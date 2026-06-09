@@ -22,8 +22,6 @@ CSV-based reference data uploaded via scripts. Source CSVs live in `data/`.
 | `currentai.catalog.model_benchmarks` | `data/huggingface/model_benchmarks.csv` | ~4.5K | Open LLM Leaderboard v2 scores |
 | `currentai.catalog.model_repos` | `data/huggingface/model_repos.csv` | ~6.3K | HF model → GitHub repo links |
 | `currentai.catalog.foundation_model_repos` | `data/huggingface/foundation_model_repos.csv` | ~72 | Curated foundation model families → canonical repos |
-| `currentai.catalog.osai_gap_map` | `data/osai-gap-map/scores.csv` | 41 | Qualitative maturity scores (10 dimensions) |
-| `currentai.catalog.osai_subcategory_mapping` | `data/osai_subcategory_repos.csv` | ~42 | OSAI subcategory → GoodAI subcategory bridge |
 | `currentai.catalog.taxonomy_crosswalk` | `data/taxonomy_crosswalk.csv` | ~10 | OSAI layer → GoodAI category bridge |
 | `currentai.catalog.pypi_downloads` | `data/pypi/pypi_downloads.csv` (gitignored) | ~1.6M | PyPI daily downloads by package × country, 39 AI packages |
 
@@ -60,12 +58,12 @@ Metric types: `stars`, `forks`, `commits`, `pull_requests`, `issues_opened`, `co
 
 Interpretive layer — taxonomy, dependencies, fragility, rankings, summaries.
 
+The OSAI/Raffi v2 taxonomy layer (scores.taxonomy, scores.investment_ranking) was removed in favor of the sources/categories model.
+
 | Table | SQL | Schedule | Rows | Description |
 |-------|-----|----------|------|-------------|
-| `currentai.scores.taxonomy` | [scores_taxonomy.sql](scores_taxonomy.sql) | Daily 6am | ~57K | Project → OSAI layer/subcategory mapping |
 | `currentai.scores.dependency_graph` | [scores_dependency_graph.sql](scores_dependency_graph.sql) | Daily 6am | ~26K | Transitive AI→AI deps (direct + depth-2) |
 | `currentai.scores.fragility` | [scores_fragility.sql](scores_fragility.sql) | Daily 6am | ~600 | Dependency reach × maintainer capacity |
-| `currentai.scores.investment_ranking` | [scores_investment_ranking.sql](scores_investment_ranking.sql) | Daily 6am | 42 | Composite ranking per OSAI subcategory |
 | `currentai.scores.project_summary` | [scores_project_summary.sql](scores_project_summary.sql) | Daily 7am | ~14K | Rolled-up snapshot per project |
 | `currentai.scores.repos_summary` | [scores_repos_summary.sql](scores_repos_summary.sql) | Daily 7am | ~15K | Per-repo snapshot: catalog metadata + 90-day activity + contributors |
 | `currentai.scores.ossd_coverage` | [scores_ossd_coverage.sql](scores_ossd_coverage.sql) | Daily 6am | ~10K | Per-org oss-directory match rates |
@@ -94,7 +92,6 @@ SELECT metric, SUM(value) FROM currentai.metrics.daily WHERE repo = 'pytorch/pyt
 -- Scores
 SELECT * FROM currentai.scores.repos_summary WHERE country = 'France' ORDER BY stars DESC LIMIT 20
 SELECT * FROM currentai.scores.project_summary ORDER BY total_stars DESC LIMIT 10
-SELECT * FROM currentai.scores.taxonomy WHERE project_slug = 'pytorch'
 ```
 
 ## Refreshing
@@ -119,6 +116,5 @@ catalog (static CSVs)  +  oso.oss_directory.*
          ↓
     metrics (daily ← events.github_events + OpenDevData)
          ↓
-    scores (taxonomy, dependency_graph, fragility, investment_ranking,
-            project_summary, repos_summary, ossd_coverage)
+    scores (dependency_graph, fragility, project_summary, repos_summary, ossd_coverage)
 ```

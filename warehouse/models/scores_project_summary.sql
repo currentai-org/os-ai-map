@@ -56,20 +56,6 @@ frag AS (
   FROM currentai.scores.fragility f
   JOIN currentai.entities.repos r ON f.repo = r.repo
   GROUP BY COALESCE(r.project_slug, f.repo)
-),
-tax AS (
-  SELECT project_slug, MIN(gap_score) AS primary_gap_score
-  FROM currentai.scores.taxonomy
-  GROUP BY project_slug
-),
-inv AS (
-  SELECT
-    t.project_slug,
-    MAX(ir.composite_score) AS investment_priority
-  FROM currentai.scores.taxonomy t
-  JOIN currentai.scores.investment_ranking ir
-    ON t.osai_layer = ir.layer AND t.osai_subcategory = ir.subcategory
-  GROUP BY t.project_slug
 )
 SELECT
   p.project_slug,
@@ -84,14 +70,10 @@ SELECT
   COALESCE(fr.direct_dependents, 0) AS direct_dependents,
   COALESCE(fr.total_dependents, 0) AS total_dependents,
   COALESCE(fr.max_fragility_score, 0.0) AS max_fragility_score,
-  mc.best_benchmark_avg,
-  tx.primary_gap_score,
-  inv.investment_priority
+  mc.best_benchmark_avg
 FROM proj p
 LEFT JOIN star_totals st ON p.project_slug = st.project_slug
 LEFT JOIN recent_metrics rm ON p.project_slug = rm.project_slug
 LEFT JOIN pkg_counts pk ON p.project_slug = pk.project_slug
 LEFT JOIN model_counts mc ON p.project_slug = mc.project_slug
 LEFT JOIN frag fr ON p.project_slug = fr.project_slug
-LEFT JOIN tax tx ON p.project_slug = tx.project_slug
-LEFT JOIN inv ON p.project_slug = inv.project_slug
