@@ -1,0 +1,41 @@
+product: unsloth
+openness:
+  score: 5
+  class: open_source
+  components: license:Apache-2.0(OSI, core unsloth pkg)+AGPL-3.0(OSI, optional Unsloth Studio UI);source:public(unslothai/unsloth);no
+    proprietary managed-training SaaS gate
+  confidence: high
+  note: OSI-licensed throughout (Apache-2.0 core, AGPL-3.0 for the optional Studio UI); both are OSI licenses
+    so class is open_source, not open_core.
+  sources:
+  - url: https://github.com/unslothai/unsloth
+    shows: Apache-2.0 core + AGPL-3.0 Studio UI; fine-tuning framework
+    accessed: '2026-06-04'
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: ~2.43M PyPI downloads last month; widely used for low-VRAM/consumer-GPU fine-tuning of open models;
+    ~65.8K stars corroborate. Level 4 on download volume.
+  sources:
+  - url: https://pypistats.org/packages/unsloth
+    shows: 'Downloads last month: 2,432,077'
+    accessed: '2026-06-04'
+  - url: https://github.com/unslothai/unsloth
+    shows: ~65.8K GitHub stars (corroborating)
+    accessed: '2026-06-04'
+capability:
+  score: 4
+  basis: feature_matrix
+  value: 'Methods: full FT, LoRA/QLoRA, RL (GRPO, FP8 RL), pretraining, embedding FT; custom Triton kernels
+    delivering ~2x faster / up to 70% less VRAM, MoE training ~12x faster / 35% less VRAM; 500+ supported
+    models; multiple quant formats. Single-node memory/speed optimization is its frontier edge; less focused
+    on multi-node frontier-scale parallelism than Megatron-LM.'
+  confidence: high
+  note: Best-in-class single-/consumer-GPU efficiency (kernel-level), broad method coverage; C4 — not
+    the frontier multi-node-scale anchor.
+  sources:
+  - url: https://github.com/unslothai/unsloth
+    shows: Triton-kernel 2x speed / 70% VRAM claims, GRPO/FP8 RL, 500+ models
+    accessed: '2026-06-04'

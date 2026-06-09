@@ -1,0 +1,41 @@
+product: azure-openai-fine-tuning
+openness:
+  score: 1
+  class: closed
+  components: source:closed;training-code:closed;runs-on:Azure-AI-Foundry-only;license:Proprietary(managed
+    Azure service)
+  confidence: high
+  note: Proprietary managed FT service inside Azure AI Foundry; no source, runs only on Azure against
+    (mostly) closed OpenAI models.
+  sources:
+  - url: https://learn.microsoft.com/en-us/azure/ai-foundry/openai/how-to/fine-tuning
+    shows: managed FT service; SFT/DPO/RFT; gpt-4o/4.1/o4-mini/gpt-5 tunable; Azure-only
+    accessed: '2026-06-04'
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: No disclosed standalone usage figure for the Azure OpenAI fine-tuning feature located this run
+    (jobs run / customers tuning). Azure OpenAI overall is widely deployed in enterprise, but no honest
+    signal specific to the FT SKU was found; declining to assign a level rather than borrow the umbrella
+    surface number.
+  sources:
+  - url: https://learn.microsoft.com/en-us/azure/ai-foundry/openai/how-to/fine-tuning
+    shows: GA managed FT feature; no usage figures disclosed
+    accessed: '2026-06-04'
+capability:
+  score: 4
+  basis: feature_matrix
+  value: 'Methods: SFT, DPO (preference), RFT (model-grader reward signals) across the gpt-4o/gpt-4.1/o4-mini/gpt-5
+    frontier line, plus preview SFT on Ministral/Qwen/Llama/gpt-oss. Managed end-to-end (data validation,
+    per-epoch checkpoints, auto-deploy); Standard/Global/Developer training tiers.'
+  confidence: medium
+  note: 'Strong managed method coverage (SFT+DPO+RFT) over frontier closed base models plus an open-model
+    preview lane, but black-box: no parallelism/precision/scale controls, no MLPerf-Training basis. Scored
+    4 on method breadth + frontier base quality, calibrated equal to the OpenAI FT API (C4) it wraps;
+    not 5 since the user cannot control training internals/scale.'
+  sources:
+  - url: https://learn.microsoft.com/en-us/azure/ai-foundry/openai/how-to/fine-tuning
+    shows: SFT, DPO, RFT across gpt-4o/4.1/o4-mini/gpt-5 + Qwen/Llama/gpt-oss preview
+    accessed: '2026-06-04'

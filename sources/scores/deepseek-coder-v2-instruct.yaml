@@ -1,0 +1,42 @@
+product: deepseek-coder-v2-instruct
+openness:
+  score: 2
+  class: restricted
+  components: weights:open(downloadable on HF);data:closed;code:open(MIT, repo code);model-license:DeepSeek-Model-License(non-OSI;
+    Attachment A acceptable-use restrictions - military/illegal/discrimination/etc.; commercial allowed
+    but use-based restrictions must propagate to derivatives)
+  confidence: high
+  note: 'Mixed tier: repo CODE is MIT, but the WEIGHTS are governed by the non-OSI DeepSeek Model License
+    with use-based restrictions (Attachment A) -> restricted class for the model, not open_weights. Distinct
+    from newer DeepSeek models (R1/V3.2/V4) which ship weights under plain MIT.'
+  sources:
+  - url: https://huggingface.co/deepseek-ai/DeepSeek-Coder-V2-Instruct
+    shows: model license = 'DeepSeek Model Agreement', code license = MIT, 236B-A21B MoE instruct coder
+    accessed: '2026-06-04'
+  - url: https://github.com/deepseek-ai/DeepSeek-Coder-V2/blob/main/LICENSE-MODEL
+    shows: DeepSeek Model License with Attachment A use-based restrictions; non-OSI custom license
+    accessed: '2026-06-04'
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: ~15.7K downloads last month on HF for this 236B SKU; superseded by DeepSeek-V2.5/V3/R1 coders
+    and 2026 coders. Modest, declining usage -> low band (~10K-100K including quants/derivatives).
+  sources:
+  - url: https://huggingface.co/deepseek-ai/DeepSeek-Coder-V2-Instruct
+    shows: ~15,679 downloads last month
+    accessed: '2026-06-04'
+capability:
+  score: 3
+  basis: benchmark:code-tasks
+  value: 'Vendor: comparable to GPT-4 Turbo on code-specific tasks, beats Claude 3 Opus / Gemini 1.5 Pro
+    on coding+math at 2024 release; 338-language support'
+  confidence: medium
+  note: GPT-4-Turbo-class open coder at its 2024 release, but a 2024-generation model now mid-tier vs
+    2026 frontier coders (Qwen3-Coder, DeepSeek-V4, GLM-5.1, Kimi K2.6). HF card defers exact HumanEval/MBPP/SWE-bench
+    numbers to the paper; scored 3 with medium confidence on vendor positioning.
+  sources:
+  - url: https://huggingface.co/deepseek-ai/DeepSeek-Coder-V2-Instruct
+    shows: vendor claim of GPT-4-Turbo-comparable code performance, 338 languages
+    accessed: '2026-06-04'

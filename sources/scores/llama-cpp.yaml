@@ -1,0 +1,43 @@
+product: llama-cpp
+openness:
+  score: 5
+  class: open_source
+  components: license:MIT(OSI);source:public;governance:ggml-org/Hugging Face(community);no feature-gated
+    core
+  confidence: high
+  note: Fully MIT-licensed C/C++ inference engine; entire source public, no proprietary tier.
+  sources:
+  - url: https://github.com/ggml-org/llama.cpp/blob/master/LICENSE
+    shows: MIT License text, (c) 2023-2026 The ggml authors
+    accessed: '2026-06-04'
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: medium
+  note: 'De facto standard local/edge inference engine: GGUF (its native format) is >60% of all quantized
+    models on HF, and llama.cpp powers Ollama, LM Studio, GPT4All, Jan.ai, and HF Inference Endpoints,
+    which collectively serve millions. 115k GitHub stars (fastest OSS-AI project to 100k, Mar 2026) corroborates
+    but is not the basis. No clean PyPI/user count for the C++ engine itself, so usage inferred from ecosystem
+    dominance; placed at 4 (1-10M-equivalent).'
+  sources:
+  - url: https://github.com/ggml-org/llama.cpp
+    shows: 115k stars; README lists Ollama/LM Studio/LocalAI/HF Inference Endpoints as downstream integrations
+    accessed: '2026-06-04'
+  - url: https://huggingface.co/docs/hub/gguf-llamacpp
+    shows: GGUF/llama.cpp as the standard local-inference path on the HF Hub
+    accessed: '2026-06-04'
+capability:
+  score: 4
+  basis: feature_matrix
+  value: 'Backends: Metal/CUDA/HIP/Vulkan/SYCL/OpenVINO/MUSA/WebGPU; quantization 1.5/2/3/4/5/6/8-bit
+    integer; 100+ model architectures incl. multimodal (LLaVA); continuous batching + server. No standardized
+    MLPerf Inference submission for the engine itself.'
+  confidence: high
+  note: Frontier for portable/CPU/consumer-hardware inference and quantization breadth, but not the datacenter-GPU
+    throughput frontier held by vLLM/SGLang/TensorRT-LLM; scored 4 on a category where C5 is reserved
+    for the throughput-defining server engines.
+  sources:
+  - url: https://github.com/ggml-org/llama.cpp
+    shows: README documents backend list, 1.5-8bit quantization, 100+ architectures, multimodal support
+    accessed: '2026-06-04'

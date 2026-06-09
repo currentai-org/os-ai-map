@@ -1,0 +1,39 @@
+product: qwen2-5-coder-instruct
+openness:
+  score: 3
+  class: open_weights
+  components: weights:open(Apache-2.0, on HF);data:closed(5.5T-token mix described, corpus not released);code:partial(inference/chat
+    template; no training pipeline);license:Apache-2.0(OSI permissive)
+  confidence: high
+  note: Genuine OSI Apache-2.0 open weights; training data/code not released -> open_weights.
+  sources:
+  - url: https://huggingface.co/Qwen/Qwen2.5-Coder-32B-Instruct
+    shows: Apache-2.0 license, 32.5B instruct coder model card, downloadable BF16 weights
+    accessed: '2026-06-04'
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: ~1.36M downloads last month for the 32B-Instruct SKU alone on HF; the broader Qwen2.5-Coder family
+    (0.5B-32B base+instruct) multiplies this. Squarely in the 1-10M reach band on measured monthly download
+    volume.
+  sources:
+  - url: https://huggingface.co/Qwen/Qwen2.5-Coder-32B-Instruct
+    shows: ~1,360,411 downloads last month
+    accessed: '2026-06-04'
+capability:
+  score: 3
+  basis: benchmark:Aider/HumanEval
+  value: Aider code-repair 73.7 (comparable to GPT-4o); McEval 65.9, MdEval 75.2 (1st among open at 2024
+    release); SOTA open coder at launch
+  confidence: high
+  note: Best open-source code LLM at its Sep 2024 release (GPT-4o-class on Aider), but a 2024 dense model
+    now mid-tier vs 2026 frontier coders. Aider 73.7 from the primary Qwen blog.
+  sources:
+  - url: https://qwenlm.github.io/blog/qwen2.5-coder-family/
+    shows: Aider 73.7 (GPT-4o-comparable), McEval 65.9, MdEval 75.2; SOTA among open coders at release
+    accessed: '2026-06-04'
+  - url: https://huggingface.co/Qwen/Qwen2.5-Coder-32B-Instruct
+    shows: vendor claim of GPT-4o-matching coding for the 32B instruct
+    accessed: '2026-06-04'

@@ -1,0 +1,40 @@
+product: beta9
+openness:
+  score: 3
+  class: open_core
+  components: license:AGPL-3.0(OSI, copyleft);source:public;managed-tier:Beam (beam.cloud) fully-managed
+    GPU cloud (proprietary)
+  confidence: high
+  note: AGPL-3.0 (OSI but strong copyleft) engine plus proprietary managed Beam cloud => open_core. Scored
+    3 (vs 4) for AGPL copyleft tempering commercial reuse, consistent with Daytona's treatment.
+  sources:
+  - url: https://github.com/beam-cloud/beta9
+    shows: AGPL-3.0 license; open-source serverless AI runtime; engine powering managed Beam cloud (beam.cloud)
+    accessed: '2026-06-04'
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: stars_fallback
+  confidence: low
+  note: No PyPI/usage figure for the OSS runtime surfaced and no disclosed Beam customer/usage count;
+    only ~1.7k GitHub stars available as a signal. stars_fallback caps level at 3; placed at 2 given the
+    small star base and absence of any volume signal. Low confidence.
+  sources:
+  - url: https://github.com/beam-cloud/beta9
+    shows: 1.7k stars; no published download/usage figures
+    accessed: '2026-06-04'
+capability:
+  score: 3
+  basis: feature_matrix
+  value: isolation:container (serverless containers, not VM/microVM per repo description); cold-start:fast
+    container launch; language/runtime breadth:Python AI workloads + GPU (4090/H100); persistence:volume
+    storage; scale:parallelize across hundreds of containers + autoscaling
+  confidence: medium
+  note: Capable serverless container runtime with GPU support, volumes, autoscaling and sandbox primitives,
+    but container-level (not VM/microVM) isolation places it below the VM-grade peers on the isolation-strength
+    dimension; mid-tier.
+  sources:
+  - url: https://github.com/beam-cloud/beta9
+    shows: 'serverless runtime: rapid container launches, parallelize across hundreds of containers, GPU
+      support, volume storage, sandboxes'
+    accessed: '2026-06-04'

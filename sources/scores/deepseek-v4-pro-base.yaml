@@ -1,0 +1,48 @@
+product: deepseek-v4-pro-base
+openness:
+  score: 3
+  class: open_weights
+  components: weights:open(downloadable on HF, both Pro-Base and Flash-Base);data:closed;code:partial(inference/serving;
+    no training pipeline);license:MIT(permissive, no use restrictions)
+  confidence: high
+  note: 'MIT-licensed open weights (confirmed via the repo''s LICENSE blob — note the HF page itself shows
+    ''No model card'', so license relied on the LICENSE file directly), data/training pipeline closed.
+    Matches the DeepSeek-V4-Pro anchor (O3 open_weights). Confidence raised to high: independently re-verified
+    the live repo (1.6T, 24,567 dl/mo) AND the MIT LICENSE blob (first line "MIT License", DeepSeek 2023)
+    this pass; model card empty but license unambiguous.'
+  sources:
+  - url: https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro-Base
+    shows: 1.6T base model, 24,567 downloads/mo, live repo, but 'No model card'
+    accessed: '2026-06-04'
+  - url: https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro-Base/blob/main/LICENSE
+    shows: MIT License text, dated 2023 DeepSeek (LICENSE blob exists, 1.08 kB)
+    accessed: '2026-06-04'
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: medium
+  note: Base released ~6 weeks before scoring; ~24.5k base-checkpoint downloads/mo (confirmed) and broad
+    serving of the V4-Pro chat line across providers. Calibrated to the DeepSeek-V4-Pro anchor (A4) —
+    strong early traction, too recent to confirm >10M independently.
+  sources:
+  - url: https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro-Base
+    shows: live base repo 24,567 downloads/mo
+    accessed: '2026-06-04'
+  - url: https://huggingface.co/deepseek-ai
+    shows: 'DeepSeek-V4 collection: V4-Pro (862B), V4-Flash (158B), V4-Pro-Base (1.6T), V4-Flash-Base
+      (292B); confirms bare ''DeepSeek-V4-Base'' does not exist'
+    accessed: '2026-06-04'
+capability:
+  score: 5
+  basis: benchmark:SWE-bench/MMLU-Pro/GPQA
+  value: 'DeepSeek-V4-Pro (chat sibling of this base): SWE-bench Verified 80.6%, MMLU-Pro 87.5, GPQA Diamond
+    90.1, LiveCodeBench 93.5 — strongest open-source model at release (per frozen anchor).'
+  confidence: medium
+  note: 'Frontier-tier for the category; benchmarks reflect the post-trained V4-Pro built on this base.
+    Matches the DeepSeek-V4-Pro anchor (C5). Note: these figures are from the frozen anchor, not re-verified
+    against a primary AA/vendor card in this pass (V4-Pro-Base card is empty).'
+  sources:
+  - url: https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro-Base
+    shows: 1.6T V4-Pro base, the pretrained foundation of frontier V4-Pro
+    accessed: '2026-06-04'

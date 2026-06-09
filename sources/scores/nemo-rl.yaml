@@ -1,0 +1,38 @@
+product: nemo-rl
+openness:
+  score: 5
+  class: open_source
+  components: license:Apache-2.0(OSI);source:public;maintainer:NVIDIA;no feature-gated core (NVIDIA-GPU
+    oriented, not a license restriction)
+  confidence: high
+  note: Apache-2.0, full source public; GPU orientation is a hardware practicality, not a license restriction.
+  sources:
+  - url: https://github.com/NVIDIA-NeMo/RL
+    shows: Apache-2.0 license; v0.6.0 (Apr 30 2026); post-training library
+    accessed: '2026-06-04'
+adoption:
+  level: 2
+  reach: <10K
+  signal_type: stars_fallback
+  confidence: medium
+  note: No PyPI download or named-user volume located this run; only ~1.7k GitHub stars (last-resort signal,
+    caps at level 3). Young (v0.6.0, Apr 2026) and narrower than the broader NeMo framework. Level 2 on
+    stars_fallback; honest signal is limited.
+  sources:
+  - url: https://github.com/NVIDIA-NeMo/RL
+    shows: ~1.7k GitHub stars; v0.6.0 Apr 2026
+    accessed: '2026-06-04'
+capability:
+  score: 5
+  basis: feature_matrix
+  value: 'Methods: GRPO, GSPO, DAPO, GDPO, SFT (+LoRA), DPO (+LoRA), on-policy distillation, reward modeling;
+    backends DTensor (TP/SP/PP/CP/FSDP2) and Megatron Core with 6D parallelism (TP/PP/CP/SP/EP/FSDP);
+    SGLang backend, speculative decoding, long-context training.'
+  confidence: high
+  note: 'Frontier-tier scale/parallelism within finetuning_code: Megatron-Core backend with 6D parallelism
+    and modern RL/preference method coverage. Capability (does it train at scale, well?) is high even
+    though adoption is still small; calibrated as C5 alongside Megatron-LM and verl.'
+  sources:
+  - url: https://github.com/NVIDIA-NeMo/RL
+    shows: GRPO/GSPO/DAPO/GDPO/SFT/DPO/distillation; DTensor + Megatron Core 6D parallelism; SGLang backend
+    accessed: '2026-06-04'

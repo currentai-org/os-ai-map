@@ -1,0 +1,47 @@
+product: onnx-runtime
+openness:
+  score: 5
+  class: open_source
+  components: license:MIT(OSI);source:public(Microsoft);no proprietary core; plugin execution providers
+    (CUDA/WebGPU/etc.) in-repo
+  confidence: high
+  note: Fully MIT-licensed open source from Microsoft; no feature-gated tier.
+  sources:
+  - url: https://github.com/microsoft/onnxruntime/blob/main/LICENSE
+    shows: MIT License text, Microsoft Corporation
+    accessed: '2026-06-04'
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: high
+  note: '~74.7M PyPI downloads in the last month for the onnxruntime package; GitHub reports ''used by''
+    ~89.9k repositories. Embedded across Microsoft products and the broader ML deployment stack. Well
+    into the >10M band on download volume. (Note: onnxruntime spans general ML inference, not only LLM
+    serving — see capability/recategorize note.)'
+  sources:
+  - url: https://pypistats.org/packages/onnxruntime
+    shows: ~74.7M downloads last month
+    accessed: '2026-06-04'
+  - url: https://github.com/microsoft/onnxruntime
+    shows: 20.7k stars; 'used by 89.9k'; cross-platform inference accelerator description
+    accessed: '2026-06-04'
+capability:
+  score: 4
+  basis: benchmark:MLPerf
+  value: Appears in MLPerf Inference v5.0 submissions (ResNet50, RetinaNet, offline; multiple ORT versions
+    v1.20.1-v1.23.2). Execution providers across CUDA/WebGPU/CPU/TensorRT/OpenVINO/CoreML; cross-framework
+    (PyTorch/TF/scikit-learn/XGBoost). Quantization + graph optimization.
+  confidence: medium
+  note: Strong, MLPerf-present general-purpose inference accelerator, but its MLPerf coverage is vision/classical
+    models, not LLM-serving throughput; for transformer/LLM serving it trails the purpose-built vLLM/SGLang/TensorRT-LLM
+    (C5) frontier. Scored 4 within this category. Arguably broader than inference_code (a general ML runtime),
+    but it does load weights and serve predictions, so it fits the litmus test; flagging for reviewer
+    consideration without forcing a move.
+  sources:
+  - url: https://github.com/mlcommons/mlperf_inference_test_submissions_v5.0
+    shows: ONNX Runtime (v1.20.1-v1.23.2) submissions for ResNet50/RetinaNet offline
+    accessed: '2026-06-04'
+  - url: https://github.com/microsoft/onnxruntime
+    shows: cross-platform inference accelerator, plugin execution providers (CUDA/WebGPU)
+    accessed: '2026-06-04'

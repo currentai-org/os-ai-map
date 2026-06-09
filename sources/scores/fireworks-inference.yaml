@@ -1,0 +1,43 @@
+product: fireworks-inference
+openness:
+  score: 1
+  class: closed
+  components: engine:proprietary(FireAttention kernels);source:closed;access:managed-cloud-API-only;license:Proprietary
+  confidence: high
+  note: Proprietary FireAttention inference engine offered only as a managed cloud service; closed per
+    recipe.
+  sources:
+  - url: https://fireworks.ai/
+    shows: managed cloud inference platform serving open models; engine not released publicly
+    accessed: '2026-06-04'
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: reported_traction
+  confidence: medium
+  note: Strong named-customer roster including Cursor, Vercel, Notion, Sourcegraph, UiPath, Quora, Cresta,
+    StackBlitz; serves top open models for many high-traffic AI products. No raw user count disclosed;
+    reported_traction. Breadth of high-volume production customers supports the 1-10M-equivalent band.
+  sources:
+  - url: https://fireworks.ai/
+    shows: customers Cursor, Vercel, Notion, Sourcegraph, UiPath, Quora, Cresta, StackBlitz; case-study
+      latency/throughput gains
+    accessed: '2026-06-04'
+capability:
+  score: 4
+  basis: benchmark:ArtificialAnalysis(provider-speed)
+  value: '3rd-fastest provider for gpt-oss-120b on the Artificial Analysis leaderboard at 658.8 output
+    tokens/sec (top GPU-based provider; behind wafer/LPU-class Cerebras 1,726.0 and SambaNova 692.5).
+    Customer case studies: Notion ~2s -> 350ms latency, Quora 3x speedup. (AA is a living leaderboard;
+    figures re-verified 2026-06-04.)'
+  confidence: medium
+  note: Top-tier GPU-based inference (FireAttention) and fastest GPU provider on the AA gpt-oss-120b board
+    (658.8 t/s, 3rd overall), but below the wafer/LPU speed-frontier (Cerebras). C4 -> strong but not
+    the throughput frontier-definer that gets a 5.
+  sources:
+  - url: https://artificialanalysis.ai/models/gpt-oss-120b/providers
+    shows: Fireworks 658.8 t/s (3rd by output speed) for gpt-oss-120b; Cerebras 1,726.0, SambaNova 692.5
+    accessed: '2026-06-04'
+  - url: https://fireworks.ai/
+    shows: Notion 2s->350ms, Quora 3x speedup case studies
+    accessed: '2026-06-04'

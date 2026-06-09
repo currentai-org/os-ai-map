@@ -1,0 +1,47 @@
+product: yi-1-5
+openness:
+  score: 3
+  class: open_weights
+  components: weights:open(Apache-2.0, on HF);data:closed(pretraining corpus not released);code:partial(inference/usage
+    examples; no training pipeline);license:Apache-2.0(OSI, permissive, no use restrictions)
+  confidence: high
+  note: Permissive Apache-2.0 weights but training data and full training code are not released, so open_weights
+    not open_source. Apache-2.0 confirmed on HF base cards 2026-06-04.
+  sources:
+  - url: https://huggingface.co/01-ai/Yi-1.5-34B
+    shows: Apache-2.0 license, 34B base model (base vs chat variants listed), downloadable weights
+    accessed: '2026-06-04'
+  - url: https://huggingface.co/01-ai/Yi-1.5-9B
+    shows: Apache-2.0 license, 9B base model, base/chat variants listed
+    accessed: '2026-06-04'
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: HF monthly downloads are modest in 2026 (Yi-1.5-34B 10,925/mo, Yi-1.5-9B 16,052/mo, both confirmed
+    2026-06-04) as a 2024-era family superseded by Qwen/Llama/DeepSeek generations. Cumulative reach across
+    variants + ModelScope/wisemodel mirrors lands in the early-adopter band; relevance has faded.
+  sources:
+  - url: https://huggingface.co/01-ai/Yi-1.5-34B
+    shows: 10,925 downloads last month
+    accessed: '2026-06-04'
+  - url: https://huggingface.co/01-ai/Yi-1.5-9B
+    shows: 16,052 downloads last month
+    accessed: '2026-06-04'
+capability:
+  score: 2
+  basis: benchmark:MMLU/GSM8K
+  value: 'Yi-1.5-34B base: MMLU 76.3, C-Eval 81.4, BBH 54.3; 34B-Chat GSM8K 90.2. Competitive in 2024
+    mid-size class.'
+  confidence: medium
+  note: Strong for a 2024 sub-35B model but well below 2026 frontier open models (DeepSeek-V4, Qwen 3.6);
+    calibrates near Falcon 3 (C2) on the dated-generation ladder. Benchmarks from the 01-ai GitHub repo
+    (not the HF card).
+  sources:
+  - url: https://arxiv.org/abs/2403.04652
+    shows: Yi foundation-models tech report with benchmark methodology
+    accessed: '2026-06-04'
+  - url: https://github.com/01-ai/Yi-1.5
+    shows: Yi-1.5 base benchmark results (MMLU 76.3, BBH 54.3, C-Eval 81.4)
+    accessed: '2026-06-04'

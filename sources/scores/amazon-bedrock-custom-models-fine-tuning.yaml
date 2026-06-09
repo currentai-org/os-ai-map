@@ -1,0 +1,41 @@
+product: amazon-bedrock-custom-models-fine-tuning
+openness:
+  score: 1
+  class: closed
+  components: source:closed;training-code:closed;runs-on:AWS-Bedrock-only;license:Proprietary(managed
+    AWS service, token+storage billed)
+  confidence: high
+  note: Proprietary managed customization service inside AWS Bedrock — no source, runs only on AWS against
+    Bedrock-hosted foundation models.
+  sources:
+  - url: https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html
+    shows: supervised fine-tuning, reinforcement fine-tuning, distillation; managed AWS service; token/storage
+      pricing
+    accessed: '2026-06-04'
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: No disclosed usage figure for the Bedrock customization feature located this run (jobs run / customers
+    using fine-tuning). Bedrock overall is widely used, but no honest signal specific to the custom-models/fine-tuning
+    capability was found; declining to assign a level.
+  sources:
+  - url: https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html
+    shows: managed customization feature; no usage figures disclosed
+    accessed: '2026-06-04'
+capability:
+  score: 3
+  basis: feature_matrix
+  value: 'Methods: supervised fine-tuning, reinforcement fine-tuning (custom Lambda reward functions,
+    real-time metrics), distillation (teacher->student). Continued pre-training also offered on select
+    models.'
+  confidence: medium
+  note: 'Solid managed method set (SFT + RFT + distillation), but a black-box service with no exposed
+    parallelism/precision/scale controls and no benchmark basis. Scored 3: capable managed FT across a
+    model catalog, below the RFT-on-frontier-reasoning depth of the OpenAI/Vertex offerings and far below
+    the OSS scale-frontier libs.'
+  sources:
+  - url: https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html
+    shows: SFT, reinforcement fine-tuning with Lambda reward funcs, distillation
+    accessed: '2026-06-04'

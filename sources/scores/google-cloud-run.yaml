@@ -1,0 +1,51 @@
+product: google-cloud-run
+openness:
+  score: 1
+  class: closed
+  components: service:proprietary(Google SaaS);source:closed;isolation-runtime:gVisor(open-source, github.com/google/gvisor)
+    but the Cloud Run product/control-plane is proprietary;managed-only(no self-host)
+  confidence: high
+  note: Proprietary managed serverless platform; only the underlying gVisor sandbox runtime is OSS, not
+    Cloud Run itself.
+  sources:
+  - url: https://cloud.google.com/run
+    shows: Cloud Run described as fully-managed Google serverless container product (proprietary SaaS)
+    accessed: '2026-06-04'
+  - url: https://github.com/google/gvisor
+    shows: gVisor (Cloud Run's isolation runtime) is the open-source component, distinct from the closed
+      product
+    accessed: '2026-06-04'
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: high
+  note: 'Google Next ''26 blog (primary, verified verbatim): external active developers and apps on Cloud
+    Run doubled YoY, more new customers/apps in 2025 than its first 6 years combined; Replit VP quote:
+    >1M live projects hosted on Replit with Cloud Run as primary target. Hyperscaler serverless reach
+    is well into the >10M band.'
+  sources:
+  - url: https://cloud.google.com/blog/products/serverless/whats-new-for-cloud-run-at-next26
+    shows: active developers/apps doubled YoY; more new customers in 2025 than first 6 years combined;
+      Replit >1M live projects on Cloud Run
+    accessed: '2026-06-04'
+capability:
+  score: 4
+  basis: feature_matrix
+  value: 'isolation: container + gVisor syscall sandbox (now a dedicated `sandbox` agent tool for AI-generated
+    code); cold-start: scale-to-zero with sub-second to low-second starts; language/runtime breadth: any
+    OCI container (very broad); persistence: stateless request model + volume mounts; scale: 0 to thousands
+    of instances autoscaling on a hyperscaler'
+  confidence: medium
+  note: Very broad runtime/language coverage and hyperscaler scale; new agent `sandbox` tool (announced
+    Next '26, 'coming soon') adds first-class AI-code-execution via a `sandbox do --` command. gVisor
+    isolation is process/syscall-level rather than full microVM (Sprites/Northflank), so not the top isolation
+    tier. Strong but not the single frontier-definer.
+  sources:
+  - url: https://cloud.google.com/blog/products/serverless/whats-new-for-cloud-run-at-next26
+    shows: built-in `sandbox` tool for agents to run AI-generated code in ephemeral isolated envs; container
+      model, autoscale 0->thousands
+    accessed: '2026-06-04'
+  - url: https://cloud.google.com/run
+    shows: OCI container deploy, scale-to-zero, broad runtime support
+    accessed: '2026-06-04'

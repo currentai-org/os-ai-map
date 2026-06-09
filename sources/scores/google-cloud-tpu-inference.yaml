@@ -1,0 +1,39 @@
+product: google-cloud-tpu-inference
+openness:
+  score: 1
+  class: closed
+  components: license:proprietary;runtime:Pathways(Google-internal distributed runtime, not open-sourced);hardware-lock:Google
+    TPU-only;managed:Google Cloud/GKE;note:JetStream(separate, Apache-2.0 OSS) is the open serving frontend
+    but the scored product is the proprietary Pathways/TPU runtime
+  confidence: high
+  note: The named product (Pathways / TPU Runtime managed inference) is proprietary, TPU-locked, and cloud-delivered.
+    JetStream (open) is a distinct artifact and not what this SKU is; scored closed.
+  sources:
+  - url: https://cloud.google.com/blog/products/compute/ai-hypercomputer-inference-updates-for-google-cloud-tpu-and-gpu
+    shows: Pathways runtime offered as managed Google Cloud component (not labeled open source); JetStream
+      described as the open-source engine separately
+    accessed: '2026-06-04'
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: reported_traction
+  confidence: low
+  note: Powers Google internal + Cloud TPU inference via AI Hypercomputer/GKE; no standalone usage figure
+    for the Pathways runtime offering. Level 3 = reported managed-cloud traction.
+  sources:
+  - url: https://cloud.google.com/blog/products/compute/ai-hypercomputer-inference-updates-for-google-cloud-tpu-and-gpu
+    shows: Pathways/JetStream managed TPU inference on AI Hypercomputer, GKE-integrated, 3-yr CUD pricing
+    accessed: '2026-06-04'
+capability:
+  score: 4
+  basis: feature_matrix
+  value: 'JetStream+Pathways: 1703 tok/s on Llama 3.1 405B on Trillium (multi-host), ~3x inference/$ vs
+    TPU v5e; multi-host disaggregated serving'
+  confidence: medium
+  note: High-throughput multi-host TPU inference (1703 tok/s Llama 405B on Trillium, primary Google figure).
+    Strong but TPU-locked and not an independent MLPerf submission for the runtime; C4, below the open
+    frontier engines' breadth.
+  sources:
+  - url: https://cloud.google.com/blog/products/compute/ai-hypercomputer-inference-updates-for-google-cloud-tpu-and-gpu
+    shows: 1703 tok/s Llama 3.1 405B on Trillium, ~3x inference/$ vs v5e
+    accessed: '2026-06-04'

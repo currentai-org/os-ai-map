@@ -1,0 +1,37 @@
+product: hermes-4-llama-3-1-70b
+openness:
+  score: 2
+  class: restricted
+  confidence: high
+  components: 'weights:open(downloadable);base:Llama-3.1-70B;post-training-data:closed;code:partial(inference);license:Llama-3.1-Community(non-OSI:
+    700M MAU cap + acceptable-use)'
+  note: Same non-OSI Llama 3.1 Community License as the 405B => restricted. Marketed as 'open' despite
+    the restricted license.
+  sources:
+  - url: https://huggingface.co/NousResearch/Hermes-4-70B
+    shows: 'License: Llama3, base meta-llama/Llama-3.1-70B'
+    accessed: '2026-06-04'
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: high
+  note: ~1,055 HF downloads/mo for the BF16 70B; modest even with FP8/GGUF variants. Hobbyist/specialist
+    scale on download signal.
+  sources:
+  - url: https://huggingface.co/NousResearch/Hermes-4-70B
+    shows: 1,055 downloads last month
+    accessed: '2026-06-04'
+capability:
+  score: 3
+  basis: benchmark:AIME/MMLU-Pro
+  value: Hermes 4 family (tech report arXiv:2508.18255); 70B reasoning model on Llama-3.1-70B base, below
+    the 405B SKU on math/knowledge/coding
+  confidence: low
+  note: Per-SKU 70B benchmark numbers not isolated in fetched sources; scored a 3 by interpolation from
+    the 405B (C4) down a tier given the smaller Llama-3.1-70B base. Mid-tier open instruct, below 2026
+    frontier. Low confidence on the exact figure.
+  sources:
+  - url: https://arxiv.org/pdf/2508.18255
+    shows: Hermes 4 technical report covering 70B/405B/14B variants
+    accessed: '2026-06-04'

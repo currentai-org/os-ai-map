@@ -1,0 +1,53 @@
+product: granite-code-instruct
+openness:
+  score: 3
+  class: open_weights
+  components: weights:open(Apache-2.0,on HF);code:partial(inference + fine-tune sample scripts via Dolomite
+    Engine; no full training pipeline in repo);data:described_not_released(CommitPackFT/MathInstruct/Glaive/HelpSteer/Open-Platypus
+    named in card but processed corpus not redistributable);post-training-data:described(SFT mixture named,
+    not released);paper:open(arXiv 2405.04324);model_card:open;license:Apache-2.0(OSI)
+  confidence: high
+  note: OSI Apache-2.0 + downloadable weights + paper + model card, but training/post-training data only
+    described (not redistributable) and no full training pipeline => open_weights, not open_source. Strong
+    within the open_weights class (genuinely permissive, no use caps).
+  sources:
+  - url: https://huggingface.co/ibm-granite/granite-3b-code-instruct-2k
+    shows: Apache-2.0 license, instruction-tuned model card, named training-data sources, HumanEvalSynthesis
+      scores
+    accessed: '2026-06-04'
+  - url: https://github.com/ibm-granite/granite-code-models
+    shows: repo with Apache-2.0, fine-tune sample scripts (Dolomite Engine), but no training data download
+      and no full training pipeline
+    accessed: '2026-06-04'
+  - url: https://research.ibm.com/blog/granite-code-models-open-source
+    shows: IBM describes data sources (GitHub Code Clean, StarCoderData, CodeNet) but does not release
+      the processed datasets
+    accessed: '2026-06-04'
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: medium
+  note: HF shows ~1,925 downloads/month on the granite-3b-code-instruct-2k variant; model is officially
+    deprecated and superseded by Granite 4.x. Even summed across the four Instruct sizes the active monthly
+    pull volume is small. Hobbyist/legacy-research tier.
+  sources:
+  - url: https://huggingface.co/ibm-granite/granite-3b-code-instruct-2k
+    shows: ~1,925 downloads last month; deprecation notice
+    accessed: '2026-06-04'
+capability:
+  score: 2
+  basis: benchmark:HumanEval
+  value: 'granite-3b-code-instruct-2k HumanEvalSynthesis pass@1: Python 51.2, JS 43.9, Java 41.5, C++
+    40.2, Go 31.7, Rust 29.3; 8B variant ~SOTA-among-open-code-LLMs at 2024 release on HumanEvalPack'
+  confidence: high
+  note: Strong-for-size 2024 code SLMs (matched open code LLMs of their era), but sub-13B and ~51% HumanEval
+    Python is far below 2026 frontier chat/agentic coders (Opus 4.8 88.6 SWE-bench). Low-mid on a frontier-relative
+    scale.
+  sources:
+  - url: https://huggingface.co/ibm-granite/granite-3b-code-instruct-2k
+    shows: HumanEvalSynthesis pass@1 per-language scores
+    accessed: '2026-06-04'
+  - url: https://research.ibm.com/blog/granite-code-models-open-source
+    shows: Granite-8B-Code matches SOTA among open-source code LLMs on HumanEvalPack at 2024 release
+    accessed: '2026-06-04'

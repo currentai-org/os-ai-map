@@ -1,0 +1,42 @@
+product: laminar
+openness:
+  score: 5
+  class: open_source
+  components: license:Apache-2.0(OSI);source:public(Rust core + TS UI);SDKs:Apache-2.0;no feature-gated
+    core observed in repo;managed Laminar Cloud is hosting not a gated tier
+  confidence: medium
+  note: Repo and SDKs Apache-2.0 with full source; a hosted cloud exists but no enterprise-gated module
+    split was visible in the repo (less explicit open-core boundary than Langfuse/LangWatch).
+  sources:
+  - url: https://github.com/lmnr-ai/lmnr
+    shows: Apache-2.0 license; Rust+TS source public; OTel-native tracing/evals/datasets features
+    accessed: '2026-06-04'
+  - url: https://pypi.org/project/lmnr/
+    shows: lmnr v0.7.52 (27 May 2026), open-source LLM engineering platform SDK
+    accessed: '2026-06-04'
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: low
+  note: pypistats reports ~17M lmnr downloads/mo, but this is anomalously high for a ~3k-star project
+    and almost certainly CI/mirror-inflated (common for OTel auto-instrumentation SDKs pulled transitively);
+    discounting to level 3 rather than treating 17M as honest end-user reach. GitHub ~3k stars corroborates
+    a smaller real user base. Treat as directional.
+  sources:
+  - url: https://pypistats.org/packages/lmnr
+    shows: ~17.06M lmnr downloads in last month (flagged as likely mirror-inflated)
+    accessed: '2026-06-04'
+capability:
+  score: 3
+  basis: feature_matrix
+  value: 'Has: OTel-native tracing (Vercel AI SDK, Browser Use, LangChain, OpenAI/Anthropic/Gemini); evals
+    (SDK+CLI, CI/CD); datasets + annotation UI; SQL query over traces; dashboards. Lighter on: prompt
+    versioning/management and explicit cost tracking (not surfaced in repo).'
+  confidence: medium
+  note: Solid tracing+evals+datasets coverage with a differentiated SQL/dashboard layer; below Langfuse/MLflow
+    (C4 anchors) on prompt management and cost-tracking breadth, hence 3.
+  sources:
+  - url: https://github.com/lmnr-ai/lmnr
+    shows: 'feature list: tracing, evals SDK/CLI, datasets/annotation, SQL editor, dashboards'
+    accessed: '2026-06-04'

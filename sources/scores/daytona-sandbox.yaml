@@ -1,0 +1,40 @@
+product: daytona-sandbox
+openness:
+  score: 3
+  class: open_core
+  components: license:AGPL-3.0(OSI, copyleft);source:public;managed-tier:app.daytona.io hosted cloud +
+    hybrid (proprietary)
+  confidence: high
+  note: 'AGPL-3.0 (OSI-approved but strong copyleft) core plus a proprietary managed cloud => open_core.
+    Scored 3 rather than 4: AGPL copyleft constrains commercial reuse vs the permissive-Apache open-core
+    peers, tempering effective openness.'
+  sources:
+  - url: https://github.com/daytonaio/daytona
+    shows: AGPL-3.0 license; secure runtime for AI-generated code; managed cloud at app.daytona.io
+    accessed: '2026-06-04'
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: 'PyPI: ~8.31M downloads last month for the daytona package (primary). Note part of this volume
+    is inherited from the prior dev-environment product line, but the package now ships the sandbox SDK.
+    Solidly 1M-10M band.'
+  sources:
+  - url: https://pypistats.org/packages/daytona
+    shows: ~8,313,410 downloads last month
+    accessed: '2026-06-04'
+capability:
+  score: 4
+  basis: feature_matrix
+  value: isolation:dedicated kernel/filesystem/network stack per sandbox (VM-class, 'full composable computer');
+    cold-start:<90ms; language/runtime breadth:Python+TypeScript+JS; persistence:persistent state across
+    sessions; scale:elastic
+  confidence: high
+  note: Strong isolation (dedicated kernel + isolated net/fs, allocated vCPU/RAM/disk) with sub-90ms cold-start
+    and persistent sessions; among the strongest agent-runtime feature sets, just below the kernel/microVM
+    frontier-definers.
+  sources:
+  - url: https://github.com/daytonaio/daytona
+    shows: dedicated kernel/filesystem/network stack per sandbox; <90ms spin-up; persistent state; Python/TS/JS
+    accessed: '2026-06-04'

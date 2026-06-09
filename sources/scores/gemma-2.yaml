@@ -1,0 +1,46 @@
+product: gemma-2
+openness:
+  score: 2
+  class: restricted
+  components: weights:open(gated, terms acceptance required);data:closed;code:closed;license:Gemma-License(non-OSI,
+    Prohibited-Use-Policy)
+  confidence: high
+  note: 'Weights open but gated under the non-OSI Gemma License with a prohibited-use policy (CONFIRMED:
+    repo requires accepting conditions to access files); marketed as ''open'' so flagged open_washed.
+    Matches the Gemma 3 anchor (O2 restricted).'
+  sources:
+  - url: https://huggingface.co/google/gemma-2-27b
+    shows: 27B base (PT, not instruct), Gemma license, gated access requiring terms acceptance, 5,893
+      downloads/mo, 13T tokens
+    accessed: '2026-06-04'
+  - url: https://blog.google/technology/developers/google-gemma-2/
+    shows: 'Google release post: Gemma license, 9B/27B, 27 Jun 2024'
+    accessed: '2026-06-04'
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: medium
+  note: Among the most-downloaded open model families; the 27B-IT shows ~133.6k downloads/mo and the family
+    runs widely via HF, Ollama, Kaggle, Google AI tooling (27 finetunes, 14 quantizations, 10 adapters
+    listed on the base card). Family-level reach in the tens-of-millions; calibrated to the Gemma 3 anchor
+    (A5).
+  sources:
+  - url: https://huggingface.co/google/gemma-2-27b-it
+    shows: ~133.6k downloads/mo for Gemma 2 27B-IT
+    accessed: '2026-06-04'
+  - url: https://huggingface.co/google/gemma-2-27b
+    shows: 27B base 5,893 downloads/mo, 27 finetunes / 14 quantizations / 10 adapters, broad multi-platform
+      distribution
+    accessed: '2026-06-04'
+capability:
+  score: 3
+  basis: benchmark:MMLU
+  value: 'Gemma 2 27B-IT: MMLU 75.2 (5-shot), HumanEval 51.8, GSM8K 74.0, MATH 42.3, BIG-Bench 74.9; ''best-in-class
+    for size'' at launch, competitive with 2x-larger 2024 models.'
+  confidence: medium
+  note: Strong for size in 2024, mid-tier non-reasoning model in 2026; matches the Gemma 3 anchor (C3).
+  sources:
+  - url: https://huggingface.co/google/gemma-2-27b-it
+    shows: 'model card benchmarks: MMLU 75.2, HumanEval 51.8, GSM8K 74.0, MATH 42.3'
+    accessed: '2026-06-04'

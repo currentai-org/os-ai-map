@@ -1,0 +1,40 @@
+product: qualcomm-ai-engine-direct
+openness:
+  score: 1
+  class: closed
+  components: core-sdk:proprietary(Qualcomm AI Runtime SDK, separate EULA download from Qualcomm software
+    center);open-wrapper:quic/ai-engine-direct-helper(BSD-3, OSI, only a convenience API layer);hardware-lock:Qualcomm
+    Snapdragon NPU/HTP
+  confidence: high
+  note: The QNN runtime/SDK itself is proprietary (Qualcomm download + license); the open BSD-3 helper
+    merely wraps it and requires the proprietary libraries. Headline engine closed; scored closed.
+  sources:
+  - url: https://github.com/quic/ai-engine-direct-helper
+    shows: BSD-3 helper that 'is an extension of the Qualcomm AI Runtime SDK'; underlying QNN SDK is a
+      separate proprietary download required to run inference on NPU/HTP
+    accessed: '2026-06-04'
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: reported_traction
+  confidence: low
+  note: QNN is the on-device inference backend for the broad Snapdragon install base and is wired into
+    LiteRT (Google AI Edge) and ExecuTorch as the Qualcomm NPU backend, giving it wide on-device reach.
+    No clean developer/usage count; level 4 reflects Snapdragon-ecosystem distribution (reported), not
+    a measured figure.
+  sources:
+  - url: https://github.com/quic/ai-engine-direct-helper
+    shows: tooling for running models on Snapdragon NPU/HTP across Windows-on-Snapdragon and Linux ARM64
+    accessed: '2026-06-04'
+capability:
+  score: 4
+  basis: feature_matrix
+  value: unified API across Hexagon HTP/NPU + Adreno GPU + Kryo CPU; AOT + on-device compilation; LiteRT
+    CompiledModel + ExecuTorch backends; power-efficient on-device LLM/CV inference
+  confidence: medium
+  note: Leading mobile/edge on-device inference runtime (HTP acceleration, multi-accelerator, AOT compile)
+    but Snapdragon-locked and edge-scale; C4 within this category, below the server frontier engines.
+  sources:
+  - url: https://github.com/quic/ai-engine-direct-helper
+    shows: runs inference on NPU/HTP; multi-accelerator Qualcomm stack
+    accessed: '2026-06-04'

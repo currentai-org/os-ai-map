@@ -1,0 +1,41 @@
+product: coder-oss
+openness:
+  score: 4
+  class: open_core
+  components: license:AGPL-3.0(OSI, Community Edition);source:public(GitHub);commercial-tier:Premium/Enterprise
+    paid features for large teams under separate Coder enterprise license
+  confidence: high
+  note: AGPL-3.0 OSI core (Community Edition) with a separate proprietary Premium/Enterprise tier => open_core,
+    calibrated identically to the Ray anchor (O4 open_core).
+  sources:
+  - url: https://github.com/coder/coder
+    shows: AGPL-3.0 Community Edition + Premium paid tier (compare-plans), self-hosted workspaces
+    accessed: '2026-06-04'
+adoption:
+  level: 3
+  signal_type: stars_fallback
+  reach: 100K-1M
+  confidence: low
+  note: No published install/active-user count for the OSS edition; ~13.4k GitHub stars is the only concrete
+    signal. Stars-fallback caps at level 3; placed at 3 (not higher) on broad enterprise positioning +
+    star base, but reach is unverified by usage_volume.
+  sources:
+  - url: https://github.com/coder/coder
+    shows: ~13.4k stars; self-hosted CDE used by enterprises; no usage_volume figure
+    accessed: '2026-06-04'
+capability:
+  score: 3
+  basis: feature_matrix
+  value: isolation:workspace-level (Terraform-provisioned VMs/containers/k8s pods on user infra) - depends
+    on the backing infra template, not a hardened ephemeral microVM sandbox; cold-start:workspace provisioning
+    (seconds-minutes), not ms; runtime breadth:any (IaC-defined, full dev environments); persistence:persistent
+    long-lived workspaces; scale:org-scale self-hosted
+  confidence: medium
+  note: Strong as a persistent governed dev-environment platform but a poor fit for the deployment litmus
+    'safely run arbitrary agent-generated code in an ephemeral sandbox' - isolation/cold-start depend
+    on the infra template, not a purpose-built sandbox; scored 3. Belongs more in a dev-environment shelf
+    than the agent-sandbox sub-segment.
+  sources:
+  - url: https://github.com/coder/coder
+    shows: Terraform-defined persistent workspaces, Wireguard tunnel, AI-agent workspace support
+    accessed: '2026-06-04'

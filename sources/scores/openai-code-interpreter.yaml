@@ -1,0 +1,42 @@
+product: openai-code-interpreter
+openness:
+  score: 1
+  class: closed
+  components: service:proprietary(OpenAI-managed sandbox);source:closed;isolation:undisclosed;access:API/tool
+    only(no self-host, no open runtime)
+  confidence: high
+  note: Fully proprietary managed code-execution sandbox; OpenAI does not document the isolation mechanism
+    or release any runtime.
+  sources:
+  - url: https://developers.openai.com/api/docs/assistants/tools/code-interpreter
+    shows: Code Interpreter runs Python in a proprietary OpenAI-managed sandbox; $0.03/session; isolation
+      details not disclosed
+    accessed: '2026-06-04'
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: active_users
+  confidence: low
+  note: Code Interpreter ships inside ChatGPT (advanced data analysis) and the Assistants/Responses API;
+    the ChatGPT surface it rides has ~1B weekly users (flagship anchor record, GPT-5). No standalone Code-Interpreter
+    usage figure is disclosed, so adoption is attributed to the surface — placed conservatively at 4 (a
+    fraction of ChatGPT users invoke code execution) with low confidence given no primary per-tool number.
+  sources:
+  - url: https://developers.openai.com/api/docs/assistants/tools/code-interpreter
+    shows: Code Interpreter is a first-class tool in the Assistants/Responses API and underlies ChatGPT
+      data analysis (the surface that drives usage)
+    accessed: '2026-06-04'
+capability:
+  score: 3
+  basis: feature_matrix
+  value: 'isolation: undisclosed managed sandbox; cold-start: per-session (1hr persistence within session);
+    language/runtime breadth: Python only; persistence: per-session file workspace, 512MB file handling;
+    scale: OpenAI infra'
+  confidence: low
+  note: Reliable Python-only data-analysis sandbox with iterative retry, but single-language, undisclosed
+    isolation, and session-scoped — narrower than general-purpose deployment sandboxes. Mid-tier; capability
+    detail limited because OpenAI does not document the isolation/scale internals.
+  sources:
+  - url: https://developers.openai.com/api/docs/assistants/tools/code-interpreter
+    shows: Python sandbox, iterative code retry, 512MB files, 1-hour session
+    accessed: '2026-06-04'

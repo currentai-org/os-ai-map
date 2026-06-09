@@ -1,0 +1,40 @@
+product: vertex-ai-gen-ai-evaluation-service
+openness:
+  score: 1
+  class: closed
+  components: license:proprietary(GCP managed service);source:closed;deployment:cloud-only(Vertex AI pipelines/AutoSxS);billing:GCP
+    managed-service pricing
+  confidence: high
+  note: Proprietary Google Cloud managed service; no source, no self-host, runs as Vertex AI eval pipelines.
+  sources:
+  - url: https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/evaluation-overview
+    shows: managed GCP eval service (computation-based + autorater + AutoSxS) within Gemini Enterprise
+      Agent Platform
+    accessed: '2026-06-04'
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: Managed GCP feature with no published standalone usage/customer count and no download or stars
+    signal (closed cloud service). Unlike Bedrock Evaluations there was no clear GA-scale traction figure
+    verifiable this run, so declining to assign a level rather than infer from the parent Vertex surface.
+  sources:
+  - url: https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/evaluation-overview
+    shows: managed Vertex AI feature, no usage/adoption figures disclosed
+    accessed: '2026-06-04'
+capability:
+  score: 4
+  basis: feature_matrix
+  value: 'Eval-target coverage: models + agents + RAG; metric types: computation-based, model-based/autorater
+    (managed rubric-based metrics + custom judge models), pointwise + pairwise (AutoSxS side-by-side);
+    RAG grounding evaluation; model-backend breadth = Gemini + custom/external models.'
+  confidence: medium
+  note: 'Broad managed eval suite: model/agent/RAG targets, both computation- and autorater-based metrics,
+    and pointwise + pairwise (AutoSxS) comparison. Comparable scope to Bedrock Evaluations; a custom-dataset
+    eval product rather than a public standardized leaderboard, so 4 not 5.'
+  sources:
+  - url: https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/evaluation-overview
+    shows: evaluates models/agents/RAG with computation-based + autorater metrics and pointwise/pairwise
+      AutoSxS
+    accessed: '2026-06-04'

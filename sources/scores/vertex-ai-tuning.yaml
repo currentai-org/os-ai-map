@@ -1,0 +1,38 @@
+product: vertex-ai-tuning
+openness:
+  score: 1
+  class: closed
+  components: source:closed;training-code:closed;runs-on:Google-Cloud-Vertex-AI-only;license:Proprietary(managed
+    GCP service)
+  confidence: high
+  note: Proprietary managed tuning service inside Vertex AI — no source, runs only on Google Cloud against
+    closed Gemini models.
+  sources:
+  - url: https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/tune-models
+    shows: supervised fine-tuning + preference tuning for Gemini; managed GCP service
+    accessed: '2026-06-04'
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: No disclosed usage figure for the Vertex Gemini tuning feature located this run. The Gemini app
+    surface has 750M+ MAU but that is not the Vertex tuning service and cannot be attributed to this SKU;
+    declining to assign a level rather than borrow the surface number.
+  sources:
+  - url: https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/tune-models
+    shows: managed Gemini tuning feature; no usage figures disclosed
+    accessed: '2026-06-04'
+capability:
+  score: 4
+  basis: feature_matrix
+  value: 'Methods: supervised fine-tuning and preference tuning (DPO-style) for Gemini; multimodal tuning
+    across text/document/image/audio/video plus function-calling tuning; checkpoint management.'
+  confidence: medium
+  note: Broad managed multimodal tuning (SFT + preference + function-calling, across modalities) over
+    frontier closed Gemini models. Black-box (no scale/precision controls, no benchmark basis), so capped
+    below the OSS scale definers; scored 4 on method+modality breadth, comparable to the OpenAI FT API.
+  sources:
+  - url: https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/tune-models
+    shows: SFT + preference tuning, multimodal + function-calling tuning for Gemini
+    accessed: '2026-06-04'

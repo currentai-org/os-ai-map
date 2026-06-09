@@ -1,0 +1,58 @@
+product: replit-agent-code-execution-api
+openness:
+  score: 2
+  class: open_core
+  components: service:proprietary(Replit managed Autoscale Deployments);sandbox-runtime:omegajail(open-source,
+    github.com/omegaup/omegajail unprivileged container);client:replit-code-exec(PyPI / github.com/replit/replit-code-exec,
+    ISC, ARCHIVED 2025-02-11);no self-hostable execution service
+  confidence: medium
+  note: The isolation primitive (omegajail, from omegaUp) is open source and a thin client was published,
+    but the code-execution service is a proprietary managed offering, and the client repo is now archived
+    (read-only since 2025-02-11). Closest to open_core (open primitive under a closed service); no feature-gated
+    OSS core product to self-host.
+  sources:
+  - url: https://replit.com/blog/ai-agents-code-execution
+    shows: Code Execution API uses omegajail (open-source unprivileged container sandbox) on Replit's
+      proprietary Autoscale Deployments; replit-code-exec PyPI client; Python-focused
+    accessed: '2026-06-04'
+  - url: https://github.com/replit/replit-code-exec
+    shows: 'Replit code-exec client: stateless API for AI agents, runs untrusted Python in ephemeral unprivileged
+      containers using omegajail (github.com/omegaup/omegajail); ISC license; repo ARCHIVED read-only
+      2025-02-11'
+    accessed: '2026-06-04'
+  - url: https://blog.replit.com/ai-agents-code-execution
+    shows: 'canonical Replit blog: Code Execution API uses omegajail on Autoscale Deployments, ~100ms,
+      Python-focused (Feb 2024)'
+    accessed: '2026-06-04'
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: medium
+  note: Replit platform serves >50M users (Replit docs/coverage) and runs >1M live projects on Cloud Run
+    (Google Next '26, primary). The code-execution API specifically discloses no standalone usage figures,
+    so adoption is attributed to the Replit Agent/platform surface it powers, not the raw API. Placed
+    at 4 (platform-surface reach); the API alone would be lower.
+  sources:
+  - url: https://cloud.google.com/blog/products/serverless/whats-new-for-cloud-run-at-next26
+    shows: Replit runs >1M live projects (on Cloud Run) — primary-source scale signal for the Replit surface
+    accessed: '2026-06-04'
+  - url: https://replit.com/products/agent
+    shows: Replit Agent product page (the agent surface the code-exec API backs)
+    accessed: '2026-06-04'
+capability:
+  score: 3
+  basis: feature_matrix
+  value: 'isolation: omegajail unprivileged container (process/container-level, weaker than microVM);
+    cold-start: ~100ms (very fast); language/runtime breadth: primarily Python, customizable Docker image;
+    persistence: stateless (prior stateful-Repl experiment discontinued); scale: Replit Autoscale Deployments'
+  confidence: medium
+  note: 'Fast container-level execution tuned for agent code-eval, but container (not microVM) isolation,
+    narrow language focus, and no persistence put it mid-tier vs microVM-backed peers. Note: the public
+    self-serve client (replit-code-exec) is archived (2025-02-11); the capability now lives inside the
+    Replit Agent surface.'
+  sources:
+  - url: https://replit.com/blog/ai-agents-code-execution
+    shows: omegajail container sandbox, ~100ms start, Python-focused, stateless (stateful-Repl experiment
+      discontinued)
+    accessed: '2026-06-04'

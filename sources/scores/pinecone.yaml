@@ -1,0 +1,49 @@
+product: pinecone
+openness:
+  score: 1
+  class: closed
+  components: license:proprietary(SaaS);source:closed;self-host:none(BYOC runs Pinecone-managed in customer
+    VPC, not OSS);managed:Pinecone-Cloud
+  confidence: high
+  note: Fully proprietary managed vector DB; no open-source core (contrast Milvus/Qdrant which are OSI-licensed).
+    BYOC is still closed-source software run in customer cloud.
+  sources:
+  - url: https://www.pinecone.io/pricing/
+    shows: proprietary tiered SaaS pricing (Starter/Builder/Standard/Enterprise/BYOC); no OSS/self-host
+      license
+    accessed: '2026-06-04'
+  - url: https://docs.pinecone.io/guides/get-started/overview
+    shows: described as 'fully managed vector database', billions of items searched in ms
+    accessed: '2026-06-04'
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: medium
+  note: Leading managed vector DB; production deployments cited at 1.4B vectors / 5,700 QPS for a single
+    e-commerce customer and 135M vectors / 2,200 QPS load-tested for another. Broad enterprise/developer
+    base via serverless + AWS Marketplace PAYG. No single hard user count published; placed at 4 on aggregate
+    production usage_volume. (Some churn noted, e.g. Notion left over cost.)
+  sources:
+  - url: https://siliconangle.com/2025/12/01/pinecone-scales-vector-database-support-demanding-workloads/
+    shows: billion-scale production workloads, multi-thousand QPS customer deployments
+    accessed: '2026-06-04'
+  - url: https://aws.amazon.com/marketplace/pp/prodview-xhgyscinlz4jk
+    shows: Pinecone PAYG distribution via AWS Marketplace (broad enterprise availability)
+    accessed: '2026-06-04'
+capability:
+  score: 4
+  basis: benchmark:ANN-Benchmarks
+  value: P50 latency ~26-60ms at 1.4B-vector scale, 5,700 QPS; serverless auto-indexing, dedicated read
+    nodes
+  confidence: medium
+  note: Top-tier managed ANN search at billion-vector scale with strong latency/QPS. No independent ANN-Benchmarks/VectorDBBench
+    submission found (closed system, vendor-reported figures); rated 4 (peer to Milvus C4), reserving
+    5 for benchmark-proven frontier.
+  sources:
+  - url: https://www.infoq.com/news/2025/12/pinecone-drn-vector-workloads/
+    shows: dedicated read nodes for predictable vector workloads, serverless scaling
+    accessed: '2026-06-04'
+  - url: https://siliconangle.com/2025/12/01/pinecone-scales-vector-database-support-demanding-workloads/
+    shows: 26-60ms P50 latency, thousands of QPS at billion-vector scale
+    accessed: '2026-06-04'

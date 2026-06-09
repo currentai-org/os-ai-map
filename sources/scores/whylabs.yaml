@@ -1,0 +1,45 @@
+product: whylabs
+openness:
+  score: 4
+  class: open_source
+  components: license:Apache-2.0(OSI, whylogs + LangKit + open-sourced platform);source:public(github.com/whylabs);hosted-SaaS:discontinued;status:company-ceased-ops,
+    platform open-sourced on closure
+  confidence: high
+  note: 'Scored on what remains accessible: the OSS stack. whylogs (data logging) + LangKit (LLM monitoring)
+    are Apache-2.0 OSI, and WhyLabs open-sourced its platform on shutdown. Not 5 because the hosted monitoring
+    backend is no longer maintained/operating and the OSS pieces are libraries rather than a turnkey live
+    observability product.'
+  sources:
+  - url: https://whylabs.ai/langkit
+    shows: '''WhyLabs, Inc. is discontinuing operations''; platform/whylogs/LangKit open-sourced'
+    accessed: '2026-06-04'
+  - url: https://github.com/whylabs/whylogs
+    shows: whylogs Apache-2.0, 2.8k stars, public source
+    accessed: '2026-06-04'
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: stars_fallback
+  confidence: low
+  note: 'Hosted SaaS shut down (no active platform users). Remaining signal is the OSS libraries: whylogs
+    ~2.8k GitHub stars, last release Dec 2024 — stars_fallback caps at 3; placed at 2 given the dead commercial
+    product and stalled release cadence. Honest signal is modest residual OSS usage, not a live platform.'
+  sources:
+  - url: https://github.com/whylabs/whylogs
+    shows: 2.8k stars, latest release v1.6.4 (Dec 3, 2024)
+    accessed: '2026-06-04'
+capability:
+  score: 2
+  basis: feature_matrix
+  value: 'whylogs(data logging/profiling, drift + data-quality monitoring, privacy-preserving) + LangKit(LLM
+    text-quality/safety metrics: sentiment, toxicity, prompt-injection signals). No live tracing backend,
+    no eval-experiment/prompt-mgmt platform (open-sourced but unmaintained). Narrow vs anchor C4 tools.'
+  confidence: medium
+  note: As living, usable capability it is a pair of monitoring libraries (drift + LLM safety metrics),
+    not a full tracing/eval/prompt platform; with the hosted backend gone and releases stalled since Dec
+    2024, rated 2 — well below the MLflow/Langfuse C4 anchors.
+  sources:
+  - url: https://github.com/whylabs/whylogs
+    shows: whylogs data-logging/drift/data-quality monitoring library feature set; release cadence stalled
+      Dec 2024
+    accessed: '2026-06-04'

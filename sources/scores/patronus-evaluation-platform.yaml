@@ -1,0 +1,47 @@
+product: patronus-evaluation-platform
+openness:
+  score: 2
+  class: open_core
+  components: platform:closed(hosted SaaS; remote Judge/Lynx/Glider evaluators run on Patronus infrastructure);
+    client-SDKs:open(patronus-py public on GitHub, v0.1.25, but only 7 stars and wires to the hosted API);
+    eval engine + proprietary evaluators not self-hostable
+  confidence: medium
+  note: Open-source SDK is a thin client to a closed hosted evaluation backend — the core scoring engine
+    and managed evaluators are proprietary => open_core, low end (the OSS surface is a connector, not
+    the product). License text not displayed on the SDK repo page (note).
+  sources:
+  - url: https://github.com/patronus-ai/patronus-py
+    shows: Python SDK whose remote evaluators 'run remotely on Patronus infrastructure'; v0.1.25 Jan 2026;
+      7 stars
+    accessed: '2026-06-04'
+  - url: https://docs.patronus.ai/docs
+    shows: 'hosted platform: built-in Lynx/Glider evaluators, experiments, production monitoring, SDK
+      access to cloud service'
+    accessed: '2026-06-04'
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: No disclosed user/customer counts or usage volume found on the docs/homepage this run; open-source
+    SDK has only 7 GitHub stars (stars_fallback would cap at hobbyist and is not an honest signal for
+    a hosted platform). Declining to assign a level rather than infer from marketing.
+  sources:
+  - url: https://github.com/patronus-ai/patronus-py
+    shows: 7 stars on the public SDK (no honest usage figure for the hosted platform)
+    accessed: '2026-06-04'
+capability:
+  score: 3
+  basis: feature_matrix
+  value: 'benchmark/task coverage: RAG, agent eval, NLP, OWASP/safety metrics, red-teaming dataset generation;
+    model-backend breadth: model-agnostic via SDK; agentic-eval support: yes (agent evaluation + Percival);
+    proprietary evaluators: Lynx (hallucination), Glider; reproducibility: hosted/standardized but not
+    independently reproducible (closed engine)'
+  confidence: medium
+  note: Solid, broad commercial eval feature set (evaluators + experiments + monitoring + agent eval)
+    but not frontier-defining within the category and the closed backend limits reproducibility. Mid-tier
+    on the feature matrix.
+  sources:
+  - url: https://docs.patronus.ai/docs
+    shows: Lynx/Glider evaluators, RAG/agent/NLP/OWASP metrics, experiments, red-teaming, monitoring
+    accessed: '2026-06-04'

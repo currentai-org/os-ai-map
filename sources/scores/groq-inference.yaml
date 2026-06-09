@@ -1,0 +1,44 @@
+product: groq-inference
+openness:
+  score: 1
+  class: closed
+  components: engine:proprietary(LPU stack);source:closed;access:managed-cloud-API-only;license:Proprietary
+  confidence: high
+  note: Proprietary cloud inference engine + custom LPU silicon, API-only; per recipe, cloud inference
+    engines (Groq) are closed.
+  sources:
+  - url: https://groq.com/
+    shows: GroqCloud proprietary managed inference on LPU hardware, API access via console, OpenAI-compatible
+    accessed: '2026-06-04'
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: reported_traction
+  confidence: medium
+  note: Vendor reports '3m developers and teams' on GroqCloud; named enterprise users incl. Dropbox, Vercel,
+    Canva, Robinhood, Volkswagen, Workday, Ramp. Developer-count is vendor-self-reported (reported_traction),
+    placing it in the 1-10M band.
+  sources:
+  - url: https://groq.com/
+    shows: '''3m developers and teams'' use Groq; named customers Dropbox/Vercel/Canva/Robinhood/Workday/Ramp'
+    accessed: '2026-06-04'
+capability:
+  score: 5
+  basis: benchmark:ArtificialAnalysis(provider-speed)
+  value: Groq LPU is among the top tokens/sec providers on the Artificial Analysis provider leaderboard
+    (purpose-built inference silicon); listed among the fastest-class providers for open models, though
+    Cerebras leads on gpt-oss-120b. Speed/latency frontier among inference engines.
+  confidence: medium
+  note: 'Capability for an inference engine = throughput/latency frontier (the MLPerf analog here is the
+    Artificial Analysis provider-speed leaderboard). Groq LPU is a recognized speed-frontier provider
+    class; C5 alongside the open-engine anchors. NOTE: could not pull Groq''s exact t/s figure for gpt-oss-120b
+    on the AA page this run (Groq present but not in the displayed top-5); score leans on its established
+    speed-leadership positioning -> medium confidence.'
+  sources:
+  - url: https://artificialanalysis.ai/models/gpt-oss-120b/providers
+    shows: Artificial Analysis provider speed leaderboard for gpt-oss-120b (Groq listed among 22 providers;
+      Cerebras top at 1,776.8 t/s)
+    accessed: '2026-06-04'
+  - url: https://groq.com/
+    shows: LPU purpose-built for inference; customer reports 7.41x chat-speed gain
+    accessed: '2026-06-04'

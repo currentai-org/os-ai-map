@@ -1,0 +1,45 @@
+product: starcoder2
+openness:
+  score: 4
+  class: open_source
+  components: weights:open;data:open(self-oss-instruct-sc2-exec-filter-50k + 7 documented intermediate
+    datasets);code:open(starcoder2-self-align pipeline on GitHub);base-data:open(The Stack v2);license:BigCode-OpenRAIL-M(open
+    but RAIL behavioral-use restrictions, not OSI)
+  confidence: high
+  note: Fully reproducible self-alignment pipeline (open weights + open instruct data + open code + open
+    base corpus) -> open_source tier; held to 4 rather than 5 because OpenRAIL-M carries non-OSI behavioral-use
+    restrictions.
+  sources:
+  - url: https://huggingface.co/bigcode/starcoder2-15b-instruct-v0.1
+    shows: self-aligned; open dataset + open self-align code + OpenRAIL-M license
+    accessed: '2026-06-04'
+  - url: https://huggingface.co/bigcode/starcoder2-15b
+    shows: base StarCoder2 trained on open The Stack v2; OpenRAIL-M
+    accessed: '2026-06-04'
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: medium
+  note: Instruct SKU ~1.1k downloads/last-month; base StarCoder2-15B ~9.4k/last-month. Research-significant
+    (fully-open self-alignment recipe) but low production reach; placed at 1 on the instruct SKU's measured
+    volume.
+  sources:
+  - url: https://huggingface.co/bigcode/starcoder2-15b-instruct-v0.1
+    shows: ~1,120 downloads last month
+    accessed: '2026-06-04'
+  - url: https://huggingface.co/bigcode/starcoder2-15b
+    shows: ~9,449 downloads last month (base)
+    accessed: '2026-06-04'
+capability:
+  score: 3
+  basis: benchmark:HumanEval
+  value: StarCoder2-15B-Instruct-v0.1 HumanEval pass@1 72.6% (HumanEval+ 63.4%)
+  confidence: high
+  note: Strong HumanEval for a fully-open 16B in 2024 (best fully-self-aligned code model at release),
+    but HumanEval is saturated and the model is below 2026 frontier coders on harder agentic benchmarks
+    (SWE-bench). Mid-tier.
+  sources:
+  - url: https://huggingface.co/bigcode/starcoder2-15b-instruct-v0.1
+    shows: HumanEval pass@1 72.6%, HumanEval+ 63.4%
+    accessed: '2026-06-04'

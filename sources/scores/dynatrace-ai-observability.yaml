@@ -1,0 +1,40 @@
+product: dynatrace-ai-observability
+openness:
+  score: 1
+  class: closed
+  components: platform:proprietary-SaaS(Grail-powered, Davis AI);license:commercial;ingestion:OpenTelemetry+OpenLLMetry(via
+    Traceloop)+GenAI-semconv(open standards, not open product);source:closed
+  confidence: high
+  note: Fully proprietary Dynatrace platform; AI Observability is a commercial app/module. OTel + OpenLLMetry
+    ingestion are open standards consumed by a closed product. Scored closed (1).
+  sources:
+  - url: https://docs.dynatrace.com/docs/observe/dynatrace-for-ai-observability
+    shows: proprietary Dynatrace platform AI Observability; Grail/Davis AI; OTel + OpenLLMetry ingestion
+    accessed: '2026-06-04'
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: Dynatrace is a large public observability vendor, but I found no primary, AI-Observability-specific
+    usage figure this run (vendor docs confirm the product exists but disclose no module adoption count).
+    Declining to assign a level rather than attribute platform-wide numbers I could not source primarily.
+  sources:
+  - url: https://docs.dynatrace.com/docs/observe/dynatrace-for-ai-observability
+    shows: product exists and is part of the Dynatrace platform; no module usage count disclosed
+    accessed: '2026-06-04'
+capability:
+  score: 4
+  basis: feature_matrix
+  value: tracing(end-to-end prompt-flow tracing/debugging, root-cause, prompt latency + model-level metrics);
+    cost(predictive cost mgmt via Davis AI, token/service-fee tracking, no-sampling full capture); OTel
+    + OpenLLMetry(Traceloop) + GenAI semconv; providers OpenAI/Bedrock/NIM/Ollama/Gemini/Azure AI Foundry
+    + LangChain/CrewAI. Lacks dedicated eval/LLM-as-judge + prompt-versioning depth.
+  confidence: medium
+  note: Strong full-stack AI observability (no-sampling capture, predictive cost, agentic tracing) at
+    the anchor C4 tier; not an eval/prompt-mgmt frontier-definer, so 4.
+  sources:
+  - url: https://docs.dynatrace.com/docs/observe/dynatrace-for-ai-observability
+    shows: end-to-end tracing, token/cost metrics, predictive cost (Davis AI), OTel/OpenLLMetry, multi-provider
+      + agentic framework support
+    accessed: '2026-06-04'

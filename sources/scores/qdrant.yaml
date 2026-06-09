@@ -1,0 +1,46 @@
+product: qdrant
+openness:
+  score: 4
+  class: open_core
+  components: license:Apache-2.0(OSI, engine core);source:public(Rust);managed-tier:Qdrant Cloud (hosted,
+    paid + free tier)
+  confidence: high
+  note: Engine core is Apache-2.0 OSI, but a managed Qdrant Cloud tier sits on top — recipe explicitly
+    classes Qdrant Cloud as open_core, so scored 4 rather than the pure-OSS 5 the Milvus anchor carries.
+  sources:
+  - url: https://github.com/qdrant/qdrant/blob/master/LICENSE
+    shows: Apache-2.0 license text
+    accessed: '2026-06-04'
+  - url: https://github.com/qdrant/qdrant
+    shows: v1.18.2 (4 Jun 2026); Qdrant Cloud managed tier with free option
+    accessed: '2026-06-04'
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: qdrant-client ~26.1M PyPI downloads in the last month — a strong, primary usage_volume signal
+    placing it in the 1-10M+ monthly band; a leading open vector DB for RAG/agent retrieval. Sits one
+    above the Milvus anchor's A3 on download volume (Milvus anchored at A3); reasonable given Qdrant's
+    very high client-download count.
+  sources:
+  - url: https://pypistats.org/packages/qdrant-client
+    shows: ~26.1M monthly PyPI downloads
+    accessed: '2026-06-04'
+capability:
+  score: 4
+  basis: benchmark:ANN-Benchmarks
+  value: 'Included in ANN-Benchmarks (37 algorithms incl. Qdrant/Milvus/faiss/scann). Vendor benchmark:
+    highest RPS and lowest latency in almost all scenarios vs Milvus/Weaviate/Elasticsearch/Redis at matched
+    precision; advanced filtered-search query planning.'
+  confidence: medium
+  note: Top-tier ANN engine on RPS/latency; tied with the Milvus anchor at C4 (frontier vector-DB capability).
+    Headline comparison is vendor-run (qdrant.tech/benchmarks); ANN-Benchmarks corroborates inclusion
+    but its interactive plots did not yield a clean ranking number this run, hence medium confidence.
+  sources:
+  - url: https://ann-benchmarks.com/
+    shows: Qdrant included among 37 benchmarked ANN algorithms
+    accessed: '2026-06-04'
+  - url: https://qdrant.tech/benchmarks/
+    shows: Qdrant highest RPS/lowest latency vs Milvus/Weaviate/Elasticsearch/Redis (vendor benchmark)
+    accessed: '2026-06-04'

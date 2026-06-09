@@ -1,0 +1,38 @@
+product: promptlayer
+openness:
+  score: 1
+  class: closed
+  components: license:Apache-2.0(OSI, client library MagnivOrg/prompt-layer-library only);platform:proprietary-SaaS(API-key
+    gated, hosted prompt registry/logging/evals);self-host:no(managed only)
+  confidence: high
+  note: Open client SDK over a closed hosted backend (prompt CMS, logging, evals are SaaS) — no OSS core,
+    so 'closed' alongside the Braintrust/LangSmith pattern; the open library is instrumentation only.
+  sources:
+  - url: https://github.com/MagnivOrg/prompt-layer-library
+    shows: Apache-2.0 official PromptLayer Python library; platform at promptlayer.com requiring API key
+    accessed: '2026-06-04'
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: '~289K PyPI downloads in the last month for the `promptlayer` package (primary: pypistats) → 100K-1M
+    band. Recognized but lighter-weight (no-code prompt CMS for non-technical teams) vs the deeper platforms;
+    no harder user count disclosed.'
+  sources:
+  - url: https://pypistats.org/packages/promptlayer
+    shows: 289,237 downloads last month for the promptlayer package
+    accessed: '2026-06-04'
+capability:
+  score: 3
+  basis: feature_matrix
+  value: 'prompt mgmt/versioning(registry-based CMS, visual no-code editor, A/B testing); tracing(logs
+    every request/response); evals(basic, regression sets); cost/monitoring(narrower than full-stack).
+    Missing: deep LLM-as-judge eval + broad OTel/framework observability vs anchors.'
+  confidence: medium
+  note: Strong prompt-lifecycle/versioning focus but shallower eval + production observability than MLflow/Langfuse
+    (C4) per 2026 comparisons — rated 3, mid-tier.
+  sources:
+  - url: https://github.com/MagnivOrg/prompt-layer-library
+    shows: version/test/monitor prompts and agents with evals, tracing, regression sets
+    accessed: '2026-06-04'

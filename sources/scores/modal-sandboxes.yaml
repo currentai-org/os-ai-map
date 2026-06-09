@@ -1,0 +1,49 @@
+product: modal-sandboxes
+openness:
+  score: 3
+  class: open_core
+  components: sdk:open (modal Python/JS client libraries public);runtime/platform:proprietary managed
+    cloud (no self-host of the gVisor execution plane);pricing:pay-as-you-go usage, free starter credits
+  confidence: medium
+  note: 'Treated as open_core per the recipe''s explicit example (E2B, Modal = open_core: OSS runtime/SDK
+    + managed cloud). The SDK is open but the execution substrate is a proprietary managed service; calibrated
+    below the Ollama/full-OSS anchors. Confidence medium - the managed plane dominates the value and is
+    closed.'
+  sources:
+  - url: https://modal.com/pricing
+    shows: Modal is a managed proprietary cloud platform, pay-per-CPU-cycle, $30/mo free credits
+    accessed: '2026-06-04'
+  - url: https://modal.com/docs/guide/sandbox
+    shows: Sandboxes = secure containers for untrusted agent code, driven via Modal SDK
+    accessed: '2026-06-04'
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: reported_traction
+  confidence: low
+  note: No disclosed Modal Sandboxes user/usage count on primary pages; Modal is a well-known managed
+    AI-compute platform with broad developer use and a documented free tier. Placed at 3 on reported multi-customer
+    traction, not a measured usage_volume figure (kept conservative absent a hard number).
+  sources:
+  - url: https://modal.com/docs/guide/sandbox
+    shows: documented production sandbox feature on a widely-used managed platform
+    accessed: '2026-06-04'
+capability:
+  score: 4
+  basis: feature_matrix
+  value: isolation:gVisor user-space kernel (Sentry intercepts syscalls) - strong container isolation,
+    below microVM but above plain containers; cold-start:optimized container stack, fast startup; runtime
+    breadth:arbitrary images/dependencies (custom images, any deps, repo checkout); persistence:named/ID
+    sandbox lookup, custom images; scale:reported 50,000+ concurrent sessions; timeouts default 5min up
+    to 24h
+  confidence: medium
+  note: 'Strong, purpose-built agent sandbox: gVisor isolation + arbitrary images + high concurrency.
+    Sits just below the Firecracker-microVM frontier (Lambda/Vercel) on isolation strength; scored 4,
+    level with the Ray/Ollama capability anchors.'
+  sources:
+  - url: https://modal.com/docs/guide/sandbox
+    shows: sandbox lifecycle, custom images, timeouts up to 24h, untrusted-code execution
+    accessed: '2026-06-04'
+  - url: https://modal.com/resources/best-code-execution-sandboxes-ai-agents
+    shows: gVisor user-space kernel isolation, 50,000+ concurrent sessions (corroborating)
+    accessed: '2026-06-04'

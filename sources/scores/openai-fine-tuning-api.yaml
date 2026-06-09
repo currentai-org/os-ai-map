@@ -1,0 +1,45 @@
+product: openai-fine-tuning-api
+openness:
+  score: 1
+  class: closed
+  components: source:closed;training-code:closed;runs-on:OpenAI-platform-only;license:Proprietary(paid
+    API service)
+  confidence: high
+  note: Proprietary managed fine-tuning service — no source, runs only on OpenAI's platform against OpenAI's
+    closed models.
+  sources:
+  - url: https://developers.openai.com/api/docs/guides/model-optimization
+    shows: proprietary paid fine-tuning service; SFT/DPO/RFT; gpt-4.1/4o/o4-mini tunable
+    accessed: '2026-06-04'
+  - url: https://developers.openai.com/api/docs/deprecations
+    shows: 'fine-tuning platform wind-down: new users blocked May 7 2026; all job creation ends Jan 6
+      2027; inference persists until base deprecation; existing users still create SFT/DPO (gpt-4.1) and
+      RFT (o4-mini) jobs'
+    accessed: '2026-06-04'
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: No disclosed standalone fine-tuning-API usage figure located this run (developer count / jobs
+    run / tokens). The OpenAI platform broadly serves ~1B+ ChatGPT WAU, but that surface is not the fine-tuning
+    API and cannot be honestly attributed to this SKU. Declining to assign a level rather than borrow
+    the umbrella surface number.
+  sources:
+  - url: https://developers.openai.com/api/docs/guides/model-optimization
+    shows: fine-tuning offered via paid API; no usage figures disclosed
+    accessed: '2026-06-04'
+capability:
+  score: 4
+  basis: feature_matrix
+  value: 'Methods exposed: SFT, vision fine-tuning, DPO (preference), reinforcement fine-tuning (RFT)
+    for reasoning models. Tunes frontier closed models (gpt-4.1 family, gpt-4o, o4-mini). Managed end-to-end
+    (data validation, training, hosting, eval).'
+  confidence: medium
+  note: 'Strong managed method coverage (SFT+DPO+RFT) over frontier base models, but black-box: no parallelism/precision/scale
+    knobs exposed, no MLPerf-Training basis. Scored 4 on method breadth + frontier base quality; not 5
+    since the user cannot control training scale/internals.'
+  sources:
+  - url: https://developers.openai.com/api/docs/guides/model-optimization
+    shows: SFT, vision FT, DPO, RFT across gpt-4.1/4o/o4-mini
+    accessed: '2026-06-04'

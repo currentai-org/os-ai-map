@@ -1,0 +1,44 @@
+product: aws-neuron
+openness:
+  score: 1
+  class: closed
+  components: license:mixed/proprietary-core;runtime:proprietary(Neuron Runtime+Compiler not open-sourced);open-glue:Linux
+    kernel driver(Apache-2.0),vLLM-Neuron integration(open, in vLLM org),NKI library, samples(MIT-0);hardware-lock:AWS-Inferentia/Trainium-only
+  confidence: high
+  note: Headline inference path (Neuron Compiler + Neuron Runtime) is proprietary AWS, only runnable on
+    AWS silicon; surrounding glue (driver, vLLM integration, NKI, samples) is open but does not make the
+    engine open_source. Scored closed.
+  sources:
+  - url: https://github.com/aws-neuron/aws-neuron-sdk
+    shows: SDK repo lists samples/docs (MIT-0/Unknown) only; runtime+compiler not in an OSI-licensed repo;
+      2.30.0 release ~May 22 2026
+    accessed: '2026-06-04'
+  - url: https://awsdocs-neuron.readthedocs-hosted.com/en/latest/about-neuron/what-is-neuron.html
+    shows: open components (driver Apache-2.0, vLLM integration) named; Compiler/Runtime absent from open
+      list; vLLM-V1 inference on Inferentia/Trainium
+    accessed: '2026-06-04'
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: reported_traction
+  confidence: low
+  note: Used across AWS Inf2/Trn fleet and integrated with HuggingFace/vLLM/PyTorch; no clean download
+    or user count published. Level 3 reflects reported AWS-scale traction rather than a verified usage_volume
+    figure.
+  sources:
+  - url: https://aws.amazon.com/ai/machine-learning/neuron/
+    shows: Neuron positioned as production SDK for Inferentia/Trainium with framework integrations
+    accessed: '2026-06-04'
+capability:
+  score: 4
+  basis: feature_matrix
+  value: vLLM V1 API on Trainium/Inferentia with Expert Parallelism, disaggregated inference, speculative
+    decoding; native PyTorch + JAX; compiler/runtime/profiler stack
+  confidence: medium
+  note: Strong large-scale LLM inference feature set on AWS silicon (EP, disaggregated serving, spec decode).
+    No MLPerf Inference figure surfaced for Neuron this run, so feature_matrix not benchmark. Not a frontier
+    C5 (hardware-locked, narrower than vLLM/SGLang/TensorRT-LLM coverage).
+  sources:
+  - url: https://awsdocs-neuron.readthedocs-hosted.com/en/latest/about-neuron/what-is-neuron.html
+    shows: vLLM V1 with EP, disaggregated inference, speculative decoding on Trainium/Inferentia
+    accessed: '2026-06-04'

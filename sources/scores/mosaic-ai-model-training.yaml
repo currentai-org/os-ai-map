@@ -1,0 +1,42 @@
+product: mosaic-ai-model-training
+openness:
+  score: 1
+  class: closed
+  components: source:closed;training-code:closed;runs-on:Databricks-workspace-only(AWS regions);license:Proprietary(managed
+    service); base weights:Llama-Community-License(non-OSI)
+  confidence: high
+  note: Proprietary managed FT service running only inside a Databricks workspace; no source. (Databricks'
+    separate LLM Foundry / Composer libs are OSS but are not this product.)
+  sources:
+  - url: https://docs.databricks.com/aws/en/large-language-models/foundation-model-training/
+    shows: managed FT service via databricks_genai SDK; deprecated, removal Aug 14 2026; Llama-only base
+      models
+    accessed: '2026-06-04'
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: No disclosed usage figure for the FMFT feature located this run (jobs run / customers fine-tuning).
+    Databricks overall is widely used, but no honest signal specific to this FT capability was found;
+    declining to assign a level. Feature is also being sunset (removal Aug 14 2026), which further depresses
+    any forward adoption.
+  sources:
+  - url: https://docs.databricks.com/aws/en/large-language-models/foundation-model-training/
+    shows: managed FT feature; deprecation notice; no usage figures disclosed
+    accessed: '2026-06-04'
+capability:
+  score: 2
+  basis: feature_matrix
+  value: 'Methods: chat-completion FT, instruction FT, continued pre-training. No exposed LoRA/QLoRA/DPO/RLHF
+    or preference methods; no parallelism/precision/scale knobs. Base models limited to the Meta Llama
+    family.'
+  confidence: medium
+  note: 'Narrow managed method set (SFT + continued pretraining only, no preference/RL methods) over a
+    single base-model family, and a black-box service. Scored 2: below the OpenAI/Vertex/Together managed
+    offerings (SFT+DPO+RFT / 100B+ models) and far below the OSS scale definers. Being deprecated also
+    caps forward capability investment.'
+  sources:
+  - url: https://docs.databricks.com/aws/en/large-language-models/foundation-model-training/
+    shows: chat-completion FT, instruction FT, continued pre-training; Llama-only
+    accessed: '2026-06-04'

@@ -1,0 +1,46 @@
+product: fly-sprites
+openness:
+  score: 1
+  class: closed
+  components: service:proprietary(Fly.io managed);source:closed;clients:CLI/REST/JS/Go SDKs (client libs
+    only, no open runtime);isolation:Firecracker(Firecracker itself is OSS/AWS, but the Sprites product/orchestration
+    is proprietary)
+  confidence: high
+  note: Proprietary managed sandbox SaaS; no open-source runtime published (only client SDKs). Underlying
+    Firecracker is OSS but the product is not.
+  sources:
+  - url: https://sprites.dev/
+    shows: Sprites = hardware-isolated Firecracker execution env for arbitrary code; managed service,
+      CLI/REST/JS/Go clients; no self-hostable open runtime
+    accessed: '2026-06-04'
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: reported_traction
+  confidence: low
+  note: Launched Jan 2026 (~5 months at scoring time) as Fly.io's answer to E2B. No disclosed user/customer/usage
+    counts on the product page or launch coverage; positioned for AI coding-agent sessions (Claude Code/Codex).
+    Early-stage; placed at 1 on reported traction with low confidence pending real numbers.
+  sources:
+  - url: https://sprites.dev/
+    shows: product live, usage-based pricing ($0.07/CPU-hr); no user/customer figures disclosed
+    accessed: '2026-06-04'
+  - url: https://simonwillison.net/2026/Jan/9/sprites-dev/
+    shows: Sprites launched early Jan 2026 as Fly.io's E2B competitor (corroborating recency, not a usage
+      figure)
+    accessed: '2026-06-04'
+capability:
+  score: 4
+  basis: feature_matrix
+  value: 'isolation: Firecracker microVM (hardware-isolated, strongest tier); cold-start: 1-12s cold,
+    warm restore <1s, checkpoint/restore <1s; persistence: persistent ext4 / 100GB NVMe surviving across
+    sessions (a key differentiator); language/runtime breadth: arbitrary Linux (''any code blob''); scale:
+    Fly.io global infra'
+  confidence: medium
+  note: Top-tier microVM isolation plus persistent stateful sandboxes (explicitly anti-ephemeral) is a
+    strong, differentiated feature set. Not a 5 only because it is brand-new with unproven scale vs incumbents;
+    isolation + persistence are best-in-class.
+  sources:
+  - url: https://sprites.dev/
+    shows: Firecracker isolation, persistent ext4 filesystem, sub-1s restore, arbitrary Linux code
+    accessed: '2026-06-04'

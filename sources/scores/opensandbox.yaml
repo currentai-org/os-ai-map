@@ -1,0 +1,39 @@
+product: opensandbox
+openness:
+  score: 5
+  class: open_source
+  components: license:Apache-2.0(OSI);source:public(Go execd + multi-language SDKs);runtimes:Docker/Kubernetes;no-managed-tier-observed;no-feature-gated-core
+  confidence: high
+  note: Apache-2.0, fully self-hostable, no managed/enterprise gating observed => open_source (not open_core).
+    Alibaba says it open-sourced the sandbox infra used internally.
+  sources:
+  - url: https://github.com/alibaba/OpenSandbox
+    shows: Apache-2.0 license; general-purpose AI-agent sandbox; Docker/K8s runtimes; multi-language SDKs;
+      self-host
+    accessed: '2026-06-04'
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: stars_fallback
+  confidence: low
+  note: 'Only ~2-3 months old; no PyPI/download or named-deployment figures surfaced. ~11.3k GitHub stars
+    (3,845 within 72h of launch) is the only signal — stars_fallback, which caps level at 3. Placed at
+    2: rapid early stars but no usage volume yet. Revisit as usage data emerges.'
+  sources:
+  - url: https://github.com/alibaba/OpenSandbox
+    shows: 11.3k GitHub stars; released Mar 2026; no usage/download figures
+    accessed: '2026-06-04'
+capability:
+  score: 3
+  basis: feature_matrix
+  value: isolation:container (Docker/Kubernetes runtimes, not VM/microVM); cold-start:container launch;
+    language/runtime breadth:Python/TS/Go/Java SDKs, unified sandbox API, MCP server (Claude Code/Cursor);
+    persistence:file ops; scale:K8s
+  confidence: medium
+  note: Broad multi-language SDK surface and MCP integration with K8s scale, but container-level isolation
+    (no VM/microVM tier observed) keeps it mid-tier on the isolation-strength dimension vs Firecracker/gVisor/Kata.
+    Strong breadth, moderate isolation.
+  sources:
+  - url: https://github.com/alibaba/OpenSandbox
+    shows: Docker/Kubernetes runtimes; multi-language SDKs (Python/TS/Go/Java); unified API; MCP server
+    accessed: '2026-06-04'

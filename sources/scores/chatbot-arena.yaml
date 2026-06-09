@@ -1,0 +1,59 @@
+product: chatbot-arena
+openness:
+  score: 2
+  class: open_core
+  components: platform:closed(hosted arena.ai, proprietary live leaderboard + private vote data); reference-code:FastChat
+    Apache-2.0 (powers Chatbot Arena but stale, last release Feb 2024, 39.5k stars); aux-OSS:Arena-Hard-Auto
+    Apache-2.0 (automatic LLM eval, highest correlation to LMArena); ranking methodology + crowd-vote
+    dataset not fully open
+  confidence: medium
+  note: 'Scored as the hosted platform: the live evaluation product, its vote stream, and current ranking
+    pipeline are closed; substantial OSS heritage (FastChat) and an OSS automatic-eval companion exist,
+    so open_core not closed. The OSS code is stale relative to the operating platform.'
+  sources:
+  - url: https://github.com/lm-sys/FastChat
+    shows: Apache-2.0; 'FastChat powers Chatbot Arena (lmarena.ai), serving over 10M chat requests for
+      70+ LLMs'; latest release v0.2.36 Feb 2024
+    accessed: '2026-06-04'
+  - url: https://github.com/lmarena/arena-hard-auto
+    shows: Apache-2.0 automatic LLM eval tool, highest correlation to LMArena
+    accessed: '2026-06-04'
+  - url: https://arena.ai/
+    shows: hosted 'Official AI Ranking & LLM Leaderboard' with Battle Mode; conversations disclosed to
+      providers (proprietary platform)
+    accessed: '2026-06-04'
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: medium
+  note: FastChat README (primary) states Chatbot Arena has served 'over 10 million chat requests for 70+
+    LLMs'; Arena Elo is the most-cited human-preference leaderboard in frontier model releases (LMArena
+    Elo appears across vendor launch posts). Headline = the 10M+ chat-request figure (primary, FastChat
+    repo). Banded 1M-10M conservatively on request volume; could be higher cumulatively.
+  sources:
+  - url: https://github.com/lm-sys/FastChat
+    shows: '''serving over 10 million chat requests for 70+ LLMs'''
+    accessed: '2026-06-04'
+  - url: https://arena.ai/
+    shows: hosted live leaderboard / battle platform in active operation June 2026
+    accessed: '2026-06-04'
+capability:
+  score: 4
+  basis: feature_matrix
+  value: 'eval modality: blind pairwise human-preference battles -> Elo/Bradley-Terry ranking (the reference
+    human-eval methodology); coverage: 70+ LLMs, multimodal/vision/coding arenas; agentic-eval: limited
+    (preference-based, not task-execution); reproducibility: Arena-Hard-Auto provides an automatic-judge
+    approximation'
+  confidence: medium
+  note: Reference platform for human-preference evaluation and the de-facto Elo standard cited everywhere;
+    not a 5 because as eval CODE it is largely closed/hosted and narrower than execution-based harnesses
+    on agentic/task coverage. Capability assessed on its evaluation methodology breadth.
+  sources:
+  - url: https://github.com/lmarena/arena-hard-auto
+    shows: 500 SWE/math queries + 250 creative prompts, GPT-4.1/Gemini-2.5 judges, highest correlation
+      to LMArena
+    accessed: '2026-06-04'
+  - url: https://arena.ai/
+    shows: battle-mode pairwise comparison across many models
+    accessed: '2026-06-04'

@@ -1,0 +1,42 @@
+product: gvisor
+openness:
+  score: 5
+  class: open_source
+  components: license:Apache-2.0(OSI);source:public(Go);governance:Google-led open project;no-feature-gated-core
+  confidence: high
+  note: Fully Apache-2.0 application kernel, source public, no gated core (recipe lists gVisor as an open_source
+    exemplar).
+  sources:
+  - url: https://github.com/google/gvisor
+    shows: Apache-2.0 license; application kernel implementing Linux-like interface in userspace (Go)
+    accessed: '2026-06-04'
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: high
+  note: Underpins Google Cloud Run ('Powered by gVisor' on gvisor.dev) and is the sandbox layer for GKE
+    Sandbox / App Engine / Cloud Functions — billions of container executions across Google Cloud. Reach
+    far exceeds >10M end-equivalent. (18.5k stars corroborate only.)
+  sources:
+  - url: https://gvisor.dev/docs/
+    shows: '''Powered by gVisor'' linking to Google Cloud Run as a production user'
+    accessed: '2026-06-04'
+  - url: https://github.com/google/gvisor
+    shows: Google-developed sandbox application kernel in production
+    accessed: '2026-06-04'
+capability:
+  score: 5
+  basis: feature_matrix
+  value: isolation:application-kernel (userspace syscall interception, defense-in-depth) — distinct strong-isolation
+    third approach between seccomp and full VM; cold-start:fast userspace startup; language/runtime breadth:any
+    Linux container workload (kernel-level); scale:powers Cloud Run/GKE Sandbox
+  confidence: high
+  note: 'Frontier-definer: a novel application-kernel isolation model giving VM-class security at userspace
+    footprint/startup, the reference sandbox for Google Cloud''s serverless containers. Co-frontier with
+    Firecracker (different isolation philosophy).'
+  sources:
+  - url: https://github.com/google/gvisor
+    shows: intercepts syscalls as a userspace application kernel; VM-class security benefits at userspace
+      footprint and startup
+    accessed: '2026-06-04'

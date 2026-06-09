@@ -1,0 +1,43 @@
+product: codestral
+openness:
+  score: 2
+  class: restricted
+  components: weights:open(downloadable on HF);data:closed;code:closed(no training pipeline);license:Mistral-AI-Non-Production-License(MNPL,
+    non-OSI, research/testing only; commercial license on demand)
+  confidence: high
+  note: Weights downloadable but under MNPL (non-OSI, non-production) — open-weights gated by a use-restricted
+    license, so restricted not open_weights.
+  sources:
+  - url: https://mistral.ai/news/codestral/
+    shows: Codestral open-weight on HF under Mistral AI Non-Production License (research/testing; commercial
+      on demand)
+    accessed: '2026-06-04'
+  - url: https://mistral.ai/news/codestral-25-08/
+    shows: Codestral 25.08 released 30 Jul 2025; API + VPC + on-prem deployment
+    accessed: '2026-06-04'
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: reported_traction
+  confidence: low
+  note: Embedded as the default FIM/code-completion backend in IDE assistants (Continue, Tabnine, and
+    Mistral's own coding stack) and on multiple API gateways; Mistral reports per-version completion-acceptance
+    gains but discloses no hard download/user count. Level 3 reflects multi-platform IDE distribution,
+    not a verified usage_volume figure.
+  sources:
+  - url: https://mistral.ai/news/codestral-25-08/
+    shows: Codestral coding stack distributed via API/VPC/on-prem; +30% accepted completions vs prior
+      version
+    accessed: '2026-06-04'
+capability:
+  score: 3
+  basis: benchmark:HumanEval/MBPP
+  value: HumanEval pass@1 ~86.6%, MBPP ~91.2%; strong on completion/FIM and RepoBench long-context, but
+    ~22B specialist — weak on agentic SWE-bench (single-run resolves only a small fraction)
+  confidence: medium
+  note: Strong code-completion specialist for its size, but a narrow FIM model — mid-tier on a chat/agentic
+    capability axis where the comparison set is 2026 frontier agentic coders.
+  sources:
+  - url: https://mistral.ai/news/codestral/
+    shows: Mistral-reported HumanEval/MBPP/RepoBench/Spider code benchmarks for Codestral
+    accessed: '2026-06-04'

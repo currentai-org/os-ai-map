@@ -1,0 +1,39 @@
+product: firecracker
+openness:
+  score: 5
+  class: open_source
+  components: license:Apache-2.0(OSI);source:public(Rust 78.7%);governance:AWS-led open project;no-feature-gated-core
+  confidence: high
+  note: Fully Apache-2.0, source public, no gated core; AWS-developed but openly governed (recipe lists
+    Firecracker as an open_source exemplar).
+  sources:
+  - url: https://github.com/firecracker-microvm/firecracker
+    shows: Apache-2.0 license; v1.16.0 (Jun 4 2026); powers AWS Lambda and Fargate
+    accessed: '2026-06-04'
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: high
+  note: Underpins AWS Lambda and AWS Fargate — among the highest-volume serverless platforms in the world
+    (trillions of invocations) — plus downstream use in Kata Containers, Flintlock, and E2B. Production
+    reach far exceeds >10M end-equivalent. (34.8k stars corroborate only.)
+  sources:
+  - url: https://github.com/firecracker-microvm/firecracker
+    shows: developed at AWS; powers AWS Lambda and AWS Fargate; integrated into Kata Containers and Flintlock
+    accessed: '2026-06-04'
+capability:
+  score: 5
+  basis: feature_matrix
+  value: isolation:hardware-virtualized microVM (KVM) — strongest isolation tier; cold-start:~125ms boot,
+    <5MiB memory overhead per microVM; language/runtime breadth:runs any OCI/container or function workload
+    (kernel-level, language-agnostic); scale:powers Lambda/Fargate fleets
+  confidence: high
+  note: 'Frontier-definer for the deployment category: hardware-VM isolation at container-like speed/density,
+    the reference microVM that the managed sandbox layer (E2B, others) builds on. Defines the strongest
+    point on the isolation x cold-start x scale matrix.'
+  sources:
+  - url: https://github.com/firecracker-microvm/firecracker
+    shows: lightweight microVMs combining hardware virtualization security with container speed; minimal
+      memory footprint/attack surface
+    accessed: '2026-06-04'

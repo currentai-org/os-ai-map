@@ -1,0 +1,44 @@
+product: sandbox-runtime
+openness:
+  score: 5
+  class: open_source
+  components: license:Apache-2.0(OSI);source:public(GitHub);distribution:npm package;no managed/proprietary
+    tier(it is a local library, not a service)
+  confidence: high
+  note: Apache-2.0 OS-level sandboxing library, fully open and self-contained; no feature-gated core or
+    paid tier.
+  sources:
+  - url: https://github.com/anthropic-experimental/sandbox-runtime
+    shows: Apache-2.0 license; OS-level (bubblewrap/seatbelt) sandbox library, no container required
+    accessed: '2026-06-04'
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: npm @anthropic-ai/sandbox-runtime ~558.8k downloads in the last 30 days (npm registry API), plus
+    403 GitHub dependents and 4.3k stars. Package-manager pulls overstate distinct users (CI/mirror inflation)
+    and it is a young research preview shipped alongside Claude Code, so reach placed conservatively at
+    10K-100K distinct users / level 2.
+  sources:
+  - url: https://api.npmjs.org/downloads/point/last-month/@anthropic-ai/sandbox-runtime
+    shows: ~558,800 downloads May 4-Jun 2 2026
+    accessed: '2026-06-04'
+  - url: https://github.com/anthropic-experimental/sandbox-runtime
+    shows: 403 dependents, 4.3k stars
+    accessed: '2026-06-04'
+capability:
+  score: 3
+  basis: feature_matrix
+  value: isolation:OS-level process sandbox (Linux bubblewrap namespaces+seccomp BPF, macOS Seatbelt)
+    - weaker boundary than gVisor/microVM, no kernel isolation; cold-start:near-zero (no container/VM
+    spin-up); runtime breadth:any local process (language-agnostic, host-defined); persistence:n/a (host
+    fs, deny/allow rules); scale:per-host, no managed fleet
+  confidence: medium
+  note: Best-in-class for low-overhead, no-container process isolation with fine-grained fs+network allow/deny
+    and pre-built seccomp filters; but a process-level sandbox is a weaker security boundary than the
+    microVM/gVisor frontier and offers no managed scale, so 3.
+  sources:
+  - url: https://github.com/anthropic-experimental/sandbox-runtime
+    shows: bubblewrap+seccomp / sandbox-exec isolation, filesystem+network restriction model, no container
+    accessed: '2026-06-04'

@@ -1,0 +1,40 @@
+product: fireworks-fine-tuning
+openness:
+  score: 1
+  class: closed
+  components: source:closed;training-pipeline:closed;runs-on:Fireworks-cloud-only;license:Proprietary(managed
+    service); base weights:open-models(varies)
+  confidence: high
+  note: The managed FT service/pipeline is proprietary and runs only on Fireworks' cloud; no source. (Fireworks'
+    separate reward-kit RFT toolkit is OSS but was not confirmed as part of this product this run.)
+  sources:
+  - url: https://docs.fireworks.ai/fine-tuning/fine-tuning-models
+    shows: managed FT service (SFT/DPO/RFT); LoRA outputs; dedicated-deployment serving; proprietary cloud
+    accessed: '2026-06-04'
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: No disclosed standalone usage figure for the Fireworks fine-tuning feature located this run (jobs
+    run / customers tuning). Fireworks serves notable inference volume, but no honest signal specific
+    to the FT SKU was found; declining to assign a level.
+  sources:
+  - url: https://docs.fireworks.ai/fine-tuning/fine-tuning-models
+    shows: managed FT feature; no usage figures disclosed
+    accessed: '2026-06-04'
+capability:
+  score: 4
+  basis: feature_matrix
+  value: 'Methods: SFT, DPO (preference), RFT (reinforcement fine-tuning). LoRA-adapter outputs with warm-start
+    continued training; serves resulting adapters on dedicated deployments. Open base-model catalog.'
+  confidence: medium
+  note: Strong managed method coverage (SFT+DPO+RFT, incl. reinforcement FT) over open base models. Black-box
+    (LoRA-output oriented, limited scale/precision control), no MLPerf-Training basis, so capped below
+    OSS scale definers; scored 4, on par with the other RFT-capable managed services. Slightly narrower
+    demonstrated scale than Together (no confirmed 100B+ full-FT claim), but matching RFT depth keeps
+    it at 4.
+  sources:
+  - url: https://docs.fireworks.ai/fine-tuning/fine-tuning-models
+    shows: SFT, DPO, RFT; LoRA outputs + warm-start
+    accessed: '2026-06-04'

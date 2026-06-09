@@ -1,0 +1,37 @@
+product: minimax-m2-5
+openness:
+  score: 3
+  class: open_weights
+  components: weights:open(on HF + ModelScope; F32/BF16/F8_E4M3);data:closed;code:partial(inference via
+    SGLang/vLLM/Transformers; no training pipeline/data);license:Modified-MIT(permissive)
+  confidence: high
+  note: Downloadable weights under a permissive Modified-MIT; data and training pipeline closed, so open_weights
+    not open_source. Distinct from the unreleased/closed MiniMax M3 anchor.
+  sources:
+  - url: https://huggingface.co/MiniMaxAI/MiniMax-M2.5
+    shows: MiniMax-M2.5 open weights on HF, Modified-MIT, 229B MoE, ~693K downloads/month
+    accessed: '2026-06-04'
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: HF model card reports ~693,331 downloads in the last month (100K-1M band); additionally served
+    via OpenRouter and free in coding tools (Kilo Code). Headline figure is the HF monthly download count.
+  sources:
+  - url: https://huggingface.co/MiniMaxAI/MiniMax-M2.5
+    shows: ~693,331 downloads last month on the official HF model page
+    accessed: '2026-06-04'
+capability:
+  score: 5
+  basis: benchmark:SWE-bench Verified
+  value: SWE-bench Verified 80.2%, SWE-bench Pro 55.4%, GPQA-D 85.2%, AIME25 86.3%, BrowseComp 76.3%;
+    VIBE-Pro on par with Opus 4.5
+  confidence: medium
+  note: Frontier-tier among open-weights agentic chat models (SWE-bench Verified 80.2% with strong reasoning/browse
+    scores), at very low serving cost. Figures are MiniMax-reported on the HF card; not independently
+    audited but consistent with peer open models (Kimi K2.6, DeepSeek-V4).
+  sources:
+  - url: https://huggingface.co/MiniMaxAI/MiniMax-M2.5
+    shows: MiniMax-reported SWE-bench Verified 80.2%, GPQA-D 85.2%, AIME25 86.3% on the official HF card
+    accessed: '2026-06-04'

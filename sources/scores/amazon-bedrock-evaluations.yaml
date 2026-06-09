@@ -1,0 +1,49 @@
+product: amazon-bedrock-evaluations
+openness:
+  score: 1
+  class: closed
+  components: license:proprietary(AWS managed service);source:closed;deployment:cloud-only(AWS-hosted
+    eval jobs, S3 I/O);billing:pay-as-you-go(judge-model inference + AWS-managed human workforce)
+  confidence: high
+  note: Proprietary AWS managed service; no source, no self-host, runs as billed Bedrock evaluation jobs.
+  sources:
+  - url: https://docs.aws.amazon.com/bedrock/latest/userguide/evaluation.html
+    shows: managed Bedrock service running automatic/judge/human eval jobs on AWS, CORS S3 I/O, CloudTrail
+      events
+    accessed: '2026-06-04'
+  - url: https://aws.amazon.com/bedrock/evaluations/
+    shows: AWS-hosted feature, AWS-managed human evaluator workforce option, directs to pricing page
+    accessed: '2026-06-04'
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: reported_traction
+  confidence: low
+  note: GA since 2025-03-20 and distributed inside Amazon Bedrock (a large enterprise AI surface), but
+    AWS publishes no standalone usage count for the Evaluations feature specifically. Level 3 = reported
+    traction via the Bedrock platform footprint, not a measured figure; low confidence because the signal
+    is the parent surface, not the feature. No stars fallback (closed service).
+  sources:
+  - url: https://aws.amazon.com/blogs/machine-learning/evaluate-models-or-rag-systems-using-amazon-bedrock-evaluations-now-generally-available/
+    shows: GA announcement (2025-03-20) of model + RAG evaluations as a broadly available Bedrock feature
+    accessed: '2026-06-04'
+capability:
+  score: 4
+  basis: feature_matrix
+  value: 'Eval-type coverage: model eval (LLM-as-a-judge, programmatic BERTScore/F1, human), RAG eval
+    (retrieval + retrieve-and-generate, citation precision/coverage); metric areas: quality (correctness/completeness/faithfulness),
+    UX (helpfulness/coherence/relevance), instruction-compliance, safety (harmfulness/stereotyping/refusal);
+    model-backend breadth = Bedrock + external/on-prem via BYO responses.'
+  confidence: medium
+  note: Broad managed eval suite covering model + RAG + agent, judge/programmatic/human modes, and four
+    metric families with BYO-responses portability. Comprehensive but a custom-dataset eval product, not
+    a standardized public benchmark leaderboard; placed at 4.
+  sources:
+  - url: https://aws.amazon.com/bedrock/evaluations/
+    shows: model eval (LLM-as-judge/programmatic/human) + RAG eval (retrieval, retrieve-and-generate)
+      with safety/quality metrics
+    accessed: '2026-06-04'
+  - url: https://aws.amazon.com/blogs/machine-learning/evaluate-models-or-rag-systems-using-amazon-bedrock-evaluations-now-generally-available/
+    shows: four metric areas (quality/UX/instruction-compliance/safety) and citation precision/coverage
+      metrics
+    accessed: '2026-06-04'

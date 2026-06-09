@@ -1,0 +1,37 @@
+product: snowflake-cortex-fine-tuning
+openness:
+  score: 1
+  class: closed
+  components: service:fully-managed-proprietary(in-Snowflake);source:closed;method:PEFT(LoRA-class, not
+    specified);base-models:fixed allowlist;access:Snowflake-account+credits;data:user-data stays in account
+    but engine closed
+  confidence: high
+  note: Proprietary fully-managed SaaS fine-tuning feature; no source, no self-host. Closed.
+  sources:
+  - url: https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-finetuning
+    shows: fully managed proprietary PEFT service, fixed base-model list, credit-based pricing, GA
+    accessed: '2026-06-04'
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: No published usage/customer-count figure for the fine-tuning feature specifically; Snowflake has
+    a large data-platform install base but no honest signal for this SKU's fine-tuning adoption. Null.
+  sources:
+  - url: https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-finetuning
+    shows: GA service with usage-history view but no disclosed adoption numbers
+    accessed: '2026-06-04'
+capability:
+  score: 2
+  basis: feature_matrix
+  value: 'Method: PEFT (single LoRA-class technique) on a fixed allowlist of 6 base models (Llama 3/3.1,
+    Mistral/Mixtral); no full FT, no RLHF/DPO/GRPO, no user-chosen models/scale. Convenience-first managed
+    feature, narrow method/model coverage.'
+  confidence: medium
+  note: Narrow capability vs the recipe's feature matrix (single PEFT method, fixed older base models,
+    no advanced RL methods). Integrated convenience, not a frontier trainer.
+  sources:
+  - url: https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-finetuning
+    shows: PEFT only, 6 fixed base models, no full-FT/RL methods listed
+    accessed: '2026-06-04'

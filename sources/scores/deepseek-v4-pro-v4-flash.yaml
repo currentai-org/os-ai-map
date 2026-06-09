@@ -1,0 +1,38 @@
+product: deepseek-v4-pro-v4-flash
+openness:
+  score: 3
+  class: open_weights
+  components: weights:open(MIT, on HF);data:closed;code:partial(inference/serving; no training pipeline
+    or data);license:MIT(OSI-style permissive, no use restrictions)
+  confidence: high
+  note: V4-Flash weights are MIT open (matching the V4-Pro anchor's open_weights class); training data/code
+    closed -> open_weights. Consistent with the frozen V4-Pro anchor's openness ladder.
+  sources:
+  - url: https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash
+    shows: MIT license, 284B-A13B MoE, 1M context, downloadable FP4/FP8 weights
+    accessed: '2026-06-04'
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: ~3.50M downloads last month for V4-Flash on HF; the cheaper/faster sibling of V4-Pro is attractive
+    for self-hosting, driving strong pull volume. Squarely 1-10M on measured monthly downloads (V4-Pro
+    anchor itself sits at level 4).
+  sources:
+  - url: https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash
+    shows: ~3,503,796 downloads last month
+    accessed: '2026-06-04'
+capability:
+  score: 4
+  basis: benchmark:MMLU-Pro/LiveCodeBench
+  value: 'Instruct (Max mode): MMLU-Pro 86.2, LiveCodeBench 91.6, MRCR-1M 78.7; base MMLU 88.7, HumanEval
+    69.5, GSM8K 90.8 (HF card)'
+  confidence: medium
+  note: Near-frontier capability (MMLU-Pro 86.2, LiveCodeBench 91.6) but deliberately the lighter sibling
+    of the V4-Pro anchor (capability 5); placed at 4 to keep the family curve consistent - Flash trails
+    Pro. Figures DeepSeek-reported on the HF card.
+  sources:
+  - url: https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash
+    shows: MMLU-Pro 86.2, LiveCodeBench 91.6, MRCR-1M 78.7 (Max mode); base MMLU 88.7
+    accessed: '2026-06-04'

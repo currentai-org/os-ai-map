@@ -1,0 +1,42 @@
+product: azure-ai-foundry-observability
+openness:
+  score: 1
+  class: closed
+  components: license:proprietary(Azure managed service);source:closed;note:tracing built on open OTel
+    standard + Azure Monitor App Insights, but the observability product is proprietary and Azure-locked
+  confidence: high
+  note: Proprietary Microsoft Azure managed offering. OTel is the wire standard (trace data is portable)
+    but the service itself is closed.
+  sources:
+  - url: https://learn.microsoft.com/en-us/azure/foundry/concepts/observability
+    shows: Microsoft Foundry observability (eval/monitoring/tracing) as a managed Azure service built
+      on OpenTelemetry + Azure Monitor
+    accessed: '2026-06-04'
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: reported_traction
+  confidence: low
+  note: GA March 2026 as a feature surface within Microsoft Foundry on Azure; no standalone usage figures
+    published for the observability capability specifically. Level 3 reflects availability inside a large
+    cloud AI platform, not a measured user count; directional.
+  sources:
+  - url: https://learn.microsoft.com/en-us/azure/foundry/concepts/observability
+    shows: observability GA (Mar 2026) shipped within the managed Microsoft Foundry platform
+    accessed: '2026-06-04'
+capability:
+  score: 3
+  basis: feature_matrix
+  value: tracing (OTel distributed tracing of LLM calls, tool invocations, agent decisions, cross-agent
+    handoffs; inputs/outputs/latency/token usage via Azure Monitor App Insights) + monitoring + evaluations;
+    auto-instrumentation across Semantic Kernel, LangChain, LangGraph, OpenAI Agents SDK. Strong tracing
+    + framework breadth; prompt mgmt/datasets/annotation not evidenced as first-class native features.
+  confidence: medium
+  note: Three pillars (eval/monitoring/tracing) with strong OTel + framework coverage, but matrix breadth
+    on prompt versioning/datasets/annotation is thinner than the dedicated OSS platforms; scored 3 below
+    the C4 anchors.
+  sources:
+  - url: https://learn.microsoft.com/en-us/azure/foundry/concepts/observability
+    shows: OTel tracing, monitoring, evaluations; auto-instrumentation for Semantic Kernel/LangChain/LangGraph/OpenAI
+      Agents SDK
+    accessed: '2026-06-04'

@@ -1,0 +1,40 @@
+product: apple-core-ml-runtime
+openness:
+  score: 1
+  class: closed
+  components: runtime:proprietary(Apple system framework, closed);conversion-tooling:coremltools(BSD-3-Clause,
+    OSI, open);model-format:.mlmodel/.mlpackage(documented);hardware:Apple-silicon-only(Neural Engine)
+  confidence: high
+  note: The inference runtime itself is a closed Apple framework; only coremltools (model conversion)
+    is open BSD-3. Headline (the runtime) is closed; scored closed with open-tooling note.
+  sources:
+  - url: https://developer.apple.com/documentation/coreml
+    shows: Core ML is Apple's proprietary on-device ML inference framework; runtime closed, runs models
+      on Apple hardware
+    accessed: '2026-06-04'
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: active_users
+  confidence: medium
+  note: Core ML is the system on-device inference runtime shipped on every modern iPhone/iPad/Mac (>1B
+    active Apple devices) and used by a large share of App Store ML features. Mass-market reach attributed
+    to the Apple device install base the runtime ships on, not a developer download count.
+  sources:
+  - url: https://developer.apple.com/documentation/coreml
+    shows: Core ML runs on-device across iOS/macOS/watchOS/tvOS, the default on-device inference framework
+      for Apple platforms
+    accessed: '2026-06-04'
+capability:
+  score: 4
+  basis: feature_matrix
+  value: on-device inference across CPU/GPU/Neural Engine; broad model coverage via coremltools (PyTorch/TF
+    conversion); quantization/compression; transformer + diffusion support
+  confidence: medium
+  note: Best-in-class on-device/edge inference runtime (Neural Engine acceleration, quantization, broad
+    converted-model coverage) but constrained to Apple silicon and on-device scale; C4 within this category
+    (frontier C5 reserved for the large-scale server engines vLLM/SGLang/TensorRT-LLM).
+  sources:
+  - url: https://developer.apple.com/documentation/coreml
+    shows: Neural Engine acceleration, on-device inference, model optimization features
+    accessed: '2026-06-04'

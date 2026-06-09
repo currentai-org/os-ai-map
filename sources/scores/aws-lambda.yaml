@@ -1,0 +1,40 @@
+product: aws-lambda
+openness:
+  score: 1
+  class: closed
+  components: service:proprietary AWS-only SaaS (no self-host);underlying-microVM:Firecracker is Apache-2.0
+    OSS but the Lambda control/data plane is closed;weights:n/a;source:closed
+  confidence: high
+  note: Lambda is a proprietary managed serverless service (closed), per recipe's explicit 'Lambda as
+    closed counterpart'. Firecracker (the microVM substrate) is separately open source but is a different
+    artifact; Lambda itself is not self-hostable.
+  sources:
+  - url: https://aws.amazon.com/blogs/aws/firecracker-lightweight-virtualization-for-serverless-computing/
+    shows: Firecracker microVM powers Lambda; Lambda is AWS-managed proprietary service
+    accessed: '2026-06-04'
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: high
+  note: AWS states Lambda 'processes trillions of executions for hundreds of thousands of active customers
+    every month' - mass-market serverless deployment substrate, unambiguously >10M reach. (Adoption attributed
+    to general serverless usage, not specifically agent-code-execution.)
+  sources:
+  - url: https://aws.amazon.com/blogs/aws/firecracker-lightweight-virtualization-for-serverless-computing/
+    shows: trillions of executions / hundreds of thousands of active customers monthly
+    accessed: '2026-06-04'
+capability:
+  score: 5
+  basis: feature_matrix
+  value: isolation:Firecracker microVM (per-invocation hardware-virtualized, KVM) - strongest isolation
+    tier, ~125ms VM start, ~5MiB/VM; cold-start:ms-to-sub-second; runtime breadth:very high (managed runtimes
+    Node/Python/Java/Go/Ruby/.NET + custom runtimes/container images, arbitrary code); persistence:stateless+attachable
+    storage (EFS, /tmp); scale:trillions of executions/mo, effectively unbounded autoscale
+  confidence: high
+  note: 'Frontier-definer for this category: microVM-grade isolation, the widest runtime breadth, and
+    the largest proven scale of any deployment runtime here. Scored 5.'
+  sources:
+  - url: https://aws.amazon.com/blogs/aws/firecracker-lightweight-virtualization-for-serverless-computing/
+    shows: Firecracker microVM isolation, ~125ms start, ~5MiB/VM, trillions of executions
+    accessed: '2026-06-04'

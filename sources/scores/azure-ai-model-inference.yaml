@@ -1,0 +1,39 @@
+product: azure-ai-model-inference
+openness:
+  score: 1
+  class: closed
+  components: license:proprietary(Azure managed service);source:closed;interface:OpenAI-compatible REST
+    endpoint over Foundry model deployments;hardware:Azure-managed
+  confidence: high
+  note: Fully proprietary managed Azure service; no source released. Scored closed.
+  sources:
+  - url: https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/endpoints
+    shows: single managed Azure inference endpoint over model deployments; proprietary Azure resource,
+      OpenAI-compatible API
+    accessed: '2026-06-04'
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: reported_traction
+  confidence: low
+  note: Default inference surface for Microsoft Foundry across Azure's enterprise base; broad distribution
+    but no published per-service usage number. Level 4 reflects Azure-enterprise scale (reported), not
+    a measured count.
+  sources:
+  - url: https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/endpoints
+    shows: unified endpoint for all Foundry model deployments, enterprise Azure integration
+    accessed: '2026-06-04'
+capability:
+  score: 3
+  basis: feature_matrix
+  value: unified OpenAI-compatible endpoint; multi-provider model deployments (OpenAI, DeepSeek, MAI-DS-R1,
+    etc.); keyless Entra ID auth; content filtering, rate limiting, batch inference
+  confidence: medium
+  note: Capability is managed-endpoint breadth (multi-model routing, auth, governance), not raw engine
+    throughput. This is closer to a managed API gateway over model deployments than a weight-loading inference
+    engine; see recategorize flag.
+  sources:
+  - url: https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/endpoints
+    shows: single endpoint switches between model deployments with content filtering, rate limiting, keyless
+      auth
+    accessed: '2026-06-04'

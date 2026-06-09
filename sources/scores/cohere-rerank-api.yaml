@@ -1,0 +1,47 @@
+product: cohere-rerank-api
+openness:
+  score: 1
+  class: closed
+  components: license:proprietary(hosted-API; also cloud-marketplace deploy);source:closed;weights:not-released;managed:Cohere+Azure/AWS/Oracle
+  confidence: high
+  note: Proprietary closed reranking models served via API and cloud marketplaces; no open weights or
+    source. Marketed as 'open' in search-relevance contexts but is not OSS.
+  sources:
+  - url: https://docs.cohere.com/docs/rerank-overview
+    shows: commercial Rerank API; models 4.0/3.5/3.0, no source or weight release
+    accessed: '2026-06-04'
+  - url: https://docs.cohere.com/changelog/rerank-v3.5
+    shows: Rerank v3.5 announced as a hosted proprietary model
+    accessed: '2026-06-04'
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: reported_traction
+  confidence: medium
+  note: De facto default managed reranker for RAG, distributed across Azure AI Foundry, AWS SageMaker
+    JumpStart / OpenSearch, and Oracle GenAI in addition to Cohere's API. No hard call-volume/user count
+    published; placed at 3 on broad multi-cloud distribution (reported_traction).
+  sources:
+  - url: https://aws.amazon.com/blogs/big-data/enhancing-search-relevancy-with-cohere-rerank-3-5-and-amazon-opensearch-service/
+    shows: Rerank 3.5 integrated/distributed via Amazon OpenSearch Service
+    accessed: '2026-06-04'
+  - url: https://ai.azure.com/catalog/models/Cohere-rerank-v3.5
+    shows: Rerank v3.5 available in Azure AI Foundry model catalog
+    accessed: '2026-06-04'
+capability:
+  score: 4
+  basis: feature_matrix
+  value: SOTA on BEIR + multilingual retrieval (nDCG@10), 100+ languages with SOTA on 10 business languages;
+    up to ~25% gain over embedding-only retrieval; multimodal/long-context in newer variants
+  confidence: medium
+  note: Vendor reports SOTA on BEIR and multilingual nDCG@10; widely treated as the reference managed
+    reranker. Concrete nDCG numbers not disclosed on primary pages (claims are vendor-run, not an independent
+    leaderboard), so rated 4 rather than 5. Capability basis is feature_matrix as no standard public reranker
+    leaderboard applies.
+  sources:
+  - url: https://cohere.com/blog/rerank-3pt5
+    shows: vendor SOTA claims on BEIR + multilingual retrieval, ~25% gain over embedding search
+    accessed: '2026-06-04'
+  - url: https://docs.cohere.com/changelog/rerank-v3.5
+    shows: multilingual 100+ language reranking, nDCG@10 evaluation
+    accessed: '2026-06-04'

@@ -1,0 +1,46 @@
+product: max
+openness:
+  score: 3
+  class: source_available
+  components: license:Modular-Community-License(non-OSI; Apache-2.0-w/-LLVM-exceptions only for some components);source:public(~450k
+    LOC incl MAX kernels + inference server + Mojo stdlib);commercial-tier:Modular enterprise/managed
+    deployment
+  confidence: high
+  note: Large public codebase but MAX/Mojo usage and distribution are governed by the non-OSI Modular
+    Community License (not OSI-approved), plus a commercial tier -> source_available, not open_source.
+    Marketed as 'open'; flag open_washed (non-OSI license presented as open).
+  sources:
+  - url: https://github.com/modular/modular
+    shows: Modular Community License (non-OSI) governs MAX/Mojo usage+distribution; ~450k LOC public;
+      MAX 26.3 / Mojo 1.0.0b1 (May 7 2026)
+    accessed: '2026-06-04'
+  - url: https://docs.modular.com/max/
+    shows: MAX serves 500+ open models with OpenAI-compatible endpoints across NVIDIA/AMD/Apple GPUs
+    accessed: '2026-06-04'
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: stars_fallback
+  confidence: low
+  note: No published download/user/tokens figure for MAX serving specifically. 26.3k GitHub stars on the
+    modular/modular monorepo (covers MAX+Mojo) is the only signal; capped per stars_fallback and placed
+    at 2 given no verified production-deployment count and a still-maturing serving ecosystem vs the established
+    OSS engines.
+  sources:
+  - url: https://github.com/modular/modular
+    shows: 26.3k stars on modular/modular (MAX + Mojo)
+    accessed: '2026-06-04'
+capability:
+  score: 4
+  basis: feature_matrix
+  value: 500+ open-model coverage out of the box, OpenAI-compatible serving, multi-vendor GPU support
+    (NVIDIA/AMD/Apple) + CPU, custom-kernel authoring in Mojo, cloud deployment; designed as high-performance
+    inference + hardware-abstraction layer
+  confidence: medium
+  note: Broad multi-hardware coverage and a high-performance serving stack with custom-kernel programmability;
+    no standardized MLPerf/AA inference-engine submission verified independently, so feature_matrix. Strong
+    (C4) but not a demonstrated throughput-frontier-definer like the C5 anchors.
+  sources:
+  - url: https://docs.modular.com/max/
+    shows: 500+ models, OpenAI-compatible endpoints, NVIDIA/AMD/Apple GPU + CPU, custom GPU kernels
+    accessed: '2026-06-04'

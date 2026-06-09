@@ -1,0 +1,47 @@
+product: together-fine-tuning
+openness:
+  score: 1
+  class: closed
+  components: source:closed;training-pipeline:closed;runs-on:Together-cloud-only;license:Proprietary(managed
+    service, per-token training pricing); base weights:open-models(varies)
+  confidence: high
+  note: The fine-tuning service/pipeline is proprietary and runs only on Together's cloud; no source.
+    (It tunes open-weight base models, but the offering itself is closed.)
+  sources:
+  - url: https://docs.together.ai/docs/fine-tuning-overview
+    shows: managed FT service (LoRA/full/preference/vision); data-prep to hosting; proprietary cloud
+    accessed: '2026-06-04'
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: No disclosed standalone usage figure for the Together fine-tuning feature located this run (jobs
+    run / customers tuning). Together AI raised a $305M Series B and serves substantial inference traffic,
+    and a vendor case study cites a customer moving to daily iteration / 77%->87% accuracy, but no hard
+    per-SKU FT usage number was found; declining to assign a level rather than rely on a single anecdote.
+  sources:
+  - url: https://docs.together.ai/docs/fine-tuning-overview
+    shows: managed FT feature; no aggregate usage figures disclosed
+    accessed: '2026-06-04'
+  - url: https://www.together.ai/fine-tuning
+    shows: FT product page; case-study traction (daily iteration, 77%->87% accuracy)
+    accessed: '2026-06-04'
+capability:
+  score: 4
+  basis: feature_matrix
+  value: 'Methods: LoRA + full fine-tuning, preference (DPO), function-calling, reasoning, vision-language
+    FT; demonstrated tuning of 100B+ open models (DeepSeek-V3, Qwen3-235B). Managed end-to-end (prep ->
+    train -> dedicated-endpoint serve).'
+  confidence: medium
+  note: Broad managed method coverage (LoRA + full FT + preference + multimodal) over large open models
+    incl. demonstrated 100B+/235B-scale tuning - the widest open-model scale among the managed services
+    here. Black-box (limited scale/precision control), no MLPerf-Training basis, so capped below OSS scale
+    definers; scored 4, on par with the OpenAI/Azure FT APIs.
+  sources:
+  - url: https://docs.together.ai/docs/fine-tuning-overview
+    shows: LoRA, full FT, preference, function-calling, reasoning, vision-language FT
+    accessed: '2026-06-04'
+  - url: https://www.together.ai/fine-tuning
+    shows: fine-tune 100B+ models incl. DeepSeek-V3 and Qwen3-235B
+    accessed: '2026-06-04'

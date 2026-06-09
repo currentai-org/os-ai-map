@@ -1,0 +1,48 @@
+product: braintrust
+openness:
+  score: 1
+  class: closed
+  components: license:Apache-2.0(OSI, client SDKs only — Python/TS/Go/Ruby/C#);platform:proprietary(Brainstore
+    custom DB, evals/tracing/automation all SaaS);self-host:enterprise-only(hybrid)
+  confidence: high
+  note: Open SDKs but a closed SaaS core (Brainstore backend, dashboards, automation are proprietary)
+    — no OSS core, so 'closed' (not open_core) like LangSmith/Galileo per recipe's closed examples. The
+    Apache-2.0 client SDK is instrumentation only and does not open the product.
+  sources:
+  - url: https://github.com/braintrustdata/braintrust-sdk
+    shows: Apache-2.0 license on client SDK; platform itself at braintrust.dev
+    accessed: '2026-06-04'
+  - url: https://www.braintrust.dev/
+    shows: proprietary backend (Brainstore custom DB), SaaS + hybrid enterprise deployment
+    accessed: '2026-06-04'
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: '~6.08M PyPI downloads in the last month for the `braintrust` package (primary: pypistats); named
+    production users incl. Vercel, Notion, Coursera, Dropbox, Replit. 1-10M monthly-download band; strongest
+    adoption of the closed-platform set here.'
+  sources:
+  - url: https://pypistats.org/packages/braintrust
+    shows: 6,080,857 downloads last month for the braintrust package
+    accessed: '2026-06-04'
+  - url: https://www.braintrust.dev/
+    shows: named customers Vercel, Notion, Coursera, Dropbox, Replit
+    accessed: '2026-06-04'
+capability:
+  score: 5
+  basis: feature_matrix
+  value: tracing(real-time inspection across millions of logs, tool calls); evals(LLM/code/human scorers,
+    experiments vs datasets); prompt mgmt + playground; automation(Topics pattern discovery, continuous
+    scoring, quality gates blocking releases); datasets/annotation; OTel + MCP + framework-agnostic SDKs(5
+    langs). Quality-gate/automation depth exceeds the anchor tier.
+  confidence: high
+  note: Deepest eval+automation feature surface in this batch (CI-style quality gates, Topics auto-clustering,
+    continuous scoring) — a frontier-definer for eval-first LLM observability; rated 5 above the MLflow/Langfuse
+    C4 anchors on feature breadth.
+  sources:
+  - url: https://www.braintrust.dev/
+    shows: tracing, evals (LLM/code/human), automation (Topics, quality gates), prompt mgmt, OTel/MCP
+      integrations
+    accessed: '2026-06-04'

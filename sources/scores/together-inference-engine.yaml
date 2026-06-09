@@ -1,0 +1,44 @@
+product: together-inference-engine
+openness:
+  score: 1
+  class: closed
+  components: engine:proprietary(Together Inference Engine);source:closed(though Together publishes OSS
+    research e.g. FlashAttention/ThunderKittens separately);access:managed-cloud-API-only;license:Proprietary
+  confidence: high
+  note: The inference engine/service itself is proprietary, API-only; closed per recipe. (Together open-sources
+    research components like FlashAttention separately, but those are not the serving engine.)
+  sources:
+  - url: https://www.together.ai/
+    shows: proprietary serverless/dedicated cloud inference for open models; engine not released; OSS
+      research published separately
+    accessed: '2026-06-04'
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: reported_traction
+  confidence: medium
+  note: Broad named-customer roster (Cursor, Cohere, DeepMind, ElevenLabs, Salesforce, Mozilla, Decagon,
+    ~30+ orgs); widely used serverless inference for open models. No raw developer/user count disclosed;
+    reported_traction at the 1-10M-equivalent band on enterprise breadth.
+  sources:
+  - url: https://www.together.ai/
+    shows: named customers Cursor, Cohere, DeepMind, ElevenLabs, Salesforce, Mozilla, Decagon + ~30 orgs
+    accessed: '2026-06-04'
+capability:
+  score: 4
+  basis: feature_matrix
+  value: Research-optimized GPU inference (FlashAttention-4 up to 1.3x cuDNN on Blackwell, ATLAS accelerators
+    up to 4x LLM inference, vendor 2x-faster claim); serverless + batch + dedicated serving across broad
+    open-model catalog
+  confidence: low
+  note: 'Strong GPU-based inference with leading-research kernels, but no Together figure available on
+    the AA gpt-oss-120b provider speed board this run (only TTFT ~4.19s shown, not output t/s), so capability
+    rests on vendor-reported research speedups -> feature_matrix, low confidence. C4: strong GPU provider,
+    not a demonstrated throughput frontier-definer.'
+  sources:
+  - url: https://www.together.ai/
+    shows: FlashAttention-4 1.3x cuDNN on Blackwell, ATLAS up to 4x LLM inference, 2x-faster claim
+    accessed: '2026-06-04'
+  - url: https://artificialanalysis.ai/models/gpt-oss-120b/providers
+    shows: Together.ai present on provider board (TTFT ~4.19s); output t/s not in displayed ranking
+    accessed: '2026-06-04'

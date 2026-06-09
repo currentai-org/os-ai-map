@@ -1,0 +1,47 @@
+product: webcontainers
+openness:
+  score: 2
+  class: source_available
+  components: public-repo:webcontainer-core is MIT but issue-tracker only (no runtime source);actual-runtime:proprietary(StackBlitz);license-terms:free
+    for OSS/prototypes, commercial license required for for-profit production (charge beyond 10k API req/mo);distribution:@webcontainer/api
+    npm (proprietary binary)
+  confidence: high
+  note: The MIT 'open' repo holds no implementation — the runtime is closed and gated by a commercial
+    license for production use. Best classed source_available leaning closed; flag open_washed for the
+    MIT-issue-tracker-as-open-source framing.
+  sources:
+  - url: https://github.com/stackblitz/webcontainer-core
+    shows: MIT repo is a central hub for issues/bug reports, not the runtime implementation
+    accessed: '2026-06-04'
+  - url: https://www.npmjs.com/package/@webcontainer/api
+    shows: WebContainer API distributed as npm package; commercial license required for for-profit production
+      use (free for OSS/POC, charge beyond 10k req/mo)
+    accessed: '2026-06-04'
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: reported_traction
+  confidence: low
+  note: Powers StackBlitz's own IDE and is embedded by named projects (SvelteKit, Astro, Scrimba, egghead.io,
+    Xata) for in-browser code experiences. No disclosed download/MAU figure on the primary pages; placed
+    at 3 on named-integration reported traction. No hard usage_volume number found, so confidence low.
+  sources:
+  - url: https://webcontainers.io/
+    shows: WebContainers used by SvelteKit, Astro, Scrimba, egghead.io, Xata (named integrations); no
+      quantitative usage figure
+    accessed: '2026-06-04'
+capability:
+  score: 3
+  basis: feature_matrix
+  value: 'isolation: browser/WASM sandbox (client-side, inherently isolated from host but not a server
+    execution env); cold-start: instant (no server provisioning); language/runtime breadth: Node.js +
+    npm ecosystem, JS/TS focused, plus arbitrary WASM (narrow vs general Linux sandboxes); persistence:
+    per-session in-browser; scale: runs on the end-user''s device (no server cost, no server scale)'
+  confidence: medium
+  note: Unique in-browser execution with instant start and zero server cost, but Node/JS-only and not
+    a general-purpose server-side code sandbox for arbitrary languages — a different (narrower) capability
+    profile than microVM/container peers. Mid-tier within deployment.
+  sources:
+  - url: https://webcontainers.io/
+    shows: runs Node.js/npm and WASM fully in-browser, 'up to 10x faster than local', any modern framework
+    accessed: '2026-06-04'

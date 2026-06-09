@@ -1,0 +1,49 @@
+product: mistral-fine-tuning-api
+openness:
+  score: 1
+  class: closed
+  components: source:closed;training-pipeline:closed;runs-on:La-Plateforme-only;license:Proprietary(managed
+    service, per-token + storage pricing); base weights:Mistral-models(open-weight variants exist)
+  confidence: high
+  note: 'The hosted FT API on La Plateforme is a proprietary managed service (LoRA adapters under the
+    hood); no source for the service. Mistral separately ships an OSS mistral-finetune SDK for self-hosting,
+    but that is a distinct product from this managed API. Verified 2026-06-04: the FT API remains a live
+    production service on La Plateforme (changelog + platform docs); only the legacy docs guide was relocated
+    to /resources/deprecated/, which carries a deprecation banner but does not retire the API.'
+  sources:
+  - url: https://mistral.ai/news/customization
+    shows: serverless FT on La Plateforme; LoRA adapters under the hood; managed proprietary service;
+      separate OSS mistral-finetune SDK
+    accessed: '2026-06-04'
+  - url: https://docs.mistral.ai/resources/deprecated/finetuning
+    shows: legacy fine-tuning DOCS guide moved to /resources/deprecated/ (Classifier Factory + text/vision
+      SFT documented); corroborates that only the docs guide moved while the managed FT API on La Plateforme
+      remains a live production service
+    accessed: '2026-06-04'
+adoption:
+  level: null
+  reach: null
+  signal_type: unknown
+  confidence: low
+  note: No disclosed standalone usage figure for the Mistral fine-tuning API located this run (jobs run
+    / customers tuning). La Plateforme is a widely used developer platform, but no honest per-SKU FT signal
+    was found; declining to assign a level.
+  sources:
+  - url: https://mistral.ai/news/customization
+    shows: managed FT feature on La Plateforme; no usage figures disclosed
+    accessed: '2026-06-04'
+capability:
+  score: 3
+  basis: feature_matrix
+  value: 'Methods: LoRA-adapter supervised fine-tuning (text & vision) + Classifier Factory for classification
+    models. Tunable base models limited to Mistral''s own (Small/Medium tier). No exposed full-FT/DPO/RFT
+    or scale/precision knobs in the managed API.'
+  confidence: medium
+  note: 'Narrower managed method set than the SFT+DPO+RFT services - LoRA SFT + classifier factory only,
+    over Mistral''s own models, black-box. Scored 3: a real, capable managed LoRA-FT service but below
+    the preference/RL-capable OpenAI/Azure/Together/Fireworks offerings (C4) and far below the OSS scale
+    definers.'
+  sources:
+  - url: https://mistral.ai/news/customization
+    shows: LoRA SFT (text & vision) + Classifier Factory; Mistral Small/Medium base
+    accessed: '2026-06-04'

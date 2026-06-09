@@ -1,0 +1,44 @@
+product: openllmetry
+openness:
+  score: 5
+  class: open_source
+  components: license:Apache-2.0(OSI);source:public;no-feature-gated-core(SDK is fully OSS; Traceloop
+    dashboard is an optional external export target, not gated core)
+  confidence: high
+  note: Apache-2.0 instrumentation library; exports to any OTel backend (Datadog, Honeycomb, etc.), so
+    the OSS is genuinely standalone.
+  sources:
+  - url: https://pypi.org/project/traceloop-sdk/
+    shows: 'License: Apache-2.0; v0.61.0 (31 May 2026)'
+    accessed: '2026-06-04'
+  - url: https://github.com/traceloop/openllmetry
+    shows: Apache-2.0; OTel-based GenAI instrumentation
+    accessed: '2026-06-04'
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: traceloop-sdk ~3.15M PyPI downloads/month; 15+ LLM providers, 7 vector DBs, 25+ tested export
+    destinations; ~7.2k stars corroborates only.
+  sources:
+  - url: https://pypistats.org/packages/traceloop-sdk
+    shows: ~3,149,787 downloads last month
+    accessed: '2026-06-04'
+  - url: https://github.com/traceloop/openllmetry
+    shows: ~7.2k stars; 15+ providers, 25+ destinations
+    accessed: '2026-06-04'
+capability:
+  score: 3
+  basis: feature_matrix
+  value: deep OTel instrumentation(15+ LLM providers, 7 vector DBs, framework hooks), multi-destination
+    export(25+ platforms); NO native prompt management, evals/LLM-as-judge, or datasets/annotation in
+    the OSS layer
+  confidence: high
+  note: Strong on tracing + integrations but narrow vs full platforms — it is an instrumentation layer,
+    not an eval/prompt/dataset suite. Below the MLflow/Langfuse/Phoenix/Opik feature breadth (C4).
+  sources:
+  - url: https://github.com/traceloop/openllmetry
+    shows: instrumentation/integration-focused feature set; evals/prompt mgmt are Traceloop-platform features
+      not OSS SDK
+    accessed: '2026-06-04'

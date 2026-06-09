@@ -1,0 +1,40 @@
+product: weave
+openness:
+  score: 4
+  class: open_core
+  components: license:Apache-2.0(OSI, SDK/client repo wandb/weave);source:public;backend:commercial(W&B
+    SaaS platform hosts traces/evals; full platform is proprietary, self-host is enterprise);eval+tracing-client:OSS
+  confidence: high
+  note: Apache-2.0 OSS instrumentation SDK (@weave.op tracing + eval scoring) but the trace store / dashboards
+    / monitoring backend is the proprietary W&B SaaS platform — open-core, calibrated below MLflow O5
+    (fully-OSS core) and at/with Langfuse O4 (OSS core + commercial backend).
+  sources:
+  - url: https://github.com/wandb/weave
+    shows: Apache-2.0 license on the Weave SDK repo; LLM logging/tracing/eval toolkit
+    accessed: '2026-06-04'
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: '~1.03M PyPI downloads in the last month for the `weave` package (primary: pypistats); rides the
+    established W&B install base (ML teams adding LLM observability without leaving W&B). 1-10M monthly-download
+    band.'
+  sources:
+  - url: https://pypistats.org/packages/weave
+    shows: 1,028,914 downloads last month for the weave package
+    accessed: '2026-06-04'
+capability:
+  score: 4
+  basis: feature_matrix
+  value: tracing(auto-logs OpenAI/Anthropic calls incl inputs/outputs/tokens/cost); evals(LLM-as-judge
+    + code scorers, experiments vs datasets); datasets/annotation; cost tracking; integrations(OpenAI/Anthropic
+    + framework hooks). Missing dedicated prompt-management/versioning depth vs MLflow/Langfuse.
+  confidence: medium
+  note: Competent end-to-end tracing+eval suite; rated 4 = at the MLflow/Langfuse anchor tier on feature
+    breadth, just short of frontier (lighter prompt-versioning + OTel story than Langfuse/MLflow per 2026
+    comparisons).
+  sources:
+  - url: https://github.com/wandb/weave
+    shows: logging/debugging LLM traces + rigorous evaluations feature set
+    accessed: '2026-06-04'

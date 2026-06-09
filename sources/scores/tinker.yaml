@@ -1,0 +1,43 @@
+product: tinker
+openness:
+  score: 1
+  class: closed
+  components: engine:closed(hosted distributed-training service on TML infra);cookbook:open(Apache-2.0,
+    thinking-machines-lab/tinker-cookbook);api:public-but-proprietary(forward_backward/optim_step/sample/save_state);method:LoRA(+RL
+    via sample);access:paid+account-gated
+  confidence: high
+  note: Core training service is a proprietary hosted API; only the example cookbook is OSI-licensed,
+    so the product is closed. Not open_core since no self-hostable engine exists.
+  sources:
+  - url: https://thinkingmachines.ai/tinker/
+    shows: paid managed LoRA training API, usage pricing, supported models 1B-550B
+    accessed: '2026-06-04'
+  - url: https://github.com/thinking-machines-lab/tinker-cookbook/blob/main/LICENSE
+    shows: Apache-2.0 license for the (only) open component, the cookbook
+    accessed: '2026-06-04'
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: reported_traction
+  confidence: low
+  note: Early named research adopters (Princeton Goedel, Stanford Rotskoff, Berkeley SkyRL, Redwood Research)
+    and moved from private beta to paid GA; no disclosed user/usage count. Reported research traction
+    => conservative level 2.
+  sources:
+  - url: https://thinkingmachines.ai/tinker/
+    shows: paid GA service with named research adopters; no published user count
+    accessed: '2026-06-04'
+capability:
+  score: 4
+  basis: feature_matrix
+  value: 'Methods: LoRA training + sampling for RL/eval; broad model breadth (1B-550B incl. large MoE
+    like Qwen3-235B-A22B, DeepSeek, Nemotron); abstracts distributed multi-GPU training behind 4-function
+    API. Largest demonstrated: 550B-class MoE fine-tuning.'
+  confidence: medium
+  note: Strong fine-tuning capability — frontier-scale model breadth and managed distributed training
+    — but LoRA-centric (not full FT / full RL stack), so 4 not 5. Feature-matrix basis; no MLPerf-Training
+    submission.
+  sources:
+  - url: https://thinkingmachines.ai/tinker/
+    shows: LoRA training across Qwen/Llama/DeepSeek/GPT-OSS/Moonshot/Nemotron, 1B-550B, MoE support
+    accessed: '2026-06-04'

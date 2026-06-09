@@ -1,0 +1,41 @@
+product: hermes-4-llama-3-1-405b
+openness:
+  score: 2
+  class: restricted
+  confidence: high
+  components: 'weights:open(downloadable);base:Llama-3.1-405B;post-training-data:closed;code:partial(inference);license:Llama-3.1-Community(non-OSI:
+    700M MAU commercial cap + acceptable-use + naming requirements inherited from base)'
+  note: Inherits Meta's non-OSI Llama 3.1 Community License (MAU cap + field-of-use restrictions) => restricted,
+    not open. Marketed as 'open' on the model card despite the restricted license.
+  sources:
+  - url: https://huggingface.co/NousResearch/Hermes-4-405B-FP8
+    shows: 'License: Llama3, base Meta-Llama/Llama-3.1-405B'
+    accessed: '2026-06-04'
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: high
+  note: FP8 variant ~381 HF downloads/mo; BF16 405B comparably low. 405B size limits self-hosting; some
+    managed serving (OpenRouter, Nous Portal, Chutes, Nebius) but no large verified usage figure. Hobbyist/specialist
+    scale on download signal.
+  sources:
+  - url: https://huggingface.co/NousResearch/Hermes-4-405B-FP8
+    shows: 381 downloads last month
+    accessed: '2026-06-04'
+capability:
+  score: 4
+  basis: benchmark:AIME/MMLU-Pro/LiveCodeBench
+  value: MATH-500 96.2, AIME'24 81.9, AIME'25 78.1, GPQA Diamond 70.6, MMLU-Pro 80.6, LiveCodeBench 61.3,
+    BBH 86.3 (tech report / OpenRouter)
+  confidence: medium
+  note: Strongest Hermes 4 SKU; near-frontier on math/knowledge for an open instruct model, though coding
+    (LiveCodeBench 61.3) trails the 2026 frontier coders. Not a category-defining 5 (those are DeepSeek-V4/Qwen3.6/Kimi-class).
+    Vendor/tech-report figures, corroborated by OpenRouter.
+  sources:
+  - url: https://arxiv.org/pdf/2508.18255
+    shows: Hermes 4 technical report with comprehensive benchmark evaluation across math/code/knowledge
+    accessed: '2026-06-04'
+  - url: https://openrouter.ai/nousresearch/hermes-4-405b
+    shows: Hermes 4 405B benchmark figures (AIME, MMLU-Pro, LiveCodeBench)
+    accessed: '2026-06-04'

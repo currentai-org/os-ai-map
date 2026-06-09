@@ -1,0 +1,38 @@
+product: sambanova-cloud
+openness:
+  score: 1
+  class: closed
+  components: license:proprietary;software-stack:closed(SambaFlow compiler/runtime not open);hardware:SN40L-RDU-only;delivery:managed-cloud-API
+  confidence: high
+  note: Proprietary managed cloud inference on SambaNova's own RDU silicon; no open-source software disclosed.
+    Scored closed.
+  sources:
+  - url: https://sambanova.ai/blog/sn40l-chip-best-inference-solution
+    shows: SambaNova Cloud is a hosted proprietary inference service on SN40L; no OSS components disclosed;
+      serves Llama 3.1 models
+    accessed: '2026-06-04'
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: reported_traction
+  confidence: low
+  note: Marketed as fast inference cloud with free tier; integrated by tools (Vellum) and benchmarked
+    by third parties, but a niche specialized provider vs the hyperscalers. No verified user count; level
+    3 = reported traction.
+  sources:
+  - url: https://sambanova.ai/blog/sn40l-chip-best-inference-solution
+    shows: public SambaNova Cloud with free try-it inference; positioned as commercial inference provider
+    accessed: '2026-06-04'
+capability:
+  score: 4
+  basis: feature_matrix
+  value: Llama 3.1 8B ~1,042 tok/s, 70B ~457 tok/s, 405B ~129 tok/s at full (16-bit) precision on SN40L;
+    >1000 tok/s single-node milestone
+  confidence: medium
+  note: Among the fastest per-request token/s in market on its silicon (full-precision 405B at 129 tok/s,
+    8B >1000 tok/s). Vendor/3rd-party throughput figures; specialized hardware, narrower model/feature
+    breadth than the open frontier engines, so C4 not C5.
+  sources:
+  - url: https://sambanova.ai/blog/sn40l-chip-best-inference-solution
+    shows: Llama 3.1 405B 129 tok/s, 70B 457 tok/s, 8B 1042 tok/s at 16-bit on SN40L
+    accessed: '2026-06-04'

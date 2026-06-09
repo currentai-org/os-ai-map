@@ -1,0 +1,39 @@
+product: vertex-ai-model-observability
+openness:
+  score: 1
+  class: closed
+  components: license:proprietary(Google Cloud managed service);source:closed;note:tracing is built on
+    the open OTel standard but the observability product/service itself is proprietary and cloud-locked
+  confidence: high
+  note: Proprietary GCP managed offering (Agent Engine + Cloud Trace/Monitoring/Logging). OTel is the
+    wire standard but the service is closed and tied to Google Cloud.
+  sources:
+  - url: https://docs.cloud.google.com/agent-builder/agent-engine/manage/tracing
+    shows: Cloud Trace tracing for Agent Engine as a managed Google Cloud service
+    accessed: '2026-06-04'
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: reported_traction
+  confidence: low
+  note: A feature surface within Vertex AI Agent Engine on Google Cloud; no standalone usage figures published
+    for the observability capability specifically. Level 3 reflects availability inside a large cloud
+    platform's agent stack, not a measured user count; directional.
+  sources:
+  - url: https://docs.cloud.google.com/agent-builder/agent-engine/manage/tracing
+    shows: observability shipped as part of the managed Vertex AI Agent Engine platform
+    accessed: '2026-06-04'
+capability:
+  score: 3
+  basis: feature_matrix
+  value: tracing (traces/spans for LLM calls, tool calls, agent decisions via Cloud Trace/OTel) + perf
+    monitoring dashboard (token consumption, latency, error rates, tool calls) + quality/evaluation (integrated
+    Gen AI Evaluation service incl User Simulator) + Cloud Logging. Cost/token tracking present; prompt
+    management and dedicated annotation queues not evidenced as native.
+  confidence: medium
+  note: Solid tracing + monitoring + integrated eval, but the observability matrix is thinner than the
+    dedicated OSS platforms on prompt versioning/datasets/annotation; scored 3 below the C4 anchors.
+  sources:
+  - url: https://docs.cloud.google.com/agent-builder/agent-engine/manage/tracing
+    shows: Cloud Trace traces/spans, perf dashboard, Gen AI Evaluation integration
+    accessed: '2026-06-04'

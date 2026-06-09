@@ -1,0 +1,43 @@
+product: spaces
+openness:
+  score: 2
+  class: open_core
+  components: platform:proprietary(HF-managed hosting);SDKs:Gradio(Apache-2.0 OSS), Streamlit(OSS), Docker;runtime/control-plane:closed(no
+    self-hostable Spaces);hardware-tiers:CPU free + paid GPU upgrades
+  confidence: medium
+  note: The app SDKs (Gradio etc.) are OSS and apps run as arbitrary Docker, but the Spaces hosting/orchestration
+    platform is a closed managed service — open SDKs over a proprietary host = open_core-ish. Not self-hostable
+    as Spaces.
+  sources:
+  - url: https://huggingface.co/docs/hub/spaces
+    shows: Spaces hosts apps via Gradio (OSS SDK), Streamlit, arbitrary Dockerfile, or static HTML on
+      HF-managed infra with paid GPU upgrades
+    accessed: '2026-06-04'
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: medium
+  note: 'Hugging Face homepage (primary): Spaces hosts 1M+ AI applications, on a platform used by 50,000+
+    organizations. 1M+ hosted apps plus the broad end-user traffic to those demos puts served reach into
+    the >10M band. Headline (1M+ Spaces) cites HF''s own homepage; per-Space user totals not individually
+    disclosed so confidence medium.'
+  sources:
+  - url: https://huggingface.co
+    shows: Spaces = 1M+ AI applications hosted; 50,000+ organizations on Hugging Face
+    accessed: '2026-06-04'
+capability:
+  score: 3
+  basis: feature_matrix
+  value: 'isolation: managed container per Space (Docker), not microVM-grade for untrusted multi-tenant
+    code; cold-start: warm/sleep model (free tier sleeps), seconds; language/runtime breadth: Gradio/Streamlit/Docker/static
+    (broad for app hosting); persistence: persistent storage tiers + dev mode; scale: CPU free tier +
+    paid GPU upgrades on HF infra'
+  confidence: medium
+  note: Excellent for hosting/demoing ML apps with broad SDK and GPU support, but it is an app-hosting
+    platform rather than a hardened arbitrary-untrusted-code sandbox (container, not microVM isolation),
+    and free Spaces sleep. Mid-tier within the deployment sandbox lens.
+  sources:
+  - url: https://huggingface.co/docs/hub/spaces
+    shows: Gradio/Streamlit/Docker/static hosting, GPU hardware upgrades, persistent storage and dev mode
+    accessed: '2026-06-04'

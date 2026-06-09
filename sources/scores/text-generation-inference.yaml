@@ -1,0 +1,40 @@
+product: text-generation-inference
+openness:
+  score: 5
+  class: open_source
+  components: license:Apache-2.0(OSI);source:public;note:was briefly under restrictive HFOIL license in
+    2023, reverted to Apache-2.0; current LICENSE confirmed Apache-2.0
+  confidence: high
+  note: Current LICENSE is standard Apache-2.0 (not HFOIL); fully open source despite being archived.
+  sources:
+  - url: https://github.com/huggingface/text-generation-inference/blob/main/LICENSE
+    shows: Apache License 2.0 text, Copyright 2022 Hugging Face
+    accessed: '2026-06-04'
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: reported_traction
+  confidence: medium
+  note: Ran in production at HF (Hugging Chat, Inference API, Inference Endpoints) and was widely deployed
+    2023-2025, but the repo is now archived/maintenance-mode with HF steering users to vLLM/SGLang, so
+    adoption is declining. 10.9k stars (secondary). Level 3 reflects a real but shrinking, sunsetting
+    footprint.
+  sources:
+  - url: https://github.com/huggingface/text-generation-inference
+    shows: 'README: ''Used in production at Hugging Face to power Hugging Chat, the Inference API and
+      Inference Endpoints''; archived Mar 21 2026, maintenance mode, recommends vLLM/SGLang'
+    accessed: '2026-06-04'
+capability:
+  score: 3
+  basis: feature_matrix
+  value: Continuous batching, tensor parallelism, quantization (bitsandbytes/GPTQ/AWQ), distributed tracing
+    (OpenTelemetry) + Prometheus metrics, OpenAI-compatible API. No active MLPerf submission; feature
+    set frozen at v3.3.7.
+  confidence: medium
+  note: Was a capable production server, but development has stopped (archived); its feature set is frozen
+    while vLLM/SGLang continue advancing, so it now sits mid-pack rather than at the C5 frontier.
+  sources:
+  - url: https://github.com/huggingface/text-generation-inference
+    shows: README documents continuous batching, tensor parallelism, OpenTelemetry tracing, Prometheus
+      metrics, production-ready feature set
+    accessed: '2026-06-04'

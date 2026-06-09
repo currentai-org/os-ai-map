@@ -1,0 +1,47 @@
+product: huggingchat-chat-ui
+openness:
+  score: 5
+  class: open_source
+  components: license:Apache-2.0(OSI);source:public;no-feature-gated-core(self-hostable SvelteKit app,
+    MongoDB backend)
+  confidence: high
+  note: Fully OSI (Apache-2.0); the public codebase is exactly what powers the hosted HuggingChat, self-hostable
+    end to end.
+  sources:
+  - url: https://github.com/huggingface/chat-ui
+    shows: Apache-2.0; 'open source codebase powering HuggingChat'; v0.10.0
+    accessed: '2026-06-04'
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: reported_traction
+  confidence: medium
+  note: Hosted HuggingChat served 1M+ users and 100k+ assistants over its lifetime (HF announcement) before
+    the July 2025 sunset; relaunched as HuggingChat Omni and live again on hf.co/chat. chat-ui repo itself
+    is a modest 10.7k stars (self-host base is niche). Placed at 3 on the disclosed lifetime user reach
+    of the hosted product; the discontinuity + relaunch lowers confidence.
+  sources:
+  - url: https://huggingface.co/chat
+    shows: live HuggingChat Omni interface, Omni router, 123+ open-source models, MCP
+    accessed: '2026-06-04'
+  - url: https://www.startuphub.ai/ai-news/startup-news/2025/hugging-face-closes-huggingchat-to-make-way-for-next-generation-ai-tools
+    shows: HuggingChat served 1M+ users / 100k+ assistants before July 2025 sunset
+    accessed: '2026-06-04'
+capability:
+  score: 3
+  basis: feature_matrix
+  value: model breadth (115-123 open models via 15 inference providers, Omni smart-router on Arch-Router-1.5B);
+    multimodal input; MCP tools; OpenAI-compatible API; multi-user (hosted). Current branch removed legacy
+    provider-specific integrations and GGUF discovery
+  confidence: medium
+  note: Good model breadth + smart routing + MCP, but the rebuilt v0.10 deliberately stripped RAG/provider
+    integrations present in the legacy branch, so the self-host feature surface is leaner than Open WebUI/LibreChat.
+    Mid-tier for the category.
+  sources:
+  - url: https://github.com/huggingface/chat-ui
+    shows: OpenAI-compatible API, MCP tools, multimodal, Omni routing; legacy provider integrations +
+      GGUF discovery removed
+    accessed: '2026-06-04'
+  - url: https://huggingface.co/chat
+    shows: Omni router selecting among 123+ open models, MCP enabled
+    accessed: '2026-06-04'

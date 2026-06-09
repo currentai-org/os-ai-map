@@ -1,0 +1,39 @@
+product: agent-infra-sandbox
+openness:
+  score: 5
+  class: open_source
+  components: license:Apache-2.0(OSI);source:public(GitHub);packaging:self-hostable Docker image + K8s
+    deploy examples;no feature-gated core observed
+  confidence: high
+  note: Apache-2.0, fully self-hostable single-container runtime; no separate proprietary/managed tier
+    gating the core.
+  sources:
+  - url: https://github.com/agent-infra/sandbox
+    shows: Apache-2.0 license, single-Docker-container all-in-one agent sandbox, self-hostable
+    accessed: '2026-06-04'
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: stars_fallback
+  confidence: low
+  note: No download/install or named-production-user figures disclosed; only signal is ~4.9k GitHub stars
+    + 426 forks + 18 releases. Stars-fallback caps level; placed at 1 (hobbyist/early) on the absence
+    of any usage_volume evidence.
+  sources:
+  - url: https://github.com/agent-infra/sandbox
+    shows: ~4.9k stars, 426 forks, 18 releases; no usage figures
+    accessed: '2026-06-04'
+capability:
+  score: 3
+  basis: feature_matrix
+  value: isolation:single Docker container (process/namespace, weaker than microVM/gVisor); runtime breadth:high
+    (Python+Node sandboxes, browser/VNC, shell, Jupyter, VSCode, MCP servers); persistence:session-persistent
+    within container; scale:K8s high-density deploy examples but no published concurrency limit
+  confidence: medium
+  note: Unusually broad multi-modal feature set (browser+shell+file+MCP+IDE in one) but isolation is container-level
+    only, below the Firecracker/gVisor isolation strength of the frontier deployment runtimes; scored
+    3.
+  sources:
+  - url: https://github.com/agent-infra/sandbox
+    shows: 'feature list: Browser/VNC, Shell, File, MCP, Jupyter, VSCode in one Docker container'
+    accessed: '2026-06-04'

@@ -1,0 +1,54 @@
+product: cloudflare-sandboxes
+openness:
+  score: 3
+  class: open_core
+  components: sdk:open (@cloudflare/sandbox Apache-2.0, cloudflare/sandbox-sdk on GitHub);runtime/platform:proprietary
+    Cloudflare edge (Workers/Durable Objects/Dynamic Worker Loader - no self-host);pricing:Workers paid
+    plan, Dynamic Workers $0.002/unique-worker/day post-beta
+  confidence: high
+  note: 'open_core: the Sandbox SDK is Apache-2.0 and public, but execution requires Cloudflare''s proprietary
+    managed edge network (no self-host of the isolate/container plane). Calibrated as open_core alongside
+    Modal/Vercel.'
+  sources:
+  - url: https://github.com/cloudflare/sandbox-sdk
+    shows: Apache-2.0 SDK; runs on Cloudflare Containers/Workers/Durable Objects (managed edge)
+    accessed: '2026-06-04'
+  - url: https://blog.cloudflare.com/dynamic-workers/
+    shows: Dynamic Worker Loader open beta, isolate sandboxing, post-beta $0.002/worker/day pricing
+    accessed: '2026-06-04'
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: npm @cloudflare/sandbox ~533k downloads in the last 30 days (npm registry API); Dynamic Workers
+    in open beta to all paid Workers users with a named customer (Zite) reporting 'millions of execution
+    requests daily.' Package pulls + young beta status => reach placed at 100K-1M (level 3); execution-request
+    volume is per-customer, not distinct-user adoption.
+  sources:
+  - url: https://api.npmjs.org/downloads/point/last-month/@cloudflare/sandbox
+    shows: ~533,043 downloads May 4-Jun 2 2026
+    accessed: '2026-06-04'
+  - url: https://blog.cloudflare.com/dynamic-workers/
+    shows: open beta to all paid Workers users; Zite millions of execution requests/day
+    accessed: '2026-06-04'
+capability:
+  score: 4
+  basis: feature_matrix
+  value: isolation:dual - V8 isolates (Dynamic Workers, ms start, MB memory, hardened second-layer sandbox)
+    for JS/TS + container-backed Sandbox SDK for arbitrary commands/processes; cold-start:isolates start
+    in a few ms (~100x faster than containers); runtime breadth:JS/TS native via isolates, broader via
+    container sandbox; persistence:Durable Objects-backed state; scale:edge-global, unlimited dynamic
+    workers
+  confidence: medium
+  note: Distinctive isolate-based approach gives best-in-class cold-start and density, plus a container
+    path for arbitrary code; held at 4 because isolate sandboxing is JS/TS-centric (narrower than microVM
+    any-image), Dynamic Workers is still open beta, and overall scale evidence is per-customer rather
+    than category-leading. Scored as a combined product per the registry name.
+  sources:
+  - url: https://blog.cloudflare.com/dynamic-workers/
+    shows: V8 isolate sandboxing, ~ms start, 100x faster/100x more memory-efficient than containers
+    accessed: '2026-06-04'
+  - url: https://github.com/cloudflare/sandbox-sdk
+    shows: 'container-backed sandbox: run commands, manage files, background processes, expose services'
+    accessed: '2026-06-04'

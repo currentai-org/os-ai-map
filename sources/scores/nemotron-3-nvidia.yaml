@@ -1,0 +1,50 @@
+product: nemotron-3-nvidia
+openness:
+  score: 4
+  class: open_weights
+  confidence: high
+  components: weights:open;data:open(~10T-token pretraining + ~40M post-training/SFT+RL samples released
+    as Nemotron-SFT-Data/Nemotron-RL-Data);code:open(training recipes + RL env configs);license:NVIDIA-Nemotron-Open-Model-License(permissive,commercial,non-OSI)
+  note: 'Unusually open for post-trained models: NVIDIA releases weights + pretraining and post-training
+    data + recipes, but under the non-OSI NVIDIA Open Model License, so open_weights not open_source.
+    Calibrated to the Nemotron 3 base anchor (O4 open_weights).'
+  sources:
+  - url: https://research.nvidia.com/labs/nemotron/Nemotron-3/
+    shows: Nemotron 3 Nano/Super/Ultra family; post-trained models; Nemotron-SFT-Data + Nemotron-RL-Data
+      + training recipes released
+    accessed: '2026-06-04'
+  - url: https://developer.nvidia.com/blog/introducing-nemotron-3-super-an-open-hybrid-mamba-transformer-moe-for-agentic-reasoning/
+    shows: 'NVIDIA primary blog: Nemotron 3 Super ''fully open with open weights, datasets, and recipes'';
+      license = NVIDIA Nemotron Open Model License (non-OSI)'
+    accessed: '2026-06-04'
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: reported_traction
+  confidence: medium
+  note: Distributed free via OpenRouter (nemotron-3-super-120b-a12b:free), NVIDIA build/NIM, and Hugging
+    Face; positioned for agentic/enterprise use. No verified hard download/user count for the instruct
+    SKUs at scoring (HF repo gated). Level 3 on reported multi-platform distribution, consistent with
+    the base anchor (A3).
+  sources:
+  - url: https://research.nvidia.com/labs/nemotron/Nemotron-3/
+    shows: official distribution via NVIDIA build/NIM + HF for agentic use
+    accessed: '2026-06-04'
+capability:
+  score: 5
+  basis: benchmark:SWE-bench/AIME/GPQA/MMLU-Pro
+  value: 'Nemotron 3 Super (per NVIDIA tech report, base anchor): SWE-Bench Verified 60.47, AIME 2025
+    90.21, GPQA (no tools) 79.23, MMLU-Pro 83.73; ~2.2x inference throughput vs GPT-OSS-120B'
+  confidence: high
+  note: Frontier-tier among open instruct models on the Super SKU; calibrated to the base_pretrained Nemotron
+    3 anchor (C5); SWE-bench Verified 60.47 confirmed as highest open-weight score via NVIDIA technical
+    report + developer blog. Nano is much smaller and would score lower, but the family's headline SKU
+    defines the score.
+  sources:
+  - url: https://research.nvidia.com/labs/nemotron/Nemotron-3/
+    shows: Nemotron 3 reasoning/agentic benchmark positioning vs GPT-OSS-20B/Qwen3
+    accessed: '2026-06-04'
+  - url: https://research.nvidia.com/labs/nemotron/files/NVIDIA-Nemotron-3-Super-Technical-Report.pdf
+    shows: NVIDIA Nemotron 3 Super Technical Report (Apr 2026) with SWE-bench Verified 60.47 and full
+      benchmark suite
+    accessed: '2026-06-04'

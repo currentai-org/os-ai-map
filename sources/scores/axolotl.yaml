@@ -1,0 +1,42 @@
+product: axolotl
+openness:
+  score: 5
+  class: open_source
+  components: 'license:Apache-2.0(OSI);source:public(axolotl-ai-cloud/axolotl);no managed SaaS tier (cloud-template
+    integrations only: RunPod/Modal/etc.)'
+  confidence: high
+  note: Fully OSI-licensed (Apache-2.0); no proprietary managed training service, only deployment templates
+    for third-party clouds.
+  sources:
+  - url: https://github.com/axolotl-ai-cloud/axolotl/blob/main/LICENSE
+    shows: Apache License Version 2.0 text
+    accessed: '2026-06-04'
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: ~22.3K PyPI downloads last month; ~12K GitHub stars. Popular config-driven FT tool in the open-model
+    community but download volume is modest vs TRL/PEFT/Unsloth; level 2 on usage_volume, stars corroborate
+    only.
+  sources:
+  - url: https://pypistats.org/packages/axolotl
+    shows: 'Downloads last month: 22,336'
+    accessed: '2026-06-04'
+  - url: https://github.com/axolotl-ai-cloud/axolotl
+    shows: ~12,000+ GitHub stars (corroborating, not basis)
+    accessed: '2026-06-04'
+capability:
+  score: 4
+  basis: feature_matrix
+  value: 'Methods: full FT, LoRA, QLoRA, GPTQ, QAT, DPO/IPO/KTO/ORPO, GRPO/GDPO, reward modeling; parallelism:
+    FSDP1/FSDP2, DeepSpeed, multi-node Torchrun/Ray, Sequence Parallelism + ND Parallelism (CP+TP+FSDP);
+    precision: BF16/4-8bit. Broadest single-tool method+parallelism matrix in this batch.'
+  confidence: high
+  note: Very wide method and parallelism coverage (ND parallelism, multi-node) — strong C4; below Megatron-LM
+    frontier-scale-training anchor on demonstrated extreme scale.
+  sources:
+  - url: https://github.com/axolotl-ai-cloud/axolotl
+    shows: documented methods (LoRA/QLoRA/DPO/GRPO/...) and parallelism (FSDP/DeepSpeed/SP/ND, multi-node
+      Ray)
+    accessed: '2026-06-04'

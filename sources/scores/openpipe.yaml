@@ -1,0 +1,43 @@
+product: openpipe
+openness:
+  score: 4
+  class: open_core
+  components: license:Apache-2.0(OSI, OpenPipe Inc.; some vendored code LGPL-3.0);source:public;methods:RL(GRPO)+SFT
+    trajectory training;managed-tier:OpenPipe hosted training/serving SaaS on top of the OSS lib
+  confidence: high
+  note: Core ART library is OSI-licensed (Apache-2.0) and fully public; OpenPipe's revenue product is
+    a managed training/hosting platform layered on top, so open_core.
+  sources:
+  - url: https://github.com/OpenPipe/ART/blob/main/LICENSE
+    shows: Apache-2.0 license text (OpenPipe, Inc. 2025; LGPL-3.0 notice for vendored portions)
+    accessed: '2026-06-04'
+  - url: https://github.com/OpenPipe/ART
+    shows: ART = open-source GRPO RL trainer; v0.5.17 release; active dev
+    accessed: '2026-06-04'
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: openpipe-art PyPI ~47.7k downloads last month; 9.9k GitHub stars (corroborating only). Specialist
+    RL-fine-tuning audience; 10K-100K monthly-download band.
+  sources:
+  - url: https://pypistats.org/packages/openpipe-art
+    shows: ~47,684 downloads last month for openpipe-art
+    accessed: '2026-06-04'
+  - url: https://github.com/OpenPipe/ART
+    shows: 9.9k stars (secondary corroboration)
+    accessed: '2026-06-04'
+capability:
+  score: 3
+  basis: feature_matrix
+  value: 'Methods: multi-step agentic RL via GRPO + SFT; integrates with vLLM/Unsloth backends; supports
+    Qwen, Llama, GPT-OSS. Specialist agent-RL focus, not broad-method or large-scale-parallelism training
+    infra.'
+  confidence: medium
+  note: Capable, focused agent-RL trainer; mid-tier vs full training stacks (no TP/PP/EP at Megatron scale).
+    Feature-matrix basis per recipe; no MLPerf-Training submission.
+  sources:
+  - url: https://github.com/OpenPipe/ART
+    shows: GRPO RL trainer, vLLM/Unsloth integration, Qwen/Llama/GPT-OSS support
+    accessed: '2026-06-04'

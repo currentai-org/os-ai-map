@@ -1,0 +1,43 @@
+product: lmdeploy
+openness:
+  score: 5
+  class: open_source
+  components: license:Apache-2.0(OSI);source:public(InternLM/lmdeploy);no-feature-gated-core;quantization:weight-only+kv(AWQ/W4A16)
+  confidence: high
+  note: Fully OSI-licensed (Apache-2.0), source public, no proprietary core; broad model coverage (Llama/InternLM/Qwen/DeepSeek/Mixtral
+    + VLMs).
+  sources:
+  - url: https://github.com/InternLM/lmdeploy
+    shows: Apache-2.0 license, v0.13.0 (May 12 2026), weight-only+kv quantization, Llama/InternLM/Qwen/DeepSeek/Mixtral
+      + VLM support
+    accessed: '2026-06-04'
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: ~165K PyPI downloads last month (pypistats); 352 GitHub dependents. Real usage volume in the 100K-1M
+    band. Smaller footprint than vLLM/SGLang anchors (millions/mo) but well beyond hobbyist; especially
+    used in the InternLM/Chinese-model ecosystem. 7.9k stars corroborate only.
+  sources:
+  - url: https://pypistats.org/packages/lmdeploy
+    shows: ~165,001 downloads last month
+    accessed: '2026-06-04'
+  - url: https://github.com/InternLM/lmdeploy
+    shows: 352 dependent projects, 7.9k stars
+    accessed: '2026-06-04'
+capability:
+  score: 4
+  basis: feature_matrix
+  value: TurboMind + PyTorch engines; persistent/continuous batching, blocked KV cache, weight-only +
+    kv (AWQ/W4A16) quantization, tensor parallelism, broad LLM + VLM architecture coverage; vendor-reported
+    4-bit inference ~2.4x FP16
+  confidence: medium
+  note: Strong, full-featured GPU inference engine (continuous batching, quantization, TP, VLM support).
+    No standardized MLPerf submission confirmed, so feature_matrix not benchmark; a notch below the vLLM/SGLang/TensorRT-LLM
+    C5 anchors on throughput-leadership/ecosystem breadth.
+  sources:
+  - url: https://github.com/InternLM/lmdeploy
+    shows: TurboMind/PyTorch engines, continuous batching, AWQ/kv quantization, TP, VLM support, 2.4x
+      4-bit claim
+    accessed: '2026-06-04'

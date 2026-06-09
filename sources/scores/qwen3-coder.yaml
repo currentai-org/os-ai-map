@@ -1,0 +1,42 @@
+product: qwen3-coder
+openness:
+  score: 3
+  class: open_weights
+  components: weights:open(Apache-2.0, on HF);data:closed(no training corpus released);code:partial(inference/usage
+    + chat template; no training pipeline or post-training/SFT data);license:Apache-2.0(OSI permissive,
+    no use restrictions)
+  confidence: high
+  note: Open weights under genuine OSI Apache-2.0, but post-training data and training code are not released
+    -> open_weights, not full open_source.
+  sources:
+  - url: https://huggingface.co/Qwen/Qwen3-Coder-480B-A35B-Instruct
+    shows: Apache-2.0 license, 480B-A35B MoE instruct model card, downloadable BF16 weights
+    accessed: '2026-06-04'
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: Flagship 480B coder card shows ~28.8K downloads last month on HF (heavy size limits direct pulls);
+    it is the agentic-coding SKU of the dominant Qwen family (Qwen ~942M cumulative HF downloads per ATOM
+    Apr 2026) and is widely served via Qwen Code / providers. Aggregate family reach is far higher, but
+    the honest per-SKU download signal places this single 480B variant in the 100K-1M band. Smaller quant/derivative
+    coder variants add to reach.
+  sources:
+  - url: https://huggingface.co/Qwen/Qwen3-Coder-480B-A35B-Instruct
+    shows: ~28.8K downloads last month for the 480B-A35B-Instruct SKU
+    accessed: '2026-06-04'
+capability:
+  score: 4
+  basis: benchmark:SWE-bench/agentic-coding
+  value: Vendor positions agentic coding comparable to Claude Sonnet class; 480B-A35B MoE, repository-scale
+    long context; non-thinking mode
+  confidence: medium
+  note: Strong open-weight coding model (Claude Sonnet-class agentic coding per vendor card), a notch
+    below 2026 frontier coders (DeepSeek-V4-Pro/Kimi K2.6/GLM-5.1). HF card is vendor-reported; no independent
+    SWE-bench number captured this run, so capped at 4 with medium confidence.
+  sources:
+  - url: https://huggingface.co/Qwen/Qwen3-Coder-480B-A35B-Instruct
+    shows: vendor claim of Claude-Sonnet-class agentic coding; MoE architecture and long-context coding
+      focus
+    accessed: '2026-06-04'

@@ -1,0 +1,39 @@
+product: kata-containers
+openness:
+  score: 5
+  class: open_source
+  components: license:Apache-2.0(OSI);source:public;governance:open community (OpenInfra Foundation);no-feature-gated-core
+  confidence: high
+  note: Fully Apache-2.0, source public, vendor-neutral open-foundation governance, no managed-tier gating
+    from the project itself.
+  sources:
+  - url: https://github.com/kata-containers/kata-containers
+    shows: Apache-2.0 license; lightweight VMs with container UX + VM isolation; v3.31.0 (May 19 2026)
+    accessed: '2026-06-04'
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: reported_traction
+  confidence: medium
+  note: Established CNCF/OpenInfra-adjacent container-runtime project integrated into Kubernetes runtimeclass
+    deployments; broad but operator-concentrated infrastructure adoption rather than a mass per-user count.
+    No clean download/user figure verified; ~8k stars (corroborate only, not the basis). Level 3 reflects
+    specialist infra reach.
+  sources:
+  - url: https://github.com/kata-containers/kata-containers
+    shows: standard implementation of lightweight VM containers; integrated runtime; 8k stars
+    accessed: '2026-06-04'
+capability:
+  score: 4
+  basis: feature_matrix
+  value: isolation:hardware VM (pluggable VMM — QEMU/Firecracker/Cloud Hypervisor) — strong VM-class isolation;
+    cold-start:VM boot (slower than pure userspace); language/runtime breadth:any OCI container (language-agnostic,
+    K8s-native); persistence:container lifecycle; scale:K8s clusters
+  confidence: high
+  note: VM-grade isolation with OCI/Kubernetes compatibility and pluggable hypervisors; very strong isolation
+    but higher cold-start than microVM/userspace frontier-definers, so 4.
+  sources:
+  - url: https://github.com/kata-containers/kata-containers
+    shows: lightweight VMs performing like containers with VM workload-isolation/security; integrated
+      with Firecracker
+    accessed: '2026-06-04'

@@ -1,0 +1,57 @@
+product: predibase
+openness:
+  score: 2
+  class: open_core
+  components: core-platform:closed(proprietary post-training stack + turbo serving);OSS-components:LoRAX(open-source
+    multi-LoRA serving)+Ludwig(open-source);runs-on:Predibase-SaaS-or-customer-VPC;license:Proprietary(managed)
+    with Apache-licensed LoRAX/Ludwig adjuncts
+  confidence: high
+  note: 'Open-core: the founders created and maintain OSS LoRAX (multi-LoRA serving) and Ludwig, but the
+    Predibase fine-tuning/RFT platform itself is proprietary managed SaaS. Scored 2 (open-core leaning
+    closed) because the FT product - the thing being scored - is the proprietary platform, with OSS only
+    at the serving/declarative-ML edges.'
+  sources:
+  - url: https://docs.predibase.com/
+    shows: managed platform to fine-tune & serve open-source LLMs; SFT/RFT/continued-pretraining; built
+      by LoRAX creators; SaaS/VPC
+    accessed: '2026-06-04'
+  - url: https://www.rubrik.com/company/newsroom/press-releases/25/rubrik-to-acquire-predibase-to-accelerate-agentic-ai-adoption
+    shows: Rubrik acquisition (Jun 25 2025); proprietary post-training stack + turbo serving + OSS LoRA
+      eXchange
+    accessed: '2026-06-04'
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: reported_traction
+  confidence: low
+  note: 'No hard per-platform usage figure (jobs / customers) disclosed this run. Reported traction: enterprise
+    post-training/agent platform now distributed under Rubrik (acquisition valued $100M-$500M per press),
+    founder-pedigree (Google/Uber), and a widely-adopted OSS serving layer (LoRAX). Placed at 2 on reported
+    enterprise traction, not a verified usage_volume number; low confidence pending hard data.'
+  sources:
+  - url: https://techcrunch.com/2025/06/25/rubrik-acquires-predibase-to-accelerate-adoption-of-ai-agents/
+    shows: Rubrik acquires Predibase (Jun 25 2025) to scale enterprise AI-agent/fine-tuning adoption
+    accessed: '2026-06-04'
+  - url: https://docs.predibase.com/
+    shows: production private serverless endpoints; SaaS/VPC enterprise deployment
+    accessed: '2026-06-04'
+capability:
+  score: 4
+  basis: feature_matrix
+  value: 'Methods: supervised fine-tuning, reinforcement fine-tuning (first end-to-end RFT platform for
+    LLMs, GRPO-style; learns from outcomes/feedback without heavy data prep), continued pretraining; LoRA
+    + LoRAX multi-adapter serving (hundreds of fine-tuned models per GPU); turbo serving (~2x). Tunes
+    open-source base models.'
+  confidence: medium
+  note: 'Strong managed method depth - notably the pioneer of end-to-end RFT for LLMs - plus efficient
+    multi-LoRA serving over open models. Scored 4: matches the RFT-capable managed services (OpenAI/Azure/Fireworks
+    at C4) and adds best-in-class multi-adapter serving, but is still a black-box managed platform without
+    exposed large-scale training internals, so below the OSS scale-frontier definers (Megatron-LM C5).'
+  sources:
+  - url: https://www.rubrik.com/blog/ai/25/introducing-reinforcement-fine-tuning-on-predibase
+    shows: first end-to-end reinforcement fine-tuning platform for LLMs (per Rubrik; corroborated by acquisition
+      coverage)
+    accessed: '2026-06-04'
+  - url: https://docs.predibase.com/
+    shows: SFT, RFT, continued pretraining; LoRAX multi-adapter serving; turbo serving 2x
+    accessed: '2026-06-04'

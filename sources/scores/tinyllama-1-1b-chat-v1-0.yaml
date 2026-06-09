@@ -1,0 +1,39 @@
+product: tinyllama-1-1b-chat-v1-0
+openness:
+  score: 4
+  class: open_weights
+  confidence: high
+  components: weights:open(Apache-2.0);base:TinyLlama-1.1B(open, 3T-token pretrain documented);post-training:SFT
+    on UltraChat + DPO on UltraFeedback(both public datasets);code:open(pretraining project public);license:Apache-2.0(OSI)
+  note: 'Unusually transparent for a chat model: open base, and named public alignment datasets (UltraChat
+    SFT + UltraFeedback DPO). Scored 4 open_weights — just short of full open_source since the base pretraining
+    data is documented but the end-to-end reproducible pipeline is not packaged as one release. Strongest
+    openness in this batch alongside Nemotron.'
+  sources:
+  - url: https://huggingface.co/TinyLlama/TinyLlama-1.1B-Chat-v1.0
+    shows: Apache-2.0; base TinyLlama-1.1B; SFT on UltraChat + DPO on UltraFeedback
+    accessed: '2026-06-04'
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: ~2.31M HF downloads last month — a workhorse tiny-chat model for edge/testing/CI and educational
+    use. Solidly in the 1-10M monthly-download band.
+  sources:
+  - url: https://huggingface.co/TinyLlama/TinyLlama-1.1B-Chat-v1.0
+    shows: 2,314,508 downloads last month
+    accessed: '2026-06-04'
+capability:
+  score: 1
+  basis: benchmark:MMLU
+  value: 1.1B Llama-2-era model; intended for lightweight/edge use, not competitive on 2026 capability
+    benchmarks
+  confidence: high
+  note: Intentionally tiny (1.1B, 2023 Llama-2 architecture). Its value is footprint and openness, not
+    capability — scored 1 against a 2026 frontier comparison set. Not built to compete on reasoning/coding
+    suites.
+  sources:
+  - url: https://huggingface.co/TinyLlama/TinyLlama-1.1B-Chat-v1.0
+    shows: 1.1B params, Llama 2 architecture, chat-optimized lightweight model
+    accessed: '2026-06-04'

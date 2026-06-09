@@ -1,0 +1,56 @@
+product: apertus
+openness:
+  score: 5
+  class: open_source
+  components: weights:open(Apache-2.0, BF16 safetensors);data:open(full pretraining-data reconstruction
+    scripts, github.com/swiss-ai/pretrain-data);code:open(Megatron-LM training recipe + reconstruction
+    scripts);checkpoints:open(intermediate checkpoints on HF branches);license:Apache-2.0(OSI)
+  confidence: high
+  note: 'Among the most transparent large-model releases to date: open weights, open data (reconstruction
+    scripts rather than a raw dump, to respect opt-out/robots.txt and strip personal data), open training
+    code/recipe, intermediate checkpoints, a technical report (arXiv 2509.14233), and EU AI Act + Swiss
+    data-protection/copyright compliance docs — all Apache-2.0. Sits in the OLMo/Pythia full-openness
+    tier.'
+  sources:
+  - url: https://huggingface.co/swiss-ai/Apertus-70B-2509
+    shows: Apache-2.0; BF16 safetensors weights; training checkpoints on branches; data reconstruction
+      scripts; EU AI Act docs; 15T tokens; 4,096 GH200 GPUs; Megatron-LM
+    accessed: '2026-06-08'
+  - url: https://ethz.ch/en/news-and-events/eth-news/news/2025/09/press-release-apertus-a-fully-open-transparent-multilingual-language-model.html
+    shows: 'ETH Zurich press release: fully open weights + data + training recipe; Swiss data-protection/copyright
+      + EU AI Act compliance; released 2 Sep 2025 by EPFL/ETH/CSCS'
+    accessed: '2026-06-08'
+  - url: https://github.com/swiss-ai/pretrain-data
+    shows: open pretraining-data reconstruction scripts
+    accessed: '2026-06-08'
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: medium
+  note: Newer release (Sep 2025) with strong institutional/sovereign-AI interest but modest raw download
+    volume — swiss-ai/Apertus-70B-2509 shows ~1.5K downloads/month and 149 likes on HF (June 2026); cumulative
+    across the 8B/70B base+Instruct SKUs lands in the 10K-100K band. Distributed via Swisscom, Hugging
+    Face, and the Public AI network. Comparable adoption tier to Falcon 3 / Yi-1.5.
+  sources:
+  - url: https://huggingface.co/swiss-ai/Apertus-70B-2509
+    shows: ~1,462 downloads/month, 149 likes (June 2026)
+    accessed: '2026-06-08'
+capability:
+  score: 3
+  basis: benchmark:MMLU / pretraining suite
+  value: Apertus-70B pretraining-eval avg 67.5% (ARC/HellaSwag/WinoGrande/XNLI/XCOPA/PIQA), ~on par with
+    Llama 3.1-70B (67.3%); Apertus-70B-Instruct MMLU 69.6%, trailing Llama 3.3-70B (87.5%) and Qwen2.5-72B
+    (86.6%) by ~17-20 pts.
+  confidence: medium
+  note: 'Mid-tier capability: competitive with the prior open generation (Llama 3.1-70B class) on pretraining
+    benchmarks and unusually strong multilingually, but below the 2026 frontier on MMLU-style reasoning/knowledge.
+    The value proposition is full openness + multilingual breadth + legal compliance, not raw SOTA — same
+    profile as OLMo 2.'
+  sources:
+  - url: https://huggingface.co/swiss-ai/Apertus-70B-2509
+    shows: 'pretraining benchmark table: Apertus-70B avg 67.5% vs Llama 3.1-70B 67.3%'
+    accessed: '2026-06-08'
+  - url: https://arxiv.org/pdf/2509.14233
+    shows: Apertus technical report — benchmark results and methodology
+    accessed: '2026-06-08'

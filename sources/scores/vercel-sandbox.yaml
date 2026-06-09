@@ -1,0 +1,44 @@
+product: vercel-sandbox
+openness:
+  score: 3
+  class: open_core
+  components: sdk:open (@vercel/sandbox JS + Python SDK + CLI, GitHub vercel/sandbox);runtime/platform:proprietary
+    Vercel Fluid-compute managed cloud (no self-host);pricing:pay-for-active-CPU-time managed service
+  confidence: medium
+  note: 'open_core: SDK + CLI are public on GitHub, but sandboxes only execute on Vercel''s proprietary
+    Fluid-compute cloud (no self-host of the microVM plane). Calibrated alongside Modal as open_core.'
+  sources:
+  - url: https://vercel.com/docs/sandbox
+    shows: Firecracker microVM isolation; SDK/CLI on GitHub vercel/sandbox; managed Vercel cloud, pay-for-active-CPU
+    accessed: '2026-06-04'
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: medium
+  note: npm @vercel/sandbox ~9.06M downloads in the last 30 days (npm registry API). Package-manager pulls
+    include CI/mirror inflation and overstate distinct human users, so reach is placed at the 1M-10M band
+    (level 4) rather than >10M; GA status + large Vercel install base corroborate genuine production use.
+  sources:
+  - url: https://api.npmjs.org/downloads/point/last-month/@vercel/sandbox
+    shows: ~9,062,145 downloads May 4-Jun 2 2026
+    accessed: '2026-06-04'
+  - url: https://vercel.com/docs/sandbox
+    shows: GA ephemeral compute primitive, JS+Python SDK
+    accessed: '2026-06-04'
+capability:
+  score: 4
+  basis: feature_matrix
+  value: isolation:Firecracker microVM with dedicated kernel (stronger than container/gVisor); cold-start:starts
+    in milliseconds; runtime breadth:moderate (Amazon Linux 2023; node22/24/26 + python3.13 runtimes,
+    sudo+root, install any package, can run Docker/VPN/FUSE); persistence:persistent-by-default (auto-save
+    state on stop) + explicit snapshotting; scale:managed autoscale, up to 45min execution
+  confidence: high
+  note: Firecracker microVM isolation (top tier) + ms cold-start + persistence/snapshots make it a strong
+    agent sandbox; held at 4 rather than 5 because the managed-runtime breadth is narrower (Node/Python
+    first-class) than Lambda's any-runtime/any-image frontier and scale is not at Lambda's proven level.
+  sources:
+  - url: https://vercel.com/docs/sandbox
+    shows: Firecracker microVM per sandbox, ms startup, persistent+snapshot, node/python runtimes, up
+      to 45m
+    accessed: '2026-06-04'
