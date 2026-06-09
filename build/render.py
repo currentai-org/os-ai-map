@@ -3,6 +3,7 @@
 in the ai-stack-map.py editorial house style. Static-export friendly: data is
 embedded; interactivity is the JS Details drawer + a JS type-toggle (no kernel)."""
 import json
+import yaml
 from pathlib import Path
 
 # Repo root is the parent of build/. Read the serialized payload from
@@ -12,6 +13,38 @@ OUT = str(ROOT / "notebooks" / "ai-stack-map.py")
 data = json.load(open(ROOT / "build" / "notebook_data.json"))
 data_json = json.dumps(data, ensure_ascii=False)
 DATA_LITERAL = repr(data_json)  # safe Python string literal for json.loads(...)
+
+# Read straplines and weights from sources/categories/<cid>.yaml at render time
+# so the NB template no longer contains hardcoded literals.
+_cats_yaml = {
+    _c["slug"]: _c
+    for _f in sorted((ROOT / "sources" / "categories").glob("*.yaml"))
+    for _c in [yaml.safe_load(_f.read_text())]
+}
+_ORDER = data["order"]  # canonical key order — must match the notebook dict order
+
+
+def _build_straplines_literal(order, cats):
+    lines = ["{\n"]
+    for cid in order:
+        strap = cats[cid]["strapline"]
+        lines.append(f'        "{cid}": "{strap}",\n')
+    lines.append("    }")
+    return "".join(lines)
+
+
+def _build_layer_weights_literal(order, cats):
+    lines = ["{\n"]
+    for cid in order:
+        adopt = cats[cid]["weights"]["adopt"]
+        cap = cats[cid]["weights"]["cap"]
+        lines.append(f'        "{cid}": ({adopt}, {cap}),\n')
+    lines.append("    }")
+    return "".join(lines)
+
+
+STRAPLINES_LITERAL = _build_straplines_literal(_ORDER, _cats_yaml)
+LAYER_WEIGHTS_LITERAL = _build_layer_weights_literal(_ORDER, _cats_yaml)
 
 NB = '''import marimo
 
@@ -72,19 +105,7 @@ def data():
     import json
     DATA = json.loads(__DATA_LITERAL__)
     ORDER = DATA["order"]
-    STRAPLINES = {
-        "base_pretrained": "The frontier is open-weights, not open-source. Only a couple of families ship the full pipeline; the rest withhold data or licenses.",
-        "finetuned_chat": "Where the closed labs lead. Most chat assistants are API-only; the open challengers ship weights without the recipe.",
-        "inference_code": "The most open layer in the stack: the engines that serve models are overwhelmingly OSI-licensed.",
-        "finetuning_code": "Open libraries, closed platforms. The training code is open; the managed fine-tuning services are not.",
-        "evaluation_code": "Mostly open harnesses: the tools that grade models are largely OSI-licensed.",
-        "benchmark_eval_data": "Open problems, gated answers. Many benchmarks publish the questions but hold back the test split.",
-        "orchestration_agents": "Open frameworks, closed agents. The SDKs are open-core; the marquee coding agents are proprietary.",
-        "ui_api": "Structurally closed at the top. Self-hosters get open chat UIs; the mass-market surfaces are proprietary.",
-        "telemetry_observability": "Open-core territory: OSS tracing cores with the enterprise tier behind a paywall.",
-        "agent_tools_protocols": "Open protocols, closed search. MCP and vector DBs are open; the search/scrape APIs are proprietary.",
-        "deployment": "Split down the middle: open sandboxes and runtimes vs proprietary serverless clouds.",
-    }
+    STRAPLINES = __STRAPLINES__
     # Neutral one-line definitions for the at-a-glance overview (what the
     # category IS, vs the strapline which is the finding).
     STACK_DESC = {
@@ -103,19 +124,7 @@ def data():
     # Per-category combined-score weights (adoption, capability), ported from the
     # v2 stack map (slugs identical). Feed the "standout product" gate behind the
     # openness verdict; the table also shows the blended score.
-    LAYER_WEIGHTS = {
-        "base_pretrained": (0.3, 0.7),
-        "finetuned_chat": (0.3, 0.7),
-        "inference_code": (0.5, 0.5),
-        "finetuning_code": (0.5, 0.5),
-        "evaluation_code": (0.5, 0.5),
-        "benchmark_eval_data": (0.6, 0.4),
-        "orchestration_agents": (0.3, 0.7),
-        "ui_api": (0.7, 0.3),
-        "telemetry_observability": (0.5, 0.5),
-        "agent_tools_protocols": (0.6, 0.4),
-        "deployment": (0.6, 0.4),
-    }
+    LAYER_WEIGHTS = __LAYER_WEIGHTS__
     # Framework white-space: homes in the Columbia/MOF openness stack that the
     # 11 categories above do NOT cover. Rendered by the framework_edges cell as a
     # scope statement (the vertical edge of the map, paired with the long tail).
@@ -916,6 +925,10 @@ for i, cid in enumerate(data["order"], start=1):
     )
 section_block = "\n\n".join(_sections)
 
-NB = NB.replace("__DATA_LITERAL__", DATA_LITERAL).replace("__SECTION_CELLS__", section_block)
+NB = (NB
+      .replace("__DATA_LITERAL__", DATA_LITERAL)
+      .replace("__STRAPLINES__", STRAPLINES_LITERAL)
+      .replace("__LAYER_WEIGHTS__", LAYER_WEIGHTS_LITERAL)
+      .replace("__SECTION_CELLS__", section_block))
 open(OUT, "w").write(NB)
 print("wrote", OUT, "(", len(NB), "chars )")
