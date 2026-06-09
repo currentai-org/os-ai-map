@@ -8,22 +8,23 @@ the OSO platform.
 
 ---
 
-## Data model: four concerns
+## Data model: four concerns plus one manifest
 
-Everything in `sources/` is split into four directories. Each holds one YAML file per
-entity:
+The curated source set is the four per-record concerns (one YAML file per entity)
+**plus** the single `sources/taxonomy.yaml` manifest:
 
-| Directory | Contains | Key rule |
+| Path | Contains | Key rule |
 |-----------|----------|----------|
 | `sources/organizations/` | One file per org (`slug`, `name`, `type`, `homepage`) | Orgs are referenced by slug from product files |
 | `sources/categories/` | One file per stack-map category | Category owns the **ordered product roster** (`products:` array). Order = display order. |
 | `sources/products/` | One file per product (`slug`, `name`, `org`, `type`, `description`, `artifacts`) | One product appears in exactly one category roster |
 | `sources/scores/` | One file per product (same slug) with `openness`, `adoption`, `capability` | Every non-null score value needs a `sources:` citation |
+| `sources/taxonomy.yaml` | Owns arc grouping + cross-category display order (`arcs:` -> ordered category slugs) | Every category must appear in exactly one arc; `serialize.py` derives order + arc from here |
 
 Category slugs use underscore form (`base_pretrained`, `finetuned_chat`).
 Product and org slugs are hyphenated kebab-case (`llama-3-1`, `allen-ai`).
 
-JSON Schemas for all four concerns live in `docs/schemas/`.
+JSON Schemas for all five source files live in `docs/schemas/`.
 
 ---
 
@@ -38,6 +39,10 @@ uv run marimo export html notebooks/ai-stack-map.py -o /tmp/preview.html
 
 Deployment (publish to OSO, deploy UDMs) is a maintainer step described in
 `docs/runbooks/`.
+
+`build/uncategorized.json` is a hand-frozen long-tail snapshot (a copy of
+`build/_frozen_long_tail.json`) pending the warehouse-recompute follow-up; it is not yet
+regenerated from live data, so treat it as a fixture, not a derived artifact.
 
 ---
 

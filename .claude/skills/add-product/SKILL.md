@@ -10,7 +10,8 @@ Creates three coordinated edits: a product file, a score file, and a roster entr
 ## Steps
 
 1. **Pick the slug**: kebab-case of the product name (e.g. `OLMo 2` becomes `olmo-2`). If the
-   slug is taken, suffix the org slug (`command-r-cohere`).
+   slug is taken, suffix the org slug (`command-r-cohere`); if `base-<org>` also collides, a
+   numeric suffix (`-2`, `-3`) is appended (matches `convert.py`).
 2. **Organization**: ensure `sources/organizations/<org-slug>.yaml` exists; if not,
    create it (`slug`, `name`, `type`, `homepage`, `country`).
 3. **Product**: create `sources/products/<slug>.yaml`:
@@ -37,6 +38,8 @@ Creates three coordinated edits: a product file, a score file, and a roster entr
    capability: { score: null, basis: "n/a" }
    ```
 5. **Roster**: append `<slug>` to the owning `sources/categories/<cat>.yaml` `products:`.
+   If the owning category is brand-new, also add its slug to an arc in
+   `sources/taxonomy.yaml`, or validate fails with "must appear in exactly one taxonomy arc".
 6. **Validate**: `uv run python -m build.validate` must print `0 error(s)`.
 7. **Verify the source**: never assert a product/version from memory. Confirm any 2025+
    release against a PRIMARY source (vendor HF org / blog / registry). A plausible press

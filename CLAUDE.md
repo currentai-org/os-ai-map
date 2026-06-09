@@ -13,7 +13,7 @@ There is no front-end in this repo. The website lives in `ecosystem-mapping/app/
 ## Directory map
 
 ```
-sources/               Curated YAML: organizations, categories, products, scores
+sources/               Curated YAML: organizations, categories, products, scores + taxonomy.yaml
 warehouse/models/      UDM SQL (entities, events, metrics, scores)
 warehouse/ingest/      Python fetchers that write CSVs to warehouse/catalog/
 warehouse/catalog/     Raw external CSVs (GoodAI List, HF benchmarks, etc.)
@@ -22,22 +22,26 @@ build/                 Python pipeline: validate.py, serialize.py, render.py, sl
 notebooks/             Generated marimo notebook (ai-stack-map.py)
 docs/guides/           Query conventions and notebook style guide
 docs/runbooks/         Maintainer deploy runbooks
-docs/schemas/          JSON Schemas for the four source concerns
+docs/schemas/          JSON Schemas for the source files (four concerns + taxonomy)
 tests/                 pytest suite for build helpers and round-trip proof
 ```
 
 ## Data model
 
-Four YAML concerns in `sources/`:
+The curated source set is four per-record YAML concerns in `sources/` plus the single
+`sources/taxonomy.yaml` manifest:
 
 - **organizations**: one file per org, referenced by slug from products.
 - **categories**: one file per stack-map category. Owns the ordered product roster
   (`products:` array). Order equals display order. One product appears in exactly one
-  category.
+  category. Category files no longer carry `arc` or cross-category `order`.
 - **products**: one file per product (`slug`, `name`, `org`, `type`, `description`,
   `artifacts`).
 - **scores**: one file per product (same slug) with `openness`, `adoption`, `capability`.
   Every non-null score value requires a `sources:` citation entry.
+- **taxonomy.yaml**: owns arc grouping + cross-category display order
+  (`arcs:` -> ordered category slugs). `serialize.py` derives order + arc from here, and
+  validate enforces that every category appears in exactly one arc.
 
 Category slugs are underscore form (`base_pretrained`). Product and org slugs are
 hyphenated kebab-case (`llama-3-1`).

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Generate notebooks/oss-ai-openness-map-v3.py, the v3 three-axis openness map,
-in the ai-stack-map.py editorial house style. Static-export friendly: data is
-embedded; interactivity is the JS Details drawer + a JS type-toggle (no kernel)."""
+"""Generate notebooks/ai-stack-map.py, the three-axis openness map, in the
+ai-stack-map.py editorial house style. Static-export friendly: data is embedded;
+interactivity is the JS Details drawer + a JS type-toggle (no kernel)."""
 import json
 import yaml
 from pathlib import Path
