@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Category",
+  "type": "object",
+  "required": ["slug", "name", "arc", "products"],
+  "additionalProperties": false,
+  "properties": {
+    "slug": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+    "name": { "type": "string", "minLength": 1 },
+    "arc": { "type": "string", "minLength": 1 },
+    "definition": { "type": "string" },
+    "litmus": { "type": "string" },
+    "strapline": { "type": "string" },
+    "weights": {
+      "type": "object",
+      "required": ["adopt", "cap"],
+      "additionalProperties": false,
+      "properties": { "adopt": { "type": "number" }, "cap": { "type": "number" } }
+    },
+    "scoring_recipe": { "type": "object" },
+    "products": { "type": "array", "items": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" } }
+  }
+}

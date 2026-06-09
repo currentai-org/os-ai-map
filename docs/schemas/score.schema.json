@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Score",
+  "type": "object",
+  "required": ["product", "openness", "adoption", "capability"],
+  "additionalProperties": false,
+  "properties": {
+    "product": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+    "openness": {
+      "type": "object",
+      "required": ["score", "class"],
+      "properties": {
+        "score": { "type": ["integer", "null"], "minimum": 0, "maximum": 5 },
+        "class": { "type": "string" },
+        "components": { "type": "string" },
+        "confidence": { "enum": ["high", "medium", "low"] },
+        "note": { "type": "string" },
+        "sources": { "type": "array", "items": { "$ref": "#/definitions/source" } }
+      }
+    },
+    "adoption": {
+      "type": "object",
+      "required": ["level"],
+      "properties": {
+        "level": { "type": ["integer", "null"], "minimum": 1, "maximum": 5 },
+        "reach": { "type": "string" },
+        "signal_type": { "enum": ["active_users", "usage_volume", "reported_traction", "stars_fallback", "unknown"] },
+        "confidence": { "enum": ["high", "medium", "low"] },
+        "note": { "type": "string" },
+        "sources": { "type": "array", "items": { "$ref": "#/definitions/source" } }
+      }
+    },
+    "capability": {
+      "type": "object",
+      "required": ["score", "basis"],
+      "properties": {
+        "score": { "type": ["integer", "null"], "minimum": 1, "maximum": 5 },
+        "basis": { "type": "string" },
+        "value": { "type": ["string", "number", "null"] },
+        "confidence": { "enum": ["high", "medium", "low"] },
+        "note": { "type": "string" },
+        "sources": { "type": "array", "items": { "$ref": "#/definitions/source" } }
+      }
+    }
+  },
+  "definitions": {
+    "source": {
+      "type": "object",
+      "required": ["url", "shows", "accessed"],
+      "properties": {
+        "url": { "type": "string", "pattern": "^https?://" },
+        "shows": { "type": "string", "minLength": 1 },
+        "accessed": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}
