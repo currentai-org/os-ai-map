@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate notebooks/oss-ai-openness-map-v3.py — the v3 three-axis openness map,
+"""Generate notebooks/oss-ai-openness-map-v3.py, the v3 three-axis openness map,
 in the ai-stack-map.py editorial house style. Static-export friendly: data is
 embedded; interactivity is the JS Details drawer + a JS type-toggle (no kernel)."""
 import json
@@ -21,7 +21,7 @@ _cats_yaml = {
     for _f in sorted((ROOT / "sources" / "categories").glob("*.yaml"))
     for _c in [yaml.safe_load(_f.read_text())]
 }
-_ORDER = data["order"]  # canonical key order — must match the notebook dict order
+_ORDER = data["order"]  # canonical key order, must match the notebook dict order
 
 
 def _build_straplines_literal(order, cats):

@@ -8,7 +8,7 @@ Outputs:
   sources/{organizations,categories,products,scores}/*.yaml
 
 Notes on reading the generator constants:
-  `generate_notebook.py` is a *code generator* — it does not expose a top-level
+  `generate_notebook.py` is a *code generator*, it does not expose a top-level
   `load_data()`. STRAPLINES / STACK_DESC / LAYER_WEIGHTS are static dict literals
   embedded inside the generated-notebook template string (the `data()` cell).
   We extract them with ast.literal_eval rather than importing the module, because
