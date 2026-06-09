@@ -117,11 +117,11 @@ def main():
         _dump(ROOT / "sources/scores" / f"{slug}.yaml", score_doc)
 
     # 3) categories (label/arc/products from overlay; strapline/weights from generator)
-    for cid in overlay["order"]:
+    for ordinal, cid in enumerate(overlay["order"]):
         c = overlay["categories"][cid]
         wa, wc = weights.get(cid, (0.5, 0.5))
         cat_doc = {
-            "slug": cid, "name": c["label"], "arc": c["arc"],
+            "slug": cid, "order": ordinal, "name": c["label"], "arc": c["arc"],
             "strapline": straplines.get(cid, ""),
             "weights": {"adopt": wa, "cap": wc},
             "products": roster[cid],
