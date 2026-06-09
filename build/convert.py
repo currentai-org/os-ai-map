@@ -116,17 +116,28 @@ def main():
                      "adoption": p["adoption"], "capability": p["capability"]}
         _dump(ROOT / "sources/scores" / f"{slug}.yaml", score_doc)
 
-    # 3) categories (label/arc/products from overlay; strapline/weights from generator)
-    for ordinal, cid in enumerate(overlay["order"]):
+    # 3) categories (label/products from overlay; strapline/weights from generator).
+    # arc + order are cross-category concerns; they live in sources/taxonomy.yaml now.
+    for cid in overlay["order"]:
         c = overlay["categories"][cid]
         wa, wc = weights.get(cid, (0.5, 0.5))
         cat_doc = {
-            "slug": cid, "order": ordinal, "name": c["label"], "arc": c["arc"],
+            "slug": cid, "name": c["label"],
             "strapline": straplines.get(cid, ""),
             "weights": {"adopt": wa, "cap": wc},
             "products": roster[cid],
         }
         _dump(ROOT / "sources/categories" / f"{cid}.yaml", cat_doc)
+
+    # 4) taxonomy manifest: derive arcs by walking the curated overlay order and
+    # grouping consecutive same-arc categories. Within-arc order is preserved as-is.
+    arcs: list[dict] = []
+    for cid in overlay["order"]:
+        arc_name = overlay["categories"][cid]["arc"]
+        if not arcs or arcs[-1]["name"] != arc_name:
+            arcs.append({"name": arc_name, "categories": []})
+        arcs[-1]["categories"].append(cid)
+    _dump(ROOT / "sources/taxonomy.yaml", {"arcs": arcs})
 
     print(
         f"wrote {len(org_records)} orgs, {len(flat)} products+scores, "

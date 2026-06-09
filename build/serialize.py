@@ -32,10 +32,16 @@ def _row(prod: dict, org_name: str, score: dict) -> dict:
 def build_payload(sources: dict, frozen_long_tail: dict, generated: str = "2026-06-04") -> dict:
     orgs, cats, prods, scores = (sources["organizations"], sources["categories"],
                                  sources["products"], sources["scores"])
-    # load_sources returns categories in filename-sorted (alphabetical) order, which
-    # is NOT the curated display order. Sort by the explicit `order` ordinal each
-    # category YAML carries (its index in the overlay's `order` list).
-    order = sorted(cats, key=lambda cid: cats[cid]["order"])
+    taxonomy = sources["taxonomy"]
+    # The curated display order + arc grouping live in sources/taxonomy.yaml.
+    # Flatten arcs[].categories in sequence to get the global `order` list, and
+    # build a {category_slug: arc_name} map for per-category arc tagging.
+    order: list[str] = []
+    cid_arc: dict[str, str] = {}
+    for arc in taxonomy["arcs"]:
+        for cid in arc["categories"]:
+            order.append(cid)
+            cid_arc[cid] = arc["name"]
     out_cats = {}
     n = 0
     for cid in order:
@@ -50,7 +56,7 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str = "2026-
             org_name = "" if p["org"] == "unknown" else orgs[p["org"]]["name"]
             rows.append(_row(p, org_name, scores[slug]))
             n += 1
-        out_cats[cid] = {"label": cat["name"], "arc": cat["arc"], "products": rows}
+        out_cats[cid] = {"label": cat["name"], "arc": cid_arc[cid], "products": rows}
     return {"categories": out_cats, "order": order, "n_total": n,
             "generated": generated, "long_tail": frozen_long_tail}
 

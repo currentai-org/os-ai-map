@@ -3,8 +3,9 @@ from build.validate import validate_sources
 def _fixture():
     return {
         "organizations": {"meta": {"slug": "meta", "name": "Meta"}},
+        "taxonomy": {"arcs": [{"name": "Models", "categories": ["base_pretrained"]}]},
         "categories": {
-            "base_pretrained": {"slug": "base_pretrained", "name": "Base", "arc": "Models",
+            "base_pretrained": {"slug": "base_pretrained", "name": "Base",
                                 "products": ["llama-4"]}
         },
         "products": {"llama-4": {"slug": "llama-4", "name": "Llama 4", "org": "meta", "type": "model"}},
@@ -24,6 +25,18 @@ def test_orphan_product_not_in_roster_fails():
     d["products"]["ghost"] = {"slug": "ghost", "name": "Ghost", "org": "meta", "type": "model"}
     errs = validate_sources(d)
     assert any("exactly one category" in e for e in errs)
+
+def test_category_missing_from_taxonomy_fails():
+    d = _fixture()
+    d["taxonomy"]["arcs"] = []  # base_pretrained no longer listed in any arc
+    errs = validate_sources(d)
+    assert any("exactly one taxonomy arc" in e for e in errs)
+
+def test_category_listed_in_two_arcs_fails():
+    d = _fixture()
+    d["taxonomy"]["arcs"].append({"name": "Other", "categories": ["base_pretrained"]})
+    errs = validate_sources(d)
+    assert any("exactly one taxonomy arc" in e for e in errs)
 
 def test_roster_pointing_at_missing_product_fails():
     d = _fixture()

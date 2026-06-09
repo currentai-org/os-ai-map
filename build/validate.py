@@ -18,6 +18,7 @@ def load_sources(root: Path) -> dict:
         "categories": _dir("categories"),
         "products": _dir("products"),
         "scores": _dir("scores"),
+        "taxonomy": yaml.safe_load((root / "sources" / "taxonomy.yaml").read_text()),
     }
 
 
@@ -25,6 +26,21 @@ def validate_sources(data: dict) -> list[str]:
     errors: list[str] = []
     orgs, cats, prods, scores = (data["organizations"], data["categories"],
                                  data["products"], data["scores"])
+    taxonomy = data["taxonomy"]
+
+    # --- taxonomy <-> category invariants ---
+    # Every category file appears in exactly one arc's `categories` list, and
+    # every slug in the manifest resolves to a real category file.
+    tax_count: dict[str, int] = {}
+    for arc in taxonomy.get("arcs", []):
+        for cid in arc.get("categories", []):
+            tax_count[cid] = tax_count.get(cid, 0) + 1
+            if cid not in cats:
+                errors.append(f"taxonomy arc {arc.get('name')!r}: category {cid!r} has no categories/{cid}.yaml")
+    for cid in cats:
+        n = tax_count.get(cid, 0)
+        if n != 1:
+            errors.append(f"category {cid!r}: must appear in exactly one taxonomy arc (found in {n})")
 
     # --- roster <-> product invariants ---
     roster_count: dict[str, int] = {}
