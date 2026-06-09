@@ -1,0 +1,72 @@
+"""Validate the four-concern sources/ tree: schema + cross-file invariants."""
+from pathlib import Path
+import yaml
+
+OPENNESS_CLASSES = {
+    "model": {"open_source", "open_weights", "restricted", "closed"},
+    "software": {"open_source", "source_available", "open_core", "closed"},
+    "dataset": {"open", "gated", "documented_only", "closed"},
+}
+SIGNAL_TYPES = {"active_users", "usage_volume", "reported_traction", "stars_fallback", "unknown"}
+
+
+def load_sources(root: Path) -> dict:
+    def _dir(name):
+        return {p.stem: yaml.safe_load(p.read_text()) for p in sorted((root / "sources" / name).glob("*.yaml"))}
+    return {
+        "organizations": _dir("organizations"),
+        "categories": _dir("categories"),
+        "products": _dir("products"),
+        "scores": _dir("scores"),
+    }
+
+
+def validate_sources(data: dict) -> list[str]:
+    errors: list[str] = []
+    orgs, cats, prods, scores = (data["organizations"], data["categories"],
+                                 data["products"], data["scores"])
+
+    # --- roster <-> product invariants ---
+    roster_count: dict[str, int] = {}
+    for cid, cat in cats.items():
+        for slug in cat.get("products", []):
+            roster_count[slug] = roster_count.get(slug, 0) + 1
+            if slug not in prods:
+                errors.append(f"category {cid}: roster slug {slug!r} has no products/{slug}.yaml")
+    for slug in prods:
+        n = roster_count.get(slug, 0)
+        if n != 1:
+            errors.append(f"product {slug!r}: must appear in exactly one category roster (found in {n})")
+
+    # --- product -> org ref ---
+    for slug, p in prods.items():
+        if p.get("org") not in orgs:
+            errors.append(f"product {slug!r}: org {p.get('org')!r} has no organizations/ record")
+
+    # --- scores ---
+    for slug, sc in scores.items():
+        if slug not in prods:
+            errors.append(f"score {slug!r}: no matching product")
+            continue
+        typ = prods[slug].get("type")
+        op = sc.get("openness", {})
+        if op.get("class") and op["class"] not in OPENNESS_CLASSES.get(typ, set()):
+            errors.append(f"score {slug!r}: openness class {op['class']!r} invalid for type {typ!r}")
+        if op.get("score") is not None and not op.get("sources"):
+            errors.append(f"score {slug!r}: non-null openness needs >=1 source")
+        ad = sc.get("adoption", {})
+        st = ad.get("signal_type")
+        if st and st not in SIGNAL_TYPES:
+            errors.append(f"score {slug!r}: adoption signal_type {st!r} invalid")
+        if st == "stars_fallback" and (ad.get("level") or 0) > 3:
+            errors.append(f"score {slug!r}: stars_fallback cannot justify adoption level > 3")
+    return errors
+
+
+if __name__ == "__main__":
+    import sys
+    errs = validate_sources(load_sources(Path(__file__).resolve().parents[1]))
+    for e in errs:
+        print("ERROR:", e)
+    print(f"\n{len(errs)} error(s)")
+    sys.exit(1 if errs else 0)
