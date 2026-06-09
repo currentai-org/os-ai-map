@@ -22,7 +22,6 @@ CSV-based reference data uploaded via scripts. Source CSVs live in `data/`.
 | `currentai.catalog.model_benchmarks` | `data/huggingface/model_benchmarks.csv` | ~4.5K | Open LLM Leaderboard v2 scores |
 | `currentai.catalog.model_repos` | `data/huggingface/model_repos.csv` | ~6.3K | HF model → GitHub repo links |
 | `currentai.catalog.foundation_model_repos` | `data/huggingface/foundation_model_repos.csv` | ~72 | Curated foundation model families → canonical repos |
-| `currentai.catalog.taxonomy_crosswalk` | `data/taxonomy_crosswalk.csv` | ~10 | OSAI layer → GoodAI category bridge |
 | `currentai.catalog.pypi_downloads` | `data/pypi/pypi_downloads.csv` (gitignored) | ~1.6M | PyPI daily downloads by package × country, 39 AI packages |
 
 ## Entities (User Defined Models)

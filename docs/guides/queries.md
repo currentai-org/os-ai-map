@@ -6,7 +6,7 @@
 
 | Dataset | Type | Key tables |
 |---------|------|------------|
-| `catalog` | Static CSV | `goodailist_repos`, `model_benchmarks`, `model_repos`, `osai_gap_map` |
+| `catalog` | Static CSV | `goodailist_repos`, `model_benchmarks`, `model_repos` |
 | `entities` | UDM | `repos`, `projects`, `packages`, `models` |
 | `events` | UDM | `github_events` |
 | `metrics` | UDM | `daily` |
@@ -55,11 +55,6 @@ SELECT r.repo, r.project_slug, p.display_name, p.location
 FROM currentai.entities.repos r
 LEFT JOIN currentai.entities.projects p ON r.project_slug = p.project_slug
 
--- Project → taxonomy (OSAI layers)
-SELECT t.project_slug, t.osai_layer, t.osai_subcategory, t.gap_score
-FROM currentai.scores.taxonomy t
-WHERE t.project_slug = 'pytorch'
-
 -- Project → packages
 SELECT p.package_source, p.package_name, p.url
 FROM currentai.entities.packages p
@@ -98,7 +93,6 @@ GROUP BY pc.collection_name, c.display_name
 
 - [`docs/catalog-gaps.md`](../catalog-gaps.md) = coverage/ingestion backlog (missing orgs/repos).
 - `scores.ossd_coverage` = per-org oss-directory match rates.
-- `catalog.osai_gap_map` = maturity gap framework once data is present.
 
 ## Pointers
 

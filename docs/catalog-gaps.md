@@ -1,6 +1,6 @@
 # Catalog Gaps
 
-Projects, repos, and orgs that should be in our data foundation but are missing from both GoodAI List and OSS Insights (coverage/ingestion backlog). This doc is about what to add next; for OSAI “maturity gaps” once data exists, see `currentai.osai_gap_map` and mapping tables in [`warehouse/models/README.md`](../warehouse/models/README.md) (analysis guidance lives in persona skills).
+Projects, repos, and orgs that should be in our data foundation but are missing from both GoodAI List and OSS Insights (coverage/ingestion backlog). This doc is about what to add next. Product-level openness/adoption/capability scoring lives in the curated `sources/` tree; see [`warehouse/models/README.md`](../warehouse/models/README.md) for the warehouse model inventory (analysis guidance lives in persona skills).
 
 Last reviewed: 2026-04-28
 
