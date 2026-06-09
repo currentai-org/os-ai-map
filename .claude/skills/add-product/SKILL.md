@@ -9,23 +9,31 @@ Creates three coordinated edits: a product file, a score file, and a roster entr
 
 ## Steps
 
-1. **Pick the slug**: kebab-case of the product name (e.g. `OLMo 2` becomes `olmo-2`). If the
-   slug is taken, suffix the org slug (`command-r-cohere`); if `base-<org>` also collides, a
-   numeric suffix (`-2`, `-3`) is appended (matches `convert.py`).
+1. **Pick the slug**: kebab-case of the product name (e.g. `OLMo 2` becomes `olmo-2`). The
+   slug becomes the `name` field. If the slug is taken, suffix the org slug
+   (`command-r-cohere`); if that also collides, append a numeric suffix (`-2`, `-3`)
+   (matches `convert.py`).
 2. **Organization**: ensure `sources/organizations/<org-slug>.yaml` exists; if not,
-   create it (`slug`, `name`, `type`, `homepage`, `country`).
-3. **Product**: create `sources/products/<slug>.yaml`:
+   create it (`name`, `display_name`, `type`, `homepage`, `country`).
+3. **Product**: create `sources/products/<slug>.yaml`. Use `name` for the slug and
+   `display_name` for the human label. Declare open artifacts as typed top-level arrays of
+   `{url: ...}` objects, one key per source type. Only include keys the product actually
+   has; products with no open artifacts include none.
    ```yaml
-   slug: <slug>
-   name: <Display Name>
+   name: <slug>
+   display_name: <Display Name>
    org: <org-slug>
    type: model | software | dataset
    description: <one paragraph>
-   artifacts:
-     repos: [owner/name]        # the warehouse computes adoption from these
-     hf_models: []
+   github:
+     - url: https://github.com/<owner>/<repo>
+   pypi:
+     - url: https://pypi.org/project/<package>
    flags: []
+   comments: []
    ```
+   Supported artifact keys: `github`, `npm`, `pypi`, `crates`, `go`,
+   `huggingface_model`, `huggingface_dataset`. Omit any key with no entries.
 4. **Score**: create `sources/scores/<slug>.yaml`. Use the owning category's
    `scoring_recipe` (in its category file) for openness checklist, capability basis, and
    adoption signal. **Every non-null openness/capability value needs a primary `sources:`

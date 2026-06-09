@@ -12,8 +12,9 @@ product roster** (the array order is the display order).
 ## Steps
 
 1. Open `sources/categories/<slug>.yaml`.
-2. Edit any of: `name`, `definition`, `litmus`, `strapline`, `weights.{adopt,cap}`,
-   `scoring_recipe`, and the `products:` roster. To regroup or reorder categories across
+2. Edit any of: `display_name`, `strapline`, `weights.{adopt,cap}`,
+   `scoring_recipe`, `comments`, and the `products:` roster. The `name` field is the
+   slug; do not rename it after creation. To regroup or reorder categories across
    arcs, edit `sources/taxonomy.yaml`: that is the only place arc grouping and
    cross-category display order live (a category file no longer carries `arc` or `order`).
 3. To add a product, it must already have a `sources/products/<slug>.yaml` and a

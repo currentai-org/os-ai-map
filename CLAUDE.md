@@ -31,12 +31,16 @@ tests/                 pytest suite for build helpers and round-trip proof
 The curated source set is four per-record YAML concerns in `sources/` plus the single
 `sources/taxonomy.yaml` manifest:
 
-- **organizations**: one file per org, referenced by slug from products.
-- **categories**: one file per stack-map category. Owns the ordered product roster
-  (`products:` array). Order equals display order. One product appears in exactly one
-  category. Category files no longer carry `arc` or cross-category `order`.
-- **products**: one file per product (`slug`, `name`, `org`, `type`, `description`,
-  `artifacts`).
+- **organizations**: one file per org (`name`=slug, `display_name`, `type`, `homepage`),
+  referenced by slug from products.
+- **categories**: one file per stack-map category (`name`=slug, `display_name`). Owns the
+  ordered product roster (`products:` array). Order equals display order. One product
+  appears in exactly one category. Category files no longer carry `arc` or cross-category
+  `order`. Optional `comments` array for curator notes.
+- **products**: one file per product. `name` is the slug (kebab-case); `display_name` is
+  the human label. Open artifacts are declared as typed top-level arrays of `{url: ...}`
+  objects: `github`, `npm`, `pypi`, `crates`, `go`, `huggingface_model`,
+  `huggingface_dataset`. Only keys with entries are included. Optional `comments` array.
 - **scores**: one file per product (same slug) with `openness`, `adoption`, `capability`.
   Every non-null score value requires a `sources:` citation entry.
 - **taxonomy.yaml**: owns arc grouping + cross-category display order
