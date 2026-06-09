@@ -18,7 +18,7 @@ product roster** (the array order is the display order).
    `sources/scores/<slug>.yaml` (use the `add-product` skill first), then append its slug
    to `products:`. A product slug may appear in exactly one category roster.
 4. Reorder by moving slugs within `products:`.
-5. Validate: `uv run python -m build.validate` — must print `0 error(s)`.
+5. Validate: `uv run python -m build.validate`: must print `0 error(s)`.
 6. Rebuild + preview: `uv run python -m build.serialize && uv run python build/render.py`,
    then `uv run marimo export html notebooks/ai-stack-map.py -o /tmp/preview.html`.
 7. Open a PR. Do not deploy UDMs or publish. That is a maintainer step (see

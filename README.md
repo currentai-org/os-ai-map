@@ -1,0 +1,89 @@
+# os-ai-map
+
+The public data + modeling home behind the [AI Stack Map](https://oso.xyz/currentai/ai-stack-map).
+
+Curated YAML in `sources/` feeds a deterministic build pipeline that serializes to
+`build/notebook_data.json`, renders to `notebooks/ai-stack-map.py`, and publishes to
+the OSO platform.
+
+---
+
+## Data model: four concerns
+
+Everything in `sources/` is split into four directories. Each holds one YAML file per
+entity:
+
+| Directory | Contains | Key rule |
+|-----------|----------|----------|
+| `sources/organizations/` | One file per org (`slug`, `name`, `type`, `homepage`) | Orgs are referenced by slug from product files |
+| `sources/categories/` | One file per stack-map category | Category owns the **ordered product roster** (`products:` array). Order = display order. |
+| `sources/products/` | One file per product (`slug`, `name`, `org`, `type`, `description`, `artifacts`) | One product appears in exactly one category roster |
+| `sources/scores/` | One file per product (same slug) with `openness`, `adoption`, `capability` | Every non-null score value needs a `sources:` citation |
+
+Category slugs use underscore form (`base_pretrained`, `finetuned_chat`).
+Product and org slugs are hyphenated kebab-case (`llama-3-1`, `allen-ai`).
+
+JSON Schemas for all four concerns live in `docs/schemas/`.
+
+---
+
+## Build pipeline
+
+```
+uv run python -m build.validate        # check sources/ for schema + cross-file errors
+uv run python -m build.serialize       # sources/ -> build/notebook_data.json
+uv run python build/render.py          # build/notebook_data.json -> notebooks/ai-stack-map.py
+uv run marimo export html notebooks/ai-stack-map.py -o /tmp/preview.html
+```
+
+Deployment (publish to OSO, deploy UDMs) is a maintainer step described in
+`docs/runbooks/`.
+
+---
+
+## Warehouse
+
+`warehouse/` holds the SQL models and data fetchers that power the adoption and
+activity signals:
+
+- `warehouse/models/`: UDM SQL (entities, events, metrics, scores). See `warehouse/models/README.md`.
+- `warehouse/ingest/`: Python fetchers that write CSVs to `warehouse/catalog/`.
+- `warehouse/sources.yaml`: manifest linking each external source to its fetcher.
+
+---
+
+## Editor skills
+
+Four Claude Code skills are available in `.claude/skills/`:
+
+| Skill | When to use |
+|-------|------------|
+| `curate-category` | Edit a category's definition, weights, or product roster |
+| `add-product` | Add a new product (scaffolds product + score YAML, updates roster) |
+| `add-data-source` | Register a new external data source and add a fetcher |
+| `pyoso-analyst` | Query `currentai.*` tables via `pyoso` (read-only) |
+
+All editor skills operate **read-only on the warehouse**. No MCP, no uploads.
+
+---
+
+## Quick start
+
+```bash
+uv sync
+uv run python -m build.validate    # must print "0 error(s)"
+```
+
+Requires `OSO_API_KEY` in your environment (see `.env.example`). With `direnv`, place it
+in `.env` and it loads automatically.
+
+---
+
+## Maintainer runbooks
+
+Deploys, UDM refreshes, and notebook publishing require OSO MCP write access.
+See `docs/runbooks/`:
+
+- `deploy-udms.md`: revise and release UDM SQL changes
+- `refresh-data.md`: run fetchers and reload static models
+- `publish-notebook.md`: serialize, render, and publish the live notebook
