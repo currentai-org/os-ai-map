@@ -15,7 +15,7 @@ PRODUCT_KEY_ORDER = ["product", "org", "type", "description",
 
 def _row(prod: dict, org_name: str, score: dict) -> dict:
     row = {
-        "product": prod["name"],
+        "product": prod["display_name"],
         "org": org_name,
         "type": prod["type"],
         "description": prod.get("description", ""),
@@ -53,10 +53,10 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str = "2026-
             # that had an empty org string in the source. Reconstruct that empty
             # string so the round-trip is lossless (the registry keeps the display
             # name "Unknown", which is schema-valid; the overlay carries "").
-            org_name = "" if p["org"] == "unknown" else orgs[p["org"]]["name"]
+            org_name = "" if p["org"] == "unknown" else orgs[p["org"]]["display_name"]
             rows.append(_row(p, org_name, scores[slug]))
             n += 1
-        out_cats[cid] = {"label": cat["name"], "arc": cid_arc[cid], "products": rows}
+        out_cats[cid] = {"label": cat["display_name"], "arc": cid_arc[cid], "products": rows}
     return {"categories": out_cats, "order": order, "n_total": n,
             "generated": generated, "long_tail": frozen_long_tail}
 

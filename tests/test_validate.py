@@ -2,13 +2,15 @@ from build.validate import validate_sources
 
 def _fixture():
     return {
-        "organizations": {"meta": {"slug": "meta", "name": "Meta"}},
+        "organizations": {"meta": {"name": "meta", "display_name": "Meta"}},
         "taxonomy": {"arcs": [{"name": "Models", "categories": ["base_pretrained"]}]},
         "categories": {
-            "base_pretrained": {"slug": "base_pretrained", "name": "Base",
-                                "products": ["llama-4"]}
+            "base_pretrained": {"name": "base_pretrained", "display_name": "Base",
+                                "products": ["llama-4"], "comments": []}
         },
-        "products": {"llama-4": {"slug": "llama-4", "name": "Llama 4", "org": "meta", "type": "model"}},
+        "products": {"llama-4": {"name": "llama-4", "display_name": "Llama 4", "org": "meta",
+                                 "type": "model", "github": [{"url": "https://github.com/meta-llama/llama"}],
+                                 "comments": []}},
         "scores": {"llama-4": {"product": "llama-4",
                                "openness": {"score": 2, "class": "restricted",
                                             "sources": [{"url": "https://x", "shows": "y", "accessed": "2026-06-09"}]},
@@ -22,7 +24,7 @@ def test_valid_fixture_passes():
 
 def test_orphan_product_not_in_roster_fails():
     d = _fixture()
-    d["products"]["ghost"] = {"slug": "ghost", "name": "Ghost", "org": "meta", "type": "model"}
+    d["products"]["ghost"] = {"name": "ghost", "display_name": "Ghost", "org": "meta", "type": "model"}
     errs = validate_sources(d)
     assert any("exactly one category" in e for e in errs)
 
@@ -78,7 +80,7 @@ def test_schema_violation_negative_openness_score_caught():
 def test_product_without_score_file_caught_not_raised():
     d = _fixture()
     # rostered product present in products + roster but absent from scores
-    d["products"]["mistral"] = {"slug": "mistral", "name": "Mistral", "org": "meta", "type": "model"}
+    d["products"]["mistral"] = {"name": "mistral", "display_name": "Mistral", "org": "meta", "type": "model"}
     d["categories"]["base_pretrained"]["products"].append("mistral")
     errs = validate_sources(d)  # must not raise
     assert any(e == "product 'mistral': no scores/mistral.yaml" for e in errs)

@@ -11,5 +11,5 @@ def test_build_org_registry_dedupes_and_slugs():
     assert name_to_slug["Meta"] == "meta"
     assert name_to_slug["Allen Institute for AI"] == "allen-institute-for-ai"
     # one record per distinct org name; empty org -> "unknown"
-    assert sum(1 for o in orgs if o["slug"] == "meta") == 1
+    assert sum(1 for o in orgs if o["name"] == "meta") == 1
     assert name_to_slug[""] == "unknown"

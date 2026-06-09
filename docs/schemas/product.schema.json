@@ -2,24 +2,32 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Product",
   "type": "object",
-  "required": ["slug", "name", "org", "type"],
+  "required": ["name", "display_name", "org", "type"],
   "additionalProperties": false,
   "properties": {
-    "slug": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
-    "name": { "type": "string", "minLength": 1 },
+    "name": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+    "display_name": { "type": "string", "minLength": 1 },
     "org": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
     "type": { "enum": ["model", "software", "dataset"] },
     "description": { "type": "string" },
     "version_note": { "type": "string" },
     "flags": { "type": "array", "items": { "type": "string" } },
-    "artifacts": {
+    "comments": { "type": "array", "items": { "type": "string" } },
+    "github": { "type": "array", "items": { "$ref": "#/definitions/url" } },
+    "npm": { "type": "array", "items": { "$ref": "#/definitions/url" } },
+    "pypi": { "type": "array", "items": { "$ref": "#/definitions/url" } },
+    "crates": { "type": "array", "items": { "$ref": "#/definitions/url" } },
+    "go": { "type": "array", "items": { "$ref": "#/definitions/url" } },
+    "huggingface_model": { "type": "array", "items": { "$ref": "#/definitions/url" } },
+    "huggingface_dataset": { "type": "array", "items": { "$ref": "#/definitions/url" } }
+  },
+  "definitions": {
+    "url": {
       "type": "object",
+      "required": ["url"],
       "additionalProperties": false,
       "properties": {
-        "repos": { "type": "array", "items": { "type": "string" } },
-        "packages": { "type": "array", "items": { "type": "string" } },
-        "hf_models": { "type": "array", "items": { "type": "string" } },
-        "datasets": { "type": "array", "items": { "type": "string" } }
+        "url": { "type": "string", "pattern": "^https?://" }
       }
     }
   }

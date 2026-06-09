@@ -17,7 +17,7 @@ DATA_LITERAL = repr(data_json)  # safe Python string literal for json.loads(...)
 # Read straplines and weights from sources/categories/<cid>.yaml at render time
 # so the NB template no longer contains hardcoded literals.
 _cats_yaml = {
-    _c["slug"]: _c
+    _f.stem: _c
     for _f in sorted((ROOT / "sources" / "categories").glob("*.yaml"))
     for _c in [yaml.safe_load(_f.read_text())]
 }

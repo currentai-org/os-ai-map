@@ -38,79 +38,55 @@ def _norm(name: str) -> str:
     return re.sub(r"[^a-z0-9]", "", (name or "").lower())
 
 
-def _parse_repo(url: str) -> str | None:
-    """github.com/<owner>/<name> -> '<owner>/<name>'. Non-github -> None."""
-    m = re.match(r"https?://(?:www\.)?github\.com/([^/?#]+)/([^/?#]+)", url)
+# Typed-url artifact keys, in stable emit order. Each maps to a top-level
+# array of {url: ...} entries on the product, per oss-directory conventions.
+_ARTIFACT_KEYS = ("github", "npm", "pypi", "crates", "go",
+                  "huggingface_model", "huggingface_dataset")
+
+
+def _artifact_key(url: str) -> str | None:
+    """Classify a registry artifact url to its typed-array key by host.
+
+    github.com -> github; pypi.org -> pypi; npmjs.com -> npm;
+    huggingface.co/datasets/... -> huggingface_dataset;
+    other huggingface.co/... -> huggingface_model. Anything else -> None.
+    """
+    m = re.match(r"https?://(?:www\.)?([^/?#]+)(/[^?#]*)?", url or "")
     if not m:
         return None
-    owner, repo = m.group(1), m.group(2)
-    repo = re.sub(r"\.git$", "", repo)
-    if not owner or not repo:
-        return None
-    return f"{owner}/{repo}"
-
-
-def _parse_hf_model(url: str) -> str | None:
-    """huggingface.co/<org>/<model> (not a /datasets/ path) -> '<org>/<model>'."""
-    m = re.match(r"https?://(?:www\.)?huggingface\.co/([^/?#]+)/([^/?#]+)", url)
-    if not m:
-        return None
-    org, model = m.group(1), m.group(2)
-    if org == "datasets":  # that's a dataset url, not a model
-        return None
-    return f"{org}/{model}"
-
-
-def _parse_hf_dataset(url: str) -> str | None:
-    """huggingface.co/datasets/<id> -> '<id>' (id may contain a slash)."""
-    m = re.match(r"https?://(?:www\.)?huggingface\.co/datasets/([^?#]+)", url)
-    if not m:
-        return None
-    ident = m.group(1).rstrip("/")
-    return ident or None
-
-
-def _parse_package(url: str) -> str | None:
-    """pypi.org/project/<x> -> 'pypi/<x>'; npmjs.com/package/<x> -> 'npm/<x>'."""
-    m = re.match(r"https?://(?:www\.)?pypi\.org/project/([^/?#]+)", url)
-    if m:
-        return f"pypi/{m.group(1)}"
-    m = re.match(r"https?://(?:www\.)?npmjs\.com/package/(@?[^/?#]+(?:/[^/?#]+)?)", url)
-    if m:
-        return f"npm/{m.group(1)}"
+    host = m.group(1).lower()
+    path = m.group(2) or ""
+    if host == "github.com":
+        return "github"
+    if host == "pypi.org":
+        return "pypi"
+    if host == "npmjs.com":
+        return "npm"
+    if host == "crates.io":
+        return "crates"
+    if host == "huggingface.co":
+        return "huggingface_dataset" if path.startswith("/datasets/") else "huggingface_model"
     return None
 
 
-# Per-type dispatch: parser + the artifacts-dict key the id lands in.
-_ARTIFACT_PARSERS = {
-    "repo": (_parse_repo, "repos"),
-    "model": (_parse_hf_model, "hf_models"),
-    "dataset": (_parse_hf_dataset, "datasets"),
-    "package": (_parse_package, "packages"),
-}
-
-
 def _build_artifacts(entries: list[dict], skips: dict[str, int]) -> dict:
-    """Map a registry artifact list -> the product `artifacts` dict.
+    """Map a registry artifact list -> typed top-level url arrays.
 
-    Only the four schema keys are emitted, each a deduped, first-seen-ordered
-    list of strings. Unparseable urls are skipped and tallied in `skips`.
+    Each emitted key is an array of {url: <full url>} entries, deduped by url
+    and first-seen-ordered. Unclassifiable urls are skipped and tallied in
+    `skips`. Empty result -> {} (no artifact keys emitted on the product).
     """
     buckets: dict[str, list[str]] = {}
     for a in entries:
-        parser_key = _ARTIFACT_PARSERS.get(a.get("type"))
-        if not parser_key:
-            continue
-        parser, dest = parser_key
-        ident = parser(a.get("url") or "")
-        if not ident:
+        url = a.get("url") or ""
+        key = _artifact_key(url)
+        if not key:
             skips[a.get("type", "?")] = skips.get(a.get("type", "?"), 0) + 1
             continue
-        lst = buckets.setdefault(dest, [])
-        if ident not in lst:
-            lst.append(ident)
-    # Stable key order; drop empty lists so artifacts: {} stays {} when nothing joins.
-    return {k: buckets[k] for k in ("repos", "packages", "hf_models", "datasets") if buckets.get(k)}
+        lst = buckets.setdefault(key, [])
+        if url not in lst:
+            lst.append(url)
+    return {k: [{"url": u} for u in buckets[k]] for k in _ARTIFACT_KEYS if buckets.get(k)}
 
 
 def _load_gen_constants():
@@ -167,7 +143,7 @@ def main():
     # 1) organizations
     org_records, name_to_slug = build_org_registry(flat)
     for o in org_records:
-        _dump(ROOT / "sources/organizations" / f"{o['slug']}.yaml", o)
+        _dump(ROOT / "sources/organizations" / f"{o['name']}.yaml", o)
 
     # 2) products + scores  (assign slugs, dedupe on collision by org, then by suffix)
     taken: set[str] = set()
@@ -189,20 +165,22 @@ def main():
         roster[p["_cat"]].append(slug)
 
         product_doc = {
-            "slug": slug, "name": p["product"], "org": org_slug, "type": p["type"],
+            "name": slug, "display_name": p["product"], "org": org_slug, "type": p["type"],
             "description": p.get("description", ""),
         }
         if p.get("version_note"):
             product_doc["version_note"] = p["version_note"]
-        if p.get("flags"):
-            product_doc["flags"] = p["flags"]
         # Backfill artifacts from the v2 registry fixture, keyed by normalized name
-        # (overlay product name == our product `name`). No match -> {} (valid).
+        # (overlay product label == our product `display_name`). No match -> no
+        # artifact keys. Emitted as typed top-level url arrays (oss-directory style).
         entries = registry_artifacts.get(_norm(p["product"]), [])
         artifacts = _build_artifacts(entries, artifact_skips)
         if artifacts:
             artifact_matches += 1
-        product_doc["artifacts"] = artifacts
+        product_doc.update(artifacts)
+        if p.get("flags"):
+            product_doc["flags"] = p["flags"]
+        product_doc["comments"] = []
         _dump(ROOT / "sources/products" / f"{slug}.yaml", product_doc)
 
         score_doc = {"product": slug, "openness": p["openness"],
@@ -215,10 +193,11 @@ def main():
         c = overlay["categories"][cid]
         wa, wc = weights.get(cid, (0.5, 0.5))
         cat_doc = {
-            "slug": cid, "name": c["label"],
+            "name": cid, "display_name": c["label"],
             "strapline": straplines.get(cid, ""),
             "weights": {"adopt": wa, "cap": wc},
             "products": roster[cid],
+            "comments": [],
         }
         _dump(ROOT / "sources/categories" / f"{cid}.yaml", cat_doc)
 
