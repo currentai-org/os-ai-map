@@ -1,6 +1,25 @@
 """Validate the four-concern sources/ tree: schema + cross-file invariants."""
+import json
 from pathlib import Path
+
+import jsonschema
 import yaml
+
+# Maps each sources/ subdir to its docs/schemas/<name>.schema.json basename.
+_SCHEMA_FOR_DIR = {
+    "organizations": "organization",
+    "categories": "category",
+    "products": "product",
+    "scores": "score",
+}
+
+
+def _load_schemas(root: Path) -> dict:
+    schema_dir = root / "docs" / "schemas"
+    return {
+        name: json.loads((schema_dir / f"{name}.schema.json").read_text())
+        for name in set(_SCHEMA_FOR_DIR.values())
+    }
 
 OPENNESS_CLASSES = {
     "model": {"open_source", "open_weights", "restricted", "closed"},
@@ -76,6 +95,24 @@ def validate_sources(data: dict) -> list[str]:
             errors.append(f"score {slug!r}: adoption signal_type {st!r} invalid")
         if st == "stars_fallback" and (ad.get("level") or 0) > 3:
             errors.append(f"score {slug!r}: stars_fallback cannot justify adoption level > 3")
+
+    # --- product -> score existence ---
+    # validate only checks score -> product; without this, a rostered product
+    # with no scores/<slug>.yaml passes validate then crashes serialize.py.
+    for slug in prods:
+        if slug not in scores:
+            errors.append(f"product {slug!r}: no scores/{slug}.yaml")
+
+    # --- per-record JSON Schema validation ---
+    schemas = _load_schemas(Path(__file__).resolve().parents[1])
+    for dirname, schema_name in _SCHEMA_FOR_DIR.items():
+        schema = schemas[schema_name]
+        for slug, record in data[dirname].items():
+            try:
+                jsonschema.validate(record, schema)
+            except jsonschema.ValidationError as e:
+                errors.append(f"{dirname}/{slug}: schema: {e.message}")
+
     return errors
 
 

@@ -62,3 +62,23 @@ def test_stars_fallback_cannot_exceed_level_3():
                                           "sources": [{"url": "https://x", "shows": "y", "accessed": "2026-06-09"}]}
     errs = validate_sources(d)
     assert any("stars_fallback" in e for e in errs)
+
+def test_schema_violation_bad_product_type_caught():
+    d = _fixture()
+    d["products"]["llama-4"]["type"] = "not-a-real-type"  # outside the enum
+    errs = validate_sources(d)
+    assert any("schema" in e and "llama-4" in e for e in errs)
+
+def test_schema_violation_negative_openness_score_caught():
+    d = _fixture()
+    d["scores"]["llama-4"]["openness"]["score"] = -1  # below schema minimum of 0
+    errs = validate_sources(d)
+    assert any("schema" in e and "llama-4" in e for e in errs)
+
+def test_product_without_score_file_caught_not_raised():
+    d = _fixture()
+    # rostered product present in products + roster but absent from scores
+    d["products"]["mistral"] = {"slug": "mistral", "name": "Mistral", "org": "meta", "type": "model"}
+    d["categories"]["base_pretrained"]["products"].append("mistral")
+    errs = validate_sources(d)  # must not raise
+    assert any(e == "product 'mistral': no scores/mistral.yaml" for e in errs)
