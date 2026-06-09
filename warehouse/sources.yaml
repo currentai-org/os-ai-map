@@ -1,0 +1,44 @@
+# Registry of external data sources the pipeline ingests.
+# Each entry links a source to its fetcher in warehouse/ingest/.
+sources:
+  - id: goodailist
+    name: Good AI List
+    homepage: https://goodailist.com/
+    provides: Curated AI repos with categories and activity metrics
+    fetcher: warehouse/ingest/fetch_goodailist.py
+    refresh: monthly
+
+  - id: huggingface
+    name: Hugging Face models and datasets
+    homepage: https://huggingface.co/
+    provides: Model and dataset catalogs from the Hugging Face Hub
+    fetcher: warehouse/ingest/fetch_huggingface.py
+    refresh: monthly
+
+  - id: huggingface_benchmarks
+    name: Hugging Face / Open LLM Leaderboard
+    homepage: https://huggingface.co/
+    provides: Model and dataset catalogs, benchmark scores
+    fetcher: warehouse/ingest/fetch_model_benchmarks.py
+    refresh: monthly
+
+  - id: github_orgs
+    name: GitHub AI org/repo catalog
+    homepage: https://github.com/
+    provides: AI-tagged repos and orgs
+    fetcher: warehouse/ingest/fetch_github_orgs.py
+    refresh: monthly
+
+  - id: github_ai_repos
+    name: GitHub AI repo search
+    homepage: https://github.com/
+    provides: AI repos discovered via GitHub topic and keyword search
+    fetcher: warehouse/ingest/fetch_github_ai_repos.py
+    refresh: monthly
+
+  - id: ai_incidents
+    name: AI Incident Database
+    homepage: https://incidentdatabase.ai/
+    provides: Safety / safeguards incidents
+    fetcher: warehouse/ingest/fetch_incidents.py
+    refresh: quarterly
