@@ -8,6 +8,15 @@ the OSO platform.
 
 ---
 
+## Contributing
+
+Community curation happens through pull requests and issue forms. Read
+[CONTRIBUTING.md](CONTRIBUTING.md) for the data model and step-by-step recipes,
+or open a [product suggestion](../../issues/new?template=suggest-a-product.yml)
+if you'd rather not write YAML. Every PR is validated by CI.
+
+---
+
 ## Data model: four concerns plus one manifest
 
 The curated source set is the four per-record concerns (one YAML file per entity)
