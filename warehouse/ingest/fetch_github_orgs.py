@@ -17,7 +17,7 @@ import sys
 import time
 from pathlib import Path
 
-DATA_DIR = Path(__file__).resolve().parent.parent / "data" / "github-orgs"
+DATA_DIR = Path(__file__).resolve().parent.parent / "catalog" / "github-orgs"
 OUTPUT_CSV = DATA_DIR / "orgs.csv"
 
 FIELDS = [
@@ -37,7 +37,7 @@ def get_owners_from_goodailist() -> dict[str, int]:
         SELECT
           LOWER(SPLIT_PART(repo, '/', 1)) AS owner,
           COUNT(DISTINCT LOWER(repo)) AS repo_count
-        FROM currentai.goodailist_repos.repos
+        FROM currentai.catalog.goodailist_repos
         GROUP BY LOWER(SPLIT_PART(repo, '/', 1))
         ORDER BY repo_count DESC
     """)

@@ -14,7 +14,7 @@ from pathlib import Path
 
 import requests
 
-OUTPUT_PATH = Path(__file__).resolve().parent.parent / "data" / "ai-incidents" / "incidents.csv"
+OUTPUT_PATH = Path(__file__).resolve().parent.parent / "catalog" / "ai-incidents" / "incidents.csv"
 OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
 
 # Gatsby pre-rendered page data — contains all incidents + entity lookup

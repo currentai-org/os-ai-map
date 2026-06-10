@@ -15,7 +15,7 @@ from pathlib import Path
 
 from huggingface_hub import list_models, list_datasets
 
-DATA_DIR = Path(__file__).resolve().parent.parent / "data" / "huggingface"
+DATA_DIR = Path(__file__).resolve().parent.parent / "catalog" / "huggingface"
 MODELS_CSV = DATA_DIR / "tracked_models.csv"
 DATASETS_CSV = DATA_DIR / "tracked_datasets.csv"
 TOP_MODELS_CSV = DATA_DIR / "top_models.csv"
@@ -38,7 +38,7 @@ def get_tracked_authors() -> set[str]:
         client = Client()
         df = client.to_pandas("""
             SELECT DISTINCT LOWER(SPLIT_PART(repo, '/', 1)) AS owner
-            FROM currentai.goodailist_repos.repos
+            FROM currentai.catalog.goodailist_repos
         """)
         authors = set(df["owner"].dropna().unique())
         print(f"Found {len(authors)} unique repo owners from GoodAI List")

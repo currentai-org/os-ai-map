@@ -4,6 +4,7 @@ import sys
 import csv
 import requests
 import argparse
+from pathlib import Path
 
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN")
 HEADERS = {"Accept": "application/vnd.github.v3+json"}
@@ -105,7 +106,7 @@ if __name__ == "__main__":
         default=100,
         help="Max results to fetch (default: 100)",
     )
-    default_output = str(Path(__file__).resolve().parent.parent / "data" / "goodailist" / "forked_ai_repos.csv")
+    default_output = str(Path(__file__).resolve().parent.parent / "catalog" / "goodailist" / "forked_ai_repos.csv")
     parser.add_argument("--output", type=str, default=default_output, help="Output CSV file path")
 
     args = parser.parse_args()

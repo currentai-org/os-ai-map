@@ -14,7 +14,7 @@ import urllib.request
 import urllib.error
 
 BASE_URL = "https://goodailist.com"
-OUT_DIR = Path(__file__).resolve().parent.parent / "data" / "goodailist"
+OUT_DIR = Path(__file__).resolve().parent.parent / "catalog" / "goodailist"
 LIMIT = 1000  # max items per page (API allows up to 1000)
 SORT_BY = "stars"
 SORT_ORDER = "desc"

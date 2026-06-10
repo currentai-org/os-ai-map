@@ -19,7 +19,7 @@ from pathlib import Path
 
 print = functools.partial(print, flush=True)
 
-DATA_DIR = Path(__file__).resolve().parent.parent / "data" / "huggingface"
+DATA_DIR = Path(__file__).resolve().parent.parent / "catalog" / "huggingface"
 BENCHMARKS_CSV = DATA_DIR / "model_benchmarks.csv"
 REPOS_CSV = DATA_DIR / "model_repos.csv"
 
@@ -101,7 +101,7 @@ def fetch_model_repos() -> list[dict]:
             SELECT DISTINCT
               LOWER(SPLIT_PART(repo, '/', 1)) AS owner,
               repo
-            FROM currentai.ai_repo_activity.ai_repo_activity
+            FROM currentai.entities.repos
         """)
         owner_to_repos = {}
         for _, r in df.iterrows():
