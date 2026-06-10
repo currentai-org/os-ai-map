@@ -55,9 +55,11 @@ Invariants (validated in CI):
    Artifact keys (include only the ones that exist): `github`, `npm`, `pypi`,
    `crates`, `go`, `huggingface_model`, `huggingface_dataset`. Do **not** add an
    `org:` field — org membership lives in the org file.
-3. **Create `sources/scores/<slug>.yaml`** (see scoring rubric below). If you
-   can't score an axis yet, use `score: null` with a `basis`/`note` explaining
-   why — but openness is usually determinable from the license.
+3. **Create `sources/scores/<slug>.yaml`** (see scoring rubric below). The file
+   starts with `product: <slug>`; openness requires both `score` and `class`,
+   and capability requires `score` and `basis`. If you can't score an axis yet,
+   use `score: null` with a `basis`/`note` explaining why — but openness is
+   usually determinable from the license.
 4. **Add the slug to one category roster** in `sources/categories/<category>.yaml`,
    at the position where it should display.
 5. **Add the slug to one org roster** in `sources/organizations/<org>.yaml`.
@@ -87,7 +89,7 @@ Arc grouping and cross-category order live in `sources/taxonomy.yaml`.
 Each score file has three axes. **Every non-null value needs at least one
 `sources:` citation** (`url`, `shows`, `accessed`).
 
-- **openness** (`score:` 1-5, `class:` depends on type):
+- **openness** (`score:` 0-5, `class:` depends on type):
   - models: `open_source`, `open_weights`, `restricted`, `closed`
   - software: `open_source`, `source_available`, `open_core`, `closed`
   - datasets: `open`, `gated`, `documented_only`, `closed`

@@ -71,6 +71,18 @@ def test_openness_class_invalid_for_type_fails():
     errs = validate_sources(d)
     assert any("class" in e for e in errs)
 
+def test_adoption_without_sources_fails():
+    d = _fixture()
+    d["scores"]["llama-4"]["adoption"].pop("sources", None)
+    errs = validate_sources(d)
+    assert any("adoption" in e and "source" in e for e in errs)
+
+def test_capability_without_sources_fails():
+    d = _fixture()
+    d["scores"]["llama-4"]["capability"] = {"score": 3, "basis": "benchmark:X"}
+    errs = validate_sources(d)
+    assert any("capability" in e and "source" in e for e in errs)
+
 def test_stars_fallback_cannot_exceed_level_3():
     d = _fixture()
     d["scores"]["llama-4"]["adoption"] = {"level": 5, "signal_type": "stars_fallback",

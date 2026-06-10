@@ -104,6 +104,11 @@ def validate_sources(data: dict) -> list[str]:
             errors.append(f"score {slug!r}: adoption signal_type {st!r} invalid")
         if st == "stars_fallback" and (ad.get("level") or 0) > 3:
             errors.append(f"score {slug!r}: stars_fallback cannot justify adoption level > 3")
+        if ad.get("level") is not None and not ad.get("sources"):
+            errors.append(f"score {slug!r}: non-null adoption needs >=1 source")
+        cap = sc.get("capability", {})
+        if cap.get("score") is not None and not cap.get("sources"):
+            errors.append(f"score {slug!r}: non-null capability needs >=1 source")
 
     # --- product -> score existence ---
     # validate only checks score -> product; without this, a rostered product
