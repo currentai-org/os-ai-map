@@ -12,7 +12,7 @@ Creates four coordinated edits: a product file, a score file, a category roster 
 1. **Pick the slug**: kebab-case of the product name (e.g. `OLMo 2` becomes `olmo-2`). The
    slug becomes the `name` field. If the slug is taken, suffix the org slug
    (`command-r-cohere`); if that also collides, append a numeric suffix (`-2`, `-3`)
-   (matches `convert.py`).
+   (matches `build/slugs.py`).
 2. **Product**: create `sources/products/<slug>.yaml`. Use `name` for the slug and
    `display_name` for the human label. Declare open artifacts as typed top-level arrays of
    `{url: ...}` objects, one key per source type. Only include keys the product actually
