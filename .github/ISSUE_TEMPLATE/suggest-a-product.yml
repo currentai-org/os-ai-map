@@ -1,0 +1,55 @@
+name: Suggest a product
+description: Propose a product for the AI Stack Map (no YAML required)
+title: "[product] <name>"
+labels: ["product-suggestion"]
+body:
+  - type: input
+    id: product_name
+    attributes:
+      label: Product name
+      placeholder: e.g. OLMo 2
+    validations:
+      required: true
+  - type: input
+    id: org
+    attributes:
+      label: Organization / maintainer
+      placeholder: e.g. Allen Institute for AI
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: Suggested category
+      options:
+        - Base / pretrained models (base_pretrained)
+        - Fine-tuned / chat models (finetuned_chat)
+        - Inference code (inference_code)
+        - Fine-tuning code (finetuning_code)
+        - Evaluation code (evaluation_code)
+        - Benchmarks & eval data (benchmark_eval_data)
+        - Orchestration & agents (orchestration_agents)
+        - UI / API (ui_api)
+        - Telemetry & observability (telemetry_observability)
+        - Agent tools & protocols (agent_tools_protocols)
+        - Deployment (deployment)
+        - Not sure
+    validations:
+      required: true
+  - type: textarea
+    id: artifacts
+    attributes:
+      label: Open artifact URLs
+      description: GitHub repo, Hugging Face model/dataset, PyPI/npm/crates/Go package links — one per line.
+      placeholder: |
+        https://github.com/allenai/OLMo
+        https://huggingface.co/allenai/OLMo-2-1124-13B
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why it belongs on the map
+      description: Adoption signals, license, what makes it notable.
+    validations:
+      required: true

@@ -1,0 +1,26 @@
+name: Report an error
+description: Wrong score, stale description, bad link, or misplaced product
+title: "[error] <product or category>"
+labels: ["data-error"]
+body:
+  - type: input
+    id: record
+    attributes:
+      label: Which record?
+      description: Product, org, or category name (or the sources/ file path).
+      placeholder: e.g. sources/scores/vllm.yaml
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What's wrong?
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Links that show the correct information.
+    validations:
+      required: true
