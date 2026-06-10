@@ -3,6 +3,7 @@
 Reproduces the exact structure the live notebook consumes:
   { categories: {cid: {label, arc, products[]}}, order[], n_total, generated, long_tail }
 """
+from datetime import date
 from pathlib import Path
 import json
 import yaml
@@ -30,7 +31,9 @@ def _row(prod: dict, org_name: str, score: dict) -> dict:
     return {k: row[k] for k in PRODUCT_KEY_ORDER if k in row}
 
 
-def build_payload(sources: dict, frozen_long_tail: dict, generated: str = "2026-06-04") -> dict:
+def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None = None) -> dict:
+    if generated is None:
+        generated = date.today().isoformat()
     orgs, cats, prods, scores = (sources["organizations"], sources["categories"],
                                  sources["products"], sources["scores"])
     taxonomy = sources["taxonomy"]
@@ -70,9 +73,14 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str = "2026-
 
 
 if __name__ == "__main__":
+    import argparse
     from build.validate import load_sources
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--date", default=None,
+                        help="value for the payload 'generated' field (default: today)")
+    args = parser.parse_args()
     sources = load_sources(ROOT)
     frozen = json.load(open(ROOT / "build" / "_frozen_long_tail.json"))
-    payload = build_payload(sources, frozen)
+    payload = build_payload(sources, frozen, generated=args.date)
     (ROOT / "build" / "notebook_data.json").write_text(json.dumps(payload, indent=2, ensure_ascii=False))
     print(f"wrote build/notebook_data.json ({payload['n_total']} products)")
