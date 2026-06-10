@@ -88,7 +88,8 @@ uv sync
 uv run python -m build.validate    # must print "0 error(s)"
 ```
 
-Requires `OSO_API_KEY` in your environment (see `.env.example`). With `direnv`, place it
+No API key is needed to edit sources or run validation. Warehouse queries (`pyoso`,
+the analyst skill) require `OSO_API_KEY` (see `.env.example`). With `direnv`, place it
 in `.env` and it loads automatically.
 
 ---

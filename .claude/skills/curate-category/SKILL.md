@@ -24,6 +24,8 @@ product roster** (the array order is the display order).
 5. Validate: `uv run python -m build.validate`: must print `0 error(s)`.
 6. Rebuild + preview: `uv run python -m build.serialize && uv run python build/render.py`,
    then `uv run marimo export html notebooks/ai-stack-map.py -o /tmp/preview.html`.
+   Preview only: do not commit `build/notebook_data.json` or `notebooks/ai-stack-map.py`
+   (a bot regenerates them on merge; CI blocks PRs that hand-edit them).
 7. Open a PR. Do not deploy UDMs or publish. That is a maintainer step (see
    `docs/runbooks/`).
 

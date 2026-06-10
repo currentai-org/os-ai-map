@@ -64,7 +64,9 @@ Creates four coordinated edits: a product file, a score file, a category roster 
 7. **Verify the source**: never assert a product/version from memory. Confirm any 2025+
    release against a PRIMARY source (vendor HF org / blog / registry). A plausible press
    claim that does not survive a check is rejected.
-8. Rebuild + preview, then open a PR.
+8. Rebuild + preview, then open a PR. Preview only: do not commit the regenerated
+   `build/notebook_data.json` or `notebooks/ai-stack-map.py` (bot-owned; CI blocks
+   hand-edits).
 
 ## Boundaries
 - Read-only on the warehouse. No MCP, no uploads.

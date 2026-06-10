@@ -18,12 +18,12 @@ warehouse/models/      UDM SQL (entities, events, metrics, scores)
 warehouse/ingest/      Python fetchers that write CSVs to warehouse/catalog/
 warehouse/catalog/     Raw external CSVs (GoodAI List, HF benchmarks, etc.)
 warehouse/sources.yaml Manifest linking each external source to its fetcher
-build/                 Python pipeline: validate.py, serialize.py, render.py, slugs.py, orgs.py
+build/                 Python pipeline: validate.py, serialize.py, render.py, slugs.py
 notebooks/             Generated marimo notebook (ai-stack-map.py)
 docs/guides/           Query conventions and notebook style guide
 docs/runbooks/         Maintainer deploy runbooks
 docs/schemas/          JSON Schemas for the source files (four concerns + taxonomy)
-tests/                 pytest suite for build helpers and round-trip proof
+tests/                 pytest suite for build helpers and serializer behavior
 ```
 
 ## Data model
@@ -62,6 +62,10 @@ uv run python -m build.serialize       # sources/ -> build/notebook_data.json
 uv run python build/render.py          # -> notebooks/ai-stack-map.py
 uv run marimo export html notebooks/ai-stack-map.py -o /tmp/preview.html
 ```
+
+Serialize/render locally for preview only. Do not commit `build/notebook_data.json` or
+`notebooks/ai-stack-map.py`: a bot regenerates them on merge to main, and CI blocks PRs
+that hand-edit them.
 
 ## Editor posture (read-only on the warehouse)
 
