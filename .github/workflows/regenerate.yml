@@ -1,0 +1,43 @@
+name: regenerate
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "sources/**"
+      - "build/serialize.py"
+      - "build/render.py"
+      - "build/_frozen_long_tail.json"
+
+permissions:
+  contents: write
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --locked
+      - name: Validate
+        run: uv run python -m build.validate
+      - name: Serialize (generated = run date)
+        run: uv run python -m build.serialize --date "$(date -u +%F)"
+      - name: Render notebook
+        run: uv run python build/render.py
+      - name: Notebook structure check
+        run: uv run marimo check notebooks/ai-stack-map.py
+      - name: Commit regenerated artifacts
+        run: |
+          if git diff --quiet build/notebook_data.json notebooks/ai-stack-map.py; then
+            echo "No changes to generated artifacts."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add build/notebook_data.json notebooks/ai-stack-map.py
+          git commit -m "chore(build): regenerate notebook data + notebook [bot]"
+          git push
