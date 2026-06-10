@@ -6,7 +6,7 @@ then query HF for models and datasets by those authors. This gives us
 the HF artifacts that are relevant to our ecosystem, not the full 2.8M dump.
 
 Usage:
-    uv run scripts/fetch_huggingface.py
+    uv run python warehouse/ingest/fetch_huggingface.py
 """
 
 import csv

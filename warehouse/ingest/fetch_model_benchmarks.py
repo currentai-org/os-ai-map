@@ -2,13 +2,13 @@
 Fetch model benchmarks and model→repo links from Hugging Face.
 
 Outputs:
-  data/huggingface/model_benchmarks.csv  — Open LLM Leaderboard v2 scores (4.5K+ models)
-  data/huggingface/model_repos.csv       — model_id → GitHub repo links (from HF metadata)
+  warehouse/catalog/huggingface/model_benchmarks.csv  — Open LLM Leaderboard v2 scores (4.5K+ models)
+  warehouse/catalog/huggingface/model_repos.csv       — model_id → GitHub repo links (from HF metadata)
 
 Usage:
-    uv run scripts/fetch_model_benchmarks.py
-    uv run scripts/fetch_model_benchmarks.py --benchmarks-only
-    uv run scripts/fetch_model_benchmarks.py --repos-only
+    uv run python warehouse/ingest/fetch_model_benchmarks.py
+    uv run python warehouse/ingest/fetch_model_benchmarks.py --benchmarks-only
+    uv run python warehouse/ingest/fetch_model_benchmarks.py --repos-only
 """
 
 import csv

@@ -14,15 +14,15 @@ scores (USER_MODEL)        — interpretive: taxonomy, dependencies, fragility, 
 
 ## Catalog (Static Model)
 
-CSV-based reference data uploaded via scripts. Source CSVs live in `data/`.
+CSV-based reference data uploaded via scripts. Source CSVs live in `warehouse/catalog/`.
 
 | Table | Source CSV | Records | Description |
 |-------|-----------|---------|-------------|
-| `currentai.catalog.goodailist_repos` | `data/goodailist/repos.csv` | ~15K | Primary repo catalog with categories, stars, contributors |
-| `currentai.catalog.model_benchmarks` | `data/huggingface/model_benchmarks.csv` | ~4.5K | Open LLM Leaderboard v2 scores |
-| `currentai.catalog.model_repos` | `data/huggingface/model_repos.csv` | ~6.3K | HF model → GitHub repo links |
-| `currentai.catalog.foundation_model_repos` | `data/huggingface/foundation_model_repos.csv` | ~72 | Curated foundation model families → canonical repos |
-| `currentai.catalog.pypi_downloads` | `data/pypi/pypi_downloads.csv` (gitignored) | ~1.6M | PyPI daily downloads by package × country, 39 AI packages |
+| `currentai.catalog.goodailist_repos` | `warehouse/catalog/goodailist/repos.csv` | ~15K | Primary repo catalog with categories, stars, contributors |
+| `currentai.catalog.model_benchmarks` | `warehouse/catalog/huggingface/model_benchmarks.csv` | ~4.5K | Open LLM Leaderboard v2 scores |
+| `currentai.catalog.model_repos` | `warehouse/catalog/huggingface/model_repos.csv` | ~6.3K | HF model → GitHub repo links |
+| `currentai.catalog.foundation_model_repos` | `warehouse/catalog/huggingface/foundation_model_repos.csv` | ~72 | Curated foundation model families → canonical repos |
+| `currentai.catalog.pypi_downloads` | `warehouse/catalog/pypi/pypi_downloads.csv` (gitignored) | ~1.6M | PyPI daily downloads by package × country, 39 AI packages |
 
 ## Entities (User Defined Models)
 
@@ -97,8 +97,8 @@ SELECT * FROM currentai.scores.project_summary ORDER BY total_stars DESC LIMIT 1
 
 ```bash
 # Refresh catalog CSVs:
-uv run scripts/fetch_goodailist.py          # then upload via MCP
-uv run scripts/fetch_model_benchmarks.py    # then upload via MCP
+uv run python warehouse/ingest/fetch_goodailist.py          # then upload via MCP
+uv run python warehouse/ingest/fetch_model_benchmarks.py    # then upload via MCP
 
 # UDMs refresh on their daily cron schedule, or trigger manually via MCP:
 # createUserModelRunRequest with the dataset ID

@@ -5,8 +5,8 @@ Pulls unique owners from the GoodAI List via pyoso, then queries the GitHub API
 for org/user profile metadata. Requires `gh` CLI to be authenticated.
 
 Usage:
-    uv run scripts/fetch_github_orgs.py
-    uv run scripts/fetch_github_orgs.py --limit 100   # test with first 100
+    uv run python warehouse/ingest/fetch_github_orgs.py
+    uv run python warehouse/ingest/fetch_github_orgs.py --limit 100   # test with first 100
 """
 
 import argparse
