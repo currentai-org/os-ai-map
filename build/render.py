@@ -697,7 +697,6 @@ def details_payload(DATA, ORDER, mo):
           '<div class="v3-sect">Capability \\u00b7 '+(cap.score==null?'n/a':cap.score+'/5')+'</div>'+
           row('Basis',cap.basis)+row('Value',cap.value)+row('Detail',cap.note)+row('Confidence',cap.confidence)+
           '<div class="v3-row"><span class="v3-lbl">Sources</span><span class="v3-val">'+srcs(cap.sources)+'</span></div>'+
-          ((p.flags&&p.flags.length)?'<div class="v3-sect">Flags</div><div class="v3-row"><span class="v3-val">'+esc(p.flags.join(', '))+'</span></div>':'')+
           '</div></div>';
         return h;
       }

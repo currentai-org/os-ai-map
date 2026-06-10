@@ -179,8 +179,6 @@ def main():
         if artifacts:
             artifact_matches += 1
         product_doc.update(artifacts)
-        if p.get("flags"):
-            product_doc["flags"] = p["flags"]
         # Provenance text formerly named `version_note`; now a free-text `comments`
         # string (empty when the overlay carried no note).
         product_doc["comments"] = p.get("version_note") or ""

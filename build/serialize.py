@@ -10,7 +10,7 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 
 PRODUCT_KEY_ORDER = ["product", "org", "type", "description",
-                     "openness", "adoption", "capability", "flags", "version_note"]
+                     "openness", "adoption", "capability", "version_note"]
 
 
 def _row(prod: dict, org_name: str, score: dict) -> dict:
@@ -22,7 +22,6 @@ def _row(prod: dict, org_name: str, score: dict) -> dict:
         "openness": score["openness"],
         "adoption": score["adoption"],
         "capability": score["capability"],
-        "flags": prod.get("flags", []),
     }
     # Bridge: the source field is now `comments` (a string), but the payload key
     # the notebook consumes is still `version_note`. Same value, renamed at rest.
