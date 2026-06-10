@@ -73,10 +73,19 @@ def validate_sources(data: dict) -> list[str]:
         if n != 1:
             errors.append(f"product {slug!r}: must appear in exactly one category roster (found in {n})")
 
-    # --- product -> org ref ---
-    for slug, p in prods.items():
-        if p.get("org") not in orgs:
-            errors.append(f"product {slug!r}: org {p.get('org')!r} has no organizations/ record")
+    # --- org roster <-> product invariants (org now owns the roster) ---
+    # Symmetric to the category roster: every product slug appears in exactly one
+    # org roster, and every slug in an org roster resolves to a real product file.
+    org_roster_count: dict[str, int] = {}
+    for oslug, org in orgs.items():
+        for slug in org.get("products", []):
+            org_roster_count[slug] = org_roster_count.get(slug, 0) + 1
+            if slug not in prods:
+                errors.append(f"organization {oslug}: roster slug {slug!r} has no products/{slug}.yaml")
+    for slug in prods:
+        n = org_roster_count.get(slug, 0)
+        if n != 1:
+            errors.append(f"product {slug!r}: must appear in exactly one org roster (found in {n})")
 
     # --- scores ---
     for slug, sc in scores.items():

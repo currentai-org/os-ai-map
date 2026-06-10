@@ -24,8 +24,10 @@ def _row(prod: dict, org_name: str, score: dict) -> dict:
         "capability": score["capability"],
         "flags": prod.get("flags", []),
     }
-    if prod.get("version_note"):
-        row["version_note"] = prod["version_note"]
+    # Bridge: the source field is now `comments` (a string), but the payload key
+    # the notebook consumes is still `version_note`. Same value, renamed at rest.
+    if prod.get("comments"):
+        row["version_note"] = prod["comments"]
     return {k: row[k] for k in PRODUCT_KEY_ORDER if k in row}
 
 
@@ -33,6 +35,12 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str = "2026-
     orgs, cats, prods, scores = (sources["organizations"], sources["categories"],
                                  sources["products"], sources["scores"])
     taxonomy = sources["taxonomy"]
+    # Products no longer carry an `org` field; the organization owns the roster.
+    # Build the reverse map (product_slug -> org_slug) by walking every org roster.
+    product_org: dict[str, str] = {}
+    for org_slug, org in orgs.items():
+        for prod_slug in org.get("products", []):
+            product_org[prod_slug] = org_slug
     # The curated display order + arc grouping live in sources/taxonomy.yaml.
     # Flatten arcs[].categories in sequence to get the global `order` list, and
     # build a {category_slug: arc_name} map for per-category arc tagging.
@@ -53,7 +61,8 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str = "2026-
             # that had an empty org string in the source. Reconstruct that empty
             # string so the round-trip is lossless (the registry keeps the display
             # name "Unknown", which is schema-valid; the overlay carries "").
-            org_name = "" if p["org"] == "unknown" else orgs[p["org"]]["display_name"]
+            org_slug = product_org[slug]
+            org_name = "" if org_slug == "unknown" else orgs[org_slug]["display_name"]
             rows.append(_row(p, org_name, scores[slug]))
             n += 1
         out_cats[cid] = {"label": cat["display_name"], "arc": cid_arc[cid], "products": rows}

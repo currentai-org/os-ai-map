@@ -140,14 +140,16 @@ def main():
         for p in overlay["categories"][cid]["products"]:
             flat.append({**p, "_cat": cid})
 
-    # 1) organizations
+    # 1) organizations (records first; product rosters are filled in below as we
+    #    assign product slugs, then written out after the product loop).
     org_records, name_to_slug = build_org_registry(flat)
-    for o in org_records:
-        _dump(ROOT / "sources/organizations" / f"{o['name']}.yaml", o)
 
     # 2) products + scores  (assign slugs, dedupe on collision by org, then by suffix)
     taken: set[str] = set()
     roster: dict[str, list[str]] = {cid: [] for cid in overlay["order"]}
+    # Reverse of the old per-product `org` field: each org owns an ordered roster
+    # of product slugs, in the order products first appear in the flat overlay list.
+    org_roster: dict[str, list[str]] = {o["name"]: [] for o in org_records}
     suffix_count = 0
     for p in flat:
         org_slug = name_to_slug[(p.get("org") or "").strip()]
@@ -163,13 +165,12 @@ def main():
             suffix_count += 1
         taken.add(slug)
         roster[p["_cat"]].append(slug)
+        org_roster[org_slug].append(slug)
 
         product_doc = {
-            "name": slug, "display_name": p["product"], "org": org_slug, "type": p["type"],
+            "name": slug, "display_name": p["product"], "type": p["type"],
             "description": p.get("description", ""),
         }
-        if p.get("version_note"):
-            product_doc["version_note"] = p["version_note"]
         # Backfill artifacts from the v2 registry fixture, keyed by normalized name
         # (overlay product label == our product `display_name`). No match -> no
         # artifact keys. Emitted as typed top-level url arrays (oss-directory style).
@@ -180,12 +181,19 @@ def main():
         product_doc.update(artifacts)
         if p.get("flags"):
             product_doc["flags"] = p["flags"]
-        product_doc["comments"] = []
+        # Provenance text formerly named `version_note`; now a free-text `comments`
+        # string (empty when the overlay carried no note).
+        product_doc["comments"] = p.get("version_note") or ""
         _dump(ROOT / "sources/products" / f"{slug}.yaml", product_doc)
 
         score_doc = {"product": slug, "openness": p["openness"],
                      "adoption": p["adoption"], "capability": p["capability"]}
         _dump(ROOT / "sources/scores" / f"{slug}.yaml", score_doc)
+
+    # Write organizations now that each roster is populated (org owns its products).
+    for o in org_records:
+        o["products"] = org_roster[o["name"]]
+        _dump(ROOT / "sources/organizations" / f"{o['name']}.yaml", o)
 
     # 3) categories (label/products from overlay; strapline/weights from generator).
     # arc + order are cross-category concerns; they live in sources/taxonomy.yaml now.
@@ -197,7 +205,7 @@ def main():
             "strapline": straplines.get(cid, ""),
             "weights": {"adopt": wa, "cap": wc},
             "products": roster[cid],
-            "comments": [],
+            "comments": "",
         }
         _dump(ROOT / "sources/categories" / f"{cid}.yaml", cat_doc)
 
