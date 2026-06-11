@@ -11,6 +11,7 @@ Usage:
 
 import csv
 import sys
+import time
 from pathlib import Path
 
 from huggingface_hub import list_models, list_datasets
@@ -49,6 +50,24 @@ def get_tracked_authors() -> set[str]:
         return set()
 
 
+# HF's api rate limit is 10K requests per 300s window. Pace calls (~20/s) and
+# retry on 429 so fast runners (CI) don't silently drop authors.
+RATE_SLEEP = 0.05
+
+
+def _throttled(thunk):
+    for attempt in range(5):
+        time.sleep(RATE_SLEEP)
+        try:
+            return thunk()
+        except Exception as e:
+            if "429" in str(e) and attempt < 4:
+                print("  429 rate limited; sleeping 60s")
+                time.sleep(60)
+                continue
+            raise
+
+
 def fetch_models_by_authors(authors: set[str]) -> list[dict]:
     """Fetch HF models published by tracked authors."""
     rows = []
@@ -57,7 +76,7 @@ def fetch_models_by_authors(authors: set[str]) -> list[dict]:
         if i % 100 == 0:
             print(f"  Models: scanning author {i}/{total} ({len(rows)} found so far)")
         try:
-            for m in list_models(author=author, sort="downloads", limit=100):
+            for m in _throttled(lambda: list(list_models(author=author, sort="downloads", limit=100))):
                 rows.append({
                     "model_id": m.id or "",
                     "author": m.author or "",
@@ -83,7 +102,7 @@ def fetch_datasets_by_authors(authors: set[str]) -> list[dict]:
         if i % 100 == 0:
             print(f"  Datasets: scanning author {i}/{total} ({len(rows)} found so far)")
         try:
-            for d in list_datasets(author=author, sort="downloads", limit=100):
+            for d in _throttled(lambda: list(list_datasets(author=author, sort="downloads", limit=100))):
                 rows.append({
                     "dataset_id": d.id or "",
                     "author": d.author or "",

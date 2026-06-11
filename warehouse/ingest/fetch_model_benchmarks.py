@@ -15,6 +15,7 @@ import csv
 import functools
 import re
 import sys
+import time
 from pathlib import Path
 
 print = functools.partial(print, flush=True)
@@ -42,7 +43,17 @@ def fetch_benchmarks() -> list[dict]:
     from datasets import load_dataset
 
     print("Fetching Open LLM Leaderboard v2...")
-    ds = load_dataset("open-llm-leaderboard/contents", split="train")
+    # Retry on 429: a preceding fetcher may have drained the shared HF api window.
+    for attempt in range(3):
+        try:
+            ds = load_dataset("open-llm-leaderboard/contents", split="train")
+            break
+        except Exception as e:
+            if "429" in str(e) and attempt < 2:
+                print("  429 rate limited; sleeping 120s")
+                time.sleep(120)
+                continue
+            raise
     print(f"  Found {len(ds)} entries")
 
     rows = []
@@ -127,9 +138,20 @@ def fetch_model_repos() -> list[dict]:
         likes = 0
         author = mid.split("/")[0] if "/" in mid else ""
 
-        # Try HF API for detailed metadata
+        # Try HF API for detailed metadata (paced: HF allows 10K requests/300s)
         try:
-            info = model_info(mid)
+            info = None
+            for attempt in range(3):
+                time.sleep(0.05)
+                try:
+                    info = model_info(mid)
+                    break
+                except Exception as e:
+                    if "429" in str(e) and attempt < 2:
+                        print("  429 rate limited; sleeping 60s")
+                        time.sleep(60)
+                        continue
+                    raise
             downloads = info.downloads or 0
             likes = info.likes or 0
             pipeline_tag = info.pipeline_tag or ""
