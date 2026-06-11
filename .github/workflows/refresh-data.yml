@@ -15,7 +15,11 @@ concurrency:
 jobs:
   refresh:
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    # The HF link scan spends ~2h of wall time in 60s sleeps on 429s (the
+    # pacing that keeps it alive); a full paced run takes ~3.5h. 180m killed
+    # run 27345470020 at 79% of the link scan. Trim pacing or split fetchers
+    # into parallel jobs before tightening this again.
+    timeout-minutes: 330
     env:
       OSO_API_KEY: ${{ secrets.OSO_API_KEY }}
       HF_TOKEN: ${{ secrets.HF_TOKEN }}
