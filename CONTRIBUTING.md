@@ -112,6 +112,6 @@ turns accepted suggestions into PRs.
 
 ## For agent-assisted editing
 
-If you use Claude Code, the repo ships skills that automate these recipes:
+If you use a coding agent, the repo ships skills that automate these recipes:
 `add-product`, `curate-category`, `add-data-source`, `pyoso-analyst`. See
-`CLAUDE.md`.
+`AGENTS.md` and `skills/`.

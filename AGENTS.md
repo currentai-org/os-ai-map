@@ -1,6 +1,6 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code when working in this repository.
+This file provides guidance to coding agents and assistants when working in this repository.
 
 ## Project Overview
 
@@ -23,6 +23,7 @@ notebooks/             Generated marimo notebook (ai-stack-map.py)
 docs/guides/           Query conventions and notebook style guide
 docs/runbooks/         Maintainer deploy runbooks
 docs/schemas/          JSON Schemas for the source files (four concerns + taxonomy)
+skills/                Agent skills for common editor workflows
 tests/                 pytest suite for build helpers and serializer behavior
 ```
 
@@ -80,7 +81,7 @@ All warehouse write operations are maintainer steps. See `docs/runbooks/`.
 
 ## Skills
 
-Four Claude Code skills are defined in `.claude/skills/`:
+Four editor skills live in `skills/`:
 
 | Skill | When to use |
 |-------|------------|
@@ -89,8 +90,8 @@ Four Claude Code skills are defined in `.claude/skills/`:
 | `add-data-source` | Register a new external data source and add a fetcher |
 | `pyoso-analyst` | Query `currentai.*` tables via `pyoso` (read-only analysis) |
 
-Invoke a skill before doing editor work. The skills enforce the read-only boundary and
-walk through validation + preview steps.
+Invoke the relevant skill before doing editor work. Skills enforce the read-only boundary
+and walk through validation + preview steps.
 
 ## Maintainer runbooks
 
