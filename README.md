@@ -24,7 +24,7 @@ The curated source set is the four per-record concerns (one YAML file per entity
 
 | Path | Contains | Key rule |
 |-----------|----------|----------|
-| `sources/organizations/` | One file per org (`name`=slug, `display_name`, `type`, `homepage`; owns `products:` roster) | Org declares which products belong to it via a `products:` array |
+| `sources/organizations/` | One file per org (`name`=slug, `display_name`, `type`, `homepage`, optional `github` url array + `comments`; owns `products:` roster) | Org declares which products belong to it via a `products:` array |
 | `sources/categories/` | One file per stack-map category (`name`=slug, `display_name`, `products`, optional `comments`) | Category owns the **ordered product roster** (`products:` array). Order = display order. |
 | `sources/products/` | One file per product (`name`=slug, `display_name`, `type`, `description`; typed artifact arrays per source: `github`, `npm`, `pypi`, `crates`, `go`, `huggingface_model`, `huggingface_dataset`; optional `comments` string) | One product appears in exactly one category roster AND exactly one org roster. No `org:` field on the product; no `flags` field. |
 | `sources/scores/` | One file per product (same slug) with `openness`, `adoption`, `capability` | Every non-null score value needs a `sources:` citation |

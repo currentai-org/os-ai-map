@@ -10,6 +10,16 @@
     "type": { "enum": ["company", "lab", "foundation", "individual", "government", "unknown"] },
     "homepage": { "type": "string" },
     "country": { "type": "string" },
-    "products": { "type": "array", "items": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" } }
+    "github": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["url"],
+        "additionalProperties": false,
+        "properties": { "url": { "type": "string", "pattern": "^https?://" } }
+      }
+    },
+    "products": { "type": "array", "items": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" } },
+    "comments": { "type": "string" }
   }
 }

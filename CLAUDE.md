@@ -31,8 +31,8 @@ tests/                 pytest suite for build helpers and serializer behavior
 The curated source set is four per-record YAML concerns in `sources/` plus the single
 `sources/taxonomy.yaml` manifest:
 
-- **organizations**: one file per org (`name`=slug, `display_name`, `type`, `homepage`).
-  Owns the `products:` roster: a list of product slugs that belong to this org. A product
+- **organizations**: one file per org (`name`=slug, `display_name`, `type`, `homepage`,
+  optional `github` typed-url array and `comments` string). Owns the `products:` roster: a list of product slugs that belong to this org. A product
   slug must appear in exactly one org roster (validated).
 - **categories**: one file per stack-map category (`name`=slug, `display_name`). Owns the
   ordered product roster (`products:` array). Order equals display order. One product
