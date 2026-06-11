@@ -10,7 +10,7 @@
 | `entities` | UDM | `repos`, `projects`, `packages`, `models` |
 | `events` | UDM | `github_events` |
 | `metrics` | UDM | `daily` |
-| `scores` | UDM | `repos_summary`, `taxonomy`, `dependency_graph`, `fragility`, `project_summary`, `ossd_coverage` |
+| `scores` | UDM | `repos_summary`, `dependency_graph`, `fragility`, `project_summary`, `ossd_coverage` |
 
 `oso.*` tables are public and can be queried with any valid key.
 

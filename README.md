@@ -49,9 +49,9 @@ uv run marimo export html notebooks/ai-stack-map.py -o /tmp/preview.html
 Deployment (publish to OSO, deploy UDMs) is a maintainer step described in
 `docs/runbooks/`.
 
-`build/uncategorized.json` is a hand-frozen long-tail snapshot (a copy of
-`build/_frozen_long_tail.json`) pending the warehouse-recompute follow-up; it is not yet
-regenerated from live data, so treat it as a fixture, not a derived artifact.
+`build/_frozen_long_tail.json` is a hand-frozen long-tail snapshot pending the
+warehouse-recompute follow-up (Phase 3 queue indexer); it is not yet regenerated from
+live data, so treat it as a fixture, not a derived artifact.
 
 ---
 
