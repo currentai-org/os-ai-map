@@ -33,9 +33,9 @@ If you detect a request that requires write access, you must:
 ## Workflow Steps
 
 1. **Pick the right table from the registry**
-   - Start from [`warehouse/models/README.md`](../../../warehouse/models/README.md) for the inventory.
-   - Use [`docs/guides/queries.md`](../../../docs/guides/queries.md) for query conventions and caveats.
-   - Use [`docs/guides/notebooks.md`](../../../docs/guides/notebooks.md) for marimo notebook structure/style.
+   - Start from [`warehouse/models/README.md`](../../warehouse/models/README.md) for the inventory.
+   - Use [`docs/guides/queries.md`](../../docs/guides/queries.md) for query conventions and caveats.
+   - Use [`docs/guides/notebooks.md`](../../docs/guides/notebooks.md) for marimo notebook structure/style.
 
 2. **Draft bounded Trino SQL**
    - Prefer `LIMIT`, date windows (e.g. last 90 days), and aggregations.
