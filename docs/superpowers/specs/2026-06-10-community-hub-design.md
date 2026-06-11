@@ -18,7 +18,7 @@ models, the reference marimo notebook, and the editor skills.
 | Where does recurring automation live? | GitHub Actions: weekly fetcher crons + on-merge regeneration, committing via a bot. Warehouse static-model loads and notebook publish remain maintainer-MCP runbook steps. |
 | How do community members contribute? | Direct YAML PRs for capable contributors, plus structured GitHub issue forms for everyone else; maintainers (or the add-product skill) convert issues to PRs. CI validates everything. |
 | Where do indexer-discovered candidates land? | A committed queue file (`sources/queue/uncategorized.yaml`) updated by a weekly bot PR; curators triage in-repo. |
-| Licensing | Deferred. Hard blocker before publicly inviting contributions, but blocks nothing else. |
+| Licensing | MIT for the whole repo (code + data). Decided 2026-06-11. |
 
 ## Architecture: three loops
 
@@ -41,7 +41,7 @@ All three loops anchor on the curated `sources/` tree.
 - Repo metadata: push `main` to `currentai-org/os-ai-map` (currently empty), update the
   GitHub description to reflect data + models (the app lives in `ecosystem-mapping`),
   add `.DS_Store` to `.gitignore`.
-- Leave a license placeholder note in CONTRIBUTING (decision deferred).
+- License: MIT (decided 2026-06-11; LICENSE committed).
 - **Full dataset refresh dry-run** (done 2026-06-10): every fetcher run end-to-end;
   refreshed `warehouse/catalog/` CSVs to be committed with this phase. Bugs found and
   fixed during the dry-run:
@@ -152,8 +152,6 @@ All three loops anchor on the curated `sources/` tree.
 
 ## Open items
 
-- **License** (code + data): must be chosen before publicly announcing/inviting
-  contributions.
 - **OSO write automation**: automating static-model upload and notebook publish from
   Actions depends on an API-token path; until then these remain maintainer runbooks.
 - **Benchmark successor**: Open LLM Leaderboard v2 is frozen upstream; pick a successor

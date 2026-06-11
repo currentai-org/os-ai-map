@@ -13,7 +13,8 @@ the OSO platform.
 Community curation happens through pull requests and issue forms. Read
 [CONTRIBUTING.md](CONTRIBUTING.md) for the data model and step-by-step recipes,
 or open a [product suggestion](../../issues/new?template=suggest-a-product.yml)
-if you'd rather not write YAML. Every PR is validated by CI.
+if you'd rather not write YAML. Every PR is validated by CI. Code and data are
+[MIT licensed](LICENSE).
 
 ---
 

@@ -4,8 +4,8 @@ Thanks for helping map the open source AI stack. All curation happens through
 pull requests editing the YAML files in `sources/`. CI validates every PR, so
 you can't break anything that a maintainer won't catch.
 
-> **License note:** a code + data license is being finalized. Until it lands,
-> contributions are accepted under the project's forthcoming terms.
+This project is [MIT licensed](LICENSE); contributions are accepted under the
+same terms.
 
 ## Quick start
 
