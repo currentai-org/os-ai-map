@@ -98,4 +98,3 @@ GROUP BY pc.collection_name, c.display_name
 
 - Inventory + schedules: [`warehouse/models/README.md`](../../warehouse/models/README.md)
 - Coverage backlog: [`docs/catalog-gaps.md`](../catalog-gaps.md)
-- Compatibility router: [`docs/analysis-router.md`](../analysis-router.md)

@@ -28,6 +28,8 @@ One YAML file per record, four concerns plus one manifest:
 | `sources/categories/<slug>.yaml` | The category, plus its **ordered** `products:` roster (order = display order) |
 | `sources/taxonomy.yaml` | Arc grouping and cross-category display order |
 
+Machine-readable JSON Schemas for all five file types live in `docs/schemas/`.
+
 Invariants (validated in CI):
 - A product appears in **exactly one** category roster and **exactly one** org roster.
 - Every product has a matching score file (same slug).
