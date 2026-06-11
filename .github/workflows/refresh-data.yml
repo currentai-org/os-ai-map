@@ -1,0 +1,70 @@
+name: refresh-data
+
+on:
+  schedule:
+    - cron: "17 5 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: refresh-data
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      OSO_API_KEY: ${{ secrets.OSO_API_KEY }}
+      HF_TOKEN: ${{ secrets.HF_TOKEN }}
+      # GITHUB_TOKEN is read by fetch_github_ai_repos; GH_TOKEN by the gh CLI
+      # inside fetch_github_orgs. Both map to the GH_FETCH_TOKEN repo secret
+      # (a PAT, not the Actions token: PRs opened with the Actions token would
+      # not trigger the validate workflow, and the orgs scan needs a 5K/hr limit).
+      GITHUB_TOKEN: ${{ secrets.GH_FETCH_TOKEN }}
+      GH_TOKEN: ${{ secrets.GH_FETCH_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Require secrets (fetchers degrade silently without them)
+        run: |
+          missing=""
+          [ -n "$OSO_API_KEY" ] || missing="$missing OSO_API_KEY"
+          [ -n "$HF_TOKEN" ] || missing="$missing HF_TOKEN"
+          [ -n "$GITHUB_TOKEN" ] || missing="$missing GH_FETCH_TOKEN"
+          if [ -n "$missing" ]; then
+            echo "::error::Missing repo secrets:$missing. Without tokens the HF link scan silently drops from ~742 links to ~7; refusing to run."
+            exit 1
+          fi
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --locked
+      - name: Run fetchers
+        run: |
+          uv run python warehouse/ingest/fetch_goodailist.py
+          uv run python warehouse/ingest/fetch_incidents.py
+          uv run python warehouse/ingest/fetch_huggingface.py
+          uv run python warehouse/ingest/fetch_model_benchmarks.py
+          uv run python warehouse/ingest/fetch_github_ai_repos.py
+          # Resumes from the committed orgs.csv, so steady-state runs only
+          # fetch new owners and stay well under the 5K/hr rate limit.
+          uv run python warehouse/ingest/fetch_github_orgs.py
+      - name: Open refresh PR
+        run: |
+          if [ -z "$(git status --porcelain warehouse/catalog/)" ]; then
+            echo "Catalog unchanged; no PR needed."
+            exit 0
+          fi
+          BRANCH="data-refresh/$(date -u +%F)"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add warehouse/catalog/
+          git commit -m "chore(catalog): weekly data refresh $(date -u +%F)"
+          git push -u origin "$BRANCH"
+          gh pr create \
+            --title "chore(catalog): weekly data refresh $(date -u +%F)" \
+            --body "Automated weekly fetcher run. Review row-count deltas before merging. After merge, reload static models per \`docs/runbooks/refresh-data.md\`."
