@@ -1,0 +1,20 @@
+{
+  "_comment": "Canonical openness normalization for the AI Stack Map. Derived from the OPEN dict and vbucket() in build/render.py. Use `class` (not the raw openness.score) to position a product on a cross-category openness spectrum. See docs/guides/openness-spectrum.md for the rationale.",
+  "source_of_truth": "build/render.py (OPEN dict + verdict_logic.vbucket)",
+  "classes": {
+    "open_source": { "label": "Open source",      "gradient": 5, "bucket": "open",    "color": "#1b6b5e" },
+    "open":        { "label": "Open data",         "gradient": 5, "bucket": "open",    "color": "#1b6b5e" },
+    "open_core":   { "label": "Open core",         "gradient": 4, "bucket": "open",    "color": "#1b6b5e" },
+    "open_weights":{ "label": "Open weights",      "gradient": 3, "bucket": "openish", "color": "#d97c2a" },
+    "gated":       { "label": "Gated",             "gradient": 2, "bucket": "openish", "color": "#d97c2a" },
+    "source_available": { "label": "Source available", "gradient": 2, "bucket": "openish", "color": "#c8341d" },
+    "restricted":  { "label": "Restricted",        "gradient": 2, "bucket": "closed",  "color": "#c8341d" },
+    "documented_only": { "label": "Documented only", "gradient": 1, "bucket": "closed", "color": "#6b6253" },
+    "closed":      { "label": "Closed",            "gradient": 1, "bucket": "closed",  "color": "#6b6253" }
+  },
+  "buckets": {
+    "open":    { "label": "Open",     "color": "#1b6b5e", "classes": ["open_source", "open", "open_core"] },
+    "openish": { "label": "Open-ish", "color": "#d97c2a", "classes": ["open_weights", "source_available", "gated"] },
+    "closed":  { "label": "Closed",   "color": "#c8341d", "classes": ["restricted", "documented_only", "closed"] }
+  }
+}
