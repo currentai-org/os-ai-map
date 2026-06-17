@@ -1,0 +1,42 @@
+product: confer
+openness:
+  score: 2
+  class: source_available
+  components: license:none-declared(no LICENSE file in either public repo);source:partial(confer-proxy +
+    confer-image public,client-app private);self-host:no(depends on vendor attestation infra);models:open-source(undisclosed)
+  confidence: high
+  note: 'Marketed as open-source, but neither public repo declares any license (GitHub reports license:null),
+    so re-use rights are undefined, and the end-user client is not public. Source is published for verifiability/reproducible
+    builds, not for self-deployment. Accurate classification is source-available, not open_source.'
+  sources:
+  - url: https://confer.to/blog/2026/01/private-inference/
+    shows: architecture (TEE, Noise pipes, dm-verity, reproducible nix/mkosi builds, transparency log); names
+      the confer-proxy and confer-image repos
+    accessed: '2026-06-17'
+  - url: https://github.com/ConferLabs/confer-proxy
+    shows: public proxy repo with no LICENSE file (no declared license)
+    accessed: '2026-06-17'
+adoption:
+  level: 2
+  signal_type: reported_traction
+  confidence: low
+  note: Young product (repos created Dec 2025, launched late 2025/early 2026); ~70-75 stars per repo and a
+    reported partnership "bringing foundational AI privacy to Meta", but no user/usage numbers. Notability
+    is driven mainly by the founder's reputation.
+  sources:
+  - url: https://confer.to/blog/
+    shows: product positioning and feature timeline (memory, encrypted folders, connectors, Meta partnership)
+    accessed: '2026-06-17'
+capability:
+  score: 3
+  basis: feature_matrix
+  value: 'E2EE chat with TEE inference; remote attestation + reproducible builds + transparency log; encrypted
+    chat history (passkey-derived keys); encrypted folders; cross-conversation memory; emerging connectors;
+    models: multiple open-source (task-routed via vLLM, names undisclosed); self-host: no; web client'
+  confidence: medium
+  note: Strong, genuinely novel on the privacy/crypto dimension, but a relatively standard chat feature set,
+    no self-hosting, and undisclosed models cap it at mid-tier.
+  sources:
+  - url: https://confer.to/blog/2026/01/private-inference/
+    shows: 'feature set: E2EE chat, TEE inference, attestation, transparency log, encrypted history'
+    accessed: '2026-06-17'

@@ -1,0 +1,45 @@
+product: openpcc
+openness:
+  score: 5
+  class: open_source
+  components: license:Apache-2.0(OSI);source:public(github.com/openpcc/openpcc + spec/whitepaper);reference-impl(Go)+client-SDKs;commercial-managed-service(CONFSEC)separate
+  confidence: high
+  note: Fully OSI-licensed (Apache-2.0) across the reference implementation and related repos, with the spec
+    and whitepaper public. Confident Security runs a commercial managed service (CONFSEC) on top, but that
+    is an open-core *business* around a fully open standard, not open-core licensing.
+  sources:
+  - url: https://github.com/openpcc/openpcc
+    shows: Apache-2.0; "open-source framework for verifiably private AI inference"; OHTTP gateway, attestation,
+      transparency log, client SDKs
+    accessed: '2026-06-17'
+  - url: https://cloudsecurityalliance.org/blog/2025/11/13/introducing-openpcc
+    shows: defines OpenPCC as an Apache-2.0 standard for provably-confidential cloud compute; launch Nov 2025;
+      Confident Security
+    accessed: '2026-06-17'
+adoption:
+  level: 2
+  signal_type: reported_traction
+  confidence: low
+  note: Launched Nov 5 2025 with a $5M seed (Decibel, Ex/Ante, South Park Commons, Halcyon, SAIF); ~940 GitHub
+    stars by mid-2026 (notable for a young infra project) but no production adopters documented in primary
+    sources. Early-stage.
+  sources:
+  - url: https://github.com/openpcc/openpcc
+    shows: ~940 stars; reference implementation
+    accessed: '2026-06-17'
+capability:
+  score: 4
+  basis: feature_matrix
+  value: 'confidential inference on commodity CPU + GPU (NVIDIA) TEEs; integrated CPU/GPU remote attestation;
+    HPKE-based encrypted client-server streaming (Two-Way); tamper-proof verifiable transparency logs; unlinkable/anonymized
+    requests via Oblivious HTTP; client SDKs (Go native + C lib for Python/JS); model/provider-agnostic (prototyped
+    on Intel TDX + H100 serving Llama-3 8B on vLLM)'
+  confidence: medium
+  note: Broad, well-architected confidential-serving stack with attestation plus anonymization that goes beyond
+    plain confidential compute. Not top because it is young with limited proven scale and no documented production
+    adopters.
+  sources:
+  - url: https://cloudsecurityalliance.org/blog/2025/11/13/introducing-openpcc
+    shows: 'technical scope: TEE inference, attestation, transparency logs, Oblivious-HTTP anonymization,
+      client SDKs'
+    accessed: '2026-06-17'
