@@ -1,0 +1,42 @@
+product: maple-ai
+openness:
+  score: 5
+  class: open_source
+  components: license:MIT(Maple-client)+AGPL-3.0(OpenSecret-platform),both-OSI;source:public(github.com/OpenSecretCloud);models:open-weight;hosted-tier:paid(managed-enclaves)
+  confidence: medium
+  note: Both halves of the stack are open under standard OSI licenses (Maple client MIT, OpenSecret platform
+    AGPL-3.0) and the served models are open-weight - unusually clean for a "private AI" product. Scored
+    open_source because the privacy guarantee is only credible because the code is open and attestable. A
+    defensible alternative is open_core, since the delivered offering is a paid hosted service over managed
+    enclaves.
+  sources:
+  - url: https://github.com/OpenSecretCloud/Maple
+    shows: MIT-licensed Maple client (Tauri/Rust/TS), active; multi-platform
+    accessed: '2026-06-17'
+  - url: https://github.com/OpenSecretCloud/opensecret
+    shows: AGPL-3.0 OpenSecret platform; AWS Nitro enclave / TEE confidential-computing architecture
+    accessed: '2026-06-17'
+adoption:
+  level: 3
+  signal_type: reported_traction
+  confidence: low
+  note: Launched Jan 2025; vendor reports "5x user growth in the last six months", >90% month-over-month
+    paid retention, and "billions of tokens" in year one, but no absolute user count is published. Self-reported
+    figures only, hence low confidence.
+  sources:
+  - url: https://blog.trymaple.ai/one-year-of-private-ai-how-maple-ai-made-encryption-easy/
+    shows: launch date (Jan 2025); 5x growth, >90% retention, billions of tokens processed
+    accessed: '2026-06-17'
+capability:
+  score: 4
+  basis: feature_matrix
+  value: 'models: 6+ open-weight (gpt-oss-120b, kimi-k2.5, deepseek-r1, llama-3.3-70b, qwen3-vl, gemma-3);
+    E2EE chat in TEEs with remote attestation; image/vision (gated to paid tiers); voice/transcription; OpenAI-compatible
+    API (Maple Proxy); platforms: web/iOS/Android/macOS/desktop; teams/multi-seat'
+  confidence: medium
+  note: Broad multi-model, multi-platform private chat with vision, API, and teams. Short of top because it
+    is a focused private-chat product without a confirmed agentic tool-use/web-browsing ecosystem.
+  sources:
+  - url: https://blog.trymaple.ai/maple-ai-model-guide-with-example-prompts/
+    shows: 'model lineup (open-weight) and tier/feature structure'
+    accessed: '2026-06-17'

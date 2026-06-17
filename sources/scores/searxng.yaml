@@ -1,0 +1,40 @@
+product: searxng
+openness:
+  score: 5
+  class: open_source
+  components: license:AGPL-3.0(OSI);source:public(github.com/searxng/searxng);self-host:only(no official
+    SaaS);reproducible-Docker-build;no-proprietary-backend
+  confidence: high
+  note: Fully open source under copyleft AGPL-3.0, complete source public, reproducible official Docker image,
+    no proprietary backend or gated hosted tier - self-hosting (or community public instances) is the only
+    distribution.
+  sources:
+  - url: https://github.com/searxng/searxng
+    shows: AGPL-3.0 license; ~32k stars; privacy metasearch engine, no tracking
+    accessed: '2026-06-17'
+adoption:
+  level: 4
+  reach: 50M+ total Docker pulls
+  signal_type: usage_volume
+  confidence: high
+  note: ~32k GitHub stars plus 50M+ total Docker pulls (~1.5M in a single recent week) and ~70 maintained
+    public instances - concrete deployment volume well into the high band, not stars-only. The de facto open
+    web-search backend for self-hosted AI.
+  sources:
+  - url: https://hub.docker.com/r/searxng/searxng
+    shows: official image, 50M+ total pulls, ~1.5M weekly
+    accessed: '2026-06-17'
+capability:
+  score: 4
+  basis: feature_matrix
+  value: 'engines aggregated: up to 269 search services; API: JSON (also CSV/RSS) via ?format=json, no auth
+    required by default; programmatic access: simple HTTP GET; consumed as a web-search/RAG backend by Open
+    WebUI, Perplexica, Morphic, LibreChat; self-hostable official Docker image'
+  confidence: medium
+  note: The reference open implementation of the search-backend slot - broad source aggregation, clean structured
+    JSON, fully self-hosted. Below top among AI search APIs because it is raw metasearch without the AI-native
+    extraction/reranking that proprietary peers (Tavily/Exa) layer on.
+  sources:
+  - url: https://docs.searxng.org/dev/search_api.html
+    shows: '?format=json search API; up to 269 search services aggregated'
+    accessed: '2026-06-17'
