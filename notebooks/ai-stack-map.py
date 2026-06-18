@@ -360,37 +360,95 @@ def openness_distribution(C, DATA, F, mo):
 
 
 @app.cell(hide_code=True)
-def openness_toggle(C, F, mo):
-    # JS-only filter (works in static HTML). Buttons set a data-filter on the
-    # document body; CSS hides section rows whose openness bucket (data-open)
-    # does not match. Long-tail rows use a different attribute and are unaffected.
+def filter_sort_controls(mo):
+    # JS-driven filter + sort controller. Works in static HTML, where marimo
+    # reactivity and <script> tags are stripped — so the logic is injected via an
+    # iframe onload handler that runs in the parent document context.
+    #
+    # Three filters (openness bucket, min adoption, min capability) intersect, and
+    # a sort selector re-orders the surviving rows within each category table.
+    # Operates only on category rows (tr[data-open]); the long-tail table uses
+    # data-lttype and is untouched. A category whose rows all filter out collapses
+    # its whole cell so no orphaned header/callout is left over an empty table.
     _css = (
         "<style>"
-        ".v3map-filter button{font-family:Inter,system-ui,sans-serif;font-size:12px;"
+        ".v3ctrl-bar .v3ctrl-lbl{font-family:'JetBrains Mono',monospace;font-size:10px;"
+        "color:#6b6253;letter-spacing:0.08em;text-transform:uppercase;margin-right:10px;}"
+        ".v3ctrl-bar button{font-family:Inter,system-ui,sans-serif;font-size:12px;"
         "border:1px solid #c9bfac;background:#fff;color:#3a342b;border-radius:5px;"
         "padding:5px 12px;cursor:pointer;margin-right:6px;}"
-        ".v3map-filter button.active{background:#2a3d8f;color:#fff;border-color:#2a3d8f;}"
-        "body[data-v3filter=open] tr[data-open]:not([data-open=open]){display:none;}"
-        "body[data-v3filter=openish] tr[data-open]:not([data-open=openish]){display:none;}"
-        "body[data-v3filter=closed] tr[data-open]:not([data-open=closed]){display:none;}"
+        ".v3ctrl-bar button.active{background:#2a3d8f;color:#fff;border-color:#2a3d8f;}"
         "</style>"
     )
-    _js = (
-        "(function(){var f=document.querySelector('.v3map-filter');if(!f)return;"
-        "f.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;"
-        "document.body.setAttribute('data-v3filter',b.getAttribute('data-f'));"
-        "f.querySelectorAll('button').forEach(function(x){x.classList.toggle('active',x===b);});});})();"
+
+    def _group(group, label, opts, active):
+        btns = "".join(
+            '<button data-v="' + v + '" class="'
+            + ("active" if v == active else "") + '">' + lab + "</button>"
+            for v, lab in opts
+        )
+        return (
+            '<div data-group="' + group + '" '
+            'style="display:flex; align-items:center; flex-wrap:wrap;">'
+            '<span class="v3ctrl-lbl">' + label + "</span>" + btns + "</div>"
+        )
+
+    # "All" maps to -1 (not 0) so it imposes no constraint and keeps rows whose
+    # score is null (rendered as data-* = -1); the 2+..5 thresholds exclude nulls.
+    _levels = [("-1", "All"), ("2", "2+"), ("3", "3+"), ("4", "4+"), ("5", "5")]
+    _bar = (
+        '<div class="v3ctrl-bar" style="margin:0 0 24px; display:flex; '
+        'flex-wrap:wrap; gap:14px 28px; align-items:center;">'
+        + _group("openness", "Filter by openness",
+                 [("all", "All"), ("open", "Open"), ("openish", "Open-ish"),
+                  ("closed", "Closed")], "all")
+        + _group("adopt", "Min adoption", _levels, "0")
+        + _group("cap", "Min capability", _levels, "0")
+        + _group("sort", "Sort by",
+                 [("openness", "Openness"), ("adoption", "Adoption"),
+                  ("capability", "Capability")], "openness")
+        + "</div>"
     )
-    _boot = (_css + "<div class=\"v3map-filter\" style=\"margin:0 0 24px;\">"
-        "<span style=\"font-family:'JetBrains Mono',monospace;font-size:10px;color:#6b6253;"
-        "letter-spacing:0.08em;text-transform:uppercase;margin-right:12px;\">Filter by openness</span>"
-        "<button data-f=\"all\" class=\"active\">All</button>"
-        "<button data-f=\"open\">Open</button>"
-        "<button data-f=\"openish\">Open-ish</button>"
-        "<button data-f=\"closed\">Closed</button></div>")
-    _enc = (_js.replace("&", "&amp;").replace('"', "&quot;").replace("<", "&lt;"))
+
+    _js = (
+        "(function(){"
+        "var bar=document.querySelector('.v3ctrl-bar');if(!bar)return;"
+        "var state={openness:'all',adopt:-1,cap:-1,sort:'openness'};"
+        "var keymap={openness:'data-openness',adoption:'data-adopt',capability:'data-cap'};"
+        "var axes=['data-openness','data-adopt','data-cap'];"
+        "function num(r,k){return parseFloat(r.getAttribute(k));}"
+        "function apply(){"
+        "var rows=document.querySelectorAll('tr[data-open]');var bodies=[];"
+        "rows.forEach(function(r){"
+        "var ok=(state.openness==='all'||r.getAttribute('data-open')===state.openness)"
+        "&&num(r,'data-adopt')>=state.adopt&&num(r,'data-cap')>=state.cap;"
+        "r.style.display=ok?'':'none';"
+        "if(bodies.indexOf(r.parentNode)===-1)bodies.push(r.parentNode);});"
+        "var key=keymap[state.sort];"
+        "var order=[key].concat(axes.filter(function(k){return k!==key;}));"
+        "bodies.forEach(function(tb){"
+        "var vis=[].slice.call(tb.querySelectorAll('tr[data-open]'))"
+        ".filter(function(r){return r.style.display!=='none';});"
+        "vis.sort(function(a,b){var d=0;order.some(function(k){"
+        "var x=num(b,k)-num(a,k);if(x){d=x;return true;}return false;});return d;});"
+        "vis.forEach(function(r){tb.appendChild(r);});"
+        "var cell=tb.closest('.marimo-cell');if(cell)cell.style.display=vis.length?'':'none';});"
+        "}"
+        "bar.addEventListener('click',function(e){"
+        "var b=e.target.closest('button');if(!b)return;"
+        "var g=b.closest('[data-group]');if(!g)return;"
+        "var grp=g.getAttribute('data-group');var v=b.getAttribute('data-v');"
+        "if(grp==='openness'){state.openness=v;}"
+        "else if(grp==='adopt'){state.adopt=parseFloat(v);}"
+        "else if(grp==='cap'){state.cap=parseFloat(v);}"
+        "else if(grp==='sort'){state.sort=v;}"
+        "g.querySelectorAll('button').forEach(function(x){x.classList.toggle('active',x===b);});"
+        "apply();});"
+        "})();"
+    )
+    _enc = _js.replace("&", "&amp;").replace('"', "&quot;").replace("<", "&lt;")
     mo.Html(
-        _boot + f'<iframe srcdoc="&lt;!doctype html&gt;&lt;html&gt;&lt;/html&gt;" '
+        _css + _bar + f'<iframe srcdoc="&lt;!doctype html&gt;&lt;html&gt;&lt;/html&gt;" '
         f'style="display:none;width:0;height:0;border:0;position:absolute" '
         f'onload="{_enc}"></iframe>'
     )
@@ -449,8 +507,17 @@ def helpers(C, DATA, F, OPEN, STRAPLINES, VERDICT, mix_counts, mo, vbucket,
         op, ad, cap = p.get("openness", {}), p.get("adoption", {}), p.get("capability", {})
         _name = p.get("product", "")
         _ob = vbucket(op.get("class"))
+        # Numeric axis values for the JS filter/sort controller; null -> -1 so the
+        # row sorts last and fails every "min" threshold.
+        _osc = op.get("score")
+        _adl = ad.get("level")
+        _cpc = cap.get("score")
         return (
-            f'<tr data-open="{_ob}" data-type="{p.get("type","")}" style="border-bottom:1px solid {C["paper_2"]};">'
+            f'<tr data-open="{_ob}" data-type="{p.get("type","")}" '
+            f'data-openness="{-1 if _osc is None else _osc}" '
+            f'data-adopt="{-1 if _adl is None else _adl}" '
+            f'data-cap="{-1 if _cpc is None else _cpc}" '
+            f'style="border-bottom:1px solid {C["paper_2"]};">'
             f'<td style="padding:8px 10px; font-family:{F["body"]}; font-size:0.86rem; color:{C["ink"]};">{_name}</td>'
             f'<td style="padding:8px 10px; font-family:{F["body"]}; font-size:0.78rem; color:{C["ink_3"]};">{p.get("org","") or ""}</td>'
             f'<td style="padding:8px 10px;">{openness_cell(op)}</td>'
