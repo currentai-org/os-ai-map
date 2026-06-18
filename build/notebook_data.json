@@ -2183,6 +2183,102 @@
             ]
           },
           "version_note": "Apertus family (8B + 70B, base + Instruct), released 2 Sep 2025 by the Swiss AI Initiative (EPFL, ETH Zurich, CSCS). 15T training tokens across 1,811 natively supported languages (~40% non-English, incl. Swiss German and Romansh), 65,536-token context, trained on 4,096 GH200 GPUs (Alps/CSCS) with Megatron-LM. Verified live on Hugging Face June 2026 (swiss-ai/Apertus-70B-2509)."
+        },
+        {
+          "product": "SmolLM2",
+          "org": "Hugging Face",
+          "type": "model",
+          "description": "Hugging Face's fully-open small-model family (135M, 360M, 1.7B; base + Instruct). The 1.7B was trained on 11T tokens (FineWeb-Edu, DCLM, The Stack, plus math/code), with the SmolLM-Corpus and training recipes published - a fully-open-pipeline model alongside OLMo 2 and Pythia, light enough to run on-device.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "weights:open(Apache-2.0);data:open(SmolLM-Corpus,odc-by);code:open(github.com/huggingface/smollm);license:Apache-2.0(OSI)",
+            "confidence": "high",
+            "note": "Fully-open pipeline: open weights, open training corpus, and public training code under OSI licenses.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/HuggingFaceTB/SmolLM2-1.7B",
+                "shows": "Apache-2.0, 11T-token training, sizes",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 3,
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "~184k monthly downloads on SmolLM2-1.7B; widely used as an on-device/research small model.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/HuggingFaceTB/SmolLM2-1.7B",
+                "shows": "~184,032 downloads last month",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "benchmark:HumanEval/MMLU/GSM8K",
+            "value": "best-in-class for its parameter band (beats Qwen2.5-1.5B, Llama-3.2-1B on several evals)",
+            "confidence": "medium",
+            "note": "Strong for its size; small-model tier overall - the value is full openness + efficiency.",
+            "sources": [
+              {
+                "url": "https://github.com/huggingface/smollm",
+                "shows": "SmolLM2 paper, benchmarks, recipes",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "version_note": "Apache-2.0 weights; SmolLM-Corpus training data (odc-by) and training code public. ~184k monthly downloads on SmolLM2-1.7B."
+        },
+        {
+          "product": "Gemma 4",
+          "org": "Google",
+          "type": "model",
+          "description": "Google's latest open-model family (launched March 2026, built from the same research as Gemini 3): E2B/E4B edge variants, a 26B-A4B MoE, and a 31B dense model, with context windows up to 256K, native vision + audio, and 140+ languages. Notably released under Apache 2.0 - a shift from earlier Gemma generations' custom license.",
+          "openness": {
+            "score": 3,
+            "class": "open_weights",
+            "components": "weights:open(Apache-2.0);data:closed;code:closed;license:Apache-2.0(OSI,but no open data/code)",
+            "confidence": "medium",
+            "note": "OSI-licensed weights, but no open training data or code -> open-weights, not a fully-open pipeline. (License-weighted rubrics could argue toward 4.)",
+            "sources": [
+              {
+                "url": "https://ai.google.dev/gemma/docs/releases",
+                "shows": "Gemma 4 sizes, release dates, Apache-2.0 license",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 4,
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "~8.39M monthly downloads on gemma-4-31b-it.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/google/gemma-4-31b-it",
+                "shows": "Apache-2.0, ~8.39M downloads last month",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "capability": {
+            "score": 5,
+            "basis": "benchmark:LMArena",
+            "value": "high intelligence-per-parameter; multimodal (vision+audio); Google claims top-tier Arena rankings vs much larger models",
+            "confidence": "medium",
+            "note": "Frontier-class for an open model; benchmark ranking is vendor-reported.",
+            "sources": [
+              {
+                "url": "https://cloud.google.com/blog/products/ai-machine-learning/gemma-4-available-on-google-cloud",
+                "shows": "Gemma 4 capabilities and rankings",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "version_note": "Apache-2.0 (OSI) - unlike CodeGemma/Gemma 3, which use the Gemma Terms of Use. Training data and recipe not released. ~8.4M monthly downloads on gemma-4-31b-it. Benchmark claims (LMArena) are vendor-reported."
         }
       ]
     },
@@ -4373,6 +4469,54 @@
             ]
           },
           "version_note": "GLM-4.6 (zai-org/GLM-4.6 on HF) by Z.ai (Zhipu AI), GLM4_MoE ~357B-param MoE, 200K context (up from 128K in GLM-4.5), instruction/chat + reasoning + agentic tool-use tuned. Released late 2025 (post-GLM-4.5 which has arXiv 2508.06471). Verified live on HF June 2026 (succeeded by GLM-5/GLM-5.1, the latter a flagship anchor). Recategorized from base_pretrained -> finetuned_chat per pilot litmus: GLM-4.6 is an instruct/agentic chat SKU, not a raw base model."
+        },
+        {
+          "product": "CodeGemma",
+          "org": "Google",
+          "type": "model",
+          "description": "Google's code-specialized Gemma family: a 2B pretrained model for fast code completion (fill-in-the-middle), a 7B pretrained model for infilling + natural language, and a 7B instruction-tuned variant for code chat. Further-trained on 500B-1T tokens of public code, math, and synthetic data.",
+          "openness": {
+            "score": 3,
+            "class": "open_weights",
+            "components": "weights:open;data:closed;code:closed;license:Gemma-Terms-of-Use(custom,use-restricted,non-OSI)",
+            "confidence": "high",
+            "note": "Open weights under Google's custom, use-restricted Gemma license; no open training data or code.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/google/codegemma-7b-it",
+                "shows": "model card: Gemma license, sizes, intended use",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 2,
+            "signal_type": "usage_volume",
+            "confidence": "medium",
+            "note": "Modest current usage (~2k monthly downloads on codegemma-7b-it); largely superseded by newer coding models.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/google/codegemma-7b-it",
+                "shows": "~1,929 downloads last month",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "benchmark:HumanEval/MBPP",
+            "value": "competent FIM/code completion at 2B/7B circa 2024",
+            "confidence": "medium",
+            "note": "Below current coding peers (Qwen2.5-Coder, StarCoder2, Granite Code) on benchmarks.",
+            "sources": [
+              {
+                "url": "https://github.com/huggingface/blog/blob/main/codegemma.md",
+                "shows": "2B/7B variants, FIM training, benchmarks",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "version_note": "Gemma Terms of Use (custom, use-restricted, NOT OSI). Training data and recipe not released. Largely superseded by Qwen2.5-Coder / Gemma 3 for coding."
         }
       ]
     },
@@ -5361,6 +5505,54 @@
             ]
           },
           "version_note": "Actively maintained; repo last updated 2026-06-01 with ongoing releases (AutoDeploy Q2/Q3 milestone). Confirmed to exist as of June 2026."
+        },
+        {
+          "product": "LocalAI",
+          "org": "Mudler (LocalAI)",
+          "type": "software",
+          "description": "Self-hosted, OpenAI-compatible inference engine that runs LLMs, vision, image, audio, and video models on commodity hardware (CPU or any GPU). A modular multi-backend architecture (36+ backends incl. llama.cpp, vLLM, transformers, whisper.cpp, diffusers) behind one unified API, with built-in agents, RAG, and MCP.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public;no-feature-gated-core",
+            "confidence": "high",
+            "note": "Fully MIT.",
+            "sources": [
+              {
+                "url": "https://github.com/mudler/LocalAI",
+                "shows": "MIT, ~46.9k stars, multi-backend OpenAI-compatible API",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 3,
+            "signal_type": "stars_fallback",
+            "confidence": "medium",
+            "note": "~47k stars; no clean download telemetry for a self-hosted server - stars_fallback (capped at 3).",
+            "sources": [
+              {
+                "url": "https://github.com/mudler/LocalAI",
+                "shows": "~46.9k stars",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "capability": {
+            "score": 5,
+            "basis": "feature_matrix",
+            "value": "text/vision/voice/image/video models; 36+ backends; OpenAI-compatible API; CPU-only capable; built-in agents + RAG + MCP",
+            "confidence": "high",
+            "note": "Widest model-type and backend coverage of the inference-engine peers.",
+            "sources": [
+              {
+                "url": "https://github.com/mudler/LocalAI",
+                "shows": "feature set: multi-backend, multimodal, agents/MCP",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "version_note": "MIT, no feature-gated core. ~47k stars. Broadest model-type coverage of the local inference engines."
         }
       ]
     },
@@ -8034,6 +8226,102 @@
             ]
           },
           "version_note": "Google Cloud Vertex AI managed Gen AI evaluation service; evaluates models, agents, and RAG. Computation-based metrics, model-based/autorater (managed rubric-based + custom judge models), pointwise + pairwise (AutoSxS). Part of Gemini Enterprise Agent Platform. Verified live June 2026 (docs current)."
+        },
+        {
+          "product": "AlpacaEval",
+          "org": "Tatsu Lab (Stanford)",
+          "type": "software",
+          "description": "Automatic LLM-judge evaluator for instruction-following models: an LLM annotator compares a candidate's outputs against a reference on a fixed instruction set to produce a win-rate and leaderboard. AlpacaEval 2.0 adds a length-controlled win-rate to debias for output length (raising correlation with Chatbot Arena to ~0.98).",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public;no-feature-gated-core",
+            "confidence": "high",
+            "note": "Fully Apache-2.0.",
+            "sources": [
+              {
+                "url": "https://github.com/tatsu-lab/alpaca_eval",
+                "shows": "Apache-2.0, ~2.0k stars",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 3,
+            "signal_type": "stars_fallback",
+            "confidence": "medium",
+            "note": "~2k stars - stars_fallback; widely used as the standard LLM-judge instruction-following eval.",
+            "sources": [
+              {
+                "url": "https://github.com/tatsu-lab/alpaca_eval",
+                "shows": "~1,996 stars",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "LLM-as-judge win-rate; length-controlled metric; reference-model comparison; leaderboard",
+            "confidence": "medium",
+            "note": "De-facto standard for its niche with an influential LC metric; narrower than multi-task harnesses.",
+            "sources": [
+              {
+                "url": "https://github.com/tatsu-lab/alpaca_eval",
+                "shows": "AlpacaEval 2.0 LC win-rate",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "version_note": "Apache-2.0. ~2k stars. A full eval runs in ~5 min for under ~$10."
+        },
+        {
+          "product": "Open LLM Leaderboard",
+          "org": "Hugging Face",
+          "type": "software",
+          "description": "Hugging Face's flagship public leaderboard for comparing open LLMs on a fixed, reproducible benchmark suite run on a shared cluster. v2 (2024) raised difficulty with IFEval, BBH, MATH-L5, GPQA, MuSR, and MMLU-Pro. It evaluated 13,000+ models and drew 2M+ visitors before being archived.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(HF-Space);backend:lm-eval-harness/lighteval(open);source:public",
+            "confidence": "high",
+            "note": "Open Apache-2.0 leaderboard built on open eval backends (now archived).",
+            "sources": [
+              {
+                "url": "https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard",
+                "shows": "Apache-2.0 Space, ~14k likes",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 4,
+            "signal_type": "reported_traction",
+            "confidence": "high",
+            "note": "ARCHIVED 2025-03-13. At peak: 13,000+ models evaluated, 2M+ unique visitors - historically the most influential open-model leaderboard.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard/discussions/1135",
+                "shows": "retirement announcement, 2025-03-13",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "standardized 6-benchmark suite (v2: IFEval/BBH/MATH-L5/GPQA/MuSR/MMLU-Pro); shared-cluster reproducible runs; 13,000+ models",
+            "confidence": "high",
+            "note": "Historically the most visible open-model leaderboard; static rather than human-preference; now archived.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/docs/leaderboards/en/open_llm_leaderboard/archive",
+                "shows": "v2 benchmark suite, 2M visitors, archive",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "version_note": "ARCHIVED/retired (announced 2025-03-13); HF redirected users to the OpenEvals hub. HF Space was Apache-2.0; backend used lm-evaluation-harness (v1) and lighteval (v2). Listed for historical significance."
         }
       ]
     },
@@ -9051,6 +9339,198 @@
             "sources": []
           },
           "version_note": "TruthfulQA, 817 questions across 38 categories crafted to elicit imitative falsehoods/misconceptions; generation + multiple_choice configs. Paper arXiv:2109.07958 (2021). Now relatively dated and saturated by frontier models but still a widely-cited truthfulness benchmark. HF dataset truthfulqa/truthful_qa verified live June 2026."
+        },
+        {
+          "product": "MT-Bench",
+          "org": "SGLang (LMSYS / UC Berkeley)",
+          "type": "dataset",
+          "description": "An 80-question, multi-turn, open-ended benchmark for LLM instruction-following and conversational ability, scored with a strong LLM (e.g. GPT-4) as judge. Created by LMSYS, it ships inside FastChat with both questions and GPT-4 reference answers public. Introduced in the NeurIPS 2023 'LLM-as-a-Judge' paper.",
+          "openness": {
+            "score": 5,
+            "class": "open",
+            "components": "questions:public;answers:public(GPT-4 references in FastChat);license:Apache-2.0",
+            "confidence": "high",
+            "note": "Both questions and reference answers are public and openly licensed.",
+            "sources": [
+              {
+                "url": "https://github.com/lm-sys/FastChat/tree/main/fastchat/llm_judge/data/mt_bench",
+                "shows": "public questions + GPT-4 references",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 3,
+            "signal_type": "stars_fallback",
+            "confidence": "medium",
+            "note": "Ships in FastChat (~39.5k stars, shared across the platform) - stars_fallback (capped at 3).",
+            "sources": [
+              {
+                "url": "https://github.com/lm-sys/FastChat",
+                "shows": "Apache-2.0, ~39.5k stars, MT-Bench in llm_judge",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "80 multi-turn questions across 8 categories; LLM-as-judge scoring",
+            "confidence": "medium",
+            "note": "Seminal multi-turn chat benchmark that pioneered LLM-as-judge; now small and partly saturated vs harder peers.",
+            "sources": [
+              {
+                "url": "https://arxiv.org/abs/2306.05685",
+                "shows": "MT-Bench / LLM-as-a-Judge paper",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "version_note": "Questions + GPT-4 reference answers public in FastChat (Apache-2.0); companion human-judgments dataset is CC-BY-4.0. Small (80 Q) and partly saturated now."
+        },
+        {
+          "product": "LiveBench",
+          "org": "LiveBench",
+          "type": "dataset",
+          "description": "An open, contamination-limited LLM benchmark with objective ground-truth answers and automatic scoring (no LLM judges), spanning six categories (math, coding, reasoning, language, instruction following, data analysis). New questions are released monthly and older ones retired to limit contamination. Built by Abacus.AI, NYU, Nvidia, UMD, USC; ICLR 2025 Spotlight.",
+          "openness": {
+            "score": 5,
+            "class": "open",
+            "components": "questions:public;answers:public(ground_truth released);license:Apache-2.0/MIT",
+            "confidence": "high",
+            "note": "All questions, answers, and code are released openly; rotation is for freshness, not access control.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/livebench/reasoning",
+                "shows": "public ground_truth column, release/removal dates",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 4,
+            "signal_type": "usage_volume",
+            "confidence": "medium",
+            "note": "~1.2k GitHub stars plus multi-category HF dataset downloads (genuine multi-source adoption).",
+            "sources": [
+              {
+                "url": "https://github.com/livebench/livebench",
+                "shows": "~1.2k stars, six categories, monthly releases",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "capability": {
+            "score": 5,
+            "basis": "feature_matrix",
+            "value": "6 domains; objective ground-truth auto-scoring (no LLM judge); monthly question rotation for contamination resistance",
+            "confidence": "high",
+            "note": "Among the most influential contamination-resistant benchmarks; broader than code-only LiveCodeBench and judge-free.",
+            "sources": [
+              {
+                "url": "https://arxiv.org/abs/2406.19314",
+                "shows": "ICLR 2025 Spotlight, releases all questions/code/answers",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "version_note": "Questions and ground-truth answers public (Apache-2.0/MIT). ~1.2k stars; multi-category HF dataset downloads. Monthly rotation is freshness management, not gating."
+        },
+        {
+          "product": "GAIA (General AI Assistants)",
+          "org": "Meta",
+          "type": "dataset",
+          "description": "A benchmark for General AI Assistants from Meta AI / Hugging Face: 466 real-world questions across 3 difficulty levels requiring reasoning, multi-modality, web browsing, and tool use. Simple for humans (92%) but hard for frontier systems (GPT-4+plugins scored 15% at release). A 300-question test set with private answers powers a submission-based leaderboard.",
+          "openness": {
+            "score": 2,
+            "class": "gated",
+            "components": "questions:public(val);answers:held-out(300-Q test,private);access:HF-gated(accept-terms,anti-resharing)",
+            "confidence": "high",
+            "note": "Test answers are private and the dataset itself is access-gated.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/gaia-benchmark/GAIA",
+                "shows": "gated access, private test answers",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 4,
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "~42k monthly HF downloads; widely cited and integrated into agent eval harnesses.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/gaia-benchmark/GAIA",
+                "shows": "~42,218 downloads/month",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "capability": {
+            "score": 5,
+            "basis": "feature_matrix",
+            "value": "466 questions, 3 levels; multi-step tool use, live browsing, multi-modal files with one checkable answer",
+            "confidence": "high",
+            "note": "The canonical end-to-end agentic-assistant benchmark; distinct from knowledge and code benchmarks, contamination-resistant.",
+            "sources": [
+              {
+                "url": "https://arxiv.org/abs/2311.12983",
+                "shows": "466 Q, 92% human vs 15% GPT-4, held-out answers",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "version_note": "Double-gated: test-set answers held out (server-side scoring) AND the HF dataset is access-gated (accept terms, anti-resharing clause). ~42k monthly downloads."
+        },
+        {
+          "product": "Humanity's Last Exam (HLE)",
+          "org": "Center for AI Safety",
+          "type": "dataset",
+          "description": "A multi-modal frontier-knowledge benchmark from the Center for AI Safety and Scale AI, built with ~1,000 subject-matter experts: 2,500 expert-written closed-ended questions (MC + short answer, text+image) across 100+ subjects, each with an unambiguous answer not quickly findable online. Positioned as the hardest frontier academic benchmark.",
+          "openness": {
+            "score": 2,
+            "class": "gated",
+            "components": "questions+answers:public(MIT,2500-Q);access:HF-gated(accept-conditions,no-redistribution,canary);holdout:private",
+            "confidence": "medium",
+            "note": "Public set is MIT-licensed with answers, but access is gated and a private held-out set exists - judgment call (could be open under a license-weighted reading).",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/cais/hle",
+                "shows": "MIT, gated access, no-redistribution notice",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 4,
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "~35k monthly HF downloads; ~1.6k GitHub stars on the eval code.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/cais/hle",
+                "shows": "~34,984 downloads/month",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "capability": {
+            "score": 5,
+            "basis": "feature_matrix",
+            "value": "2,500 expert questions across 100+ subjects; multimodal; private held-out set; designed as successor to saturated MMLU/MATH",
+            "confidence": "high",
+            "note": "Far harder and broader than MMLU/MATH; GPQA is a narrower difficulty peer.",
+            "sources": [
+              {
+                "url": "https://lastexam.ai",
+                "shows": "~1,000 experts, 2,500 Q, 100+ subjects, private holdout",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "version_note": "The 2,500 public questions include answers under MIT, but the HF dataset is access-gated (accept conditions, no-redistribution + canary string) and a separate private held-out set detects overfitting -> scored gated (a license-weighted reading could argue open). ~35k monthly downloads."
         }
       ]
     },
@@ -10492,6 +10972,582 @@
             ]
           },
           "version_note": "Active 2026; MIT core (langchain-core, langgraph, integrations); LangSmith is commercial"
+        },
+        {
+          "product": "LangGraph",
+          "org": "LangChain",
+          "type": "software",
+          "description": "Low-level orchestration framework from LangChain for building stateful, multi-actor agent applications. Unlike higher-level frameworks it exposes an explicit graph/state-machine model (nodes, edges, persistence, human-in-the-loop checkpoints), the production choice when you need fine-grained control over loops, branching, and durable resumable execution.",
+          "openness": {
+            "score": 4,
+            "class": "open_core",
+            "components": "license:MIT(core);commercial:LangGraph-Platform/LangSmith;source:public",
+            "confidence": "high",
+            "note": "MIT-licensed self-hostable core with a commercial managed deployment platform.",
+            "sources": [
+              {
+                "url": "https://github.com/langchain-ai/langgraph",
+                "shows": "MIT, ~35k stars, low-level agent orchestration",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 5,
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "~58M PyPI downloads/month (directional - largely transitive via LangChain).",
+            "sources": [
+              {
+                "url": "https://pypistats.org/packages/langgraph",
+                "shows": "~58.6M downloads/month",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "capability": {
+            "score": 5,
+            "basis": "feature_matrix",
+            "value": "graph control flow; checkpointing/persistence; durable resumable execution; HITL interrupts; streaming; subgraphs",
+            "confidence": "high",
+            "note": "Deepest durable-execution control among the orchestration peers.",
+            "sources": [
+              {
+                "url": "https://github.com/langchain-ai/langgraph",
+                "shows": "feature set: graph control flow, persistence, HITL",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "version_note": "MIT core; commercial LangGraph Platform / LangSmith is the managed layer (open-core). ~35k stars, ~58M PyPI downloads/month (heavily transitive via LangChain)."
+        },
+        {
+          "product": "AutoGen",
+          "org": "Microsoft",
+          "type": "software",
+          "description": "Microsoft's framework for agentic AI centred on multi-agent conversation patterns where LLM agents collaborate, critique, and run tools/code. Its event-driven v0.4 redesign and code-execution focus distinguish it from graph- or role-based frameworks.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(code,via LICENSE-CODE);docs:CC-BY-4.0;source:public;no-feature-gated-core",
+            "confidence": "high",
+            "note": "Code is MIT and fully open; the GitHub-surfaced CC-BY-4.0 is only the docs license.",
+            "sources": [
+              {
+                "url": "https://github.com/microsoft/autogen/blob/main/LICENSE-CODE",
+                "shows": "MIT code license",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 4,
+            "signal_type": "usage_volume",
+            "confidence": "medium",
+            "note": "~1.37M downloads/month for autogen-agentchat; trajectory flat as it enters maintenance mode.",
+            "sources": [
+              {
+                "url": "https://pypistats.org/packages/autogen-agentchat",
+                "shows": "~1.37M downloads/month",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "multi-agent conversation orchestration; preset team patterns; tool use; code execution; async/event-driven; AutoGen Studio",
+            "confidence": "medium",
+            "note": "Strong multi-agent conversation model; less durable-execution depth than LangGraph and now in maintenance.",
+            "sources": [
+              {
+                "url": "https://github.com/microsoft/autogen",
+                "shows": "feature set: multi-agent conversation, code execution",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "version_note": "Code is MIT (LICENSE-CODE; the repo's root LICENSE is CC-BY-4.0 for docs, which mislabels the GitHub license field). In maintenance mode - Microsoft now directs new work to the Microsoft Agent Framework (Semantic Kernel + AutoGen merge). ~59k stars."
+        },
+        {
+          "product": "PydanticAI",
+          "org": "Pydantic",
+          "type": "software",
+          "description": "Python agent framework from the Pydantic team bringing type-safety to production LLM agents: structured/validated outputs, typed dependency injection, and model-agnostic providers, with first-class Pydantic Logfire observability.",
+          "openness": {
+            "score": 4,
+            "class": "open_core",
+            "components": "license:MIT(library);commercial:Pydantic-Logfire;source:public",
+            "confidence": "high",
+            "note": "MIT type-first agent library with a commercial Logfire observability platform.",
+            "sources": [
+              {
+                "url": "https://github.com/pydantic/pydantic-ai",
+                "shows": "MIT, ~17.8k stars, Logfire integration",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 5,
+            "signal_type": "usage_volume",
+            "confidence": "medium",
+            "note": "~31M PyPI downloads/month (heavily transitive/CI-driven; directional).",
+            "sources": [
+              {
+                "url": "https://pypistats.org/packages/pydantic-ai",
+                "shows": "~31M downloads/month",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "typed/structured outputs; typed DI; model-agnostic; tool calling; streaming; multi-agent; MCP; OTel/Logfire",
+            "confidence": "medium",
+            "note": "Lean, type-safe DX; narrower built-in RAG than LlamaIndex and fewer prebuilt role abstractions than CrewAI.",
+            "sources": [
+              {
+                "url": "https://pypi.org/project/pydantic-ai/",
+                "shows": "MIT, typed agent framework",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "version_note": "MIT library; commercially-operated Pydantic Logfire platform makes the overall offering open-core. ~18k stars."
+        },
+        {
+          "product": "Haystack",
+          "org": "deepset",
+          "type": "software",
+          "description": "deepset's open-source orchestration framework for production LLM apps in Python, built around composable modular pipelines and agent workflows with explicit control over retrieval, routing, memory, and generation. Originally RAG/search-focused; Haystack 2.x is a general orchestrator.",
+          "openness": {
+            "score": 4,
+            "class": "open_core",
+            "components": "license:Apache-2.0(core);commercial:Haystack-Enterprise;source:public",
+            "confidence": "high",
+            "note": "Apache-2.0 self-hostable core with a commercial enterprise tier.",
+            "sources": [
+              {
+                "url": "https://github.com/deepset-ai/haystack",
+                "shows": "Apache-2.0, ~25.6k stars, Haystack Enterprise tiers",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 4,
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "~883k PyPI downloads/month for the 2.x haystack-ai package.",
+            "sources": [
+              {
+                "url": "https://pypistats.org/packages/haystack-ai",
+                "shows": "~883k downloads/month",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "capability": {
+            "score": 5,
+            "basis": "feature_matrix",
+            "value": "modular pipeline/DAG composition; retrievers + document stores (RAG); routing; memory; agent workflows; tool calling; evaluation; broad integrations",
+            "confidence": "high",
+            "note": "Most mature combined RAG + orchestration feature set among the peers.",
+            "sources": [
+              {
+                "url": "https://github.com/deepset-ai/haystack",
+                "shows": "feature set: pipelines, RAG, agents, eval",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "version_note": "Apache-2.0 core; commercial Haystack Enterprise (managed/governance) makes the overall offering open-core. ~26k stars, ~883k PyPI downloads/month (haystack-ai)."
+        },
+        {
+          "product": "LlamaIndex",
+          "org": "LlamaIndex",
+          "type": "software",
+          "description": "Open-source data framework (Python and TypeScript) for building LLM apps over private data: data connectors, indexing/retrieval, and an agent/Workflows orchestration layer. Its depth is in RAG and data ingestion - 'document agents', many-format parsing, and structured extraction.",
+          "openness": {
+            "score": 4,
+            "class": "open_core",
+            "components": "license:MIT(core);commercial:LlamaCloud/LlamaParse;source:public",
+            "confidence": "high",
+            "note": "MIT self-hostable core with a commercial managed cloud.",
+            "sources": [
+              {
+                "url": "https://github.com/run-llama/llama_index",
+                "shows": "MIT, ~50.2k stars, LlamaCloud commercial tier",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 5,
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "~10.18M PyPI downloads/month.",
+            "sources": [
+              {
+                "url": "https://pypistats.org/packages/llama-index",
+                "shows": "~10.18M downloads/month",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "capability": {
+            "score": 5,
+            "basis": "feature_matrix",
+            "value": "data connectors (LlamaHub); multiple index/retrieval strategies; query engines; agentic Workflows; structured extraction; multimodal/OCR; TS port",
+            "confidence": "high",
+            "note": "Best-in-class RAG/data-ingestion depth plus an agent layer.",
+            "sources": [
+              {
+                "url": "https://github.com/run-llama/llama_index",
+                "shows": "feature set: connectors, indices, Workflows, extraction",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "version_note": "MIT core; commercial LlamaCloud / LlamaParse (parse/extract/index APIs) makes the overall offering open-core. ~50k stars, ~10M PyPI downloads/month."
+        },
+        {
+          "product": "OpenManus",
+          "org": "FoundationAgents",
+          "type": "software",
+          "description": "Open-source reimplementation of the Manus autonomous agent, built by MetaGPT/DeepWisdom team members as a no-invite-code general agent that plans and executes tasks via tools, browser automation, and computer use. Framed as a run-from-source product rather than a reusable library.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public;self-host:primary;no-feature-gated-core",
+            "confidence": "high",
+            "note": "Fully MIT, run from source, no commercial layer.",
+            "sources": [
+              {
+                "url": "https://github.com/FoundationAgents/OpenManus",
+                "shows": "MIT, ~56.6k stars, MetaGPT-team maintainers",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 3,
+            "signal_type": "stars_fallback",
+            "confidence": "medium",
+            "note": "~57k stars but negligible package usage (~186 PyPI downloads/month) - stars_fallback (capped at 3).",
+            "sources": [
+              {
+                "url": "https://pypistats.org/packages/openmanus",
+                "shows": "~186 downloads/month",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "value": "single autonomous agent loop; tool use; browser automation; computer-use actions; planning; MCP; experimental RL branch",
+            "confidence": "medium",
+            "note": "Capable demo agent but narrower and less battle-tested than the framework peers.",
+            "sources": [
+              {
+                "url": "https://github.com/FoundationAgents/OpenManus",
+                "shows": "feature set: autonomous agent, browser, MCP",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "version_note": "MIT, no paid/feature-gated core. ~57k stars but a vestigial PyPI package (~186 downloads/month) - run via git clone, not pip."
+        },
+        {
+          "product": "DSPy",
+          "org": "Stanford NLP",
+          "type": "software",
+          "description": "Stanford framework for 'programming - not prompting - language models': compose typed declarative modules (signatures, Predict/ChainOfThought/ReAct) into pipelines, then hand them to optimizers (MIPROv2, BootstrapFewShot, GEPA) that auto-tune prompts and/or weights against a metric.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public;no-feature-gated-core;no-commercial-saas",
+            "confidence": "high",
+            "note": "Fully MIT with no commercial tier.",
+            "sources": [
+              {
+                "url": "https://github.com/stanfordnlp/dspy",
+                "shows": "MIT, ~35.1k stars",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 4,
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "~6.36M PyPI downloads/month for the dspy package.",
+            "sources": [
+              {
+                "url": "https://pypistats.org/packages/dspy",
+                "shows": "~6.36M downloads/month",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "declarative modules + typed signatures; automatic prompt optimization/compilation; weight fine-tuning; ReAct/CoT/RAG patterns; assertions; eval",
+            "confidence": "high",
+            "note": "Best-in-class on prompt-optimization/compilation; thinner multi-agent coordination than CrewAI/AutoGen.",
+            "sources": [
+              {
+                "url": "https://github.com/stanfordnlp/dspy",
+                "shows": "feature set: modules, optimizers, compilation",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "version_note": "MIT, no commercial cloud from the project. ~35k stars, ~6.4M PyPI downloads/month."
+        },
+        {
+          "product": "GraphRAG",
+          "org": "Microsoft",
+          "type": "software",
+          "description": "Microsoft Research's modular graph-based RAG system: LLMs extract a knowledge graph (entities + relationships) from unstructured text, cluster it into hierarchical communities, generate community summaries, and answer via Global/Local/DRIFT search - built for corpus-wide 'sensemaking' questions where naive vector RAG falls short.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public;no-feature-gated-core",
+            "confidence": "high",
+            "note": "Fully MIT.",
+            "sources": [
+              {
+                "url": "https://github.com/microsoft/graphrag",
+                "shows": "MIT, ~33.8k stars",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 3,
+            "signal_type": "stars_fallback",
+            "confidence": "medium",
+            "note": "~34k stars; no published download telemetry - stars_fallback (capped at 3).",
+            "sources": [
+              {
+                "url": "https://github.com/microsoft/graphrag",
+                "shows": "~33.8k stars",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "KG extraction; hierarchical community detection; community summarization; Global/Local/DRIFT query modes; auto prompt-tuning",
+            "confidence": "medium",
+            "note": "Turnkey for graph-RAG sensemaking but a deliberately narrow single technique.",
+            "sources": [
+              {
+                "url": "https://microsoft.github.io/graphrag/",
+                "shows": "architecture + Global/Local/DRIFT modes",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "version_note": "MIT, no feature-gated core. ~34k stars. Indexing is compute/cost-intensive."
+        },
+        {
+          "product": "LightRAG",
+          "org": "HKU Data Science Lab",
+          "type": "software",
+          "description": "Lightweight graph-based RAG framework from HKU Data Science Lab (EMNLP 2025) combining knowledge graphs with vector embeddings via dual-layer retrieval. Drops GraphRAG's expensive community-report step and supports incremental updates (add data without rebuilding the global index).",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public;no-feature-gated-core",
+            "confidence": "high",
+            "note": "Fully MIT.",
+            "sources": [
+              {
+                "url": "https://github.com/HKUDS/LightRAG",
+                "shows": "MIT, ~36.7k stars, EMNLP 2025",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 4,
+            "signal_type": "usage_volume",
+            "confidence": "medium",
+            "note": "~251k PyPI downloads/month (lightrag-hku) corroborating ~37k stars.",
+            "sources": [
+              {
+                "url": "https://pepy.tech/projects/lightrag-hku",
+                "shows": "~251k downloads/month",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "dual-level (local+global) graph retrieval; KG construction; incremental updates; naive/local/global/hybrid query; pluggable storage; multimodal parsing; API + web UI",
+            "confidence": "medium",
+            "note": "Deeper and more efficient than GraphRAG for graph-RAG; narrower than general orchestrators.",
+            "sources": [
+              {
+                "url": "https://github.com/HKUDS/LightRAG",
+                "shows": "feature set: dual-level retrieval, incremental updates",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "version_note": "MIT. ~37k stars, ~251k monthly PyPI downloads (lightrag-hku)."
+        },
+        {
+          "product": "nano-graphrag",
+          "org": "gusye1234",
+          "type": "software",
+          "description": "A simple, hackable ~1,100-line reimplementation of Microsoft's GraphRAG, built because the official version is hard to read or modify. Portable, fully async/typed, with swappable graph/vector/LLM backends - a lightweight reference and customization base rather than a production system.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public;no-feature-gated-core",
+            "confidence": "high",
+            "note": "Fully MIT.",
+            "sources": [
+              {
+                "url": "https://github.com/gusye1234/nano-graphrag",
+                "shows": "MIT, ~3.9k stars",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 2,
+            "signal_type": "stars_fallback",
+            "confidence": "medium",
+            "note": "~3.9k stars and ~1.7k monthly PyPI; no release since Oct 2024 (likely stale) - stars_fallback.",
+            "sources": [
+              {
+                "url": "https://pypi.org/project/nano-graphrag/",
+                "shows": "v0.0.8.2, last release Oct 2024",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "value": "global+local queries; KG community detection; pluggable stores; multi-provider LLMs; incremental insert; async+typed",
+            "confidence": "medium",
+            "note": "Trades breadth/polish for a small readable core.",
+            "sources": [
+              {
+                "url": "https://github.com/gusye1234/nano-graphrag",
+                "shows": "~1,100-line GraphRAG reimplementation",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "version_note": "MIT. ~3.9k stars. Likely stale - no release since Oct 2024."
+        },
+        {
+          "product": "Pathway",
+          "org": "Pathway",
+          "type": "software",
+          "description": "Python ETL/stream-processing framework on a Rust dataflow engine, unifying batch and streaming under one API with production RAG/LLM templates and live connectors. Unlike glue-layer frameworks it is an incremental dataflow engine - it keeps vector indexes continuously synced with changing data (real-time RAG) instead of batch re-indexing.",
+          "openness": {
+            "score": 2,
+            "class": "source_available",
+            "components": "license:BSL-1.1(non-OSI:single-machine + no-compete, Change-Date 2027-07-20 -> Apache-2.0);commercial:Scale/Enterprise;source:public",
+            "confidence": "high",
+            "note": "Source-available under BSL 1.1, not open source; production use is license-restricted with paid enterprise tiers.",
+            "sources": [
+              {
+                "url": "https://github.com/pathwaycom/pathway",
+                "shows": "BSL 1.1, ~62.9k stars",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 3,
+            "signal_type": "usage_volume",
+            "confidence": "medium",
+            "note": "~30k monthly PyPI downloads alongside ~63k stars (star count inflated for an infra repo).",
+            "sources": [
+              {
+                "url": "https://pypi.org/project/pathway/",
+                "shows": "BSL, active releases, download stats",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "unified batch+streaming incremental dataflow (Rust); real-time RAG with continuously-synced indexing; 300+ connectors; hybrid search; single-node -> distributed/K8s",
+            "confidence": "medium",
+            "note": "Stronger on streaming/incremental infra than LLM-orchestration breadth.",
+            "sources": [
+              {
+                "url": "https://github.com/pathwaycom/pathway",
+                "shows": "feature set: incremental dataflow, real-time RAG",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "version_note": "Business Source License 1.1 (BSL, NOT OSI): single-machine production limit + no-compete clause, converts to Apache-2.0 on 2027-07-20. Commercial Scale/Enterprise tiers. ~63k stars."
+        },
+        {
+          "product": "OpenCode",
+          "org": "SST / Anomaly",
+          "type": "software",
+          "description": "Open-source terminal (TUI) AI coding agent from the SST team (now Anomaly), aggressively provider-agnostic with 75+ LLM providers (Claude, GPT, Gemini, Bedrock, local models). A polished native TUI with multi-session agents, shareable sessions, built-in LSP, and a client/server architecture.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public;no-feature-gated-core",
+            "confidence": "high",
+            "note": "Fully MIT.",
+            "sources": [
+              {
+                "url": "https://github.com/sst/opencode",
+                "shows": "MIT, ~176k stars, open coding agent",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 4,
+            "signal_type": "reported_traction",
+            "confidence": "medium",
+            "note": "~176k GitHub stars and active npm distribution (opencode-ai); clean download count not retrievable.",
+            "sources": [
+              {
+                "url": "https://registry.npmjs.org/opencode-ai/latest",
+                "shows": "npm opencode-ai, MIT, active",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "capability": {
+            "score": 5,
+            "basis": "feature_matrix",
+            "value": "native TUI agent; 75+ providers incl. local; multi-session concurrent agents; shareable sessions; built-in LSP; client/server",
+            "confidence": "high",
+            "note": "Matches/exceeds the coding-agent peers on breadth, with standout provider-neutrality and TUI/LSP polish.",
+            "sources": [
+              {
+                "url": "https://opencode.ai/",
+                "shows": "feature set: TUI, 75+ providers, LSP, sessions",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "version_note": "MIT. ~176k stars; repo recently renamed sst/opencode -> anomalyco/opencode (old URL redirects). Distributed via npm (opencode-ai)."
         }
       ]
     },
@@ -12517,6 +13573,102 @@
             ]
           },
           "version_note": "v1.84.5 (June 4, 2026)"
+        },
+        {
+          "product": "LM Studio",
+          "org": "LM Studio",
+          "type": "software",
+          "description": "Desktop app (Windows/macOS/Linux) for discovering, downloading, and running local LLMs with a polished chat GUI, model browser, an OpenAI-compatible local server, headless mode, and native Apple MLX support. The smoothest local-LLM onboarding - but the app itself is closed-source.",
+          "openness": {
+            "score": 1,
+            "class": "closed",
+            "components": "app:proprietary-freeware(ToS forbids modify/reverse-engineer/redistribute);sdk+cli:MIT(public);core-engine:closed",
+            "confidence": "high",
+            "note": "Core app/engine is closed proprietary freeware; only peripheral CLI/SDKs are open.",
+            "sources": [
+              {
+                "url": "https://lmstudio.ai/app-terms",
+                "shows": "ToS: no modification/reverse-engineering/redistribution",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 3,
+            "signal_type": "reported_traction",
+            "confidence": "medium",
+            "note": "Widely-used consumer app but no primary-verified install count; conservative level 3.",
+            "sources": [
+              {
+                "url": "https://lmstudio.ai/",
+                "shows": "product positioning, free for home and work use",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "polished chat UI; model browser; OpenAI-compatible local server; headless mode; native Apple MLX",
+            "confidence": "medium",
+            "note": "Strong UX/polish on par with the open local UIs; loses on openness/extensibility (closed source).",
+            "sources": [
+              {
+                "url": "https://lmstudio.ai/",
+                "shows": "feature set: chat UI, model browser, local server, MLX",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "version_note": "Desktop app is proprietary freeware ('free for home and work use'; ToS forbids modification/reverse-engineering/redistribution). Only the CLI (lms) and JS/Python SDKs are MIT. Score 1 (not 0) because the SDK/CLI source is public."
+        },
+        {
+          "product": "GPT4All",
+          "org": "Nomic AI",
+          "type": "software",
+          "description": "Free, cross-platform desktop app from Nomic AI for running LLMs privately on everyday laptops with no API or GPU required. Includes a chat UI, LocalDocs (private RAG over your files), an OpenAI-compatible local API server, and a Python client, with Nomic Vulkan GPU acceleration.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public;no-feature-gated-core",
+            "confidence": "high",
+            "note": "Fully MIT.",
+            "sources": [
+              {
+                "url": "https://github.com/nomic-ai/gpt4all",
+                "shows": "MIT, ~77.4k stars, LocalDocs RAG + local API server",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 3,
+            "signal_type": "stars_fallback",
+            "confidence": "medium",
+            "note": "~77k stars but reduced maintenance since early 2025 - stars_fallback (capped at 3).",
+            "sources": [
+              {
+                "url": "https://github.com/nomic-ai/gpt4all",
+                "shows": "~77.4k stars; last major release Feb 2025",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "value": "chat UI; LocalDocs private RAG; OpenAI-compatible local server; Vulkan GPU",
+            "confidence": "medium",
+            "note": "Solid core but behind faster-moving peers on newest-model support due to the maintenance slowdown.",
+            "sources": [
+              {
+                "url": "https://github.com/nomic-ai/gpt4all",
+                "shows": "feature set: chat, LocalDocs, local server",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "version_note": "MIT. ~77k stars. Reduced maintenance - last notable release Feb 2025, community reports of stalled development through 2025 (no official deprecation)."
         }
       ]
     },
@@ -15022,6 +16174,390 @@
             ]
           },
           "version_note": "v2.6.x stable (late 2025); v3.0 RC published May 2026; LF AI & Data project"
+        },
+        {
+          "product": "MCP Python SDK",
+          "org": "Anthropic",
+          "type": "software",
+          "description": "Official Python implementation of the Model Context Protocol for building MCP clients and servers that give LLMs standardized access to tools, resources, and prompts. Bundles the FastMCP high-level framework, stdio/SSE/Streamable-HTTP transports, structured (Pydantic) output, and OAuth 2.1 auth.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public;no-feature-gated-core",
+            "confidence": "high",
+            "note": "Fully MIT reference SDK.",
+            "sources": [
+              {
+                "url": "https://pypi.org/project/mcp/",
+                "shows": "MIT, package 'mcp', author Anthropic PBC",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 3,
+            "signal_type": "stars_fallback",
+            "confidence": "medium",
+            "note": "~23k stars; PyPI download volume not retrievable - stars_fallback (true usage likely higher as the reference SDK).",
+            "sources": [
+              {
+                "url": "https://github.com/modelcontextprotocol/python-sdk",
+                "shows": "MIT, ~23.4k stars",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "capability": {
+            "score": 5,
+            "basis": "feature_matrix",
+            "value": "client+server; stdio/SSE/Streamable-HTTP; FastMCP; structured output; OAuth 2.1; elicitation",
+            "confidence": "high",
+            "note": "Most complete Python MCP toolkit.",
+            "sources": [
+              {
+                "url": "https://github.com/modelcontextprotocol/python-sdk",
+                "shows": "feature set: client/server, transports, FastMCP, OAuth",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "version_note": "MIT (package 'mcp', author Anthropic PBC). ~23k stars; very actively released."
+        },
+        {
+          "product": "MCP TypeScript SDK",
+          "org": "Anthropic",
+          "type": "software",
+          "description": "Official TypeScript SDK for the Model Context Protocol (Node, Bun, Deno), providing server and client libraries with tools/resources/prompts, Streamable-HTTP + stdio transports, auth helpers, and Express/Hono/Node middleware. The most-downloaded MCP package by a wide margin.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public;no-feature-gated-core",
+            "confidence": "high",
+            "note": "Fully MIT reference SDK.",
+            "sources": [
+              {
+                "url": "https://www.npmjs.com/package/@modelcontextprotocol/sdk",
+                "shows": "MIT, ~154M downloads/30d",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 5,
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "~154M npm downloads in the last 30 days.",
+            "sources": [
+              {
+                "url": "https://www.npmjs.com/package/@modelcontextprotocol/sdk",
+                "shows": "~154.2M downloads/last-30-days",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "capability": {
+            "score": 5,
+            "basis": "feature_matrix",
+            "value": "client+server; Node/Bun/Deno; Streamable-HTTP/stdio; auth + framework middleware",
+            "confidence": "high",
+            "note": "Feature parity with the Python SDK; the canonical JS/TS MCP implementation.",
+            "sources": [
+              {
+                "url": "https://github.com/modelcontextprotocol/typescript-sdk",
+                "shows": "feature set: client/server, multi-runtime, transports",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "version_note": "MIT (@modelcontextprotocol/sdk). ~13k stars, ~154M npm downloads/last-30-days."
+        },
+        {
+          "product": "MCP Inspector",
+          "org": "Anthropic",
+          "type": "software",
+          "description": "Developer tool for testing and debugging MCP servers, with a React web UI and a CLI mode. Includes a Node proxy supporting stdio/SSE/Streamable-HTTP, request history and live visualization, bearer-token auth, multi-server config, and DNS-rebinding protection.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public;no-feature-gated-core",
+            "confidence": "high",
+            "note": "Fully MIT.",
+            "sources": [
+              {
+                "url": "https://github.com/modelcontextprotocol/inspector",
+                "shows": "MIT license file",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 4,
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "~847k npm downloads in the last 30 days.",
+            "sources": [
+              {
+                "url": "https://www.npmjs.com/package/@modelcontextprotocol/inspector",
+                "shows": "~847k downloads/last-30-days",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "visual + CLI MCP debugging; all transports; request history/visualization; auth; multi-server config",
+            "confidence": "high",
+            "note": "Best-in-class for its debugging niche; narrower scope than the SDKs by design.",
+            "sources": [
+              {
+                "url": "https://github.com/modelcontextprotocol/inspector",
+                "shows": "feature set: web UI + CLI debugging, all transports",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "version_note": "MIT. ~10k stars, ~847k npm downloads/last-30-days."
+        },
+        {
+          "product": "GitHub MCP Server",
+          "org": "GitHub (Microsoft)",
+          "type": "software",
+          "description": "GitHub's official MCP server (Go) that lets AI agents interact with the GitHub platform in natural language, exposing 20+ toolsets - Repositories, Issues, Pull Requests, Actions, Code Security, Dependabot, Discussions, Projects, Copilot, and more. Runs locally via Docker/binary or via GitHub's remote hosted endpoint.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public;no-feature-gated-core",
+            "confidence": "high",
+            "note": "Fully MIT, first-party GitHub server.",
+            "sources": [
+              {
+                "url": "https://github.com/github/github-mcp-server",
+                "shows": "MIT, ~30.8k stars, official GitHub server",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 3,
+            "signal_type": "stars_fallback",
+            "confidence": "medium",
+            "note": "~31k stars; no download metric for Go/Docker distribution - stars_fallback (first-party backing implies higher real usage).",
+            "sources": [
+              {
+                "url": "https://github.com/github/github-mcp-server",
+                "shows": "~30.8k stars",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "capability": {
+            "score": 5,
+            "basis": "feature_matrix",
+            "value": "20+ toolsets: repos, issues, PRs, Actions, code security, Dependabot, Discussions, Projects, Copilot",
+            "confidence": "high",
+            "note": "The most comprehensive GitHub-platform tool surface among MCP servers.",
+            "sources": [
+              {
+                "url": "https://github.com/github/github-mcp-server",
+                "shows": "toolset list",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "version_note": "MIT (c) 2025 GitHub. ~31k stars. Distributed as a Go binary/Docker image (no npm/pypi)."
+        },
+        {
+          "product": "Slack MCP Server",
+          "org": "Dmitry Korotovsky",
+          "type": "software",
+          "description": "Actively maintained community Slack MCP server (Go) connecting AI agents to Slack workspaces over stdio/SSE/HTTP, with a 'stealth mode' needing no bot install or workspace permissions plus an OAuth mode. Exposes 18 tools (history, search, posting, reactions, channel/user management).",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public;no-feature-gated-core",
+            "confidence": "high",
+            "note": "Fully MIT.",
+            "sources": [
+              {
+                "url": "https://github.com/korotovsky/slack-mcp-server",
+                "shows": "MIT, ~1.7k stars, v1.3.0",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 2,
+            "signal_type": "stars_fallback",
+            "confidence": "medium",
+            "note": "~1.7k stars (smaller community project) - stars_fallback.",
+            "sources": [
+              {
+                "url": "https://github.com/korotovsky/slack-mcp-server",
+                "shows": "~1.7k stars",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "18 tools: history/replies/search, posting, reactions, channel/user/usergroup management, saved items; stealth + OAuth modes",
+            "confidence": "medium",
+            "note": "Broad Slack read/write surface with an unusual no-permission stealth mode.",
+            "sources": [
+              {
+                "url": "https://github.com/korotovsky/slack-mcp-server",
+                "shows": "18-tool feature set",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "version_note": "MIT. ~1.7k stars. There is no first-party official Slack MCP server - the original reference server was archived (servers-archived), making this the most popular maintained one."
+        },
+        {
+          "product": "Notion MCP Server",
+          "org": "Notion",
+          "type": "software",
+          "description": "Notion's official MCP server (TypeScript), exposing ~22 tools over the Notion API for agents: search the workspace, query/retrieve/create/update data sources, read and write pages and blocks, manage properties and comments - with token-optimized responses tailored to agents.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public;no-feature-gated-core",
+            "confidence": "high",
+            "note": "Fully MIT, first-party Notion server.",
+            "sources": [
+              {
+                "url": "https://github.com/makenotion/notion-mcp-server",
+                "shows": "MIT, ~4.4k stars, official Notion server",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 3,
+            "signal_type": "stars_fallback",
+            "confidence": "medium",
+            "note": "~4.4k stars plus npm distribution - stars_fallback (first-party backing implies higher real usage).",
+            "sources": [
+              {
+                "url": "https://github.com/makenotion/notion-mcp-server",
+                "shows": "~4.4k stars",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "~22 tools across search, data sources, pages, blocks, comments; agent-optimized output",
+            "confidence": "medium",
+            "note": "Comprehensive single-product Notion API coverage.",
+            "sources": [
+              {
+                "url": "https://github.com/makenotion/notion-mcp-server",
+                "shows": "22-tool feature set",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "version_note": "MIT. ~4.4k stars. First-party Notion (makenotion) server."
+        },
+        {
+          "product": "Filesystem MCP Server",
+          "org": "Anthropic",
+          "type": "software",
+          "description": "The official reference Filesystem MCP server (TypeScript) in the modelcontextprotocol/servers monorepo, providing secure file operations within configurable allowed directories - read/write/edit files, directory trees, search, media reads - with the MCP Roots protocol for dynamic access scoping.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public;no-feature-gated-core",
+            "confidence": "high",
+            "note": "Fully MIT reference server.",
+            "sources": [
+              {
+                "url": "https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem",
+                "shows": "MIT, reference filesystem server",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 3,
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "note": "Bundled reference server; monorepo ~87k stars are shared across servers - stars_fallback (capped at 3).",
+            "sources": [
+              {
+                "url": "https://github.com/modelcontextprotocol/servers",
+                "shows": "~87.4k monorepo stars, filesystem among active reference servers",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "granular read/write/edit; directory tree; search; media reads; sandboxed allowed-directory access; Roots support",
+            "confidence": "high",
+            "note": "Full local-filesystem surface with sandboxed access controls.",
+            "sources": [
+              {
+                "url": "https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem",
+                "shows": "tool list",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "version_note": "MIT. One of the active reference servers; the monorepo has ~87k stars shared across all bundled servers, so per-server adoption isn't separable."
+        },
+        {
+          "product": "Postgres MCP Pro",
+          "org": "Crystal DBA",
+          "type": "software",
+          "description": "Actively maintained PostgreSQL MCP server (Python) by Crystal DBA, 'Postgres MCP Pro', that goes beyond read-only querying to database performance and health tooling for agents: schema/object inspection, execute_sql with access modes, EXPLAIN with hypothetical-index simulation, slow-query analysis, index advising, and health checks.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public;no-feature-gated-core",
+            "confidence": "high",
+            "note": "Fully MIT.",
+            "sources": [
+              {
+                "url": "https://github.com/crystaldba/postgres-mcp",
+                "shows": "MIT, ~2.9k stars, Postgres MCP Pro",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 3,
+            "signal_type": "stars_fallback",
+            "confidence": "medium",
+            "note": "~2.9k stars plus PyPI distribution - stars_fallback (capped at 3).",
+            "sources": [
+              {
+                "url": "https://github.com/crystaldba/postgres-mcp",
+                "shows": "~2.9k stars",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "9 tools: schema/object inspection, execute_sql w/ access modes, EXPLAIN + hypothetical indexes, slow-query analysis, index advising, health checks",
+            "confidence": "medium",
+            "note": "Richest open Postgres MCP surface, well beyond the archived read-only reference server.",
+            "sources": [
+              {
+                "url": "https://github.com/crystaldba/postgres-mcp",
+                "shows": "9-tool feature set",
+                "accessed": "2026-06-17"
+              }
+            ]
+          },
+          "version_note": "MIT. ~2.9k stars. The original reference Postgres server was archived (read-only since May 2025) and only did read-only queries, so this is the canonical maintained one."
         }
       ]
     },
@@ -16350,8 +17886,8 @@
     "agent_tools_protocols",
     "deployment"
   ],
-  "n_total": 298,
-  "generated": "2026-06-17",
+  "n_total": 330,
+  "generated": "2026-06-18",
   "long_tail": {
     "counts": {
       "repos": 15375,
