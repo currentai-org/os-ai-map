@@ -63,10 +63,42 @@ Creates four coordinated edits: a product file, a score file, a category roster 
 6. **Validate**: `uv run python -m build.validate` must print `0 error(s)`.
 7. **Verify the source**: never assert a product/version from memory. Confirm any 2025+
    release against a PRIMARY source (vendor HF org / blog / registry). A plausible press
-   claim that does not survive a check is rejected.
+   claim that does not survive a check is rejected. The map is a forward-dated universe
+   that can include speculative entries — if a release cannot be confirmed against any
+   primary source, mark it SKIP rather than guess.
 8. Rebuild + preview, then open a PR. Preview only: do not commit the regenerated
    `build/notebook_data.json` or `notebooks/ai-stack-map.py` (bot-owned; CI blocks
    hand-edits).
+
+## Openness class & score quick-reference
+
+Assign `class` first, then the 0–5 `score` (full rationale in
+`docs/guides/openness-spectrum.md`). Calls that are easy to get wrong:
+
+- **Models:** `closed` (proprietary/API-only, no weights) = 1; `open_weights` (weights
+  public but restrictive license and/or no open data) = 3; `open_source` (open weights +
+  data + code under an OSI license) = 5. Google's **Gemma license is NOT OSI** →
+  Gemma/CodeGemma are `open_weights`, not open_source.
+- **Software:** `open_source` (OSI license, full source, no feature-gated core) = 5;
+  `open_core` (OSS core + a commercial cloud/feature tier, e.g. LangGraph, LlamaIndex) = 4;
+  `source_available` = 2; `closed` = 0–1. **Fair-code** (e.g. n8n's Sustainable Use
+  License) and **BSL 1.1** (e.g. Pathway) are NOT OSI → `source_available`, even when
+  marketed as "open source".
+- A custom copyright line can make GitHub report `NOASSERTION` for a genuine MIT/Apache
+  license — check the LICENSE body, don't trust the GitHub classifier.
+- Keep generic version buckets (e.g. "GPT-5 line", "Claude Opus 4.x") rather than
+  splitting frontier models into every point release.
+
+## Adding in batches
+
+For more than a few products, generate the files with a small Python script
+(`yaml.safe_dump(..., sort_keys=False, allow_unicode=True)` for the product/score/org
+files, plus a helper that inserts `- <slug>` lines under the `products:` block of existing
+category/org YAMLs so their formatting is preserved) — far less error-prone than
+hand-writing each file. Verify every product against PRIMARY sources first (parallel
+research agents work well). **After a batch, two hand-authored things drift and must be
+re-checked:** category **straplines** (see the `curate-category` skill) and the
+`build/_frozen_long_tail.json` dedup counts (`scored` / `overlap` / `uncategorized`).
 
 ## Boundaries
 - Read-only on the warehouse. No MCP, no uploads.
