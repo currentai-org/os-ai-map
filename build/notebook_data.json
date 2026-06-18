@@ -2279,6 +2279,54 @@
             ]
           },
           "version_note": "Apache-2.0 (OSI) - unlike CodeGemma/Gemma 3, which use the Gemma Terms of Use. Training data and recipe not released. ~8.4M monthly downloads on gemma-4-31b-it. Benchmark claims (LMArena) are vendor-reported."
+        },
+        {
+          "product": "RWKV",
+          "org": "RWKV Project",
+          "type": "model",
+          "description": "Open-weights LLM family with a novel architecture that is 100% RNN yet trains in parallel like a GPT transformer - combining linear-time inference, constant memory (no KV-cache), and effectively unbounded context. The current generation, RWKV-7 'Goose', introduces 'Dynamic State Evolution' for expressivity beyond the limits of attention.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "weights:open(Apache-2.0);data:open(3.1T-token multilingual corpus);code:open(github.com/BlinkDL/RWKV-LM);license:Apache-2.0(OSI)",
+            "confidence": "high",
+            "note": "Fully-open pipeline: open weights, open training data, and open training code under Apache-2.0.",
+            "sources": [
+              {
+                "url": "https://arxiv.org/abs/2503.14456",
+                "shows": "RWKV-7 Goose: Apache-2.0 weights + data + code, 3.1T open corpus",
+                "accessed": "2026-06-18"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 3,
+            "signal_type": "stars_fallback",
+            "confidence": "medium",
+            "note": "~14.6k stars on RWKV-LM; HF download volume low/noisy - stars_fallback (capped at 3).",
+            "sources": [
+              {
+                "url": "https://github.com/BlinkDL/RWKV-LM",
+                "shows": "~14.6k stars, RWKV-7 Goose",
+                "accessed": "2026-06-18"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "benchmark:RWKV-7 Goose (arXiv:2503.14456)",
+            "value": "RWKV-7 'Goose' 2.9B: claimed 3B SoTA multilingual and matching 3B SoTA English on far fewer training tokens; MMLU rose to ~43% across generations",
+            "confidence": "medium",
+            "note": "Strong intelligence-per-token for its size via a linear-time RNN architecture; not at frontier absolute capability.",
+            "sources": [
+              {
+                "url": "https://arxiv.org/abs/2503.14456",
+                "shows": "RWKV-7 3B SoTA-multilingual claims, Pareto vs transformers",
+                "accessed": "2026-06-18"
+              }
+            ]
+          },
+          "version_note": "Apache-2.0 with open weights, an open 3.1T-token multilingual corpus, and open training code - a fully-open pipeline (rare for a model). The RWKV Project is an LF AI & Data (Generative AI Commons) non-profit led by Bo Peng (BlinkDL). ~14.6k stars on RWKV-LM."
         }
       ]
     },
@@ -11548,6 +11596,102 @@
             ]
           },
           "version_note": "MIT. ~176k stars; repo recently renamed sst/opencode -> anomalyco/opencode (old URL redirects). Distributed via npm (opencode-ai)."
+        },
+        {
+          "product": "Semantic Kernel",
+          "org": "Microsoft",
+          "type": "software",
+          "description": "Microsoft's lightweight open-source SDK for building AI agents and integrating LLMs into C#, Python, or Java code. It exposes your code as model-callable 'plugins' (often via OpenAPI), with connectors to AI services and vector stores, telemetry, and responsible-AI hooks. Its differentiator vs the Python-first frameworks is genuine, first-class multi-language support (.NET and Java, not Python-only).",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public(C#/Python/Java);model-agnostic;no-feature-gated-core",
+            "confidence": "high",
+            "note": "MIT multi-language SDK; first-class Azure connectors but model-agnostic and self-hostable.",
+            "sources": [
+              {
+                "url": "https://github.com/microsoft/semantic-kernel",
+                "shows": "MIT, ~28.2k stars, multi-language agent SDK",
+                "accessed": "2026-06-18"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 3,
+            "signal_type": "stars_fallback",
+            "confidence": "medium",
+            "note": "~28k stars; PyPI volume not surfaced. Entering maintenance as Microsoft Agent Framework becomes the successor - stars_fallback (capped at 3).",
+            "sources": [
+              {
+                "url": "https://github.com/microsoft/semantic-kernel",
+                "shows": "~28.2k stars; MAF-successor banner",
+                "accessed": "2026-06-18"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "multi-LLM connectors; plugin/OpenAPI system; auto function-calling orchestration; agent abstractions; memory/vector connectors; telemetry; RAI filters; first-class .NET + Java",
+            "confidence": "medium",
+            "note": "Enterprise multi-language orchestration with uniquely strong .NET/Java coverage; now superseded by Microsoft Agent Framework.",
+            "sources": [
+              {
+                "url": "https://learn.microsoft.com/en-us/agent-framework/overview/",
+                "shows": "MAF is the successor to SK + AutoGen",
+                "accessed": "2026-06-18"
+              }
+            ]
+          },
+          "version_note": "MIT. ~28k stars. Microsoft has converged Semantic Kernel + AutoGen into the Microsoft Agent Framework (the successor); SK is now in maintenance mode (bug/security fixes only), supported ~1 year past MAF GA."
+        },
+        {
+          "product": "BeeAI Framework",
+          "org": "IBM",
+          "type": "software",
+          "description": "Open-source toolkit for production-ready multi-agent systems with full feature parity across Python and TypeScript - its signature differentiator vs the Python-first peers. Emphasizes production concerns (caching, memory, OpenTelemetry observability), constraint-based agent governance, native MCP + A2A interop, and 10+ LLM backends.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public(Python+TS);no-feature-gated-core",
+            "confidence": "high",
+            "note": "Apache-2.0 across Python + TypeScript with no commercial gating.",
+            "sources": [
+              {
+                "url": "https://github.com/i-am-bee/beeai-framework",
+                "shows": "Apache-2.0, ~3.3k stars, dual-language agent framework",
+                "accessed": "2026-06-18"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 3,
+            "signal_type": "stars_fallback",
+            "confidence": "medium",
+            "note": "~3.3k stars; package download volume not retrievable - stars_fallback (capped at 3).",
+            "sources": [
+              {
+                "url": "https://github.com/i-am-bee/beeai-framework",
+                "shows": "~3.3k stars",
+                "accessed": "2026-06-18"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "Python+TS parity; agents/multi-agent workflows; RAG; tools; memory; YAML + decorator orchestration (parallelism/retries/replanning); constraint governance; MCP + A2A; OpenTelemetry; 10+ LLM backends",
+            "confidence": "medium",
+            "note": "Distinctive dual-language parity and production focus; smaller adoption than the leading frameworks.",
+            "sources": [
+              {
+                "url": "https://lfaidata.foundation/projects/beeai/",
+                "shows": "LF-hosted; dual-language production agent framework",
+                "accessed": "2026-06-18"
+              }
+            ]
+          },
+          "version_note": "Apache-2.0. IBM-originated, now under the Linux Foundation (LF AI & Data), alongside Docling and Data Prep Kit. ~3.3k stars."
         }
       ]
     },
@@ -15020,6 +15164,54 @@
             ]
           },
           "version_note": "Active 2026; acquired by ClickHouse Mar 2026; MIT core"
+        },
+        {
+          "product": "TruLens",
+          "org": "Snowflake",
+          "type": "software",
+          "description": "Open-source library for evaluation and tracing of LLM apps and AI agents. Its differentiator is 'feedback functions' - programmatic evaluators including the RAG triad (groundedness, context relevance, answer relevance) plus toxicity and others - combined with app instrumentation and tracing, making it more eval-first than gateway/observability-first peers.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public(github.com/truera/trulens);commercial:Snowflake-Cortex-AI-Observability(separate hosted product);library:not-feature-gated",
+            "confidence": "high",
+            "note": "MIT library that is fully functional standalone; the Snowflake Cortex hosted product is separate, not a gate on the library.",
+            "sources": [
+              {
+                "url": "https://github.com/truera/trulens",
+                "shows": "MIT, ~3.4k stars, LLM eval + tracing",
+                "accessed": "2026-06-18"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 4,
+            "signal_type": "usage_volume",
+            "confidence": "medium",
+            "note": "~38.7k PyPI downloads/month (pypistats) alongside ~3.4k stars.",
+            "sources": [
+              {
+                "url": "https://pypistats.org/packages/trulens",
+                "shows": "38,729 downloads last month",
+                "accessed": "2026-06-18"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "feedback functions / LLM-as-judge (RAG triad, toxicity); instrumentation + tracing; experiment comparison across versions; Streamlit dashboard; OpenAI/HF/LiteLLM/Cortex providers",
+            "confidence": "medium",
+            "note": "Eval-first observability; lighter than Langfuse/Helicone on production gateway and prompt management.",
+            "sources": [
+              {
+                "url": "https://www.snowflake.com/en/blog/trulens-open-source-ai/",
+                "shows": "Snowflake acquired TruEra; TruLens stays open source",
+                "accessed": "2026-06-18"
+              }
+            ]
+          },
+          "version_note": "MIT. Created by TruEra, which Snowflake acquired in 2024; now maintained by Snowflake (the GitHub org remains 'truera'). A separate hosted Snowflake Cortex AI Observability product exists; the library stays fully open. ~3.4k stars, ~39k PyPI downloads/month."
         }
       ]
     },
@@ -16558,6 +16750,54 @@
             ]
           },
           "version_note": "MIT. ~2.9k stars. The original reference Postgres server was archived (read-only since May 2025) and only did read-only queries, so this is the canonical maintained one."
+        },
+        {
+          "product": "Docling",
+          "org": "IBM",
+          "type": "software",
+          "description": "Open-source SDK and CLI that parses PDF, DOCX, PPTX, XLSX, HTML, EPUB, images, and audio into unified structured output (Markdown, lossless JSON, HTML, DocTags) for gen-AI and RAG pipelines. Unlike web-URL-to-Markdown services (Firecrawl, Jina Reader), it does deep local document understanding of rich binary docs - layout/reading-order analysis, table-structure recognition, formula/code extraction, OCR, and VLM integration - running locally as a library.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public(github.com/docling-project/docling);self-host:primary;no-feature-gated-core",
+            "confidence": "high",
+            "note": "MIT, local-first document parsing, fully self-hostable with integrated open-weight models.",
+            "sources": [
+              {
+                "url": "https://github.com/docling-project/docling",
+                "shows": "MIT, ~61.8k stars, multi-format document parser",
+                "accessed": "2026-06-18"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 3,
+            "signal_type": "stars_fallback",
+            "confidence": "medium",
+            "note": "~62k stars (exceptionally high) but PyPI download volume not surfaced - stars_fallback (capped at 3; true usage almost certainly higher).",
+            "sources": [
+              {
+                "url": "https://github.com/docling-project/docling",
+                "shows": "~61.8k stars",
+                "accessed": "2026-06-18"
+              }
+            ]
+          },
+          "capability": {
+            "score": 5,
+            "basis": "feature_matrix",
+            "value": "parses PDF/DOCX/PPTX/XLSX/HTML/EPUB/images/audio -> Markdown/JSON/HTML/DocTags; layout + reading-order; table-structure recognition; formula/code extraction; OCR; VLM integration",
+            "confidence": "high",
+            "note": "Deepest local document understanding among RAG ingestion tools; web-URL parsers lack rich binary-doc depth.",
+            "sources": [
+              {
+                "url": "https://github.com/docling-project/docling",
+                "shows": "feature set: multi-format, layout, tables, OCR, VLM",
+                "accessed": "2026-06-18"
+              }
+            ]
+          },
+          "version_note": "MIT; originated at IBM Research, inducted into the Linux Foundation AI & Data Foundation (Docling Project) on 2025-04-29 under community governance. ~62k stars (exceptionally high)."
         }
       ]
     },
@@ -17886,7 +18126,7 @@
     "agent_tools_protocols",
     "deployment"
   ],
-  "n_total": 330,
+  "n_total": 335,
   "generated": "2026-06-18",
   "long_tail": {
     "counts": {
