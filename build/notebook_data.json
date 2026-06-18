@@ -2327,6 +2327,198 @@
             ]
           },
           "version_note": "Apache-2.0 with open weights, an open 3.1T-token multilingual corpus, and open training code - a fully-open pipeline (rare for a model). The RWKV Project is an LF AI & Data (Generative AI Commons) non-profit led by Bo Peng (BlinkDL). ~14.6k stars on RWKV-LM."
+        },
+        {
+          "product": "Qwen3.7-Max",
+          "org": "Alibaba",
+          "type": "model",
+          "description": "Alibaba's flagship proprietary model in the Qwen 'Max' line (announced ~mid-2026), positioned as an agent foundation for coding, office-workflow automation, and autonomous multi-step execution. Offers OpenAI- and Anthropic-compatible APIs and integrates with Claude Code, OpenClaw, and Qwen Code. Sizes/architecture not disclosed; distinct from Qwen's open-weights line.",
+          "openness": {
+            "score": 1,
+            "class": "closed",
+            "components": "weights:closed;data:closed;code:closed;license:proprietary(Alibaba Model Studio API);API-only(distinct from Qwen open-weights line)",
+            "confidence": "high",
+            "note": "Alibaba's own announcement calls it a proprietary model; no weights distributed.",
+            "sources": [
+              {
+                "url": "https://www.alibabacloud.com/blog/qwen3-7-the-agent-frontier_603154",
+                "shows": "official: 'proprietary', Model Studio API-only",
+                "accessed": "2026-06-18"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 4,
+            "signal_type": "reported_traction",
+            "confidence": "low",
+            "note": "Commercial API live on Model Studio, cross-listed on OpenRouter/Together; no download numbers (not on HF).",
+            "sources": [
+              {
+                "url": "https://huggingface.co/Qwen",
+                "shows": "official Qwen HF org confirms no Max open-weights model",
+                "accessed": "2026-06-18"
+              }
+            ]
+          },
+          "capability": {
+            "score": 5,
+            "basis": "benchmark:LMArena/GPQA-Diamond/SWE-Pro/Terminal-Bench",
+            "value": "GPQA Diamond 92.4, SWE-Pro 60.6, Terminal-Bench 69.7; agent-focused; LMArena frontier (rank mirror-reported)",
+            "confidence": "medium",
+            "note": "Frontier agent model; official benchmarks, Arena rank from third-party mirrors.",
+            "sources": [
+              {
+                "url": "https://www.alibabacloud.com/blog/qwen3-7-the-agent-frontier_603154",
+                "shows": "official GPQA/SWE-Pro/Terminal-Bench benchmarks",
+                "accessed": "2026-06-18"
+              }
+            ]
+          },
+          "version_note": "Proprietary/API-only (Alibaba Cloud Model Studio / DashScope; cross-listed on OpenRouter/Together). The Max line is closed, unlike Qwen's open-weights releases. LMArena frontier (~#17 per mirrors; vendor cites ~1475 Elo Text)."
+        },
+        {
+          "product": "GLM-5.2",
+          "org": "Zhipu / Z.ai",
+          "type": "model",
+          "description": "Z.ai's flagship open-weights frontier model (mid-June 2026, successor to GLM-5.1), built for long-horizon agentic and coding tasks. A sparse MoE (~753B total params) with a 1M-token context, introducing 'IndexShare' sparse attention (~2.9x FLOP cut at 1M context) and improved speculative decoding. Positioned as a leading open-weights coding model.",
+          "openness": {
+            "score": 3,
+            "class": "open_weights",
+            "components": "weights:open(MIT);data:closed;code:open(inference);license:MIT(OSI)",
+            "confidence": "high",
+            "note": "Permissive MIT open weights + inference code, but no open training data -> open_weights.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/zai-org/GLM-5.2/blob/main/LICENSE",
+                "shows": "MIT, (c) Zhipu AI 2026",
+                "accessed": "2026-06-18"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 2,
+            "signal_type": "usage_volume",
+            "confidence": "low",
+            "note": "~666 HF downloads last month (model was days old at audit; volatile/low).",
+            "sources": [
+              {
+                "url": "https://huggingface.co/zai-org/GLM-5.2",
+                "shows": "666 downloads last month, 753B MoE, 1M context",
+                "accessed": "2026-06-18"
+              }
+            ]
+          },
+          "capability": {
+            "score": 5,
+            "basis": "benchmark:LMArena/FrontierSWE/Terminal-Bench",
+            "value": "FrontierSWE 74.4, SWE-bench Pro 62.1, Terminal-Bench 2.1 ~82, HLE 40.5, AIME 2026 99.2; strongest-open-weights-coder positioning; LMArena frontier",
+            "confidence": "medium",
+            "note": "Frontier open-weights model; official benchmarks, Arena rank mirror-reported.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/zai-org/GLM-5.2",
+                "shows": "official FrontierSWE/Terminal-Bench/HLE benchmarks",
+                "accessed": "2026-06-18"
+              }
+            ]
+          },
+          "version_note": "MIT-licensed open weights (HF model card + LICENSE, (c) Zhipu AI 2026). ~753B-param MoE, 1M context. Model only days old at audit (~666 HF downloads/month, volatile)."
+        },
+        {
+          "product": "ERNIE 5.1",
+          "org": "Baidu",
+          "type": "model",
+          "description": "Baidu's flagship fifth-generation LLM (released May 2026): a Mixture-of-Experts model with elastic depth/width/sparsity, focused on text generation, reasoning, agentic tool-use, and creative writing. Baidu emphasizes cost efficiency - total params ~1/3 and active params ~1/2 of ERNIE 5.0, trained at ~6% of comparable models' pre-training cost. 128K context.",
+          "openness": {
+            "score": 1,
+            "class": "closed",
+            "components": "weights:closed;data:closed;code:closed;license:proprietary(Baidu Qianfan API);API-only(ERNIE 4.5 was open, 5.x flagship closed)",
+            "confidence": "high",
+            "note": "No weights distributed for the 5.x flagship; closed API model.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/baidu",
+                "shows": "Baidu HF org lists only ERNIE 4.5 + Image open, no 5.x weights",
+                "accessed": "2026-06-18"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 4,
+            "signal_type": "reported_traction",
+            "confidence": "low",
+            "note": "Baidu's ERNIE/Wenxiaoyan assistant app reported ~200M MAUs around the 5.0 launch (app-level, not 5.1-specific); not on HF.",
+            "sources": [
+              {
+                "url": "https://ernie.baidu.com/blog/posts/ernie-5.1-0508-release/",
+                "shows": "ERNIE 5.1 release; API access",
+                "accessed": "2026-06-18"
+              }
+            ]
+          },
+          "capability": {
+            "score": 5,
+            "basis": "benchmark:LMArena/AIME",
+            "value": "AIME 2026 (with tools) 99.6, strong GPQA/MMLU-Pro; MoE, 128K context; LMArena frontier (Baidu claims #13 Text)",
+            "confidence": "medium",
+            "note": "Frontier proprietary model; Arena rank disputed between mirrors (#28) and Baidu's own claim (#13 Text).",
+            "sources": [
+              {
+                "url": "https://ernie.baidu.com/blog/posts/ernie-5.1-0508-release/",
+                "shows": "official MoE design, benchmarks, training-cost efficiency",
+                "accessed": "2026-06-18"
+              }
+            ]
+          },
+          "version_note": "Proprietary/API-only (Baidu Qianfan API, ernie.baidu.com, AI Studio). Note ERNIE 4.5 was open-sourced (Apache-2.0, June 2025) but the 5.x flagship line is closed. LMArena frontier (~#28 per mirrors; Baidu claims 5.1-Preview #13 Text / #1 Chinese)."
+        },
+        {
+          "product": "MiMo-V2.5-Pro",
+          "org": "Xiaomi",
+          "type": "model",
+          "description": "Xiaomi's open-weights MoE model (released April 2026): ~1.02T total / 42B active params (70 layers, 8 experts/token), hybrid attention interleaving sliding-window and global attention (6:1), 3-layer Multi-Token Prediction, and a 1M-token context. Built for demanding agentic, complex software-engineering, and long-horizon tasks.",
+          "openness": {
+            "score": 3,
+            "class": "open_weights",
+            "components": "weights:open(MIT per HF card);data:closed;code:open;license:MIT(HF card; older GitHub repo shows Apache-2.0)",
+            "confidence": "medium",
+            "note": "Open weights under a permissive license (MIT per the model card); no open training data -> open_weights.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/XiaomiMiMo/MiMo-V2.5-Pro",
+                "shows": "MIT, 1.02T/42B MoE, 1M context, benchmarks",
+                "accessed": "2026-06-18"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 4,
+            "signal_type": "usage_volume",
+            "confidence": "medium",
+            "note": "~66,027 HF downloads last month, 651 likes, plus third-party quantizations (unsloth GGUF, MLX, vLLM).",
+            "sources": [
+              {
+                "url": "https://huggingface.co/XiaomiMiMo/MiMo-V2.5-Pro",
+                "shows": "66,027 downloads last month, 651 likes",
+                "accessed": "2026-06-18"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "benchmark:LMArena/MMLU-Pro",
+            "value": "MMLU 89.4, MMLU-Pro 68.5, GSM8K 99.6, HumanEval+ 75.6; efficiency-focused; lower end of the LMArena frontier band (~#29 per mirrors)",
+            "confidence": "medium",
+            "note": "Frontier open-weights model, efficiency-focused; official benchmarks, Arena rank mirror-reported.",
+            "sources": [
+              {
+                "url": "https://mimo.xiaomi.com/mimo-v2-5-pro",
+                "shows": "official architecture + benchmarks, Apr 2026 release",
+                "accessed": "2026-06-18"
+              }
+            ]
+          },
+          "version_note": "Open weights, MIT per the HF model card (an older MiMo GitHub repo lists Apache-2.0; the model card is authoritative for this release). ~1.02T/42B MoE, 1M context. ~66k HF downloads/month plus third-party quantizations."
         }
       ]
     },
@@ -3934,16 +4126,21 @@
             ]
           },
           "capability": {
-            "score": 4,
-            "basis": "benchmark:HLE",
-            "value": "Humanity's Last Exam 58%, FrontierScience Research 38% (Contemplating mode); positioned vs Gemini Deep Think / GPT Pro extreme-reasoning modes",
-            "confidence": "low",
-            "note": "Vendor-reported (Meta's own blog) frontier-competitive reasoning scores; strong but 'small and fast by design' first-of-series model and figures are not independently verified. Held at 4 rather than 5 pending independent confirmation.",
+            "score": 5,
+            "basis": "benchmark:LMArena/HLE",
+            "value": "LMArena #6 overall (~1487 Elo, mid-2026); Humanity's Last Exam 58%, FrontierScience Research 38% (Contemplating mode); positioned vs Gemini Deep Think / GPT Pro extreme-reasoning modes",
+            "confidence": "medium",
+            "note": "Bumped 4 -> 5: the independent confirmation the prior note awaited now exists - LMArena ranks Muse Spark #6 overall (top of the non-Anthropic/Google frontier), corroborating Meta's vendor-reported reasoning scores.",
             "sources": [
               {
                 "url": "https://ai.meta.com/blog/introducing-muse-spark-msl/",
                 "shows": "Meta-reported HLE 58% and FrontierScience 38% for Muse Spark Contemplating mode",
                 "accessed": "2026-06-04"
+              },
+              {
+                "url": "https://lmarena.ai/leaderboard",
+                "shows": "Muse Spark ranked",
+                "accessed": "2026-06-18"
               }
             ]
           },
@@ -4565,6 +4762,54 @@
             ]
           },
           "version_note": "Gemma Terms of Use (custom, use-restricted, NOT OSI). Training data and recipe not released. Largely superseded by Qwen2.5-Coder / Gemma 3 for coding."
+        },
+        {
+          "product": "Gemini 3 Pro",
+          "org": "Google",
+          "type": "model",
+          "description": "Google DeepMind's flagship reasoning model in the Gemini 3 family (successor to Gemini 2.5), launched in preview Nov 2025. Natively multimodal (text, image, audio, video, PDFs, code) with a 1M-token context and thinking_level reasoning control; aimed at agentic building, coding, and multi-step planning. Proprietary, API-only; Google discloses no parameter count.",
+          "openness": {
+            "score": 1,
+            "class": "closed",
+            "components": "weights:closed;data:closed;code:closed;license:proprietary(Google Gemini API/Vertex terms);API-only",
+            "confidence": "high",
+            "note": "No public weights; closed API-only model.",
+            "sources": [
+              {
+                "url": "https://blog.google/products/gemini/gemini-3/",
+                "shows": "official launch: 1M context, benchmarks, API-only",
+                "accessed": "2026-06-18"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 5,
+            "signal_type": "reported_traction",
+            "confidence": "low",
+            "note": "Frontier proprietary model; Google cites 650M+ Gemini app MAUs (generational, not model-specific); not on HF, no download numbers.",
+            "sources": [
+              {
+                "url": "https://blog.google/products/gemini/gemini-3/",
+                "shows": "Gemini 3 Pro availability across Gemini app / API / Vertex",
+                "accessed": "2026-06-18"
+              }
+            ]
+          },
+          "capability": {
+            "score": 5,
+            "basis": "benchmark:LMArena/GPQA-Diamond/HLE",
+            "value": "GPQA Diamond 91.9%, Humanity's Last Exam 37.5%, MMMU-Pro 81%; natively multimodal, 1M context; LMArena frontier (rank vendor/mirror-reported)",
+            "confidence": "medium",
+            "note": "Frontier proprietary model; benchmark figures vendor-published, Arena rank from third-party mirrors.",
+            "sources": [
+              {
+                "url": "https://blog.google/products/gemini/gemini-3/",
+                "shows": "published GPQA/HLE/MMMU-Pro benchmarks",
+                "accessed": "2026-06-18"
+              }
+            ]
+          },
+          "version_note": "Proprietary/API-only (Gemini API + Vertex AI). On LMArena's frontier (Google claimed #1 / ~1501 Elo at launch; ~#8 mid-2026 per third-party mirrors). Note the original gemini-3-pro-preview endpoint was reportedly superseded by gemini-3.1-pro (~Mar 2026)."
         }
       ]
     },
@@ -18510,7 +18755,7 @@
     "agent_tools_protocols",
     "deployment"
   ],
-  "n_total": 343,
+  "n_total": 348,
   "generated": "2026-06-18",
   "long_tail": {
     "counts": {
@@ -18518,11 +18763,11 @@
       "models": 6428,
       "packages": 2823,
       "total": 24626,
-      "scored": 343,
-      "overlap": 152,
-      "scored_outside": 191,
-      "uncategorized": 24474,
-      "universe": 24817
+      "scored": 348,
+      "overlap": 154,
+      "scored_outside": 194,
+      "uncategorized": 24472,
+      "universe": 24820
     },
     "top": [
       {
