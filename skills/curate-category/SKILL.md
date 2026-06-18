@@ -31,6 +31,12 @@ product roster** (the array order is the display order).
 
 ## Boundaries
 - Read-only on the warehouse. No MCP, no uploads.
+- **The `strapline` is the only hand-authored caption in the notebook** — every number
+  (header counts, verdict badges, openness-mix chips) is computed at render time and
+  auto-syncs. After adding/removing products, re-check that the strapline's claim still
+  matches the category's current openness mix and standout verdict; it does not update
+  itself and silently goes stale (e.g. "split down the middle" once the mix shifts to
+  mostly-open).
 - One product, one category: validation enforces it. If you want a product moved,
   remove its slug from the old roster and add it to yours in the same PR.
 - Adding a brand-new category also requires adding its slug to an arc in
