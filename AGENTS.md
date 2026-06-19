@@ -61,12 +61,21 @@ hyphenated kebab-case (`llama-3-1`).
 uv run python -m build.validate        # validate sources/ (must print "0 error(s)")
 uv run python -m build.serialize       # sources/ -> build/notebook_data.json
 uv run python build/render.py          # -> notebooks/ai-stack-map.py
+uv run python build/products_view_data.py  # refresh the embedded data payload in notebooks/products-view.py
 uv run marimo export html notebooks/ai-stack-map.py -o /tmp/preview.html
 ```
 
 Serialize/render locally for preview only. Do not commit `build/notebook_data.json` or
 `notebooks/ai-stack-map.py`: a bot regenerates them on merge to main, and CI blocks PRs
 that hand-edit them.
+
+`notebooks/products-view.py` is a **hybrid**: its gallery, lookup engine, and layout
+cells are hand-authored, but its data payload (the `PAYLOAD = json.loads(...)` line in the
+`data` cell) is regenerated from `build/notebook_data.json` by `build/products_view_data.py`.
+The regenerate bot refreshes that one line on merge, so the products view never drifts from
+the stack-map data — edit the gallery/engine freely, but do not hand-edit the payload line.
+Run `build/products_view_data.py --check` to fail if a gallery exemplar name no longer
+resolves to a product.
 
 ## Editor posture (read-only on the warehouse)
 
