@@ -5846,6 +5846,55 @@
             ]
           },
           "version_note": "MIT, no feature-gated core. ~47k stars. Broadest model-type coverage of the local inference engines."
+        },
+        {
+          "product": "ds4",
+          "org": "antirez (Salvatore Sanfilippo)",
+          "type": "software",
+          "description": "Native local LLM inference engine by antirez (Salvatore Sanfilippo), optimized first for DeepSeek V4 Flash (with DeepSeek V4 PRO support on very-high-memory machines). Self-contained C/CUDA/Objective-C engine built on llama.cpp/GGML with DeepSeek-specific loading, prompt rendering, tool calling, and KV state streaming (RAM and on-disk SSD). Ships an HTTP server with OpenAI-compatible endpoints and an integrated coding agent, across Metal (Apple Silicon), NVIDIA CUDA/DGX Spark, and AMD Strix Halo (ROCm) backends.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public;no feature-gated core;built on ggml/llama.cpp",
+            "confidence": "high",
+            "note": "MIT-licensed native inference engine; full C/CUDA/Obj-C source public, no proprietary tier.",
+            "sources": [
+              {
+                "url": "https://github.com/antirez/ds4/blob/main/LICENSE",
+                "shows": "MIT License text, (c) 2026 The ds4.c authors; (c) 2023-2026 The ggml authors",
+                "accessed": "2026-06-19"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "10K-100K",
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "note": "~14.6k GitHub stars six weeks after launch, but driven heavily by antirez's profile; no package distribution and no install/usage count, so treated as a low-confidence star-proxy pending warehouse signal.",
+            "sources": [
+              {
+                "url": "https://github.com/antirez/ds4",
+                "shows": "~14.6k stars, 332 commits, 0 releases, created May 2026",
+                "accessed": "2026-06-19"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "value": "Backends: Metal/CUDA/ROCm; DeepSeek V4 Flash/PRO specialization; OpenAI-compatible HTTP server; RAM + SSD KV streaming; integrated coding agent. No MLPerf submission.",
+            "confidence": "medium",
+            "note": "Specialized single-model-family engine rather than the breadth of llama.cpp (C4) or the datacenter-throughput frontier (C5); scored 3 for a focused, capable local runtime.",
+            "sources": [
+              {
+                "url": "https://github.com/antirez/ds4",
+                "shows": "README documents Metal/CUDA/ROCm backends, OpenAI-compatible server, SSD KV streaming, integrated agent",
+                "accessed": "2026-06-19"
+              }
+            ]
+          },
+          "version_note": "MIT-licensed (LICENSE body, (c) 2026 The ds4.c authors + ggml authors). Created 6 May 2026, ~332 commits, last push 17 Jun 2026; ~14.6k stars, no tagged releases (built from source). Deliberately narrow 'one model at a time' design. Verified 2026-06-19."
         }
       ]
     },
@@ -12225,6 +12274,55 @@
             ]
           },
           "version_note": "Sustainable Use License (fair-code, NOT OSI: internal-business-use only, no resale/hosting-as-a-service) + n8n Enterprise License; GitHub reports NOASSERTION. ~193k stars, ~316k npm downloads/month. n8n Cloud + Enterprise are the commercial tiers."
+        },
+        {
+          "product": "Datasette Agent",
+          "org": "Datasette",
+          "type": "software",
+          "description": "LLM-powered agent assistant for Datasette, Simon Willison's tool for exploring and publishing structured data in SQLite. A chat interface at /-/agent answers natural-language questions against databases: the agent writes and runs SQL (save_query, execute_write_sql tools), explores data in the background, and renders results. Uses the datasette-llm plugin to call models and exposes an extensible tool surface (charts, image generation) for third-party tools.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public(GitHub);PyPI;no feature-gated core",
+            "confidence": "high",
+            "note": "Apache-2.0 verified against LICENSE body; full source public on the datasette org; no gated tier.",
+            "sources": [
+              {
+                "url": "https://github.com/datasette/datasette-agent/blob/main/LICENSE",
+                "shows": "Apache License 2.0 full text",
+                "accessed": "2026-06-19"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<10K",
+            "signal_type": "stars_fallback",
+            "confidence": "high",
+            "note": "Pre-release alpha (PyPI 0.3a0, Jun 2026) roughly one month old; ~96 GitHub stars. Minimal adoption to date — included as an emerging on-thesis structured-data agent.",
+            "sources": [
+              {
+                "url": "https://github.com/datasette/datasette-agent",
+                "shows": "~96 stars, 7 tags; PyPI 0.3a0 (15 Jun 2026)",
+                "accessed": "2026-06-19"
+              }
+            ]
+          },
+          "capability": {
+            "score": 2,
+            "basis": "feature_matrix",
+            "value": "Natural-language-to-SQL agent over SQLite via Datasette; tools for save_query / execute_write_sql, background exploration, and pluggable tools (charts, image gen). Domain-specific; not a general coding agent; no standardized benchmark.",
+            "confidence": "medium",
+            "note": "Narrow, early structured-data agent on an alpha release; capable within its domain but limited in scope and maturity, so scored 2.",
+            "sources": [
+              {
+                "url": "https://agent.datasette.io/",
+                "shows": "docs: /-/agent NL-to-SQL chat, save_query/execute_write_sql tools, pluggable tool surface",
+                "accessed": "2026-06-19"
+              }
+            ]
+          },
+          "version_note": "Apache-2.0 (verified LICENSE body). EARLY/ALPHA: latest PyPI 0.3a0 (15 Jun 2026), announced ~21 May 2026, runs on Datasette 1.0a33. ~96 stars, 7 tags. Verified 2026-06-19."
         }
       ]
     },
@@ -14394,6 +14492,60 @@
             ]
           },
           "version_note": "MIT (repo LICENSE body is MIT; GitHub shows NOASSERTION due to a custom 'OpenClaw Foundation' copyright line; npm declares MIT). Community project led by Peter Steinberger (steipete). Created Nov 2025; ~379k stars, ~10.3M npm downloads/month."
+        },
+        {
+          "product": "LLM (Datasette)",
+          "org": "Datasette",
+          "type": "software",
+          "description": "Command-line tool and Python library for interacting with large language models. Provides a unified CLI and API to send prompts to remote models (OpenAI, Anthropic, Gemini, Llama, etc.) and to local models, with a plugin architecture for adding new backends. Logs prompts and responses to a local SQLite database and supports embeddings and templated prompts. Part of Simon Willison's Datasette ecosystem (docs at llm.datasette.io).",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public(GitHub);PyPI;plugin-extensible;no feature-gated core",
+            "confidence": "high",
+            "note": "Apache-2.0 verified against LICENSE body; full source public; CLI/library with no gated tier (model providers need their own API keys, external to the tool).",
+            "sources": [
+              {
+                "url": "https://github.com/simonw/llm/blob/main/LICENSE",
+                "shows": "Apache License 2.0 full text",
+                "accessed": "2026-06-19"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "100K-1M",
+            "signal_type": "usage_volume",
+            "confidence": "medium",
+            "note": "Established CLI/library distributed on PyPI (package 'llm', v0.31) with ~12.1k GitHub stars and a broad plugin ecosystem; widely used across Simon Willison's tooling. No exact monthly download figure captured, so placed at 3 on PyPI-presence + ecosystem signal.",
+            "sources": [
+              {
+                "url": "https://pypi.org/project/llm",
+                "shows": "llm v0.31 published ~Apr 2026",
+                "accessed": "2026-06-19"
+              },
+              {
+                "url": "https://github.com/simonw/llm",
+                "shows": "~12.1k stars, plugin ecosystem",
+                "accessed": "2026-06-19"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "value": "Model breadth: 100+ remote and local models via plugins; embeddings; prompt templates; SQLite logging of prompts/responses; Python API. CLI/library surface, not a full chat UI.",
+            "confidence": "high",
+            "note": "Strong on model breadth and extensibility, but a developer CLI/library rather than a multi-user surface; lacks the built-in RAG/multimodal/auth feature stack of top ui_api entries, so scored 3.",
+            "sources": [
+              {
+                "url": "https://llm.datasette.io/",
+                "shows": "docs: unified CLI/Python API for remote+local models, plugins, embeddings, templates, SQLite logging",
+                "accessed": "2026-06-19"
+              }
+            ]
+          },
+          "version_note": "Apache-2.0 (verified LICENSE body). Latest release v0.31 (~24 Apr 2026, PyPI/GitHub). ~12.1k stars. Canonical repo under the personal simonw account; branded under the Datasette ecosystem. Verified 2026-06-19."
         }
       ]
     },
@@ -18755,19 +18907,19 @@
     "agent_tools_protocols",
     "deployment"
   ],
-  "n_total": 348,
-  "generated": "2026-06-18",
+  "n_total": 351,
+  "generated": "2026-06-19",
   "long_tail": {
     "counts": {
       "repos": 15375,
       "models": 6428,
       "packages": 2823,
       "total": 24626,
-      "scored": 348,
-      "overlap": 154,
-      "scored_outside": 194,
-      "uncategorized": 24472,
-      "universe": 24820
+      "scored": 351,
+      "overlap": 156,
+      "scored_outside": 195,
+      "uncategorized": 24470,
+      "universe": 24821
     },
     "top": [
       {
