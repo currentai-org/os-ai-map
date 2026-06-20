@@ -118,7 +118,7 @@ def gallery():
             ],
             "gaps": [
                 ("structural", "Training corpora & data-prep pipelines",
-                 "No category covers the corpora and curation tooling the fine-tune actually needs — framework white-space."),
+                 "No category covers the corpora and curation tooling the fine-tune actually needs; framework white-space."),
                 ("weak_layer", "Multilingual eval data",
                  "The benchmark layer is rich but English- and code-centric; MMLU stands in as a proxy."),
             ],
@@ -189,7 +189,7 @@ def gallery():
             "health": "partial",
             "desc": "A support assistant that answers from your product docs and past "
                     "tickets, escalates to humans, and files actions in your ticketing "
-                    "system — with evaluation and tracing before it faces customers.",
+                    "system, with evaluation and tracing before it faces customers.",
             "layers": [
                 ("finetuned_chat", [("Qwen2.5-14B-Instruct", "similarity")]),
                 ("evaluation_code", [("DeepEval", "documented_component"), ("promptfoo", "documented_component"), ("Ragas", "documented_component")]),
@@ -335,7 +335,7 @@ def gallery():
          "RAG retrieval needs an embedder; the map has no embedding-model category (only the closed Cohere Rerank API)."),
         (["guardrail", "guardrails", "moderation", "safety", "jailbreak", "filter"],
          "Guardrails / safety filtering",
-         "Input/output filtering and policy enforcement are unmapped — the framework's Safeguards white-space."),
+         "Input/output filtering and policy enforcement are unmapped; the framework's Safeguards white-space."),
         (["ocr", "pdf", "scan", "scanned", "parsing", "extraction"],
          "Document parsing / OCR",
          "Layout-aware document parsing is unmapped; only web scrapers are adjacent."),
@@ -475,15 +475,15 @@ def header(C, F, GENERATED, N_TOTAL, mo):
         f'margin:0; line-height:1.5;">'
         f'Maybe it’s a chat assistant that keeps patient records in the building. A coding agent '
         f'for your team. A question-answering service over your country’s public records. '
-        f'Whatever you’re building, the hard part is rarely the idea — it’s knowing which of the '
+        f'Whatever you’re building, the hard part is rarely the idea. It’s knowing which of the '
         f'<strong>{N_TOTAL} scored open-source AI components</strong> on this map to trust at each '
-        f'layer of the stack. Start with the <strong>gallery</strong>: 13 reference builds, each '
-        f'broken down into the components it’s made of, with the receipts for why each one is '
-        f'there. Or skip ahead to the <strong>lookup tool</strong> and describe your product in '
-        f'your own words — it returns suggested components for every layer, ranked. Click any '
-        f'component anywhere on the page for its full scorecard: openness, adoption, capability, '
-        f'sources and all. And when the open stack can’t fill a layer your product needs, we tell '
-        f'you that too, plainly — knowing what’s missing is worth as much as knowing what to use. '
+        f'layer of the stack. Start with the <strong>lookup tool</strong>: describe your product '
+        f'in your own words and get suggested components for every layer, ranked. Or browse the '
+        f'<strong>gallery</strong>: 13 reference builds, each broken down into the components '
+        f'it’s made of, with the receipts for why each one is there. Click any component anywhere '
+        f'on the page for its full scorecard: openness, adoption, capability, sources and all. '
+        f'And when the open stack can’t fill a layer your product needs, we say so plainly. '
+        f'Knowing what’s missing is worth as much as knowing what to use. '
         f'Component data as of {GENERATED}.</p></div>'
     )
     return
@@ -576,110 +576,17 @@ def coverage_matrix(C, CATS, F, GALLERY, HEALTH, ORDER, mo):
 
 
 @app.cell(hide_code=True)
-def gallery_cards(BASIS, BY_NAME, C, CATS, F, GALLERY, HEALTH, OPEN_LABEL, mo):
-    # The gallery: every reference product as a card, layers grouped by arc,
-    # exemplar components as chips colored by openness with basis tags.
-    _ARCS = ["Models", "Model code & data", "System / Product-UX"]
-
-    def _chip(name, basis):
-        _p = BY_NAME[name]
-        _ol, _ock = OPEN_LABEL.get(_p.get("oc"), ("n/a", "ink_3"))
-        _bl, _bck, _ = BASIS[basis]
-        return (
-            f'<span class="pv-details" data-pid="{name}" title="Click for the full scorecard" '
-            f'style="display:inline-block; margin:0 6px 6px 0; padding:4px 9px; '
-            f'background:white; border:1px solid {C["rule"]}; border-radius:4px; cursor:pointer;">'
-            f'<span title="{_ol}" style="display:inline-block; width:8px; height:8px; '
-            f'border-radius:50%; background:{C[_ock]}; margin-right:6px;"></span>'
-            f'<span style="font-family:{F["body"]}; font-size:0.82rem; color:{C["ink"]}; font-weight:600;">{name}</span>'
-            f'<span title="{BASIS[basis][2]}" style="font-family:{F["mono"]}; font-size:0.6rem; '
-            f'color:{C[_bck]}; text-transform:uppercase; letter-spacing:0.04em; margin-left:7px;">{_bl}</span>'
-            f'</span>'
-        )
-
-    _cards = ""
-    for _i, _g in enumerate(GALLERY, 1):
-        _hl, _hck = HEALTH[_g["health"]]
-        _arcs_html = ""
-        for _arc in _ARCS:
-            _layers = [(c, comps) for c, comps in _g["layers"] if CATS[c]["arc"] == _arc]
-            if not _layers:
-                continue
-            _lrows = "".join(
-                f'<div style="display:flex; gap:14px; margin:7px 0; align-items:baseline;">'
-                f'<div style="min-width:190px; font-family:{F["mono"]}; font-size:0.72rem; '
-                f'color:{C["ink_3"]}; text-transform:uppercase; letter-spacing:0.04em;">{CATS[_c]["label"]}</div>'
-                f'<div style="flex:1;">{"".join(_chip(_n, _b) for _n, _b in _comps)}</div>'
-                f'</div>'
-                for _c, _comps in _layers
-            )
-            _arcs_html += (
-                f'<div style="margin:12px 0 2px;">'
-                f'<div style="font-family:{F["mono"]}; font-size:0.62rem; color:{C["accent"]}; '
-                f'letter-spacing:0.08em; text-transform:uppercase; border-bottom:1px solid {C["paper_2"]}; '
-                f'padding-bottom:3px; margin-bottom:6px;">{_arc}</div>{_lrows}</div>'
-            )
-        _gaps_html = ""
-        if _g["gaps"]:
-            _gitems = "".join(
-                f'<div style="margin:6px 0; font-size:0.84rem; line-height:1.5; color:{C["ink_2"]};">'
-                f'<span style="font-family:{F["mono"]}; font-size:0.62rem; color:white; '
-                f'background:{C["signal"] if _k == "structural" else C["warm"]}; padding:2px 7px; '
-                f'border-radius:9px; text-transform:uppercase; letter-spacing:0.04em; margin-right:8px;">{_k.replace("_", " ")}</span>'
-                f'<strong>{_t}.</strong> {_w}</div>'
-                for _k, _t, _w in _g["gaps"]
-            )
-            _gaps_html = (
-                f'<div style="margin:14px 0 0; padding:10px 14px; background:{C["paper"]}; '
-                f'border-left:3px solid {C["signal"]}; border-radius:0 4px 4px 0;">'
-                f'<div style="font-family:{F["mono"]}; font-size:0.62rem; color:{C["signal"]}; '
-                f'letter-spacing:0.08em; text-transform:uppercase; margin-bottom:4px;">Gap signals</div>'
-                f'{_gitems}</div>'
-            )
-        _cards += (
-            f'<div style="margin:0 0 26px; padding:20px 22px; background:white; '
-            f'border:1px solid {C["rule"]}; border-radius:6px;">'
-            f'<div style="display:flex; justify-content:space-between; align-items:baseline; gap:12px;">'
-            f'<h3 style="font-family:{F["headline"]}; font-size:1.25rem; font-weight:500; '
-            f'color:{C["ink"]}; margin:0;">{_i:02d} · {_g["title"]}</h3>'
-            f'<span style="font-family:{F["mono"]}; font-size:0.64rem; color:white; background:{C[_hck]}; '
-            f'padding:3px 10px; border-radius:10px; text-transform:uppercase; letter-spacing:0.05em; '
-            f'white-space:nowrap;">{_hl}</span></div>'
-            f'<p style="font-family:{F["body"]}; font-size:0.9rem; color:{C["ink_2"]}; '
-            f'line-height:1.55; margin:8px 0 4px;">{_g["desc"]}</p>'
-            f'{_arcs_html}{_gaps_html}</div>'
-        )
-    mo.Html(
-        f'<div style="margin:44px 0 20px; padding:24px 0 0; border-top:2px solid {C["accent"]};">'
-        f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
-        f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:8px;">Gallery · mode 1</div>'
-        f'<h2 style="font-family:{F["headline"]}; font-size:1.6rem; font-weight:500; color:{C["ink"]}; '
-        f'margin:0 0 12px; letter-spacing:-0.015em;">Thirteen things you can build (and what they’re made of)</h2>'
-        f'<p style="font-family:{F["body"]}; font-size:0.95rem; color:{C["ink_2"]}; margin:0 0 22px; line-height:1.6;">'
-        f'Each card is a reference product: a realistic build, its component stack drawn from the map’s '
-        f'scored records, and honest gap signals where composition breaks down. Dot color on each chip is the '
-        f'component’s openness class (green = open, orange = open-ish, red/grey = restricted or closed); '
-        f'the small tag is the composition basis. <strong>Click any chip for the component’s full '
-        f'scorecard</strong> — the same openness, adoption, and capability detail as the parent stack map, '
-        f'sources included. One card — the voice assistant — is a deliberate '
-        f'gap probe: a sensible product the open map cannot yet compose.</p>'
-        f'{_cards}</div>'
-    )
-    return
-
-
-@app.cell(hide_code=True)
 def lookup_header(C, F, mo):
     mo.Html(
         f'<div style="margin:44px 0 14px; padding:24px 0 0; border-top:2px solid {C["accent"]};">'
         f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
-        f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:8px;">Lookup · mode 2</div>'
+        f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:8px;">Lookup · mode 1</div>'
         f'<h2 style="font-family:{F["headline"]}; font-size:1.6rem; font-weight:500; color:{C["ink"]}; '
         f'margin:0 0 12px; letter-spacing:-0.015em;">Describe what you want to build</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.95rem; color:{C["ink_2"]}; margin:0; line-height:1.6;">'
         f'Type a product description (or pick a preset) and get suggested components ranked by relevance, '
         f'grouped by stack layer. The ranking is TF-IDF similarity over the map’s component descriptions '
-        f'plus a taxonomy keyword boost — deliberately simple, fully reproducible, and v1 by design: '
+        f'plus a taxonomy keyword boost. Deliberately simple, fully reproducible, and v1 by design: '
         f'it doesn’t need to be perfect, it needs to be useful. Layers your description implies but where '
         f'the open stack answers weakly are flagged beneath the results as gap signals.</p></div>'
     )
@@ -757,7 +664,7 @@ def lookup_results(C, CATS, CAT_KW, F, OPEN_LABEL, ORDER, TH, gap_triggers,
     if not _groups:
         _groups = (
             f'<p style="font-family:{F["body"]}; font-size:0.9rem; color:{C["signal"]}; line-height:1.5;">'
-            f'No layer clears the display threshold for this description — itself a strong gap signal: '
+            f'No layer clears the display threshold for this description. That itself is a strong gap signal: '
             f'the open stack has little to offer this product today.</p>'
         )
 
@@ -775,7 +682,7 @@ def lookup_results(C, CATS, CAT_KW, F, OPEN_LABEL, ORDER, TH, gap_triggers,
             f'<div style="margin:5px 0; font-size:0.84rem; color:{C["ink_2"]}; line-height:1.5;">'
             f'<span style="font-family:{F["mono"]}; font-size:0.6rem; color:white; background:{C["warm"]}; '
             f'padding:2px 7px; border-radius:9px; text-transform:uppercase; margin-right:8px;">weak layer</span>'
-            f'<strong>{CATS[_c]["label"]}</strong> — your description implies this layer, but the best '
+            f'<strong>{CATS[_c]["label"]}</strong>: your description implies this layer, but the best '
             f'open match scores {_best_open.get(_c, 0.0):.3f} (threshold {TH["gap"]}).</div>'
         )
     for _c in _closed_only:
@@ -783,7 +690,7 @@ def lookup_results(C, CATS, CAT_KW, F, OPEN_LABEL, ORDER, TH, gap_triggers,
             f'<div style="margin:5px 0; font-size:0.84rem; color:{C["ink_2"]}; line-height:1.5;">'
             f'<span style="font-family:{F["mono"]}; font-size:0.6rem; color:white; background:{C["warm"]}; '
             f'padding:2px 7px; border-radius:9px; text-transform:uppercase; margin-right:8px;">closed only</span>'
-            f'<strong>{CATS[_c]["label"]}</strong> — this layer answers your description, but only with '
+            f'<strong>{CATS[_c]["label"]}</strong>: this layer answers your description, but only with '
             f'closed components.</div>'
         )
     for _t, _w in _structural:
@@ -791,7 +698,7 @@ def lookup_results(C, CATS, CAT_KW, F, OPEN_LABEL, ORDER, TH, gap_triggers,
             f'<div style="margin:5px 0; font-size:0.84rem; color:{C["ink_2"]}; line-height:1.5;">'
             f'<span style="font-family:{F["mono"]}; font-size:0.6rem; color:white; background:{C["signal"]}; '
             f'padding:2px 7px; border-radius:9px; text-transform:uppercase; margin-right:8px;">structural</span>'
-            f'<strong>{_t}</strong> — {_w}</div>'
+            f'<strong>{_t}</strong>: {_w}</div>'
         )
     _gap_panel = ""
     if _gap_items:
@@ -812,6 +719,99 @@ def lookup_results(C, CATS, CAT_KW, F, OPEN_LABEL, ORDER, TH, gap_triggers,
         f'Query · “{_q}” · {"open components only" if _open_only else "all components"} '
         f'· top 3 per layer, layers shown when best score ≥ {TH["show"]}</div>'
         f'{_groups}{_gap_panel}</div>'
+    )
+    return
+
+
+@app.cell(hide_code=True)
+def gallery_cards(BASIS, BY_NAME, C, CATS, F, GALLERY, HEALTH, OPEN_LABEL, mo):
+    # The gallery: every reference product as a card, layers grouped by arc,
+    # exemplar components as chips colored by openness with basis tags.
+    _ARCS = ["Models", "Model code & data", "System / Product-UX"]
+
+    def _chip(name, basis):
+        _p = BY_NAME[name]
+        _ol, _ock = OPEN_LABEL.get(_p.get("oc"), ("n/a", "ink_3"))
+        _bl, _bck, _ = BASIS[basis]
+        return (
+            f'<span class="pv-details" data-pid="{name}" title="Click for the full scorecard" '
+            f'style="display:inline-block; margin:0 6px 6px 0; padding:4px 9px; '
+            f'background:white; border:1px solid {C["rule"]}; border-radius:4px; cursor:pointer;">'
+            f'<span title="{_ol}" style="display:inline-block; width:8px; height:8px; '
+            f'border-radius:50%; background:{C[_ock]}; margin-right:6px;"></span>'
+            f'<span style="font-family:{F["body"]}; font-size:0.82rem; color:{C["ink"]}; font-weight:600;">{name}</span>'
+            f'<span title="{BASIS[basis][2]}" style="font-family:{F["mono"]}; font-size:0.6rem; '
+            f'color:{C[_bck]}; text-transform:uppercase; letter-spacing:0.04em; margin-left:7px;">{_bl}</span>'
+            f'</span>'
+        )
+
+    _cards = ""
+    for _i, _g in enumerate(GALLERY, 1):
+        _hl, _hck = HEALTH[_g["health"]]
+        _arcs_html = ""
+        for _arc in _ARCS:
+            _layers = [(c, comps) for c, comps in _g["layers"] if CATS[c]["arc"] == _arc]
+            if not _layers:
+                continue
+            _lrows = "".join(
+                f'<div style="display:flex; gap:14px; margin:7px 0; align-items:baseline;">'
+                f'<div style="min-width:190px; font-family:{F["mono"]}; font-size:0.72rem; '
+                f'color:{C["ink_3"]}; text-transform:uppercase; letter-spacing:0.04em;">{CATS[_c]["label"]}</div>'
+                f'<div style="flex:1;">{"".join(_chip(_n, _b) for _n, _b in _comps)}</div>'
+                f'</div>'
+                for _c, _comps in _layers
+            )
+            _arcs_html += (
+                f'<div style="margin:12px 0 2px;">'
+                f'<div style="font-family:{F["mono"]}; font-size:0.62rem; color:{C["accent"]}; '
+                f'letter-spacing:0.08em; text-transform:uppercase; border-bottom:1px solid {C["paper_2"]}; '
+                f'padding-bottom:3px; margin-bottom:6px;">{_arc}</div>{_lrows}</div>'
+            )
+        _gaps_html = ""
+        if _g["gaps"]:
+            _gitems = "".join(
+                f'<div style="margin:6px 0; font-size:0.84rem; line-height:1.5; color:{C["ink_2"]};">'
+                f'<span style="font-family:{F["mono"]}; font-size:0.62rem; color:white; '
+                f'background:{C["signal"] if _k == "structural" else C["warm"]}; padding:2px 7px; '
+                f'border-radius:9px; text-transform:uppercase; letter-spacing:0.04em; margin-right:8px;">{_k.replace("_", " ")}</span>'
+                f'<strong>{_t}.</strong> {_w}</div>'
+                for _k, _t, _w in _g["gaps"]
+            )
+            _gaps_html = (
+                f'<div style="margin:14px 0 0; padding:10px 14px; background:{C["paper"]}; '
+                f'border-left:3px solid {C["signal"]}; border-radius:0 4px 4px 0;">'
+                f'<div style="font-family:{F["mono"]}; font-size:0.62rem; color:{C["signal"]}; '
+                f'letter-spacing:0.08em; text-transform:uppercase; margin-bottom:4px;">Gap signals</div>'
+                f'{_gitems}</div>'
+            )
+        _cards += (
+            f'<div style="margin:0 0 26px; padding:20px 22px; background:white; '
+            f'border:1px solid {C["rule"]}; border-radius:6px;">'
+            f'<div style="display:flex; justify-content:space-between; align-items:baseline; gap:12px;">'
+            f'<h3 style="font-family:{F["headline"]}; font-size:1.25rem; font-weight:500; '
+            f'color:{C["ink"]}; margin:0;">{_i:02d} · {_g["title"]}</h3>'
+            f'<span style="font-family:{F["mono"]}; font-size:0.64rem; color:white; background:{C[_hck]}; '
+            f'padding:3px 10px; border-radius:10px; text-transform:uppercase; letter-spacing:0.05em; '
+            f'white-space:nowrap;">{_hl}</span></div>'
+            f'<p style="font-family:{F["body"]}; font-size:0.9rem; color:{C["ink_2"]}; '
+            f'line-height:1.55; margin:8px 0 4px;">{_g["desc"]}</p>'
+            f'{_arcs_html}{_gaps_html}</div>'
+        )
+    mo.Html(
+        f'<div style="margin:44px 0 20px; padding:24px 0 0; border-top:2px solid {C["accent"]};">'
+        f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
+        f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:8px;">Gallery · mode 2</div>'
+        f'<h2 style="font-family:{F["headline"]}; font-size:1.6rem; font-weight:500; color:{C["ink"]}; '
+        f'margin:0 0 12px; letter-spacing:-0.015em;">Thirteen things you can build (and what they’re made of)</h2>'
+        f'<p style="font-family:{F["body"]}; font-size:0.95rem; color:{C["ink_2"]}; margin:0 0 22px; line-height:1.6;">'
+        f'Each card is a reference product: a realistic build, its component stack drawn from the map’s '
+        f'scored records, and honest gap signals where composition breaks down. Dot color on each chip is the '
+        f'component’s openness class (green = open, orange = open-ish, red/grey = restricted or closed); '
+        f'the small tag is the composition basis. <strong>Click any chip for the component’s full '
+        f'scorecard</strong>: the same openness, adoption, and capability detail as the parent stack map, '
+        f'sources included. One card, the voice assistant, is a deliberate '
+        f'gap probe: a sensible product the open map cannot yet compose.</p>'
+        f'{_cards}</div>'
     )
     return
 
@@ -868,10 +868,10 @@ def gaps_aggregate(C, CATS, F, GALLERY, ORDER, mo):
         f'margin:0 0 12px; letter-spacing:-0.015em;">Where composition breaks down</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.95rem; color:{C["ink_2"]}; margin:0 0 16px; line-height:1.6;">'
         f'Layer demand first: how many of the {len(GALLERY)} reference products draw on each layer. '
-        f'The map’s well-stocked layers — inference, evaluation, orchestration — are exactly the '
+        f'The map’s well-stocked layers (inference, evaluation, orchestration) are exactly the '
         f'ones everything needs, which is reassuring. The gap table below is the more important half: '
         f'capabilities that sensible products need and the map answers weakly or not at all. '
-        f'<strong>This table is an input, not a footnote</strong> — each row is a candidate category or '
+        f'<strong>This table is an input, not a footnote.</strong> Each row is a candidate category or '
         f'scoring target for the next iteration of gap analysis.</p>'
         f'<div style="margin:0 0 22px;">{_bars}</div>'
         f'<table style="border-collapse:collapse; width:100%;">'
@@ -882,13 +882,185 @@ def gaps_aggregate(C, CATS, F, GALLERY, ORDER, mo):
 
 
 @app.cell(hide_code=True)
+def prompt_batch(COMPONENTS, OPEN_CLASSES, TH, search):
+    # Deterministic builder requests (product-type x domain x rotating
+    # constraint/persona windows — no randomness) run through the SAME lookup
+    # engine as the interactive search above, to see in aggregate which open
+    # building blocks recur and which sit in the long tail. Reproducible: the
+    # lists below fully determine the numbers.
+    _PRODUCTS = [
+        "a privacy-preserving chat assistant",
+        "a RAG system over documents with citations",
+        "an autonomous coding agent that fixes GitHub issues",
+        "a fine-tuning pipeline for an open model",
+        "a model evaluation harness and leaderboard",
+        "an on-device offline assistant",
+        "a realtime voice assistant with speech recognition",
+        "a multi-agent back-office workflow",
+        "an enterprise model gateway and router",
+        "a production LLM observability stack",
+        "a deep research assistant with web search",
+        "a customer-support agent over a knowledge base",
+        "a text-to-SQL analytics agent over our database",
+        "an image and video generation product",
+        "a guardrails and content-moderation layer",
+        "a document parsing and OCR pipeline",
+    ]
+    _DOMAINS = ["healthcare", "government", "finance", "education", "legal",
+                "scientific research", "journalism", "manufacturing"]
+    _CONSTRAINTS = ["that runs entirely on our own servers", "in our national language",
+                    "on a tight budget", "at low latency", "with strong safety guardrails",
+                    "offline on low-power hardware"]
+    _PERSONAS = ["I'm a student and I want to build", "As a startup founder, I want to build",
+                 "Our enterprise platform team needs to build", "I'm a researcher building",
+                 "As an NGO field engineer I need", "As a civic technologist I want to build"]
+
+    _prompts = []
+    _pair = 0
+    for _prod in _PRODUCTS:
+        for _dom in _DOMAINS:
+            for _w in range(4):  # 4-of-6 constraint/persona windows per pair, rotating
+                _c = _CONSTRAINTS[(_pair + _w) % len(_CONSTRAINTS)]
+                _persona = _PERSONAS[(_pair + _w) % len(_PERSONAS)]
+                _prompts.append(f"{_persona} {_prod} for {_dom} {_c}")
+            _pair += 1
+
+    _TOPK = 5
+    _freq = {}
+    for _q in _prompts:
+        for _score, _p in [r for r in search(_q, open_only=True) if r[0] >= TH["show"]][:_TOPK]:
+            _freq[_p["n"]] = _freq.get(_p["n"], 0) + 1
+    _open = [c for c in COMPONENTS if c.get("oc") in OPEN_CLASSES]
+    _surfaced = [c for c in _open if _freq.get(c["n"], 0) > 0]
+    _tail = sorted((c for c in _open if _freq.get(c["n"], 0) == 0), key=lambda c: c["n"])
+    BATCH = {
+        "n_prompts": len(_prompts),
+        "n_products": len(_PRODUCTS),
+        "n_domains": len(_DOMAINS),
+        "n_open": len(_open),
+        "n_surfaced": len(_surfaced),
+        "freq": _freq,
+        "tail": _tail,
+        "top": sorted(_freq.items(), key=lambda kv: (-kv[1], kv[0])),
+    }
+    return (BATCH,)
+
+
+@app.cell(hide_code=True)
+def builder_demand_ui(BATCH, C, F, mo):
+    _header = mo.Html(
+        f'<div style="margin:44px 0 14px; padding:24px 0 0; border-top:2px solid {C["accent"]};">'
+        f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
+        f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:8px;">Common combinations</div>'
+        f'<h2 style="font-family:{F["headline"]}; font-size:1.6rem; font-weight:500; color:{C["ink"]}; '
+        f'margin:0 0 12px; letter-spacing:-0.015em;">How often each open project comes up</h2>'
+        f'<p style="font-family:{F["body"]}; font-size:0.95rem; color:{C["ink_2"]}; margin:0; line-height:1.6;">'
+        f'We ran <strong>{BATCH["n_prompts"]}</strong> synthetic builder requests (combinations of '
+        f'{BATCH["n_products"]} product types across {BATCH["n_domains"]} domains and a range of constraints) '
+        f'through the same lookup, and counted how often each open project landed in a request’s '
+        f'top 5. Search, sort, or page through the table below. <strong>{BATCH["n_surfaced"]}</strong> of '
+        f'{BATCH["n_open"]} open projects surface at least once; the rest form a long tail (0). '
+        f'Counts reflect how the lookup matches descriptions today, not real-world usage.</p></div>'
+    )
+    demand_search = mo.ui.text(placeholder="Filter by product or category…")
+    demand_sort = mo.ui.dropdown(
+        options=["Most frequent", "Least frequent", "Name (A–Z)", "Category"],
+        value="Most frequent", label="Sort")
+    demand_page = mo.ui.number(start=1, stop=999, step=1, value=1, label="Page")
+    mo.vstack([
+        _header,
+        mo.hstack([demand_search, demand_sort, demand_page], justify="start", gap=1.5),
+    ], gap=0.75)
+    return demand_page, demand_search, demand_sort
+
+
+@app.cell(hide_code=True)
+def builder_demand_table(BATCH, C, CATS, COMPONENTS, F, OPEN_CLASSES, OPEN_LABEL,
+                         demand_page, demand_search, demand_sort, mo):
+    _freq = BATCH["freq"]
+    _rows = []
+    for _p in COMPONENTS:
+        if _p.get("oc") not in OPEN_CLASSES:
+            continue
+        _label, _ckey = OPEN_LABEL.get(_p.get("oc"), (_p.get("oc") or "—", "ink_3"))
+        _rows.append({
+            "name": _p["n"], "cat": CATS[_p["c"]]["label"],
+            "open_label": _label, "open_color": C.get(_ckey, C["ink_3"]),
+            "count": _freq.get(_p["n"], 0),
+        })
+    _maxc = max((r["count"] for r in _rows), default=1) or 1
+
+    _q = (demand_search.value or "").strip().lower()
+    if _q:
+        _rows = [r for r in _rows if _q in r["name"].lower() or _q in r["cat"].lower()]
+    _s = demand_sort.value
+    if _s == "Least frequent":
+        _rows.sort(key=lambda r: (r["count"], r["name"]))
+    elif _s == "Name (A–Z)":
+        _rows.sort(key=lambda r: r["name"].lower())
+    elif _s == "Category":
+        _rows.sort(key=lambda r: (r["cat"], -r["count"]))
+    else:
+        _rows.sort(key=lambda r: (-r["count"], r["name"]))
+
+    _PER = 15
+    _total = len(_rows)
+    _pages = max(1, (_total + _PER - 1) // _PER)
+    _page = min(max(int(demand_page.value or 1), 1), _pages)
+    _start = (_page - 1) * _PER
+    _slice = _rows[_start:_start + _PER]
+
+    _head = "".join(
+        f'<th style="padding:7px 10px; font-family:{F["mono"]}; font-size:9px; color:{C["ink_3"]}; '
+        f'text-transform:uppercase; letter-spacing:0.05em; text-align:left;">{_h}</th>'
+        for _h in ["Product", "Category", "Openness", "In top 5"]
+    )
+    _body = ""
+    for _r in _slice:
+        _w = round(_r["count"] / _maxc * 100)
+        _barcol = C["healthy"] if _r["count"] else C["paper_2"]
+        _body += (
+            f'<tr style="border-bottom:1px solid {C["paper_2"]};">'
+            f'<td style="padding:8px 10px; font-family:{F["body"]}; font-size:0.86rem; color:{C["ink"]}; '
+            f'font-weight:600; white-space:nowrap;">{_r["name"]}</td>'
+            f'<td style="padding:8px 10px; font-family:{F["body"]}; font-size:0.82rem; color:{C["ink_2"]};">{_r["cat"]}</td>'
+            f'<td style="padding:8px 10px;"><span style="font-family:{F["mono"]}; font-size:0.6rem; color:white; '
+            f'background:{_r["open_color"]}; padding:2px 8px; border-radius:9px; text-transform:uppercase; '
+            f'letter-spacing:0.04em; white-space:nowrap;">{_r["open_label"]}</span></td>'
+            f'<td style="padding:8px 10px; width:42%;"><div style="display:flex; align-items:center; gap:8px;">'
+            f'<div style="flex:1; background:{C["paper_2"]}; border-radius:2px; height:10px; min-width:60px;">'
+            f'<div style="width:{_w}%; height:10px; border-radius:2px; background:{_barcol};"></div></div>'
+            f'<div style="font-family:{F["mono"]}; font-size:0.74rem; color:{C["ink_3"]}; min-width:28px; '
+            f'text-align:right;">{_r["count"]}</div></div></td></tr>'
+        )
+    if not _slice:
+        _body = (f'<tr><td colspan="4" style="padding:18px 10px; font-family:{F["body"]}; '
+                 f'font-size:0.86rem; color:{C["ink_3"]};">No products match that filter.</td></tr>')
+
+    _lo = 0 if _total == 0 else _start + 1
+    _hi = _start + len(_slice)
+    _footer = (
+        f'<div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; '
+        f'font-family:{F["mono"]}; font-size:0.7rem; color:{C["ink_3"]}; letter-spacing:0.03em;">'
+        f'<span>Showing {_lo}–{_hi} of {_total} open products</span>'
+        f'<span>Page {_page} of {_pages}</span></div>'
+    )
+    mo.Html(
+        f'<table style="border-collapse:collapse; width:100%;">'
+        f'<thead><tr style="border-bottom:2px solid {C["rule"]};">{_head}</tr></thead>'
+        f'<tbody>{_body}</tbody></table>{_footer}'
+    )
+    return
+
+
+@app.cell(hide_code=True)
 def methodology(C, F, TH, mo):
     _ps = [
-        f"""<strong>What counts as part of a product (the composition rules).</strong> A component is included in a reference product iff at least one rule fires: <strong>R1 · known build</strong> — it appears in a documented real-world build of this product pattern (eg, Open WebUI’s quickstart pairs it with Ollama; verl documents vLLM as its rollout engine; the Open LLM Leaderboard runs lm-evaluation-harness on Spaces). Curator-asserted from the component’s own documentation. <strong>R2 · documented component</strong> — the component’s documentation, as reflected in its map description, names the product pattern or role as a primary use case. <strong>R3 · similarity</strong> — TF-IDF cosine similarity between the product description and the component’s map description clears {TH["strong"]}. Gallery exemplars are selected by R1/R2 and capped at four per layer; R3 alone never makes an exemplar, only a lookup suggestion.""",
+        f"""<strong>What counts as part of a product (the composition rules).</strong> A component is included in a reference product iff at least one rule fires: <strong>R1 · known build</strong>: it appears in a documented real-world build of this product pattern (eg, Open WebUI’s quickstart pairs it with Ollama; verl documents vLLM as its rollout engine; the Open LLM Leaderboard runs lm-evaluation-harness on Spaces). Curator-asserted from the component’s own documentation. <strong>R2 · documented component</strong>: the component’s documentation, as reflected in its map description, names the product pattern or role as a primary use case. <strong>R3 · similarity</strong>: TF-IDF cosine similarity between the product description and the component’s map description clears {TH["strong"]}. Gallery exemplars are selected by R1/R2 and capped at four per layer; R3 alone never makes an exemplar, only a lookup suggestion.""",
         f"""<strong>Exemplars are open-leaning by design.</strong> The map exists to chart the open stack, so gallery exemplars are drawn from open / open-core / open-weights components; closed incumbents stay visible in the parent stack map and in lookup mode with the “open components only” switch off. Where only closed components can fill a layer, that is reported as a gap, not papered over.""",
         f"""<strong>Lookup scoring.</strong> score = cosine_tfidf × (1 + 0.25·taxonomy_keyword_hit) × (1 + 0.05·(adoption−3)/2). Pure-Python TF-IDF (log-tf, smoothed idf, L2-normalized) over each component’s name, org, type, category label, and description; a small documented synonym list expands query vocabulary (“privacy” → “self-hosted, local”) at half weight. Thresholds, calibrated on the preset queries: strong match ≥ {TH["strong"]}, layer displayed ≥ {TH["show"]}, gap flagged when an implied layer’s best open match < {TH["gap"]}. Embeddings would rank better; TF-IDF ranks <em>reproducibly</em>, with no model dependency, and that trade is right for v1.""",
-        f"""<strong>Gap signals are the point, not the failure mode.</strong> Three kinds: <em>weak layer</em> (your description implies a layer, the best open match stays under threshold), <em>closed only</em> (the layer answers, but only with closed components), and <em>structural</em> (no category covers the capability at all — speech, embeddings, guardrails, document parsing, training corpora, generative media). Structural absences are keyword-triggered and cross-checked against the parent map’s framework white-space. All three feed Gap Analysis and Scoring as candidate categories and scoring targets.""",
-        f"""<strong>Provenance.</strong> Component records, scores, and taxonomy come from <a href="https://github.com/currentai-org/os-ai-map" target="_blank" rel="noopener" style="color:{C["accent"]}; text-decoration:underline;">currentai-org/os-ai-map</a> (the data behind the AI Stack Map); no new data was collected for this view. The gallery is curated and versioned — disagree with a composition? Open a PR. Known limits: known-build edges are curator-asserted rather than mined from deployment telemetry; descriptions are English, so lookup is English-centric; and 13 reference products sample the product space, they don’t span it.""",
+        f"""<strong>Gap signals are the point, not the failure mode.</strong> Three kinds: <em>weak layer</em> (your description implies a layer, the best open match stays under threshold), <em>closed only</em> (the layer answers, but only with closed components), and <em>structural</em> (no category covers the capability at all: speech, embeddings, guardrails, document parsing, training corpora, generative media). Structural absences are keyword-triggered and cross-checked against the parent map’s framework white-space. All three feed Gap Analysis and Scoring as candidate categories and scoring targets.""",
+        f"""<strong>Provenance.</strong> Component records, scores, and taxonomy come from <a href="https://github.com/currentai-org/os-ai-map" target="_blank" rel="noopener" style="color:{C["accent"]}; text-decoration:underline;">currentai-org/os-ai-map</a> (the data behind the AI Stack Map); no new data was collected for this view. The gallery is curated and versioned. Disagree with a composition? Open a PR. Known limits: known-build edges are curator-asserted rather than mined from deployment telemetry; descriptions are English, so lookup is English-centric; and 13 reference products sample the product space, they don’t span it.""",
     ]
     _body = "".join(
         f'<p style="font-family:{F["body"]}; font-size:0.9rem; color:{C["ink_2"]}; line-height:1.6; margin:0 0 12px;">{_p}</p>'
