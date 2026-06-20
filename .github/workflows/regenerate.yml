@@ -7,6 +7,7 @@ on:
       - "sources/**"
       - "build/serialize.py"
       - "build/render.py"
+      - "build/products_view_data.py"
       - "build/_frozen_long_tail.json"
 
 permissions:
@@ -28,16 +29,21 @@ jobs:
         run: uv run python -m build.serialize --date "$(date -u +%F)"
       - name: Render notebook
         run: uv run python build/render.py
+      - name: Refresh products-view payload
+        run: uv run python build/products_view_data.py
       - name: Notebook structure check
-        run: uv run marimo check notebooks/ai-stack-map.py
+        run: |
+          uv run marimo check notebooks/ai-stack-map.py
+          uv run marimo check notebooks/products-view.py
       - name: Commit regenerated artifacts
         run: |
-          if git diff --quiet build/notebook_data.json notebooks/ai-stack-map.py; then
+          ARTIFACTS="build/notebook_data.json notebooks/ai-stack-map.py notebooks/products-view.py"
+          if git diff --quiet $ARTIFACTS; then
             echo "No changes to generated artifacts."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add build/notebook_data.json notebooks/ai-stack-map.py
-          git commit -m "chore(build): regenerate notebook data + notebook [bot]"
+          git add $ARTIFACTS
+          git commit -m "chore(build): regenerate notebook data + notebooks [bot]"
           git push
