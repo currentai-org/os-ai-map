@@ -301,11 +301,11 @@ def stack_overview(C, DATA, F, ORDER, STACK_DESC, VERDICT, mix_counts, mo,
             )
             _last_arc = _arc
         _m = mix_counts(_cid)
+        _code, _basis = verdict_for(_cid)
+        _vlabel, _vckey = VERDICT[_code]
         _st = _cat.get("stage") or {}
         _sn = _st.get("num", 0)
         _scol = C["healthy"] if _sn >= 5 else C["accent"] if _sn == 4 else C["warm"] if _sn >= 2 else C["signal"]
-        _gaps = _cat.get("gaps") or []
-        _gaptext = " \\u00b7 ".join(_gaps) if _gaps else "no gaps"
         _chips = (
             f'<span style="color:{C["healthy"]};">\\u25cf</span> {_m["open"]} open'
             f'&nbsp;&nbsp;<span style="color:{C["warm"]};">\\u25cf</span> {_m["openish"]} open-ish'
@@ -321,10 +321,11 @@ def stack_overview(C, DATA, F, ORDER, STACK_DESC, VERDICT, mix_counts, mo,
             f'margin-top:3px; line-height:1.4;">{STACK_DESC.get(_cid, "")}</div></div>'
             f'<div style="font-family:{F["mono"]}; font-size:0.74rem; color:{C["ink_2"]};">{_chips}</div>'
             f'<div>'
-            f'<span style="display:inline-block; font-family:{F["mono"]}; font-size:0.68rem; font-weight:500; '
-            f'color:#fff; background:{_scol}; padding:3px 9px; border-radius:11px;">Stage {_sn} \\u00b7 {_st.get("name","")}</span>'
-            f'<div style="font-family:{F["mono"]}; font-size:0.64rem; color:{C["ink_3"] if _gaps else C["healthy"]}; '
-            f'margin-top:5px;">{_gaptext}</div>'
+            f'<span style="display:inline-block; font-family:{F["mono"]}; font-size:0.68rem; letter-spacing:0.05em; '
+            f'text-transform:uppercase; color:#fff; background:{C[_vckey]}; padding:4px 9px; border-radius:2px;">{_vlabel}</span>'
+            f'<div style="margin-top:6px;"><span style="display:inline-block; font-family:{F["mono"]}; '
+            f'font-size:0.66rem; font-weight:500; color:#fff; background:{_scol}; padding:3px 9px; '
+            f'border-radius:11px;">Stage {_sn} \\u00b7 {_st.get("name","")}</span></div>'
             f'</div>'
             f'</div>'
         )
@@ -339,8 +340,8 @@ def stack_overview(C, DATA, F, ORDER, STACK_DESC, VERDICT, mix_counts, mo,
         f'{_n_arcs} layers \\u00b7 {len(ORDER)} categories \\u00b7 {_total} scored products</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.95rem; color:{C["ink_2"]}; margin:0 0 20px; line-height:1.6;">'
         f'Each row is one category, grouped into three layers. The dots show the openness mix of all its '
-        f'products; the badge gives the category\\u2019s open-ecosystem maturity stage (Void \\u2192 Mature) and '
-        f'the gaps keeping it from the next rung. The same stage and gaps appear on each category below.</p>'
+        f'products; the verdict pill names which tier leads among its standout products, and the stage chip '
+        f'places its open ecosystem on the Void \\u2192 Mature ladder. The same pills appear on each category below.</p>'
         f'{"".join(_rows)}</div>'
     )
     return
@@ -650,8 +651,23 @@ def helpers(C, DATA, F, OPEN, STRAPLINES, VERDICT, mix_counts, mo, vbucket,
         )
 
     def _verdict_spine(cid):
-        # Dot tally only; the stage badge above now carries the openness verdict, so
-        # the standalone verdict pill was dropped to de-clutter the section header.
+        # Openness verdict pill + a plain Stage chip (gaps omitted for now), then the
+        # open / open-ish / closed dot tally.
+        _code, _basis = verdict_for(cid)
+        _vlabel, _vckey = VERDICT[_code]
+        _verdict = (
+            f'<span style="display:inline-block; font-family:{F["mono"]}; font-size:0.72rem; '
+            f'letter-spacing:0.05em; text-transform:uppercase; color:white; background:{C[_vckey]}; '
+            f'padding:4px 10px; border-radius:2px;">{_vlabel}</span>'
+        )
+        _st = DATA["categories"][cid].get("stage") or {}
+        _sn = _st.get("num", 0)
+        _scol = C["healthy"] if _sn >= 5 else C["accent"] if _sn == 4 else C["warm"] if _sn >= 2 else C["signal"]
+        _stage = (
+            f'<span style="display:inline-block; font-family:{F["mono"]}; font-size:0.72rem; font-weight:500; '
+            f'color:#fff; background:{_scol}; padding:4px 10px; border-radius:11px; margin-left:8px;">'
+            f'Stage {_sn} \\u00b7 {_st.get("name","")}</span>'
+        )
         _m = mix_counts(cid)
         _tally = (
             f'<span style="color:{C["healthy"]};">\\u25cf</span> {_m["open"]} open'
@@ -659,29 +675,10 @@ def helpers(C, DATA, F, OPEN, STRAPLINES, VERDICT, mix_counts, mo, vbucket,
             f'&nbsp;&nbsp;<span style="color:{C["ink_3"]};">\\u25cf</span> {_m["closed"]} closed'
         )
         return (
-            f'<div style="margin:0 0 14px; font-family:{F["mono"]}; font-size:0.78rem; '
-            f'color:{C["ink_2"]};">{_tally}</div>'
+            f'<div style="margin:4px 0 12px;">{_verdict}{_stage}'
+            f'<span style="font-family:{F["mono"]}; font-size:0.78rem; color:{C["ink_2"]}; '
+            f'margin-left:14px;">{_tally}</span></div>'
         )
-
-    def _stage_gaps_badge(cid):
-        cat = DATA["categories"][cid]
-        st = cat.get("stage") or {}
-        if not st:
-            return ""
-        _n = st.get("num", 0)
-        _sc = C["healthy"] if _n >= 5 else C["accent"] if _n == 4 else C["warm"] if _n >= 2 else C["signal"]
-        _badge = (f'<span style="font-family:{F["mono"]}; font-size:0.72rem; font-weight:500; color:#fff; '
-                  f'background:{_sc}; padding:3px 9px; border-radius:11px;">Stage {_n} \\u00b7 {st.get("name","")}</span>')
-        _chips = "".join(
-            f'<span style="font-family:{F["mono"]}; font-size:0.64rem; text-transform:uppercase; '
-            f'letter-spacing:0.04em; color:{C["ink_2"]}; background:{C["paper_2"]}; border:1px solid {C["rule"]}; '
-            f'padding:2px 8px; border-radius:11px;">{_g}</span>'
-            for _g in (cat.get("gaps") or [])
-        )
-        _none = "" if cat.get("gaps") else (f'<span style="font-family:{F["mono"]}; font-size:0.64rem; '
-                f'color:{C["healthy"]};">no gaps</span>')
-        return (f'<div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:0 0 6px;">'
-                f'{_badge}{_chips}{_none}</div>')
 
     def render_section(cid, num):
         cat = DATA["categories"][cid]
@@ -719,7 +716,6 @@ def helpers(C, DATA, F, OPEN, STRAPLINES, VERDICT, mix_counts, mo, vbucket,
             f'<span style="font-family:{F["mono"]}; font-size:0.8rem; color:{C["ink_3"]};">({len(prods)})</span></h2>'
             f'<p style="font-family:{F["body"]}; font-size:0.98rem; font-weight:600; color:{C["ink_2"]}; '
             f'margin:0 0 10px; line-height:1.45;">{_strap}</p>'
-            + _stage_gaps_badge(cid)
             + _verdict_spine(cid)
             + _scoring_callout(cid)
             + f'<table style="border-collapse:collapse; width:100%;">'
