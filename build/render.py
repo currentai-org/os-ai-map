@@ -123,6 +123,9 @@ def data():
         "telemetry_observability": "Tracing and observability for LLM apps.",
         "agent_tools_protocols": "Tools, protocols, and retrieval for agents.",
         "deployment": "Sandboxes, runtimes, and serverless model hosting.",
+        "training_synthetic_datasets": "Corpora for pre-training and post-training models.",
+        "ml_frameworks": "Foundational libraries the rest of the stack is built on.",
+        "edge_hardware": "Boards and chips that run model inference at the edge.",
     }
     # Per-category combined-score weights (adoption, capability), ported from the
     # v2 stack map (slugs identical). Feed the "standout product" gate behind the
@@ -298,15 +301,18 @@ def stack_overview(C, DATA, F, ORDER, STACK_DESC, VERDICT, mix_counts, mo,
             )
             _last_arc = _arc
         _m = mix_counts(_cid)
-        _code, _basis = verdict_for(_cid)
-        _vlabel, _vckey = VERDICT[_code]
+        _st = _cat.get("stage") or {}
+        _sn = _st.get("num", 0)
+        _scol = C["healthy"] if _sn >= 5 else C["accent"] if _sn == 4 else C["warm"] if _sn >= 2 else C["signal"]
+        _gaps = _cat.get("gaps") or []
+        _gaptext = " \\u00b7 ".join(_gaps) if _gaps else "no gaps"
         _chips = (
             f'<span style="color:{C["healthy"]};">\\u25cf</span> {_m["open"]} open'
             f'&nbsp;&nbsp;<span style="color:{C["warm"]};">\\u25cf</span> {_m["openish"]} open-ish'
             f'&nbsp;&nbsp;<span style="color:{C["ink_3"]};">\\u25cf</span> {_m["closed"]} closed'
         )
         _rows.append(
-            f'<div style="display:grid; grid-template-columns:32px 1fr 232px 150px; gap:18px; '
+            f'<div style="display:grid; grid-template-columns:32px 1fr 200px 200px; gap:18px; '
             f'align-items:center; padding:14px 0; border-bottom:1px solid {C["rule"]};">'
             f'<div style="font-family:{F["mono"]}; font-size:12px; color:{C["ink_3"]};">{_i:02d}</div>'
             f'<div><div style="font-family:{F["headline"]}; font-size:1.05rem; font-weight:500; '
@@ -314,9 +320,12 @@ def stack_overview(C, DATA, F, ORDER, STACK_DESC, VERDICT, mix_counts, mo,
             f'<div style="font-family:{F["body"]}; font-size:0.85rem; color:{C["ink_3"]}; '
             f'margin-top:3px; line-height:1.4;">{STACK_DESC.get(_cid, "")}</div></div>'
             f'<div style="font-family:{F["mono"]}; font-size:0.74rem; color:{C["ink_2"]};">{_chips}</div>'
-            f'<div style="font-family:{F["mono"]}; font-size:0.72rem; letter-spacing:0.05em; '
-            f'text-transform:uppercase; color:white; background:{C[_vckey]}; padding:7px 10px; '
-            f'text-align:center; border-radius:2px;">{_vlabel}</div>'
+            f'<div>'
+            f'<span style="display:inline-block; font-family:{F["mono"]}; font-size:0.68rem; font-weight:500; '
+            f'color:#fff; background:{_scol}; padding:3px 9px; border-radius:11px;">Stage {_sn} \\u00b7 {_st.get("name","")}</span>'
+            f'<div style="font-family:{F["mono"]}; font-size:0.64rem; color:{C["ink_3"] if _gaps else C["healthy"]}; '
+            f'margin-top:5px;">{_gaptext}</div>'
+            f'</div>'
             f'</div>'
         )
     _total = DATA.get("n_total") or sum(len(DATA["categories"][c]["products"]) for c in ORDER)
@@ -330,9 +339,8 @@ def stack_overview(C, DATA, F, ORDER, STACK_DESC, VERDICT, mix_counts, mo,
         f'{_n_arcs} layers \\u00b7 {len(ORDER)} categories \\u00b7 {_total} scored products</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.95rem; color:{C["ink_2"]}; margin:0 0 20px; line-height:1.6;">'
         f'Each row is one category, grouped into three layers. The dots show the openness mix of all its '
-        f'products; the badge names which tier leads among the category\\u2019s standout products: '
-        f'those that clear the combined adoption\\u00d7capability bar. Open in the long tail and closed at the '
-        f'top can coexist \\u2014 that gap is the point.</p>'
+        f'products; the badge gives the category\\u2019s open-ecosystem maturity stage (Void \\u2192 Mature) and '
+        f'the gaps keeping it from the next rung. The same stage and gaps appear on each category below.</p>'
         f'{"".join(_rows)}</div>'
     )
     return
