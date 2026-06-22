@@ -126,7 +126,7 @@ def data():
     # openness verdict; the table also shows the blended score.
     LAYER_WEIGHTS = __LAYER_WEIGHTS__
     # Framework white-space: homes in the Columbia/MOF openness stack that the
-    # 11 categories above do NOT cover. Rendered by the framework_edges cell as a
+    # the categories above do NOT cover. Rendered by the framework_edges cell as a
     # scope statement (the vertical edge of the map, paired with the long tail).
     FRAMEWORK_EDGES = [
         ("Model", [
@@ -244,7 +244,7 @@ def header(C, DATA, F, mo):
 
 @app.cell(hide_code=True)
 def combat_scorecard(C, DATA, F, ORDER, VERDICT, mo, verdict_for):
-    # Hero: one count tile per openness verdict across the 11 categories.
+    # Hero: one count tile per openness verdict across the categories.
     _counts = {}
     for _cid in ORDER:
         _code = verdict_for(_cid)[0]
@@ -889,7 +889,7 @@ def framework_edges(C, FRAMEWORK_EDGES, F, mo):
         f'The Columbia framework treats openness as varying across the whole stack: at the '
         f'<strong>model</strong> level (datasets, code, weights), in the <strong>system</strong> around it '
         f'(infrastructure below, product and UX above), and across <strong>cross-cutting</strong> attributes '
-        f'(documentation, licensing, safeguards). The 11 categories above occupy some of those areas; these are the '
+        f'(documentation, licensing, safeguards). The categories above occupy some of those areas; these are the '
         f'ones we have not yet defined as categories. A statement of scope, not a backlog.</p>'
         f'{_levels}'
         f'<p style="font-family:{F["body"]}; font-size:0.82rem; color:{C["ink_3"]}; margin:6px 0 0; line-height:1.5;">'
@@ -981,7 +981,7 @@ if __name__ == "__main__":
     app.run()
 '''
 
-# Build the 11 section cells
+# Build the section cells
 _sections = []
 for i, cid in enumerate(data["order"], start=1):
     _sections.append(
