@@ -5,7 +5,8 @@ def _sources():
     return {
         "organizations": {"meta": {"name": "meta", "display_name": "Meta",
                                    "type": "unknown", "products": ["llama-4"]}},
-        "taxonomy": {"arcs": [{"name": "Models", "categories": ["base_pretrained"]}]},
+        "taxonomy": {"arcs": [{"name": "Model components", "layer": "model_components",
+                               "categories": ["base_pretrained"]}]},
         "categories": {
             "base_pretrained": {"name": "base_pretrained",
                                 "display_name": "Base / pretrained models",
@@ -29,7 +30,8 @@ def test_build_payload_shape_and_order():
     assert payload["generated"] == "2026-06-10"
     cat = payload["categories"]["base_pretrained"]
     assert cat["label"] == "Base / pretrained models"
-    assert cat["arc"] == "Models"
+    assert cat["arc"] == "Model components"
+    assert cat["layer"] == "model_components"
     row = cat["products"][0]
     assert row["product"] == "Llama 4"
     assert row["org"] == "Meta"

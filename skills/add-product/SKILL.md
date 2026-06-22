@@ -54,7 +54,7 @@ Creates four coordinated edits: a product file, a score file, a category roster 
    ```yaml
    name: <org-slug>
    display_name: <Org Display Name>
-   type: unknown | company | nonprofit | academic | community
+   type: company | lab | foundation | individual | government | unknown
    products:
      - <slug>
    ```

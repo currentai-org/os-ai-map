@@ -3,7 +3,8 @@ from build.validate import validate_sources
 def _fixture():
     return {
         "organizations": {"meta": {"name": "meta", "display_name": "Meta", "products": ["llama-4"]}},
-        "taxonomy": {"arcs": [{"name": "Models", "categories": ["base_pretrained"]}]},
+        "taxonomy": {"arcs": [{"name": "Model components", "layer": "model_components",
+                               "categories": ["base_pretrained"]}]},
         "categories": {
             "base_pretrained": {"name": "base_pretrained", "display_name": "Base",
                                 "products": ["llama-4"], "comments": ""}
@@ -36,7 +37,8 @@ def test_category_missing_from_taxonomy_fails():
 
 def test_category_listed_in_two_arcs_fails():
     d = _fixture()
-    d["taxonomy"]["arcs"].append({"name": "Other", "categories": ["base_pretrained"]})
+    d["taxonomy"]["arcs"].append({"name": "Other", "layer": "infrastructure",
+                                  "categories": ["base_pretrained"]})
     errs = validate_sources(d)
     assert any("exactly one taxonomy arc" in e for e in errs)
 

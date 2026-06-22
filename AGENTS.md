@@ -48,9 +48,13 @@ The curated source set is four per-record YAML concerns in `sources/` plus the s
   free-text string for provenance and scoring notes (version, license, last release date).
 - **scores**: one file per product (same slug) with `openness`, `adoption`, `capability`.
   Every non-null score value requires a `sources:` citation entry.
-- **taxonomy.yaml**: owns arc grouping + cross-category display order
-  (`arcs:` -> ordered category slugs). `serialize.py` derives order + arc from here, and
-  validate enforces that every category appears in exactly one arc.
+- **taxonomy.yaml**: owns arc grouping + cross-category display order. The three arcs
+  ARE the Columbia openness-ontology layers (`product_ux`, `model_components`,
+  `infrastructure`); each arc declares its `layer` slug and an ordered category list.
+  `serialize.py` derives order, the display `arc`, and the machine `layer` from here, so
+  a category's layer is never a separate hand-maintained field -- it is whichever arc the
+  category sits in. Validate enforces that every category appears in exactly one arc and
+  that every arc declares a valid layer.
 
 Category slugs are underscore form (`base_pretrained`). Product and org slugs are
 hyphenated kebab-case (`llama-3-1`).

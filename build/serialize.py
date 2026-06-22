@@ -44,14 +44,18 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
         for prod_slug in org.get("products", []):
             product_org[prod_slug] = org_slug
     # The curated display order + arc grouping live in sources/taxonomy.yaml.
+    # Arcs are the Columbia ontology layers; each arc carries a `layer` slug.
     # Flatten arcs[].categories in sequence to get the global `order` list, and
-    # build a {category_slug: arc_name} map for per-category arc tagging.
+    # build {category_slug: arc_name} + {category_slug: layer_slug} maps so both
+    # the display arc and the machine layer are derived from the same source.
     order: list[str] = []
     cid_arc: dict[str, str] = {}
+    cid_layer: dict[str, str] = {}
     for arc in taxonomy["arcs"]:
         for cid in arc["categories"]:
             order.append(cid)
             cid_arc[cid] = arc["name"]
+            cid_layer[cid] = arc.get("layer")
     out_cats = {}
     n = 0
     for cid in order:
@@ -67,7 +71,8 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
             org_name = "" if org_slug == "unknown" else orgs[org_slug]["display_name"]
             rows.append(_row(p, org_name, scores[slug]))
             n += 1
-        out_cats[cid] = {"label": cat["display_name"], "arc": cid_arc[cid], "products": rows}
+        out_cats[cid] = {"label": cat["display_name"], "arc": cid_arc[cid],
+                         "layer": cid_layer[cid], "products": rows}
     return {"categories": out_cats, "order": order, "n_total": n,
             "generated": generated, "long_tail": frozen_long_tail}
 

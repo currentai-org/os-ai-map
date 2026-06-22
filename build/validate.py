@@ -27,6 +27,7 @@ OPENNESS_CLASSES = {
     "dataset": {"open", "gated", "documented_only", "closed"},
 }
 SIGNAL_TYPES = {"active_users", "usage_volume", "reported_traction", "stars_fallback", "unknown"}
+LAYERS = {"product_ux", "model_components", "infrastructure"}
 
 
 def load_sources(root: Path) -> dict:
@@ -50,8 +51,12 @@ def validate_sources(data: dict) -> list[str]:
     # --- taxonomy <-> category invariants ---
     # Every category file appears in exactly one arc's `categories` list, and
     # every slug in the manifest resolves to a real category file.
+    # Arcs are the Columbia ontology layers; each must declare a valid `layer`
+    # slug, since serialize derives every category's layer from its arc.
     tax_count: dict[str, int] = {}
     for arc in taxonomy.get("arcs", []):
+        if arc.get("layer") not in LAYERS:
+            errors.append(f"taxonomy arc {arc.get('name')!r}: layer {arc.get('layer')!r} not in {sorted(LAYERS)}")
         for cid in arc.get("categories", []):
             tax_count[cid] = tax_count.get(cid, 0) + 1
             if cid not in cats:
