@@ -39,6 +39,22 @@ def test_build_payload_shape_and_order():
     assert row["version_note"] == "note text"
 
 
+def test_long_tail_drops_now_categorized_products():
+    # llama-4 carries github.com/meta-llama/llama; a frozen long-tail sample row for
+    # that same repo must be filtered out (it is no longer uncategorized), while an
+    # unrelated row survives.
+    src = _sources()
+    src["products"]["llama-4"]["github"] = [{"url": "https://github.com/meta-llama/llama"}]
+    frozen = {"counts": {}, "top": [
+        {"name": "meta-llama/llama", "type": "repo", "usage_label": "", "description": ""},
+        {"name": "someone/uncategorized", "type": "repo", "usage_label": "", "description": ""},
+    ]}
+    payload = build_payload(src, frozen_long_tail=frozen, generated="2026-06-10")
+    names = [t["name"] for t in payload["long_tail"]["top"]]
+    assert "meta-llama/llama" not in names
+    assert "someone/uncategorized" in names
+
+
 def test_unknown_org_renders_empty_string():
     s = _sources()
     s["organizations"] = {"unknown": {"name": "unknown", "display_name": "Unknown",
