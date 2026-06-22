@@ -34,13 +34,17 @@ LAYERS = {"product_ux", "model_components", "infrastructure"}
 def load_sources(root: Path) -> dict:
     def _dir(name):
         return {p.stem: yaml.safe_load(p.read_text()) for p in sorted((root / "sources" / name).glob("*.yaml"))}
-    return {
+    data = {
         "organizations": _dir("organizations"),
         "categories": _dir("categories"),
         "products": _dir("products"),
         "scores": _dir("scores"),
         "taxonomy": yaml.safe_load((root / "sources" / "taxonomy.yaml").read_text()),
     }
+    lt = root / "build" / "_frozen_long_tail.json"
+    if lt.exists():
+        data["long_tail"] = json.loads(lt.read_text())
+    return data
 
 
 def validate_sources(data: dict) -> list[str]:
@@ -115,6 +119,18 @@ def validate_sources(data: dict) -> list[str]:
         cap = sc.get("capability", {})
         if cap.get("score") is not None and not cap.get("sources"):
             errors.append(f"score {slug!r}: non-null capability needs >=1 source")
+
+    # --- frozen long-tail <-> live count invariant ---
+    # The long-tail section shows "Of the {scored} products scored above ..."; that
+    # count is a hand-synced snapshot and must track the live product count, or the
+    # notebook contradicts itself. Only checked when the fixture is loaded (real runs,
+    # not hand-built test fixtures).
+    lt = data.get("long_tail")
+    if lt:
+        scored = (lt.get("counts") or {}).get("scored")
+        if scored is not None and scored != len(prods):
+            errors.append(f"long_tail counts.scored ({scored}) != product count ({len(prods)}); "
+                          f"re-sync build/_frozen_long_tail.json after a batch")
 
     # --- product -> score existence ---
     # validate only checks score -> product; without this, a rostered product

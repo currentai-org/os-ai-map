@@ -23,6 +23,15 @@ def _fixture():
 def test_valid_fixture_passes():
     assert validate_sources(_fixture()) == []
 
+def test_long_tail_scored_must_match_product_count():
+    d = _fixture()  # exactly one product
+    d["long_tail"] = {"counts": {"scored": 999}}
+    errs = validate_sources(d)
+    assert any("counts.scored" in e for e in errs)
+    d["long_tail"]["counts"]["scored"] = 1  # now matches the single product
+    assert not any("counts.scored" in e for e in validate_sources(d))
+
+
 def test_orphan_product_not_in_roster_fails():
     d = _fixture()
     d["products"]["ghost"] = {"name": "ghost", "display_name": "Ghost", "type": "model"}
