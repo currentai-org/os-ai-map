@@ -1,18 +1,29 @@
+# Arcs are the three layers of the Columbia openness ontology (GPAIS tech stack):
+# Product / UX (above), Model components (middle), Infrastructure (below).
+# Each arc declares its Columbia `layer` slug; serialize derives both the display
+# arc name and the machine layer slug from here, so a category's layer is never a
+# separate hand-maintained field -- it is whichever arc the category sits in.
 arcs:
-- name: Models
+- name: Model components
+  layer: model_components
   categories:
   - base_pretrained
   - finetuned_chat
-- name: Model code & data
-  categories:
   - inference_code
   - finetuning_code
   - evaluation_code
   - benchmark_eval_data
-- name: System / Product-UX
+  - training_synthetic_datasets
+- name: Product / UX
+  layer: product_ux
   categories:
   - orchestration_agents
   - ui_api
   - telemetry_observability
   - agent_tools_protocols
+- name: Infrastructure
+  layer: infrastructure
+  categories:
+  - ml_frameworks
   - deployment
+  - edge_hardware

@@ -3,7 +3,8 @@ from build.validate import validate_sources
 def _fixture():
     return {
         "organizations": {"meta": {"name": "meta", "display_name": "Meta", "products": ["llama-4"]}},
-        "taxonomy": {"arcs": [{"name": "Models", "categories": ["base_pretrained"]}]},
+        "taxonomy": {"arcs": [{"name": "Model components", "layer": "model_components",
+                               "categories": ["base_pretrained"]}]},
         "categories": {
             "base_pretrained": {"name": "base_pretrained", "display_name": "Base",
                                 "products": ["llama-4"], "comments": ""}
@@ -22,6 +23,15 @@ def _fixture():
 def test_valid_fixture_passes():
     assert validate_sources(_fixture()) == []
 
+def test_long_tail_scored_must_match_product_count():
+    d = _fixture()  # exactly one product
+    d["long_tail"] = {"counts": {"scored": 999}}
+    errs = validate_sources(d)
+    assert any("counts.scored" in e for e in errs)
+    d["long_tail"]["counts"]["scored"] = 1  # now matches the single product
+    assert not any("counts.scored" in e for e in validate_sources(d))
+
+
 def test_orphan_product_not_in_roster_fails():
     d = _fixture()
     d["products"]["ghost"] = {"name": "ghost", "display_name": "Ghost", "type": "model"}
@@ -36,7 +46,8 @@ def test_category_missing_from_taxonomy_fails():
 
 def test_category_listed_in_two_arcs_fails():
     d = _fixture()
-    d["taxonomy"]["arcs"].append({"name": "Other", "categories": ["base_pretrained"]})
+    d["taxonomy"]["arcs"].append({"name": "Other", "layer": "infrastructure",
+                                  "categories": ["base_pretrained"]})
     errs = validate_sources(d)
     assert any("exactly one taxonomy arc" in e for e in errs)
 

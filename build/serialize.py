@@ -6,12 +6,49 @@ Reproduces the exact structure the live notebook consumes:
 from datetime import date
 from pathlib import Path
 import json
+import re
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 
 PRODUCT_KEY_ORDER = ["product", "org", "type", "description",
                      "openness", "adoption", "capability", "version_note"]
+
+
+def _catalog_ids(prods: dict) -> dict:
+    """Artifact ids now claimed by a categorized product, keyed by long-tail entry
+    type, so the frozen 'uncategorized' sample can self-heal as products are added."""
+    ids = {"repo": set(), "package": set(), "dataset": set(), "model": set()}
+    for p in prods.values():
+        for u in p.get("github", []):
+            m = re.search(r"github\.com/([^/]+/[^/]+?)(?:\.git)?/?$", u["url"])
+            if m:
+                ids["repo"].add(m.group(1).lower())
+        for key in ("pypi", "npm"):
+            for u in p.get(key, []):
+                m = re.search(r"/([^/]+?)/?$", u["url"])
+                if m:
+                    ids["package"].add(m.group(1).lower())
+        for u in p.get("huggingface_dataset", []):
+            m = re.search(r"huggingface\.co/datasets/([^/]+/[^/]+?)/?$", u["url"])
+            if m:
+                ids["dataset"].add(m.group(1).lower())
+        for u in p.get("huggingface_model", []):
+            m = re.search(r"huggingface\.co/([^/]+/[^/]+?)/?$", u["url"])
+            if m:
+                ids["model"].add(m.group(1).lower())
+    return ids
+
+
+def _filter_long_tail(frozen: dict, prods: dict) -> dict:
+    """Drop frozen 'top' sample rows that are now categorized products. The frozen
+    counts stay as the point-in-time warehouse snapshot (synced by hand after a
+    batch); only the visible sample is derived so it never lists a scored product."""
+    ids = _catalog_ids(prods)
+    lt = dict(frozen)
+    lt["top"] = [t for t in frozen.get("top", [])
+                 if t.get("name", "").lower() not in ids.get(t.get("type"), set())]
+    return lt
 
 
 def _row(prod: dict, org_name: str, score: dict) -> dict:
@@ -44,14 +81,18 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
         for prod_slug in org.get("products", []):
             product_org[prod_slug] = org_slug
     # The curated display order + arc grouping live in sources/taxonomy.yaml.
+    # Arcs are the Columbia ontology layers; each arc carries a `layer` slug.
     # Flatten arcs[].categories in sequence to get the global `order` list, and
-    # build a {category_slug: arc_name} map for per-category arc tagging.
+    # build {category_slug: arc_name} + {category_slug: layer_slug} maps so both
+    # the display arc and the machine layer are derived from the same source.
     order: list[str] = []
     cid_arc: dict[str, str] = {}
+    cid_layer: dict[str, str] = {}
     for arc in taxonomy["arcs"]:
         for cid in arc["categories"]:
             order.append(cid)
             cid_arc[cid] = arc["name"]
+            cid_layer[cid] = arc.get("layer")
     out_cats = {}
     n = 0
     for cid in order:
@@ -67,9 +108,10 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
             org_name = "" if org_slug == "unknown" else orgs[org_slug]["display_name"]
             rows.append(_row(p, org_name, scores[slug]))
             n += 1
-        out_cats[cid] = {"label": cat["display_name"], "arc": cid_arc[cid], "products": rows}
+        out_cats[cid] = {"label": cat["display_name"], "arc": cid_arc[cid],
+                         "layer": cid_layer[cid], "products": rows}
     return {"categories": out_cats, "order": order, "n_total": n,
-            "generated": generated, "long_tail": frozen_long_tail}
+            "generated": generated, "long_tail": _filter_long_tail(frozen_long_tail, prods)}
 
 
 if __name__ == "__main__":

@@ -9,10 +9,14 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["name", "categories"],
+        "required": ["name", "layer", "categories"],
         "additionalProperties": false,
         "properties": {
           "name": { "type": "string", "minLength": 1 },
+          "layer": {
+            "description": "Columbia openness ontology layer (GPAIS tech stack) this arc represents.",
+            "enum": ["product_ux", "model_components", "infrastructure"]
+          },
           "categories": {
             "type": "array",
             "items": { "type": "string", "pattern": "^[a-z0-9_]+$" }

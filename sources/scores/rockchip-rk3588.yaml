@@ -1,0 +1,39 @@
+product: rockchip-rk3588
+openness:
+  class: documented
+  score: 3
+  components: full TRM + datasheet public (no NDA);NPU SDK on GitHub but proprietary RKNN license + prebuilt
+    blobs;rknpu kernel driver open;proprietary GPU/NPU firmware
+  confidence: high
+  note: Documentation is unusually open (full TRM and datasheet public) and the RKNN toolkit is openly
+    distributed, but the SDK ships as prebuilt binaries under a proprietary license with closed firmware.
+  sources:
+  - url: https://www.rock-chips.com/a/en/products/RK35_Series/2022/0926/1660.html
+    shows: 'official RK3588 page: 8-core A76+A55, 6 TOPS triple-core NPU, Mali-G610 MC4'
+    accessed: '2026-06-22'
+  - url: https://github.com/airockchip/rknn-toolkit2/blob/master/LICENSE
+    shows: SDK under a proprietary RKNN SDK License
+    accessed: '2026-06-22'
+adoption:
+  level: 5
+  reach: mass-market
+  signal_type: reported_traction
+  confidence: high
+  note: Powers a very large multi-vendor set of SBCs and modules (Orange Pi, Radxa, Khadas, FriendlyELEC,
+    Firefly), widely available at retail and broadly supported in community Linux.
+  sources:
+  - url: https://forum.armbian.com/topic/26398-video-comparing-rk3588-sbcs-nanopi-r6s-khadas-edge2-radxa-rock5b-mekotronics-r58-mini-r58x-4g-orange-pi-5/
+    shows: independent comparison of many RK3588 SBCs from multiple vendors
+    accessed: '2026-06-22'
+capability:
+  score: 4
+  basis: feature_matrix
+  value: 6 TOPS triple-core NPU (INT4-TF32); up to 32GB LPDDR4x/LPDDR5 (board-dependent); runs quantized
+    on-device LLMs via RKNN-LLM
+  confidence: high
+  note: The 6 TOPS NPU is genuine edge-AI capability and the RKLLM SDK runs quantized LLMs on-chip, but
+    modest versus dedicated accelerators.
+  sources:
+  - url: https://github.com/airockchip/rknn-llm
+    shows: official RKLLM SDK running LLMs on RK3588-series NPU
+    accessed: '2026-06-22'

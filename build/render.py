@@ -126,7 +126,7 @@ def data():
     # openness verdict; the table also shows the blended score.
     LAYER_WEIGHTS = __LAYER_WEIGHTS__
     # Framework white-space: homes in the Columbia/MOF openness stack that the
-    # 11 categories above do NOT cover. Rendered by the framework_edges cell as a
+    # the categories above do NOT cover. Rendered by the framework_edges cell as a
     # scope statement (the vertical edge of the map, paired with the long tail).
     FRAMEWORK_EDGES = [
         ("Model", [
@@ -244,7 +244,7 @@ def header(C, DATA, F, mo):
 
 @app.cell(hide_code=True)
 def combat_scorecard(C, DATA, F, ORDER, VERDICT, mo, verdict_for):
-    # Hero: one count tile per openness verdict across the 11 categories.
+    # Hero: one count tile per openness verdict across the categories.
     _counts = {}
     for _cid in ORDER:
         _code = verdict_for(_cid)[0]
@@ -339,16 +339,16 @@ def stack_overview(C, DATA, F, ORDER, STACK_DESC, VERDICT, mix_counts, mo,
 def openness_distribution(C, DATA, F, mo):
     import collections as _collections
     def _ccol(_cls):
-        if _cls in ("open_source", "open"):
+        if _cls in ("open_source", "open", "open_hardware"):
             return C["healthy"]
-        if _cls in ("open_weights", "open_core"):
+        if _cls in ("open_weights", "open_core", "open_toolchain"):
             return C["warm"]
-        if _cls in ("restricted", "source_available", "gated"):
+        if _cls in ("restricted", "source_available", "gated", "documented"):
             return C["signal"]
         return C["ink_3"]
-    _CLS_ORDER = ["open_source", "open", "open_core", "open_weights", "source_available", "gated", "restricted", "documented_only", "closed"]
+    _CLS_ORDER = ["open_source", "open", "open_hardware", "open_core", "open_weights", "open_toolchain", "source_available", "gated", "documented", "restricted", "documented_only", "closed"]
     _bars = []
-    for _tk, _tl in [("model", "Models"), ("dataset", "Datasets"), ("software", "Software")]:
+    for _tk, _tl in [("model", "Models"), ("dataset", "Datasets"), ("software", "Software"), ("hardware", "Hardware")]:
         _cnt = _collections.Counter()
         for _cat in DATA["categories"].values():
             for _p in _cat["products"]:
@@ -563,6 +563,7 @@ def helpers(C, DATA, F, OPEN, STRAPLINES, VERDICT, mix_counts, mo, vbucket,
             "model": "the Model Openness Framework (weights, data, code, license)",
             "software": "OSI-class license tests",
             "dataset": "data-openness (access, license, and documentation)",
+            "hardware": "open-hardware tests (design files, toolchain, and availability)",
         }.get(_dominant_type(cid), "OSI-class license tests")
 
     def _cap_summary(cid):
@@ -888,7 +889,7 @@ def framework_edges(C, FRAMEWORK_EDGES, F, mo):
         f'The Columbia framework treats openness as varying across the whole stack: at the '
         f'<strong>model</strong> level (datasets, code, weights), in the <strong>system</strong> around it '
         f'(infrastructure below, product and UX above), and across <strong>cross-cutting</strong> attributes '
-        f'(documentation, licensing, safeguards). The 11 categories above occupy some of those areas; these are the '
+        f'(documentation, licensing, safeguards). The categories above occupy some of those areas; these are the '
         f'ones we have not yet defined as categories. A statement of scope, not a backlog.</p>'
         f'{_levels}'
         f'<p style="font-family:{F["body"]}; font-size:0.82rem; color:{C["ink_3"]}; margin:6px 0 0; line-height:1.5;">'
@@ -980,7 +981,7 @@ if __name__ == "__main__":
     app.run()
 '''
 
-# Build the 11 section cells
+# Build the section cells
 _sections = []
 for i, cid in enumerate(data["order"], start=1):
     _sections.append(

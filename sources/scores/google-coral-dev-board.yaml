@@ -1,0 +1,38 @@
+product: google-coral-dev-board
+openness:
+  class: documented
+  score: 3
+  components: schematics:no full board files;toolchain:open runtime (libedgetpu) + TFLite, closed Edge
+    TPU compiler;datasheets:public;blobs:proprietary Edge TPU ASIC + closed compiler;retail:broadly purchasable
+  confidence: high
+  note: Public datasheet and open runtime/TFLite path, but the Edge TPU silicon and the model compiler
+    are proprietary closed binaries.
+  sources:
+  - url: https://coral.ai/docs/dev-board/datasheet/
+    shows: 'datasheet: 4 TOPS, 2 TOPS/W, SoM form factor, TFLite, Google-designed Edge TPU'
+    accessed: '2026-06-22'
+  - url: https://github.com/google-coral/libedgetpu
+    shows: open-source Edge TPU userspace runtime driver
+    accessed: '2026-06-22'
+adoption:
+  level: 4
+  reach: broad
+  signal_type: reported_traction
+  confidence: medium
+  note: Long-established, widely distributed edge-AI dev platform with an active google-coral GitHub org;
+    the older edgetpu repo was archived April 2026 with libedgetpu now maintained.
+  sources:
+  - url: https://github.com/google-coral/libedgetpu
+    shows: maintained official runtime repo; broad ecosystem
+    accessed: '2026-06-22'
+capability:
+  score: 2
+  basis: feature_matrix
+  value: 4 TOPS (2 TOPS/W); int8-quantized models; TensorFlow Lite only
+  confidence: high
+  note: Modest 4 TOPS limited to int8 TFLite models; suited to small CNN inference rather than large or
+    generative models.
+  sources:
+  - url: https://coral.ai/docs/dev-board/datasheet/
+    shows: 4 TOPS, 2 TOPS/W, TFLite-focused Edge TPU
+    accessed: '2026-06-22'
