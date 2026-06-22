@@ -4,8 +4,7 @@ The public data + modeling home behind the [AI Stack Map](https://oso.xyz/curren
 
 Curated YAML in `sources/` feeds a deterministic build pipeline that serializes to
 `build/notebook_data.json`, renders to `notebooks/ai-stack-map.py`, and publishes to
-the OSO platform. There is no front-end in this repo; the website lives in
-`ecosystem-mapping/app/`.
+the OSO platform. There is no front-end in this repo.
 
 ---
 
@@ -28,10 +27,10 @@ those on merge to `main`. Code and data are [MIT licensed](LICENSE).
 |------|------|
 | `sources/` | Curated YAML: organizations, categories, products, scores + `taxonomy.yaml` |
 | `build/` | Validate, serialize, render pipeline |
-| `notebooks/` | Generated marimo notebook (`ai-stack-map.py`) |
+| `notebooks/` | Marimo notebooks: generated `ai-stack-map.py` + hand-authored `products-view.py` (payload generated) |
 | `warehouse/` | UDM SQL, ingest fetchers, and external CSV catalog |
 | `docs/schemas/` | JSON Schemas for all source file types |
-| `docs/guides/` | Query and notebook conventions |
+| `docs/guides/` | Query, notebook, openness, and gap-analysis conventions |
 | `docs/runbooks/` | Maintainer deploy steps (MCP write access) |
 | `skills/` | Agent skills for common editor workflows |
 | `tests/` | pytest suite for build helpers |
@@ -73,6 +72,9 @@ uv run marimo export html notebooks/ai-stack-map.py -o /tmp/preview.html
 
 Serialize and render locally for preview only. Do not commit `build/notebook_data.json` or
 `notebooks/ai-stack-map.py`.
+
+The companion `notebooks/products-view.py` is hand-authored; only its embedded data payload
+is regenerated, by `uv run python build/products_view_data.py` (the bot refreshes it on merge).
 
 Note: `build/_frozen_long_tail.json` is a hand-frozen long-tail snapshot (fixture, not derived from
 live warehouse data yet).
@@ -140,4 +142,6 @@ See `docs/runbooks/`:
 
 - Query conventions: `docs/guides/queries.md`
 - Notebook style: `docs/guides/notebooks.md`
+- Openness scoring: `docs/guides/openness-spectrum.md`
+- Gap analysis (stages + gaps): `docs/guides/gap-analysis.md`
 - Warehouse inventory: `warehouse/models/README.md`

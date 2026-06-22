@@ -21,7 +21,7 @@ Creates four coordinated edits: a product file, a score file, a category roster 
    ```yaml
    name: <slug>
    display_name: <Display Name>
-   type: model | software | dataset
+   type: model | software | dataset | hardware
    description: <one paragraph>
    github:
      - url: https://github.com/<owner>/<repo>
@@ -84,6 +84,13 @@ Assign `class` first, then the 0–5 `score` (full rationale in
   `source_available` = 2; `closed` = 0–1. **Fair-code** (e.g. n8n's Sustainable Use
   License) and **BSL 1.1** (e.g. Pathway) are NOT OSI → `source_available`, even when
   marketed as "open source".
+- **Datasets:** `open` (public download + OSI-compatible/open-data license) = 5;
+  `gated` (free but access-gated, e.g. click-through or HF gating) = 2; `documented_only`
+  (composition documented but data not redistributable) = 1; `closed` = 0–1.
+- **Hardware:** `open_hardware` (open schematics/RTL + open toolchain) = 5; `open_toolchain`
+  (proprietary silicon but open SDK/datasheets, e.g. a board with a published BSP) = 3;
+  `documented` (datasheets public, design and firmware proprietary) = 2; `restricted` /
+  `closed` (NDA-gated or fully proprietary) = 0–1.
 - A custom copyright line can make GitHub report `NOASSERTION` for a genuine MIT/Apache
   license — check the LICENSE body, don't trust the GitHub classifier.
 - Keep generic version buckets (e.g. "GPT-5 line", "Claude Opus 4.x") rather than
