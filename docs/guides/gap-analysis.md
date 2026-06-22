@@ -35,15 +35,16 @@ surface — and it is reported independently of how mature the ecosystem is othe
 - **Adoption** — `adoption.level` (1–5).
 - **Capability** — `capability.score` (1–5; may be null for product types where capability is
   not meaningful, e.g. datasets).
-- **Per-category weights** — `weights.adopt` and `weights.cap` (sum to 1), so each category
-  blends the two axes according to what matters most for that part of the stack.
+- **Per-category weights** — `weights.adopt` and `weights.cap`, so each category blends the two
+  axes according to what matters most for that part of the stack.
 
 ## Maturity score and the "mature" bar
 
-Each product gets a single **maturity score** on a 1–5 scale from a per-category linear blend:
+Each product gets a single **maturity score** on a 1–5 scale from a per-category linear blend,
+normalized by the weight sum so it stays on the 1–5 scale for any weights:
 
 ```
-score = weights.adopt · adoption + weights.cap · capability
+score = (weights.adopt · adoption + weights.cap · capability) / (weights.adopt + weights.cap)
 ```
 
 Where capability is not meaningful (null), the product is graded on adoption alone. A product
@@ -63,7 +64,7 @@ expose. Counting also distinguishes depth from a single standout (see Stage 5).
 
 | Stage | Name | Condition |
 |------:|------|-----------|
-| **5** | Mature Open Ecosystem | enough mature fully-open products **and** enough total fully-open products to be redundant/resilient |
+| **5** | Mature Open Ecosystem | enough mature fully-open products to be redundant/resilient |
 | **4** | Competitive Open Ecosystem | at least one mature fully-open product, but not yet enough for depth |
 | **3** | Viable Alternatives | no mature fully-open product, but the best fully-open option is strong |
 | **2** | Emerging Alternatives | no mature fully-open product; the best fully-open option is promising but limited |
@@ -79,8 +80,8 @@ Gaps are a **set** (zero or more) per category, so a category can carry more tha
 derived from the same metrics as the stage:
 
 - **`void`** — no usable open option at all.
-- **`capability`** — the best open option isn't capable enough to be useful.
-- **`adoption`** — a capable open option exists but is under-adopted.
+- **`capability`** — the best fully-open option isn't capable enough to be useful.
+- **`adoption`** — a capable fully-open option exists but is under-adopted.
 - **`maturity`** — open options exist and at least one may be mature, but the ecosystem lacks
   the depth/redundancy of a mature ecosystem (too few mature fully-open products).
 - **`openness`** — capable, adopted options exist, but the mature ones are not fully open
@@ -107,8 +108,9 @@ The thresholds are deliberate, tunable choices rather than fixed law. They live 
 constants at the top of the gap-analysis block in `build/serialize.py`:
 
 - the **mature** score threshold,
-- the counts of mature and total fully-open products required for **Stage 5**,
-- the best-fully-open score bands that separate **Stages 1–3**.
+- the count of mature fully-open products required for **Stage 5**,
+- the best-fully-open score bands that separate **Stages 1–3**,
+- the raw capability cutoff that splits a `capability` gap from an `adoption` gap.
 
 Adjusting them shifts how demanding each rung is; they should be reviewed when the scoring
 rubric or the curation density changes materially.

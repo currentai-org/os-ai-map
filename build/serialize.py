@@ -20,9 +20,9 @@ PRODUCT_KEY_ORDER = ["product", "org", "type", "description",
 # diverge from the JSON, the JSON is source of truth.
 _GAP_OPEN = {"open_source", "open", "open_core", "open_hardware"}
 _GAP_OPENISH = {"open_weights", "source_available", "gated", "open_toolchain"}
-_MATURE_MIN = 4.5          # blended adoption/capability score to count as "mature"
-_STAGE5_MIN_MATURE = 4     # mature fully-open products needed for Stage 5
-_STAGE5_MIN_TOTAL = 3      # total fully-open products needed for Stage 5
+_MATURE_MIN = 4.5          # blended adoption/capability score for a product to be "mature"
+_STAGE5_MIN_MATURE = 4     # mature fully-open products needed for Stage 5 (Mature Open Ecosystem)
+_CAPABLE_MIN = 4           # raw capability below which an open option is "not capable yet"
 _STAGE_NAMES = {0: "Void", 1: "Open Experiments", 2: "Emerging Alternatives",
                 3: "Viable Alternatives", 4: "Competitive Open Ecosystem",
                 5: "Mature Open Ecosystem"}
@@ -37,13 +37,15 @@ def _gap_bucket(cls: str) -> str:
 
 
 def _maturity_score(row: dict, w: dict) -> float:
-    # Per-category linear formula over the 1-5 axes; datasets have no capability
-    # score, so they are graded on adoption alone.
+    # Per-category linear blend of the 1-5 axes, normalized by the weight sum so the
+    # result stays on the 1-5 scale for any weights (identity when they sum to 1).
+    # Datasets have no capability score, so they are graded on adoption alone.
     adoption = (row.get("adoption") or {}).get("level") or 0
     capability = (row.get("capability") or {}).get("score")
     if capability is None:
         return float(adoption)
-    return w["adopt"] * adoption + w["cap"] * capability
+    wa, wc = w.get("adopt", 0.5), w.get("cap", 0.5)
+    return (wa * adoption + wc * capability) / ((wa + wc) or 1.0)
 
 
 def _stage_and_gaps(rows: list[dict], weights: dict) -> dict:
@@ -53,18 +55,17 @@ def _stage_and_gaps(rows: list[dict], weights: dict) -> dict:
     open-ish only serves to detect the openness gap. See docs/guides/gap-analysis.md.
     """
     w = weights or {"adopt": 0.5, "cap": 0.5}
-    enr = [(_gap_bucket((r.get("openness") or {}).get("class")), _maturity_score(r, w)) for r in rows]
-    open_scores = [s for b, s in enr if b == "open"]
-    total_open = len(open_scores)
-    mature_open = sum(1 for s in open_scores if s >= _MATURE_MIN)
-    best_open = max(open_scores, default=0.0)
-    mature_any = any(s >= _MATURE_MIN for _, s in enr)
+    enr = [(r, _gap_bucket((r.get("openness") or {}).get("class")), _maturity_score(r, w)) for r in rows]
+    open_rows = [(r, s) for r, b, s in enr if b == "open"]
+    mature_open = sum(1 for _, s in open_rows if s >= _MATURE_MIN)
+    best_open = max((s for _, s in open_rows), default=0.0)
+    mature_anywhere = any(s >= _MATURE_MIN for _, _, s in enr)
 
-    if mature_open >= _STAGE5_MIN_MATURE and total_open >= _STAGE5_MIN_TOTAL:
+    if mature_open >= _STAGE5_MIN_MATURE:
         stage = 5
     elif mature_open >= 1:
         stage = 4
-    elif best_open < 2 and not mature_any:
+    elif best_open < 2 and not mature_anywhere:
         stage = 0
     elif best_open < 3:
         stage = 1
@@ -81,13 +82,12 @@ def _stage_and_gaps(rows: list[dict], weights: dict) -> dict:
         gaps = ["maturity"]
     else:
         gaps = ["maturity"]
-        if mature_any:                       # capable mature options exist, but none fully open
+        if mature_anywhere:                  # capable mature options exist, but none fully open
             gaps.append("openness")
-        else:                                # nothing mature anywhere -> diagnose the limiting axis
-            best = max(rows, key=lambda r: _maturity_score(r, w), default=None)
-            bcap = (best or {}).get("capability", {}) or {}
-            cap = bcap.get("score")
-            gaps.append("capability" if (cap is not None and cap < 4) else "adoption")
+        else:                                # the open ecosystem itself is immature -> which axis?
+            best = max(open_rows, key=lambda rs: rs[1])[0] if open_rows else None
+            cap = ((best or {}).get("capability") or {}).get("score")
+            gaps.append("capability" if (cap is not None and cap < _CAPABLE_MIN) else "adoption")
 
     return {"num": stage, "name": _STAGE_NAMES[stage], "gaps": gaps}
 
