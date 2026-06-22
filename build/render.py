@@ -642,23 +642,17 @@ def helpers(C, DATA, F, OPEN, STRAPLINES, VERDICT, mix_counts, mo, vbucket,
         )
 
     def _verdict_spine(cid):
-        _code, _basis = verdict_for(cid)
-        _vlabel, _vckey = VERDICT[_code]
+        # Dot tally only; the stage badge above now carries the openness verdict, so
+        # the standalone verdict pill was dropped to de-clutter the section header.
         _m = mix_counts(cid)
-        _badge = (
-            f'<span style="display:inline-block; font-family:{F["mono"]}; font-size:0.72rem; '
-            f'letter-spacing:0.05em; text-transform:uppercase; color:white; background:{C[_vckey]}; '
-            f'padding:4px 10px; border-radius:2px; vertical-align:middle;">{_vlabel}</span>'
-        )
         _tally = (
             f'<span style="color:{C["healthy"]};">\\u25cf</span> {_m["open"]} open'
             f'&nbsp;&nbsp;<span style="color:{C["warm"]};">\\u25cf</span> {_m["openish"]} open-ish'
             f'&nbsp;&nbsp;<span style="color:{C["ink_3"]};">\\u25cf</span> {_m["closed"]} closed'
         )
         return (
-            f'<div style="margin:4px 0 10px;">{_badge}'
-            f'<span style="font-family:{F["mono"]}; font-size:0.78rem; color:{C["ink_2"]}; '
-            f'margin-left:14px;">{_tally}</span></div>'
+            f'<div style="margin:0 0 14px; font-family:{F["mono"]}; font-size:0.78rem; '
+            f'color:{C["ink_2"]};">{_tally}</div>'
         )
 
     def _stage_gaps_badge(cid):
@@ -673,12 +667,12 @@ def helpers(C, DATA, F, OPEN, STRAPLINES, VERDICT, mix_counts, mo, vbucket,
         _chips = "".join(
             f'<span style="font-family:{F["mono"]}; font-size:0.64rem; text-transform:uppercase; '
             f'letter-spacing:0.04em; color:{C["ink_2"]}; background:{C["paper_2"]}; border:1px solid {C["rule"]}; '
-            f'padding:2px 8px; border-radius:11px;">{_g} gap</span>'
+            f'padding:2px 8px; border-radius:11px;">{_g}</span>'
             for _g in (cat.get("gaps") or [])
         )
         _none = "" if cat.get("gaps") else (f'<span style="font-family:{F["mono"]}; font-size:0.64rem; '
                 f'color:{C["healthy"]};">no gaps</span>')
-        return (f'<div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:0 0 12px;">'
+        return (f'<div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:0 0 6px;">'
                 f'{_badge}{_chips}{_none}</div>')
 
     def render_section(cid, num):
