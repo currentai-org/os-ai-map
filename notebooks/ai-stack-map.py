@@ -879,9 +879,6 @@ def stages_table(C, DATA, F, ORDER, mo):
         _sn = (DATA["categories"][_cid].get("stage") or {}).get("num", 0)
         _by_stage.setdefault(_sn, []).append(DATA["categories"][_cid]["label"])
 
-    def _scol(_n):
-        return C["healthy"] if _n >= 5 else C["accent"] if _n == 4 else C["warm"] if _n >= 2 else C["signal"]
-
     _rows = []
     for _n, _name, _desc in _DEFS:
         _cats = _by_stage.get(_n, [])
@@ -899,8 +896,8 @@ def stages_table(C, DATA, F, ORDER, mo):
             f'<tr style="border-bottom:1px solid {C["rule"]}; vertical-align:top;">'
             f'<td style="padding:14px 14px 14px 0; white-space:nowrap;">'
             f'<span style="display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; '
-            f'font-family:{F["mono"]}; font-size:0.8rem; font-weight:600; color:#fff; background:{_scol(_n)}; '
-            f'border-radius:50%;">{_n}</span></td>'
+            f'box-sizing:border-box; font-family:{F["mono"]}; font-size:0.8rem; font-weight:600; color:{C["ink"]}; '
+            f'background:#fff; border:1.5px solid {C["ink"]}; border-radius:50%;">{_n}</span></td>'
             f'<td style="padding:14px 16px 14px 0; font-family:{F["headline"]}; font-size:0.98rem; '
             f'font-weight:500; color:{C["ink"]}; white-space:nowrap;">{_name}</td>'
             f'<td style="padding:14px 16px 14px 0; font-family:{F["body"]}; font-size:0.86rem; '
