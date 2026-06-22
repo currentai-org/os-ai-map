@@ -220,21 +220,6 @@ def gallery():
             ],
         },
         {
-            "slug": "eval-leaderboard",
-            "title": "Domain model leaderboard & eval service",
-            "health": "healthy",
-            "desc": "A public leaderboard that evaluates models for one domain or "
-                    "country: a reproducible harness, open benchmark sets, batch "
-                    "inference, and a hosted results page.",
-            "layers": [
-                ("inference_code", [("vLLM", "documented_component")]),
-                ("evaluation_code", [("lm-evaluation-harness", "known_build"), ("HELM", "documented_component"), ("OpenCompass", "documented_component"), ("Inspect AI", "documented_component")]),
-                ("benchmark_eval_data", [("MMLU-Pro", "known_build"), ("GPQA", "documented_component"), ("IFEval", "documented_component")]),
-                ("deployment", [("Spaces", "known_build")]),
-            ],
-            "gaps": [],
-        },
-        {
             "slug": "research-assistant",
             "title": "Deep research assistant with citations",
             "health": "partial",
@@ -251,41 +236,6 @@ def gallery():
                 ("weak_layer", "Open web search",
                  "Every mapped search API (Tavily, Exa, Serper, Perplexity Sonar, Google Grounding) is closed; the open side stops at scraping."),
             ],
-        },
-        {
-            "slug": "workflow-automation",
-            "title": "Multi-agent back-office workflow automation",
-            "health": "partial",
-            "desc": "Teams of agents that process invoices, reconcile records, and "
-                    "draft responses across internal systems, coordinating with each "
-                    "other and running tools in isolated sandboxes.",
-            "layers": [
-                ("orchestration_agents", [("CrewAI", "known_build"), ("LangChain", "documented_component"), ("smolagents", "documented_component"), ("AutoGPT", "documented_component")]),
-                ("telemetry_observability", [("AgentOps", "documented_component"), ("Opik", "documented_component")]),
-                ("agent_tools_protocols", [("Model Context Protocol", "documented_component"), ("Agent2Agent Protocol", "documented_component"), ("Composio", "documented_component")]),
-                ("deployment", [("E2B Sandbox", "documented_component"), ("Modal Sandboxes", "documented_component")]),
-            ],
-            "gaps": [
-                ("structural", "Guardrails / policy enforcement",
-                 "Agents acting on financial systems need approval flows and policy guardrails; nothing in the map covers this."),
-            ],
-        },
-        {
-            "slug": "rl-lab",
-            "title": "RL fine-tuning lab for reasoning models",
-            "health": "healthy",
-            "desc": "A research stack for reinforcement-learning fine-tuning: an open "
-                    "base model, an RLHF/RLVR trainer with fast rollouts, math "
-                    "benchmarks for reward signal, and a cluster runtime.",
-            "layers": [
-                ("base_pretrained", [("Qwen3", "known_build"), ("OLMo 2", "documented_component"), ("Pythia", "documented_component")]),
-                ("inference_code", [("vLLM", "known_build"), ("SGLang", "documented_component")]),
-                ("finetuning_code", [("verl", "known_build"), ("OpenRLHF", "documented_component"), ("TRL", "documented_component"), ("Atropos", "documented_component")]),
-                ("evaluation_code", [("lm-evaluation-harness", "documented_component")]),
-                ("benchmark_eval_data", [("GSM8K", "known_build"), ("MATH", "documented_component")]),
-                ("deployment", [("Ray", "known_build")]),
-            ],
-            "gaps": [],
         },
         {
             "slug": "llm-observability",
@@ -346,13 +296,32 @@ def gallery():
          "Image / video generation",
          "Generative media models are out of the map's current scope."),
     ]
+    # Each preset is (user story, search query), 1:1 with the ten gallery builds
+    # below. The story carries a persona + intent (build / inspect) and is what
+    # the dropdown shows; the query is a clean product description fed to the
+    # lookup, so persona framing never pollutes the TF-IDF vector. Picking a
+    # story surfaces the same components the matching gallery card breaks down.
     PRESETS = [
-        "I want to build a coding agent that fixes GitHub issues automatically",
-        "A privacy-preserving chat assistant that runs entirely on our own servers",
-        "Fine-tune an open model on our national language and evaluate it",
-        "RAG system over government documents with citations",
-        "A voice assistant for call centers with speech recognition",
-        "Observability and evaluation for our production LLM app",
+        ("I'm a CS student and I want to build a coding agent that fixes GitHub issues automatically",
+         "autonomous coding agent that takes a repo issue, writes and tests a patch in a sandbox, and opens a pull request"),
+        ("I'm a startup founder building an on-prem chat assistant where data never leaves our servers",
+         "self-hosted privacy-preserving chat assistant with a local open chat model and no external API calls"),
+        ("I'm an NLP researcher fine-tuning an open model for an underserved national language",
+         "continued pretraining and instruction tuning of an open base model on local-language corpora with language-specific evaluation"),
+        ("I'm a civic technologist building a citizen-facing Q&A service over public records",
+         "RAG question-answering over government records and regulations with citations and a vector store"),
+        ("I'm a platform engineer who needs one open API gateway in front of many models",
+         "enterprise model gateway with routing, budgets, audit logs, and failover across self-hosted and external models"),
+        ("I'm an IT lead checking whether an open customer-support agent could replace our closed vendor",
+         "customer-support agent over a knowledge base and past tickets with escalation, evaluation, and tracing"),
+        ("I'm an analyst building a deep-research assistant that cites its sources",
+         "deep research assistant that decomposes a question, searches and reads the open web, and synthesizes a sourced report with citations"),
+        ("I'm an ML lead auditing what open options exist for monitoring our production LLM app",
+         "observability, tracing, cost tracking, and evaluation for a production LLM application"),
+        ("I'm building an offline assistant for field clinics with no connectivity",
+         "on-device offline assistant running a small quantized open model on an embedded low-power runtime"),
+        ("I'm a call-center product lead and I want to see what's open for a multilingual voice assistant today",
+         "realtime multilingual voice assistant with streaming speech recognition, an open chat model, and low-latency speech synthesis"),
     ]
     return GALLERY, PRESETS, STRUCTURAL_GAPS
 
@@ -479,7 +448,7 @@ def header(C, F, GENERATED, N_TOTAL, mo):
         f'<strong>{N_TOTAL} scored open-source AI components</strong> on this map to trust at each '
         f'layer of the stack. Start with the <strong>lookup tool</strong>: describe your product '
         f'in your own words and get suggested components for every layer, ranked. Or browse the '
-        f'<strong>gallery</strong>: 13 reference builds, each broken down into the components '
+        f'<strong>gallery</strong>: 10 reference builds, each broken down into the components '
         f'it’s made of, with the receipts for why each one is there. Click any component anywhere '
         f'on the page for its full scorecard: openness, adoption, capability, sources and all. '
         f'And when the open stack can’t fill a layer your product needs, we say so plainly. '
@@ -584,7 +553,7 @@ def lookup_header(C, F, mo):
         f'<h2 style="font-family:{F["headline"]}; font-size:1.6rem; font-weight:500; color:{C["ink"]}; '
         f'margin:0 0 12px; letter-spacing:-0.015em;">Describe what you want to build</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.95rem; color:{C["ink_2"]}; margin:0; line-height:1.6;">'
-        f'Type a product description (or pick a preset) and get suggested components ranked by relevance, '
+        f'Type a product description (or pick a user story) and get suggested components ranked by relevance, '
         f'grouped by stack layer. The ranking is TF-IDF similarity over the map’s component descriptions '
         f'plus a taxonomy keyword boost. Deliberately simple, fully reproducible, and v1 by design: '
         f'it doesn’t need to be perfect, it needs to be useful. Layers your description implies but where '
@@ -595,7 +564,8 @@ def lookup_header(C, F, mo):
 
 @app.cell(hide_code=True)
 def lookup_ui(PRESETS, mo):
-    lookup_preset = mo.ui.dropdown(options=PRESETS, value=PRESETS[0], label="Preset description")
+    _preset_opts = {_story: _query for _story, _query in PRESETS}
+    lookup_preset = mo.ui.dropdown(options=_preset_opts, value=PRESETS[0][0], label="Example user story")
     lookup_query = mo.ui.text_area(placeholder="…or describe your own product here (overrides the preset)", rows=2, full_width=True)
     lookup_open_only = mo.ui.switch(value=True, label="Open components only")
     mo.vstack([mo.hstack([lookup_preset, lookup_open_only], justify="start", gap=2), lookup_query], gap=0.5)
@@ -802,7 +772,7 @@ def gallery_cards(BASIS, BY_NAME, C, CATS, F, GALLERY, HEALTH, OPEN_LABEL, mo):
         f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
         f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:8px;">Gallery · mode 2</div>'
         f'<h2 style="font-family:{F["headline"]}; font-size:1.6rem; font-weight:500; color:{C["ink"]}; '
-        f'margin:0 0 12px; letter-spacing:-0.015em;">Thirteen things you can build (and what they’re made of)</h2>'
+        f'margin:0 0 12px; letter-spacing:-0.015em;">Ten things you can build (and what they’re made of)</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.95rem; color:{C["ink_2"]}; margin:0 0 22px; line-height:1.6;">'
         f'Each card is a reference product: a realistic build, its component stack drawn from the map’s '
         f'scored records, and honest gap signals where composition breaks down. Dot color on each chip is the '
@@ -1060,7 +1030,7 @@ def methodology(C, F, TH, mo):
         f"""<strong>Exemplars are open-leaning by design.</strong> The map exists to chart the open stack, so gallery exemplars are drawn from open / open-core / open-weights components; closed incumbents stay visible in the parent stack map and in lookup mode with the “open components only” switch off. Where only closed components can fill a layer, that is reported as a gap, not papered over.""",
         f"""<strong>Lookup scoring.</strong> score = cosine_tfidf × (1 + 0.25·taxonomy_keyword_hit) × (1 + 0.05·(adoption−3)/2). Pure-Python TF-IDF (log-tf, smoothed idf, L2-normalized) over each component’s name, org, type, category label, and description; a small documented synonym list expands query vocabulary (“privacy” → “self-hosted, local”) at half weight. Thresholds, calibrated on the preset queries: strong match ≥ {TH["strong"]}, layer displayed ≥ {TH["show"]}, gap flagged when an implied layer’s best open match < {TH["gap"]}. Embeddings would rank better; TF-IDF ranks <em>reproducibly</em>, with no model dependency, and that trade is right for v1.""",
         f"""<strong>Gap signals are the point, not the failure mode.</strong> Three kinds: <em>weak layer</em> (your description implies a layer, the best open match stays under threshold), <em>closed only</em> (the layer answers, but only with closed components), and <em>structural</em> (no category covers the capability at all: speech, embeddings, guardrails, document parsing, training corpora, generative media). Structural absences are keyword-triggered and cross-checked against the parent map’s framework white-space. All three feed Gap Analysis and Scoring as candidate categories and scoring targets.""",
-        f"""<strong>Provenance.</strong> Component records, scores, and taxonomy come from <a href="https://github.com/currentai-org/os-ai-map" target="_blank" rel="noopener" style="color:{C["accent"]}; text-decoration:underline;">currentai-org/os-ai-map</a> (the data behind the AI Stack Map); no new data was collected for this view. The gallery is curated and versioned. Disagree with a composition? Open a PR. Known limits: known-build edges are curator-asserted rather than mined from deployment telemetry; descriptions are English, so lookup is English-centric; and 13 reference products sample the product space, they don’t span it.""",
+        f"""<strong>Provenance.</strong> Component records, scores, and taxonomy come from <a href="https://github.com/currentai-org/os-ai-map" target="_blank" rel="noopener" style="color:{C["accent"]}; text-decoration:underline;">currentai-org/os-ai-map</a> (the data behind the AI Stack Map); no new data was collected for this view. The gallery is curated and versioned. Disagree with a composition? Open a PR. Known limits: known-build edges are curator-asserted rather than mined from deployment telemetry; descriptions are English, so lookup is English-centric; and 10 reference products sample the product space, they don’t span it.""",
     ]
     _body = "".join(
         f'<p style="font-family:{F["body"]}; font-size:0.9rem; color:{C["ink_2"]}; line-height:1.6; margin:0 0 12px;">{_p}</p>'
