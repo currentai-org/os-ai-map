@@ -68,12 +68,20 @@ spectrum coordinate:
 | `gated` | Gated | 2 |
 | `documented_only` | Documented only | 1 |
 | `closed` | Closed | 1 |
+| `open_hardware` | Open hardware | 5 |
+| `open_toolchain` | Open toolchain | 3 |
+| `documented` | Documented | 2 |
+
+The last three are the **hardware** openness vocabulary (product `type: hardware`):
+open schematics + toolchain = `open_hardware`; proprietary silicon but open SDK/datasheets +
+retail-available = `open_toolchain`; datasheets public but proprietary design / firmware blobs =
+`documented`; NDA/private-sale = `restricted` (shared with the model vocabulary).
 
 **Class → three-bucket verdict** (`vbucket()` in `render.py`) — the coarse spectrum:
 
-- **open** = `open_source` / `open` / `open_core`
-- **open-ish** = `open_weights` / `source_available` / `gated`
-- **closed** = `restricted` / `documented_only` / `closed`
+- **open** = `open_source` / `open` / `open_core` / `open_hardware`
+- **open-ish** = `open_weights` / `source_available` / `gated` / `open_toolchain`
+- **closed** = `restricted` / `documented_only` / `closed` / `documented`
 
 ## Caveats — these are editorial choices
 

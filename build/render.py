@@ -86,6 +86,9 @@ def style():
         "gated": ("Gated", 2, "warm"),
         "documented_only": ("Documented only", 1, "ink_3"),
         "closed": ("Closed", 1, "ink_3"),
+        "open_hardware": ("Open hardware", 5, "healthy"),
+        "open_toolchain": ("Open toolchain", 3, "warm"),
+        "documented": ("Documented", 2, "signal"),
     }
     # Openness verdict code -> (label, color key into C). Colors match the
     # count chips (open=green, open-ish=orange, closed=red) so the badge
@@ -164,8 +167,8 @@ def verdict_logic(DATA, LAYER_WEIGHTS):
     #   open    = open_source / open / open_core
     #   openish = open_weights / source_available / gated
     #   closed  = restricted / documented_only / closed
-    _OPEN = {"open_source", "open", "open_core"}
-    _OPENISH = {"open_weights", "source_available", "gated"}
+    _OPEN = {"open_source", "open", "open_core", "open_hardware"}
+    _OPENISH = {"open_weights", "source_available", "gated", "open_toolchain"}
 
     def vbucket(cls):
         if cls in _OPEN:
