@@ -303,16 +303,13 @@ def stack_overview(C, DATA, F, ORDER, STACK_DESC, VERDICT, mix_counts, mo,
         _m = mix_counts(_cid)
         _code, _basis = verdict_for(_cid)
         _vlabel, _vckey = VERDICT[_code]
-        _st = _cat.get("stage") or {}
-        _sn = _st.get("num", 0)
-        _scol = C["healthy"] if _sn >= 5 else C["accent"] if _sn == 4 else C["warm"] if _sn >= 2 else C["signal"]
         _chips = (
             f'<span style="color:{C["healthy"]};">\\u25cf</span> {_m["open"]} open'
             f'&nbsp;&nbsp;<span style="color:{C["warm"]};">\\u25cf</span> {_m["openish"]} open-ish'
             f'&nbsp;&nbsp;<span style="color:{C["ink_3"]};">\\u25cf</span> {_m["closed"]} closed'
         )
         _rows.append(
-            f'<div style="display:grid; grid-template-columns:32px 1fr 200px 200px; gap:18px; '
+            f'<div style="display:grid; grid-template-columns:32px 1fr 232px 150px; gap:18px; '
             f'align-items:center; padding:14px 0; border-bottom:1px solid {C["rule"]};">'
             f'<div style="font-family:{F["mono"]}; font-size:12px; color:{C["ink_3"]};">{_i:02d}</div>'
             f'<div><div style="font-family:{F["headline"]}; font-size:1.05rem; font-weight:500; '
@@ -320,13 +317,9 @@ def stack_overview(C, DATA, F, ORDER, STACK_DESC, VERDICT, mix_counts, mo,
             f'<div style="font-family:{F["body"]}; font-size:0.85rem; color:{C["ink_3"]}; '
             f'margin-top:3px; line-height:1.4;">{STACK_DESC.get(_cid, "")}</div></div>'
             f'<div style="font-family:{F["mono"]}; font-size:0.74rem; color:{C["ink_2"]};">{_chips}</div>'
-            f'<div>'
-            f'<span style="display:inline-block; font-family:{F["mono"]}; font-size:0.68rem; letter-spacing:0.05em; '
-            f'text-transform:uppercase; color:#fff; background:{C[_vckey]}; padding:4px 9px; border-radius:2px;">{_vlabel}</span>'
-            f'<div style="margin-top:6px;"><span style="display:inline-block; font-family:{F["mono"]}; '
-            f'font-size:0.66rem; font-weight:500; color:#fff; background:{_scol}; padding:3px 9px; '
-            f'border-radius:11px;">Stage {_sn} \\u00b7 {_st.get("name","")}</span></div>'
-            f'</div>'
+            f'<div style="font-family:{F["mono"]}; font-size:0.72rem; letter-spacing:0.05em; '
+            f'text-transform:uppercase; color:white; background:{C[_vckey]}; padding:7px 10px; '
+            f'text-align:center; border-radius:2px;">{_vlabel}</div>'
             f'</div>'
         )
     _total = DATA.get("n_total") or sum(len(DATA["categories"][c]["products"]) for c in ORDER)
@@ -340,8 +333,9 @@ def stack_overview(C, DATA, F, ORDER, STACK_DESC, VERDICT, mix_counts, mo,
         f'{_n_arcs} layers \\u00b7 {len(ORDER)} categories \\u00b7 {_total} scored products</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.95rem; color:{C["ink_2"]}; margin:0 0 20px; line-height:1.6;">'
         f'Each row is one category, grouped into three layers. The dots show the openness mix of all its '
-        f'products; the verdict pill names which tier leads among its standout products, and the stage chip '
-        f'places its open ecosystem on the Void \\u2192 Mature ladder. The same pills appear on each category below.</p>'
+        f'products; the badge names which tier leads among the category\\u2019s standout products: '
+        f'those that clear the combined adoption\\u00d7capability bar. Open in the long tail and closed at the '
+        f'top can coexist \\u2014 that gap is the point.</p>'
         f'{"".join(_rows)}</div>'
     )
     return
@@ -651,22 +645,13 @@ def helpers(C, DATA, F, OPEN, STRAPLINES, VERDICT, mix_counts, mo, vbucket,
         )
 
     def _verdict_spine(cid):
-        # Openness verdict pill + a plain Stage chip (gaps omitted for now), then the
-        # open / open-ish / closed dot tally.
+        # Openness verdict pill, then the open / open-ish / closed dot tally.
         _code, _basis = verdict_for(cid)
         _vlabel, _vckey = VERDICT[_code]
         _verdict = (
             f'<span style="display:inline-block; font-family:{F["mono"]}; font-size:0.72rem; '
             f'letter-spacing:0.05em; text-transform:uppercase; color:white; background:{C[_vckey]}; '
             f'padding:4px 10px; border-radius:2px;">{_vlabel}</span>'
-        )
-        _st = DATA["categories"][cid].get("stage") or {}
-        _sn = _st.get("num", 0)
-        _scol = C["healthy"] if _sn >= 5 else C["accent"] if _sn == 4 else C["warm"] if _sn >= 2 else C["signal"]
-        _stage = (
-            f'<span style="display:inline-block; font-family:{F["mono"]}; font-size:0.72rem; font-weight:500; '
-            f'color:#fff; background:{_scol}; padding:4px 10px; border-radius:11px; margin-left:8px;">'
-            f'Stage {_sn} \\u00b7 {_st.get("name","")}</span>'
         )
         _m = mix_counts(cid)
         _tally = (
@@ -675,7 +660,7 @@ def helpers(C, DATA, F, OPEN, STRAPLINES, VERDICT, mix_counts, mo, vbucket,
             f'&nbsp;&nbsp;<span style="color:{C["ink_3"]};">\\u25cf</span> {_m["closed"]} closed'
         )
         return (
-            f'<div style="margin:4px 0 12px;">{_verdict}{_stage}'
+            f'<div style="margin:4px 0 12px;">{_verdict}'
             f'<span style="font-family:{F["mono"]}; font-size:0.78rem; color:{C["ink_2"]}; '
             f'margin-left:14px;">{_tally}</span></div>'
         )
@@ -808,6 +793,76 @@ def details_payload(DATA, ORDER, mo):
     mo.Html(
         f'<iframe srcdoc="&lt;!doctype html&gt;&lt;html&gt;&lt;/html&gt;" '
         f'style="display:none;width:0;height:0;border:0;position:absolute" onload="{_boot}"></iframe>'
+    )
+    return
+
+
+@app.cell(hide_code=True)
+def stages_table(C, DATA, F, ORDER, mo):
+    # The maturity ladder: each category's open ecosystem placed on a 0-5 stage.
+    # Only fully-open products count toward a stage (open-ish/closed do not); see
+    # docs/guides/gap-analysis.md. Stages + assignments come straight from the payload.
+    _DEFS = [
+        (0, "Void", "No meaningful open products exist."),
+        (1, "Open Experiments", "Open experiments exist, but capability and adoption are both limited."),
+        (2, "Emerging Alternatives", "Promising open products exist, but important functionality is missing and adoption is limited."),
+        (3, "Viable Alternatives", "Viable open alternatives exist for many use cases."),
+        (4, "Competitive Open Ecosystem", "Open solutions are competitive across a broad range of use cases."),
+        (5, "Mature Open Ecosystem", "Multiple open solutions are mature, widely adopted, and resilient."),
+    ]
+    _by_stage = {}
+    for _cid in ORDER:
+        _sn = (DATA["categories"][_cid].get("stage") or {}).get("num", 0)
+        _by_stage.setdefault(_sn, []).append(DATA["categories"][_cid]["label"])
+
+    def _scol(_n):
+        return C["healthy"] if _n >= 5 else C["accent"] if _n == 4 else C["warm"] if _n >= 2 else C["signal"]
+
+    _rows = []
+    for _n, _name, _desc in _DEFS:
+        _cats = _by_stage.get(_n, [])
+        _cat_html = (
+            "".join(
+                f'<span style="display:inline-block; font-family:{F["body"]}; font-size:0.82rem; '
+                f'color:{C["ink_2"]}; background:{C["paper_2"]}; padding:2px 9px; border-radius:11px; '
+                f'margin:0 5px 5px 0;">{_l}</span>'
+                for _l in _cats
+            )
+            if _cats
+            else f'<span style="font-family:{F["body"]}; font-size:0.82rem; color:{C["ink_3"]}; font-style:italic;">\\u2014</span>'
+        )
+        _rows.append(
+            f'<tr style="border-bottom:1px solid {C["rule"]}; vertical-align:top;">'
+            f'<td style="padding:14px 14px 14px 0; white-space:nowrap;">'
+            f'<span style="display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; '
+            f'font-family:{F["mono"]}; font-size:0.8rem; font-weight:600; color:#fff; background:{_scol(_n)}; '
+            f'border-radius:50%;">{_n}</span></td>'
+            f'<td style="padding:14px 16px 14px 0; font-family:{F["headline"]}; font-size:0.98rem; '
+            f'font-weight:500; color:{C["ink"]}; white-space:nowrap;">{_name}</td>'
+            f'<td style="padding:14px 16px 14px 0; font-family:{F["body"]}; font-size:0.86rem; '
+            f'color:{C["ink_2"]}; line-height:1.45; max-width:300px;">{_desc}</td>'
+            f'<td style="padding:14px 0;">{_cat_html}</td>'
+            f'</tr>'
+        )
+    _head = "".join(
+        f'<th style="padding:0 16px 8px 0; font-family:{F["mono"]}; font-size:9px; color:{C["ink_3"]}; '
+        f'text-transform:uppercase; letter-spacing:0.05em; text-align:left;">{_h}</th>'
+        for _h in ["Stage", "", "What it means", "Categories here"]
+    )
+    mo.Html(
+        f'<div style="margin:52px 0 44px;">'
+        f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
+        f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:8px;">The maturity ladder</div>'
+        f'<h2 style="font-family:{F["headline"]}; font-size:1.6rem; font-weight:500; color:{C["ink"]}; '
+        f'margin:0 0 14px; letter-spacing:-0.015em;">How mature is the open ecosystem in each category?</h2>'
+        f'<p style="font-family:{F["body"]}; font-size:0.95rem; color:{C["ink_2"]}; margin:0 0 20px; line-height:1.6;">'
+        f'Each category sits on a Void \\u2192 Mature ladder, scored on the depth of its <em>fully-open</em> '
+        f'options \\u2014 open-weights or source-available products do not count toward a stage, only toward '
+        f'flagging an openness gap. A category climbs the ladder as more of its open products clear the combined '
+        f'adoption\\u00d7capability bar.</p>'
+        f'<table style="border-collapse:collapse; width:100%;">'
+        f'<thead><tr style="border-bottom:2px solid {C["rule"]};">{_head}</tr></thead>'
+        f'<tbody>{"".join(_rows)}</tbody></table></div>'
     )
     return
 
