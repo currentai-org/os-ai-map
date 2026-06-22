@@ -123,6 +123,9 @@ def data():
         "telemetry_observability": "Tracing and observability for LLM apps.",
         "agent_tools_protocols": "Tools, protocols, and retrieval for agents.",
         "deployment": "Sandboxes, runtimes, and serverless model hosting.",
+        "training_synthetic_datasets": "Corpora for pre-training and post-training models.",
+        "ml_frameworks": "Foundational libraries the rest of the stack is built on.",
+        "edge_hardware": "Boards and chips that run model inference at the edge.",
     }
     # Per-category combined-score weights (adoption, capability), ported from the
     # v2 stack map (slugs identical). Feed the "standout product" gate behind the
@@ -642,21 +645,22 @@ def helpers(C, DATA, F, OPEN, STRAPLINES, VERDICT, mix_counts, mo, vbucket,
         )
 
     def _verdict_spine(cid):
+        # Openness verdict pill, then the open / open-ish / closed dot tally.
         _code, _basis = verdict_for(cid)
         _vlabel, _vckey = VERDICT[_code]
-        _m = mix_counts(cid)
-        _badge = (
+        _verdict = (
             f'<span style="display:inline-block; font-family:{F["mono"]}; font-size:0.72rem; '
             f'letter-spacing:0.05em; text-transform:uppercase; color:white; background:{C[_vckey]}; '
-            f'padding:4px 10px; border-radius:2px; vertical-align:middle;">{_vlabel}</span>'
+            f'padding:4px 10px; border-radius:2px;">{_vlabel}</span>'
         )
+        _m = mix_counts(cid)
         _tally = (
             f'<span style="color:{C["healthy"]};">\\u25cf</span> {_m["open"]} open'
             f'&nbsp;&nbsp;<span style="color:{C["warm"]};">\\u25cf</span> {_m["openish"]} open-ish'
             f'&nbsp;&nbsp;<span style="color:{C["ink_3"]};">\\u25cf</span> {_m["closed"]} closed'
         )
         return (
-            f'<div style="margin:4px 0 10px;">{_badge}'
+            f'<div style="margin:4px 0 12px;">{_verdict}'
             f'<span style="font-family:{F["mono"]}; font-size:0.78rem; color:{C["ink_2"]}; '
             f'margin-left:14px;">{_tally}</span></div>'
         )
@@ -789,6 +793,76 @@ def details_payload(DATA, ORDER, mo):
     mo.Html(
         f'<iframe srcdoc="&lt;!doctype html&gt;&lt;html&gt;&lt;/html&gt;" '
         f'style="display:none;width:0;height:0;border:0;position:absolute" onload="{_boot}"></iframe>'
+    )
+    return
+
+
+@app.cell(hide_code=True)
+def stages_table(C, DATA, F, ORDER, mo):
+    # The maturity ladder: each category's open ecosystem placed on a 0-5 stage.
+    # Only fully-open products count toward a stage (open-ish/closed do not); see
+    # docs/guides/gap-analysis.md. Stages + assignments come straight from the payload.
+    _DEFS = [
+        (0, "Void", "No meaningful open products exist."),
+        (1, "Open Experiments", "Open experiments exist, but capability and adoption are both limited."),
+        (2, "Emerging Alternatives", "Promising open products exist, but important functionality is missing and adoption is limited."),
+        (3, "Viable Alternatives", "Viable open alternatives exist for many use cases."),
+        (4, "Competitive Open Ecosystem", "Open solutions are competitive across a broad range of use cases."),
+        (5, "Mature Open Ecosystem", "Multiple open solutions are mature, widely adopted, and resilient."),
+    ]
+    _by_stage = {}
+    for _cid in ORDER:
+        _sn = (DATA["categories"][_cid].get("stage") or {}).get("num", 0)
+        _by_stage.setdefault(_sn, []).append(DATA["categories"][_cid]["label"])
+
+    def _scol(_n):
+        return C["healthy"] if _n >= 5 else C["accent"] if _n == 4 else C["warm"] if _n >= 2 else C["signal"]
+
+    _rows = []
+    for _n, _name, _desc in _DEFS:
+        _cats = _by_stage.get(_n, [])
+        _cat_html = (
+            "".join(
+                f'<span style="display:inline-block; font-family:{F["body"]}; font-size:0.82rem; '
+                f'color:{C["ink_2"]}; background:{C["paper_2"]}; padding:2px 9px; border-radius:11px; '
+                f'margin:0 5px 5px 0;">{_l}</span>'
+                for _l in _cats
+            )
+            if _cats
+            else f'<span style="font-family:{F["body"]}; font-size:0.82rem; color:{C["ink_3"]}; font-style:italic;">\\u2014</span>'
+        )
+        _rows.append(
+            f'<tr style="border-bottom:1px solid {C["rule"]}; vertical-align:top;">'
+            f'<td style="padding:14px 14px 14px 0; white-space:nowrap;">'
+            f'<span style="display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; '
+            f'font-family:{F["mono"]}; font-size:0.8rem; font-weight:600; color:#fff; background:{_scol(_n)}; '
+            f'border-radius:50%;">{_n}</span></td>'
+            f'<td style="padding:14px 16px 14px 0; font-family:{F["headline"]}; font-size:0.98rem; '
+            f'font-weight:500; color:{C["ink"]}; white-space:nowrap;">{_name}</td>'
+            f'<td style="padding:14px 16px 14px 0; font-family:{F["body"]}; font-size:0.86rem; '
+            f'color:{C["ink_2"]}; line-height:1.45; max-width:300px;">{_desc}</td>'
+            f'<td style="padding:14px 0;">{_cat_html}</td>'
+            f'</tr>'
+        )
+    _head = "".join(
+        f'<th style="padding:0 16px 8px 0; font-family:{F["mono"]}; font-size:9px; color:{C["ink_3"]}; '
+        f'text-transform:uppercase; letter-spacing:0.05em; text-align:left;">{_h}</th>'
+        for _h in ["Stage", "", "What it means", "Categories here"]
+    )
+    mo.Html(
+        f'<div style="margin:52px 0 44px;">'
+        f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
+        f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:8px;">The maturity ladder</div>'
+        f'<h2 style="font-family:{F["headline"]}; font-size:1.6rem; font-weight:500; color:{C["ink"]}; '
+        f'margin:0 0 14px; letter-spacing:-0.015em;">How mature is the open ecosystem in each category?</h2>'
+        f'<p style="font-family:{F["body"]}; font-size:0.95rem; color:{C["ink_2"]}; margin:0 0 20px; line-height:1.6;">'
+        f'Each category sits on a Void \\u2192 Mature ladder, scored on the depth of its <em>fully-open</em> '
+        f'options \\u2014 open-weights or source-available products do not count toward a stage, only toward '
+        f'flagging an openness gap. A category climbs the ladder as more of its open products clear the combined '
+        f'adoption\\u00d7capability bar.</p>'
+        f'<table style="border-collapse:collapse; width:100%;">'
+        f'<thead><tr style="border-bottom:2px solid {C["rule"]};">{_head}</tr></thead>'
+        f'<tbody>{"".join(_rows)}</tbody></table></div>'
     )
     return
 

@@ -14,6 +14,83 @@ ROOT = Path(__file__).resolve().parents[1]
 PRODUCT_KEY_ORDER = ["product", "org", "type", "description",
                      "openness", "adoption", "capability", "version_note"]
 
+# --- Gap analysis (category-level stage + gaps) -----------------------------
+# Mirrors the open / open-ish / closed verdict in docs/openness-class-map.json
+# (the canonical map). Kept inline here so serialize is self-contained; if these
+# diverge from the JSON, the JSON is source of truth.
+_GAP_OPEN = {"open_source", "open", "open_core", "open_hardware"}
+_GAP_OPENISH = {"open_weights", "source_available", "gated", "open_toolchain"}
+_MATURE_MIN = 4.5          # blended adoption/capability score for a product to be "mature"
+_STAGE5_MIN_MATURE = 4     # mature fully-open products needed for Stage 5 (Mature Open Ecosystem)
+_CAPABLE_MIN = 4           # raw capability below which an open option is "not capable yet"
+_STAGE_NAMES = {0: "Void", 1: "Open Experiments", 2: "Emerging Alternatives",
+                3: "Viable Alternatives", 4: "Competitive Open Ecosystem",
+                5: "Mature Open Ecosystem"}
+
+
+def _gap_bucket(cls: str) -> str:
+    if cls in _GAP_OPEN:
+        return "open"
+    if cls in _GAP_OPENISH:
+        return "open-ish"
+    return "closed"
+
+
+def _maturity_score(row: dict, w: dict) -> float:
+    # Per-category linear blend of the 1-5 axes, normalized by the weight sum so the
+    # result stays on the 1-5 scale for any weights (identity when they sum to 1).
+    # Datasets have no capability score, so they are graded on adoption alone.
+    adoption = (row.get("adoption") or {}).get("level") or 0
+    capability = (row.get("capability") or {}).get("score")
+    if capability is None:
+        return float(adoption)
+    wa, wc = w.get("adopt", 0.5), w.get("cap", 0.5)
+    return (wa * adoption + wc * capability) / ((wa + wc) or 1.0)
+
+
+def _stage_and_gaps(rows: list[dict], weights: dict) -> dict:
+    """Assign a maturity stage (0-5) and the set of gaps for one category.
+
+    Strict open-only: only fully-open products count toward maturity/stage;
+    open-ish only serves to detect the openness gap. See docs/guides/gap-analysis.md.
+    """
+    w = weights or {"adopt": 0.5, "cap": 0.5}
+    enr = [(r, _gap_bucket((r.get("openness") or {}).get("class")), _maturity_score(r, w)) for r in rows]
+    open_rows = [(r, s) for r, b, s in enr if b == "open"]
+    mature_open = sum(1 for _, s in open_rows if s >= _MATURE_MIN)
+    best_open = max((s for _, s in open_rows), default=0.0)
+    mature_anywhere = any(s >= _MATURE_MIN for _, _, s in enr)
+
+    if mature_open >= _STAGE5_MIN_MATURE:
+        stage = 5
+    elif mature_open >= 1:
+        stage = 4
+    elif best_open < 2 and not mature_anywhere:
+        stage = 0
+    elif best_open < 3:
+        stage = 1
+    elif best_open < 3.5:
+        stage = 2
+    else:
+        stage = 3
+
+    if stage == 5:
+        gaps: list[str] = []
+    elif stage == 0:
+        gaps = ["void"]
+    elif stage == 4:
+        gaps = ["maturity"]
+    else:
+        gaps = ["maturity"]
+        if mature_anywhere:                  # capable mature options exist, but none fully open
+            gaps.append("openness")
+        else:                                # the open ecosystem itself is immature -> which axis?
+            best = max(open_rows, key=lambda rs: rs[1])[0] if open_rows else None
+            cap = ((best or {}).get("capability") or {}).get("score")
+            gaps.append("capability" if (cap is not None and cap < _CAPABLE_MIN) else "adoption")
+
+    return {"num": stage, "name": _STAGE_NAMES[stage], "gaps": gaps}
+
 
 def _catalog_ids(prods: dict) -> dict:
     """Artifact ids now claimed by a categorized product, keyed by long-tail entry
@@ -108,8 +185,10 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
             org_name = "" if org_slug == "unknown" else orgs[org_slug]["display_name"]
             rows.append(_row(p, org_name, scores[slug]))
             n += 1
+        sg = _stage_and_gaps(rows, cat.get("weights"))
         out_cats[cid] = {"label": cat["display_name"], "arc": cid_arc[cid],
-                         "layer": cid_layer[cid], "products": rows}
+                         "layer": cid_layer[cid], "stage": {"num": sg["num"], "name": sg["name"]},
+                         "gaps": sg["gaps"], "products": rows}
     return {"categories": out_cats, "order": order, "n_total": n,
             "generated": generated, "long_tail": _filter_long_tail(frozen_long_tail, prods)}
 
