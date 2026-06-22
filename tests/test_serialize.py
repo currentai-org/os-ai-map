@@ -1,4 +1,32 @@
-from build.serialize import build_payload
+from build.serialize import build_payload, _stage_and_gaps
+
+
+def _p(cls, adoption, capability):
+    return {"openness": {"class": cls}, "adoption": {"level": adoption},
+            "capability": {"score": capability}}
+
+
+def test_stage5_mature_open_ecosystem():
+    rows = [_p("open_source", 5, 5) for _ in range(4)]  # 4 mature fully-open
+    sg = _stage_and_gaps(rows, {"adopt": 0.5, "cap": 0.5})
+    assert sg["num"] == 5 and sg["gaps"] == []
+
+
+def test_openness_gap_when_mature_options_are_open_ish():
+    rows = [_p("open_weights", 5, 5) for _ in range(3)]  # mature but open-ish, none fully open
+    sg = _stage_and_gaps(rows, {"adopt": 0.5, "cap": 0.5})
+    assert sg["num"] < 5 and "maturity" in sg["gaps"] and "openness" in sg["gaps"]
+
+
+def test_void_when_no_open_option():
+    sg = _stage_and_gaps([_p("closed", 1, 1)], {"adopt": 0.5, "cap": 0.5})
+    assert sg["num"] == 0 and sg["gaps"] == ["void"]
+
+
+def test_capability_gap_when_nothing_mature_and_weak():
+    rows = [_p("open_source", 2, 2)]  # fully open but weak on both axes
+    sg = _stage_and_gaps(rows, {"adopt": 0.5, "cap": 0.5})
+    assert "maturity" in sg["gaps"] and "capability" in sg["gaps"]
 
 
 def _sources():

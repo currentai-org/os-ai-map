@@ -658,6 +658,26 @@ def helpers(C, DATA, F, OPEN, STRAPLINES, VERDICT, mix_counts, mo, vbucket,
             f'margin-left:14px;">{_tally}</span></div>'
         )
 
+    def _stage_gaps_badge(cid):
+        cat = DATA["categories"][cid]
+        st = cat.get("stage") or {}
+        if not st:
+            return ""
+        _n = st.get("num", 0)
+        _sc = C["healthy"] if _n >= 5 else C["accent"] if _n == 4 else C["warm"] if _n >= 2 else C["signal"]
+        _badge = (f'<span style="font-family:{F["mono"]}; font-size:0.72rem; font-weight:500; color:#fff; '
+                  f'background:{_sc}; padding:3px 9px; border-radius:11px;">Stage {_n} \\u00b7 {st.get("name","")}</span>')
+        _chips = "".join(
+            f'<span style="font-family:{F["mono"]}; font-size:0.64rem; text-transform:uppercase; '
+            f'letter-spacing:0.04em; color:{C["ink_2"]}; background:{C["paper_2"]}; border:1px solid {C["rule"]}; '
+            f'padding:2px 8px; border-radius:11px;">{_g} gap</span>'
+            for _g in (cat.get("gaps") or [])
+        )
+        _none = "" if cat.get("gaps") else (f'<span style="font-family:{F["mono"]}; font-size:0.64rem; '
+                f'color:{C["healthy"]};">no gaps</span>')
+        return (f'<div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:0 0 12px;">'
+                f'{_badge}{_chips}{_none}</div>')
+
     def render_section(cid, num):
         cat = DATA["categories"][cid]
         _order = DATA["order"]
@@ -694,6 +714,7 @@ def helpers(C, DATA, F, OPEN, STRAPLINES, VERDICT, mix_counts, mo, vbucket,
             f'<span style="font-family:{F["mono"]}; font-size:0.8rem; color:{C["ink_3"]};">({len(prods)})</span></h2>'
             f'<p style="font-family:{F["body"]}; font-size:0.98rem; font-weight:600; color:{C["ink_2"]}; '
             f'margin:0 0 10px; line-height:1.45;">{_strap}</p>'
+            + _stage_gaps_badge(cid)
             + _verdict_spine(cid)
             + _scoring_callout(cid)
             + f'<table style="border-collapse:collapse; width:100%;">'
