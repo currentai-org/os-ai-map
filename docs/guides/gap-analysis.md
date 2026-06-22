@@ -1,69 +1,125 @@
-# Gap Analysis Guide
+# Gap Analysis
 
-How each category is assigned a **maturity stage (0–5)** and a set of **gaps**, from
-product scores. Computed in `build/serialize.py` (`_stage_and_gaps`) and emitted per
-category into `build/notebook_data.json` as `stage` (`{num, name}`) and `gaps` (a list),
-alongside `layer`. The published notebook renders both as a badge + chips per category.
+Gap analysis assigns every stack-map category two derived attributes, computed
+deterministically from the scores of the products in that category:
 
-This is the MVP, **category-level** collapse of CF's 6-stage maturity ladder (Void →
-Stage 5 / competitive). Per-stage product placement is deliberately out of scope for now.
+- a **maturity stage** (`0`–`5`) — how far the category's *open* ecosystem has progressed
+  toward parity with the best available option, and
+- a **set of gaps** — what is missing for it to advance.
+
+Both are recomputed from source on every build, so they never drift from the underlying
+product scores. They are emitted per category into `build/notebook_data.json` as
+`stage` (`{num, name}`) and `gaps` (a list, possibly empty), alongside `layer`, and the
+published notebook renders them as a stage badge with gap chips.
+
+Stages and gaps are assigned at the **category** level. Placing individual products on the
+ladder, or splitting a category into sub-bands, is a possible later refinement; it does not
+change the model below.
+
+## The model
+
+A category's open ecosystem climbs a ladder from **Void** (no usable open option) to a
+**Mature Open Ecosystem** (several open options are strong, widely used, and redundant). The
+stage is the rung it currently occupies. The gaps name what is keeping it off the next rung.
+
+Openness is treated as an axis **orthogonal** to maturity: a category can have strong,
+widely-adopted options that simply aren't *fully* open (e.g. open-weights rather than
+open-source). That situation is the **openness gap** — the distinction the map exists to
+surface — and it is reported independently of how mature the ecosystem is otherwise.
 
 ## Inputs (per product)
 
-- **openness bucket** from `openness.class` → `open` / `open-ish` / `closed`
-  (the canonical map in `docs/openness-class-map.json`).
-- **adoption** `adoption.level` (1–5), **capability** `capability.score` (1–5, null for datasets).
-- **per-category weights** `weights.adopt` / `weights.cap` (sum to 1).
+- **Openness bucket** — `openness.class` collapsed to `open` / `open-ish` / `closed` via the
+  canonical map in [`openness-class-map.json`](../openness-class-map.json). "Fully open" means
+  the `open` bucket; "open-ish" is partial openness (e.g. open-weights, source-available).
+- **Adoption** — `adoption.level` (1–5).
+- **Capability** — `capability.score` (1–5; may be null for product types where capability is
+  not meaningful, e.g. datasets).
+- **Per-category weights** — `weights.adopt` and `weights.cap` (sum to 1), so each category
+  blends the two axes according to what matters most for that part of the stack.
 
-## Maturity score & "mature"
+## Maturity score and the "mature" bar
 
-Per-category linear formula: `score = w_adopt·adoption + w_cap·capability` (1–5).
-Datasets (no capability) are graded on adoption alone. A product is **mature** when its
-score **≥ 4.5** — a deliberately high bar (near-best on both axes).
+Each product gets a single **maturity score** on a 1–5 scale from a per-category linear blend:
 
-**Only fully-open products count toward maturity/stage** (strict open-only). Open-ish
-products (open-weights / source-available / open-toolchain) do *not* count toward the
-ecosystem's maturity; they only surface the openness gap.
+```
+score = weights.adopt · adoption + weights.cap · capability
+```
 
-## Stage
+Where capability is not meaningful (null), the product is graded on adoption alone. A product
+is **mature** when its score clears a high threshold (a near-best-on-both-axes bar). The bar is
+intentionally demanding: because the map curates the most prominent products in each category,
+a low bar would call almost everything mature.
 
-| | condition |
-|---|---|
-| **5 Mature Open Ecosystem** | ≥ 4 mature fully-open products **and** ≥ 3 total fully-open |
-| **4 Competitive Open Ecosystem** | 1–3 mature fully-open products |
-| **3 Viable Alternatives** | 0 mature; best fully-open score ≥ 3.5 |
-| **2 Emerging Alternatives** | 0 mature; best fully-open score 3–3.5 |
-| **1 Open Experiments** | 0 mature; best fully-open score 2–3 |
-| **0 Void** | no viable open option (best fully-open < 2 and nothing mature anywhere) |
+## Counting rule: open-only
 
-## Gaps (a set per category — extensible)
+Only **fully-open** products count toward a category's maturity and stage. Open-ish products do
+not advance the stage — they are used solely to detect the openness gap. The rationale: the
+ladder measures the health of the genuinely-open ecosystem, and crediting partially-open
+products to it would blur exactly the open-source-vs-open-weights line the map is built to
+expose. Counting also distinguishes depth from a single standout (see Stage 5).
 
-- **Stage 5** → none.
-- **Stage 0** → `void`.
-- **Stage 4** → `maturity` (competitive, but needs more mature open products for depth/resilience).
-- **Stages 1–3** → `maturity` **plus** one diagnostic:
-  - `openness` — a *mature* product exists somewhere (open-ish or closed), but none is fully open
-    (the map's core finding: open-weights ≠ open-source);
-  - else `capability` — the best option's capability < 4 (nothing capable yet);
-  - else `adoption` — capable but under-adopted.
+## Stages
 
-The set is designed to grow: future flags (e.g. *maintenance* / *bus-factor*) slot in once
-those signals are available, without changing the stage logic.
+| Stage | Name | Condition |
+|------:|------|-----------|
+| **5** | Mature Open Ecosystem | enough mature fully-open products **and** enough total fully-open products to be redundant/resilient |
+| **4** | Competitive Open Ecosystem | at least one mature fully-open product, but not yet enough for depth |
+| **3** | Viable Alternatives | no mature fully-open product, but the best fully-open option is strong |
+| **2** | Emerging Alternatives | no mature fully-open product; the best fully-open option is promising but limited |
+| **1** | Open Experiments | fully-open options exist but are weak on both axes |
+| **0** | Void | no usable open option exists (and nothing is mature anywhere) |
 
-## Current result (421 products)
+The exact count and score cutoffs that separate the stages are policy parameters (below),
+chosen so the ladder discriminates rather than bunching categories at one rung.
 
-| Stage | Categories | Gaps |
-|---|---|---|
-| 5 Mature | ml_frameworks, orchestration_agents | — |
-| 4 Competitive | inference_code, finetuning_code, evaluation_code, benchmark_eval_data, ui_api, agent_tools_protocols, deployment | maturity |
-| 3 Viable | base_pretrained, telemetry_observability, edge_hardware | maturity, openness |
-| 2 Emerging | training_synthetic_datasets | maturity, adoption |
-| 1 Open Experiments | finetuned_chat | maturity, openness |
+## Gaps
 
-The story: open developer **tooling** is mature; the open frontier struggles are in
-**models, data, and hardware**, which carry openness/adoption gaps.
+Gaps are a **set** (zero or more) per category, so a category can carry more than one. They are
+derived from the same metrics as the stage:
 
-## Tunable parameters
+- **`void`** — no usable open option at all.
+- **`capability`** — the best open option isn't capable enough to be useful.
+- **`adoption`** — a capable open option exists but is under-adopted.
+- **`maturity`** — open options exist and at least one may be mature, but the ecosystem lacks
+  the depth/redundancy of a mature ecosystem (too few mature fully-open products).
+- **`openness`** — capable, adopted options exist, but the mature ones are not fully open
+  (open-ish or closed). This is the orthogonal flag; it can co-occur with the others.
 
-`_MATURE_MIN` (4.5), `_STAGE5_MIN_MATURE` (4), `_STAGE5_MIN_TOTAL` (3), and the stage-1–3
-score bands live at the top of the gap-analysis block in `build/serialize.py`.
+A fully mature ecosystem carries no gaps.
+
+The set is **extensible**: new gap types (for example *maintenance* or *bus-factor* risk, once
+those signals are tracked) can be added without changing the staging logic — they are simply
+additional flags computed per category.
+
+## Worked example (illustrative)
+
+A hypothetical category whose strongest, most-adopted products are all open-*weights* (not
+open-source), with only weak fully-open options behind them: it has no mature *fully-open*
+product, so it sits low on the ladder (Viable / Emerging) and carries a **maturity** gap; and
+because capable, adopted options do exist but aren't fully open, it also carries an
+**openness** gap. Contrast a category with several strong, widely-used open-source libraries:
+multiple mature fully-open products → Stage 5, no gaps.
+
+## Policy parameters
+
+The thresholds are deliberate, tunable choices rather than fixed law. They live as named
+constants at the top of the gap-analysis block in `build/serialize.py`:
+
+- the **mature** score threshold,
+- the counts of mature and total fully-open products required for **Stage 5**,
+- the best-fully-open score bands that separate **Stages 1–3**.
+
+Adjusting them shifts how demanding each rung is; they should be reviewed when the scoring
+rubric or the curation density changes materially.
+
+## Where it lives
+
+- **Computed** in `build/serialize.py` (`_stage_and_gaps`), from the per-product scores in
+  `sources/scores/` and the per-category `weights` in `sources/categories/`.
+- **Emitted** into `build/notebook_data.json` per category (`stage`, `gaps`).
+- **Displayed** in the published notebook (stage badge + gap chips) and available to any
+  downstream consumer reading the notebook payload.
+
+For the current assignments, read the live notebook payload — they are regenerated on every
+build and are intentionally not duplicated here.
