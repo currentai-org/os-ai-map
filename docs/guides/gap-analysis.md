@@ -120,8 +120,9 @@ rubric or the curation density changes materially.
 - **Computed** in `build/serialize.py` (`_stage_and_gaps`), from the per-product scores in
   `sources/scores/` and the per-category `weights` in `sources/categories/`.
 - **Emitted** into `build/notebook_data.json` per category (`stage`, `gaps`).
-- **Displayed** in the published notebook (stage badge + gap chips) and available to any
-  downstream consumer reading the notebook payload.
+- **Displayed** in the published notebook as a maturity-ladder table (each category placed on
+  its stage). The per-category gap set is carried in the payload for downstream consumers
+  rather than shown inline.
 
 For the current assignments, read the live notebook payload — they are regenerated on every
 build and are intentionally not duplicated here.

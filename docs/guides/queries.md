@@ -91,10 +91,10 @@ GROUP BY pc.collection_name, c.display_name
 
 ## Gap semantics
 
-- [`docs/catalog-gaps.md`](../catalog-gaps.md) = coverage/ingestion backlog (missing orgs/repos).
+- Coverage/ingestion gaps (missing orgs/repos) are tracked in GitHub issues.
 - `scores.ossd_coverage` = per-org oss-directory match rates.
 
 ## Pointers
 
 - Inventory + schedules: [`warehouse/models/README.md`](../../warehouse/models/README.md)
-- Coverage backlog: [`docs/catalog-gaps.md`](../catalog-gaps.md)
+- Coverage backlog: tracked in GitHub issues

@@ -55,7 +55,7 @@ If you detect a request that requires write access, you must:
    - Keep heavy queries in memoized/parameterized cells when possible.
 
 5. **Report results with limitations**
-   - If a requested dataset is missing, point to `docs/catalog-gaps.md`.
+   - If a requested dataset is missing, flag it as a coverage gap (tracked in GitHub issues).
    - Summarize what you can validate vs what needs OSO-side remediation.
 
 ## Quick Reference

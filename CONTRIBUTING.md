@@ -45,7 +45,7 @@ Invariants (validated in CI):
    ```yaml
    name: <slug>
    display_name: <Display Name>
-   type: model | software | dataset
+   type: model | software | dataset | hardware
    description: <one paragraph: what it is, why it matters>
    github:
    - url: https://github.com/org/repo
@@ -95,6 +95,7 @@ Each score file has three axes. **Every non-null value needs at least one
   - models: `open_source`, `open_weights`, `restricted`, `closed`
   - software: `open_source`, `source_available`, `open_core`, `closed`
   - datasets: `open`, `gated`, `documented_only`, `closed`
+  - hardware: `open_hardware`, `open_toolchain`, `documented`, `restricted`, `closed`
 - **adoption** (`level:` 1-5, `signal_type:` one of `active_users`,
   `usage_volume`, `reported_traction`, `stars_fallback`, `unknown`): real usage
   (downloads, active users, deployments) beats stars. `stars_fallback` can
