@@ -1,0 +1,38 @@
+product: memryx-mx3
+openness:
+  class: documented
+  score: 3
+  components: schematics:no;toolchain:open runtime (MxAccl) + utils + driver mirror, closed NeuralCompiler;datasheets:public;blobs:proprietary
+    silicon;retail:Amazon/Mouser ~$149
+  confidence: high
+  note: Proprietary dataflow silicon with public datasheets, retail availability, and several open-source
+    runtime/driver repos, though the compiler core is closed.
+  sources:
+  - url: https://developer.memryx.com/specs/M.2_datasheet.html
+    shows: 'MX3 M.2 datasheet: chip count, TOPS, data formats, power'
+    accessed: '2026-06-22'
+  - url: https://github.com/memryx/MxAccl
+    shows: open-source MemryX C++ runtime library
+    accessed: '2026-06-22'
+adoption:
+  level: 3
+  reach: niche
+  signal_type: reported_traction
+  confidence: medium
+  note: Low-cost retail availability (Amazon, Mouser), independent reviews, a 2025 industry award, and
+    an active GitHub org point to growing but emerging traction.
+  sources:
+  - url: https://www.tomshardware.com/tech-industry/artificial-intelligence/memryx-launches-usd149-mx3-m-2-ai-accelerator-module-capable-of-24-tops-compute-power
+    shows: retail launch at $149 with broad distribution
+    accessed: '2026-06-22'
+capability:
+  score: 3
+  basis: feature_matrix
+  value: 6 TOPS/chip, up to 24 TOPS (4-chip M.2); 4/8/16-bit weights + BFloat16; ~42M params per module
+  confidence: high
+  note: Moderate throughput with flexible precision, but on-chip parameter capacity caps deployable model
+    size.
+  sources:
+  - url: https://developer.memryx.com/specs/M.2_datasheet.html
+    shows: per-chip/module TOPS, supported data formats, parameter capacity
+    accessed: '2026-06-22'

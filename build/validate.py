@@ -25,6 +25,7 @@ OPENNESS_CLASSES = {
     "model": {"open_source", "open_weights", "restricted", "closed"},
     "software": {"open_source", "source_available", "open_core", "closed"},
     "dataset": {"open", "gated", "documented_only", "closed"},
+    "hardware": {"open_hardware", "open_toolchain", "documented", "restricted"},
 }
 SIGNAL_TYPES = {"active_users", "usage_volume", "reported_traction", "stars_fallback", "unknown"}
 LAYERS = {"product_ux", "model_components", "infrastructure"}

@@ -339,16 +339,16 @@ def stack_overview(C, DATA, F, ORDER, STACK_DESC, VERDICT, mix_counts, mo,
 def openness_distribution(C, DATA, F, mo):
     import collections as _collections
     def _ccol(_cls):
-        if _cls in ("open_source", "open"):
+        if _cls in ("open_source", "open", "open_hardware"):
             return C["healthy"]
-        if _cls in ("open_weights", "open_core"):
+        if _cls in ("open_weights", "open_core", "open_toolchain"):
             return C["warm"]
-        if _cls in ("restricted", "source_available", "gated"):
+        if _cls in ("restricted", "source_available", "gated", "documented"):
             return C["signal"]
         return C["ink_3"]
-    _CLS_ORDER = ["open_source", "open", "open_core", "open_weights", "source_available", "gated", "restricted", "documented_only", "closed"]
+    _CLS_ORDER = ["open_source", "open", "open_hardware", "open_core", "open_weights", "open_toolchain", "source_available", "gated", "documented", "restricted", "documented_only", "closed"]
     _bars = []
-    for _tk, _tl in [("model", "Models"), ("dataset", "Datasets"), ("software", "Software")]:
+    for _tk, _tl in [("model", "Models"), ("dataset", "Datasets"), ("software", "Software"), ("hardware", "Hardware")]:
         _cnt = _collections.Counter()
         for _cat in DATA["categories"].values():
             for _p in _cat["products"]:
@@ -563,6 +563,7 @@ def helpers(C, DATA, F, OPEN, STRAPLINES, VERDICT, mix_counts, mo, vbucket,
             "model": "the Model Openness Framework (weights, data, code, license)",
             "software": "OSI-class license tests",
             "dataset": "data-openness (access, license, and documentation)",
+            "hardware": "open-hardware tests (design files, toolchain, and availability)",
         }.get(_dominant_type(cid), "OSI-class license tests")
 
     def _cap_summary(cid):
