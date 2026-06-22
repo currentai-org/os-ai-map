@@ -2,7 +2,8 @@
   "categories": {
     "base_pretrained": {
       "label": "Base / pretrained models",
-      "arc": "Models",
+      "arc": "Model components",
+      "layer": "model_components",
       "products": [
         {
           "product": "Llama 3.1",
@@ -2524,7 +2525,8 @@
     },
     "finetuned_chat": {
       "label": "Fine-tuned / chat models",
-      "arc": "Models",
+      "arc": "Model components",
+      "layer": "model_components",
       "products": [
         {
           "product": "Qwen3-Coder",
@@ -4815,7 +4817,8 @@
     },
     "inference_code": {
       "label": "Inference code",
-      "arc": "Model code & data",
+      "arc": "Model components",
+      "layer": "model_components",
       "products": [
         {
           "product": "llama.cpp",
@@ -5900,7 +5903,8 @@
     },
     "finetuning_code": {
       "label": "Fine-tuning code",
-      "arc": "Model code & data",
+      "arc": "Model components",
+      "layer": "model_components",
       "products": [
         {
           "product": "TRL",
@@ -7334,7 +7338,8 @@
     },
     "evaluation_code": {
       "label": "Evaluation code",
-      "arc": "Model code & data",
+      "arc": "Model components",
+      "layer": "model_components",
       "products": [
         {
           "product": "SWE-bench",
@@ -8664,12 +8669,121 @@
             ]
           },
           "version_note": "ARCHIVED/retired (announced 2025-03-13); HF redirected users to the OpenEvals hub. HF Space was Apache-2.0; backend used lm-evaluation-harness (v1) and lighteval (v2). Listed for historical significance."
+        },
+        {
+          "product": "Compar:IA",
+          "org": "DINUM / beta.gouv.fr (French Government)",
+          "type": "software",
+          "description": "Compar:IA is an open-source LLM comparison 'arena' created by the French Government (betagouv / DINUM with the Ministry of Culture). Users blind-compare responses from two anonymous models, vote on the better answer, then see the models' identities and environmental impact, raising awareness of model pluralism, bias, and carbon cost. Its core mission is to build large non-English (predominantly French) human-preference and alignment datasets; it is self-hostable.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI; verified LICENSE body);source:public;self-hostable",
+            "confidence": "high",
+            "note": "Permissive OSI license with full public source code.",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/betagouv/ComparIA/develop/LICENSE",
+                "shows": "LICENSE body 'Apache License, Version 2.0'",
+                "accessed": "2026-06-22"
+              },
+              {
+                "url": "https://github.com/betagouv/ComparIA",
+                "shows": "Apache-2.0 license badge, full source, betagouv ownership",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "niche",
+            "signal_type": "stars_fallback",
+            "confidence": "high",
+            "note": "74 GitHub stars (capped at 3 per stars-fallback rule); the live service has collected 600k+ prompts and 250k+ votes.",
+            "sources": [
+              {
+                "url": "https://github.com/betagouv/ComparIA",
+                "shows": "74 stars, 16 forks",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "Blind pairwise model arena across 30+ models with preference voting, leaderboards, EcoLogits environmental tracking, multilingual deployment, and open dataset export.",
+            "confidence": "high",
+            "note": "Broad arena feature set comparable to LMArena plus environmental tracking and dataset generation.",
+            "sources": [
+              {
+                "url": "https://github.com/betagouv/ComparIA",
+                "shows": "Feature list: model comparison, voting, EcoLogits, dataset publishing, self-hosting",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Permissive OSI license with full public source code."
+        },
+        {
+          "product": "SimpleAudit",
+          "org": "Simula Research Laboratory",
+          "type": "software",
+          "description": "SimpleAudit is a lightweight, local-first framework for multilingual auditing and red-teaming of AI systems via adversarial probing. Developed by Simula / SimulaMet (Norway) with the Norwegian Directorate of Health, it runs with open models locally (no API required) and ships scenario packs for safety, RAG, healthcare, and epistemic (broken-premise) testing. It is a verified Digital Public Good.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI; verified LICENSE body, copyright Simula);source:public;Python",
+            "confidence": "high",
+            "note": "Permissive OSI (MIT) license with full public source.",
+            "sources": [
+              {
+                "url": "https://raw.githubusercontent.com/kelkalot/simpleaudit/main/LICENSE",
+                "shows": "LICENSE body 'MIT License', copyright Simula Research Laboratory",
+                "accessed": "2026-06-22"
+              },
+              {
+                "url": "https://www.digitalpublicgoods.net/r/simpleaudit",
+                "shows": "DPG profile confirming multilingual safety red-teaming framework",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "niche",
+            "signal_type": "stars_fallback",
+            "confidence": "medium",
+            "note": "19 GitHub stars, 9 forks - early-stage; no PyPI download signal found.",
+            "sources": [
+              {
+                "url": "https://github.com/kelkalot/simpleaudit",
+                "shows": "19 stars, 9 forks",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "value": "Multilingual adversarial probing with local/open-model support; scenario packs (safety, RAG, healthcare) plus a broken-premise evaluator.",
+            "confidence": "high",
+            "note": "Focused but functional red-teaming toolkit with a distinctive broken-premise mode.",
+            "sources": [
+              {
+                "url": "https://github.com/kelkalot/simpleaudit",
+                "shows": "README: adversarial probing, local-first, scenario packs, broken-premise runner",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Permissive OSI (MIT) license with full public source."
         }
       ]
     },
     "benchmark_eval_data": {
       "label": "Benchmark / eval datasets",
-      "arc": "Model code & data",
+      "arc": "Model components",
+      "layer": "model_components",
       "products": [
         {
           "product": "HumanEval",
@@ -9873,12 +9987,1052 @@
             ]
           },
           "version_note": "The 2,500 public questions include answers under MIT, but the HF dataset is access-gated (accept conditions, no-redistribution + canary string) and a separate private held-out set detects overfitting -> scored gated (a license-weighted reading could argue open). ~35k monthly downloads."
+        },
+        {
+          "product": "Compar:IA Datasets",
+          "org": "Ministere de la Culture (France)",
+          "type": "dataset",
+          "description": "The Compar:IA datasets are human-preference and conversation data released from the French Government's Compar:IA LLM arena, published on Hugging Face by the Ministere de la Culture (SNUM). The collection includes comparia-votes (150,000+ conversation-level pairwise preference annotations), comparia-conversations, and comparia-reactions. The data is ~89% French and is intended for finetuning, alignment, and benchmarking of multilingual LLMs.",
+          "openness": {
+            "score": 3,
+            "class": "gated",
+            "components": "license:Etalab-2.0(permissive French-gov open license);gated:HF contact-info agreement required;dataset card present",
+            "confidence": "high",
+            "note": "Open license and documented, but gated access requiring agreement caps it at gated.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/ministere-culture/comparia-votes",
+                "shows": "License Etalab 2.0; gated access requiring contact-info agreement; dataset card present",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "niche",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "comparia-votes ~155 and comparia-conversations ~202 downloads last month on Hugging Face.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/ministere-culture/comparia-votes",
+                "shows": "155 downloads last month",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": null,
+            "basis": "n/a",
+            "value": null,
+            "confidence": "high",
+            "note": "a dataset is not 'capable'",
+            "sources": []
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Open license and documented, but gated access requiring agreement caps it at gated."
+        }
+      ]
+    },
+    "training_synthetic_datasets": {
+      "label": "Training & synthetic datasets",
+      "arc": "Model components",
+      "layer": "model_components",
+      "products": [
+        {
+          "product": "FineWeb",
+          "org": "Hugging Face",
+          "type": "dataset",
+          "description": "FineWeb is a large-scale English pretraining dataset of over 18.5 trillion tokens of cleaned and deduplicated text derived from 96 CommonCrawl snapshots (2013-2024), released by Hugging Face's FineWeb team. It is distributed as Parquet across ~114 date-based subsets. It was built to provide an open, high-quality web corpus that outperforms other public web datasets for LLM training, and is a widely cited reference in the open-data pretraining community.",
+          "openness": {
+            "score": 5,
+            "class": "open",
+            "components": "license:ODC-BY;gated:false;dataset_card:present;format:parquet",
+            "confidence": "high",
+            "note": "Permissive ODC-BY license with ungated download and a full dataset card.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/HuggingFaceFW/fineweb",
+                "shows": "Dataset card present, ODC-BY license, public ungated download",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "100k-1M",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "327,873 monthly downloads on Hugging Face.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/datasets/HuggingFaceFW/fineweb",
+                "shows": "downloads field = 327,873 monthly",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": null,
+            "basis": "n/a",
+            "value": null,
+            "confidence": "high",
+            "note": "a dataset is not 'capable'",
+            "sources": []
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Permissive ODC-BY license with ungated download and a full dataset card."
+        },
+        {
+          "product": "FineWeb-Edu",
+          "org": "Hugging Face",
+          "type": "dataset",
+          "description": "FineWeb-Edu is an educational subset of FineWeb (~1.3 trillion tokens) created by Hugging Face's FineWeb team. It was produced by filtering FineWeb with an educational-quality classifier trained on Llama-3-70B annotations, retaining text scored as highly educational. It is intended to improve LLM performance on knowledge- and reasoning-heavy benchmarks relative to unfiltered web data.",
+          "openness": {
+            "score": 5,
+            "class": "open",
+            "components": "license:ODC-BY;gated:false;dataset_card:present;format:parquet",
+            "confidence": "high",
+            "note": "Permissive ODC-BY license with ungated download and full dataset card.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/HuggingFaceFW/fineweb-edu",
+                "shows": "Dataset card present, ODC-BY license, public ungated download",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "100k-1M",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "411,911 monthly downloads on Hugging Face.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/datasets/HuggingFaceFW/fineweb-edu",
+                "shows": "downloads field = 411,911 monthly",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": null,
+            "basis": "n/a",
+            "value": null,
+            "confidence": "high",
+            "note": "a dataset is not 'capable'",
+            "sources": []
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Permissive ODC-BY license with ungated download and full dataset card."
+        },
+        {
+          "product": "FineWeb-2",
+          "org": "Hugging Face",
+          "type": "dataset",
+          "description": "FineWeb-2 is the multilingual successor to FineWeb, covering over 1,000 languages and writing systems with more than 1 trillion tokens of filtered and deduplicated CommonCrawl text, released by Hugging Face's FineWeb team. Each language is processed through a per-language pipeline with deduplication and quality filtering. It extends the open-data pretraining work beyond English to support multilingual LLM training.",
+          "openness": {
+            "score": 5,
+            "class": "open",
+            "components": "license:ODC-BY;gated:false;dataset_card:present;languages:1000+",
+            "confidence": "high",
+            "note": "Permissive ODC-BY license, ungated, with a dataset card spanning 1000+ languages.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/HuggingFaceFW/fineweb-2",
+                "shows": "Dataset page exists on public hub, ODC-BY, 1000+ languages",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "10k-100k",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "94,143 monthly downloads on Hugging Face.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/datasets/HuggingFaceFW/fineweb-2",
+                "shows": "downloads field = 94,143 monthly",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": null,
+            "basis": "n/a",
+            "value": null,
+            "confidence": "high",
+            "note": "a dataset is not 'capable'",
+            "sources": []
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Permissive ODC-BY license, ungated, with a dataset card spanning 1000+ languages."
+        },
+        {
+          "product": "DCLM-baseline",
+          "org": "DataComp-LM (ML Foundations)",
+          "type": "dataset",
+          "description": "DCLM-baseline-1.0 is a curated CommonCrawl-derived pretraining dataset of about 4 trillion tokens across 3 billion documents (~7.2TB), produced by the DataComp-LM (ML Foundations) project. It was built using heuristic cleaning, Bloom-filter deduplication, and fastText model-based quality filtering, and is the reference dataset for the DCLM benchmark. It is positioned as a research dataset that outperforms prior open web datasets when training 7B models.",
+          "openness": {
+            "score": 5,
+            "class": "open",
+            "components": "license:CC-BY-4.0;gated:false;dataset_card:present;github:mlfoundations/dclm",
+            "confidence": "high",
+            "note": "Permissive CC-BY-4.0 license, ungated download, with open code repo and dataset card.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/mlfoundations/dclm-baseline-1.0",
+                "shows": "Dataset card, CC-BY-4.0 license, ungated public download, GitHub link",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "100k-1M",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "542,120 monthly downloads on Hugging Face.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/datasets/mlfoundations/dclm-baseline-1.0",
+                "shows": "downloads field = 542,120 monthly",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": null,
+            "basis": "n/a",
+            "value": null,
+            "confidence": "high",
+            "note": "a dataset is not 'capable'",
+            "sources": []
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Permissive CC-BY-4.0 license, ungated download, with open code repo and dataset card."
+        },
+        {
+          "product": "RefinedWeb",
+          "org": "Technology Innovation Institute",
+          "type": "dataset",
+          "description": "Falcon RefinedWeb is a large English web dataset (~968M rows, ~2.8TB) built by the Technology Innovation Institute (TII) via stringent filtering and exact-plus-fuzzy deduplication of CommonCrawl. The public release is an extract of the larger corpus used to train the Falcon-7B/40B models. It demonstrated that rigorously filtered web data alone can match or beat curated corpora for LLM pretraining.",
+          "openness": {
+            "score": 5,
+            "class": "open",
+            "components": "license:ODC-BY-1.0;gated:false;dataset_card:present;note:public_extract",
+            "confidence": "high",
+            "note": "Permissive ODC-BY 1.0 license, ungated download, with a dataset card (a public extract of the full corpus).",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/tiiuae/falcon-refinedweb",
+                "shows": "Dataset card, ODC-By 1.0 license, ungated public download",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "10k-100k",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "11,850 monthly downloads on Hugging Face.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/datasets/tiiuae/falcon-refinedweb",
+                "shows": "downloads field = 11,850 monthly",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": null,
+            "basis": "n/a",
+            "value": null,
+            "confidence": "high",
+            "note": "a dataset is not 'capable'",
+            "sources": []
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Permissive ODC-BY 1.0 license, ungated download, with a dataset card (a public extract of the full corpus)."
+        },
+        {
+          "product": "Dolma",
+          "org": "Allen Institute for AI",
+          "type": "dataset",
+          "description": "Dolma is an open pretraining corpus of roughly 3 trillion tokens drawn from Common Crawl web text, academic publications, code, books, and encyclopedic material. It was created by the Allen Institute for AI (AI2) and used to train the OLMo family of models. The release includes the corpus plus an open-source toolkit for replicating and curating the data.",
+          "openness": {
+            "score": 5,
+            "class": "open",
+            "components": "license:ODC-BY;ungated:yes;dataset_card:yes;code:apache-2.0-toolkit",
+            "confidence": "high",
+            "note": "Permissively licensed (ODC-BY), ungated download with a full dataset card and replication toolkit.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/allenai/dolma",
+                "shows": "ODC-BY license, ungated access, dataset card, ~3T tokens",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<10k",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "HF reports 4,074 monthly downloads.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/allenai/dolma",
+                "shows": "4,074 monthly downloads",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": null,
+            "basis": "n/a",
+            "value": null,
+            "confidence": "high",
+            "note": "a dataset is not 'capable'",
+            "sources": []
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Permissively licensed (ODC-BY), ungated download with a full dataset card and replication toolkit."
+        },
+        {
+          "product": "RedPajama-Data-v2",
+          "org": "Together AI",
+          "type": "dataset",
+          "description": "RedPajama-Data-v2 is a large open web dataset built from Common Crawl, containing over 100B text documents with around 30B documents annotated with quality signals and ~20B deduplicated documents (tens of trillions of tokens). It was created by Together Computer to support open language-model pretraining. The processing scripts are Apache-2.0, while the underlying text follows Common Crawl's Terms of Use.",
+          "openness": {
+            "score": 5,
+            "class": "open",
+            "components": "license:CommonCrawl-ToU+Apache-2.0(code);ungated:yes;dataset_card:yes",
+            "confidence": "high",
+            "note": "Ungated with a full dataset card; redistributable per Common Crawl ToU with Apache-2.0 processing code.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/togethercomputer/RedPajama-Data-V2",
+                "shows": "Common Crawl ToU + Apache-2.0 code license, ungated access, dataset card",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<10k",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "HF reports 7,258 monthly downloads.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/togethercomputer/RedPajama-Data-V2",
+                "shows": "7,258 monthly downloads",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": null,
+            "basis": "n/a",
+            "value": null,
+            "confidence": "high",
+            "note": "a dataset is not 'capable'",
+            "sources": []
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Ungated with a full dataset card; redistributable per Common Crawl ToU with Apache-2.0 processing code."
+        },
+        {
+          "product": "The Stack v2",
+          "org": "BigCode Project",
+          "type": "dataset",
+          "description": "The Stack v2 is a large source-code dataset of 3.28B unique files (67.53TB uncompressed) from 104.2M GitHub repositories spanning 658 programming languages, sourced via Software Heritage. It was created by the BigCode project and used to train the StarCoder2 models. Files carry permissive licenses, but access requires accepting terms of use tied to Software Heritage principles.",
+          "openness": {
+            "score": 3,
+            "class": "gated",
+            "components": "license:permissive(SPDX);gated:terms-acceptance+contact-info;dataset_card:yes",
+            "confidence": "high",
+            "note": "Requires acceptance of terms and sharing contact info before download, so access is gated.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/bigcode/the-stack-v2",
+                "shows": "gated access requiring terms acceptance and contact-info sharing, permissive licenses, dataset card",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "10k-100k",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "HF reports 23,823 monthly downloads.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/bigcode/the-stack-v2",
+                "shows": "23,823 monthly downloads",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": null,
+            "basis": "n/a",
+            "value": null,
+            "confidence": "high",
+            "note": "a dataset is not 'capable'",
+            "sources": []
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Requires acceptance of terms and sharing contact info before download, so access is gated."
+        },
+        {
+          "product": "C4",
+          "org": "Allen Institute for AI",
+          "type": "dataset",
+          "description": "C4 (Colossal Clean Crawled Corpus) is a cleaned version of Common Crawl created for the T5 paper, hosted on Hugging Face by AI2. It offers multiple variants, including the cleaned English split (~305GB) and the multilingual mC4 covering 108 languages (~9.7TB). It is one of the most widely used English pretraining corpora.",
+          "openness": {
+            "score": 5,
+            "class": "open",
+            "components": "license:ODC-BY;ungated:yes;dataset_card:yes",
+            "confidence": "high",
+            "note": "Permissively licensed (ODC-BY) and ungated with a full dataset card.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/allenai/c4",
+                "shows": "ODC-BY license, ungated access, dataset card, size variants",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "100k-1M",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "HF reports 831,302 monthly downloads.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/allenai/c4",
+                "shows": "831,302 monthly downloads",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": null,
+            "basis": "n/a",
+            "value": null,
+            "confidence": "high",
+            "note": "a dataset is not 'capable'",
+            "sources": []
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Permissively licensed (ODC-BY) and ungated with a full dataset card."
+        },
+        {
+          "product": "Common Corpus",
+          "org": "PleIAs",
+          "type": "dataset",
+          "description": "Common Corpus is a multilingual pretraining dataset of roughly 2.27 trillion tokens containing only uncopyrighted or openly licensed content across 367+ languages. It was assembled by PleIAs with partners including the AI Alliance, organized into six curated collections (public-domain books, government documents, academic content, code, semantic data, and web text) with document-level provenance and toxicity filtering. It is one of the largest openly licensed text corpora for LLM training.",
+          "openness": {
+            "score": 5,
+            "class": "open",
+            "components": "license:open(uncopyrighted/freely-licensed only);ungated:yes;dataset_card:yes",
+            "confidence": "high",
+            "note": "Ungated with a full dataset card and built exclusively from uncopyrighted or openly licensed sources.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/PleIAs/common_corpus",
+                "shows": "open-license-only content, ungated access, dataset card, 2.27T tokens",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "10k-100k",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "HF reports 57,926 monthly downloads.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/PleIAs/common_corpus",
+                "shows": "57,926 monthly downloads",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": null,
+            "basis": "n/a",
+            "value": null,
+            "confidence": "high",
+            "note": "a dataset is not 'capable'",
+            "sources": []
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Ungated with a full dataset card and built exclusively from uncopyrighted or openly licensed sources."
+        },
+        {
+          "product": "CulturaX",
+          "org": "University of Oregon NLP (UONLP)",
+          "type": "dataset",
+          "description": "CulturaX is a multilingual web corpus for LLM pretraining containing 6.3 trillion tokens across 167 languages, combined and cleaned from mC4 and OSCAR. It was created by the University of Oregon NLP group (UONLP) and applies a multi-stage pipeline of language identification, URL filtering, metric-based cleaning, document refinement, and MinHash fuzzy deduplication. Distributed as ~16TB of parquet.",
+          "openness": {
+            "score": 3,
+            "class": "gated",
+            "components": "license:follows mC4 + OSCAR-2301 terms;gated:auto(contact-info agreement);card:present",
+            "confidence": "high",
+            "note": "Dataset card is rich but downloads require agreeing to share contact information (auto gate).",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/uonlp/CulturaX",
+                "shows": "Card with 6.3T tokens/167 languages, mC4+OSCAR license inheritance, gated access requiring contact-info agreement",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "10k-100k",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "Hugging Face reports 18,449 downloads in the last month.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/datasets/uonlp/CulturaX",
+                "shows": "downloads = 18449",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": null,
+            "basis": "n/a",
+            "value": null,
+            "confidence": "high",
+            "note": "a dataset is not 'capable'",
+            "sources": []
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Dataset card is rich but downloads require agreeing to share contact information (auto gate)."
+        },
+        {
+          "product": "MADLAD-400",
+          "org": "Allen Institute for AI",
+          "type": "dataset",
+          "description": "MADLAD-400 is a document-level multilingual web corpus derived from Common Crawl, covering 419 languages, released by the Allen Institute for AI (AI2). It ships in a noisy (minimally filtered) variant and a clean (quality-filtered) variant, totaling roughly 38TB, and was designed to improve coverage of low-resource languages. It underpins the MADLAD-400 machine-translation models.",
+          "openness": {
+            "score": 5,
+            "class": "open",
+            "components": "license:odc-by(API tag; card cites CC-BY-4.0);gated:false;card:present",
+            "confidence": "high",
+            "note": "Ungated with a permissive open-data license and a complete dataset card.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/datasets/allenai/MADLAD-400",
+                "shows": "gated = false, license = odc-by",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "10k-100k",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "Hugging Face reports 41,696 downloads in the last month.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/datasets/allenai/MADLAD-400",
+                "shows": "downloads = 41696",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": null,
+            "basis": "n/a",
+            "value": null,
+            "confidence": "high",
+            "note": "a dataset is not 'capable'",
+            "sources": []
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Ungated with a permissive open-data license and a complete dataset card."
+        },
+        {
+          "product": "Aya Collection",
+          "org": "Cohere",
+          "type": "dataset",
+          "description": "The Aya Collection is a large multilingual instruction-tuning dataset spanning 114+ languages, built from templated and translated subsets for tasks like classification, summarization, and translation. It was created by Cohere Labs (formerly Cohere For AI) as part of the Aya open-science initiative. The collection holds hundreds of millions of examples across 64 subsets.",
+          "openness": {
+            "score": 5,
+            "class": "open",
+            "components": "license:apache-2.0;gated:false;card:present",
+            "confidence": "high",
+            "note": "Ungated, Apache-2.0 licensed, with a complete dataset card.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/CohereLabs/aya_collection",
+                "shows": "Card describing 114+ languages, templated/translated subsets, Apache-2.0, ungated",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "10k-100k",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "Hugging Face reports 36,400 downloads in the last month.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/datasets/CohereLabs/aya_collection",
+                "shows": "downloads = 36400",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": null,
+            "basis": "n/a",
+            "value": null,
+            "confidence": "high",
+            "note": "a dataset is not 'capable'",
+            "sources": []
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Ungated, Apache-2.0 licensed, with a complete dataset card."
+        },
+        {
+          "product": "OSCAR-2301",
+          "org": "OSCAR Project",
+          "type": "dataset",
+          "description": "OSCAR-2301 is a multilingual web corpus extracted and filtered from the late-2022 Common Crawl snapshot, covering 151 languages and totaling ~3.57TB of raw unannotated text for LLM pretraining. It is published by the OSCAR project (oscar-corpus) and includes KenLM-based content quality metrics and deduplication hashes. The corpus content is from Common Crawl with no copyright held by the authors; metadata is CC0-1.0.",
+          "openness": {
+            "score": 3,
+            "class": "gated",
+            "components": "license:cc0-1.0(metadata);gated:manual(login + terms acceptance);card notes access temporarily suspended",
+            "confidence": "high",
+            "note": "Manually gated and the card states access is temporarily suspended pending clarification.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/oscar-corpus/OSCAR-2301",
+                "shows": "Card describing 151 languages/~3.57TB, CC0 metadata, gated access with a notice suspending access",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<10k",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "Hugging Face reports 1,345 downloads in the last month (depressed by the access suspension).",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/datasets/oscar-corpus/OSCAR-2301",
+                "shows": "downloads = 1345",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": null,
+            "basis": "n/a",
+            "value": null,
+            "confidence": "high",
+            "note": "a dataset is not 'capable'",
+            "sources": []
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Manually gated and the card states access is temporarily suspended pending clarification."
+        },
+        {
+          "product": "Cosmopedia",
+          "org": "Hugging Face",
+          "type": "dataset",
+          "description": "Cosmopedia is a large-scale synthetic dataset of over 31 million textbooks, blog posts, stories, and educational articles (~25 billion tokens) generated with Mixtral-8x7B-Instruct using seed samples from web data, Stanford courses, OpenStax, Khan Academy, and WikiHow. It was created by Hugging Face's Smol Models Research team and described as the largest open synthetic dataset of its kind at release. It is a reference corpus for synthetic-data pretraining recipes.",
+          "openness": {
+            "score": 5,
+            "class": "open",
+            "components": "license:apache-2.0;ungated;dataset card present;parquet downloadable",
+            "confidence": "high",
+            "note": "Permissive Apache-2.0 license, ungated, full dataset card and downloadable parquet files.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/HuggingFaceTB/cosmopedia",
+                "shows": "Apache-2.0 license, 31M rows, full dataset card",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "10k-100k",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "About 18.3k downloads in the last month per HF.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/datasets/HuggingFaceTB/cosmopedia",
+                "shows": "downloads=18336",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": null,
+            "basis": "n/a",
+            "value": null,
+            "confidence": "high",
+            "note": "a dataset is not 'capable'",
+            "sources": []
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Permissive Apache-2.0 license, ungated, full dataset card and downloadable parquet files."
+        },
+        {
+          "product": "OpenThoughts-114k",
+          "org": "Open Thoughts",
+          "type": "dataset",
+          "description": "OpenThoughts-114k is a synthetic reasoning dataset of roughly 114,000 examples spanning math, science, code, and puzzles, built by curating problem sets and generating reasoning traces with DeepSeek-R1 followed by correctness verification. It was created by the Open Thoughts team and documented in arXiv 2506.04178. It was used to train the OpenThinker-7B and OpenThinker-32B models.",
+          "openness": {
+            "score": 5,
+            "class": "open",
+            "components": "license:apache-2.0;ungated;dataset card present;GitHub repo + paper",
+            "confidence": "high",
+            "note": "Apache-2.0 licensed, ungated, with dataset card, code repo, and paper.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/open-thoughts/OpenThoughts-114k",
+                "shows": "Apache-2.0 license, dataset card, GitHub and arXiv links",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "10k-100k",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "About 83k downloads in the last month per HF.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/datasets/open-thoughts/OpenThoughts-114k",
+                "shows": "downloads=83018",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": null,
+            "basis": "n/a",
+            "value": null,
+            "confidence": "high",
+            "note": "a dataset is not 'capable'",
+            "sources": []
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Apache-2.0 licensed, ungated, with dataset card, code repo, and paper."
+        },
+        {
+          "product": "WildChat-1M",
+          "org": "Allen Institute for AI",
+          "type": "dataset",
+          "description": "WildChat-1M is a corpus of around 838k real user-chatbot conversations collected by the Allen Institute for AI (Ai2) by offering free access to GPT-3.5/GPT-4 in exchange for consenting to data collection. It spans 74 languages and includes metadata such as timestamps, hashed IPs, geographic region, model used, and moderation scores. It is a widely cited source of naturalistic instruction and chat data.",
+          "openness": {
+            "score": 5,
+            "class": "open",
+            "components": "license:odc-by;gated:false per HF API;dataset card present;parquet downloadable",
+            "confidence": "medium",
+            "note": "ODC-BY licensed and reported ungated by the HF API, though Ai2 datasets sometimes show an access notice.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/datasets/allenai/WildChat-1M",
+                "shows": "gated=false, license=odc-by",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "10k-100k",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "About 28.8k downloads in the last month per HF.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/datasets/allenai/WildChat-1M",
+                "shows": "downloads=28779",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": null,
+            "basis": "n/a",
+            "value": null,
+            "confidence": "high",
+            "note": "a dataset is not 'capable'",
+            "sources": []
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. ODC-BY licensed and reported ungated by the HF API, though Ai2 datasets sometimes show an access notice."
+        },
+        {
+          "product": "Tulu 3 SFT Mixture",
+          "org": "Allen Institute for AI",
+          "type": "dataset",
+          "description": "The Tulu 3 SFT Mixture is a supervised fine-tuning dataset of roughly 939k samples combining 18 data sources, created by the Allen Institute for AI (Ai2) for its Tulu 3 post-training recipe. It covers conversation, instruction-following, math, code, safety, and multilingual data across 70+ languages. The mixture is ODC-BY-1.0 licensed while incorporating subsets under varying licenses. It underpins the open Tulu 3 model family.",
+          "openness": {
+            "score": 5,
+            "class": "open",
+            "components": "license:odc-by(mixed subset licenses incl CC-BY-NC);ungated;dataset card present",
+            "confidence": "high",
+            "note": "ODC-BY licensed and ungated with a full dataset card, though some subsets carry non-commercial licenses.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/allenai/tulu-3-sft-mixture",
+                "shows": "ODC-BY-1.0 license, ~939k rows, dataset card",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "10k-100k",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "About 19k downloads in the last month per HF.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/api/datasets/allenai/tulu-3-sft-mixture",
+                "shows": "downloads=18959",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": null,
+            "basis": "n/a",
+            "value": null,
+            "confidence": "high",
+            "note": "a dataset is not 'capable'",
+            "sources": []
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. ODC-BY licensed and ungated with a full dataset card, though some subsets carry non-commercial licenses."
+        },
+        {
+          "product": "OpenHermes 2.5",
+          "org": "Teknium",
+          "type": "dataset",
+          "description": "OpenHermes 2.5 is a large synthetic instruction-following dataset of ~1M conversational examples compiled and generated primarily from GPT-4 outputs across math, code, roleplay, and general-knowledge tasks. Created by Teknium as an expansion of OpenHermes 1, it was used to train the popular OpenHermes 2.5 fine-tunes and is widely used as a base SFT mix for open instruction-tuned models.",
+          "openness": {
+            "score": 5,
+            "class": "open",
+            "components": "license:not-clearly-stated-on-card(commonly cited as permissive);card:present;ungated:yes;format:JSON/Parquet;rows:~1M",
+            "confidence": "medium",
+            "note": "Publicly downloadable and ungated with a full card, though an explicit license string is not stated on the card.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/teknium/OpenHermes-2.5",
+                "shows": "Public ungated dataset card, ~1M rows, synthetic/GPT-4 tags",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": null,
+            "reach": null,
+            "signal_type": "usage_volume",
+            "confidence": "low",
+            "note": "Download count did not render via fetch, so a usage figure could not be confirmed from the primary source.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/teknium/OpenHermes-2.5",
+                "shows": "Dataset page accessed but monthly download number not visible in fetched content",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": null,
+            "basis": "n/a",
+            "value": null,
+            "confidence": "high",
+            "note": "a dataset is not 'capable'",
+            "sources": []
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Publicly downloadable and ungated with a full card, though an explicit license string is not stated on the card."
+        },
+        {
+          "product": "PersonaHub",
+          "org": "Tencent AI Lab",
+          "type": "dataset",
+          "description": "PersonaHub is a persona-driven synthetic data resource from Tencent AI Lab, backed by the paper 'Scaling Synthetic Data Creation with 1,000,000,000 Personas' (arXiv 2406.20094). The repo releases a large set of distilled personas (200K preview plus ~370M elite personas) plus seed synthetic samples such as 50K math problems, 50K logical-reasoning problems, and 50K instructions. It is a method and dataset for generating diverse, scalable synthetic instruction and reasoning data.",
+          "openness": {
+            "score": 5,
+            "class": "open",
+            "components": "license:cc-by-nc-sa-4.0(non-commercial);card:present;ungated:yes;scope:~370M personas+seed samples",
+            "confidence": "high",
+            "note": "Publicly downloadable and ungated under CC-BY-NC-SA-4.0, which permits redistribution for non-commercial research.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/proj-persona/PersonaHub",
+                "shows": "CC-BY-NC-SA-4.0 license, ungated card, persona counts and paper reference",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<10k",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "The dataset page reports 6,572 downloads in the last month.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/proj-persona/PersonaHub",
+                "shows": "Downloads last month: 6,572",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": null,
+            "basis": "n/a",
+            "value": null,
+            "confidence": "high",
+            "note": "a dataset is not 'capable'",
+            "sources": []
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Publicly downloadable and ungated under CC-BY-NC-SA-4.0, which permits redistribution for non-commercial research."
+        },
+        {
+          "product": "UltraFeedback",
+          "org": "OpenBMB",
+          "type": "dataset",
+          "description": "UltraFeedback is a large-scale GPT-4-annotated preference dataset comprising ~64K prompts, ~256K responses, and ~380K fine-grained feedback annotations across instruction-following, truthfulness, honesty, and helpfulness. Prompts are drawn from six public datasets with responses from 17 different models. Built by OpenBMB, it is a foundational dataset for training reward and critic models and underpins many open RLHF/DPO pipelines.",
+          "openness": {
+            "score": 5,
+            "class": "open",
+            "components": "license:mit;card:present;ungated:yes;rows:63,967;size:940MB",
+            "confidence": "high",
+            "note": "Publicly downloadable and ungated under the permissive MIT license.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/openbmb/UltraFeedback",
+                "shows": "MIT license, ungated card, 63,967 rows / 940 MB",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<10k",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "The dataset page reports 4,657 downloads last month.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/openbmb/UltraFeedback",
+                "shows": "Downloads last month: 4,657",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": null,
+            "basis": "n/a",
+            "value": null,
+            "confidence": "high",
+            "note": "a dataset is not 'capable'",
+            "sources": []
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Publicly downloadable and ungated under the permissive MIT license."
+        },
+        {
+          "product": "HH-RLHF (Anthropic Helpful/Harmless)",
+          "org": "Anthropic",
+          "type": "dataset",
+          "description": "HH-RLHF is Anthropic's human preference dataset for RLHF, containing ~169K rows of chosen-vs-rejected response pairs on helpfulness and harmlessness, plus red-teaming dialogues. Released alongside Anthropic's papers on training helpful and harmless assistants, it is intended for preference modeling rather than supervised dialogue training. It is one of the most influential early open RLHF preference datasets.",
+          "openness": {
+            "score": 5,
+            "class": "open",
+            "components": "license:mit;card:present;ungated:yes;rows:169,352;size:94.7MB",
+            "confidence": "high",
+            "note": "Publicly downloadable and ungated under the permissive MIT license.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/Anthropic/hh-rlhf",
+                "shows": "MIT license, ungated card, 169,352 rows, 94.7 MB",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "10k-100k",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "The dataset page reports 30,331 downloads in the last month.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/Anthropic/hh-rlhf",
+                "shows": "Downloads last month: 30,331",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": null,
+            "basis": "n/a",
+            "value": null,
+            "confidence": "high",
+            "note": "a dataset is not 'capable'",
+            "sources": []
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Publicly downloadable and ungated under the permissive MIT license."
+        },
+        {
+          "product": "SYNTH",
+          "org": "PleIAs",
+          "type": "dataset",
+          "description": "SYNTH is a large-scale synthetic dataset from PleIAs (released with the AI Alliance) designed for training small reasoning models end-to-end. It contains tens of millions of synthetic samples amplifying content from tens of thousands of Wikipedia articles, Wikibooks, and internal documents, spanning exercise types like arithmetic, creative writing, RAG, and information extraction. Samples include reasoning traces and seed attribution, and roughly 20% covers non-English European languages.",
+          "openness": {
+            "score": 5,
+            "class": "open",
+            "components": "license:CC-BY-4.0(permissive);ungated;dataset card present",
+            "confidence": "high",
+            "note": "Permissively licensed, ungated dataset with a documented card.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/PleIAs/SYNTH",
+                "shows": "License CC-BY-4.0, not gated, dataset card present",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "niche",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "~9.5k downloads in the last month on Hugging Face (near the 10k threshold; recently released).",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/PleIAs/SYNTH",
+                "shows": "9,488 downloads last month",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": null,
+            "basis": "n/a",
+            "value": null,
+            "confidence": "high",
+            "note": "a dataset is not 'capable'",
+            "sources": []
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Permissively licensed, ungated dataset with a documented card."
         }
       ]
     },
     "orchestration_agents": {
       "label": "Orchestration & agents",
-      "arc": "System / Product-UX",
+      "arc": "Product / UX",
+      "layer": "product_ux",
       "products": [
         {
           "product": "Aider",
@@ -12323,12 +13477,126 @@
             ]
           },
           "version_note": "Apache-2.0 (verified LICENSE body). EARLY/ALPHA: latest PyPI 0.3a0 (15 Jun 2026), announced ~21 May 2026, runs on Datasette 1.0a33. ~96 stars, 7 tags. Verified 2026-06-19."
+        },
+        {
+          "product": "OpenFn",
+          "org": "Open Function Group (OpenFn)",
+          "type": "software",
+          "description": "OpenFn (Open Function Group) is an open-source workflow automation and data-integration platform used by governments and NGOs to orchestrate service workflows across legacy systems, web APIs, databases, and increasingly LLMs/AI tools. Its flagship product, Lightning, is built in Elixir/Phoenix and ships with 70+ adaptors. It is a verified Digital Public Good and Digital Square Global Good, maintained by a public benefit corporation since 2014.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:LGPL-3.0/GPL-3.0(OSI copyleft);source:public;no feature-gated core per maintainers",
+            "confidence": "high",
+            "note": "Fully open-source DPG with copyleft licensing and no feature-gated core.",
+            "sources": [
+              {
+                "url": "https://github.com/OpenFn/lightning",
+                "shows": "OpenFn/lightning, dual-licensed LGPL-3.0/GPL-3.0, fully open source, verified DPG",
+                "accessed": "2026-06-22"
+              },
+              {
+                "url": "https://www.openfn.org/about",
+                "shows": "Described as the leading DPG for workflow automation, FOSS since 2014",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "niche",
+            "signal_type": "stars_fallback",
+            "confidence": "medium",
+            "note": "286 GitHub stars; reported use by 70+ NGOs/governments across 40+ countries.",
+            "sources": [
+              {
+                "url": "https://github.com/OpenFn/lightning",
+                "shows": "286 GitHub stars",
+                "accessed": "2026-06-22"
+              },
+              {
+                "url": "https://www.openfn.org/about",
+                "shows": "used by 70+ NGOs and government ministries across 40+ countries",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "End-to-end workflow automation: visual builder, 70+ integration adaptors, AI/LLM orchestration, run monitoring, alerting, per-project access management.",
+            "confidence": "high",
+            "note": "Broad integration platform spanning authoring, many connectors, and operational monitoring.",
+            "sources": [
+              {
+                "url": "https://docs.openfn.org/documentation",
+                "shows": "70+ adaptors and AI-orchestration / data-integration capabilities",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Fully open-source DPG with copyleft licensing and no feature-gated core."
+        },
+        {
+          "product": "Hexabot",
+          "org": "Hexastack",
+          "type": "software",
+          "description": "Hexabot is an AI chatbot / agent builder by the company Hexastack for creating multi-channel, multilingual conversational agents, deployed across North and East Africa. It offers a visual flow editor, a plugin/extension system, and integrations with LLMs (ChatGPT, Gemini, Mistral, Ollama, Claude) plus channels like WhatsApp, Telegram, Slack, and Facebook. v3 combines workflows, actions, agents, and conversational channels in one runtime.",
+          "openness": {
+            "score": 2,
+            "class": "source_available",
+            "components": "license:FCL-1.0-ALv2 (Fair Core License, NOT OSI; converts to Apache-2.0 two years after each release; competing/hosted commercial use restricted until conversion). Earlier v1/v2 were AGPL-3.0.",
+            "confidence": "high",
+            "note": "Fair Core License is a delayed-open / fair-code model, so the current core is source-available rather than open source.",
+            "sources": [
+              {
+                "url": "https://github.com/Hexastack/Hexabot",
+                "shows": "Licensed under FCL-1.0-ALv2; GitHub reports license as 'Other'",
+                "accessed": "2026-06-22"
+              },
+              {
+                "url": "https://hexabot.ai/",
+                "shows": "Fair Core License: converts to Apache-2.0 after 2 years; competing commercial use restricted",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "niche",
+            "signal_type": "stars_fallback",
+            "confidence": "medium",
+            "note": "974 GitHub stars and 218 forks; no package download figures available.",
+            "sources": [
+              {
+                "url": "https://github.com/Hexastack/Hexabot",
+                "shows": "974 stars, 218 forks",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "Visual chatbot flow editor, multilingual support, plugin marketplace, multi-channel connectors (WhatsApp/Telegram/Slack/Facebook), LLM+NLU integration, and (v3) agentic workflows with MCP support.",
+            "confidence": "high",
+            "note": "Broad conversational-AI platform spanning authoring, channels, LLM integration, and agentic workflows.",
+            "sources": [
+              {
+                "url": "https://github.com/Hexastack/Hexabot",
+                "shows": "agentic workflows, actions, MCP support, multi-channel, admin UI and REST API",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Fair Core License is a delayed-open / fair-code model, so the current core is source-available rather than open source."
         }
       ]
     },
     "ui_api": {
       "label": "UI & API",
-      "arc": "System / Product-UX",
+      "arc": "Product / UX",
+      "layer": "product_ux",
       "products": [
         {
           "product": "Azure AI Model Inference",
@@ -14551,7 +15819,8 @@
     },
     "telemetry_observability": {
       "label": "Telemetry & observability",
-      "arc": "System / Product-UX",
+      "arc": "Product / UX",
+      "layer": "product_ux",
       "products": [
         {
           "product": "Phoenix",
@@ -15950,7 +17219,8 @@
     },
     "agent_tools_protocols": {
       "label": "Agent tools & protocols",
-      "arc": "System / Product-UX",
+      "arc": "Product / UX",
+      "layer": "product_ux",
       "products": [
         {
           "product": "Model Context Protocol",
@@ -17582,9 +18852,1105 @@
         }
       ]
     },
+    "ml_frameworks": {
+      "label": "Core ML frameworks & libraries",
+      "arc": "Infrastructure",
+      "layer": "infrastructure",
+      "products": [
+        {
+          "product": "PyTorch",
+          "org": "PyTorch Foundation (Linux Foundation)",
+          "type": "software",
+          "description": "PyTorch is a Python library for tensor computation with strong GPU acceleration and deep neural networks built on a tape-based autograd system. Originally developed at Meta, it is now governed by the PyTorch Foundation under the Linux Foundation. It is one of the two dominant deep learning frameworks and underpins most modern research and production model training.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:BSD-3-Clause(OSI);source:public;no feature-gated core",
+            "confidence": "high",
+            "note": "BSD 3-Clause license with multiple contributor copyright lines; full source public.",
+            "sources": [
+              {
+                "url": "https://github.com/pytorch/pytorch/blob/main/LICENSE",
+                "shows": "BSD 3-Clause license body with Facebook/contributor copyright lines",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 5,
+            "reach": "88M+/mo",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "88.6M PyPI downloads in the last 30 days.",
+            "sources": [
+              {
+                "url": "https://pepy.tech/projects/torch",
+                "shows": "88,636,352 downloads in last 30 days",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 5,
+            "basis": "feature_matrix",
+            "value": "Foundational deep learning framework: GPU-accelerated tensors, dynamic autograd, neural network primitives, distributed training.",
+            "confidence": "high",
+            "note": "Defines the model-training layer alongside TensorFlow.",
+            "sources": [
+              {
+                "url": "https://github.com/pytorch/pytorch",
+                "shows": "README describes tensor computation with GPU acceleration and tape-based autograd",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. BSD 3-Clause license with multiple contributor copyright lines; full source public."
+        },
+        {
+          "product": "TensorFlow",
+          "org": "Google",
+          "type": "software",
+          "description": "TensorFlow is an end-to-end open-source platform for machine learning, offering stable Python and C++ APIs for building and deploying ML models across CPUs, GPUs, and TPUs. It was developed by Google Brain and remains maintained by Google with broad community involvement. It is one of the two dominant deep learning frameworks and powers large-scale research and production deployments.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public;no feature-gated core",
+            "confidence": "high",
+            "note": "Apache-2.0 licensed with full public source.",
+            "sources": [
+              {
+                "url": "https://github.com/tensorflow/tensorflow",
+                "shows": "Repo shows Apache License 2.0 and full source",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 4,
+            "reach": "21M+/mo",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "21.9M PyPI downloads in the last 30 days.",
+            "sources": [
+              {
+                "url": "https://pepy.tech/projects/tensorflow",
+                "shows": "21,890,544 downloads in last 30 days",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 5,
+            "basis": "feature_matrix",
+            "value": "Foundational ML platform: numerical computation graph engine, neural network training, multi-device (CPU/GPU/TPU) and edge deployment.",
+            "confidence": "high",
+            "note": "Defines the model-training layer alongside PyTorch.",
+            "sources": [
+              {
+                "url": "https://github.com/tensorflow/tensorflow",
+                "shows": "README describes end-to-end ML platform with stable Python/C++ APIs",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Apache-2.0 licensed with full public source."
+        },
+        {
+          "product": "JAX",
+          "org": "Google",
+          "type": "software",
+          "description": "JAX is a Python library for accelerator-oriented array computation and program transformation, combining NumPy-style arrays with composable function transforms (automatic differentiation, JIT compilation via XLA, and auto-vectorization). It is developed by the jax-ml organization (originating at Google) and is widely used for high-performance numerical computing and large-scale ML research.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public;no feature-gated core",
+            "confidence": "high",
+            "note": "Apache-2.0 licensed with full public source.",
+            "sources": [
+              {
+                "url": "https://github.com/jax-ml/jax",
+                "shows": "Repo shows Apache-2.0 license and full source",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 4,
+            "reach": "19M+/mo",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "19.3M PyPI downloads in the last 30 days.",
+            "sources": [
+              {
+                "url": "https://pepy.tech/projects/jax",
+                "shows": "19,260,713 downloads in last 30 days",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 5,
+            "basis": "feature_matrix",
+            "value": "Composable function transforms over array code: autodiff, XLA JIT compilation for GPU/TPU, vectorization; foundation of a major ML ecosystem.",
+            "confidence": "high",
+            "note": "Defines the functional/accelerated-compute layer for ML research.",
+            "sources": [
+              {
+                "url": "https://github.com/jax-ml/jax",
+                "shows": "README describes accelerator-oriented array computation and program transformation",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Apache-2.0 licensed with full public source."
+        },
+        {
+          "product": "Keras",
+          "org": "Google",
+          "type": "software",
+          "description": "Keras is a high-level deep learning framework billed as 'Deep Learning for humans'; Keras 3 is multi-backend, running on JAX, TensorFlow, PyTorch, and OpenVINO. It is maintained by the keras-team organization (closely tied to Google) and reports use by nearly three million developers. It provides an accessible API for building and training models while letting users choose the underlying backend.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public;no feature-gated core",
+            "confidence": "high",
+            "note": "Apache-2.0 licensed with full public source.",
+            "sources": [
+              {
+                "url": "https://github.com/keras-team/keras",
+                "shows": "Repo shows Apache-2.0 license and full source",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 4,
+            "reach": "21M+/mo",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "21.7M PyPI downloads in the last 30 days.",
+            "sources": [
+              {
+                "url": "https://pepy.tech/projects/keras",
+                "shows": "21.7M downloads in last 30 days",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "High-level multi-backend deep learning API for building/training models over JAX, TensorFlow, PyTorch, and OpenVINO.",
+            "confidence": "high",
+            "note": "Central API layer but sits atop lower-level frameworks rather than defining the compute layer.",
+            "sources": [
+              {
+                "url": "https://github.com/keras-team/keras",
+                "shows": "README describes multi-backend deep learning framework",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Apache-2.0 licensed with full public source."
+        },
+        {
+          "product": "Flax",
+          "org": "Google DeepMind",
+          "type": "software",
+          "description": "Flax is a neural network library and ecosystem for JAX designed for flexibility, providing network components (Linear, Conv, BatchNorm, attention) plus training utilities like checkpointing and serialization. It is developed and maintained by Google DeepMind as an open-source project. Its newer Flax NNX API emphasizes Python reference semantics for building networks with standard Python objects.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public;no feature-gated core",
+            "confidence": "high",
+            "note": "Apache-2.0 licensed with full public source.",
+            "sources": [
+              {
+                "url": "https://github.com/google/flax",
+                "shows": "Repo displays Apache-2.0 license and full source",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 4,
+            "reach": "5M+/mo",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "5.3M PyPI downloads in the last 30 days, just above the 5M Level-4 threshold.",
+            "sources": [
+              {
+                "url": "https://pepy.tech/projects/flax",
+                "shows": "5,302,085 downloads in last 30 days",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "Neural network library on top of JAX: layers, attention, training utilities, Flax NNX API.",
+            "confidence": "high",
+            "note": "Key NN layer for the JAX ecosystem but built atop JAX rather than foundational itself.",
+            "sources": [
+              {
+                "url": "https://github.com/google/flax",
+                "shows": "README describes neural network library and ecosystem for JAX",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Apache-2.0 licensed with full public source."
+        },
+        {
+          "product": "Transformers",
+          "org": "Hugging Face",
+          "type": "software",
+          "description": "Transformers is a model-definition framework for state-of-the-art machine learning across text, vision, audio, and multimodal models, supporting both inference and training. It is maintained by Hugging Face and provides a unified API to load and run over a million pretrained model checkpoints from the Hugging Face Hub. It is a foundational library underpinning much of the modern open-source ML and LLM ecosystem.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public;no feature-gated core",
+            "confidence": "high",
+            "note": "LICENSE file is the standard, unmodified Apache 2.0 text.",
+            "sources": [
+              {
+                "url": "https://github.com/huggingface/transformers/blob/main/LICENSE",
+                "shows": "Standard Apache License 2.0 full text",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 5,
+            "reach": "150M+/month",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "PyPI last_month downloads of 150,245,308 exceed the 50M+ Level 5 threshold.",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/transformers/recent",
+                "shows": "last_month downloads = 150,245,308",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 5,
+            "basis": "feature_matrix",
+            "value": "Unified framework for defining, loading, fine-tuning, and running 1M+ pretrained models across text, vision, audio, and multimodal tasks.",
+            "confidence": "high",
+            "note": "Centralizes model definitions across training frameworks and inference engines; foundational to the ecosystem.",
+            "sources": [
+              {
+                "url": "https://github.com/huggingface/transformers",
+                "shows": "Describes multimodal model-definition framework, 1M+ checkpoints",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. LICENSE file is the standard, unmodified Apache 2.0 text."
+        },
+        {
+          "product": "Datasets",
+          "org": "Hugging Face",
+          "type": "software",
+          "description": "Datasets is a lightweight Hugging Face library providing one-line dataloaders for thousands of public datasets and efficient data preprocessing for ML workflows. It supports CSV, JSON, Parquet, audio, image, and video formats with streaming, memory-mapping, and multi-framework integration (PyTorch, TensorFlow, JAX). It is widely used to feed training and evaluation pipelines.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public;no feature-gated core",
+            "confidence": "high",
+            "note": "LICENSE file is the standard, unmodified Apache 2.0 text.",
+            "sources": [
+              {
+                "url": "https://github.com/huggingface/datasets/blob/main/LICENSE",
+                "shows": "Standard Apache License 2.0 full text",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 5,
+            "reach": "120M+/month",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "PyPI last_month downloads of 120,316,114 exceed the 50M+ Level 5 threshold.",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/datasets/recent",
+                "shows": "last_month downloads = 120,316,114",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "Data loading and preprocessing library: one-line dataset loading from the Hub plus fast manipulation of multi-format, multi-modal data with streaming.",
+            "confidence": "high",
+            "note": "Broad and central to data pipelines but scoped to data handling rather than modeling.",
+            "sources": [
+              {
+                "url": "https://github.com/huggingface/datasets",
+                "shows": "Describes one-line dataloaders and efficient preprocessing",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. LICENSE file is the standard, unmodified Apache 2.0 text."
+        },
+        {
+          "product": "Diffusers",
+          "org": "Hugging Face",
+          "type": "software",
+          "description": "Diffusers is a PyTorch library from Hugging Face providing state-of-the-art pretrained diffusion models for generating images, audio, and 3D molecular structures. It offers ready-to-use inference pipelines, interchangeable noise schedulers, and pretrained models that serve as building blocks for custom diffusion systems. It is the de facto open-source library for working with diffusion-based generative models.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public;no feature-gated core",
+            "confidence": "high",
+            "note": "LICENSE file is the standard, unmodified Apache 2.0 text.",
+            "sources": [
+              {
+                "url": "https://github.com/huggingface/diffusers/blob/main/LICENSE",
+                "shows": "Standard Apache License 2.0 full text",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 4,
+            "reach": "7M+/month",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "PyPI last_month downloads of 7,406,705 fall in the 5M-50M Level 4 band.",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/diffusers/recent",
+                "shows": "last_month downloads = 7,406,705",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "Diffusion-model toolkit: inference pipelines, swappable schedulers, and pretrained models for image, audio, and 3D generation.",
+            "confidence": "high",
+            "note": "Deep but domain-specific to diffusion/generative models rather than general-purpose ML.",
+            "sources": [
+              {
+                "url": "https://github.com/huggingface/diffusers",
+                "shows": "Describes pipelines, schedulers, and pretrained diffusion models",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. LICENSE file is the standard, unmodified Apache 2.0 text."
+        },
+        {
+          "product": "Accelerate",
+          "org": "Hugging Face",
+          "type": "software",
+          "description": "Accelerate is a Hugging Face PyTorch library that lets users run raw PyTorch training scripts across CPUs, multi-GPU, and TPU configurations with mixed precision, by adding only a few lines of code. It abstracts the boilerplate of distributed setup and device placement while leaving the training loop under the user's control, and provides a CLI for configuration. It is widely used as the distributed-training backbone for other Hugging Face libraries.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public;no feature-gated core",
+            "confidence": "high",
+            "note": "LICENSE file is the standard, unmodified Apache 2.0 text.",
+            "sources": [
+              {
+                "url": "https://github.com/huggingface/accelerate/blob/main/LICENSE",
+                "shows": "Standard Apache License 2.0 full text",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 4,
+            "reach": "23M+/month",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "PyPI last_month downloads of 23,028,484 fall in the 5M-50M Level 4 band.",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/accelerate/recent",
+                "shows": "last_month downloads = 23,028,484",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "Distributed-training abstraction: launches and runs PyTorch training on CPU/GPU/multi-GPU/TPU with mixed precision via minimal code changes.",
+            "confidence": "high",
+            "note": "Central infrastructure for distributed training but scoped to orchestration, not modeling.",
+            "sources": [
+              {
+                "url": "https://github.com/huggingface/accelerate",
+                "shows": "Describes few-line distributed/mixed-precision training across devices",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. LICENSE file is the standard, unmodified Apache 2.0 text."
+        },
+        {
+          "product": "Gradio",
+          "org": "Hugging Face",
+          "type": "software",
+          "description": "Gradio is an open-source Python package for quickly building web demos and applications for machine learning models, APIs, or arbitrary Python functions without JavaScript, CSS, or web-hosting knowledge. It provides the Interface, Blocks, and ChatInterface classes plus built-in public sharing of demos. Originally an independent project, it is now maintained under Hugging Face after the company acquired Gradio.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public;no feature-gated core",
+            "confidence": "high",
+            "note": "LICENSE file is the standard, unmodified Apache 2.0 text.",
+            "sources": [
+              {
+                "url": "https://github.com/gradio-app/gradio/blob/main/LICENSE",
+                "shows": "Standard Apache License 2.0 full text",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 4,
+            "reach": "12M+/month",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "PyPI last_month downloads of 12,691,392 fall in the 5M-50M Level 4 band.",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/gradio/recent",
+                "shows": "last_month downloads = 12,691,392",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "UI/demo framework: build shareable web interfaces and chatbots for ML models and Python functions with no frontend code.",
+            "confidence": "high",
+            "note": "Broad and widely used for demos and apps but scoped to the interface layer, not model training.",
+            "sources": [
+              {
+                "url": "https://github.com/gradio-app/gradio",
+                "shows": "Describes Interface/Blocks/ChatInterface and public sharing",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. LICENSE file is the standard, unmodified Apache 2.0 text."
+        },
+        {
+          "product": "Safetensors",
+          "org": "Hugging Face",
+          "type": "software",
+          "description": "Safetensors is a file format and library for safely storing and loading tensors, designed as a secure alternative to Python pickle that avoids arbitrary code execution and supports fast zero-copy loading. It is implemented in Rust with Python bindings and works across PyTorch, TensorFlow, and other frameworks. Maintained by Hugging Face, it has become the default weight format for models on the Hugging Face Hub.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public;no feature-gated core",
+            "confidence": "high",
+            "note": "LICENSE body is verbatim Apache License 2.0; full Rust/Python source public.",
+            "sources": [
+              {
+                "url": "https://github.com/huggingface/safetensors/blob/main/LICENSE",
+                "shows": "LICENSE file is the verbatim Apache License Version 2.0",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 5,
+            "reach": "78M+/month",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "PyPI last-month downloads of 78,250,137 exceed the 50M+ threshold.",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/safetensors/recent",
+                "shows": "last_month = 78,250,137 PyPI downloads",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "Secure, zero-copy tensor serialization format and library used cross-framework.",
+            "confidence": "high",
+            "note": "Narrow scope (storage format) but central as the default Hub weight format.",
+            "sources": [
+              {
+                "url": "https://github.com/huggingface/safetensors",
+                "shows": "README describes safe, zero-copy, multi-framework tensor format",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. LICENSE body is verbatim Apache License 2.0; full Rust/Python source public."
+        },
+        {
+          "product": "Tokenizers",
+          "org": "Hugging Face",
+          "type": "software",
+          "description": "Tokenizers is a library providing fast implementations of modern tokenization algorithms including Byte-Pair Encoding, WordPiece, and Unigram. It is written in Rust with bindings for Python, Node.js, and Ruby, and emphasizes high-throughput training and inference. Maintained by Hugging Face, it underpins tokenization in the Transformers library and many production NLP pipelines.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public;no feature-gated core",
+            "confidence": "high",
+            "note": "LICENSE body is verbatim Apache License 2.0; full Rust/Python source public.",
+            "sources": [
+              {
+                "url": "https://github.com/huggingface/tokenizers/blob/main/LICENSE",
+                "shows": "LICENSE file is the verbatim Apache License Version 2.0",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 5,
+            "reach": "189M+/month",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "PyPI last-month downloads of 189,770,639 exceed the 50M+ threshold.",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/tokenizers/recent",
+                "shows": "last_month = 189,770,639 PyPI downloads",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 5,
+            "basis": "feature_matrix",
+            "value": "Foundational, fast multi-algorithm tokenization with training, normalization, and pre/post-processing.",
+            "confidence": "high",
+            "note": "Broad feature set and central dependency of the Transformers ecosystem.",
+            "sources": [
+              {
+                "url": "https://github.com/huggingface/tokenizers",
+                "shows": "README lists BPE/WordPiece/Unigram, normalization, multi-language bindings",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. LICENSE body is verbatim Apache License 2.0; full Rust/Python source public."
+        },
+        {
+          "product": "huggingface_hub",
+          "org": "Hugging Face",
+          "type": "software",
+          "description": "huggingface_hub is the official Python client for the Hugging Face Hub, enabling programmatic downloading and uploading of files, repository management, running inference, and search across models, datasets, and Spaces. It serves as the integration layer that other ML libraries use to host and retrieve content on the Hub. It is maintained by Hugging Face.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public;no feature-gated core",
+            "confidence": "high",
+            "note": "LICENSE body is verbatim Apache License 2.0; full source public.",
+            "sources": [
+              {
+                "url": "https://github.com/huggingface/huggingface_hub/blob/main/LICENSE",
+                "shows": "LICENSE file is the verbatim Apache License Version 2.0",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 5,
+            "reach": "331M+/month",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "PyPI last-month downloads of 331,796,503 exceed the 50M+ threshold.",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/huggingface-hub/recent",
+                "shows": "last_month = 331,796,503 PyPI downloads",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 5,
+            "basis": "feature_matrix",
+            "value": "Foundational client for Hub up/download, repo management, inference, and library integration.",
+            "confidence": "high",
+            "note": "Central dependency across the Hugging Face ecosystem.",
+            "sources": [
+              {
+                "url": "https://github.com/huggingface/huggingface_hub",
+                "shows": "README describes downloading/uploading, repo management, inference, search",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. LICENSE body is verbatim Apache License 2.0; full source public."
+        },
+        {
+          "product": "Optimum",
+          "org": "Hugging Face",
+          "type": "software",
+          "description": "Optimum is an extension of Transformers, Diffusers, TIMM, and Sentence-Transformers that provides tools to optimize training and inference on targeted hardware. It supports accelerators and runtimes including ONNX Runtime, OpenVINO, Intel Gaudi, AWS Trainium/Inferentia, and NVIDIA TensorRT-LLM, and handles model export and quantization. It is maintained by Hugging Face.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public;no feature-gated core",
+            "confidence": "high",
+            "note": "LICENSE body is verbatim Apache License 2.0; full source public.",
+            "sources": [
+              {
+                "url": "https://github.com/huggingface/optimum/blob/main/LICENSE",
+                "shows": "LICENSE file is the verbatim Apache License Version 2.0",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "1.7M+/month",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "PyPI last-month downloads of 1,759,764 fall in the 500k-5M range.",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/optimum/recent",
+                "shows": "last_month = 1,759,764 PyPI downloads",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "Hardware-targeted optimization, export, and quantization across multiple accelerators/runtimes.",
+            "confidence": "high",
+            "note": "Broad multi-backend optimization layer, though dependent on the core Transformers stack.",
+            "sources": [
+              {
+                "url": "https://github.com/huggingface/optimum",
+                "shows": "README lists ONNX Runtime, OpenVINO, Gaudi, Trainium/Inferentia, TensorRT-LLM support",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. LICENSE body is verbatim Apache License 2.0; full source public."
+        },
+        {
+          "product": "SentencePiece",
+          "org": "Google",
+          "type": "software",
+          "description": "SentencePiece is an unsupervised text tokenizer and detokenizer that implements subword units (Byte-Pair Encoding and unigram language model) directly from raw text, without language-specific pre-tokenization. It treats input as a stream of Unicode characters, enabling a language-independent, end-to-end pipeline useful for languages without clear word boundaries. It is developed and maintained by Google.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public;no feature-gated core",
+            "confidence": "high",
+            "note": "LICENSE body is verbatim Apache License 2.0; full C++/Python source public.",
+            "sources": [
+              {
+                "url": "https://github.com/google/sentencepiece/blob/master/LICENSE",
+                "shows": "LICENSE file is the verbatim Apache License Version 2.0",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 4,
+            "reach": "35M+/month",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "PyPI last-month downloads of 35,443,864 fall in the 5M-50M range.",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/sentencepiece/recent",
+                "shows": "last_month = 35,443,864 PyPI downloads",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "Language-independent subword tokenization (BPE/unigram) trained directly from raw text.",
+            "confidence": "high",
+            "note": "Widely used tokenizer underpinning many LLM and NMT models, though narrow in scope.",
+            "sources": [
+              {
+                "url": "https://github.com/google/sentencepiece",
+                "shows": "README describes BPE and unigram subword units, language-independent tokenization",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. LICENSE body is verbatim Apache License 2.0; full C++/Python source public."
+        },
+        {
+          "product": "ONNX",
+          "org": "LF AI & Data (Linux Foundation)",
+          "type": "software",
+          "description": "ONNX (Open Neural Network Exchange) is an open standard format and specification for representing machine learning models, defining an extensible computation graph model plus built-in operators and standard data types. It enables interoperability so models can move between frameworks like PyTorch, TensorFlow, and scikit-learn. It is governed under the Linux Foundation as part of LF AI & Data.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public;no feature-gated core",
+            "confidence": "high",
+            "note": "Apache-2.0 license body confirmed; full source public on GitHub.",
+            "sources": [
+              {
+                "url": "https://github.com/onnx/onnx/blob/main/LICENSE",
+                "shows": "Apache License Version 2.0 full text",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 4,
+            "reach": "~19.8M/mo",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "PyPI last_month downloads ~19.76M.",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/onnx/recent",
+                "shows": "last_month=19,763,965 downloads",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 5,
+            "basis": "feature_matrix",
+            "value": "Foundational open model-exchange format and operator spec underpinning cross-framework interoperability.",
+            "confidence": "high",
+            "note": "Defines the graph model, operators, and data types used as the de-facto interchange standard.",
+            "sources": [
+              {
+                "url": "https://github.com/onnx/onnx",
+                "shows": "README: open format with extensible computation graph, built-in operators",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Apache-2.0 license body confirmed; full source public on GitHub."
+        },
+        {
+          "product": "Triton",
+          "org": "Triton (triton-lang)",
+          "type": "software",
+          "description": "Triton is a Python-embedded language and compiler for writing highly efficient custom GPU kernels (deep-learning primitives), aiming for higher productivity than CUDA with more flexibility than other DSLs. It compiles via MLIR and targets NVIDIA GPUs and AMD GPUs, with CPU support in progress. Originally created by Philippe Tillet at OpenAI, it is now developed under the triton-lang organization. It is widely used as the kernel backend for projects like PyTorch's inductor.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public;no feature-gated core",
+            "confidence": "high",
+            "note": "MIT license body confirmed (Tillet/OpenAI copyright); full source public.",
+            "sources": [
+              {
+                "url": "https://github.com/triton-lang/triton/blob/main/LICENSE",
+                "shows": "MIT License text, Copyright 2018-2020 Philippe Tillet / 2020-2022 OpenAI",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 5,
+            "reach": "50M+/mo",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "PyPI last_month downloads ~64.7M.",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/triton/recent",
+                "shows": "last_month=64,708,650 downloads",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 5,
+            "basis": "feature_matrix",
+            "value": "GPU kernel language and MLIR-based compiler for custom high-performance deep-learning operators.",
+            "confidence": "high",
+            "note": "Foundational kernel-authoring layer (e.g. PyTorch inductor backend) across NVIDIA/AMD GPUs.",
+            "sources": [
+              {
+                "url": "https://github.com/triton-lang/triton",
+                "shows": "README: language+compiler for fast custom DL primitives, MLIR-based",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. MIT license body confirmed (Tillet/OpenAI copyright); full source public."
+        },
+        {
+          "product": "DeepSpeed",
+          "org": "Microsoft",
+          "type": "software",
+          "description": "DeepSpeed is a deep-learning optimization library for efficient distributed training and inference of very large models. It provides system-level innovations including ZeRO memory optimization, ZeRO-Infinity, 3D parallelism, and mixture-of-experts support, and has powered training of models like BLOOM (176B) and Megatron-Turing NLG (530B). It is maintained by Microsoft and integrates with Hugging Face Transformers, PyTorch Lightning, and others.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public;no feature-gated core",
+            "confidence": "high",
+            "note": "Apache-2.0 license body confirmed; full source public.",
+            "sources": [
+              {
+                "url": "https://github.com/deepspeedai/DeepSpeed/blob/master/LICENSE",
+                "shows": "Apache License Version 2.0 full text",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "~1.4M/mo",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "PyPI last_month downloads ~1.37M.",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/deepspeed/recent",
+                "shows": "last_month=1,374,390 downloads",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 5,
+            "basis": "feature_matrix",
+            "value": "Large-scale distributed training/inference optimization library (ZeRO, 3D parallelism, MoE).",
+            "confidence": "high",
+            "note": "Foundational scale-out training stack used for many of the largest published models.",
+            "sources": [
+              {
+                "url": "https://github.com/deepspeedai/DeepSpeed",
+                "shows": "README: ZeRO, ZeRO-Infinity, 3D-Parallelism, MoE; powered BLOOM 176B",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Apache-2.0 license body confirmed; full source public."
+        },
+        {
+          "product": "OpenVINO",
+          "org": "Intel",
+          "type": "software",
+          "description": "OpenVINO is an open-source toolkit for optimizing and deploying AI inference across computer vision, speech, NLP, and generative AI. It converts models from PyTorch, TensorFlow, and ONNX and deploys across CPUs (x86, ARM), Intel integrated/discrete GPUs, and Intel NPUs, with a GenAI API for LLM pipelines. It is developed by Intel and integrates with Hugging Face Optimum Intel and vLLM.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public;no feature-gated core",
+            "confidence": "high",
+            "note": "Apache-2.0 license body confirmed; full source public.",
+            "sources": [
+              {
+                "url": "https://github.com/openvinotoolkit/openvino/blob/master/LICENSE",
+                "shows": "Apache License Version 2.0 full text",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "~1.4M/mo",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "PyPI last_month downloads ~1.38M.",
+            "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/openvino/recent",
+                "shows": "last_month=1,379,327 downloads",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "Inference optimization/deployment toolkit across Intel CPU/GPU/NPU with multi-framework model conversion.",
+            "confidence": "high",
+            "note": "Broad inference runtime with model conversion and GenAI API, primarily Intel-hardware oriented.",
+            "sources": [
+              {
+                "url": "https://github.com/openvinotoolkit/openvino",
+                "shows": "README: optimize/deploy inference, convert from PyTorch/TF/ONNX, CPU/GPU/NPU targets",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Apache-2.0 license body confirmed; full source public."
+        },
+        {
+          "product": "GGML",
+          "org": "ggml-org (Georgi Gerganov)",
+          "type": "software",
+          "description": "GGML is a low-level C tensor library for machine learning with no third-party dependencies, zero runtime memory allocations, integer quantization support, automatic differentiation, and optimizers. It runs cross-platform and is the tensor backend behind llama.cpp and whisper.cpp. It is maintained by ggml.ai / Georgi Gerganov; much active development now occurs in the dependent llama.cpp and whisper.cpp repos.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public;no feature-gated core",
+            "confidence": "high",
+            "note": "MIT license body confirmed (Copyright 2023-2026 The ggml authors); full source public.",
+            "sources": [
+              {
+                "url": "https://github.com/ggml-org/ggml/blob/master/LICENSE",
+                "shows": "MIT License text, Copyright (c) 2023-2026 The ggml authors",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "~14.9k stars",
+            "signal_type": "stars_fallback",
+            "confidence": "medium",
+            "note": "No PyPI package; GitHub shows ~14.9k stars (and underpins much higher-adoption llama.cpp).",
+            "sources": [
+              {
+                "url": "https://github.com/ggml-org/ggml",
+                "shows": "GitHub repo ~14,900 stars",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 5,
+            "basis": "feature_matrix",
+            "value": "Dependency-free C tensor library with quantization and autodiff; backbone of llama.cpp/whisper.cpp inference.",
+            "confidence": "high",
+            "note": "Foundational low-level runtime enabling efficient on-device LLM/ASR inference.",
+            "sources": [
+              {
+                "url": "https://github.com/ggml-org/ggml",
+                "shows": "README: tensor library, quantization, autodiff, no deps, zero runtime allocs",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. MIT license body confirmed (Copyright 2023-2026 The ggml authors); full source public."
+        },
+        {
+          "product": "Syft / PySyft",
+          "org": "OpenMined",
+          "type": "software",
+          "description": "PySyft is OpenMined's open-source library for privacy-preserving and remote data science, letting data scientists run computations on private data they cannot see or copy via secure 'Datasite' servers. It supports techniques associated with federated learning and differential privacy and offers a NumPy-like remote analysis interface. It is one of the most established open frameworks for collaborative analysis on sensitive data.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI permissive);source:public",
+            "confidence": "high",
+            "note": "Apache-2.0 licensed with full public source code.",
+            "sources": [
+              {
+                "url": "https://github.com/OpenMined/PySyft",
+                "shows": "Apache-2.0 license, public source, 9.9k stars",
+                "accessed": "2026-06-22"
+              },
+              {
+                "url": "https://pypi.org/project/syft/",
+                "shows": "PyPI metadata lists License Apache-2.0, source OpenMined/PySyft",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "broad",
+            "signal_type": "stars_fallback",
+            "confidence": "medium",
+            "note": "9.9k GitHub stars (capped at 3 per stars-fallback rule); ~10.8k monthly PyPI downloads and 1M+ all-time.",
+            "sources": [
+              {
+                "url": "https://github.com/OpenMined/PySyft",
+                "shows": "9.9k GitHub stars",
+                "accessed": "2026-06-22"
+              },
+              {
+                "url": "https://pepy.tech/project/syft",
+                "shows": "1,043,989 total downloads; 10,846 last 30 days",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "Remote/privacy-preserving data science: submit computations to private datasets via Datasite servers, NumPy-like remote analysis, sandboxed job execution, cross-platform.",
+            "confidence": "high",
+            "note": "Mature, feature-rich platform for remote data science on private data.",
+            "sources": [
+              {
+                "url": "https://pypi.org/project/syft/",
+                "shows": "remote data science, Datasite servers, NumPy-like analysis",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Apache-2.0 licensed with full public source code."
+        },
+        {
+          "product": "Feluda",
+          "org": "Tattle",
+          "type": "software",
+          "description": "Feluda is a configurable engine by Tattle for analysing multilingual, multimodal content (images, text, video), built around a modular 'operators' plugin architecture. It supports vector embeddings, hash-based search, text extraction from images, and entity extraction. It is open infrastructure for analysing misinformation and social-media content, particularly in Indian-language contexts.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:GPL-3.0(OSI copyleft);source:public",
+            "confidence": "high",
+            "note": "GPL-3.0 licensed open-source project with public source.",
+            "sources": [
+              {
+                "url": "https://github.com/tattle-made/feluda",
+                "shows": "GPL-3.0 license, public source under tattle-made org",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "niche",
+            "signal_type": "stars_fallback",
+            "confidence": "high",
+            "note": "96 GitHub stars; no PyPI package found.",
+            "sources": [
+              {
+                "url": "https://github.com/tattle-made/feluda",
+                "shows": "96 GitHub stars",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "value": "Configurable multilingual/multimodal content-analysis engine with modular operators: vector embeddings, hash-based search, image text extraction, entity extraction.",
+            "confidence": "high",
+            "note": "Flexible modular engine focused on multimodal content analysis.",
+            "sources": [
+              {
+                "url": "https://github.com/tattle-made/feluda",
+                "shows": "README: operators, embeddings, hash search, text/entity extraction",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. GPL-3.0 licensed open-source project with public source."
+        }
+      ]
+    },
     "deployment": {
       "label": "Deployment",
-      "arc": "System / Product-UX",
+      "arc": "Infrastructure",
+      "layer": "infrastructure",
       "products": [
         {
           "product": "E2B Sandbox",
@@ -18892,6 +21258,1063 @@
           "version_note": "Apache-2.0; maintained by Confident Security (San Francisco; $5M seed). Launched Nov 5 2025; ~940 stars by mid-2026. Reference implementation in Go plus a written spec/whitepaper; related repos (twoway, ohttp, bhttp) are also Apache-2.0. Confident Security operates a commercial managed service (CONFSEC) on top of the open standard, but the standard and implementation themselves are fully open."
         }
       ]
+    },
+    "edge_hardware": {
+      "label": "Edge AI hardware",
+      "arc": "Infrastructure",
+      "layer": "infrastructure",
+      "products": [
+        {
+          "product": "Raspberry Pi 5",
+          "org": "Raspberry Pi",
+          "type": "hardware",
+          "description": "A credit-card-sized single-board computer (SBC) built on the Broadcom BCM2712 SoC with a 2.4GHz quad-core Arm Cortex-A76 CPU and VideoCore VII GPU, offered with 1/2/4/8/16GB LPDDR4X RAM. It has no dedicated NPU, so on-device AI runs on the CPU/GPU or via add-on accelerators (e.g. the AI HAT+). Made by Raspberry Pi, it is the most ubiquitous hobbyist/edge SBC and the de facto reference platform for community edge-AI projects.",
+          "openness": {
+            "class": "open_toolchain",
+            "score": 4,
+            "components": "schematics:reduced published;toolchain:open kernel tree + Raspberry Pi OS;datasheets:public;blobs:minimal;retail:mass-market",
+            "confidence": "high",
+            "note": "Open Linux kernel tree and published datasheets/reduced schematics, globally purchasable, though full board design files and some firmware remain closed.",
+            "sources": [
+              {
+                "url": "https://www.raspberrypi.com/products/raspberry-pi-5/",
+                "shows": "Official product page: BCM2712, Cortex-A76, RAM options, production until 2036",
+                "accessed": "2026-06-22"
+              },
+              {
+                "url": "https://github.com/raspberrypi/linux",
+                "shows": "Official Raspberry Pi kernel source tree (open BSP)",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 5,
+            "reach": "mass-market",
+            "signal_type": "reported_traction",
+            "confidence": "high",
+            "note": "Flagship Raspberry Pi SBC sold globally through countless distributors with a huge community; in production until at least January 2036.",
+            "sources": [
+              {
+                "url": "https://www.raspberrypi.com/products/raspberry-pi-5/",
+                "shows": "Official availability commitment and distribution",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 2,
+            "basis": "feature_matrix",
+            "value": "No NPU; up to 16GB RAM; Cortex-A76 quad-core + VideoCore VII; runs small quantized LLMs slowly on CPU",
+            "confidence": "high",
+            "note": "General-purpose SBC with no dedicated AI accelerator; on-device AI is modest unless paired with an accelerator HAT.",
+            "sources": [
+              {
+                "url": "https://www.raspberrypi.com/products/raspberry-pi-5/",
+                "shows": "CPU/GPU/RAM spec with no NPU/TOPS figure listed",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Open Linux kernel tree and published datasheets/reduced schematics, globally purchasable, though full board design files and some firmware remain closed."
+        },
+        {
+          "product": "Raspberry Pi AI HAT+",
+          "org": "Raspberry Pi",
+          "type": "hardware",
+          "description": "An AI accelerator HAT+ add-on board for the Raspberry Pi 5 that integrates a Hailo neural-network accelerator: the 13 TOPS Hailo-8L or the 26 TOPS Hailo-8 variant. It conforms to the Raspberry Pi HAT+ specification, connects over PCIe, and integrates with the Pi camera stack for tasks like object detection and segmentation. Made by Raspberry Pi (silicon by Hailo); it is the official first-party way to add meaningful NPU compute to a Pi 5.",
+          "openness": {
+            "class": "open_toolchain",
+            "score": 4,
+            "components": "schematics:HAT+ mechanical spec public;toolchain:open Pi driver integration, Hailo compiler gated;datasheets:public brief;blobs:Hailo firmware required;retail:mass-market",
+            "confidence": "medium",
+            "note": "Officially supported open Pi software stack and public product page, globally purchasable, but the underlying Hailo model-compiler toolchain is registration-gated.",
+            "sources": [
+              {
+                "url": "https://www.raspberrypi.com/products/ai-hat/",
+                "shows": "Official product page: Hailo-8 (26 TOPS) / Hailo-8L (13 TOPS), HAT+ form factor, from $70",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 4,
+            "reach": "mass-market",
+            "signal_type": "reported_traction",
+            "confidence": "high",
+            "note": "First-party Raspberry Pi accessory sold through the global Pi distributor network with strong community/tutorial coverage.",
+            "sources": [
+              {
+                "url": "https://www.raspberrypi.com/products/ai-hat/",
+                "shows": "Official availability and pricing from $70",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "value": "13 TOPS (Hailo-8L) or 26 TOPS (Hailo-8); vision inference; no onboard RAM (uses host Pi)",
+            "confidence": "high",
+            "note": "Mid-tier vision-focused NPU; strong for CNN inference but not large LLMs, and dependent on the host Pi for memory.",
+            "sources": [
+              {
+                "url": "https://www.raspberrypi.com/products/ai-hat/",
+                "shows": "26/13 TOPS Hailo accelerator spec and supported tasks",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Officially supported open Pi software stack and public product page, globally purchasable, but the underlying Hailo model-compiler toolchain is registration-gated."
+        },
+        {
+          "product": "NVIDIA Jetson Orin Nano Super Developer Kit",
+          "org": "NVIDIA",
+          "type": "hardware",
+          "description": "An entry-level edge-AI developer kit pairing the Jetson Orin Nano 8GB module with a carrier board; the 'Super' mode boosts it to 67 INT8 (sparse) TOPS. It uses an Ampere GPU with 1024 CUDA cores and 32 Tensor Cores, a 6-core Arm Cortex-A78AE CPU, and 8GB LPDDR5. Made by NVIDIA, it was repriced to $249 and is the cheapest on-ramp into the CUDA/Jetson generative-AI ecosystem, capable of running small LLMs and VLMs locally.",
+          "openness": {
+            "class": "documented",
+            "score": 3,
+            "components": "schematics:carrier design guide public;toolchain:JetPack/Jetson Linux free but NVIDIA-SLA proprietary;datasheets:public;blobs:proprietary GPU drivers/bootloader required;retail:mass-market",
+            "confidence": "high",
+            "note": "Public datasheets and globally purchasable, but the SDK requires proprietary NVIDIA drivers/blobs under license, so it sits in the documented tier despite the community OE4T BSP.",
+            "sources": [
+              {
+                "url": "https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/nano-super-developer-kit/",
+                "shows": "Official spec: 67 INT8 TOPS, 1024-core Ampere GPU, 6-core A78AE, 8GB LPDDR5, $249",
+                "accessed": "2026-06-22"
+              },
+              {
+                "url": "https://developer.nvidia.com/embedded/jetson-linux",
+                "shows": "Jetson Linux (L4T) BSP under NVIDIA Software License Agreement",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 4,
+            "reach": "mass-market",
+            "signal_type": "reported_traction",
+            "confidence": "high",
+            "note": "Widely available developer kit at a low $249 price with a large NVIDIA Jetson developer community and global distribution.",
+            "sources": [
+              {
+                "url": "https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/nano-super-developer-kit/",
+                "shows": "Official $249 pricing and developer-kit positioning",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "value": "67 INT8 (sparse) TOPS; 8GB LPDDR5; runs small LLMs (~7B quantized) and VLMs locally",
+            "confidence": "high",
+            "note": "Solid entry-tier generative-AI compute, but 8GB RAM caps model size versus higher Orin tiers.",
+            "sources": [
+              {
+                "url": "https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/nano-super-developer-kit/",
+                "shows": "67 INT8 TOPS and 8GB LPDDR5 spec",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Public datasheets and globally purchasable, but the SDK requires proprietary NVIDIA drivers/blobs under license, so it sits in the documented tier despite the community OE4T BSP."
+        },
+        {
+          "product": "NVIDIA Jetson AGX Orin",
+          "org": "NVIDIA",
+          "type": "hardware",
+          "description": "NVIDIA's high-end edge-AI system-on-module (SoM), delivering up to 275 TOPS via a 2048-core Ampere GPU with 64 Tensor Cores and a 12-core Arm Cortex-A78AE CPU. It ships in 32GB and 64GB LPDDR5 variants on a 699-pin module. Made by NVIDIA, it is the flagship Jetson module for robotics and autonomous machines, able to run large LLMs/VLMs at the edge.",
+          "openness": {
+            "class": "documented",
+            "score": 3,
+            "components": "schematics:module datasheet + carrier design guide public;toolchain:JetPack/Jetson Linux proprietary (NVIDIA SLA);datasheets:public;blobs:proprietary drivers/bootloader;retail:via distributors",
+            "confidence": "high",
+            "note": "Public datasheets and commercially purchasable, but SDK relies on proprietary NVIDIA blobs under license, placing it in the documented tier.",
+            "sources": [
+              {
+                "url": "https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin",
+                "shows": "Official spec: up to 275 TOPS, 2048-core Ampere GPU, 32/64GB LPDDR5, 699-pin module",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "niche",
+            "signal_type": "reported_traction",
+            "confidence": "medium",
+            "note": "Available as a dev kit and production module through NVIDIA's distributor network with a large Jetson community, but the high price targets professional robotics.",
+            "sources": [
+              {
+                "url": "https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin",
+                "shows": "Module family page indicating production module and dev kit availability",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 5,
+            "basis": "feature_matrix",
+            "value": "Up to 275 TOPS; 32GB or 64GB LPDDR5; runs large LLMs/VLMs and multi-model robotics pipelines at the edge",
+            "confidence": "high",
+            "note": "Top-tier edge-AI compute; the 64GB/275 TOPS variant runs large models that exceed smaller Orin modules.",
+            "sources": [
+              {
+                "url": "https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin",
+                "shows": "275 TOPS and up to 64GB LPDDR5 spec",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Public datasheets and commercially purchasable, but SDK relies on proprietary NVIDIA blobs under license, placing it in the documented tier."
+        },
+        {
+          "product": "NVIDIA Jetson Orin NX",
+          "org": "NVIDIA",
+          "type": "hardware",
+          "description": "A compact mid-range edge-AI system-on-module (SoM) in a 260-pin SO-DIMM form factor, delivering up to 157 TOPS via a 1792-core Ampere GPU with 56 Tensor Cores and an 8-core Arm Cortex-A78AE CPU. It comes in 8GB and 16GB LPDDR5 variants. Made by NVIDIA, it slots between the Orin Nano and AGX Orin and is widely used in drones, cameras, and compact robotics for local LLM/vision workloads.",
+          "openness": {
+            "class": "documented",
+            "score": 3,
+            "components": "schematics:module datasheet + carrier design guide public;toolchain:JetPack/Jetson Linux proprietary (NVIDIA SLA);datasheets:public;blobs:proprietary drivers/bootloader;retail:via distributors",
+            "confidence": "high",
+            "note": "Public datasheets and purchasable through distributors, but the SDK depends on proprietary NVIDIA blobs under license.",
+            "sources": [
+              {
+                "url": "https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin",
+                "shows": "Official spec: up to 157 TOPS, 1792-core Ampere GPU, 8/16GB LPDDR5, 260-pin SO-DIMM",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "niche",
+            "signal_type": "reported_traction",
+            "confidence": "medium",
+            "note": "Production SO-DIMM module sold through NVIDIA's distributor network with strong Jetson community; popular in commercial drones/robotics but not mass-market.",
+            "sources": [
+              {
+                "url": "https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin",
+                "shows": "Module family page indicating production module availability",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "Up to 157 TOPS; 8GB or 16GB LPDDR5; runs mid-to-large LLMs/VLMs and multi-stream vision",
+            "confidence": "high",
+            "note": "Strong mid-range edge compute; the 16GB/157 TOPS variant handles sizeable models, below AGX Orin but above Orin Nano.",
+            "sources": [
+              {
+                "url": "https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin",
+                "shows": "157 TOPS and up to 16GB LPDDR5 spec",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Public datasheets and purchasable through distributors, but the SDK depends on proprietary NVIDIA blobs under license."
+        },
+        {
+          "product": "Orange Pi 5",
+          "org": "Orange Pi (Shenzhen Xunlong)",
+          "type": "hardware",
+          "description": "A single-board computer (SBC) built around the Rockchip RK3588S SoC, an 8-core 64-bit ARM processor (4x Cortex-A76 + 4x Cortex-A55) with a Mali-G610 GPU and a built-in NPU rated at 6 TOPS. It ships in 4/8/16GB LPDDR4/4X configurations and is made by Orange Pi (Shenzhen Xunlong). Widely sold at retail for roughly $69-$115, it supports Android 12, Debian, Ubuntu, and Orange Pi OS, and is one of the most popular and affordable RK3588S edge-AI boards.",
+          "openness": {
+            "class": "open_toolchain",
+            "score": 4,
+            "components": "schematics:published PDF;toolchain:open GPL-2.0 BSP/build system;datasheets:public RK3588S;blobs:Rockchip firmware required;retail:global",
+            "confidence": "high",
+            "note": "Proprietary Rockchip silicon with an open GPL-2.0 BSP, public datasheet and schematics, and global retail availability, but bootable images depend on Rockchip firmware blobs.",
+            "sources": [
+              {
+                "url": "https://github.com/orangepi-xunlong/orangepi-build",
+                "shows": "official GPL-2.0 build system supporting Orange Pi 5 / RK3588S",
+                "accessed": "2026-06-22"
+              },
+              {
+                "url": "http://www.orangepi.org/html/hardWare/computerAndMicrocontrollers/service-and-support/Orange-pi-5.html",
+                "shows": "official support page with schematic, manual, and source downloads",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 5,
+            "reach": "mass-market",
+            "signal_type": "reported_traction",
+            "confidence": "high",
+            "note": "Sold directly on AliExpress and Amazon at ~$69-$115 across multiple SKUs, with a large third-party software/community ecosystem.",
+            "sources": [
+              {
+                "url": "https://www.amazon.com/Orange-Pi-Frequency-Development-Android12/dp/B0BN16ZLXB",
+                "shows": "Orange Pi 5 retail listing on Amazon",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "value": "6 TOPS NPU; up to 16GB LPDDR4/4X; runs quantized LLMs up to ~8B (W4A16) and CV models via RKNN/RKLLM",
+            "confidence": "high",
+            "note": "The RK3588S NPU does 6 TOPS with mixed-precision support and runs small on-device LLMs, but well below discrete GPUs and dedicated NPUs.",
+            "sources": [
+              {
+                "url": "http://www.orangepi.org/html/hardWare/computerAndMicrocontrollers/details/Orange-Pi-5.html",
+                "shows": "official spec: RK3588S, 6 TOPS NPU, 4/8/16GB",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Proprietary Rockchip silicon with an open GPL-2.0 BSP, public datasheet and schematics, and global retail availability, but bootable images depend on Rockchip firmware blobs."
+        },
+        {
+          "product": "Radxa ROCK 5B",
+          "org": "Radxa",
+          "type": "hardware",
+          "description": "A single-board computer (SBC) built on the Rockchip RK3588 SoC, pairing a quad-core Cortex-A76 (up to 2.4 GHz) with a quad-core Cortex-A55 and a built-in 6 TOPS NPU, in a 100 x 75 mm form factor. It is offered in 4/8/16GB LPDDR4X (ROCK 5B) and up to 32GB LPDDR5 (ROCK 5B+). Made by Radxa, which publishes complete hardware design schematics and software source, it is one of the most popular high-end RK3588 maker boards.",
+          "openness": {
+            "class": "open_toolchain",
+            "score": 4,
+            "components": "schematics:PDF + SMD maps + DXF + 3D STP + CE/FCC public;toolchain:open BSP/kernel/U-Boot;blobs:Rockchip rkbin/DDR/TF-A required;retail:global",
+            "confidence": "high",
+            "note": "Schematics and mechanical files are publicly downloadable and the BSP is open, but the RK3588 needs proprietary Rockchip blobs and editable PCB source is not released.",
+            "sources": [
+              {
+                "url": "https://docs.radxa.com/en/rock5/rock5b/download",
+                "shows": "downloadable schematic PDFs, SMD maps, DXF, 3D STP, CE/FCC reports",
+                "accessed": "2026-06-22"
+              },
+              {
+                "url": "https://github.com/radxa-repo/bsp",
+                "shows": "official open Radxa BSP build tool with ROCK 5B profile",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 5,
+            "reach": "mass-market",
+            "signal_type": "reported_traction",
+            "confidence": "high",
+            "note": "One of the most popular RK3588 SBCs, sold globally through authorized distributors with 15+ third-party OS ports and an active community.",
+            "sources": [
+              {
+                "url": "https://ameridroid.com/products/rock5-model-b",
+                "shows": "live retail listing at an authorized US distributor",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "6 TOPS NPU; up to 16GB LPDDR4X (5B) / 32GB LPDDR5 (5B+); RK3588 8-core CPU",
+            "confidence": "high",
+            "note": "6 TOPS INT8 plus up to 16-32GB RAM runs quantized small/mid LLMs and real-time vision via RKNN, strong for an edge SBC.",
+            "sources": [
+              {
+                "url": "https://docs.radxa.com/en/rock5/rock5b/getting-started/introduction",
+                "shows": "6 TOPS NPU; RAM up to 16GB (5B) / 32GB LPDDR5 (5B+)",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Schematics and mechanical files are publicly downloadable and the BSP is open, but the RK3588 needs proprietary Rockchip blobs and editable PCB source is not released."
+        },
+        {
+          "product": "Khadas Edge2",
+          "org": "Khadas (Shenzhen Wesion)",
+          "type": "hardware",
+          "description": "A credit-card-sized single-board computer (SBC) built around the Rockchip RK3588S2, an 8nm 8-core 64-bit ARM SoC with a Mali-G610 MP4 GPU and a built-in NPU rated at 6 TOPS. It ships in Basic (8GB + 32GB eMMC) and Pro (16GB + 64GB eMMC) configurations in a compact fanless design. Made by Khadas (Shenzhen Wesion), it runs Ubuntu and Android with mainline Armbian support.",
+          "openness": {
+            "class": "open_toolchain",
+            "score": 4,
+            "components": "schematics:versioned PDFs published;toolchain:open GPL-2.0 Fenix + mainline Armbian;datasheets:public SoC TRM;blobs:Rockchip NPU/boot blobs required;retail:global",
+            "confidence": "high",
+            "note": "Khadas publishes versioned board schematics and an open toolchain with mainline Armbian, but proprietary Rockchip silicon and required blobs keep it at open_toolchain.",
+            "sources": [
+              {
+                "url": "https://dl.khadas.com/products/edge2/schematics/",
+                "shows": "versioned schematic PDFs (edge2-sch-v11/12/13)",
+                "accessed": "2026-06-22"
+              },
+              {
+                "url": "https://github.com/khadas/fenix",
+                "shows": "Fenix build system (GPL-2.0) with Edge2 as a target",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 4,
+            "reach": "niche",
+            "signal_type": "reported_traction",
+            "confidence": "high",
+            "note": "Sold on Amazon US and Newegg (Basic and Pro), with an active community forum and mainline Armbian support, but smaller than Raspberry Pi-class platforms.",
+            "sources": [
+              {
+                "url": "https://www.amazon.com/khadas-Computer-RK3588S-Portable-Compact/dp/B0BFVSC2D5",
+                "shows": "Edge2 Pro 16GB retail listing on Amazon US",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "value": "6 TOPS NPU; 8/16GB LPDDR4X; runs quantized vision models in real time and small LLMs (~1-3B INT4) via RKNN",
+            "confidence": "high",
+            "note": "The RK3588S2 NPU delivers 6 TOPS, handling real-time CV and small quantized LLMs, mid-tier versus Jetson Orin.",
+            "sources": [
+              {
+                "url": "https://www.khadas.com/edge2",
+                "shows": "6 TOPS NPU; 8GB/16GB LPDDR4X options",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Khadas publishes versioned board schematics and an open toolchain with mainline Armbian, but proprietary Rockchip silicon and required blobs keep it at open_toolchain."
+        },
+        {
+          "product": "BeagleY-AI",
+          "org": "BeagleBoard.org Foundation",
+          "type": "hardware",
+          "description": "An open-source single-board computer (SBC) from the BeagleBoard.org Foundation, built around the Texas Instruments AM67A vision processor. It pairs a quad-core Cortex-A53 CPU at 1.4 GHz with a TI C7x deep-learning accelerator subsystem (dual C7x DSP + MMA) rated at up to 4 TOPS, an IMG BXS GPU, and Cortex-R5 real-time cores, with 4GB LPDDR4 and a 40-pin Raspberry Pi-compatible header (~$72). It is OSHWA-certified and targets vision, robotics, and smart cameras.",
+          "openness": {
+            "class": "open_hardware",
+            "score": 5,
+            "components": "schematics + 3D/mechanical files (CC-BY/CC-BY-SA-4.0);OSHWA-certified US002616;open Linux/U-Boot BSP;public TI AM67A datasheet;TI DSP/WiFi firmware blobs a caveat",
+            "confidence": "high",
+            "note": "Full board design files published under Creative Commons and OSHWA-certified with an open toolchain and public datasheet, though proprietary AM67A silicon and firmware blobs are a caveat.",
+            "sources": [
+              {
+                "url": "https://github.com/beagleboard/beagley-ai",
+                "shows": "repo with design files, 3D models, OSHWA cert, schematic PDF, CC-BY-4.0 license",
+                "accessed": "2026-06-22"
+              },
+              {
+                "url": "https://docs.beagleboard.org/boards/beagley/ai/03-design.html",
+                "shows": "CC-BY-SA-4.0 license, OSHWA cert US002616, open design-file hosting",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 4,
+            "reach": "niche",
+            "signal_type": "reported_traction",
+            "confidence": "medium",
+            "note": "In stock at $71.99 with volume pricing at Seeed and orderable via TI, backed by the established BeagleBoard.org community, though recent (2024) so installed base trails Raspberry Pi.",
+            "sources": [
+              {
+                "url": "https://www.seeedstudio.com/BeagleYr-AI-beagleboard-orgr-4-TOPS-AI-Acceleration-powered-by-TI-AM67A.html",
+                "shows": "$71.99, in stock, with volume pricing",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "value": "4 TOPS (TI C7x DL accelerator); 4GB LPDDR4; runs quantized CNNs / small object-detection and classification models",
+            "confidence": "high",
+            "note": "4 TOPS plus an IMG BXS GPU suits edge vision and quantized CNNs, but fixed 4GB RAM and modest TOPS rule out large LLMs.",
+            "sources": [
+              {
+                "url": "https://www.beagleboard.org/boards/beagley-ai",
+                "shows": "dual C7x DSP + MMA at 4 TOPS, 4GB LPDDR4, quad Cortex-A53",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Full board design files published under Creative Commons and OSHWA-certified with an open toolchain and public datasheet, though proprietary AM67A silicon and firmware blobs are a caveat."
+        },
+        {
+          "product": "Rockchip RK3588",
+          "org": "Rockchip",
+          "type": "hardware",
+          "description": "An application-processor SoC/chipset (not a board) made by Fuzhou Rockchip. It is an octa-core ARM SoC pairing 4x Cortex-A76 with 4x Cortex-A55, a Mali-G610 MC4 GPU, and a 6 TOPS triple-core NPU supporting INT4/INT8/INT16/FP16/BF16/TF32, with LPDDR4x/LPDDR5 up to 32GB and PCIe 3.0. It is the chipset behind a broad range of edge/SBC products (Orange Pi 5, Radxa Rock 5B, Khadas Edge2), making it the de facto high-end ARM SBC SoC of its generation.",
+          "openness": {
+            "class": "documented",
+            "score": 3,
+            "components": "full TRM + datasheet public (no NDA);NPU SDK on GitHub but proprietary RKNN license + prebuilt blobs;rknpu kernel driver open;proprietary GPU/NPU firmware",
+            "confidence": "high",
+            "note": "Documentation is unusually open (full TRM and datasheet public) and the RKNN toolkit is openly distributed, but the SDK ships as prebuilt binaries under a proprietary license with closed firmware.",
+            "sources": [
+              {
+                "url": "https://www.rock-chips.com/a/en/products/RK35_Series/2022/0926/1660.html",
+                "shows": "official RK3588 page: 8-core A76+A55, 6 TOPS triple-core NPU, Mali-G610 MC4",
+                "accessed": "2026-06-22"
+              },
+              {
+                "url": "https://github.com/airockchip/rknn-toolkit2/blob/master/LICENSE",
+                "shows": "SDK under a proprietary RKNN SDK License",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 5,
+            "reach": "mass-market",
+            "signal_type": "reported_traction",
+            "confidence": "high",
+            "note": "Powers a very large multi-vendor set of SBCs and modules (Orange Pi, Radxa, Khadas, FriendlyELEC, Firefly), widely available at retail and broadly supported in community Linux.",
+            "sources": [
+              {
+                "url": "https://forum.armbian.com/topic/26398-video-comparing-rk3588-sbcs-nanopi-r6s-khadas-edge2-radxa-rock5b-mekotronics-r58-mini-r58x-4g-orange-pi-5/",
+                "shows": "independent comparison of many RK3588 SBCs from multiple vendors",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "6 TOPS triple-core NPU (INT4-TF32); up to 32GB LPDDR4x/LPDDR5 (board-dependent); runs quantized on-device LLMs via RKNN-LLM",
+            "confidence": "high",
+            "note": "The 6 TOPS NPU is genuine edge-AI capability and the RKLLM SDK runs quantized LLMs on-chip, but modest versus dedicated accelerators.",
+            "sources": [
+              {
+                "url": "https://github.com/airockchip/rknn-llm",
+                "shows": "official RKLLM SDK running LLMs on RK3588-series NPU",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Documentation is unusually open (full TRM and datasheet public) and the RKNN toolkit is openly distributed, but the SDK ships as prebuilt binaries under a proprietary license with closed firmware."
+        },
+        {
+          "product": "Hailo-8",
+          "org": "Hailo Technologies",
+          "type": "hardware",
+          "description": "An edge AI inference accelerator delivering up to 26 TOPS at roughly 2.5W typical power, built by Hailo Technologies (Israel). It is sold as a bare chip and in M.2, mPCIe, and PCIe card form factors with on-die memory, supporting TensorFlow, TFLite, Keras, PyTorch, and ONNX via the Hailo Dataflow Compiler and HailoRT runtime. It is widely deployed in robotics, ADAS, security cameras, and industrial vision.",
+          "openness": {
+            "class": "documented",
+            "score": 3,
+            "components": "schematics:no;toolchain:open runtime (HailoRT) + closed/registration Dataflow Compiler;datasheets:public briefs;blobs:proprietary silicon + firmware;retail:global modules",
+            "confidence": "high",
+            "note": "Proprietary silicon with an open-source runtime and public product briefs, but the model-compiler toolchain requires registration and silicon is closed.",
+            "sources": [
+              {
+                "url": "https://hailo.ai/products/ai-accelerators/hailo-8-ai-accelerator/",
+                "shows": "official product page: form factors, frameworks, software suite",
+                "accessed": "2026-06-22"
+              },
+              {
+                "url": "https://github.com/hailo-ai/hailort",
+                "shows": "open-source HailoRT inference runtime",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 4,
+            "reach": "broad",
+            "signal_type": "reported_traction",
+            "confidence": "high",
+            "note": "Retail-available modules and a large developer base; vendor reports 100K+ users and hundreds of deployed customer products, with an active GitHub org.",
+            "sources": [
+              {
+                "url": "https://hailo.ai/products/ai-accelerators/hailo-8-ai-accelerator/",
+                "shows": "vendor claim of >100K users and hundreds of customer products",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "value": "26 TOPS; CNN/vision inference; supports TF/TFLite/PyTorch/ONNX; on-die memory",
+            "confidence": "high",
+            "note": "Strong dedicated CNN inference throughput for the edge, but vision-oriented and limited to models that fit on-die memory.",
+            "sources": [
+              {
+                "url": "https://hailo.ai/products/ai-accelerators/hailo-8-ai-accelerator/",
+                "shows": "26 TOPS, 2.5W typical, on-die memory",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Proprietary silicon with an open-source runtime and public product briefs, but the model-compiler toolchain requires registration and silicon is closed."
+        },
+        {
+          "product": "Hailo-10H",
+          "org": "Hailo Technologies",
+          "type": "hardware",
+          "description": "Hailo's generative-AI edge accelerator, offered as an M.2 module and as a chip, delivering 40 TOPS at INT4 and 20 TOPS at INT8 with ~2.5W typical power. Unlike the Hailo-8, it adds a direct DDR interface so it can run LLMs and vision-language models (VLMs) on-device. It targets PCs, automotive, and edge devices needing local generative AI, supported by Hailo's software suite and a GenAI model zoo.",
+          "openness": {
+            "class": "documented",
+            "score": 3,
+            "components": "schematics:no;toolchain:open runtime + MIT GenAI model zoo;datasheets:public (June 2025);blobs:proprietary silicon/firmware;retail:M.2 modules purchasable",
+            "confidence": "high",
+            "note": "Proprietary silicon with published datasheets and an open GenAI model zoo, but the silicon and full toolchain are closed.",
+            "sources": [
+              {
+                "url": "https://hailo.ai/products/ai-accelerators/hailo-10h-m-2-ai-acceleration-module/",
+                "shows": "official module product page for Hailo-10H",
+                "accessed": "2026-06-22"
+              },
+              {
+                "url": "https://github.com/hailo-ai/hailo_model_zoo_genai",
+                "shows": "MIT-licensed GenAI model zoo for Hailo-10H",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "niche",
+            "signal_type": "reported_traction",
+            "confidence": "medium",
+            "note": "Newer generative-AI part; purchasable M.2 modules and a dedicated GenAI repo, but smaller install base than the Hailo-8.",
+            "sources": [
+              {
+                "url": "https://hailo.ai/products/ai-accelerators/hailo-10h-m-2-ai-acceleration-module/",
+                "shows": "productized, purchasable M.2 generative-AI module",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "40 TOPS INT4 / 20 TOPS INT8; runs LLMs & VLMs via direct DDR interface",
+            "confidence": "high",
+            "note": "Edge-first part that runs generative models locally via a DDR interface, a step beyond CNN-only edge accelerators.",
+            "sources": [
+              {
+                "url": "https://hailo.ai/products/ai-accelerators/hailo-10h-m-2-ai-acceleration-module/",
+                "shows": "40 TOPS INT4 / 20 TOPS INT8, DDR interface, LLM/VLM support",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Proprietary silicon with published datasheets and an open GenAI model zoo, but the silicon and full toolchain are closed."
+        },
+        {
+          "product": "Google Coral Dev Board",
+          "org": "Google",
+          "type": "hardware",
+          "description": "A single-board computer from Google's Coral platform that pairs a removable System-on-Module (NXP i.MX 8M SoC) with a baseboard and integrates Google's Edge TPU ASIC. The Edge TPU delivers 4 TOPS at about 2 TOPS/watt, accelerating int8-quantized TensorFlow Lite models for local inference. It is aimed at prototyping edge AI that can scale to production by reusing the SoM. The Edge TPU is designed and supplied by Google.",
+          "openness": {
+            "class": "documented",
+            "score": 3,
+            "components": "schematics:no full board files;toolchain:open runtime (libedgetpu) + TFLite, closed Edge TPU compiler;datasheets:public;blobs:proprietary Edge TPU ASIC + closed compiler;retail:broadly purchasable",
+            "confidence": "high",
+            "note": "Public datasheet and open runtime/TFLite path, but the Edge TPU silicon and the model compiler are proprietary closed binaries.",
+            "sources": [
+              {
+                "url": "https://coral.ai/docs/dev-board/datasheet/",
+                "shows": "datasheet: 4 TOPS, 2 TOPS/W, SoM form factor, TFLite, Google-designed Edge TPU",
+                "accessed": "2026-06-22"
+              },
+              {
+                "url": "https://github.com/google-coral/libedgetpu",
+                "shows": "open-source Edge TPU userspace runtime driver",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 4,
+            "reach": "broad",
+            "signal_type": "reported_traction",
+            "confidence": "medium",
+            "note": "Long-established, widely distributed edge-AI dev platform with an active google-coral GitHub org; the older edgetpu repo was archived April 2026 with libedgetpu now maintained.",
+            "sources": [
+              {
+                "url": "https://github.com/google-coral/libedgetpu",
+                "shows": "maintained official runtime repo; broad ecosystem",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 2,
+            "basis": "feature_matrix",
+            "value": "4 TOPS (2 TOPS/W); int8-quantized models; TensorFlow Lite only",
+            "confidence": "high",
+            "note": "Modest 4 TOPS limited to int8 TFLite models; suited to small CNN inference rather than large or generative models.",
+            "sources": [
+              {
+                "url": "https://coral.ai/docs/dev-board/datasheet/",
+                "shows": "4 TOPS, 2 TOPS/W, TFLite-focused Edge TPU",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Public datasheet and open runtime/TFLite path, but the Edge TPU silicon and the model compiler are proprietary closed binaries."
+        },
+        {
+          "product": "Axelera Metis AIPU",
+          "org": "Axelera AI",
+          "type": "hardware",
+          "description": "An edge AI inference accelerator from Axelera AI (Netherlands), built on a quad-core in-memory-compute architecture and sold as M.2 modules, PCIe cards, and an integrated compute board. A single quad-core Metis delivers on the order of 214 TOPS, with PCIe configurations scaling to multiple units. It is paired with the Voyager SDK (100+ models) and targets computer-vision workloads such as multi-channel video analytics and quality inspection.",
+          "openness": {
+            "class": "documented",
+            "score": 3,
+            "components": "schematics:no;toolchain:Voyager SDK on public GitHub;datasheets:product pages/briefs public;blobs:proprietary AIPU silicon + firmware;retail:webstore + partners",
+            "confidence": "medium",
+            "note": "Proprietary in-memory-compute silicon with a publicly available Voyager SDK on GitHub and retail purchasing, but board design files are not open.",
+            "sources": [
+              {
+                "url": "https://www.axelera.ai/",
+                "shows": "Metis AIPU form factors, ~214 TOPS, Voyager SDK, webstore availability",
+                "accessed": "2026-06-22"
+              },
+              {
+                "url": "https://github.com/axelera-ai-hub/voyager-sdk",
+                "shows": "publicly available Voyager SDK repo under Axelera's official org",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "niche",
+            "signal_type": "reported_traction",
+            "confidence": "medium",
+            "note": "Commercially available via webstore and partners with a public, versioned SDK, but a younger ecosystem than Hailo/Coral.",
+            "sources": [
+              {
+                "url": "https://github.com/axelera-ai-hub/voyager-sdk",
+                "shows": "actively released SDK branches indicating developer traction",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "~214 TOPS per quad-core Metis; PCIe x4 scales across 4 units; Voyager SDK with 100+ CV models",
+            "confidence": "medium",
+            "note": "High raw inference throughput via in-memory compute, currently oriented toward CNN/computer-vision pipelines.",
+            "sources": [
+              {
+                "url": "https://www.axelera.ai/",
+                "shows": "~214 TOPS Metis, PCIe scaling, Voyager SDK model coverage",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Proprietary in-memory-compute silicon with a publicly available Voyager SDK on GitHub and retail purchasing, but board design files are not open."
+        },
+        {
+          "product": "MemryX MX3",
+          "org": "MemryX",
+          "type": "hardware",
+          "description": "An edge AI accelerator from MemryX (USA) built on a dataflow architecture, where each MX3 chip provides ~6 TOPS and an M.2 module packs four chips for up to 24 TOPS at roughly 6-8W with passive cooling. The M.2 (2280, M-Key) module uses PCIe Gen3 and supports 4/8/16-bit weights plus BFloat16, with no model-zoo lock-in. Sold at retail (~$149) via Amazon, Mouser, and distributors, it won a 2025 Edge AI & Vision Alliance Product of the Year award and is supported by the MemryX SDK and open-source tooling.",
+          "openness": {
+            "class": "documented",
+            "score": 3,
+            "components": "schematics:no;toolchain:open runtime (MxAccl) + utils + driver mirror, closed NeuralCompiler;datasheets:public;blobs:proprietary silicon;retail:Amazon/Mouser ~$149",
+            "confidence": "high",
+            "note": "Proprietary dataflow silicon with public datasheets, retail availability, and several open-source runtime/driver repos, though the compiler core is closed.",
+            "sources": [
+              {
+                "url": "https://developer.memryx.com/specs/M.2_datasheet.html",
+                "shows": "MX3 M.2 datasheet: chip count, TOPS, data formats, power",
+                "accessed": "2026-06-22"
+              },
+              {
+                "url": "https://github.com/memryx/MxAccl",
+                "shows": "open-source MemryX C++ runtime library",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "niche",
+            "signal_type": "reported_traction",
+            "confidence": "medium",
+            "note": "Low-cost retail availability (Amazon, Mouser), independent reviews, a 2025 industry award, and an active GitHub org point to growing but emerging traction.",
+            "sources": [
+              {
+                "url": "https://www.tomshardware.com/tech-industry/artificial-intelligence/memryx-launches-usd149-mx3-m-2-ai-accelerator-module-capable-of-24-tops-compute-power",
+                "shows": "retail launch at $149 with broad distribution",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "value": "6 TOPS/chip, up to 24 TOPS (4-chip M.2); 4/8/16-bit weights + BFloat16; ~42M params per module",
+            "confidence": "high",
+            "note": "Moderate throughput with flexible precision, but on-chip parameter capacity caps deployable model size.",
+            "sources": [
+              {
+                "url": "https://developer.memryx.com/specs/M.2_datasheet.html",
+                "shows": "per-chip/module TOPS, supported data formats, parameter capacity",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Proprietary dataflow silicon with public datasheets, retail availability, and several open-source runtime/driver repos, though the compiler core is closed."
+        },
+        {
+          "product": "Qualcomm Dragonwing RB3 Gen 2 Development Kit",
+          "org": "Qualcomm",
+          "type": "hardware",
+          "description": "A Qualcomm edge AI and IoT development kit built around the QCS6490 SoC (Kryo 670 CPU, Adreno 643L GPU, Hexagon NPU) delivering up to 12 dense TOPS, with a QCS5430 variant also offered. It follows the modular 96Boards form factor and ships with a Qualcomm Linux software stack plus Qualcomm AI Hub, Edge Impulse, and Foundries.io support. It is a reference platform for prototyping commercial edge-AI products on Qualcomm silicon.",
+          "openness": {
+            "class": "documented",
+            "score": 3,
+            "components": "schematics:partial (96Boards mezzanine standard);toolchain:open Qualcomm Linux + AI Hub;datasheets:public brief;blobs:proprietary silicon + firmware;retail:via Thundercomm/distributors",
+            "confidence": "high",
+            "note": "Proprietary Qualcomm silicon with public docs and a Linux SDK, sold through distributors, but the board itself is not fully open hardware.",
+            "sources": [
+              {
+                "url": "https://www.qualcomm.com/developer/hardware/rb3-gen-2-development-kit",
+                "shows": "official page: QCS6490, up to 12 TOPS, 96Boards design, Qualcomm Linux stack",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "niche",
+            "signal_type": "reported_traction",
+            "confidence": "medium",
+            "note": "Sold via Thundercomm and other distributors; first-class support in Edge Impulse, indicating an established but specialist developer base.",
+            "sources": [
+              {
+                "url": "https://docs.edgeimpulse.com/hardware/boards/qualcomm-rb3-gen-2-dev-kit",
+                "shows": "platform support in the Edge Impulse ecosystem",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "12 TOPS (Hexagon NPU); QCS6490 octa-core; multi-camera vision",
+            "confidence": "high",
+            "note": "12 dense TOPS with octa-core CPU and dual-ISP vision puts it among the more capable edge-AI dev kits here.",
+            "sources": [
+              {
+                "url": "https://www.qualcomm.com/developer/hardware/rb3-gen-2-development-kit",
+                "shows": "up to 12 dense TOPS, QCS6490 SoC specs",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Proprietary Qualcomm silicon with public docs and a Linux SDK, sold through distributors, but the board itself is not fully open hardware."
+        },
+        {
+          "product": "Arduino UNO Q",
+          "org": "Arduino",
+          "type": "hardware",
+          "description": "A hybrid single-board computer in the UNO form factor that pairs a Qualcomm Dragonwing QRB2210 quad-core applications processor (Adreno GPU, dual ISP, running Debian Linux) with an STM32U585 microcontroller for real-time control. It targets AI-accelerated vision and sound applications, programmed via the open-source Arduino App Lab. Made by Arduino (now a Qualcomm company), it ships in 2GB/16GB and 4GB/32GB variants around EUR 47-65, a low-cost on-ramp to Qualcomm edge-AI silicon for the maker community.",
+          "openness": {
+            "class": "documented",
+            "score": 3,
+            "components": "schematics:open (gerbers + schematics CC-BY-SA 4.0);toolchain:open App Lab;datasheets:public;blobs:proprietary Qualcomm SoC firmware;retail:global",
+            "confidence": "high",
+            "note": "Board schematics and gerbers are CC-BY-SA 4.0 and tooling is open, but the QRB2210 SoC remains proprietary silicon needing firmware blobs.",
+            "sources": [
+              {
+                "url": "https://www.arduino.cc/product-uno-q",
+                "shows": "QRB2210 + STM32U585, schematics/gerbers under CC-BY-SA 4.0, App Lab open source",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 4,
+            "reach": "broad",
+            "signal_type": "reported_traction",
+            "confidence": "high",
+            "note": "Sold globally through Arduino Store plus Digikey, Mouser, and RS Components, backed by Arduino's large maker community.",
+            "sources": [
+              {
+                "url": "https://store.arduino.cc/pages/uno-q",
+                "shows": "availability across Arduino Store and authorized distributors",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "value": "QRB2210 quad-core 2.0 GHz + Adreno GPU; up to 4GB RAM; AI acceleration",
+            "confidence": "medium",
+            "note": "Capable Linux+MCU hybrid with GPU/ISP-based AI acceleration, but no published TOPS figure so throughput is modest versus dedicated-NPU kits.",
+            "sources": [
+              {
+                "url": "https://store.arduino.cc/pages/uno-q",
+                "shows": "QRB2210 quad-core, 2GB/4GB RAM, AI-accelerated tasks",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Board schematics and gerbers are CC-BY-SA 4.0 and tooling is open, but the QRB2210 SoC remains proprietary silicon needing firmware blobs."
+        },
+        {
+          "product": "Texas Instruments AM67A",
+          "org": "Texas Instruments",
+          "type": "hardware",
+          "description": "A Texas Instruments edge-AI vision SoC built on a quad Arm Cortex-A53 CPU at 1.4 GHz plus dual C7x DSP cores with Matrix Multiply Accelerators delivering 4 TOPS of deep-learning performance. On 16nm FinFET, it integrates a multi-camera ISP (up to 4 CSI-2 inputs), PCIe Gen3, and Gigabit Ethernet with TSN, supporting up to 8GB LPDDR4. It is supported by TI's Processor SDK and Edge AI Studio and is the chip behind the BeagleY-AI SBC.",
+          "openness": {
+            "class": "documented",
+            "score": 3,
+            "components": "schematics:reference designs (BeagleY-AI board files open);toolchain:open SDK + TIDL tools + Edge AI Studio;datasheets:public (Rev B);blobs:proprietary silicon + TIDL firmware;retail:active via TI and partners",
+            "confidence": "high",
+            "note": "Public datasheet and open SDK/TIDL tools on GitHub, commercially active, but proprietary silicon and firmware keep it short of fully open hardware.",
+            "sources": [
+              {
+                "url": "https://www.ti.com/product/AM67A",
+                "shows": "official page: 4 TOPS C7x+MMA, quad A53, public datasheet, ACTIVE status, SDKs",
+                "accessed": "2026-06-22"
+              },
+              {
+                "url": "https://github.com/TexasInstruments/edgeai-tidl-tools",
+                "shows": "open-source TIDL deep-learning toolchain for AM67A-class processors",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "broad",
+            "signal_type": "reported_traction",
+            "confidence": "high",
+            "note": "ACTIVE production part available from TI and distributors, and the basis of the widely sold BeagleY-AI board, giving solid commercial and community reach.",
+            "sources": [
+              {
+                "url": "https://www.beagleboard.org/boards/beagley-ai",
+                "shows": "AM67A powers the BeagleY-AI SBC",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "4 TOPS (dual C7x+MMA); quad A53 1.4 GHz; up to 8GB LPDDR4",
+            "confidence": "high",
+            "note": "4 TOPS plus a strong vision/ISP pipeline and 8GB memory make it a capable dedicated edge-AI vision SoC.",
+            "sources": [
+              {
+                "url": "https://www.ti.com/product/AM67A",
+                "shows": "4 TOPS deep-learning, quad A53, 8GB LPDDR4, 600MP/s ISP",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Public datasheet and open SDK/TIDL tools on GitHub, commercially active, but proprietary silicon and firmware keep it short of fully open hardware."
+        },
+        {
+          "product": "NXP i.MX 8M Plus",
+          "org": "NXP Semiconductors",
+          "type": "hardware",
+          "description": "An NXP applications processor family with up to a quad Arm Cortex-A53 CPU, a Cortex-M7 real-time core, and an integrated NPU delivering up to 2.3 TOPS for on-device ML and vision. It includes dual ISPs and two camera inputs and targets smart home, building, city, and Industry 4.0 use cases. NXP provides a Linux/Yocto BSP and public datasheets, and the part is commercially available with SoM options from ADLINK, Toradex, and SolidRun.",
+          "openness": {
+            "class": "documented",
+            "score": 3,
+            "components": "schematics:no (EVK reference designs only);toolchain:Linux/Yocto BSP;datasheets:public (IMX8MPCEC);blobs:proprietary silicon + NPU firmware;retail:commercial via NXP and SoM partners",
+            "confidence": "high",
+            "note": "Public datasheets and a Linux BSP with broad commercial availability, but proprietary silicon with no open board files.",
+            "sources": [
+              {
+                "url": "https://www.nxp.com/products/i.MX8MPLUS",
+                "shows": "official page: Cortex-A53/M7, up to 2.3 TOPS NPU, ML/vision focus",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 4,
+            "reach": "broad",
+            "signal_type": "reported_traction",
+            "confidence": "high",
+            "note": "Widely deployed industrial processor with SoMs from multiple vendors (ADLINK, Toradex Verdin, SolidRun) and broad distributor availability.",
+            "sources": [
+              {
+                "url": "https://www.toradex.com/computer-on-modules/verdin-arm-family/nxp-imx-8m-plus",
+                "shows": "Toradex Verdin SoM productizes the i.MX 8M Plus",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "value": "2.3 TOPS NPU; quad Cortex-A53 + Cortex-M7; LPDDR4 support",
+            "confidence": "high",
+            "note": "2.3 TOPS integrated NPU with dual-ISP vision is solid for industrial ML but lower throughput than the 4-12 TOPS dedicated kits here.",
+            "sources": [
+              {
+                "url": "https://www.nxp.com/docs/en/fact-sheet/IMX8MPLUSFS.pdf",
+                "shows": "fact sheet: 2.3 TOPS NPU, CPU/ISP specs",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Public datasheets and a Linux BSP with broad commercial availability, but proprietary silicon with no open board files."
+        },
+        {
+          "product": "Sipeed MaixCAM",
+          "org": "Sipeed",
+          "type": "hardware",
+          "description": "A compact AI vision and audio dev board built around the SOPHGO SG2002 SoC (a 1 GHz RISC-V C906 big core plus a 700 MHz small core) with a 1 TOPS INT8 NPU that also supports BF16 models, 256MB DDR3, a 2.3-inch IPS touchscreen, and dual MIPI-CSI camera input. It is programmed via the open-source MaixPy (Python) and MaixCDK (C/C++) SDKs and sold through Taobao/AliExpress. It matters as an ultra-low-cost RISC-V edge-AI vision module with strong open tooling.",
+          "openness": {
+            "class": "open_toolchain",
+            "score": 4,
+            "components": "schematics:available via wiki/GitHub;toolchain:fully open (MaixPy/MaixCDK, Apache-2.0);datasheets:public on wiki;blobs:SG2002 silicon proprietary;retail:global via AliExpress/Taobao",
+            "confidence": "high",
+            "note": "Open Apache-2.0 SDKs, public schematics/datasheets, and global retail availability, though the SG2002 silicon itself is proprietary.",
+            "sources": [
+              {
+                "url": "https://wiki.sipeed.com/hardware/en/maixcam/maixcam.html",
+                "shows": "spec page: SG2002 RISC-V, 1 TOPS NPU, 256MB DDR3, open schematics/datasheets, MaixPy/MaixCDK",
+                "accessed": "2026-06-22"
+              },
+              {
+                "url": "https://github.com/sipeed/MaixPy",
+                "shows": "open-source (Apache-2.0) Python SDK for MaixCAM",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "niche",
+            "signal_type": "reported_traction",
+            "confidence": "medium",
+            "note": "Sold globally via AliExpress/Taobao with an active MaixPy/MaixHub community, but reach is concentrated among hobbyist and RISC-V edge-AI developers.",
+            "sources": [
+              {
+                "url": "https://github.com/sipeed/MaixPy",
+                "shows": "active open-source repo and release cadence",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "capability": {
+            "score": 2,
+            "basis": "feature_matrix",
+            "value": "1 TOPS INT8 NPU; RISC-V C906; 256MB DDR3",
+            "confidence": "high",
+            "note": "1 TOPS and only 256MB RAM suit lightweight vision/audio models, the lowest compute tier among these devices.",
+            "sources": [
+              {
+                "url": "https://wiki.sipeed.com/hardware/en/maixcam/maixcam.html",
+                "shows": "1 TOPS@INT8 NPU, RISC-V C906 1GHz, 256MB DDR3",
+                "accessed": "2026-06-22"
+              }
+            ]
+          },
+          "version_note": "Verified live 2026-06-22 via primary sources. Open Apache-2.0 SDKs, public schematics/datasheets, and global retail availability, though the SG2002 silicon itself is proprietary."
+        }
+      ]
     }
   },
   "order": [
@@ -18901,33 +22324,30 @@
     "finetuning_code",
     "evaluation_code",
     "benchmark_eval_data",
+    "training_synthetic_datasets",
     "orchestration_agents",
     "ui_api",
     "telemetry_observability",
     "agent_tools_protocols",
-    "deployment"
+    "ml_frameworks",
+    "deployment",
+    "edge_hardware"
   ],
-  "n_total": 351,
-  "generated": "2026-06-20",
+  "n_total": 421,
+  "generated": "2026-06-22",
   "long_tail": {
     "counts": {
       "repos": 15375,
       "models": 6428,
       "packages": 2823,
       "total": 24626,
-      "scored": 351,
-      "overlap": 156,
+      "scored": 421,
+      "overlap": 226,
       "scored_outside": 195,
-      "uncategorized": 24470,
+      "uncategorized": 24400,
       "universe": 24821
     },
     "top": [
-      {
-        "name": "tensorflow/tensorflow",
-        "type": "repo",
-        "usage_label": "194,919 stars",
-        "description": "An Open Source Machine Learning Framework for Everyone"
-      },
       {
         "name": "ultraworkers/claw-code",
         "type": "repo",
@@ -18957,12 +22377,6 @@
         "type": "repo",
         "usage_label": "160,986 stars",
         "description": "f.k.a. Awesome ChatGPT Prompts. Share, discover, and collect prompts from the community. Free and open source — self-hos"
-      },
-      {
-        "name": "huggingface/transformers",
-        "type": "repo",
-        "usage_label": "160,031 stars",
-        "description": "🤗 Transformers: the model-definition framework for state-of-the-art machine learning models in text, vision, audio, and "
       },
       {
         "name": "Snailclimb/JavaGuide",
@@ -19097,12 +22511,6 @@
         "description": "fineinstructions dataset"
       },
       {
-        "name": "allenai/c4",
-        "type": "dataset",
-        "usage_label": "733k downloads",
-        "description": "allenai dataset"
-      },
-      {
         "name": "mlfoundations/MINT-1T-PDF-CC-2024-18",
         "type": "dataset",
         "usage_label": "691k downloads",
@@ -19145,18 +22553,6 @@
         "description": "PyPI package"
       },
       {
-        "name": "transformers",
-        "type": "package",
-        "usage_label": "1.2B downloads",
-        "description": "PyPI package"
-      },
-      {
-        "name": "torch",
-        "type": "package",
-        "usage_label": "825.5M downloads",
-        "description": "PyPI package"
-      },
-      {
         "name": "nltk",
         "type": "package",
         "usage_label": "518.2M downloads",
@@ -19178,12 +22574,6 @@
         "name": "opencv-python",
         "type": "package",
         "usage_label": "395.2M downloads",
-        "description": "PyPI package"
-      },
-      {
-        "name": "tensorflow",
-        "type": "package",
-        "usage_label": "286.4M downloads",
         "description": "PyPI package"
       }
     ]
