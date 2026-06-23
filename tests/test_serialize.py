@@ -112,6 +112,37 @@ def test_long_tail_drops_now_categorized_products():
     assert "someone/uncategorized" in names
 
 
+def test_descriptions_block_present_and_sourced():
+    src = _sources()
+    src["categories"]["base_pretrained"]["description"] = "Foundation models trained from scratch."
+    payload = build_payload(src, frozen_long_tail={}, generated="2026-06-10")
+    d = payload["descriptions"]
+    # stages keyed 0-5, gaps keyed by name, categories keyed by slug from the source yaml
+    assert set(d["stages"]) == {"0", "1", "2", "3", "4", "5"}
+    assert "void" in d["gaps"] and "openness" in d["gaps"]
+    assert d["categories"]["base_pretrained"] == "Foundation models trained from scratch."
+    # descriptions ships first so it reads as a header
+    assert list(payload)[0] == "descriptions"
+
+
+def test_openness_bucket_assigned_per_product():
+    # restricted collapses to the closed bucket; the raw class is preserved alongside it
+    payload = build_payload(_sources(), frozen_long_tail={}, generated="2026-06-10")
+    op = payload["categories"]["base_pretrained"]["products"][0]["openness"]
+    assert op["class"] == "restricted"
+    assert op["bucket"] == "closed"
+
+
+def test_openness_bucket_covers_open_and_open_ish():
+    src = _sources()
+    src["scores"]["llama-4"]["openness"] = {"score": 5, "class": "open_source"}
+    payload = build_payload(src, frozen_long_tail={}, generated="2026-06-10")
+    assert payload["categories"]["base_pretrained"]["products"][0]["openness"]["bucket"] == "open"
+    src["scores"]["llama-4"]["openness"] = {"score": 3, "class": "open_weights"}
+    payload = build_payload(src, frozen_long_tail={}, generated="2026-06-10")
+    assert payload["categories"]["base_pretrained"]["products"][0]["openness"]["bucket"] == "open-ish"
+
+
 def test_unknown_org_renders_empty_string():
     s = _sources()
     s["organizations"] = {"unknown": {"name": "unknown", "display_name": "Unknown",

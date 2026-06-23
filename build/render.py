@@ -109,24 +109,11 @@ def data():
     DATA = json.loads(__DATA_LITERAL__)
     ORDER = DATA["order"]
     STRAPLINES = __STRAPLINES__
-    # Neutral one-line definitions for the at-a-glance overview (what the
-    # category IS, vs the strapline which is the finding).
-    STACK_DESC = {
-        "base_pretrained": "Foundation models trained from scratch.",
-        "finetuned_chat": "Instruction-tuned chat and reasoning assistants.",
-        "inference_code": "Engines and runtimes that serve model inference.",
-        "finetuning_code": "Libraries and platforms for fine-tuning models.",
-        "evaluation_code": "Harnesses that run and grade model evaluations.",
-        "benchmark_eval_data": "Benchmark datasets used to evaluate models.",
-        "orchestration_agents": "Frameworks and agents that plan and execute tasks.",
-        "ui_api": "Chat UIs and API gateways in front of models.",
-        "telemetry_observability": "Tracing and observability for LLM apps.",
-        "agent_tools_protocols": "Tools, protocols, and retrieval for agents.",
-        "deployment": "Sandboxes, runtimes, and serverless model hosting.",
-        "training_synthetic_datasets": "Corpora for pre-training and post-training models.",
-        "ml_frameworks": "Foundational libraries the rest of the stack is built on.",
-        "edge_hardware": "Boards and chips that run model inference at the edge.",
-    }
+    # Neutral one-line definitions for the at-a-glance overview (what the category
+    # IS, vs the strapline which is the finding). Sourced from the payload's
+    # descriptions.categories (ultimately sources/categories/<cid>.yaml), so the
+    # wording lives in one place.
+    STACK_DESC = DATA["descriptions"]["categories"]
     # Per-category combined-score weights (adoption, capability), ported from the
     # v2 stack map (slugs identical). Feed the "standout product" gate behind the
     # openness verdict; the table also shows the blended score.

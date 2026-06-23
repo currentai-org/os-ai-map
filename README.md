@@ -46,7 +46,7 @@ One YAML file per record, four concerns **plus** the single `sources/taxonomy.ya
 | Path | Contains | Key rule |
 |------|----------|----------|
 | `sources/organizations/` | Org metadata (`name`, `display_name`, optional `type`, `homepage`, `github`, `comments`) and a `products:` roster | Each product slug appears in exactly one org roster |
-| `sources/categories/` | Category definition (`display_name`, optional `strapline`, `weights`, `scoring_recipe`, `comments`) and an ordered `products:` roster | Order = display order; each product in exactly one category |
+| `sources/categories/` | Category definition (`display_name`, optional `description`, `strapline`, `weights`, `scoring_recipe`, `comments`) and an ordered `products:` roster | Order = display order; each product in exactly one category |
 | `sources/products/` | Product record (`name`, `display_name`, `type`, `description`, typed artifact URL arrays, optional `comments`) | No `org:` or `flags` fields — org membership is declared in the org file |
 | `sources/scores/` | Per-product `openness`, `adoption`, `capability` | Every non-null score value needs a `sources:` citation |
 | `sources/taxonomy.yaml` | Arc grouping + cross-category display order. The three arcs are the Columbia ontology layers (`product_ux` / `model_components` / `infrastructure`); each arc declares its `layer` slug + ordered category slugs | Every category appears in exactly one arc; serialize derives each category's `layer` from its arc |

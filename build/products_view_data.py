@@ -29,26 +29,6 @@ ROOT = Path(__file__).resolve().parents[1]
 NB = ROOT / "notebooks" / "products-view.py"
 ND = ROOT / "build" / "notebook_data.json"
 
-# Source of truth for the short per-category captions shown in the products
-# view (the canonical notebook_data.json does not carry these). A caption read
-# from the notebook's current payload wins over this fallback, so curators can
-# tweak wording in-notebook; this dict guarantees a sensible default and covers
-# any newly-added category.
-CAT_DESCS = {
-    "base_pretrained": "Foundation models trained from scratch.",
-    "finetuned_chat": "Instruction-tuned chat and reasoning assistants.",
-    "inference_code": "Engines and runtimes that serve model inference.",
-    "finetuning_code": "Libraries and platforms for fine-tuning models.",
-    "evaluation_code": "Harnesses that run and grade model evaluations.",
-    "benchmark_eval_data": "Benchmark datasets used to evaluate models.",
-    "orchestration_agents": "Frameworks and agents that plan and execute tasks.",
-    "ui_api": "Chat UIs and API gateways in front of models.",
-    "telemetry_observability": "Tracing and observability for LLM apps.",
-    "agent_tools_protocols": "Tools, protocols, and retrieval for agents.",
-    "deployment": "Sandboxes, runtimes, and serverless model hosting.",
-}
-
-
 def _embedded_payload(source: str) -> dict | None:
     """Return the payload currently embedded in the notebook, or None."""
     for node in ast.walk(ast.parse(source)):
@@ -65,13 +45,17 @@ def build_payload(nd: dict, prev: dict | None) -> dict:
     """Map build/notebook_data.json into the compact products-view payload."""
     prev_descs = {cid: c.get("desc") for cid, c in (prev or {}).get("cats", {}).items()}
     order = nd["order"]
+    # Canonical per-category captions now ship in the payload (descriptions.categories,
+    # sourced from sources/categories/<cid>.yaml). A caption already edited into the
+    # notebook's current payload still wins, so curators can tweak wording in-notebook.
+    nd_descs = nd.get("descriptions", {}).get("categories", {})
     cats, components = {}, []
     for cid in order:
         c = nd["categories"][cid]
         cats[cid] = {
             "label": c["label"],
             "arc": c["arc"],
-            "desc": prev_descs.get(cid) or CAT_DESCS.get(cid, ""),
+            "desc": prev_descs.get(cid) or nd_descs.get(cid, ""),
         }
         for p in c["products"]:
             comp = {
