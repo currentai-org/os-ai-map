@@ -12,7 +12,7 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 
 PRODUCT_KEY_ORDER = ["product", "org", "type", "description",
-                     "openness", "adoption", "capability", "version_note"]
+                     "openness", "adoption", "capability", "maturity", "version_note"]
 
 # --- Gap analysis (category-level stage + gaps) -----------------------------
 # Mirrors the open / open-ish / closed verdict in docs/openness-class-map.json
@@ -36,11 +36,15 @@ def _gap_bucket(cls: str) -> str:
     return "closed"
 
 
-def _maturity_score(row: dict, w: dict) -> float:
+def _maturity_score(row: dict, w: dict) -> float | None:
     # Per-category linear blend of the 1-5 axes, normalized by the weight sum so the
     # result stays on the 1-5 scale for any weights (identity when they sum to 1).
-    # Datasets have no capability score, so they are graded on adoption alone.
-    adoption = (row.get("adoption") or {}).get("level") or 0
+    # Maturity is anchored on adoption: a product with no adoption signal has no
+    # maturity score (None) rather than a spurious zero. Capability may be legitimately
+    # null for some product types (e.g. datasets), which are graded on adoption alone.
+    adoption = (row.get("adoption") or {}).get("level")
+    if adoption is None:
+        return None
     capability = (row.get("capability") or {}).get("score")
     if capability is None:
         return float(adoption)
@@ -55,11 +59,14 @@ def _stage_and_gaps(rows: list[dict], weights: dict) -> dict:
     open-ish only serves to detect the openness gap. See docs/guides/gap-analysis.md.
     """
     w = weights or {"adopt": 0.5, "cap": 0.5}
+    # Products with no maturity score (missing adoption) are excluded from the stage
+    # computation — we can't judge what we can't measure, so they neither advance nor
+    # depress the category's stage.
     enr = [(r, _gap_bucket((r.get("openness") or {}).get("class")), _maturity_score(r, w)) for r in rows]
-    open_rows = [(r, s) for r, b, s in enr if b == "open"]
+    open_rows = [(r, s) for r, b, s in enr if b == "open" and s is not None]
     mature_open = sum(1 for _, s in open_rows if s >= _MATURE_MIN)
     best_open = max((s for _, s in open_rows), default=0.0)
-    mature_anywhere = any(s >= _MATURE_MIN for _, _, s in enr)
+    mature_anywhere = any(s >= _MATURE_MIN for _, _, s in enr if s is not None)
 
     if mature_open >= _STAGE5_MIN_MATURE:
         stage = 5
@@ -128,7 +135,7 @@ def _filter_long_tail(frozen: dict, prods: dict) -> dict:
     return lt
 
 
-def _row(prod: dict, org_name: str, score: dict) -> dict:
+def _row(prod: dict, org_name: str, score: dict, weights: dict | None) -> dict:
     row = {
         "product": prod["display_name"],
         "org": org_name,
@@ -138,6 +145,11 @@ def _row(prod: dict, org_name: str, score: dict) -> dict:
         "adoption": score["adoption"],
         "capability": score["capability"],
     }
+    # The weighted product maturity score (per-category blend of adoption/capability)
+    # rounded to 2dp for display, or null when adoption is missing. The category stage
+    # thresholds in _stage_and_gaps use the unrounded value; this field is the same metric.
+    m = _maturity_score(row, weights or {"adopt": 0.5, "cap": 0.5})
+    row["maturity"] = round(m, 2) if m is not None else None
     # Bridge: the source field is now `comments` (a string), but the payload key
     # the notebook consumes is still `version_note`. Same value, renamed at rest.
     if prod.get("comments"):
@@ -183,7 +195,7 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
             # name "Unknown", which is schema-valid; the overlay carries "").
             org_slug = product_org[slug]
             org_name = "" if org_slug == "unknown" else orgs[org_slug]["display_name"]
-            rows.append(_row(p, org_name, scores[slug]))
+            rows.append(_row(p, org_name, scores[slug], cat.get("weights")))
             n += 1
         sg = _stage_and_gaps(rows, cat.get("weights"))
         out_cats[cid] = {"label": cat["display_name"], "arc": cid_arc[cid],
