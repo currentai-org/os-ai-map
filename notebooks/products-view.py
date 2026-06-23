@@ -374,11 +374,14 @@ def engine(CATS, COMPONENTS, ORDER, STRUCTURAL_GAPS):
         "finetuning_code": set(tok("finetuning fine tuning train training lora rlhf rl adapt instruction")),
         "evaluation_code": set(tok("evaluation eval harness benchmark test grade quality regression")),
         "benchmark_eval_data": set(tok("benchmark dataset eval questions test math code knowledge")),
+        "training_synthetic_datasets": set(tok("dataset datasets data corpus pretraining synthetic training tokens text web multilingual instruction")),
         "orchestration_agents": set(tok("agent agents orchestration framework workflow autonomous plan rag retrieval chain")),
         "ui_api": set(tok("ui interface chat frontend gateway api proxy router self hosted web app")),
         "telemetry_observability": set(tok("observability tracing telemetry monitoring logging cost analytics debug")),
         "agent_tools_protocols": set(tok("tools protocol vector database search retrieval scrape browse mcp embedding index")),
+        "ml_frameworks": set(tok("framework frameworks library libraries pytorch tensorflow jax keras transformers deep learning training python")),
         "deployment": set(tok("deploy deployment sandbox container serverless runtime host hosting cluster cloud")),
+        "edge_hardware": set(tok("edge hardware device board soc npu gpu arm embedded sbc accelerator chip raspberry jetson offline")),
     }
     OPEN_CLASSES = {"open_source", "open", "open_weights", "open_core"}
     # Calibrated on the preset queries (see methodology).
