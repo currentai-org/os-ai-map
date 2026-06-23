@@ -236,10 +236,9 @@ def header(C, DATA, F, mo):
 
 
 @app.cell(hide_code=True)
-def stack_overview(C, DATA, F, ORDER, STACK_DESC, VERDICT, mix_counts, mo,
-                   verdict_for):
+def stack_overview(C, DATA, F, ORDER, STACK_DESC, mix_counts, mo):
     # The at-a-glance roster: every category as a row, grouped by arc, with the
-    # full openness-mix count chips and the verdict badge.
+    # full openness-mix count chips.
     _rows = []
     _last_arc = None
     for _i, _cid in enumerate(ORDER, start=1):
@@ -255,15 +254,13 @@ def stack_overview(C, DATA, F, ORDER, STACK_DESC, VERDICT, mix_counts, mo,
             )
             _last_arc = _arc
         _m = mix_counts(_cid)
-        _code, _basis = verdict_for(_cid)
-        _vlabel, _vckey = VERDICT[_code]
         _chips = (
             f'<span style="color:{C["healthy"]};">\\u25cf</span> {_m["open"]} open'
             f'&nbsp;&nbsp;<span style="color:{C["warm"]};">\\u25cf</span> {_m["openish"]} open-ish'
             f'&nbsp;&nbsp;<span style="color:{C["ink_3"]};">\\u25cf</span> {_m["closed"]} closed'
         )
         _rows.append(
-            f'<div style="display:grid; grid-template-columns:32px 1fr 232px 150px; gap:18px; '
+            f'<div style="display:grid; grid-template-columns:32px 1fr 232px; gap:18px; '
             f'align-items:center; padding:14px 0; border-bottom:1px solid {C["rule"]};">'
             f'<div style="font-family:{F["mono"]}; font-size:12px; color:{C["ink_3"]};">{_i:02d}</div>'
             f'<div><div style="font-family:{F["headline"]}; font-size:1.05rem; font-weight:500; '
@@ -271,9 +268,6 @@ def stack_overview(C, DATA, F, ORDER, STACK_DESC, VERDICT, mix_counts, mo,
             f'<div style="font-family:{F["body"]}; font-size:0.85rem; color:{C["ink_3"]}; '
             f'margin-top:3px; line-height:1.4;">{STACK_DESC.get(_cid, "")}</div></div>'
             f'<div style="font-family:{F["mono"]}; font-size:0.74rem; color:{C["ink_2"]};">{_chips}</div>'
-            f'<div style="font-family:{F["mono"]}; font-size:0.72rem; letter-spacing:0.05em; '
-            f'text-transform:uppercase; color:white; background:{C[_vckey]}; padding:7px 10px; '
-            f'text-align:center; border-radius:2px;">{_vlabel}</div>'
             f'</div>'
         )
     _total = DATA.get("n_total") or sum(len(DATA["categories"][c]["products"]) for c in ORDER)
@@ -287,8 +281,7 @@ def stack_overview(C, DATA, F, ORDER, STACK_DESC, VERDICT, mix_counts, mo,
         f'{_n_arcs} layers \\u00b7 {len(ORDER)} categories \\u00b7 {_total} scored products</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.95rem; color:{C["ink_2"]}; margin:0 0 20px; line-height:1.6;">'
         f'Each row is one category, grouped into three layers. The dots show the openness mix of all its '
-        f'products; the badge names which tier leads among the category\\u2019s standout products: '
-        f'those that clear the combined adoption\\u00d7capability bar. Open in the long tail and closed at the '
+        f'products. Open in the long tail and closed at the '
         f'top can coexist \\u2014 that gap is the point.</p>'
         f'{"".join(_rows)}</div>'
     )
