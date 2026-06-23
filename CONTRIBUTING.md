@@ -86,6 +86,12 @@ edit the `products:` array. To move a product between categories, remove it
 from one roster and add it to the other (it must end up in exactly one).
 Arc grouping and cross-category order live in `sources/taxonomy.yaml`.
 
+The category also carries two bits of editorial text: `description` (a neutral
+one-liner — *what the category is*) and `strapline` (the *finding* — what the map
+concludes about its open/closed gap). Both flow into the build, so edit them here
+rather than in the notebook; `description` is also emitted into the payload's
+top-level `descriptions.categories` legend.
+
 ## Scoring rubric (summary)
 
 Each score file has three axes. **Every non-null value needs at least one

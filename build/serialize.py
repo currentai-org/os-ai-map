@@ -26,6 +26,27 @@ _CAPABLE_MIN = 4           # raw capability below which an open option is "not c
 _STAGE_NAMES = {0: "Void", 1: "Open Experiments", 2: "Emerging Alternatives",
                 3: "Viable Alternatives", 4: "Competitive Open Ecosystem",
                 5: "Mature Open Ecosystem"}
+# Plain-language definitions of each stage and gap, emitted into the payload's
+# top-level `descriptions` block so downstream consumers render a legend without
+# re-deriving the methodology. Kept verbatim from docs/guides/gap-analysis.md
+# (the prose source of truth); edit both together.
+_STAGE_DESC = {
+    0: "no usable open option exists (and nothing is mature anywhere)",
+    1: "fully-open options exist but are weak on both axes",
+    2: "no mature fully-open product; the best fully-open option is promising but limited",
+    3: "no mature fully-open product, but the best fully-open option is strong",
+    4: "at least one mature fully-open product, but not yet enough for depth",
+    5: "enough mature fully-open products to be redundant/resilient",
+}
+_GAP_DESC = {
+    "void": "no usable open option at all.",
+    "capability": "the best fully-open option isn't capable enough to be useful.",
+    "adoption": "a capable fully-open option exists but is under-adopted.",
+    "maturity": "open options exist and at least one may be mature, but the ecosystem lacks "
+                "the depth/redundancy of a mature ecosystem (too few mature fully-open products).",
+    "openness": "capable, adopted options exist, but the mature ones are not fully open "
+                "(open-ish or closed). This is the orthogonal flag; it can co-occur with the others.",
+}
 
 
 def _gap_bucket(cls: str) -> str:
@@ -136,12 +157,16 @@ def _filter_long_tail(frozen: dict, prods: dict) -> dict:
 
 
 def _row(prod: dict, org_name: str, score: dict, weights: dict | None) -> dict:
+    # Pre-compute the open / open-ish / closed bucket alongside the raw class, so
+    # consumers get a stable 3-way verdict that survives changes to the openness.class
+    # vocabulary. Same collapse the category gap logic uses (_gap_bucket).
+    openness = {**score["openness"], "bucket": _gap_bucket((score["openness"] or {}).get("class"))}
     row = {
         "product": prod["display_name"],
         "org": org_name,
         "type": prod["type"],
         "description": prod.get("description", ""),
-        "openness": score["openness"],
+        "openness": openness,
         "adoption": score["adoption"],
         "capability": score["capability"],
     }
@@ -201,8 +226,18 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
         out_cats[cid] = {"label": cat["display_name"], "arc": cid_arc[cid],
                          "layer": cid_layer[cid], "stage": {"num": sg["num"], "name": sg["name"]},
                          "gaps": sg["gaps"], "products": rows}
-    return {"categories": out_cats, "order": order, "n_total": n,
-            "generated": generated, "long_tail": _filter_long_tail(frozen_long_tail, prods)}
+    # Editable legend for the derived attributes, carried at the top of the payload.
+    # Stage/gap text are methodology constants (above); the per-category one-liner is
+    # the neutral `description` from sources/categories/<cid>.yaml ("what it is", as
+    # opposed to the editorial strapline). Edit at the source; it flows here on build.
+    descriptions = {
+        "stages": {str(k): v for k, v in _STAGE_DESC.items()},
+        "gaps": dict(_GAP_DESC),
+        "categories": {cid: cats[cid].get("description", "") for cid in order},
+    }
+    return {"descriptions": descriptions, "categories": out_cats, "order": order,
+            "n_total": n, "generated": generated,
+            "long_tail": _filter_long_tail(frozen_long_tail, prods)}
 
 
 if __name__ == "__main__":

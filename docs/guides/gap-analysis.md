@@ -119,7 +119,12 @@ rubric or the curation density changes materially.
 
 - **Computed** in `build/serialize.py` (`_stage_and_gaps`), from the per-product scores in
   `sources/scores/` and the per-category `weights` in `sources/categories/`.
-- **Emitted** into `build/notebook_data.json` per category (`stage`, `gaps`).
+- **Emitted** into `build/notebook_data.json` per category (`stage`, `gaps`). The
+  plain-language definitions of every stage and gap ship in the payload's top-level
+  `descriptions` block (`descriptions.stages`, `descriptions.gaps`, plus the neutral
+  per-category one-liner in `descriptions.categories`), so a consumer can render a
+  legend without re-deriving this document. Each product also carries its openness
+  `bucket` (`open` / `open-ish` / `closed`) alongside the raw `class`.
 - **Displayed** in the published notebook as a maturity-ladder table (each category placed on
   its stage). The per-category gap set is carried in the payload for downstream consumers
   rather than shown inline.
