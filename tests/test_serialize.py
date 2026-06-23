@@ -18,6 +18,14 @@ def test_openness_gap_when_mature_options_are_open_ish():
     assert sg["num"] < 5 and "maturity" in sg["gaps"] and "openness" in sg["gaps"]
 
 
+def test_missing_adoption_yields_null_maturity_and_is_excluded_from_stage():
+    # A product with null adoption has no maturity score (not 0.0) and must not drag
+    # the category's stage down — here a mature open product should still reach stage 4.
+    rows = [_p("open_source", 5, 5), _p("open_source", None, None)]
+    sg = _stage_and_gaps(rows, {"adopt": 0.5, "cap": 0.5})
+    assert sg["num"] == 4  # the null-adoption product is ignored, the mature one stands
+
+
 def test_void_when_no_open_option():
     sg = _stage_and_gaps([_p("closed", 1, 1)], {"adopt": 0.5, "cap": 0.5})
     assert sg["num"] == 0 and sg["gaps"] == ["void"]
@@ -65,6 +73,27 @@ def test_build_payload_shape_and_order():
     assert row["org"] == "Meta"
     # comments field is carried under the legacy payload key version_note
     assert row["version_note"] == "note text"
+    # llama-4 has no capability score, so maturity falls back to adoption (4) alone
+    assert row["maturity"] == 4.0
+
+
+def test_null_adoption_serializes_maturity_null():
+    src = _sources()
+    src["scores"]["llama-4"]["adoption"] = {"level": None, "signal_type": "unknown"}
+    payload = build_payload(src, frozen_long_tail={}, generated="2026-06-10")
+    assert payload["categories"]["base_pretrained"]["products"][0]["maturity"] is None
+
+
+def test_maturity_is_weighted_blend_rounded_2dp():
+    # adoption 4, capability 5 with default 0.5/0.5 weights -> 4.5; cap-heavy 0.25/0.75 -> 4.75
+    src = _sources()
+    src["scores"]["llama-4"]["capability"] = {"score": 5, "basis": "x"}
+    payload = build_payload(src, frozen_long_tail={}, generated="2026-06-10")
+    assert payload["categories"]["base_pretrained"]["products"][0]["maturity"] == 4.5
+
+    src["categories"]["base_pretrained"]["weights"] = {"adopt": 0.25, "cap": 0.75}
+    payload = build_payload(src, frozen_long_tail={}, generated="2026-06-10")
+    assert payload["categories"]["base_pretrained"]["products"][0]["maturity"] == 4.75
 
 
 def test_long_tail_drops_now_categorized_products():
