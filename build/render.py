@@ -216,7 +216,7 @@ def header(C, DATA, F, mo):
         f'Current AI \\u00b7 Open Source AI Map \\u00b7 v3</div>'
         f'<h1 style="font-family:{F["headline"]}; font-size:2.2rem; font-weight:400; '
         f'color:{C["ink"]}; margin:0 0 14px; line-height:1.05; letter-spacing:-0.025em;">'
-        f'Open Source AI Map: openness is a spectrum, not a checkbox</h1>'
+        f'Open Source AI Map</h1>'
         f'<p style="font-family:{F["body"]}; font-size:1rem; color:{C["ink_2"]}; '
         f'margin:0; line-height:1.5;">'
         f'We track <strong>{_lt["total"]:,}</strong> open-source AI artifacts across the stack. '
@@ -231,39 +231,6 @@ def header(C, DATA, F, mo):
         f'<a href="https://arxiv.org/abs/2405.15802" target="_blank" rel="noopener" '
         f'style="color:{C["accent"]}; text-decoration:underline;">'
         f'2024 Columbia Convening on Openness in AI</a>.</p></div>'
-    )
-    return
-
-
-@app.cell(hide_code=True)
-def combat_scorecard(C, DATA, F, ORDER, VERDICT, mo, verdict_for):
-    # Hero: one count tile per openness verdict across the categories.
-    _counts = {}
-    for _cid in ORDER:
-        _code = verdict_for(_cid)[0]
-        _counts[_code] = _counts.get(_code, 0) + 1
-    _codes = ["open_leads", "openish_leads", "closed_leads", "competitive"]
-    if _counts.get("none"):
-        _codes.append("none")
-    _tiles = []
-    for _code in _codes:
-        _label, _ckey = VERDICT[_code]
-        _n = _counts.get(_code, 0)
-        _tiles.append(
-            f'<div style="background:{C[_ckey]}; color:white; padding:18px 16px; border-radius:3px;">'
-            f'<div style="font-family:{F["headline"]}; font-size:2.4rem; font-weight:500; '
-            f'line-height:1; letter-spacing:-0.02em;">{_n}</div>'
-            f'<div style="font-family:{F["mono"]}; font-size:0.7rem; letter-spacing:0.08em; '
-            f'text-transform:uppercase; margin-top:8px; opacity:0.92;">{_label}</div>'
-            f'</div>'
-        )
-    mo.Html(
-        f'<div style="margin:0 0 44px;">'
-        f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
-        f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:10px;">'
-        f'Where openness leads \\u00b7 {len(ORDER)} categories</div>'
-        f'<div style="display:grid; grid-template-columns:repeat({len(_codes)}, 1fr); gap:10px;">'
-        f'{"".join(_tiles)}</div></div>'
     )
     return
 
