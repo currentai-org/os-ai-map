@@ -459,7 +459,7 @@ def header(C, F, GENERATED, N_TOTAL, mo):
         f'Maybe it’s a chat assistant that keeps patient records in the building. A coding agent '
         f'for your team. A question-answering service over your country’s public records. '
         f'Whatever you’re building, the hard part is rarely the idea. It’s knowing which of the '
-        f'<strong>{N_TOTAL} scored open-source AI components</strong> on this map to trust at each '
+        f'<strong>{N_TOTAL} scored open source AI components</strong> on this map to trust at each '
         f'layer of the stack. Start with the <strong>lookup tool</strong>: describe your product '
         f'in your own words and get suggested components for every layer, ranked. Or browse the '
         f'<strong>gallery</strong>: 10 reference builds, each broken down into the components '
@@ -694,7 +694,7 @@ def lookup_results(C, CATS, CAT_KW, F, OPEN_LABEL, ORDER, TH, gap_triggers,
             f'Gap signals for this description</div>{_gap_items}'
             f'<div style="font-family:{F["body"]}; font-size:0.76rem; color:{C["ink_3"]}; margin-top:8px;">'
             f'These signals feed the map’s gap analysis: a sensible product description that the stack '
-            f'answers weakly marks a place where open-source AI needs investment.</div></div>'
+            f'answers weakly marks a place where open source AI needs investment.</div></div>'
         )
     mo.Html(
         f'<div style="margin:8px 0 10px; padding:16px 20px; background:white; '
