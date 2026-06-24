@@ -6,9 +6,11 @@ prose shown in notebooks/ai-stack-map.py. It is NOT generated.
 
 build/render.py reads it at render time, substitutes the {placeholders} below with
 counts computed from build/notebook_data.json, converts the Markdown to HTML, and
-bakes the result into the generated notebook (the Summary section into the header,
-the Detail section into the Methodology section). The numbers therefore refresh on
-every build and cannot drift; edit the prose here and commit.
+bakes the result into the generated notebook. The doc has exactly two top-level
+"## " sections, in order: the first (Summary) feeds the notebook header, the second
+(the body) feeds the Methodology section. They are split by position, so you can
+rename either heading freely, but keep it to these two top-level sections. The
+numbers therefore refresh on every build and cannot drift; edit the prose and commit.
 
 Placeholders (filled from the payload at build time):
   {total} {scored} {uncategorized} {universe}
@@ -28,25 +30,25 @@ narrative; keep the two consistent when the openness model changes.
 
 We track {total} open source AI artifacts across the stack. This map scores {scored} of them in depth on three independent axes: **openness** (graded 0–5 against openness frameworks, not a yes/no: the Model Openness Framework for models, OSI classes for software, with data and hardware analogues), **adoption** (real usage, not stars), and **capability** (benchmarks where they exist, feature coverage where they don't). Every score is sourced. The remaining {uncategorized} are the uncategorized long tail, tracked by usage signal but not yet scored. The openness framework descends directly from the [2024 Columbia Convening on Openness in AI](https://arxiv.org/abs/2405.15802).
 
-## Detail
+## Full methodology
 
-This document describes how the Open Source AI Map is constructed: how the corpus is assembled, how each product is scored on three axes, how categories are placed on a maturity ladder, and how gaps are derived. The aim is a procedure that is auditable and reproducible rather than a black box. Every non-null score records a primary source and the date it was consulted; values are not inferred or interpolated.
+To create the map, we used both a discovery layer (to find the universe) and a more rigorous scoring and enrichment layer (to grade each product).
 
-### Corpus and discovery
+### Discovery and scoring
 
-We distinguish two layers of effort. A **discovery layer** establishes the universe of candidate artifacts, and a more demanding **scoring layer** enriches and grades a curated subset of them.
+The *discovery layer* establishes the universe of candidate products and associated artifacts, while the *scoring layer* enriches and grades a curated subset of products.
 
-Discovery draws on large-scale open data through [Open Source Observer](https://www.oso.xyz), an open pipeline for the discovery of open source software data. From it we assembled approximately {universe} candidate artifacts: roughly {disc_repos} GitHub repositories (identified through the platform's AI topic and keyword search, a catalog of AI-focused organizations and repositories, and the Good AI List), about {disc_models} models and datasets from the Hugging Face Hub, and around {disc_packages} entries from package registries, supplemented by the Open LLM Leaderboard and the AI Incident Database. Candidates were ranked by adoption signal (repository stars, package and model downloads, and related measures), and the most prominent were selected for enrichment.
+The discovery layer draws on large-scale open data from the software supply chain compiled by [Open Source Observer](https://www.oso.xyz). It was initially seeded from Chip Huyen's [Good AI List](https://goodailist.com), a catalog of AI-focused repositories, and broadened through analysis of the Hugging Face Hub, the Open LLM Leaderboard, the AI Incident Database, package registries and SBOMs, and academic and industry publications. From these approaches, we assembled approximately {universe} candidate artifacts: about {disc_repos} GitHub repositories, {disc_models} models and datasets, and {disc_packages} package entries. Candidates were ranked by adoption signal (repository stars, package and model downloads, and related measures), and the most prominent were selected for enrichment.
 
 The scoring layer enriched and graded {scored} products in depth: {n_software} software tools and libraries, {n_models} models, {n_datasets} datasets, and {n_hardware} hardware projects, produced by {n_orgs} organizations. These products are organized into {n_categories} categories across {n_layers} layers of the stack. The remaining {uncategorized} artifacts constitute the uncategorized long tail: they are tracked by usage signal but carry no openness, adoption, or capability score until they are researched and cited.
 
 ### The three axes
 
-Each scored product is graded on three axes that answer deliberately different questions: *is it open?* (openness), *is it used?* (adoption), and *is it any good?* (capability). The axes are treated as orthogonal. The analytically interesting cases are those in which they disagree: a widely used model that is barely open, or a fully open project that few have adopted. Holding the axes apart is what makes those cases visible.
+Each scored product is graded on three axes that answer deliberately different questions: *how open is it?* (openness), *how used is it?* (adoption), and *how good is it?* (capability). The axes are treated as orthogonal. The analytically interesting cases are those in which they disagree: a widely used model that is barely open, or a fully open project that few have adopted. Holding the axes apart is what makes those cases visible.
 
 #### Openness
 
-Openness is recorded in two fields. The first, the **class**, is a categorical label drawn from the Model Openness Framework and OSI license taxonomy (for example `open_source`, `open_weights`, `open_core`, `source_available`, `restricted`, `gated`, `documented_only`, `closed`). The class is the cross-category normaliser: it is the field to use when positioning a product on an openness spectrum. The second, the **score**, is a 0–5 grade with a component-level breakdown: weights, data, code, checkpoints, and license for models; license tests for software; access, license, and documentation for datasets.
+Openness is recorded in two fields. The first, the **class**, is a categorical label drawn from the Model Openness Framework and OSI license taxonomy (for example `open_source`, `open_weights`, `open_core`, `source_available`, `restricted`, `gated`, `documented_only`, `closed`). The class is the cross-category normalizer: it is the field to use when positioning a product on an openness spectrum. The second, the **score**, is a 0–5 grade with a component-level breakdown: weights, data, code, checkpoints, and license for models; license tests for software; access, license, and documentation for datasets.
 
 The score is graded relative to what is achievable *within a product type*, so the same number does not carry the same meaning across categories. A pretrained model at 2 is genuinely restricted, because the openness range for models is compressed: open weights typically land near 3, and a 5 requires a fully open pipeline of the Pythia or OLMo kind. A deployment tool at 2 sits elsewhere entirely. The raw 0–5 score should therefore be read as a within-type detail, not as a cross-category coordinate.
 
@@ -68,15 +70,17 @@ Adoption is graded 1–5 and measures real usage (downloads, active users, and d
 
 The sources differ by product type. For repositories we use GitHub stars, forks, and developer activity; for models and datasets, Hugging Face downloads and likes; for packages, registry download statistics (PyPI via pypistats.org, pepy.tech, and pypi.org, together with npm). Relative usage across models is estimated from OpenRouter's per-model token-share leaderboard. For the large closed consumer surfaces, where first-party usage figures are unavailable, we rely on traffic and monthly-active-user trackers such as Business of Apps and DemandSage.
 
+We recognize that adoption metrics can be gamed or manipulated, and welcome community feedback on the sources and methods used to compute them.
+
 #### Capability
 
 Capability is graded 1–5 and is method-labeled, so the basis of each grade is explicit. Where a community benchmark exists, the grade rests on it; where none does, it rests on a structured feature grid; and where capability is not a meaningful axis for a product type, the value is left null.
 
-Capability means different things for a model, a tool, and a dataset, so capability grades are comparable *within* a category and not across categories. Benchmark evidence is drawn from Artificial Analysis (its Intelligence Index), LMArena / Chatbot Arena, Epoch AI (including FrontierMath, GPQA Diamond, and SWE-bench), Scale's SEAL leaderboards, Vals AI, LLM-Stats, and the EleutherAI evaluation-harness lineage behind the Open LLM Leaderboard. For specialised categories we use domain benchmarks (for example ANN-Benchmarks and Qdrant's published figures for vector databases, and SWE-bench aggregators for coding agents), and in some cases we return to the original arXiv papers for methodology and reported results.
+Capability means different things for a model, a tool, and a dataset, so capability grades are comparable *within* a category and not across categories. Benchmark evidence is drawn from Artificial Analysis (its Intelligence Index), LMArena / Chatbot Arena, Epoch AI (including FrontierMath, GPQA Diamond, and SWE-bench), Scale's SEAL leaderboards, Vals AI, LLM-Stats, and the EleutherAI evaluation-harness lineage behind the Open LLM Leaderboard. For specialized categories we use domain benchmarks (for example ANN-Benchmarks and Qdrant's published figures for vector databases, and SWE-bench aggregators for coding agents), and in some cases we return to the original arXiv papers for methodology and reported results.
 
 ### Maturity stages
 
-Beyond the per-product scores, every category is assigned a **maturity stage** (0–5) and a **set of gaps**. Both are computed deterministically from the scores of the products in the category and are recomputed on every build, so they never drift from the underlying data.
+Beyond the per-product scores, every category is assigned a **maturity stage** (0–5) and a **set of gaps**. Both are computed deterministically from the scores of the products in the category, so they never drift from the underlying data.
 
 Each product first receives a single maturity score on a 1–5 scale, a per-category weighted blend of its adoption and capability grades, normalised by the weight sum:
 
@@ -111,11 +115,11 @@ Openness is treated as an axis orthogonal to maturity: a category can hold stron
 
 A fully mature ecosystem carries no gaps. The set is extensible: further gap types, such as maintenance or bus-factor risk, can be added as the underlying signals become available, without changing the staging logic.
 
-Two illustrations. The base/pretrained-models and fine-tuned/chat-models categories both carry an **openness** gap: capable, well-adopted options exist, but the mature ones are not fully open. The inference-code category, by contrast, has mature, competitive, well-adopted open source options (vLLM, llama.cpp, SGLang) but few of them; this is a **maturity** gap, signalling an ecosystem that depends on a small number of projects continuing to do well. At present {n_openness_gaps} of the {n_categories} categories carry an openness gap.
+Two illustrations. The base/pretrained-models and fine-tuned/chat-models categories both carry an **openness** gap: capable, well-adopted options exist, but the mature ones are not fully open. The inference-code category, by contrast, has mature, competitive, well-adopted open source options (vLLM, llama.cpp, SGLang) but few of them; this is a **maturity** gap, signaling an ecosystem that depends on a small number of projects continuing to do well. At present {n_openness_gaps} of the {n_categories} categories carry an openness gap.
 
 ### The openness verdict
 
-Each category also reports a coarse verdict summarising which openness tier leads among its **standout** products: those whose blended adoption-by-capability score, weighted by the same per-category weights, reaches 4.0 of 5. This standout bar (4.0) is deliberately looser than the maturity bar (4.5): it admits the strong products whose openness is worth summarising, not only the fully mature ones. A tier *leads* only when it holds a clear plurality of those standouts, beating the next tier by at least ten percentage points; otherwise the category reads *competitive*, or *no standout* where nothing clears the bar. The accompanying count chips always show the full openness mix across every product, so a category that is open in its long tail but closed at the top remains visible.
+Each category also reports a coarse verdict summarizing which openness tier leads among its **standout** products: those whose blended adoption-by-capability score, weighted by the same per-category weights, reaches 4.0 of 5. This standout bar (4.0) is deliberately looser than the maturity bar (4.5): it admits the strong products whose openness is worth summarizing, not only the fully mature ones. A tier *leads* only when it holds a clear plurality of those standouts, beating the next tier by at least ten percentage points; otherwise the category reads *competitive*, or *no standout* where nothing clears the bar. The accompanying per-category counts always show the full openness mix across every product, so a category that is open in its long tail but closed at the top remains visible.
 
 ### Triangulation, provenance, and reproducibility
 
