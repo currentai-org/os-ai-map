@@ -355,7 +355,7 @@ def stack_overview(C, DATA, F, ORDER, STACK_DESC, mix_counts, mo):
         f'<p style="font-family:{F["body"]}; font-size:0.95rem; color:{C["ink_2"]}; margin:0 0 20px; line-height:1.6;">'
         f'Each row is one category, grouped into three layers. The dots show the openness mix of all its '
         f'products. Open in the long tail and closed at the '
-        f'top can coexist \\u2014 that gap is the point.</p>'
+        f'top can coexist, and that gap is the point.</p>'
         f'{"".join(_rows)}</div>'
     )
     return
@@ -880,7 +880,7 @@ def stages_table(C, DATA, F, ORDER, mo):
         f'margin:0 0 14px; letter-spacing:-0.015em;">How mature is the open ecosystem in each category?</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.95rem; color:{C["ink_2"]}; margin:0 0 20px; line-height:1.6;">'
         f'Each category sits on a Void \\u2192 Mature ladder, scored on the depth of its <em>fully-open</em> '
-        f'options \\u2014 open-weights or source-available products do not count toward a stage, only toward '
+        f'options; open-weights or source-available products do not count toward a stage, only toward '
         f'flagging an openness gap. A category climbs the ladder as more of its open products clear the combined '
         f'adoption\\u00d7capability bar.</p>'
         f'<table style="border-collapse:collapse; width:100%;">'
@@ -941,7 +941,7 @@ def uncategorized_long_tail(C, DATA, F, mo):
         f'<h2 style="font-family:{F["headline"]}; font-size:1.6rem; font-weight:600; color:{C["ink"]}; '
         f'margin:0 0 12px; letter-spacing:-0.015em;">{_c["uncategorized"]:,} more products, tracked but not yet scored</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.95rem; color:{C["ink_2"]}; margin:0 0 16px; line-height:1.6;">'
-        f'We track <strong>{_c["total"]:,}</strong> open-source AI artifacts in total: '
+        f'We track <strong>{_c["total"]:,}</strong> open source AI artifacts in total: '
         f'<strong>{_c["repos"]:,}</strong> repositories, <strong>{_c["models"]:,}</strong> models, and '
         f'<strong>{_c["packages"]:,}</strong> packages. Of the {_c["scored"]} products scored above, '
         f'<strong>{_c["overlap"]}</strong> are drawn from this catalog and <strong>{_c["scored_outside"]}</strong> '
