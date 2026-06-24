@@ -3,6 +3,7 @@
 ai-stack-map.py editorial house style. Static-export friendly: data is embedded;
 interactivity is the JS Details drawer + a JS type-toggle (no kernel)."""
 import json
+import markdown
 import yaml
 from pathlib import Path
 
@@ -45,6 +46,74 @@ def _build_layer_weights_literal(order, cats):
 
 STRAPLINES_LITERAL = _build_straplines_literal(_ORDER, _cats_yaml)
 LAYER_WEIGHTS_LITERAL = _build_layer_weights_literal(_ORDER, _cats_yaml)
+
+
+# Methodology copy lives in sources/methodology.md (hand-authored, canonical). We
+# substitute the {placeholders} with live counts from the payload so the prose can
+# never drift, split the Summary and Detail sections, and convert Markdown -> HTML.
+# The Summary feeds the header; the Detail feeds the Methodology section.
+def _methodology_numbers(d):
+    _c = d["long_tail"]["counts"]
+    _prods = [p for _cat in d["categories"].values() for p in _cat["products"]]
+    _urls = [
+        s.get("url")
+        for p in _prods
+        for _axis in ("openness", "adoption", "capability")
+        for s in ((p.get(_axis) or {}).get("sources") or [])
+        if s.get("url")
+    ]
+
+    def _dom(u):
+        return u.split("//", 1)[-1].split("/", 1)[0].removeprefix("www.")
+
+    def _count_type(t):
+        return sum(1 for p in _prods if p.get("type") == t)
+
+    return {
+        "total": f'{_c["total"]:,}',
+        "scored": f'{_c["scored"]:,}',
+        "uncategorized": f'{_c["uncategorized"]:,}',
+        "universe": f'{_c["universe"]:,}',
+        "disc_repos": f'{_c["repos"]:,}',
+        "disc_models": f'{_c["models"]:,}',
+        "disc_packages": f'{_c["packages"]:,}',
+        "n_software": f'{_count_type("software"):,}',
+        "n_models": f'{_count_type("model"):,}',
+        "n_datasets": f'{_count_type("dataset"):,}',
+        "n_hardware": f'{_count_type("hardware"):,}',
+        "n_orgs": f'{len({p.get("org") for p in _prods if p.get("org")}):,}',
+        "n_categories": f'{len(d["order"]):,}',
+        "n_openness_gaps": str(sum(1 for _cat in d["categories"].values()
+                                   if "openness" in (_cat.get("gaps") or []))),
+        "n_layers": str(len({_cat.get("arc") for _cat in d["categories"].values()})),
+        "n_citations": f'{len(_urls):,}',
+        "n_domains": f'{len({_dom(u) for u in _urls}):,}',
+    }
+
+
+def _split_methodology_section(text, head):
+    # Body under a "## <head>" heading, up to the next "## " heading.
+    _start = text.index(f"## {head}") + len(f"## {head}")
+    _rest = text[_start:]
+    _end = _rest.find("\n## ")
+    return (_rest if _end == -1 else _rest[:_end]).strip()
+
+
+_method_md = (ROOT / "sources" / "methodology.md").read_text(encoding="utf-8")
+for _k, _v in _methodology_numbers(data).items():
+    _method_md = _method_md.replace("{" + _k + "}", _v)
+_leftover = [t for t in ("{total}", "{scored}", "{n_orgs}", "{n_citations}") if t in _method_md]
+assert not _leftover, f"unsubstituted methodology placeholders: {_leftover}"
+
+_md = markdown.Markdown(extensions=["extra"])
+_summary_html = _md.convert(_split_methodology_section(_method_md, "Summary"))
+if _summary_html.startswith("<p>") and _summary_html.endswith("</p>"):
+    _summary_html = _summary_html[3:-4]  # inject inner HTML into the header's styled <p>
+_md.reset()
+_method_html = _md.convert(_split_methodology_section(_method_md, "Detail"))
+SUMMARY_HTML_LITERAL = repr(_summary_html)
+METHOD_HTML_LITERAL = repr(_method_html)
+
 
 NB = '''import marimo
 
@@ -220,9 +289,9 @@ def verdict_logic(DATA, LAYER_WEIGHTS):
 
 
 @app.cell(hide_code=True)
-def header(C, DATA, F, mo):
-    _lt = DATA["long_tail"]["counts"]
-    _n = _lt["scored"]
+def header(C, F, mo):
+    # Summary prose is authored in sources/methodology.md (## Summary) and injected
+    # here as HTML with the live counts already substituted; see build/render.py.
     mo.Html(
         f'<div style="padding:40px 0 28px; border-bottom:2px solid {C["accent"]}; margin-bottom:36px;">'
         f'<div style="font-family:{F["mono"]}; font-size:11px; color:{C["ink_3"]}; '
@@ -231,20 +300,10 @@ def header(C, DATA, F, mo):
         f'<h1 style="font-family:{F["headline"]}; font-size:2.2rem; font-weight:600; '
         f'color:{C["ink"]}; margin:0 0 14px; line-height:1.05; letter-spacing:-0.025em;">'
         f'Open Source AI Map</h1>'
-        f'<p style="font-family:{F["body"]}; font-size:1rem; color:{C["ink_2"]}; '
+        f'<p class="v3-sum" style="font-family:{F["body"]}; font-size:1rem; color:{C["ink_2"]}; '
         f'margin:0; line-height:1.5;">'
-        f'We track <strong>{_lt["total"]:,}</strong> open-source AI artifacts across the stack. '
-        f'This map <strong>scores {_n} of them in depth</strong> on three independent axes: '
-        f'<strong>openness</strong> (graded 0\\u20135 on the Model Openness Framework / OSI '
-        f'classes, not a yes/no), <strong>adoption</strong> (real usage, not stars), and '
-        f'<strong>capability</strong> (benchmarks where they exist, feature coverage where '
-        f'they don\\u2019t). Every score is sourced. The remaining <strong>{_lt["uncategorized"]:,}</strong> '
-        f'are the <strong>uncategorized long tail</strong>, tracked by usage signal but not yet scored. '
-        f'The interesting findings live where the axes disagree \\u2014 the widely-used model that is '
-        f'barely open, the fully-open project few have adopted. The openness framework descends directly from the '
-        f'<a href="https://arxiv.org/abs/2405.15802" target="_blank" rel="noopener" '
-        f'style="color:{C["accent"]}; text-decoration:underline;">'
-        f'2024 Columbia Convening on Openness in AI</a>.</p></div>'
+        + __SUMMARY_HTML__
+        + '</p></div>'
     )
     return
 
@@ -943,27 +1002,44 @@ def framework_edges(C, FRAMEWORK_EDGES, F, mo):
 
 @app.cell(hide_code=True)
 def methodology(C, F, mo):
-    # mo.Html (not mo.md): marimo skips inline markdown wrapped in a block-level
-    # <div>, so bold/links must be literal HTML here, like every other cell.
-    def _a(url, txt):
-        return f'<a href="{url}" target="_blank" rel="noopener" style="color:{C["accent"]}; text-decoration:underline;">{txt}</a>'
-    _ps = [
-        f"""<strong>Three independent axes.</strong> Every product is scored on <strong>openness</strong>, <strong>adoption</strong>, and <strong>capability</strong>. They answer different questions (is it open? is it used? is it good?), and the map's insight is where they disagree. Every non-null score cites a verifiable source; values are never inferred.""",
-        f"""<strong>Openness (0–5 + class)</strong> is graded with the {_a('https://arxiv.org/abs/2403.13784', 'Model Openness Framework')} for models (open_source / open_weights / restricted / closed), OSI-class tests for software (open_source / source_available / open_core / closed), and data-openness for datasets (open / gated / documented_only / closed). "Open weights" is not "open source." The distinction is the point.""",
-        f"""<strong>Adoption (1–5)</strong> is real usage (downloads, active users, deployments); GitHub stars are a last resort and never push a product above level 3.""",
-        f"""<strong>Capability (1–5, method-labeled)</strong> uses community benchmarks where they exist (MMLU-Pro, GPQA, SWE-bench, LMArena, MLPerf, ANN-Benchmarks) and a feature matrix where they don't; null where capability isn't a meaningful axis. <em>Capability means different things for a model vs a tool vs a dataset, so compare within a category, not across.</em>""",
-        f"""<strong>The openness verdict.</strong> Each category's badge reports which tier (open, open-ish [open-weights / source-available / gated], or closed) leads among its <em>standout</em> products: those whose blended adoption×capability score (weighted by layer, so capability counts more for models and adoption more for end-user surfaces) clears 4 of 5. "Leads" requires a clear plurality; otherwise the category reads <em>competitive</em>, or <em>no standout</em> where nothing clears the bar. The count chips always show the full openness mix, so a category that is open in the long tail but closed at the top is visible.""",
-        f"""Built on the openness framework from the <strong>Columbia Convening on Openness in AI</strong> ({_a('https://arxiv.org/abs/2405.15802', 'arXiv:2405.15802')}; follow-on {_a('https://arxiv.org/abs/2506.22183', 'arXiv:2506.22183')}). Products that could not be verified against a primary source were excluded rather than guessed.""",
-    ]
-    _body = "".join(
-        f'<p style="font-family:{F["body"]}; font-size:0.9rem; color:{C["ink_2"]}; line-height:1.6; margin:0 0 12px;">{_p}</p>'
-        for _p in _ps
+    # Full methodology prose is authored in sources/methodology.md (## Detail),
+    # converted from Markdown to HTML at build time and injected as __METHOD_HTML__
+    # (numbers already substituted). The scoped <style> below carries the house
+    # fonts/colours onto the generated HTML, so the source stays plain Markdown.
+    # This <style> also styles the header summary (.v3-sum) links.
+    _style = (
+        "<style>"
+        f".v3-meth, .v3-meth p, .v3-meth li{{font-family:{F['body']};}}"
+        f".v3-meth p{{font-size:0.9rem; color:{C['ink_2']}; line-height:1.6; margin:0 0 12px;}}"
+        f".v3-meth h3{{font-family:{F['headline']}; font-weight:600; font-size:1.12rem; "
+        f"color:{C['ink']}; letter-spacing:-0.01em; margin:28px 0 8px;}}"
+        f".v3-meth h4{{font-family:{F['headline']}; font-weight:600; font-size:0.98rem; "
+        f"color:{C['ink']}; margin:18px 0 6px;}}"
+        f".v3-meth strong{{color:{C['ink']}; font-weight:600;}}"
+        ".v3-meth em{font-style:italic;}"
+        f".v3-meth a, .v3-sum a{{color:{C['accent']}; text-decoration:underline;}}"
+        ".v3-meth ul{margin:6px 0 14px; padding-left:20px;}"
+        f".v3-meth li{{font-size:0.9rem; color:{C['ink_2']}; line-height:1.55; margin:0 0 5px;}}"
+        ".v3-meth table{border-collapse:collapse; width:100%; margin:10px 0 18px;}"
+        f".v3-meth th{{font-family:{F['mono']}; font-size:9px; text-transform:uppercase; "
+        f"letter-spacing:0.05em; color:{C['ink_3']}; text-align:left; padding:7px 12px 7px 0; "
+        f"border-bottom:2px solid {C['rule']};}}"
+        f".v3-meth td{{font-size:0.84rem; color:{C['ink_2']}; padding:7px 12px 7px 0; "
+        f"border-bottom:1px solid {C['rule']}; vertical-align:top; line-height:1.45;}}"
+        f".v3-meth code{{font-family:{F['mono']}; font-size:0.82rem; background:{C['paper_2']}; padding:1px 5px;}}"
+        f".v3-meth pre{{font-family:{F['mono']}; font-size:0.8rem; color:{C['ink']}; "
+        f"background:{C['paper_2']}; padding:12px 16px; margin:8px 0 16px; overflow-x:auto; line-height:1.5;}}"
+        ".v3-meth pre code{background:none; padding:0;}"
+        "</style>"
     )
     mo.Html(
         f'<div style="margin:48px 0 24px; padding:24px 0 0; border-top:2px solid {C["accent"]};">'
         f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; letter-spacing:0.1em; '
         f'text-transform:uppercase; margin-bottom:10px;">Methodology</div>'
-        f'{_body}</div>'
+        + _style
+        + '<div class="v3-meth">'
+        + __METHOD_HTML__
+        + '</div></div>'
     )
     return
 
@@ -1037,6 +1113,8 @@ NB = (NB
       .replace("__DATA_LITERAL__", DATA_LITERAL)
       .replace("__STRAPLINES__", STRAPLINES_LITERAL)
       .replace("__LAYER_WEIGHTS__", LAYER_WEIGHTS_LITERAL)
+      .replace("__SUMMARY_HTML__", SUMMARY_HTML_LITERAL)
+      .replace("__METHOD_HTML__", METHOD_HTML_LITERAL)
       .replace("__SECTION_CELLS__", section_block))
-open(OUT, "w").write(NB)
+open(OUT, "w", encoding="utf-8").write(NB)
 print("wrote", OUT, "(", len(NB), "chars )")
