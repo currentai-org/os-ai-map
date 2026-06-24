@@ -4,6 +4,7 @@ ai-stack-map.py editorial house style. Static-export friendly: data is embedded;
 interactivity is the JS Details drawer + a JS type-toggle (no kernel)."""
 import json
 import markdown
+import re
 import yaml
 from pathlib import Path
 
@@ -92,13 +93,15 @@ def _methodology_numbers(d):
 
 
 def _methodology_split(text):
-    # The doc has exactly two top-level "## " sections, in order: the summary
-    # (-> notebook header) and the body (-> Methodology section). Split by POSITION,
-    # not heading text, so either heading can be renamed without breaking the build.
-    _h1 = text.index("## ")             # first "## " heading (the summary)
-    _h2 = text.index("\n## ", _h1) + 1  # second "## " heading (the body)
-    _summary = text[text.index("\n", _h1) + 1:_h2].strip()
-    _body = text[text.index("\n", _h2) + 1:].strip()
+    # Drop a leading HTML comment (build notes) so its content never renders, then
+    # split on the two top-level headings by POSITION: the first "## " section is the
+    # summary (-> notebook header), the second is the body (-> Methodology section).
+    # Match only line-start "## " (the (?m)^ anchor), so a "## " appearing mid-line
+    # inside prose or the comment is ignored, and either heading can be renamed freely.
+    text = re.sub(r"\A\s*<!--.*?-->\s*", "", text, flags=re.DOTALL)
+    _heads = [m.start() for m in re.finditer(r"(?m)^## ", text)]
+    _summary = text[text.index("\n", _heads[0]) + 1:_heads[1]].strip()
+    _body = text[text.index("\n", _heads[1]) + 1:].strip()
     return _summary, _body
 
 
