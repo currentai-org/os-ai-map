@@ -20,6 +20,7 @@ warehouse/catalog/     Raw external CSVs (GoodAI List, HF benchmarks, etc.)
 warehouse/sources.yaml Manifest linking each external source to its fetcher
 build/                 Python pipeline: validate.py, serialize.py, render.py, slugs.py
 notebooks/             Generated marimo notebook (ai-stack-map.py)
+docs/methodology.md    Canonical methodology copy, rendered into the notebook (a build input)
 docs/guides/           Query conventions and notebook style guide
 docs/runbooks/         Maintainer deploy runbooks
 docs/schemas/          JSON Schemas for the source files (four concerns + taxonomy)
@@ -126,6 +127,7 @@ After a PR merges, a maintainer (OSO MCP write access) may need to:
 
 - Query conventions: `docs/guides/queries.md`
 - Notebook style: `docs/guides/notebooks.md`
+- Methodology copy (rendered into the notebook): `docs/methodology.md`
 - Openness scoring: `docs/guides/openness-spectrum.md`
 - Gap analysis (stages + gaps): `docs/guides/gap-analysis.md`
 - Coverage backlog: tracked in GitHub issues
