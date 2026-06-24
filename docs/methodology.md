@@ -14,9 +14,14 @@ Placeholders (filled from the payload at build time):
   {total} {scored} {uncategorized} {universe}
   {n_software} {n_models} {n_datasets} {n_hardware}
   {n_orgs} {n_categories} {n_layers} {n_citations} {n_domains}
-  {disc_repos} {disc_models} {disc_packages}
+  {n_openness_gaps} {disc_repos} {disc_models} {disc_packages}
 Write prose in the academic register of a methods section: precise, defined,
 measured, and forthright about limitations. No marketing cadence.
+
+Companion: docs/guides/openness-spectrum.md is the data-consumer / query reference
+for openness (which field to use, openness.class vs openness.score, the class->0-5
+gradient table, and cross-category caveats). This file is the reader-facing
+narrative; keep the two consistent when the openness model changes.
 -->
 
 ## Summary

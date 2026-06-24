@@ -3,6 +3,10 @@
 How openness is scored, why the raw score isn't comparable across categories, and
 which field to use when you want to place a product on an openness spectrum.
 
+> This is the data-consumer / query reference. For the reader-facing methodology
+> narrative published in the notebook, see [`docs/methodology.md`](../methodology.md).
+> Keep the two consistent when the openness model changes.
+
 ## TL;DR
 
 - **`openness.class` is the cross-category normalizer.** Use it to position a product

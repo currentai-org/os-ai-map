@@ -48,7 +48,7 @@ STRAPLINES_LITERAL = _build_straplines_literal(_ORDER, _cats_yaml)
 LAYER_WEIGHTS_LITERAL = _build_layer_weights_literal(_ORDER, _cats_yaml)
 
 
-# Methodology copy lives in sources/methodology.md (hand-authored, canonical). We
+# Methodology copy lives in docs/methodology.md (hand-authored, canonical). We
 # substitute the {placeholders} with live counts from the payload so the prose can
 # never drift, split the Summary and Detail sections, and convert Markdown -> HTML.
 # The Summary feeds the header; the Detail feeds the Methodology section.
@@ -99,7 +99,7 @@ def _split_methodology_section(text, head):
     return (_rest if _end == -1 else _rest[:_end]).strip()
 
 
-_method_md = (ROOT / "sources" / "methodology.md").read_text(encoding="utf-8")
+_method_md = (ROOT / "docs" / "methodology.md").read_text(encoding="utf-8")
 for _k, _v in _methodology_numbers(data).items():
     _method_md = _method_md.replace("{" + _k + "}", _v)
 _leftover = [t for t in ("{total}", "{scored}", "{n_orgs}", "{n_citations}") if t in _method_md]
@@ -290,7 +290,7 @@ def verdict_logic(DATA, LAYER_WEIGHTS):
 
 @app.cell(hide_code=True)
 def header(C, F, mo):
-    # Summary prose is authored in sources/methodology.md (## Summary) and injected
+    # Summary prose is authored in docs/methodology.md (## Summary) and injected
     # here as HTML with the live counts already substituted; see build/render.py.
     mo.Html(
         f'<div style="padding:40px 0 28px; border-bottom:2px solid {C["accent"]}; margin-bottom:36px;">'
@@ -1002,7 +1002,7 @@ def framework_edges(C, FRAMEWORK_EDGES, F, mo):
 
 @app.cell(hide_code=True)
 def methodology(C, F, mo):
-    # Full methodology prose is authored in sources/methodology.md (## Detail),
+    # Full methodology prose is authored in docs/methodology.md (## Detail),
     # converted from Markdown to HTML at build time and injected as __METHOD_HTML__
     # (numbers already substituted). The scoped <style> below carries the house
     # fonts/colours onto the generated HTML, so the source stays plain Markdown.
