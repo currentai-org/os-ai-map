@@ -91,12 +91,15 @@ def _methodology_numbers(d):
     }
 
 
-def _split_methodology_section(text, head):
-    # Body under a "## <head>" heading, up to the next "## " heading.
-    _start = text.index(f"## {head}") + len(f"## {head}")
-    _rest = text[_start:]
-    _end = _rest.find("\n## ")
-    return (_rest if _end == -1 else _rest[:_end]).strip()
+def _methodology_split(text):
+    # The doc has exactly two top-level "## " sections, in order: the summary
+    # (-> notebook header) and the body (-> Methodology section). Split by POSITION,
+    # not heading text, so either heading can be renamed without breaking the build.
+    _h1 = text.index("## ")             # first "## " heading (the summary)
+    _h2 = text.index("\n## ", _h1) + 1  # second "## " heading (the body)
+    _summary = text[text.index("\n", _h1) + 1:_h2].strip()
+    _body = text[text.index("\n", _h2) + 1:].strip()
+    return _summary, _body
 
 
 _method_md = (ROOT / "docs" / "methodology.md").read_text(encoding="utf-8")
@@ -105,12 +108,13 @@ for _k, _v in _methodology_numbers(data).items():
 _leftover = [t for t in ("{total}", "{scored}", "{n_orgs}", "{n_citations}") if t in _method_md]
 assert not _leftover, f"unsubstituted methodology placeholders: {_leftover}"
 
+_summary_md, _detail_md = _methodology_split(_method_md)
 _md = markdown.Markdown(extensions=["extra"])
-_summary_html = _md.convert(_split_methodology_section(_method_md, "Summary"))
+_summary_html = _md.convert(_summary_md)
 if _summary_html.startswith("<p>") and _summary_html.endswith("</p>"):
     _summary_html = _summary_html[3:-4]  # inject inner HTML into the header's styled <p>
 _md.reset()
-_method_html = _md.convert(_split_methodology_section(_method_md, "Detail"))
+_method_html = _md.convert(_detail_md)
 SUMMARY_HTML_LITERAL = repr(_summary_html)
 METHOD_HTML_LITERAL = repr(_method_html)
 
