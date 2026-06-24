@@ -8,7 +8,7 @@ app = marimo.App(width="full")
 def load_fonts(mo):
     mo.Html(
         '<style>'
-        '@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");'
+        '@import url("https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Noto+Serif:ital,wght@0,400;0,600;1,400&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap");'
         '</style>'
     )
     return
@@ -17,14 +17,25 @@ def load_fonts(mo):
 @app.cell(hide_code=True)
 def style():
     F = {
-        "headline": "Fraunces, Georgia, serif",
-        "body": "Inter, -apple-system, system-ui, sans-serif",
-        "mono": "'JetBrains Mono', ui-monospace, SFMono-Regular, monospace",
+        "headline": "'Noto Serif', Georgia, serif",
+        "body": "'Plus Jakarta Sans', -apple-system, system-ui, sans-serif",
+        "mono": "'DM Mono', ui-monospace, SFMono-Regular, monospace",
     }
     C = {
-        "ink": "#1a1814", "ink_2": "#3a342b", "ink_3": "#6b6253",
-        "paper": "#f5f1ea", "paper_2": "#ede7dc", "rule": "#c9bfac",
-        "signal": "#c8341d", "healthy": "#1b6b5e", "warm": "#d97c2a", "accent": "#2a3d8f",
+        # Shared neutrals + structure (match ai-stack-map).
+        "ink": "#0b252f", "ink_2": "#272726", "ink_3": "#8fa1a4",
+        "paper": "#f7f6f6", "paper_2": "#f2f1f1", "rule": "#edecec",
+        "accent": "#0b252f", "white": "#ffffff", "border": "#a5bbbe",
+        # Openness ramp (match ai-stack-map): deep salmon = open, fading to pale.
+        # Used only for OPEN_LABEL dots and the modal openness pill.
+        "healthy": "#e86f57", "warm": "#f4886f", "signal": "#f8ad99",
+        "closed": "#f6cabd", "null": "#dcdcda",
+        # Composition-basis confidence ramp — cool, so it never reads as openness.
+        "basis_known": "#0b252f",   # known build — navy (most confident)
+        "basis_doc": "#5f7e88",     # documented  — mid slate
+        "basis_sim": "#a5bbbe",     # similarity  — light slate
+        # Gaps / missing layers — a muted brand red (the site marks gaps in red).
+        "gap": "#cf4436", "gap_red": "#ff0d0d",
     }
     # Openness class -> (label, color key). Same vocabulary as the parent stack map.
     OPEN_LABEL = {
@@ -35,24 +46,24 @@ def style():
         "source_available": ("Source available", "signal"),
         "restricted": ("Restricted", "signal"),
         "gated": ("Gated", "warm"),
-        "documented_only": ("Documented only", "ink_3"),
-        "closed": ("Closed", "ink_3"),
+        "documented_only": ("Documented only", "closed"),
+        "closed": ("Closed", "closed"),
     }
     # Composition-rule basis tag -> (short label, color key, definition). These are
     # THE rules for when a component counts as part of a product; see methodology.
     BASIS = {
-        "known_build": ("known build", "healthy",
+        "known_build": ("known build", "basis_known",
                         "Appears in a documented real-world build of this product pattern"),
-        "documented_component": ("documented", "accent",
+        "documented_component": ("documented", "basis_doc",
                                  "Its own documentation names this product pattern as a primary use case"),
-        "similarity": ("similarity", "warm",
+        "similarity": ("similarity", "basis_sim",
                        "Description similarity clears the lookup threshold; no documented pairing"),
     }
     # Gallery health -> (label, color key).
     HEALTH = {
-        "healthy": ("All layers covered", "healthy"),
-        "partial": ("Buildable, with gaps", "warm"),
-        "gap": ("Gap probe", "signal"),
+        "healthy": ("All layers covered", "accent"),
+        "partial": ("Buildable, with gaps", "basis_doc"),
+        "gap": ("Gap probe", "gap"),
     }
     return BASIS, C, F, HEALTH, OPEN_LABEL
 
@@ -439,8 +450,8 @@ def header(C, F, GENERATED, N_TOTAL, mo):
         f'<div style="padding:40px 0 28px; border-bottom:2px solid {C["accent"]}; margin-bottom:36px;">'
         f'<div style="font-family:{F["mono"]}; font-size:11px; color:{C["ink_3"]}; '
         f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:10px;">'
-        f'Current AI · Open Source AI Map · Products view</div>'
-        f'<h1 style="font-family:{F["headline"]}; font-size:2.2rem; font-weight:400; '
+        f'Current AI</div>'
+        f'<h1 style="font-family:{F["headline"]}; font-size:2.2rem; font-weight:600; '
         f'color:{C["ink"]}; margin:0 0 14px; line-height:1.05; letter-spacing:-0.025em;">'
         f'You have an idea. Here’s the open stack to build it on.</h1>'
         f'<p style="font-family:{F["body"]}; font-size:1rem; color:{C["ink_2"]}; '
@@ -489,7 +500,7 @@ def coverage_matrix(C, CATS, F, GALLERY, HEALTH, ORDER, mo):
     # Products x layers: which layers each reference product draws on, colored
     # by the strongest composition basis in that layer. The edges back to the
     # stack map, at a glance.
-    _BC = {"known_build": C["healthy"], "documented_component": C["accent"], "similarity": C["warm"]}
+    _BC = {"known_build": C["basis_known"], "documented_component": C["basis_doc"], "similarity": C["basis_sim"]}
     _PRIO = {"known_build": 0, "documented_component": 1, "similarity": 2}
     _head = '<th style="text-align:left; padding:6px 8px;"></th>' + "".join(
         f'<th title="{CATS[_cid]["label"]}" style="padding:6px 3px; font-family:{F["mono"]}; '
@@ -506,15 +517,15 @@ def coverage_matrix(C, CATS, F, GALLERY, HEALTH, ORDER, mo):
         _hl, _hc = HEALTH[_g["health"]]
         _cells = "".join(
             (f'<td style="padding:4px 3px; text-align:center;">'
-             f'<div title="{CATS[_cid]["label"]}" style="width:16px; height:16px; border-radius:3px; '
+             f'<div title="{CATS[_cid]["label"]}" style="width:16px; height:16px; border-radius:0; '
              f'background:{_BC[_bymap[_cid]]}; margin:0 auto;"></div></td>')
             if _cid in _bymap else
             f'<td style="padding:4px 3px; text-align:center;"><div style="width:16px; height:16px; '
-            f'border-radius:3px; background:{C["paper_2"]}; margin:0 auto;"></div></td>'
+            f'border-radius:0; background:{C["paper_2"]}; margin:0 auto;"></div></td>'
             for _cid in ORDER
         )
         _gapcell = (f'<td style="padding:4px 8px; text-align:center; font-family:{F["mono"]}; '
-                    f'font-size:0.78rem; color:{C["signal"] if _g["gaps"] else C["rule"]};">'
+                    f'font-size:0.78rem; color:{C["gap"] if _g["gaps"] else C["rule"]};">'
                     f'{len(_g["gaps"]) or "—"}</td>')
         _rows += (
             f'<tr style="border-bottom:1px solid {C["paper_2"]};">'
@@ -524,9 +535,9 @@ def coverage_matrix(C, CATS, F, GALLERY, HEALTH, ORDER, mo):
         )
     _legend = "".join(
         f'<span style="margin-right:16px;"><span style="display:inline-block; width:11px; height:11px; '
-        f'border-radius:2px; background:{_c}; vertical-align:-1px; margin-right:5px;"></span>{_l}</span>'
-        for _l, _c in [("known build", C["healthy"]), ("documented component", C["accent"]),
-                       ("similarity only", C["warm"]), ("layer not needed", C["paper_2"])]
+        f'border-radius:0; background:{_c}; vertical-align:-1px; margin-right:5px;"></span>{_l}</span>'
+        for _l, _c in [("known build", C["basis_known"]), ("documented component", C["basis_doc"]),
+                       ("similarity only", C["basis_sim"]), ("layer not needed", C["paper_2"])]
     )
     mo.Html(
         f'<div style="margin:36px 0 8px;">'
@@ -553,7 +564,7 @@ def lookup_header(C, F, mo):
         f'<div style="margin:44px 0 14px; padding:24px 0 0; border-top:2px solid {C["accent"]};">'
         f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
         f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:8px;">Lookup · mode 1</div>'
-        f'<h2 style="font-family:{F["headline"]}; font-size:1.6rem; font-weight:500; color:{C["ink"]}; '
+        f'<h2 style="font-family:{F["headline"]}; font-size:1.6rem; font-weight:600; color:{C["ink"]}; '
         f'margin:0 0 12px; letter-spacing:-0.015em;">Describe what you want to build</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.95rem; color:{C["ink_2"]}; margin:0; line-height:1.6;">'
         f'Type a product description (or pick a user story) and get suggested components ranked by relevance, '
@@ -616,8 +627,8 @@ def lookup_results(C, CATS, CAT_KW, F, OPEN_LABEL, ORDER, TH, gap_triggers,
                     f'color:{C["ink"]}; font-weight:{600 if _strong else 400};">{_p["n"]}'
                     f'<span style="font-family:{F["mono"]}; font-size:0.6rem; color:{C[_ock]}; '
                     f'margin-left:7px; text-transform:uppercase;">{_ol}</span></div>'
-                    f'<div style="flex:1; background:{C["paper_2"]}; border-radius:2px; height:8px;">'
-                    f'<div style="width:{_w}%; height:8px; border-radius:2px; '
+                    f'<div style="flex:1; background:{C["paper_2"]}; border-radius:0; height:8px;">'
+                    f'<div style="width:{_w}%; height:8px; border-radius:0; '
                     f'background:{C["accent"] if _strong else C["rule"]};"></div></div>'
                     f'<div style="font-family:{F["mono"]}; font-size:0.7rem; color:{C["ink_3"]}; '
                     f'min-width:42px; text-align:right;">{_s:.3f}</div></div>'
@@ -636,7 +647,7 @@ def lookup_results(C, CATS, CAT_KW, F, OPEN_LABEL, ORDER, TH, gap_triggers,
         )
     if not _groups:
         _groups = (
-            f'<p style="font-family:{F["body"]}; font-size:0.9rem; color:{C["signal"]}; line-height:1.5;">'
+            f'<p style="font-family:{F["body"]}; font-size:0.9rem; color:{C["gap"]}; line-height:1.5;">'
             f'No layer clears the display threshold for this description. That itself is a strong gap signal: '
             f'the open stack has little to offer this product today.</p>'
         )
@@ -653,32 +664,32 @@ def lookup_results(C, CATS, CAT_KW, F, OPEN_LABEL, ORDER, TH, gap_triggers,
     for _c in _weak:
         _gap_items += (
             f'<div style="margin:5px 0; font-size:0.84rem; color:{C["ink_2"]}; line-height:1.5;">'
-            f'<span style="font-family:{F["mono"]}; font-size:0.6rem; color:white; background:{C["warm"]}; '
-            f'padding:2px 7px; border-radius:9px; text-transform:uppercase; margin-right:8px;">weak layer</span>'
+            f'<span style="font-family:{F["mono"]}; font-size:0.6rem; color:white; background:{C["gap"]}; '
+            f'padding:2px 7px; border-radius:0; text-transform:uppercase; margin-right:8px;">weak layer</span>'
             f'<strong>{CATS[_c]["label"]}</strong>: your description implies this layer, but the best '
             f'open match scores {_best_open.get(_c, 0.0):.3f} (threshold {TH["gap"]}).</div>'
         )
     for _c in _closed_only:
         _gap_items += (
             f'<div style="margin:5px 0; font-size:0.84rem; color:{C["ink_2"]}; line-height:1.5;">'
-            f'<span style="font-family:{F["mono"]}; font-size:0.6rem; color:white; background:{C["warm"]}; '
-            f'padding:2px 7px; border-radius:9px; text-transform:uppercase; margin-right:8px;">closed only</span>'
+            f'<span style="font-family:{F["mono"]}; font-size:0.6rem; color:white; background:{C["gap"]}; '
+            f'padding:2px 7px; border-radius:0; text-transform:uppercase; margin-right:8px;">closed only</span>'
             f'<strong>{CATS[_c]["label"]}</strong>: this layer answers your description, but only with '
             f'closed components.</div>'
         )
     for _t, _w in _structural:
         _gap_items += (
             f'<div style="margin:5px 0; font-size:0.84rem; color:{C["ink_2"]}; line-height:1.5;">'
-            f'<span style="font-family:{F["mono"]}; font-size:0.6rem; color:white; background:{C["signal"]}; '
-            f'padding:2px 7px; border-radius:9px; text-transform:uppercase; margin-right:8px;">structural</span>'
+            f'<span style="font-family:{F["mono"]}; font-size:0.6rem; color:white; background:{C["gap"]}; '
+            f'padding:2px 7px; border-radius:0; text-transform:uppercase; margin-right:8px;">structural</span>'
             f'<strong>{_t}</strong>: {_w}</div>'
         )
     _gap_panel = ""
     if _gap_items:
         _gap_panel = (
             f'<div style="margin:18px 0 0; padding:12px 16px; background:{C["paper"]}; '
-            f'border-left:3px solid {C["signal"]}; border-radius:0 4px 4px 0;">'
-            f'<div style="font-family:{F["mono"]}; font-size:0.62rem; color:{C["signal"]}; '
+            f'border-left:3px solid {C["gap"]}; border-radius:0;">'
+            f'<div style="font-family:{F["mono"]}; font-size:0.62rem; color:{C["gap"]}; '
             f'letter-spacing:0.08em; text-transform:uppercase; margin-bottom:4px;">'
             f'Gap signals for this description</div>{_gap_items}'
             f'<div style="font-family:{F["body"]}; font-size:0.76rem; color:{C["ink_3"]}; margin-top:8px;">'
@@ -687,7 +698,7 @@ def lookup_results(C, CATS, CAT_KW, F, OPEN_LABEL, ORDER, TH, gap_triggers,
         )
     mo.Html(
         f'<div style="margin:8px 0 10px; padding:16px 20px; background:white; '
-        f'border:1px solid {C["rule"]}; border-radius:6px;">'
+        f'border:1px solid {C["rule"]}; border-radius:0;">'
         f'<div style="font-family:{F["mono"]}; font-size:0.66rem; color:{C["ink_3"]}; margin-bottom:8px;">'
         f'Query · “{_q}” · {"open components only" if _open_only else "all components"} '
         f'· top 3 per layer, layers shown when best score ≥ {TH["show"]}</div>'
@@ -709,7 +720,7 @@ def gallery_cards(BASIS, BY_NAME, C, CATS, F, GALLERY, HEALTH, OPEN_LABEL, mo):
         return (
             f'<span class="pv-details" data-pid="{name}" title="Click for the full scorecard" '
             f'style="display:inline-block; margin:0 6px 6px 0; padding:4px 9px; '
-            f'background:white; border:1px solid {C["rule"]}; border-radius:4px; cursor:pointer;">'
+            f'background:white; border:1px solid {C["rule"]}; border-radius:0; cursor:pointer;">'
             f'<span title="{_ol}" style="display:inline-block; width:8px; height:8px; '
             f'border-radius:50%; background:{C[_ock]}; margin-right:6px;"></span>'
             f'<span style="font-family:{F["body"]}; font-size:0.82rem; color:{C["ink"]}; font-weight:600;">{name}</span>'
@@ -745,26 +756,26 @@ def gallery_cards(BASIS, BY_NAME, C, CATS, F, GALLERY, HEALTH, OPEN_LABEL, mo):
             _gitems = "".join(
                 f'<div style="margin:6px 0; font-size:0.84rem; line-height:1.5; color:{C["ink_2"]};">'
                 f'<span style="font-family:{F["mono"]}; font-size:0.62rem; color:white; '
-                f'background:{C["signal"] if _k == "structural" else C["warm"]}; padding:2px 7px; '
-                f'border-radius:9px; text-transform:uppercase; letter-spacing:0.04em; margin-right:8px;">{_k.replace("_", " ")}</span>'
+                f'background:{C["gap"]}; padding:2px 7px; '
+                f'border-radius:0; text-transform:uppercase; letter-spacing:0.04em; margin-right:8px;">{_k.replace("_", " ")}</span>'
                 f'<strong>{_t}.</strong> {_w}</div>'
                 for _k, _t, _w in _g["gaps"]
             )
             _gaps_html = (
                 f'<div style="margin:14px 0 0; padding:10px 14px; background:{C["paper"]}; '
-                f'border-left:3px solid {C["signal"]}; border-radius:0 4px 4px 0;">'
-                f'<div style="font-family:{F["mono"]}; font-size:0.62rem; color:{C["signal"]}; '
+                f'border-left:3px solid {C["gap"]}; border-radius:0;">'
+                f'<div style="font-family:{F["mono"]}; font-size:0.62rem; color:{C["gap"]}; '
                 f'letter-spacing:0.08em; text-transform:uppercase; margin-bottom:4px;">Gap signals</div>'
                 f'{_gitems}</div>'
             )
         _cards += (
             f'<div style="margin:0 0 26px; padding:20px 22px; background:white; '
-            f'border:1px solid {C["rule"]}; border-radius:6px;">'
+            f'border:1px solid {C["rule"]}; border-radius:0;">'
             f'<div style="display:flex; justify-content:space-between; align-items:baseline; gap:12px;">'
-            f'<h3 style="font-family:{F["headline"]}; font-size:1.25rem; font-weight:500; '
+            f'<h3 style="font-family:{F["headline"]}; font-size:1.25rem; font-weight:600; '
             f'color:{C["ink"]}; margin:0;">{_i:02d} · {_g["title"]}</h3>'
             f'<span style="font-family:{F["mono"]}; font-size:0.64rem; color:white; background:{C[_hck]}; '
-            f'padding:3px 10px; border-radius:10px; text-transform:uppercase; letter-spacing:0.05em; '
+            f'padding:3px 10px; border-radius:0; text-transform:uppercase; letter-spacing:0.05em; '
             f'white-space:nowrap;">{_hl}</span></div>'
             f'<p style="font-family:{F["body"]}; font-size:0.9rem; color:{C["ink_2"]}; '
             f'line-height:1.55; margin:8px 0 4px;">{_g["desc"]}</p>'
@@ -774,7 +785,7 @@ def gallery_cards(BASIS, BY_NAME, C, CATS, F, GALLERY, HEALTH, OPEN_LABEL, mo):
         f'<div style="margin:44px 0 20px; padding:24px 0 0; border-top:2px solid {C["accent"]};">'
         f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
         f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:8px;">Gallery · mode 2</div>'
-        f'<h2 style="font-family:{F["headline"]}; font-size:1.6rem; font-weight:500; color:{C["ink"]}; '
+        f'<h2 style="font-family:{F["headline"]}; font-size:1.6rem; font-weight:600; color:{C["ink"]}; '
         f'margin:0 0 12px; letter-spacing:-0.015em;">Ten things you can build (and what they’re made of)</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.95rem; color:{C["ink_2"]}; margin:0 0 22px; line-height:1.6;">'
         f'Each card is a reference product: a realistic build, its component stack drawn from the map’s '
@@ -805,8 +816,8 @@ def gaps_aggregate(C, CATS, F, GALLERY, ORDER, mo):
             f'<div style="display:flex; align-items:center; gap:10px; margin:5px 0;">'
             f'<div style="min-width:210px; font-family:{F["mono"]}; font-size:0.72rem; '
             f'color:{C["ink_2"]};">{CATS[_cid]["label"]}</div>'
-            f'<div style="flex:1; background:{C["paper_2"]}; border-radius:2px; height:12px;">'
-            f'<div style="width:{_w}%; height:12px; border-radius:2px; background:{C["accent"]};"></div></div>'
+            f'<div style="flex:1; background:{C["paper_2"]}; border-radius:0; height:12px;">'
+            f'<div style="width:{_w}%; height:12px; border-radius:0; background:{C["accent"]};"></div></div>'
             f'<div style="font-family:{F["mono"]}; font-size:0.74rem; color:{C["ink_3"]}; '
             f'min-width:80px; text-align:right;">{_demand[_cid]} of {len(GALLERY)}</div></div>'
         )
@@ -818,8 +829,8 @@ def gaps_aggregate(C, CATS, F, GALLERY, ORDER, mo):
     _gap_rows = "".join(
         f'<tr style="border-bottom:1px solid {C["paper_2"]};">'
         f'<td style="padding:8px 10px;"><span style="font-family:{F["mono"]}; font-size:0.62rem; color:white; '
-        f'background:{C["signal"] if _v["kind"] == "structural" else C["warm"]}; padding:2px 8px; '
-        f'border-radius:9px; text-transform:uppercase;">{_v["kind"].replace("_", " ")}</span></td>'
+        f'background:{C["gap"]}; padding:2px 8px; '
+        f'border-radius:0; text-transform:uppercase;">{_v["kind"].replace("_", " ")}</span></td>'
         f'<td style="padding:8px 10px; font-family:{F["body"]}; font-size:0.86rem; color:{C["ink"]}; '
         f'font-weight:600; white-space:nowrap;">{_t}</td>'
         f'<td style="padding:8px 10px; font-family:{F["body"]}; font-size:0.82rem; color:{C["ink_2"]}; '
@@ -837,7 +848,7 @@ def gaps_aggregate(C, CATS, F, GALLERY, ORDER, mo):
         f'<div style="margin:44px 0 20px; padding:24px 0 0; border-top:2px solid {C["accent"]};">'
         f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
         f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:8px;">Gaps the products reveal</div>'
-        f'<h2 style="font-family:{F["headline"]}; font-size:1.6rem; font-weight:500; color:{C["ink"]}; '
+        f'<h2 style="font-family:{F["headline"]}; font-size:1.6rem; font-weight:600; color:{C["ink"]}; '
         f'margin:0 0 12px; letter-spacing:-0.015em;">Where composition breaks down</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.95rem; color:{C["ink_2"]}; margin:0 0 16px; line-height:1.6;">'
         f'The bars below count how many of the {len(GALLERY)} reference products draw on each layer. '
@@ -925,7 +936,7 @@ def builder_demand_ui(BATCH, C, F, mo):
         f'<div style="margin:44px 0 14px; padding:24px 0 0; border-top:2px solid {C["accent"]};">'
         f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
         f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:8px;">Common combinations</div>'
-        f'<h2 style="font-family:{F["headline"]}; font-size:1.6rem; font-weight:500; color:{C["ink"]}; '
+        f'<h2 style="font-family:{F["headline"]}; font-size:1.6rem; font-weight:600; color:{C["ink"]}; '
         f'margin:0 0 12px; letter-spacing:-0.015em;">How often each open project comes up</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.95rem; color:{C["ink_2"]}; margin:0; line-height:1.6;">'
         f'We ran <strong>{BATCH["n_prompts"]}</strong> synthetic builder requests (combinations of '
@@ -991,18 +1002,18 @@ def builder_demand_table(BATCH, C, CATS, COMPONENTS, F, OPEN_CLASSES, OPEN_LABEL
     _body = ""
     for _r in _slice:
         _w = round(_r["count"] / _maxc * 100)
-        _barcol = C["healthy"] if _r["count"] else C["paper_2"]
+        _barcol = C["accent"] if _r["count"] else C["paper_2"]
         _body += (
             f'<tr style="border-bottom:1px solid {C["paper_2"]};">'
             f'<td style="padding:8px 10px; font-family:{F["body"]}; font-size:0.86rem; color:{C["ink"]}; '
             f'font-weight:600; white-space:nowrap;">{_r["name"]}</td>'
             f'<td style="padding:8px 10px; font-family:{F["body"]}; font-size:0.82rem; color:{C["ink_2"]};">{_r["cat"]}</td>'
             f'<td style="padding:8px 10px;"><span style="font-family:{F["mono"]}; font-size:0.6rem; color:white; '
-            f'background:{_r["open_color"]}; padding:2px 8px; border-radius:9px; text-transform:uppercase; '
+            f'background:{_r["open_color"]}; padding:2px 8px; border-radius:0; text-transform:uppercase; '
             f'letter-spacing:0.04em; white-space:nowrap;">{_r["open_label"]}</span></td>'
             f'<td style="padding:8px 10px; width:42%;"><div style="display:flex; align-items:center; gap:8px;">'
-            f'<div style="flex:1; background:{C["paper_2"]}; border-radius:2px; height:10px; min-width:60px;">'
-            f'<div style="width:{_w}%; height:10px; border-radius:2px; background:{_barcol};"></div></div>'
+            f'<div style="flex:1; background:{C["paper_2"]}; border-radius:0; height:10px; min-width:60px;">'
+            f'<div style="width:{_w}%; height:10px; border-radius:0; background:{_barcol};"></div></div>'
             f'<div style="font-family:{F["mono"]}; font-size:0.74rem; color:{C["ink_3"]}; min-width:28px; '
             f'text-align:right;">{_r["count"]}</div></div></td></tr>'
         )
@@ -1071,41 +1082,42 @@ def details_modal(CATS, COMPONENTS, mo):
         }
     _pj = _json.dumps(_payload, ensure_ascii=False)
     _css = (
-        ".pv-details:hover{border-color:#2a3d8f !important;box-shadow:0 1px 4px rgba(42,61,143,0.22);}"
-        ".v3-bd{position:fixed;inset:0;background:rgba(26,24,20,0.55);z-index:99999;display:flex;"
-        "align-items:flex-start;justify-content:center;padding:40px 20px;overflow-y:auto;font-family:Inter,system-ui,sans-serif;}"
-        ".v3-modal{background:#fff;border-radius:10px;max-width:780px;width:100%;padding:24px 28px;box-shadow:0 20px 60px rgba(0,0,0,0.25);}"
-        ".v3-modal h2{font-family:Fraunces,Georgia,serif;font-weight:500;font-size:1.4rem;margin:0 0 4px;color:#1a1814;}"
-        ".v3-x{float:right;cursor:pointer;background:none;border:1px solid #c9bfac;border-radius:5px;padding:4px 10px;font-size:12px;color:#6b6253;}"
-        ".v3-sect{margin:16px 0 6px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;text-transform:uppercase;"
-        "letter-spacing:0.08em;color:#2a3d8f;font-weight:600;border-bottom:1px solid #c9bfac;padding-bottom:4px;}"
-        ".v3-row{display:flex;gap:14px;margin:5px 0;font-size:13px;color:#3a342b;}"
-        ".v3-lbl{min-width:96px;color:#6b6253;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11.5px;}"
+        ".pv-details:hover{border-color:#0b252f !important;box-shadow:0 1px 4px rgba(11,37,47,0.22);}"
+        ".v3-bd{position:fixed;inset:0;background:rgba(11,37,47,0.55);z-index:99999;display:flex;"
+        "align-items:flex-start;justify-content:center;padding:40px 20px;overflow-y:auto;font-family:'Plus Jakarta Sans',system-ui,sans-serif;}"
+        ".v3-modal{background:#fff;border-radius:0;max-width:780px;width:100%;padding:24px 28px;box-shadow:0px 4px 4px 0px rgba(0,0,0,0.05);}"
+        ".v3-modal h2{font-family:'Noto Serif',Georgia,serif;font-weight:600;font-size:1.4rem;letter-spacing:-0.015em;margin:0 0 4px;color:#0b252f;}"
+        ".v3-x{float:right;cursor:pointer;background:none;border:1px solid #a5bbbe;border-radius:0;padding:4px 10px;font-size:11px;color:#a5bbbe;}"
+        ".v3-sect{margin:16px 0 6px;font-family:'DM Mono',ui-monospace,monospace;font-size:10px;text-transform:uppercase;"
+        "letter-spacing:0.08em;color:#0b252f;opacity:0.5;font-weight:600;border-bottom:1px solid #edecec;padding-bottom:4px;}"
+        ".v3-row{display:flex;gap:14px;margin:5px 0;font-size:13px;color:#272726;}"
+        ".v3-lbl{min-width:96px;color:#a5bbbe;font-family:'DM Mono',ui-monospace,monospace;font-size:11px;}"
         ".v3-val{flex:1;line-height:1.45;}"
-        ".v3-pill{display:inline-block;padding:2px 8px;border-radius:10px;color:#fff;font-size:11px;font-weight:600;}"
-        ".v3-modal ul{margin:4px 0;padding-left:20px;font-size:12.5px;color:#3a342b;line-height:1.5;}"
-        ".v3-modal a{color:#2a3d8f;text-decoration:none;}.v3-modal a:hover{text-decoration:underline;}"
+        ".v3-pill{display:inline-block;padding:2px 8px;border-radius:0;color:#fff;font-size:11px;font-weight:600;}"
+        ".v3-modal ul{margin:4px 0;padding-left:20px;font-size:12.5px;color:#272726;line-height:1.5;}"
+        ".v3-modal a{color:#0b252f;text-decoration:none;}.v3-modal a:hover{text-decoration:underline;}"
     )
     _js = r'''
     (function(){
       if (window.__PV_INSTALLED__) { window.__PV_PAYLOAD__ = __PAYLOAD__; return; }
       window.__PV_INSTALLED__ = true; window.__PV_PAYLOAD__ = __PAYLOAD__;
       var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];});};
-      function ocol(sc){return sc==null?'#6b6253':(sc>=4?'#1b6b5e':(sc==3?'#d97c2a':(sc==2?'#c8341d':'#6b6253')));}
-      function srcs(a){if(!a||!a.length)return '<span style="color:#aaa">no sources</span>';
+      function ocol(sc){return sc==null?'#dcdcda':(sc>=4?'#e86f57':(sc==3?'#f4886f':(sc==2?'#f8ad99':'#f6cabd')));}
+      function otext(sc){return '#0b252f';}
+      function srcs(a){if(!a||!a.length)return '<span style="color:#a5bbbe">no sources</span>';
         return '<ul>'+a.map(function(s){var u=s&&s.url?s.url:'';var sh=s&&s.shows?s.shows:u;
         return u?'<li><a href="'+esc(u)+'" target="_blank" rel="noopener">'+esc(sh||u)+'</a></li>':'<li>'+esc(sh)+'</li>';}).join('')+'</ul>';}
-      function row(l,v){if(v==null||v==='')v='<em style="color:#aaa">n/a</em>';
+      function row(l,v){if(v==null||v==='')v='<em style="color:#a5bbbe">n/a</em>';
         return '<div class="v3-row"><span class="v3-lbl">'+esc(l)+'</span><span class="v3-val">'+(typeof v==='string'&&v.indexOf('<')===0?v:esc(v))+'</span></div>';}
       function build(p){
         var o=p.openness||{},ad=p.adoption||{},cap=p.capability||{};
         var h='<div class="v3-bd"><div class="v3-modal"><button class="v3-x">Close ✕</button>'+
           '<h2>'+esc(p.product||'')+'</h2>'+
-          '<div style="font-family:\'JetBrains Mono\',monospace;font-size:11px;color:#6b6253;margin-bottom:6px;">'+
+          '<div style="font-family:\'DM Mono\',monospace;font-size:11px;color:#a5bbbe;margin-bottom:6px;">'+
             esc(p.org||'')+' · '+esc(p.type||'')+' · '+esc(p.category_label||'')+
-            (o.class?' · <span class="v3-pill" style="background:'+ocol(o.score)+'">'+esc(o.class)+'</span>':'')+'</div>'+
-          (p.description?'<div style="font-size:13px;color:#3a342b;line-height:1.5;margin:8px 0;">'+esc(p.description)+'</div>':'')+
-          (p.version_note?'<div style="font-size:11.5px;color:#6b6253;line-height:1.45;margin:6px 0;">'+esc(p.version_note)+'</div>':'')+
+            (o.class?' · <span class="v3-pill" style="background:'+ocol(o.score)+';color:'+otext(o.score)+'">'+esc(o.class)+'</span>':'')+'</div>'+
+          (p.description?'<div style="font-size:13px;color:#272726;line-height:1.5;margin:8px 0;">'+esc(p.description)+'</div>':'')+
+          (p.version_note?'<div style="font-size:11.5px;color:#a5bbbe;line-height:1.45;margin:6px 0;">'+esc(p.version_note)+'</div>':'')+
           '<div class="v3-sect">Openness · '+(o.score==null?'n/a':o.score+'/5')+' ('+esc(o.class||'')+')</div>'+
           row('Components',o.components)+row('Why',o.note)+row('Confidence',o.confidence)+
           '<div class="v3-row"><span class="v3-lbl">Sources</span><span class="v3-val">'+srcs(o.sources)+'</span></div>'+

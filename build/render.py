@@ -56,7 +56,7 @@ app = marimo.App(width="full")
 def load_fonts(mo):
     mo.Html(
         '<style>'
-        '@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");'
+        '@import url("https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Noto+Serif:ital,wght@0,400;0,600;1,400&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap");'
         '</style>'
     )
     return
@@ -65,14 +65,28 @@ def load_fonts(mo):
 @app.cell(hide_code=True)
 def style():
     F = {
-        "headline": "Fraunces, Georgia, serif",
-        "body": "Inter, -apple-system, system-ui, sans-serif",
-        "mono": "'JetBrains Mono', ui-monospace, SFMono-Regular, monospace",
+        "headline": "'Noto Serif', Georgia, serif",
+        "body": "'Plus Jakarta Sans', -apple-system, system-ui, sans-serif",
+        "mono": "'DM Mono', ui-monospace, SFMono-Regular, monospace",
     }
     C = {
-        "ink": "#1a1814", "ink_2": "#3a342b", "ink_3": "#6b6253",
-        "paper": "#f5f1ea", "paper_2": "#ede7dc", "rule": "#c9bfac",
-        "signal": "#c8341d", "healthy": "#1b6b5e", "warm": "#d97c2a", "accent": "#2a3d8f",
+        "ink": "#0b252f", "ink_2": "#272726", "ink_3": "#8fa1a4",
+        "paper": "#f7f6f6", "paper_2": "#f2f1f1", "rule": "#edecec",
+        # Openness: a single-hue salmon ramp, deepest = most open, fading to a
+        # pale (but still legible) tint for closed. Monotonic lightness, so it
+        # reads as one ordered scale; brand salmon sits mid-ramp and open
+        # products carry the most colour.
+        "healthy": "#e86f57",   # open        — deep salmon
+        "warm": "#f4886f",      # open-ish    — salmon (brand-adjacent)
+        "signal": "#f8ad99",    # restricted  — light coral
+        "closed": "#f6cabd",    # closed      — pale coral
+        "null": "#dcdcda",      # no score    — neutral grey (off the ramp)
+        # Structure + the two magnitude axes — a quiet cool pair so the openness
+        # column is where colour lives.
+        "accent": "#0b252f",    # navy — eyebrows, rules, active controls
+        "adopt": "#8aa6ac",     # adoption bar   — light slate
+        "capab": "#3f5d68",     # capability bar — dark slate
+        "white": "#ffffff", "border": "#a5bbbe", "gap_red": "#ff0d0d",
     }
     # Openness class -> (label, 0-5 score for bar fill, color key). Unifies the
     # model / software / dataset class vocabularies onto one openness gradient.
@@ -96,9 +110,9 @@ def style():
     VERDICT = {
         "open_leads": ("Open leads", "healthy"),
         "openish_leads": ("Open-ish leads", "warm"),
-        "closed_leads": ("Closed leads", "signal"),
-        "competitive": ("Competitive", "accent"),
-        "none": ("No standout", "ink_3"),
+        "closed_leads": ("Closed leads", "closed"),
+        "competitive": ("Competitive", "capab"),
+        "none": ("No standout", "null"),
     }
     return C, F, OPEN, VERDICT
 
@@ -213,8 +227,8 @@ def header(C, DATA, F, mo):
         f'<div style="padding:40px 0 28px; border-bottom:2px solid {C["accent"]}; margin-bottom:36px;">'
         f'<div style="font-family:{F["mono"]}; font-size:11px; color:{C["ink_3"]}; '
         f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:10px;">'
-        f'Current AI \\u00b7 Open Source AI Map \\u00b7 v3</div>'
-        f'<h1 style="font-family:{F["headline"]}; font-size:2.2rem; font-weight:400; '
+        f'Current AI</div>'
+        f'<h1 style="font-family:{F["headline"]}; font-size:2.2rem; font-weight:600; '
         f'color:{C["ink"]}; margin:0 0 14px; line-height:1.05; letter-spacing:-0.025em;">'
         f'Open Source AI Map</h1>'
         f'<p style="font-family:{F["body"]}; font-size:1rem; color:{C["ink_2"]}; '
@@ -257,13 +271,13 @@ def stack_overview(C, DATA, F, ORDER, STACK_DESC, mix_counts, mo):
         _chips = (
             f'<span style="color:{C["healthy"]};">\\u25cf</span> {_m["open"]} open'
             f'&nbsp;&nbsp;<span style="color:{C["warm"]};">\\u25cf</span> {_m["openish"]} open-ish'
-            f'&nbsp;&nbsp;<span style="color:{C["ink_3"]};">\\u25cf</span> {_m["closed"]} closed'
+            f'&nbsp;&nbsp;<span style="color:{C["closed"]};">\\u25cf</span> {_m["closed"]} closed'
         )
         _rows.append(
             f'<div style="display:grid; grid-template-columns:32px 1fr 232px; gap:18px; '
             f'align-items:center; padding:14px 0; border-bottom:1px solid {C["rule"]};">'
             f'<div style="font-family:{F["mono"]}; font-size:12px; color:{C["ink_3"]};">{_i:02d}</div>'
-            f'<div><div style="font-family:{F["headline"]}; font-size:1.05rem; font-weight:500; '
+            f'<div><div style="font-family:{F["headline"]}; font-size:1.05rem; font-weight:600; '
             f'color:{C["ink"]}; line-height:1.2;">{_cat["label"]}</div>'
             f'<div style="font-family:{F["body"]}; font-size:0.85rem; color:{C["ink_3"]}; '
             f'margin-top:3px; line-height:1.4;">{STACK_DESC.get(_cid, "")}</div></div>'
@@ -276,7 +290,7 @@ def stack_overview(C, DATA, F, ORDER, STACK_DESC, mix_counts, mo):
         f'<div style="margin:0 0 52px;">'
         f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
         f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:8px;">The stack at a glance</div>'
-        f'<h2 style="font-family:{F["headline"]}; font-size:1.6rem; font-weight:500; color:{C["ink"]}; '
+        f'<h2 style="font-family:{F["headline"]}; font-size:1.6rem; font-weight:600; color:{C["ink"]}; '
         f'margin:0 0 14px; letter-spacing:-0.015em;">'
         f'{_n_arcs} layers \\u00b7 {len(ORDER)} categories \\u00b7 {_total} scored products</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.95rem; color:{C["ink_2"]}; margin:0 0 20px; line-height:1.6;">'
@@ -298,7 +312,7 @@ def openness_distribution(C, DATA, F, mo):
             return C["warm"]
         if _cls in ("restricted", "source_available", "gated", "documented"):
             return C["signal"]
-        return C["ink_3"]
+        return C["closed"]
     _CLS_ORDER = ["open_source", "open", "open_hardware", "open_core", "open_weights", "open_toolchain", "source_available", "gated", "documented", "restricted", "documented_only", "closed"]
     _bars = []
     for _tk, _tl in [("model", "Models"), ("dataset", "Datasets"), ("software", "Software"), ("hardware", "Hardware")]:
@@ -316,14 +330,14 @@ def openness_distribution(C, DATA, F, mo):
         _bars.append(
             f'<div style="display:grid; grid-template-columns:84px 1fr 44px; gap:12px; align-items:center; margin:8px 0;">'
             f'<div style="font-family:{F["body"]}; font-size:0.9rem; color:{C["ink"]}; font-weight:600;">{_tl}</div>'
-            f'<div style="display:flex; border-radius:3px; overflow:hidden;">{_segs}</div>'
+            f'<div style="display:flex; border-radius:0; overflow:hidden;">{_segs}</div>'
             f'<div style="font-family:{F["mono"]}; font-size:0.78rem; color:{C["ink_3"]}; text-align:right;">{_tot}</div>'
             f'</div>'
         )
     _legend = "".join(
         f'<span style="display:inline-flex; align-items:center; margin-right:16px; font-family:{F["body"]}; font-size:0.78rem; color:{C["ink_3"]};">'
-        f'<span style="width:11px; height:11px; background:{_col}; border-radius:2px; display:inline-block; margin-right:5px;"></span>{_lab}</span>'
-        for _lab, _col in [("Open source / data", C["healthy"]), ("Open weights / core", C["warm"]), ("Restricted / gated", C["signal"]), ("Closed", C["ink_3"])]
+        f'<span style="width:11px; height:11px; background:{_col}; border-radius:0; display:inline-block; margin-right:5px;"></span>{_lab}</span>'
+        for _lab, _col in [("Open source / data", C["healthy"]), ("Open weights / core", C["warm"]), ("Restricted / gated", C["signal"]), ("Closed", C["closed"])]
     )
     mo.Html(
         f'<div style="margin:0 0 44px;">'
@@ -349,12 +363,12 @@ def filter_sort_controls(mo):
     # its whole cell so no orphaned header/callout is left over an empty table.
     _css = (
         "<style>"
-        ".v3ctrl-bar .v3ctrl-lbl{font-family:'JetBrains Mono',monospace;font-size:10px;"
-        "color:#6b6253;letter-spacing:0.08em;text-transform:uppercase;margin-right:10px;}"
-        ".v3ctrl-bar button{font-family:Inter,system-ui,sans-serif;font-size:12px;"
-        "border:1px solid #c9bfac;background:#fff;color:#3a342b;border-radius:5px;"
-        "padding:5px 12px;cursor:pointer;margin-right:6px;}"
-        ".v3ctrl-bar button.active{background:#2a3d8f;color:#fff;border-color:#2a3d8f;}"
+        ".v3ctrl-bar .v3ctrl-lbl{font-family:'DM Mono',ui-monospace,monospace;font-size:10px;"
+        "color:#a5bbbe;letter-spacing:0.08em;text-transform:uppercase;margin-right:10px;}"
+        ".v3ctrl-bar button{font-family:'DM Mono',ui-monospace,monospace;font-size:11px;"
+        "border:1px solid #a5bbbe;background:#fff;color:#0b252f;border-radius:0;"
+        "padding:5px 12px;cursor:pointer;margin-right:6px;letter-spacing:0.04em;text-transform:uppercase;}"
+        ".v3ctrl-bar button.active{background:#0b252f;color:#f2f1f1;border-color:#0b252f;}"
         "</style>"
     )
 
@@ -440,20 +454,20 @@ def helpers(C, DATA, F, OPEN, STRAPLINES, VERDICT, mix_counts, mo, vbucket,
 
     def _ocolor(score):
         if score is None:
-            return C["rule"]
+            return C["null"]
         if score >= 4:
-            return C["healthy"]
+            return C["healthy"]   # salmon — open
         if score == 3:
-            return C["warm"]
+            return C["warm"]      # light coral — open-ish
         if score == 2:
-            return C["signal"]
-        return C["ink_3"]
+            return C["signal"]    # mid slate — restricted
+        return C["closed"]        # dark slate — closed
 
     def _bars(value, on_color):
         v = int(value) if isinstance(value, (int, float)) else 0
         return "".join(
             f'<span style="display:inline-block; width:6px; height:14px; margin-right:2px; '
-            f'vertical-align:middle; background:{on_color if j < v else C["paper_2"]};"></span>'
+            f'vertical-align:middle; background:{on_color if j < v else C["rule"]};"></span>'
             for j in range(5)
         )
 
@@ -498,8 +512,8 @@ def helpers(C, DATA, F, OPEN, STRAPLINES, VERDICT, mix_counts, mo, vbucket,
             f'<td style="padding:8px 10px; font-family:{F["body"]}; font-size:0.86rem; color:{C["ink"]};">{_name}</td>'
             f'<td style="padding:8px 10px; font-family:{F["body"]}; font-size:0.78rem; color:{C["ink_3"]};">{p.get("org","") or ""}</td>'
             f'<td style="padding:8px 10px;">{openness_cell(op)}</td>'
-            f'<td style="padding:8px 10px;">{axis_bars(ad, "level", C["accent"])}</td>'
-            f'<td style="padding:8px 10px;">{axis_bars(cap, "score", C["ink_2"])}</td>'
+            f'<td style="padding:8px 10px;">{axis_bars(ad, "level", C["adopt"])}</td>'
+            f'<td style="padding:8px 10px;">{axis_bars(cap, "score", C["capab"])}</td>'
             f'<td style="padding:8px 10px;"><button class="v3-details" data-pid="{pid}">Details</button></td>'
             f'</tr>'
         )
@@ -594,17 +608,21 @@ def helpers(C, DATA, F, OPEN, STRAPLINES, VERDICT, mix_counts, mo, vbucket,
     def _verdict_spine(cid):
         # Openness verdict pill, then the open / open-ish / closed dot tally.
         _code, _basis = verdict_for(cid)
-        _vlabel, _vckey = VERDICT[_code]
+        _vlabel, _ = VERDICT[_code]
+        # The verdict is a categorical call, not an ordinal one, so colour-coding it
+        # fought the openness ramp (open-ish vs closed read alike, and competitive /
+        # no-standout fall off the ramp). Keep it a neutral tag; the colour story
+        # lives in the open / open-ish / closed chips beside it.
         _verdict = (
             f'<span style="display:inline-block; font-family:{F["mono"]}; font-size:0.72rem; '
-            f'letter-spacing:0.05em; text-transform:uppercase; color:white; background:{C[_vckey]}; '
-            f'padding:4px 10px; border-radius:2px;">{_vlabel}</span>'
+            f'letter-spacing:0.05em; text-transform:uppercase; color:{C["ink"]}; '
+            f'background:{C["paper_2"]}; padding:4px 10px; border-radius:0;">{_vlabel}</span>'
         )
         _m = mix_counts(cid)
         _tally = (
             f'<span style="color:{C["healthy"]};">\\u25cf</span> {_m["open"]} open'
             f'&nbsp;&nbsp;<span style="color:{C["warm"]};">\\u25cf</span> {_m["openish"]} open-ish'
-            f'&nbsp;&nbsp;<span style="color:{C["ink_3"]};">\\u25cf</span> {_m["closed"]} closed'
+            f'&nbsp;&nbsp;<span style="color:{C["closed"]};">\\u25cf</span> {_m["closed"]} closed'
         )
         return (
             f'<div style="margin:4px 0 12px;">{_verdict}'
@@ -643,7 +661,7 @@ def helpers(C, DATA, F, OPEN, STRAPLINES, VERDICT, mix_counts, mo, vbucket,
             + f'<div style="margin:28px 0 18px;">'
             f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
             f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:6px;">{cat["arc"]} \\u00b7 {num:02d}</div>'
-            f'<h2 style="font-family:{F["headline"]}; font-size:1.4rem; font-weight:500; '
+            f'<h2 style="font-family:{F["headline"]}; font-size:1.4rem; font-weight:600; '
             f'color:{C["ink"]}; margin:0 0 8px;">{cat["label"]} '
             f'<span style="font-family:{F["mono"]}; font-size:0.8rem; color:{C["ink_3"]};">({len(prods)})</span></h2>'
             f'<p style="font-family:{F["body"]}; font-size:0.98rem; font-weight:600; color:{C["ink_2"]}; '
@@ -673,43 +691,45 @@ def details_payload(DATA, ORDER, mo):
             _payload[_p["product"]] = {**_p, "category_label": DATA["categories"][_cid]["label"]}
     _pj = _json.dumps(_payload, ensure_ascii=False)
     _css = (
-        ".v3-details{padding:3px 9px;font-size:11px;font-family:Inter,system-ui,sans-serif;"
-        "border:1px solid #2a3d8f;background:#fff;color:#2a3d8f;border-radius:4px;cursor:pointer;font-weight:600;}"
-        ".v3-details:hover{background:#2a3d8f;color:#fff;}"
-        ".v3-bd{position:fixed;inset:0;background:rgba(26,24,20,0.55);z-index:99999;display:flex;"
-        "align-items:flex-start;justify-content:center;padding:40px 20px;overflow-y:auto;font-family:Inter,system-ui,sans-serif;}"
-        ".v3-modal{background:#fff;border-radius:10px;max-width:780px;width:100%;padding:24px 28px;box-shadow:0 20px 60px rgba(0,0,0,0.25);}"
-        ".v3-modal h2{font-family:Fraunces,Georgia,serif;font-weight:500;font-size:1.4rem;margin:0 0 4px;color:#1a1814;}"
-        ".v3-x{float:right;cursor:pointer;background:none;border:1px solid #c9bfac;border-radius:5px;padding:4px 10px;font-size:12px;color:#6b6253;}"
-        ".v3-sect{margin:16px 0 6px;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10.5px;text-transform:uppercase;"
-        "letter-spacing:0.08em;color:#2a3d8f;font-weight:600;border-bottom:1px solid #c9bfac;padding-bottom:4px;}"
-        ".v3-row{display:flex;gap:14px;margin:5px 0;font-size:13px;color:#3a342b;}"
-        ".v3-lbl{min-width:96px;color:#6b6253;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11.5px;}"
+        ".v3-details{padding:3px 9px;font-size:11px;font-family:'DM Mono',ui-monospace,monospace;"
+        "border:1px solid #a5bbbe;background:#fff;color:#0b252f;border-radius:0;cursor:pointer;font-weight:500;"
+        "letter-spacing:0.04em;text-transform:uppercase;}"
+        ".v3-details:hover{background:#0b252f;color:#f2f1f1;}"
+        ".v3-bd{position:fixed;inset:0;background:rgba(11,37,47,0.55);z-index:99999;display:flex;"
+        "align-items:flex-start;justify-content:center;padding:40px 20px;overflow-y:auto;font-family:'Plus Jakarta Sans',system-ui,sans-serif;}"
+        ".v3-modal{background:#fff;border-radius:0;max-width:780px;width:100%;padding:24px 28px;box-shadow:0px 4px 4px 0px rgba(0,0,0,0.05);}"
+        ".v3-modal h2{font-family:'Noto Serif',Georgia,serif;font-weight:600;font-size:1.4rem;letter-spacing:-0.015em;margin:0 0 4px;color:#0b252f;}"
+        ".v3-x{float:right;cursor:pointer;background:none;border:1px solid #a5bbbe;border-radius:0;padding:4px 10px;font-size:11px;color:#a5bbbe;}"
+        ".v3-sect{margin:16px 0 6px;font-family:'DM Mono',ui-monospace,monospace;font-size:10px;text-transform:uppercase;"
+        "letter-spacing:0.08em;color:#0b252f;opacity:0.5;font-weight:600;border-bottom:1px solid #edecec;padding-bottom:4px;}"
+        ".v3-row{display:flex;gap:14px;margin:5px 0;font-size:13px;color:#272726;}"
+        ".v3-lbl{min-width:96px;color:#a5bbbe;font-family:'DM Mono',ui-monospace,monospace;font-size:11px;}"
         ".v3-val{flex:1;line-height:1.45;}"
-        ".v3-pill{display:inline-block;padding:2px 8px;border-radius:10px;color:#fff;font-size:11px;font-weight:600;}"
-        ".v3-modal ul{margin:4px 0;padding-left:20px;font-size:12.5px;color:#3a342b;line-height:1.5;}"
-        ".v3-modal a{color:#2a3d8f;text-decoration:none;}.v3-modal a:hover{text-decoration:underline;}"
+        ".v3-pill{display:inline-block;padding:2px 8px;border-radius:0;color:#fff;font-size:11px;font-weight:600;}"
+        ".v3-modal ul{margin:4px 0;padding-left:20px;font-size:12.5px;color:#272726;line-height:1.5;}"
+        ".v3-modal a{color:#0b252f;text-decoration:none;}.v3-modal a:hover{text-decoration:underline;}"
     )
     _js = r\'\'\'
     (function(){
       if (window.__V3_INSTALLED__) { window.__V3_PAYLOAD__ = __PAYLOAD__; return; }
       window.__V3_INSTALLED__ = true; window.__V3_PAYLOAD__ = __PAYLOAD__;
       var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];});};
-      function ocol(sc){return sc==null?'#6b6253':(sc>=4?'#1b6b5e':(sc==3?'#d97c2a':(sc==2?'#c8341d':'#6b6253')));}
-      function srcs(a){if(!a||!a.length)return '<span style="color:#aaa">no sources</span>';
+      function ocol(sc){return sc==null?'#dcdcda':(sc>=4?'#e86f57':(sc==3?'#f4886f':(sc==2?'#f8ad99':'#f6cabd')));}
+      function otext(sc){return '#0b252f';}
+      function srcs(a){if(!a||!a.length)return '<span style="color:#a5bbbe">no sources</span>';
         return '<ul>'+a.map(function(s){var u=s&&s.url?s.url:'';var sh=s&&s.shows?s.shows:u;
         return u?'<li><a href="'+esc(u)+'" target="_blank" rel="noopener">'+esc(sh||u)+'</a></li>':'<li>'+esc(sh)+'</li>';}).join('')+'</ul>';}
-      function row(l,v){if(v==null||v==='')v='<em style="color:#aaa">n/a</em>';
+      function row(l,v){if(v==null||v==='')v='<em style="color:#a5bbbe">n/a</em>';
         return '<div class="v3-row"><span class="v3-lbl">'+esc(l)+'</span><span class="v3-val">'+(typeof v==='string'&&v.indexOf('<')===0?v:esc(v))+'</span></div>';}
       function build(p){
         var o=p.openness||{},ad=p.adoption||{},cap=p.capability||{};
         var h='<div class="v3-bd"><div class="v3-modal"><button class="v3-x">Close \\u2715</button>'+
           '<h2>'+esc(p.product||'')+'</h2>'+
-          '<div style="font-family:\\'JetBrains Mono\\',monospace;font-size:11px;color:#6b6253;margin-bottom:6px;">'+
+          '<div style="font-family:\\'DM Mono\\',monospace;font-size:11px;color:#a5bbbe;margin-bottom:6px;">'+
             esc(p.org||'')+' \\u00b7 '+esc(p.type||'')+' \\u00b7 '+esc(p.category_label||'')+
-            (o.class?' \\u00b7 <span class="v3-pill" style="background:'+ocol(o.score)+'">'+esc(o.class)+'</span>':'')+'</div>'+
-          (p.description?'<div style="font-size:13px;color:#3a342b;line-height:1.5;margin:8px 0;">'+esc(p.description)+'</div>':'')+
-          (p.version_note?'<div style="font-size:11.5px;color:#6b6253;line-height:1.45;margin:6px 0;">'+esc(p.version_note)+'</div>':'')+
+            (o.class?' \\u00b7 <span class="v3-pill" style="background:'+ocol(o.score)+';color:'+otext(o.score)+'">'+esc(o.class)+'</span>':'')+'</div>'+
+          (p.description?'<div style="font-size:13px;color:#272726;line-height:1.5;margin:8px 0;">'+esc(p.description)+'</div>':'')+
+          (p.version_note?'<div style="font-size:11.5px;color:#a5bbbe;line-height:1.45;margin:6px 0;">'+esc(p.version_note)+'</div>':'')+
           '<div class="v3-sect">Openness \\u00b7 '+(o.score==null?'n/a':o.score+'/5')+' ('+esc(o.class||'')+')</div>'+
           row('Components',o.components)+row('Why',o.note)+row('Confidence',o.confidence)+
           '<div class="v3-row"><span class="v3-lbl">Sources</span><span class="v3-val">'+srcs(o.sources)+'</span></div>'+
@@ -768,7 +788,7 @@ def stages_table(C, DATA, F, ORDER, mo):
         _cat_html = (
             "".join(
                 f'<span style="display:inline-block; font-family:{F["body"]}; font-size:0.82rem; '
-                f'color:{C["ink_2"]}; background:{C["paper_2"]}; padding:2px 9px; border-radius:11px; '
+                f'color:{C["ink_2"]}; background:{C["paper_2"]}; padding:2px 9px; border-radius:0; '
                 f'margin:0 5px 5px 0;">{_l}</span>'
                 for _l in _cats
             )
@@ -782,7 +802,7 @@ def stages_table(C, DATA, F, ORDER, mo):
             f'box-sizing:border-box; font-family:{F["mono"]}; font-size:0.8rem; font-weight:600; color:{C["ink"]}; '
             f'background:#fff; border:1.5px solid {C["ink"]}; border-radius:50%;">{_n}</span></td>'
             f'<td style="padding:14px 16px 14px 0; font-family:{F["headline"]}; font-size:0.98rem; '
-            f'font-weight:500; color:{C["ink"]}; white-space:nowrap;">{_name}</td>'
+            f'font-weight:600; color:{C["ink"]}; white-space:nowrap;">{_name}</td>'
             f'<td style="padding:14px 16px 14px 0; font-family:{F["body"]}; font-size:0.86rem; '
             f'color:{C["ink_2"]}; line-height:1.45; max-width:300px;">{_desc}</td>'
             f'<td style="padding:14px 0;">{_cat_html}</td>'
@@ -797,7 +817,7 @@ def stages_table(C, DATA, F, ORDER, mo):
         f'<div style="margin:52px 0 44px;">'
         f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
         f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:8px;">The maturity ladder</div>'
-        f'<h2 style="font-family:{F["headline"]}; font-size:1.6rem; font-weight:500; color:{C["ink"]}; '
+        f'<h2 style="font-family:{F["headline"]}; font-size:1.6rem; font-weight:600; color:{C["ink"]}; '
         f'margin:0 0 14px; letter-spacing:-0.015em;">How mature is the open ecosystem in each category?</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.95rem; color:{C["ink_2"]}; margin:0 0 20px; line-height:1.6;">'
         f'Each category sits on a Void \\u2192 Mature ladder, scored on the depth of its <em>fully-open</em> '
@@ -815,7 +835,7 @@ def stages_table(C, DATA, F, ORDER, mo):
 def uncategorized_long_tail(C, DATA, F, mo):
     _lt = DATA["long_tail"]
     _c = _lt["counts"]
-    _TC = {"repo": C["accent"], "model": C["healthy"], "package": C["warm"], "dataset": C["signal"]}
+    _TC = {"repo": C["border"], "model": C["healthy"], "package": C["warm"], "dataset": C["signal"]}
     _btns = "".join(
         '<button data-ltf="' + _k + '" class="lt-btn' + (' active' if _k == 'all' else '') + '">' + _lab + '</button>'
         for _k, _lab in [("all", "All"), ("repo", "Repos"), ("model", "Models"), ("package", "Packages"), ("dataset", "Datasets")]
@@ -824,7 +844,7 @@ def uncategorized_long_tail(C, DATA, F, mo):
         f'<tr data-lttype="{_t["type"]}" style="border-bottom:1px solid {C["paper_2"]};">'
         f'<td style="padding:7px 10px; font-family:{F["mono"]}; font-size:0.8rem; color:{C["ink"]};">{_t["name"]}</td>'
         f'<td style="padding:7px 10px;"><span style="font-family:{F["mono"]}; font-size:0.64rem; text-transform:uppercase; '
-        f'letter-spacing:0.04em; color:#fff; background:{_TC.get(_t["type"], C["ink_3"])}; padding:2px 7px; border-radius:10px;">{_t["type"]}</span></td>'
+        f'letter-spacing:0.04em; color:{C["ink"]}; background:{_TC.get(_t["type"], C["ink_3"])}; padding:2px 7px; border-radius:0;">{_t["type"]}</span></td>'
         f'<td style="padding:7px 10px; font-family:{F["mono"]}; font-size:0.76rem; color:{C["ink_3"]}; text-align:right; white-space:nowrap;">{_t["usage_label"]}</td>'
         f'<td style="padding:7px 10px; font-family:{F["body"]}; font-size:0.8rem; color:{C["ink_3"]};">{_t["description"]}</td>'
         f'<td style="padding:7px 10px; font-family:{F["mono"]}; font-size:0.66rem; color:{C["rule"]}; text-transform:uppercase; letter-spacing:0.04em;">uncategorized</td>'
@@ -838,9 +858,9 @@ def uncategorized_long_tail(C, DATA, F, mo):
     )
     _css = (
         "<style>"
-        ".lt-bar .lt-btn{font-family:Inter,system-ui,sans-serif;font-size:11px;border:1px solid #c9bfac;"
-        "background:#fff;color:#3a342b;border-radius:5px;padding:4px 11px;cursor:pointer;margin-right:6px;}"
-        ".lt-bar .lt-btn.active{background:#2a3d8f;color:#fff;border-color:#2a3d8f;}"
+        ".lt-bar .lt-btn{font-family:'DM Mono',ui-monospace,monospace;font-size:11px;border:1px solid #a5bbbe;"
+        "background:#fff;color:#0b252f;border-radius:0;padding:4px 11px;cursor:pointer;margin-right:6px;letter-spacing:0.04em;text-transform:uppercase;}"
+        ".lt-bar .lt-btn.active{background:#0b252f;color:#f2f1f1;border-color:#0b252f;}"
         ".lt-wrap[data-lttype=repo] tr[data-lttype]:not([data-lttype=repo]){display:none;}"
         ".lt-wrap[data-lttype=model] tr[data-lttype]:not([data-lttype=model]){display:none;}"
         ".lt-wrap[data-lttype=package] tr[data-lttype]:not([data-lttype=package]){display:none;}"
@@ -859,7 +879,7 @@ def uncategorized_long_tail(C, DATA, F, mo):
         + f'<div style="margin:48px 0 20px; padding:24px 0 0; border-top:2px solid {C["accent"]};">'
         f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
         f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:8px;">The long tail \\u00b7 uncategorized</div>'
-        f'<h2 style="font-family:{F["headline"]}; font-size:1.6rem; font-weight:500; color:{C["ink"]}; '
+        f'<h2 style="font-family:{F["headline"]}; font-size:1.6rem; font-weight:600; color:{C["ink"]}; '
         f'margin:0 0 12px; letter-spacing:-0.015em;">{_c["uncategorized"]:,} more products, tracked but not yet scored</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.95rem; color:{C["ink_2"]}; margin:0 0 16px; line-height:1.6;">'
         f'We track <strong>{_c["total"]:,}</strong> open-source AI artifacts in total: '
@@ -904,7 +924,7 @@ def framework_edges(C, FRAMEWORK_EDGES, F, mo):
         f'<div style="margin:48px 0 20px; padding:24px 0 0; border-top:2px solid {C["accent"]};">'
         f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
         f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:8px;">The map\\u2019s edges \\u00b7 framework white-space</div>'
-        f'<h2 style="font-family:{F["headline"]}; font-size:1.6rem; font-weight:500; color:{C["ink"]}; '
+        f'<h2 style="font-family:{F["headline"]}; font-size:1.6rem; font-weight:600; color:{C["ink"]}; '
         f'margin:0 0 12px; letter-spacing:-0.015em;">What\\u2019s not on the map yet</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.95rem; color:{C["ink_2"]}; margin:0 0 18px; line-height:1.6;">'
         f'The Columbia framework treats openness as varying across the whole stack: at the '
@@ -976,7 +996,7 @@ def next_steps(C, F, mo):
         f'<div style="padding-top:24px; border-top:1px solid {C["rule"]}; margin:8px 0 16px;">'
         f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
         f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:8px;">Roadmap</div>'
-        f'<h2 style="font-family:{F["headline"]}; font-size:1.5rem; font-weight:500; '
+        f'<h2 style="font-family:{F["headline"]}; font-size:1.5rem; font-weight:600; '
         f'color:{C["ink"]}; margin:0 0 14px;">Next steps</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.9rem; color:{C["ink_2"]}; '
         f'line-height:1.6; margin:0 0 12px;">This map is a first pass, not a finished '
