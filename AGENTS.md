@@ -19,7 +19,7 @@ warehouse/ingest/      Python fetchers that write CSVs to warehouse/catalog/
 warehouse/catalog/     Raw external CSVs (GoodAI List, HF benchmarks, etc.)
 warehouse/sources.yaml Manifest linking each external source to its fetcher
 build/                 Python pipeline: validate.py, serialize.py, render.py, slugs.py
-notebooks/             Generated marimo notebook (ai-stack-map.py)
+notebooks/             Generated ai-stack-map.py, products-view.py, and standalone companion notebooks (pypi-geo-trends, oss-ai-trends, france-ecosystem)
 docs/methodology.md    Canonical methodology copy, rendered into the notebook (a build input)
 docs/guides/           Query conventions and notebook style guide
 docs/runbooks/         Maintainer deploy runbooks
@@ -81,6 +81,13 @@ The regenerate bot refreshes that one line on merge, so the products view never 
 the stack-map data — edit the gallery/engine freely, but do not hand-edit the payload line.
 Run `build/products_view_data.py --check` to fail if a gallery exemplar name no longer
 resolves to a product.
+
+`notebooks/pypi-geo-trends.py`, `notebooks/oss-ai-trends.py`, and `notebooks/france-ecosystem.py`
+are **fully standalone**: no build-pipeline coupling, no generated payload. Each queries
+`currentai.*` warehouse tables live via `pyoso`, so the bot never touches them. They share the
+AI Stack Map design system; when editing, keep them aligned with `docs/guides/notebook-design.md`
+(Noto Serif / Plus Jakarta Sans / DM Mono, the navy + salmon-ramp palette, sharp corners). These
+mirror notebooks also published on the OSO platform.
 
 ## Editor posture (read-only on the warehouse)
 
