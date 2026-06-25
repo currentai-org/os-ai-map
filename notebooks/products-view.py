@@ -448,9 +448,6 @@ def engine(CATS, COMPONENTS, ORDER, STRUCTURAL_GAPS):
 def header(C, F, GENERATED, N_TOTAL, mo):
     mo.Html(
         f'<div style="padding:40px 0 28px; border-bottom:2px solid {C["accent"]}; margin-bottom:36px;">'
-        f'<div style="font-family:{F["mono"]}; font-size:11px; color:{C["ink_3"]}; '
-        f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:10px;">'
-        f'Current AI</div>'
         f'<h1 style="font-family:{F["headline"]}; font-size:2.2rem; font-weight:600; '
         f'color:{C["ink"]}; margin:0 0 14px; line-height:1.05; letter-spacing:-0.025em;">'
         f'You have an idea. Here’s the open stack to build it on.</h1>'
@@ -543,7 +540,7 @@ def coverage_matrix(C, CATS, F, GALLERY, HEALTH, ORDER, mo):
         f'<div style="margin:36px 0 8px;">'
         f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
         f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:8px;">'
-        f'Products × layers · the edges back to the map</div>'
+        f'Products × layers</div>'
         f'<p style="font-family:{F["body"]}; font-size:0.95rem; color:{C["ink_2"]}; margin:0 0 14px; line-height:1.6;">'
         f'Each row is a reference product; each column is one of the map’s categories, in stack order. '
         f'A filled cell means the product draws on that layer, colored by the strongest composition basis. '
@@ -563,7 +560,7 @@ def lookup_header(C, F, mo):
     mo.Html(
         f'<div style="margin:44px 0 14px; padding:24px 0 0; border-top:2px solid {C["accent"]};">'
         f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
-        f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:8px;">Lookup · mode 1</div>'
+        f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:8px;">Lookup</div>'
         f'<h2 style="font-family:{F["headline"]}; font-size:1.6rem; font-weight:600; color:{C["ink"]}; '
         f'margin:0 0 12px; letter-spacing:-0.015em;">Describe what you want to build</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.95rem; color:{C["ink_2"]}; margin:0; line-height:1.6;">'
@@ -637,7 +634,7 @@ def lookup_results(C, CATS, CAT_KW, F, OPEN_LABEL, ORDER, TH, gap_triggers,
                 f'<div style="margin:10px 0 14px;">'
                 f'<div style="font-family:{F["mono"]}; font-size:0.7rem; color:{C["ink_3"]}; '
                 f'text-transform:uppercase; letter-spacing:0.04em; margin-bottom:4px;">{CATS[_cid]["label"]}'
-                f' · <span style="color:{C["ink_2"]};">{CATS[_cid]["desc"]}</span></div>{_rows}</div>'
+                f': <span style="color:{C["ink_2"]};">{CATS[_cid]["desc"]}</span></div>{_rows}</div>'
             )
         _groups += (
             f'<div style="margin:14px 0;">'
@@ -700,8 +697,8 @@ def lookup_results(C, CATS, CAT_KW, F, OPEN_LABEL, ORDER, TH, gap_triggers,
         f'<div style="margin:8px 0 10px; padding:16px 20px; background:white; '
         f'border:1px solid {C["rule"]}; border-radius:0;">'
         f'<div style="font-family:{F["mono"]}; font-size:0.66rem; color:{C["ink_3"]}; margin-bottom:8px;">'
-        f'Query · “{_q}” · {"open components only" if _open_only else "all components"} '
-        f'· top 3 per layer, layers shown when best score ≥ {TH["show"]}</div>'
+        f'Query “{_q}”, {"open components only" if _open_only else "all components"}, '
+        f'top 3 per layer, shown when best score ≥ {TH["show"]}</div>'
         f'{_groups}{_gap_panel}</div>'
     )
     return
@@ -730,7 +727,7 @@ def gallery_cards(BASIS, BY_NAME, C, CATS, F, GALLERY, HEALTH, OPEN_LABEL, mo):
         )
 
     _cards = ""
-    for _i, _g in enumerate(GALLERY, 1):
+    for _g in GALLERY:
         _hl, _hck = HEALTH[_g["health"]]
         _arcs_html = ""
         for _arc in _ARCS:
@@ -773,7 +770,7 @@ def gallery_cards(BASIS, BY_NAME, C, CATS, F, GALLERY, HEALTH, OPEN_LABEL, mo):
             f'border:1px solid {C["rule"]}; border-radius:0;">'
             f'<div style="display:flex; justify-content:space-between; align-items:baseline; gap:12px;">'
             f'<h3 style="font-family:{F["headline"]}; font-size:1.25rem; font-weight:600; '
-            f'color:{C["ink"]}; margin:0;">{_i:02d} · {_g["title"]}</h3>'
+            f'color:{C["ink"]}; margin:0;">{_g["title"]}</h3>'
             f'<span style="font-family:{F["mono"]}; font-size:0.64rem; color:white; background:{C[_hck]}; '
             f'padding:3px 10px; border-radius:0; text-transform:uppercase; letter-spacing:0.05em; '
             f'white-space:nowrap;">{_hl}</span></div>'
@@ -784,7 +781,7 @@ def gallery_cards(BASIS, BY_NAME, C, CATS, F, GALLERY, HEALTH, OPEN_LABEL, mo):
     mo.Html(
         f'<div style="margin:44px 0 20px; padding:24px 0 0; border-top:2px solid {C["accent"]};">'
         f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
-        f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:8px;">Gallery · mode 2</div>'
+        f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:8px;">Gallery</div>'
         f'<h2 style="font-family:{F["headline"]}; font-size:1.6rem; font-weight:600; color:{C["ink"]}; '
         f'margin:0 0 12px; letter-spacing:-0.015em;">Ten things you can build (and what they’re made of)</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.95rem; color:{C["ink_2"]}; margin:0 0 22px; line-height:1.6;">'
@@ -1040,7 +1037,7 @@ def builder_demand_table(BATCH, C, CATS, COMPONENTS, F, OPEN_CLASSES, OPEN_LABEL
 @app.cell(hide_code=True)
 def methodology(C, F, TH, mo):
     _ps = [
-        f"""<strong>What counts as part of a product (the composition rules).</strong> A component is included in a reference product iff at least one rule fires: <strong>R1 · known build</strong>: it appears in a documented real-world build of this product pattern (eg, Open WebUI’s quickstart pairs it with Ollama; verl documents vLLM as its rollout engine; the Open LLM Leaderboard runs lm-evaluation-harness on Spaces). Curator-asserted from the component’s own documentation. <strong>R2 · documented component</strong>: the component’s documentation, as reflected in its map description, names the product pattern or role as a primary use case. <strong>R3 · similarity</strong>: TF-IDF cosine similarity between the product description and the component’s map description clears {TH["strong"]}. Gallery exemplars are selected by R1/R2 and capped at four per layer; R3 alone never makes an exemplar, only a lookup suggestion.""",
+        f"""<strong>What counts as part of a product (the composition rules).</strong> A component is included in a reference product iff at least one rule fires: <strong>R1, known build</strong>: it appears in a documented real-world build of this product pattern (eg, Open WebUI’s quickstart pairs it with Ollama; verl documents vLLM as its rollout engine; the Open LLM Leaderboard runs lm-evaluation-harness on Spaces). Curator-asserted from the component’s own documentation. <strong>R2, documented component</strong>: the component’s documentation, as reflected in its map description, names the product pattern or role as a primary use case. <strong>R3, similarity</strong>: TF-IDF cosine similarity between the product description and the component’s map description clears {TH["strong"]}. Gallery exemplars are selected by R1/R2 and capped at four per layer; R3 alone never makes an exemplar, only a lookup suggestion.""",
         f"""<strong>Exemplars are open-leaning by design.</strong> The map exists to chart the open stack, so gallery exemplars are drawn from open / open-core / open-weights components; closed incumbents stay visible in the parent stack map and in lookup mode with the “open components only” switch off. Where only closed components can fill a layer, that is reported as a gap, not papered over.""",
         f"""<strong>Lookup scoring.</strong> score = cosine_tfidf × (1 + 0.25·taxonomy_keyword_hit) × (1 + 0.05·(adoption−3)/2). Pure-Python TF-IDF (log-tf, smoothed idf, L2-normalized) over each component’s name, org, type, category label, and description; a small documented synonym list expands query vocabulary (“privacy” → “self-hosted, local”) at half weight. Thresholds, calibrated on the preset queries: strong match ≥ {TH["strong"]}, layer displayed ≥ {TH["show"]}, gap flagged when an implied layer’s best open match < {TH["gap"]}. Embeddings would rank better; TF-IDF ranks <em>reproducibly</em>, with no model dependency, and that trade is right for v1.""",
         f"""<strong>Gap signals are the point, not the failure mode.</strong> Three kinds: <em>weak layer</em> (your description implies a layer, the best open match stays under threshold), <em>closed only</em> (the layer answers, but only with closed components), and <em>structural</em> (no category covers the capability at all: speech, embeddings, guardrails, document parsing, generative media). Structural absences are keyword-triggered and cross-checked against the parent map’s framework white-space. All three feed Gap Analysis and Scoring as candidate categories and scoring targets.""",
@@ -1053,7 +1050,7 @@ def methodology(C, F, TH, mo):
     mo.Html(
         f'<div style="margin:48px 0 24px; padding:24px 0 0; border-top:2px solid {C["accent"]};">'
         f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; letter-spacing:0.1em; '
-        f'text-transform:uppercase; margin-bottom:10px;">Methodology · composition logic</div>'
+        f'text-transform:uppercase; margin-bottom:10px;">Methodology</div>'
         f'{_body}</div>'
     )
     return
@@ -1114,17 +1111,17 @@ def details_modal(CATS, COMPONENTS, mo):
         var h='<div class="v3-bd"><div class="v3-modal"><button class="v3-x">Close ✕</button>'+
           '<h2>'+esc(p.product||'')+'</h2>'+
           '<div style="font-family:\'DM Mono\',monospace;font-size:11px;color:#a5bbbe;margin-bottom:6px;">'+
-            esc(p.org||'')+' · '+esc(p.type||'')+' · '+esc(p.category_label||'')+
-            (o.class?' · <span class="v3-pill" style="background:'+ocol(o.score)+';color:'+otext(o.score)+'">'+esc(o.class)+'</span>':'')+'</div>'+
+            esc(p.org||'')+', '+esc(p.type||'')+', '+esc(p.category_label||'')+
+            (o.class?' <span class="v3-pill" style="background:'+ocol(o.score)+';color:'+otext(o.score)+'">'+esc(o.class)+'</span>':'')+'</div>'+
           (p.description?'<div style="font-size:13px;color:#272726;line-height:1.5;margin:8px 0;">'+esc(p.description)+'</div>':'')+
           (p.version_note?'<div style="font-size:11.5px;color:#a5bbbe;line-height:1.45;margin:6px 0;">'+esc(p.version_note)+'</div>':'')+
-          '<div class="v3-sect">Openness · '+(o.score==null?'n/a':o.score+'/5')+' ('+esc(o.class||'')+')</div>'+
+          '<div class="v3-sect">Openness '+(o.score==null?'n/a':o.score+'/5')+' ('+esc(o.class||'')+')</div>'+
           row('Components',o.components)+row('Why',o.note)+row('Confidence',o.confidence)+
           '<div class="v3-row"><span class="v3-lbl">Sources</span><span class="v3-val">'+srcs(o.sources)+'</span></div>'+
-          '<div class="v3-sect">Adoption · '+(ad.level==null?'n/a':ad.level+'/5')+'</div>'+
+          '<div class="v3-sect">Adoption '+(ad.level==null?'n/a':ad.level+'/5')+'</div>'+
           row('Reach',ad.reach)+row('Signal',ad.signal_type)+row('Detail',ad.note)+row('Confidence',ad.confidence)+
           '<div class="v3-row"><span class="v3-lbl">Sources</span><span class="v3-val">'+srcs(ad.sources)+'</span></div>'+
-          '<div class="v3-sect">Capability · '+(cap.score==null?'n/a':cap.score+'/5')+'</div>'+
+          '<div class="v3-sect">Capability '+(cap.score==null?'n/a':cap.score+'/5')+'</div>'+
           row('Basis',cap.basis)+row('Value',cap.value)+row('Detail',cap.note)+row('Confidence',cap.confidence)+
           '<div class="v3-row"><span class="v3-lbl">Sources</span><span class="v3-val">'+srcs(cap.sources)+'</span></div>'+
           '</div></div>';
