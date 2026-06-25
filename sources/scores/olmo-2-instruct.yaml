@@ -1,0 +1,46 @@
+product: olmo-2-instruct
+openness:
+  score: 5
+  class: open_source
+  components: weights:open(Apache-2.0);data:open(Dolma/OLMo-Mix pretraining + Tulu 3
+    post-training mixtures);code:open(OLMo + open-instruct training code, recipes);checkpoints:open(intermediate);license:Apache-2.0(OSI)
+  confidence: high
+  note: 'Genuinely fully-open instruct line: Apache-2.0 weights + open pretraining and
+    post-training data + open training code/recipe + intermediate checkpoints. Open_source
+    tier 5. Post-trained with the open Tulu 3 SFT->DPO->RLVR pipeline. Cards note limited
+    safety training.'
+  sources:
+  - url: https://huggingface.co/allenai/OLMo-2-0325-32B-Instruct
+    shows: License Apache-2.0; Tulu 3 SFT+DPO+RLVR post-training; fully-open data/code/checkpoints
+    accessed: '2026-06-25'
+  - url: https://allenai.org/blog/olmo2
+    shows: '"best fully open language model to date"; releases weights, data, code, recipes,
+      intermediate checkpoints, and instruction-tuned models'
+    accessed: '2026-06-25'
+adoption:
+  level: 3
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: Combined ~58k HF downloads/month across the three named instruct SKUs (7B-Instruct
+    ~45.2k, 13B-Instruct ~6.9k, 32B-Instruct ~5.9k). 32B-Instruct carries the highest
+    likes (147). Solid research/practitioner reach; below the Qwen/Llama instruct workhorses.
+  sources:
+  - url: https://huggingface.co/allenai/OLMo-2-1124-7B-Instruct
+    shows: ~45,191 downloads last month
+    accessed: '2026-06-25'
+  - url: https://huggingface.co/allenai/OLMo-2-0325-32B-Instruct
+    shows: ~5,918 downloads last month; 147 likes
+    accessed: '2026-06-25'
+capability:
+  score: 3
+  basis: benchmark:MMLU/IFEval/AlpacaEval
+  value: OLMo-2-32B-Instruct MMLU 77.3, GSM8K 87.6, IFEval 85.6, AlpacaEval2 LC 42.8
+  confidence: high
+  note: 32B-Instruct competitive with GPT-4o-mini / Qwen2.5-32B class and outperforms
+    GPT-3.5 Turbo on most benchmarks; mid-tier on a scale where 5 = 2026 frontier chat.
+    The value proposition is full openness, not raw SOTA.
+  sources:
+  - url: https://huggingface.co/allenai/OLMo-2-0325-32B-Instruct
+    shows: MMLU 77.3, GSM8K 87.6, IFEval 85.6; comparison vs GPT-4o-mini and Qwen2.5-32B
+    accessed: '2026-06-25'
