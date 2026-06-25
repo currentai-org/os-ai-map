@@ -85,12 +85,12 @@ def header(C, F, mo):
     mo.Html(
         f'<div style="padding:40px 0 28px; border-bottom:2px solid {C["accent"]}; margin-bottom:8px;">'
         f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
-        f'letter-spacing:0.12em; text-transform:uppercase; margin-bottom:10px;">Current AI · AI Stack Map</div>'
+        f'letter-spacing:0.12em; text-transform:uppercase; margin-bottom:10px;">Current AI</div>'
         f'<h1 style="font-family:{F["headline"]}; font-size:2.3rem; font-weight:600; '
         f'color:{C["ink"]}; margin:0 0 14px; line-height:1.05; letter-spacing:-0.025em;">'
         f'The open-source AI stack, in five charts</h1>'
         f'<p style="font-family:{F["body"]}; font-size:1.05rem; color:{C["ink_2"]}; '
-        f'margin:0; max-width:760px; line-height:1.55;">'
+        f'margin:0; line-height:1.55;">'
         f'Five findings from the AI Stack Map, each in one sentence, one paragraph, and one chart. '
         f'Every number is queried live from the '
         f'<span style="font-family:{F["mono"]}; font-size:0.85em;">currentai</span> warehouse.</p>'
@@ -122,12 +122,12 @@ def s1(C, F, mo):
     mo.Html(
         f'<div style="margin:48px 0 18px;">'
         f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
-        f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:6px;">01 · Resilience</div>'
+        f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:6px;">Resilience</div>'
         f'<h2 style="font-family:{F["headline"]}; font-size:1.7rem; font-weight:600; '
         f'color:{C["ink"]}; margin:0 0 10px; letter-spacing:-0.015em;">'
         f'A whole layer of open AI runs on three projects.</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.98rem; color:{C["ink_2"]}; '
-        f'margin:0; max-width:760px; line-height:1.6;">'
+        f'margin:0; line-height:1.6;">'
         f'The map rates open inference a "Competitive Open Ecosystem," but its contributor base is narrow. '
         f'vLLM, SGLang, and llama.cpp account for more than four in five of the layer\'s developers. '
         f'Each project is well staffed on its own. The risk is that the whole category depends on so few of them.</p>'
@@ -165,12 +165,12 @@ def s2(C, F, mo):
     mo.Html(
         f'<div style="margin:48px 0 18px;">'
         f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
-        f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:6px;">02 · Geography</div>'
+        f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:6px;">Geography</div>'
         f'<h2 style="font-family:{F["headline"]}; font-size:1.7rem; font-weight:600; '
         f'color:{C["ink"]}; margin:0 0 10px; letter-spacing:-0.015em;">'
         f'Open AI is built in 16 countries. The closed frontier fits in three.</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.98rem; color:{C["ink_2"]}; '
-        f'margin:0; max-width:760px; line-height:1.6;">'
+        f'margin:0; line-height:1.6;">'
         f'The scored open-stack projects are based in 16 countries. The US leads, followed by China, Germany, '
         f'the UK, Japan, France, Switzerland, India, Israel, Brazil, and Singapore. The major closed labs are '
         f'based in three: the US, the UK (DeepMind), and France (Mistral).</p>'
@@ -195,7 +195,7 @@ def c2(C, F, LAYOUT, df_geo, go, mo):
     )
     _fig.add_annotation(
         x=0.98, y=0.06, xref="paper", yref="paper", showarrow=False, align="right",
-        text="Closed frontier labs: ~3 countries<br>(US · UK · France)",
+        text="Closed frontier labs: ~3 countries<br>(US, UK, France)",
         font=dict(family=F["mono"], size=11, color=C["ink_3"]),
     )
     _fig.update_xaxes(title="", showgrid=True, gridcolor=C["rule"], tickformat=",d",
@@ -210,12 +210,12 @@ def s3(C, F, mo):
     mo.Html(
         f'<div style="margin:48px 0 18px;">'
         f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
-        f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:6px;">03 · People</div>'
+        f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:6px;">People</div>'
         f'<h2 style="font-family:{F["headline"]}; font-size:1.7rem; font-weight:600; '
         f'color:{C["ink"]}; margin:0 0 10px; letter-spacing:-0.015em;">'
         f'More people build open AI than work at every frontier lab combined.</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.98rem; color:{C["ink_2"]}; '
-        f'margin:0; max-width:760px; line-height:1.6;">'
+        f'margin:0; line-height:1.6;">'
         f'In the last 12 months, tens of thousands of distinct developers committed code to the open AI stack. '
         f'Even the conservative core, those with 50 or more commits in the year, is comparable to the combined '
         f'disclosed headcount of every major closed lab. The broad community is several times larger. '
@@ -235,9 +235,9 @@ def c3(C, F, LAYOUT, df_tiers, go, mo):
     # Closed-lab combined headcount: rough public estimates of total employees (not just technical).
     _labs_est = 11000
     _rows = [
-        ("Open · any contributor", _any, C["pale"], f"{_any:,} ({_any_oc:,} excl. one viral outlier)"),
-        ("Open · substantial (≥10 commits)", _sub, C["warm"], f"{_sub:,}"),
-        ("Open · core (≥50 commits)", _core, C["healthy"], f"{_core:,}"),
+        ("Open, any contributor", _any, C["pale"], f"{_any:,} ({_any_oc:,} excl. one viral outlier)"),
+        ("Open, 10+ commits", _sub, C["warm"], f"{_sub:,}"),
+        ("Open, 50+ commits (core)", _core, C["healthy"], f"{_core:,}"),
         ("All frontier labs combined (est.)", _labs_est, C["slate"], "≈11,000 employees (public estimate)"),
     ]
     _labels = [r[0] for r in _rows][::-1]
@@ -267,12 +267,12 @@ def s4(C, F, mo):
     mo.Html(
         f'<div style="margin:48px 0 18px;">'
         f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
-        f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:6px;">04 · Growth</div>'
+        f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:6px;">Growth</div>'
         f'<h2 style="font-family:{F["headline"]}; font-size:1.7rem; font-weight:600; '
         f'color:{C["ink"]}; margin:0 0 10px; letter-spacing:-0.015em;">'
         f'The open-AI workforce is growing fast, and moving up the stack.</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.98rem; color:{C["ink_2"]}; '
-        f'margin:0; max-width:760px; line-height:1.6;">'
+        f'margin:0; line-height:1.6;">'
         f'Monthly active contributors to the open stack are up about 80% year-over-year. The growth is uneven by '
         f'layer. The mature infrastructure core is flat, the model layer roughly doubled, and the product and '
         f'agent layer grew fastest. Contribution is concentrating higher up the stack, toward applications and '
@@ -316,12 +316,12 @@ def s5(C, F, mo):
     mo.Html(
         f'<div style="margin:48px 0 18px;">'
         f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
-        f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:6px;">05 · Categories</div>'
+        f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:6px;">Categories</div>'
         f'<h2 style="font-family:{F["headline"]}; font-size:1.7rem; font-weight:600; '
         f'color:{C["ink"]}; margin:0 0 10px; letter-spacing:-0.015em;">'
         f'The fastest-growing category in open AI didn\'t exist 18 months ago.</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.98rem; color:{C["ink_2"]}; '
-        f'margin:0; max-width:760px; line-height:1.6;">'
+        f'margin:0; line-height:1.6;">'
         f'The agent-tooling layer barely existed before late 2024. An open standard, MCP, catalyzed it, and '
         f'almost every project in the category has been created since. The framework core, by contrast, has '
         f'added no new open entrants since 2024. Breakout open products and standards keep creating new '
@@ -332,32 +332,39 @@ def s5(C, F, mo):
 
 
 @app.cell(hide_code=True)
-def c5(C, F, LAYER_COLORS, LAYER_LABELS, LAYOUT, df_age, go, mo):
-    _df = df_age.sort_values("avg_birth_year", ascending=True).copy()
+def c5(C, F, LAYER_COLORS, LAYOUT, df_founding, go, mo, pd):
+    _df = df_founding.copy()
+    _df["created_at"] = pd.to_datetime(_df["created_at"])
+    _df = _df[_df["created_at"] >= "2014-01-01"]
+    _df["month"] = _df["created_at"].values.astype("datetime64[M]")
+    _counts = _df.groupby(["month", "category"]).size().unstack(fill_value=0)
+    _grid = pd.date_range(_counts.index.min(), _counts.index.max(), freq="MS")
+    _counts = _counts.reindex(_grid, fill_value=0).cumsum()
+    _cat_layer = _df.drop_duplicates("category").set_index("category")["layer"].to_dict()
+    _order = _counts.iloc[-1].sort_values(ascending=False).index.tolist()
     _fig = go.Figure()
-    for _layer in ["product_ux", "model_components", "infrastructure"]:
-        _d = _df[_df["layer"] == _layer]
-        if _d.empty:
-            continue
+    for _cat in _order:
+        _color = LAYER_COLORS.get(_cat_layer.get(_cat), C["ink_3"])
         _fig.add_trace(go.Scatter(
-            x=_d["avg_birth_year"], y=_d["category"], mode="markers",
-            name=LAYER_LABELS[_layer],
-            marker=dict(color=LAYER_COLORS[_layer], size=_d["repos"] * 1.6 + 8,
-                        line=dict(color="white", width=1)),
-            customdata=list(zip(_d["repos"], (_d["born_2024_share"] * 100))),
-            hovertemplate="<b>%{y}</b><br>Avg founding year: %{x:.0f}<br>Projects: %{customdata[0]}<br>Born 2024+: %{customdata[1]:.0f}%<extra></extra>",
+            x=_counts.index, y=_counts[_cat], mode="lines",
+            line=dict(color=_color, width=2), showlegend=False,
+            hovertemplate="<b>" + _cat + "</b><br>%{x|%b %Y}: %{y} projects<extra></extra>",
         ))
-    _fig.update_layout(**LAYOUT, height=480)
+        _fig.add_annotation(
+            x=_counts.index[-1], y=_counts[_cat].iloc[-1], text="  " + _cat,
+            xanchor="left", yanchor="middle", showarrow=False,
+            font=dict(family=F["mono"], size=9, color=_color),
+        )
+    _fig.update_layout(**LAYOUT, height=560)
     _fig.update_layout(
-        title=dict(text="When each category of the open stack was born (avg. project founding year)",
+        title=dict(text="Cumulative open-source projects founded, by category",
                    font=dict(family=F["headline"], size=15, color=C["ink"]), x=0, xref="paper"),
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="left", x=0,
-                    font=dict(size=11), bgcolor="rgba(0,0,0,0)"),
+        margin=dict(t=64, l=60, r=250, b=50),
     )
-    _fig.update_xaxes(title="Average founding year of the category's open projects", showgrid=True,
-                      gridcolor=C["rule"], showline=True, linecolor=C["ink"],
-                      tickfont=dict(size=11, color=C["ink_3"]), dtick=2)
-    _fig.update_yaxes(title="", showgrid=False, tickfont=dict(size=11, color=C["ink"]))
+    _fig.update_xaxes(title="", showgrid=False, showline=True, linecolor=C["ink"],
+                      tickfont=dict(size=11, color=C["ink_3"]))
+    _fig.update_yaxes(title="Cumulative projects", showgrid=True, gridcolor=C["rule"],
+                      showline=True, linecolor=C["ink"], tickfont=dict(size=11, color=C["ink_3"]))
     mo.ui.plotly(_fig, config={"displayModeBar": False})
     return
 
@@ -368,7 +375,7 @@ def methodology(C, F, mo):
         f'<div style="margin-top:52px; padding-top:20px; border-top:1px solid {C["rule"]};">'
         f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["ink_3"]}; '
         f'letter-spacing:0.08em; text-transform:uppercase; margin-bottom:8px;">Methodology</div>'
-        f'<p style="font-family:{F["body"]}; font-size:0.85rem; color:{C["ink_3"]}; line-height:1.55; max-width:820px;">'
+        f'<p style="font-family:{F["body"]}; font-size:0.85rem; color:{C["ink_3"]}; line-height:1.55;">'
         f'Contributor counts are distinct GitHub code committers (bots excluded) to the 199 scored open-stack '
         f'repositories over the trailing 12 months, from <span style="font-family:{F["mono"]};font-size:0.9em;">'
         f'currentai.scores.stack_contributors</span> (joined to the stack-map taxonomy bridge '
@@ -381,7 +388,7 @@ def methodology(C, F, mo):
         f'directional only. Underlying data: OSO / GitHub Archive.</p>'
         f'<p style="font-family:{F["body"]}; font-size:0.85rem; color:{C["ink_3"]}; margin-top:8px;">'
         f'<strong>Source:</strong> '
-        f'<a href="https://www.oso.xyz" style="color:{C["accent"]}">Open Source Observer</a> · '
+        f'<a href="https://www.oso.xyz" style="color:{C["accent"]}">Open Source Observer</a>, '
         f'<a href="https://map.currentai.org" style="color:{C["accent"]}">AI Stack Map</a></p>'
         f'</div>'
     )
@@ -470,25 +477,17 @@ def load_growth(mo, pyoso_db_conn):
 
 
 @app.cell(hide_code=True)
-def load_age(mo, pyoso_db_conn):
-    df_age = mo.sql(
+def load_founding(mo, pyoso_db_conn):
+    df_founding = mo.sql(
         """
-        SELECT
-          s.category,
-          s.layer,
-          COUNT(*) AS repos,
-          AVG(YEAR(r.created_at)) AS avg_birth_year,
-          CAST(SUM(CASE WHEN r.created_at >= DATE '2024-01-01' THEN 1 ELSE 0 END) AS DOUBLE) / COUNT(*) AS born_2024_share
+        SELECT s.category, s.layer, r.created_at
         FROM currentai.entities.repos r
         JOIN currentai.catalog.stack_map s ON LOWER(r.repo) = s.repo
         WHERE s.openness_bucket IN ('open', 'open-ish') AND r.created_at IS NOT NULL
-        GROUP BY s.category, s.layer
-        HAVING COUNT(*) >= 3
-        ORDER BY avg_birth_year
         """,
         output=False, engine=pyoso_db_conn,
     )
-    return (df_age,)
+    return (df_founding,)
 
 
 if __name__ == "__main__":
