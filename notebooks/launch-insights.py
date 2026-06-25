@@ -16,10 +16,9 @@ def setup_pyoso():
 
 @app.cell(hide_code=True)
 def imports():
-    import numpy as np
     import pandas as pd
     import plotly.graph_objects as go
-    return go, np, pd
+    return go, pd
 
 
 @app.cell(hide_code=True)
@@ -134,7 +133,9 @@ def s_people(C, F, mo):
 
 
 @app.cell(hide_code=True)
-def c_people(C, F, LAYER_COLORS, LAYER_LABELS, df_contrib, go, mo, np):
+def c_people(C, F, LAYER_COLORS, LAYER_LABELS, df_contrib, mo):
+    import json as _json
+    import html as _html
     from itertools import combinations
     from collections import Counter
 
@@ -152,10 +153,8 @@ def c_people(C, F, LAYER_COLORS, LAYER_LABELS, df_contrib, go, mo, np):
         if 1 < len(_rs) <= 40:
             for _a, _b in combinations(_rs, 2):
                 _ec[(_a, _b)] += 1
-    _EDGE_MIN = 5
-    _pairs = [(a, b, w) for (a, b), w in _ec.items() if w >= _EDGE_MIN]
+    _pairs = [(a, b, w) for (a, b), w in _ec.items() if w >= 5]
 
-    # Keep only connected projects, capped to the 80 largest, so the graph is legible.
     _conn = set()
     for _a, _b, _w in _pairs:
         _conn.add(_a)
@@ -163,72 +162,101 @@ def c_people(C, F, LAYER_COLORS, LAYER_LABELS, df_contrib, go, mo, np):
     _nodes_df = (_cand[_cand.index.isin(_conn)].reset_index()
                  .nlargest(80, "contributors").reset_index(drop=True))
     _keep = set(_nodes_df["repo"])
-    _idx = {r: i for i, r in enumerate(_nodes_df["repo"])}
-    _n = len(_nodes_df)
-    _edges = [(_idx[a], _idx[b], w) for a, b, w in _pairs if a in _keep and b in _keep]
+    _hubs = set(_nodes_df.nlargest(12, "contributors")["repo"])
 
-    # Fruchterman-Reingold spring layout (numpy only, no external deps).
-    _rng = np.random.RandomState(7)
-    _pos = _rng.rand(_n, 2)
-    _k = np.sqrt(2.5 / _n)
-    _ei = np.array([e[0] for e in _edges])
-    _ej = np.array([e[1] for e in _edges])
-    _ew = np.array([e[2] for e in _edges], dtype=float)
-    _ew = np.sqrt(_ew / _ew.max())
-    _t = 0.10
-    for _ in range(300):
-        _diff = _pos[:, None, :] - _pos[None, :, :]
-        _d = np.sqrt((_diff ** 2).sum(-1))
-        _d[_d == 0] = 1e-4
-        _disp = ((_diff / _d[..., None]) * (_k * _k / _d)[..., None]).sum(1)
-        _ev = _pos[_ei] - _pos[_ej]
-        _el = np.sqrt((_ev ** 2).sum(1))
-        _el[_el == 0] = 1e-4
-        _fa = (_ev / _el[:, None]) * ((_el * _el / _k) * _ew)[:, None]
-        np.add.at(_disp, _ei, -_fa)
-        np.add.at(_disp, _ej, _fa)
-        _dl = np.sqrt((_disp ** 2).sum(1))
-        _dl[_dl == 0] = 1e-4
-        _pos += (_disp / _dl[:, None]) * np.minimum(_dl, _t)[:, None]
-        _t = max(_t * 0.99, 0.002)
-    _pos -= _pos.mean(0)
-    _scale = np.percentile(np.sqrt((_pos ** 2).sum(1)), 92) + 1e-9
-    _pos = np.clip(_pos / _scale, -1.3, 1.3)
+    _nodes = [{
+        "id": _r["repo"], "name": _r["product"], "layer": _r["layer"],
+        "contributors": int(_r["contributors"]),
+        "r": float(min(26.0, (_r["contributors"] ** 0.5) * 0.55 + 5)),
+        "color": LAYER_COLORS.get(_r["layer"], C["ink_3"]),
+        "hub": bool(_r["repo"] in _hubs),
+    } for _, _r in _nodes_df.iterrows()]
+    _links = [{"source": a, "target": b, "weight": int(w)}
+              for a, b, w in _pairs if a in _keep and b in _keep]
+    _cfg = {
+        "nodes": _nodes, "links": _links, "height": 600,
+        "edge": C["slate_lt"], "ink": C["ink"],
+        "legend": [{"label": LAYER_LABELS[_lk], "color": _lv} for _lk, _lv in LAYER_COLORS.items()],
+    }
+    _cfg_js = _json.dumps(_cfg).replace("</", "<\\/")
 
-    _fig = go.Figure()
-    _ex, _ey = [], []
-    for _i, _j, _w in _edges:
-        _ex += [_pos[_i, 0], _pos[_j, 0], None]
-        _ey += [_pos[_i, 1], _pos[_j, 1], None]
-    _fig.add_trace(go.Scatter(x=_ex, y=_ey, mode="lines", hoverinfo="skip", showlegend=False,
-                              line=dict(color=C["slate_lt"], width=0.7), opacity=0.5))
-    _sizes = np.clip(np.sqrt(_nodes_df["contributors"].to_numpy()) * 0.55 + 5, 5, 24)
-    for _layer in ["infrastructure", "model_components", "product_ux"]:
-        _m = (_nodes_df["layer"] == _layer).to_numpy()
-        if not _m.any():
-            continue
-        _fig.add_trace(go.Scatter(
-            x=_pos[_m, 0], y=_pos[_m, 1], mode="markers", name=LAYER_LABELS[_layer],
-            marker=dict(color=LAYER_COLORS[_layer], size=_sizes[_m], line=dict(color="white", width=0.8)),
-            text=_nodes_df.loc[_m, "product"], customdata=_nodes_df.loc[_m, "contributors"],
-            hovertemplate="<b>%{text}</b><br>Contributors: %{customdata:,}<extra></extra>",
-        ))
-    for _, _r in _nodes_df.nlargest(12, "contributors").iterrows():
-        _p = _pos[_idx[_r["repo"]]]
-        _fig.add_annotation(x=_p[0], y=_p[1], text=_r["product"], showarrow=False, yshift=12,
-                            font=dict(family=F["mono"], size=9, color=C["ink"]))
-    _fig.update_layout(
-        plot_bgcolor="white", paper_bgcolor="white", height=640,
-        font=dict(family=F["body"], size=12, color=C["ink"]),
-        margin=dict(t=64, l=20, r=20, b=20),
-        title=dict(text="The open AI stack, linked where projects share contributors",
-                   font=dict(family=F["headline"], size=15, color=C["ink"]), x=0, xref="paper"),
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="left", x=0,
-                    font=dict(size=11), bgcolor="rgba(0,0,0,0)"),
+    _head = (
+        '<!DOCTYPE html><html><head><meta charset="utf-8">'
+        '<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>'
+        '<style>'
+        "@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&display=swap');"
+        '*{margin:0;box-sizing:border-box}'
+        'html,body{background:#fff;overflow:hidden;height:100%}'
+        '#legend{font-family:"DM Mono",monospace;font-size:11px;color:#0b252f;padding:8px 4px 4px;'
+        'text-transform:uppercase;letter-spacing:0.04em}'
+        '.leg{display:inline-flex;align-items:center;margin-right:18px}'
+        '.leg i{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:6px}'
+        'text{font-family:"DM Mono",monospace}'
+        '</style></head><body>'
+        '<div id="legend"></div><div id="chart"></div>'
+        '<script>'
     )
-    _fig.update_xaxes(visible=False, range=[-1.45, 1.45])
-    _fig.update_yaxes(visible=False, scaleanchor="x", scaleratio=1, range=[-1.45, 1.45])
-    mo.ui.plotly(_fig, config={"displayModeBar": False})
+    _js = """
+    const CFG = window.__CFG__;
+    document.getElementById('legend').innerHTML = CFG.legend.map(function(d){
+        return '<span class="leg"><i style="background:' + d.color + '"></i>' + d.label + '</span>'; }).join('');
+    const el = document.getElementById('chart');
+    const W = el.clientWidth || 900, H = CFG.height;
+    const svg = d3.select('#chart').append('svg').attr('width', '100%').attr('height', H)
+        .attr('viewBox', '0 0 ' + W + ' ' + H);
+    const root = svg.append('g');
+    svg.call(d3.zoom().scaleExtent([0.4, 4]).on('zoom', function(e){ root.attr('transform', e.transform); }));
+    const nodes = CFG.nodes.map(function(d){ return Object.assign({}, d); });
+    const links = CFG.links.map(function(d){ return Object.assign({}, d); });
+    const adj = {};
+    nodes.forEach(function(n){ adj[n.id] = {}; adj[n.id][n.id] = 1; });
+    links.forEach(function(l){ adj[l.source][l.target] = 1; adj[l.target][l.source] = 1; });
+    const sim = d3.forceSimulation(nodes)
+        .force('link', d3.forceLink(links).id(function(d){ return d.id; })
+            .distance(function(d){ return 60 / Math.sqrt(d.weight) + 18; })
+            .strength(function(d){ return Math.min(0.85, d.weight / 18); }))
+        .force('charge', d3.forceManyBody().strength(-170))
+        .force('center', d3.forceCenter(W / 2, H / 2))
+        .force('collide', d3.forceCollide().radius(function(d){ return d.r + 3; }));
+    const link = root.append('g').attr('stroke', CFG.edge).attr('stroke-opacity', 0.4)
+        .selectAll('line').data(links).join('line')
+        .attr('stroke-width', function(d){ return Math.sqrt(d.weight) * 0.5 + 0.3; });
+    const node = root.append('g').selectAll('circle').data(nodes).join('circle')
+        .attr('r', function(d){ return d.r; }).attr('fill', function(d){ return d.color; })
+        .attr('stroke', '#fff').attr('stroke-width', 1.2).style('cursor', 'pointer')
+        .call(d3.drag().on('start', ds).on('drag', dg).on('end', de));
+    node.append('title').text(function(d){ return d.name + ': ' + d.contributors.toLocaleString() + ' contributors'; });
+    const label = root.append('g').selectAll('text').data(nodes.filter(function(d){ return d.hub; })).join('text')
+        .text(function(d){ return d.name; }).attr('font-size', 10).attr('fill', CFG.ink)
+        .attr('text-anchor', 'middle').attr('pointer-events', 'none').attr('paint-order', 'stroke')
+        .attr('stroke', '#fff').attr('stroke-width', 3).attr('stroke-linejoin', 'round');
+    sim.on('tick', function(){
+        link.attr('x1', function(d){ return d.source.x; }).attr('y1', function(d){ return d.source.y; })
+            .attr('x2', function(d){ return d.target.x; }).attr('y2', function(d){ return d.target.y; });
+        node.attr('cx', function(d){ return d.x; }).attr('cy', function(d){ return d.y; });
+        label.attr('x', function(d){ return d.x; }).attr('y', function(d){ return d.y - d.r - 5; });
+    });
+    node.on('mouseover', function(e, d){
+        const nb = adj[d.id];
+        node.attr('opacity', function(n){ return nb[n.id] ? 1 : 0.12; });
+        link.attr('stroke-opacity', function(l){ return (l.source.id === d.id || l.target.id === d.id) ? 0.85 : 0.03; });
+        label.attr('opacity', function(n){ return nb[n.id] ? 1 : 0.12; });
+    }).on('mouseout', function(){
+        node.attr('opacity', 1); link.attr('stroke-opacity', 0.4); label.attr('opacity', 1);
+    });
+    function ds(e){ if(!e.active) sim.alphaTarget(0.3).restart(); e.subject.fx = e.subject.x; e.subject.fy = e.subject.y; }
+    function dg(e){ e.subject.fx = e.x; e.subject.fy = e.y; }
+    function de(e){ if(!e.active) sim.alphaTarget(0); e.subject.fx = null; e.subject.fy = null; }
+    """
+    _inner = _head + "window.__CFG__=" + _cfg_js + ";" + _js + "</script></body></html>"
+    _src = _html.escape(_inner, quote=True)
+    mo.Html(
+        '<div style="font-family:' + F["headline"] + ';font-size:15px;color:' + C["ink"]
+        + ';margin:0 0 2px;">The open AI stack, linked where projects share contributors</div>'
+        '<div style="font-family:' + F["mono"] + ';font-size:11px;color:' + C["ink_3"]
+        + ';margin:0 0 6px;">Drag a node, scroll to zoom, hover to isolate its collaborators.</div>'
+        '<iframe srcdoc="' + _src + '" style="width:100%;height:656px;border:none;" scrolling="no"></iframe>'
+    )
     return
 
 
