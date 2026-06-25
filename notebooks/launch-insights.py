@@ -16,9 +16,10 @@ def setup_pyoso():
 
 @app.cell(hide_code=True)
 def imports():
+    import numpy as np
     import pandas as pd
     import plotly.graph_objects as go
-    return go, pd
+    return go, np, pd
 
 
 @app.cell(hide_code=True)
@@ -37,12 +38,10 @@ def style():
         "rule": "#edecec",
         "white": "#ffffff",
         "border": "#a5bbbe",
-        # Brand salmon ramp: deep = emphasis, fading to pale coral.
         "healthy": "#e86f57",
         "warm": "#f4886f",
         "signal": "#f8ad99",
         "pale": "#f6cabd",
-        # Navy accent + cool slate pair for magnitude/secondary series.
         "accent": "#0b252f",
         "slate": "#3f5d68",
         "slate_mid": "#5f7e88",
@@ -56,11 +55,10 @@ def style():
         margin=dict(t=64, l=60, r=24, b=50),
         hovermode="closest",
     )
-    # Columbia ontology layers -> brand colors (salmon for the surging app layer).
     LAYER_COLORS = {
-        "product_ux": "#e86f57",       # deep salmon
-        "model_components": "#3f5d68",  # dark slate
-        "infrastructure": "#a5bbbe",    # pale slate
+        "product_ux": "#e86f57",
+        "model_components": "#3f5d68",
+        "infrastructure": "#a5bbbe",
     }
     LAYER_LABELS = {
         "product_ux": "Product / UX",
@@ -88,10 +86,10 @@ def header(C, F, mo):
         f'letter-spacing:0.12em; text-transform:uppercase; margin-bottom:10px;">Current AI</div>'
         f'<h1 style="font-family:{F["headline"]}; font-size:2.3rem; font-weight:600; '
         f'color:{C["ink"]}; margin:0 0 14px; line-height:1.05; letter-spacing:-0.025em;">'
-        f'The open-source AI stack, in five charts</h1>'
+        f'The open-source AI stack, in four charts</h1>'
         f'<p style="font-family:{F["body"]}; font-size:1.05rem; color:{C["ink_2"]}; '
         f'margin:0; line-height:1.55;">'
-        f'Five findings from the AI Stack Map, each in one sentence, one paragraph, and one chart. '
+        f'Four findings from the AI Stack Map, each in one sentence, one paragraph, and one chart. '
         f'Every number is queried live from the '
         f'<span style="font-family:{F["mono"]}; font-size:0.85em;">currentai</span> warehouse.</p>'
         f'</div>'
@@ -100,170 +98,130 @@ def header(C, F, mo):
 
 
 @app.cell(hide_code=True)
-def kpi_strip(df_growth, df_inf, df_geo, df_tiers, mo):
+def kpi_strip(df_contrib, df_tiers, mo):
     _core = int(df_tiers["core"].iloc[0])
-    _countries = int((df_geo["country"] != "Unknown").sum())
-    _top3 = df_inf.nlargest(3, "contributors")["contributors"].sum()
-    _inf_total = df_inf["contributors"].sum()
-    _top3_share = 100.0 * _top3 / _inf_total if _inf_total else 0
-    _piv = df_growth.groupby("month")["active_contributors"].sum().sort_index()
-    _yoy = 100.0 * (_piv.iloc[-1] - _piv.iloc[0]) / _piv.iloc[0] if len(_piv) > 1 and _piv.iloc[0] else 0
+    _any_oc = int(df_tiers["any_excl_oc"].iloc[0])
+    _repos = df_contrib["repo"].nunique()
+    _multi = (df_contrib.groupby("developer_id")["repo"].nunique() >= 2).sum()
     mo.hstack([
-        mo.stat(label="Core contributors", value=f"{_core:,}", bordered=True, caption="≥50 commits to open AI, 12mo"),
-        mo.stat(label="Countries", value=str(_countries), bordered=True, caption="where the open stack is built"),
-        mo.stat(label="Contributor growth", value=f"+{_yoy:.0f}%", bordered=True, caption="active devs, YoY"),
-        mo.stat(label="Inference concentration", value=f"{_top3_share:.0f}%", bordered=True, caption="of contributors on top 3 projects"),
+        mo.stat(label="Contributors", value=f"{_any_oc:,}", bordered=True, caption="distinct, last 12 months"),
+        mo.stat(label="Core contributors", value=f"{_core:,}", bordered=True, caption="50+ commits, last 12 months"),
+        mo.stat(label="Multi-project developers", value=f"{int(_multi):,}", bordered=True, caption="contribute to 2+ open projects"),
+        mo.stat(label="Open projects", value=f"{_repos:,}", bordered=True, caption="scored across the stack"),
     ], widths="equal", gap=1)
     return
 
 
 @app.cell(hide_code=True)
-def s1(C, F, mo):
-    mo.Html(
-        f'<div style="margin:48px 0 18px;">'
-        f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
-        f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:6px;">Resilience</div>'
-        f'<h2 style="font-family:{F["headline"]}; font-size:1.7rem; font-weight:600; '
-        f'color:{C["ink"]}; margin:0 0 10px; letter-spacing:-0.015em;">'
-        f'A whole layer of open AI runs on three projects.</h2>'
-        f'<p style="font-family:{F["body"]}; font-size:0.98rem; color:{C["ink_2"]}; '
-        f'margin:0; line-height:1.6;">'
-        f'The map rates open inference a "Competitive Open Ecosystem," but its contributor base is narrow. '
-        f'vLLM, SGLang, and llama.cpp account for more than four in five of the layer\'s developers. '
-        f'Each project is well staffed on its own. The risk is that the whole category depends on so few of them.</p>'
-        f'</div>'
-    )
-    return
-
-
-@app.cell(hide_code=True)
-def c1(C, F, LAYOUT, df_inf, go, mo):
-    _df = df_inf.sort_values("contributors", ascending=True).copy()
-    _df["short"] = _df["repo"].apply(lambda r: r.split("/")[-1])
-    _rank = _df["contributors"].rank(ascending=False)
-    _colors = [C["healthy"] if r <= 3 else C["slate_lt"] for r in _rank]
-    _fig = go.Figure(go.Bar(
-        x=_df["contributors"], y=_df["short"], orientation="h",
-        marker_color=_colors,
-        customdata=_df["repo"],
-        hovertemplate="<b>%{customdata}</b><br>Contributors (12mo): %{x:,}<extra></extra>",
-    ))
-    _fig.update_layout(**LAYOUT, height=440)
-    _fig.update_layout(
-        title=dict(text="Distinct contributors to open inference projects (last 12 months)",
-                   font=dict(family=F["headline"], size=15, color=C["ink"]), x=0, xref="paper"),
-    )
-    _fig.update_xaxes(title="", showgrid=True, gridcolor=C["rule"], tickformat=",d",
-                      showline=True, linecolor=C["ink"], tickfont=dict(size=11, color=C["ink_3"]))
-    _fig.update_yaxes(title="", showgrid=False, tickfont=dict(size=11, color=C["ink"]))
-    mo.ui.plotly(_fig, config={"displayModeBar": False})
-    return
-
-
-@app.cell(hide_code=True)
-def s2(C, F, mo):
-    mo.Html(
-        f'<div style="margin:48px 0 18px;">'
-        f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
-        f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:6px;">Geography</div>'
-        f'<h2 style="font-family:{F["headline"]}; font-size:1.7rem; font-weight:600; '
-        f'color:{C["ink"]}; margin:0 0 10px; letter-spacing:-0.015em;">'
-        f'Open AI is built in 16 countries. The closed frontier fits in three.</h2>'
-        f'<p style="font-family:{F["body"]}; font-size:0.98rem; color:{C["ink_2"]}; '
-        f'margin:0; line-height:1.6;">'
-        f'The scored open-stack projects are based in 16 countries. The US leads, followed by China, Germany, '
-        f'the UK, Japan, France, Switzerland, India, Israel, Brazil, and Singapore. The major closed labs are '
-        f'based in three: the US, the UK (DeepMind), and France (Mistral).</p>'
-        f'</div>'
-    )
-    return
-
-
-@app.cell(hide_code=True)
-def c2(C, F, LAYOUT, df_geo, go, mo):
-    _df = df_geo[df_geo["country"] != "Unknown"].nlargest(12, "repos").sort_values("repos", ascending=True).copy()
-    _colors = [C["healthy"] if c == "USA" else C["slate"] for c in _df["country"]]
-    _fig = go.Figure(go.Bar(
-        x=_df["repos"], y=_df["country"], orientation="h",
-        marker_color=_colors,
-        hovertemplate="<b>%{y}</b><br>Open-stack projects: %{x}<extra></extra>",
-    ))
-    _fig.update_layout(**LAYOUT, height=440)
-    _fig.update_layout(
-        title=dict(text="Open-stack projects by country (16 countries represented)",
-                   font=dict(family=F["headline"], size=15, color=C["ink"]), x=0, xref="paper"),
-    )
-    _fig.add_annotation(
-        x=0.98, y=0.06, xref="paper", yref="paper", showarrow=False, align="right",
-        text="Closed frontier labs: ~3 countries<br>(US, UK, France)",
-        font=dict(family=F["mono"], size=11, color=C["ink_3"]),
-    )
-    _fig.update_xaxes(title="", showgrid=True, gridcolor=C["rule"], tickformat=",d",
-                      showline=True, linecolor=C["ink"], tickfont=dict(size=11, color=C["ink_3"]))
-    _fig.update_yaxes(title="", showgrid=False, tickfont=dict(size=11, color=C["ink"]))
-    mo.ui.plotly(_fig, config={"displayModeBar": False})
-    return
-
-
-@app.cell(hide_code=True)
-def s3(C, F, mo):
+def s_people(C, F, mo):
     mo.Html(
         f'<div style="margin:48px 0 18px;">'
         f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
         f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:6px;">People</div>'
         f'<h2 style="font-family:{F["headline"]}; font-size:1.7rem; font-weight:600; '
         f'color:{C["ink"]}; margin:0 0 10px; letter-spacing:-0.015em;">'
-        f'More people build open AI than work at every frontier lab combined.</h2>'
+        f'Open AI is built by one connected community, not a set of silos.</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.98rem; color:{C["ink_2"]}; '
         f'margin:0; line-height:1.6;">'
-        f'In the last 12 months, tens of thousands of distinct developers committed code to the open AI stack. '
-        f'Even the conservative core, those with 50 or more commits in the year, is comparable to the combined '
-        f'disclosed headcount of every major closed lab. The broad community is several times larger. '
-        f'The comparison is rough: the open figure counts GitHub committers, while the closed figure is a public '
-        f'estimate of total employees, not just researchers. Read it as an order-of-magnitude contrast.</p>'
+        f'Tens of thousands of developers committed code to the open AI stack in the last year. Even the core, '
+        f'those with 50 or more commits, is comparable to the combined disclosed headcount of every major closed '
+        f'lab. The network below links two projects whenever they share contributors. The dense center shows the '
+        f'same developers working across projects and across layers, which is what makes the ecosystem hard to '
+        f'fork or capture.</p>'
         f'</div>'
     )
     return
 
 
 @app.cell(hide_code=True)
-def c3(C, F, LAYOUT, df_tiers, go, mo):
-    _any = int(df_tiers["any_commit"].iloc[0])
-    _any_oc = int(df_tiers["any_excl_oc"].iloc[0])
-    _sub = int(df_tiers["substantial"].iloc[0])
-    _core = int(df_tiers["core"].iloc[0])
-    # Closed-lab combined headcount: rough public estimates of total employees (not just technical).
-    _labs_est = 11000
-    _rows = [
-        ("Open, any contributor", _any, C["pale"], f"{_any:,} ({_any_oc:,} excl. one viral outlier)"),
-        ("Open, 10+ commits", _sub, C["warm"], f"{_sub:,}"),
-        ("Open, 50+ commits (core)", _core, C["healthy"], f"{_core:,}"),
-        ("All frontier labs combined (est.)", _labs_est, C["slate"], "≈11,000 employees (public estimate)"),
-    ]
-    _labels = [r[0] for r in _rows][::-1]
-    _vals = [r[1] for r in _rows][::-1]
-    _cols = [r[2] for r in _rows][::-1]
-    _txt = [r[3] for r in _rows][::-1]
-    _fig = go.Figure(go.Bar(
-        x=_vals, y=_labels, orientation="h", marker_color=_cols,
-        text=_txt, textposition="outside",
-        textfont=dict(family=F["mono"], size=11, color=C["ink"]),
-        hovertemplate="<b>%{y}</b><br>%{x:,}<extra></extra>",
-    ))
-    _fig.update_layout(**LAYOUT, height=420)
+def c_people(C, F, LAYER_COLORS, LAYER_LABELS, df_contrib, go, mo, np):
+    from itertools import combinations
+    from collections import Counter
+
+    _nodes_df = (df_contrib.groupby("repo")
+                 .agg(contributors=("developer_id", "nunique"),
+                      layer=("layer", "first"),
+                      product=("product_name", "first"))
+                 .reset_index())
+    _nodes_df = _nodes_df[_nodes_df["contributors"] >= 5].reset_index(drop=True)
+    _keep = set(_nodes_df["repo"])
+    _names = _nodes_df["repo"].tolist()
+    _idx = {r: i for i, r in enumerate(_names)}
+    _n = len(_names)
+
+    _dev_repos = (df_contrib[df_contrib["repo"].isin(_keep)]
+                  .groupby("developer_id")["repo"].apply(lambda s: sorted(set(s))))
+    _ec = Counter()
+    for _rs in _dev_repos:
+        if 1 < len(_rs) <= 40:
+            for _a, _b in combinations(_rs, 2):
+                _ec[(_a, _b)] += 1
+    _EDGE_MIN = 4
+    _edges = [(_idx[a], _idx[b], w) for (a, b), w in _ec.items() if w >= _EDGE_MIN]
+
+    # Fruchterman-Reingold layout (numpy only, no external deps).
+    _rng = np.random.RandomState(7)
+    _pos = _rng.rand(_n, 2) * 2 - 1
+    _k = 1.3 / np.sqrt(_n)
+    _temp = 0.5
+    _ei = np.array([e[0] for e in _edges]) if _edges else np.array([], dtype=int)
+    _ej = np.array([e[1] for e in _edges]) if _edges else np.array([], dtype=int)
+    _ew = np.array([e[2] for e in _edges], dtype=float) if _edges else np.array([])
+    if len(_ew):
+        _ew = _ew / _ew.max()
+    for _ in range(140):
+        _delta = _pos[:, None, :] - _pos[None, :, :]
+        _d2 = (_delta ** 2).sum(-1) + 1e-6
+        _disp = ((_k * _k / _d2)[..., None] * _delta).sum(1)
+        if len(_edges):
+            _dd_vec = _pos[_ei] - _pos[_ej]
+            _dd = np.sqrt((_dd_vec ** 2).sum(1)) + 1e-6
+            _f = ((_dd / _k) * _ew)[:, None] * (_dd_vec / _dd[:, None])
+            np.add.at(_disp, _ei, -_f)
+            np.add.at(_disp, _ej, _f)
+        _len = np.sqrt((_disp ** 2).sum(1)) + 1e-9
+        _pos += (_disp / _len[:, None]) * np.minimum(_len, _temp)[:, None]
+        _temp *= 0.97
+
+    _fig = go.Figure()
+    _ex, _ey = [], []
+    for _i, _j, _w in _edges:
+        _ex += [_pos[_i, 0], _pos[_j, 0], None]
+        _ey += [_pos[_i, 1], _pos[_j, 1], None]
+    _fig.add_trace(go.Scatter(x=_ex, y=_ey, mode="lines", hoverinfo="skip", showlegend=False,
+                              line=dict(color=C["slate_lt"], width=0.4), opacity=0.25))
+    _sizes = np.sqrt(_nodes_df["contributors"].to_numpy()) * 1.5 + 5
+    for _layer in ["infrastructure", "model_components", "product_ux"]:
+        _m = (_nodes_df["layer"] == _layer).to_numpy()
+        if not _m.any():
+            continue
+        _fig.add_trace(go.Scatter(
+            x=_pos[_m, 0], y=_pos[_m, 1], mode="markers", name=LAYER_LABELS[_layer],
+            marker=dict(color=LAYER_COLORS[_layer], size=_sizes[_m], line=dict(color="white", width=0.5)),
+            text=_nodes_df.loc[_m, "product"], customdata=_nodes_df.loc[_m, "contributors"],
+            hovertemplate="<b>%{text}</b><br>Contributors: %{customdata:,}<extra></extra>",
+        ))
+    for _, _r in _nodes_df.nlargest(10, "contributors").iterrows():
+        _p = _pos[_idx[_r["repo"]]]
+        _fig.add_annotation(x=_p[0], y=_p[1], text=_r["product"], showarrow=False, yshift=11,
+                            font=dict(family=F["mono"], size=9, color=C["ink"]))
     _fig.update_layout(
-        title=dict(text="Developers building open AI (12mo) vs. closed-lab headcount",
+        plot_bgcolor="white", paper_bgcolor="white", height=620,
+        font=dict(family=F["body"], size=12, color=C["ink"]),
+        margin=dict(t=64, l=20, r=20, b=20),
+        title=dict(text="The open AI stack, linked where projects share contributors",
                    font=dict(family=F["headline"], size=15, color=C["ink"]), x=0, xref="paper"),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="left", x=0,
+                    font=dict(size=11), bgcolor="rgba(0,0,0,0)"),
     )
-    _fig.update_xaxes(title="", showgrid=True, gridcolor=C["rule"], tickformat=",d", range=[0, _any * 1.18],
-                      showline=True, linecolor=C["ink"], tickfont=dict(size=11, color=C["ink_3"]))
-    _fig.update_yaxes(title="", showgrid=False, tickfont=dict(size=11, color=C["ink"]))
+    _fig.update_xaxes(visible=False)
+    _fig.update_yaxes(visible=False, scaleanchor="x", scaleratio=1)
     mo.ui.plotly(_fig, config={"displayModeBar": False})
     return
 
 
 @app.cell(hide_code=True)
-def s4(C, F, mo):
+def s_growth(C, F, mo):
     mo.Html(
         f'<div style="margin:48px 0 18px;">'
         f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
@@ -273,32 +231,35 @@ def s4(C, F, mo):
         f'The open-AI workforce is growing fast, and moving up the stack.</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.98rem; color:{C["ink_2"]}; '
         f'margin:0; line-height:1.6;">'
-        f'Monthly active contributors to the open stack are up about 80% year-over-year. The growth is uneven by '
-        f'layer. The mature infrastructure core is flat, the model layer roughly doubled, and the product and '
-        f'agent layer grew fastest. Contribution is concentrating higher up the stack, toward applications and '
-        f'agents. The trend excludes one viral 2025 project, OpenClaw, so the figure is not a single-project artifact.</p>'
+        f'Active contributors to the open stack are up about 80% over the past year, shown here as a 28-day '
+        f'rolling average. The growth is uneven by layer. The mature infrastructure core is roughly flat, the '
+        f'model layer grew steadily, and the product and agent layer grew fastest. Contribution is concentrating '
+        f'higher up the stack, toward applications and agents. The trend excludes one viral 2025 project, '
+        f'OpenClaw, so the figure is not a single-project artifact.</p>'
         f'</div>'
     )
     return
 
 
 @app.cell(hide_code=True)
-def c4(C, F, LAYER_COLORS, LAYER_LABELS, LAYOUT, df_growth, go, mo, pd):
+def c_growth(C, F, LAYER_COLORS, LAYER_LABELS, LAYOUT, df_growth, go, mo, pd):
     _df = df_growth.copy()
-    _df["month"] = pd.to_datetime(_df["month"])
+    _df["day"] = pd.to_datetime(_df["day"])
+    _piv = _df.pivot_table(index="day", columns="layer", values="active", aggfunc="sum").sort_index()
+    _grid = pd.date_range(_piv.index.min(), _piv.index.max(), freq="D")
+    _piv = _piv.reindex(_grid).interpolate().fillna(0)
+    _roll = _piv.rolling(28, min_periods=1).mean()
     _fig = go.Figure()
     for _layer in ["infrastructure", "model_components", "product_ux"]:
-        _d = _df[_df["layer"] == _layer].sort_values("month")
-        _fig.add_trace(go.Scatter(
-            x=_d["month"], y=_d["active_contributors"],
-            name=LAYER_LABELS[_layer], mode="lines",
-            line=dict(color=LAYER_COLORS[_layer], width=2.5),
-            stackgroup="one",
-            hovertemplate="<b>" + LAYER_LABELS[_layer] + "</b><br>%{x|%b %Y}: %{y:,}<extra></extra>",
-        ))
+        if _layer in _roll.columns:
+            _fig.add_trace(go.Scatter(
+                x=_roll.index, y=_roll[_layer], mode="lines", name=LAYER_LABELS[_layer],
+                line=dict(color=LAYER_COLORS[_layer], width=1.2), stackgroup="one",
+                hovertemplate="<b>" + LAYER_LABELS[_layer] + "</b><br>%{x|%d %b %Y}: %{y:,.0f}<extra></extra>",
+            ))
     _fig.update_layout(**LAYOUT, height=460)
     _fig.update_layout(
-        title=dict(text="Monthly active contributors to the open stack, by layer",
+        title=dict(text="Active contributors to the open stack, by layer (28-day rolling average)",
                    font=dict(family=F["headline"], size=15, color=C["ink"]), x=0, xref="paper"),
         legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="left", x=0,
                     font=dict(size=11), bgcolor="rgba(0,0,0,0)"),
@@ -312,7 +273,7 @@ def c4(C, F, LAYER_COLORS, LAYER_LABELS, LAYOUT, df_growth, go, mo, pd):
 
 
 @app.cell(hide_code=True)
-def s5(C, F, mo):
+def s_categories(C, F, mo):
     mo.Html(
         f'<div style="margin:48px 0 18px;">'
         f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
@@ -332,7 +293,7 @@ def s5(C, F, mo):
 
 
 @app.cell(hide_code=True)
-def c5(C, F, LAYER_COLORS, LAYOUT, df_founding, go, mo, pd):
+def c_categories(C, F, LAYER_COLORS, LAYOUT, df_founding, go, mo, pd):
     _df = df_founding.copy()
     _df["created_at"] = pd.to_datetime(_df["created_at"])
     _df = _df[_df["created_at"] >= "2014-01-01"]
@@ -341,7 +302,8 @@ def c5(C, F, LAYER_COLORS, LAYOUT, df_founding, go, mo, pd):
     _grid = pd.date_range(_counts.index.min(), _counts.index.max(), freq="MS")
     _counts = _counts.reindex(_grid, fill_value=0).cumsum()
     _cat_layer = _df.drop_duplicates("category").set_index("category")["layer"].to_dict()
-    _order = _counts.iloc[-1].sort_values(ascending=False).index.tolist()
+    # Prune to the 10 largest categories so end labels don't collide.
+    _order = _counts.iloc[-1].sort_values(ascending=False).head(10).index.tolist()
     _fig = go.Figure()
     for _cat in _order:
         _color = LAYER_COLORS.get(_cat_layer.get(_cat), C["ink_3"])
@@ -355,9 +317,9 @@ def c5(C, F, LAYER_COLORS, LAYOUT, df_founding, go, mo, pd):
             xanchor="left", yanchor="middle", showarrow=False,
             font=dict(family=F["mono"], size=9, color=_color),
         )
-    _fig.update_layout(**LAYOUT, height=560)
+    _fig.update_layout(**LAYOUT, height=520)
     _fig.update_layout(
-        title=dict(text="Cumulative open-source projects founded, by category",
+        title=dict(text="Cumulative open-source projects founded, by category (10 largest)",
                    font=dict(family=F["headline"], size=15, color=C["ink"]), x=0, xref="paper"),
         margin=dict(t=64, l=60, r=250, b=50),
     )
@@ -370,22 +332,72 @@ def c5(C, F, LAYER_COLORS, LAYOUT, df_founding, go, mo, pd):
 
 
 @app.cell(hide_code=True)
+def s_resilience(C, F, mo):
+    mo.Html(
+        f'<div style="margin:48px 0 18px;">'
+        f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
+        f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:6px;">Resilience</div>'
+        f'<h2 style="font-family:{F["headline"]}; font-size:1.7rem; font-weight:600; '
+        f'color:{C["ink"]}; margin:0 0 10px; letter-spacing:-0.015em;">'
+        f'Most open projects spread the work; a few widely-used tools rest on one person.</h2>'
+        f'<p style="font-family:{F["body"]}; font-size:0.98rem; color:{C["ink_2"]}; '
+        f'margin:0; line-height:1.6;">'
+        f'The big serving and framework projects are well staffed. Across vLLM, SGLang, Transformers, and '
+        f'PyTorch, the single most active contributor accounts for only a few percent of commits. The fragility '
+        f'sits in the tooling and evaluation layer. At promptfoo one person writes more than a quarter of the '
+        f'commits, and AutoGPT and Diffusers are similarly top-heavy. These are widely used, and they rest on '
+        f'very few shoulders.</p>'
+        f'</div>'
+    )
+    return
+
+
+@app.cell(hide_code=True)
+def c_resilience(C, F, LAYOUT, df_contrib, go, mo):
+    _g = df_contrib.groupby("repo")
+    _bus = _g.agg(total=("commits_12mo", "sum"), top1=("commits_12mo", "max"),
+                  contributors=("developer_id", "nunique"), product=("product_name", "first")).reset_index()
+    _bus["top1_share"] = 100.0 * _bus["top1"] / _bus["total"]
+    _bus = _bus[_bus["contributors"] >= 150].sort_values("top1_share", ascending=True)
+    _colors = [C["healthy"] if s > 15 else C["slate_lt"] for s in _bus["top1_share"]]
+    _fig = go.Figure(go.Bar(
+        x=_bus["top1_share"], y=_bus["product"], orientation="h", marker_color=_colors,
+        customdata=list(zip(_bus["contributors"], _bus["top1_share"])),
+        hovertemplate="<b>%{y}</b><br>Top contributor: %{customdata[1]:.1f}% of commits<br>Contributors: %{customdata[0]:,}<extra></extra>",
+    ))
+    _fig.update_layout(**LAYOUT, height=560)
+    _fig.update_layout(
+        title=dict(text="Share of commits by the single top contributor (projects with 150+ contributors)",
+                   font=dict(family=F["headline"], size=15, color=C["ink"]), x=0, xref="paper"),
+    )
+    _fig.add_annotation(x=0.97, y=0.08, xref="paper", yref="paper", showarrow=False, align="right",
+                        text="Salmon = one person writes >15% of commits",
+                        font=dict(family=F["mono"], size=11, color=C["healthy"]))
+    _fig.update_xaxes(title="Top contributor's share of commits (%)", showgrid=True, gridcolor=C["rule"],
+                      showline=True, linecolor=C["ink"], tickfont=dict(size=11, color=C["ink_3"]))
+    _fig.update_yaxes(title="", showgrid=False, tickfont=dict(size=10, color=C["ink"]))
+    mo.ui.plotly(_fig, config={"displayModeBar": False})
+    return
+
+
+@app.cell(hide_code=True)
 def methodology(C, F, mo):
     mo.Html(
         f'<div style="margin-top:52px; padding-top:20px; border-top:1px solid {C["rule"]};">'
         f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["ink_3"]}; '
         f'letter-spacing:0.08em; text-transform:uppercase; margin-bottom:8px;">Methodology</div>'
         f'<p style="font-family:{F["body"]}; font-size:0.85rem; color:{C["ink_3"]}; line-height:1.55;">'
-        f'Contributor counts are distinct GitHub code committers (bots excluded) to the 199 scored open-stack '
-        f'repositories over the trailing 12 months, from <span style="font-family:{F["mono"]};font-size:0.9em;">'
-        f'currentai.scores.stack_contributors</span> (joined to the stack-map taxonomy bridge '
-        f'<span style="font-family:{F["mono"]};font-size:0.9em;">currentai.catalog.stack_map</span>). '
-        f'Growth uses monthly-active contributor counts from <span style="font-family:{F["mono"]};font-size:0.9em;">'
-        f'currentai.metrics.daily</span> (excluding one viral 2025 outlier, OpenClaw, so growth is not a single-project artifact); geography is repo org-HQ from '
-        f'<span style="font-family:{F["mono"]};font-size:0.9em;">currentai.scores.repos_summary</span>; '
-        f'founding year is repo <span style="font-family:{F["mono"]};font-size:0.9em;">created_at</span>. '
-        f'Closed-lab headcount is a rough public estimate of total employees (not just technical staff) and is '
-        f'directional only. Underlying data: OSO / GitHub Archive.</p>'
+        f'Contributors are distinct GitHub code committers (bots excluded) to the scored open-stack repositories '
+        f'over the trailing 12 months, from <span style="font-family:{F["mono"]};font-size:0.9em;">'
+        f'currentai.scores.stack_contributors</span> joined to the taxonomy bridge '
+        f'<span style="font-family:{F["mono"]};font-size:0.9em;">currentai.catalog.stack_map</span>. '
+        f'The network links two projects when they share 4 or more contributors; node size is contributor '
+        f'count and color is stack layer. Growth is a 28-day rolling average of daily active contributors from '
+        f'<span style="font-family:{F["mono"]};font-size:0.9em;">currentai.metrics.daily</span>, excluding one '
+        f'viral 2025 outlier (OpenClaw). Founding date is repo '
+        f'<span style="font-family:{F["mono"]};font-size:0.9em;">created_at</span>. Resilience uses each '
+        f'project\'s share of commits written by its single most active contributor. Underlying data: OSO and '
+        f'GitHub Archive.</p>'
         f'<p style="font-family:{F["body"]}; font-size:0.85rem; color:{C["ink_3"]}; margin-top:8px;">'
         f'<strong>Source:</strong> '
         f'<a href="https://www.oso.xyz" style="color:{C["accent"]}">Open Source Observer</a>, '
@@ -396,35 +408,16 @@ def methodology(C, F, mo):
 
 
 @app.cell(hide_code=True)
-def load_inf(mo, pyoso_db_conn):
-    df_inf = mo.sql(
+def load_contrib(mo, pyoso_db_conn):
+    df_contrib = mo.sql(
         """
-        SELECT product_name, repo, COUNT(DISTINCT developer_id) AS contributors
+        SELECT developer_id, repo, product_name, layer, commits_12mo
         FROM currentai.scores.stack_contributors
-        WHERE category = 'inference_code'
-        GROUP BY product_name, repo
-        ORDER BY contributors DESC
+        WHERE openness_bucket IN ('open', 'open-ish')
         """,
         output=False, engine=pyoso_db_conn,
     )
-    return (df_inf,)
-
-
-@app.cell(hide_code=True)
-def load_geo(mo, pyoso_db_conn):
-    df_geo = mo.sql(
-        """
-        SELECT COALESCE(country, 'Unknown') AS country, COUNT(*) AS repos
-        FROM currentai.scores.repos_summary
-        WHERE LOWER(repo) IN (
-          SELECT repo FROM currentai.catalog.stack_map WHERE openness_bucket IN ('open', 'open-ish')
-        )
-        GROUP BY COALESCE(country, 'Unknown')
-        ORDER BY repos DESC
-        """,
-        output=False, engine=pyoso_db_conn,
-    )
-    return (df_geo,)
+    return (df_contrib,)
 
 
 @app.cell(hide_code=True)
@@ -434,19 +427,11 @@ def load_tiers(mo, pyoso_db_conn):
         WITH dev AS (
           SELECT developer_id, SUM(commits_12mo) AS commits
           FROM currentai.scores.stack_contributors
-          WHERE openness_bucket IN ('open', 'open-ish')
-          GROUP BY developer_id
-        ),
-        dev_oc AS (
-          SELECT developer_id, SUM(commits_12mo) AS commits
-          FROM currentai.scores.stack_contributors
           WHERE openness_bucket IN ('open', 'open-ish') AND repo <> 'openclaw/openclaw'
           GROUP BY developer_id
         )
         SELECT
-          (SELECT COUNT(*) FROM dev) AS any_commit,
-          (SELECT COUNT(*) FROM dev_oc) AS any_excl_oc,
-          (SELECT COUNT(*) FROM dev WHERE commits >= 10) AS substantial,
+          (SELECT COUNT(*) FROM dev) AS any_excl_oc,
           (SELECT COUNT(*) FROM dev WHERE commits >= 50) AS core
         """,
         output=False, engine=pyoso_db_conn,
@@ -458,18 +443,14 @@ def load_tiers(mo, pyoso_db_conn):
 def load_growth(mo, pyoso_db_conn):
     df_growth = mo.sql(
         """
-        WITH m AS (
-          SELECT d.repo, DATE_TRUNC('month', d.day) AS month, MAX(CAST(d.value AS INTEGER)) AS active
-          FROM currentai.metrics.daily d
-          WHERE d.metric = 'contributors'
-            AND d.repo IN (SELECT repo FROM currentai.catalog.stack_map WHERE openness_bucket IN ('open', 'open-ish'))
-            AND d.repo <> 'openclaw/openclaw'
-          GROUP BY d.repo, DATE_TRUNC('month', d.day)
-        )
-        SELECT s.layer, m.month, SUM(m.active) AS active_contributors
-        FROM m JOIN currentai.catalog.stack_map s ON m.repo = s.repo
-        GROUP BY s.layer, m.month
-        ORDER BY m.month, s.layer
+        SELECT s.layer, d.day, SUM(CAST(d.value AS INTEGER)) AS active
+        FROM currentai.metrics.daily d
+        JOIN currentai.catalog.stack_map s ON d.repo = s.repo
+        WHERE d.metric = 'contributors'
+          AND s.openness_bucket IN ('open', 'open-ish')
+          AND d.repo <> 'openclaw/openclaw'
+        GROUP BY s.layer, d.day
+        ORDER BY d.day, s.layer
         """,
         output=False, engine=pyoso_db_conn,
     )
