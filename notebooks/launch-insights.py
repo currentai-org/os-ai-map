@@ -91,8 +91,8 @@ def header(C, F, mo):
         f'The open-source AI stack, in five charts</h1>'
         f'<p style="font-family:{F["body"]}; font-size:1.05rem; color:{C["ink_2"]}; '
         f'margin:0; max-width:760px; line-height:1.55;">'
-        f'Five data-backed findings from the AI Stack Map. Each is one sentence, one paragraph, '
-        f'and one chart — built to be read fast and shared. Every number is queried live from the '
+        f'Five findings from the AI Stack Map, each in one sentence, one paragraph, and one chart. '
+        f'Every number is queried live from the '
         f'<span style="font-family:{F["mono"]}; font-size:0.85em;">currentai</span> warehouse.</p>'
         f'</div>'
     )
@@ -128,10 +128,9 @@ def s1(C, F, mo):
         f'A whole layer of open AI runs on three projects.</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.98rem; color:{C["ink_2"]}; '
         f'margin:0; max-width:760px; line-height:1.6;">'
-        f'The map rates open inference a "Competitive Open Ecosystem" — but the contributor base tells a '
-        f'thinner story. vLLM, SGLang and llama.cpp together account for more than four in five of the layer\'s '
-        f'developers. Inside those projects the work is well distributed; the fragility is that the entire '
-        f'category rests on so few of them. Mature is not the same as resilient.</p>'
+        f'The map rates open inference a "Competitive Open Ecosystem," but its contributor base is narrow. '
+        f'vLLM, SGLang, and llama.cpp account for more than four in five of the layer\'s developers. '
+        f'Each project is well staffed on its own. The risk is that the whole category depends on so few of them.</p>'
         f'</div>'
     )
     return
@@ -172,10 +171,9 @@ def s2(C, F, mo):
         f'Open AI is built in 16 countries. The closed frontier fits in three.</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.98rem; color:{C["ink_2"]}; '
         f'margin:0; max-width:760px; line-height:1.6;">'
-        f'The scored open-stack projects geolocate to 16 countries — the US leads, but the rest spread across '
-        f'China, Germany, the UK, Japan, France, Switzerland, India, Israel, Brazil, Singapore and more. '
-        f'The frontier closed labs sit in essentially three: the US, the UK (DeepMind) and France (Mistral). '
-        f'Open AI is built everywhere; closed AI is built on a few campuses.</p>'
+        f'The scored open-stack projects are based in 16 countries. The US leads, followed by China, Germany, '
+        f'the UK, Japan, France, Switzerland, India, Israel, Brazil, and Singapore. The major closed labs are '
+        f'based in three: the US, the UK (DeepMind), and France (Mistral).</p>'
         f'</div>'
     )
     return
@@ -192,7 +190,7 @@ def c2(C, F, LAYOUT, df_geo, go, mo):
     ))
     _fig.update_layout(**LAYOUT, height=440)
     _fig.update_layout(
-        title=dict(text="Open-stack projects by country — 16 countries represented",
+        title=dict(text="Open-stack projects by country (16 countries represented)",
                    font=dict(family=F["headline"], size=15, color=C["ink"]), x=0, xref="paper"),
     )
     _fig.add_annotation(
@@ -218,11 +216,11 @@ def s3(C, F, mo):
         f'More people build open AI than work at every frontier lab combined.</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.98rem; color:{C["ink_2"]}; '
         f'margin:0; max-width:760px; line-height:1.6;">'
-        f'In the last 12 months tens of thousands of distinct developers committed code to the open AI stack. '
-        f'Even the conservative core — those with 50+ commits in the year — is comparable to the combined '
-        f'disclosed headcount of every major closed lab, and the broad community is several times larger. '
-        f'A caveat by construction: the open figure is hard data (GitHub committers); the closed figure is a '
-        f'public-estimate of total employees, not just researchers. Read it as an order-of-magnitude contrast.</p>'
+        f'In the last 12 months, tens of thousands of distinct developers committed code to the open AI stack. '
+        f'Even the conservative core, those with 50 or more commits in the year, is comparable to the combined '
+        f'disclosed headcount of every major closed lab. The broad community is several times larger. '
+        f'The comparison is rough: the open figure counts GitHub committers, while the closed figure is a public '
+        f'estimate of total employees, not just researchers. Read it as an order-of-magnitude contrast.</p>'
         f'</div>'
     )
     return
@@ -272,13 +270,13 @@ def s4(C, F, mo):
         f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:6px;">04 · Growth</div>'
         f'<h2 style="font-family:{F["headline"]}; font-size:1.7rem; font-weight:600; '
         f'color:{C["ink"]}; margin:0 0 10px; letter-spacing:-0.015em;">'
-        f'The open-AI workforce is growing fast — and moving up the stack.</h2>'
+        f'The open-AI workforce is growing fast, and moving up the stack.</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.98rem; color:{C["ink_2"]}; '
         f'margin:0; max-width:760px; line-height:1.6;">'
-        f'Monthly active contributors to the open stack are up sharply year-over-year. The shape is the story: '
-        f'the mature infrastructure core is flat, the model layer roughly doubled, and the product / agent layer '
-        f'has surged. Open AI\'s contributor energy is moving up the stack, toward applications and agents. '
-        f'(The trend excludes one viral 2025 breakout, OpenClaw, so the ~80% growth isn\'t a single-project artifact.)</p>'
+        f'Monthly active contributors to the open stack are up about 80% year-over-year. The growth is uneven by '
+        f'layer. The mature infrastructure core is flat, the model layer roughly doubled, and the product and '
+        f'agent layer grew fastest. Contribution is concentrating higher up the stack, toward applications and '
+        f'agents. The trend excludes one viral 2025 project, OpenClaw, so the figure is not a single-project artifact.</p>'
         f'</div>'
     )
     return
@@ -324,10 +322,10 @@ def s5(C, F, mo):
         f'The fastest-growing category in open AI didn\'t exist 18 months ago.</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.98rem; color:{C["ink_2"]}; '
         f'margin:0; max-width:760px; line-height:1.6;">'
-        f'Open source doesn\'t just fill the AI stack — it redraws it. The agent-tooling layer was catalyzed by '
-        f'a single open standard (MCP) and is almost entirely born in the last year and a half, while the '
-        f'framework core has had no new open entrants since 2024. Breakout open products mint whole new '
-        f'categories, and the map keeps growing to absorb them.</p>'
+        f'The agent-tooling layer barely existed before late 2024. An open standard, MCP, catalyzed it, and '
+        f'almost every project in the category has been created since. The framework core, by contrast, has '
+        f'added no new open entrants since 2024. Breakout open products and standards keep creating new '
+        f'categories, and the map adds rows to track them.</p>'
         f'</div>'
     )
     return
