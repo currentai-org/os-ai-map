@@ -301,9 +301,6 @@ def header(C, F, mo):
     # here as HTML with the live counts already substituted; see build/render.py.
     mo.Html(
         f'<div style="padding:40px 0 28px; border-bottom:2px solid {C["accent"]}; margin-bottom:36px;">'
-        f'<div style="font-family:{F["mono"]}; font-size:11px; color:{C["ink_3"]}; '
-        f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:10px;">'
-        f'Current AI</div>'
         f'<h1 style="font-family:{F["headline"]}; font-size:2.2rem; font-weight:600; '
         f'color:{C["ink"]}; margin:0 0 14px; line-height:1.05; letter-spacing:-0.025em;">'
         f'Open Source AI Map</h1>'
@@ -321,11 +318,11 @@ def stack_overview(C, DATA, F, ORDER, STACK_DESC, mix_counts, mo):
     # full openness-mix count chips.
     _rows = []
     _last_arc = None
-    for _i, _cid in enumerate(ORDER, start=1):
+    for _cid in ORDER:
         _cat = DATA["categories"][_cid]
         _arc = _cat["arc"]
         if _arc != _last_arc:
-            _bt = "none" if _last_arc is None else f"1px dashed {C['rule']}"
+            _bt = "none" if _last_arc is None else f"1px solid {C['rule']}"
             _mt = "8px" if _last_arc is None else "22px"
             _rows.append(
                 f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
@@ -340,9 +337,8 @@ def stack_overview(C, DATA, F, ORDER, STACK_DESC, mix_counts, mo):
             f'&nbsp;&nbsp;<span style="color:{C["closed"]};">\\u25cf</span> {_m["closed"]} closed'
         )
         _rows.append(
-            f'<div style="display:grid; grid-template-columns:32px 1fr 232px; gap:18px; '
+            f'<div style="display:grid; grid-template-columns:1fr 232px; gap:18px; '
             f'align-items:center; padding:14px 0; border-bottom:1px solid {C["rule"]};">'
-            f'<div style="font-family:{F["mono"]}; font-size:12px; color:{C["ink_3"]};">{_i:02d}</div>'
             f'<div><div style="font-family:{F["headline"]}; font-size:1.05rem; font-weight:600; '
             f'color:{C["ink"]}; line-height:1.2;">{_cat["label"]}</div>'
             f'<div style="font-family:{F["body"]}; font-size:0.85rem; color:{C["ink_3"]}; '
@@ -358,7 +354,7 @@ def stack_overview(C, DATA, F, ORDER, STACK_DESC, mix_counts, mo):
         f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:8px;">The stack at a glance</div>'
         f'<h2 style="font-family:{F["headline"]}; font-size:1.6rem; font-weight:600; color:{C["ink"]}; '
         f'margin:0 0 14px; letter-spacing:-0.015em;">'
-        f'{_n_arcs} layers \\u00b7 {len(ORDER)} categories \\u00b7 {_total} scored products</h2>'
+        f'{_n_arcs} layers, {len(ORDER)} categories, {_total} scored products</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.95rem; color:{C["ink_2"]}; margin:0 0 20px; line-height:1.6;">'
         f'Each row is one category, grouped into three layers. The dots show the openness mix of all its '
         f'products. Open in the long tail and closed at the '
@@ -647,7 +643,7 @@ def helpers(C, DATA, F, OPEN, STRAPLINES, VERDICT, mix_counts, mo, vbucket,
         _srcs = _category_sources(cid)
         _src_html = ""
         if _srcs:
-            _links = " &middot; ".join(
+            _links = ", ".join(
                 f'<a href="{_u.replace("&", "&amp;")}" target="_blank" rel="noopener" '
                 f'style="color:{C["accent"]}; text-decoration:none;">{_dom}</a>'
                 for _dom, _u in _srcs
@@ -658,8 +654,7 @@ def helpers(C, DATA, F, OPEN, STRAPLINES, VERDICT, mix_counts, mo, vbucket,
                 f'<div style="font-family:{F["body"]}; font-size:0.82rem; line-height:1.7;">{_links}</div>'
             )
         return (
-            f'<div style="margin:4px 0 16px; padding:14px 18px; background:{C["paper_2"]}; '
-            f'border-left:2px solid {C["ink_3"]};">'
+            f'<div style="margin:4px 0 16px; padding:14px 18px; background:{C["paper_2"]};">'
             f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["ink_3"]}; '
             f'letter-spacing:0.12em; text-transform:uppercase; margin-bottom:8px;">How this was scored</div>'
             f'<ul style="font-family:{F["body"]}; font-size:0.88rem; color:{C["ink_2"]}; '
@@ -705,7 +700,7 @@ def helpers(C, DATA, F, OPEN, STRAPLINES, VERDICT, mix_counts, mo, vbucket,
         _archead = ""
         if _first_in_arc:
             _archead = (
-                f'<div style="margin:44px 0 0; padding:14px 0 8px; border-top:1px dashed {C["rule"]};">'
+                f'<div style="margin:44px 0 0; padding:14px 0 8px; border-top:1px solid {C["rule"]};">'
                 f'<div style="font-family:{F["mono"]}; font-size:11px; color:{C["accent"]}; '
                 f'letter-spacing:0.14em; text-transform:uppercase;">{_arc}</div></div>'
             )
@@ -726,7 +721,7 @@ def helpers(C, DATA, F, OPEN, STRAPLINES, VERDICT, mix_counts, mo, vbucket,
             _archead
             + f'<div style="margin:28px 0 18px;">'
             f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
-            f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:6px;">{cat["arc"]} \\u00b7 {num:02d}</div>'
+            f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:6px;">{cat["arc"]}</div>'
             f'<h2 style="font-family:{F["headline"]}; font-size:1.4rem; font-weight:600; '
             f'color:{C["ink"]}; margin:0 0 8px;">{cat["label"]} '
             f'<span style="font-family:{F["mono"]}; font-size:0.8rem; color:{C["ink_3"]};">({len(prods)})</span></h2>'
@@ -792,17 +787,17 @@ def details_payload(DATA, ORDER, mo):
         var h='<div class="v3-bd"><div class="v3-modal"><button class="v3-x">Close \\u2715</button>'+
           '<h2>'+esc(p.product||'')+'</h2>'+
           '<div style="font-family:\\'DM Mono\\',monospace;font-size:11px;color:#a5bbbe;margin-bottom:6px;">'+
-            esc(p.org||'')+' \\u00b7 '+esc(p.type||'')+' \\u00b7 '+esc(p.category_label||'')+
-            (o.class?' \\u00b7 <span class="v3-pill" style="background:'+ocol(o.score)+';color:'+otext(o.score)+'">'+esc(o.class)+'</span>':'')+'</div>'+
+            esc(p.org||'')+', '+esc(p.type||'')+', '+esc(p.category_label||'')+
+            (o.class?' <span class="v3-pill" style="background:'+ocol(o.score)+';color:'+otext(o.score)+'">'+esc(o.class)+'</span>':'')+'</div>'+
           (p.description?'<div style="font-size:13px;color:#272726;line-height:1.5;margin:8px 0;">'+esc(p.description)+'</div>':'')+
           (p.version_note?'<div style="font-size:11.5px;color:#a5bbbe;line-height:1.45;margin:6px 0;">'+esc(p.version_note)+'</div>':'')+
-          '<div class="v3-sect">Openness \\u00b7 '+(o.score==null?'n/a':o.score+'/5')+' ('+esc(o.class||'')+')</div>'+
+          '<div class="v3-sect">Openness '+(o.score==null?'n/a':o.score+'/5')+' ('+esc(o.class||'')+')</div>'+
           row('Components',o.components)+row('Why',o.note)+row('Confidence',o.confidence)+
           '<div class="v3-row"><span class="v3-lbl">Sources</span><span class="v3-val">'+srcs(o.sources)+'</span></div>'+
-          '<div class="v3-sect">Adoption \\u00b7 '+(ad.level==null?'n/a':ad.level+'/5')+'</div>'+
+          '<div class="v3-sect">Adoption '+(ad.level==null?'n/a':ad.level+'/5')+'</div>'+
           row('Reach',ad.reach)+row('Signal',ad.signal_type)+row('Detail',ad.note)+row('Confidence',ad.confidence)+
           '<div class="v3-row"><span class="v3-lbl">Sources</span><span class="v3-val">'+srcs(ad.sources)+'</span></div>'+
-          '<div class="v3-sect">Capability \\u00b7 '+(cap.score==null?'n/a':cap.score+'/5')+'</div>'+
+          '<div class="v3-sect">Capability '+(cap.score==null?'n/a':cap.score+'/5')+'</div>'+
           row('Basis',cap.basis)+row('Value',cap.value)+row('Detail',cap.note)+row('Confidence',cap.confidence)+
           '<div class="v3-row"><span class="v3-lbl">Sources</span><span class="v3-val">'+srcs(cap.sources)+'</span></div>'+
           '</div></div>';
@@ -944,7 +939,7 @@ def uncategorized_long_tail(C, DATA, F, mo):
         _css
         + f'<div style="margin:48px 0 20px; padding:24px 0 0; border-top:2px solid {C["accent"]};">'
         f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
-        f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:8px;">The long tail \\u00b7 uncategorized</div>'
+        f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:8px;">The long tail</div>'
         f'<h2 style="font-family:{F["headline"]}; font-size:1.6rem; font-weight:600; color:{C["ink"]}; '
         f'margin:0 0 12px; letter-spacing:-0.015em;">{_c["uncategorized"]:,} more products, tracked but not yet scored</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.95rem; color:{C["ink_2"]}; margin:0 0 16px; line-height:1.6;">'
@@ -989,7 +984,7 @@ def framework_edges(C, FRAMEWORK_EDGES, F, mo):
     mo.Html(
         f'<div style="margin:48px 0 20px; padding:24px 0 0; border-top:2px solid {C["accent"]};">'
         f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
-        f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:8px;">The map\\u2019s edges \\u00b7 framework white-space</div>'
+        f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:8px;">The map\\u2019s edges</div>'
         f'<h2 style="font-family:{F["headline"]}; font-size:1.6rem; font-weight:600; color:{C["ink"]}; '
         f'margin:0 0 12px; letter-spacing:-0.015em;">What\\u2019s not on the map yet</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.95rem; color:{C["ink_2"]}; margin:0 0 18px; line-height:1.6;">'
