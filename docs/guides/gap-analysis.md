@@ -56,9 +56,14 @@ a low bar would call almost everything mature.
 
 Only **fully-open** products count toward a category's maturity and stage. Open-ish products do
 not advance the stage — they are used solely to detect the openness gap. The rationale: the
-ladder measures the health of the genuinely-open ecosystem, and crediting partially-open
-products to it would blur exactly the open-source-vs-open-weights line the map is built to
-expose. Counting also distinguishes depth from a single standout (see Stage 5).
+ladder measures **fully-open-pipeline maturity** — the health of the genuinely-open ecosystem —
+and crediting partially-open products to it would blur exactly the open-source-vs-open-weights
+line the map is built to expose. Open-weights models therefore never advance a stage. Counting
+also distinguishes depth from a single standout (see Stage 5).
+
+This is consequential but bounded: counting open-weights as fully open would move only three
+categories, all in the model layer (`base_pretrained` 3→5, `finetuned_chat` 1→3,
+`edge_hardware` 3→4), and would leave every infrastructure and tooling verdict unchanged.
 
 ## Stages
 

@@ -143,6 +143,41 @@ def test_openness_bucket_covers_open_and_open_ish():
     assert payload["categories"]["base_pretrained"]["products"][0]["openness"]["bucket"] == "open-ish"
 
 
+def _mature_flag(cls, adoption, capability, weights=None):
+    src = _sources()
+    src["scores"]["llama-4"]["openness"] = {"score": 5, "class": cls}
+    src["scores"]["llama-4"]["adoption"] = {"level": adoption, "signal_type": "usage_volume"}
+    src["scores"]["llama-4"]["capability"] = {"score": capability, "basis": "x"}
+    if weights is not None:
+        src["categories"]["base_pretrained"]["weights"] = weights
+    payload = build_payload(src, frozen_long_tail={}, generated="2026-06-10")
+    return payload["categories"]["base_pretrained"]["products"][0]["mature"]
+
+
+def test_mature_flag_matches_stage_engine_rule():
+    # Rule: maturity is not None AND maturity >= 4.5 AND bucket == "open".
+    # Fully open, blended 5.0 -> mature.
+    assert _mature_flag("open_source", 5, 5) is True
+    # Fully open but blended 4.0 (< 4.5 bar) -> not mature.
+    assert _mature_flag("open_source", 4, 4) is False
+    # Open-weights (open-ish bucket), blended 5.0 -> NOT mature: the bucket gate fails.
+    assert _mature_flag("open_weights", 5, 5) is False
+    # Closed, blended 5.0 -> not mature.
+    assert _mature_flag("closed", 5, 5) is False
+    # Exactly at the 4.5 bar, fully open -> mature (>= is inclusive).
+    assert _mature_flag("open_source", 4, 5) is True
+
+
+def test_mature_flag_false_when_maturity_null():
+    src = _sources()
+    src["scores"]["llama-4"]["openness"] = {"score": 5, "class": "open_source"}
+    src["scores"]["llama-4"]["adoption"] = {"level": None, "signal_type": "unknown"}
+    payload = build_payload(src, frozen_long_tail={}, generated="2026-06-10")
+    row = payload["categories"]["base_pretrained"]["products"][0]
+    assert row["maturity"] is None
+    assert row["mature"] is False
+
+
 def test_unknown_org_renders_empty_string():
     s = _sources()
     s["organizations"] = {"unknown": {"name": "unknown", "display_name": "Unknown",
