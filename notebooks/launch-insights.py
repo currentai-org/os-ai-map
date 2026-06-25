@@ -138,50 +138,62 @@ def c_people(C, F, LAYER_COLORS, LAYER_LABELS, df_contrib, go, mo, np):
     from itertools import combinations
     from collections import Counter
 
-    _nodes_df = (df_contrib.groupby("repo")
-                 .agg(contributors=("developer_id", "nunique"),
-                      layer=("layer", "first"),
-                      product=("product_name", "first"))
-                 .reset_index())
-    _nodes_df = _nodes_df[_nodes_df["contributors"] >= 5].reset_index(drop=True)
-    _keep = set(_nodes_df["repo"])
-    _names = _nodes_df["repo"].tolist()
-    _idx = {r: i for i, r in enumerate(_names)}
-    _n = len(_names)
+    _agg = (df_contrib.groupby("repo")
+            .agg(contributors=("developer_id", "nunique"),
+                 layer=("layer", "first"),
+                 product=("product_name", "first")))
+    _cand = _agg[_agg["contributors"] >= 8]
+    _cand_set = set(_cand.index)
 
-    _dev_repos = (df_contrib[df_contrib["repo"].isin(_keep)]
+    _dev_repos = (df_contrib[df_contrib["repo"].isin(_cand_set)]
                   .groupby("developer_id")["repo"].apply(lambda s: sorted(set(s))))
     _ec = Counter()
     for _rs in _dev_repos:
         if 1 < len(_rs) <= 40:
             for _a, _b in combinations(_rs, 2):
                 _ec[(_a, _b)] += 1
-    _EDGE_MIN = 4
-    _edges = [(_idx[a], _idx[b], w) for (a, b), w in _ec.items() if w >= _EDGE_MIN]
+    _EDGE_MIN = 5
+    _pairs = [(a, b, w) for (a, b), w in _ec.items() if w >= _EDGE_MIN]
 
-    # Fruchterman-Reingold layout (numpy only, no external deps).
+    # Keep only connected projects, capped to the 80 largest, so the graph is legible.
+    _conn = set()
+    for _a, _b, _w in _pairs:
+        _conn.add(_a)
+        _conn.add(_b)
+    _nodes_df = (_cand[_cand.index.isin(_conn)].reset_index()
+                 .nlargest(80, "contributors").reset_index(drop=True))
+    _keep = set(_nodes_df["repo"])
+    _idx = {r: i for i, r in enumerate(_nodes_df["repo"])}
+    _n = len(_nodes_df)
+    _edges = [(_idx[a], _idx[b], w) for a, b, w in _pairs if a in _keep and b in _keep]
+
+    # Fruchterman-Reingold spring layout (numpy only, no external deps).
     _rng = np.random.RandomState(7)
-    _pos = _rng.rand(_n, 2) * 2 - 1
-    _k = 1.3 / np.sqrt(_n)
-    _temp = 0.5
-    _ei = np.array([e[0] for e in _edges]) if _edges else np.array([], dtype=int)
-    _ej = np.array([e[1] for e in _edges]) if _edges else np.array([], dtype=int)
-    _ew = np.array([e[2] for e in _edges], dtype=float) if _edges else np.array([])
-    if len(_ew):
-        _ew = _ew / _ew.max()
-    for _ in range(140):
-        _delta = _pos[:, None, :] - _pos[None, :, :]
-        _d2 = (_delta ** 2).sum(-1) + 1e-6
-        _disp = ((_k * _k / _d2)[..., None] * _delta).sum(1)
-        if len(_edges):
-            _dd_vec = _pos[_ei] - _pos[_ej]
-            _dd = np.sqrt((_dd_vec ** 2).sum(1)) + 1e-6
-            _f = ((_dd / _k) * _ew)[:, None] * (_dd_vec / _dd[:, None])
-            np.add.at(_disp, _ei, -_f)
-            np.add.at(_disp, _ej, _f)
-        _len = np.sqrt((_disp ** 2).sum(1)) + 1e-9
-        _pos += (_disp / _len[:, None]) * np.minimum(_len, _temp)[:, None]
-        _temp *= 0.97
+    _pos = _rng.rand(_n, 2)
+    _k = np.sqrt(2.5 / _n)
+    _ei = np.array([e[0] for e in _edges])
+    _ej = np.array([e[1] for e in _edges])
+    _ew = np.array([e[2] for e in _edges], dtype=float)
+    _ew = np.sqrt(_ew / _ew.max())
+    _t = 0.10
+    for _ in range(300):
+        _diff = _pos[:, None, :] - _pos[None, :, :]
+        _d = np.sqrt((_diff ** 2).sum(-1))
+        _d[_d == 0] = 1e-4
+        _disp = ((_diff / _d[..., None]) * (_k * _k / _d)[..., None]).sum(1)
+        _ev = _pos[_ei] - _pos[_ej]
+        _el = np.sqrt((_ev ** 2).sum(1))
+        _el[_el == 0] = 1e-4
+        _fa = (_ev / _el[:, None]) * ((_el * _el / _k) * _ew)[:, None]
+        np.add.at(_disp, _ei, -_fa)
+        np.add.at(_disp, _ej, _fa)
+        _dl = np.sqrt((_disp ** 2).sum(1))
+        _dl[_dl == 0] = 1e-4
+        _pos += (_disp / _dl[:, None]) * np.minimum(_dl, _t)[:, None]
+        _t = max(_t * 0.99, 0.002)
+    _pos -= _pos.mean(0)
+    _scale = np.percentile(np.sqrt((_pos ** 2).sum(1)), 92) + 1e-9
+    _pos = np.clip(_pos / _scale, -1.3, 1.3)
 
     _fig = go.Figure()
     _ex, _ey = [], []
@@ -189,24 +201,24 @@ def c_people(C, F, LAYER_COLORS, LAYER_LABELS, df_contrib, go, mo, np):
         _ex += [_pos[_i, 0], _pos[_j, 0], None]
         _ey += [_pos[_i, 1], _pos[_j, 1], None]
     _fig.add_trace(go.Scatter(x=_ex, y=_ey, mode="lines", hoverinfo="skip", showlegend=False,
-                              line=dict(color=C["slate_lt"], width=0.4), opacity=0.25))
-    _sizes = np.sqrt(_nodes_df["contributors"].to_numpy()) * 1.5 + 5
+                              line=dict(color=C["slate_lt"], width=0.7), opacity=0.5))
+    _sizes = np.clip(np.sqrt(_nodes_df["contributors"].to_numpy()) * 0.55 + 5, 5, 24)
     for _layer in ["infrastructure", "model_components", "product_ux"]:
         _m = (_nodes_df["layer"] == _layer).to_numpy()
         if not _m.any():
             continue
         _fig.add_trace(go.Scatter(
             x=_pos[_m, 0], y=_pos[_m, 1], mode="markers", name=LAYER_LABELS[_layer],
-            marker=dict(color=LAYER_COLORS[_layer], size=_sizes[_m], line=dict(color="white", width=0.5)),
+            marker=dict(color=LAYER_COLORS[_layer], size=_sizes[_m], line=dict(color="white", width=0.8)),
             text=_nodes_df.loc[_m, "product"], customdata=_nodes_df.loc[_m, "contributors"],
             hovertemplate="<b>%{text}</b><br>Contributors: %{customdata:,}<extra></extra>",
         ))
-    for _, _r in _nodes_df.nlargest(10, "contributors").iterrows():
+    for _, _r in _nodes_df.nlargest(12, "contributors").iterrows():
         _p = _pos[_idx[_r["repo"]]]
-        _fig.add_annotation(x=_p[0], y=_p[1], text=_r["product"], showarrow=False, yshift=11,
+        _fig.add_annotation(x=_p[0], y=_p[1], text=_r["product"], showarrow=False, yshift=12,
                             font=dict(family=F["mono"], size=9, color=C["ink"]))
     _fig.update_layout(
-        plot_bgcolor="white", paper_bgcolor="white", height=620,
+        plot_bgcolor="white", paper_bgcolor="white", height=640,
         font=dict(family=F["body"], size=12, color=C["ink"]),
         margin=dict(t=64, l=20, r=20, b=20),
         title=dict(text="The open AI stack, linked where projects share contributors",
@@ -214,8 +226,8 @@ def c_people(C, F, LAYER_COLORS, LAYER_LABELS, df_contrib, go, mo, np):
         legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="left", x=0,
                     font=dict(size=11), bgcolor="rgba(0,0,0,0)"),
     )
-    _fig.update_xaxes(visible=False)
-    _fig.update_yaxes(visible=False, scaleanchor="x", scaleratio=1)
+    _fig.update_xaxes(visible=False, range=[-1.45, 1.45])
+    _fig.update_yaxes(visible=False, scaleanchor="x", scaleratio=1, range=[-1.45, 1.45])
     mo.ui.plotly(_fig, config={"displayModeBar": False})
     return
 
