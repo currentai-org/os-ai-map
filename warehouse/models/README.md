@@ -23,6 +23,7 @@ CSV-based reference data uploaded via scripts. Source CSVs live in `warehouse/ca
 | `currentai.catalog.model_repos` | `warehouse/catalog/huggingface/model_repos.csv` | ~6.3K | HF model → GitHub repo links |
 | `currentai.catalog.foundation_model_repos` | `warehouse/catalog/huggingface/foundation_model_repos.csv` | ~72 | Curated foundation model families → canonical repos |
 | `currentai.catalog.pypi_downloads` | `warehouse/catalog/pypi/pypi_downloads.csv` (gitignored) | ~1.6M | PyPI daily downloads by package × country, 39 AI packages |
+| `currentai.catalog.stack_map` | `warehouse/catalog/stack_map/repos.csv` | 199 | Taxonomy bridge: scored-product repos → stack-map category / layer / openness, generated from `sources/` by `warehouse/ingest/build_stack_map.py` |
 
 ## Entities (User Defined Models)
 
@@ -66,6 +67,7 @@ The OSAI/Raffi v2 taxonomy layer (scores.taxonomy, scores.investment_ranking) wa
 | `currentai.scores.project_summary` | [scores_project_summary.sql](scores_project_summary.sql) | Daily 7am | ~14K | Rolled-up snapshot per project |
 | `currentai.scores.repos_summary` | [scores_repos_summary.sql](scores_repos_summary.sql) | Daily 7am | ~15K | Per-repo snapshot: catalog metadata + 90-day activity + contributors |
 | `currentai.scores.ossd_coverage` | [scores_ossd_coverage.sql](scores_ossd_coverage.sql) | Daily 6am | ~10K | Per-org oss-directory match rates |
+| `currentai.scores.stack_contributors` | [scores_stack_contributors.sql](scores_stack_contributors.sql) | @manual | ~68K | Distinct GitHub code committers (12mo, bots excluded) per scored product, bridged to stack-map category/layer/openness via `catalog.stack_map` |
 
 ## Subscribed External Datasets
 
