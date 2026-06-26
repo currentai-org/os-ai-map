@@ -27,7 +27,7 @@ those on merge to `main`. Code and data are [MIT licensed](LICENSE).
 |------|------|
 | `sources/` | Curated YAML: organizations, categories, products, scores + `taxonomy.yaml` |
 | `build/` | Validate, serialize, render pipeline |
-| `notebooks/` | Marimo notebooks: generated `ai-stack-map.py` + hand-authored `products-view.py` (payload generated) + standalone companion notebooks (`pypi-geo-trends.py`, `oss-ai-trends.py`, `france-ecosystem.py`) |
+| `notebooks/` | Marimo notebooks: generated `ai-stack-map.py` + standalone companion notebooks (`pypi-geo-trends.py`, `oss-ai-trends.py`, `long-tail-explorer.py`) |
 | `warehouse/` | UDM SQL, ingest fetchers, and external CSV catalog |
 | `docs/schemas/` | JSON Schemas for all source file types |
 | `docs/guides/` | Query, notebook, openness, and gap-analysis conventions |
@@ -73,14 +73,12 @@ uv run marimo export html notebooks/ai-stack-map.py -o /tmp/preview.html
 Serialize and render locally for preview only. Do not commit `build/notebook_data.json` or
 `notebooks/ai-stack-map.py`.
 
-The companion `notebooks/products-view.py` is hand-authored; only its embedded data payload
-is regenerated, by `uv run python build/products_view_data.py` (the bot refreshes it on merge).
-
-Three further companion notebooks are fully standalone: `pypi-geo-trends.py` (PyPI download
-geography), `oss-ai-trends.py` (ecosystem growth signals), and `france-ecosystem.py` (France
-grantee discovery). They sit outside the build pipeline. Each queries `currentai.*` warehouse
-tables live via `pyoso`, so the bot never regenerates them. They share the AI Stack Map design
-system (see `docs/guides/notebook-design.md`). Run any of them locally with `OSO_API_KEY` set:
+The companion notebooks are fully standalone: `pypi-geo-trends.py` (PyPI download geography),
+`oss-ai-trends.py` (ecosystem growth signals), and `long-tail-explorer.py` (the uncategorized
+long tail of open source AI). They sit outside the build pipeline. Each queries `currentai.*`
+warehouse tables live via `pyoso`, so the bot never regenerates them. They share the AI Stack
+Map design system (see `docs/guides/notebook-design.md`). Run any of them locally with
+`OSO_API_KEY` set:
 
 ```bash
 uv run marimo edit notebooks/pypi-geo-trends.py

@@ -23,30 +23,3 @@
       Re-call **without** `force` to poll until `status: READY` (returns a `contentUrl`).
 5. Verify live: `curl` the `contentUrl` (gzipped HTML) → `gunzip` → grep for the product
    count and a few newly-added product names.
-
-## Publishing the products view (`os-ai-products-view`)
-
-The products view (`notebooks/products-view.py`, slug `/currentai/os-ai-products-view`) is a
-second published notebook. Unlike `ai-stack-map.py` it is **hand-authored**, not rendered by
-`build/render.py`: only its embedded data payload is generated, by
-`build/products_view_data.py`, which the regenerate bot refreshes on merge to `main`. So after
-a merge the file on `main` is already current — `git pull` and publish that file as-is.
-
-- **Identifiers:** notebook id `d2ebb50d-8785-4955-97d9-c2a011cc2c5f`, slug
-  `/currentai/os-ai-products-view`, org `currentai` (`ad7f4c1c-dd2f-430e-a831-e7f1f16e6d9e`).
-- **Gates:** `uv run python -m build.validate` (clean), `uv run marimo check
-  notebooks/products-view.py`, and `uv run python build/products_view_data.py --check` (every
-  gallery exemplar still resolves to a product).
-- **Visual sign-off:** the notebook is **reactive** (the lookup and the builder-demand table
-  use `mo.ui` controls), so a static `marimo export html` renders the prose and server-side
-  tables but does not exercise the interactive widgets. To verify those, run
-  `uv run marimo run notebooks/products-view.py` and check in a browser, or accept the static
-  export for a prose/layout check.
-- **Publish:** identical MCP flow to steps 4–5 above (`createNotebookUploadUrl` →
-  `curl PUT` the file → `updateNotebook` with the `uploadId`, double-nested input, read
-  `success` via `jq` → `publishNotebook({force:true})`, poll until `READY` → verify the
-  `contentUrl`). Confirm the live HTML leads with the lookup (mode 1) and contains the
-  builder-demand table.
-- **Preview before merge:** publish the branch build to a throwaway notebook in the same org
-  (create one via `createNotebook` or the UI), share that slug for review, then `deleteNotebook`
-  it once done — keep the live `os-ai-products-view` on merged `main`.

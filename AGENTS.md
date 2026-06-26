@@ -19,7 +19,7 @@ warehouse/ingest/      Python fetchers that write CSVs to warehouse/catalog/
 warehouse/catalog/     Raw external CSVs (GoodAI List, HF benchmarks, etc.)
 warehouse/sources.yaml Manifest linking each external source to its fetcher
 build/                 Python pipeline: validate.py, serialize.py, render.py, slugs.py
-notebooks/             Generated ai-stack-map.py, products-view.py, and standalone companion notebooks (pypi-geo-trends, oss-ai-trends, france-ecosystem)
+notebooks/             Generated ai-stack-map.py and standalone companion notebooks (pypi-geo-trends, oss-ai-trends, long-tail-explorer)
 docs/methodology.md    Canonical methodology copy, rendered into the notebook (a build input)
 docs/guides/           Query conventions and notebook style guide
 docs/runbooks/         Maintainer deploy runbooks
@@ -66,7 +66,6 @@ hyphenated kebab-case (`llama-3-1`).
 uv run python -m build.validate        # validate sources/ (must print "0 error(s)")
 uv run python -m build.serialize       # sources/ -> build/notebook_data.json
 uv run python build/render.py          # -> notebooks/ai-stack-map.py
-uv run python build/products_view_data.py  # refresh the embedded data payload in notebooks/products-view.py
 uv run marimo export html notebooks/ai-stack-map.py -o /tmp/preview.html
 ```
 
@@ -74,15 +73,7 @@ Serialize/render locally for preview only. Do not commit `build/notebook_data.js
 `notebooks/ai-stack-map.py`: a bot regenerates them on merge to main, and CI blocks PRs
 that hand-edit them.
 
-`notebooks/products-view.py` is a **hybrid**: its gallery, lookup engine, and layout
-cells are hand-authored, but its data payload (the `PAYLOAD = json.loads(...)` line in the
-`data` cell) is regenerated from `build/notebook_data.json` by `build/products_view_data.py`.
-The regenerate bot refreshes that one line on merge, so the products view never drifts from
-the stack-map data — edit the gallery/engine freely, but do not hand-edit the payload line.
-Run `build/products_view_data.py --check` to fail if a gallery exemplar name no longer
-resolves to a product.
-
-`notebooks/pypi-geo-trends.py`, `notebooks/oss-ai-trends.py`, and `notebooks/france-ecosystem.py`
+`notebooks/pypi-geo-trends.py`, `notebooks/oss-ai-trends.py`, and `notebooks/long-tail-explorer.py`
 are **fully standalone**: no build-pipeline coupling, no generated payload. Each queries
 `currentai.*` warehouse tables live via `pyoso`, so the bot never touches them. They share the
 AI Stack Map design system; when editing, keep them aligned with `docs/guides/notebook-design.md`
