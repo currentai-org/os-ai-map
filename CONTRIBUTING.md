@@ -109,6 +109,37 @@ Each score file has three axes. **Every non-null value needs at least one
 - **capability** (`score:` 1-5, `basis:` e.g. `benchmark:MLPerf`): benchmark or
   comparative evidence; `null` with a reason if no defensible basis exists.
 
+### Adoption level bands
+
+The `adoption.level` is graded against monthly usage volume — package-registry
+downloads (PyPI, npm), Hugging Face downloads, or equivalent active-user / request
+counts. Use the band the product's verified monthly volume falls into:
+
+| Level | Monthly usage volume | Reading |
+|------:|----------------------|---------|
+| **5** | **> 10M / mo** | Ecosystem standard — the default choice for its job (e.g. PyTorch, LangChain, MLflow, Ray). |
+| **4** | 1M – 10M / mo | Widely adopted; a leading option in its category (e.g. vLLM, TRL, Diffusers). |
+| **3** | 100k – 1M / mo | Real, non-trivial usage; established but not dominant. |
+| **2** | 10k – 100k / mo | Emerging; a meaningful user base but still niche. |
+| **1** | < 10k / mo | Early / experimental; little verified usage. |
+
+Notes on applying the bands:
+
+- **Use real usage, not popularity.** Downloads, active users, deployments, and
+  request volume are the basis. **GitHub stars are a weak last-resort signal and
+  never raise adoption above level 3** (`signal_type: stars_fallback`, enforced by
+  validation).
+- **Ecosystem-standard status can stand in for a clean count.** A few infrastructure
+  tools have no single download figure but are unambiguously the default in their
+  category (e.g. a C/C++ engine, a managed platform). These may sit at level 4–5 on
+  documented ecosystem-standard status with `signal_type: reported_traction`; say so
+  in the `note`.
+- **Borderline cases.** When volume sits right at a band edge (e.g. ~10–13M/mo at the
+  level-5 floor), lean on whether the product is genuinely the ecosystem default before
+  promoting, and record the reasoning in the `note`.
+- The `reach` field is a free-text label for the same figure (e.g. `'>10M'`,
+  `1M-10M`); keep it consistent with the chosen level.
+
 Look at `sources/scores/vllm.yaml` for a complete worked example.
 
 ## Suggesting without writing YAML
