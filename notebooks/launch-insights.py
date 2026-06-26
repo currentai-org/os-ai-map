@@ -207,8 +207,7 @@ def c_people(C, F, LAYER_COLORS, LAYER_LABELS, df_contrib, mo):
     const focusEl = document.getElementById('focus');
     focusEl.innerHTML = '<option value="__all__">All projects</option>' + byC.map(function(n){
         return '<option value="'+n.id+'">'+n.name+'</option>'; }).join('');
-    const topHub = AN.slice().sort(function(a,b){ return adj[b.id].size - adj[a.id].size; })[0];
-    focusEl.value = topHub ? topHub.id : '__all__';
+    focusEl.value = '__all__';
 
     const el = document.getElementById('chart');
     const W = el.clientWidth || 900, H = CFG.height;
@@ -226,11 +225,12 @@ def c_people(C, F, LAYER_COLORS, LAYER_LABELS, df_contrib, mo):
         root.selectAll('*').remove();
         sim = d3.forceSimulation(nodes)
             .force('link', d3.forceLink(links).id(function(d){ return d.id; })
-                .distance(function(d){ return 60/Math.sqrt(d.weight)+18; })
-                .strength(function(d){ return Math.min(0.85, d.weight/18); }))
-            .force('charge', d3.forceManyBody().strength(focus==='__all__' ? -170 : -260))
-            .force('center', d3.forceCenter(W/2, H/2))
-            .force('collide', d3.forceCollide().radius(function(d){ return d.r+4; }));
+                .distance(function(d){ return 120/Math.sqrt(d.weight)+34; })
+                .strength(function(d){ return Math.min(0.7, d.weight/24); }))
+            .force('charge', d3.forceManyBody().strength(focus==='__all__' ? -520 : -560).distanceMax(W))
+            .force('x', d3.forceX(W/2).strength(0.05))
+            .force('y', d3.forceY(H/2).strength(0.13))
+            .force('collide', d3.forceCollide().radius(function(d){ return d.r+8; }));
         const link = root.append('g').attr('stroke', CFG.edge).attr('stroke-opacity', 0.45)
             .selectAll('line').data(links).join('line')
             .attr('stroke-width', function(d){ return Math.sqrt(d.weight)*0.5+0.4; });
@@ -306,8 +306,18 @@ def c_categories(C, F, LAYER_COLORS, LAYOUT, df_founding, go, mo, pd):
     _grid = pd.date_range(_counts.index.min(), _counts.index.max(), freq="MS")
     _counts = _counts.reindex(_grid, fill_value=0).cumsum()
     _cat_layer = _df.drop_duplicates("category").set_index("category")["layer"].to_dict()
-    # Prune to the 7 largest categories so end labels don't collide.
-    _order = _counts.iloc[-1].sort_values(ascending=False).head(7).index.tolist()
+    _finals = _counts.iloc[-1].sort_values(ascending=False)
+    _order = _finals.index.tolist()
+    # Dodge end labels downward so none collide, even when two categories end
+    # on the same value (e.g. Deployment and Evaluation Code both at 11).
+    _gap = float(_finals.max()) * 0.035
+    _label_y, _prev = {}, None
+    for _cat in _order:
+        _y = float(_finals[_cat])
+        if _prev is not None and _prev - _y < _gap:
+            _y = _prev - _gap
+        _label_y[_cat] = _y
+        _prev = _y
     _fig = go.Figure()
     for _cat in _order:
         _color = LAYER_COLORS.get(_cat_layer.get(_cat), C["ink_3"])
@@ -317,15 +327,15 @@ def c_categories(C, F, LAYER_COLORS, LAYOUT, df_founding, go, mo, pd):
             hovertemplate="<b>" + _cat + "</b><br>%{x|%b %Y}: %{y} projects<extra></extra>",
         ))
         _fig.add_annotation(
-            x=_counts.index[-1], y=_counts[_cat].iloc[-1], text="  " + _cat,
+            x=_counts.index[-1], y=_label_y[_cat], text="  " + _cat,
             xanchor="left", yanchor="middle", showarrow=False,
             font=dict(family=F["mono"], size=9, color=_color),
         )
-    _fig.update_layout(**LAYOUT, height=520)
+    _fig.update_layout(**LAYOUT, height=560)
     _fig.update_layout(
-        title=dict(text="Cumulative open source projects founded, by category (7 largest)",
+        title=dict(text="Cumulative open source projects founded, by category",
                    font=dict(family=F["headline"], size=15, color=C["ink"]), x=0, xref="paper"),
-        margin=dict(t=64, l=60, r=250, b=50),
+        margin=dict(t=64, l=60, r=230, b=50),
     )
     _fig.update_xaxes(title="", showgrid=False, showline=True, linecolor=C["ink"],
                       tickfont=dict(size=11, color=C["ink_3"]))
@@ -488,9 +498,10 @@ def load_tiers(mo, pyoso_db_conn):
 def load_founding(mo, pyoso_db_conn):
     df_founding = mo.sql(
         """
-        SELECT s.category, s.layer, r.created_at
+        SELECT c.category_name AS category, s.layer, r.created_at
         FROM currentai.entities.repos r
         JOIN currentai.catalog.stack_map s ON LOWER(r.repo) = s.repo
+        JOIN currentai.stack_map.categories c ON c.category_id = s.category
         WHERE s.openness_bucket IN ('open', 'open-ish') AND r.created_at IS NOT NULL
         """,
         output=False, engine=pyoso_db_conn,
