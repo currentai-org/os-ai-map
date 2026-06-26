@@ -108,6 +108,88 @@ def kpi_strip(df_contrib, df_tiers, mo):
 
 
 @app.cell(hide_code=True)
+def s_categories(C, F, mo):
+    mo.Html(
+        f'<div style="margin:48px 0 18px;">'
+        f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
+        f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:6px;">Categories</div>'
+        f'<h2 style="font-family:{F["headline"]}; font-size:1.7rem; font-weight:600; '
+        f'color:{C["ink"]}; margin:0 0 10px; letter-spacing:-0.015em;">'
+        f'Entire categories of AI are being born in open source, not handed down by the frontier labs.</h2>'
+        f'<p style="font-family:{F["body"]}; font-size:0.98rem; color:{C["ink_2"]}; '
+        f'margin:0; line-height:1.6;">'
+        f'The frontier labs ship models. Open source is inventing the categories that turn those models into '
+        f'working software. Orchestration and agents barely existed before late 2024. An open standard, MCP, '
+        f'catalyzed the category, and almost every project in it has been created since. The older core tells the '
+        f'opposite story: the ML frameworks that defined the last decade have added no new open entrants. As '
+        f'innovation moves up the stack, open source is increasingly the one setting the agenda, not following it.</p>'
+        f'</div>'
+    )
+    return
+
+
+@app.cell(hide_code=True)
+def c_categories(C, F, LAYER_COLORS, LAYOUT, df_founding, go, mo, pd):
+    # Curated categories per layer, chosen to contrast an early plateau
+    # (ML Frameworks, founded 2014 and flat since) with the recent agent and
+    # serving surge.
+    _SHOW = {
+        "orchestration_agents": "Orchestration & Agents",
+        "telemetry_observability": "Telemetry & Observability",
+        "inference_code": "Inference Code",
+        "base_pretrained": "Base / Pretrained",
+        "ml_frameworks": "ML Frameworks",
+        "deployment": "Deployment",
+    }
+    _df = df_founding[df_founding["category"].isin(_SHOW)].copy()
+    _df["created_at"] = pd.to_datetime(_df["created_at"])
+    _df = _df[_df["created_at"] >= "2014-01-01"]
+    _df["month"] = _df["created_at"].values.astype("datetime64[M]")
+    _counts = _df.groupby(["month", "category"]).size().unstack(fill_value=0)
+    _grid = pd.date_range(_counts.index.min(), _counts.index.max(), freq="MS")
+    _counts = _counts.reindex(_grid, fill_value=0).cumsum()
+    _cat_layer = _df.drop_duplicates("category").set_index("category")["layer"].to_dict()
+    _finals = _counts.iloc[-1].sort_values(ascending=False)
+    _order = _finals.index.tolist()
+    # Dodge end labels downward so none collide, even when two categories end
+    # on the same value (e.g. Deployment and Evaluation Code both at 11).
+    _gap = float(_finals.max()) * 0.035
+    _label_y, _prev = {}, None
+    for _cat in _order:
+        _y = float(_finals[_cat])
+        if _prev is not None and _prev - _y < _gap:
+            _y = _prev - _gap
+        _label_y[_cat] = _y
+        _prev = _y
+    _fig = go.Figure()
+    for _cat in _order:
+        _color = LAYER_COLORS.get(_cat_layer.get(_cat), C["ink_3"])
+        _fig.add_trace(go.Scatter(
+            x=_counts.index, y=_counts[_cat], mode="lines",
+            line=dict(color=_color, width=2.5), showlegend=False,
+            hovertemplate="<b>" + _SHOW[_cat] + "</b><br>%{x|%b %Y}: %{y} projects<extra></extra>",
+        ))
+        _fig.add_annotation(
+            x=_counts.index[-1], y=_label_y[_cat], text="  " + _SHOW[_cat],
+            xanchor="left", yanchor="middle", showarrow=False,
+            font=dict(family=F["mono"], size=10, color=_color),
+        )
+    _fig.update_layout(**LAYOUT, height=560)
+    _fig.update_layout(
+        title=dict(text="Cumulative open source projects founded, by category",
+                   font=dict(family=F["headline"], size=15, color=C["ink"]), x=0, xref="paper"),
+        margin=dict(t=64, l=60, r=230, b=50),
+    )
+    _fig.update_xaxes(title="", showgrid=False, showline=True, linecolor=C["ink"],
+                      tickfont=dict(size=11, color=C["ink_3"]))
+    _fig.update_yaxes(title="Cumulative projects", showgrid=True, gridcolor=C["rule"],
+                      rangemode="tozero", showline=True, linecolor=C["ink"], zeroline=False,
+                      tickfont=dict(size=11, color=C["ink_3"]))
+    mo.ui.plotly(_fig, config={"displayModeBar": False})
+    return
+
+
+@app.cell(hide_code=True)
 def s_people(C, F, mo):
     mo.Html(
         f'<div style="margin:48px 0 18px;">'
@@ -115,14 +197,14 @@ def s_people(C, F, mo):
         f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:6px;">People</div>'
         f'<h2 style="font-family:{F["headline"]}; font-size:1.7rem; font-weight:600; '
         f'color:{C["ink"]}; margin:0 0 10px; letter-spacing:-0.015em;">'
-        f'Open source AI is built by one connected community, not a set of silos.</h2>'
+        f'The open stack is built by one shared workforce, not a set of silos.</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.98rem; color:{C["ink_2"]}; '
         f'margin:0; line-height:1.6;">'
         f'Tens of thousands of developers committed code to the open source AI stack in the last year. Even the core, '
-        f'those with 50 or more commits, is comparable to the combined disclosed headcount of every major closed '
-        f'lab. The two networks below put any pair of projects side by side, linking each to every project it '
-        f'shares contributors with. The same developers thread through very different corners of the stack, which '
-        f'is what makes the ecosystem hard to fork or capture.</p>'
+        f'those with 50 or more commits, rivals the combined disclosed headcount of every major closed lab. This is '
+        f'active contribution, not downstream reuse of someone else\'s work. The same people show up across very '
+        f'different projects, which is what makes the ecosystem hard to fork or capture. The two networks below put '
+        f'any pair of projects side by side and link each to every project it shares contributors with.</p>'
         f'</div>'
     )
     return
@@ -290,87 +372,6 @@ def c_people(C, F, LAYER_COLORS, LAYER_LABELS, df_contrib, mo):
 
 
 @app.cell(hide_code=True)
-def s_categories(C, F, mo):
-    mo.Html(
-        f'<div style="margin:48px 0 18px;">'
-        f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
-        f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:6px;">Categories</div>'
-        f'<h2 style="font-family:{F["headline"]}; font-size:1.7rem; font-weight:600; '
-        f'color:{C["ink"]}; margin:0 0 10px; letter-spacing:-0.015em;">'
-        f'The fastest-growing category in open source AI didn\'t exist 18 months ago.</h2>'
-        f'<p style="font-family:{F["body"]}; font-size:0.98rem; color:{C["ink_2"]}; '
-        f'margin:0; line-height:1.6;">'
-        f'The agent-tooling layer barely existed before late 2024. An open standard, MCP, catalyzed it, and '
-        f'almost every project in the category has been created since. The framework core, by contrast, has '
-        f'added no new open entrants since 2024. Breakout open products and standards keep creating new '
-        f'categories, and the map adds rows to track them.</p>'
-        f'</div>'
-    )
-    return
-
-
-@app.cell(hide_code=True)
-def c_categories(C, F, LAYER_COLORS, LAYOUT, df_founding, go, mo, pd):
-    # Curated categories per layer, chosen to contrast an early plateau
-    # (ML Frameworks, founded 2014 and flat since) with the recent agent and
-    # serving surge.
-    _SHOW = {
-        "orchestration_agents": "Orchestration & Agents",
-        "telemetry_observability": "Telemetry & Observability",
-        "inference_code": "Inference Code",
-        "base_pretrained": "Base / Pretrained",
-        "ml_frameworks": "ML Frameworks",
-        "deployment": "Deployment",
-    }
-    _df = df_founding[df_founding["category"].isin(_SHOW)].copy()
-    _df["created_at"] = pd.to_datetime(_df["created_at"])
-    _df = _df[_df["created_at"] >= "2014-01-01"]
-    _df["month"] = _df["created_at"].values.astype("datetime64[M]")
-    _counts = _df.groupby(["month", "category"]).size().unstack(fill_value=0)
-    _grid = pd.date_range(_counts.index.min(), _counts.index.max(), freq="MS")
-    _counts = _counts.reindex(_grid, fill_value=0).cumsum()
-    _cat_layer = _df.drop_duplicates("category").set_index("category")["layer"].to_dict()
-    _finals = _counts.iloc[-1].sort_values(ascending=False)
-    _order = _finals.index.tolist()
-    # Dodge end labels downward so none collide, even when two categories end
-    # on the same value (e.g. Deployment and Evaluation Code both at 11).
-    _gap = float(_finals.max()) * 0.035
-    _label_y, _prev = {}, None
-    for _cat in _order:
-        _y = float(_finals[_cat])
-        if _prev is not None and _prev - _y < _gap:
-            _y = _prev - _gap
-        _label_y[_cat] = _y
-        _prev = _y
-    _fig = go.Figure()
-    for _cat in _order:
-        _color = LAYER_COLORS.get(_cat_layer.get(_cat), C["ink_3"])
-        _fig.add_trace(go.Scatter(
-            x=_counts.index, y=_counts[_cat], mode="lines",
-            line=dict(color=_color, width=2.5), showlegend=False,
-            hovertemplate="<b>" + _SHOW[_cat] + "</b><br>%{x|%b %Y}: %{y} projects<extra></extra>",
-        ))
-        _fig.add_annotation(
-            x=_counts.index[-1], y=_label_y[_cat], text="  " + _SHOW[_cat],
-            xanchor="left", yanchor="middle", showarrow=False,
-            font=dict(family=F["mono"], size=10, color=_color),
-        )
-    _fig.update_layout(**LAYOUT, height=560)
-    _fig.update_layout(
-        title=dict(text="Cumulative open source projects founded, by category",
-                   font=dict(family=F["headline"], size=15, color=C["ink"]), x=0, xref="paper"),
-        margin=dict(t=64, l=60, r=230, b=50),
-    )
-    _fig.update_xaxes(title="", showgrid=False, showline=True, linecolor=C["ink"],
-                      tickfont=dict(size=11, color=C["ink_3"]))
-    _fig.update_yaxes(title="Cumulative projects", showgrid=True, gridcolor=C["rule"],
-                      rangemode="tozero", showline=True, linecolor=C["ink"], zeroline=False,
-                      tickfont=dict(size=11, color=C["ink_3"]))
-    mo.ui.plotly(_fig, config={"displayModeBar": False})
-    return
-
-
-@app.cell(hide_code=True)
 def s_resilience(C, F, mo):
     mo.Html(
         f'<div style="margin:48px 0 18px;">'
@@ -378,15 +379,16 @@ def s_resilience(C, F, mo):
         f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:6px;">Resilience</div>'
         f'<h2 style="font-family:{F["headline"]}; font-size:1.7rem; font-weight:600; '
         f'color:{C["ink"]}; margin:0 0 10px; letter-spacing:-0.015em;">'
-        f'Most open projects spread the work; a few widely-used tools rest on one person.</h2>'
+        f'Most open projects spread the work, but a few of the most-used rest on a single maintainer.</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.98rem; color:{C["ink_2"]}; '
         f'margin:0; line-height:1.6;">'
-        f'Each dot is one of the 50 most-active open source AI projects, placed by how mature it is (vertical) '
-        f'against how much of its code comes from a single top contributor (horizontal). The healthy pattern '
-        f'fills the upper left: large projects like vLLM, SGLang, and Transformers where the busiest contributor '
-        f'writes under 3% of commits. The concern is the upper right, where widely-used tools lean on very few '
-        f'shoulders. TensorFlow is the standout, a mature project with nearly a third of its recent commits from '
-        f'one author, alongside a cluster of evaluation and agent tools such as promptfoo, Unsloth, and Inspect AI.</p>'
+        f'Each dot is one of the 50 most-active open source AI projects, placed by maturity (vertical) against how '
+        f'much of its code comes from a single top contributor (horizontal). Most mature projects spread the work '
+        f'across many hands, the healthy upper-left pattern of vLLM and Transformers, where the busiest contributor '
+        f'writes under 3% of commits. The resiliency question sits in the upper right, where tools the whole '
+        f'ecosystem leans on still run on one or two people. Open WebUI, the de-facto self-hosted chat interface, '
+        f'and Unsloth, a widely-used fine-tuning library, both live here; so does the coding agent Aider, just below '
+        f'the maturity line. Each is a natural candidate for a closer look at bus factor and long-term resilience.</p>'
         f'</div>'
     )
     return
@@ -423,17 +425,18 @@ def c_resilience(C, F, LAYOUT, df_contrib, go, mo):
                       "Maturity: %{y}<br>Contributors: %{customdata[1]:,}<extra></extra>",
         showlegend=False,
     ))
-    # Label the standout at-risk projects, with hand-tuned offsets so the
-    # tight y=4 cluster (Unsloth, promptfoo, LightRAG) does not collide.
+    # Label the projects the narrative calls out, with hand-tuned offsets:
+    # the well-staffed anchors (vLLM, Transformers), the standout TensorFlow,
+    # and the mature-but-concentrated examples (Open WebUI, Unsloth, Aider).
     _label = {
-        "TensorFlow": ("left", "bottom", 6, 2),
-        "Inspect AI": ("left", "bottom", 6, 2),
-        "LibreChat": ("left", "top", 6, -3),
-        "Unsloth": ("right", "middle", -6, 0),
-        "promptfoo": ("center", "bottom", 0, 9),
-        "LightRAG": ("left", "bottom", 6, 2),
+        "vLLM": ("left", "middle", 6, 0),
+        "Transformers": ("left", "middle", 6, 0),
+        "TensorFlow": ("right", "bottom", -6, 3),
+        "Open WebUI": ("center", "top", 0, -7),
+        "Unsloth": ("center", "bottom", 0, 9),
+        "Aider": ("left", "middle", 6, 0),
     }
-    for _, _r in _d[_danger].iterrows():
+    for _, _r in _d.iterrows():
         _o = _label.get(_r["product"])
         if _o:
             _fig.add_annotation(x=_r["top1_share"], y=_r["maturity"], text=_r["product"],
@@ -468,9 +471,9 @@ def methodology(C, F, mo):
         f'over the trailing 12 months, from <span style="font-family:{F["mono"]};font-size:0.9em;">'
         f'currentai.scores.stack_contributors</span> joined to the taxonomy bridge '
         f'<span style="font-family:{F["mono"]};font-size:0.9em;">currentai.catalog.stack_map</span>. '
-        f'The network links two projects when they share 4 or more contributors; node size is contributor '
-        f'count and color is stack layer. Founding date is repo '
-        f'<span style="font-family:{F["mono"]};font-size:0.9em;">created_at</span>. Resilience plots the 50 open '
+        f'Founding date is repo <span style="font-family:{F["mono"]};font-size:0.9em;">created_at</span>. '
+        f'The networks link two projects when they share 4 or more contributors; node size is contributor '
+        f'count and color is stack layer. Resilience plots the 50 open '
         f'projects with the most contributors, placing maturity (the adoption x capability blend from the AI '
         f'Stack Map gap engine, carried on the bridge) against the share of commits written by each project\'s '
         f'single most active contributor; the viral 2025 outlier OpenClaw is excluded. Underlying data: OSO and '
