@@ -81,16 +81,12 @@ def fonts(mo):
 def header(C, F, mo):
     mo.Html(
         f'<div style="padding:40px 0 28px; border-bottom:2px solid {C["accent"]}; margin-bottom:8px;">'
-        f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
-        f'letter-spacing:0.12em; text-transform:uppercase; margin-bottom:10px;">Current AI</div>'
         f'<h1 style="font-family:{F["headline"]}; font-size:2.3rem; font-weight:600; '
         f'color:{C["ink"]}; margin:0 0 14px; line-height:1.05; letter-spacing:-0.025em;">'
-        f'The open-source AI stack, in four charts</h1>'
+        f'The open source AI stack, in four charts</h1>'
         f'<p style="font-family:{F["body"]}; font-size:1.05rem; color:{C["ink_2"]}; '
         f'margin:0; line-height:1.55;">'
-        f'Four findings from the AI Stack Map, each in one sentence, one paragraph, and one chart. '
-        f'Every number is queried live from the '
-        f'<span style="font-family:{F["mono"]}; font-size:0.85em;">currentai</span> warehouse.</p>'
+        f'Four findings from the AI Stack Map, each in one sentence, one paragraph, and one chart.</p>'
         f'</div>'
     )
     return
@@ -119,10 +115,10 @@ def s_people(C, F, mo):
         f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:6px;">People</div>'
         f'<h2 style="font-family:{F["headline"]}; font-size:1.7rem; font-weight:600; '
         f'color:{C["ink"]}; margin:0 0 10px; letter-spacing:-0.015em;">'
-        f'Open AI is built by one connected community, not a set of silos.</h2>'
+        f'Open source AI is built by one connected community, not a set of silos.</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.98rem; color:{C["ink_2"]}; '
         f'margin:0; line-height:1.6;">'
-        f'Tens of thousands of developers committed code to the open AI stack in the last year. Even the core, '
+        f'Tens of thousands of developers committed code to the open source AI stack in the last year. Even the core, '
         f'those with 50 or more commits, is comparable to the combined disclosed headcount of every major closed '
         f'lab. The network below links two projects whenever they share contributors. The dense center shows the '
         f'same developers working across projects and across layers, which is what makes the ecosystem hard to '
@@ -252,7 +248,7 @@ def c_people(C, F, LAYER_COLORS, LAYER_LABELS, df_contrib, mo):
     _src = _html.escape(_inner, quote=True)
     mo.Html(
         '<div style="font-family:' + F["headline"] + ';font-size:15px;color:' + C["ink"]
-        + ';margin:0 0 2px;">The open AI stack, linked where projects share contributors</div>'
+        + ';margin:0 0 2px;">The open source AI stack, linked where projects share contributors</div>'
         '<div style="font-family:' + F["mono"] + ';font-size:11px;color:' + C["ink_3"]
         + ';margin:0 0 6px;">Drag a node, scroll to zoom, hover to isolate its collaborators.</div>'
         '<iframe srcdoc="' + _src + '" style="width:100%;height:656px;border:none;" scrolling="no"></iframe>'
@@ -268,7 +264,7 @@ def s_growth(C, F, mo):
         f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:6px;">Growth</div>'
         f'<h2 style="font-family:{F["headline"]}; font-size:1.7rem; font-weight:600; '
         f'color:{C["ink"]}; margin:0 0 10px; letter-spacing:-0.015em;">'
-        f'The open-AI workforce is growing fast, and moving up the stack.</h2>'
+        f'The open source AI workforce is growing fast, and moving up the stack.</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.98rem; color:{C["ink_2"]}; '
         f'margin:0; line-height:1.6;">'
         f'Active contributors to the open stack are up about 80% over the past year, shown here as a 28-day '
@@ -320,7 +316,7 @@ def s_categories(C, F, mo):
         f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:6px;">Categories</div>'
         f'<h2 style="font-family:{F["headline"]}; font-size:1.7rem; font-weight:600; '
         f'color:{C["ink"]}; margin:0 0 10px; letter-spacing:-0.015em;">'
-        f'The fastest-growing category in open AI didn\'t exist 18 months ago.</h2>'
+        f'The fastest-growing category in open source AI didn\'t exist 18 months ago.</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.98rem; color:{C["ink_2"]}; '
         f'margin:0; line-height:1.6;">'
         f'The agent-tooling layer barely existed before late 2024. An open standard, MCP, catalyzed it, and '
@@ -359,7 +355,7 @@ def c_categories(C, F, LAYER_COLORS, LAYOUT, df_founding, go, mo, pd):
         )
     _fig.update_layout(**LAYOUT, height=520)
     _fig.update_layout(
-        title=dict(text="Cumulative open-source projects founded, by category (10 largest)",
+        title=dict(text="Cumulative open source projects founded, by category (10 largest)",
                    font=dict(family=F["headline"], size=15, color=C["ink"]), x=0, xref="paper"),
         margin=dict(t=64, l=60, r=250, b=50),
     )
@@ -440,7 +436,7 @@ def methodology(C, F, mo):
         f'GitHub Archive.</p>'
         f'<p style="font-family:{F["body"]}; font-size:0.85rem; color:{C["ink_3"]}; margin-top:8px;">'
         f'<strong>Source:</strong> '
-        f'<a href="https://www.oso.xyz" style="color:{C["accent"]}">Open Source Observer</a>, '
+        f'<a href="https://www.oso.xyz" style="color:{C["accent"]}">OSO</a>, '
         f'<a href="https://map.currentai.org" style="color:{C["accent"]}">AI Stack Map</a></p>'
         f'</div>'
     )
