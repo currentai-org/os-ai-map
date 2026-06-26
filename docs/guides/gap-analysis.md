@@ -62,7 +62,7 @@ line the map is built to expose. Open-weights models therefore never advance a s
 also distinguishes depth from a single standout (see Stage 5).
 
 This is consequential but bounded: counting open-weights as fully open would move only three
-categories, all in the model layer (`base_pretrained` 3→5, `finetuned_chat` 1→3,
+categories, all in the model layer (`base_pretrained` 3→5, `finetuned_chat` 2→3,
 `edge_hardware` 3→4), and would leave every infrastructure and tooling verdict unchanged.
 
 ## Stages

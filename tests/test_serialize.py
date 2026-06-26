@@ -37,6 +37,15 @@ def test_capability_gap_when_nothing_mature_and_weak():
     assert "maturity" in sg["gaps"] and "capability" in sg["gaps"]
 
 
+def test_stage_uses_rounded_maturity_not_float_noise():
+    # 0.3*3 + 0.7*3 = 2.9999999999999996 as a float. Rounded to 2dp it is 3.00, which
+    # sits at the Stage 2 boundary (best fully-open >= 3.0), not Stage 1. The stage must
+    # compare the rounded value so float epsilon can't decide the rung.
+    rows = [_p("open_source", 3, 3)]
+    sg = _stage_and_gaps(rows, {"adopt": 0.3, "cap": 0.7})
+    assert sg["num"] == 2
+
+
 def _sources():
     return {
         "organizations": {"meta": {"name": "meta", "display_name": "Meta",

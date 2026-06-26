@@ -64,14 +64,17 @@ def _maturity_score(row: dict, w: dict) -> float | None:
     # Maturity is anchored on adoption: a product with no adoption signal has no
     # maturity score (None) rather than a spurious zero. Capability may be legitimately
     # null for some product types (e.g. datasets), which are graded on adoption alone.
+    # Rounded to 2dp so the stage thresholds compare the same value we display, and so
+    # float noise (e.g. 0.3*3 + 0.7*3 = 2.9999999999999996) can't push a product across
+    # a stage boundary.
     adoption = (row.get("adoption") or {}).get("level")
     if adoption is None:
         return None
     capability = (row.get("capability") or {}).get("score")
     if capability is None:
-        return float(adoption)
+        return round(float(adoption), 2)
     wa, wc = w.get("adopt", 0.5), w.get("cap", 0.5)
-    return (wa * adoption + wc * capability) / ((wa + wc) or 1.0)
+    return round((wa * adoption + wc * capability) / ((wa + wc) or 1.0), 2)
 
 
 def _stage_and_gaps(rows: list[dict], weights: dict) -> dict:
@@ -171,11 +174,11 @@ def _row(prod: dict, org_name: str, score: dict, weights: dict | None) -> dict:
         "adoption": score["adoption"],
         "capability": score["capability"],
     }
-    # The weighted product maturity score (per-category blend of adoption/capability)
-    # rounded to 2dp for display, or null when adoption is missing. The category stage
-    # thresholds in _stage_and_gaps use the unrounded value; this field is the same metric.
+    # The weighted product maturity score (per-category blend of adoption/capability),
+    # already rounded to 2dp by _maturity_score, or null when adoption is missing. The
+    # category stage thresholds in _stage_and_gaps compare this same 2dp value.
     m = _maturity_score(row, weights or {"adopt": 0.5, "cap": 0.5})
-    row["maturity"] = round(m, 2) if m is not None else None
+    row["maturity"] = m
     # Canonical `mature` flag: the SAME rule the category stage engine uses
     # (_stage_and_gaps) — a fully-open product whose blended maturity clears
     # _MATURE_MIN. Emitted here so downstream consumers stop recomputing it with a
