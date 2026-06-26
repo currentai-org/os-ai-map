@@ -319,18 +319,7 @@ states. The verdict is categorical, not ordinal, so colour-coding it on the
 salmon ramp made "open-ish leads" and "closed leads" look alike; the colour
 story already lives in the open / open-ish / closed chips beside it.
 
-**products-view only** — it reuses these slots for different concepts, so it gets
-two more harmonised families, each distinct from the salmon openness ramp:
-
-- **Composition basis** (a confidence axis) → a cool slate ramp: known build
-  `#0b252f` (navy) → documented `#5f7e88` (mid slate) → similarity `#a5bbbe`
-  (light slate).
-- **Gaps / missing layers** → a muted brand red `#cf4436` (the site marks gaps
-  in red; `#ff0d0d` reserved for actual gap icons).
-
 **Header eyebrow** trimmed from `Current AI · Open Source AI Map · v3` to just
 `Current AI`.
 
-These values live in the `C` dict of `build/render.py` (ai-stack-map, generated)
-and `notebooks/products-view.py` (hand-authored). The openness ramp is shared
-verbatim between both so the openness encoding reads identically across views.
+These values live in the `C` dict of `build/render.py` (ai-stack-map, generated).

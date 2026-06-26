@@ -8,7 +8,6 @@ on:
       - "docs/methodology.md"
       - "build/serialize.py"
       - "build/render.py"
-      - "build/products_view_data.py"
       - "build/_frozen_long_tail.json"
 
 permissions:
@@ -30,15 +29,12 @@ jobs:
         run: uv run python -m build.serialize --date "$(date -u +%F)"
       - name: Render notebook
         run: uv run python build/render.py
-      - name: Refresh products-view payload
-        run: uv run python build/products_view_data.py
       - name: Notebook structure check
         run: |
           uv run marimo check notebooks/ai-stack-map.py
-          uv run marimo check notebooks/products-view.py
       - name: Commit regenerated artifacts
         run: |
-          ARTIFACTS="build/notebook_data.json notebooks/ai-stack-map.py notebooks/products-view.py"
+          ARTIFACTS="build/notebook_data.json notebooks/ai-stack-map.py"
           if git diff --quiet $ARTIFACTS; then
             echo "No changes to generated artifacts."
             exit 0
