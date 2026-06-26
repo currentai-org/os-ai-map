@@ -298,7 +298,18 @@ def s_categories(C, F, mo):
 
 @app.cell(hide_code=True)
 def c_categories(C, F, LAYER_COLORS, LAYOUT, df_founding, go, mo, pd):
-    _df = df_founding.copy()
+    # Curated two categories per layer, chosen to contrast an early plateau
+    # (ML Frameworks, founded 2014 and flat since) with the recent agent,
+    # serving, and eval surge.
+    _SHOW = {
+        "ml_frameworks": "ML Frameworks",
+        "deployment": "Deployment",
+        "inference_code": "Inference Code",
+        "evaluation_code": "Evaluation Code",
+        "orchestration_agents": "Orchestration Agents",
+        "agent_tools_protocols": "Agent Tools & Protocols",
+    }
+    _df = df_founding[df_founding["category"].isin(_SHOW)].copy()
     _df["created_at"] = pd.to_datetime(_df["created_at"])
     _df = _df[_df["created_at"] >= "2014-01-01"]
     _df["month"] = _df["created_at"].values.astype("datetime64[M]")
@@ -323,13 +334,13 @@ def c_categories(C, F, LAYER_COLORS, LAYOUT, df_founding, go, mo, pd):
         _color = LAYER_COLORS.get(_cat_layer.get(_cat), C["ink_3"])
         _fig.add_trace(go.Scatter(
             x=_counts.index, y=_counts[_cat], mode="lines",
-            line=dict(color=_color, width=2), showlegend=False,
-            hovertemplate="<b>" + _cat + "</b><br>%{x|%b %Y}: %{y} projects<extra></extra>",
+            line=dict(color=_color, width=2.5), showlegend=False,
+            hovertemplate="<b>" + _SHOW[_cat] + "</b><br>%{x|%b %Y}: %{y} projects<extra></extra>",
         ))
         _fig.add_annotation(
-            x=_counts.index[-1], y=_label_y[_cat], text="  " + _cat,
+            x=_counts.index[-1], y=_label_y[_cat], text="  " + _SHOW[_cat],
             xanchor="left", yanchor="middle", showarrow=False,
-            font=dict(family=F["mono"], size=9, color=_color),
+            font=dict(family=F["mono"], size=10, color=_color),
         )
     _fig.update_layout(**LAYOUT, height=560)
     _fig.update_layout(
@@ -498,10 +509,9 @@ def load_tiers(mo, pyoso_db_conn):
 def load_founding(mo, pyoso_db_conn):
     df_founding = mo.sql(
         """
-        SELECT c.category_name AS category, s.layer, r.created_at
+        SELECT s.category, s.layer, r.created_at
         FROM currentai.entities.repos r
         JOIN currentai.catalog.stack_map s ON LOWER(r.repo) = s.repo
-        JOIN currentai.stack_map.categories c ON c.category_id = s.category
         WHERE s.openness_bucket IN ('open', 'open-ish') AND r.created_at IS NOT NULL
         """,
         output=False, engine=pyoso_db_conn,
