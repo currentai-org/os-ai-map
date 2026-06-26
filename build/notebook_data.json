@@ -3301,6 +3301,316 @@
           "version_note": "Scored on StarCoder2-15B-Instruct-v0.1 (the instruct SKU; 16B, self-aligned, released 31 Oct 2024, arXiv:2410.24198). NOTE: base StarCoder2-15B (Feb 2024) is a pretrained model belonging in base_pretrained; only the instruct variant fits finetuned_chat. Both verified live on HF June 2026."
         },
         {
+          "product": "OLMo 2 Instruct",
+          "org": "Ai2",
+          "type": "model",
+          "description": "Instruction-tuned chat SKUs of Ai2's OLMo 2 family (7B/13B/32B-Instruct), post-trained with the fully-open Tulu 3 pipeline (SFT -> DPO -> RLVR) on top of the open OLMo 2 base. Distinct from the base OLMo 2 family entry (base_pretrained): separate HF repos, separate post-training, and the chat-relevant capability axis (IFEval, AlpacaEval). Verified live on HF June 2026.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "weights:open(Apache-2.0);data:open(Dolma/OLMo-Mix pretraining + Tulu 3 post-training mixtures);code:open(OLMo + open-instruct training code, recipes);checkpoints:open(intermediate);license:Apache-2.0(OSI)",
+            "confidence": "high",
+            "note": "Genuinely fully-open instruct line: Apache-2.0 weights + open pretraining and post-training data + open training code/recipe + intermediate checkpoints. Open_source tier 5. Post-trained with the open Tulu 3 SFT->DPO->RLVR pipeline. Cards note limited safety training.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/allenai/OLMo-2-0325-32B-Instruct",
+                "shows": "License Apache-2.0; Tulu 3 SFT+DPO+RLVR post-training; fully-open data/code/checkpoints",
+                "accessed": "2026-06-25"
+              },
+              {
+                "url": "https://allenai.org/blog/olmo2",
+                "shows": "\"best fully open language model to date\"; releases weights, data, code, recipes, intermediate checkpoints, and instruction-tuned models",
+                "accessed": "2026-06-25"
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "10K-100K",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "Combined ~58k HF downloads/month across the three named instruct SKUs (7B-Instruct ~45.2k, 13B-Instruct ~6.9k, 32B-Instruct ~5.9k). 32B-Instruct carries the highest likes (147). Solid research/practitioner reach; below the Qwen/Llama instruct workhorses.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/allenai/OLMo-2-1124-7B-Instruct",
+                "shows": "~45,191 downloads last month",
+                "accessed": "2026-06-25"
+              },
+              {
+                "url": "https://huggingface.co/allenai/OLMo-2-0325-32B-Instruct",
+                "shows": "~5,918 downloads last month; 147 likes",
+                "accessed": "2026-06-25"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "benchmark:MMLU/IFEval/AlpacaEval",
+            "value": "OLMo-2-32B-Instruct MMLU 77.3, GSM8K 87.6, IFEval 85.6, AlpacaEval2 LC 42.8",
+            "confidence": "high",
+            "note": "32B-Instruct competitive with GPT-4o-mini / Qwen2.5-32B class and outperforms GPT-3.5 Turbo on most benchmarks; mid-tier on a scale where 5 = 2026 frontier chat. The value proposition is full openness, not raw SOTA.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/allenai/OLMo-2-0325-32B-Instruct",
+                "shows": "MMLU 77.3, GSM8K 87.6, IFEval 85.6; comparison vs GPT-4o-mini and Qwen2.5-32B",
+                "accessed": "2026-06-25"
+              }
+            ]
+          },
+          "maturity": 3.0,
+          "mature": false,
+          "version_note": "Scored on the OLMo 2 Instruct SKUs (0325 32B-Instruct is the most capable). Apache-2.0; fully-open weights + data + recipe + intermediate checkpoints. Post-training via the Tulu 3 recipe."
+        },
+        {
+          "product": "OLMoE Instruct",
+          "org": "Ai2",
+          "type": "model",
+          "description": "Ai2's fully-open Mixture-of-Experts instruct model (OLMoE-1B-7B-0924-Instruct: 1.3B active / 6.9B total, SFT + DPO). Released with open pretraining data (OLMoE-mix-0924, built on Dolma + DataComp), open post-training data, open training code, and 244 intermediate checkpoints. Verified live on HF June 2026.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "weights:open(Apache-2.0);data:open(OLMoE-mix-0924 pretraining + Tulu/UltraFeedback post-training);code:open(OLMoE training code, SFT/DPO/KTO recipes);checkpoints:open(244 intermediate);license:Apache-2.0(OSI)",
+            "confidence": "high",
+            "note": "Fully-open MoE: Apache-2.0 weights + open pretraining data (OLMoE-mix-0924, on Dolma/DataComp) + open post-training data + open code + 244 intermediate checkpoints. Open_source tier 5.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/allenai/OLMoE-1B-7B-0924-Instruct",
+                "shows": "License Apache-2.0; SFT+DPO instruct; open data and code",
+                "accessed": "2026-06-25"
+              },
+              {
+                "url": "https://allenai.org/blog/olmoe-an-open-small-and-state-of-the-art-mixture-of-experts-model-c258432d0514",
+                "shows": "released with open data, code, evaluations, logs, and intermediate training checkpoints",
+                "accessed": "2026-06-25"
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "10K-100K",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "~37.9k HF downloads/month on the instruct SKU; 96 likes. Solid reach for a fully-open research MoE.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/allenai/OLMoE-1B-7B-0924-Instruct",
+                "shows": "~37,880 downloads last month; 96 likes",
+                "accessed": "2026-06-25"
+              }
+            ]
+          },
+          "capability": {
+            "score": 2,
+            "basis": "benchmark:MMLU/AlpacaEval",
+            "value": "OLMoE-1B-7B-Instruct MMLU 51.9, GSM8k 45.5, HumanEval 54.8, AlpacaEval1 84.0, IFEval 48.1",
+            "confidence": "medium",
+            "note": "State-of-the-art among ~1B-active-parameter models at release (beats Gemma2, Llama2-13B-Chat, OLMo-7B, DeepSeekMoE-16B per the blog), but absolute capability is low-tier vs full-size 2026 chat models given the 1.3B active budget. Scored 2 on absolute capability. Exact per-competitor numbers live in arXiv 2409.02060 (blog charts are images), so the comparative claims are directional -- hence medium confidence.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/allenai/OLMoE-1B-7B-0924-Instruct",
+                "shows": "MMLU 51.9, GSM8k 45.5, HumanEval 54.8, AlpacaEval 84.0, IFEval 48.1",
+                "accessed": "2026-06-25"
+              },
+              {
+                "url": "https://allenai.org/blog/olmoe-an-open-small-and-state-of-the-art-mixture-of-experts-model-c258432d0514",
+                "shows": "positioned state-of-the-art at the ~1B-active cost class",
+                "accessed": "2026-06-25"
+              }
+            ]
+          },
+          "maturity": 2.3,
+          "mature": false,
+          "version_note": "Apache-2.0; fully-open MoE (weights + data + code + intermediate checkpoints). State-of-the-art among ~1B-active-parameter models at release."
+        },
+        {
+          "product": "Tulu 3",
+          "org": "Ai2",
+          "type": "model",
+          "description": "Ai2's open post-training model family (Llama-3.1-Tulu-3 8B / 70B / 405B), the reference fully-open post-training recipe: open SFT + preference data, open training code (open-instruct), and the RLVR (Reinforcement Learning with Verifiable Rewards) method, applied on top of Meta's Llama 3.1 base. Note: the recipe/data/code are Apache-2.0 and fully reproducible, but the released weights inherit Meta's Llama 3.1 Community License (non-OSI), so the artifact is open-recipe over restricted weights. Verified live on HF June 2026.",
+          "openness": {
+            "score": 3,
+            "class": "restricted",
+            "components": "weights:open(downloadable);license:Llama-3.1-Community(non-OSI;700M-MAU cap + use policy);post-training-data:open(Apache-2.0/ODC-BY);code:open(open-instruct Apache-2.0);recipe:open(SFT->DPO->RLVR);evals:open(OLMES)",
+            "confidence": "high",
+            "note": "NOT fully-open: the released weights inherit Meta's Llama 3.1 Community License (non-OSI, 700M-MAU cap), so the class is restricted -- same calibration as other Llama-Community models in the map. Scored 3 rather than the bare-Llama-Instruct 2 because the entire post-training layer (data, code, RLVR recipe, eval framework) is genuinely open and reproducible (Apache-2.0). Data license is ODC-BY/Apache per Ai2 practice; the exact dataset-card license string is medium confidence, but the headline open-recipe-over-restricted-weights call is high confidence.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/allenai/Llama-3.1-Tulu-3-8B",
+                "shows": "License: Llama 3.1 Community License Agreement (non-OSI); base meta-llama/Llama-3.1-8B",
+                "accessed": "2026-06-25"
+              },
+              {
+                "url": "https://allenai.org/blog/tulu-3",
+                "shows": "fully-transparent post-training release -- open data + data mixes, training code/recipe, eval framework, and weights",
+                "accessed": "2026-06-25"
+              },
+              {
+                "url": "https://github.com/allenai/open-instruct",
+                "shows": "Apache-2.0; Tulu 3 SFT/DPO/RLVR post-training framework + decontamination tools",
+                "accessed": "2026-06-25"
+              }
+            ],
+            "bucket": "closed"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "10K-100K",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "Research/reference traction, not a production endpoint. HF downloads/month ~3.1k (8B), ~493 (70B), ~832 (405B); likes 179/61/112. Aggregate low-thousands monthly. Level 2.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/allenai/Llama-3.1-Tulu-3-8B",
+                "shows": "~3,109 downloads last month; 179 likes",
+                "accessed": "2026-06-25"
+              },
+              {
+                "url": "https://huggingface.co/allenai/Llama-3.1-Tulu-3-405B",
+                "shows": "~832 downloads last month; 112 likes",
+                "accessed": "2026-06-25"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "benchmark:MMLU/GSM8K/IFEval",
+            "value": "Tulu-3-405B MMLU 87.0, GSM8K 95.5, IFEval 86.0, HumanEval 95.9, MATH 67.3",
+            "confidence": "high",
+            "note": "The 405B SKU trades blows with GPT-4o (2024-11) on math/reasoning (GSM8K 95.5 vs 91.7) and trails slightly on chat (AlpacaEval) and raw MMLU vs Llama-3.1-405B-Instruct. Strong upper-mid capability; scored 4. The smaller 8B is competitive in its size class (MMLU 68.2, GSM8K 87.6, IFEval 82.4).",
+            "sources": [
+              {
+                "url": "https://huggingface.co/allenai/Llama-3.1-Tulu-3-405B",
+                "shows": "MMLU 87.0, GSM8K 95.5, IFEval 86.0, HumanEval 95.9, MATH 67.3; vs GPT-4o comparison",
+                "accessed": "2026-06-25"
+              },
+              {
+                "url": "https://huggingface.co/allenai/Llama-3.1-Tulu-3-8B",
+                "shows": "MMLU 68.2, GSM8K 87.6, IFEval 82.4",
+                "accessed": "2026-06-25"
+              }
+            ]
+          },
+          "maturity": 3.4,
+          "mature": false,
+          "version_note": "Weights under Llama 3.1 Community License (non-OSI); Ai2's post-training data, code, recipe, and eval framework (open-instruct, OLMES) are Apache-2.0. Classed as restricted on the weights license, consistent with how other Llama-Community models are scored."
+        },
+        {
+          "product": "Zephyr",
+          "org": "Hugging Face",
+          "type": "model",
+          "description": "Hugging Face H4's fully-open chat model line. The flagship zephyr-7b-beta is a DPO fine-tune of Mistral-7B, trained with the open alignment-handbook recipe on the public UltraChat and UltraFeedback datasets and relicensed MIT. A late-2023 model that remains a widely-downloaded, fully-reproducible 7B open baseline. Also includes the zephyr-orpo-141b MoE variant (Apache-2.0). Verified live on HF June 2026.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "weights:open(MIT;base Mistral-7B Apache-2.0);data:open(UltraChat_200k + UltraFeedback_binarized, both MIT, ungated);code:open(alignment-handbook DPO recipe, Apache-2.0);license:MIT(OSI)",
+            "confidence": "high",
+            "note": "Genuinely fully-open: MIT weights, the two DPO training datasets are public and MIT, and the end-to-end training code (alignment-handbook) is Apache-2.0 and replicates zephyr-7b-beta. Open_source tier 5. Caveat (does not change the class): upstream UltraChat/UltraFeedback were partly generated with OpenAI model outputs, but the released HF artifacts are open and MIT.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/HuggingFaceH4/zephyr-7b-beta",
+                "shows": "License MIT; DPO fine-tune of Mistral-7B on UltraChat/UltraFeedback",
+                "accessed": "2026-06-25"
+              },
+              {
+                "url": "https://github.com/huggingface/alignment-handbook",
+                "shows": "Apache-2.0; contains all training code to replicate zephyr-7b-beta",
+                "accessed": "2026-06-25"
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 4,
+            "reach": "1M-10M",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "~164.9k HF downloads/month on zephyr-7b-beta with 1.85k likes -- a late-2023 model still pulling meaningful volume as a lightweight fully-open 7B baseline. The underlying datasets remain active (ultrachat_200k ~57.7k/mo). The 141B ORPO variant is effectively dormant (~52/mo). Level 4 on the leading SKU's sustained monthly volume.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/HuggingFaceH4/zephyr-7b-beta",
+                "shows": "~164,917 downloads last month; 1.85k likes",
+                "accessed": "2026-06-25"
+              }
+            ]
+          },
+          "capability": {
+            "score": 2,
+            "basis": "benchmark:MT-Bench/AlpacaEval",
+            "value": "zephyr-7b-beta MT-Bench 7.34, AlpacaEval 90.6% win rate, Open LLM Leaderboard avg 52.15",
+            "confidence": "high",
+            "note": "Notable late-2023 capability (a 7B beating much larger chat models on MT-Bench at release), but weak by 2026 standards (GSM8K 12.74, DROP 9.66 on the leaderboard). Low-tier on a scale where 5 = current frontier chat. Scored 2.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/HuggingFaceH4/zephyr-7b-beta",
+                "shows": "MT-Bench 7.34; AlpacaEval 90.60%; Open LLM Leaderboard avg 52.15",
+                "accessed": "2026-06-25"
+              }
+            ]
+          },
+          "maturity": 2.6,
+          "mature": false,
+          "version_note": "Scored on zephyr-7b-beta (MIT; base Mistral-7B Apache-2.0). Fully-open: weights + open DPO datasets (UltraChat/UltraFeedback, MIT) + open training code (alignment-handbook, Apache-2.0). Late-2023 capability, still ~165k HF downloads/month."
+        },
+        {
+          "product": "K2 Chat",
+          "org": "LLM360",
+          "type": "model",
+          "description": "LLM360's fully-open 65B instruction-tuned chat model (K2-Chat). LLM360 is the reference \"fully reproducible\" LLM project: it releases data-prep code, training code, intermediate checkpoints, and named instruction-tuning data, all Apache-2.0. A clean fully-open exemplar; modest adoption and last updated Jan 2025. Verified live on HF June 2026.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "weights:open(Apache-2.0);data:open(named instruction sets + open data-prep code);code:open(k2-train training code);checkpoints:open;license:Apache-2.0(OSI)",
+            "confidence": "high",
+            "note": "LLM360 is the reference fully-reproducible LLM project: open weights + open data-prep code + open training code + open checkpoints, all Apache-2.0. A clean open_source exemplar (tier 5) for the instruct category.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/LLM360/K2-Chat",
+                "shows": "License Apache-2.0; 65B instruct; open data/code/checkpoints",
+                "accessed": "2026-06-25"
+              },
+              {
+                "url": "https://github.com/LLM360",
+                "shows": "k2-train (training code) and k2-data-prep (data preparation code), Apache-2.0",
+                "accessed": "2026-06-25"
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "10K-100K",
+            "signal_type": "usage_volume",
+            "confidence": "medium",
+            "note": "LOW-CONFIDENCE PROMINENCE CALL (flagged for review): ~651 HF downloads/month, 21,298 all-time, 37 likes; last modified Jan 2025. Niche, not a mass-adoption model. Included as a clean fully-open exemplar rather than on popularity. Aggregate all-time volume puts it just into the 10K-100K band -> level 2; monthly volume alone would argue level 1.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/LLM360/K2-Chat",
+                "shows": "~651 downloads last month; 21,298 all-time; 37 likes; last modified 2025-01-12",
+                "accessed": "2026-06-25"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "benchmark:MMLU/GSM8K",
+            "value": "K2-Chat MMLU 69.14, GSM8K 77.10, BBH 70.37, HumanEval 60.82, TruthfulQA 57.32",
+            "confidence": "medium",
+            "note": "Reported to outperform Llama 2 70B Chat using ~35% less compute. Solid mid-tier for a 2024 fully-open 65B; below 2026 frontier chat models. Numbers are card-reported (not independently re-run) -> medium confidence.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/LLM360/K2-Chat",
+                "shows": "MMLU 69.14, GSM8K 77.10, BBH 70.37, HumanEval 60.82; outperforms Llama 2 70B Chat with ~35% less compute",
+                "accessed": "2026-06-25"
+              }
+            ]
+          },
+          "maturity": 2.7,
+          "mature": false,
+          "version_note": "Apache-2.0; open weights + open data-prep + open training code + open checkpoints. 65B. Reported to outperform Llama 2 70B Chat using ~35% less compute. Niche adoption (~651 HF downloads/month)."
+        },
+        {
           "product": "Phi-4-mini-instruct",
           "org": "Microsoft",
           "type": "model",
@@ -23740,7 +24050,7 @@
     "deployment",
     "edge_hardware"
   ],
-  "n_total": 421,
+  "n_total": 426,
   "generated": "2026-06-26",
   "long_tail": {
     "counts": {
@@ -23748,11 +24058,11 @@
       "models": 6428,
       "packages": 2823,
       "total": 24626,
-      "scored": 421,
+      "scored": 426,
       "overlap": 226,
-      "scored_outside": 195,
+      "scored_outside": 200,
       "uncategorized": 24400,
-      "universe": 24821
+      "universe": 24826
     },
     "top": [
       {
