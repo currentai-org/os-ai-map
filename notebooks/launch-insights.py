@@ -298,16 +298,17 @@ def s_categories(C, F, mo):
 
 @app.cell(hide_code=True)
 def c_categories(C, F, LAYER_COLORS, LAYOUT, df_founding, go, mo, pd):
-    # Curated two categories per layer, chosen to contrast an early plateau
-    # (ML Frameworks, founded 2014 and flat since) with the recent agent,
-    # serving, and eval surge.
+    # Curated categories per layer, chosen to contrast an early plateau
+    # (ML Frameworks, founded 2014 and flat since) with the recent agent and
+    # serving surge.
     _SHOW = {
+        "orchestration_agents": "Orchestration & Agents",
+        "agent_tools_protocols": "Agent Tools & Protocols",
+        "telemetry_observability": "Telemetry & Observability",
+        "inference_code": "Inference Code",
+        "base_pretrained": "Base / Pretrained",
         "ml_frameworks": "ML Frameworks",
         "deployment": "Deployment",
-        "inference_code": "Inference Code",
-        "evaluation_code": "Evaluation Code",
-        "orchestration_agents": "Orchestration Agents",
-        "agent_tools_protocols": "Agent Tools & Protocols",
     }
     _df = df_founding[df_founding["category"].isin(_SHOW)].copy()
     _df["created_at"] = pd.to_datetime(_df["created_at"])
