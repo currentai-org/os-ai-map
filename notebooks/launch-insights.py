@@ -303,7 +303,6 @@ def c_categories(C, F, LAYER_COLORS, LAYOUT, df_founding, go, mo, pd):
     # serving surge.
     _SHOW = {
         "orchestration_agents": "Orchestration & Agents",
-        "agent_tools_protocols": "Agent Tools & Protocols",
         "telemetry_observability": "Telemetry & Observability",
         "inference_code": "Inference Code",
         "base_pretrained": "Base / Pretrained",
