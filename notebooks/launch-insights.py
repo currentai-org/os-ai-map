@@ -120,9 +120,9 @@ def s_people(C, F, mo):
         f'margin:0; line-height:1.6;">'
         f'Tens of thousands of developers committed code to the open source AI stack in the last year. Even the core, '
         f'those with 50 or more commits, is comparable to the combined disclosed headcount of every major closed '
-        f'lab. The network below links two projects whenever they share contributors. The dense center shows the '
-        f'same developers working across projects and across layers, which is what makes the ecosystem hard to '
-        f'fork or capture. Pick any project below to trace who it shares contributors with.</p>'
+        f'lab. The two networks below put any pair of projects side by side, linking each to every project it '
+        f'shares contributors with. The same developers thread through very different corners of the stack, which '
+        f'is what makes the ecosystem hard to fork or capture.</p>'
         f'</div>'
     )
     return
@@ -170,7 +170,7 @@ def c_people(C, F, LAYER_COLORS, LAYER_LABELS, df_contrib, mo):
     _links = [{"source": a, "target": b, "weight": int(w)}
               for a, b, w in _pairs if a in _keep and b in _keep]
     _cfg = {
-        "nodes": _nodes, "links": _links, "height": 600,
+        "nodes": _nodes, "links": _links, "height": 540,
         "edge": C["slate_lt"], "ink": C["ink"],
         "legend": [{"label": LAYER_LABELS[_lk], "color": _lv} for _lk, _lv in LAYER_COLORS.items()],
     }
@@ -183,16 +183,23 @@ def c_people(C, F, LAYER_COLORS, LAYER_LABELS, df_contrib, mo):
         "@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&display=swap');"
         '*{margin:0;box-sizing:border-box}'
         'html,body{background:#fff;overflow:hidden;height:100%;font-family:"DM Mono",monospace}'
-        '#bar{display:flex;align-items:center;gap:10px;padding:8px 4px 4px;font-size:11px;color:#0b252f}'
-        '#bar select{font-family:"DM Mono",monospace;font-size:12px;color:#0b252f;background:#fff;'
-        'border:1px solid #a5bbbe;border-radius:0;padding:5px 9px;outline:none;max-width:300px}'
-        '#legend{margin-left:auto;text-transform:uppercase;letter-spacing:0.04em}'
+        '#legend{display:flex;align-items:center;justify-content:flex-end;padding:6px 4px;'
+        'font-size:10px;color:#0b252f;text-transform:uppercase;letter-spacing:0.04em}'
         '.leg{display:inline-flex;align-items:center;margin-left:16px}'
         '.leg i{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:6px}'
+        '#panels{display:flex}'
+        '.panel{flex:1;min-width:0;padding:0 10px}'
+        '.panel+.panel{border-left:1px solid #edecec}'
+        '.pbar{display:flex;align-items:center;gap:8px;padding:2px 0 6px}'
+        '.pbar select{font-family:"DM Mono",monospace;font-size:12px;color:#0b252f;background:#fff;'
+        'border:1px solid #a5bbbe;border-radius:0;padding:5px 9px;outline:none;width:100%}'
         'text{font-family:"DM Mono",monospace}'
         '</style></head><body>'
-        '<div id="bar"><span>Focus project</span><select id="focus"></select>'
-        '<span id="legend"></span></div><div id="chart"></div>'
+        '<div id="legend"></div>'
+        '<div id="panels">'
+        '<div class="panel"><div class="pbar"><select id="selA"></select></div><div id="chartA"></div></div>'
+        '<div class="panel"><div class="pbar"><select id="selB"></select></div><div id="chartB"></div></div>'
+        '</div>'
         '<script>'
     )
     _js = """
@@ -204,74 +211,80 @@ def c_people(C, F, LAYER_COLORS, LAYER_LABELS, df_contrib, mo):
     document.getElementById('legend').innerHTML = CFG.legend.map(function(d){
         return '<span class="leg"><i style="background:'+d.color+'"></i>'+d.label+'</span>'; }).join('');
     const byC = AN.slice().sort(function(a,b){ return b.contributors-a.contributors; });
-    const focusEl = document.getElementById('focus');
-    focusEl.innerHTML = '<option value="__all__">All projects</option>' + byC.map(function(n){
-        return '<option value="'+n.id+'">'+n.name+'</option>'; }).join('');
-    focusEl.value = '__all__';
-
-    const el = document.getElementById('chart');
-    const W = el.clientWidth || 900, H = CFG.height;
-    const svg = d3.select('#chart').append('svg').attr('width','100%').attr('height',H).attr('viewBox','0 0 '+W+' '+H);
-    const root = svg.append('g');
-    svg.call(d3.zoom().scaleExtent([0.3,4]).on('zoom', function(e){ root.attr('transform', e.transform); }));
-    let sim = null;
+    const optionsHtml = byC.map(function(n){ return '<option value="'+n.id+'">'+n.name+'</option>'; }).join('');
     function eid(x){ return (x && x.id) ? x.id : x; }
-    function draw(focus){
-        const keep = (focus==='__all__') ? null : adj[focus];
-        const nodes = AN.filter(function(n){ return !keep || keep.has(n.id); }).map(function(d){ return Object.assign({}, d); });
-        const links = AL.filter(function(l){ return !keep || (keep.has(eid(l.source)) && keep.has(eid(l.target))); })
-            .map(function(l){ return {source:eid(l.source), target:eid(l.target), weight:l.weight}; });
-        if(sim) sim.stop();
-        root.selectAll('*').remove();
-        sim = d3.forceSimulation(nodes)
-            .force('link', d3.forceLink(links).id(function(d){ return d.id; })
-                .distance(function(d){ return 120/Math.sqrt(d.weight)+34; })
-                .strength(function(d){ return Math.min(0.7, d.weight/24); }))
-            .force('charge', d3.forceManyBody().strength(focus==='__all__' ? -520 : -560).distanceMax(W))
-            .force('x', d3.forceX(W/2).strength(0.05))
-            .force('y', d3.forceY(H/2).strength(0.13))
-            .force('collide', d3.forceCollide().radius(function(d){ return d.r+8; }));
-        const link = root.append('g').attr('stroke', CFG.edge).attr('stroke-opacity', 0.45)
-            .selectAll('line').data(links).join('line')
-            .attr('stroke-width', function(d){ return Math.sqrt(d.weight)*0.5+0.4; });
-        const node = root.append('g').selectAll('circle').data(nodes).join('circle')
-            .attr('r', function(d){ return d.r; }).attr('fill', function(d){ return d.color; })
-            .attr('stroke', function(d){ return d.id===focus ? CFG.ink : '#fff'; })
-            .attr('stroke-width', function(d){ return d.id===focus ? 2.5 : 1.2; })
-            .style('cursor','pointer')
-            .call(d3.drag().on('start', ds).on('drag', dg).on('end', de));
-        node.append('title').text(function(d){ return d.name+': '+d.contributors.toLocaleString()+' contributors'; });
-        const labelData = (focus==='__all__') ? nodes.filter(function(d){ return d.hub; }) : nodes;
-        const label = root.append('g').selectAll('text').data(labelData).join('text')
-            .text(function(d){ return d.name; }).attr('font-size', 10).attr('fill', CFG.ink)
-            .attr('text-anchor','middle').attr('pointer-events','none').attr('paint-order','stroke')
-            .attr('stroke','#fff').attr('stroke-width',3).attr('stroke-linejoin','round');
-        sim.on('tick', function(){
-            link.attr('x1', function(d){ return d.source.x; }).attr('y1', function(d){ return d.source.y; })
-                .attr('x2', function(d){ return d.target.x; }).attr('y2', function(d){ return d.target.y; });
-            node.attr('cx', function(d){ return d.x; }).attr('cy', function(d){ return d.y; });
-            label.attr('x', function(d){ return d.x; }).attr('y', function(d){ return d.y-d.r-5; });
-        });
-        node.on('mouseover', function(e,d){
-            node.attr('opacity', function(n){ return adj[d.id].has(n.id) ? 1 : 0.12; });
-            link.attr('stroke-opacity', function(l){ return (eid(l.source)===d.id || eid(l.target)===d.id) ? 0.85 : 0.05; });
-            label.attr('opacity', function(n){ return adj[d.id].has(n.id) ? 1 : 0.12; });
-        }).on('mouseout', function(){ node.attr('opacity',1); link.attr('stroke-opacity',0.45); label.attr('opacity',1); });
+    function pickDefault(names, layer){
+        for(var i=0;i<names.length;i++){ var f=byC.find(function(n){ return n.name===names[i]; }); if(f) return f.id; }
+        var g=byC.find(function(n){ return n.layer===layer; });
+        return g ? g.id : byC[0].id;
     }
-    function ds(e){ if(!e.active) sim.alphaTarget(0.3).restart(); e.subject.fx=e.subject.x; e.subject.fy=e.subject.y; }
-    function dg(e){ e.subject.fx=e.x; e.subject.fy=e.y; }
-    function de(e){ if(!e.active) sim.alphaTarget(0); e.subject.fx=null; e.subject.fy=null; }
-    focusEl.addEventListener('change', function(){ draw(focusEl.value); });
-    draw(focusEl.value);
+    function makePanel(selId, chartId, focus0){
+        const sel = document.getElementById(selId);
+        sel.innerHTML = optionsHtml;
+        sel.value = focus0;
+        const el = document.getElementById(chartId);
+        const W = el.clientWidth || 480, H = CFG.height;
+        const svg = d3.select('#'+chartId).append('svg').attr('width','100%').attr('height',H).attr('viewBox','0 0 '+W+' '+H);
+        const root = svg.append('g');
+        svg.call(d3.zoom().scaleExtent([0.3,4]).on('zoom', function(e){ root.attr('transform', e.transform); }));
+        let sim = null;
+        function ds(e){ if(!e.active) sim.alphaTarget(0.3).restart(); e.subject.fx=e.subject.x; e.subject.fy=e.subject.y; }
+        function dg(e){ e.subject.fx=e.x; e.subject.fy=e.y; }
+        function de(e){ if(!e.active) sim.alphaTarget(0); e.subject.fx=null; e.subject.fy=null; }
+        function draw(focus){
+            const keep = adj[focus];
+            const nodes = AN.filter(function(n){ return keep.has(n.id); }).map(function(d){ return Object.assign({}, d); });
+            const links = AL.filter(function(l){ return keep.has(eid(l.source)) && keep.has(eid(l.target)); })
+                .map(function(l){ return {source:eid(l.source), target:eid(l.target), weight:l.weight}; });
+            if(sim) sim.stop();
+            root.selectAll('*').remove();
+            sim = d3.forceSimulation(nodes)
+                .force('link', d3.forceLink(links).id(function(d){ return d.id; })
+                    .distance(function(d){ return 72/Math.sqrt(d.weight)+22; })
+                    .strength(function(d){ return Math.min(0.8, d.weight/20); }))
+                .force('charge', d3.forceManyBody().strength(-300).distanceMax(W))
+                .force('center', d3.forceCenter(W/2, H/2))
+                .force('x', d3.forceX(W/2).strength(0.06))
+                .force('y', d3.forceY(H/2).strength(0.12))
+                .force('collide', d3.forceCollide().radius(function(d){ return d.r+5; }));
+            const link = root.append('g').attr('stroke', CFG.edge).attr('stroke-opacity', 0.45)
+                .selectAll('line').data(links).join('line')
+                .attr('stroke-width', function(d){ return Math.sqrt(d.weight)*0.5+0.4; });
+            const node = root.append('g').selectAll('circle').data(nodes).join('circle')
+                .attr('r', function(d){ return d.r; }).attr('fill', function(d){ return d.color; })
+                .attr('stroke', function(d){ return d.id===focus ? CFG.ink : '#fff'; })
+                .attr('stroke-width', function(d){ return d.id===focus ? 3 : 1.2; })
+                .style('cursor','pointer')
+                .call(d3.drag().on('start', ds).on('drag', dg).on('end', de));
+            node.append('title').text(function(d){ return d.name+': '+d.contributors.toLocaleString()+' contributors'; });
+            const label = root.append('g').selectAll('text').data(nodes).join('text')
+                .text(function(d){ return d.name; })
+                .attr('font-size', function(d){ return d.id===focus ? 11 : 9; })
+                .attr('font-weight', function(d){ return d.id===focus ? 500 : 400; })
+                .attr('fill', CFG.ink).attr('text-anchor','middle').attr('pointer-events','none')
+                .attr('paint-order','stroke').attr('stroke','#fff').attr('stroke-width',3).attr('stroke-linejoin','round');
+            sim.on('tick', function(){
+                link.attr('x1', function(d){ return d.source.x; }).attr('y1', function(d){ return d.source.y; })
+                    .attr('x2', function(d){ return d.target.x; }).attr('y2', function(d){ return d.target.y; });
+                node.attr('cx', function(d){ return d.x; }).attr('cy', function(d){ return d.y; });
+                label.attr('x', function(d){ return d.x; }).attr('y', function(d){ return d.y-d.r-4; });
+            });
+        }
+        sel.addEventListener('change', function(){ draw(sel.value); });
+        draw(focus0);
+    }
+    makePanel('selA', 'chartA', pickDefault(['PyTorch'], 'infrastructure'));
+    makePanel('selB', 'chartB', pickDefault(['Open WebUI', 'Cline', 'Gemini CLI', 'n8n', 'Aider'], 'product_ux'));
     """
     _inner = _head + "window.__CFG__=" + _cfg_js + ";" + _js + "</script></body></html>"
     _src = _html.escape(_inner, quote=True)
     mo.Html(
         '<div style="font-family:' + F["headline"] + ';font-size:15px;color:' + C["ink"]
-        + ';margin:0 0 2px;">The open source AI stack, linked where projects share contributors</div>'
+        + ';margin:0 0 2px;">Two projects, side by side, and the collaborators they share</div>'
         '<div style="font-family:' + F["mono"] + ';font-size:11px;color:' + C["ink_3"]
-        + ';margin:0 0 6px;">Pick a project to see who it shares contributors with. Drag, scroll to zoom, hover to isolate.</div>'
-        '<iframe srcdoc="' + _src + '" style="width:100%;height:690px;border:none;" scrolling="no"></iframe>'
+        + ';margin:0 0 6px;">Each network shows a project and every project it shares contributors with. '
+        'Pick any two to compare. Drag or scroll to explore.</div>'
+        '<iframe srcdoc="' + _src + '" style="width:100%;height:620px;border:none;" scrolling="no"></iframe>'
     )
     return
 
