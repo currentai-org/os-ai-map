@@ -2692,6 +2692,68 @@
           "maturity": 4.0,
           "mature": false,
           "version_note": "Open weights, MIT per the HF model card (an older MiMo GitHub repo lists Apache-2.0; the model card is authoritative for this release). ~1.02T/42B MoE, 1M context. ~66k HF downloads/month plus third-party quantizations."
+        },
+        {
+          "product": "ALIA-40b",
+          "org": "Barcelona Supercomputing Center",
+          "type": "model",
+          "description": "Spain's national open LLM: a 40.4B-parameter transformer decoder-only model pretrained from scratch by the Barcelona Supercomputing Center (BSC-LT) on the MareNostrum 5 supercomputer, as part of the ALIA project under Spain's National Language Technology Plan. Trained on 9.37 trillion tokens across 35 European languages plus 92 programming languages, with a focus on Spanish and the co-official languages (Catalan, Valencian, Basque, Galician). Released under Apache 2.0 with downloadable weights and fully published training code, though the pretraining corpus is documented rather than released. Distributed through the broader ALIA Kit (models, corpora, integration tools, docs). Capability is mid-tier and below the 2026 frontier; the value proposition is permissive licensing, multilingual breadth, and digital sovereignty for the ~600M Spanish speakers and Iberian-language communities.",
+          "openness": {
+            "score": 4,
+            "class": "open_weights",
+            "components": "weights:open(Apache-2.0, safetensors on HF BSC-LT/ALIA-40b);data:documented-not-released(60+ named sources described in the model card, but the pretraining corpus \"will not be released or distributed to third parties\");code:open(all training scripts + configuration files at github.com/langtech-bsc/alia);checkpoints:not-released;license:Apache-2.0(OSI)",
+            "confidence": "high",
+            "note": "Strong open-weights release that stops one notch short of full openness: permissive Apache-2.0 weights plus the complete training code/recipe published on GitHub, but the pretraining corpus is only documented (60+ named sources) rather than released or reconstructable. That missing open-data component is the bright line that keeps it at open_weights (4) rather than the OLMo/Pythia/Apertus open_source (5) tier, where Apertus reaches 5 by shipping data-reconstruction scripts. No intermediate checkpoints.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/BSC-LT/ALIA-40b",
+                "shows": "Apache-2.0 license; downloadable safetensors weights; 40.4B params; 9.37T training tokens; corpus documented across 60+ sources but \"will not be released or distributed\"; links training code at github.com/langtech-bsc/alia",
+                "accessed": "2026-06-26"
+              },
+              {
+                "url": "https://github.com/langtech-bsc/alia",
+                "shows": "open training scripts and configuration files for the ALIA models",
+                "accessed": "2026-06-26"
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "1K-10K",
+            "signal_type": "usage_volume",
+            "confidence": "medium",
+            "note": "Public-funded sovereign model (Spain's national LLM, BSC / MareNostrum 5) with strong institutional and policy interest but modest raw volume. HF BSC-LT/ALIA-40b shows ~59 downloads/month and 88 likes (June 2026); the niche multilingual focus (Spanish + co-official + 35 European languages) keeps adoption below Apertus's tier. Cumulative across the wider ALIA Kit (instruct, GGUF, Salamandra) would be higher, but the base model alone sits in the low band.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/BSC-LT/ALIA-40b",
+                "shows": "~59 downloads/month, 88 likes (June 2026)",
+                "accessed": "2026-06-26"
+              }
+            ]
+          },
+          "capability": {
+            "score": 2,
+            "basis": "scale + multilingual pretraining (full benchmarks pending technical report)",
+            "value": "40.4B params, decoder-only, 9.37T pretraining tokens, 35 European languages + 92 programming languages; mid-tier and below the 2026 frontier. Detailed benchmarks are deferred to a forthcoming technical report; the model card cites the Salamandra technical report (arXiv:2502.08489) for the shared methodology.",
+            "confidence": "low",
+            "note": "A serious 40B multilingual base model, but smaller than Apertus-70B (capability 3) and below the 2026 frontier on reasoning/knowledge. Positioned for Iberian and European-language coverage and digital sovereignty rather than SOTA capability. Score kept conservative pending published benchmarks.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/BSC-LT/ALIA-40b",
+                "shows": "40.4B params, 48 layers, 9.37T tokens, 35 European languages + 92 programming languages",
+                "accessed": "2026-06-26"
+              },
+              {
+                "url": "https://arxiv.org/abs/2502.08489",
+                "shows": "Salamandra technical report (BSC-LT) describing the shared training methodology and benchmarks",
+                "accessed": "2026-06-26"
+              }
+            ]
+          },
+          "maturity": 1.7,
+          "mature": false,
+          "version_note": "ALIA-40b base model from BSC-LT (Barcelona Supercomputing Center, Language Technologies Lab), Apache 2.0. 40.4B params, 48 layers, 32,768 context, 256k vocab; 9.37T pretraining tokens (+6.3B for context extension). Trained on MareNostrum 5 under Spain's National Language Technology Plan with EU NextGenerationEU funds. Docs portal: langtech-bsc.gitbook.io/alia-kit. Instruct variant (ALIA-40b-instruct) and the earlier Salamandra family exist but are not separately scored. Verified live on Hugging Face, June 2026 (59 downloads/month, 88 likes)."
         }
       ]
     },
@@ -24050,7 +24112,7 @@
     "deployment",
     "edge_hardware"
   ],
-  "n_total": 426,
+  "n_total": 427,
   "generated": "2026-06-26",
   "long_tail": {
     "counts": {
@@ -24058,11 +24120,11 @@
       "models": 6428,
       "packages": 2823,
       "total": 24626,
-      "scored": 426,
+      "scored": 427,
       "overlap": 226,
-      "scored_outside": 200,
+      "scored_outside": 201,
       "uncategorized": 24400,
-      "universe": 24826
+      "universe": 24827
     },
     "top": [
       {
