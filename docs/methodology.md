@@ -57,7 +57,7 @@ We grade each product on three axes, each answering a different question:
 
 The grading is deliberately multi-source. Each axis pulls from a different family (adoption from registries, OpenRouter, and trackers; capability from benchmark leaderboards and papers; openness from primary vendor and repository sources), so no single source determines a product's standing.
 
-Every value also records what the source showed and when we accessed it. Across the scored set this comes to {n_citations} primary citations spanning {n_domains} distinct source domains. We excluded any product we could not verify against a primary source rather than estimating it. The result is auditable and reproducible, not something to take on trust.
+Every value also records what the source showed and when we accessed it. Across the scored set this comes to {n_citations} primary citations spanning {n_domains} distinct source domains. We excluded any product we could not verify against a primary source rather than estimating it. The result is sourced and auditable: every value is citation-backed and checkable against its primary source. The scores themselves are editorial judgments rather than the output of a deterministic formula, so this is an open trail to follow, not an independently reproducible computation.
 
 #### Axis 1: Openness
 
@@ -91,7 +91,7 @@ Capability means different things for a model, a tool, and a dataset, so capabil
 
 ### Maturity stages
 
-We place every category on a maturity stage from 0 (Void) to 5 (Mature), computed deterministically from its products' scores, in two steps: first we score each product's maturity, then we read the category's stage off how many of its open products are mature.
+We place every category on a maturity stage from 0 (Void) to 5 (Mature), computed deterministically from its products' scores, in two steps: first we score each product's maturity, then we read the category's stage off how many of its open products are mature. The ladder measures **fully-open-pipeline maturity** specifically: only products in the fully-`open` bucket count toward a stage. Open-weights models never advance a stage, no matter how capable or widely adopted, so the stage is a verdict on the genuinely-open ecosystem rather than on open AI in general.
 
 **Step 1: the product maturity score.** Each product receives a single score on a 1–5 scale, a per-category weighted blend of its adoption and capability grades:
 
@@ -101,7 +101,7 @@ score = (w_adopt · adoption + w_cap · capability) / (w_adopt + w_cap)
 
 The weights vary by category, because the two axes do not matter equally everywhere: adoption is weighted more heavily for end-user surfaces such as UI & API (0.7 adoption to 0.3 capability), and capability more heavily for the model categories (0.3 to 0.7); the two weights sum to one. Where capability is not a meaningful axis (for datasets, for instance), the product is graded on adoption alone, and a product with no adoption signal at all receives no score and is left out of its category's stage. A product is **mature** only when its blended score reaches 4.5 of 5, a deliberately demanding bar: because the map already curates the most prominent products, a lower bar would call almost everything mature.
 
-**Step 2: the category stage.** Only **fully open** products advance a category's stage. Open-ish products (open weights, source-available, and the like) are used solely to detect the openness gap below; crediting them would blur the line between open source and open weights that the map exists to draw. The ladder therefore measures the health of the genuinely open ecosystem:
+**Step 2: the category stage.** Only **fully open** products advance a category's stage. Open-ish products (open weights, source-available, and the like) are used solely to detect the openness gap below; crediting them would blur the line between open source and open weights that the map exists to draw. The choice is consequential but bounded: counting open-weights models as open would move only three categories, all in the model layer — base/pretrained models (Stage 3→5), fine-tuned/chat models (1→3), and edge hardware (3→4) — and would leave every infrastructure and tooling verdict unchanged. The open-model verdict should therefore be read as a deliberately strict reading of a few model categories, not a sweeping claim about the whole stack. The ladder measures the health of the genuinely open ecosystem:
 
 - **Stage 5: Mature Open Ecosystem.** Four or more mature fully open products: redundant and resilient.
 - **Stage 4: Competitive Open Ecosystem.** At least one mature fully open product, but fewer than four.
@@ -129,7 +129,7 @@ Here are two illustrations:
 - The base/pretrained-models and fine-tuned/chat-models categories both carry an openness gap: capable, well-adopted options exist, but the mature ones are not fully open.
 - The inference-code category, by contrast, has mature, competitive, well-adopted open source options (vLLM, llama.cpp, SGLang) but few of them; this is a maturity gap, signaling an ecosystem that depends on a small number of projects continuing to do well.
 
-At present {n_openness_gaps} of the {n_categories} categories in the map carry an openness gap.
+At present {n_openness_gaps} of the {n_categories} categories in the map carry an openness gap. The gap vocabulary is broader than what the current data exercises: in the present scored set the maturity gap is near-ubiquitous, the openness gap appears in only a few model and infrastructure categories, the adoption gap fires rarely, and the void and capability gaps do not fire at all. The unused types are kept in the model because they describe situations the map expects to encounter as coverage grows, not because nothing qualifies for them today by accident.
 
 ### The openness verdict
 

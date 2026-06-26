@@ -12,7 +12,8 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 
 PRODUCT_KEY_ORDER = ["product", "org", "type", "description",
-                     "openness", "adoption", "capability", "maturity", "version_note"]
+                     "openness", "adoption", "capability", "maturity", "mature",
+                     "version_note"]
 
 # --- Gap analysis (category-level stage + gaps) -----------------------------
 # Mirrors the open / open-ish / closed verdict in docs/openness-class-map.json
@@ -175,6 +176,13 @@ def _row(prod: dict, org_name: str, score: dict, weights: dict | None) -> dict:
     # thresholds in _stage_and_gaps use the unrounded value; this field is the same metric.
     m = _maturity_score(row, weights or {"adopt": 0.5, "cap": 0.5})
     row["maturity"] = round(m, 2) if m is not None else None
+    # Canonical `mature` flag: the SAME rule the category stage engine uses
+    # (_stage_and_gaps) — a fully-open product whose blended maturity clears
+    # _MATURE_MIN. Emitted here so downstream consumers stop recomputing it with a
+    # looser threshold. Uses the unrounded score `m` to match the stage logic.
+    row["mature"] = (
+        m is not None and m >= _MATURE_MIN and openness["bucket"] == "open"
+    )
     # Bridge: the source field is now `comments` (a string), but the payload key
     # the notebook consumes is still `version_note`. Same value, renamed at rest.
     if prod.get("comments"):
