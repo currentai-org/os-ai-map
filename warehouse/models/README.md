@@ -23,7 +23,7 @@ CSV-based reference data uploaded via scripts. Source CSVs live in `warehouse/ca
 | `currentai.catalog.model_repos` | `warehouse/catalog/huggingface/model_repos.csv` | ~6.3K | HF model → GitHub repo links |
 | `currentai.catalog.foundation_model_repos` | `warehouse/catalog/huggingface/foundation_model_repos.csv` | ~72 | Curated foundation model families → canonical repos |
 | `currentai.catalog.pypi_downloads` | `warehouse/catalog/pypi/pypi_downloads.csv` (gitignored) | ~1.6M | PyPI daily downloads by package × country, 39 AI packages |
-| `currentai.catalog.stack_map` | `warehouse/catalog/stack_map/repos.csv` | 199 | Taxonomy bridge: scored-product repos → stack-map category / layer / openness, generated from `sources/` by `warehouse/ingest/build_stack_map.py` |
+| `currentai.catalog.stack_map` | `warehouse/catalog/stack_map/repos.csv` | 205 | Taxonomy bridge: scored-product repos → stack-map category / layer / openness + gap-map scores (adoption, capability, maturity), generated from `sources/` by `warehouse/ingest/build_stack_map.py` |
 
 ## Entities (User Defined Models)
 
