@@ -83,10 +83,10 @@ def header(C, F, mo):
         f'<div style="padding:40px 0 28px; border-bottom:2px solid {C["accent"]}; margin-bottom:8px;">'
         f'<h1 style="font-family:{F["headline"]}; font-size:2.3rem; font-weight:600; '
         f'color:{C["ink"]}; margin:0 0 14px; line-height:1.05; letter-spacing:-0.025em;">'
-        f'The open source AI stack, in four charts</h1>'
+        f'The open source AI stack, in three charts</h1>'
         f'<p style="font-family:{F["body"]}; font-size:1.05rem; color:{C["ink_2"]}; '
         f'margin:0; line-height:1.55;">'
-        f'Four findings from the AI Stack Map, each in one sentence, one paragraph, and one chart.</p>'
+        f'Three findings from the AI Stack Map, each in one sentence, one paragraph, and one chart.</p>'
         f'</div>'
     )
     return
@@ -122,7 +122,7 @@ def s_people(C, F, mo):
         f'those with 50 or more commits, is comparable to the combined disclosed headcount of every major closed '
         f'lab. The network below links two projects whenever they share contributors. The dense center shows the '
         f'same developers working across projects and across layers, which is what makes the ecosystem hard to '
-        f'fork or capture.</p>'
+        f'fork or capture. Pick any project below to trace who it shares contributors with.</p>'
         f'</div>'
     )
     return
@@ -182,67 +182,87 @@ def c_people(C, F, LAYER_COLORS, LAYER_LABELS, df_contrib, mo):
         '<style>'
         "@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&display=swap');"
         '*{margin:0;box-sizing:border-box}'
-        'html,body{background:#fff;overflow:hidden;height:100%}'
-        '#legend{font-family:"DM Mono",monospace;font-size:11px;color:#0b252f;padding:8px 4px 4px;'
-        'text-transform:uppercase;letter-spacing:0.04em}'
-        '.leg{display:inline-flex;align-items:center;margin-right:18px}'
+        'html,body{background:#fff;overflow:hidden;height:100%;font-family:"DM Mono",monospace}'
+        '#bar{display:flex;align-items:center;gap:10px;padding:8px 4px 4px;font-size:11px;color:#0b252f}'
+        '#bar select{font-family:"DM Mono",monospace;font-size:12px;color:#0b252f;background:#fff;'
+        'border:1px solid #a5bbbe;border-radius:0;padding:5px 9px;outline:none;max-width:300px}'
+        '#legend{margin-left:auto;text-transform:uppercase;letter-spacing:0.04em}'
+        '.leg{display:inline-flex;align-items:center;margin-left:16px}'
         '.leg i{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:6px}'
         'text{font-family:"DM Mono",monospace}'
         '</style></head><body>'
-        '<div id="legend"></div><div id="chart"></div>'
+        '<div id="bar"><span>Focus project</span><select id="focus"></select>'
+        '<span id="legend"></span></div><div id="chart"></div>'
         '<script>'
     )
     _js = """
     const CFG = window.__CFG__;
+    const AN = CFG.nodes, AL = CFG.links;
+    const adj = {};
+    AN.forEach(function(n){ adj[n.id] = new Set([n.id]); });
+    AL.forEach(function(l){ adj[l.source].add(l.target); adj[l.target].add(l.source); });
     document.getElementById('legend').innerHTML = CFG.legend.map(function(d){
-        return '<span class="leg"><i style="background:' + d.color + '"></i>' + d.label + '</span>'; }).join('');
+        return '<span class="leg"><i style="background:'+d.color+'"></i>'+d.label+'</span>'; }).join('');
+    const byC = AN.slice().sort(function(a,b){ return b.contributors-a.contributors; });
+    const focusEl = document.getElementById('focus');
+    focusEl.innerHTML = '<option value="__all__">All projects</option>' + byC.map(function(n){
+        return '<option value="'+n.id+'">'+n.name+'</option>'; }).join('');
+    const topHub = AN.slice().sort(function(a,b){ return adj[b.id].size - adj[a.id].size; })[0];
+    focusEl.value = topHub ? topHub.id : '__all__';
+
     const el = document.getElementById('chart');
     const W = el.clientWidth || 900, H = CFG.height;
-    const svg = d3.select('#chart').append('svg').attr('width', '100%').attr('height', H)
-        .attr('viewBox', '0 0 ' + W + ' ' + H);
+    const svg = d3.select('#chart').append('svg').attr('width','100%').attr('height',H).attr('viewBox','0 0 '+W+' '+H);
     const root = svg.append('g');
-    svg.call(d3.zoom().scaleExtent([0.4, 4]).on('zoom', function(e){ root.attr('transform', e.transform); }));
-    const nodes = CFG.nodes.map(function(d){ return Object.assign({}, d); });
-    const links = CFG.links.map(function(d){ return Object.assign({}, d); });
-    const adj = {};
-    nodes.forEach(function(n){ adj[n.id] = {}; adj[n.id][n.id] = 1; });
-    links.forEach(function(l){ adj[l.source][l.target] = 1; adj[l.target][l.source] = 1; });
-    const sim = d3.forceSimulation(nodes)
-        .force('link', d3.forceLink(links).id(function(d){ return d.id; })
-            .distance(function(d){ return 60 / Math.sqrt(d.weight) + 18; })
-            .strength(function(d){ return Math.min(0.85, d.weight / 18); }))
-        .force('charge', d3.forceManyBody().strength(-170))
-        .force('center', d3.forceCenter(W / 2, H / 2))
-        .force('collide', d3.forceCollide().radius(function(d){ return d.r + 3; }));
-    const link = root.append('g').attr('stroke', CFG.edge).attr('stroke-opacity', 0.4)
-        .selectAll('line').data(links).join('line')
-        .attr('stroke-width', function(d){ return Math.sqrt(d.weight) * 0.5 + 0.3; });
-    const node = root.append('g').selectAll('circle').data(nodes).join('circle')
-        .attr('r', function(d){ return d.r; }).attr('fill', function(d){ return d.color; })
-        .attr('stroke', '#fff').attr('stroke-width', 1.2).style('cursor', 'pointer')
-        .call(d3.drag().on('start', ds).on('drag', dg).on('end', de));
-    node.append('title').text(function(d){ return d.name + ': ' + d.contributors.toLocaleString() + ' contributors'; });
-    const label = root.append('g').selectAll('text').data(nodes.filter(function(d){ return d.hub; })).join('text')
-        .text(function(d){ return d.name; }).attr('font-size', 10).attr('fill', CFG.ink)
-        .attr('text-anchor', 'middle').attr('pointer-events', 'none').attr('paint-order', 'stroke')
-        .attr('stroke', '#fff').attr('stroke-width', 3).attr('stroke-linejoin', 'round');
-    sim.on('tick', function(){
-        link.attr('x1', function(d){ return d.source.x; }).attr('y1', function(d){ return d.source.y; })
-            .attr('x2', function(d){ return d.target.x; }).attr('y2', function(d){ return d.target.y; });
-        node.attr('cx', function(d){ return d.x; }).attr('cy', function(d){ return d.y; });
-        label.attr('x', function(d){ return d.x; }).attr('y', function(d){ return d.y - d.r - 5; });
-    });
-    node.on('mouseover', function(e, d){
-        const nb = adj[d.id];
-        node.attr('opacity', function(n){ return nb[n.id] ? 1 : 0.12; });
-        link.attr('stroke-opacity', function(l){ return (l.source.id === d.id || l.target.id === d.id) ? 0.85 : 0.03; });
-        label.attr('opacity', function(n){ return nb[n.id] ? 1 : 0.12; });
-    }).on('mouseout', function(){
-        node.attr('opacity', 1); link.attr('stroke-opacity', 0.4); label.attr('opacity', 1);
-    });
-    function ds(e){ if(!e.active) sim.alphaTarget(0.3).restart(); e.subject.fx = e.subject.x; e.subject.fy = e.subject.y; }
-    function dg(e){ e.subject.fx = e.x; e.subject.fy = e.y; }
-    function de(e){ if(!e.active) sim.alphaTarget(0); e.subject.fx = null; e.subject.fy = null; }
+    svg.call(d3.zoom().scaleExtent([0.3,4]).on('zoom', function(e){ root.attr('transform', e.transform); }));
+    let sim = null;
+    function eid(x){ return (x && x.id) ? x.id : x; }
+    function draw(focus){
+        const keep = (focus==='__all__') ? null : adj[focus];
+        const nodes = AN.filter(function(n){ return !keep || keep.has(n.id); }).map(function(d){ return Object.assign({}, d); });
+        const links = AL.filter(function(l){ return !keep || (keep.has(eid(l.source)) && keep.has(eid(l.target))); })
+            .map(function(l){ return {source:eid(l.source), target:eid(l.target), weight:l.weight}; });
+        if(sim) sim.stop();
+        root.selectAll('*').remove();
+        sim = d3.forceSimulation(nodes)
+            .force('link', d3.forceLink(links).id(function(d){ return d.id; })
+                .distance(function(d){ return 60/Math.sqrt(d.weight)+18; })
+                .strength(function(d){ return Math.min(0.85, d.weight/18); }))
+            .force('charge', d3.forceManyBody().strength(focus==='__all__' ? -170 : -260))
+            .force('center', d3.forceCenter(W/2, H/2))
+            .force('collide', d3.forceCollide().radius(function(d){ return d.r+4; }));
+        const link = root.append('g').attr('stroke', CFG.edge).attr('stroke-opacity', 0.45)
+            .selectAll('line').data(links).join('line')
+            .attr('stroke-width', function(d){ return Math.sqrt(d.weight)*0.5+0.4; });
+        const node = root.append('g').selectAll('circle').data(nodes).join('circle')
+            .attr('r', function(d){ return d.r; }).attr('fill', function(d){ return d.color; })
+            .attr('stroke', function(d){ return d.id===focus ? CFG.ink : '#fff'; })
+            .attr('stroke-width', function(d){ return d.id===focus ? 2.5 : 1.2; })
+            .style('cursor','pointer')
+            .call(d3.drag().on('start', ds).on('drag', dg).on('end', de));
+        node.append('title').text(function(d){ return d.name+': '+d.contributors.toLocaleString()+' contributors'; });
+        const labelData = (focus==='__all__') ? nodes.filter(function(d){ return d.hub; }) : nodes;
+        const label = root.append('g').selectAll('text').data(labelData).join('text')
+            .text(function(d){ return d.name; }).attr('font-size', 10).attr('fill', CFG.ink)
+            .attr('text-anchor','middle').attr('pointer-events','none').attr('paint-order','stroke')
+            .attr('stroke','#fff').attr('stroke-width',3).attr('stroke-linejoin','round');
+        sim.on('tick', function(){
+            link.attr('x1', function(d){ return d.source.x; }).attr('y1', function(d){ return d.source.y; })
+                .attr('x2', function(d){ return d.target.x; }).attr('y2', function(d){ return d.target.y; });
+            node.attr('cx', function(d){ return d.x; }).attr('cy', function(d){ return d.y; });
+            label.attr('x', function(d){ return d.x; }).attr('y', function(d){ return d.y-d.r-5; });
+        });
+        node.on('mouseover', function(e,d){
+            node.attr('opacity', function(n){ return adj[d.id].has(n.id) ? 1 : 0.12; });
+            link.attr('stroke-opacity', function(l){ return (eid(l.source)===d.id || eid(l.target)===d.id) ? 0.85 : 0.05; });
+            label.attr('opacity', function(n){ return adj[d.id].has(n.id) ? 1 : 0.12; });
+        }).on('mouseout', function(){ node.attr('opacity',1); link.attr('stroke-opacity',0.45); label.attr('opacity',1); });
+    }
+    function ds(e){ if(!e.active) sim.alphaTarget(0.3).restart(); e.subject.fx=e.subject.x; e.subject.fy=e.subject.y; }
+    function dg(e){ e.subject.fx=e.x; e.subject.fy=e.y; }
+    function de(e){ if(!e.active) sim.alphaTarget(0); e.subject.fx=null; e.subject.fy=null; }
+    focusEl.addEventListener('change', function(){ draw(focusEl.value); });
+    draw(focusEl.value);
     """
     _inner = _head + "window.__CFG__=" + _cfg_js + ";" + _js + "</script></body></html>"
     _src = _html.escape(_inner, quote=True)
@@ -250,61 +270,9 @@ def c_people(C, F, LAYER_COLORS, LAYER_LABELS, df_contrib, mo):
         '<div style="font-family:' + F["headline"] + ';font-size:15px;color:' + C["ink"]
         + ';margin:0 0 2px;">The open source AI stack, linked where projects share contributors</div>'
         '<div style="font-family:' + F["mono"] + ';font-size:11px;color:' + C["ink_3"]
-        + ';margin:0 0 6px;">Drag a node, scroll to zoom, hover to isolate its collaborators.</div>'
-        '<iframe srcdoc="' + _src + '" style="width:100%;height:656px;border:none;" scrolling="no"></iframe>'
+        + ';margin:0 0 6px;">Pick a project to see who it shares contributors with. Drag, scroll to zoom, hover to isolate.</div>'
+        '<iframe srcdoc="' + _src + '" style="width:100%;height:690px;border:none;" scrolling="no"></iframe>'
     )
-    return
-
-
-@app.cell(hide_code=True)
-def s_growth(C, F, mo):
-    mo.Html(
-        f'<div style="margin:48px 0 18px;">'
-        f'<div style="font-family:{F["mono"]}; font-size:10px; color:{C["accent"]}; '
-        f'letter-spacing:0.1em; text-transform:uppercase; margin-bottom:6px;">Growth</div>'
-        f'<h2 style="font-family:{F["headline"]}; font-size:1.7rem; font-weight:600; '
-        f'color:{C["ink"]}; margin:0 0 10px; letter-spacing:-0.015em;">'
-        f'The open source AI workforce is growing fast, and moving up the stack.</h2>'
-        f'<p style="font-family:{F["body"]}; font-size:0.98rem; color:{C["ink_2"]}; '
-        f'margin:0; line-height:1.6;">'
-        f'Active contributors to the open stack are up about 80% over the past year, shown here as a 28-day '
-        f'rolling average. The growth is uneven by layer. The mature infrastructure core is roughly flat, the '
-        f'model layer grew steadily, and the product and agent layer grew fastest. Contribution is concentrating '
-        f'higher up the stack, toward applications and agents. The trend excludes one viral 2025 project, '
-        f'OpenClaw, so the figure is not a single-project artifact.</p>'
-        f'</div>'
-    )
-    return
-
-
-@app.cell(hide_code=True)
-def c_growth(C, F, LAYER_COLORS, LAYER_LABELS, LAYOUT, df_growth, go, mo, pd):
-    _df = df_growth.copy()
-    _df["day"] = pd.to_datetime(_df["day"])
-    _piv = _df.pivot_table(index="day", columns="layer", values="active", aggfunc="sum").sort_index()
-    _grid = pd.date_range(_piv.index.min(), _piv.index.max(), freq="D")
-    _piv = _piv.reindex(_grid).interpolate().fillna(0)
-    _roll = _piv.rolling(28, min_periods=1).mean()
-    _fig = go.Figure()
-    for _layer in ["infrastructure", "model_components", "product_ux"]:
-        if _layer in _roll.columns:
-            _fig.add_trace(go.Scatter(
-                x=_roll.index, y=_roll[_layer], mode="lines", name=LAYER_LABELS[_layer],
-                line=dict(color=LAYER_COLORS[_layer], width=1.2), stackgroup="one",
-                hovertemplate="<b>" + LAYER_LABELS[_layer] + "</b><br>%{x|%d %b %Y}: %{y:,.0f}<extra></extra>",
-            ))
-    _fig.update_layout(**LAYOUT, height=460)
-    _fig.update_layout(
-        title=dict(text="Active contributors to the open stack, by layer (28-day rolling average)",
-                   font=dict(family=F["headline"], size=15, color=C["ink"]), x=0, xref="paper"),
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="left", x=0,
-                    font=dict(size=11), bgcolor="rgba(0,0,0,0)"),
-    )
-    _fig.update_xaxes(title="", showgrid=False, showline=True, linecolor=C["ink"],
-                      tickfont=dict(size=11, color=C["ink_3"]))
-    _fig.update_yaxes(title="Active contributors", showgrid=True, gridcolor=C["rule"], tickformat=",d",
-                      showline=True, linecolor=C["ink"], tickfont=dict(size=11, color=C["ink_3"]))
-    mo.ui.plotly(_fig, config={"displayModeBar": False})
     return
 
 
@@ -338,8 +306,8 @@ def c_categories(C, F, LAYER_COLORS, LAYOUT, df_founding, go, mo, pd):
     _grid = pd.date_range(_counts.index.min(), _counts.index.max(), freq="MS")
     _counts = _counts.reindex(_grid, fill_value=0).cumsum()
     _cat_layer = _df.drop_duplicates("category").set_index("category")["layer"].to_dict()
-    # Prune to the 10 largest categories so end labels don't collide.
-    _order = _counts.iloc[-1].sort_values(ascending=False).head(10).index.tolist()
+    # Prune to the 7 largest categories so end labels don't collide.
+    _order = _counts.iloc[-1].sort_values(ascending=False).head(7).index.tolist()
     _fig = go.Figure()
     for _cat in _order:
         _color = LAYER_COLORS.get(_cat_layer.get(_cat), C["ink_3"])
@@ -355,14 +323,15 @@ def c_categories(C, F, LAYER_COLORS, LAYOUT, df_founding, go, mo, pd):
         )
     _fig.update_layout(**LAYOUT, height=520)
     _fig.update_layout(
-        title=dict(text="Cumulative open source projects founded, by category (10 largest)",
+        title=dict(text="Cumulative open source projects founded, by category (7 largest)",
                    font=dict(family=F["headline"], size=15, color=C["ink"]), x=0, xref="paper"),
         margin=dict(t=64, l=60, r=250, b=50),
     )
     _fig.update_xaxes(title="", showgrid=False, showline=True, linecolor=C["ink"],
                       tickfont=dict(size=11, color=C["ink_3"]))
     _fig.update_yaxes(title="Cumulative projects", showgrid=True, gridcolor=C["rule"],
-                      showline=True, linecolor=C["ink"], tickfont=dict(size=11, color=C["ink_3"]))
+                      rangemode="tozero", showline=True, linecolor=C["ink"], zeroline=False,
+                      tickfont=dict(size=11, color=C["ink_3"]))
     mo.ui.plotly(_fig, config={"displayModeBar": False})
     return
 
@@ -378,11 +347,12 @@ def s_resilience(C, F, mo):
         f'Most open projects spread the work; a few widely-used tools rest on one person.</h2>'
         f'<p style="font-family:{F["body"]}; font-size:0.98rem; color:{C["ink_2"]}; '
         f'margin:0; line-height:1.6;">'
-        f'The big serving and framework projects are well staffed. Across vLLM, SGLang, Transformers, and '
-        f'PyTorch, the single most active contributor accounts for only a few percent of commits. The fragility '
-        f'sits in the tooling and evaluation layer. At promptfoo one person writes more than a quarter of the '
-        f'commits, and AutoGPT and Diffusers are similarly top-heavy. These are widely used, and they rest on '
-        f'very few shoulders.</p>'
+        f'Each dot is one of the 50 most-active open source AI projects, placed by how mature it is (vertical) '
+        f'against how much of its code comes from a single top contributor (horizontal). The healthy pattern '
+        f'fills the upper left: large projects like vLLM, SGLang, and Transformers where the busiest contributor '
+        f'writes under 3% of commits. The concern is the upper right, where widely-used tools lean on very few '
+        f'shoulders. TensorFlow is the standout, a mature project with nearly a third of its recent commits from '
+        f'one author, alongside a cluster of evaluation and agent tools such as promptfoo, Unsloth, and Inspect AI.</p>'
         f'</div>'
     )
     return
@@ -390,28 +360,65 @@ def s_resilience(C, F, mo):
 
 @app.cell(hide_code=True)
 def c_resilience(C, F, LAYOUT, df_contrib, go, mo):
-    _g = df_contrib.groupby("repo")
-    _bus = _g.agg(total=("commits_12mo", "sum"), top1=("commits_12mo", "max"),
-                  contributors=("developer_id", "nunique"), product=("product_name", "first")).reset_index()
-    _bus["top1_share"] = 100.0 * _bus["top1"] / _bus["total"]
-    _bus = _bus[_bus["contributors"] >= 150].sort_values("top1_share", ascending=True)
-    _colors = [C["healthy"] if s > 15 else C["slate_lt"] for s in _bus["top1_share"]]
-    _fig = go.Figure(go.Bar(
-        x=_bus["top1_share"], y=_bus["product"], orientation="h", marker_color=_colors,
-        customdata=list(zip(_bus["contributors"], _bus["top1_share"])),
-        hovertemplate="<b>%{y}</b><br>Top contributor: %{customdata[1]:.1f}% of commits<br>Contributors: %{customdata[0]:,}<extra></extra>",
+    _src = df_contrib[df_contrib["repo"] != "openclaw/openclaw"]
+    _d = (_src.groupby("repo").agg(
+        product=("product_name", "first"), maturity=("maturity", "first"),
+        contributors=("developer_id", "nunique"), total=("commits_12mo", "sum"),
+        top1=("commits_12mo", "max")).reset_index())
+    _d = _d[_d["maturity"].notna() & (_d["total"] > 0)]
+    _d["top1_share"] = 100.0 * _d["top1"] / _d["total"]
+    # Sample the 50 projects the ecosystem leans on most (by contributor count).
+    _d = _d.nlargest(50, "contributors")
+    _XT, _YT = 15.0, 4.0  # concentration / maturity thresholds
+    _danger = (_d["maturity"] >= _YT) & (_d["top1_share"] >= _XT)
+    _xmax = float(_d["top1_share"].max()) * 1.12
+
+    _fig = go.Figure()
+    # Shade the at-risk quadrant: widely used and concentrated.
+    _fig.add_shape(type="rect", x0=_XT, x1=_xmax, y0=_YT, y1=5.35,
+                   fillcolor=C["healthy"], opacity=0.06, line_width=0, layer="below")
+    _fig.add_hline(y=_YT, line=dict(color=C["slate_faint"], width=1, dash="dot"))
+    _fig.add_vline(x=_XT, line=dict(color=C["slate_faint"], width=1, dash="dot"))
+    _fig.add_trace(go.Scatter(
+        x=_d["top1_share"], y=_d["maturity"], mode="markers",
+        marker=dict(size=9 + (_d["contributors"] ** 0.5) * 0.32, opacity=0.85,
+                    color=[C["healthy"] if _b else C["slate_lt"] for _b in _danger],
+                    line=dict(width=1, color="white")),
+        customdata=list(zip(_d["product"], _d["contributors"])),
+        hovertemplate="<b>%{customdata[0]}</b><br>Top contributor: %{x:.1f}% of commits<br>"
+                      "Maturity: %{y}<br>Contributors: %{customdata[1]:,}<extra></extra>",
+        showlegend=False,
     ))
+    # Label the standout at-risk projects, with hand-tuned offsets so the
+    # tight y=4 cluster (Unsloth, promptfoo, LightRAG) does not collide.
+    _label = {
+        "TensorFlow": ("left", "bottom", 6, 2),
+        "Inspect AI": ("left", "bottom", 6, 2),
+        "LibreChat": ("left", "top", 6, -3),
+        "Unsloth": ("right", "middle", -6, 0),
+        "promptfoo": ("center", "bottom", 0, 9),
+        "LightRAG": ("left", "bottom", 6, 2),
+    }
+    for _, _r in _d[_danger].iterrows():
+        _o = _label.get(_r["product"])
+        if _o:
+            _fig.add_annotation(x=_r["top1_share"], y=_r["maturity"], text=_r["product"],
+                                xanchor=_o[0], yanchor=_o[1], xshift=_o[2], yshift=_o[3],
+                                showarrow=False, font=dict(family=F["mono"], size=9, color=C["ink"]))
     _fig.update_layout(**LAYOUT, height=560)
     _fig.update_layout(
-        title=dict(text="Share of commits by the single top contributor (projects with 150+ contributors)",
+        title=dict(text="Maturity vs. reliance on a single contributor (50 most-active open projects)",
                    font=dict(family=F["headline"], size=15, color=C["ink"]), x=0, xref="paper"),
     )
-    _fig.add_annotation(x=0.97, y=0.08, xref="paper", yref="paper", showarrow=False, align="right",
-                        text="Salmon = one person writes >15% of commits",
+    _fig.add_annotation(x=0.99, y=0.04, xref="paper", yref="paper", showarrow=False, align="right",
+                        text="Salmon = widely used, and one author writes 15%+ of commits",
                         font=dict(family=F["mono"], size=11, color=C["healthy"]))
     _fig.update_xaxes(title="Top contributor's share of commits (%)", showgrid=True, gridcolor=C["rule"],
-                      showline=True, linecolor=C["ink"], tickfont=dict(size=11, color=C["ink_3"]))
-    _fig.update_yaxes(title="", showgrid=False, tickfont=dict(size=10, color=C["ink"]))
+                      showline=True, linecolor=C["ink"], rangemode="tozero", range=[0, _xmax],
+                      tickfont=dict(size=11, color=C["ink_3"]))
+    _fig.update_yaxes(title="Maturity score (adoption x capability)", showgrid=True, gridcolor=C["rule"],
+                      showline=True, linecolor=C["ink"], range=[float(_d["maturity"].min()) - 0.4, 5.4],
+                      tickfont=dict(size=11, color=C["ink_3"]))
     mo.ui.plotly(_fig, config={"displayModeBar": False})
     return
 
@@ -428,11 +435,11 @@ def methodology(C, F, mo):
         f'currentai.scores.stack_contributors</span> joined to the taxonomy bridge '
         f'<span style="font-family:{F["mono"]};font-size:0.9em;">currentai.catalog.stack_map</span>. '
         f'The network links two projects when they share 4 or more contributors; node size is contributor '
-        f'count and color is stack layer. Growth is a 28-day rolling average of daily active contributors from '
-        f'<span style="font-family:{F["mono"]};font-size:0.9em;">currentai.metrics.daily</span>, excluding one '
-        f'viral 2025 outlier (OpenClaw). Founding date is repo '
-        f'<span style="font-family:{F["mono"]};font-size:0.9em;">created_at</span>. Resilience uses each '
-        f'project\'s share of commits written by its single most active contributor. Underlying data: OSO and '
+        f'count and color is stack layer. Founding date is repo '
+        f'<span style="font-family:{F["mono"]};font-size:0.9em;">created_at</span>. Resilience plots the 50 open '
+        f'projects with the most contributors, placing maturity (the adoption x capability blend from the AI '
+        f'Stack Map gap engine, carried on the bridge) against the share of commits written by each project\'s '
+        f'single most active contributor; the viral 2025 outlier OpenClaw is excluded. Underlying data: OSO and '
         f'GitHub Archive.</p>'
         f'<p style="font-family:{F["body"]}; font-size:0.85rem; color:{C["ink_3"]}; margin-top:8px;">'
         f'<strong>Source:</strong> '
@@ -447,9 +454,11 @@ def methodology(C, F, mo):
 def load_contrib(mo, pyoso_db_conn):
     df_contrib = mo.sql(
         """
-        SELECT developer_id, repo, product_name, layer, commits_12mo
-        FROM currentai.scores.stack_contributors
-        WHERE openness_bucket IN ('open', 'open-ish')
+        SELECT sc.developer_id, sc.repo, sc.product_name, sc.layer, sc.commits_12mo,
+               sm.maturity
+        FROM currentai.scores.stack_contributors sc
+        JOIN currentai.catalog.stack_map sm ON sc.repo = sm.repo
+        WHERE sc.openness_bucket IN ('open', 'open-ish')
         """,
         output=False, engine=pyoso_db_conn,
     )
@@ -473,24 +482,6 @@ def load_tiers(mo, pyoso_db_conn):
         output=False, engine=pyoso_db_conn,
     )
     return (df_tiers,)
-
-
-@app.cell(hide_code=True)
-def load_growth(mo, pyoso_db_conn):
-    df_growth = mo.sql(
-        """
-        SELECT s.layer, d.day, SUM(CAST(d.value AS INTEGER)) AS active
-        FROM currentai.metrics.daily d
-        JOIN currentai.catalog.stack_map s ON d.repo = s.repo
-        WHERE d.metric = 'contributors'
-          AND s.openness_bucket IN ('open', 'open-ish')
-          AND d.repo <> 'openclaw/openclaw'
-        GROUP BY s.layer, d.day
-        ORDER BY d.day, s.layer
-        """,
-        output=False, engine=pyoso_db_conn,
-    )
-    return (df_growth,)
 
 
 @app.cell(hide_code=True)
