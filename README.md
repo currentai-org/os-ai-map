@@ -1,6 +1,6 @@
 # os-ai-map
 
-The public data + modeling home behind the [AI Stack Map](https://oso.xyz/currentai/ai-stack-map).
+The public data + modeling home behind the [AI Stack Map](https://map.currentai.org/).
 
 Curated YAML in `sources/` feeds a deterministic build pipeline that serializes to
 `build/notebook_data.json`, renders to `notebooks/ai-stack-map.py`, and publishes to
