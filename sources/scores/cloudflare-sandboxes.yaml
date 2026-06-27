@@ -1,14 +1,14 @@
 product: cloudflare-sandboxes
 openness:
-  score: 3
-  class: open_core
-  components: sdk:open (@cloudflare/sandbox Apache-2.0, cloudflare/sandbox-sdk on GitHub);runtime/platform:proprietary
-    Cloudflare edge (Workers/Durable Objects/Dynamic Worker Loader - no self-host);pricing:Workers paid
-    plan, Dynamic Workers $0.002/unique-worker/day post-beta
+  score: 1
+  class: closed
+  components: service:proprietary Cloudflare edge (Workers/Durable Objects/Dynamic Worker Loader - no
+    self-host of the isolate/container plane);open-part:Sandbox SDK only (@cloudflare/sandbox Apache-2.0,
+    cloudflare/sandbox-sdk on GitHub);pricing:Workers paid plan, Dynamic Workers $0.002/unique-worker/day
   confidence: high
-  note: 'open_core: the Sandbox SDK is Apache-2.0 and public, but execution requires Cloudflare''s proprietary
-    managed edge network (no self-host of the isolate/container plane). Calibrated as open_core alongside
-    Modal/Vercel.'
+  note: 'Closed managed service. The Sandbox SDK is Apache-2.0, but execution requires Cloudflare''s proprietary
+    managed edge network (no self-host of the isolate/container plane); an open client SDK over a closed
+    runtime is not open_core. Reclassified from open_core.'
   sources:
   - url: https://github.com/cloudflare/sandbox-sdk
     shows: Apache-2.0 SDK; runs on Cloudflare Containers/Workers/Durable Objects (managed edge)

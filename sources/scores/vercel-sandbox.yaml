@@ -1,12 +1,15 @@
 product: vercel-sandbox
 openness:
-  score: 3
-  class: open_core
-  components: sdk:open (@vercel/sandbox JS + Python SDK + CLI, GitHub vercel/sandbox);runtime/platform:proprietary
-    Vercel Fluid-compute managed cloud (no self-host);pricing:pay-for-active-CPU-time managed service
-  confidence: medium
-  note: 'open_core: SDK + CLI are public on GitHub, but sandboxes only execute on Vercel''s proprietary
-    Fluid-compute cloud (no self-host of the microVM plane). Calibrated alongside Modal as open_core.'
+  score: 1
+  class: closed
+  components: service:proprietary Vercel Fluid-compute managed cloud (no self-host of the Firecracker
+    microVM plane);open-part:client SDK/CLI only (@vercel/sandbox JS + Python, vercel/sandbox on GitHub);license:proprietary
+    service
+  confidence: high
+  note: 'Closed managed service. The SDK/CLI are open, but they are only a client for Vercel''s proprietary
+    microVM cloud, which cannot be self-hosted; an open client over a closed runtime is not open_core (the
+    core is proprietary). Reclassified from open_core; sits with the other proprietary sandbox clouds (Google
+    Cloud Run, Fly Sprites, Northflank).'
   sources:
   - url: https://vercel.com/docs/sandbox
     shows: Firecracker microVM isolation; SDK/CLI on GitHub vercel/sandbox; managed Vercel cloud, pay-for-active-CPU
