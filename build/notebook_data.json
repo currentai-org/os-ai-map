@@ -29,7 +29,8 @@
       "agent_tools_protocols": "Tools, protocols, and retrieval for agents.",
       "ml_frameworks": "Foundational libraries the rest of the stack is built on.",
       "deployment": "Sandboxes, runtimes, and serverless model hosting.",
-      "edge_hardware": "Boards and chips that run model inference at the edge."
+      "edge_hardware": "Boards and chips that run model inference at the edge.",
+      "safeguards": "Tools whose job is to detect, filter, or constrain unsafe model inputs and outputs, or to stress-test AI systems for harm: guardrail models (safety/content classifiers, jailbreak detectors), guardrail libraries, and AI red-teaming / safety-evaluation tooling."
     }
   },
   "categories": {
@@ -24146,6 +24147,1274 @@
           "version_note": "Verified live 2026-06-22 via primary sources. Open Apache-2.0 SDKs, public schematics/datasheets, and global retail availability, though the SG2002 silicon itself is proprietary."
         }
       ]
+    },
+    "safeguards": {
+      "label": "Safety & Guardrails",
+      "arc": "Infrastructure",
+      "layer": "infrastructure",
+      "stage": {
+        "num": 3,
+        "name": "Viable Alternatives"
+      },
+      "gaps": [
+        "maturity",
+        "adoption"
+      ],
+      "products": [
+        {
+          "product": "Aegis AI Content Safety",
+          "org": "NVIDIA",
+          "type": "model",
+          "description": "NVIDIA's content-safety classifier (now also called Llama Nemotron Safety Guard Defensive), a LlamaGuard/Llama2-7B-based model parameter-efficiently tuned on NVIDIA's Aegis safety dataset to classify prompts and responses across 13 critical risk categories.",
+          "openness": {
+            "score": 3,
+            "class": "open_weights",
+            "components": "weights:adapter-open(HF) but base LlamaGuard gated via Meta access;data:Aegis safety dataset documented;license:Llama-2-Community(NOT OSI)",
+            "confidence": "medium",
+            "note": "Open-weights at the adapter level but the LlamaGuard base is access-gated through Meta and the license is the non-OSI Llama 2 Community License, so it lands at open_weights (3) with a gating caveat.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/nvidia/Aegis-AI-Content-Safety-LlamaGuard-Defensive-1.0",
+                "shows": "Llama 2 Community License; adapter weights public, base gated via Meta; 13 risk categories; built on LlamaGuard/Llama2-7B",
+                "accessed": "2026-06-29"
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "10K-100K",
+            "signal_type": "usage_volume",
+            "confidence": "low",
+            "note": "NVIDIA safety classifier with a documented dataset and NeMo integration; modest standalone HF adoption, distributed largely via NVIDIA's stack.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/nvidia/Aegis-AI-Content-Safety-LlamaGuard-Defensive-1.0",
+                "shows": "NVIDIA Aegis content-safety classifier; 13 categories",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "risk coverage",
+            "value": "13 critical safety risk categories across prompts and responses, with an open safety dataset and a defensive/permissive variant pair.",
+            "confidence": "low",
+            "note": "Broad risk taxonomy with a documented training dataset; comparable coverage to Llama Guard, its base.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/nvidia/Aegis-AI-Content-Safety-LlamaGuard-Defensive-1.0",
+                "shows": "13 risk categories; defensive variant",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "maturity": 3.0,
+          "mature": false,
+          "version_note": "NVIDIA Aegis AI Content Safety (Defensive 1.0), aka Llama Nemotron Safety Guard Defensive V1. Llama 2 Community License (not OSI). Adapter weights public on HF, but the LlamaGuard base must be obtained via Meta's access request, so not fully open-weight. Aegis safety dataset documented. Verified June 2026."
+        },
+        {
+          "product": "OpenGuardrails",
+          "org": "OpenGuardrails",
+          "type": "software",
+          "description": "An open, context-aware AI guardrails platform that pairs a safety/manipulation-detection model (OpenGuardrails-Text-2510, a 3.3B quantized LLM) with a deployable guardrails platform: APIs, deployment scripts, and modular components for private or on-prem use. Covers content safety, manipulation attacks (prompt injection, jailbreak, code-interpreter abuse), and data leakage across 119 languages.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI) for both platform and model;source:public;self-host:yes(on-prem/private);model:OpenGuardrails-Text-2510 open weights Apache-2.0",
+            "confidence": "high",
+            "note": "Fully open source: both the guardrails platform and the safety model are Apache-2.0 and self-hostable, including on-prem deployment.",
+            "sources": [
+              {
+                "url": "https://github.com/openguardrails/openguardrails",
+                "shows": "Apache-2.0 platform; ~80 stars; on-prem deployment",
+                "accessed": "2026-06-29"
+              },
+              {
+                "url": "https://huggingface.co/openguardrails/OpenGuardrails-Text-2510",
+                "shows": "Apache-2.0; 3.3B quantized safety model; 119 languages",
+                "accessed": "2026-06-29"
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "1K-10K",
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "note": "New (late 2025) project, ~80 GitHub stars (June 2026); stars-only proxy, capped per methodology; early-stage adoption.",
+            "sources": [
+              {
+                "url": "https://github.com/openguardrails/openguardrails",
+                "shows": "~80 stars (June 2026)",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "platform + model + multilingual",
+            "value": "A safety/manipulation-detection model plus a deployable platform (APIs, deployment scripts, modular components) covering content safety, prompt injection/jailbreak, code-interpreter abuse, and data leakage across 119 languages.",
+            "confidence": "low",
+            "note": "Unusually complete for its age: ships both an open safety model and an on-prem platform, with broad multilingual coverage.",
+            "sources": [
+              {
+                "url": "https://arxiv.org/abs/2510.19169",
+                "shows": "context-aware guardrails platform + safety model; 119 languages; content safety, manipulation, data leakage",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "maturity": 3.0,
+          "mature": false,
+          "version_note": "OpenGuardrails: Apache-2.0 platform AND model (OpenGuardrails-Text-2510, 3.3B quantized); 119 languages; on-prem/private deployment. ~80 GitHub stars (June 2026); arXiv 2510.19169. The first project to open-source both a large-scale safety LLM and a production guardrails platform. Verified June 2026."
+        },
+        {
+          "product": "Zentropi CoPE",
+          "org": "Zentropi",
+          "type": "model",
+          "description": "Zentropi's Content Policy Evaluator (CoPE-A, 9B, built on Gemma-2-9B with LoRA): a steerable, bring-your-own-policy content-labeling model. Rather than a fixed taxonomy, it evaluates content against natural-language policies you define, scoring across harm areas like hate speech, sexual content, violence, harassment, self-harm, and toxicity.",
+          "openness": {
+            "score": 3,
+            "class": "open_weights",
+            "components": "weights:open(zentropi-ai/cope-a-9b on HF);base:Gemma-2-9B(LoRA);license:zentropi-openrail-m(OpenRAIL-M, use-restricted, NOT OSI)",
+            "confidence": "medium",
+            "note": "Open weights and self-hostable, but under an OpenRAIL-M license with use restrictions (e.g. surveillance), which is not OSI-approved, so open_weights (3).",
+            "sources": [
+              {
+                "url": "https://huggingface.co/zentropi-ai/cope-a-9b",
+                "shows": "zentropi-openrail-m (OpenRAIL-M, use-restricted); open weights; Gemma-2-9B LoRA; policy-adaptive labeling; 23 likes",
+                "accessed": "2026-06-29"
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "1K-10K",
+            "signal_type": "reported_traction",
+            "confidence": "low",
+            "note": "Niche but notable: a ROOST Model Community partner model (distributed via RMC); 23 HF likes (June 2026), downloads not tracked.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/zentropi-ai/cope-a-9b",
+                "shows": "23 likes (June 2026); RMC partner model",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "steerable bring-your-own-policy",
+            "value": "Policy-adaptive labeling: evaluates content against arbitrary natural-language policies rather than a fixed taxonomy, with strong F1 across hate, sexual, violence, harassment, self-harm, and toxicity.",
+            "confidence": "low",
+            "note": "Like gpt-oss-safeguard, a bring-your-own-policy model that generalizes to custom policies; strong reported F1 across harm areas.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/zentropi-ai/cope-a-9b",
+                "shows": "policy-adaptive labeling; hate/sexual/violence/harassment/self-harm/toxicity",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "maturity": 3.0,
+          "mature": false,
+          "version_note": "Zentropi CoPE-A (9B) on Gemma-2-9B (LoRA); license zentropi-openrail-m (OpenRAIL-M, use-restricted, NOT OSI). Open weights, self-hostable. RMC partner model distributed via the ROOST Model Community. 23 likes (June 2026); arXiv 2512.18027. Verified June 2026."
+        },
+        {
+          "product": "Qwen3Guard",
+          "org": "Alibaba Cloud",
+          "type": "model",
+          "description": "Alibaba's Qwen3-based safety moderation model family (0.6B / 4B / 8B) that classifies prompts and responses as safe, controversial, or unsafe across 119 languages, with a token-level streaming variant for real-time moderation. Deployable via vLLM, SGLang, and HF inference.",
+          "openness": {
+            "score": 4,
+            "class": "open_weights",
+            "components": "weights:open(Qwen3Guard 0.6B/4B/8B on HF);data:not-released;license:Apache-2.0(OSI)",
+            "confidence": "medium",
+            "note": "Open weights under Apache-2.0 (OSI); training data not released, so open_weights (4) rather than open_source. Unusually broad multilingual coverage (119 languages) plus a streaming variant.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/Qwen/Qwen3Guard-Gen-8B",
+                "shows": "Apache-2.0; open weights; 0.6B/4B/8B; 119 languages; safe/controversial/unsafe; ~74,669 downloads/month, 119 likes",
+                "accessed": "2026-06-29"
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 4,
+            "reach": "100K-1M",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "8B variant ~74.7K HF downloads/month (June 2026); cumulative across the three sizes is higher. Strong, fast-growing adoption.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/Qwen/Qwen3Guard-Gen-8B",
+                "shows": "~74,669 downloads/month, 119 likes (June 2026)",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "coverage + multilingual + streaming",
+            "value": "Prompt and response classification across 119 languages with a three-level verdict and a token-level streaming variant; size ladder from 0.6B to 8B.",
+            "confidence": "medium",
+            "note": "Among the broadest open guardrails on language coverage, with a streaming mode that few others offer.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/Qwen/Qwen3Guard-Gen-8B",
+                "shows": "119 languages; prompt+response; streaming variant",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "maturity": 4.0,
+          "mature": false,
+          "version_note": "Qwen3Guard (0.6B/4B/8B), Apache-2.0 open weights; 119 languages; generative + streaming variants. 8B ~74.7K HF downloads/month, 119 likes (June 2026). Verified live June 2026."
+        },
+        {
+          "product": "WildGuard",
+          "org": "Ai2",
+          "type": "model",
+          "description": "Ai2's open safety moderation model (7B, fine-tuned from Mistral-7B) that jointly detects harmful prompts, harmful responses, and model refusals across 13 risk subcategories. Trained on the open WildGuardMix corpus and benchmarked above GPT-4 on several moderation tasks.",
+          "openness": {
+            "score": 4,
+            "class": "open_weights",
+            "components": "weights:open(allenai/wildguard on HF);data:open(WildGuardMix corpus public);base:Mistral-7B;license:Apache-2.0(OSI)",
+            "confidence": "medium",
+            "note": "Open weights under Apache-2.0 with the WildGuardMix training corpus published; from Ai2, which sits at the open end of the spectrum. Scored open_weights (4); a strong open release, just short of the full open_source pipeline tier.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/allenai/wildguard",
+                "shows": "Apache-2.0; 7B Mistral fine-tune; prompt/response/refusal detection; open WildGuardMix corpus; ~265K downloads/month",
+                "accessed": "2026-06-29"
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 4,
+            "reach": "100K-1M",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "~265K HF downloads/month (June 2026); one of the most-downloaded open guardrail models.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/allenai/wildguard",
+                "shows": "~265,259 downloads/month, 52 likes (June 2026)",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "joint detection + benchmarks",
+            "value": "Joint prompt-harm, response-harm, and refusal detection across 13 subcategories; reported above GPT-4 and prior open baselines, with low over-blocking on benign traffic.",
+            "confidence": "medium",
+            "note": "Strong precision and low over-refusal; the joint refusal-detection head is a useful differentiator.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/allenai/wildguard",
+                "shows": "prompt/response/refusal detection; 13 subcategories; beats GPT-4 on benchmarks",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "maturity": 4.0,
+          "mature": false,
+          "version_note": "WildGuard (7B, Mistral-based), Apache-2.0 open weights; trained on the open WildGuardMix dataset. ~265K HF downloads/month, 52 likes (June 2026). Verified live June 2026."
+        },
+        {
+          "product": "Llama Prompt Guard 2",
+          "org": "Meta",
+          "type": "model",
+          "description": "Meta's compact prompt-injection and jailbreak classifier (86M and 22M), labeling prompts benign or malicious. Part of LlamaFirewall, it is tuned for very low latency (sub-100ms) and high precision, with multilingual coverage across eight languages.",
+          "openness": {
+            "score": 3,
+            "class": "open_weights",
+            "components": "weights:open(Llama-Prompt-Guard-2-86M/22M on HF);data:not-released;license:Llama-4-Community(NOT OSI)",
+            "confidence": "medium",
+            "note": "Open weights under Meta's Llama 4 Community License, which is use-restricted and not OSI-approved, so open_weights (3) like the rest of the Llama family.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/meta-llama/Llama-Prompt-Guard-2-86M",
+                "shows": "Llama 4 Community License; open weights; 86M/22M; prompt-injection/jailbreak classifier; ~90,441 downloads/month, 149 likes",
+                "accessed": "2026-06-29"
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 4,
+            "reach": "100K-1M",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "86M variant ~90.4K HF downloads/month (June 2026); widely used as a low-latency injection filter, including inside LlamaFirewall.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/meta-llama/Llama-Prompt-Guard-2-86M",
+                "shows": "~90,441 downloads/month, 149 likes (June 2026)",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "injection detection + latency",
+            "value": "Dedicated prompt-injection/jailbreak detection at 99.8% AUC and 97.5% recall at 1% FPR (English), 8 languages, sub-100ms latency; narrow but best-in-class at its job.",
+            "confidence": "medium",
+            "note": "Specialized injection/jailbreak classifier with strong accuracy and very low latency; complements full-taxonomy guards.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/meta-llama/Llama-Prompt-Guard-2-86M",
+                "shows": "99.8% AUC, 97.5% recall @1% FPR; 8 languages; sub-100ms",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "maturity": 4.0,
+          "mature": false,
+          "version_note": "Llama Prompt Guard 2 (86M / 22M); Llama 4 Community License (not OSI). 99.8% AUC, 97.5% recall at 1% FPR on English jailbreaks; 8 languages. 86M ~90.4K HF downloads/month, 149 likes (June 2026). Verified live June 2026."
+        },
+        {
+          "product": "LlamaFirewall",
+          "org": "Meta",
+          "type": "software",
+          "description": "Meta's open, system-level guardrail framework for AI agents (part of PurpleLlama). It composes layered defenses: Prompt Guard 2 (jailbreak/injection detection), Agent Alignment Checks (detecting goal hijacking), and CodeShield (filtering insecure generated code), into a real-time firewall around agent execution.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "framework:open(LlamaFirewall + CodeShield code, MIT-licensed in PurpleLlama);self-host:yes;note:bundled guard models (Prompt Guard 2, Llama Guard) carry the Llama Community License",
+            "confidence": "high",
+            "note": "The firewall framework and CodeShield are open-source (MIT) and self-hostable; it orchestrates Meta's Llama-licensed guard models. Scored on the framework, which is genuinely open source (5).",
+            "sources": [
+              {
+                "url": "https://github.com/meta-llama/PurpleLlama",
+                "shows": "PurpleLlama: MIT evals + Llama-licensed safeguard models; ~4.2k stars; LlamaFirewall, Prompt Guard, CodeShield components",
+                "accessed": "2026-06-29"
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "10K-100K",
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "note": "PurpleLlama ~4.2K GitHub stars (June 2026); stars-only proxy, capped per methodology.",
+            "sources": [
+              {
+                "url": "https://github.com/meta-llama/PurpleLlama",
+                "shows": "~4.2k stars (June 2026)",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "layered agent defenses",
+            "value": "Layered, agent-focused defenses: jailbreak/injection detection (Prompt Guard 2), agent-alignment/goal-hijack checks, and insecure-code filtering (CodeShield) in one real-time firewall.",
+            "confidence": "medium",
+            "note": "One of the few guardrail systems aimed specifically at agent security, with alignment checks and code filtering beyond I/O moderation.",
+            "sources": [
+              {
+                "url": "https://github.com/meta-llama/PurpleLlama",
+                "shows": "Prompt Guard 2 + Agent Alignment Checks + CodeShield",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "maturity": 3.5,
+          "mature": false,
+          "version_note": "LlamaFirewall, in meta-llama/PurpleLlama (~4.2K stars). PurpleLlama licensing is mixed: evals/benchmarks MIT, safeguard models under the Llama Community License. Components: Prompt Guard 2, Agent Alignment Checks, CodeShield. Verified live June 2026."
+        },
+        {
+          "product": "HarmBench",
+          "org": "Center for AI Safety",
+          "type": "software",
+          "description": "A standardized evaluation framework for automated red-teaming from the Center for AI Safety. It runs a common pipeline across many attack methods and target models so red-team attacks and defenses can be compared rigorously and co-developed.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public;self-host:yes;service:none",
+            "confidence": "high",
+            "note": "Fully open source: MIT-licensed standardized red-teaming evaluation framework, self-hostable.",
+            "sources": [
+              {
+                "url": "https://github.com/centerforaisafety/HarmBench",
+                "shows": "MIT; standardized automated red-teaming eval; 18 attacks x 33 target models; ~993 stars",
+                "accessed": "2026-06-29"
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "1K-10K",
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "note": "~1K GitHub stars (June 2026); stars-only proxy. Widely cited as the standardized red-teaming benchmark in research.",
+            "sources": [
+              {
+                "url": "https://github.com/centerforaisafety/HarmBench",
+                "shows": "~993 stars (June 2026)",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "standardized eval coverage",
+            "value": "A standardized pipeline spanning 18 automated attack methods and 33 target models, enabling rigorous attack/defense comparison and co-development.",
+            "confidence": "medium",
+            "note": "The reference standardized harness for comparing red-team attacks and defenses; research-grade breadth.",
+            "sources": [
+              {
+                "url": "https://github.com/centerforaisafety/HarmBench",
+                "shows": "18 attack methods, 33 target models, standardized pipeline",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "maturity": 3.0,
+          "mature": false,
+          "version_note": "HarmBench, MIT, Center for AI Safety; ~1K GitHub stars (June 2026). Standardized red-teaming eval across 18 attacks and 33 target models. Verified live June 2026."
+        },
+        {
+          "product": "Giskard",
+          "org": "Giskard",
+          "type": "software",
+          "description": "An open-source Python library for testing and red-teaming LLM and agentic systems. Giskard Scan automatically probes applications for vulnerabilities (prompt injection, harmful output, hallucination), and Giskard Checks runs scenario-based evaluations, including multi-turn agent validation.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public;self-host:yes;service:none(per the repo)",
+            "confidence": "high",
+            "note": "Fully open source: Apache-2.0 Python library, self-hostable; no commercial tier mentioned on the repo.",
+            "sources": [
+              {
+                "url": "https://github.com/Giskard-AI/giskard",
+                "shows": "Apache-2.0; ~5.5k stars; automated scan + scenario checks; adversarial/injection testing",
+                "accessed": "2026-06-29"
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "10K-100K",
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "note": "~5.5K GitHub stars (June 2026); stars-only proxy, capped per methodology.",
+            "sources": [
+              {
+                "url": "https://github.com/Giskard-AI/giskard",
+                "shows": "~5.5k stars (June 2026)",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "scan + checks coverage",
+            "value": "Automated vulnerability scanning (injection, harmful output, hallucination) plus scenario-based and multi-turn agent evaluations.",
+            "confidence": "medium",
+            "note": "Combines automated red-team scanning with structured evaluation; broad coverage for both safety and reliability.",
+            "sources": [
+              {
+                "url": "https://github.com/Giskard-AI/giskard",
+                "shows": "Scan + Checks; adversarial, injection, multi-turn agent validation",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "maturity": 3.5,
+          "mature": false,
+          "version_note": "Giskard, Apache-2.0, Python; ~5.5K GitHub stars (June 2026). Scan (automated red-teaming) + Checks (scenario evals). Verified live June 2026."
+        },
+        {
+          "product": "DeepTeam",
+          "org": "Confident AI",
+          "type": "software",
+          "description": "An open-source red-teaming framework for LLM systems from Confident AI. It simulates adversarial attacks (jailbreaking, prompt injection, multi-turn exploitation) with 50+ built-in vulnerability checks and 20+ attack methods aligned to OWASP Top 10 for LLMs, NIST AI RMF, and MITRE ATLAS, and ships production guardrails.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public;self-host:yes;service:none",
+            "confidence": "high",
+            "note": "Fully open source: Apache-2.0 red-teaming framework, self-hostable.",
+            "sources": [
+              {
+                "url": "https://github.com/confident-ai/deepteam",
+                "shows": "Apache-2.0; ~1.9k stars; 50+ vuln checks, 20+ attacks; OWASP/NIST/MITRE aligned",
+                "accessed": "2026-06-29"
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "1K-10K",
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "note": "~1.9K GitHub stars (June 2026); stars-only proxy, capped per methodology.",
+            "sources": [
+              {
+                "url": "https://github.com/confident-ai/deepteam",
+                "shows": "~1.9k stars (June 2026)",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "vuln + standards coverage",
+            "value": "50+ vulnerability checks and 20+ attack methods (jailbreak, injection, multi-turn) mapped to OWASP Top 10 for LLMs, NIST AI RMF, and MITRE ATLAS, plus production guardrails.",
+            "confidence": "medium",
+            "note": "Strong standards alignment (OWASP/NIST/MITRE) and broad attack coverage; also ships runtime guardrails.",
+            "sources": [
+              {
+                "url": "https://github.com/confident-ai/deepteam",
+                "shows": "50+ vulnerabilities, 20+ attacks, OWASP/NIST/MITRE",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "maturity": 3.0,
+          "mature": false,
+          "version_note": "DeepTeam, Apache-2.0, Confident AI; ~1.9K GitHub stars (June 2026). 50+ vulnerability checks, 20+ attack methods; OWASP/NIST/MITRE aligned. Verified live June 2026."
+        },
+        {
+          "product": "Perspective API",
+          "org": "Jigsaw",
+          "type": "software",
+          "description": "Jigsaw's (Google) free hosted API for scoring the toxicity of text (and related attributes like insult, threat, and identity attack), widely used by platforms and researchers for comment moderation since 2017. Closed, API-only; no weights or self-hosting.",
+          "openness": {
+            "score": 1,
+            "class": "closed",
+            "components": "service:proprietary hosted API by Jigsaw/Google(no weights, no self-host);access:free with quota;scores:toxicity + related attributes",
+            "confidence": "high",
+            "note": "Closed, API-only hosted classifier; no weights or source. Long-standing and influential, but proprietary.",
+            "sources": [
+              {
+                "url": "https://perspectiveapi.com/",
+                "shows": "Jigsaw (Google) free hosted toxicity-scoring API; no weights or self-host",
+                "accessed": "2026-06-29"
+              }
+            ],
+            "bucket": "closed"
+          },
+          "adoption": {
+            "level": 4,
+            "reach": "1M-10M",
+            "signal_type": "usage_volume",
+            "confidence": "medium",
+            "note": "One of the most widely-adopted moderation APIs since 2017, used across major platforms and research; free with quota.",
+            "sources": [
+              {
+                "url": "https://perspectiveapi.com/",
+                "shows": "widely-used free hosted moderation API since 2017",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "attribute coverage",
+            "value": "Scores toxicity and related attributes (insult, threat, profanity, identity attack) for text, multilingual; established but a fixed attribute set.",
+            "confidence": "low",
+            "note": "Mature toxicity scoring with broad real-world use; narrower than full safety taxonomies and policy-conditioned models.",
+            "sources": [
+              {
+                "url": "https://perspectiveapi.com/",
+                "shows": "toxicity + insult/threat/identity-attack scoring, multilingual",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "maturity": 3.5,
+          "mature": false,
+          "version_note": "Perspective API by Jigsaw (Google); free hosted toxicity-scoring API, proprietary (no weights, no self-host). Long-standing comment-moderation API. Verified June 2026."
+        },
+        {
+          "product": "Llama Guard",
+          "org": "Meta",
+          "type": "model",
+          "description": "Meta's input/output safety classifier built on Llama 3.1-8B, the de-facto open guardrail model. It labels both prompts and responses across 14 hazard categories (violent crime, child exploitation, hate, self-harm, code-interpreter abuse, and more) and supports eight languages. Widely used as the moderation layer in front of open chat and agent stacks.",
+          "openness": {
+            "score": 3,
+            "class": "open_weights",
+            "components": "weights:open(Llama-Guard-3-8B safetensors on HF);data:not-released;code:inference recipe public;license:Llama-3.1-Community(NOT OSI, >700M-MAU restriction)",
+            "confidence": "medium",
+            "note": "Open-weights safety classifier under Meta's Llama Community License, which carries use restrictions and is not OSI-approved, so it lands at the open_weights tier (3) like the rest of the Llama family rather than open_source.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/meta-llama/Llama-Guard-3-8B",
+                "shows": "Llama 3.1 Community License; open weights; 14 hazard categories; I/O classifier; ~237K downloads/month, 307 likes",
+                "accessed": "2026-06-29"
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 4,
+            "reach": "1M-10M",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "~237K Hugging Face downloads/month on the 8B variant (June 2026), the most-adopted open guardrail model; widely embedded as a moderation layer.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/meta-llama/Llama-Guard-3-8B",
+                "shows": "~237,092 downloads/month, 307 likes (June 2026)",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "hazard coverage + benchmarks",
+            "value": "14 hazard categories across input and output, 8 languages, MLCommons-aligned taxonomy; strong and widely-benchmarked safety classifier, the reference open baseline.",
+            "confidence": "medium",
+            "note": "Broad hazard taxonomy and multilingual coverage; the reference open guardrail others are measured against.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/meta-llama/Llama-Guard-3-8B",
+                "shows": "14 hazard categories, 8 languages, I/O moderation",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "maturity": 4.0,
+          "mature": false,
+          "version_note": "Llama Guard 3 (8B), built on Llama 3.1; Llama 3.1 Community License (not OSI; >700M MAU restriction). ~237K HF downloads/month, 307 likes (June 2026). Verified live June 2026."
+        },
+        {
+          "product": "ShieldGemma",
+          "org": "Google DeepMind",
+          "type": "model",
+          "description": "Google DeepMind's content-safety classifier built on Gemma 2, shipped in 2B/9B/27B sizes. It predicts policy violations across four harm categories (sexually explicit, dangerous content, hate, harassment) for both prompts and responses, as a yes/no classifier.",
+          "openness": {
+            "score": 3,
+            "class": "open_weights",
+            "components": "weights:open(shieldgemma 2B/9B/27B on HF);data:not-released;license:Gemma(NOT OSI, use-restricted)",
+            "confidence": "medium",
+            "note": "Open weights under the Gemma license, which is use-restricted and not OSI-approved (per the openness rubric, Gemma = open_weights, not open_source), so it sits at 3.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/google/shieldgemma-2b",
+                "shows": "Gemma license (not OSI); open weights; four harm categories; ~8,555 downloads/month, 124 likes",
+                "accessed": "2026-06-29"
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "10K-100K",
+            "signal_type": "usage_volume",
+            "confidence": "medium",
+            "note": "2B variant ~8.5K HF downloads/month, 124 likes (June 2026); solid adoption across the three sizes.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/google/shieldgemma-2b",
+                "shows": "~8,555 downloads/month, 124 likes (June 2026)",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "hazard coverage",
+            "value": "Four harm categories (sexual, dangerous, hate, harassment), yes/no policy classifier in 2B/9B/27B; narrower taxonomy than Llama Guard but multiple sizes.",
+            "confidence": "medium",
+            "note": "Competent four-category classifier with a size ladder; narrower hazard taxonomy than Llama Guard / Granite Guardian.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/google/shieldgemma-2b",
+                "shows": "four harm categories; 2B/9B/27B sizes",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "maturity": 3.0,
+          "mature": false,
+          "version_note": "ShieldGemma (2B/9B/27B) on Gemma 2; Gemma license (NOT OSI). 2B variant ~8.5K HF downloads/month, 124 likes (June 2026). Verified live June 2026."
+        },
+        {
+          "product": "Granite Guardian",
+          "org": "IBM",
+          "type": "model",
+          "description": "IBM's open guardrail model family for detecting risks in prompts and responses, plus RAG-specific checks. It covers harm, social bias, jailbreaking, violence, profanity and sexual content, and adds hallucination checks for retrieval pipelines (context relevance, groundedness, answer relevance).",
+          "openness": {
+            "score": 4,
+            "class": "open_weights",
+            "components": "weights:open(granite-guardian-3.2-5b on HF);data:not-released;license:Apache-2.0(OSI)",
+            "confidence": "medium",
+            "note": "Open weights under Apache-2.0 (permissive, OSI), but the training data is not released, so it stops short of the open_source (5) tier; a strong open_weights release at 4.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/ibm-granite/granite-guardian-3.2-5b",
+                "shows": "Apache-2.0; open weights; harm/bias/jailbreak + RAG groundedness checks; ~1,377 downloads/month, 14 likes",
+                "accessed": "2026-06-29"
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "10K-100K",
+            "signal_type": "usage_volume",
+            "confidence": "medium",
+            "note": "~1.4K HF downloads/month on the 3.2-5B variant (June 2026); cumulative across the Guardian family is higher. Enterprise-leaning distribution via watsonx.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/ibm-granite/granite-guardian-3.2-5b",
+                "shows": "~1,377 downloads/month, 14 likes (June 2026)",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "risk coverage + RAG checks",
+            "value": "Harm, bias, jailbreak, violence, profanity, sexual content plus RAG hallucination checks (context relevance, groundedness, answer relevance); broader than pure I/O moderation.",
+            "confidence": "medium",
+            "note": "One of the broadest open guardrails: standard harm taxonomy plus RAG-specific groundedness/hallucination checks.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/ibm-granite/granite-guardian-3.2-5b",
+                "shows": "harm/bias/jailbreak + RAG groundedness/answer-relevance checks",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "maturity": 3.0,
+          "mature": false,
+          "version_note": "Granite Guardian 3.2 (5B, distilled from the 8B); Apache-2.0 open weights. ~1.4K HF downloads/month, 14 likes (June 2026). Verified live June 2026."
+        },
+        {
+          "product": "gpt-oss-safeguard",
+          "org": "OpenAI",
+          "type": "model",
+          "description": "OpenAI's open safety reasoning model, built on gpt-oss and released with Hugging Face and ROOST. Rather than emitting a fixed label, it reasons over a safety policy you supply and returns a reasoned decision, with configurable reasoning effort. Shipped in 20b and 120b variants under Apache 2.0.",
+          "openness": {
+            "score": 4,
+            "class": "open_weights",
+            "components": "weights:open(gpt-oss-safeguard-20b/120b on HF);data:not-released;license:Apache-2.0(OSI)",
+            "confidence": "medium",
+            "note": "Open weights under Apache-2.0 (OSI), training data not released, so open_weights (4) rather than open_source. Notable as a policy-conditioned safety reasoning model rather than a fixed classifier.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/openai/gpt-oss-safeguard-20b",
+                "shows": "Apache-2.0; open weights; policy-conditioned safety reasoning; 20b/120b; ~131K downloads/month, 235 likes",
+                "accessed": "2026-06-29"
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 4,
+            "reach": "100K-1M",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "20b variant ~131K HF downloads/month, 235 likes, 100+ Spaces (June 2026); strong early adoption for a recent release.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/openai/gpt-oss-safeguard-20b",
+                "shows": "~131,038 downloads/month, 235 likes, 100+ Spaces (June 2026)",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "reasoning + configurable policy",
+            "value": "Policy-conditioned safety reasoning (bring-your-own-policy), reasoned decisions rather than just scores, configurable reasoning effort; 20b and 120b.",
+            "confidence": "medium",
+            "note": "A different shape from fixed classifiers: reasons over an arbitrary supplied policy, which generalizes to novel categories at some latency cost.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/openai/gpt-oss-safeguard-20b",
+                "shows": "reasoned decisions, configurable reasoning effort, bring-your-own-policy",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "maturity": 4.0,
+          "mature": false,
+          "version_note": "gpt-oss-safeguard (20b / 120b), Apache-2.0 open weights; released by OpenAI with Hugging Face and ROOST, distributed via the ROOST Model Community (RMC). 20b ~131K HF downloads/month, 235 likes (June 2026). Verified live June 2026."
+        },
+        {
+          "product": "NeMo Guardrails",
+          "org": "NVIDIA",
+          "type": "software",
+          "description": "NVIDIA's open-source toolkit for adding programmable guardrails around LLM applications. It wraps input/output moderation, dialog control, retrieval filtering, and tool-use control through a small policy language (Colang), and works across multiple LLM providers. Deployable as a Python library, CLI, Docker, or standalone server.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public(full Python implementation);self-host:yes(library/CLI/Docker/server);service:none",
+            "confidence": "high",
+            "note": "Fully open source: Apache-2.0, complete source, self-hostable with no proprietary tier.",
+            "sources": [
+              {
+                "url": "https://github.com/NVIDIA/NeMo-Guardrails",
+                "shows": "Apache-2.0; full Python source; self-hostable as library/CLI/Docker/server; ~6.6k stars",
+                "accessed": "2026-06-29"
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "10K-100K",
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "note": "~6.6K GitHub stars (June 2026); stars-only proxy, capped per methodology; broadly referenced guardrail framework.",
+            "sources": [
+              {
+                "url": "https://github.com/NVIDIA/NeMo-Guardrails",
+                "shows": "~6.6k stars (June 2026)",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature coverage",
+            "value": "Programmable rails for I/O moderation, dialog/topic control, retrieval filtering, and tool-use control via Colang; multi-provider.",
+            "confidence": "medium",
+            "note": "One of the most feature-complete open guardrail orchestration layers; the Colang policy language adds flexibility beyond simple scanners.",
+            "sources": [
+              {
+                "url": "https://github.com/NVIDIA/NeMo-Guardrails",
+                "shows": "I/O moderation, dialog control, retrieval filtering, tool-use control",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "maturity": 3.5,
+          "mature": false,
+          "version_note": "NeMo Guardrails, Apache-2.0, Python; ~6.6K GitHub stars (June 2026). Fully open source and self-hostable. Verified live June 2026."
+        },
+        {
+          "product": "Guardrails AI",
+          "org": "Guardrails AI",
+          "type": "software",
+          "description": "An open framework for input/output guards on LLM applications, with a Hub of pre-built validators (PII, toxicity, prompt injection, format/structure). Wraps model calls in guards that detect risks and enforce structured output, self-hostable as a Python library.",
+          "openness": {
+            "score": 4,
+            "class": "open_core",
+            "components": "license:Apache-2.0(OSI) for the framework;source:public;hub:Guardrails Hub validator registry;commercial:hosted/enterprise tier",
+            "confidence": "medium",
+            "note": "Apache-2.0 framework that is fully self-hostable, with a Hub of validators and a commercial tier on top; classed open_core alongside other OSS-core-plus-commercial tools.",
+            "sources": [
+              {
+                "url": "https://github.com/guardrails-ai/guardrails",
+                "shows": "Apache-2.0 framework; ~7.1k stars; Guardrails Hub validators; commercial offerings",
+                "accessed": "2026-06-29"
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "10K-100K",
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "note": "~7.1K GitHub stars (June 2026); stars-only proxy, capped per methodology.",
+            "sources": [
+              {
+                "url": "https://github.com/guardrails-ai/guardrails",
+                "shows": "~7.1k stars (June 2026)",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "validator coverage",
+            "value": "Input/output guards plus a Hub of pre-built validators (PII, toxicity, injection, structure) and structured-output enforcement.",
+            "confidence": "medium",
+            "note": "Broad validator ecosystem via the Hub; strong on structured-output enforcement in addition to safety checks.",
+            "sources": [
+              {
+                "url": "https://github.com/guardrails-ai/guardrails",
+                "shows": "I/O guards, validator Hub, structured-output enforcement",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "maturity": 3.5,
+          "mature": false,
+          "version_note": "Guardrails AI framework, Apache-2.0, ~7.1K GitHub stars (June 2026); plus Guardrails Hub (validator registry) and commercial offerings. Verified live June 2026."
+        },
+        {
+          "product": "LLM Guard",
+          "org": "Protect AI",
+          "type": "software",
+          "description": "An open security toolkit for LLM interactions from Protect AI, providing input and output scanners for prompt-injection, PII/data-leakage, toxicity, and harmful-content detection and sanitization. Self-hostable as a Python library.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public(full Python implementation);self-host:yes;service:none(the OSS toolkit; Protect AI's platform is separate)",
+            "confidence": "high",
+            "note": "Fully open source: MIT-licensed, complete source, self-hostable. (Protect AI's commercial platform is a separate product; this is the standalone OSS toolkit.)",
+            "sources": [
+              {
+                "url": "https://github.com/protectai/llm-guard",
+                "shows": "MIT; full Python source; input/output scanners; ~3.1k stars",
+                "accessed": "2026-06-29"
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "10K-100K",
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "note": "~3.1K GitHub stars (June 2026); stars-only proxy, capped per methodology.",
+            "sources": [
+              {
+                "url": "https://github.com/protectai/llm-guard",
+                "shows": "~3.1k stars (June 2026)",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "scanner coverage",
+            "value": "Input/output scanners for prompt injection, PII/data leakage, toxicity, and harmful content, with sanitization.",
+            "confidence": "medium",
+            "note": "Solid set of I/O scanners; lighter-weight orchestration than NeMo Guardrails but easy to drop in.",
+            "sources": [
+              {
+                "url": "https://github.com/protectai/llm-guard",
+                "shows": "input/output scanners: injection, PII, toxicity, harmful content",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "maturity": 2.5,
+          "mature": false,
+          "version_note": "LLM Guard, MIT, Python; ~3.1K GitHub stars (June 2026). Maintained by Protect AI (acquired by Palo Alto Networks). Verified live June 2026."
+        },
+        {
+          "product": "PyRIT",
+          "org": "Microsoft",
+          "type": "software",
+          "description": "The Python Risk Identification Tool from the Microsoft AI Red Team: an open framework that automates red-teaming of generative AI systems, orchestrating adversarial prompts, attack strategies, and scoring to surface harms and vulnerabilities at scale.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public(full Python framework);self-host:yes;service:none",
+            "confidence": "high",
+            "note": "Fully open source: MIT-licensed automation framework, self-hostable, no proprietary tier.",
+            "sources": [
+              {
+                "url": "https://github.com/microsoft/PyRIT",
+                "shows": "MIT; open red-teaming framework from the Microsoft AI Red Team",
+                "accessed": "2026-06-29"
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "10K-100K",
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "note": "Widely-used AI red-teaming framework from the Microsoft AI Red Team; stars-only proxy, capped per methodology.",
+            "sources": [
+              {
+                "url": "https://github.com/microsoft/PyRIT",
+                "shows": "open framework, Microsoft AI Red Team; relocated to microsoft/PyRIT",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "red-team coverage",
+            "value": "Automated adversarial prompting, attack-strategy orchestration, and scoring to identify harms across providers.",
+            "confidence": "medium",
+            "note": "A leading open red-teaming harness; strong automation and scoring, multi-provider.",
+            "sources": [
+              {
+                "url": "https://github.com/microsoft/PyRIT",
+                "shows": "automated adversarial prompting, attack orchestration, scoring",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "maturity": 3.5,
+          "mature": false,
+          "version_note": "PyRIT, MIT, maintained by the Microsoft AI Red Team; repo now at github.com/microsoft/PyRIT. Verified live June 2026."
+        },
+        {
+          "product": "garak",
+          "org": "NVIDIA",
+          "type": "software",
+          "description": "An open LLM vulnerability scanner maintained by NVIDIA. It probes models for hallucination, data leakage, prompt injection, misinformation, toxicity, and jailbreaks across many providers (Hugging Face, OpenAI, Bedrock, and others), the nmap of LLM security testing.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public;self-host:yes;service:none",
+            "confidence": "high",
+            "note": "Fully open source: Apache-2.0 scanner, self-hostable, no proprietary tier.",
+            "sources": [
+              {
+                "url": "https://github.com/NVIDIA/garak",
+                "shows": "Apache-2.0; ~8.3k stars; probes for injection, leakage, jailbreaks, toxicity across providers",
+                "accessed": "2026-06-29"
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "10K-100K",
+            "signal_type": "stars_fallback",
+            "confidence": "low",
+            "note": "~8.3K GitHub stars (June 2026); stars-only proxy, capped per methodology.",
+            "sources": [
+              {
+                "url": "https://github.com/NVIDIA/garak",
+                "shows": "~8.3k stars (June 2026)",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "probe coverage",
+            "value": "Large library of vulnerability probes (hallucination, leakage, injection, misinformation, toxicity, jailbreaks) across many model providers.",
+            "confidence": "medium",
+            "note": "Broadest open library of LLM vulnerability probes; multi-provider coverage.",
+            "sources": [
+              {
+                "url": "https://github.com/NVIDIA/garak",
+                "shows": "probes: hallucination, leakage, injection, misinformation, toxicity, jailbreaks",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "maturity": 3.5,
+          "mature": false,
+          "version_note": "garak LLM vulnerability scanner, Apache-2.0, maintained by NVIDIA; ~8.3K GitHub stars (June 2026). Verified live June 2026."
+        },
+        {
+          "product": "OpenAI Moderation API",
+          "org": "OpenAI",
+          "type": "software",
+          "description": "OpenAI's hosted moderation endpoint, a free API that classifies text (and images) against OpenAI's content-policy categories (hate, harassment, self-harm, sexual, violence, and more). Closed, API-only; no weights or self-hosting.",
+          "openness": {
+            "score": 1,
+            "class": "closed",
+            "components": "service:proprietary hosted API(no weights, no self-host);access:free moderation endpoint",
+            "confidence": "high",
+            "note": "Closed, API-only hosted classifier; no weights or source.",
+            "sources": [
+              {
+                "url": "https://platform.openai.com/docs/guides/moderation",
+                "shows": "free hosted moderation API; OpenAI content-policy categories; no weights",
+                "accessed": "2026-06-29"
+              }
+            ],
+            "bucket": "closed"
+          },
+          "adoption": {
+            "level": 4,
+            "reach": "1M-10M",
+            "signal_type": "usage_volume",
+            "confidence": "medium",
+            "note": "Free, default moderation endpoint for the large OpenAI developer base; widely used as a first-line filter.",
+            "sources": [
+              {
+                "url": "https://platform.openai.com/docs/guides/moderation",
+                "shows": "free hosted moderation endpoint",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "category coverage",
+            "value": "Multi-category text (and image) moderation aligned to OpenAI's content policy; convenient but fixed taxonomy.",
+            "confidence": "low",
+            "note": "Convenient broad-category moderation; fixed policy, no customization vs policy-conditioned models.",
+            "sources": [
+              {
+                "url": "https://platform.openai.com/docs/guides/moderation",
+                "shows": "multi-category text/image moderation",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "maturity": 3.5,
+          "mature": false,
+          "version_note": "OpenAI Moderation API; free hosted endpoint, proprietary (no weights, no self-host). Verified live June 2026."
+        },
+        {
+          "product": "Azure AI Content Safety",
+          "org": "Microsoft Azure",
+          "type": "software",
+          "description": "Microsoft's managed content-safety service on Azure: hosted APIs for text and image moderation across hate, sexual, violence and self-harm categories, plus prompt-shield (jailbreak/injection) and groundedness detection. Closed, managed service.",
+          "openness": {
+            "score": 1,
+            "class": "closed",
+            "components": "service:proprietary managed Azure service(no self-host);features:text/image moderation, prompt shields, groundedness",
+            "confidence": "high",
+            "note": "Closed managed cloud service; no weights or source.",
+            "sources": [
+              {
+                "url": "https://azure.microsoft.com/en-us/products/ai-services/ai-content-safety",
+                "shows": "managed content-safety APIs: moderation, prompt shields, groundedness; proprietary",
+                "accessed": "2026-06-29"
+              }
+            ],
+            "bucket": "closed"
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "100K-1M",
+            "signal_type": "usage_volume",
+            "confidence": "low",
+            "note": "Default content-safety layer for Azure OpenAI and Azure AI customers; broad enterprise reach.",
+            "sources": [
+              {
+                "url": "https://azure.microsoft.com/en-us/products/ai-services/ai-content-safety",
+                "shows": "managed service for the Azure AI customer base",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature coverage",
+            "value": "Text and image moderation, prompt-shield jailbreak/injection detection, and groundedness detection in one managed service.",
+            "confidence": "low",
+            "note": "Broad managed feature set (moderation + prompt shields + groundedness); strong coverage, closed.",
+            "sources": [
+              {
+                "url": "https://azure.microsoft.com/en-us/products/ai-services/ai-content-safety",
+                "shows": "moderation + prompt shields + groundedness",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "maturity": 3.5,
+          "mature": false,
+          "version_note": "Azure AI Content Safety; managed Azure service (text/image moderation, prompt shields, groundedness). Proprietary, no self-host. Verified live June 2026."
+        },
+        {
+          "product": "Amazon Bedrock Guardrails",
+          "org": "Amazon Web Services",
+          "type": "software",
+          "description": "Managed guardrails for Amazon Bedrock: configurable policies for denied topics, content filters, PII redaction, word filters, and contextual-grounding checks, applied to any Bedrock model. Closed, managed service.",
+          "openness": {
+            "score": 1,
+            "class": "closed",
+            "components": "service:proprietary managed AWS service(no self-host);features:denied topics, content filters, PII redaction, contextual grounding",
+            "confidence": "high",
+            "note": "Closed managed cloud service; no weights or source.",
+            "sources": [
+              {
+                "url": "https://aws.amazon.com/bedrock/guardrails/",
+                "shows": "managed guardrails: denied topics, content filters, PII redaction, grounding; proprietary",
+                "accessed": "2026-06-29"
+              }
+            ],
+            "bucket": "closed"
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "100K-1M",
+            "signal_type": "usage_volume",
+            "confidence": "low",
+            "note": "Default guardrail layer for the Amazon Bedrock customer base; broad enterprise reach.",
+            "sources": [
+              {
+                "url": "https://aws.amazon.com/bedrock/guardrails/",
+                "shows": "managed guardrails across Bedrock models",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature coverage",
+            "value": "Denied topics, content filters, PII redaction, word filters, and contextual-grounding checks across any Bedrock model.",
+            "confidence": "low",
+            "note": "Broad configurable managed guardrail set; strong coverage, closed.",
+            "sources": [
+              {
+                "url": "https://aws.amazon.com/bedrock/guardrails/",
+                "shows": "denied topics, filters, PII redaction, contextual grounding",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "maturity": 3.5,
+          "mature": false,
+          "version_note": "Amazon Bedrock Guardrails; managed AWS service (denied topics, content filters, PII redaction, grounding checks). Proprietary, no self-host. Verified live June 2026."
+        },
+        {
+          "product": "Lakera Guard",
+          "org": "Lakera",
+          "type": "software",
+          "description": "Lakera's hosted AI security product: a real-time API defending LLM applications against prompt injection, jailbreaks, data leakage, and content risks. Closed/SaaS; Lakera was acquired by Check Point in 2025.",
+          "openness": {
+            "score": 1,
+            "class": "closed",
+            "components": "service:proprietary SaaS API(no self-host);note:vendor Lakera acquired by Check Point Nov 2025",
+            "confidence": "high",
+            "note": "Closed SaaS security product; no weights or source. (Lakera also runs the public Gandalf prompt-injection game, but Guard itself is proprietary.)",
+            "sources": [
+              {
+                "url": "https://www.lakera.ai/",
+                "shows": "proprietary AI security / prompt-injection defense SaaS; Lakera acquired by Check Point (2025)",
+                "accessed": "2026-06-29"
+              }
+            ],
+            "bucket": "closed"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "10K-100K",
+            "signal_type": "reported_traction",
+            "confidence": "low",
+            "note": "Established prompt-injection-defense vendor with notable enterprise customers; acquired by Check Point in 2025. No public usage counts.",
+            "sources": [
+              {
+                "url": "https://www.lakera.ai/",
+                "shows": "commercial AI security product; Check Point acquisition 2025",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "defense coverage",
+            "value": "Real-time prompt-injection, jailbreak, data-leakage, and content-risk defense for LLM apps.",
+            "confidence": "low",
+            "note": "Category-defining prompt-injection defense; strong coverage, now part of Check Point's platform.",
+            "sources": [
+              {
+                "url": "https://www.lakera.ai/",
+                "shows": "real-time prompt-injection / jailbreak / data-leakage defense",
+                "accessed": "2026-06-29"
+              }
+            ]
+          },
+          "maturity": 3.0,
+          "mature": false,
+          "version_note": "Lakera Guard; proprietary SaaS API (prompt-injection/jailbreak defense). Lakera acquired by Check Point (completed Nov 2025). Verified live June 2026."
+        }
+      ]
     }
   },
   "order": [
@@ -24162,9 +25431,10 @@
     "agent_tools_protocols",
     "ml_frameworks",
     "deployment",
-    "edge_hardware"
+    "edge_hardware",
+    "safeguards"
   ],
-  "n_total": 428,
+  "n_total": 452,
   "generated": "2026-06-29",
   "long_tail": {
     "counts": {
@@ -24172,11 +25442,11 @@
       "models": 6428,
       "packages": 2823,
       "total": 24626,
-      "scored": 428,
+      "scored": 452,
       "overlap": 226,
-      "scored_outside": 202,
+      "scored_outside": 226,
       "uncategorized": 24400,
-      "universe": 24828
+      "universe": 24852
     },
     "top": [
       {
