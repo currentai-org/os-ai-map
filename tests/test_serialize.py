@@ -86,6 +86,15 @@ def test_build_payload_shape_and_order():
     assert row["maturity"] == 4.0
 
 
+def test_layer_order_present_and_in_arc_sequence():
+    # layer_order lists the Columbia layers in taxonomy arc order; the fixture
+    # has a single Model components arc, so it is just that layer.
+    payload = build_payload(_sources(), frozen_long_tail={}, generated="2026-06-10")
+    assert payload["layer_order"] == ["model_components"]
+    # it ships right after descriptions so consumers can read the stack order up top
+    assert list(payload)[:2] == ["descriptions", "layer_order"]
+
+
 def test_null_adoption_serializes_maturity_null():
     src = _sources()
     src["scores"]["llama-4"]["adoption"] = {"level": None, "signal_type": "unknown"}
