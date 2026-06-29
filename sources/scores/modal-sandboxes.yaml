@@ -1,14 +1,14 @@
 product: modal-sandboxes
 openness:
-  score: 3
-  class: open_core
-  components: sdk:open (modal Python/JS client libraries public);runtime/platform:proprietary managed
-    cloud (no self-host of the gVisor execution plane);pricing:pay-as-you-go usage, free starter credits
-  confidence: medium
-  note: 'Treated as open_core per the recipe''s explicit example (E2B, Modal = open_core: OSS runtime/SDK
-    + managed cloud). The SDK is open but the execution substrate is a proprietary managed service; calibrated
-    below the Ollama/full-OSS anchors. Confidence medium - the managed plane dominates the value and is
-    closed.'
+  score: 1
+  class: closed
+  components: service:proprietary Modal managed cloud (no self-host of the gVisor execution plane);open-part:client
+    SDK only (modal Python/JS client libraries);pricing:pay-as-you-go usage, free starter credits
+  confidence: high
+  note: 'Closed managed service. The client SDK is open, but the execution substrate is a proprietary
+    managed cloud with no self-host; an open client over a closed runtime is not open_core. Corrects a
+    prior mis-calibration that grouped Modal with the genuinely self-hostable E2B (E2B ships self-hostable
+    infra; Modal does not).'
   sources:
   - url: https://modal.com/pricing
     shows: Modal is a managed proprietary cloud platform, pay-per-CPU-cycle, $30/mo free credits

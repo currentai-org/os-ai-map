@@ -1,13 +1,14 @@
 product: spaces
 openness:
-  score: 2
-  class: open_core
-  components: platform:proprietary(HF-managed hosting);SDKs:Gradio(Apache-2.0 OSS), Streamlit(OSS), Docker;runtime/control-plane:closed(no
-    self-hostable Spaces);hardware-tiers:CPU free + paid GPU upgrades
+  score: 1
+  class: closed
+  components: platform:proprietary(HF-managed hosting/orchestration, no self-hostable Spaces);open-part:app
+    SDKs only (Gradio Apache-2.0, Streamlit) which are separate, portable OSS products;hardware-tiers:CPU
+    free + paid GPU upgrades
   confidence: medium
-  note: The app SDKs (Gradio etc.) are OSS and apps run as arbitrary Docker, but the Spaces hosting/orchestration
-    platform is a closed managed service; open SDKs over a proprietary host = open_core-ish. Not self-hostable
-    as Spaces.
+  note: 'Closed managed hosting service. Apps are built with OSS SDKs (Gradio etc.) that run anywhere,
+    but Spaces itself - the managed host/orchestration - is proprietary and not self-hostable; those SDKs
+    are separate products, not a Spaces open core. Reclassified from open_core (borderline).'
   sources:
   - url: https://huggingface.co/docs/hub/spaces
     shows: Spaces hosts apps via Gradio (OSS SDK), Streamlit, arbitrary Dockerfile, or static HTML on

@@ -1,15 +1,15 @@
 product: replit-agent-code-execution-api
 openness:
-  score: 2
-  class: open_core
-  components: service:proprietary(Replit managed Autoscale Deployments);sandbox-runtime:omegajail(open source,
-    github.com/omegaup/omegajail unprivileged container);client:replit-code-exec(PyPI / github.com/replit/replit-code-exec,
-    ISC, ARCHIVED 2025-02-11);no self-hostable execution service
+  score: 1
+  class: closed
+  components: service:proprietary(Replit managed Autoscale Deployments, no self-host);open-part:third-party
+    isolation primitive omegajail(github.com/omegaup/omegajail) + an ARCHIVED thin client (replit-code-exec,
+    ISC, read-only since 2025-02-11);no self-hostable execution service
   confidence: medium
-  note: The isolation primitive (omegajail, from omegaUp) is open source and a thin client was published,
-    but the code-execution service is a proprietary managed offering, and the client repo is now archived
-    (read-only since 2025-02-11). Closest to open_core (open primitive under a closed service); no feature-gated
-    OSS core product to self-host.
+  note: 'Closed managed service. The sandbox primitive (omegajail) is open source but it is a third-party
+    dependency, not Replit''s own open core, and the thin client is archived; there is no self-hostable
+    open product, so an open dependency under a closed service is not open_core. Reclassified from open_core
+    (borderline).'
   sources:
   - url: https://replit.com/blog/ai-agents-code-execution
     shows: Code Execution API uses omegajail (open source unprivileged container sandbox) on Replit's
