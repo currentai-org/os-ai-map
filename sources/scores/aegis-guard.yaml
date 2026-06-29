@@ -1,0 +1,37 @@
+product: aegis-guard
+openness:
+  score: 3
+  class: open_weights
+  components: weights:adapter-open(HF) but base LlamaGuard gated via Meta access;data:Aegis safety dataset
+    documented;license:Llama-2-Community(NOT OSI)
+  confidence: medium
+  note: Open-weights at the adapter level but the LlamaGuard base is access-gated through Meta and the
+    license is the non-OSI Llama 2 Community License, so it lands at open_weights (3) with a gating caveat.
+  sources:
+  - url: https://huggingface.co/nvidia/Aegis-AI-Content-Safety-LlamaGuard-Defensive-1.0
+    shows: Llama 2 Community License; adapter weights public, base gated via Meta; 13 risk categories;
+      built on LlamaGuard/Llama2-7B
+    accessed: '2026-06-29'
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: low
+  note: NVIDIA safety classifier with a documented dataset and NeMo integration; modest standalone HF
+    adoption, distributed largely via NVIDIA's stack.
+  sources:
+  - url: https://huggingface.co/nvidia/Aegis-AI-Content-Safety-LlamaGuard-Defensive-1.0
+    shows: NVIDIA Aegis content-safety classifier; 13 categories
+    accessed: '2026-06-29'
+capability:
+  score: 4
+  basis: risk coverage
+  value: 13 critical safety risk categories across prompts and responses, with an open safety dataset
+    and a defensive/permissive variant pair.
+  confidence: low
+  note: Broad risk taxonomy with a documented training dataset; comparable coverage to Llama Guard, its
+    base.
+  sources:
+  - url: https://huggingface.co/nvidia/Aegis-AI-Content-Safety-LlamaGuard-Defensive-1.0
+    shows: 13 risk categories; defensive variant
+    accessed: '2026-06-29'
