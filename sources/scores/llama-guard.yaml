@@ -1,0 +1,38 @@
+product: llama-guard
+openness:
+  score: 3
+  class: open_weights
+  components: weights:open(Llama-Guard-3-8B safetensors on HF);data:not-released;code:inference recipe
+    public;license:Llama-3.1-Community(NOT OSI, >700M-MAU restriction)
+  confidence: medium
+  note: Open-weights safety classifier under Meta's Llama Community License, which carries use restrictions
+    and is not OSI-approved, so it lands at the open_weights tier (3) like the rest of the Llama family
+    rather than open_source.
+  sources:
+  - url: https://huggingface.co/meta-llama/Llama-Guard-3-8B
+    shows: Llama 3.1 Community License; open weights; 14 hazard categories; I/O classifier; ~237K downloads/month,
+      307 likes
+    accessed: '2026-06-29'
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: ~237K Hugging Face downloads/month on the 8B variant (June 2026), the most-adopted open guardrail
+    model; widely embedded as a moderation layer.
+  sources:
+  - url: https://huggingface.co/meta-llama/Llama-Guard-3-8B
+    shows: ~237,092 downloads/month, 307 likes (June 2026)
+    accessed: '2026-06-29'
+capability:
+  score: 4
+  basis: hazard coverage + benchmarks
+  value: 14 hazard categories across input and output, 8 languages, MLCommons-aligned taxonomy; strong
+    and widely-benchmarked safety classifier, the reference open baseline.
+  confidence: medium
+  note: Broad hazard taxonomy and multilingual coverage; the reference open guardrail others are measured
+    against.
+  sources:
+  - url: https://huggingface.co/meta-llama/Llama-Guard-3-8B
+    shows: 14 hazard categories, 8 languages, I/O moderation
+    accessed: '2026-06-29'
