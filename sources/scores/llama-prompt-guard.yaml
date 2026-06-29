@@ -1,0 +1,37 @@
+product: llama-prompt-guard
+openness:
+  score: 3
+  class: open_weights
+  components: weights:open(Llama-Prompt-Guard-2-86M/22M on HF);data:not-released;license:Llama-4-Community(NOT
+    OSI)
+  confidence: medium
+  note: Open weights under Meta's Llama 4 Community License, which is use-restricted and not OSI-approved,
+    so open_weights (3) like the rest of the Llama family.
+  sources:
+  - url: https://huggingface.co/meta-llama/Llama-Prompt-Guard-2-86M
+    shows: Llama 4 Community License; open weights; 86M/22M; prompt-injection/jailbreak classifier; ~90,441
+      downloads/month, 149 likes
+    accessed: '2026-06-29'
+adoption:
+  level: 4
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: 86M variant ~90.4K HF downloads/month (June 2026); widely used as a low-latency injection filter,
+    including inside LlamaFirewall.
+  sources:
+  - url: https://huggingface.co/meta-llama/Llama-Prompt-Guard-2-86M
+    shows: ~90,441 downloads/month, 149 likes (June 2026)
+    accessed: '2026-06-29'
+capability:
+  score: 4
+  basis: injection detection + latency
+  value: Dedicated prompt-injection/jailbreak detection at 99.8% AUC and 97.5% recall at 1% FPR (English),
+    8 languages, sub-100ms latency; narrow but best-in-class at its job.
+  confidence: medium
+  note: Specialized injection/jailbreak classifier with strong accuracy and very low latency; complements
+    full-taxonomy guards.
+  sources:
+  - url: https://huggingface.co/meta-llama/Llama-Prompt-Guard-2-86M
+    shows: 99.8% AUC, 97.5% recall @1% FPR; 8 languages; sub-100ms
+    accessed: '2026-06-29'
