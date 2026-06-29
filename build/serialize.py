@@ -1,7 +1,8 @@
 """Compile sources/ (+ frozen long-tail) into the notebook_data.json payload.
 
 Reproduces the exact structure the live notebook consumes:
-  { categories: {cid: {label, arc, products[]}}, order[], n_total, generated, long_tail }
+  { descriptions, layer_order[], categories: {cid: {label, arc, layer, products[]}},
+    order[], n_total, generated, long_tail }
 """
 from datetime import date
 from pathlib import Path
@@ -213,11 +214,18 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
     order: list[str] = []
     cid_arc: dict[str, str] = {}
     cid_layer: dict[str, str] = {}
+    # layer_order is the Columbia layers in stacking order, taken from the arc
+    # sequence in sources/taxonomy.yaml (one layer per arc). Consumers use it to
+    # render layers in order without re-deriving it from the per-category `layer`.
+    layer_order: list[str] = []
     for arc in taxonomy["arcs"]:
+        lyr = arc.get("layer")
+        if lyr and lyr not in layer_order:
+            layer_order.append(lyr)
         for cid in arc["categories"]:
             order.append(cid)
             cid_arc[cid] = arc["name"]
-            cid_layer[cid] = arc.get("layer")
+            cid_layer[cid] = lyr
     out_cats = {}
     n = 0
     for cid in order:
@@ -246,7 +254,8 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
         "gaps": dict(_GAP_DESC),
         "categories": {cid: cats[cid].get("description", "") for cid in order},
     }
-    return {"descriptions": descriptions, "categories": out_cats, "order": order,
+    return {"descriptions": descriptions, "layer_order": layer_order,
+            "categories": out_cats, "order": order,
             "n_total": n, "generated": generated,
             "long_tail": _filter_long_tail(frozen_long_tail, prods)}
 
