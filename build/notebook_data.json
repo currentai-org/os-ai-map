@@ -21761,7 +21761,7 @@
           "product": "gVisor",
           "org": "Google",
           "type": "software",
-          "description": "gVisor application-kernel sandbox; repo live June 2026 (rolling date-tagged releases, no GitHub Releases page). Go userspace kernel intercepting syscalls (Sentry + Gofer); powers Google Cloud Run.",
+          "description": "gVisor application-kernel sandbox; repo live June 2026 (rolling date-tagged releases, no GitHub Releases page). Go userspace kernel intercepting syscalls (Sentry + Gofer); used as the sandbox runtime behind Google Cloud Run and GKE Sandbox.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -22189,11 +22189,11 @@
           "type": "software",
           "description": "Closed-source serverless platform that lets you run Python and shell code (including GPU workloads) in seconds-startup containers, with a dedicated Sandbox primitive for executing untrusted agent-generated code. Picked when AI teams need GPU-capable sandboxes with Pythonic ergonomics. Raised $355M Series C in May 2026 at a $4.65B valuation; $300M annualized revenue driven largely by coding-agent demand.",
           "openness": {
-            "score": 3,
-            "class": "open_core",
-            "components": "sdk:open (modal Python/JS client libraries public);runtime/platform:proprietary managed cloud (no self-host of the gVisor execution plane);pricing:pay-as-you-go usage, free starter credits",
-            "confidence": "medium",
-            "note": "Treated as open_core per the recipe's explicit example (E2B, Modal = open_core: OSS runtime/SDK + managed cloud). The SDK is open but the execution substrate is a proprietary managed service; calibrated below the Ollama/full-OSS anchors. Confidence medium - the managed plane dominates the value and is closed.",
+            "score": 1,
+            "class": "closed",
+            "components": "service:proprietary Modal managed cloud (no self-host of the gVisor execution plane);open-part:client SDK only (modal Python/JS client libraries);pricing:pay-as-you-go usage, free starter credits",
+            "confidence": "high",
+            "note": "Closed managed service. The client SDK is open, but the execution substrate is a proprietary managed cloud with no self-host; an open client over a closed runtime is not open_core. Corrects a prior mis-calibration that grouped Modal with the genuinely self-hostable E2B (E2B ships self-hostable infra; Modal does not).",
             "sources": [
               {
                 "url": "https://modal.com/pricing",
@@ -22206,7 +22206,7 @@
                 "accessed": "2026-06-04"
               }
             ],
-            "bucket": "open"
+            "bucket": "closed"
           },
           "adoption": {
             "level": 3,
@@ -22251,11 +22251,11 @@
           "type": "software",
           "description": "Closed-source compute primitive (GA in 2026) that runs untrusted/agent-generated code in isolated Firecracker microVMs with millisecond startup, default Node 24 + Python 3.13 runtimes, filesystem and shell access. Picked by teams already on Vercel building AI agents that need a managed sandbox tightly integrated with the AI SDK. The execution layer behind Vercel Open Agents.",
           "openness": {
-            "score": 3,
-            "class": "open_core",
-            "components": "sdk:open (@vercel/sandbox JS + Python SDK + CLI, GitHub vercel/sandbox);runtime/platform:proprietary Vercel Fluid-compute managed cloud (no self-host);pricing:pay-for-active-CPU-time managed service",
-            "confidence": "medium",
-            "note": "open_core: SDK + CLI are public on GitHub, but sandboxes only execute on Vercel's proprietary Fluid-compute cloud (no self-host of the microVM plane). Calibrated alongside Modal as open_core.",
+            "score": 1,
+            "class": "closed",
+            "components": "service:proprietary Vercel Fluid-compute managed cloud (no self-host of the Firecracker microVM plane);open-part:client SDK/CLI only (@vercel/sandbox JS + Python, vercel/sandbox on GitHub);license:proprietary service",
+            "confidence": "high",
+            "note": "Closed managed service. The SDK/CLI are open, but they are only a client for Vercel's proprietary microVM cloud, which cannot be self-hosted; an open client over a closed runtime is not open_core (the core is proprietary). Reclassified from open_core; sits with the other proprietary sandbox clouds (Google Cloud Run, Fly Sprites, Northflank).",
             "sources": [
               {
                 "url": "https://vercel.com/docs/sandbox",
@@ -22263,7 +22263,7 @@
                 "accessed": "2026-06-04"
               }
             ],
-            "bucket": "open"
+            "bucket": "closed"
           },
           "adoption": {
             "level": 4,
@@ -22306,13 +22306,13 @@
           "product": "Cloudflare Sandboxes",
           "org": "Cloudflare",
           "type": "software",
-          "description": "Cloudflare's two-tier sandboxing for AI agents, shipped during Agents Week 2026: Dynamic Workers (V8 isolates, ms-scale cold start, ~100x faster and more memory-efficient than containers, open beta April 2026) and Sandboxes (persistent Linux environments, GA April 2026 for full-OS workloads). Picked when latency, edge distribution, and isolation density matter; distributed across Cloudflare's global edge network and available to all paid Workers users, the company's headline agent infrastructure release of 2026.",
+          "description": "Cloudflare's two-tier sandboxing for AI agents, shipped during Agents Week 2026: Dynamic Workers (V8 isolates, ms-scale cold start, ~100x faster and more memory-efficient than containers, open beta April 2026) and Sandboxes (persistent Linux environments, GA April 2026 for full-OS workloads). Runs on Cloudflare's global edge network and is available to paid Workers users. Execution is tied to Cloudflare's proprietary platform; only the Sandbox SDK is open source.",
           "openness": {
-            "score": 3,
-            "class": "open_core",
-            "components": "sdk:open (@cloudflare/sandbox Apache-2.0, cloudflare/sandbox-sdk on GitHub);runtime/platform:proprietary Cloudflare edge (Workers/Durable Objects/Dynamic Worker Loader - no self-host);pricing:Workers paid plan, Dynamic Workers $0.002/unique-worker/day post-beta",
+            "score": 1,
+            "class": "closed",
+            "components": "service:proprietary Cloudflare edge (Workers/Durable Objects/Dynamic Worker Loader - no self-host of the isolate/container plane);open-part:Sandbox SDK only (@cloudflare/sandbox Apache-2.0, cloudflare/sandbox-sdk on GitHub);pricing:Workers paid plan, Dynamic Workers $0.002/unique-worker/day",
             "confidence": "high",
-            "note": "open_core: the Sandbox SDK is Apache-2.0 and public, but execution requires Cloudflare's proprietary managed edge network (no self-host of the isolate/container plane). Calibrated as open_core alongside Modal/Vercel.",
+            "note": "Closed managed service. The Sandbox SDK is Apache-2.0, but execution requires Cloudflare's proprietary managed edge network (no self-host of the isolate/container plane); an open client SDK over a closed runtime is not open_core. Reclassified from open_core.",
             "sources": [
               {
                 "url": "https://github.com/cloudflare/sandbox-sdk",
@@ -22325,7 +22325,7 @@
                 "accessed": "2026-06-04"
               }
             ],
-            "bucket": "open"
+            "bucket": "closed"
           },
           "adoption": {
             "level": 3,
@@ -22494,11 +22494,11 @@
           "type": "software",
           "description": "Closed-source cloud dev platform with Nix-based environments supporting 30,000+ OS packages, exposing a Code Execution API that runs untrusted/AI-generated code in sandboxed VMs. Picked when teams want a tightly integrated build+run+deploy story (Replit Agent 4 leans heavily on this) rather than an unbundled SDK. Raised $400M Series D in March 2026 at a $9B valuation; 50M+ users.",
           "openness": {
-            "score": 2,
-            "class": "open_core",
-            "components": "service:proprietary(Replit managed Autoscale Deployments);sandbox-runtime:omegajail(open source, github.com/omegaup/omegajail unprivileged container);client:replit-code-exec(PyPI / github.com/replit/replit-code-exec, ISC, ARCHIVED 2025-02-11);no self-hostable execution service",
+            "score": 1,
+            "class": "closed",
+            "components": "service:proprietary(Replit managed Autoscale Deployments, no self-host);open-part:third-party isolation primitive omegajail(github.com/omegaup/omegajail) + an ARCHIVED thin client (replit-code-exec, ISC, read-only since 2025-02-11);no self-hostable execution service",
             "confidence": "medium",
-            "note": "The isolation primitive (omegajail, from omegaUp) is open source and a thin client was published, but the code-execution service is a proprietary managed offering, and the client repo is now archived (read-only since 2025-02-11). Closest to open_core (open primitive under a closed service); no feature-gated OSS core product to self-host.",
+            "note": "Closed managed service. The sandbox primitive (omegajail) is open source but it is a third-party dependency, not Replit's own open core, and the thin client is archived; there is no self-hostable open product, so an open dependency under a closed service is not open_core. Reclassified from open_core (borderline).",
             "sources": [
               {
                 "url": "https://replit.com/blog/ai-agents-code-execution",
@@ -22516,7 +22516,7 @@
                 "accessed": "2026-06-04"
               }
             ],
-            "bucket": "open"
+            "bucket": "closed"
           },
           "adoption": {
             "level": 4,
@@ -22722,11 +22722,11 @@
           "type": "software",
           "description": "Managed sandbox platform for hosting interactive ML apps, supports Gradio, Streamlit, Docker, and static SDKs with a free CPU tier, paid CPU/GPU upgrades, and a ZeroGPU shared-pool tier. Differentiates through tight integration with the Hugging Face Hub (one-click deploy from any model card) and community discoverability, making it the default demo surface for nearly every open-weight model release. ~400K+ apps as of early 2026 with reportedly ~40K new Spaces created per month and 100M+ monthly visits; the canonical 'where you go to try an open model in your browser'.",
           "openness": {
-            "score": 2,
-            "class": "open_core",
-            "components": "platform:proprietary(HF-managed hosting);SDKs:Gradio(Apache-2.0 OSS), Streamlit(OSS), Docker;runtime/control-plane:closed(no self-hostable Spaces);hardware-tiers:CPU free + paid GPU upgrades",
+            "score": 1,
+            "class": "closed",
+            "components": "platform:proprietary(HF-managed hosting/orchestration, no self-hostable Spaces);open-part:app SDKs only (Gradio Apache-2.0, Streamlit) which are separate, portable OSS products;hardware-tiers:CPU free + paid GPU upgrades",
             "confidence": "medium",
-            "note": "The app SDKs (Gradio etc.) are OSS and apps run as arbitrary Docker, but the Spaces hosting/orchestration platform is a closed managed service; open SDKs over a proprietary host = open_core-ish. Not self-hostable as Spaces.",
+            "note": "Closed managed hosting service. Apps are built with OSS SDKs (Gradio etc.) that run anywhere, but Spaces itself - the managed host/orchestration - is proprietary and not self-hostable; those SDKs are separate products, not a Spaces open core. Reclassified from open_core (borderline).",
             "sources": [
               {
                 "url": "https://huggingface.co/docs/hub/spaces",
@@ -22734,7 +22734,7 @@
                 "accessed": "2026-06-04"
               }
             ],
-            "bucket": "open"
+            "bucket": "closed"
           },
           "adoption": {
             "level": 5,
@@ -24113,7 +24113,7 @@
     "edge_hardware"
   ],
   "n_total": 427,
-  "generated": "2026-06-26",
+  "generated": "2026-06-29",
   "long_tail": {
     "counts": {
       "repos": 15375,
