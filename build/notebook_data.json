@@ -1005,36 +1005,26 @@
           "version_note": "Kimi K2.6, 1T total / 32B active MoE (384 experts, MLA), 256K context, 400M-param MoonViT vision encoder. Released April 20 2026 (rolled to all subscribers Apr 13). Verified live on HF June 2026."
         },
         {
-          "product": "OLMo 2",
+          "product": "OLMo 3",
           "org": "Ai2",
           "type": "model",
-          "description": "OLMo 2 family (1B/7B/13B/32B), base + Instruct. Latest 32B-Instruct (0325) and 1B (0425, updated May 2025). Verified existing June 2026; succeeded by OLMo 3 announced late 2025/2026.",
+          "description": "Ai2's OLMo 3 family (7B/32B; Base, Think, Instruct, RL-Zero), released Nov 2025 with a Dec 2025 3.1 update. Fully open: Apache-2.0 weights plus the 9.3T-token Dolma 3 corpus, training code, recipes and intermediate checkpoints. The strongest fully-open base model to date; supersedes OLMo 2.",
           "openness": {
             "score": 5,
             "class": "open_source",
-            "components": "weights:open(Apache-2.0);data:open(Dolma/Tulu, all stages incl pre/mid/post-training);code:open(training code+recipes+logs);checkpoints:open(thousands of intermediate);license:Apache-2.0(OSI)",
+            "components": "weights:open(Apache-2.0);data:open(Dolma 3, 9.3T tokens, all stages);code:open(training code+recipes+logs);checkpoints:open(intermediate);license:Apache-2.0(OSI)",
             "confidence": "high",
-            "note": "weights:open(Apache-2.0);data:open(Dolma/Tulu, all stages incl pre/mid/post-training);code:open(training code+recipes+logs);checkpoints:open(thousands of intermediate);license:Apache-2.0(OSI)",
+            "note": "Fully open: Apache-2.0 weights + the complete Dolma 3 corpus + training code + intermediate checkpoints. The reference fully-open model line.",
             "sources": [
               {
-                "url": "https://allenai.org/blog/olmo2",
-                "shows": "flagship phase-C verification source",
-                "accessed": "2026-06-04"
+                "url": "https://allenai.org/blog/olmo3",
+                "shows": "fully-open release: weights, Dolma 3 data, code, recipes, checkpoints; Nov 2025 / Dec 2025 3.1 update",
+                "accessed": "2026-06-30"
               },
               {
-                "url": "https://huggingface.co/allenai/OLMo-2-1124-7B",
-                "shows": "flagship phase-C verification source",
-                "accessed": "2026-06-04"
-              },
-              {
-                "url": "https://arxiv.org/pdf/2501.00656",
-                "shows": "flagship phase-C verification source",
-                "accessed": "2026-06-04"
-              },
-              {
-                "url": "https://huggingface.co/collections/allenai/olmo-2",
-                "shows": "flagship phase-C verification source",
-                "accessed": "2026-06-04"
+                "url": "https://huggingface.co/allenai/Olmo-3-1025-7B",
+                "shows": "OLMo 3 7B base on HF; Apache-2.0",
+                "accessed": "2026-06-30"
               }
             ],
             "bucket": "open"
@@ -1043,43 +1033,33 @@
             "level": 4,
             "reach": "1M-10M",
             "signal_type": "usage_volume",
-            "confidence": "high",
-            "note": "ATOM Report (Apr 2026) measures ~14.8M cumulative downloads for the OLMo family on Hugging Face; OLMo 2 1B alone ~323k downloads. Falls in 1-10M cumulative downloads band. Strong in research/interpretability circles but small vs Qwen/Llama scale.",
+            "confidence": "medium",
+            "note": "Succeeds OLMo 2 (the OLMo family measured ~14.8M cumulative HF downloads in early 2026). The reference fully-open model in research/interpretability circles; below the Qwen/Llama scale.",
             "sources": [
               {
-                "url": "https://arxiv.org/html/2604.07190v1",
-                "shows": "flagship phase-C verification source",
-                "accessed": "2026-06-04"
-              },
-              {
-                "url": "https://huggingface.co/allenai/OLMo-2-0425-1B",
-                "shows": "flagship phase-C verification source",
-                "accessed": "2026-06-04"
+                "url": "https://allenai.org/blog/olmo3",
+                "shows": "flagship fully-open release; broad research uptake",
+                "accessed": "2026-06-30"
               }
             ]
           },
           "capability": {
-            "score": 3,
-            "basis": "benchmark:MMLU/GPQA",
-            "value": null,
+            "score": 4,
+            "basis": "benchmark:MMLU/GPQA/reasoning",
+            "value": "OLMo 3-Think 32B narrows the gap to Qwen3-32B on reasoning at ~6x fewer tokens",
             "confidence": "high",
-            "note": "OLMo 2 32B is the most capable; reported competitive with GPT-3.5-Turbo / GPT-4o-mini class and Qwen 2.5 on academic benchmarks but below current frontier open models (DeepSeek-V4, Qwen 3.6). Mid-tier capability; the value proposition is full openness, not raw SOTA.",
+            "note": "Strongest fully-open base/reasoning model to date; competitive with Qwen2.5/Gemma3 and approaching Qwen3-32B, but still a step below the trillion-param open-weight frontier (=5).",
             "sources": [
               {
-                "url": "https://allenai.org/blog/olmo2",
-                "shows": "flagship phase-C verification source",
-                "accessed": "2026-06-04"
-              },
-              {
-                "url": "https://arxiv.org/pdf/2501.00656",
-                "shows": "flagship phase-C verification source",
-                "accessed": "2026-06-04"
+                "url": "https://allenai.org/blog/olmo3",
+                "shows": "OLMo 3-Think 32B strongest fully-open reasoning model; OLMo 3-Base beats fully-open peers (K2, Marin, Apertus)",
+                "accessed": "2026-06-30"
               }
             ]
           },
-          "maturity": 3.3,
+          "maturity": 4.0,
           "mature": false,
-          "version_note": "OLMo 2 family (1B/7B/13B/32B), base + Instruct. Latest 32B-Instruct (0325) and 1B (0425, updated May 2025). Verified existing June 2026; succeeded by OLMo 3 announced late 2025/2026."
+          "version_note": "Apache-2.0; fully-open weights + Dolma 3 data + training code + checkpoints. OLMo 3-Think 32B is the strongest fully-open reasoning model, narrowing the gap to Qwen3-32B on ~6x fewer tokens; still below the trillion-param open-weight frontier."
         },
         {
           "product": "Pythia",
@@ -2343,55 +2323,61 @@
           "version_note": "Apertus family (8B + 70B, base + Instruct), released 2 Sep 2025 by the Swiss AI Initiative (EPFL, ETH Zurich, CSCS). 15T training tokens across 1,811 natively supported languages (~40% non-English, incl. Swiss German and Romansh), 65,536-token context, trained on 4,096 GH200 GPUs (Alps/CSCS) with Megatron-LM. Verified live on Hugging Face June 2026 (swiss-ai/Apertus-70B-2509)."
         },
         {
-          "product": "SmolLM2",
+          "product": "SmolLM3",
           "org": "Hugging Face",
           "type": "model",
-          "description": "Hugging Face's fully-open small-model family (135M, 360M, 1.7B; base + Instruct). The 1.7B was trained on 11T tokens (FineWeb-Edu, DCLM, The Stack, plus math/code), with the SmolLM-Corpus and training recipes published - a fully-open-pipeline model alongside OLMo 2 and Pythia, light enough to run on-device.",
+          "description": "Hugging Face's fully-open 3B small-model line (base + Instruct), released Jul 2025. Trained on ~11T tokens with a 128K context window and 6-language multilingual support; dual-mode reasoning. The full engineering blueprint (architecture, data mixtures, training and post-training recipe) is published. Supersedes SmolLM2.",
           "openness": {
             "score": 5,
             "class": "open_source",
-            "components": "weights:open(Apache-2.0);data:open(SmolLM-Corpus,odc-by);code:open(github.com/huggingface/smollm);license:Apache-2.0(OSI)",
+            "components": "weights:open(Apache-2.0);data:open(public data mixtures, ~11T tokens);code:open(training+post-training recipe published);license:Apache-2.0(OSI)",
             "confidence": "high",
-            "note": "Fully-open pipeline: open weights, open training corpus, and public training code under OSI licenses.",
+            "note": "Fully-open small-model line: Apache-2.0 weights with the complete engineering blueprint (architecture, data mixtures, training and post-training recipe) published.",
             "sources": [
               {
-                "url": "https://huggingface.co/HuggingFaceTB/SmolLM2-1.7B",
-                "shows": "Apache-2.0, 11T-token training, sizes",
-                "accessed": "2026-06-17"
+                "url": "https://huggingface.co/blog/smollm3",
+                "shows": "fully-open 3B: 11T tokens, 128K context, multilingual, full recipe published",
+                "accessed": "2026-06-30"
+              },
+              {
+                "url": "https://huggingface.co/HuggingFaceTB/SmolLM3-3B",
+                "shows": "SmolLM3-3B on HF; Apache-2.0",
+                "accessed": "2026-06-30"
               }
             ],
             "bucket": "open"
           },
           "adoption": {
             "level": 3,
+            "reach": "100K-1M",
             "signal_type": "usage_volume",
-            "confidence": "high",
-            "note": "~184k monthly downloads on SmolLM2-1.7B; widely used as an on-device/research small model.",
+            "confidence": "medium",
+            "note": "Popular fully-open small model (HF's SmolLM line saw ~184k monthly downloads at the SmolLM2 generation); strong in on-device/edge use, niche vs the large open-weight families.",
             "sources": [
               {
-                "url": "https://huggingface.co/HuggingFaceTB/SmolLM2-1.7B",
-                "shows": "~184,032 downloads last month",
-                "accessed": "2026-06-17"
+                "url": "https://huggingface.co/HuggingFaceTB/SmolLM3-3B",
+                "shows": "active SmolLM3-3B HF repo",
+                "accessed": "2026-06-30"
               }
             ]
           },
           "capability": {
             "score": 3,
-            "basis": "benchmark:HumanEval/MMLU/GSM8K",
-            "value": "best-in-class for its parameter band (beats Qwen2.5-1.5B, Llama-3.2-1B on several evals)",
-            "confidence": "medium",
-            "note": "Strong for its size; small-model tier overall - the value is full openness + efficiency.",
+            "basis": "benchmark:reasoning/multilingual",
+            "value": "Outperforms Llama-3.2-3B and Qwen2.5-3B; competitive with 4B Qwen3/Gemma3",
+            "confidence": "high",
+            "note": "Strong intelligence-per-parameter for a 3B model, but small absolute capability vs larger open and open-weight models.",
             "sources": [
               {
-                "url": "https://github.com/huggingface/smollm",
-                "shows": "SmolLM2 paper, benchmarks, recipes",
-                "accessed": "2026-06-17"
+                "url": "https://huggingface.co/blog/smollm3",
+                "shows": "beats Llama-3.2-3B and Qwen2.5-3B; competitive with 4B alternatives",
+                "accessed": "2026-06-30"
               }
             ]
           },
           "maturity": 3.0,
           "mature": false,
-          "version_note": "Apache-2.0 weights; SmolLM-Corpus training data (odc-by) and training code public. ~184k monthly downloads on SmolLM2-1.7B."
+          "version_note": "Apache-2.0 weights; public data mixtures and training recipe. Outperforms Llama-3.2-3B and Qwen2.5-3B and stays competitive with 4B Qwen3/Gemma3; light enough to run on-device."
         },
         {
           "product": "Gemma 4",
@@ -2760,6 +2746,63 @@
           "maturity": 1.7,
           "mature": false,
           "version_note": "ALIA-40b base model from BSC-LT (Barcelona Supercomputing Center, Language Technologies Lab), Apache 2.0. 40.4B params, 48 layers, 32,768 context, 256k vocab; 9.37T pretraining tokens (+6.3B for context extension). Trained on MareNostrum 5 under Spain's National Language Technology Plan with EU NextGenerationEU funds. Docs portal: langtech-bsc.gitbook.io/alia-kit. Instruct variant (ALIA-40b-instruct) and the earlier Salamandra family exist but are not separately scored. Verified live on Hugging Face, June 2026 (59 downloads/month, 88 likes)."
+        },
+        {
+          "product": "Marin",
+          "org": "Stanford CRFM",
+          "type": "model",
+          "description": "Stanford CRFM's Marin, a fully-open 'open lab' foundation model (Marin 8B Base/Instruct and 32B Base), built in JAX/Levanter with bit-for-bit reproducibility. Code, data, experiments, hyperparameters and training logs are all documented and released.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "weights:open(Apache-2.0);data:open(documented mixtures);code:open(marin + Levanter, JAX);checkpoints:open;reproducibility:bit-for-bit;license:Apache-2.0(OSI)",
+            "confidence": "high",
+            "note": "Stanford CRFM 'open lab': Apache-2.0 weights plus documented code, data, experiments, hyperparameters and training logs, with bit-for-bit reproducible training.",
+            "sources": [
+              {
+                "url": "http://marin.community/blog/2025/05/19/announcement/",
+                "shows": "Marin open lab: code, data, experiments, logs all shared",
+                "accessed": "2026-06-30"
+              },
+              {
+                "url": "https://huggingface.co/marin-community/marin-8b-base",
+                "shows": "Marin 8B Base on HF; marin-community",
+                "accessed": "2026-06-30"
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "10K-100K",
+            "signal_type": "usage_volume",
+            "confidence": "low",
+            "note": "Research-stage fully-open project; modest adoption. Included as a fully-open exemplar and to track Stanford CRFM's entry, not on popularity.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/marin-community/marin-8b-base",
+                "shows": "marin-community HF org; research-stage uptake",
+                "accessed": "2026-06-30"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "benchmark:MMLU/academic",
+            "value": "Marin 8B Base competitive among fully-open models; 32B Base released",
+            "confidence": "medium",
+            "note": "Mid-tier fully-open capability at 8B/32B; OLMo 3 outperforms it on fully-open model evaluations.",
+            "sources": [
+              {
+                "url": "https://developers.googleblog.com/stanfords-marin-foundation-model-first-fully-open-model-developed-using-jax/",
+                "shows": "Marin 8B fully-open, JAX/Levanter, 12T tokens",
+                "accessed": "2026-06-30"
+              }
+            ]
+          },
+          "maturity": 2.7,
+          "mature": false,
+          "version_note": "Apache-2.0; ~12T-token training run with full data/code/logs and bit-reproducible training. Fully open but below OLMo 3 on fully-open evals; modest adoption."
         }
       ]
     },
@@ -2768,8 +2811,8 @@
       "arc": "Model components",
       "layer": "model_components",
       "stage": {
-        "num": 2,
-        "name": "Emerging Alternatives"
+        "num": 3,
+        "name": "Viable Alternatives"
       },
       "gaps": [
         "maturity",
@@ -3369,26 +3412,26 @@
           "version_note": "Scored on StarCoder2-15B-Instruct-v0.1 (the instruct SKU; 16B, self-aligned, released 31 Oct 2024, arXiv:2410.24198). NOTE: base StarCoder2-15B (Feb 2024) is a pretrained model belonging in base_pretrained; only the instruct variant fits finetuned_chat. Both verified live on HF June 2026."
         },
         {
-          "product": "OLMo 2 Instruct",
+          "product": "OLMo 3 Instruct",
           "org": "Ai2",
           "type": "model",
-          "description": "Instruction-tuned chat SKUs of Ai2's OLMo 2 family (7B/13B/32B-Instruct), post-trained with the fully-open Tulu 3 pipeline (SFT -> DPO -> RLVR) on top of the open OLMo 2 base. Distinct from the base OLMo 2 family entry (base_pretrained): separate HF repos, separate post-training, and the chat-relevant capability axis (IFEval, AlpacaEval). Verified live on HF June 2026.",
+          "description": "Instruction-tuned chat SKUs of Ai2's OLMo 3 family (7B/32B-Instruct), post-trained on the fully-open OLMo 3 base. OLMo 3-Instruct 7B ties or surpasses Qwen 2.5, Gemma 3 and Llama 3.1 at its scale. Apache-2.0; open weights, data, recipe and checkpoints. Supersedes OLMo 2 Instruct.",
           "openness": {
             "score": 5,
             "class": "open_source",
-            "components": "weights:open(Apache-2.0);data:open(Dolma/OLMo-Mix pretraining + Tulu 3 post-training mixtures);code:open(OLMo + open-instruct training code, recipes);checkpoints:open(intermediate);license:Apache-2.0(OSI)",
+            "components": "weights:open(Apache-2.0);data:open(Dolma 3 pretraining + open post-training mixtures);code:open(OLMo + open-instruct);checkpoints:open;license:Apache-2.0(OSI)",
             "confidence": "high",
-            "note": "Genuinely fully-open instruct line: Apache-2.0 weights + open pretraining and post-training data + open training code/recipe + intermediate checkpoints. Open_source tier 5. Post-trained with the open Tulu 3 SFT->DPO->RLVR pipeline. Cards note limited safety training.",
+            "note": "Fully-open instruct line: Apache-2.0 weights + open pretraining and post-training data + open training code + checkpoints.",
             "sources": [
               {
-                "url": "https://huggingface.co/allenai/OLMo-2-0325-32B-Instruct",
-                "shows": "License Apache-2.0; Tulu 3 SFT+DPO+RLVR post-training; fully-open data/code/checkpoints",
-                "accessed": "2026-06-25"
+                "url": "https://huggingface.co/allenai/Olmo-3-7B-Instruct",
+                "shows": "OLMo 3 7B Instruct on HF; Apache-2.0",
+                "accessed": "2026-06-30"
               },
               {
-                "url": "https://allenai.org/blog/olmo2",
-                "shows": "\"best fully open language model to date\"; releases weights, data, code, recipes, intermediate checkpoints, and instruction-tuned models",
-                "accessed": "2026-06-25"
+                "url": "https://allenai.org/blog/olmo3",
+                "shows": "fully-open instruct models released with data, code, recipes",
+                "accessed": "2026-06-30"
               }
             ],
             "bucket": "open"
@@ -3397,38 +3440,33 @@
             "level": 3,
             "reach": "10K-100K",
             "signal_type": "usage_volume",
-            "confidence": "high",
-            "note": "Combined ~58k HF downloads/month across the three named instruct SKUs (7B-Instruct ~45.2k, 13B-Instruct ~6.9k, 32B-Instruct ~5.9k). 32B-Instruct carries the highest likes (147). Solid research/practitioner reach; below the Qwen/Llama instruct workhorses.",
+            "confidence": "medium",
+            "note": "Solid research/practitioner reach for a fully-open instruct line; below the Qwen/Llama instruct workhorses. Downloads still ramping as it supersedes OLMo 2 Instruct.",
             "sources": [
               {
-                "url": "https://huggingface.co/allenai/OLMo-2-1124-7B-Instruct",
-                "shows": "~45,191 downloads last month",
-                "accessed": "2026-06-25"
-              },
-              {
-                "url": "https://huggingface.co/allenai/OLMo-2-0325-32B-Instruct",
-                "shows": "~5,918 downloads last month; 147 likes",
-                "accessed": "2026-06-25"
+                "url": "https://huggingface.co/allenai/Olmo-3-7B-Instruct",
+                "shows": "OLMo 3 Instruct SKUs live on HF",
+                "accessed": "2026-06-30"
               }
             ]
           },
           "capability": {
-            "score": 3,
-            "basis": "benchmark:MMLU/IFEval/AlpacaEval",
-            "value": "OLMo-2-32B-Instruct MMLU 77.3, GSM8K 87.6, IFEval 85.6, AlpacaEval2 LC 42.8",
+            "score": 4,
+            "basis": "benchmark:IFEval/AlpacaEval/MMLU",
+            "value": "OLMo 3-Instruct 7B ties or surpasses Qwen 2.5, Gemma 3 and Llama 3.1 at its scale",
             "confidence": "high",
-            "note": "32B-Instruct competitive with GPT-4o-mini / Qwen2.5-32B class and outperforms GPT-3.5 Turbo on most benchmarks; mid-tier on a scale where 5 = 2026 frontier chat. The value proposition is full openness, not raw SOTA.",
+            "note": "Strongest fully-open chat line; competitive with same-scale open-weight instruct models but below the 2026 frontier (=5).",
             "sources": [
               {
-                "url": "https://huggingface.co/allenai/OLMo-2-0325-32B-Instruct",
-                "shows": "MMLU 77.3, GSM8K 87.6, IFEval 85.6; comparison vs GPT-4o-mini and Qwen2.5-32B",
-                "accessed": "2026-06-25"
+                "url": "https://allenai.org/blog/olmo3",
+                "shows": "OLMo 3-Instruct 7B ties/surpasses Qwen 2.5, Gemma 3, Llama 3.1",
+                "accessed": "2026-06-30"
               }
             ]
           },
-          "maturity": 3.0,
+          "maturity": 3.7,
           "mature": false,
-          "version_note": "Scored on the OLMo 2 Instruct SKUs (0325 32B-Instruct is the most capable). Apache-2.0; fully-open weights + data + recipe + intermediate checkpoints. Post-training via the Tulu 3 recipe."
+          "version_note": "Apache-2.0; fully-open instruct line post-trained with the open Tulu/OLMo recipe."
         },
         {
           "product": "OLMoE Instruct",
@@ -3622,26 +3660,26 @@
           "version_note": "Scored on zephyr-7b-beta (MIT; base Mistral-7B Apache-2.0). Fully-open: weights + open DPO datasets (UltraChat/UltraFeedback, MIT) + open training code (alignment-handbook, Apache-2.0). Late-2023 capability, still ~165k HF downloads/month."
         },
         {
-          "product": "K2 Chat",
+          "product": "K2-V2",
           "org": "LLM360",
           "type": "model",
-          "description": "LLM360's fully-open 65B instruction-tuned chat model (K2-Chat). LLM360 is the reference \"fully reproducible\" LLM project: it releases data-prep code, training code, intermediate checkpoints, and named instruction-tuning data, all Apache-2.0. A clean fully-open exemplar; modest adoption and last updated Jan 2025. Verified live on HF June 2026.",
+          "description": "LLM360 / MBZUAI's K2-V2 (70B dense), released Dec 2025: a 360-open, reasoning-enhanced LLM. Fully reproducible — Apache-2.0 weights plus the complete TxT360 pretraining, midtraining and SFT data, training code and checkpoints. Supersedes the 65B K2 Chat.",
           "openness": {
             "score": 5,
             "class": "open_source",
-            "components": "weights:open(Apache-2.0);data:open(named instruction sets + open data-prep code);code:open(k2-train training code);checkpoints:open;license:Apache-2.0(OSI)",
+            "components": "weights:open(Apache-2.0);data:open(TxT360 pretraining + midtraining + SFT);code:open(k2v2_train);checkpoints:open;license:Apache-2.0(OSI)",
             "confidence": "high",
-            "note": "LLM360 is the reference fully-reproducible LLM project: open weights + open data-prep code + open training code + open checkpoints, all Apache-2.0. A clean open_source exemplar (tier 5) for the instruct category.",
+            "note": "360-open / fully reproducible: Apache-2.0 weights + complete TxT360 data + training code + checkpoints. A clean fully-open exemplar at 70B.",
             "sources": [
               {
-                "url": "https://huggingface.co/LLM360/K2-Chat",
-                "shows": "License Apache-2.0; 65B instruct; open data/code/checkpoints",
-                "accessed": "2026-06-25"
+                "url": "https://huggingface.co/LLM360/K2-V2",
+                "shows": "K2-V2 70B; Apache-2.0; open data/code/checkpoints",
+                "accessed": "2026-06-30"
               },
               {
-                "url": "https://github.com/LLM360",
-                "shows": "k2-train (training code) and k2-data-prep (data preparation code), Apache-2.0",
-                "accessed": "2026-06-25"
+                "url": "https://arxiv.org/abs/2512.06201",
+                "shows": "K2-V2: A 360-Open, Reasoning-Enhanced LLM (Dec 2025); TxT360 data fully released",
+                "accessed": "2026-06-30"
               }
             ],
             "bucket": "open"
@@ -3651,32 +3689,32 @@
             "reach": "10K-100K",
             "signal_type": "usage_volume",
             "confidence": "medium",
-            "note": "LOW-CONFIDENCE PROMINENCE CALL (flagged for review): ~651 HF downloads/month, 21,298 all-time, 37 likes; last modified Jan 2025. Niche, not a mass-adoption model. Included as a clean fully-open exemplar rather than on popularity. Aggregate all-time volume puts it just into the 10K-100K band -> level 2; monthly volume alone would argue level 1.",
+            "note": "New (Dec 2025) and still niche, like its K2 predecessor; included as a clean fully-open 70B exemplar rather than on popularity.",
             "sources": [
               {
-                "url": "https://huggingface.co/LLM360/K2-Chat",
-                "shows": "~651 downloads last month; 21,298 all-time; 37 likes; last modified 2025-01-12",
-                "accessed": "2026-06-25"
+                "url": "https://huggingface.co/LLM360/K2-V2",
+                "shows": "K2-V2 repo live on HF; niche download volume",
+                "accessed": "2026-06-30"
               }
             ]
           },
           "capability": {
-            "score": 3,
-            "basis": "benchmark:MMLU/GSM8K",
-            "value": "K2-Chat MMLU 69.14, GSM8K 77.10, BBH 70.37, HumanEval 60.82, TruthfulQA 57.32",
+            "score": 4,
+            "basis": "benchmark:MMLU/GSM8K/reasoning",
+            "value": "Outperforms Qwen2.5-72B; approaches Qwen3-235B",
             "confidence": "medium",
-            "note": "Reported to outperform Llama 2 70B Chat using ~35% less compute. Solid mid-tier for a 2024 fully-open 65B; below 2026 frontier chat models. Numbers are card-reported (not independently re-run) -> medium confidence.",
+            "note": "Strongest fully-open model by parameter scale (70B dense), with strong long-context and math/reasoning; OLMo 3 still leads on fully-open evals. Card/report-reported numbers -> medium confidence.",
             "sources": [
               {
-                "url": "https://huggingface.co/LLM360/K2-Chat",
-                "shows": "MMLU 69.14, GSM8K 77.10, BBH 70.37, HumanEval 60.82; outperforms Llama 2 70B Chat with ~35% less compute",
-                "accessed": "2026-06-25"
+                "url": "https://arxiv.org/abs/2512.06201",
+                "shows": "outperforms Qwen2.5-72B, approaches Qwen3-235B",
+                "accessed": "2026-06-30"
               }
             ]
           },
-          "maturity": 2.7,
+          "maturity": 3.4,
           "mature": false,
-          "version_note": "Apache-2.0; open weights + open data-prep + open training code + open checkpoints. 65B. Reported to outperform Llama 2 70B Chat using ~35% less compute. Niche adoption (~651 HF downloads/month)."
+          "version_note": "Apache-2.0; open weights + open TxT360 data + open training code + checkpoints. Outperforms Qwen2.5-72B and approaches Qwen3-235B; strongest fully-open model by parameter scale, though OLMo 3 leads on fully-open evals."
         },
         {
           "product": "Phi-4-mini-instruct",
@@ -5514,6 +5552,58 @@
           "maturity": 5.0,
           "mature": false,
           "version_note": "Proprietary/API-only (Gemini API + Vertex AI). On LMArena's frontier (Google claimed #1 / ~1501 Elo at launch; ~#8 mid-2026 per third-party mirrors). Note the original gemini-3-pro-preview endpoint was reportedly superseded by gemini-3.1-pro (~Mar 2026)."
+        },
+        {
+          "product": "VibeThinker-3B",
+          "org": "WeiboAI",
+          "type": "model",
+          "description": "WeiboAI's VibeThinker-3B, an MIT-licensed 3B reasoning model fine-tuned from Qwen2.5-3B / Qwen2.5-Coder-3B and specialized for verifiable math, coding and STEM. Claims frontier-range scores on narrow reasoning benchmarks despite its size; not intended for tool-calling or agentic use.",
+          "openness": {
+            "score": 3,
+            "class": "open_weights",
+            "components": "weights:open(MIT);base:open_weights(Qwen2.5);data:partial(RL/SFT data not fully released);license:MIT",
+            "confidence": "medium",
+            "note": "MIT-licensed weights, but a fine-tune of the open-weight Qwen2.5 line without a fully open/reproducible data+training pipeline -> open_weights tier, not open_source.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/WeiboAI/VibeThinker-3B",
+                "shows": "VibeThinker-3B; MIT license; fine-tuned from Qwen2.5-3B / Qwen2.5-Coder-3B",
+                "accessed": "2026-06-30"
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "10K-100K",
+            "signal_type": "reported_traction",
+            "confidence": "low",
+            "note": "Recently released specialist model with early attention for its size; directional estimate (not a measured usage figure).",
+            "sources": [
+              {
+                "url": "https://huggingface.co/WeiboAI/VibeThinker-3B",
+                "shows": "active HF repo; early traction as a small reasoning specialist",
+                "accessed": "2026-06-30"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "benchmark:AIME/GPQA/LeetCode",
+            "value": "AIME 2026 94.3, GPQA Diamond 70.2, IMO-AnswerBench 76.4, LeetCode 96.1% accept",
+            "confidence": "medium",
+            "note": "Frontier-range on narrow verifiable math/code reasoning despite 3B, but explicitly not for general/agentic use -> mid-tier on a general-capability scale.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/WeiboAI/VibeThinker-3B",
+                "shows": "reports AIME 2026 94.3, GPQA Diamond 70.2, IMO-AnswerBench 76.4; not for tool/agent use",
+                "accessed": "2026-06-30"
+              }
+            ]
+          },
+          "maturity": 2.7,
+          "mature": false,
+          "version_note": "MIT-licensed weights, but a fine-tune of the open-weight Qwen2.5 line without a fully open data/training pipeline -> open_weights, not open_source. Narrow specialist."
         }
       ]
     },
@@ -25439,19 +25529,19 @@
     "edge_hardware",
     "safeguards"
   ],
-  "n_total": 452,
-  "generated": "2026-06-29",
+  "n_total": 454,
+  "generated": "2026-06-30",
   "long_tail": {
     "counts": {
       "repos": 15375,
       "models": 6428,
       "packages": 2823,
       "total": 24626,
-      "scored": 452,
+      "scored": 454,
       "overlap": 226,
-      "scored_outside": 226,
+      "scored_outside": 228,
       "uncategorized": 24400,
-      "universe": 24852
+      "universe": 24854
     },
     "top": [
       {
