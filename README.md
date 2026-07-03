@@ -32,16 +32,16 @@ the published map.
 
 ## Contribute
 
-The map is a public, iterative effort, and community curation is the point. There are two ways in.
+The map is a public, iterative effort, and community curation is the point. There are two ways in:
 
-**File an issue** (no code needed):
-[suggest a product](https://github.com/currentai-org/os-ai-map/issues/new?template=suggest-a-product.yml),
-[report an error](https://github.com/currentai-org/os-ai-map/issues/new?template=report-an-error.yml), or
-[propose a category](https://github.com/currentai-org/os-ai-map/issues/new?template=propose-a-category.yml).
+1. **File an issue** (no code needed):
+   [suggest a product](https://github.com/currentai-org/os-ai-map/issues/new?template=suggest-a-product.yml),
+   [report an error](https://github.com/currentai-org/os-ai-map/issues/new?template=report-an-error.yml), or
+   [propose a category](https://github.com/currentai-org/os-ai-map/issues/new?template=propose-a-category.yml).
 
-**Open a pull request** editing `sources/`. Adding a product is a handful of small YAML files:
-a product record, a score with citations, and an entry in one category roster and one
-organization roster. [CONTRIBUTING.md](CONTRIBUTING.md) has the full recipe and the scoring rubric.
+2. **Open a pull request** editing `sources/`. Adding a product is a handful of small YAML files:
+   a product record, a score with citations, and an entry in one category roster and one
+   organization roster. [CONTRIBUTING.md](CONTRIBUTING.md) has the full recipe and the scoring rubric.
 
 A few ground rules:
 
