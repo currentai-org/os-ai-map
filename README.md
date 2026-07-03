@@ -1,20 +1,15 @@
 <div align="center">
 
-<a href="https://map.currentai.org/"><img src="assets/hero.png" alt="Open Source AI Stack Gap Map" width="640"></a>
+<a href="https://map.currentai.org/"><img src="assets/hero.png" alt="Open Source AI Stack Gap Map" width="100%"></a>
 
-**The public data + modeling home behind the [Open Source AI Gap Map](https://map.currentai.org/).**
-
-<p align="center">
-  <a href="https://github.com/currentai-org/os-ai-map/actions/workflows/validate.yml"><img src="https://github.com/currentai-org/os-ai-map/actions/workflows/validate.yml/badge.svg" alt="Validate"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
-  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.12+-blue.svg" alt="Python 3.12+"></a>
-  <a href="https://map.currentai.org/"><img src="https://img.shields.io/badge/live-map.currentai.org-F0776A.svg" alt="Live map"></a>
-</p>
+**The public data + scoring behind the [Open Source AI Gap Map](https://map.currentai.org/).**
 
 <p align="center">
   <img src="https://img.shields.io/badge/categories-15-F0776A" alt="15 categories">
   <img src="https://img.shields.io/badge/organizations-249-F0776A" alt="249 organizations">
   <img src="https://img.shields.io/badge/products-458-F0776A" alt="458 products">
+  <a href="https://github.com/currentai-org/os-ai-map/actions/workflows/validate.yml"><img src="https://github.com/currentai-org/os-ai-map/actions/workflows/validate.yml/badge.svg" alt="Validate"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
 </p>
 
 </div>
