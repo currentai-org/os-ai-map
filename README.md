@@ -8,12 +8,18 @@
 
 Curated YAML scoring the public-interest AI stack — from base models through orchestration, agents, and deployment — on openness, capability, and adoption.
 
-[![Validate](https://github.com/currentai-org/os-ai-map/actions/workflows/validate.yml/badge.svg)](https://github.com/currentai-org/os-ai-map/actions/workflows/validate.yml)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/)
-[![Live map](https://img.shields.io/badge/live-map.currentai.org-F0776A.svg)](https://map.currentai.org/)
+<p align="center">
+  <a href="https://github.com/currentai-org/os-ai-map/actions/workflows/validate.yml"><img src="https://github.com/currentai-org/os-ai-map/actions/workflows/validate.yml/badge.svg" alt="Validate"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
+  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.12+-blue.svg" alt="Python 3.12+"></a>
+  <a href="https://map.currentai.org/"><img src="https://img.shields.io/badge/live-map.currentai.org-F0776A.svg" alt="Live map"></a>
+</p>
 
-**458 products · 15 categories · 249 organizations**
+<table align="center"><tr>
+  <td align="center"><img src="assets/icons/products.svg" width="40" height="40" alt=""><br><b>458</b><br>products</td>
+  <td align="center"><img src="assets/icons/categories.svg" width="40" height="40" alt=""><br><b>15</b><br>categories</td>
+  <td align="center"><img src="assets/icons/organizations.svg" width="40" height="40" alt=""><br><b>249</b><br>organizations</td>
+</tr></table>
 
 </div>
 
