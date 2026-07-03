@@ -2,7 +2,7 @@
 
 <a href="https://map.currentai.org/"><img src="assets/hero.png" alt="Open Source AI Stack Gap Map" width="100%"></a>
 
-**The public data + scoring behind the [Open Source AI Gap Map](https://map.currentai.org/).**
+**The public data + scoring behind the [Open Source AI Stack Gap Map](https://map.currentai.org/).**
 
 <p align="center">
   <img src="https://img.shields.io/badge/categories-15-F0776A" alt="15 categories">
@@ -17,7 +17,7 @@
 ---
 
 The open source AI stack is already strong, but it's fragmented, duplicative, and hard to
-see as a whole. The [Open Source AI Gap Map](https://map.currentai.org/) makes it legible: a
+see as a whole. The [Open Source AI Stack Gap Map](https://map.currentai.org/) makes it legible: a
 living map of what exists across the stack, how open each piece is, how widely it's used, and
 where the gaps are — so the community can see where to build, where to invest, and where to
 open things up.
