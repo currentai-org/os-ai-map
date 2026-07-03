@@ -1,0 +1,37 @@
+product: ornith
+openness:
+  score: 3
+  class: open_weights
+  components: weights:open(MIT);base:Qwen3.5;data:closed;recipe:closed;license:MIT(OSI)
+  confidence: high
+  note: MIT-licensed open weights on a Qwen 3.5 base, but no open training data or recipe -> open_weights.
+  sources:
+  - url: https://huggingface.co/deepreinforce-ai/Ornith-1.0-9B
+    shows: license:mit tag; qwen3_5 architecture; safetensors weights
+    accessed: '2026-07-03'
+adoption:
+  level: 3
+  reach: 100k-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: ~352k HF downloads last month combined across the primary weights repo (~64k) and the GGUF quant
+    (~288k), July 2026; 361 + 407 likes. Squarely in the 100k-1M band.
+  sources:
+  - url: https://huggingface.co/deepreinforce-ai/Ornith-1.0-9B
+    shows: 64,051 downloads last month, 361 likes
+    accessed: '2026-07-03'
+  - url: https://huggingface.co/deepreinforce-ai/Ornith-1.0-9B-GGUF
+    shows: 287,942 downloads last month, 407 likes
+    accessed: '2026-07-03'
+capability:
+  score: 4
+  basis: benchmark:SWE-Bench/Terminal-Bench
+  value: SWE-Bench Verified 69.4, SWE-Bench Pro 42.9, Terminal-Bench 2.1 ~43 (Terminus-2) / ~40.6 (Claude
+    Code); agentic coding with reasoning and tool-calling
+  confidence: medium
+  note: Strong agentic-coding scores for a 9B and competitive within the category, but below the frontier
+    coders; benchmarks are vendor-reported on the model card.
+  sources:
+  - url: https://huggingface.co/deepreinforce-ai/Ornith-1.0-9B
+    shows: reported SWE-Bench Verified / Pro and Terminal-Bench results
+    accessed: '2026-07-03'
