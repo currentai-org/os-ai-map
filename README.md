@@ -25,6 +25,7 @@ open things up.
 This repo is the data behind that map. Everything is curated YAML in `sources/`; a
 deterministic pipeline validates it, serializes it to `build/notebook_data.json`, and renders
 the published map.
+
 ---
 
 ## Contribute
