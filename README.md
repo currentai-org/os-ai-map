@@ -16,9 +16,9 @@ Curated YAML scoring the public-interest AI stack — from base models through o
 </p>
 
 <table align="center"><tr>
-  <td align="center"><img src="assets/icons/products.svg" width="40" height="40" alt=""><br><b>458</b><br>products</td>
   <td align="center"><img src="assets/icons/categories.svg" width="40" height="40" alt=""><br><b>15</b><br>categories</td>
   <td align="center"><img src="assets/icons/organizations.svg" width="40" height="40" alt=""><br><b>249</b><br>organizations</td>
+  <td align="center"><img src="assets/icons/products.svg" width="40" height="40" alt=""><br><b>458</b><br>products</td>
 </tr></table>
 
 </div>
