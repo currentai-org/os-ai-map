@@ -2,11 +2,7 @@
 
 <a href="https://map.currentai.org/"><img src="assets/hero.png" alt="Open Source AI Stack Gap Map" width="640"></a>
 
-# os-ai-map
-
-**The public data + modeling home behind the [AI Stack Map](https://map.currentai.org/).**
-
-Curated YAML scoring the public-interest AI stack — from base models through orchestration, agents, and deployment — on openness, capability, and adoption.
+**The public data + modeling home behind the [Open Source AI Gap Map](https://map.currentai.org/).**
 
 <p align="center">
   <a href="https://github.com/currentai-org/os-ai-map/actions/workflows/validate.yml"><img src="https://github.com/currentai-org/os-ai-map/actions/workflows/validate.yml/badge.svg" alt="Validate"></a>
@@ -15,11 +11,11 @@ Curated YAML scoring the public-interest AI stack — from base models through o
   <a href="https://map.currentai.org/"><img src="https://img.shields.io/badge/live-map.currentai.org-F0776A.svg" alt="Live map"></a>
 </p>
 
-<table align="center"><tr>
-  <td align="center"><img src="assets/icons/categories.svg" width="40" height="40" alt=""><br><b>15</b><br>categories</td>
-  <td align="center"><img src="assets/icons/organizations.svg" width="40" height="40" alt=""><br><b>249</b><br>organizations</td>
-  <td align="center"><img src="assets/icons/products.svg" width="40" height="40" alt=""><br><b>458</b><br>products</td>
-</tr></table>
+<p align="center">
+  <img src="https://img.shields.io/badge/categories-15-F0776A" alt="15 categories">
+  <img src="https://img.shields.io/badge/organizations-249-F0776A" alt="249 organizations">
+  <img src="https://img.shields.io/badge/products-458-F0776A" alt="458 products">
+</p>
 
 </div>
 
@@ -27,11 +23,7 @@ Curated YAML scoring the public-interest AI stack — from base models through o
 
 Curated YAML in `sources/` feeds a deterministic build pipeline that serializes to
 `build/notebook_data.json`, renders to `notebooks/ai-stack-map.py`, and publishes to
-the OSO platform. There is no front-end in this repo.
-
-```
-sources/*.yaml ──▶ validate ──▶ serialize ──▶ notebook_data.json ──▶ render ──▶ ai-stack-map.py ──▶ OSO platform
-```
+the OSO platform.
 
 ---
 
