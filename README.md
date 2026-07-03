@@ -1,10 +1,31 @@
+<div align="center">
+
+<a href="https://map.currentai.org/"><img src="assets/hero.png" alt="Open Source AI Stack Gap Map" width="640"></a>
+
 # os-ai-map
 
-The public data + modeling home behind the [AI Stack Map](https://map.currentai.org/).
+**The public data + modeling home behind the [AI Stack Map](https://map.currentai.org/).**
+
+Curated YAML scoring the public-interest AI stack — from base models through orchestration, agents, and deployment — on openness, capability, and adoption.
+
+[![Validate](https://github.com/currentai-org/os-ai-map/actions/workflows/validate.yml/badge.svg)](https://github.com/currentai-org/os-ai-map/actions/workflows/validate.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/)
+[![Live map](https://img.shields.io/badge/live-map.currentai.org-F0776A.svg)](https://map.currentai.org/)
+
+**458 products · 15 categories · 249 organizations**
+
+</div>
+
+---
 
 Curated YAML in `sources/` feeds a deterministic build pipeline that serializes to
 `build/notebook_data.json`, renders to `notebooks/ai-stack-map.py`, and publishes to
 the OSO platform. There is no front-end in this repo.
+
+```
+sources/*.yaml ──▶ validate ──▶ serialize ──▶ notebook_data.json ──▶ render ──▶ ai-stack-map.py ──▶ OSO platform
+```
 
 ---
 
