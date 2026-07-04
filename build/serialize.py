@@ -48,6 +48,9 @@ _GAP_DESC = {
                 "the depth/redundancy of a mature ecosystem (too few mature fully-open products).",
     "openness": "capable, adopted options exist, but the mature ones are not fully open "
                 "(open-ish or closed). This is the orthogonal flag; it can co-occur with the others.",
+    "disclosure": "no closed comparator exists to measure against: the closed frontier does not "
+                  "publish anything in this category, so the open ecosystem is the only measurable "
+                  "one. The meaningful comparison is data availability, not head-to-head maturity.",
 }
 
 
@@ -121,6 +124,14 @@ def _stage_and_gaps(rows: list[dict], weights: dict) -> dict:
             best = max(open_rows, key=lambda rs: rs[1])[0] if open_rows else None
             cap = ((best or {}).get("capability") or {}).get("score")
             gaps.append("capability" if (cap is not None and cap < _CAPABLE_MIN) else "adoption")
+
+    # Disclosure flag (orthogonal, any stage): in an all-dataset category with no
+    # closed-bucket row, the closed frontier publishes nothing at all -- there is no
+    # comparator. Benchmark data does not fire (closed internal evals are documented
+    # and curated as rows); training corpora do. See docs/guides/gap-analysis.md.
+    if rows and all(r.get("type") == "dataset" for r in rows) \
+            and not any(b == "closed" for _, b, _ in enr):
+        gaps.append("disclosure")
 
     return {"num": stage, "name": _STAGE_NAMES[stage], "gaps": gaps}
 

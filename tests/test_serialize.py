@@ -202,3 +202,36 @@ def test_unknown_org_renders_empty_string():
                                       "type": "unknown", "products": ["llama-4"]}}
     payload = build_payload(s, frozen_long_tail={}, generated="2026-06-10")
     assert payload["categories"]["base_pretrained"]["products"][0]["org"] == ""
+
+
+def _pd(cls, adoption):
+    # dataset row: capability is structurally null, graded on adoption alone
+    return {"openness": {"class": cls}, "adoption": {"level": adoption},
+            "capability": {"score": None}, "type": "dataset"}
+
+
+def test_disclosure_gap_when_all_dataset_category_has_no_closed_comparator():
+    # 4 mature open corpora -> Stage 5, but the closed frontier publishes nothing:
+    # disclosure is flagged even at the top rung.
+    rows = [_pd("open", 5) for _ in range(4)] + [_pd("gated", 3)]
+    sg = _stage_and_gaps(rows, {"adopt": 1.0, "cap": 0.0})
+    assert sg["num"] == 5 and sg["gaps"] == ["disclosure"]
+
+
+def test_disclosure_gap_coexists_with_stage_gaps():
+    rows = [_pd("open", 5), _pd("open", 3)]  # one mature open corpus -> stage 4
+    sg = _stage_and_gaps(rows, {"adopt": 1.0, "cap": 0.0})
+    assert sg["num"] == 4 and sg["gaps"] == ["maturity", "disclosure"]
+
+
+def test_no_disclosure_gap_when_closed_comparator_exists():
+    # e.g. benchmark data: closed internal evals are documented and curated as rows
+    rows = [_pd("open", 4), _pd("closed", None)]
+    sg = _stage_and_gaps(rows, {"adopt": 1.0, "cap": 0.0})
+    assert "disclosure" not in sg["gaps"]
+
+
+def test_no_disclosure_gap_for_non_dataset_categories():
+    rows = [_p("open_source", 2, 2)]  # software rows are not dataset-typed
+    sg = _stage_and_gaps(rows, {"adopt": 0.5, "cap": 0.5})
+    assert "disclosure" not in sg["gaps"]
