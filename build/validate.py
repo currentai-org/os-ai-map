@@ -27,7 +27,8 @@ OPENNESS_CLASSES = {
     "dataset": {"open", "gated", "documented_only", "closed"},
     "hardware": {"open_hardware", "open_toolchain", "documented", "restricted"},
 }
-SIGNAL_TYPES = {"active_users", "usage_volume", "reported_traction", "stars_fallback", "unknown"}
+SIGNAL_TYPES = {"active_users", "usage_volume", "reported_traction", "documented_reuse",
+                "stars_fallback", "unknown"}
 LAYERS = {"product_ux", "model_components", "infrastructure"}
 
 
