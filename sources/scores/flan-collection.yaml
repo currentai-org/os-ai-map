@@ -1,0 +1,39 @@
+product: flan-collection
+openness:
+  score: 4
+  class: open
+  components: access:ungated(conversion);license:Apache-2.0(recipe)+per-task;dataset_card:partial
+  confidence: medium
+  note: Released as an Apache-2.0 recipe/repo; the widely used HF conversion (ai2-adapt-dev) is ungated.
+    Underlying task datasets keep their own licenses.
+  sources:
+  - url: https://github.com/google-research/FLAN
+    shows: Apache-2.0 FLAN v2 recipe
+    accessed: '2026-07-04'
+  - url: https://huggingface.co/datasets/ai2-adapt-dev/flan_v2_converted
+    shows: ungated HF conversion used by Tulu/OLMo mixes
+    accessed: '2026-07-04'
+adoption:
+  level: 1
+  reach: <1k
+  signal_type: usage_volume
+  confidence: high
+  note: 924 monthly downloads on Hugging Face, graded on the training-corpus bands.
+  sources:
+  - url: https://huggingface.co/api/datasets/ai2-adapt-dev/flan_v2_converted
+    shows: downloads field = 924 (30-day)
+    accessed: '2026-07-04'
+capability:
+  score: 3
+  basis: training_value:superseded
+  value: null
+  confidence: high
+  note: Strong historical comparative ablations (Flan 2022 beats P3/T0/SNI on the same T5-XL) and still
+    a component in Tulu 3, Dolci, and Marin's mixes, but dated as a standalone chat-era recipe.
+  sources:
+  - url: https://arxiv.org/abs/2301.13688
+    shows: 'The Flan Collection: Flan 2022 leads P3++/Super-NatInst on MMLU/BBH (same T5-XL)'
+    accessed: '2026-07-04'
+  - url: https://huggingface.co/datasets/allenai/Dolci-Instruct-SFT
+    shows: OLMo 3 Dolci still consumes FLAN v2 (89,981 prompts)
+    accessed: '2026-07-04'
