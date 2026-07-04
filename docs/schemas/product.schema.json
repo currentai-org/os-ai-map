@@ -16,7 +16,16 @@
     "crates": { "type": "array", "items": { "$ref": "#/definitions/url" } },
     "go": { "type": "array", "items": { "$ref": "#/definitions/url" } },
     "huggingface_model": { "type": "array", "items": { "$ref": "#/definitions/url" } },
-    "huggingface_dataset": { "type": "array", "items": { "$ref": "#/definitions/url" } }
+    "huggingface_dataset": { "type": "array", "items": { "$ref": "#/definitions/url" } },
+    "lineage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "derived_from": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "curated_with": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "trains": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+      }
+    }
   },
   "definitions": {
     "url": {

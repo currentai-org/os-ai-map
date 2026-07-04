@@ -127,3 +127,20 @@ def test_unknown_signal_type_still_fails():
     d = _fixture()
     d["scores"]["llama-4"]["adoption"]["signal_type"] = "vibes"
     assert any("signal_type" in e for e in validate_sources(d))
+
+
+def test_product_lineage_block_validates():
+    d = _fixture()
+    d["products"]["llama-4"]["lineage"] = {
+        "derived_from": ["Common Crawl"],
+        "curated_with": ["datatrove"],
+        "trains": ["llama-4"],
+    }
+    assert validate_sources(d) == []
+
+
+def test_product_lineage_rejects_unknown_keys():
+    d = _fixture()
+    d["products"]["llama-4"]["lineage"] = {"forked_from": ["x"]}
+    errs = validate_sources(d)
+    assert any("lineage" in e or "forked_from" in e or "additional" in e.lower() for e in errs)

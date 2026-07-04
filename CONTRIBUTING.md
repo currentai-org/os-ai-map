@@ -176,6 +176,23 @@ documented reuse and winning controlled ablations are capability evidence. Keep
 adoption to verified download volume and record reuse and ablation results under
 `capability`.
 
+#### Dataset lineage
+
+Dataset products may carry an optional `lineage` block recording filiation — how
+corpora derive from one another, what tooling curated them, and which models they
+verifiably trained:
+
+```yaml
+lineage:
+  derived_from: [fineweb]          # upstream data sources
+  curated_with: [datatrove]        # curation/processing tooling
+  trains: [smollm3, apertus]       # models documented as trained on it
+```
+
+Use map product slugs where the referent is on the map, otherwise a plain name
+(e.g. `Common Crawl`, `datatrove`). Entries must be documented in the product's
+primary sources (model cards, technical reports, dataset cards), not inferred.
+
 ## Suggesting without writing YAML
 
 Open an issue instead — there are structured forms for **suggest a product**,
