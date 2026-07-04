@@ -13,7 +13,8 @@
       "capability": "the best fully-open option isn't capable enough to be useful.",
       "adoption": "a capable fully-open option exists but is under-adopted.",
       "maturity": "open options exist and at least one may be mature, but the ecosystem lacks the depth/redundancy of a mature ecosystem (too few mature fully-open products).",
-      "openness": "capable, adopted options exist, but the mature ones are not fully open (open-ish or closed). This is the orthogonal flag; it can co-occur with the others."
+      "openness": "capable, adopted options exist, but the mature ones are not fully open (open-ish or closed). This is the orthogonal flag; it can co-occur with the others.",
+      "disclosure": "the open products here are real and widely used, but the closed frontier's own equivalent is undisclosed: labs publish neither their proprietary and licensed data nor their exact training-data recipe. The gap is the invisibility of the frontier's data, not the absence of open data. Declared per category (see docs/guides/gap-analysis.md), not inferred from the roster."
     },
     "categories": {
       "base_pretrained": "Foundation models trained from scratch.",
@@ -11216,12 +11217,12 @@
       "arc": "Model components",
       "layer": "model_components",
       "stage": {
-        "num": 2,
-        "name": "Emerging Alternatives"
+        "num": 4,
+        "name": "Competitive Open Ecosystem"
       },
       "gaps": [
         "maturity",
-        "adoption"
+        "disclosure"
       ],
       "products": [
         {
@@ -11245,28 +11246,34 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 3,
+            "level": 4,
             "reach": "100k-1M",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "327,873 monthly downloads on Hugging Face.",
+            "note": "337,208 monthly downloads on Hugging Face, graded on the training-corpus bands.",
             "sources": [
               {
                 "url": "https://huggingface.co/api/datasets/HuggingFaceFW/fineweb",
-                "shows": "downloads field = 327,873 monthly",
-                "accessed": "2026-06-22"
+                "shows": "downloads field = 337,208 (30-day)",
+                "accessed": "2026-07-04"
               }
             ]
           },
           "capability": {
-            "score": null,
-            "basis": "n/a",
+            "score": 4,
+            "basis": "training_value:ablation",
             "value": null,
             "confidence": "high",
-            "note": "a dataset is not 'capable'",
-            "sources": []
+            "note": "The FineWeb paper's 1.7B ablation beats C4, RefinedWeb, RedPajama, Dolma, The Pile, and OSCAR; but its FineWeb-Edu subset is the preferred quality source.",
+            "sources": [
+              {
+                "url": "https://arxiv.org/abs/2406.17557",
+                "shows": "FineWeb 1.7B ablation outperforms C4/RefinedWeb/RedPajama/Dolma/Pile/OSCAR on the aggregate suite",
+                "accessed": "2026-07-04"
+              }
+            ]
           },
-          "maturity": 3.0,
+          "maturity": 4.0,
           "mature": false,
           "version_note": "Verified live 2026-06-22 via primary sources. Permissive ODC-BY license with ungated download and a full dataset card."
         },
@@ -11291,29 +11298,40 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 3,
+            "level": 4,
             "reach": "100k-1M",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "411,911 monthly downloads on Hugging Face.",
+            "note": "384,910 monthly downloads on Hugging Face, graded on the training-corpus bands.",
             "sources": [
               {
                 "url": "https://huggingface.co/api/datasets/HuggingFaceFW/fineweb-edu",
-                "shows": "downloads field = 411,911 monthly",
-                "accessed": "2026-06-22"
+                "shows": "downloads field = 384,910 (30-day)",
+                "accessed": "2026-07-04"
               }
             ]
           },
           "capability": {
-            "score": null,
-            "basis": "n/a",
+            "score": 5,
+            "basis": "training_value:ablation",
             "value": null,
             "confidence": "high",
-            "note": "a dataset is not 'capable'",
-            "sources": []
+            "note": "Dominates FineWeb and all peers on MMLU/ARC, matching full FineWeb with ~10x fewer tokens; current default web corpus for SmolLM2/3 and Apertus.",
+            "sources": [
+              {
+                "url": "https://arxiv.org/abs/2406.17557",
+                "shows": "FineWeb-Edu matches full FineWeb on MMLU/ARC at ~10x fewer tokens",
+                "accessed": "2026-07-04"
+              },
+              {
+                "url": "https://arxiv.org/abs/2502.02737",
+                "shows": "SmolLM2 uses FineWeb-Edu as its English web component",
+                "accessed": "2026-07-04"
+              }
+            ]
           },
-          "maturity": 3.0,
-          "mature": false,
+          "maturity": 4.5,
+          "mature": true,
           "version_note": "Verified live 2026-06-22 via primary sources. Permissive ODC-BY license with ungated download and full dataset card."
         },
         {
@@ -11337,28 +11355,39 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 2,
+            "level": 3,
             "reach": "10k-100k",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "94,143 monthly downloads on Hugging Face.",
+            "note": "93,906 monthly downloads on Hugging Face, graded on the training-corpus bands.",
             "sources": [
               {
                 "url": "https://huggingface.co/api/datasets/HuggingFaceFW/fineweb-2",
-                "shows": "downloads field = 94,143 monthly",
-                "accessed": "2026-06-22"
+                "shows": "downloads field = 93,906 (30-day)",
+                "accessed": "2026-07-04"
               }
             ]
           },
           "capability": {
-            "score": null,
-            "basis": "n/a",
+            "score": 5,
+            "basis": "training_value:downstream",
             "value": null,
             "confidence": "high",
-            "note": "a dataset is not 'capable'",
-            "sources": []
+            "note": "Primary web corpus for Apertus 8B/70B (2025), 1811 languages; the current multilingual default, and its HQ variant leads multilingual data-selection work.",
+            "sources": [
+              {
+                "url": "https://arxiv.org/abs/2509.14233",
+                "shows": "Apertus 8B/70B train on 15T tokens from 1811 languages via FineWeb-2/FineWeb-2-HQ",
+                "accessed": "2026-07-04"
+              },
+              {
+                "url": "https://huggingface.co/datasets/HuggingFaceFW/fineweb-2",
+                "shows": "FineWeb-2 outperforms CulturaX/mC4/CC-100/HPLT on FineTasks in controlled ablations",
+                "accessed": "2026-07-04"
+              }
+            ]
           },
-          "maturity": 2.0,
+          "maturity": 4.0,
           "mature": false,
           "version_note": "Verified live 2026-06-22 via primary sources. Permissive ODC-BY license, ungated, with a dataset card spanning 1000+ languages."
         },
@@ -11383,29 +11412,40 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 3,
+            "level": 4,
             "reach": "100k-1M",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "542,120 monthly downloads on Hugging Face.",
+            "note": "440,189 monthly downloads on Hugging Face, graded on the training-corpus bands.",
             "sources": [
               {
                 "url": "https://huggingface.co/api/datasets/mlfoundations/dclm-baseline-1.0",
-                "shows": "downloads field = 542,120 monthly",
-                "accessed": "2026-06-22"
+                "shows": "downloads field = 440,189 (30-day)",
+                "accessed": "2026-07-04"
               }
             ]
           },
           "capability": {
-            "score": null,
-            "basis": "n/a",
+            "score": 5,
+            "basis": "training_value:ablation",
             "value": null,
             "confidence": "high",
-            "note": "a dataset is not 'capable'",
-            "sources": []
+            "note": "Leads the DataComp-LM leaderboard (beats C4/RefinedWeb/RedPajama/Dolma); current 2024-26 default of OLMoE, Marin, SmolLM3, and RWKV.",
+            "sources": [
+              {
+                "url": "https://arxiv.org/abs/2406.11794",
+                "shows": "DCLM-Baseline 7B reaches 64% MMLU at 2.6T tokens; model-based filtering adds >6 MMLU over the best prior open corpus",
+                "accessed": "2026-07-04"
+              },
+              {
+                "url": "https://huggingface.co/datasets/mlfoundations/dclm-baseline-1.0",
+                "shows": "OLMoE, SmolLM3, Marin, and RWKV built on DCLM",
+                "accessed": "2026-07-04"
+              }
+            ]
           },
-          "maturity": 3.0,
-          "mature": false,
+          "maturity": 4.5,
+          "mature": true,
           "version_note": "Verified live 2026-06-22 via primary sources. Permissive CC-BY-4.0 license, ungated download, with open code repo and dataset card."
         },
         {
@@ -11429,28 +11469,39 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 2,
+            "level": 3,
             "reach": "10k-100k",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "11,850 monthly downloads on Hugging Face.",
+            "note": "12,934 monthly downloads on Hugging Face, graded on the training-corpus bands.",
             "sources": [
               {
                 "url": "https://huggingface.co/api/datasets/tiiuae/falcon-refinedweb",
-                "shows": "downloads field = 11,850 monthly",
-                "accessed": "2026-06-22"
+                "shows": "downloads field = 12,934 (30-day)",
+                "accessed": "2026-07-04"
               }
             ]
           },
           "capability": {
-            "score": null,
-            "basis": "n/a",
+            "score": 3,
+            "basis": "training_value:superseded",
             "value": null,
             "confidence": "high",
-            "note": "a dataset is not 'capable'",
-            "sources": []
+            "note": "Filtered web alone beat The Pile and was the best legacy corpus in DCLM's tests; powered Falcon (2023-24) but is now a component inside newer pipelines rather than a standalone default.",
+            "sources": [
+              {
+                "url": "https://arxiv.org/abs/2306.01116",
+                "shows": "RefinedWeb: filtered/deduplicated web alone outperforms models trained on The Pile",
+                "accessed": "2026-07-04"
+              },
+              {
+                "url": "https://arxiv.org/abs/2406.11794",
+                "shows": "In DCLM's controlled ablations RefinedWeb is the best legacy corpus but DCLM-Baseline surpasses it",
+                "accessed": "2026-07-04"
+              }
+            ]
           },
-          "maturity": 2.0,
+          "maturity": 3.0,
           "mature": false,
           "version_note": "Verified live 2026-06-22 via primary sources. Permissive ODC-BY 1.0 license, ungated download, with a dataset card (a public extract of the full corpus)."
         },
@@ -11475,28 +11526,39 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 1,
-            "reach": "<10k",
+            "level": 2,
+            "reach": "1k-10k",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "HF reports 4,074 monthly downloads.",
+            "note": "4,015 monthly downloads on Hugging Face, graded on the training-corpus bands.",
             "sources": [
               {
-                "url": "https://huggingface.co/datasets/allenai/dolma",
-                "shows": "4,074 monthly downloads",
-                "accessed": "2026-06-22"
+                "url": "https://huggingface.co/api/datasets/allenai/dolma",
+                "shows": "downloads field = 4,015 (30-day)",
+                "accessed": "2026-07-04"
               }
             ]
           },
           "capability": {
-            "score": null,
-            "basis": "n/a",
+            "score": 3,
+            "basis": "training_value:superseded",
             "value": null,
             "confidence": "high",
-            "note": "a dataset is not 'capable'",
-            "sources": []
+            "note": "Proven training corpus for OLMo 1/2 and OLMoE, but loses to FineWeb in the canonical FineWeb ablation and is superseded by Dolma 3.",
+            "sources": [
+              {
+                "url": "https://arxiv.org/abs/2406.17557",
+                "shows": "FineWeb outperforms Dolma v1.6 and v1.7 in the 1.82B/350B ablation",
+                "accessed": "2026-07-04"
+              },
+              {
+                "url": "https://allenai.org/blog/olmo3",
+                "shows": "Dolma superseded by Dolma 3 for OLMo 3",
+                "accessed": "2026-07-04"
+              }
+            ]
           },
-          "maturity": 1.0,
+          "maturity": 2.5,
           "mature": false,
           "version_note": "Verified live 2026-06-22 via primary sources. Permissively licensed (ODC-BY), ungated download with a full dataset card and replication toolkit."
         },
@@ -11521,28 +11583,39 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 1,
-            "reach": "<10k",
+            "level": 2,
+            "reach": "1k-10k",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "HF reports 7,258 monthly downloads.",
+            "note": "9,452 monthly downloads on Hugging Face, graded on the training-corpus bands.",
             "sources": [
               {
-                "url": "https://huggingface.co/datasets/togethercomputer/RedPajama-Data-V2",
-                "shows": "7,258 monthly downloads",
-                "accessed": "2026-06-22"
+                "url": "https://huggingface.co/api/datasets/togethercomputer/RedPajama-Data-V2",
+                "shows": "downloads field = 9,452 (30-day)",
+                "accessed": "2026-07-04"
               }
             ]
           },
           "capability": {
-            "score": null,
-            "basis": "n/a",
+            "score": 3,
+            "basis": "training_value:superseded",
             "value": null,
             "confidence": "high",
-            "note": "a dataset is not 'capable'",
-            "sources": []
+            "note": "Competitive in its own filtered ablation but loses to FineWeb in FineWeb's 1.82B run; primarily a 2023 base (RedPajama-INCITE), superseded by DCLM/FineWeb.",
+            "sources": [
+              {
+                "url": "https://arxiv.org/abs/2411.12372",
+                "shows": "RPv2 with Gopher filtering is competitive vs C4/Dolma but trails RefinedWeb",
+                "accessed": "2026-07-04"
+              },
+              {
+                "url": "https://arxiv.org/abs/2406.17557",
+                "shows": "FineWeb outperforms RedPajama2 in the FineWeb ablation",
+                "accessed": "2026-07-04"
+              }
+            ]
           },
-          "maturity": 1.0,
+          "maturity": 2.5,
           "mature": false,
           "version_note": "Verified live 2026-06-22 via primary sources. Ungated with a full dataset card; redistributable per Common Crawl ToU with Apache-2.0 processing code."
         },
@@ -11567,28 +11640,39 @@
             "bucket": "open-ish"
           },
           "adoption": {
-            "level": 2,
+            "level": 3,
             "reach": "10k-100k",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "HF reports 23,823 monthly downloads.",
+            "note": "28,469 monthly downloads on Hugging Face, graded on the training-corpus bands.",
             "sources": [
               {
-                "url": "https://huggingface.co/datasets/bigcode/the-stack-v2",
-                "shows": "23,823 monthly downloads",
-                "accessed": "2026-06-22"
+                "url": "https://huggingface.co/api/datasets/bigcode/the-stack-v2",
+                "shows": "downloads field = 28,469 (30-day)",
+                "accessed": "2026-07-04"
               }
             ]
           },
           "capability": {
-            "score": null,
-            "basis": "n/a",
+            "score": 4,
+            "basis": "training_value:downstream",
             "value": null,
             "confidence": "high",
-            "note": "a dataset is not 'capable'",
-            "sources": []
+            "note": "Trained StarCoder2 (2024) and is the code base of SmolLM3 (2025) plus the source for Stack-Edu; as the raw corpus it is beaten by its own edu-filtered slice in ablations.",
+            "sources": [
+              {
+                "url": "https://arxiv.org/abs/2402.19173",
+                "shows": "StarCoder2 trained on The Stack v2 (900B+ tokens, 619 languages)",
+                "accessed": "2026-07-04"
+              },
+              {
+                "url": "https://huggingface.co/blog/smollm3",
+                "shows": "SmolLM3 code data is The Stack v2",
+                "accessed": "2026-07-04"
+              }
+            ]
           },
-          "maturity": 2.0,
+          "maturity": 3.5,
           "mature": false,
           "version_note": "Verified live 2026-06-22 via primary sources. Requires acceptance of terms and sharing contact info before download, so access is gated."
         },
@@ -11613,28 +11697,34 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 3,
-            "reach": "100k-1M",
+            "level": 5,
+            "reach": ">1M",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "HF reports 831,302 monthly downloads.",
+            "note": "1,261,777 monthly downloads on Hugging Face, graded on the training-corpus bands.",
             "sources": [
               {
-                "url": "https://huggingface.co/datasets/allenai/c4",
-                "shows": "831,302 monthly downloads",
-                "accessed": "2026-06-22"
+                "url": "https://huggingface.co/api/datasets/allenai/c4",
+                "shows": "downloads field = 1,261,777 (30-day)",
+                "accessed": "2026-07-04"
               }
             ]
           },
           "capability": {
-            "score": null,
-            "basis": "n/a",
+            "score": 3,
+            "basis": "training_value:superseded",
             "value": null,
             "confidence": "high",
-            "note": "a dataset is not 'capable'",
-            "sources": []
+            "note": "Powered T5 (2019) and UL2 (2022); now a baseline that FineWeb and DCLM beat, superseded by modern filtered web corpora.",
+            "sources": [
+              {
+                "url": "https://arxiv.org/abs/2406.17557",
+                "shows": "C4 is a baseline in the FineWeb ablations, which FineWeb outperforms overall",
+                "accessed": "2026-07-04"
+              }
+            ]
           },
-          "maturity": 3.0,
+          "maturity": 4.0,
           "mature": false,
           "version_note": "Verified live 2026-06-22 via primary sources. Permissively licensed (ODC-BY) and ungated with a full dataset card."
         },
@@ -11659,28 +11749,39 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 2,
+            "level": 3,
             "reach": "10k-100k",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "HF reports 57,926 monthly downloads.",
+            "note": "91,700 monthly downloads on Hugging Face, graded on the training-corpus bands.",
             "sources": [
               {
-                "url": "https://huggingface.co/datasets/PleIAs/common_corpus",
-                "shows": "57,926 monthly downloads",
-                "accessed": "2026-06-22"
+                "url": "https://huggingface.co/api/datasets/PleIAs/common_corpus",
+                "shows": "downloads field = 91,700 (30-day)",
+                "accessed": "2026-07-04"
               }
             ]
           },
           "capability": {
-            "score": null,
-            "basis": "n/a",
+            "score": 3,
+            "basis": "training_value:downstream",
             "value": null,
             "confidence": "high",
-            "note": "a dataset is not 'capable'",
-            "sources": []
+            "note": "Trains the Pleias 1.0 SLM family and several European models (2024-25), but small demonstrator models with no controlled ablation wins; leads on ethical sourcing rather than capability.",
+            "sources": [
+              {
+                "url": "https://arxiv.org/html/2506.01732v1",
+                "shows": "Pleias 1.0 family and ~7 European models trained on Common Corpus",
+                "accessed": "2026-07-04"
+              },
+              {
+                "url": "https://huggingface.co/blog/Pclanglais/common-corpus",
+                "shows": "Common Corpus is the largest fully-open licensed pretraining corpus (2.27T tokens)",
+                "accessed": "2026-07-04"
+              }
+            ]
           },
-          "maturity": 2.0,
+          "maturity": 3.0,
           "mature": false,
           "version_note": "Verified live 2026-06-22 via primary sources. Ungated with a full dataset card and built exclusively from uncopyrighted or openly licensed sources."
         },
@@ -11705,28 +11806,39 @@
             "bucket": "open-ish"
           },
           "adoption": {
-            "level": 2,
+            "level": 3,
             "reach": "10k-100k",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "Hugging Face reports 18,449 downloads in the last month.",
+            "note": "18,361 monthly downloads on Hugging Face, graded on the training-corpus bands.",
             "sources": [
               {
                 "url": "https://huggingface.co/api/datasets/uonlp/CulturaX",
-                "shows": "downloads = 18449",
-                "accessed": "2026-06-22"
+                "shows": "downloads field = 18,361 (30-day)",
+                "accessed": "2026-07-04"
               }
             ]
           },
           "capability": {
-            "score": null,
-            "basis": "n/a",
+            "score": 3,
+            "basis": "training_value:superseded",
             "value": null,
             "confidence": "high",
-            "note": "a dataset is not 'capable'",
-            "sources": []
+            "note": "A strong 2023-24 default multilingual corpus, but explicitly beaten by FineWeb-2 in controlled per-language ablations.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/HuggingFaceFW/fineweb-2",
+                "shows": "FineWeb-2 outperforms CulturaX across diverse languages on FineTasks",
+                "accessed": "2026-07-04"
+              },
+              {
+                "url": "https://huggingface.co/datasets/uonlp/CulturaX",
+                "shows": "CulturaX is a 6.3T-token, 167-language corpus built from mC4+OSCAR",
+                "accessed": "2026-07-04"
+              }
+            ]
           },
-          "maturity": 2.0,
+          "maturity": 3.0,
           "mature": false,
           "version_note": "Verified live 2026-06-22 via primary sources. Dataset card is rich but downloads require agreeing to share contact information (auto gate)."
         },
@@ -11751,28 +11863,34 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 2,
+            "level": 3,
             "reach": "10k-100k",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "Hugging Face reports 41,696 downloads in the last month.",
+            "note": "32,957 monthly downloads on Hugging Face, graded on the training-corpus bands.",
             "sources": [
               {
                 "url": "https://huggingface.co/api/datasets/allenai/MADLAD-400",
-                "shows": "downloads = 41696",
-                "accessed": "2026-06-22"
+                "shows": "downloads field = 32,957 (30-day)",
+                "accessed": "2026-07-04"
               }
             ]
           },
           "capability": {
-            "score": null,
-            "basis": "n/a",
+            "score": 4,
+            "basis": "training_value:downstream",
             "value": null,
             "confidence": "high",
-            "note": "a dataset is not 'capable'",
-            "sources": []
+            "note": "Underpins Google's MADLAD-400 MT models (10.7B/8B, 2023) competitive with NLLB-54B; a strong documented downstream training result, not the current leader.",
+            "sources": [
+              {
+                "url": "https://proceedings.neurips.cc/paper_files/paper/2023/file/d49042a5d49818711c401d34172f9900-Paper-Datasets_and_Benchmarks.pdf",
+                "shows": "MADLAD-400 10.7B MT model averages 31.8 BLEU vs NLLB-54B's 32.7 across 400+ languages",
+                "accessed": "2026-07-04"
+              }
+            ]
           },
-          "maturity": 2.0,
+          "maturity": 3.5,
           "mature": false,
           "version_note": "Verified live 2026-06-22 via primary sources. Ungated with a permissive open-data license and a complete dataset card."
         },
@@ -11797,28 +11915,39 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 2,
+            "level": 3,
             "reach": "10k-100k",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "Hugging Face reports 36,400 downloads in the last month.",
+            "note": "26,509 monthly downloads on Hugging Face, graded on the training-corpus bands.",
             "sources": [
               {
                 "url": "https://huggingface.co/api/datasets/CohereLabs/aya_collection",
-                "shows": "downloads = 36400",
-                "accessed": "2026-06-22"
+                "shows": "downloads field = 26,509 (30-day)",
+                "accessed": "2026-07-04"
               }
             ]
           },
           "capability": {
-            "score": null,
-            "basis": "n/a",
+            "score": 4,
+            "basis": "training_value:downstream",
             "value": null,
             "confidence": "high",
-            "note": "a dataset is not 'capable'",
-            "sources": []
+            "note": "Instruction collection behind Aya 101 (2024), Aya 23, and Aya Expanse, which beat Gemma 2 / Qwen 2.5 / Llama 3.1 in their size class; strong, multiple notable open models.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/blog/aya-expanse",
+                "shows": "Aya Expanse 8B/32B outperform Gemma 2, Qwen 2.5, Llama 3.1 in class (up to 76.6% win-rate on Arena-Hard-Auto)",
+                "accessed": "2026-07-04"
+              },
+              {
+                "url": "https://ritvik19.medium.com/papers-explained-151-aya-23-d01605c3ee80",
+                "shows": "Aya Collection (513M examples, 114+ langs) feeds Aya 101 and Aya 23/Expanse instruction data",
+                "accessed": "2026-07-04"
+              }
+            ]
           },
-          "maturity": 2.0,
+          "maturity": 3.5,
           "mature": false,
           "version_note": "Verified live 2026-06-22 via primary sources. Ungated, Apache-2.0 licensed, with a complete dataset card."
         },
@@ -11843,28 +11972,39 @@
             "bucket": "open-ish"
           },
           "adoption": {
-            "level": 1,
-            "reach": "<10k",
+            "level": 2,
+            "reach": "1k-10k",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "Hugging Face reports 1,345 downloads in the last month (depressed by the access suspension).",
+            "note": "1,793 monthly downloads on Hugging Face, graded on the training-corpus bands.",
             "sources": [
               {
                 "url": "https://huggingface.co/api/datasets/oscar-corpus/OSCAR-2301",
-                "shows": "downloads = 1345",
-                "accessed": "2026-06-22"
+                "shows": "downloads field = 1,793 (30-day)",
+                "accessed": "2026-07-04"
               }
             ]
           },
           "capability": {
-            "score": null,
-            "basis": "n/a",
+            "score": 3,
+            "basis": "training_value:superseded",
             "value": null,
             "confidence": "high",
-            "note": "a dataset is not 'capable'",
-            "sources": []
+            "note": "A dated 2022-snapshot web corpus with access suspended; the derived Colossal OSCAR trains ALIA/Salamandra (2024) but the 2301 version itself is superseded by FineWeb-2/CulturaX.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/BSC-LT/salamandra-7b",
+                "shows": "Colossal OSCAR contributes 53% of Salamandra/ALIA pretraining tokens",
+                "accessed": "2026-07-04"
+              },
+              {
+                "url": "https://huggingface.co/datasets/HuggingFaceFW/fineweb-2",
+                "shows": "FineWeb-2 supersedes raw OSCAR web extraction in quality ablations",
+                "accessed": "2026-07-04"
+              }
+            ]
           },
-          "maturity": 1.0,
+          "maturity": 2.5,
           "mature": false,
           "version_note": "Verified live 2026-06-22 via primary sources. Manually gated and the card states access is temporarily suspended pending clarification."
         },
@@ -11889,28 +12029,39 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 2,
+            "level": 3,
             "reach": "10k-100k",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "About 18.3k downloads in the last month per HF.",
+            "note": "16,870 monthly downloads on Hugging Face, graded on the training-corpus bands.",
             "sources": [
               {
                 "url": "https://huggingface.co/api/datasets/HuggingFaceTB/cosmopedia",
-                "shows": "downloads=18336",
-                "accessed": "2026-06-22"
+                "shows": "downloads field = 16,870 (30-day)",
+                "accessed": "2026-07-04"
               }
             ]
           },
           "capability": {
-            "score": null,
-            "basis": "n/a",
+            "score": 3,
+            "basis": "training_value:superseded",
             "value": null,
             "confidence": "high",
-            "note": "a dataset is not 'capable'",
-            "sources": []
+            "note": "Cosmo-1B beats TinyLlama on ARC/MMLU but trails Phi-1.5; explicitly superseded by Cosmopedia v2.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/blog/cosmopedia",
+                "shows": "Cosmo-1B beats TinyLlama on ARC/OpenBookQA/MMLU, still trails Phi-1.5",
+                "accessed": "2026-07-04"
+              },
+              {
+                "url": "https://huggingface.co/datasets/HuggingFaceTB/cosmopedia-v2",
+                "shows": "Cosmopedia v2 is the direct successor",
+                "accessed": "2026-07-04"
+              }
+            ]
           },
-          "maturity": 2.0,
+          "maturity": 3.0,
           "mature": false,
           "version_note": "Verified live 2026-06-22 via primary sources. Permissive Apache-2.0 license, ungated, full dataset card and downloadable parquet files."
         },
@@ -11935,28 +12086,39 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 2,
+            "level": 3,
             "reach": "10k-100k",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "About 83k downloads in the last month per HF.",
+            "note": "73,774 monthly downloads on Hugging Face, graded on the training-corpus bands.",
             "sources": [
               {
                 "url": "https://huggingface.co/api/datasets/open-thoughts/OpenThoughts-114k",
-                "shows": "downloads=83018",
-                "accessed": "2026-06-22"
+                "shows": "downloads field = 73,774 (30-day)",
+                "accessed": "2026-07-04"
               }
             ]
           },
           "capability": {
-            "score": null,
-            "basis": "n/a",
+            "score": 3,
+            "basis": "training_value:superseded",
             "value": null,
             "confidence": "high",
-            "note": "a dataset is not 'capable'",
-            "sources": []
+            "note": "Strong early-2025 reasoning results (OpenThinker-32B led open-data MATH500/GPQA-D) but superseded by OpenThoughts3-1.2M.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/open-thoughts/OpenThinker-32B",
+                "shows": "OpenThinker-32B hits MATH500 90.6 / GPQA-D 61.6, leading open-data peers",
+                "accessed": "2026-07-04"
+              },
+              {
+                "url": "https://www.openthoughts.ai/blog/ot3",
+                "shows": "OpenThoughts3-1.2M is the recommended SOTA open-data successor",
+                "accessed": "2026-07-04"
+              }
+            ]
           },
-          "maturity": 2.0,
+          "maturity": 3.0,
           "mature": false,
           "version_note": "Verified live 2026-06-22 via primary sources. Apache-2.0 licensed, ungated, with dataset card, code repo, and paper."
         },
@@ -11981,28 +12143,39 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 2,
+            "level": 3,
             "reach": "10k-100k",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "About 28.8k downloads in the last month per HF.",
+            "note": "31,364 monthly downloads on Hugging Face, graded on the training-corpus bands.",
             "sources": [
               {
                 "url": "https://huggingface.co/api/datasets/allenai/WildChat-1M",
-                "shows": "downloads=28779",
-                "accessed": "2026-06-22"
+                "shows": "downloads field = 31,364 (30-day)",
+                "accessed": "2026-07-04"
               }
             ]
           },
           "capability": {
-            "score": null,
-            "basis": "n/a",
+            "score": 4,
+            "basis": "training_value:downstream",
             "value": null,
-            "confidence": "high",
-            "note": "a dataset is not 'capable'",
-            "sources": []
+            "confidence": "medium",
+            "note": "A sustained cross-recipe SFT ingredient (Tulu 3 2024, OLMo 3 Dolci 2025), but its own ablation is weak/dated and it does not lead comparisons.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/datasets/allenai/tulu-3-sft-mixture",
+                "shows": "Named source in the Tulu 3 SFT mixture",
+                "accessed": "2026-07-04"
+              },
+              {
+                "url": "https://arxiv.org/html/2405.01470v1",
+                "shows": "WildChat's own ablation (WildLlama) is modest vs 2023 baselines",
+                "accessed": "2026-07-04"
+              }
+            ]
           },
-          "maturity": 2.0,
+          "maturity": 3.5,
           "mature": false,
           "version_note": "Verified live 2026-06-22 via primary sources. ODC-BY licensed and reported ungated by the HF API, though Ai2 datasets sometimes show an access notice."
         },
@@ -12027,28 +12200,39 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 2,
+            "level": 3,
             "reach": "10k-100k",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "About 19k downloads in the last month per HF.",
+            "note": "18,317 monthly downloads on Hugging Face, graded on the training-corpus bands.",
             "sources": [
               {
                 "url": "https://huggingface.co/api/datasets/allenai/tulu-3-sft-mixture",
-                "shows": "downloads=18959",
-                "accessed": "2026-06-22"
+                "shows": "downloads field = 18,317 (30-day)",
+                "accessed": "2026-07-04"
               }
             ]
           },
           "capability": {
-            "score": null,
-            "basis": "n/a",
+            "score": 4,
+            "basis": "training_value:downstream",
             "value": null,
             "confidence": "high",
-            "note": "a dataset is not 'capable'",
-            "sources": []
+            "note": "Current multi-org SFT default (Marin, SmolLM3, OLMo 2) with SOTA open-recipe claims, but a reused component rather than the head-to-head leader; Dolci now leads the fully-open frontier.",
+            "sources": [
+              {
+                "url": "https://arxiv.org/abs/2411.15124",
+                "shows": "The Tulu 3 recipe surpasses instruct versions of Llama 3.1, Qwen 2.5, and GPT-4o-mini",
+                "accessed": "2026-07-04"
+              },
+              {
+                "url": "https://huggingface.co/marin-community/marin-8b-instruct",
+                "shows": "Marin 8B Instruct lists tulu-3-sft-mixture among its SFT sources",
+                "accessed": "2026-07-04"
+              }
+            ]
           },
-          "maturity": 2.0,
+          "maturity": 3.5,
           "mature": false,
           "version_note": "Verified live 2026-06-22 via primary sources. ODC-BY licensed and ungated with a full dataset card, though some subsets carry non-commercial licenses."
         },
@@ -12073,28 +12257,34 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 2,
-            "reach": null,
+            "level": 3,
+            "reach": "10k-100k",
             "signal_type": "usage_volume",
-            "confidence": "medium",
-            "note": "About 16k downloads in the last month per the HF API, plus 861 likes (among the highest in the category), placing it alongside other level-2 synthetic SFT datasets like Tulu 3 and Cosmopedia.",
+            "confidence": "high",
+            "note": "14,982 monthly downloads on Hugging Face, graded on the training-corpus bands.",
             "sources": [
               {
                 "url": "https://huggingface.co/api/datasets/teknium/OpenHermes-2.5",
-                "shows": "HF API reports downloads=15954 (30d) and likes=861",
-                "accessed": "2026-06-23"
+                "shows": "downloads field = 14,982 (30-day)",
+                "accessed": "2026-07-04"
               }
             ]
           },
           "capability": {
-            "score": null,
-            "basis": "n/a",
+            "score": 3,
+            "basis": "training_value:superseded",
             "value": null,
             "confidence": "high",
-            "note": "a dataset is not 'capable'",
-            "sources": []
+            "note": "Attributed gains inside SmolTalk (MMLU/BBH/WinoGrande) but no standalone ablation; superseded by Hermes 3 and survives as a 100k SmolTalk slice.",
+            "sources": [
+              {
+                "url": "https://arxiv.org/html/2502.02737v1",
+                "shows": "SmolLM2 paper credits a 100k OpenHermes-2.5 subset with MMLU/WinoGrande/BBH gains",
+                "accessed": "2026-07-04"
+              }
+            ]
           },
-          "maturity": 2.0,
+          "maturity": 3.0,
           "mature": false,
           "version_note": "Verified live 2026-06-22 via primary sources. Publicly downloadable and ungated with a full card, though an explicit license string is not stated on the card."
         },
@@ -12119,28 +12309,39 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 1,
-            "reach": "<10k",
+            "level": 2,
+            "reach": "1k-10k",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "The dataset page reports 6,572 downloads in the last month.",
+            "note": "7,395 monthly downloads on Hugging Face, graded on the training-corpus bands.",
             "sources": [
               {
-                "url": "https://huggingface.co/datasets/proj-persona/PersonaHub",
-                "shows": "Downloads last month: 6,572",
-                "accessed": "2026-06-22"
+                "url": "https://huggingface.co/api/datasets/proj-persona/PersonaHub",
+                "shows": "downloads field = 7,395 (30-day)",
+                "accessed": "2026-07-04"
               }
             ]
           },
           "capability": {
-            "score": null,
-            "basis": "n/a",
+            "score": 4,
+            "basis": "training_value:results",
             "value": null,
             "confidence": "high",
-            "note": "a dataset is not 'capable'",
-            "sources": []
+            "note": "A 7B trained on persona math rivals GPT-4-turbo-preview on MATH; current adoption by strong open models (Tulu 3, NVIDIA Nemotron-Personas).",
+            "sources": [
+              {
+                "url": "https://arxiv.org/abs/2406.20094",
+                "shows": "Qwen2-7B on ~1.07M persona math problems hits 64.9% MATH, rivaling GPT-4-turbo-preview",
+                "accessed": "2026-07-04"
+              },
+              {
+                "url": "https://huggingface.co/datasets/allenai/tulu-3-sft-personas-math",
+                "shows": "Tulu 3 conditions on ~250K PersonaHub personas",
+                "accessed": "2026-07-04"
+              }
+            ]
           },
-          "maturity": 1.0,
+          "maturity": 3.0,
           "mature": false,
           "version_note": "Verified live 2026-06-22 via primary sources. Publicly downloadable and ungated under CC-BY-NC-SA-4.0, which permits redistribution for non-commercial research."
         },
@@ -12165,28 +12366,39 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 1,
-            "reach": "<10k",
+            "level": 2,
+            "reach": "1k-10k",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "The dataset page reports 4,657 downloads last month.",
+            "note": "4,496 monthly downloads on Hugging Face, graded on the training-corpus bands.",
             "sources": [
               {
-                "url": "https://huggingface.co/datasets/openbmb/UltraFeedback",
-                "shows": "Downloads last month: 4,657",
-                "accessed": "2026-06-22"
+                "url": "https://huggingface.co/api/datasets/openbmb/UltraFeedback",
+                "shows": "downloads field = 4,496 (30-day)",
+                "accessed": "2026-07-04"
               }
             ]
           },
           "capability": {
-            "score": null,
-            "basis": "n/a",
+            "score": 4,
+            "basis": "training_value:ablation",
             "value": null,
             "confidence": "high",
-            "note": "a dataset is not 'capable'",
-            "sources": []
+            "note": "Clean documented DPO before/after (Zephyr MT-Bench 6.64->7.34); its pipeline is the template for Tulu 3 / OLMo 2 preference data, with cleaned subsets still in use.",
+            "sources": [
+              {
+                "url": "https://ar5iv.labs.arxiv.org/html/2310.16944",
+                "shows": "Zephyr: DPO on ultrafeedback_binarized lifts MT-Bench 6.64->7.00, final model 7.34",
+                "accessed": "2026-07-04"
+              },
+              {
+                "url": "https://arxiv.org/abs/2411.15124",
+                "shows": "Tulu 3 extends the UltraFeedback pipeline to scale preference data",
+                "accessed": "2026-07-04"
+              }
+            ]
           },
-          "maturity": 1.0,
+          "maturity": 3.0,
           "mature": false,
           "version_note": "Verified live 2026-06-22 via primary sources. Publicly downloadable and ungated under the permissive MIT license."
         },
@@ -12211,28 +12423,39 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 2,
+            "level": 3,
             "reach": "10k-100k",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "The dataset page reports 30,331 downloads in the last month.",
+            "note": "29,021 monthly downloads on Hugging Face, graded on the training-corpus bands.",
             "sources": [
               {
-                "url": "https://huggingface.co/datasets/Anthropic/hh-rlhf",
-                "shows": "Downloads last month: 30,331",
-                "accessed": "2026-06-22"
+                "url": "https://huggingface.co/api/datasets/Anthropic/hh-rlhf",
+                "shows": "downloads field = 29,021 (30-day)",
+                "accessed": "2026-07-04"
               }
             ]
           },
           "capability": {
-            "score": null,
-            "basis": "n/a",
+            "score": 3,
+            "basis": "training_value:superseded",
             "value": null,
             "confidence": "high",
-            "note": "a dataset is not 'capable'",
-            "sources": []
+            "note": "Documented 2022 RLHF results and huge historical influence, but dropped from frontier open preference mixes (absent from Tulu 3 and OLMo 3 Dolci DPO).",
+            "sources": [
+              {
+                "url": "https://arxiv.org/abs/2204.05862",
+                "shows": "Anthropic RLHF on HH data improves helpfulness Elo, TruthfulQA, BBQ (self-reported)",
+                "accessed": "2026-07-04"
+              },
+              {
+                "url": "https://huggingface.co/datasets/allenai/llama-3.1-tulu-3-8b-preference-mixture",
+                "shows": "HH-RLHF is not used in the Tulu 3 preference mixture",
+                "accessed": "2026-07-04"
+              }
+            ]
           },
-          "maturity": 2.0,
+          "maturity": 3.0,
           "mature": false,
           "version_note": "Verified live 2026-06-22 via primary sources. Publicly downloadable and ungated under the permissive MIT license."
         },
@@ -12258,27 +12481,38 @@
           },
           "adoption": {
             "level": 2,
-            "reach": "niche",
+            "reach": "1k-10k",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "~9.5k downloads in the last month on Hugging Face (near the 10k threshold; recently released).",
+            "note": "6,105 monthly downloads on Hugging Face, graded on the training-corpus bands.",
             "sources": [
               {
-                "url": "https://huggingface.co/datasets/PleIAs/SYNTH",
-                "shows": "9,488 downloads last month",
-                "accessed": "2026-06-22"
+                "url": "https://huggingface.co/api/datasets/PleIAs/SYNTH",
+                "shows": "downloads field = 6,105 (30-day)",
+                "accessed": "2026-07-04"
               }
             ]
           },
           "capability": {
-            "score": null,
-            "basis": "n/a",
+            "score": 4,
+            "basis": "training_value:results",
             "value": null,
             "confidence": "high",
-            "note": "a dataset is not 'capable'",
-            "sources": []
+            "note": "A novel fully-open synthetic reasoning corpus with real first-party end-to-end results (Baguettotron best-in-class sub-350M), but single-lab evidence.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/blog/Pclanglais/synth-data-frontier",
+                "shows": "PleIAs trained Baguettotron (321M) and Monad (56M) end-to-end on SYNTH, best-in-class for size",
+                "accessed": "2026-07-04"
+              },
+              {
+                "url": "https://huggingface.co/datasets/PleIAs/SYNTH",
+                "shows": "SYNTH: ~79.6M samples, CC-BY-4.0, released Nov 2025",
+                "accessed": "2026-07-04"
+              }
+            ]
           },
-          "maturity": 2.0,
+          "maturity": 3.0,
           "mature": false,
           "version_note": "Verified live 2026-06-22 via primary sources. Permissively licensed, ungated dataset with a documented card."
         }
@@ -25811,7 +26045,7 @@
     "edge_hardware"
   ],
   "n_total": 459,
-  "generated": "2026-07-03",
+  "generated": "2026-07-04",
   "long_tail": {
     "counts": {
       "repos": 15375,
