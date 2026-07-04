@@ -14,16 +14,22 @@ adoption:
   reach: 1k-10k
   signal_type: usage_volume
   confidence: high
-  note: 3,892 monthly downloads on Hugging Face, graded on the training-corpus bands. Documented component
-    of SmolLM3 and OLMo 3's Dolma 3 pool.
+  note: 3,892 monthly downloads on Hugging Face, graded on the training-corpus bands.
   sources:
   - url: https://huggingface.co/api/datasets/HuggingFaceTB/stack-edu
     shows: downloads field = 3,892 (30-day)
     accessed: '2026-07-04'
 capability:
-  score: null
-  basis: n/a
+  score: 5
+  basis: training_value:ablation
   value: null
   confidence: high
-  note: a dataset is not 'capable'
-  sources: []
+  note: Leads controlled classifier ablations, beating StarCoder2Data on MultiPL-E across all languages
+    (SmolLM2 paper); current default in SmolLM3 and OLMo 3's Dolma 3.
+  sources:
+  - url: https://arxiv.org/html/2502.02737v1
+    shows: Stack-Edu consistently outperforms StarCoder2Data on MultiPL-E (Python 25.6 vs 20.7, etc.)
+    accessed: '2026-07-04'
+  - url: https://huggingface.co/blog/smollm3
+    shows: Stack-Edu included in the SmolLM3 pretraining mixture
+    accessed: '2026-07-04'

@@ -15,16 +15,23 @@ adoption:
   reach: 10k-100k
   signal_type: usage_volume
   confidence: high
-  note: 16,100 monthly downloads on the v2 artifact, graded on the training-corpus bands. Documented pretraining
-    data for Nemotron 3 and Marin 8B.
+  note: 16,100 monthly downloads on Hugging Face, graded on the training-corpus bands.
   sources:
   - url: https://huggingface.co/api/datasets/nvidia/Nemotron-CC-v2
     shows: downloads field = 16,100 (30-day)
     accessed: '2026-07-04'
 capability:
-  score: null
-  basis: n/a
+  score: 5
+  basis: training_value:ablation
   value: null
   confidence: high
-  note: a dataset is not 'capable'
-  sources: []
+  note: Wins vs DCLM at a long token horizon (Nemotron-CC-HQ +5.6 MMLU over DCLM; a 15T-token 8B beats
+    Llama 3.1 8B); current default for NVIDIA Nemotron models and Marin 8B late phases.
+  sources:
+  - url: https://arxiv.org/abs/2412.02595
+    shows: Nemotron-CC-HQ improves MMLU by 5.6 over DCLM; an 8B on 15T tokens beats Llama 3.1 8B by +5
+      MMLU
+    accessed: '2026-07-04'
+  - url: https://marin.readthedocs.io/en/latest/reports/marin-8b-retro/
+    shows: Marin 8B adopted Nemotron-CC as its primary source in later phases
+    accessed: '2026-07-04'

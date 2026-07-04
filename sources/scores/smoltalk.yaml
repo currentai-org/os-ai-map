@@ -14,19 +14,22 @@ adoption:
   reach: 10k-100k
   signal_type: usage_volume
   confidence: high
-  note: 17,489 monthly downloads on SmolTalk (SmolTalk2 at 10,783), graded on the training-corpus bands.
-    Documented SFT data for SmolLM2/3 and Marin 8B Instruct.
+  note: 17,489 monthly downloads on Hugging Face, graded on the training-corpus bands.
   sources:
   - url: https://huggingface.co/api/datasets/HuggingFaceTB/smoltalk
     shows: downloads field = 17,489 (30-day)
     accessed: '2026-07-04'
-  - url: https://huggingface.co/api/datasets/HuggingFaceTB/smoltalk2
-    shows: downloads field = 10,783 (30-day)
-    accessed: '2026-07-04'
 capability:
-  score: null
-  basis: n/a
+  score: 5
+  basis: training_value:ablation
   value: null
   confidence: high
-  note: a dataset is not 'capable'
-  sources: []
+  note: Leads head-to-head SFT-mixture ablations (beats OpenHermes-2.5, UltraChat, MagPie-Pro) and is
+    the current default across SmolLM2/3 and Marin 8B Instruct.
+  sources:
+  - url: https://arxiv.org/html/2502.02737v1
+    shows: 'SmolLM2 paper: SmolTalk surpasses OpenHermes-2.5, UltraChat, and MagPie-Pro'
+    accessed: '2026-07-04'
+  - url: https://huggingface.co/marin-community/marin-8b-instruct
+    shows: Marin 8B Instruct lists SmolTalk in its SFT mix
+    accessed: '2026-07-04'
