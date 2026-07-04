@@ -103,9 +103,11 @@ Each score file has three axes. **Every non-null value needs at least one
   - datasets: `open`, `gated`, `documented_only`, `closed`
   - hardware: `open_hardware`, `open_toolchain`, `documented`, `restricted`, `closed`
 - **adoption** (`level:` 1-5, `signal_type:` one of `active_users`,
-  `usage_volume`, `reported_traction`, `stars_fallback`, `unknown`): real usage
-  (downloads, active users, deployments) beats stars. `stars_fallback` can
-  never justify a level above 3 (enforced by validation).
+  `usage_volume`, `reported_traction`, `documented_reuse`, `stars_fallback`,
+  `unknown`): real usage (downloads, active users, deployments) beats stars.
+  `stars_fallback` can never justify a level above 3 (enforced by validation).
+  `documented_reuse` is for training corpora whose decisive signal is documented
+  use by downstream models (see the training-corpus bands below).
 - **capability** (`score:` 1-5, `basis:` e.g. `benchmark:MLPerf`): benchmark or
   comparative evidence; `null` with a reason if no defensible basis exists.
 
@@ -141,6 +143,32 @@ Notes on applying the bands:
   `1M-10M`); keep it consistent with the chosen level.
 
 Look at `sources/scores/vllm.yaml` for a complete worked example.
+
+#### Training-corpus bands
+
+Download volume for a multi-terabyte corpus is not comparable to a package: a
+corpus is pulled a handful of times per training run, not on every CI job. Products
+in the `training_synthetic_datasets` category are therefore graded one order of
+magnitude below the standard bands:
+
+| Level | Monthly HF downloads | Reading |
+|------:|----------------------|---------|
+| **5** | **> 1M / mo** | Ecosystem-standard corpus — a default choice for building models. |
+| **4** | 100k – 1M / mo | Widely used; a leading corpus in its niche. |
+| **3** | 10k – 100k / mo | Established, real usage. |
+| **2** | 1k – 10k / mo | Emerging; a meaningful user base but still niche. |
+| **1** | < 1k / mo | Early / experimental; little verified usage. |
+
+These bands do **not** apply to `benchmark_eval_data`: benchmark sets are small
+files pulled by evaluation harnesses on every run, so their download counts behave
+like package downloads and the standard bands fit.
+
+**Documented reuse.** Raw downloads still under-measure a corpus that model builders
+mirror once and reuse forever. A corpus verifiably documented (model cards, technical
+reports) as a training-data component of **three or more notable independent model
+families** may sit **one level above** its volume band — never more than one. Use
+`signal_type: documented_reuse`, name the model families in the `note`, and cite the
+documenting reports in `sources`.
 
 ## Suggesting without writing YAML
 
