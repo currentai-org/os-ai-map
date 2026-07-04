@@ -205,33 +205,33 @@ def test_unknown_org_renders_empty_string():
 
 
 def _pd(cls, adoption):
-    # dataset row: capability is structurally null, graded on adoption alone
     return {"openness": {"class": cls}, "adoption": {"level": adoption},
             "capability": {"score": None}, "type": "dataset"}
 
 
-def test_disclosure_gap_when_all_dataset_category_has_no_closed_comparator():
-    # 4 mature open corpora -> Stage 5, but the closed frontier publishes nothing:
-    # disclosure is flagged even at the top rung.
-    rows = [_pd("open", 5) for _ in range(4)] + [_pd("gated", 3)]
-    sg = _stage_and_gaps(rows, {"adopt": 1.0, "cap": 0.0})
+def test_disclosure_gap_flagged_even_at_top_stage():
+    # 4 mature open corpora -> Stage 5; disclosure is a declared attribute that still
+    # applies at the top rung (the frontier's own data recipe stays invisible).
+    rows = [_pd("open", 5) for _ in range(4)]
+    sg = _stage_and_gaps(rows, {"adopt": 1.0, "cap": 0.0}, disclosure=True)
     assert sg["num"] == 5 and sg["gaps"] == ["disclosure"]
 
 
 def test_disclosure_gap_coexists_with_stage_gaps():
     rows = [_pd("open", 5), _pd("open", 3)]  # one mature open corpus -> stage 4
-    sg = _stage_and_gaps(rows, {"adopt": 1.0, "cap": 0.0})
+    sg = _stage_and_gaps(rows, {"adopt": 1.0, "cap": 0.0}, disclosure=True)
     assert sg["num"] == 4 and sg["gaps"] == ["maturity", "disclosure"]
 
 
-def test_no_disclosure_gap_when_closed_comparator_exists():
-    # e.g. benchmark data: closed internal evals are documented and curated as rows
-    rows = [_pd("open", 4), _pd("closed", None)]
+def test_no_disclosure_gap_when_not_declared():
+    # not declared (e.g. benchmark data: open benchmarks are the shared public standard)
+    rows = [_pd("open", 4), _pd("open", 3)]
     sg = _stage_and_gaps(rows, {"adopt": 1.0, "cap": 0.0})
     assert "disclosure" not in sg["gaps"]
 
 
-def test_no_disclosure_gap_for_non_dataset_categories():
-    rows = [_p("open_source", 2, 2)]  # software rows are not dataset-typed
-    sg = _stage_and_gaps(rows, {"adopt": 0.5, "cap": 0.5})
-    assert "disclosure" not in sg["gaps"]
+def test_disclosure_flag_is_independent_of_closed_rows():
+    # presence of a closed row no longer toggles disclosure -- it is declared, not inferred
+    rows = [_pd("open", 4), _pd("closed", None)]
+    assert "disclosure" in _stage_and_gaps(rows, {"adopt": 1.0, "cap": 0.0}, disclosure=True)["gaps"]
+    assert "disclosure" not in _stage_and_gaps(rows, {"adopt": 1.0, "cap": 0.0})["gaps"]

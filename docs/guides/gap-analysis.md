@@ -65,9 +65,16 @@ also where documented reuse counts (crediting it to adoption too would double-co
 signal). Benchmark datasets keep the standard adoption bands, because small evaluation sets are
 pulled by harnesses on every run and their download counts behave like packages.
 
-Dataset categories are also where the `disclosure` gap applies: frontier labs publish nothing
-about their training data, so a training-data category has no closed comparator at all, and the
-finding worth surfacing is that asymmetry itself rather than a maturity or adoption shortfall.
+One caveat specific to `training_synthetic_datasets`: it mixes roles — pretraining corpora, SFT
+mixtures, and preference sets — whose capability is measured against different yardsticks
+(pretraining perplexity/knowledge benchmarks versus instruction-following or preference wins).
+Capability is read per role, so cross-role comparison within the category is looser than in the
+single-purpose categories, and the mature open corpora today are all of one kind (filtered
+Common-Crawl web text); the multilingual, preference, and reasoning roles still lag.
+
+Training data is also where the `disclosure` gap is declared (see *Declaring the disclosure gap*
+below): the open corpora are real and shared, but the frontier's proprietary and licensed data
+and its exact mixing recipe stay invisible, and that asymmetry is the finding worth surfacing.
 
 ## Counting rule: open-only
 
@@ -108,16 +115,27 @@ derived from the same metrics as the stage:
   the depth/redundancy of a mature ecosystem (too few mature fully-open products).
 - **`openness`** — capable, adopted options exist, but the mature ones are not fully open
   (open-ish or closed). This is the orthogonal flag; it can co-occur with the others.
-- **`disclosure`** — no closed comparator exists to measure against: the closed frontier does
-  not publish anything in this category, so the open ecosystem is the only measurable one. The
-  meaningful comparison is data availability, not head-to-head maturity. Like `openness` this
-  flag is orthogonal — it is derived from the category's roster (all products are datasets and
-  none sit in the closed bucket) rather than from the scores, and it can appear at **any**
-  stage, including Stage 5.
+- **`disclosure`** — the open products are real and widely used, but the closed frontier's own
+  equivalent is undisclosed: labs publish neither their proprietary and licensed data nor their
+  exact recipe. The gap is the invisibility of the frontier's data, not the absence of open
+  data. Unlike the other gaps it is **declared per category**, not inferred (see below), and it
+  can appear at **any** stage, including Stage 5.
 
 A fully mature ecosystem carries no gaps — with one exception: `disclosure` can still be
 flagged at Stage 5, because it describes the closed frontier's silence, not a shortfall of the
 open ecosystem.
+
+### Declaring the disclosure gap
+
+`disclosure` is set with `disclosure_gap: true` in the category file, not derived from the
+product scores. It is an editorial judgment about the *closed* world, which the open products'
+scores cannot express, so making it explicit keeps it from silently toggling when the roster
+changes. Set it where the open products are inputs whose closed-frontier equivalent (proprietary
+data, licensed corpora, the exact mixing recipe) is structurally undisclosed — training data is
+the clear case. Do **not** set it where the open products are the shared public standard the
+frontier reports against: open evaluation benchmarks, for instance, are what closed models are
+measured on in public, so there is no comparable invisibility and `benchmark_eval_data` leaves
+the flag unset.
 
 The set is **extensible**: new gap types (for example *maintenance* or *bus-factor* risk, once
 those signals are tracked) can be added without changing the staging logic — they are simply

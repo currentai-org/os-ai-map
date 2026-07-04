@@ -48,9 +48,11 @@ _GAP_DESC = {
                 "the depth/redundancy of a mature ecosystem (too few mature fully-open products).",
     "openness": "capable, adopted options exist, but the mature ones are not fully open "
                 "(open-ish or closed). This is the orthogonal flag; it can co-occur with the others.",
-    "disclosure": "no closed comparator exists to measure against: the closed frontier does not "
-                  "publish anything in this category, so the open ecosystem is the only measurable "
-                  "one. The meaningful comparison is data availability, not head-to-head maturity.",
+    "disclosure": "the open products here are real and widely used, but the closed frontier's own "
+                  "equivalent is undisclosed: labs publish neither their proprietary and licensed "
+                  "data nor their exact training-data recipe. The gap is the invisibility of the "
+                  "frontier's data, not the absence of open data. Declared per category (see "
+                  "docs/guides/gap-analysis.md), not inferred from the roster.",
 }
 
 
@@ -81,11 +83,13 @@ def _maturity_score(row: dict, w: dict) -> float | None:
     return round((wa * adoption + wc * capability) / ((wa + wc) or 1.0), 2)
 
 
-def _stage_and_gaps(rows: list[dict], weights: dict) -> dict:
+def _stage_and_gaps(rows: list[dict], weights: dict, disclosure: bool = False) -> dict:
     """Assign a maturity stage (0-5) and the set of gaps for one category.
 
     Strict open-only: only fully-open products count toward maturity/stage;
     open-ish only serves to detect the openness gap. See docs/guides/gap-analysis.md.
+    `disclosure` is a declared per-category attribute (not inferred): set it where the
+    closed frontier's equivalent to these open products is structurally undisclosed.
     """
     w = weights or {"adopt": 0.5, "cap": 0.5}
     # Products with no maturity score (missing adoption) are excluded from the stage
@@ -125,12 +129,13 @@ def _stage_and_gaps(rows: list[dict], weights: dict) -> dict:
             cap = ((best or {}).get("capability") or {}).get("score")
             gaps.append("capability" if (cap is not None and cap < _CAPABLE_MIN) else "adoption")
 
-    # Disclosure flag (orthogonal, any stage): in an all-dataset category with no
-    # closed-bucket row, the closed frontier publishes nothing at all -- there is no
-    # comparator. Benchmark data does not fire (closed internal evals are documented
-    # and curated as rows); training corpora do. See docs/guides/gap-analysis.md.
-    if rows and all(r.get("type") == "dataset" for r in rows) \
-            and not any(b == "closed" for _, b, _ in enr):
+    # Disclosure flag (orthogonal, any stage): a declared category attribute, set where
+    # the closed frontier's equivalent to these open products is structurally undisclosed
+    # (its proprietary data and recipe). Declared rather than inferred so it can't silently
+    # toggle on a curation change, and so training data (declared) and benchmark data (not
+    # declared -- open benchmarks are the shared public standard) are treated deliberately.
+    # See docs/guides/gap-analysis.md.
+    if disclosure:
         gaps.append("disclosure")
 
     return {"num": stage, "name": _STAGE_NAMES[stage], "gaps": gaps}
@@ -252,7 +257,7 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
             org_name = "" if org_slug == "unknown" else orgs[org_slug]["display_name"]
             rows.append(_row(p, org_name, scores[slug], cat.get("weights")))
             n += 1
-        sg = _stage_and_gaps(rows, cat.get("weights"))
+        sg = _stage_and_gaps(rows, cat.get("weights"), disclosure=cat.get("disclosure_gap", False))
         out_cats[cid] = {"label": cat["display_name"], "arc": cid_arc[cid],
                          "layer": cid_layer[cid], "stage": {"num": sg["num"], "name": sg["name"]},
                          "gaps": sg["gaps"], "products": rows}
