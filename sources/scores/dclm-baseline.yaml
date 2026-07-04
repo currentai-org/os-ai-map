@@ -10,33 +10,27 @@ openness:
     shows: Dataset card, CC-BY-4.0 license, ungated public download, GitHub link
     accessed: '2026-06-22'
 adoption:
-  level: 5
-  reach: '>1M'
-  signal_type: documented_reuse
+  level: 4
+  reach: 100k-1M
+  signal_type: usage_volume
   confidence: high
-  note: 440,189 monthly downloads on Hugging Face (level 4 on the corpus bands), promoted one level for
-    documented reuse. Documented pretraining component of SmolLM3, OLMoE, Marin, RWKV World v3, and a
-    Hermes 4 synthesis seed.
+  note: 440,189 monthly downloads on Hugging Face, graded on the training-corpus bands.
   sources:
   - url: https://huggingface.co/api/datasets/mlfoundations/dclm-baseline-1.0
     shows: downloads field = 440,189 (30-day)
     accessed: '2026-07-04'
-  - url: https://huggingface.co/blog/smollm3
-    shows: SmolLM3 pretraining mix includes DCLM
-    accessed: '2026-07-04'
-  - url: https://huggingface.co/datasets/allenai/OLMoE-mix-0924
-    shows: 'OLMoE mix: DCLM Baseline 1.0 is the 3.86T-token core'
-    accessed: '2026-07-04'
-  - url: https://huggingface.co/marin-community/marin-8b-base
-    shows: Marin 8B pretraining mixture includes DCLM Baseline
-    accessed: '2026-07-04'
-  - url: https://arxiv.org/abs/2508.18255
-    shows: 'Hermes 4 report: DCLM used as DataForge synthesis seeds'
-    accessed: '2026-07-04'
 capability:
-  score: null
-  basis: n/a
+  score: 5
+  basis: training_value:ablation
   value: null
   confidence: high
-  note: a dataset is not 'capable'
-  sources: []
+  note: Leads the DataComp-LM leaderboard (beats C4/RefinedWeb/RedPajama/Dolma); current 2024-26 default
+    of OLMoE, Marin, SmolLM3, and RWKV.
+  sources:
+  - url: https://arxiv.org/abs/2406.11794
+    shows: DCLM-Baseline 7B reaches 64% MMLU at 2.6T tokens; model-based filtering adds >6 MMLU over the
+      best prior open corpus
+    accessed: '2026-07-04'
+  - url: https://huggingface.co/datasets/mlfoundations/dclm-baseline-1.0
+    shows: OLMoE, SmolLM3, Marin, and RWKV built on DCLM
+    accessed: '2026-07-04'

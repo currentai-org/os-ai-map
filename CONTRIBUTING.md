@@ -103,13 +103,14 @@ Each score file has three axes. **Every non-null value needs at least one
   - datasets: `open`, `gated`, `documented_only`, `closed`
   - hardware: `open_hardware`, `open_toolchain`, `documented`, `restricted`, `closed`
 - **adoption** (`level:` 1-5, `signal_type:` one of `active_users`,
-  `usage_volume`, `reported_traction`, `documented_reuse`, `stars_fallback`,
-  `unknown`): real usage (downloads, active users, deployments) beats stars.
-  `stars_fallback` can never justify a level above 3 (enforced by validation).
-  `documented_reuse` is for training corpora whose decisive signal is documented
-  use by downstream models (see the training-corpus bands below).
+  `usage_volume`, `reported_traction`, `stars_fallback`, `unknown`): real usage
+  (downloads, active users, deployments) beats stars. `stars_fallback` can
+  never justify a level above 3 (enforced by validation).
 - **capability** (`score:` 1-5, `basis:` e.g. `benchmark:MLPerf`): benchmark or
-  comparative evidence; `null` with a reason if no defensible basis exists.
+  comparative evidence; `null` with a reason if no defensible basis exists. For a
+  training corpus, capability is its **training value** — how good the models
+  built on it are — graded from controlled ablations and downstream-model evidence
+  (`basis: training_value:ablation` / `:downstream` / `:results` / `:superseded`).
 
 ### Adoption level bands
 
@@ -163,12 +164,12 @@ These bands do **not** apply to `benchmark_eval_data`: benchmark sets are small
 files pulled by evaluation harnesses on every run, so their download counts behave
 like package downloads and the standard bands fit.
 
-**Documented reuse.** Raw downloads still under-measure a corpus that model builders
-mirror once and reuse forever. A corpus verifiably documented (model cards, technical
-reports) as a training-data component of **three or more notable independent model
-families** may sit **one level above** its volume band — never more than one. Use
-`signal_type: documented_reuse`, name the model families in the `note`, and cite the
-documenting reports in `sources`.
+Download volume alone under-measures a corpus that model builders mirror once and
+reuse forever. That reuse signal belongs on the **capability** axis, not adoption:
+a corpus's training value is how good the models built on it are, so widespread
+documented reuse and winning controlled ablations are capability evidence. Keep
+adoption to verified download volume and record reuse and ablation results under
+`capability`.
 
 ## Suggesting without writing YAML
 

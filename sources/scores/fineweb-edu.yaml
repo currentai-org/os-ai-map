@@ -10,32 +10,26 @@ openness:
     shows: Dataset card present, ODC-BY license, public ungated download
     accessed: '2026-06-22'
 adoption:
-  level: 5
-  reach: '>1M'
-  signal_type: documented_reuse
+  level: 4
+  reach: 100k-1M
+  signal_type: usage_volume
   confidence: high
-  note: 384,910 monthly downloads on Hugging Face (level 4 on the corpus bands), promoted one level for
-    documented reuse. Documented pretraining component of Apertus, SmolLM3, ALIA-40b, and RWKV World v3.
+  note: 384,910 monthly downloads on Hugging Face, graded on the training-corpus bands.
   sources:
   - url: https://huggingface.co/api/datasets/HuggingFaceFW/fineweb-edu
     shows: downloads field = 384,910 (30-day)
     accessed: '2026-07-04'
-  - url: https://arxiv.org/abs/2509.14233
-    shows: Apertus tech report lists FineWeb-Edu as a pretraining corpus
-    accessed: '2026-07-04'
-  - url: https://huggingface.co/blog/smollm3
-    shows: SmolLM3 pretraining mix includes FineWeb-Edu
-    accessed: '2026-07-04'
-  - url: https://huggingface.co/BSC-LT/ALIA-40b
-    shows: 'ALIA-40b card: FineWeb-Edu 350BT subset is 10.24% of pretraining tokens'
-    accessed: '2026-07-04'
-  - url: https://arxiv.org/abs/2503.14456
-    shows: 'RWKV-7 report: FineWeb-Edu is an RWKV World v3 component'
-    accessed: '2026-07-04'
 capability:
-  score: null
-  basis: n/a
+  score: 5
+  basis: training_value:ablation
   value: null
   confidence: high
-  note: a dataset is not 'capable'
-  sources: []
+  note: Dominates FineWeb and all peers on MMLU/ARC, matching full FineWeb with ~10x fewer tokens; current
+    default web corpus for SmolLM2/3 and Apertus.
+  sources:
+  - url: https://arxiv.org/abs/2406.17557
+    shows: FineWeb-Edu matches full FineWeb on MMLU/ARC at ~10x fewer tokens
+    accessed: '2026-07-04'
+  - url: https://arxiv.org/abs/2502.02737
+    shows: SmolLM2 uses FineWeb-Edu as its English web component
+    accessed: '2026-07-04'

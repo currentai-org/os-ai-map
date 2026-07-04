@@ -11,33 +11,26 @@ openness:
     shows: ODC-BY-1.0 license, ~939k rows, dataset card
     accessed: '2026-06-22'
 adoption:
-  level: 4
-  reach: 100k-1M
-  signal_type: documented_reuse
+  level: 3
+  reach: 10k-100k
+  signal_type: usage_volume
   confidence: high
-  note: 18,317 monthly downloads on Hugging Face (level 3 on the corpus bands), promoted one level for
-    documented reuse. Documented post-training data for Tulu 3, Apertus, Marin 8B Instruct, and SmolLM3
-    (via SmolTalk2).
+  note: 18,317 monthly downloads on Hugging Face, graded on the training-corpus bands.
   sources:
   - url: https://huggingface.co/api/datasets/allenai/tulu-3-sft-mixture
     shows: downloads field = 18,317 (30-day)
     accessed: '2026-07-04'
-  - url: https://arxiv.org/abs/2411.15124
-    shows: 'Tulu 3 paper: the SFT mixture is the core recipe'
-    accessed: '2026-07-04'
-  - url: https://arxiv.org/abs/2509.14233
-    shows: 'Apertus tech report: SFT on the Tulu 3 SFT mixture'
-    accessed: '2026-07-04'
-  - url: https://huggingface.co/marin-community/marin-8b-base
-    shows: Marin 8B Instruct SFT sources include Tulu-3 SFT Mixture
-    accessed: '2026-07-04'
-  - url: https://huggingface.co/blog/smollm3
-    shows: SmolLM3 SFT uses SmolTalk2, which folds in Tulu 3 data
-    accessed: '2026-07-04'
 capability:
-  score: null
-  basis: n/a
+  score: 4
+  basis: training_value:downstream
   value: null
   confidence: high
-  note: a dataset is not 'capable'
-  sources: []
+  note: Current multi-org SFT default (Marin, SmolLM3, OLMo 2) with SOTA open-recipe claims, but a reused
+    component rather than the head-to-head leader; Dolci now leads the fully-open frontier.
+  sources:
+  - url: https://arxiv.org/abs/2411.15124
+    shows: The Tulu 3 recipe surpasses instruct versions of Llama 3.1, Qwen 2.5, and GPT-4o-mini
+    accessed: '2026-07-04'
+  - url: https://huggingface.co/marin-community/marin-8b-instruct
+    shows: Marin 8B Instruct lists tulu-3-sft-mixture among its SFT sources
+    accessed: '2026-07-04'

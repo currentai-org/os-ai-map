@@ -10,29 +10,26 @@ openness:
     shows: Dataset page exists on public hub, ODC-BY, 1000+ languages
     accessed: '2026-06-22'
 adoption:
-  level: 4
-  reach: 100k-1M
-  signal_type: documented_reuse
+  level: 3
+  reach: 10k-100k
+  signal_type: usage_volume
   confidence: high
-  note: 93,906 monthly downloads on Hugging Face (level 3 on the corpus bands), promoted one level for
-    documented reuse. Documented pretraining component of Apertus, SmolLM3, and ALIA-40b.
+  note: 93,906 monthly downloads on Hugging Face, graded on the training-corpus bands.
   sources:
   - url: https://huggingface.co/api/datasets/HuggingFaceFW/fineweb-2
     shows: downloads field = 93,906 (30-day)
     accessed: '2026-07-04'
-  - url: https://arxiv.org/abs/2509.14233
-    shows: Apertus tech report lists FineWeb-2 and FineWeb2-HQ as pretraining corpora
-    accessed: '2026-07-04'
-  - url: https://huggingface.co/blog/smollm3
-    shows: SmolLM3 pretraining mix includes FineWeb2 and FineWeb2-HQ
-    accessed: '2026-07-04'
-  - url: https://huggingface.co/BSC-LT/ALIA-40b
-    shows: 'ALIA-40b card: 178B-token FineWeb2 subset in pretraining'
-    accessed: '2026-07-04'
 capability:
-  score: null
-  basis: n/a
+  score: 5
+  basis: training_value:downstream
   value: null
   confidence: high
-  note: a dataset is not 'capable'
-  sources: []
+  note: Primary web corpus for Apertus 8B/70B (2025), 1811 languages; the current multilingual default,
+    and its HQ variant leads multilingual data-selection work.
+  sources:
+  - url: https://arxiv.org/abs/2509.14233
+    shows: Apertus 8B/70B train on 15T tokens from 1811 languages via FineWeb-2/FineWeb-2-HQ
+    accessed: '2026-07-04'
+  - url: https://huggingface.co/datasets/HuggingFaceFW/fineweb-2
+    shows: FineWeb-2 outperforms CulturaX/mC4/CC-100/HPLT on FineTasks in controlled ablations
+    accessed: '2026-07-04'

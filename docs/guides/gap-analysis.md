@@ -33,8 +33,9 @@ surface — and it is reported independently of how mature the ecosystem is othe
   canonical map in [`openness-class-map.json`](../openness-class-map.json). "Fully open" means
   the `open` bucket; "open-ish" is partial openness (e.g. open-weights, source-available).
 - **Adoption** — `adoption.level` (1–5).
-- **Capability** — `capability.score` (1–5; may be null for product types where capability is
-  not meaningful, e.g. datasets).
+- **Capability** — `capability.score` (1–5; for a dataset this is its *training value* — how
+  good the models built on it are — from ablations and downstream-model evidence. May be null
+  where no defensible basis exists yet).
 - **Per-category weights** — `weights.adopt` and `weights.cap`, so each category blends the two
   axes according to what matters most for that part of the stack.
 
@@ -47,21 +48,22 @@ normalized by the weight sum so it stays on the 1–5 scale for any weights:
 score = (weights.adopt · adoption + weights.cap · capability) / (weights.adopt + weights.cap)
 ```
 
-Where capability is not meaningful (null), the product is graded on adoption alone. A product
-is **mature** when its score clears a high threshold (a near-best-on-both-axes bar). The bar is
-intentionally demanding: because the map curates the most prominent products in each category,
-a low bar would call almost everything mature.
+Where a product's capability has no defensible basis it may be null, in which case the product
+is graded on adoption alone. A product is **mature** when its score clears a high threshold (a
+near-best-on-both-axes bar). The bar is intentionally demanding: because the map curates the
+most prominent products in each category, a low bar would call almost everything mature.
 
 ## Dataset categories
 
-Capability is structurally null for a corpus, so a dataset's maturity score collapses to its
-adoption level alone, and the "mature" bar can only be cleared at the top adoption level. That
-makes the adoption calibration do all the work. Training corpora are therefore graded against
-corpus-specific bands (one order of magnitude below the package bands, plus a documented-reuse
-signal — see the *Training-corpus bands* section of `CONTRIBUTING.md`): a multi-terabyte corpus
-is pulled per training run, not per CI job, so package-scale download floors would make maturity
-structurally unreachable. Benchmark datasets keep the standard bands, because small evaluation
-sets are pulled by harnesses on every run and their download counts behave like packages.
+Datasets are scored on both axes like everything else, but each axis is read specifically for a
+corpus. Adoption is verified download volume, graded against corpus-specific bands one order of
+magnitude below the package bands (see the *Training-corpus bands* section of `CONTRIBUTING.md`):
+a multi-terabyte corpus is pulled per training run, not per CI job, so package-scale download
+floors would make maturity unreachable. Capability is the corpus's *training value* — how good
+the models built on it are — from controlled ablations and downstream-model evidence, which is
+also where documented reuse counts (crediting it to adoption too would double-count the same
+signal). Benchmark datasets keep the standard adoption bands, because small evaluation sets are
+pulled by harnesses on every run and their download counts behave like packages.
 
 Dataset categories are also where the `disclosure` gap applies: frontier labs publish nothing
 about their training data, so a training-data category has no closed comparator at all, and the

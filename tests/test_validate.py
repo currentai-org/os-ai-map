@@ -123,12 +123,6 @@ def test_product_without_score_file_caught_not_raised():
     assert any(e == "product 'mistral': no scores/mistral.yaml" for e in errs)
 
 
-def test_documented_reuse_is_a_valid_signal_type():
-    d = _fixture()
-    d["scores"]["llama-4"]["adoption"]["signal_type"] = "documented_reuse"
-    assert validate_sources(d) == []
-
-
 def test_unknown_signal_type_still_fails():
     d = _fixture()
     d["scores"]["llama-4"]["adoption"]["signal_type"] = "vibes"
