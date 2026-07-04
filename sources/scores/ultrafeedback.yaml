@@ -10,19 +10,26 @@ openness:
     shows: MIT license, ungated card, 63,967 rows / 940 MB
     accessed: '2026-06-22'
 adoption:
-  level: 1
-  reach: <10k
+  level: 2
+  reach: 1k-10k
   signal_type: usage_volume
   confidence: high
-  note: The dataset page reports 4,657 downloads last month.
+  note: 4,496 monthly downloads on Hugging Face, graded on the training-corpus bands.
   sources:
-  - url: https://huggingface.co/datasets/openbmb/UltraFeedback
-    shows: 'Downloads last month: 4,657'
-    accessed: '2026-06-22'
+  - url: https://huggingface.co/api/datasets/openbmb/UltraFeedback
+    shows: downloads field = 4,496 (30-day)
+    accessed: '2026-07-04'
 capability:
-  score: null
-  basis: n/a
+  score: 4
+  basis: training_value:ablation
   value: null
   confidence: high
-  note: a dataset is not 'capable'
-  sources: []
+  note: Clean documented DPO before/after (Zephyr MT-Bench 6.64->7.34); its pipeline is the template for
+    Tulu 3 / OLMo 2 preference data, with cleaned subsets still in use.
+  sources:
+  - url: https://ar5iv.labs.arxiv.org/html/2310.16944
+    shows: 'Zephyr: DPO on ultrafeedback_binarized lifts MT-Bench 6.64->7.00, final model 7.34'
+    accessed: '2026-07-04'
+  - url: https://arxiv.org/abs/2411.15124
+    shows: Tulu 3 extends the UltraFeedback pipeline to scale preference data
+    accessed: '2026-07-04'

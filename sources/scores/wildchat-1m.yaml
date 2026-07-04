@@ -11,19 +11,26 @@ openness:
     shows: gated=false, license=odc-by
     accessed: '2026-06-22'
 adoption:
-  level: 2
+  level: 3
   reach: 10k-100k
   signal_type: usage_volume
   confidence: high
-  note: About 28.8k downloads in the last month per HF.
+  note: 31,364 monthly downloads on Hugging Face, graded on the training-corpus bands.
   sources:
   - url: https://huggingface.co/api/datasets/allenai/WildChat-1M
-    shows: downloads=28779
-    accessed: '2026-06-22'
+    shows: downloads field = 31,364 (30-day)
+    accessed: '2026-07-04'
 capability:
-  score: null
-  basis: n/a
+  score: 4
+  basis: training_value:downstream
   value: null
-  confidence: high
-  note: a dataset is not 'capable'
-  sources: []
+  confidence: medium
+  note: A sustained cross-recipe SFT ingredient (Tulu 3 2024, OLMo 3 Dolci 2025), but its own ablation
+    is weak/dated and it does not lead comparisons.
+  sources:
+  - url: https://huggingface.co/datasets/allenai/tulu-3-sft-mixture
+    shows: Named source in the Tulu 3 SFT mixture
+    accessed: '2026-07-04'
+  - url: https://arxiv.org/html/2405.01470v1
+    shows: WildChat's own ablation (WildLlama) is modest vs 2023 baselines
+    accessed: '2026-07-04'

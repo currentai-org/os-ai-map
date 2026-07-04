@@ -10,19 +10,26 @@ openness:
     shows: ODC-BY license, ungated access, dataset card, ~3T tokens
     accessed: '2026-06-22'
 adoption:
-  level: 1
-  reach: <10k
+  level: 2
+  reach: 1k-10k
   signal_type: usage_volume
   confidence: high
-  note: HF reports 4,074 monthly downloads.
+  note: 4,015 monthly downloads on Hugging Face, graded on the training-corpus bands.
   sources:
-  - url: https://huggingface.co/datasets/allenai/dolma
-    shows: 4,074 monthly downloads
-    accessed: '2026-06-22'
+  - url: https://huggingface.co/api/datasets/allenai/dolma
+    shows: downloads field = 4,015 (30-day)
+    accessed: '2026-07-04'
 capability:
-  score: null
-  basis: n/a
+  score: 3
+  basis: training_value:superseded
   value: null
   confidence: high
-  note: a dataset is not 'capable'
-  sources: []
+  note: Proven training corpus for OLMo 1/2 and OLMoE, but loses to FineWeb in the canonical FineWeb ablation
+    and is superseded by Dolma 3.
+  sources:
+  - url: https://arxiv.org/abs/2406.17557
+    shows: FineWeb outperforms Dolma v1.6 and v1.7 in the 1.82B/350B ablation
+    accessed: '2026-07-04'
+  - url: https://allenai.org/blog/olmo3
+    shows: Dolma superseded by Dolma 3 for OLMo 3
+    accessed: '2026-07-04'

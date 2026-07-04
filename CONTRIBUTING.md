@@ -107,7 +107,15 @@ Each score file has three axes. **Every non-null value needs at least one
   (downloads, active users, deployments) beats stars. `stars_fallback` can
   never justify a level above 3 (enforced by validation).
 - **capability** (`score:` 1-5, `basis:` e.g. `benchmark:MLPerf`): benchmark or
-  comparative evidence; `null` with a reason if no defensible basis exists.
+  comparative evidence; `null` with a reason if no defensible basis exists. For a
+  training corpus, capability is its **training value under frontier-style
+  evaluation** — how good the models built on it are on standard (largely English,
+  benchmark-driven) evals — graded from controlled ablations and downstream-model
+  evidence (`basis: training_value:ablation` / `:downstream` / `:results` /
+  `:superseded`). A low score means a corpus is not the current pick for *that*
+  objective, **not** that it is low quality: consent, licensing, documentation
+  quality, and language coverage are openness or scope concerns and are deliberately
+  not captured by this axis.
 
 ### Adoption level bands
 
@@ -141,6 +149,32 @@ Notes on applying the bands:
   `1M-10M`); keep it consistent with the chosen level.
 
 Look at `sources/scores/vllm.yaml` for a complete worked example.
+
+#### Training-corpus bands
+
+Download volume for a multi-terabyte corpus is not comparable to a package: a
+corpus is pulled a handful of times per training run, not on every CI job. Products
+in the `training_synthetic_datasets` category are therefore graded one order of
+magnitude below the standard bands:
+
+| Level | Monthly HF downloads | Reading |
+|------:|----------------------|---------|
+| **5** | **> 1M / mo** | Ecosystem-standard corpus — a default choice for building models. |
+| **4** | 100k – 1M / mo | Widely used; a leading corpus in its niche. |
+| **3** | 10k – 100k / mo | Established, real usage. |
+| **2** | 1k – 10k / mo | Emerging; a meaningful user base but still niche. |
+| **1** | < 1k / mo | Early / experimental; little verified usage. |
+
+These bands do **not** apply to `benchmark_eval_data`: benchmark sets are small
+files pulled by evaluation harnesses on every run, so their download counts behave
+like package downloads and the standard bands fit.
+
+Download volume alone under-measures a corpus that model builders mirror once and
+reuse forever. That reuse signal belongs on the **capability** axis, not adoption:
+a corpus's training value is how good the models built on it are, so widespread
+documented reuse and winning controlled ablations are capability evidence. Keep
+adoption to verified download volume and record reuse and ablation results under
+`capability`.
 
 ## Suggesting without writing YAML
 

@@ -11,19 +11,26 @@ openness:
       card
     accessed: '2026-06-22'
 adoption:
-  level: 2
+  level: 3
   reach: 10k-100k
   signal_type: usage_volume
   confidence: high
-  note: HF reports 23,823 monthly downloads.
+  note: 28,469 monthly downloads on Hugging Face, graded on the training-corpus bands.
   sources:
-  - url: https://huggingface.co/datasets/bigcode/the-stack-v2
-    shows: 23,823 monthly downloads
-    accessed: '2026-06-22'
+  - url: https://huggingface.co/api/datasets/bigcode/the-stack-v2
+    shows: downloads field = 28,469 (30-day)
+    accessed: '2026-07-04'
 capability:
-  score: null
-  basis: n/a
+  score: 4
+  basis: training_value:downstream
   value: null
   confidence: high
-  note: a dataset is not 'capable'
-  sources: []
+  note: Trained StarCoder2 (2024) and is the code base of SmolLM3 (2025) plus the source for Stack-Edu;
+    as the raw corpus it is beaten by its own edu-filtered slice in ablations.
+  sources:
+  - url: https://arxiv.org/abs/2402.19173
+    shows: StarCoder2 trained on The Stack v2 (900B+ tokens, 619 languages)
+    accessed: '2026-07-04'
+  - url: https://huggingface.co/blog/smollm3
+    shows: SmolLM3 code data is The Stack v2
+    accessed: '2026-07-04'

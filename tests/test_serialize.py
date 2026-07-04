@@ -202,3 +202,36 @@ def test_unknown_org_renders_empty_string():
                                       "type": "unknown", "products": ["llama-4"]}}
     payload = build_payload(s, frozen_long_tail={}, generated="2026-06-10")
     assert payload["categories"]["base_pretrained"]["products"][0]["org"] == ""
+
+
+def _pd(cls, adoption):
+    return {"openness": {"class": cls}, "adoption": {"level": adoption},
+            "capability": {"score": None}, "type": "dataset"}
+
+
+def test_disclosure_gap_flagged_even_at_top_stage():
+    # 4 mature open corpora -> Stage 5; disclosure is a declared attribute that still
+    # applies at the top rung (the frontier's own data recipe stays invisible).
+    rows = [_pd("open", 5) for _ in range(4)]
+    sg = _stage_and_gaps(rows, {"adopt": 1.0, "cap": 0.0}, disclosure=True)
+    assert sg["num"] == 5 and sg["gaps"] == ["disclosure"]
+
+
+def test_disclosure_gap_coexists_with_stage_gaps():
+    rows = [_pd("open", 5), _pd("open", 3)]  # one mature open corpus -> stage 4
+    sg = _stage_and_gaps(rows, {"adopt": 1.0, "cap": 0.0}, disclosure=True)
+    assert sg["num"] == 4 and sg["gaps"] == ["maturity", "disclosure"]
+
+
+def test_no_disclosure_gap_when_not_declared():
+    # not declared (e.g. benchmark data: open benchmarks are the shared public standard)
+    rows = [_pd("open", 4), _pd("open", 3)]
+    sg = _stage_and_gaps(rows, {"adopt": 1.0, "cap": 0.0})
+    assert "disclosure" not in sg["gaps"]
+
+
+def test_disclosure_flag_is_independent_of_closed_rows():
+    # presence of a closed row no longer toggles disclosure -- it is declared, not inferred
+    rows = [_pd("open", 4), _pd("closed", None)]
+    assert "disclosure" in _stage_and_gaps(rows, {"adopt": 1.0, "cap": 0.0}, disclosure=True)["gaps"]
+    assert "disclosure" not in _stage_and_gaps(rows, {"adopt": 1.0, "cap": 0.0})["gaps"]
