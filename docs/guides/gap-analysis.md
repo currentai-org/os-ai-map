@@ -33,9 +33,11 @@ surface — and it is reported independently of how mature the ecosystem is othe
   canonical map in [`openness-class-map.json`](../openness-class-map.json). "Fully open" means
   the `open` bucket; "open-ish" is partial openness (e.g. open-weights, source-available).
 - **Adoption** — `adoption.level` (1–5).
-- **Capability** — `capability.score` (1–5; for a dataset this is its *training value* — how
-  good the models built on it are — from ablations and downstream-model evidence. May be null
-  where no defensible basis exists yet).
+- **Capability** — `capability.score` (1–5; for a dataset this is its *training value under
+  frontier-style evaluation* — how good the models built on it are on standard, largely English
+  and benchmark-driven evals — from ablations and downstream-model evidence. It does not capture
+  consent, licensing, documentation, or language coverage; a low score means "not the current
+  pick for that objective," not "low quality." May be null where no defensible basis exists yet).
 - **Per-category weights** — `weights.adopt` and `weights.cap`, so each category blends the two
   axes according to what matters most for that part of the stack.
 
@@ -65,12 +67,15 @@ also where documented reuse counts (crediting it to adoption too would double-co
 signal). Benchmark datasets keep the standard adoption bands, because small evaluation sets are
 pulled by harnesses on every run and their download counts behave like packages.
 
-One caveat specific to `training_synthetic_datasets`: it mixes roles — pretraining corpora, SFT
-mixtures, and preference sets — whose capability is measured against different yardsticks
-(pretraining perplexity/knowledge benchmarks versus instruction-following or preference wins).
-Capability is read per role, so cross-role comparison within the category is looser than in the
-single-purpose categories, and the mature open corpora today are all of one kind (filtered
-Common-Crawl web text); the multilingual, preference, and reasoning roles still lag.
+The headline finding for `training_synthetic_datasets` is a **monoculture**: every mature
+fully-open corpus today is filtered Common-Crawl English web text (FineWeb-Edu, DCLM, Dolma 3).
+The multilingual, preference, and reasoning roles lag well behind — capable corpora exist
+(FineWeb-2, MADLAD-400, Aya, UltraFeedback) but none clears the maturity bar — so the category's
+Stage 4 reflects English web pretraining specifically, not a broadly mature open data ecosystem.
+This is partly a property of the category mixing roles — pretraining corpora, SFT mixtures, and
+preference sets are graded against different yardsticks (knowledge benchmarks versus
+instruction-following or preference wins), so capability is read per role and cross-role
+comparison within the category is looser than in the single-purpose categories.
 
 Training data is also where the `disclosure` gap is declared (see *Declaring the disclosure gap*
 below): the open corpora are real and shared, but the frontier's proprietary and licensed data

@@ -108,9 +108,14 @@ Each score file has three axes. **Every non-null value needs at least one
   never justify a level above 3 (enforced by validation).
 - **capability** (`score:` 1-5, `basis:` e.g. `benchmark:MLPerf`): benchmark or
   comparative evidence; `null` with a reason if no defensible basis exists. For a
-  training corpus, capability is its **training value** — how good the models
-  built on it are — graded from controlled ablations and downstream-model evidence
-  (`basis: training_value:ablation` / `:downstream` / `:results` / `:superseded`).
+  training corpus, capability is its **training value under frontier-style
+  evaluation** — how good the models built on it are on standard (largely English,
+  benchmark-driven) evals — graded from controlled ablations and downstream-model
+  evidence (`basis: training_value:ablation` / `:downstream` / `:results` /
+  `:superseded`). A low score means a corpus is not the current pick for *that*
+  objective, **not** that it is low quality: consent, licensing, documentation
+  quality, and language coverage are openness or scope concerns and are deliberately
+  not captured by this axis.
 
 ### Adoption level bands
 
