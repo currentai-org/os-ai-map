@@ -52,6 +52,21 @@ is **mature** when its score clears a high threshold (a near-best-on-both-axes b
 intentionally demanding: because the map curates the most prominent products in each category,
 a low bar would call almost everything mature.
 
+## Dataset categories
+
+Capability is structurally null for a corpus, so a dataset's maturity score collapses to its
+adoption level alone, and the "mature" bar can only be cleared at the top adoption level. That
+makes the adoption calibration do all the work. Training corpora are therefore graded against
+corpus-specific bands (one order of magnitude below the package bands, plus a documented-reuse
+signal — see the *Training-corpus bands* section of `CONTRIBUTING.md`): a multi-terabyte corpus
+is pulled per training run, not per CI job, so package-scale download floors would make maturity
+structurally unreachable. Benchmark datasets keep the standard bands, because small evaluation
+sets are pulled by harnesses on every run and their download counts behave like packages.
+
+Dataset categories are also where the `disclosure` gap applies: frontier labs publish nothing
+about their training data, so a training-data category has no closed comparator at all, and the
+finding worth surfacing is that asymmetry itself rather than a maturity or adoption shortfall.
+
 ## Counting rule: open-only
 
 Only **fully-open** products count toward a category's maturity and stage. Open-ish products do
@@ -91,8 +106,16 @@ derived from the same metrics as the stage:
   the depth/redundancy of a mature ecosystem (too few mature fully-open products).
 - **`openness`** — capable, adopted options exist, but the mature ones are not fully open
   (open-ish or closed). This is the orthogonal flag; it can co-occur with the others.
+- **`disclosure`** — no closed comparator exists to measure against: the closed frontier does
+  not publish anything in this category, so the open ecosystem is the only measurable one. The
+  meaningful comparison is data availability, not head-to-head maturity. Like `openness` this
+  flag is orthogonal — it is derived from the category's roster (all products are datasets and
+  none sit in the closed bucket) rather than from the scores, and it can appear at **any**
+  stage, including Stage 5.
 
-A fully mature ecosystem carries no gaps.
+A fully mature ecosystem carries no gaps — with one exception: `disclosure` can still be
+flagged at Stage 5, because it describes the closed frontier's silence, not a shortfall of the
+open ecosystem.
 
 The set is **extensible**: new gap types (for example *maintenance* or *bus-factor* risk, once
 those signals are tracked) can be added without changing the staging logic — they are simply
