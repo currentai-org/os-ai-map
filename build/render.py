@@ -800,6 +800,10 @@ def details_payload(DATA, ORDER, mo):
           '<div class="v3-sect">Capability '+(cap.score==null?'n/a':cap.score+'/5')+'</div>'+
           row('Basis',cap.basis)+row('Value',cap.value)+row('Detail',cap.note)+row('Confidence',cap.confidence)+
           '<div class="v3-row"><span class="v3-lbl">Sources</span><span class="v3-val">'+srcs(cap.sources)+'</span></div>'+
+          (p.lineage?('<div class="v3-sect">Lineage</div>'+
+            (p.lineage.derived_from&&p.lineage.derived_from.length?row('Derived from',p.lineage.derived_from.join(', ')):'')+
+            (p.lineage.curated_with&&p.lineage.curated_with.length?row('Built with',p.lineage.curated_with.join(', ')):'')+
+            (p.lineage.trains&&p.lineage.trains.length?row('Trains',p.lineage.trains.join(', ')):'')):'')+
           '</div></div>';
         return h;
       }

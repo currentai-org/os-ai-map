@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 PRODUCT_KEY_ORDER = ["product", "org", "type", "description",
                      "openness", "adoption", "capability", "maturity", "mature",
-                     "version_note"]
+                     "version_note", "lineage"]
 
 # --- Gap analysis (category-level stage + gaps) -----------------------------
 # Mirrors the open / open-ish / closed verdict in docs/openness-class-map.json
@@ -177,7 +177,8 @@ def _filter_long_tail(frozen: dict, prods: dict) -> dict:
     return lt
 
 
-def _row(prod: dict, org_name: str, score: dict, weights: dict | None) -> dict:
+def _row(prod: dict, org_name: str, score: dict, weights: dict | None,
+         name_map: dict | None = None) -> dict:
     # Pre-compute the open / open-ish / closed bucket alongside the raw class, so
     # consumers get a stable 3-way verdict that survives changes to the openness.class
     # vocabulary. Same collapse the category gap logic uses (_gap_bucket).
@@ -207,6 +208,21 @@ def _row(prod: dict, org_name: str, score: dict, weights: dict | None) -> dict:
     # the notebook consumes is still `version_note`. Same value, renamed at rest.
     if prod.get("comments"):
         row["version_note"] = prod["comments"]
+    # Lineage is a display-only provenance block (derived_from / curated_with /
+    # trains). It feeds no score. On-map references are resolved to display names
+    # via name_map; anything not on the map (curation tools, external corpora like
+    # Common Crawl) passes through verbatim. Empty edges are dropped; the whole key
+    # is omitted when a product has no lineage.
+    lineage = prod.get("lineage")
+    if lineage:
+        nm = name_map or {}
+        resolved = {}
+        for edge in ("derived_from", "curated_with", "trains"):
+            refs = lineage.get(edge) or []
+            if refs:
+                resolved[edge] = [nm.get(r, r) for r in refs]
+        if resolved:
+            row["lineage"] = resolved
     return {k: row[k] for k in PRODUCT_KEY_ORDER if k in row}
 
 
@@ -216,6 +232,9 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
     orgs, cats, prods, scores = (sources["organizations"], sources["categories"],
                                  sources["products"], sources["scores"])
     taxonomy = sources["taxonomy"]
+    # Global slug -> display name map, used to resolve lineage references (which
+    # point at other on-map products by slug) into readable names at serialize time.
+    name_map = {slug: p["display_name"] for slug, p in prods.items()}
     # Products no longer carry an `org` field; the organization owns the roster.
     # Build the reverse map (product_slug -> org_slug) by walking every org roster.
     product_org: dict[str, str] = {}
@@ -255,7 +274,7 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
             # name "Unknown", which is schema-valid; the overlay carries "").
             org_slug = product_org[slug]
             org_name = "" if org_slug == "unknown" else orgs[org_slug]["display_name"]
-            rows.append(_row(p, org_name, scores[slug], cat.get("weights")))
+            rows.append(_row(p, org_name, scores[slug], cat.get("weights"), name_map))
             n += 1
         sg = _stage_and_gaps(rows, cat.get("weights"), disclosure=cat.get("disclosure_gap", False))
         out_cats[cid] = {"label": cat["display_name"], "arc": cid_arc[cid],
