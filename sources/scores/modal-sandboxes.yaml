@@ -39,7 +39,8 @@ capability:
   confidence: medium
   note: 'Strong, purpose-built agent sandbox: gVisor isolation + arbitrary images + high concurrency.
     Sits just below the Firecracker-microVM frontier (Lambda/Vercel) on isolation strength; scored 4,
-    level with the Ray/Ollama capability anchors.'
+    level with the Ray/Ollama capability anchors. Independent ComputeSDK TTI benchmarks measure ~470ms
+    median cold-start (13th of 19 sandbox providers), consistent with the fast-container-stack claim.'
   sources:
   - url: https://modal.com/docs/guide/sandbox
     shows: sandbox lifecycle, custom images, timeouts up to 24h, untrusted-code execution
@@ -47,3 +48,7 @@ capability:
   - url: https://modal.com/resources/best-code-execution-sandboxes-ai-agents
     shows: gVisor user-space kernel isolation, 50,000+ concurrent sessions (corroborating)
     accessed: '2026-06-04'
+  - url: https://www.computesdk.com/benchmarks/sandboxes/
+    shows: 'ComputeSDK TTI leaderboard (independent, 100 iters/day, 2026-07-09 run): median time-to-interactive
+      ~470ms sequential / ~570ms burst @100 concurrent; 13th of 19 providers'
+    accessed: '2026-07-09'

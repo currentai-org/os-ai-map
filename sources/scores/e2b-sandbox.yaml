@@ -35,8 +35,13 @@ capability:
   confidence: high
   note: VM-grade isolation (Firecracker) is the strongest tier in the feature matrix; broad SDK/runtime
     support and proven scale. Below the frontier-definer Firecracker itself (which it builds on), so 4
-    not 5.
+    not 5. Independent ComputeSDK TTI benchmarks corroborate the sub-second cold-start (~370ms median
+    time-to-interactive, mid-pack of 19 sandbox providers).
   sources:
   - url: https://e2b.dev/
     shows: each sandbox powered by Firecracker microVM; 1B+ sandboxes started
     accessed: '2026-06-04'
+  - url: https://www.computesdk.com/benchmarks/sandboxes/
+    shows: 'ComputeSDK TTI leaderboard (independent, 100 iters/day, 2026-07-09 run): median time-to-interactive
+      ~370ms sequential / ~470ms burst @100 concurrent; 7th-fastest of 19 providers'
+    accessed: '2026-07-09'

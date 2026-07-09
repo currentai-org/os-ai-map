@@ -40,8 +40,15 @@ capability:
   note: Firecracker microVM isolation (top tier) + ms cold-start + persistence/snapshots make it a strong
     agent sandbox; held at 4 rather than 5 because the managed-runtime breadth is narrower (Node/Python
     first-class) than Lambda's any-runtime/any-image frontier and scale is not at Lambda's proven level.
+    Independent ComputeSDK TTI benchmarks measure ~390ms median cold-start (9th of 19 sandbox providers);
+    the vendor's 'ms startup' framing is optimistic versus the measured hundreds of ms, though still solidly
+    sub-second.
   sources:
   - url: https://vercel.com/docs/sandbox
     shows: Firecracker microVM per sandbox, ms startup, persistent+snapshot, node/python runtimes, up
       to 45m
     accessed: '2026-06-04'
+  - url: https://www.computesdk.com/benchmarks/sandboxes/
+    shows: 'ComputeSDK TTI leaderboard (independent, 100 iters/day, 2026-07-09 run): median time-to-interactive
+      ~390ms sequential / ~490ms burst @100 concurrent; 9th of 19 providers'
+    accessed: '2026-07-09'

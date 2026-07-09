@@ -40,7 +40,8 @@ capability:
   note: Very broad runtime/language coverage and hyperscaler scale; new agent `sandbox` tool (announced
     Next '26, 'coming soon') adds first-class AI-code-execution via a `sandbox do --` command. gVisor
     isolation is process/syscall-level rather than full microVM (Sprites/Northflank), so not the top isolation
-    tier. Strong but not the single frontier-definer.
+    tier. Strong but not the single frontier-definer. Independent ComputeSDK TTI benchmarks corroborate
+    the sub-second cold-start (~430ms median, 10th of 19 sandbox providers).
   sources:
   - url: https://cloud.google.com/blog/products/serverless/whats-new-for-cloud-run-at-next26
     shows: built-in `sandbox` tool for agents to run AI-generated code in ephemeral isolated envs; container
@@ -49,3 +50,7 @@ capability:
   - url: https://cloud.google.com/run
     shows: OCI container deploy, scale-to-zero, broad runtime support
     accessed: '2026-06-04'
+  - url: https://www.computesdk.com/benchmarks/sandboxes/
+    shows: 'ComputeSDK TTI leaderboard (independent, 100 iters/day, 2026-07-09 run): median time-to-interactive
+      ~430ms sequential / ~510ms burst @100 concurrent; 10th of 19 providers'
+    accessed: '2026-07-09'

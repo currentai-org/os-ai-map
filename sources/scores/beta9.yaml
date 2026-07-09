@@ -32,9 +32,14 @@ capability:
   confidence: medium
   note: Capable serverless container runtime with GPU support, volumes, autoscaling and sandbox primitives,
     but container-level (not VM/microVM) isolation places it below the VM-grade peers on the isolation-strength
-    dimension; mid-tier.
+    dimension; mid-tier. Independent ComputeSDK TTI benchmarks of Beam (the managed beta9 cloud) corroborate
+    the fast container launch (~380ms median cold-start, 8th of 19 sandbox providers).
   sources:
   - url: https://github.com/beam-cloud/beta9
     shows: 'serverless runtime: rapid container launches, parallelize across hundreds of containers, GPU
       support, volume storage, sandboxes'
     accessed: '2026-06-04'
+  - url: https://www.computesdk.com/benchmarks/sandboxes/
+    shows: 'ComputeSDK TTI leaderboard (independent, 100 iters/day, 2026-07-09 run): Beam (managed beta9)
+      median time-to-interactive ~380ms sequential / ~810ms burst @100 concurrent; 8th of 19 providers'
+    accessed: '2026-07-09'
