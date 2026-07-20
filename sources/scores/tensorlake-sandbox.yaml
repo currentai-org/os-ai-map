@@ -1,0 +1,48 @@
+product: tensorlake-sandbox
+openness:
+  score: 4
+  class: open_core
+  components: license:Apache-2.0(OSI);source:public(runtime+SDK, BYOC self-host in your own AWS/GCP/Azure);managed-tier:Tensorlake
+    hosted cloud + proprietary Lattice scheduler
+  confidence: medium
+  note: Apache-2.0 runtime and SDK with a genuine bring-your-own-cloud self-host path, plus a proprietary
+    managed scheduler, so open-core on par with the permissive-Apache peers (E2B). The open part is permissive
+    and self-hostable; the managed scheduler is the closed value-add.
+  sources:
+  - url: https://github.com/tensorlakeai/tensorlake
+    shows: Apache-2.0 license; sandbox runtime + SDK (Python + Rust); BYOC self-host
+    accessed: '2026-07-09'
+  - url: https://www.tensorlake.ai/
+    shows: sandbox-native cloud for AI agents; run sandboxes in your own cloud account
+    accessed: '2026-07-09'
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: stars_fallback
+  confidence: low
+  note: No published usage or download figure for the runtime; ~959 GitHub stars is the available signal,
+    alongside Redpoint and Amplify backing and a free tier. stars_fallback caps the level at 3; placed
+    at 2 on a low-thousands star base absent any volume signal. Low confidence.
+  sources:
+  - url: https://github.com/tensorlakeai/tensorlake
+    shows: ~959 stars / 138 forks; no published usage figures
+    accessed: '2026-07-09'
+capability:
+  score: 4
+  basis: feature_matrix
+  value: isolation:Firecracker microVM (top tier); cold-start:sub-second; runtime breadth:arbitrary agent
+    sandboxes; persistence:snapshot/suspend/resume + durable-execution orchestration; scale:reported thousands
+    of concurrent sandboxes
+  confidence: medium
+  note: Firecracker microVM isolation plus durable-execution orchestration and snapshot/resume make for
+    a rich agent-runtime feature set, level with the microVM peers. Independent ComputeSDK TTI benchmarks
+    measure ~460ms median cold-start (12th of 19 sandbox providers), mid-pack and consistent with the
+    sub-second claim.
+  sources:
+  - url: https://www.tensorlake.ai/
+    shows: Firecracker microVM sandboxes, snapshot/suspend/resume, durable execution, scale to thousands
+    accessed: '2026-07-09'
+  - url: https://www.computesdk.com/benchmarks/sandboxes/
+    shows: 'ComputeSDK TTI leaderboard (independent, 100 iters/day, 2026-07-09 run): median time-to-interactive
+      ~460ms sequential / ~960ms burst @100 concurrent; 12th of 19 providers'
+    accessed: '2026-07-09'

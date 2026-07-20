@@ -1,0 +1,49 @@
+product: blaxel-sandbox
+openness:
+  score: 4
+  class: open_core
+  components: license:MIT(OSI);source:public(sandbox API, self-hostable via Docker Compose);managed-tier:Blaxel
+    proprietary perpetual-standby platform
+  confidence: medium
+  note: MIT sandbox API that is self-hostable via Docker Compose, with a proprietary managed perpetual-standby
+    platform, so open-core. The open component carries a maximally permissive MIT license; the standby/scale
+    platform is the closed value-add. Open surface is narrower than E2B's full self-hostable infra.
+  sources:
+  - url: https://github.com/blaxel-ai/sandbox
+    shows: MIT license; sandbox API self-hostable via Docker Compose (port 8080)
+    accessed: '2026-07-09'
+  - url: https://blaxel.ai/sandbox
+    shows: perpetual sandbox platform for AI agents; standby at zero compute cost, sub-25ms resume
+    accessed: '2026-07-09'
+adoption:
+  level: 1
+  reach: null
+  signal_type: stars_fallback
+  confidence: low
+  note: 'Very nascent: ~22 stars on the sandbox repo, a $7.3M seed (First Round, YC S2025), and an unverified
+    vendor claim of billions of agent requests. No usage or download signal. stars_fallback with a low-double-digit
+    star base places this at 1. Added on openness and mission-fit grounds despite the low prominence;
+    scored honestly. Low confidence.'
+  sources:
+  - url: https://github.com/blaxel-ai/sandbox
+    shows: ~22 stars / 11 forks; MIT sandbox API
+    accessed: '2026-07-09'
+capability:
+  score: 3
+  basis: feature_matrix
+  value: isolation:microVM (strong); cold-start:sub-second fresh, sub-25ms resume from standby; runtime
+    breadth:agent code execution; persistence:perpetual standby with full FS/memory state; scale:vendor-claimed
+    billions of agent requests (unverified)
+  confidence: medium
+  note: MicroVM isolation and the perpetual-standby resume model are a genuinely strong, distinctive feature
+    set, but proven scale is unverified and the product is early, so held at 3 rather than level with
+    the proven microVM 4s. Independent ComputeSDK TTI benchmarks measure ~450ms median fresh cold-start
+    (11th of 19 sandbox providers), mid-pack.
+  sources:
+  - url: https://blaxel.ai/sandbox
+    shows: microVM sandboxes, perpetual standby, sub-25ms resume with full FS/memory state
+    accessed: '2026-07-09'
+  - url: https://www.computesdk.com/benchmarks/sandboxes/
+    shows: 'ComputeSDK TTI leaderboard (independent, 100 iters/day, 2026-07-09 run): median time-to-interactive
+      ~450ms sequential / ~910ms burst @100 concurrent; 11th of 19 providers'
+    accessed: '2026-07-09'

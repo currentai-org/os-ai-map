@@ -33,8 +33,13 @@ capability:
   confidence: high
   note: Strong isolation (dedicated kernel + isolated net/fs, allocated vCPU/RAM/disk) with sub-90ms cold-start
     and persistent sessions; among the strongest agent-runtime feature sets, just below the kernel/microVM
-    frontier-definers.
+    frontier-definers. Independent ComputeSDK TTI benchmarks corroborate the sub-100ms-class cold-start
+    (~140ms median, 4th-fastest of 19 sandbox providers).
   sources:
   - url: https://github.com/daytonaio/daytona
     shows: dedicated kernel/filesystem/network stack per sandbox; <90ms spin-up; persistent state; Python/TS/JS
     accessed: '2026-06-04'
+  - url: https://www.computesdk.com/benchmarks/sandboxes/
+    shows: 'ComputeSDK TTI leaderboard (independent, 100 iters/day, 2026-07-09 run): median time-to-interactive
+      ~140ms sequential / ~710ms burst @100 concurrent; 4th-fastest of 19 providers'
+    accessed: '2026-07-09'

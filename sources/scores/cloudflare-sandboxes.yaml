@@ -41,10 +41,15 @@ capability:
     container sandbox; persistence:Durable Objects-backed state; scale:edge-global, unlimited dynamic
     workers
   confidence: medium
-  note: Distinctive isolate-based approach gives best-in-class cold-start and density, plus a container
-    path for arbitrary code; held at 4 because isolate sandboxing is JS/TS-centric (narrower than microVM
-    any-image), Dynamic Workers is still open beta, and overall scale evidence is per-customer rather
-    than category-leading. Scored as a combined product per the registry name.
+  note: Distinctive isolate-based approach gives best-in-class cold-start and density on the JS/TS isolate
+    path, plus a container path for arbitrary code; held at 4 because isolate sandboxing is JS/TS-centric
+    (narrower than microVM any-image), Dynamic Workers is still open beta, and overall scale evidence is
+    per-customer rather than category-leading. Scored as a combined product per the registry name.
+    Independent ComputeSDK TTI benchmarks measure the container-backed sandbox path (what runs arbitrary
+    code) at ~1.8s median cold-start, 18th of 19 sandbox providers, degrading to ~4.3s under 100-concurrent
+    burst; the sub-ms figures apply to the JS/TS Dynamic Workers path, not the arbitrary-code sandbox the
+    benchmark exercises. On measured full-sandbox latency alone this would be a 3; held at 4 on the strength
+    of the dual isolate-plus-container isolation model.
   sources:
   - url: https://blog.cloudflare.com/dynamic-workers/
     shows: V8 isolate sandboxing, ~ms start, 100x faster/100x more memory-efficient than containers
@@ -52,3 +57,7 @@ capability:
   - url: https://github.com/cloudflare/sandbox-sdk
     shows: 'container-backed sandbox: run commands, manage files, background processes, expose services'
     accessed: '2026-06-04'
+  - url: https://www.computesdk.com/benchmarks/sandboxes/
+    shows: 'ComputeSDK TTI leaderboard (independent, 100 iters/day, 2026-07-09 run): container-backed sandbox
+      median time-to-interactive ~1760ms sequential / ~4290ms burst @100 concurrent; 18th of 19 providers'
+    accessed: '2026-07-09'
