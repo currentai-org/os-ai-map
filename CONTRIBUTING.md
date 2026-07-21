@@ -153,9 +153,12 @@ Look at `sources/scores/vllm.yaml` for a complete worked example.
 #### Training-corpus bands
 
 Download volume for a multi-terabyte corpus is not comparable to a package: a
-corpus is pulled a handful of times per training run, not on every CI job. Products
-in the `training_synthetic_datasets` category are therefore graded one order of
-magnitude below the standard bands:
+corpus is pulled a handful of times per training run, not on every CI job. The same
+logic covers the software that builds those corpora — a curation or processing tool
+is run alongside a corpus build, not pulled on every CI job, so its download volume
+sits an order of magnitude below a normal library for the same real impact. Products
+in the `training_synthetic_datasets` and `dataset_processing_tools` categories are
+therefore graded one order of magnitude below the standard bands:
 
 | Level | Monthly HF downloads | Reading |
 |------:|----------------------|---------|
