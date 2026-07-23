@@ -23,7 +23,8 @@
       "finetuning_code": "Libraries and platforms for fine-tuning models.",
       "evaluation_code": "Harnesses that run and grade model evaluations.",
       "benchmark_eval_data": "Benchmark datasets used to evaluate models.",
-      "training_synthetic_datasets": "Corpora for pre-training and post-training models.",
+      "training_synthetic_datasets": "Corpora for pre-training and post-training models. This category is the datasets themselves; the software that builds them lives in Dataset Processing Tools.",
+      "dataset_processing_tools": "Software that builds training corpora: extraction, filtering, deduplication, decontamination, and synthetic-data generation pipelines. This category is the tooling; the corpora themselves live in Training & synthetic datasets.",
       "orchestration_agents": "Frameworks and agents that plan and execute tasks.",
       "ui_api": "Chat UIs and API gateways in front of models.",
       "telemetry_observability": "Tracing and observability for LLM apps.",
@@ -11967,7 +11968,7 @@
               "GitHub issues and pull requests"
             ],
             "curated_with": [
-              "bigcode-dataset tooling"
+              "bigcode-dataset"
             ],
             "trains": [
               "StarCoder2",
@@ -13017,7 +13018,7 @@
               "Project Gutenberg"
             ],
             "curated_with": [
-              "the-pile pipeline"
+              "The Pile (pipeline)"
             ],
             "trains": [
               "Pythia"
@@ -13150,7 +13151,7 @@
               "The Stack v2"
             ],
             "curated_with": [
-              "bigcode-dataset tooling"
+              "bigcode-dataset"
             ],
             "trains": [
               "TinyLlama-1.1B-Chat-v1.0",
@@ -13369,7 +13370,7 @@
               "HackerNews"
             ],
             "curated_with": [
-              "TxT360 pipeline"
+              "TxT360 (pipeline)"
             ],
             "trains": [
               "K2-V2"
@@ -13997,6 +13998,1123 @@
               "Hermes-4-Llama-3.1-405B"
             ]
           }
+        }
+      ]
+    },
+    "dataset_processing_tools": {
+      "label": "Dataset Processing Tools",
+      "arc": "Model components",
+      "layer": "model_components",
+      "stage": {
+        "num": 3,
+        "name": "Viable Alternatives"
+      },
+      "gaps": [
+        "maturity",
+        "adoption"
+      ],
+      "products": [
+        {
+          "product": "datatrove",
+          "org": "Hugging Face",
+          "type": "software",
+          "description": "Platform-agnostic library of composable pipeline blocks for large-scale text data processing (reading, filtering, deduplication, tokenization) that runs unchanged across local, Slurm, and cloud backends. The reference pretraining-data pipeline behind the FineWeb family.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public(huggingface/datatrove);governance:Hugging Face;no feature-gated core;managed-tier:none",
+            "confidence": "high",
+            "note": "Fully OSI-licensed (Apache-2.0), full source public, no proprietary core or managed gate.",
+            "sources": [
+              {
+                "url": "https://github.com/huggingface/datatrove/blob/main/LICENSE",
+                "shows": "Apache License Version 2.0 text",
+                "accessed": "2026-07-21"
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "10K-100K",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "~55k PyPI downloads/month; the reference pipeline for the FineWeb dataset family and widely reused across open pretraining-data efforts.",
+            "sources": [
+              {
+                "url": "https://pypistats.org/packages/datatrove",
+                "shows": "Downloads last month: 55,132",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "capability": {
+            "score": 5,
+            "basis": "benchmark",
+            "value": "FineWeb-Edu, the corpus datatrove builds, is the top public dataset in the FineWeb 1.82B-param ablation (~44.5% aggregate over 8 tasks, above RefinedWeb, C4, The Pile, Dolma, RedPajama); the educational filter lifts MMLU ~33->37 and ARC ~46->57.",
+            "confidence": "high",
+            "note": "Benchmark-anchored on the output corpus (a proxy for the tool): FineWeb-Edu leads public pretraining corpora on the FineWeb ablation suite.",
+            "sources": [
+              {
+                "url": "https://arxiv.org/abs/2406.17557",
+                "shows": "FineWeb ablation: FineWeb-Edu tops public datasets on an 8-task aggregate (identical 1.82B model, equal tokens)",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "maturity": 3.8,
+          "mature": false,
+          "version_note": "Hugging Face datatrove; repo active (v0.9.0, 2026-03-04), Apache-2.0 confirmed live 2026-07-21. Built FineWeb, FineWeb-Edu, FineWeb-2, and FineMath; the de-facto open pretraining-data processing pipeline."
+        },
+        {
+          "product": "distilabel",
+          "org": "Argilla",
+          "type": "software",
+          "description": "Framework for building synthetic-data and AI-feedback pipelines: LLM-driven generation, labeling, and preference-data construction with pluggable model backends.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public(argilla-io/distilabel);governance:Argilla/Hugging Face;no feature-gated core",
+            "confidence": "high",
+            "note": "Fully OSI-licensed (Apache-2.0), full source public, no proprietary core.",
+            "sources": [
+              {
+                "url": "https://github.com/argilla-io/distilabel/blob/main/LICENSE",
+                "shows": "Apache License Version 2.0 text",
+                "accessed": "2026-07-21"
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "1K-10K",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "~6.5k PyPI downloads/month; established in the HF synthetic-data workflow but modest raw volume.",
+            "sources": [
+              {
+                "url": "https://pypistats.org/packages/distilabel",
+                "shows": "Downloads last month: 6,510",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "downstream_proxy",
+            "value": "No benchmark of the tool itself; inferred from controlled downstream results. Notus-7B-v1 (identical Zephyr recipe, only the preference data recurated with distilabel) reaches 91.42 AlpacaEval vs Zephyr-7B-beta's 90.60; a distilabel-curated Orca-DPO set (46% of the data) beats full-data DPO on the Nous suite (54.04 vs 53.51).",
+            "confidence": "medium",
+            "note": "Indirect proxy: tool quality inferred from models where distilabel-curated data was the only changed variable. Confidence capped because there is no head-to-head against other synthetic-data frameworks.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/argilla/notus-7b-v1",
+                "shows": "Notus-7B (distilabel-recurated UltraFeedback): 91.42 AlpacaEval vs Zephyr 90.60",
+                "accessed": "2026-07-21"
+              },
+              {
+                "url": "https://huggingface.co/argilla/distilabeled-Hermes-2.5-Mistral-7B",
+                "shows": "distilabel Orca-DPO curation (46% of data): 54.04 Nous avg vs 53.51 full-data DPO",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "maturity": 2.8,
+          "mature": false,
+          "version_note": "Argilla/Hugging Face distilabel; latest release v1.5.3 (2025-01-28), repo active into 2026, Apache-2.0 confirmed live 2026-07-21. Used to build the Zephyr/Notus preference data and the FinePersonas dataset."
+        },
+        {
+          "product": "NeMo Curator",
+          "org": "NVIDIA",
+          "type": "software",
+          "description": "GPU-accelerated, scalable data-curation toolkit for LLM training corpora across text, image, video, and audio: extraction, language ID, exact/fuzzy/substring dedup, quality classification, and synthetic generation.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public(NVIDIA/NeMo-Curator);governance:NVIDIA;no feature-gated core",
+            "confidence": "high",
+            "note": "Fully OSI-licensed (Apache-2.0), full source public. Vendor-backed but not gated.",
+            "sources": [
+              {
+                "url": "https://github.com/NVIDIA/NeMo-Curator/blob/main/LICENSE",
+                "shows": "Apache License Version 2.0 text",
+                "accessed": "2026-07-21"
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "1K-10K",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "~5.6k PyPI downloads/month; NVIDIA-backed and the pipeline behind the Nemotron-CC family, but modest raw download volume.",
+            "sources": [
+              {
+                "url": "https://pypistats.org/packages/nemo-curator",
+                "shows": "Downloads last month: 5,618",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "capability": {
+            "score": 5,
+            "basis": "benchmark",
+            "value": "Nemotron-CC, built with NeMo Curator, beats DCLM by +5.6 MMLU (59.0 vs 53.4) for its HQ subset at 8B/1T tokens; a 15T-token long-horizon run reached 70.3 MMLU vs Llama 3.1 8B's 65.3 while retaining ~4x more unique tokens than DCLM/FineWeb-Edu.",
+            "confidence": "high",
+            "note": "Benchmark-anchored on the output corpus (proxy): Nemotron-CC matches or beats the DCLM/FineWeb-Edu frontier, especially at long-horizon token budgets.",
+            "sources": [
+              {
+                "url": "https://arxiv.org/abs/2412.02595",
+                "shows": "Nemotron-CC-HQ +5.6 MMLU over DCLM at 8B/1T; 70.3 vs 65.3 MMLU at 15T tokens",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "maturity": 3.2,
+          "mature": false,
+          "version_note": "NVIDIA NeMo Curator; repo actively maintained (v1.2.0, 2026-05-14), Apache-2.0 confirmed live 2026-07-21. Powers the Nemotron-CC curation pipeline and Nemotron-4 data prep (8T+ multilingual tokens)."
+        },
+        {
+          "product": "olmOCR",
+          "org": "Allen Institute for AI",
+          "type": "software",
+          "description": "Converts PDFs and images to clean markdown/text using a 7B vision-language model, handling equations, tables, and handwriting. Emits Dolma-format documents; used in the Dolma 3 PDF-extraction path.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public(allenai/olmocr);governance:Allen Institute for AI;no feature-gated core",
+            "confidence": "high",
+            "note": "Fully OSI-licensed (Apache-2.0), full source public.",
+            "sources": [
+              {
+                "url": "https://github.com/allenai/olmocr/blob/main/LICENSE",
+                "shows": "Apache License Version 2.0 text",
+                "accessed": "2026-07-21"
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "10K-100K",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "~22k PyPI downloads/month and 19k+ GitHub stars; a leading open document-extraction tool, used in the Dolma 3 data path.",
+            "sources": [
+              {
+                "url": "https://pypistats.org/packages/olmocr",
+                "shows": "Downloads last month: 21,753",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "benchmark",
+            "value": "olmOCR 2 (v0.4.0) scores 82.4 on olmOCR-Bench, ahead of Marker (76.1), MinerU (75.2), Mistral OCR (72.0), and GPT-4o (69.9); on the third-party OmniDocBench it is mid-pack (~85.7, near GPT-4o) behind MinerU2.5-Pro and Gemini-3 Pro.",
+            "confidence": "high",
+            "note": "Benchmark-anchored: leads open document-extraction tools on olmOCR-Bench but sits mid-pack on the neutral OmniDocBench, so near-SOTA rather than SOTA. Snapshot; extraction leaderboards move.",
+            "sources": [
+              {
+                "url": "https://github.com/allenai/olmocr",
+                "shows": "olmOCR 2 (v0.4.0): 82.4 on olmOCR-Bench, ahead of Marker/MinerU/Mistral OCR/GPT-4o",
+                "accessed": "2026-07-21"
+              },
+              {
+                "url": "https://github.com/opendatalab/OmniDocBench",
+                "shows": "OmniDocBench: olmOCR ~85.7, mid-pack behind MinerU2.5-Pro and Gemini-3 Pro",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "maturity": 3.4,
+          "mature": false,
+          "version_note": "Ai2 olmOCR; repo active (v0.4.27, 2026-03-12), Apache-2.0 confirmed live 2026-07-21. High-profile document-extraction tool (19k+ GitHub stars); feeds the Dolma 3 pipeline."
+        },
+        {
+          "product": "Dolma toolkit",
+          "org": "Allen Institute for AI",
+          "type": "software",
+          "description": "High-performance toolkit for curating LM pretraining data: taggers, quality and content filtering, and Rust Bloom-filter deduplication. The software that built the Dolma corpus and the OLMo/OLMoE mixes.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public(allenai/dolma);governance:Allen Institute for AI;no feature-gated core",
+            "confidence": "high",
+            "note": "Fully OSI-licensed (Apache-2.0), full source public.",
+            "sources": [
+              {
+                "url": "https://github.com/allenai/dolma/blob/main/LICENSE",
+                "shows": "Apache License Version 2.0 text",
+                "accessed": "2026-07-21"
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "1K-10K",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "~5.1k PyPI downloads/month; the curation toolkit behind the Dolma corpus and OLMo family.",
+            "sources": [
+              {
+                "url": "https://pypistats.org/packages/dolma",
+                "shows": "Downloads last month: 5,097",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "benchmark",
+            "value": "Dolma, the corpus the toolkit builds, scores 35.0 CORE on DataComp-LM (7B-1x), below RefinedWeb (36.9) and well under DCLM-baseline, and is among the lower performers in the FineWeb ablation. A foundational, fully-documented open pipeline whose released output sits a tier below the current curation frontier.",
+            "confidence": "high",
+            "note": "Benchmark-anchored on the output corpus (proxy): capable and fully open, but its released corpus trails the datatrove / NeMo Curator frontier on DCLM. Down from a feature-only read of 4.",
+            "sources": [
+              {
+                "url": "https://arxiv.org/abs/2406.11794",
+                "shows": "DataComp-LM Table 2: Dolma-V1 35.0 CORE vs RefinedWeb 36.9 at 7B-1x scale",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "maturity": 2.4,
+          "mature": false,
+          "version_note": "Ai2 Dolma toolkit (allenai/dolma), distinct from the Dolma dataset artifact; repo active (v1.2.1, 2025-07-07), Apache-2.0 confirmed live 2026-07-21. Built the Dolma corpus and OLMo/OLMoE pretraining mixes."
+        },
+        {
+          "product": "datamap-rs",
+          "org": "Allen Institute for AI",
+          "type": "software",
+          "description": "Rust JSONL map-filter-annotate pipeline for cleaning and filtering large text corpora. The data-cleaning stage of the Dolma 3 pipeline.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public(allenai/datamap-rs);governance:Allen Institute for AI;no feature-gated core",
+            "confidence": "high",
+            "note": "Fully OSI-licensed (Apache-2.0), full source public.",
+            "sources": [
+              {
+                "url": "https://github.com/allenai/datamap-rs/blob/main/LICENSE",
+                "shows": "Apache License Version 2.0 text",
+                "accessed": "2026-07-21"
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<10K",
+            "signal_type": "stars_fallback",
+            "confidence": "medium",
+            "note": "New (2026) single-purpose Rust CLI, ~56 GitHub stars; real but niche, used in the Dolma 3 pipeline.",
+            "sources": [
+              {
+                "url": "https://github.com/allenai/datamap-rs",
+                "shows": "56 stars",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "value": "Single-purpose JSONL map/filter/annotate cleaning stage; focused, not a full pipeline.",
+            "confidence": "medium",
+            "note": "One capability slot (cleaning) of the Dolma 3 toolchain.",
+            "sources": [
+              {
+                "url": "https://github.com/allenai/datamap-rs",
+                "shows": "datamap-rs repo feature set confirmed",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "maturity": 1.8,
+          "mature": false,
+          "version_note": "Ai2 datamap-rs; repo active (pushed 2026-03), Apache-2.0 confirmed live 2026-07-21. Cleaning/filtering stage of the Dolma 3 pipeline behind OLMo 3."
+        },
+        {
+          "product": "duplodocus",
+          "org": "Allen Institute for AI",
+          "type": "software",
+          "description": "Rust deduplication tool for large text corpora: exact and fuzzy MinHash-LSH dedup. The dedup stage of the Dolma 3 pipeline.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public(allenai/duplodocus);governance:Allen Institute for AI;no feature-gated core",
+            "confidence": "high",
+            "note": "Fully OSI-licensed (Apache-2.0), full source public.",
+            "sources": [
+              {
+                "url": "https://github.com/allenai/duplodocus/blob/main/LICENSE",
+                "shows": "Apache License Version 2.0 text",
+                "accessed": "2026-07-21"
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<10K",
+            "signal_type": "stars_fallback",
+            "confidence": "medium",
+            "note": "New (2026) single-purpose Rust CLI, ~90 GitHub stars; niche, used in the Dolma 3 pipeline.",
+            "sources": [
+              {
+                "url": "https://github.com/allenai/duplodocus",
+                "shows": "90 stars",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "value": "Exact + fuzzy MinHash-LSH deduplication; focused single-purpose tool.",
+            "confidence": "medium",
+            "note": "One capability slot (dedup) of the Dolma 3 toolchain.",
+            "sources": [
+              {
+                "url": "https://github.com/allenai/duplodocus",
+                "shows": "duplodocus repo feature set confirmed",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "maturity": 1.8,
+          "mature": false,
+          "version_note": "Ai2 duplodocus; repo active (pushed 2026-03), Apache-2.0 confirmed live 2026-07-21. Deduplication stage of the Dolma 3 pipeline behind OLMo 3."
+        },
+        {
+          "product": "decon",
+          "org": "Allen Institute for AI",
+          "type": "software",
+          "description": "Decontamination tool that flags and removes training documents overlapping evaluation benchmarks. The decontamination stage of the Dolma 3 pipeline.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public(allenai/decon);governance:Allen Institute for AI;no feature-gated core",
+            "confidence": "high",
+            "note": "Fully OSI-licensed (Apache-2.0), full source public.",
+            "sources": [
+              {
+                "url": "https://github.com/allenai/decon/blob/main/LICENSE",
+                "shows": "Apache License Version 2.0 text",
+                "accessed": "2026-07-21"
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<10K",
+            "signal_type": "stars_fallback",
+            "confidence": "medium",
+            "note": "New (2026) single-purpose Rust CLI, ~35 GitHub stars; niche, used in the Dolma 3 pipeline.",
+            "sources": [
+              {
+                "url": "https://github.com/allenai/decon",
+                "shows": "35 stars",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "value": "Flags/removes train docs overlapping eval benchmarks; focused decontamination tool.",
+            "confidence": "medium",
+            "note": "One capability slot (decontamination) of the Dolma 3 toolchain.",
+            "sources": [
+              {
+                "url": "https://github.com/allenai/decon",
+                "shows": "decon repo feature set confirmed",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "maturity": 1.8,
+          "mature": false,
+          "version_note": "Ai2 decon; repo active (pushed 2026-03), Apache-2.0 confirmed live 2026-07-21. Train/eval decontamination stage of the Dolma 3 pipeline behind OLMo 3."
+        },
+        {
+          "product": "Marin (framework)",
+          "org": "Stanford CRFM",
+          "type": "software",
+          "description": "Open framework for reproducible foundation-model development that tracks every step from raw data to final model: data curation, transformation, filtering, tokenization, training, evaluation, and experiment/mixture orchestration. Distinct from the Marin model it produces.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public(marin-community/marin);governance:Marin community/Stanford CRFM;no feature-gated core",
+            "confidence": "high",
+            "note": "Fully OSI-licensed (Apache-2.0), full source public. Repo is the framework; the Marin model is a separate artifact.",
+            "sources": [
+              {
+                "url": "https://github.com/marin-community/marin/blob/main/LICENSE",
+                "shows": "Apache License Version 2.0 text",
+                "accessed": "2026-07-21"
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "<10K",
+            "signal_type": "stars_fallback",
+            "confidence": "medium",
+            "note": "~1.2k GitHub stars and very active development; a research framework with adoption concentrated around the Marin project rather than broad external use.",
+            "sources": [
+              {
+                "url": "https://github.com/marin-community/marin",
+                "shows": "1.2k stars",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "End-to-end reproducible data curation + mixture orchestration + training/eval with step-dependency execution scaled to TPU clusters.",
+            "confidence": "medium",
+            "note": "Broad end-to-end framework; adoption, not capability, is its weak axis.",
+            "sources": [
+              {
+                "url": "https://github.com/marin-community/marin",
+                "shows": "marin-framework repo feature set confirmed",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "maturity": 2.8,
+          "mature": false,
+          "version_note": "Stanford CRFM / Marin community framework (marin-community/marin), distinct from the Marin model artifact on HF; repo very active (~9.5k commits), Apache-2.0 confirmed live 2026-07-21. Contains no weights; produces the Marin 8B model."
+        },
+        {
+          "product": "smallpond",
+          "org": "DeepSeek",
+          "type": "software",
+          "description": "Lightweight distributed data-processing framework built on DuckDB and DeepSeek's 3FS, aimed at PB-scale preprocessing.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public(deepseek-ai/smallpond);governance:DeepSeek;no feature-gated core",
+            "confidence": "high",
+            "note": "Fully OSI-licensed (MIT), full source public.",
+            "sources": [
+              {
+                "url": "https://github.com/deepseek-ai/smallpond/blob/main/LICENSE",
+                "shows": "MIT License text (Copyright 2025 DeepSeek)",
+                "accessed": "2026-07-21"
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<10K",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "~250 PyPI downloads/month; large star count from the DeepSeek open-infra launch but little sustained adoption, dormant since March 2025.",
+            "sources": [
+              {
+                "url": "https://pypistats.org/packages/smallpond",
+                "shows": "Downloads last month: 254",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "value": "Distributed preprocessing on DuckDB + 3FS for PB-scale data; capable but early-stage and unmaintained.",
+            "confidence": "medium",
+            "note": "Promising design, but not proven on downstream corpora and dormant.",
+            "sources": [
+              {
+                "url": "https://github.com/deepseek-ai/smallpond",
+                "shows": "smallpond repo feature set confirmed",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "maturity": 1.8,
+          "mature": false,
+          "version_note": "DeepSeek smallpond; MIT confirmed live 2026-07-21, but effectively dormant (no repo commits since 2025-03). A rare open data-infra release from an otherwise closed-data lab; strong launch-driven star count, thin sustained use."
+        },
+        {
+          "product": "bigcode-dataset",
+          "org": "BigCode Project",
+          "type": "software",
+          "description": "Preprocessing, quality filtering, decontamination, and PII detection/anonymization for large code corpora. The filtering and PII pipeline behind The Stack and StarCoder training data.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public(bigcode-project/bigcode-dataset);governance:BigCode;no feature-gated core",
+            "confidence": "high",
+            "note": "Fully OSI-licensed (Apache-2.0), full source public.",
+            "sources": [
+              {
+                "url": "https://github.com/bigcode-project/bigcode-dataset/blob/main/LICENSE",
+                "shows": "Apache License Version 2.0 text",
+                "accessed": "2026-07-21"
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "<10K",
+            "signal_type": "stars_fallback",
+            "confidence": "medium",
+            "note": "~497 GitHub stars; dormant since 2024 but the load-bearing filtering/PII pipeline behind The Stack and StarCoder.",
+            "sources": [
+              {
+                "url": "https://github.com/bigcode-project/bigcode-dataset",
+                "shows": "497 stars",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "Quality filtering (line length, alphanumeric %), decontamination, and PII detection/anonymization for code corpora.",
+            "confidence": "medium",
+            "note": "Solid code-corpus curation coverage; specialized to code, not actively developed.",
+            "sources": [
+              {
+                "url": "https://github.com/bigcode-project/bigcode-dataset",
+                "shows": "bigcode-dataset repo feature set confirmed",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "maturity": 2.8,
+          "mature": false,
+          "version_note": "BigCode bigcode-dataset; Apache-2.0 confirmed live 2026-07-21, but maintenance-quiet (last push 2024-08). Built the filtering + PII pipeline behind The Stack / StarCoder."
+        },
+        {
+          "product": "Ungoliant",
+          "org": "OSCAR Project",
+          "type": "software",
+          "description": "Rust pipeline that generates the OSCAR corpus from Common Crawl WET files: language identification, filtering, and metadata annotation. The official OSCAR / Colossal-OSCAR construction pipeline.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public(oscar-project/ungoliant);governance:OSCAR project;no feature-gated core",
+            "confidence": "high",
+            "note": "Fully OSI-licensed (Apache-2.0), full source public.",
+            "sources": [
+              {
+                "url": "https://github.com/oscar-project/ungoliant/blob/main/LICENSE",
+                "shows": "Apache License Version 2.0 text",
+                "accessed": "2026-07-21"
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "<10K",
+            "signal_type": "stars_fallback",
+            "confidence": "medium",
+            "note": "~178 GitHub stars; niche but the official pipeline behind the widely-used OSCAR multilingual corpora.",
+            "sources": [
+              {
+                "url": "https://github.com/oscar-project/ungoliant",
+                "shows": "178 stars",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "value": "Common Crawl WET processing with language ID, filtering, and metadata for multilingual corpus construction.",
+            "confidence": "medium",
+            "note": "Focused single-corpus pipeline; mature for its scope.",
+            "sources": [
+              {
+                "url": "https://github.com/oscar-project/ungoliant",
+                "shows": "ungoliant repo feature set confirmed",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "maturity": 2.4,
+          "mature": false,
+          "version_note": "OSCAR project Ungoliant; Apache-2.0 confirmed live 2026-07-21 (v2.0.0, still receiving commits). The pipeline that produces the OSCAR / Colossal-OSCAR multilingual corpora."
+        },
+        {
+          "product": "The Pile (pipeline)",
+          "org": "EleutherAI",
+          "type": "software",
+          "description": "The original documented-corpus construction pipeline: downloads, combines, weights/upsamples, and formats 22 components into The Pile. Distinct from the released Pile dataset.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public(EleutherAI/the-pile);governance:EleutherAI;no feature-gated core",
+            "confidence": "high",
+            "note": "Fully OSI-licensed (MIT), full source public.",
+            "sources": [
+              {
+                "url": "https://github.com/EleutherAI/the-pile/blob/master/LICENSE",
+                "shows": "MIT License text",
+                "accessed": "2026-07-21"
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "<10K",
+            "signal_type": "stars_fallback",
+            "confidence": "medium",
+            "note": "~1.7k GitHub stars; frozen since 2023 but the canonical, widely-cited documented-corpus construction pipeline (GPT-Neo/J, Pythia).",
+            "sources": [
+              {
+                "url": "https://github.com/EleutherAI/the-pile",
+                "shows": "1.7k stars",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "value": "Assemble, weight/upsample, and format the 22-component Pile corpus; historically important, now dated.",
+            "confidence": "medium",
+            "note": "Origin-node construction pipeline; not actively developed.",
+            "sources": [
+              {
+                "url": "https://github.com/EleutherAI/the-pile",
+                "shows": "the-pile-pipeline repo feature set confirmed",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "maturity": 2.4,
+          "mature": false,
+          "version_note": "EleutherAI the-pile construction code (distinct from the Pile dataset); MIT confirmed live 2026-07-21 but frozen (last push 2023-04). The canonical documented-corpus construction reference; underpinned GPT-Neo/GPT-J/Pythia."
+        },
+        {
+          "product": "TxT360 (pipeline)",
+          "org": "LLM360",
+          "type": "software",
+          "description": "Construction pipeline for the TxT360 open pretraining corpus: global deduplication and source processing across 99 Common Crawl snapshots and 14 curated sources. Distinct from the released TxT360 dataset.",
+          "openness": {
+            "score": 3,
+            "class": "source_available",
+            "components": "license:Apache-2.0 asserted in README only, no LICENSE file in repo (GitHub reports null); source:public(LLM360/TxT360)",
+            "confidence": "low",
+            "note": "The README badge asserts Apache-2.0 but the repo ships no LICENSE file, so there is no actual redistribution grant. Scored source_available until a LICENSE lands, rather than assuming OSI open source from a badge.",
+            "sources": [
+              {
+                "url": "https://github.com/LLM360/TxT360",
+                "shows": "README asserts Apache-2.0; no LICENSE file in repo (GitHub reports null license)",
+                "accessed": "2026-07-21"
+              }
+            ],
+            "bucket": "open-ish"
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<10K",
+            "signal_type": "stars_fallback",
+            "confidence": "medium",
+            "note": "~25 GitHub stars on the pipeline repo; the value is the 5.7T-token corpus it builds, not the tool's own adoption.",
+            "sources": [
+              {
+                "url": "https://github.com/LLM360/TxT360",
+                "shows": "25 stars",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "value": "Scripts for global-dedup construction of TxT360 from 99 Common Crawl snapshots + 14 curated sources.",
+            "confidence": "medium",
+            "note": "Replication-oriented construction scripts rather than an evolving tool.",
+            "sources": [
+              {
+                "url": "https://github.com/LLM360/TxT360",
+                "shows": "txt360-pipeline repo feature set confirmed",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "maturity": 1.8,
+          "mature": false,
+          "version_note": "LLM360 TxT360 pipeline code (distinct from the dataset on HF); reference/replication drop, last push 2024-12. README asserts Apache-2.0 but the repo ships NO LICENSE file (GitHub reports null) -- scored open_source on the asserted license + LLM360's open track record, with the missing file flagged."
+        },
+        {
+          "product": "Snorkel Flow",
+          "org": "Snorkel AI",
+          "type": "software",
+          "description": "Snorkel AI's commercial data-development platform: programmatic labeling and weak supervision (heuristic and LLM-generated labeling functions), plus curation, slicing, filtering, and fine-tuning/evaluation data workflows.",
+          "openness": {
+            "score": 1,
+            "class": "closed",
+            "components": "proprietary enterprise SaaS; the original 'snorkel' weak-supervision library is a separate Apache-2.0 OSS repo (stale), not the shipped product",
+            "confidence": "high",
+            "note": "The commercial Snorkel Flow product is closed; the open snorkel library is separate and effectively in maintenance/wind-down.",
+            "sources": [
+              {
+                "url": "https://snorkel.ai",
+                "shows": "Commercial enterprise data-development platform; separate OSS snorkel library is stale",
+                "accessed": "2026-07-21"
+              }
+            ],
+            "bucket": "closed"
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "enterprise",
+            "signal_type": "reported_traction",
+            "confidence": "medium",
+            "note": "~$237M raised at a ~$1.3B valuation (Series D, May 2025); established enterprise/government adoption rather than frontier-lab pretraining use. Directional.",
+            "sources": [
+              {
+                "url": "https://snorkel.ai",
+                "shows": "Enterprise data-development platform; ~$1.3B valuation (Series D, 2025)",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "Programmatic labeling / weak supervision at scale plus curation, slicing, filtering, and fine-tuning/eval data workflows.",
+            "confidence": "medium",
+            "note": "Broad enterprise data-development coverage; less oriented to frontier-scale pretraining corpora.",
+            "sources": [
+              {
+                "url": "https://snorkel.ai",
+                "shows": "Snorkel Flow product/feature description",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "maturity": 3.4,
+          "mature": false,
+          "version_note": "Snorkel Flow, proprietary enterprise platform (distinct from the Apache-2.0 snorkel-team/snorkel OSS library, which is stale: last release 0.10.0, Feb 2024). Confirmed 2026-07-21. ~$237M raised, ~$1.3B valuation (Series D, May 2025); enterprise/government rather than frontier-lab customers."
+        },
+        {
+          "product": "NVIDIA NeMo Data Designer",
+          "org": "NVIDIA",
+          "type": "software",
+          "description": "NVIDIA's proprietary synthetic-data generation service for building structured and unstructured training data with transformation and augmentation workflows. The productized form of Gretel's technology after NVIDIA's 2025 acquisition.",
+          "openness": {
+            "score": 1,
+            "class": "closed",
+            "components": "proprietary NVIDIA NeMo microservice; archived gretel-synthetics OSS (Apache-2.0) is a separate legacy artifact, not this product",
+            "confidence": "medium",
+            "note": "Proprietary closed synthetic-data service; the open gretel-synthetics library is archived and not the shipped product.",
+            "sources": [
+              {
+                "url": "https://techcrunch.com/2025/03/19/nvidia-reportedly-acquires-synthetic-data-startup-gretel/",
+                "shows": "NVIDIA acquired Gretel (Mar 2025); tech now shipped as NeMo Data Designer / NeMo microservices",
+                "accessed": "2026-07-21"
+              }
+            ],
+            "bucket": "closed"
+          },
+          "adoption": {
+            "level": 3,
+            "reach": "enterprise",
+            "signal_type": "reported_traction",
+            "confidence": "low",
+            "note": "Backed by NVIDIA and distributed through the NeMo platform; Gretel had a large synthetic-data user base pre-acquisition. Directional; hard to separate from NeMo overall.",
+            "sources": [
+              {
+                "url": "https://www.nvidia.com/en-us/ai-data-science/products/nemo/",
+                "shows": "NeMo synthetic-data / Data Designer service under the NVIDIA NeMo platform",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "Synthetic-data generation for structured/unstructured data with transformation and augmentation; differential-privacy heritage from Gretel.",
+            "confidence": "medium",
+            "note": "Capable synthetic-data engine; scored on the current NVIDIA-productized form.",
+            "sources": [
+              {
+                "url": "https://www.nvidia.com/en-us/ai-data-science/products/nemo/",
+                "shows": "NVIDIA NeMo Data Designer product/feature description",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "maturity": 3.4,
+          "mature": false,
+          "version_note": "NVIDIA NeMo Data Designer (NeMo microservices), proprietary. Represents the synthetic-data capability of Gretel, which NVIDIA acquired in March 2025; the Gretel brand is retired (gretel.ai redirects to NVIDIA) and the gretel-synthetics OSS repo (Apache-2.0) was archived Feb 2026. Substituted for Gretel, which no longer exists as a standalone product. Confirmed 2026-07-21."
+        },
+        {
+          "product": "DatologyAI",
+          "org": "DatologyAI",
+          "type": "software",
+          "description": "Automated training-data curation platform: deduplication, model-based quality filtering, embedding-based selection and pruning, data ordering, and synthetic-data steps for text and multimodal pretraining corpora.",
+          "openness": {
+            "score": 1,
+            "class": "closed",
+            "components": "proprietary curation platform (VPC-deployed); no source available; no OSS core",
+            "confidence": "high",
+            "note": "Fully proprietary automated-curation engine; the closed analogue to datatrove/NeMo Curator, science-of-data-curation niche.",
+            "sources": [
+              {
+                "url": "https://www.datologyai.com",
+                "shows": "Proprietary automated data-curation platform, no source available",
+                "accessed": "2026-07-21"
+              }
+            ],
+            "bucket": "closed"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "early / niche",
+            "signal_type": "reported_traction",
+            "confidence": "medium",
+            "note": "~$57.5M raised with high-profile backers, but early-stage with no named frontier-lab deployments; traction is credibility/funding rather than proven scale. Directional.",
+            "sources": [
+              {
+                "url": "https://aibusiness.com/data/startup-raises-46m-to-revolutionize-ai-dataset-curation",
+                "shows": "~$46M Series A (total ~$57.5M) for automated data curation",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "value": "Automated dedup, model-based filtering, embedding-based selection/pruning, ordering, and synthetic steps; specialized, no human-labeling/RLHF.",
+            "confidence": "medium",
+            "note": "Strong specialized curation engine, narrow scope and early adoption.",
+            "sources": [
+              {
+                "url": "https://www.datologyai.com",
+                "shows": "DatologyAI product/feature description",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "maturity": 2.4,
+          "mature": false,
+          "version_note": "DatologyAI, proprietary curation platform deployed into customer VPC; no source-available product. Founded 2023 by Ari Morcos (ex-FAIR/DeepMind) and Matthew Leavitt (ex-MosaicML). ~$57.5M raised (seed + $46M Series A); angels include Jeff Dean and Yann LeCun. No named frontier-lab customers disclosed. Confirmed 2026-07-21."
+        },
+        {
+          "product": "DCLM pipeline",
+          "org": "DataComp-LM (ML Foundations)",
+          "type": "software",
+          "description": "The DataComp-LM toolkit and competition harness: a standardized Common Crawl pool, open_lm training recipes, a 50+ task eval suite, and the reference curation pipeline that produces DCLM-baseline.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public;no feature-gated core",
+            "confidence": "high",
+            "note": "Fully OSI-licensed (MIT), full source public.",
+            "sources": [
+              {
+                "url": "https://github.com/mlfoundations/dclm/blob/main/LICENSE",
+                "shows": "MIT License text",
+                "accessed": "2026-07-21"
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "<10K",
+            "signal_type": "stars_fallback",
+            "confidence": "medium",
+            "note": "~1,454 GitHub stars; no PyPI package (source install). The reference DataComp-LM toolkit.",
+            "sources": [
+              {
+                "url": "https://github.com/mlfoundations/dclm",
+                "shows": "1,454 stars; not published to PyPI",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "capability": {
+            "score": 5,
+            "basis": "benchmark",
+            "value": "DCLM is the DataComp-LM benchmark harness; its own DCLM-baseline corpus tops the benchmark (a 7B model on 2.6T tokens reaches ~64% MMLU, beating RefinedWeb/C4/Dolma), so it defines the curation frontier the other tools are scored against.",
+            "confidence": "high",
+            "note": "Benchmark-defining: DCLM-baseline is the reference-topping corpus of the DataComp-LM leaderboard.",
+            "sources": [
+              {
+                "url": "https://arxiv.org/abs/2406.11794",
+                "shows": "DataComp-LM: DCLM-baseline tops existing corpora; 7B/2.6T ~64% MMLU",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "maturity": 3.2,
+          "mature": false,
+          "version_note": "mlfoundations/dclm; MIT, active (last push 2025-09). Not on PyPI (installs from source, includes a Rust component). This is the DataComp-LM benchmark framework itself, which the capability scores of datatrove/NeMo Curator/Dolma are measured against."
+        },
+        {
+          "product": "Data-Juicer",
+          "org": "Alibaba",
+          "type": "software",
+          "description": "Data processing system for foundation models: 200+ composable operators for cleaning, deduplicating, synthesizing, and analyzing text and multimodal LLM training data.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public;no feature-gated core",
+            "confidence": "high",
+            "note": "Fully OSI-licensed (Apache-2.0), full source public.",
+            "sources": [
+              {
+                "url": "https://github.com/datajuicer/data-juicer/blob/main/LICENSE",
+                "shows": "Apache License Version 2.0 text",
+                "accessed": "2026-07-21"
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "1K-10K",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "~3.1k PyPI downloads/month (py-data-juicer) and ~6.7k GitHub stars; actively developed.",
+            "sources": [
+              {
+                "url": "https://pypistats.org/packages/py-data-juicer",
+                "shows": "Downloads last month: ~3,107",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "200+ composable operators spanning cleaning, dedup, quality filtering, synthesis, and analysis across text and multimodal data; Data-Juicer-refined recipes have been fielded in DataComp/DCLM-style data-centric challenges.",
+            "confidence": "medium",
+            "note": "Broadest operator coverage among the open tools; multimodal. Benchmark participation but no single frontier-topping corpus of its own.",
+            "sources": [
+              {
+                "url": "https://github.com/datajuicer/data-juicer",
+                "shows": "200+ operators for LLM data processing; active",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "maturity": 2.8,
+          "mature": false,
+          "version_note": "Alibaba Data-Juicer (datajuicer/data-juicer, formerly modelscope); Apache-2.0, very active (v1.5.3, Jun 2026). PyPI package py-data-juicer. 200+ operators for multimodal LLM data processing."
+        },
+        {
+          "product": "CCNet",
+          "org": "Meta",
+          "type": "software",
+          "description": "The CCNet pipeline: downloads and cleans Common Crawl into high-quality monolingual corpora via language identification, KenLM perplexity filtering, and deduplication. Built CC-100.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI);source:public;no feature-gated core",
+            "confidence": "high",
+            "note": "Fully OSI-licensed (MIT), full source public.",
+            "sources": [
+              {
+                "url": "https://github.com/facebookresearch/cc_net/blob/main/LICENSE",
+                "shows": "MIT License text",
+                "accessed": "2026-07-21"
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "<10K",
+            "signal_type": "stars_fallback",
+            "confidence": "medium",
+            "note": "~1,000 GitHub stars; research repo, no PyPI package. Archived since 2023 but a foundational, widely-reused pipeline.",
+            "sources": [
+              {
+                "url": "https://github.com/facebookresearch/cc_net",
+                "shows": "~1,000 stars; archived read-only 2023-10-31",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "value": "Language ID + KenLM perplexity filtering + dedup to build monolingual corpora from Common Crawl; single-approach, foundational, now dated.",
+            "confidence": "medium",
+            "note": "Historically foundational (CC-100), but a single-method pipeline and frozen since 2023.",
+            "sources": [
+              {
+                "url": "https://github.com/facebookresearch/cc_net",
+                "shows": "CCNet perplexity-filtering pipeline (built CC-100)",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "maturity": 2.4,
+          "mature": false,
+          "version_note": "Meta facebookresearch/cc_net; MIT, ARCHIVED read-only 2023-10-31 (no longer maintained). Foundational Common Crawl pipeline that built CC-100 and seeded the perplexity-filtering approach reused across later multilingual corpora."
+        },
+        {
+          "product": "RedPajama-Data",
+          "org": "Together AI",
+          "type": "software",
+          "description": "The RedPajama construction and quality-signal pipeline: quality classifiers, per-document quality/toxicity/importance annotations, and exact + fuzzy deduplication. Produced RedPajama-Data-v2 (30T tokens, 5 languages).",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public;no feature-gated core",
+            "confidence": "high",
+            "note": "Fully OSI-licensed (Apache-2.0), full source public.",
+            "sources": [
+              {
+                "url": "https://github.com/togethercomputer/RedPajama-Data/blob/main/LICENSE",
+                "shows": "Apache License Version 2.0 text",
+                "accessed": "2026-07-21"
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 2,
+            "reach": "<10K",
+            "signal_type": "stars_fallback",
+            "confidence": "medium",
+            "note": "~4,969 GitHub stars; pipeline repo, no PyPI package. Widely referenced quality-signal pipeline; dormant since Dec 2024.",
+            "sources": [
+              {
+                "url": "https://github.com/togethercomputer/RedPajama-Data",
+                "shows": "4,969 stars; last real commit Dec 2024",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "capability": {
+            "score": 4,
+            "basis": "feature_matrix",
+            "value": "Three-stage pipeline: quality classifiers, quality-signal + dedup annotation (perplexity, toxicity, importance weights), and exact + fuzzy dedup (bloom/LSH); produced the 30T-token RedPajama-v2.",
+            "confidence": "medium",
+            "note": "Comprehensive quality-signal pipeline; produced a frontier-scale open corpus, but dormant.",
+            "sources": [
+              {
+                "url": "https://github.com/togethercomputer/RedPajama-Data",
+                "shows": "RedPajama-v2 quality-signal + dedup pipeline (30T tokens)",
+                "accessed": "2026-07-21"
+              }
+            ]
+          },
+          "maturity": 2.8,
+          "mature": false,
+          "version_note": "Together togethercomputer/RedPajama-Data; Apache-2.0, dormant since Dec 2024. The construction pipeline (not the dataset) behind RedPajama-v2 and the RedPajama-INCITE models."
         }
       ]
     },
@@ -27743,6 +28861,7 @@
     "evaluation_code",
     "benchmark_eval_data",
     "training_synthetic_datasets",
+    "dataset_processing_tools",
     "orchestration_agents",
     "ui_api",
     "telemetry_observability",
@@ -27752,19 +28871,19 @@
     "deployment",
     "edge_hardware"
   ],
-  "n_total": 480,
-  "generated": "2026-07-21",
+  "n_total": 501,
+  "generated": "2026-07-23",
   "long_tail": {
     "counts": {
       "repos": 15375,
       "models": 6428,
       "packages": 2823,
       "total": 24626,
-      "scored": 480,
+      "scored": 501,
       "overlap": 244,
-      "scored_outside": 236,
+      "scored_outside": 257,
       "uncategorized": 24382,
-      "universe": 24862
+      "universe": 24883
     },
     "top": [
       {
