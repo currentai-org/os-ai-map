@@ -2,38 +2,123 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Product",
   "type": "object",
-  "required": ["name", "display_name", "type"],
+  "required": [
+    "name",
+    "display_name",
+    "type"
+  ],
   "additionalProperties": false,
   "properties": {
-    "name": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
-    "display_name": { "type": "string", "minLength": 1 },
-    "type": { "enum": ["model", "software", "dataset", "hardware"] },
-    "description": { "type": "string" },
-    "comments": { "type": "string" },
-    "github": { "type": "array", "items": { "$ref": "#/definitions/url" } },
-    "npm": { "type": "array", "items": { "$ref": "#/definitions/url" } },
-    "pypi": { "type": "array", "items": { "$ref": "#/definitions/url" } },
-    "crates": { "type": "array", "items": { "$ref": "#/definitions/url" } },
-    "go": { "type": "array", "items": { "$ref": "#/definitions/url" } },
-    "huggingface_model": { "type": "array", "items": { "$ref": "#/definitions/url" } },
-    "huggingface_dataset": { "type": "array", "items": { "$ref": "#/definitions/url" } },
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
+    "display_name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "type": {
+      "enum": [
+        "model",
+        "software",
+        "dataset",
+        "hardware"
+      ]
+    },
+    "description": {
+      "type": "string"
+    },
+    "comments": {
+      "type": "string"
+    },
+    "github": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/url"
+      }
+    },
+    "npm": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/url"
+      }
+    },
+    "pypi": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/url"
+      }
+    },
+    "crates": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/url"
+      }
+    },
+    "go": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/url"
+      }
+    },
+    "huggingface_model": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/url"
+      }
+    },
+    "huggingface_dataset": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/url"
+      }
+    },
+    "arxiv": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/url"
+      }
+    },
     "lineage": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "derived_from": { "type": "array", "items": { "type": "string", "minLength": 1 } },
-        "curated_with": { "type": "array", "items": { "type": "string", "minLength": 1 } },
-        "trains": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+        "derived_from": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "curated_with": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "trains": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
       }
     }
   },
   "definitions": {
     "url": {
       "type": "object",
-      "required": ["url"],
+      "required": [
+        "url"
+      ],
       "additionalProperties": false,
       "properties": {
-        "url": { "type": "string", "pattern": "^https?://" }
+        "url": {
+          "type": "string",
+          "pattern": "^https?://"
+        }
       }
     }
   }
