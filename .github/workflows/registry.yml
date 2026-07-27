@@ -52,5 +52,6 @@ jobs:
       - name: Publish to OSO
         env:
           OSO_API_KEY: ${{ secrets.OSO_API_KEY }}
-          OSO_ORG_ID: ${{ secrets.OSO_ORG_ID }}
+          # Org id is not sensitive, so it lives as a repo variable rather than a secret.
+          OSO_ORG_ID: ${{ vars.OSO_ORG_ID }}
         run: uv run python -m build.publish_registry
