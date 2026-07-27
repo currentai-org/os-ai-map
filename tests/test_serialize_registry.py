@@ -122,3 +122,43 @@ def test_real_sources_serialize_without_structural_errors():
     assert errors == [], f"registry has structural errors: {errors[:5]}"
     assert len(tables["products"]) == len(tables["product_categories"])
     assert len(tables["products"]) == len(tables["product_organizations"])
+
+
+def test_arxiv_ids_normalise_from_every_form():
+    """URL, bare id, arxiv: prefix and version suffix all reduce to the bare id,
+    so the DOI is derivable as 10.48550/arXiv.<id> without further parsing."""
+    assert artifact_id("arxiv", "https://arxiv.org/abs/2110.14168") == "2110.14168"
+    assert artifact_id("arxiv", "https://arxiv.org/pdf/2009.03300v3") == "2009.03300"
+    assert artifact_id("arxiv", "arxiv:1803.05457") == "1803.05457"
+    assert artifact_id("arxiv", "2311.12022") == "2311.12022"
+
+
+def test_arxiv_rejects_non_identifiers():
+    assert artifact_id("arxiv", "https://arxiv.org/abs/not-an-id") is None
+    assert artifact_id("arxiv", "") is None
+
+
+def test_arxiv_artifacts_serialize_like_any_other_kind():
+    sources = _sources(
+        products={
+            "gsm8k": {
+                "display_name": "GSM8K",
+                "type": "dataset",
+                "arxiv": [{"url": "https://arxiv.org/abs/2110.14168"}],
+            }
+        },
+        organizations={"openai": {"products": ["gsm8k"]}},
+        categories={"bench": {"weights": {}, "products": ["gsm8k"]}},
+        taxonomy={"arcs": [{"name": "Model components", "layer": "model_components", "categories": ["bench"]}]},
+    )
+    tables, errors, _ = build_registry(sources)
+    assert errors == []
+    assert tables["product_artifacts"] == [
+        {
+            "product_slug": "gsm8k",
+            "product_type": "dataset",
+            "artifact_kind": "arxiv",
+            "artifact_id": "2110.14168",
+            "artifact_url": "https://arxiv.org/abs/2110.14168",
+        }
+    ]
