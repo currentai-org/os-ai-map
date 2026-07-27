@@ -14,9 +14,16 @@ Emitted tables (one CSV each, written to build/registry/):
   categories            slug, display_name, description, strapline,
                         weight_adopt, weight_cap, arc_name, layer
   product_artifacts     product_slug, product_type, artifact_kind, artifact_id, artifact_url
+                        (kinds: github, huggingface_model, huggingface_dataset,
+                         pypi, npm, crates, arxiv)
   product_categories    product_slug, category_slug
   product_organizations product_slug, org_slug
   product_lineage       product_slug, relation, target
+
+`arxiv` exists so citation lookups join on an exact identifier. Matching papers
+by product name was measured at 2 correct out of 10 — APPS resolved to a medical
+software paper with 25k citations and MATH to a psychology paper with 3.4k, both
+of which would have looked entirely credible in a table.
 
 Two structural notes:
 
@@ -44,7 +51,15 @@ from build.validate import load_sources
 ROOT = Path(__file__).resolve().parents[1]
 OUT_DIR = ROOT / "build" / "registry"
 
-ARTIFACT_KINDS = ("github", "huggingface_model", "huggingface_dataset", "pypi", "npm", "crates")
+ARTIFACT_KINDS = (
+    "github",
+    "huggingface_model",
+    "huggingface_dataset",
+    "pypi",
+    "npm",
+    "crates",
+    "arxiv",
+)
 LINEAGE_RELATIONS = ("derived_from", "curated_with", "trains")
 
 TABLES: dict[str, tuple[str, ...]] = {
@@ -78,6 +93,9 @@ _ID_PATTERNS = {
     "huggingface_dataset": r"huggingface\.co/datasets/(.+)",
     "pypi": r"pypi\.org/project/([^/]+)",
     "npm": r"npmjs\.com/package/(.+)",
+    # Accept an abs/pdf URL or a bare id, and normalise to the bare id so the
+    # DOI is derivable as 10.48550/arXiv.<id> without further parsing.
+    "arxiv": r"(?:arxiv\.org/(?:abs|pdf)/)?(\d{4}\.\d{4,5})(?:v\d+)?",
 }
 
 
