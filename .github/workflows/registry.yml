@@ -1,0 +1,57 @@
+name: registry
+
+# The "config in" bridge: the repo declares what exists, and CI pushes that
+# declaration to OSO. Nothing flows back in here — scores are computed downstream
+# and serialized outward separately.
+
+on:
+  pull_request:
+    paths:
+      - "sources/**"
+      - "build/serialize_registry.py"
+      - "build/publish_registry.py"
+      - ".github/workflows/registry.yml"
+  push:
+    branches: [main]
+    paths:
+      - "sources/**"
+      - "build/serialize_registry.py"
+      - "build/publish_registry.py"
+  workflow_dispatch:
+
+jobs:
+  # On a PR, prove the registry is internally consistent. Structural problems
+  # (a category listing a product that doesn't exist, a product in no category)
+  # fail here rather than reaching OSO.
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --locked
+      - name: Check registry consistency
+        run: uv run python -m build.serialize_registry --check
+
+  # On main, serialize and push. Static models are created on first run and
+  # reused after, so this is safe to run on every change to sources/.
+  publish:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --locked
+      - name: Serialize registry
+        run: uv run python -m build.serialize_registry
+      - name: Publish to OSO
+        env:
+          OSO_API_KEY: ${{ secrets.OSO_API_KEY }}
+          # Org id is not sensitive, so it lives as a repo variable rather than a secret.
+          OSO_ORG_ID: ${{ vars.OSO_ORG_ID }}
+        run: uv run python -m build.publish_registry
