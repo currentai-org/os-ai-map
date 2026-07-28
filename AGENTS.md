@@ -8,17 +8,25 @@ This file provides guidance to coding agents and assistants when working in this
 YAML (`sources/`), warehouse SQL and fetchers (`warehouse/`), a deterministic build
 pipeline (`build/`), and the published notebook (`notebooks/`).
 
-There is no front-end in this repo. The website lives in `ecosystem-mapping/app/`.
+There is no front-end in this repo. The website lives in the `aipotluck.org` monorepo
+(`currentai-org/aipotluck.org`), which *consumes* this data and does not regenerate it.
+The older `os-ai-visualization` repo is retired; it still receives bot data-sync PRs, so
+activity there is not a signal of real work.
 
 ## Directory map
 
 ```
-sources/               Curated YAML: organizations, categories, products, scores + taxonomy.yaml
+sources/               Curated YAML: organizations, categories, products, scores
+sources/taxonomy.yaml  Arc grouping + cross-category display order
+sources/signal_routing.yaml  Which machine signal is authoritative per dimension, and
+                       which values mean "this source has no answer" (abstain_values)
+sources/evidence_policy.yaml  When an observation is admissible as evidence
 warehouse/models/      UDM SQL (entities, events, metrics, scores)
 warehouse/ingest/      Python fetchers that write CSVs to warehouse/catalog/
-warehouse/catalog/     Raw external CSVs (GoodAI List, HF benchmarks, etc.)
-warehouse/sources.yaml Manifest linking each external source to its fetcher
-build/                 Python pipeline: validate.py, serialize.py, render.py, slugs.py
+warehouse/catalog/     Raw external CSVs (HF benchmarks, incidents, GitHub orgs)
+warehouse/sources.yaml Manifest: each external source declares EITHER a fetcher
+                       (writes a CSV) or an ingested_by (a UDM reads it directly)
+build/                 Python pipeline, see below
 notebooks/             Generated ai-stack-map.py and standalone companion notebooks (pypi-geo-trends, oss-ai-trends, long-tail-explorer)
 docs/methodology.md    Canonical methodology copy, rendered into the notebook (a build input)
 docs/guides/           Query conventions and notebook style guide
@@ -27,6 +35,37 @@ docs/schemas/          JSON Schemas for the source files (four concerns + taxono
 skills/                Agent skills for common editor workflows
 tests/                 pytest suite for build helpers and serializer behavior
 ```
+
+### What is in `build/`
+
+Every module is a CLI with a docstring that explains why it exists; run any of them with
+`--help`. Grouped by what they are for:
+
+```
+Notebook build      validate.py      sources/ schema + cross-file invariants
+                    serialize.py     sources/ -> build/notebook_data.json
+                    render.py        notebook_data.json -> notebooks/ai-stack-map.py
+                    update_readme.py syncs the README stat badges
+                    slugs.py         slug helpers shared by the above
+
+Config bridge out   serialize_registry.py  identity: what exists
+                    serialize_rubric.py    each category's rubric + recorded evidence
+                    publish_registry.py    pushes both table sets to OSO as static models
+
+Scores back in      apply_scores.py   reads computed scores from OSO, writes
+                                      sources/scores/. The ONLY inbound data path.
+
+Checkers (CI)       check_rubric.py    does the rubric reproduce the hand-authored scores
+                    check_routing.py   which dimensions have a usable machine signal
+                    check_freshness.py how stale is each axis
+
+Proposers           propose_arxiv.py     candidate arXiv ids, verified live
+                    propose_artifacts.py candidate artifacts, verified live
+```
+
+Proposers deliberately **print rather than write**. Matching artifacts by name measured 2
+correct in 10 on this data, and a wrong artifact attaches another project's license and
+downloads to a product, which is indistinguishable from a real score until someone checks.
 
 ## Data model
 
@@ -73,12 +112,60 @@ Serialize/render locally for preview only. Do not commit `build/notebook_data.js
 `notebooks/ai-stack-map.py`: a bot regenerates them on merge to main, and CI blocks PRs
 that hand-edit them.
 
+### Layer-2: scores computed from evidence, not authored
+
+The repo declares; OSO computes; a PR brings the result back for review. The test of this
+working is not "is the data fresh" — it is **did a score change without anyone hand-writing
+it?**
+
+```bash
+# Out: rubric and recorded evidence -> registry static models on OSO
+uv run python -m build.serialize_rubric --check    # CI gate
+uv run python -m build.serialize_rubric && uv run python -m build.publish_registry
+
+# In: computed scores -> sources/scores/
+uv run python -m build.apply_scores --check        # exits non-zero if a score moved
+uv run python -m build.apply_scores
+```
+
+Between those two halves sit two warehouse models, both plain Trino SQL:
+`currentai.evidence.product_evidence` (graded observations) and
+`currentai.scores.openness_computed` (the ordered-rule walk from `check_rubric.py`).
+Their SQL lives outside this repo, with the maintainer's UDM sources.
+
+Three rules worth knowing before editing any of it:
+
+- **Evidence is graded by re-derivability, never by author.** `dataset` means a named field
+  in a machine-readable source; `document` means a URL whose content asserts the value. The
+  first pass of `sources/scores/` was agent-authored, so who wrote a value says nothing
+  about whether anyone can check it.
+- **Declare a rule once.** Abstention values live on the route in `signal_routing.yaml`,
+  admission policy in `evidence_policy.yaml`, the formula in the category's
+  `scoring_recipe`. The warehouse hardcodes none of them; it reads them across the bridge.
+- **`apply_scores` never invents a date.** `last_verified` is the oldest accessed date among
+  the evidence a score depends on, and absent if any of that evidence cites nothing
+  specific. Nothing stamps the current date, so a recompute cannot make stale evidence look
+  freshly checked.
+
 `notebooks/pypi-geo-trends.py`, `notebooks/oss-ai-trends.py`, and `notebooks/long-tail-explorer.py`
 are **fully standalone**: no build-pipeline coupling, no generated payload. Each queries
 `currentai.*` warehouse tables live via `pyoso`, so the bot never touches them. They share the
 AI Stack Map design system; when editing, keep them aligned with `docs/guides/notebook-design.md`
 (Noto Serif / Plus Jakarta Sans / DM Mono, the navy + salmon-ramp palette, sharp corners). These
 mirror notebooks also published on the OSO platform.
+
+## Prefer a UDM over a committed CSV
+
+When adding an external source, the default is a UDM that reads it directly, not a
+fetcher that commits a CSV. A committed mirror of a live source can only be staler than
+the source, and nothing makes the drift visible.
+
+The GoodAI List was ingested as a CSV and is the cautionary case: by the time it was
+retired, the frozen copy still listed 300 repos the site had delisted (169 of them over
+1,000 stars) while missing 2,056 it had added. It is now
+`currentai.signal_goodailist.repo_catalog`, on a daily cron. Reserve the fetcher route
+for sources needing credentials or shaping a UDM cannot do, or for genuinely fixed
+reference data.
 
 ## Editor posture (read-only on the warehouse)
 
