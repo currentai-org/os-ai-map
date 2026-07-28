@@ -6,6 +6,172 @@ strapline: The frontier is open-weights, not open source. Only a handful of fami
 weights:
   adopt: 0.3
   cap: 0.7
+
+# Machine-readable rubric for this category. Drives layer-2: the evidence
+# checklist tells the research stage what to hunt for, the formula turns stored
+# evidence into a score. Not hand-designed — reverse-engineered from the 47
+# hand-authored scores in sources/scores/ on 2026-07-28 and verified to reproduce
+# all 47 exactly (build/check_rubric.py). Changing it should produce an
+# explainable diff, so change the rubric here rather than editing scores directly.
+scoring_recipe:
+  version: 1
+  derived_from:
+    method: reverse-engineered from hand-authored scores, then verified
+    scores_reproduced: 47
+    scores_total: 47
+    verified_on: '2026-07-28'
+    checker: build/check_rubric.py
+
+  openness:
+    # Four dimensions were asked of all 47 products; checkpoints of 6. These are
+    # the questions, taken from what the category has actually been scoring.
+    dimensions:
+      weights:
+        question: Are the trained model weights downloadable and runnable locally?
+        values: [open, closed, pending]
+        evidence:
+        - Hugging Face model repo with downloadable weight files (safetensors/GGUF)
+        - vendor download page or torrent for weights outside the Hub
+        - '`pending` only where a release is announced with a date but not yet shipped'
+        machine_signal: signal_huggingface.hub_state (gated, private, files)
+      data:
+        question: Is the pretraining corpus released, or reconstructible from released scripts?
+        values: [open, documented-not-released, closed]
+        evidence:
+        - a released dataset, or scripts that reconstruct the corpus end to end
+        - '`documented-not-released` where composition is fully described but no
+          data or scripts ship'
+        - a data card describing sources is NOT sufficient for `open`
+        machine_signal: none — requires research
+      code:
+        question: Is the training pipeline released, not just inference code?
+        values: [open, partial, closed]
+        evidence:
+        - '`open`: full pretraining pipeline (data prep, training recipe, configs)'
+        - '`partial`: inference or fine-tuning code only, which is the common case'
+        - '`closed`: no code, or evaluation harness only'
+        machine_signal: partial — repo presence from signal_github.repo_state
+      checkpoints:
+        question: Are intermediate training checkpoints published?
+        values: [open, not-released]
+        optional: true
+        note: Scored for only 6 of 47. Absence is not evidence of `not-released`.
+        evidence:
+        - intermediate checkpoints on HF branches or a public mirror
+        machine_signal: none — requires research
+
+    # The discriminator that decides restricted vs open_weights. OSI approval
+    # alone is too blunt: several non-OSI licences are permissive in substance.
+    # The line is whether the licence restricts USE, not whether OSI blessed it.
+    license_tier:
+      values:
+        osi:
+          definition: OSI-approved licence
+          examples: [Apache-2.0, MIT, BSD-3-Clause]
+        permissive_non_osi:
+          definition: >
+            Not OSI-approved but imposes no use restriction. Attribution or
+            naming requirements alone belong here.
+          examples: [Modified-MIT, DeepSeek-Model-License, minimax-community, NVIDIA-Open-Model-License]
+        use_restricted:
+          definition: >
+            Caps or gates use — monthly-active-user ceilings, field-of-use limits,
+            research-only terms, or a commercial agreement requirement.
+          examples: [Llama-3.1-Community-License, Llama-4-Community, Gemma-License, Mistral-Research-License, TII-Falcon-License-2.0, glm-4, Qwen-License-Agreement]
+        proprietary:
+          definition: No public licence; weights not distributed.
+      multi_sku_rule: >
+        Where a family ships SKUs under different licences, the most restrictive
+        licence among the SKUs WHOSE WEIGHTS ARE ACTUALLY DISTRIBUTED governs.
+        API-only and hosted-only tiers are excluded: they are a different product
+        surface, and this axis scores the artifact you can download. That
+        distinction is what separates the two families previously both recorded
+        as `mixed` — Qwen 2.5 distributes 3B/72B under the Qwen License, which
+        caps the family at use_restricted, while Qwen 3's restrictive Plus/Max
+        tiers are never distributed at all, leaving the distributed set Apache.
+        Per-SKU licences come from signal_huggingface.hub_state, so this is
+        derivable rather than judged.
+      normalisation:
+      - 'compound `code X + model Y`: the MODEL licence governs, since it is the
+        one attached to the weights'
+      - 'prefix `assumed-`: same tier as the licence named, but confidence drops
+        to medium until the release confirms it'
+      never_use:
+        mixed: >
+          Records that SKUs differ without recording the outcome, so the score
+          cannot be reproduced from the evidence. Apply multi_sku_rule and store
+          the resolved tier instead.
+        unknown: Research it or leave the product unscored.
+
+    # Ordered rules, first match wins.
+    formula:
+    - when: {weights: closed}
+      then: {score: 1, class: closed}
+    - when: {license_tier: proprietary}
+      then: {score: 1, class: closed}
+    - when: {license_tier: use_restricted}
+      then: {score: 2, class: restricted}
+      note: Open weights behind a use cap. Downloadable is not the same as usable.
+    - when: {data: open, code: open, license_tier: osi}
+      then: {score: 5, class: open_source}
+    - when: {data: open, code: open}
+      then: {score: 4, class: open_weights}
+      note: Full pipeline but a non-OSI licence caps the score at 4.
+    - when: {data: documented-not-released, code: open}
+      then: {score: 4, class: open_weights}
+    - otherwise: {score: 3, class: open_weights}
+      note: The category's centre of gravity — open weights, closed data.
+
+  adoption:
+    # Signal choice follows openness: a closed model has no artifact to measure,
+    # so the axis falls back to reported figures. 29 of 47 are usage_volume,
+    # 14 reported_traction, 3 active_users, 1 stars_fallback.
+    signal_preference:
+    - signal_type: usage_volume
+      source: Hugging Face downloads, summed across the family's shipped SKUs
+      machine_signal: signal_huggingface.hub_state
+    - signal_type: active_users
+      source: vendor-disclosed MAU or seat counts
+    - signal_type: reported_traction
+      source: >
+        Credible third-party or vendor-reported reach where no artifact exists.
+        Directional only — set confidence to medium at best.
+    - signal_type: stars_fallback
+      source: GitHub stars, last resort
+      machine_signal: signal_github.repo_state
+    bands:
+    - {level: 1, reach: <10K}
+    - {level: 2, reach: 10K-100K}
+    - {level: 3, reach: 100K-1M}
+    - {level: 4, reach: 1M-10M}
+    - {level: 5, reach: '>10M'}
+    reach_is_monthly: true
+    note: >
+      Bands are monthly figures. Sum across the family's SKUs, base and instruct,
+      because the map's unit is the model family, not a single repo.
+
+  capability:
+    # 46 of 47 are already benchmark-based, so this axis has a real anchor.
+    basis: benchmark
+    anchor:
+      primary: Artificial Analysis Intelligence Index
+      machine_signal: signal_artificialanalysis.model_evaluations
+      fallback: >
+        Published pretraining-suite average (ARC/HellaSwag/WinoGrande/PIQA and
+        similar) where the model is absent from Artificial Analysis.
+    bands: null
+    bands_status: >
+      NOT YET CALIBRATED. The 1-5 thresholds must be fitted against the Artificial
+      Analysis index using the 47 existing capability scores, which is a separate
+      step from this rubric. Until fitted, capability stays hand-authored and the
+      layer-2 scorer must not write it.
+
+  # Confidence stops being a per-file judgment call and becomes derived.
+  confidence_rule:
+    high: a direct measured signal or a primary source states the fact outright
+    medium: a proxy signal, or a reported figure that could not be independently confirmed
+    low: inferred from indirect evidence, or the source is older than 90 days
+
 products:
 - llama-3-1
 - deepseek-v3-base
