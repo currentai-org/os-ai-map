@@ -2,27 +2,47 @@ product: rwkv
 openness:
   score: 4
   class: open_weights
-  components: weights:open(Apache-2.0);data:documented-not-released(component listing + 100k/1M subsamples
-    only; the 3.1T corpus itself is not published);code:open(github.com/BlinkDL/RWKV-LM);license:Apache-2.0(OSI)
+  components: weights:open(Apache-2.0);data:documented-not-released(itemised machine-readable component
+    index with resolvable links to public datasets, but no released corpus and no reconstruction
+    pipeline);code:open(github.com/BlinkDL/RWKV-LM);license:Apache-2.0(OSI)
   confidence: high
   last_verified: '2026-07-28'
-  note: 'Corrected from 5/open_source on 2026-07-28. The previous score rested on the RWKV-7 paper''s
-    claim of a 3.1T open corpus, but the published Hugging Face datasets contain only a listing of
-    component datasets plus two small preview subsamples (100k and 1M JSONL), totalling 8.17GB across
-    10 files. The corpus is described, not released, so this is documented-not-released rather than
-    open. Weights, training code and licence are unaffected and remain fully open under Apache-2.0.'
+  note: 'Corrected from 5/open_source on 2026-07-28, then re-examined the same day after challenge.
+    The correction stands but it is a close call, and RWKV published more than a first look suggests.
+    What IS released: an itemised, machine-readable index (index/train.jsonl, train.csv) naming every
+    component dataset with a resolvable URL, category and citation, essentially all of them public, plus
+    100k and 1M preview subsamples. That is real openness work and well beyond a prose description.
+    What is NOT released, and why this is not data:open: no corpus and no reconstruction scripts. The
+    exact subsampling amounts are referenced as "supplementary material (see wiki.txt, oscar.txt)" which
+    is not published in the dataset repo, not an arXiv ancillary file, and not in RWKV-LM, which carries
+    model and training code but no data-prep directory. No mixing proportions or per-component token
+    counts are given, one component (OSCAR23.01) is itself gated, and the maintainers'' own notes record
+    "peS2o - Which version out of the 3?", so the mixture is not reproducible in detail even in
+    principle. The rubric defines data:open as a released dataset OR scripts that reconstruct the corpus
+    end to end; neither holds. Weights, training code and licence are unaffected and remain fully open
+    under Apache-2.0, so this narrows one claim rather than downgrading the project. NOTE: this lands in
+    a genuine rubric gap. "Every component named and publicly resolvable, but the mixture not
+    reproducible" is meaningfully more open than prose documentation and less than a released corpus,
+    and the data enum has no value for it. Nemotron 3''s partial release hits the same gap, so two of
+    the nine products checked fall between the available values.'
   sources:
-  - url: https://huggingface.co/api/datasets/Goose-World/RWKV-World-v3
-    shows: '10 files, 8.17GB total: 100k/subsample_100k.jsonl, 1m/subsample_1m.jsonl, README only.
-      No corpus shards.'
+  - url: https://huggingface.co/datasets/RWKV/RWKV-World-Listing/raw/main/train.csv
+    shows: 'Component table: Dataset;Category;Citation;Version;URL;Notes. Every source named with a
+      resolvable link. Notes defer exact sampling to unpublished supplementary material and include the
+      unresolved question "peS2o - Which version out of the 3?".'
     accessed: '2026-07-28'
-  - url: https://huggingface.co/api/datasets/RWKV/RWKV-World-Listing
-    shows: Identical contents to RWKV-World-v3 — a component listing plus the same two subsamples.
+  - url: https://huggingface.co/api/datasets/Goose-World/RWKV-World-v3
+    shows: '10 files, 8.17GB: index/train.jsonl, train.csv, 100k and 1M preview subsamples, READMEs,
+      one figure. No corpus shards.'
+    accessed: '2026-07-28'
+  - url: https://api.github.com/repos/BlinkDL/RWKV-LM
+    shows: Model and training code by version (RWKV-v1..v8) plus figures. No data-prep or corpus
+      reconstruction directory.
     accessed: '2026-07-28'
   - url: https://arxiv.org/abs/2503.14456
-    shows: 'RWKV-7 Goose paper: claims Apache-2.0 weights + data + code and a 3.1T open corpus. The
-      data claim is not borne out by the published datasets.'
-    accessed: '2026-06-18'
+    shows: 'RWKV-7 Goose paper: claims a 3.1T open corpus. No arXiv ancillary files are attached, so
+      the supplementary material the dataset notes point to is not obtainable from the paper either.'
+    accessed: '2026-07-28'
 adoption:
   level: 3
   signal_type: stars_fallback
