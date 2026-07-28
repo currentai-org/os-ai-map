@@ -16,7 +16,7 @@ WITH goodai_deduped AS (
       PARTITION BY LOWER(repo)
       ORDER BY updated_at DESC NULLS LAST
     ) AS _rn
-  FROM currentai.catalog.goodailist_repos
+  FROM currentai.signal_goodailist.repo_catalog
 ),
 ossd_projects AS (
   SELECT

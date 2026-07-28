@@ -70,7 +70,8 @@ uv run marimo run notebooks/<your_notebook>.py
 ### SQL conventions
 - Trino SQL dialect.
 - Always `LOWER()` repo names when joining across sources (casing is inconsistent).
-- Deduplicate `currentai.catalog.goodailist_repos` by `LOWER(repo)` when needed.
+- Deduplicate `currentai.signal_goodailist.repo_catalog` by `LOWER(repo)` when needed. It
+  replaces the retired `currentai.catalog.goodailist_repos` static model.
 - Source tables live in `sources/` (YAML) and `warehouse/` (SQL UDMs); the curated registry is not a SQL table.
 
 ## Checklist (before completing)

@@ -37,7 +37,7 @@ def get_owners_from_goodailist() -> dict[str, int]:
         SELECT
           LOWER(SPLIT_PART(repo, '/', 1)) AS owner,
           COUNT(DISTINCT LOWER(repo)) AS repo_count
-        FROM currentai.catalog.goodailist_repos
+        FROM currentai.signal_goodailist.repo_catalog
         GROUP BY LOWER(SPLIT_PART(repo, '/', 1))
         ORDER BY repo_count DESC
     """)

@@ -48,7 +48,9 @@ jobs:
         run: uv sync --locked
       - name: Run fetchers
         run: |
-          uv run python warehouse/ingest/fetch_goodailist.py
+          # The GoodAI List fetcher is gone: currentai.signal_goodailist.repo_catalog
+          # reads goodailist.com directly on its own cron, so a committed CSV mirror
+          # was a second copy of the same data that could only be staler.
           uv run python warehouse/ingest/fetch_incidents.py
           uv run python warehouse/ingest/fetch_huggingface.py
           uv run python warehouse/ingest/fetch_model_benchmarks.py

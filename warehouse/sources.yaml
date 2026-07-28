@@ -5,8 +5,13 @@ sources:
     name: Good AI List
     homepage: https://goodailist.com/
     provides: Curated AI repos with categories and activity metrics
-    fetcher: warehouse/ingest/fetch_goodailist.py
-    refresh: monthly
+    # No fetcher and no committed CSV. This source is read directly by the
+    # currentai.signal_goodailist.repo_catalog UDM on its own cron, so there is
+    # nothing to mirror into warehouse/catalog/. A mirror could only be staler
+    # than the live table, and it was: the frozen CSV still listed 300 repos
+    # goodailist.com had delisted.
+    ingested_by: currentai.signal_goodailist.repo_catalog
+    refresh: daily (UDM cron)
 
   - id: huggingface
     name: Hugging Face models and datasets
