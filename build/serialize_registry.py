@@ -93,7 +93,7 @@ _ID_PATTERNS = {
     "huggingface_dataset": r"huggingface\.co/datasets/(.+)",
     "pypi": r"pypi\.org/project/([^/]+)",
     "npm": r"npmjs\.com/package/(.+)",
-    # Accept an abs/pdf URL or a bare id, and normalise to the bare id so the
+    # Accept an abs/pdf URL or a bare id, and normalize to the bare id so the
     # DOI is derivable as 10.48550/arXiv.<id> without further parsing.
     "arxiv": r"(?:arxiv\.org/(?:abs|pdf)/)?(\d{4}\.\d{4,5})(?:v\d+)?",
 }

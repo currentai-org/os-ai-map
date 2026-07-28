@@ -15,7 +15,7 @@ like progress.
 Like `propose_arxiv.py`, it writes nothing. It prints candidates with their
 evidence and verdict for a human to accept. The reason is the same: matching by
 name was measured at 2 correct in 10 on this data, and a wrong artifact silently
-attaches another project's licence and download counts to a product. That is
+attaches another project's license and download counts to a product. That is
 indistinguishable from a real score until someone checks.
 
 Candidate sources, in order of trust:
