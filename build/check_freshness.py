@@ -1,0 +1,164 @@
+"""Report how stale the map's scores are.
+
+The map's value depends on its numbers being current, and until now there was no
+way to check that without reading 501 files. A score last touched in June looks
+exactly like one touched yesterday.
+
+## Two dates, deliberately not merged
+
+  * **`last_verified`** — layer-2 re-checked this axis against its sources on that
+    date, whether or not the value changed. Currently absent everywhere, because
+    layer-2 does not exist yet. That absence is the honest baseline, and watching
+    it fill in is how we measure the automation landing.
+  * **`max(sources[].accessed)`** — when a source behind the score was last read,
+    by whoever authored it. The best staleness proxy available today, and *not* a
+    verification.
+
+`last_verified` is deliberately NOT backfilled from `accessed`. Someone opening a
+URL is a weaker claim than the conclusion being re-confirmed, and copying one into
+a field whose name asserts the other would overstate the map's freshness across
+1,479 axes at a stroke. It would also be pointless: `accessed` is already in the
+files, so a derived column adds no information, only the stronger claim.
+
+This report therefore labels which signal each number came from, and never lets
+the weaker one be read as the stronger.
+
+Exit status is 0 unless `--max-age-days` is given, so it is safe to run for
+information. Pass a threshold to turn it into a CI gate once layer-2 is keeping
+scores fresh; gating today would only fail on the pre-automation backlog.
+
+Usage:
+    uv run python -m build.check_freshness
+    uv run python -m build.check_freshness --category base_pretrained
+    uv run python -m build.check_freshness --max-age-days 30
+"""
+
+from __future__ import annotations
+
+import argparse
+from collections import defaultdict
+from datetime import date, datetime
+from pathlib import Path
+
+import yaml
+
+ROOT = Path(__file__).resolve().parents[1]
+AXES = ("openness", "adoption", "capability")
+
+
+def parse_date(value: object) -> date | None:
+    if isinstance(value, date):
+        return value
+    if isinstance(value, str):
+        try:
+            return datetime.strptime(value[:10], "%Y-%m-%d").date()
+        except ValueError:
+            return None
+    return None
+
+
+def collect() -> tuple[dict[str, list[tuple[str, str, date, bool]]], list[str]]:
+    """Return (category -> [(product, axis, when, is_verified)], axes with no date).
+
+    `is_verified` separates a real `last_verified` from an `accessed` fallback, so
+    the report can never present the weaker signal as the stronger one.
+    """
+    by_category: dict[str, list[tuple[str, str, date, bool]]] = defaultdict(list)
+    undated: list[str] = []
+
+    for path in sorted((ROOT / "sources" / "categories").glob("*.yaml")):
+        category = yaml.safe_load(path.read_text())
+        for product in category.get("products") or []:
+            score_path = ROOT / "sources" / "scores" / f"{product}.yaml"
+            if not score_path.exists():
+                continue
+            scores = yaml.safe_load(score_path.read_text()) or {}
+            for axis in AXES:
+                block = scores.get(axis)
+                if not isinstance(block, dict):
+                    continue
+
+                verified = parse_date(block.get("last_verified"))
+                if verified is not None:
+                    by_category[category["name"]].append((product, axis, verified, True))
+                    continue
+
+                accessed = [
+                    parse_date(s.get("accessed"))
+                    for s in (block.get("sources") or [])
+                    if isinstance(s, dict)
+                ]
+                accessed = [d for d in accessed if d is not None]
+                if accessed:
+                    by_category[category["name"]].append(
+                        (product, axis, max(accessed), False)
+                    )
+                else:
+                    undated.append(f"{product}.{axis}")
+    return by_category, undated
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--category", help="limit to one category slug")
+    parser.add_argument(
+        "--max-age-days",
+        type=int,
+        help="exit 1 if any category's oldest axis exceeds this. Omit to report only.",
+    )
+    parser.add_argument("--today", help="override today's date, YYYY-MM-DD, for testing")
+    args = parser.parse_args()
+
+    today = parse_date(args.today) or date.today()
+    by_category, undated = collect()
+    if args.category:
+        by_category = {k: v for k, v in by_category.items() if k == args.category}
+
+    rows = [entry for entries in by_category.values() for entry in entries]
+    if not rows:
+        print("no scored axes found")
+        return 0
+
+    print(f"{'category':<30}{'axes':>6}{'median':>9}{'oldest':>9}  oldest product")
+    stalest: list[tuple[int, str, str]] = []
+    for name in sorted(by_category):
+        entries = by_category[name]
+        ages = sorted((today - when).days for _, _, when, _ in entries)
+        median = ages[len(ages) // 2]
+        product, axis, _, _ = max(entries, key=lambda e: (today - e[2]).days)
+        print(f"{name:<30}{len(entries):>6}{median:>8}d{ages[-1]:>8}d  {product}.{axis}")
+        stalest.append((ages[-1], name, f"{product}.{axis}"))
+
+    all_ages = sorted((today - when).days for _, _, when, _ in rows)
+    print(
+        f"\n{len(rows)} axes | median {all_ages[len(all_ages) // 2]}d "
+        f"| oldest {all_ages[-1]}d | newest {all_ages[0]}d"
+    )
+
+    verified_n = sum(1 for _, _, _, is_verified in rows if is_verified)
+    print(
+        f"\n{verified_n} of {len(rows)} axes carry a real last_verified. "
+        f"The other {len(rows) - verified_n} fall back to max(sources.accessed), "
+        "which dates the evidence, not a verification — read those ages as an upper "
+        "bound on freshness."
+    )
+    if undated:
+        print(
+            f"{len(undated)} axes have no date at all: {', '.join(undated[:6])}"
+            + (" ..." if len(undated) > 6 else "")
+        )
+
+    if args.max_age_days is None:
+        return 0
+    over = [(age, cat, what) for age, cat, what in stalest if age > args.max_age_days]
+    if over:
+        print(f"\n{len(over)} categor(ies) exceed {args.max_age_days}d:")
+        for age, cat, what in sorted(over, reverse=True):
+            print(f"  ! {cat:<28} {age}d  ({what})")
+        return 1
+    print(f"\nall categories within {args.max_age_days}d")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
