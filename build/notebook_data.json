@@ -1141,7 +1141,13 @@
             "components": "weights:open(Apache-2.0);data:open(Lucie-Training-Dataset on HF, redistributed in training form);code:open(Lucie-Training Megatron-DeepSpeed fork);checkpoints:open(intermediate HF revisions);license:Apache-2.0(OSI)",
             "confidence": "high",
             "note": "Full open-source tier alongside OLMo / Apertus: open weights, open training data, open training code, intermediate checkpoints. Authors position Lucie as OSI-definition-compliant for open-source AI. Training-dataset product deferred — artifacts cited here for openness only.",
+            "last_verified": "2026-07-28",
             "sources": [
+              {
+                "url": "https://huggingface.co/api/datasets/OpenLLM-France/Lucie-Training-Dataset",
+                "shows": "Public, ungated dataset repo present on the Hub; 3,101 downloads. Corpus is published, not merely described.",
+                "accessed": "2026-07-28"
+              },
               {
                 "url": "https://huggingface.co/OpenLLM-France/Lucie-7B",
                 "shows": "Apache-2.0 weights; links to Lucie-Training-Dataset; intermediate checkpoints; Llama-3.1 arch",
@@ -1218,7 +1224,13 @@
             "components": "weights:open(Apache-2.0);data:open(Dolma 3, 9.3T tokens, all stages);code:open(training code+recipes+logs);checkpoints:open(intermediate);license:Apache-2.0(OSI)",
             "confidence": "high",
             "note": "Fully open: Apache-2.0 weights + the complete Dolma 3 corpus + training code + intermediate checkpoints. The reference fully-open model line.",
+            "last_verified": "2026-07-28",
             "sources": [
+              {
+                "url": "https://huggingface.co/api/datasets/allenai/dolma",
+                "shows": "Public, ungated dataset repo present on the Hub; 3,052 downloads. Dolma corpus is published.",
+                "accessed": "2026-07-28"
+              },
               {
                 "url": "https://allenai.org/blog/olmo3",
                 "shows": "fully-open release: weights, Dolma 3 data, code, recipes, checkpoints; Nov 2025 / Dec 2025 3.1 update",
@@ -1275,7 +1287,13 @@
             "components": "weights:open(Apache-2.0);data:open(the Pile, with dataloader reconstruction tools);code:open(training+analysis code, GitHub);checkpoints:open(154 per model);license:Apache-2.0(OSI)",
             "confidence": "high",
             "note": "weights:open(Apache-2.0);data:open(the Pile, with dataloader reconstruction tools);code:open(training+analysis code, GitHub);checkpoints:open(154 per model);license:Apache-2.0(OSI)",
+            "last_verified": "2026-07-28",
             "sources": [
+              {
+                "url": "https://huggingface.co/api/datasets/EleutherAI/pile",
+                "shows": "Public, ungated dataset repo present on the Hub; 2,441 downloads. The Pile is published.",
+                "accessed": "2026-07-28"
+              },
               {
                 "url": "https://arxiv.org/abs/2304.01373",
                 "shows": "flagship phase-C verification source",
@@ -2069,10 +2087,20 @@
           "openness": {
             "score": 4,
             "class": "open_weights",
-            "components": "weights:open;data:open(~10T-token pretraining + 40M post-training);code:open(recipes+21 RL env configs);license:NVIDIA-Open-Model-License(permissive,commercial,non-OSI)",
+            "components": "weights:open;data:open(substantial portions released, not the full corpus: Nemotron-Pretraining-Specialized-v1.2 is 53.6GB of synthetic pretraining data, but Nemotron-Pretraining-Code-v3 ships metadata parquet rather than the code corpus);code:open(recipes+21 RL env configs);license:NVIDIA-Open-Model-License(permissive,commercial,non-OSI)",
             "confidence": "high",
-            "note": "weights:open;data:open(~10T-token pretraining + 40M post-training);code:open(recipes+21 RL env configs);license:NVIDIA-Open-Model-License(permissive,commercial,non-OSI)",
+            "note": "Open weights and open training recipes under a permissive but non-OSI license, which caps the score at 4 regardless of how open the data is. Data claim narrowed on 2026-07-28: the previous '~10T-token pretraining' wording implied the full corpus was released. NVIDIA publishes substantial portions — 53.6GB of synthetic pretraining data across fact-seeking and related sets — while the code portion ships as metadata parquet rather than the corpus itself. Left at data:open because a real, substantial dataset is downloadable; the rubric currently has no value for a partial release, which is a gap worth closing.",
             "sources": [
+              {
+                "url": "https://huggingface.co/api/datasets/nvidia/Nemotron-Pretraining-Specialized-v1.2",
+                "shows": "92 files, 53.62GB, ungated. Nemotron-Pretraining-Fact-Seeking/*.parquet and related synthetic pretraining sets.",
+                "accessed": "2026-07-28"
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/nvidia/Nemotron-Pretraining-Code-v3",
+                "shows": "67 files, 1.20GB, ungated, all under Nemotron-Code-Metadata/*.parquet — metadata describing the code corpus, not the corpus.",
+                "accessed": "2026-07-28"
+              },
               {
                 "url": "https://research.nvidia.com/labs/nemotron/Nemotron-3/",
                 "shows": "flagship phase-C verification source",
@@ -2089,6 +2117,7 @@
                 "accessed": "2026-06-04"
               }
             ],
+            "last_verified": "2026-07-28",
             "bucket": "open-ish"
           },
           "adoption": {
@@ -2469,7 +2498,13 @@
             "components": "weights:open(Apache-2.0, BF16 safetensors);data:open(full pretraining-data reconstruction scripts, github.com/swiss-ai/pretrain-data);code:open(Megatron-LM training recipe + reconstruction scripts);checkpoints:open(intermediate checkpoints on HF branches);license:Apache-2.0(OSI)",
             "confidence": "high",
             "note": "Among the most transparent large-model releases to date: open weights, open data (reconstruction scripts rather than a raw dump, to respect opt-out/robots.txt and strip personal data), open training code/recipe, intermediate checkpoints, a technical report (arXiv 2509.14233), and EU AI Act + Swiss data-protection/copyright compliance docs. All Apache-2.0. Sits in the OLMo/Pythia full-openness tier.",
+            "last_verified": "2026-07-28",
             "sources": [
+              {
+                "url": "https://api.github.com/repos/swiss-ai/pretrain-data",
+                "shows": "Repository resolves 200. Pretraining-data reconstruction scripts are published, satisfying data:open by reconstruction.",
+                "accessed": "2026-07-28"
+              },
               {
                 "url": "https://huggingface.co/swiss-ai/Apertus-70B-2509",
                 "shows": "Apache-2.0; BF16 safetensors weights; training checkpoints on branches; data reconstruction scripts; EU AI Act docs; 15T tokens; 4,096 GH200 GPUs; Megatron-LM",
@@ -2639,19 +2674,35 @@
           "type": "model",
           "description": "Open-weights LLM family with a novel architecture that is 100% RNN yet trains in parallel like a GPT transformer - combining linear-time inference, constant memory (no KV-cache), and effectively unbounded context. The current generation, RWKV-7 'Goose', introduces 'Dynamic State Evolution' for expressivity beyond the limits of attention.",
           "openness": {
-            "score": 5,
-            "class": "open_source",
-            "components": "weights:open(Apache-2.0);data:open(3.1T-token multilingual corpus);code:open(github.com/BlinkDL/RWKV-LM);license:Apache-2.0(OSI)",
+            "score": 4,
+            "class": "open_weights",
+            "components": "weights:open(Apache-2.0);data:documented-not-released(itemized machine-readable component index with resolvable links to public datasets, but no released corpus and no reconstruction pipeline);code:open(github.com/BlinkDL/RWKV-LM);license:Apache-2.0(OSI)",
             "confidence": "high",
-            "note": "Fully-open pipeline: open weights, open training data, and open training code under Apache-2.0.",
+            "last_verified": "2026-07-28",
+            "note": "Corrected from 5/open_source on 2026-07-28, then re-examined the same day after challenge. The correction stands but it is a close call, and RWKV published more than a first look suggests. What IS released: an itemized, machine-readable index (index/train.jsonl, train.csv) naming every component dataset with a resolvable URL, category and citation, essentially all of them public, plus 100k and 1M preview subsamples. That is real openness work and well beyond a prose description. What is NOT released, and why this is not data:open: no corpus and no reconstruction scripts. The exact subsampling amounts are referenced as \"supplementary material (see wiki.txt, oscar.txt)\" which is not published in the dataset repo, not an arXiv ancillary file, and not in RWKV-LM, which carries model and training code but no data-prep directory. No mixing proportions or per-component token counts are given, one component (OSCAR23.01) is itself gated, and the maintainers' own notes record \"peS2o - Which version out of the 3?\", so the mixture is not reproducible in detail even in principle. The rubric defines data:open as a released dataset OR scripts that reconstruct the corpus end to end; neither holds. Weights, training code and license are unaffected and remain fully open under Apache-2.0, so this narrows one claim rather than downgrading the project. NOTE: this lands in a genuine rubric gap. \"Every component named and publicly resolvable, but the mixture not reproducible\" is meaningfully more open than prose documentation and less than a released corpus, and the data enum has no value for it. Nemotron 3's partial release hits the same gap, so two of the nine products checked fall between the available values.",
             "sources": [
               {
+                "url": "https://huggingface.co/datasets/RWKV/RWKV-World-Listing/raw/main/train.csv",
+                "shows": "Component table: Dataset;Category;Citation;Version;URL;Notes. Every source named with a resolvable link. Notes defer exact sampling to unpublished supplementary material and include the unresolved question \"peS2o - Which version out of the 3?\".",
+                "accessed": "2026-07-28"
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/Goose-World/RWKV-World-v3",
+                "shows": "10 files, 8.17GB: index/train.jsonl, train.csv, 100k and 1M preview subsamples, READMEs, one figure. No corpus shards.",
+                "accessed": "2026-07-28"
+              },
+              {
+                "url": "https://api.github.com/repos/BlinkDL/RWKV-LM",
+                "shows": "Model and training code by version (RWKV-v1..v8) plus figures. No data-prep or corpus reconstruction directory.",
+                "accessed": "2026-07-28"
+              },
+              {
                 "url": "https://arxiv.org/abs/2503.14456",
-                "shows": "RWKV-7 Goose: Apache-2.0 weights + data + code, 3.1T open corpus",
-                "accessed": "2026-06-18"
+                "shows": "RWKV-7 Goose paper: claims a 3.1T open corpus. No arXiv ancillary files are attached, so the supplementary material the dataset notes point to is not obtainable from the paper either.",
+                "accessed": "2026-07-28"
               }
             ],
-            "bucket": "open"
+            "bucket": "open-ish"
           },
           "adoption": {
             "level": 3,
