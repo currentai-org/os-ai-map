@@ -2,12 +2,26 @@ product: nemotron-3
 openness:
   score: 4
   class: open_weights
-  components: weights:open;data:open(~10T-token pretraining + 40M post-training);code:open(recipes+21
-    RL env configs);license:NVIDIA-Open-Model-License(permissive,commercial,non-OSI)
+  components: 'weights:open;data:open(substantial portions released, not the full corpus: Nemotron-Pretraining-Specialized-v1.2
+    is 53.6GB of synthetic pretraining data, but Nemotron-Pretraining-Code-v3 ships metadata parquet rather
+    than the code corpus);code:open(recipes+21 RL env configs);license:NVIDIA-Open-Model-License(permissive,commercial,non-OSI)'
   confidence: high
-  note: weights:open;data:open(~10T-token pretraining + 40M post-training);code:open(recipes+21 RL env
-    configs);license:NVIDIA-Open-Model-License(permissive,commercial,non-OSI)
+  note: 'Open weights and open training recipes under a permissive but non-OSI license, which caps the
+    score at 4 regardless of how open the data is. Data claim narrowed on 2026-07-28: the previous ''~10T-token
+    pretraining'' wording implied the full corpus was released. NVIDIA publishes substantial portions
+    — 53.6GB of synthetic pretraining data across fact-seeking and related sets — while the code portion
+    ships as metadata parquet rather than the corpus itself. Left at data:open because a real, substantial
+    dataset is downloadable; the rubric currently has no value for a partial release, which is a gap worth
+    closing.'
   sources:
+  - url: https://huggingface.co/api/datasets/nvidia/Nemotron-Pretraining-Specialized-v1.2
+    shows: 92 files, 53.62GB, ungated. Nemotron-Pretraining-Fact-Seeking/*.parquet and related synthetic
+      pretraining sets.
+    accessed: '2026-07-28'
+  - url: https://huggingface.co/api/datasets/nvidia/Nemotron-Pretraining-Code-v3
+    shows: 67 files, 1.20GB, ungated, all under Nemotron-Code-Metadata/*.parquet — metadata describing
+      the code corpus, not the corpus.
+    accessed: '2026-07-28'
   - url: https://research.nvidia.com/labs/nemotron/Nemotron-3/
     shows: flagship phase-C verification source
     accessed: '2026-06-04'
@@ -17,6 +31,7 @@ openness:
   - url: https://research.nvidia.com/labs/nemotron/files/NVIDIA-Nemotron-3-Super-Technical-Report.pdf
     shows: flagship phase-C verification source
     accessed: '2026-06-04'
+  last_verified: '2026-07-28'
 adoption:
   level: 3
   reach: 100K-1M
