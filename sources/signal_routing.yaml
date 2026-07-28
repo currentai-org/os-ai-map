@@ -1,0 +1,215 @@
+# Which machine signal is authoritative for which scoring dimension.
+#
+# Layer-2 research uses this to answer what it can from cached, dated,
+# traceable sources before spending an LLM on anything. It is the difference
+# between a refresh that is cheap and defensible and one that quietly
+# corrupts good data.
+#
+# ## Routing is by ARTIFACT KIND, not by product
+#
+# This is the whole reason the file exists. A model's code repository and its
+# weights routinely carry different licences, and the code repo is the wrong
+# answer for the weights dimension.
+#
+# Measured on 2026-07-28 against the 239 products with a GitHub licence signal:
+# 175 agreed exactly with the recorded value, 5 differed only in formatting,
+# 25 returned NOASSERTION, and 13 genuinely disagreed. In every model case
+# among those 13, Hugging Face agreed with the recorded value and GitHub was
+# the outlier — glm-5-2 (recorded MIT, HF mit, GitHub Apache-2.0), lucie-7b
+# (recorded Apache-2.0, HF apache-2.0, GitHub GPL-3.0), and likewise mimo-v2-5-pro,
+# zephyr and tulu-3.
+#
+# So a naive "refresh licence from GitHub" pass would have overwritten six
+# correct model scores with the wrong licence, each change looking like a
+# well-sourced improvement. Route by artifact kind and that class of error
+# cannot occur.
+#
+# ## Abstain rather than substitute
+#
+# When the authoritative signal for a dimension is missing or unusable, the
+# rule is to produce NO evidence and leave the dimension to research. Falling
+# through to a less authoritative signal is how the failure above happens.
+
+version: 1
+verified_on: '2026-07-28'
+
+# Where each artifact kind's facts live. `key` is the join column back to the
+# registry; a source with no key cannot be used until a bridge exists.
+sources:
+  github:
+    table: currentai.signal_github.repo_state
+    key: product_slug
+    evidence_url: https://github.com/{repo}
+    bridged: true
+  huggingface_model:
+    table: currentai.signal_huggingface.hub_state
+    key: product_slug
+    filter: artifact_kind = 'huggingface_model'
+    evidence_url: https://huggingface.co/{artifact_id}
+    bridged: true
+  huggingface_dataset:
+    table: currentai.signal_huggingface.hub_state
+    key: product_slug
+    filter: artifact_kind = 'huggingface_dataset'
+    evidence_url: https://huggingface.co/datasets/{artifact_id}
+    bridged: true
+  pypi:
+    table: currentai.signal_pypi.package_downloads
+    key: product_slug
+    evidence_url: https://pypistats.org/packages/{package}
+    bridged: true
+  semanticscholar:
+    table: currentai.signal_semanticscholar.paper_citations
+    key: product_slug
+    evidence_url: https://www.semanticscholar.org/paper/{paper_id}
+    bridged: true
+  artificialanalysis:
+    table: currentai.signal_artificialanalysis.model_evaluations
+    key: null
+    evidence_url: https://artificialanalysis.ai/models/{aa_slug}
+    bridged: false
+    bridge_note: >
+      Keyed on `aa_slug`, with no product_slug column. A product -> aa_slug
+      bridge must exist before capability can be routed here. Until then this
+      source is declared but unusable, and capability stays hand-authored.
+  lmarena:
+    table: currentai.signal_lmarena.text_leaderboard
+    key: null
+    evidence_url: https://lmarena.ai/leaderboard
+    bridged: false
+    bridge_note: >
+      Keyed on `model_name` as published by the arena, which does not match our
+      slugs. Same bridge problem as artificialanalysis.
+
+# Ordered routes per dimension. First route whose artifact the product actually
+# has, wins. `governs` records what the value is a fact ABOUT, so a licence
+# attached to code is never read as a licence attached to weights.
+dimensions:
+
+  license:
+    question: Which licence governs the artifact being scored?
+    routes:
+    - source: huggingface_model
+      column: license
+      governs: weights
+      confidence: high
+    - source: huggingface_dataset
+      column: license
+      governs: dataset
+      confidence: high
+    - source: github
+      column: license_spdx_id
+      governs: code
+      confidence: high
+      abstain_when: license_spdx_id = 'NOASSERTION'
+      abstain_note: >
+        GitHub could not classify the LICENSE file. It is an absence of
+        information, not evidence of a non-standard licence. 25 products hit
+        this. Leave it to research.
+    never:
+    - route: github licence -> the weights dimension
+      because: >
+        Measured wrong for 6 of 6 models where the two disagreed. The code repo
+        licence is a fact about the code, not the weights.
+    normalisation:
+    - GPLv3 -> GPL-3.0, AGPLv3 -> AGPL-3.0, case-insensitive
+    - strip a leading `app=` / `code=` / `model=` qualifier
+    - '`assumed-X` keeps tier X but caps confidence at medium'
+
+  weights:
+    question: Are the trained weights downloadable and runnable locally?
+    routes:
+    - source: huggingface_model
+      columns: [is_gated, gated_mode, is_private, is_disabled, used_storage_bytes]
+      governs: weights
+      derivation: >
+        open when the repo is public, not disabled, and carries weight files;
+        gating is recorded in value_detail rather than closing the dimension,
+        since a click-through gate is not the same as withheld weights.
+      confidence: high
+    unroutable_note: >
+      A model distributed outside the Hub has no signal here. Research it.
+
+  code:
+    question: Is the source released, and is the project still alive?
+    routes:
+    - source: github
+      columns: [is_archived, is_disabled, pushed_at, html_url]
+      governs: code
+      derivation: >
+        Presence and liveness only. Whether the code constitutes a full training
+        pipeline versus inference-only is a judgment the API cannot make, so this
+        route informs `code` but does not settle it.
+      settles_dimension: false
+      confidence: high
+
+  adoption:
+    question: How widely is this actually used?
+    routes:
+    - source: huggingface_model
+      column: downloads_30d
+      signal_type: usage_volume
+      confidence: high
+    - source: huggingface_dataset
+      column: downloads_30d
+      signal_type: usage_volume
+      confidence: high
+    - source: pypi
+      column: downloads_30d
+      signal_type: usage_volume
+      confidence: high
+    - source: semanticscholar
+      column: citation_count
+      signal_type: usage_volume
+      applies_to_categories: [benchmark_eval_data]
+      confidence: high
+      note: >
+        For a benchmark, citations measure reach better than downloads: the
+        question is how many papers evaluate against it.
+    - source: github
+      column: stargazers_count
+      signal_type: stars_fallback
+      confidence: low
+      note: >
+        Last resort, and explicitly last. Stars measure attention, not use, and
+        the rubric already ranks this below every real usage signal.
+    sum_across_artifacts: true
+    sum_note: >
+      A model family ships several SKUs. The map's unit is the family, so
+      downloads sum across its artifacts rather than taking the largest.
+
+  capability:
+    question: How good is it, measured independently?
+    routes:
+    - source: artificialanalysis
+      column: artificial_analysis_intelligence_index
+      applies_to_categories: [base_pretrained, finetuned_chat]
+      blocked_by: bridge
+    - source: lmarena
+      column: rating
+      applies_to_categories: [finetuned_chat]
+      blocked_by: bridge
+    - source: semanticscholar
+      column: citation_count
+      applies_to_categories: [benchmark_eval_data]
+      confidence: medium
+      note: >
+        Citations are a reach signal, not a quality one. Usable as corroboration
+        for a benchmark's standing, not as the capability score itself.
+    status: >
+      Effectively unroutable today. The two real capability anchors are both
+      unbridged, and no category's scoring_recipe has calibrated 1-5 thresholds
+      against them. Capability stays hand-authored until both are fixed.
+
+# Dimensions with no machine signal at all, listed so their absence is a
+# recorded decision rather than an oversight.
+research_only:
+  data:
+    why: >
+      Whether a pretraining corpus is released, or reconstructible from released
+      scripts, is not exposed by any API. A dataset card describing sources does
+      not answer it.
+  checkpoints:
+    why: Intermediate checkpoints on HF branches are not surfaced in the Hub API summary.
+  governance:
+    why: Who controls the roadmap is a question about an organisation, not an artifact.
