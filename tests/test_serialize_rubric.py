@@ -202,33 +202,68 @@ def test_license_aliases_come_out_per_source():
     ]
 
 
-def test_abstentions_flatten_and_skip_their_prose_notes():
-    """The policy crosses the bridge instead of being written into warehouse SQL, so
-    that one declaration drives both. The `_note` keys are for a reader."""
-    policy = {
-        "abstentions": {
-            "huggingface": {"license": ["other", "cc"], "license_note": "prose for a human"},
-            "github": {"license_spdx_id": ["NOASSERTION"]},
-            "null_is_abstention": True,
+def test_abstentions_come_from_the_route_and_keep_the_source_specific():
+    """Read from signal_routing.yaml, not evidence_policy.yaml. `source` is the route
+    name so a model-license abstention cannot be read as a dataset-license one."""
+    routing = {
+        "dimensions": {
+            "license": {
+                "routes": [
+                    {"source": "huggingface_model", "column": "license",
+                     "abstain_values": ["other", "cc"], "abstain_note": "prose for a human"},
+                    {"source": "github", "column": "license_spdx_id",
+                     "abstain_values": ["NOASSERTION"]},
+                    {"source": "huggingface_dataset", "column": "license"},
+                ]
+            }
         }
     }
-    rows = evidence_abstentions(policy)
-    assert rows == [
-        {"source": "huggingface", "column_name": "license", "abstain_value": "other"},
-        {"source": "huggingface", "column_name": "license", "abstain_value": "cc"},
+    assert evidence_abstentions(routing) == [
+        {"source": "huggingface_model", "column_name": "license", "abstain_value": "other"},
+        {"source": "huggingface_model", "column_name": "license", "abstain_value": "cc"},
         {"source": "github", "column_name": "license_spdx_id", "abstain_value": "NOASSERTION"},
     ]
 
 
-def test_real_abstentions_cover_the_two_escape_hatches_seen_in_the_data():
+def test_the_same_source_column_routed_twice_yields_one_row_per_value():
+    """A lookup table with duplicate keys would fan out the evidence join."""
+    routing = {
+        "dimensions": {
+            "license": {"routes": [{"source": "github", "column": "license_spdx_id",
+                                    "abstain_values": ["NOASSERTION"]}]},
+            "code": {"routes": [{"source": "github", "column": "license_spdx_id",
+                                 "abstain_values": ["NOASSERTION"]}]},
+        }
+    }
+    assert len(evidence_abstentions(routing)) == 1
+
+
+def test_real_abstentions_cover_the_escape_hatches_seen_in_the_data():
+    from pathlib import Path
+
+    from build.serialize_rubric import load_routing
+
+    rows = evidence_abstentions(load_routing(Path(__file__).resolve().parents[1]))
+    pairs = {(r["source"], r["abstain_value"]) for r in rows}
+    assert ("huggingface_model", "other") in pairs
+    assert ("huggingface_model", "cc") in pairs
+    assert ("github", "NOASSERTION") in pairs
+
+
+def test_abstentions_are_declared_in_exactly_one_file():
+    """Regression guard. NOASSERTION was once declared in both signal_routing.yaml and
+    evidence_policy.yaml; a reader fixing one would have missed the other."""
     from pathlib import Path
 
     from build.serialize_rubric import load_policy
 
-    rows = evidence_abstentions(load_policy(Path(__file__).resolve().parents[1]))
-    pairs = {(r["source"], r["abstain_value"]) for r in rows}
-    assert ("huggingface", "other") in pairs
-    assert ("github", "NOASSERTION") in pairs
+    policy_abstentions = load_policy(Path(__file__).resolve().parents[1]).get("abstentions") or {}
+    # Only non-source-specific policy belongs here, and those are scalars/flags.
+    for key, value in policy_abstentions.items():
+        assert not isinstance(value, dict), (
+            f"evidence_policy.yaml declares per-source abstentions under {key!r}; "
+            f"those belong on the route in signal_routing.yaml"
+        )
 
 
 def test_admission_rejects_the_declared_boilerplate():

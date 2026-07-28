@@ -49,32 +49,24 @@ admission:
   # verbosity, not specificity.
   require_nonempty_shows: true
 
-# Values that mean "this source has no answer". Falling through to a less
-# authoritative source here is how a refresh silently corrupts good data, so the
-# rule is to produce no evidence and leave the dimension to research.
+# Values that mean "this source has no answer" are NOT declared here. They are a
+# fact about a source, so they live on the route in `signal_routing.yaml` as
+# `abstain_values`, and build/serialize_rubric.py reads them from there into the
+# registry.evidence_abstentions table.
+#
+# An earlier draft of this file declared GitHub's NOASSERTION as well, alongside
+# the `abstain_when` that signal_routing.yaml already had. Two declarations of one
+# rule is precisely the drift the config bridge exists to prevent, so there is now
+# one. What stays here is the policy that is NOT source-specific:
 abstentions:
-  huggingface:
-    license: [other, cc]
-    license_note: >
-      `other` is the Hub's escape hatch for "read the repo". It is an absence of
-      information, not evidence of a permissive or a restrictive license. 12 of
-      147 live Hub rows carry it, including 4 base models. Bare `cc` is the same
-      problem in a different costume: it names a license family with no version
-      and no terms, so it settles nothing.
-  github:
-    license_spdx_id: [NOASSERTION]
-    license_spdx_id_note: >
-      GitHub could not classify the LICENSE file. 25 products hit this. Already
-      declared in signal_routing.yaml as an abstain_when; repeated here so the
-      whole abstention policy reads in one place.
-  # A null license is an abstention everywhere, and is not listed per source
+  # A null value is an abstention from every source, and needs no per-source list
   # because it needs no interpretation.
   null_is_abstention: true
 
-  # A declared artifact that does not resolve is not a signal. Five base-model
-  # artifacts are in this state: gemma-3 (both SKUs 404), mistral-large-3 (404),
-  # gemma-4 (307), olmo-3's 32B SKU (404), and rwkv, whose artifact_id is `RWKV`,
-  # an organization rather than a repository.
+  # A declared artifact that does not resolve is not a signal, whichever source it
+  # came from. Five base-model artifacts were in this state before PR #109: gemma-3
+  # (both SKUs 404), mistral-large-3 (404), gemma-4 (307), olmo-3's 32B SKU (404),
+  # and rwkv, whose artifact_id was `RWKV`, an organization rather than a repository.
   usable_http_status: [200]
 
 # Where a family ships several SKUs and the rubric resolves them with an

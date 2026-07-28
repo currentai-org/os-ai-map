@@ -287,25 +287,41 @@ def license_aliases(routing: dict) -> list[dict]:
     return rows
 
 
-def evidence_abstentions(policy: dict) -> list[dict]:
-    """Flatten the per-source abstention lists declared in evidence_policy.yaml.
+def evidence_abstentions(routing: dict) -> list[dict]:
+    """Flatten every route's `abstain_values` from signal_routing.yaml.
+
+    Read from the ROUTE rather than from evidence_policy.yaml, because a value that
+    means "no answer" is a fact about a source and signal_routing.yaml is what owns
+    source semantics. An earlier draft declared GitHub's NOASSERTION in both files,
+    which is the drift this bridge exists to prevent.
 
     These cross the bridge rather than being written into the warehouse SQL for the
-    same reason the components parser stays here: a policy implemented in two places
-    is a policy that will drift. The `_note` keys alongside each list are prose for
-    a reader and are skipped.
+    same reason the components parser stays in the repo: one declaration, or they
+    diverge. `source` is the route's source name — `huggingface_model`, not
+    `huggingface` — so an abstention attached to model licenses cannot be read as
+    applying to dataset licenses.
     """
     rows: list[dict] = []
-    for source, columns in (policy.get("abstentions") or {}).items():
-        if not isinstance(columns, dict):
+    seen: set[tuple[str, str, str]] = set()
+    for dimension in (routing.get("dimensions") or {}).values():
+        if not isinstance(dimension, dict):
             continue
-        for column, values in columns.items():
-            if column.endswith("_note") or not isinstance(values, list):
+        for route in dimension.get("routes") or []:
+            if not isinstance(route, dict):
                 continue
-            for value in values:
-                rows.append(
-                    {"source": source, "column_name": column, "abstain_value": str(value)}
-                )
+            source = route.get("source")
+            column = route.get("column")
+            if not source or not column:
+                continue
+            for value in route.get("abstain_values") or []:
+                key = (str(source), str(column), str(value))
+                # The same source/column pair can be routed by more than one
+                # dimension, and the lookup table wants one row per value.
+                if key not in seen:
+                    seen.add(key)
+                    rows.append(
+                        {"source": source, "column_name": column, "abstain_value": str(value)}
+                    )
     return rows
 
 
@@ -325,9 +341,9 @@ def build_rubric(sources: dict, policy: dict, routing: dict) -> tuple[dict[str, 
     warnings: list[str] = []
 
     tables["license_aliases"] = license_aliases(routing)
-    tables["evidence_abstentions"] = evidence_abstentions(policy)
+    tables["evidence_abstentions"] = evidence_abstentions(routing)
     if not tables["evidence_abstentions"]:
-        warnings.append("evidence_policy.yaml declares no abstentions")
+        warnings.append("signal_routing.yaml declares no route abstain_values")
 
     scored_categories = 0
     for slug, category in sorted(categories.items()):

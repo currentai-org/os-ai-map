@@ -88,20 +88,35 @@ dimensions:
 
   license:
     question: Which license governs the artifact being scored?
+    # `abstain_values` is the authoritative list of values that mean "this source
+    # has no answer for this column". It lives here, on the route, because
+    # abstention is a fact about a SOURCE, and this file is what owns source
+    # semantics. `evidence_policy.yaml` owns the separate question of whether a
+    # DOCUMENT is admissible. Keeping the two apart is deliberate: an earlier draft
+    # declared NOASSERTION in both files, which is exactly the drift this bridge
+    # exists to prevent. build/serialize_rubric.py reads these into the
+    # registry.evidence_abstentions table, so the warehouse never hardcodes them.
     routes:
     - source: huggingface_model
       column: license
       governs: weights
       confidence: high
+      abstain_values: [other, cc]
+      abstain_note: >
+        `other` is the Hub's escape hatch for "read the repo", and bare `cc` names
+        a license family with no version and no terms. Both are an absence of
+        information, not evidence of a permissive or a restrictive license. 12 of
+        147 live Hub rows carry one, including 4 base models.
     - source: huggingface_dataset
       column: license
       governs: dataset
       confidence: high
+      abstain_values: [other, cc]
     - source: github
       column: license_spdx_id
       governs: code
       confidence: high
-      abstain_when: license_spdx_id = 'NOASSERTION'
+      abstain_values: [NOASSERTION]
       abstain_note: >
         GitHub could not classify the LICENSE file. It is an absence of
         information, not evidence of a non-standard license. 25 products hit
