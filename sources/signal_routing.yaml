@@ -8,10 +8,10 @@
 # ## Routing is by ARTIFACT KIND, not by product
 #
 # This is the whole reason the file exists. A model's code repository and its
-# weights routinely carry different licences, and the code repo is the wrong
+# weights routinely carry different licenses, and the code repo is the wrong
 # answer for the weights dimension.
 #
-# Measured on 2026-07-28 against the 239 products with a GitHub licence signal:
+# Measured on 2026-07-28 against the 239 products with a GitHub license signal:
 # 175 agreed exactly with the recorded value, 5 differed only in formatting,
 # 25 returned NOASSERTION, and 13 genuinely disagreed. In every model case
 # among those 13, Hugging Face agreed with the recorded value and GitHub was
@@ -19,8 +19,8 @@
 # (recorded Apache-2.0, HF apache-2.0, GitHub GPL-3.0), and likewise mimo-v2-5-pro,
 # zephyr and tulu-3.
 #
-# So a naive "refresh licence from GitHub" pass would have overwritten six
-# correct model scores with the wrong licence, each change looking like a
+# So a naive "refresh license from GitHub" pass would have overwritten six
+# correct model scores with the wrong license, each change looking like a
 # well-sourced improvement. Route by artifact kind and that class of error
 # cannot occur.
 #
@@ -82,12 +82,12 @@ sources:
       slugs. Same bridge problem as artificialanalysis.
 
 # Ordered routes per dimension. First route whose artifact the product actually
-# has, wins. `governs` records what the value is a fact ABOUT, so a licence
-# attached to code is never read as a licence attached to weights.
+# has, wins. `governs` records what the value is a fact ABOUT, so a license
+# attached to code is never read as a license attached to weights.
 dimensions:
 
   license:
-    question: Which licence governs the artifact being scored?
+    question: Which license governs the artifact being scored?
     routes:
     - source: huggingface_model
       column: license
@@ -104,14 +104,14 @@ dimensions:
       abstain_when: license_spdx_id = 'NOASSERTION'
       abstain_note: >
         GitHub could not classify the LICENSE file. It is an absence of
-        information, not evidence of a non-standard licence. 25 products hit
+        information, not evidence of a non-standard license. 25 products hit
         this. Leave it to research.
     never:
-    - route: github licence -> the weights dimension
+    - route: github license -> the weights dimension
       because: >
         Measured wrong for 6 of 6 models where the two disagreed. The code repo
-        licence is a fact about the code, not the weights.
-    normalisation:
+        license is a fact about the code, not the weights.
+    normalization:
     - GPLv3 -> GPL-3.0, AGPLv3 -> AGPL-3.0, case-insensitive
     - strip a leading `app=` / `code=` / `model=` qualifier
     - '`assumed-X` keeps tier X but caps confidence at medium'
@@ -212,4 +212,4 @@ research_only:
   checkpoints:
     why: Intermediate checkpoints on HF branches are not surfaced in the Hub API summary.
   governance:
-    why: Who controls the roadmap is a question about an organisation, not an artifact.
+    why: Who controls the roadmap is a question about an organization, not an artifact.
