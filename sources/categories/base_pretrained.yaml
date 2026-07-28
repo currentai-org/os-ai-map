@@ -61,12 +61,12 @@ scoring_recipe:
         machine_signal: none — requires research
 
     # The discriminator that decides restricted vs open_weights. OSI approval
-    # alone is too blunt: several non-OSI licences are permissive in substance.
-    # The line is whether the licence restricts USE, not whether OSI blessed it.
+    # alone is too blunt: several non-OSI licenses are permissive in substance.
+    # The line is whether the license restricts USE, not whether OSI blessed it.
     license_tier:
       values:
         osi:
-          definition: OSI-approved licence
+          definition: OSI-approved license
           examples: [Apache-2.0, MIT, BSD-3-Clause]
         permissive_non_osi:
           definition: >
@@ -79,22 +79,22 @@ scoring_recipe:
             research-only terms, or a commercial agreement requirement.
           examples: [Llama-3.1-Community-License, Llama-4-Community, Gemma-License, Mistral-Research-License, TII-Falcon-License-2.0, glm-4, Qwen-License-Agreement]
         proprietary:
-          definition: No public licence; weights not distributed.
+          definition: No public license; weights not distributed.
       multi_sku_rule: >
-        Where a family ships SKUs under different licences, the most restrictive
-        licence among the SKUs WHOSE WEIGHTS ARE ACTUALLY DISTRIBUTED governs.
+        Where a family ships SKUs under different licenses, the most restrictive
+        license among the SKUs WHOSE WEIGHTS ARE ACTUALLY DISTRIBUTED governs.
         API-only and hosted-only tiers are excluded: they are a different product
         surface, and this axis scores the artifact you can download. That
         distinction is what separates the two families previously both recorded
         as `mixed` — Qwen 2.5 distributes 3B/72B under the Qwen License, which
         caps the family at use_restricted, while Qwen 3's restrictive Plus/Max
         tiers are never distributed at all, leaving the distributed set Apache.
-        Per-SKU licences come from signal_huggingface.hub_state, so this is
+        Per-SKU licenses come from signal_huggingface.hub_state, so this is
         derivable rather than judged.
-      normalisation:
-      - 'compound `code X + model Y`: the MODEL licence governs, since it is the
+      normalization:
+      - 'compound `code X + model Y`: the MODEL license governs, since it is the
         one attached to the weights'
-      - 'prefix `assumed-`: same tier as the licence named, but confidence drops
+      - 'prefix `assumed-`: same tier as the license named, but confidence drops
         to medium until the release confirms it'
       never_use:
         mixed: >
@@ -116,11 +116,11 @@ scoring_recipe:
       then: {score: 5, class: open_source}
     - when: {data: open, code: open}
       then: {score: 4, class: open_weights}
-      note: Full pipeline but a non-OSI licence caps the score at 4.
+      note: Full pipeline but a non-OSI license caps the score at 4.
     - when: {data: documented-not-released, code: open}
       then: {score: 4, class: open_weights}
     - otherwise: {score: 3, class: open_weights}
-      note: The category's centre of gravity — open weights, closed data.
+      note: The category's center of gravity — open weights, closed data.
 
   adoption:
     # Signal choice follows openness: a closed model has no artifact to measure,

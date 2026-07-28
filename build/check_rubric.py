@@ -75,15 +75,15 @@ def head(value: str) -> str:
     return re.split(r"[(,]", value)[0].strip()
 
 
-def normalise_license(raw: str) -> str:
-    """Reduce a recorded licence string to the licence that governs the weights.
+def normalize_license(raw: str) -> str:
+    """Reduce a recorded license string to the license that governs the weights.
 
     Two forms in the data need flattening, both spelled out in the recipe's
-    `normalisation` list:
-      * `code MIT + model DeepSeek-Model-License` — the model licence governs,
+    `normalization` list:
+      * `code MIT + model DeepSeek-Model-License` — the model license governs,
         because it is the one attached to the artifact being scored.
       * `assumed-Modified-MIT` — the `assumed-` prefix marks confidence, not a
-        different licence.
+        different license.
     Purely mechanical. Anything needing judgment is left alone to be flagged.
     """
     value = head(raw)
@@ -95,14 +95,14 @@ def normalise_license(raw: str) -> str:
 
 
 def license_tier(raw: str, recipe: dict) -> str | None:
-    """Map a licence string onto a tier from the recipe's own examples.
+    """Map a license string onto a tier from the recipe's own examples.
 
-    Returns None when the licence is unmapped, which is a finding rather than an
-    error — an unmapped licence means the rubric has not yet been told how to
+    Returns None when the license is unmapped, which is a finding rather than an
+    error — an unmapped license means the rubric has not yet been told how to
     treat it, and `mixed` means the evidence never recorded the outcome.
     """
     tiers = ((recipe.get("openness") or {}).get("license_tier") or {}).get("values") or {}
-    needle = normalise_license(raw).lower()
+    needle = normalize_license(raw).lower()
     for name, spec in tiers.items():
         for example in (spec or {}).get("examples") or []:
             if example.lower() == needle:
@@ -153,7 +153,7 @@ def check_category(slug: str, verbose: bool) -> tuple[int, int, list[str]]:
         tier = license_tier(raw_license, recipe)
         if tier is None:
             problems.append(
-                f"{product}: licence {raw_license!r} maps to no tier "
+                f"{product}: license {raw_license!r} maps to no tier "
                 f"(recorded {openness.get('score')} {openness.get('class')})"
             )
             continue
