@@ -9,6 +9,7 @@ on:
     paths:
       - "sources/**"
       - "build/serialize_registry.py"
+      - "build/serialize_rubric.py"
       - "build/publish_registry.py"
       - ".github/workflows/registry.yml"
   push:
@@ -16,6 +17,7 @@ on:
     paths:
       - "sources/**"
       - "build/serialize_registry.py"
+      - "build/serialize_rubric.py"
       - "build/publish_registry.py"
   workflow_dispatch:
 
@@ -34,6 +36,11 @@ jobs:
         run: uv sync --locked
       - name: Check registry consistency
         run: uv run python -m build.serialize_registry --check
+      # A formula rule that can never match — one testing an undeclared dimension
+      # or a value outside its own enum — does not raise. It silently pushes
+      # products into `otherwise`, so it has to fail here.
+      - name: Check rubric consistency
+        run: uv run python -m build.serialize_rubric --check
 
   # On main, serialize and push. Static models are created on first run and
   # reused after, so this is safe to run on every change to sources/.
@@ -49,6 +56,8 @@ jobs:
         run: uv sync --locked
       - name: Serialize registry
         run: uv run python -m build.serialize_registry
+      - name: Serialize rubric and evidence
+        run: uv run python -m build.serialize_rubric
       - name: Publish to OSO
         env:
           OSO_API_KEY: ${{ secrets.OSO_API_KEY }}

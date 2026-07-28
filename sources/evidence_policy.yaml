@@ -1,0 +1,93 @@
+# What counts as evidence, and what counts as an absence of information.
+#
+# ## Evidence is graded by re-derivability, not by author
+#
+# The first pass of `sources/scores/` was agent-authored, so recording whether a
+# human or a model produced a value tells you nothing about whether anyone can
+# check it. What matters is whether the value can be arrived at again. Two grades:
+#
+#   dataset    A named field in a machine-readable source. Re-derived by running
+#              a query. Carries the table, the column and the transform.
+#   document   A specific URL whose content asserts the value. Re-derived by
+#              reading it again. Carries the url, what it shows, and when it was
+#              read.
+#
+# `dataset` is preferred wherever it can answer, because a document is an
+# interpretation of prose and a dataset field is a lookup. RWKV is the case that
+# settled it: its data-openness 5 rested on a paper's claim of a 3.1T open
+# corpus, and what corrected it to 4 was the Hugging Face datasets API showing
+# the published repos hold a component index and 100k/1M previews, no corpus.
+# The document was plausible, traceable and wrong. The dataset was neither
+# plausible nor implausible, it was just checkable.
+#
+# This file is the policy half. `signal_routing.yaml` decides WHICH source is
+# authoritative per dimension; this decides WHETHER a given observation is
+# admissible at all.
+version: 1
+verified_on: '2026-07-28'
+
+# A value with no re-derivation path is not evidence. A rejected observation is
+# still recorded, with its reason, so the gap is queryable rather than invisible
+# - the point is to turn unsourced assertions into a work list.
+admission:
+  # `shows` has to say what the source specifically demonstrates. This phrase was
+  # used as filler during the first pass and asserts nothing: it appears on 199 of
+  # the 1,950 source rows in the repo, and on 111 of the 253 rows behind the 47
+  # base models. 13 base-model products have no other kind of source.
+  boilerplate_shows:
+  - verification source
+  boilerplate_note: >
+    Declared as the shortest phrase that matches all 199 rows. The full string is
+    'flagship phase-C verification source'; matching on the fragment catches the
+    same set with no over-reach. Add a phrase here only after counting how many
+    rows it hits and confirming none of them are real.
+
+  # There is deliberately NO minimum length rule. It was tried and rejected: a
+  # 25-character floor would have thrown out 'MIT License text' and
+  # '13,834 monthly downloads', which are short and completely specific, while
+  # keeping every one of the 199 filler rows, which are long. Length measures
+  # verbosity, not specificity.
+  require_nonempty_shows: true
+
+# Values that mean "this source has no answer". Falling through to a less
+# authoritative source here is how a refresh silently corrupts good data, so the
+# rule is to produce no evidence and leave the dimension to research.
+abstentions:
+  huggingface:
+    license: [other, cc]
+    license_note: >
+      `other` is the Hub's escape hatch for "read the repo". It is an absence of
+      information, not evidence of a permissive or a restrictive license. 12 of
+      147 live Hub rows carry it, including 4 base models. Bare `cc` is the same
+      problem in a different costume: it names a license family with no version
+      and no terms, so it settles nothing.
+  github:
+    license_spdx_id: [NOASSERTION]
+    license_spdx_id_note: >
+      GitHub could not classify the LICENSE file. 25 products hit this. Already
+      declared in signal_routing.yaml as an abstain_when; repeated here so the
+      whole abstention policy reads in one place.
+  # A null license is an abstention everywhere, and is not listed per source
+  # because it needs no interpretation.
+  null_is_abstention: true
+
+  # A declared artifact that does not resolve is not a signal. Five base-model
+  # artifacts are in this state: gemma-3 (both SKUs 404), mistral-large-3 (404),
+  # gemma-4 (307), olmo-3's 32B SKU (404), and rwkv, whose artifact_id is `RWKV`,
+  # an organization rather than a repository.
+  usable_http_status: [200]
+
+# Where a family ships several SKUs and the rubric resolves them with an
+# aggregate rule - most-restrictive-license is the one in use today - the
+# aggregate is only computable when EVERY distributed SKU yields a mapped value.
+partial_coverage:
+  rule: abstain
+  why: >
+    max(restrictiveness) over a subset can only fall, so partial coverage biases
+    a family toward permissive. It overstates openness, which is the worst
+    direction for this map to be wrong in. Measured on qwen-2-5: Qwen2.5-72B
+    reports `other` and Qwen2.5-7B reports apache-2.0, so scoring from the SKUs
+    that answered would move the family from 2/restricted to 3/open_weights on
+    the strength of the SKU that is not the restrictive one. The recipe's
+    multi_sku_rule states that per-SKU licenses come from the Hub and are
+    therefore derivable rather than judged; for this family they are not.

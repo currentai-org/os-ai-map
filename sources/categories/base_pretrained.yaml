@@ -64,6 +64,12 @@ scoring_recipe:
     # alone is too blunt: several non-OSI licenses are permissive in substance.
     # The line is whether the license restricts USE, not whether OSI blessed it.
     license_tier:
+      # Declaration order below IS restrictiveness order, least restrictive first.
+      # `multi_sku_rule` resolves a family to the most restrictive tier among its
+      # distributed SKUs, which is meaningless without an ordering. Declared here
+      # and emitted as `tier_rank` by build/serialize_rubric.py so the scorer reads
+      # the order rather than inferring it from how the YAML happens to be written.
+      ordered_by: restrictiveness_ascending
       values:
         osi:
           definition: OSI-approved license

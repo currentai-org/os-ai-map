@@ -1,8 +1,13 @@
-"""Push the serialized registry CSVs to OSO as static models.
+"""Push the serialized registry and rubric CSVs to OSO as static models.
 
-This is the "config in" half of the bridge: the repo declares what exists, CI
-pushes that declaration outward. Nothing is pulled back in, and no generated CSV
-is committed — the repo stays YAML, and OSO gets a flat mirror of it.
+This is the "config in" half of the bridge: the repo declares what exists and how
+to score it, CI pushes that declaration outward. Nothing is pulled back in here,
+and no generated CSV is committed — the repo stays YAML, and OSO gets a flat mirror
+of it.
+
+Two serializers feed this. `serialize_registry` emits identity; `serialize_rubric`
+emits each category's scoring rules plus the evidence currently on record. Layer-2
+cannot compute a score without both, so they publish together.
 
 Idempotent. Static models are created on first run and reused after, so this can
 run on every push to sources/.
@@ -27,7 +32,15 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-from build.serialize_registry import OUT_DIR, TABLES
+from build.serialize_registry import OUT_DIR
+from build.serialize_registry import TABLES as REGISTRY_TABLES
+from build.serialize_rubric import TABLES as RUBRIC_TABLES
+
+# One dataset, two serializers. `serialize_registry` declares what exists;
+# `serialize_rubric` declares how to score it and what evidence is on record.
+# Both are configuration flowing outward, so they share the `registry` dataset
+# and this publisher. Order is stable so the materialization run is reproducible.
+TABLES: tuple[str, ...] = tuple(REGISTRY_TABLES) + tuple(RUBRIC_TABLES)
 
 API = "https://api.oso.xyz/v1/graphql"
 USER_AGENT = "os-ai-map-registry-publisher/1.0"
@@ -125,7 +138,11 @@ def main() -> int:
 
     missing = [t for t in TABLES if not (args.dir / f"{t}.csv").exists()]
     if missing:
-        print(f"missing CSVs: {missing}. Run build.serialize_registry first.", file=sys.stderr)
+        print(
+            f"missing CSVs: {missing}. Run build.serialize_registry and "
+            f"build.serialize_rubric first.",
+            file=sys.stderr,
+        )
         return 2
 
     dataset_id = resolve_dataset(dataset_name, org_id, token)
