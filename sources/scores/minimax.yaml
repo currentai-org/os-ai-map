@@ -1,0 +1,45 @@
+product: minimax
+openness:
+  score: 3
+  class: open_weights
+  components: weights:open(on HF; ungated; safetensors/BF16; MoE);data:closed;code:partial(inference only; no training
+    pipeline/data);license:minimax-community(custom, see HF LICENSE)
+  confidence: high
+  note: Weights released publicly on Hugging Face after the 2026-06-04 scoring (then announced-not-yet-released);
+    ungated download under a custom minimax-community license. Data and training pipeline closed, so open_weights
+    not open_source. Matches the MiniMax-M2.5 sibling precedent. Tier consolidated 2026-07-29 from minimax-m2-5.
+    Openness is minimax-m3's, the current release, resolved most-restrictive across its distributed SKUs; an API-only
+    or unshipped release does not lower a tier. adoption level 3 carried from minimax-m2-5; capability score 5 carried
+    from minimax-m2-5.
+  last_verified: '2026-06-23'
+  sources:
+  - url: https://huggingface.co/api/models/MiniMaxAI/MiniMax-M3
+    shows: Public ungated weights repo (safetensors/MoE), license=minimax-community, created 2026-06-02
+    accessed: '2026-06-23'
+  - url: https://venturebeat.com/technology/minimax-m3-debuts-eclipsing-gpt-5-5-and-gemini-3-1-pro-on-key-benchmark-performance-for-just-5-10-of-the-cost
+    shows: flagship phase-C verification source
+    accessed: '2026-06-04'
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: HF model card reports ~693,331 downloads in the last month (100K-1M band); additionally served via OpenRouter
+    and free in coding tools (Kilo Code). Headline figure is the HF monthly download count.
+  sources:
+  - url: https://huggingface.co/MiniMaxAI/MiniMax-M2.5
+    shows: ~693,331 downloads last month on the official HF model page
+    accessed: '2026-06-04'
+capability:
+  score: 5
+  basis: benchmark:SWE-bench Verified
+  value: SWE-bench Verified 80.2%, SWE-bench Pro 55.4%, GPQA-D 85.2%, AIME25 86.3%, BrowseComp 76.3%; VIBE-Pro on
+    par with Opus 4.5
+  confidence: medium
+  note: Frontier-tier among open-weights agentic chat models (SWE-bench Verified 80.2% with strong reasoning/browse
+    scores), at very low serving cost. Figures are MiniMax-reported on the HF card; not independently audited but
+    consistent with peer open models (Kimi K2.6, DeepSeek-V4).
+  sources:
+  - url: https://huggingface.co/MiniMaxAI/MiniMax-M2.5
+    shows: MiniMax-reported SWE-bench Verified 80.2%, GPQA-D 85.2%, AIME25 86.3% on the official HF card
+    accessed: '2026-06-04'

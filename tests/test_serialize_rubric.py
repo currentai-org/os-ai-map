@@ -417,12 +417,10 @@ def test_real_sources_serialize_without_errors():
         return counts
 
     assert per_category("category_scoring_rules") == {"base_pretrained": 11, "finetuned_chat": 9}
-    # base_pretrained 183, down from the 195 the port measured: gpt-4-1,
-    # gemini-3-5-flash and nemotron-3 left the category when their duplicate
-    # finetuned_chat records absorbed them, four dimensions each. finetuned_chat is
-    # unchanged at 205, because it kept the same 46 products throughout - the three
-    # survivors were already its records and only their slugs changed.
-    assert per_category("product_openness_evidence") == {"base_pretrained": 183, "finetuned_chat": 205}
+    # Both fell with the slug migration: release-level products collapsed into the
+    # tier the vendor sells, so 25 products left the roster and the closed frontier
+    # models moved from base_pretrained to finetuned_chat.
+    assert per_category("product_openness_evidence") == {"base_pretrained": 111, "finetuned_chat": 171}
     assert {r["grade"] for r in tables["product_openness_evidence"]} == {"document"}
 
 

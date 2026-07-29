@@ -1,0 +1,44 @@
+product: glm
+openness:
+  score: 3
+  class: open_weights
+  components: weights:open(MIT);data:closed;code:open(inference);license:MIT(OSI)
+  confidence: high
+  note: Permissive MIT open weights + inference code, but no open training data -> open_weights. Tier consolidated
+    2026-07-29 from glm-4, glm-4-6, glm-4-9b, glm-5-1. Openness is glm-5-2's, the current release, resolved most-restrictive
+    across its distributed SKUs; an API-only or unshipped release does not lower a tier. adoption level 3 carried
+    from glm-4; capability score 5 carried from glm-5-1.
+  last_verified: '2026-07-29'
+  sources:
+  - url: https://huggingface.co/zai-org/GLM-5.2/blob/main/LICENSE
+    shows: MIT, (c) Zhipu AI 2026
+    accessed: '2026-06-18'
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: medium
+  note: HF model card shows 121,169 downloads in the last month (100K-1M band), confirming the level-3 placement
+    on a primary usage figure. Adoption has shifted to the newer GLM-4.5/5/5.1 generations, but GLM-4-9B-Chat remains
+    a meaningfully-pulled small Chinese open model. Headline figure is the HF monthly download count.
+  sources:
+  - url: https://huggingface.co/zai-org/GLM-4-9B-Chat
+    shows: 'GLM-4-9B-Chat model card: 121,169 downloads last month (primary usage figure)'
+    accessed: '2026-06-04'
+capability:
+  score: 5
+  basis: benchmark:SWE-bench
+  value: null
+  confidence: high
+  note: 'SWE-Bench Pro 58.4 (reported #1 at release, edging GPT-5.4 57.7 and Claude Opus 4.6 57.3); Terminal-Bench
+    2.0 63.5. Frontier-tier agentic coding for an open-weights model.'
+  sources:
+  - url: https://serenitiesai.com/articles/glm-5-1-zhipu-coding-benchmark-claude-opus-comparison-2026
+    shows: flagship phase-C verification source
+    accessed: '2026-06-04'
+  - url: https://www.modemguides.com/blogs/ai-news/glm-5-1-open-source-benchmarks-local-ai
+    shows: flagship phase-C verification source
+    accessed: '2026-06-04'
+  - url: https://www.vals.ai/models/zai_glm-5.1-thinking
+    shows: flagship phase-C verification source
+    accessed: '2026-06-04'

@@ -86,7 +86,7 @@ aliases:
   deepseek-v3-base: deepseek
   deepseek-v4-pro: deepseek
   deepseek-v4-pro-base: deepseek
-  deepseek-v4-pro-v4-flash: deepseek-chat
+  deepseek-v4-pro-v4-flash: deepseek-instruct
   deepseek-coder-v2-instruct: deepseek-coder
 
   # --- Qwen sells Qwen (2.5/3/3.6 are versions) plus a Coder line ---
@@ -97,6 +97,20 @@ aliases:
   qwen2-5-14b-instruct: qwen-instruct
   qwen2-5-coder-instruct: qwen-coder
   qwen3-coder: qwen-coder
+
+# Renames that need no alias, because nothing pointed at the slug yet. Recorded for the
+# audit trail only. An alias key means "this slug is retired", so a slug being reused for
+# a different product cannot appear above without making redirects ambiguous.
+#
+# `grok` is the collision that forced this: xAI markets both a model line and a consumer
+# chat app as Grok, and the app held the bare slug. Model lines own the bare brand and
+# consumer surfaces carry a surface qualifier, which is informative in the way a vendor
+# suffix never was. DeepSeek needed no such move - its app really is called DeepSeek
+# Chat, so it keeps `deepseek-chat` and the served model tier is `deepseek-instruct`,
+# consistent with olmo-instruct / qwen-instruct / phi-instruct.
+renamed_before_links:
+  grok: grok-app                        # ui_api consumer app; `grok` now names the model line
+  github-copilot-github-microsoft: github-copilot-ide   # the IDE surface; `github-copilot` is Agent Mode
 
 # Organizations duplicated for the same company. Same stability rule applies: org slugs
 # are deep-link keys too.

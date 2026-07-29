@@ -1,0 +1,41 @@
+product: gemma
+openness:
+  score: 3
+  class: open_weights
+  components: weights:open(Apache-2.0);data:closed;code:closed;license:Apache-2.0(OSI,but no open data/code)
+  confidence: medium
+  note: OSI-licensed weights, but no open training data or code -> open-weights, not a fully-open pipeline. (License-weighted
+    rubrics could argue toward 4.). Tier consolidated 2026-07-29 from gemma-2, gemma-3. Openness is gemma-4's, the
+    current release, resolved most-restrictive across its distributed SKUs; an API-only or unshipped release does
+    not lower a tier. adoption level 5 carried from gemma-2.
+  last_verified: '2026-07-29'
+  sources:
+  - url: https://ai.google.dev/gemma/docs/releases
+    shows: Gemma 4 sizes, release dates, Apache-2.0 license
+    accessed: '2026-06-17'
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: medium
+  note: Among the most-downloaded open model families; the 27B-IT shows ~133.6k downloads/mo and the family runs
+    widely via HF, Ollama, Kaggle, Google AI tooling (27 finetunes, 14 quantizations, 10 adapters listed on the
+    base card). Family-level reach in the tens-of-millions; calibrated to the Gemma 3 anchor (A5).
+  sources:
+  - url: https://huggingface.co/google/gemma-2-27b-it
+    shows: ~133.6k downloads/mo for Gemma 2 27B-IT
+    accessed: '2026-06-04'
+  - url: https://huggingface.co/google/gemma-2-27b
+    shows: 27B base 5,893 downloads/mo, 27 finetunes / 14 quantizations / 10 adapters, broad multi-platform distribution
+    accessed: '2026-06-04'
+capability:
+  score: 5
+  basis: benchmark:LMArena
+  value: high intelligence-per-parameter; multimodal (vision+audio); Google claims top-tier Arena rankings vs much
+    larger models
+  confidence: medium
+  note: Frontier-class for an open model; benchmark ranking is vendor-reported.
+  sources:
+  - url: https://cloud.google.com/blog/products/ai-machine-learning/gemma-4-available-on-google-cloud
+    shows: Gemma 4 capabilities and rankings
+    accessed: '2026-06-17'

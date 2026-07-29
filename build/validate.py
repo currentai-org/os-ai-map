@@ -41,6 +41,7 @@ def load_sources(root: Path) -> dict:
         "products": _dir("products"),
         "scores": _dir("scores"),
         "taxonomy": yaml.safe_load((root / "sources" / "taxonomy.yaml").read_text()),
+        "slug_aliases": yaml.safe_load((root / "sources" / "slug_aliases.yaml").read_text()),
     }
     lt = root / "build" / "_frozen_long_tail.json"
     if lt.exists():
@@ -120,6 +121,37 @@ def validate_sources(data: dict) -> list[str]:
         cap = sc.get("capability", {})
         if cap.get("score") is not None and not cap.get("sources"):
             errors.append(f"score {slug!r}: non-null capability needs >=1 source")
+
+    # --- slug stability ---
+    # The slug is a product's identity and the key deep links are built on, so a slug may
+    # only leave sources/products/ by being recorded in sources/slug_aliases.yaml. These
+    # checks are what make that a rule rather than an intention. See that file's header.
+    spec = data.get("slug_aliases") or {}
+    aliases = spec.get("aliases") or {}
+    for old, new in sorted(aliases.items()):
+        if new not in prods:
+            errors.append(f"slug alias {old!r} -> {new!r}: target is not a live product")
+        if old in prods:
+            errors.append(
+                f"slug alias {old!r}: an alias key means the slug is retired, but a product "
+                f"still uses it. Either drop the alias or rename the product."
+            )
+    org_aliases = spec.get("organization_aliases") or {}
+    for old, new in sorted(org_aliases.items()):
+        if new not in orgs:
+            errors.append(f"org alias {old!r} -> {new!r}: target is not a live organization")
+        if old in orgs:
+            errors.append(f"org alias {old!r}: retired, but an organization still uses it")
+
+    # A slug ending in its own vendor's name carries no information and is the pattern
+    # that produced gpt-4-1-openai and nemotron-3-nvidia. Cheap to catch, so caught.
+    for org_slug, org in sorted(orgs.items()):
+        for product in org.get("products") or []:
+            if product != org_slug and product.endswith(f"-{org_slug}"):
+                errors.append(
+                    f"product {product!r}: slug ends with its own organization {org_slug!r}. "
+                    f"Disambiguate by product surface, not by vendor."
+                )
 
     # --- frozen long-tail <-> live count invariant ---
     # The long-tail section shows "Of the {scored} products scored above ..."; that
