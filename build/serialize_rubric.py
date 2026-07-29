@@ -413,6 +413,30 @@ def build_rubric(sources: dict, policy: dict, routing: dict) -> tuple[dict[str, 
                     }
                 )
 
+            # The license the tier lookup consumes, emitted under the name the
+            # warehouse joins on. `license_tier.reads` lets a category accept the value
+            # under another key - deepseek-coder records `model-license`, because its card
+            # distinguishes the code license from the one on the weights - and
+            # check_rubric honours that list. Without resolving it here the row went out
+            # as `model-license`, the SQL looked only for `license`, and the product
+            # abstained in the warehouse while reproducing locally. Same drift as the
+            # dimension resolution above, one key over.
+            license_key = next((k for k in license_keys if components.get(k)), None)
+            if license_key:
+                bare, detail = split_value(components[license_key])
+                tables["product_openness_evidence"].append(
+                    {
+                        "product_slug": product_slug,
+                        "category_slug": slug,
+                        "dimension": "license",
+                        "value": bare,
+                        "value_detail": detail,
+                        "grade": "document",
+                        # No enum: `license` is the raw input the tier lookup consumes.
+                        "in_declared_enum": "",
+                    }
+                )
+
             # Then every recorded key that is not itself a dimension name, so nothing
             # the repo recorded is dropped. This carries the license the tier lookup
             # consumes, and the losing side of a `reads` preference — granite records
@@ -423,6 +447,8 @@ def build_rubric(sources: dict, policy: dict, routing: dict) -> tuple[dict[str, 
             # above already emitted them. Emitting both would put two values on one
             # grain and let the warehouse pick between them by row order.
             for key, raw in components.items():
+                if key == "license":
+                    continue  # emitted above, under the resolved license row
                 if key in declared:
                     # A key that shares a dimension's name but lost the `reads`
                     # preference is answering a different question under a name this
