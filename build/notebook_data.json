@@ -670,59 +670,6 @@
           "version_note": "OpenAI GPT-4o, multimodal (text+image in, text out), 128K context; first snapshot gpt-4o-2024-05-13, knowledge cutoff Oct 2023. API-only, no released weights. Verified live in OpenAI's model docs June 2026 (developers.openai.com). A 2024-era flagship, since surpassed by the GPT-5 line but still served via API/ChatGPT."
         },
         {
-          "product": "GPT-4.1",
-          "org": "OpenAI",
-          "type": "model",
-          "description": "Previous-generation general-purpose instruction-tuned model (April 2025). Strong on HumanEval and real-world coding with 1M token context, but two numerical generations behind by mid-2026; OpenAI's current production line is GPT-5 → 5.2 → 5.4 → 5.5 (April 23, 2026), with GPT-5.5 Pro and 5.5 Instant variants. GPT-4.1 remains available via API and is still used in legacy integrations.",
-          "openness": {
-            "score": 1,
-            "class": "closed",
-            "components": "weights:closed;data:closed;code:closed;license:Proprietary(API-only)",
-            "confidence": "high",
-            "note": "No downloadable weights; API-only, like the GPT-5 anchor (O1 closed). Confirmed API-only with 1M context (1,047,576) on OpenAI docs 2026-06-04.",
-            "last_verified": "2026-06-04",
-            "sources": [
-              {
-                "url": "https://developers.openai.com/api/docs/models/gpt-4.1",
-                "shows": "GPT-4.1 API-only model, 1,047,576 context window, no open weights",
-                "accessed": "2026-06-04"
-              }
-            ],
-            "bucket": "closed"
-          },
-          "adoption": {
-            "level": 4,
-            "reach": "1M-10M",
-            "signal_type": "reported_traction",
-            "confidence": "low",
-            "note": "Widely available developer API model (default API-tier non-reasoning model in the GPT-4.1 family, incl. mini/nano) but not the primary ChatGPT default surface (that's the GPT-5 line by 2026). No disclosed standalone user/usage count; placed at 4 on broad developer-API distribution rather than a verified figure. Directional.",
-            "sources": [
-              {
-                "url": "https://developers.openai.com/api/docs/models/gpt-4.1",
-                "shows": "GPT-4.1 served broadly via OpenAI API as the non-reasoning instruction/tool model",
-                "accessed": "2026-06-04"
-              }
-            ]
-          },
-          "capability": {
-            "score": 3,
-            "basis": "benchmark:n/a",
-            "value": null,
-            "confidence": "low",
-            "note": "OpenAI's docs market GPT-4.1 as a strong non-reasoning model (instruction-following, tool calling, 1M context) but the docs page surfaces no SWE-bench/MMLU figure (confirmed 2026-06-04: no quantitative benchmarks present), and it explicitly recommends GPT-5 for complex tasks. A non-reasoning 2025 model below the 2026 reasoning frontier; scored 3 on positioning, with no headline benchmark number asserted (value null).",
-            "sources": [
-              {
-                "url": "https://developers.openai.com/api/docs/models/gpt-4.1",
-                "shows": "GPT-4.1 described as 'smartest non-reasoning model', recommends GPT-5 for complex tasks, no benchmark figures",
-                "accessed": "2026-06-04"
-              }
-            ]
-          },
-          "maturity": 3.3,
-          "mature": false,
-          "version_note": "OpenAI GPT-4.1, snapshot gpt-4.1-2025-04-14, ~1M-token context (1,047,576), knowledge cutoff Jun 2024; OpenAI's 'smartest non-reasoning' model, strong at instruction-following/tool calling. API-only, no released weights. Verified live in OpenAI's model docs June 2026; positioned below the GPT-5 reasoning line."
-        },
-        {
           "product": "Amazon Nova",
           "org": "Amazon",
           "type": "model",
@@ -2104,89 +2051,6 @@
           "version_note": "MiniMax M3 launched 1 Jun 2026: API-first at launch with MiniMax Sparse Attention, 1M-token context, native multimodal. Open weights have since been released on Hugging Face (ungated, ~131k downloads/month) under a custom minimax-community license; training data and pipeline remain closed."
         },
         {
-          "product": "Nemotron 3",
-          "org": "NVIDIA",
-          "type": "model",
-          "description": "NVIDIA's first-party open-weight instruction-tuned model family for agentic reasoning, post-trained with SFT + RL on top of Nemotron Base. Current SKUs are Nemotron 3 Nano (30B total / 3B active hybrid MoE, March–April 2026) and Nemotron 3 Super (120B / 12B active Mamba-Transformer MoE, March 11, 2026); Nemotron 3 Ultra (~500B / 50B active) is announced for H1 2026. Differentiates on (a) open training data and recipes published alongside the weights, (b) 1M-token context with strong RULER scores (Super 91.8 @ 1M), and (c) being NVIDIA's reference post-trained line for NeMo and NIM, optimized end-to-end against NVIDIA hardware. Adoption signal: 1.38M monthly Hugging Face downloads on Nano BF16 plus 758K on Super BF16, and free hosting on OpenRouter and build.nvidia.com.",
-          "openness": {
-            "score": 4,
-            "class": "open_weights",
-            "components": "weights:open;data:open(substantial portions released, not the full corpus: Nemotron-Pretraining-Specialized-v1.2 is 53.6GB of synthetic pretraining data, but Nemotron-Pretraining-Code-v3 ships metadata parquet rather than the code corpus);code:open(recipes+21 RL env configs);license:NVIDIA-Open-Model-License(permissive,commercial,non-OSI)",
-            "confidence": "high",
-            "note": "Open weights and open training recipes under a permissive but non-OSI license, which caps the score at 4 regardless of how open the data is. Data claim narrowed on 2026-07-28: the previous '~10T-token pretraining' wording implied the full corpus was released. NVIDIA publishes substantial portions — 53.6GB of synthetic pretraining data across fact-seeking and related sets — while the code portion ships as metadata parquet rather than the corpus itself. Left at data:open because a real, substantial dataset is downloadable; the rubric currently has no value for a partial release, which is a gap worth closing.",
-            "sources": [
-              {
-                "url": "https://huggingface.co/api/datasets/nvidia/Nemotron-Pretraining-Specialized-v1.2",
-                "shows": "92 files, 53.62GB, ungated. Nemotron-Pretraining-Fact-Seeking/*.parquet and related synthetic pretraining sets.",
-                "accessed": "2026-07-28"
-              },
-              {
-                "url": "https://huggingface.co/api/datasets/nvidia/Nemotron-Pretraining-Code-v3",
-                "shows": "67 files, 1.20GB, ungated, all under Nemotron-Code-Metadata/*.parquet — metadata describing the code corpus, not the corpus.",
-                "accessed": "2026-07-28"
-              },
-              {
-                "url": "https://research.nvidia.com/labs/nemotron/Nemotron-3/",
-                "shows": "flagship phase-C verification source",
-                "accessed": "2026-06-04"
-              },
-              {
-                "url": "https://llm-stats.com/blog/research/nemotron-3-super-launch",
-                "shows": "flagship phase-C verification source",
-                "accessed": "2026-06-04"
-              },
-              {
-                "url": "https://research.nvidia.com/labs/nemotron/files/NVIDIA-Nemotron-3-Super-Technical-Report.pdf",
-                "shows": "flagship phase-C verification source",
-                "accessed": "2026-06-04"
-              }
-            ],
-            "last_verified": "2026-07-28",
-            "bucket": "open-ish"
-          },
-          "adoption": {
-            "level": 3,
-            "reach": "100K-1M",
-            "signal_type": "reported_traction",
-            "confidence": "high",
-            "note": "Distributed free via OpenRouter (nemotron-3-super-120b-a12b:free), NVIDIA build/NIM, and Hugging Face; positioned for agentic/enterprise use. Strong distribution but no verified hard usage count; level 3 = reported traction.",
-            "sources": [
-              {
-                "url": "https://openrouter.ai/nvidia/nemotron-3-super-120b-a12b:free",
-                "shows": "flagship phase-C verification source",
-                "accessed": "2026-06-04"
-              },
-              {
-                "url": "https://research.nvidia.com/labs/nemotron/Nemotron-3/",
-                "shows": "flagship phase-C verification source",
-                "accessed": "2026-06-04"
-              }
-            ]
-          },
-          "capability": {
-            "score": 5,
-            "basis": "benchmark:SWE-bench",
-            "value": null,
-            "confidence": "high",
-            "note": "Nemotron 3 Super: SWE-Bench Verified 60.47, AIME 2025 90.21, GPQA (no tools) 79.23, MMLU-Pro 83.73; ~2.2x inference throughput vs GPT-OSS-120B. Frontier-tier open model.",
-            "sources": [
-              {
-                "url": "https://llm-stats.com/blog/research/nemotron-3-super-launch",
-                "shows": "flagship phase-C verification source",
-                "accessed": "2026-06-04"
-              },
-              {
-                "url": "https://research.nvidia.com/labs/nemotron/files/NVIDIA-Nemotron-3-Super-Technical-Report.pdf",
-                "shows": "flagship phase-C verification source",
-                "accessed": "2026-06-04"
-              }
-            ]
-          },
-          "maturity": 4.4,
-          "mature": false,
-          "version_note": "Scored on Nemotron 3 Super (120B hybrid MoE, 12B active, 1M context), released 11 Mar 2026 at GTC. Family also includes Nemotron 3 Nano (Dec 2025) and Nemotron 3 Nano Omni (Apr 2026, 30B multimodal). NVIDIA releases weights + pretraining data (10T tokens) + post-training samples (40M) + training recipes + RL env configs."
-        },
-        {
           "product": "GPT-5",
           "org": "OpenAI",
           "type": "model",
@@ -2384,69 +2248,6 @@
           "maturity": 4.7,
           "mature": false,
           "version_note": "Anthropic Claude Fable 5 (model id claude-fable-5), released Jun 9 2026. Mythos-class tier above Opus; generally available counterpart to restricted Claude Mythos 5 (Project Glasswing). 30-day mandatory data retention (Covered Model). Verified via Anthropic Fable 5 launch post and API docs June 2026."
-        },
-        {
-          "product": "Gemini 3.5 Flash",
-          "org": "Google",
-          "type": "model",
-          "description": "Released at Google I/O 2026 (May 19, 2026) as the new default in the Gemini app. Marketed as 'Pro-grade reasoning at Flash-level speed': #9 on the May 2026 LMArena text leaderboard (Elo 1480) and #2 on LiveCodeBench at 90.8%. Configurable thinking budgets let users trade reasoning depth for latency. Powers Antigravity / Gemini CLI and most Google-side coding-assistant deployments where cost matters.",
-          "openness": {
-            "score": 1,
-            "class": "closed",
-            "components": "weights:closed;data:closed;code:closed;license:Proprietary(API-only)",
-            "confidence": "high",
-            "note": "weights:closed;data:closed;code:closed;license:Proprietary(API-only)",
-            "last_verified": "2026-07-28",
-            "sources": [
-              {
-                "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-5/",
-                "shows": "launch post lists the surfaces as the Gemini app, AI Mode in Search, Google Antigravity, the Gemini API in AI Studio and Android Studio, and Gemini Enterprise; all hosted, with no download offered",
-                "accessed": "2026-07-28"
-              },
-              {
-                "url": "https://deepmind.google/models/gemini/",
-                "shows": "Google's own model index files Gemini under API and app access while placing Gemma separately under a heading of \"Open models\", so the open-weights line here is drawn by the vendor rather than inferred from silence",
-                "accessed": "2026-07-28"
-              }
-            ],
-            "bucket": "closed"
-          },
-          "adoption": {
-            "level": 5,
-            "reach": ">10M",
-            "signal_type": "active_users",
-            "confidence": "high",
-            "note": "Gemini 3.5 Flash distributed via the Gemini app and AI Mode in Google Search 'to billions globally.' The Gemini app surpassed 750M monthly active users (TechCrunch, Feb 2026, Q4 2025 figure). Well above >10M. Attributed to the Gemini app surface 3.5 Flash powers, not a standalone count.",
-            "sources": [
-              {
-                "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-5/",
-                "shows": "flagship phase-C verification source",
-                "accessed": "2026-06-04"
-              },
-              {
-                "url": "https://techcrunch.com/2026/02/04/googles-gemini-app-has-surpassed-750m-monthly-active-users/",
-                "shows": "flagship phase-C verification source",
-                "accessed": "2026-06-04"
-              }
-            ]
-          },
-          "capability": {
-            "score": 5,
-            "basis": "benchmark:Terminal-Bench 2.1",
-            "value": null,
-            "confidence": "high",
-            "note": "Google-reported for 3.5 Flash: Terminal-Bench 2.1 76.2%, MCP Atlas 83.6%, CharXiv Reasoning 84.2%, GDPval-AA 1656 Elo; reported to lead Opus 4.7 and GPT-5.5 on MCP Atlas, Toolathlon, Finance Agent v2, CharXiv, MMMU-Pro. Top-right of Artificial Analysis Intelligence Index. Vendor-reported.",
-            "sources": [
-              {
-                "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-5/",
-                "shows": "flagship phase-C verification source",
-                "accessed": "2026-06-04"
-              }
-            ]
-          },
-          "maturity": 5.0,
-          "mature": false,
-          "version_note": "Google Gemini 3.5 family; 3.5 Flash launched at I/O 2026 on May 19, 2026 as the first 3.5 model. Gemini 3.5 Pro announced as in internal use, expected ~June 2026 (not yet GA at scoring time). Scored facts are for the released 3.5 Flash; Pro availability unconfirmed."
         },
         {
           "product": "Grok 4.20",
@@ -4199,8 +4000,13 @@
             "class": "closed",
             "components": "weights:closed;data:closed;code:closed;license:Proprietary(API-only)",
             "confidence": "high",
-            "note": "Proprietary OpenAI API model; no weights/data/code released.",
+            "note": "Proprietary OpenAI API model; no weights/data/code released. Absorbed the duplicate base_pretrained record on 2026-07-29, which contributed OpenAI's own model docs as a primary source alongside the press coverage, and the exact context window (1,047,576 tokens).",
             "sources": [
+              {
+                "url": "https://developers.openai.com/api/docs/models/gpt-4.1",
+                "shows": "OpenAI's own model page: API-only, no downloadable weights, 1,047,576-token context, knowledge cutoff Jun 2024",
+                "accessed": "2026-06-04"
+              },
               {
                 "url": "https://techcrunch.com/2025/04/14/openais-new-gpt-4-1-models-focus-on-coding/",
                 "shows": "GPT-4.1 family is API-only, coding-focused, released Apr 14 2025",
@@ -4452,11 +4258,16 @@
             "class": "closed",
             "components": "weights:closed;data:closed;code:closed;license:Proprietary(Gemini app/Search/API/enterprise, no downloadable weights)",
             "confidence": "high",
-            "note": "Closed proprietary model; no open components. Consistent with the flagship anchor.",
+            "note": "Closed proprietary model; no open components. Absorbed the duplicate base_pretrained record on 2026-07-29, which contributed the DeepMind model page as a second primary source.",
             "sources": [
               {
                 "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-5/",
                 "shows": "proprietary launch across Gemini app/Search/API/enterprise, no open weights",
+                "accessed": "2026-06-04"
+              },
+              {
+                "url": "https://deepmind.google/models/gemini/",
+                "shows": "DeepMind model listing for the Gemini family; served via API and apps only, no weight downloads",
                 "accessed": "2026-06-04"
               }
             ],
@@ -4892,13 +4703,13 @@
           "product": "Nemotron 3",
           "org": "NVIDIA",
           "type": "model",
-          "description": "NVIDIA's first-party open-weight instruction-tuned model family for agentic reasoning, post-trained with SFT + RL on top of Nemotron Base. Current SKUs are Nemotron 3 Nano (30B total / 3B active hybrid MoE, March–April 2026) and Nemotron 3 Super (120B / 12B active Mamba-Transformer MoE, March 11, 2026); Nemotron 3 Ultra (~500B / 50B active) is announced for H1 2026. Differentiates on (a) open training data and recipes published alongside the weights, (b) 1M-token context with strong RULER scores (Super 91.8 @ 1M), and (c) being NVIDIA's reference post-trained line for NeMo and NIM, optimized end-to-end against NVIDIA hardware. Adoption signal: 1.38M monthly Hugging Face downloads on Nano BF16 plus 758K on Super BF16, and free hosting on OpenRouter and build.nvidia.com.",
+          "description": "NVIDIA's first-party open-weight instruction-tuned model family for agentic reasoning, post-trained with SFT + RL on top of Nemotron Base. Current SKUs are Nemotron 3 Nano (30B total / 3B active hybrid MoE, March–April 2026) and Nemotron 3 Super (120B / 12B active Mamba-Transformer MoE, March 11, 2026); Nemotron 3 Ultra (550B total / 55B active) shipped 3 June 2026. Differentiates on (a) open training data and recipes published alongside the weights, (b) 1M-token context with strong RULER scores (Super 91.8 @ 1M), and (c) being NVIDIA's reference post-trained line for NeMo and NIM, optimized end-to-end against NVIDIA hardware. Adoption signal (Hub, 2026-07-29): ~994K monthly downloads on Nano BF16, 855K on Super BF16 and 339K on Ultra BF16, plus free hosting on OpenRouter and build.nvidia.com.",
           "openness": {
             "score": 4,
             "class": "open_weights",
             "confidence": "high",
-            "components": "weights:open;data:open(~10T-token pretraining + ~40M post-training/SFT+RL samples released as Nemotron-SFT-Data/Nemotron-RL-Data);code:open(training recipes + RL env configs);license:NVIDIA-Nemotron-Open-Model-License(permissive,commercial,non-OSI)",
-            "note": "Unusually open for post-trained models: NVIDIA releases weights + pretraining and post-training data + recipes, but under the non-OSI NVIDIA Open Model License, so open_weights not open_source. Calibrated to the Nemotron 3 base anchor (O4 open_weights).",
+            "components": "weights:open;data:open(~40M post-training/SFT+RL samples released as Nemotron-SFT-Data/Nemotron-RL-Data; pretraining sets only partly released);code:open(training recipes + RL env configs);license:NVIDIA-Nemotron-Open-Model-License(permissive,commercial,non-OSI)",
+            "note": "Unusually open for post-trained models: NVIDIA releases weights, the post-training data and the recipes, but under the non-OSI NVIDIA Open Model License, so open_weights not open_source. This category scores the post-training data, which is genuinely released. The pretraining side is thinner than NVIDIA's \"fully open\" framing suggests -- Nemotron-Pretraining-Specialized-v1.2 ships 53.6GB of synthetic data, but Nemotron-Pretraining-Code-v3 ships metadata parquet describing the code corpus rather than the corpus, so the earlier \"~10T-token pretraining released\" wording overstated it and has been narrowed. Score is unaffected: the post-training answer is what this category asks for.",
             "sources": [
               {
                 "url": "https://research.nvidia.com/labs/nemotron/Nemotron-3/",
@@ -4909,6 +4720,16 @@
                 "url": "https://developer.nvidia.com/blog/introducing-nemotron-3-super-an-open-hybrid-mamba-transformer-moe-for-agentic-reasoning/",
                 "shows": "NVIDIA primary blog: Nemotron 3 Super 'fully open with open weights, datasets, and recipes'; license = NVIDIA Nemotron Open Model License (non-OSI)",
                 "accessed": "2026-06-04"
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/nvidia/Nemotron-Pretraining-Specialized-v1.2",
+                "shows": "92 files, 53.62GB, ungated. Nemotron-Pretraining-Fact-Seeking/*.parquet and related synthetic pretraining sets.",
+                "accessed": "2026-07-28"
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/nvidia/Nemotron-Pretraining-Code-v3",
+                "shows": "67 files, 1.20GB, ungated, all under Nemotron-Code-Metadata/*.parquet -- metadata describing the code corpus, not the corpus itself",
+                "accessed": "2026-07-28"
               }
             ],
             "bucket": "open-ish"
@@ -4918,7 +4739,7 @@
             "reach": "100K-1M",
             "signal_type": "reported_traction",
             "confidence": "medium",
-            "note": "Distributed free via OpenRouter (nemotron-3-super-120b-a12b:free), NVIDIA build/NIM, and Hugging Face; positioned for agentic/enterprise use. No verified hard download/user count for the instruct SKUs at scoring (HF repo gated). Level 3 on reported multi-platform distribution, consistent with the base anchor (A3).",
+            "note": "Distributed free via OpenRouter (nemotron-3-super-120b-a12b:free), NVIDIA build/NIM, and Hugging Face; positioned for agentic/enterprise use. Level 3 on reported multi-platform distribution. The earlier note said no hard download count was available because the HF repo was gated; the shipped repos are in fact ungated and carry ~1.0M monthly downloads on Nano BF16, 855K on Super BF16 and 339K on Ultra BF16, which is 1M-10M territory. Left at 3 pending a signal-backed recount rather than re-banded on a hand-read figure -- the Hub artifacts are now declared, so signal_huggingface will answer this directly.",
             "sources": [
               {
                 "url": "https://research.nvidia.com/labs/nemotron/Nemotron-3/",
@@ -4930,9 +4751,9 @@
           "capability": {
             "score": 5,
             "basis": "benchmark:SWE-bench/AIME/GPQA/MMLU-Pro",
-            "value": "Nemotron 3 Super (per NVIDIA tech report, base anchor): SWE-Bench Verified 60.47, AIME 2025 90.21, GPQA (no tools) 79.23, MMLU-Pro 83.73; ~2.2x inference throughput vs GPT-OSS-120B",
+            "value": "Nemotron 3 Super (per NVIDIA tech report): SWE-Bench Verified 60.47, AIME 2025 90.21, GPQA (no tools) 79.23, MMLU-Pro 83.73; ~2.2x inference throughput vs GPT-OSS-120B",
             "confidence": "high",
-            "note": "Frontier-tier among open instruct models on the Super SKU; calibrated to the base_pretrained Nemotron 3 anchor (C5); SWE-bench Verified 60.47 confirmed as highest open-weight score via NVIDIA technical report + developer blog. Nano is much smaller and would score lower, but the family's headline SKU defines the score.",
+            "note": "Frontier-tier among open instruct models on the Super SKU. SWE-bench Verified 60.47 confirmed as highest open-weight score via NVIDIA technical report + developer blog. Nano is much smaller and would score lower, but the family's headline SKU defines the score.",
             "sources": [
               {
                 "url": "https://research.nvidia.com/labs/nemotron/Nemotron-3/",
@@ -4948,7 +4769,7 @@
           },
           "maturity": 4.4,
           "mature": false,
-          "version_note": "Post-trained/instruct (SFT+RL) variants of the Nemotron 3 family: Nano (~3.2B active hybrid MoE, released Dec 2025) and Super (120B hybrid Mamba-Transformer MoE / 12B active, 1M context, released 11 Mar 2026 at GTC). Designed for agentic/conversational use. Verified live via NVIDIA Nemotron research page June 2026 (instruct HF repo gated/401 at scoring). Base of this family is the base_pretrained anchor."
+          "version_note": "The Nemotron 3 family: Nano (30B total / 3B active hybrid MoE), Super (120B / 12B active hybrid Mamba-Transformer MoE, 1M context, 11 Mar 2026 at GTC) and Ultra (550B / 55B active, 3 Jun 2026). Designed for agentic/conversational use. Held a duplicate record in base_pretrained until 2026-07-29; the two were merged here because the family distributes post-trained weights only. The sole -Base repo on the Hub is nvidia/nemotron-3-8b-base-4k, created 2023-11-14 with a single download, which is the earlier 8B generation and not this family. Per the #114 convention, the observable artifact decides the category. BF16 originals are declared above; the NVFP4/FP8/GGUF quantizations are the same weights repackaged. An earlier note recorded the instruct repo as gated/401 -- all three resolve ungated as of 2026-07-29."
         },
         {
           "product": "Hermes-4.3-36B",
@@ -13278,7 +13099,6 @@
               "Lynx + LLM math pipeline"
             ],
             "trains": [
-              "Nemotron 3",
               "Nemotron 3",
               "Marin"
             ]
@@ -28775,7 +28595,7 @@
     "deployment",
     "edge_hardware"
   ],
-  "n_total": 498,
+  "n_total": 495,
   "generated": "2026-07-29",
   "long_tail": {
     "counts": {
@@ -28783,11 +28603,11 @@
       "models": 6428,
       "packages": 2823,
       "total": 24626,
-      "scored": 498,
+      "scored": 495,
       "overlap": 245,
-      "scored_outside": 253,
+      "scored_outside": 250,
       "uncategorized": 24381,
-      "universe": 24879
+      "universe": 24876
     },
     "top": [
       {
