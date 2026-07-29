@@ -17,6 +17,7 @@ from __future__ import annotations
 import pytest
 
 from build.check_rubric import (
+    ROOT,
     check_category,
     dimension_value,
     license_tier,
@@ -132,22 +133,36 @@ class TestRealCategories:
     def test_finetuned_chat_reproduces_every_undeferred_score(self):
         reproduced, total, problems, _ = check_category("finetuned_chat", verbose=False)
         assert problems == []
-        assert reproduced == total == 36
+        assert reproduced == total == 39
 
-    def test_finetuned_chat_deferrals_are_reported_with_a_reason(self):
-        """A deferral that prints nothing is a silent cap on coverage."""
+    def test_no_category_defers_without_a_substantive_reason(self):
+        """A deferral that prints nothing is a silent cap on coverage.
+
+        Written as an invariant over every category rather than a fixed list, because
+        the list is currently empty: issue #117 settled conduct-versus-commerce, which
+        decided the three products finetuned_chat used to defer. Asserting "3 deferred"
+        would have to be edited every time the count moves; asserting "any deferral
+        carries a reason" holds at zero and bites the moment one is added."""
+        import yaml
+
+        for path in sorted((ROOT / "sources" / "categories").glob("*.yaml")):
+            category = yaml.safe_load(path.read_text())
+            if not category.get("scoring_recipe"):
+                continue
+            _, _, problems, deferred = check_category(category["name"], verbose=False)
+            assert problems == [], f"{category['name']}: {problems}"
+            for entry in deferred:
+                reason = entry.split(":", 1)[1].strip()
+                assert len(reason) > 40, f"{category['name']}: no real reason given: {entry}"
+
+    def test_finetuned_chat_currently_defers_nothing(self):
+        """The count itself, pinned separately so a new deferral is visible in a diff."""
         _, _, _, deferred = check_category("finetuned_chat", verbose=False)
-        assert len(deferred) == 3
-        assert {entry.split(":")[0] for entry in deferred} == {
-            "starcoder2",
-            "deepseek-coder",
-            "command-r",
-        }
-        for entry in deferred:
-            assert len(entry.split(":", 1)[1].strip()) > 40, f"no real reason given: {entry}"
+        assert deferred == []
 
     def test_deferred_products_are_excluded_not_counted_as_reproduced(self):
-        """36, not 39. Counting a deferral as a pass is how a rubric claims to
-        describe products it cannot score."""
+        """39 scored and 0 deferred. Counting a deferral as a pass is how a rubric
+        claims to describe products it cannot score, so the identity is worth keeping
+        even while the deferral count is zero."""
         _, total, _, deferred = check_category("finetuned_chat", verbose=False)
         assert total + len(deferred) == 39
