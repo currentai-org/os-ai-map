@@ -2,62 +2,63 @@ product: nemotron-3
 openness:
   score: 4
   class: open_weights
-  components: 'weights:open;data:open(substantial portions released, not the full corpus: Nemotron-Pretraining-Specialized-v1.2
-    is 53.6GB of synthetic pretraining data, but Nemotron-Pretraining-Code-v3 ships metadata parquet rather
-    than the code corpus);code:open(recipes+21 RL env configs);license:NVIDIA-Open-Model-License(permissive,commercial,non-OSI)'
   confidence: high
-  note: 'Open weights and open training recipes under a permissive but non-OSI license, which caps the
-    score at 4 regardless of how open the data is. Data claim narrowed on 2026-07-28: the previous ''~10T-token
-    pretraining'' wording implied the full corpus was released. NVIDIA publishes substantial portions
-    — 53.6GB of synthetic pretraining data across fact-seeking and related sets — while the code portion
-    ships as metadata parquet rather than the corpus itself. Left at data:open because a real, substantial
-    dataset is downloadable; the rubric currently has no value for a partial release, which is a gap worth
-    closing.'
+  components: weights:open;data:open(~40M post-training/SFT+RL samples released as Nemotron-SFT-Data/Nemotron-RL-Data;
+    pretraining sets only partly released);code:open(training recipes + RL env configs);license:NVIDIA-Nemotron-Open-Model-License(permissive,commercial,non-OSI)
+  note: 'Unusually open for post-trained models: NVIDIA releases weights, the post-training data and the
+    recipes, but under the non-OSI NVIDIA Open Model License, so open_weights not open_source. This
+    category scores the post-training data, which is genuinely released. The pretraining side is thinner
+    than NVIDIA''s "fully open" framing suggests -- Nemotron-Pretraining-Specialized-v1.2 ships 53.6GB of
+    synthetic data, but Nemotron-Pretraining-Code-v3 ships metadata parquet describing the code corpus
+    rather than the corpus, so the earlier "~10T-token pretraining released" wording overstated it and has
+    been narrowed. Score is unaffected: the post-training answer is what this category asks for.'
   sources:
+  - url: https://research.nvidia.com/labs/nemotron/Nemotron-3/
+    shows: Nemotron 3 Nano/Super/Ultra family; post-trained models; Nemotron-SFT-Data + Nemotron-RL-Data
+      + training recipes released
+    accessed: '2026-06-04'
+  - url: https://developer.nvidia.com/blog/introducing-nemotron-3-super-an-open-hybrid-mamba-transformer-moe-for-agentic-reasoning/
+    shows: 'NVIDIA primary blog: Nemotron 3 Super ''fully open with open weights, datasets, and recipes'';
+      license = NVIDIA Nemotron Open Model License (non-OSI)'
+    accessed: '2026-06-04'
   - url: https://huggingface.co/api/datasets/nvidia/Nemotron-Pretraining-Specialized-v1.2
     shows: 92 files, 53.62GB, ungated. Nemotron-Pretraining-Fact-Seeking/*.parquet and related synthetic
       pretraining sets.
     accessed: '2026-07-28'
   - url: https://huggingface.co/api/datasets/nvidia/Nemotron-Pretraining-Code-v3
-    shows: 67 files, 1.20GB, ungated, all under Nemotron-Code-Metadata/*.parquet — metadata describing
-      the code corpus, not the corpus.
+    shows: 67 files, 1.20GB, ungated, all under Nemotron-Code-Metadata/*.parquet -- metadata describing
+      the code corpus, not the corpus itself
     accessed: '2026-07-28'
-  - url: https://research.nvidia.com/labs/nemotron/Nemotron-3/
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
-  - url: https://llm-stats.com/blog/research/nemotron-3-super-launch
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
-  - url: https://research.nvidia.com/labs/nemotron/files/NVIDIA-Nemotron-3-Super-Technical-Report.pdf
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
-  last_verified: '2026-07-28'
 adoption:
   level: 3
   reach: 100K-1M
   signal_type: reported_traction
-  confidence: high
+  confidence: medium
   note: Distributed free via OpenRouter (nemotron-3-super-120b-a12b:free), NVIDIA build/NIM, and Hugging
-    Face; positioned for agentic/enterprise use. Strong distribution but no verified hard usage count;
-    level 3 = reported traction.
+    Face; positioned for agentic/enterprise use. Level 3 on reported multi-platform distribution. The
+    earlier note said no hard download count was available because the HF repo was gated; the shipped
+    repos are in fact ungated and carry ~1.0M monthly downloads on Nano BF16, 855K on Super BF16 and 339K
+    on Ultra BF16, which is 1M-10M territory. Left at 3 pending a signal-backed recount rather than
+    re-banded on a hand-read figure -- the Hub artifacts are now declared, so signal_huggingface will
+    answer this directly.
   sources:
-  - url: https://openrouter.ai/nvidia/nemotron-3-super-120b-a12b:free
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
   - url: https://research.nvidia.com/labs/nemotron/Nemotron-3/
-    shows: flagship phase-C verification source
+    shows: official distribution via NVIDIA build/NIM + HF for agentic use
     accessed: '2026-06-04'
 capability:
   score: 5
-  basis: benchmark:SWE-bench
-  value: null
+  basis: benchmark:SWE-bench/AIME/GPQA/MMLU-Pro
+  value: 'Nemotron 3 Super (per NVIDIA tech report): SWE-Bench Verified 60.47, AIME 2025 90.21, GPQA (no
+    tools) 79.23, MMLU-Pro 83.73; ~2.2x inference throughput vs GPT-OSS-120B'
   confidence: high
-  note: 'Nemotron 3 Super: SWE-Bench Verified 60.47, AIME 2025 90.21, GPQA (no tools) 79.23, MMLU-Pro
-    83.73; ~2.2x inference throughput vs GPT-OSS-120B. Frontier-tier open model.'
+  note: Frontier-tier among open instruct models on the Super SKU. SWE-bench Verified 60.47 confirmed as
+    highest open-weight score via NVIDIA technical report + developer blog. Nano is much smaller and would
+    score lower, but the family's headline SKU defines the score.
   sources:
-  - url: https://llm-stats.com/blog/research/nemotron-3-super-launch
-    shows: flagship phase-C verification source
+  - url: https://research.nvidia.com/labs/nemotron/Nemotron-3/
+    shows: Nemotron 3 reasoning/agentic benchmark positioning vs GPT-OSS-20B/Qwen3
     accessed: '2026-06-04'
   - url: https://research.nvidia.com/labs/nemotron/files/NVIDIA-Nemotron-3-Super-Technical-Report.pdf
-    shows: flagship phase-C verification source
+    shows: NVIDIA Nemotron 3 Super Technical Report (Apr 2026) with SWE-bench Verified 60.47 and full
+      benchmark suite
     accessed: '2026-06-04'

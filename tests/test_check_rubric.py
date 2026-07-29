@@ -121,9 +121,13 @@ class TestRealCategories:
     """The claim the whole pipeline rests on, asserted against the real files."""
 
     def test_base_pretrained_still_reproduces_every_score(self):
+        """44, down from the 47 the rubric was derived against: gpt-4-1,
+        gemini-3-5-flash and nemotron-3 were duplicates of finetuned_chat records and
+        were merged into them. The point of pinning this is that the count only ever
+        moves for a reason recorded in a commit."""
         reproduced, total, problems, deferred = check_category("base_pretrained", verbose=False)
         assert problems == []
-        assert (reproduced, total, deferred) == (47, 47, [])
+        assert (reproduced, total, deferred) == (44, 44, [])
 
     def test_finetuned_chat_reproduces_every_undeferred_score(self):
         reproduced, total, problems, _ = check_category("finetuned_chat", verbose=False)
