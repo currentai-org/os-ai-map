@@ -7,9 +7,20 @@ a person typing the value.
 
 ## What it writes, and what it refuses to
 
-  * `openness.last_verified` — whenever the pipeline could verify the score. That is
-    the honest, machine-authored change: a fresh Hub field agreeing with the recorded
-    license genuinely is verification, dated the day the field was fetched.
+  * `openness.last_verified` — the CHECK EVENT: the most recent date on which any
+    admitted evidence behind the score was actually read. A document source's `accessed`
+    date, or a signal's fetch. It comes from the scorer's `last_checked` column.
+
+    It is deliberately NOT the freshness bound. The scorer also computes
+    `freshness_floor` — the MIN accessed date across everything the score relies on, null
+    if any of it is unsourced — and that stays in the warehouse. Both are useful; they are
+    different questions, and writing the bound into this field is what let a derived value
+    overwrite a human's check date with a date appearing nowhere in the file's own
+    evidence, so no reader could trace it.
+
+    A stored date is never moved backwards. It records that somebody looked on that day,
+    which stays true regardless of what we can currently derive; if the computed value is
+    older, that is reported rather than applied.
   * `openness.score` / `openness.class` — only when the computed value differs. It
     should not, since the rubric was reverse-engineered from these files, so a
     difference is either a real evidence change worth reviewing or a bug worth
@@ -52,19 +63,43 @@ TABLE = "currentai.scores.openness_computed"
 
 
 def fetch_computed(category: str | None) -> list[dict]:
-    """Read the computed scores. Requires OSO_API_KEY, same as publish_registry."""
+    """Read the computed scores. Requires OSO_API_KEY, same as publish_registry.
+
+    The trailing unique comment is load-bearing. Query results are cached keyed on the
+    QUERY TEXT, so a tool that issues a fixed string keeps receiving its first answer
+    forever - it never self-heals. That is not theoretical: this function returned the
+    pre-run baseline for a full run cycle after the models had already re-materialized,
+    and adding a single trailing comment to the same SQL returned the fresh numbers. A
+    writer reading through that cache would write stale dates into sources/scores.
+    """
+    import uuid
+
     from pyoso import Client
 
     where = f"WHERE category_slug = '{category}'" if category else ""
     sql = f"""
         SELECT product_slug, category_slug, openness_score, openness_class,
-               last_verified, unsourced_dimensions, license_tier_grade,
+               last_checked, freshness_floor, unsourced_dimensions, license_tier_grade,
                dims_from_dataset, dims_relied_on, scoring_note
         FROM {TABLE}
         {where}
         ORDER BY product_slug
+        -- cache-bust {uuid.uuid4()}
     """
     return Client().to_pandas(sql).to_dict("records")
+
+
+def has_date(value: object) -> bool:
+    """True when a value read out of a DataFrame is a real date.
+
+    Needed because a null DATE arrives as pandas NaT or float nan depending on the column's
+    dtype, and both satisfy `is not None`. Counting with that test reported 14 products
+    gaining a date when the true number was 5.
+    """
+    if value is None:
+        return False
+    text = str(value).strip()
+    return text not in ("", "None", "NaT", "nan", "NaN")
 
 
 def block_bounds(lines: list[str], key: str) -> tuple[int, int] | None:
@@ -116,13 +151,26 @@ def apply_to_file(path: Path, computed: dict) -> tuple[list[str], list[str]]:
                 lines[index] = f"  {key}: {value}\n"
                 changes.append(f"{path.stem}: openness.{key} {current} -> {value}")
 
-    verified = computed.get("last_verified")
-    if verified is not None and str(verified) not in ("None", "NaT", "nan"):
-        stamp = str(verified)[:10]
+    # `last_checked` is the CHECK EVENT - the most recent date any admitted evidence behind
+    # this score was actually read. That, not the freshness bound, is what belongs in a
+    # score file: it is traceable to a dated row, and it answers the question a reader has.
+    # Writing the bound here is what let a derived value overwrite a human's check date with
+    # one that appears nowhere in the file's own evidence.
+    checked = computed.get("last_checked")
+    if has_date(checked):
+        stamp = str(checked)[:10]
         index = find_key(lines, bounds, "last_verified")
         if index is not None:
             current = lines[index].split(":", 1)[1].strip().strip("'\"")
-            if current != stamp:
+            # Never move a stored date backwards. A date already in the file records that
+            # somebody looked on that day, and that remains true whatever we can currently
+            # derive. If the computed value is older, the file is ahead of us - report it
+            # rather than destroying the record. ISO dates compare correctly as strings.
+            if current > stamp:
+                changes.append(
+                    f"{path.stem}: KEPT last_verified {current}, computed {stamp} is older"
+                )
+            elif current != stamp:
                 lines[index] = f"  last_verified: '{stamp}'\n"
                 changes.append(f"{path.stem}: last_verified {current} -> {stamp}")
         else:
@@ -168,10 +216,10 @@ def main() -> int:
             continue
 
         recorded = yaml.safe_load(path.read_text()) or {}
-        had_verified = "last_verified" in (recorded.get("openness") or {})
-        if had_verified and row.get("last_verified") is None:
+        had_verified = bool((recorded.get("openness") or {}).get("last_verified"))
+        if had_verified and not has_date(row.get("last_checked")):
             stale_kept.append(
-                f"{slug}: carries last_verified but the pipeline cannot earn one "
+                f"{slug}: carries last_verified but no admitted evidence has a date "
                 f"(unsourced: {row.get('unsourced_dimensions')})"
             )
 
@@ -182,12 +230,14 @@ def main() -> int:
             changed_files.append(path)
             score_changes.extend(c for c in changes if "openness.score" in c or "openness.class" in c)
 
-    verified = sum(1 for r in rows if r.get("last_verified") is not None)
+    checked = sum(1 for r in rows if has_date(r.get("last_checked")))
+    floored = sum(1 for r in rows if has_date(r.get("freshness_floor")))
     from_dataset = sum(1 for r in rows if r.get("license_tier_grade") == "dataset")
 
     print(f"{len(rows)} computed score(s) read from {TABLE}")
     print(f"  license tier from a machine-readable field : {from_dataset}")
-    print(f"  score verifiable end to end (last_verified): {verified}")
+    print(f"  evidence checked on a known date (last_checked): {checked}")
+    print(f"  every relied-on fact sourced (freshness_floor) : {floored}")
     print(f"  files this run would change                : {len(changed_files)}")
     print(f"  openness score or class moved              : {len(score_changes)}")
 
