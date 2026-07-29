@@ -23,6 +23,32 @@ def _fixture():
 def test_valid_fixture_passes():
     assert validate_sources(_fixture()) == []
 
+def test_stem_must_equal_the_inner_name():
+    """The filename stem is the identity every join uses.
+
+    A copied or renamed file with a stale inner name passes schema and roster checks and
+    then corrupts joins silently: the roster resolves by stem while anything reading the
+    field resolves elsewhere. Nothing checked this until the slug migration renamed 60
+    files at once and made the risk obvious."""
+    d = _fixture()
+    d["products"]["llama"]["name"] = "llama-stale"
+    errs = validate_sources(d)
+    assert any("does not match the filename stem" in e and "llama" in e for e in errs)
+
+
+def test_score_stem_must_equal_its_product_key():
+    """Scores name their slug `product`, not `name`, so the check has to know that."""
+    d = _fixture()
+    d["scores"]["llama"]["product"] = "something-else"
+    errs = validate_sources(d)
+    assert any("does not match the filename stem" in e for e in errs)
+
+
+def test_matching_stems_produce_no_identity_error():
+    d = _fixture()
+    assert not any("does not match the filename stem" in e for e in validate_sources(d))
+
+
 def test_long_tail_scored_must_match_product_count():
     d = _fixture()  # exactly one product
     d["long_tail"] = {"counts": {"scored": 999}}

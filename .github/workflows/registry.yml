@@ -4,6 +4,13 @@ name: registry
 # declaration to OSO. Nothing flows back in here — scores are computed downstream
 # and serialized outward separately.
 
+# One publish at a time. Tables upload individually and are then materialized, so two
+# overlapping runs can commit a snapshot that is half registry and half rubric. Not
+# cancel-in-progress: a half-finished upload is exactly what must not be abandoned.
+concurrency:
+  group: registry-publish
+  cancel-in-progress: false
+
 on:
   pull_request:
     paths:
