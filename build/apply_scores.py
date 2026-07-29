@@ -54,6 +54,7 @@ from __future__ import annotations
 import argparse
 import os
 import sys
+from datetime import date
 from pathlib import Path
 
 import yaml
@@ -166,7 +167,17 @@ def apply_to_file(path: Path, computed: dict) -> tuple[list[str], list[str]]:
             # somebody looked on that day, and that remains true whatever we can currently
             # derive. If the computed value is older, the file is ahead of us - report it
             # rather than destroying the record. ISO dates compare correctly as strings.
-            if current > stamp:
+            #
+            # But "ahead of us" only makes sense up to today. A check cannot have happened
+            # tomorrow, so a future date is a data error, and treating it as ahead would
+            # protect it forever - the guard would entrench exactly what it should surface.
+            today = date.today().isoformat()
+            if current > today:
+                changes.append(
+                    f"{path.stem}: IMPOSSIBLE last_verified {current} is in the future "
+                    f"(today {today}); left alone, but it needs correcting at source"
+                )
+            elif current > stamp:
                 changes.append(
                     f"{path.stem}: KEPT last_verified {current}, computed {stamp} is older"
                 )

@@ -1,4 +1,5 @@
 """Validate the four-concern sources/ tree: schema + cross-file invariants."""
+from datetime import date
 import json
 from pathlib import Path
 
@@ -131,6 +132,37 @@ def validate_sources(data: dict) -> list[str]:
         if scored is not None and scored != len(prods):
             errors.append(f"long_tail counts.scored ({scored}) != product count ({len(prods)}); "
                           f"re-sync build/_frozen_long_tail.json after a batch")
+
+    # --- observation dates cannot be in the future ---
+    # `accessed` records when a source was read and `last_verified` when a check happened.
+    # Both are observation events, so neither can be later than today. The map is
+    # deliberately a forward-dated universe and may describe unreleased products, but that
+    # is prose and release dates, never a claim about when somebody looked.
+    #
+    # Checked because nothing else does, and because apply_scores refuses to move a stored
+    # date backwards - so a future date, once written, would be protected indefinitely by
+    # the very guard meant to preserve real checks.
+    today = date.today()
+    for slug, score in sorted(scores.items()):
+        for axis in ("openness", "adoption", "capability"):
+            block = score.get(axis) or {}
+            candidates = [("last_verified", block.get("last_verified"))]
+            for source in block.get("sources") or []:
+                if isinstance(source, dict):
+                    candidates.append(("sources.accessed", source.get("accessed")))
+            for field, raw in candidates:
+                if not raw:
+                    continue
+                try:
+                    when = date.fromisoformat(str(raw))
+                except ValueError:
+                    errors.append(f"score {slug!r}: {axis}.{field} {raw!r} is not an ISO date")
+                    continue
+                if when > today:
+                    errors.append(
+                        f"score {slug!r}: {axis}.{field} is {when}, later than today ({today}); "
+                        f"an observation cannot have happened in the future"
+                    )
 
     # --- product -> score existence ---
     # validate only checks score -> product; without this, a rostered product
