@@ -1,6 +1,7 @@
 """Validate the four-concern sources/ tree: schema + cross-file invariants."""
 from datetime import date
 import json
+import re
 from pathlib import Path
 
 import jsonschema
@@ -41,6 +42,7 @@ def load_sources(root: Path) -> dict:
         "products": _dir("products"),
         "scores": _dir("scores"),
         "taxonomy": yaml.safe_load((root / "sources" / "taxonomy.yaml").read_text()),
+        "slug_aliases": yaml.safe_load((root / "sources" / "slug_aliases.yaml").read_text()),
     }
     lt = root / "build" / "_frozen_long_tail.json"
     if lt.exists():
@@ -120,6 +122,63 @@ def validate_sources(data: dict) -> list[str]:
         cap = sc.get("capability", {})
         if cap.get("score") is not None and not cap.get("sources"):
             errors.append(f"score {slug!r}: non-null capability needs >=1 source")
+
+    # --- slug stability ---
+    # The slug is a product's identity and the key deep links are built on, so a slug may
+    # only leave sources/products/ by being recorded in sources/slug_aliases.yaml. These
+    # checks are what make that a rule rather than an intention. See that file's header.
+    spec = data.get("slug_aliases") or {}
+    aliases = spec.get("aliases") or {}
+    for old, new in sorted(aliases.items()):
+        if new not in prods:
+            errors.append(f"slug alias {old!r} -> {new!r}: target is not a live product")
+        if old in prods:
+            errors.append(
+                f"slug alias {old!r}: an alias key means the slug is retired, but a product "
+                f"still uses it. Either drop the alias or rename the product."
+            )
+    org_aliases = spec.get("organization_aliases") or {}
+    for old, new in sorted(org_aliases.items()):
+        if new not in orgs:
+            errors.append(f"org alias {old!r} -> {new!r}: target is not a live organization")
+        if old in orgs:
+            errors.append(f"org alias {old!r}: retired, but an organization still uses it")
+
+    # A model slug that bakes in a version goes stale the day the next release ships,
+    # and then costs an alias to fix. Vendors do sometimes sell the version as the
+    # product - GPT-4o, Mistral 7B - so an exception is allowed, but it has to be
+    # declared with a reason in slug_aliases.yaml. Scoped to model categories: for a
+    # dataset or a board the version genuinely is the identity (oscar-2301,
+    # raspberry-pi-5), which is why those are not checked.
+    model_cats = {"base_pretrained", "finetuned_chat"}
+    model_products = {
+        p for slug, cat in cats.items() if slug in model_cats for p in (cat.get("products") or [])
+    }
+    allowed_versions = spec.get("version_in_identity") or {}
+    version_token = re.compile(r"(?:^|-)(v?\d+(?:[-.]\d+)*[a-z]?|\d+[bx])(?:-|$)")
+    for product in sorted(model_products):
+        if version_token.search(product) and product not in allowed_versions:
+            errors.append(
+                f"product {product!r}: model slug carries a version or size token. Collapse it "
+                f"to the tier the vendor sells, or declare it under version_in_identity in "
+                f"sources/slug_aliases.yaml with the reason."
+            )
+    for product in sorted(allowed_versions):
+        if product not in model_products:
+            errors.append(
+                f"version_in_identity lists {product!r}, which is not a model product. "
+                f"Drop the exception."
+            )
+
+    # A slug ending in its own vendor's name carries no information and is the pattern
+    # that produced gpt-4-1-openai and nemotron-3-nvidia. Cheap to catch, so caught.
+    for org_slug, org in sorted(orgs.items()):
+        for product in org.get("products") or []:
+            if product != org_slug and product.endswith(f"-{org_slug}"):
+                errors.append(
+                    f"product {product!r}: slug ends with its own organization {org_slug!r}. "
+                    f"Disambiguate by product surface, not by vendor."
+                )
 
     # --- frozen long-tail <-> live count invariant ---
     # The long-tail section shows "Of the {scored} products scored above ..."; that

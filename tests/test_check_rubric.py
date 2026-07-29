@@ -121,18 +121,18 @@ class TestRealCategories:
     """The claim the whole pipeline rests on, asserted against the real files."""
 
     def test_base_pretrained_still_reproduces_every_score(self):
-        """44, down from the 47 the rubric was derived against: gpt-4-1,
-        gemini-3-5-flash and nemotron-3 were duplicates of finetuned_chat records and
-        were merged into them. The point of pinning this is that the count only ever
-        moves for a reason recorded in a commit."""
+        """26, down from 44: the slug migration collapsed release-level products into
+        the tier the vendor sells, and moved the closed frontier models to
+        finetuned_chat. The point of pinning this is that the count only ever moves for
+        a reason recorded in a commit."""
         reproduced, total, problems, deferred = check_category("base_pretrained", verbose=False)
         assert problems == []
-        assert (reproduced, total, deferred) == (44, 44, [])
+        assert (reproduced, total, deferred) == (26, 26, [])
 
     def test_finetuned_chat_reproduces_every_undeferred_score(self):
         reproduced, total, problems, _ = check_category("finetuned_chat", verbose=False)
         assert problems == []
-        assert reproduced == total == 43
+        assert reproduced == total == 36
 
     def test_finetuned_chat_deferrals_are_reported_with_a_reason(self):
         """A deferral that prints nothing is a silent cap on coverage."""
@@ -140,14 +140,14 @@ class TestRealCategories:
         assert len(deferred) == 3
         assert {entry.split(":")[0] for entry in deferred} == {
             "starcoder2",
-            "deepseek-coder-v2-instruct",
+            "deepseek-coder",
             "command-r",
         }
         for entry in deferred:
             assert len(entry.split(":", 1)[1].strip()) > 40, f"no real reason given: {entry}"
 
     def test_deferred_products_are_excluded_not_counted_as_reproduced(self):
-        """43, not 46. Counting a deferral as a pass is how a rubric claims to
+        """36, not 39. Counting a deferral as a pass is how a rubric claims to
         describe products it cannot score."""
         _, total, _, deferred = check_category("finetuned_chat", verbose=False)
-        assert total + len(deferred) == 46
+        assert total + len(deferred) == 39

@@ -1,0 +1,42 @@
+product: olmo
+openness:
+  score: 5
+  class: open_source
+  components: weights:open(Apache-2.0);data:open(Dolma 3, 9.3T tokens, all stages);code:open(training code+recipes+logs);checkpoints:open(intermediate);license:Apache-2.0(OSI)
+  confidence: high
+  note: 'Fully open: Apache-2.0 weights + the complete Dolma 3 corpus + training code + intermediate checkpoints.
+    The reference fully-open model line.'
+  last_verified: '2026-07-29'
+  sources:
+  - url: https://huggingface.co/api/datasets/allenai/dolma
+    shows: Public, ungated dataset repo present on the Hub; 3,052 downloads. Dolma corpus is published.
+    accessed: '2026-07-28'
+  - url: https://allenai.org/blog/olmo3
+    shows: 'fully-open release: weights, Dolma 3 data, code, recipes, checkpoints; Nov 2025 / Dec 2025 3.1 update'
+    accessed: '2026-06-30'
+  - url: https://huggingface.co/allenai/Olmo-3-1025-7B
+    shows: OLMo 3 7B base on HF; Apache-2.0
+    accessed: '2026-06-30'
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: medium
+  note: Succeeds OLMo 2 (the OLMo family measured ~14.8M cumulative HF downloads in early 2026). The reference fully-open
+    model in research/interpretability circles; below the Qwen/Llama scale.
+  sources:
+  - url: https://allenai.org/blog/olmo3
+    shows: flagship fully-open release; broad research uptake
+    accessed: '2026-06-30'
+capability:
+  score: 4
+  basis: benchmark:MMLU/GPQA/reasoning
+  value: OLMo 3-Think 32B narrows the gap to Qwen3-32B on reasoning at ~6x fewer tokens
+  confidence: high
+  note: Strongest fully-open base/reasoning model to date; competitive with Qwen2.5/Gemma3 and approaching Qwen3-32B,
+    but still a step below the trillion-param open-weight frontier (=5).
+  sources:
+  - url: https://allenai.org/blog/olmo3
+    shows: OLMo 3-Think 32B strongest fully-open reasoning model; OLMo 3-Base beats fully-open peers (K2, Marin,
+      Apertus)
+    accessed: '2026-06-30'

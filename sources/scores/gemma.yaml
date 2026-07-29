@@ -1,0 +1,43 @@
+product: gemma
+openness:
+  score: 3
+  class: open_weights
+  components: weights:open(Apache-2.0);data:closed;code:closed;license:Apache-2.0(OSI,but no open data/code)
+  confidence: medium
+  note: 'Apache-2.0 weights, no open training data and no training code, so open_weights rather than a fully-open
+    pipeline. The tier reads 3 because Gemma 4 relicensed: Gemma 2 and 3 shipped under the non-OSI Gemma License
+    with a Prohibited-Use-Policy and scored 2, while all six Gemma 4 SKUs are Apache-2.0 and ungated, verified against
+    the Hub on 2026-07-29. The current release governs, so a family that becomes more open is recorded as such rather
+    than pinned to its worst historical release. Adoption 5 is carried from Gemma 2, which still out-downloads Gemma
+    4.'
+  last_verified: '2026-07-29'
+  sources:
+  - url: https://ai.google.dev/gemma/docs/releases
+    shows: Gemma 4 sizes, release dates, Apache-2.0 license
+    accessed: '2026-06-17'
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: medium
+  note: Among the most-downloaded open model families; the 27B-IT shows ~133.6k downloads/mo and the family runs
+    widely via HF, Ollama, Kaggle, Google AI tooling (27 finetunes, 14 quantizations, 10 adapters listed on the
+    base card). Family-level reach in the tens-of-millions; calibrated to the Gemma 3 anchor (A5).
+  sources:
+  - url: https://huggingface.co/google/gemma-2-27b-it
+    shows: ~133.6k downloads/mo for Gemma 2 27B-IT
+    accessed: '2026-06-04'
+  - url: https://huggingface.co/google/gemma-2-27b
+    shows: 27B base 5,893 downloads/mo, 27 finetunes / 14 quantizations / 10 adapters, broad multi-platform distribution
+    accessed: '2026-06-04'
+capability:
+  score: 5
+  basis: benchmark:LMArena
+  value: high intelligence-per-parameter; multimodal (vision+audio); Google claims top-tier Arena rankings vs much
+    larger models
+  confidence: medium
+  note: Frontier-class for an open model; benchmark ranking is vendor-reported.
+  sources:
+  - url: https://cloud.google.com/blog/products/ai-machine-learning/gemma-4-available-on-google-cloud
+    shows: Gemma 4 capabilities and rankings
+    accessed: '2026-06-17'
