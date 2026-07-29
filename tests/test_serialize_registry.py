@@ -107,6 +107,46 @@ def test_unaddressable_artifact_is_a_warning_not_an_error():
     assert tables["product_artifacts"] == []
 
 
+def test_shared_display_name_is_a_warning_naming_both_products_and_categories():
+    """Slugs are unique because they are filenames, so nothing caught two products
+    wearing one label. They render as two identical entries and a reader cannot tell
+    whether the map is double counting. The warning has to name the categories,
+    because base-vs-finetuned is the pair that is usually one product entered twice
+    while two categories on the same layer is usually two real surfaces."""
+    sources = _sources(
+        products={
+            "nemotron-3": {"type": "model", "display_name": "Nemotron 3"},
+            "nemotron-3-nvidia": {"type": "model", "display_name": "Nemotron 3"},
+        },
+        organizations={"nvidia": {"products": ["nemotron-3", "nemotron-3-nvidia"]}},
+        categories={
+            "base_pretrained": {"weights": {}, "products": ["nemotron-3"]},
+            "finetuned_chat": {"weights": {}, "products": ["nemotron-3-nvidia"]},
+        },
+        taxonomy={
+            "arcs": [
+                {
+                    "name": "Model",
+                    "layer": "model",
+                    "categories": ["base_pretrained", "finetuned_chat"],
+                }
+            ]
+        },
+    )
+    _, errors, warnings = build_registry(sources)
+    assert errors == [], "a collision must not fail the build; the fix is a curation call"
+    hits = [w for w in warnings if "display_name" in w]
+    assert len(hits) == 1, hits
+    assert "'Nemotron 3'" in hits[0]
+    for token in ("nemotron-3", "nemotron-3-nvidia", "base_pretrained", "finetuned_chat"):
+        assert token in hits[0], f"{token!r} missing from {hits[0]!r}"
+
+
+def test_distinct_display_names_produce_no_collision_warning():
+    _, _, warnings = build_registry(_sources())
+    assert [w for w in warnings if "display_name" in w] == []
+
+
 def test_every_declared_table_is_populated_or_present():
     tables, _, _ = build_registry(_sources())
     assert set(tables) == set(TABLES)

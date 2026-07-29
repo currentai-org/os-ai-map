@@ -164,6 +164,30 @@ def build_registry(sources: dict) -> tuple[dict[str, list[dict]], list[str], lis
     errors: list[str] = []
     warnings: list[str] = []
 
+    # Two products sharing a display_name render as two identically labeled entries,
+    # so a reader cannot tell them apart and cannot tell whether the map is double
+    # counting. Slugs are unique by construction — they are filenames — so nothing
+    # caught this, and four collisions accumulated: 'Nemotron 3', 'GPT-4.1',
+    # 'Gemini 3.5 Flash' and 'GitHub Copilot'.
+    #
+    # A warning rather than an error, because the collisions are not one defect. Some
+    # are genuinely two product surfaces needing distinct labels (Copilot's agent mode
+    # vs its IDE assistant); others are one product entered twice and the fix is a
+    # deletion, which is a curation decision. Failing the build would force whoever
+    # hits it next to pick under time pressure.
+    by_display_name: dict[str, list[str]] = {}
+    for slug, product in sorted(products.items()):
+        name = (product.get("display_name") or "").strip()
+        if name:
+            by_display_name.setdefault(name, []).append(slug)
+    for name, slugs in sorted(by_display_name.items()):
+        if len(slugs) > 1:
+            where = ", ".join(
+                f"{slug} ({', '.join(c for c, spec in sorted(categories.items()) if slug in (spec.get('products') or [])) or 'no category'})"
+                for slug in slugs
+            )
+            warnings.append(f"display_name {name!r} is shared by {len(slugs)} products: {where}")
+
     for slug, product in sorted(products.items()):
         tables["products"].append(
             {
