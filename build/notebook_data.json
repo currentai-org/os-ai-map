@@ -3828,11 +3828,11 @@
           "type": "model",
           "description": "Ai2's open post-training model family (Llama-3.1-Tulu-3 8B / 70B / 405B), the reference fully-open post-training recipe: open SFT + preference data, open training code (open-instruct), and the RLVR (Reinforcement Learning with Verifiable Rewards) method, applied on top of Meta's Llama 3.1 base. Note: the recipe/data/code are Apache-2.0 and fully reproducible, but the released weights inherit Meta's Llama 3.1 Community License (non-OSI), so the artifact is open-recipe over restricted weights. Verified live on HF June 2026.",
           "openness": {
-            "score": 3,
+            "score": 2,
             "class": "restricted",
             "components": "weights:open(downloadable);license:Llama-3.1-Community(non-OSI;700M-MAU cap + use policy);post-training-data:open(Apache-2.0/ODC-BY);code:open(open-instruct Apache-2.0);recipe:open(SFT->DPO->RLVR);evals:open(OLMES)",
             "confidence": "high",
-            "note": "NOT fully-open: the released weights inherit Meta's Llama 3.1 Community License (non-OSI, 700M-MAU cap), so the class is restricted -- same calibration as other Llama-Community models in the map. Scored 3 rather than the bare-Llama-Instruct 2 because the entire post-training layer (data, code, RLVR recipe, eval framework) is genuinely open and reproducible (Apache-2.0). Data license is ODC-BY/Apache per Ai2 practice; the exact dataset-card license string is medium confidence, but the headline open-recipe-over-restricted-weights call is high confidence.",
+            "note": "NOT fully-open: the released weights inherit Meta's Llama 3.1 Community License (non-OSI, 700M-MAU cap), so the class is restricted -- same calibration as other Llama-Community models in the map. Corrected from 3 to 2 on 2026-07-29. The earlier 3 added a point for the genuinely open post-training layer (data, code, RLVR recipe, eval framework, all Apache-2.0), but 3/restricted is a pair the category ladder cannot produce, and crediting the method on the checkpoint scores two different things at once. The method generalizes across bases -- the same recipe produces olmo-3-instruct at 5/open_source -- so it is credited where it lives: tulu-3-sft-mixture carries 5/open in training_synthetic_datasets. What a user downloading THIS checkpoint is bound by is Meta's license, which is 2. Data license is ODC-BY/Apache per Ai2 practice; the exact dataset-card license string is medium confidence, but the restricted-weights call is high confidence.",
             "sources": [
               {
                 "url": "https://huggingface.co/allenai/Llama-3.1-Tulu-3-8B",
@@ -5169,11 +5169,11 @@
           "type": "model",
           "description": "A 1.1B instruction-tuned chat model from the TinyLlama project, built on the Llama architecture and trained on 3T tokens for ~90 days on 16 A100-40G GPUs. It became the canonical sub-2B open chat baseline for edge and local-inference research and still pulls ~2.5M Hugging Face downloads per month two years after release.",
           "openness": {
-            "score": 4,
-            "class": "open_weights",
+            "score": 5,
+            "class": "open_source",
             "confidence": "high",
-            "components": "weights:open(Apache-2.0);base:TinyLlama-1.1B(open, 3T-token pretrain documented);post-training:SFT on UltraChat + DPO on UltraFeedback(both public datasets);code:open(pretraining project public);license:Apache-2.0(OSI)",
-            "note": "Unusually transparent for a chat model: open base, and named public alignment datasets (UltraChat SFT + UltraFeedback DPO). Scored 4 open_weights, just short of full open_source since the base pretraining data is documented but the end-to-end reproducible pipeline is not packaged as one release. Strongest openness in this batch alongside Nemotron.",
+            "components": "weights:open(Apache-2.0);base:TinyLlama-1.1B(open, 3T-token pretrain documented);post-training-data:open(SFT on UltraChat + DPO on UltraFeedback, both public datasets);code:open(pretraining project public);license:Apache-2.0(OSI)",
+            "note": "Unusually transparent for a chat model: open base, and named public alignment datasets (UltraChat SFT + UltraFeedback DPO). Corrected from 4 to 5 on 2026-07-29, and the post-training evidence moved out of a free-text `post-training` key into `post-training-data` so it carries a value the rubric can read. The old 4 rested on the base pretraining corpus being documented rather than packaged, but this category scores the post-training data -- what the tuner released -- and zephyr scores 5/open_source on these same two datasets while sitting on Mistral-7B, whose corpus is closed outright. Judging TinyLlama by its base while judging zephyr by its post-training set penalized the more open of the two bases. Strongest openness in this batch alongside Nemotron.",
             "sources": [
               {
                 "url": "https://huggingface.co/TinyLlama/TinyLlama-1.1B-Chat-v1.0",
@@ -5181,7 +5181,7 @@
                 "accessed": "2026-06-04"
               }
             ],
-            "bucket": "open-ish"
+            "bucket": "open"
           },
           "adoption": {
             "level": 4,
@@ -5392,11 +5392,11 @@
           "type": "model",
           "description": "Google's code-specialized Gemma family: a 2B pretrained model for fast code completion (fill-in-the-middle), a 7B pretrained model for infilling + natural language, and a 7B instruction-tuned variant for code chat. Further-trained on 500B-1T tokens of public code, math, and synthetic data.",
           "openness": {
-            "score": 3,
-            "class": "open_weights",
+            "score": 2,
+            "class": "restricted",
             "components": "weights:open;data:closed;code:closed;license:Gemma-Terms-of-Use(custom,use-restricted,non-OSI)",
             "confidence": "high",
-            "note": "Open weights under Google's custom, use-restricted Gemma license; no open training data or code.",
+            "note": "Open weights under Google's custom, use-restricted Gemma license; no open training data or code. Corrected from 3/open_weights on 2026-07-29. The facts here are identical to gemma-2 and gemma-3, which both score 2/restricted on the same license, and the note above already called the license use-restricted while the score did not. A use cap lands at 2 whatever category the product sits in.",
             "sources": [
               {
                 "url": "https://huggingface.co/google/codegemma-7b-it",
@@ -5404,7 +5404,7 @@
                 "accessed": "2026-06-17"
               }
             ],
-            "bucket": "open-ish"
+            "bucket": "closed"
           },
           "adoption": {
             "level": 2,
