@@ -1,0 +1,125 @@
+# Retired product slug -> the slug that replaced it.
+#
+# The slug is a product's identity and the key deep links are built on, so it has to be
+# stable. This file is what makes that possible: a slug may leave `sources/products/`
+# only by appearing here, and anything holding an old link resolves through it.
+#
+# `build/validate.py` enforces both directions - every alias must point at a product
+# that exists, and no alias may collide with a live slug.
+#
+# ## Why the 2026-07-29 batch is large, and why it is a one-off
+#
+# Slugs had been recorded at release level (`claude-opus-4-7`) rather than at the level
+# vendors actually sell (`claude-opus`), so they churned with every point release and
+# could not be linked to. Fixed before deep linking shipped, which is the only moment
+# it was free: the front end keys links on display names today, so nothing pointed at a
+# product slug yet. After links exist, a rename costs an alias forever.
+#
+# The tiebreaker for how far to collapse is **what the vendor markets as the product**.
+# Google sells "Gemma" and 2/3/4 are versions, so `gemma`. OpenAI sells GPT-4o and
+# GPT-4.1 and GPT-5 as distinct products, so those stay apart - same reason
+# `raspberry-pi-5` keeps its 5. Datasets and hardware keep version-in-identity for the
+# same reason and are out of scope here.
+#
+# Combine rules when releases merge into one tier:
+#   adoption, capability  max across the tier's releases
+#   openness              the current release governs, resolved most-restrictive across
+#                         that release's DISTRIBUTED SKUs. API-only tiers and unshipped
+#                         previews are excluded, and absence of evidence never lowers a
+#                         tier. See docs/guides/openness-spectrum.md and the rubric's
+#                         multi_sku_rule.
+
+version: 1
+
+aliases:
+  # --- Anthropic: sells Claude Opus / Sonnet / Haiku / Fable; digits are versions ---
+  claude-opus-4-7: claude-opus
+  claude-opus-4-x: claude-opus
+  claude-fable-5: claude-fable
+
+  # --- OpenAI: sells GPT-4o, GPT-4.1, GPT-5 and the o-series as distinct products ---
+  gpt-5-line: gpt-5
+  o3-o4-mini: o-series
+
+  # --- Google: sells Gemini Flash/Pro and Gemma ---
+  gemini-2-5-flash: gemini-flash
+  gemini-3-5-flash: gemini-flash
+  gemma-2: gemma
+  gemma-3: gemma
+  gemma-4: gemma
+
+  # --- xAI sells Grok; Amazon sells Nova ---
+  grok-3: grok
+  grok-4-20: grok
+  amazon-nova-pro: amazon-nova
+
+  # --- open-weight families: vendor sells the family, digits are versions ---
+  kimi-k2-6: kimi
+  kimi-k3: kimi
+  mistral-large-2: mistral-large
+  mistral-large-3: mistral-large
+  mistral-7b-instruct-v0-2: mistral-7b-instruct
+  minimax-m2-5: minimax
+  minimax-m3: minimax
+  glm-4: glm
+  glm-4-6: glm
+  glm-4-9b: glm
+  glm-5-1: glm
+  glm-5-2: glm
+  llama-3-1: llama
+  llama-4-scout-maverick: llama
+  llama-3-1-8b-instruct: llama-instruct
+  codellama-instruct: codellama
+  smollm3: smollm
+  phi-4: phi
+  phi-4-mini-instruct: phi-instruct
+  olmo-3: olmo
+  olmo-3-instruct: olmo-instruct
+  tulu-3: tulu
+  hermes-4-14b: hermes
+  hermes-4-3-36b: hermes
+  hermes-4-llama-3-1-405b: hermes
+  hermes-4-llama-3-1-70b: hermes
+
+  # --- DeepSeek sells DeepSeek (V3/V4 are versions), plus R1 and Coder as own lines ---
+  deepseek-v3-2: deepseek
+  deepseek-v3-base: deepseek
+  deepseek-v4-pro: deepseek
+  deepseek-v4-pro-base: deepseek
+  deepseek-v4-pro-v4-flash: deepseek-chat
+  deepseek-coder-v2-instruct: deepseek-coder
+
+  # --- Qwen sells Qwen (2.5/3/3.6 are versions) plus a Coder line ---
+  qwen-2-5: qwen
+  qwen3: qwen
+  qwen-3-6: qwen
+  qwen-3-7-max: qwen
+  qwen2-5-14b-instruct: qwen-instruct
+  qwen2-5-coder-instruct: qwen-coder
+  qwen3-coder: qwen-coder
+
+# Organizations duplicated for the same company. Same stability rule applies: org slugs
+# are deep-link keys too.
+organization_aliases:
+  google-deepmind: google
+  alibaba: alibaba-cloud
+
+# Releases whose openness governs its tier, per the current-release rule. Recorded
+# rather than inferred from slug digits, because "which is newest" is a judgment about
+# the product line and a reader must be able to check it.
+governing_release:
+  gemma: gemma-4                      # all six SKUs Apache-2.0 and ungated, verified on the Hub 2026-07-29
+  mistral-large: mistral-large-3      # relicensed from Mistral-Research-License to Apache-2.0
+  glm: glm-5-2                        # MIT
+  kimi: kimi-k3
+  minimax: minimax-m3
+  deepseek: deepseek-v4-pro
+  qwen: qwen-3-6                      # qwen-3-7-max is API-only, excluded from the distributed set
+  qwen-coder: qwen3-coder
+  llama: llama-4-scout-maverick       # still Llama-4-Community, so the tier stays restricted
+  gemini-flash: gemini-3-5-flash
+  grok: grok-4-20
+  amazon-nova: amazon-nova-pro
+  claude-opus: claude-opus-4-x
+  gpt-5: gpt-5-line
+  hermes: hermes-4-llama-3-1-405b     # one release across four bases, so most-restrictive applies within it
