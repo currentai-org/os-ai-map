@@ -1,14 +1,17 @@
 product: deepseek-coder
 openness:
-  score: 2
-  class: restricted
+  score: 3
+  class: open_weights
   components: weights:open(downloadable on HF);data:closed;code:open(MIT, repo code);model-license:DeepSeek-Model-License(non-OSI;
     Attachment A acceptable-use restrictions - military/illegal/discrimination/etc.; commercial allowed but use-based
     restrictions must propagate to derivatives)
   confidence: high
-  note: 'Mixed tier: repo CODE is MIT, but the WEIGHTS are governed by the non-OSI DeepSeek Model License with use-based
-    restrictions (Attachment A) -> restricted class for the model, not open_weights. Distinct from newer DeepSeek
-    models (R1/V3.2/V4) which ship weights under plain MIT.'
+  note: 'MIT-licensed inference code with downloadable weights under the DeepSeek Model License, corpus not released,
+    so 3/open_weights. Corrected from 2/restricted on 2026-07-29 under issue #117. The license''s Attachment A forbids
+    military, illegal and discriminatory use and requires those terms to propagate to derivatives, but permits commercial
+    use at any scale - a conduct restriction, not a commercial one. This also removes the contradiction that opened
+    #117: base_pretrained already tiered the same license permissive_non_osi, so the same terms were producing a
+    3 in one category and a 2 in another. Now consistent with the `deepseek` tier, which reaches 3 under plain MIT.'
   sources:
   - url: https://huggingface.co/deepseek-ai/DeepSeek-Coder-V2-Instruct
     shows: model license = 'DeepSeek Model Agreement', code license = MIT, 236B-A21B MoE instruct coder

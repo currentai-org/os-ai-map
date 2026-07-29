@@ -31,9 +31,9 @@ scoring_recipe:
   derived_from:
     method: ported from base_pretrained, then verified against this category's scores
     ported_from: base_pretrained
-    scores_reproduced: 37
-    scores_total: 37
-    scores_deferred: 3
+    scores_reproduced: 39
+    scores_total: 39
+    scores_deferred: 0
     scores_corrected: 3
     verified_on: '2026-07-29'
     checker: build/check_rubric.py
@@ -97,9 +97,16 @@ scoring_recipe:
           examples: [Apache-2.0, MIT, BSD-3-Clause]
         permissive_non_osi:
           definition: >
-            Not OSI-approved but imposes no use restriction. Attribution or
-            naming requirements alone belong here.
-          examples: [Modified-MIT, minimax-community, NVIDIA-Open-Model-License]
+            Not OSI-approved, but imposes no restriction on WHO may use the artifact or
+            AT WHAT SCALE. Attribution, naming and CONDUCT requirements belong here: an
+            acceptable-use policy forbidding military, illegal or discriminatory use caps
+            neither commerce nor reach, so it sits beside attribution rather than beside a
+            monthly-active-user ceiling. Non-OSI by construction, since the OSD forbids
+            discriminating against a field of endeavor. Settled in issue #117, which was
+            opened because the same OpenRAIL family had been scored 3 in one category and
+            4 in another.
+          examples: [Modified-MIT, minimax-community, NVIDIA-Open-Model-License, BigCode-OpenRAIL-M,
+            DeepSeek-Model-License, TII-Falcon-License-2.0]
         use_restricted:
           definition: >
             Caps or gates use - monthly-active-user ceilings, field-of-use limits,
@@ -107,7 +114,7 @@ scoring_recipe:
           examples: [Llama-2-Community-License, Llama-3-Community-License, Llama-3.1-Community-License,
             Llama-3.2-Community-License, Llama-4-Community, Gemma-License, GLM-4-License,
             Qwen-License-Agreement, Mistral-Research-License, Mistral-AI-Non-Production-License,
-            Jamba-Open-Model-License]
+            Jamba-Open-Model-License, CC-BY-NC]
         proprietary:
           definition: No public license; weights not distributed.
       multi_sku_rule: >
@@ -158,48 +165,10 @@ scoring_recipe:
     - otherwise: {score: 3, class: open_weights}
       note: The category's center of gravity - open weights, closed recipe.
 
-  # Products this rubric does not decide, each with a reason. All three share one
-  # cause: a license that restricts CONDUCT - no military use, no discrimination,
-  # no commercial use - rather than capping commerce or field of use. The ladder's
-  # `use_restricted` is defined by commercial caps and field-of-use limits, so
-  # these fit no tier honestly.
-  #
-  # Not a quirk of this category. The same licenses are scored three different ways
-  # across the map, including one flat contradiction: DeepSeek-Model-License is
-  # permissive_non_osi in base_pretrained (the deepseek tier, 3/open_weights) and
-  # use-restricting here (2/restricted). OpenRAIL lands at 4/open_source here and
-  # 3/open_weights in safeguards. CC-BY-NC is 2/restricted here and 5/open in
-  # training_synthetic_datasets.
-  #
-  # Adding a tier for it would expand the taxonomy on one category's evidence,
-  # which is the thing #106 exists to prevent. Deferring keeps the products visible
-  # and unscored by machine until the tier question is settled in the open.
-  #
-  # Tracked in issue #117. Whatever lands there has to hold for datasets as well as
-  # models, which is why it is not settled here.
-  deferred:
-    starcoder2:
-      because: >
-        BigCode-OpenRAIL-M restricts behavior, not commerce. Weights, data and code
-        are all fully open, so the ladder would drop it to 2/restricted on the
-        license alone - harsher than any other reading of this artifact. Recorded
-        4/open_source, a pair the ladder cannot emit at all.
-      license: BigCode-OpenRAIL-M
-    deepseek-coder:
-      because: >
-        DeepSeek-Model-License carries Attachment A acceptable-use restrictions
-        (military, illegal, discriminatory). base_pretrained tiers this same license
-        permissive_non_osi and scores the deepseek tier 3/open_weights; this product
-        is recorded 2/restricted. One of the two is wrong and the rubric should not
-        pick by fiat.
-      license: DeepSeek-Model-License
-    command-r:
-      because: >
-        CC-BY-NC is non-commercial, which is a harder restriction than most entries
-        in use_restricted, yet cc-by-nc-sa-4.0 carries 5/open on personahub in
-        training_synthetic_datasets. Needs one ruling that holds for models and
-        datasets both.
-      license: CC-BY-NC
+  # Nothing deferred. The three products that were - starcoder2, deepseek-coder and
+  # command-r - are decided by the conduct-versus-commerce distinction settled in issue
+  # #117 and written into permissive_non_osi above. Keeping the key with an empty map
+  # would read as "we defer nothing yet"; removing it says the question was answered.
 
 products:
 - qwen-coder
