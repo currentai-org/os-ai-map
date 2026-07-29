@@ -75,6 +75,31 @@ def head(value: str) -> str:
     return re.split(r"[(,]", value)[0].strip()
 
 
+_RECORDED_ALIASES: dict[str, str] | None = None
+
+
+def recorded_license_aliases() -> dict[str, str]:
+    """Canonical license name for a name as hand-written in a `components` string.
+
+    Read from `sources/signal_routing.yaml`, which already owns the equivalent map
+    for Hub-published slugs. One declaration for both, because they are the same
+    kind of fact — what a license is CALLED — and two copies would drift.
+
+    Deliberately does not carry a tier. Which tier a license belongs to stays a
+    per-category judgment, and a canonical name that appears in no category example
+    still abstains. That abstention is the signal to extend the rubric.
+    """
+    global _RECORDED_ALIASES
+    if _RECORDED_ALIASES is None:
+        routing = yaml.safe_load((ROOT / "sources" / "signal_routing.yaml").read_text()) or {}
+        aliases = ((routing.get("dimensions") or {}).get("license") or {}).get("aliases") or {}
+        _RECORDED_ALIASES = {
+            str(slug).strip().lower(): str(name).strip()
+            for slug, name in (aliases.get("recorded") or {}).items()
+        }
+    return _RECORDED_ALIASES
+
+
 def normalize_license(raw: str) -> str:
     """Reduce a recorded license string to the license that governs the weights.
 
@@ -84,14 +109,19 @@ def normalize_license(raw: str) -> str:
         because it is the one attached to the artifact being scored.
       * `assumed-Modified-MIT` — the `assumed-` prefix marks confidence, not a
         different license.
+
+    Then the recorded-name alias, which resolves spellings of one license to one
+    name. Applied last, so it sees the value after the mechanical steps rather
+    than having to enumerate every prefixed variant.
+
     Purely mechanical. Anything needing judgment is left alone to be flagged.
     """
     value = head(raw)
     if "+" in value and "model" in value.lower():
         value = value.split("+")[-1]
         value = re.sub(r"(?i)^\s*model\s+", "", value)
-    value = re.sub(r"(?i)^assumed-", "", value.strip())
-    return value.strip()
+    value = re.sub(r"(?i)^assumed-", "", value.strip()).strip()
+    return recorded_license_aliases().get(value.lower(), value)
 
 
 def license_tier(raw: str, recipe: dict) -> str | None:
@@ -113,6 +143,63 @@ def license_tier(raw: str, recipe: dict) -> str | None:
     return None
 
 
+def resolve_dimension(components: dict[str, str], dimension: str, recipe: dict) -> str | None:
+    """Which recorded key answers a dimension, or None if nothing does.
+
+    A dimension's `reads` list names the `components` keys that carry its answer,
+    in preference order. It exists because the same question is recorded under
+    different keys in different categories: for a base model the data question is
+    `data`, the pretraining corpus, while for a fine-tune the corpus belongs to
+    somebody else's model and the honest answer lives in `post-training-data`.
+
+    Prefers the first key whose value is in the declared enum, rather than the
+    first key present. A product recording both `data:closed` and
+    `post-training-data:open` is answering two different questions, and taking
+    whichever appeared first in the string would pick between them by accident.
+
+    Falls back to the first present key when none is in the enum, so an
+    unrecognized value surfaces in the mismatch message instead of silently
+    reading as absent.
+
+    Returns the KEY rather than the value, because callers that write evidence out
+    need the parenthetical detail attached to that key too, and re-deriving the
+    preference in a second place is how the two would drift.
+    """
+    spec = (((recipe.get("openness") or {}).get("dimensions") or {}).get(dimension)) or {}
+    keys = spec.get("reads") or [dimension]
+    allowed = set(spec.get("values") or ())
+    present = [key for key in keys if key in components]
+    for key in present:
+        if head(components[key]) in allowed:
+            return key
+    return present[0] if present else None
+
+
+def dimension_value(components: dict[str, str], dimension: str, recipe: dict) -> str:
+    """The bare value the formula reads for a dimension, or '' if unanswered."""
+    key = resolve_dimension(components, dimension, recipe)
+    return head(components[key]) if key is not None else ""
+
+
+def dimension_read_map(recipe: dict) -> dict[str, str]:
+    """Recorded key -> the dimension it can answer.
+
+    A key named in some dimension's `reads` is declared vocabulary even though it is
+    not itself a dimension name, so it must not be reported as vocabulary drift.
+    """
+    declared = ((recipe.get("openness") or {}).get("dimensions")) or {}
+    return {
+        key: name
+        for name, spec in declared.items()
+        for key in ((spec or {}).get("reads") or [name])
+    }
+
+
+def license_read_keys(recipe: dict) -> list[str]:
+    """Recorded keys that may carry the license the tier lookup consumes."""
+    return (((recipe.get("openness") or {}).get("license_tier") or {}).get("reads")) or ["license"]
+
+
 def matches(rule_when: dict, facts: dict) -> bool:
     return all(facts.get(key) == value for key, value in rule_when.items())
 
@@ -129,27 +216,41 @@ def apply_formula(recipe: dict, facts: dict) -> tuple[int, str] | None:
     return None
 
 
-def check_category(slug: str, verbose: bool) -> tuple[int, int, list[str]]:
-    """Return (reproduced, total, problems)."""
+def check_category(slug: str, verbose: bool) -> tuple[int, int, list[str], list[str]]:
+    """Return (reproduced, total, problems, deferred)."""
     category = yaml.safe_load((ROOT / "sources" / "categories" / f"{slug}.yaml").read_text())
     recipe = category.get("scoring_recipe")
     if not recipe:
-        return 0, 0, []
+        return 0, 0, [], []
+
+    # Products the category has declared the rubric does not yet decide, each with
+    # a reason. Deferring is not the same as passing: these are excluded from the
+    # reproduction count rather than counted as reproduced, and printed every run
+    # so the exclusion cannot go quiet. A rubric that reproduces 45 of 45 while
+    # deferring the one product that contradicts it has proved nothing.
+    deferrals = recipe.get("deferred") or {}
 
     reproduced = 0
     total = 0
     problems: list[str] = []
+    deferred: list[str] = []
 
     for product in category.get("products") or []:
         path = ROOT / "sources" / "scores" / f"{product}.yaml"
         if not path.exists():
+            continue
+        if product in deferrals:
+            because = (deferrals[product] or {}).get("because", "no reason recorded")
+            deferred.append(f"{product}: {' '.join(str(because).split())}")
             continue
         scores = yaml.safe_load(path.read_text())
         openness = scores.get("openness") or {}
         components = split_components(openness.get("components") or "")
         total += 1
 
-        raw_license = components.get("license", "")
+        raw_license = next(
+            (components[key] for key in license_read_keys(recipe) if components.get(key)), ""
+        )
         tier = license_tier(raw_license, recipe)
         if tier is None:
             problems.append(
@@ -159,9 +260,9 @@ def check_category(slug: str, verbose: bool) -> tuple[int, int, list[str]]:
             continue
 
         facts = {
-            "weights": head(components.get("weights", "")),
-            "data": head(components.get("data", "")),
-            "code": head(components.get("code", "")),
+            "weights": dimension_value(components, "weights", recipe),
+            "data": dimension_value(components, "data", recipe),
+            "code": dimension_value(components, "code", recipe),
             "license_tier": tier,
         }
         got = apply_formula(recipe, facts)
@@ -178,7 +279,11 @@ def check_category(slug: str, verbose: bool) -> tuple[int, int, list[str]]:
                 f"code={facts['code']} tier={tier}]"
             )
 
-    return reproduced, total, problems
+    unknown = sorted(set(deferrals) - set(category.get("products") or []))
+    for product in unknown:
+        problems.append(f"{product}: deferred by the recipe but not a product of this category")
+
+    return reproduced, total, problems, deferred
 
 
 def main() -> int:
@@ -196,14 +301,17 @@ def main() -> int:
     failed = False
     checked_any = False
     for slug in slugs:
-        reproduced, total, problems = check_category(slug, args.verbose)
-        if total == 0:
+        reproduced, total, problems, deferred = check_category(slug, args.verbose)
+        if total == 0 and not deferred:
             continue
         checked_any = True
         status = "OK" if not problems else "FAIL"
-        print(f"{slug}: {reproduced}/{total} reproduced  [{status}]")
+        suffix = f", {len(deferred)} deferred" if deferred else ""
+        print(f"{slug}: {reproduced}/{total} reproduced{suffix}  [{status}]")
         for problem in problems:
             print(f"  ! {problem}")
+        for entry in deferred:
+            print(f"  ~ deferred  {entry}")
         if problems:
             failed = True
 

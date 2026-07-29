@@ -405,11 +405,70 @@ def test_real_sources_serialize_without_errors():
     root = Path(__file__).resolve().parents[1]
     tables, errors, _ = build_rubric(load_sources(root), load_policy(root), load_routing(root))
     assert errors == [], f"rubric has errors: {errors[:5]}"
-    # base_pretrained is the only category with a recipe today; when that changes
-    # these counts move, which is the point of asserting them.
-    assert len(tables["category_scoring_rules"]) == 11
-    assert len(tables["product_openness_evidence"]) == 195
+
+    # Asserted per category rather than as a total, so a new recipe shows up as its
+    # own line instead of moving one opaque number. base_pretrained's counts are
+    # pinned as a regression guard: porting the rubric to a second category, adding
+    # recorded-name aliases and adding `reads` must not disturb the pilot.
+    def per_category(table):
+        counts: dict[str, int] = {}
+        for row in tables[table]:
+            counts[row["category_slug"]] = counts.get(row["category_slug"], 0) + 1
+        return counts
+
+    assert per_category("category_scoring_rules") == {"base_pretrained": 11, "finetuned_chat": 9}
+    assert per_category("product_openness_evidence") == {"base_pretrained": 195, "finetuned_chat": 205}
     assert {r["grade"] for r in tables["product_openness_evidence"]} == {"document"}
+
+
+def test_every_scored_product_carries_a_row_for_each_formula_dimension():
+    """The warehouse joins a rule's `condition_key` against the `dimension` column,
+    so a dimension recorded under a different key has to be emitted under the
+    DIMENSION name. Emitted under the raw key instead, the condition silently fails
+    to match and the product falls through to `otherwise` — scored on an absence.
+    """
+    from pathlib import Path
+
+    from build.serialize_rubric import load_policy, load_routing
+    from build.validate import load_sources
+
+    root = Path(__file__).resolve().parents[1]
+    tables, _, _ = build_rubric(load_sources(root), load_policy(root), load_routing(root))
+
+    by_product: dict[tuple[str, str], set[str]] = {}
+    for row in tables["product_openness_evidence"]:
+        by_product.setdefault((row["category_slug"], row["product_slug"]), set()).add(
+            row["dimension"]
+        )
+
+    # `data` is the dimension finetuned_chat reads from a different key, so it is the
+    # one that would go missing.
+    missing = [
+        product
+        for (category, product), dimensions in by_product.items()
+        if category == "finetuned_chat" and "data" not in dimensions
+    ]
+    assert missing == [], f"no data row emitted for: {missing}"
+
+
+def test_evidence_never_puts_two_values_on_one_grain():
+    """One product/category/dimension must carry one value. Two would let the
+    warehouse pick between a base corpus and a post-training mixture by row order.
+    """
+    from collections import Counter
+    from pathlib import Path
+
+    from build.serialize_rubric import load_policy, load_routing
+    from build.validate import load_sources
+
+    root = Path(__file__).resolve().parents[1]
+    tables, _, _ = build_rubric(load_sources(root), load_policy(root), load_routing(root))
+
+    counts = Counter(
+        (r["product_slug"], r["category_slug"], r["dimension"])
+        for r in tables["product_openness_evidence"]
+    )
+    assert [key for key, n in counts.items() if n > 1] == []
 
 
 def test_real_license_aliases_cover_every_slug_the_hub_actually_returns():
