@@ -1,0 +1,61 @@
+product: mastra
+openness:
+  score: 4
+  class: open_core
+  components: license:Apache-2.0(OSI, everything outside `ee/`);source:public;ee/-auth-directories-under-Mastra-Enterprise-License;Mastra-Platform-hosted-tier-commercial
+  confidence: high
+  note: Open-core in the LangGraph/LlamaIndex shape rather than the n8n one - the framework itself is a real
+    OSI license, not fair-code. LICENSE.md scopes the commercial carve-out narrowly to `ee/` auth directories,
+    so the agent, workflow, memory and eval surfaces a user actually builds on are Apache-2.0. Not 5 because
+    the enterprise auth code is source-available and the managed platform is closed.
+  last_verified: '2026-07-29'
+  sources:
+  - url: https://github.com/mastra-ai/mastra/blob/main/LICENSE.md
+    shows: 'LICENSE.md states content outside `ee/` directories is "available under the Apache License 2.0",
+      Copyright 2025 Kepler Software, Inc., while `ee/` paths (packages/core/src/auth/ee/,
+      packages/server/src/server/auth/ee/) fall under the license in ee/LICENSE. This preamble ahead of the
+      Apache text is why GitHub''s classifier reports NOASSERTION for the repo.'
+    accessed: '2026-07-29'
+  - url: https://www.npmjs.com/package/@mastra/core
+    shows: published package metadata declares license Apache-2.0 at v1.54.0, confirming the framework ships
+      to consumers under the OSI license rather than only being licensed that way in-repo
+    accessed: '2026-07-29'
+  - url: https://mastra.ai/
+    shows: 'site FAQ states "Mastra''s core framework is open source under the Apache 2.0 license. Enterprise
+      features are source-available under the Mastra Enterprise License", and describes Mastra Platform as a
+      hosted commercial tier'
+    accessed: '2026-07-29'
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: '@mastra/core at 4,931,561 downloads in the last month, which places it in the 1-10M band. Deliberately
+    NOT summed with the `mastra` package (2,151,411/mo): npm counts increment for transitively fetched
+    dependencies, and `mastra` pulls @mastra/core through @mastra/deployer, so adding them double-counts the
+    same installs. @mastra/core is the package everything resolves to and is the better single proxy. The band
+    is the same either way. Raw download volume includes CI and mirror traffic, so this is install volume rather
+    than a user count.'
+  sources:
+  - url: https://api.npmjs.org/downloads/point/last-month/@mastra/core
+    shows: npm registry download API returns 4,931,561 downloads for @mastra/core over the trailing month
+    accessed: '2026-07-29'
+  - url: https://github.com/mastra-ai/mastra
+    shows: 26,669 stars, 2,523 forks and 100 contributors, last pushed 2026-07-29 - corroborating activity,
+      not the adoption basis
+    accessed: '2026-07-29'
+capability:
+  score: 4
+  basis: feature_matrix
+  value: null
+  confidence: medium
+  note: Feature coverage comparable to LangChain and Pydantic-AI (both 4) - agents with tools, graph workflows
+    with explicit control flow, memory with semantic recall, model routing across 90+ providers, evals, tracing
+    and human-in-the-loop. Not 5 like LangGraph or LlamaIndex, which have deeper ecosystems and longer track
+    records. Confidence is medium rather than high because no first-party SWE-bench or GAIA result exists for
+    the framework itself, so this is a feature-matrix judgment rather than a measurement.
+  sources:
+  - url: https://mastra.ai/
+    shows: documents agents, graph-based workflows with control flow, memory with semantic recall, model routing
+      across 90+ providers, built-in evals and tracing, and human-in-the-loop
+    accessed: '2026-07-29'
