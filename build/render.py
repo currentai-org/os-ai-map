@@ -27,10 +27,19 @@ _ORDER = data["order"]  # canonical key order, must match the notebook dict orde
 
 
 def _build_straplines_literal(order, cats):
+    """Emit a dict literal for the generated notebook.
+
+    Values go through json.dumps, not f-string interpolation. A strapline is
+    contributor-authored prose, so one apostrophe-free quote - `the "open" frontier` -
+    used to close the literal early and produce a notebook that will not parse. CI
+    serializes but did not render, so that broke after merge rather than in review.
+    json output is a valid Python string literal for any input, which is the same
+    reason DATA_LITERAL already uses repr.
+    """
     lines = ["{\n"]
     for cid in order:
         strap = cats[cid]["strapline"]
-        lines.append(f'        "{cid}": "{strap}",\n')
+        lines.append(f"        {json.dumps(cid)}: {json.dumps(strap)},\n")
     lines.append("    }")
     return "".join(lines)
 
@@ -314,6 +323,10 @@ def header(C, F, mo):
 
 @app.cell(hide_code=True)
 def stack_overview(C, DATA, F, ORDER, STACK_DESC, mix_counts, mo):
+    # Category labels and descriptions are contributor-authored and land in HTML bodies.
+    # `ornith`'s description contains a literal <think>, which the browser silently
+    # swallows as an unknown element, so today the published map drops that word.
+    import html as _html
     # The at-a-glance roster: every category as a row, grouped by arc, with the
     # full openness-mix count chips.
     _rows = []
@@ -340,9 +353,9 @@ def stack_overview(C, DATA, F, ORDER, STACK_DESC, mix_counts, mo):
             f'<div style="display:grid; grid-template-columns:1fr 232px; gap:18px; '
             f'align-items:center; padding:14px 0; border-bottom:1px solid {C["rule"]};">'
             f'<div><div style="font-family:{F["headline"]}; font-size:1.05rem; font-weight:600; '
-            f'color:{C["ink"]}; line-height:1.2;">{_cat["label"]}</div>'
+            f'color:{C["ink"]}; line-height:1.2;">{_html.escape(str(_cat["label"]))}</div>'
             f'<div style="font-family:{F["body"]}; font-size:0.85rem; color:{C["ink_3"]}; '
-            f'margin-top:3px; line-height:1.4;">{STACK_DESC.get(_cid, "")}</div></div>'
+            f'margin-top:3px; line-height:1.4;">{_html.escape(str(STACK_DESC.get(_cid, "")))}</div></div>'
             f'<div style="font-family:{F["mono"]}; font-size:0.74rem; color:{C["ink_2"]};">{_chips}</div>'
             f'</div>'
         )
@@ -511,6 +524,7 @@ def filter_sort_controls(mo):
 @app.cell(hide_code=True)
 def helpers(C, DATA, F, OPEN, STRAPLINES, VERDICT, mix_counts, mo, vbucket,
             verdict_for):
+    import html as _html  # product display names are contributor-authored
     def _oscore(p):
         return (p.get("openness") or {}).get("score")
 
@@ -571,7 +585,7 @@ def helpers(C, DATA, F, OPEN, STRAPLINES, VERDICT, mix_counts, mo, vbucket,
             f'data-adopt="{-1 if _adl is None else _adl}" '
             f'data-cap="{-1 if _cpc is None else _cpc}" '
             f'style="border-bottom:1px solid {C["paper_2"]};">'
-            f'<td style="padding:8px 10px; font-family:{F["body"]}; font-size:0.86rem; color:{C["ink"]};">{_name}</td>'
+            f'<td style="padding:8px 10px; font-family:{F["body"]}; font-size:0.86rem; color:{C["ink"]};">{_html.escape(str(_name))}</td>'
             f'<td style="padding:8px 10px; font-family:{F["body"]}; font-size:0.78rem; color:{C["ink_3"]};">{p.get("org","") or ""}</td>'
             f'<td style="padding:8px 10px;">{openness_cell(op)}</td>'
             f'<td style="padding:8px 10px;">{axis_bars(ad, "level", C["adopt"])}</td>'
@@ -831,6 +845,7 @@ def details_payload(DATA, ORDER, mo):
 
 @app.cell(hide_code=True)
 def stages_table(C, DATA, F, ORDER, mo):
+    import html as _html  # product display names are contributor-authored
     # The maturity ladder: each category's open ecosystem placed on a 0-5 stage.
     # Only fully-open products count toward a stage (open-ish/closed do not); see
     # docs/guides/gap-analysis.md. Stages + assignments come straight from the payload.
@@ -867,7 +882,7 @@ def stages_table(C, DATA, F, ORDER, mo):
             f'box-sizing:border-box; font-family:{F["mono"]}; font-size:0.8rem; font-weight:600; color:{C["ink"]}; '
             f'background:#fff; border:1.5px solid {C["ink"]}; border-radius:50%;">{_n}</span></td>'
             f'<td style="padding:14px 16px 14px 0; font-family:{F["headline"]}; font-size:0.98rem; '
-            f'font-weight:600; color:{C["ink"]}; white-space:nowrap;">{_name}</td>'
+            f'font-weight:600; color:{C["ink"]}; white-space:nowrap;">{_html.escape(str(_name))}</td>'
             f'<td style="padding:14px 16px 14px 0; font-family:{F["body"]}; font-size:0.86rem; '
             f'color:{C["ink_2"]}; line-height:1.45; max-width:300px;">{_desc}</td>'
             f'<td style="padding:14px 0;">{_cat_html}</td>'
@@ -1122,5 +1137,10 @@ NB = (NB
       .replace("__SUMMARY_HTML__", SUMMARY_HTML_LITERAL)
       .replace("__METHOD_HTML__", METHOD_HTML_LITERAL)
       .replace("__SECTION_CELLS__", section_block))
-open(OUT, "w", encoding="utf-8").write(NB)
-print("wrote", OUT, "(", len(NB), "chars )")
+# Guarded so the module can be imported without writing. Everything above is pure -
+# reads and string building - but the write is not, and an unguarded write means
+# importing render.py to test one helper silently regenerates a bot-owned file and
+# dirties the tree. That is why nothing here had tests.
+if __name__ == "__main__":
+    open(OUT, "w", encoding="utf-8").write(NB)
+    print("wrote", OUT, "(", len(NB), "chars )")

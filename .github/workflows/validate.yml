@@ -22,6 +22,18 @@ jobs:
       - name: Serialize dry-run
         run: uv run python -m build.serialize --date ci-dry-run
 
+      # Render the notebook and parse the result. The generated file is bot-owned and is
+      # not committed from a PR, but rendering is the only thing that catches a
+      # contributor string breaking the generated Python: a quote in a strapline produces
+      # a notebook that will not parse, and that surfaced after merge because CI
+      # serialized without ever rendering.
+      - name: Render notebook and check it parses
+        run: |
+          uv run python build/render.py
+          uv run python -c "import ast, pathlib; ast.parse(pathlib.Path('notebooks/ai-stack-map.py').read_text()); print('generated notebook parses')"
+          uv run marimo check notebooks/ai-stack-map.py
+          git checkout -- notebooks/ai-stack-map.py
+
   generated-files-guard:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request' && github.actor != 'github-actions[bot]'

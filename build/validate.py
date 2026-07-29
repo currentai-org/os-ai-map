@@ -14,13 +14,16 @@ _SCHEMA_FOR_DIR = {
     "products": "product",
     "scores": "score",
 }
+# taxonomy.yaml is one file, not a directory, so it is schema-checked separately below
+# rather than through _SCHEMA_FOR_DIR. Listed here so _load_schemas picks it up.
+_EXTRA_SCHEMAS = ("taxonomy",)
 
 
 def _load_schemas(root: Path) -> dict:
     schema_dir = root / "docs" / "schemas"
     return {
         name: json.loads((schema_dir / f"{name}.schema.json").read_text())
-        for name in set(_SCHEMA_FOR_DIR.values())
+        for name in set(_SCHEMA_FOR_DIR.values()) | set(_EXTRA_SCHEMAS)
     }
 
 OPENNESS_CLASSES = {
@@ -230,6 +233,28 @@ def validate_sources(data: dict) -> list[str]:
         if slug not in scores:
             errors.append(f"product {slug!r}: no scores/{slug}.yaml")
 
+    # --- the filename IS the identity ---
+    # Every join in the pipeline keys on the file stem, but the record also carries the
+    # slug in a field, and nothing checked the two agree. A copied or renamed file with
+    # a stale inner name passes schema and roster checks and then corrupts joins
+    # silently: the roster resolves by stem, while anything reading the field resolves
+    # somewhere else. Cheap to assert, so asserted.
+    #
+    # `scores` names its slug `product` rather than `name`, because a score is about a
+    # product rather than being one.
+    for dirname, key in (("organizations", "name"), ("categories", "name"),
+                         ("products", "name"), ("scores", "product")):
+        for stem, record in (data.get(dirname) or {}).items():
+            if not isinstance(record, dict):
+                continue
+            inner = record.get(key)
+            if inner != stem:
+                errors.append(
+                    f"{dirname}/{stem}.yaml: `{key}: {inner!r}` does not match the filename "
+                    f"stem {stem!r}. The stem is the identity every join uses, so these must "
+                    f"agree or the record is reachable under two different names."
+                )
+
     # --- per-record JSON Schema validation ---
     schemas = _load_schemas(Path(__file__).resolve().parents[1])
     for dirname, schema_name in _SCHEMA_FOR_DIR.items():
@@ -239,6 +264,16 @@ def validate_sources(data: dict) -> list[str]:
                 jsonschema.validate(record, schema)
             except jsonschema.ValidationError as e:
                 errors.append(f"{dirname}/{slug}: schema: {e.message}")
+
+    # `taxonomy.yaml` is a single file rather than a directory, so it fell outside
+    # `_SCHEMA_FOR_DIR` and was never schema-checked despite having a schema and being
+    # described as schema-governed in AGENTS.md. The cross-file arc checks above catch a
+    # dangling category, but a malformed required field reaches serialize before anything
+    # complains.
+    try:
+        jsonschema.validate(data["taxonomy"], schemas["taxonomy"])
+    except jsonschema.ValidationError as e:
+        errors.append(f"sources/taxonomy.yaml: schema: {e.message}")
 
     return errors
 

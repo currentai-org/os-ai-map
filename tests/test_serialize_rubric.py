@@ -420,7 +420,7 @@ def test_real_sources_serialize_without_errors():
     # Both fell with the slug migration: release-level products collapsed into the
     # tier the vendor sells, so 25 products left the roster and the closed frontier
     # models moved from base_pretrained to finetuned_chat.
-    assert per_category("product_openness_evidence") == {"base_pretrained": 111, "finetuned_chat": 171}
+    assert per_category("product_openness_evidence") == {"base_pretrained": 111, "finetuned_chat": 172}
     assert {r["grade"] for r in tables["product_openness_evidence"]} == {"document"}
 
 
@@ -452,6 +452,33 @@ def test_every_scored_product_carries_a_row_for_each_formula_dimension():
         if category == "finetuned_chat" and "data" not in dimensions
     ]
     assert missing == [], f"no data row emitted for: {missing}"
+
+
+def test_license_is_emitted_under_the_name_the_warehouse_joins_on():
+    """`license_tier.reads` lets a category accept the license under another key.
+
+    deepseek-coder records `model-license`, because its card separates the code license
+    from the one on the weights. check_rubric honours that list, but the serializer used
+    to emit the row under its raw key, so the SQL - which looks only for
+    `dimension = 'license'` - found nothing and the product abstained in the warehouse
+    while reproducing locally. Exactly one license row per scored product, under
+    `license`, is what keeps the two in step.
+    """
+    from pathlib import Path
+
+    from build.serialize_rubric import load_policy, load_routing
+    from build.validate import load_sources
+
+    root = Path(__file__).resolve().parents[1]
+    tables, _, _ = build_rubric(load_sources(root), load_policy(root), load_routing(root))
+
+    rows = tables["product_openness_evidence"]
+    scored = {(r["product_slug"], r["category_slug"]) for r in rows}
+    licensed = {(r["product_slug"], r["category_slug"]) for r in rows if r["dimension"] == "license"}
+    assert scored - licensed == set(), f"no license row emitted for: {sorted(scored - licensed)}"
+
+    deepseek = [r for r in rows if r["product_slug"] == "deepseek-coder" and r["dimension"] == "license"]
+    assert len(deepseek) == 1 and deepseek[0]["value"] == "DeepSeek-Model-License"
 
 
 def test_evidence_never_puts_two_values_on_one_grain():
