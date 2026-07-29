@@ -1,14 +1,18 @@
 product: tinyllama-1-1b-chat-v1-0
 openness:
-  score: 4
-  class: open_weights
+  score: 5
+  class: open_source
   confidence: high
-  components: weights:open(Apache-2.0);base:TinyLlama-1.1B(open, 3T-token pretrain documented);post-training:SFT
-    on UltraChat + DPO on UltraFeedback(both public datasets);code:open(pretraining project public);license:Apache-2.0(OSI)
+  components: weights:open(Apache-2.0);base:TinyLlama-1.1B(open, 3T-token pretrain documented);post-training-data:open(SFT
+    on UltraChat + DPO on UltraFeedback, both public datasets);code:open(pretraining project public);license:Apache-2.0(OSI)
   note: 'Unusually transparent for a chat model: open base, and named public alignment datasets (UltraChat
-    SFT + UltraFeedback DPO). Scored 4 open_weights, just short of full open_source since the base pretraining
-    data is documented but the end-to-end reproducible pipeline is not packaged as one release. Strongest
-    openness in this batch alongside Nemotron.'
+    SFT + UltraFeedback DPO). Corrected from 4 to 5 on 2026-07-29, and the post-training evidence moved
+    out of a free-text `post-training` key into `post-training-data` so it carries a value the rubric can
+    read. The old 4 rested on the base pretraining corpus being documented rather than packaged, but this
+    category scores the post-training data -- what the tuner released -- and zephyr scores 5/open_source
+    on these same two datasets while sitting on Mistral-7B, whose corpus is closed outright. Judging
+    TinyLlama by its base while judging zephyr by its post-training set penalized the more open of the two
+    bases. Strongest openness in this batch alongside Nemotron.'
   sources:
   - url: https://huggingface.co/TinyLlama/TinyLlama-1.1B-Chat-v1.0
     shows: Apache-2.0; base TinyLlama-1.1B; SFT on UltraChat + DPO on UltraFeedback

@@ -6,6 +6,198 @@ strapline: Where the closed labs lead. Most chat assistants are API-only; the op
 weights:
   adopt: 0.3
   cap: 0.7
+
+# Second category to carry a machine-readable rubric, and the one that tests
+# whether the first was a general mechanism or a bespoke one. The answer is mostly
+# yes: the tier ladder and the formula below are base_pretrained's, unchanged. What
+# needed adding was vocabulary, not structure - which keys carry the data answer for
+# a fine-tune, and eight more licenses.
+#
+# Ported on 2026-07-29. Three things the port found are recorded here rather than
+# quietly fixed, because they are judgments about published scores:
+#   * `deferred` below - three products whose license restricts CONDUCT rather than
+#     commerce, which this ladder has no tier for.
+#   * codegemma scored 3 while gemma-3 scored 2 on identical facts and the same
+#     license. Corrected to 2 in sources/scores/codegemma.yaml.
+#   * tulu-3 and starcoder2 recorded score/class pairs this ladder cannot emit
+#     (3/restricted, 4/open_source).
+#
+# The formula restates base_pretrained's, less one rule no product here can trigger.
+# Restating is tolerable at two categories and a liability at three - the third one to
+# land should extract the ladder to a shared default that a category overrides rather
+# than copies.
+scoring_recipe:
+  version: 1
+  derived_from:
+    method: ported from base_pretrained, then verified against this category's scores
+    ported_from: base_pretrained
+    scores_reproduced: 43
+    scores_total: 43
+    scores_deferred: 3
+    scores_corrected: 3
+    verified_on: '2026-07-29'
+    checker: build/check_rubric.py
+    note: >
+      43 of 43 reproduce, but only after three recorded scores were corrected -
+      codegemma 3 -> 2, tulu-3 3 -> 2, tinyllama-1-1b-chat-v1-0 4 -> 5. Counting
+      those as reproductions would be circular. 32 of 46 reproduced against the
+      unmodified rubric and unmodified scores, before any alias, any `reads`
+      declaration or any correction; that is the honest measure of how far the pilot
+      rubric traveled on its own.
+
+  openness:
+    dimensions:
+      weights:
+        question: Are the tuned model weights downloadable and runnable locally?
+        values: [open, closed, pending]
+        evidence:
+        - Hugging Face model repo with downloadable weight files (safetensors/GGUF)
+        - vendor download page for weights outside the Hub
+        machine_signal: signal_huggingface.hub_state (gated, private, files)
+      data:
+        question: Is the POST-TRAINING data released - the SFT, DPO or RL sets this
+          tune was built from?
+        # For a base model the data question is the pretraining corpus. For a tune,
+        # that corpus belongs to somebody else's model, and asking about it scores
+        # the base rather than the product. The honest question here is what the
+        # tuner released, which is why `post-training-data` is read first.
+        reads: [post-training-data, data]
+        values: [open, described_not_released, described, partial, closed]
+        evidence:
+        - a released SFT/DPO/RL mixture, or scripts that reconstruct it
+        - '`described` where the mixture is named in the card but not published'
+        - naming the datasets used is NOT sufficient for `open`
+        machine_signal: none - requires research
+        vocabulary_note: >
+          `described_not_released` here is `documented-not-released` in
+          base_pretrained. Same concept, two spellings, and neither category should
+          be the one that unilaterally renames it. Unifying the shared data
+          vocabulary is issue #106.
+      code:
+        question: Is the fine-tuning pipeline released, not just inference code?
+        values: [open, partial, closed]
+        evidence:
+        - '`open`: the post-training recipe - SFT/DPO/RL configs and scripts'
+        - '`partial`: inference, serving or chat-template code only'
+        - '`closed`: no code'
+        machine_signal: partial - repo presence from signal_github.repo_state
+
+    license_tier:
+      # base_pretrained's ladder, unchanged, including the declaration order that
+      # `tier_rank` and the multi-SKU rule depend on. Eight licenses added because
+      # this category ships them and the pilot did not.
+      ordered_by: restrictiveness_ascending
+      # A tune records its license under `license`, except where the card
+      # distinguishes a code license from the one attached to the weights, and then
+      # it lands in `model-license`. The weights license governs either way.
+      reads: [license, model-license]
+      values:
+        osi:
+          definition: OSI-approved license
+          examples: [Apache-2.0, MIT, BSD-3-Clause]
+        permissive_non_osi:
+          definition: >
+            Not OSI-approved but imposes no use restriction. Attribution or
+            naming requirements alone belong here.
+          examples: [Modified-MIT, minimax-community, NVIDIA-Open-Model-License]
+        use_restricted:
+          definition: >
+            Caps or gates use - monthly-active-user ceilings, field-of-use limits,
+            research-only terms, or a commercial agreement requirement.
+          examples: [Llama-2-Community-License, Llama-3-Community-License, Llama-3.1-Community-License,
+            Llama-3.2-Community-License, Llama-4-Community, Gemma-License, GLM-4-License,
+            Qwen-License-Agreement, Mistral-Research-License, Mistral-AI-Non-Production-License,
+            Jamba-Open-Model-License]
+        proprietary:
+          definition: No public license; weights not distributed.
+      multi_sku_rule: >
+        As base_pretrained: where a family ships SKUs under different licenses, the
+        most restrictive license among the SKUs WHOSE WEIGHTS ARE ACTUALLY
+        DISTRIBUTED governs, and API-only tiers are excluded.
+      inherits_from_base: >
+        A tune of a restrictively licensed base carries that restriction, because
+        the license travels with the weights. hermes-4-llama-3-1-405b is
+        use_restricted on account of Meta's terms, not anything Nous did. This needs
+        no rule of its own - the tune records the license it actually ships under,
+        and the ladder does the rest.
+
+        What the ladder deliberately does NOT do is credit the tuner's open method
+        here. A fine-tuning approach generalizes across bases - AI2's Tulu recipe
+        runs on Llama and on OLMo - so scoring the checkpoint would either bury the
+        open method or overstate the artifact. The map already resolves this by
+        scoring the method's artifacts as their own products:
+        tulu-3-sft-mixture is 5/open in training_synthetic_datasets while the
+        Llama-based tulu-3 checkpoint is 2/restricted. That pair is the signal.
+        Recording the checkpoint -> base link so the two can be joined is not yet
+        done; `lineage` exists but is dataset-only and free-text.
+      normalization:
+      - 'compound `code X + model Y`: the MODEL license governs'
+      - 'prefix `assumed-`: same tier, confidence drops to medium'
+      never_use:
+        mixed: Apply multi_sku_rule and store the resolved tier instead.
+        unknown: Research it or defer the product with a reason.
+
+    # Ordered rules, first match wins. base_pretrained's ladder less one rule: it
+    # carries a `data: documented-not-released, code: open -> 4`, and no product here
+    # pairs a described-but-unreleased mixture with an open pipeline. Declaring it
+    # anyway would add a rule that cannot fire, and a dead rule in a first-match-wins
+    # formula is a place for a later edit to hide.
+    formula:
+    - when: {weights: closed}
+      then: {score: 1, class: closed}
+    - when: {license_tier: proprietary}
+      then: {score: 1, class: closed}
+    - when: {license_tier: use_restricted}
+      then: {score: 2, class: restricted}
+      note: Open weights behind a use cap. Downloadable is not the same as usable.
+    - when: {data: open, code: open, license_tier: osi}
+      then: {score: 5, class: open_source}
+    - when: {data: open, code: open}
+      then: {score: 4, class: open_weights}
+      note: Full recipe but a non-OSI license caps the score at 4.
+    - otherwise: {score: 3, class: open_weights}
+      note: The category's center of gravity - open weights, closed recipe.
+
+  # Products this rubric does not decide, each with a reason. All three share one
+  # cause: a license that restricts CONDUCT - no military use, no discrimination,
+  # no commercial use - rather than capping commerce or field of use. The ladder's
+  # `use_restricted` is defined by commercial caps and field-of-use limits, so
+  # these fit no tier honestly.
+  #
+  # Not a quirk of this category. The same licenses are scored three different ways
+  # across the map, including one flat contradiction: DeepSeek-Model-License is
+  # permissive_non_osi in base_pretrained (deepseek-v3-base, 3/open_weights) and
+  # use-restricting here (2/restricted). OpenRAIL lands at 4/open_source here and
+  # 3/open_weights in safeguards. CC-BY-NC is 2/restricted here and 5/open in
+  # training_synthetic_datasets.
+  #
+  # Adding a tier for it would expand the taxonomy on one category's evidence,
+  # which is the thing #106 exists to prevent. Deferring keeps the products visible
+  # and unscored by machine until the tier question is settled in the open.
+  deferred:
+    starcoder2:
+      because: >
+        BigCode-OpenRAIL-M restricts behavior, not commerce. Weights, data and code
+        are all fully open, so the ladder would drop it to 2/restricted on the
+        license alone - harsher than any other reading of this artifact. Recorded
+        4/open_source, a pair the ladder cannot emit at all.
+      license: BigCode-OpenRAIL-M
+    deepseek-coder-v2-instruct:
+      because: >
+        DeepSeek-Model-License carries Attachment A acceptable-use restrictions
+        (military, illegal, discriminatory). base_pretrained tiers this same license
+        permissive_non_osi and scores deepseek-v3-base 3/open_weights; this product
+        is recorded 2/restricted. One of the two is wrong and the rubric should not
+        pick by fiat.
+      license: DeepSeek-Model-License
+    command-r:
+      because: >
+        CC-BY-NC is non-commercial, which is a harder restriction than most entries
+        in use_restricted, yet cc-by-nc-sa-4.0 carries 5/open on personahub in
+        training_synthetic_datasets. Needs one ruling that holds for models and
+        datasets both.
+      license: CC-BY-NC
+
 products:
 - qwen3-coder
 - qwen2-5-coder-instruct
