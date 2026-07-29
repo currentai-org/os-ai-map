@@ -88,20 +88,35 @@ dimensions:
 
   license:
     question: Which license governs the artifact being scored?
+    # `abstain_values` is the authoritative list of values that mean "this source
+    # has no answer for this column". It lives here, on the route, because
+    # abstention is a fact about a SOURCE, and this file is what owns source
+    # semantics. `evidence_policy.yaml` owns the separate question of whether a
+    # DOCUMENT is admissible. Keeping the two apart is deliberate: an earlier draft
+    # declared NOASSERTION in both files, which is exactly the drift this bridge
+    # exists to prevent. build/serialize_rubric.py reads these into the
+    # registry.evidence_abstentions table, so the warehouse never hardcodes them.
     routes:
     - source: huggingface_model
       column: license
       governs: weights
       confidence: high
+      abstain_values: [other, cc]
+      abstain_note: >
+        `other` is the Hub's escape hatch for "read the repo", and bare `cc` names
+        a license family with no version and no terms. Both are an absence of
+        information, not evidence of a permissive or a restrictive license. 12 of
+        147 live Hub rows carry one, including 4 base models.
     - source: huggingface_dataset
       column: license
       governs: dataset
       confidence: high
+      abstain_values: [other, cc]
     - source: github
       column: license_spdx_id
       governs: code
       confidence: high
-      abstain_when: license_spdx_id = 'NOASSERTION'
+      abstain_values: [NOASSERTION]
       abstain_note: >
         GitHub could not classify the LICENSE file. It is an absence of
         information, not evidence of a non-standard license. 25 products hit
@@ -115,6 +130,36 @@ dimensions:
     - GPLv3 -> GPL-3.0, AGPLv3 -> AGPL-3.0, case-insensitive
     - strip a leading `app=` / `code=` / `model=` qualifier
     - '`assumed-X` keeps tier X but caps confidence at medium'
+
+    # Hugging Face publishes a license SLUG, not the license name a rubric's tier
+    # examples use. Without this map `gemma` and `llama3.1` match no tier and the
+    # signal reads as ABSENT while it is in fact present and use-restricting -
+    # which is the failure that overstates openness. 12 of the 47 base models
+    # depend on an alias to route their license at all.
+    #
+    # These are aliases only. They say what a slug is CALLED, which is a fact
+    # about the Hub. They deliberately do NOT say what tier it belongs to, which
+    # is a judgment each category's `scoring_recipe` makes for itself. A slug that
+    # aliases to a name absent from the category's license_tier examples abstains,
+    # and that abstention is the signal to extend the rubric rather than to guess.
+    aliases:
+      huggingface:
+        apache-2.0: Apache-2.0
+        mit: MIT
+        bsd-3-clause: BSD-3-Clause
+        gemma: Gemma-License
+        llama2: Llama-2-Community-License
+        llama3: Llama-3-Community-License
+        llama3.1: Llama-3.1-Community-License
+        llama3.2: Llama-3.2-Community-License
+        llama4: Llama-4-Community
+        bigcode-openrail-m: BigCode-OpenRAIL-M
+        odc-by: ODC-By-1.0
+        cc0-1.0: CC0-1.0
+        cc-by-4.0: CC-BY-4.0
+        cc-by-sa-4.0: CC-BY-SA-4.0
+        cc-by-nc-sa-4.0: CC-BY-NC-SA-4.0
+        etalab-2.0: Etalab-Open-License-2.0
 
   weights:
     question: Are the trained weights downloadable and runnable locally?

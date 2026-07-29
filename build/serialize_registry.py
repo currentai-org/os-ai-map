@@ -252,9 +252,19 @@ def build_registry(sources: dict) -> tuple[dict[str, list[dict]], list[str], lis
     return tables, errors, warnings
 
 
-def write_tables(tables: dict[str, list[dict]], out_dir: Path) -> None:
+def write_tables(
+    tables: dict[str, list[dict]],
+    out_dir: Path,
+    spec: dict[str, tuple[str, ...]] | None = None,
+) -> None:
+    """Write one CSV per declared table. `spec` defaults to the registry's own.
+
+    Shared with build/serialize_rubric.py, which emits a different table set into
+    the same directory, so the column order comes from the caller's spec rather
+    than from this module's TABLES.
+    """
     out_dir.mkdir(parents=True, exist_ok=True)
-    for name, columns in TABLES.items():
+    for name, columns in (spec or TABLES).items():
         path = out_dir / f"{name}.csv"
         with path.open("w", newline="", encoding="utf-8") as handle:
             writer = csv.DictWriter(handle, fieldnames=list(columns))

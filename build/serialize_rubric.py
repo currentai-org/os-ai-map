@@ -1,0 +1,488 @@
+"""Serialize each category's scoring rubric and its recorded evidence to flat CSVs.
+
+Companion to `serialize_registry.py`, and deliberately a separate module. That one
+emits IDENTITY — which products, organizations and categories exist. This one emits
+the two things layer-2 needs in order to compute a score: the rubric that says how
+to score, and the evidence recorded against each product.
+
+They are kept apart because their claims differ. The registry is authoritative
+about what exists. This module is authoritative about the rubric and explicitly
+NOT authoritative about the evidence — it reports what `sources/scores/` currently
+records, including the places where that record cites nothing specific. Merging the
+two would let a serializer that ships unverified assertions borrow the registry's
+credibility.
+
+## Why evidence flows outward when scores do not
+
+`serialize_registry.py` excludes scores on purpose: scoring is computed downstream
+and flows back, so mirroring scores outward would point the dependency the wrong
+way. Evidence is not a score. It is the input a score is computed FROM, and it has
+to reach the scorer somehow.
+
+There is a circularity here worth stating plainly: for the base-model pilot the
+document-grade evidence is parsed out of the very files the pipeline writes back
+to. That makes the first run a fidelity test of the formula and nothing more. It
+can prove the rubric describes how the category was scored; it cannot show the
+scores are right. Steady state is evidence from datasets and fresh research, with
+these rows surviving only where nothing better exists.
+
+## Parsing stays in the repo
+
+`components` strings are parsed by `build/check_rubric.py`, which is tested and
+which CI already gates on. Shipping a second copy of that parser into a warehouse
+model would leave two implementations to keep in step, and they would drift. So the
+repo emits pre-split dimensions and the warehouse consumes flat facts.
+
+## Grain, and an honest limit
+
+`components` gives a value per dimension. `sources` is a list per AXIS, with no
+attribution of a particular source to a particular dimension. So evidence comes out
+at dimension grain and sources come out at axis grain, and the two cannot be joined
+more tightly than that. The evidence-store design wants source-per-dimension; today's
+files do not carry it. Recording the limit beats inventing an attribution.
+
+Emitted tables (CSVs into `build/registry/`, alongside the registry's own):
+
+  category_scoring_rules      the ordered formula, one row per rule condition
+  category_license_tiers      tier <- example license, per category
+  license_aliases             a source's license slug -> canonical license name
+  evidence_abstentions        values that mean "this source has no answer"
+  product_openness_evidence   per-dimension values parsed from `components`
+  product_score_sources       per-axis sources, each with an admission verdict
+
+Usage:
+    uv run python -m build.serialize_rubric            # write CSVs
+    uv run python -m build.serialize_rubric --check    # validate, write nothing
+"""
+
+from __future__ import annotations
+
+import argparse
+import re
+import sys
+from pathlib import Path
+
+import yaml
+
+from build.check_rubric import split_components
+from build.serialize_registry import write_tables
+from build.validate import load_sources
+
+ROOT = Path(__file__).resolve().parents[1]
+OUT_DIR = ROOT / "build" / "registry"
+
+AXES = ("openness", "adoption", "capability")
+
+# `license_tier()` in check_rubric defines the proprietary tier by MEANING rather
+# than by an example list, because no vendor publishes a license called
+# "proprietary". Those tokens are emitted as definitional examples so the warehouse
+# gets one lookup table instead of a lookup table plus a hardcoded special case.
+DEFINITIONAL_TIERS = {"proprietary": ("proprietary", "closed", "none")}
+
+TABLES: dict[str, tuple[str, ...]] = {
+    "category_scoring_rules": (
+        "category_slug",
+        "recipe_version",
+        "rule_index",
+        "is_otherwise",
+        "condition_key",
+        "condition_value",
+        "then_score",
+        "then_class",
+    ),
+    "category_license_tiers": (
+        "category_slug",
+        "tier",
+        "tier_rank",
+        "example_license",
+        "is_definitional",
+    ),
+    "license_aliases": ("source", "license_slug", "license_name"),
+    "evidence_abstentions": ("source", "column_name", "abstain_value"),
+    "product_openness_evidence": (
+        "product_slug",
+        "category_slug",
+        "dimension",
+        "value",
+        "value_detail",
+        "grade",
+        "in_declared_enum",
+    ),
+    "product_score_sources": (
+        "product_slug",
+        "category_slug",
+        "axis",
+        "source_url",
+        "source_shows",
+        "source_accessed",
+        "grade",
+        "admitted",
+        "reject_reason",
+    ),
+}
+
+
+def load_policy(root: Path) -> dict:
+    return yaml.safe_load((root / "sources" / "evidence_policy.yaml").read_text()) or {}
+
+
+def load_routing(root: Path) -> dict:
+    return yaml.safe_load((root / "sources" / "signal_routing.yaml").read_text()) or {}
+
+
+def split_value(raw: str) -> tuple[str, str]:
+    """Split a recorded component into its bare value and its trailing detail.
+
+    'open(downloadable on HF, gated)' -> ('open', 'downloadable on HF, gated')
+    The bare half matches `check_rubric.head` exactly, which is what the formula
+    consumes; the detail half is what a reviewer needs and the formula ignores.
+    """
+    text = (raw or "").strip()
+    parts = re.split(r"[(,]", text, maxsplit=1)
+    bare = parts[0].strip()
+    rest = parts[1].strip() if len(parts) > 1 else ""
+    return bare, rest.rstrip(")").strip()
+
+
+def admit(shows: str, policy: dict) -> tuple[bool, str]:
+    """Decide whether a recorded source is admissible evidence.
+
+    Rejection is not deletion. The row is still emitted, carrying its reason, so
+    that unsourced assertions become a queryable work list instead of quietly
+    passing for provenance.
+    """
+    rules = policy.get("admission") or {}
+    text = (shows or "").strip()
+    if rules.get("require_nonempty_shows", True) and not text:
+        return False, "no `shows` recorded"
+    lowered = text.lower()
+    for phrase in rules.get("boilerplate_shows") or []:
+        if str(phrase).lower() in lowered:
+            return False, f"boilerplate `shows`: {phrase!r}"
+    return True, ""
+
+
+def scoring_rules(slug: str, recipe: dict) -> tuple[list[dict], list[str]]:
+    """Flatten the ordered formula into one row per condition.
+
+    Long form rather than a column per dimension: dimensions differ by category,
+    and a wide table would need reshaping every time a new rubric lands.
+    `rule_index` preserves the order, which is load-bearing — the formula is
+    first-match-wins, so a reordering silently changes scores.
+    """
+    rows: list[dict] = []
+    errors: list[str] = []
+    openness = recipe.get("openness") or {}
+    declared = openness.get("dimensions") or {}
+    tiers = ((openness.get("license_tier") or {}).get("values") or {}).keys()
+    version = recipe.get("version", "")
+
+    for index, rule in enumerate(openness.get("formula") or []):
+        if "otherwise" in rule:
+            result = rule["otherwise"]
+            rows.append(
+                {
+                    "category_slug": slug,
+                    "recipe_version": version,
+                    "rule_index": index,
+                    "is_otherwise": True,
+                    "condition_key": "",
+                    "condition_value": "",
+                    "then_score": result.get("score", ""),
+                    "then_class": result.get("class", ""),
+                }
+            )
+            continue
+
+        when = rule.get("when") or {}
+        then = rule.get("then") or {}
+        if not when or not then:
+            errors.append(f"category '{slug}' formula rule {index} has neither a when/then nor an otherwise")
+            continue
+
+        for key, value in when.items():
+            # A condition naming a dimension that the rubric never declared, or a
+            # tier that its own tier list does not define, cannot ever match. It
+            # would not raise; it would just make the rule dead and push products
+            # into `otherwise`. That is exactly the failure a checker has to catch.
+            if key == "license_tier":
+                if value not in tiers:
+                    errors.append(
+                        f"category '{slug}' rule {index} tests license_tier={value!r}, "
+                        f"which is not one of its declared tiers {sorted(tiers)}"
+                    )
+            elif key not in declared:
+                errors.append(
+                    f"category '{slug}' rule {index} tests undeclared dimension {key!r}"
+                )
+            elif value not in (declared[key].get("values") or []):
+                errors.append(
+                    f"category '{slug}' rule {index} tests {key}={value!r}, which is not in "
+                    f"its declared values {declared[key].get('values')}"
+                )
+            rows.append(
+                {
+                    "category_slug": slug,
+                    "recipe_version": version,
+                    "rule_index": index,
+                    "is_otherwise": False,
+                    "condition_key": key,
+                    "condition_value": value,
+                    "then_score": then.get("score", ""),
+                    "then_class": then.get("class", ""),
+                }
+            )
+    return rows, errors
+
+
+def license_tiers(slug: str, recipe: dict) -> tuple[list[dict], list[str]]:
+    """Emit tier <- example license, carrying the declared restrictiveness rank.
+
+    `tier_rank` is the position of the tier in the recipe's `values` mapping. That
+    is only meaningful if the category says its declaration order encodes
+    restrictiveness, so `ordered_by` is required whenever there is more than one
+    tier to compare. Without it the multi-SKU rule would be resolving "most
+    restrictive" against whatever order the YAML happened to be written in.
+    """
+    rows: list[dict] = []
+    errors: list[str] = []
+    spec_root = ((recipe.get("openness") or {}).get("license_tier")) or {}
+    values = spec_root.get("values") or {}
+    if len(values) > 1 and spec_root.get("ordered_by") != "restrictiveness_ascending":
+        errors.append(
+            f"category '{slug}' declares {len(values)} license tiers but no "
+            f"`ordered_by: restrictiveness_ascending`, so the most-restrictive rule "
+            f"has no defined ordering to resolve against"
+        )
+    for rank, (tier, spec) in enumerate(values.items()):
+        for example in (spec or {}).get("examples") or []:
+            rows.append(
+                {
+                    "category_slug": slug,
+                    "tier": tier,
+                    "tier_rank": rank,
+                    "example_license": example,
+                    "is_definitional": False,
+                }
+            )
+        for token in DEFINITIONAL_TIERS.get(tier, ()):
+            rows.append(
+                {
+                    "category_slug": slug,
+                    "tier": tier,
+                    "tier_rank": rank,
+                    "example_license": token,
+                    "is_definitional": True,
+                }
+            )
+    return rows, errors
+
+
+def license_aliases(routing: dict) -> list[dict]:
+    rows: list[dict] = []
+    aliases = (((routing.get("dimensions") or {}).get("license") or {}).get("aliases")) or {}
+    for source, mapping in aliases.items():
+        for slug, name in (mapping or {}).items():
+            rows.append({"source": source, "license_slug": str(slug), "license_name": name})
+    return rows
+
+
+def evidence_abstentions(routing: dict) -> list[dict]:
+    """Flatten every route's `abstain_values` from signal_routing.yaml.
+
+    Read from the ROUTE rather than from evidence_policy.yaml, because a value that
+    means "no answer" is a fact about a source and signal_routing.yaml is what owns
+    source semantics. An earlier draft declared GitHub's NOASSERTION in both files,
+    which is the drift this bridge exists to prevent.
+
+    These cross the bridge rather than being written into the warehouse SQL for the
+    same reason the components parser stays in the repo: one declaration, or they
+    diverge. `source` is the route's source name — `huggingface_model`, not
+    `huggingface` — so an abstention attached to model licenses cannot be read as
+    applying to dataset licenses.
+    """
+    rows: list[dict] = []
+    seen: set[tuple[str, str, str]] = set()
+    for dimension in (routing.get("dimensions") or {}).values():
+        if not isinstance(dimension, dict):
+            continue
+        for route in dimension.get("routes") or []:
+            if not isinstance(route, dict):
+                continue
+            source = route.get("source")
+            column = route.get("column")
+            if not source or not column:
+                continue
+            for value in route.get("abstain_values") or []:
+                key = (str(source), str(column), str(value))
+                # The same source/column pair can be routed by more than one
+                # dimension, and the lookup table wants one row per value.
+                if key not in seen:
+                    seen.add(key)
+                    rows.append(
+                        {"source": source, "column_name": column, "abstain_value": str(value)}
+                    )
+    return rows
+
+
+def build_rubric(sources: dict, policy: dict, routing: dict) -> tuple[dict[str, list[dict]], list[str], list[str]]:
+    """Return (tables, errors, warnings).
+
+    Errors are things that would make scoring wrong rather than merely incomplete:
+    a malformed rule, or a rule that can never match. Warnings are coverage and
+    data-quality facts — a category with no rubric yet, a recorded value outside
+    its own declared enum, a source that cites nothing.
+    """
+    categories: dict = sources["categories"]
+    scores: dict = sources.get("scores") or {}
+
+    tables: dict[str, list[dict]] = {name: [] for name in TABLES}
+    errors: list[str] = []
+    warnings: list[str] = []
+
+    tables["license_aliases"] = license_aliases(routing)
+    tables["evidence_abstentions"] = evidence_abstentions(routing)
+    if not tables["evidence_abstentions"]:
+        warnings.append("signal_routing.yaml declares no route abstain_values")
+
+    scored_categories = 0
+    for slug, category in sorted(categories.items()):
+        recipe = category.get("scoring_recipe")
+        if not recipe:
+            warnings.append(f"category '{slug}' declares no scoring_recipe")
+            continue
+        scored_categories += 1
+
+        rules, rule_errors = scoring_rules(slug, recipe)
+        tables["category_scoring_rules"].extend(rules)
+        errors.extend(rule_errors)
+        tier_rows, tier_errors = license_tiers(slug, recipe)
+        tables["category_license_tiers"].extend(tier_rows)
+        errors.extend(tier_errors)
+
+        declared = ((recipe.get("openness") or {}).get("dimensions")) or {}
+
+        for product_slug in category.get("products") or []:
+            record = scores.get(product_slug)
+            if record is None:
+                continue
+            openness = record.get("openness") or {}
+            components = split_components(openness.get("components") or "")
+            if not components:
+                warnings.append(
+                    f"product '{product_slug}' in '{slug}' records no openness components"
+                )
+
+            for dimension, raw in components.items():
+                bare, detail = split_value(raw)
+                # A component the rubric never declared is vocabulary drift. It cannot
+                # affect a score, because the formula only reads what it declares, so
+                # it is a curation finding rather than a failure - but left unreported
+                # it is an observation nobody will ever act on. `marin` records
+                # `reproducibility:bit-for-bit`, which is a real openness fact the
+                # rubric has no question for.
+                if dimension != "license" and dimension not in declared:
+                    warnings.append(
+                        f"product '{product_slug}' records {dimension!r}, which "
+                        f"'{slug}' does not declare as a dimension"
+                    )
+                allowed = (declared.get(dimension) or {}).get("values")
+                # `license` is not a dimension with an enum; it is the raw input the
+                # license_tier lookup consumes, so it has nothing to be checked against.
+                in_enum = "" if dimension == "license" or not allowed else bare in allowed
+                if in_enum is False:
+                    warnings.append(
+                        f"product '{product_slug}' records {dimension}={bare!r}, which is not in "
+                        f"the rubric's declared values {allowed}"
+                    )
+                tables["product_openness_evidence"].append(
+                    {
+                        "product_slug": product_slug,
+                        "category_slug": slug,
+                        "dimension": dimension,
+                        "value": bare,
+                        "value_detail": detail,
+                        "grade": "document",
+                        "in_declared_enum": in_enum,
+                    }
+                )
+
+            rejected = 0
+            for axis in AXES:
+                for source in (record.get(axis) or {}).get("sources") or []:
+                    if not isinstance(source, dict):
+                        continue
+                    shows = source.get("shows") or ""
+                    admitted, reason = admit(shows, policy)
+                    rejected += 0 if admitted else 1
+                    accessed = source.get("accessed")
+                    tables["product_score_sources"].append(
+                        {
+                            "product_slug": product_slug,
+                            "category_slug": slug,
+                            "axis": axis,
+                            "source_url": source.get("url", ""),
+                            "source_shows": shows,
+                            "source_accessed": str(accessed) if accessed else "",
+                            "grade": "document",
+                            "admitted": admitted,
+                            "reject_reason": reason,
+                        }
+                    )
+            if rejected:
+                warnings.append(
+                    f"product '{product_slug}': {rejected} source row(s) cite nothing specific"
+                )
+
+    if scored_categories == 0:
+        errors.append("no category declares a scoring_recipe, so there is nothing to score with")
+
+    return tables, errors, warnings
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--check", action="store_true", help="validate only, write nothing")
+    parser.add_argument("--out", type=Path, default=OUT_DIR, help="output directory")
+    parser.add_argument("--verbose", action="store_true", help="print every warning")
+    args = parser.parse_args()
+
+    sources = load_sources(ROOT)
+    tables, errors, warnings = build_rubric(sources, load_policy(ROOT), load_routing(ROOT))
+
+    for name in TABLES:
+        print(f"  {name:<27} {len(tables[name]):>5} rows")
+
+    admitted = sum(1 for r in tables["product_score_sources"] if r["admitted"])
+    total_sources = len(tables["product_score_sources"])
+    if total_sources:
+        print(
+            f"\n  admissible sources: {admitted}/{total_sources} "
+            f"({admitted / total_sources:.0%}); {total_sources - admitted} cite nothing specific"
+        )
+
+    if warnings:
+        print(f"\n{len(warnings)} warning(s) — coverage and data quality, nothing broken")
+        shown = warnings if args.verbose else warnings[:8]
+        for warning in shown:
+            print(f"  - {warning}")
+        if len(shown) < len(warnings):
+            print(f"  ... {len(warnings) - len(shown)} more (--verbose)")
+
+    if errors:
+        print(f"\n{len(errors)} error(s) — these would make scoring wrong:", file=sys.stderr)
+        for error in errors:
+            print(f"  - {error}", file=sys.stderr)
+        return 1
+
+    if args.check:
+        print("\ncheck only: nothing written")
+        return 0
+
+    write_tables(tables, args.out, TABLES)
+    print(f"\nwrote {len(TABLES)} CSVs to {args.out.relative_to(ROOT)}/")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
