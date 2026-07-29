@@ -6,11 +6,14 @@ openness:
     code on GitHub; no training pipeline/data);license:Apache-2.0(most restrictive distributed SKU; the proprietary
     Plus/Max tiers are API-only and never distributed, so they fall outside this axis)
   confidence: high
-  note: weights:open(Apache-2.0 for open variants e.g. 27B/35B-A3B);data:closed;code:partial(inference/usage code
-    on GitHub; no training pipeline/data);license:mixed(open variants Apache-2.0; Plus/Max flagship tiers proprietary,
-    commercial-restricted/API-only). Tier consolidated 2026-07-29 from qwen-2-5, qwen-3-7-max, qwen3. Openness is
-    qwen-3-6's, the current release, resolved most-restrictive across its distributed SKUs; an API-only or unshipped
-    release does not lower a tier. adoption level 5 carried from qwen-2-5.
+  note: 'Apache-2.0 across the distributed base variants, data closed and only inference code published, so 3. The
+    load-bearing exclusion: Qwen3.7-Max is proprietary and served only through Alibaba Model Studio, so it is not
+    part of the distributed set and does not cap the family. Including it would publish Qwen as 1/closed, which
+    is what the rubric''s multi_sku_rule exists to prevent - API-only tiers are a different product surface from
+    the weights you can download. Qwen 2.5 scored 2 because its distributed 3B and 72B SKUs carried the Qwen License
+    Agreement; from Qwen3 onward the distributed set is Apache. Replaces an earlier note that was a copy of the
+    components string and recorded the license as `mixed`, a value the rubric forbids because it states that SKUs
+    differ without recording the outcome.'
   sources:
   - url: https://huggingface.co/api/models/Qwen/Qwen3.6-27B
     shows: license apache-2.0, ungated, 55.6GB of weight files, 6,232,995 downloads last month

@@ -28,6 +28,13 @@
 #                         previews are excluded, and absence of evidence never lowers a
 #                         tier. See docs/guides/openness-spectrum.md and the rubric's
 #                         multi_sku_rule.
+#
+# Most-restrictive applies across SKUs a user cannot substitute away from - sizes and
+# quantizations of one model, where the flagship governs. It does NOT apply across
+# independent alternatives that fully substitute. Hermes 4 is the case: Nous ships one
+# recipe on four bases, two Apache and two Llama-licensed, and anyone wanting Apache
+# takes the Seed-OSS or Qwen build and gets it. Treating those as SKUs would have
+# published the family as restricted when open weights are freely available.
 
 version: 1
 
@@ -164,4 +171,4 @@ governing_release:
   amazon-nova: amazon-nova-pro
   claude-opus: claude-opus-4-x
   gpt-5: gpt-5-line
-  hermes: hermes-4-llama-3-1-405b     # one release across four bases, so most-restrictive applies within it
+  hermes: hermes-4-3-36b              # see below: independent bases substitute, so most-restrictive does not apply across them
