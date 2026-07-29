@@ -98,6 +98,20 @@ aliases:
   qwen2-5-coder-instruct: qwen-coder
   qwen3-coder: qwen-coder
 
+  # --- single-record families whose slug still baked in a version. Same rule, they
+  # --- just never surfaced in a duplicate analysis because there was only one of each.
+  falcon-3: falcon
+  ernie-5-1: ernie
+  internlm-2-5: internlm
+  yi-1-5: yi
+  inflection-3-0: inflection
+  mimo-v2-5-pro: mimo-pro
+  doubao-seed-2-0: doubao-seed
+  jamba-1-5-large: jamba-large
+  k2-v2: k2
+  nemotron-3: nemotron
+  tinyllama-1-1b-chat-v1-0: tinyllama-chat
+
 # Renames that need no alias, because nothing pointed at the slug yet. Recorded for the
 # audit trail only. An alias key means "this slug is retired", so a slug being reused for
 # a different product cannot appear above without making redirects ambiguous.
@@ -111,6 +125,20 @@ aliases:
 renamed_before_links:
   grok: grok-app                        # ui_api consumer app; `grok` now names the model line
   github-copilot-github-microsoft: github-copilot-ide   # the IDE surface; `github-copilot` is Agent Mode
+
+
+# Model slugs that keep a version or size token because it IS the product name. The
+# vendor-markets-it test cuts both ways: nobody sells "GPT", they sell GPT-4o, and
+# nobody sells "Mistral" as a 7B, they sell Mistral 7B. build/validate.py requires a
+# model slug carrying a version token to be listed here, so the next one is a
+# deliberate decision rather than an oversight.
+version_in_identity:
+  gpt-4o: OpenAI markets GPT-4o as a distinct product, not a version of GPT
+  gpt-4-1: same, GPT-4.1 is its own product line
+  gpt-5: same, and the o-series sits beside it rather than under it
+  alia-40b: BSC ships this as ALIA-40b; the size is the model's name
+  lucie-7b: OpenLLM-France ships Lucie-7B under that name
+  mistral-7b-instruct: Mistral 7B is a named product alongside Small / Large / Nemo
 
 # Organizations duplicated for the same company. Same stability rule applies: org slugs
 # are deep-link keys too.

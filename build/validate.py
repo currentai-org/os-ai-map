@@ -1,6 +1,7 @@
 """Validate the four-concern sources/ tree: schema + cross-file invariants."""
 from datetime import date
 import json
+import re
 from pathlib import Path
 
 import jsonschema
@@ -142,6 +143,32 @@ def validate_sources(data: dict) -> list[str]:
             errors.append(f"org alias {old!r} -> {new!r}: target is not a live organization")
         if old in orgs:
             errors.append(f"org alias {old!r}: retired, but an organization still uses it")
+
+    # A model slug that bakes in a version goes stale the day the next release ships,
+    # and then costs an alias to fix. Vendors do sometimes sell the version as the
+    # product - GPT-4o, Mistral 7B - so an exception is allowed, but it has to be
+    # declared with a reason in slug_aliases.yaml. Scoped to model categories: for a
+    # dataset or a board the version genuinely is the identity (oscar-2301,
+    # raspberry-pi-5), which is why those are not checked.
+    model_cats = {"base_pretrained", "finetuned_chat"}
+    model_products = {
+        p for slug, cat in cats.items() if slug in model_cats for p in (cat.get("products") or [])
+    }
+    allowed_versions = spec.get("version_in_identity") or {}
+    version_token = re.compile(r"(?:^|-)(v?\d+(?:[-.]\d+)*[a-z]?|\d+[bx])(?:-|$)")
+    for product in sorted(model_products):
+        if version_token.search(product) and product not in allowed_versions:
+            errors.append(
+                f"product {product!r}: model slug carries a version or size token. Collapse it "
+                f"to the tier the vendor sells, or declare it under version_in_identity in "
+                f"sources/slug_aliases.yaml with the reason."
+            )
+    for product in sorted(allowed_versions):
+        if product not in model_products:
+            errors.append(
+                f"version_in_identity lists {product!r}, which is not a model product. "
+                f"Drop the exception."
+            )
 
     # A slug ending in its own vendor's name carries no information and is the pattern
     # that produced gpt-4-1-openai and nemotron-3-nvidia. Cheap to catch, so caught.

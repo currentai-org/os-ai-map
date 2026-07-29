@@ -2,17 +2,17 @@ from build.validate import validate_sources
 
 def _fixture():
     return {
-        "organizations": {"meta": {"name": "meta", "display_name": "Meta", "products": ["llama-4"]}},
+        "organizations": {"meta": {"name": "meta", "display_name": "Meta", "products": ["llama"]}},
         "taxonomy": {"arcs": [{"name": "Model components", "layer": "model_components",
                                "categories": ["base_pretrained"]}]},
         "categories": {
             "base_pretrained": {"name": "base_pretrained", "display_name": "Base",
-                                "products": ["llama-4"], "comments": ""}
+                                "products": ["llama"], "comments": ""}
         },
-        "products": {"llama-4": {"name": "llama-4", "display_name": "Llama 4",
+        "products": {"llama": {"name": "llama", "display_name": "Llama",
                                  "type": "model", "github": [{"url": "https://github.com/meta-llama/llama"}],
                                  "comments": ""}},
-        "scores": {"llama-4": {"product": "llama-4",
+        "scores": {"llama": {"product": "llama",
                                "openness": {"score": 2, "class": "restricted",
                                             "sources": [{"url": "https://x", "shows": "y", "accessed": "2026-06-09"}]},
                                "adoption": {"level": 4, "signal_type": "usage_volume",
@@ -59,16 +59,16 @@ def test_roster_pointing_at_missing_product_fails():
 
 def test_product_in_zero_org_rosters_fails():
     d = _fixture()
-    d["organizations"]["meta"]["products"] = []  # llama-4 now in no org roster
+    d["organizations"]["meta"]["products"] = []  # llama now in no org roster
     errs = validate_sources(d)
-    assert any("exactly one org roster" in e and "llama-4" in e for e in errs)
+    assert any("exactly one org roster" in e and "llama" in e for e in errs)
 
 def test_product_in_two_org_rosters_fails():
     d = _fixture()
-    # a second org also claims llama-4 -> appears in two rosters
-    d["organizations"]["other"] = {"name": "other", "display_name": "Other", "products": ["llama-4"]}
+    # a second org also claims llama -> appears in two rosters
+    d["organizations"]["other"] = {"name": "other", "display_name": "Other", "products": ["llama"]}
     errs = validate_sources(d)
-    assert any("exactly one org roster" in e and "llama-4" in e for e in errs)
+    assert any("exactly one org roster" in e and "llama" in e for e in errs)
 
 def test_org_roster_pointing_at_missing_product_fails():
     d = _fixture()
@@ -78,40 +78,40 @@ def test_org_roster_pointing_at_missing_product_fails():
 
 def test_openness_class_invalid_for_type_fails():
     d = _fixture()
-    d["scores"]["llama-4"]["openness"]["class"] = "open_core"  # software-only class on a model
+    d["scores"]["llama"]["openness"]["class"] = "open_core"  # software-only class on a model
     errs = validate_sources(d)
     assert any("class" in e for e in errs)
 
 def test_adoption_without_sources_fails():
     d = _fixture()
-    d["scores"]["llama-4"]["adoption"].pop("sources", None)
+    d["scores"]["llama"]["adoption"].pop("sources", None)
     errs = validate_sources(d)
     assert any("adoption" in e and "source" in e for e in errs)
 
 def test_capability_without_sources_fails():
     d = _fixture()
-    d["scores"]["llama-4"]["capability"] = {"score": 3, "basis": "benchmark:X"}
+    d["scores"]["llama"]["capability"] = {"score": 3, "basis": "benchmark:X"}
     errs = validate_sources(d)
     assert any("capability" in e and "source" in e for e in errs)
 
 def test_stars_fallback_cannot_exceed_level_3():
     d = _fixture()
-    d["scores"]["llama-4"]["adoption"] = {"level": 5, "signal_type": "stars_fallback",
+    d["scores"]["llama"]["adoption"] = {"level": 5, "signal_type": "stars_fallback",
                                           "sources": [{"url": "https://x", "shows": "y", "accessed": "2026-06-09"}]}
     errs = validate_sources(d)
     assert any("stars_fallback" in e for e in errs)
 
 def test_schema_violation_bad_product_type_caught():
     d = _fixture()
-    d["products"]["llama-4"]["type"] = "not-a-real-type"  # outside the enum
+    d["products"]["llama"]["type"] = "not-a-real-type"  # outside the enum
     errs = validate_sources(d)
-    assert any("schema" in e and "llama-4" in e for e in errs)
+    assert any("schema" in e and "llama" in e for e in errs)
 
 def test_schema_violation_negative_openness_score_caught():
     d = _fixture()
-    d["scores"]["llama-4"]["openness"]["score"] = -1  # below schema minimum of 0
+    d["scores"]["llama"]["openness"]["score"] = -1  # below schema minimum of 0
     errs = validate_sources(d)
-    assert any("schema" in e and "llama-4" in e for e in errs)
+    assert any("schema" in e and "llama" in e for e in errs)
 
 def test_product_without_score_file_caught_not_raised():
     d = _fixture()
@@ -125,22 +125,22 @@ def test_product_without_score_file_caught_not_raised():
 
 def test_unknown_signal_type_still_fails():
     d = _fixture()
-    d["scores"]["llama-4"]["adoption"]["signal_type"] = "vibes"
+    d["scores"]["llama"]["adoption"]["signal_type"] = "vibes"
     assert any("signal_type" in e for e in validate_sources(d))
 
 
 def test_product_lineage_block_validates():
     d = _fixture()
-    d["products"]["llama-4"]["lineage"] = {
+    d["products"]["llama"]["lineage"] = {
         "derived_from": ["Common Crawl"],
         "curated_with": ["datatrove"],
-        "trains": ["llama-4"],
+        "trains": ["llama"],
     }
     assert validate_sources(d) == []
 
 
 def test_product_lineage_rejects_unknown_keys():
     d = _fixture()
-    d["products"]["llama-4"]["lineage"] = {"forked_from": ["x"]}
+    d["products"]["llama"]["lineage"] = {"forked_from": ["x"]}
     errs = validate_sources(d)
     assert any("lineage" in e or "forked_from" in e or "additional" in e.lower() for e in errs)
