@@ -4,6 +4,11 @@ The map's value depends on its numbers being current, and until now there was no
 way to check that without reading 501 files. A score last touched in June looks
 exactly like one touched yesterday.
 
+**`docs/guides/freshness.md` is the normative definition.** The rule is one sentence:
+`last_verified` is the most recent date on which everything in the score was confirmed
+still correct. This module implements the report; that guide owns the meaning, and
+when the two disagree the guide wins.
+
 ## Two dates, deliberately not merged
 
   * **`last_verified`** — the most recent date on which everything in the score was
