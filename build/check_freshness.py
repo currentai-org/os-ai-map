@@ -4,24 +4,34 @@ The map's value depends on its numbers being current, and until now there was no
 way to check that without reading 501 files. A score last touched in June looks
 exactly like one touched yesterday.
 
+**`docs/guides/freshness.md` is the normative definition.** The rule is one sentence:
+`last_verified` is the most recent date on which everything in the score was confirmed
+still correct. This module implements the report; that guide owns the meaning, and
+when the two disagree the guide wins.
+
 ## Two dates, deliberately not merged
 
-  * **`last_verified`** — layer-2 re-checked this axis against its sources on that
-    date, whether or not the value changed. Currently absent everywhere, because
-    layer-2 does not exist yet. That absence is the honest baseline, and watching
-    it fill in is how we measure the automation landing.
-  * **`max(sources[].accessed)`** — when a source behind the score was last read,
-    by whoever authored it. The best staleness proxy available today, and *not* a
-    verification.
+  * **`last_verified`** — the most recent date on which everything in the score was
+    confirmed still correct. Written when an axis is re-checked against its sources,
+    whether or not the value changed. 41 of 1,485 axes carry one, up from zero when
+    the field landed, and watching that fill in is how we measure the automation.
+  * **The score file's last commit date** — the fallback. Somebody committed this
+    file on that date and left the score standing, which git records and nobody can
+    inflate. Weaker than a re-check and *not* presented as one.
 
-`last_verified` is deliberately NOT backfilled from `accessed`. Someone opening a
-URL is a weaker claim than the conclusion being re-confirmed, and copying one into
-a field whose name asserts the other would overstate the map's freshness across
-1,479 axes at a stroke. It would also be pointless: `accessed` is already in the
-files, so a derived column adds no information, only the stronger claim.
+`last_verified` is deliberately NOT backfilled from `sources[].accessed`. Someone
+opening a URL is a weaker claim than the conclusion being re-confirmed, and copying
+one into a field whose name asserts the other would overstate freshness across every
+axis at a stroke. It also adds nothing, since `accessed` is already in the files.
 
-This report therefore labels which signal each number came from, and never lets
-the weaker one be read as the stronger.
+The commit date is the better fallback for the same reason it is honest: it dates a
+review rather than a reading. `max(accessed)` read a median 55d when the files had in
+fact been revised a median 35d ago, so it was both the stronger claim and the wronger
+number. Its one limit, stated in the output: for a file untouched since it was added
+the commit date dates the import, which still answers "has anyone revisited this".
+
+This report labels which signal each number came from, and never lets the weaker one
+be read as the stronger.
 
 Exit status is 0 unless `--max-age-days` is given, so it is safe to run for
 information. Pass a threshold to turn it into a CI gate once layer-2 is keeping
@@ -36,6 +46,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import subprocess
 from collections import defaultdict
 from datetime import date, datetime
 from pathlib import Path
@@ -57,12 +68,54 @@ def parse_date(value: object) -> date | None:
     return None
 
 
+def commit_dates() -> dict[str, date]:
+    """Most recent commit date per score file, from one pass over git history.
+
+    This is the fallback when an axis carries no `last_verified`, and it is a better
+    one than `max(sources[].accessed)`. Committing a score file is somebody asserting
+    the file is right as of that date, which is why #102 put it as "the git history of
+    a score file becomes its verification record". An `accessed` date only says a URL
+    was opened; copying that into a freshness figure is the overstatement that PR
+    reverted, and it reads 20 days staler than the truth because it dates the reading
+    rather than the review.
+
+    Honest about what it is not: for a file untouched since it was added, this dates
+    the import, not a review. That still answers the question the report exists for -
+    nobody has revisited this - which is why the label says `commit` and not
+    `verified`.
+
+    One `git log` for the whole directory rather than 495 invocations. Walking
+    newest-first, the first time a path appears is its latest commit.
+    """
+    result = subprocess.run(
+        ["git", "log", "--format=%cs", "--name-only", "--", "sources/scores"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+    )
+    latest: dict[str, date] = {}
+    current: date | None = None
+    for line in result.stdout.splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        # A `%cs` line parses as a date; a path line does not. That is the whole
+        # discriminator, so no state machine is needed.
+        parsed = parse_date(line)
+        if parsed is not None:
+            current = parsed
+        elif current is not None and line.startswith("sources/scores/") and line.endswith(".yaml"):
+            latest.setdefault(line[len("sources/scores/") : -len(".yaml")], current)
+    return latest
+
+
 def collect() -> tuple[dict[str, list[tuple[str, str, date, bool]]], list[str]]:
     """Return (category -> [(product, axis, when, is_verified)], axes with no date).
 
-    `is_verified` separates a real `last_verified` from an `accessed` fallback, so
+    `is_verified` separates a real `last_verified` from a commit-date fallback, so
     the report can never present the weaker signal as the stronger one.
     """
+    committed = commit_dates()
     by_category: dict[str, list[tuple[str, str, date, bool]]] = defaultdict(list)
     undated: list[str] = []
 
@@ -83,17 +136,12 @@ def collect() -> tuple[dict[str, list[tuple[str, str, date, bool]]], list[str]]:
                     by_category[category["name"]].append((product, axis, verified, True))
                     continue
 
-                accessed = [
-                    parse_date(s.get("accessed"))
-                    for s in (block.get("sources") or [])
-                    if isinstance(s, dict)
-                ]
-                accessed = [d for d in accessed if d is not None]
-                if accessed:
-                    by_category[category["name"]].append(
-                        (product, axis, max(accessed), False)
-                    )
+                when = committed.get(product)
+                if when is not None:
+                    by_category[category["name"]].append((product, axis, when, False))
                 else:
+                    # Only reachable for a file git has never seen, so in practice an
+                    # uncommitted local addition rather than a data problem.
                     undated.append(f"{product}.{axis}")
     return by_category, undated
 
@@ -138,9 +186,10 @@ def main() -> int:
     verified_n = sum(1 for _, _, _, is_verified in rows if is_verified)
     print(
         f"\n{verified_n} of {len(rows)} axes carry a real last_verified. "
-        f"The other {len(rows) - verified_n} fall back to max(sources.accessed), "
-        "which dates the evidence, not a verification — read those ages as an upper "
-        "bound on freshness."
+        f"The other {len(rows) - verified_n} fall back to the score file's last commit "
+        "date, which dates the last time somebody committed the file and left the score "
+        "standing. For a file untouched since it was added that dates the import, not a "
+        "review, so read those ages as 'nobody has revisited this'."
     )
     if undated:
         print(
