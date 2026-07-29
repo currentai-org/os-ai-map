@@ -1229,11 +1229,11 @@
           "type": "model",
           "description": "TII's open-weights model line from Abu Dhabi. The original Falcon 3 family (1B/3B/7B/10B Apache-2.0, December 2024) has been extended in 2025-2026 by Falcon-H1 (a hybrid Mamba-Transformer architecture spanning 0.5B-34B with native 18-language support) and Falcon-H1 Arabic (3B/7B/34B, January 2026), positioned as the world's leading Arabic open model. Falcon H1R 7B (January 2026) outperforms Qwen and Nemotron variants up to 7x its size on reasoning. Adoption remains modest vs Llama/Qwen at equivalent size (Falcon3-7B-Instruct ~23K monthly HF downloads).",
           "openness": {
-            "score": 2,
-            "class": "restricted",
+            "score": 3,
+            "class": "open_weights",
             "components": "weights:open;data:closed;code:closed;license:TII-Falcon-License-2.0(Apache-based+AUP,non-OSI)",
             "confidence": "high",
-            "note": "Weights downloadable, corpus not released, no training code, and licensed under TII-Falcon-License-2.0 - Apache-based but carrying an acceptable-use policy, so non-OSI and use-restricting. That license is what caps the tier at 2 rather than 3: downloadable is not the same as usable without conditions. The Hub reports the license as `other`, which is an abstention rather than an answer, so the tier rests on TII's published text rather than on a machine-readable field.",
+            "note": "Weights downloadable and freely usable commercially at any scale, corpus not released, no training code, so 3/open_weights. Corrected from 2/restricted on 2026-07-29 under issue #117: TII-Falcon-License-2.0 is Apache-based with an acceptable-use policy, and a conduct restriction caps neither who may use the model nor at what scale. It therefore sits in permissive_non_osi beside attribution requirements rather than in use_restricted beside Llama's 700M-MAU ceiling. Not 4 or 5: the corpus and the pipeline are both closed, and the license is non-OSI regardless, since the OSD forbids discriminating against a field of endeavor. The Hub reports this license as `other`, an abstention rather than an answer, so the tier rests on TII's published text.",
             "sources": [
               {
                 "url": "https://huggingface.co/api/models/tiiuae/Falcon3-10B-Base",
@@ -1256,7 +1256,7 @@
                 "accessed": "2026-06-04"
               }
             ],
-            "bucket": "closed"
+            "bucket": "open-ish"
           },
           "adoption": {
             "level": 2,
@@ -1953,11 +1953,11 @@
           "type": "model",
           "description": "Dedicated coding MoE model (seed product) instruction-tuned for code generation, completion, and chat. Available in full (236B) and Lite (16B) variants. The Lite variant remains popular for local deployment with 1.1M+ downloads. Predecessor to the V3/R1 generation that proved open source could compete on coding benchmarks.",
           "openness": {
-            "score": 2,
-            "class": "restricted",
+            "score": 3,
+            "class": "open_weights",
             "components": "weights:open(downloadable on HF);data:closed;code:open(MIT, repo code);model-license:DeepSeek-Model-License(non-OSI; Attachment A acceptable-use restrictions - military/illegal/discrimination/etc.; commercial allowed but use-based restrictions must propagate to derivatives)",
             "confidence": "high",
-            "note": "Mixed tier: repo CODE is MIT, but the WEIGHTS are governed by the non-OSI DeepSeek Model License with use-based restrictions (Attachment A) -> restricted class for the model, not open_weights. Distinct from newer DeepSeek models (R1/V3.2/V4) which ship weights under plain MIT.",
+            "note": "MIT-licensed inference code with downloadable weights under the DeepSeek Model License, corpus not released, so 3/open_weights. Corrected from 2/restricted on 2026-07-29 under issue #117. The license's Attachment A forbids military, illegal and discriminatory use and requires those terms to propagate to derivatives, but permits commercial use at any scale - a conduct restriction, not a commercial one. This also removes the contradiction that opened #117: base_pretrained already tiered the same license permissive_non_osi, so the same terms were producing a 3 in one category and a 2 in another. Now consistent with the `deepseek` tier, which reaches 3 under plain MIT.",
             "sources": [
               {
                 "url": "https://huggingface.co/deepseek-ai/DeepSeek-Coder-V2-Instruct",
@@ -1970,7 +1970,7 @@
                 "accessed": "2026-06-04"
               }
             ],
-            "bucket": "closed"
+            "bucket": "open-ish"
           },
           "adoption": {
             "level": 2,
@@ -2271,10 +2271,10 @@
           "description": "Scored on StarCoder2-15B-Instruct-v0.1 (the instruct SKU; 16B, self-aligned, released 31 Oct 2024, arXiv:2410.24198). NOTE: base StarCoder2-15B (Feb 2024) is a pretrained model belonging in base_pretrained; only the instruct variant fits finetuned_chat. Both verified live on HF June 2026.",
           "openness": {
             "score": 4,
-            "class": "open_source",
+            "class": "open_weights",
             "components": "weights:open;data:open(self-oss-instruct-sc2-exec-filter-50k + 7 documented intermediate datasets);code:open(starcoder2-self-align pipeline on GitHub);base-data:open(The Stack v2);license:BigCode-OpenRAIL-M(open but RAIL behavioral-use restrictions, not OSI)",
             "confidence": "high",
-            "note": "Fully reproducible self-alignment pipeline (open weights + open instruct data + open code + open base corpus) -> open_source tier; held to 4 rather than 5 because OpenRAIL-M carries non-OSI behavioral-use restrictions.",
+            "note": "The most open artifact in this category by evidence: weights, the full training corpus (The Stack v2) and the self-align pipeline are all published. Held to 4 rather than 5 because BigCode-OpenRAIL-M is not OSI-approved - its behavioral-use clauses discriminate against fields of endeavor, which the OSD forbids - and rule 5 of the ladder reserves the top score for an OSI license. Class corrected from open_source to open_weights on 2026-07-29: the score was right but 4/open_source is a pair this ladder cannot emit, and the mismatch is what flagged it. Resolved under issue #117 by tiering RAIL as a conduct restriction, which is what keeps a fully-open pipeline off the 2/restricted floor it would otherwise have hit on the license alone.",
             "sources": [
               {
                 "url": "https://huggingface.co/bigcode/starcoder2-15b-instruct-v0.1",
@@ -2287,7 +2287,7 @@
                 "accessed": "2026-06-04"
               }
             ],
-            "bucket": "open"
+            "bucket": "open-ish"
           },
           "adoption": {
             "level": 1,
