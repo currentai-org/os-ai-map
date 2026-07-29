@@ -106,7 +106,12 @@ if __name__ == "__main__":
         default=100,
         help="Max results to fetch (default: 100)",
     )
-    default_output = str(Path(__file__).resolve().parent.parent / "catalog" / "goodailist" / "forked_ai_repos.csv")
+    # Lives under its own directory rather than the GoodAI List's. This fetcher does
+    # not read that source and never did; the file only sat there historically, and
+    # the retired goodailist/ tree took it down with it.
+    default_output = str(
+        Path(__file__).resolve().parent.parent / "catalog" / "github-ai-repos" / "forked_ai_repos.csv"
+    )
     parser.add_argument("--output", type=str, default=default_output, help="Output CSV file path")
 
     args = parser.parse_args()

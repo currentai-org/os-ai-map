@@ -14,7 +14,7 @@ WITH proj AS (
 goodai_deduped AS (
   SELECT LOWER(repo) AS repo, CAST(stars AS BIGINT) AS stars,
     ROW_NUMBER() OVER (PARTITION BY LOWER(repo) ORDER BY updated_at DESC NULLS LAST) AS _rn
-  FROM currentai.catalog.goodailist_repos
+  FROM currentai.signal_goodailist.repo_catalog
 ),
 star_totals AS (
   SELECT

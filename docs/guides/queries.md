@@ -6,7 +6,8 @@
 
 | Dataset | Type | Key tables |
 |---------|------|------------|
-| `catalog` | Static CSV | `goodailist_repos`, `model_benchmarks`, `model_repos` |
+| `catalog` | Static CSV | `model_benchmarks`, `model_repos`, `stack_map` |
+| `signal_goodailist` | UDM | `repo_catalog` (the GoodAI roster, live) |
 | `entities` | UDM | `repos`, `projects`, `packages`, `models` |
 | `events` | UDM | `github_events` |
 | `metrics` | UDM | `daily` |
@@ -85,7 +86,9 @@ GROUP BY pc.collection_name, c.display_name
 ## Join and dedupe caveats
 
 - `scores.repos_summary` and `entities.repos` are already deduped by `LOWER(repo)`. No `ROW_NUMBER()` needed.
-- `catalog.goodailist_repos` can contain duplicates; deduplicate by `LOWER(repo)` when querying it directly.
+- `signal_goodailist.repo_catalog` is the GoodAI roster. It replaces the retired
+  `catalog.goodailist_repos` static model; deduplicate by `LOWER(repo)` when querying it
+  directly.
 - Always `LOWER()` repo names when joining across sources.
 - Bound exploratory queries with `LIMIT` and/or date windows.
 

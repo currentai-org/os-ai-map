@@ -39,7 +39,7 @@ def get_tracked_authors() -> set[str]:
         client = Client()
         df = client.to_pandas("""
             SELECT DISTINCT LOWER(SPLIT_PART(repo, '/', 1)) AS owner
-            FROM currentai.catalog.goodailist_repos
+            FROM currentai.signal_goodailist.repo_catalog
         """)
         authors = set(df["owner"].dropna().unique())
         print(f"Found {len(authors)} unique repo owners from GoodAI List")
