@@ -21,6 +21,11 @@ sources/taxonomy.yaml  Arc grouping + cross-category display order
 sources/signal_routing.yaml  Which machine signal is authoritative per dimension, and
                        which values mean "this source has no answer" (abstain_values)
 sources/evidence_policy.yaml  When an observation is admissible as evidence
+sources/rubrics/       Shared scoring ladders. A category inherits one with
+                       `scoring_recipe: {extends: <name>}` rather than copying it;
+                       build/rubrics.py resolves that. license-to-tier lives here,
+                       because whether AGPL is `osi` is a fact about AGPL, not
+                       about one category.
 warehouse/models/      UDM SQL (entities, events, metrics, scores)
 warehouse/ingest/      Python fetchers that write CSVs to warehouse/catalog/
 warehouse/catalog/     Raw external CSVs (HF benchmarks, incidents, GitHub orgs)
@@ -29,7 +34,7 @@ warehouse/sources.yaml Manifest: each external source declares EITHER a fetcher
 build/                 Python pipeline, see below
 notebooks/             Generated ai-stack-map.py and standalone companion notebooks (pypi-geo-trends, oss-ai-trends, long-tail-explorer)
 docs/methodology.md    Canonical methodology copy, rendered into the notebook (a build input)
-docs/guides/           Query conventions and notebook style guide
+docs/guides/           Query conventions, notebook style, freshness and verification
 docs/runbooks/         Maintainer deploy runbooks
 docs/schemas/          JSON Schemas for the source files (four concerns + taxonomy)
 skills/                Agent skills for common editor workflows
@@ -53,7 +58,10 @@ Config bridge out   serialize_registry.py  identity: what exists
                     publish_registry.py    pushes both table sets to OSO as static models
 
 Scores back in      apply_scores.py   reads computed scores from OSO, writes
-                                      sources/scores/. The ONLY inbound data path.
+                                      openness.score and openness.class into
+                                      sources/scores/ and nothing else. The ONLY
+                                      inbound data path. It writes no dates -- see
+                                      docs/guides/verification.md.
 
 Checkers (CI)       check_rubric.py    does the rubric reproduce the hand-authored scores
                     check_routing.py   which dimensions have a usable machine signal
@@ -142,10 +150,15 @@ Three rules worth knowing before editing any of it:
 - **Declare a rule once.** Abstention values live on the route in `signal_routing.yaml`,
   admission policy in `evidence_policy.yaml`, the formula in the category's
   `scoring_recipe`. The warehouse hardcodes none of them; it reads them across the bridge.
-- **`apply_scores` never invents a date.** `last_verified` is the oldest accessed date among
-  the evidence a score depends on, and absent if any of that evidence cites nothing
-  specific. Nothing stamps the current date, so a recompute cannot make stale evidence look
-  freshly checked.
+- **`apply_scores` writes no date at all.** It writes `openness.score` and
+  `openness.class`, and that is the whole list. `last_verified` means a person or an agent
+  re-read the cited sources and re-derived the value; this pipeline reads values back out of
+  `sources/scores/`, which confirms nothing. Two releases taught it to write the field from
+  an aggregate of `sources[].accessed` anyway — #108 the MIN, #115 the MAX — and between
+  them they put a derived date on 19 of the 26 axes that carried one. **Do not reintroduce
+  it**, under any aggregation or column name; `tests/test_apply_scores.py` asserts the
+  absence. The rule is in `docs/guides/freshness.md`, who may write it in
+  `docs/guides/verification.md`.
 
 `notebooks/pypi-geo-trends.py`, `notebooks/oss-ai-trends.py`, and `notebooks/long-tail-explorer.py`
 are **fully standalone**: no build-pipeline coupling, no generated payload. Each queries
@@ -196,6 +209,9 @@ and walk through validation + preview steps.
 
 After a PR merges, a maintainer (OSO MCP write access) may need to:
 
+- `docs/runbooks/verification-pass.md`: the plan for getting every score auditable --
+  gates first, then coverage, then the re-read pass. Start here for score-verification
+  work; it names the failure modes each step is guarding against.
 - `docs/runbooks/deploy-udms.md`: revise, release, and run UDM SQL changes.
 - `docs/runbooks/refresh-data.md`: run fetchers and reload static models.
 - `docs/runbooks/publish-notebook.md`: serialize, render, upload, and publish the live

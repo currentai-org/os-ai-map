@@ -6,6 +6,9 @@ look like they answer it but do not.
 > This is the data-consumer / query reference, and it is normative. For the
 > reader-facing methodology see `docs/methodology.md`. When the rule below changes,
 > change it here first and make the code follow.
+>
+> This guide defines what `last_verified` MEANS. For who may write one, how an axis earns
+> it, and the plan for populating every axis, see `docs/guides/verification.md`.
 
 ## The rule
 
