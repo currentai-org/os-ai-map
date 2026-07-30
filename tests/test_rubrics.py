@@ -5,7 +5,9 @@ A mixed-type category (safeguards: 9 models, 17 software) declares
 `extends: <name>` and resolves exactly as before.
 """
 
-from build.rubrics import recipe_for, resolve_recipe, resolve_recipe_variants
+from pathlib import Path
+
+from build.rubrics import recipe_for, resolve_recipe, resolve_recipe_variants, load_product_types
 
 SHARED = {
     "software": {"openness": {"formula": [{"otherwise": {"score": 1, "class": "closed"}}]}},
@@ -62,3 +64,17 @@ def test_resolve_recipe_rejects_mapping_extends():
     recipe, errors = resolve_recipe(category, SHARED)
     assert recipe is None
     assert errors and "resolve_recipe_variants" in errors[0]
+
+
+def test_load_product_types(tmp_path: Path):
+    d = tmp_path / "sources" / "products"
+    d.mkdir(parents=True)
+    (d / "some-model.yaml").write_text("name: some-model\ntype: model\n")
+    (d / "some-tool.yaml").write_text("name: some-tool\ntype: software\n")
+    (d / "broken.yaml").write_text("name: broken\n")
+    types = load_product_types(tmp_path)
+    assert types == {"some-model": "model", "some-tool": "software", "broken": ""}
+
+
+def test_load_product_types_missing_dir(tmp_path: Path):
+    assert load_product_types(tmp_path) == {}

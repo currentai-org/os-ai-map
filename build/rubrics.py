@@ -157,3 +157,16 @@ def dimension_vocabulary(categories: dict[str, dict], shared: dict[str, dict]) -
         if recipe and not errors:
             names |= recipe_vocabulary(recipe)
     return names
+
+
+def load_product_types(root: Path) -> dict[str, str]:
+    """slug -> `type` for every product file. The slug is the filename stem —
+    that identity rule is enforced by validate, so it is safe to rely on here."""
+    directory = root / "sources" / "products"
+    if not directory.is_dir():
+        return {}
+    types: dict[str, str] = {}
+    for path in sorted(directory.glob("*.yaml")):
+        record = yaml.safe_load(path.read_text()) or {}
+        types[path.stem] = str(record.get("type") or "")
+    return types
