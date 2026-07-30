@@ -271,10 +271,19 @@ Two things ride along:
   every dimension the score *records*. Without this column no tool can ever legitimately
   write `last_verified`, so it is the precondition for step 3.
 - **A `category_deferrals` table.** `deferred` currently lives only in the repo, so the
-  warehouse does not know which products a category has held back. There are 63 of them now,
-  alongside the 111 products in the four categories with no recipe at all. With no
-  `otherwise` rule in the software ladder they fall out of the model's INNER JOIN rather than
-  being scored wrongly — the safe direction, but silent.
+  warehouse does not know which products a category has held back. There are 89 of them now,
+  alongside the 85 products in the three categories with no recipe at all. For the software
+  categories the silence has been safe: with no `otherwise` rule in the software ladder their
+  deferred products fall out of the model's INNER JOIN rather than being scored wrongly.
+
+  **That safety argument no longer covers every category.** `sources/rubrics/model.yaml` ends
+  in `otherwise: {score: 3, class: open_weights}`, so a deferred product on the model ladder
+  gets a score in the warehouse instead of dropping out. `safeguards` is the first category to
+  pair an `otherwise` ladder with deferrals, and all 26 of its products are deferred. Until
+  this table exists, the warehouse can compute openness for products whose recorded scores the
+  repo has explicitly declined to reproduce, and for seven of the nine guardrail models the
+  computed value disagrees with the published one. That makes the table a correctness fix for
+  `safeguards` rather than only an observability one.
 
 ### 3. The automated freshness pass — roughly 400 axes
 
@@ -292,8 +301,9 @@ twice, and it re-verifies scores that are about to change.
 That backlog is currently 174 products: 49 whose prose does not settle `source` or
 `core-gated`, 10 whose recorded license maps to no tier in the ladder, 4 where the ladder and
 the recorded score still disagree (`jina-reader`, `openhands`, `maple-ai`, `privatemode` — all
-producible pairs, so G3 passes them and only `check_rubric` objects), plus the 111 products in
-the four categories that have no recipe yet.
+producible pairs, so G3 passes them and only `check_rubric` objects), plus the 85 products in
+the three categories that have no recipe yet and the 26 in `safeguards`, which has a recipe but
+reproduces none of them.
 
 **Expect scores to move.** Verification is not a formality: the RWKV correction in #105 came
 out of a pass like this, and G3's first run moved 17 openness scores or classes before the
