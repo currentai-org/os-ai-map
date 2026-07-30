@@ -35,6 +35,8 @@ from pathlib import Path
 
 import yaml
 
+from build.rubrics import load_shared, resolve_recipe
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -219,7 +221,12 @@ def apply_formula(recipe: dict, facts: dict) -> tuple[int, str] | None:
 def check_category(slug: str, verbose: bool) -> tuple[int, int, list[str], list[str]]:
     """Return (reproduced, total, problems, deferred)."""
     category = yaml.safe_load((ROOT / "sources" / "categories" / f"{slug}.yaml").read_text())
-    recipe = category.get("scoring_recipe")
+    # `extends: software` pulls the shared ladder in. Resolution errors are returned as
+    # problems rather than raising, so one broken category cannot stop the others being
+    # checked - and cannot pass silently either.
+    recipe, recipe_errors = resolve_recipe(category, load_shared(ROOT))
+    if recipe_errors:
+        return 0, 0, [f"{slug}: {e}" for e in recipe_errors], []
     if not recipe:
         return 0, 0, [], []
 
@@ -259,24 +266,48 @@ def check_category(slug: str, verbose: bool) -> tuple[int, int, list[str], list[
             )
             continue
 
-        facts = {
-            "weights": dimension_value(components, "weights", recipe),
-            "data": dimension_value(components, "data", recipe),
-            "code": dimension_value(components, "code", recipe),
-            "license_tier": tier,
-        }
+        # Facts come from the dimensions the recipe DECLARES, not a fixed list. The
+        # model categories ask about weights/data/code; software categories ask whether
+        # the source is public, whether the real thing self-hosts, and whether the core
+        # is feature-gated. Hardcoding the model's four here is what would have forced a
+        # checker change per product type.
+        declared = ((recipe.get("openness") or {}).get("dimensions")) or {}
+        facts = {name: dimension_value(components, name, recipe) for name in declared}
+        facts["license_tier"] = tier
+
         got = apply_formula(recipe, facts)
         expected = (openness.get("score"), openness.get("class"))
+
+        # No rule matched and the recipe declares no `otherwise`, so it is telling us it
+        # does not decide this product. Abstain rather than score it.
+        #
+        # This is how a category opts out of guessing. The model recipes end in an
+        # `otherwise` and so can never reach here; the software recipes deliberately do
+        # not, because their discriminating evidence - whether the published source is the
+        # whole product - is recorded for only about two thirds of products, and the
+        # `otherwise` rule would quietly record the rest at whatever the last tier was.
+        #
+        # The facts go in the reason, so the two causes stay distinguishable: a blank
+        # value means nobody recorded that dimension, while a full set of values means the
+        # ladder itself has a gap. Abstentions print every run and are excluded from the
+        # reproduced count, so neither can go quiet.
+        if got is None:
+            shown = " ".join(f"{name}={facts[name]!r}" for name in declared)
+            deferred.append(
+                f"{product}: recipe does not decide it [{shown} tier={tier}] "
+                f"(recorded {openness.get('score')} {openness.get('class')})"
+            )
+            total -= 1
+            continue
 
         if got == expected:
             reproduced += 1
             if verbose:
                 print(f"  ok    {product:<24} {expected[0]} {expected[1]}")
         else:
+            shown = " ".join(f"{name}={facts[name]!r}" for name in declared)
             problems.append(
-                f"{product}: rubric says {got}, scores say {expected} "
-                f"[weights={facts['weights']} data={facts['data']} "
-                f"code={facts['code']} tier={tier}]"
+                f"{product}: rubric says {got}, scores say {expected} [{shown} tier={tier}]"
             )
 
     unknown = sorted(set(deferrals) - set(category.get("products") or []))

@@ -416,11 +416,26 @@ def test_real_sources_serialize_without_errors():
             counts[row["category_slug"]] = counts.get(row["category_slug"], 0) + 1
         return counts
 
-    assert per_category("category_scoring_rules") == {"base_pretrained": 11, "finetuned_chat": 9}
+    # Ten software categories inherit ONE ladder from sources/rubrics/software.yaml, so
+    # they all serialize the same 16 rules. Identical counts are the point: a category
+    # showing a different number means it stopped inheriting. The software rules outnumber
+    # the model categories' because the formula enumerates its license-tier / core_gated
+    # pairs explicitly instead of leaning on an `otherwise`, which it deliberately omits.
+    SOFTWARE = ["agent_tools_protocols", "dataset_processing_tools", "deployment",
+                "evaluation_code", "finetuning_code", "inference_code", "ml_frameworks",
+                "orchestration_agents", "telemetry_observability", "ui_api"]
+    assert per_category("category_scoring_rules") == {
+        "base_pretrained": 11, "finetuned_chat": 9, **{c: 16 for c in SOFTWARE},
+    }
     # Both fell with the slug migration: release-level products collapsed into the
     # tier the vendor sells, so 25 products left the roster and the closed frontier
     # models moved from base_pretrained to finetuned_chat.
-    assert per_category("product_openness_evidence") == {"base_pretrained": 111, "finetuned_chat": 172}
+    assert per_category("product_openness_evidence") == {
+        "base_pretrained": 111, "finetuned_chat": 172, "deployment": 131,
+        "agent_tools_protocols": 122, "dataset_processing_tools": 88, "evaluation_code": 92,
+        "finetuning_code": 131, "inference_code": 77, "ml_frameworks": 84,
+        "orchestration_agents": 176, "telemetry_observability": 100, "ui_api": 168,
+    }
     assert {r["grade"] for r in tables["product_openness_evidence"]} == {"document"}
 
 
@@ -466,14 +481,32 @@ def test_license_is_emitted_under_the_name_the_warehouse_joins_on():
     """
     from pathlib import Path
 
+    from build.rubrics import resolve_recipe
     from build.serialize_rubric import load_policy, load_routing
     from build.validate import load_sources
 
     root = Path(__file__).resolve().parents[1]
     tables, _, _ = build_rubric(load_sources(root), load_policy(root), load_routing(root))
 
+    # Deferred products are excluded: a category has declared the rubric does not decide
+    # them, and several are deferred precisely BECAUSE no licence is recorded. Asserting a
+    # licence row for those would be asserting evidence we have said we do not have.
+    #
+    # Note the asymmetry this leaves. `deferred` lives only in the repo - there is no
+    # category_deferrals table - so the warehouse does not know these products are held
+    # back. With no `otherwise` rule in the software ladder they currently fall out of the
+    # scoring model's INNER JOIN rather than being scored wrongly, which is the safe
+    # direction but a silent one. Bridging the list is tracked separately.
+    sources = load_sources(root)
+    shared = sources.get("rubrics") or {}
+    deferred = set()
+    for slug, category in sources["categories"].items():
+        recipe, _ = resolve_recipe(category, shared)
+        for product in ((recipe or {}).get("deferred") or {}):
+            deferred.add((product, slug))
+
     rows = tables["product_openness_evidence"]
-    scored = {(r["product_slug"], r["category_slug"]) for r in rows}
+    scored = {(r["product_slug"], r["category_slug"]) for r in rows} - deferred
     licensed = {(r["product_slug"], r["category_slug"]) for r in rows if r["dimension"] == "license"}
     assert scored - licensed == set(), f"no license row emitted for: {sorted(scored - licensed)}"
 

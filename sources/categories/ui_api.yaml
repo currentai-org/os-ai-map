@@ -50,4 +50,70 @@ products:
 - gpt4all
 - openclaw
 - llm
+scoring_recipe:
+  version: 1
+  extends: software
+  derived_from:
+    method: shared software ladder, verified against the hand-authored scores
+    scores_reproduced: 30
+    scores_total: 43
+    verified_on: '2026-07-30'
+    checker: build/check_rubric.py
+  # Held back rather than scored. The shared ladder has no `otherwise` rule, so
+  # these already abstain; declaring them here records WHY, and keeps the
+  # reproduction count honest by excluding them from it rather than counting
+  # them as passes.
+  deferred:
+    open-webui:
+      because: >-
+        ladder computes 4/open_core from the recorded evidence but the score says
+        3/source_available; one of the two is wrong and it needs a human
+    lobe-chat:
+      because: >-
+        ladder computes 4/open_core from the recorded evidence but the score says
+        3/source_available; one of the two is wrong and it needs a human
+    nextchat:
+      because: >-
+        source or core-gated is not recorded in a form the ladder can read; needs a read of
+        the repo and pricing page
+    continue:
+      because: >-
+        source or core-gated is not recorded in a form the ladder can read; needs a read of
+        the repo and pricing page
+    thunderbolt:
+      because: >-
+        source or core-gated is not recorded in a form the ladder can read; needs a read of
+        the repo and pricing page
+    lumo:
+      because: >-
+        source or core-gated is not recorded in a form the ladder can read; needs a read of
+        the repo and pricing page
+    maple-ai:
+      because: >-
+        ladder computes 4/open_core from the recorded evidence but the score says
+        5/open_source; one of the two is wrong and it needs a human
+    privatemode:
+      because: >-
+        ladder computes 1/closed from the recorded evidence but the score says
+        2/source_available; one of the two is wrong and it needs a human
+    confer:
+      because: >-
+        source or core-gated is not recorded in a form the ladder can read; needs a read of
+        the repo and pricing page
+    deepseek-chat:
+      because: >-
+        source or core-gated is not recorded in a form the ladder can read; needs a read of
+        the repo and pricing page
+    meta-ai:
+      because: >-
+        source or core-gated is not recorded in a form the ladder can read; needs a read of
+        the repo and pricing page
+    doubao:
+      because: >-
+        source or core-gated is not recorded in a form the ladder can read; needs a read of
+        the repo and pricing page
+    otari:
+      because: >-
+        source or core-gated is not recorded in a form the ladder can read; needs a read of
+        the repo and pricing page
 comments: ''

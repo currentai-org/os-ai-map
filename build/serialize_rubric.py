@@ -84,6 +84,8 @@ AXES = ("openness", "adoption", "capability")
 # gets one lookup table instead of a lookup table plus a hardcoded special case.
 DEFINITIONAL_TIERS = {"proprietary": ("proprietary", "closed", "none")}
 
+from build.rubrics import resolve_recipe
+
 TABLES: dict[str, tuple[str, ...]] = {
     "category_scoring_rules": (
         "category_slug",
@@ -340,6 +342,9 @@ def build_rubric(sources: dict, policy: dict, routing: dict) -> tuple[dict[str, 
     """
     categories: dict = sources["categories"]
     scores: dict = sources.get("scores") or {}
+    # Shared ladders arrive through `sources` rather than being read here, so build_rubric
+    # stays a pure function of its inputs and the tests can pass a recipe inline.
+    shared_rubrics: dict = sources.get("rubrics") or {}
 
     tables: dict[str, list[dict]] = {name: [] for name in TABLES}
     errors: list[str] = []
@@ -352,9 +357,11 @@ def build_rubric(sources: dict, policy: dict, routing: dict) -> tuple[dict[str, 
 
     scored_categories = 0
     for slug, category in sorted(categories.items()):
-        recipe = category.get("scoring_recipe")
+        recipe, recipe_errors = resolve_recipe(category, shared_rubrics)
+        errors.extend(f"category '{slug}' {e}" for e in recipe_errors)
         if not recipe:
-            warnings.append(f"category '{slug}' declares no scoring_recipe")
+            if not recipe_errors:
+                warnings.append(f"category '{slug}' declares no scoring_recipe")
             continue
         scored_categories += 1
 

@@ -42,6 +42,7 @@ def load_sources(root: Path) -> dict:
     data = {
         "organizations": _dir("organizations"),
         "categories": _dir("categories"),
+        "rubrics": _dir("rubrics"),
         "products": _dir("products"),
         "scores": _dir("scores"),
         "taxonomy": yaml.safe_load((root / "sources" / "taxonomy.yaml").read_text()),

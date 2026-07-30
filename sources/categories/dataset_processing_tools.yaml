@@ -31,6 +31,28 @@ products:
 - data-juicer
 - ccnet
 - redpajama-data
+scoring_recipe:
+  version: 1
+  extends: software
+  derived_from:
+    method: shared software ladder, verified against the hand-authored scores
+    scores_reproduced: 19
+    scores_total: 21
+    verified_on: '2026-07-30'
+    checker: build/check_rubric.py
+  # Held back rather than scored. The shared ladder has no `otherwise` rule, so
+  # these already abstain; declaring them here records WHY, and keeps the
+  # reproduction count honest by excluding them from it rather than counting
+  # them as passes.
+  deferred:
+    txt360-pipeline:
+      because: >-
+        source or core-gated is not recorded in a form the ladder can read; needs a read of
+        the repo and pricing page
+    nemo-data-designer:
+      because: >-
+        source or core-gated is not recorded in a form the ladder can read; needs a read of
+        the repo and pricing page
 comments: 'The software that produces the training_synthetic_datasets row (Columbia model-components layer;
   MOF ''Data Preprocessing Code''). Scoped to data-processing software; human-data / RLHF labor marketplaces (Scale, Surge, Mercor) are
   out of scope -- per the Columbia framework their output is data (the datasets category) and their labor
