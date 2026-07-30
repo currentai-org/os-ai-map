@@ -111,6 +111,21 @@ def _sources(categories=None, scores=None, rubrics=None, product_types=None):
     }
 
 
+def _real_sources(root):
+    """The repo's real sources, with `product_types` threaded through the way `main()`
+    does it (`build/serialize_rubric.py:564`). Without this key every product's `type`
+    reads as `""`, which for a mixed category (`extends` mapping product type -> ladder)
+    means `recipe_for` resolves to None for every product rather than to its real ladder
+    — a test that omits it exercises a path no production run takes.
+    """
+    from build.rubrics import load_product_types
+    from build.validate import load_sources
+
+    sources = load_sources(root)
+    sources["product_types"] = load_product_types(root)
+    return sources
+
+
 def test_split_value_separates_the_bare_value_from_its_detail():
     assert split_value("open(downloadable on HF, gated)") == ("open", "downloadable on HF, gated")
     assert split_value("Apache-2.0(OSI)") == ("Apache-2.0", "OSI")
@@ -559,10 +574,9 @@ def test_real_sources_serialize_without_errors():
     from pathlib import Path
 
     from build.serialize_rubric import load_policy, load_routing
-    from build.validate import load_sources
 
     root = Path(__file__).resolve().parents[1]
-    tables, errors, _ = build_rubric(load_sources(root), load_policy(root), load_routing(root))
+    tables, errors, _ = build_rubric(_real_sources(root), load_policy(root), load_routing(root))
     assert errors == [], f"rubric has errors: {errors[:5]}"
 
     # Asserted per category rather than as a total, so a new recipe shows up as its
@@ -596,7 +610,7 @@ def test_real_sources_serialize_without_errors():
     # `core-gated:` key. The two model categories are untouched, which is what the pilot
     # counts are pinned to catch.
     assert per_category("product_openness_evidence") == {
-        "base_pretrained": 111, "finetuned_chat": 172, "deployment": 131,
+        "base_pretrained": 111, "finetuned_chat": 172, "safeguards": 87, "deployment": 131,
         "agent_tools_protocols": 123, "dataset_processing_tools": 88, "evaluation_code": 95,
         "finetuning_code": 132, "inference_code": 80, "ml_frameworks": 84,
         "orchestration_agents": 178, "telemetry_observability": 102, "ui_api": 169,
@@ -613,10 +627,9 @@ def test_every_scored_product_carries_a_row_for_each_formula_dimension():
     from pathlib import Path
 
     from build.serialize_rubric import load_policy, load_routing
-    from build.validate import load_sources
 
     root = Path(__file__).resolve().parents[1]
-    tables, _, _ = build_rubric(load_sources(root), load_policy(root), load_routing(root))
+    tables, _, _ = build_rubric(_real_sources(root), load_policy(root), load_routing(root))
 
     by_product: dict[tuple[str, str], set[str]] = {}
     for row in tables["product_openness_evidence"]:
@@ -646,12 +659,12 @@ def test_license_is_emitted_under_the_name_the_warehouse_joins_on():
     """
     from pathlib import Path
 
-    from build.rubrics import resolve_recipe
+    from build.rubrics import resolve_recipe_variants
     from build.serialize_rubric import load_policy, load_routing
-    from build.validate import load_sources
 
     root = Path(__file__).resolve().parents[1]
-    tables, _, _ = build_rubric(load_sources(root), load_policy(root), load_routing(root))
+    sources = _real_sources(root)
+    tables, _, _ = build_rubric(sources, load_policy(root), load_routing(root))
 
     # Deferred products are excluded: a category has declared the rubric does not decide
     # them, and several are deferred precisely BECAUSE no licence is recorded. Asserting a
@@ -662,12 +675,17 @@ def test_license_is_emitted_under_the_name_the_warehouse_joins_on():
     # back. With no `otherwise` rule in the software ladder they currently fall out of the
     # scoring model's INNER JOIN rather than being scored wrongly, which is the safe
     # direction but a silent one. Bridging the list is tracked separately.
-    sources = load_sources(root)
+    #
+    # Deferrals are a property of the category's declaration, not of any one resolved
+    # ladder — `resolve_recipe_variants` only screens out a category whose `extends` is
+    # broken, matching `build/check_rubric.py`'s `check_category`.
     shared = sources.get("rubrics") or {}
     deferred = set()
     for slug, category in sources["categories"].items():
-        recipe, _ = resolve_recipe(category, shared)
-        for product in ((recipe or {}).get("deferred") or {}):
+        variants, _ = resolve_recipe_variants(category, shared)
+        if not variants:
+            continue
+        for product in ((category.get("scoring_recipe") or {}).get("deferred") or {}):
             deferred.add((product, slug))
 
     rows = tables["product_openness_evidence"]
@@ -687,10 +705,9 @@ def test_evidence_never_puts_two_values_on_one_grain():
     from pathlib import Path
 
     from build.serialize_rubric import load_policy, load_routing
-    from build.validate import load_sources
 
     root = Path(__file__).resolve().parents[1]
-    tables, _, _ = build_rubric(load_sources(root), load_policy(root), load_routing(root))
+    tables, _, _ = build_rubric(_real_sources(root), load_policy(root), load_routing(root))
 
     counts = Counter(
         (r["product_slug"], r["category_slug"], r["dimension"])
