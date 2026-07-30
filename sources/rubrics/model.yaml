@@ -1,0 +1,133 @@
+# Shared openness ladder for FINE-TUNED / GUARDRAIL model categories.
+#
+# Inherited via `scoring_recipe: {extends: model}`. See build/rubrics.py for the merge
+# rules and why the ladder is shared rather than copied per category.
+#
+# Three dimensions carry a tune's openness question: weights, post-training data, code.
+# That is deliberately not base_pretrained's questionnaire — a base model asks about the
+# pretraining corpus and (optionally) checkpoints, which is a different set of facts about
+# a different artifact. base_pretrained does not extend this ladder for exactly that
+# reason: the merge rule replaces a whole key rather than merging into it, so sharing only
+# the license tiers and not the dimensions would buy nothing — the category would still
+# have to restate its own `dimensions` and `formula` in full.
+#
+# As of this extraction, `finetuned_chat` extends this ladder.
+openness:
+  dimensions:
+    weights:
+      question: Are the tuned model weights downloadable and runnable locally?
+      values: [open, closed, pending]
+      evidence:
+      - Hugging Face model repo with downloadable weight files (safetensors/GGUF)
+      - vendor download page for weights outside the Hub
+      machine_signal: signal_huggingface.hub_state (gated, private, files)
+    data:
+      question: Is the POST-TRAINING data released - the SFT, DPO or RL sets this
+        tune was built from?
+      # For a base model the data question is the pretraining corpus. For a tune,
+      # that corpus belongs to somebody else's model, and asking about it scores
+      # the base rather than the product. The honest question here is what the
+      # tuner released, which is why `post-training-data` is read first.
+      reads: [post-training-data, data]
+      values: [open, described_not_released, described, partial, closed]
+      evidence:
+      - a released SFT/DPO/RL mixture, or scripts that reconstruct it
+      - '`described` where the mixture is named in the card but not published'
+      - naming the datasets used is NOT sufficient for `open`
+      machine_signal: none - requires research
+      vocabulary_note: >
+        `described_not_released` here is `documented-not-released` in
+        base_pretrained. Same concept, two spellings, and neither category should
+        be the one that unilaterally renames it. Unifying the shared data
+        vocabulary is issue #106.
+    code:
+      question: Is the fine-tuning pipeline released, not just inference code?
+      values: [open, partial, closed]
+      evidence:
+      - '`open`: the post-training recipe - SFT/DPO/RL configs and scripts'
+      - '`partial`: inference, serving or chat-template code only'
+      - '`closed`: no code'
+      machine_signal: partial - repo presence from signal_github.repo_state
+
+  license_tier:
+    # base_pretrained's ladder, unchanged, including the declaration order that
+    # `tier_rank` and the multi-SKU rule depend on. Eight licenses added because
+    # this category ships them and the pilot did not.
+    ordered_by: restrictiveness_ascending
+    # A tune records its license under `license`, except where the card
+    # distinguishes a code license from the one attached to the weights, and then
+    # it lands in `model-license`. The weights license governs either way.
+    reads: [license, model-license]
+    values:
+      osi:
+        definition: OSI-approved license
+        examples: [Apache-2.0, MIT, BSD-3-Clause]
+      permissive_non_osi:
+        definition: >
+          Not OSI-approved, but imposes no restriction on WHO may use the artifact or
+          AT WHAT SCALE. Attribution, naming and CONDUCT requirements belong here: an
+          acceptable-use policy forbidding military, illegal or discriminatory use caps
+          neither commerce nor reach, so it sits beside attribution rather than beside a
+          monthly-active-user ceiling. Non-OSI by construction, since the OSD forbids
+          discriminating against a field of endeavor. Settled in issue #117, which was
+          opened because the same OpenRAIL family had been scored 3 in one category and
+          4 in another.
+        examples: [Modified-MIT, minimax-community, NVIDIA-Open-Model-License, BigCode-OpenRAIL-M,
+          DeepSeek-Model-License, TII-Falcon-License-2.0]
+      use_restricted:
+        definition: >
+          Caps or gates use - monthly-active-user ceilings, field-of-use limits,
+          research-only terms, or a commercial agreement requirement.
+        examples: [Llama-2-Community-License, Llama-3-Community-License, Llama-3.1-Community-License,
+          Llama-3.2-Community-License, Llama-4-Community, Gemma-License, GLM-4-License,
+          Qwen-License-Agreement, Mistral-Research-License, Mistral-AI-Non-Production-License,
+          Jamba-Open-Model-License, CC-BY-NC]
+      proprietary:
+        definition: No public license; weights not distributed.
+    multi_sku_rule: >
+      As base_pretrained: where a family ships SKUs under different licenses, the
+      most restrictive license among the SKUs WHOSE WEIGHTS ARE ACTUALLY
+      DISTRIBUTED governs, and API-only tiers are excluded.
+    inherits_from_base: >
+      A tune of a restrictively licensed base carries that restriction, because
+      the license travels with the weights. hermes-4-llama-3-1-405b is
+      use_restricted on account of Meta's terms, not anything Nous did. This needs
+      no rule of its own - the tune records the license it actually ships under,
+      and the ladder does the rest.
+
+      What the ladder deliberately does NOT do is credit the tuner's open method
+      here. A fine-tuning approach generalizes across bases - AI2's Tulu recipe
+      runs on Llama and on OLMo - so scoring the checkpoint would either bury the
+      open method or overstate the artifact. The map already resolves this by
+      scoring the method's artifacts as their own products:
+      tulu-3-sft-mixture is 5/open in training_synthetic_datasets while the
+      Llama-based tulu-3 checkpoint is 2/restricted. That pair is the signal.
+      Recording the checkpoint -> base link so the two can be joined is not yet
+      done; `lineage` exists but is dataset-only and free-text.
+    normalization:
+    - 'compound `code X + model Y`: the MODEL license governs'
+    - 'prefix `assumed-`: same tier, confidence drops to medium'
+    never_use:
+      mixed: Apply multi_sku_rule and store the resolved tier instead.
+      unknown: Research it or defer the product with a reason.
+
+  # Ordered rules, first match wins. base_pretrained's ladder less one rule: it
+  # carries a `data: documented-not-released, code: open -> 4`, and no product here
+  # pairs a described-but-unreleased mixture with an open pipeline. Declaring it
+  # anyway would add a rule that cannot fire, and a dead rule in a first-match-wins
+  # formula is a place for a later edit to hide.
+  formula:
+  - when: {weights: closed}
+    then: {score: 1, class: closed}
+  - when: {license_tier: proprietary}
+    then: {score: 1, class: closed}
+  - when: {license_tier: use_restricted}
+    then: {score: 2, class: restricted}
+    note: Open weights behind a use cap. Downloadable is not the same as usable.
+  - when: {data: open, code: open, license_tier: osi}
+    then: {score: 5, class: open_source}
+  - when: {data: open, code: open}
+    then: {score: 4, class: open_weights}
+    note: Full recipe but a non-OSI license caps the score at 4.
+  - otherwise: {score: 3, class: open_weights}
+    note: The category's center of gravity - open weights, closed recipe.
