@@ -23,9 +23,11 @@ sources/signal_routing.yaml  Which machine signal is authoritative per dimension
 sources/evidence_policy.yaml  When an observation is admissible as evidence
 sources/rubrics/       Shared scoring ladders. A category inherits one with
                        `scoring_recipe: {extends: <name>}` rather than copying it;
-                       build/rubrics.py resolves that. license-to-tier lives here,
-                       because whether AGPL is `osi` is a fact about AGPL, not
-                       about one category.
+                       or, for a category whose products don't all climb the same
+                       ladder, `{extends: {<product type>: <name>, ...}}` (safeguards
+                       is the example). build/rubrics.py resolves either form.
+                       license-to-tier lives here, because whether AGPL is `osi` is
+                       a fact about AGPL, not about one category.
 warehouse/models/      UDM SQL (entities, events, metrics, scores)
 warehouse/ingest/      Python fetchers that write CSVs to warehouse/catalog/
 warehouse/catalog/     Raw external CSVs (HF benchmarks, incidents, GitHub orgs)

@@ -43,8 +43,9 @@ files do not carry it. Recording the limit beats inventing an attribution.
 
 Emitted tables (CSVs into `build/registry/`, alongside the registry's own):
 
-  category_scoring_rules      the ordered formula, one row per rule condition
-  category_license_tiers      tier <- example license, per category
+  category_scoring_rules      the ordered formula, one row per rule condition, per category
+                              and product type
+  category_license_tiers      tier <- example license, per category and product type
   license_aliases             a source's license slug -> canonical license name
   evidence_abstentions        values that mean "this source has no answer"
   product_openness_evidence   per-dimension values parsed from `components`

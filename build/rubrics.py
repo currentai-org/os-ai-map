@@ -1,7 +1,15 @@
 """Shared scoring ladders, and how a category inherits one.
 
 A category's `scoring_recipe` may either spell out its own `openness` block or point at a
-shared ladder in `sources/rubrics/<name>.yaml` with `extends: <name>`.
+shared ladder in `sources/rubrics/<name>.yaml` with `extends: <name>`. `extends` can also be
+a mapping of product type to ladder name, for a category whose products do not all climb the
+same ladder — `safeguards` holds guardrail models and guardrail software, so it declares
+`extends: {model: model, software: software}` rather than a single name. The key `"*"` means
+one ladder covers every type; `resolve_recipe_variants` returns that as its only entry when
+`extends` is a plain string, so callers do not need to branch on which form a category used.
+`recipe_for(variants, product_type)` then picks the recipe that governs one product, reading
+its `type:` field from `sources/products/<slug>.yaml` (see `load_product_types`), and reports
+why when no ladder in the mapping covers that type.
 
 ## Why this exists
 

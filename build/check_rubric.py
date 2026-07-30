@@ -221,9 +221,10 @@ def apply_formula(recipe: dict, facts: dict) -> tuple[int, str] | None:
 def check_category(slug: str, verbose: bool) -> tuple[int, int, list[str], list[str]]:
     """Return (reproduced, total, problems, deferred)."""
     category = yaml.safe_load((ROOT / "sources" / "categories" / f"{slug}.yaml").read_text())
-    # `extends: software` pulls the shared ladder in. Resolution errors are returned as
-    # problems rather than raising, so one broken category cannot stop the others being
-    # checked - and cannot pass silently either.
+    # `extends: software` pulls in one shared ladder for every product; `extends: {model:
+    # ..., software: ...}` pulls in one per product type, as `safeguards` does. Resolution
+    # errors are returned as problems rather than raising, so one broken category cannot
+    # stop the others being checked - and cannot pass silently either.
     variants, recipe_errors = resolve_recipe_variants(category, load_shared(ROOT))
     if recipe_errors:
         return 0, 0, [f"{slug}: {e}" for e in recipe_errors], []

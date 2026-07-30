@@ -226,25 +226,36 @@ one gets done twice if rushed.
 
 ### 1. Finish the recipes — 16/16 categories, 470/470 products
 
-111 products across four categories still have no `scoring_recipe`:
+85 products across three categories still have no `scoring_recipe`:
 
 | category | n | product type |
 |---|---|---|
 | `benchmark_eval_data` | 27 | dataset |
 | `training_synthetic_datasets` | 38 | dataset |
 | `edge_hardware` | 20 | hardware |
-| `safeguards` | 26 | **mixed** — 9 model, 17 software |
 
 **Do this before step 2.** Step 2 generalizes the scoring SQL off its hardcoded model
 dimensions, and that generalization should be driven by the complete dimension vocabulary.
 Generalize it now for software alone and it gets redone when `dataset` and `hardware` arrive
 with dimensions of their own.
 
-Two of the four are cheap: one dataset ladder covers 65 products, hardware is 20 products.
-`safeguards` is the one that changes the machinery — it is the only mixed-type category, so
-`extends` has to become per-product-type rather than per-category. That in turn forces the
-other half of the ladder extraction: pulling the model ladder out to
-`sources/rubrics/model.yaml` so `safeguards` can reference both it and `software.yaml`.
+Both are cheap: one dataset ladder covers the 65 products in `benchmark_eval_data` and
+`training_synthetic_datasets`, hardware is `edge_hardware`'s 20.
+
+`safeguards` is no longer on this list, and it is why `extends` now accepts two forms. It
+holds 9 products typed `model` and 17 typed `software`, so a single shared ladder could not
+cover it. `scoring_recipe.extends` can now be a mapping of product type to ladder name —
+`safeguards` declares `model: model, software: software` — resolved per product by the
+`type:` field in `sources/products/<slug>.yaml`, through `build/rubrics.py`'s
+`resolve_recipe_variants` and `recipe_for`. That forced the other half of the extraction
+too: the fine-tuned model ladder moved out of `finetuned_chat.yaml` into a shared
+`sources/rubrics/model.yaml`, so `safeguards` could reference it alongside `software.yaml`.
+
+The machinery landed; the scores did not. `safeguards` reproduces none of its 26 products.
+All 26 sit in the category's `deferred` block: a license resolving to the wrong tier,
+evidence recorded under a key the ladder does not read, a couple of judgment calls on which
+SKU governs a bundled guard model. Correcting those 26 is what remains, through curation
+rather than more machinery.
 
 ### 2. Generalize the scoring SQL, once
 
