@@ -7,6 +7,8 @@ from pathlib import Path
 import jsonschema
 import yaml
 
+from build.rubrics import dimension_vocabulary
+
 # Maps each sources/ subdir to its docs/schemas/<name>.schema.json basename.
 _SCHEMA_FOR_DIR = {
     "organizations": "organization",
@@ -195,6 +197,29 @@ def validate_sources(data: dict) -> list[str]:
         if scored is not None and scored != len(prods):
             errors.append(f"long_tail counts.scored ({scored}) != product count ({len(prods)}); "
                           f"re-sync build/_frozen_long_tail.json after a batch")
+
+    # --- `establishes` must name a real dimension ---
+    # A source's `establishes` list is what makes a re-check claim checkable: it records
+    # which source settles which dimension, so check_verification can require a fresh read
+    # per dimension rather than one fresh read per axis. That only works if the names mean
+    # something. A typo'd `licence` or `weight` establishes nothing at all while reading
+    # like attribution, and the gate that consumes it would then pass an axis whose
+    # dimension has no supporting source. Cross-file because the vocabulary lives in the
+    # category recipes, not in the schema.
+    vocabulary = dimension_vocabulary(cats, data.get("rubrics") or {})
+    if vocabulary:
+        for slug, score in sorted(scores.items()):
+            for axis in ("openness", "adoption", "capability"):
+                for source in (score.get(axis) or {}).get("sources") or []:
+                    if not isinstance(source, dict):
+                        continue
+                    for name in source.get("establishes") or []:
+                        if name not in vocabulary:
+                            errors.append(
+                                f"score {slug!r}: {axis} source {source.get('url')!r} claims to "
+                                f"establish {name!r}, which no scoring_recipe declares as a "
+                                f"dimension or reads as a recorded key"
+                            )
 
     # --- observation dates cannot be in the future ---
     # `accessed` records when a source was read and `last_verified` when a check happened.

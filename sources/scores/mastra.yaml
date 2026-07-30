@@ -9,23 +9,37 @@ openness:
     OSI license, not fair-code. LICENSE.md scopes the commercial carve-out narrowly to `ee/` auth directories,
     so the agent, workflow, memory and eval surfaces a user actually builds on are Apache-2.0. Not 5 because
     the enterprise auth code is source-available and the managed platform is closed.
-  last_verified: '2026-07-29'
+  last_verified: '2026-07-30'
   sources:
   - url: https://github.com/mastra-ai/mastra/blob/main/LICENSE.md
-    shows: 'LICENSE.md states content outside `ee/` directories is "available under the Apache License 2.0",
-      Copyright 2025 Kepler Software, Inc., while `ee/` paths (packages/core/src/auth/ee/,
-      packages/server/src/server/auth/ee/) fall under the license in ee/LICENSE. This preamble ahead of the
-      Apache text is why GitHub''s classifier reports NOASSERTION for the repo.'
-    accessed: '2026-07-29'
-  - url: https://www.npmjs.com/package/@mastra/core
-    shows: published package metadata declares license Apache-2.0 at v1.54.0, confirming the framework ships
-      to consumers under the OSI license rather than only being licensed that way in-repo
-    accessed: '2026-07-29'
+    shows: 'LICENSE.md: "All content that resides under any directory named ''ee/'' within this repository"
+      - listing packages/core/src/auth/ee/ and packages/server/src/server/auth/ee/ - "is licensed under
+      the license defined in ee/LICENSE", while everything "not mentioned" in those directories or
+      restrictions "is available under the ''Apache License 2.0''". This preamble ahead of the Apache
+      text is why GitHub''s classifier reports NOASSERTION for the repo.'
+    accessed: '2026-07-30'
+    http_status: 200
+    content_sha256: f3e088854ab54991f81a9b4a0b8343d33a80124c091dfb5c962e67b589f0e1bd
+    establishes: [license, core-gated]
+  - url: https://registry.npmjs.org/@mastra/core
+    shows: 'Registry metadata declares `license: Apache-2.0`, latest 1.55.0 (was 1.54.0 on 2026-07-29),
+      confirming the framework ships to consumers under the OSI license rather than only being licensed
+      that way in-repo. Cited previously as the npmjs.com package page, which answers 403 to any
+      non-browser fetch behind a Cloudflare interstitial; the registry endpoint serves the same fact
+      and can actually be re-checked.'
+    accessed: '2026-07-30'
+    http_status: 200
+    content_sha256: 374b1995706041a57a638521d51bfef0ea265ca0acfd323e412b3b3d90e9980f
+    establishes: [license]
   - url: https://mastra.ai/
-    shows: 'site FAQ states "Mastra''s core framework is open source under the Apache 2.0 license. Enterprise
-      features are source-available under the Mastra Enterprise License", and describes Mastra Platform as a
-      hosted commercial tier'
-    accessed: '2026-07-29'
+    shows: 'Site FAQ states "Mastra''s core framework is open source under the Apache 2.0 license.
+      Enterprise features are source-available under the Mastra Enterprise License", and describes
+      Mastra Cloud as the hosted commercial tier you can "deploy the same app to" after running it
+      locally - so the published framework is what self-hosts.'
+    accessed: '2026-07-30'
+    http_status: 200
+    content_sha256: c1458faa3a17755659530882810b981eaa4849f8e2135f48e2c7efe7cc8ce82b
+    establishes: [source, core-gated]
 adoption:
   level: 4
   reach: 1M-10M

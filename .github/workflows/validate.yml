@@ -19,6 +19,12 @@ jobs:
         run: uv run python -m build.validate
       - name: Run tests
         run: uv run pytest -q
+
+      # G1, G2 and G3. Free, no network, and scoped so they cover exactly what has been
+      # done: G1 and G2 apply only to axes claiming a last_verified, G3 to every scored
+      # product in a category with a recipe. See docs/guides/verification.md.
+      - name: Verification gates (G1 invariant, G2 digests, G3 producible pairs)
+        run: uv run python -m build.check_verification --verbose
       - name: Serialize dry-run
         run: uv run python -m build.serialize --date ci-dry-run
 

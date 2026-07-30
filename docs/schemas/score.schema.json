@@ -53,7 +53,25 @@
       "properties": {
         "url": { "type": "string", "pattern": "^https?://" },
         "shows": { "type": "string", "minLength": 1 },
-        "accessed": { "type": "string", "minLength": 1 }
+        "accessed": { "type": "string", "minLength": 1 },
+        "establishes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 },
+          "description": "Which dimensions of this axis's score THIS source settles. `sources` is a flat list per axis, so without it nothing records which source establishes which dimension, and a re-check claim cannot be checked. Every name must be a dimension some category's scoring_recipe declares, or a recorded key one of those dimensions reads; build/validate.py enforces that cross-file, because a typo'd name would establish nothing while looking like attribution. Optional and forward-populated: build/check_verification.py requires it only on axes that claim a last_verified. Normative definition in docs/guides/verification.md."
+        },
+        "http_status": {
+          "type": "integer",
+          "minimum": 100,
+          "maximum": 599,
+          "description": "HTTP status the fetch at `accessed` returned. Present means something actually made a request. A 404 at re-check time says the URL was either never real or has rotted."
+        },
+        "content_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "SHA-256 of the fetched response body at `accessed` time. A changed digest says the page moved under a claim that still cites it — a reason to re-check rather than a failure on its own, since pages legitimately change. A MISSING digest on a newly claimed confirmation is a hard failure, because it means the tool fetched nothing."
+        }
       }
     }
   }

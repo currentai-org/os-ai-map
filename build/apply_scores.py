@@ -72,6 +72,13 @@ import os
 import sys
 from pathlib import Path
 
+# `block_bounds` and `find_key` used to be defined here. They now live beside the
+# components rewriter, which needs the same two primitives and must not have a second
+# copy of them: two implementations of "find this field in this file" is how one of them
+# ends up subtly wrong about folded scalars while the other is right.
+from build.components import block_bounds, find_key
+from build.warehouse import query
+
 ROOT = Path(__file__).resolve().parents[1]
 TABLE = "currentai.scores.openness_computed"
 
@@ -79,28 +86,21 @@ TABLE = "currentai.scores.openness_computed"
 def fetch_computed(category: str | None) -> list[dict]:
     """Read the computed scores. Requires OSO_API_KEY, same as publish_registry.
 
-    The trailing unique comment is load-bearing. Query results are cached keyed on the
-    QUERY TEXT, so a tool that issues a fixed string keeps receiving its first answer
-    forever - it never self-heals. That is not theoretical: this function returned the
-    pre-run baseline for a full run cycle after the models had already re-materialized,
-    and adding a single trailing comment to the same SQL returned the fresh numbers. A
-    writer reading through that cache would write stale dates into sources/scores.
+    The cache-busting nonce this used to append itself now comes from `build.warehouse`,
+    which is the only place that builds a warehouse query and cannot be called without
+    one. Its docstring carries the reasoning and the incident; the short version is that
+    results cache on query TEXT, so a fixed string returns its first answer forever and
+    this function once spent a full run cycle reporting pre-materialization numbers.
     """
-    import uuid
-
-    from pyoso import Client
-
     where = f"WHERE category_slug = '{category}'" if category else ""
-    sql = f"""
+    return query(f"""
         SELECT product_slug, category_slug, openness_score, openness_class,
                last_checked, unsourced_dimensions, license_tier_grade,
                dims_from_dataset, dims_relied_on, scoring_note
         FROM {TABLE}
         {where}
         ORDER BY product_slug
-        -- cache-bust {uuid.uuid4()}
-    """
-    return Client().to_pandas(sql).to_dict("records")
+    """)
 
 
 def has_date(value: object) -> bool:
@@ -114,34 +114,6 @@ def has_date(value: object) -> bool:
         return False
     text = str(value).strip()
     return text not in ("", "None", "NaT", "nan", "NaN")
-
-
-def block_bounds(lines: list[str], key: str) -> tuple[int, int] | None:
-    """Line range [start, end) of the top-level `key:` mapping."""
-    start = None
-    for index, line in enumerate(lines):
-        if line.startswith(f"{key}:") and not line[:1].isspace():
-            start = index
-            break
-    if start is None:
-        return None
-    for index in range(start + 1, len(lines)):
-        if lines[index].strip() and not lines[index][:1].isspace():
-            return start, index
-    return start, len(lines)
-
-
-def find_key(lines: list[str], bounds: tuple[int, int], key: str) -> int | None:
-    """Index of a two-space-indented `key:` inside the block, or None.
-
-    Indent is checked exactly. A `score:` nested deeper — inside a `sources` entry,
-    say — is a different key and must not be mistaken for the axis's own.
-    """
-    for index in range(bounds[0] + 1, bounds[1]):
-        line = lines[index]
-        if line.startswith(f"  {key}:") and not line[2:3].isspace():
-            return index
-    return None
 
 
 def apply_to_file(path: Path, computed: dict) -> tuple[list[str], list[str]]:

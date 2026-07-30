@@ -1,15 +1,18 @@
 product: predibase
 openness:
   score: 2
-  class: open_core
-  components: core-platform:closed(proprietary post-training stack + turbo serving);OSS-components:LoRAX(open source
+  class: source_available
+  components: core-platform:closed(proprietary post-training stack + turbo serving);source:partial(LoRAX
+    and Ludwig are adjacent OSS; the fine-tuning platform does not ship);OSS-components:LoRAX(open source
     multi-LoRA serving)+Ludwig(open source);runs-on:Predibase-SaaS-or-customer-VPC;license:Proprietary(managed)
     with Apache-licensed LoRAX/Ludwig adjuncts
   confidence: high
-  note: 'Open-core: the founders created and maintain OSS LoRAX (multi-LoRA serving) and Ludwig, but the
-    Predibase fine-tuning/RFT platform itself is proprietary managed SaaS. Scored 2 (open-core leaning
-    closed) because the FT product - the thing being scored - is the proprietary platform, with OSS only
-    at the serving/declarative-ML edges.'
+  note: The founders created and maintain OSS LoRAX (multi-LoRA serving) and Ludwig, but the Predibase fine-tuning/RFT
+    platform, which is the thing being scored, is proprietary managed SaaS running on Predibase's own cloud
+    or a customer VPC. The OSS sits at the serving and declarative-ML edges. Class corrected from open_core
+    on 2026-07-30. In this ladder open_core means an OSI core with functionality withheld for a paid tier,
+    and there is no open core here, only an open periphery. A repo that exists while the runtime does not
+    ship is source:partial, which the ladder scores 2/source_available. The score itself was already 2.
   sources:
   - url: https://docs.predibase.com/
     shows: managed platform to fine-tune & serve open source LLMs; SFT/RFT/continued-pretraining; built
