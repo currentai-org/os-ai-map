@@ -1,15 +1,21 @@
 product: chatbot-arena
 openness:
   score: 2
-  class: open_core
-  components: platform:closed(hosted arena.ai, proprietary live leaderboard + private vote data); reference-code:FastChat
-    Apache-2.0 (powers Chatbot Arena but stale, last release Feb 2024, 39.5k stars); aux-OSS:Arena-Hard-Auto
-    Apache-2.0 (automatic LLM eval, highest correlation to LMArena); ranking methodology + crowd-vote
-    dataset not fully open
+  class: source_available
+  components: platform:closed(hosted arena.ai, proprietary live leaderboard + private vote data); source:partial(FastChat
+    is a real arena implementation but stale relative to the operating platform; the current ranking pipeline
+    does not ship); reference-code:FastChat Apache-2.0 (powers Chatbot Arena but stale, last release Feb
+    2024, 39.5k stars); aux-OSS:Arena-Hard-Auto Apache-2.0 (automatic LLM eval, highest correlation to LMArena);
+    ranking methodology + crowd-vote dataset not fully open
   confidence: medium
-  note: 'Scored as the hosted platform: the live evaluation product, its vote stream, and current ranking
-    pipeline are closed; substantial OSS heritage (FastChat) and an OSS automatic-eval companion exist,
-    so open_core not closed. The OSS code is stale relative to the operating platform.'
+  note: 'Scored as the hosted platform: the live evaluation product, its vote stream and the current ranking
+    pipeline are closed, while substantial OSS heritage (FastChat) and an OSS automatic-eval companion (Arena-Hard-Auto)
+    exist. The OSS code is stale relative to the operating platform, which is what makes this source_available
+    rather than closed: FastChat is a real arena implementation, just not the one running. Class corrected
+    from open_core on 2026-07-30. In this ladder open_core means an OSI core with functionality withheld
+    for a paid tier, and there is no open core here, only an open periphery. A repo that exists while the
+    runtime does not ship is source:partial, which the ladder scores 2/source_available. The score itself
+    was already 2.'
   sources:
   - url: https://github.com/lm-sys/FastChat
     shows: Apache-2.0; 'FastChat powers Chatbot Arena (lmarena.ai), serving over 10M chat requests for

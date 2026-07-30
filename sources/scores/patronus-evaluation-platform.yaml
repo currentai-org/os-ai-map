@@ -1,14 +1,17 @@
 product: patronus-evaluation-platform
 openness:
   score: 2
-  class: open_core
-  components: platform:closed(hosted SaaS; remote Judge/Lynx/Glider evaluators run on Patronus infrastructure);
-    client-SDKs:open(patronus-py public on GitHub, v0.1.25, but only 7 stars and wires to the hosted API);
-    eval engine + proprietary evaluators not self-hostable
+  class: source_available
+  components: platform:closed(hosted SaaS; remote Judge/Lynx/Glider evaluators run on Patronus infrastructure);source:partial(patronus-py
+    is a client wiring to the hosted API, not the engine);client-SDKs:open(patronus-py public on GitHub,
+    v0.1.25, but only 7 stars and wires to the hosted API);eval engine + proprietary evaluators not self-hostable
   confidence: medium
-  note: Open-source SDK is a thin client to a closed hosted evaluation backend; the core scoring engine
-    and managed evaluators are proprietary => open_core, low end (the OSS surface is a connector, not
-    the product). License text not displayed on the SDK repo page (note).
+  note: The open-source SDK is a thin client to a closed hosted evaluation backend; the core scoring engine
+    and the managed Lynx/Glider evaluators are proprietary and not self-hostable. License text is not displayed
+    on the SDK repo page. Class corrected from open_core on 2026-07-30. In this ladder open_core means an
+    OSI core with functionality withheld for a paid tier, and there is no open core here, only an open periphery.
+    A repo that exists while the runtime does not ship is source:partial, which the ladder scores 2/source_available.
+    The score itself was already 2.
   sources:
   - url: https://github.com/patronus-ai/patronus-py
     shows: Python SDK whose remote evaluators 'run remotely on Patronus infrastructure'; v0.1.25 Jan 2026;

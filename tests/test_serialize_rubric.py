@@ -430,11 +430,17 @@ def test_real_sources_serialize_without_errors():
     # Both fell with the slug migration: release-level products collapsed into the
     # tier the vendor sells, so 25 products left the roster and the closed frontier
     # models moved from base_pretrained to finetuned_chat.
+    #
+    # Eight software categories then rose by 1-3 rows when the G3 score corrections landed:
+    # fixing an impossible score/class pair means recording the dimension that decides it, so
+    # products that had described their gating in prose gained a readable `source:` or
+    # `core-gated:` key. The two model categories are untouched, which is what the pilot
+    # counts are pinned to catch.
     assert per_category("product_openness_evidence") == {
         "base_pretrained": 111, "finetuned_chat": 172, "deployment": 131,
-        "agent_tools_protocols": 122, "dataset_processing_tools": 88, "evaluation_code": 92,
-        "finetuning_code": 131, "inference_code": 77, "ml_frameworks": 84,
-        "orchestration_agents": 176, "telemetry_observability": 100, "ui_api": 168,
+        "agent_tools_protocols": 123, "dataset_processing_tools": 88, "evaluation_code": 95,
+        "finetuning_code": 132, "inference_code": 80, "ml_frameworks": 84,
+        "orchestration_agents": 178, "telemetry_observability": 102, "ui_api": 169,
     }
     assert {r["grade"] for r in tables["product_openness_evidence"]} == {"document"}
 

@@ -136,21 +136,42 @@ exactly what has been done, never blocks progress, and never permits a regressio
 already taken. A big-bang gate over all 1386 axes would fail on day one and get switched
 off, which is how gates die.
 
-G3, G5 and G6 apply in full immediately — nothing has to be populated first. G3 already has
-a known catch: `vellum` and `whylabs` are recorded `4 / open_source`, a pair no ladder here
-can produce.
+G3, G5 and G6 apply in full immediately — nothing has to be populated first.
+
+G3 found 17 impossible pairs on its first run, not the two that were known. `vellum`,
+`whylabs` and `tensorrt-llm` were recorded `4 / open_source`, a pair no rule emits because
+4 is `open_core`; five more were `2 / open_core`, which no rule emits either; and nine
+carried a score of 3, which the software ladder cannot produce **at all**, its rungs being
+1, 2, 4 and 5. All 17 were corrected by reading the products, in three groups:
+
+- `2 / open_core` → `2 / source_available`. The class was wrong. `open_core` in this ladder
+  means an OSI core with functionality withheld for a paid tier; these five have an open
+  periphery around a closed engine, which is `source: partial`.
+- score 3 → 2. The score was wrong. Every one of the nine is "you can read it and not run
+  it freely" — a non-OSI restrictive license over public source, or a client standing in
+  for a closed service — which the ladder scores at 2.
+- `4 / open_source` → `5 / open_source`. The score was wrong. Each of the three publishes
+  the whole self-hostable product under an OSI license with nothing withheld. The 4s
+  encoded maturity or scepticism about the vendor's marketing, both of which belong on the
+  adoption and capability axes and were already recorded there.
+
+Worth noting what G3 caught that `check_rubric` could not: 16 of the 17 were sitting in a
+category's `deferred` block, which excludes a product from reproduction. G3 ignores the
+evidence and asks only whether the pair exists in the ladder, so deferring cannot hide it.
 
 ### Two shared utilities, so the mechanism cannot be bypassed
 
 - **`build/components.py`** — the only supported way to edit a `components` field. The
-  block-safe rewriter with the reparse assertion, extracted. 21 of deployment's 27 files
-  fold that scalar across lines, so any hand-rolled `^  components: (.*)$` substitution
-  splices keys mid-string and corrupts the value silently. A shared helper means the next
-  script cannot re-invent that.
-- **A query helper that forces a cache-busting nonce.** Warehouse results cache on query
-  TEXT, so a fixed verification query returns its first answer forever and a tool reading
-  through that cache reports success against stale data. It has already happened. The nonce
-  belongs in the helper, not in each caller's discipline.
+  block-safe rewriter with the reparse assertion. 277 of the 470 score files fold that
+  scalar across lines, 57 of them across three or more, so any hand-rolled
+  `^  components: (.*)$` substitution splices keys mid-string and corrupts the value
+  silently. A shared helper means the next script cannot re-invent that. Generic over the
+  field, so a score correction and a components edit are the same operation with the same
+  assertion behind them.
+- **`build/warehouse.py`** — the only supported way to read the warehouse, and it forces a
+  cache-busting nonce. Results cache on query TEXT, so a fixed verification query returns
+  its first answer forever and a tool reading through that cache reports success against
+  stale data. It has already happened. `query()` has no parameter to switch the nonce off.
 
 ## Why openness can never be fully automated
 
@@ -172,10 +193,20 @@ different in kind and can be automated — see the table below.
 | **real claims to verify** | **1386** |
 | of those, citing at least one source URL | 1386 |
 | carrying a real `last_verified` | 6 (once #124 lands; 26 before it, 19 of them tool-written) |
+| of those 6, satisfying G1 and G2 | 6, after the Phase 0 re-read |
 | distinct source URLs behind all of it | 1099 (450 cited more than once) |
 
 Every real claim already cites a source. The work is not finding evidence; it is re-reading
 what is cited. And the re-read surface is 1099 fetches, not 1386, because sources are shared.
+
+**None of the 6 satisfied G1 as first written**, which is worth recording because it is the
+clearest evidence that the invariant does something. `establishes` did not exist when those
+dates were set, and beyond that the 2026-07-28 pass on the four model flagships re-read only
+the dataset endpoint: `apertus`, `olmo`, `pythia` and `lucie-7b` all claimed a whole-axis
+confirmation while citing 2026-06 reads for weights, code, checkpoints and license. Refetching
+the 23 cited sources cleared it and turned up two things an exemption would have hidden — a
+Lucie source URL that had never resolved as cited (missing the `/datasets/` segment, so the
+Hub answered 401), and an `rwkv` `weights:open` claim with no source behind it at all.
 
 ### What automation can and cannot earn, per axis
 
@@ -229,9 +260,10 @@ Two things ride along:
   every dimension the score *records*. Without this column no tool can ever legitimately
   write `last_verified`, so it is the precondition for step 3.
 - **A `category_deferrals` table.** `deferred` currently lives only in the repo, so the
-  warehouse does not know which products a category has held back. There are ~180 of them
-  now. With no `otherwise` rule in the software ladder they fall out of the model's INNER
-  JOIN rather than being scored wrongly — the safe direction, but silent.
+  warehouse does not know which products a category has held back. There are 63 of them now,
+  alongside the 111 products in the four categories with no recipe at all. With no
+  `otherwise` rule in the software ladder they fall out of the model's INNER JOIN rather than
+  being scored wrongly — the safe direction, but silent.
 
 ### 3. The automated freshness pass — roughly 400 axes
 
@@ -246,13 +278,16 @@ than clearing it first.** Reading a product's sources to determine `core-gated` 
 re-check that earns its `last_verified`; done as two passes it is the same pages fetched
 twice, and it re-verifies scores that are about to change.
 
-That backlog is currently ~180 products: 59 whose prose does not settle their dimensions, 11
-where the ladder and the recorded score disagree, plus the model-category gaps.
+That backlog is currently 174 products: 49 whose prose does not settle `source` or
+`core-gated`, 10 whose recorded license maps to no tier in the ladder, 4 where the ladder and
+the recorded score still disagree (`jina-reader`, `openhands`, `maple-ai`, `privatemode` — all
+producible pairs, so G3 passes them and only `check_rubric` objects), plus the 111 products in
+the four categories that have no recipe yet.
 
 **Expect scores to move.** Verification is not a formality: the RWKV correction in #105 came
-out of a pass like this, and the 11 ladder conflicts already say some recorded scores are
-wrong — `vellum` and `whylabs` are recorded `4 / open_source`, which is not a pair any ladder
-here can produce. `apply_scores --check` exits non-zero on a moved score for this reason.
+out of a pass like this, and G3's first run moved 17 openness scores or classes before the
+gate could land at all. `apply_scores --check` exits non-zero on a moved score for this
+reason.
 
 ### 5. Turn on the age gate
 

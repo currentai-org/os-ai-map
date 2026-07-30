@@ -47,8 +47,12 @@ scoring_recipe:
   deferred:
     txt360-pipeline:
       because: >-
-        source or core-gated is not recorded in a form the ladder can read; needs a read of
-        the repo and pricing page
+        the license is recorded as prose - `Apache-2.0 asserted in README only, no LICENSE file in
+        repo` - so the tier lookup reads a sentence rather than a license name. Confirmed
+        2026-07-30: the repo still ships no LICENSE file and the GitHub license endpoint 404s. The
+        deciding rule reads `source` alone, but check_rubric resolves a license tier before
+        applying the formula, so it abstains. Adding the license to a tier is a rubric change,
+        held for Phase 1.
     nemo-data-designer:
       because: >-
         source or core-gated is not recorded in a form the ladder can read; needs a read of

@@ -7,24 +7,50 @@ openness:
   confidence: high
   note: 'Full open-source tier alongside OLMo / Apertus: open weights, open training data, open training
     code, intermediate checkpoints. Authors position Lucie as OSI-definition-compliant for open-source AI.
-    Training-dataset product deferred — artifacts cited here for openness only.'
-  last_verified: '2026-07-28'
+    Training-dataset product deferred — artifacts cited here for openness only. Caveat found on the
+    2026-07-30 re-read: Lucie-Training-Dataset carries `cc-by-nc-sa-4.0`, so the corpus is published
+    and ungated but NOT commercially reusable. The `data` dimension asks whether the corpus is released,
+    not under what terms, so the score is unchanged — but the authors'' OSI-compliance claim does not
+    survive a strict reading, and Lucie is a weaker full-openness exemplar than OLMo, whose Dolma is
+    `odc-by`.'
+  last_verified: '2026-07-30'
   sources:
   - url: https://huggingface.co/api/datasets/OpenLLM-France/Lucie-Training-Dataset
-    shows: Public, ungated dataset repo present on the Hub; 3,101 downloads. Corpus is published, not merely described.
-    accessed: '2026-07-28'
+    shows: '`gated: false`, `private: false`, 2,823 downloads, 38 likes. Card license is `cc-by-nc-sa-4.0`
+      - the corpus is published and ungated, but non-commercial. See the note.'
+    accessed: '2026-07-30'
+    http_status: 200
+    content_sha256: 45eb931a751bf23f6b1483d7e9f36de370f6d97f8c16c385a8ccae2acd8c6164
+    establishes: [data]
   - url: https://huggingface.co/OpenLLM-France/Lucie-7B
-    shows: Apache-2.0 weights; links to Lucie-Training-Dataset; intermediate checkpoints; Llama-3.1 arch
-    accessed: '2026-07-19'
-  - url: https://huggingface.co/OpenLLM-France/Lucie-Training-Dataset
-    shows: redistributable multilingual pretraining corpus used for Lucie-7B
-    accessed: '2026-07-19'
+    shows: 'License apache-2.0, safetensors weights, links to Lucie-Training-Dataset, and intermediate
+      checkpoints as repo branches (`step0005000`, `step0010000`, ...); `isGated: false`.'
+    accessed: '2026-07-30'
+    http_status: 200
+    content_sha256: a5fe19f486e453fa8ff6a2f528a7b4f7855809cd39442d25c5b590af6f855198
+    establishes: [weights, license, checkpoints]
+  - url: https://huggingface.co/datasets/OpenLLM-France/Lucie-Training-Dataset
+    shows: 'Dataset page for the multilingual pretraining corpus: `isGated: false`, `isPrivate: false`,
+      Parquet format present. Cited previously WITHOUT the `/datasets/` path segment, which the Hub
+      resolves as a model repo and answers 401; the URL was corrected on re-read rather than the
+      dataset having become gated.'
+    accessed: '2026-07-30'
+    http_status: 200
+    content_sha256: ab497f71443c15c8e810967bc042d412b3c4fea042b835021e318998a48874f0
+    establishes: [data]
   - url: https://github.com/OpenLLM-France/Lucie-Training
-    shows: open training code (Megatron-DeepSpeed fork)
-    accessed: '2026-07-19'
+    shows: Repository described as "Code for continual pretraining of LUCIE" - the Megatron-DeepSpeed
+      fork used for the run.
+    accessed: '2026-07-30'
+    http_status: 200
+    content_sha256: b7f84d33bcf5b837dab128ddfabf07d5111127bb8f434f8ddf86ebf5942e26f3
+    establishes: [code]
   - url: https://arxiv.org/abs/2503.12294
-    shows: paper claiming OSI-compliant open resources for multilingual generation
-    accessed: '2026-07-19'
+    shows: Paper claiming OSI-compliant open resources for multilingual generation. The claim is the
+      authors', which is why it establishes no dimension by itself.
+    accessed: '2026-07-30'
+    http_status: 200
+    content_sha256: 2943dcf52d6e8f8ff3a631bb99bc6b48bb75c5015eac8c5fc7f29d9f0848dc41
 adoption:
   level: 2
   reach: 10K-100K

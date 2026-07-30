@@ -66,8 +66,10 @@ scoring_recipe:
         the repo and pricing page
     apify:
       because: >-
-        ladder computes 1/closed from the recorded evidence but the score says 2/open_core;
-        one of the two is wrong and it needs a human
+        the license is recorded as `mixed(platform closed, SDK open)`, which names no license and
+        so maps to no tier. The deciding rule reads `source` alone, but check_rubric resolves a
+        license tier before applying the formula, so it abstains. Adding the license to a tier is
+        a rubric change, held for Phase 1.
     yomo:
       because: >-
         source or core-gated is not recorded in a form the ladder can read; needs a read of

@@ -1,14 +1,20 @@
 product: max
 openness:
-  score: 3
+  score: 2
   class: source_available
-  components: license:Modular-Community-License(non-OSI; Apache-2.0-w/-LLVM-exceptions only for some components);source:public(~450k
-    LOC incl MAX kernels + inference server + Mojo stdlib);commercial-tier:Modular enterprise/managed
-    deployment
+  components: license:Modular-Community-License(non-OSI, per-device licensing and a limited redistribution
+    grant, governs MAX/Mojo usage+distribution);repo-license:Apache-2.0-WITH-LLVM-exception(the source in
+    modular/modular);source:public(~450k LOC incl MAX kernels + inference server + Mojo stdlib);commercial-tier:Modular
+    enterprise/managed deployment
   confidence: high
-  note: Large public codebase but MAX/Mojo usage and distribution are governed by the non-OSI Modular
-    Community License (not OSI-approved), plus a commercial tier -> source_available, not open_source.
-    Marketed as 'open'; flag open_washed (non-OSI license presented as open).
+  note: 'Large public codebase, and the repo''s own LICENSE is now Apache-2.0 with LLVM Exceptions. The
+    README is explicit that "Modular, MAX and Mojo usage and distribution are licensed under the Modular
+    Community License", which is not OSI approved: read 2026-07-30, it licenses per discrete physical device,
+    grants only a limited right to redistribute certain components, and provides the community variant free
+    of charge subject to withdrawal at any time. So the source is readable and not freely runnable at scale.
+    Marketed as "open"; flag open_washed. Score corrected from 3 to 2 on 2026-07-30. The software ladder
+    has rungs at 1, 2, 4 and 5 and none at 3, so 3/source_available was not a pair any rule could produce;
+    the ladder scores "you can read it and not run it freely" at 2.'
   sources:
   - url: https://github.com/modular/modular
     shows: Modular Community License (non-OSI) governs MAX/Mojo usage+distribution; ~450k LOC public;

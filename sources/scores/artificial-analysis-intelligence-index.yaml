@@ -1,16 +1,21 @@
 product: artificial-analysis-intelligence-index
 openness:
   score: 2
-  class: open_core
-  components: platform:closed(proprietary benchmarking site + methodology); methodology:documented(public
-    methodology page, per-eval breakdown, temp/token params); datasets:closed(maintains internal copies
-    of all eval datasets); harness:partial-open(Stirrup MIT, used for the agentic GDPval-AA eval only,
-    413 stars); the full Intelligence Index harness is not open
+  class: source_available
+  components: platform:closed(proprietary benchmarking site + methodology); source:partial(Stirrup covers
+    one of ten evals; the Index pipeline does not ship); methodology:documented(public methodology page,
+    per-eval breakdown, temp/token params); datasets:closed(maintains internal copies of all eval datasets);
+    harness:partial-open(Stirrup MIT, used for the agentic GDPval-AA eval only, 413 stars); the full Intelligence
+    Index harness is not open
   confidence: high
-  note: Methodology is well-documented and one component harness (Stirrup) is MIT-OSS, but the Index itself
-    (pipeline, internal dataset copies, grader config) is proprietary => open_core (closed-leaning with
-    a documented methodology + one OSS sub-tool). Not pure closed given Stirrup + transparent methodology;
-    not source_available since the core isn't published.
+  note: 'Methodology is well documented and one component harness (Stirrup) is MIT, but the Index itself
+    (pipeline, internal dataset copies, grader config) is proprietary. The earlier note reasoned "not source_available
+    since the core isn''t published", which reads source_available as a stronger claim than this ladder
+    makes: source:partial covers a repo existing while the runtime does not ship, and Stirrup covers one
+    of ten evals. Class corrected from open_core on 2026-07-30. In this ladder open_core means an OSI core
+    with functionality withheld for a paid tier, and there is no open core here, only an open periphery.
+    A repo that exists while the runtime does not ship is source:partial, which the ladder scores 2/source_available.
+    The score itself was already 2.'
   sources:
   - url: https://artificialanalysis.ai/methodology/intelligence-benchmarking
     shows: v4.0.4 (Mar 2026), 10-eval composite, internal copies of all datasets, standardized params

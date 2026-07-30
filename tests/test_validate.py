@@ -170,3 +170,89 @@ def test_product_lineage_rejects_unknown_keys():
     d["products"]["llama"]["lineage"] = {"forked_from": ["x"]}
     errs = validate_sources(d)
     assert any("lineage" in e or "forked_from" in e or "additional" in e.lower() for e in errs)
+
+
+def _with_recipe(d):
+    """Give the fixture a category recipe, so `establishes` has a vocabulary to check.
+
+    Without one the cross-file check has nothing to check against and skips, which is the
+    correct behavior for a hand-built fixture but makes it useless for these tests.
+    """
+    d["categories"]["base_pretrained"]["scoring_recipe"] = {
+        "openness": {
+            "dimensions": {
+                "weights": {"values": ["open", "closed"]},
+                "data": {"values": ["open", "closed"], "reads": ["data", "post-training-data"]},
+            },
+            "formula": [{"when": {"weights": "closed"}, "then": {"score": 1, "class": "closed"}}],
+        }
+    }
+    return d
+
+
+def test_establishes_accepts_a_declared_dimension():
+    d = _with_recipe(_fixture())
+    d["scores"]["llama"]["openness"]["sources"][0]["establishes"] = ["weights"]
+    assert validate_sources(d) == []
+
+
+def test_establishes_accepts_a_recorded_key_a_dimension_reads():
+    """`post-training-data` is not a dimension name, but it is declared vocabulary."""
+    d = _with_recipe(_fixture())
+    d["scores"]["llama"]["openness"]["sources"][0]["establishes"] = ["post-training-data"]
+    assert validate_sources(d) == []
+
+
+def test_establishes_accepts_license_though_it_is_a_derived_tier():
+    """A source establishes the license; the recipe derives the tier from it."""
+    d = _with_recipe(_fixture())
+    d["scores"]["llama"]["openness"]["sources"][0]["establishes"] = ["license"]
+    assert validate_sources(d) == []
+
+
+def test_establishes_rejects_a_typo():
+    """The whole point: a misspelled dimension establishes nothing while looking like it does."""
+    d = _with_recipe(_fixture())
+    d["scores"]["llama"]["openness"]["sources"][0]["establishes"] = ["weight"]
+    errs = validate_sources(d)
+    assert any("establish 'weight'" in e for e in errs)
+
+
+def test_establishes_rejects_a_british_spelling_of_license():
+    d = _with_recipe(_fixture())
+    d["scores"]["llama"]["openness"]["sources"][0]["establishes"] = ["licence"]
+    assert any("establish 'licence'" in e for e in validate_sources(d))
+
+
+def test_establishes_checked_on_adoption_and_capability_too():
+    d = _with_recipe(_fixture())
+    d["scores"]["llama"]["adoption"]["sources"][0]["establishes"] = ["nonsense"]
+    assert any("adoption source" in e and "nonsense" in e for e in validate_sources(d))
+
+
+def test_establishes_skipped_when_no_recipe_declares_anything():
+    """No vocabulary means no basis to reject a name, so the check abstains rather than
+    failing every source in a repo whose categories have no recipes yet."""
+    d = _fixture()  # deliberately no scoring_recipe
+    d["scores"]["llama"]["openness"]["sources"][0]["establishes"] = ["weight"]
+    assert not any("establish" in e for e in validate_sources(d))
+
+
+def test_digest_must_be_a_sha256():
+    d = _fixture()
+    d["scores"]["llama"]["openness"]["sources"][0]["content_sha256"] = "deadbeef"
+    assert any("schema" in e for e in validate_sources(d))
+
+
+def test_http_status_must_be_a_real_status_code():
+    d = _fixture()
+    d["scores"]["llama"]["openness"]["sources"][0]["http_status"] = 20
+    assert any("schema" in e for e in validate_sources(d))
+
+
+def test_a_fetched_source_with_status_and_digest_validates():
+    d = _fixture()
+    d["scores"]["llama"]["openness"]["sources"][0].update(
+        {"http_status": 200, "content_sha256": "a" * 64}
+    )
+    assert validate_sources(d) == []

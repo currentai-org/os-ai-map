@@ -27,6 +27,23 @@ corrupted twice already.
 Do this first. Everything after it is bulk edits to `sources/scores/`, and gates written
 afterwards would be gates written to fit whatever the bulk edits happened to produce.
 
+> **0.1 to 0.4 have landed.** `build/check_verification.py` runs in `validate.yml`, and all
+> three gates pass. Two things went differently from what is written below and are worth
+> knowing before following it:
+>
+> - **G3 caught 17 impossible pairs, not 2.** `vellum` and `whylabs` were the known ones;
+>   `tensorrt-llm` made a third `4 / open_source`, five products were `2 / open_core`, and
+>   nine carried a score of 3, which the software ladder cannot emit at all. All were fixed
+>   as score corrections. `docs/guides/verification.md` has the three groups and the
+>   reasoning; the ladder was not touched.
+> - **The G2 exemption list is empty.** All 6 dated axes qualified for it, and none of them
+>   satisfied G1 either, because the 2026-07-28 pass on the model flagships re-read only the
+>   dataset endpoint. Re-fetching the 23 cited sources was 23 requests and it turned up two
+>   defects the exemption would have hidden. Exempting stays the cheaper move and the
+>   mechanism is still there; it is not the better move when the set is small.
+>
+> **0.5 (G6) has NOT landed.** It is the one Phase 0 item still open.
+
 ### 0.1 Schema: `establishes`, `http_status`, `content_sha256`
 
 Add all three to `docs/schemas/score.schema.json` under `definitions.source`, **all
@@ -154,7 +171,8 @@ Three things ship together:
    only what the winning rule reads, which is the wrong denominator — the rule requires every
    dimension the score *records*. Without this, Phase 3 cannot legitimately write a date.
 3. **A `category_deferrals` table.** `deferred` lives only in the repo, so the warehouse does
-   not know which ~180 products are held back. With no `otherwise` rule in the software
+   not know which 174 products are held back (63 recipe deferrals plus 111 in the four
+   categories with no recipe). With no `otherwise` rule in the software
    ladder they currently fall out of an INNER JOIN — safe, but silent.
 
 Deploy per `docs/runbooks/deploy-udms.md`, and note the release step:
@@ -203,7 +221,7 @@ them as `verified` rather than `commit`.
 
 ## Phase 4 — The re-read pass, ~1099 URLs
 
-Everything else, all of openness included. **Fold the ~180 deferrals in rather than clearing
+Everything else, all of openness included. **Fold the 174 held-back products in rather than clearing
 them first** — reading a product's sources to settle `core-gated` *is* the re-check that earns
 its date. Two passes means the same pages fetched twice, on scores about to change.
 

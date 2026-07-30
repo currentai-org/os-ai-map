@@ -1,12 +1,18 @@
 product: tensorrt-llm
 openness:
-  score: 4
+  score: 5
   class: open_source
-  components: license:Apache-2.0(OSI);source:public;caveat:runs only on NVIDIA GPUs (vendor-hardware lock,
-    not a license restriction)
-  confidence: high
-  note: license:Apache-2.0(OSI);source:public;caveat:runs only on NVIDIA GPUs (vendor-hardware lock, not
+  components: license:Apache-2.0(OSI, stated in LICENSE; GitHub reports NOASSERTION because of the bundled-dependency
+    appendix);source:public;core-gated:ungated;caveat:runs only on NVIDIA GPUs (vendor-hardware lock, not
     a license restriction)
+  confidence: high
+  note: 'Apache-2.0 across the repo. The LICENSE opens "This project is licensed under the Apache 2.0 license"
+    and then appends the terms of the third-party code it bundles, which is why GitHub''s classifier reports
+    NOASSERTION. Nothing is withheld from the published source: NVIDIA sells NIM and enterprise support
+    as separate products rather than gating features out of this one. Score corrected from 4 to 5 on 2026-07-30.
+    In this ladder 4 pairs with open_core and never with open_source, and the recorded 4 was carrying the
+    NVIDIA-GPU-only caveat, which is a hardware lock rather than a license restriction and answers no openness
+    dimension.'
   sources:
   - url: https://github.com/NVIDIA/TensorRT-LLM
     shows: flagship phase-C verification source

@@ -1,13 +1,17 @@
 product: lumo
 openness:
-  score: 3
-  class: open_core
-  components: clients:open(GPLv3 - web in ProtonMail/WebClients, iOS/Android in ProtonLumo);service:closed(backend,
-    routing, model-serving not public);license:GPLv3(clients)
+  score: 2
+  class: source_available
+  components: source:partial(GPLv3 clients only; backend, routing and model-serving are not published);clients:open(GPLv3
+    - web in ProtonMail/WebClients, iOS/Android in ProtonLumo);service:closed(backend, routing, model-serving
+    not public);license:GPLv3(clients)
   confidence: high
-  note: Open clients (GPLv3) over a proprietary hosted service - the backend, routing, and model-serving
-    layer are not published. Marketed as "fully open source," but support and third-party reviews note
-    that only the clients are open, so open_core is the honest class.
+  note: 'Open clients (GPLv3) over a proprietary hosted service: the backend, routing and model-serving
+    layer are not published. Marketed as "fully open source", but support pages and third-party reviews
+    note that only the clients are open. Corrected from 3/open_core on 2026-07-30, and both values were
+    wrong: the ladder has no rung at 3, and a published client standing in for an unpublished engine is
+    source:partial, which it scores 2/source_available. open_core would mean an OSI core with a paid tier
+    withheld.'
   sources:
   - url: https://github.com/ProtonLumo/ios-lumo
     shows: iOS client source under GPLv3
