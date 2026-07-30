@@ -50,6 +50,11 @@ def resolve_recipe(category: dict, shared: dict[str, dict]) -> tuple[dict | None
         return None, []
 
     base_name = recipe.get("extends")
+    if isinstance(base_name, dict):
+        return None, [
+            "scoring_recipe extends per product type; call resolve_recipe_variants "
+            "and select with recipe_for"
+        ]
     if not base_name:
         return recipe, []
 
@@ -64,6 +69,54 @@ def resolve_recipe(category: dict, shared: dict[str, dict]) -> tuple[dict | None
     merged.update({key: value for key, value in recipe.items() if key != "extends"})
     merged["extends"] = base_name
     return merged, []
+
+
+def resolve_recipe_variants(
+    category: dict, shared: dict[str, dict]
+) -> tuple[dict[str, dict], list[str]]:
+    """({product type: resolved recipe}, errors). The key "*" covers every type.
+
+    `extends` is a string for a uniform category and a mapping of product type ->
+    ladder name for a mixed one (`safeguards` holds guardrail models and software
+    libraries, which climb different ladders). The category's own keys merge into
+    every variant under the same whole-key-replace rule as `resolve_recipe`.
+    """
+    recipe = category.get("scoring_recipe")
+    if not recipe:
+        return {}, []
+    base_name = recipe.get("extends")
+    if not isinstance(base_name, dict):
+        resolved, errors = resolve_recipe(category, shared)
+        return ({"*": resolved} if resolved else {}), errors
+
+    variants: dict[str, dict] = {}
+    errors: list[str] = []
+    for product_type, ladder_name in sorted(base_name.items()):
+        base = shared.get(ladder_name)
+        if base is None:
+            errors.append(
+                f"scoring_recipe extends {ladder_name!r} for type {product_type!r}, "
+                f"which is not a file in sources/rubrics/ "
+                f"(have: {', '.join(sorted(shared)) or 'none'})"
+            )
+            continue
+        merged = dict(base)
+        merged.update({key: value for key, value in recipe.items() if key != "extends"})
+        merged["extends"] = ladder_name
+        variants[product_type] = merged
+    return variants, errors
+
+
+def recipe_for(variants: dict[str, dict], product_type: str) -> tuple[dict | None, str | None]:
+    """The recipe governing one product, or (None, why not)."""
+    if "*" in variants:
+        return variants["*"], None
+    if product_type in variants:
+        return variants[product_type], None
+    return None, (
+        f"no ladder for product type {product_type!r} "
+        f"(recipe covers: {', '.join(sorted(variants)) or 'nothing'})"
+    )
 
 
 def recipe_vocabulary(recipe: dict) -> set[str]:
