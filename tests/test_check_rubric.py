@@ -212,6 +212,11 @@ def test_mixed_type_category_scores_each_product_on_its_own_ladder(tmp_path, mon
         "openness": {"score": 5, "class": "open_source", "components": "source:public;license:Apache-2.0"}
     })
     monkeypatch.setattr("build.check_rubric.ROOT", tmp_path)
+    # Cold cache: reset the module-level alias cache so this test does not depend on an
+    # earlier test in the file having already warmed it against the real ROOT. Without
+    # this, `recorded_license_aliases()` reads `tmp_path/sources/signal_routing.yaml`,
+    # which does not exist, and the test's pass/fail depends on suite ordering.
+    monkeypatch.setattr("build.check_rubric._RECORDED_ALIASES", {})
 
     reproduced, total, problems, deferred = check_category("mixed", verbose=False)
 

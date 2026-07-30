@@ -95,17 +95,17 @@ def test_a_dimension_answered_under_a_reads_alias_keeps_the_alias():
 
 def test_g1_passes_when_every_dimension_has_a_fresh_establishing_source():
     scores = _score(last_verified="2026-07-30", sources=FULL)
-    assert g1_invariant(scores, CATEGORIES, RECIPES) == []
+    assert g1_invariant(scores, CATEGORIES, RECIPES, {}) == []
 
 
 def test_g1_ignores_an_axis_with_no_date():
     """The ratchet: an axis claiming nothing is not asked to prove anything."""
-    assert g1_invariant(_score(sources=[_src("https://a", "2020-01-01")]), CATEGORIES, RECIPES) == []
+    assert g1_invariant(_score(sources=[_src("https://a", "2020-01-01")]), CATEGORIES, RECIPES, {}) == []
 
 
 def test_g1_fails_when_a_dimension_has_no_establishing_source():
     scores = _score(last_verified="2026-07-30", sources=FULL[:2])  # code unattributed
-    problems = g1_invariant(scores, CATEGORIES, RECIPES)
+    problems = g1_invariant(scores, CATEGORIES, RECIPES, {})
     assert any("records 'code'" in p and "no source claims to establish it" in p for p in problems)
 
 
@@ -120,7 +120,7 @@ def test_g1_fails_when_one_dimension_is_stale():
             _src("https://c", "2026-06-01", ["code"]),
         ],
     )
-    problems = g1_invariant(scores, CATEGORIES, RECIPES)
+    problems = g1_invariant(scores, CATEGORIES, RECIPES, {})
     assert len(problems) == 1
     assert "records 'code'" in problems[0]
     assert "only established by a source last read 2026-06-01" in problems[0]
@@ -131,7 +131,7 @@ def test_g1_fails_when_no_source_was_read_on_or_after_the_claimed_date():
         last_verified="2026-07-30",
         sources=[_src("https://a", "2026-06-01", ["weights", "data", "code", "license"])],
     )
-    problems = g1_invariant(scores, CATEGORIES, RECIPES)
+    problems = g1_invariant(scores, CATEGORIES, RECIPES, {})
     assert any("no source was accessed on or after that date" in p for p in problems)
 
 
@@ -139,7 +139,7 @@ def test_g1_never_derives_a_date_it_only_validates_one():
     """Guards against the #115 'simplification'. A fully-attributed axis with no
     `last_verified` must stay silent rather than acquiring one."""
     scores = _score(sources=FULL)
-    assert g1_invariant(scores, CATEGORIES, RECIPES) == []
+    assert g1_invariant(scores, CATEGORIES, RECIPES, {}) == []
     assert "last_verified" not in scores["m"]["openness"]
 
 
@@ -148,25 +148,25 @@ def test_g1_floor_applies_to_adoption_where_there_are_no_dimensions():
     confirmation still cannot rest on zero sources read on or after the date it claims."""
     scores = {"m": {"product": "m", "adoption": {"level": 4, "last_verified": "2026-07-30",
                                                 "sources": [_src("https://a", "2026-06-01")]}}}
-    assert any("no source was accessed on or after" in p for p in g1_invariant(scores, {}, {}))
+    assert any("no source was accessed on or after" in p for p in g1_invariant(scores, {}, {}, {}))
 
 
 def test_g1_accepts_adoption_with_one_fresh_source_and_no_attribution():
     scores = {"m": {"product": "m", "adoption": {"level": 4, "last_verified": "2026-07-30",
                                                 "sources": [_src("https://a", "2026-07-30")]}}}
-    assert g1_invariant(scores, {}, {}) == []
+    assert g1_invariant(scores, {}, {}, {}) == []
 
 
 def test_g1_rejects_a_last_verified_that_is_not_a_date():
     scores = _score(last_verified="last week", sources=FULL)
-    assert any("is not a date" in p for p in g1_invariant(scores, CATEGORIES, RECIPES))
+    assert any("is not a date" in p for p in g1_invariant(scores, CATEGORIES, RECIPES, {}))
 
 
 def test_g1_falls_back_to_the_floor_for_a_category_with_no_recipe():
     """Four categories have no recipe yet, so there is no declared vocabulary to check
     against. The gate degrades to the floor rather than passing vacuously or erroring."""
     scores = _score(last_verified="2026-07-30", sources=[_src("https://a", "2026-06-01")])
-    assert any("no source was accessed on or after" in p for p in g1_invariant(scores, {}, {}))
+    assert any("no source was accessed on or after" in p for p in g1_invariant(scores, {}, {}, {}))
 
 
 # --- G2 ---
@@ -260,10 +260,12 @@ def test_g3_is_not_escapable_by_deferring_the_product():
 # --- the repo itself ---
 
 def test_the_repo_passes_all_three_gates():
-    from build.check_verification import load
+    from build.check_verification import ROOT, load
+    from build.rubrics import load_product_types
 
     scores, categories, recipes = load()
-    assert g1_invariant(scores, categories, recipes) == []
+    product_types = load_product_types(ROOT)
+    assert g1_invariant(scores, categories, recipes, product_types) == []
     assert g2_digests(scores) == []
     assert g3_producible(scores, categories, recipes) == []
 

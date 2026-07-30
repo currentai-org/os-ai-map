@@ -157,15 +157,14 @@ def recorded_dimensions(components: dict[str, str], recipe: dict) -> dict[str, s
 
 
 def g1_invariant(
-    scores: dict, categories: dict, recipes: dict, product_types: dict[str, str] | None = None
+    scores: dict, categories: dict, recipes: dict, product_types: dict[str, str]
 ) -> list[str]:
     """Every recorded dimension of a dated axis has an establishing source read since."""
     problems: list[str] = []
     owner = category_of(categories)
-    product_types = product_types or {}
     for slug, score in sorted(scores.items()):
         variants = recipes.get(owner.get(slug, ""), {})
-        recipe, _ = recipe_for(variants, product_types.get(slug, "")) if variants else (None, None)
+        recipe, _ = recipe_for(variants, product_types.get(slug, ""))
         recipe = recipe or {}
         for axis in AXES:
             block = score.get(axis) or {}

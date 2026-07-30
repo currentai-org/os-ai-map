@@ -230,14 +230,13 @@ def check_category(slug: str, verbose: bool) -> tuple[int, int, list[str], list[
     if not variants:
         return 0, 0, [], []
     product_types = load_product_types(ROOT)
-    # Deferrals are a property of the category's declaration, not of any one ladder.
+    # Deferrals are a property of the category's declaration, not of any one ladder:
+    # products the category has declared the rubric does not yet decide, each with a
+    # reason. Deferring is not the same as passing: these are excluded from the
+    # reproduction count rather than counted as reproduced, and printed every run so
+    # the exclusion cannot go quiet. A rubric that reproduces 45 of 45 while deferring
+    # the one product that contradicts it has proved nothing.
     deferrals = (category.get("scoring_recipe") or {}).get("deferred") or {}
-
-    # Products the category has declared the rubric does not yet decide, each with
-    # a reason. Deferring is not the same as passing: these are excluded from the
-    # reproduction count rather than counted as reproduced, and printed every run
-    # so the exclusion cannot go quiet. A rubric that reproduces 45 of 45 while
-    # deferring the one product that contradicts it has proved nothing.
 
     reproduced = 0
     total = 0
@@ -339,7 +338,7 @@ def main() -> int:
     checked_any = False
     for slug in slugs:
         reproduced, total, problems, deferred = check_category(slug, args.verbose)
-        if total == 0 and not deferred:
+        if total == 0 and not deferred and not problems:
             continue
         checked_any = True
         status = "OK" if not problems else "FAIL"
