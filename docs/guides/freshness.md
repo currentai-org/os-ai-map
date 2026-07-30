@@ -72,18 +72,51 @@ product, and takes `--max-age-days` to become a CI gate once enough axes carry a
 `last_verified` that gating would fail on genuine staleness rather than on the
 pre-automation backlog.
 
-## Known divergences, as of 2026-07-29
+## Who may write `last_verified`
 
-Recorded so nobody mistakes the current data for the rule.
+**A person, and only a person.** No tool in this repo writes the field.
 
-- **`build/apply_scores.py` writes `last_verified` from the pipeline's `last_checked`**,
-  which is the max over any admitted evidence. That contradicts the rule twice over: it
-  is derived from access dates, and it takes the newest rather than requiring everything
-  to have been confirmed. Consequences in the data today: 6 axes carry a date newer than
-  some of their own evidence (`deepseek-v3-2`, `deepseek-v4-pro`, `phi-4`, `kimi-k2-6`,
-  `mistral-large-3`, `minimax-m3`), and 4 carry a date that no source in the file was
-  read on, because it came from a signal fetch (`pythia`, `apertus`, `olmo-3`,
-  `lucie-7b`). Both need fixing in `apply_scores`, not by reinterpreting the rule.
-- **`freshness_floor` in `currentai.scores.openness_computed`** is a per-dimension
-  aggregate of access dates. It is the reverted backfill under another name and should
-  be removed rather than refined.
+`build/apply_scores.py` is the only thing allowed to change a score file without
+somebody typing the value, and it writes `openness.score` and `openness.class`
+exclusively. It cannot earn `last_verified`, and the reason is structural rather than a
+matter of current coverage: of the four recorded dimensions only `license` and `weights`
+have a dataset route at all. `signal_routing.yaml` declares `data` research-only, and
+the GitHub code route carries `settles_dimension = false`, so
+`currentai.scores.openness_computed` hardcodes both to document grade. Document grade
+means a human read some prose and wrote it into the score file — so for those two
+dimensions the pipeline is reading the repo back to itself, which confirms nothing.
+
+Since "everything confirmed" can never be true of a pipeline run, there is no date for
+it to write.
+
+## Both earlier divergences, and how they were closed
+
+Kept because the mistake is easy to re-invent, and was, twice.
+
+- **`apply_scores` wrote a derived date into the field.** #108 wrote the freshness bound
+  (MIN `accessed`); #115 replaced it with `last_checked` (MAX over the same dates).
+  Between them they put a derived date on **19 of the 26 axes** that carried one. Six
+  overwrote a date a person had established: `apertus`, `lucie-7b`, `olmo` and `pythia`
+  each lost their #105 verification date to a signal fetch one day later.
+
+  Closed by deleting the writer, and reverting what it had written. Tracing every stored
+  date to the commit that set it put the 26 into three groups: **2** set by hand (#105
+  `rwkv`, #113 `mastra`) and kept; **4** restored to the #105 date the tool had
+  overwritten; **20** removed, because no constituent had ever been hand-confirmed. The
+  20 are 15 the tool wrote outright plus 5 the #121 tier merge carried forward from
+  tool-written release files — a merge confirms nothing, so it cannot originate a date.
+
+  Coverage went 26 → 6 axes, which is the honest number: six axes have actually been
+  checked by somebody. The other 20 fall back to their commit date, correctly labeled
+  `commit` rather than `verified`.
+
+  Restoring rather than keeping was the right call because these were never confirmation
+  records. The rule that a stored date is never moved backwards protects a person's
+  observation; it does not protect a tool's arithmetic.
+- **`freshness_floor`** was a per-dimension aggregate of access dates — the reverted
+  backfill under another name. Removed from the model rather than refined.
+
+Where a tier had absorbed several release-level products, the restored date is the
+**oldest** constituent confirmation, because the tier's score covers all of them and one
+stale member bounds the whole thing. That is an aggregate over confirmations, not over
+readings, so it is consistent with the rule above.

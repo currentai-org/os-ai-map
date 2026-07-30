@@ -5,30 +5,48 @@ pushes declarations outward. That direction matters: the repo is the source of t
 for what the map SAYS, and this tool is the only thing allowed to change it without
 a person typing the value.
 
-## What it writes, and what it refuses to
+## What it writes
 
-  * `openness.last_verified` — the CHECK EVENT: the most recent date on which any
-    admitted evidence behind the score was actually read. A document source's `accessed`
-    date, or a signal's fetch. It comes from the scorer's `last_checked` column.
-
-    It is deliberately NOT the freshness bound. The scorer also computes
-    `freshness_floor` — the MIN accessed date across everything the score relies on, null
-    if any of it is unsourced — and that stays in the warehouse. Both are useful; they are
-    different questions, and writing the bound into this field is what let a derived value
-    overwrite a human's check date with a date appearing nowhere in the file's own
-    evidence, so no reader could trace it.
-
-    A stored date is never moved backwards. It records that somebody looked on that day,
-    which stays true regardless of what we can currently derive; if the computed value is
-    older, that is reported rather than applied.
   * `openness.score` / `openness.class` — only when the computed value differs. It
     should not, since the rubric was reverse-engineered from these files, so a
     difference is either a real evidence change worth reviewing or a bug worth
     finding. Either way it must be loud, so `--check` exits non-zero on one.
 
-It will NOT remove an existing `last_verified` when the pipeline can no longer earn
-one. That case is reported instead. Deleting a date because provenance got stricter
-is destructive, and the fix is to source the evidence, not to erase the record.
+That is the whole list.
+
+## Why it does not write `last_verified`
+
+`docs/guides/freshness.md` is normative: `last_verified` is the most recent date on
+which EVERYTHING in the score was confirmed still correct, and "everything" means
+every dimension the score records, not only the ones the winning rule happens to read.
+
+This pipeline cannot establish that, for any product, by construction. Of the four
+recorded dimensions, only `license` and `weights` have a dataset route;
+`signal_routing.yaml` declares `data` research-only and the GitHub code route carries
+`settles_dimension = false`, so `currentai.scores.openness_computed` hardcodes both to
+document grade. A document is a human's reading of prose that was already in the score
+file. Re-reading the repo is not a confirmation of anything.
+
+So there is no date here for the pipeline to write, and it writes none. Two earlier
+attempts wrote one anyway, from a derived aggregate:
+
+  * #108 wrote the freshness BOUND, the MIN `accessed` across the score's evidence.
+  * #115 replaced it with `last_checked`, the MAX over the same dates.
+
+Both are the mistake the guide names: any aggregate of access dates is still a
+confirmation claim computed from readings, and changing the aggregation does not fix
+the category error. Between them they put a derived date on 19 of the 26 axes that
+carried one, in six cases overwriting a date a person had established by checking.
+Those were reverted when this writer was removed.
+
+`last_checked` is still read and reported, because "when did the pipeline last see any
+of this evidence" is a useful diagnostic. It is not written to a file.
+
+**What would have to change for this to write the field again.** A dataset route that
+settles `data` and `code`, and a column counting dimensions the score RECORDS rather
+than `dims_relied_on`, which counts only what the winning rule reads. Until both
+exist, a guarded write-when-fully-confirmed branch could never fire, and a branch that
+cannot fire reads as working code.
 
 It will NOT touch `note`, `sources`, `confidence`, `adoption` or `capability`. Those
 are human prose and human judgment. A tool that rewrote them would make its own diffs
@@ -39,9 +57,7 @@ unreviewable, which is the whole value of the review step.
 `yaml.safe_load` then `yaml.dump` reformats every string in the file — folded scalars
 collapse, quoting changes, key order moves. The diff would be 501 files of noise with
 the real change buried in it. So this edits the specific lines and leaves every other
-byte alone. `last_verified` is replaced where it already sits, since its position
-varies across the six files that carry one, and otherwise inserted before `sources:`,
-which is where most of them put it.
+byte alone.
 
 Usage:
     uv run python -m build.apply_scores --check      # report, write nothing
@@ -54,10 +70,7 @@ from __future__ import annotations
 import argparse
 import os
 import sys
-from datetime import date
 from pathlib import Path
-
-import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 TABLE = "currentai.scores.openness_computed"
@@ -80,7 +93,7 @@ def fetch_computed(category: str | None) -> list[dict]:
     where = f"WHERE category_slug = '{category}'" if category else ""
     sql = f"""
         SELECT product_slug, category_slug, openness_score, openness_class,
-               last_checked, freshness_floor, unsourced_dimensions, license_tier_grade,
+               last_checked, unsourced_dimensions, license_tier_grade,
                dims_from_dataset, dims_relied_on, scoring_note
         FROM {TABLE}
         {where}
@@ -152,44 +165,9 @@ def apply_to_file(path: Path, computed: dict) -> tuple[list[str], list[str]]:
                 lines[index] = f"  {key}: {value}\n"
                 changes.append(f"{path.stem}: openness.{key} {current} -> {value}")
 
-    # `last_checked` is the CHECK EVENT - the most recent date any admitted evidence behind
-    # this score was actually read. That, not the freshness bound, is what belongs in a
-    # score file: it is traceable to a dated row, and it answers the question a reader has.
-    # Writing the bound here is what let a derived value overwrite a human's check date with
-    # one that appears nowhere in the file's own evidence.
-    checked = computed.get("last_checked")
-    if has_date(checked):
-        stamp = str(checked)[:10]
-        index = find_key(lines, bounds, "last_verified")
-        if index is not None:
-            current = lines[index].split(":", 1)[1].strip().strip("'\"")
-            # Never move a stored date backwards. A date already in the file records that
-            # somebody looked on that day, and that remains true whatever we can currently
-            # derive. If the computed value is older, the file is ahead of us - report it
-            # rather than destroying the record. ISO dates compare correctly as strings.
-            #
-            # But "ahead of us" only makes sense up to today. A check cannot have happened
-            # tomorrow, so a future date is a data error, and treating it as ahead would
-            # protect it forever - the guard would entrench exactly what it should surface.
-            today = date.today().isoformat()
-            if current > today:
-                changes.append(
-                    f"{path.stem}: IMPOSSIBLE last_verified {current} is in the future "
-                    f"(today {today}); left alone, but it needs correcting at source"
-                )
-            elif current > stamp:
-                changes.append(
-                    f"{path.stem}: KEPT last_verified {current}, computed {stamp} is older"
-                )
-            elif current != stamp:
-                lines[index] = f"  last_verified: '{stamp}'\n"
-                changes.append(f"{path.stem}: last_verified {current} -> {stamp}")
-        else:
-            anchor = find_key(lines, bounds, "sources")
-            insert_at = anchor if anchor is not None else bounds[1]
-            lines.insert(insert_at, f"  last_verified: '{stamp}'\n")
-            changes.append(f"{path.stem}: last_verified + {stamp}")
-
+    # No `last_verified` write. See the module docstring: the pipeline cannot confirm
+    # every recorded dimension, so it has no date to offer, and every date it has offered
+    # so far was an aggregate of access dates wearing a confirmation's name.
     return lines, changes
 
 
@@ -212,7 +190,6 @@ def main() -> int:
     changed_files: list[Path] = []
     all_changes: list[str] = []
     score_changes: list[str] = []
-    stale_kept: list[str] = []
     unscored: list[str] = []
     pending: dict[Path, list[str]] = {}
 
@@ -226,14 +203,6 @@ def main() -> int:
             unscored.append(f"{slug}: {row.get('scoring_note')}")
             continue
 
-        recorded = yaml.safe_load(path.read_text()) or {}
-        had_verified = bool((recorded.get("openness") or {}).get("last_verified"))
-        if had_verified and not has_date(row.get("last_checked")):
-            stale_kept.append(
-                f"{slug}: carries last_verified but no admitted evidence has a date "
-                f"(unsourced: {row.get('unsourced_dimensions')})"
-            )
-
         new_lines, changes = apply_to_file(path, row)
         if changes:
             pending[path] = new_lines
@@ -242,15 +211,23 @@ def main() -> int:
             score_changes.extend(c for c in changes if "openness.score" in c or "openness.class" in c)
 
     checked = sum(1 for r in rows if has_date(r.get("last_checked")))
-    floored = sum(1 for r in rows if has_date(r.get("freshness_floor")))
     from_dataset = sum(1 for r in rows if r.get("license_tier_grade") == "dataset")
+    # How far automation actually reaches: the winning rule rested entirely on facts read
+    # out of a machine-readable field. Reported because it is the number that has to grow
+    # before this tool could ever write last_verified, and it is NOT sufficient on its own -
+    # a rule can win on license alone while `data` and `code` stay document-grade.
+    all_machine = sum(
+        1 for r in rows
+        if r.get("dims_relied_on") and r.get("dims_from_dataset") == r.get("dims_relied_on")
+    )
 
     print(f"{len(rows)} computed score(s) read from {TABLE}")
-    print(f"  license tier from a machine-readable field : {from_dataset}")
-    print(f"  evidence checked on a known date (last_checked): {checked}")
-    print(f"  every relied-on fact sourced (freshness_floor) : {floored}")
-    print(f"  files this run would change                : {len(changed_files)}")
-    print(f"  openness score or class moved              : {len(score_changes)}")
+    print(f"  license tier from a machine-readable field  : {from_dataset}")
+    print(f"  winning rule rested only on dataset grade   : {all_machine}")
+    print(f"  pipeline last saw evidence on a known date  : {checked}")
+    print(f"  files this run would change                 : {len(changed_files)}")
+    print(f"  openness score or class moved               : {len(score_changes)}")
+    print("  last_verified written                       : 0, always (see the docstring)")
 
     if score_changes:
         print("\nSCORE CHANGES — each one needs a human to look at it:")
@@ -261,12 +238,6 @@ def main() -> int:
         print(f"\n{len(unscored)} product(s) the rubric declined to score:")
         for item in unscored:
             print(f"  - {item}")
-
-    if stale_kept:
-        print(f"\n{len(stale_kept)} product(s) keep a last_verified the pipeline cannot re-earn:")
-        for item in stale_kept:
-            print(f"  - {item}")
-        print("  (left alone on purpose — source the evidence rather than erase the date)")
 
     if args.verbose and all_changes:
         print(f"\nall {len(all_changes)} change(s):")
