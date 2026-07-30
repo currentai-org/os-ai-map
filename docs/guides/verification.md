@@ -38,6 +38,120 @@ No tool that computes over already-recorded values. `build/apply_scores.py` writ
 `openness.score` and `openness.class` and deliberately writes no date at all; the reasoning
 is in its module docstring and in the divergence history in `freshness.md`.
 
+## The audit chain, and where it currently breaks
+
+For a score to be auditable, a reader must be able to walk it back to something outside the
+repo:
+
+```
+score  <-  the rule that fired      (category scoring_recipe)
+       <-  the dimension values     (openness.components)
+       <-  the evidence             (openness.sources[].shows)
+       <-  a source                 (openness.sources[].url)
+```
+
+Three of those four links hold today. **The third does not.** `sources` is a flat list per
+axis, so nothing records WHICH source establishes WHICH dimension. Measured on 2026-07-30:
+324 of 470 openness axes cite exactly one source, asserted to establish `weights`, `data`,
+`code` and `license` together. A reader cannot check that, and neither can a tool.
+
+That is the gap that makes a re-check unfalsifiable, and closing it is what makes everything
+below possible.
+
+### `establishes`: per-dimension attribution
+
+A source item gains an optional list naming the dimensions it settles:
+
+```yaml
+sources:
+- url: https://huggingface.co/org/model
+  shows: Apache-2.0 in the model card; safetensors weights downloadable
+  accessed: '2026-07-30'
+  establishes: [license, weights]
+- url: https://github.com/org/model
+  shows: pretraining configs and data-prep scripts in the repo
+  accessed: '2026-07-30'
+  establishes: [code, data]
+```
+
+Optional and forward-populated, so existing data is not retroactively invalid. The re-check
+tooling writes it; the gates below apply only to axes that claim a confirmation.
+
+### The invariant that makes a rubber stamp fail
+
+> **`last_verified: D` is valid only if, for every dimension the score records, at least one
+> source that `establishes` that dimension has `accessed >= D`.**
+
+This is the mechanism, not a convention. Claiming a confirmation you did not perform now
+requires also back-dating the `accessed` field of every dimension's source — and those are
+what the content check below verifies.
+
+**This validates a claimed date. It never derives one.** The distinction is the whole point
+and it is easy to erode: someone will eventually notice that the invariant mentions
+`accessed` and "simplify" it into `last_verified = max(accessed)`, which is #115 exactly.
+Deriving the date asserts a confirmation nobody made; validating it rejects a confirmation
+nobody could have made. `freshness.md` forbids the first and requires the second.
+
+Note the aggregation direction, which is also load-bearing: the check is over EVERY recorded
+dimension, so the binding constraint is the *least* recently re-read one. `max(accessed)`
+across an axis would pass an axis where one dimension was re-read today and three were last
+seen in June.
+
+### Catching fabrication rather than just inconsistency
+
+The invariant catches unsupported dates. It cannot catch a source that never said what
+`shows` claims, or a URL that never existed. For that, the re-check tool records what it
+actually fetched:
+
+```yaml
+- url: https://…
+  accessed: '2026-07-30'
+  http_status: 200
+  content_sha256: 3f9a…          # of the fetched body at accessed time
+```
+
+A digest makes two later audits possible: a URL that 404s at re-check time was either never
+real or has rotted, and a changed digest tells you the page moved under a claim that still
+cites it. Neither is a hard failure on its own — pages legitimately change — but both are
+reasons to re-check, and a *missing* digest on a newly claimed confirmation is a hard
+failure, because it means the tool did not fetch anything.
+
+## The gates, and why they ratchet
+
+Every failure mode this project has actually hit gets a mechanism, not a note. Cheap ones
+gate every PR; ones needing the network run periodically.
+
+| # | failure mode | mechanism | cost |
+|---|---|---|---|
+| G1 | a confirmation with no supporting evidence | the invariant above | free |
+| G2 | a claimed date with no fetch digest | required on axes claiming a confirmation | free |
+| G3 | an impossible score/class pair | the pair must be producible by some rule in the recipe | free |
+| G4 | fabricated or rotted sources | sampled re-fetch, digest and `shows` token match | network, weekly |
+| G5 | repo and warehouse drifting apart | per-product differential after every publish | network, per publish |
+| G6 | a UDM revision that was never released | assert latest revision == latest release | network, per publish |
+
+**They ratchet rather than switch on.** G1 and G2 apply only to axes that carry a
+`last_verified`, which is 6 today and grows as the re-read pass proceeds. So the gate covers
+exactly what has been done, never blocks progress, and never permits a regression on ground
+already taken. A big-bang gate over all 1386 axes would fail on day one and get switched
+off, which is how gates die.
+
+G3, G5 and G6 apply in full immediately — nothing has to be populated first. G3 already has
+a known catch: `vellum` and `whylabs` are recorded `4 / open_source`, a pair no ladder here
+can produce.
+
+### Two shared utilities, so the mechanism cannot be bypassed
+
+- **`build/components.py`** — the only supported way to edit a `components` field. The
+  block-safe rewriter with the reparse assertion, extracted. 21 of deployment's 27 files
+  fold that scalar across lines, so any hand-rolled `^  components: (.*)$` substitution
+  splices keys mid-string and corrupts the value silently. A shared helper means the next
+  script cannot re-invent that.
+- **A query helper that forces a cache-busting nonce.** Warehouse results cache on query
+  TEXT, so a fixed verification query returns its first answer forever and a tool reading
+  through that cache reports success against stale data. It has already happened. The nonce
+  belongs in the helper, not in each caller's discipline.
+
 ## Why openness can never be fully automated
 
 By design, not for want of coverage. Of the recorded openness dimensions only `license` and
@@ -149,6 +263,8 @@ staleness.
 
 ## Related
 
+- `docs/runbooks/verification-pass.md` — the executable plan: gate order, commands, exit
+  criteria per phase, and the standing-hazards table
 - `docs/guides/freshness.md` — what `last_verified` means, and the two divergences already
   closed
 - `docs/guides/openness-spectrum.md` — the openness ladders themselves

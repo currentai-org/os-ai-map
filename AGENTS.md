@@ -209,6 +209,9 @@ and walk through validation + preview steps.
 
 After a PR merges, a maintainer (OSO MCP write access) may need to:
 
+- `docs/runbooks/verification-pass.md`: the plan for getting every score auditable --
+  gates first, then coverage, then the re-read pass. Start here for score-verification
+  work; it names the failure modes each step is guarding against.
 - `docs/runbooks/deploy-udms.md`: revise, release, and run UDM SQL changes.
 - `docs/runbooks/refresh-data.md`: run fetchers and reload static models.
 - `docs/runbooks/publish-notebook.md`: serialize, render, upload, and publish the live
