@@ -421,9 +421,13 @@ def test_no_recipe_anywhere_is_an_error():
 
 
 def test_rubric_rows_carry_product_type():
-    """A uniform category's rows are stamped `*`; a mixed category's rows are
-    stamped with the product type of the ladder that produced them, and each
-    scored product picks up the row for its own type via `recipe_for`.
+    """A uniform category's rubric rows are stamped `*`; a mixed category's rubric
+    rows are stamped with the product type of the ladder that produced them. This
+    test supplies no `scores`, so it exercises only the per-category rubric-table
+    stamping (`category_scoring_rules` and `category_license_tiers`) — the
+    per-product `recipe_for` selection is covered separately by
+    `test_recipe_for_selects_the_matching_ladder_for_a_scored_product` and
+    `test_recipe_miss_still_emits_score_sources_for_other_axes`.
     """
     sources = _sources(
         categories={
@@ -437,10 +441,76 @@ def test_rubric_rows_carry_product_type():
     )
     tables, errors, _ = build_rubric(sources, policy={}, routing={})
     assert errors == []
-    uniform_rows = [r for r in tables["category_scoring_rules"] if r["category_slug"] == "uniform"]
-    mixed_rows = [r for r in tables["category_scoring_rules"] if r["category_slug"] == "mixed"]
-    assert {r["product_type"] for r in uniform_rows} == {"*"}
-    assert {r["product_type"] for r in mixed_rows} == {"model", "software"}
+    uniform_rules = [r for r in tables["category_scoring_rules"] if r["category_slug"] == "uniform"]
+    mixed_rules = [r for r in tables["category_scoring_rules"] if r["category_slug"] == "mixed"]
+    assert {r["product_type"] for r in uniform_rules} == {"*"}
+    assert {r["product_type"] for r in mixed_rules} == {"model", "software"}
+
+    uniform_tiers = [r for r in tables["category_license_tiers"] if r["category_slug"] == "uniform"]
+    mixed_tiers = [r for r in tables["category_license_tiers"] if r["category_slug"] == "mixed"]
+    assert {r["product_type"] for r in uniform_tiers} == {"*"}
+    assert {r["product_type"] for r in mixed_tiers} == {"model", "software"}
+
+
+def test_recipe_for_selects_the_matching_ladder_for_a_scored_product():
+    """A scored product in a mixed-type category picks up the openness evidence
+    for its OWN type's ladder, not the other one — `weights` differs between the
+    two fixture ladders so a mismatch would be visible in the emitted value.
+    """
+    sources = _sources(
+        categories={
+            "mixed": {"name": "mixed", "products": ["m1", "s1"],
+                      "scoring_recipe": {"extends": {"model": "model", "software": "software"}}},
+        },
+        scores={
+            "m1": {"openness": {"components": "weights:open"}},
+            "s1": {"openness": {"components": "weights:closed"}},
+        },
+        rubrics=SHARED_RUBRICS_FIXTURE,
+        product_types={"m1": "model", "s1": "software"},
+    )
+    tables, errors, warnings = build_rubric(sources, policy={}, routing={})
+    assert errors == []
+    assert not any("in 'mixed':" in w for w in warnings)
+    evidence = {
+        (r["product_slug"], r["dimension"]): r["value"] for r in tables["product_openness_evidence"]
+    }
+    assert evidence[("m1", "weights")] == "open"
+    assert evidence[("s1", "weights")] == "closed"
+
+
+def test_recipe_miss_still_emits_score_sources_for_other_axes():
+    """A product whose declared `type` does not match any ladder (missing, or not
+    one of the mapped keys) loses its openness evidence — `recipe_for` has nothing
+    to hand back — but its adoption and capability source rows must still be
+    emitted. Those axes read only `record` and `policy`, never `recipe`, so a
+    `recipe_for` miss has no bearing on them. This pins Finding 1: narrowing the
+    `continue` to skip only the recipe-dependent block, not the whole per-product
+    body.
+    """
+    sources = _sources(
+        categories={
+            "mixed": {"name": "mixed", "products": ["m1"],
+                      "scoring_recipe": {"extends": {"model": "model", "software": "software"}}},
+        },
+        scores={
+            "m1": {
+                "openness": {"components": "weights:open"},
+                "adoption": {"sources": [{"url": "https://x.test/a", "shows": "13,834 monthly downloads"}]},
+                "capability": {"sources": [{"url": "https://x.test/b", "shows": "AA Intelligence Index 17"}]},
+            },
+        },
+        rubrics=SHARED_RUBRICS_FIXTURE,
+        product_types={"m1": "unmapped-type"},
+    )
+    tables, errors, warnings = build_rubric(sources, policy=POLICY, routing={})
+    assert errors == []
+    assert any("in 'mixed':" in w for w in warnings)
+    assert not any(r["product_slug"] == "m1" for r in tables["product_openness_evidence"])
+    sources_by_axis = {r["axis"]: r for r in tables["product_score_sources"] if r["product_slug"] == "m1"}
+    assert set(sources_by_axis) == {"adoption", "capability"}
+    assert sources_by_axis["adoption"]["admitted"] is True
+    assert sources_by_axis["capability"]["admitted"] is True
 
 
 def test_every_declared_table_is_present():
