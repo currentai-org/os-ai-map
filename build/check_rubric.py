@@ -259,12 +259,15 @@ def check_category(slug: str, verbose: bool) -> tuple[int, int, list[str], list[
             )
             continue
 
-        facts = {
-            "weights": dimension_value(components, "weights", recipe),
-            "data": dimension_value(components, "data", recipe),
-            "code": dimension_value(components, "code", recipe),
-            "license_tier": tier,
-        }
+        # Facts come from the dimensions the recipe DECLARES, not a fixed list. The
+        # model categories ask about weights/data/code; software categories ask whether
+        # the source is public, whether the real thing self-hosts, and whether the core
+        # is feature-gated. Hardcoding the model's four here is what would have forced a
+        # checker change per product type.
+        declared = ((recipe.get("openness") or {}).get("dimensions")) or {}
+        facts = {name: dimension_value(components, name, recipe) for name in declared}
+        facts["license_tier"] = tier
+
         got = apply_formula(recipe, facts)
         expected = (openness.get("score"), openness.get("class"))
 
@@ -273,10 +276,9 @@ def check_category(slug: str, verbose: bool) -> tuple[int, int, list[str], list[
             if verbose:
                 print(f"  ok    {product:<24} {expected[0]} {expected[1]}")
         else:
+            shown = " ".join(f"{name}={facts[name]!r}" for name in declared)
             problems.append(
-                f"{product}: rubric says {got}, scores say {expected} "
-                f"[weights={facts['weights']} data={facts['data']} "
-                f"code={facts['code']} tier={tier}]"
+                f"{product}: rubric says {got}, scores say {expected} [{shown} tier={tier}]"
             )
 
     unknown = sorted(set(deferrals) - set(category.get("products") or []))
