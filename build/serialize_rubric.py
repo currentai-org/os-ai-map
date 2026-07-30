@@ -460,7 +460,7 @@ def build_rubric(sources: dict, policy: dict, routing: dict) -> tuple[dict[str, 
                 # warehouse joins on. `license_tier.reads` lets a category accept the value
                 # under another key - deepseek-coder records `model-license`, because its card
                 # distinguishes the code license from the one on the weights - and
-                # check_rubric honours that list. Without resolving it here the row went out
+                # check_rubric honors that list. Without resolving it here the row went out
                 # as `model-license`, the SQL looked only for `license`, and the product
                 # abstained in the warehouse while reproducing locally. Same drift as the
                 # dimension resolution above, one key over.
