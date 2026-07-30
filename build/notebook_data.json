@@ -930,33 +930,57 @@
             "class": "open_source",
             "components": "weights:open(Apache-2.0);data:open(Lucie-Training-Dataset on HF, redistributed in training form);code:open(Lucie-Training Megatron-DeepSpeed fork);checkpoints:open(intermediate HF revisions);license:Apache-2.0(OSI)",
             "confidence": "high",
-            "note": "Full open-source tier alongside OLMo / Apertus: open weights, open training data, open training code, intermediate checkpoints. Authors position Lucie as OSI-definition-compliant for open-source AI. Training-dataset product deferred — artifacts cited here for openness only.",
-            "last_verified": "2026-07-28",
+            "note": "Full open-source tier alongside OLMo / Apertus: open weights, open training data, open training code, intermediate checkpoints. Authors position Lucie as OSI-definition-compliant for open-source AI. Training-dataset product deferred — artifacts cited here for openness only. Caveat found on the 2026-07-30 re-read: Lucie-Training-Dataset carries `cc-by-nc-sa-4.0`, so the corpus is published and ungated but NOT commercially reusable. The `data` dimension asks whether the corpus is released, not under what terms, so the score is unchanged — but the authors' OSI-compliance claim does not survive a strict reading, and Lucie is a weaker full-openness exemplar than OLMo, whose Dolma is `odc-by`.",
+            "last_verified": "2026-07-30",
             "sources": [
               {
                 "url": "https://huggingface.co/api/datasets/OpenLLM-France/Lucie-Training-Dataset",
-                "shows": "Public, ungated dataset repo present on the Hub; 3,101 downloads. Corpus is published, not merely described.",
-                "accessed": "2026-07-28"
+                "shows": "`gated: false`, `private: false`, 2,823 downloads, 38 likes. Card license is `cc-by-nc-sa-4.0` - the corpus is published and ungated, but non-commercial. See the note.",
+                "accessed": "2026-07-30",
+                "http_status": 200,
+                "content_sha256": "45eb931a751bf23f6b1483d7e9f36de370f6d97f8c16c385a8ccae2acd8c6164",
+                "establishes": [
+                  "data"
+                ]
               },
               {
                 "url": "https://huggingface.co/OpenLLM-France/Lucie-7B",
-                "shows": "Apache-2.0 weights; links to Lucie-Training-Dataset; intermediate checkpoints; Llama-3.1 arch",
-                "accessed": "2026-07-19"
+                "shows": "License apache-2.0, safetensors weights, links to Lucie-Training-Dataset, and intermediate checkpoints as repo branches (`step0005000`, `step0010000`, ...); `isGated: false`.",
+                "accessed": "2026-07-30",
+                "http_status": 200,
+                "content_sha256": "a5fe19f486e453fa8ff6a2f528a7b4f7855809cd39442d25c5b590af6f855198",
+                "establishes": [
+                  "weights",
+                  "license",
+                  "checkpoints"
+                ]
               },
               {
-                "url": "https://huggingface.co/OpenLLM-France/Lucie-Training-Dataset",
-                "shows": "redistributable multilingual pretraining corpus used for Lucie-7B",
-                "accessed": "2026-07-19"
+                "url": "https://huggingface.co/datasets/OpenLLM-France/Lucie-Training-Dataset",
+                "shows": "Dataset page for the multilingual pretraining corpus: `isGated: false`, `isPrivate: false`, Parquet format present. Cited previously WITHOUT the `/datasets/` path segment, which the Hub resolves as a model repo and answers 401; the URL was corrected on re-read rather than the dataset having become gated.",
+                "accessed": "2026-07-30",
+                "http_status": 200,
+                "content_sha256": "ab497f71443c15c8e810967bc042d412b3c4fea042b835021e318998a48874f0",
+                "establishes": [
+                  "data"
+                ]
               },
               {
                 "url": "https://github.com/OpenLLM-France/Lucie-Training",
-                "shows": "open training code (Megatron-DeepSpeed fork)",
-                "accessed": "2026-07-19"
+                "shows": "Repository described as \"Code for continual pretraining of LUCIE\" - the Megatron-DeepSpeed fork used for the run.",
+                "accessed": "2026-07-30",
+                "http_status": 200,
+                "content_sha256": "b7f84d33bcf5b837dab128ddfabf07d5111127bb8f434f8ddf86ebf5942e26f3",
+                "establishes": [
+                  "code"
+                ]
               },
               {
                 "url": "https://arxiv.org/abs/2503.12294",
-                "shows": "paper claiming OSI-compliant open resources for multilingual generation",
-                "accessed": "2026-07-19"
+                "shows": "Paper claiming OSI-compliant open resources for multilingual generation. The claim is the authors', which is why it establishes no dimension by itself.",
+                "accessed": "2026-07-30",
+                "http_status": 200,
+                "content_sha256": "2943dcf52d6e8f8ff3a631bb99bc6b48bb75c5015eac8c5fc7f29d9f0848dc41"
               }
             ],
             "bucket": "open"
@@ -1014,22 +1038,40 @@
             "components": "weights:open(Apache-2.0);data:open(Dolma 3, 9.3T tokens, all stages);code:open(training code+recipes+logs);checkpoints:open(intermediate);license:Apache-2.0(OSI)",
             "confidence": "high",
             "note": "Fully open: Apache-2.0 weights + the complete Dolma 3 corpus + training code + intermediate checkpoints. The reference fully-open model line.",
-            "last_verified": "2026-07-28",
+            "last_verified": "2026-07-30",
             "sources": [
               {
                 "url": "https://huggingface.co/api/datasets/allenai/dolma",
-                "shows": "Public, ungated dataset repo present on the Hub; 3,052 downloads. Dolma corpus is published.",
-                "accessed": "2026-07-28"
+                "shows": "`gated: false`, `private: false`, 2,767 downloads, 1,064 likes, card license `odc-by`. The Dolma corpus is published and ungated.",
+                "accessed": "2026-07-30",
+                "http_status": 200,
+                "content_sha256": "6f3da060ba808471df1fcbbf40725022dc3778c4b994ec1ed490991230ff869a",
+                "establishes": [
+                  "data"
+                ]
               },
               {
                 "url": "https://allenai.org/blog/olmo3",
-                "shows": "fully-open release: weights, Dolma 3 data, code, recipes, checkpoints; Nov 2025 / Dec 2025 3.1 update",
-                "accessed": "2026-06-30"
+                "shows": "\"Olmo 3 is pretrained on Dolma 3, a new ~9.3-trillion-token corpus\"; \"Because the Olmo 3 data recipes, training pipeline, and checkpoints are open, independent teams can connect model behavior back to measurable\" training decisions; \"Olmo 3-Base delivers the strongest performance among fully open base models - where training data, code, and weights are all publicly available\".",
+                "accessed": "2026-07-30",
+                "http_status": 200,
+                "content_sha256": "fc5d9ecb2b5ed673bac303a0a171c28183c19c3a4805d26e4676b6d112ceb94b",
+                "establishes": [
+                  "data",
+                  "code",
+                  "checkpoints"
+                ]
               },
               {
                 "url": "https://huggingface.co/allenai/Olmo-3-1025-7B",
-                "shows": "OLMo 3 7B base on HF; Apache-2.0",
-                "accessed": "2026-06-30"
+                "shows": "OLMo 3 7B base model card: License apache-2.0, safetensors weight files, `isGated: false`.",
+                "accessed": "2026-07-30",
+                "http_status": 200,
+                "content_sha256": "e8e02a24fb65c9b97ede3bc582e78689a9a12c0ca7f16effc953e5a57bbd24f3",
+                "establishes": [
+                  "weights",
+                  "license"
+                ]
               }
             ],
             "bucket": "open"
@@ -1077,27 +1119,49 @@
             "components": "weights:open(Apache-2.0);data:open(the Pile, with dataloader reconstruction tools);code:open(training+analysis code, GitHub);checkpoints:open(154 per model);license:Apache-2.0(OSI)",
             "confidence": "high",
             "note": "The reference case for 5/open_source in this category. Apache-2.0 weights, the Pile released as the training corpus together with dataloader tools that reconstruct the exact token order, training and analysis code on GitHub, and 154 intermediate checkpoints per model size. Every dimension the rubric asks about is answered by something downloadable, which is what separates 5 from the open-weights tier: the run is reproducible, not merely the model usable.",
-            "last_verified": "2026-07-28",
+            "last_verified": "2026-07-30",
             "sources": [
               {
                 "url": "https://huggingface.co/api/datasets/EleutherAI/pile",
-                "shows": "Public, ungated dataset repo present on the Hub; 2,441 downloads. The Pile is published.",
-                "accessed": "2026-07-28"
+                "shows": "`gated: false`, `private: false`, 2,308 downloads, 502 likes. The Pile is published and ungated on the Hub.",
+                "accessed": "2026-07-30",
+                "http_status": 200,
+                "content_sha256": "9371eeb13e004a16509da436da0b3ef00eed76096078a82766cb980dc657c9ca",
+                "establishes": [
+                  "data"
+                ]
               },
               {
                 "url": "https://arxiv.org/abs/2304.01373",
-                "shows": "flagship phase-C verification source",
-                "accessed": "2026-06-04"
+                "shows": "Abstract: \"We provide public access to 154 checkpoints for each one of the 16 models, alongside tools to download and reconstruct their exact training dataloaders\" - which is both the checkpoint claim and the reconstruction tooling that makes the corpus reproducible in token order.",
+                "accessed": "2026-07-30",
+                "http_status": 200,
+                "content_sha256": "4a9c75245714d244bd57fdac23e8cc59ccf7b12a72594e32941b7e9c26de3983",
+                "establishes": [
+                  "checkpoints",
+                  "data"
+                ]
               },
               {
                 "url": "https://github.com/EleutherAI/pythia",
-                "shows": "flagship phase-C verification source",
-                "accessed": "2026-06-04"
+                "shows": "Repository page, described as \"The hub for EleutherAI's work on interpretability and learning dynamics\" - training and analysis code, public.",
+                "accessed": "2026-07-30",
+                "http_status": 200,
+                "content_sha256": "34d20875f3ddcdae5b25e04fb188e300e5faf94eddfc1b59cd4002b846f1866e",
+                "establishes": [
+                  "code"
+                ]
               },
               {
                 "url": "https://huggingface.co/EleutherAI/pythia-12b/blob/main/README.md",
-                "shows": "flagship phase-C verification source",
-                "accessed": "2026-06-04"
+                "shows": "Model card front matter: `license: apache-2.0`, `datasets: [EleutherAI/pile]`; License apache-2.0 in the repo sidebar.",
+                "accessed": "2026-07-30",
+                "http_status": 200,
+                "content_sha256": "e5da5801a6a437bf051cdaa442810bf7d832b3b3b7a8af62546755322fdb2a0f",
+                "establishes": [
+                  "weights",
+                  "license"
+                ]
               }
             ],
             "bucket": "open"
@@ -1351,27 +1415,47 @@
             "components": "weights:open(Apache-2.0, BF16 safetensors);data:open(full pretraining-data reconstruction scripts, github.com/swiss-ai/pretrain-data);code:open(Megatron-LM training recipe + reconstruction scripts);checkpoints:open(intermediate checkpoints on HF branches);license:Apache-2.0(OSI)",
             "confidence": "high",
             "note": "Among the most transparent large-model releases to date: open weights, open data (reconstruction scripts rather than a raw dump, to respect opt-out/robots.txt and strip personal data), open training code/recipe, intermediate checkpoints, a technical report (arXiv 2509.14233), and EU AI Act + Swiss data-protection/copyright compliance docs. All Apache-2.0. Sits in the OLMo/Pythia full-openness tier.",
-            "last_verified": "2026-07-28",
+            "last_verified": "2026-07-30",
             "sources": [
               {
                 "url": "https://api.github.com/repos/swiss-ai/pretrain-data",
-                "shows": "Repository resolves 200. Pretraining-data reconstruction scripts are published, satisfying data:open by reconstruction.",
-                "accessed": "2026-07-28"
+                "shows": "`private: false`, `archived: false`, license `Apache-2.0`, description \"Pretraining data reconstruction scripts for Apertus\". The reconstruction scripts are published, which is what satisfies data:open by reconstruction rather than by a released corpus.",
+                "accessed": "2026-07-30",
+                "http_status": 200,
+                "content_sha256": "22e9345c0f44c7324c2929ca38e9408ec556575ea2ff4c4b7ebb538fe1d69e2e",
+                "establishes": [
+                  "data"
+                ]
               },
               {
                 "url": "https://huggingface.co/swiss-ai/Apertus-70B-2509",
-                "shows": "Apache-2.0; BF16 safetensors weights; training checkpoints on branches; data reconstruction scripts; EU AI Act docs; 15T tokens; 4,096 GH200 GPUs; Megatron-LM",
-                "accessed": "2026-06-08"
+                "shows": "Model card: \"Fully open model: open weights + open data + full training details including all data and training recipes\"; \"Training Framework: Megatron-LM\" linking github.com/swiss-ai/Megatron-LM; \"The training intermediate checkpoints are available on the different branches of this same repository\"; license apache-2.0; BF16 safetensors.",
+                "accessed": "2026-07-30",
+                "http_status": 200,
+                "content_sha256": "e8de05e747aaf6672a8eb9207609722e7b7f310340f30af75bf22fdd6daa489a",
+                "establishes": [
+                  "weights",
+                  "license",
+                  "code",
+                  "checkpoints"
+                ]
               },
               {
                 "url": "https://ethz.ch/en/news-and-events/eth-news/news/2025/09/press-release-apertus-a-fully-open-transparent-multilingual-language-model.html",
-                "shows": "ETH Zurich press release: fully open weights + data + training recipe; Swiss data-protection/copyright + EU AI Act compliance; released 2 Sep 2025 by EPFL/ETH/CSCS",
-                "accessed": "2026-06-08"
+                "shows": "ETH Zurich press release, title \"Apertus: a fully open, transparent, multilingual language model\", dated 2 September 2025 (EPFL/ETH/CSCS). Corroborates the release framing; establishes no dimension on its own, since a press release describes rather than exhibits the artifacts.",
+                "accessed": "2026-07-30",
+                "http_status": 200,
+                "content_sha256": "fbd3f61a6bbf347b973e0bab0b366ba30fbf24002de216fc1a9e5d3ff458be3b"
               },
               {
                 "url": "https://github.com/swiss-ai/pretrain-data",
-                "shows": "open pretraining-data reconstruction scripts",
-                "accessed": "2026-06-08"
+                "shows": "Repository page for the pretraining-data reconstruction scripts; \"reconstruction\" appears throughout the tree and README.",
+                "accessed": "2026-07-30",
+                "http_status": 200,
+                "content_sha256": "713a1393fe21e68bf2fffbcd11d9f4d395aacf16b55fc9852f511ee4549cb579",
+                "establishes": [
+                  "data"
+                ]
               }
             ],
             "bucket": "open"
@@ -1480,28 +1564,56 @@
             "class": "open_weights",
             "components": "weights:open(Apache-2.0);data:documented-not-released(itemized machine-readable component index with resolvable links to public datasets, but no released corpus and no reconstruction pipeline);code:open(github.com/BlinkDL/RWKV-LM);license:Apache-2.0(OSI)",
             "confidence": "high",
-            "last_verified": "2026-07-28",
+            "last_verified": "2026-07-30",
             "note": "Corrected from 5/open_source on 2026-07-28, then re-examined the same day after challenge. The correction stands but it is a close call, and RWKV published more than a first look suggests. What IS released: an itemized, machine-readable index (index/train.jsonl, train.csv) naming every component dataset with a resolvable URL, category and citation, essentially all of them public, plus 100k and 1M preview subsamples. That is real openness work and well beyond a prose description. What is NOT released, and why this is not data:open: no corpus and no reconstruction scripts. The exact subsampling amounts are referenced as \"supplementary material (see wiki.txt, oscar.txt)\" which is not published in the dataset repo, not an arXiv ancillary file, and not in RWKV-LM, which carries model and training code but no data-prep directory. No mixing proportions or per-component token counts are given, one component (OSCAR23.01) is itself gated, and the maintainers' own notes record \"peS2o - Which version out of the 3?\", so the mixture is not reproducible in detail even in principle. The rubric defines data:open as a released dataset OR scripts that reconstruct the corpus end to end; neither holds. Weights, training code and license are unaffected and remain fully open under Apache-2.0, so this narrows one claim rather than downgrading the project. NOTE: this lands in a genuine rubric gap. \"Every component named and publicly resolvable, but the mixture not reproducible\" is meaningfully more open than prose documentation and less than a released corpus, and the data enum has no value for it. Nemotron 3's partial release hits the same gap, so two of the nine products checked fall between the available values.",
             "sources": [
               {
                 "url": "https://huggingface.co/datasets/RWKV/RWKV-World-Listing/raw/main/train.csv",
-                "shows": "Component table: Dataset;Category;Citation;Version;URL;Notes. Every source named with a resolvable link. Notes defer exact sampling to unpublished supplementary material and include the unresolved question \"peS2o - Which version out of the 3?\".",
-                "accessed": "2026-07-28"
+                "shows": "Header `Dataset;Category;Categories;Citation;Version;URL;Notes`; every source named with a resolvable link. Notes defer exact sampling to unpublished supplementary material (\"see wiki.txt in the supplementary material for exact\" amounts) and include the unresolved question \"peS2o - Which version out of the 3?\".",
+                "accessed": "2026-07-30",
+                "http_status": 200,
+                "content_sha256": "b017936cd892fab763f650c6d9ee11cb375faaa0240f4ee313866960310ab03d",
+                "establishes": [
+                  "data"
+                ]
               },
               {
                 "url": "https://huggingface.co/api/datasets/Goose-World/RWKV-World-v3",
-                "shows": "10 files, 8.17GB: index/train.jsonl, train.csv, 100k and 1M preview subsamples, READMEs, one figure. No corpus shards.",
-                "accessed": "2026-07-28"
+                "shows": "`gated: false`, `private: false`, 217 downloads. Files are `index/train.jsonl`, `train.csv`, `100k/subsample_100k.jsonl`, `1m/subsample_1m.jsonl`, two READMEs and one figure. No corpus shards, which is what holds `data` at documented-not-released.",
+                "accessed": "2026-07-30",
+                "http_status": 200,
+                "content_sha256": "d5d229aa8e6b2381fd7cc987d6f9203b3bc3a8e7837ccab9fe2055f036ed6db0",
+                "establishes": [
+                  "data"
+                ]
               },
               {
                 "url": "https://api.github.com/repos/BlinkDL/RWKV-LM",
-                "shows": "Model and training code by version (RWKV-v1..v8) plus figures. No data-prep or corpus reconstruction directory.",
-                "accessed": "2026-07-28"
+                "shows": "`private: false`, license `Apache-2.0`, 14,642 stars, pushed 2026-07-23. Model and training code by version (RWKV-v1..v8). No data-prep or corpus-reconstruction directory.",
+                "accessed": "2026-07-30",
+                "http_status": 200,
+                "content_sha256": "756686a7592173285002c7f9a7315216e500ff3aecebd1bea8a9b950804eec9a",
+                "establishes": [
+                  "code"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/models/BlinkDL/rwkv-7-world",
+                "shows": "`gated: false`, `private: false`, card license `apache-2.0`, 4,537 downloads. Weight files downloadable as `RWKV-x070-World-{0.1B,0.4B,1.5B}-*.pth`. Added on the 2026-07-30 re-read: the axis recorded `weights:open(Apache-2.0)` while citing only the code repo and the dataset, so nothing on file actually established the weights.",
+                "accessed": "2026-07-30",
+                "http_status": 200,
+                "content_sha256": "ed3f89200a3bfc477a6e76310016fee4adeafc7577883f6b1e5a12906c3dbe7d",
+                "establishes": [
+                  "weights",
+                  "license"
+                ]
               },
               {
                 "url": "https://arxiv.org/abs/2503.14456",
-                "shows": "RWKV-7 Goose paper: claims a 3.1T open corpus. No arXiv ancillary files are attached, so the supplementary material the dataset notes point to is not obtainable from the paper either.",
-                "accessed": "2026-07-28"
+                "shows": "RWKV-7 Goose paper abstract: \"we also present an extended open source 3.1 trillion token multilingual corpus\". No arXiv ancillary files are attached, so the supplementary material the dataset notes point to is not obtainable from the paper either.",
+                "accessed": "2026-07-30",
+                "http_status": 200,
+                "content_sha256": "ead02dec46f813c10d8ff4b7884f5d83f41d05a27ce94edbbaaaee2f18212d68"
               }
             ],
             "bucket": "open-ish"
@@ -4335,11 +4447,11 @@
           "type": "software",
           "description": "Unified inference engine built on the Mojo programming language that targets multiple hardware backends (NVIDIA, AMD, Intel, Apple) from a single codebase. Includes a graph compiler that automatically optimizes model execution for the target hardware. Supports PyTorch and Hugging Face models with claimed performance matching or exceeding TensorRT-LLM on NVIDIA GPUs while also running on non-NVIDIA hardware. Founded by former LLVM/Swift creator Chris Lattner. 26K+ stars on the combined Modular repo.",
           "openness": {
-            "score": 3,
+            "score": 2,
             "class": "source_available",
-            "components": "license:Modular-Community-License(non-OSI; Apache-2.0-w/-LLVM-exceptions only for some components);source:public(~450k LOC incl MAX kernels + inference server + Mojo stdlib);commercial-tier:Modular enterprise/managed deployment",
+            "components": "license:Modular-Community-License(non-OSI, per-device licensing and a limited redistribution grant, governs MAX/Mojo usage+distribution);repo-license:Apache-2.0-WITH-LLVM-exception(the source in modular/modular);source:public(~450k LOC incl MAX kernels + inference server + Mojo stdlib);commercial-tier:Modular enterprise/managed deployment",
             "confidence": "high",
-            "note": "Large public codebase but MAX/Mojo usage and distribution are governed by the non-OSI Modular Community License (not OSI-approved), plus a commercial tier -> source_available, not open_source. Marketed as 'open'; flag open_washed (non-OSI license presented as open).",
+            "note": "Large public codebase, and the repo's own LICENSE is now Apache-2.0 with LLVM Exceptions. The README is explicit that \"Modular, MAX and Mojo usage and distribution are licensed under the Modular Community License\", which is not OSI approved: read 2026-07-30, it licenses per discrete physical device, grants only a limited right to redistribute certain components, and provides the community variant free of charge subject to withdrawal at any time. So the source is readable and not freely runnable at scale. Marketed as \"open\"; flag open_washed. Score corrected from 3 to 2 on 2026-07-30. The software ladder has rungs at 1, 2, 4 and 5 and none at 3, so 3/source_available was not a pair any rule could produce; the ladder scores \"you can read it and not run it freely\" at 2.",
             "sources": [
               {
                 "url": "https://github.com/modular/modular",
@@ -5019,11 +5131,11 @@
           "type": "software",
           "description": "NVIDIA's optimized LLM inference library providing maximum throughput on NVIDIA GPUs through kernel fusion, in-flight batching, FP8/INT4 quantization, and multi-GPU tensor parallelism. Python API for defining and compiling models into optimized TensorRT engines. Used by major cloud providers and inference services as the backend for NVIDIA GPU deployments. Source code is Apache-2.0, but the value proposition is tightly coupled to NVIDIA hardware and CUDA ecosystem.",
           "openness": {
-            "score": 4,
+            "score": 5,
             "class": "open_source",
-            "components": "license:Apache-2.0(OSI);source:public;caveat:runs only on NVIDIA GPUs (vendor-hardware lock, not a license restriction)",
+            "components": "license:Apache-2.0(OSI, stated in LICENSE; GitHub reports NOASSERTION because of the bundled-dependency appendix);source:public;core-gated:ungated;caveat:runs only on NVIDIA GPUs (vendor-hardware lock, not a license restriction)",
             "confidence": "high",
-            "note": "license:Apache-2.0(OSI);source:public;caveat:runs only on NVIDIA GPUs (vendor-hardware lock, not a license restriction)",
+            "note": "Apache-2.0 across the repo. The LICENSE opens \"This project is licensed under the Apache 2.0 license\" and then appends the terms of the third-party code it bundles, which is why GitHub's classifier reports NOASSERTION. Nothing is withheld from the published source: NVIDIA sells NIM and enterprise support as separate products rather than gating features out of this one. Score corrected from 4 to 5 on 2026-07-30. In this ladder 4 pairs with open_core and never with open_source, and the recorded 4 was carrying the NVIDIA-GPU-only caveat, which is a hardware lock rather than a license restriction and answers no openness dimension.",
             "sources": [
               {
                 "url": "https://github.com/NVIDIA/TensorRT-LLM",
@@ -6252,10 +6364,10 @@
           "description": "Predibase managed fine-tuning/serving platform, acquired by Rubrik June 25 2025 (now an AI Agent Operations platform under Rubrik). Pioneered the first end-to-end Reinforcement Fine-Tuning (RFT) platform for LLMs. Methods: SFT, RFT (GRPO-style), continued pretraining; fine-tunes open source models; LoRA eXchange (LoRAX) OSS serving + turbo serving engine. Proprietary managed SaaS/VPC platform (OSS LoRAX + Ludwig are separate components). Confirmed live June 2026.",
           "openness": {
             "score": 2,
-            "class": "open_core",
-            "components": "core-platform:closed(proprietary post-training stack + turbo serving);OSS-components:LoRAX(open source multi-LoRA serving)+Ludwig(open source);runs-on:Predibase-SaaS-or-customer-VPC;license:Proprietary(managed) with Apache-licensed LoRAX/Ludwig adjuncts",
+            "class": "source_available",
+            "components": "core-platform:closed(proprietary post-training stack + turbo serving);source:partial(LoRAX and Ludwig are adjacent OSS; the fine-tuning platform does not ship);OSS-components:LoRAX(open source multi-LoRA serving)+Ludwig(open source);runs-on:Predibase-SaaS-or-customer-VPC;license:Proprietary(managed) with Apache-licensed LoRAX/Ludwig adjuncts",
             "confidence": "high",
-            "note": "Open-core: the founders created and maintain OSS LoRAX (multi-LoRA serving) and Ludwig, but the Predibase fine-tuning/RFT platform itself is proprietary managed SaaS. Scored 2 (open-core leaning closed) because the FT product - the thing being scored - is the proprietary platform, with OSS only at the serving/declarative-ML edges.",
+            "note": "The founders created and maintain OSS LoRAX (multi-LoRA serving) and Ludwig, but the Predibase fine-tuning/RFT platform, which is the thing being scored, is proprietary managed SaaS running on Predibase's own cloud or a customer VPC. The OSS sits at the serving and declarative-ML edges. Class corrected from open_core on 2026-07-30. In this ladder open_core means an OSI core with functionality withheld for a paid tier, and there is no open core here, only an open periphery. A repo that exists while the runtime does not ship is source:partial, which the ladder scores 2/source_available. The score itself was already 2.",
             "sources": [
               {
                 "url": "https://docs.predibase.com/",
@@ -6268,7 +6380,7 @@
                 "accessed": "2026-06-04"
               }
             ],
-            "bucket": "open"
+            "bucket": "open-ish"
           },
           "adoption": {
             "level": 2,
@@ -7540,10 +7652,10 @@
           "description": "Hosted human-preference LLM evaluation platform; rebranded LMSYS Chatbot Arena -> LMArena -> Arena (arena.ai; lmarena.ai 301-redirects to arena.ai as of June 2026). The PRODUCT is the hosted leaderboard/battle platform (closed). Its historical OSS code is FastChat (Apache-2.0) but stale (v0.2.36, Feb 2024); auxiliary OSS eval tooling Arena-Hard-Auto (Apache-2.0) is maintained. Confirmed live June 2026.",
           "openness": {
             "score": 2,
-            "class": "open_core",
-            "components": "platform:closed(hosted arena.ai, proprietary live leaderboard + private vote data); reference-code:FastChat Apache-2.0 (powers Chatbot Arena but stale, last release Feb 2024, 39.5k stars); aux-OSS:Arena-Hard-Auto Apache-2.0 (automatic LLM eval, highest correlation to LMArena); ranking methodology + crowd-vote dataset not fully open",
+            "class": "source_available",
+            "components": "platform:closed(hosted arena.ai, proprietary live leaderboard + private vote data); source:partial(FastChat is a real arena implementation but stale relative to the operating platform; the current ranking pipeline does not ship); reference-code:FastChat Apache-2.0 (powers Chatbot Arena but stale, last release Feb 2024, 39.5k stars); aux-OSS:Arena-Hard-Auto Apache-2.0 (automatic LLM eval, highest correlation to LMArena); ranking methodology + crowd-vote dataset not fully open",
             "confidence": "medium",
-            "note": "Scored as the hosted platform: the live evaluation product, its vote stream, and current ranking pipeline are closed; substantial OSS heritage (FastChat) and an OSS automatic-eval companion exist, so open_core not closed. The OSS code is stale relative to the operating platform.",
+            "note": "Scored as the hosted platform: the live evaluation product, its vote stream and the current ranking pipeline are closed, while substantial OSS heritage (FastChat) and an OSS automatic-eval companion (Arena-Hard-Auto) exist. The OSS code is stale relative to the operating platform, which is what makes this source_available rather than closed: FastChat is a real arena implementation, just not the one running. Class corrected from open_core on 2026-07-30. In this ladder open_core means an OSI core with functionality withheld for a paid tier, and there is no open core here, only an open periphery. A repo that exists while the runtime does not ship is source:partial, which the ladder scores 2/source_available. The score itself was already 2.",
             "sources": [
               {
                 "url": "https://github.com/lm-sys/FastChat",
@@ -7561,7 +7673,7 @@
                 "accessed": "2026-06-04"
               }
             ],
-            "bucket": "open"
+            "bucket": "open-ish"
           },
           "adoption": {
             "level": 4,
@@ -7612,10 +7724,10 @@
           "description": "Managed evaluation platform built around proprietary judge models, Lynx (8B hallucination detector), GLIDER (3.8B explainable rubric judge) and Percival (agent execution-trace analyzer). Picked by enterprises needing managed eval models rather than spinning up their own LLM-as-judge. Raised $20M; usage-based pricing $10-$20 per 1,000 evaluator API calls.",
           "openness": {
             "score": 2,
-            "class": "open_core",
-            "components": "platform:closed(hosted SaaS; remote Judge/Lynx/Glider evaluators run on Patronus infrastructure); client-SDKs:open(patronus-py public on GitHub, v0.1.25, but only 7 stars and wires to the hosted API); eval engine + proprietary evaluators not self-hostable",
+            "class": "source_available",
+            "components": "platform:closed(hosted SaaS; remote Judge/Lynx/Glider evaluators run on Patronus infrastructure);source:partial(patronus-py is a client wiring to the hosted API, not the engine);client-SDKs:open(patronus-py public on GitHub, v0.1.25, but only 7 stars and wires to the hosted API);eval engine + proprietary evaluators not self-hostable",
             "confidence": "medium",
-            "note": "Open-source SDK is a thin client to a closed hosted evaluation backend; the core scoring engine and managed evaluators are proprietary => open_core, low end (the OSS surface is a connector, not the product). License text not displayed on the SDK repo page (note).",
+            "note": "The open-source SDK is a thin client to a closed hosted evaluation backend; the core scoring engine and the managed Lynx/Glider evaluators are proprietary and not self-hostable. License text is not displayed on the SDK repo page. Class corrected from open_core on 2026-07-30. In this ladder open_core means an OSI core with functionality withheld for a paid tier, and there is no open core here, only an open periphery. A repo that exists while the runtime does not ship is source:partial, which the ladder scores 2/source_available. The score itself was already 2.",
             "sources": [
               {
                 "url": "https://github.com/patronus-ai/patronus-py",
@@ -7628,7 +7740,7 @@
                 "accessed": "2026-06-04"
               }
             ],
-            "bucket": "open"
+            "bucket": "open-ish"
           },
           "adoption": {
             "level": null,
@@ -7736,10 +7848,10 @@
           "description": "Independent benchmarking service that runs 10+ academic and agentic evals (MMLU, GPQA, long-context, etc.) against every major model and publishes the Intelligence Index, a composite score with 95% CIs. Picked as the go-to neutral leaderboard for model selection: their Index v3 score is widely cited and covers 300+ models across 100+ providers. Raised a seed round via the Nat Friedman / Daniel Gross AIGrant program.",
           "openness": {
             "score": 2,
-            "class": "open_core",
-            "components": "platform:closed(proprietary benchmarking site + methodology); methodology:documented(public methodology page, per-eval breakdown, temp/token params); datasets:closed(maintains internal copies of all eval datasets); harness:partial-open(Stirrup MIT, used for the agentic GDPval-AA eval only, 413 stars); the full Intelligence Index harness is not open",
+            "class": "source_available",
+            "components": "platform:closed(proprietary benchmarking site + methodology); source:partial(Stirrup covers one of ten evals; the Index pipeline does not ship); methodology:documented(public methodology page, per-eval breakdown, temp/token params); datasets:closed(maintains internal copies of all eval datasets); harness:partial-open(Stirrup MIT, used for the agentic GDPval-AA eval only, 413 stars); the full Intelligence Index harness is not open",
             "confidence": "high",
-            "note": "Methodology is well-documented and one component harness (Stirrup) is MIT-OSS, but the Index itself (pipeline, internal dataset copies, grader config) is proprietary => open_core (closed-leaning with a documented methodology + one OSS sub-tool). Not pure closed given Stirrup + transparent methodology; not source_available since the core isn't published.",
+            "note": "Methodology is well documented and one component harness (Stirrup) is MIT, but the Index itself (pipeline, internal dataset copies, grader config) is proprietary. The earlier note reasoned \"not source_available since the core isn't published\", which reads source_available as a stronger claim than this ladder makes: source:partial covers a repo existing while the runtime does not ship, and Stirrup covers one of ten evals. Class corrected from open_core on 2026-07-30. In this ladder open_core means an OSI core with functionality withheld for a paid tier, and there is no open core here, only an open periphery. A repo that exists while the runtime does not ship is source:partial, which the ladder scores 2/source_available. The score itself was already 2.",
             "sources": [
               {
                 "url": "https://artificialanalysis.ai/methodology/intelligence-benchmarking",
@@ -7752,7 +7864,7 @@
                 "accessed": "2026-06-04"
               }
             ],
-            "bucket": "open"
+            "bucket": "open-ish"
           },
           "adoption": {
             "level": 4,
@@ -12872,11 +12984,11 @@
           "type": "software",
           "description": "Construction pipeline for the TxT360 open pretraining corpus: global deduplication and source processing across 99 Common Crawl snapshots and 14 curated sources. Distinct from the released TxT360 dataset.",
           "openness": {
-            "score": 3,
+            "score": 2,
             "class": "source_available",
             "components": "license:Apache-2.0 asserted in README only, no LICENSE file in repo (GitHub reports null); source:public(LLM360/TxT360)",
             "confidence": "low",
-            "note": "The README badge asserts Apache-2.0 but the repo ships no LICENSE file, so there is no actual redistribution grant. Scored source_available until a LICENSE lands, rather than assuming OSI open source from a badge.",
+            "note": "The README badge asserts Apache-2.0 but the repo ships no LICENSE file, so there is no actual redistribution grant. Re-checked 2026-07-30: still no LICENSE file, and the GitHub license endpoint returns 404 while the repo API reports a null license. Scored on that rather than on the badge. Score corrected from 3 to 2 on 2026-07-30. The software ladder has rungs at 1, 2, 4 and 5 and none at 3, so 3/source_available was not a pair any rule could produce; the ladder scores \"you can read it and not run it freely\" at 2.",
             "sources": [
               {
                 "url": "https://github.com/LLM360/TxT360",
@@ -13580,11 +13692,11 @@
           "type": "software",
           "description": "One of the earliest and most well-known autonomous AI agent platforms, AutoGPT lets users define goals and the agent recursively breaks them into sub-tasks, executes actions, and learns from results. Has evolved from a viral demo into a more mature platform with a visual builder and marketplace. 184K GitHub stars (highest in the category) with 429 contributors, though much of the star count reflects the 2023 hype wave. Still actively developed with 668 commits in 90 days.",
           "openness": {
-            "score": 3,
+            "score": 2,
             "class": "source_available",
             "confidence": "high",
             "components": "license:DUAL, autogpt_platform/ under PolyForm Shield (non-OSI, source-available, anti-compete); everything else (Classic, Forge, agbenchmark) MIT(OSI);source:public",
-            "note": "Verified dual license: the current flagship, the AutoGPT Platform, is PolyForm Shield (source-available, non-OSI), while legacy components stay MIT. Mixed-tier: scored source_available because the active product is non-OSI. Confirmed via primary GitHub source.",
+            "note": "Verified dual license: the current flagship, the AutoGPT Platform, is PolyForm Shield (source-available, non-OSI, anti-compete), while legacy components (Classic, Forge, agbenchmark) stay MIT. Scored on the active product. Score corrected from 3 to 2 on 2026-07-30. The software ladder has rungs at 1, 2, 4 and 5 and none at 3, so 3/source_available was not a pair any rule could produce; the ladder scores \"you can read it and not run it freely\" at 2.",
             "sources": [
               {
                 "url": "https://github.com/Significant-Gravitas/AutoGPT",
@@ -13689,11 +13801,11 @@
           "type": "software",
           "description": "Open-source generalist AI agent positioned as an 'autonomous company operating system'; can browse the web, write and execute code, manage files, interact with APIs, and complete complex multi-step business tasks. Differentiates through an ambitious scope beyond coding (document creation, data analysis, web research) with a polished web UI. 19.8K GitHub stars with explosive development velocity (2,522 commits in 90 days), suggesting heavy investment in rapid iteration.",
           "openness": {
-            "score": 3,
+            "score": 2,
             "class": "source_available",
             "confidence": "high",
             "components": "license:Elastic License 2.0(non-OSI, source-available, restricts hosting as a managed service);source:public;managed cloud + self-host tiers",
-            "note": "Verified Elastic License 2.0 in the LICENSE file, source-available, NOT OSI; restricts providing the software as a hosted/managed service. Marketed as 'open source' but carries managed-service restrictions; flagged open_washed.",
+            "note": "Verified Elastic License 2.0 in the LICENSE file: source-available, not OSI approved, and restricts providing the software as a hosted or managed service. Marketed as \"open source\" while carrying managed-service restrictions; flagged open_washed. Score corrected from 3 to 2 on 2026-07-30. The software ladder has rungs at 1, 2, 4 and 5 and none at 3, so 3/source_available was not a pair any rule could produce; the ladder scores \"you can read it and not run it freely\" at 2.",
             "sources": [
               {
                 "url": "https://github.com/kortix-ai/suna/blob/main/LICENSE",
@@ -14331,11 +14443,11 @@
           "type": "software",
           "description": "Consumer-facing 'Personal Intelligence' agent, a multi-platform (web, macOS, iOS, CLI) assistant with episodic, semantic, and procedural memory that takes actions on the user's behalf. Pivoted in 2026 from an LLMops/prompt-engineering platform (prompts, workflows, evals) to a consumer agent product after a $20M Series A in July 2025; legacy LLMops surface still available but no longer the headline.",
           "openness": {
-            "score": 4,
+            "score": 5,
             "class": "open_source",
-            "components": "license:MIT(OSI, Copyright 2025 Vellum AI);source:public+full-agent(github.com/vellum-ai/vellum-assistant: gateway+clients+skill-framework+memory);self-host:yes(by design);managed-cloud:optional-add-on(memory/security)",
+            "components": "license:MIT(OSI, Copyright 2025 Vellum AI);source:public(the full agent - gateway, clients, skill framework, memory - in github.com/vellum-ai/vellum-assistant);core-gated:ungated(README: managed runtime on Vellum Platform or self-hosted, \"Same codebase, same data model\");self-host:yes(by design);managed-cloud:hosting convenience, not a feature tier",
             "confidence": "high",
-            "note": "CORRECTED from record's 'closed/score 1'. Primary check disproves it: the agent's complete source is public and MIT-licensed (LICENSE file: 'Copyright (c) 2025 Vellum AI', full app incl. backend gateway, Mac/Slack/Telegram clients, sandboxed skill framework, memory system), self-hostable by design, not a client/SDK stub. Vendor's own marketing comparison table paradoxically labels Vellum 'Proprietary' (vs MIT for Hermes/OpenClaw) because it sells a managed cloud tier; but the core agent is genuinely open source. Class=open_source; score 4 rather than 5 because the differentiated managed memory/security layer is a hosted add-on and the vendor markets the primary offering as proprietary cloud.",
+            "note": "CORRECTED from the record's \"closed/score 1\". The agent's complete source is public and MIT-licensed (LICENSE: \"Copyright (c) 2025 Vellum AI\"), covering the backend gateway, the Mac/Slack/Telegram clients, the sandboxed skill framework and the memory system, and it is self-hostable by design rather than a client stub. The vendor's own marketing comparison table labels Vellum \"Proprietary\" against MIT for Hermes/OpenClaw, because it sells a managed cloud tier. Score corrected from 4 to 5 on 2026-07-30. The earlier 4 rested on the managed memory/security layer being a differentiator, but the README states the managed runtime and the self-hosted one are the \"Same codebase, same data model\", so hosting is convenience rather than a feature tier. The ladder's core_gated note is explicit that a hosted offering alongside an ungated core is not gating, and 4 pairs with open_core in any case.",
             "sources": [
               {
                 "url": "https://www.vellum.ai",
@@ -14532,11 +14644,11 @@
           "type": "software",
           "description": "Active 2026; ~144K GitHub stars",
           "openness": {
-            "score": 3,
+            "score": 2,
             "class": "source_available",
             "components": "license:Dify-Open-Source-License(Apache-2.0-based,non-OSI,added-conditions:multi-tenant/branding-restrictions);source:public;cloud+enterprise-tiers",
             "confidence": "high",
-            "note": "license:Dify-Open-Source-License(Apache-2.0-based,non-OSI,added-conditions:multi-tenant/branding-restrictions);source:public;cloud+enterprise-tiers",
+            "note": "The Dify Open Source License is Apache-2.0 with added conditions: a multi-tenant service restriction and branding requirements. That puts it outside OSI approval and charges for a class of use, so the public source does not make the product freely runnable. Cloud and enterprise tiers sit alongside it. Score corrected from 3 to 2 on 2026-07-30. The software ladder has rungs at 1, 2, 4 and 5 and none at 3, so 3/source_available was not a pair any rule could produce; the ladder scores \"you can read it and not run it freely\" at 2.",
             "sources": [
               {
                 "url": "https://github.com/langgenius/dify",
@@ -16058,22 +16170,39 @@
             "components": "license:Apache-2.0(OSI, everything outside `ee/`);source:public;ee/-auth-directories-under-Mastra-Enterprise-License;Mastra-Platform-hosted-tier-commercial;core-gated:gated",
             "confidence": "high",
             "note": "Open-core in the LangGraph/LlamaIndex shape rather than the n8n one - the framework itself is a real OSI license, not fair-code. LICENSE.md scopes the commercial carve-out narrowly to `ee/` auth directories, so the agent, workflow, memory and eval surfaces a user actually builds on are Apache-2.0. Not 5 because the enterprise auth code is source-available and the managed platform is closed.",
-            "last_verified": "2026-07-29",
+            "last_verified": "2026-07-30",
             "sources": [
               {
                 "url": "https://github.com/mastra-ai/mastra/blob/main/LICENSE.md",
-                "shows": "LICENSE.md states content outside `ee/` directories is \"available under the Apache License 2.0\", Copyright 2025 Kepler Software, Inc., while `ee/` paths (packages/core/src/auth/ee/, packages/server/src/server/auth/ee/) fall under the license in ee/LICENSE. This preamble ahead of the Apache text is why GitHub's classifier reports NOASSERTION for the repo.",
-                "accessed": "2026-07-29"
+                "shows": "LICENSE.md: \"All content that resides under any directory named 'ee/' within this repository\" - listing packages/core/src/auth/ee/ and packages/server/src/server/auth/ee/ - \"is licensed under the license defined in ee/LICENSE\", while everything \"not mentioned\" in those directories or restrictions \"is available under the 'Apache License 2.0'\". This preamble ahead of the Apache text is why GitHub's classifier reports NOASSERTION for the repo.",
+                "accessed": "2026-07-30",
+                "http_status": 200,
+                "content_sha256": "f3e088854ab54991f81a9b4a0b8343d33a80124c091dfb5c962e67b589f0e1bd",
+                "establishes": [
+                  "license",
+                  "core-gated"
+                ]
               },
               {
-                "url": "https://www.npmjs.com/package/@mastra/core",
-                "shows": "published package metadata declares license Apache-2.0 at v1.54.0, confirming the framework ships to consumers under the OSI license rather than only being licensed that way in-repo",
-                "accessed": "2026-07-29"
+                "url": "https://registry.npmjs.org/@mastra/core",
+                "shows": "Registry metadata declares `license: Apache-2.0`, latest 1.55.0 (was 1.54.0 on 2026-07-29), confirming the framework ships to consumers under the OSI license rather than only being licensed that way in-repo. Cited previously as the npmjs.com package page, which answers 403 to any non-browser fetch behind a Cloudflare interstitial; the registry endpoint serves the same fact and can actually be re-checked.",
+                "accessed": "2026-07-30",
+                "http_status": 200,
+                "content_sha256": "374b1995706041a57a638521d51bfef0ea265ca0acfd323e412b3b3d90e9980f",
+                "establishes": [
+                  "license"
+                ]
               },
               {
                 "url": "https://mastra.ai/",
-                "shows": "site FAQ states \"Mastra's core framework is open source under the Apache 2.0 license. Enterprise features are source-available under the Mastra Enterprise License\", and describes Mastra Platform as a hosted commercial tier",
-                "accessed": "2026-07-29"
+                "shows": "Site FAQ states \"Mastra's core framework is open source under the Apache 2.0 license. Enterprise features are source-available under the Mastra Enterprise License\", and describes Mastra Cloud as the hosted commercial tier you can \"deploy the same app to\" after running it locally - so the published framework is what self-hosts.",
+                "accessed": "2026-07-30",
+                "http_status": 200,
+                "content_sha256": "c1458faa3a17755659530882810b981eaa4849f8e2135f48e2c7efe7cc8ce82b",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
               }
             ],
             "bucket": "open"
@@ -16244,11 +16373,11 @@
           "type": "software",
           "description": "Self-hosted, extensible web UI for chatting with any OpenAI-compatible endpoint or local Ollama model, with built-in RAG, multimodal support, and a tools/plugins marketplace. Picked over alternatives for its breadth of features (knowledge bases, web search, document chat) and very active development; the most popular open chat frontend with ~138k GitHub stars and 280M+ container pulls by May 2026.",
           "openness": {
-            "score": 3,
+            "score": 2,
             "class": "source_available",
             "components": "license:Open-WebUI-License(BSD-3-Clause-based + non-OSI branding clause: branding may not be removed above 50 end-users/30d without enterprise license or written permission);source:public;enterprise-tier:commercial license to remove branding",
             "confidence": "high",
-            "note": "Source-available, not OSI: a branding-retention clause caps free branding removal at <=50 users/30d, which fails the OSS Definition; widely marketed as open source.",
+            "note": "Source-available, not OSI: a branding-retention clause caps free branding removal at 50 end-users per 30 days, above which an enterprise license or written permission is required. That charges for a class of use and fails the OSS Definition, though it is widely marketed as open source. Score corrected from 3 to 2 on 2026-07-30. The software ladder has rungs at 1, 2, 4 and 5 and none at 3, so 3/source_available was not a pair any rule could produce; the ladder scores \"you can read it and not run it freely\" at 2.",
             "sources": [
               {
                 "url": "https://github.com/open-webui/open-webui/blob/main/LICENSE",
@@ -16358,11 +16487,11 @@
           "type": "software",
           "description": "Modern-design open source chat framework supporting OpenAI, Claude, Gemini, Ollama, Azure, DeepSeek and others, with knowledge bases, vision/TTS, plugin marketplace, and one-click deployment. Chosen for its polished UI and breadth of multi-modal/plugin support compared to barebones alternatives; ~77k GitHub stars makes it the second-most-starred OSS chat UI.",
           "openness": {
-            "score": 3,
+            "score": 2,
             "class": "source_available",
             "components": "license:LobeHub-Community-License(Apache-2.0-based, non-OSI: commercial license required to develop+distribute a derivative work; CLA lets LobeHub relicense contributions for cloud editions);source:public;cloud-tier:LobeHub Cloud",
             "confidence": "high",
-            "note": "Source-available, not OSI: the derivative-work commercial-license requirement and contributor relicensing terms exceed Apache-2.0; still presented publicly as open source.",
+            "note": "Source-available, not OSI: distributing a derivative work requires a commercial license, and the CLA lets LobeHub relicense contributions for its cloud editions. Both exceed Apache-2.0, though it is still presented publicly as open source. Score corrected from 3 to 2 on 2026-07-30. The software ladder has rungs at 1, 2, 4 and 5 and none at 3, so 3/source_available was not a pair any rule could produce; the ladder scores \"you can read it and not run it freely\" at 2.",
             "sources": [
               {
                 "url": "https://github.com/lobehub/lobe-chat/blob/main/LICENSE",
@@ -17371,11 +17500,11 @@
           "type": "software",
           "description": "Privacy-first AI assistant from Proton with zero-access encryption, a no-logs policy, and a \"ghost mode\" that discards chats on close. Runs on open-weight models from Proton's European data centers, excluding third-party providers like OpenAI from inference. Web and mobile clients are open source (GPLv3), though the backend service, routing layer, and model serving are not public. The differentiator is confidentiality - no account is required and conversations are never used for training.",
           "openness": {
-            "score": 3,
-            "class": "open_core",
-            "components": "clients:open(GPLv3 - web in ProtonMail/WebClients, iOS/Android in ProtonLumo);service:closed(backend, routing, model-serving not public);license:GPLv3(clients)",
+            "score": 2,
+            "class": "source_available",
+            "components": "source:partial(GPLv3 clients only; backend, routing and model-serving are not published);clients:open(GPLv3 - web in ProtonMail/WebClients, iOS/Android in ProtonLumo);service:closed(backend, routing, model-serving not public);license:GPLv3(clients)",
             "confidence": "high",
-            "note": "Open clients (GPLv3) over a proprietary hosted service - the backend, routing, and model-serving layer are not published. Marketed as \"fully open source,\" but support and third-party reviews note that only the clients are open, so open_core is the honest class.",
+            "note": "Open clients (GPLv3) over a proprietary hosted service: the backend, routing and model-serving layer are not published. Marketed as \"fully open source\", but support pages and third-party reviews note that only the clients are open. Corrected from 3/open_core on 2026-07-30, and both values were wrong: the ladder has no rung at 3, and a published client standing in for an unpublished engine is source:partial, which it scores 2/source_available. open_core would mean an OSI core with a paid tier withheld.",
             "sources": [
               {
                 "url": "https://github.com/ProtonLumo/ios-lumo",
@@ -17388,7 +17517,7 @@
                 "accessed": "2026-06-17"
               }
             ],
-            "bucket": "open"
+            "bucket": "open-ish"
           },
           "adoption": {
             "level": 3,
@@ -18549,11 +18678,11 @@
           "type": "software",
           "description": "Open-source AI observability and evaluation toolkit by Arize AI. Provides tracing, embeddings analysis, experiment tracking, and LLM evaluation in a local-first workflow. Strong integrations with LlamaIndex and LangChain. Built by the team behind the Arize production ML monitoring platform. 9.8K GitHub stars.",
           "openness": {
-            "score": 3,
+            "score": 2,
             "class": "source_available",
             "components": "license:Elastic-License-2.0(ELv2, non-OSI: prohibits offering as a managed/hosted service to third parties);source:public;self-hostable;commercial:Arize-AX-SaaS-is-separate-closed-product",
             "confidence": "high",
-            "note": "LICENSE file is ELv2 verbatim, not an OSI license; Arize markets Phoenix as 'the open source platform' (open_washed). Source-available + self-hostable, but not OSI open_source.",
+            "note": "The LICENSE file is ELv2 verbatim, which is not an OSI license, while Arize markets Phoenix as \"the open source platform\" (open_washed). Source-available and self-hostable, with Arize AX as a separate closed SaaS product. Score corrected from 3 to 2 on 2026-07-30. The software ladder has rungs at 1, 2, 4 and 5 and none at 3, so 3/source_available was not a pair any rule could produce; the ladder scores \"you can read it and not run it freely\" at 2.",
             "sources": [
               {
                 "url": "https://github.com/Arize-ai/phoenix/blob/main/LICENSE",
@@ -19550,11 +19679,11 @@
           "type": "software",
           "description": "AI observability platform for monitoring ML models and LLM applications in production. Provides data drift detection, performance monitoring, and LLM security guardrails. Built on the open source whylogs profiling library and LangKit LLM monitoring toolkit. Differentiated by statistical profiling approach, monitors distributions rather than individual requests, enabling cost-effective monitoring at scale.",
           "openness": {
-            "score": 4,
+            "score": 5,
             "class": "open_source",
-            "components": "license:Apache-2.0(OSI, whylogs + LangKit + open sourced platform);source:public(github.com/whylabs);hosted-SaaS:discontinued;status:company-ceased-ops, platform open sourced on closure",
+            "components": "license:Apache-2.0(OSI, whylogs + LangKit + open sourced platform);source:public(github.com/whylabs);core-gated:ungated(nothing is withheld - the company ceased operations and open sourced the platform on closure);hosted-SaaS:discontinued;status:company-ceased-ops, platform open sourced on closure",
             "confidence": "high",
-            "note": "Scored on what remains accessible: the OSS stack. whylogs (data logging) + LangKit (LLM monitoring) are Apache-2.0 OSI, and WhyLabs open sourced its platform on shutdown. Not 5 because the hosted monitoring backend is no longer maintained/operating and the OSS pieces are libraries rather than a turnkey live observability product.",
+            "note": "Scored on what remains accessible: the OSS stack. whylogs (data logging) and LangKit (LLM monitoring) are Apache-2.0, and WhyLabs open sourced its platform on shutdown. Score corrected from 4 to 5 on 2026-07-30. The earlier 4 was justified by the hosted backend no longer operating and the OSS pieces being libraries rather than a turnkey observability product, which are maturity judgments and are already recorded as adoption 2 and capability 2. On the openness question the published source is the whole product, because there is no longer anything else, and 4 pairs with open_core rather than open_source.",
             "sources": [
               {
                 "url": "https://whylabs.ai/langkit",
@@ -22311,10 +22440,10 @@
           "description": "Full-stack web scraping and automation platform with a marketplace of 2000+ pre-built scrapers (Actors) for specific websites. Provides cloud infrastructure for running scrapers at scale, proxy management, and anti-bot handling. The most mature commercial web scraping platform now repositioned for AI agent workflows. Offers both a managed platform and Crawlee, their open source crawling framework (23K stars).",
           "openness": {
             "score": 2,
-            "class": "open_core",
-            "components": "platform:proprietary(Apify-Cloud,Actor-store,managed);oss-sdk:Crawlee(Apache-2.0,OSI, JS+Python);license:mixed(platform closed, SDK open)",
+            "class": "source_available",
+            "components": "platform:proprietary(Apify-Cloud,Actor-store,managed);source:partial(Crawlee SDK published, the platform that runs Actors is not);oss-sdk:Crawlee(Apache-2.0,OSI, JS+Python);license:mixed(platform closed, SDK open)",
             "confidence": "high",
-            "note": "The product proper (Apify platform/Actor store) is proprietary SaaS; Apify also maintains the OSS Crawlee scraping library (Apache-2.0). Scored open_core but low (2): the open piece is an adjacent SDK, not the platform core, so most value is gated behind the managed cloud.",
+            "note": "The product proper (Apify platform/Actor store) is proprietary SaaS; Apify also maintains the OSS Crawlee scraping library (Apache-2.0). Crawlee is an adjacent SDK rather than the platform core, so most value stays behind the managed cloud. Class corrected from open_core on 2026-07-30. In this ladder open_core means an OSI core with functionality withheld for a paid tier, and there is no open core here, only an open periphery. A repo that exists while the runtime does not ship is source:partial, which the ladder scores 2/source_available. The score itself was already 2.",
             "sources": [
               {
                 "url": "https://apify.com",
@@ -22327,7 +22456,7 @@
                 "accessed": "2026-06-04"
               }
             ],
-            "bucket": "open"
+            "bucket": "open-ish"
           },
           "adoption": {
             "level": 3,
