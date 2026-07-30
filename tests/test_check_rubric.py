@@ -15,6 +15,7 @@ carry most of the risk, because each one fails QUIETLY:
 from __future__ import annotations
 
 import pytest
+import yaml
 
 from build.check_rubric import (
     ROOT,
@@ -25,6 +26,11 @@ from build.check_rubric import (
     recorded_license_aliases,
     split_components,
 )
+
+
+def write_yaml(path, payload):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(yaml.safe_dump(payload, sort_keys=False))
 
 RECIPE = {
     "openness": {
@@ -166,3 +172,48 @@ class TestRealCategories:
         even while the deferral count is zero."""
         _, total, _, deferred = check_category("finetuned_chat", verbose=False)
         assert total + len(deferred) == 39
+
+
+def test_mixed_type_category_scores_each_product_on_its_own_ladder(tmp_path, monkeypatch):
+    # Arrange a category holding one model and one software product, a shared
+    # ladder for each, and score files that reproduce only if the right ladder
+    # is applied to the right product.
+    write_yaml(tmp_path / "sources/rubrics/model.yaml", {
+        "openness": {
+            "license_tier": {"reads": ["license"], "values": {"osi": {"examples": ["Apache-2.0"]}}},
+            "dimensions": {"weights": {"values": ["open", "closed"]}},
+            "formula": [
+                {"when": {"weights": "open"}, "then": {"score": 5, "class": "open_source"}},
+                {"otherwise": {"score": 1, "class": "closed"}},
+            ],
+        }
+    })
+    write_yaml(tmp_path / "sources/rubrics/software.yaml", {
+        "openness": {
+            "license_tier": {"reads": ["license"], "values": {"osi": {"examples": ["Apache-2.0"]}}},
+            "dimensions": {"source": {"values": ["public", "closed"]}},
+            "formula": [
+                {"when": {"source": "public", "license_tier": "osi"},
+                 "then": {"score": 5, "class": "open_source"}},
+            ],
+        }
+    })
+    write_yaml(tmp_path / "sources/categories/mixed.yaml", {
+        "name": "mixed",
+        "products": ["a-model", "a-tool"],
+        "scoring_recipe": {"extends": {"model": "model", "software": "software"}},
+    })
+    write_yaml(tmp_path / "sources/products/a-model.yaml", {"name": "a-model", "type": "model"})
+    write_yaml(tmp_path / "sources/products/a-tool.yaml", {"name": "a-tool", "type": "software"})
+    write_yaml(tmp_path / "sources/scores/a-model.yaml", {
+        "openness": {"score": 5, "class": "open_source", "components": "weights:open;license:Apache-2.0"}
+    })
+    write_yaml(tmp_path / "sources/scores/a-tool.yaml", {
+        "openness": {"score": 5, "class": "open_source", "components": "source:public;license:Apache-2.0"}
+    })
+    monkeypatch.setattr("build.check_rubric.ROOT", tmp_path)
+
+    reproduced, total, problems, deferred = check_category("mixed", verbose=False)
+
+    assert problems == []
+    assert (reproduced, total) == (2, 2)

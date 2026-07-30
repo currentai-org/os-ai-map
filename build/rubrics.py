@@ -153,8 +153,8 @@ def dimension_vocabulary(categories: dict[str, dict], shared: dict[str, dict]) -
     """
     names: set[str] = set()
     for category in (categories or {}).values():
-        recipe, errors = resolve_recipe(category or {}, shared or {})
-        if recipe and not errors:
+        variants, _ = resolve_recipe_variants(category or {}, shared or {})
+        for recipe in variants.values():
             names |= recipe_vocabulary(recipe)
     return names
 

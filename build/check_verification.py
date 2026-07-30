@@ -64,7 +64,7 @@ from pathlib import Path
 import yaml
 
 from build.check_rubric import license_read_keys, resolve_dimension, split_components
-from build.rubrics import load_shared, resolve_recipe
+from build.rubrics import load_product_types, load_shared, recipe_for, resolve_recipe_variants
 
 ROOT = Path(__file__).resolve().parents[1]
 AXES = ("openness", "adoption", "capability")
@@ -88,7 +88,7 @@ DIGEST_EXEMPT: dict[str, str] = {}
 
 
 def load() -> tuple[dict, dict, dict]:
-    """(scores, categories, resolved recipe per category)."""
+    """(scores, categories, resolved recipe variants per category)."""
     scores = {
         p.stem: yaml.safe_load(p.read_text()) or {}
         for p in sorted((ROOT / "sources" / "scores").glob("*.yaml"))
@@ -100,9 +100,9 @@ def load() -> tuple[dict, dict, dict]:
     shared = load_shared(ROOT)
     recipes = {}
     for slug, category in categories.items():
-        recipe, errors = resolve_recipe(category, shared)
-        if recipe and not errors:
-            recipes[slug] = recipe
+        variants, errors = resolve_recipe_variants(category, shared)
+        if variants and not errors:
+            recipes[slug] = variants
     return scores, categories, recipes
 
 
@@ -156,12 +156,17 @@ def recorded_dimensions(components: dict[str, str], recipe: dict) -> dict[str, s
     return found
 
 
-def g1_invariant(scores: dict, categories: dict, recipes: dict) -> list[str]:
+def g1_invariant(
+    scores: dict, categories: dict, recipes: dict, product_types: dict[str, str] | None = None
+) -> list[str]:
     """Every recorded dimension of a dated axis has an establishing source read since."""
     problems: list[str] = []
     owner = category_of(categories)
+    product_types = product_types or {}
     for slug, score in sorted(scores.items()):
-        recipe = recipes.get(owner.get(slug, ""), {})
+        variants = recipes.get(owner.get(slug, ""), {})
+        recipe, _ = recipe_for(variants, product_types.get(slug, "")) if variants else (None, None)
+        recipe = recipe or {}
         for axis in AXES:
             block = score.get(axis) or {}
             claimed = parse_date(block.get("last_verified"))
@@ -259,10 +264,16 @@ def producible_pairs(recipe: dict) -> set[tuple[int, str]]:
 
 
 def g3_producible(scores: dict, categories: dict, recipes: dict) -> list[str]:
-    """A recorded (score, class) must be an outcome the category's ladder can produce."""
+    """A recorded (score, class) must be an outcome the category's ladder can produce.
+
+    A mixed category has one ladder per product type, so a pair is possible for the
+    category if ANY of its ladders can produce it — the union across variants.
+    """
     problems: list[str] = []
-    for slug, recipe in sorted(recipes.items()):
-        pairs = producible_pairs(recipe)
+    for slug, variants in sorted(recipes.items()):
+        pairs: set[tuple[int, str]] = set()
+        for recipe in variants.values():
+            pairs |= producible_pairs(recipe)
         if not pairs:
             continue
         for product in categories[slug].get("products") or []:
@@ -293,8 +304,9 @@ def main() -> int:
     args = parser.parse_args()
 
     scores, categories, recipes = load()
+    product_types = load_product_types(ROOT)
     results = {
-        "g1": g1_invariant(scores, categories, recipes),
+        "g1": g1_invariant(scores, categories, recipes, product_types),
         "g2": g2_digests(scores),
         "g3": g3_producible(scores, categories, recipes),
     }
@@ -309,7 +321,7 @@ def main() -> int:
     )
     scored = sum(
         1
-        for slug, recipe in recipes.items()
+        for slug in recipes
         for product in categories[slug].get("products") or []
         if ((scores.get(product) or {}).get("openness") or {}).get("score") is not None
     )

@@ -33,7 +33,10 @@ RECIPE = {
     }
 }
 CATEGORIES = {"models": {"name": "models", "products": ["m"], "scoring_recipe": RECIPE}}
-RECIPES = {"models": RECIPE}
+# `recipes` maps a category to its resolved variants ("*" for a uniform category, or one
+# key per product type for a mixed one) - the same shape build.check_verification.load()
+# produces via resolve_recipe_variants.
+RECIPES = {"models": {"*": RECIPE}}
 
 
 def _score(**openness):
@@ -249,7 +252,7 @@ def test_g3_is_not_escapable_by_deferring_the_product():
     category could defer its way out of an impossible pair - which is how `4/open_source`
     survived a checker that reported 33/33."""
     categories = {"models": dict(CATEGORIES["models"])}
-    recipes = {"models": dict(RECIPE, deferred={"m": {"because": "needs a human, at length"}})}
+    recipes = {"models": {"*": dict(RECIPE, deferred={"m": {"because": "needs a human, at length"}})}}
     scores = _score(score=3, **{"class": "open_source"})
     assert g3_producible(scores, categories, recipes)
 

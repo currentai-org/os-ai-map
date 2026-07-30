@@ -35,7 +35,7 @@ from pathlib import Path
 
 import yaml
 
-from build.rubrics import load_shared, resolve_recipe
+from build.rubrics import load_product_types, load_shared, recipe_for, resolve_recipe_variants
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -224,18 +224,20 @@ def check_category(slug: str, verbose: bool) -> tuple[int, int, list[str], list[
     # `extends: software` pulls the shared ladder in. Resolution errors are returned as
     # problems rather than raising, so one broken category cannot stop the others being
     # checked - and cannot pass silently either.
-    recipe, recipe_errors = resolve_recipe(category, load_shared(ROOT))
+    variants, recipe_errors = resolve_recipe_variants(category, load_shared(ROOT))
     if recipe_errors:
         return 0, 0, [f"{slug}: {e}" for e in recipe_errors], []
-    if not recipe:
+    if not variants:
         return 0, 0, [], []
+    product_types = load_product_types(ROOT)
+    # Deferrals are a property of the category's declaration, not of any one ladder.
+    deferrals = (category.get("scoring_recipe") or {}).get("deferred") or {}
 
     # Products the category has declared the rubric does not yet decide, each with
     # a reason. Deferring is not the same as passing: these are excluded from the
     # reproduction count rather than counted as reproduced, and printed every run
     # so the exclusion cannot go quiet. A rubric that reproduces 45 of 45 while
     # deferring the one product that contradicts it has proved nothing.
-    deferrals = recipe.get("deferred") or {}
 
     reproduced = 0
     total = 0
@@ -249,6 +251,10 @@ def check_category(slug: str, verbose: bool) -> tuple[int, int, list[str], list[
         if product in deferrals:
             because = (deferrals[product] or {}).get("because", "no reason recorded")
             deferred.append(f"{product}: {' '.join(str(because).split())}")
+            continue
+        recipe, why = recipe_for(variants, product_types.get(product, ""))
+        if recipe is None:
+            problems.append(f"{product}: {why}")
             continue
         scores = yaml.safe_load(path.read_text())
         openness = scores.get("openness") or {}
