@@ -38,4 +38,38 @@ products:
 - docling
 - markitdown
 - yomo
+scoring_recipe:
+  version: 1
+  extends: software
+  derived_from:
+    method: shared software ladder, verified against the hand-authored scores
+    scores_reproduced: 27
+    scores_total: 32
+    verified_on: '2026-07-30'
+    checker: build/check_rubric.py
+  # Held back rather than scored. The shared ladder has no `otherwise` rule, so
+  # these already abstain; declaring them here records WHY, and keeps the
+  # reproduction count honest by excluding them from it rather than counting
+  # them as passes.
+  deferred:
+    model-context-protocol:
+      because: >-
+        source or core-gated is not recorded in a form the ladder can read; needs a read of
+        the repo and pricing page
+    jina-reader:
+      because: >-
+        ladder computes 4/open_core from the recorded evidence but the score says
+        5/open_source; one of the two is wrong and it needs a human
+    agent2agent-protocol:
+      because: >-
+        source or core-gated is not recorded in a form the ladder can read; needs a read of
+        the repo and pricing page
+    apify:
+      because: >-
+        ladder computes 1/closed from the recorded evidence but the score says 2/open_core;
+        one of the two is wrong and it needs a human
+    yomo:
+      because: >-
+        source or core-gated is not recorded in a form the ladder can read; needs a read of
+        the repo and pricing page
 comments: ''

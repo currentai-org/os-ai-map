@@ -32,4 +32,42 @@ products:
 - mlflow
 - langfuse
 - trulens
+scoring_recipe:
+  version: 1
+  extends: software
+  derived_from:
+    method: shared software ladder, verified against the hand-authored scores
+    scores_reproduced: 20
+    scores_total: 26
+    verified_on: '2026-07-30'
+    checker: build/check_rubric.py
+  # Held back rather than scored. The shared ladder has no `otherwise` rule, so
+  # these already abstain; declaring them here records WHY, and keeps the
+  # reproduction count honest by excluding them from it rather than counting
+  # them as passes.
+  deferred:
+    phoenix:
+      because: >-
+        ladder computes 2/source_available from the recorded evidence but the score says
+        3/source_available; one of the two is wrong and it needs a human
+    agentops:
+      because: >-
+        source or core-gated is not recorded in a form the ladder can read; needs a read of
+        the repo and pricing page
+    langtrace:
+      because: >-
+        source or core-gated is not recorded in a form the ladder can read; needs a read of
+        the repo and pricing page
+    weave:
+      because: >-
+        source or core-gated is not recorded in a form the ladder can read; needs a read of
+        the repo and pricing page
+    whylabs:
+      because: >-
+        ladder computes 4/open_core from the recorded evidence but the score says
+        4/open_source; one of the two is wrong and it needs a human
+    langfuse:
+      because: >-
+        source or core-gated is not recorded in a form the ladder can read; needs a read of
+        the repo and pricing page
 comments: ''

@@ -1,0 +1,125 @@
+# Shared openness ladder for SOFTWARE categories.
+#
+# Inherited via `scoring_recipe: {extends: software}`. See build/rubrics.py for the merge
+# rules and why the ladder is shared rather than copied per category.
+#
+# Software openness does not turn on a model's questions. There are no weights and no
+# training corpus; what matters is whether the thing you run is the thing that was
+# published. Ten categories ask that same question of the same four license tiers, so the
+# ladder lives here and the license-to-tier mapping has one home: whether AGPL is `osi` is
+# a fact about AGPL, not about telemetry versus deployment.
+#
+# Verified against deployment first, 27/27. Each inheriting category records its own
+# `derived_from` counts.
+openness:
+  # Software openness does not turn on the same questions as a model's. There are no
+  # weights and no training corpus; what matters is whether the thing you actually run
+  # is the thing that was published. Two dimensions carry that, and both were already
+  # being recorded in prose before this recipe existed - in about forty phrasings, which
+  # is precisely why a rubric could not read them. The controlled keys restate the prose;
+  # they do not replace it.
+  dimensions:
+    source:
+      question: Is the source of the product you actually run published?
+      values: [public, partial, closed]
+      evidence:
+      - '`public`: the running product builds from the published repo, self-host included'
+      - '`partial`: a repo exists but the runtime does not ship - a client, an SDK, or an
+        issue tracker standing in for the engine'
+      - '`closed`: a managed service with no self-hostable implementation'
+      machine_signal: partial — repo presence from signal_github.repo_state, which
+        establishes that a repo exists but never that it is the whole product
+    core_gated:
+      question: Is functionality withheld from the published source for a paid tier?
+      values: [gated, ungated]
+      reads: [core-gated]
+      evidence:
+      - '`gated`: features live behind an enterprise license directory, a Premium tier, or
+        a commercial edition the published source cannot build'
+      - '`ungated`: a managed or hosted offering may exist ALONGSIDE an ungated core; hosting
+        convenience is not gating. `openpcc` is the case - its commercial CONFSEC service
+        is explicitly separate from the Apache-2.0 reference implementation'
+      note: >-
+        Values are `gated`/`ungated` rather than yes/no on purpose: YAML 1.1 parses bare
+        yes and no as booleans, so a `values: [yes, no]` list becomes [True, False] and
+        stops matching the quoted strings in the formula. serialize_rubric catches it,
+        but the words avoid it. Only meaningful where `source` is public. Where the source is not published
+        there is nothing to gate, and the formula settles those on `source` alone.
+      machine_signal: none — requires reading the repo and the pricing page
+
+  # Same shape as the model ladder, different rungs. Declaration order IS restrictiveness
+  # order, least restrictive first, and `tier_rank` is emitted from it.
+  license_tier:
+    # Most products record the license under `license`. A few record it under
+    # `license-terms` instead, where the terms are a paragraph rather than a name -
+    # `webcontainers` is the case, its runtime being proprietary while a shell repo is
+    # MIT. Either key answers the same question, so both are read, first match winning.
+    reads: [license, license-terms]
+    ordered_by: restrictiveness_ascending
+    values:
+      osi:
+        definition: >-
+          OSI-approved, copyleft included. A copyleft obligation binds whoever
+          redistributes; it does not cap who may use the software or at what scale, which
+          is the line this ladder draws. AGPL sits beside Apache here, not below it.
+          Settled in issue #125, which was opened because two products had been scored a
+          level down for AGPL on a rationale the other 22 copyleft products did not apply.
+        # Spelling variants and dual forms are listed literally rather than normalized:
+        # whether `GPLv3` is OSI is a fact, and a fact is cheaper to look up than a regex
+        # is to get right. `LGPL-3.0/GPL-3.0` is openfn dual-licensing under two OSI
+        # licenses, so either branch lands on this rung.
+        examples: [Apache-2.0, MIT, BSD-3-Clause, GPL-3.0, AGPL-3.0, LGPL-3.0, MPL-2.0,
+          GPL-3.0-or-later, GPLv3, LGPL-3.0/GPL-3.0]
+      permissive_non_osi:
+        definition: >-
+          Not OSI-approved, but imposes no restriction on WHO may use the software or AT
+          WHAT SCALE. Attribution and naming requirements belong here.
+        examples: []
+      competition_restricted:
+        definition: >-
+          Source is published and readable, but the license forbids or charges for a class
+          of use - competing hosted services, for-profit production above a threshold, or
+          use before a delayed conversion date. The reader can audit the code and still
+          not be free to run it, which is why this sits below the OSI tiers rather than
+          beside them. Delayed-conversion licenses are scored on their terms TODAY.
+        examples: [BSL-1.1, SSPL-1.0, FCL-1.0-ALv2, Elastic-License-2.0,
+          Elastic License 2.0, Sustainable-Use-License]
+      proprietary:
+        definition: No license to the source, because the source is not published.
+        # `commercial` is how the closed observability vendors record it.
+        examples: [Proprietary, commercial, proprietary]
+
+  # Ordered, first match wins. There is deliberately NO `otherwise`: a product whose
+  # recorded evidence does not reach a rule is abstained on by check_rubric and reported,
+  # rather than being scored at whatever the last rung happened to be. Roughly a third of
+  # software products across the map do not yet record `core-gated`, and an `otherwise`
+  # would publish a score for every one of them.
+  formula:
+  - when: {source: closed}
+    then: {score: 1, class: closed}
+    because: No self-hostable implementation, so nothing about the license can help.
+  - when: {source: partial}
+    then: {score: 2, class: source_available}
+    because: >-
+      A repo without the runtime. Readable, not runnable - `webcontainers` publishes
+      webcontainer-core but not the proprietary StackBlitz engine.
+  - when: {license_tier: competition_restricted, source: public}
+    then: {score: 2, class: source_available}
+    because: >-
+      Full source, but a license that forbids a class of use. Scored beside partial
+      source because the practical outcome matches: you can read it and not run it freely.
+  - when: {license_tier: osi, source: public, core_gated: gated}
+    then: {score: 4, class: open_core}
+    because: >-
+      An OSI core with functionality withheld for a paid tier. Not 5, because the
+      published source is not the whole product; not 3, because what ships is genuinely
+      open and self-hostable.
+  - when: {license_tier: permissive_non_osi, source: public, core_gated: gated}
+    then: {score: 4, class: open_core}
+  - when: {license_tier: osi, source: public, core_gated: ungated}
+    then: {score: 5, class: open_source}
+    because: >-
+      The published source is the whole product. A managed offering alongside it does not
+      change that.
+  - when: {license_tier: permissive_non_osi, source: public, core_gated: ungated}
+    then: {score: 5, class: open_source}

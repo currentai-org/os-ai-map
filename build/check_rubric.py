@@ -35,6 +35,8 @@ from pathlib import Path
 
 import yaml
 
+from build.rubrics import load_shared, resolve_recipe
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -219,7 +221,12 @@ def apply_formula(recipe: dict, facts: dict) -> tuple[int, str] | None:
 def check_category(slug: str, verbose: bool) -> tuple[int, int, list[str], list[str]]:
     """Return (reproduced, total, problems, deferred)."""
     category = yaml.safe_load((ROOT / "sources" / "categories" / f"{slug}.yaml").read_text())
-    recipe = category.get("scoring_recipe")
+    # `extends: software` pulls the shared ladder in. Resolution errors are returned as
+    # problems rather than raising, so one broken category cannot stop the others being
+    # checked - and cannot pass silently either.
+    recipe, recipe_errors = resolve_recipe(category, load_shared(ROOT))
+    if recipe_errors:
+        return 0, 0, [f"{slug}: {e}" for e in recipe_errors], []
     if not recipe:
         return 0, 0, [], []
 
