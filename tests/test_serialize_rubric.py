@@ -565,6 +565,59 @@ def test_recipe_miss_still_emits_score_sources_for_other_axes():
     assert sources_by_axis["capability"]["admitted"] is True
 
 
+def test_deferred_product_emits_no_openness_evidence():
+    """`openness_computed` builds its product roster with `SELECT DISTINCT
+    product_slug, category_slug FROM product_evidence` — so a deferred product must
+    not appear in `product_openness_evidence` at all, or that downstream model
+    computes a score for a product the repo has explicitly declined to stand behind.
+    """
+    sources = _sources(
+        categories={
+            "base": {
+                "scoring_recipe": {**RECIPE, "deferred": {"m1": {"because": "test reason"}}},
+                "products": ["m1", "m2"],
+            }
+        },
+        scores={
+            "m1": {"openness": {"components": "weights:open;data:open;code:open;license:MIT(OSI)"}},
+            "m2": {"openness": {"components": "weights:open;data:open;code:open;license:MIT(OSI)"}},
+        },
+    )
+    tables, errors, _ = build_rubric(sources, POLICY, {})
+    assert errors == []
+    assert not any(r["product_slug"] == "m1" for r in tables["product_openness_evidence"])
+    # The non-deferred product in the same category is unaffected.
+    assert any(r["product_slug"] == "m2" for r in tables["product_openness_evidence"])
+
+
+def test_deferred_product_still_emits_score_sources():
+    """`deferred` is scoped to the openness axis only. `product_score_sources` covers
+    all three axes, including adoption and capability, which have nothing to do with
+    a deferred openness score — a body-wide `continue` here would silently drop them,
+    which is exactly the regression `c151452` had to repair.
+    """
+    sources = _sources(
+        categories={
+            "base": {
+                "scoring_recipe": {**RECIPE, "deferred": {"m1": {"because": "test reason"}}},
+                "products": ["m1"],
+            }
+        },
+        scores={
+            "m1": {
+                "openness": {"components": "weights:open;data:open;code:open;license:MIT(OSI)"},
+                "adoption": {"sources": [{"url": "https://x.test/a", "shows": "1.2M monthly downloads"}]},
+                "capability": {"sources": [{"url": "https://x.test/b", "shows": "AA Intelligence Index 17"}]},
+            },
+        },
+    )
+    tables, errors, _ = build_rubric(sources, POLICY, {})
+    assert errors == []
+    assert not any(r["product_slug"] == "m1" for r in tables["product_openness_evidence"])
+    sources_by_axis = {r["axis"]: r for r in tables["product_score_sources"] if r["product_slug"] == "m1"}
+    assert set(sources_by_axis) == {"adoption", "capability"}
+
+
 def test_every_declared_table_is_present():
     tables, _, _ = build_rubric(_sources(categories={"base": {"scoring_recipe": RECIPE}}), POLICY, {})
     assert set(tables) == set(TABLES)
@@ -609,11 +662,17 @@ def test_real_sources_serialize_without_errors():
     # products that had described their gating in prose gained a readable `source:` or
     # `core-gated:` key. The two model categories are untouched, which is what the pilot
     # counts are pinned to catch.
+    # `safeguards` disappears from this dict entirely: all 26 of its products are
+    # deferred, so it now contributes zero product_openness_evidence rows. Nine other
+    # categories drop too, by however many rows their own deferred products used to
+    # carry (1-3 rows per product) — a deferred product publishes no openness evidence
+    # at all now, so `openness_computed` never sees enough rows to score a product the
+    # repo declined to stand behind.
     assert per_category("product_openness_evidence") == {
-        "base_pretrained": 111, "finetuned_chat": 172, "safeguards": 87, "deployment": 131,
-        "agent_tools_protocols": 123, "dataset_processing_tools": 88, "evaluation_code": 95,
-        "finetuning_code": 132, "inference_code": 80, "ml_frameworks": 84,
-        "orchestration_agents": 178, "telemetry_observability": 102, "ui_api": 169,
+        "base_pretrained": 111, "finetuned_chat": 172, "deployment": 131,
+        "agent_tools_protocols": 108, "dataset_processing_tools": 86, "evaluation_code": 66,
+        "finetuning_code": 119, "inference_code": 47, "ml_frameworks": 80,
+        "orchestration_agents": 137, "telemetry_observability": 90, "ui_api": 127,
     }
     assert {r["grade"] for r in tables["product_openness_evidence"]} == {"document"}
 

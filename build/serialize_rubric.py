@@ -371,6 +371,12 @@ def build_rubric(sources: dict, policy: dict, routing: dict) -> tuple[dict[str, 
             continue
         scored_categories += 1
 
+        # Deferrals are a property of the category's declaration, not of any one
+        # resolved ladder variant, so they are read off `scoring_recipe` directly
+        # rather than through `resolve_recipe` — the same source `check_rubric.py`'s
+        # `check_category` reads (build/check_rubric.py:240).
+        deferred = (category.get("scoring_recipe") or {}).get("deferred") or {}
+
         for product_type, variant_recipe in sorted(variants.items()):
             rules, rule_errors = scoring_rules(slug, variant_recipe)
             for row in rules:
@@ -394,7 +400,16 @@ def build_rubric(sources: dict, policy: dict, routing: dict) -> tuple[dict[str, 
             # that runs unconditionally after this block (see
             # test_recipe_miss_still_emits_score_sources_for_other_axes).
             recipe, why = recipe_for(variants, product_types.get(product_slug, ""))
-            if recipe is None:
+            if product_slug in deferred:
+                # `openness_computed` builds its roster with SELECT DISTINCT product_slug,
+                # category_slug FROM product_evidence, so any row emitted here is enough for
+                # that downstream model to compute a score. `deferred` means the repo has
+                # declared it will NOT stand behind the ladder reproducing this product's
+                # recorded score, so no openness evidence goes out and no score is ever
+                # computed for it — the safe silence, instead of a computed score nobody
+                # signed off on.
+                pass
+            elif recipe is None:
                 warnings.append(f"product '{product_slug}' in '{slug}': {why}")
             else:
                 declared = ((recipe.get("openness") or {}).get("dimensions")) or {}
