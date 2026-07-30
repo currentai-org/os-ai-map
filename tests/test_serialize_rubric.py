@@ -584,7 +584,7 @@ def test_real_sources_serialize_without_errors():
                 "evaluation_code", "finetuning_code", "inference_code", "ml_frameworks",
                 "orchestration_agents", "telemetry_observability", "ui_api"]
     assert per_category("category_scoring_rules") == {
-        "base_pretrained": 11, "finetuned_chat": 9, **{c: 16 for c in SOFTWARE},
+        "base_pretrained": 11, "finetuned_chat": 9, "safeguards": 25, **{c: 16 for c in SOFTWARE},
     }
     # Both fell with the slug migration: release-level products collapsed into the
     # tier the vendor sells, so 25 products left the roster and the closed frontier
