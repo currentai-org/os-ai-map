@@ -43,8 +43,9 @@ files do not carry it. Recording the limit beats inventing an attribution.
 
 Emitted tables (CSVs into `build/registry/`, alongside the registry's own):
 
-  category_scoring_rules      the ordered formula, one row per rule condition
-  category_license_tiers      tier <- example license, per category
+  category_scoring_rules      the ordered formula, one row per rule condition, per category
+                              and product type
+  category_license_tiers      tier <- example license, per category and product type
   license_aliases             a source's license slug -> canonical license name
   evidence_abstentions        values that mean "this source has no answer"
   product_openness_evidence   per-dimension values parsed from `components`
@@ -70,6 +71,7 @@ from build.check_rubric import (
     resolve_dimension,
     split_components,
 )
+from build.rubrics import load_product_types, recipe_for, resolve_recipe_variants
 from build.serialize_registry import write_tables
 from build.validate import load_sources
 
@@ -84,11 +86,10 @@ AXES = ("openness", "adoption", "capability")
 # gets one lookup table instead of a lookup table plus a hardcoded special case.
 DEFINITIONAL_TIERS = {"proprietary": ("proprietary", "closed", "none")}
 
-from build.rubrics import resolve_recipe
-
 TABLES: dict[str, tuple[str, ...]] = {
     "category_scoring_rules": (
         "category_slug",
+        "product_type",
         "recipe_version",
         "rule_index",
         "is_otherwise",
@@ -99,6 +100,7 @@ TABLES: dict[str, tuple[str, ...]] = {
     ),
     "category_license_tiers": (
         "category_slug",
+        "product_type",
         "tier",
         "tier_rank",
         "example_license",
@@ -355,150 +357,184 @@ def build_rubric(sources: dict, policy: dict, routing: dict) -> tuple[dict[str, 
     if not tables["evidence_abstentions"]:
         warnings.append("signal_routing.yaml declares no route abstain_values")
 
+    # Slug -> declared `type`, threaded through `sources` rather than read here so
+    # `build_rubric` stays a pure function of its inputs (see `test_rubric_rows_carry_product_type`).
+    product_types: dict[str, str] = sources.get("product_types") or {}
+
     scored_categories = 0
     for slug, category in sorted(categories.items()):
-        recipe, recipe_errors = resolve_recipe(category, shared_rubrics)
+        variants, recipe_errors = resolve_recipe_variants(category, shared_rubrics)
         errors.extend(f"category '{slug}' {e}" for e in recipe_errors)
-        if not recipe:
+        if not variants:
             if not recipe_errors:
                 warnings.append(f"category '{slug}' declares no scoring_recipe")
             continue
         scored_categories += 1
 
-        rules, rule_errors = scoring_rules(slug, recipe)
-        tables["category_scoring_rules"].extend(rules)
-        errors.extend(rule_errors)
-        tier_rows, tier_errors = license_tiers(slug, recipe)
-        tables["category_license_tiers"].extend(tier_rows)
-        errors.extend(tier_errors)
+        # Deferrals are a property of the category's declaration, not of any one
+        # resolved ladder variant, so they are read off `scoring_recipe` directly
+        # rather than through `resolve_recipe` — the same source `check_rubric.py`'s
+        # `check_category` reads (build/check_rubric.py:240).
+        deferred = (category.get("scoring_recipe") or {}).get("deferred") or {}
 
-        declared = ((recipe.get("openness") or {}).get("dimensions")) or {}
+        for product_type, variant_recipe in sorted(variants.items()):
+            rules, rule_errors = scoring_rules(slug, variant_recipe)
+            for row in rules:
+                row["product_type"] = product_type
+            tables["category_scoring_rules"].extend(rules)
+            errors.extend(rule_errors)
+
+            tier_rows, tier_errors = license_tiers(slug, variant_recipe)
+            for row in tier_rows:
+                row["product_type"] = product_type
+            tables["category_license_tiers"].extend(tier_rows)
+            errors.extend(tier_errors)
 
         for product_slug in category.get("products") or []:
             record = scores.get(product_slug)
             if record is None:
                 continue
-            openness = record.get("openness") or {}
-            components = split_components(openness.get("components") or "")
-            if not components:
-                warnings.append(
-                    f"product '{product_slug}' in '{slug}' records no openness components"
-                )
+            # A missing/unmapped product type only forfeits the recipe-dependent
+            # openness evidence below — it says nothing about whether adoption and
+            # capability sources exist, so it must not skip the axis-source loop
+            # that runs unconditionally after this block (see
+            # test_recipe_miss_still_emits_score_sources_for_other_axes).
+            recipe, why = recipe_for(variants, product_types.get(product_slug, ""))
+            if product_slug in deferred:
+                # `openness_computed` builds its roster with SELECT DISTINCT product_slug,
+                # category_slug FROM product_evidence, so any row emitted here is enough for
+                # that downstream model to compute a score. `deferred` means the repo has
+                # declared it will NOT stand behind the ladder reproducing this product's
+                # recorded score, so no openness evidence goes out and no score is ever
+                # computed for it — the safe silence, instead of a computed score nobody
+                # signed off on.
+                pass
+            elif recipe is None:
+                warnings.append(f"product '{product_slug}' in '{slug}': {why}")
+            else:
+                declared = ((recipe.get("openness") or {}).get("dimensions")) or {}
 
-            read_map = dimension_read_map(recipe)
-            license_keys = license_read_keys(recipe)
-
-            # One row per DECLARED DIMENSION, carrying the value the formula will
-            # actually read. Emitted under the dimension name rather than the key it
-            # was recorded under, because the warehouse joins a rule's condition_key
-            # against this column: a row labeled `post-training-data` would leave the
-            # `data` condition unmatched and drop the product into `otherwise`
-            # silently, scoring it 3 on an absence.
-            resolved_keys: dict[str, str] = {}
-            for dimension, spec in declared.items():
-                key = resolve_dimension(components, dimension, recipe)
-                if key is None:
-                    continue
-                resolved_keys[dimension] = key
-                bare, detail = split_value(components[key])
-                allowed = (spec or {}).get("values")
-                in_enum = bare in allowed if allowed else ""
-                if in_enum is False:
+                openness = record.get("openness") or {}
+                components = split_components(openness.get("components") or "")
+                if not components:
                     warnings.append(
-                        f"product '{product_slug}' records {key}={bare!r}, which is not in "
-                        f"the rubric's declared values for {dimension} {allowed}"
+                        f"product '{product_slug}' in '{slug}' records no openness components"
                     )
-                tables["product_openness_evidence"].append(
-                    {
-                        "product_slug": product_slug,
-                        "category_slug": slug,
-                        "dimension": dimension,
-                        "value": bare,
-                        "value_detail": detail,
-                        "grade": "document",
-                        "in_declared_enum": in_enum,
-                    }
-                )
 
-            # The license the tier lookup consumes, emitted under the name the
-            # warehouse joins on. `license_tier.reads` lets a category accept the value
-            # under another key - deepseek-coder records `model-license`, because its card
-            # distinguishes the code license from the one on the weights - and
-            # check_rubric honours that list. Without resolving it here the row went out
-            # as `model-license`, the SQL looked only for `license`, and the product
-            # abstained in the warehouse while reproducing locally. Same drift as the
-            # dimension resolution above, one key over.
-            license_key = next((k for k in license_keys if components.get(k)), None)
-            if license_key:
-                bare, detail = split_value(components[license_key])
-                tables["product_openness_evidence"].append(
-                    {
-                        "product_slug": product_slug,
-                        "category_slug": slug,
-                        "dimension": "license",
-                        "value": bare,
-                        "value_detail": detail,
-                        "grade": "document",
-                        # No enum: `license` is the raw input the tier lookup consumes.
-                        "in_declared_enum": "",
-                    }
-                )
+                read_map = dimension_read_map(recipe)
+                license_keys = license_read_keys(recipe)
 
-            # Then every recorded key that is not itself a dimension name, so nothing
-            # the repo recorded is dropped. This carries the license the tier lookup
-            # consumes, and the losing side of a `reads` preference — granite records
-            # both a base corpus and an SFT mixture, and only one of them answers the
-            # category's data question.
-            #
-            # Keys that ARE dimension names are skipped here because the resolved pass
-            # above already emitted them. Emitting both would put two values on one
-            # grain and let the warehouse pick between them by row order.
-            for key, raw in components.items():
-                if key == "license":
-                    continue  # emitted above, under the resolved license row
-                if key in declared:
-                    # A key that shares a dimension's name but lost the `reads`
-                    # preference is answering a different question under a name this
-                    # category has already spent. granite records
-                    # `data:described_not_released` about its BASE corpus while
-                    # `post-training-data` answers the category's data question, so the
-                    # base fact has nowhere to go and would be dropped without a word.
-                    # Reported so it can be relabeled — starcoder2 already uses
-                    # `base-data` for exactly this.
-                    if resolved_keys.get(key) != key:
+                # One row per DECLARED DIMENSION, carrying the value the formula will
+                # actually read. Emitted under the dimension name rather than the key it
+                # was recorded under, because the warehouse joins a rule's condition_key
+                # against this column: a row labeled `post-training-data` would leave the
+                # `data` condition unmatched and drop the product into `otherwise`
+                # silently, scoring it 3 on an absence.
+                resolved_keys: dict[str, str] = {}
+                for dimension, spec in declared.items():
+                    key = resolve_dimension(components, dimension, recipe)
+                    if key is None:
+                        continue
+                    resolved_keys[dimension] = key
+                    bare, detail = split_value(components[key])
+                    allowed = (spec or {}).get("values")
+                    in_enum = bare in allowed if allowed else ""
+                    if in_enum is False:
                         warnings.append(
-                            f"product '{product_slug}' records {key}={split_value(raw)[0]!r}, but "
-                            f"'{slug}' resolved {key} from {resolved_keys.get(key)!r} instead, so "
-                            f"the recorded value is dropped from the evidence store. Relabel it if "
-                            f"it answers a different question."
+                            f"product '{product_slug}' records {key}={bare!r}, which is not in "
+                            f"the rubric's declared values for {dimension} {allowed}"
                         )
-                    continue
-                bare, detail = split_value(raw)
-                # A component no dimension declares and no `reads` list names is
-                # vocabulary drift. It cannot affect a score, so it is a curation
-                # finding rather than a failure — but left unreported it is an
-                # observation nobody will ever act on. `marin` records
-                # `reproducibility:bit-for-bit`, a real openness fact the rubric has
-                # no question for.
-                if key not in license_keys and key not in read_map:
-                    warnings.append(
-                        f"product '{product_slug}' records {key!r}, which "
-                        f"'{slug}' does not declare as a dimension"
+                    tables["product_openness_evidence"].append(
+                        {
+                            "product_slug": product_slug,
+                            "category_slug": slug,
+                            "dimension": dimension,
+                            "value": bare,
+                            "value_detail": detail,
+                            "grade": "document",
+                            "in_declared_enum": in_enum,
+                        }
                     )
-                tables["product_openness_evidence"].append(
-                    {
-                        "product_slug": product_slug,
-                        "category_slug": slug,
-                        "dimension": key,
-                        "value": bare,
-                        "value_detail": detail,
-                        "grade": "document",
-                        # A traceability row, not the value any rule reads. Left blank
-                        # rather than validated, since the enum it would be checked
-                        # against belongs to the dimension that won.
-                        "in_declared_enum": "",
-                    }
-                )
+
+                # The license the tier lookup consumes, emitted under the name the
+                # warehouse joins on. `license_tier.reads` lets a category accept the value
+                # under another key - deepseek-coder records `model-license`, because its card
+                # distinguishes the code license from the one on the weights - and
+                # check_rubric honours that list. Without resolving it here the row went out
+                # as `model-license`, the SQL looked only for `license`, and the product
+                # abstained in the warehouse while reproducing locally. Same drift as the
+                # dimension resolution above, one key over.
+                license_key = next((k for k in license_keys if components.get(k)), None)
+                if license_key:
+                    bare, detail = split_value(components[license_key])
+                    tables["product_openness_evidence"].append(
+                        {
+                            "product_slug": product_slug,
+                            "category_slug": slug,
+                            "dimension": "license",
+                            "value": bare,
+                            "value_detail": detail,
+                            "grade": "document",
+                            # No enum: `license` is the raw input the tier lookup consumes.
+                            "in_declared_enum": "",
+                        }
+                    )
+
+                # Then every recorded key that is not itself a dimension name, so nothing
+                # the repo recorded is dropped. This carries the license the tier lookup
+                # consumes, and the losing side of a `reads` preference — granite records
+                # both a base corpus and an SFT mixture, and only one of them answers the
+                # category's data question.
+                #
+                # Keys that ARE dimension names are skipped here because the resolved pass
+                # above already emitted them. Emitting both would put two values on one
+                # grain and let the warehouse pick between them by row order.
+                for key, raw in components.items():
+                    if key == "license":
+                        continue  # emitted above, under the resolved license row
+                    if key in declared:
+                        # A key that shares a dimension's name but lost the `reads`
+                        # preference is answering a different question under a name this
+                        # category has already spent. granite records
+                        # `data:described_not_released` about its BASE corpus while
+                        # `post-training-data` answers the category's data question, so the
+                        # base fact has nowhere to go and would be dropped without a word.
+                        # Reported so it can be relabeled — starcoder2 already uses
+                        # `base-data` for exactly this.
+                        if resolved_keys.get(key) != key:
+                            warnings.append(
+                                f"product '{product_slug}' records {key}={split_value(raw)[0]!r}, but "
+                                f"'{slug}' resolved {key} from {resolved_keys.get(key)!r} instead, so "
+                                f"the recorded value is dropped from the evidence store. Relabel it if "
+                                f"it answers a different question."
+                            )
+                        continue
+                    bare, detail = split_value(raw)
+                    # A component no dimension declares and no `reads` list names is
+                    # vocabulary drift. It cannot affect a score, so it is a curation
+                    # finding rather than a failure — but left unreported it is an
+                    # observation nobody will ever act on. `marin` records
+                    # `reproducibility:bit-for-bit`, a real openness fact the rubric has
+                    # no question for.
+                    if key not in license_keys and key not in read_map:
+                        warnings.append(
+                            f"product '{product_slug}' records {key!r}, which "
+                            f"'{slug}' does not declare as a dimension"
+                        )
+                    tables["product_openness_evidence"].append(
+                        {
+                            "product_slug": product_slug,
+                            "category_slug": slug,
+                            "dimension": key,
+                            "value": bare,
+                            "value_detail": detail,
+                            "grade": "document",
+                            # A traceability row, not the value any rule reads. Left blank
+                            # rather than validated, since the enum it would be checked
+                            # against belongs to the dimension that won.
+                            "in_declared_enum": "",
+                        }
+                    )
 
             rejected = 0
             for axis in AXES:
@@ -541,6 +577,7 @@ def main() -> int:
     args = parser.parse_args()
 
     sources = load_sources(ROOT)
+    sources["product_types"] = load_product_types(ROOT)
     tables, errors, warnings = build_rubric(sources, load_policy(ROOT), load_routing(ROOT))
 
     for name in TABLES:

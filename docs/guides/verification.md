@@ -226,25 +226,36 @@ one gets done twice if rushed.
 
 ### 1. Finish the recipes — 16/16 categories, 470/470 products
 
-111 products across four categories still have no `scoring_recipe`:
+85 products across three categories still have no `scoring_recipe`:
 
 | category | n | product type |
 |---|---|---|
 | `benchmark_eval_data` | 27 | dataset |
 | `training_synthetic_datasets` | 38 | dataset |
 | `edge_hardware` | 20 | hardware |
-| `safeguards` | 26 | **mixed** — 9 model, 17 software |
 
 **Do this before step 2.** Step 2 generalizes the scoring SQL off its hardcoded model
 dimensions, and that generalization should be driven by the complete dimension vocabulary.
 Generalize it now for software alone and it gets redone when `dataset` and `hardware` arrive
 with dimensions of their own.
 
-Two of the four are cheap: one dataset ladder covers 65 products, hardware is 20 products.
-`safeguards` is the one that changes the machinery — it is the only mixed-type category, so
-`extends` has to become per-product-type rather than per-category. That in turn forces the
-other half of the ladder extraction: pulling the model ladder out to
-`sources/rubrics/model.yaml` so `safeguards` can reference both it and `software.yaml`.
+Both are cheap: one dataset ladder covers the 65 products in `benchmark_eval_data` and
+`training_synthetic_datasets`, hardware is `edge_hardware`'s 20.
+
+`safeguards` is no longer on this list, and it is why `extends` now accepts two forms. It
+holds 9 products typed `model` and 17 typed `software`, so a single shared ladder could not
+cover it. `scoring_recipe.extends` can now be a mapping of product type to ladder name —
+`safeguards` declares `model: model, software: software` — resolved per product by the
+`type:` field in `sources/products/<slug>.yaml`, through `build/rubrics.py`'s
+`resolve_recipe_variants` and `recipe_for`. That forced the other half of the extraction
+too: the fine-tuned model ladder moved out of `finetuned_chat.yaml` into a shared
+`sources/rubrics/model.yaml`, so `safeguards` could reference it alongside `software.yaml`.
+
+The machinery landed; the scores did not. `safeguards` reproduces none of its 26 products.
+All 26 sit in the category's `deferred` block: a license resolving to the wrong tier,
+evidence recorded under a key the ladder does not read, a couple of judgment calls on which
+SKU governs a bundled guard model. Correcting those 26 is what remains, through curation
+rather than more machinery.
 
 ### 2. Generalize the scoring SQL, once
 
@@ -260,10 +271,19 @@ Two things ride along:
   every dimension the score *records*. Without this column no tool can ever legitimately
   write `last_verified`, so it is the precondition for step 3.
 - **A `category_deferrals` table.** `deferred` currently lives only in the repo, so the
-  warehouse does not know which products a category has held back. There are 63 of them now,
-  alongside the 111 products in the four categories with no recipe at all. With no
-  `otherwise` rule in the software ladder they fall out of the model's INNER JOIN rather than
-  being scored wrongly — the safe direction, but silent.
+  warehouse does not know which products a category has held back. There are 89 of them now,
+  alongside the 85 products in the three categories with no recipe at all. For the software
+  categories the silence has been safe: with no `otherwise` rule in the software ladder their
+  deferred products fall out of the model's INNER JOIN rather than being scored wrongly.
+
+  **That safety argument no longer covers every category.** `sources/rubrics/model.yaml` ends
+  in `otherwise: {score: 3, class: open_weights}`, so a deferred product on the model ladder
+  gets a score in the warehouse instead of dropping out. `safeguards` is the first category to
+  pair an `otherwise` ladder with deferrals, and all 26 of its products are deferred. Until
+  this table exists, the warehouse can compute openness for products whose recorded scores the
+  repo has explicitly declined to reproduce, and for seven of the nine guardrail models the
+  computed value disagrees with the published one. That makes the table a correctness fix for
+  `safeguards` rather than only an observability one.
 
 ### 3. The automated freshness pass — roughly 400 axes
 
@@ -281,8 +301,9 @@ twice, and it re-verifies scores that are about to change.
 That backlog is currently 174 products: 49 whose prose does not settle `source` or
 `core-gated`, 10 whose recorded license maps to no tier in the ladder, 4 where the ladder and
 the recorded score still disagree (`jina-reader`, `openhands`, `maple-ai`, `privatemode` — all
-producible pairs, so G3 passes them and only `check_rubric` objects), plus the 111 products in
-the four categories that have no recipe yet.
+producible pairs, so G3 passes them and only `check_rubric` objects), plus the 85 products in
+the three categories that have no recipe yet and the 26 in `safeguards`, which has a recipe but
+reproduces none of them.
 
 **Expect scores to move.** Verification is not a formality: the RWKV correction in #105 came
 out of a pass like this, and G3's first run moved 17 openness scores or classes before the

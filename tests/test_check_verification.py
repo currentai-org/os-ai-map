@@ -33,7 +33,10 @@ RECIPE = {
     }
 }
 CATEGORIES = {"models": {"name": "models", "products": ["m"], "scoring_recipe": RECIPE}}
-RECIPES = {"models": RECIPE}
+# `recipes` maps a category to its resolved variants ("*" for a uniform category, or one
+# key per product type for a mixed one) - the same shape build.check_verification.load()
+# produces via resolve_recipe_variants.
+RECIPES = {"models": {"*": RECIPE}}
 
 
 def _score(**openness):
@@ -92,17 +95,17 @@ def test_a_dimension_answered_under_a_reads_alias_keeps_the_alias():
 
 def test_g1_passes_when_every_dimension_has_a_fresh_establishing_source():
     scores = _score(last_verified="2026-07-30", sources=FULL)
-    assert g1_invariant(scores, CATEGORIES, RECIPES) == []
+    assert g1_invariant(scores, CATEGORIES, RECIPES, {}) == []
 
 
 def test_g1_ignores_an_axis_with_no_date():
     """The ratchet: an axis claiming nothing is not asked to prove anything."""
-    assert g1_invariant(_score(sources=[_src("https://a", "2020-01-01")]), CATEGORIES, RECIPES) == []
+    assert g1_invariant(_score(sources=[_src("https://a", "2020-01-01")]), CATEGORIES, RECIPES, {}) == []
 
 
 def test_g1_fails_when_a_dimension_has_no_establishing_source():
     scores = _score(last_verified="2026-07-30", sources=FULL[:2])  # code unattributed
-    problems = g1_invariant(scores, CATEGORIES, RECIPES)
+    problems = g1_invariant(scores, CATEGORIES, RECIPES, {})
     assert any("records 'code'" in p and "no source claims to establish it" in p for p in problems)
 
 
@@ -117,7 +120,7 @@ def test_g1_fails_when_one_dimension_is_stale():
             _src("https://c", "2026-06-01", ["code"]),
         ],
     )
-    problems = g1_invariant(scores, CATEGORIES, RECIPES)
+    problems = g1_invariant(scores, CATEGORIES, RECIPES, {})
     assert len(problems) == 1
     assert "records 'code'" in problems[0]
     assert "only established by a source last read 2026-06-01" in problems[0]
@@ -128,7 +131,7 @@ def test_g1_fails_when_no_source_was_read_on_or_after_the_claimed_date():
         last_verified="2026-07-30",
         sources=[_src("https://a", "2026-06-01", ["weights", "data", "code", "license"])],
     )
-    problems = g1_invariant(scores, CATEGORIES, RECIPES)
+    problems = g1_invariant(scores, CATEGORIES, RECIPES, {})
     assert any("no source was accessed on or after that date" in p for p in problems)
 
 
@@ -136,7 +139,7 @@ def test_g1_never_derives_a_date_it_only_validates_one():
     """Guards against the #115 'simplification'. A fully-attributed axis with no
     `last_verified` must stay silent rather than acquiring one."""
     scores = _score(sources=FULL)
-    assert g1_invariant(scores, CATEGORIES, RECIPES) == []
+    assert g1_invariant(scores, CATEGORIES, RECIPES, {}) == []
     assert "last_verified" not in scores["m"]["openness"]
 
 
@@ -145,25 +148,25 @@ def test_g1_floor_applies_to_adoption_where_there_are_no_dimensions():
     confirmation still cannot rest on zero sources read on or after the date it claims."""
     scores = {"m": {"product": "m", "adoption": {"level": 4, "last_verified": "2026-07-30",
                                                 "sources": [_src("https://a", "2026-06-01")]}}}
-    assert any("no source was accessed on or after" in p for p in g1_invariant(scores, {}, {}))
+    assert any("no source was accessed on or after" in p for p in g1_invariant(scores, {}, {}, {}))
 
 
 def test_g1_accepts_adoption_with_one_fresh_source_and_no_attribution():
     scores = {"m": {"product": "m", "adoption": {"level": 4, "last_verified": "2026-07-30",
                                                 "sources": [_src("https://a", "2026-07-30")]}}}
-    assert g1_invariant(scores, {}, {}) == []
+    assert g1_invariant(scores, {}, {}, {}) == []
 
 
 def test_g1_rejects_a_last_verified_that_is_not_a_date():
     scores = _score(last_verified="last week", sources=FULL)
-    assert any("is not a date" in p for p in g1_invariant(scores, CATEGORIES, RECIPES))
+    assert any("is not a date" in p for p in g1_invariant(scores, CATEGORIES, RECIPES, {}))
 
 
 def test_g1_falls_back_to_the_floor_for_a_category_with_no_recipe():
     """Four categories have no recipe yet, so there is no declared vocabulary to check
     against. The gate degrades to the floor rather than passing vacuously or erroring."""
     scores = _score(last_verified="2026-07-30", sources=[_src("https://a", "2026-06-01")])
-    assert any("no source was accessed on or after" in p for p in g1_invariant(scores, {}, {}))
+    assert any("no source was accessed on or after" in p for p in g1_invariant(scores, {}, {}, {}))
 
 
 # --- G2 ---
@@ -223,13 +226,13 @@ def test_producible_pairs_reads_then_and_otherwise():
 
 
 def test_g3_passes_on_a_producible_pair():
-    assert g3_producible(_score(), CATEGORIES, RECIPES) == []
+    assert g3_producible(_score(), CATEGORIES, RECIPES, {}) == []
 
 
 def test_g3_fails_on_a_class_no_rule_pairs_with_that_score():
     """`4/open_source` in software: 4 exists and `open_source` exists, never together."""
     scores = _score(score=1, **{"class": "open_source"})
-    problems = g3_producible(scores, CATEGORIES, RECIPES)
+    problems = g3_producible(scores, CATEGORIES, RECIPES, {})
     assert any("1/open_source is not an outcome" in p for p in problems)
 
 
@@ -237,11 +240,11 @@ def test_g3_fails_on_a_score_no_rule_emits():
     """The software ladder's rungs are 1, 2, 4, 5. A software product scored 3 is impossible
     by construction, however plausible the class looks beside it."""
     scores = _score(score=3, **{"class": "open_source"})
-    assert any("3/open_source is not an outcome" in p for p in g3_producible(scores, CATEGORIES, RECIPES))
+    assert any("3/open_source is not an outcome" in p for p in g3_producible(scores, CATEGORIES, RECIPES, {}))
 
 
 def test_g3_ignores_an_unscored_product():
-    assert g3_producible(_score(score=None), CATEGORIES, RECIPES) == []
+    assert g3_producible(_score(score=None), CATEGORIES, RECIPES, {}) == []
 
 
 def test_g3_is_not_escapable_by_deferring_the_product():
@@ -249,20 +252,53 @@ def test_g3_is_not_escapable_by_deferring_the_product():
     category could defer its way out of an impossible pair - which is how `4/open_source`
     survived a checker that reported 33/33."""
     categories = {"models": dict(CATEGORIES["models"])}
-    recipes = {"models": dict(RECIPE, deferred={"m": {"because": "needs a human, at length"}})}
+    recipes = {"models": {"*": dict(RECIPE, deferred={"m": {"because": "needs a human, at length"}})}}
     scores = _score(score=3, **{"class": "open_source"})
-    assert g3_producible(scores, categories, recipes)
+    assert g3_producible(scores, categories, recipes, {})
+
+
+def test_g3_checks_a_mixed_category_product_against_its_own_ladder_not_the_union():
+    """G1, `check_rubric` and `serialize_rubric` all select per product with `recipe_for`.
+    G3 used to test each recorded pair against the UNION of every variant in the
+    category instead, so a software product recording a pair only the model ladder can
+    emit would have passed - even though the software ladder, the one that actually
+    governs it, cannot produce that pair. That is exactly the class of failure this gate
+    exists to catch (see the module docstring's `4/open_source` story), so the union was
+    the one place the escape hatch stayed open.
+    """
+    model_recipe = {"openness": {"formula": [
+        {"when": {"weights": "open"}, "then": {"score": 3, "class": "open_weights"}},
+        {"otherwise": {"score": 1, "class": "closed"}},
+    ]}}
+    software_recipe = {"openness": {"formula": [
+        {"when": {"source": "public"}, "then": {"score": 5, "class": "open_source"}},
+        {"otherwise": {"score": 1, "class": "closed"}},
+    ]}}
+    categories = {"mixed": {"name": "mixed", "products": ["a-tool"]}}
+    recipes = {"mixed": {"model": model_recipe, "software": software_recipe}}
+    product_types = {"a-tool": "software"}
+    scores = {"a-tool": {"product": "a-tool", "openness": {"score": 3, "class": "open_weights"}}}
+
+    # The union of both ladders WOULD have admitted this pair (the model ladder emits
+    # it), which is why the old implementation passed it.
+    union_pairs = producible_pairs(model_recipe) | producible_pairs(software_recipe)
+    assert (3, "open_weights") in union_pairs
+
+    problems = g3_producible(scores, categories, recipes, product_types)
+    assert any("3/open_weights is not an outcome" in p for p in problems)
 
 
 # --- the repo itself ---
 
 def test_the_repo_passes_all_three_gates():
-    from build.check_verification import load
+    from build.check_verification import ROOT, load
+    from build.rubrics import load_product_types
 
     scores, categories, recipes = load()
-    assert g1_invariant(scores, categories, recipes) == []
+    product_types = load_product_types(ROOT)
+    assert g1_invariant(scores, categories, recipes, product_types) == []
     assert g2_digests(scores) == []
-    assert g3_producible(scores, categories, recipes) == []
+    assert g3_producible(scores, categories, recipes, product_types) == []
 
 
 @pytest.mark.parametrize("axis", ["openness", "adoption", "capability"])

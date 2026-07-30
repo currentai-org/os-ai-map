@@ -49,9 +49,81 @@ RECIPE = {
 
 POLICY = {"admission": {"boilerplate_shows": ["verification source"], "require_nonempty_shows": True}}
 
+# Two shared ladders, minimal but structurally valid, for the product-type variant test.
+SHARED_RUBRICS_FIXTURE = {
+    "software": {
+        "openness": {
+            "dimensions": {"weights": {"question": "?", "values": ["open", "closed"]}},
+            "license_tier": {
+                "ordered_by": "restrictiveness_ascending",
+                "values": {"osi": {"examples": ["MIT"]}, "proprietary": {"definition": "no public license"}},
+            },
+            "formula": [{"otherwise": {"score": 3, "class": "open_weights"}}],
+        },
+    },
+    "model": {
+        "openness": {
+            "dimensions": {"weights": {"question": "?", "values": ["open", "closed"]}},
+            "license_tier": {
+                "ordered_by": "restrictiveness_ascending",
+                "values": {"osi": {"examples": ["MIT"]}, "proprietary": {"definition": "no public license"}},
+            },
+            "formula": [{"otherwise": {"score": 3, "class": "open_weights"}}],
+        },
+    },
+}
 
-def _sources(categories=None, scores=None):
-    return {"categories": categories or {}, "scores": scores or {}}
+
+# Dedicated to test_recipe_for_selects_the_matching_ladder_for_a_scored_product only.
+# Unlike SHARED_RUBRICS_FIXTURE, the two ladders here declare DISJOINT `weights` enums,
+# so scoring a product against the wrong ladder is visible: the recorded value falls
+# outside the other ladder's declared values and trips `in_declared_enum`.
+DISJOINT_WEIGHTS_RUBRICS_FIXTURE = {
+    "software": {
+        "openness": {
+            "dimensions": {"weights": {"question": "?", "values": ["closed-source", "source-available"]}},
+            "license_tier": {
+                "ordered_by": "restrictiveness_ascending",
+                "values": {"osi": {"examples": ["MIT"]}, "proprietary": {"definition": "no public license"}},
+            },
+            "formula": [{"otherwise": {"score": 3, "class": "open_weights"}}],
+        },
+    },
+    "model": {
+        "openness": {
+            "dimensions": {"weights": {"question": "?", "values": ["open", "closed"]}},
+            "license_tier": {
+                "ordered_by": "restrictiveness_ascending",
+                "values": {"osi": {"examples": ["MIT"]}, "proprietary": {"definition": "no public license"}},
+            },
+            "formula": [{"otherwise": {"score": 3, "class": "open_weights"}}],
+        },
+    },
+}
+
+
+def _sources(categories=None, scores=None, rubrics=None, product_types=None):
+    return {
+        "categories": categories or {},
+        "scores": scores or {},
+        "rubrics": rubrics or {},
+        "product_types": product_types or {},
+    }
+
+
+def _real_sources(root):
+    """The repo's real sources, with `product_types` threaded through the way `main()`
+    does it (`build/serialize_rubric.py:564`). Without this key every product's `type`
+    reads as `""`, which for a mixed category (`extends` mapping product type -> ladder)
+    means `recipe_for` resolves to None for every product rather than to its real ladder
+    — a test that omits it exercises a path no production run takes.
+    """
+    from build.rubrics import load_product_types
+    from build.validate import load_sources
+
+    sources = load_sources(root)
+    sources["product_types"] = load_product_types(root)
+    return sources
 
 
 def test_split_value_separates_the_bare_value_from_its_detail():
@@ -391,6 +463,161 @@ def test_no_recipe_anywhere_is_an_error():
     assert any("nothing to score with" in e for e in errors)
 
 
+def test_rubric_rows_carry_product_type():
+    """A uniform category's rubric rows are stamped `*`; a mixed category's rubric
+    rows are stamped with the product type of the ladder that produced them. This
+    test supplies no `scores`, so it exercises only the per-category rubric-table
+    stamping (`category_scoring_rules` and `category_license_tiers`) — the
+    per-product `recipe_for` selection is covered separately by
+    `test_recipe_for_selects_the_matching_ladder_for_a_scored_product` and
+    `test_recipe_miss_still_emits_score_sources_for_other_axes`.
+    """
+    sources = _sources(
+        categories={
+            "uniform": {"name": "uniform", "products": ["p1"],
+                        "scoring_recipe": {"extends": "software"}},
+            "mixed": {"name": "mixed", "products": ["m1", "s1"],
+                      "scoring_recipe": {"extends": {"model": "model", "software": "software"}}},
+        },
+        rubrics=SHARED_RUBRICS_FIXTURE,
+        product_types={"p1": "software", "m1": "model", "s1": "software"},
+    )
+    tables, errors, _ = build_rubric(sources, policy={}, routing={})
+    assert errors == []
+    uniform_rules = [r for r in tables["category_scoring_rules"] if r["category_slug"] == "uniform"]
+    mixed_rules = [r for r in tables["category_scoring_rules"] if r["category_slug"] == "mixed"]
+    assert {r["product_type"] for r in uniform_rules} == {"*"}
+    assert {r["product_type"] for r in mixed_rules} == {"model", "software"}
+
+    uniform_tiers = [r for r in tables["category_license_tiers"] if r["category_slug"] == "uniform"]
+    mixed_tiers = [r for r in tables["category_license_tiers"] if r["category_slug"] == "mixed"]
+    assert {r["product_type"] for r in uniform_tiers} == {"*"}
+    assert {r["product_type"] for r in mixed_tiers} == {"model", "software"}
+
+
+def test_recipe_for_selects_the_matching_ladder_for_a_scored_product():
+    """A scored product in a mixed-type category is scored against its OWN type's
+    ladder, not the other one. `DISJOINT_WEIGHTS_RUBRICS_FIXTURE`'s two ladders
+    declare non-overlapping `weights` enums (model: open/closed; software:
+    closed-source/source-available), so picking the wrong ladder for a product
+    is visible: the recorded value falls outside the other ladder's declared
+    values, flipping `in_declared_enum` to False and firing a "not in the
+    rubric's declared values" warning. A `recipe_for` that ignored `product_type`
+    and always returned one ladder for both products would trip that check on
+    whichever product does not match the ladder it hard-coded.
+    """
+    sources = _sources(
+        categories={
+            "mixed": {"name": "mixed", "products": ["m1", "s1"],
+                      "scoring_recipe": {"extends": {"model": "model", "software": "software"}}},
+        },
+        scores={
+            "m1": {"openness": {"components": "weights:open"}},
+            "s1": {"openness": {"components": "weights:source-available"}},
+        },
+        rubrics=DISJOINT_WEIGHTS_RUBRICS_FIXTURE,
+        product_types={"m1": "model", "s1": "software"},
+    )
+    tables, errors, warnings = build_rubric(sources, policy={}, routing={})
+    assert errors == []
+    assert not any("in 'mixed':" in w for w in warnings)
+    assert not any("not in the rubric's declared values" in w for w in warnings)
+    evidence = {
+        (r["product_slug"], r["dimension"]): r for r in tables["product_openness_evidence"]
+    }
+    assert evidence[("m1", "weights")]["value"] == "open"
+    assert evidence[("m1", "weights")]["in_declared_enum"] is True
+    assert evidence[("s1", "weights")]["value"] == "source-available"
+    assert evidence[("s1", "weights")]["in_declared_enum"] is True
+
+
+def test_recipe_miss_still_emits_score_sources_for_other_axes():
+    """A product whose declared `type` does not match any ladder (missing, or not
+    one of the mapped keys) loses its openness evidence — `recipe_for` has nothing
+    to hand back — but its adoption and capability source rows must still be
+    emitted. Those axes read only `record` and `policy`, never `recipe`, so a
+    `recipe_for` miss has no bearing on them. This pins Finding 1: narrowing the
+    `continue` to skip only the recipe-dependent block, not the whole per-product
+    body.
+    """
+    sources = _sources(
+        categories={
+            "mixed": {"name": "mixed", "products": ["m1"],
+                      "scoring_recipe": {"extends": {"model": "model", "software": "software"}}},
+        },
+        scores={
+            "m1": {
+                "openness": {"components": "weights:open"},
+                "adoption": {"sources": [{"url": "https://x.test/a", "shows": "13,834 monthly downloads"}]},
+                "capability": {"sources": [{"url": "https://x.test/b", "shows": "AA Intelligence Index 17"}]},
+            },
+        },
+        rubrics=SHARED_RUBRICS_FIXTURE,
+        product_types={"m1": "unmapped-type"},
+    )
+    tables, errors, warnings = build_rubric(sources, policy=POLICY, routing={})
+    assert errors == []
+    assert any("in 'mixed':" in w for w in warnings)
+    assert not any(r["product_slug"] == "m1" for r in tables["product_openness_evidence"])
+    sources_by_axis = {r["axis"]: r for r in tables["product_score_sources"] if r["product_slug"] == "m1"}
+    assert set(sources_by_axis) == {"adoption", "capability"}
+    assert sources_by_axis["adoption"]["admitted"] is True
+    assert sources_by_axis["capability"]["admitted"] is True
+
+
+def test_deferred_product_emits_no_openness_evidence():
+    """`openness_computed` builds its product roster with `SELECT DISTINCT
+    product_slug, category_slug FROM product_evidence` — so a deferred product must
+    not appear in `product_openness_evidence` at all, or that downstream model
+    computes a score for a product the repo has explicitly declined to stand behind.
+    """
+    sources = _sources(
+        categories={
+            "base": {
+                "scoring_recipe": {**RECIPE, "deferred": {"m1": {"because": "test reason"}}},
+                "products": ["m1", "m2"],
+            }
+        },
+        scores={
+            "m1": {"openness": {"components": "weights:open;data:open;code:open;license:MIT(OSI)"}},
+            "m2": {"openness": {"components": "weights:open;data:open;code:open;license:MIT(OSI)"}},
+        },
+    )
+    tables, errors, _ = build_rubric(sources, POLICY, {})
+    assert errors == []
+    assert not any(r["product_slug"] == "m1" for r in tables["product_openness_evidence"])
+    # The non-deferred product in the same category is unaffected.
+    assert any(r["product_slug"] == "m2" for r in tables["product_openness_evidence"])
+
+
+def test_deferred_product_still_emits_score_sources():
+    """`deferred` is scoped to the openness axis only. `product_score_sources` covers
+    all three axes, including adoption and capability, which have nothing to do with
+    a deferred openness score — a body-wide `continue` here would silently drop them,
+    which is exactly the regression `c151452` had to repair.
+    """
+    sources = _sources(
+        categories={
+            "base": {
+                "scoring_recipe": {**RECIPE, "deferred": {"m1": {"because": "test reason"}}},
+                "products": ["m1"],
+            }
+        },
+        scores={
+            "m1": {
+                "openness": {"components": "weights:open;data:open;code:open;license:MIT(OSI)"},
+                "adoption": {"sources": [{"url": "https://x.test/a", "shows": "1.2M monthly downloads"}]},
+                "capability": {"sources": [{"url": "https://x.test/b", "shows": "AA Intelligence Index 17"}]},
+            },
+        },
+    )
+    tables, errors, _ = build_rubric(sources, POLICY, {})
+    assert errors == []
+    assert not any(r["product_slug"] == "m1" for r in tables["product_openness_evidence"])
+    sources_by_axis = {r["axis"]: r for r in tables["product_score_sources"] if r["product_slug"] == "m1"}
+    assert set(sources_by_axis) == {"adoption", "capability"}
+
+
 def test_every_declared_table_is_present():
     tables, _, _ = build_rubric(_sources(categories={"base": {"scoring_recipe": RECIPE}}), POLICY, {})
     assert set(tables) == set(TABLES)
@@ -400,10 +627,9 @@ def test_real_sources_serialize_without_errors():
     from pathlib import Path
 
     from build.serialize_rubric import load_policy, load_routing
-    from build.validate import load_sources
 
     root = Path(__file__).resolve().parents[1]
-    tables, errors, _ = build_rubric(load_sources(root), load_policy(root), load_routing(root))
+    tables, errors, _ = build_rubric(_real_sources(root), load_policy(root), load_routing(root))
     assert errors == [], f"rubric has errors: {errors[:5]}"
 
     # Asserted per category rather than as a total, so a new recipe shows up as its
@@ -425,7 +651,7 @@ def test_real_sources_serialize_without_errors():
                 "evaluation_code", "finetuning_code", "inference_code", "ml_frameworks",
                 "orchestration_agents", "telemetry_observability", "ui_api"]
     assert per_category("category_scoring_rules") == {
-        "base_pretrained": 11, "finetuned_chat": 9, **{c: 16 for c in SOFTWARE},
+        "base_pretrained": 11, "finetuned_chat": 9, "safeguards": 25, **{c: 16 for c in SOFTWARE},
     }
     # Both fell with the slug migration: release-level products collapsed into the
     # tier the vendor sells, so 25 products left the roster and the closed frontier
@@ -436,11 +662,17 @@ def test_real_sources_serialize_without_errors():
     # products that had described their gating in prose gained a readable `source:` or
     # `core-gated:` key. The two model categories are untouched, which is what the pilot
     # counts are pinned to catch.
+    # `safeguards` disappears from this dict entirely: all 26 of its products are
+    # deferred, so it now contributes zero product_openness_evidence rows. Nine other
+    # categories drop too, by however many rows their own deferred products used to
+    # carry (1-3 rows per product) — a deferred product publishes no openness evidence
+    # at all now, so `openness_computed` never sees enough rows to score a product the
+    # repo declined to stand behind.
     assert per_category("product_openness_evidence") == {
         "base_pretrained": 111, "finetuned_chat": 172, "deployment": 131,
-        "agent_tools_protocols": 123, "dataset_processing_tools": 88, "evaluation_code": 95,
-        "finetuning_code": 132, "inference_code": 80, "ml_frameworks": 84,
-        "orchestration_agents": 178, "telemetry_observability": 102, "ui_api": 169,
+        "agent_tools_protocols": 108, "dataset_processing_tools": 86, "evaluation_code": 66,
+        "finetuning_code": 119, "inference_code": 47, "ml_frameworks": 80,
+        "orchestration_agents": 137, "telemetry_observability": 90, "ui_api": 127,
     }
     assert {r["grade"] for r in tables["product_openness_evidence"]} == {"document"}
 
@@ -454,10 +686,9 @@ def test_every_scored_product_carries_a_row_for_each_formula_dimension():
     from pathlib import Path
 
     from build.serialize_rubric import load_policy, load_routing
-    from build.validate import load_sources
 
     root = Path(__file__).resolve().parents[1]
-    tables, _, _ = build_rubric(load_sources(root), load_policy(root), load_routing(root))
+    tables, _, _ = build_rubric(_real_sources(root), load_policy(root), load_routing(root))
 
     by_product: dict[tuple[str, str], set[str]] = {}
     for row in tables["product_openness_evidence"]:
@@ -487,12 +718,12 @@ def test_license_is_emitted_under_the_name_the_warehouse_joins_on():
     """
     from pathlib import Path
 
-    from build.rubrics import resolve_recipe
+    from build.rubrics import resolve_recipe_variants
     from build.serialize_rubric import load_policy, load_routing
-    from build.validate import load_sources
 
     root = Path(__file__).resolve().parents[1]
-    tables, _, _ = build_rubric(load_sources(root), load_policy(root), load_routing(root))
+    sources = _real_sources(root)
+    tables, _, _ = build_rubric(sources, load_policy(root), load_routing(root))
 
     # Deferred products are excluded: a category has declared the rubric does not decide
     # them, and several are deferred precisely BECAUSE no licence is recorded. Asserting a
@@ -503,12 +734,17 @@ def test_license_is_emitted_under_the_name_the_warehouse_joins_on():
     # back. With no `otherwise` rule in the software ladder they currently fall out of the
     # scoring model's INNER JOIN rather than being scored wrongly, which is the safe
     # direction but a silent one. Bridging the list is tracked separately.
-    sources = load_sources(root)
+    #
+    # Deferrals are a property of the category's declaration, not of any one resolved
+    # ladder — `resolve_recipe_variants` only screens out a category whose `extends` is
+    # broken, matching `build/check_rubric.py`'s `check_category`.
     shared = sources.get("rubrics") or {}
     deferred = set()
     for slug, category in sources["categories"].items():
-        recipe, _ = resolve_recipe(category, shared)
-        for product in ((recipe or {}).get("deferred") or {}):
+        variants, _ = resolve_recipe_variants(category, shared)
+        if not variants:
+            continue
+        for product in ((category.get("scoring_recipe") or {}).get("deferred") or {}):
             deferred.add((product, slug))
 
     rows = tables["product_openness_evidence"]
@@ -528,10 +764,9 @@ def test_evidence_never_puts_two_values_on_one_grain():
     from pathlib import Path
 
     from build.serialize_rubric import load_policy, load_routing
-    from build.validate import load_sources
 
     root = Path(__file__).resolve().parents[1]
-    tables, _, _ = build_rubric(load_sources(root), load_policy(root), load_routing(root))
+    tables, _, _ = build_rubric(_real_sources(root), load_policy(root), load_routing(root))
 
     counts = Counter(
         (r["product_slug"], r["category_slug"], r["dimension"])
