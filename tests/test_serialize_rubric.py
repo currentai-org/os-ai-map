@@ -74,6 +74,34 @@ SHARED_RUBRICS_FIXTURE = {
 }
 
 
+# Dedicated to test_recipe_for_selects_the_matching_ladder_for_a_scored_product only.
+# Unlike SHARED_RUBRICS_FIXTURE, the two ladders here declare DISJOINT `weights` enums,
+# so scoring a product against the wrong ladder is visible: the recorded value falls
+# outside the other ladder's declared values and trips `in_declared_enum`.
+DISJOINT_WEIGHTS_RUBRICS_FIXTURE = {
+    "software": {
+        "openness": {
+            "dimensions": {"weights": {"question": "?", "values": ["closed-source", "source-available"]}},
+            "license_tier": {
+                "ordered_by": "restrictiveness_ascending",
+                "values": {"osi": {"examples": ["MIT"]}, "proprietary": {"definition": "no public license"}},
+            },
+            "formula": [{"otherwise": {"score": 3, "class": "open_weights"}}],
+        },
+    },
+    "model": {
+        "openness": {
+            "dimensions": {"weights": {"question": "?", "values": ["open", "closed"]}},
+            "license_tier": {
+                "ordered_by": "restrictiveness_ascending",
+                "values": {"osi": {"examples": ["MIT"]}, "proprietary": {"definition": "no public license"}},
+            },
+            "formula": [{"otherwise": {"score": 3, "class": "open_weights"}}],
+        },
+    },
+}
+
+
 def _sources(categories=None, scores=None, rubrics=None, product_types=None):
     return {
         "categories": categories or {},
@@ -453,9 +481,15 @@ def test_rubric_rows_carry_product_type():
 
 
 def test_recipe_for_selects_the_matching_ladder_for_a_scored_product():
-    """A scored product in a mixed-type category picks up the openness evidence
-    for its OWN type's ladder, not the other one — `weights` differs between the
-    two fixture ladders so a mismatch would be visible in the emitted value.
+    """A scored product in a mixed-type category is scored against its OWN type's
+    ladder, not the other one. `DISJOINT_WEIGHTS_RUBRICS_FIXTURE`'s two ladders
+    declare non-overlapping `weights` enums (model: open/closed; software:
+    closed-source/source-available), so picking the wrong ladder for a product
+    is visible: the recorded value falls outside the other ladder's declared
+    values, flipping `in_declared_enum` to False and firing a "not in the
+    rubric's declared values" warning. A `recipe_for` that ignored `product_type`
+    and always returned one ladder for both products would trip that check on
+    whichever product does not match the ladder it hard-coded.
     """
     sources = _sources(
         categories={
@@ -464,19 +498,22 @@ def test_recipe_for_selects_the_matching_ladder_for_a_scored_product():
         },
         scores={
             "m1": {"openness": {"components": "weights:open"}},
-            "s1": {"openness": {"components": "weights:closed"}},
+            "s1": {"openness": {"components": "weights:source-available"}},
         },
-        rubrics=SHARED_RUBRICS_FIXTURE,
+        rubrics=DISJOINT_WEIGHTS_RUBRICS_FIXTURE,
         product_types={"m1": "model", "s1": "software"},
     )
     tables, errors, warnings = build_rubric(sources, policy={}, routing={})
     assert errors == []
     assert not any("in 'mixed':" in w for w in warnings)
+    assert not any("not in the rubric's declared values" in w for w in warnings)
     evidence = {
-        (r["product_slug"], r["dimension"]): r["value"] for r in tables["product_openness_evidence"]
+        (r["product_slug"], r["dimension"]): r for r in tables["product_openness_evidence"]
     }
-    assert evidence[("m1", "weights")] == "open"
-    assert evidence[("s1", "weights")] == "closed"
+    assert evidence[("m1", "weights")]["value"] == "open"
+    assert evidence[("m1", "weights")]["in_declared_enum"] is True
+    assert evidence[("s1", "weights")]["value"] == "source-available"
+    assert evidence[("s1", "weights")]["in_declared_enum"] is True
 
 
 def test_recipe_miss_still_emits_score_sources_for_other_axes():
