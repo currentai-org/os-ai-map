@@ -49,9 +49,38 @@ RECIPE = {
 
 POLICY = {"admission": {"boilerplate_shows": ["verification source"], "require_nonempty_shows": True}}
 
+# Two shared ladders, minimal but structurally valid, for the product-type variant test.
+SHARED_RUBRICS_FIXTURE = {
+    "software": {
+        "openness": {
+            "dimensions": {"weights": {"question": "?", "values": ["open", "closed"]}},
+            "license_tier": {
+                "ordered_by": "restrictiveness_ascending",
+                "values": {"osi": {"examples": ["MIT"]}, "proprietary": {"definition": "no public license"}},
+            },
+            "formula": [{"otherwise": {"score": 3, "class": "open_weights"}}],
+        },
+    },
+    "model": {
+        "openness": {
+            "dimensions": {"weights": {"question": "?", "values": ["open", "closed"]}},
+            "license_tier": {
+                "ordered_by": "restrictiveness_ascending",
+                "values": {"osi": {"examples": ["MIT"]}, "proprietary": {"definition": "no public license"}},
+            },
+            "formula": [{"otherwise": {"score": 3, "class": "open_weights"}}],
+        },
+    },
+}
 
-def _sources(categories=None, scores=None):
-    return {"categories": categories or {}, "scores": scores or {}}
+
+def _sources(categories=None, scores=None, rubrics=None, product_types=None):
+    return {
+        "categories": categories or {},
+        "scores": scores or {},
+        "rubrics": rubrics or {},
+        "product_types": product_types or {},
+    }
 
 
 def test_split_value_separates_the_bare_value_from_its_detail():
@@ -389,6 +418,29 @@ def test_a_category_with_no_recipe_is_a_warning():
 def test_no_recipe_anywhere_is_an_error():
     _, errors, _ = build_rubric(_sources(categories={"other": {}}), POLICY, {})
     assert any("nothing to score with" in e for e in errors)
+
+
+def test_rubric_rows_carry_product_type():
+    """A uniform category's rows are stamped `*`; a mixed category's rows are
+    stamped with the product type of the ladder that produced them, and each
+    scored product picks up the row for its own type via `recipe_for`.
+    """
+    sources = _sources(
+        categories={
+            "uniform": {"name": "uniform", "products": ["p1"],
+                        "scoring_recipe": {"extends": "software"}},
+            "mixed": {"name": "mixed", "products": ["m1", "s1"],
+                      "scoring_recipe": {"extends": {"model": "model", "software": "software"}}},
+        },
+        rubrics=SHARED_RUBRICS_FIXTURE,
+        product_types={"p1": "software", "m1": "model", "s1": "software"},
+    )
+    tables, errors, _ = build_rubric(sources, policy={}, routing={})
+    assert errors == []
+    uniform_rows = [r for r in tables["category_scoring_rules"] if r["category_slug"] == "uniform"]
+    mixed_rows = [r for r in tables["category_scoring_rules"] if r["category_slug"] == "mixed"]
+    assert {r["product_type"] for r in uniform_rows} == {"*"}
+    assert {r["product_type"] for r in mixed_rows} == {"model", "software"}
 
 
 def test_every_declared_table_is_present():

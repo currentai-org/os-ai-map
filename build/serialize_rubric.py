@@ -70,6 +70,7 @@ from build.check_rubric import (
     resolve_dimension,
     split_components,
 )
+from build.rubrics import load_product_types, recipe_for, resolve_recipe_variants
 from build.serialize_registry import write_tables
 from build.validate import load_sources
 
@@ -84,11 +85,10 @@ AXES = ("openness", "adoption", "capability")
 # gets one lookup table instead of a lookup table plus a hardcoded special case.
 DEFINITIONAL_TIERS = {"proprietary": ("proprietary", "closed", "none")}
 
-from build.rubrics import resolve_recipe
-
 TABLES: dict[str, tuple[str, ...]] = {
     "category_scoring_rules": (
         "category_slug",
+        "product_type",
         "recipe_version",
         "rule_index",
         "is_otherwise",
@@ -99,6 +99,7 @@ TABLES: dict[str, tuple[str, ...]] = {
     ),
     "category_license_tiers": (
         "category_slug",
+        "product_type",
         "tier",
         "tier_rank",
         "example_license",
@@ -355,29 +356,44 @@ def build_rubric(sources: dict, policy: dict, routing: dict) -> tuple[dict[str, 
     if not tables["evidence_abstentions"]:
         warnings.append("signal_routing.yaml declares no route abstain_values")
 
+    # Slug -> declared `type`, threaded through `sources` rather than read here so
+    # `build_rubric` stays a pure function of its inputs (see `test_rubric_rows_carry_product_type`).
+    product_types: dict[str, str] = sources.get("product_types") or {}
+
     scored_categories = 0
     for slug, category in sorted(categories.items()):
-        recipe, recipe_errors = resolve_recipe(category, shared_rubrics)
+        variants, recipe_errors = resolve_recipe_variants(category, shared_rubrics)
         errors.extend(f"category '{slug}' {e}" for e in recipe_errors)
-        if not recipe:
+        if not variants:
             if not recipe_errors:
                 warnings.append(f"category '{slug}' declares no scoring_recipe")
             continue
         scored_categories += 1
 
-        rules, rule_errors = scoring_rules(slug, recipe)
-        tables["category_scoring_rules"].extend(rules)
-        errors.extend(rule_errors)
-        tier_rows, tier_errors = license_tiers(slug, recipe)
-        tables["category_license_tiers"].extend(tier_rows)
-        errors.extend(tier_errors)
+        for product_type, variant_recipe in sorted(variants.items()):
+            rules, rule_errors = scoring_rules(slug, variant_recipe)
+            for row in rules:
+                row["product_type"] = product_type
+            tables["category_scoring_rules"].extend(rules)
+            errors.extend(rule_errors)
 
-        declared = ((recipe.get("openness") or {}).get("dimensions")) or {}
+            tier_rows, tier_errors = license_tiers(slug, variant_recipe)
+            for row in tier_rows:
+                row["product_type"] = product_type
+            tables["category_license_tiers"].extend(tier_rows)
+            errors.extend(tier_errors)
 
         for product_slug in category.get("products") or []:
             record = scores.get(product_slug)
             if record is None:
                 continue
+            recipe, why = recipe_for(variants, product_types.get(product_slug, ""))
+            if recipe is None:
+                warnings.append(f"product '{product_slug}' in '{slug}': {why}")
+                continue
+
+            declared = ((recipe.get("openness") or {}).get("dimensions")) or {}
+
             openness = record.get("openness") or {}
             components = split_components(openness.get("components") or "")
             if not components:
@@ -541,6 +557,7 @@ def main() -> int:
     args = parser.parse_args()
 
     sources = load_sources(ROOT)
+    sources["product_types"] = load_product_types(ROOT)
     tables, errors, warnings = build_rubric(sources, load_policy(ROOT), load_routing(ROOT))
 
     for name in TABLES:
