@@ -416,11 +416,18 @@ def test_real_sources_serialize_without_errors():
             counts[row["category_slug"]] = counts.get(row["category_slug"], 0) + 1
         return counts
 
-    assert per_category("category_scoring_rules") == {"base_pretrained": 11, "finetuned_chat": 9}
+    # deployment is the first SOFTWARE recipe. Its 16 rules are more than the model
+    # categories' because its formula enumerates the license-tier / core_gated pairs
+    # explicitly rather than leaning on an `otherwise`, which it deliberately omits.
+    assert per_category("category_scoring_rules") == {
+        "base_pretrained": 11, "finetuned_chat": 9, "deployment": 16,
+    }
     # Both fell with the slug migration: release-level products collapsed into the
     # tier the vendor sells, so 25 products left the roster and the closed frontier
     # models moved from base_pretrained to finetuned_chat.
-    assert per_category("product_openness_evidence") == {"base_pretrained": 111, "finetuned_chat": 172}
+    assert per_category("product_openness_evidence") == {
+        "base_pretrained": 111, "finetuned_chat": 172, "deployment": 131,
+    }
     assert {r["grade"] for r in tables["product_openness_evidence"]} == {"document"}
 
 

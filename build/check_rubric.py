@@ -271,6 +271,28 @@ def check_category(slug: str, verbose: bool) -> tuple[int, int, list[str], list[
         got = apply_formula(recipe, facts)
         expected = (openness.get("score"), openness.get("class"))
 
+        # No rule matched and the recipe declares no `otherwise`, so it is telling us it
+        # does not decide this product. Abstain rather than score it.
+        #
+        # This is how a category opts out of guessing. The model recipes end in an
+        # `otherwise` and so can never reach here; the software recipes deliberately do
+        # not, because their discriminating evidence - whether the published source is the
+        # whole product - is recorded for only about two thirds of products, and the
+        # `otherwise` rule would quietly record the rest at whatever the last tier was.
+        #
+        # The facts go in the reason, so the two causes stay distinguishable: a blank
+        # value means nobody recorded that dimension, while a full set of values means the
+        # ladder itself has a gap. Abstentions print every run and are excluded from the
+        # reproduced count, so neither can go quiet.
+        if got is None:
+            shown = " ".join(f"{name}={facts[name]!r}" for name in declared)
+            deferred.append(
+                f"{product}: recipe does not decide it [{shown} tier={tier}] "
+                f"(recorded {openness.get('score')} {openness.get('class')})"
+            )
+            total -= 1
+            continue
+
         if got == expected:
             reproduced += 1
             if verbose:
