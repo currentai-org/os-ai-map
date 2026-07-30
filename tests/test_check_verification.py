@@ -226,13 +226,13 @@ def test_producible_pairs_reads_then_and_otherwise():
 
 
 def test_g3_passes_on_a_producible_pair():
-    assert g3_producible(_score(), CATEGORIES, RECIPES) == []
+    assert g3_producible(_score(), CATEGORIES, RECIPES, {}) == []
 
 
 def test_g3_fails_on_a_class_no_rule_pairs_with_that_score():
     """`4/open_source` in software: 4 exists and `open_source` exists, never together."""
     scores = _score(score=1, **{"class": "open_source"})
-    problems = g3_producible(scores, CATEGORIES, RECIPES)
+    problems = g3_producible(scores, CATEGORIES, RECIPES, {})
     assert any("1/open_source is not an outcome" in p for p in problems)
 
 
@@ -240,11 +240,11 @@ def test_g3_fails_on_a_score_no_rule_emits():
     """The software ladder's rungs are 1, 2, 4, 5. A software product scored 3 is impossible
     by construction, however plausible the class looks beside it."""
     scores = _score(score=3, **{"class": "open_source"})
-    assert any("3/open_source is not an outcome" in p for p in g3_producible(scores, CATEGORIES, RECIPES))
+    assert any("3/open_source is not an outcome" in p for p in g3_producible(scores, CATEGORIES, RECIPES, {}))
 
 
 def test_g3_ignores_an_unscored_product():
-    assert g3_producible(_score(score=None), CATEGORIES, RECIPES) == []
+    assert g3_producible(_score(score=None), CATEGORIES, RECIPES, {}) == []
 
 
 def test_g3_is_not_escapable_by_deferring_the_product():
@@ -254,7 +254,38 @@ def test_g3_is_not_escapable_by_deferring_the_product():
     categories = {"models": dict(CATEGORIES["models"])}
     recipes = {"models": {"*": dict(RECIPE, deferred={"m": {"because": "needs a human, at length"}})}}
     scores = _score(score=3, **{"class": "open_source"})
-    assert g3_producible(scores, categories, recipes)
+    assert g3_producible(scores, categories, recipes, {})
+
+
+def test_g3_checks_a_mixed_category_product_against_its_own_ladder_not_the_union():
+    """G1, `check_rubric` and `serialize_rubric` all select per product with `recipe_for`.
+    G3 used to test each recorded pair against the UNION of every variant in the
+    category instead, so a software product recording a pair only the model ladder can
+    emit would have passed - even though the software ladder, the one that actually
+    governs it, cannot produce that pair. That is exactly the class of failure this gate
+    exists to catch (see the module docstring's `4/open_source` story), so the union was
+    the one place the escape hatch stayed open.
+    """
+    model_recipe = {"openness": {"formula": [
+        {"when": {"weights": "open"}, "then": {"score": 3, "class": "open_weights"}},
+        {"otherwise": {"score": 1, "class": "closed"}},
+    ]}}
+    software_recipe = {"openness": {"formula": [
+        {"when": {"source": "public"}, "then": {"score": 5, "class": "open_source"}},
+        {"otherwise": {"score": 1, "class": "closed"}},
+    ]}}
+    categories = {"mixed": {"name": "mixed", "products": ["a-tool"]}}
+    recipes = {"mixed": {"model": model_recipe, "software": software_recipe}}
+    product_types = {"a-tool": "software"}
+    scores = {"a-tool": {"product": "a-tool", "openness": {"score": 3, "class": "open_weights"}}}
+
+    # The union of both ladders WOULD have admitted this pair (the model ladder emits
+    # it), which is why the old implementation passed it.
+    union_pairs = producible_pairs(model_recipe) | producible_pairs(software_recipe)
+    assert (3, "open_weights") in union_pairs
+
+    problems = g3_producible(scores, categories, recipes, product_types)
+    assert any("3/open_weights is not an outcome" in p for p in problems)
 
 
 # --- the repo itself ---
@@ -267,7 +298,7 @@ def test_the_repo_passes_all_three_gates():
     product_types = load_product_types(ROOT)
     assert g1_invariant(scores, categories, recipes, product_types) == []
     assert g2_digests(scores) == []
-    assert g3_producible(scores, categories, recipes) == []
+    assert g3_producible(scores, categories, recipes, product_types) == []
 
 
 @pytest.mark.parametrize("axis", ["openness", "adoption", "capability"])

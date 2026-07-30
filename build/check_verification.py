@@ -262,24 +262,26 @@ def producible_pairs(recipe: dict) -> set[tuple[int, str]]:
     return pairs
 
 
-def g3_producible(scores: dict, categories: dict, recipes: dict) -> list[str]:
+def g3_producible(
+    scores: dict, categories: dict, recipes: dict, product_types: dict[str, str]
+) -> list[str]:
     """A recorded (score, class) must be an outcome the category's ladder can produce.
 
-    A mixed category has one ladder per product type, so a pair is possible for the
-    category if ANY of its ladders can produce it — the union across variants.
+    A mixed category has one ladder per product type. Each product is checked against
+    its OWN ladder via `recipe_for` — the same selection G1, `check_rubric` and
+    `serialize_rubric` all use — not the union of every variant in the category. A
+    software product recording a pair only the model ladder can emit must still fail
+    here, even though some ladder in the category could have produced it.
     """
     problems: list[str] = []
     for slug, variants in sorted(recipes.items()):
-        pairs: set[tuple[int, str]] = set()
-        for recipe in variants.values():
-            pairs |= producible_pairs(recipe)
-        if not pairs:
-            continue
         for product in categories[slug].get("products") or []:
             openness = (scores.get(product) or {}).get("openness") or {}
             score, klass = openness.get("score"), openness.get("class")
             if score is None:
                 continue
+            recipe, _ = recipe_for(variants, product_types.get(product, ""))
+            pairs = producible_pairs(recipe or {})
             if (score, klass) not in pairs:
                 problems.append(
                     f"{product}:openness in {slug}: {score}/{klass} is not an outcome any rule "
@@ -307,7 +309,7 @@ def main() -> int:
     results = {
         "g1": g1_invariant(scores, categories, recipes, product_types),
         "g2": g2_digests(scores),
-        "g3": g3_producible(scores, categories, recipes),
+        "g3": g3_producible(scores, categories, recipes, product_types),
     }
     if args.gate:
         results = {args.gate: results[args.gate]}
