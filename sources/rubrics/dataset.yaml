@@ -1,0 +1,161 @@
+# Shared openness ladder for DATASET categories.
+#
+# Inherited via `scoring_recipe: {extends: dataset}`. See build/rubrics.py for the merge
+# rules and why the ladder is shared rather than copied per category.
+#
+# A corpus asks neither the software question nor the model question. There is no runtime to
+# self-host and no weights to download, so `source` and `core-gated` have nothing to bind to.
+# What decides a dataset's openness is whether you can get it, whether the license that
+# covers it covers all of it, and whether anything documents what is inside. Three
+# dimensions, in that order of weight.
+#
+# Verified against training_synthetic_datasets first, 30/38. That category records the
+# cleanest evidence in the map - 38 of 38 name a license and almost every value is a
+# controlled token - which is why the ladder was derived from it rather than from
+# benchmark_eval_data. Each inheriting category records its own `derived_from` counts.
+openness:
+  dimensions:
+    gate:
+      question: Is download gated - terms to accept, contact details to hand over, or an
+        approval to wait for?
+      # Three keys and two polarities record one fact. `gated: false`, `ungated: yes` and
+      # `access: ungated` are the same statement three ways, and `reads:` cannot reconcile
+      # them because it selects a key and takes its value: it has no way to invert one.
+      #
+      # The ladder does not need it to. Every way of saying "there is a gate" is a distinct
+      # positive token, so the rules test only those, and all three spellings of "no gate"
+      # fall through to the license rungs below. They are declared here anyway, because they
+      # ARE the recorded vocabulary and a reader of this file should see what the data says
+      # rather than what it ought to say.
+      #
+      # `'yes'` and `'false'` are quoted deliberately. YAML 1.1 parses both bare, and a
+      # `values:` list holding [True, False] stops matching the strings the formula sees.
+      reads: [access, gated, ungated]
+      values: [ungated, 'yes', 'false', auto, manual, terms-acceptance,
+        terms-acceptance+contact-info]
+      evidence:
+      - '`manual`: a maintainer approves each request, so access depends on a human'
+      - '`auto`: the gate grants automatically but still takes contact details - `culturax`
+        is the case, auto-approved against a contact-info agreement'
+      - '`terms-acceptance`: a click-through license gate, no contact details'
+      - '`terms-acceptance+contact-info`: both, which is `the-stack-v2`'
+      - '`ungated`, `yes` and `false`: three recordings of an open download'
+      machine_signal: full - signal_huggingface.hub_state carries the gate state directly,
+        and it is the only dimension on this ladder a fetcher can settle without a human
+    documentation:
+      question: Is there a dataset card describing provenance, composition and limits?
+      # `present` and `yes` are one value with two spellings, under two keys. Unlike the
+      # gate above the polarity is consistent, so `reads:` handles the keys and both
+      # spellings are declared - but the drift does reach the formula, which carries the
+      # top rung twice, once per spelling. That is the honest cost of not rewriting 5
+      # score files to agree with the other 25, and it is the first thing a components
+      # normalization on this category would remove.
+      #
+      # The top rung tests this dimension rather than resting on gate and license alone,
+      # which is deliberate. The gate rungs fire on POSITIVE gate evidence, so a product
+      # recording no gate key at all is not thereby ungated - it is unrecorded. Requiring a
+      # card at the top rung is what stops "no evidence" from resolving as "nothing wrong".
+      reads: [dataset_card, card]
+      values: [present, 'yes', partial, legacy-repo-only]
+      evidence:
+      - '`partial`: a card exists but does not describe the release being scored -
+        `flan-collection` documents the recipe, not the conversion people actually download'
+      - '`legacy-repo-only`: the card lives on a superseded repo whose loader or mirrors are
+        dead, which is `the-pile`'
+      machine_signal: partial - the Hub API establishes that a card file exists, never that
+        it describes provenance
+
+  # Declaration order IS restrictiveness order, least restrictive first, and `tier_rank` is
+  # emitted from it.
+  license_tier:
+    reads: [license]
+    ordered_by: restrictiveness_ascending
+    values:
+      open_data:
+        definition: >-
+          One license, covering the whole release, permitting redistribution and reuse.
+          Attribution and share-alike obligations belong here: they bind whoever
+          redistributes without capping who may use the corpus, which is the line this
+          ladder draws, exactly as the software ladder puts AGPL beside Apache.
+        # Spelling and case variants are listed literally rather than normalized, following
+        # software.yaml: whether ODC-BY permits redistribution is a fact, and a fact is
+        # cheaper to look up than a regex is to get right.
+        #
+        # `permissive` and `open` are NOT license names. They are a curator's conclusion
+        # recorded where the license goes, and they are listed because they are what four
+        # products actually record. Replacing them with the licenses they stand for is a
+        # curation fix, not a rubric one.
+        examples: [ODC-BY, odc-by, ODC-BY-1.0, CC-BY-4.0, cc0-1.0, Apache-2.0, apache-2.0,
+          MIT, mit, permissive, open, NVIDIA-Open-Data, CommonCrawl-ToU+Apache-2.0]
+      noncommercial:
+        definition: >-
+          Permits redistribution but forbids commercial use. Deliberately carries NO rung in
+          the formula below, which is the one place this ladder declines to decide: the same
+          license family resolves to `use_restricted` in model.yaml and caps a model at
+          2/restricted, while `personahub` is recorded 5/open here on the reasoning that a
+          corpus's openness question is redistributability and non-commercial terms still
+          permit it. Both readings are defensible and they cannot both be right across the
+          map. Until one is chosen, a product landing here abstains and says so, rather than
+          having whichever answer the ladder happened to encode published on its behalf.
+          Issue #117 settled the analogous question for OpenRAIL on models.
+        examples: [cc-by-nc-sa-4.0]
+      deferred_to_components:
+        definition: >-
+          The card grants no license of its own and defers to the terms of whatever the
+          corpus was assembled from. Below the noncommercial tier because a bounded
+          restriction you can read is a smaller problem than an unbounded one you have to
+          audit per subset, and above `unstated` because at least the obligation is
+          locatable.
+        examples: [mixed-per-subset, inherits-the-stack-v2, follows mC4 + OSCAR-2301 terms]
+      unstated:
+        definition: >-
+          No license recorded on the card at all. The most restrictive tier, because absent
+          a grant there is no permission to rely on, however freely the files download.
+        examples: [not-clearly-stated-on-card]
+
+  # Ordered, first match wins. There is deliberately NO `otherwise`. Two thirds of the
+  # gate-positive vocabulary and the whole `noncommercial` tier are cases where the ladder
+  # either has a rule or should abstain, and an `otherwise` would publish 5/open for a
+  # dataset whose license nobody recorded.
+  formula:
+  # A gate comes first and outranks everything below it. A permissively licensed corpus you
+  # cannot download without a maintainer's approval is not more open than one you can,
+  # whatever the license says, so no license tier can lift a gated product past 3.
+  - when: {gate: manual}
+    then: {score: 3, class: gated}
+    because: A maintainer approves each request, so access depends on someone answering.
+  - when: {gate: auto}
+    then: {score: 3, class: gated}
+    because: >-
+      The gate grants automatically, but it still collects contact details before it does.
+      Scored beside manual approval because the barrier is the disclosure, not the wait.
+  - when: {gate: terms-acceptance}
+    then: {score: 3, class: gated}
+    because: A click-through license gate. Downloadable, not freely downloadable.
+  - when: {gate: terms-acceptance+contact-info}
+    then: {score: 3, class: gated}
+    because: Both barriers at once, which is the most gated shape the category records.
+  # Ungated from here down, so the license is what decides.
+  - when: {license_tier: deferred_to_components, documentation: legacy-repo-only}
+    then: {score: 3, class: open}
+    because: >-
+      No license of its own AND no live card. `the-pile` is the case: per-subset terms, a
+      superseded repo, and Books3 withdrawn from circulation. Open in the sense that it
+      downloads, and in no other sense.
+  - when: {license_tier: deferred_to_components, documentation: present}
+    then: {score: 4, class: open}
+    because: >-
+      A documented, ungated release whose license points somewhere else. Not 5, because
+      establishing what you may do with it means reading another corpus's terms - and for
+      `stack-edu` those terms are The Stack v2's, which is itself gated.
+  - when: {license_tier: open_data, documentation: partial}
+    then: {score: 4, class: open}
+    because: >-
+      A clean license and an ungated download, but the card does not describe the artifact
+      people actually use. `flan-collection` documents the Apache-2.0 recipe while the
+      widely used conversion is documented by whoever converted it.
+  - when: {license_tier: open_data, documentation: present}
+    then: {score: 5, class: open}
+    because: One license covering the release, an open download, and a card. Nothing withheld.
+  - when: {license_tier: open_data, documentation: 'yes'}
+    then: {score: 5, class: open}
