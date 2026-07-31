@@ -677,7 +677,10 @@ def test_real_sources_serialize_without_errors():
     # at all now, so `openness_computed` never sees enough rows to score a product the
     # repo declined to stand behind.
     assert per_category("product_openness_evidence") == {
-        "base_pretrained": 111, "finetuned_chat": 172, "deployment": 131,
+        # finetuned_chat rose by 1 when `recipe` joined `code`'s `reads` list: `ornith`
+        # recorded only `recipe:closed`, so its `code` dimension had been reading as
+        # unrecorded and published no evidence row. check_recipe found it.
+        "base_pretrained": 111, "finetuned_chat": 173, "deployment": 131,
         "agent_tools_protocols": 108, "dataset_processing_tools": 86, "evaluation_code": 66,
         "finetuning_code": 119, "inference_code": 47, "ml_frameworks": 80,
         "orchestration_agents": 137, "telemetry_observability": 90, "ui_api": 127,

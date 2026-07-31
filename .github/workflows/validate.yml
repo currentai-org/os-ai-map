@@ -25,6 +25,14 @@ jobs:
       # product in a category with a recipe. See docs/guides/verification.md.
       - name: Verification gates (G1 invariant, G2 digests, G3 producible pairs)
         run: uv run python -m build.check_verification --verbose
+
+      # Structure of every scoring recipe: a rationale on each rung, a machine_signal on
+      # each dimension, no rule that cannot fire, no product abstained on without a
+      # declared reason, and no evidence the components parser silently discards. Note
+      # check_rubric is not in CI at all; this is what puts the class of check on every PR.
+      # See skills/build-rubric/SKILL.md.
+      - name: Recipe gate (structure, deferral completeness, discarded evidence)
+        run: uv run python -m build.check_recipe --verbose
       - name: Serialize dry-run
         run: uv run python -m build.serialize --date ci-dry-run
 
