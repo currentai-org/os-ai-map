@@ -164,7 +164,7 @@ def test_real_sources_serialize_without_structural_errors():
     assert len(tables["products"]) == len(tables["product_organizations"])
 
 
-def test_arxiv_ids_normalise_from_every_form():
+def test_arxiv_ids_normalize_from_every_form():
     """URL, bare id, arxiv: prefix and version suffix all reduce to the bare id,
     so the DOI is derivable as 10.48550/arXiv.<id> without further parsing."""
     assert artifact_id("arxiv", "https://arxiv.org/abs/2110.14168") == "2110.14168"

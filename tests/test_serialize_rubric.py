@@ -710,7 +710,7 @@ def test_license_is_emitted_under_the_name_the_warehouse_joins_on():
     """`license_tier.reads` lets a category accept the license under another key.
 
     deepseek-coder records `model-license`, because its card separates the code license
-    from the one on the weights. check_rubric honours that list, but the serializer used
+    from the one on the weights. check_rubric honors that list, but the serializer used
     to emit the row under its raw key, so the SQL - which looks only for
     `dimension = 'license'` - found nothing and the product abstained in the warehouse
     while reproducing locally. Exactly one license row per scored product, under
@@ -726,8 +726,8 @@ def test_license_is_emitted_under_the_name_the_warehouse_joins_on():
     tables, _, _ = build_rubric(sources, load_policy(root), load_routing(root))
 
     # Deferred products are excluded: a category has declared the rubric does not decide
-    # them, and several are deferred precisely BECAUSE no licence is recorded. Asserting a
-    # licence row for those would be asserting evidence we have said we do not have.
+    # them, and several are deferred precisely BECAUSE no license is recorded. Asserting a
+    # license row for those would be asserting evidence we have said we do not have.
     #
     # Note the asymmetry this leaves. `deferred` lives only in the repo - there is no
     # category_deferrals table - so the warehouse does not know these products are held

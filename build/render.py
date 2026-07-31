@@ -160,14 +160,14 @@ def style():
         # Openness: a single-hue salmon ramp, deepest = most open, fading to a
         # pale (but still legible) tint for closed. Monotonic lightness, so it
         # reads as one ordered scale; brand salmon sits mid-ramp and open
-        # products carry the most colour.
+        # products carry the most color.
         "healthy": "#e86f57",   # open        — deep salmon
         "warm": "#f4886f",      # open-ish    — salmon (brand-adjacent)
         "signal": "#f8ad99",    # restricted  — light coral
         "closed": "#f6cabd",    # closed      — pale coral
         "null": "#dcdcda",      # no score    — neutral grey (off the ramp)
         # Structure + the two magnitude axes — a quiet cool pair so the openness
-        # column is where colour lives.
+        # column is where color lives.
         "accent": "#0b252f",    # navy — eyebrows, rules, active controls
         "adopt": "#8aa6ac",     # adoption bar   — light slate
         "capab": "#3f5d68",     # capability bar — dark slate
@@ -684,9 +684,9 @@ def helpers(C, DATA, F, OPEN, STRAPLINES, VERDICT, mix_counts, mo, vbucket,
         # Openness verdict pill, then the open / open-ish / closed dot tally.
         _code, _basis = verdict_for(cid)
         _vlabel, _ = VERDICT[_code]
-        # The verdict is a categorical call, not an ordinal one, so colour-coding it
+        # The verdict is a categorical call, not an ordinal one, so color-coding it
         # fought the openness ramp (open-ish vs closed read alike, and competitive /
-        # no-standout fall off the ramp). Keep it a neutral tag; the colour story
+        # no-standout fall off the ramp). Keep it a neutral tag; the color story
         # lives in the open / open-ish / closed chips beside it.
         _verdict = (
             f'<span style="display:inline-block; font-family:{F["mono"]}; font-size:0.72rem; '
@@ -1026,7 +1026,7 @@ def methodology(C, F, mo):
     # Full methodology prose is authored in docs/methodology.md (## Detail),
     # converted from Markdown to HTML at build time and injected as __METHOD_HTML__
     # (numbers already substituted). The scoped <style> below carries the house
-    # fonts/colours onto the generated HTML, so the source stays plain Markdown.
+    # fonts/colors onto the generated HTML, so the source stays plain Markdown.
     # This <style> also styles the header summary (.v3-sum) links.
     _style = (
         "<style>"

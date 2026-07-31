@@ -288,9 +288,9 @@ Everything above (typography, neutrals, surfaces, sharp corners, the navy
 structural accent, the single-salmon brand highlight) is applied as written —
 that is what carries the "looks like the site" resemblance.
 
-The one place we adapted is **data colour**. The site encodes openness through
+The one place we adapted is **data color**. The site encodes openness through
 *shape* (square vs triangle) and uses salmon as a sparing editorial accent. The
-notebooks are dense data instruments: they colour-encode an ordinal 0–5 openness
+notebooks are dense data instruments: they color-encode an ordinal 0–5 openness
 scale, three independent axes, a 4-way distribution, and verdict states. Mapping
 those onto the site's two data hues 1:1 collapsed distinct values (open read the
 same as restricted) and produced low-contrast / heavy-black bars. Per this
@@ -300,7 +300,7 @@ reviewed changes (signed off by Carl; worth confirming with the CF design team):
 **Openness → a single-hue salmon *sequential* ramp** (deepest = most open,
 fading to a pale-but-legible coral for closed). One ordered intensity scale, so
 open vs restricted are unambiguous and "warmth = openness" — open products carry
-the most colour, matching how the site uses salmon as the highlight.
+the most color, matching how the site uses salmon as the highlight.
 
 | Openness | Hex |
 |----------|-----|
@@ -311,12 +311,12 @@ the most colour, matching how the site uses salmon as the highlight.
 | No score | `#dcdcda` |
 
 **Adoption & capability → a quiet cool slate pair**, so the openness column is
-the only place colour lives: adoption `#8aa6ac` (light slate), capability
+the only place color lives: adoption `#8aa6ac` (light slate), capability
 `#3f5d68` (dark slate).
 
 **Verdict pills → one neutral tag** (`#f2f1f1` fill, navy text) for all five
-states. The verdict is categorical, not ordinal, so colour-coding it on the
-salmon ramp made "open-ish leads" and "closed leads" look alike; the colour
+states. The verdict is categorical, not ordinal, so color-coding it on the
+salmon ramp made "open-ish leads" and "closed leads" look alike; the color
 story already lives in the open / open-ish / closed chips beside it.
 
 **Header eyebrow** trimmed from `Current AI · Open Source AI Map · v3` to just
