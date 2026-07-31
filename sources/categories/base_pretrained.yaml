@@ -119,20 +119,44 @@ scoring_recipe:
     formula:
     - when: {weights: closed}
       then: {score: 1, class: closed}
+      because: >-
+        No downloadable weights, so there is no artifact for the license or the corpus to be
+        open about. Checked ahead of every license rung: an OSI license on a model nobody can
+        run is not worth a point.
     - when: {license_tier: proprietary}
       then: {score: 1, class: closed}
+      because: >-
+        No public license means no permission to rely on, whatever else was published.
     - when: {license_tier: use_restricted}
       then: {score: 2, class: restricted}
-      note: Open weights behind a use cap. Downloadable is not the same as usable.
+      because: >-
+        Open weights behind a use cap. Downloadable is not the same as usable, and this rung
+        sits ahead of the data and code rungs deliberately: publishing the pretraining corpus
+        does not buy back the right to use the model.
     - when: {data: open, code: open, license_tier: osi}
       then: {score: 5, class: open_source}
+      because: >-
+        The pretraining corpus, the code that consumed it, and an OSI license over the
+        weights. Pythia and the OLMo family are what this rung was written for.
     - when: {data: open, code: open}
       then: {score: 4, class: open_weights}
-      note: Full pipeline but a non-OSI license caps the score at 4.
+      because: >-
+        Full pipeline but a non-OSI license caps the score at 4. MOF would call this
+        source-available rather than open, so it must not reach the `open` bucket; see
+        docs/guides/openness-spectrum.md.
     - when: {data: documented-not-released, code: open}
       then: {score: 4, class: open_weights}
+      because: >-
+        A corpus described in enough detail to audit the mixture, and the code to rebuild
+        against it, but the corpus itself withheld. Level with a non-OSI full release rather
+        than below it, because a reader can check the claims either way. `finetuned_chat`
+        deliberately omits this rung - no tune there pairs a described mixture with an open
+        pipeline, and a rule that cannot fire is a place for a later edit to hide.
     - otherwise: {score: 3, class: open_weights}
-      note: The category's center of gravity — open weights, closed data.
+      because: >-
+        The category's center of gravity - open weights, closed data. A fallthrough rather
+        than a rule because it is what remains once the cases above are spent, and it lands
+        in the open-ish bucket so unrecorded evidence never counts as open.
 
   adoption:
     # Signal choice follows openness: a closed model has no artifact to measure,

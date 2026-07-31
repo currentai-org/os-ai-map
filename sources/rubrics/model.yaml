@@ -43,6 +43,13 @@ openness:
         vocabulary is issue #106.
     code:
       question: Is the fine-tuning pipeline released, not just inference code?
+      # `recipe` is how two products spell this, and it is the more natural word for a
+      # post-training pipeline. `code` stays first: `tulu` records both, and where a product
+      # answers under either key the more widely used one wins. Found by check_recipe --
+      # `ornith` recorded only `recipe:closed`, so the ladder read `code` as unrecorded and
+      # reproduced its 3/open_weights through the `otherwise` rather than through the
+      # evidence. Same score, and now for the right reason.
+      reads: [code, recipe]
       values: [open, partial, closed]
       evidence:
       - '`open`: the post-training recipe - SFT/DPO/RL configs and scripts'
@@ -120,15 +127,34 @@ openness:
   formula:
   - when: {weights: closed}
     then: {score: 1, class: closed}
+    because: >-
+      No downloadable weights, so there is no artifact for the license or the recipe to be
+      open about. Checked first, ahead of every license rung, because an OSI license on a
+      model nobody can run is not worth a point.
   - when: {license_tier: proprietary}
     then: {score: 1, class: closed}
+    because: >-
+      No public license means no permission to rely on, whatever else was published. Scored
+      beside closed weights rather than above them.
   - when: {license_tier: use_restricted}
     then: {score: 2, class: restricted}
-    note: Open weights behind a use cap. Downloadable is not the same as usable.
+    because: >-
+      Open weights behind a use cap. Downloadable is not the same as usable, and this rung
+      sits ahead of the data and code rungs on purpose: a full open recipe does not buy back
+      the right to use the result.
   - when: {data: open, code: open, license_tier: osi}
     then: {score: 5, class: open_source}
+    because: >-
+      The whole tune is reproducible and the license permits it - post-training mixture, the
+      pipeline that consumed it, and an OSI license over the weights.
   - when: {data: open, code: open}
     then: {score: 4, class: open_weights}
-    note: Full recipe but a non-OSI license caps the score at 4.
+    because: >-
+      Full recipe but a non-OSI license caps the score at 4. The Model Openness Framework
+      would call this source-available rather than open, so it must not reach the `open`
+      bucket; see docs/guides/openness-spectrum.md.
   - otherwise: {score: 3, class: open_weights}
-    note: The category's center of gravity - open weights, closed recipe.
+    because: >-
+      The category's center of gravity - open weights, closed recipe. A fallthrough rather
+      than a rule because it is what remains once the cases above are spent, and it lands in
+      the open-ish bucket so unrecorded evidence never counts as open.
