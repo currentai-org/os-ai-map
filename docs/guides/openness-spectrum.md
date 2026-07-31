@@ -115,6 +115,71 @@ retail-available = `open_toolchain`; datasheets public but proprietary design / 
 - **open-ish** = `open_weights` / `source_available` / `gated` / `open_toolchain`
 - **closed** = `restricted` / `documented_only` / `closed` / `documented`
 
+## How the buckets relate to MOF and OSAID
+
+The Model Openness Framework and the OSI's Open Source AI Definition are both **binary**.
+MOF says so directly: openness "has always been a binary decision in the open-source
+movement", and it warns the reader not to read its Class I/II/III as a gradient — those
+classes measure how *complete* a release is, once it has already passed the license test.
+OSAID requires the freedom to use a system "for any purpose", so a field-of-use or commercial
+restriction disqualifies. Under MOF, a release under OpenRAIL, a Llama community license or
+AI2 ImpACT is *source-available*, not open.
+
+This map is a 0–5 score, which is a different instrument. The 2024 Columbia Convening
+catalogues three families of approach — gradient, score, and binary — and adopts none; the
+score family is the one the map belongs to.
+
+The two stay compatible through one rule:
+
+> **The `open` bucket requires a license that is open by an external standard** — OSI
+> approval for code and weights, the Open Definition for data. The score may subdivide the
+> region below that line as finely as it likes, and nothing below it enters the `open`
+> bucket.
+
+So MOF's binary line sits between the `open` bucket and the `open-ish` bucket, exactly where
+MOF puts it, and our 4/3/2/1 subdivide what MOF treats as one undifferentiated
+"source-available" bucket. `render.py` calls this the "strict OSI/MOF cut".
+`tests/test_openness_buckets.py` enforces it against every ladder, and it is a live check
+rather than a comment: `software.yaml` carried two rungs emitting `open_core` and
+`open_source` from its `permissive_non_osi` tier, and they went unnoticed because that tier's
+`examples` list is empty so the rungs could never fire.
+
+### Two places the map deliberately departs from MOF
+
+Both are choices, not oversights, and neither moves the binary line.
+
+- **We are stricter than MOF Class III.** Class III is MOF's entry point and needs
+  architecture, final weights, and light documentation including a *data card* — not the
+  data. So an Apache-2.0 open-weights model with a good card and closed training data is
+  fully open under MOF and scores **3/`open_weights`** here. Do not read our 5 as Class I or
+  our 3 as failing MOF. We are tighter than Class III on training data and looser than
+  Class I, which additionally wants the research paper, intermediate checkpoints and
+  training logs — none of which we score.
+- **We rank acceptable-use policies above commercial caps; MOF ranks neither.** MOF excludes
+  a release that implements "restrictions or acceptable uses" outright. We put an
+  attribution-or-conduct license at 4 and a 700M-MAU commercial cap at 3, on the reasoning
+  settled in issue #117: a prohibition on illegal or military use caps neither commerce nor
+  reach, and collapsing it into the same bucket as a revenue ceiling discards information the
+  map exists to surface. Both still sit below the `open` bucket, so the outcome agrees with
+  MOF even where the reasoning does not.
+
+### Where the boundary is currently weakest
+
+The **dataset** vocabulary has no middle. Its classes are `open`, `gated`, `documented_only`
+and `closed`, and `open` is the only word above `gated`, so every corpus scored 3 or higher
+lands in the `open` bucket — 52 products today, including one at 3 and six at 4. A model at 4
+is `open_weights` and open-ish; a corpus at 4 is `open`. `the-pile` (license deferring to
+per-subset terms, Books3 withdrawn) and `stack-edu` (deferring to The Stack v2's gated terms)
+are counted as open on that basis. Closing it means giving the vocabulary a middle class and
+re-scoring, so the two rungs involved sit in `KNOWN_VIOLATIONS` in the bucket test with the
+reasoning attached, and the test fails if that list stops being accurate in either direction.
+
+**Hardware has no license gate at all.** `hardware.yaml` scores design, toolchain and
+availability rather than a source license, by design, and `open_hardware` sits at 5 in the
+`open` bucket. The analogue that keeps the rule honest is OSHWA certification plus design
+files under a license permitting reuse, which is what `beagley-ai` has. That analogue should
+be written into the ladder when `edge_hardware` gets a recipe rather than left implicit.
+
 ## Caveats — these are editorial choices
 
 The mapping is the analysts' judgment, not a law of nature. Two things to know before you
