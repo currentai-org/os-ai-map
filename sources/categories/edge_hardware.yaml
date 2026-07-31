@@ -30,9 +30,17 @@ products:
 - sipeed-maixcam
 comments: 'Physical AI hardware (issue #24): SBCs, system-on-modules, accelerator modules,
   and chipsets used to run inference at the edge. Hardware openness vocabulary, scored on
-  design + toolchain + availability rather than source license: open_hardware (open
-  schematics + open toolchain, no blobs) = 5; open_toolchain (proprietary silicon, open
-  SDK/datasheets, globally purchasable) = 4; documented (datasheets public + buyable, but
-  closed/limited SDK or firmware blobs) = 3; restricted (NDA/design-win/private-sale only) =
-  1. Adoption = retail availability + community; capability = TOPS / RAM / runnable model
-  size.'
+  design + toolchain + availability rather than source license: open_hardware (board design
+  files published under a license permitting reuse + open toolchain) = 5; open_toolchain
+  (schematics readable but not reusable, open SDK/datasheets, globally purchasable) = 4;
+  documented (datasheets public + buyable, but no design files of its own, or a closed or
+  registration-gated SDK) = 3; restricted (NDA/design-win/private-sale only) = 1. Adoption =
+  retail availability + community; capability = TOPS / RAM / runnable model size.
+
+  Level 5 previously read "open schematics + open toolchain, no blobs". The no-blobs
+  condition is dropped because it is unreachable: every part in this category runs on a
+  proprietary SoC needing firmware blobs, beagley-ai included, and beagley-ai is the only
+  product scored 5. What separates it from the 4s is that its design files carry a license
+  permitting reuse (CC-BY/CC-BY-SA, OSHWA-certified US002616) where radxa-rock-5b, for one,
+  publishes PDFs and explicitly withholds editable PCB source. Blobs remain a documented
+  caveat on every product rather than a discriminator between any two.'
