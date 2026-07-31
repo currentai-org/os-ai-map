@@ -9,6 +9,81 @@ weights:
   adopt: 0.5
   cap: 0.5
 disclosure_gap: true
+scoring_recipe:
+  version: 1
+  derived_from:
+    method: reverse-engineered from hand-authored scores, then verified
+    scores_reproduced: 30
+    scores_total: 38
+    scores_deferred: 8
+    verified_on: '2026-07-31'
+    checker: build/check_rubric.py
+  note: >-
+    First DATASET category, and the source the shared ladder was derived from. Chosen over
+    benchmark_eval_data because its recorded evidence is the cleanest in the map: 38 of 38
+    name a license and almost every value is a controlled token rather than a sentence. Eight
+    products are deferred below and none of the eight is deferred for being awkward - five
+    record their evidence in clauses the components parser discards, one is the only
+    non-commercial license on the ladder, one records no license at all, and one hides the
+    fact that decides it inside a parenthetical.
+
+  extends: dataset
+  deferred:
+    smoltalk:
+      because: >-
+        The ladder computes 5/open and the score says 4/open. The 4 rests on
+        `license:apache-2.0(new-subsets)+per-component` - newly created subsets are
+        Apache-2.0 while incorporated datasets keep their own terms - but `head()` splits the
+        license value at the first parenthesis, so the ladder reads a clean `apache-2.0` and
+        the qualifier that justifies the 4 never reaches it. Either the per-component scope
+        belongs in a key of its own or the score is a level high; it needs a human.
+    personahub:
+      because: >-
+        `cc-by-nc-sa-4.0` resolves to the `noncommercial` tier, which carries no rung on
+        purpose. model.yaml puts the same license family in `use_restricted` and caps a model
+        at 2/restricted; this is recorded 5/open on the reasoning that a corpus's openness
+        question is redistributability, which non-commercial terms still permit. Both readings
+        are defensible and the map cannot hold both. Deferred until the question is settled
+        the way issue #117 settled OpenRAIL for models.
+    openhermes-2-5:
+      because: >-
+        License `not-clearly-stated-on-card` resolves to the `unstated` tier, which carries no
+        rung: absent a grant there is no permission to rely on, however freely the files
+        download. Recorded 5/open with the note conceding no explicit license string exists.
+        Either the license is findable, in which case record it, or a 5 is not supportable.
+    cosmopedia:
+      because: >-
+        Records `ungated` and `dataset card present` as clauses with no key, which
+        split_components discards, so neither the gate nor the documentation dimension has a
+        value and no rung can fire. The evidence is present and correct; only the keys are
+        missing. Fixed by recording `gated:false;dataset_card:present`.
+    openthoughts-114k:
+      because: >-
+        Records `ungated` and `dataset card present` as clauses with no key, which
+        split_components discards, so neither the gate nor the documentation dimension has a
+        value and no rung can fire. The evidence is present and correct; only the keys are
+        missing. Fixed by recording `gated:false;dataset_card:present`.
+    synth:
+      because: >-
+        Records `ungated` and `dataset card present` as clauses with no key, which
+        split_components discards, so neither the gate nor the documentation dimension has a
+        value and no rung can fire. The evidence is present and correct; only the keys are
+        missing. Fixed by recording `gated:false;dataset_card:present`.
+    tulu-3-sft-mixture:
+      because: >-
+        Records `ungated` and `dataset card present` as clauses with no key, which
+        split_components discards, so neither the gate nor the documentation dimension has a
+        value and no rung can fire. The evidence is present and correct; only the keys are
+        missing. Fixed by recording `gated:false;dataset_card:present`. Note the recorded
+        license carries `(mixed subset licenses incl CC-BY-NC)`, so once the keys are fixed
+        this product raises the same question `personahub` is deferred for.
+    wildchat-1m:
+      because: >-
+        Records `dataset card present` as a clause with no key, so the documentation dimension
+        has no value. Separately its gate reads `false per HF API`, whose `head()` is the whole
+        phrase rather than `false`, so the value sits outside the declared enum too. Both are
+        recording defects rather than missing research: `gated:false;dataset_card:present`
+        settles it.
 products:
 - fineweb
 - fineweb-edu
