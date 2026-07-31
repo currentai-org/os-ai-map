@@ -643,10 +643,14 @@ def test_real_sources_serialize_without_errors():
         return counts
 
     # Ten software categories inherit ONE ladder from sources/rubrics/software.yaml, so
-    # they all serialize the same 16 rules. Identical counts are the point: a category
-    # showing a different number means it stopped inheriting. The software rules outnumber
-    # the model categories' because the formula enumerates its license-tier / core_gated
-    # pairs explicitly instead of leaning on an `otherwise`, which it deliberately omits.
+    # they all serialize the same 10 rules. Identical counts are the point: a category
+    # showing a different number means it stopped inheriting.
+    #
+    # Was 16 until the two `permissive_non_osi` rungs came out. Both were unreachable - the
+    # tier's `examples` list is empty - and both emitted an open-bucket class from a non-OSI
+    # license, which is the boundary tests/test_openness_buckets.py now enforces. Removing
+    # them costs 6 rows per software category and 6 from `safeguards`, whose software half
+    # inherits the same ladder (25 -> 19 = 10 software + 9 model).
     SOFTWARE = ["agent_tools_protocols", "dataset_processing_tools", "deployment",
                 "evaluation_code", "finetuning_code", "inference_code", "ml_frameworks",
                 "orchestration_agents", "telemetry_observability", "ui_api"]
@@ -654,8 +658,8 @@ def test_real_sources_serialize_without_errors():
     # sources/rubrics/dataset.yaml. Its 14 rows are 4 single-condition gate rungs plus 5
     # rungs pairing a license tier with a documentation state.
     assert per_category("category_scoring_rules") == {
-        "base_pretrained": 11, "finetuned_chat": 9, "safeguards": 25,
-        "training_synthetic_datasets": 14, **{c: 16 for c in SOFTWARE},
+        "base_pretrained": 11, "finetuned_chat": 9, "safeguards": 19,
+        "training_synthetic_datasets": 14, **{c: 10 for c in SOFTWARE},
     }
     # Both fell with the slug migration: release-level products collapsed into the
     # tier the vendor sells, so 25 products left the roster and the closed frontier

@@ -114,12 +114,25 @@ openness:
       An OSI core with functionality withheld for a paid tier. Not 5, because the
       published source is not the whole product; not 3, because what ships is genuinely
       open and self-hostable.
-  - when: {license_tier: permissive_non_osi, source: public, core_gated: gated}
-    then: {score: 4, class: open_core}
   - when: {license_tier: osi, source: public, core_gated: ungated}
     then: {score: 5, class: open_source}
     because: >-
       The published source is the whole product. A managed offering alongside it does not
       change that.
-  - when: {license_tier: permissive_non_osi, source: public, core_gated: ungated}
-    then: {score: 5, class: open_source}
+  # `permissive_non_osi` deliberately has NO rung, so a product landing there abstains and
+  # is deferred for a human. Two rungs used to sit here, emitting 4/open_core and
+  # 5/open_source. Both were unreachable, because this tier's `examples` list is empty and
+  # no software product resolves into it - and both were wrong in the same way: they handed
+  # a non-OSI license an open_source or open_core class, and openness-class-map.json puts
+  # both of those in the `open` bucket. render.py calls that bucket boundary a "strict
+  # OSI/MOF cut", and it was neither. The Model Openness Framework classes a release under
+  # OpenRAIL or a Llama community license as source-available rather than open, and OSAID
+  # requires the freedom to use a system "for any purpose", so a non-OSI license cannot
+  # reach the open bucket by either standard.
+  #
+  # Dead rules were the reason it went unnoticed. model.yaml already records the principle:
+  # a dead rule in a first-match-wins formula is a place for a later edit to hide. Assigning
+  # any license to this tier would have silently activated a 5/open_source rung.
+  #
+  # Restoring a rung here needs evidence from a real product, not a guess about a
+  # hypothetical one. tests/test_openness_buckets.py enforces the boundary either way.
