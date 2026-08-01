@@ -87,14 +87,34 @@ openness:
         # conflation had scored one OpenRAIL family two different ways.
         examples: [Modified-MIT, minimax-community, NVIDIA-Open-Model-License, BigCode-OpenRAIL-M,
           zentropi-openrail-m, DeepSeek-Model-License, TII-Falcon-License-2.0]
-      use_restricted:
+      use_bounded:
         definition: >
-          Caps or gates use - monthly-active-user ceilings, field-of-use limits,
-          research-only terms, or a commercial agreement requirement.
+          Commercial use is permitted, but bounded - a monthly-active-user ceiling, an annual
+          revenue ceiling, or an acceptable-use policy. The overwhelming majority of users
+          are inside the bound and may use the artifact commercially without asking.
+
+          This tier was `use_restricted` and capped at 2 until the universal license scale
+          landed. It sits at 3 because the test at this boundary is whether commercial use is
+          available AT ALL: Meta's 700M-MAU clause and AI21's $50M-revenue clause bind almost
+          nobody, and lumping them with a licence that forbids commerce outright discarded
+          the distinction the map exists to draw. Renamed with the cap change so that a stale
+          reference to `use_restricted` fails loudly rather than resolving to a tier whose
+          meaning moved underneath it.
         examples: [Llama-2-Community-License, Llama-3-Community-License, Llama-3.1-Community-License,
           Llama-3.2-Community-License, Llama-4-Community, Gemma-License, GLM-4-License,
-          Qwen-License-Agreement, Mistral-Research-License, Mistral-AI-Non-Production-License,
-          Jamba-Open-Model-License, CC-BY-NC]
+          Qwen-License-Agreement, Jamba-Open-Model-License]
+      commercial_forbidden:
+        definition: >
+          Weights are published and commercial use is prohibited, or reserved to the vendor.
+          Non-commercial, research-only and non-production terms live here.
+
+          The split from `use_bounded` is the one question this scale asks at the 3/2
+          boundary: does the licence permit commercial use at all? CC-BY-NC and Mistral's
+          Non-Production Licence say no, so they sit below a MAU ceiling rather than beside
+          it. It is also the same line the Model Openness Framework draws at the bottom of
+          its qualifying range - MOF Class III requires components usable "including for
+          commercial and educational purposes".
+        examples: [CC-BY-NC, Mistral-AI-Non-Production-License, Mistral-Research-License]
       proprietary:
         definition: No public license; weights not distributed.
     multi_sku_rule: >
@@ -104,7 +124,7 @@ openness:
     inherits_from_base: >
       A tune of a restrictively licensed base carries that restriction, because
       the license travels with the weights. hermes-4-llama-3-1-405b is
-      use_restricted on account of Meta's terms, not anything Nous did. This needs
+      use_bounded on account of Meta's terms, not anything Nous did. This needs
       no rule of its own - the tune records the license it actually ships under,
       and the ladder does the rest.
 
@@ -141,12 +161,19 @@ openness:
     because: >-
       No public license means no permission to rely on, whatever else was published. Scored
       beside closed weights rather than above them.
-  - when: {license_tier: use_restricted}
+  - when: {license_tier: commercial_forbidden}
     then: {score: 2, class: restricted}
     because: >-
-      Open weights behind a use cap. Downloadable is not the same as usable, and this rung
-      sits ahead of the data and code rungs on purpose: a full open recipe does not buy back
-      the right to use the result.
+      Open weights you may not use commercially. Downloadable is not the same as usable, and
+      this rung sits ahead of the data and code rungs on purpose: a full open recipe does not
+      buy back the right to use the result.
+  - when: {license_tier: use_bounded}
+    then: {score: 3, class: open_weights}
+    because: >-
+      A commercial cap almost nobody meets. Level with the open-weights centre of gravity
+      rather than below it, because for practically every user the artifact behaves like open
+      weights with a closed recipe - which is what 3 means. Still short of 4, because the
+      bound is real and the licence is not OSI.
   - when: {data: open, code: open, license_tier: osi}
     then: {score: 5, class: open_source}
     because: >-

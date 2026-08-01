@@ -85,11 +85,19 @@ scoring_recipe:
             opened because the same OpenRAIL family had been scored 3 in one category and
             4 in another.
           examples: [Modified-MIT, DeepSeek-Model-License, TII-Falcon-License-2.0, minimax-community, NVIDIA-Open-Model-License]
-        use_restricted:
+        use_bounded:
           definition: >
-            Caps or gates use — monthly-active-user ceilings, field-of-use limits,
-            research-only terms, or a commercial agreement requirement.
-          examples: [Llama-3.1-Community-License, Llama-4-Community, Gemma-License, Mistral-Research-License, GLM-4-License, Qwen-License-Agreement]
+            Commercial use is permitted, but bounded — a monthly-active-user ceiling, an
+            annual revenue ceiling, or an acceptable-use policy. Almost every user is inside
+            the bound and may use the model commercially without asking. Was `use_restricted`
+            and capped at 2 before the universal license scale; see sources/rubrics/model.yaml
+            for why the cap moved and why the tier was renamed alongside it.
+          examples: [Llama-3.1-Community-License, Llama-4-Community, Gemma-License, GLM-4-License, Qwen-License-Agreement]
+        commercial_forbidden:
+          definition: >
+            Weights are published and commercial use is prohibited, or reserved to the vendor.
+            The 3/2 boundary asks one question: does the licence permit commercial use at all?
+          examples: [Mistral-Research-License, Mistral-AI-Non-Production-License, CC-BY-NC]
         proprietary:
           definition: No public license; weights not distributed.
       multi_sku_rule: >
@@ -99,7 +107,7 @@ scoring_recipe:
         surface, and this axis scores the artifact you can download. That
         distinction is what separates the two families previously both recorded
         as `mixed` — Qwen 2.5 distributes 3B/72B under the Qwen License, which
-        caps the family at use_restricted, while Qwen 3's restrictive Plus/Max
+        caps the family at use_bounded, while Qwen 3's restrictive Plus/Max
         tiers are never distributed at all, leaving the distributed set Apache.
         Per-SKU licenses come from signal_huggingface.hub_state, so this is
         derivable rather than judged.
@@ -127,12 +135,18 @@ scoring_recipe:
       then: {score: 1, class: closed}
       because: >-
         No public license means no permission to rely on, whatever else was published.
-    - when: {license_tier: use_restricted}
+    - when: {license_tier: commercial_forbidden}
       then: {score: 2, class: restricted}
       because: >-
-        Open weights behind a use cap. Downloadable is not the same as usable, and this rung
-        sits ahead of the data and code rungs deliberately: publishing the pretraining corpus
-        does not buy back the right to use the model.
+        Open weights you may not use commercially. Downloadable is not the same as usable, and
+        this rung sits ahead of the data and code rungs deliberately: publishing the
+        pretraining corpus does not buy back the right to use the model.
+    - when: {license_tier: use_bounded}
+      then: {score: 3, class: open_weights}
+      because: >-
+        A commercial cap almost nobody meets. Level with the open-weights centre of gravity
+        rather than below it: for practically every user the model behaves like open weights
+        with a closed corpus. Short of 4, because the bound is real and the licence is not OSI.
     - when: {data: open, code: open, license_tier: osi}
       then: {score: 5, class: open_source}
       because: >-

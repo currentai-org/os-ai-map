@@ -144,15 +144,17 @@ openness:
           NVIDIA-Open-Data, CommonCrawl-ToU+Apache-2.0]
       noncommercial:
         definition: >-
-          Permits redistribution but forbids commercial use. Deliberately carries NO rung in
-          the formula below, which is the one place this ladder declines to decide: the same
-          license family resolves to `use_restricted` in model.yaml and caps a model at
-          2/restricted, while `personahub` is recorded 5/open here on the reasoning that a
-          corpus's openness question is redistributability and non-commercial terms still
-          permit it. Both readings are defensible and they cannot both be right across the
-          map. Until one is chosen, a product landing here abstains and says so, rather than
-          having whichever answer the ladder happened to encode published on its behalf.
-          Issue #117 settled the analogous question for OpenRAIL on models.
+          Permits redistribution but forbids commercial use. Capped at 2 by the universal
+          license scale, which asks one question at this boundary: does the licence permit
+          commercial use at all?
+
+          This tier deliberately carried NO rung until that scale landed, because the map
+          answered the question two ways - `command-r` is 2/restricted under CC-BY-NC while
+          `personahub` was 5/open under CC-BY-NC-SA on the reasoning that a corpus's openness
+          question is redistributability. Both readings were defensible and they could not
+          both be right. The scale picks the commercial-use test, so a non-commercial corpus
+          now scores where a non-commercial model already did. The Open Definition agrees:
+          data is not open unless it may be reused commercially.
         examples: [cc-by-nc-sa-4.0]
       deferred_to_components:
         definition: >-
@@ -172,11 +174,22 @@ openness:
         examples: [not-clearly-stated-on-card, undeclared on HF dataset card, cc]
 
   # Ordered, first match wins. There is deliberately NO `otherwise`. Most of the
-  # availability vocabulary and the whole `noncommercial` and `unstated` tiers are cases
-  # where the ladder either has a rule or should abstain, and an `otherwise` would publish
-  # 5/open for a dataset whose license nobody recorded.
+  # availability vocabulary and the whole `unstated` tier are cases where the ladder either
+  # has a rule or should abstain, and an `otherwise` would publish 5/open for a dataset whose
+  # license nobody recorded.
   formula:
-  # Not published at all, first. Nothing below can lift a corpus you cannot obtain.
+  # A licence forbidding commercial use caps the corpus wherever it sits, so this is tested
+  # before availability: an ungated CC-BY-NC download is not more usable than a gated one.
+  # `restricted` is the class, shared with the model and hardware vocabularies - the dataset
+  # vocabulary had no word between `open` and `gated`, which is why every corpus scored 3 or
+  # above used to land in the `open` bucket. See docs/guides/openness-spectrum.md.
+  - when: {license_tier: noncommercial}
+    then: {score: 2, class: restricted}
+    because: >-
+      Redistributable, and not usable commercially. Scored where a non-commercial MODEL is
+      scored, which is the point of a universal scale: `command-r` and `personahub` carry the
+      same licence family and used to sit three levels apart.
+  # Not published at all, next. Nothing below can lift a corpus you cannot obtain.
   - when: {availability: internal-only}
     then: {score: 0, class: closed}
     because: >-

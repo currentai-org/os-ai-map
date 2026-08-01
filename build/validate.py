@@ -31,7 +31,12 @@ def _load_schemas(root: Path) -> dict:
 OPENNESS_CLASSES = {
     "model": {"open_source", "open_weights", "restricted", "closed"},
     "software": {"open_source", "source_available", "open_core", "closed"},
-    "dataset": {"open", "gated", "documented_only", "closed"},
+    # `restricted` joined the dataset vocabulary with the universal license scale. It was the
+    # only product type with no word between `open` and `gated`, so a non-commercial corpus
+    # had nowhere to land but `open` - which is how `personahub` came to be 5/open under a
+    # licence that caps a model at 2. The word already exists for models and hardware, and
+    # already carries gradient 2 and the closed bucket in openness-class-map.json.
+    "dataset": {"open", "gated", "restricted", "documented_only", "closed"},
     "hardware": {"open_hardware", "open_toolchain", "documented", "restricted"},
 }
 SIGNAL_TYPES = {"active_users", "usage_volume", "reported_traction", "stars_fallback", "unknown"}
