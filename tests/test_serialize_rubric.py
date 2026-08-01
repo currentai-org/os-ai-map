@@ -692,9 +692,10 @@ def test_real_sources_serialize_without_errors():
         # while recording everything the ladder needed.
         "orchestration_agents": 140, "telemetry_observability": 90, "ui_api": 127,
         "training_synthetic_datasets": 158,
-        # 18 scored hardware products x 5 recorded dimensions, less the keys two products
-        # do not record. No license row among them, by design.
-        "edge_hardware": 87,
+        # 17 scored hardware products across the five recorded dimensions, less the keys
+        # individual products do not record. No license row among them, by design -
+        # `edge_hardware` is the only category whose ladder declares no `license_tier`.
+        "edge_hardware": 83,
     }
     assert {r["grade"] for r in tables["product_openness_evidence"]} == {"document"}
 

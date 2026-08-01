@@ -11,9 +11,9 @@ scoring_recipe:
   version: 1
   derived_from:
     method: reverse-engineered from hand-authored scores, then verified
-    scores_reproduced: 18
+    scores_reproduced: 17
     scores_total: 20
-    scores_deferred: 2
+    scores_deferred: 3
     verified_on: '2026-08-01'
     checker: build/check_rubric.py
   note: >-
@@ -24,12 +24,26 @@ scoring_recipe:
     This category could not be scored at all until its `components` values were normalized:
     71% of them were prose sentences, where every other category was curated against
     controlled tokens, and check_rubric reads a token. The normalization preserved each
-    original phrase in a parenthetical and moved no score. The two deferrals below are both
-    real disagreements between the ladder and a recorded score, and both survived the
-    normalization unchanged.
+    original phrase in a parenthetical and moved no score. Where a product recorded nothing
+    for a dimension, nothing was written: `rockchip-rk3588` is deferred rather than given an
+    inferred `schematics` value, which is the honest way to surface that the ladder asks a
+    board question of a bare chipset.
+
+    The other two deferrals are real disagreements between the ladder and a recorded score,
+    and both survived the normalization unchanged.
 
   extends: hardware
   deferred:
+    rockchip-rk3588:
+      because: >-
+        Records nothing about board design files, and correctly: it is an application-processor
+        SoC, not a board, so `schematics` - the dimension every rung turns on - has no answer
+        rather than a negative one. Recording `none` would conflate "not applicable" with
+        "withheld", and would be inferring evidence from the product description rather than
+        transcribing what the openness axis records. The other four chip-class products all
+        record a schematics clause of their own and so are scored normally; this one does not.
+        A `form_factor` key distinguishing board / module / chipset would let the ladder ask
+        the right question of each, and is a curation proposal rather than something to infer.
     arduino-uno-q:
       because: >-
         Recorded 3/documented; the ladder computes 5/open_hardware. Its board schematics and
