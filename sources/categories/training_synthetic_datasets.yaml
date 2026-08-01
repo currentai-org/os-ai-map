@@ -13,9 +13,9 @@ scoring_recipe:
   version: 1
   derived_from:
     method: reverse-engineered from hand-authored scores, then verified
-    scores_reproduced: 30
+    scores_reproduced: 31
     scores_total: 38
-    scores_deferred: 8
+    scores_deferred: 7
     verified_on: '2026-07-31'
     checker: build/check_rubric.py
   note: >-
@@ -25,7 +25,9 @@ scoring_recipe:
     products are deferred below and none of the eight is deferred for being awkward - five
     record their evidence in clauses the components parser discards, one is the only
     non-commercial license on the ladder, one records no license at all, and one hides the
-    fact that decides it inside a parenthetical.
+    fact that decides it inside a parenthetical. The non-commercial one, `personahub`, resolved
+    on 2026-08-01 when the universal license scale gave that tier a rung at 2 - it had been the
+    one place this ladder declined to decide.
 
   extends: dataset
   deferred:
@@ -37,14 +39,6 @@ scoring_recipe:
         license value at the first parenthesis, so the ladder reads a clean `apache-2.0` and
         the qualifier that justifies the 4 never reaches it. Either the per-component scope
         belongs in a key of its own or the score is a level high; it needs a human.
-    personahub:
-      because: >-
-        `cc-by-nc-sa-4.0` resolves to the `noncommercial` tier, which carries no rung on
-        purpose. model.yaml puts the same license family in `use_restricted` and caps a model
-        at 2/restricted; this is recorded 5/open on the reasoning that a corpus's openness
-        question is redistributability, which non-commercial terms still permit. Both readings
-        are defensible and the map cannot hold both. Deferred until the question is settled
-        the way issue #117 settled OpenRAIL for models.
     openhermes-2-5:
       because: >-
         License `not-clearly-stated-on-card` resolves to the `unstated` tier, which carries no

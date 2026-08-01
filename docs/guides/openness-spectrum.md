@@ -115,6 +115,54 @@ retail-available = `open_toolchain`; datasheets public but proprietary design / 
 - **open-ish** = `open_weights` / `source_available` / `gated` / `open_toolchain`
 - **closed** = `restricted` / `documented_only` / `closed` / `documented`
 
+## The license scale
+
+One scale across every product type. It is a **cap on the score, not the score**: the license
+sets the ceiling, and the artifact dimensions decide where below it a product lands. Every
+ladder checks `weights: closed` or `source: closed` before any license rung, so an OSI license
+on something nobody can run is still a 1.
+
+| cap | test | tier names |
+|---|---|---|
+| **5** | OSI-approved, or open by the Open Definition for data | `osi`, `open_data` |
+| **4** | not OSI-approved, but no cap on who may use it or at what scale — attribution, naming, conduct | `permissive_non_osi` |
+| **3** | commercial use permitted but bounded — a MAU ceiling, a revenue ceiling, an acceptable-use policy | `use_bounded` |
+| **2** | commercial use prohibited or reserved to the vendor, though source or weights are published | `commercial_forbidden`, `competition_restricted`, `noncommercial` |
+| **1** | nothing published to license | `proprietary`, `unstated` |
+
+**The 3/2 boundary asks one question: does the license permit commercial use at all?** That is
+what separates Meta's 700M-MAU clause and AI21's $50M-revenue clause — which bind almost
+nobody — from CC-BY-NC and Mistral's Non-Production License, which bind everyone. It is also
+where MOF draws its own line: Class III, its entry point, requires components usable
+"including for commercial and educational purposes".
+
+The tier names still differ per ladder, because a corpus and a codebase carry different
+license families. The **caps** are what is universal.
+
+### What it changed, and why it was needed
+
+Before the scale, the same license family was scored two ways. `Llama-3.1-Community` was
+`3/open_weights` on `llama-guard` in `safeguards` and `2/restricted` on `llama-instruct` in
+`finetuned_chat`. `CC-BY-NC` capped `command-r` at 2 while `CC-BY-NC-SA` left `personahub` at
+5. Ten products carry a bounded commercial license; six were recorded 2 and four were recorded
+3.
+
+Applying the scale on 2026-08-01 moved seven scores: six from `2/restricted` to
+`3/open_weights` (`llama`, `codellama`, `llama-instruct`, `tulu`, `jamba-large`, `codegemma`)
+and `personahub` from `5/open` to `2/restricted`. Four products deferred in `safeguards`
+resolved without being touched, because they were already recorded where the scale puts them.
+
+Two things worth knowing about the shape of it:
+
+- **A full open recipe does not lift a capped license.** `tulu` releases its post-training
+  data, code and RLVR recipe under Apache-2.0 and still scores 3, because the license rung
+  fires ahead of the data and code rungs. The recipe is credited where it lives —
+  `tulu-3-sft-mixture` is 5/open in `training_synthetic_datasets`, and the same recipe produces
+  `olmo-3-instruct` at 5/open_source on an open base.
+- **`restricted` joined the dataset class vocabulary** for this. Datasets were the only product
+  type with no word between `open` and `gated`, which is exactly how a non-commercial corpus
+  came to sit in the `open` bucket.
+
 ## How the buckets relate to MOF and OSAID
 
 The Model Openness Framework and the OSI's Open Source AI Definition are both **binary**.

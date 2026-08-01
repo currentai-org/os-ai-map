@@ -16,9 +16,9 @@ scoring_recipe:
   derived_from:
     method: per-type extends over the shared ladders; evidence transcribed into the keys the
       ladders read, then verified
-    scores_reproduced: 17
+    scores_reproduced: 21
     scores_total: 26
-    scores_deferred: 9
+    scores_deferred: 5
     verified_on: '2026-08-01'
     checker: build/check_rubric.py
   note: >-
@@ -30,40 +30,15 @@ scoring_recipe:
     Two more were license-lookup misses with settled precedent: a bare `gemma` alias, and a
     vendor-prefixed OpenRAIL-M that #117 already governs.
 
-    What remains is nine real disagreements, in three shapes. Four are the license cap: a
-    use-restricted model is capped at 2 by the current ladders and all four are recorded 3,
-    which is what the agreed universal license scale sets that tier to - they resolve when it is
-    built, not by curation. Four are scored 4 where the recorded evidence supports 3. One needs
-    a decision about which artifact a bundled product is scored on.
+    Four more resolved when the universal license scale landed: `aegis-guard`, `llama-guard`,
+    `llama-prompt-guard` and `shieldgemma` were all recorded 3 against ladders that capped a
+    bounded commercial licence at 2, and the scale sets that tier to 3. Four hand-authored
+    scores already agreeing with the scale was part of the evidence for it.
+
+    Five remain. Four are scored 4 where the recorded evidence supports 3 - three of them the
+    same `data:not-released` case, so one reading settles all three. One needs a decision about
+    which artifact a bundled product is scored on.
   deferred:
-    aegis-guard:
-      because: >-
-        Recorded 3/open_weights; the ladders compute 2/restricted. Llama-2-Community resolves to
-        `use_restricted`, which model.yaml caps at 2. This is one of four products in the
-        category recorded at exactly the 3 the agreed universal license scale assigns that tier,
-        so it resolves when the scale is built rather than by curation. Separately, its
-        `weights:adapter-open` and `data:Aegis safety dataset documented` are both outside
-        model.yaml's declared enums, so the record needs a rewrite of its own either way - the
-        adapter weights are public while the base LlamaGuard model is gated behind Meta's
-        access request, which no single `weights` value currently expresses.
-    llama-guard:
-      because: >-
-        Recorded 3/open_weights; the ladders compute 2/restricted. Llama-3.1-Community resolves
-        to `use_restricted` on the >700M-MAU clause. Resolves with the universal license scale,
-        which sets that tier to 3. Note `code:inference recipe public` is also outside the
-        declared enum, though it does not affect the outcome.
-    llama-prompt-guard:
-      because: >-
-        Recorded 3/open_weights; the ladders compute 2/restricted. Llama-4-Community resolves to
-        `use_restricted`. Resolves with the universal license scale.
-    shieldgemma:
-      because: >-
-        Recorded 3/open_weights; the ladders compute 2/restricted. This one changed shape in
-        this pass: it used to abstain because the bare `gemma` license string matched no alias,
-        and the alias is now recorded, so the real disagreement is visible - Gemma-License
-        resolves to `use_restricted` and the ladder caps it at 2. Resolves with the universal
-        license scale. Surfacing a mismatch where there was an abstention is the point of
-        fixing a lookup.
     qwen3guard:
       because: >-
         Recorded 4/open_weights; the ladders compute 3/open_weights. Apache-2.0, so the license

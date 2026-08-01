@@ -655,7 +655,11 @@ def test_real_sources_serialize_without_errors():
                 "evaluation_code", "finetuning_code", "inference_code", "ml_frameworks",
                 "orchestration_agents", "telemetry_observability", "ui_api"]
     # Two DATASET categories inherit sources/rubrics/dataset.yaml, so both serialize the
-    # same 21 rules: 3 not-published rungs, 2 held-out-answer rungs, 6 gate rungs and 5
+    # same 22 rules. Each of the four ladders gained exactly one rung with the universal
+    # license scale, which split one tier in two - a bounded commercial licence at 3, and a
+    # licence forbidding commerce outright at 2.
+    #
+    # Formerly 21: 3 not-published rungs, 2 held-out-answer rungs, 6 gate rungs and 5
     # license/documentation rungs, all single-condition except the last 5.
     #
     # Was 14 for training_synthetic_datasets alone. benchmark_eval_data widened the shared
@@ -668,8 +672,8 @@ def test_real_sources_serialize_without_errors():
     # `license_tier`: 4 rungs, each a single condition on `schematics` except the two that
     # also test `toolchain`, so 6 rows.
     assert per_category("category_scoring_rules") == {
-        "base_pretrained": 11, "finetuned_chat": 9, "safeguards": 19,
-        "benchmark_eval_data": 21, "training_synthetic_datasets": 21, "edge_hardware": 6,
+        "base_pretrained": 12, "finetuned_chat": 10, "safeguards": 20,
+        "benchmark_eval_data": 22, "training_synthetic_datasets": 22, "edge_hardware": 6,
         **{c: 10 for c in SOFTWARE},
     }
     # Both fell with the slug migration: release-level products collapsed into the
@@ -703,8 +707,11 @@ def test_real_sources_serialize_without_errors():
         # training_synthetic_datasets is unchanged at 158 across the ladder widening, which
         # is the check that mattered: benchmark_eval_data's new dimensions and rungs did not
         # disturb the category the ladder was derived from.
-        "training_synthetic_datasets": 158, "benchmark_eval_data": 111,
-        "safeguards": 90,
+        "training_synthetic_datasets": 164, "benchmark_eval_data": 111,
+        # safeguards 90 -> 103 and training_synthetic_datasets 158 -> 164: the universal
+        # license scale retired five deferrals, and a deferred product publishes no
+        # openness evidence at all.
+        "safeguards": 103,
         # 17 scored hardware products across the five recorded dimensions, less the keys
         # individual products do not record. No license row among them, by design -
         # `edge_hardware` is the only category whose ladder declares no `license_tier`.

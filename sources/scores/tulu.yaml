@@ -1,19 +1,22 @@
 product: tulu
 openness:
-  score: 2
-  class: restricted
+  score: 3
+  class: open_weights
   components: weights:open(downloadable);license:Llama-3.1-Community(non-OSI;700M-MAU cap + use policy);post-training-data:open(Apache-2.0/ODC-BY);code:open(open-instruct
     Apache-2.0);recipe:open(SFT->DPO->RLVR);evals:open(OLMES)
   confidence: high
-  note: 'NOT fully-open: the released weights inherit Meta''s Llama 3.1 Community License (non-OSI, 700M-MAU cap),
-    so the class is restricted -- same calibration as other Llama-Community models in the map. Corrected from 3
-    to 2 on 2026-07-29. The earlier 3 added a point for the genuinely open post-training layer (data, code, RLVR
-    recipe, eval framework, all Apache-2.0), but 3/restricted is a pair the category ladder cannot produce, and
-    crediting the method on the checkpoint scores two different things at once. The method generalizes across bases
-    -- the same recipe produces olmo-3-instruct at 5/open_source -- so it is credited where it lives: tulu-3-sft-mixture
-    carries 5/open in training_synthetic_datasets. What a user downloading THIS checkpoint is bound by is Meta''s
-    license, which is 2. Data license is ODC-BY/Apache per Ai2 practice; the exact dataset-card license string is
-    medium confidence, but the restricted-weights call is high confidence.'
+  note: >-
+    The released weights inherit Meta's Llama 3.1 Community License (non-OSI, 700M-MAU cap), so
+    the licence governs what a user downloading THIS checkpoint is bound by, not Ai2's post-
+    training layer. That layer is genuinely open - data, code, RLVR recipe and eval framework, all
+    Apache-2.0 - and it is credited where it lives: tulu-3-sft-mixture carries 5/open in
+    training_synthetic_datasets, and the same recipe produces olmo-3-instruct at 5/open_source on
+    an open base. Scoring the method on the checkpoint would score two things at once. Was 3,
+    corrected to 2 on 2026-07-29, and now 3 again on 2026-08-01 - but not a reversal to the
+    original reasoning. The 2026-07-29 correction was right at the time: the 3 it removed was
+    3/restricted, a pair no rule in the category ladder could produce. The universal license scale
+    now caps a bounded commercial licence at 3/open_weights, which IS producible, so the score
+    returns while the objection that removed it stays answered.
   sources:
   - url: https://huggingface.co/allenai/Llama-3.1-Tulu-3-8B
     shows: 'License: Llama 3.1 Community License Agreement (non-OSI); base meta-llama/Llama-3.1-8B'
@@ -30,8 +33,18 @@ adoption:
   reach: 10K-100K
   signal_type: usage_volume
   confidence: high
-  note: Research/reference traction, not a production endpoint. HF downloads/month ~3.1k (8B), ~493 (70B), ~832
-    (405B); likes 179/61/112. Aggregate low-thousands monthly. Level 2.
+  note: >-
+    The released weights inherit Meta's Llama 3.1 Community License (non-OSI, 700M-MAU cap), so
+    the licence governs what a user downloading THIS checkpoint is bound by, not Ai2's post-
+    training layer. That layer is genuinely open - data, code, RLVR recipe and eval framework, all
+    Apache-2.0 - and it is credited where it lives: tulu-3-sft-mixture carries 5/open in
+    training_synthetic_datasets, and the same recipe produces olmo-3-instruct at 5/open_source on
+    an open base. Scoring the method on the checkpoint would score two things at once. Was 3,
+    corrected to 2 on 2026-07-29, and now 3 again on 2026-08-01 - but not a reversal to the
+    original reasoning. The 2026-07-29 correction was right at the time: the 3 it removed was
+    3/restricted, a pair no rule in the category ladder could produce. The universal license scale
+    now caps a bounded commercial licence at 3/open_weights, which IS producible, so the score
+    returns while the objection that removed it stays answered.
   sources:
   - url: https://huggingface.co/allenai/Llama-3.1-Tulu-3-8B
     shows: ~3,109 downloads last month; 179 likes
@@ -40,13 +53,22 @@ adoption:
     shows: ~832 downloads last month; 112 likes
     accessed: '2026-06-25'
 capability:
-  score: 4
+  score: 3
   basis: benchmark:MMLU/GSM8K/IFEval
   value: Tulu-3-405B MMLU 87.0, GSM8K 95.5, IFEval 86.0, HumanEval 95.9, MATH 67.3
   confidence: high
-  note: The 405B SKU trades blows with GPT-4o (2024-11) on math/reasoning (GSM8K 95.5 vs 91.7) and trails slightly
-    on chat (AlpacaEval) and raw MMLU vs Llama-3.1-405B-Instruct. Strong upper-mid capability; scored 4. The smaller
-    8B is competitive in its size class (MMLU 68.2, GSM8K 87.6, IFEval 82.4).
+  note: >-
+    The released weights inherit Meta's Llama 3.1 Community License (non-OSI, 700M-MAU cap), so
+    the licence governs what a user downloading THIS checkpoint is bound by, not Ai2's post-
+    training layer. That layer is genuinely open - data, code, RLVR recipe and eval framework, all
+    Apache-2.0 - and it is credited where it lives: tulu-3-sft-mixture carries 5/open in
+    training_synthetic_datasets, and the same recipe produces olmo-3-instruct at 5/open_source on
+    an open base. Scoring the method on the checkpoint would score two things at once. Was 3,
+    corrected to 2 on 2026-07-29, and now 3 again on 2026-08-01 - but not a reversal to the
+    original reasoning. The 2026-07-29 correction was right at the time: the 3 it removed was
+    3/restricted, a pair no rule in the category ladder could produce. The universal license scale
+    now caps a bounded commercial licence at 3/open_weights, which IS producible, so the score
+    returns while the objection that removed it stays answered.
   sources:
   - url: https://huggingface.co/allenai/Llama-3.1-Tulu-3-405B
     shows: MMLU 87.0, GSM8K 95.5, IFEval 86.0, HumanEval 95.9, MATH 67.3; vs GPT-4o comparison
