@@ -42,11 +42,13 @@ import yaml
 
 from build.check_rubric import (
     ROOT,
+    apply_formula,
     check_category,
     dimension_read_map,
     dimension_value,
     head,
     license_read_keys,
+    license_tier,
     load_product_types,
     load_shared,
     recipe_for,
@@ -315,6 +317,50 @@ def undeclared_keys_holding_evidence(
     return blocking, reported, len(undeclared)
 
 
+def stale_deferrals(
+    slug: str, variants: dict, product_types: dict[str, str], deferred: set[str]
+) -> list[str]:
+    """A product declared `deferred:` that the ladder now reproduces on its own.
+
+    The opposite direction to the silent-abstention check, and the one that rots. A silent
+    abstention is a product nobody declared; a stale deferral is a product declared as
+    undecidable that has since become decidable — because the ladder gained a rung, a license
+    joined a tier, or the evidence was corrected. It looks handled and is not, which is worse:
+    the product is excluded from the reproduction count it would now pass, so the count
+    understates the ladder and the prose reason states something untrue about the file.
+
+    Nothing checked this before. `n8n` was deferred as "source or core-gated is not recorded"
+    while recording `source:public` and a `Sustainable-Use-License` that had since been added
+    to the `competition_restricted` tier, so it produced its recorded 2/source_available
+    exactly. That one went stale in about a week; at forty categories, on prose nobody
+    re-reads, they would accumulate silently.
+    """
+    problems = []
+    for product in sorted(deferred):
+        path = ROOT / "sources" / "scores" / f"{product}.yaml"
+        if not path.exists():
+            continue
+        recipe, _ = recipe_for(variants, product_types.get(product, ""))
+        if recipe is None:
+            continue
+        openness = (yaml.safe_load(path.read_text()) or {}).get("openness") or {}
+        components = split_components(openness.get("components") or "")
+        raw = next((components[k] for k in license_read_keys(recipe) if components.get(k)), "")
+        tier = license_tier(raw, recipe)
+        if tier is None:
+            continue
+        declared = _dimensions(recipe)
+        facts = {name: dimension_value(components, name, recipe) for name in declared}
+        facts["license_tier"] = tier
+        got = apply_formula(recipe, facts)
+        if got is not None and got == (openness.get("score"), openness.get("class")):
+            problems.append(
+                f"category '{slug}' defers '{product}', but the ladder now reproduces its "
+                f"{got[0]}/{got[1]} from the recorded evidence. Remove the deferral."
+            )
+    return problems
+
+
 def check_one(slug: str, verbose: bool) -> tuple[list[str], list[str]]:
     """Check one category. Returns (failures, report_lines)."""
     category = yaml.safe_load(
@@ -399,6 +445,7 @@ def check_one(slug: str, verbose: bool) -> tuple[list[str], list[str]]:
                 f"category '{slug}' defers '{product}' with no reason. Deferral is the "
                 f"honest state; silence is not."
             )
+    failures += stale_deferrals(slug, variants, product_types, deferred)
 
     lines = [
         f"  dimensions declared ...... {dimension_count:<4}"

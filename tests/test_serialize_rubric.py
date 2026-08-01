@@ -683,7 +683,10 @@ def test_real_sources_serialize_without_errors():
         "base_pretrained": 111, "finetuned_chat": 173, "deployment": 131,
         "agent_tools_protocols": 108, "dataset_processing_tools": 86, "evaluation_code": 66,
         "finetuning_code": 119, "inference_code": 47, "ml_frameworks": 80,
-        "orchestration_agents": 137, "telemetry_observability": 90, "ui_api": 127,
+        # orchestration_agents rose by 3 when n8n's stale deferral was removed: a deferred
+        # product publishes no openness evidence, and n8n had been deferred as "not recorded"
+        # while recording everything the ladder needed.
+        "orchestration_agents": 140, "telemetry_observability": 90, "ui_api": 127,
         "training_synthetic_datasets": 158,
     }
     assert {r["grade"] for r in tables["product_openness_evidence"]} == {"document"}
