@@ -261,16 +261,32 @@ def check_category(slug: str, verbose: bool) -> tuple[int, int, list[str], list[
         components = split_components(openness.get("components") or "")
         total += 1
 
-        raw_license = next(
-            (components[key] for key in license_read_keys(recipe) if components.get(key)), ""
-        )
-        tier = license_tier(raw_license, recipe)
-        if tier is None:
-            problems.append(
-                f"{product}: license {raw_license!r} maps to no tier "
-                f"(recorded {openness.get('score')} {openness.get('class')})"
+        # A ladder need not turn on a source license at all. Hardware openness is scored on
+        # design, toolchain and availability - `sources/rubrics/hardware.yaml` declares no
+        # `license_tier`, and none of the 20 edge products records a license. Resolving a
+        # tier against a recipe that declares none returns None for every product and would
+        # report all 20 as hard failures, so the tier step only runs where there is a tier
+        # vocabulary to resolve against. `license_tier` is then simply absent from `facts`,
+        # and a rung testing it could not have been declared: check_recipe's unreachable-rule
+        # assertion rejects a `license_tier` condition with no declared tiers.
+        #
+        # `serialize_rubric` already tolerated a tier-free ladder - `license_tiers()` emits
+        # zero rows and only requires `ordered_by` above one tier. This is check_rubric
+        # catching up, and it changes shared resolution semantics, so the warehouse mirror
+        # in `currentai.scores.openness_computed` needs the same allowance.
+        has_tiers = bool(((recipe.get("openness") or {}).get("license_tier") or {}).get("values"))
+        tier = None
+        if has_tiers:
+            raw_license = next(
+                (components[key] for key in license_read_keys(recipe) if components.get(key)), ""
             )
-            continue
+            tier = license_tier(raw_license, recipe)
+            if tier is None:
+                problems.append(
+                    f"{product}: license {raw_license!r} maps to no tier "
+                    f"(recorded {openness.get('score')} {openness.get('class')})"
+                )
+                continue
 
         # Facts come from the dimensions the recipe DECLARES, not a fixed list. The
         # model categories ask about weights/data/code; software categories ask whether
@@ -279,7 +295,8 @@ def check_category(slug: str, verbose: bool) -> tuple[int, int, list[str], list[
         # checker change per product type.
         declared = ((recipe.get("openness") or {}).get("dimensions")) or {}
         facts = {name: dimension_value(components, name, recipe) for name in declared}
-        facts["license_tier"] = tier
+        if has_tiers:
+            facts["license_tier"] = tier
 
         got = apply_formula(recipe, facts)
         expected = (openness.get("score"), openness.get("class"))
@@ -299,8 +316,10 @@ def check_category(slug: str, verbose: bool) -> tuple[int, int, list[str], list[
         # reproduced count, so neither can go quiet.
         if got is None:
             shown = " ".join(f"{name}={facts[name]!r}" for name in declared)
+            if has_tiers:
+                shown = f"{shown} tier={tier}"
             deferred.append(
-                f"{product}: recipe does not decide it [{shown} tier={tier}] "
+                f"{product}: recipe does not decide it [{shown}] "
                 f"(recorded {openness.get('score')} {openness.get('class')})"
             )
             total -= 1
@@ -312,8 +331,10 @@ def check_category(slug: str, verbose: bool) -> tuple[int, int, list[str], list[
                 print(f"  ok    {product:<24} {expected[0]} {expected[1]}")
         else:
             shown = " ".join(f"{name}={facts[name]!r}" for name in declared)
+            if has_tiers:
+                shown = f"{shown} tier={tier}"
             problems.append(
-                f"{product}: rubric says {got}, scores say {expected} [{shown} tier={tier}]"
+                f"{product}: rubric says {got}, scores say {expected} [{shown}]"
             )
 
     unknown = sorted(set(deferrals) - set(category.get("products") or []))

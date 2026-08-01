@@ -222,3 +222,79 @@ def test_mixed_type_category_scores_each_product_on_its_own_ladder(tmp_path, mon
 
     assert problems == []
     assert (reproduced, total) == (2, 2)
+
+
+def test_a_ladder_with_no_license_tier_scores_rather_than_failing(tmp_path, monkeypatch):
+    """Hardware openness turns on design and toolchain, not a source license.
+
+    `license_tier()` returns None for a recipe declaring no tiers, and that used to append a
+    problem per product — so a tier-free ladder reported every one of its products as a hard
+    failure and could not be written at all. `sources/rubrics/hardware.yaml` is the real case:
+    none of `edge_hardware`'s 20 products records a license, because a board is not licensed
+    the way software is.
+
+    The tier step now runs only where there is a tier vocabulary to resolve against, and
+    `license_tier` is simply absent from the facts. A rung testing it could not have been
+    declared — check_recipe's unreachable-rule assertion rejects a `license_tier` condition
+    against no declared tiers.
+    """
+    write_yaml(tmp_path / "sources/rubrics/hardware.yaml", {
+        "openness": {
+            "dimensions": {"schematics": {"values": ["open", "none"]}},
+            "formula": [
+                {"when": {"schematics": "open"}, "then": {"score": 5, "class": "open_hardware"}},
+                {"when": {"schematics": "none"}, "then": {"score": 3, "class": "documented"}},
+            ],
+        }
+    })
+    write_yaml(tmp_path / "sources/categories/boards.yaml", {
+        "name": "boards",
+        "products": ["a-board", "a-chip"],
+        "scoring_recipe": {"extends": "hardware"},
+    })
+    for slug in ("a-board", "a-chip"):
+        write_yaml(tmp_path / f"sources/products/{slug}.yaml", {"name": slug, "type": "hardware"})
+    write_yaml(tmp_path / "sources/scores/a-board.yaml", {
+        "openness": {"score": 5, "class": "open_hardware", "components": "schematics:open"}
+    })
+    write_yaml(tmp_path / "sources/scores/a-chip.yaml", {
+        "openness": {"score": 3, "class": "documented", "components": "schematics:none"}
+    })
+    monkeypatch.setattr("build.check_rubric.ROOT", tmp_path)
+    monkeypatch.setattr("build.check_rubric._RECORDED_ALIASES", {})
+
+    reproduced, total, problems, deferred = check_category("boards", verbose=False)
+
+    assert problems == []
+    assert (reproduced, total) == (2, 2)
+
+
+def test_a_ladder_WITH_tiers_still_fails_an_unmappable_license(tmp_path, monkeypatch):
+    """The allowance is scoped to recipes declaring no tiers, not to a missing license.
+
+    A category that HAS a tier vocabulary and meets a license outside it must still report
+    that, or the tier-free path would quietly become an escape hatch for every unmapped
+    license on the map.
+    """
+    write_yaml(tmp_path / "sources/rubrics/software.yaml", {
+        "openness": {
+            "license_tier": {"reads": ["license"], "values": {"osi": {"examples": ["MIT"]}}},
+            "dimensions": {"source": {"values": ["public"]}},
+            "formula": [{"when": {"source": "public"}, "then": {"score": 5, "class": "open_source"}}],
+        }
+    })
+    write_yaml(tmp_path / "sources/categories/tools.yaml", {
+        "name": "tools", "products": ["a-tool"],
+        "scoring_recipe": {"extends": "software"},
+    })
+    write_yaml(tmp_path / "sources/products/a-tool.yaml", {"name": "a-tool", "type": "software"})
+    write_yaml(tmp_path / "sources/scores/a-tool.yaml", {
+        "openness": {"score": 5, "class": "open_source",
+                     "components": "source:public;license:Some-Unmapped-License"}
+    })
+    monkeypatch.setattr("build.check_rubric.ROOT", tmp_path)
+    monkeypatch.setattr("build.check_rubric._RECORDED_ALIASES", {})
+
+    reproduced, total, problems, deferred = check_category("tools", verbose=False)
+
+    assert len(problems) == 1 and "maps to no tier" in problems[0]

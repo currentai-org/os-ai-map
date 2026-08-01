@@ -1,0 +1,123 @@
+# Shared openness ladder for HARDWARE categories.
+#
+# Inherited via `scoring_recipe: {extends: hardware}`. See build/rubrics.py for the merge
+# rules and why the ladder is shared rather than copied per category.
+#
+# The only ladder in the map with NO `license_tier`, and that is the whole point of it. A
+# board is not licensed the way software is: what you can do with a design depends on whether
+# the design files were published and under what terms, and every part in this category runs
+# on a proprietary SoC regardless. `edge_hardware`'s own comments have said so since issue
+# #24 - "scored on design + toolchain + availability rather than source license" - and the
+# evidence agrees: not one of its 20 products records a `license` key at all.
+#
+# check_rubric resolved a license tier before applying any formula and treated an unresolved
+# tier as a hard failure, which made a tier-free ladder impossible to write. That is fixed in
+# this change rather than worked around, because "this artifact's openness does not turn on a
+# source license" is a true statement about hardware and the machinery should be able to
+# express it.
+#
+# Where the analogue of an OSI license does show up, it is in the top rung: level 5 requires
+# design files under terms permitting reuse. `beagley-ai` is CC-BY/CC-BY-SA and OSHWA-
+# certified, which is the closest thing hardware has to OSI approval, and that is what keeps
+# `open_hardware` in the `open` bucket honest - see docs/guides/openness-spectrum.md.
+#
+# Verified against edge_hardware, 18/20.
+openness:
+  dimensions:
+    schematics:
+      question: Are the board design files published, and may they be reused?
+      # THE deciding dimension. Every rung turns on it, which is not an accident: openness
+      # for a board is a question about the design, and the toolchain only breaks the tie
+      # between `open` and `published`.
+      values: [open, published, partial, none]
+      evidence:
+      - '`open`: design files under terms permitting reuse, or OSHWA certification.
+        `beagley-ai` is CC-BY/CC-BY-SA plus OSHWA US002616; `arduino-uno-q` is CC-BY-SA-4.0
+        gerbers'
+      - '`published`: schematics readable and not reusable. `radxa-rock-5b` ships PDFs, SMD
+        maps, DXF and 3D STP and explicitly does not release editable PCB source'
+      - '`partial`: a mechanical spec, a carrier reference design or an EVK design - the
+        documentation for building your OWN board, not the design of the product sold'
+      - '`none`: no design files. For an accelerator module that means withheld; for a bare
+        chipset it means there is no board to have designed. See the note on form factor'
+      machine_signal: none - needs a human to find a design-file repo and read its license.
+        OSHWA maintains a certification directory that a fetcher could check, which would
+        settle the top rung but not the three below it
+    toolchain:
+      question: Can the whole inference stack be built and run from open source?
+      values: [open, partial, closed]
+      evidence:
+      - '`open`: the stack builds from published source, blobs aside'
+      - '`partial`: an open runtime with a closed or registration-gated model compiler.
+        `hailo-8` ships HailoRT openly and gates the Dataflow Compiler behind registration'
+      - '`closed`: an SDK under a proprietary vendor license. NVIDIA JetPack is the case'
+      machine_signal: partial - signal_github.repo_state establishes that a repo exists,
+        never that the compiler is in it, which is exactly the open/partial distinction
+    datasheets:
+      question: Are the part's datasheets public, or behind an NDA?
+      # Declared and tested by no rung. Every product in the category publishes at least a
+      # product brief, so a rung on this would either be unsatisfiable or fire for all 20.
+      # It stays declared because it is recorded evidence, because it is half of what the
+      # `restricted` tier will turn on the first time an NDA-only part joins the roster, and
+      # because dropping it would make 17 products report vocabulary drift.
+      values: [public, brief, nda]
+      machine_signal: none - a vendor page either links a datasheet or it does not, but
+        telling a full datasheet from a marketing brief needs a human
+    blobs:
+      question: Does booting or inference require proprietary firmware?
+      # Declared, tested by no rung, and the one that most looks like it should be. The
+      # category's own prose ladder used to define level 5 as "open schematics + open
+      # toolchain, NO BLOBS", which was unreachable: every part here runs on a proprietary
+      # SoC needing firmware, `beagley-ai` included, and `beagley-ai` is the only 5. That
+      # text was corrected in #132. Blobs are a caveat on every product in the category and
+      # therefore a discriminator between none of them.
+      values: [none, minimal, required]
+      machine_signal: none - requires reading the BSP
+    retail:
+      question: Can anyone buy one?
+      # Declared, tested by no rung. Two products record nothing here and the rest split
+      # between open_market and distributor, neither of which any rung distinguishes. It is
+      # the other half of the future `restricted` tier: an NDA/design-win part is one nobody
+      # can buy AND whose docs nobody can read.
+      values: [open_market, distributor, restricted]
+      machine_signal: none - a listing on a distributor site is checkable in principle,
+        but absence of a listing does not establish restriction
+
+  # Ordered, first match wins. No `otherwise`: a product recording no `schematics` value is
+  # unrecorded rather than closed, and an `otherwise` would score it at whatever the last
+  # rung happened to be.
+  #
+  # There is deliberately no `restricted`/1 rung. The category's prose ladder defines one
+  # (NDA / design-win / private-sale only) and no product on the roster is one, so declaring
+  # it would add a rule that cannot fire - and model.yaml already records why that is
+  # dangerous: a dead rule in a first-match-wins formula is a place for a later edit to hide.
+  # #133 is what that looks like when it goes wrong. The tier is described in the category's
+  # comments so the vocabulary is not lost; it becomes a rung when a part needs it.
+  formula:
+  - when: {schematics: open, toolchain: open}
+    then: {score: 5, class: open_hardware}
+    because: >-
+      Design files published under terms permitting reuse, and a stack that builds from open
+      source. Proprietary silicon underneath does not reduce this: every part in the category
+      runs on a closed SoC, so requiring open silicon would make the rung unreachable by
+      construction. Reusable terms are what keep this in the `open` bucket - it is hardware's
+      analogue of the OSI requirement the other ladders enforce.
+  - when: {schematics: published, toolchain: open}
+    then: {score: 4, class: open_toolchain}
+    because: >-
+      Schematics readable but not reusable, which is the distinction the class name draws:
+      what is open here is the toolchain. `radxa-rock-5b` publishes PDFs, DXF and STP and
+      explicitly withholds editable PCB source.
+  - when: {schematics: partial}
+    then: {score: 3, class: documented}
+    because: >-
+      A carrier guide or an EVK design documents how to build your own board; it is not the
+      design of the board being sold. An open SDK does not make the hardware open, which is
+      why the rung ignores `toolchain` entirely.
+  - when: {schematics: none}
+    then: {score: 3, class: documented}
+    because: >-
+      Accelerator modules and bare chipsets publish datasheets and no design files. The tier
+      is named `documented` because that is precisely what it is - and it is the same 3 as
+      the rung above, because from a builder's position a partial design and no design differ
+      less than either differs from a design you may reuse.

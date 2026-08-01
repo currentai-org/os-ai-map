@@ -7,6 +7,49 @@ strapline: Open at the board, closed at the silicon. The SBC ecosystem ships sch
 weights:
   adopt: 0.5
   cap: 0.5
+scoring_recipe:
+  version: 1
+  derived_from:
+    method: reverse-engineered from hand-authored scores, then verified
+    scores_reproduced: 18
+    scores_total: 20
+    scores_deferred: 2
+    verified_on: '2026-08-01'
+    checker: build/check_rubric.py
+  note: >-
+    First HARDWARE category, and the only ladder in the map with no `license_tier` - none of
+    the 20 products records a license, because a board's openness is a question about its
+    design files rather than a source license. See sources/rubrics/hardware.yaml.
+
+    This category could not be scored at all until its `components` values were normalized:
+    71% of them were prose sentences, where every other category was curated against
+    controlled tokens, and check_rubric reads a token. The normalization preserved each
+    original phrase in a parenthetical and moved no score. The two deferrals below are both
+    real disagreements between the ladder and a recorded score, and both survived the
+    normalization unchanged.
+
+  extends: hardware
+  deferred:
+    arduino-uno-q:
+      because: >-
+        Recorded 3/documented; the ladder computes 5/open_hardware. Its board schematics and
+        gerbers are CC-BY-SA-4.0 and its toolchain is open, which is the same combination that
+        earns `beagley-ai` a 5. The recorded note gives the reason for the 3 as the proprietary
+        QRB2210 SoC needing firmware blobs - but that is equally true of `beagley-ai` (TI
+        AM67A, DSP and WiFi blobs), `orange-pi-5`, `khadas-edge2` and `sipeed-maixcam`, all of
+        which score above 3. Either this is scored low, or `beagley-ai`'s 5 rests on OSHWA
+        certification specifically, in which case that is a rung condition nobody has written
+        down. Needs a human.
+    raspberry-pi-ai-hat-plus:
+      because: >-
+        Recorded 4/open_toolchain; the ladder computes 3/documented. It records a HAT+
+        mechanical spec rather than board design files, and a partial toolchain - the Pi
+        driver integration is open while the Hailo model compiler is registration-gated.
+        Nothing about the accessory itself is open at the level the other 4s are; what it
+        inherits is the Pi ecosystem around it. A rung for `{schematics: partial, toolchain:
+        partial}` would reproduce it and would exist solely because one product needs it,
+        which this ladder does not do. Whether an accessory's score should track its host
+        platform is a curation question.
 products:
 - raspberry-pi-5
 - raspberry-pi-ai-hat-plus

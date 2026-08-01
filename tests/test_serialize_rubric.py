@@ -657,9 +657,13 @@ def test_real_sources_serialize_without_errors():
     # `training_synthetic_datasets` is the first DATASET category and inherits
     # sources/rubrics/dataset.yaml. Its 14 rows are 4 single-condition gate rungs plus 5
     # rungs pairing a license tier with a documentation state.
+    # `edge_hardware` is the first HARDWARE category and the only ladder with no
+    # `license_tier`: 4 rungs, each a single condition on `schematics` except the two that
+    # also test `toolchain`, so 6 rows.
     assert per_category("category_scoring_rules") == {
         "base_pretrained": 11, "finetuned_chat": 9, "safeguards": 19,
-        "training_synthetic_datasets": 14, **{c: 10 for c in SOFTWARE},
+        "training_synthetic_datasets": 14, "edge_hardware": 6,
+        **{c: 10 for c in SOFTWARE},
     }
     # Both fell with the slug migration: release-level products collapsed into the
     # tier the vendor sells, so 25 products left the roster and the closed frontier
@@ -685,6 +689,9 @@ def test_real_sources_serialize_without_errors():
         "finetuning_code": 119, "inference_code": 47, "ml_frameworks": 80,
         "orchestration_agents": 137, "telemetry_observability": 90, "ui_api": 127,
         "training_synthetic_datasets": 158,
+        # 18 scored hardware products x 5 recorded dimensions, less the keys two products
+        # do not record. No license row among them, by design.
+        "edge_hardware": 87,
     }
     assert {r["grade"] for r in tables["product_openness_evidence"]} == {"document"}
 
@@ -750,17 +757,38 @@ def test_license_is_emitted_under_the_name_the_warehouse_joins_on():
     # Deferrals are a property of the category's declaration, not of any one resolved
     # ladder — `resolve_recipe_variants` only screens out a category whose `extends` is
     # broken, matching `build/check_rubric.py`'s `check_category`.
+    # Categories whose ladder declares no `license_tier` are excluded for the same reason as
+    # deferrals: there is no license to emit, so asserting a row would be asserting evidence
+    # we have said does not exist. `edge_hardware` is the case - a board's openness turns on
+    # whether its design files were published, not on a source license, and not one of its 20
+    # products records one.
+    #
+    # This leaves the same asymmetry the deferral note describes, and it is worth stating
+    # plainly: `currentai.scores.openness_computed` mirrors this walk by hand and joins
+    # license evidence, so until it carries the same tier-free allowance the repo just gained
+    # in `check_rubric.check_category`, hardware products will abstain in the warehouse while
+    # reproducing locally. That is the safe direction and a silent one.
     shared = sources.get("rubrics") or {}
     deferred = set()
+    tier_free = set()
     for slug, category in sources["categories"].items():
         variants, _ = resolve_recipe_variants(category, shared)
         if not variants:
             continue
         for product in ((category.get("scoring_recipe") or {}).get("deferred") or {}):
             deferred.add((product, slug))
+        if not any(
+            ((v.get("openness") or {}).get("license_tier") or {}).get("values")
+            for v in variants.values()
+        ):
+            tier_free.add(slug)
 
     rows = tables["product_openness_evidence"]
-    scored = {(r["product_slug"], r["category_slug"]) for r in rows} - deferred
+    scored = {
+        (r["product_slug"], r["category_slug"])
+        for r in rows
+        if r["category_slug"] not in tier_free
+    } - deferred
     licensed = {(r["product_slug"], r["category_slug"]) for r in rows if r["dimension"] == "license"}
     assert scored - licensed == set(), f"no license row emitted for: {sorted(scored - licensed)}"
 
