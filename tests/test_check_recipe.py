@@ -281,6 +281,49 @@ class TestUndeclaredKeys:
         assert blocking == [] and count == 0
 
 
+class TestStaleDeferrals:
+    """The direction that rots.
+
+    A silent abstention is a product nobody declared. A stale deferral is a product declared
+    undecidable that has since become decidable, and it is worse because it looks handled:
+    the product is excluded from a reproduction count it would now pass, and the prose reason
+    says something untrue about the file.
+    """
+
+    VARIANTS = {"*": GOOD}
+
+    def _score(self, tmp_path, monkeypatch, components, score, klass):
+        import build.check_recipe as module
+
+        scores = tmp_path / "sources" / "scores"
+        scores.mkdir(parents=True)
+        (scores / "p.yaml").write_text(
+            f"openness:\n  score: {score}\n  class: {klass}\n  components: {components}\n"
+        )
+        monkeypatch.setattr(module, "ROOT", tmp_path)
+
+    def test_a_deferral_the_ladder_now_reproduces_fails(self, tmp_path, monkeypatch):
+        from build.check_recipe import stale_deferrals
+
+        self._score(tmp_path, monkeypatch, "license:MIT;source:public", 5, "open_source")
+        problems = stale_deferrals("cat", self.VARIANTS, {"p": ""}, {"p"})
+        assert len(problems) == 1 and "Remove the deferral" in problems[0]
+
+    def test_a_deferral_the_ladder_still_cannot_decide_passes(self, tmp_path, monkeypatch):
+        from build.check_recipe import stale_deferrals
+
+        # No `source` recorded, so no rung fires and the deferral is still doing work.
+        self._score(tmp_path, monkeypatch, "license:MIT", 5, "open_source")
+        assert stale_deferrals("cat", self.VARIANTS, {"p": ""}, {"p"}) == []
+
+    def test_a_deferral_whose_score_still_disagrees_passes(self, tmp_path, monkeypatch):
+        """Reproducing a DIFFERENT pair is a live mismatch, not a stale deferral."""
+        from build.check_recipe import stale_deferrals
+
+        self._score(tmp_path, monkeypatch, "license:MIT;source:public", 4, "open_core")
+        assert stale_deferrals("cat", self.VARIANTS, {"p": ""}, {"p"}) == []
+
+
 def test_reproduction_rate_is_never_asserted():
     """The one rule above the others.
 
