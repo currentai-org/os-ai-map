@@ -6,6 +6,97 @@ strapline: Open problems, gated answers. Many benchmarks publish the questions b
 weights:
   adopt: 0.6
   cap: 0.4
+scoring_recipe:
+  version: 1
+  derived_from:
+    method: shared dataset ladder, widened by this category, then verified against the
+      hand-authored scores
+    scores_reproduced: 17
+    scores_total: 27
+    scores_deferred: 10
+    verified_on: '2026-08-01'
+    checker: build/check_rubric.py
+  note: >-
+    Second DATASET category. The shared ladder as first written could not read this category
+    at all - 0 of 27 - for two reasons, neither of which was that the questions differed:
+    the card key is spelled `datasheet` here, and `gate` assumed publication, which a
+    held-out or internal eval set does not have. Widening `gate` into `availability` and
+    adding the `answers` dimension fixed both, and training_synthetic_datasets reproduces
+    identically before and after.
+
+    Ten products are deferred and eight of the ten are recording defects rather than open
+    questions. The two that are not: `gpqa` is the only gated product on the map scored 4
+    where every other gate lands on 3, and `math` is scored on a DMCA takedown the ladder
+    has no way to see.
+
+  extends: dataset
+  deferred:
+    gpqa:
+      because: >-
+        Recorded 4/gated; the ladder computes 3/gated. Every other gated product across both
+        dataset categories is 3, so this is the only 4. Its note argues the gate is a
+        login-walled anti-contamination agreement over a fully redistributable CC-BY-4.0
+        release, which is a real distinction - but a rung for it would exist to satisfy one
+        product, and the ladder does not add those. Either gpqa is a 3 or the gate rungs need
+        a dimension recording what the gate is FOR, which is a curation question.
+    math:
+      because: >-
+        Recorded 2/gated; the ladder computes 5/open, and this is the one place the ladder
+        gets a confidently wrong answer rather than abstaining. Both facts that justify the 2
+        are recorded as prose - `data:NOT downloadable from canonical HF repo` and
+        `redistributability:BLOCKED on the primary registry` - so `head()` reduces neither to
+        a token, `availability` matches no rung, and the product falls through to the license
+        rungs which do not test it. The underlying fact is a DMCA takedown on the canonical HF
+        repo over AMC/AIME problem rights. Recording `access:closed` would settle it.
+    swe-bench-verified:
+      because: >-
+        License `undeclared on HF dataset card` resolves to the `unstated` tier, which carries
+        no rung: absent a grant there is no permission to rely on, however freely the files
+        download. Recorded 4/open, and its note explicitly scores 4 rather than 5 on that
+        ambiguity - which is the same reasoning the `unstated` tier encodes, so the disagreement
+        is only about whether an inferred license can support a 4 at all. Note
+        `openhermes-2-5` in training_synthetic_datasets is deferred for the same tier and
+        recorded 5, so the two disagree with each other; one answer should cover both.
+    livecodebench:
+      because: >-
+        License recorded as a bare `cc`, which names no terms - CC-BY and CC-BY-NC are both
+        `cc`, and they sit two tiers apart. Resolves to `unstated`, which carries no rung.
+        Recorded 4/open on exactly that ambiguity. Reading the card for the variant settles it.
+    multipl-e:
+      because: >-
+        Recorded 4/open; the ladder computes 5/open. The 4 rests on a `caveat:` key recording
+        that the source repo carries a modified BSD-3 with a no-ML-training clause conflicting
+        with the MIT on the HF data artifact. `caveat` is not a key any dimension reads, so the
+        ladder sees clean MIT. This is the multi-SKU problem in dataset form: two licenses on
+        two artifacts of one product, and the ladder scores whichever one is recorded under
+        `license`.
+    gaia:
+      because: >-
+        No license key is recorded at all, so no tier resolves and the product abstains before
+        the formula runs. The evidence the ladder WOULD use is present and correct -
+        `answers:held-out` reaches the 2/gated rung, which is the recorded score - so this is
+        one missing key away from reproducing.
+    humanitys-last-exam:
+      because: >-
+        The license is recorded inside a compound key, `questions+answers:public(MIT,2500-Q)`,
+        which no dimension reads and which the license lookup cannot see. Same shape as `gaia`:
+        `holdout:private` already reaches the 2/gated rung, so recording `license:MIT` would
+        settle it.
+    compar-ia-datasets:
+      because: >-
+        The gate is recorded as `gated:HF contact-info agreement required`, a sentence rather
+        than a token, so `head()` returns the whole phrase and it matches no rung. The recorded
+        3/gated is what `terms-acceptance+contact-info` produces. A vocabulary fix, not research.
+    mt-bench:
+      because: >-
+        Records neither a card nor an availability key - only `license:Apache-2.0` and
+        `answers:public`. The top rung requires documentation deliberately, so that a product
+        recording nothing cannot reach 5 by default. Recorded 5/open; needs its card and
+        access state recorded.
+    livebench:
+      because: >-
+        As `mt-bench`: `license:Apache-2.0/MIT` and `answers:public` and nothing else. Recorded
+        5/open, and the ladder declines to award it on an unrecorded card.
 products:
 - humaneval
 - gsm8k
