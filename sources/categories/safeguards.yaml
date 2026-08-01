@@ -14,136 +14,91 @@ scoring_recipe:
     model: model
     software: software
   derived_from:
-    method: per-type extends over the shared ladders; reproduction pending curation
-    scores_reproduced: 0
+    method: per-type extends over the shared ladders; evidence transcribed into the keys the
+      ladders read, then verified
+    scores_reproduced: 17
     scores_total: 26
-    scores_deferred: 26
-    verified_on: '2026-07-30'
+    scores_deferred: 9
+    verified_on: '2026-08-01'
     checker: build/check_rubric.py
+  note: >-
+    Was 0/26. Sixteen products were not disagreeing with the ladders at all - they recorded the
+    deciding evidence under keys the ladders do not read, or in prose. Eleven software products
+    recorded `self-host:yes;service:none`, which is `core-gated:ungated` said another way; five
+    hosted services recorded `service:proprietary ...(no self-host)`, which is `source:closed`
+    plus `license:proprietary`. Transcribing those moved no score, and none of it was research.
+    Two more were license-lookup misses with settled precedent: a bare `gemma` alias, and a
+    vendor-prefixed OpenRAIL-M that #117 already governs.
+
+    What remains is nine real disagreements, in three shapes. Four are the license cap: a
+    use-restricted model is capped at 2 by the current ladders and all four are recorded 3,
+    which is what the agreed universal license scale sets that tier to - they resolve when it is
+    built, not by curation. Four are scored 4 where the recorded evidence supports 3. One needs
+    a decision about which artifact a bundled product is scored on.
   deferred:
     aegis-guard:
       because: >-
-        License Llama-2-Community resolves to use_restricted; the ladder computes
-        2/restricted from the recorded evidence but the score says 3/open_weights. The
-        recorded weights:adapter-open and data:Aegis safety dataset documented values also
-        fall outside the ladder's declared enums. See the 2026-07-30 reproduction report.
-    openguardrails:
-      because: >-
-        source or core-gated is not recorded in a form the ladder can read; needs a read of
-        the repo and pricing page
-    zentropi-cope:
-      because: >-
-        License zentropi-openrail-m appears in no tier's examples and has no alias in
-        signal_routing.yaml, so the tier lookup fails before the formula runs even though
-        the components note already calls it use-restricted. See the 2026-07-30
-        reproduction report.
-    qwen3guard:
-      because: >-
-        License resolves to osi; the ladder computes 3/open_weights from the recorded
-        evidence (data:not-released) but the score says 4/open_weights. See the 2026-07-30
-        reproduction report.
-    wildguard:
-      because: >-
-        data:open is recorded but code was never recorded at all, so the 4-rule's second
-        condition is unmet; the ladder computes 3/open_weights from the recorded evidence
-        but the score says 4/open_weights. See the 2026-07-30 reproduction report.
-    llama-prompt-guard:
-      because: >-
-        License Llama-4-Community resolves to use_restricted; the ladder computes
-        2/restricted from the recorded evidence but the score says 3/open_weights. See the
-        2026-07-30 reproduction report.
-    llamafirewall:
-      because: >-
-        The MIT-licensed framework facts are recorded under framework and self-host, keys
-        the software ladder does not read, and the bundled guard models carry a
-        use-restricted Llama license the harness's own license does not cover; which SKU
-        governs 5/open_source is a curation call. See the 2026-07-30 reproduction report.
-    harmbench:
-      because: >-
-        source or core-gated is not recorded in a form the ladder can read; needs a read of
-        the repo and pricing page
-    giskard:
-      because: >-
-        source or core-gated is not recorded in a form the ladder can read; needs a read of
-        the repo and pricing page
-    deepteam:
-      because: >-
-        source or core-gated is not recorded in a form the ladder can read; needs a read of
-        the repo and pricing page
-    perspective-api:
-      because: >-
-        No source or license key is recorded, only a service:proprietary... prose
-        description the software ladder's reads list does not check. See the 2026-07-30
-        reproduction report.
+        Recorded 3/open_weights; the ladders compute 2/restricted. Llama-2-Community resolves to
+        `use_restricted`, which model.yaml caps at 2. This is one of four products in the
+        category recorded at exactly the 3 the agreed universal license scale assigns that tier,
+        so it resolves when the scale is built rather than by curation. Separately, its
+        `weights:adapter-open` and `data:Aegis safety dataset documented` are both outside
+        model.yaml's declared enums, so the record needs a rewrite of its own either way - the
+        adapter weights are public while the base LlamaGuard model is gated behind Meta's
+        access request, which no single `weights` value currently expresses.
     llama-guard:
       because: >-
-        License Llama-3.1-Community resolves to use_restricted (the >700M-MAU clause); the
-        ladder computes 2/restricted from the recorded evidence but the score says
-        3/open_weights. See the 2026-07-30 reproduction report.
+        Recorded 3/open_weights; the ladders compute 2/restricted. Llama-3.1-Community resolves
+        to `use_restricted` on the >700M-MAU clause. Resolves with the universal license scale,
+        which sets that tier to 3. Note `code:inference recipe public` is also outside the
+        declared enum, though it does not affect the outcome.
+    llama-prompt-guard:
+      because: >-
+        Recorded 3/open_weights; the ladders compute 2/restricted. Llama-4-Community resolves to
+        `use_restricted`. Resolves with the universal license scale.
     shieldgemma:
       because: >-
-        License Gemma matches no tier in model.yaml's examples; an alias exists
-        (gemma: Gemma-License) but only in signal_routing.yaml's huggingface: sub-table,
-        which the license-alias lookup does not read. See the 2026-07-30 reproduction
-        report.
+        Recorded 3/open_weights; the ladders compute 2/restricted. This one changed shape in
+        this pass: it used to abstain because the bare `gemma` license string matched no alias,
+        and the alias is now recorded, so the real disagreement is visible - Gemma-License
+        resolves to `use_restricted` and the ladder caps it at 2. Resolves with the universal
+        license scale. Surfacing a mismatch where there was an abstention is the point of
+        fixing a lookup.
+    qwen3guard:
+      because: >-
+        Recorded 4/open_weights; the ladders compute 3/open_weights. Apache-2.0, so the license
+        is not the constraint: model.yaml's 4-rung needs BOTH post-training data and the
+        fine-tuning pipeline released, and this records `data:not-released` with no `code` at
+        all. Either the 4 is crediting a recipe the product's own record says is not published,
+        or the 4-rung is the wrong test for a guardrail model. Same shape as `granite-guardian`
+        and `gpt-oss-safeguard`; one reading should settle all three.
     granite-guardian:
       because: >-
-        License resolves to osi; the ladder computes 3/open_weights from the recorded
-        evidence (data:not-released) but the score says 4/open_weights. See the 2026-07-30
-        reproduction report.
+        Recorded 4/open_weights; the ladders compute 3/open_weights. As `qwen3guard`: an
+        OSI license, `data:not-released`, no `code` recorded, and the 4-rung needs both.
     gpt-oss-safeguard:
       because: >-
-        License resolves to osi; the ladder computes 3/open_weights from the recorded
-        evidence (data:not-released) but the score says 4/open_weights. See the 2026-07-30
-        reproduction report.
-    nemo-guardrails:
+        Recorded 4/open_weights; the ladders compute 3/open_weights. As `qwen3guard`: an
+        OSI license, `data:not-released`, no `code` recorded, and the 4-rung needs both.
+    wildguard:
       because: >-
-        source or core-gated is not recorded in a form the ladder can read; needs a read of
-        the repo and pricing page
-    guardrails-ai:
+        Recorded 4/open_weights; the ladders compute 3/open_weights. Different cause from the
+        three above: `data:open` is genuinely correct, since the WildGuardMix corpus is public,
+        but `code` was never recorded and the 4-rung needs both. This is the one of the four
+        that a repo read could settle rather than a judgment call - if the fine-tuning pipeline
+        is published, recording it makes the 4 reproduce.
+    llamafirewall:
       because: >-
-        source or core-gated is not recorded in a form the ladder can read; needs a read of
-        the repo and pricing page
-    llm-guard:
-      because: >-
-        source or core-gated is not recorded in a form the ladder can read; needs a read of
-        the repo and pricing page
-    pyrit:
-      because: >-
-        source or core-gated is not recorded in a form the ladder can read; needs a read of
-        the repo and pricing page
-    garak:
-      because: >-
-        source or core-gated is not recorded in a form the ladder can read; needs a read of
-        the repo and pricing page
-    osprey:
-      because: >-
-        source or core-gated is not recorded in a form the ladder can read; needs a read of
-        the repo and pricing page
-    coop:
-      because: >-
-        source or core-gated is not recorded in a form the ladder can read; needs a read of
-        the repo and pricing page
-    openai-moderation:
-      because: >-
-        No source or license key is recorded, only a service:proprietary... prose
-        description the software ladder's reads list does not check. See the 2026-07-30
-        reproduction report.
-    azure-content-safety:
-      because: >-
-        No source or license key is recorded, only a service:proprietary... prose
-        description the software ladder's reads list does not check. See the 2026-07-30
-        reproduction report.
-    bedrock-guardrails:
-      because: >-
-        No source or license key is recorded, only a service:proprietary... prose
-        description the software ladder's reads list does not check. See the 2026-07-30
-        reproduction report.
-    lakera-guard:
-      because: >-
-        No source or license key is recorded, only a service:proprietary... prose
-        description the software ladder's reads list does not check. See the 2026-07-30
-        reproduction report.
+        Recorded 5/open_source; the ladders abstain, because neither `source` nor `license` is
+        recorded under a key the software ladder reads - the MIT framework facts sit under
+        `framework` and `self-host`. Deliberately left untranscribed, unlike the other sixteen:
+        the same components string records that the bundled guard models (Prompt Guard 2, Llama
+        Guard) carry the use-restricted Llama Community License, so transcribing only the
+        favourable half would manufacture a 5 while ignoring the question. Which artifact a
+        bundled product is scored on is the multi-SKU rule applied to a case where "SKU" is
+        arguable - the harness is MIT and runs against whatever model you point it at.
+        Needs a human.
+
 products:
 - aegis-guard
 - openguardrails
