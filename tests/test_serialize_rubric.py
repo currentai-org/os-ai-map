@@ -654,15 +654,22 @@ def test_real_sources_serialize_without_errors():
     SOFTWARE = ["agent_tools_protocols", "dataset_processing_tools", "deployment",
                 "evaluation_code", "finetuning_code", "inference_code", "ml_frameworks",
                 "orchestration_agents", "telemetry_observability", "ui_api"]
-    # `training_synthetic_datasets` is the first DATASET category and inherits
-    # sources/rubrics/dataset.yaml. Its 14 rows are 4 single-condition gate rungs plus 5
-    # rungs pairing a license tier with a documentation state.
+    # Two DATASET categories inherit sources/rubrics/dataset.yaml, so both serialize the
+    # same 21 rules: 3 not-published rungs, 2 held-out-answer rungs, 6 gate rungs and 5
+    # license/documentation rungs, all single-condition except the last 5.
+    #
+    # Was 14 for training_synthetic_datasets alone. benchmark_eval_data widened the shared
+    # ladder rather than overriding it: a benchmark may not be published at all, which the
+    # first version had no rung for, and its answers may be held back, which is a question
+    # a training corpus does not have. Identical counts are the point - a category showing
+    # a different number means it stopped inheriting.
+    #
     # `edge_hardware` is the first HARDWARE category and the only ladder with no
     # `license_tier`: 4 rungs, each a single condition on `schematics` except the two that
     # also test `toolchain`, so 6 rows.
     assert per_category("category_scoring_rules") == {
         "base_pretrained": 11, "finetuned_chat": 9, "safeguards": 19,
-        "training_synthetic_datasets": 14, "edge_hardware": 6,
+        "benchmark_eval_data": 21, "training_synthetic_datasets": 21, "edge_hardware": 6,
         **{c: 10 for c in SOFTWARE},
     }
     # Both fell with the slug migration: release-level products collapsed into the
@@ -691,7 +698,10 @@ def test_real_sources_serialize_without_errors():
         # product publishes no openness evidence, and n8n had been deferred as "not recorded"
         # while recording everything the ladder needed.
         "orchestration_agents": 140, "telemetry_observability": 90, "ui_api": 127,
-        "training_synthetic_datasets": 158,
+        # training_synthetic_datasets is unchanged at 158 across the ladder widening, which
+        # is the check that mattered: benchmark_eval_data's new dimensions and rungs did not
+        # disturb the category the ladder was derived from.
+        "training_synthetic_datasets": 158, "benchmark_eval_data": 111,
         # 17 scored hardware products across the five recorded dimensions, less the keys
         # individual products do not record. No license row among them, by design -
         # `edge_hardware` is the only category whose ladder declares no `license_tier`.
