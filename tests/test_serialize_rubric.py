@@ -681,8 +681,10 @@ def test_real_sources_serialize_without_errors():
     # products that had described their gating in prose gained a readable `source:` or
     # `core-gated:` key. The two model categories are untouched, which is what the pilot
     # counts are pinned to catch.
-    # `safeguards` disappears from this dict entirely: all 26 of its products are
-    # deferred, so it now contributes zero product_openness_evidence rows. Nine other
+    # `safeguards` is back at 90 rows. It had disappeared from this dict entirely when all
+    # 26 of its products were deferred; 17 now reproduce, because sixteen of them were
+    # recording the deciding evidence under keys the ladders do not read rather than
+    # disagreeing with the ladders. Nine other
     # categories drop too, by however many rows their own deferred products used to
     # carry (1-3 rows per product) — a deferred product publishes no openness evidence
     # at all now, so `openness_computed` never sees enough rows to score a product the
@@ -702,6 +704,7 @@ def test_real_sources_serialize_without_errors():
         # is the check that mattered: benchmark_eval_data's new dimensions and rungs did not
         # disturb the category the ladder was derived from.
         "training_synthetic_datasets": 158, "benchmark_eval_data": 111,
+        "safeguards": 90,
         # 17 scored hardware products across the five recorded dimensions, less the keys
         # individual products do not record. No license row among them, by design -
         # `edge_hardware` is the only category whose ladder declares no `license_tier`.
