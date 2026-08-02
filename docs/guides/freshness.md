@@ -19,8 +19,9 @@ That is the whole definition. Three consequences follow from it, and no other re
 is intended:
 
 1. **"Everything" means every dimension the score records**, not only the ones the
-   winning rule happens to read. `falcon-3` scores 2 the moment its license resolves
-   to `use_restricted`, so its `data` and `code` values never affect the outcome — but
+   winning rule happens to read. A model scores the moment its license resolves to a
+   capped tier — `use_bounded` or `commercial_forbidden` — so its `data` and `code`
+   values never affect the outcome, but
    they are still published claims, so they still have to be confirmed. A fresh
    license cannot carry a stale corpus claim.
 2. **Confirmation means the axis was re-checked against its sources**, whether or not
