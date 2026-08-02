@@ -224,23 +224,33 @@ automatically: the HF hub, GitHub, PyPI, LMArena, Artificial Analysis, OpenRoute
 The order matters more than usual here, because two of the steps get cheaper by waiting and
 one gets done twice if rushed.
 
-### 1. Finish the recipes — 16/16 categories, 470/470 products
+### 1. Finish the recipes — 16/16 categories ✅ **done 2026-08-01**
 
-85 products across three categories still have no `scoring_recipe`:
+All sixteen categories carry a `scoring_recipe`. The last three landed as PRs #131, #135 and
+#137, and `safeguards` was corrected from 0/26 to 21/26 in #138 and #139.
 
-| category | n | product type |
-|---|---|---|
-| `benchmark_eval_data` | 27 | dataset |
-| `training_synthetic_datasets` | 38 | dataset |
-| `edge_hardware` | 20 | hardware |
+Four shared ladders now exist — `software` (ten categories), `model` (two), `dataset` (two)
+and `hardware` (one) — plus `base_pretrained`'s own. `build/check_recipe.py` gates the
+structure of every one of them on every PR, and `skills/build-rubric/SKILL.md` is the
+procedure for the next one.
 
-**Do this before step 2.** Step 2 generalizes the scoring SQL off its hardcoded model
-dimensions, and that generalization should be driven by the complete dimension vocabulary.
-Generalize it now for software alone and it gets redone when `dataset` and `hardware` arrive
-with dimensions of their own.
+Two things this step turned out to depend on, neither of which the plan anticipated:
 
-Both are cheap: one dataset ladder covers the 65 products in `benchmark_eval_data` and
-`training_synthetic_datasets`, hardware is `edge_hardware`'s 20.
+- **A category can only be laddered if its `components` VALUES are controlled tokens.**
+  `check_rubric` matches `head(value)` against a declared enum, so a category recording
+  sentences cannot be read at all. `edge_hardware` had the tidiest key coverage of the three
+  and 71% prose values, which is why it went last and needed a normalization pass first. Key
+  coverage is not readiness; measuring the prose share is now step 0 of the guide.
+- **"One dataset ladder covers both dataset categories" was optimistic.** Applied unchanged to
+  `benchmark_eval_data` the ladder reproduced 0 of 27, because that category spells the card
+  key `datasheet` and because a benchmark may not be published at all — an internal eval suite
+  or a held-out test set — which `gate` had no rung for. The shared ladder widened rather than
+  forking, and `training_synthetic_datasets` came through identical.
+
+**This had to precede step 2**, and still does for anyone re-reading the order: step 2
+generalizes the scoring SQL off its hardcoded model dimensions, and that generalization is
+driven by the complete dimension vocabulary. Doing it before `dataset` and `hardware` existed
+would have meant doing it twice.
 
 `safeguards` is no longer on this list, and it is why `extends` now accepts two forms. It
 holds 9 products typed `model` and 17 typed `software`, so a single shared ladder could not
@@ -271,8 +281,8 @@ Two things ride along:
   every dimension the score *records*. Without this column no tool can ever legitimately
   write `last_verified`, so it is the precondition for step 3.
 - **A `category_deferrals` table.** `deferred` currently lives only in the repo, so the
-  warehouse does not know which products a category has held back. There are 89 of them now,
-  alongside the 85 products in the three categories with no recipe at all. For the software
+  warehouse does not know which products a category has held back. There are 86 of them now,
+  and no category is without a recipe any more, so deferrals are the whole of it. For the software
   categories the silence has been safe: with no `otherwise` rule in the software ladder their
   deferred products fall out of the model's INNER JOIN rather than being scored wrongly.
 
@@ -298,12 +308,15 @@ than clearing it first.** Reading a product's sources to determine `core-gated` 
 re-check that earns its `last_verified`; done as two passes it is the same pages fetched
 twice, and it re-verifies scores that are about to change.
 
-That backlog is currently 174 products: 49 whose prose does not settle `source` or
-`core-gated`, 10 whose recorded license maps to no tier in the ladder, 4 where the ladder and
-the recorded score still disagree (`jina-reader`, `openhands`, `maple-ai`, `privatemode` — all
-producible pairs, so G3 passes them and only `check_rubric` objects), plus the 85 products in
-the three categories that have no recipe yet and the 26 in `safeguards`, which has a recipe but
-reproduces none of them.
+That backlog is currently the 86 declared deferrals. Every category has a recipe now, and
+`safeguards` — which used to contribute all 26 of its products here — is down to 5. The
+composition is roughly: products whose prose does not settle a dimension the ladder reads,
+products whose recorded license maps to no tier, and a handful where the ladder and the
+recorded score genuinely disagree (`jina-reader`, `openhands`, `maple-ai`, `privatemode`, all
+producible pairs, so G3 passes them and only `check_rubric` objects).
+
+Regenerate the number rather than trusting it — `check_recipe` prints per-category counts, and
+the figure has moved several times in a week.
 
 **Expect scores to move.** Verification is not a formality: the RWKV correction in #105 came
 out of a pass like this, and G3's first run moved 17 openness scores or classes before the

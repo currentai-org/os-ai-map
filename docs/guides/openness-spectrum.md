@@ -39,9 +39,10 @@ than one kind of product maps `extends` per product type.
 
 Three caveats, because "a formula exists" is easy to over-read:
 
-- **The remaining three categories have no recipe yet** — `benchmark_eval_data`,
-  `training_synthetic_datasets` and `edge_hardware`, 85 products. Their scores are still
-  editorial only.
+- **A recipe covers a category, not every product in it.** All sixteen categories carry one as
+  of 2026-08-01, but 86 products are declared in a `deferred:` block, meaning the category has
+  said the ladder does not decide them. Those scores remain editorial. `check_recipe` prints
+  the per-category split and fails if a product abstains without being declared.
 - **A recipe reproducing a score does not validate it.** It shows the rules describe how the
   category was scored. The document-grade evidence the checker reads was parsed out of the
   same files the scores live in, so agreement is a fidelity check on the formula, not on the

@@ -25,8 +25,11 @@ supposed to check. It looks rigorous and is worth less than nothing, because it 
 check while appearing to pass it.
 
 - Finding a real mismatch and *lowering* the reproduction rate is a good day's work.
-- `safeguards` reproduced 0 of 26 and that was the correct outcome. The mismatches were the
-  finding.
+- `safeguards` reproduced 0 of 26 and that was the correct outcome at the time: the mismatches
+  were the finding. It is 21/26 now, and the way it got there is the more useful lesson —
+  sixteen of the seventeen fixes were transcription, not curation. The evidence was in the
+  files under keys the ladders do not read. Check for that before assuming a low rate means
+  research is owed.
 - Never add a rung whose only justification is that one product needs it.
 - Never edit a score to make a ladder reproduce. **You do not edit `sources/scores/` at all** —
   see Boundaries.
