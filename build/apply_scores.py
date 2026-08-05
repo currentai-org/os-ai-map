@@ -20,12 +20,12 @@ That is the whole list.
 which EVERYTHING in the score was confirmed still correct, and "everything" means
 every dimension the score records, not only the ones the winning rule happens to read.
 
-This pipeline cannot establish that, for any product, by construction. Of the four
-recorded dimensions, only `license` and `weights` have a dataset route;
+This pipeline cannot establish that, for any product, by construction. Of the recorded
+openness dimensions, only `license` and `weights` have a dataset route;
 `signal_routing.yaml` declares `data` research-only and the GitHub code route carries
-`settles_dimension = false`, so `currentai.scores.openness_computed` hardcodes both to
-document grade. A document is a human's reading of prose that was already in the score
-file. Re-reading the repo is not a confirmation of anything.
+`settles_dimension = false`, so both resolve to document grade in
+`currentai.scores.openness_facts`. A document is a human's reading of prose that was
+already in the score file. Re-reading the repo is not a confirmation of anything.
 
 So there is no date here for the pipeline to write, and it writes none. Two earlier
 attempts wrote one anyway, from a derived aggregate:
@@ -42,11 +42,15 @@ Those were reverted when this writer was removed.
 `last_checked` is still read and reported, because "when did the pipeline last see any
 of this evidence" is a useful diagnostic. It is not written to a file.
 
-**What would have to change for this to write the field again.** A dataset route that
-settles `data` and `code`, and a column counting dimensions the score RECORDS rather
-than `dims_relied_on`, which counts only what the winning rule reads. Until both
-exist, a guarded write-when-fully-confirmed branch could never fire, and a branch that
-cannot fire reads as working code.
+**What would have to change for this to write the field again.** Two things, and one of
+them now exists. `currentai.scores.openness_computed` gained `dims_recorded` and
+`all_recorded_dims_from_dataset`, which count and test every dimension the score RECORDS
+rather than `dims_relied_on`'s narrower "what the winning rule read". Still missing is the
+part that matters: a dataset route that settles `data` and `code`. So the boolean is false
+on essentially every openness axis, and a guarded write-when-fully-confirmed branch would
+still never fire. A branch that cannot fire reads as working code, so there is still no
+branch — but the column it would read is there, and it is queryable if you want to see how
+far off it is.
 
 It will NOT touch `note`, `sources`, `confidence`, `adoption` or `capability`. Those
 are human prose and human judgment. A tool that rewrote them would make its own diffs

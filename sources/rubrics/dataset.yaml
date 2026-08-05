@@ -171,7 +171,17 @@ openness:
         # `cc` is `livecodebench` recording the family without the variant, which names no
         # terms: CC-BY and CC-BY-NC are both `cc`. `undeclared on HF dataset card` is
         # `swe-bench-verified` saying so outright.
-        examples: [not-clearly-stated-on-card, undeclared on HF dataset card, cc]
+        #
+        # `none`, `closed` and `proprietary` are listed here rather than left to
+        # check_rubric's definitional fallback, which resolves all three to a tier NAMED
+        # `proprietary` whether or not the ladder declares one. This ladder does not: an
+        # unpublished eval suite grants nothing, which is what `unstated` already means, and
+        # its definition above says so. Left implicit the two halves disagreed - the local
+        # checker invented the tier and scored the three internal-eval products on their
+        # availability rung, while the warehouse joins a real lookup table, found no row, and
+        # suppressed the score. Declaring it puts both on the same table.
+        examples: [not-clearly-stated-on-card, undeclared on HF dataset card, cc, none,
+          closed, proprietary]
 
   # Ordered, first match wins. There is deliberately NO `otherwise`. Most of the
   # availability vocabulary and the whole `unstated` tier are cases where the ladder either

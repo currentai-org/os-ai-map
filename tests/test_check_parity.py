@@ -1,0 +1,110 @@
+"""Tests for the repo/warehouse parity gate.
+
+No network. The warehouse half is faked, because what needs testing is the comparison: which
+disagreements the gate calls a failure, and which it lets through as a shared abstention.
+
+`local_scores` does read the real `sources/`, on purpose. Its job is to replay what
+`check_rubric` would conclude, and a fixture would let the two drift - which is the exact
+failure mode this gate exists to catch, one level up.
+"""
+
+import build.check_parity as parity
+from build.check_parity import as_pair, local_scores
+
+
+def row(product, category, score=None, klass=None, deferred=False, rule=None):
+    return {
+        "product_slug": product,
+        "category_slug": category,
+        "openness_score": score,
+        "openness_class": klass,
+        "is_deferred": deferred,
+        "winning_rule_index": rule,
+        "dimension_values": "",
+        "scoring_note": None,
+    }
+
+
+def run(monkeypatch, published, category=None, verbose=False):
+    """Drive main() with a faked warehouse. Returns its exit status."""
+    monkeypatch.setattr(parity, "warehouse_scores", lambda _c: published)
+
+    class Args:
+        pass
+
+    args = Args()
+    args.category = category
+    args.verbose = verbose
+    monkeypatch.setattr(parity.argparse.ArgumentParser, "parse_args", lambda self: args)
+    return parity.main()
+
+
+def test_local_scores_matches_check_rubrics_split():
+    """384 products the ladders decide, 86 the categories defer. The same 470 the warehouse
+    publishes, so a change to either number should show up as a failure here first."""
+    computed, deferred = local_scores(None)
+    assert len(deferred) == 86
+    assert len(computed) == 384
+    assert not set(computed) & set(deferred)
+    # Every one of the 384 reproduces today, so none should abstain.
+    assert [key for key, value in computed.items() if value is None] == []
+
+
+def test_agreement_passes(monkeypatch):
+    computed, deferred = local_scores("base_pretrained")
+    published = {
+        key: row(key[0], key[1], value[0], value[1], rule=0) for key, value in computed.items()
+    }
+    published.update({key: row(key[0], key[1], deferred=True) for key in deferred})
+    assert run(monkeypatch, published, "base_pretrained") == 0
+
+
+def test_a_different_score_fails(monkeypatch, capsys):
+    computed, _ = local_scores("base_pretrained")
+    published = {
+        key: row(key[0], key[1], value[0], value[1], rule=0) for key, value in computed.items()
+    }
+    victim = sorted(published)[0]
+    published[victim]["openness_score"] = 1
+    published[victim]["openness_class"] = "closed"
+    assert run(monkeypatch, published, "base_pretrained") == 1
+    assert "1 diverge" in capsys.readouterr().out
+
+
+def test_a_missing_row_fails(monkeypatch, capsys):
+    """The shape that hid 36 deferrals when the roster came from the evidence store: a
+    product the repo knows about and the warehouse never published at all."""
+    computed, _ = local_scores("base_pretrained")
+    published = {
+        key: row(key[0], key[1], value[0], value[1], rule=0) for key, value in computed.items()
+    }
+    del published[sorted(published)[0]]
+    assert run(monkeypatch, published, "base_pretrained") == 1
+    assert "no row in the warehouse at all" in capsys.readouterr().out
+
+
+def test_scoring_a_deferred_product_fails(monkeypatch, capsys):
+    """The safeguards bug: a ladder ending in `otherwise` scoring what the repo declined."""
+    computed, deferred = local_scores("safeguards")
+    published = {
+        key: row(key[0], key[1], value[0], value[1], rule=0) for key, value in computed.items()
+    }
+    published.update({key: row(key[0], key[1], deferred=True) for key in deferred})
+    victim = sorted(deferred)[0]
+    published[victim] = row(victim[0], victim[1], 3, "open_weights", deferred=False, rule=6)
+    assert run(monkeypatch, published, "safeguards") == 1
+    assert "repo defers it, the warehouse does not know" in capsys.readouterr().out
+
+
+def test_a_shared_abstention_is_not_a_divergence(monkeypatch, capsys):
+    """Both sides declining is a curation work list, not a parity failure."""
+    _, deferred = local_scores("ui_api")
+    published = {key: row(key[0], key[1], deferred=True) for key in deferred}
+    assert run(monkeypatch, published, "ui_api") == 1  # the scored products are missing
+    out = capsys.readouterr().out
+    assert f"{len(deferred)} abstain on both sides" in out
+
+
+def test_as_pair_normalizes_the_score_type():
+    assert as_pair(row("x", "y", 4, "open_core")) == (4, "open_core")
+    assert as_pair(row("x", "y")) is None

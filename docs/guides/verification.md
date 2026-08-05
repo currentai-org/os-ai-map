@@ -127,7 +127,7 @@ gate every PR; ones needing the network run periodically.
 | G2 | a claimed date with no fetch digest | required on axes claiming a confirmation | free |
 | G3 | an impossible score/class pair | the pair must be producible by some rule in the recipe | free |
 | G4 | fabricated or rotted sources | sampled re-fetch, digest and `shows` token match | network, weekly |
-| G5 | repo and warehouse drifting apart | per-product differential after every publish | network, per publish |
+| G5 | repo and warehouse drifting apart | `build/check_parity.py`, a per-product differential | network, daily |
 | G6 | a UDM revision that was never released | assert latest revision == latest release | network, per publish |
 
 **They ratchet rather than switch on.** G1 and G2 apply only to axes that carry a
@@ -137,6 +137,13 @@ already taken. A big-bang gate over all 1386 axes would fail on day one and get 
 off, which is how gates die.
 
 G3, G5 and G6 apply in full immediately — nothing has to be populated first.
+
+G5 runs on its own daily schedule rather than inside the publish job, and that placement is
+deliberate rather than a stopgap in disguise. Publishing pushes and materializes the static
+models; the three user models that read them carry no cron and only refresh when something
+asks. Chained onto a publish, the gate would compare fresh rules against a warehouse that has
+not recomputed and fail for a reason that is not a drift. Move it into `registry.yml` on the
+day those models carry crons, and not before.
 
 G3 found 17 impossible pairs on its first run, not the two that were known. `vellum`,
 `whylabs` and `tensorrt-llm` were recorded `4 / open_source`, a pair no rule emits because
@@ -175,8 +182,10 @@ evidence and asks only whether the pair exists in the ladder, so deferring canno
 
 ## Why openness can never be fully automated
 
-By design, not for want of coverage. Of the recorded openness dimensions only `license` and
-`weights` have a dataset route. `signal_routing.yaml` declares `data` research-only, and the
+By design, not for want of coverage. `all_recorded_dims_from_dataset` in
+`currentai.scores.openness_computed` is the column that says so per axis, and it is false
+almost everywhere. Of the recorded openness dimensions only `license` and `weights` have a
+dataset route. `signal_routing.yaml` declares `data` research-only, and the
 GitHub code route carries `settles_dimension: false` because a live repo establishes neither
 a full training pipeline nor an ungated core. For software categories, `core_gated` needs a
 pricing page read.
@@ -267,33 +276,68 @@ evidence recorded under a key the ladder does not read, a couple of judgment cal
 SKU governs a bundled guard model. Correcting those 26 is what remains, through curation
 rather than more machinery.
 
-### 2. Generalize the scoring SQL, once
+### 2. Generalize the scoring SQL, once ✅ **done 2026-08-05**
 
-`currentai.scores.openness_computed` resolves `weights`, `data`, `code` and `license` by
-name in hardcoded UNION branches, so the ten software categories do not score in the
-warehouse at all today. It needs to read the dimensions each recipe DECLARES, exactly as
-`build/check_rubric.py` now does.
+`currentai.scores.openness_computed` resolved `weights`, `data`, `code` and `license` by name
+in hardcoded UNION branches, so 13 of the 16 categories produced no rows at all: their rules
+test `source`, `core_gated`, `availability`, `answers`, `documentation`, `schematics` and
+`toolchain`, nothing built those facts, and with no `otherwise` rung in those ladders every
+product fell out of the join. 74 rows of a possible 470.
 
-Two things ride along:
+It now reads the dimensions each ladder DECLARES, from a new
+`currentai.registry.category_dimensions`, so a seventeenth category scores in the warehouse
+the day its recipe lands. **470 rows, 384 scored, and `check_parity` reports zero divergence
+from `check_rubric` on every one of them.**
 
-- **A per-axis "every recorded dimension is dataset-grade" column.** `dims_relied_on` counts
-  only what the winning rule reads, which is the wrong denominator — `freshness.md` requires
-  every dimension the score *records*. Without this column no tool can ever legitimately
-  write `last_verified`, so it is the precondition for step 3.
-- **A `category_deferrals` table.** `deferred` currently lives only in the repo, so the
-  warehouse does not know which products a category has held back. There are 86 of them now,
-  and no category is without a recipe any more, so deferrals are the whole of it. For the software
-  categories the silence has been safe: with no `otherwise` rule in the software ladder their
-  deferred products fall out of the model's INNER JOIN rather than being scored wrongly.
+What it took, beyond the generic resolution:
 
-  **That safety argument no longer covers every category.** `sources/rubrics/model.yaml` ends
-  in `otherwise: {score: 3, class: open_weights}`, so a deferred product on the model ladder
-  gets a score in the warehouse instead of dropping out. `safeguards` is the first category to
-  pair an `otherwise` ladder with deferrals, and all 26 of its products are deferred. Until
-  this table exists, the warehouse can compute openness for products whose recorded scores the
-  repo has explicitly declined to reproduce, and for seven of the nine guardrail models the
-  computed value disagrees with the published one. That makes the table a correctness fix for
-  `safeguards` rather than only an observability one.
+- **A split into two models.** Generalizing took the query to 174 Trino stages against a
+  ceiling of 150, because the resolution CTEs are read several times each by the rule walk
+  and Trino replans the subtree per reference. `currentai.scores.openness_facts` now holds one
+  row per (product, category, declared dimension) and `openness_computed` walks the rules over
+  it. That is also the audit chain's third link, which this guide describes and which had no
+  table: "which fact did this score rest on, at what grade" is now a select.
+- **The rule join carries the product type.** `rule_index` is unique only within
+  `(category_slug, product_type)`, so `safeguards` — guardrail models on one ladder, guardrail
+  software on another — was the category where joining on the slug alone interleaves two
+  ladders' numbering.
+- **The tier-free allowance.** The unmapped-license guard now fires only for ladders that ask
+  about a license. `sources/rubrics/hardware.yaml` declares no `license_tier` and none of the
+  20 edge products records one, so applied unconditionally the guard nulls all 20.
+- **`dims_recorded` and `all_recorded_dims_from_dataset`.** `dims_relied_on` counts only what
+  the winning rule reads, which is the wrong denominator — this guide requires every dimension
+  the score *records*. The new columns are the precondition for step 3, and for openness the
+  boolean is false almost everywhere, which is the honest answer rather than a gap.
+- **A `category_deferrals` table.** `deferred` lived only in the repo, so the warehouse did
+  not know which products a category had held back. Deferred products now carry a row with a
+  null score and the recorded reason, and the rule walk is skipped for them.
+
+  This was a correctness fix, not observability. `sources/rubrics/model.yaml` ends in
+  `otherwise: {score: 3, class: open_weights}`, so a deferred product on the model ladder was
+  scored rather than dropped: `safeguards` published a computed openness for nine guardrail
+  models the repo had explicitly declined to stand behind, and seven of the nine disagreed
+  with the published value.
+
+Three things this step turned up that the plan did not anticipate:
+
+- **The evidence model was three recipes stale.** `currentai.evidence.product_evidence` last
+  materialized before the dataset, hardware and safeguards recipes landed — and before the
+  slug collapse in #121, so it still held 47 orchestration products where the repo has 36.
+  None of these models carries a cron, so "the repo is ahead of the warehouse" had a second
+  cause underneath the SQL. Crons are step 5 of the plan in `layer2-status`; until then a
+  publish is only half a refresh.
+- **The roster cannot come from the evidence store.** It was
+  `SELECT DISTINCT product_slug, category_slug FROM product_evidence`, which quietly made
+  coverage conditional on evidence existing: `serialize_rubric` emits no document rows for a
+  deferred product, so 36 of the 86 deferrals — the ones with no Hub or GitHub artifact to
+  generate a dataset row either — were absent rather than unscored. It is now
+  `product_categories`, which is what a category claims.
+- **`license:none` resolved two ways.** `check_rubric` maps `none`, `closed` and `proprietary`
+  to a tier NAMED `proprietary` whether or not the ladder declares one; the warehouse joins a
+  real lookup table and found no row, so three internal-eval benchmarks scored locally and
+  came back null. The dataset ladder's `unstated` tier already means exactly this, so the
+  three tokens are now declared there rather than left to a fallback. Precisely the shape of
+  drift `check_parity` exists to catch, and it was caught by the first run of it.
 
 ### 3. The automated freshness pass — roughly 400 axes
 
