@@ -138,10 +138,17 @@ uv run python -m build.apply_scores --check        # exits non-zero if a score m
 uv run python -m build.apply_scores
 ```
 
-Between those two halves sit two warehouse models, both plain Trino SQL:
-`currentai.evidence.product_evidence` (graded observations) and
+Between those two halves sit three warehouse models, all plain Trino SQL:
+`currentai.evidence.product_evidence` (graded observations),
+`currentai.scores.openness_facts` (one resolved fact per dimension a ladder declares) and
 `currentai.scores.openness_computed` (the ordered-rule walk from `check_rubric.py`).
 Their SQL lives outside this repo, with the maintainer's UDM sources.
+
+None of the three carries a cron, so publishing the registry is only half a refresh: the
+user models recompute when something asks them to, in that order. `check_parity` is what
+tells you whether what the warehouse published still matches what the repo computes, and it
+is a per-product comparison because every drift this project has shipped was invisible to a
+count.
 
 Three rules worth knowing before editing any of it:
 

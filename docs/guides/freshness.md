@@ -67,6 +67,7 @@ can never be conflated.
 | score file commit date | git | Same question, weaker. Used when `last_verified` is absent. |
 | `sources[].accessed` | `sources/scores/<slug>.yaml`, per source | When was this specific URL read? Evidence provenance. **Not freshness.** |
 | `last_checked` | `currentai.scores.openness_computed` | When did the pipeline last read *any* admitted evidence. Diagnostic. **Not freshness.** |
+| `fact_accessed` | `currentai.scores.openness_facts`, per dimension | When the evidence behind one dimension was read or fetched. Provenance, per fact. **Not freshness.** |
 
 ## What it is for
 
@@ -83,12 +84,19 @@ pre-automation backlog.
 `build/apply_scores.py` is the only thing allowed to change a score file without
 somebody typing the value, and it writes `openness.score` and `openness.class`
 exclusively. It cannot earn `last_verified`, and the reason is structural rather than a
-matter of current coverage: of the four recorded dimensions only `license` and `weights`
-have a dataset route at all. `signal_routing.yaml` declares `data` research-only, and
-the GitHub code route carries `settles_dimension = false`, so
-`currentai.scores.openness_computed` hardcodes both to document grade. Document grade
-means a human read some prose and wrote it into the score file — so for those two
-dimensions the pipeline is reading the repo back to itself, which confirms nothing.
+matter of current coverage: of the recorded openness dimensions only `license` and `weights`
+have a dataset route at all. `signal_routing.yaml` declares `data` research-only, and the
+GitHub code route carries `settles_dimension = false`, so both resolve to document grade in
+`currentai.scores.openness_facts`. Document grade means a human read some prose and wrote it
+into the score file — so for those dimensions the pipeline is reading the repo back to itself,
+which confirms nothing.
+
+Nothing hardcodes that any more, which is worth stating because the older wording said the
+scoring model pinned `data` and `code` to document grade by name. It does not: a dataset row
+wins wherever its route carries `settles_dimension`, and those two routes do not. The
+conclusion is unchanged and now rests on a declaration rather than on a special case.
+`all_recorded_dims_from_dataset` in `currentai.scores.openness_computed` reports the outcome
+per axis, and it is the column a guarded write-when-fully-confirmed branch would have to read.
 
 Since "everything confirmed" can never be true of a pipeline run, there is no date for
 it to write.

@@ -157,41 +157,64 @@ category's stage or gaps moved (diff the serialized output before and after).
 
 ---
 
-## Phase 2 — Generalize the scoring SQL, once
+## Phase 2 — Generalize the scoring SQL, once ✅ done 2026-08-05
 
-`currentai.scores.openness_computed` resolves `weights`, `data`, `code` and `license` by name
-in hardcoded UNION branches, so the ten software categories do not score in the warehouse at
-all today. It must read the dimensions each recipe DECLARES, as `build/check_rubric.py` now
-does.
+Landed as two models. `docs/guides/verification.md` step 2 carries the full account; this is
+the operational half.
 
-Three things ship together:
+`currentai.scores.openness_computed` resolved `weights`, `data`, `code` and `license` by name,
+so 13 of 16 categories produced no rows. It now reads
+`currentai.registry.category_dimensions`, the ladder's own declaration. **470 rows, 384
+scored, zero divergence from `check_rubric`.**
 
-1. **Dimension-generic resolution**, driven by `category_scoring_rules.condition_key`.
-2. **A per-axis "every RECORDED dimension is dataset-grade" column.** `dims_relied_on` counts
-   only what the winning rule reads, which is the wrong denominator — the rule requires every
-   dimension the score *records*. Without this, Phase 3 cannot legitimately write a date.
-3. **A `category_deferrals` table.** `deferred` lives only in the repo, so the warehouse does
-   not know which 174 products are held back (63 recipe deferrals plus 111 in the four
-   categories with no recipe). With no `otherwise` rule in the software
-   ladder they currently fall out of an INNER JOIN — safe, but silent.
+What shipped:
 
-Deploy per `docs/runbooks/deploy-udms.md`, and note the release step:
+1. **Dimension-generic resolution**, in a new `currentai.scores.openness_facts` — one row per
+   (product, category, declared dimension), which is also the audit chain's dimension link.
+   The split was forced: one query hit 174 Trino stages against a ceiling of 150.
+2. **`dims_recorded` and `all_recorded_dims_from_dataset`**, the denominator Phase 3 needs.
+3. **`category_deferrals`**, plus `category_dimensions`. Deferred products keep a row, carry
+   the recorded reason, and are never walked through the rules.
+
+### The refresh order, which is not optional
+
+Nothing here carries a cron, so a publish is only the first half of a refresh. Getting this
+wrong looks exactly like a code bug: the first run of the generalized SQL reported three
+categories missing entirely, and the cause was `product_evidence` sitting three recipes stale
+— from before the slug collapse in #121, so it still held 47 orchestration products against
+the repo's 36.
 
 ```bash
-# revision -> RELEASE -> run. The middle step is the one that gets forgotten.
+# 1. push the declarations, and wait for the static models to materialize
 uv run python -m build.serialize_rubric && uv run python -m build.publish_registry
-# then create the revision, create the release, then trigger the run
+
+# 2. refresh the user models IN ORDER, waiting for each: they do not cascade
+#    evidence.product_evidence -> scores.openness_facts -> scores.openness_computed
+
+# 3. revision -> RELEASE -> run, for a model whose SQL changed. The middle step is the
+#    one that gets forgotten, and a run without it executes the previous release.
+uv run python tools/deploy_udm.py --dataset scores --model openness_facts \
+    --sql udms/scores_openness_facts.sql
+
+# 4. prove it
+uv run python -m build.check_parity
 ```
 
 ### G5 — the parity gate
 
-Add `build/check_parity.py`: for every scored product, compare `check_rubric`'s local result
-against `currentai.scores.openness_computed` and fail on any divergence. Run it in
-`registry.yml` after the publish step.
+`build/check_parity.py` compares `check_rubric`'s local verdict against
+`currentai.scores.openness_computed` for every product, and fails on any divergence. It runs
+daily in `.github/workflows/parity.yml`.
 
-This is the mechanism for the failure mode that bit four times in one day — `check_rubric`
-and the SQL mirror each other's logic by hand and drift silently. Every one of those four was
-caught by per-product comparison and none by a local check. Automate the thing that worked.
+This is the mechanism for the failure mode that bit four times in one day — `check_rubric` and
+the SQL mirror each other's logic by hand and drift silently. Every one of those four was
+caught by per-product comparison and none by a local check, and the gate's first run caught a
+fifth: `license:none` resolving to a tier through check_rubric's definitional fallback and to
+nothing at all through the warehouse's lookup table.
+
+It is not in `registry.yml`, on purpose. Chained onto a publish it would compare fresh rules
+against the un-recomputed warehouse of step 2 above and fail for a reason that is not a drift.
+Move it there when those three models carry crons.
 
 **Exit criteria:** all 16 categories score in the warehouse, `check_parity` passes, and the
 deferral count in `category_deferrals` matches the repo's.

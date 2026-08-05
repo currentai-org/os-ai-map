@@ -46,6 +46,7 @@ Emitted tables (CSVs into `build/registry/`, alongside the registry's own):
   category_scoring_rules      the ordered formula, one row per rule condition, per category
                               and product type
   category_license_tiers      tier <- example license, per category and product type
+  category_deferrals          products a category has declared its ladder does not decide
   license_aliases             a source's license slug -> canonical license name
   evidence_abstentions        values that mean "this source has no answer"
   product_openness_evidence   per-dimension values parsed from `components`
@@ -106,6 +107,27 @@ TABLES: dict[str, tuple[str, ...]] = {
         "example_license",
         "is_definitional",
     ),
+    # The ladder's dimension vocabulary, so the warehouse does not have to infer it from
+    # which keys the rules happen to test. `openness_computed` needs the declared set for
+    # two different things — which evidence rows are facts rather than traceability, and the
+    # denominator for "every dimension this score records is dataset-grade" — and a rule's
+    # `condition_key` answers neither: a dimension a formula never tests is still recorded,
+    # and `license_tier` is a derived fact rather than a declared dimension.
+    "category_dimensions": (
+        "category_slug",
+        "product_type",
+        "dimension",
+        "reads_keys",
+        "declared_values",
+    ),
+    # Deferrals cross the bridge because silence does not travel. `check_rubric` excludes a
+    # deferred product from reproduction, but the warehouse never heard about it, so a ladder
+    # ending in `otherwise` scored it anyway: `safeguards` published computed openness for
+    # nine guardrail models the repo had explicitly declined to stand behind, and seven of
+    # them disagreed with the recorded score. Emitted per category rather than per variant,
+    # because `deferred` is declared on `scoring_recipe` itself and applies whichever ladder
+    # a product resolves to.
+    "category_deferrals": ("category_slug", "product_slug", "because"),
     "license_aliases": ("source", "license_slug", "license_name"),
     "evidence_abstentions": ("source", "column_name", "abstain_value"),
     "product_openness_evidence": (
@@ -287,6 +309,26 @@ def license_tiers(slug: str, recipe: dict) -> tuple[list[dict], list[str]]:
     return rows, errors
 
 
+def category_dimensions(slug: str, recipe: dict) -> list[dict]:
+    """The ladder's declared dimensions, with the keys each may be recorded under.
+
+    `reads_keys` and `declared_values` are joined with '|' rather than emitted as one row
+    per element: nothing downstream joins on them. They are there so a reader of the
+    warehouse can see what vocabulary a dimension accepts without opening the repo, and so
+    a value arriving outside its enum can be spotted from the warehouse side too.
+    """
+    declared = ((recipe.get("openness") or {}).get("dimensions")) or {}
+    return [
+        {
+            "category_slug": slug,
+            "dimension": name,
+            "reads_keys": "|".join((spec or {}).get("reads") or [name]),
+            "declared_values": "|".join((spec or {}).get("values") or []),
+        }
+        for name, spec in declared.items()
+    ]
+
+
 def license_aliases(routing: dict) -> list[dict]:
     rows: list[dict] = []
     aliases = (((routing.get("dimensions") or {}).get("license") or {}).get("aliases")) or {}
@@ -377,6 +419,21 @@ def build_rubric(sources: dict, policy: dict, routing: dict) -> tuple[dict[str, 
         # `check_category` reads (build/check_rubric.py:240).
         deferred = (category.get("scoring_recipe") or {}).get("deferred") or {}
 
+        # Emitted from the declaration rather than from inside the products loop below,
+        # which only reaches products that have a `sources/scores/` file. The evidence
+        # store's roster is `product_categories`, so a deferred product with no score file
+        # still arrives in the warehouse carrying hub-derived dataset rows, and the filter
+        # that has to stop it needs a row here regardless.
+        for product_slug, spec in sorted(deferred.items()):
+            because = (spec or {}).get("because", "")
+            tables["category_deferrals"].append(
+                {
+                    "category_slug": slug,
+                    "product_slug": product_slug,
+                    "because": " ".join(str(because).split()),
+                }
+            )
+
         for product_type, variant_recipe in sorted(variants.items()):
             rules, rule_errors = scoring_rules(slug, variant_recipe)
             for row in rules:
@@ -389,6 +446,16 @@ def build_rubric(sources: dict, policy: dict, routing: dict) -> tuple[dict[str, 
                 row["product_type"] = product_type
             tables["category_license_tiers"].extend(tier_rows)
             errors.extend(tier_errors)
+
+            dimension_rows = category_dimensions(slug, variant_recipe)
+            for row in dimension_rows:
+                row["product_type"] = product_type
+            tables["category_dimensions"].extend(dimension_rows)
+            if not dimension_rows:
+                errors.append(
+                    f"category '{slug}' ladder for product type '{product_type}' declares no "
+                    f"openness dimensions, so nothing it scores can be traced to a fact"
+                )
 
         for product_slug in category.get("products") or []:
             record = scores.get(product_slug)

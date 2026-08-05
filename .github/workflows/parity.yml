@@ -1,0 +1,39 @@
+name: parity
+
+# Gate G5: the repo and the warehouse must compute the same score for every product.
+# `build/check_rubric.py` walks each ladder in Python and
+# `currentai.scores.openness_computed` walks it in Trino, and only this makes the two agree.
+# Every drift this project has shipped was invisible to a count — the reasoning and the four
+# incidents are in build/check_parity.py.
+
+# Deliberately NOT a step in registry.yml, which is where it belongs eventually and cannot
+# go yet. Publishing pushes the static models and materializes those; the user models that
+# read them — evidence.product_evidence, scores.openness_facts, scores.openness_computed —
+# carry no cron and only refresh when something asks them to. So a parity check chained
+# straight onto a publish would compare fresh rules against a warehouse that has not
+# recomputed, and fail for a reason that is not a drift. A gate that cries wolf gets
+# switched off, which is how gates die.
+#
+# Move this into registry.yml's publish job on the day those three models carry crons, or on
+# the day publish_registry triggers the downstream runs and waits for them.
+
+on:
+  schedule:
+    # Daily, well after any working-hours publish has had time to be recomputed.
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+jobs:
+  parity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --locked
+      - name: Compare every product against the warehouse
+        env:
+          OSO_API_KEY: ${{ secrets.OSO_API_KEY }}
+        run: uv run python -m build.check_parity
