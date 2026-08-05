@@ -6,21 +6,29 @@ name: parity
 # Every drift this project has shipped was invisible to a count — the reasoning and the four
 # incidents are in build/check_parity.py.
 
-# Deliberately NOT a step in registry.yml, which is where it belongs eventually and cannot
-# go yet. Publishing pushes the static models and materializes those; the user models that
-# read them — evidence.product_evidence, scores.openness_facts, scores.openness_computed —
-# carry no cron and only refresh when something asks them to. So a parity check chained
-# straight onto a publish would compare fresh rules against a warehouse that has not
-# recomputed, and fail for a reason that is not a drift. A gate that cries wolf gets
-# switched off, which is how gates die.
+# Deliberately NOT a step in registry.yml. Publishing pushes the static models and
+# materializes those, but the user models that read them recompute on a WEEKLY cron —
+# evidence.product_evidence Monday 03:00 UTC, scores.openness_facts 04:00,
+# scores.openness_computed 05:00. So a parity check chained onto a publish would compare
+# fresh rules against a warehouse that has not recomputed yet, and fail for a reason that is
+# not a drift. A gate that cries wolf gets switched off, which is how gates die.
 #
-# Move this into registry.yml's publish job on the day those three models carry crons, or on
-# the day publish_registry triggers the downstream runs and waits for them.
+# Crons do not fix that, which is worth being precise about: they bound how stale the
+# warehouse gets, not how quickly a publish reaches it. On a weekly schedule a Tuesday merge
+# waits six days to be scored. This moves into registry.yml on the day publish_registry
+# triggers the three downstream runs and waits for them, and not before.
+#
+# This schedule is why the gate is weekly rather than daily, and the two must move together.
+# A daily gate over a weekly chain fails every day between a merge and the next Monday — six
+# false alarms per real one, all of them saying "the warehouse has not caught up yet", which
+# is not what a parity gate is for. Anyone wanting a check sooner should refresh the three
+# models and then run this by hand: workflow_dispatch is here for exactly that.
 
 on:
   schedule:
-    # Daily, well after any working-hours publish has had time to be recomputed.
-    - cron: "0 6 * * *"
+    # Monday 06:00 UTC, one hour behind scores.openness_computed, so it grades a warehouse
+    # that has just recomputed against the rules CI pushed during the week.
+    - cron: "0 6 * * 1"
   workflow_dispatch:
 
 jobs:

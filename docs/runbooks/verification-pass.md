@@ -178,11 +178,24 @@ What shipped:
 
 ### The refresh order, which is not optional
 
-Nothing here carries a cron, so a publish is only the first half of a refresh. Getting this
-wrong looks exactly like a code bug: the first run of the generalized SQL reported three
-categories missing entirely, and the cause was `product_evidence` sitting three recipes stale
-— from before the slug collapse in #121, so it still held 47 orchestration products against
-the repo's 36.
+The three user models now carry weekly crons — `evidence.product_evidence` Monday 03:00 UTC,
+`scores.openness_facts` 04:00, `scores.openness_computed` 05:00, with G5 grading at 06:00 — so
+the warehouse is at most a week behind the repo on its own. **A publish is still only the first
+half of a refresh**, and on a weekly cadence that matters more rather than less: merge on
+Tuesday and the map carries the old numbers until the following Monday unless you walk the chain
+below. Do that whenever a merge changes a score, rather than waiting.
+
+Getting this wrong looks exactly like a code bug: the first run of the generalized SQL reported
+three categories missing entirely, and the cause was `product_evidence` sitting three recipes
+stale — from before the slug collapse in #121, so it still held 47 orchestration products
+against the repo's 36. That was with nothing scheduled at all; a weekly cron caps that at a week,
+and changes nothing about the next ten minutes.
+
+**What the crons do NOT refresh: the signals themselves.** `signal_huggingface.hub_state` and
+`signal_github.repo_state` are still `@manual`, so the chain recomputes the same fetched facts
+every Monday. Scheduling those is a bigger decision than a cron expression — it is the point at
+which scores start moving on their own, which is what `apply_scores --check` exits non-zero
+for and what the review digest in the autopilot design exists to handle.
 
 ```bash
 # 1. push the declarations, and wait for the static models to materialize
