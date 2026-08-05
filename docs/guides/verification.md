@@ -138,12 +138,21 @@ off, which is how gates die.
 
 G3, G5 and G6 apply in full immediately — nothing has to be populated first.
 
-G5 runs on its own daily schedule rather than inside the publish job, and that placement is
+G5 runs on its own weekly schedule rather than inside the publish job, and that placement is
 deliberate rather than a stopgap in disguise. Publishing pushes and materializes the static
-models; the three user models that read them carry no cron and only refresh when something
-asks. Chained onto a publish, the gate would compare fresh rules against a warehouse that has
-not recomputed and fail for a reason that is not a drift. Move it into `registry.yml` on the
-day those models carry crons, and not before.
+models; the three user models that read them recompute on Monday at 03:00, 04:00 and 05:00 UTC,
+upstream first, and G5 grades the result at 06:00. Chained onto a publish instead, the gate would
+compare fresh rules against a warehouse that has not recomputed and fail for a reason that is
+not a drift.
+
+**The gate's schedule has to match the chain's.** A daily gate over a weekly chain fails every
+day between a merge and the following Monday, always saying "the warehouse has not caught up",
+which is not what a parity gate is for and is how a gate earns its way into being ignored. If
+you want a check sooner, refresh the three models and run `check_parity` by hand.
+
+The crons bound how stale the warehouse gets; they do not make a publish arrive any faster, so a
+Tuesday merge is scored the following Monday. Move G5 into `registry.yml` on the day
+`publish_registry` triggers those three runs and waits for them.
 
 G3 found 17 impossible pairs on its first run, not the two that were known. `vellum`,
 `whylabs` and `tensorrt-llm` were recorded `4 / open_source`, a pair no rule emits because
