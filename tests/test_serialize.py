@@ -246,3 +246,20 @@ def test_disclosure_flag_is_independent_of_closed_rows():
     rows = [_pd("open", 4), _pd("closed", None)]
     assert "disclosure" in _stage_and_gaps(rows, {"adopt": 1.0, "cap": 0.0}, disclosure=True)["gaps"]
     assert "disclosure" not in _stage_and_gaps(rows, {"adopt": 1.0, "cap": 0.0})["gaps"]
+
+
+def test_organizations_block_is_complete_and_deterministic():
+    """Every org_slug a product points at must resolve, or the app's org links 404.
+    Sorted because the payload feeds a daily bot PR and unsorted keys are review noise."""
+    payload = build_payload(_sources(), frozen_long_tail={}, generated="2026-01-01")
+    orgs = payload["organizations"]
+    assert list(orgs) == sorted(orgs), "organization keys must be sorted"
+    rows = [p for c in payload["categories"].values() for p in c["products"]]
+    for row in rows:
+        assert row["org_slug"] in orgs, f"{row['slug']} points at missing org {row['org_slug']}"
+    for slug, org in orgs.items():
+        assert org["slug"] == slug
+        assert org["products"] == sorted(org["products"]), f"{slug} roster must be sorted"
+        assert isinstance(org["github"], list)
+        for url in org["github"]:
+            assert isinstance(url, str), f"{slug} github must be flat URL strings"

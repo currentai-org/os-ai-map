@@ -233,6 +233,34 @@ def _row(slug: str, prod: dict, org_slug: str, org_name: str, score: dict,
     return {k: row[k] for k in PRODUCT_KEY_ORDER if k in row}
 
 
+def _organizations(orgs: dict, product_org: dict) -> dict:
+    """The organization roster, emitted for the app's /map/org/<slug> pages.
+
+    Sourced from sources/organizations/*.yaml rather than build/registry/organizations.csv:
+    the registry is gitignored, so it never reaches a consumer, and its github column is a
+    stringified Python repr. Here github is a list of {url: ...} mappings, flattened to URLs.
+
+    Everything is sorted. A curator reordering a YAML roster must not produce a payload diff,
+    because a payload diff is a daily bot PR in the app repo.
+    """
+    by_org: dict[str, list[str]] = {}
+    for prod_slug, org_slug in product_org.items():
+        by_org.setdefault(org_slug, []).append(prod_slug)
+    return {
+        slug: {
+            "slug": slug,
+            "display_name": orgs[slug].get("display_name", ""),
+            "type": orgs[slug].get("type", "unknown"),
+            "homepage": orgs[slug].get("homepage", ""),
+            "github": [e["url"] for e in (orgs[slug].get("github") or [])
+                       if isinstance(e, dict) and e.get("url")],
+            "country": orgs[slug].get("country", ""),
+            "products": sorted(by_org.get(slug, [])),
+        }
+        for slug in sorted(orgs)
+    }
+
+
 def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None = None,
                   freshness: dict | None = None) -> dict:
     if generated is None:
@@ -301,6 +329,7 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
     }
     return {"descriptions": descriptions, "layer_order": layer_order,
             "categories": out_cats, "order": order,
+            "organizations": _organizations(orgs, product_org),
             "n_total": n, "generated": generated,
             "long_tail": _filter_long_tail(frozen_long_tail, prods)}
 
