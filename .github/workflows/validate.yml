@@ -40,6 +40,12 @@ jobs:
       - name: Serialize dry-run
         run: uv run python -m build.serialize --date ci-dry-run
 
+      # The payload's own identity invariants: slugs, org_slug resolution, aliases, and
+      # the freshness canary that catches a shallow-clone checkout from the inside. See
+      # build/check_payload.py.
+      - name: Gate the serialized payload
+        run: uv run python -m build.check_payload
+
       # Render the notebook and parse the result. The generated file is bot-owned and is
       # not committed from a PR, but rendering is the only thing that catches a
       # contributor string breaking the generated Python: a quote in a strapline produces

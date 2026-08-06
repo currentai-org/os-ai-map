@@ -31,6 +31,14 @@ jobs:
         run: uv run python -m build.validate
       - name: Serialize (generated = run date)
         run: uv run python -m build.serialize --date "$(date -u +%F)"
+
+      # Same identity gate validate.yml runs on every PR, plus the retirement check that
+      # only a two-payload diff can do: fail the bot commit rather than let a slug 404
+      # silently. See build/check_payload.py and build/check_retirement.py.
+      - name: Gate the serialized payload
+        run: uv run python -m build.check_payload
+      - name: Fail on an unrouted retirement
+        run: uv run python -m build.check_retirement
       - name: Render notebook
         run: uv run python build/render.py
       - name: Sync README stat badges
