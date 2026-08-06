@@ -21,13 +21,30 @@ class ShallowRepositoryError(RuntimeError):
 
 
 def _is_shallow(root: Path | None) -> bool:
-    out = subprocess.run(["git", "rev-parse", "--is-shallow-repository"],
-                         cwd=root, capture_output=True, text=True)
+    # An ambiguous or failed detection must never default to "not shallow, carry on" --
+    # that is the same silent-wrong-date failure the guard exists to prevent, arriving
+    # through a different door. `root` not being a git repository at all (exit 128, empty
+    # stdout) used to read the same as a clean "false"; it must instead say plainly that
+    # shallowness could not be determined, not that history is known to be shallow.
+    try:
+        out = subprocess.run(["git", "rev-parse", "--is-shallow-repository"],
+                             cwd=root, capture_output=True, text=True)
+    except FileNotFoundError as e:
+        raise ShallowRepositoryError(
+            f"could not determine whether {root} is a shallow git checkout: git is not "
+            "installed or not on PATH."
+        ) from e
+    if out.returncode != 0:
+        raise ShallowRepositoryError(
+            f"could not determine whether {root} is a shallow git checkout: "
+            f"`git rev-parse --is-shallow-repository` exited {out.returncode} "
+            f"({out.stderr.strip() or 'no stderr'})."
+        )
     return out.stdout.strip() == "true"
 
 
 def _commit_dates(root: Path | None) -> dict[str, str]:
-    return {slug: d.isoformat() for slug, d in commit_dates().items()}
+    return {slug: d.isoformat() for slug, d in commit_dates(root).items()}
 
 
 def _last_verified(root: Path | None) -> dict[str, str]:
