@@ -366,12 +366,14 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
 if __name__ == "__main__":
     import argparse
     from build.validate import load_sources
+    from build.freshness_payload import resolve_freshness
     parser = argparse.ArgumentParser()
     parser.add_argument("--date", default=None,
                         help="value for the payload 'generated' field (default: today)")
     args = parser.parse_args()
     sources = load_sources(ROOT)
     frozen = json.load(open(ROOT / "build" / "_frozen_long_tail.json"))
-    payload = build_payload(sources, frozen, generated=args.date)
+    payload = build_payload(sources, frozen, generated=args.date,
+                            freshness=resolve_freshness(ROOT))
     (ROOT / "build" / "notebook_data.json").write_text(json.dumps(payload, indent=2, ensure_ascii=False))
     print(f"wrote build/notebook_data.json ({payload['n_total']} products)")
