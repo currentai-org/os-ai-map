@@ -204,6 +204,17 @@ def test_unknown_org_renders_empty_string():
     assert payload["categories"]["base_pretrained"]["products"][0]["org"] == ""
 
 
+def test_every_product_carries_its_slug_and_org_slug():
+    """Identity survives PRODUCT_KEY_ORDER — the whitelist at serialize.py:226 silently
+    drops any key not listed, so this fails loudly rather than emitting a slug-less payload."""
+    payload = build_payload(_sources(), frozen_long_tail={}, generated="2026-01-01")
+    rows = [p for c in payload["categories"].values() for p in c["products"]]
+    assert rows, "fixture produced no products"
+    for row in rows:
+        assert row["slug"], f"{row['product']} has no slug"
+        assert row["org_slug"], f"{row['product']} has no org_slug"
+
+
 def _pd(cls, adoption):
     return {"openness": {"class": cls}, "adoption": {"level": adoption},
             "capability": {"score": None}, "type": "dataset"}
