@@ -252,8 +252,8 @@ def _organizations(orgs: dict, product_org: dict) -> dict:
             "display_name": orgs[slug].get("display_name", ""),
             "type": orgs[slug].get("type", "unknown"),
             "homepage": orgs[slug].get("homepage", ""),
-            "github": [e["url"] for e in (orgs[slug].get("github") or [])
-                       if isinstance(e, dict) and e.get("url")],
+            "github": sorted(e["url"] for e in (orgs[slug].get("github") or [])
+                             if isinstance(e, dict) and e.get("url")),
             "country": orgs[slug].get("country", ""),
             "products": sorted(by_org.get(slug, [])),
         }

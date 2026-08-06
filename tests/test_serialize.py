@@ -263,3 +263,52 @@ def test_organizations_block_is_complete_and_deterministic():
         assert isinstance(org["github"], list)
         for url in org["github"]:
             assert isinstance(url, str), f"{slug} github must be flat URL strings"
+
+
+def _multi_org_sources():
+    """Two organizations, deliberately unsorted at every level the shared _sources()
+    fixture cannot exercise: zeta-labs owns two products listed out of order and two
+    github entries listed out of order; alpha-labs sorts before it but is declared
+    second. The shared fixture has one org, one product, and no github key at all, so
+    it cannot go red on any of this -- see the review finding this test answers."""
+    return {
+        "organizations": {
+            "zeta-labs": {"name": "zeta-labs", "display_name": "Zeta Labs", "type": "company",
+                         "github": [{"url": "https://github.com/zeta-two"},
+                                    {"url": "https://github.com/zeta-one"}],
+                         "products": ["zeta-b", "zeta-a"]},
+            "alpha-labs": {"name": "alpha-labs", "display_name": "Alpha Labs", "type": "company",
+                          "products": ["alpha-x"]},
+        },
+        "taxonomy": {"arcs": [{"name": "Model components", "layer": "model_components",
+                               "categories": ["base_pretrained"]}]},
+        "categories": {
+            "base_pretrained": {"name": "base_pretrained",
+                                "display_name": "Base / pretrained models",
+                                "products": ["zeta-a", "zeta-b", "alpha-x"], "comments": ""}
+        },
+        "products": {
+            "zeta-a": {"name": "zeta-a", "display_name": "Zeta A", "type": "model", "description": "d"},
+            "zeta-b": {"name": "zeta-b", "display_name": "Zeta B", "type": "model", "description": "d"},
+            "alpha-x": {"name": "alpha-x", "display_name": "Alpha X", "type": "model", "description": "d"},
+        },
+        "scores": {
+            slug: {"product": slug, "openness": {"score": 2, "class": "restricted"},
+                  "adoption": {"level": 3, "signal_type": "usage_volume"},
+                  "capability": {"score": None, "basis": "n/a"}}
+            for slug in ("zeta-a", "zeta-b", "alpha-x")
+        },
+    }
+
+
+def test_organizations_block_sorts_github_urls_and_out_of_order_rosters():
+    """Regression for the finding that github.py:255-256 preserved source order: a
+    cosmetic reorder of a YAML github: list or products: roster must not change the
+    payload, or a curator's harmless edit becomes a phantom daily bot PR."""
+    payload = build_payload(_multi_org_sources(), frozen_long_tail={}, generated="2026-01-01")
+    orgs = payload["organizations"]
+    assert list(orgs) == ["alpha-labs", "zeta-labs"]
+    assert orgs["zeta-labs"]["products"] == ["zeta-a", "zeta-b"]
+    assert orgs["zeta-labs"]["github"] == [
+        "https://github.com/zeta-one", "https://github.com/zeta-two",
+    ], "github urls must be sorted, not preserved in source order"
