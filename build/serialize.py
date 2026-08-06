@@ -261,6 +261,30 @@ def _organizations(orgs: dict, product_org: dict) -> dict:
     }
 
 
+def _aliases(spec: dict) -> dict:
+    """Retired slug -> live slug, for the app's redirects.
+
+    ONLY `aliases` and `organization_aliases`. sources/slug_aliases.yaml has four other
+    top-level keys that look like alias maps and are not:
+      - renamed_before_links records that a slug's PREVIOUS occupant moved elsewhere,
+        not that the slug itself retired. One entry's key (grok) is itself a live
+        product today, so treating it as a redirect would 308 that live page onto a
+        different one; the other's target sits alongside its own still-live sibling
+        (github-copilot-ide next to github-copilot). Its own comment in the YAML says
+        as much: it exists for the audit trail only, because nothing ever linked to
+        the old slug.
+      - version_in_identity and governing_release are documentation (why a slug keeps
+        a version token; which release governs a tier's score), not old-slug -> new-slug
+        pairs, and their values aren't even slugs.
+    Sorted, because this payload feeds a daily automated PR in another repo and
+    unsorted keys would show up there as a phantom diff.
+    """
+    return {
+        "products": dict(sorted((spec.get("aliases") or {}).items())),
+        "organizations": dict(sorted((spec.get("organization_aliases") or {}).items())),
+    }
+
+
 def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None = None,
                   freshness: dict | None = None) -> dict:
     if generated is None:
@@ -268,6 +292,10 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
     orgs, cats, prods, scores = (sources["organizations"], sources["categories"],
                                  sources["products"], sources["scores"])
     taxonomy = sources["taxonomy"]
+    # .get with a default so unit-test fixtures, which build their own source dicts,
+    # keep working without carrying a slug_aliases block. load_sources always supplies
+    # one for the real build (build/validate.py).
+    slug_aliases = sources.get("slug_aliases") or {}
     # Global slug -> display name map, used to resolve lineage references (which
     # point at other on-map products by slug) into readable names at serialize time.
     name_map = {slug: p["display_name"] for slug, p in prods.items()}
@@ -330,6 +358,7 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
     return {"descriptions": descriptions, "layer_order": layer_order,
             "categories": out_cats, "order": order,
             "organizations": _organizations(orgs, product_org),
+            "aliases": _aliases(slug_aliases),
             "n_total": n, "generated": generated,
             "long_tail": _filter_long_tail(frozen_long_tail, prods)}
 

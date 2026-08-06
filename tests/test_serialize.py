@@ -312,3 +312,45 @@ def test_organizations_block_sorts_github_urls_and_out_of_order_rosters():
     assert orgs["zeta-labs"]["github"] == [
         "https://github.com/zeta-one", "https://github.com/zeta-two",
     ], "github urls must be sorted, not preserved in source order"
+
+
+def _sources_with_aliases():
+    src = _sources()
+    src["slug_aliases"] = {
+        "version": 1,
+        # Two products, declared out of alphabetical order, so a missing sort call
+        # would leave the payload's key order matching this insertion order instead.
+        "aliases": {"llama-4-scout": "llama-4", "aaa-legacy-name": "llama-4"},
+        # Present in the real file and NOT a redirect map: its key ("llama-4") is a
+        # live product (see _sources()), so merging this in would 308 that live page
+        # onto "something-else".
+        "renamed_before_links": {"llama-4": "something-else"},
+        "version_in_identity": {"raspberry-pi-5": "keeps its 5"},
+        # Two orgs, also out of order, and non-empty so the per-entry loop below
+        # actually runs instead of vacuously passing over an empty dict.
+        "organization_aliases": {"meta-platforms": "meta", "facebook": "meta"},
+        "governing_release": {},
+    }
+    return src
+
+
+def test_alias_map_carries_only_the_two_redirect_safe_blocks():
+    """renamed_before_links is an audit trail, not a redirect map: its key here is a live
+    product, so emitting it would 308 a live page onto a different product."""
+    payload = build_payload(_sources_with_aliases(), frozen_long_tail={}, generated="2026-01-01")
+    aliases = payload["aliases"]
+    assert aliases["products"] == {"aaa-legacy-name": "llama-4", "llama-4-scout": "llama-4"}
+    assert "llama-4" not in aliases["products"], "renamed_before_links leaked into the redirects"
+    assert set(aliases) == {"products", "organizations"}
+    live = {p["slug"] for c in payload["categories"].values() for p in c["products"]}
+    for old, new in aliases["products"].items():
+        assert old not in live, f"alias {old} is also a live product slug"
+        assert new in live, f"alias {old} points at missing product {new}"
+    for old, new in aliases["organizations"].items():
+        assert old not in payload["organizations"], f"alias {old} is also a live org"
+        assert new in payload["organizations"], f"alias {old} points at missing org {new}"
+    assert list(aliases["products"]) == sorted(aliases["products"]), \
+        "product aliases must be sorted, not left in source order"
+    assert list(aliases["organizations"]) == sorted(aliases["organizations"]), \
+        "organization aliases must be sorted, not left in source order"
+    assert aliases["organizations"] == {"facebook": "meta", "meta-platforms": "meta"}
