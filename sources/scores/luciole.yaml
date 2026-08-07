@@ -1,0 +1,64 @@
+product: luciole
+openness:
+  score: 5
+  class: open_source
+  components: weights:open(Apache-2.0, safetensors on HF for 1B/8B/23B base + Instruct-1.1);data:open(Luciole-Training-Dataset
+    on HF, ~4.65T tokens, "only corpora under open licenses");code:open(Luciole-Training pretraining +
+    data-processing pipeline on GitHub, GPL-3.0);checkpoints:open(intermediate + final pretraining checkpoints
+    released);license:Apache-2.0(OSI)
+  confidence: high
+  note: 'Full open-source tier alongside Lucie / OLMo / Apertus: open weights, open training data, open
+    training code, and intermediate checkpoints. Notably a cleaner full-openness exemplar than its Lucie
+    predecessor — the Luciole-Training-Dataset is described as containing only openly licensed corpora,
+    where Lucie-Training-Dataset carried a non-commercial cc-by-nc-sa license. The weights are Apache-2.0
+    (OSI) across every distributed size, so the data + code + OSI-license rule lands at 5.'
+  sources:
+  - url: https://huggingface.co/OpenLLM-France/Luciole-23B-Instruct-1.1
+    shows: Apache-2.0 license; downloadable safetensors weights; fine-tuned + DPO-aligned version of
+      Luciole-23B-Base; developed by LINAGORA and the OpenLLM-France consortium (France 2030 / BPI France)
+    accessed: '2026-08-07'
+  - url: https://huggingface.co/datasets/OpenLLM-France/Luciole-Training-Dataset
+    shows: released multilingual pretraining corpus (~4.65T tokens; EN 53.4% / FR 16.3% / DE / ES / IT /
+      PT / NL / AR + regional), "contains only corpora under open licenses"
+    accessed: '2026-08-07'
+  - url: https://github.com/OpenLLM-France/Luciole-Training
+    shows: training pipeline for the Luciole series — data prep, training recipe, and configs (GPL-3.0)
+    accessed: '2026-08-07'
+  - url: https://huggingface.co/collections/OpenLLM-France/luciole-llm
+    shows: official Luciole LLM collection (1B/8B/23B base + Instruct-1.1, training dataset), with final
+      and intermediate pretraining checkpoints shared for research and continual pretraining
+    accessed: '2026-08-07'
+adoption:
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
+  confidence: medium
+  note: 'Niche sovereign / French open-LLM audience, and newer and smaller-reach than Lucie-7B (level 2).
+    Summed monthly HF downloads across the shipped sizes sit in the low thousands (23B ~640, 8B ~944, 1B
+    ~842 as of Aug 2026), well under the 10K level-2 threshold. Adoption may be recomputed from the linked
+    artifacts by the warehouse.'
+  sources:
+  - url: https://huggingface.co/OpenLLM-France/Luciole-23B-Instruct-1.1
+    shows: ~640 downloads/month, 13 likes (as of 2026-08-07)
+    accessed: '2026-08-07'
+  - url: https://huggingface.co/collections/OpenLLM-France/luciole-llm
+    shows: family of 1B / 8B / 23B (base + Instruct-1.1); per-size monthly downloads in the hundreds
+    accessed: '2026-08-07'
+capability:
+  score: 2
+  basis: benchmark:multilingual-pretrain-suite
+  value: null
+  confidence: low
+  note: Multilingual French–English family up to 23B, prioritizing French cultural representation and open
+    data rights over frontier performance. Larger than Lucie-7B (capability 2) but the same sovereign-model
+    tier — mid-scale and well below the 2026 open-weight frontier (trillion-param MoEs). Positioned like
+    Alia-40b (capability 2); kept conservative pending published benchmarks. Value is openness + FR/EU
+    language coverage.
+  sources:
+  - url: https://huggingface.co/OpenLLM-France/Luciole-23B-Base
+    shows: 23B multilingual base model, ~30% French pretraining data, French/English focus
+    accessed: '2026-08-07'
+  - url: https://huggingface.co/collections/OpenLLM-France/luciole-llm
+    shows: 1B / 8B / 23B base + Instruct-1.1 lineup; Instruct trained via SFT + DPO on math, science,
+      coding, chat, RAG, and translation
+    accessed: '2026-08-07'
