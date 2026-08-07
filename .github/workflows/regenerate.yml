@@ -9,6 +9,13 @@ on:
       - "build/serialize.py"
       - "build/render.py"
       - "build/_frozen_long_tail.json"
+  # Manual re-run. The path filter above is right for the normal case — regenerate when the
+  # inputs change — but it leaves no way to re-run after a fix to something the filter does not
+  # watch. On 2026-08-07 a bug in build/check_retirement.py aborted this workflow before its
+  # commit step, so the payload on main went stale; the fix touched only that gate and its tests,
+  # neither of which is a trigger path, so nothing re-ran and the staleness persisted with no way
+  # to clear it. A gate that can block regeneration needs a way to unblock it.
+  workflow_dispatch:
 
 permissions:
   contents: write
