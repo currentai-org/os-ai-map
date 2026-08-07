@@ -10,6 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Full history: build.freshness_payload dates each score file from its last
+          # commit, and a shallow clone collapses all 470 onto the tip commit.
+          fetch-depth: 0
       - uses: astral-sh/setup-uv@v5
         with:
           enable-cache: true
@@ -35,6 +39,12 @@ jobs:
         run: uv run python -m build.check_recipe --verbose
       - name: Serialize dry-run
         run: uv run python -m build.serialize --date ci-dry-run
+
+      # The payload's own identity invariants: slugs, org_slug resolution, aliases, and
+      # the freshness canary that catches a shallow-clone checkout from the inside. See
+      # build/check_payload.py.
+      - name: Gate the serialized payload
+        run: uv run python -m build.check_payload
 
       # Render the notebook and parse the result. The generated file is bot-owned and is
       # not committed from a PR, but rendering is the only thing that catches a

@@ -12,9 +12,9 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 
-PRODUCT_KEY_ORDER = ["product", "org", "type", "description",
+PRODUCT_KEY_ORDER = ["slug", "product", "org_slug", "org", "type", "description",
                      "openness", "adoption", "capability", "maturity", "mature",
-                     "version_note", "lineage"]
+                     "freshness", "version_note", "lineage"]
 
 # --- Gap analysis (category-level stage + gaps) -----------------------------
 # Mirrors the open / open-ish / closed verdict in docs/openness-class-map.json
@@ -177,14 +177,17 @@ def _filter_long_tail(frozen: dict, prods: dict) -> dict:
     return lt
 
 
-def _row(prod: dict, org_name: str, score: dict, weights: dict | None,
-         name_map: dict | None = None) -> dict:
+def _row(slug: str, prod: dict, org_slug: str, org_name: str, score: dict,
+         weights: dict | None, name_map: dict | None = None,
+         freshness: dict | None = None) -> dict:
     # Pre-compute the open / open-ish / closed bucket alongside the raw class, so
     # consumers get a stable 3-way verdict that survives changes to the openness.class
     # vocabulary. Same collapse the category gap logic uses (_gap_bucket).
     openness = {**score["openness"], "bucket": _gap_bucket((score["openness"] or {}).get("class"))}
     row = {
+        "slug": slug,
         "product": prod["display_name"],
+        "org_slug": org_slug,
         "org": org_name,
         "type": prod["type"],
         "description": prod.get("description", ""),
@@ -223,15 +226,76 @@ def _row(prod: dict, org_name: str, score: dict, weights: dict | None,
                 resolved[edge] = [nm.get(r, r) for r in refs]
         if resolved:
             row["lineage"] = resolved
+    # Optional so the unit tests can call build_payload with no repo context. Task 5
+    # computes it in __main__ and threads it through.
+    if freshness:
+        row["freshness"] = freshness
     return {k: row[k] for k in PRODUCT_KEY_ORDER if k in row}
 
 
-def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None = None) -> dict:
+def _organizations(orgs: dict, product_org: dict) -> dict:
+    """The organization roster, emitted for the app's /map/org/<slug> pages.
+
+    Sourced from sources/organizations/*.yaml rather than build/registry/organizations.csv:
+    the registry is gitignored, so it never reaches a consumer, and its github column is a
+    stringified Python repr. Here github is a list of {url: ...} mappings, flattened to URLs.
+
+    Everything is sorted. A curator reordering a YAML roster must not produce a payload diff,
+    because a payload diff is a daily bot PR in the app repo.
+    """
+    by_org: dict[str, list[str]] = {}
+    for prod_slug, org_slug in product_org.items():
+        by_org.setdefault(org_slug, []).append(prod_slug)
+    return {
+        slug: {
+            "slug": slug,
+            "display_name": orgs[slug].get("display_name", ""),
+            "type": orgs[slug].get("type", "unknown"),
+            "homepage": orgs[slug].get("homepage", ""),
+            "github": sorted(e["url"] for e in (orgs[slug].get("github") or [])
+                             if isinstance(e, dict) and e.get("url")),
+            "country": orgs[slug].get("country", ""),
+            "products": sorted(by_org.get(slug, [])),
+        }
+        for slug in sorted(orgs)
+    }
+
+
+def _aliases(spec: dict) -> dict:
+    """Retired slug -> live slug, for the app's redirects.
+
+    ONLY `aliases` and `organization_aliases`. sources/slug_aliases.yaml has four other
+    top-level keys that look like alias maps and are not:
+      - renamed_before_links records that a slug's PREVIOUS occupant moved elsewhere,
+        not that the slug itself retired. One entry's key (grok) is itself a live
+        product today, so treating it as a redirect would 308 that live page onto a
+        different one; the other's target sits alongside its own still-live sibling
+        (github-copilot-ide next to github-copilot). Its own comment in the YAML says
+        as much: it exists for the audit trail only, because nothing ever linked to
+        the old slug.
+      - version_in_identity and governing_release are documentation (why a slug keeps
+        a version token; which release governs a tier's score), not old-slug -> new-slug
+        pairs, and their values aren't even slugs.
+    Sorted, because this payload feeds a daily automated PR in another repo and
+    unsorted keys would show up there as a phantom diff.
+    """
+    return {
+        "products": dict(sorted((spec.get("aliases") or {}).items())),
+        "organizations": dict(sorted((spec.get("organization_aliases") or {}).items())),
+    }
+
+
+def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None = None,
+                  freshness: dict | None = None) -> dict:
     if generated is None:
         generated = date.today().isoformat()
     orgs, cats, prods, scores = (sources["organizations"], sources["categories"],
                                  sources["products"], sources["scores"])
     taxonomy = sources["taxonomy"]
+    # .get with a default so unit-test fixtures, which build their own source dicts,
+    # keep working without carrying a slug_aliases block. load_sources always supplies
+    # one for the real build (build/validate.py).
+    slug_aliases = sources.get("slug_aliases") or {}
     # Global slug -> display name map, used to resolve lineage references (which
     # point at other on-map products by slug) into readable names at serialize time.
     name_map = {slug: p["display_name"] for slug, p in prods.items()}
@@ -274,7 +338,9 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
             # name "Unknown", which is schema-valid; the overlay carries "").
             org_slug = product_org[slug]
             org_name = "" if org_slug == "unknown" else orgs[org_slug]["display_name"]
-            rows.append(_row(p, org_name, scores[slug], cat.get("weights"), name_map))
+            rows.append(_row(slug, p, org_slug, org_name, scores[slug],
+                             cat.get("weights"), name_map,
+                             (freshness or {}).get(slug)))
             n += 1
         sg = _stage_and_gaps(rows, cat.get("weights"), disclosure=cat.get("disclosure_gap", False))
         out_cats[cid] = {"label": cat["display_name"], "arc": cid_arc[cid],
@@ -291,6 +357,8 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
     }
     return {"descriptions": descriptions, "layer_order": layer_order,
             "categories": out_cats, "order": order,
+            "organizations": _organizations(orgs, product_org),
+            "aliases": _aliases(slug_aliases),
             "n_total": n, "generated": generated,
             "long_tail": _filter_long_tail(frozen_long_tail, prods)}
 
@@ -298,12 +366,14 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
 if __name__ == "__main__":
     import argparse
     from build.validate import load_sources
+    from build.freshness_payload import resolve_freshness
     parser = argparse.ArgumentParser()
     parser.add_argument("--date", default=None,
                         help="value for the payload 'generated' field (default: today)")
     args = parser.parse_args()
     sources = load_sources(ROOT)
     frozen = json.load(open(ROOT / "build" / "_frozen_long_tail.json"))
-    payload = build_payload(sources, frozen, generated=args.date)
+    payload = build_payload(sources, frozen, generated=args.date,
+                            freshness=resolve_freshness(ROOT))
     (ROOT / "build" / "notebook_data.json").write_text(json.dumps(payload, indent=2, ensure_ascii=False))
     print(f"wrote build/notebook_data.json ({payload['n_total']} products)")

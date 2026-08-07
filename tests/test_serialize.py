@@ -204,6 +204,17 @@ def test_unknown_org_renders_empty_string():
     assert payload["categories"]["base_pretrained"]["products"][0]["org"] == ""
 
 
+def test_every_product_carries_its_slug_and_org_slug():
+    """Identity survives PRODUCT_KEY_ORDER — the whitelist at serialize.py:226 silently
+    drops any key not listed, so this fails loudly rather than emitting a slug-less payload."""
+    payload = build_payload(_sources(), frozen_long_tail={}, generated="2026-01-01")
+    rows = [p for c in payload["categories"].values() for p in c["products"]]
+    assert rows, "fixture produced no products"
+    for row in rows:
+        assert row["slug"], f"{row['product']} has no slug"
+        assert row["org_slug"], f"{row['product']} has no org_slug"
+
+
 def _pd(cls, adoption):
     return {"openness": {"class": cls}, "adoption": {"level": adoption},
             "capability": {"score": None}, "type": "dataset"}
@@ -235,3 +246,111 @@ def test_disclosure_flag_is_independent_of_closed_rows():
     rows = [_pd("open", 4), _pd("closed", None)]
     assert "disclosure" in _stage_and_gaps(rows, {"adopt": 1.0, "cap": 0.0}, disclosure=True)["gaps"]
     assert "disclosure" not in _stage_and_gaps(rows, {"adopt": 1.0, "cap": 0.0})["gaps"]
+
+
+def test_organizations_block_is_complete_and_deterministic():
+    """Every org_slug a product points at must resolve, or the app's org links 404.
+    Sorted because the payload feeds a daily bot PR and unsorted keys are review noise."""
+    payload = build_payload(_sources(), frozen_long_tail={}, generated="2026-01-01")
+    orgs = payload["organizations"]
+    assert list(orgs) == sorted(orgs), "organization keys must be sorted"
+    rows = [p for c in payload["categories"].values() for p in c["products"]]
+    for row in rows:
+        assert row["org_slug"] in orgs, f"{row['slug']} points at missing org {row['org_slug']}"
+    for slug, org in orgs.items():
+        assert org["slug"] == slug
+        assert org["products"] == sorted(org["products"]), f"{slug} roster must be sorted"
+        assert isinstance(org["github"], list)
+        for url in org["github"]:
+            assert isinstance(url, str), f"{slug} github must be flat URL strings"
+
+
+def _multi_org_sources():
+    """Two organizations, deliberately unsorted at every level the shared _sources()
+    fixture cannot exercise: zeta-labs owns two products listed out of order and two
+    github entries listed out of order; alpha-labs sorts before it but is declared
+    second. The shared fixture has one org, one product, and no github key at all, so
+    it cannot go red on any of this -- see the review finding this test answers."""
+    return {
+        "organizations": {
+            "zeta-labs": {"name": "zeta-labs", "display_name": "Zeta Labs", "type": "company",
+                         "github": [{"url": "https://github.com/zeta-two"},
+                                    {"url": "https://github.com/zeta-one"}],
+                         "products": ["zeta-b", "zeta-a"]},
+            "alpha-labs": {"name": "alpha-labs", "display_name": "Alpha Labs", "type": "company",
+                          "products": ["alpha-x"]},
+        },
+        "taxonomy": {"arcs": [{"name": "Model components", "layer": "model_components",
+                               "categories": ["base_pretrained"]}]},
+        "categories": {
+            "base_pretrained": {"name": "base_pretrained",
+                                "display_name": "Base / pretrained models",
+                                "products": ["zeta-a", "zeta-b", "alpha-x"], "comments": ""}
+        },
+        "products": {
+            "zeta-a": {"name": "zeta-a", "display_name": "Zeta A", "type": "model", "description": "d"},
+            "zeta-b": {"name": "zeta-b", "display_name": "Zeta B", "type": "model", "description": "d"},
+            "alpha-x": {"name": "alpha-x", "display_name": "Alpha X", "type": "model", "description": "d"},
+        },
+        "scores": {
+            slug: {"product": slug, "openness": {"score": 2, "class": "restricted"},
+                  "adoption": {"level": 3, "signal_type": "usage_volume"},
+                  "capability": {"score": None, "basis": "n/a"}}
+            for slug in ("zeta-a", "zeta-b", "alpha-x")
+        },
+    }
+
+
+def test_organizations_block_sorts_github_urls_and_out_of_order_rosters():
+    """Regression for the finding that github.py:255-256 preserved source order: a
+    cosmetic reorder of a YAML github: list or products: roster must not change the
+    payload, or a curator's harmless edit becomes a phantom daily bot PR."""
+    payload = build_payload(_multi_org_sources(), frozen_long_tail={}, generated="2026-01-01")
+    orgs = payload["organizations"]
+    assert list(orgs) == ["alpha-labs", "zeta-labs"]
+    assert orgs["zeta-labs"]["products"] == ["zeta-a", "zeta-b"]
+    assert orgs["zeta-labs"]["github"] == [
+        "https://github.com/zeta-one", "https://github.com/zeta-two",
+    ], "github urls must be sorted, not preserved in source order"
+
+
+def _sources_with_aliases():
+    src = _sources()
+    src["slug_aliases"] = {
+        "version": 1,
+        # Two products, declared out of alphabetical order, so a missing sort call
+        # would leave the payload's key order matching this insertion order instead.
+        "aliases": {"llama-4-scout": "llama-4", "aaa-legacy-name": "llama-4"},
+        # Present in the real file and NOT a redirect map: its key ("llama-4") is a
+        # live product (see _sources()), so merging this in would 308 that live page
+        # onto "something-else".
+        "renamed_before_links": {"llama-4": "something-else"},
+        "version_in_identity": {"raspberry-pi-5": "keeps its 5"},
+        # Two orgs, also out of order, and non-empty so the per-entry loop below
+        # actually runs instead of vacuously passing over an empty dict.
+        "organization_aliases": {"meta-platforms": "meta", "facebook": "meta"},
+        "governing_release": {},
+    }
+    return src
+
+
+def test_alias_map_carries_only_the_two_redirect_safe_blocks():
+    """renamed_before_links is an audit trail, not a redirect map: its key here is a live
+    product, so emitting it would 308 a live page onto a different product."""
+    payload = build_payload(_sources_with_aliases(), frozen_long_tail={}, generated="2026-01-01")
+    aliases = payload["aliases"]
+    assert aliases["products"] == {"aaa-legacy-name": "llama-4", "llama-4-scout": "llama-4"}
+    assert "llama-4" not in aliases["products"], "renamed_before_links leaked into the redirects"
+    assert set(aliases) == {"products", "organizations"}
+    live = {p["slug"] for c in payload["categories"].values() for p in c["products"]}
+    for old, new in aliases["products"].items():
+        assert old not in live, f"alias {old} is also a live product slug"
+        assert new in live, f"alias {old} points at missing product {new}"
+    for old, new in aliases["organizations"].items():
+        assert old not in payload["organizations"], f"alias {old} is also a live org"
+        assert new in payload["organizations"], f"alias {old} points at missing org {new}"
+    assert list(aliases["products"]) == sorted(aliases["products"]), \
+        "product aliases must be sorted, not left in source order"
+    assert list(aliases["organizations"]) == sorted(aliases["organizations"]), \
+        "organization aliases must be sorted, not left in source order"
+    assert aliases["organizations"] == {"facebook": "meta", "meta-platforms": "meta"}

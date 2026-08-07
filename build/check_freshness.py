@@ -68,7 +68,7 @@ def parse_date(value: object) -> date | None:
     return None
 
 
-def commit_dates() -> dict[str, date]:
+def commit_dates(root: Path | None = None) -> dict[str, date]:
     """Most recent commit date per score file, from one pass over git history.
 
     This is the fallback when an axis carries no `last_verified`, and it is a better
@@ -86,10 +86,15 @@ def commit_dates() -> dict[str, date]:
 
     One `git log` for the whole directory rather than 495 invocations. Walking
     newest-first, the first time a path appears is its latest commit.
+
+    `root` defaults to this module's own repository root, which is what every existing
+    caller in this file wants. `build.freshness_payload` passes its own `root` through
+    explicitly so it can be pointed at a different checkout (a test fixture, a shallow-
+    clone probe) without silently reading this repository's history instead.
     """
     result = subprocess.run(
         ["git", "log", "--format=%cs", "--name-only", "--", "sources/scores"],
-        cwd=ROOT,
+        cwd=root or ROOT,
         capture_output=True,
         text=True,
     )
