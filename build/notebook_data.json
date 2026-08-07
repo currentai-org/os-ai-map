@@ -1028,6 +1028,83 @@
           "version_note": "Lucie-7B base + Instruct-v1.1 / Instruct-human-data. Apache-2.0 weights; training data at OpenLLM-France/Lucie-Training-Dataset (not a separate map product for now); training code AGPL/community stack on GitHub. Paper arXiv:2503.12294. Collection https://huggingface.co/collections/OpenLLM-France/lucie-llm."
         },
         {
+          "product": "Luciole",
+          "org": "Linagora",
+          "type": "model",
+          "description": "Linagora / OpenLLM-France's fully open multilingual (French–English) LLM family and the successor to Lucie, released in 1B, 8B, and 23B sizes (base + Instruct-1.1). Apache-2.0 weights, the redistributable Luciole-Training-Dataset (~4.65T tokens drawn only from openly licensed corpora), the Luciole-Training pipeline on GitHub, and intermediate + final pretraining checkpoints — clearing the full open-source bar. Base models are pretrained on roughly 30% French data (English 53%, French 16%, plus German/Spanish/Italian/Portuguese/Dutch/Arabic and regional languages); the Instruct-1.1 models are SFT + DPO aligned on math, science, coding, chat, RAG, and translation. Built by LINAGORA and the OpenLLM-France consortium, funded by BPI France through the France 2030 program.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "weights:open(Apache-2.0, safetensors on HF for 1B/8B/23B base + Instruct-1.1);data:open(Luciole-Training-Dataset on HF, ~4.65T tokens, \"only corpora under open licenses\");code:open(Luciole-Training pretraining + data-processing pipeline on GitHub, GPL-3.0);checkpoints:open(intermediate + final pretraining checkpoints released);license:Apache-2.0(OSI)",
+            "confidence": "high",
+            "note": "Full open-source tier alongside Lucie / OLMo / Apertus: open weights, open training data, open training code, and intermediate checkpoints. Notably a cleaner full-openness exemplar than its Lucie predecessor — the Luciole-Training-Dataset is described as containing only openly licensed corpora, where Lucie-Training-Dataset carried a non-commercial cc-by-nc-sa license. The weights are Apache-2.0 (OSI) across every distributed size, so the data + code + OSI-license rule lands at 5.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/OpenLLM-France/Luciole-23B-Instruct-1.1",
+                "shows": "Apache-2.0 license; downloadable safetensors weights; fine-tuned + DPO-aligned version of Luciole-23B-Base; developed by LINAGORA and the OpenLLM-France consortium (France 2030 / BPI France)",
+                "accessed": "2026-08-07"
+              },
+              {
+                "url": "https://huggingface.co/datasets/OpenLLM-France/Luciole-Training-Dataset",
+                "shows": "released multilingual pretraining corpus (~4.65T tokens; EN 53.4% / FR 16.3% / DE / ES / IT / PT / NL / AR + regional), \"contains only corpora under open licenses\"",
+                "accessed": "2026-08-07"
+              },
+              {
+                "url": "https://github.com/OpenLLM-France/Luciole-Training",
+                "shows": "training pipeline for the Luciole series — data prep, training recipe, and configs (GPL-3.0)",
+                "accessed": "2026-08-07"
+              },
+              {
+                "url": "https://huggingface.co/collections/OpenLLM-France/luciole-llm",
+                "shows": "official Luciole LLM collection (1B/8B/23B base + Instruct-1.1, training dataset), with final and intermediate pretraining checkpoints shared for research and continual pretraining",
+                "accessed": "2026-08-07"
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 1,
+            "reach": "<10K",
+            "signal_type": "usage_volume",
+            "confidence": "medium",
+            "note": "Niche sovereign / French open-LLM audience, and newer and smaller-reach than Lucie-7B (level 2). Summed monthly HF downloads across the shipped sizes sit in the low thousands (23B ~640, 8B ~944, 1B ~842 as of Aug 2026), well under the 10K level-2 threshold. Adoption may be recomputed from the linked artifacts by the warehouse.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/OpenLLM-France/Luciole-23B-Instruct-1.1",
+                "shows": "~640 downloads/month, 13 likes (as of 2026-08-07)",
+                "accessed": "2026-08-07"
+              },
+              {
+                "url": "https://huggingface.co/collections/OpenLLM-France/luciole-llm",
+                "shows": "family of 1B / 8B / 23B (base + Instruct-1.1); per-size monthly downloads in the hundreds",
+                "accessed": "2026-08-07"
+              }
+            ]
+          },
+          "capability": {
+            "score": 2,
+            "basis": "benchmark:multilingual-pretrain-suite",
+            "value": null,
+            "confidence": "low",
+            "note": "Multilingual French–English family up to 23B, prioritizing French cultural representation and open data rights over frontier performance. Larger than Lucie-7B (capability 2) but the same sovereign-model tier — mid-scale and well below the 2026 open-weight frontier (trillion-param MoEs). Positioned like Alia-40b (capability 2); kept conservative pending published benchmarks. Value is openness + FR/EU language coverage.",
+            "sources": [
+              {
+                "url": "https://huggingface.co/OpenLLM-France/Luciole-23B-Base",
+                "shows": "23B multilingual base model, ~30% French pretraining data, French/English focus",
+                "accessed": "2026-08-07"
+              },
+              {
+                "url": "https://huggingface.co/collections/OpenLLM-France/luciole-llm",
+                "shows": "1B / 8B / 23B base + Instruct-1.1 lineup; Instruct trained via SFT + DPO on math, science, coding, chat, RAG, and translation",
+                "accessed": "2026-08-07"
+              }
+            ]
+          },
+          "maturity": 1.7,
+          "mature": false,
+          "version_note": "Luciole family (1B / 8B / 23B, base + Instruct-1.1) from LINAGORA / OpenLLM-France, successor to Lucie-7B. Apache-2.0 weights; open Luciole-Training-Dataset (~4.65T tokens, open-licensed corpora only — cleaner terms than Lucie's cc-by-nc-sa corpus); Luciole-Training pipeline on GitHub (GPL-3.0); intermediate + final checkpoints published. Funded by BPI France / France 2030. Collection: https://huggingface.co/collections/OpenLLM-France/luciole-llm. Verified via primary model/dataset cards, August 2026 (HF direct fetch blocked by egress proxy; figures cross-checked via search snippets of the live cards)."
+        },
+        {
           "product": "OLMo 3",
           "org": "Ai2",
           "type": "model",
@@ -15938,6 +16015,57 @@
           "version_note": "Apache-2.0. ~83k stars. Deployed via Docker Compose (no first-party PyPI/npm). Commercial managed cloud / enterprise edition exists; the self-hosted engine is fully open."
         },
         {
+          "product": "OpenRAG",
+          "org": "Linagora",
+          "type": "software",
+          "description": "Linagora's lightweight, modular, and extensible retrieval-augmented generation (RAG) framework — a batteries-included, self-hostable application stack rather than a bare library. It ingests multiple document formats (PDFs, documents, audio, and images with AI captioning), organizes knowledge into partitions, performs hybrid semantic + keyword search with multilingual reranking, and exposes indexed content through a bundled web chat interface, an admin UI, and an OpenAI-compatible REST API. Backend in Python with a TypeScript/JavaScript frontend; scales across machines and GPUs via Ray and deploys via Docker Compose. AGPL-3.0, fully open source with no vendor lock-in.",
+          "openness": {
+            "score": 5,
+            "class": "open_source",
+            "components": "license:AGPL-3.0(OSI);source:public;self-host:primary(Docker Compose);core-gated:ungated;commercial:none",
+            "confidence": "high",
+            "note": "Fully open AGPL-3.0 RAG application stack — the published source is the whole product, self-hosted via Docker Compose, with no feature-gated enterprise tier and no vendor lock-in. AGPL is OSI-approved and sits beside Apache on the software ladder, so osi + public + ungated lands at 5.",
+            "sources": [
+              {
+                "url": "https://github.com/linagora/openrag",
+                "shows": "AGPL-3.0 license; full source for backend (Python) + frontend (TS/JS); self-hostable via Docker Compose; admin UI, chat UI, and OpenAI-compatible REST API bundled; no paid/enterprise tier",
+                "accessed": "2026-08-07"
+              }
+            ],
+            "bucket": "open"
+          },
+          "adoption": {
+            "level": 1,
+            "signal_type": "stars_fallback",
+            "confidence": "medium",
+            "note": "~237 GitHub stars, 55 forks (Aug 2026) — early-stage. No download metric available (Docker-distributed, no first-party PyPI/npm), so adoption falls back to stars, which the ladder caps at 3; 237 stars places it in the lowest band.",
+            "sources": [
+              {
+                "url": "https://github.com/linagora/openrag",
+                "shows": "~237 stars, 55 forks, 88 open issues (as of 2026-08-07)",
+                "accessed": "2026-08-07"
+              }
+            ]
+          },
+          "capability": {
+            "score": 3,
+            "basis": "feature_matrix",
+            "value": "multimodal ingestion (PDF / document / audio / image with AI captioning); knowledge partitions; hybrid semantic + keyword search with multilingual reranking; bundled chat UI + admin UI; OpenAI-compatible REST API; Ray-based distributed processing; GPU acceleration; Docker Compose deployment",
+            "confidence": "medium",
+            "note": "Feature-complete, batteries-included general RAG stack with a broad ingestion + retrieval surface and a bundled UI/API. A notch below RAGFlow (capability 4), whose distinctive layout-aware deep document understanding and larger, more mature community set the ceiling for this category.",
+            "sources": [
+              {
+                "url": "https://github.com/linagora/openrag",
+                "shows": "feature set: multimodal ingestion, hybrid search + multilingual reranking, chat/admin UI, OpenAI-compatible API, Ray distribution, GPU acceleration",
+                "accessed": "2026-08-07"
+              }
+            ]
+          },
+          "maturity": 2.4,
+          "mature": false,
+          "version_note": "OpenRAG by Linagora, AGPL-3.0. Full application stack (admin UI + chat UI + OpenAI-compatible REST API), Python backend / TS-JS frontend, Ray-based distributed processing, GPU acceleration, Docker Compose deployment. ~237 GitHub stars (Aug 2026). No first-party PyPI/npm package; self-host is the primary distribution. Verified live on GitHub, August 2026."
+        },
+        {
           "product": "n8n",
           "org": "n8n",
           "type": "software",
@@ -27234,19 +27362,19 @@
     "deployment",
     "edge_hardware"
   ],
-  "n_total": 470,
-  "generated": "2026-08-05",
+  "n_total": 472,
+  "generated": "2026-08-07",
   "long_tail": {
     "counts": {
       "repos": 15375,
       "models": 6428,
       "packages": 2823,
       "total": 24626,
-      "scored": 470,
+      "scored": 472,
       "overlap": 245,
-      "scored_outside": 225,
+      "scored_outside": 227,
       "uncategorized": 24381,
-      "universe": 24851
+      "universe": 24853
     },
     "top": [
       {
