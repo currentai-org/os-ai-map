@@ -128,13 +128,14 @@ class TestRealCategories:
     """The claim the whole pipeline rests on, asserted against the real files."""
 
     def test_base_pretrained_still_reproduces_every_score(self):
-        """26, down from 44: the slug migration collapsed release-level products into
-        the tier the vendor sells, and moved the closed frontier models to
-        finetuned_chat. The point of pinning this is that the count only ever moves for
-        a reason recorded in a commit."""
+        """27, down from 44 then up 1: the slug migration collapsed release-level products
+        into the tier the vendor sells and moved the closed frontier models to
+        finetuned_chat (44 -> 26); adding the fully-open Luciole family took it to 27. The
+        point of pinning this is that the count only ever moves for a reason recorded in a
+        commit."""
         reproduced, total, problems, deferred = check_category("base_pretrained", verbose=False)
         assert problems == []
-        assert (reproduced, total, deferred) == (26, 26, [])
+        assert (reproduced, total, deferred) == (27, 27, [])
 
     def test_finetuned_chat_reproduces_every_undeferred_score(self):
         reproduced, total, problems, _ = check_category("finetuned_chat", verbose=False)
