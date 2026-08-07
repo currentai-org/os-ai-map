@@ -130,3 +130,84 @@ def test_exits_nonzero_rather_than_skipping_when_root_is_not_a_git_repository(tm
     _write_new_payload(tmp_path, _payload(["a"]))
     assert main() == 1
     assert "could not check retired slugs" in capsys.readouterr().err
+
+
+# --- the hotfix: a previously committed payload from before slugs existed carries no
+# 'slug' key on any product. There is nothing meaningful to diff across that schema
+# change -- it must be a clean skip, never the KeyError this module shipped with. ---
+
+def test_exits_zero_when_previous_payload_predates_slugs(tmp_path, monkeypatch, capsys):
+    """The exact production crash this hotfix exists for: the payload committed at HEAD
+    predates the slug field entirely, so `previous['slug']` has nothing to read."""
+    monkeypatch.setattr(cr, "ROOT", tmp_path)
+    _init_repo(tmp_path)
+    pre_slug_payload = {
+        "categories": {"c": {"products": [{"product": "a"}, {"product": "b"}]}},
+        "aliases": {"products": {}, "organizations": {}},
+    }
+    _commit_payload(tmp_path, pre_slug_payload)
+    _write_new_payload(tmp_path, _payload(["a", "b"]))
+    assert main() == 0
+    assert "predates slugs" in capsys.readouterr().out
+
+
+def test_pre_slug_skip_message_is_distinct_from_no_previous_payload_skip_message(tmp_path, monkeypatch, capsys):
+    """Both are exit-0 skips but mean different things -- 'nothing has ever been
+    committed' is not 'something was committed but it's from before slugs existed'. A
+    reader must be able to tell them apart from the message alone."""
+    monkeypatch.setattr(cr, "ROOT", tmp_path)
+    _init_repo(tmp_path)
+    pre_slug_payload = {
+        "categories": {"c": {"products": [{"product": "a"}]}},
+        "aliases": {"products": {}, "organizations": {}},
+    }
+    _commit_payload(tmp_path, pre_slug_payload)
+    _write_new_payload(tmp_path, _payload(["a"]))
+    assert main() == 0
+    pre_slug_message = capsys.readouterr().out
+    assert "predates slugs" in pre_slug_message
+    assert "no committed payload to compare against" not in pre_slug_message
+
+
+@pytest.mark.parametrize(
+    "bad_new_payload",
+    [
+        {"aliases": {"products": {}, "organizations": {}}},
+        {"categories": "not-a-dict", "aliases": {"products": {}, "organizations": {}}},
+        {
+            "categories": {"c": {"products": [{"product": "a"}]}},
+            "aliases": {"products": {}, "organizations": {}},
+        },
+    ],
+    ids=["missing-categories", "categories-not-a-dict", "product-missing-slug"],
+)
+def test_exits_nonzero_with_prefixed_error_when_new_payload_is_malformed(
+    tmp_path, monkeypatch, capsys, bad_new_payload
+):
+    """The defect a reviewer flagged on the new-payload side and that got deferred, then
+    bit on the previous-payload side within a day: indexing into an unguarded shape must
+    never surface as a raw traceback, on either side."""
+    monkeypatch.setattr(cr, "ROOT", tmp_path)
+    _init_repo(tmp_path)
+    _commit_payload(tmp_path, _payload(["a", "b"]))
+    _write_new_payload(tmp_path, bad_new_payload)
+    assert main() == 1
+    err = capsys.readouterr().err
+    assert err.startswith("check_retirement:")
+
+
+def test_exits_nonzero_when_previous_payload_mixes_slugged_and_unslugged_products(tmp_path, monkeypatch, capsys):
+    """A previous payload where only some products carry a slug is not the clean
+    'predates slugs entirely' case the tolerance above exists for -- a single serializer
+    run cannot produce that shape, so it is treated as malformed rather than guessed at."""
+    monkeypatch.setattr(cr, "ROOT", tmp_path)
+    _init_repo(tmp_path)
+    mixed_payload = {
+        "categories": {"c": {"products": [{"slug": "a"}, {"product": "b"}]}},
+        "aliases": {"products": {}, "organizations": {}},
+    }
+    _commit_payload(tmp_path, mixed_payload)
+    _write_new_payload(tmp_path, _payload(["a", "b"]))
+    assert main() == 1
+    err = capsys.readouterr().err
+    assert err.startswith("check_retirement:")
