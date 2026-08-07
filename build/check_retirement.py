@@ -21,6 +21,18 @@ So this asks two separate questions instead of one:
      skipping.
   2. Only once HEAD is known good: does it carry this payload path? Absence here, and only
      here, means "first run" and returns None.
+
+## Reading a schema change honestly
+
+The same collapsing mistake shows up one layer down. A committed payload that predates the
+`slug` field entirely carries no 'slug' key on any product -- there is nothing meaningful to
+diff, and that is a legitimate skip, distinct from "no committed payload at all" above. But a
+committed payload where only *some* products carry a slug is not that case: no single
+serializer run produces a half-migrated payload, so that shape is treated as malformed and
+fails loudly rather than silently dropping the unslugged rows from the comparison. Both
+payloads are read through a shape guard rather than indexed into directly, so a missing
+'categories' block, a non-dict category, or a non-dict product row is a clean
+`check_retirement:`-prefixed error, never a raw traceback.
 """
 import json
 import subprocess
@@ -77,8 +89,38 @@ def _previous_payload(root: Path) -> dict | None:
         ) from e
 
 
-def _slugs(payload: dict) -> set[str]:
-    return {p["slug"] for c in payload["categories"].values() for p in c["products"]}
+def _product_rows(payload: dict, label: str) -> list[dict]:
+    """Every product row across every category in `payload`, or raise if the shape can't
+    be trusted enough to read one.
+
+    This is the guard the module was missing: it used to index straight into
+    payload["categories"][...]["products"][...]["slug"] and let a malformed or
+    schema-mismatched payload surface as a raw KeyError. A missing 'categories' block, a
+    non-dict category, a non-list products field, or a non-dict product row all raise
+    here -- deliberately, with a `label` naming which payload (new vs. previous) is at
+    fault -- rather than one unqualified traceback that could be either.
+    """
+    if not isinstance(payload, dict):
+        raise RetirementCheckError(f"the {label} payload is not an object (got {type(payload).__name__})")
+    categories = payload.get("categories")
+    if not isinstance(categories, dict):
+        raise RetirementCheckError(
+            f"the {label} payload has no usable 'categories' block (got {type(categories).__name__})"
+        )
+    rows: list[dict] = []
+    for cid, cat in categories.items():
+        if not isinstance(cat, dict):
+            raise RetirementCheckError(f"{label} payload category {cid!r} is not an object")
+        products = cat.get("products")
+        if not isinstance(products, list):
+            raise RetirementCheckError(f"{label} payload category {cid!r} has no usable products list")
+        for row in products:
+            if not isinstance(row, dict):
+                raise RetirementCheckError(
+                    f"{label} payload has a product row in category {cid!r} that is not an object"
+                )
+            rows.append(row)
+    return rows
 
 
 def main() -> int:
@@ -91,8 +133,53 @@ def main() -> int:
     if previous is None:
         print("check_retirement: no committed payload to compare against, skipping")
         return 0
-    gone = _slugs(previous) - _slugs(new)
-    unrouted = sorted(s for s in gone if s not in new["aliases"]["products"])
+
+    try:
+        new_rows = _product_rows(new, "new")
+        unslugged_new = [r for r in new_rows if not r.get("slug")]
+        if unslugged_new:
+            raise RetirementCheckError(
+                f"the new payload has {len(unslugged_new)} product(s) with no slug"
+            )
+        product_aliases = new.get("aliases", {}).get("products")
+        if not isinstance(product_aliases, dict):
+            raise RetirementCheckError("the new payload has no usable aliases.products block")
+
+        previous_rows = _product_rows(previous, "previous")
+    except RetirementCheckError as exc:
+        print(f"check_retirement: {exc}", file=sys.stderr)
+        return 1
+
+    # The committed payload predates the slug field entirely -- every product in it is
+    # missing 'slug', not just some. There is nothing meaningful to diff across a schema
+    # change like that, so this skips rather than raising or guessing. This is distinct
+    # from the "no committed payload at all" skip above: something WAS committed, it's
+    # just from before slugs existed.
+    previous_slugged = [r for r in previous_rows if r.get("slug")]
+    if previous_rows and not previous_slugged:
+        print(
+            "check_retirement: the committed payload predates slugs (no product in it "
+            "carries one), so there is nothing to diff across that schema change -- skipping"
+        )
+        return 0
+
+    # A mix of slugged and unslugged products in the same committed payload is not the
+    # clean pre-slug case above -- a single serializer run cannot produce that shape. It's
+    # malformed, not merely old, so it fails loudly rather than silently dropping the
+    # unslugged rows from the comparison (which would risk missing a real retirement).
+    if len(previous_slugged) != len(previous_rows):
+        print(
+            "check_retirement: the committed payload has a mix of slugged and unslugged "
+            "products, which should never happen -- refusing to guess which ones were "
+            "retired",
+            file=sys.stderr,
+        )
+        return 1
+
+    new_slugs = {r["slug"] for r in new_rows}
+    previous_slugs = {r["slug"] for r in previous_slugged}
+    gone = previous_slugs - new_slugs
+    unrouted = sorted(s for s in gone if s not in product_aliases)
     if unrouted:
         print("check_retirement: these slugs left the payload with no alias, so their pages "
               "would 404:\n  " + "\n  ".join(unrouted), file=sys.stderr)
