@@ -697,13 +697,18 @@ def test_real_sources_serialize_without_errors():
         # finetuned_chat rose by 1 when `recipe` joined `code`'s `reads` list: `ornith`
         # recorded only `recipe:closed`, so its `code` dimension had been reading as
         # unrecorded and published no evidence row. check_recipe found it.
-        "base_pretrained": 111, "finetuned_chat": 173, "deployment": 131,
+        # base_pretrained rose by 5 (111 -> 116) when the fully-open Luciole family was
+        # added: five openness dimensions recorded (weights, data, code, checkpoints, license).
+        "base_pretrained": 116, "finetuned_chat": 173, "deployment": 131,
         "agent_tools_protocols": 108, "dataset_processing_tools": 86, "evaluation_code": 66,
         "finetuning_code": 119, "inference_code": 47, "ml_frameworks": 80,
         # orchestration_agents rose by 3 when n8n's stale deferral was removed: a deferred
         # product publishes no openness evidence, and n8n had been deferred as "not recorded"
-        # while recording everything the ladder needed.
-        "orchestration_agents": 140, "telemetry_observability": 90, "ui_api": 127,
+        # while recording everything the ladder needed. Then by 6 more (140 -> 146) when
+        # OpenRAG was added: it records source, core-gated, license, self-host, commercial,
+        # and the normalized core_gated the ladder reads from core-gated — the same six-row
+        # shape RAGFlow already contributes.
+        "orchestration_agents": 146, "telemetry_observability": 90, "ui_api": 127,
         # training_synthetic_datasets is unchanged at 158 across the ladder widening, which
         # is the check that mattered: benchmark_eval_data's new dimensions and rungs did not
         # disturb the category the ladder was derived from.
