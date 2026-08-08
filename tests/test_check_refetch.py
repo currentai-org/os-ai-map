@@ -1,15 +1,17 @@
-"""Tests for G4, the sampled re-fetch.
+"""Tests for the sampled re-fetch.
 
 The two that matter are `test_reused_digest_across_urls_is_fabrication` and
 `test_rate_limit_is_not_reported_dead`.
 
-The first is the gate's whole reason to exist: G1 and G2 read what the writer wrote, so the
-only thing that catches an invented digest is noticing it could not have come from a body.
-Two URLs sharing sixty-four characters is the cheapest form of that.
+The first is the gate's whole reason to exist: the invariant and the digest requirement read
+what the writer wrote, so the only thing that catches an invented digest is noticing it could
+not have come from a body. Two URLs sharing sixty-four characters is the cheapest form of
+that.
 
-The second pins a bug the first real run produced. G4 reported a live Mastra LICENSE as dead
-because GitHub answered 429, and a gate that reports rate limiting as a dead source is a gate
-people learn to ignore. Transient statuses must stay out of the findings bucket.
+The second pins a bug the first real run produced. The sampled re-fetch reported a live
+Mastra LICENSE as dead because GitHub answered 429, and a gate that reports rate limiting as
+a dead source is a gate people learn to ignore. Transient statuses must stay out of the
+findings bucket.
 """
 
 import hashlib

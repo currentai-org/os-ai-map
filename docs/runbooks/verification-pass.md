@@ -31,18 +31,19 @@ afterwards would be gates written to fit whatever the bulk edits happened to pro
 > three gates pass. Two things went differently from what is written below and are worth
 > knowing before following it:
 >
-> - **G3 caught 17 impossible pairs, not 2.** `vellum` and `whylabs` were the known ones;
->   `tensorrt-llm` made a third `4 / open_source`, five products were `2 / open_core`, and
->   nine carried a score of 3, which the software ladder cannot emit at all. All were fixed
->   as score corrections. `docs/guides/verification.md` has the three groups and the
->   reasoning; the ladder was not touched.
-> - **The G2 exemption list is empty.** All 6 dated axes qualified for it, and none of them
->   satisfied G1 either, because the 2026-07-28 pass on the model flagships re-read only the
->   dataset endpoint. Re-fetching the 23 cited sources was 23 requests and it turned up two
->   defects the exemption would have hidden. Exempting stays the cheaper move and the
->   mechanism is still there; it is not the better move when the set is small.
+> - **The producible-pair check caught 17 impossible pairs, not 2.** `vellum` and `whylabs`
+>   were the known ones. `tensorrt-llm` made a third `4 / open_source`, five products were
+>   `2 / open_core`, and nine carried a score of 3, which the software ladder cannot emit at
+>   all. All were fixed as score corrections. `docs/guides/verification.md` has the three
+>   groups and the reasoning. The ladder was not touched.
+> - **The exemption list for the digest requirement is empty.** All 6 dated axes qualified
+>   for it, and none of them satisfied the invariant either, because the 2026-07-28 pass on
+>   the model flagships re-read only the dataset endpoint. Re-fetching the 23 cited sources
+>   was 23 requests and it turned up two defects the exemption would have hidden. Exempting
+>   stays the cheaper move and the mechanism is still there. It is not the better move when
+>   the set is small.
 >
-> **0.5 (G6) has NOT landed.** It is the one Phase 0 item still open.
+> **0.5, the release assertion, has NOT landed.** It is the one Phase 0 item still open.
 
 ### 0.1 Schema: `establishes`, `http_status`, `content_sha256`
 
@@ -70,23 +71,24 @@ passes such a test only by accident, which is why the test matters more than the
 Put all three in `build/check_verification.py`, one command, wired into `validate.yml` next
 to the existing test step.
 
-- **G1, the invariant.** For each axis carrying `last_verified: D`: every dimension the score
+- **The invariant.** For each axis carrying `last_verified: D`: every dimension the score
   records has ≥1 source with `establishes` naming it and `accessed >= D`. Scope: axes with a
   date only.
-- **G2, digest present.** Same scope: every establishing source has `http_status` and
+- **The digest requirement.** Same scope: every establishing source has `http_status` and
   `content_sha256`. Exempt dates predating this runbook by listing them explicitly, so the
   exemption is visible and shrinks.
-- **G3, producible pair.** For every scored product in a category with a recipe, `(score,
-  class)` must equal the outcome of some rule in that recipe. Full scope, immediately.
+- **The producible-pair check.** For every scored product in a category with a recipe,
+  `(score, class)` must equal the outcome of some rule in that recipe. Full scope,
+  immediately.
 
 ```bash
-uv run python -m build.check_verification          # expect G3 to FAIL first run
+uv run python -m build.check_verification          # expect producible-pairs to FAIL first run
 ```
 
-G3 will fail on `vellum` and `whylabs` (`4 / open_source`) and possibly others. **Fix those
-scores before landing the gate**; each is a real error, and one of the two recorded values is
-wrong in each case. Resolve by reading the product, not by adjusting the rubric to admit the
-pair.
+The producible-pair check will fail on `vellum` and `whylabs` (`4 / open_source`) and possibly
+others. **Fix those scores before landing the gate.** Each is a real error, and one of the two
+recorded values is wrong in each case. Resolve by reading the product, not by adjusting the
+rubric to admit the pair.
 
 ### 0.4 The nonce-forcing query helper
 
@@ -95,7 +97,7 @@ results cache on query text, so a fixed verification query returns its first ans
 this has already caused a tool to report success against pre-materialization data. Port
 `apply_scores.fetch_computed` and any verification script onto it.
 
-### 0.5 G6 — the release assertion
+### 0.5 The release assertion
 
 `build/publish_registry.py` (or the runbook step around it) asserts, for every UDM it depends
 on, that `latestRevision.revisionNumber == latestRelease.revision.revisionNumber`.
@@ -106,8 +108,8 @@ rather than an error — three runs were spent on that, concluding a column drop
 materialization when the new SQL had never executed. See `docs/runbooks/deploy-udms.md`.
 
 **Exit criteria for Phase 0:** `check_verification` passes, `validate.yml` runs it, the
-components helper has the folded-scalar test, and G3's catches are fixed as score
-corrections.
+components helper has the folded-scalar test, and what the producible-pair check caught is
+fixed as score corrections.
 
 ---
 
@@ -179,11 +181,11 @@ What shipped:
 ### The refresh order, which is not optional
 
 The three user models now carry weekly crons — `evidence.product_evidence` Monday 03:00 UTC,
-`scores.openness_facts` 04:00, `scores.openness_computed` 05:00, with G5 grading at 06:00 — so
-the warehouse is at most a week behind the repo on its own. **A publish is still only the first
-half of a refresh**, and on a weekly cadence that matters more rather than less: merge on
-Tuesday and the map carries the old numbers until the following Monday unless you walk the chain
-below. Do that whenever a merge changes a score, rather than waiting.
+`scores.openness_facts` 04:00, `scores.openness_computed` 05:00, with the parity gate grading at
+06:00 — so the warehouse is at most a week behind the repo on its own. **A publish is still only
+the first half of a refresh**, and on a weekly cadence that matters more rather than less: merge
+on Tuesday and the map carries the old numbers until the following Monday unless you walk the
+chain below. Do that whenever a merge changes a score, rather than waiting.
 
 Getting this wrong looks exactly like a code bug: the first run of the generalized SQL reported
 three categories missing entirely, and the cause was `product_evidence` sitting three recipes
@@ -226,11 +228,11 @@ Two things about step 2 that are easy to get wrong, both of which cost hours on 
   `build/warehouse.py` — which forces the nonce, without which you read the pre-materialization
   answer back out of the query-text cache.
 
-### G5 — the parity gate
+### The parity gate
 
 `build/check_parity.py` compares `check_rubric`'s local verdict against
 `currentai.scores.openness_computed` for every product, and fails on any divergence. It runs
-daily in `.github/workflows/parity.yml`.
+weekly in `.github/workflows/parity.yml`, Monday at 06:00 UTC, behind the three models it grades.
 
 This is the mechanism for the failure mode that bit four times in one day — `check_rubric` and
 the SQL mirror each other's logic by hand and drift silently. Every one of those four was
@@ -259,12 +261,12 @@ fenced to those axes. Openness is excluded permanently: `data` is research-only 
 `core_gated` needs a pricing page.
 
 ```bash
-uv run python -m build.check_verification    # G1/G2 now cover ~400 more axes
+uv run python -m build.check_verification    # invariant and digests now cover ~400 more axes
 uv run python -m build.check_freshness       # coverage should jump
 ```
 
-**Exit criteria:** every axis it touched satisfies G1 and G2, and `check_freshness` reports
-them as `verified` rather than `commit`.
+**Exit criteria:** every axis it touched satisfies the invariant and the digest requirement,
+and `check_freshness` reports them as `verified` rather than `commit`.
 
 ---
 
@@ -307,9 +309,10 @@ would have earned for free.
 
 **On agent execution.** This is 1106 fetches and it is the step most exposed to
 rubber-stamping — an agent that "confirms" without reading would reproduce #108's failure at
-fifty times the scale while looking legitimate. Three things make that not work: G1 requires
-the `accessed` bump on every dimension, G2 requires a digest that only fetching produces, and
-G4 re-fetches a sample and compares. Do not relax any of the three to make a batch finish.
+fifty times the scale while looking legitimate. Three things make that not work: the invariant
+requires the `accessed` bump on every dimension, the digest requirement requires a digest that
+only fetching produces, and the sampled re-fetch goes back to the network for a sample and
+compares. Do not relax any of the three to make a batch finish.
 
 **Expect scores to move.** The RWKV correction in #105 came out of a pass like this. Movement
 is the return on the work, not a problem with it — `apply_scores --check` exits non-zero on a
@@ -327,14 +330,15 @@ moved score deliberately.
 uv run python -m build.check_freshness --max-age-days 90     # tune, then gate
 ```
 
-**G4 landed early**, in #148, because Phase 4 is the step it exists to police and running that
-without it would be the rubber-stamp risk with nothing underneath it. `build/check_refetch.py`
-re-fetches a sample and compares digests, weekly in `.github/workflows/refetch.yml`, reporting
-drift rather than hard failing since pages legitimately change. A digest that **matches** is
-the proof — one that differs proves nothing on its own.
+**The sampled re-fetch landed early**, in #148, because Phase 4 is the step it exists to police
+and running that without it would be the rubber-stamp risk with nothing underneath it.
+`build/check_refetch.py` re-fetches a sample and compares digests, weekly in
+`.github/workflows/refetch.yml`. It reports drift rather than hard failing, since pages
+legitimately change. A digest that **matches** is the proof — one that differs proves nothing on
+its own.
 
 What remains here: turn `--max-age-days` into a CI gate once coverage makes it fail on genuine
-staleness rather than on backlog, and drop the G2 exemption list.
+staleness rather than on backlog, and drop the digest requirement's exemption list.
 
 **Exit criteria:** the five definition-of-done conditions hold, and each is enforced by
 something that runs without being remembered.
@@ -347,10 +351,10 @@ Every one of these has happened. They are not hypotheticals.
 
 | hazard | tell | guard |
 |---|---|---|
-| Derived date sold as a confirmation | any aggregate of `accessed` reaching `last_verified` | `tests/test_apply_scores.py`; G1 validates, never derives |
+| Derived date sold as a confirmation | any aggregate of `accessed` reaching `last_verified` | `tests/test_apply_scores.py`; the invariant validates, never derives |
 | Stale warehouse read | identical query text returning a pre-materialization answer | the nonce helper (0.4) |
-| Unreleased revision | "my SQL change had no effect", no error | G6 (0.5) |
-| Repo/warehouse drift | local reproduces, warehouse abstains | G5 (Phase 2) |
+| Unreleased revision | "my SQL change had no effect", no error | the release assertion (0.5) |
+| Repo/warehouse drift | local reproduces, warehouse abstains | the parity gate (Phase 2) |
 | Folded-scalar corruption | a components value with a key spliced mid-string | `build/components.py` (0.2) |
 | Partial coverage overstating openness | most-restrictive over a subset of SKUs | already in the SQL: `skus_mapped = skus_reachable AND tiers_seen <= 1` |
 | Bot-owned files in a PR | `generated-files-guard` fails | edit `sources/` only; the bot regenerates on merge |

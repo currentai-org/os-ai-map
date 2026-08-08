@@ -656,8 +656,8 @@ def test_real_sources_serialize_without_errors():
                 "orchestration_agents", "telemetry_observability", "ui_api"]
     # Two DATASET categories inherit sources/rubrics/dataset.yaml, so both serialize the
     # same 22 rules. Each of the four ladders gained exactly one rung with the universal
-    # license scale, which split one tier in two - a bounded commercial licence at 3, and a
-    # licence forbidding commerce outright at 2.
+    # license scale, which split one tier in two - a bounded commercial license at 3, and a
+    # license forbidding commerce outright at 2.
     #
     # Formerly 21: 3 not-published rungs, 2 held-out-answer rungs, 6 gate rungs and 5
     # license/documentation rungs, all single-condition except the last 5.
@@ -680,11 +680,11 @@ def test_real_sources_serialize_without_errors():
     # tier the vendor sells, so 25 products left the roster and the closed frontier
     # models moved from base_pretrained to finetuned_chat.
     #
-    # Eight software categories then rose by 1-3 rows when the G3 score corrections landed:
-    # fixing an impossible score/class pair means recording the dimension that decides it, so
-    # products that had described their gating in prose gained a readable `source:` or
-    # `core-gated:` key. The two model categories are untouched, which is what the pilot
-    # counts are pinned to catch.
+    # Eight software categories then rose by 1-3 rows when the score corrections from the
+    # producible-pair check landed: fixing an impossible score/class pair means recording the
+    # dimension that decides it, so products that had described their gating in prose gained a
+    # readable `source:` or `core-gated:` key. The two model categories are untouched, which
+    # is what the pilot counts are pinned to catch.
     # `safeguards` is back at 90 rows. It had disappeared from this dict entirely when all
     # 26 of its products were deferred; 17 now reproduce, because sixteen of them were
     # recording the deciding evidence under keys the ladders do not read rather than
