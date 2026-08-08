@@ -31,6 +31,15 @@ jobs:
       - name: Verification gates (invariant, digests, producible-pairs)
         run: uv run python -m build.check_verification --verbose
 
+      # Capability's own gate. Most bands on this map were placed against a named peer, and
+      # until `relative_to` existed that comparison lived in a note where nothing could check
+      # it. This requires the recorded relation to agree with the two recorded scores, and a
+      # dated band's peer to be confirmed at least as recently. It ratchets the same way the
+      # verification gates do: it covers the products that record a comparison, which grows
+      # as the axis is curated. See docs/guides/verification.md.
+      - name: Capability gate (recorded comparisons hold)
+        run: uv run python -m build.check_capability
+
       # Structure of every scoring recipe: a rationale on each rung, a machine_signal on
       # each dimension, no rule that cannot fire, no product abstained on without a
       # declared reason, and no evidence the components parser silently discards. Note
