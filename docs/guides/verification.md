@@ -129,6 +129,7 @@ gate every PR. The ones needing the network run periodically.
 | refetch | fabricated or rotted sources | sampled re-fetch, digest and `shows` token match | network, weekly |
 | parity | repo and warehouse drifting apart | `build/check_parity.py`, a per-product differential | network, weekly |
 | release | a UDM revision that was never released | assert latest revision == latest release | network, per publish |
+| capability-anchors | a recorded peer comparison that does not hold | `relation` must agree with both scores, and a dated band's peer must be confirmed at least as recently | free |
 
 These were numbered G1-G6 until 2026-08-08. Older PRs and commit messages use the numbers.
 
@@ -204,6 +205,61 @@ pricing page read.
 
 So every openness axis needs at least one read, permanently. Adoption and capability are
 different in kind and can be automated — see the table below.
+
+## What a capability confirmation attests to
+
+Less than the other two axes, and the difference is worth stating before roughly 400 dates get
+written across adoption and capability in step 3. **Zero capability axes carry a
+`last_verified` today**, so this is a paragraph now and an audit of 400 dates later.
+
+Capability is not measured on this map. Measured on 2026-08-08, 322 of 472 products record
+`basis: feature_matrix` against 86 `benchmark`, and `value` is prose in every one of the 372
+cases where it is populated — not a single bare number. There is no capability ladder in any of
+the four rubrics, and `signal_routing.yaml` records the axis as effectively unroutable: both
+external anchors are unbridged, and both rank *models*, so neither can say anything about a
+training framework or a sandbox.
+
+What actually places most bands is a comparison to a peer. Roughly a hundred products in the
+corpus put themselves against another product in their own category — "one tier below the
+Megatron-LM anchor", "mid-tier next to langfuse" — and in `finetuning_code` every one of the
+27 notes does it. That comparison was the instrument, and it lived in an English sentence.
+
+So it is recorded instead:
+
+```yaml
+capability:
+  score: 4
+  basis: feature_matrix
+  relative_to: megatron-lm
+  relation: one_below
+```
+
+**`relation` is arithmetic over two recorded integers, and it can be wrong.** That is the
+point, and it is the producible-pair check's shape rather than the invariant's: two statements
+of the same fact — the relation and the two scores — can disagree, and now one of them is
+checkable. `build/check_capability.py` gates it, and it ratchets like the others, covering the
+products that record a comparison rather than blocking on the ones that do not.
+
+**A dated band cannot be fresher than the band it derives from.** If `trl` claims a
+confirmation today while Megatron-LM's capability was last confirmed in June, `trl` is claiming
+to have re-derived a comparison against a fact nobody re-read. This is the openness invariant's
+insight applied to a different dependency: a date is worth no more than the least recently
+confirmed thing underneath it.
+
+With that recorded, a capability `last_verified` means: **the feature matrix still reads as
+described, and the comparison the band rests on has been re-derived against a peer confirmed at
+least as recently.** It does not mean the band was measured. Where `basis: benchmark`, it also
+does not mean the benchmark was re-run — re-reading a published number is the claim, and the
+number is a property of a harness-plus-model pairing rather than of the product alone.
+
+Two things this deliberately does not do. It does not make capability derivable from evidence,
+and the comparison itself still carries no cited source — recording it converts an
+unfalsifiable claim into a falsifiable one, which is what `establishes` did for openness, and
+`establishes` does not verify that a source says what it claims either. That is the sampled
+re-fetch's job. Nor does it try to turn `capability.value` into structured components: at 61%
+prose by `check_rubric`'s own measure, against the 71% that stopped `edge_hardware`, and with
+four different instruments sharing one field name, there is no shared ladder at the end of that
+work the way openness got four.
 
 ## Current state, 2026-08-08
 

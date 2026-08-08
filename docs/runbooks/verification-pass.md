@@ -293,6 +293,10 @@ The unit of work is therefore per product, not per axis:
    `content_sha256`, and a `shows` extract that actually appears in the body. A cited URL that
    404s is a finding, not something to paper over.
 3. Re-derive each recorded dimension and attribute it: `establishes: [...]`.
+   On capability, that means the peer comparison: if the band was placed against another
+   product, record it as `relative_to` + `relation` rather than leaving it in the note, and
+   confirm the peer at least as recently. A capability date attests to less than the other two
+   axes — `verification.md`, "What a capability confirmation attests to", says exactly what.
 4. **Rewrite the prose** per `product-info.md` — `description` load-bearing and within the
    length band, `comments` a footnote ending in the canonical verification line. Delete rather
    than research a superlative, a corporate event, or a curator rationale clause; the guide's
