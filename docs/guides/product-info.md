@@ -291,7 +291,7 @@ Three cases are **durable** and stay:
 1. **The version is the entry's identity.** For a named model release — `Apertus family
    (8B + 70B), released 2 Sep 2025` — the date is a historical fact about *this* product,
    and the next release is a different entry (or a different rung; see
-   `slug_aliases.yaml`). Keep it.
+   `docs/guides/identity.md`). Keep it.
 2. **There will be no future release.** `Latest release v3.3.7 (2025-12-19). Repo archived
    2026-03-21 and placed in maintenance mode` is durable precisely because the project
    stopped. Keep it — an archived project's last release is a lifecycle fact.

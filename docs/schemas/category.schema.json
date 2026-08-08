@@ -8,7 +8,7 @@
     "name": {
       "type": "string",
       "pattern": "^[a-z0-9_]+$",
-      "description": "The category's slug, and its identity in every join: sources/taxonomy.yaml names it in exactly one arc, build/serialize_registry.py emits it as `categories.slug`, and the warehouse keys on it as `category_slug`. Underscored, where product slugs are hyphenated, so the two vocabularies cannot be confused at a glance. build/validate.py requires it to equal the filename stem, because the stem is what every join resolves and a copied file carrying a stale inner name passes the roster checks and then corrupts joins silently. Treat it as immutable after creation: sources/slug_aliases.yaml records retirements for products and organizations, and there is no equivalent for a category, so a rename leaves nothing mapping the old name to the new one."
+      "description": "The category's slug, and its identity in every join: sources/taxonomy.yaml names it in exactly one arc, build/serialize_registry.py emits it as `categories.slug`, and the warehouse keys on it as `category_slug`. Underscored, where product slugs are hyphenated, so the two vocabularies cannot be confused at a glance. build/validate.py requires it to equal the filename stem, because the stem is what every join resolves and a copied file carrying a stale inner name passes the roster checks and then corrupts joins silently. Treat it as immutable after creation: products and organizations record retirements in their own `aliases` array, and there is no equivalent for a category, so a rename leaves nothing mapping the old name to the new one."
     },
     "display_name": {
       "type": "string",
