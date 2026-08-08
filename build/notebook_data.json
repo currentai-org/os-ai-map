@@ -5996,18 +5996,88 @@
           "org_slug": "hugging-face",
           "org": "Hugging Face",
           "type": "software",
-          "description": "The de facto reference library for post-training transformers, supports SFT, DPO, GRPO, PPO, KTO, reward modeling, and other preference-optimization methods through unified Trainer APIs. Picked over alternatives because it sits at the center of the HF ecosystem (transformers, datasets, accelerate, PEFT) and ships canonical reference implementations that papers and other frameworks build on. 18.4K GitHub stars, 482 contributors, ~400 commits in 90 days; extremely active.",
+          "description": "TRL (Transformers Reinforcement Learning) post-trains language models through Trainer classes covering supervised fine-tuning, preference optimization (DPO, KTO, ORPO, CPO), online methods (GRPO, RLOO, PPO), reward modeling, and knowledge distillation. Built on Hugging Face Transformers, it scales through Accelerate with DDP, DeepSpeed ZeRO, and FSDP, and integrates PEFT for LoRA and QLoRA training. A trl command-line interface runs the same methods without Python code. Hugging Face maintains it.",
           "openness": {
             "score": 5,
             "class": "open_source",
             "components": "license:Apache-2.0(OSI);source:public(huggingface/trl);governance:Hugging Face;no feature-gated core;managed-tier:none;core-gated:ungated",
             "confidence": "high",
             "note": "Fully OSI-licensed (Apache-2.0), full source public, no proprietary core or managed training SaaS gate.",
+            "last_verified": "2026-08-08",
             "sources": [
               {
                 "url": "https://github.com/huggingface/trl/blob/main/LICENSE",
-                "shows": "Apache License Version 2.0 text",
-                "accessed": "2026-06-04"
+                "shows": "Rendered blob of the repository LICENSE. Body carries the full Apache License text: the heading block \"Apache License / Version 2.0, January 2004 / http://www.apache.org/licenses/\", the section \"TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION\" with \"1. Definitions.\" following it, and the appendix notice \"Copyright 2020-2026 The HuggingFace Team\". No added use restriction or field-of-use clause.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "7f556f600e06ff5d980a548a0d4caf23e4f54bd798b22ad8da1c1681d618c8dc",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/huggingface/trl/main/LICENSE",
+                "shows": "11,355-byte plain-text Apache License Version 2.0 (January 2004), 201 lines, unmodified through section 9 and the appendix, closing with \"Copyright 2020-2026 The HuggingFace Team\" and the standard \"Licensed under the Apache License, Version 2.0\" notice. Stable plain-text form of the same file the cited blob URL renders.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "1bf614b1fdc40fbd344aa58d00d17d5fd0d252ea333a05be018a38959c8b2998",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/huggingface/trl/main/README.md",
+                "shows": "Installation section gives three routes to the running product from the published repo: \"pip install trl\", \"pip install git+https://github.com/huggingface/trl.git\", and \"git clone https://github.com/huggingface/trl.git; cd trl/; pip install -e .[dev]\". Highlights name SFTTrainer, GRPOTrainer, DPOTrainer and KTOTrainer, Accelerate scaling \"from single GPU to multi-node clusters\" via DDP and DeepSpeed, and PEFT LoRA/QLoRA. The CLI section shows \"trl sft\", \"trl dpo\", \"trl kto\" invocations. The file offers no paid, premium or enterprise edition and names no feature that the published source cannot build.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "7ffa39bb907633245e13b061cd788127b9144a1ca8052ebd12dd0d379a356c9c",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/huggingface/trl/main/pyproject.toml",
+                "shows": "[project] declares name = \"trl\", license = \"Apache-2.0\", license-files = [\"LICENSE\"], requires-python = \">=3.10\", and [project.scripts] trl = \"trl.cli:main\" - the CLI entry point ships in the same package. [project.optional-dependencies] lists bco, deepspeed, kernels, liger and further extras, all pulling open packages (scikit-learn, deepspeed, liger-kernel, transformers); there is no commercial, enterprise or premium extra and no reference to a separate closed distribution.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "3f478555e8c308e46581d0f7b3af9c416d9b40e356825081a18b7e642c094651",
+                "establishes": [
+                  "license",
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/docs/trl/index",
+                "shows": "The \"Taxonomy\" section prints the complete trainer set of the installed library - online: GRPOTrainer, RLOOTrainer, OnlineDPOTrainer, NashMDTrainer, PPOTrainer, XPOTrainer; reward modeling: RewardTrainer, PRMTrainer; offline: SFTTrainer, DPOTrainer, KTOTrainer, BCOTrainer, CPOTrainer, ORPOTrainer; knowledge distillation: GKDTrainer, MiniLLMTrainer. The only per-trainer markers are the legend's own two (vLLM support and experimental); no trainer is marked as belonging to a paid or hosted tier.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "eb7a95c6eb3c600d04b12bf25f6e31bb5d16e7c530fe2e01f800f89bf6319b04",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/pricing",
+                "shows": "Hugging Face's paid offering, read for the core-gated question. The plans are PRO ($9/month), Team ($20/month per user) and Enterprise ($50/month per user), plus per-TB Hub storage ($8-18/TB/mo) and hourly Spaces hardware. Every listed benefit is Hub/account scoped - private storage, inference credits, ZeroGPU quota, SSO, audit logs, resource groups. The page does not mention TRL at all (zero occurrences of the string in the body) and gates no TRL trainer or feature behind a plan.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "aef9fa33e43b04c6794e5b349e44049ccd924b1acefb1649a240dda5f16d16ce",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://pypi.org/project/trl/",
+                "shows": "Package page for trl. \"License expression: Apache-2.0\" with a link to the SPDX License List; Author: Leandro von Werra; \"Requires Python >=3.10\"; \"Provides Extra: bco, deepspeed, kernels, liger, peft, quality, quantization, scikit, test, vllm, vlm, math\" - no commercial or enterprise extra. Confirms the distributed wheel carries the same Apache-2.0 terms as the repository.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "2d152a4077be4ccea1add5206bc05407aa7c8c00aaac74a680e96b38a88d230b",
+                "establishes": [
+                  "license",
+                  "core-gated"
+                ]
               }
             ],
             "bucket": "open"
@@ -6018,11 +6088,21 @@
             "signal_type": "usage_volume",
             "confidence": "high",
             "note": "~3.81M PyPI downloads last month; standard library for RLHF/post-training in the HF stack, integrated with Transformers/Accelerate and used across labs and open-model post-training pipelines.",
+            "last_verified": "2026-08-08",
             "sources": [
               {
                 "url": "https://pypistats.org/packages/trl",
-                "shows": "Downloads last month: 3,809,112",
-                "accessed": "2026-06-04"
+                "shows": "Package page for trl. \"Downloads last day: 139,036 / Downloads last week: 884,630 / Downloads last month: 3,677,381\". Header block reads \"Latest version: 1.9.2\" and \"Summary: Train transformer language models with reinforcement learning.\" 3.68M monthly puts the package in the 1M-10M band, level 4.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "0e9c80aae1fb749fb34f0e592f3f4fb3cfa9f43335623edd226daf65b0c09e5a"
+              },
+              {
+                "url": "https://pypistats.org/api/packages/trl/recent",
+                "shows": "Full JSON body: {\"data\":{\"last_day\":139036,\"last_month\":3677381,\"last_week\":884630},\"package\":\"trl\",\"type\":\"recent_downloads\"}. Machine-readable form of the same figure the HTML page renders, so the band is re-derivable without parsing HTML.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "1500a1740ddef4742d8e1b323b2a19a728f290e0b37365d3f93fb5b647413b77"
               }
             ]
           },
@@ -6032,21 +6112,31 @@
             "value": "Methods: SFT, DPO/IPO/KTO/ORPO, PPO, GRPO, reward modeling; parallelism via HF Accelerate (DeepSpeed/FSDP); precision BF16/FP8 via Accelerate; broad method coverage but relies on Accelerate for scale rather than native frontier-scale parallelism like Megatron-LM (the C5 anchor).",
             "confidence": "high",
             "note": "Broadest post-training method coverage among the open libraries; one tier below the Megatron-LM frontier-scale-training anchor on demonstrated large-scale parallelism.",
+            "last_verified": "2026-08-08",
             "sources": [
               {
-                "url": "https://github.com/huggingface/trl/blob/main/LICENSE",
-                "shows": "huggingface/trl repo (TRL post-training library) confirmed live",
-                "accessed": "2026-06-04"
+                "url": "https://huggingface.co/docs/trl/index",
+                "shows": "The \"Taxonomy\" section is the feature matrix the band rests on: \"Online methods GRPOTrainer / RLOOTrainer / OnlineDPOTrainer / NashMDTrainer / PPOTrainer / XPOTrainer; Reward modeling RewardTrainer / PRMTrainer; Offline methods SFTTrainer / DPOTrainer / KTOTrainer / BCOTrainer / CPOTrainer / ORPOTrainer; Knowledge distillation GKDTrainer / MiniLLMTrainer\". The Integrations nav lists DeepSpeed, Harbor, Kernels Hub, Liger Kernel, OpenEnv, OpenReward, PEFT, RapidFire AI, Trackio, Unsloth, vLLM - scale is delegated to integrations rather than a native parallelism engine, which is what keeps this a tier below the Megatron-LM anchor. IPO appears nowhere on the page.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "eb7a95c6eb3c600d04b12bf25f6e31bb5d16e7c530fe2e01f800f89bf6319b04"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/huggingface/trl/main/README.md",
+                "shows": "Quick Start states \"Each trainer in TRL is a light wrapper around the Transformers trainer and natively supports distributed training methods like DDP, DeepSpeed ZeRO, and FSDP\", and Highlights state it \"Leverages Accelerate to scale from single GPU to multi-node clusters\" and that \"Full integration with PEFT enables training on large models with modest hardware via quantization and LoRA/QLoRA\", plus an Unsloth integration \"for accelerating training using optimized kernels\". Working SFTTrainer, GRPOTrainer, DPOTrainer, KTOTrainer and RewardTrainer examples follow. No FP8 claim appears in the file.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "7ffa39bb907633245e13b061cd788127b9144a1ca8052ebd12dd0d379a356c9c"
               }
             ]
           },
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-07-30",
-            "basis": "commit"
+            "date": "2026-08-08",
+            "basis": "verified"
           },
-          "version_note": "TRL (Transformer Reinforcement Learning) post-training library; repo huggingface/trl active, LICENSE confirmed live June 2026. Supplies SFT, DPO/IPO/KTO/ORPO, PPO, GRPO trainers built on HF Transformers/Accelerate; the de-facto reference post-training/RLHF library in the HF ecosystem."
+          "version_note": "The documented trainer taxonomy marks PPO, ORPO, CPO, BCO, online DPO, and the two distillation trainers experimental, so the method list is not uniformly stable API. Verified 2026-08-08 via the TRL documentation index and the repository README."
         },
         {
           "slug": "peft",
@@ -6485,18 +6575,59 @@
           "org_slug": "modelscope-alibaba",
           "org": "ModelScope (Alibaba)",
           "type": "software",
-          "description": "Alibaba ModelScope's unified PEFT/full-parameter CPT/SFT/DPO/GRPO toolkit covering 600+ LLMs and 300+ MLLMs (Qwen3, DeepSeek-R1, GLM, Llama4, InternVL, etc.). Picked over LLaMA-Factory when working in the ModelScope ecosystem or when broad multimodal model coverage matters. SWIFT often ships day-zero recipes for Chinese-origin models. 14.2K GitHub stars, 147 contributors, 335 commits in 90 days; published as AAAI 2025.",
+          "description": "SWIFT, packaged as ms-swift, covers the full lifecycle of 600+ text and 400+ multimodal models: pre-training, fine-tuning, alignment, inference, evaluation, quantization, and deployment. Tuning spans full-parameter, LoRA/QLoRA/DoRA, the GRPO family of RL algorithms, and preference methods such as DPO and KTO, reached through a CLI, a Python API, or a web UI. Alibaba's DAMO ModelScope team maintains it, and an AAAI 2025 paper describes the design.",
           "openness": {
             "score": 5,
             "class": "open_source",
             "components": "license:Apache-2.0(OSI);source:public;maintainer:ModelScope(Alibaba);no feature-gated core;core-gated:ungated",
             "confidence": "high",
             "note": "Fully OSI-licensed open source training/deploy framework; source public.",
+            "last_verified": "2026-08-08",
             "sources": [
               {
                 "url": "https://github.com/modelscope/ms-swift",
-                "shows": "Apache-2.0 license; v4.2.3 (May 31 2026); ModelScope/Alibaba maintainer",
-                "accessed": "2026-06-04"
+                "shows": "Repository tree lists swift/, setup.py, requirements/, tests/, docs/ and LICENSE, and the README install section gives 'git clone https://github.com/modelscope/ms-swift.git / cd ms-swift / pip install -e .', so the running framework builds from the published repo. The README License section reads 'This framework is licensed under the Apache License (Version 2.0)' and the sidebar Resources block lists 'Apache-2.0 license'. The README documents the complete pipeline (swift pt / sft / rlhf / infer / app / deploy / sample / eval / export, plus 'swift web-ui') with no paid, premium, enterprise or commercial edition; the only 'Enterprise', 'Premium' and 'Pricing' strings on the page sit in GitHub's own site navigation above the repository header, not in project content. Header shows 3,549 commits, 15.1k stars, 1.6k forks, no archive notice.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "3ebedde37c3a9b86af0ec620f17352ab2a83cd2fe5570a88944d7dfae7aea582",
+                "establishes": [
+                  "source",
+                  "core_gated",
+                  "core-gated",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/modelscope/ms-swift/main/LICENSE",
+                "shows": "11,357 bytes of unmodified Apache License 2.0 text: opens 'Apache License / Version 2.0, January 2004 / http://www.apache.org/licenses/' and closes with the stock appendix carrying the unfilled placeholder 'Copyright [yyyy] [name of copyright owner]'. No custom copyright line, no added use restriction, no field-of-use rider, so the OSI call is clean rather than resting on the GitHub classifier.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://swift.readthedocs.io/en/latest/",
+                "shows": "Full public documentation table of contents: Get Started (SWIFT Installation with 'Source Code Installation', Quick Start, Web-UI); Instruction (Command Line Parameters, Pre-training and Fine-tuning, GRPO, Knowledge Distillation, RLHF, Inference and Deployment, Sampling, Evaluation, Export and Push, Ray Support, Reinforced Fine-Tuning, Agent Support, Supported Models and Datasets, Using Tuners, FAQ); Megatron-SWIFT; Customization; Best Practices. A case-insensitive scan of the rendered page returns zero occurrences of 'enterprise', 'premium', 'pricing', 'commercial' or 'paid' - every documented capability is documented for the open package, with no tier withheld.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "09f09e9f63d747c73cb01ef7418fab1cf96f7d74387296df4c657bb6ce5d3e1d",
+                "establishes": [
+                  "core_gated",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://pypi.org/project/ms-swift/",
+                "shows": "Project page for 'ms-swift 4.4.2', summary 'Swift: Scalable lightWeight Infrastructure for Fine-Tuning', author 'DAMO ModelScope teams'. Meta block gives License: 'Apache Software License (Apache License 2.0)' and the Classifiers block lists 'License :: OSI Approved :: Apache Software License'. The rendered long description is the repository README verbatim (same Table of Contents, same License section linking modelscope/ms-swift/blob/master/LICENSE), so the distributed package is the same framework the repo publishes.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "a088fd583b6ec4c03542963e6955fe7c343c0f8b1b66113458de41e658e961a9",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
               }
             ],
             "bucket": "open"
@@ -6507,16 +6638,21 @@
             "signal_type": "usage_volume",
             "confidence": "high",
             "note": "~110k PyPI downloads last month (primary). Broad coverage (600+ text + 300+ multimodal models incl. Qwen3, DeepSeek, Llama, GLM) and strong uptake in the Chinese/ModelScope ecosystem. Lower bound of the 100K-1M band; level 4 on sustained monthly download volume.",
+            "last_verified": "2026-08-08",
             "sources": [
               {
                 "url": "https://pypistats.org/packages/ms-swift",
-                "shows": "~110,083 PyPI downloads last month",
-                "accessed": "2026-06-04"
+                "shows": "pypistats page for ms-swift, rendered server-side: 'Downloads last day: 3,070', 'Downloads last week: 23,151', 'Downloads last month: 121,346'. Header meta gives Author 'DAMO ModelScope teams', License 'Apache License 2.0', Latest version '4.4.2'. 121,346 sits inside the 100K-1M band that level 4 rests on.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "9068fed9cb14dbc4a991b45464e0dec777710df8ceca5d912ea8d9ee89c74d09"
               },
               {
                 "url": "https://github.com/modelscope/ms-swift",
-                "shows": "600+ text models, 300+ multimodal models supported",
-                "accessed": "2026-06-04"
+                "shows": "README Introduction states support for '600+ text-only large models and 400+ multimodal large models', naming Qwen3, Qwen3.5, InternLM3, GLM4.5, Mistral, DeepSeek-R1, Llama4, Qwen3-VL, Qwen3-Omni, Kimi-K3, InternVL3.5, DeepSeek-VL2, and claims 'Day-0 support for popular models'. Repository header shows 15.1k stars, 1.6k forks, 3,549 commits, 563 open issues and 89 open pull requests, and the News list runs to 2026.07.22 - the breadth-of-coverage half of the adoption note, and evidence the project is actively used and maintained.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "3ebedde37c3a9b86af0ec620f17352ab2a83cd2fe5570a88944d7dfae7aea582"
               }
             ]
           },
@@ -6528,11 +6664,21 @@
             "value": "Methods: full FT, LoRA/QLoRA/DoRA, SFT, GRPO family (GRPO/DAPO/GSPO/SAPO/CISPO/CHORD/RLOO/Reinforce++), preference (DPO/KTO/RM/CPO/SimPO/ORPO), pretraining; 600+ models; integrated quantization/eval/deploy.",
             "confidence": "high",
             "note": "Very broad method + model coverage and an end-to-end train/eval/deploy pipeline. Scored 4 (not 5) vs verl/Megatron: it is a comprehensive practitioner toolkit rather than the demonstrated large-scale frontier-training definer.",
+            "last_verified": "2026-08-08",
             "sources": [
               {
                 "url": "https://github.com/modelscope/ms-swift",
-                "shows": "LoRA/QLoRA/DoRA, SFT, GRPO family, DPO/KTO/CPO/SimPO/ORPO, pretraining across 600+/300+ models",
-                "accessed": "2026-06-04"
+                "shows": "README 'Supported Training Methods' matrix rows - Pre-training, Supervised Fine-Tuning, GRPO, GKD, PPO, DPO, KTO, Reward Model, CPO, SimPO, ORPO, Embedding, Reranker, Sequence Classification - across Full-Parameter / LoRA / QLoRA / Deepspeed / Multi-Machine / Multimodal columns. Separate Reinforcement Learning table lists GRPO, DAPO, GSPO, SAPO, CISPO, CHORD, RLOO, Reinforce++. Megatron-SWIFT table adds TP/PP/SP/CP/ETP/EP/VPP parallelism with FP8. Lightweight tuning list gives LoRA, QLoRA, DoRA, LoRA+, LLaMAPro, LongLoRA, LoRA-GA, ReFT, RS-LoRA, Adapter, LISA. Quantization export covers AWQ, GPTQ, FP8, BNB; evaluation runs through EvalScope over 100+ datasets; deployment through vLLM, SGLang and LmDeploy with an OpenAI-compatible interface.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "3ebedde37c3a9b86af0ec620f17352ab2a83cd2fe5570a88944d7dfae7aea582"
+              },
+              {
+                "url": "https://swift.readthedocs.io/en/latest/",
+                "shows": "Documentation sections corroborating the feature matrix with worked workflows rather than a claim: 'Pre-training and Fine-tuning' (Environment Preparation, Pre-training, Fine-tuning, Merge LoRA, Inference, Deployment), 'GRPO', 'Knowledge Distillation', 'RLHF' with sub-sections GRPO, DPO, RM, PPO, KTO, CPO, ORPO, SimPO, plus 'Sampling', 'Evaluation', 'Export and Push' (Merge LoRA, Quantization, Push Model), 'Ray Support' (Megatron Ray, Swift Ray), 'Reinforced Fine-Tuning', 'Agent Support', and a Megatron-SWIFT section covering LoRA Training, Multimodal Models, Mcore Bridge, Megatron GRPO, GKD and Ascend NPU.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "09f09e9f63d747c73cb01ef7418fab1cf96f7d74387296df4c657bb6ce5d3e1d"
               }
             ]
           },
@@ -6540,9 +6686,9 @@
           "mature": false,
           "freshness": {
             "date": "2026-08-08",
-            "basis": "commit"
+            "basis": "verified"
           },
-          "version_note": "ms-swift (SWIFT) by ModelScope/Alibaba, v4.2.3 (patch) released May 31 2026. Fine-tuning + deployment framework covering 600+ LLMs and 300+ multimodal models. Confirmed live on GitHub June 2026."
+          "version_note": "The repository's About blurb still says 300+ multimodal models while the README says 400+, and the maintainer is named as the ModelScope community on GitHub and the DAMO ModelScope team on PyPI. Verified 2026-08-08 via the ms-swift README, the PyPI project page, and the LICENSE body."
         },
         {
           "slug": "litgpt",
@@ -6671,23 +6817,42 @@
           "org_slug": "openai",
           "org": "OpenAI",
           "type": "software",
-          "description": "Managed fine-tuning for GPT-4o, GPT-4o-mini, GPT-4.1, and o-series via the OpenAI API; supports supervised fine-tuning, DPO (added late 2024), and vision fine-tuning. Picked when the use case demands GPT-4-tier quality at lower latency/cost on a narrow task; the only way to fine-tune OpenAI's frontier weights. Training priced at ~$3/M tokens for GPT-4o-mini and GPT-4o (GPT-4.1 family ~$0.80-3/M); models served at standard inference rates.",
+          "description": "The OpenAI Fine-Tuning API trains custom versions of OpenAI's closed models on OpenAI's infrastructure, exposing supervised fine-tuning, vision fine-tuning, direct preference optimization, and reinforcement fine-tuning for reasoning models. Jobs run from the dashboard or the API against gpt-4.1, gpt-4o, and o4-mini snapshots. OpenAI is winding the platform down: it is closed to new users, job creation ends in January 2027, and fine-tuned models serve until their base models are deprecated.",
           "openness": {
             "score": 1,
             "class": "closed",
             "components": "source:closed;training-code:closed;runs-on:OpenAI-platform-only;license:Proprietary(paid API service)",
             "confidence": "high",
             "note": "Proprietary managed fine-tuning service, no source, runs only on OpenAI's platform against OpenAI's closed models.",
+            "last_verified": "2026-08-08",
             "sources": [
               {
+                "url": "https://openai.com/policies/services-agreement/",
+                "shows": "Section 9.1 Reservation of Rights: \"Customer obtains only a limited right to use the Services, and no ownership rights are transferred to Customer or its End Users under this Agreement.\" The use restrictions bar Customer from \"Reverse Engineer any aspect of the Services or the systems used to provide the Services\", and the definition of Reverse Engineer covers any attempt to \"otherwise attempt to discover the source code or underlying components of the Services\". The Fees section requires Customer to pay \"the applicable Fees in the currency and pursuant to the payment terms on the Order Form\", and the Permitted Exception definition reaches \"fine tune or customize models provided as part of OpenAI\"'s fine-tuning or other Services set forth on the Pricing Page, which ties this Agreement to this product specifically. Header: Updated December 1, 2025; Effective January 1, 2026.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "d0341c61e95035c0ade81d17e152d9d7fea04de7e5cdf62c2b6d2f22bc617cc3",
+                "establishes": [
+                  "source",
+                  "license"
+                ]
+              },
+              {
                 "url": "https://developers.openai.com/api/docs/guides/model-optimization",
-                "shows": "proprietary paid fine-tuning service; SFT/DPO/RFT; gpt-4.1/4o/o4-mini tunable",
-                "accessed": "2026-06-04"
+                "shows": "The fine-tuning workflow is entirely OpenAI-hosted: \"Collect a dataset of examples to use as training data\", \"Upload that dataset to OpenAI, formatted in JSONL\", then create a job — and \"you can create fine-tuned models either in the\" dashboard \"or\" \"with the API\". No repository, package, or self-hostable runtime is offered anywhere on the page. It also points at the pricing page for \"how fine-tuned model training and usage are billed\", and carries the banner \"OpenAI is winding down the fine-tuning platform\" with the platform \"no longer\\naccessible to new users\".",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "b4ddee298abe3b5bc100779838be9446bc40d51033810d7e316521f55bed8c7c",
+                "establishes": [
+                  "source"
+                ]
               },
               {
                 "url": "https://developers.openai.com/api/docs/deprecations",
-                "shows": "fine-tuning platform wind-down: new users blocked May 7 2026; all job creation ends Jan 6 2027; inference persists until base deprecation; existing users still create SFT/DPO (gpt-4.1) and RFT (o4-mini) jobs",
-                "accessed": "2026-06-04"
+                "shows": "Under \"Update to OpenAI\"'s self-serve fine-tuning, a three-row table dated from the May 7th 2026 notification. May 7, 2026: \"Creating fine-tuning jobs or training is not available to organizations that have not previously run fine-tuning.\" July 2, 2026: \"Creating fine-tuning jobs is no longer available to organizations that have not run inference on a fine-tuned model in the past 60 days.\" Jan 6, 2027: \"Active existing customers will no longer be able to create new fine-tuning jobs on this date. Inference on fine-tuned models will be disabled only when the underlying base model is deprecated.\" Cited as lifecycle corroboration; it settles no scored openness dimension on its own.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "f2272ef1a9a1b69c8a2651d2a72771cbbabd13cda9718579678393ae3b2ad86f"
               }
             ],
             "bucket": "closed"
@@ -6698,11 +6863,28 @@
             "signal_type": "unknown",
             "confidence": "low",
             "note": "No disclosed standalone fine-tuning-API usage figure located this run (developer count / jobs run / tokens). The OpenAI platform broadly serves ~1B+ ChatGPT WAU, but that surface is not the fine-tuning API and cannot be honestly attributed to this SKU. Declining to assign a level rather than borrow the umbrella surface number.",
+            "last_verified": "2026-08-08",
             "sources": [
               {
+                "url": "https://developers.openai.com/api/docs/pricing",
+                "shows": "A \"Finetuning\" section, \"Prices per 1M tokens.\", carrying the wind-down banner and a Standard/Batch rate table. The visible rows are o4-mini-2025-04-16 at \"$100.00 / hour\" training; the collapsed rows in the body carry training rates for gpt-4.1-2025-04-14 (25), gpt-4.1-mini-2025-04-14 (5), gpt-4.1-nano-2025-04-14 (1.5), gpt-4o-2024-08-06 (25), gpt-4o-mini-2024-07-18 (3), and legacy gpt-3.5-turbo (8) and davinci-002 (6), under the column order Model / Training / Input / Cached input / Output. Rates only: the page publishes no count of users, organizations, jobs, or tokens.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "719a2ccda3e73b521bb1246c45710c33836b1a63b3b1f8ab44e918d912bb8ceb"
+              },
+              {
                 "url": "https://developers.openai.com/api/docs/guides/model-optimization",
-                "shows": "fine-tuning offered via paid API; no usage figures disclosed",
-                "accessed": "2026-06-04"
+                "shows": "OpenAI's own product documentation for the fine-tuning platform: the optimization workflow, the four supported methods and their base snapshots, and a pointer to the pricing page for billing. It describes who may use the service (\"no longer\\naccessible to new users\") but publishes no figure for how many do.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "b4ddee298abe3b5bc100779838be9446bc40d51033810d7e316521f55bed8c7c"
+              },
+              {
+                "url": "https://openai.com/api/pricing/",
+                "shows": "Redirects (final_url https://openai.com/business/pricing/) to \"Business Pricing | OpenAI\", a ChatGPT Business ($20 / user / month) and Enterprise (\"Custom pricing\") plan-comparison page. It carries no API token rates and no fine-tuning content at all — a search of the extracted text for \"fine-tun\" returns zero hits. Recorded to document where the canonical API pricing URL now lands; the rate card lives at developers.openai.com/api/docs/pricing.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "558ae206f42dba87f8891f585fd7b02c0fbec332e5f7f481702ce1be02baa1ec"
               }
             ]
           },
@@ -6712,21 +6894,31 @@
             "value": "Methods exposed: SFT, vision fine-tuning, DPO (preference), reinforcement fine-tuning (RFT) for reasoning models. Tunes frontier closed models (gpt-4.1 family, gpt-4o, o4-mini). Managed end-to-end (data validation, training, hosting, eval).",
             "confidence": "medium",
             "note": "Strong managed method coverage (SFT+DPO+RFT) over frontier base models, but black-box: no parallelism/precision/scale knobs exposed, no MLPerf-Training basis. Scored 4 on method breadth + frontier base quality; not 5 since the user cannot control training scale/internals.",
+            "last_verified": "2026-08-08",
             "sources": [
               {
                 "url": "https://developers.openai.com/api/docs/guides/model-optimization",
-                "shows": "SFT, vision FT, DPO, RFT across gpt-4.1/4o/o4-mini",
-                "accessed": "2026-06-04"
+                "shows": "\"These are the fine-tuning methods supported in the OpenAI platform today.\" — a four-row table: \"Supervised fine-tuning (SFT)\" with gpt-4.1-2025-04-14, gpt-4.1-mini-2025-04-14, gpt-4.1-nano-2025-04-14; \"Vision fine-tuning\" with gpt-4o-2024-08-06; \"Direct preference optimization\" (DPO) with the same gpt-4.1 trio; and \"Reinforcement fine-tuning (RFT)\", marked \"Reasoning models only\", with o4-mini-2025-04-16. The surrounding text describes the managed loop end to end (upload JSONL, create the job, define a grader for RFT, evaluate) and exposes no parallelism, precision, or training-scale controls.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "b4ddee298abe3b5bc100779838be9446bc40d51033810d7e316521f55bed8c7c"
+              },
+              {
+                "url": "https://developers.openai.com/api/docs/deprecations",
+                "shows": "The \"2026-04-22: Legacy GPT model snapshots\" table lists \"October 23, 2026\" shutdowns for \"o4-mini-2025-04-16\" (replacement gpt-5.6-terra) and gpt-4.1-nano-2025-04-14 (replacement gpt-5.6-luna), and a following table \"We are also removing fine-tuned versions as below\" lists ft-o4-mini-2025-04-16 and ft-gpt-4.1-nano-2025-04-14 on the same date. o4-mini-2025-04-16 is the sole base the guide offers for reinforcement fine-tuning.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "f2272ef1a9a1b69c8a2651d2a72771cbbabd13cda9718579678393ae3b2ad86f"
               }
             ]
           },
           "maturity": null,
           "mature": false,
           "freshness": {
-            "date": "2026-06-24",
-            "basis": "commit"
+            "date": "2026-08-08",
+            "basis": "verified"
           },
-          "version_note": "OpenAI model-optimization / fine-tuning API. Methods: SFT, vision fine-tuning, DPO, reinforcement fine-tuning (RFT, reasoning models only). Tunable models incl. gpt-4.1 / -mini / -nano (SFT,DPO), gpt-4o (vision), o4-mini (RFT). Proprietary managed service. FRESHNESS: OpenAI is winding down this fine-tuning platform (per primary deprecations page): new/never-before users blocked from creating jobs as of May 7 2026; orgs inactive 60d lose job creation Jul 2 2026; ALL customers lose ability to create new fine-tuning jobs Jan 6 2027. Inference on existing fine-tuned models persists until base-model deprecation. Product still exists and functions for existing users at scoring (June 2026) but is on a sunset path."
+          "version_note": "Openness was read from the OpenAI Services Agreement, since the service publishes no repository or license file. No usage figure for the fine-tuning API alone is published, so adoption abstains. Verified 2026-08-08 via the OpenAI model optimization guide, the API deprecations page, and the OpenAI Services Agreement."
         },
         {
           "slug": "amazon-bedrock-custom-models-fine-tuning",
@@ -7475,18 +7667,66 @@
           "org_slug": "nous-research",
           "org": "Nous Research",
           "type": "software",
-          "description": "Language-model reinforcement-learning environments framework for collecting and evaluating LLM trajectories across diverse environments. Nous positions it as part of the post-training stack, and the GitHub repo has 1.2K stars and 362 forks. The repo was archived (read-only) on 2026-07-04 and is no longer actively developed.",
+          "description": "Atropos is an environment microservice framework for asynchronous reinforcement learning with language models: environments run as services, and a trajectory API collects their rollouts and serves batches to a trainer. It ships environments for dataset evaluation, games, RLHF and RLAIF judging, code execution, and multimodal tasks, and integrates with the Axolotl and Tinker trainers. Nous Research archived the repository read-only on 2026-07-04, leaving 0.4.0 as the last release.",
           "openness": {
             "score": 5,
             "class": "open_source",
             "components": "license:MIT(OSI);source:public;scope:async RL-environments framework + trajectory API; trainer integrations:Axolotl/Tinker; no feature-gated core;core-gated:ungated",
             "confidence": "high",
             "note": "Fully OSI-licensed (MIT) and public, no managed/closed core. Fits finetuning_code as the RL-training-environment layer (RLHF/RLAIF/GRPO).",
+            "last_verified": "2026-08-08",
             "sources": [
               {
                 "url": "https://github.com/NousResearch/atropos",
-                "shows": "MIT license; LLM RL-environments framework; v0.4.0 (Mar 10 2026); Axolotl/Tinker trainer integrations; repo archived read-only 2026-07-04",
-                "accessed": "2026-07-21"
+                "shows": "Repo page carries the label \"Public archive\" and the banner \"This repository was archived by the owner on Jul 4, 2026. It is now read-only.\" Embedded repo JSON reads \"isPrivate\":false and \"isArchived\":true alongside \"license\":{\"spdxId\":\"MIT\",\"name\":\"MIT License\"}. The rendered README says \"Atropos is an environment microservice framework for async RL with LLMs.\" and its Navigating the Repo table lists the product's own parts in-repo: atroposlib/ (\"Core library containing base classes and utilities\"), environments/ (\"Collection of ready-to-use RL environments\"), example_trainer/ (\"Example training scripts and configurations\"); installation is \"pip install atroposlib\" or an editable install of the same tree. So the published repo is the runnable product: source public. For core-gated I extracted the rendered README text out of the saved body (21,019 characters) and searched it for enterprise, pricing, paid, commercial, subscription, premium, cloud tier, license key, sign up, contact sales and managed: zero hits on all of them except one occurrence of \"managed\", which is the ManagedServer class documentation link. Nothing in the repo is withheld for a paid tier.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "943430a5089f39cffe384bc0bf8a8ded62046beff5eb6b63400fcee22d70e5b0",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/NousResearch/atropos/main/LICENSE",
+                "shows": "The LICENSE body in full, 1,070 bytes. It opens \"MIT License\", carries \"Copyright (c) 2026 Nous Research\", and grants permission to deal in the software \"without restriction\" including use, copy, modify, merge, publish, distribute, sublicense and sell, subject only to the notice-retention condition and the standard warranty disclaimer. No field-of-use, non-commercial, competition or delayed-conversion clause anywhere in the text, so the recorded license:MIT(OSI) holds and resolves to the osi tier.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "5f79d321c17de8ef6e5f34967dc5b484afebeeefd87180890d9741941f6b815f",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/NousResearch/atropos",
+                "shows": "Repository JSON: \"private\": false, \"visibility\": \"public\", \"archived\": true, \"disabled\": false, \"spdx_id\": \"MIT\", \"pushed_at\": \"2026-07-04T17:39:01Z\", \"open_issues_count\": 0, default_branch main, created 2025-04-29. Corroborates the landing page on both the public-source and the MIT reading, and independently confirms the archived flag the warehouse GitHub signal reported.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "1c191b13b5eab265c817b7f7577e9f3ac68287272887a11d87331577ac3c2eae",
+                "establishes": [
+                  "source",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://portal.nousresearch.com/",
+                "shows": "The vendor's paid surface, and the pricing page the software ladder says core_gated needs. It sells a Nous Portal subscription built around the Hermes agent: nav sections Overview, Hermes Cloud, Models, Plans, Resources, a Pricing heading, and copy about hosted tools that \"come bundled with your subscription\" and \"bills to the same credits as your models\". The string atropos (case-insensitive) does not occur anywhere in the saved body of 647,329 bytes, searched over the raw HTML rather than the rendered text so that script-embedded payloads were included. Nothing from the Atropos repo is sold as, or withheld for, a Portal tier: core-gated ungated.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "abba81f624cb0027409ba3a378b8713556e4fb841a1f7c622849a6694177fdd2",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://nousresearch.com/",
+                "shows": "Vendor home page. The product nav is Hermes Agent, Nous Portal, Psyche, Hermes 4, Chat, Simulators, Releases, Careers, Shop, Blog. Searching the raw saved body of 76,131 bytes case-insensitively for atropos, pricing, enterprise, subscri and plan returns zero hits for every one of them, so Atropos is not a commercial offering of this vendor at all and there is no tier for a feature to be withheld into.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "ba7e0b0487374eb5b05e7cbff12170e45acfca961fe7242e3ed1eb09d870713c",
+                "establishes": [
+                  "core-gated"
+                ]
               }
             ],
             "bucket": "open"
@@ -7494,14 +7734,31 @@
           "adoption": {
             "level": 1,
             "reach": "<10K",
-            "signal_type": "stars_fallback",
-            "confidence": "low",
-            "note": "No PyPI/download or named-user count found on the primary channel; only 1.3k GitHub stars as a signal (stars_fallback => capped <=3, placed at 1). Early/niche research adoption.",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "atroposlib records 157 PyPI downloads in the trailing 30 days, a measured usage volume rather than the stars fallback the band previously rested on. The band is unchanged: 157/month is well inside <10K. Early/niche research adoption, and the repository was archived read-only on 2026-07-04, so the figure is unlikely to grow.",
+            "last_verified": "2026-08-08",
             "sources": [
               {
-                "url": "https://github.com/NousResearch/atropos",
-                "shows": "1.3k stars; no published download/user figures",
-                "accessed": "2026-06-04"
+                "url": "https://pypistats.org/api/packages/atroposlib/recent",
+                "shows": "The whole 106-byte body is {\"data\":{\"last_day\":10,\"last_month\":157,\"last_week\":40},\"package\":\"atroposlib\",\"type\":\"recent_downloads\"}. 157 downloads in the trailing 30 days for the package the README installs, which bands at level 1 (<10K) with a wide margin to the 10K level-2 floor. Fetched 200 on the first attempt, no retry needed.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "a5d4cf432e93148eccbc2580aa356ae90ea89cfcad00d3dc8d98c43fa2256b02"
+              },
+              {
+                "url": "https://pypi.org/pypi/atroposlib/json",
+                "shows": "info.version 0.4.0, summary \"Atropos: An Environment and Rollout handler for LLM RL\", requires_python >=3.10, five releases (0.1.0, 0.2.0, 0.2.1, 0.3.0, 0.4.0) with the 0.4.0 files uploaded 2026-03-10T04:21:18Z. Two things matter here. First, the record's downloads object is present and filled with sentinels rather than absent: \"downloads\":{\"last_day\":-1,\"last_month\":-1,\"last_week\":-1}. It carries no figure; a reader that treats -1 as a count would band this product at nothing, and a reader that treats the key's presence as a figure is also wrong. Second, the 25,750-character long description is the repo README and links github.com/NousResearch/atropos, which is what ties the atroposlib download count to this product, since sources/products/atropos.yaml records no pypi artifact of its own.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "d72320583ae6fa3a8862c65fa85f64ff16bb29ef999f003da7384b570a5db7ff"
+              },
+              {
+                "url": "https://api.github.com/repos/NousResearch/atropos",
+                "shows": "stargazers_count 1343, forks_count 396, open_issues_count 0, archived true, pushed_at 2026-07-04T17:39:01Z. Corroboration only, and consistent with a level-1 band: attention at the low-thousands of stars on a repo that has stopped taking changes. It is no longer the signal the score rests on.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "1c191b13b5eab265c817b7f7577e9f3ac68287272887a11d87331577ac3c2eae"
               }
             ]
           },
@@ -7511,21 +7768,31 @@
             "value": "Methods: RL training environments (RLHF/RLAIF, GRPO-style) with async-first microservice design; broad environment coverage (dataset eval GSM8K/MMLU, games, code execution, multimodal); OpenAI-compatible endpoints; debugging tooling (view-run/process). Trainer-agnostic via Axolotl/Tinker.",
             "confidence": "medium",
             "note": "Capable, well-architected RL-environments layer; mid-tier as a fine-tuning enabler (it orchestrates RL rather than implementing large-scale training itself). Vendor-reported gains (4.6x parallel-task, 2.5x finance) not independently benchmarked.",
+            "last_verified": "2026-08-08",
             "sources": [
               {
                 "url": "https://github.com/NousResearch/atropos",
-                "shows": "async RL-environments framework, diverse environments, RLHF/RLAIF support, debugging tools",
-                "accessed": "2026-06-04"
+                "shows": "The rendered README carries the feature matrix the band rests on. Its environment table lists \"Dataset environments\" (\"GSM8K, MMLU, Custom HF Datasets\"), \"Online environments\" (\"Blackjack, Taxi, Text-based games\"), \"RLAIF and RLHF\" (\"LLM Judge/Reward Models\"), \"Multi-Turn RL\", \"Code Execution\" and \"Multimodal\". A \"Trainer Integrations\" section covers Axolotl and Tinker, and the diagram caption notes the trainer and inference engine are not included with the atropos package, with the in-repo example trainer described as a reference example. Tooling includes \"view-run\", process, and \"Offline Data Generation\" via atropos-sft-gen and atropos-dpo-gen, over OpenAI-compatible endpoints. The vendor's own results table reports a \"Berkeley Function Calling Benchmark\" parallel-task improvement of \"4.6x\" and a simple-task move from 21 percent to 51.75 percent, both self-reported and not independently benchmarked. \"GRPO\" does not occur anywhere in the README.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "943430a5089f39cffe384bc0bf8a8ded62046beff5eb6b63400fcee22d70e5b0"
+              },
+              {
+                "url": "https://api.github.com/repos/NousResearch/atropos/releases",
+                "shows": "Four published releases, newest \"tag_name\": \"v0.4.0\" with \"published_at\": \"2026-03-10T04:20:36Z\" and \"prerelease\": false; the others are v0.3.0 (2025-07-16), v0.2.1 and v0.2.0. Together with the repo being archived on 2026-07-04 this establishes that the feature set is frozen at 0.4.0, which is why the capability band is a description of a fixed matrix rather than a moving target.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "c0511134ed5fde41a61e468d93deb8f1c70021d4b4793d9e53490dd60eea488d"
               }
             ]
           },
           "maturity": 2.0,
           "mature": false,
           "freshness": {
-            "date": "2026-07-30",
-            "basis": "commit"
+            "date": "2026-08-08",
+            "basis": "verified"
           },
-          "version_note": "Atropos, Nous Research LLM RL-environments framework for collecting/evaluating trajectories and driving RL training (RLHF/RLAIF, GRPO-style). v0.4.0 (Mar 10, 2026), confirmed live on GitHub June 2026. Integrates with trainers Axolotl and Tinker. Borderline: it is the RL-environment/orchestration layer that feeds a fine-tuning trainer. Repo archived read-only on 2026-07-04 (last release v0.4.0, Mar 10 2026); no longer actively maintained."
+          "version_note": "Scored as the RL-environment and orchestration layer that feeds a fine-tuning trainer rather than as a trainer itself, which is the judgment behind its place in this category. Verified 2026-08-08 via the GitHub repository and the PyPI record for atroposlib."
         },
         {
           "slug": "tinker",
@@ -7596,23 +7863,77 @@
           "org_slug": "nvidia",
           "org": "NVIDIA",
           "type": "software",
-          "description": "Megatron Core 0.17.1, released May 28, 2026 (GitHub releases). Companion Megatron-Bridge 0.4.0 (Apr 2026). Confirmed to exist as of June 2026.",
+          "description": "Megatron-LM trains transformer models across large GPU clusters, pairing pre-configured training scripts with Megatron Core, a composable library of GPU-optimized building blocks. Megatron Core supplies tensor, pipeline, data, expert, and context parallelism, mixed-precision training, and distributed checkpointing for teams building their own training frameworks. NVIDIA develops both in the open, alongside a Megatron Bridge converter for Hugging Face checkpoints.",
           "openness": {
             "score": 5,
             "class": "open_source",
-            "components": "license:BSD-3-Clause(OSI, NVIDIA core)+Apache-2.0/MIT(OSI, vendored components);source:public;restriction:attribution/change-notice only",
+            "components": "license:BSD-3-Clause(OSI, NVIDIA core)+Apache-2.0/MIT(OSI, vendored components);source:public;core-gated:ungated;restriction:attribution/change-notice only",
             "confidence": "high",
             "note": "license:BSD-3-Clause(OSI, NVIDIA core)+Apache-2.0/MIT(OSI, vendored components);source:public;restriction:attribution/change-notice only",
+            "last_verified": "2026-08-08",
             "sources": [
               {
-                "url": "https://github.com/NVIDIA/Megatron-LM/blob/main/LICENSE",
-                "shows": "flagship phase-C verification source",
-                "accessed": "2026-06-04"
+                "url": "https://raw.githubusercontent.com/NVIDIA/Megatron-LM/main/LICENSE",
+                "shows": "Opens \"The following applies to all files unless otherwise noted:\" followed by a 2019-2025 NVIDIA CORPORATION copyright and the three BSD-3-Clause conditions — retain the copyright notice in source, reproduce it in binary distributions, and \"Neither the name of NVIDIA CORPORATION nor the names of its\" contributors may be used to endorse derived products. Below that, section headers grant vendored code separate terms: \"-- LICENSE FOR Facebook, huggingface, Google Research, LLaVA, Mamba, TinyZero and vLLM code  --\" under the Apache License Version 2.0, whose clause 4(b) requires modified files to carry notices \"stating that You changed the files\", plus two MIT License sections (one for Facebook/Meta/Microsoft/OpenGVLab-InternVL/Triton/DeepSeek, one for Thinking Machines Lab). BSD-3-Clause for the NVIDIA core with Apache-2.0 and MIT vendored components, all OSI, and the only obligations are attribution, no-endorsement and change notices.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "39f1df137a306d31698db206063f462b69c19e536f012db09a66997ad2cb96f0",
+                "establishes": [
+                  "license"
+                ]
               },
               {
                 "url": "https://github.com/NVIDIA/Megatron-LM",
-                "shows": "flagship phase-C verification source",
-                "accessed": "2026-06-04"
+                "shows": "The rendered README states the repository contains two components: Megatron-LM, which \"is a reference example that includes Megatron Core plus pre-configured training scripts\", and Megatron Core, which \"is a composable library with GPU-optimized building blocks for custom training frameworks\". Getting Started offers both \"Install from PyPI: uv pip install megatron-core\" and a clone of this repository followed by \"uv pip install -e .\", so the thing you run builds from the published source. A dated news entry reads \"[2025/12] Megatron Core development has moved to GitHub.\" with \"All development and CI now happen in the open, and community contributions are welcome.\" The top-level file listing is .agents, .github, .gitlab, docker, docs, examples, experimental/agent_compose, images, megatron, scripts, skills, tasks, tests, tools plus root files — no enterprise, commercial or paid-edition directory. Sidebar shows 17.4k stars, 4.3k forks, 9,435 commits.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "87f1c5e263bfa0f32ff4decf9794c00d34ba2e514182c6624f5e26e0701d83f3",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://pypi.org/project/megatron-core/",
+                "shows": "Project page headed \"megatron-core 0.18.2\", Author/Maintainer \"NVIDIA\", License \"BSD License (Apache 2.0)\", classifier \"OSI Approved :: BSD License\", Released \"Jul 21, 2026\", Requires Python >=3.12, 5 maintainers. The Provides-Extra list is training, mlm, dev, lts, te, ssm — pip extras, not tiers. The library is published to a public index under an OSI license, which is what makes source:public true for the artifact people actually install.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "9f5d5b4bb57bd07e543981ca1c10b96873253a595e509647c64804f9e6cd0f5e",
+                "establishes": [
+                  "source",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://files.pythonhosted.org/packages/0e/0d/765e06a494ec67a2641e282ea7663713a9c290d67951dc5066d12a87c999/megatron_core-0.18.2.tar.gz",
+                "shows": "The published sdist, walked with Python's tarfile: 585 members, 490 of them regular files, 479 under megatron/ plus megatron_core.egg-info, MANIFEST.in, PKG-INFO, README.md, pyproject.toml, setup.cfg and setup.py. Every capability NVIDIA's product page advertises ships in it — megatron/core/tensor_parallel (8 files), pipeline_parallel (9), transformer/moe (13), dist_checkpointing (22), fp8_utils.py, post_training (10) and inference (87 regular files). I then read the decoded bytes of all 490 files and ran case-insensitive regex searches across them: 0 files matched 'enterprise', 0 matched 'license[_ -]?key|entitlement|activation[_ -]?code', 0 matched 'premium|paid tier|commercial edition|pro edition', 0 matched 'contact sales', 0 matched 'AI Enterprise'. Nothing in the shipped package gates a feature behind a paid tier.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "911216b7ce161ffc196baecc4ef7ec39f4a33cf79b50f5e0c123235e42002cdc",
+                "establishes": [
+                  "core-gated",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://developer.nvidia.com/megatron-core",
+                "shows": "Redirects to developer.nvidia.com/cuda/cuda-x-libraries/megatron-core. NVIDIA's own product page presents a single library — \"NVIDIA Megatron Core is a composable training library for large-scale generative AI\" — with exactly two calls to action, \"Go to GitHub\" and \"Get Started\", and no purchase, subscription, enterprise-edition or contact-sales path anywhere on it. Every feature block (parallelism techniques, customizable building blocks, scalability and training resiliency, MoE, hybrid models, multimodal training) links into the public repository or the public API documentation, and the page describes Megatron-LM as an open-source training reference framework for exploring Megatron Core. The vendor's own marketing withholds nothing from the published source.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "f68c234747aa1592c8a3ea87a5f0643c417b792777f8cc92cf9beadf4a9fc24b",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://www.nvidia.com/en-us/data-center/products/ai-enterprise/",
+                "shows": "NVIDIA's paid-suite page, read as the pricing-page half of the core-gated question. It describes AI Enterprise as bringing together \"microservices, frameworks, and libraries for AI development with advanced GPU orchestration and infrastructure management in a fully supported, production-ready, commercial software suite\" whose pitch is to \"Deploy leading open source tools and AI models with confidence\" — support and packaging around open source rather than functionality withheld from it. A case-insensitive grep for 'megatron' over the saved 675KB body returns 0 matches, so NVIDIA's commercial suite does not claim any Megatron capability of its own. Under the ladder's openpcc rule, a hosted or supported offering alongside an ungated core is not gating.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "e54e670f8159b9ce95e434b194a01e4205e07ff628a434706b45e18d77ddb54e",
+                "establishes": [
+                  "core-gated"
+                ]
               }
             ],
             "bucket": "open"
@@ -7620,48 +7941,72 @@
           "adoption": {
             "level": 3,
             "reach": "100K-1M",
-            "signal_type": "reported_traction",
+            "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "Foundational large-scale training library; directly inspired/underpins Colossal-AI, HuggingFace Accelerate, NVIDIA NeMo. Used to train models 2B-462B params across thousands of GPUs. User base is concentrated among large-model training teams (smaller absolute headcount than inference tools). 16.6k stars. Level 3 reflects specialist-but-influential reach; no clean download count verified.",
+            "note": "Foundational large-scale training library; directly inspired/underpins Colossal-AI, HuggingFace Accelerate, NVIDIA NeMo. Used to train models 2B-462B params across thousands of GPUs. User base is concentrated among large-model training teams (smaller absolute headcount than inference tools). megatron-core records 223,175 PyPI downloads in the trailing 30 days, which sits inside the 100K-1M band and replaces the previous reported-traction basis with a measured usage volume. Level 3 reflects specialist-but-influential reach.",
+            "last_verified": "2026-08-08",
             "sources": [
               {
-                "url": "https://github.com/NVIDIA/Megatron-LM",
-                "shows": "flagship phase-C verification source",
-                "accessed": "2026-06-04"
+                "url": "https://pypistats.org/api/packages/megatron-core/recent",
+                "shows": "The whole body is {\"data\":{\"last_day\":15416,\"last_month\":223175,\"last_week\":65951},\"package\":\"megatron-core\",\"type\":\"recent_downloads\"} — 223,175 downloads in the last month for the megatron-core package, which is the band the adoption score rests on and lands inside 100K-1M.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "ed79fffa3bf2bb6a9ff088a25d5809442330b2062bac3c6e844feabe0fd6441d"
               },
               {
-                "url": "https://developer.nvidia.com/megatron-core",
-                "shows": "flagship phase-C verification source",
-                "accessed": "2026-06-04"
+                "url": "https://pypi.org/project/megatron-core/",
+                "shows": "Confirms the package the download figure belongs to is the product's own: \"megatron-core 0.18.2\", Author/Maintainer \"NVIDIA\", Released \"Jul 21, 2026\", 5 maintainers listed (chtruong, eharper, jaredcasper, ko3n1g, svcnvidia-nemo-ci). Actively released, so the monthly figure is current traffic rather than residue.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "9f5d5b4bb57bd07e543981ca1c10b96873253a595e509647c64804f9e6cd0f5e"
+              },
+              {
+                "url": "https://github.com/NVIDIA/Megatron-LM",
+                "shows": "Corroborating only, and the reason the download figure is a floor rather than the whole picture: the repository sidebar reads 17.4k stars, 4.3k forks, 9,435 commits, 377 open issues and 740 open pull requests, and Getting Started documents installing from a clone as an alternative to PyPI, so source-tree users are not counted by pypistats. This supersedes the recorded \"16.6k stars\".",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "87f1c5e263bfa0f32ff4decf9794c00d34ba2e514182c6624f5e26e0701d83f3"
               }
             ]
           },
           "capability": {
             "score": 5,
             "basis": "feature_matrix",
-            "value": null,
+            "value": "Parallelism: DP, TP, PP, CP, EP and Megatron-FSDP, composable; mixed precision FP16/BF16/FP8/FP4; weak-scaling benchmark to a 462B-parameter GPT on 6,144 H100 GPUs at 47–48% MFU, strong scaling of a ~175B GPT-3 from 96 to 4,608 H100 GPUs.",
             "confidence": "high",
-            "note": "State-of-the-art parallelism (TP/PP/DP/EP/CP), mixed precision FP16/BF16/FP8/FP4; benchmarked training of 462B-param model on 6144 H100 GPUs. Reference-grade large-scale transformer training infra. No MLPerf-Training submission verified for the library itself, so basis is feature_matrix plus NVIDIA-reported scaling benchmarks.",
+            "note": "Reference-grade large-scale transformer training infrastructure, and the capability anchor the rest of this category places itself against. The parallelism, precision and scaling facts now sit in `value` with establishing sources rather than being asserted here. No MLPerf-Training submission verified for the library itself, so the basis is feature_matrix plus NVIDIA-reported scaling benchmarks.",
+            "last_verified": "2026-08-08",
             "sources": [
               {
                 "url": "https://github.com/NVIDIA/Megatron-LM",
-                "shows": "flagship phase-C verification source",
-                "accessed": "2026-06-04"
+                "shows": "The README describes Megatron Core as providing \"transformer building blocks, advanced parallelism strategies (TP, PP, DP, EP, and CP), mixed precision support (FP16, BF16, FP8, and FP4), and model architectures\". Under Performance Benchmarking: \"The codebase efficiently trains models from 2B to 462B parameters across thousands of GPUs\" at up to 47% Model FLOP Utilization (MFU) on H100 clusters, with Key Results listing a \"6,144 H100 GPUs\" heading against \"Successfully benchmarked 462B parameter model training.\" and \"Superlinear scaling: MFU increases from 41% to 47–48% with model size.\" The strong-scaling paragraph scales a GPT-3 model of slightly more than 175 billion parameters from 96 H100 GPUs to 4,608 GPUs at a fixed batch size of 1,152 sequences, MFU falling 47% to 42%. Results are noted as measured without training to convergence.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "87f1c5e263bfa0f32ff4decf9794c00d34ba2e514182c6624f5e26e0701d83f3"
               },
               {
                 "url": "https://developer.nvidia.com/megatron-core",
-                "shows": "flagship phase-C verification source",
-                "accessed": "2026-06-04"
+                "shows": "NVIDIA's own scaling documentation, and the second independent statement of the anchor figure: \"In the weak scaling experiments below, with GPT models ranging from 2 billion to 462 billion parameters, Megatron Core demonstrates superlinear scaling up to 6144 H100 GPUs.\" A weak-scaling table follows with rows from 2.1B to 509B parameters carrying tensor/pipeline/data-parallel sizes, GPU counts, per-GPU teraFLOP/s, MFU (42-50%) and aggregate petaFLOP/s. The strong-scaling paragraph states near-linear scaling of a 177 billion parameter GPT-3 from 96 to 4608 H100 GPUs at a fixed 1152-sequence batch. Feature text names \"tensor, sequence, pipeline, context, and MoE expert parallelism\", activation checkpointing, distributed optimizers and distributed checkpointing, resiliency (automatic restart, fault/hang detection), and \"features like FP8 mixed precision and advanced parallelism\"; it also cites Nemotron-4 340B trained at up to 6K+ H100 GPU scale.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "f68c234747aa1592c8a3ea87a5f0643c417b792777f8cc92cf9beadf4a9fc24b"
+              },
+              {
+                "url": "https://docs.nvidia.com/megatron-core/developer-guide/latest/user-guide/parallelism-guide.html",
+                "shows": "The Parallelism Strategies Guide opens \"Megatron Core supports multiple parallelism strategies that can be combined to efficiently train models from billions to trillions of parameters across thousands of GPUs.\" Its overview table enumerates six: Data Parallelism (DP), Tensor Parallelism (TP), Pipeline Parallelism (PP), Context Parallelism (CP), Expert Parallelism (EP) and Fully-Sharded Data Parallelism (Megatron-FSDP), each with an objective and a use case. Each section gives the actual flags — --tensor-model-parallel-size, --pipeline-model-parallel-size, --context-parallel-size, --expert-model-parallel-size, --use-megatron-fsdp with ZeRO-1/2/3 sharding strategies, --sequence-parallel — and states that sequence parallelism must be enabled when EP is combined with TP. This is the composability claim, documented rather than asserted.",
+                "accessed": "2026-08-08",
+                "http_status": 200,
+                "content_sha256": "cc5b5cf00b32cac4b1d59e9c2482f19cafba61e4b9ce17c2b22d4497471daac0"
               }
             ]
           },
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-06-09",
-            "basis": "commit"
+            "date": "2026-08-08",
+            "basis": "verified"
           },
-          "version_note": "Megatron Core 0.17.1, released May 28, 2026 (GitHub releases). Companion Megatron-Bridge 0.4.0 (Apr 2026). Confirmed to exist as of June 2026."
+          "version_note": "This entry covers both components shipped from the NVIDIA/Megatron-LM repository, and the scores are read against that repository rather than the Megatron Core package alone. Verified 2026-08-08 via the NVIDIA/Megatron-LM README and the Megatron Core developer documentation."
         }
       ]
     },
