@@ -1,12 +1,12 @@
 name: refetch
 
-# Gate G4: independent evidence that a recorded fetch actually happened.
+# The sampled re-fetch: independent evidence that a recorded fetch actually happened.
 #
-# G1 and G2 both read what the writer wrote. An agent that never opened a page can emit a
-# plausible `accessed`, a plausible 200 and sixty-four plausible hex characters, and both
-# gates pass — #108's failure mode with better spelling. G4 is the only check that goes and
-# looks, and it is the third leg the runbook names. The reasoning is in
-# build/check_refetch.py.
+# The invariant and the digest requirement both read what the writer wrote. An agent that
+# never opened a page can emit a plausible `accessed`, a plausible 200 and sixty-four
+# plausible hex characters, and both gates pass — #108's failure mode with better spelling.
+# The sampled re-fetch is the only check that goes and looks, and it is the third leg the
+# runbook names. The reasoning is in build/check_refetch.py.
 #
 # Report-only on purpose, and this is the part most likely to get "fixed" later. Pages
 # change: the first full run confirmed 4 of 24 digests and drifted on the other 20, because

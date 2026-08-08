@@ -1,18 +1,19 @@
-"""G4 — the sampled re-fetch: independent evidence that a recorded fetch actually happened.
+"""The sampled re-fetch: independent evidence that a recorded fetch actually happened.
 
-`docs/guides/verification.md` is normative; this module implements the gate. It is the third
+`docs/guides/verification.md` is normative. This module implements the gate. It is the third
 leg of the anti-rubber-stamping defense the runbook names, and until now the only one that
 was missing.
 
 ## Why the other two are not enough
 
-G1 asks whether a claimed date is supported by the `accessed` dates on record. G2 asks
-whether the sources carry an `http_status` and a `content_sha256`. Both are real, and both
-share a blind spot: **they read what the writer wrote.** An agent that never opened a page
-can still emit a plausible `accessed`, a plausible `200`, and sixty-four plausible hex
-characters, and both gates pass. That is #108's failure mode with better spelling.
+The invariant asks whether a claimed date is supported by the `accessed` dates on record.
+The digest requirement asks whether the sources carry an `http_status` and a
+`content_sha256`. Both are real, and both share a blind spot: **they read what the writer
+wrote.** An agent that never opened a page can still emit a plausible `accessed`, a plausible
+`200`, and sixty-four plausible hex characters, and both gates pass. That is #108's failure
+mode with better spelling.
 
-G4 is the only check that goes and looks.
+The sampled re-fetch is the only check that goes and looks.
 
 ## What a match proves, and what a mismatch does not
 
@@ -196,7 +197,7 @@ def main() -> int:
 
     sources = load_sources(args.product)
     if not sources:
-        print("0 sources record a digest yet — nothing for G4 to re-fetch.")
+        print("0 sources record a digest yet — nothing to re-fetch.")
         print("This is expected until the re-read pass populates content_sha256.")
         return 0
 

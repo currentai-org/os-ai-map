@@ -50,8 +50,9 @@ OPEN_BY_EXTERNAL_STANDARD = {"osi", "open_data"}
 # available above `gated`. So a corpus whose license defers to per-subset terms has nowhere to
 # land but `open`, and `open` is in the open bucket. `the-pile` (3/open, mixed-per-subset,
 # Books3 withdrawn) and `stack-edu` (4/open, defers to The Stack v2's gated terms) are the two
-# products, and the ladder emits these pairs only because the recorded scores do - G3 requires
-# a recorded pair be producible.
+# products, and the ladder emits these pairs only because the recorded scores do. The
+# producible-pair check requires that some rule in the recipe be able to emit every recorded
+# pair.
 #
 # The bucket count does not depend on the ladder: build/serialize.py buckets the RECORDED
 # class, so both products already counted as open before any recipe existed. All 52 dataset
