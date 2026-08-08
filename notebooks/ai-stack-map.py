@@ -807,7 +807,7 @@ def details_payload(DATA, ORDER, mo):
           row('Reach',ad.reach)+row('Signal',ad.signal_type)+row('Detail',ad.note)+row('Confidence',ad.confidence)+
           '<div class="v3-row"><span class="v3-lbl">Sources</span><span class="v3-val">'+srcs(ad.sources)+'</span></div>'+
           '<div class="v3-sect">Capability '+(cap.score==null?'n/a':cap.score+'/5')+'</div>'+
-          row('Basis',cap.basis)+row('Value',cap.value)+row('Detail',cap.note)+row('Confidence',cap.confidence)+
+          row('Basis',cap.basis_detail?cap.basis+': '+cap.basis_detail:cap.basis)+row('Value',cap.value)+row('Detail',cap.note)+row('Confidence',cap.confidence)+
           '<div class="v3-row"><span class="v3-lbl">Sources</span><span class="v3-val">'+srcs(cap.sources)+'</span></div>'+
           (p.lineage?('<div class="v3-sect">Lineage</div>'+
             (p.lineage.derived_from&&p.lineage.derived_from.length?row('Derived from',p.lineage.derived_from.join(', ')):'')+
