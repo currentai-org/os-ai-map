@@ -111,7 +111,7 @@ corrections.
 
 ---
 
-## Phase 1 — Finish the recipes: 16/16 categories, 470/470 products
+## Phase 1 — Finish the recipes: 16/16 categories, 472/472 products
 
 111 products, four categories. Do this before Phase 2 or the SQL generalization gets done
 twice.
@@ -213,6 +213,19 @@ uv run python tools/deploy_udm.py --dataset scores --model openness_facts \
 uv run python -m build.check_parity
 ```
 
+Two things about step 2 that are easy to get wrong, both of which cost hours on 2026-08-08:
+
+- **Per-model refresh is not reachable over MCP without the model UUIDs.**
+  `createUserModelRunRequest.selectedModels` takes UUIDs, not names: passing
+  `"openness_facts"` fails with `invalid input syntax for type uuid`. Without the IDs to hand,
+  the only path is a whole-dataset run, which does work and preserves topological order, but
+  pulls in eight unrelated `scores` models and takes about four minutes against roughly ten
+  seconds targeted.
+- **Verify a run from the data, not from the run status.** A `scores` run reports RUNNING for
+  minutes after its early models have already committed. Query `MAX(last_checked)` through
+  `build/warehouse.py` — which forces the nonce, without which you read the pre-materialization
+  answer back out of the query-text cache.
+
 ### G5 — the parity gate
 
 `build/check_parity.py` compares `check_rubric`'s local verdict against
@@ -255,24 +268,44 @@ them as `verified` rather than `commit`.
 
 ---
 
-## Phase 4 — The re-read pass, ~1099 URLs
+## Phase 4 — The re-read pass, ~1106 URLs
 
-Everything else, all of openness included. **Fold the 174 held-back products in rather than clearing
+Everything else, all of openness included. **Fold the 86 held-back products in rather than clearing
 them first** — reading a product's sources to settle `core-gated` *is* the re-check that earns
 its date. Two passes means the same pages fetched twice, on scores about to change.
+(`check_recipe` prints the current deferral count per category; regenerate it rather than
+trusting the number here.)
 
-Per axis, the unit of work:
+**The prose comes with it.** The pass refreshes a product's `description` and `comments` to
+`docs/guides/product-info.md` in the same unit of work, for the same reason the deferral
+backlog folds in: refreshing the prose means opening the repository, model card and vendor docs
+this phase already fetches. Run separately it is the same pages twice — and worse, a prose pass
+that does not open primary sources produces a provenance line naming a *method*
+(`Verified 2026-08-08 via web search`), which is how seven products acquired one in #147.
 
-1. Fetch each cited URL; record `http_status`, `content_sha256`, and a `shows` extract that
-   actually appears in the body.
-2. Re-derive each recorded dimension and attribute it: `establishes: [...]`.
-3. If a value moved, that is the valuable output — fix the score and say why in `note`.
-4. Stamp `last_verified` only once every recorded dimension has an establishing source.
+The unit of work is therefore per product, not per axis:
+
+1. **Read what the warehouse already has** before fetching anything — the signal row carries
+   `http_status`, `license_*`, `is_archived`, `is_gated`, `downloads_30d` and `fetched_at`.
+2. Fetch each cited URL a signal does not already cover; record `http_status`,
+   `content_sha256`, and a `shows` extract that actually appears in the body. A cited URL that
+   404s is a finding, not something to paper over.
+3. Re-derive each recorded dimension and attribute it: `establishes: [...]`.
+4. **Rewrite the prose** per `product-info.md` — `description` load-bearing and within the
+   length band, `comments` a footnote ending in the canonical verification line. Delete rather
+   than research a superlative, a corporate event, or a curator rationale clause; the guide's
+   claim-class table is the rule.
+5. If a value moved, that is the valuable output — fix the score and say why in `note`.
+6. Stamp `last_verified` only once every recorded dimension has an establishing source.
+   Otherwise `deferred` with a real reason. Never both, and never silently absent.
 
 Batch by category so `check_rubric` gives a clean signal per batch, and run
-`check_verification` after each batch rather than at the end.
+`check_verification` after each batch rather than at the end. One PR per category, prose and
+scores together, with every moved score itemized against its evidence. Categories go in order
+of **worst signal coverage first**, so no manual reading duplicates what Phase 3's write-back
+would have earned for free.
 
-**On agent execution.** This is 1099 fetches and it is the step most exposed to
+**On agent execution.** This is 1106 fetches and it is the step most exposed to
 rubber-stamping — an agent that "confirms" without reading would reproduce #108's failure at
 fifty times the scale while looking legitimate. Three things make that not work: G1 requires
 the `accessed` bump on every dimension, G2 requires a digest that only fetching produces, and
@@ -282,8 +315,9 @@ G4 re-fetches a sample and compares. Do not relax any of the three to make a bat
 is the return on the work, not a problem with it — `apply_scores --check` exits non-zero on a
 moved score deliberately.
 
-**Exit criteria:** every one of the 1386 real claims either carries a confirmed
-`last_verified` or sits in `deferred` with a reason. Zero silently absent.
+**Exit criteria:** every one of the 1370 real claims either carries a confirmed
+`last_verified` or sits in `deferred` with a reason, and every product's prose satisfies
+`product-info.md`. Zero silently absent.
 
 ---
 
@@ -293,9 +327,14 @@ moved score deliberately.
 uv run python -m build.check_freshness --max-age-days 90     # tune, then gate
 ```
 
-Add G4 (sampled re-fetch) as a weekly scheduled workflow, reporting drift rather than hard
-failing, since pages legitimately change. Turn `--max-age-days` into a CI gate once coverage
-makes it fail on genuine staleness rather than on backlog. Drop the G2 exemption list.
+**G4 landed early**, in #148, because Phase 4 is the step it exists to police and running that
+without it would be the rubber-stamp risk with nothing underneath it. `build/check_refetch.py`
+re-fetches a sample and compares digests, weekly in `.github/workflows/refetch.yml`, reporting
+drift rather than hard failing since pages legitimately change. A digest that **matches** is
+the proof — one that differs proves nothing on its own.
+
+What remains here: turn `--max-age-days` into a CI gate once coverage makes it fail on genuine
+staleness rather than on backlog, and drop the G2 exemption list.
 
 **Exit criteria:** the five definition-of-done conditions hold, and each is enforced by
 something that runs without being remembered.
