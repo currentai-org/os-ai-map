@@ -11,11 +11,13 @@
   "properties": {
     "name": {
       "type": "string",
-      "pattern": "^[a-z0-9][a-z0-9-]*$"
+      "pattern": "^[a-z0-9][a-z0-9-]*$",
+      "description": "The slug: this product's identity, and the string every join in the repo keys on. It must equal the filename stem, and build/validate.py asserts that, because a copied or renamed file carrying a stale inner name passes the schema and both roster checks and then corrupts joins silently. Same string again as the join key to sources/scores/<name>.yaml (whose own `product` field must also match the stem), and as the entry a category roster and an org roster each list exactly once. Written by a person when the product is added; see skills/add-product step 1 for how to pick one and what to do about a collision. A slug is effectively immutable: retiring one means recording it in sources/slug_aliases.yaml, which is both the redirect map and the migration record, and validate rejects an alias key a live product still uses. Slugs are tier-level, naming what the vendor sells rather than a release, so a model slug carrying a version or size token fails validate unless slug_aliases.yaml's `version_in_identity` lists it as identity-bearing."
     },
     "display_name": {
       "type": "string",
-      "minLength": 1
+      "minLength": 1,
+      "description": "The human label, and the only name a reader ever sees. build/serialize.py emits it as the payload's `product` key and builds the global slug -> display name map that resolves `lineage` references into readable text; build/serialize_registry.py writes it to registry/products.csv. Written by a person. Unlike the slug it is not unique by construction, so build/serialize_registry.py warns on a collision rather than failing: some collisions are two genuine product surfaces that need distinct labels, others are one product entered twice, and the two fixes are different curation decisions. Four had accumulated before anything looked; there are none as of 2026-08-08."
     },
     "type": {
       "enum": [
@@ -23,61 +25,72 @@
         "software",
         "dataset",
         "hardware"
-      ]
+      ],
+      "description": "Which of the four kinds of thing this is, and — the part the field name hides — which ladder scores it. A category's `scoring_recipe.extends` is either one shared ladder for every product in the category or a mapping of product type to ladder, and build/rubrics.py `recipe_for()` reads THIS field to choose: safeguards holds guardrail models and guardrail software, so it declares `{model: model, software: software}`. The four values are the four files in sources/rubrics/. A product whose type no ladder in its category covers scores nothing, and the checkers report why rather than falling back. Type is also what makes a 0-5 openness score readable at all, since the score is graded against what is achievable within a type and not across types (docs/methodology.md, and docs/guides/openness-spectrum.md for the per-ladder tier names). Carried into the payload, into registry/product_artifacts.csv as `product_type`, and into the per-type counts in the methodology copy. On 2026-08-08: 312 software, 75 model, 65 dataset, 20 hardware."
     },
     "description": {
-      "type": "string"
+      "type": "string",
+      "description": "Hand-authored prose saying what the product is and does, in the neutral register of a catalog entry. It is PUBLISHED COPY, not a working note: build/serialize.py emits it into the payload as `description` and the front end's product detail panel renders it, directly above `comments`. It is also the load-bearing prose field, so a fact about the product belongs here rather than in `comments`. Length band, register, and the things it must not carry (star and download counts, a current version clause, curator rationale, a restatement of the license) are normative in docs/guides/product-info.md; read that before writing one rather than working from this line. Optional in the schema and universal in practice: all 472 products carry one on 2026-08-08."
     },
     "comments": {
-      "type": "string"
+      "type": "string",
+      "description": "The other hand-authored prose field, and a footnote rather than a second description: how we know what the entry says. In practice the verification line, plus the occasional note about a judgment call or an evidence gap. Also published copy — build/serialize.py renames it to `version_note` in the payload and the front end renders it under `description` in smaller type — so a fact stated in both fields is read twice. The test for which field a sentence belongs in, the canonical `Verified <YYYY-MM-DD> via <source>.` form, and why the license must not be restated here are all in docs/guides/product-info.md. Its verification line is editorial provenance for the PROSE and is not a score's `last_verified`: writing one earns nothing on any axis, and the two mechanisms are kept apart deliberately (docs/guides/freshness.md). 464 of 472 products carry one on 2026-08-08."
     },
     "github": {
       "type": "array",
       "items": {
         "$ref": "#/definitions/url"
-      }
+      },
+      "description": "Source repositories, as URLs a machine can reduce to `owner/repo`. This and the other artifact blocks are what sources/signal_routing.yaml routes on, so they are the product's whole machine-readable surface: a product declaring none of them has no signal for any dimension and every axis falls to research, which is 135 of 472 products on 2026-08-08 (build/check_routing.py --unrouted lists them). GitHub is the authoritative route for the `code` dimension — is the source released, is the project still alive — and the explicitly last-resort `stars_fallback` for adoption. It is never routed to `weights` or to a model's license: where the repo and the Hub disagreed, the Hub was right for all 6 models checked, and routing by artifact kind is what makes that class of error impossible. build/serialize_registry.py reduces each URL for registry/product_artifacts.csv and warns when it names no repo (an org-level link such as github.com/arduino), which costs coverage without breaking a join. Written by a person; build/propose_artifacts.py prints candidates and writes nothing. 255 of 472 products declare one on 2026-08-08."
     },
     "npm": {
       "type": "array",
       "items": {
         "$ref": "#/definitions/url"
-      }
+      },
+      "description": "The npm package page. Reaches registry/product_artifacts.csv as an artifact of kind `npm`, reduced to the package name, and therefore reaches the warehouse — but sources/signal_routing.yaml declares no npm source, so as of 2026-08-08 it routes no dimension and buys no adoption number. Recording it now is what makes an npm downloads source a table away rather than a curation pass. 12 products declare one on 2026-08-08."
     },
     "pypi": {
       "type": "array",
       "items": {
         "$ref": "#/definitions/url"
-      }
+      },
+      "description": "The PyPI project page, and the adoption workhorse for the software half of the map: sources/signal_routing.yaml routes `adoption` to currentai.signal_pypi.package_downloads (`downloads_30d`, signal type `usage_volume`, high confidence) for any product that declares one. Reduced to the bare project name for registry/product_artifacts.csv. Downloads sum across a product's artifacts rather than taking the largest, because the map's unit is the family and a family ships several packages. 66 of 472 products declare one on 2026-08-08."
     },
     "crates": {
       "type": "array",
       "items": {
         "$ref": "#/definitions/url"
-      }
+      },
+      "description": "The crates.io page for a Rust crate. Same registry treatment and same routing status as `npm`: carried into registry/product_artifacts.csv, routed by nothing, because signal_routing.yaml declares no crates source. It also has no id pattern in build/serialize_registry.py, so the whole URL is stored as the artifact identifier rather than the crate name; that is fine for a link and would need fixing before anything joined on it. One product declares one on 2026-08-08."
     },
     "go": {
       "type": "array",
       "items": {
         "$ref": "#/definitions/url"
-      }
+      },
+      "description": "The Go module page. Nothing reads it. It is absent from build/serialize_registry.py's ARTIFACT_KINDS, from build/check_routing.py's artifact scan, and from sources/signal_routing.yaml, so a value here reaches neither the registry nor any route, and 0 of 472 products carry one on 2026-08-08. It exists so a Go-native product has somewhere to put the fact instead of dropping it; making it count means adding it to ARTIFACT_KINDS first, and a downloads source after that."
     },
     "huggingface_model": {
       "type": "array",
       "items": {
         "$ref": "#/definitions/url"
-      }
+      },
+      "description": "The model repository on the Hugging Face Hub, and the authoritative signal for the two dimensions nothing else can settle. `license` routes here first and governs the WEIGHTS, which is the point of routing by artifact kind: a model's code repo and its weights routinely carry different licenses. `weights` is derived from the Hub row (public, not disabled, carries weight files), with gating recorded in detail rather than closing the dimension, since a click-through gate is not withheld weights. It also routes adoption via `downloads_30d`. A model distributed off the Hub has no signal for either dimension and goes to research. The URL must be a model path: build/serialize_registry.py's pattern excludes `datasets/`, which belongs in the next field. 55 products declare one on 2026-08-08."
     },
     "huggingface_dataset": {
       "type": "array",
       "items": {
         "$ref": "#/definitions/url"
-      }
+      },
+      "description": "The dataset repository on the Hub, and the dataset half's equivalent of `huggingface_model`. Routes `license` (governing the dataset rather than any code beside it) and `adoption` via `downloads_30d`, against the same hub_state table filtered on artifact kind. Dataset adoption bands sit an order of magnitude below the package bands, because a multi-terabyte corpus is pulled per training run rather than per CI job; see docs/methodology.md. 65 products declare one on 2026-08-08, more than declare a model, since the dataset categories are Hub-native."
     },
     "arxiv": {
       "type": "array",
       "items": {
         "$ref": "#/definitions/url"
-      }
+      },
+      "description": "The paper, recorded so citation lookups join on an exact identifier. That is the entire reason the field exists: matching papers to products by NAME was measured at 2 correct out of 10, with APPS resolving to a medical software paper carrying 25k citations and MATH to a psychology paper carrying 3.4k, both of which would have read as credible in a table. It routes the `semanticscholar` source, which supplies adoption for benchmark_eval_data — for a benchmark the question is how many papers evaluate against it, not how many people downloaded it — and corroborates capability in that category without settling it. Stored as the bare id (`2401.12345`) whether the URL is an abs or a pdf path, so the DOI is derivable without further parsing. 24 products declare one on 2026-08-08; build/propose_arxiv.py proposes candidates from a product's Hub tags and writes nothing."
     },
     "lineage": {
       "type": "object",
@@ -88,23 +101,27 @@
           "items": {
             "type": "string",
             "minLength": 1
-          }
+          },
+          "description": "What this artifact was built out of: the upstream corpora for a dataset, the base model for a fine-tune. Rendered as \"Derived from\". A value matching an on-map slug resolves to that product's display name; anything else stays as written. It records the relationship and nothing more — the openness consequence of deriving from a base model, that a tune inherits its base's license cap, is a scoring judgment and lives in the score file and the category's ladder."
         },
         "curated_with": {
           "type": "array",
           "items": {
             "type": "string",
             "minLength": 1
-          }
+          },
+          "description": "The tooling that produced or filtered this artifact: `dolma-toolkit` for Dolma, a named pipeline for a corpus. Rendered as \"Built with\", so the payload key and the on-screen label differ. It earns its place mostly where the tool is itself on the map, since this is the only field that records that edge."
         },
         "trains": {
           "type": "array",
           "items": {
             "type": "string",
             "minLength": 1
-          }
+          },
+          "description": "The models this artifact was used to train, written on the dataset so a corpus's downstream reach is readable in one place. Rendered as \"Trains\". It is authored, not derived, and nothing reconciles it against the models' own `derived_from`: of the 63 `trains` edges naming an on-map product on 2026-08-08, none is mirrored by a `derived_from` on the other side. Read a missing reciprocal edge as unwritten, not as a denial."
         }
-      }
+      },
+      "description": "Display-only provenance: what this product was built from, what curated it, and what it went on to train. It feeds no score and gates nothing. build/serialize.py resolves any reference matching an on-map slug into that product's display name and passes everything else through verbatim, which is deliberate, because a corpus's ancestors are usually off-map (Common Crawl, Project Gutenberg, \"templated NLP datasets\"). Nothing validates a reference, so a mistyped slug renders as literal text rather than failing a check: 98 of 175 references resolve to a product on 2026-08-08 and the remaining 77 are intentional free text, which is why this is not gated. Also emitted to registry/product_lineage.csv as (product_slug, relation, target). 38 of 472 products carry a block, nearly all of them datasets and models."
     }
   },
   "definitions": {
@@ -114,10 +131,12 @@
         "url"
       ],
       "additionalProperties": false,
+      "description": "The shape every artifact block's entries take: a single-key object wrapping one URL. An object rather than a bare string because these blocks mirror oss-directory's project files, where the wrapper is where per-artifact metadata would go. Nothing here adds a second key yet, and `additionalProperties: false` means adding one is a schema change rather than a data change. build/serialize_registry.py tolerates a bare string on read, but the schema does not, so write the object form.",
       "properties": {
         "url": {
           "type": "string",
-          "pattern": "^https?://"
+          "pattern": "^https?://",
+          "description": "The URL. Only its scheme is checked here; whether it names a resource anything can address is checked downstream by build/serialize_registry.py, which reduces it to the identifier the relevant API expects and warns when it cannot (2 org-level GitHub links on 2026-08-08). Nothing checks that two products do not claim the same URL, and 14 are claimed twice on 2026-08-08, typically a monorepo shared by a dataset and its toolkit; since a route sums across a product's artifacts, a shared repository's signal counts toward both products."
         }
       }
     }

@@ -5,19 +5,56 @@
   "required": ["name", "display_name", "products"],
   "additionalProperties": false,
   "properties": {
-    "name": { "type": "string", "pattern": "^[a-z0-9_]+$" },
-    "display_name": { "type": "string", "minLength": 1 },
-    "description": { "type": "string" },
-    "strapline": { "type": "string" },
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$",
+      "description": "The category's slug, and its identity in every join: sources/taxonomy.yaml names it in exactly one arc, build/serialize_registry.py emits it as `categories.slug`, and the warehouse keys on it as `category_slug`. Underscored, where product slugs are hyphenated, so the two vocabularies cannot be confused at a glance. build/validate.py requires it to equal the filename stem, because the stem is what every join resolves and a copied file carrying a stale inner name passes the roster checks and then corrupts joins silently. Treat it as immutable after creation: sources/slug_aliases.yaml records retirements for products and organizations, and there is no equivalent for a category, so a rename leaves nothing mapping the old name to the new one."
+    },
+    "display_name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The label a reader sees; `name` never appears in the UI. Written by the category editor. Read as `categories[<slug>].label` in the notebook payload (build/serialize.py) and as `categories.display_name` in the registry CSVs the warehouse loads. Written for a human rather than a machine: \"Core ML frameworks & libraries\", not \"ml_frameworks\"."
+    },
+    "description": {
+      "type": "string",
+      "description": "What the category IS, in one neutral sentence. The definition, where `strapline` is the finding. Written by the category editor, and it travels: build/serialize.py copies it into the payload's `descriptions.categories` legend, which the notebook's at-a-glance overview renders, and build/serialize_registry.py emits it to the warehouse, so the wording lives in one place. Optional here; all 16 categories carry one as of 2026-08-08, and an absent one becomes an empty string in the legend rather than an error. The scope test, what is in and what is out, belongs in `comments`, which goes nowhere."
+    },
+    "strapline": {
+      "type": "string",
+      "description": "The editorial finding about this category as it currently stands, which is a different claim from the definition in `description`: ml_frameworks says \"The most open layer in the map\". Hand-authored by the category editor, and the ONLY hand-authored caption in the notebook. Every number beside it (header counts, verdict badges, openness-mix chips) is computed at render time from the payload and re-syncs on every build, so this is the one string that can go stale in silence: \"split down the middle\" survives the mix shifting to mostly open and nothing fails. Re-read it after any roster or score change. build/render.py inlines it into the generated notebook through json.dumps rather than an f-string, because a quote inside a strapline would otherwise close the Python literal early; tests/test_render.py pins that against hostile input."
+    },
     "weights": {
       "type": "object",
       "required": ["adopt", "cap"],
       "additionalProperties": false,
-      "properties": { "adopt": { "type": "number" }, "cap": { "type": "number" } }
+      "description": "How this category blends adoption and capability into the per-product maturity score that decides the category's stage and its gaps. Two axes only: openness never enters the blend, it acts as the open / open-ish / closed bucket filter around it. build/serialize.py normalizes by the weight sum, so the result stays on the 1-5 scale for any pair and is the identity when they sum to 1, as all 16 currently do. Written by the category editor as a judgment about what maturity means here: as of 2026-08-08, 0.3/0.7 toward capability for base_pretrained, finetuned_chat and orchestration_agents, 0.7/0.3 toward adoption for ui_api, 0.6/0.4 for five tooling and data categories, and an even split for the remaining seven. Read by `_maturity_score` and `_stage_and_gaps` in build/serialize.py, by build/render.py's standout-product gate, and emitted as `weight_adopt` / `weight_cap` to the registry. Optional here, and an omission is a silent 0.5/0.5 rather than an error. Formula and stage thresholds in docs/guides/gap-analysis.md.",
+      "properties": {
+        "adopt": {
+          "type": "number",
+          "description": "Weight on `adoption.level`. Maturity is anchored on this axis: a product with no adoption level has no maturity score at all and is excluded from the category's stage rather than counted as a zero, because a product nobody measured should neither advance nor depress the category."
+        },
+        "cap": {
+          "type": "number",
+          "description": "Weight on `capability.score`. A null capability is not a zero either. That product is graded on adoption alone, which is how dataset categories work, so this weight's real effect varies per product rather than applying uniformly across the roster."
+        }
+      }
     },
-    "scoring_recipe": { "type": "object" },
-    "disclosure_gap": { "type": "boolean" },
-    "products": { "type": "array", "items": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" } },
-    "comments": { "type": "string" }
+    "scoring_recipe": {
+      "type": "object",
+      "description": "The category's openness ladder, plus the per-category bookkeeping around it: the dimensions it asks about, the license tiers it recognizes, and an ordered first-match-wins formula that turns the evidence recorded in a product's `openness.components` into the same (score, class) pair sources/scores/<slug>.yaml records by hand. That is the difference between a score that is documented and a score that is checkable. Written by a category editor following skills/build-rubric/SKILL.md, which carries the derivation procedure and the rule above the others: reproduction rate is a diagnostic and never a target, because a ladder tuned until it reproduces every recorded score is a curve fit to the data it was supposed to check. Shape is asserted by build/check_recipe.py rather than by this schema, which is why the type here is a bare object: JSON Schema cannot say \"no rule that can never fire\", \"a `because` on every rung\", or \"no product abstained on without a declared reason\". Keys in use: `extends` names a shared ladder in sources/rubrics/, or maps product type to ladder for a mixed roster (safeguards runs guardrail models and guardrail software on different ladders); `openness` spells a ladder out inline instead, and a category's own top-level keys REPLACE the inherited ones rather than merging into them, since partial merging of a formula produces a rule order nobody can predict from reading either file (build/rubrics.py); `version`, `note` and `derived_from` are records for a reader, and nothing gates on `derived_from` because build/check_rubric.py recomputes the reproduction count on every run. `deferred` maps a product slug to `{because: <reason>}` and means the category has declined to score that product from the evidence recorded today. It is neither a pass nor a failure: check_rubric excludes deferred products from the reproduction count rather than counting them as reproduced, and prints every one on every run, because a ladder reporting 45 of 45 while deferring the one product that contradicts it has proved nothing. The reason has to be substantive. check_recipe fails an empty `because`, tests/test_check_rubric.py requires every printed reason to run past 40 characters, check_recipe also fails a stale deferral (one the ladder has since learned to reproduce on its own), and a deferral naming a product not on this roster is reported as a problem. Deferring buys no exemption from check_verification's producible-pair gate: 16 of the 17 impossible score/class pairs found on that gate's first run were sitting in a `deferred` block, which is why it ignores the evidence entirely and asks only whether the ladder can emit the recorded pair at all. 85 products across 13 of the 16 categories are deferred as of 2026-08-08, and that set is the standing openness verification backlog (docs/guides/verification.md). Read by build/check_rubric.py (re-derives every non-deferred score), build/check_recipe.py (gates the ladder's form), build/check_verification.py, and build/serialize_rubric.py, which ships the rules, tiers, dimensions and deferrals to the warehouse where currentai.scores.openness_computed walks the same formula in hand-written SQL; build/check_parity.py exists because that mirror does not follow automatically. base_pretrained additionally declares `adoption`, `capability` and `confidence_rule` blocks. No gate reads those today. They are curator guidance and the spec a layer-2 scorer will need, and the capability bands there are explicitly recorded as not yet calibrated."
+    },
+    "disclosure_gap": {
+      "type": "boolean",
+      "description": "Declares that the closed frontier's equivalent to these products is structurally undisclosed, its data and recipe unpublished, so \"the open option is immature\" understates the problem. build/serialize.py appends `disclosure` to the category's payload `gaps` at any stage, including stage 5, because it is orthogonal to maturity rather than a rung below it. Declared by the category editor rather than inferred, so it cannot silently toggle on a curation change and so the asymmetry stays deliberate: training_synthetic_datasets sets it, benchmark_eval_data does not, because open benchmarks ARE the shared public standard and have no hidden counterpart. One of the 16 categories carries it as of 2026-08-08. Absent means false. Reasoning in docs/guides/gap-analysis.md."
+    },
+    "products": {
+      "type": "array",
+      "description": "The category's product roster, and ARRAY ORDER IS DISPLAY ORDER: build/serialize.py emits the product rows in this sequence and consumers render them as received, so moving a slug up the list is how an editor promotes a product within its category. Order ACROSS categories is not here; that is the arc sequence in sources/taxonomy.yaml, which is also where a category's layer comes from. Every slug needs both a sources/products/<slug>.yaml and a sources/scores/<slug>.yaml, and must appear in exactly one roster: build/validate.py checks both directions, so a product in no category fails as loudly as a roster naming a product that does not exist, and moving a product between categories is one PR touching two files. Hyphenated, where the category `name` is underscored. The roster is also the ladder's denominator, walked product by product by build/check_rubric.py, and build/serialize_registry.py inverts it into the `product_categories` join the warehouse scores against. 472 slugs across the 16 rosters as of 2026-08-08.",
+      "items": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" }
+    },
+    "comments": {
+      "type": "string",
+      "description": "The editor's working note on where this category's boundary runs: dedup decisions against neighboring categories (\"peft/trl/torchtune stay in finetuning_code\"), the issue that proposed it, what was deliberately left out. Written by the category editor and read by nothing downstream. It is in neither the notebook payload nor the registry's `categories` table, unlike the product-level `comments`, which build/serialize_registry.py does publish. That absence is the point: somewhere to leave a scope judgment where the next curator will look for it without it becoming public copy. 5 of the 16 categories carry one as of 2026-08-08. A claim about the category's current state belongs in `strapline`, and its definition in `description`."
+    }
   }
 }
