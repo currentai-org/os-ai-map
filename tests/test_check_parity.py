@@ -40,13 +40,14 @@ def run(monkeypatch, published, category=None, verbose=False):
 
 
 def test_local_scores_matches_check_rubrics_split():
-    """386 products the ladders decide, 86 the categories defer. The same 472 the warehouse
+    """387 products the ladders decide, 85 the categories defer. The same 472 the warehouse
     publishes, so a change to either number should show up as a failure here first. Was 384
     before Luciole (base_pretrained) and OpenRAG (orchestration_agents) were added, both
-    computed rather than deferred."""
+    computed rather than deferred, and 386/86 until the verification sweep read megatron-lm
+    and recorded the core-gated:ungated its deferral was waiting on."""
     computed, deferred = local_scores(None)
-    assert len(deferred) == 86
-    assert len(computed) == 386
+    assert len(deferred) == 85
+    assert len(computed) == 387
     assert not set(computed) & set(deferred)
     # Every one of the 386 reproduces today, so none should abstain.
     assert [key for key, value in computed.items() if value is None] == []
