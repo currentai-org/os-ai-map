@@ -183,7 +183,7 @@ def main() -> int:
     if unrouted:
         print("check_retirement: these slugs left the payload with no alias, so their pages "
               "would 404:\n  " + "\n  ".join(unrouted), file=sys.stderr)
-        print("Record each in sources/slug_aliases.yaml, or acknowledge the removal.",
+        print("Record each as an alias on the product that replaced it, or acknowledge",
               file=sys.stderr)
         return 1
     print(f"check_retirement: {len(gone)} retired, all routed")

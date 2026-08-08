@@ -53,7 +53,6 @@ def load_sources(root: Path) -> dict:
         "products": _dir("products"),
         "scores": _dir("scores"),
         "taxonomy": yaml.safe_load((root / "sources" / "taxonomy.yaml").read_text()),
-        "slug_aliases": yaml.safe_load((root / "sources" / "slug_aliases.yaml").read_text()),
     }
     lt = root / "build" / "_frozen_long_tail.json"
     if lt.exists():
@@ -136,49 +135,58 @@ def validate_sources(data: dict) -> list[str]:
 
     # --- slug stability ---
     # The slug is a product's identity and the key deep links are built on, so a slug may
-    # only leave sources/products/ by being recorded in sources/slug_aliases.yaml. These
-    # checks are what make that a rule rather than an intention. See that file's header.
-    spec = data.get("slug_aliases") or {}
-    aliases = spec.get("aliases") or {}
-    for old, new in sorted(aliases.items()):
-        if new not in prods:
-            errors.append(f"slug alias {old!r} -> {new!r}: target is not a live product")
-        if old in prods:
-            errors.append(
-                f"slug alias {old!r}: an alias key means the slug is retired, but a product "
-                f"still uses it. Either drop the alias or rename the product."
-            )
-    org_aliases = spec.get("organization_aliases") or {}
-    for old, new in sorted(org_aliases.items()):
-        if new not in orgs:
-            errors.append(f"org alias {old!r} -> {new!r}: target is not a live organization")
-        if old in orgs:
-            errors.append(f"org alias {old!r}: retired, but an organization still uses it")
+    # only leave sources/products/ by being recorded as an alias on the product that
+    # replaced it. These checks are what make that a rule rather than an intention, and
+    # they are why the aliases live on the records: held in one mapping until 2026-08-08,
+    # two renames of the same retired slug silently kept whichever came last, because
+    # PyYAML does not error on a duplicate key. See docs/guides/identity.md.
+    claimed: dict[str, str] = {}
+    for slug, product in sorted(prods.items()):
+        for alias in product.get("aliases") or []:
+            if alias in prods:
+                errors.append(
+                    f"product {slug!r}: alias {alias!r} means that slug is retired, but a "
+                    f"product still uses it. Either drop the alias or rename the product."
+                )
+            if alias in claimed:
+                errors.append(
+                    f"alias {alias!r} is claimed by both {claimed[alias]!r} and {slug!r}. "
+                    f"A retired slug resolves to exactly one product."
+                )
+            claimed[alias] = slug
+    org_claimed: dict[str, str] = {}
+    for slug, org in sorted(orgs.items()):
+        for alias in org.get("aliases") or []:
+            if alias in orgs:
+                errors.append(f"organization {slug!r}: alias {alias!r} is still a live organization")
+            if alias in org_claimed:
+                errors.append(
+                    f"org alias {alias!r} is claimed by both {org_claimed[alias]!r} and {slug!r}"
+                )
+            org_claimed[alias] = slug
 
     # A model slug that bakes in a version goes stale the day the next release ships,
     # and then costs an alias to fix. Vendors do sometimes sell the version as the
-    # product - GPT-4o, Mistral 7B - so an exception is allowed, but it has to be
-    # declared with a reason in slug_aliases.yaml. Scoped to model categories: for a
+    # product - GPT-4o, Mistral 7B - so an exception is allowed, but the product has to
+    # carry `version_in_identity` with the reason. Scoped to model categories: for a
     # dataset or a board the version genuinely is the identity (oscar-2301,
     # raspberry-pi-5), which is why those are not checked.
     model_cats = {"base_pretrained", "finetuned_chat"}
     model_products = {
         p for slug, cat in cats.items() if slug in model_cats for p in (cat.get("products") or [])
     }
-    allowed_versions = spec.get("version_in_identity") or {}
     version_token = re.compile(r"(?:^|-)(v?\d+(?:[-.]\d+)*[a-z]?|\d+[bx])(?:-|$)")
     for product in sorted(model_products):
-        if version_token.search(product) and product not in allowed_versions:
+        if version_token.search(product) and not (prods.get(product) or {}).get("version_in_identity"):
             errors.append(
                 f"product {product!r}: model slug carries a version or size token. Collapse it "
-                f"to the tier the vendor sells, or declare it under version_in_identity in "
-                f"sources/slug_aliases.yaml with the reason."
+                f"to the tier the vendor sells, or add `version_in_identity` with the reason."
             )
-    for product in sorted(allowed_versions):
-        if product not in model_products:
+    for slug, product in sorted(prods.items()):
+        if product.get("version_in_identity") and slug not in model_products:
             errors.append(
-                f"version_in_identity lists {product!r}, which is not a model product. "
-                f"Drop the exception."
+                f"product {slug!r} declares version_in_identity, which only applies to a model "
+                f"product. Datasets and hardware keep the version by default."
             )
 
     # A slug ending in its own vendor's name carries no information and is the pattern

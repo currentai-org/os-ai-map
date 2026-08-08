@@ -261,27 +261,32 @@ def _organizations(orgs: dict, product_org: dict) -> dict:
     }
 
 
-def _aliases(spec: dict) -> dict:
+def _aliases(prods: dict, orgs: dict) -> dict:
     """Retired slug -> live slug, for the app's redirects.
 
-    ONLY `aliases` and `organization_aliases`. sources/slug_aliases.yaml has four other
-    top-level keys that look like alias maps and are not:
-      - renamed_before_links records that a slug's PREVIOUS occupant moved elsewhere,
-        not that the slug itself retired. One entry's key (grok) is itself a live
-        product today, so treating it as a redirect would 308 that live page onto a
-        different one; the other's target sits alongside its own still-live sibling
-        (github-copilot-ide next to github-copilot). Its own comment in the YAML says
-        as much: it exists for the audit trail only, because nothing ever linked to
-        the old slug.
-      - version_in_identity and governing_release are documentation (why a slug keeps
-        a version token; which release governs a tier's score), not old-slug -> new-slug
-        pairs, and their values aren't even slugs.
+    Gathered from the records rather than from one mapping, which is where these lived
+    until 2026-08-08. The mapping had a silent failure mode - PyYAML keeps only the last
+    of two duplicate keys - and it held four other top-level keys that looked like alias
+    maps and were not. Two of those are now fields on the records they describe
+    (`version_in_identity` on the product, `governing_release` on the openness score);
+    the third, `renamed_before_links`, is gone, and its absence is the point.
+
+    A rename made before anything linked to the slug owes no redirect, and treating one
+    as an alias is actively wrong: `grok` was renamed to `grok-app` and has since been
+    REUSED for a different live product, so a redirect would 308 that live page onto
+    another one. build/validate.py now rejects an alias that collides with a live slug,
+    which is the mechanism that used to be this docstring. See docs/guides/identity.md.
+
     Sorted, because this payload feeds a daily automated PR in another repo and
     unsorted keys would show up there as a phantom diff.
     """
     return {
-        "products": dict(sorted((spec.get("aliases") or {}).items())),
-        "organizations": dict(sorted((spec.get("organization_aliases") or {}).items())),
+        "products": dict(sorted(
+            (alias, slug) for slug, p in prods.items() for alias in (p.get("aliases") or [])
+        )),
+        "organizations": dict(sorted(
+            (alias, slug) for slug, o in orgs.items() for alias in (o.get("aliases") or [])
+        )),
     }
 
 
@@ -292,10 +297,6 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
     orgs, cats, prods, scores = (sources["organizations"], sources["categories"],
                                  sources["products"], sources["scores"])
     taxonomy = sources["taxonomy"]
-    # .get with a default so unit-test fixtures, which build their own source dicts,
-    # keep working without carrying a slug_aliases block. load_sources always supplies
-    # one for the real build (build/validate.py).
-    slug_aliases = sources.get("slug_aliases") or {}
     # Global slug -> display name map, used to resolve lineage references (which
     # point at other on-map products by slug) into readable names at serialize time.
     name_map = {slug: p["display_name"] for slug, p in prods.items()}
@@ -358,7 +359,7 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
     return {"descriptions": descriptions, "layer_order": layer_order,
             "categories": out_cats, "order": order,
             "organizations": _organizations(orgs, product_org),
-            "aliases": _aliases(slug_aliases),
+            "aliases": _aliases(prods, orgs),
             "n_total": n, "generated": generated,
             "long_tail": _filter_long_tail(frozen_long_tail, prods)}
 
