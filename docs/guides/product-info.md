@@ -34,7 +34,7 @@ mechanism (see "Provenance vs. `last_verified`").
 | `name` | required, kebab-case | the slug/identity; see `add-product` | machine |
 | `display_name` | required | the human label | reader |
 | `description` | string | what the product IS and DOES, neutral | reader (payload `description`) |
-| `comments` | string | provenance: license, version, release date, and the verification line | reader (payload `version_note`) |
+| `comments` | string | provenance: ownership, hosting, lifecycle, caveats, and the verification line | reader (payload `version_note`) |
 
 Both prose fields are optional in the schema, but in practice every product carries a
 `description` and almost every one carries `comments`. Write both.
