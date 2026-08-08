@@ -133,7 +133,7 @@ gate every PR; ones needing the network run periodically.
 **They ratchet rather than switch on.** G1 and G2 apply only to axes that carry a
 `last_verified`, which is 6 today and grows as the re-read pass proceeds. So the gate covers
 exactly what has been done, never blocks progress, and never permits a regression on ground
-already taken. A big-bang gate over all 1386 axes would fail on day one and get switched
+already taken. A big-bang gate over all 1370 axes would fail on day one and get switched
 off, which is how gates die.
 
 G3, G5 and G6 apply in full immediately — nothing has to be populated first.
@@ -202,20 +202,30 @@ pricing page read.
 So every openness axis needs at least one read, permanently. Adoption and capability are
 different in kind and can be automated — see the table below.
 
-## Current state, 2026-07-30
+## Current state, 2026-08-08
 
 | | count |
 |---|---|
-| axes total (470 products × 3) | 1410 |
-| deliberately null — capability on datasets and a wire protocol, not claims | 24 |
-| **real claims to verify** | **1386** |
-| of those, citing at least one source URL | 1386 |
-| carrying a real `last_verified` | 6 (once #124 lands; 26 before it, 19 of them tool-written) |
+| axes total (472 products × 3) | 1416 |
+| deliberately null — not claims | 46 (26 capability, 20 adoption) |
+| **real claims to verify** | **1370** |
+| of those, citing at least one source URL | 1370 |
+| carrying a real `last_verified` | 6 |
 | of those 6, satisfying G1 and G2 | 6, after the Phase 0 re-read |
-| distinct source URLs behind all of it | 1099 (450 cited more than once) |
+| distinct source URLs behind all of it | 1106 |
+
+Regenerate these rather than trusting them; the corpus grows most weeks.
+
+The null axes are two different abstentions and both are deliberate. Capability is null where
+the axis does not apply — datasets and a wire protocol are not capable of anything a benchmark
+measures. Adoption is null where **no usage figure exists to band**, which is mostly the hosted
+fine-tuning and evaluation features of a larger platform — Azure, OpenAI, Mistral, Together,
+Vertex, Bedrock — none of which publishes a standalone number, plus the internal eval suites,
+which have no users outside the lab that wrote them. Banding those on vendor prose would be
+inventing the number, so the axis abstains instead.
 
 Every real claim already cites a source. The work is not finding evidence; it is re-reading
-what is cited. And the re-read surface is 1099 fetches, not 1386, because sources are shared.
+what is cited. And the re-read surface is 1106 fetches, not 1370, because sources are shared.
 
 **None of the 6 satisfied G1 as first written**, which is worth recording because it is the
 clearest evidence that the invariant does something. `establishes` did not exist when those
@@ -227,6 +237,9 @@ Lucie source URL that had never resolved as cited (missing the `/datasets/` segm
 Hub answered 401), and an `rwkv` `weights:open` claim with no source behind it at all.
 
 ### What automation can and cannot earn, per axis
+
+Counted 2026-07-30, before the corpus reached 472 products. The per-axis totals have moved a
+little since; the split has not.
 
 | axis | axes | all sources signal-backed | can a fetch earn the date? |
 |---|---|---|---|
@@ -354,12 +367,20 @@ Adoption and capability, restricted to axes where every recorded dimension is si
 The date is the signal fetch date. No reading and no judgment, which is exactly why it can
 run unattended and why it must be fenced to those axes only.
 
-### 4. The re-read pass — roughly 1099 URLs
+### 4. The re-read pass — roughly 1106 URLs
 
 Everything else, all of openness included. **Fold the deferral backlog into this pass rather
 than clearing it first.** Reading a product's sources to determine `core-gated` *is* the
 re-check that earns its `last_verified`; done as two passes it is the same pages fetched
 twice, and it re-verifies scores that are about to change.
+
+**The prose refresh folds in on the same argument.** A product's `description` and `comments`
+are brought up to `docs/guides/product-info.md` in the same read, because refreshing them means
+opening the pages this pass already fetches, and because a prose pass run on its own does not
+open primary sources at all. One PR per category carries both halves. The runbook's Phase 4 has
+the unit of work; the split of authority is unchanged — this guide governs the score and the
+date, `product-info.md` governs the prose, and the `comments` verification line still earns no
+`last_verified`.
 
 That backlog is currently the 86 declared deferrals. Every category has a recipe now, and
 `safeguards` — which used to contribute all 26 of its products here — is down to 5. The

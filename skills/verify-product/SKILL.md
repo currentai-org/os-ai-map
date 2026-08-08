@@ -15,6 +15,18 @@ openness/adoption/capability value.
 > and the source of the rules below. This skill is the procedure; the guide is the
 > authority.
 
+**Where this runs.** In the category sweep the prose refresh happens *inside* the score
+re-read (`docs/runbooks/verification-pass.md`, Phase 4): one agent opens a product's sources
+once and writes both halves from them, and one PR carries the category. This skill stays the
+prose half, and the boundary below still holds — the score half follows
+`docs/guides/verification.md`, which is gated and evidence-attributed. Run standalone, the
+skill is unchanged.
+
+**How far to verify.** The guide's claim-class table is the rule. Two consequences worth
+having in front of you: a superlative, a corporate event, and a curator rationale clause are
+**deleted or omitted, never researched**, and a claim the product's own sources do not settle
+comes out of the prose rather than staying in on the grounds that it was already written.
+
 ## Steps
 
 1. **Locate the product**: `sources/products/<slug>.yaml`. Note its `type` and its
@@ -43,6 +55,18 @@ openness/adoption/capability value.
    `description` is the **load-bearing** field: everything a reader needs about the product
    lives here, including who builds or stewards it. Avoid three sentences in a row opening
    "It …" — recast one around its real subject.
+
+   **Strip the curator rationale clause.** Find it with
+   `\b(picked|chosen|included|selected)\s+(because|when|by|for|as|if)\b`. A description
+   describes; why the map picked the product up is not a product fact. Work in this order:
+   salvage the concrete facts trapped inside the clause and move them into the description
+   proper ("powers the Hugging Face Open LLM Leaderboard"), drop the counts, funding and
+   superlatives that have collected there, then delete the recommendation framing. Like a
+   stale count, this is a valid reason to edit with nothing else moving.
+
+   **Strip corporate events** — acquired, raised, IPO'd. Keep one only when it establishes who
+   ships the product today ("Predibase, now part of Rubrik"); never as company history, and
+   never funding, which is a proxy for the `adoption` axis.
 5. **Rewrite `comments` as a footnote.** It is not a second description. Anything about the
    *product* — what it does, who builds it, what it runs on — moves to `description`; what
    stays is about *the reading*: an evidence gap, a judgment call a score rests on, or

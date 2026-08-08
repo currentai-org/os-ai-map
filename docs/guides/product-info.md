@@ -82,6 +82,39 @@ see "The division of labor" below. When a fact could sit in either, it goes here
   commit counts, "fastest-growing", and the product's current version number. See
   "Volatile facts" below; they go stale the day they are written and prose has no
   freshness gate to catch it.
+- **Curator rationale** — why the map includes the product. See below.
+
+### Curator rationale is not description content
+
+A description describes. A clause explaining why the map picked something up — "Picked when
+hardware is constrained", "Chosen because it is the only OSI-licensed option in the category" —
+is a note about our selection rather than about the product, and it reads as a recommendation
+in a field that is meant to be a catalog entry.
+
+It is also where the content this guide already bans has collected. Surveying the corpus on
+2026-08-08, every hardcoded star count in a product carrying such a clause sat inside the
+clause, as did nearly every superlative, while the descriptive half of the same field was
+clean. Removing the clause is mostly a deletion, not a rewrite.
+
+Find them with:
+
+```
+\b(picked|chosen|included|selected)\s+(because|when|by|for|as|if)\b
+```
+
+Rewrite in this order:
+
+1. **Salvage the facts trapped inside.** The clause often carries the most concrete thing in
+   the entry — "powers the Hugging Face Open LLM Leaderboard", "the execution layer behind
+   Vercel Open Agents", "Anyscale's founders created Ray at UC Berkeley's RISELab in 2019".
+   Those are product facts. Move them into the description proper.
+2. **Drop counts, funding and superlatives.** Banned elsewhere in this guide already, so no
+   judgment call is involved.
+3. **Delete the recommendation framing.** What is left of "Picked when hardware is
+   constrained" after steps 1 and 2 is our opinion, and it goes.
+
+If a selection judgment genuinely needs recording — a product admitted on a borderline reading,
+say — it is a footnote about *our reading*, so it belongs in `comments` under the rules below.
 
 ## `comments` — verification details and methodology footnotes
 
@@ -156,7 +189,33 @@ Examples:
 4. **Keep judgments on the axes.** Adoption and openness are scored, sourced fields. An
    *openness verdict* ("truly open") and the **license it rests on** belong in the score
    file, where they carry evidence. See "Scored fields" below.
-5. **Do not embed volatile facts** — counts or current version numbers. See below.
+5. **Do not embed volatile facts** — counts, current version numbers, or corporate events.
+   See below.
+
+## How far to verify a claim
+
+A prose refresh runs *inside* the score re-read — one pass per product, described in
+`docs/runbooks/verification-pass.md` Phase 4. The same repository, model card and vendor docs
+are opened once and both halves are written from what they show. So prose carries no separate
+research budget, and the only question left is what to do with the claims that sit outside the
+score's evidence.
+
+| claim class | policy |
+|---|---|
+| what the product is and does | **verify** — the score re-read establishes it anyway |
+| comparative positioning ("Where MCP …, A2A …") | **verify** — the same pages settle it |
+| superlative or unsourced ranking | **delete** — already against this guide |
+| corporate event (acquired / raised / IPO) | **omit** unless identity-bearing |
+| curator rationale ("Picked when …") | **remove from `description`** |
+
+Three of the five resolve to delete or omit rather than research, which is most of the reason
+the prose half adds little to the cost of a re-read. A claim that the sources opened for the
+score do not settle, and that none of the rules above disposes of, comes **out** of the prose.
+It is never left in unverified on the grounds that it was already there.
+
+This is also why the coupling matters. A prose pass run on its own does not open primary
+sources, and the result is a provenance line naming a method — `Verified 2026-08-08 via web
+search` — which is precisely what the canonical form below forbids.
 
 ## Scored fields — don't restate them
 
@@ -239,6 +298,18 @@ Three cases are **durable** and stay:
 3. **A statement of absence.** `Created 6 May 2026; no tagged releases (built from source)`
    describes how the project ships, not where it currently is.
 
+### Corporate events
+
+An acquisition, a funding round, or an IPO fails the same test. It is true on the day it is
+written, the next event makes it incomplete rather than wrong, and nothing in the repo is
+watching. **Omit it by default.**
+
+The exception is when the event is *identity-bearing* — it establishes who ships the product
+now, and a reader who did not know it would go looking for the wrong vendor. `Predibase, now
+part of Rubrik` earns its clause on those grounds. `Raised a $50M Series B in 2025` does not,
+and neither does an acquisition recounted as company history. Funding in particular is a
+proxy for traction, which is what the `adoption` axis is for.
+
 The tell for the volatile case is a word like "latest", "current", or "as of". A tier
 product states this outright — see `claude-sonnet`: *"Anthropic ships a new Sonnet roughly
 every few months, so a versioned entry goes stale faster than it can be reviewed; the slug
@@ -276,7 +347,9 @@ Use this to refresh an existing product's prose (the `verify-product` skill auto
    but to confirm the project is alive and that neither has moved a score. A version goes in
    only under one of the three durable cases above; a license does not go in at all.
 3. **Rewrite `description`** to the format above if anything material changed, keeping it
-   neutral and within the length band. Leave it alone if nothing moved.
+   neutral and within the length band. Leave it alone if nothing moved. Strip a curator
+   rationale clause and a corporate event wherever you find one, salvaging any product fact
+   inside first; both are edits worth making on their own, with nothing else moving.
 4. **Update `comments`**: strip any stale count, "latest version" clause, or license
    restatement, and move any surviving *product* fact into `description`. Keep only
    footnotes about the reading itself. Set the verification line to today's date and the
@@ -296,6 +369,8 @@ Use this to refresh an existing product's prose (the `verify-product` skill auto
 - [ ] No hardcoded star/download/contributor counts — rely on the artifact links and the
       `adoption` axis instead.
 - [ ] No "latest/current version" clause, unless it is identity, terminal, or an absence.
+- [ ] No curator rationale — no "Picked when …" / "Chosen because …" clause in `description`.
+- [ ] No funding round, acquisition, or IPO, unless it says who ships the product now.
 - [ ] No license restatement — it is `openness.components` in the score file.
 - [ ] `comments` says nothing `description` already says — no product facts, footnotes only.
 - [ ] Verification line in canonical form: `Verified <YYYY-MM-DD> via <source>.`
