@@ -245,6 +245,73 @@ def put_field(
     return set_field(text, value, axis=axis, key=key)
 
 
+# `sources/products/*.yaml` wrap wider than the score files do. Same reasoning as WIDTH: match
+# what the corpus already contains so an edit does not reflow the file around itself.
+PRODUCT_WIDTH = 105
+
+
+def document_field_span(lines: list[str], key: str) -> tuple[int, int] | None:
+    """[start, end) covering a TOP-LEVEL `key:` and its continuation lines.
+
+    The product files put `description` and `comments` at the document root rather than inside
+    an axis block, so the field is at indent 0 and its continuations are indented by two — the
+    same shape one level up. A block sequence still puts its items at the key's indent, which
+    at the root means `- url: ...` in column 0, so that case is carried over too.
+    """
+    start = None
+    for index, line in enumerate(lines):
+        if line.startswith(f"{key}:") and not line[:1].isspace():
+            start = index
+            break
+    if start is None:
+        return None
+    end = start + 1
+    while end < len(lines):
+        line = lines[end]
+        if not line.strip():
+            break
+        if not line[:1].isspace() and not line.startswith("- "):
+            break
+        end += 1
+    return start, end
+
+
+def set_document_field(text: str, key: str, value: object, width: int = PRODUCT_WIDTH) -> str:
+    """Return `text` with a top-level `key` replaced by `value`. Raises rather than guessing.
+
+    The product prose needs this and `set_field` cannot do it: that one locates a field inside
+    an axis block, and `description` has no block to be inside. Same three assertions, because
+    the hazard is the same one — `sources/products/*.yaml` are hand-wrapped and do not
+    round-trip, so a whole-document load-modify-dump rewraps every scalar in the file and
+    buries a two-field edit in a corpus-wide diff.
+    """
+    lines = text.splitlines(keepends=True)
+    span = document_field_span(lines, key)
+    if span is None:
+        raise ValueError(f"no top-level {key!r} field to rewrite")
+
+    dumped = yaml.safe_dump(
+        {key: value}, default_flow_style=False, allow_unicode=True, width=width, sort_keys=False
+    )
+    rendered = [f"{line}\n" for line in dumped.splitlines()]
+    new_lines = lines[: span[0]] + rendered + lines[span[1] :]
+    new_text = "".join(new_lines)
+
+    before = yaml.safe_load(text)
+    after = yaml.safe_load(new_text)
+    if (after or {}).get(key) != value:
+        raise ValueError(f"{key} re-parsed as {(after or {}).get(key)!r}, not the value asked for")
+    expected = copy.deepcopy(before)
+    expected[key] = value
+    if after != expected:
+        raise ValueError(f"rewriting {key} changed something else in the document; refusing to write")
+    tail = span[0] + len(rendered)
+    if new_lines[: span[0]] != lines[: span[0]] or new_lines[tail:] != lines[span[1] :]:
+        raise ValueError(f"rewriting {key} moved bytes outside its own span")
+
+    return new_text
+
+
 def rewrite(path: Path, value: object, axis: str = "openness", key: str = "components") -> bool:
     """Write the new value into the file. True when the file changed."""
     text = path.read_text()

@@ -204,3 +204,80 @@ def test_the_naive_regex_corrupts_the_same_fixture():
     # result reads as a key called `source` whose value trails off into the previous value.
     assert corrupted.startswith("source:closed Engine; no full training pipeline")
     assert "license:Apache-2.0(OSI)" in corrupted
+
+
+# --- the document-level variant, for sources/products/*.yaml ---
+
+PRODUCT = """name: widget
+display_name: Widget
+type: software
+description: A thing that does a thing, and wraps onto a second line because the corpus wraps
+  at about a hundred and five columns rather than eighty.
+github:
+- url: https://github.com/org/widget
+pypi:
+- url: https://pypi.org/project/widget
+comments: Verified 2026-08-08 via GitHub.
+"""
+
+
+def test_a_top_level_field_is_replaced_without_touching_its_neighbors():
+    from build.components import set_document_field
+
+    out = set_document_field(PRODUCT, "description", "A shorter thing.")
+    after, before = yaml.safe_load(out), yaml.safe_load(PRODUCT)
+    assert after["description"] == "A shorter thing."
+    assert {k: v for k, v in after.items() if k != "description"} == {
+        k: v for k, v in before.items() if k != "description"
+    }
+
+
+def test_a_list_item_in_column_zero_is_not_a_sibling_key():
+    """`github:` is followed by `- url:` at indent 0. Treating that as the next key would end
+    the span early and splice the replacement above the list."""
+    from build.components import set_document_field
+
+    out = set_document_field(PRODUCT, "github", [{"url": "https://github.com/org/renamed"}])
+    after = yaml.safe_load(out)
+    assert after["github"] == [{"url": "https://github.com/org/renamed"}]
+    assert after["pypi"] == [{"url": "https://pypi.org/project/widget"}]
+    assert out.count("github:") == 1
+
+
+def test_the_last_field_can_be_replaced():
+    from build.components import set_document_field
+
+    out = set_document_field(PRODUCT, "comments", "Verified 2026-08-09 via the LICENSE body.")
+    assert yaml.safe_load(out)["comments"] == "Verified 2026-08-09 via the LICENSE body."
+
+
+def test_a_colon_in_the_value_is_the_dumper_problem():
+    """The motivating hazard one level up, and identical here: a bare `: ` changes the parse."""
+    from build.components import set_document_field
+
+    value = "TRL post-trains models through Trainer classes: SFT, DPO, GRPO."
+    out = set_document_field(PRODUCT, "description", value)
+    assert yaml.safe_load(out)["description"] == value
+
+
+def test_a_missing_field_raises_rather_than_appending():
+    from build.components import set_document_field
+
+    with pytest.raises(ValueError, match="no top-level"):
+        set_document_field(PRODUCT, "strapline", "nope")
+
+
+def test_every_product_file_round_trips_through_its_own_description():
+    """Setting a field to what it already holds must be a no-op across the whole corpus."""
+    from build.components import set_document_field
+
+    checked = 0
+    root = Path(__file__).resolve().parents[1]
+    for path in sorted((root / "sources" / "products").glob("*.yaml")):
+        text = path.read_text()
+        doc = yaml.safe_load(text)
+        if not doc.get("description"):
+            continue
+        checked += 1
+        assert yaml.safe_load(set_document_field(text, "description", doc["description"])) == doc, path.name
+    assert checked > 400
