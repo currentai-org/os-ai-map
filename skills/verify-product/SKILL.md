@@ -39,7 +39,16 @@ openness/adoption/capability value.
    go stale with no freshness gate; the artifact links and the `adoption` axis carry the
    actuals (see the guide's "Volatile facts" section). This applies even when nothing
    else moved: removing a stale count IS a valid reason to edit.
-5. **Update `comments`:** correct the identity, ownership/hosting, and caveat clauses.
+
+   `description` is the **load-bearing** field: everything a reader needs about the product
+   lives here, including who builds or stewards it. Avoid three sentences in a row opening
+   "It …" — recast one around its real subject.
+5. **Rewrite `comments` as a footnote.** It is not a second description. Anything about the
+   *product* — what it does, who builds it, what it runs on — moves to `description`; what
+   stays is about *the reading*: an evidence gap, a judgment call a score rests on, or
+   something in a source that would mislead the next editor. Most products need only the
+   verification line, and that alone is a complete entry — do not pad.
+
    **Strip any "latest / current version" clause** — the next release makes it wrong and
    nothing will notice. Keep a version only when it is the entry's identity (a named model
    release), terminal (the project is archived), or a statement of absence ("no tagged
@@ -49,8 +58,10 @@ openness/adoption/capability value.
    ```
    Verified <YYYY-MM-DD> via <source>.
    ```
-   ISO date (today's), `<source>` naming what you read (`primary sources`, `HF model
-   card`, `GitHub`, `PyPI`, `vendor docs`, `LICENSE body`). Capital V, one line, at the end.
+   ISO date (today's). `<source>` names **a document someone could reopen** — `GitHub`,
+   `PyPI`, `the LICENSE body`, `the HF model card`, `the AWS Neuron documentation`. Never a
+   method: `web search` and a bare `primary sources` say how you looked, not what settled
+   it. If a search led you to a vendor page, cite the vendor page. Capital V, one line, last.
 6. **American English** throughout — `license`, not `licence`; `behavior`, `labeled`.
 7. **Validate:** `uv run python -m build.validate` must print `0 error(s)`.
 8. Rebuild + preview, then open a PR. Preview only: do not commit the regenerated
@@ -74,11 +85,24 @@ freshness date and earns no `last_verified`. Keeping these separate is the whole
 ## Verifying in batches
 
 For many products, drive research with parallel agents (one per product, each reading that
-product's own primary sources), then apply the edits with a small script that rewrites only
-the `description` and `comments` keys with
-`yaml.safe_dump(..., sort_keys=False, allow_unicode=True)` — preserving every other field
-byte-for-byte. Run `build.validate` after each batch, not just at the end. A plausible
-release that cannot be confirmed against any primary source is SKIPPED, not guessed.
+product's own primary sources), then apply the edits with a small script.
+
+**Do not load-modify-dump the whole file.** These YAMLs are hand-wrapped and do not
+round-trip: no single `yaml.dump` width reproduces them, so a whole-document rewrite
+rewraps every plain scalar in the file and buries a two-field edit in a corpus-wide diff.
+Splice the one key instead — take the lines before it, emit just that key, and keep the
+rest byte-for-byte:
+
+```python
+lines = path.read_text().splitlines(keepends=True)
+i = next(n for n, l in enumerate(lines) if l.startswith('comments:'))
+block = yaml.dump({'comments': new_text}, width=105, allow_unicode=True,
+                  default_flow_style=False, sort_keys=False)
+path.write_text(''.join(lines[:i]) + block)   # comments is the last key
+```
+
+Run `build.validate` after each batch, not just at the end. A plausible release that cannot
+be confirmed against any primary source is SKIPPED, not guessed.
 
 ## Boundaries
 

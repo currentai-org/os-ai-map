@@ -34,7 +34,7 @@ mechanism (see "Provenance vs. `last_verified`").
 | `name` | required, kebab-case | the slug/identity; see `add-product` | machine |
 | `display_name` | required | the human label | reader |
 | `description` | string | what the product IS and DOES, neutral | reader (payload `description`) |
-| `comments` | string | provenance: ownership, hosting, lifecycle, caveats, and the verification line | reader (payload `version_note`) |
+| `comments` | string | footnote: how the entry was verified, and any judgment call behind it | reader (payload `version_note`) |
 
 Both prose fields are optional in the schema, but in practice every product carries a
 `description` and almost every one carries `comments`. Write both.
@@ -44,15 +44,23 @@ Both prose fields are optional in the schema, but in practice every product carr
 **Purpose.** Tell a reader what the product is and what it does, in the neutral register
 of a catalog entry. It is not a pitch and not a review.
 
+**`description` is the load-bearing field.** Everything a reader needs about the product
+belongs here: what it is, what it does, what distinguishes it, and who builds or stewards
+it. `comments` is a footnote about *how we know*, not a second place to put product facts —
+see "The division of labour" below. When a fact could sit in either, it goes here.
+
 **Format.**
 - **Length: 2–4 sentences, ~35–70 words.** The corpus median is 3 sentences / 55 words;
   treat 1 sentence as too thin for a scored product and 6 as too long. A long tail entry
   may be a single clause.
-- **Lead with the product doing something**, not with its vendor or its license. Good:
-  "Accelerate is a Hugging Face PyTorch library that lets users run raw PyTorch training
-  scripts across CPUs, multi-GPU, and TPU…". The org and license belong in `comments`, not
-  in the first sentence, unless the org name is genuinely load-bearing for identity (e.g.
-  "NVIDIA's content-safety classifier").
+- **Lead with the product doing something**, not with its vendor. Good: "Accelerate is a
+  Hugging Face PyTorch library that lets users run raw PyTorch training scripts across
+  CPUs, multi-GPU, and TPU…". Who builds it belongs in the description, but usually in a
+  closing clause rather than the opening one, unless the org is load-bearing for identity
+  (e.g. "NVIDIA's content-safety classifier").
+- **Vary the sentence openings.** Three sentences in a row beginning "It …" reads as a
+  generated list. Recast one around its real subject ("A graph compiler optimizes…",
+  "Modular develops and distributes it").
 - **Present tense, third person, declarative.** No second person ("you can"), no imperative.
 - **First mention uses the display name**, then a natural short form.
 - **Spell out an acronym once** if the category reader would not know it.
@@ -75,19 +83,37 @@ of a catalog entry. It is not a pitch and not a review.
   "Volatile facts" below; they go stale the day they are written and prose has no
   freshness gate to catch it.
 
-## `comments` — provenance and notes
+## `comments` — verification details and methodology footnotes
 
-**Purpose.** The provenance notes a reader or the next editor needs but that are not the
-product's description: identity and aliases, ownership and hosting, gating caveats,
-lifecycle state (archived, superseded), and the verification line.
+**Purpose.** How we know what the entry says, and anything a reader or the next editor
+needs about the *treatment* rather than the product. In practice: the verification line,
+plus the occasional footnote about a judgment call or an evidence gap.
 
-**Format.** One compact paragraph, up to ~45 words. Semicolon- or period-separated clauses
-are both fine. Order, loosely: identity/aka → ownership/hosting → caveats → verification
-line.
+### The division of labour
 
-There is no lower bound. With the license and the current version both out, a product whose
-durable provenance is just "who maintains it" gets one clause and the verification line, and
-that is a complete entry. Do not pad to reach a length.
+`description` is load-bearing; `comments` is a footnote. The test is the subject of the
+sentence:
+
+| the sentence is about… | field |
+|---|---|
+| the product — what it is, does, runs on, who builds it | `description` |
+| our reading of it — what was checked, what was ambiguous, what a score followed | `comments` |
+
+Both fields render in the same product detail panel, one directly above the other. A fact
+stated twice is read twice, so the split is not cosmetic. Before writing a clause in
+`comments`, check it is not already in `description`; if it belongs to the product, move it
+rather than repeat it.
+
+Footnotes that earn their place:
+- an evidence gap — "no tagged releases, so this is verified against the repository head"
+- a judgment call the score rests on — "the repository source and usage terms carry
+  different licenses; the openness score follows the usage terms"
+- something in a source that would mislead the next reader — "the LICENSE file also bundles
+  third-party code under separate terms"
+
+**Format.** Up to ~45 words, and no lower bound. Most products need only the verification
+line, and one line is a complete entry. Do not pad, and do not invent a footnote to fill
+the field.
 
 **Do not state the license here.** It is a scored field — see "Scored fields" below.
 
@@ -102,13 +128,20 @@ Verified <YYYY-MM-DD> via <source>.
 
 - **ISO date**, matching the `accessed:` format in score files. A month-year ("June 2026")
   is acceptable only when the exact day is genuinely unknown; prefer the full date.
-- **`<source>`** names what was read: `primary sources`, `HF model card`, `GitHub`,
-  `PyPI`, `vendor docs`, `LICENSE body`. Name the host when one source settled it.
+- **`<source>` names the document you read, not the method you used.** `GitHub`, `PyPI`,
+  `the LICENSE body`, `the HF model card`, `the AWS Neuron documentation`, `Groq's LPU
+  architecture blog` are all good. This list is **illustrative, not closed** — name the
+  source specifically enough that the next editor can open the same page. Where several
+  sources were needed, name them.
+- **Never name a method.** `web search`, `research`, and the bare `primary sources` describe
+  how you looked rather than what settled it, and leave the next editor nothing to re-open.
+  If a search led you to a vendor page, the vendor page is the source.
 - Capital "V". One line, at the end of `comments`.
 
 Examples:
-- `Hosted by the Linux Foundation; originated at UC Berkeley. Verified 2026-06-22 via GitHub.`
-- `Adapter weights public on HF, base gated by Meta. Verified 2026-06-14 via HF model card.`
+- `Verified 2026-06-22 via GitHub and the LICENSE body.`
+- `No tagged releases, so this is verified against the repository head. Verified 2026-06-22 via GitHub.`
+- `The base weights are gated, so openness was read from the model card rather than a download. Verified 2026-06-14 via the HF model card.`
 
 ## Global rules
 
@@ -244,9 +277,10 @@ Use this to refresh an existing product's prose (the `verify-product` skill auto
    only under one of the three durable cases above; a license does not go in at all.
 3. **Rewrite `description`** to the format above if anything material changed, keeping it
    neutral and within the length band. Leave it alone if nothing moved.
-4. **Update `comments`**: correct the ownership, hosting, and caveat clauses; strip any
-   stale count, "latest version" clause, or license restatement; then set the verification
-   line to today's date and the source you read.
+4. **Update `comments`**: strip any stale count, "latest version" clause, or license
+   restatement, and move any surviving *product* fact into `description`. Keep only
+   footnotes about the reading itself. Set the verification line to today's date and the
+   document you read.
 5. **If a fact moves a score**, do not touch the score file here — record it and hand off
    to the `verification.md` flow.
 6. **Validate:** `uv run python -m build.validate` prints `0 error(s)`. Preview only; do
@@ -256,13 +290,16 @@ Use this to refresh an existing product's prose (the `verify-product` skill auto
 
 - [ ] `description`: 2–4 sentences, ~35–70 words, leads with the product doing something,
       present tense, neutral register.
-- [ ] No marketing words; no unsourced superlatives; judgments left on the axes.
+- [ ] No marketing words; no unsourced superlatives; judgments left on the axes. Watch
+      "high-performance" and "high-throughput" — say what the product does instead.
+- [ ] No three consecutive sentences opening "It …".
 - [ ] No hardcoded star/download/contributor counts — rely on the artifact links and the
       `adoption` axis instead.
 - [ ] No "latest/current version" clause, unless it is identity, terminal, or an absence.
 - [ ] No license restatement — it is `openness.components` in the score file.
-- [ ] `comments`: identity/aka; ownership/hosting; caveats; lifecycle state.
+- [ ] `comments` says nothing `description` already says — no product facts, footnotes only.
 - [ ] Verification line in canonical form: `Verified <YYYY-MM-DD> via <source>.`
+- [ ] `<source>` names a document someone could reopen, never a method ("web search").
 - [ ] American English throughout.
 - [ ] Every factual claim confirmed against a primary source, not memory.
 - [ ] `uv run python -m build.validate` → `0 error(s)`.
