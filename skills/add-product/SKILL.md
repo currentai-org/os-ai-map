@@ -107,5 +107,9 @@ research agents work well). **After a batch, two hand-authored things drift and 
 re-checked:** category **straplines** (see the `curate-category` skill) and the
 `build/_frozen_long_tail.json` dedup counts (`scored` / `overlap` / `uncategorized`).
 
+## Related
+- `docs/guides/product-info.md` — style/format/tone for the `description` and `comments`
+  prose written in step 2; `skills/verify-product` refreshes those fields later.
+
 ## Boundaries
 - Read-only on the warehouse. No MCP, no uploads.

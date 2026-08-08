@@ -57,6 +57,10 @@ Invariants (validated in CI):
    Artifact keys (include only the ones that exist): `github`, `npm`, `pypi`,
    `crates`, `go`, `huggingface_model`, `huggingface_dataset`. Do **not** add an
    `org:` field — org membership lives in the org file.
+
+   For the style, length, and tone of `description`/`comments` — and the canonical
+   `Verified <YYYY-MM-DD> via <source>.` line — see `docs/guides/product-info.md`.
+   To refresh those fields on an existing product, use the `verify-product` skill.
 3. **Create `sources/scores/<slug>.yaml`** (see scoring rubric below). The file
    starts with `product: <slug>`; openness requires both `score` and `class`,
    and capability requires `score` and `basis`. If you can't score an axis yet,
