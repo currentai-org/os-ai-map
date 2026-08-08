@@ -87,8 +87,15 @@ def field_span(lines: list[str], bounds: tuple[int, int], key: str) -> tuple[int
     """[start, end) covering `  key:` AND every folded continuation line.
 
     The continuation test is indentation, not content. A sibling key sits at the same
-    indent as `key`, a `sources:` list item likewise, so anything MORE indented belongs to
-    this field's value. That is the entire reason this is not a line-oriented regex.
+    indent as `key`, so anything MORE indented belongs to this field's value. That is the
+    entire reason this is not a line-oriented regex.
+
+    One exception, and it is not a special case so much as the same rule read correctly: a
+    block sequence puts its items at the KEY's indent, so `sources:` is followed by `  - url:`
+    at two spaces. Those items are the value. Treating them as siblings ends the span after
+    the `sources:` line alone, and the replacement then sits above the old items rather than
+    replacing them — which the re-parse assertion catches as a doubled list rather than
+    letting it through, but catching it is not the same as handling it.
 
     A blank line ends the span. Nothing in `sources/scores/` puts one inside a scalar, and
     treating it as a terminator fails loudly via the reparse assertion if that ever stops
@@ -102,7 +109,8 @@ def field_span(lines: list[str], bounds: tuple[int, int], key: str) -> tuple[int
         line = lines[end]
         if not line.strip():
             break
-        if len(line) - len(line.lstrip()) <= len(INDENT):
+        indent = len(line) - len(line.lstrip())
+        if indent <= len(INDENT) and not line.startswith(f"{INDENT}- "):
             break
         end += 1
     return start, end
@@ -171,6 +179,70 @@ def set_field(text: str, value: object, axis: str = "openness", key: str = "comp
         raise ValueError(f"rewriting {axis}.{key} moved bytes outside its own span")
 
     return new_text
+
+
+def add_field(
+    text: str,
+    value: object,
+    axis: str = "openness",
+    key: str = "last_verified",
+    before: str = "sources",
+) -> str:
+    """Return `text` with a field `axis.key` that did not exist, inserted before `before`.
+
+    `set_field` rewrites a field that is already there and raises when it is not, which is
+    the right default for `components` — a missing one means the file is not what the caller
+    thinks. The re-read pass needs the other operation: `last_verified` is absent on almost
+    every axis, and that is exactly the state it exists to change.
+
+    Insertion is positional, so it needs a rule. The convention in the files that already
+    carry a date is immediately before `sources:`, which also reads correctly: the date is a
+    claim about the evidence listed under it.
+
+    The same three assertions as `set_field`, one of them strengthened — re-parsing must show
+    the original document plus this one key and nothing else, which is what catches an insert
+    that landed inside a neighboring folded scalar rather than between two fields.
+    """
+    lines = text.splitlines(keepends=True)
+    bounds = block_bounds(lines, axis)
+    if bounds is None:
+        raise ValueError(f"no top-level {axis!r} block")
+    if find_key(lines, bounds, key) is not None:
+        raise ValueError(f"{axis}.{key} already exists; use set_field to change it")
+    anchor = find_key(lines, bounds, before)
+    if anchor is None:
+        raise ValueError(f"{axis} has no {before!r} field to insert before")
+
+    rendered = render(key, value)
+    new_lines = lines[:anchor] + rendered + lines[anchor:]
+    new_text = "".join(new_lines)
+
+    before_doc = yaml.safe_load(text)
+    after = yaml.safe_load(new_text)
+    expected = copy.deepcopy(before_doc)
+    expected[axis][key] = value
+    if after != expected:
+        raise ValueError(
+            f"inserting {axis}.{key} changed something else in the document; refusing to write"
+        )
+    tail = anchor + len(rendered)
+    if new_lines[:anchor] != lines[:anchor] or new_lines[tail:] != lines[anchor:]:
+        raise ValueError(f"inserting {axis}.{key} moved bytes outside its own span")
+
+    return new_text
+
+
+def put_field(
+    text: str, value: object, axis: str = "openness", key: str = "components", before: str = "sources"
+) -> str:
+    """`set_field` when the key is there, `add_field` when it is not."""
+    lines = text.splitlines(keepends=True)
+    bounds = block_bounds(lines, axis)
+    if bounds is None:
+        raise ValueError(f"no top-level {axis!r} block")
+    if find_key(lines, bounds, key) is None:
+        return add_field(text, value, axis=axis, key=key, before=before)
+    return set_field(text, value, axis=axis, key=key)
 
 
 def rewrite(path: Path, value: object, axis: str = "openness", key: str = "components") -> bool:
