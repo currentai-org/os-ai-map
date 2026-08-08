@@ -1,0 +1,53 @@
+name: refetch
+
+# Gate G4: independent evidence that a recorded fetch actually happened.
+#
+# G1 and G2 both read what the writer wrote. An agent that never opened a page can emit a
+# plausible `accessed`, a plausible 200 and sixty-four plausible hex characters, and both
+# gates pass — #108's failure mode with better spelling. G4 is the only check that goes and
+# looks, and it is the third leg the runbook names. The reasoning is in
+# build/check_refetch.py.
+#
+# Report-only on purpose, and this is the part most likely to get "fixed" later. Pages
+# change: the first full run confirmed 4 of 24 digests and drifted on the other 20, because
+# every GitHub and Hugging Face API endpoint carries a star or download count in its body.
+# Failing on drift would fail 83% on day one, and a gate that fails on ordinary behavior gets
+# switched off — which is how gates die. What it DOES fail on is fabrication: a digest reused
+# across two URLs, or one that is not a SHA-256 at all. Those admit no innocent reading.
+#
+# The count of confirmations is the signal, not the ratio. An agent that fetched nothing
+# would confirm zero, stable URLs included.
+#
+# Unlike parity.yml this needs no warehouse, so it is not tied to the Monday recompute chain
+# and can run any day. Thursday keeps it clear of the Monday gate traffic.
+
+on:
+  schedule:
+    - cron: "0 7 * * 4"
+  workflow_dispatch:
+    inputs:
+      sample:
+        description: "How many sources to re-fetch"
+        default: "25"
+      all:
+        description: "Re-fetch every source carrying a digest"
+        type: boolean
+        default: false
+
+jobs:
+  refetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --locked
+      - name: Re-fetch a sample and compare digests
+        run: |
+          if [ "${{ inputs.all }}" = "true" ]; then
+            uv run python -m build.check_refetch --all
+          else
+            uv run python -m build.check_refetch --sample "${{ inputs.sample || 25 }}"
+          fi
