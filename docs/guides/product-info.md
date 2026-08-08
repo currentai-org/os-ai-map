@@ -70,19 +70,20 @@ of a catalog entry. It is not a pitch and not a review.
   measured, forthright about limitations.*
 - **Unsourced superlatives and rankings** ("the best", "the leading", "the de facto
   standard") unless they are a plain, checkable fact stated as one.
-- **Point-in-time metrics** — star counts, download/install/pull counts, contributor and
-  commit counts, "fastest-growing". See "Volatile metrics" below; they go stale the day
-  they are written and prose has no freshness gate to catch it.
+- **Point-in-time facts** — star counts, download/install/pull counts, contributor and
+  commit counts, "fastest-growing", and the product's current version number. See
+  "Volatile facts" below; they go stale the day they are written and prose has no
+  freshness gate to catch it.
 
 ## `comments` — provenance and notes
 
 **Purpose.** The scoring/provenance notes a reader or the next editor needs but that are
-not the product's description: license (with OSI/OSI-not call), version and release date,
-ownership/hosting nuance, gating caveats, and the verification line.
+not the product's description: license (with OSI/OSI-not call), ownership/hosting nuance,
+gating caveats, lifecycle state (archived, superseded), and the verification line.
 
 **Format.** One compact paragraph, ~15–45 words (corpus median ~30). Semicolon- or
-period-separated clauses are both fine. Order, loosely: identity/aka → license → version
-& date → caveats → verification line.
+period-separated clauses are both fine. Order, loosely: identity/aka → license →
+caveats → verification line.
 
 **Always state the license explicitly, and flag the non-obvious call**, because the
 license is what the openness score turns on and the classifier lies (see
@@ -106,7 +107,7 @@ Verified <YYYY-MM-DD> via <source>.
 - Capital "V". One line, at the end of `comments`.
 
 Examples:
-- `Apache 2.0 (unmodified LICENSE body). v1.9.3 released 2026-05-29. Verified 2026-06-22 via GitHub.`
+- `Apache 2.0 (unmodified LICENSE body). Hosted by the Linux Foundation. Verified 2026-06-22 via GitHub.`
 - `Llama 2 Community License (not OSI); adapter weights public on HF, base gated by Meta. Verified 2026-06-14 via HF model card.`
 
 ## Global rules
@@ -123,14 +124,22 @@ Examples:
    *openness verdict* ("truly open") belongs in the score file, where it carries evidence,
    not in prose. When in doubt, describe what the product is and let the axis carry the
    judgment.
-5. **Do not embed volatile metrics** — see below.
+5. **Do not embed volatile facts** — counts or current version numbers. See below.
 
-## Volatile metrics — link, don't embed
+## Volatile facts — link, don't embed
 
-A star count, download count, or contributor count is stale the moment it is written, and
-prose carries no freshness mechanism — `last_verified` gates *scores*, not `description`
-text. So a hardcoded "24K GitHub stars" or "~4.8k stars, actively maintained" is a
-liability with no owner. Do not write it.
+Prose carries no freshness mechanism. `last_verified` gates *scores*, not `description`
+text, so any fact in prose that a later event can invalidate is a liability with no owner.
+
+**The test: would a future release make this sentence wrong?** If yes, it is volatile and
+does not belong in prose. If a future release would instead be a *different product entry*,
+or if there will be no future release, the fact is durable and can stay.
+
+### Counts
+
+A star count, download count, or contributor count is stale the moment it is written. A
+hardcoded "24K GitHub stars" or "~4.8k stars, actively maintained" fails the test. Do not
+write it.
 
 The actuals already have two homes, and neither is the prose:
 
@@ -149,6 +158,34 @@ as a stand-in for a count. If a number matters, it is an `adoption` score, not a
 > Forward direction: as the notebook renders live/computed counts from the linked artifacts
 > and the `adoption` axis, prose should carry none. Treat every metric you would type as a
 > link you should rely on instead.
+
+### Current version and release date
+
+A "latest version" clause fails the same test for the same reason: the next release makes
+it wrong, and nothing in the repo will notice. `v0.26.0 released 2026-07-25` and
+`Latest stable v1.2.1 ...; 1.3.0 release candidates in progress` are both promises the map
+cannot keep across several hundred products. The `github`/`pypi`/`huggingface_*` links
+already point at the page showing the current release. Do not restate it.
+
+Three cases are **durable** and stay:
+
+1. **The version is the entry's identity.** For a named model release — `Apertus family
+   (8B + 70B), released 2 Sep 2025` — the date is a historical fact about *this* product,
+   and the next release is a different entry (or a different rung; see
+   `slug_aliases.yaml`). Keep it.
+2. **There will be no future release.** `Latest release v3.3.7 (2025-12-19). Repo archived
+   2026-03-21 and placed in maintenance mode` is durable precisely because the project
+   stopped. Keep it — an archived project's last release is a lifecycle fact.
+3. **A statement of absence.** `Created 6 May 2026; no tagged releases (built from source)`
+   describes how the project ships, not where it currently is.
+
+The tell for the volatile case is a word like "latest", "current", or "as of". A tier
+product states this outright — see `claude-sonnet`: *"Anthropic ships a new Sonnet roughly
+every few months, so a versioned entry goes stale faster than it can be reviewed; the slug
+is stable."* That reasoning generalizes; it is why the rule exists.
+
+Where a version genuinely bears on a *score* — a relicense at v2, weights pulled in a
+later release — it is score evidence with a `sources[].accessed` date, not a prose clause.
 
 ## Provenance vs. `last_verified`
 
@@ -174,12 +211,15 @@ Use this to refresh an existing product's prose (the `verify-product` skill auto
 1. **Open the primary source(s)** the product points at — its `github`/`huggingface_*`/
    `pypi` URLs, and the vendor blog or registry. Never refresh from memory or a secondary
    summary.
-2. **Re-derive the checkable facts**: current version and release date, license (read the
-   LICENSE body, not the GitHub classifier), what it bundles/does, ownership/hosting.
+2. **Re-derive the checkable facts**: license (read the LICENSE body, not the GitHub
+   classifier), what it bundles/does, ownership/hosting, lifecycle state. Check the current
+   release to confirm the project is alive and that nothing moved a score, but do not write
+   the version into prose unless it is one of the three durable cases above.
 3. **Rewrite `description`** to the format above if anything material changed, keeping it
    neutral and within the length band. Leave it alone if nothing moved.
-4. **Update `comments`**: correct the license/version/date clauses, then set the
-   verification line to today's date and the source you read.
+4. **Update `comments`**: correct the license and caveat clauses, strip any stale count or
+   "latest version" clause, then set the verification line to today's date and the source
+   you read.
 5. **If a fact moves a score**, do not touch the score file here — record it and hand off
    to the `verification.md` flow.
 6. **Validate:** `uv run python -m build.validate` prints `0 error(s)`. Preview only; do
@@ -192,7 +232,8 @@ Use this to refresh an existing product's prose (the `verify-product` skill auto
 - [ ] No marketing words; no unsourced superlatives; judgments left on the axes.
 - [ ] No hardcoded star/download/contributor counts — rely on the artifact links and the
       `adoption` axis instead.
-- [ ] `comments`: license stated with the OSI call; version + release date; caveats.
+- [ ] No "latest/current version" clause, unless it is identity, terminal, or an absence.
+- [ ] `comments`: license stated with the OSI call; ownership/hosting; caveats.
 - [ ] Verification line in canonical form: `Verified <YYYY-MM-DD> via <source>.`
 - [ ] American English throughout.
 - [ ] Every factual claim confirmed against a primary source, not memory.
