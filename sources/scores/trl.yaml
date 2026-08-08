@@ -7,10 +7,88 @@ openness:
   confidence: high
   note: Fully OSI-licensed (Apache-2.0), full source public, no proprietary core or managed training SaaS
     gate.
+  last_verified: '2026-08-08'
   sources:
   - url: https://github.com/huggingface/trl/blob/main/LICENSE
-    shows: Apache License Version 2.0 text
-    accessed: '2026-06-04'
+    shows: 'Rendered blob of the repository LICENSE. Body carries the full Apache License text: the heading
+      block "Apache License / Version 2.0, January 2004 / http://www.apache.org/licenses/", the section
+      "TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION" with "1. Definitions." following it,
+      and the appendix notice "Copyright 2020-2026 The HuggingFace Team". No added use restriction or field-of-use
+      clause.'
+    accessed: '2026-08-08'
+    http_status: 200
+    content_sha256: 7f556f600e06ff5d980a548a0d4caf23e4f54bd798b22ad8da1c1681d618c8dc
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/huggingface/trl/main/LICENSE
+    shows: 11,355-byte plain-text Apache License Version 2.0 (January 2004), 201 lines, unmodified through
+      section 9 and the appendix, closing with "Copyright 2020-2026 The HuggingFace Team" and the standard
+      "Licensed under the Apache License, Version 2.0" notice. Stable plain-text form of the same file the
+      cited blob URL renders.
+    accessed: '2026-08-08'
+    http_status: 200
+    content_sha256: 1bf614b1fdc40fbd344aa58d00d17d5fd0d252ea333a05be018a38959c8b2998
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/huggingface/trl/main/README.md
+    shows: 'Installation section gives three routes to the running product from the published repo: "pip
+      install trl", "pip install git+https://github.com/huggingface/trl.git", and "git clone https://github.com/huggingface/trl.git;
+      cd trl/; pip install -e .[dev]". Highlights name SFTTrainer, GRPOTrainer, DPOTrainer and KTOTrainer,
+      Accelerate scaling "from single GPU to multi-node clusters" via DDP and DeepSpeed, and PEFT LoRA/QLoRA.
+      The CLI section shows "trl sft", "trl dpo", "trl kto" invocations. The file offers no paid, premium
+      or enterprise edition and names no feature that the published source cannot build.'
+    accessed: '2026-08-08'
+    http_status: 200
+    content_sha256: 7ffa39bb907633245e13b061cd788127b9144a1ca8052ebd12dd0d379a356c9c
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/huggingface/trl/main/pyproject.toml
+    shows: '[project] declares name = "trl", license = "Apache-2.0", license-files = ["LICENSE"], requires-python
+      = ">=3.10", and [project.scripts] trl = "trl.cli:main" - the CLI entry point ships in the same package.
+      [project.optional-dependencies] lists bco, deepspeed, kernels, liger and further extras, all pulling
+      open packages (scikit-learn, deepspeed, liger-kernel, transformers); there is no commercial, enterprise
+      or premium extra and no reference to a separate closed distribution.'
+    accessed: '2026-08-08'
+    http_status: 200
+    content_sha256: 3f478555e8c308e46581d0f7b3af9c416d9b40e356825081a18b7e642c094651
+    establishes:
+    - license
+    - source
+    - core-gated
+  - url: https://huggingface.co/docs/trl/index
+    shows: 'The "Taxonomy" section prints the complete trainer set of the installed library - online: GRPOTrainer,
+      RLOOTrainer, OnlineDPOTrainer, NashMDTrainer, PPOTrainer, XPOTrainer; reward modeling: RewardTrainer,
+      PRMTrainer; offline: SFTTrainer, DPOTrainer, KTOTrainer, BCOTrainer, CPOTrainer, ORPOTrainer; knowledge
+      distillation: GKDTrainer, MiniLLMTrainer. The only per-trainer markers are the legend''s own two (vLLM
+      support and experimental); no trainer is marked as belonging to a paid or hosted tier.'
+    accessed: '2026-08-08'
+    http_status: 200
+    content_sha256: eb7a95c6eb3c600d04b12bf25f6e31bb5d16e7c530fe2e01f800f89bf6319b04
+    establishes:
+    - core-gated
+  - url: https://huggingface.co/pricing
+    shows: Hugging Face's paid offering, read for the core-gated question. The plans are PRO ($9/month),
+      Team ($20/month per user) and Enterprise ($50/month per user), plus per-TB Hub storage ($8-18/TB/mo)
+      and hourly Spaces hardware. Every listed benefit is Hub/account scoped - private storage, inference
+      credits, ZeroGPU quota, SSO, audit logs, resource groups. The page does not mention TRL at all (zero
+      occurrences of the string in the body) and gates no TRL trainer or feature behind a plan.
+    accessed: '2026-08-08'
+    http_status: 200
+    content_sha256: aef9fa33e43b04c6794e5b349e44049ccd924b1acefb1649a240dda5f16d16ce
+    establishes:
+    - core-gated
+  - url: https://pypi.org/project/trl/
+    shows: 'Package page for trl. "License expression: Apache-2.0" with a link to the SPDX License List;
+      Author: Leandro von Werra; "Requires Python >=3.10"; "Provides Extra: bco, deepspeed, kernels, liger,
+      peft, quality, quantization, scikit, test, vllm, vlm, math" - no commercial or enterprise extra. Confirms
+      the distributed wheel carries the same Apache-2.0 terms as the repository.'
+    accessed: '2026-08-08'
+    http_status: 200
+    content_sha256: 2d152a4077be4ccea1add5206bc05407aa7c8c00aaac74a680e96b38a88d230b
+    establishes:
+    - license
+    - core-gated
 adoption:
   level: 4
   reach: 1M-10M
@@ -18,10 +96,23 @@ adoption:
   confidence: high
   note: ~3.81M PyPI downloads last month; standard library for RLHF/post-training in the HF stack, integrated
     with Transformers/Accelerate and used across labs and open-model post-training pipelines.
+  last_verified: '2026-08-08'
   sources:
   - url: https://pypistats.org/packages/trl
-    shows: 'Downloads last month: 3,809,112'
-    accessed: '2026-06-04'
+    shows: 'Package page for trl. "Downloads last day: 139,036 / Downloads last week: 884,630 / Downloads
+      last month: 3,677,381". Header block reads "Latest version: 1.9.2" and "Summary: Train transformer
+      language models with reinforcement learning." 3.68M monthly puts the package in the 1M-10M band, level
+      4.'
+    accessed: '2026-08-08'
+    http_status: 200
+    content_sha256: 0e9c80aae1fb749fb34f0e592f3f4fb3cfa9f43335623edd226daf65b0c09e5a
+  - url: https://pypistats.org/api/packages/trl/recent
+    shows: 'Full JSON body: {"data":{"last_day":139036,"last_month":3677381,"last_week":884630},"package":"trl","type":"recent_downloads"}.
+      Machine-readable form of the same figure the HTML page renders, so the band is re-derivable without
+      parsing HTML.'
+    accessed: '2026-08-08'
+    http_status: 200
+    content_sha256: 1500a1740ddef4742d8e1b323b2a19a728f290e0b37365d3f93fb5b647413b77
 capability:
   score: 4
   basis: feature_matrix
@@ -31,7 +122,27 @@ capability:
   confidence: high
   note: Broadest post-training method coverage among the open libraries; one tier below the Megatron-LM
     frontier-scale-training anchor on demonstrated large-scale parallelism.
+  last_verified: '2026-08-08'
   sources:
-  - url: https://github.com/huggingface/trl/blob/main/LICENSE
-    shows: huggingface/trl repo (TRL post-training library) confirmed live
-    accessed: '2026-06-04'
+  - url: https://huggingface.co/docs/trl/index
+    shows: 'The "Taxonomy" section is the feature matrix the band rests on: "Online methods GRPOTrainer
+      / RLOOTrainer / OnlineDPOTrainer / NashMDTrainer / PPOTrainer / XPOTrainer; Reward modeling RewardTrainer
+      / PRMTrainer; Offline methods SFTTrainer / DPOTrainer / KTOTrainer / BCOTrainer / CPOTrainer / ORPOTrainer;
+      Knowledge distillation GKDTrainer / MiniLLMTrainer". The Integrations nav lists DeepSpeed, Harbor,
+      Kernels Hub, Liger Kernel, OpenEnv, OpenReward, PEFT, RapidFire AI, Trackio, Unsloth, vLLM - scale
+      is delegated to integrations rather than a native parallelism engine, which is what keeps this a tier
+      below the Megatron-LM anchor. IPO appears nowhere on the page.'
+    accessed: '2026-08-08'
+    http_status: 200
+    content_sha256: eb7a95c6eb3c600d04b12bf25f6e31bb5d16e7c530fe2e01f800f89bf6319b04
+  - url: https://raw.githubusercontent.com/huggingface/trl/main/README.md
+    shows: Quick Start states "Each trainer in TRL is a light wrapper around the Transformers trainer and
+      natively supports distributed training methods like DDP, DeepSpeed ZeRO, and FSDP", and Highlights
+      state it "Leverages Accelerate to scale from single GPU to multi-node clusters" and that "Full integration
+      with PEFT enables training on large models with modest hardware via quantization and LoRA/QLoRA",
+      plus an Unsloth integration "for accelerating training using optimized kernels". Working SFTTrainer,
+      GRPOTrainer, DPOTrainer, KTOTrainer and RewardTrainer examples follow. No FP8 claim appears in the
+      file.
+    accessed: '2026-08-08'
+    http_status: 200
+    content_sha256: 7ffa39bb907633245e13b061cd788127b9144a1ca8052ebd12dd0d379a356c9c

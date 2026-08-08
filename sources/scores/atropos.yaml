@@ -7,22 +7,110 @@ openness:
   confidence: high
   note: Fully OSI-licensed (MIT) and public, no managed/closed core. Fits finetuning_code as the RL-training-environment
     layer (RLHF/RLAIF/GRPO).
+  last_verified: '2026-08-08'
   sources:
   - url: https://github.com/NousResearch/atropos
-    shows: MIT license; LLM RL-environments framework; v0.4.0 (Mar 10 2026); Axolotl/Tinker trainer integrations;
-      repo archived read-only 2026-07-04
-    accessed: '2026-07-21'
+    shows: 'Repo page carries the label "Public archive" and the banner "This repository was archived by
+      the owner on Jul 4, 2026. It is now read-only." Embedded repo JSON reads "isPrivate":false and "isArchived":true
+      alongside "license":{"spdxId":"MIT","name":"MIT License"}. The rendered README says "Atropos is an
+      environment microservice framework for async RL with LLMs." and its Navigating the Repo table lists
+      the product''s own parts in-repo: atroposlib/ ("Core library containing base classes and utilities"),
+      environments/ ("Collection of ready-to-use RL environments"), example_trainer/ ("Example training
+      scripts and configurations"); installation is "pip install atroposlib" or an editable install of the
+      same tree. So the published repo is the runnable product: source public. For core-gated I extracted
+      the rendered README text out of the saved body (21,019 characters) and searched it for enterprise,
+      pricing, paid, commercial, subscription, premium, cloud tier, license key, sign up, contact sales
+      and managed: zero hits on all of them except one occurrence of "managed", which is the ManagedServer
+      class documentation link. Nothing in the repo is withheld for a paid tier.'
+    accessed: '2026-08-08'
+    http_status: 200
+    content_sha256: 943430a5089f39cffe384bc0bf8a8ded62046beff5eb6b63400fcee22d70e5b0
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/NousResearch/atropos/main/LICENSE
+    shows: The LICENSE body in full, 1,070 bytes. It opens "MIT License", carries "Copyright (c) 2026 Nous
+      Research", and grants permission to deal in the software "without restriction" including use, copy,
+      modify, merge, publish, distribute, sublicense and sell, subject only to the notice-retention condition
+      and the standard warranty disclaimer. No field-of-use, non-commercial, competition or delayed-conversion
+      clause anywhere in the text, so the recorded license:MIT(OSI) holds and resolves to the osi tier.
+    accessed: '2026-08-08'
+    http_status: 200
+    content_sha256: 5f79d321c17de8ef6e5f34967dc5b484afebeeefd87180890d9741941f6b815f
+    establishes:
+    - license
+  - url: https://api.github.com/repos/NousResearch/atropos
+    shows: 'Repository JSON: "private": false, "visibility": "public", "archived": true, "disabled": false,
+      "spdx_id": "MIT", "pushed_at": "2026-07-04T17:39:01Z", "open_issues_count": 0, default_branch main,
+      created 2025-04-29. Corroborates the landing page on both the public-source and the MIT reading, and
+      independently confirms the archived flag the warehouse GitHub signal reported.'
+    accessed: '2026-08-08'
+    http_status: 200
+    content_sha256: 1c191b13b5eab265c817b7f7577e9f3ac68287272887a11d87331577ac3c2eae
+    establishes:
+    - source
+    - license
+  - url: https://portal.nousresearch.com/
+    shows: 'The vendor''s paid surface, and the pricing page the software ladder says core_gated needs.
+      It sells a Nous Portal subscription built around the Hermes agent: nav sections Overview, Hermes Cloud,
+      Models, Plans, Resources, a Pricing heading, and copy about hosted tools that "come bundled with your
+      subscription" and "bills to the same credits as your models". The string atropos (case-insensitive)
+      does not occur anywhere in the saved body of 647,329 bytes, searched over the raw HTML rather than
+      the rendered text so that script-embedded payloads were included. Nothing from the Atropos repo is
+      sold as, or withheld for, a Portal tier: core-gated ungated.'
+    accessed: '2026-08-08'
+    http_status: 200
+    content_sha256: abba81f624cb0027409ba3a378b8713556e4fb841a1f7c622849a6694177fdd2
+    establishes:
+    - core-gated
+  - url: https://nousresearch.com/
+    shows: Vendor home page. The product nav is Hermes Agent, Nous Portal, Psyche, Hermes 4, Chat, Simulators,
+      Releases, Careers, Shop, Blog. Searching the raw saved body of 76,131 bytes case-insensitively for
+      atropos, pricing, enterprise, subscri and plan returns zero hits for every one of them, so Atropos
+      is not a commercial offering of this vendor at all and there is no tier for a feature to be withheld
+      into.
+    accessed: '2026-08-08'
+    http_status: 200
+    content_sha256: ba7e0b0487374eb5b05e7cbff12170e45acfca961fe7242e3ed1eb09d870713c
+    establishes:
+    - core-gated
 adoption:
   level: 1
   reach: <10K
-  signal_type: stars_fallback
-  confidence: low
-  note: No PyPI/download or named-user count found on the primary channel; only 1.3k GitHub stars as a
-    signal (stars_fallback => capped <=3, placed at 1). Early/niche research adoption.
+  signal_type: usage_volume
+  confidence: high
+  note: 'atroposlib records 157 PyPI downloads in the trailing 30 days, a measured usage volume rather than
+    the stars fallback the band previously rested on. The band is unchanged: 157/month is well inside <10K.
+    Early/niche research adoption, and the repository was archived read-only on 2026-07-04, so the figure
+    is unlikely to grow.'
+  last_verified: '2026-08-08'
   sources:
-  - url: https://github.com/NousResearch/atropos
-    shows: 1.3k stars; no published download/user figures
-    accessed: '2026-06-04'
+  - url: https://pypistats.org/api/packages/atroposlib/recent
+    shows: The whole 106-byte body is {"data":{"last_day":10,"last_month":157,"last_week":40},"package":"atroposlib","type":"recent_downloads"}.
+      157 downloads in the trailing 30 days for the package the README installs, which bands at level 1
+      (<10K) with a wide margin to the 10K level-2 floor. Fetched 200 on the first attempt, no retry needed.
+    accessed: '2026-08-08'
+    http_status: 200
+    content_sha256: a5d4cf432e93148eccbc2580aa356ae90ea89cfcad00d3dc8d98c43fa2256b02
+  - url: https://pypi.org/pypi/atroposlib/json
+    shows: 'info.version 0.4.0, summary "Atropos: An Environment and Rollout handler for LLM RL", requires_python
+      >=3.10, five releases (0.1.0, 0.2.0, 0.2.1, 0.3.0, 0.4.0) with the 0.4.0 files uploaded 2026-03-10T04:21:18Z.
+      Two things matter here. First, the record''s downloads object is present and filled with sentinels
+      rather than absent: "downloads":{"last_day":-1,"last_month":-1,"last_week":-1}. It carries no figure;
+      a reader that treats -1 as a count would band this product at nothing, and a reader that treats the
+      key''s presence as a figure is also wrong. Second, the 25,750-character long description is the repo
+      README and links github.com/NousResearch/atropos, which is what ties the atroposlib download count
+      to this product, since sources/products/atropos.yaml records no pypi artifact of its own.'
+    accessed: '2026-08-08'
+    http_status: 200
+    content_sha256: d72320583ae6fa3a8862c65fa85f64ff16bb29ef999f003da7384b570a5db7ff
+  - url: https://api.github.com/repos/NousResearch/atropos
+    shows: 'stargazers_count 1343, forks_count 396, open_issues_count 0, archived true, pushed_at 2026-07-04T17:39:01Z.
+      Corroboration only, and consistent with a level-1 band: attention at the low-thousands of stars on
+      a repo that has stopped taking changes. It is no longer the signal the score rests on.'
+    accessed: '2026-08-08'
+    http_status: 200
+    content_sha256: 1c191b13b5eab265c817b7f7577e9f3ac68287272887a11d87331577ac3c2eae
 capability:
   score: 3
   basis: feature_matrix
@@ -33,7 +121,27 @@ capability:
   note: Capable, well-architected RL-environments layer; mid-tier as a fine-tuning enabler (it orchestrates
     RL rather than implementing large-scale training itself). Vendor-reported gains (4.6x parallel-task,
     2.5x finance) not independently benchmarked.
+  last_verified: '2026-08-08'
   sources:
   - url: https://github.com/NousResearch/atropos
-    shows: async RL-environments framework, diverse environments, RLHF/RLAIF support, debugging tools
-    accessed: '2026-06-04'
+    shows: The rendered README carries the feature matrix the band rests on. Its environment table lists
+      "Dataset environments" ("GSM8K, MMLU, Custom HF Datasets"), "Online environments" ("Blackjack, Taxi,
+      Text-based games"), "RLAIF and RLHF" ("LLM Judge/Reward Models"), "Multi-Turn RL", "Code Execution"
+      and "Multimodal". A "Trainer Integrations" section covers Axolotl and Tinker, and the diagram caption
+      notes the trainer and inference engine are not included with the atropos package, with the in-repo
+      example trainer described as a reference example. Tooling includes "view-run", process, and "Offline
+      Data Generation" via atropos-sft-gen and atropos-dpo-gen, over OpenAI-compatible endpoints. The vendor's
+      own results table reports a "Berkeley Function Calling Benchmark" parallel-task improvement of "4.6x"
+      and a simple-task move from 21 percent to 51.75 percent, both self-reported and not independently
+      benchmarked. "GRPO" does not occur anywhere in the README.
+    accessed: '2026-08-08'
+    http_status: 200
+    content_sha256: 943430a5089f39cffe384bc0bf8a8ded62046beff5eb6b63400fcee22d70e5b0
+  - url: https://api.github.com/repos/NousResearch/atropos/releases
+    shows: 'Four published releases, newest "tag_name": "v0.4.0" with "published_at": "2026-03-10T04:20:36Z"
+      and "prerelease": false; the others are v0.3.0 (2025-07-16), v0.2.1 and v0.2.0. Together with the
+      repo being archived on 2026-07-04 this establishes that the feature set is frozen at 0.4.0, which
+      is why the capability band is a description of a fixed matrix rather than a moving target.'
+    accessed: '2026-08-08'
+    http_status: 200
+    content_sha256: c0511134ed5fde41a61e468d93deb8f1c70021d4b4793d9e53490dd60eea488d

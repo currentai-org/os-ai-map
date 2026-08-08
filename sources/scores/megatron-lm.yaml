@@ -2,47 +2,185 @@ product: megatron-lm
 openness:
   score: 5
   class: open_source
-  components: license:BSD-3-Clause(OSI, NVIDIA core)+Apache-2.0/MIT(OSI, vendored components);source:public;restriction:attribution/change-notice
+  components: license:BSD-3-Clause(OSI, NVIDIA core)+Apache-2.0/MIT(OSI, vendored components);source:public;core-gated:ungated;restriction:attribution/change-notice
     only
   confidence: high
   note: license:BSD-3-Clause(OSI, NVIDIA core)+Apache-2.0/MIT(OSI, vendored components);source:public;restriction:attribution/change-notice
     only
+  last_verified: '2026-08-08'
   sources:
-  - url: https://github.com/NVIDIA/Megatron-LM/blob/main/LICENSE
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
+  - url: https://raw.githubusercontent.com/NVIDIA/Megatron-LM/main/LICENSE
+    shows: 'Opens "The following applies to all files unless otherwise noted:" followed by a 2019-2025 NVIDIA
+      CORPORATION copyright and the three BSD-3-Clause conditions — retain the copyright notice in source,
+      reproduce it in binary distributions, and "Neither the name of NVIDIA CORPORATION nor the names of
+      its" contributors may be used to endorse derived products. Below that, section headers grant vendored
+      code separate terms: "-- LICENSE FOR Facebook, huggingface, Google Research, LLaVA, Mamba, TinyZero
+      and vLLM code  --" under the Apache License Version 2.0, whose clause 4(b) requires modified files
+      to carry notices "stating that You changed the files", plus two MIT License sections (one for Facebook/Meta/Microsoft/OpenGVLab-InternVL/Triton/DeepSeek,
+      one for Thinking Machines Lab). BSD-3-Clause for the NVIDIA core with Apache-2.0 and MIT vendored
+      components, all OSI, and the only obligations are attribution, no-endorsement and change notices.'
+    accessed: '2026-08-08'
+    http_status: 200
+    content_sha256: 39f1df137a306d31698db206063f462b69c19e536f012db09a66997ad2cb96f0
+    establishes:
+    - license
   - url: https://github.com/NVIDIA/Megatron-LM
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
+    shows: 'The rendered README states the repository contains two components: Megatron-LM, which "is a
+      reference example that includes Megatron Core plus pre-configured training scripts", and Megatron
+      Core, which "is a composable library with GPU-optimized building blocks for custom training frameworks".
+      Getting Started offers both "Install from PyPI: uv pip install megatron-core" and a clone of this
+      repository followed by "uv pip install -e .", so the thing you run builds from the published source.
+      A dated news entry reads "[2025/12] Megatron Core development has moved to GitHub." with "All development
+      and CI now happen in the open, and community contributions are welcome." The top-level file listing
+      is .agents, .github, .gitlab, docker, docs, examples, experimental/agent_compose, images, megatron,
+      scripts, skills, tasks, tests, tools plus root files — no enterprise, commercial or paid-edition directory.
+      Sidebar shows 17.4k stars, 4.3k forks, 9,435 commits.'
+    accessed: '2026-08-08'
+    http_status: 200
+    content_sha256: 87f1c5e263bfa0f32ff4decf9794c00d34ba2e514182c6624f5e26e0701d83f3
+    establishes:
+    - source
+    - core-gated
+  - url: https://pypi.org/project/megatron-core/
+    shows: 'Project page headed "megatron-core 0.18.2", Author/Maintainer "NVIDIA", License "BSD License
+      (Apache 2.0)", classifier "OSI Approved :: BSD License", Released "Jul 21, 2026", Requires Python
+      >=3.12, 5 maintainers. The Provides-Extra list is training, mlm, dev, lts, te, ssm — pip extras, not
+      tiers. The library is published to a public index under an OSI license, which is what makes source:public
+      true for the artifact people actually install.'
+    accessed: '2026-08-08'
+    http_status: 200
+    content_sha256: 9f5d5b4bb57bd07e543981ca1c10b96873253a595e509647c64804f9e6cd0f5e
+    establishes:
+    - source
+    - license
+  - url: https://files.pythonhosted.org/packages/0e/0d/765e06a494ec67a2641e282ea7663713a9c290d67951dc5066d12a87c999/megatron_core-0.18.2.tar.gz
+    shows: 'The published sdist, walked with Python''s tarfile: 585 members, 490 of them regular files,
+      479 under megatron/ plus megatron_core.egg-info, MANIFEST.in, PKG-INFO, README.md, pyproject.toml,
+      setup.cfg and setup.py. Every capability NVIDIA''s product page advertises ships in it — megatron/core/tensor_parallel
+      (8 files), pipeline_parallel (9), transformer/moe (13), dist_checkpointing (22), fp8_utils.py, post_training
+      (10) and inference (87 regular files). I then read the decoded bytes of all 490 files and ran case-insensitive
+      regex searches across them: 0 files matched ''enterprise'', 0 matched ''license[_ -]?key|entitlement|activation[_
+      -]?code'', 0 matched ''premium|paid tier|commercial edition|pro edition'', 0 matched ''contact sales'',
+      0 matched ''AI Enterprise''. Nothing in the shipped package gates a feature behind a paid tier.'
+    accessed: '2026-08-08'
+    http_status: 200
+    content_sha256: 911216b7ce161ffc196baecc4ef7ec39f4a33cf79b50f5e0c123235e42002cdc
+    establishes:
+    - core-gated
+    - source
+  - url: https://developer.nvidia.com/megatron-core
+    shows: Redirects to developer.nvidia.com/cuda/cuda-x-libraries/megatron-core. NVIDIA's own product page
+      presents a single library — "NVIDIA Megatron Core is a composable training library for large-scale
+      generative AI" — with exactly two calls to action, "Go to GitHub" and "Get Started", and no purchase,
+      subscription, enterprise-edition or contact-sales path anywhere on it. Every feature block (parallelism
+      techniques, customizable building blocks, scalability and training resiliency, MoE, hybrid models,
+      multimodal training) links into the public repository or the public API documentation, and the page
+      describes Megatron-LM as an open-source training reference framework for exploring Megatron Core.
+      The vendor's own marketing withholds nothing from the published source.
+    accessed: '2026-08-08'
+    http_status: 200
+    content_sha256: f68c234747aa1592c8a3ea87a5f0643c417b792777f8cc92cf9beadf4a9fc24b
+    establishes:
+    - core-gated
+  - url: https://www.nvidia.com/en-us/data-center/products/ai-enterprise/
+    shows: NVIDIA's paid-suite page, read as the pricing-page half of the core-gated question. It describes
+      AI Enterprise as bringing together "microservices, frameworks, and libraries for AI development with
+      advanced GPU orchestration and infrastructure management in a fully supported, production-ready, commercial
+      software suite" whose pitch is to "Deploy leading open source tools and AI models with confidence"
+      — support and packaging around open source rather than functionality withheld from it. A case-insensitive
+      grep for 'megatron' over the saved 675KB body returns 0 matches, so NVIDIA's commercial suite does
+      not claim any Megatron capability of its own. Under the ladder's openpcc rule, a hosted or supported
+      offering alongside an ungated core is not gating.
+    accessed: '2026-08-08'
+    http_status: 200
+    content_sha256: e54e670f8159b9ce95e434b194a01e4205e07ff628a434706b45e18d77ddb54e
+    establishes:
+    - core-gated
 adoption:
   level: 3
   reach: 100K-1M
-  signal_type: reported_traction
+  signal_type: usage_volume
   confidence: high
   note: Foundational large-scale training library; directly inspired/underpins Colossal-AI, HuggingFace
     Accelerate, NVIDIA NeMo. Used to train models 2B-462B params across thousands of GPUs. User base is
-    concentrated among large-model training teams (smaller absolute headcount than inference tools). 16.6k
-    stars. Level 3 reflects specialist-but-influential reach; no clean download count verified.
+    concentrated among large-model training teams (smaller absolute headcount than inference tools). megatron-core
+    records 223,175 PyPI downloads in the trailing 30 days, which sits inside the 100K-1M band and replaces
+    the previous reported-traction basis with a measured usage volume. Level 3 reflects specialist-but-influential
+    reach.
+  last_verified: '2026-08-08'
   sources:
+  - url: https://pypistats.org/api/packages/megatron-core/recent
+    shows: The whole body is {"data":{"last_day":15416,"last_month":223175,"last_week":65951},"package":"megatron-core","type":"recent_downloads"}
+      — 223,175 downloads in the last month for the megatron-core package, which is the band the adoption
+      score rests on and lands inside 100K-1M.
+    accessed: '2026-08-08'
+    http_status: 200
+    content_sha256: ed79fffa3bf2bb6a9ff088a25d5809442330b2062bac3c6e844feabe0fd6441d
+  - url: https://pypi.org/project/megatron-core/
+    shows: 'Confirms the package the download figure belongs to is the product''s own: "megatron-core 0.18.2",
+      Author/Maintainer "NVIDIA", Released "Jul 21, 2026", 5 maintainers listed (chtruong, eharper, jaredcasper,
+      ko3n1g, svcnvidia-nemo-ci). Actively released, so the monthly figure is current traffic rather than
+      residue.'
+    accessed: '2026-08-08'
+    http_status: 200
+    content_sha256: 9f5d5b4bb57bd07e543981ca1c10b96873253a595e509647c64804f9e6cd0f5e
   - url: https://github.com/NVIDIA/Megatron-LM
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
-  - url: https://developer.nvidia.com/megatron-core
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
+    shows: 'Corroborating only, and the reason the download figure is a floor rather than the whole picture:
+      the repository sidebar reads 17.4k stars, 4.3k forks, 9,435 commits, 377 open issues and 740 open
+      pull requests, and Getting Started documents installing from a clone as an alternative to PyPI, so
+      source-tree users are not counted by pypistats. This supersedes the recorded "16.6k stars".'
+    accessed: '2026-08-08'
+    http_status: 200
+    content_sha256: 87f1c5e263bfa0f32ff4decf9794c00d34ba2e514182c6624f5e26e0701d83f3
 capability:
   score: 5
   basis: feature_matrix
-  value: null
+  value: 'Parallelism: DP, TP, PP, CP, EP and Megatron-FSDP, composable; mixed precision FP16/BF16/FP8/FP4;
+    weak-scaling benchmark to a 462B-parameter GPT on 6,144 H100 GPUs at 47–48% MFU, strong scaling of a
+    ~175B GPT-3 from 96 to 4,608 H100 GPUs.'
   confidence: high
-  note: State-of-the-art parallelism (TP/PP/DP/EP/CP), mixed precision FP16/BF16/FP8/FP4; benchmarked
-    training of 462B-param model on 6144 H100 GPUs. Reference-grade large-scale transformer training infra.
-    No MLPerf-Training submission verified for the library itself, so basis is feature_matrix plus NVIDIA-reported
-    scaling benchmarks.
+  note: Reference-grade large-scale transformer training infrastructure, and the capability anchor the rest
+    of this category places itself against. The parallelism, precision and scaling facts now sit in `value`
+    with establishing sources rather than being asserted here. No MLPerf-Training submission verified for
+    the library itself, so the basis is feature_matrix plus NVIDIA-reported scaling benchmarks.
+  last_verified: '2026-08-08'
   sources:
   - url: https://github.com/NVIDIA/Megatron-LM
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
+    shows: 'The README describes Megatron Core as providing "transformer building blocks, advanced parallelism
+      strategies (TP, PP, DP, EP, and CP), mixed precision support (FP16, BF16, FP8, and FP4), and model
+      architectures". Under Performance Benchmarking: "The codebase efficiently trains models from 2B to
+      462B parameters across thousands of GPUs" at up to 47% Model FLOP Utilization (MFU) on H100 clusters,
+      with Key Results listing a "6,144 H100 GPUs" heading against "Successfully benchmarked 462B parameter
+      model training." and "Superlinear scaling: MFU increases from 41% to 47–48% with model size." The
+      strong-scaling paragraph scales a GPT-3 model of slightly more than 175 billion parameters from 96
+      H100 GPUs to 4,608 GPUs at a fixed batch size of 1,152 sequences, MFU falling 47% to 42%. Results
+      are noted as measured without training to convergence.'
+    accessed: '2026-08-08'
+    http_status: 200
+    content_sha256: 87f1c5e263bfa0f32ff4decf9794c00d34ba2e514182c6624f5e26e0701d83f3
   - url: https://developer.nvidia.com/megatron-core
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
+    shows: 'NVIDIA''s own scaling documentation, and the second independent statement of the anchor figure:
+      "In the weak scaling experiments below, with GPT models ranging from 2 billion to 462 billion parameters,
+      Megatron Core demonstrates superlinear scaling up to 6144 H100 GPUs." A weak-scaling table follows
+      with rows from 2.1B to 509B parameters carrying tensor/pipeline/data-parallel sizes, GPU counts, per-GPU
+      teraFLOP/s, MFU (42-50%) and aggregate petaFLOP/s. The strong-scaling paragraph states near-linear
+      scaling of a 177 billion parameter GPT-3 from 96 to 4608 H100 GPUs at a fixed 1152-sequence batch.
+      Feature text names "tensor, sequence, pipeline, context, and MoE expert parallelism", activation checkpointing,
+      distributed optimizers and distributed checkpointing, resiliency (automatic restart, fault/hang detection),
+      and "features like FP8 mixed precision and advanced parallelism"; it also cites Nemotron-4 340B trained
+      at up to 6K+ H100 GPU scale.'
+    accessed: '2026-08-08'
+    http_status: 200
+    content_sha256: f68c234747aa1592c8a3ea87a5f0643c417b792777f8cc92cf9beadf4a9fc24b
+  - url: https://docs.nvidia.com/megatron-core/developer-guide/latest/user-guide/parallelism-guide.html
+    shows: 'The Parallelism Strategies Guide opens "Megatron Core supports multiple parallelism strategies
+      that can be combined to efficiently train models from billions to trillions of parameters across thousands
+      of GPUs." Its overview table enumerates six: Data Parallelism (DP), Tensor Parallelism (TP), Pipeline
+      Parallelism (PP), Context Parallelism (CP), Expert Parallelism (EP) and Fully-Sharded Data Parallelism
+      (Megatron-FSDP), each with an objective and a use case. Each section gives the actual flags — --tensor-model-parallel-size,
+      --pipeline-model-parallel-size, --context-parallel-size, --expert-model-parallel-size, --use-megatron-fsdp
+      with ZeRO-1/2/3 sharding strategies, --sequence-parallel — and states that sequence parallelism must
+      be enabled when EP is combined with TP. This is the composability claim, documented rather than asserted.'
+    accessed: '2026-08-08'
+    http_status: 200
+    content_sha256: cc5b5cf00b32cac4b1d59e9c2482f19cafba61e4b9ce17c2b22d4497471daac0

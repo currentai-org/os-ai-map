@@ -701,7 +701,7 @@ def test_real_sources_serialize_without_errors():
         # added: five openness dimensions recorded (weights, data, code, checkpoints, license).
         "base_pretrained": 116, "finetuned_chat": 173, "deployment": 131,
         "agent_tools_protocols": 108, "dataset_processing_tools": 86, "evaluation_code": 66,
-        "finetuning_code": 119, "inference_code": 47, "ml_frameworks": 80,
+        "finetuning_code": 124, "inference_code": 47, "ml_frameworks": 80,
         # orchestration_agents rose by 3 when n8n's stale deferral was removed: a deferred
         # product publishes no openness evidence, and n8n had been deferred as "not recorded"
         # while recording everything the ladder needed. Then by 6 more (140 -> 146) when
