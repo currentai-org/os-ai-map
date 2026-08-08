@@ -5,6 +5,8 @@ category N" is a second copy of a fact the corpus already carries, and it desync
 someone finishes a category by hand. These assert the survey reads the corpus.
 """
 
+from datetime import date
+
 from build.sweep_status import product_state, survey
 
 
@@ -78,3 +80,60 @@ def test_the_real_corpus_surveys_and_orders_worst_coverage_first():
     # Finished categories sort last whatever their coverage; among the rest, worst first.
     coverages = [r["coverage"] for r in rows if r["done"] < r["products"]]
     assert coverages == sorted(coverages), "pending categories must be worst-coverage first"
+
+
+# --- the refresh window ---
+
+def _dated(day: str) -> dict:
+    return score(openness={"last_verified": day},
+                 adoption={"last_verified": day},
+                 capability={"last_verified": day})
+
+
+def test_without_a_cutoff_any_confirmation_counts():
+    state = product_state("p", {"comments": "Verified 2020-01-01 via GitHub."},
+                          _dated("2020-01-01"), held={})
+    assert state["done"] is True
+
+
+def test_a_confirmation_older_than_the_window_is_stale_not_verified():
+    """This is what turns the sweep from a one-time pass into a recurring refresh."""
+    state = product_state("p", {"comments": "Verified 2026-06-01 via GitHub."},
+                          _dated("2026-06-01"), held={}, cutoff=date(2026, 7, 1))
+    assert set(state["axes"].values()) == {"stale"}
+    assert state["done"] is False
+
+
+def test_a_confirmation_on_the_cutoff_still_counts():
+    state = product_state("p", {"comments": "Verified 2026-07-01 via GitHub."},
+                          _dated("2026-07-01"), held={}, cutoff=date(2026, 7, 1))
+    assert set(state["axes"].values()) == {"verified"}
+    assert state["done"] is True
+
+
+def test_a_never_confirmed_axis_is_open_not_stale():
+    """Open and stale are different jobs: one has never been read, the other has aged."""
+    state = product_state("p", {"comments": "Verified 2026-08-08 via GitHub."},
+                          score(), held={}, cutoff=date(2026, 7, 1))
+    assert set(state["axes"].values()) == {"open"}
+
+
+def test_the_prose_ages_on_the_same_clock():
+    """The canonical line carries its own date, so it can go stale without going missing."""
+    fresh = product_state("p", {"comments": "Verified 2026-08-08 via GitHub."},
+                          _dated("2026-08-08"), held={}, cutoff=date(2026, 7, 1))
+    assert fresh["prose_state"] == "verified"
+
+    aged = product_state("p", {"comments": "Verified 2026-06-01 via GitHub."},
+                         _dated("2026-08-08"), held={}, cutoff=date(2026, 7, 1))
+    assert aged["prose_state"] == "stale", "a dated line that has aged is stale, not missing"
+    assert aged["done"] is False
+
+    none = product_state("p", {"comments": "No line at all."},
+                         _dated("2026-08-08"), held={}, cutoff=date(2026, 7, 1))
+    assert none["prose_state"] == "missing"
+
+
+def test_a_held_product_stays_resolved_under_any_window():
+    state = product_state("p", {}, _dated("2020-01-01"), held={"p": {}}, cutoff=date(2026, 7, 1))
+    assert state["done"] is True

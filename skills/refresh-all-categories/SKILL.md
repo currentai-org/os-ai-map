@@ -26,7 +26,8 @@ the next.
 ### 1. Report
 
 ```bash
-uv run python -m build.sweep_status
+uv run python -m build.sweep_status                     # what has never been confirmed
+uv run python -m build.sweep_status --max-age-days 30   # what has also gone stale
 ```
 
 ```
@@ -46,6 +47,18 @@ those, and after a run that crashed halfway.
 
 Give the user the table. It is the answer to "how far along are we", which is the question this
 skill exists to answer.
+
+**Ask which question they mean**, unless they said. Without a window the sweep is finishing
+something: every product confirmed once. With `--max-age-days 30` it is maintaining something:
+every product confirmed within the month, so a category that finished in June comes back round.
+The first is the current job. The second is what this becomes afterwards, and the same tooling
+does both — pass the window straight through to `refresh-category`, which refreshes only the
+products it returns.
+
+A sensible default once the first pass is done is 90 days, matching the age gate
+`docs/guides/verification.md` step 5 turns on. Do not invent a tighter one silently: a window is
+a decision about how much re-reading the map is worth, and it belongs to whoever is paying for
+it.
 
 ### 2. Pick
 

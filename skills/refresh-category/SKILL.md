@@ -49,11 +49,28 @@ outcome; a date you cannot support is the failure this whole apparatus exists to
 
 ## Steps
 
-### 1. Take the category, and order the batch
+### 1. Take the category, and decide which of its products are in scope
 
 ```bash
-uv run python -m build.sweep_status --verbose      # what is unfinished in it
+uv run python -m build.sweep_status --verbose                    # never confirmed
+uv run python -m build.sweep_status --max-age-days 30 --verbose  # or confirmed too long ago
 ```
+
+**Two modes, same machinery.** The first pass over a category takes every product that has
+never been confirmed. After that the category is done until its confirmations age, and
+`--max-age-days N` (or `--since YYYY-MM-DD`) reads anything older than the window as `stale`
+rather than `verified`. Pass the same window the caller gave you, and refresh only what it
+returns — re-reading a product confirmed last week costs a full unit of work and earns a date
+it already had.
+
+`last_verified` is a claim about a day, so a refresh window is the honest way to ask "is this
+still true" without asking it of everything. The prose ages on the same clock, because the
+canonical verification line carries its own date: a product can be score-fresh and prose-stale,
+and `--verbose` distinguishes `stale` from `open` and `prose line stale` from
+`no verification line`.
+
+There is no default window. Absent one, "confirmed once" counts as confirmed, which is right
+for the first pass and wrong forever after — so the caller chooses, and says why.
 
 **Anchor first.** If any product records `capability.relative_to`, the peer it points at must be
 verified in this run or already dated — a derived band cannot be fresher than what it derives
