@@ -119,45 +119,48 @@ failure, because it means the tool did not fetch anything.
 ## The gates, and why they ratchet
 
 Every failure mode this project has actually hit gets a mechanism, not a note. Cheap ones
-gate every PR; ones needing the network run periodically.
+gate every PR. The ones needing the network run periodically.
 
-| # | failure mode | mechanism | cost |
+| gate | failure mode | mechanism | cost |
 |---|---|---|---|
-| G1 | a confirmation with no supporting evidence | the invariant above | free |
-| G2 | a claimed date with no fetch digest | required on axes claiming a confirmation | free |
-| G3 | an impossible score/class pair | the pair must be producible by some rule in the recipe | free |
-| G4 | fabricated or rotted sources | sampled re-fetch, digest and `shows` token match | network, weekly |
-| G5 | repo and warehouse drifting apart | `build/check_parity.py`, a per-product differential | network, daily |
-| G6 | a UDM revision that was never released | assert latest revision == latest release | network, per publish |
+| invariant | a confirmation with no supporting evidence | the invariant above | free |
+| digests | a claimed date with no fetch digest | required on axes claiming a confirmation | free |
+| producible-pairs | an impossible score/class pair | the pair must be producible by some rule in the recipe | free |
+| refetch | fabricated or rotted sources | sampled re-fetch, digest and `shows` token match | network, weekly |
+| parity | repo and warehouse drifting apart | `build/check_parity.py`, a per-product differential | network, weekly |
+| release | a UDM revision that was never released | assert latest revision == latest release | network, per publish |
 
-**They ratchet rather than switch on.** G1 and G2 apply only to axes that carry a
-`last_verified`, which is 6 today and grows as the re-read pass proceeds. So the gate covers
-exactly what has been done, never blocks progress, and never permits a regression on ground
-already taken. A big-bang gate over all 1370 axes would fail on day one and get switched
+These were numbered G1-G6 until 2026-08-08. Older PRs and commit messages use the numbers.
+
+**They ratchet rather than switch on.** The invariant and the digest requirement apply only to
+axes that carry a `last_verified`, which is 6 today and grows as the re-read pass proceeds. So
+they cover exactly what has been done, never block progress, and never permit a regression on
+ground already taken. A big-bang gate over all 1370 axes would fail on day one and get switched
 off, which is how gates die.
 
-G3, G5 and G6 apply in full immediately — nothing has to be populated first.
+The producible-pair check, the parity gate and the release assertion apply in full immediately —
+nothing has to be populated first.
 
-G5 runs on its own weekly schedule rather than inside the publish job, and that placement is
-deliberate rather than a stopgap in disguise. Publishing pushes and materializes the static
-models; the three user models that read them recompute on Monday at 03:00, 04:00 and 05:00 UTC,
-upstream first, and G5 grades the result at 06:00. Chained onto a publish instead, the gate would
-compare fresh rules against a warehouse that has not recomputed and fail for a reason that is
-not a drift.
+The parity gate runs on its own weekly schedule rather than inside the publish job, and that
+placement is deliberate rather than a stopgap in disguise. Publishing pushes and materializes the
+static models. The three user models that read them recompute on Monday at 03:00, 04:00 and 05:00
+UTC, upstream first, and parity grades the result at 06:00. If it were chained onto a publish
+instead, the gate would compare fresh rules against a warehouse that has not recomputed and fail
+for a reason that is not a drift.
 
 **The gate's schedule has to match the chain's.** A daily gate over a weekly chain fails every
 day between a merge and the following Monday, always saying "the warehouse has not caught up",
 which is not what a parity gate is for and is how a gate earns its way into being ignored. If
 you want a check sooner, refresh the three models and run `check_parity` by hand.
 
-The crons bound how stale the warehouse gets; they do not make a publish arrive any faster, so a
-Tuesday merge is scored the following Monday. Move G5 into `registry.yml` on the day
+The crons bound how stale the warehouse gets. They do not make a publish arrive any faster, so a
+Tuesday merge is scored the following Monday. Move parity into `registry.yml` on the day
 `publish_registry` triggers those three runs and waits for them.
 
-G3 found 17 impossible pairs on its first run, not the two that were known. `vellum`,
-`whylabs` and `tensorrt-llm` were recorded `4 / open_source`, a pair no rule emits because
-4 is `open_core`; five more were `2 / open_core`, which no rule emits either; and nine
-carried a score of 3, which the software ladder cannot produce **at all**, its rungs being
+The producible-pair check found 17 impossible pairs on its first run, not the two that were
+known. `vellum`, `whylabs` and `tensorrt-llm` were recorded `4 / open_source`, a pair no rule
+emits because 4 is `open_core`; five more were `2 / open_core`, which no rule emits either; and
+nine carried a score of 3, which the software ladder cannot produce **at all**, its rungs being
 1, 2, 4 and 5. All 17 were corrected by reading the products, in three groups:
 
 - `2 / open_core` → `2 / source_available`. The class was wrong. `open_core` in this ladder
@@ -168,12 +171,12 @@ carried a score of 3, which the software ladder cannot produce **at all**, its r
   for a closed service — which the ladder scores at 2.
 - `4 / open_source` → `5 / open_source`. The score was wrong. Each of the three publishes
   the whole self-hostable product under an OSI license with nothing withheld. The 4s
-  encoded maturity or scepticism about the vendor's marketing, both of which belong on the
+  encoded maturity or skepticism about the vendor's marketing, both of which belong on the
   adoption and capability axes and were already recorded there.
 
-Worth noting what G3 caught that `check_rubric` could not: 16 of the 17 were sitting in a
-category's `deferred` block, which excludes a product from reproduction. G3 ignores the
-evidence and asks only whether the pair exists in the ladder, so deferring cannot hide it.
+The producible-pair check caught something `check_rubric` could not: 16 of the 17 were sitting
+in a category's `deferred` block, which excludes a product from reproduction. The check ignores
+the evidence and asks only whether the pair exists in the ladder, so deferring cannot hide it.
 
 ### Two shared utilities, so the mechanism cannot be bypassed
 
@@ -211,7 +214,7 @@ different in kind and can be automated — see the table below.
 | **real claims to verify** | **1370** |
 | of those, citing at least one source URL | 1370 |
 | carrying a real `last_verified` | 6 |
-| of those 6, satisfying G1 and G2 | 6, after the Phase 0 re-read |
+| of those 6, satisfying the invariant and the digest requirement | 6, after the Phase 0 re-read |
 | distinct source URLs behind all of it | 1106 |
 
 Regenerate these rather than trusting them; the corpus grows most weeks.
@@ -227,8 +230,8 @@ inventing the number, so the axis abstains instead.
 Every real claim already cites a source. The work is not finding evidence; it is re-reading
 what is cited. And the re-read surface is 1106 fetches, not 1370, because sources are shared.
 
-**None of the 6 satisfied G1 as first written**, which is worth recording because it is the
-clearest evidence that the invariant does something. `establishes` did not exist when those
+**None of the 6 satisfied the invariant as first written**, which is worth recording because it
+is the clearest evidence the invariant does something. `establishes` did not exist when those
 dates were set, and beyond that the 2026-07-28 pass on the four model flagships re-read only
 the dataset endpoint: `apertus`, `olmo`, `pythia` and `lucie-7b` all claimed a whole-axis
 confirmation while citing 2026-06 reads for weights, code, checkpoints and license. Refetching
@@ -387,15 +390,15 @@ That backlog is currently the 86 declared deferrals. Every category has a recipe
 composition is roughly: products whose prose does not settle a dimension the ladder reads,
 products whose recorded license maps to no tier, and a handful where the ladder and the
 recorded score genuinely disagree (`jina-reader`, `openhands`, `maple-ai`, `privatemode`, all
-producible pairs, so G3 passes them and only `check_rubric` objects).
+pairs some rule can produce, so producible-pairs passes them and only `check_rubric` objects).
 
 Regenerate the number rather than trusting it — `check_recipe` prints per-category counts, and
 the figure has moved several times in a week.
 
 **Expect scores to move.** Verification is not a formality: the RWKV correction in #105 came
-out of a pass like this, and G3's first run moved 17 openness scores or classes before the
-gate could land at all. `apply_scores --check` exits non-zero on a moved score for this
-reason.
+out of a pass like this, and the first run of producible-pairs moved 17 openness scores or
+classes before the gate could land at all. `apply_scores --check` exits non-zero on a moved
+score for this reason.
 
 ### 5. Turn on the age gate
 

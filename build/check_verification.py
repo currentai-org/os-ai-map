@@ -4,7 +4,7 @@
 the two disagree the guide wins. `docs/runbooks/verification-pass.md` has the order of
 operations and why the gates land before any bulk editing of `sources/scores/`.
 
-## G1 — the invariant
+## The invariant
 
 > `last_verified: D` is valid only if, for every dimension the score records, at least one
 > source that `establishes` that dimension has `accessed >= D`.
@@ -22,36 +22,38 @@ recorded dimension, so the binding constraint is the LEAST recently re-read one.
 three were last seen in June — and that is not hypothetical, it is what the 2026-07-28 pass
 on the model flagships produced by re-reading only the dataset endpoint.
 
-## G2 — a claimed date needs a fetch to point at
+## The digest requirement — a claimed date needs a fetch to point at
 
 Same scope. Every source read as part of the confirmation carries `http_status` and
 `content_sha256`, because those are what only an actual request produces. The invariant
-alone catches an unsupported date; it cannot catch a source that never said what `shows`
+alone catches an unsupported date. It cannot catch a source that never said what `shows`
 claims. A missing digest on a newly claimed confirmation means the tool fetched nothing.
 
-## G3 — a score/class pair must be producible
+## The producible-pair check — a score/class pair must be producible
 
-Full scope, immediately, and unlike G1 and G2 it needs nothing to be populated first. For
-every scored product in a category with a `scoring_recipe`, `(score, class)` must be the
-outcome of SOME rule in that recipe. Deliberately weaker than `build/check_rubric.py`,
-which asks whether the recipe reproduces the score from the recorded evidence: G3 ignores
-the evidence and asks only whether the pair exists in the ladder at all. That makes it
-immune to the escape hatch `check_rubric` has, which is `deferred` — a category can defer a
-product out of reproduction, but an impossible pair stays impossible.
+Full scope, immediately, and unlike the invariant and the digest requirement it needs
+nothing to be populated first. For every scored product in a category with a
+`scoring_recipe`, `(score, class)` must be the outcome of SOME rule in that recipe.
+Deliberately weaker than `build/check_rubric.py`, which asks whether the recipe reproduces
+the score from the recorded evidence: producible-pairs ignores the evidence and asks only
+whether the pair exists in the ladder at all. That makes it immune to the escape hatch
+`check_rubric` has, which is `deferred` — a category can defer a product out of
+reproduction, but an impossible pair stays impossible.
 
 Which is how `4 / open_source` survived: no software rule emits 4 with `open_source` (4 is
 `open_core`), and no software rule emits 3 at all, since the ladder's rungs are 1, 2, 4, 5.
 
 ## How the gates ratchet
 
-G1 and G2 apply only to axes carrying a `last_verified`, which is a handful today and grows
-as the re-read pass proceeds. The gate therefore covers exactly what has been done, never
-blocks progress, and never permits a regression on ground already taken. A big-bang gate
-over all 1386 axes would fail on day one and get switched off, which is how gates die.
+The invariant and the digest requirement apply only to axes carrying a `last_verified`,
+which is a handful today and grows as the re-read pass proceeds. They therefore cover
+exactly what has been done, never block progress, and never permit a regression on ground
+already taken. A big-bang gate over all 1370 axes would fail on day one and get switched
+off, which is how gates die.
 
 Usage:
     uv run python -m build.check_verification
-    uv run python -m build.check_verification --gate g3
+    uv run python -m build.check_verification --gate producible-pairs
     uv run python -m build.check_verification --verbose
 """
 
@@ -69,19 +71,20 @@ from build.rubrics import load_product_types, load_shared, recipe_for, resolve_r
 ROOT = Path(__file__).resolve().parents[1]
 AXES = ("openness", "adoption", "capability")
 
-# Axes exempt from G2 because a digest could not have been recorded when their sources were
-# read. A visible list that shrinks, rather than a date comparison that quietly covers
-# whatever is old.
+# Axes exempt from the digest requirement because a digest could not have been recorded when
+# their sources were read. A visible list that shrinks, rather than a date comparison that
+# quietly covers whatever is old.
 #
 # Empty, and worth saying why. The six axes carrying a date when this gate landed all
-# predated it and so would all have qualified; they were re-fetched instead, which took 23
+# predated it and so would all have qualified. They were re-fetched instead, which took 23
 # requests and produced two findings the exemption would have hidden — a Lucie source URL
 # that had never resolved as cited, and an `rwkv` weights claim with no source behind it at
-# all. Exempting is the cheaper move and it is available; it is not the better one when the
+# all. Exempting is the cheaper move and it is available. It is not the better one when the
 # set is small.
 #
-# G2 only. An exemption says a digest was unobtainable, which says nothing about whether the
-# sources support the date — that is G1's question, and G1 has no exemptions.
+# Digests only. An exemption says a digest was unobtainable, which says nothing about whether
+# the sources support the date. That is the invariant's question, and the invariant has no
+# exemptions.
 #
 # Each entry names the axis as `<product>:<axis>` and why. Stale entries are reported.
 DIGEST_EXEMPT: dict[str, str] = {}
@@ -156,7 +159,7 @@ def recorded_dimensions(components: dict[str, str], recipe: dict) -> dict[str, s
     return found
 
 
-def g1_invariant(
+def invariant(
     scores: dict, categories: dict, recipes: dict, product_types: dict[str, str]
 ) -> list[str]:
     """Every recorded dimension of a dated axis has an establishing source read since."""
@@ -212,7 +215,7 @@ def g1_invariant(
     return problems
 
 
-def g2_digests(scores: dict) -> list[str]:
+def digests(scores: dict) -> list[str]:
     """Sources read as part of a claimed confirmation must show they were fetched."""
     problems: list[str] = []
     used: set[str] = set()
@@ -246,13 +249,13 @@ def g2_digests(scores: dict) -> list[str]:
     for key, reason in sorted(DIGEST_EXEMPT.items()):
         if key not in used:
             problems.append(
-                f"{key}: exempted from G2 ({reason}) but the axis no longer carries a "
-                f"last_verified. Drop the exemption."
+                f"{key}: exempted from the digest requirement ({reason}) but the axis no "
+                f"longer carries a last_verified. Drop the exemption."
             )
     return problems
 
 
-def producible_pairs(recipe: dict) -> set[tuple[int, str]]:
+def rule_outcomes(recipe: dict) -> set[tuple[int, str]]:
     """Every (score, class) some rule in the recipe can emit."""
     pairs: set[tuple[int, str]] = set()
     for rule in (recipe.get("openness") or {}).get("formula") or []:
@@ -262,13 +265,13 @@ def producible_pairs(recipe: dict) -> set[tuple[int, str]]:
     return pairs
 
 
-def g3_producible(
+def producible_pairs(
     scores: dict, categories: dict, recipes: dict, product_types: dict[str, str]
 ) -> list[str]:
     """A recorded (score, class) must be an outcome the category's ladder can produce.
 
     A mixed category has one ladder per product type. Each product is checked against
-    its OWN ladder via `recipe_for` — the same selection G1, `check_rubric` and
+    its OWN ladder via `recipe_for` — the same selection the invariant, `check_rubric` and
     `serialize_rubric` all use — not the union of every variant in the category. A
     software product recording a pair only the model ladder can emit must still fail
     here, even though some ladder in the category could have produced it.
@@ -281,7 +284,7 @@ def g3_producible(
             if score is None:
                 continue
             recipe, _ = recipe_for(variants, product_types.get(product, ""))
-            pairs = producible_pairs(recipe or {})
+            pairs = rule_outcomes(recipe or {})
             if (score, klass) not in pairs:
                 problems.append(
                     f"{product}:openness in {slug}: {score}/{klass} is not an outcome any rule "
@@ -292,10 +295,11 @@ def g3_producible(
 
 
 GATES = {
-    "g1": "a confirmation with no supporting evidence",
-    "g2": "a claimed date with no fetch digest",
-    "g3": "an impossible score/class pair",
+    "invariant": "a confirmation with no supporting evidence",
+    "digests": "a claimed date with no fetch digest",
+    "producible-pairs": "an impossible score/class pair",
 }
+NAME_WIDTH = max(len(name) for name in GATES)
 
 
 def main() -> int:
@@ -307,9 +311,9 @@ def main() -> int:
     scores, categories, recipes = load()
     product_types = load_product_types(ROOT)
     results = {
-        "g1": g1_invariant(scores, categories, recipes, product_types),
-        "g2": g2_digests(scores),
-        "g3": g3_producible(scores, categories, recipes, product_types),
+        "invariant": invariant(scores, categories, recipes, product_types),
+        "digests": digests(scores),
+        "producible-pairs": producible_pairs(scores, categories, recipes, product_types),
     }
     if args.gate:
         results = {args.gate: results[args.gate]}
@@ -328,16 +332,19 @@ def main() -> int:
     )
 
     if args.verbose:
-        print(f"{dated} axis/axes carry a last_verified  (G1, G2 scope)")
-        print(f"{scored} scored products in {len(recipes)} categories with a recipe  (G3 scope)")
+        print(f"{dated} axis/axes carry a last_verified  (invariant, digests scope)")
+        print(
+            f"{scored} scored products in {len(recipes)} categories with a recipe  "
+            f"(producible-pairs scope)"
+        )
         if DIGEST_EXEMPT:
-            print(f"{len(DIGEST_EXEMPT)} G2 exemption(s), each of which should be shrinking")
+            print(f"{len(DIGEST_EXEMPT)} digest exemption(s), each of which should be shrinking")
         print()
 
     failed = False
     for gate, problems in results.items():
         status = "OK" if not problems else "FAIL"
-        print(f"{gate.upper()}  {GATES[gate]:<44} [{status}]")
+        print(f"{gate:<{NAME_WIDTH}}  {GATES[gate]:<44} [{status}]")
         for problem in problems:
             print(f"  ! {problem}")
         if problems:

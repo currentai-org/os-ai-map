@@ -222,7 +222,7 @@ search` — which is precisely what the canonical form below forbids.
 The license is the clearest case, and the one this guide used to get backwards. It is not
 merely descriptive: it *is* the openness score's basis, recorded in
 `sources/scores/<slug>.yaml` as `openness.components` (`license:Apache-2.0(OSI);…`) with
-`sources[].accessed` behind it and the G1/G2 gates in front of it.
+`sources[].accessed` behind it and the invariant and the digest requirement in front of it.
 
 Restating it in `comments` creates a second copy with none of that. The two then drift in
 one direction only: a relicense flows correctly through `verification.md`, the score
@@ -327,8 +327,9 @@ These look alike and are not the same, and conflating them is the exact error
   product file. It says "an editor last confirmed these descriptive facts on this day." It
   is not gated, not machine-read for freshness, and carries no per-dimension evidence.
 - **`last_verified`** lives in the *score* file, per axis, and is a confirmation that a
-  *score* is still correct, re-derivable from `sources[].establishes`, and gated (G1/G2).
-  Only a person writes it, and only per the rules in `verification.md`.
+  *score* is still correct, re-derivable from `sources[].establishes`, and gated by the
+  invariant and the digest requirement. Only a person writes it, and only per the rules in
+  `verification.md`.
 
 Writing the `comments` line **does not** earn a `last_verified`, and updating a product's
 prose is not a score re-check. If a prose re-read turns up a fact that moves a *score* (a

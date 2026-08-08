@@ -14,9 +14,10 @@ born needing a recipe. `skills/build-rubric/SKILL.md` is the procedure; this is 
 a machine can enforce.
 
 Almost everything here composes a signal that already exists somewhere and was not gated:
-`check_rubric` knows about abstentions, `check_verification` G3 knows about impossible pairs,
-and `serialize_rubric --check` knows about undeclared dimensions and out-of-enum values — but
-it emits them as warnings among 282, which is to say invisibly. Gating is the contribution.
+`check_rubric` knows about abstentions, `check_verification`'s producible-pair check knows
+about impossible pairs, and `serialize_rubric --check` knows about undeclared dimensions and
+out-of-enum values — but it emits them as warnings among 282, which is to say invisibly.
+Gating is the contribution.
 
 WHAT THIS DELIBERATELY DOES NOT ASSERT: any threshold on the reproduction rate, in either
 direction. A ladder tuned until it reproduces every recorded score is a curve fit to the data
@@ -55,7 +56,7 @@ from build.check_rubric import (
     resolve_recipe_variants,
     split_components,
 )
-from build.check_verification import producible_pairs
+from build.check_verification import rule_outcomes
 
 
 def split_clauses(text: str) -> list[str]:
@@ -406,7 +407,7 @@ def check_one(slug: str, verbose: bool) -> tuple[list[str], list[str]]:
             continue
         by_recipe.setdefault(id(recipe), {})[product] = openness.get("components") or ""
         pair = (openness.get("score"), openness.get("class"))
-        if pair[0] is not None and pair not in producible_pairs(recipe):
+        if pair[0] is not None and pair not in rule_outcomes(recipe):
             impossible += 1
             failures.append(
                 f"category '{slug}' product '{product}': {pair[0]}/{pair[1]} is not an "

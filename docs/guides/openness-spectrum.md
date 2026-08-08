@@ -70,8 +70,8 @@ across all score files shows the overlap:
 | 1 | `closed` |
 | 0 | `closed` |
 
-Regenerated 2026-07-30. The overlap is narrower than it was: #128's verification gate G3 found
-17 pairs no rule in any recipe could emit and corrected them, which is why `open_core` and
+Regenerated 2026-07-30. The overlap is narrower than it was: the producible-pair check added in
+#128 found 17 pairs no rule in any recipe could emit, and correcting them is why `open_core` and
 `source_available` no longer appear at 3 and `open_core` no longer appears at 2. If you are
 reading this table long after that date, regenerate it rather than trusting it — the check is
 a few lines over `sources/scores/*.yaml`.
@@ -175,7 +175,7 @@ restriction disqualifies. Under MOF, a release under OpenRAIL, a Llama community
 AI2 ImpACT is *source-available*, not open.
 
 This map is a 0–5 score, which is a different instrument. The 2024 Columbia Convening
-catalogues three families of approach — gradient, score, and binary — and adopts none; the
+catalogs three families of approach — gradient, score, and binary — and adopts none; the
 score family is the one the map belongs to.
 
 The two stay compatible through one rule:
