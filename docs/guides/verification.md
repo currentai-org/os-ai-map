@@ -390,5 +390,7 @@ staleness.
 - `docs/guides/freshness.md` — what `last_verified` means, and the two divergences already
   closed
 - `docs/guides/openness-spectrum.md` — the openness ladders themselves
+- `docs/guides/product-info.md` — the prose companion: style/tone for a product's
+  `description`/`comments`, and why the `comments` verification line is NOT a `last_verified`
 - `sources/rubrics/` — shared ladders; `build/rubrics.py` for how `extends` resolves (#126)
 - `AGENTS.md` — the layer-2 loop and the evidence grading rule
