@@ -77,19 +77,19 @@ of a catalog entry. It is not a pitch and not a review.
 
 ## `comments` — provenance and notes
 
-**Purpose.** The scoring/provenance notes a reader or the next editor needs but that are
-not the product's description: license (with OSI/OSI-not call), ownership/hosting nuance,
-gating caveats, lifecycle state (archived, superseded), and the verification line.
+**Purpose.** The provenance notes a reader or the next editor needs but that are not the
+product's description: identity and aliases, ownership and hosting, gating caveats,
+lifecycle state (archived, superseded), and the verification line.
 
-**Format.** One compact paragraph, ~15–45 words (corpus median ~30). Semicolon- or
-period-separated clauses are both fine. Order, loosely: identity/aka → license →
-caveats → verification line.
+**Format.** One compact paragraph, up to ~45 words. Semicolon- or period-separated clauses
+are both fine. Order, loosely: identity/aka → ownership/hosting → caveats → verification
+line.
 
-**Always state the license explicitly, and flag the non-obvious call**, because the
-license is what the openness score turns on and the classifier lies (see
-`add-product` and `openness-spectrum.md`): "Llama 2 Community License (not OSI)",
-"Gemma license is not OSI", "BSL 1.1 → source_available", "LICENSE file is the standard,
-unmodified Apache 2.0 text."
+There is no lower bound. With the license and the current version both out, a product whose
+durable provenance is just "who maintains it" gets one clause and the verification line, and
+that is a complete entry. Do not pad to reach a length.
+
+**Do not state the license here.** It is a scored field — see "Scored fields" below.
 
 ### The verification line — canonical form
 
@@ -107,8 +107,8 @@ Verified <YYYY-MM-DD> via <source>.
 - Capital "V". One line, at the end of `comments`.
 
 Examples:
-- `Apache 2.0 (unmodified LICENSE body). Hosted by the Linux Foundation. Verified 2026-06-22 via GitHub.`
-- `Llama 2 Community License (not OSI); adapter weights public on HF, base gated by Meta. Verified 2026-06-14 via HF model card.`
+- `Hosted by the Linux Foundation; originated at UC Berkeley. Verified 2026-06-22 via GitHub.`
+- `Adapter weights public on HF, base gated by Meta. Verified 2026-06-14 via HF model card.`
 
 ## Global rules
 
@@ -121,10 +121,37 @@ Examples:
    plausible claim that does not survive a check is not written. (This is the same rule
    `add-product` step 7 states for adding.)
 4. **Keep judgments on the axes.** Adoption and openness are scored, sourced fields. An
-   *openness verdict* ("truly open") belongs in the score file, where it carries evidence,
-   not in prose. When in doubt, describe what the product is and let the axis carry the
-   judgment.
+   *openness verdict* ("truly open") and the **license it rests on** belong in the score
+   file, where they carry evidence. See "Scored fields" below.
 5. **Do not embed volatile facts** — counts or current version numbers. See below.
+
+## Scored fields — don't restate them
+
+The license is the clearest case, and the one this guide used to get backwards. It is not
+merely descriptive: it *is* the openness score's basis, recorded in
+`sources/scores/<slug>.yaml` as `openness.components` (`license:Apache-2.0(OSI);…`) with
+`sources[].accessed` behind it and the G1/G2 gates in front of it.
+
+Restating it in `comments` creates a second copy with none of that. The two then drift in
+one direction only: a relicense flows correctly through `verification.md`, the score
+updates, and the prose is quietly left wrong with nothing to catch it. That is the same
+"liability with no owner" the volatile-facts rule names, made worse by the copy *looking*
+authoritative.
+
+It also buys the reader nothing. `build/serialize.py` emits the whole `openness` dict into
+the payload, and the front end already renders `openness.components` in the product detail
+panel — in larger type than the prose `version_note` directly above it. The license is on
+screen either way; only one copy carries evidence.
+
+So: **read the LICENSE body, and do not write it into prose.** Reading it stays essential —
+the GitHub classifier lies (a custom copyright line makes a genuine MIT/Apache repo report
+`NOASSERTION`), and the OSI / not-OSI call is exactly what the score turns on. But when the
+body disagrees with the recorded score, that is a **score** finding: stop and follow
+`verification.md`. Do not reconcile it by editing the product file.
+
+The same applies to any other scored dimension. Adoption, capability, and the openness
+class are axes with evidence; prose describes what the product is and lets them carry the
+judgment.
 
 ## Volatile facts — link, don't embed
 
@@ -211,15 +238,15 @@ Use this to refresh an existing product's prose (the `verify-product` skill auto
 1. **Open the primary source(s)** the product points at — its `github`/`huggingface_*`/
    `pypi` URLs, and the vendor blog or registry. Never refresh from memory or a secondary
    summary.
-2. **Re-derive the checkable facts**: license (read the LICENSE body, not the GitHub
-   classifier), what it bundles/does, ownership/hosting, lifecycle state. Check the current
-   release to confirm the project is alive and that nothing moved a score, but do not write
-   the version into prose unless it is one of the three durable cases above.
+2. **Re-derive the checkable facts**: what it bundles/does, ownership/hosting, lifecycle
+   state. Read the LICENSE body and the current release too — not to write them into prose,
+   but to confirm the project is alive and that neither has moved a score. A version goes in
+   only under one of the three durable cases above; a license does not go in at all.
 3. **Rewrite `description`** to the format above if anything material changed, keeping it
    neutral and within the length band. Leave it alone if nothing moved.
-4. **Update `comments`**: correct the license and caveat clauses, strip any stale count or
-   "latest version" clause, then set the verification line to today's date and the source
-   you read.
+4. **Update `comments`**: correct the ownership, hosting, and caveat clauses; strip any
+   stale count, "latest version" clause, or license restatement; then set the verification
+   line to today's date and the source you read.
 5. **If a fact moves a score**, do not touch the score file here — record it and hand off
    to the `verification.md` flow.
 6. **Validate:** `uv run python -m build.validate` prints `0 error(s)`. Preview only; do
@@ -233,7 +260,8 @@ Use this to refresh an existing product's prose (the `verify-product` skill auto
 - [ ] No hardcoded star/download/contributor counts — rely on the artifact links and the
       `adoption` axis instead.
 - [ ] No "latest/current version" clause, unless it is identity, terminal, or an absence.
-- [ ] `comments`: license stated with the OSI call; ownership/hosting; caveats.
+- [ ] No license restatement — it is `openness.components` in the score file.
+- [ ] `comments`: identity/aka; ownership/hosting; caveats; lifecycle state.
 - [ ] Verification line in canonical form: `Verified <YYYY-MM-DD> via <source>.`
 - [ ] American English throughout.
 - [ ] Every factual claim confirmed against a primary source, not memory.

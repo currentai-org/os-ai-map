@@ -24,13 +24,14 @@ openness/adoption/capability value.
    blog / registry. Never refresh from memory or a secondary summary. If a cited URL 404s
    or has moved, that is a finding — note it; do not paper over it.
 3. **Re-derive the checkable facts:**
-   - license — **read the LICENSE body**, not the GitHub classifier (a custom copyright
-     line makes a genuine MIT/Apache repo report `NOASSERTION`); make the OSI / not-OSI
-     call (Gemma, Llama Community, BSL 1.1, fair-code are all NOT OSI);
    - what it is / does / bundles, and ownership + hosting;
    - lifecycle state — archived, maintenance mode, superseded;
+   - the license — **read the LICENSE body**, not the GitHub classifier (a custom copyright
+     line makes a genuine MIT/Apache repo report `NOASSERTION`); make the OSI / not-OSI
+     call (Gemma, Llama Community, BSL 1.1, fair-code are all NOT OSI). Read it to check it
+     against the recorded score; **do not write it into prose** (see step 5);
    - the current release, to confirm the project is alive and that nothing moved a score.
-     Read it; do not write it into prose (see step 5).
+     Read it; do not write it into prose either.
 4. **Rewrite `description`** to the guide's format only if something material changed:
    2–4 sentences (~35–70 words), lead with the product doing something, present tense,
    neutral register, no marketing cadence, no unsourced superlatives. Leave it untouched
@@ -38,11 +39,13 @@ openness/adoption/capability value.
    go stale with no freshness gate; the artifact links and the `adoption` axis carry the
    actuals (see the guide's "Volatile facts" section). This applies even when nothing
    else moved: removing a stale count IS a valid reason to edit.
-5. **Update `comments`:** correct the license and caveat clauses. **Strip any "latest /
-   current version" clause** — the next release makes it wrong and nothing will notice.
-   Keep a version only when it is the entry's identity (a named model release), terminal
-   (the project is archived), or a statement of absence ("no tagged releases"). Then
-   set the verification line to the canonical form:
+5. **Update `comments`:** correct the identity, ownership/hosting, and caveat clauses.
+   **Strip any "latest / current version" clause** — the next release makes it wrong and
+   nothing will notice. Keep a version only when it is the entry's identity (a named model
+   release), terminal (the project is archived), or a statement of absence ("no tagged
+   releases"). **Strip any license restatement** — the license is `openness.components` in
+   the score file, where it carries evidence and a gate; a second copy in prose only drifts.
+   Then set the verification line to the canonical form:
    ```
    Verified <YYYY-MM-DD> via <source>.
    ```
