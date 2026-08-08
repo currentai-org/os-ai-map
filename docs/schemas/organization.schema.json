@@ -2,24 +2,56 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Organization",
   "type": "object",
+  "description": "One body that ships products on the map - a company, lab, foundation, government or individual - plus the roster of product slugs it owns. The file stem is the org slug and the only identity anything joins on. Two consumers read a row. build/serialize.py resolves each product's `org_slug` and `org` from whichever roster contains its slug, and emits every org as the payload's top-level `organizations` block so a consumer can group products by vendor; build/serialize_registry.py inverts the same rosters into the registry's `organizations` and `product_organizations` tables, which build/publish_registry.py pushes to OSO. The org owns membership and the product does not - a product file carries no `org:` field - so this roster is the single stored copy of the relationship rather than one of two that can disagree. Membership is a separate question from placement: the category roster in sources/categories/<cid>.yaml says where a product sits on the map, this says who made it, and build/validate.py requires every product to appear in exactly one of each. There were 257 org files covering 472 products on 2026-08-08.",
   "required": ["name", "display_name", "products"],
   "additionalProperties": false,
   "properties": {
-    "name": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
-    "display_name": { "type": "string", "minLength": 1 },
-    "type": { "enum": ["company", "lab", "foundation", "individual", "government", "unknown"] },
-    "homepage": { "type": "string" },
-    "country": { "type": "string" },
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$",
+      "description": "The org slug, kebab-case, and identical to the filename stem. build/validate.py fails the build when the two disagree, because the stem is what every roster and join resolves against while anything reading this field resolves somewhere else, and a copied file with a stale inner name would pass every other check. Product slugs share this form; category slugs are underscore form instead. A retired slug is never recorded here: `organization_aliases` in sources/slug_aliases.yaml holds the old -> live pairs (google-deepmind -> google, alibaba -> alibaba-cloud on 2026-08-08), serialize emits them as the payload's `aliases.organizations` for the app's redirects, and build/check_payload.py refuses a payload where an alias key is also a live slug or points at an org that no longer exists."
+    },
+    "display_name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The vendor's name as a reader sees it, written by whoever added the org. Copied onto every product row in the payload as `org`, which is the only vendor label the front end has - it renders next to the product name and the product search matches on it. Also load-bearing for a published number: build/render.py counts DISTINCT non-empty `org` values for the `{n_orgs}` figure interpolated into docs/methodology.md (\"produced by N organizations\", 256 on 2026-08-08), so two org files sharing a display name would silently count as one org. All 257 are distinct today and nothing checks that they stay distinct. The `unknown` sentinel org is handled by hand: serialize emits `org: \"\"` for its four products rather than \"Unknown\", which keeps a placeholder out of that count."
+    },
+    "type": {
+      "enum": ["company", "lab", "foundation", "individual", "government", "unknown"],
+      "description": "What kind of body this is. Descriptive only - nothing gates, scores or routes on it, and an individual's project is scored on exactly the same rubric as a hyperscaler's. Emitted into the payload and the registry's `organizations` table for grouping and filtering downstream. `unknown` is the honest value for an unconfirmed affiliation rather than a missing entry, and it is also what serialize substitutes when the key is absent. The split on 2026-08-08 was 192 company, 35 lab, 12 individual, 10 foundation, 5 unknown, 3 government."
+    },
+    "homepage": {
+      "type": "string",
+      "description": "The org's own site: the canonical place to confirm the org exists and is who this record says it is. Not a product page and not a repo. Free text with no pattern, absent on 49 of 257 files on 2026-08-08 - mostly community projects and individuals whose only public presence is a GitHub account. Emitted to the payload and the registry; no gate requires it and no fetcher visits it, so it is a reader's link rather than evidence. Evidence for a score is cited per axis in the score file's `sources`, which is what verification reads (docs/guides/verification.md)."
+    },
+    "country": {
+      "type": "string",
+      "description": "Where the org is based. Free text and uncontrolled - no ISO codes, no agreed spelling - and populated on 7 of 257 files on 2026-08-08 (six \"USA\", one \"Sweden\"). Emitted into the payload and the registry's `organizations` table, and read by nothing. Documented in this state so the field is not mistaken for coverage: any geography claim over the map would need it deliberately backfilled and normalized first, and until then an empty string means unrecorded, never domestic."
+    },
     "github": {
       "type": "array",
+      "description": "The org's GitHub accounts, as `{url: ...}` objects - the same typed-URL shape a product file uses for its artifact arrays, so both can be walked by the same code. An array because an org can genuinely hold more than one account; datasette is the only one on 2026-08-08, where the `llm` CLI sits under Simon Willison's personal account and datasette-agent under the org. Present on 128 of 257 files. serialize flattens it to a sorted list of URL strings in the payload. This is the ACCOUNT, not the products' repos: a product's repos live on its own `github` array, and that is the array the registry turns into `product_artifacts` and the warehouse joins on. Nothing joins on this one.",
       "items": {
         "type": "object",
         "required": ["url"],
         "additionalProperties": false,
-        "properties": { "url": { "type": "string", "pattern": "^https?://" } }
+        "properties": {
+          "url": {
+            "type": "string",
+            "pattern": "^https?://",
+            "description": "The account URL. `^https?://` is the entire constraint, so github.com is a convention here rather than a rule. 127 of the 129 URLs on 2026-08-08 are account-level (`https://github.com/<account>`) and two point at a single repo instead (open-web-math, openassistant), which is a curation slip nothing catches. Unlike a product artifact URL it is never parsed into an identifier - build/serialize_registry.py runs `artifact_id` over product arrays only - so a wrong one degrades a link and breaks no join."
+          }
+        }
       }
     },
-    "products": { "type": "array", "items": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" } },
-    "comments": { "type": "string" }
+    "products": {
+      "type": "array",
+      "description": "The product slugs this org owns, and the only stored copy of product-to-org membership: a product file has no `org:` field, so this roster contradicts nothing. build/validate.py requires every slug here to resolve to a sources/products/<slug>.yaml and every product to appear in exactly ONE org roster; serialize walks all rosters into a product -> org map and derives both the per-row `org_slug`/`org` and the payload's per-org product list from it, so the payload never carries a second hand-maintained copy either. Structurally the twin of the category roster in sources/categories/<cid>.yaml, but the two answer independent questions and order means different things: a category roster's order IS display order, while this one's is arbitrary and serialize sorts it before emitting. On 2026-08-08, 472 products across 257 orgs, 197 orgs owning exactly one product and hugging-face the largest at 28. An empty roster validates but emits a vendor with nothing under it; none exist today.",
+      "items": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" }
+    },
+    "comments": {
+      "type": "string",
+      "description": "Curator notes about the ORG record itself, not about its products: merge candidates and aliasing (`ai2` beside `allen-institute-for-ai`, `mistral-ai-api` beside `mistral-ai`), the legal entity behind a trading name (Mastra is Kepler Software, Inc., per the copyright line in its LICENSE.md), an affiliation that could not be confirmed. Free text, written by a curator, read by nothing downstream. It exists so the next curator does not re-derive a judgment someone already made, and the merge-candidate notes are the only record that those duplicates are known. 16 of 257 files carried one on 2026-08-08. Product provenance belongs in the product file's `comments` (docs/guides/product-info.md); scoring rationale belongs in the score file's per-axis `note`."
+    }
   }
 }
