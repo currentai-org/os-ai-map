@@ -13,6 +13,7 @@ cannot tell those apart gets switched off.
 """
 
 from datetime import date
+from pathlib import Path
 
 import pytest
 
@@ -201,3 +202,24 @@ def test_the_real_corpus_holds():
 
     corpus, owner = load()
     assert check(corpus, owner) == []
+
+
+def test_a_relation_outside_capability_is_rejected_by_the_schema():
+    """A sweep run wrote `relation` onto openness and adoption on four axes. The fields are
+    declared under capability only, but every axis had additionalProperties unset, so they
+    validated silently and were read by nothing."""
+    import json
+
+    import jsonschema
+    import yaml
+
+    root = Path(__file__).resolve().parents[1]
+    schema = json.loads((root / "docs/schemas/score.schema.json").read_text())
+    doc = yaml.safe_load((root / "sources/scores/trl.yaml").read_text())
+
+    jsonschema.validate(doc, schema)
+    for axis in ("openness", "adoption"):
+        stray = yaml.safe_load((root / "sources/scores/trl.yaml").read_text())
+        stray[axis]["relation"] = "at"
+        with pytest.raises(jsonschema.ValidationError, match="Additional properties"):
+            jsonschema.validate(stray, schema)
