@@ -47,7 +47,7 @@ of a catalog entry. It is not a pitch and not a review.
 **`description` is the load-bearing field.** Everything a reader needs about the product
 belongs here: what it is, what it does, what distinguishes it, and who builds or stewards
 it. `comments` is a footnote about *how we know*, not a second place to put product facts —
-see "The division of labour" below. When a fact could sit in either, it goes here.
+see "The division of labor" below. When a fact could sit in either, it goes here.
 
 **Format.**
 - **Length: 2–4 sentences, ~35–70 words.** The corpus median is 3 sentences / 55 words;
@@ -67,7 +67,7 @@ see "The division of labour" below. When a fact could sit in either, it goes her
 
 **Content — include:**
 - The product's *kind* (library / model / protocol / dataset / board) and its one-line job.
-- What distinguishes it from the obvious neighbour, factually ("Where MCP connects agents
+- What distinguishes it from the obvious neighbor, factually ("Where MCP connects agents
   to tools, A2A connects agents to other agents").
 - Concrete, checkable specifics: parameter class, modality, what it bundles, what standard
   it implements.
@@ -89,7 +89,7 @@ see "The division of labour" below. When a fact could sit in either, it goes her
 needs about the *treatment* rather than the product. In practice: the verification line,
 plus the occasional footnote about a judgment call or an evidence gap.
 
-### The division of labour
+### The division of labor
 
 `description` is load-bearing; `comments` is a footnote. The test is the subject of the
 sentence:
