@@ -65,6 +65,7 @@
             "score": 3,
             "class": "open_weights",
             "components": "weights:open(downloadable on HF);data:closed;code:partial(inference/utils via llama-models, no training code);license:Llama-4-Community(non-OSI: 700M MAU commercial cap as of Apr 2025 + no-compete/no-train-competing-LLM clause)",
+            "governing_release": "llama-4-scout-maverick",
             "confidence": "high",
             "note": "Weights downloadable under Meta's Llama-4-Community terms: a 700M-MAU commercial cap, an acceptable-use policy and naming requirements. No relicensing to record - Llama 3.1 carried the equivalent terms, and Llama 4 Scout and Maverick govern as the current release. Moved from 2/restricted on 2026-08-01 by the universal license scale, which caps a bounded commercial license at 3 rather than 2. The test at that boundary is whether the license permits commercial use AT ALL: this one does, for everyone inside the bound. A license that forbids commerce outright - CC-BY-NC, Mistral Non-Production - stays at 2. Nine other products carry a bounded license and all now score 3; four of them were already recorded there, which is the inconsistency this resolves.",
             "sources": [
@@ -136,7 +137,7 @@
             "date": "2026-08-08",
             "basis": "commit"
           },
-          "version_note": "Llama 4 herd, released April 2025: Scout (17B active / 109B total MoE, 10M-token context) and Maverick (17B active / 400B total MoE, 1M-token context), natively multimodal. Behemoth still unreleased/preview as of June 2026. Both Scout/Maverick verified live on HF June 2026. Consolidated on 2026-07-29 from llama-3-1; openness follows llama-4-scout-maverick, the release that currently governs. See sources/slug_aliases.yaml."
+          "version_note": "Llama 4 herd, released April 2025: Scout (17B active / 109B total MoE, 10M-token context) and Maverick (17B active / 400B total MoE, 1M-token context), natively multimodal. Behemoth still unreleased/preview as of June 2026. Both Scout/Maverick verified live on HF June 2026. Consolidated on 2026-07-29 from llama-3-1; openness follows llama-4-scout-maverick, the release that currently governs. See docs/guides/identity.md."
         },
         {
           "slug": "deepseek",
@@ -149,6 +150,7 @@
             "score": 3,
             "class": "open_weights",
             "components": "weights:open(MIT, on HF, both Pro and Flash);data:closed;code:partial(inference/serving; no training pipeline or data);license:MIT(permissive, no use restrictions)",
+            "governing_release": "deepseek-v4-pro",
             "confidence": "high",
             "note": "MIT weights across the V4 line, training corpus not released, inference and serving code only, so 3. V4-Pro governs and both it and V4-Pro-Base are plain MIT, which keeps the tier clear of an unsettled question: the retired deepseek-v3-base record carried a compound `code MIT + model DeepSeek-Model-License`, and whether that license's acceptable-use restrictions count as use-restricting is open in issue #117. The tier does not depend on that ruling. Adoption 5 is carried from V3.2, the most downloaded release.",
             "sources": [
@@ -230,7 +232,7 @@
             "date": "2026-08-08",
             "basis": "commit"
           },
-          "version_note": "DeepSeek-V4-Pro, 1.6T total / 49B active MoE, 1M-token context, hybrid CSA+HCA attention. Released April 24 2026 under MIT, alongside V4-Flash (284B). V4-Pro-Max = max-reasoning mode. Verified live June 2026. Consolidated on 2026-07-29 from deepseek-v3-2, deepseek-v3-base, deepseek-v4-pro-base; openness follows deepseek-v4-pro, the release that currently governs. See sources/slug_aliases.yaml."
+          "version_note": "DeepSeek-V4-Pro, 1.6T total / 49B active MoE, 1M-token context, hybrid CSA+HCA attention. Released April 24 2026 under MIT, alongside V4-Flash (284B). V4-Pro-Max = max-reasoning mode. Verified live June 2026. Consolidated on 2026-07-29 from deepseek-v3-2, deepseek-v3-base, deepseek-v4-pro-base; openness follows deepseek-v4-pro, the release that currently governs. See docs/guides/identity.md."
         },
         {
           "slug": "qwen",
@@ -243,6 +245,7 @@
             "score": 3,
             "class": "open_weights",
             "components": "weights:open(Apache-2.0 for open variants e.g. 27B/35B-A3B);data:closed;code:partial(inference/usage code on GitHub; no training pipeline/data);license:Apache-2.0(most restrictive distributed SKU; the proprietary Plus/Max tiers are API-only and never distributed, so they fall outside this axis)",
+            "governing_release": "qwen-3-6",
             "confidence": "high",
             "note": "Apache-2.0 across the distributed base variants, data closed and only inference code published, so 3. The load-bearing exclusion: Qwen3.7-Max is proprietary and served only through Alibaba Model Studio, so it is not part of the distributed set and does not cap the family. Including it would publish Qwen as 1/closed, which is what the rubric's multi_sku_rule exists to prevent - API-only tiers are a different product surface from the weights you can download. Qwen 2.5 scored 2 because its distributed 3B and 72B SKUs carried the Qwen License Agreement; from Qwen3 onward the distributed set is Apache. Replaces an earlier note that was a copy of the components string and recorded the license as `mixed`, a value the rubric forbids because it states that SKUs differ without recording the outcome.",
             "sources": [
@@ -314,7 +317,7 @@
             "date": "2026-08-08",
             "basis": "commit"
           },
-          "version_note": "Qwen3.6 series, released early-mid 2026: open-weight variants incl Qwen3.6-35B-A3B (MoE, Apr 16 2026) and dense Qwen3.6-27B (Apr 22 2026), plus hosted flagship tiers Qwen3.6-Plus and Qwen3.6-Max (Preview) that are proprietary/API-only. GitHub QwenLM/Qwen3.6 verified live June 2026. Consolidated on 2026-07-29 from qwen-2-5, qwen-3-7-max, qwen3; openness follows qwen-3-6, the release that currently governs. See sources/slug_aliases.yaml."
+          "version_note": "Qwen3.6 series, released early-mid 2026: open-weight variants incl Qwen3.6-35B-A3B (MoE, Apr 16 2026) and dense Qwen3.6-27B (Apr 22 2026), plus hosted flagship tiers Qwen3.6-Plus and Qwen3.6-Max (Preview) that are proprietary/API-only. GitHub QwenLM/Qwen3.6 verified live June 2026. Consolidated on 2026-07-29 from qwen-2-5, qwen-3-7-max, qwen3; openness follows qwen-3-6, the release that currently governs. See docs/guides/identity.md."
         },
         {
           "slug": "mistral-large",
@@ -327,6 +330,7 @@
             "score": 3,
             "class": "open_weights",
             "components": "weights:open(Apache-2.0);data:closed;code:closed;license:Apache-2.0(OSI)",
+            "governing_release": "mistral-large-3",
             "confidence": "high",
             "note": "Apache-2.0 weights with closed data and no training code, so 3. Mistral relicensed between releases: Large 2 shipped under the Mistral Research License, which permits research and non-commercial use only and scored 2, and Large 3 is Apache-2.0. Large 3 governs, so the tier records the relicensing rather than the family's worst historical terms.",
             "sources": [
@@ -388,7 +392,7 @@
             "date": "2026-08-08",
             "basis": "commit"
           },
-          "version_note": "Mistral Large 3 (mistral-large-3-25-12), announced 2 Dec 2025. Sparse MoE, 41B active / 675B total params. Base + instruct released; reasoning variant announced but not shipped as of mid-2026. Consolidated on 2026-07-29 from mistral-large-2; openness follows mistral-large-3, the release that currently governs. See sources/slug_aliases.yaml."
+          "version_note": "Mistral Large 3 (mistral-large-3-25-12), announced 2 Dec 2025. Sparse MoE, 41B active / 675B total params. Base + instruct released; reasoning variant announced but not shipped as of mid-2026. Consolidated on 2026-07-29 from mistral-large-2; openness follows mistral-large-3, the release that currently governs. See docs/guides/identity.md."
         },
         {
           "slug": "gemma",
@@ -401,6 +405,7 @@
             "score": 3,
             "class": "open_weights",
             "components": "weights:open(Apache-2.0);data:closed;code:closed;license:Apache-2.0(OSI,but no open data/code)",
+            "governing_release": "gemma-4",
             "confidence": "medium",
             "note": "Apache-2.0 weights, no open training data and no training code, so open_weights rather than a fully-open pipeline. The tier reads 3 because Gemma 4 relicensed: Gemma 2 and 3 shipped under the non-OSI Gemma License with a Prohibited-Use-Policy and scored 2, while all six Gemma 4 SKUs are Apache-2.0 and ungated, verified against the Hub on 2026-07-29. The current release governs, so a family that becomes more open is recorded as such rather than pinned to its worst historical release. Adoption 5 is carried from Gemma 2, which still out-downloads Gemma 4.",
             "sources": [
@@ -452,7 +457,7 @@
             "date": "2026-08-08",
             "basis": "commit"
           },
-          "version_note": "Apache-2.0 (OSI) - unlike CodeGemma/Gemma 3, which use the Gemma Terms of Use. Training data and recipe not released. ~8.4M monthly downloads on gemma-4-31b-it. Benchmark claims (LMArena) are vendor-reported. Consolidated on 2026-07-29 from gemma-2, gemma-3; openness follows gemma-4, the release that currently governs. See sources/slug_aliases.yaml."
+          "version_note": "Apache-2.0 (OSI) - unlike CodeGemma/Gemma 3, which use the Gemma Terms of Use. Training data and recipe not released. ~8.4M monthly downloads on gemma-4-31b-it. Benchmark claims (LMArena) are vendor-reported. Consolidated on 2026-07-29 from gemma-2, gemma-3; openness follows gemma-4, the release that currently governs. See docs/guides/identity.md."
         },
         {
           "slug": "yi",
@@ -799,6 +804,7 @@
             "score": 3,
             "class": "open_weights",
             "components": "weights:open(MIT);data:closed;code:open(inference);license:MIT(OSI)",
+            "governing_release": "glm-5-2",
             "confidence": "high",
             "note": "MIT weights on the current release, data closed, no training pipeline, so 3. Z.ai moved to MIT partway through the family: GLM-4 and GLM-4-9B carried the GLM-4 License, which requires commercial-use registration and a 'Built with GLM' attribution and scored 2, while GLM-4.6, GLM-5.1 and GLM-5.2 are plain MIT. GLM-5.2 governs as the current release. Capability 5 comes from the GLM-5 line; the GLM-4 line scored 2.",
             "sources": [
@@ -855,7 +861,7 @@
             "date": "2026-08-08",
             "basis": "commit"
           },
-          "version_note": "MIT-licensed open weights (HF model card + LICENSE, (c) Zhipu AI 2026). ~753B-param MoE, 1M context. ~191k HF downloads/month and 3.32k likes as of July 2026 (up sharply from ~666 when days old at the June audit). Consolidated on 2026-07-29 from glm-4, glm-4-6, glm-4-9b, glm-5-1; openness follows glm-5-2, the release that currently governs. See sources/slug_aliases.yaml."
+          "version_note": "MIT-licensed open weights (HF model card + LICENSE, (c) Zhipu AI 2026). ~753B-param MoE, 1M context. ~191k HF downloads/month and 3.32k likes as of July 2026 (up sharply from ~666 when days old at the June audit). Consolidated on 2026-07-29 from glm-4, glm-4-6, glm-4-9b, glm-5-1; openness follows glm-5-2, the release that currently governs. See docs/guides/identity.md."
         },
         {
           "slug": "kimi",
@@ -868,6 +874,7 @@
             "score": 3,
             "class": "open_weights",
             "components": "weights:pending(scheduled 2026-07-27; API live today);data:closed;code:partial(inference/deploy expected; no training data or full pipeline);license:assumed-Modified-MIT(continuity with Kimi K2.x; confirm on weight release)",
+            "governing_release": "kimi-k3",
             "confidence": "medium",
             "note": "Modified-MIT weights - standard MIT below a 100M-MAU and $20M-monthly-revenue threshold - with a closed corpus, so 3. Confidence is medium rather than high on purpose: K3 governs as the current release, and its license is recorded as `assumed-Modified-MIT` by continuity with K2.x rather than confirmed against a published file. K2.6's Modified-MIT is confirmed, so the tier's openness firms up as soon as K3's terms are read directly. Adoption 4 is carried from K2.6.",
             "sources": [
@@ -934,7 +941,7 @@
             "date": "2026-08-08",
             "basis": "commit"
           },
-          "version_note": "Kimi K3, 2.8T total MoE, Stable LatentMoE (16/896 experts), 1M context, native multimodal. API live 16 Jul 2026; weights promised by 27 Jul 2026. Openness scored assuming continuity with the Kimi K2.x Modified-MIT open-weight license (same family pattern as kimi-k2-6); confirm against the HF card once weights land. No HF URL yet — add when the checkpoint is published. Consolidated on 2026-07-29 from kimi-k2-6; openness follows kimi-k3, the release that currently governs. See sources/slug_aliases.yaml."
+          "version_note": "Kimi K3, 2.8T total MoE, Stable LatentMoE (16/896 experts), 1M context, native multimodal. API live 16 Jul 2026; weights promised by 27 Jul 2026. Openness scored assuming continuity with the Kimi K2.x Modified-MIT open-weight license (same family pattern as kimi-k2-6); confirm against the HF card once weights land. No HF URL yet — add when the checkpoint is published. Consolidated on 2026-07-29 from kimi-k2-6; openness follows kimi-k3, the release that currently governs. See docs/guides/identity.md."
         },
         {
           "slug": "inkling",
@@ -1568,6 +1575,7 @@
             "score": 3,
             "class": "open_weights",
             "components": "weights:open(on HF; ungated; safetensors/BF16; MoE);data:closed;code:partial(inference only; no training pipeline/data);license:minimax-community(custom, see HF LICENSE)",
+            "governing_release": "minimax-m3",
             "confidence": "high",
             "note": "Weights distributed under the custom minimax-community license with a closed corpus, so 3. M3 governs as the current release. Capability 5 is carried from M2.5 because M3 records no capability score at all, so the tier's capability describes the older release and should be re-read when M3 is benchmarked - it is the one axis here not sourced to the governing release.",
             "sources": [
@@ -1619,7 +1627,7 @@
             "date": "2026-08-08",
             "basis": "commit"
           },
-          "version_note": "MiniMax M3 launched 1 Jun 2026: API-first at launch with MiniMax Sparse Attention, 1M-token context, native multimodal. Open weights have since been released on Hugging Face (ungated, ~131k downloads/month) under a custom minimax-community license; training data and pipeline remain closed. Consolidated on 2026-07-29 from minimax-m2-5; openness follows minimax-m3, the release that currently governs. See sources/slug_aliases.yaml."
+          "version_note": "MiniMax M3 launched 1 Jun 2026: API-first at launch with MiniMax Sparse Attention, 1M-token context, native multimodal. Open weights have since been released on Hugging Face (ungated, ~131k downloads/month) under a custom minimax-community license; training data and pipeline remain closed. Consolidated on 2026-07-29 from minimax-m2-5; openness follows minimax-m3, the release that currently governs. See docs/guides/identity.md."
         },
         {
           "slug": "apertus",
@@ -2168,6 +2176,7 @@
             "score": 3,
             "class": "open_weights",
             "components": "weights:open(Apache-2.0, on HF);data:closed(no training corpus released);code:partial(inference/usage + chat template; no training pipeline or post-training/SFT data);license:Apache-2.0(OSI permissive, no use restrictions)",
+            "governing_release": "qwen3-coder",
             "confidence": "high",
             "note": "Apache-2.0 weights with a closed corpus and inference code only, so 3, consistent across both generations - Qwen2.5-Coder and Qwen3-Coder are both plain Apache with no use restrictions. Qwen3-Coder governs and contributes capability 4; adoption 4 is carried from Qwen2.5-Coder, which has had longer to accumulate downloads. Kept apart from the base Qwen tier because Alibaba ships and markets the Coder line separately.",
             "sources": [
@@ -2214,7 +2223,7 @@
             "date": "2026-08-08",
             "basis": "commit"
           },
-          "version_note": "Qwen3-Coder-480B-A35B-Instruct (MoE, 480B total / 35B active, 160 experts, 256K native context to 1M w/ Yarn), non-thinking instruct/agentic-coding SKU; arXiv 2505.09388. HF card lists release 2025-05-14. Verified live on HF June 2026. Consolidated on 2026-07-29 from qwen2-5-coder-instruct; openness follows qwen3-coder, the release that currently governs. See sources/slug_aliases.yaml."
+          "version_note": "Qwen3-Coder-480B-A35B-Instruct (MoE, 480B total / 35B active, 160 experts, 256K native context to 1M w/ Yarn), non-thinking instruct/agentic-coding SKU; arXiv 2505.09388. HF card lists release 2025-05-14. Verified live on HF June 2026. Consolidated on 2026-07-29 from qwen2-5-coder-instruct; openness follows qwen3-coder, the release that currently governs. See docs/guides/identity.md."
         },
         {
           "slug": "qwen-instruct",
@@ -3394,6 +3403,7 @@
             "score": 1,
             "class": "closed",
             "components": "weights:closed;data:closed;code:closed;license:Proprietary(API + ChatGPT only)",
+            "governing_release": "gpt-5-line",
             "confidence": "high",
             "note": "No downloadable weights, no published training data or code. Served through the OpenAI API and ChatGPT only, so 1/closed. Kept apart from GPT-4o and GPT-4.1 because OpenAI markets those as distinct products rather than versions of a single line, which is the same reason their slugs keep their version tokens. Adoption 5 reflects ChatGPT-scale reach.",
             "sources": [
@@ -3450,7 +3460,7 @@
             "date": "2026-08-08",
             "basis": "commit"
           },
-          "version_note": "OpenAI GPT-5 line: GPT-5 (Aug 7 2025, became ChatGPT default replacing GPT-4o) through GPT-5.1/5.2/5.4 and GPT-5.5 / GPT-5.5 Instant (the current ChatGPT default as of May 2026). Unified reasoning+chat post-trained model family, closed/API + ChatGPT only. Verified via OpenAI pages + Wikipedia + TechCrunch June 2026. Consolidated on 2026-07-29 from gpt-5; openness follows gpt-5-line, the release that currently governs. See sources/slug_aliases.yaml."
+          "version_note": "OpenAI GPT-5 line: GPT-5 (Aug 7 2025, became ChatGPT default replacing GPT-4o) through GPT-5.1/5.2/5.4 and GPT-5.5 / GPT-5.5 Instant (the current ChatGPT default as of May 2026). Unified reasoning+chat post-trained model family, closed/API + ChatGPT only. Verified via OpenAI pages + Wikipedia + TechCrunch June 2026. Consolidated on 2026-07-29 from gpt-5; openness follows gpt-5-line, the release that currently governs. See docs/guides/identity.md."
         },
         {
           "slug": "claude-opus",
@@ -3463,6 +3473,7 @@
             "score": 1,
             "class": "closed",
             "components": "weights:closed;data:closed;code:closed;license:Proprietary(API/Bedrock/Vertex/claude.ai)",
+            "governing_release": "claude-opus-4-x",
             "confidence": "high",
             "note": "No weights distributed in any form. Served only through the Anthropic API, Bedrock, Vertex and claude.ai, so 1/closed on every dimension. Opus 4.x governs as the current release; 4.7 scored identically, and nothing about the tier's openness turns on which release is read. Consolidated because Anthropic markets Claude Opus as the product and 4.7 and 4.8 are versions of it.",
             "sources": [
@@ -3524,7 +3535,7 @@
             "date": "2026-08-08",
             "basis": "commit"
           },
-          "version_note": "Anthropic Claude Opus 4.x flagship line: Opus 4 (May 22 2025) -> 4.5 (Nov 2025) -> 4.6 (Feb 2026) -> 4.7 (Apr 16 2026) -> 4.8 (May 28 2026, current frontier, model id claude-opus-4-8). Post-trained chat/agentic flagship, closed/API + Bedrock + Vertex + claude.ai. Note: Opus 4.7 is a frozen base_pretrained anchor; this record scores the Opus 4.x line in finetuned_chat. Verified via Anthropic Opus 4.8 + Claude 4 pages June 2026. Consolidated on 2026-07-29 from claude-opus-4-7; openness follows claude-opus-4-x, the release that currently governs. See sources/slug_aliases.yaml."
+          "version_note": "Anthropic Claude Opus 4.x flagship line: Opus 4 (May 22 2025) -> 4.5 (Nov 2025) -> 4.6 (Feb 2026) -> 4.7 (Apr 16 2026) -> 4.8 (May 28 2026, current frontier, model id claude-opus-4-8). Post-trained chat/agentic flagship, closed/API + Bedrock + Vertex + claude.ai. Note: Opus 4.7 is a frozen base_pretrained anchor; this record scores the Opus 4.x line in finetuned_chat. Verified via Anthropic Opus 4.8 + Claude 4 pages June 2026. Consolidated on 2026-07-29 from claude-opus-4-7; openness follows claude-opus-4-x, the release that currently governs. See docs/guides/identity.md."
         },
         {
           "slug": "gemini-flash",
@@ -3537,6 +3548,7 @@
             "score": 1,
             "class": "closed",
             "components": "weights:closed;data:closed;code:closed;license:Proprietary(Gemini app/Search/API/enterprise, no downloadable weights)",
+            "governing_release": "gemini-3-5-flash",
             "confidence": "high",
             "note": "Proprietary and API-only across the Flash line, no downloadable weights, so 1/closed. Gemini 3.5 Flash governs as the current release and is a genuine capability jump - it scores 5 where 2.5 Flash scored 3 - which is why the versions were worth combining rather than keeping the older figure. Held apart from Gemini Pro, which Google prices and positions as a separate tier.",
             "sources": [
@@ -3593,7 +3605,7 @@
             "date": "2026-08-08",
             "basis": "commit"
           },
-          "version_note": "Google Gemini 3.5 Flash, launched at I/O 2026 on May 19, 2026 as the first Gemini 3.5 model; price-performance thinking/agentic instruct model. Available via Gemini app, AI Mode in Search, Google Antigravity, Gemini API and enterprise. Proprietary API-only. (Matches the flagship anchor 'Gemini 3.5 Flash'; scored here for the finetuned_chat category, calibrated to that anchor.) Verified live June 2026. Consolidated on 2026-07-29 from gemini-2-5-flash; openness follows gemini-3-5-flash, the release that currently governs. See sources/slug_aliases.yaml."
+          "version_note": "Google Gemini 3.5 Flash, launched at I/O 2026 on May 19, 2026 as the first Gemini 3.5 model; price-performance thinking/agentic instruct model. Available via Gemini app, AI Mode in Search, Google Antigravity, Gemini API and enterprise. Proprietary API-only. (Matches the flagship anchor 'Gemini 3.5 Flash'; scored here for the finetuned_chat category, calibrated to that anchor.) Verified live June 2026. Consolidated on 2026-07-29 from gemini-2-5-flash; openness follows gemini-3-5-flash, the release that currently governs. See docs/guides/identity.md."
         },
         {
           "slug": "grok",
@@ -3606,6 +3618,7 @@
             "score": 1,
             "class": "closed",
             "components": "weights:closed;data:closed;code:closed;license:Proprietary(API-only)",
+            "governing_release": "grok-4-20",
             "confidence": "high",
             "note": "Proprietary, served through the xAI API, grok.com and X, with no downloadable weights, so 1/closed. Grok 4.20 governs and contributes capability 4; adoption 3 is carried from Grok 3, which had wider reach. The bare `grok` slug names this model line - the consumer chat app is a separate product recorded as grok-app.",
             "sources": [
@@ -3662,7 +3675,7 @@
             "date": "2026-08-08",
             "basis": "commit"
           },
-          "version_note": "xAI Grok 4.20; beta Feb 17, 2026, API GA Mar 10, 2026 (Grok 4.20 + Multi-agent). Revision '4.20 0309 v2' dated Apr 7, 2026. Multi-agent architecture (4 parallel agents); 2M-token context. Consolidated on 2026-07-29 from grok-3; openness follows grok-4-20, the release that currently governs. See sources/slug_aliases.yaml."
+          "version_note": "xAI Grok 4.20; beta Feb 17, 2026, API GA Mar 10, 2026 (Grok 4.20 + Multi-agent). Revision '4.20 0309 v2' dated Apr 7, 2026. Multi-agent architecture (4 parallel agents); 2M-token context. Consolidated on 2026-07-29 from grok-3; openness follows grok-4-20, the release that currently governs. See docs/guides/identity.md."
         },
         {
           "slug": "codestral",
@@ -3739,6 +3752,7 @@
             "score": 1,
             "class": "closed",
             "components": "weights:closed;data:closed;code:closed;license:Proprietary(API-only via Amazon Bedrock)",
+            "governing_release": "amazon-nova-pro",
             "confidence": "high",
             "note": "Served only through Amazon Bedrock with no weights released, so 1/closed. Nova Pro governs and carries adoption 4; the broader Nova record scored 3. Consolidated because Amazon markets Nova as one family with Micro, Lite and Pro as tiers within it.",
             "sources": [
@@ -3784,7 +3798,7 @@
             "date": "2026-08-08",
             "basis": "commit"
           },
-          "version_note": "Amazon Nova Pro (amazon.nova-pro-v1:0), released 3 Dec 2024; multimodal understanding/instruct model (text+image+video in, text out), 300K context. Proprietary, API-only via Amazon Bedrock. Succeeded by Amazon Nova 2 family (2026) but Nova Pro v1 remains in service. Verified live in AWS Bedrock docs June 2026. Consolidated on 2026-07-29 from amazon-nova; openness follows amazon-nova-pro, the release that currently governs. See sources/slug_aliases.yaml."
+          "version_note": "Amazon Nova Pro (amazon.nova-pro-v1:0), released 3 Dec 2024; multimodal understanding/instruct model (text+image+video in, text out), 300K context. Proprietary, API-only via Amazon Bedrock. Succeeded by Amazon Nova 2 family (2026) but Nova Pro v1 remains in service. Verified live in AWS Bedrock docs June 2026. Consolidated on 2026-07-29 from amazon-nova; openness follows amazon-nova-pro, the release that currently governs. See docs/guides/identity.md."
         },
         {
           "slug": "muse-spark",
@@ -4018,6 +4032,7 @@
           "openness": {
             "score": 3,
             "class": "open_weights",
+            "governing_release": "hermes-4-3-36b",
             "confidence": "high",
             "components": "weights:open(Apache-2.0);base:Seed-OSS-36B-Base;post-training-data:closed(proprietary ~5M-sample corpus);code:partial(inference only);license:Apache-2.0(OSI)",
             "note": "Nous ships one Hermes 4 post-training recipe on four independent base models, and the base determines the license the weights carry: Seed-OSS-36B and Qwen3-14B are Apache-2.0, while the Llama-3.1 405B and 70B builds inherit Meta's Llama-3.1-Community terms (700M-MAU commercial cap, acceptable-use policy, naming requirements). Scored 3 on the Apache builds rather than 2 on the Llama ones, because most-restrictive-across-SKUs is a rule about variants you cannot substitute away from - Qwen 2.5's restricted 72B caps Qwen because the 7B is not a substitute for the flagship - and here the base is a free choice. Anyone wanting Apache-licensed Hermes 4 takes the 36B or 14B build and gets it, so the family genuinely offers open weights. Not 4 or 5: the post-training corpus is proprietary and only inference code ships, so the recipe is not reproducible. Corrected from 2/restricted on 2026-07-29 after the tier consolidation initially applied most-restrictive across all four bases.",
@@ -4070,7 +4085,7 @@
             "date": "2026-08-08",
             "basis": "commit"
           },
-          "version_note": "Hermes 4, hybrid-mode reasoning instruct model post-trained on Meta-Llama-3.1-405B (406B params). Released Sep 2 2025; single-checkpoint reason/non-reason toggle. Tech report arXiv:2508.18255. Verified live on HF June 2026. License = Llama3 (Llama 3.1 Community License, non-OSI, use-restricted). Consolidated on 2026-07-29 from hermes-4-14b, hermes-4-3-36b, hermes-4-llama-3-1-70b; openness follows hermes-4-llama-3-1-405b, the release that currently governs. See sources/slug_aliases.yaml."
+          "version_note": "Hermes 4, hybrid-mode reasoning instruct model post-trained on Meta-Llama-3.1-405B (406B params). Released Sep 2 2025; single-checkpoint reason/non-reason toggle. Tech report arXiv:2508.18255. Verified live on HF June 2026. License = Llama3 (Llama 3.1 Community License, non-OSI, use-restricted). Consolidated on 2026-07-29 from hermes-4-14b, hermes-4-3-36b, hermes-4-llama-3-1-70b; openness follows hermes-4-llama-3-1-405b, the release that currently governs. See docs/guides/identity.md."
         },
         {
           "slug": "tinyllama-chat",
