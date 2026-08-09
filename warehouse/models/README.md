@@ -10,7 +10,23 @@ entities (USER_MODEL)      — resolved identities: repos, projects, packages, m
 events (USER_MODEL)        — pre-filtered event logs (GitHub Archive)
 metrics (USER_MODEL)       — normalized daily activity per repo
 scores (USER_MODEL)        — interpretive: taxonomy, dependencies, fragility, rankings
+registry (STATIC_MODEL)    — pushed by CI from sources/; see build/publish_registry.py
+signal_* (USER_MODEL)      — one dataset per external source; see below
 ```
+
+### The signal_* models are deployed and mostly NOT mirrored here
+
+`signal_github`, `signal_huggingface`, `signal_pypi`, `signal_lmarena`,
+`signal_artificialanalysis`, `signal_semanticscholar` and `signal_goodailist` all run in
+the warehouse, and until 2026-08-09 none of their SQL was in this directory — while the
+deploy runbook says this is where the source of truth lives. That gap is how
+`signal_pypi` came to carry the adoption bands as a hardcoded CASE that nothing in the
+repo could see.
+
+`signal_pypi_package_downloads.sql` is the first one mirrored back. The rest still need
+recovering from the platform, and a revision's `cron`, `kind` and `schema` are not
+readable through the GraphQL API, so recovering them is a UI job rather than a scripted
+one.
 
 ## Catalog (Static Model)
 
