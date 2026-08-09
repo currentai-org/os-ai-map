@@ -862,3 +862,44 @@ def test_real_license_aliases_cover_every_slug_the_hub_actually_returns():
         if r["source"] == "huggingface"
     }
     assert observed_models <= aliased, f"unaliased Hub license slugs: {observed_models - aliased}"
+
+
+def test_adoption_bands_are_declared_per_type_and_hardware_declares_none():
+    """The bands were hardcoded in the scoring SQL until 2026-08-09.
+
+    Four types, five levels each, minus hardware — which declares `qualitative: true` and
+    an empty `bands`, so it emits no rows. That absence is load-bearing: a consumer that
+    finds no band for a type must abstain rather than borrow another type's scale.
+    """
+    from build.serialize_rubric import adoption_bands
+    from build.validate import load_sources
+    from pathlib import Path
+
+    rows, _warnings = adoption_bands(load_sources(Path(".")).get("rubrics") or {})
+    by_type = {}
+    for row in rows:
+        by_type.setdefault(row["product_type"], []).append(row)
+
+    assert set(by_type) == {"software", "model", "dataset"}
+    assert all(len(v) == 5 for v in by_type.values())
+
+    # `above` is an exclusive lower bound, so it must be strictly decreasing with level
+    # or the highest-matching-level rule silently picks the wrong band.
+    for product_type, bands in by_type.items():
+        ordered = sorted(bands, key=lambda b: -b["level"])
+        thresholds = [b["above"] for b in ordered]
+        assert thresholds == sorted(thresholds, reverse=True), product_type
+        assert ordered[-1]["above"] == 0, f"{product_type} has no floor band"
+
+
+def test_dataset_bands_sit_one_order_below_software():
+    """Measured, not assumed: no dataset artifact in the corpus exceeds 10M monthly
+    downloads and exactly one exceeds 1M, so the software scale cannot discriminate."""
+    from build.serialize_rubric import adoption_bands
+    from build.validate import load_sources
+    from pathlib import Path
+
+    rows, _ = adoption_bands(load_sources(Path(".")).get("rubrics") or {})
+    top = {r["product_type"]: r["above"] for r in rows if r["level"] == 5}
+    assert top["software"] == top["model"] == 10_000_000
+    assert top["dataset"] == 1_000_000

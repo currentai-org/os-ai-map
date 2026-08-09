@@ -277,3 +277,42 @@ openness:
       The rung above, for the five products that record the card as `yes` rather than
       `present`. Two spellings of one value, so two rungs; a components normalization on
       this category would collapse them back into one.
+
+# Adoption bands: which monthly figure maps to which level, for this product type.
+#
+# Declared here rather than in the warehouse because they were hardcoded in
+# currentai.signal_pypi.package_downloads and nowhere else - the same repo/warehouse
+# split that check_parity exists to catch, one axis over. The scoring SQL now reads
+# registry.adoption_bands, which build/serialize_registry.py emits from this block.
+#
+# The scale is a property of the product TYPE, which is what the rubrics are already
+# keyed on, so this is four declarations rather than sixteen.
+#
+# `above` is the exclusive lower bound, so the bands read the way the SQL does: the
+# highest level whose `above` the figure exceeds wins. `reach` is the label a score
+# records, and it carries the UNIT the band was read in - stars and downloads are not
+# the same reach at the same magnitude.
+#
+# ONE order of magnitude below software and model, and the reason is measured rather
+# than assumed. Across the 66 Hugging Face dataset artifacts with a download figure on
+# 2026-08-09: median 27,648, exactly one above 1M, and NONE above 10M. On the software
+# scale level 5 would be unreachable and 76% of datasets would pile into levels 2-3,
+# which is a scale that cannot discriminate.
+#
+# Shifting down one order reproduces the corpus's own bottom three levels exactly
+# (<1K->1, 1K-10K->2, 10K-100K->3) and yields a spread comparable to model's.
+#
+# Known disagreement, deliberately not resolved by this change: 14 dataset products
+# record level 4 against a reach of 1M-10M, which is level 5 on this scale. Some were
+# read in a different unit - citations for a benchmark, GitHub for a corpus shipped as
+# code - and `reach` carries the unit precisely so those are not silently comparable.
+# They are a work list, not a migration.
+adoption:
+  reach_is_monthly: true
+  unit: Hugging Face dataset downloads in the trailing 30 days
+  bands:
+  - {level: 5, above: 1000000, reach: '>1M'}
+  - {level: 4, above: 100000, reach: 100K-1M}
+  - {level: 3, above: 10000, reach: 10K-100K}
+  - {level: 2, above: 1000, reach: 1K-10K}
+  - {level: 1, above: 0, reach: <1K}

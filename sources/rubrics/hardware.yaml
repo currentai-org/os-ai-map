@@ -121,3 +121,35 @@ openness:
       is named `documented` because that is precisely what it is - and it is the same 3 as
       the rung above, because from a builder's position a partial design and no design differ
       less than either differs from a design you may reuse.
+
+# Adoption bands: which monthly figure maps to which level, for this product type.
+#
+# Declared here rather than in the warehouse because they were hardcoded in
+# currentai.signal_pypi.package_downloads and nowhere else - the same repo/warehouse
+# split that check_parity exists to catch, one axis over. The scoring SQL now reads
+# registry.adoption_bands, which build/serialize_registry.py emits from this block.
+#
+# The scale is a property of the product TYPE, which is what the rubrics are already
+# keyed on, so this is four declarations rather than sixteen.
+#
+# `above` is the exclusive lower bound, so the bands read the way the SQL does: the
+# highest level whose `above` the figure exceeds wins. `reach` is the label a score
+# records, and it carries the UNIT the band was read in - stars and downloads are not
+# the same reach at the same magnitude.
+#
+# Hardware has no download to count, and the corpus has never pretended otherwise: all
+# 20 products record a qualitative reach (niche, broad, mass-market) and none records a
+# figure. So this type declares NO numeric bands, and that absence is the declaration -
+# a consumer that finds no band here must not fall back to another type's scale.
+#
+# The recorded levels span 3 to 5 only, which is honest for a category whose members are
+# all shipping products rather than an unfiltered long tail.
+adoption:
+  reach_is_monthly: false
+  qualitative: true
+  unit: qualitative reach; a board has no download count
+  reach_vocabulary: [niche, broad, mass-market]
+  bands: []
+  note: >-
+    No numeric bands by design. An adoption level here is a judgment against the
+    vocabulary above, and no machine signal routes to it.
