@@ -458,10 +458,23 @@ score for this reason.
 
 ### 5. Turn on the age gate
 
-`build/check_freshness.py --max-age-days` becomes a CI gate. This is the entire point of
+`build/check_freshness.py --max-age-days 30` becomes a CI gate. This is the entire point of
 having the field: a category whose oldest axis is 50 days old is a category to go and look
 at. Gating earlier would only fail on the pre-automation backlog rather than on genuine
 staleness.
+
+**The window is 30 days, decided 2026-08-09.** It is a judgment about how much re-reading the
+map is worth rather than anything derivable, so it is recorded here with its date and its owner
+and not re-argued per category. Earlier drafts suggested 90; that was a placeholder for an
+unmade decision, and this replaces it.
+
+At 30 days the re-read is continuous rather than occasional: sixteen categories inside a
+month is roughly four a week. Two things follow. A whole category shares one confirmation
+date, because a category is re-read in a single run, so categories expire in cliffs rather
+than drifting past the line one product at a time — that is the shape of the work, not a
+backlog. And the sampled re-fetch will keep reporting drift on pages that change daily;
+at this window that drift is noise, and a digest that *matches* remains the only thing it
+positively proves.
 
 ## Related
 
