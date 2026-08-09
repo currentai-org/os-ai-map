@@ -77,7 +77,10 @@ Two reasons to override it, and say which applies:
 
 ### 3. Hand off
 
-Invoke `refresh-category` with the chosen slug and let it run to its PR. Do not reimplement any
+Invoke `refresh-category` with the chosen slug and let it run to its PR. It spends a cheap model
+tier on the per-product research and an expensive one on the audits and the orchestration; that
+choice is explained there and is worth preserving, because the research is the bulk of the cost
+and the audit is the thing that makes it safe. Do not reimplement any
 of it here, and do not "help" by pre-fetching or pre-deciding — its preflight exists because a
 pilot run invented product slugs from a summary.
 
