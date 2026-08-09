@@ -202,12 +202,17 @@ All warehouse write operations are maintainer steps. See `docs/runbooks/`.
 
 ## Skills
 
-Four editor skills live in `skills/`:
+Editor skills live in `skills/`. They compose: the sweep drives a category, a category
+drives its products, and a product's prose has its own procedure.
 
 | Skill | When to use |
 |-------|------------|
 | `curate-category` | Edit category definition, weights, litmus, or product roster |
 | `add-product` | Add a new product (scaffolds product + score YAML, updates roster) |
+| `build-rubric` | Derive a category's openness ladder, or extend a shared one to it |
+| `verify-product` | Refresh one product's `description` and `comments` against its sources |
+| `refresh-category` | Re-verify a whole category: scores and prose together, to the PR |
+| `refresh-all-categories` | Drive the sweep — report progress, pick the next category |
 | `add-data-source` | Register a new external data source and add a fetcher |
 | `pyoso-analyst` | Query `currentai.*` tables via `pyoso` (read-only analysis) |
 

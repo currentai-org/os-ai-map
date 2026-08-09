@@ -15,7 +15,7 @@ openness/adoption/capability value.
 > and the source of the rules below. This skill is the procedure; the guide is the
 > authority.
 
-**Where this runs.** In the category sweep the prose refresh happens *inside* the score
+**Where this runs.** Under `refresh-category` the prose refresh happens *inside* the score
 re-read (`docs/runbooks/verification-pass.md`, Phase 4): one agent opens a product's sources
 once and writes both halves from them, and one PR carries the category. This skill stays the
 prose half, and the boundary below still holds — the score half follows
