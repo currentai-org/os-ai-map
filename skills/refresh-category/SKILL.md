@@ -25,8 +25,10 @@ the category because that is the unit a rubric, a stage and a reviewer all work 
 ## This file is orchestration only
 
 Every rule about *how to verify* lives in the guides, and this skill restates none of them. Two
-copies drift, and that is the exact failure the sweep exists to fix. The agents you dispatch
-read these, and so should you before dispatching them:
+copies drift, and that is the exact failure the sweep exists to fix. If a rule needs changing,
+change the guide. Never the prompt.
+
+**You** read all of these before dispatching:
 
 - `docs/guides/verification.md` — how an axis earns `last_verified`, the invariant, the gates,
   and what a capability confirmation attests to
@@ -35,7 +37,20 @@ read these, and so should you before dispatching them:
 - `docs/guides/identity.md` — slugs, aliases, and the combine rules when releases merge
 - `docs/runbooks/verification-pass.md` Phase 4 — the per-product unit of work
 
-If a rule needs changing, change the guide. Never the prompt.
+**A research agent reads two**, and this matters more than it looks: every agent loads its
+reading list before its first fetch, so the list is multiplied by the batch size. Telling all
+twenty-two to read all nine documents cost 2,049 lines apiece and dominated the first run's
+wall-clock.
+
+- `docs/guides/product-info.md` — it is writing the prose
+- `docs/guides/verification.md` — it is earning the date
+
+Add `docs/guides/identity.md` only for a product whose slug covers a tier or family, where the
+combine rules actually bite. Do not send the rest: `verification-pass.md` and this file are
+orchestration, and the agent is not orchestrating; `verify-product` restates `product-info.md`;
+`freshness.md` is covered by `verification.md` for a research agent's purposes; and the rubric
+is unnecessary because preflight already computes the recorded dimensions and hands them over.
+That is 866 lines instead of 2,049.
 
 ## Definition of done, per product
 
@@ -72,10 +87,16 @@ and `--verbose` distinguishes `stale` from `open` and `prose line stale` from
 There is no default window. Absent one, "confirmed once" counts as confirmed, which is right
 for the first pass and wrong forever after — so the caller chooses, and says why.
 
-**Anchor first.** If any product records `capability.relative_to`, the peer it points at must be
-verified in this run or already dated — a derived band cannot be fresher than what it derives
-from, and `check_capability` fails if it is. Put anchors at the front. In `finetuning_code` that
-was `megatron-lm`, which twelve notes place themselves against.
+**Anchor first, and "already dated" is not enough.** If any product records
+`capability.relative_to`, the peer must carry a confirmation dated **on or after the date this
+run is claiming** — not merely some date. A derived band cannot be fresher than what it derives
+from, so an anchor confirmed yesterday fails a band dated today, and `check_capability` catches
+it. Put anchors at the front of the batch and date them in the same run.
+
+Where that is impossible — the anchor sits in another category, or was confirmed in an earlier
+run — tell the agents to **leave `relative_to` and `relation` unset and report it**, never to
+substitute a different peer to satisfy the arithmetic. Three products did exactly that in
+`finetuning_code` and their capability axes went to the queue, which is the correct outcome.
 
 ### 2. Preflight — gather once, centrally
 
@@ -93,8 +114,14 @@ product slugs from a truncated terminal listing.
 
 ### 3. Research — one agent per product
 
-Dispatch a `Workflow`, one agent per product, roughly ten concurrent. Each agent reads the guides
-above and its own product's two files, fetches, and **edits no file** — it returns a packet.
+Dispatch a `Workflow`, one agent per product. Each agent reads the two guides above and its own
+product's two files, fetches, and **edits no file** — it returns a packet.
+
+**Concurrency is `min(16, cores - 2)`, not a number you choose.** On a six-core machine that is
+four, so twenty-two products run in six waves. Size the expectation off the real cap rather than
+the agent count, and remember the products with the fewest artifacts are the *slowest*: with no
+repo to read, the license has to come from pricing pages and terms documents. Since categories
+are ordered worst-coverage-first, the early ones are the slow ones.
 
 **Put the cheap tier here and the expensive tier on the audit.** Research is bounded work:
 fetch a URL, read a LICENSE body, decide whether a core is gated, draft sixty words. It is
@@ -134,9 +161,20 @@ Give every agent these. Each is a defect the pilot actually produced:
 
 ### 4. Audit — assume a rubber stamp
 
-Two auditors over the packets. They earn their cost: on the pilot they caught a false
-confirmation, a false negative, and three products writing capability relations they could not
-support.
+Auditors over the packets. They earn their cost: across the runs so far they have caught a false
+confirmation built on an un-retried rate limit, two asserted negatives whose stated method could
+not have produced them, a note carrying adopters absent from every body fetched that day, and
+three products writing capability relations they could not support.
+
+**Shard the evidence audit; keep the prose audit whole.** One agent re-fetching every digest
+across a whole category is both slow and fragile — it died mid-response on the first attempt at
+22 products, and a died audit means either re-running it or shipping unverified. Four shards
+striped across the packets, each running the same checks on its slice, is robust and parallel.
+The prose audit stays single because it needs to compare the batch against itself: it caught two
+products in one run treating identical vendor language differently, which no per-slice agent
+could see.
+
+**Put the expensive model tier here.** See the note in step 3.
 
 - **Evidence.** Re-fetch every digest and compare. Grep every `shows` against the saved body.
   Check the invariant per recorded dimension. Check no 4xx is used as evidence. Check
@@ -155,18 +193,32 @@ A script, not a model. `sources/` YAML is hand-wrapped and does not round-trip: 
 `build.components` (`set_field`, `put_field`, `set_document_field`), which asserts on reparse
 that the edit did what was asked and touched nothing else.
 
-Held products go to `sources/verification_queue.yaml`, otherwise untouched:
+**An auditor's replacement text arrives in three shapes** and the applier has to parse rather
+than assume: a bare value, a single `description: ...` line, and a YAML fragment carrying both
+prose fields at once. Writing a fragment in as a value nests the key inside itself. That shipped
+on seven products in one run and was caught by
+`tests/test_components.py::test_every_product_file_round_trips_through_its_own_description`,
+which is worth running before the full suite for exactly this reason.
+
+**An axis the audit disputes does not get dated.** Where the evidence does not support what the
+packet claimed, the axis goes to the queue with the reason. Never date it and leave the disputed
+clause standing — that is a confirmation of something nobody confirmed.
+
+Unsettled axes go to `sources/verification_queue.yaml`, the product otherwise untouched:
 
 ```yaml
 held:
-  predibase:
-    category: finetuning_code
-    since: '2026-08-08'
-    because: >-
-      Adoption evidence rests on an asserted negative its own saved body contradicts.
+  llama-factory:
+    adoption:
+      since: '2026-08-09'
+      because: >-
+        PyPI downloads fell ~90% while stars, forks and named enterprise adopters all grew.
+        Likelier a packaging change than a collapse; banding either way today records a guess.
 ```
 
-Data, not a PR comment nobody re-reads.
+Per axis, not per product — a product with two axes settled and one disputed is neither done nor
+held. Data, not a PR comment nobody re-reads, and an entry earns its place by naming what would
+settle it.
 
 ### 6. Gate
 
@@ -197,9 +249,13 @@ its reason, and the re-fetch confirmations. Then stop: a human merges.
 
 ## Cost, measured
 
-`finetuning_code`, 2026-08-08: **5–10 fetches and about 15 minutes per product**, with a tail
-where the citations have rotted — `predibase` took 25 fetches because all four of its cited URLs
-were dead or blocked. Budget by the tail, not the median.
+`finetuning_code`, 22 products, 2026-08-09: **about 50 minutes end to end** at a concurrency cap
+of four, median 7 fetches per product and a tail to 31 where the citations had rotted. The audit
+adds roughly half as long again, because it re-fetches every digest.
+
+Budget by the tail rather than the median, and expect the *early* categories to be the slowest:
+they are ordered worst-artifact-coverage first, and a product with no repo needs more reading,
+not less.
 
 ## Boundaries
 
