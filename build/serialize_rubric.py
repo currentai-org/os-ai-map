@@ -128,6 +128,17 @@ TABLES: dict[str, tuple[str, ...]] = {
     # because `deferred` is declared on `scoring_recipe` itself and applies whichever ladder
     # a product resolves to.
     "category_deferrals": ("category_slug", "product_slug", "because"),
+    # Adoption bands, per product TYPE rather than per category, because the scale is a
+    # property of what the thing IS. They were hardcoded in the scoring SQL and nowhere
+    # else until 2026-08-09 — the repo/warehouse split check_parity exists to catch, one
+    # axis over. `above` is the exclusive lower bound, so the highest level whose `above`
+    # a figure exceeds wins, which is how the CASE expression already read.
+    #
+    # Hardware emits no rows on purpose. It declares `qualitative: true` and an empty
+    # `bands`, and the absence is the declaration: a consumer finding no band for a type
+    # must abstain rather than borrow another type's scale, which is exactly the
+    # "abstain rather than substitute" rule signal_routing.yaml states for sources.
+    "adoption_bands": ("product_type", "level", "above", "reach", "unit"),
     "license_aliases": ("source", "license_slug", "license_name"),
     "evidence_abstentions": ("source", "column_name", "abstain_value"),
     "product_openness_evidence": (
@@ -309,6 +320,32 @@ def license_tiers(slug: str, recipe: dict) -> tuple[list[dict], list[str]]:
     return rows, errors
 
 
+def adoption_bands(shared_rubrics: dict) -> tuple[list[dict], list[str]]:
+    """One row per (product type, level), from the shared ladders' `adoption.bands`.
+
+    Keyed on the rubric's filename stem, which IS the product type — `recipe_for` already
+    resolves a product to its ladder by `type`, so no second mapping is invented here.
+    """
+    rows, warnings = [], []
+    for product_type, rubric in sorted(shared_rubrics.items()):
+        adoption = (rubric or {}).get("adoption")
+        if adoption is None:
+            warnings.append(f"rubric {product_type!r} declares no adoption bands")
+            continue
+        bands = adoption.get("bands") or []
+        if not bands and not adoption.get("qualitative"):
+            warnings.append(f"rubric {product_type!r} declares empty bands but is not qualitative")
+        for band in bands:
+            rows.append({
+                "product_type": product_type,
+                "level": band["level"],
+                "above": band["above"],
+                "reach": str(band.get("reach") or ""),
+                "unit": str(adoption.get("unit") or ""),
+            })
+    return rows, warnings
+
+
 def category_dimensions(slug: str, recipe: dict) -> list[dict]:
     """The ladder's declared dimensions, with the keys each may be recorded under.
 
@@ -394,6 +431,8 @@ def build_rubric(sources: dict, policy: dict, routing: dict) -> tuple[dict[str, 
     errors: list[str] = []
     warnings: list[str] = []
 
+    tables["adoption_bands"], band_warnings = adoption_bands(shared_rubrics)
+    warnings.extend(band_warnings)
     tables["license_aliases"] = license_aliases(routing)
     tables["evidence_abstentions"] = evidence_abstentions(routing)
     if not tables["evidence_abstentions"]:

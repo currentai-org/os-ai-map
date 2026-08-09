@@ -190,3 +190,36 @@ openness:
       The category's center of gravity - open weights, closed recipe. A fallthrough rather
       than a rule because it is what remains once the cases above are spent, and it lands in
       the open-ish bucket so unrecorded evidence never counts as open.
+
+# Adoption bands: which monthly figure maps to which level, for this product type.
+#
+# Declared here rather than in the warehouse because they were hardcoded in
+# currentai.signal_pypi.package_downloads and nowhere else - the same repo/warehouse
+# split that check_parity exists to catch, one axis over. The scoring SQL now reads
+# registry.adoption_bands, which build/serialize_registry.py emits from this block.
+#
+# The scale is a property of the product TYPE, which is what the rubrics are already
+# keyed on, so this is four declarations rather than sixteen.
+#
+# `above` is the exclusive lower bound, so the bands read the way the SQL does: the
+# highest level whose `above` the figure exceeds wins. `reach` is the label a score
+# records, and it carries the UNIT the band was read in - stars and downloads are not
+# the same reach at the same magnitude.
+#
+# Derived 2026-08-09 from the 75 model products recording both a level and a reach, and
+# identical to software's. That is the finding rather than an assumption: Hugging Face
+# model downloads and PyPI package downloads sit at the same order of magnitude across
+# this corpus (model median 41,344 over 101 artifacts), so one scale serves both.
+#
+# base_pretrained declared exactly these bands inline before this file existed. Its
+# category-level block is the only other place they appeared, and it is now the
+# exception rather than the convention.
+adoption:
+  reach_is_monthly: true
+  unit: Hugging Face downloads in the trailing 30 days, summed across the family's SKUs
+  bands:
+  - {level: 5, above: 10000000, reach: '>10M'}
+  - {level: 4, above: 1000000, reach: 1M-10M}
+  - {level: 3, above: 100000, reach: 100K-1M}
+  - {level: 2, above: 10000, reach: 10K-100K}
+  - {level: 1, above: 0, reach: <10K}
