@@ -89,6 +89,14 @@ pilot run invented product slugs from a summary.
 Report the PR, the counts, and what the next invocation will pick up. Then stop. The human
 merges.
 
+**On how long this takes.** A category is roughly an hour of wall-clock, not the minutes an
+agent count suggests: concurrency is capped at `min(16, cores - 2)`, so a 22-product category
+runs in six waves on a six-core machine, and the audit re-fetches every digest afterwards. The
+ordering makes the early categories the slow ones — worst artifact coverage first means the
+products with no repository to read, where a license has to come from pricing pages and terms
+documents. Quote a range and say what it depends on rather than a single figure; the first
+estimate given for `finetuning_code` was 20 minutes and it took 50.
+
 ## What finished looks like
 
 ```
