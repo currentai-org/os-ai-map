@@ -5,34 +5,73 @@ openness:
   components: license:proprietary;software-stack:closed(SambaFlow compiler/runtime not open);hardware:SN40L-RDU-only;delivery:managed-cloud-API
   confidence: high
   note: Proprietary managed cloud inference on SambaNova's own RDU silicon; no open source software disclosed.
-    Scored closed.
+    The Cloud EULA confirms a non-exclusive, non-transferable, limited license to use the hosted service
+    only -- not a redistribution or source grant. Scored closed.
+  last_verified: '2026-08-09'
   sources:
+  - url: https://sambanova.ai/cloud-end-user-license-agreement
+    shows: SambaNova hereby grants to Customer a non-exclusive, non-transferable, limited license during
+      the Term to use the software embodied in the Service
+    accessed: '2026-08-09'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: ba2fd4ebee6a698fd26af51f4eecce486b09fcf3ae3208c2673a38ee06cf7b2d
   - url: https://sambanova.ai/blog/sn40l-chip-best-inference-solution
-    shows: SambaNova Cloud is a hosted proprietary inference service on SN40L; no OSS components disclosed;
-      serves Llama 3.1 models
-    accessed: '2026-06-04'
+    shows: The RDU is also the only AI accelerator with a tightly coupled three-tier memory system comprising
+      SRAM, HBM, and DDR DRAM.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 9aa0f21b7844a01acadaeb1f5c0b94ec047a758aa2c1d1d3bd33a8298a76a4ef
 adoption:
   level: 3
   reach: 100K-1M
   signal_type: reported_traction
   confidence: low
-  note: Marketed as fast inference cloud with free tier; integrated by tools (Vellum) and benchmarked
-    by third parties, but a niche specialized provider vs the hyperscalers. No verified user count; level
-    3 = reported traction.
+  note: OpenRouter's SambaNova provider page shows real, current multi-hundred-million-to-billion-token
+    daily volume across the models it routes to SambaNova (e.g. ~1.65B tokens on 2026-08-09 across 6 models),
+    corroborating genuine third-party traffic beyond vendor marketing. No standalone user/customer count
+    is published, so this remains reported/observed traction rather than a banded usage figure; level and
+    reach held unchanged pending rubric-level reach thresholds this pass did not open.
+  last_verified: '2026-08-09'
   sources:
+  - url: https://openrouter.ai/provider/sambanova
+    shows: 'Tokens processed on OpenRouter time series for SambaNova-routed models, e.g. 2026-08-09: google/gemma-4-31b-it
+      ~1,094,432,018; openai/gpt-oss-120b ~343,850,246; minimax/minimax-m2.7 ~107,023,059 tokens'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 38e3683b096b1c73bd4ee48310ecf86adb3984c6a75b704101a91b74f0053c2a
   - url: https://sambanova.ai/blog/sn40l-chip-best-inference-solution
     shows: public SambaNova Cloud with free try-it inference; positioned as commercial inference provider
-    accessed: '2026-06-04'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 9aa0f21b7844a01acadaeb1f5c0b94ec047a758aa2c1d1d3bd33a8298a76a4ef
 capability:
   score: 4
   basis: feature_matrix
-  value: Llama 3.1 8B ~1,042 tok/s, 70B ~457 tok/s, 405B ~129 tok/s at full (16-bit) precision on SN40L;
-    >1000 tok/s single-node milestone
+  value: SambaNova's own SN40L benchmark reports Llama 3.1 405B at 129 output tok/s, 70B at 457 tok/s, and
+    8B at 1,042 tok/s, all at full 16-bit precision. Per Artificial Analysis (checked today), SambaNova
+    currently serves 9 models via its API; the fastest is gpt-oss-120b at roughly 724 output tok/s, with
+    Llama 3.3 70B at roughly 290 tok/s.
   confidence: medium
-  note: Among the fastest per-request token/s in market on its silicon (full-precision 405B at 129 tok/s,
-    8B >1000 tok/s). Vendor/3rd-party throughput figures; specialized hardware, narrower model/feature
-    breadth than the open frontier engines, so C4 not C5.
+  note: No peer comparison is recorded in the source data for this product, and none was substituted --
+    see flags. Score and basis held at their prior values; only the supporting value/basis_detail were re-derived.
+  basis_detail: Vendor SN40L throughput benchmark against named competitor silicon, corroborated by Artificial
+    Analysis' independent, currently-live ranking across the models SambaNova now serves. No capability
+    ladder exists for this category and no peer comparison is recorded for this product; score reflects
+    specialized-hardware throughput leadership offset by a narrower served-model breadth than the largest
+    multi-tenant inference clouds.
+  last_verified: '2026-08-09'
   sources:
   - url: https://sambanova.ai/blog/sn40l-chip-best-inference-solution
-    shows: Llama 3.1 405B 129 tok/s, 70B 457 tok/s, 8B 1042 tok/s at 16-bit on SN40L
-    accessed: '2026-06-04'
+    shows: Llama 3.1 Instruct 405B 129, 70B 457, 8B 1042 (output tokens/sec, SambaNova 16-bit column of
+      Table 1)
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 9aa0f21b7844a01acadaeb1f5c0b94ec047a758aa2c1d1d3bd33a8298a76a4ef
+  - url: https://artificialanalysis.ai/providers/sambanova
+    shows: 'Fastest # 1 gpt-oss-120b (low) 724 t/s # 2 gpt-oss-120b (high) 706 t/s # 3 MiniMax-M2.7 381
+      t/s # 4 Llama 3.3 70B 290 t/s # 5 Gemma 4 31B 203 t/s'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: ef754ce317fc3e8eaa147ffac4ab8ae69b2b9206665f017faece64d442cfb557

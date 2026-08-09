@@ -2,41 +2,75 @@ product: apple-core-ml-runtime
 openness:
   score: 1
   class: closed
-  components: runtime:proprietary(Apple system framework, closed);conversion-tooling:coremltools(BSD-3-Clause,
-    OSI, open);model-format:.mlmodel/.mlpackage(documented);hardware:Apple-silicon-only(Neural Engine)
+  components: source:closed;license:proprietary(Apple system framework, ships compiled with the OS/SDK,
+    no published source);self-host:no
   confidence: high
-  note: The inference runtime itself is a closed Apple framework; only coremltools (model conversion)
-    is open BSD-3. Headline (the runtime) is closed; scored closed with open-tooling note.
+  note: 'Core ML has no repository - Apple''s own documentation describes it purely as an API surface (`MLModel`
+    etc.) that a person''s app calls into; there is no source tree to self-host or fork. The ladder''s `source:
+    closed` rule fires regardless of license tier, so core-gated is not applicable here (the note in software.yaml:
+    that dimension only matters where source is public).'
+  last_verified: '2026-08-09'
   sources:
-  - url: https://developer.apple.com/documentation/coreml
-    shows: Core ML is Apple's proprietary on-device ML inference framework; runtime closed, runs models
-      on Apple hardware
-    accessed: '2026-06-04'
+  - url: https://developer.apple.com/tutorials/data/documentation/coreml.md
+    shows: Use Core ML to integrate machine learning models into your app... Copyright &copy; 2026 Apple
+      Inc. All rights reserved.
+    accessed: '2026-08-09'
+    establishes:
+    - source
+    - license
+    http_status: 200
+    content_sha256: a2aa644242309dfefa82b7e0c4b739e5a086622f7d5e395f31e30f48e7948f25
 adoption:
   level: 5
   reach: '>10M'
   signal_type: active_users
   confidence: medium
-  note: Core ML is the system on-device inference runtime shipped on every modern iPhone/iPad/Mac (>1B
-    active Apple devices) and used by a large share of App Store ML features. Mass-market reach attributed
-    to the Apple device install base the runtime ships on, not a developer download count.
+  note: Core ML ships as a system framework across iOS/iPadOS/macOS/tvOS/watchOS/visionOS (confirmed against
+    the MLModel availability list), and Apple's own Q3 FY2026 earnings call puts the active-device installed
+    base at over 2.5 billion. Reach is attributed to the device base the runtime ships preinstalled on,
+    not a developer download count.
+  last_verified: '2026-08-09'
   sources:
-  - url: https://developer.apple.com/documentation/coreml
-    shows: Core ML runs on-device across iOS/macOS/watchOS/tvOS, the default on-device inference framework
-      for Apple platforms
-    accessed: '2026-06-04'
+  - url: https://docs.developer.apple.com/tutorials/data/documentation/coreml/mlmodel.md
+    shows: '"availability" : [ "iOS: 11.0.0 -", "iPadOS: 11.0.0 -", "macCatalyst: 13.1.0 -", "macOS: 10.13.0
+      -", "tvOS: 11.0.0 -", "visionOS: 1.0.0 -", "watchOS: 4.0.0 -" ]'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 721795be9387719d53e03068029104df427354744e5a818009dabd9ddb1ca774
+  - url: https://sixcolors.com/post/2026/07/one-last-time-this-is-tim-transcript-of-apples-q3-2026-financial-call/
+    shows: installed base of over two and a half billion active devices has reached another all-time high
+      across all major product categories and geographic segments
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 933db5de1791777e14a3baeb18db29269b1d490dc17fff3dfeb1d4bd2317dc5f
 capability:
   score: 4
   basis: feature_matrix
   relative_to: vllm
   relation: one_below
-  value: on-device inference across CPU/GPU/Neural Engine; broad model coverage via coremltools (PyTorch/TF
-    conversion); quantization/compression; transformer + diffusion support
+  value: On-device inference across CPU, GPU, and Neural Engine compute devices with a compute-plan API
+    for per-layer device placement; coremltools converts PyTorch/TensorFlow models into the format; weight/activation
+    compression via INT4/INT8 linear quantization, palettization (1-8 bit lookup tables), and pruning, with
+    per-model optimization guides published for ResNet50, OPT, and Stable Diffusion.
   confidence: medium
-  note: Best-in-class on-device/edge inference runtime (Neural Engine acceleration, quantization, broad
-    converted-model coverage) but constrained to Apple silicon and on-device scale; C4 within this category
-    (frontier C5 reserved for the large-scale server engines vLLM/SGLang/TensorRT-LLM).
+  note: 'Comparison basis unchanged from the prior read: best-in-class for on-device/edge inference (Neural
+    Engine acceleration, quantization/palettization, broad converted-model coverage) but constrained to
+    Apple silicon and on-device scale, one tier below the large-scale server engines (vllm re-confirmed
+    today at capability score 5).'
+  basis_detail: 'Apple''s own CoreML and coremltools documentation: multi-device execution (CPU/GPU/Neural
+    Engine), a compute-plan API for per-layer device placement, and a compression toolkit (quantization,
+    palettization, pruning) whose documentation set carries dedicated optimization walkthroughs for ResNet50,
+    an OPT transformer, and Stable Diffusion (linked from the optimization overview; the walkthrough pages
+    themselves were not fetched).'
+  last_verified: '2026-08-09'
   sources:
-  - url: https://developer.apple.com/documentation/coreml
-    shows: Neural Engine acceleration, on-device inference, model optimization features
-    accessed: '2026-06-04'
+  - url: https://docs.developer.apple.com/tutorials/data/documentation/coreml.md
+    shows: leveraging the CPU, GPU, and Neural Engine while minimizing its memory footprint and power consumption
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: a2aa644242309dfefa82b7e0c4b739e5a086622f7d5e395f31e30f48e7948f25
+  - url: https://apple.github.io/coremltools/docs-guides/source/opt-overview.html
+    shows: Core ML supports INT4 and INT8 quantization options for weights and INT8 for activations.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 0090388772039bb5338c2d0332a0349a3832c41a2bf098774786197670a58adf

@@ -7,35 +7,55 @@ openness:
     modular/modular);source:public(~450k LOC incl MAX kernels + inference server + Mojo stdlib);commercial-tier:Modular
     enterprise/managed deployment
   confidence: high
-  note: 'Large public codebase, and the repo''s own LICENSE is now Apache-2.0 with LLVM Exceptions. The
-    README is explicit that "Modular, MAX and Mojo usage and distribution are licensed under the Modular
-    Community License", which is not OSI approved: read 2026-07-30, it licenses per discrete physical device,
-    grants only a limited right to redistribute certain components, and provides the community variant free
-    of charge subject to withdrawal at any time. So the source is readable and not freely runnable at scale.
-    Marketed as "open"; flag open_washed. Score corrected from 3 to 2 on 2026-07-30. The software ladder
-    has rungs at 1, 2, 4 and 5 and none at 3, so 3/source_available was not a pair any rule could produce;
-    the ladder scores "you can read it and not run it freely" at 2.'
+  note: 'Large public codebase; the repo''s own LICENSE is Apache-2.0 with LLVM Exceptions. GitHub''s repo
+    page still states "Modular, MAX and Mojo usage and distribution are licensed under the Modular Community
+    License", which is not OSI approved. Re-read 2026-08-09 on the license page itself: it splits capacity
+    by device architecture (no cap on X86/ARM/NVIDIA-PTX devices; an 8-device cap on any other accelerator
+    type), grants only "a limited right to redistribute certain components of the SDK", and the community
+    variant is "provided free of charge" but Modular "may at any time change its provision" with only commercially-reasonable
+    notice. So the source is readable and not unconditionally freely runnable/redistributable at scale.
+    Marketed as "open"; flag open_washed. Score corrected from 3 to 2 on 2026-07-30 and unchanged on this
+    re-read.'
+  last_verified: '2026-08-09'
   sources:
   - url: https://github.com/modular/modular
-    shows: Modular Community License (non-OSI) governs MAX/Mojo usage+distribution; ~450k LOC public;
-      MAX 26.3 / Mojo 1.0.0b1 (May 7 2026)
-    accessed: '2026-06-04'
-  - url: https://docs.modular.com/max/
-    shows: MAX serves 500+ open models with OpenAI-compatible endpoints across NVIDIA/AMD/Apple GPUs
-    accessed: '2026-06-04'
+    shows: Modular, MAX and Mojo usage and distribution are licensed under the Modular Community License
+    accessed: '2026-08-09'
+    establishes:
+    - source
+    http_status: 200
+    content_sha256: c6d520730b91071a7a1131be8b213ccd2319d46968bb99df11bed182db751dc7
+  - url: https://www.modular.com/legal/community
+    shows: Modular grants a limited right to redistribute certain components of the SDK as part of Licensee's
+      Applications, subject to conditions and Distribution Requirements specified in the SDK documentation.
+    accessed: '2026-08-09'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: 2125e9ed0d988853e9701f018433c0648daf178882b93fb24304e5f0a1237a8c
+  - url: https://raw.githubusercontent.com/modular/modular/main/LICENSE
+    shows: 'The MAX repository is licensed under the Apache License v2.0 with LLVM Exceptions:'
+    accessed: '2026-08-09'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: b9ec095b4c52f3564cef5a7d720d4eafd0589fbb760a578d8c020f97a2fc4ae4
 adoption:
   level: 2
   reach: 10K-100K
   signal_type: stars_fallback
   confidence: low
-  note: No published download/user/tokens figure for MAX serving specifically. 26.3k GitHub stars on the
-    modular/modular monorepo (covers MAX+Mojo) is the only signal; capped per stars_fallback and placed
-    at 2 given no verified production-deployment count and a still-maturing serving ecosystem vs the established
-    OSS engines.
+  note: No published download/user/tokens figure for MAX serving specifically. GitHub stargazerCount on
+    modular/modular (covers MAX+Mojo) is the only signal; capped per stars_fallback and placed at 2 given
+    no verified production-deployment count and a still-maturing serving ecosystem vs the established OSS
+    engines.
+  last_verified: '2026-08-09'
   sources:
   - url: https://github.com/modular/modular
-    shows: 26.3k stars on modular/modular (MAX + Mojo)
-    accessed: '2026-06-04'
+    shows: '"stargazerCount":26690'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: c6d520730b91071a7a1131be8b213ccd2319d46968bb99df11bed182db751dc7
 capability:
   score: 4
   basis: feature_matrix
@@ -43,10 +63,23 @@ capability:
     (NVIDIA/AMD/Apple) + CPU, custom-kernel authoring in Mojo, cloud deployment; designed as high-performance
     inference + hardware-abstraction layer
   confidence: medium
-  note: Broad multi-hardware coverage and a high-performance serving stack with custom-kernel programmability;
-    no standardized MLPerf/AA inference-engine submission verified independently, so feature_matrix. Strong
-    (C4) but not a demonstrated throughput-frontier-definer like the C5 anchors.
+  note: 'Re-read 2026-08-09: docs confirm serving 500+ Hugging Face models via an OpenAI-compatible REST
+    API, a graph compiler with op-level fusions, and native MAX/PyTorch execution across GPUs and CPUs;
+    the GitHub README confirms separate NVIDIA and AMD GPU containers plus Apple-silicon GPU support, and
+    custom op/kernel authoring in Mojo. No standardized MLPerf/AA inference-engine submission found, so
+    basis stays feature_matrix rather than benchmark. No peer comparison is recorded in the brief and none
+    was found to rest the band on, so relative_to/relation stay unset.'
+  last_verified: '2026-08-09'
   sources:
-  - url: https://docs.modular.com/max/
-    shows: 500+ models, OpenAI-compatible endpoints, NVIDIA/AMD/Apple GPU + CPU, custom GPU kernels
-    accessed: '2026-06-04'
+  - url: https://docs.modular.com/max/intro
+    shows: 'High-performance, portable serving: Serve 500+ AI models from Hugging Face using our OpenAI-compatible
+      REST API with industry-leading performance across GPUs and CPUs.'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: c8b5a6c86da68a79746c87b4ed9be1f1908445baed1df5bc507cfcfa84a024a7
+  - url: https://github.com/modular/modular
+    shows: We have separate containers for NVIDIA and AMD GPU environments, and a unified container that
+      works with both.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: c6d520730b91071a7a1131be8b213ccd2319d46968bb99df11bed182db751dc7

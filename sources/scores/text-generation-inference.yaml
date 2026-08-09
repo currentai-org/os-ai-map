@@ -5,36 +5,63 @@ openness:
   components: license:Apache-2.0(OSI);source:public;note:was briefly under restrictive HFOIL license in
     2023, reverted to Apache-2.0; current LICENSE confirmed Apache-2.0
   confidence: high
-  note: Current LICENSE is standard Apache-2.0 (not HFOIL); fully open source despite being archived.
+  note: Current LICENSE body re-read verbatim, still standard Apache-2.0 (not HFOIL). Repository page confirms
+    'Public archive' visibility, so source remains public despite the archive.
+  last_verified: '2026-08-09'
   sources:
   - url: https://github.com/huggingface/text-generation-inference/blob/main/LICENSE
-    shows: Apache License 2.0 text, Copyright 2022 Hugging Face
-    accessed: '2026-06-04'
+    shows: Apache License Version 2.0, January 2004; Copyright 2022 Hugging Face
+    accessed: '2026-08-09'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: 28216184827860ae83a60244c8868de4cf84e16357d16cdb975a46afe3afa9db
+  - url: https://github.com/huggingface/text-generation-inference
+    shows: '''This repository was archived by the owner on Mar 21, 2026. It is now read-only.'' with a ''Public
+      archive'' label, confirming the source remains publicly readable'
+    accessed: '2026-08-09'
+    establishes:
+    - source
+    http_status: 200
+    content_sha256: 4d0c5bdbac0ffcc20b6319206dd085cf73c9f2892821acf5bfb9d5bd11a63c1d
 adoption:
   level: 3
   reach: 100K-1M
   signal_type: reported_traction
   confidence: medium
-  note: Ran in production at HF (Hugging Chat, Inference API, Inference Endpoints) and was widely deployed
-    2023-2025, but the repo is now archived/maintenance-mode with HF steering users to vLLM/SGLang, so
-    adoption is declining. 10.9k stars (secondary). Level 3 reflects a real but shrinking, sunsetting
-    footprint.
+  note: README still states production use at Hugging Face and now explicitly recommends vLLM/SGLang/llama.cpp/MLX
+    going forward, confirming a real but sunsetting footprint; unchanged from prior read.
+  last_verified: '2026-08-09'
   sources:
   - url: https://github.com/huggingface/text-generation-inference
-    shows: 'README: ''Used in production at Hugging Face to power Hugging Chat, the Inference API and
-      Inference Endpoints''; archived Mar 21 2026, maintenance mode, recommends vLLM/SGLang'
-    accessed: '2026-06-04'
+    shows: '''Used in production at Hugging Face to power Hugging Chat, the Inference API and Inference
+      Endpoints.'' and ''This approach is now adopted by downstream inference engines, which we contribute
+      to and recommend using going forward: vllm, SGLang, as well as local engines with inter-compatibility
+      such as llama.cpp or MLX.'''
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 4d0c5bdbac0ffcc20b6319206dd085cf73c9f2892821acf5bfb9d5bd11a63c1d
 capability:
   score: 3
   basis: feature_matrix
-  value: Continuous batching, tensor parallelism, quantization (bitsandbytes/GPTQ/AWQ), distributed tracing
-    (OpenTelemetry) + Prometheus metrics, OpenAI-compatible API. No active MLPerf submission; feature
-    set frozen at v3.3.7.
+  value: Continuous batching, tensor parallelism, Flash Attention, token streaming, quantization (bitsandbytes/GPTQ/AWQ/EETQ),
+    distributed tracing (OpenTelemetry) + Prometheus metrics, OpenAI-compatible API. Feature set is frozen
+    at the final release, v3.3.7 (2025-12-19), confirmed 'Latest' on the releases page.
   confidence: medium
-  note: Was a capable production server, but development has stopped (archived); its feature set is frozen
-    while vLLM/SGLang continue advancing, so it now sits mid-pack rather than at the C5 frontier.
+  note: No peer comparison is recorded for this product and none was found in today's read, so relative_to/relation
+    stay unset rather than borrowing a peer not confirmed as of this date. Development is stopped (archived);
+    feature set frozen while vLLM/SGLang continue advancing, holding it mid-pack rather than at the frontier.
+  basis_detail: README-documented feature set, re-read against the live page
+  last_verified: '2026-08-09'
   sources:
   - url: https://github.com/huggingface/text-generation-inference
-    shows: README documents continuous batching, tensor parallelism, OpenTelemetry tracing, Prometheus
-      metrics, production-ready feature set
-    accessed: '2026-06-04'
+    shows: README documents continuous batching, tensor parallelism, Flash Attention, token streaming, GPTQ/AWQ/EETQ
+      quantization, OpenTelemetry tracing, Prometheus metrics
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 4d0c5bdbac0ffcc20b6319206dd085cf73c9f2892821acf5bfb9d5bd11a63c1d
+  - url: https://github.com/huggingface/text-generation-inference/releases
+    shows: v3.3.7 tagged 'Latest', released 2025-12-19T14:35:25Z by drbh
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: b13bf738ab8d9586582c7d15ebf27f9e5ad342241ecdf10a1343ca55d2497f1f

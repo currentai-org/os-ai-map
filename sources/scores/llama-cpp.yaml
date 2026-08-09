@@ -5,39 +5,76 @@ openness:
   components: license:MIT(OSI);source:public;governance:ggml-org/Hugging Face(community);no feature-gated
     core;core-gated:ungated
   confidence: high
-  note: Fully MIT-licensed C/C++ inference engine; entire source public, no proprietary tier.
+  note: 'Fully MIT-licensed C/C++ inference engine; entire source public, no proprietary tier. Checked the
+    repo page and the ggml-org GitHub org profile for a hosted or paid SKU and found none: the only distribution
+    is the one MIT-licensed codebase.'
+  last_verified: '2026-08-09'
   sources:
   - url: https://github.com/ggml-org/llama.cpp/blob/master/LICENSE
-    shows: MIT License text, (c) 2023-2026 The ggml authors
-    accessed: '2026-06-04'
+    shows: MIT License text, "Copyright (c) 2023-2026 The ggml authors"
+    accessed: '2026-08-09'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: 94f29bbed6a22c35b992c5c6ebf0e7c92f13b836b90f36f461c9cf2f0f1d010d
+  - url: https://github.com/ggml-org/llama.cpp
+    shows: Public repository, single MIT license badge, README states "Plain C/C++ implementation without
+      any dependencies"; no pricing page, paid tier, or feature-gated build found in the repo
+    accessed: '2026-08-09'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: 2354d46dd6ccad587f322f2750973f0d0c720e00e63510e20ff2324c23e0464f
 adoption:
   level: 4
   reach: 1M-10M
   signal_type: usage_volume
   confidence: medium
-  note: 'De facto standard local/edge inference engine: GGUF (its native format) is >60% of all quantized
-    models on HF, and llama.cpp powers Ollama, LM Studio, GPT4All, Jan.ai, and HF Inference Endpoints,
-    which collectively serve millions. 115k GitHub stars (fastest OSS-AI project to 100k, Mar 2026) corroborates
-    but is not the basis. No clean PyPI/user count for the C++ engine itself, so usage inferred from ecosystem
-    dominance; placed at 4 (1-10M-equivalent).'
+  note: 'De facto standard local/edge inference engine: the Hugging Face Hub documents GGUF usage separately
+    for llama.cpp, Ollama, LM Studio, and GPT4All, reflecting the format''s centrality across that ecosystem.
+    GitHub stars grew from ~115k (June 2026) to 123,185 (today), consistent with the warehouse-recorded
+    123,037 as of 2026-08-07. No clean PyPI/download count exists for the C++ engine itself, so usage is
+    inferred from ecosystem centrality and star growth rather than a direct install count; placed at 4 (1-10M-equivalent).
+    The prior note''s specific claim that GGUF is ">60% of all quantized models on HF" was dropped: no source
+    fetched today states that figure, and it did not appear on the pages re-read.'
+  last_verified: '2026-08-09'
   sources:
   - url: https://github.com/ggml-org/llama.cpp
-    shows: 115k stars; README lists Ollama/LM Studio/LocalAI/HF Inference Endpoints as downstream integrations
-    accessed: '2026-06-04'
+    shows: '"123185 users starred" this repository'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 2354d46dd6ccad587f322f2750973f0d0c720e00e63510e20ff2324c23e0464f
   - url: https://huggingface.co/docs/hub/gguf-llamacpp
-    shows: GGUF/llama.cpp as the standard local-inference path on the HF Hub
-    accessed: '2026-06-04'
+    shows: Separate Hub doc pages titled "GGUF usage with llama.cpp", "GGUF usage with LM Studio", "GGUF
+      usage with GPT4All", and "GGUF usage with Ollama"
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: fd5144d240cb4863cbe51a46c3185f2cf0debbf8d38d29c615096ad8d7dc054b
 capability:
   score: 4
   basis: feature_matrix
-  value: 'Backends: Metal/CUDA/HIP/Vulkan/SYCL/OpenVINO/MUSA/WebGPU; quantization 1.5/2/3/4/5/6/8-bit
-    integer; 100+ model architectures incl. multimodal (LLaVA); continuous batching + server. No standardized
-    MLPerf Inference submission for the engine itself.'
+  value: 'Backends: Metal, CUDA, HIP (AMD), MUSA (Moore Threads), Vulkan, SYCL, WebGPU, and an in-progress
+    OpenVINO backend; integer quantization at 1.5/2/3/4/5/6/8-bit; a multimodal subsystem (vision models);
+    an OpenAI-compatible llama-server REST API; runs any of the thousands of GGUF models hosted on Hugging
+    Face. No standardized MLPerf Inference submission for the engine itself.'
   confidence: high
-  note: Frontier for portable/CPU/consumer-hardware inference and quantization breadth, but not the datacenter-GPU
-    throughput frontier held by vLLM/SGLang/TensorRT-LLM; scored 4 on a category where C5 is reserved
-    for the throughput-defining server engines.
+  note: 'Frontier for portable/CPU/consumer-hardware inference and quantization breadth, not the datacenter-GPU
+    throughput frontier associated with vLLM/SGLang/TensorRT-LLM, which is the reasoning behind sitting
+    at 4 rather than 5. That comparison is contextual color carried in this note, not a recorded relative_to/relation:
+    those peers were not reconfirmed today, so no peer band is claimed.'
+  basis_detail: README backend/quantization matrix plus the models doc, re-read today; no benchmark submission
+    exists for the engine itself
+  last_verified: '2026-08-09'
   sources:
   - url: https://github.com/ggml-org/llama.cpp
-    shows: README documents backend list, 1.5-8bit quantization, 100+ architectures, multimodal support
-    accessed: '2026-06-04'
+    shows: Backend list (Metal/CUDA/HIP/MUSA/Vulkan/SYCL/WebGPU/OpenVINO), 1.5-8bit quantization list, multimodal
+      subsystem reference, "llama-server REST API", OpenAI-compatible server example
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 2354d46dd6ccad587f322f2750973f0d0c720e00e63510e20ff2324c23e0464f
+  - url: https://github.com/ggml-org/llama.cpp/blob/master/docs/models.md
+    shows: '"The Hugging Face platform hosts [thousands of models]" compatible with llama.cpp'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: aaa614d738bedabed1e748b901476e45eb228fbcf6b50d5880eafceccdea8e86

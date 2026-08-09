@@ -2,48 +2,79 @@ product: vllm
 openness:
   score: 5
   class: open_source
-  components: license:Apache-2.0(OSI);source:public;governance:vLLM-project(community,PyTorch-ecosystem
+  components: license:Apache-2.0(OSI);source:public;core-gated:ungated;governance:vLLM-project(community,PyTorch-ecosystem
     adjacent)
   confidence: high
-  note: license:Apache-2.0(OSI);source:public;governance:vLLM-project(community,PyTorch-ecosystem adjacent)
+  note: Apache-2.0 across the repo, re-confirmed today against the LICENSE body. The published tree is the
+    full engine with no commercial edition or enterprise-licensed directory, so nothing is gated out of
+    the source. Governance sits with the vLLM project community, adjacent to the PyTorch ecosystem.
+  last_verified: '2026-08-09'
   sources:
   - url: https://github.com/vllm-project/vllm
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
-  - url: https://www.programming-helper.com/tech/vllm-2026-open-source-llm-inference-engine
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
+    shows: Public repository vllm-project/vllm, described as "A high-throughput and memory-efficient inference
+      and serving engine for LLMs"; full source tree with no commercial edition or enterprise-licensed directory
+      - the page's only "Enterprise"/"Pricing" strings are GitHub's own site navigation; README states it
+      was originally developed in the Sky Computing Lab at UC Berkeley and is now maintained by a diverse
+      community.
+    accessed: '2026-08-09'
+    establishes:
+    - source
+    - core_gated
+    http_status: 200
+    content_sha256: 3723432a3cb40acc8cfb3cfe7a575360fa1a5fe60affd907883e38adf18423ed
+  - url: https://raw.githubusercontent.com/vllm-project/vllm/main/LICENSE
+    shows: '"Apache License" "Version 2.0, January 2004" full text, unmodified.'
+    accessed: '2026-08-09'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
 adoption:
   level: 4
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: ~3M+ PyPI downloads/month as of 2026; de facto standard open inference engine with enterprise
-    adoption (Amazon, Roblox, Stripe). 81.9k GitHub stars corroborates but is not the primary basis. Level
-    4 (1-10M) on download volume; could exceed if cumulative installs counted.
+  note: PyPI downloads of 5.29M in the trailing 30 days band at level 4 (1M-10M); 88,585 GitHub stars corroborate
+    but are not the primary basis.
+  last_verified: '2026-08-09'
   sources:
-  - url: https://pypistats.org/packages/vllm
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
+  - url: https://pypistats.org/api/packages/vllm/recent
+    shows: '"last_month":5293683'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 9d4b0793ce561f946f7f1be185acd2183709e498a8fffd023509f666495f8bef
   - url: https://pypi.org/project/vllm/
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
-  - url: https://awesomeagents.ai/tools/best-open-source-llm-inference-servers-2026/
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
+    shows: vllm package listing on PyPI confirming the project is actively published there.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 27e84f4ede93980ab436b5e211bcfb166830b7884d0607058e9911dd7dd9fe62
+  - url: https://github.com/vllm-project/vllm
+    shows: '"88585 users starred"'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 3723432a3cb40acc8cfb3cfe7a575360fa1a5fe60affd907883e38adf18423ed
 capability:
   score: 5
   basis: benchmark
-  basis_detail: MLPerf
+  basis_detail: MLPerf Inference v6.0 (AMD Instinct MI355X submission, April 2026)
   value: null
   confidence: high
-  note: Reference PagedAttention implementation; used in MLPerf Inference submissions (Red Hat OpenShift
-    AI on GPT-J-6b and llama-2-70b). Broad model/hardware coverage (200+ architectures) per repo. Top-tier
-    among open inference engines.
+  note: vLLM is the serving stack behind AMD's MLPerf Inference v6.0 submission on Instinct MI355X, across
+    gpt-oss-120b, Llama 2 70B and a multi-node Llama 3.1 405B run reported at 97-98% scaling efficiency,
+    and it reports support for 200+ model architectures on Hugging Face. vLLM is the capability anchor for
+    inference_code; no relative_to is recorded here. Re-sourced from the April 2026 submission, replacing
+    a April 2024 Red Hat OpenShift AI result that dated the benchmark two years behind the confirmation.
+  last_verified: '2026-08-09'
   sources:
-  - url: https://www.redhat.com/en/blog/accelerating-generative-ai-adoption-red-hat-openshift-ai-achieves-impressive-results-mlperf-inference-benchmarks-vllm-runtime
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
+  - url: https://rocm.blogs.amd.com/artificial-intelligence/mlperf-inference-v6.0/README.html
+    shows: AMD Instinct MI355X MLPerf Inference v6.0 submission; "tuning experiments were conducted on vLLM
+      parameters and used to refine the scheduler configurations", and the Llama 3.1 405B multi-node run
+      used "an AMD MLPerf Stack with vLLM" at 97-98% scaling efficiency.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 91705e11f8905706f022c434c23e982a8e5720edecdee78eacc4bc9d0b2bcfdc
   - url: https://github.com/vllm-project/vllm
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
+    shows: '"vLLM seamlessly supports 200+ model architectures on Hugging Face"'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 3723432a3cb40acc8cfb3cfe7a575360fa1a5fe60affd907883e38adf18423ed
