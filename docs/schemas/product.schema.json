@@ -135,6 +135,22 @@
         }
       },
       "description": "Display-only provenance: what this product was built from, what curated it, and what it went on to train. It feeds no score and gates nothing. build/serialize.py resolves any reference matching an on-map slug into that product's display name and passes everything else through verbatim, which is deliberate, because a corpus's ancestors are usually off-map (Common Crawl, Project Gutenberg, \"templated NLP datasets\"). Nothing validates a reference, so a mistyped slug renders as literal text rather than failing a check: 98 of 175 references resolve to a product on 2026-08-08 and the remaining 77 are intentional free text, which is why this is not gated. Also emitted to registry/product_lineage.csv as (product_slug, relation, target). 38 of 472 products carry a block, nearly all of them datasets and models."
+    },
+    "artifact_exceptions": {
+      "type": "object",
+      "description": "Why a declared artifact fails one of build/check_artifacts.py's checks legitimately, keyed by check name. The presence of the key is the exemption and the value is the reason, the same shape as `version_in_identity` and a category's `deferred` block. Kept on the record it describes rather than in a central file, because docs/guides/identity.md records what went wrong with the central one: a duplicate key silently kept the last value. Real cases: a package published from a subtree so its metadata names no repo (megatron-core), or a package deliberately named for its distribution rather than its project (crfm-helm for HELM). Never a way to silence a check that is right - a wrong artifact attaches another project's downloads and license.",
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 20
+      },
+      "propertyNames": {
+        "enum": [
+          "pypi_repo_mismatch",
+          "pypi_stub",
+          "github_moved",
+          "pypi_missing"
+        ]
+      }
     }
   },
   "definitions": {

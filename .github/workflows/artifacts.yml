@@ -1,0 +1,54 @@
+name: artifacts
+
+# Does each declared artifact still name the thing we think it names?
+#
+# An artifact_id is a join key, so a stale one does not fail loudly — it attaches another
+# project's stars, license and downloads to a product and keeps reporting them. That is
+# indistinguishable from a working signal, which is why this needs a scheduled check
+# rather than a reviewer's attention. Three drifts, all of which happened in one week:
+# 16 repositories had moved (#166), and two packages were reservations rather than
+# distributions (#167). The reasoning is in build/check_artifacts.py.
+#
+# Two of the checks read signals that were already being computed weekly and never read:
+# signal_github.resolved_via_redirect and signal_pypi.missing_from_pypi. The other two
+# need the PyPI JSON API, which is what --live turns on.
+#
+# Timed against the chain it depends on rather than the calendar, which is the lesson
+# parity.yml records: the signal user models recompute Monday 03:00-05:00 UTC, so this
+# runs at 07:00 and reads a warehouse that has caught up. Running it before that would
+# report last week's roster and call it drift.
+#
+# Report-only. `--strict` exists and CI does not pass it yet: the first real run surfaced
+# 4 legitimate client-package cases that needed waivers, and a gate that fails on the day
+# it lands gets switched off rather than fixed. Turn it on once the findings stay at zero
+# across a few runs.
+
+on:
+  schedule:
+    - cron: "0 7 * * 1"
+  workflow_dispatch:
+    inputs:
+      strict:
+        description: "Exit non-zero on any unwaived finding"
+        type: boolean
+        default: false
+
+jobs:
+  artifacts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --locked
+      - name: Check declared artifacts against what they resolve to
+        env:
+          OSO_API_KEY: ${{ secrets.OSO_API_KEY }}
+        run: |
+          if [ "${{ inputs.strict }}" = "true" ]; then
+            uv run python -m build.check_artifacts --live --strict
+          else
+            uv run python -m build.check_artifacts --live
+          fi
