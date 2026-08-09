@@ -5,27 +5,73 @@ openness:
   components: license:BSD-3-Clause(OSI);source:public(pytorch/torchtune);governance:PyTorch Foundation/Meta;no managed
     tier;core-gated:ungated
   confidence: high
-  note: Fully OSI-licensed (BSD-3-Clause), full source public; openness unaffected by the project being
-    wound down.
+  note: Fully OSI-licensed (BSD-3-Clause), re-read from the raw LICENSE body rather than the GitHub classifier
+    since this license is off the category's Apache-2.0 norm; text is clean, unmodified three-clause BSD
+    with no field-of-use or commercial carve-out. Full source public at the repo's current home (meta-pytorch/torchtune;
+    pytorch/torchtune 301-redirects there). No enterprise/pricing directory found; openness unaffected by
+    the project being wound down.
+  last_verified: '2026-08-09'
   sources:
   - url: https://github.com/pytorch/torchtune
-    shows: BSD-3-Clause license; PyTorch post-training library
-    accessed: '2026-06-04'
+    shows: 'Redirects (final_url https://github.com/meta-pytorch/torchtune) to the repo now hosted under
+      the meta-pytorch GitHub org. Metadata shows "isArchived":false and "visibilityLabel":"Public", license
+      spdxId "BSD-3-Clause", 5,794 stargazers and 744 forks. The README opens with "Torchtune is no longer
+      actively maintained: torchtune development wound down in 2025" and lists "Hackable training recipes
+      for SFT, knowledge distillation, DPO, PPO, GRPO, and quantization-aware training", "PyTorch FSDP2"
+      for distributed training, single-device recipes, and a February 2025 note that multi-node training
+      is "officially open for business in torchtune". The repository is an ordinary public source tree (recipes,
+      docs, tests, configs) with no enterprise, pricing, or paid-tier directory; the page''s own ''enterprise''/''pricing''
+      strings are GitHub''s own site navigation, not anything torchtune-specific.'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 4de6f2f233818817d48a7a6d6170ed12042a25b7f1bce08037b44c75a8de278b
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/meta-pytorch/torchtune/main/LICENSE
+    shows: 'The full raw LICENSE file is a standard three-clause BSD license: "BSD 3-Clause License", copyright
+      "Copyright 2024 Meta", the three ordinary conditions (retain the copyright notice in source; reproduce
+      it in binary distributions; the copyright holder''s or contributors'' names may not be used to endorse
+      or promote derived products without permission), and the standard AS-IS warranty disclaimer. No added
+      field-of-use restriction, commercial carve-out, or non-standard clause beyond the three.'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 8ef78c2d6e787b103a0548e73ba2cfe68bc469b5b0e6f5e7db649f1312f4f2a6
+    establishes:
+    - license
 adoption:
   level: 3
   reach: 100K-1M
   signal_type: usage_volume
   confidence: medium
-  note: ~370K PyPI downloads last month, but the project is officially deprecated (development wound down
-    in 2025), so usage is on a declining trajectory; ~5.8K stars. Level 3 on current download volume with
-    the stale caveat flagged.
+  note: 315,525 PyPI downloads in the trailing month (was ~370K in June 2026) - still solidly inside the
+    100K-1M band, no level change. Project remains officially deprecated (development wound down in 2025),
+    so usage is on a declining trajectory; ~5.8K stars, roughly flat. Level 3 held on current download volume
+    with the stale-project caveat still flagged.
+  last_verified: '2026-08-09'
   sources:
-  - url: https://pypistats.org/packages/torchtune
-    shows: 'Downloads last month: 370,048'
-    accessed: '2026-06-04'
+  - url: https://pypistats.org/api/packages/torchtune/recent
+    shows: 'Whole JSON body: {"data":{"last_day":10553,"last_month":315525,"last_week":65273},"package":"torchtune","type":"recent_downloads"}
+      - 315,525 downloads in the trailing month, which stays inside the 100K-1M band the adoption score
+      already rests on.'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: e94ad476cae6d10e3a5226fef1c9dacdbc7700dc260c116d1d118afa14b3329c
+  - url: https://pypi.org/project/torchtune/
+    shows: Project page titled "torchtune · PyPI". Sidebar lists Author "PyTorch Team" (packages@pytorch.org),
+      License "BSD 3-Clause License", and "Released:" with datetime 2025-04-07 - confirming the download
+      figure belongs to the product's own package and that its most recent release predates the 2025 wind-down
+      the GitHub README describes.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: b4a7aee5922be8a5a9e40ad3916074eb3aba64fab61a0db98d27163296f83331
   - url: https://github.com/pytorch/torchtune
-    shows: '''no longer actively maintained; development wound down in 2025''; ~5.8K stars'
-    accessed: '2026-06-04'
+    shows: The repo (now at meta-pytorch/torchtune) records 5,794 stargazers and 744 forks, roughly flat
+      against the ~5.8K stars previously recorded, corroborating a plateaued rather than growing user base
+      consistent with the deprecated status.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 4de6f2f233818817d48a7a6d6170ed12042a25b7f1bce08037b44c75a8de278b
 capability:
   score: 3
   basis: feature_matrix
@@ -34,9 +80,21 @@ capability:
     wind-down; no FP8/FP4 or newer-method additions; behind actively-developed peers and the Megatron-LM
     anchor.'
   confidence: medium
-  note: Competent native-PyTorch method/parallelism coverage but development halted in 2025, so it no
-    longer tracks the moving frontier, C3.
+  note: 'Feature matrix (SFT, knowledge distillation, DPO/PPO/GRPO, QAT; FSDP2; single-device to multi-node
+    scaling; HF Hub and Weights & Biases integration) re-read and unchanged since the 2025 wind-down - no
+    new method or precision mode (FP8/FP4) added. The note''s comparison to the Megatron-LM anchor could
+    not be re-dated this pass: megatron-lm''s own capability confirmation (2026-08-08) is one day older
+    than this run (2026-08-09), so recording relative_to/relation now would make this band fresher than
+    the peer it derives from and fail check_capability.py. C3 held on feature-matrix competence alone.'
+  last_verified: '2026-08-09'
   sources:
   - url: https://github.com/pytorch/torchtune
-    shows: SFT/distillation/DPO/PPO/GRPO/QAT, FSDP2, single/multi-device/multi-node
-    accessed: '2026-06-04'
+    shows: 'The README''s feature list still matches the recorded value: "Hackable training recipes for
+      SFT, knowledge distillation, DPO, PPO, GRPO, and quantization-aware training", "PyTorch FSDP2" for
+      distributed training, single-device recipes, and a February 2025 note that multi-node training is
+      "officially open for business in torchtune"; Hugging Face Hub and Weights & Biases integrations are
+      both referenced. No new method, precision mode, or capability has been added since development wound
+      down in 2025.'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 4de6f2f233818817d48a7a6d6170ed12042a25b7f1bce08037b44c75a8de278b

@@ -7,24 +7,52 @@ openness:
   confidence: high
   note: OSI-licensed throughout (Apache-2.0 core, AGPL-3.0 for the optional Studio UI); both are OSI licenses
     so class is open_source, not open_core.
+  last_verified: '2026-08-09'
   sources:
   - url: https://github.com/unslothai/unsloth
-    shows: Apache-2.0 core + AGPL-3.0 Studio UI; fine-tuning framework
-    accessed: '2026-06-04'
+    shows: Live public repository (HTTP 200); GitHub's own page describes it as "The local UI to run and
+      train text and diffusion models, including Kimi K3, Gemma 4, Qwen3.6, DeepSeek-V4, FLUX and more."
+      and lists both an Apache-2.0 license and an AGPL-3.0 license for the repo.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: cc73cdefa12bf38de5e0211f2a070db5738e3a4f1e7e1a92cdaf656e9d1d5b5f
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/unslothai/unsloth/main/LICENSE
+    shows: 'LICENSE body states: "Files under unsloth/*, tests/*, scripts/* are Apache 2.0 licensed. Files
+      under studio/*, unsloth_cli/* which is optional to install are AGPLv3 licensed."'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 40e0b458a68b557560def38b106a1a0da1aac57685536dcb882f1c78c647e4d3
+    establishes:
+    - license
+  - url: https://unsloth.ai/pricing
+    shows: Lists a "Free" open-source plan alongside paid "unsloth Pro" ("Enhanced MultiGPU support", up
+      to 8 GPUs) and "unsloth Enterprise" ("Multi-node support", "Supports full training", "Customer support")
+      plans, both reachable only via "Contact us"; the Free-tier row still reads "MultiGPU - coming soon".
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 438194ecdcc3c6c28e04c51afeea4a25cd9ba9234f8f2e1d4949509b8ff05604
 adoption:
   level: 4
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: ~2.43M PyPI downloads last month; widely used for low-VRAM/consumer-GPU fine-tuning of open models;
-    ~65.8K stars corroborate. Level 4 on download volume.
+  note: ~2.19M PyPI downloads last month (Aug 2026, down slightly from ~2.43M in June); ~69.7K GitHub stars
+    corroborate. Level 4 on download volume, unchanged.
+  last_verified: '2026-08-09'
   sources:
   - url: https://pypistats.org/packages/unsloth
-    shows: 'Downloads last month: 2,432,077'
-    accessed: '2026-06-04'
+    shows: 'Downloads last month: 2,193,618'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: ba6fb8c85ac9c898c20b8f615436b256cb26ace231426e6995c1ccf4c9ac793d
   - url: https://github.com/unslothai/unsloth
-    shows: ~65.8K GitHub stars (corroborating)
-    accessed: '2026-06-04'
+    shows: Star button carries aria-label "69730 users starred" this repository, corroborating continued
+      usage volume.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: cc73cdefa12bf38de5e0211f2a070db5738e3a4f1e7e1a92cdaf656e9d1d5b5f
 capability:
   score: 4
   basis: feature_matrix
@@ -35,7 +63,12 @@ capability:
   confidence: high
   note: Best-in-class single-/consumer-GPU efficiency (kernel-level), broad method coverage; C4, not
     the frontier multi-node-scale anchor.
+  last_verified: '2026-08-09'
   sources:
-  - url: https://github.com/unslothai/unsloth
-    shows: Triton-kernel 2x speed / 70% VRAM claims, GRPO/FP8 RL, 500+ models
-    accessed: '2026-06-04'
+  - url: https://raw.githubusercontent.com/unslothai/unsloth/main/README.md
+    shows: States "Train and RL 500+ models up to 2x faster with 70% less VRAM; MoE up to 12x faster" and
+      "Supports LoRA/QLoRA, full fine-tuning, RL, pretraining, 4-bit, 16-bit and FP8", plus GRPO/FP8 reinforcement
+      learning and multi-GPU training support, corroborating the recorded feature matrix.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 4a4b60c2e95c8ea124998943f1b3b34d219071da2b13ae964844a518fb8c8d75

@@ -7,10 +7,40 @@ openness:
   confidence: high
   note: Fully OSI-licensed (Apache-2.0); no proprietary managed training service, only deployment templates
     for third-party clouds.
+  last_verified: '2026-08-09'
   sources:
-  - url: https://github.com/axolotl-ai-cloud/axolotl/blob/main/LICENSE
-    shows: Apache License Version 2.0 text
-    accessed: '2026-06-04'
+  - url: https://raw.githubusercontent.com/axolotl-ai-cloud/axolotl/main/LICENSE
+    shows: The body is the standard, unmodified Apache License, Version 2.0 text, with no custom copyright
+      line or added restriction layered on top.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+    establishes:
+    - license
+  - url: https://github.com/axolotl-ai-cloud/axolotl
+    shows: Repository metadata reports isArchived:false and license spdxId Apache-2.0; this is the same
+      axolotl-ai-cloud/axolotl codebase pyproject.toml's Repository field and the PyPI project page point
+      back to, i.e. the running product builds from this published repo.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: a37395d7f09ea24fc797a1054f12cfca6ce1b5313b97c1ce6b3fa70c08b10697
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/axolotl-ai-cloud/axolotl/main/README.md
+    shows: Documents pip and Docker installation for self-hosting (uv pip install axolotl; docker run axolotlai/axolotl:main-latest)
+      and lists third-party cloud deployment templates (RunPod, Vast.ai, PRIME Intellect, Modal, Novita,
+      JarvisLabs, Latitude.sh) rather than a first-party managed or paid tier -- corroborates core-gated:ungated,
+      which is not currently recorded as a controlled token on this product.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: fd60c6b8c9062efed362133ececc5f9f6d1b919edfbb616f401eb715c7289f06
+  - url: https://axolotl.ai/
+    shows: The marketing homepage frames the product as free and open source, self-hostable in your own
+      cloud or Docker/Kubernetes setup, names third-party sponsors (e.g. Modal) rather than a first-party
+      hosted offering, and carries no pricing page -- further corroborates core-gated:ungated.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 05204e242744d193f1cf4eb56188eeb0ab0f436856e06417842a714bca8a5c7f
 adoption:
   level: 2
   reach: 10K-100K
@@ -19,13 +49,25 @@ adoption:
   note: ~22.3K PyPI downloads last month; ~12K GitHub stars. Popular config-driven FT tool in the open-model
     community but download volume is modest vs TRL/PEFT/Unsloth; level 2 on usage_volume, stars corroborate
     only.
+  last_verified: '2026-08-09'
   sources:
   - url: https://pypistats.org/packages/axolotl
-    shows: 'Downloads last month: 22,336'
-    accessed: '2026-06-04'
+    shows: 'Downloads last month: 12,389'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 1abcb4f8e838327064d48731c884cc6bf59facd66a7f4eb79b9b627116b0690a
   - url: https://github.com/axolotl-ai-cloud/axolotl
-    shows: ~12,000+ GitHub stars (corroborating, not basis)
-    accessed: '2026-06-04'
+    shows: stargazerCount 12330 (corroborating signal, not the adoption basis)
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: a37395d7f09ea24fc797a1054f12cfca6ce1b5313b97c1ce6b3fa70c08b10697
+  - url: https://pypi.org/pypi/axolotl/json
+    shows: 'info.name = axolotl, info.version = 0.18.0: a live PyPI project named axolotl exists, even though
+      the product file''s artifact list carries no pypi entry and the warehouse signal_pypi table has no
+      row for it (see findings).'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 97f80bf7dcb9ef840a5cc777255b95145899bc2b4abf998139e135824187fb24
 capability:
   score: 4
   basis: feature_matrix
@@ -35,8 +77,13 @@ capability:
   confidence: high
   note: Very wide method and parallelism coverage (ND parallelism, multi-node), strong C4; below Megatron-LM
     frontier-scale-training anchor on demonstrated extreme scale.
+  last_verified: '2026-08-09'
   sources:
-  - url: https://github.com/axolotl-ai-cloud/axolotl
-    shows: documented methods (LoRA/QLoRA/DPO/GRPO/...) and parallelism (FSDP/DeepSpeed/SP/ND, multi-node
-      Ray)
-    accessed: '2026-06-04'
+  - url: https://raw.githubusercontent.com/axolotl-ai-cloud/axolotl/main/README.md
+    shows: 'Feature/parallelism matrix: full fine-tuning, LoRA, QLoRA, GPTQ, QAT (int8/int4/FP8/NVFP4/MXFP4),
+      DPO/IPO/KTO/ORPO, GRPO/GDPO, reward and process-reward modelling; FSDP1/FSDP2, DeepSpeed, multi-node
+      Torchrun/Ray, Sequence Parallelism, plus newly added Expert Parallelism (EP) and Context Parallelism
+      for hybrid SSM models -- matches or exceeds what capability.value already records.'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: fd60c6b8c9062efed362133ececc5f9f6d1b919edfbb616f401eb715c7289f06

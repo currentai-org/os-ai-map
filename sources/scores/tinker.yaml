@@ -9,25 +9,64 @@ openness:
   confidence: high
   note: Core training service is a proprietary hosted API; only the example cookbook is OSI-licensed,
     so the product is closed. Not open_core since no self-hostable engine exists.
+  last_verified: '2026-08-09'
   sources:
   - url: https://thinkingmachines.ai/tinker/
-    shows: paid managed LoRA training API, usage pricing, supported models 1B-550B
-    accessed: '2026-06-04'
+    shows: Describes Tinker as "a training API for researchers" where users "Control every aspect of model
+      training and fine-tuning while we handle the infrastructure." Offers sign-up/sign-in, docs, and per-token/per-GB-month
+      pricing; no self-host or download path exists for the training engine itself, only a link out to the
+      separate tinker-cookbook example repo.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 074ddd126ca528099724da7fb888763bd391ac412a17279f197d6070b58c9305
+    establishes:
+    - source
+  - url: https://thinkingmachines.ai/legal/terms/
+    shows: The Service Terms of Use (last updated January 10, 2026) grants Authorized Users "a non-exclusive,
+      limited, non-transferable, non-sublicensable, worldwide right to access and use the Services" - a
+      proprietary terms-of-use grant over the hosted platform, not an open-source license to the underlying
+      engine.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 1ed8d08b0c2663245d0bd450bafd867a161348e2b484bcf4b97276805e3c173c
+    establishes:
+    - license
   - url: https://github.com/thinking-machines-lab/tinker-cookbook/blob/main/LICENSE
-    shows: Apache-2.0 license for the (only) open component, the cookbook
-    accessed: '2026-06-04'
+    shows: Full text of the Apache License, Version 2.0 - the tinker-cookbook repository's own license,
+      unchanged from the prior read (fetched via the raw.githubusercontent.com redirect).
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: d13899cd96d284a6d9f130dfcf19fb3ee5f7e3be3ec627cefa5ff9d9d6023136
+  - url: https://github.com/thinking-machines-lab/tinker-cookbook
+    shows: GitHub repository page for thinking-machines-lab/tinker-cookbook, described in its own metadata
+      as 'Post-training with Tinker' - example and recipe code that calls the hosted Tinker API rather than
+      the training engine itself.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 66cb87d544eadb40705dc846e776ba14d32f6abad82b24a703aef8e5a31d7b1c
+  - url: https://thinkingmachines.ai/news/
+    shows: News archive lists "Oct 1, 2025 Announcing Tinker" as its own dated entry, confirming the product's
+      launch date cited in prose.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 3421e6a2ef0f216afb689c791d962d16cb24a511a37efdd5185599b54c96c769
 adoption:
   level: 2
   reach: 10K-100K
   signal_type: reported_traction
   confidence: low
-  note: Early named research adopters (Princeton Goedel, Stanford Rotskoff, Berkeley SkyRL, Redwood Research)
-    and moved from private beta to paid GA; no disclosed user/usage count. Reported research traction
-    => conservative level 2.
+  note: Thinking Machines' own Tinker page names Glean/Waldo, Chroma, Lightning Rod Labs, Mantic, Trajectory,
+    MIT, Stanford and Axiom Math among users of the API. Level 2 on named adopters rather than a download
+    or seat count, none being published for a hosted training API.
+  last_verified: '2026-08-09'
   sources:
   - url: https://thinkingmachines.ai/tinker/
-    shows: paid GA service with named research adopters; no published user count
-    accessed: '2026-06-04'
+    shows: Case-study section now names Glean (Waldo), Chroma (Context-1), Lightning Rod Labs, Mantic, and
+      Trajectory as customers, plus research collaborations credited to MIT, Stanford, and Axiom Math; no
+      aggregate user count, download count, or revenue figure appears anywhere on the page.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 074ddd126ca528099724da7fb888763bd391ac412a17279f197d6070b58c9305
 capability:
   score: 4
   basis: feature_matrix
@@ -35,10 +74,25 @@ capability:
     like Qwen3-235B-A22B, DeepSeek, Nemotron); abstracts distributed multi-GPU training behind 4-function
     API. Largest demonstrated: 550B-class MoE fine-tuning.'
   confidence: medium
-  note: Strong fine-tuning capability (frontier-scale model breadth and managed distributed training)
-    but LoRA-centric (not full FT / full RL stack), so 4 not 5. Feature-matrix basis; no MLPerf-Training
-    submission.
+  note: In capability.value, replace the 'incl. Qwen3-235B-A22B' example - that checkpoint was retired 2026-06-12
+    per the docs' Retired Models page - with the current top end, NVIDIA Nemotron-3-Ultra-550B-A55B-BF16
+    (550B total / 55B active params), now the largest model Tinker lists. The 4-vs-5 reasoning (LoRA-centric,
+    no full-FT/full-RL stack, feature-matrix basis, no MLPerf-Training submission) still holds as written;
+    no peer comparison is made in the note, so relative_to/relation stay unset.
+  last_verified: '2026-08-09'
   sources:
   - url: https://thinkingmachines.ai/tinker/
-    shows: LoRA training across Qwen/Llama/DeepSeek/GPT-OSS/Moonshot/Nemotron, 1B-550B, MoE support
-    accessed: '2026-06-04'
+    shows: FAQ still states "Tinker is a flexible API for efficiently fine-tuning open source models with
+      LoRA." Current model tiles top out at NVIDIA Nemotron-3-Ultra-550B-A55B-BF16; no full-fine-tuning
+      or full-RL-stack option is described anywhere on the page.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 074ddd126ca528099724da7fb888763bd391ac412a17279f197d6070b58c9305
+  - url: https://tinker-docs.thinkingmachines.ai/tinker/models/
+    shows: Retired Models page lists a June 12, 2026 retirement batch including Qwen3-235B-A22B-Instruct-2507
+      and six Llama checkpoints (Llama-3.3-70B-Instruct, Llama-3.1-70B, Llama-3.1-8B, Llama-3.1-8B-Instruct,
+      Llama-3.2-3B, Llama-3.2-1B), confirming the model roster the score's value field cites has shifted
+      since it was last read.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: bea511c0ff97bf4647d76b5bef32febec518c2756465f53d64ca757fe44dd610

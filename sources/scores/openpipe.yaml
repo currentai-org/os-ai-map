@@ -6,29 +6,71 @@ openness:
     trajectory training;managed-tier:OpenPipe hosted training/serving SaaS on top of the OSS
     lib;core-gated:gated
   confidence: high
-  note: Core ART library is OSI-licensed (Apache-2.0) and fully public; OpenPipe's revenue product is
-    a managed training/hosting platform layered on top, so open_core.
+  note: ART's own FAQ and backend docs (fetched 2026-08-09) describe the hosted ServerlessBackend as an
+    optional convenience alongside a fully self-hostable LocalBackend, with no ART feature withheld from
+    the free path. The OSI-licensed, self-hostable core is the whole product, which the software ladder's
+    rule for {license_tier:osi, source:public, core_gated:ungated} scores 5/open_source rather than 4/open_core.
+  last_verified: '2026-08-09'
   sources:
-  - url: https://github.com/OpenPipe/ART/blob/main/LICENSE
-    shows: Apache-2.0 license text (OpenPipe, Inc. 2025; LGPL-3.0 notice for vendored portions)
-    accessed: '2026-06-04'
   - url: https://github.com/OpenPipe/ART
-    shows: ART = open source GRPO RL trainer; v0.5.17 release; active dev
-    accessed: '2026-06-04'
+    shows: Repo metadata reads `"isPrivate":false`, `"isArchived":false`, `"visibilityLabel":"Public"`,
+      and `"license":{"spdxId":"Apache-2.0","name":"Apache License 2.0"}`.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 469010d00db146ff546c8510e596dcd376d4550af478994f26f9f596832d18ea
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/OpenPipe/ART/main/LICENSE
+    shows: Full Apache License 2.0 text; appendix reads "Copyright 2025, OpenPipe, Inc." followed by an
+      "Additional License Notice" stating the distribution "includes a small portion of code adapted from
+      a third-party project licensed under the GNU Lesser General Public License v3.0."
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: d39185043a0ec089a0e5f88350f1f3eec10fbb34578e04aca3e2dab5b3a5f6cb
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/OpenPipe/ART/main/README.md
+    shows: '"Train from anywhere. Run the ART client on your laptop and let the ART server kick off an ephemeral
+      GPU-enabled environment, or run on a local GPU." Install is `pip install openpipe-art`.'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 0e7d753fd7000e43b8ffe459265056c81ef9dce90b1a7d2d9759d14d48821e37
+    establishes:
+    - source
+  - url: https://art.openpipe.ai/getting-started/faq.md
+    shows: 'FAQ answer to "Which pieces of ART are open source?": "We are committed to maintaining ART as
+      a full-featured open source project. We will also deploy an optional hosted ART backend for users
+      who don''t want to manage GPU infrastructure on their own."'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 41cdd194495331be3b7cdfe7b778531da1f753f35c2bd46466ee36a1b7a878f4
+    establishes:
+    - core-gated
+  - url: https://art.openpipe.ai/fundamentals/art-backend.md
+    shows: 'Documents two interchangeable backend classes on the same client code: ServerlessBackend "train
+      remotely on autoscaling GPUs" and LocalBackend "run your agent and training code on the same machine"
+      — no capability described as exclusive to either.'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 495c01b3bd7a55525bad50d8206a472024b02e6f2130ff644a0b42638f3eeb57
+    establishes:
+    - core-gated
 adoption:
   level: 2
   reach: 10K-100K
   signal_type: usage_volume
   confidence: medium
-  note: openpipe-art PyPI ~47.7k downloads last month; 9.9k GitHub stars (corroborating only). Specialist
-    RL-fine-tuning audience; 10K-100K monthly-download band.
+  note: openpipe-art averaged 22,537 downloads over the trailing 30 days as of 2026-08-07 (pypistats.org's
+    Overall series), down from the ~47.7k/month read in June but still inside the 10K-100K band. 10,568
+    GitHub stars as of 2026-08-09 (corroborating only, per signal_routing.yaml's stars_fallback rule).
+  last_verified: '2026-08-09'
   sources:
   - url: https://pypistats.org/packages/openpipe-art
-    shows: ~47,684 downloads last month for openpipe-art
-    accessed: '2026-06-04'
-  - url: https://github.com/OpenPipe/ART
-    shows: 9.9k stars (secondary corroboration)
-    accessed: '2026-06-04'
+    shows: The page's "Overall" Plotly series for openpipe-art covers 2026-02-09 through 2026-08-09; summing
+      its daily values over the last 30 recorded days (through 2026-08-07) gives 22,537 downloads.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: a43479bb48ee9ec456e5d894b7728d7a4f0bb4c504d527efb7181970654e44d9
 capability:
   score: 3
   basis: feature_matrix
