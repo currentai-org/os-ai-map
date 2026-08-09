@@ -32,6 +32,14 @@ Usage:
     uv run python -m build.propose_artifacts --include-closed
     uv run python -m build.propose_artifacts --category base_pretrained
     uv run python -m build.propose_artifacts --format yaml      # paste-ready blocks
+    uv run python -m build.propose_artifacts --kind pypi        # missing THIS kind specifically
+
+`--kind` exists because "has an artifact" and "routes a signal" are different questions.
+`signal_routing.yaml` sends adoption to HF, then PyPI, then stars — and stars is
+`stars_fallback`, which the rubric caps at level 3. So a library with a GitHub repo and no
+declared `pypi` is fully verifiable and still pinned to a capped band. Measured 2026-08-09:
+66 of 472 products declared a `pypi` artifact, while 87 more cited a PyPI page in their
+adoption evidence, meaning a human had read the number the signal could not.
 """
 
 from __future__ import annotations
@@ -67,6 +75,13 @@ PATTERNS = [
     ("huggingface_model", re.compile(r"huggingface\.co/([\w\-.]+/[\w\-.]+)", re.I)),
     ("github", re.compile(r"github\.com/([\w\-.]+/[\w\-.]+)", re.I)),
     ("pypi", re.compile(r"pypi\.org/project/([\w\-.]+)", re.I)),
+    # pypistats, in all three shapes the corpus uses: /packages/<name>,
+    # /api/packages/<name>/recent, /api/packages/<name>/overall. It is where a human goes
+    # to READ a download count, so it is the form the evidence usually carries — 69 score
+    # files cite pypistats against 23 citing pypi.org, and mining only the latter finds a
+    # fraction of what is there. The captured name is still verified against the PyPI JSON
+    # API below before anything is proposed, so a stale or misspelled one cannot slip in.
+    ("pypi", re.compile(r"pypistats\.org/(?:api/)?packages/([\w\-.]+)", re.I)),
     ("npm", re.compile(r"npmjs\.com/package/((?:@[\w\-.]+/)?[\w\-.]+)", re.I)),
     ("crates", re.compile(r"crates\.io/crates/([\w\-.]+)", re.I)),
 ]
@@ -197,6 +212,9 @@ def main() -> int:
     parser.add_argument("--include-closed", action="store_true",
                         help="also propose for products scored `closed`")
     parser.add_argument("--format", choices=("table", "yaml"), default="table")
+    parser.add_argument("--kind", choices=VERIFIABLE_KINDS,
+                        help="propose only this artifact kind, and select products missing THIS "
+                             "kind rather than products missing every kind")
     parser.add_argument("--no-verify", action="store_true",
                         help="skip live checks (offline; verdicts become 'unchecked')")
     args = parser.parse_args()
@@ -215,7 +233,12 @@ def main() -> int:
         if args.category and category_of.get(slug) != args.category:
             continue
         product = yaml.safe_load(path.read_text()) or {}
-        if any(product.get(kind) for kind in VERIFIABLE_KINDS):
+        # Without --kind, "verifiable at all" is the bar: a product with a GitHub repo is
+        # checkable and needs nothing. With --kind, the bar is that ONE kind, because a
+        # product can be perfectly verifiable and still route no adoption signal — a
+        # library with a repo and no declared `pypi` falls through to stars_fallback,
+        # which the rubric caps.
+        if any(product.get(kind) for kind in ((args.kind,) if args.kind else VERIFIABLE_KINDS)):
             continue  # already verifiable
 
         score_path = ROOT / "sources" / "scores" / f"{slug}.yaml"
@@ -225,6 +248,8 @@ def main() -> int:
             continue
 
         found = candidates_for(product, scores or {})
+        if args.kind:
+            found = {k: v for k, v in found.items() if k == args.kind}
         verified: list[tuple[str, str, int]] = []
         for kind, idents in found.items():
             for ident in idents:
