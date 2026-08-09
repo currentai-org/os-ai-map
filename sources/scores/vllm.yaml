@@ -56,22 +56,23 @@ adoption:
 capability:
   score: 5
   basis: benchmark
-  basis_detail: MLPerf Inference v4.0 (Red Hat OpenShift AI submission, April 2024)
+  basis_detail: MLPerf Inference v6.0 (AMD Instinct MI355X submission, April 2026)
   value: null
   confidence: high
-  note: vLLM is the runtime behind Red Hat OpenShift AI's MLPerf Inference submissions (GPT-J-6B and Llama2-70B
-    benchmarks) and reports support for 200+ model architectures on Hugging Face. vLLM is the capability
-    anchor for inference_code; no relative_to is recorded here. The cited MLPerf result is from April 2024;
-    the accessed date records when the page was re-read, not the benchmark's vintage.
+  note: vLLM is the serving stack behind AMD's MLPerf Inference v6.0 submission on Instinct MI355X, across
+    gpt-oss-120b, Llama 2 70B and a multi-node Llama 3.1 405B run reported at 97-98% scaling efficiency,
+    and it reports support for 200+ model architectures on Hugging Face. vLLM is the capability anchor for
+    inference_code; no relative_to is recorded here. Re-sourced from the April 2026 submission, replacing
+    a April 2024 Red Hat OpenShift AI result that dated the benchmark two years behind the confirmation.
   last_verified: '2026-08-09'
   sources:
-  - url: https://www.redhat.com/en/blog/accelerating-generative-ai-adoption-red-hat-openshift-ai-achieves-impressive-results-mlperf-inference-benchmarks-vllm-runtime
-    shows: '"over 3000 tokens per second for the Llama2-70B benchmark in offline mode with 99.9% accuracy";
-      benchmark run "through the OpenShift AI framework" with "the original fp16 Llama2-70b model loaded"
-      via vLLM.'
+  - url: https://rocm.blogs.amd.com/artificial-intelligence/mlperf-inference-v6.0/README.html
+    shows: AMD Instinct MI355X MLPerf Inference v6.0 submission; "tuning experiments were conducted on vLLM
+      parameters and used to refine the scheduler configurations", and the Llama 3.1 405B multi-node run
+      used "an AMD MLPerf Stack with vLLM" at 97-98% scaling efficiency.
     accessed: '2026-08-09'
     http_status: 200
-    content_sha256: 57bd333b567e901c9fee47f4cbf33678b252f3fd74a73531c5665fb085f6ca1f
+    content_sha256: 91705e11f8905706f022c434c23e982a8e5720edecdee78eacc4bc9d0b2bcfdc
   - url: https://github.com/vllm-project/vllm
     shows: '"vLLM seamlessly supports 200+ model architectures on Hugging Face"'
     accessed: '2026-08-09'

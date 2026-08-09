@@ -34,11 +34,11 @@ adoption:
   reach: 10K-100K
   signal_type: usage_volume
   confidence: medium
-  note: PyPI downloads last month are now 50,402 (16,260/week, 841/day), down from the ~165,001/month cited
-    in the prior read (2026-06-04) — confirmed identically via both the pypistats API and the pypistats.org
-    web page, so this is a real decline, not a fetch artifact. GitHub dependent-repository count is up slightly
-    to 356 (from 352) and stars are ~8.0k; both corroborate only. Primary usage-volume signal now sits in
-    the 10K-100K band rather than 100K-1M.
+  note: 'PyPI downloads stepped down between May and June 2026 and have held at the new level for three
+    months: 171,750 in May, 57,776 in June, 54,993 in July and 50,402 over the trailing 30 days. The prior
+    read''s 165,001 was a trailing window ending 2026-06-04, so it was measuring May. Level 2 (10K-100K)
+    on sustained volume rather than a single point read. No second distribution channel absorbs the difference:
+    releases from v0.13.0 onward attach no wheel assets, so PyPI is the package''s only route.'
   last_verified: '2026-08-09'
   sources:
   - url: https://pypistats.org/packages/lmdeploy
@@ -56,6 +56,18 @@ adoption:
     accessed: '2026-08-09'
     http_status: 200
     content_sha256: 4c26b0f1de03215d7f5054b347097f3a4e64a2f7c065360dbb5d1b163f50d4ee
+  - url: https://pypistats.org/api/packages/lmdeploy/overall?mirrors=false
+    shows: daily download history; summed by month it gives 171,750 for 2026-05, 57,776 for 2026-06 and
+      54,993 for 2026-07
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: cc52bbd1a1262fbda72464b89c946c12d61f5a91943f2834747aebaa1c20f79d
+  - url: https://api.github.com/repos/InternLM/lmdeploy/releases
+    shows: 'releases v0.13.0, v0.14.0 and v0.15.0 each carry an empty "assets": [] list, so no wheel is
+      distributed outside PyPI'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 13a1eed24aaf6214ca7362b280eef68d40d3269c7a530b28106a8b3d97894599
 capability:
   score: 4
   basis: feature_matrix

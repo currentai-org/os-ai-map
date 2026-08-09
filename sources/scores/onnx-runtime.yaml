@@ -43,27 +43,23 @@ adoption:
     content_sha256: 4a1b2d733ddee6a196a41203e293f0040baa278f5a082885e8e7847da098faf2
 capability:
   score: 4
-  basis: benchmark
-  basis_detail: MLPerf
-  value: Appears in MLPerf Inference v5.0 submissions (ResNet50, RetinaNet, offline; multiple ORT versions
-    v1.20.1-v1.23.2). Execution providers across CUDA/WebGPU/CPU/TensorRT/OpenVINO/CoreML; cross-framework
-    (PyTorch/TF/scikit-learn/XGBoost). Quantization + graph optimization.
+  basis: feature_matrix
+  basis_detail: execution-provider and framework coverage
+  value: 'Execution providers across CPU, GPU, IoT/edge/mobile and cloud: default CPU, NVIDIA CUDA and TensorRT,
+    Intel OpenVINO and DNNL, AMD MIGraphX and ROCm, DirectML, WebGPU, XNNPACK, CoreML, Qualcomm QNN, Android
+    NNAPI, Huawei CANN, Xilinx Vitis-AI, Arm NN and Arm Compute Library, Rockchip NPU and TVM. Runs models
+    exported from PyTorch, TensorFlow/Keras and classical ML libraries through the ONNX interchange format.'
   confidence: medium
-  note: 'Re-confirmed: the MLCommons submissions table still lists an onnxruntime CPU/edge RetinaNet-offline
-    row and a v1.20.1 ResNet50-offline row. No peer comparison is recorded for this product and none was
-    found to rest the band on, so relative_to/relation stay unset. Strong general-purpose inference accelerator
-    but trails purpose-built LLM-serving engines (vLLM/SGLang/TensorRT-LLM) on transformer throughput, which
-    caps this at 4 rather than 5.'
+  note: 'Execution-provider breadth across CPU, GPU, IoT/edge/mobile and cloud targets, re-derived from
+    the published EP summary. Scored 4 rather than 5: the coverage is real and unusually broad, but for
+    transformer serving throughput the purpose-built engines hold the frontier. The prior basis of ''benchmark/MLPerf''
+    was withdrawn - the row it cited is an MLCommons CI test submission in the open division, submitted
+    by MLCommons itself, which is not a benchmark result for this product.'
+  last_verified: '2026-08-09'
   sources:
-  - url: https://github.com/mlcommons/mlperf_inference_test_submissions_v5.0
-    shows: 'table rows: "onnxruntime-default_config" / "retinanet" / "offline" for an edge CPU config, and
-      "onnxruntime_v1.20.1-default_config" / "resnet50" / "offline" for a macOS x86 CPU config'
+  - url: https://onnxruntime.ai/docs/execution-providers/
+    shows: '"Summary of supported Execution Providers" table listing "NVIDIA TensorRT", "Qualcomm QNN",
+      "AMD MIGraphX" and "Android Neural Networks API" among CPU, GPU, IoT/Edge/Mobile and Other targets.'
     accessed: '2026-08-09'
     http_status: 200
-    content_sha256: 93056027e8387d983dcf16ab5fdbefdc785db3bf5049d1533c87f6874afe00df
-  - url: https://github.com/microsoft/onnxruntime
-    shows: 'repo description "ONNX Runtime: cross-platform, high performance ML inferencing and training
-      accelerator"'
-    accessed: '2026-08-09'
-    http_status: 200
-    content_sha256: c990b0204dbf31be685520fe465bb57dd8210e4e03f27011a6fa26305970386a
+    content_sha256: fd1004db78728df63f4862319583f77f26a533312478901406ee3b59931ae8e7
