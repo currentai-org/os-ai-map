@@ -2,38 +2,83 @@ product: llamafile
 openness:
   score: 5
   class: open_source
-  components: license:Apache-2.0(OSI)+MIT(OSI, for llama.cpp/whisper.cpp
-    deltas);source:public(Mozilla-Ocho/llamafile);no-feature-gated-core;core-gated:ungated
+  components: license:Apache-2.0(OSI)+MIT(OSI, for llama.cpp/whisper.cpp deltas);source:public(mozilla-ai/llamafile);no-feature-gated-core;core-gated:ungated
   confidence: high
   note: Fully OSI-licensed, source public, single-file llama.cpp+Cosmopolitan distribution; no proprietary
-    tier.
+    tier. GitHub org renamed from Mozilla-Ocho to mozilla-ai; same repo, license and openness posture unchanged.
+    GitHub's own classifier still reports NOASSERTION/"Other" for this repo, which the LICENSE body and
+    README's licensing section both contradict with a plain Apache-2.0 (+ MIT deltas) statement.
+  last_verified: '2026-08-09'
   sources:
-  - url: https://github.com/Mozilla-Ocho/llamafile
-    shows: Apache-2.0 (+ MIT deltas) license, v0.10.3 (June 2 2026), single-file executable, 24.7k stars,
-      actively maintained
-    accessed: '2026-06-04'
+  - url: https://github.com/mozilla-ai/llamafile
+    shows: 'repo metadata: "isPrivate":false,"isArchived":false,"visibilityLabel":"Public"; License badge
+      in README reads Apache 2.0; no pricing/paid-tier link anywhere on the repo page or in the documentation
+      links listed'
+    accessed: '2026-08-09'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: 0f01b14ccda6ad5dc2d691287e1e2133f65d6895dd3dc8e1c6c9064c44c4e978
+  - url: https://raw.githubusercontent.com/mozilla-ai/llamafile/main/LICENSE
+    shows: The Apache 2.0 License / Copyright 2023 Mozilla Foundation / Licensed under the Apache License,
+      Version 2.0
+    accessed: '2026-08-09'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: df7b68d51e439946dd34ec5c9466f51659fba68940ce7c804d6079ef4fd4b13f
+  - url: https://raw.githubusercontent.com/mozilla-ai/llamafile/main/README.md
+    shows: While the llamafile project is Apache 2.0-licensed, our changes to llama.cpp and whisper.cpp
+      are licensed under MIT (just like the projects themselves) so as to remain compatible and upstreamable
+      in the future
+    accessed: '2026-08-09'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: ec541178249a9a080700f3bcfe638f78e4f19fdb149abed019a096197da8c254
 adoption:
   level: 3
   reach: 100K-1M
   signal_type: stars_fallback
   confidence: low
   note: No PyPI/download or pull-count signal available (distributed as single-file binaries, not a package);
-    24.7k GitHub stars + Mozilla backing is the only honest signal. Capped at 3 per stars_fallback rule.
-    Popular local-inference convenience tool but no verified usage_volume figure.
+    GitHub stars is the only honest signal. Capped at 3 per stars_fallback rule. Popular local-inference
+    convenience tool but no verified usage_volume figure.
+  last_verified: '2026-08-09'
   sources:
-  - url: https://github.com/Mozilla-Ocho/llamafile
-    shows: 24.7k stars, 40 releases, Mozilla Builders initiative
-    accessed: '2026-06-04'
+  - url: https://github.com/mozilla-ai/llamafile
+    shows: '"stargazerCount":25523,"watcherCount":225,"forksCount":1544'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 0f01b14ccda6ad5dc2d691287e1e2133f65d6895dd3dc8e1c6c9064c44c4e978
 capability:
   score: 3
   basis: feature_matrix
-  value: Single-file cross-platform (Cosmopolitan Libc) llama.cpp-based local inference; CPU+GPU, GGUF
-    models, OpenAI-compatible server, whisperfile STT; portability is the differentiator, not peak throughput
+  value: Single-file cross-platform (Cosmopolitan Libc) llama.cpp-based local inference; CPU inference plus
+    GPU acceleration via Metal (macOS ARM64) and CUDA (Linux; Windows GPU still unsupported), GGUF external-weight
+    loading, a bundled llama.cpp server mode (`--server`) and TUI chat, plus whisperfile for speech-to-text;
+    portability is the differentiator, not peak throughput.
   confidence: medium
   note: Optimizes for portability/zero-install local inference rather than datacenter throughput; built
-    on llama.cpp so no continuous-batching/TP server scaling like vLLM. Mid-tier on a capability axis
-    whose frontier (C5) is the high-throughput serving engines.
+    on llama.cpp so no continuous-batching/tensor-parallel server scaling like vLLM. Mid-tier on a capability
+    axis whose frontier is the high-throughput serving engines. No peer comparison was recorded in the brief
+    and none was introduced here.
+  basis_detail: single-file cross-platform local inference feature set re-read from the repo README and
+    its build-migration changelog
+  last_verified: '2026-08-09'
   sources:
-  - url: https://github.com/Mozilla-Ocho/llamafile
-    shows: single-file llama.cpp + Cosmopolitan Libc, cross-OS, whisperfile STT
-    accessed: '2026-06-04'
+  - url: https://raw.githubusercontent.com/mozilla-ai/llamafile/main/README.md
+    shows: combining llama.cpp with Cosmopolitan Libc into one framework...single-file executable...runs
+      locally on most operating systems and CPU architectures, with no installation; llamafile also includes
+      whisperfile
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: ec541178249a9a080700f3bcfe638f78e4f19fdb149abed019a096197da8c254
+  - url: https://raw.githubusercontent.com/mozilla-ai/llamafile/main/README_0.10.0.md
+    shows: 'added Metal support: GPU on MacOS ARM64...Brought back cuda support on Linux...added TUI support:
+      you can now directly chat with the chosen LLM from the terminal, or run the llama.cpp server using
+      the --server parameter...What''s missing: GPU support for Windows (and for whisperfile)'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 2c25302802ccb7a3efd6d29871d306e1aade35ff5a0b052fe96de8cb64f121e6

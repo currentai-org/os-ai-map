@@ -2,39 +2,85 @@ product: qualcomm-ai-engine-direct
 openness:
   score: 1
   class: closed
-  components: core-sdk:proprietary(Qualcomm AI Runtime SDK, separate EULA download from Qualcomm software
-    center);open-wrapper:quic/ai-engine-direct-helper(BSD-3, OSI, only a convenience API layer);hardware-lock:Qualcomm
-    Snapdragon NPU/HTP
+  components: source:closed(no published source for the QNN/Qualcomm AI Runtime SDK core engine; distributed
+    as a proprietary binary via the Qualcomm Software Center under an EULA);license:proprietary(no license
+    to the source since it is not published);open-wrapper:BSD-3-Clause(qualcomm/qai-appbuilder, formerly
+    quic/ai-engine-direct-helper -- a convenience API layer that requires the proprietary SDK libraries)
   confidence: high
-  note: The QNN runtime/SDK itself is proprietary (Qualcomm download + license); the open BSD-3 helper
-    merely wraps it and requires the proprietary libraries. Headline engine closed; scored closed.
+  note: 'Re-read against the ladder''s controlled vocabulary: source is closed (the core engine has no published
+    repo and ships only as an EULA-gated download from the Qualcomm Software Center), so the formula settles
+    on source alone and the BSD-3 wrapper does not change the class. The wrapper repo has moved from quic/ai-engine-direct-helper
+    to qualcomm/qai-appbuilder; both names now redirect to the same place.'
   sources:
   - url: https://github.com/quic/ai-engine-direct-helper
-    shows: BSD-3 helper that 'is an extension of the Qualcomm AI Runtime SDK'; underlying QNN SDK is a
-      separate proprietary download required to run inference on NPU/HTP
-    accessed: '2026-06-04'
+    shows: QAI AppBuilder is an extension of the Qualcomm® AI Runtime SDK, which is used to simplify the
+      deployment of QNN models. Some libraries from the Qualcomm® AI Runtime SDK are required to use QAI
+      AppBuilder.
+    accessed: '2026-08-09'
+    establishes:
+    - source
+    - license
+    http_status: 200
+    content_sha256: e0a3c0d0547d1ba10c0733b575a5253a5bd6a55661f72fd36f68e84a4d72ea46
 adoption:
   level: 4
-  reach: 1M-10M
+  reach: null
   signal_type: reported_traction
   confidence: low
-  note: QNN is the on-device inference backend for the broad Snapdragon install base and is wired into
-    LiteRT (Google AI Edge) and ExecuTorch as the Qualcomm NPU backend, giving it wide on-device reach.
-    No clean developer/usage count; level 4 reflects Snapdragon-ecosystem distribution (reported), not
-    a measured figure.
+  note: 'Integration breadth across the Snapdragon ecosystem: LiteRT (Google AI Edge) documents Snapdragon
+    8 Gen 1/2/3 and 8 Elite support, ExecuTorch delegates to it as the Qualcomm NPU backend, and ONNX Runtime
+    ships a QNN execution provider. No developer, device, or download figure is published, so no numeric
+    reach is recorded and the band rests on shipping-integration breadth rather than a reported figure.'
+  last_verified: '2026-08-09'
   sources:
-  - url: https://github.com/quic/ai-engine-direct-helper
-    shows: tooling for running models on Snapdragon NPU/HTP across Windows-on-Snapdragon and Linux ARM64
-    accessed: '2026-06-04'
+  - url: https://docs.pytorch.org/executorch/stable/backends-qualcomm.html
+    shows: Currently, this ExecuTorch Backend can delegate AI computations to Hexagon processors and Adreno
+      GPU through Qualcomm AI Engine Direct APIs.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: a1db58d1668040eb2fbd74e2603ffb30ebdd374c4965e8aaf47bc7f57efbb4c6
+  - url: https://ai.google.dev/edge/litert/android/npu/qualcomm
+    shows: 'essential to running inference on the NPU for your LiteRT model on-device. Supported devices
+      include: Snapdragon 8 Gen 1 (SM8450) Snapdragon 8 Gen 2 (SM8550) Snapdragon 8 Gen 3 (SM8650) Snapdragon
+      8 Elite (SM8750) and more'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 2efeb7e8877f9e5926c0a8e0a0c137537affb5af44c4023640bfbde88b28ad5b
+  - url: https://onnxruntime.ai/docs/execution-providers/QNN-ExecutionProvider.html
+    shows: The QNN Execution Provider for ONNX Runtime enables hardware accelerated execution on Qualcomm
+      chipsets. It uses the Qualcomm AI Engine Direct SDK (QNN SDK) to construct a QNN graph from an ONNX
+      model
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 9fbdb7fa74354b535635c49be474146586864062027b4762055ae70d743910a6
 capability:
   score: 4
   basis: feature_matrix
-  value: unified API across Hexagon HTP/NPU + Adreno GPU + Kryo CPU; AOT + on-device compilation; LiteRT
-    CompiledModel + ExecuTorch backends; power-efficient on-device LLM/CV inference
+  value: unified low-level API across Hexagon HTP/NPU, Adreno GPU, and Kryo CPU; AOT and on-device compilation;
+    LiteRT, ExecuTorch, and ONNX Runtime all delegate to it as their Qualcomm NPU backend; quantized (INT8/INT16)
+    on-device LLM/VLM inference (e.g. Gemma, FastVLM) with NPU speedups reported up to 100x over CPU and
+    10x over GPU on Snapdragon 8 Elite Gen 5
   confidence: medium
-  note: Leading mobile/edge on-device inference runtime (HTP acceleration, multi-accelerator, AOT compile)
-    but Snapdragon-locked and edge-scale; C4 within this category, below the server frontier engines.
+  note: No peer comparison is recorded for this product and none is confirmed at least as recently as this
+    claim, so relative_to/relation stay unset per the capability-anchors rule; C4 reflects a leading mobile/edge
+    on-device runtime that is still Snapdragon-locked and edge-scale, below the server frontier engines
+    in this category.
+  basis_detail: 'Re-derived from current vendor/integrator documentation rather than a benchmark row: unified
+    low-level API surface, multi-accelerator coverage, AOT and on-device compilation, and measured NPU speedups
+    reported by the LiteRT integration.'
+  last_verified: '2026-08-09'
   sources:
-  - url: https://github.com/quic/ai-engine-direct-helper
-    shows: runs inference on NPU/HTP; multi-accelerator Qualcomm stack
-    accessed: '2026-06-04'
+  - url: https://docs.pytorch.org/executorch/stable/backends-qualcomm.html
+    shows: Qualcomm AI Engine Direct is designed to provide unified, low-level APIs for AI development.
+      Developers can interact with various accelerators on Qualcomm SoCs with these set of APIs, including
+      Kryo CPU, Adreno GPU, and Hexagon processors.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: a1db58d1668040eb2fbd74e2603ffb30ebdd374c4965e8aaf47bc7f57efbb4c6
+  - url: https://developers.googleblog.com/unlocking-peak-performance-on-qualcomm-npu-with-litert/
+    shows: You can now deploy your model seamlessly across all supported devices, with either ahead-of-time
+      (AOT) or on-device compilation. ... the NPU acceleration provides up to a 100x speedup over CPU and
+      a 10x speedup over GPU ... achieving SOTA performance for models like Gemma and FastVLM
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 4b6bf6e071a45140b9d222f2e35a6e480289f87e0d7bb5eb44a95947c1038f4a

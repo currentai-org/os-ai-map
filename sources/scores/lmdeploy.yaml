@@ -4,28 +4,58 @@ openness:
   class: open_source
   components: license:Apache-2.0(OSI);source:public(InternLM/lmdeploy);no-feature-gated-core;quantization:weight-only+kv(AWQ/W4A16);core-gated:ungated
   confidence: high
-  note: Fully OSI-licensed (Apache-2.0), source public, no proprietary core; broad model coverage (Llama/InternLM/Qwen/DeepSeek/Mixtral
-    + VLMs).
+  note: 'Re-confirmed: repo public and active, LICENSE body is the unmodified Apache-2.0 text, GitHub''s
+    repo metadata also reports spdxId Apache-2.0. No pricing/enterprise page or paid-tier mention exists
+    for the project itself; the only ''enterprise''/''pricing'' hits on the fetched repo page are GitHub''s
+    own site navigation chrome, not LMDeploy content, so core-gated:ungated stands. AWQ/W4A16 weight-only
+    and kv-cache quantization still documented on the repo page.'
+  last_verified: '2026-08-09'
   sources:
   - url: https://github.com/InternLM/lmdeploy
-    shows: Apache-2.0 license, v0.13.0 (May 12 2026), weight-only+kv quantization, Llama/InternLM/Qwen/DeepSeek/Mixtral
-      + VLM support
-    accessed: '2026-06-04'
+    shows: repo metadata "license":{"spdxId":"Apache-2.0","name":"Apache License 2.0"}; README documents
+      AWQ, W4A16, tensor parallel, TurboMind and PyTorch engines; no enterprise/paid-tier content in the
+      project's own text (only GitHub's site-wide nav uses those words)
+    accessed: '2026-08-09'
+    establishes:
+    - license
+    - source
+    - core_gated
+    http_status: 200
+    content_sha256: 1e930c9fd3268bc1a45d9385f5a110db3c0630d22de33ad91590086188f5c984
+  - url: https://raw.githubusercontent.com/InternLM/lmdeploy/main/LICENSE
+    shows: Apache License Version 2.0, January 2004, http://www.apache.org/licenses/
+    accessed: '2026-08-09'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: 811e05b43b0d985814c7ffd0a1d0b93e9166e6f0271245d540302505734528ba
 adoption:
-  level: 3
-  reach: 100K-1M
+  level: 2
+  reach: 10K-100K
   signal_type: usage_volume
   confidence: medium
-  note: ~165K PyPI downloads last month (pypistats); 352 GitHub dependents. Real usage volume in the 100K-1M
-    band. Smaller footprint than vLLM/SGLang anchors (millions/mo) but well beyond hobbyist; especially
-    used in the InternLM/Chinese-model ecosystem. 7.9k stars corroborate only.
+  note: PyPI downloads last month are now 50,402 (16,260/week, 841/day), down from the ~165,001/month cited
+    in the prior read (2026-06-04) — confirmed identically via both the pypistats API and the pypistats.org
+    web page, so this is a real decline, not a fetch artifact. GitHub dependent-repository count is up slightly
+    to 356 (from 352) and stars are ~8.0k; both corroborate only. Primary usage-volume signal now sits in
+    the 10K-100K band rather than 100K-1M.
+  last_verified: '2026-08-09'
   sources:
   - url: https://pypistats.org/packages/lmdeploy
-    shows: ~165,001 downloads last month
-    accessed: '2026-06-04'
-  - url: https://github.com/InternLM/lmdeploy
-    shows: 352 dependent projects, 7.9k stars
-    accessed: '2026-06-04'
+    shows: 'Downloads last month: 50,402 / Downloads last week: 16,260 / Downloads last day: 841'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 3eebdb123f0533b8db1daf077aab21a2e44030e23085178724ccda58922502df
+  - url: https://pypistats.org/api/packages/lmdeploy/recent
+    shows: '{"data":{"last_day":841,"last_month":50402,"last_week":16260}'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 579b40f1469ae9021f0306ee8ec62a7c112409b47c1cfe2c86b69d22bc1635dd
+  - url: https://github.com/InternLM/lmdeploy/network/dependents
+    shows: 356 Repositories (dependent_type=REPOSITORY tab count)
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 4c26b0f1de03215d7f5054b347097f3a4e64a2f7c065360dbb5d1b163f50d4ee
 capability:
   score: 4
   basis: feature_matrix
@@ -35,11 +65,17 @@ capability:
     kv (AWQ/W4A16) quantization, tensor parallelism, broad LLM + VLM architecture coverage; vendor-reported
     4-bit inference ~2.4x FP16
   confidence: medium
-  note: Strong, full-featured GPU inference engine (continuous batching, quantization, TP, VLM support).
-    No standardized MLPerf submission confirmed, so feature_matrix not benchmark; a notch below the vLLM/SGLang/TensorRT-LLM
-    C5 anchors on throughput-leadership/ecosystem breadth.
+  note: Feature set re-confirmed unchanged on today's read of the repo (TurboMind/PyTorch engines, continuous
+    batching, AWQ/kv quantization, tensor parallelism, VLM support, the 2.4x 4-bit claim all still present).
+    vllm was re-confirmed in this same run at capability score 5 on 2026-08-09, so one_below (4) is arithmetic-consistent
+    and at least as fresh as the peer it rests on. The README's own claim of up to 1.8x higher request throughput
+    than vLLM is a vendor self-benchmark; the one_below placement rests on vLLM's independent MLPerf submission
+    and broader architecture coverage, not on a throughput ranking.
+  last_verified: '2026-08-09'
   sources:
   - url: https://github.com/InternLM/lmdeploy
-    shows: TurboMind/PyTorch engines, continuous batching, AWQ/kv quantization, TP, VLM support, 2.4x
-      4-bit claim
-    accessed: '2026-06-04'
+    shows: TurboMind and PyTorch engine descriptions; persistent batching, blocked KV cache, AWQ/W4A16 weight-only
+      and kv quantization, tensor parallel, InternVL/VLM support, 4-bit ~2.4x throughput claim
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 1e930c9fd3268bc1a45d9385f5a110db3c0630d22de33ad91590086188f5c984

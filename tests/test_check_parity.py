@@ -40,16 +40,20 @@ def run(monkeypatch, published, category=None, verbose=False):
 
 
 def test_local_scores_matches_check_rubrics_split():
-    """387 products the ladders decide, 85 the categories defer. The same 472 the warehouse
+    """391 products the ladders decide, 81 the categories defer. The same 472 the warehouse
     publishes, so a change to either number should show up as a failure here first. Was 384
     before Luciole (base_pretrained) and OpenRAG (orchestration_agents) were added, both
     computed rather than deferred, and 386/86 until the verification sweep read megatron-lm
-    and recorded the core-gated:ungated its deferral was waiting on."""
+    and recorded the core-gated:ungated its deferral was waiting on. Then 387/85 -> 391/81
+    when the sweep reached `inference_code`: reading vllm, apple-core-ml-runtime,
+    google-cloud-tpu-inference and qualcomm-ai-engine-direct recorded the `source` and
+    `core-gated` values their deferrals had been waiting on, and check_recipe failed until
+    the four stale deferrals were removed."""
     computed, deferred = local_scores(None)
-    assert len(deferred) == 85
-    assert len(computed) == 387
+    assert len(deferred) == 81
+    assert len(computed) == 391
     assert not set(computed) & set(deferred)
-    # Every one of the 386 reproduces today, so none should abstain.
+    # Every one of the 391 reproduces today, so none should abstain.
     assert [key for key, value in computed.items() if value is None] == []
 
 

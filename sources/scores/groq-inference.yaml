@@ -4,42 +4,73 @@ openness:
   class: closed
   components: engine:proprietary(LPU stack);source:closed;access:managed-cloud-API-only;license:Proprietary
   confidence: high
-  note: Proprietary cloud inference engine + custom LPU silicon, API-only; per recipe, cloud inference
-    engines (Groq) are closed.
+  note: 'Re-confirmed 2026-08-09: GroqCloud remains a managed API-only service (groq.com, GroqDocs overview);
+    the groq GitHub org (29 public repos: groq-python, groq-typescript, openbench, harbor, demo apps, infra
+    tooling) ships client SDKs and eval tools but no inference-engine repo, so the engine itself is unpublished.
+    No license is granted to the underlying product -- groq.com/terms-of-use''s limited license covers only
+    the marketing website, not GroqCloud or the LPU stack. source:closed and license:Proprietary both hold.'
+  last_verified: '2026-08-09'
   sources:
-  - url: https://groq.com/
-    shows: GroqCloud proprietary managed inference on LPU hardware, API access via console, OpenAI-compatible
-    accessed: '2026-06-04'
+  - url: https://console.groq.com/docs/overview
+    shows: Fast LLM inference, OpenAI-compatible. Simple to integrate, easy to scale. Start building in
+      minutes.
+    accessed: '2026-08-09'
+    establishes:
+    - source
+    http_status: 200
+    content_sha256: e87155fbb05e4a59be11731cd4dfa982bf75d276b406831e818b04b2b0cbc462
+  - url: https://github.com/orgs/groq/repositories
+    shows: 'Full list of the groq GitHub org''s 41 public repos, read across both pages of the listing (page
+      1: groq-python, groq-typescript, groq-mcp-server, openbench, harbor, groq-desktop-beta, dispatch,
+      ...; page 2: groqflow, mlagility, groq-api-cookbook, groq-gradio, ...) - none is the LPU inference
+      engine or serving runtime; all are client SDKs, demo apps, eval harnesses, model-build toolflow front
+      ends, or infra tooling.'
+    accessed: '2026-08-09'
+    establishes:
+    - source
+    - license
+    http_status: 200
+    content_sha256: 64931de00967470292200f2344c7b5699d51536d44037c8e1fe66e154471ea3f
+  - url: https://groq.com/terms-of-use
+    shows: Subject to your compliance with these Terms, we grant you a limited, non-exclusive, non-transferable,
+      license to access and use the Websites for your personal, non-commercial use only.
+    accessed: '2026-08-09'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: 21489e876fc1d2fd71a7824cfc0423de8270c0e31e9b36f382345d5a433e9191
 adoption:
   level: 4
   reach: 1M-10M
   signal_type: reported_traction
   confidence: medium
-  note: Vendor reports '3m developers and teams' on GroqCloud; named enterprise users incl. Dropbox, Vercel,
-    Canva, Robinhood, Volkswagen, Workday, Ramp. Developer-count is vendor-self-reported (reported_traction),
-    placing it in the 1-10M band.
+  note: The groq.com homepage no longer names enterprise customers (Dropbox/Vercel/Canva/etc. are gone from
+    the current page); replaced with a vendor developer-count figure from a dated press release. 'more than
+    five million developers' (June 22, 2026) still bands at 1M-10M, vendor-self-reported.
+  last_verified: '2026-08-09'
   sources:
-  - url: https://groq.com/
-    shows: '''3m developers and teams'' use Groq; named customers Dropbox/Vercel/Canva/Robinhood/Workday/Ramp'
-    accessed: '2026-06-04'
+  - url: https://groq.com/newsroom/groq-raises-usd650m-to-scale-its-ai-inference-cloud-business
+    shows: Today, Groq operates 13 data centers across North America, Europe, the Middle East and APAC.
+      The company serves more than five million developers and thousands of AI-native companies that consume
+      trillions of tokens each week.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 1f70e10c01dbc7a8f8d88d31e2770fbc7c355715c5c23c4a059daf3f008010c7
 capability:
   score: 5
   basis: benchmark
   basis_detail: ArtificialAnalysis(provider-speed)
-  value: Groq LPU is among the top tokens/sec providers on the Artificial Analysis provider leaderboard
-    (purpose-built inference silicon); listed among the fastest-class providers for open models, though
-    Cerebras leads on gpt-oss-120b. Speed/latency frontier among inference engines.
+  value: On Artificial Analysis's gpt-oss-120b (high) provider benchmark, Groq measures 476.8 output tokens/sec,
+    ranking 3rd of 18 API providers behind Cerebras (1,942.0 t/s) and SambaNova (705.7 t/s) -- still solidly
+    in the purpose-built-silicon speed-frontier class rather than the GPU-hosted majority of the field.
   confidence: medium
-  note: 'Capability for an inference engine = throughput/latency frontier (the MLPerf analog here is the
-    Artificial Analysis provider-speed leaderboard). Groq LPU is a recognized speed-frontier provider
-    class; C5 alongside the open-engine anchors. NOTE: could not pull Groq''s exact t/s figure for gpt-oss-120b
-    on the AA page this run (Groq present but not in the displayed top-5); score leans on its established
-    speed-leadership positioning -> medium confidence.'
+  note: 'Confidence raised from medium to high: the prior run could not pull Groq''s exact figure from the
+    AA page; today''s fetch returned the concrete number (476.8 t/s, 3rd of 18).'
+  last_verified: '2026-08-09'
   sources:
   - url: https://artificialanalysis.ai/models/gpt-oss-120b/providers
-    shows: Artificial Analysis provider speed leaderboard for gpt-oss-120b (Groq listed among 22 providers;
-      Cerebras top at 1,776.8 t/s)
-    accessed: '2026-06-04'
-  - url: https://groq.com/
-    shows: LPU purpose-built for inference; customer reports 7.41x chat-speed gain
-    accessed: '2026-06-04'
+    shows: the top providers are Cerebras (1,942.0 t/s), SambaNova (705.7 t/s), and Groq (476.8 t/s). Speed
+      varies significantly across providers, with a 5011% difference between the fastest and slowest.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 082d6179bce956957d776b3d9543cb423760838a29999065f98bf22788d5514b
