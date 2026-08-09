@@ -45,6 +45,7 @@ adoption evidence, meaning a human had read the number the signal could not.
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import re
 import time
@@ -141,6 +142,80 @@ def _get(url: str, token: str | None) -> int:
         return exc.code
     except (urllib.error.URLError, TimeoutError):
         return 0
+
+
+def _get_json(url: str, token: str | None) -> dict | None:
+    """The body, or None on any failure. Existence is `_get`'s job; this reads content."""
+    headers = {"User-Agent": USER_AGENT}
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    request = urllib.request.Request(url, headers=headers, method="GET")
+    try:
+        with urllib.request.urlopen(request, timeout=25) as response:
+            return json.load(response)
+    except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError, ValueError):
+        return None
+
+
+# A version nobody has moved off, on a package whose description was never written.
+# Both of the wrong declarations in #165 carried one of these and one carried both.
+PLACEHOLDER_VERSIONS = {"0.0.0", "0.1.0"}
+# The literal string uv and poetry scaffold into a fresh pyproject. An EMPTY summary is
+# deliberately not a tell: safetensors, tokenizers and cohere all ship one and are among
+# the most-downloaded packages in the corpus. Flagging those was this check's first
+# false-positive class.
+PLACEHOLDER_SUMMARY = re.compile(r"add your description here|^placeholder", re.I)
+
+
+def pypi_info(ident: str) -> dict | None:
+    """The `info` block of a package's PyPI JSON, or None on any failure."""
+    body = _get_json(f"https://pypi.org/pypi/{ident}/json", None)
+    return None if body is None else (body.get("info") or {})
+
+
+def stub_reason(kind: str, ident: str, info: dict | None = None) -> str | None:
+    """Why this artifact looks like a reservation rather than a distribution, or None.
+
+    A 200 answers "does this name exist", which is not the question. `pypi:openmanus`
+    existed, returned 200, and was a stub published from a 622-star predecessor repo
+    while the product on the map had 57,911 stars — so its download count measured a
+    different project. `pypi:nemo-rl` existed at version 0.0.0, a reserved name with no
+    release behind it.
+
+    Only PyPI is checked today because that is where the evidence is. The same shape
+    applies to npm and crates and can be added when one of them bites.
+    """
+    if kind != "pypi":
+        return None
+    if info is None:
+        info = pypi_info(ident)
+    if info is None:
+        return None  # a transport failure is not evidence of a stub
+    reasons = []
+    version = str(info.get("version") or "")
+    if version in PLACEHOLDER_VERSIONS:
+        reasons.append(f"version {version}")
+    if PLACEHOLDER_SUMMARY.search(str(info.get("summary") or "")):
+        reasons.append("placeholder summary")
+    return "; ".join(reasons) or None
+
+
+def declared_repo(kind: str, ident: str, info: dict | None = None) -> str | None:
+    """The repository this artifact's own metadata points at, lowercased, or None.
+
+    Corroboration rather than existence: a package whose metadata names a different
+    project than the one we declare is the failure `stub_reason` cannot see on its own.
+    """
+    if kind != "pypi":
+        return None
+    if info is None:
+        info = pypi_info(ident)
+    if info is None:
+        return None
+    blob = " ".join(str(v) for v in (info.get("project_urls") or {}).values())
+    blob += " " + str(info.get("home_page") or "")
+    found = re.findall(r"github\.com/([\w\-.]+/[\w\-.]+)", blob, re.I)
+    return found[0].lower().removesuffix(".git") if found else None
 
 
 def check_token(gh_token: str | None) -> str | None:
@@ -258,6 +333,17 @@ def main() -> int:
                 if not args.no_verify:
                     time.sleep(0.12)  # stay polite across a few hundred calls
 
+        # A 200 says the name resolves, not that it is this product's distribution.
+        # Screen the live ones before they can be reported as safe to accept.
+        stubs: list[tuple[str, str, str]] = []
+        if not args.no_verify:
+            for kind, ident, status in [v for v in verified if v[2] == 200]:
+                reason = stub_reason(kind, ident)
+                if reason:
+                    stubs.append((kind, ident, reason))
+        stub_idents = {(k, i) for k, i, _ in stubs}
+        verified = [v for v in verified if (v[0], v[1]) not in stub_idents]
+
         live = [v for v in verified if v[2] == 200]
         # Only 404 means absent. 401/403 is auth or rate limiting, 0 is a transport
         # failure, and reading either as "this repo does not exist" turns a broken
@@ -277,7 +363,10 @@ def main() -> int:
         if args.no_verify:
             verdict = "unchecked" if verified else "NONE"
         elif not verified:
-            verdict = "NONE"
+            # Every candidate was screened out. Say STUB rather than NONE: "no candidate
+            # in the repo" and "the only candidate is a reservation" are different
+            # findings, and the second is the one that nearly shipped twice.
+            verdict = "STUB" if stubs else "NONE"
         elif contested:
             verdict = "REVIEW"
         elif live_by_kind:
@@ -295,6 +384,7 @@ def main() -> int:
             "candidates": verified,
             "live": live,
             "live_by_kind": live_by_kind,
+            "stubs": stubs,
             "verdict": verdict,
         })
 
@@ -308,7 +398,7 @@ def main() -> int:
                 print(f"- url: {public_url(kind, idents[0])}")
             print()
         counts = {v: sum(1 for r in rows if r["verdict"] == v) for v in
-                  ("single", "multi-kind", "REVIEW", "ALL-404", "NONE")}
+                  ("single", "multi-kind", "REVIEW", "ALL-404", "NONE", "STUB")}
         print(f"# ready: {counts['single'] + counts['multi-kind']}  "
               f"needs a choice: {counts['REVIEW']}  no candidate: {counts['NONE']}")
         return 0
@@ -321,14 +411,21 @@ def main() -> int:
         print(f"  {row['display_name'][:24]:<26}{str(row['openness_class']):<17}"
               f"{row['verdict']:<11}{shown[:64]}")
 
+    stubbed = [(r["slug"], k, i, why) for r in rows for k, i, why in r["stubs"]]
+    if stubbed:
+        print("\nscreened out as reservations rather than distributions:")
+        for slug, kind, ident, why in stubbed:
+            print(f"  {slug:<24}{kind}:{ident} — {why}")
+
     counts = {v: sum(1 for r in rows if r["verdict"] == v) for v in
-              ("single", "multi-kind", "REVIEW", "UNVERIFIED", "ALL-404", "NONE")}
+              ("single", "multi-kind", "REVIEW", "UNVERIFIED", "ALL-404", "NONE", "STUB")}
     print(f"\nsingle verified candidate (safe to accept): {counts['single']}")
     print(f"several kinds, all verified (accept all):    {counts['multi-kind']}")
     print(f"two of the SAME kind (pick one):            {counts['REVIEW']}")
     print(f"could not verify (auth/rate limit/network): {counts['UNVERIFIED']}")
     print(f"candidates found but confirmed 404:         {counts['ALL-404']}")
     print(f"no candidate in the repo at all:            {counts['NONE']}")
+    print(f"only candidate was a stub/reservation:      {counts['STUB']}")
     print("\nNothing written. Review, then add the artifact block to the product yaml.")
     return 0
 
