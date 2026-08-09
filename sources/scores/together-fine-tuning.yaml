@@ -5,12 +5,33 @@ openness:
   components: source:closed;training-pipeline:closed;runs-on:Together-cloud-only;license:Proprietary(managed
     service, per-token training pricing); base weights:open-models(varies)
   confidence: high
-  note: The fine-tuning service/pipeline is proprietary and runs only on Together's cloud; no source.
-    (It tunes open-weight base models, but the offering itself is closed.)
+  note: The fine-tuning service and its training pipeline are proprietary and run only on Together's cloud;
+    there is no self-hostable implementation. Together's Terms of Service bar reverse-engineering the underlying
+    source code and vest all IP in Together AI, granting users only a non-sublicensable right to use the
+    service. (Together tunes open-weight base models, but the offering itself is closed.)
+  last_verified: '2026-08-09'
   sources:
   - url: https://docs.together.ai/docs/fine-tuning-overview
-    shows: managed FT service (LoRA/full/preference/vision); data-prep to hosting; proprietary cloud
-    accessed: '2026-06-04'
+    shows: '"Together AI handles the full lifecycle: data upload, training, hosting, and inference on a
+      dedicated endpoint." No self-hosted training pipeline or repository appears anywhere on the page;
+      deploying a tuned model is described only as "Serve your fine-tuned model on a dedicated endpoint
+      or download it for local use," which is about the resulting checkpoint, not the training engine.'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 1fd545fcd22d170fe6afd4d2901dd6f5b8884c7484d4d22dee4a707f980c1e2d
+    establishes:
+    - source
+  - url: https://www.together.ai/terms-of-service
+    shows: The Terms of Service prohibit a user from any "attempt to create, or derive, or permit or assist
+      any third party to create or derive, the source code underlying the Services," and state that the
+      Company "hereby grants you a non-exclusive, non-sublicensable right and license to use the Company
+      IP as permitted by this Agreement," while "Company reserves all of its intellectual property and other
+      proprietary rights not expressly granted to you herein."
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: b37c2cc8a83421eb7d355524afc7083b50daba7ca60e2001ae2f238d6f245026
+    establishes:
+    - license
 adoption:
   level: null
   reach: null
@@ -38,10 +59,27 @@ capability:
     incl. demonstrated 100B+/235B-scale tuning - the widest open-model scale among the managed services
     here. Black-box (limited scale/precision control), no MLPerf-Training basis, so capped below OSS scale
     definers; scored 4, on par with the OpenAI/Azure FT APIs.
+  last_verified: '2026-08-09'
   sources:
   - url: https://docs.together.ai/docs/fine-tuning-overview
-    shows: LoRA, full FT, preference, function-calling, reasoning, vision-language FT
-    accessed: '2026-06-04'
+    shows: Lists the supported methods -- LoRA, full fine-tuning, "Preference fine-tuning Align a model
+      with rankings over preferred and dispreferred responses using DPO," "Function calling Train a model
+      to invoke tools and structured functions reliably," and "Reasoning fine-tuning Train a reasoning model
+      with chain-of-thought data" -- with results served "on a dedicated endpoint."
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 1fd545fcd22d170fe6afd4d2901dd6f5b8884c7484d4d22dee4a707f980c1e2d
   - url: https://www.together.ai/fine-tuning
-    shows: fine-tune 100B+ models incl. DeepSeek-V3 and Qwen3-235B
-    accessed: '2026-06-04'
+    shows: '"Fine-tune 100B+ models (DeepSeek-V3, Qwen3-235B) that break other platforms, with the reliability
+      to experiment rapidly."'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 98bb93bbfc58c847cb4fc614e7b2a38ae6215e2976ca1ce11e86c98647c1cac8
+  - url: https://docs.together.ai/docs/fine-tuning/supported-models
+    shows: Two separate tables, headed "LoRA fine-tuning" and "Full fine-tuning," list every fine-tunable
+      base model; the LoRA table includes deepseek-ai/DeepSeek-V4-Flash and Qwen/Qwen3.5-397B-A17B, while
+      the Full fine-tuning table tops out at meta-llama/Llama-3.3-70B-Instruct-Reference -- full-parameter
+      tuning does not reach the largest MoE releases that LoRA does.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 451d4451f4c2bb7c4197125e51147af9b7e0dfc79ea2c340d4baccc596413cc7

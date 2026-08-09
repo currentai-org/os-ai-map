@@ -6,25 +6,88 @@ openness:
     core;managed-tier:none;core-gated:ungated
   confidence: high
   note: Fully OSI-licensed (Apache-2.0), full source public, no proprietary tier.
+  last_verified: '2026-08-09'
   sources:
-  - url: https://github.com/huggingface/peft/blob/main/LICENSE
-    shows: Apache License Version 2.0 text
-    accessed: '2026-06-04'
+  - url: https://raw.githubusercontent.com/huggingface/peft/main/LICENSE
+    shows: Full unmodified Apache License, Version 2.0 text, opening "Apache License / Version 2.0, January
+      2004 / http://www.apache.org/licenses/" and "TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION",
+      closing with the standard APPENDIX carrying the unfilled template placeholder "Copyright [yyyy] [name
+      of copyright owner]". No added use restriction or field-of-use clause.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://github.com/huggingface/peft
+    shows: 'Repository metadata reports "license":{"spdxId":"Apache-2.0","name":"Apache License 2.0"} and
+      "isArchived":false, with description "🤗 PEFT: State-of-the-art Parameter-Efficient Fine-Tuning." The
+      only occurrences of "enterprise" or "premium" in the page are GitHub''s own site-wide navigation chrome
+      (Copilot/Enterprise nav links to github.com/enterprise and github.com/pricing) — none reference peft
+      itself, and the page names no gated feature or paid edition of the library.'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 2e586a33e2f6c45a9bd8702c08f41fdf16a86d64c7c929728da26a06bd689a83
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/huggingface/peft/main/setup.py
+    shows: 'setup() declares name="peft", license="Apache", license_files=["LICENSE"], and classifiers including
+      "License :: OSI Approved :: Apache Software License". extras_require is limited to quality, docs_specific,
+      dev and test — no commercial or enterprise extra — and package_dir/packages point at the same src/peft
+      tree the repo ships, so the installable package builds from the published source with nothing withheld.'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: a042e8c17b9adb7dffc77ff5c3656d3fd4be909efc4051f9b26b4d1e788e4499
+    establishes:
+    - source
+    - core-gated
+    - license
+  - url: https://pypi.org/project/peft/
+    shows: 'Project page headed "peft 0.20.0". Sidebar License reads "Apache Software License (Apache)"
+      and the classifier list carries "License :: OSI Approved :: Apache Software License". Provides Extra
+      lists exactly dev, docs-specific, quality and test, matching setup.py — no paid or enterprise extra
+      on the distributed wheel.'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: b66f68f5674868238a74e6642a97d7dd76e20a8276807163e0ae8b7373094649
+    establishes:
+    - license
+    - source
+    - core-gated
+  - url: https://huggingface.co/pricing
+    shows: 'Hugging Face''s paid plans: PRO at "$9" per month, Team at "$20", Enterprise at "$50", plus
+      per-TB Hub storage and hourly Spaces/inference hardware. Every listed benefit is Hub- or account-scoped
+      (storage, inference credits, SSO, audit logs); a case-insensitive search of the body for "peft" returns
+      zero matches, so no PEFT feature is gated behind a plan.'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 0c022bf223d3cddd30c5703a705881ec12027ce3c5166e1758077688764f9cb2
+    establishes:
+    - core-gated
 adoption:
   level: 5
   reach: '>10M'
   signal_type: usage_volume
   confidence: high
-  note: 'Re-scored 4->5. 10.28M PyPI downloads in the last 30 days; the canonical
-    adapter/LoRA library and a dependency of TRL and most LoRA fine-tuning stacks.
-    The map''s prevailing usage_volume level-5 floor is >10M/mo (cf. llama-index
-    ~10.18M, pydantic-ai ~31M at level 5); PEFT clears it. Conservative note: at
-    ~10.3M it sits just above the floor, so the bump is borderline and rests on
-    volume plus its dependency-graph centrality in the HF fine-tuning stack.'
+  note: Reconfirmed at level 5. 11.69M PyPI downloads in the trailing 30 days (pypistats, 2026-08-09), comfortably
+    clear of the map's usage_volume level-5 floor of >10M/mo; the canonical adapter/LoRA library and a dependency
+    of TRL and most LoRA fine-tuning stacks.
+  last_verified: '2026-08-09'
   sources:
   - url: https://pypistats.org/api/packages/peft/recent
-    shows: last_month downloads = 10,281,112
-    accessed: '2026-06-25'
+    shows: 'Full JSON body: {"data":{"last_day":471851,"last_month":11691121,"last_week":2916121},"package":"peft","type":"recent_downloads"}
+      — 11,691,121 downloads in the trailing month, comfortably inside the >10M level-5 band the adoption
+      score already rests on.'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 7c08298786776f5c248db35718313f1fd07f75592ed0c38a074e66795444e7bc
+  - url: https://pypistats.org/packages/peft
+    shows: 'HTML package-statistics page. Rendered text reads "Downloads last month: 11,691,121" and "Downloads
+      last week: 2,916,121", with "Latest version: 0.20.0" — corroborates the API figure from an actively-released
+      package rather than download residue.'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 9eeb07a096550a628871207138968435e4d95cf7923467c32709d1fe8ef99d18
 capability:
   score: 4
   basis: feature_matrix
@@ -35,7 +98,31 @@ capability:
   confidence: high
   note: Reference-grade depth on parameter-efficient methods; narrower method scope than full-stack trainers,
     so C4 not C5.
+  last_verified: '2026-08-09'
   sources:
-  - url: https://github.com/huggingface/peft/blob/main/LICENSE
-    shows: huggingface/peft repo (PEFT adapter library) confirmed live
-    accessed: '2026-06-04'
+  - url: https://raw.githubusercontent.com/huggingface/peft/main/README.md
+    shows: Quickstart wraps a Transformers model with `get_peft_model` and a `LoraConfig`. The PEFT integrations
+      section documents Transformers ("directly integrated"), Diffusers ("conveniently managing different
+      adapters"), Accelerate ("distributed training and inference for really big models"), and TRL ("PEFT
+      can also be applied to training LLMs with RLHF components such as the ranker and policy"). The memory
+      table reports full fine-tuning of a 12B model running out of GPU memory versus fitting in 56GB with
+      PEFT-LoRA, and a Stable Diffusion LoRA checkpoint at "only 8.8MB".
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 65958fdf047de668cb2abd1c34dace3082d46680b98ae781b8bd2db38486e13e
+  - url: https://raw.githubusercontent.com/huggingface/peft/main/src/peft/utils/peft_types.py
+    shows: The PeftType enum lists over 40 method identifiers today — LORA, ADALORA, IA3, PROMPT_TUNING,
+      PREFIX_TUNING, P_TUNING, BOFT, LOHA, LOKR, OFT, VERA, FOURIERFT, HRA and BONE among the established
+      ones, plus a long tail of recent additions (DELORA, GRALORA, CARTRIDGE, WAVEFT and more). All remain
+      adapter/PEFT-family techniques; none add full-model training orchestration or frontier-scale parallelism.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 71fdbfc64825ce5d89a2bd7e81a6cc231bdbfac5cb37e406aa19a9a91881363a
+  - url: https://raw.githubusercontent.com/huggingface/peft/main/docs/source/developer_guides/quantization.md
+    shows: The Quantization guide combines PEFT LoRA with 4/8-bit bitsandbytes quantization, AWQ, GPTQ and
+      AQLM, stating "QLoRA is a method that quantizes a model to 4-bits and then trains it with LoRA" and
+      that this "allows you to finetune a 65B parameter model on a single 48GB GPU". The worked example
+      sets `bnb_4bit_compute_dtype=torch.bfloat16`, matching the recorded value's BF16 precision claim.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: e9425bb1f20db3e8f0ba37a24c6559a688cb8d7a5571e06ddb65b70373e46aa9

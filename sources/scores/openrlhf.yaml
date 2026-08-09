@@ -5,11 +5,38 @@ openness:
   components: license:Apache-2.0(OSI);source:public(OpenRLHF/OpenRLHF);no managed tier;built on
     Ray+vLLM+DeepSpeed;core-gated:ungated
   confidence: high
-  note: Fully OSI-licensed (Apache-2.0), full source public, no proprietary tier.
+  note: 'unchanged: Fully OSI-licensed (Apache-2.0), full source public, no proprietary tier -- re-confirmed
+    2026-08-09 against the LICENSE body, the README, and the repo page; no gating found.'
+  last_verified: '2026-08-09'
   sources:
+  - url: https://raw.githubusercontent.com/OpenRLHF/OpenRLHF/main/LICENSE
+    shows: The unmodified Apache License, Version 2.0 template -- opens "Apache License" / "Version 2.0,
+      January 2004" and the standard TERMS AND CONDITIONS, ending with the generic placeholder "Copyright
+      [yyyy] [name of copyright owner]" rather than a custom notice. No altered terms, no NOASSERTION trap.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/OpenRLHF/OpenRLHF/main/README.md
+    shows: The Installation section gives "pip install openrlhf" and, for the source route, "git clone https://github.com/OpenRLHF/OpenRLHF.git"
+      followed by "pip install -e ." -- the thing you run builds from this repo. No enterprise, pricing,
+      hosted-service, or paid-tier section appears anywhere in the file.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: ce9e32beb7153b42fc266fa39a43878b5327cf93f0784fcaec2794e880c25553
+    establishes:
+    - source
+    - core-gated
   - url: https://github.com/OpenRLHF/OpenRLHF
-    shows: Apache-2.0 license; production-ready RLHF framework
-    accessed: '2026-06-04'
+    shows: Repo page's embedded data records "license":{"spdxId":"Apache-2.0","name":"Apache License 2.0"}
+      and "isArchived":false, with a top-level tree containing the openrlhf package directory itself (plus
+      dockerfile, docs, examples, tests) -- the repo is the shipped code, not a stand-in for it.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 8b5b071dc3ef01799e57b3e92d890262d4818dd24c9490f7a9f0c55f21a3271c
+    establishes:
+    - source
 adoption:
   level: 2
   reach: 10K-100K
@@ -19,10 +46,22 @@ adoption:
     China Telecom, Vivo, Allen AI, NexusFlow, Jülich). Specialist RLHF tool used by research/training
     teams rather than a mass-download library (no headline PyPI figure surfaced); level 2 on named-traction,
     not stars.
+  last_verified: '2026-08-09'
   sources:
+  - url: https://raw.githubusercontent.com/OpenRLHF/OpenRLHF/main/README.md
+    shows: The "Companies and Organizations using OpenRLHF" section still lists Google, ByteDance, Tencent,
+      Alibaba, Baidu, China Telecom, Vivo, Allen AI, NexusFlow, and Jülich Supercomputing Centre (JSC),
+      among others -- the same named adopters the score's note cites, unchanged. No download-count badge
+      or PyPI figure appears anywhere in the file.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: ce9e32beb7153b42fc266fa39a43878b5327cf93f0784fcaec2794e880c25553
   - url: https://github.com/OpenRLHF/OpenRLHF
-    shows: ~9.6K stars; named users Google/ByteDance/Tencent/Alibaba/Baidu/Allen AI etc.
-    accessed: '2026-06-04'
+    shows: Repo page reports "stargazerCount":9896 today, up from the ~9.6K the score's June 2026 note cites
+      but still well short of a mass-adoption tier -- the same order of magnitude, same named-traction basis.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 8b5b071dc3ef01799e57b3e92d890262d4818dd24c9490f7a9f0c55f21a3271c
 capability:
   score: 4
   basis: feature_matrix
@@ -32,7 +71,14 @@ capability:
   confidence: medium
   note: Strong distributed-RLHF capability (Ray+vLLM+DeepSpeed, 70B+), C4; below the Megatron-LM frontier-scale
     anchor and method scope is RL-centric rather than full-spectrum.
+  last_verified: '2026-08-09'
   sources:
-  - url: https://github.com/OpenRLHF/OpenRLHF
-    shows: PPO/REINFORCE++/GRPO/RLOO, Ray+vLLM+DeepSpeed, 70B+ scale
-    accessed: '2026-06-04'
+  - url: https://raw.githubusercontent.com/OpenRLHF/OpenRLHF/main/README.md
+    shows: Architecture section still describes Ray separating Actor/Reward/Reference/Critic models "up
+      to 70B+ parameters," vLLM for high-throughput rollout generation, and DeepSpeed ZeRO-3/AutoTP/RingAttention
+      for training; the algorithm table still lists PPO, REINFORCE++, REINFORCE++-baseline, RLOO, GRPO,
+      and Dr. GRPO. A new experimental "Molt" backend is noted as an alternative to DeepSpeed, not yet the
+      primary path.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: ce9e32beb7153b42fc266fa39a43878b5327cf93f0784fcaec2794e880c25553

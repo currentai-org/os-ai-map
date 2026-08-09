@@ -5,21 +5,56 @@ openness:
   components: source:closed;training-pipeline:closed;runs-on:La-Plateforme-only;license:Proprietary(managed
     service, per-token + storage pricing); base weights:Mistral-models(open-weight variants exist)
   confidence: high
-  note: 'The hosted FT API on La Plateforme is a proprietary managed service (LoRA adapters under the
-    hood); no source for the service. Mistral separately ships an OSS mistral-finetune SDK for self-hosting,
-    but that is a distinct product from this managed API. Verified 2026-06-04: the FT API remains a live
-    production service on La Plateforme (changelog + platform docs); only the legacy docs guide was relocated
-    to /resources/deprecated/, which carries a deprecation banner but does not retire the API.'
+  note: 'The hosted FT API on Mistral''s Studio platform (formerly branded La Plateforme) is a proprietary
+    managed service (LoRA adapters under the hood); no source for the service. Mistral separately ships
+    an OSS mistral-finetune SDK for self-hosting, but that is a distinct product from this managed API.
+    Verified 2026-08-09: Mistral''s own docs now file the service under ''Deprecated features > Fine-tuning
+    API (legacy)'' with a banner reading ''This feature is deprecated and is no longer actively supported'';
+    the current API pricing catalog lists ongoing training/storage billing only for the Classifier API tier,
+    with no separate catalog entry for general text/vision SFT. Openness is unaffected either way: still
+    a closed, proprietary managed offering with no self-hostable implementation.'
+  last_verified: '2026-08-09'
   sources:
   - url: https://mistral.ai/news/customization
-    shows: serverless FT on La Plateforme; LoRA adapters under the hood; managed proprietary service;
-      separate OSS mistral-finetune SDK
-    accessed: '2026-06-04'
+    shows: States it will 'leverage our proprietary fine-tuning techniques with our managed fine-tuning
+      services' for the serverless offering, and separately introduces the open source mistral-finetune
+      SDK as the self-hosted alternative; no repository is offered for the managed service itself.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 288945c654271839acbc3217390db1073d34f311e2011de790b68ddf6a5e6ffe
+    establishes:
+    - source
+    - license
   - url: https://docs.mistral.ai/resources/deprecated/finetuning
-    shows: legacy fine-tuning DOCS guide moved to /resources/deprecated/ (Classifier Factory + text/vision
-      SFT documented); corroborates that only the docs guide moved while the managed FT API on La Plateforme
-      remains a live production service
-    accessed: '2026-06-04'
+    shows: Nav files this page under 'Deprecated features' as 'Fine-tuning API (legacy)'; the page banner
+      reads 'This feature is deprecated and is no longer actively supported.' Describes the service as 'Text
+      and vision general fine-tuning via SFT' plus 'Classifier Factory', billed with 'a minimum fee per
+      fine-tuning job of $4' and a monthly storage fee; no repository or self-hosted build path is offered
+      for this managed feature.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: b1166812b92559c26498d033ad4e41a700f20c88c2c7fa0cc030ed289467601a
+    establishes:
+    - source
+  - url: https://mistral.ai/pricing/api/
+    shows: Its 'Browse our APIs' catalog lists 'Classifier API model 3B' and 'Classifier API model 8B' fine-tuning,
+      each billed 'minimum fee per fine-tuning job of $4' plus a per-token training cost and a monthly per-model
+      storage cost; this is Mistral's own commercial price list, not a license grant, and no separate catalog
+      entry prices general text/vision SFT.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 5f93d1336cc0aaa088e83186586a9cdc65db7afc33f987dca406bef88f9f4f61
+    establishes:
+    - license
+  - url: https://legal.mistral.ai/terms
+    shows: Indexes Mistral's legal documents, listing a 'Commercial Terms of Service' for commercial/API
+      customers and a 'License Notice' for everyone; no open source license is offered for the hosted platform
+      itself, consistent with a proprietary managed service.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 57268162219e6b09fdbbd9aafda9aa05a23d09508a4e8ef27738295edb3f1e8e
+    establishes:
+    - license
 adoption:
   level: null
   reach: null
@@ -40,10 +75,24 @@ capability:
     or scale/precision knobs in the managed API.'
   confidence: medium
   note: 'Narrower managed method set than the SFT+DPO+RFT services - LoRA SFT + classifier factory only,
-    over Mistral''s own models, black-box. Scored 3: a real, capable managed LoRA-FT service but below
-    the preference/RL-capable OpenAI/Azure/Together/Fireworks offerings (C4) and far below the OSS scale
-    definers.'
+    over Mistral''s own models, black-box. Scored 3: a real, capable managed LoRA-FT service but below the
+    preference/RL-capable OpenAI/Azure/Together/Fireworks offerings (C4) and far below the OSS scale definers.
+    Verified 2026-08-09: Mistral''s docs still describe both methods (deprecated fine-tuning guide), but
+    the live API pricing catalog now lists ongoing billing only for the Classifier API tier, with no separate
+    entry for general text/vision SFT - a possible narrowing worth a closer read.'
+  last_verified: '2026-08-09'
   sources:
-  - url: https://mistral.ai/news/customization
-    shows: LoRA SFT (text & vision) + Classifier Factory; Mistral Small/Medium base
-    accessed: '2026-06-04'
+  - url: https://docs.mistral.ai/resources/deprecated/finetuning
+    shows: 'Confirms the recorded method set verbatim: ''Text and vision general fine-tuning via SFT'' and
+      ''Classifier Factory'', with no full fine-tune, DPO, or RFT option mentioned; filed under ''Deprecated
+      features > Fine-tuning API (legacy)'' with a ''no longer actively supported'' banner.'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: b1166812b92559c26498d033ad4e41a700f20c88c2c7fa0cc030ed289467601a
+  - url: https://mistral.ai/pricing/api/
+    shows: The current API catalog itemizes fine-tuning pricing only for 'Classifier API model 3B' and 'Classifier
+      API model 8B'; no catalog card prices general text/vision SFT of Mistral Small or Medium, though the
+      deprecated guide still documents it as a service.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 5f93d1336cc0aaa088e83186586a9cdc65db7afc33f987dca406bef88f9f4f61

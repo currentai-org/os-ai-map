@@ -13,15 +13,49 @@ openness:
     on 2026-07-30. In this ladder open_core means an OSI core with functionality withheld for a paid tier,
     and there is no open core here, only an open periphery. A repo that exists while the runtime does not
     ship is source:partial, which the ladder scores 2/source_available. The score itself was already 2.
+  last_verified: '2026-08-09'
   sources:
-  - url: https://docs.predibase.com/
-    shows: managed platform to fine-tune & serve open source LLMs; SFT/RFT/continued-pretraining; built
-      by LoRAX creators; SaaS/VPC
-    accessed: '2026-06-04'
-  - url: https://www.rubrik.com/company/newsroom/press-releases/25/rubrik-to-acquire-predibase-to-accelerate-agentic-ai-adoption
-    shows: Rubrik acquisition (Jun 25 2025); proprietary post-training stack + turbo serving + OSS LoRA
-      eXchange
-    accessed: '2026-06-04'
+  - url: https://pypi.org/pypi/predibase/json
+    shows: 'The JSON API''s info object records license: null, classifiers: [], summary: null, and home_page:
+      null for the predibase package (version 2025.10.3) on PyPI — no license or project metadata is declared
+      for the published client library.'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 59ba77191fa40bc9732a986a8a93a6bc3b10004fdb3905b05a06b45f8857b57c
+    establishes:
+    - license
+  - url: https://files.pythonhosted.org/packages/f2/f0/6fb3406af8891fe08b8e5d3b325c39050f7616054bf0a73496277701356a/predibase-2025.10.3.tar.gz
+    shows: 'Extracted with Python''s tarfile (106 members). README.md opens "## Predibase Python SDK"; PKG-INFO
+      records "License: UNKNOWN"; no LICENSE file exists anywhere in the archive; setup.py registers only
+      a console-script entry point (pbase=predibase.cli:main) and no license classifier. A case-insensitive
+      grep of every decoded file for "vpc" found exactly one hit, in predibase/resources/datasets.py: ":param
+      region: (str) Optional region to upload to. Only relevant for VPC customers with multiple dataplanes."
+      This corrects a prior run''s claim that the sdist contains no VPC reference.'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: cab2382bf03e9ff95f6a89bcf8b47f504ab9fb0b7a977fc15f61a46e220b970f
+    establishes:
+    - source
+    - license
+  - url: https://web.archive.org/web/20260107043258/https://docs.predibase.com/
+    shows: 'The "Additional Capabilities" list states "SaaS or VPC deployment options: Deploy in our cloud
+      or yours" and "UI and SDK: Deploy, fine-tune, and prompt via our UI or Python SDK" — access is through
+      a hosted UI/SDK and a deployment-location choice, not a self-hostable code drop of the platform itself.'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: f7e12c9270a491070634021213b52c22d48f33e4d579dc8dbd27c2e0ed554713
+    establishes:
+    - source
+  - url: https://github.com/predibase/lorax
+    shows: The repository title reads "Multi-LoRA inference server that scales to 1000s of fine-tuned LLMs";
+      the repo metadata records "license":{"spdxId":"Apache-2.0","name":"Apache License 2.0"} and "archived":false.
+      The serving engine that plugs into Predibase is public, OSI-licensed, and actively maintained, in
+      contrast to the managed fine-tuning/training platform itself, which ships no equivalent repository.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 5996255122e52caecf69a9588af17afcd5deded3d4b42cdc656a87d82c09ac8c
+    establishes:
+    - source
 adoption:
   level: 2
   reach: 10K-100K
@@ -31,13 +65,17 @@ adoption:
     post-training/agent platform now distributed under Rubrik (acquisition valued $100M-$500M per press),
     founder-pedigree (Google/Uber), and a widely-adopted OSS serving layer (LoRAX). Placed at 2 on reported
     enterprise traction, not a verified usage_volume number; low confidence pending hard data.'
+  last_verified: '2026-08-09'
   sources:
   - url: https://techcrunch.com/2025/06/25/rubrik-acquires-predibase-to-accelerate-adoption-of-ai-agents/
-    shows: Rubrik acquires Predibase (Jun 25 2025) to scale enterprise AI-agent/fine-tuning adoption
-    accessed: '2026-06-04'
-  - url: https://docs.predibase.com/
-    shows: production private serverless endpoints; SaaS/VPC enterprise deployment
-    accessed: '2026-06-04'
+    shows: 'Reports the Rubrik acquisition of Predibase: "Terms of the deal were not disclosed, though CNBC
+      reported that the deal was between $100 million and $500 million"; Predibase, founded in 2021 by Devvret
+      Rishi (CEO), Piero Molino (chief science officer) and Travis Addair (CTO), "has raised more than $28
+      million in VC money" from Felicis, Greylock, and Sancus Ventures. No per-platform usage or customer
+      count is given anywhere in the piece.'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 79b1e31c855d87a0a3b969f6302389217bab304110020e915fc81cd5cec49a4b
 capability:
   score: 4
   basis: feature_matrix
@@ -50,11 +88,26 @@ capability:
     multi-LoRA serving over open models. Scored 4: matches the RFT-capable managed services (OpenAI/Azure/Fireworks
     at C4) and adds best-in-class multi-adapter serving, but is still a black-box managed platform without
     exposed large-scale training internals, so below the OSS scale-frontier definers (Megatron-LM C5).'
+  last_verified: '2026-08-09'
   sources:
-  - url: https://www.rubrik.com/blog/ai/25/introducing-reinforcement-fine-tuning-on-predibase
-    shows: first end-to-end reinforcement fine-tuning platform for LLMs (per Rubrik; corroborated by acquisition
-      coverage)
-    accessed: '2026-06-04'
-  - url: https://docs.predibase.com/
-    shows: SFT, RFT, continued pretraining; LoRAX multi-adapter serving; turbo serving 2x
-    accessed: '2026-06-04'
+  - url: https://web.archive.org/web/20260107043258/https://docs.predibase.com/
+    shows: The Key Features section describes Serving as deploying models via production-ready private serverless
+      endpoints through LoRAX, which serves hundreds of fine-tuned models on a single GPU, and Post-training
+      as supervised fine-tuning, reinforcement fine-tuning, or continued pretraining. A features card elsewhere
+      names Reinforcement Fine-Tuning specifically as Group Relative Policy Optimization (GRPO), and the
+      docs' internal redirect map still routes a turbo_lora path to a TurboLoRA page, confirming it as a
+      current feature name rather than a retired one.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: f7e12c9270a491070634021213b52c22d48f33e4d579dc8dbd27c2e0ed554713
+  - url: https://web.archive.org/web/20260118040413id_/https://predibase.com/
+    shows: 'Searched the raw HTML including script payloads (not just visible text), case-insensitive substring
+      counts: "fine-tun" appears 11 times and "TurboLoRA"/"reinforcement fine-tun" once each. The Organization
+      JSON-LD lists knowsAbout entries for "Fine-tuning", "LoRA", "TurboLoRA", and "Reinforcement fine-tuning",
+      and keywords "LLM, LoRA, inference, AI, fine-tuning, open-source models, AI serving". This directly
+      contradicts a prior claim that this archived homepage has no fine-tuning mentions. The rendered page
+      itself (title "Predibase: Govern Every Agent. Trust Every Action.") had already pivoted to agent-governance
+      messaging by this date even though the schema block still lists the fine-tuning capabilities.'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 3169050aeb93039288cb8ad9736ddaac0cf64e91fd1c8b390a2329b4d36ed9f6

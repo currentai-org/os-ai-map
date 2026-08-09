@@ -96,6 +96,21 @@ product slugs from a truncated terminal listing.
 Dispatch a `Workflow`, one agent per product, roughly ten concurrent. Each agent reads the guides
 above and its own product's two files, fetches, and **edits no file** — it returns a packet.
 
+**Put the cheap tier here and the expensive tier on the audit.** Research is bounded work:
+fetch a URL, read a LICENSE body, decide whether a core is gated, draft sixty words. It is
+careful rather than deep, and there are twenty-odd agents doing it. Auditing is the opposite —
+adversarial reading, noticing that a `shows` describes something absent from the body it cites,
+or that an asserted negative was searched for in a way that could not have found it — and there
+are two agents doing it. Spend accordingly: cheap on the many, expensive on the few that check
+them, and expensive on whatever is orchestrating.
+
+That split is safe precisely because the audit re-verifies from the saved bodies rather than
+trusting the packet, so it does not much care which model wrote one. The honest caveat is that
+it does not buy as much at the research layer as the price suggests either: every defect the
+audits have caught so far — the un-retried 429, the grep against a compressed archive, the
+prose that dropped a true fact — was produced by the expensive tier. Watch the ratio of clean
+to suspect verdicts when you change tiers, and change back if it moves.
+
 Fetch **only** through `uv run python -m build.fetch_source --body-dir <scratch> <url>`, never
 curl and never WebFetch, so the digest recorded is one the weekly sampled re-fetch can confirm.
 

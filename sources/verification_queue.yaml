@@ -1,0 +1,67 @@
+# Axes a verification pass reached and could not settle, with the reason and the date.
+#
+# The runbook's definition of done is that every claim either carries a confirmed
+# `last_verified` or sits somewhere with a reason - never silently absent. A category's
+# `scoring_recipe.deferred` block covers products the openness ladder cannot read. This file
+# covers the other case: an axis a re-read opened, worked, and honestly could not close.
+#
+# It is a queue, not an archive. An entry earns its place by naming what would settle it.
+version: 1
+
+held:
+  llama-factory:
+    adoption:
+      since: '2026-08-09'
+      because: >-
+        PyPI downloads fell from ~234.6K/month in June to 22,005, a ~90% drop, while stars,
+        forks and named enterprise adopters all kept growing. A fall that large against rising
+        breadth signals is likelier a packaging or measurement change than a collapse in use.
+        Settling it needs the download history rather than two point reads.
+    capability:
+      since: '2026-08-09'
+      because: >-
+        The band is anchored to a comparison against megatron-lm, whose own capability was
+        confirmed 2026-08-08 - a day older than this pass. A derived band cannot be fresher
+        than what it derives from, so the comparison waits for the anchor to be re-read.
+
+  verl:
+    capability:
+      since: '2026-08-09'
+      because: >-
+        The proposed change drops DPO from the method list on an asserted negative the fetched
+        endpoint cannot support: it returns a submodule pointer, which enumerates no files and
+        so cannot show what verl-recipe contains. Settling it needs the submodule listing.
+
+  openpipe:
+    capability:
+      since: '2026-08-09'
+      because: >-
+        Same anchor-freshness case as llama-factory: the recorded band rests on an explicit
+        comparison to Megatron-scale training stacks, and megatron-lm was confirmed a day
+        earlier than this pass.
+
+  amazon-bedrock-custom-models-fine-tuning:
+    capability:
+      since: '2026-08-09'
+      because: >-
+        The recorded value says continued pre-training is offered on select models; the current
+        AWS customization docs enumerate three methods that do not include it. Whether it was
+        withdrawn or merely documented elsewhere needs a source this pass did not reach.
+
+  together-fine-tuning:
+    adoption:
+      since: '2026-08-09'
+      because: >-
+        A hosted training service publishes no usage figure, and nothing fetched this pass
+        establishes the recorded band. It is not a deliberate abstention either, since the axis
+        carries a value - so it is neither confirmed nor honestly null until one or the other
+        is settled.
+
+  anyscale-fine-tuning:
+    capability:
+      since: '2026-08-09'
+      because: >-
+        The recorded band scores LLMForge's feature set, and LLMForge is retired: the platform
+        now orchestrates open frameworks (LLaMA-Factory, SkyRL, Ray Train) instead. Re-deriving
+        the band needs a fresh read of what the service actually offers today, which is a
+        curation judgment rather than a re-fetch.

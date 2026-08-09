@@ -7,11 +7,26 @@ openness:
   confidence: high
   note: Proprietary managed FT service running only inside a Databricks workspace; no source. (Databricks'
     separate LLM Foundry / Composer libs are OSS but are not this product.)
+  last_verified: '2026-08-09'
   sources:
   - url: https://docs.databricks.com/aws/en/large-language-models/foundation-model-training/
-    shows: managed FT service via databricks_genai SDK; deprecated, removal Aug 14 2026; Llama-only base
-      models
-    accessed: '2026-06-04'
+    shows: Foundation Model Fine-tuning requires a Databricks workspace in AWS us-east-1 or us-west-2 and
+      is used only through the databricks_genai SDK or its UI; the page publishes no repository or self-hosted
+      build of the training engine, and the only license text on the page covers the base Llama models being
+      fine-tuned, not the service itself.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: ef351611643c0c07f2b647c4fd5a9efba16a2f9fa6996691bbbd5f60252ddc69
+    establishes:
+    - source
+    - license
+  - url: https://www.databricks.com/product/machine-learning/mosaic-ai-training
+    shows: Databricks markets this capability as Databricks Model Training, describing it only as a way
+      to fine-tune an open source LLM on Databricks; the page offers no download, repository, or self-host
+      option for the training service itself, and never uses the name Mosaic AI Model Training.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 10de73484f9cfb01a62773d4532c43b6bd55fec51f800d6e0e252884e89451f8
 adoption:
   level: null
   reach: null
@@ -21,10 +36,22 @@ adoption:
     Databricks overall is widely used, but no honest signal specific to this FT capability was found;
     declining to assign a level. Feature is also being sunset (removal Aug 14 2026), which further depresses
     any forward adoption.
+  last_verified: '2026-08-09'
   sources:
   - url: https://docs.databricks.com/aws/en/large-language-models/foundation-model-training/
-    shows: managed FT feature; deprecation notice; no usage figures disclosed
-    accessed: '2026-06-04'
+    shows: The Foundation Model Fine-tuning page discloses no usage, job-count, or customer figures for
+      the feature anywhere in the article; the only forward-looking statement is the admonition that it
+      is deprecated and scheduled for removal on August 14, 2026.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: ef351611643c0c07f2b647c4fd5a9efba16a2f9fa6996691bbbd5f60252ddc69
+  - url: https://www.databricks.com/product/machine-learning/mosaic-ai-training
+    shows: The Databricks Model Training product page carries no customer counts, job counts, or usage figures
+      specific to this fine-tuning capability, only generic cost-comparison marketing language (e.g. lower
+      cost than proprietary LLMs).
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 10de73484f9cfb01a62773d4532c43b6bd55fec51f800d6e0e252884e89451f8
 capability:
   score: 2
   basis: feature_matrix
@@ -36,7 +63,13 @@ capability:
     single base-model family, and a black-box service. Scored 2: below the OpenAI/Vertex/Together managed
     offerings (SFT+DPO+RFT / 100B+ models) and far below the OSS scale definers. Being deprecated also
     caps forward capability investment.'
+  last_verified: '2026-08-09'
   sources:
   - url: https://docs.databricks.com/aws/en/large-language-models/foundation-model-training/
-    shows: chat-completion FT, instruction FT, continued pre-training; Llama-only
-    accessed: '2026-06-04'
+    shows: Supported tasks lists exactly three methods, chat completion, instruction fine-tuning, and continued
+      pre-training, with no LoRA, QLoRA, DPO, RLHF or other preference-tuning options mentioned; Supported
+      models lists only Meta Llama 3.1, 3.2 and 3.3 checkpoints (70B/8B and 1B/3B variants), matching the
+      recorded feature-matrix value exactly.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: ef351611643c0c07f2b647c4fd5a9efba16a2f9fa6996691bbbd5f60252ddc69

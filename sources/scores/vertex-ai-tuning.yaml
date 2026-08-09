@@ -5,34 +5,79 @@ openness:
   components: source:closed;training-code:closed;runs-on:Google-Cloud-Vertex-AI-only;license:Proprietary(managed
     GCP service)
   confidence: high
-  note: Proprietary managed tuning service inside Vertex AI; no source, runs only on Google Cloud against
+  note: Proprietary managed tuning service inside Google Cloud's Vertex AI generative-AI docs (now also
+    mirrored under 'Gemini Enterprise Agent Platform' branding); no source, runs only on Google Cloud against
     closed Gemini models.
+  last_verified: '2026-08-09'
   sources:
   - url: https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/tune-models
-    shows: supervised fine-tuning + preference tuning for Gemini; managed GCP service
-    accessed: '2026-06-04'
+    shows: 'The tuning introduction page (redirected today to the canonical docs.cloud.google.com/gemini-enterprise-agent-platform/models/tuning)
+      describes Gemini tuning entirely as a hosted capability: supervised fine-tuning, preference tuning,
+      tuning checkpoints and continuous tuning are all run and served by Google, opening with "Agent Platform
+      supports supervised fine-tuning to customize foundational models." No client library, SDK source,
+      or self-hostable runtime is offered anywhere on the page.'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 595cea31f8e23af6c78ca0942606c306efe788b89b809f13e57c5d6f1637acad
+    establishes:
+    - source
+  - url: https://cloud.google.com/terms/
+    shows: Section 3.3 "Restrictions" of the Google Cloud Platform Terms of Service states Customer will
+      not, and will not allow End Users to, "copy, modify, or create a derivative work of the Services",
+      "reverse engineer, decompile, translate, disassemble, or otherwise attempt to extract any or all of
+      the source code of, the Services", or "sell, resell, sublicense, transfer, or distribute any or all
+      of the Services" — the standard proprietary-SaaS terms this closed, managed feature is offered under.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: c3abe0478cee251b8bb3fd0d649ac137d4be309a155d379eb06d8a3ea79d19dd
+    establishes:
+    - license
 adoption:
   level: null
   reach: null
   signal_type: unknown
   confidence: low
-  note: No disclosed usage figure for the Vertex Gemini tuning feature located this run. The Gemini app
-    surface has 750M+ MAU but that is not the Vertex tuning service and cannot be attributed to this SKU;
-    declining to assign a level rather than borrow the surface number.
+  note: No disclosed usage figure for the Gemini tuning feature located this run. The pricing page publishes
+    only per-token tuning rates, and the Gemini app surface's MAU is a different product and cannot be attributed
+    to this SKU; declining to assign a level rather than borrow the surface number.
+  last_verified: '2026-08-09'
   sources:
   - url: https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/tune-models
-    shows: managed Gemini tuning feature; no usage figures disclosed
-    accessed: '2026-06-04'
+    shows: The tuning documentation is entirely a how-to and reference guide; it contains no count of customers,
+      developers, tuning jobs, or tokens tuned anywhere on the page.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 595cea31f8e23af6c78ca0942606c306efe788b89b809f13e57c5d6f1637acad
+  - url: https://cloud.google.com/vertex-ai/generative-ai/pricing
+    shows: The pricing page (redirected today to cloud.google.com/gemini-enterprise-agent-platform/generative-ai/pricing)
+      lists only per-token rates, e.g. a 'Tuning for 1M training tokens' row at $3.00 for Gemini 2.0 Flash
+      and $1.00 for Gemini 2.0 Flash-Lite. A case-insensitive search of the extracted page text for 'customers',
+      'users', 'downloads', 'MAU' and 'monthly active' turns up pricing-terms usage and case-study links
+      only, no adoption or usage-count figure for the tuning feature.
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 627809c818d73d58c6f34a5b6d51e098a809335068e5beb25769a27e6c03dd0f
 capability:
   score: 4
   basis: feature_matrix
   value: 'Methods: supervised fine-tuning and preference tuning (DPO-style) for Gemini; multimodal tuning
     across text/document/image/audio/video plus function-calling tuning; checkpoint management.'
   confidence: medium
-  note: Broad managed multimodal tuning (SFT + preference + function-calling, across modalities) over
-    frontier closed Gemini models. Black-box (no scale/precision controls, no benchmark basis), so capped
-    below the OSS scale definers; scored 4 on method+modality breadth, comparable to the OpenAI FT API.
+  note: 'Broad managed multimodal tuning (SFT + preference tuning + a newly-observed preview reinforcement-learning
+    method, across modalities) over frontier closed Gemini models. Black-box (no scale/precision controls,
+    no benchmark basis), so capped below the OSS scale definers; scored 4 on method+modality breadth. Not
+    recording relative_to/relation against the OpenAI FT API this run: that peer''s (openai-fine-tuning-api)
+    capability was last confirmed 2026-08-08, one day before this read, and check_capability.py rejects
+    a dated band fresher than the peer it derives from.'
+  last_verified: '2026-08-09'
   sources:
   - url: https://docs.cloud.google.com/vertex-ai/generative-ai/docs/models/tune-models
-    shows: SFT + preference tuning, multimodal + function-calling tuning for Gemini
-    accessed: '2026-06-04'
+    shows: 'Confirms three tuning methods for Gemini models: "Supervised fine-tuning"; "Preference tuning",
+      described as "Gemini Enterprise Agent Platform preference tuning builds on supervised fine-tuning
+      by letting you tune your Gemini models with human feedback data"; and a nav-listed "Reinforcement
+      learning fine-tuning" section carrying a "Preview" badge (data-title="Preview"). Also lists "Tuning
+      checkpoints" and "Continuous tuning". The ''Supported modalities'' nav enumerates Text, Document,
+      Image, Audio and Video tuning plus "Tune function calling".'
+    accessed: '2026-08-09'
+    http_status: 200
+    content_sha256: 595cea31f8e23af6c78ca0942606c306efe788b89b809f13e57c5d6f1637acad
