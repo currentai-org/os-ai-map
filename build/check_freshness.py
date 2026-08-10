@@ -13,7 +13,7 @@ when the two disagree the guide wins.
 
   * **`last_verified`** — the most recent date on which everything in the score was
     confirmed still correct. Written when an axis is re-checked against its sources,
-    whether or not the value changed. 41 of 1,485 axes carry one, up from zero when
+    whether or not the value changed. 137 of 1,370 axes carry one, up from zero when
     the field landed, and watching that fill in is how we measure the automation.
   * **The score file's last commit date** — the fallback. Somebody committed this
     file on that date and left the score standing, which git records and nobody can

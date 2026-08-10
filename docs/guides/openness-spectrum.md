@@ -214,8 +214,8 @@ Both are choices, not oversights, and neither moves the binary line.
 ### Where the boundary is currently weakest
 
 The **dataset** vocabulary has no middle. Its classes are `open`, `gated`, `restricted`
-and `closed`, and `open` is the only word above `gated`, so every corpus scored 3 or higher
-lands in the `open` bucket — 52 products today, including one at 3 and six at 4. A model at 4
+and `closed`, and `open` is the only word above `gated`, so every corpus classed `open` sits
+in that bucket — 51 products today, including one at 3 and six at 4. A model at 4
 is `open_weights` and open-ish; a corpus at 4 is `open`. `the-pile` (license deferring to
 per-subset terms, Books3 withdrawn) and `stack-edu` (deferring to The Stack v2's gated terms)
 are counted as open on that basis. Closing it means giving the vocabulary a middle class and
