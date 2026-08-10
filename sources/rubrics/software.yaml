@@ -152,6 +152,11 @@ openness:
 # records, and it carries the UNIT the band was read in - stars and downloads are not
 # the same reach at the same magnitude.
 #
+# The floor band is -1 rather than 0 so that a figure of exactly ZERO still bands at 1.
+# With 0 it did not: `0 > 0` is false, the product matched no band, and it came back
+# unbanded - which asserts "no scale exists for this type" when the truth is "nobody
+# downloaded it". zentropi-cope surfaced it on the first real run.
+#
 # Derived 2026-08-09 from the 279 software products recording both a level and a reach.
 # The mapping is unambiguous at every level: <10K->1 (11 of 12), 10K-100K->2 (26 of 44),
 # 100K-1M->3 (56 of 72), 1M-10M->4 (63 of 67), >10M->5 (32 of 35).
@@ -163,4 +168,4 @@ adoption:
   - {level: 4, above: 1000000, reach: 1M-10M}
   - {level: 3, above: 100000, reach: 100K-1M}
   - {level: 2, above: 10000, reach: 10K-100K}
-  - {level: 1, above: 0, reach: <10K}
+  - {level: 1, above: -1, reach: <10K}
