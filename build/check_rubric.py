@@ -77,6 +77,132 @@ def head(value: str) -> str:
     return re.split(r"[(,]", value)[0].strip()
 
 
+def split_value(raw: str) -> tuple[str, str]:
+    """Split a recorded component into its bare value and its trailing detail.
+
+    'open(downloadable on HF, gated)' -> ('open', 'downloadable on HF, gated')
+
+    Lives beside `head` because the bare half must equal `head(raw)` exactly — that is
+    what makes a structured `components` mapping score-neutral, and two modules apart is
+    how the two would drift. `build/serialize_rubric.py` re-exports it.
+    """
+    text = (raw or "").strip()
+    parts = re.split(r"[(,]", text, maxsplit=1)
+    bare = parts[0].strip()
+    rest = parts[1].strip() if len(parts) > 1 else ""
+    return bare, rest.rstrip(")").strip()
+
+
+FREE_TEXT = "free_text"
+
+
+def _clauses(text: str) -> list[str]:
+    """Depth-0 clause split, KEEPING the keyless clauses `split_components` discards.
+
+    `split_components` drops any clause with no colon, silently — 221 of them across 168
+    files. The structured form has to put those somewhere, so the migration needs a splitter
+    that hands them back.
+    """
+    parts: list[str] = []
+    depth = 0
+    current = ""
+    for char in text:
+        if char == "(":
+            depth += 1
+        elif char == ")":
+            depth = max(0, depth - 1)
+        if char == ";" and depth == 0:
+            parts.append(current)
+            current = ""
+        else:
+            current += char
+    if current.strip():
+        parts.append(current)
+    return parts
+
+
+def structure(text: str) -> dict:
+    """The flat `k:v;k:v` string as a mapping of key -> {value, detail?, raw?}.
+
+    `raw` appears only when `f"{value}({detail})"` does not reproduce the clause
+    byte-for-byte. 155 entries on 81 products need one, in three shapes: text after the
+    closing paren ('Apache-2.0(OSI) for the framework'), a comma that is a list separator
+    rather than a value/detail boundary ('rows:169,352', which every caller of split_value
+    already reads as '169' today), and nested parens, where rstrip(')') removes one closer
+    and leaves the inner one unbalanced.
+
+    Keyless clauses accumulate under `free_text` in the order they appeared. They are not
+    promoted to dimensions here: `dimension_value` would start answering where it answered
+    '' and that can change which rung fires, which this phase is not allowed to do.
+    """
+    out: dict = {}
+    free: list[str] = []
+    for clause in _clauses(text):
+        clause = clause.strip()
+        if ":" not in clause:
+            free.append(clause)
+            continue
+        key, value = clause.split(":", 1)
+        key, value = key.strip(), value.strip()
+        bare, detail = split_value(value)
+        entry: dict = {"value": bare}
+        if detail:
+            entry["detail"] = detail
+        if (f"{bare}({detail})" if detail else bare) != value:
+            entry["raw"] = value
+        out[key] = entry
+    if free:
+        out[FREE_TEXT] = free
+    return out
+
+
+def recompose(mapping: dict) -> dict[str, str]:
+    """The mapping back to the key -> raw-clause dict `split_components` produces.
+
+    This is the join that makes the migration score-neutral: every reader keeps seeing the
+    exact strings it saw before the shape changed.
+    """
+    out: dict[str, str] = {}
+    for key, entry in mapping.items():
+        if key == FREE_TEXT:
+            continue
+        if "raw" in entry:
+            out[key] = entry["raw"]
+            continue
+        detail = entry.get("detail")
+        out[key] = f"{entry['value']}({detail})" if detail else entry["value"]
+    return out
+
+
+def components_of(openness: dict) -> dict[str, str]:
+    """The recorded components as key -> raw clause, from either shape.
+
+    The one function every reader calls. Both shapes are on `main` at once while the corpus
+    migrates in batches, so no reader may assume either.
+    """
+    components = (openness or {}).get("components")
+    if isinstance(components, dict):
+        return recompose(components)
+    return split_components(components or "")
+
+
+def components_string(openness: dict) -> str:
+    """The flat string, for the payload and for anything that re-splits it itself.
+
+    Prefers the verbatim `raw` sibling, which is what the file said before it was migrated;
+    falls back to rejoining the mapping. The payload key stays a string so the front end and
+    the rendered notebook see no change at all from this migration.
+    """
+    block = openness or {}
+    raw = block.get("raw")
+    if isinstance(raw, str) and raw:
+        return raw
+    components = block.get("components")
+    if isinstance(components, str):
+        return components
+    return ";".join(f"{key}:{value}" for key, value in recompose(components or {}).items())
+
+
 _RECORDED_ALIASES: dict[str, str] | None = None
 
 

@@ -60,7 +60,6 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import re
 import sys
 from pathlib import Path
 
@@ -71,6 +70,7 @@ from build.check_rubric import (
     license_read_keys,
     resolve_dimension,
     split_components,
+    split_value,
 )
 from build.rubrics import load_product_types, recipe_for, resolve_recipe_variants
 from build.serialize_registry import write_tables
@@ -175,20 +175,6 @@ def load_policy(root: Path) -> dict:
 
 def load_routing(root: Path) -> dict:
     return yaml.safe_load((root / "sources" / "signal_routing.yaml").read_text()) or {}
-
-
-def split_value(raw: str) -> tuple[str, str]:
-    """Split a recorded component into its bare value and its trailing detail.
-
-    'open(downloadable on HF, gated)' -> ('open', 'downloadable on HF, gated')
-    The bare half matches `check_rubric.head` exactly, which is what the formula
-    consumes; the detail half is what a reviewer needs and the formula ignores.
-    """
-    text = (raw or "").strip()
-    parts = re.split(r"[(,]", text, maxsplit=1)
-    bare = parts[0].strip()
-    rest = parts[1].strip() if len(parts) > 1 else ""
-    return bare, rest.rstrip(")").strip()
 
 
 def admit(shows: str, policy: dict) -> tuple[bool, str]:

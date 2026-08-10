@@ -977,3 +977,35 @@ def test_download_bands_and_stars_bands_do_not_collide():
     assert all(r["product_type"] != "*" for r in downloads)
     keys = {(r["product_type"], r["signal_type"], r["level"]) for r in downloads + stars}
     assert len(keys) == len(downloads) + len(stars), "a (type, instrument, level) key repeats"
+
+
+def test_split_value_bare_half_matches_head_on_the_whole_corpus():
+    """The property the structured-dimensions migration rests on, tested against the corpus.
+
+    A structured `components` mapping is score-neutral only because the bare half of
+    `split_value` is byte-identical to `check_rubric.head`, which is what every formula
+    actually reads. That held on all 1,754 recordings when it was measured, and until now
+    it was asserted against four hand-written strings — so an edit to either function could
+    move scores with every gate green. Four literals cannot notice that; the corpus can.
+    """
+    from pathlib import Path
+
+    import yaml
+
+    from build.check_rubric import head, split_components
+
+    root = Path(__file__).resolve().parents[1]
+    mismatches = []
+    recordings = 0
+    for path in sorted((root / "sources" / "scores").glob("*.yaml")):
+        block = (yaml.safe_load(path.read_text()) or {}).get("openness") or {}
+        components = block.get("components")
+        if not isinstance(components, str) or not components:
+            continue
+        for key, raw in split_components(components).items():
+            recordings += 1
+            if split_value(raw)[0] != head(raw):
+                mismatches.append(f"{path.stem}.{key}: {raw!r}")
+
+    assert recordings > 1_000, f"only {recordings} recordings reached; the corpus walk is broken"
+    assert mismatches == [], "split_value and head disagree:\n  " + "\n  ".join(mismatches)

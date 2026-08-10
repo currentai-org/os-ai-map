@@ -305,3 +305,78 @@ def test_no_score_file_mints_a_phantom_dimension_key():
                 offenders.append(f"{path.stem}: {key!r}")
 
     assert offenders == [], "phantom dimension keys minted from prose:\n  " + "\n  ".join(offenders)
+
+
+def test_structure_splits_a_keyed_clause_into_value_and_detail():
+    from build.check_rubric import structure
+
+    assert structure("weights:open(downloadable on HF);data:closed") == {
+        "weights": {"value": "open", "detail": "downloadable on HF"},
+        "data": {"value": "closed"},
+    }
+
+
+def test_structure_keeps_a_keyless_clause_as_free_text():
+    """A keyless clause has no key to sit under, and dropping it deletes evidence.
+
+    `split_components` discards it silently and `check_recipe`'s blocking test only ever
+    sees clauses that survived that discard — which is why the gate reports 0 blocking
+    clauses while 221 of them go unread.
+    """
+    from build.check_rubric import structure
+
+    assert structure("source:public;no feature-gated core") == {
+        "source": {"value": "public"},
+        "free_text": ["no feature-gated core"],
+    }
+
+
+def test_structure_records_raw_when_value_and_detail_cannot_round_trip():
+    """Three clause shapes that split_value cannot reverse; `raw` is what keeps them.
+
+    `rows:169,352` is the sharpest: the first comma is taken as the value/detail boundary,
+    so a row count is cut in half. That is happening today, with no migration involved.
+    """
+    from build.check_rubric import structure
+
+    assert structure("rows:169,352")["rows"] == {"value": "169", "detail": "352", "raw": "169,352"}
+    assert structure("license:Apache-2.0(OSI) for the framework")["license"]["raw"] == (
+        "Apache-2.0(OSI) for the framework"
+    )
+    assert structure("toolchain:open (fully open (MaixPy, Apache-2.0))")["toolchain"]["raw"] == (
+        "open (fully open (MaixPy, Apache-2.0))"
+    )
+
+
+def test_components_of_reads_both_shapes_identically():
+    """Both shapes are on main at once while the corpus migrates in batches."""
+    from build.check_rubric import components_of, split_components, structure
+
+    text = "weights:open(on HF);data:closed;rows:169,352;no feature-gated core"
+    assert components_of({"components": text}) == split_components(text)
+    assert components_of({"components": structure(text)}) == split_components(text)
+
+
+def test_structure_round_trips_every_recorded_components_string():
+    """The corpus-wide guarantee: no reader sees a different string after the migration.
+
+    Byte-exact, not whitespace-insensitive. A normalizing comparison would let 108 entries
+    that differ only by a space before the opening paren pass while quietly changing the
+    detail text the warehouse evidence rows carry.
+    """
+    from build.check_rubric import recompose, split_components, structure
+
+    root = Path(__file__).resolve().parents[1]
+    failures = []
+    walked = 0
+    for path in sorted((root / "sources" / "scores").glob("*.yaml")):
+        block = (yaml.safe_load(path.read_text()) or {}).get("openness") or {}
+        components = block.get("components")
+        if not isinstance(components, str) or not components:
+            continue
+        walked += 1
+        if recompose(structure(components)) != split_components(components):
+            failures.append(path.stem)
+
+    assert walked > 0, "no string-shaped components reached; the corpus walk is broken"
+    assert failures == [], f"structure/recompose does not round-trip: {failures}"
