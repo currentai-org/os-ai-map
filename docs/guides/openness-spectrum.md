@@ -29,7 +29,7 @@ Each `sources/scores/<slug>.yaml` carries two separate, analyst-assigned opennes
 Every non-null value needs a primary `sources:` entry. Both fields were originally assigned
 by hand against MOF/OSI, and that history is why `components`/`note` read as editorial prose.
 
-**A deterministic formula now exists for most of the map.** 13 of the 16 categories declare a
+**A deterministic formula now exists for most of the map.** All 16 categories declare a
 `scoring_recipe` that names an ordered rule list over dimension values, and
 `build/check_rubric.py` replays it against each product's recorded `components` to check that
 the recorded score is the one the rules produce. Most recipes `extend` a shared ladder in
@@ -40,7 +40,7 @@ than one kind of product maps `extends` per product type.
 Three caveats, because "a formula exists" is easy to over-read:
 
 - **A recipe covers a category, not every product in it.** All sixteen categories carry one as
-  of 2026-08-01, but 86 products are declared in a `deferred:` block, meaning the category has
+  of 2026-08-01, but 81 products are declared in a `deferred:` block, meaning the category has
   said the ladder does not decide them. Those scores remain editorial. `check_recipe` prints
   the per-category split and fails if a product abstains without being declared.
 - **A recipe reproducing a score does not validate it.** It shows the rules describe how the
@@ -49,8 +49,8 @@ Three caveats, because "a formula exists" is easy to over-read:
   facts.
 - **A category can hold products back.** `scoring_recipe.deferred` lists products the rules do
   not decide, usually because a dimension is not recorded in a form the ladder can read. There
-  are 89 such products across 10 categories, and `safeguards` currently defers all 26 of its
-  own. Deferred products publish no openness evidence to the warehouse.
+  are 81 such products across 13 categories, and `safeguards` defers 5 of its 26. Deferred
+  products publish no openness evidence to the warehouse.
 
 So openness is part computed and part editorial, and which one you are looking at depends on
 the category and the product. `docs/guides/verification.md` tracks the work to close that gap.

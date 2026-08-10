@@ -240,9 +240,9 @@ After a PR merges, a maintainer (OSO MCP write access) may need to:
 ## Common references
 
 - Query conventions: `docs/guides/queries.md`
-- Notebook style: `docs/guides/notebooks.md`
+- Notebook style: `docs/guides/notebook-design.md`
 - Methodology copy (rendered into the notebook): `docs/methodology.md`
 - Openness scoring: `docs/guides/openness-spectrum.md`
 - Gap analysis (stages + gaps): `docs/guides/gap-analysis.md`
 - Coverage backlog: tracked in GitHub issues
-- Warehouse inventory: `warehouse/models/README.md`
+- Warehouse models this repo maintains: `warehouse/models/README.md`

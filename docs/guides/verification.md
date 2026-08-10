@@ -128,19 +128,18 @@ gate every PR. The ones needing the network run periodically.
 | producible-pairs | an impossible score/class pair | the pair must be producible by some rule in the recipe | free |
 | refetch | fabricated or rotted sources | sampled re-fetch, digest and `shows` token match | network, weekly |
 | parity | repo and warehouse drifting apart | `build/check_parity.py`, a per-product differential | network, weekly |
-| release | a UDM revision that was never released | assert latest revision == latest release | network, per publish |
 | capability-anchors | a recorded peer comparison that does not hold | `relation` must agree with both scores, and a dated band's peer must be confirmed at least as recently | free |
 
 These were numbered G1-G6 until 2026-08-08. Older PRs and commit messages use the numbers.
 
 **They ratchet rather than switch on.** The invariant and the digest requirement apply only to
-axes that carry a `last_verified`, which is 6 today and grows as the re-read pass proceeds. So
+axes that carry a `last_verified`, which is 137 today and grows as the re-read pass proceeds. So
 they cover exactly what has been done, never block progress, and never permit a regression on
 ground already taken. A big-bang gate over all 1370 axes would fail on day one and get switched
 off, which is how gates die.
 
-The producible-pair check, the parity gate and the release assertion apply in full immediately —
-nothing has to be populated first.
+The producible-pair check and the parity gate apply in full immediately — nothing has to be
+populated first.
 
 The parity gate runs on its own weekly schedule rather than inside the publish job, and that
 placement is deliberate rather than a stopgap in disguise. Publishing pushes and materializes the
@@ -209,7 +208,7 @@ different in kind and can be automated — see the table below.
 ## What a capability confirmation attests to
 
 Less than the other two axes, and the difference is worth stating before roughly 400 dates get
-written across adoption and capability in step 3. **Zero capability axes carry a
+written across adoption and capability in step 3. **42 capability axes carry a
 `last_verified` today**, so this is a paragraph now and an audit of 400 dates later.
 
 Capability is not measured on this map. Measured on 2026-08-08, 322 of 472 products record
@@ -351,10 +350,10 @@ cover it. `scoring_recipe.extends` can now be a mapping of product type to ladde
 too: the fine-tuned model ladder moved out of `finetuned_chat.yaml` into a shared
 `sources/rubrics/model.yaml`, so `safeguards` could reference it alongside `software.yaml`.
 
-The machinery landed; the scores did not. `safeguards` reproduces none of its 26 products.
-All 26 sit in the category's `deferred` block: a license resolving to the wrong tier,
+The machinery landed; the scores did not. `safeguards` reproduces 21 of its 26 products.
+The other 5 sit in the category's `deferred` block: a license resolving to the wrong tier,
 evidence recorded under a key the ladder does not read, a couple of judgment calls on which
-SKU governs a bundled guard model. Correcting those 26 is what remains, through curation
+SKU governs a bundled guard model. Correcting those 5 is what remains, through curation
 rather than more machinery.
 
 ### 2. Generalize the scoring SQL, once ✅ **done 2026-08-05**
@@ -441,7 +440,7 @@ the unit of work; the split of authority is unchanged — this guide governs the
 date, `product-info.md` governs the prose, and the `comments` verification line still earns no
 `last_verified`.
 
-That backlog is currently the 86 declared deferrals. Every category has a recipe now, and
+That backlog is currently the 81 declared deferrals. Every category has a recipe now, and
 `safeguards` — which used to contribute all 26 of its products here — is down to 5. The
 composition is roughly: products whose prose does not settle a dimension the ladder reads,
 products whose recorded license maps to no tier, and a handful where the ladder and the

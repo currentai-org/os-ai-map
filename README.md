@@ -150,9 +150,17 @@ signals. Contributors work read-only here; only maintainers write.
 - `refresh-data.md` — run fetchers and reload static models
 - `publish-notebook.md` — serialize, render, and publish the live notebook
 
-**Editor skills.** Four skills in `skills/` mirror the CONTRIBUTING recipes and enforce the same
-read-only warehouse boundary: `curate-category`, `add-product`, `add-data-source`, and
-`pyoso-analyst` (read-only queries).
+**Editor skills.** Eight skills in `skills/` mirror the CONTRIBUTING recipes and enforce the same
+read-only warehouse boundary:
+
+- `curate-category` — edit a category's definition, weights, litmus, or product roster
+- `add-product` — add a new product (scaffolds product + score YAML, updates the roster)
+- `build-rubric` — derive a category's openness ladder, or extend a shared one to it
+- `verify-product` — refresh one product's `description` and `comments` against its sources
+- `refresh-category` — re-verify a whole category: scores and prose together, to the PR
+- `refresh-all-categories` — drive the sweep: report progress, pick the next category
+- `add-data-source` — register a new external data source and add a fetcher
+- `pyoso-analyst` — query `currentai.*` tables via `pyoso` (read-only analysis)
 
 **Companion notebooks.** `pypi-geo-trends.py`, `oss-ai-trends.py`, and `long-tail-explorer.py` are
 standalone marimo notebooks that sit outside the build pipeline and query `currentai.*` warehouse
