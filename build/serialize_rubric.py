@@ -138,7 +138,12 @@ TABLES: dict[str, tuple[str, ...]] = {
     # `bands`, and the absence is the declaration: a consumer finding no band for a type
     # must abstain rather than borrow another type's scale, which is exactly the
     # "abstain rather than substitute" rule signal_routing.yaml states for sources.
-    "adoption_bands": ("product_type", "level", "above", "reach", "unit"),
+    # `signal_type` distinguishes the two banded instruments. Download bands are per
+    # product type, because a dataset's downloads run an order below a package's. The
+    # stars band is per INSTRUMENT and type-independent — a star is a star whatever it
+    # was given to — so it is emitted once with product_type '*' and is declared on its
+    # route in signal_routing.yaml rather than in four rubrics that could drift.
+    "adoption_bands": ("product_type", "signal_type", "level", "above", "reach", "unit"),
     "license_aliases": ("source", "license_slug", "license_name"),
     "evidence_abstentions": ("source", "column_name", "abstain_value"),
     "product_openness_evidence": (
@@ -320,6 +325,37 @@ def license_tiers(slug: str, recipe: dict) -> tuple[list[dict], list[str]]:
     return rows, errors
 
 
+def stars_bands(routing: dict) -> tuple[list[dict], list[str]]:
+    """The stars scale, from the adoption route that produces it.
+
+    Emitted with product_type '*' because it does not vary by type, and capped: a
+    stars-derived band may never claim levels 4 or 5, since stars measure attention
+    rather than use. The cap is enforced here rather than trusted, so a later edit that
+    adds a level-4 stars band fails the serializer instead of quietly publishing one.
+    """
+    routes = ((routing.get("dimensions") or {}).get("adoption") or {}).get("routes") or []
+    rows, warnings = [], []
+    for route in routes:
+        if route.get("signal_type") != "stars_fallback":
+            continue
+        cap = route.get("cap")
+        for band in route.get("bands") or []:
+            if cap is not None and band["level"] > cap:
+                warnings.append(
+                    f"stars band level {band['level']} exceeds the declared cap {cap}; dropped"
+                )
+                continue
+            rows.append({
+                "product_type": "*",
+                "signal_type": "stars_fallback",
+                "level": band["level"],
+                "above": band["above"],
+                "reach": str(band.get("reach") or ""),
+                "unit": "GitHub stars",
+            })
+    return rows, warnings
+
+
 def adoption_bands(shared_rubrics: dict) -> tuple[list[dict], list[str]]:
     """One row per (product type, level), from the shared ladders' `adoption.bands`.
 
@@ -338,6 +374,7 @@ def adoption_bands(shared_rubrics: dict) -> tuple[list[dict], list[str]]:
         for band in bands:
             rows.append({
                 "product_type": product_type,
+                "signal_type": "usage_volume",
                 "level": band["level"],
                 "above": band["above"],
                 "reach": str(band.get("reach") or ""),
@@ -433,6 +470,9 @@ def build_rubric(sources: dict, policy: dict, routing: dict) -> tuple[dict[str, 
 
     tables["adoption_bands"], band_warnings = adoption_bands(shared_rubrics)
     warnings.extend(band_warnings)
+    star_rows, star_warnings = stars_bands(routing)
+    tables["adoption_bands"].extend(star_rows)
+    warnings.extend(star_warnings)
     tables["license_aliases"] = license_aliases(routing)
     tables["evidence_abstentions"] = evidence_abstentions(routing)
     if not tables["evidence_abstentions"]:

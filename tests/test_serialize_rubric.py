@@ -907,3 +907,73 @@ def test_dataset_bands_sit_one_order_below_software():
     top = {r["product_type"]: r["above"] for r in rows if r["level"] == 5}
     assert top["software"] == top["model"] == 10_000_000
     assert top["dataset"] == 1_000_000
+
+
+def test_stars_bands_are_declared_once_and_capped():
+    """Stars are per INSTRUMENT, not per product type.
+
+    A dataset's downloads run an order below a package's, which is why those bands are
+    per type. A star is a star whatever it was given to, so the scale is declared once on
+    its route in signal_routing.yaml and emitted with product_type '*'. Four copies in
+    four rubrics is exactly the drift this whole table exists to stop.
+    """
+    import yaml
+    from pathlib import Path
+
+    from build.serialize_rubric import stars_bands
+
+    routing = yaml.safe_load(Path("sources/signal_routing.yaml").read_text())
+    rows, warnings = stars_bands(routing)
+
+    assert warnings == []
+    assert {r["product_type"] for r in rows} == {"*"}
+    assert {r["signal_type"] for r in rows} == {"stars_fallback"}
+    # Capped at 3: stars measure attention rather than use, so a stars-derived band may
+    # never claim the top two levels however large the count.
+    assert max(r["level"] for r in rows) == 3
+    assert sorted(r["above"] for r in rows) == [-1, 1000, 10000]
+
+
+def test_a_stars_band_above_the_cap_is_dropped_with_a_warning():
+    """The cap is enforced, not trusted. A later edit adding a level-4 stars band should
+    fail the serializer rather than quietly publish one."""
+    from build.serialize_rubric import stars_bands
+
+    routing = {
+        "dimensions": {
+            "adoption": {
+                "routes": [
+                    {
+                        "signal_type": "stars_fallback",
+                        "cap": 3,
+                        "bands": [
+                            {"level": 4, "above": 100000, "reach": ">100K stars"},
+                            {"level": 3, "above": 10000, "reach": ">10K stars"},
+                        ],
+                    }
+                ]
+            }
+        }
+    }
+    rows, warnings = stars_bands(routing)
+    assert [r["level"] for r in rows] == [3]
+    assert any("exceeds the declared cap" in w for w in warnings)
+
+
+def test_download_bands_and_stars_bands_do_not_collide():
+    """Both live in one table, distinguished by signal_type. A consumer joining without
+    filtering on it would band a package's downloads against the stars scale."""
+    from pathlib import Path
+
+    import yaml
+
+    from build.serialize_rubric import adoption_bands, stars_bands
+    from build.validate import load_sources
+
+    downloads, _ = adoption_bands(load_sources(Path(".")).get("rubrics") or {})
+    stars, _ = stars_bands(yaml.safe_load(Path("sources/signal_routing.yaml").read_text()))
+
+    assert {r["signal_type"] for r in downloads} == {"usage_volume"}
+    assert all(r["product_type"] != "*" for r in downloads)
+    keys = {(r["product_type"], r["signal_type"], r["level"]) for r in downloads + stars}
+    assert len(keys) == len(downloads) + len(stars), "a (type, instrument, level) key repeats"
