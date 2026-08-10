@@ -86,6 +86,37 @@ rather than borrow another type's scale. That is the same "abstain rather than s
 rule `sources/signal_routing.yaml` states for sources, and it is why the scoring models LEFT
 JOIN the band table rather than defaulting.
 
+### The stars scale is per instrument, not per type
+
+Stars get their own scale, declared **once** on the adoption route that produces it in
+`sources/signal_routing.yaml` rather than in the four type rubrics:
+
+| level | stars |
+|---|---|
+| 3 | >10K |
+| 2 | 1K-10K |
+| 1 | <1K |
+
+Two reasons it lives there. A dataset's downloads run an order below a package's, which is
+why *those* bands are per type — but a star is a star whatever it was given to, so the scale
+is a property of the instrument. And declaring it once is the only way to avoid four copies
+of a number that must not drift.
+
+**Capped at 3, and the cap is enforced rather than trusted.** Stars measure attention rather
+than use, so a stars-derived band may never claim levels 4 or 5 however large the count.
+`build/serialize_rubric.py` drops a band above the cap with a warning, so a later edit adding
+a level-4 stars band fails the serializer instead of quietly publishing one. The corpus
+already respects this: no `stars_fallback` product records 4 or 5.
+
+Thresholds set 2026-08-10 from the medians the corpus already used — the 71 `stars_fallback`
+products with a live GitHub row sit at medians of ~93, ~1,733 and ~15,801 stars for levels 1,
+2 and 3. The ranges overlap badly (20,901 stars recorded at 2 against 77 recorded at 3), so
+**this scale tightens a loose convention rather than describing one**, and applying it will
+move products.
+
+Both scales share `registry.adoption_bands`, distinguished by `signal_type`. A consumer that
+joins without filtering on it will band a package's downloads against the stars scale.
+
 ### The floor admits zero
 
 Level 1's threshold is `above: -1`, not `0`. With `0` a product measuring exactly zero

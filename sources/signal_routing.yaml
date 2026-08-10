@@ -249,6 +249,28 @@ dimensions:
       note: >
         Last resort, and explicitly last. Stars measure attention, not use, and
         the rubric already ranks this below every real usage signal.
+      # The stars scale lives HERE rather than in sources/rubrics/<type>.yaml,
+      # because it is a property of the INSTRUMENT rather than of the product
+      # type. A dataset's downloads run an order below a package's, which is why
+      # those bands are per type; a star is a star whatever it was given to.
+      # Declaring it once on the route that produces it is also the only way to
+      # avoid four copies of a scale that must not drift.
+      #
+      # Thresholds set 2026-08-10 from the medians the corpus already used: the
+      # 71 stars_fallback products with a live GitHub row sit at medians of ~93,
+      # ~1,733 and ~15,801 stars for levels 1, 2 and 3. The ranges overlap badly
+      # - 20,901 stars recorded at 2 against 77 recorded at 3 - so this scale is
+      # a decision that tightens a loose convention rather than a description of
+      # one.
+      cap: 3
+      cap_because: >
+        Stars measure attention, not use, so a stars-derived band may never claim
+        the top two levels however large the count. The corpus already respects
+        this: no stars_fallback product records 4 or 5.
+      bands:
+      - {level: 3, above: 10000, reach: '>10K stars'}
+      - {level: 2, above: 1000, reach: 1K-10K stars}
+      - {level: 1, above: -1, reach: <1K stars}
     sum_across_artifacts: true
     sum_note: >
       A model family ships several SKUs. The map's unit is the family, so
