@@ -261,8 +261,10 @@ not less.
 
 - Read-only on the warehouse. No MCP writes, no uploads.
 - Edits `sources/` only, and only for products in the named category.
-- Does not clear deferrals, split a type, restructure `openness.components`, or change a ladder.
-  Each is its own project. If the sweep surfaces evidence for one, record it and carry on.
+- Does not clear deferrals, split a type, restructure `openness.components` (string or
+  structured mapping — edit only via `build/components.py`, never by hand), or change a
+  ladder. Each is its own project. If the sweep surfaces evidence for one, record it and
+  carry on.
 
 ## Related
 

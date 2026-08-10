@@ -48,6 +48,13 @@ jobs:
       - name: Recipe gate (structure, deferral completeness, discarded evidence)
         run: uv run python -m build.check_recipe --verbose
 
+      # Does a structured `components` mapping say what the string it replaced said? This is
+      # the only gate that compares the shape migration's output against its input, and it
+      # has to run BEFORE the rubric gate, because the rubric gate reads the mapping and
+      # would simply believe a mangled one. Vacuously green until the first batch migrates.
+      - name: Components gate (a structured mapping matches its raw string)
+        run: uv run python -m build.check_components
+
       # Does the recorded score match what the category's own rubric produces? This is the
       # only gate that compares a published number against the rule meant to generate it,
       # and it ran in no workflow until now. Safe to gate on: products a category has

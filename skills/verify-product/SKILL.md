@@ -77,7 +77,9 @@ comes out of the prose rather than staying in on the grounds that it was already
    nothing will notice. Keep a version only when it is the entry's identity (a named model
    release), terminal (the project is archived), or a statement of absence ("no tagged
    releases"). **Strip any license restatement** — the license is `openness.components` in
-   the score file, where it carries evidence and a gate; a second copy in prose only drifts.
+   the score file (string or structured mapping, read via `components_of`, edited only via
+   `build/components.py`), where it carries evidence and a gate; a second copy in prose only
+   drifts.
    Then set the verification line to the canonical form:
    ```
    Verified <YYYY-MM-DD> via <source>.

@@ -221,8 +221,10 @@ search` — which is precisely what the canonical form below forbids.
 
 The license is the clearest case, and the one this guide used to get backwards. It is not
 merely descriptive: it *is* the openness score's basis, recorded in
-`sources/scores/<slug>.yaml` as `openness.components` (`license:Apache-2.0(OSI);…`) with
-`sources[].accessed` behind it and the invariant and the digest requirement in front of it.
+`sources/scores/<slug>.yaml` as `openness.components` — either the legacy flat string
+(`license:Apache-2.0(OSI);…`) or the structured mapping the corpus is migrating to, always
+read via `components_of` rather than assumed to be either shape — with `sources[].accessed`
+behind it and the invariant and the digest requirement in front of it.
 
 Restating it in `comments` creates a second copy with none of that. The two then drift in
 one direction only: a relicense flows correctly through `verification.md`, the score
@@ -230,10 +232,11 @@ updates, and the prose is quietly left wrong with nothing to catch it. That is t
 "liability with no owner" the volatile-facts rule names, made worse by the copy *looking*
 authoritative.
 
-It also buys the reader nothing. `build/serialize.py` emits the whole `openness` dict into
-the payload, and the front end already renders `openness.components` in the product detail
-panel — in larger type than the prose `version_note` directly above it. The license is on
-screen either way; only one copy carries evidence.
+It also buys the reader nothing. `build/serialize.py` emits the `openness` dict into the
+payload, flattening `components` back to a string via `components_string` whichever shape
+the score file carries, and the front end already renders `openness.components` in the
+product detail panel — in larger type than the prose `version_note` directly above it. The
+license is on screen either way; only one copy carries evidence.
 
 So: **read the LICENSE body, and do not write it into prose.** Reading it stays essential —
 the GitHub classifier lies (a custom copyright line makes a genuine MIT/Apache repo report
@@ -372,7 +375,8 @@ Use this to refresh an existing product's prose (the `verify-product` skill auto
 - [ ] No "latest/current version" clause, unless it is identity, terminal, or an absence.
 - [ ] No curator rationale — no "Picked when …" / "Chosen because …" clause in `description`.
 - [ ] No funding round, acquisition, or IPO, unless it says who ships the product now.
-- [ ] No license restatement — it is `openness.components` in the score file.
+- [ ] No license restatement — it is `openness.components` in the score file (string or
+      structured mapping, read via `components_of`, edited only via `build/components.py`).
 - [ ] `comments` says nothing `description` already says — no product facts, footnotes only.
 - [ ] Verification line in canonical form: `Verified <YYYY-MM-DD> via <source>.`
 - [ ] `<source>` names a document someone could reopen, never a method ("web search").

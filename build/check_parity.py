@@ -64,10 +64,10 @@ import yaml
 
 from build.check_rubric import (
     apply_formula,
+    components_of,
     dimension_value,
     license_read_keys,
     license_tier,
-    split_components,
 )
 from build.rubrics import load_product_types, load_shared, recipe_for, resolve_recipe_variants
 from build.warehouse import query
@@ -113,7 +113,7 @@ def local_scores(category_filter: str | None) -> tuple[dict, dict]:
                 computed[key] = None
                 continue
             openness = (yaml.safe_load(score_path.read_text()) or {}).get("openness") or {}
-            components = split_components(openness.get("components") or "")
+            components = components_of(openness)
 
             # Same order as check_rubric: the tier first, and only where the ladder declares
             # one. A tier-free ladder - hardware scores design and toolchain - must not be

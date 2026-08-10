@@ -10,6 +10,8 @@ import json
 import re
 import yaml
 
+from build.check_rubric import components_string
+
 ROOT = Path(__file__).resolve().parents[1]
 
 PRODUCT_KEY_ORDER = ["slug", "product", "org_slug", "org", "type", "description",
@@ -183,7 +185,18 @@ def _row(slug: str, prod: dict, org_slug: str, org_name: str, score: dict,
     # Pre-compute the open / open-ish / closed bucket alongside the raw class, so
     # consumers get a stable 3-way verdict that survives changes to the openness.class
     # vocabulary. Same collapse the category gap logic uses (_gap_bucket).
-    openness = {**score["openness"], "bucket": _gap_bucket((score["openness"] or {}).get("class"))}
+    # The payload's `components` stays a flat string whatever shape the record carries, and
+    # `raw` never ships. The front end's contract with this payload is undocumented and
+    # untested, and build/render.py plus the rendered notebook both do `row('Components',
+    # o.components)` on it — so a mapping here would render as [object Object] in the product
+    # detail panel and force a regeneration of a bot-owned file. Keeping the key a string
+    # means the structured-dimensions migration is invisible downstream, which is also what
+    # makes "zero published scores moved" a byte comparison rather than a judgment.
+    block = score["openness"] or {}
+    openness = {**block, "bucket": _gap_bucket(block.get("class"))}
+    openness.pop("raw", None)
+    if block.get("components"):
+        openness["components"] = components_string(block)
     row = {
         "slug": slug,
         "product": prod["display_name"],
