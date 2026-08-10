@@ -132,3 +132,10 @@ Where a tier had absorbed several release-level products, the restored date is t
 **oldest** constituent confirmation, because the tier's score covers all of them and one
 stale member bounds the whole thing. That is an aggregate over confirmations, not over
 readings, so it is consistent with the rule above.
+
+## Related
+
+- `docs/guides/verification.md` — how an axis earns `last_verified`, and the gates
+- `docs/guides/adoption.md` — the adoption axis, and why a band nothing can measure still
+  has to age
+- `docs/guides/openness-spectrum.md` — the openness ladders
