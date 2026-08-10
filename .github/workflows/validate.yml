@@ -42,11 +42,22 @@ jobs:
 
       # Structure of every scoring recipe: a rationale on each rung, a machine_signal on
       # each dimension, no rule that cannot fire, no product abstained on without a
-      # declared reason, and no evidence the components parser silently discards. Note
-      # check_rubric is not in CI at all; this is what puts the class of check on every PR.
-      # See skills/build-rubric/SKILL.md.
+      # declared reason, and no evidence the components parser silently discards.
+      # check_rubric runs in the step below; this one gates recipe structure rather than
+      # per-product reproduction. See skills/build-rubric/SKILL.md.
       - name: Recipe gate (structure, deferral completeness, discarded evidence)
         run: uv run python -m build.check_recipe --verbose
+
+      # Does the recorded score match what the category's own rubric produces? This is the
+      # only gate that compares a published number against the rule meant to generate it,
+      # and it ran in no workflow until now. Safe to gate on: products a category has
+      # explicitly deferred are excluded from the comparison, so the escape hatch is the
+      # `deferred` block with a written reason rather than editing a score to make CI pass.
+      # check_recipe above gates the STRUCTURE of a recipe and deliberately refuses to gate
+      # on a reproduction rate; this gates per-product mismatches, which is a different
+      # claim. See build/check_rubric.py's module docstring.
+      - name: Rubric gate (recorded scores reproduce)
+        run: uv run python -m build.check_rubric
       - name: Serialize dry-run
         run: uv run python -m build.serialize --date ci-dry-run
 
