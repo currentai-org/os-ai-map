@@ -178,3 +178,22 @@ def test_validate_vocabulary_is_a_subset_of_the_schema_enum():
 
     permitted = {cls for classes in OPENNESS_CLASSES.values() for cls in classes}
     assert permitted <= allowed, f"validate.py permits classes the schema forbids: {sorted(permitted - allowed)}"
+
+
+def test_payload_openness_carries_a_string_components_and_never_raw():
+    """The payload's contract with the front end does not change with the record's shape.
+
+    build/render.py and the rendered notebook both do `row('Components', o.components)`, and
+    the notebook is bot-owned — `generated-files-guard` fails any PR that edits it. So the
+    payload key stays a string whatever `sources/scores/` carries, and the shadow `raw`
+    sibling never ships.
+    """
+    payload = json.loads((ROOT / "build" / "notebook_data.json").read_text())
+    for category in payload["categories"].values():
+        for row in category["products"]:
+            openness = row.get("openness") or {}
+            assert "raw" not in openness, f"{row['slug']}: payload openness carries raw"
+            components = openness.get("components")
+            assert components is None or isinstance(components, str), (
+                f"{row['slug']}: payload components is {type(components).__name__}, not a string"
+            )

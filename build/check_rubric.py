@@ -384,7 +384,7 @@ def check_category(slug: str, verbose: bool) -> tuple[int, int, list[str], list[
             continue
         scores = yaml.safe_load(path.read_text())
         openness = scores.get("openness") or {}
-        components = split_components(openness.get("components") or "")
+        components = components_of(openness)
         total += 1
 
         # A ladder need not turn on a source license at all. Hardware openness is scored on

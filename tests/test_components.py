@@ -380,3 +380,125 @@ def test_structure_round_trips_every_recorded_components_string():
 
     assert walked > 0, "no string-shaped components reached; the corpus walk is broken"
     assert failures == [], f"structure/recompose does not round-trip: {failures}"
+
+
+def test_check_components_flags_a_mapping_that_disagrees_with_its_raw(tmp_path):
+    """A mangled migration parses, validates, and passes every other gate.
+
+    Every reader takes the mapping at its word, so nothing else in the repo can tell a
+    faithful migration from a lossy one. This gate can, and only because the original
+    string is kept beside it.
+    """
+    from build.check_components import check
+
+    scores = tmp_path / "sources" / "scores"
+    scores.mkdir(parents=True)
+    (scores / "good.yaml").write_text(yaml.safe_dump({"openness": {
+        "components": {"weights": {"value": "open", "detail": "on HF"}},
+        "raw": "weights:open(on HF)",
+    }}, sort_keys=False))
+    (scores / "mangled.yaml").write_text(yaml.safe_dump({"openness": {
+        "components": {"weights": {"value": "closed"}},
+        "raw": "weights:open(on HF)",
+    }}, sort_keys=False))
+
+    failures = check(tmp_path)
+    assert len(failures) == 1
+    assert "mangled.weights" in failures[0]
+
+
+def test_check_components_requires_raw_on_a_migrated_record_and_forbids_it_otherwise(tmp_path):
+    from build.check_components import check
+
+    scores = tmp_path / "sources" / "scores"
+    scores.mkdir(parents=True)
+    (scores / "no-raw.yaml").write_text(yaml.safe_dump({"openness": {
+        "components": {"weights": {"value": "open"}},
+    }}, sort_keys=False))
+    (scores / "stale-raw.yaml").write_text(yaml.safe_dump({"openness": {
+        "components": "weights:open", "raw": "weights:closed",
+    }}, sort_keys=False))
+
+    failures = sorted(check(tmp_path))
+    assert len(failures) == 2
+    assert "no openness.raw" in failures[0]
+    assert "still a string" in failures[1]
+
+
+def test_check_components_flags_a_dropped_keyless_clause(tmp_path):
+    """Dropping a keyless clause deletes evidence with every other gate green.
+
+    `check_recipe`'s blocking test only ever sees clauses that survived
+    `split_components`, which discards these before it runs — which is why it reports 0
+    blocking clauses while 221 of them go unread.
+    """
+    from build.check_components import check
+
+    scores = tmp_path / "sources" / "scores"
+    scores.mkdir(parents=True)
+    (scores / "dropped.yaml").write_text(yaml.safe_dump({"openness": {
+        "components": {"source": {"value": "public"}},
+        "raw": "source:public;no feature-gated core",
+    }}, sort_keys=False))
+
+    failures = check(tmp_path)
+    assert len(failures) == 1
+    assert "free_text" in failures[0]
+
+
+def test_components_string_returns_the_flat_string_unchanged():
+    """Branch 1: `components` is already a string, so there is nothing to recompose.
+
+    This is the only branch the corpus exercises today (all 472 files), and it is also
+    exactly what the payload emitted before this migration touched serialize.py — the
+    property this test protects is that an unmigrated file's payload output is untouched.
+    """
+    from build.check_rubric import components_string
+
+    openness = {"components": "weights:open(on HF);license:MIT"}
+    assert components_string(openness) == "weights:open(on HF);license:MIT"
+
+
+def test_components_string_prefers_the_raw_sibling_over_recomposing():
+    """Branch 2: a migrated record's `raw` wins even though `components` is also present.
+
+    `raw` is the verbatim pre-migration string, so preferring it is what makes the payload
+    byte-identical to what it was before the file moved to the structured shape. If this
+    preferred the recompose path instead, a migration could change the payload's `Components`
+    text without moving a score, which is exactly the silent drift `raw` exists to catch.
+    """
+    from build.check_rubric import components_string
+
+    openness = {
+        "components": {"weights": {"value": "closed"}},  # deliberately disagrees with raw
+        "raw": "weights:open(on HF);license:MIT",
+    }
+    assert components_string(openness) == "weights:open(on HF);license:MIT"
+
+
+def test_components_string_recomposes_a_mapping_with_no_raw_sibling():
+    """Branch 3: a structured mapping with no `raw` to fall back on.
+
+    Every file Tasks 4-9 migrate hits this exact branch until `raw` is added alongside the
+    mapping (or, per `check_components`'s invariant, never — a mapping with no `raw` is a
+    gate failure, but `components_string` itself must still degrade sensibly if called on
+    one). Exercises all three recompose cases in one mapping so a change to any of them
+    fails this test: a keyed entry with a `detail` (parenthesized back on), a keyed entry
+    with no `detail` (bare value), and a keyless `free_text` clause.
+
+    `free_text` clauses are NOT restored into the joined string: `recompose` only walks
+    keyed entries, so a keyless clause that survived structuring is dropped from this
+    fallback's output. That is current, deliberate behavior of `recompose` (it has no key to
+    rejoin the clause under) and this test pins it down rather than leaving it to be
+    discovered by a migrated file's payload going quietly shorter than its `raw`.
+    """
+    from build.check_rubric import FREE_TEXT, components_string
+
+    openness = {
+        "components": {
+            "weights": {"value": "open", "detail": "on HF"},
+            "license": {"value": "MIT"},
+            FREE_TEXT: ["no feature-gated core"],
+        },
+    }
+    assert components_string(openness) == "weights:open(on HF);license:MIT"

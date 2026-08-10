@@ -45,6 +45,8 @@ from build.check_rubric import (
     ROOT,
     apply_formula,
     check_category,
+    components_of,
+    components_string,
     dimension_read_map,
     dimension_value,
     head,
@@ -345,7 +347,7 @@ def stale_deferrals(
         if recipe is None:
             continue
         openness = (yaml.safe_load(path.read_text()) or {}).get("openness") or {}
-        components = split_components(openness.get("components") or "")
+        components = components_of(openness)
         raw = next((components[k] for k in license_read_keys(recipe) if components.get(k)), "")
         tier = license_tier(raw, recipe)
         if tier is None:
@@ -405,7 +407,7 @@ def check_one(slug: str, verbose: bool) -> tuple[list[str], list[str]]:
         recipe, _ = recipe_for(variants, product_types.get(product, ""))
         if recipe is None:
             continue
-        by_recipe.setdefault(id(recipe), {})[product] = openness.get("components") or ""
+        by_recipe.setdefault(id(recipe), {})[product] = components_string(openness)
         pair = (openness.get("score"), openness.get("class"))
         if pair[0] is not None and pair not in rule_outcomes(recipe):
             impossible += 1

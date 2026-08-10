@@ -65,7 +65,7 @@ from pathlib import Path
 
 import yaml
 
-from build.check_rubric import license_read_keys, resolve_dimension, split_components
+from build.check_rubric import components_of, license_read_keys, resolve_dimension
 from build.rubrics import load_product_types, load_shared, recipe_for, resolve_recipe_variants
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -193,7 +193,7 @@ def invariant(
 
             if axis != "openness":
                 continue
-            components = split_components(block.get("components") or "")
+            components = components_of(block)
             required = recorded_dimensions(components, recipe)
             for dimension, key in sorted(required.items()):
                 names = {dimension, key}

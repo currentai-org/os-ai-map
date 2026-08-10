@@ -50,6 +50,11 @@ score  <-  the rule that fired      (category scoring_recipe)
        <-  a source                 (openness.sources[].url)
 ```
 
+`openness.components` is either the legacy flat string or the structured mapping the corpus
+is migrating to, one dimension at a time; every reader in this repo goes through
+`build.check_rubric.components_of`, which returns the same key -> clause dict whichever
+shape a given file carries, so the audit chain above holds unchanged either way.
+
 Three of those four links hold today. **The third does not.** `sources` is a flat list per
 axis, so nothing records WHICH source establishes WHICH dimension. Measured on 2026-07-30:
 324 of 470 openness axes cite exactly one source, asserted to establish `weights`, `data`,

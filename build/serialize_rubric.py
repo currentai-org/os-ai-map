@@ -66,10 +66,10 @@ from pathlib import Path
 import yaml
 
 from build.check_rubric import (
+    components_of,
     dimension_read_map,
     license_read_keys,
     resolve_dimension,
-    split_components,
     split_value,
 )
 from build.rubrics import load_product_types, recipe_for, resolve_recipe_variants
@@ -547,7 +547,7 @@ def build_rubric(sources: dict, policy: dict, routing: dict) -> tuple[dict[str, 
                 declared = ((recipe.get("openness") or {}).get("dimensions")) or {}
 
                 openness = record.get("openness") or {}
-                components = split_components(openness.get("components") or "")
+                components = components_of(openness)
                 if not components:
                     warnings.append(
                         f"product '{product_slug}' in '{slug}' records no openness components"
