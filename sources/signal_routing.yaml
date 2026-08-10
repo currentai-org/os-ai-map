@@ -58,6 +58,25 @@ sources:
     key: product_slug
     evidence_url: https://pypistats.org/packages/{package}
     bridged: true
+  npm:
+    table: null
+    key: null
+    evidence_url: https://www.npmjs.com/package/{package}
+    bridged: false
+    bridge_note: >
+      12 products declare an npm package and no signal model reads the npm registry, so their
+      adoption falls through to the stars scale and its cap of 3 - four of them, including
+      `gemini-cli` and `openclaw`, record 5. npm download counts are a direct analogue of the
+      pypi route, so this is a missing model rather than a missing method. Declared here so
+      the gap is a backlog entry instead of a silent cap.
+  crates:
+    table: null
+    key: null
+    evidence_url: https://crates.io/crates/{package}
+    bridged: false
+    bridge_note: >
+      One product (`yomo`) declares a crates package. Same shape as npm: crates.io publishes
+      download counts and no model reads them.
   semanticscholar:
     table: currentai.signal_semanticscholar.paper_citations
     key: product_slug
