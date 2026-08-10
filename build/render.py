@@ -183,7 +183,6 @@ def style():
         "source_available": ("Source available", 2, "signal"),
         "restricted": ("Restricted", 2, "signal"),
         "gated": ("Gated", 2, "warm"),
-        "documented_only": ("Documented only", 1, "ink_3"),
         "closed": ("Closed", 1, "ink_3"),
         "open_hardware": ("Open hardware", 5, "healthy"),
         "open_toolchain": ("Open toolchain", 3, "warm"),
@@ -255,7 +254,7 @@ def verdict_logic(DATA, LAYER_WEIGHTS):
     # at-a-glance overview, and each section. Strict OSI/MOF cut:
     #   open    = open_source / open / open_core
     #   openish = open_weights / source_available / gated
-    #   closed  = restricted / documented_only / closed
+    #   closed  = restricted / documented / closed
     _OPEN = {"open_source", "open", "open_core", "open_hardware"}
     _OPENISH = {"open_weights", "source_available", "gated", "open_toolchain"}
 
@@ -388,7 +387,7 @@ def openness_distribution(C, DATA, F, mo):
         if _cls in ("restricted", "source_available", "gated", "documented"):
             return C["signal"]
         return C["closed"]
-    _CLS_ORDER = ["open_source", "open", "open_hardware", "open_core", "open_weights", "open_toolchain", "source_available", "gated", "documented", "restricted", "documented_only", "closed"]
+    _CLS_ORDER = ["open_source", "open", "open_hardware", "open_core", "open_weights", "open_toolchain", "source_available", "gated", "documented", "restricted", "closed"]
     _bars = []
     for _tk, _tl in [("model", "Models"), ("dataset", "Datasets"), ("software", "Software"), ("hardware", "Hardware")]:
         _cnt = _collections.Counter()

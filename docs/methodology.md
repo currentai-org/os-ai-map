@@ -61,7 +61,7 @@ Every value also records what the source showed and when we accessed it. Across 
 
 #### Axis 1: Openness
 
-Openness has two fields. The first, the class, is a categorical label drawn from the [Model Openness Framework](https://isitopen.ai/) and OSI license taxonomy (for example `open_source`, `open_weights`, `open_core`, `source_available`, `restricted`, `gated`, `documented_only`, `closed`). The class serves as the cross-category normalizer: it is the field to use when positioning a product on an openness spectrum. The second, the score, is a 0–5 grade with a component-level breakdown: weights, data, code, checkpoints, and license for models; license tests for software; access, license, and documentation for datasets.
+Openness has two fields. The first, the class, is a categorical label drawn from the [Model Openness Framework](https://isitopen.ai/) and OSI license taxonomy (for example `open_source`, `open_weights`, `open_core`, `source_available`, `restricted`, `gated`, `closed`). The class serves as the cross-category normalizer: it is the field to use when positioning a product on an openness spectrum. The second, the score, is a 0–5 grade with a component-level breakdown: weights, data, code, checkpoints, and license for models; license tests for software; access, license, and documentation for datasets.
 
 The score is graded relative to what is achievable within a product type, so the same number does not carry the same meaning across categories. A pretrained model at 2 is genuinely restricted, because the openness range for models is compressed: open weights typically land near 3, and a 5 requires a fully open pipeline of the Pythia or OLMo kind. A deployment tool at 2 sits elsewhere entirely. The raw 0–5 score should therefore be read as a within-type detail, not as a cross-category coordinate.
 
@@ -69,7 +69,7 @@ For analysis across the whole stack, we collapse the class vocabulary into three
 
 - Open: `open_source`, `open`, `open_core`, `open_hardware`
 - Open-ish: `open_weights`, `source_available`, `gated`, `open_toolchain`
-- Closed: `restricted`, `documented_only`, `closed`, `documented`
+- Closed: `restricted`, `closed`, `documented`
 
 Hardware uses its own openness vocabulary, parallel to the software and model classes: open schematics with an open toolchain (`open_hardware`); proprietary silicon but an open SDK with public datasheets and retail availability (`open_toolchain`); public datasheets but proprietary design or firmware (`documented`); and private or NDA-gated availability (`restricted`).
 
