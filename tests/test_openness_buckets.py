@@ -55,8 +55,8 @@ OPEN_BY_EXTERNAL_STANDARD = {"osi", "open_data"}
 # pair.
 #
 # The bucket count does not depend on the ladder: build/serialize.py buckets the RECORDED
-# class, so both products already counted as open before any recipe existed. All 52 dataset
-# products scored 3 or above count as open today, where a model at 4 is open_weights and
+# class, so both products already counted as open before any recipe existed. All 51 dataset
+# products classed open count as open today, where a model at 4 is open_weights and
 # open-ish. Closing it means giving the dataset vocabulary a middle class and re-scoring two
 # products, which is a score change and therefore not this test's business to force.
 KNOWN_VIOLATIONS = frozenset(

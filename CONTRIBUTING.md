@@ -108,8 +108,8 @@ Each score file has three axes. **Every non-null value needs at least one
 - **openness** (`score:` 0-5, `class:` depends on type):
   - models: `open_source`, `open_weights`, `restricted`, `closed`
   - software: `open_source`, `source_available`, `open_core`, `closed`
-  - datasets: `open`, `gated`, `documented_only`, `closed`
-  - hardware: `open_hardware`, `open_toolchain`, `documented`, `restricted`, `closed`
+  - datasets: `open`, `gated`, `restricted`, `closed`
+  - hardware: `open_hardware`, `open_toolchain`, `documented`, `restricted`
 - **adoption** (`level:` 1-5, `signal_type:` one of `active_users`,
   `usage_volume`, `reported_traction`, `stars_fallback`, `unknown`): real usage
   (downloads, active users, deployments) beats stars. `stars_fallback` can
