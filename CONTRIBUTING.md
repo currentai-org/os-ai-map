@@ -38,8 +38,12 @@ Invariants (validated in CI):
 
 ## Recipe: add a product
 
-1. **Pick the slug**: kebab-case of the product name (`OLMo 2` → `olmo-2`). If
-   taken, suffix the org slug (`command-r-cohere`), then a numeric suffix.
+1. **Pick the slug**: kebab-case of the *tier the vendor sells*, not a version or a size
+   (`OLMo 2` → `olmo`, `Command R` → `command-r`). A slug is permanent and deep links are
+   built on it, so it must not carry a version. If the natural slug is genuinely taken by a
+   different product, pick a distinguishing word from the product's own name rather than
+   appending the org. `build/validate.py` enforces this and `docs/guides/identity.md` is
+   normative.
 2. **Create `sources/products/<slug>.yaml`**:
 
    ```yaml

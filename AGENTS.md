@@ -53,7 +53,6 @@ Notebook build      validate.py      sources/ schema + cross-file invariants
                     serialize.py     sources/ -> build/notebook_data.json
                     render.py        notebook_data.json -> notebooks/ai-stack-map.py
                     update_readme.py syncs the README stat badges
-                    slugs.py         slug helpers shared by the above
 
 Config bridge out   serialize_registry.py  identity: what exists
                     serialize_rubric.py    each category's rubric + recorded evidence
