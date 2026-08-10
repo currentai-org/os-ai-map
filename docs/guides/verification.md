@@ -483,6 +483,8 @@ positively proves.
 - `docs/guides/freshness.md` — what `last_verified` means, and the two divergences already
   closed
 - `docs/guides/openness-spectrum.md` — the openness ladders themselves
+- `docs/guides/adoption.md` — the adoption bands, the instrument vocabulary, and which
+  signals may be compared to which
 - `docs/guides/product-info.md` — the prose companion: style/tone for a product's
   `description`/`comments`, and why the `comments` verification line is NOT a `last_verified`
 - `sources/rubrics/` — shared ladders; `build/rubrics.py` for how `extends` resolves (#126)

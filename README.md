@@ -126,7 +126,8 @@ Warehouse queries (via `pyoso`) need `OSO_API_KEY`; with `direnv`, place it in `
 | `tests/` | pytest suite for build helpers |
 
 Guides worth knowing: [openness scoring](docs/guides/openness-spectrum.md),
-[gap analysis](docs/guides/gap-analysis.md), and [query conventions](docs/guides/queries.md).
+[adoption scoring](docs/guides/adoption.md), [gap analysis](docs/guides/gap-analysis.md),
+and [query conventions](docs/guides/queries.md).
 See [AGENTS.md](AGENTS.md) for agent-oriented project context.
 
 ---
