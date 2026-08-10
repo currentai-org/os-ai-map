@@ -889,7 +889,11 @@ def test_adoption_bands_are_declared_per_type_and_hardware_declares_none():
         ordered = sorted(bands, key=lambda b: -b["level"])
         thresholds = [b["above"] for b in ordered]
         assert thresholds == sorted(thresholds, reverse=True), product_type
-        assert ordered[-1]["above"] == 0, f"{product_type} has no floor band"
+        # The floor is -1, not 0, so a figure of exactly ZERO still bands at 1. With 0 it
+        # did not — `0 > 0` is false, so the product matched no band and came back
+        # unbanded, which asserts "no scale exists for this type" rather than "nobody
+        # downloaded it". zentropi-cope surfaced it on the first real run.
+        assert ordered[-1]["above"] == -1, f"{product_type} floor must admit zero"
 
 
 def test_dataset_bands_sit_one_order_below_software():
