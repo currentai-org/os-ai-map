@@ -23,7 +23,7 @@ Each `sources/scores/<slug>.yaml` carries two separate, analyst-assigned opennes
 
 | Field | Type | What it is |
 |-------|------|------------|
-| `openness.class` | categorical | An OSI / Model Openness Framework (MOF) label. In use today, by frequency: `open_source`, `closed`, `open`, `open_weights`, `open_core`, `source_available`, `documented`, `gated`, `restricted`, `open_toolchain`, `open_hardware`. `documented_only` is also defined in the vocabulary but no product currently carries it. [`openness-class-map.json`](../openness-class-map.json) is the authoritative list. |
+| `openness.class` | categorical | An OSI / Model Openness Framework (MOF) label. In use today, by frequency: `open_source`, `closed`, `open`, `open_weights`, `open_core`, `source_available`, `documented`, `gated`, `restricted`, `open_toolchain`, `open_hardware`. [`openness-class-map.json`](../openness-class-map.json) is the authoritative list. |
 | `openness.score` | integer 0–5 | A graded openness score with a `components` breakdown (models: `weights / data / code / checkpoints / license`; software: OSI-class license tests; datasets: access / license / documentation). |
 
 Every non-null value needs a primary `sources:` entry. Both fields were originally assigned
@@ -99,7 +99,6 @@ spectrum coordinate:
 | `source_available` | Source available | 2 |
 | `restricted` | Restricted | 2 |
 | `gated` | Gated | 2 |
-| `documented_only` | Documented only | 1 |
 | `closed` | Closed | 1 |
 | `open_hardware` | Open hardware | 5 |
 | `open_toolchain` | Open toolchain | 3 |
@@ -114,7 +113,7 @@ retail-available = `open_toolchain`; datasheets public but proprietary design / 
 
 - **open** = `open_source` / `open` / `open_core` / `open_hardware`
 - **open-ish** = `open_weights` / `source_available` / `gated` / `open_toolchain`
-- **closed** = `restricted` / `documented_only` / `closed` / `documented`
+- **closed** = `restricted` / `closed` / `documented`
 
 ## The license scale
 
@@ -214,7 +213,7 @@ Both are choices, not oversights, and neither moves the binary line.
 
 ### Where the boundary is currently weakest
 
-The **dataset** vocabulary has no middle. Its classes are `open`, `gated`, `documented_only`
+The **dataset** vocabulary has no middle. Its classes are `open`, `gated`, `restricted`
 and `closed`, and `open` is the only word above `gated`, so every corpus scored 3 or higher
 lands in the `open` bucket — 52 products today, including one at 3 and six at 4. A model at 4
 is `open_weights` and open-ish; a corpus at 4 is `open`. `the-pile` (license deferring to
@@ -238,9 +237,9 @@ lean on it:
   and `gated` all share gradient = 2, but bucket differently: `source_available` and `gated`
   are *open-ish* while `restricted` is *closed*. If your visualization shows both a fine
   gradient and a coarse bucket, expect them to disagree at the 2-fill band.
-- **Some distinctions collapse.** `open_source` and `open` both map to 5; `documented_only`
-  and `closed` both map to 1. That's intentional for the map but may be too coarse depending
-  on what you're showing.
+- **Some distinctions collapse.** `open_source` and `open` both map to 5; `documented`
+  and `closed` both sit in the closed bucket. That's intentional for the map but may be too
+  coarse depending on what you're showing.
 
 If you want a different lens than the published map, you're free to define one — just do it
 deliberately and note where it diverges from this table.

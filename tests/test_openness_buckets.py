@@ -46,7 +46,7 @@ OPEN_BY_EXTERNAL_STANDARD = {"osi", "open_data"}
 # formula does not silently move an exemption onto a different rung.
 #
 # Both entries are the same defect and it is NOT license laxity: the dataset class vocabulary
-# in build/validate.py is {open, gated, documented_only, closed}, and `open` is the only word
+# in build/validate.py is {open, gated, restricted, closed}, and `open` is the only word
 # available above `gated`. So a corpus whose license defers to per-subset terms has nowhere to
 # land but `open`, and `open` is in the open bucket. `the-pile` (3/open, mixed-per-subset,
 # Books3 withdrawn) and `stack-edu` (4/open, defers to The Stack v2's gated terms) are the two
@@ -162,3 +162,19 @@ def test_an_otherwise_rule_never_lands_in_the_open_bucket():
             assert got not in open_classes, (
                 f"{name} falls through to {got!r}, which is in the open bucket"
             )
+
+
+def test_validate_vocabulary_is_a_subset_of_the_schema_enum():
+    """Every class build/validate.py permits must be one the schema allows.
+
+    These drifted: validate.py permitted `documented_only` for datasets while the schema
+    enum omitted it, so a dataset scored that way passed one check and failed the other
+    depending on order. No product ever carried it.
+    """
+    schema = json.loads((ROOT / "docs" / "schemas" / "score.schema.json").read_text())
+    allowed = set(schema["properties"]["openness"]["properties"]["class"]["enum"])
+
+    from build.validate import OPENNESS_CLASSES
+
+    permitted = {cls for classes in OPENNESS_CLASSES.values() for cls in classes}
+    assert permitted <= allowed, f"validate.py permits classes the schema forbids: {sorted(permitted - allowed)}"

@@ -36,7 +36,7 @@ OPENNESS_CLASSES = {
     # had nowhere to land but `open` - which is how `personahub` came to be 5/open under a
     # licence that caps a model at 2. The word already exists for models and hardware, and
     # already carries gradient 2 and the closed bucket in openness-class-map.json.
-    "dataset": {"open", "gated", "restricted", "documented_only", "closed"},
+    "dataset": {"open", "gated", "restricted", "closed"},
     "hardware": {"open_hardware", "open_toolchain", "documented", "restricted"},
 }
 SIGNAL_TYPES = {"active_users", "usage_volume", "reported_traction", "stars_fallback", "unknown"}
