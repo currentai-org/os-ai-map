@@ -281,3 +281,27 @@ def test_every_product_file_round_trips_through_its_own_description():
         checked += 1
         assert yaml.safe_load(set_document_field(text, "description", doc["description"])) == doc, path.name
     assert checked > 400
+
+
+def test_no_score_file_mints_a_phantom_dimension_key():
+    """A components clause with no key must not produce a dimension.
+
+    split_components splits each clause on its first ':' with no paren-awareness, so a
+    keyless clause whose parenthetical contains a colon mints a key out of prose. That
+    corrupts every corpus-wide key inventory and would carry into the structured form.
+    A phantom key is recognizable: real dimension keys are short, lowercase, and contain
+    no spaces or parentheses.
+    """
+    from build.check_rubric import split_components
+
+    root = Path(__file__).resolve().parents[1]
+    offenders = []
+    for path in sorted((root / "sources" / "scores").glob("*.yaml")):
+        components = (yaml.safe_load(path.read_text()).get("openness") or {}).get("components")
+        if not components:
+            continue
+        for key in split_components(components):
+            if " " in key or "(" in key or ")" in key:
+                offenders.append(f"{path.stem}: {key!r}")
+
+    assert offenders == [], "phantom dimension keys minted from prose:\n  " + "\n  ".join(offenders)
