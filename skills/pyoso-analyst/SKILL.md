@@ -25,6 +25,9 @@ Hard constraints:
 - No upload/run/revision/create model operations.
 - Treat `currentai.*` tables as read-only from your perspective.
 
+These constraints scope this skill, not the repo: OSO-internal users may use other OSO-managed
+MCP skills that are not defined here.
+
 If you detect a request that requires write access, you must:
 1. Explain why external access is insufficient.
 2. Provide the minimal reproducible SQL/notebook approach.
@@ -33,9 +36,9 @@ If you detect a request that requires write access, you must:
 ## Workflow Steps
 
 1. **Pick the right table from the registry**
-   - Start from [`warehouse/models/README.md`](../../warehouse/models/README.md) for the inventory.
+   - Start from [`warehouse/models/README.md`](../../warehouse/models/README.md) for the five datasets this repo maintains.
    - Use [`docs/guides/queries.md`](../../docs/guides/queries.md) for query conventions and caveats.
-   - Use [`docs/guides/notebooks.md`](../../docs/guides/notebooks.md) for marimo notebook structure/style.
+   - Use [`docs/guides/notebook-design.md`](../../docs/guides/notebook-design.md) for marimo notebook structure/style.
 
 2. **Draft bounded Trino SQL**
    - Prefer `LIMIT`, date windows (e.g. last 90 days), and aggregations.

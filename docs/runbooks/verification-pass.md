@@ -242,7 +242,6 @@ nothing at all through the warehouse's lookup table.
 
 It is not in `registry.yml`, on purpose. Chained onto a publish it would compare fresh rules
 against the un-recomputed warehouse of step 2 above and fail for a reason that is not a drift.
-Move it there when those three models carry crons.
 
 **Exit criteria:** all 16 categories score in the warehouse, `check_parity` passes, and the
 deferral count in `category_deferrals` matches the repo's.
@@ -272,7 +271,7 @@ and `check_freshness` reports them as `verified` rather than `commit`.
 
 ## Phase 4 — The re-read pass, ~1106 URLs
 
-Everything else, all of openness included. **Fold the 86 held-back products in rather than clearing
+Everything else, all of openness included. **Fold the 81 held-back products in rather than clearing
 them first** — reading a product's sources to settle `core-gated` *is* the re-check that earns
 its date. Two passes means the same pages fetched twice, on scores about to change.
 (`check_recipe` prints the current deferral count per category; regenerate it rather than

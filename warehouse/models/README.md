@@ -1,6 +1,9 @@
 # Models
 
-Data models deployed to the `currentai` org on the OSO data warehouse, organized into 5 datasets.
+Data models deployed to the `currentai` org on the OSO data warehouse, organized into 25 datasets.
+This file covers the five that this repo maintains — `catalog`, `entities`, `events`, `metrics`
+and `scores` — including the 12 SQL models in this directory. The rest are signal, snapshot and
+raw-ingestion datasets deployed straight to the platform, with no SQL kept here.
 
 ## Dataset Layout
 

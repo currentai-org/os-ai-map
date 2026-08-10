@@ -323,3 +323,55 @@ story already lives in the open / open-ish / closed chips beside it.
 `Current AI`.
 
 These values live in the `C` dict of `build/render.py` (ai-stack-map, generated).
+
+---
+
+## Authoring conventions
+
+The palette and type above are written against `ai-stack-map.py`. The conventions in this
+section apply to **every** marimo notebook in the repo — the generated one, the companion
+notebooks, and local exploration alike.
+
+### Section structure
+
+1. Header — eyebrow, serif title, framing paragraph
+2. KPI strip
+3. Overview chart
+4. Detail chart
+5. Table or ranked detail
+6. Methodology and sources
+
+Every chart gets a markdown framing cell before it. Keep filters (`mo.ui.dropdown`) in
+dedicated cells. End the notebook with methodology and source notes.
+
+### Queries
+
+Keep SQL cells bounded and reproducible: explicit date windows, explicit filters, deterministic
+ordering. Explain methodology assumptions inline rather than leaving them to the reader.
+
+### KPI cards
+
+Prefer `mo.stat()` for compact KPI strips:
+
+```python
+mo.hstack([
+    mo.stat(value=f"{repos:,}", label="Repos", bordered=True, caption="across the AI stack"),
+    mo.stat(value=f"{stars:,}", label="Stars", bordered=True, caption="community adoption"),
+    mo.stat(value=f"{contributors:,}", label="Contributors", bordered=True, caption="active developers"),
+], widths="equal", gap=1)
+```
+
+Three to six stats per row, `bordered=True`, a caption carrying context or timeframe, and
+thousands separators or suffixes on large numbers.
+
+### Charts
+
+Always disable the Plotly mode bar:
+
+```python
+mo.ui.plotly(fig, config={"displayModeBar": False})
+```
+
+Defaults that have held up: horizontal bars for ranked categorical comparisons, chart height
+scaled to row count, scatter with quadrant guides for coverage-versus-depth reads, and treemaps
+for market-map overviews.
