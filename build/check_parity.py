@@ -62,13 +62,7 @@ from pathlib import Path
 
 import yaml
 
-from build.check_rubric import (
-    apply_formula,
-    components_of,
-    dimension_value,
-    license_read_keys,
-    license_tier,
-)
+from build.check_rubric import components_of, score_openness
 from build.rubrics import load_product_types, load_shared, recipe_for, resolve_recipe_variants
 from build.warehouse import query
 
@@ -113,26 +107,18 @@ def local_scores(category_filter: str | None) -> tuple[dict, dict]:
                 computed[key] = None
                 continue
             openness = (yaml.safe_load(score_path.read_text()) or {}).get("openness") or {}
-            components = components_of(openness)
 
-            # Same order as check_rubric: the tier first, and only where the ladder declares
-            # one. A tier-free ladder - hardware scores design and toolchain - must not be
-            # asked for a license it never turns on.
-            facts: dict[str, str] = {}
-            has_tiers = bool(((recipe.get("openness") or {}).get("license_tier") or {}).get("values"))
-            if has_tiers:
-                raw = next(
-                    (components[k] for k in license_read_keys(recipe) if components.get(k)), ""
-                )
-                tier = license_tier(raw, recipe)
-                if tier is None:
-                    computed[key] = None
-                    continue
-                facts["license_tier"] = tier
-            declared = ((recipe.get("openness") or {}).get("dimensions")) or {}
-            for name in declared:
-                facts[name] = dimension_value(components, name, recipe)
-            computed[key] = apply_formula(recipe, facts)
+            # check_rubric's resolution exactly, via the one function all three modules
+            # share. It resolves a license tier only for a rung that tests one, so a
+            # product the ladder settles on `source` alone is computed here even when its
+            # license maps to no tier - and a product whose deciding rung DOES turn on the
+            # license still comes back None.
+            #
+            # This is a live source of parity noise until the warehouse mirror in
+            # `currentai.scores.openness_computed` carries the same rule: the SQL still
+            # resolves the tier up front, so the five products that score without one will
+            # read as local-scored / warehouse-abstained until it is updated.
+            computed[key] = score_openness(recipe, components_of(openness)).result
     return computed, deferred
 
 

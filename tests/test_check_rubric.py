@@ -258,12 +258,12 @@ class TestRealCategories:
         finetuned_chat (44 -> 26); adding the fully-open Luciole family took it to 27. The
         point of pinning this is that the count only ever moves for a reason recorded in a
         commit."""
-        reproduced, total, problems, deferred = check_category("base_pretrained", verbose=False)
+        reproduced, total, problems, deferred, _ = check_category("base_pretrained", verbose=False)
         assert problems == []
         assert (reproduced, total, deferred) == (27, 27, [])
 
     def test_finetuned_chat_reproduces_every_undeferred_score(self):
-        reproduced, total, problems, _ = check_category("finetuned_chat", verbose=False)
+        reproduced, total, problems, *_ = check_category("finetuned_chat", verbose=False)
         assert problems == []
         assert reproduced == total == 39
 
@@ -281,7 +281,7 @@ class TestRealCategories:
             category = yaml.safe_load(path.read_text())
             if not category.get("scoring_recipe"):
                 continue
-            _, _, problems, deferred = check_category(category["name"], verbose=False)
+            _, _, problems, deferred, _ = check_category(category["name"], verbose=False)
             assert problems == [], f"{category['name']}: {problems}"
             for entry in deferred:
                 reason = entry.split(":", 1)[1].strip()
@@ -289,14 +289,14 @@ class TestRealCategories:
 
     def test_finetuned_chat_currently_defers_nothing(self):
         """The count itself, pinned separately so a new deferral is visible in a diff."""
-        _, _, _, deferred = check_category("finetuned_chat", verbose=False)
+        _, _, _, deferred, _ = check_category("finetuned_chat", verbose=False)
         assert deferred == []
 
     def test_deferred_products_are_excluded_not_counted_as_reproduced(self):
         """39 scored and 0 deferred. Counting a deferral as a pass is how a rubric
         claims to describe products it cannot score, so the identity is worth keeping
         even while the deferral count is zero."""
-        _, total, _, deferred = check_category("finetuned_chat", verbose=False)
+        _, total, _, deferred, _ = check_category("finetuned_chat", verbose=False)
         assert total + len(deferred) == 39
 
 
@@ -344,7 +344,7 @@ def test_mixed_type_category_scores_each_product_on_its_own_ladder(tmp_path, mon
     # which does not exist, and the test's pass/fail depends on suite ordering.
     monkeypatch.setattr("build.check_rubric._RECORDED_ALIASES", {})
 
-    reproduced, total, problems, deferred = check_category("mixed", verbose=False)
+    reproduced, total, problems, deferred, _ = check_category("mixed", verbose=False)
 
     assert problems == []
     assert (reproduced, total) == (2, 2)
@@ -389,24 +389,19 @@ def test_a_ladder_with_no_license_tier_scores_rather_than_failing(tmp_path, monk
     monkeypatch.setattr("build.check_rubric.ROOT", tmp_path)
     monkeypatch.setattr("build.check_rubric._RECORDED_ALIASES", {})
 
-    reproduced, total, problems, deferred = check_category("boards", verbose=False)
+    reproduced, total, problems, deferred, _ = check_category("boards", verbose=False)
 
     assert problems == []
     assert (reproduced, total) == (2, 2)
 
 
-def test_a_ladder_WITH_tiers_still_fails_an_unmappable_license(tmp_path, monkeypatch):
-    """The allowance is scoped to recipes declaring no tiers, not to a missing license.
-
-    A category that HAS a tier vocabulary and meets a license outside it must still report
-    that, or the tier-free path would quietly become an escape hatch for every unmapped
-    license on the map.
-    """
+def _tier_gate_fixture(tmp_path, monkeypatch, formula, components):
+    """A one-product software category, so the tier gate can be exercised per formula."""
     write_yaml(tmp_path / "sources/rubrics/software.yaml", {
         "openness": {
             "license_tier": {"reads": ["license"], "values": {"osi": {"examples": ["MIT"]}}},
-            "dimensions": {"source": {"values": ["public"]}},
-            "formula": [{"when": {"source": "public"}, "then": {"score": 5, "class": "open_source"}}],
+            "dimensions": {"source": {"values": ["public", "partial"]}},
+            "formula": formula,
         }
     })
     write_yaml(tmp_path / "sources/categories/tools.yaml", {
@@ -415,15 +410,94 @@ def test_a_ladder_WITH_tiers_still_fails_an_unmappable_license(tmp_path, monkeyp
     })
     write_yaml(tmp_path / "sources/products/a-tool.yaml", {"name": "a-tool", "type": "software"})
     write_yaml(tmp_path / "sources/scores/a-tool.yaml", {
-        "openness": {"score": 5, "class": "open_source",
-                     "components": "source:public;license:Some-Unmapped-License"}
+        "openness": {"score": 5, "class": "open_source", "components": components}
     })
     monkeypatch.setattr("build.check_rubric.ROOT", tmp_path)
     monkeypatch.setattr("build.check_rubric._RECORDED_ALIASES", {})
+    return check_category("tools", verbose=False)
 
-    reproduced, total, problems, deferred = check_category("tools", verbose=False)
 
-    assert len(problems) == 1 and "maps to no tier" in problems[0]
+def test_a_rung_that_TESTS_the_tier_still_fails_an_unmappable_license(tmp_path, monkeypatch):
+    """The allowance is scoped to a rung that does not ask, not to a missing license.
+
+    A ladder whose deciding rung turns on `license_tier` and meets a license outside its
+    vocabulary must still report that, or "resolve the tier only when a rung needs one"
+    would quietly become an escape hatch for every unmapped license on the map. `dify`,
+    `max`, `open-webui`, `lobe-chat` and `autogpt` are the real cases: all record
+    `source:public`, which reaches a rung that tests the tier, so their vendor licenses
+    still block them.
+    """
+    report = _tier_gate_fixture(
+        tmp_path, monkeypatch,
+        formula=[{
+            "when": {"license_tier": "osi", "source": "public"},
+            "then": {"score": 5, "class": "open_source"},
+        }],
+        components="source:public;license:Some-Unmapped-License",
+    )
+
+    assert len(report.problems) == 1 and "maps to no tier" in report.problems[0]
+    assert report.tierless == []
+
+
+def test_a_rung_reading_source_alone_scores_without_resolving_a_tier(tmp_path, monkeypatch):
+    """The fix. A product settled on `source` alone must not wait on a license nobody reads.
+
+    `apify` is the case the owner ruled on: it records `mixed(platform closed, SDK open)`,
+    which names no license, and `source:partial`, which the software ladder settles at
+    2/source_available on the source dimension alone. Resolving the tier first abstained it
+    before the formula ran.
+    """
+    report = _tier_gate_fixture(
+        tmp_path, monkeypatch,
+        formula=[
+            {"when": {"source": "public"}, "then": {"score": 5, "class": "open_source"}},
+            {
+                "when": {"license_tier": "osi", "source": "partial"},
+                "then": {"score": 2, "class": "source_available"},
+            },
+        ],
+        components="source:public;license:Some-Unmapped-License",
+    )
+
+    assert report.problems == []
+    assert (report.reproduced, report.total) == (1, 1)
+
+
+def test_a_product_scoring_without_a_resolved_tier_is_reported(tmp_path, monkeypatch):
+    """Scoring without a tier is correct and must stay visible.
+
+    The guard on the fix. A score standing on a license the ladder could not read rests on
+    less evidence than its neighbours, and if that license is later mapped the product may
+    move. Reported rather than gated: every entry is a correct score, so gating would fail
+    on the day it landed.
+    """
+    report = _tier_gate_fixture(
+        tmp_path, monkeypatch,
+        formula=[{"when": {"source": "public"}, "then": {"score": 5, "class": "open_source"}}],
+        components="source:public;license:Some-Unmapped-License",
+    )
+
+    assert report.problems == []
+    assert len(report.tierless) == 1
+    assert "a-tool" in report.tierless[0]
+    assert "Some-Unmapped-License" in report.tierless[0]
+
+
+def test_a_product_whose_tier_resolves_is_not_reported_as_tierless(tmp_path, monkeypatch):
+    """The counterpart, so the report cannot silently widen to every software product.
+
+    Most products never consult a tier — a `source:closed` product is settled on the first
+    rung — and reporting those would drown the five entries that mean something.
+    """
+    report = _tier_gate_fixture(
+        tmp_path, monkeypatch,
+        formula=[{"when": {"source": "public"}, "then": {"score": 5, "class": "open_source"}}],
+        components="source:public;license:MIT",
+    )
+
+    assert report.problems == []
+    assert report.tierless == []
 
 
 def test_every_recorded_self_host_value_is_mapped():
