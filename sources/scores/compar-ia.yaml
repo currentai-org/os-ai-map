@@ -8,18 +8,37 @@ openness:
       detail: OSI; verified LICENSE body
     source:
       value: public
+    core-gated:
+      value: ungated
+      detail: publicly funded, README documents full Docker self-hosting
     free_text:
     - self-hostable
   confidence: high
   note: Permissive OSI license with full public source code.
-  raw: license:Apache-2.0(OSI; verified LICENSE body);source:public;self-hostable
+  raw: license:Apache-2.0(OSI; verified LICENSE body);source:public;self-hostable;core-gated:ungated(publicly
+    funded, README documents full Docker self-hosting)
   sources:
   - url: https://raw.githubusercontent.com/betagouv/ComparIA/develop/LICENSE
     shows: LICENSE body 'Apache License, Version 2.0'
     accessed: '2026-06-22'
+    establishes:
+    - license
   - url: https://github.com/betagouv/ComparIA
     shows: Apache-2.0 license badge, full source, betagouv ownership
     accessed: '2026-06-22'
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/betagouv/ComparIA/develop/README.md
+    shows: README states 'Self-host with Docker (single server, automatic HTTPS via Caddy)' and links devops/standalone_docker_install/DOCKER_INSTALL.md
+      for the whole application. It also states 'compar:IA is funded by DINUM and the French Ministry of
+      Culture, with European support from ALT-EDIC' and asks for funders - there is no commercial tier to
+      withhold anything for.
+    accessed: '2026-08-11'
+    http_status: 200
+    content_sha256: cc2e4c8623b499641a1bae909b31531cfa770a9342ae9c56f0067dd642d6bb8d
+    establishes:
+    - core-gated
 adoption:
   level: 3
   reach: niche

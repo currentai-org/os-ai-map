@@ -8,18 +8,34 @@ openness:
       detail: OSI; verified LICENSE body, copyright Simula
     source:
       value: public
+    core-gated:
+      value: ungated
+      detail: local execution is the default mode, all scenario packs ship in the package
     free_text:
     - Python
   confidence: high
   note: Permissive OSI (MIT) license with full public source.
-  raw: license:MIT(OSI; verified LICENSE body, copyright Simula);source:public;Python
+  raw: license:MIT(OSI; verified LICENSE body, copyright Simula);source:public;Python;core-gated:ungated(local
+    execution is the default mode, all scenario packs ship in the package)
   sources:
   - url: https://raw.githubusercontent.com/kelkalot/simpleaudit/main/LICENSE
     shows: LICENSE body 'MIT License', copyright Simula Research Laboratory
     accessed: '2026-06-22'
+    establishes:
+    - license
   - url: https://www.digitalpublicgoods.net/r/simpleaudit
     shows: DPG profile confirming multilingual safety red-teaming framework
     accessed: '2026-06-22'
+  - url: https://raw.githubusercontent.com/kelkalot/simpleaudit/main/README.md
+    shows: 'README states ''Local execution is the default deployment mode and the original design constraint:
+      prompts, transcripts, and policies stay inside the deployment environment'' and ''MIT License - see
+      LICENSE for details''. The scenario packs and judge configurations ship in the package; the only external
+      dependency is the user''s own model API key.'
+    accessed: '2026-08-11'
+    http_status: 200
+    content_sha256: 6c851942b0521b6cbf776a4b1b4905d8255fb261eff3cfcb3aa7abf07df09c46
+    establishes:
+    - core-gated
 adoption:
   level: 2
   reach: niche

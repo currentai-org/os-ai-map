@@ -9,6 +9,9 @@ openness:
     source:
       value: public
       detail: github.com/xlang-ai/OSWorld
+    core-gated:
+      value: ungated
+      detail: full harness runs locally on VMware, VirtualBox or Docker, no paid tier
     free_text:
     - execution-based eval harness + 369-task environment public
     - multi-platform (VMware/VirtualBox/Docker/AWS)
@@ -16,14 +19,27 @@ openness:
   note: Apache-2.0, full harness + environment public. Scored as the evaluation harness; the bundled 369-task
     set is also openly redistributable.
   raw: license:Apache-2.0(OSI);source:public(github.com/xlang-ai/OSWorld);execution-based eval harness +
-    369-task environment public; multi-platform (VMware/VirtualBox/Docker/AWS)
+    369-task environment public; multi-platform (VMware/VirtualBox/Docker/AWS);core-gated:ungated(full harness
+    runs locally on VMware, VirtualBox or Docker, no paid tier)
   sources:
   - url: https://github.com/xlang-ai/OSWorld
     shows: Apache-2.0 license, public source, computer-use agent eval harness
     accessed: '2026-06-04'
+    establishes:
+    - license
+    - source
   - url: https://os-world.github.io/
     shows: 369 tasks (361 excl. Google Drive), real-computer execution-based evaluation
     accessed: '2026-06-04'
+  - url: https://raw.githubusercontent.com/xlang-ai/OSWorld/main/README.md
+    shows: README carries the Apache-2.0 badge and gives full setup instructions for running the benchmark
+      locally under VMware, VirtualBox, or Docker with KVM. AWS and Azure appear only as optional providers
+      for parallel runs. No paid tier, commercial edition, or license key is mentioned.
+    accessed: '2026-08-11'
+    http_status: 200
+    content_sha256: 83b8684c2f4ac4f31996b8b4752195fcb6cc5429f89d92398177b9b721d787fc
+    establishes:
+    - core-gated
 adoption:
   level: 3
   reach: 100K-1M
