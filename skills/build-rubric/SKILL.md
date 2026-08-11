@@ -48,7 +48,8 @@ It cannot work when values are sentences. Count them:
 
 ```python
 # prose share of components values, for one category
-from build.check_rubric import split_components, head
+from build.check_rubric import components_of, head
+vals = [v for openness in category_openness for v in components_of(openness).values()]
 prose = sum(1 for v in vals if len(head(v).split()) > 1)
 ```
 
@@ -157,10 +158,10 @@ pair, no product abstained on without a declared reason, and no evidence the com
 silently discards. It runs in CI on every PR.
 
 What it reports rather than fails on is worth reading. `clauses dropped` counts `components`
-clauses with no key — `split_components` discards those silently, and 170 of 470 products have
+clauses with no key — `split_components` discards those silently, and 168 of 472 products have
 at least one. Most are harmless free-text tails or prose restating a properly keyed value, but
 a clause that is the *only* record of a dimension is lost evidence, and that cost
-`dataset.yaml` five of its eight deferrals. Same for `undeclared keys`: 113 exist across the
+`dataset.yaml` five of its eight deferrals. Same for `undeclared keys`: 118 exist across the
 map, and the gate fails only when one demonstrably holds an answer the ladder wanted.
 
 Then the human checklist, which is only what a machine cannot judge:

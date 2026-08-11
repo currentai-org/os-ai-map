@@ -2,22 +2,31 @@
 
 ## Why a module rather than a `re.sub`
 
-`components` is one long `k:v;k:v` string, and 277 of the 470 score files fold it across
-lines — 57 of them across three or more. So the obvious edit,
+`components` is a structured mapping — `key -> {value, detail?, raw?}`, plus a reserved
+`free_text` list for keyless clauses — and PyYAML renders it as a nested block, so it spans
+multiple lines in every one of the 472 score files. Before phase 1a migrated the corpus, this
+field was a single `k:v;k:v` string that PyYAML folded across lines whenever it ran past the
+configured width, and folding was the hazard the obvious edit did not see:
 
     re.sub(r"^  components: (.*)$", ..., text, flags=re.M)
 
-matches the FIRST line of a folded scalar and leaves the continuation lines standing. The
-result parses cleanly and is wrong: the old tail is spliced onto the new value, usually
+matched only the FIRST line of a folded scalar and left the continuation lines standing. The
+result parsed cleanly and was wrong: the old tail was spliced onto the new value, usually
 mid-key, producing something like `...;core-gated:gatedn(OSI);source:public`. Nothing
-downstream complains, because a components string is only ever split on `;` and `:` and
-those fragments are still shaped like keys. It corrupts silently, which is the one failure
-mode worth building a mechanism against.
+downstream complained, because the string was only ever split on `;` and `:` and those
+fragments were still shaped like keys. It corrupted silently, which is the one failure mode
+worth building a mechanism against.
+
+The structured mapping does not fold the same way — every record's value is already
+multi-line by construction — but the discipline carries over unchanged, because the general
+hazard is the same: any multi-line YAML value invites a line-oriented substitution, and the
+right fix is to stop reasoning about lines at all.
 
 Rather than get the regex right, this module does not use one:
 
   * locate the field by INDENT, taking every following more-indented line as part of it;
-  * re-emit the value with PyYAML, so quoting and folding are the emitter's problem;
+  * re-emit the value with PyYAML, so quoting and block-style formatting are the emitter's
+    problem;
   * re-parse the whole file and assert the new value is what was asked for AND that every
     other field is unchanged, then assert the bytes outside the span never moved.
 
@@ -33,7 +42,10 @@ could have the same bug.
 
 Usage:
     from build.components import rewrite, set_field
-    rewrite(Path("sources/scores/mastra.yaml"), "license:Apache-2.0(OSI);source:public")
+    rewrite(
+        Path("sources/scores/mastra.yaml"),
+        {"license": {"value": "Apache-2.0", "detail": "OSI"}, "source": {"value": "public"}},
+    )
 """
 
 from __future__ import annotations

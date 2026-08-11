@@ -50,31 +50,26 @@
           "description": "The openness VOCABULARY: the band a reader sees, paired with `score`. Eleven values, one per rung any ladder can emit \u2014 the software, model, dataset and hardware ladders do not share a vocabulary, which is why this is longer than the five a single ladder uses. `docs/openness-class-map.json` maps each to a display label, a gradient and the three-way open / open-ish / closed bucket the payload carries. Until 2026-08-08 this was an unconstrained string and the vocabulary lived only in that map and in build/render.py."
         },
         "components": {
-          "oneOf": [
-            { "type": "string" },
-            {
-              "type": "object",
-              "minProperties": 1,
-              "properties": {
-                "free_text": {
-                  "type": "array",
-                  "items": { "type": "string" },
-                  "minItems": 1
-                }
-              },
-              "additionalProperties": {
-                "type": "object",
-                "required": ["value"],
-                "properties": {
-                  "value": { "type": "string" },
-                  "detail": { "type": "string" },
-                  "raw": { "type": "string" }
-                },
-                "additionalProperties": false
-              }
+          "type": "object",
+          "minProperties": 1,
+          "properties": {
+            "free_text": {
+              "type": "array",
+              "items": { "type": "string" },
+              "minItems": 1
             }
-          ],
-          "description": "The evidence the openness score was read off, as an entry per dimension the category's ladder asks about. Two shapes coexist while the corpus migrates: the legacy flat string, one `k:v;k:v` clause per dimension - `weights:open(Apache-2.0);data:open(Dolma 3, 9.3T tokens);code:open;license:Apache-2.0(OSI)`, where the bare value before the first `(` or `,` is what a rule reads and the parenthetical is detail for a human that no formula sees - and the structured mapping, `key -> {value, detail?, raw?}` plus a reserved `free_text` list for keyless clauses. This is the most load-bearing field in the corpus, because a category is ladderable only if its VALUES are controlled tokens some dimension's declared enum contains - `edge_hardware` is 71% prose by check_rubric's measure and cannot be laddered whatever its recipe says. Written by whoever scores the product, and edited in place ONLY through build/components.py: 277 of the 472 files fold this string across lines, so the obvious regex substitution splices the old tail onto the new value and corrupts silently. Read by build/check_rubric.py (replays the formula against it), check_verification (the dimensions recorded here are the invariant's scope), check_parity.py (the repo/warehouse differential), and serialize_rubric.py, which emits one warehouse evidence row per component and warns on a key no dimension declares or `reads` - such a key is dropped from the score silently, which is this corpus's recurring bug. Every reader goes through build.check_rubric.components_of, which returns the same key -> clause dict whichever shape the file carries; nothing in the repo should call split_components directly on this field anymore. Measured 2026-08-11: on all 472 files, 137 distinct keys, of which each ladder declares a handful (`license` on 439, `source` on 298, `core-gated` on 164)."
+          },
+          "additionalProperties": {
+            "type": "object",
+            "required": ["value"],
+            "properties": {
+              "value": { "type": "string" },
+              "detail": { "type": "string" },
+              "raw": { "type": "string" }
+            },
+            "additionalProperties": false
+          },
+          "description": "The evidence the openness score was read off, as an entry per dimension the category's ladder asks about: a structured mapping, `key -> {value, detail?, raw?}`, plus a reserved `free_text` list for keyless clauses. `value` is the bare token a rule reads, `detail` is the parenthetical or trailing prose a human reads but no formula sees, and `raw` carries the original clause verbatim for the entries whose `{value, detail}` split cannot reproduce it byte-for-byte. This is the most load-bearing field in the corpus, because a category is ladderable only if its VALUES are controlled tokens some dimension's declared enum contains - `edge_hardware` is 71% prose by check_rubric's measure and cannot be laddered whatever its recipe says. Written by whoever scores the product, and edited in place ONLY through build/components.py, which locates the field by indent and re-emits it through the YAML dumper rather than by regex, because a folded scalar spliced by a line-oriented substitution corrupts silently. Read by build/check_rubric.py (replays the formula against it), check_verification (the dimensions recorded here are the invariant's scope), check_parity.py (the repo/warehouse differential), and serialize_rubric.py, which emits one warehouse evidence row per component and warns on a key no dimension declares or `reads` - such a key is dropped from the score silently, which is this corpus's recurring bug. Every reader goes through build.check_rubric.components_of, which returns the same key -> clause dict; nothing in the repo should call split_components directly on this field. build/check_components.py asserts the mapping is the only shape this field may take - a string here fails the gate rather than being skipped, which is what closed the migration. Measured 2026-08-11: on all 472 files, 137 distinct keys, of which each ladder declares a handful (`license` on 439, `source` on 298, `core-gated` on 164)."
         },
         "governing_release": {
           "type": "string",
