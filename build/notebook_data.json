@@ -9585,14 +9585,28 @@
           "openness": {
             "score": 5,
             "class": "open_source",
-            "components": "license:Apache-2.0(OSI);source:public(GitHub);execution harness + leaderboard public",
+            "components": "license:Apache-2.0(OSI);source:public(GitHub);execution harness + leaderboard public;core-gated:ungated(no paid tier or license key, harness runs locally with --execution local)",
             "confidence": "high",
             "note": "Apache-2.0, fully public; OSI -> open_source.",
             "sources": [
               {
                 "url": "https://github.com/bigcode-project/bigcodebench",
                 "shows": "Apache-2.0 license, public harness, 1140 tasks",
-                "accessed": "2026-06-04"
+                "accessed": "2026-06-04",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/bigcode-project/bigcodebench/main/README.md",
+                "shows": "README's evaluation command declares `--execution [e2b|gradio|local]`, so the harness runs end to end on the reader's own machine; the default `gradio` backend is a public Hugging Face evaluator Space the README tells you to clone for speed, and `e2b` is an optional third-party sandbox. Nothing in the README offers a paid tier, a commercial edition, or a license key, and the repo root carries no enterprise directory.",
+                "accessed": "2026-08-11",
+                "http_status": 200,
+                "content_sha256": "4aa8cbfa3111e92db886583d554a3c9e8f14561d47261d6441c069835e3bdc28",
+                "establishes": [
+                  "core-gated"
+                ]
               }
             ],
             "bucket": "open"
@@ -9633,7 +9647,7 @@
           "maturity": 2.5,
           "mature": false,
           "freshness": {
-            "date": "2026-06-09",
+            "date": "2026-08-11",
             "basis": "commit"
           },
           "version_note": "BigCodeBench v0.2.4 (Mar 2 2025); 1140 software-engineering programming tasks (Complete + Instruct splits); active HF leaderboard, 163 models evaluated. Confirmed live June 2026. Borderline: it is primarily a single benchmark+its harness; the dataset itself maps to benchmark_eval_data, but the runnable harness fits here."
@@ -9704,16 +9718,40 @@
           "type": "software",
           "description": "Pytest-style evaluation framework for LLM apps with 40+ built-in metrics including G-Eval, hallucination, faithfulness and RAG-specific scores. Picked for CI/CD integration; drops into existing test suites and gates merges on metric thresholds. 15.6k stars, 263 contributors, 561 commits in last 90 days, the most active open source eval framework on GitHub.",
           "openness": {
-            "score": 4,
-            "class": "open_core",
-            "components": "license:Apache-2.0(OSI, OSS framework);source:public(GitHub);commercial-tier:Confident AI managed eval/observability cloud on top;core-gated:gated",
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI, OSS framework);source:public(GitHub);commercial-tier:Confident AI managed eval/observability cloud on top;core-gated:ungated(Confident AI is a separate hosted platform scored as its own product, the library evaluates locally without an account, no enterprise directory in the repo)",
             "confidence": "high",
-            "note": "Apache-2.0 OSS core + proprietary Confident AI cloud -> open_core (recipe names Confident AI as the open_core exemplar); the library itself is OSI.",
+            "note": "Apache-2.0 library whose metrics and test runs execute locally with no account. Confident AI is a separate hosted platform, scored on the map as its own product; selling it alongside does not gate the library, and no component is withheld from the published source.",
             "sources": [
               {
                 "url": "https://github.com/confident-ai/deepeval",
                 "shows": "Apache-2.0 license; Confident AI commercial cloud platform",
-                "accessed": "2026-06-04"
+                "accessed": "2026-06-04",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/confident-ai/deepeval/main/README.md",
+                "shows": "README states the metrics 'run locally on your machine', and directs readers to 'Sign up for Confident AI, the enterprise AI evals and observability platform' only to 'compare iterations, share evaluation reports, and monitor your AI in production'. The account section says using the platform 'will allow you to generate sharable testing reports on the cloud. It is free, takes no additional code to setup' - optional, and not a gate on any metric.",
+                "accessed": "2026-08-11",
+                "http_status": 200,
+                "content_sha256": "88d983b58c4725a6aaa88488a79029acc9e41046c0095fb15a492b643fa5b949",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/confident-ai/deepeval/contents",
+                "shows": "Repository root listing: deepeval, docs, examples, tests, typescript, scripts, skills, assets and packaging files. No ee/, enterprise/, or cloud/ directory under a second license. The repo's declared license is Apache-2.0.",
+                "accessed": "2026-08-11",
+                "http_status": 200,
+                "establishes": [
+                  "core-gated",
+                  "license"
+                ]
               }
             ],
             "bucket": "open"
@@ -9754,7 +9792,7 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-07-30",
+            "date": "2026-08-11",
             "basis": "commit"
           },
           "version_note": "DeepEval v4.0.5 ('Opus 4.8 Day-0 Support', May 28 2026). OSS eval framework (Apache-2.0) with commercial Confident AI cloud platform. Confirmed live June 2026."
@@ -10273,19 +10311,33 @@
           "openness": {
             "score": 5,
             "class": "open_source",
-            "components": "license:Apache-2.0(OSI);source:public(github.com/xlang-ai/OSWorld);execution-based eval harness + 369-task environment public; multi-platform (VMware/VirtualBox/Docker/AWS)",
+            "components": "license:Apache-2.0(OSI);source:public(github.com/xlang-ai/OSWorld);execution-based eval harness + 369-task environment public; multi-platform (VMware/VirtualBox/Docker/AWS);core-gated:ungated(full harness runs locally on VMware, VirtualBox or Docker, no paid tier)",
             "confidence": "high",
             "note": "Apache-2.0, full harness + environment public. Scored as the evaluation harness; the bundled 369-task set is also openly redistributable.",
             "sources": [
               {
                 "url": "https://github.com/xlang-ai/OSWorld",
                 "shows": "Apache-2.0 license, public source, computer-use agent eval harness",
-                "accessed": "2026-06-04"
+                "accessed": "2026-06-04",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
               },
               {
                 "url": "https://os-world.github.io/",
                 "shows": "369 tasks (361 excl. Google Drive), real-computer execution-based evaluation",
                 "accessed": "2026-06-04"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/xlang-ai/OSWorld/main/README.md",
+                "shows": "README carries the Apache-2.0 badge and gives full setup instructions for running the benchmark locally under VMware, VirtualBox, or Docker with KVM. AWS and Azure appear only as optional providers for parallel runs. No paid tier, commercial edition, or license key is mentioned.",
+                "accessed": "2026-08-11",
+                "http_status": 200,
+                "content_sha256": "83b8684c2f4ac4f31996b8b4752195fcb6cc5429f89d92398177b9b721d787fc",
+                "establishes": [
+                  "core-gated"
+                ]
               }
             ],
             "bucket": "open"
@@ -10331,7 +10383,7 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-06-24",
+            "date": "2026-08-11",
             "basis": "commit"
           },
           "version_note": "OSWorld: scalable real-computer environment + execution-based evaluation harness for multimodal/computer-use agents (NeurIPS 2024). Apache-2.0. 369 tasks (361 excl. 8 problematic Google Drive tasks). De-facto standard for computer-use agents (GPT-5.4 75.0%, Claude Opus 4.6 72.7%, Claude Sonnet 4.6 72.5% on OSWorld-Verified cited in 2026 releases). Confirmed live June 2026. Dual artifact: ships both the task set and the runner; registry placed it in evaluation_code (the harness); note the dataset overlaps benchmark_eval_data."
@@ -10487,19 +10539,30 @@
           "openness": {
             "score": 1,
             "class": "closed",
-            "components": "platform:closed(proprietary hosted SaaS); datasets:closed(private, unpublished SEAL benchmarks kept private to prevent gaming/training contamination); methodology:partially-disclosed(leaderboard transparency) but no open eval code or self-hostable engine; human-eval workforce is a proprietary service",
+            "components": "platform:closed(proprietary hosted SaaS); datasets:closed(private, unpublished SEAL benchmarks kept private to prevent gaming/training contamination); methodology:partially-disclosed(leaderboard transparency) but no open eval code or self-hostable engine; human-eval workforce is a proprietary service;source:closed(proprietary hosted platform, VPC deployment offered but no published source)",
             "confidence": "high",
             "note": "Proprietary by design; the deliberately-private benchmark datasets and hosted expert-eval workforce are the moat; no open source eval code. Closed.",
             "sources": [
               {
                 "url": "https://scale.com/genai-platform",
                 "shows": "Scale GenAI Platform: automated + expert-human evaluation 'Trust Feedback Loop'; test against proprietary benchmark datasets",
-                "accessed": "2026-06-04"
+                "accessed": "2026-06-04",
+                "establishes": [
+                  "source"
+                ]
               },
               {
                 "url": "https://scale.com/blog/leaderboard",
                 "shows": "SEAL Leaderboards use curated PRIVATE/unpublished datasets that 'cannot be gamed'",
                 "accessed": "2026-06-04"
+              },
+              {
+                "url": "https://scale.com/genai-platform",
+                "shows": "Re-read: the platform page offers 'Deploy securely within your own VPC. Full support for AWS, Azure, and GCP' - a customer-cloud deployment of the proprietary product, not published source. No repository, no self-hostable open implementation, and no license to the evaluation code is offered anywhere on the page.",
+                "accessed": "2026-08-11",
+                "establishes": [
+                  "source"
+                ]
               }
             ],
             "bucket": "closed"
@@ -10545,7 +10608,7 @@
           "maturity": 3.5,
           "mature": false,
           "freshness": {
-            "date": "2026-06-24",
+            "date": "2026-08-11",
             "basis": "commit"
           },
           "version_note": "Scale AI 'Scale Evaluation' platform (the 'Evaluate AI' product line as of Oct 2025), part of Scale GenAI Platform. Proprietary hosted evaluation/monitoring with private SEAL benchmark datasets + expert human-eval workforce ('Trust Feedback Loop'). Public-facing SEAL Leaderboards + SEAL Showdown (millions of real-world conversations across 100+ countries). Confirmed live 2025-2026."
@@ -10696,19 +10759,30 @@
           "openness": {
             "score": 2,
             "class": "source_available",
-            "components": "dashboard:public(free to browse);eval-code:partial-open(several org repos MIT/Apache - SWE-bench docker registry, eci-public, MirrorCode-data);benchmark-data:mixed(FrontierMath gated/private to prevent contamination; some public);no-unified-OSI-harness-product",
+            "components": "dashboard:public(free to browse);eval-code:partial-open(several org repos MIT/Apache - SWE-bench docker registry, eci-public, MirrorCode-data);benchmark-data:mixed(FrontierMath gated/private to prevent contamination; some public);no-unified-OSI-harness-product;source:partial(public dashboard and MIT component repos, but no end-to-end harness published and the FrontierMath problems are unpublished)",
             "confidence": "medium",
             "note": "Mixed-tier: public results dashboard plus some MIT/Apache-licensed eval components, but the headline benchmark (FrontierMath) is deliberately private and there is no single OSI-licensed end-to-end harness, closer to source_available than fully open_source.",
             "sources": [
               {
                 "url": "https://github.com/epoch-research",
                 "shows": "public org repos incl SWE-bench docker registry, eci-public (MIT), MirrorCode-data; mostly MIT/Apache-2.0",
-                "accessed": "2026-06-04"
+                "accessed": "2026-06-04",
+                "establishes": [
+                  "source"
+                ]
               },
               {
                 "url": "https://epoch.ai/benchmarks",
                 "shows": "public benchmark dashboard running FrontierMath/GPQA Diamond/SWE-bench Verified/SimpleQA Verified across frontier models",
                 "accessed": "2026-06-04"
+              },
+              {
+                "url": "https://epoch.ai/frontiermath",
+                "shows": "Epoch describes FrontierMath Tiers 1-4 as 'a benchmark of several hundred unpublished, highly challenging mathematics problems'. The problems are held back by design, so the benchmark behind the public dashboard cannot be run by a reader.",
+                "accessed": "2026-08-11",
+                "establishes": [
+                  "source"
+                ]
               }
             ],
             "bucket": "open-ish"
@@ -10744,7 +10818,7 @@
           "maturity": 3.5,
           "mature": false,
           "freshness": {
-            "date": "2026-06-24",
+            "date": "2026-08-11",
             "basis": "commit"
           },
           "version_note": "Epoch AI benchmark database + public dashboard scoring frontier models on hard tasks (FrontierMath, GPQA Diamond, SWE-bench Verified, SimpleQA Verified, MATH Level 5, OTIS Mock AIME, Chess Puzzles). Verified live June 2026; org github.com/epoch-research has MIT/Apache eval repos (SWE-bench docker registry, eci-public, MirrorCode-data), but FrontierMath dataset is held private."
@@ -10942,14 +11016,30 @@
           "openness": {
             "score": 5,
             "class": "open_source",
-            "components": "license:Apache-2.0(HF-Space);backend:lm-eval-harness/lighteval(open);source:public",
+            "components": "license:Apache-2.0(HF-Space);backend:lm-eval-harness/lighteval(open);source:public;core-gated:ungated(Space source public and docker-compose deployable, no paid tier)",
             "confidence": "high",
             "note": "Open Apache-2.0 leaderboard built on open eval backends (now archived).",
             "sources": [
               {
                 "url": "https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard",
                 "shows": "Apache-2.0 Space, ~14k likes",
-                "accessed": "2026-06-17"
+                "accessed": "2026-06-17",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard/raw/main/README.md",
+                "shows": "Space README frontmatter declares 'license: apache-2.0' and 'sdk: docker'; the body documents bringing the React frontend and FastAPI backend up with `docker-compose up`. The Space's files are readable and downloadable over the raw endpoint, and no feature is described as paid, licensed, or restricted.",
+                "accessed": "2026-08-11",
+                "http_status": 200,
+                "content_sha256": "506aed8ab5aeccd01310992962de01898974545083e3c38170203d52b7e57214",
+                "establishes": [
+                  "core-gated",
+                  "license",
+                  "source"
+                ]
               }
             ],
             "bucket": "open"
@@ -10984,7 +11074,7 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-06-17",
+            "date": "2026-08-11",
             "basis": "commit"
           },
           "version_note": "ARCHIVED/retired (announced 2025-03-13); HF redirected users to the OpenEvals hub. HF Space was Apache-2.0; backend used lm-evaluation-harness (v1) and lighteval (v2). Listed for historical significance."
@@ -10999,19 +11089,36 @@
           "openness": {
             "score": 5,
             "class": "open_source",
-            "components": "license:Apache-2.0(OSI; verified LICENSE body);source:public;self-hostable",
+            "components": "license:Apache-2.0(OSI; verified LICENSE body);source:public;self-hostable;core-gated:ungated(publicly funded, README documents full Docker self-hosting)",
             "confidence": "high",
             "note": "Permissive OSI license with full public source code.",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/betagouv/ComparIA/develop/LICENSE",
                 "shows": "LICENSE body 'Apache License, Version 2.0'",
-                "accessed": "2026-06-22"
+                "accessed": "2026-06-22",
+                "establishes": [
+                  "license"
+                ]
               },
               {
                 "url": "https://github.com/betagouv/ComparIA",
                 "shows": "Apache-2.0 license badge, full source, betagouv ownership",
-                "accessed": "2026-06-22"
+                "accessed": "2026-06-22",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/betagouv/ComparIA/develop/README.md",
+                "shows": "README states 'Self-host with Docker (single server, automatic HTTPS via Caddy)' and links devops/standalone_docker_install/DOCKER_INSTALL.md for the whole application. It also states 'compar:IA is funded by DINUM and the French Ministry of Culture, with European support from ALT-EDIC' and asks for funders - there is no commercial tier to withhold anything for.",
+                "accessed": "2026-08-11",
+                "http_status": 200,
+                "content_sha256": "cc2e4c8623b499641a1bae909b31531cfa770a9342ae9c56f0067dd642d6bb8d",
+                "establishes": [
+                  "core-gated"
+                ]
               }
             ],
             "bucket": "open"
@@ -11047,7 +11154,7 @@
           "maturity": 3.5,
           "mature": false,
           "freshness": {
-            "date": "2026-06-22",
+            "date": "2026-08-11",
             "basis": "commit"
           },
           "version_note": "Verified live 2026-06-22 via primary sources. Permissive OSI license with full public source code."
@@ -11062,19 +11169,32 @@
           "openness": {
             "score": 5,
             "class": "open_source",
-            "components": "license:MIT(OSI; verified LICENSE body, copyright Simula);source:public;Python",
+            "components": "license:MIT(OSI; verified LICENSE body, copyright Simula);source:public;Python;core-gated:ungated(local execution is the default mode, all scenario packs ship in the package)",
             "confidence": "high",
             "note": "Permissive OSI (MIT) license with full public source.",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/kelkalot/simpleaudit/main/LICENSE",
                 "shows": "LICENSE body 'MIT License', copyright Simula Research Laboratory",
-                "accessed": "2026-06-22"
+                "accessed": "2026-06-22",
+                "establishes": [
+                  "license"
+                ]
               },
               {
                 "url": "https://www.digitalpublicgoods.net/r/simpleaudit",
                 "shows": "DPG profile confirming multilingual safety red-teaming framework",
                 "accessed": "2026-06-22"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/kelkalot/simpleaudit/main/README.md",
+                "shows": "README states 'Local execution is the default deployment mode and the original design constraint: prompts, transcripts, and policies stay inside the deployment environment' and 'MIT License - see LICENSE for details'. The scenario packs and judge configurations ship in the package; the only external dependency is the user's own model API key.",
+                "accessed": "2026-08-11",
+                "http_status": 200,
+                "content_sha256": "6c851942b0521b6cbf776a4b1b4905d8255fb261eff3cfcb3aa7abf07df09c46",
+                "establishes": [
+                  "core-gated"
+                ]
               }
             ],
             "bucket": "open"
@@ -11110,7 +11230,7 @@
           "maturity": 2.5,
           "mature": false,
           "freshness": {
-            "date": "2026-06-22",
+            "date": "2026-08-11",
             "basis": "commit"
           },
           "version_note": "Verified live 2026-06-22 via primary sources. Permissive OSI (MIT) license with full public source."
