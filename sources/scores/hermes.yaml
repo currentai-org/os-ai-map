@@ -4,8 +4,21 @@ openness:
   class: open_weights
   governing_release: hermes-4-3-36b
   confidence: high
-  components: weights:open(Apache-2.0);base:Seed-OSS-36B-Base;post-training-data:closed(proprietary ~5M-sample corpus);code:partial(inference
-    only);license:Apache-2.0(OSI)
+  components:
+    weights:
+      value: open
+      detail: Apache-2.0
+    base:
+      value: Seed-OSS-36B-Base
+    post-training-data:
+      value: closed
+      detail: proprietary ~5M-sample corpus
+    code:
+      value: partial
+      detail: inference only
+    license:
+      value: Apache-2.0
+      detail: OSI
   note: 'Nous ships one Hermes 4 post-training recipe on four independent base models, and the base determines the
     license the weights carry: Seed-OSS-36B and Qwen3-14B are Apache-2.0, while the Llama-3.1 405B and 70B builds
     inherit Meta''s Llama-3.1-Community terms (700M-MAU commercial cap, acceptable-use policy, naming requirements).
@@ -15,6 +28,8 @@ openness:
     takes the 36B or 14B build and gets it, so the family genuinely offers open weights. Not 4 or 5: the post-training
     corpus is proprietary and only inference code ships, so the recipe is not reproducible. Corrected from 2/restricted
     on 2026-07-29 after the tier consolidation initially applied most-restrictive across all four bases.'
+  raw: weights:open(Apache-2.0);base:Seed-OSS-36B-Base;post-training-data:closed(proprietary ~5M-sample
+    corpus);code:partial(inference only);license:Apache-2.0(OSI)
   sources:
   - url: https://huggingface.co/NousResearch/Hermes-4-405B-FP8
     shows: 'License: Llama3, base Meta-Llama/Llama-3.1-405B'

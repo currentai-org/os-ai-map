@@ -2,12 +2,25 @@ product: confer
 openness:
   score: 2
   class: source_available
-  components: license:none-declared(no LICENSE file in either public repo);source:partial(confer-proxy +
-    confer-image public,client-app private);self-host:no(depends on vendor attestation infra);models:open source(undisclosed)
+  components:
+    license:
+      value: none-declared
+      detail: no LICENSE file in either public repo
+    source:
+      value: partial
+      detail: confer-proxy + confer-image public,client-app private
+    self-host:
+      value: 'no'
+      detail: depends on vendor attestation infra
+    models:
+      value: open source
+      detail: undisclosed
   confidence: high
   note: 'Marketed as open source, but neither public repo declares any license (GitHub reports license:null),
     so re-use rights are undefined, and the end-user client is not public. Source is published for verifiability/reproducible
     builds, not for self-deployment. Accurate classification is source-available, not open_source.'
+  raw: license:none-declared(no LICENSE file in either public repo);source:partial(confer-proxy + confer-image
+    public,client-app private);self-host:no(depends on vendor attestation infra);models:open source(undisclosed)
   sources:
   - url: https://confer.to/blog/2026/01/private-inference/
     shows: architecture (TEE, Noise pipes, dm-verity, reproducible nix/mkosi builds, transparency log); names
