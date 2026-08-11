@@ -2,14 +2,26 @@ product: minimax
 openness:
   score: 3
   class: open_weights
-  components: weights:open(on HF; ungated; safetensors/BF16; MoE);data:closed;code:partial(inference only; no training
-    pipeline/data);license:minimax-community(custom, see HF LICENSE)
+  components:
+    weights:
+      value: open
+      detail: on HF; ungated; safetensors/BF16; MoE
+    data:
+      value: closed
+    code:
+      value: partial
+      detail: inference only; no training pipeline/data
+    license:
+      value: minimax-community
+      detail: custom, see HF LICENSE
   governing_release: minimax-m3
   confidence: high
   note: Weights distributed under the custom minimax-community license with a closed corpus, so 3. M3 governs as
     the current release. Capability 5 is carried from M2.5 because M3 records no capability score at all, so the
     tier's capability describes the older release and should be re-read when M3 is benchmarked - it is the one axis
     here not sourced to the governing release.
+  raw: weights:open(on HF; ungated; safetensors/BF16; MoE);data:closed;code:partial(inference only; no training
+    pipeline/data);license:minimax-community(custom, see HF LICENSE)
   sources:
   - url: https://huggingface.co/api/models/MiniMaxAI/MiniMax-M3
     shows: Public ungated weights repo (safetensors/MoE), license=minimax-community, created 2026-06-02

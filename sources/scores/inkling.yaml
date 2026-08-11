@@ -2,13 +2,25 @@ product: inkling
 openness:
   score: 3
   class: open_weights
-  components: weights:open(Apache-2.0 on HF, BF16 + NVFP4);data:closed(public+third-party+synthetic, not
-    redistributed);code:partial(day-0 transformers/SGLang/vLLM/llama.cpp; no training pipeline);license:Apache-2.0(OSI
-    for weights only)
+  components:
+    weights:
+      value: open
+      detail: Apache-2.0 on HF, BF16 + NVFP4
+    data:
+      value: closed
+      detail: public+third-party+synthetic, not redistributed
+    code:
+      value: partial
+      detail: day-0 transformers/SGLang/vLLM/llama.cpp; no training pipeline
+    license:
+      value: Apache-2.0
+      detail: OSI for weights only
   confidence: high
   note: Apache-2.0 weights are OSI-licensed, but training data and full training code are withheld —
     open_weights / 3, not open_source / 5. Press often calls this 'open source' because of the license
     tag; our spectrum requires open data + code for class open_source.
+  raw: weights:open(Apache-2.0 on HF, BF16 + NVFP4);data:closed(public+third-party+synthetic, not redistributed);code:partial(day-0
+    transformers/SGLang/vLLM/llama.cpp; no training pipeline);license:Apache-2.0(OSI for weights only)
   sources:
   - url: https://huggingface.co/thinkingmachines/Inkling
     shows: Apache-2.0 license tag; 975B/41B MoE; weights downloadable; model card states data from public,
