@@ -15,6 +15,12 @@ It also asserts the two directions nobody would otherwise notice:
   * an unmigrated record must NOT, or a stale `raw` will be silently believed by
     `components_string` and shipped to the payload.
 
+The migration finished at 472 of 472 records, so a THIRD thing is now a failure rather than
+a skip: `components` recorded as a string at all. Before this the string shape was simply
+narrowed past, which meant a new or reverted string-shaped record passed every gate,
+including this one, and silently returned the corpus to mixed shape. The mapping is now the
+only shape this field may take.
+
 Exit status is 1 on any failure, so CI can gate on it.
 """
 
@@ -38,9 +44,16 @@ def check(root: Path = ROOT) -> list[str]:
         raw = block.get("raw")
         slug = path.stem
 
+        if isinstance(components, str):
+            failures.append(
+                f"{slug}: openness.components is still a string. The mapping is now the "
+                f"only accepted shape for this field (phase 1a migrated all 472 records); "
+                f"migrate it with build/components.py rather than hand-writing a string."
+            )
+            continue
+
         if not isinstance(components, dict):
-            if raw is not None:
-                failures.append(f"{slug}: carries openness.raw but components is still a string")
+            failures.append(f"{slug}: openness.components is missing or not a mapping")
             continue
 
         if not isinstance(raw, str) or not raw:

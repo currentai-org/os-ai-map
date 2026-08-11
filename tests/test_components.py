@@ -394,7 +394,16 @@ def test_structure_round_trips_every_recorded_components_string():
         if recompose(structure(components)) != split_components(components):
             failures.append(path.stem)
 
-    assert walked > 0, "no string-shaped components reached; the corpus walk is broken"
+    # A floor, not an exact count, for the same reason as the sibling equivalence tests in
+    # this file and in test_serialize_rubric.py: the corpus only grows as products are
+    # scored, so more records walked than this is ordinary curation. `walked > 0` caught
+    # total collapse but not a partial one — if a later change stripped `raw` from 400 of
+    # 472 records, `walked` would drop to 72 and this test would pass having lost most of
+    # its coverage, the same shrink-without-noticing failure the sibling tests were fixed
+    # for. 472 is every record in the corpus today: phase 1a finished at 472 of 472
+    # migrated, and check_components requires `raw` on every migrated record, so this walk
+    # is now the full corpus rather than a subset of it.
+    assert walked >= 472, f"only {walked} components strings walked; the corpus walk is broken"
     assert failures == [], f"structure/recompose does not round-trip: {failures}"
 
 
@@ -460,6 +469,45 @@ def test_check_components_flags_a_dropped_keyless_clause(tmp_path):
     failures = check(tmp_path)
     assert len(failures) == 1
     assert "free_text" in failures[0]
+
+
+def test_check_components_rejects_a_string_shaped_record(tmp_path):
+    """Phase 1a finished at 472 of 472 records migrated to the mapping shape. Before this,
+    a string-shaped `components` was silently skipped rather than flagged, so a new record
+    scored from a stale template — or a hand-written string — would pass every gate and
+    quietly return the corpus to mixed shape.
+    """
+    from build.check_components import check
+
+    scores = tmp_path / "sources" / "scores"
+    scores.mkdir(parents=True)
+    (scores / "reverted.yaml").write_text(yaml.safe_dump({"openness": {
+        "components": "license:MIT(OSI);source:public",
+    }}, sort_keys=False))
+
+    failures = check(tmp_path)
+    assert len(failures) == 1
+    assert "still a string" in failures[0]
+
+
+def test_schema_rejects_a_string_shaped_components():
+    """The schema must state the same rule check_components enforces: the mapping is the
+    only accepted shape, so a new string-shaped record fails validation rather than being
+    silently accepted by a `oneOf(string | mapping)` left over from the migration.
+    """
+    import json
+
+    import jsonschema
+
+    root = Path(__file__).resolve().parents[1]
+    schema = json.loads((root / "docs/schemas/score.schema.json").read_text())
+    doc = yaml.safe_load((root / "sources/scores/mastra.yaml").read_text())
+
+    jsonschema.validate(doc, schema)
+
+    doc["openness"]["components"] = "license:MIT(OSI);source:public"
+    with pytest.raises(jsonschema.ValidationError):
+        jsonschema.validate(doc, schema)
 
 
 def test_components_string_returns_the_flat_string_unchanged():
