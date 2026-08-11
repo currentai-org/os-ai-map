@@ -20821,14 +20821,33 @@
           "openness": {
             "score": 4,
             "class": "open_core",
-            "components": "license:MIT(core, public source);enterprise-tier:NextChat Enterprise (permission controls, team resource mgmt, internal knowledge base/RAG)",
+            "components": "license:MIT(core, public source);enterprise-tier:NextChat Enterprise (permission controls, team resource mgmt, internal knowledge base/RAG);source:public(the app IS the repo; README ships one-click Vercel/Zeabur/Gitpod deploy, a Dockerfile and docker-compose, and desktop builds via src-tauri);core-gated:gated(Enterprise Edition withholds the admin panel, member/resource/knowledge-base permission control, internal knowledge-base integration and security auditing from the MIT repo)",
             "confidence": "high",
             "note": "OSI MIT core with a separate proprietary Enterprise Edition for multi-user permissions and internal-KB RAG -> open_core (calibrated to the LiteLLM open_core anchor).",
             "sources": [
               {
                 "url": "https://github.com/ChatGPTNextWeb/NextChat",
                 "shows": "MIT license; cross-platform chat client; Enterprise Edition (permissions, team mgmt, internal knowledge base)",
-                "accessed": "2026-06-04"
+                "accessed": "2026-06-04",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/ChatGPTNextWeb/NextChat/contents/",
+                "shows": "Repository root read for the source dimension. The repo license endpoint returns MIT, and the tree is the whole application - app, src-tauri, public, docs, plus Dockerfile, docker-compose.yml, vercel.json and .env.template. There is no `ee/` or `enterprise/` directory, so the Enterprise Edition is not in this repository at all. The README's deploy buttons for Vercel, Zeabur and Gitpod run this source, which is what the ladder means by a public source.",
+                "accessed": "2026-08-11",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://github.com/ChatGPTNextWeb/NextChat/blob/main/README.md",
+                "shows": "The README's own Enterprise Edition section, quoted rather than paraphrased, lists what the paid edition adds - Brand Customization, Resource Integration described as \"unified configuration and management of dozens of AI resources by company administrators\", Permission Control described as \"clearly defined member permissions, resource permissions, and knowledge base permissions, all controlled via a corporate-grade Admin Panel\", Knowledge Integration \"combining your internal knowledge base with AI capabilities\", Security Auditing, Private Deployment, and Continuous Updates. Contact is business@nextchat.club. None of that admin panel, permission model or knowledge base exists in the MIT repository, whose own Features list describes the opposite design: \"Privacy first, all data is stored locally in the browser\". So this is functionality withheld from the published source rather than a hosted service beside it, which is the gated reading.",
+                "accessed": "2026-08-11",
+                "establishes": [
+                  "core-gated"
+                ]
               }
             ],
             "bucket": "open"
@@ -20864,7 +20883,7 @@
           "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-06-09",
+            "date": "2026-08-11",
             "basis": "commit"
           },
           "version_note": "v2.16.1 latest release (~mid-2025; release notes cite OpenAI o3/o4-mini + Claude 3.7 support); MIT core. ~6-12mo since last release as of June 2026 -> freshness flag. Cross-platform (web/desktop/mobile) chat client; Enterprise Edition adds permissions/RAG."
@@ -21023,18 +21042,46 @@
             "score": 5,
             "class": "open_source",
             "confidence": "high",
-            "components": "license:Apache-2.0(OSI);source:public(github.com/continuedev/continue);clients:VSCode+JetBrains+CLI;hub:continue.dev(hosted config/model hub adjacent, core OSS)",
+            "components": "license:Apache-2.0(OSI);source:public(github.com/continuedev/continue);clients:VSCode+JetBrains+CLI;hub:continue.dev(hosted config/model hub adjacent, core OSS);core-gated:ungated(Apache-2.0 across the whole monorepo, no ee/ or enterprise directory; the enterprise license key is itself published Apache-2.0 code carrying only customerId/expiresAt/apiUrl and unlocks no client feature)",
             "note": "Apache-2.0, full source public for the IDE extensions and CLI; no feature-gated core in the editor itself (a hosted Hub exists alongside but the assistant is OSS).",
             "sources": [
               {
                 "url": "https://github.com/continuedev/continue",
                 "shows": "Apache-2.0; public source; AI code assistant (chat/edit/autocomplete + agent)",
-                "accessed": "2026-06-04"
+                "accessed": "2026-06-04",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
               },
               {
                 "url": "https://marketplace.visualstudio.com/items?itemName=Continue.continue",
                 "shows": "open source AI code agent extension listing",
                 "accessed": "2026-06-04"
+              },
+              {
+                "url": "https://api.github.com/repos/continuedev/continue/contents/",
+                "shows": "Repository root listing read for this dimension. The tree is actions, binary, core, docs, eval, extensions, gui, manual-testing-sandbox, media, packages, scripts, skills, sync - there is no `ee/`, no `enterprise/`, and no second license. `extensions/` holds cli, intellij and vscode; `packages/` holds config-types, config-yaml, continue-sdk, fetch, llm-info, openai-adapters and terminal-security. The repo license endpoint returns Apache-2.0.",
+                "accessed": "2026-08-11",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://github.com/continuedev/continue/blob/main/core/control-plane/mdm/mdm.ts",
+                "shows": "The one thing in this repo that looks like a gate, read directly rather than assumed. Continue does ship an \"Enterprise License Key\" - `continue.enterEnterpriseLicenseKey` in extensions/vscode/src/commands.ts and an AddLicenseKey action in the IntelliJ extension. But the whole validator is published Apache-2.0 code in this file, and the signed payload it verifies carries only `customerId`, `createdAt`, `expiresAt` and an `apiUrl`. The key is read from MDM-managed OS configuration (a macOS plist, a Windows registry path, a Linux json file), and its effect is to point the client at an enterprise control-plane URL. No client feature is switched on by it - nothing in the extension is compiled out, withheld, or refused without one. That is the langchain shape, a paid platform beside a complete open core, not the langgraph shape of a closed package behind a key.",
+                "accessed": "2026-08-11",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://www.continue.dev/",
+                "shows": "The vendor's own site now leads with Continue having been acquired by Cursor and states \"our open-source codebase remains freely available as a foundation for others\". No pricing page is linked from it any more, and https://www.continue.dev/pricing returns HTTP 404 - so there is no live paid tier left to withhold anything for.",
+                "accessed": "2026-08-11",
+                "establishes": [
+                  "core-gated"
+                ]
               }
             ],
             "bucket": "open"
@@ -21080,7 +21127,7 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-06-24",
+            "date": "2026-08-11",
             "basis": "commit"
           },
           "version_note": "Continue (continuedev/continue); VS Code extension v1.2.22 (Mar 2026), JetBrains plugin, and open source `cn` CLI. Open-source AI code assistant, chat + inline edit + autocomplete in the IDE, now also marketing 'AI code agent' (agent mode) and CI checks. Verified live on GitHub + VS Marketplace June 2026."
@@ -22439,13 +22486,21 @@
             "score": 1,
             "class": "closed",
             "confidence": "high",
-            "components": "client:proprietary(no public source for chat.deepseek.com app);backend:hosted-SaaS;note:underlying models open(MIT) but the chat application/service is closed",
+            "components": "client:proprietary(no public source for chat.deepseek.com app);backend:hosted-SaaS;note:underlying models open(MIT) but the chat application/service is closed;source:closed(hosted chat service at chat.deepseek.com; DeepSeek's public repos are model and inference releases, not the chat application)",
             "note": "The DeepSeek chat surface is a proprietary hosted service; openness of the V3/V4 weights it serves is a separate (model-layer) score. Scored as closed counterpart per ui_api recipe.",
             "sources": [
               {
                 "url": "https://www.deepseek.com/en/",
                 "shows": "Free hosted chat at chat.deepseek.com serving DeepSeek-V4 Preview; no source release for the chat app itself",
                 "accessed": "2026-06-04"
+              },
+              {
+                "url": "https://www.deepseek.com/en",
+                "shows": "Re-read for this dimension. The site offers exactly two ways to use DeepSeek - 'Free access to DeepSeek' pointing at chat.deepseek.com, and 'Build with the latest DeepSeek models' pointing at the hosted API platform with its own pricing. The Research section links GitHub repositories (DeepSeek R1, V3, Coder V2 and others), and every one of them is a model-weights or research/inference release; none is the chat application. So there is no self-hostable implementation of the chat surface being scored here, which is what the ladder calls a closed source.",
+                "accessed": "2026-08-11",
+                "establishes": [
+                  "source"
+                ]
               }
             ],
             "bucket": "closed"
@@ -22481,7 +22536,7 @@
           "maturity": 4.4,
           "mature": false,
           "freshness": {
-            "date": "2026-06-09",
+            "date": "2026-08-11",
             "basis": "commit"
           },
           "version_note": "Hosted consumer chat UI at chat.deepseek.com (web + iOS/Android apps), currently fronting DeepSeek-V4 Preview (stronger agent + reasoning). Verified live June 2026. Note: the underlying DeepSeek-V3/V4 model weights are open (MIT) and scored separately in base_pretrained; this record scores the CHAT PRODUCT/UI itself, which is a proprietary free hosted service, not open source software."
@@ -22497,13 +22552,21 @@
             "score": 1,
             "class": "closed",
             "confidence": "high",
-            "components": "client:proprietary(closed consumer app/embedded surface);backend:hosted-SaaS;note:underlying Llama weights are restricted (non-OSI) and model-layer scored elsewhere; the assistant product is closed",
+            "components": "client:proprietary(closed consumer app/embedded surface);backend:hosted-SaaS;note:underlying Llama weights are restricted (non-OSI) and model-layer scored elsewhere;the assistant product is closed;source:closed(assistant Meta hosts and operates; the Meta AI Terms grant rights of access and use only)",
             "note": "Meta AI the assistant/UI is a closed proprietary consumer product; scored as closed counterpart. (Llama-the-model openness is a separate restricted-class score.)",
             "sources": [
               {
                 "url": "https://www.demandsage.com/meta-ai-users/",
                 "shows": "Meta AI described as proprietary consumer assistant embedded across Meta apps + meta.ai",
                 "accessed": "2026-06-04"
+              },
+              {
+                "url": "https://www.facebook.com/legal/ai-terms",
+                "shows": "Meta's own AI Terms of Service, replacing the third-party summary above for this dimension. They describe Meta AI as a service Meta provides - 'AIs and Outputs are provided on an ''as is'' and ''as available'' basis' - and reserve the software itself, 'We retain all our respective rights, title, and interest, including intellectual property rights, in and to AIs.' The grant to the user is access only, 'Other than the rights of access and use expressly granted in these Terms, these Terms do not grant you any right, title, or interest in or to the AIs.' A right of access to a service Meta runs, with no published implementation, is the ladder's closed rung.",
+                "accessed": "2026-08-11",
+                "establishes": [
+                  "source"
+                ]
               }
             ],
             "bucket": "closed"
@@ -22549,7 +22612,7 @@
           "maturity": 4.4,
           "mature": false,
           "freshness": {
-            "date": "2026-06-24",
+            "date": "2026-08-11",
             "basis": "commit"
           },
           "version_note": "Meta's consumer AI assistant embedded across WhatsApp, Instagram, Messenger, Facebook + standalone meta.ai app. Proprietary; powered by Meta's Llama family (the underlying weights are use-restricted and scored separately at the model layer). Verified live June 2026."
@@ -22565,13 +22628,21 @@
             "score": 1,
             "class": "closed",
             "confidence": "high",
-            "components": "client:proprietary(closed consumer app);backend:hosted-SaaS on Volcano Engine;models:proprietary Doubao(closed);license:Proprietary",
+            "components": "client:proprietary(closed consumer app);backend:hosted-SaaS on Volcano Engine;models:proprietary Doubao(closed);license:Proprietary;source:closed(hosted consumer service plus a compiled client download; no published source for the assistant)",
             "note": "Doubao is a closed proprietary consumer assistant; no public source for the app and the Doubao models are not open-weight. Closed counterpart per ui_api recipe.",
             "sources": [
               {
                 "url": "https://en.wikipedia.org/wiki/Doubao",
                 "shows": "Doubao is a proprietary ByteDance AI chatbot app (iOS/Android/web) on Volcano Engine",
                 "accessed": "2026-06-04"
+              },
+              {
+                "url": "https://www.doubao.com/download/desktop",
+                "shows": "ByteDance's own distribution page for Doubao. What it offers is a compiled client - '下载豆包客户端', download the Doubao client - for desktop and mobile. Nothing on the page offers source, a repository, or a self-hosted deployment. WEAK EVIDENCE, and deliberately marked so - doubao.com is rendered entirely client-side, so a fetch returns the page header and little else, and this reads as an absence of any source offer rather than a statement that none exists. It corroborates the closed reading; it does not on its own prove it.",
+                "accessed": "2026-08-11",
+                "establishes": [
+                  "source"
+                ]
               }
             ],
             "bucket": "closed"
@@ -22612,7 +22683,7 @@
           "maturity": 4.4,
           "mature": false,
           "freshness": {
-            "date": "2026-06-09",
+            "date": "2026-08-11",
             "basis": "commit"
           },
           "version_note": "ByteDance's consumer AI assistant (chatbot app: iOS/Android/web), launched Aug 2023, running on Volcano Engine (Doubao models). Proprietary closed product. Introduced a paid Pro subscription tier ~May/Jun 2026. Verified live June 2026 (Wikipedia + China-market app trackers)."
@@ -22743,23 +22814,65 @@
           "openness": {
             "score": 4,
             "class": "open_core",
-            "components": "license:MIT(core);enterprise-dir:LiteLLM-Commercial-License;source:public;core-gated:gated",
+            "components": "license:MIT(core);enterprise-dir:LiteLLM-Commercial-License;source:public;core-gated:gated(the enterprise/ directory ships under the proprietary BerriAI Enterprise License requiring a paid subscription for production use, and the proxy gates premium features on a LITELLM_LICENSE key verified against license.litellm.ai)",
             "confidence": "high",
-            "note": "license:MIT(core);enterprise-dir:LiteLLM-Commercial-License;source:public",
+            "note": "MIT core with a proprietary enterprise directory in the same repository. `core-gated: gated` verified 2026-08-11 by a direct read, and it does NOT rest on BerriAI selling a hosted gateway. The root LICENSE is explicitly split - \"All content that resides under the 'enterprise/' directory of this repository, if that directory exists, is licensed under the license defined in 'enterprise/LICENSE'\" - and everything outside it is MIT. That enterprise license says the software \"may only be used in production, if you (and any entity that you represent) have agreed to, and are in compliance with, the BerriAI Subscription Terms of Service ... and otherwise have a valid BerriAI Enterprise license for the correct number of user seats\", with copying, distribution and sale forbidden. The directory is not a stub: it ships litellm_enterprise, enterprise_hooks, enterprise_ui and a cloudformation_stack. The proxy then enforces it in code - litellm/proxy/auth/litellm_license.py reads a LITELLM_LICENSE environment variable and verifies it against license.litellm.ai to set premium_user. A license key you must hold for the paid features to run is the dimension's question answered directly, so the 4 holds. This is the other side of the line from langchain, llama-index, pydantic-ai, zed and otari, which sell a platform beside a complete open core and moved to 5.",
+            "last_verified": "2026-08-11",
             "sources": [
               {
-                "url": "https://github.com/BerriAI/litellm/blob/main/LICENSE",
-                "shows": "flagship phase-C verification source",
-                "accessed": "2026-06-04"
+                "url": "https://raw.githubusercontent.com/BerriAI/litellm/main/LICENSE",
+                "shows": "Root LICENSE body, read rather than assumed. It opens \"Portions of this software are licensed as follows:\" and then splits the repository in two - \"All content that resides under the 'enterprise/' directory of this repository, if that directory exists, is licensed under the license defined in 'enterprise/LICENSE'\" and \"Content outside of the above mentioned directories or restrictions above is available under the MIT license as defined below\", followed by the full MIT text. So the tier-setting license is MIT and the gate is a carve-out named in the license itself.",
+                "accessed": "2026-08-11",
+                "http_status": 200,
+                "content_sha256": "b170d6bf8e8835dd357e011681db028f4d51e2fb0ea892058f56e01fb39b8273",
+                "establishes": [
+                  "license",
+                  "core-gated"
+                ]
               },
               {
-                "url": "https://github.com/BerriAI/litellm",
-                "shows": "flagship phase-C verification source",
-                "accessed": "2026-06-04"
+                "url": "https://api.github.com/repos/BerriAI/litellm/contents/enterprise",
+                "shows": "The carved-out directory exists and is not a stub. It contains LICENSE.md, README.md, __init__.py, cloudformation_stack, dist, enterprise_hooks, enterprise_ui, litellm_enterprise and its own pyproject.toml - hooks, a UI and a deployment stack, i.e. shipped functionality. The repository license endpoint returns NOASSERTION rather than MIT, which is GitHub declining to classify the split root LICENSE.",
+                "accessed": "2026-08-11",
+                "http_status": 200,
+                "content_sha256": "37244ca54271ed92f2f615aca46af53c0f9e8094d1619d1838c3741e07599d48",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/BerriAI/litellm/main/enterprise/LICENSE.md",
+                "shows": "The enterprise license body. It states the software \"may only be used in production, if you (and any entity that you represent) have agreed to, and are in compliance with, the BerriAI Subscription Terms of Service ... or other agreement governing the use of the Software, as agreed by you and BerriAI, and otherwise have a valid BerriAI Enterprise license for the correct number of user seats\". Copying for development and testing is allowed; \"it is forbidden to copy, merge, publish, distribute, sublicense, and/or sell the Software\". Production use behind a seat-counted paid license is functionality withheld from the MIT source.",
+                "accessed": "2026-08-11",
+                "http_status": 200,
+                "content_sha256": "a3160d1176cb556447255ca8652855486d681f8025550291828796a439e1b2f9",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/BerriAI/litellm/main/litellm/proxy/auth/litellm_license.py",
+                "shows": "The enforcement, in code. The module's own header comment is \"If litellm license in env, checks if it's valid\". LicenseCheck reads a LITELLM_LICENSE environment variable, carries a bundled public_key.pem for air-gapped verification, and otherwise checks the key against base_url https://license.litellm.ai, setting the premium_user flag the proxy tests before serving paid features. A key you must hold for functionality to run, which is the rubric's own wording for a gate.",
+                "accessed": "2026-08-11",
+                "http_status": 200,
+                "content_sha256": "5e23bc01f166b884f01a4c891be8b0e0e9cf7348684963b77c0c1ebe322cdcda",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/BerriAI/litellm",
+                "shows": "Repository root. The published tree is the whole gateway and proxy - litellm, gateway, ui, backend, helm, terraform, docker, migrations, tests - and self-hosting it needs nothing that is not in the repo, so the source dimension is public. Retained from the phase-C pass with a real reading in place of the placeholder.",
+                "accessed": "2026-08-11",
+                "http_status": 200,
+                "content_sha256": "2caffe731172f8176152bf5f7e71585d13729d88d69799e7602a0c61db793071",
+                "establishes": [
+                  "source"
+                ]
               },
               {
                 "url": "https://www.litellm.ai/",
-                "shows": "flagship phase-C verification source",
+                "shows": "Vendor site, kept for context only. It establishes that BerriAI sells a hosted product, which under the settled rule is NOT evidence for or against core-gated and is not what the 4 rests on.",
                 "accessed": "2026-06-04"
               }
             ],
@@ -22801,8 +22914,8 @@
           "maturity": 3.3,
           "mature": false,
           "freshness": {
-            "date": "2026-07-30",
-            "basis": "commit"
+            "date": "2026-08-11",
+            "basis": "verified"
           },
           "version_note": "v1.84.5 (June 4, 2026)"
         },
