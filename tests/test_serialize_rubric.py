@@ -987,25 +987,38 @@ def test_split_value_bare_half_matches_head_on_the_whole_corpus():
     actually reads. That held on all 1,754 recordings when it was measured, and until now
     it was asserted against four hand-written strings — so an edit to either function could
     move scores with every gate green. Four literals cannot notice that; the corpus can.
+
+    Reads each record's flat string via `components_string`, which is the one function
+    every reader uses to look past the migration's shape change: it prefers the verbatim
+    `raw` a migrated record keeps, and falls back to the literal `components` string for a
+    record not yet migrated. That keeps this walk at the full original population — 1,754
+    recordings — regardless of how many records have been reshaped, instead of shrinking
+    as `components` stops being a plain string.
     """
     from pathlib import Path
 
     import yaml
 
-    from build.check_rubric import head, split_components
+    from build.check_rubric import components_string, head, split_components
 
     root = Path(__file__).resolve().parents[1]
     mismatches = []
     recordings = 0
     for path in sorted((root / "sources" / "scores").glob("*.yaml")):
         block = (yaml.safe_load(path.read_text()) or {}).get("openness") or {}
-        components = block.get("components")
-        if not isinstance(components, str) or not components:
+        components = components_string(block)
+        if not components:
             continue
         for key, raw in split_components(components).items():
             recordings += 1
             if split_value(raw)[0] != head(raw):
                 mismatches.append(f"{path.stem}.{key}: {raw!r}")
 
-    assert recordings > 1_000, f"only {recordings} recordings reached; the corpus walk is broken"
+    # A floor, not an exact count: this is the full pre-migration recording count, and the
+    # corpus only grows from here as products are scored and edited (37 commits to
+    # sources/scores/ in the last 30 days alone), so recordings > 1,754 is ordinary
+    # curation, not a bug. A DROP below it means the walk stopped following the migrated
+    # shape — the failure this test exists to catch, which moved the count in hundreds at
+    # a time (1,754 -> 1,060 -> 510), never by ones. Growth needs no alarm; a shrink does.
+    assert recordings >= 1_754, f"only {recordings} recordings reached; the corpus walk is broken"
     assert mismatches == [], "split_value and head disagree:\n  " + "\n  ".join(mismatches)
