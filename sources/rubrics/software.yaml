@@ -33,6 +33,28 @@ openness:
       question: Is functionality withheld from the published source for a paid tier?
       values: [gated, ungated]
       reads: [core-gated, self-host]
+      # WHAT COUNTS AS GATING. The question is whether functionality is withheld FROM THE
+      # PUBLISHED SOURCE, not whether the vendor sells anything. A separate hosted product, a
+      # managed service, or a different SaaS built around an otherwise complete open core does
+      # not gate that core, however much it costs. What gates a core is a piece of the product
+      # ITSELF being withheld: a closed package the open one depends on, an enterprise or `ee/`
+      # directory under a different license, a license key that unlocks functionality.
+      #
+      # `langgraph` against `langchain` is the pair worth remembering, because from outside the
+      # two look identical - same vendor, same paid platform. langgraph is `gated`: its Agent
+      # Server ships as a closed Elastic-2.0 `langgraph-api` package that exists in no public
+      # repo and needs LANGGRAPH_CLOUD_LICENSE_KEY to run. langchain is `ungated`: every package
+      # in the repo is MIT and LangSmith is a separate platform sold beside it. `llama-index`
+      # (LlamaParse), `pydantic-ai` (Logfire), `zed` (Zed-hosted inference) and `otari` (the
+      # hosted Otari.ai platform) are all the langchain shape. Each of those five recorded
+      # 4/open_core on a `commercial:` clause - on the vendor selling something at all - and each
+      # was corrected to 5/open_source on 2026-08-11. `litellm` is the other side of the line and
+      # kept its 4, its gate being an `enterprise-dir` in the repo rather than a product beside it.
+      #
+      # So a `commercial:` or `service:` clause is NOT evidence for this dimension, and the
+      # ladder reads neither key. Where that is all a product records, `core-gated` is unanswered
+      # and the formula abstains - the right outcome, because somebody still has to read the repo.
+      #
       # `self-host` is the same question in the vocabulary the corpus actually used.
       # Whether the vendor lets you run the published thing yourself IS whether the core is
       # withheld, and 54 records say so under that name while 164 say it under
@@ -64,11 +86,15 @@ openness:
         enterprise-tier: gated
         none for core AX features: gated
       evidence:
-      - '`gated`: features live behind an enterprise license directory, a Premium tier, or
-        a commercial edition the published source cannot build'
-      - '`ungated`: a managed or hosted offering may exist ALONGSIDE an ungated core; hosting
-        convenience is not gating. `openpcc` is the case - its commercial CONFSEC service
-        is explicitly separate from the Apache-2.0 reference implementation'
+      - '`gated`: part of the product is withheld from the published source - an enterprise
+        license directory (`litellm`, `openhands`), a Premium tier or commercial edition the
+        published source cannot build, or a closed package behind a license key (`langgraph`,
+        whose Agent Server is an Elastic-2.0 wheel needing LANGGRAPH_CLOUD_LICENSE_KEY)'
+      - '`ungated`: a managed or hosted offering may exist ALONGSIDE an ungated core; selling
+        a separate product is not gating. `openpcc` is the case - its commercial CONFSEC
+        service is explicitly separate from the Apache-2.0 reference implementation - as are
+        `langchain` (LangSmith), `llama-index` (LlamaParse), `pydantic-ai` (Logfire), `zed`
+        (Zed-hosted inference) and `otari` (the hosted Otari.ai platform)'
       note: >-
         Values are `gated`/`ungated` rather than yes/no on purpose: YAML 1.1 parses bare
         yes and no as booleans, so a `values: [yes, no]` list becomes [True, False] and

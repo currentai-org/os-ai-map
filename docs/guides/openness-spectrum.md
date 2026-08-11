@@ -244,6 +244,48 @@ it under `self-host` all along. Two of them, `syfthub` and `thunderbolt`, reprod
 recorded 5/open_source exactly. One published score moved: `otari` from 4/open_core to
 5/open_source.
 
+### Selling something is not gating a core
+
+This is the distinction between 4/`open_core` and 5/`open_source`, and it is the one that gets
+scored wrongly most often.
+
+`core_gated` asks whether functionality is withheld **from the published source**. It does not
+ask whether the vendor makes money. A separate hosted product, a managed service, or a different
+SaaS built around an otherwise complete open core does not gate that core, however much it
+costs. A `commercial:` or `service:` clause is therefore not evidence either way, and the ladder
+reads neither key — where that is all a product records, the dimension is unanswered and the
+formula abstains.
+
+What gates a core is a piece of the product *itself* being withheld: a closed package the open
+one depends on, an enterprise or `ee/` directory under a different license, a license key that
+unlocks functionality.
+
+`langgraph` and `langchain` are the pair to hold onto, because from outside they are the same
+picture — one vendor, one paid platform — and they score differently:
+
+| Product | Reading | Why |
+|---|---|---|
+| `langgraph` | `gated`, 4/open_core | The Agent Server ships as a closed Elastic-2.0 `langgraph-api` package that exists in no public repo, and self-hosting it needs `LANGGRAPH_CLOUD_LICENSE_KEY`. |
+| `langchain` | `ungated`, 5/open_source | Every package in the repo is MIT with no enterprise directory; LangSmith is a separate observability and deployment platform sold beside it. |
+
+`llama-index` (LlamaParse), `pydantic-ai` (Logfire), `zed` (Zed-hosted inference) and `otari`
+(the hosted Otari.ai platform) are all the `langchain` shape and all sit at 5. `litellm` is on
+the other side with `langgraph`: its 4 rests on an `enterprise-dir` inside its own repo, not on
+the hosted product beside it.
+
+All five of the ungated cases had recorded 4/open_core on a `commercial:` clause — on the vendor
+selling something at all. `otari` was corrected on 2026-08-11 and the other four followed the
+same day. They were found only because a sweep happened to read `otari`'s record and infer the
+precedent, which is why the rule is now stated here and in `sources/rubrics/software.yaml`
+rather than left to be rediscovered.
+
+One caveat for anyone applying it: not every `core-gated: gated` in the corpus was recorded
+against this test. Twenty-two products reach the gated rung, and a number of them record their
+gate as a managed cloud "on top" of a complete OSI core — the shape this section says is
+*ungated* — with no withheld component named. Those predate the rule and have not been re-read.
+A `gated` value is not evidence that somebody applied this rule; check what the record says is
+actually withheld.
+
 ## How the buckets relate to MOF and OSAID
 
 The Model Openness Framework and the OSI's Open Source AI Definition are both **binary**.
