@@ -4826,15 +4826,15 @@
           "openness": {
             "score": 5,
             "class": "open_source",
-            "components": "license:Apache-2.0(OSI);source:public;note:was briefly under restrictive HFOIL license in 2023, reverted to Apache-2.0; current LICENSE confirmed Apache-2.0",
+            "components": "license:Apache-2.0(OSI);source:public;core-gated:ungated(Apache-2.0 across the repo, no ee/ or enterprise directory and no license key; Hugging Face Inference Endpoints and HuggingChat are separate hosted products that run this code rather than withhold from it);note:was briefly under restrictive HFOIL license in 2023, reverted to Apache-2.0; current LICENSE confirmed Apache-2.0",
             "confidence": "high",
-            "note": "Current LICENSE body re-read verbatim, still standard Apache-2.0 (not HFOIL). Repository page confirms 'Public archive' visibility, so source remains public despite the archive.",
-            "last_verified": "2026-08-09",
+            "note": "Current LICENSE body re-read verbatim, still standard Apache-2.0 (not HFOIL). The repository page confirms \"Public archive\" visibility, so source remains public despite the archive. core-gated recorded ungated on 2026-08-11: no ee/ or enterprise directory, no closed package and no license key, and Hugging Face's hosted Inference Endpoints run this code rather than withhold from it. Archived and in maintenance mode, which is a maintenance fact rather than an openness one and does not touch the ladder.",
+            "last_verified": "2026-08-11",
             "sources": [
               {
                 "url": "https://github.com/huggingface/text-generation-inference/blob/main/LICENSE",
                 "shows": "Apache License Version 2.0, January 2004; Copyright 2022 Hugging Face",
-                "accessed": "2026-08-09",
+                "accessed": "2026-08-11",
                 "establishes": [
                   "license"
                 ],
@@ -4843,13 +4843,14 @@
               },
               {
                 "url": "https://github.com/huggingface/text-generation-inference",
-                "shows": "'This repository was archived by the owner on Mar 21, 2026. It is now read-only.' with a 'Public archive' label, confirming the source remains publicly readable",
-                "accessed": "2026-08-09",
+                "shows": "\"This repository was archived by the owner on Mar 21, 2026. It is now read-only.\" with a \"Public archive\" label, confirming the source remains publicly readable. Licensed Apache-2.0. Top-level directories are .github, assets, backends, benchmark, clients/python, docs, integration-tests, launcher, load_tests, nix, proto, router, server -- no ee/ or enterprise directory and no license-key gate. The README notes text-generation-inference is in maintenance mode and points users at vLLM and SGLang. Hugging Face's own products (HuggingChat, Inference API, Inference Endpoints) are named as places TGI runs in production, not as tiers withholding features from this source.",
+                "accessed": "2026-08-11",
                 "establishes": [
-                  "source"
+                  "source",
+                  "core-gated"
                 ],
                 "http_status": 200,
-                "content_sha256": "4d0c5bdbac0ffcc20b6319206dd085cf73c9f2892821acf5bfb9d5bd11a63c1d"
+                "content_sha256": "e3de260c3facc391cf5f8b9e4fe186e1bcd9c2255ccc807db2fe266e566dcad5"
               }
             ],
             "bucket": "open"
@@ -4899,7 +4900,7 @@
           "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
+            "date": "2026-08-11",
             "basis": "verified"
           },
           "version_note": "The project is archived, so this entry is verified against the final release rather than an active repository. Verified 2026-08-09 via GitHub, the LICENSE body, and the releases page."
@@ -5660,20 +5661,21 @@
           "openness": {
             "score": 1,
             "class": "closed",
-            "components": "license:mixed/proprietary-core;runtime:proprietary(Neuron Runtime+Compiler not open sourced);open-glue:Linux kernel driver(GPL-2.0),vLLM-Neuron integration(Apache-2.0,vllm-project org),NKI library,samples(MIT-0);hardware-lock:AWS-Inferentia/Trainium-only",
+            "components": "license:mixed/proprietary-core;source:partial(aws-neuron-sdk is a documentation and issue-tracker repo carrying no Runtime or Compiler source, while the kernel driver, NKI kernel library, vLLM-for-Neuron and NKI samples do ship as source);runtime:proprietary(Neuron Runtime+Compiler not open sourced);open-glue:Linux kernel driver(GPL-2.0),vLLM-Neuron integration(Apache-2.0,vllm-project org),NKI library,samples(MIT-0);hardware-lock:AWS-Inferentia/Trainium-only",
             "confidence": "high",
-            "note": "Headline inference path (Neuron Compiler + Neuron Runtime) has no open-source release anywhere in AWS's own OSS repository catalog; surrounding glue (driver, vLLM integration, NKI, samples) is open under various OSI licenses but does not make the engine open_source. Corrects the driver's license from the previously recorded Apache-2.0 to GPL-2.0, confirmed against the repo today; this does not change the score since the driver was already 'open-glue', not the license-bearing headline component.",
-            "last_verified": "2026-08-09",
+            "note": "Headline inference path (Neuron Compiler + Neuron Runtime) has no open-source release anywhere in AWS's own OSS repository catalog; surrounding glue (kernel driver GPL-2.0, vLLM-for-Neuron, NKI kernel library, MIT-0 samples) is open under various OSI licenses but does not make the engine open_source. CONFLICT, left deferred: the sweep of 2026-08-11 recorded the missing `source` key and it reads `partial`, not `closed`. software.yaml defines `closed` as \"a managed service with no self-hostable implementation\" and Neuron is not a managed service -- the SDK installs and runs on the customer's own EC2 instance from proprietary packages. It defines `partial` as \"a repo exists but the runtime does not ship - a client, an SDK, or an issue tracker standing in for the engine\", which is aws-neuron-sdk exactly: a docs-and-issues repo whose compiler/ and neuron-runtime/ directories hold documentation rather than source, alongside four genuinely open functional components. On that reading the ladder computes 2/source_available against the recorded 1/closed, matching how `webcontainers` is already scored for the same shape. Neither side was adjusted; a human decides which reading the map wants.",
+            "last_verified": "2026-08-11",
             "sources": [
               {
                 "url": "https://awsdocs-neuron.readthedocs-hosted.com/en/latest/general/oss/index.html",
-                "shows": "AWS Neuron provides open source code and samples for some of its components, libraries, and tools under the Apache 2.0 license. The current public repositories open to contribution at this time are listed below.",
-                "accessed": "2026-08-09",
+                "shows": "AWS Neuron provides open source code and samples for some of its components, libraries, and tools under the Apache 2.0 license. The current public repositories open to contribution at this time are listed below. Re-read on 2026-08-11 (the URL now redirects to /about-neuron/oss/index.html), the catalog lists exactly six public repositories -- TorchNeuron PyTorch Extension, Neuron Agentic Development, Neuron Explorer CDK, Neuron Kernel Library, vLLM for Neuron, NKI Samples -- and neither the Neuron Runtime nor the Neuron Compiler appears among them.",
+                "accessed": "2026-08-11",
                 "establishes": [
-                  "license"
+                  "license",
+                  "source"
                 ],
                 "http_status": 200,
-                "content_sha256": "a9c893f47176f8940696baea2322c2a22aa307088a80a46ed295c2e4c11fa298"
+                "content_sha256": "902920d0c593e68d7657bfd7a70c2a1252a5b4cdb1b8363eefd478d8b547f8c7"
               },
               {
                 "url": "https://awsdocs-neuron.readthedocs-hosted.com/en/latest/about-neuron/what-is-neuron.html",
@@ -5687,13 +5689,14 @@
               },
               {
                 "url": "https://github.com/aws-neuron/aws-neuron-sdk",
-                "shows": "\"path\":\"LICENSE-DOCUMENTATION\",\"preferredFileType\":\"license\",\"tabName\":\"License\" alongside \"path\":\"LICENSE-SAMPLECODE\",...\"tabName\":\"MIT-0\" -- repo carries a generic, GitHub-unclassified license for docs and a separate MIT-0 license for sample code, i.e. no single OSI license covers the SDK repo",
-                "accessed": "2026-08-09",
+                "shows": "\"path\":\"LICENSE-DOCUMENTATION\",\"preferredFileType\":\"license\",\"tabName\":\"License\" alongside \"path\":\"LICENSE-SAMPLECODE\",...\"tabName\":\"MIT-0\" -- repo carries a generic, GitHub-unclassified license for docs and a separate MIT-0 license for sample code, i.e. no single OSI license covers the SDK repo. Re-read on 2026-08-11, the repo's top-level directories are .github, compiler, frameworks, deploy, general, libraries, neuron-runtime, neuron-customops, nki, release-notes, setup and tools -- the \"compiler\" and \"neuron-runtime\" directories hold documentation for those components, not their source. The repo points readers at the hosted Neuron SDK documentation site and carries an open issue tracker.",
+                "accessed": "2026-08-11",
                 "establishes": [
-                  "license"
+                  "license",
+                  "source"
                 ],
                 "http_status": 200,
-                "content_sha256": "be6f9ed742514b2a4d21efde088a3380d01218f3ef3e8b2f194eeb479150b62f"
+                "content_sha256": "078aca323c5731e013b9f241d89be23809990a687dffbf12177892ed53b84c62"
               },
               {
                 "url": "https://github.com/aws-neuron/aws-neuron-driver",
@@ -5765,7 +5768,7 @@
           "maturity": 3.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
+            "date": "2026-08-11",
             "basis": "verified"
           },
           "version_note": "Verified 2026-08-09 via the AWS Neuron documentation, the aws-neuron-sdk and aws-neuron-driver GitHub repos, and the AWS Neuron product page."
@@ -5941,20 +5944,21 @@
           "openness": {
             "score": 1,
             "class": "closed",
-            "components": "license:proprietary;software-stack:closed(SambaFlow compiler/runtime not open);hardware:SN40L-RDU-only;delivery:managed-cloud-API",
+            "components": "license:proprietary;source:closed(managed cloud API, the EULA states Customer has no right to obtain a copy of the underlying computer code for any Service);software-stack:closed(SambaFlow compiler/runtime not open);hardware:SN40L-RDU-only;delivery:managed-cloud-API",
             "confidence": "high",
-            "note": "Proprietary managed cloud inference on SambaNova's own RDU silicon; no open source software disclosed. The Cloud EULA confirms a non-exclusive, non-transferable, limited license to use the hosted service only -- not a redistribution or source grant. Scored closed.",
-            "last_verified": "2026-08-09",
+            "note": "Proprietary managed cloud inference on SambaNova's own RDU silicon; no open source software disclosed. The Cloud EULA grants only a limited license to use the software embodied in the Service and states that Customer has no right to obtain a copy of the underlying computer code, so there is no self-hostable implementation and source is closed. Rung 0 of the software ladder decides it on source alone.",
+            "last_verified": "2026-08-11",
             "sources": [
               {
                 "url": "https://sambanova.ai/cloud-end-user-license-agreement",
-                "shows": "SambaNova hereby grants to Customer a non-exclusive, non-transferable, limited license during the Term to use the software embodied in the Service",
-                "accessed": "2026-08-09",
+                "shows": "SambaNova hereby grants to Customer a non-exclusive, non-transferable, limited license during the Term to use the software embodied in the Service. The same agreement states: \"Customer acknowledges that the Service is offered as an online, hosted solution, and that Customer has no right to obtain a copy of the underlying computer code for any Service\", and forbids Customer to \"reverse engineer, disassemble or decompile any Service or otherwise seek to obtain the source code of any software included in the Service\".",
+                "accessed": "2026-08-11",
                 "establishes": [
-                  "license"
+                  "license",
+                  "source"
                 ],
                 "http_status": 200,
-                "content_sha256": "ba2fd4ebee6a698fd26af51f4eecce486b09fcf3ae3208c2673a38ee06cf7b2d"
+                "content_sha256": "e5ad2763b15c5889d1af8381c7ccbf990b5c1f885040850e9a715666820adf1f"
               },
               {
                 "url": "https://sambanova.ai/blog/sn40l-chip-best-inference-solution",
@@ -6018,7 +6022,7 @@
           "maturity": 3.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
+            "date": "2026-08-11",
             "basis": "verified"
           },
           "version_note": "The SambaNova Cloud API reference URL cited previously now 404s, so the OpenAI-compatible endpoint claim carries over from the prior read rather than a fresh one. Verified 2026-08-09 via the SN40L architecture blog and the SambaCloud Terms of Service."
@@ -6228,25 +6232,26 @@
           "openness": {
             "score": 5,
             "class": "open_source",
-            "components": "license:Apache-2.0(OSI);source:public;governance:LMSYS/PyTorch-ecosystem(community)",
+            "components": "license:Apache-2.0(OSI);source:public;core-gated:ungated(Apache-2.0 across the repo, no ee/ or enterprise directory among its top-level directories, and no paid tier that withholds features; the project offers enterprise consulting and sponsorship only);governance:LMSYS/PyTorch-ecosystem(community)",
             "confidence": "high",
-            "note": "license:Apache-2.0(OSI);source:public;governance:LMSYS/PyTorch-ecosystem(community)",
-            "last_verified": "2026-08-09",
+            "note": "Apache-2.0 throughout and no functionality withheld from the published source. The repo carries no ee/ or enterprise directory, no license-key gate and no closed dependency; what SGLang offers commercially is consulting and sponsorship, which software.yaml explicitly does not count as gating a core. core-gated recorded ungated on 2026-08-11, closing the deferral without moving the score.",
+            "last_verified": "2026-08-11",
             "sources": [
               {
                 "url": "https://github.com/sgl-project/sglang",
-                "shows": "GitHub - sgl-project/sglang: SGLang is a high-performance serving framework for large language models and multimodal models.",
-                "accessed": "2026-08-09",
+                "shows": "Repo page for SGLang, \"a high-performance serving framework for large language models and multimodal models\". Licensed Apache-2.0. Top-level directories are .claude, .devcontainer, .github, 3rdparty/amd, assets, benchmark, docker, docs, examples, experimental/sgl-router, proto, python, rust, scripts, sgl-model-gateway, test -- no ee/ or enterprise directory. Nothing on the page names a closed package, a license key, or a paid tier; the only commercial line is an invitation to \"enterprises interested in adopting SGLang at scale, including technical consulting, sponsorship opportunities\".",
+                "accessed": "2026-08-11",
                 "establishes": [
-                  "source"
+                  "source",
+                  "core-gated"
                 ],
                 "http_status": 200,
-                "content_sha256": "d57d7aa3f6eba744f7dd5ee8498a8ed079034ef011deb797625cdc3291ee938a"
+                "content_sha256": "746f2a133f08cf32e7bb8f0cb077198504c1f6224a754d906544a1a5b2ac08ff"
               },
               {
                 "url": "https://raw.githubusercontent.com/sgl-project/sglang/main/LICENSE",
                 "shows": "Apache License Version 2.0, January 2004",
-                "accessed": "2026-08-09",
+                "accessed": "2026-08-11",
                 "establishes": [
                   "license"
                 ],
@@ -6310,7 +6315,7 @@
           "maturity": 4.5,
           "mature": true,
           "freshness": {
-            "date": "2026-08-09",
+            "date": "2026-08-11",
             "basis": "verified"
           },
           "version_note": "Verified 2026-08-09 via GitHub and the LICENSE body."
@@ -6897,15 +6902,15 @@
           "openness": {
             "score": 5,
             "class": "open_source",
-            "components": "license:Apache-2.0(OSI);source:public(axolotl-ai-cloud/axolotl)",
+            "components": "license:Apache-2.0(OSI);source:public(axolotl-ai-cloud/axolotl);core-gated:ungated(Apache-2.0 across the repo, no ee/ or enterprise directory, no license key and no closed package; the only paid thing offered is dedicated support by email)",
             "confidence": "high",
-            "note": "Fully OSI-licensed (Apache-2.0); no proprietary managed training service, only deployment templates for third-party clouds.",
-            "last_verified": "2026-08-09",
+            "note": "Fully OSI-licensed (Apache-2.0) with no proprietary managed training service, only deployment templates for third-party clouds. core-gated recorded ungated on 2026-08-11: the repo has no ee/ or enterprise directory, no license-key gate and no closed package the open one depends on, and the only paid offering is dedicated support. Closes the deferral without moving the score.",
+            "last_verified": "2026-08-11",
             "sources": [
               {
                 "url": "https://raw.githubusercontent.com/axolotl-ai-cloud/axolotl/main/LICENSE",
                 "shows": "The body is the standard, unmodified Apache License, Version 2.0 text, with no custom copyright line or added restriction layered on top.",
-                "accessed": "2026-08-09",
+                "accessed": "2026-08-11",
                 "http_status": 200,
                 "content_sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
                 "establishes": [
@@ -6914,12 +6919,13 @@
               },
               {
                 "url": "https://github.com/axolotl-ai-cloud/axolotl",
-                "shows": "Repository metadata reports isArchived:false and license spdxId Apache-2.0; this is the same axolotl-ai-cloud/axolotl codebase pyproject.toml's Repository field and the PyPI project page point back to, i.e. the running product builds from this published repo.",
-                "accessed": "2026-08-09",
+                "shows": "Repo page for Axolotl, licensed Apache-2.0; the README states \"This project is licensed under the Apache 2.0 License.\" Top-level directories are .github, .runpod, .vscode, cicd, deepspeed_configs, devtools, docker, docs, examples, image, scripts, src/axolotl, tests -- no ee/ or enterprise directory, no closed dependency and no license key. The only commercial line is \"Need dedicated support? Please contact wing@axolotl.ai for options\".",
+                "accessed": "2026-08-11",
                 "http_status": 200,
-                "content_sha256": "a37395d7f09ea24fc797a1054f12cfca6ce1b5313b97c1ce6b3fa70c08b10697",
+                "content_sha256": "456b92cd6e991d86ddc1919cdd1d3ebf36f9df426d3fe7b721e1085fda6ca35a",
                 "establishes": [
-                  "source"
+                  "source",
+                  "core-gated"
                 ]
               },
               {
@@ -6990,7 +6996,7 @@
           "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
+            "date": "2026-08-11",
             "basis": "verified"
           },
           "version_note": "Verified 2026-08-09 via GitHub, the README, the LICENSE body, and axolotl.ai."
@@ -7121,17 +7127,17 @@
           "openness": {
             "score": 5,
             "class": "open_source",
-            "components": "license:Apache-2.0(OSI, core unsloth pkg)+AGPL-3.0(OSI, optional Unsloth Studio UI);source:public(unslothai/unsloth);no proprietary managed-training SaaS gate",
+            "components": "license:Apache-2.0(OSI, core unsloth pkg)+AGPL-3.0(OSI, optional Unsloth Studio UI);source:public(unslothai/unsloth);core-gated:gated(unsloth.ai/pricing sells Unsloth Pro and Enterprise on capabilities the free open-source tier does not have: the free column lists MultiGPU as coming soon while Pro lists Enhanced MultiGPU support and up to 8 GPUs, and Enterprise adds multi-node, full training and 5x faster inference; Pro is advertised as 20% less memory than OSS, an explicit comparison against the published package)",
             "confidence": "high",
-            "note": "OSI-licensed throughout (Apache-2.0 core, AGPL-3.0 for the optional Studio UI); both are OSI licenses so class is open_source, not open_core.",
-            "last_verified": "2026-08-09",
+            "note": "OSI-licensed throughout (Apache-2.0 core, AGPL-3.0 for the optional Studio UI). CONFLICT, left deferred: the 2026-08-11 read of unsloth.ai/pricing records core-gated as gated, and the ladder then computes 4/open_core against the recorded 5/open_source. Unsloth Pro and Enterprise are not a separate hosted service sold beside the open package; they are builds of the same product carrying capabilities the free column says it does not have. The free tier lists MultiGPU as \"coming soon\" while Pro lists \"Enhanced MultiGPU support\" and \"Up to 8 GPUS support\", and Enterprise adds multi-node, \"Supports full training\" and \"5x faster inference\". Pro is advertised as \"20% less memory than OSS\", an explicit comparison against the published package. That is functionality withheld from the published source, which is what software.yaml defines gating to be. Neither side was adjusted. Caveat for the human: the pricing page names Llama 1/2/3 and Mistral/Gemma and looks stale, so the exact feature line may have moved even though the tiering has not.",
+            "last_verified": "2026-08-11",
             "sources": [
               {
                 "url": "https://github.com/unslothai/unsloth",
                 "shows": "Live public repository (HTTP 200); GitHub's own page describes it as \"The local UI to run and train text and diffusion models, including Kimi K3, Gemma 4, Qwen3.6, DeepSeek-V4, FLUX and more.\" and lists both an Apache-2.0 license and an AGPL-3.0 license for the repo.",
-                "accessed": "2026-08-09",
+                "accessed": "2026-08-11",
                 "http_status": 200,
-                "content_sha256": "cc73cdefa12bf38de5e0211f2a070db5738e3a4f1e7e1a92cdaf656e9d1d5b5f",
+                "content_sha256": "61bd97e253eefb26d985fb822899435f6eed5011a835b4a353718b533887114b",
                 "establishes": [
                   "source"
                 ]
@@ -7139,7 +7145,7 @@
               {
                 "url": "https://raw.githubusercontent.com/unslothai/unsloth/main/LICENSE",
                 "shows": "LICENSE body states: \"Files under unsloth/*, tests/*, scripts/* are Apache 2.0 licensed. Files under studio/*, unsloth_cli/* which is optional to install are AGPLv3 licensed.\"",
-                "accessed": "2026-08-09",
+                "accessed": "2026-08-11",
                 "http_status": 200,
                 "content_sha256": "40e0b458a68b557560def38b106a1a0da1aac57685536dcb882f1c78c647e4d3",
                 "establishes": [
@@ -7148,10 +7154,13 @@
               },
               {
                 "url": "https://unsloth.ai/pricing",
-                "shows": "Lists a \"Free\" open-source plan alongside paid \"unsloth Pro\" (\"Enhanced MultiGPU support\", up to 8 GPUs) and \"unsloth Enterprise\" (\"Multi-node support\", \"Supports full training\", \"Customer support\") plans, both reachable only via \"Contact us\"; the Free-tier row still reads \"MultiGPU - coming soon\".",
-                "accessed": "2026-08-09",
+                "shows": "Three tiers. Free (Open-Source) lists \"Open-source\", \"Supports Mistral, Gemma\", \"Supports LLama 1, 2, 3\", \"MultiGPU - coming soon\", \"Supports 4 bit, 16 bit LoRA\". Unsloth Pro lists \"2.5x number of GPUs faster than FA2\", \"20% less memory than OSS\", \"Enhanced MultiGPU support\", \"Up to 8 GPUS support\". Unsloth Enterprise lists \"32x number of GPUs faster than FA2\", \"up to +30% accuracy\", \"5x faster inference\", \"Supports full training\" and multi-node support. Both paid tiers are contact-for-pricing.",
+                "accessed": "2026-08-11",
                 "http_status": 200,
-                "content_sha256": "438194ecdcc3c6c28e04c51afeea4a25cd9ba9234f8f2e1d4949509b8ff05604"
+                "content_sha256": "b7cd7e8f6702fa11ae96aef62ea3b16acffd7551c236ec9f13b37c4668b8b108",
+                "establishes": [
+                  "core-gated"
+                ]
               }
             ],
             "bucket": "open"
@@ -7200,7 +7209,7 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
+            "date": "2026-08-11",
             "basis": "verified"
           },
           "version_note": "Verified 2026-08-09 via GitHub and the LICENSE body."
@@ -8676,19 +8685,19 @@
           "type": "software",
           "description": "OpenPipe ships the Agent Reinforcement Trainer (ART), a library for post-training agentic LLMs with reinforcement learning (GRPO) and supervised fine-tuning. ART's client-server split lets training run on a self-hosted GPU or through a hosted backend, and OpenPipe sells a managed training and serving platform layered on the library. CoreWeave, which also owns Weights & Biases, acquired OpenPipe in September 2025.",
           "openness": {
-            "score": 4,
-            "class": "open_core",
-            "components": "license:Apache-2.0(OSI, OpenPipe Inc.; some vendored code LGPL-3.0);source:public;methods:RL(GRPO)+SFT trajectory training;managed-tier:OpenPipe hosted training/serving SaaS on top of the OSS lib;core-gated:gated",
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI, OpenPipe Inc.; some vendored code LGPL-3.0);source:public;methods:RL(GRPO)+SFT trajectory training;managed-tier:OpenPipe hosted training/serving SaaS on top of the OSS lib;core-gated:ungated(ART FAQ commits to maintaining ART as a full-featured open source project and calls the hosted ART backend optional, for users who do not want to manage GPU infrastructure; no ART feature is withheld from the self-hostable LocalBackend)",
             "confidence": "high",
-            "note": "ART's own FAQ and backend docs (fetched 2026-08-09) describe the hosted ServerlessBackend as an optional convenience alongside a fully self-hostable LocalBackend, with no ART feature withheld from the free path. The OSI-licensed, self-hostable core is the whole product, which the software ladder's rule for {license_tier:osi, source:public, core_gated:ungated} scores 5/open_source rather than 4/open_core.",
-            "last_verified": "2026-08-09",
+            "note": "List B re-read, 2026-08-11. The value on file was the single token `gated` while this record's own note already argued the opposite, so the recorded value was the thing under suspicion rather than a gap. The ART FAQ commits to \"maintaining ART as a full-featured open source project\" and calls the hosted backend \"an optional hosted ART backend for users who don't want to manage GPU infrastructure on their own\"; the backend docs describe a fully self-hostable LocalBackend alongside it. Nothing is withheld from the published Apache-2.0 source -- no ee/ directory, no closed package, no license key -- and OpenPipe's hosted training and serving SaaS is a separate product sold beside the open core, which software.yaml explicitly does not count as gating. core-gated corrected to ungated with that evidence in the value, moving the score 4/open_core -> 5/open_source, the same correction already applied to langchain, llama-index, pydantic-ai, zed and otari.",
+            "last_verified": "2026-08-11",
             "sources": [
               {
                 "url": "https://github.com/OpenPipe/ART",
                 "shows": "Repo metadata reads `\"isPrivate\":false`, `\"isArchived\":false`, `\"visibilityLabel\":\"Public\"`, and `\"license\":{\"spdxId\":\"Apache-2.0\",\"name\":\"Apache License 2.0\"}`.",
-                "accessed": "2026-08-09",
+                "accessed": "2026-08-11",
                 "http_status": 200,
-                "content_sha256": "469010d00db146ff546c8510e596dcd376d4550af478994f26f9f596832d18ea",
+                "content_sha256": "96b2f051e8dcd461059aba162185eed44731254e885863af4d99b1e919fec4ac",
                 "establishes": [
                   "source"
                 ]
@@ -8696,7 +8705,7 @@
               {
                 "url": "https://raw.githubusercontent.com/OpenPipe/ART/main/LICENSE",
                 "shows": "Full Apache License 2.0 text; appendix reads \"Copyright 2025, OpenPipe, Inc.\" followed by an \"Additional License Notice\" stating the distribution \"includes a small portion of code adapted from a third-party project licensed under the GNU Lesser General Public License v3.0.\"",
-                "accessed": "2026-08-09",
+                "accessed": "2026-08-11",
                 "http_status": 200,
                 "content_sha256": "d39185043a0ec089a0e5f88350f1f3eec10fbb34578e04aca3e2dab5b3a5f6cb",
                 "establishes": [
@@ -8715,8 +8724,8 @@
               },
               {
                 "url": "https://art.openpipe.ai/getting-started/faq.md",
-                "shows": "FAQ answer to \"Which pieces of ART are open source?\": \"We are committed to maintaining ART as a full-featured open source project. We will also deploy an optional hosted ART backend for users who don't want to manage GPU infrastructure on their own.\"",
-                "accessed": "2026-08-09",
+                "shows": "ART FAQ states \"We are committed to maintaining ART as a full-featured open source project\" and \"We've included an open-source ART backend\". On the hosted option it says \"We will also deploy an optional hosted ART backend for users who don't want to manage GPU infrastructure on their own.\" The FAQ names no paid OpenPipe plan and no feature paywall.",
+                "accessed": "2026-08-11",
                 "http_status": 200,
                 "content_sha256": "41cdd194495331be3b7cdfe7b778531da1f753f35c2bd46466ee36a1b7a878f4",
                 "establishes": [
@@ -8770,7 +8779,7 @@
           "maturity": 2.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
+            "date": "2026-08-11",
             "basis": "verified"
           },
           "version_note": "Scored on ART, the library, not OpenPipe's wider platform surface. Whether the hosted backend gates any ART functionality is the open question behind the openness read, and today's sources do not settle it. Verified 2026-08-09 via GitHub and the ART documentation."
@@ -8890,15 +8899,15 @@
           "openness": {
             "score": 1,
             "class": "closed",
-            "components": "license:proprietary(Anyscale-platform-only);source:not-public;built-on:Ray+DeepSpeed+HF-Accelerate(OSS deps) but LLMForge itself not redistributable;methods:LoRA+full-FT;status:deprecated",
+            "components": "license:proprietary(Anyscale-platform-only);source:closed(managed SaaS platform, Terms of Service deliver Platform Services in object code format only and no Anyscale-authored fine-tuning implementation is published);built-on:Ray+DeepSpeed+HF-Accelerate(OSS deps) but LLMForge itself not redistributable;methods:LoRA+full-FT;status:deprecated",
             "confidence": "high",
-            "note": "LLMForge, Anyscale's own fine-tuning library, has been fully retired and is absent from current docs; Anyscale's fine-tuning capability continues live, now orchestrating open frameworks (LLaMA-Factory, SkyRL, Ray Train) instead of LLMForge. The platform itself stays closed regardless: Anyscale's Terms of Service define it as a proprietary SaaS delivered in object code only, so openness follows the platform, not the open frameworks running underneath it.",
-            "last_verified": "2026-08-09",
+            "note": "LLMForge, Anyscale's own fine-tuning library, has been fully retired and is absent from current docs; Anyscale's fine-tuning capability continues live, now orchestrating open frameworks (LLaMA-Factory, SkyRL, Ray Train) instead of LLMForge. The platform itself stays closed regardless. Anyscale's Terms of Service define it as a proprietary SaaS delivered in object code only, so openness follows the platform, not the open frameworks running underneath it. Source was already recorded here, but spelled `not-public`, which is outside software.yaml's source enum of public/partial/closed and carries no value_alias, so the dimension read as unanswered and the ladder abstained. Normalized to `closed` on the evidence already on file plus a re-read of the fine-tuning docs; the deferral was a vocabulary problem rather than a missing read.",
+            "last_verified": "2026-08-11",
             "sources": [
               {
                 "url": "https://www.anyscale.com/terms",
                 "shows": "Terms of Service defines the delivered product, \"Platform Services\", as Anyscale's own proprietary software-as-a-service platform, made available to customers in object code format only, with its associated SDKs and APIs likewise object-code-only.",
-                "accessed": "2026-08-09",
+                "accessed": "2026-08-11",
                 "http_status": 200,
                 "content_sha256": "9b1833a32ad3ed28518e64d1f74919884928df9c1f5d082c4bfc02a99ba3d135",
                 "establishes": [
@@ -8908,10 +8917,10 @@
               },
               {
                 "url": "https://docs.anyscale.com/llm/fine-tuning",
-                "shows": "Describes Anyscale's current LLM post-training capability as delivered through the managed console orchestrating open frameworks (LLaMA-Factory, SkyRL, Ray Train) on Ray clusters; a full-text search of the fetched page for \"LLMForge\" found zero occurrences, where the score's prior evidence cited that library by name.",
-                "accessed": "2026-08-09",
+                "shows": "Describes Anyscale's current LLM post-training capability as delivered through the managed console orchestrating open frameworks (LLaMA-Factory, SkyRL, Ray Train) on Ray clusters; a full-text search of the fetched page for \"LLMForge\" found zero occurrences, where the score's prior evidence cited that library by name. Re-read on 2026-08-11, the page still states \"Anyscale supports multiple frameworks for LLM post-training, including LLaMA-Factory, SkyRL, and Ray Train\", names no Anyscale-authored library, and points at the Anyscale console for every workflow. No self-hostable Anyscale fine-tuning implementation is offered.",
+                "accessed": "2026-08-11",
                 "http_status": 200,
-                "content_sha256": "022cbf937adc0b534b52a0ce242b59ed6ffb7245df7b29ef464ad2ef27a8a7ac",
+                "content_sha256": "b9de20e4993be9e071e8d2e8a5e545aa6aac1155c22a0783f914ba0953d89f31",
                 "establishes": [
                   "source"
                 ]
@@ -8953,7 +8962,7 @@
           "maturity": null,
           "mature": false,
           "freshness": {
-            "date": "2026-08-09",
+            "date": "2026-08-11",
             "basis": "verified"
           },
           "version_note": "The score was recorded against LLMForge, Anyscale's own library, which current docs no longer mention; whether the platform's openness basis moved with it is a score question, not a prose one. Verified 2026-08-09 via the Anyscale fine-tuning documentation and the Terms of Service."
@@ -16367,13 +16376,45 @@
           "openness": {
             "score": 1,
             "class": "closed",
-            "components": "proprietary NVIDIA NeMo microservice; archived gretel-synthetics OSS (Apache-2.0) is a separate legacy artifact, not this product",
+            "components": "license:Apache-2.0(OSI, NVIDIA-NeMo/DataDesigner LICENSE);source:public(pip install data-designer, the published framework runs locally against any configured inference provider);the archived gretel-synthetics OSS repo (Apache-2.0) is a separate legacy artifact, not this product",
             "confidence": "medium",
-            "note": "Proprietary closed synthetic-data service; the open gretel-synthetics library is archived and not the shipped product.",
+            "note": "CONFLICT, left deferred. The prior record described this as a proprietary closed NeMo microservice on the strength of a single TechCrunch article. NVIDIA's own documentation contradicts it: the NeMo microservices Data Designer page states \"The service is built on the open-source NVIDIA NeMo Data Designer library\" and links to github.com/NVIDIA-NeMo/DataDesigner, which is Apache-2.0, installs with `pip install data-designer`, and ships the whole generation framework rather than a client for a hosted service. So `source` is public and the license is OSI, and rung 0 no longer fires -- the recorded 1/closed cannot be reproduced from the evidence at any value of core-gated. `core-gated` was deliberately NOT recorded: closing it needs a read of what, if anything, the NeMo Platform withholds from the published library, which this pass did not do. Score, class and the product description are left untouched for a human.",
+            "last_verified": "2026-08-11",
             "sources": [
               {
+                "url": "https://docs.nvidia.com/nemo/microservices/latest/data-designer/index.html",
+                "shows": "NVIDIA's own NeMo microservices documentation for Data Designer states that \"The service is built on the open-source NVIDIA NeMo Data Designer library\" and links to github.com/NVIDIA-NeMo/DataDesigner. The library is installed locally to build configurations; the microservice is one way to execute them.",
+                "accessed": "2026-08-11",
+                "establishes": [
+                  "source"
+                ],
+                "http_status": 200,
+                "content_sha256": "868882858fce660935ad86c90e3183ec166b1025b0d0a3433d7bcd1b2054e142"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/NVIDIA-NeMo/DataDesigner/main/LICENSE",
+                "shows": "Apache License Version 2.0, January 2004",
+                "accessed": "2026-08-11",
+                "establishes": [
+                  "license"
+                ],
+                "http_status": 200,
+                "content_sha256": "7125890f056a1f2420972f199adde9a972767906d9558c0df6a77434cb2cc576"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/NVIDIA-NeMo/DataDesigner/main/README.md",
+                "shows": "README titled \"NeMo Data Designer\" with an Apache-2.0 badge. Quick Start is \"pip install data-designer\". Describes the full generation framework -- statistical samplers, dependency-aware column generation, Python/SQL/custom validators, LLM-as-a-judge scoring, preview mode -- and refers to \"slow self-hosted endpoints\", so the published package runs against any configured inference provider rather than requiring an NVIDIA hosted service.",
+                "accessed": "2026-08-11",
+                "establishes": [
+                  "license",
+                  "source"
+                ],
+                "http_status": 200,
+                "content_sha256": "9accba59e9b3c83360b79d4d70b4fe6b5df275e44c294d38b1ab6a6c892d5b8e"
+              },
+              {
                 "url": "https://techcrunch.com/2025/03/19/nvidia-reportedly-acquires-synthetic-data-startup-gretel/",
-                "shows": "NVIDIA acquired Gretel (Mar 2025); tech now shipped as NeMo Data Designer / NeMo microservices",
+                "shows": "NVIDIA acquired Gretel (Mar 2025); tech now shipped as NeMo Data Designer / NeMo microservices. Third-party summary, retained only for the acquisition history, and not relied on for any recorded key.",
                 "accessed": "2026-07-21"
               }
             ],
@@ -16410,8 +16451,8 @@
           "maturity": 3.4,
           "mature": false,
           "freshness": {
-            "date": "2026-07-23",
-            "basis": "commit"
+            "date": "2026-08-11",
+            "basis": "verified"
           },
           "version_note": "NVIDIA NeMo Data Designer (NeMo microservices), proprietary. Represents the synthetic-data capability of Gretel, which NVIDIA acquired in March 2025; the Gretel brand is retired (gretel.ai redirects to NVIDIA) and the gretel-synthetics OSS repo (Apache-2.0) was archived Feb 2026. Substituted for Gretel, which no longer exists as a standalone product. Confirmed 2026-07-21."
         },
