@@ -727,7 +727,12 @@ def test_real_sources_serialize_without_errors():
         # (open-webui and lobe-chat, each with a tier key beside the two). Every row is a
         # deferral coming off; no product that was already computed gained a key, which is why
         # the other twelve categories hold.
-        "finetuning_code": 124, "inference_code": 69, "ml_frameworks": 80,
+        # finetuning_code 124 -> 133 and inference_code 69 -> 84 with the 2026-08-11 evidence
+        # sweep of those categories: five deferrals came off (sglang,
+        # text-generation-inference, axolotl, sambanova-cloud, anyscale-fine-tuning), and a
+        # product that stops being deferred publishes its whole openness evidence set rather
+        # than none of it. openpipe was already publishing and gained no rows.
+        "finetuning_code": 133, "inference_code": 84, "ml_frameworks": 80,
         # orchestration_agents rose by 3 when n8n's stale deferral was removed: a deferred
         # product publishes no openness evidence, and n8n had been deferred as "not recorded"
         # while recording everything the ladder needed. Then by 6 more (140 -> 146) when

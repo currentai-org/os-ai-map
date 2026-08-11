@@ -7,7 +7,9 @@ openness:
       value: proprietary
       detail: Anyscale-platform-only
     source:
-      value: not-public
+      value: closed
+      detail: managed SaaS platform, Terms of Service deliver Platform Services in object code format only
+        and no Anyscale-authored fine-tuning implementation is published
     built-on:
       value: Ray+DeepSpeed+HF-Accelerate
       detail: OSS deps) but LLMForge itself not redistributable
@@ -17,20 +19,25 @@ openness:
     status:
       value: deprecated
   confidence: high
-  note: 'LLMForge, Anyscale''s own fine-tuning library, has been fully retired and is absent from current
-    docs; Anyscale''s fine-tuning capability continues live, now orchestrating open frameworks (LLaMA-Factory,
-    SkyRL, Ray Train) instead of LLMForge. The platform itself stays closed regardless: Anyscale''s Terms
+  note: LLMForge, Anyscale's own fine-tuning library, has been fully retired and is absent from current
+    docs; Anyscale's fine-tuning capability continues live, now orchestrating open frameworks (LLaMA-Factory,
+    SkyRL, Ray Train) instead of LLMForge. The platform itself stays closed regardless. Anyscale's Terms
     of Service define it as a proprietary SaaS delivered in object code only, so openness follows the platform,
-    not the open frameworks running underneath it.'
-  last_verified: '2026-08-09'
-  raw: license:proprietary(Anyscale-platform-only);source:not-public;built-on:Ray+DeepSpeed+HF-Accelerate(OSS
-    deps) but LLMForge itself not redistributable;methods:LoRA+full-FT;status:deprecated
+    not the open frameworks running underneath it. Source was already recorded here, but spelled `not-public`,
+    which is outside software.yaml's source enum of public/partial/closed and carries no value_alias, so
+    the dimension read as unanswered and the ladder abstained. Normalized to `closed` on the evidence already
+    on file plus a re-read of the fine-tuning docs; the deferral was a vocabulary problem rather than a
+    missing read.
+  last_verified: '2026-08-11'
+  raw: license:proprietary(Anyscale-platform-only);source:closed(managed SaaS platform, Terms of Service
+    deliver Platform Services in object code format only and no Anyscale-authored fine-tuning implementation
+    is published);built-on:Ray+DeepSpeed+HF-Accelerate(OSS deps) but LLMForge itself not redistributable;methods:LoRA+full-FT;status:deprecated
   sources:
   - url: https://www.anyscale.com/terms
     shows: Terms of Service defines the delivered product, "Platform Services", as Anyscale's own proprietary
       software-as-a-service platform, made available to customers in object code format only, with its associated
       SDKs and APIs likewise object-code-only.
-    accessed: '2026-08-09'
+    accessed: '2026-08-11'
     http_status: 200
     content_sha256: 9b1833a32ad3ed28518e64d1f74919884928df9c1f5d082c4bfc02a99ba3d135
     establishes:
@@ -40,10 +47,13 @@ openness:
     shows: Describes Anyscale's current LLM post-training capability as delivered through the managed console
       orchestrating open frameworks (LLaMA-Factory, SkyRL, Ray Train) on Ray clusters; a full-text search
       of the fetched page for "LLMForge" found zero occurrences, where the score's prior evidence cited
-      that library by name.
-    accessed: '2026-08-09'
+      that library by name. Re-read on 2026-08-11, the page still states "Anyscale supports multiple frameworks
+      for LLM post-training, including LLaMA-Factory, SkyRL, and Ray Train", names no Anyscale-authored
+      library, and points at the Anyscale console for every workflow. No self-hostable Anyscale fine-tuning
+      implementation is offered.
+    accessed: '2026-08-11'
     http_status: 200
-    content_sha256: 022cbf937adc0b534b52a0ce242b59ed6ffb7245df7b29ef464ad2ef27a8a7ac
+    content_sha256: b9de20e4993be9e071e8d2e8a5e545aa6aac1155c22a0783f914ba0953d89f31
     establishes:
     - source
 adoption:

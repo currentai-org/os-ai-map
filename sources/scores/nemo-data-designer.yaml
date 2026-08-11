@@ -3,17 +3,62 @@ openness:
   score: 1
   class: closed
   components:
+    license:
+      value: Apache-2.0
+      detail: OSI, NVIDIA-NeMo/DataDesigner LICENSE
+    source:
+      value: public
+      detail: pip install data-designer, the published framework runs locally against any configured inference
+        provider
     free_text:
-    - proprietary NVIDIA NeMo microservice
-    - archived gretel-synthetics OSS (Apache-2.0) is a separate legacy artifact, not this product
+    - the archived gretel-synthetics OSS repo (Apache-2.0) is a separate legacy artifact, not this product
   confidence: medium
-  note: Proprietary closed synthetic-data service; the open gretel-synthetics library is archived and
-    not the shipped product.
-  raw: proprietary NVIDIA NeMo microservice; archived gretel-synthetics OSS (Apache-2.0) is a separate legacy
-    artifact, not this product
+  note: 'CONFLICT, left deferred. The prior record described this as a proprietary closed NeMo microservice
+    on the strength of a single TechCrunch article. NVIDIA''s own documentation contradicts it: the NeMo
+    microservices Data Designer page states "The service is built on the open-source NVIDIA NeMo Data Designer
+    library" and links to github.com/NVIDIA-NeMo/DataDesigner, which is Apache-2.0, installs with `pip install
+    data-designer`, and ships the whole generation framework rather than a client for a hosted service.
+    So `source` is public and the license is OSI, and rung 0 no longer fires -- the recorded 1/closed cannot
+    be reproduced from the evidence at any value of core-gated. `core-gated` was deliberately NOT recorded:
+    closing it needs a read of what, if anything, the NeMo Platform withholds from the published library,
+    which this pass did not do. Score, class and the product description are left untouched for a human.'
+  raw: license:Apache-2.0(OSI, NVIDIA-NeMo/DataDesigner LICENSE);source:public(pip install data-designer,
+    the published framework runs locally against any configured inference provider);the archived gretel-synthetics
+    OSS repo (Apache-2.0) is a separate legacy artifact, not this product
+  last_verified: '2026-08-11'
   sources:
+  - url: https://docs.nvidia.com/nemo/microservices/latest/data-designer/index.html
+    shows: NVIDIA's own NeMo microservices documentation for Data Designer states that "The service is built
+      on the open-source NVIDIA NeMo Data Designer library" and links to github.com/NVIDIA-NeMo/DataDesigner.
+      The library is installed locally to build configurations; the microservice is one way to execute them.
+    accessed: '2026-08-11'
+    establishes:
+    - source
+    http_status: 200
+    content_sha256: 868882858fce660935ad86c90e3183ec166b1025b0d0a3433d7bcd1b2054e142
+  - url: https://raw.githubusercontent.com/NVIDIA-NeMo/DataDesigner/main/LICENSE
+    shows: Apache License Version 2.0, January 2004
+    accessed: '2026-08-11'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: 7125890f056a1f2420972f199adde9a972767906d9558c0df6a77434cb2cc576
+  - url: https://raw.githubusercontent.com/NVIDIA-NeMo/DataDesigner/main/README.md
+    shows: README titled "NeMo Data Designer" with an Apache-2.0 badge. Quick Start is "pip install data-designer".
+      Describes the full generation framework -- statistical samplers, dependency-aware column generation,
+      Python/SQL/custom validators, LLM-as-a-judge scoring, preview mode -- and refers to "slow self-hosted
+      endpoints", so the published package runs against any configured inference provider rather than requiring
+      an NVIDIA hosted service.
+    accessed: '2026-08-11'
+    establishes:
+    - license
+    - source
+    http_status: 200
+    content_sha256: 9accba59e9b3c83360b79d4d70b4fe6b5df275e44c294d38b1ab6a6c892d5b8e
   - url: https://techcrunch.com/2025/03/19/nvidia-reportedly-acquires-synthetic-data-startup-gretel/
-    shows: NVIDIA acquired Gretel (Mar 2025); tech now shipped as NeMo Data Designer / NeMo microservices
+    shows: NVIDIA acquired Gretel (Mar 2025); tech now shipped as NeMo Data Designer / NeMo microservices.
+      Third-party summary, retained only for the acquisition history, and not relied on for any recorded
+      key.
     accessed: '2026-07-21'
 adoption:
   level: 3

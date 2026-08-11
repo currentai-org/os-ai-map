@@ -8,6 +8,11 @@ openness:
       detail: OSI
     source:
       value: public
+    core-gated:
+      value: ungated
+      detail: Apache-2.0 across the repo, no ee/ or enterprise directory and no license key; Hugging Face
+        Inference Endpoints and HuggingChat are separate hosted products that run this code rather than
+        withhold from it
     note:
       value: was briefly under restrictive HFOIL license in 2023
       detail: reverted to Apache-2.0
@@ -15,27 +20,38 @@ openness:
     free_text:
     - current LICENSE confirmed Apache-2.0
   confidence: high
-  note: Current LICENSE body re-read verbatim, still standard Apache-2.0 (not HFOIL). Repository page confirms
-    'Public archive' visibility, so source remains public despite the archive.
-  last_verified: '2026-08-09'
-  raw: license:Apache-2.0(OSI);source:public;note:was briefly under restrictive HFOIL license in 2023, reverted
-    to Apache-2.0; current LICENSE confirmed Apache-2.0
+  note: 'Current LICENSE body re-read verbatim, still standard Apache-2.0 (not HFOIL). The repository page
+    confirms "Public archive" visibility, so source remains public despite the archive. core-gated recorded
+    ungated on 2026-08-11: no ee/ or enterprise directory, no closed package and no license key, and Hugging
+    Face''s hosted Inference Endpoints run this code rather than withhold from it. Archived and in maintenance
+    mode, which is a maintenance fact rather than an openness one and does not touch the ladder.'
+  last_verified: '2026-08-11'
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated(Apache-2.0 across the repo, no ee/ or enterprise
+    directory and no license key; Hugging Face Inference Endpoints and HuggingChat are separate hosted products
+    that run this code rather than withhold from it);note:was briefly under restrictive HFOIL license in
+    2023, reverted to Apache-2.0; current LICENSE confirmed Apache-2.0
   sources:
   - url: https://github.com/huggingface/text-generation-inference/blob/main/LICENSE
     shows: Apache License Version 2.0, January 2004; Copyright 2022 Hugging Face
-    accessed: '2026-08-09'
+    accessed: '2026-08-11'
     establishes:
     - license
     http_status: 200
     content_sha256: 28216184827860ae83a60244c8868de4cf84e16357d16cdb975a46afe3afa9db
   - url: https://github.com/huggingface/text-generation-inference
-    shows: '''This repository was archived by the owner on Mar 21, 2026. It is now read-only.'' with a ''Public
-      archive'' label, confirming the source remains publicly readable'
-    accessed: '2026-08-09'
+    shows: '"This repository was archived by the owner on Mar 21, 2026. It is now read-only." with a "Public
+      archive" label, confirming the source remains publicly readable. Licensed Apache-2.0. Top-level directories
+      are .github, assets, backends, benchmark, clients/python, docs, integration-tests, launcher, load_tests,
+      nix, proto, router, server -- no ee/ or enterprise directory and no license-key gate. The README notes
+      text-generation-inference is in maintenance mode and points users at vLLM and SGLang. Hugging Face''s
+      own products (HuggingChat, Inference API, Inference Endpoints) are named as places TGI runs in production,
+      not as tiers withholding features from this source.'
+    accessed: '2026-08-11'
     establishes:
     - source
+    - core-gated
     http_status: 200
-    content_sha256: 4d0c5bdbac0ffcc20b6319206dd085cf73c9f2892821acf5bfb9d5bd11a63c1d
+    content_sha256: e3de260c3facc391cf5f8b9e4fe186e1bcd9c2255ccc807db2fe266e566dcad5
 adoption:
   level: 3
   reach: 100K-1M

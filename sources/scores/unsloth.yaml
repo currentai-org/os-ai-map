@@ -9,39 +9,59 @@ openness:
     source:
       value: public
       detail: unslothai/unsloth
-    free_text:
-    - no proprietary managed-training SaaS gate
+    core-gated:
+      value: gated
+      detail: 'unsloth.ai/pricing sells Unsloth Pro and Enterprise on capabilities the free open-source
+        tier does not have: the free column lists MultiGPU as coming soon while Pro lists Enhanced MultiGPU
+        support and up to 8 GPUs, and Enterprise adds multi-node, full training and 5x faster inference;
+        Pro is advertised as 20% less memory than OSS, an explicit comparison against the published package'
   confidence: high
-  note: OSI-licensed throughout (Apache-2.0 core, AGPL-3.0 for the optional Studio UI); both are OSI licenses
-    so class is open_source, not open_core.
-  last_verified: '2026-08-09'
-  raw: license:Apache-2.0(OSI, core unsloth pkg)+AGPL-3.0(OSI, optional Unsloth Studio UI);source:public(unslothai/unsloth);no
-    proprietary managed-training SaaS gate
+  note: 'OSI-licensed throughout (Apache-2.0 core, AGPL-3.0 for the optional Studio UI). CONFLICT, left
+    deferred: the 2026-08-11 read of unsloth.ai/pricing records core-gated as gated, and the ladder then
+    computes 4/open_core against the recorded 5/open_source. Unsloth Pro and Enterprise are not a separate
+    hosted service sold beside the open package; they are builds of the same product carrying capabilities
+    the free column says it does not have. The free tier lists MultiGPU as "coming soon" while Pro lists
+    "Enhanced MultiGPU support" and "Up to 8 GPUS support", and Enterprise adds multi-node, "Supports full
+    training" and "5x faster inference". Pro is advertised as "20% less memory than OSS", an explicit comparison
+    against the published package. That is functionality withheld from the published source, which is what
+    software.yaml defines gating to be. Neither side was adjusted. Caveat for the human: the pricing page
+    names Llama 1/2/3 and Mistral/Gemma and looks stale, so the exact feature line may have moved even though
+    the tiering has not.'
+  last_verified: '2026-08-11'
+  raw: 'license:Apache-2.0(OSI, core unsloth pkg)+AGPL-3.0(OSI, optional Unsloth Studio UI);source:public(unslothai/unsloth);core-gated:gated(unsloth.ai/pricing
+    sells Unsloth Pro and Enterprise on capabilities the free open-source tier does not have: the free column
+    lists MultiGPU as coming soon while Pro lists Enhanced MultiGPU support and up to 8 GPUs, and Enterprise
+    adds multi-node, full training and 5x faster inference; Pro is advertised as 20% less memory than OSS,
+    an explicit comparison against the published package)'
   sources:
   - url: https://github.com/unslothai/unsloth
     shows: Live public repository (HTTP 200); GitHub's own page describes it as "The local UI to run and
       train text and diffusion models, including Kimi K3, Gemma 4, Qwen3.6, DeepSeek-V4, FLUX and more."
       and lists both an Apache-2.0 license and an AGPL-3.0 license for the repo.
-    accessed: '2026-08-09'
+    accessed: '2026-08-11'
     http_status: 200
-    content_sha256: cc73cdefa12bf38de5e0211f2a070db5738e3a4f1e7e1a92cdaf656e9d1d5b5f
+    content_sha256: 61bd97e253eefb26d985fb822899435f6eed5011a835b4a353718b533887114b
     establishes:
     - source
   - url: https://raw.githubusercontent.com/unslothai/unsloth/main/LICENSE
     shows: 'LICENSE body states: "Files under unsloth/*, tests/*, scripts/* are Apache 2.0 licensed. Files
       under studio/*, unsloth_cli/* which is optional to install are AGPLv3 licensed."'
-    accessed: '2026-08-09'
+    accessed: '2026-08-11'
     http_status: 200
     content_sha256: 40e0b458a68b557560def38b106a1a0da1aac57685536dcb882f1c78c647e4d3
     establishes:
     - license
   - url: https://unsloth.ai/pricing
-    shows: Lists a "Free" open-source plan alongside paid "unsloth Pro" ("Enhanced MultiGPU support", up
-      to 8 GPUs) and "unsloth Enterprise" ("Multi-node support", "Supports full training", "Customer support")
-      plans, both reachable only via "Contact us"; the Free-tier row still reads "MultiGPU - coming soon".
-    accessed: '2026-08-09'
+    shows: Three tiers. Free (Open-Source) lists "Open-source", "Supports Mistral, Gemma", "Supports LLama
+      1, 2, 3", "MultiGPU - coming soon", "Supports 4 bit, 16 bit LoRA". Unsloth Pro lists "2.5x number
+      of GPUs faster than FA2", "20% less memory than OSS", "Enhanced MultiGPU support", "Up to 8 GPUS support".
+      Unsloth Enterprise lists "32x number of GPUs faster than FA2", "up to +30% accuracy", "5x faster inference",
+      "Supports full training" and multi-node support. Both paid tiers are contact-for-pricing.
+    accessed: '2026-08-11'
     http_status: 200
-    content_sha256: 438194ecdcc3c6c28e04c51afeea4a25cd9ba9234f8f2e1d4949509b8ff05604
+    content_sha256: b7cd7e8f6702fa11ae96aef62ea3b16acffd7551c236ec9f13b37c4668b8b108
+    establishes:
+    - core-gated
 adoption:
   level: 4
   reach: 1M-10M
