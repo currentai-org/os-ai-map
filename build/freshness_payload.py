@@ -4,9 +4,15 @@ docs/guides/freshness.md is normative. Two tiers, and the payload says which one
 so the page can label the weaker claim rather than passing it off as the stronger one:
 
   verified  the score file carries last_verified. 6 of 470 today.
-  commit    the git commit date of sources/scores/<slug>.yaml.
+  commit    the date of the last commit that changed what sources/scores/<slug>.yaml
+            claims. Commits that only changed how a score is stored are skipped, so a
+            shape migration cannot republish a product as freshly reviewed.
 
 A date is NEVER derived from sources[].accessed (freshness.md:30).
+
+There is nothing to fix in this module for that last point: it takes the commit tier
+from `check_freshness.commit_dates`, which is where the skip lives, so the report and
+the payload cannot disagree about what a commit date means.
 """
 import subprocess
 from pathlib import Path

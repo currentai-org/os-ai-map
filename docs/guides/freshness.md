@@ -46,12 +46,44 @@ staleness of 55 days when the files had in fact been revised a median of 35 days
 
 ## The fallback: the score file's last commit date
 
-Most axes carry no `last_verified` yet. For those, freshness falls back to **the last
-commit date of `sources/scores/<slug>.yaml`**.
+Most axes carry no `last_verified` yet. For those, freshness falls back to **the date of
+the last commit that changed what `sources/scores/<slug>.yaml` claims**.
 
 Somebody committed that file on that date and left the score standing, which is a
 review rather than a reading. Git records it, and nobody can inflate it. As #102 put
 it, the git history of a score file *is* its verification record.
+
+**Changed what it claims, not merely touched.** Some commits move a file without
+reviewing it. The Phase 1a migration reshapes `openness.components` from a string into a
+mapping in all 472 files, carrying a byte-identical `raw:` copy of the string it
+replaced, so no published value moves — and dating by touch would have republished 78 of
+the first batch's 84 products as reviewed on the migration day. A commit date is only
+defensible here because it dates a review, so a commit that reviewed nothing must not
+supply one. Otherwise the fallback makes the same category error as `sources[].accessed`:
+a weak signal promoted into a confirmation claim.
+
+`build/check_freshness.py` decides this by content rather than by convention. It walks a
+file's history newest-first and skips any commit whose two revisions of that file have
+the same `score_projection` — the whole document, with only the two storage shapes of
+`openness.components` reduced to one. Nothing has to be labeled or trailered, a commit
+cannot assert a review the content contradicts, and it works retroactively.
+
+Two exceptions worth knowing before you go looking for them.
+
+**Reordering the clauses of a `components` string does not advance the date**, because the
+projection compares clauses as a key -> clause mapping and a mapping has no order. This is
+the one case where something visible on the page moves — the published string is emitted in
+file order — while the date stands still. It is the right call on the rule as written,
+since clause order is storage rather than claim, but it is a real gap between what a reader
+sees change and what the date says changed.
+
+**A `git mv` of a score file resets its date to the rename commit.** Attribution runs with
+`--no-renames`, so a rename reads as a delete plus an add, and an add is where a slug's
+history starts. A rename is exactly the kind of structural touch this fix exists to skip,
+so the exception is deliberate rather than an oversight: with rename detection on, a pure
+rename is score-neutral for the new path and the walk runs off the end of its history with
+nothing to date it from. The cost is bounded because slugs are tier-level and immutable, so
+a score file should not be renamed in the normal course of things.
 
 **What the fallback does not claim.** For a file untouched since it was added, the
 commit date dates the import, not a review. That is still the answer to the question
@@ -64,7 +96,7 @@ can never be conflated.
 | field | where | what it answers |
 |---|---|---|
 | `last_verified` | `sources/scores/<slug>.yaml`, per axis | Is this score still right? Authoritative. |
-| score file commit date | git | Same question, weaker. Used when `last_verified` is absent. |
+| score file commit date | git | Same question, weaker. Used when `last_verified` is absent. Dates the last commit that changed a claim, skipping ones that only changed storage. |
 | `sources[].accessed` | `sources/scores/<slug>.yaml`, per source | When was this specific URL read? Evidence provenance. **Not freshness.** |
 | `last_checked` | `currentai.scores.openness_computed` | When did the pipeline last read *any* admitted evidence. Diagnostic. **Not freshness.** |
 | `fact_accessed` | `currentai.scores.openness_facts`, per dimension | When the evidence behind one dimension was read or fetched. Provenance, per fact. **Not freshness.** |
