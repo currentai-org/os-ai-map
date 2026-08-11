@@ -51,10 +51,13 @@ def test_local_scores_matches_check_rubrics_split():
     the four stale deferrals were removed. Then 391/81 -> 392/80 when compound licenses
     started resolving on all their parts: `smoltalk`'s deferral existed because the ladder
     could not see the `+per-component` half of its license and computed a 5 against a
-    recorded 4, and reading the whole value makes it reproduce."""
+    recorded 4, and reading the whole value makes it reproduce. Then 392/80 -> 395/77 when
+    `core_gated` started reading `self-host`: syfthub, thunderbolt and otari were all deferred
+    with the same text, that core-gated is not recorded in a form the ladder can read, and all
+    three had recorded it under `self-host`."""
     computed, deferred = local_scores(None)
-    assert len(deferred) == 80
-    assert len(computed) == 392
+    assert len(deferred) == 77
+    assert len(computed) == 395
     assert not set(computed) & set(deferred)
     # Every one of the 392 reproduces today, so none should abstain.
     assert [key for key, value in computed.items() if value is None] == []

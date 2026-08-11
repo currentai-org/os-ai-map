@@ -366,6 +366,30 @@ def license_tier(raw: str, recipe: dict) -> str | None:
     return max(resolved, key=lambda name: rank.get(name, len(tiers)))
 
 
+def dimension_spec(dimension: str, recipe: dict) -> dict:
+    return (((recipe.get("openness") or {}).get("dimensions") or {}).get(dimension)) or {}
+
+
+def normalize_dimension_value(value: str, spec: dict) -> str:
+    """A recorded spelling translated to the declared value it means.
+
+    `reads:` widens which KEY answers a dimension; this widens which VALUE does. The two
+    are separate because `reads:` selects a key and takes its value verbatim, so a synonym
+    key whose vocabulary differs - `self-host: none` for `core_gated: gated` - still reads
+    as unanswered without a translation step. `dataset.yaml`'s `availability` note is the
+    same observation from the other side: there, every spelling was declared as its own
+    value and the rules were written to test only one polarity, which works because the
+    other polarity falls through. `core_gated` has a rung on both sides, so falling through
+    is not available and the spellings have to collapse onto the two declared values.
+
+    An unmapped spelling is returned unchanged, which puts it outside the enum and leaves
+    the dimension unanswered. That is deliberate: the formula declares no `otherwise`, so
+    abstaining is what happens to evidence the ladder does not understand, and guessing a
+    polarity from an unrecognized word is exactly the failure that would not surface.
+    """
+    return (spec.get("value_aliases") or {}).get(value, value)
+
+
 def resolve_dimension(components: dict[str, str], dimension: str, recipe: dict) -> str | None:
     """Which recorded key answers a dimension, or None if nothing does.
 
@@ -388,20 +412,25 @@ def resolve_dimension(components: dict[str, str], dimension: str, recipe: dict) 
     need the parenthetical detail attached to that key too, and re-deriving the
     preference in a second place is how the two would drift.
     """
-    spec = (((recipe.get("openness") or {}).get("dimensions") or {}).get(dimension)) or {}
+    spec = dimension_spec(dimension, recipe)
     keys = spec.get("reads") or [dimension]
     allowed = set(spec.get("values") or ())
     present = [key for key in keys if key in components]
     for key in present:
-        if head(components[key]) in allowed:
+        if normalize_dimension_value(head(components[key]), spec) in allowed:
             return key
     return present[0] if present else None
 
 
 def dimension_value(components: dict[str, str], dimension: str, recipe: dict) -> str:
-    """The bare value the formula reads for a dimension, or '' if unanswered."""
+    """The bare value the formula reads for a dimension, or '' if unanswered.
+
+    Alias-translated, so the formula only ever tests the declared vocabulary.
+    """
     key = resolve_dimension(components, dimension, recipe)
-    return head(components[key]) if key is not None else ""
+    if key is None:
+        return ""
+    return normalize_dimension_value(head(components[key]), dimension_spec(dimension, recipe))
 
 
 def dimension_read_map(recipe: dict) -> dict[str, str]:

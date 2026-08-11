@@ -32,7 +32,37 @@ openness:
     core_gated:
       question: Is functionality withheld from the published source for a paid tier?
       values: [gated, ungated]
-      reads: [core-gated]
+      reads: [core-gated, self-host]
+      # `self-host` is the same question in the vocabulary the corpus actually used.
+      # Whether the vendor lets you run the published thing yourself IS whether the core is
+      # withheld, and 54 records say so under that name while 164 say it under
+      # `core-gated`. Where both are recorded - 23 records - they never disagree: 11
+      # `yes`/`ungated`, 10 `primary`/`ungated`, 2 `only`/`ungated`, and no contradictions.
+      # Until this list read it, `self-host` was an undeclared key and was dropped before
+      # the formula ran, which is why check_recipe's docstring names it as the single most
+      # common piece of vocabulary drift on the map.
+      #
+      # `reads:` selects a key and takes its value, so a synonym key still needs its values
+      # translated - the problem dataset.yaml's `availability` notes it cannot solve by
+      # widening `reads:` alone. `value_aliases` is that translation, and it is the same
+      # idea `license_tier` already uses: a canonical rung with the literal spellings that
+      # land on it declared beside it, because whether `enterprise-only` means gated is a
+      # fact worth writing down rather than a regex worth getting wrong. A recorded
+      # spelling with no entry here is not guessed at - it falls outside the enum, the
+      # dimension reads as unanswered, and the formula abstains.
+      #
+      # `'yes'` and `'no'` are quoted for the reason the note below gives about `values`:
+      # YAML 1.1 parses both bare as booleans, and a boolean key never matches the string
+      # the parser hands it.
+      value_aliases:
+        'yes': ungated
+        primary: ungated
+        only: ungated
+        'no': gated
+        none: gated
+        enterprise-only: gated
+        enterprise-tier: gated
+        none for core AX features: gated
       evidence:
       - '`gated`: features live behind an enterprise license directory, a Premium tier, or
         a commercial edition the published source cannot build'

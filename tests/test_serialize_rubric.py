@@ -705,18 +705,29 @@ def test_real_sources_serialize_without_errors():
         # base_pretrained rose by 5 (111 -> 116) when the fully-open Luciole family was
         # added: five openness dimensions recorded (weights, data, code, checkpoints, license).
         "base_pretrained": 116, "finetuned_chat": 173, "deployment": 131,
-        "agent_tools_protocols": 108, "dataset_processing_tools": 86, "evaluation_code": 66,
+        "agent_tools_protocols": 109, "dataset_processing_tools": 86, "evaluation_code": 66,
         # inference_code 47 -> 64 when the sweep read the category: four stale deferrals came
         # off (a deferred product publishes no openness evidence at all), and several products
         # that had described their gating in prose gained a readable `source:`/`core-gated:`.
-        "finetuning_code": 124, "inference_code": 64, "ml_frameworks": 80,
+        "finetuning_code": 124, "inference_code": 65, "ml_frameworks": 80,
         # orchestration_agents rose by 3 when n8n's stale deferral was removed: a deferred
         # product publishes no openness evidence, and n8n had been deferred as "not recorded"
         # while recording everything the ladder needed. Then by 6 more (140 -> 146) when
         # OpenRAG was added: it records source, core-gated, license, self-host, commercial,
         # and the normalized core_gated the ladder reads from core-gated — the same six-row
         # shape RAGFlow already contributes.
-        "orchestration_agents": 146, "telemetry_observability": 90, "ui_api": 127,
+        #
+        # Five categories then rose by 41 rows in total when `core_gated` started reading
+        # `self-host`, and the split is worth keeping visible because the two causes are
+        # different sizes. 29 rows are one new `core_gated` row each, on products that were
+        # already computed and stay at the score they had: agent_tools_protocols +1
+        # (pinecone), inference_code +1 (apple-core-ml-runtime), telemetry_observability +4,
+        # orchestration_agents +8 and ui_api +12, every one of them a closed hosted product
+        # the `source: closed` rung decides on its own. The other 12 are three deferrals
+        # coming off at 5 rows each, less nothing: syfthub in orchestration_agents,
+        # thunderbolt and otari in ui_api. A deferred product publishes no openness evidence
+        # at all, so a removed deferral is always the larger of the two effects.
+        "orchestration_agents": 159, "telemetry_observability": 94, "ui_api": 149,
         # training_synthetic_datasets is unchanged at 158 across the ladder widening, which
         # is the check that mattered: benchmark_eval_data's new dimensions and rungs did not
         # disturb the category the ladder was derived from.
@@ -763,6 +774,31 @@ def test_every_scored_product_carries_a_row_for_each_formula_dimension():
         if category == "finetuned_chat" and "data" not in dimensions
     ]
     assert missing == [], f"no data row emitted for: {missing}"
+
+
+def test_a_value_alias_is_translated_before_it_reaches_the_warehouse():
+    """`core_gated` reads `self-host`, whose vocabulary is `yes`/`no`/`none` rather than
+    `gated`/`ungated`. The warehouse joins a rule's `condition_value` against this column,
+    so the translation has to happen on the way out or `openness_computed` would have to
+    carry a copy of the alias table — the repo/warehouse split check_parity exists to catch.
+    Normalizing here is what keeps this change off that list.
+
+    The recorded spelling is not lost: `self-host` is still emitted under its own name by
+    the traceability pass, so both rows are in the evidence store.
+    """
+    from pathlib import Path
+
+    from build.serialize_rubric import load_policy, load_routing
+
+    root = Path(__file__).resolve().parents[1]
+    tables, _, _ = build_rubric(_real_sources(root), load_policy(root), load_routing(root))
+
+    rows = {
+        (r["dimension"], r["value"], r["in_declared_enum"])
+        for r in tables["product_openness_evidence"]
+        if r["product_slug"] == "chatgpt" and r["dimension"] in ("core_gated", "self-host")
+    }
+    assert rows == {("core_gated", "gated", True), ("self-host", "none", "")}
 
 
 def test_license_is_emitted_under_the_name_the_warehouse_joins_on():
