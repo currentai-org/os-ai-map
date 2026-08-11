@@ -32,6 +32,7 @@ from __future__ import annotations
 import argparse
 import re
 from pathlib import Path
+from typing import NamedTuple
 
 import yaml
 
@@ -457,19 +458,136 @@ def matches(rule_when: dict, facts: dict) -> bool:
 
 
 def apply_formula(recipe: dict, facts: dict) -> tuple[int, str] | None:
-    """Walk the ordered rules, first match wins."""
+    """Walk the ordered rules, first match wins.
+
+    `facts` is a COMPLETE fact set, `license_tier` included where the ladder has one.
+    Callers that may not be able to resolve a tier want `walk_formula`, which decides
+    whether the tier is needed at all before insisting on it.
+    """
+    result, _ = walk_formula(recipe, facts, tier=facts.get("license_tier"))
+    return result
+
+
+def walk_formula(
+    recipe: dict, facts: dict, tier: str | None
+) -> tuple[tuple[int, str] | None, bool]:
+    """First match wins, consulting `tier` only where a rung actually tests it.
+
+    Returns `(result, blocked)`. `blocked` is True when a rung whose other conditions all
+    match tests `license_tier` and no tier resolved — the walk cannot continue past a rung
+    it cannot evaluate, because first-match-wins means a later rung only fires if this one
+    did not.
+
+    Why the tier is not simply resolved up front: it used to be, and a product whose
+    recorded license names nothing the tier lookup recognizes abstained before the formula
+    ran, even when the rung that decides it never asks about a license. `apify` records
+    `mixed(platform closed, SDK open)` and `source:partial`; the software ladder settles
+    `source:partial` at 2/source_available on the source dimension alone, and the license
+    it could not map was never going to be consulted. Four more products across three
+    categories were deferred for the same non-reason.
+
+    The narrower rule — resolve a tier only when a rung needs one — keeps the property
+    that made the eager version defensible. An unmapped license still blocks any rung that
+    turns on it, so nothing is scored by ignoring a license the ladder could not read.
+    That distinction is the whole fix: `dify` records `source:public`, which reaches the
+    `competition_restricted` rung, so its unmapped vendor license still blocks it and it
+    stays deferred.
+
+    Skipping an unevaluable rung and carrying on would be the other failure this repo
+    already names: partial coverage overstating openness. A product whose license may sit
+    on the restrictive rung would fall through to a more permissive one below it.
+    """
     for rule in (recipe.get("openness") or {}).get("formula") or []:
         if "otherwise" in rule:
             result = rule["otherwise"]
-            return result["score"], result["class"]
-        if matches(rule.get("when") or {}, facts):
+            return (result["score"], result["class"]), False
+        when = rule.get("when") or {}
+        wanted = when.get("license_tier")
+        if not matches({k: v for k, v in when.items() if k != "license_tier"}, facts):
+            continue
+        if wanted is None:
             result = rule["then"]
-            return result["score"], result["class"]
-    return None
+            return (result["score"], result["class"]), False
+        if tier is None:
+            return None, True
+        if tier == wanted:
+            result = rule["then"]
+            return (result["score"], result["class"]), False
+    return None, False
 
 
-def check_category(slug: str, verbose: bool) -> tuple[int, int, list[str], list[str]]:
-    """Return (reproduced, total, problems, deferred)."""
+class Outcome(NamedTuple):
+    """What a ladder makes of one product's recorded evidence.
+
+    One resolution path for the three modules that replay a ladder — `check_rubric`,
+    `check_recipe`'s stale-deferral test and `check_parity`. They each had their own copy
+    of "resolve the tier, build the facts, walk the formula", and the copies are exactly
+    what let the tier gate live in one of them and not the others.
+    """
+
+    result: tuple[int, str] | None
+    facts: dict[str, str]
+    has_tiers: bool
+    raw_license: str
+    tier: str | None
+    blocked_on_tier: bool
+
+
+def score_openness(recipe: dict, components: dict[str, str]) -> Outcome:
+    """Replay one ladder against one product's recorded components.
+
+    The tier is resolved eagerly for REPORTING — `tier is None` on a product that still
+    scores is what `check_recipe` counts and names — but it is only ever REQUIRED by
+    `walk_formula`, and only for a rung that tests it.
+
+    A ladder need not turn on a source license at all. Hardware openness is scored on
+    design, toolchain and availability: `sources/rubrics/hardware.yaml` declares no
+    `license_tier` and none of the 20 edge products records a license, so `has_tiers` is
+    False and no tier is looked for. `check_recipe`'s unreachable-rule assertion rejects a
+    `license_tier` condition with no declared tiers, so such a ladder cannot have a rung
+    that needs one.
+    """
+    has_tiers = bool(((recipe.get("openness") or {}).get("license_tier") or {}).get("values"))
+    raw_license = ""
+    tier = None
+    if has_tiers:
+        raw_license = next(
+            (components[key] for key in license_read_keys(recipe) if components.get(key)), ""
+        )
+        tier = license_tier(raw_license, recipe)
+
+    # Facts come from the dimensions the recipe DECLARES, not a fixed list. The model
+    # categories ask about weights/data/code; software categories ask whether the source is
+    # public, whether the real thing self-hosts, and whether the core is feature-gated.
+    # Hardcoding the model's four here is what would have forced a checker change per
+    # product type.
+    declared = ((recipe.get("openness") or {}).get("dimensions")) or {}
+    facts = {name: dimension_value(components, name, recipe) for name in declared}
+    result, blocked = walk_formula(recipe, facts, tier)
+    return Outcome(result, facts, has_tiers, raw_license, tier, blocked)
+
+
+class CategoryReport(NamedTuple):
+    """What one category's replay produced.
+
+    `tierless` is the set the tier-gate fix made possible: products that SCORE while their
+    recorded license maps to no tier, because no rung the walk reached asked for one. They
+    are correct scores and they must stay countable — four of them are held up by vendor
+    licenses (`Modular-Community-License`, `Dify-Open-Source-License`, `Open-WebUI-License`,
+    `LobeHub-Community-License`) that a category note calls competition-restricted in
+    substance, and the moment such a license IS mapped, the product may move. A score whose
+    license nobody could read is a score standing on less evidence than its neighbours.
+    """
+
+    reproduced: int
+    total: int
+    problems: list[str]
+    deferred: list[str]
+    tierless: list[str]
+
+
+def check_category(slug: str, verbose: bool) -> CategoryReport:
+    """Return (reproduced, total, problems, deferred, tierless)."""
     category = yaml.safe_load((ROOT / "sources" / "categories" / f"{slug}.yaml").read_text())
     # `extends: software` pulls in one shared ladder for every product; `extends: {model:
     # ..., software: ...}` pulls in one per product type, as `safeguards` does. Resolution
@@ -477,9 +595,9 @@ def check_category(slug: str, verbose: bool) -> tuple[int, int, list[str], list[
     # stop the others being checked - and cannot pass silently either.
     variants, recipe_errors = resolve_recipe_variants(category, load_shared(ROOT))
     if recipe_errors:
-        return 0, 0, [f"{slug}: {e}" for e in recipe_errors], []
+        return CategoryReport(0, 0, [f"{slug}: {e}" for e in recipe_errors], [], [])
     if not variants:
-        return 0, 0, [], []
+        return CategoryReport(0, 0, [], [], [])
     product_types = load_product_types(ROOT)
     # Deferrals are a property of the category's declaration, not of any one ladder:
     # products the category has declared the rubric does not yet decide, each with a
@@ -493,6 +611,7 @@ def check_category(slug: str, verbose: bool) -> tuple[int, int, list[str], list[
     total = 0
     problems: list[str] = []
     deferred: list[str] = []
+    tierless: list[str] = []
 
     for product in category.get("products") or []:
         path = ROOT / "sources" / "scores" / f"{product}.yaml"
@@ -511,44 +630,31 @@ def check_category(slug: str, verbose: bool) -> tuple[int, int, list[str], list[
         components = components_of(openness)
         total += 1
 
+        # One resolution path, shared with check_recipe and check_parity. The tier is
+        # consulted only by a rung that tests it, so a license the lookup cannot read stops
+        # only the products a license was going to decide. `blocked_on_tier` is that stop,
+        # and it stays a hard failure: the ladder reached a rung it could not evaluate.
+        #
         # A ladder need not turn on a source license at all. Hardware openness is scored on
         # design, toolchain and availability - `sources/rubrics/hardware.yaml` declares no
-        # `license_tier`, and none of the 20 edge products records a license. Resolving a
-        # tier against a recipe that declares none returns None for every product and would
-        # report all 20 as hard failures, so the tier step only runs where there is a tier
-        # vocabulary to resolve against. `license_tier` is then simply absent from `facts`,
-        # and a rung testing it could not have been declared: check_recipe's unreachable-rule
-        # assertion rejects a `license_tier` condition with no declared tiers.
+        # `license_tier`, and none of the 20 edge products records a license, so `has_tiers`
+        # is False and no tier is looked for at all.
         #
         # `serialize_rubric` already tolerated a tier-free ladder - `license_tiers()` emits
-        # zero rows and only requires `ordered_by` above one tier. This is check_rubric
-        # catching up, and it changes shared resolution semantics, so the warehouse mirror
-        # in `currentai.scores.openness_computed` needs the same allowance.
-        has_tiers = bool(((recipe.get("openness") or {}).get("license_tier") or {}).get("values"))
-        tier = None
-        if has_tiers:
-            raw_license = next(
-                (components[key] for key in license_read_keys(recipe) if components.get(key)), ""
+        # zero rows and only requires `ordered_by` above one tier. Both allowances change
+        # shared resolution semantics, so the warehouse mirror in
+        # `currentai.scores.openness_computed` needs them too.
+        outcome = score_openness(recipe, components)
+        facts, tier, has_tiers = outcome.facts, outcome.tier, outcome.has_tiers
+        if outcome.blocked_on_tier:
+            problems.append(
+                f"{product}: license {outcome.raw_license!r} maps to no tier, and a rung "
+                f"the ladder reached tests one "
+                f"(recorded {openness.get('score')} {openness.get('class')})"
             )
-            tier = license_tier(raw_license, recipe)
-            if tier is None:
-                problems.append(
-                    f"{product}: license {raw_license!r} maps to no tier "
-                    f"(recorded {openness.get('score')} {openness.get('class')})"
-                )
-                continue
+            continue
 
-        # Facts come from the dimensions the recipe DECLARES, not a fixed list. The
-        # model categories ask about weights/data/code; software categories ask whether
-        # the source is public, whether the real thing self-hosts, and whether the core
-        # is feature-gated. Hardcoding the model's four here is what would have forced a
-        # checker change per product type.
-        declared = ((recipe.get("openness") or {}).get("dimensions")) or {}
-        facts = {name: dimension_value(components, name, recipe) for name in declared}
-        if has_tiers:
-            facts["license_tier"] = tier
-
-        got = apply_formula(recipe, facts)
+        got = outcome.result
         expected = (openness.get("score"), openness.get("class"))
 
         # No rule matched and the recipe declares no `otherwise`, so it is telling us it
@@ -565,7 +671,7 @@ def check_category(slug: str, verbose: bool) -> tuple[int, int, list[str], list[
         # ladder itself has a gap. Abstentions print every run and are excluded from the
         # reproduced count, so neither can go quiet.
         if got is None:
-            shown = " ".join(f"{name}={facts[name]!r}" for name in declared)
+            shown = " ".join(f"{name}={value!r}" for name, value in facts.items())
             if has_tiers:
                 shown = f"{shown} tier={tier}"
             deferred.append(
@@ -575,12 +681,21 @@ def check_category(slug: str, verbose: bool) -> tuple[int, int, list[str], list[
             total -= 1
             continue
 
+        # Scored, but on a license nobody could place. Correct - no rung the walk reached
+        # asked for one - and worth naming every run rather than letting it read as an
+        # ordinary score.
+        if has_tiers and tier is None:
+            tierless.append(
+                f"{product}: {got[0]}/{got[1]} on license {outcome.raw_license!r}, "
+                f"which maps to no tier"
+            )
+
         if got == expected:
             reproduced += 1
             if verbose:
                 print(f"  ok    {product:<24} {expected[0]} {expected[1]}")
         else:
-            shown = " ".join(f"{name}={facts[name]!r}" for name in declared)
+            shown = " ".join(f"{name}={value!r}" for name, value in facts.items())
             if has_tiers:
                 shown = f"{shown} tier={tier}"
             problems.append(
@@ -591,7 +706,7 @@ def check_category(slug: str, verbose: bool) -> tuple[int, int, list[str], list[
     for product in unknown:
         problems.append(f"{product}: deferred by the recipe but not a product of this category")
 
-    return reproduced, total, problems, deferred
+    return CategoryReport(reproduced, total, problems, deferred, tierless)
 
 
 def main() -> int:
@@ -609,17 +724,25 @@ def main() -> int:
     failed = False
     checked_any = False
     for slug in slugs:
-        reproduced, total, problems, deferred = check_category(slug, args.verbose)
+        reproduced, total, problems, deferred, tierless = check_category(slug, args.verbose)
         if total == 0 and not deferred and not problems:
             continue
         checked_any = True
         status = "OK" if not problems else "FAIL"
         suffix = f", {len(deferred)} deferred" if deferred else ""
+        suffix += f", {len(tierless)} scored with no tier" if tierless else ""
         print(f"{slug}: {reproduced}/{total} reproduced{suffix}  [{status}]")
         for problem in problems:
             print(f"  ! {problem}")
         for entry in deferred:
             print(f"  ~ deferred  {entry}")
+        # Reported, never gating. A gate that fails on the day it lands gets switched off,
+        # and every one of these is a correct score - the finding is that the score rests on
+        # a license the ladder could not read, which is a curation prompt rather than a
+        # defect in the ladder. It prints unconditionally for the reason the deferrals do:
+        # an exclusion nobody sees is an exclusion nobody acts on.
+        for entry in tierless:
+            print(f"  ~ no tier   {entry}")
         if problems:
             failed = True
 

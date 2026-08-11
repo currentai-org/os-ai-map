@@ -704,8 +704,18 @@ def test_real_sources_serialize_without_errors():
         # unrecorded and published no evidence row. check_recipe found it.
         # base_pretrained rose by 5 (111 -> 116) when the fully-open Luciole family was
         # added: five openness dimensions recorded (weights, data, code, checkpoints, license).
+        #
+        # Five categories rose again when the license tier stopped being resolved ahead of
+        # the formula, and every row is a deferral coming off rather than a new key:
+        # agent_tools_protocols +4 (apify), evaluation_code +12 (chatbot-arena,
+        # patronus-evaluation-platform and artificial-analysis-intelligence-index, four rows
+        # each) and ui_api +5 (confer). All five record a `source` value the software ladder
+        # settles on its own and were abstained on a license no rung deciding them reads.
+        # Note the three evaluation_code products publish no `license` row at all - they
+        # record no license key - which is what `check_rubric`'s `~ no tier` report exists
+        # to keep visible.
         "base_pretrained": 116, "finetuned_chat": 173, "deployment": 131,
-        "agent_tools_protocols": 109, "dataset_processing_tools": 86, "evaluation_code": 66,
+        "agent_tools_protocols": 113, "dataset_processing_tools": 86, "evaluation_code": 78,
         # inference_code 47 -> 64 when the sweep read the category: four stale deferrals came
         # off (a deferred product publishes no openness evidence at all), and several products
         # that had described their gating in prose gained a readable `source:`/`core-gated:`.
@@ -727,7 +737,7 @@ def test_real_sources_serialize_without_errors():
         # coming off at 5 rows each, less nothing: syfthub in orchestration_agents,
         # thunderbolt and otari in ui_api. A deferred product publishes no openness evidence
         # at all, so a removed deferral is always the larger of the two effects.
-        "orchestration_agents": 159, "telemetry_observability": 94, "ui_api": 149,
+        "orchestration_agents": 159, "telemetry_observability": 94, "ui_api": 154,
         # training_synthetic_datasets is unchanged at 158 across the ladder widening, which
         # is the check that mattered: benchmark_eval_data's new dimensions and rungs did not
         # disturb the category the ladder was derived from.
@@ -874,7 +884,32 @@ def test_license_is_emitted_under_the_name_the_warehouse_joins_on():
         if r["category_slug"] not in tier_free
     } - deferred
     licensed = {(r["product_slug"], r["category_slug"]) for r in rows if r["dimension"] == "license"}
-    assert scored - licensed == set(), f"no license row emitted for: {sorted(scored - licensed)}"
+
+    # The third exclusion, and the newest. A product can now score in a tier-carrying
+    # category without a license at all: `check_rubric` resolves a tier only for a rung that
+    # tests one, so a product the software ladder settles on `source` alone is scored whether
+    # or not anyone recorded a license. Three do, all in `evaluation_code`, and none of them
+    # records a license clause of any kind — so there is genuinely no row to emit, and
+    # asserting one would again be asserting evidence we have said does not exist.
+    #
+    # Pinned by name rather than computed away, because the set is exactly what
+    # `check_rubric`'s `~ no tier` report exists to keep countable, and a silently growing
+    # exclusion here would be the way the report stops meaning anything. A fourth product
+    # appearing means someone scored something on less evidence than its neighbours, and it
+    # should have to be written down here.
+    #
+    # This carries the same warehouse asymmetry the two notes above describe:
+    # `currentai.scores.openness_computed` resolves the tier up front and joins license
+    # evidence, so until it carries the same rule these three will abstain there while
+    # reproducing here.
+    unlicensed = {
+        ("chatbot-arena", "evaluation_code"),
+        ("patronus-evaluation-platform", "evaluation_code"),
+        ("artificial-analysis-intelligence-index", "evaluation_code"),
+    }
+    assert unlicensed <= scored, "a pinned no-license product stopped scoring"
+    missing = scored - licensed
+    assert missing == unlicensed, f"no license row emitted for: {sorted(missing - unlicensed)}"
 
     deepseek = [r for r in rows if r["product_slug"] == "deepseek-coder" and r["dimension"] == "license"]
     assert len(deepseek) == 1 and deepseek[0]["value"] == "DeepSeek-Model-License"

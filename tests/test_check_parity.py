@@ -59,12 +59,16 @@ def test_local_scores_matches_check_rubrics_split():
     synth, tulu-3-sft-mixture and wildchat-1m all recorded `dataset card present`, and four of
     them `ungated`, as clauses with no colon, which the parser discards. Their five deferral
     texts named that defect and prescribed the fix. No score moved - all five already recorded
-    the 5/open the ladder now computes."""
+    the 5/open the ladder now computes. Then 400/72 -> 405/67 when a license tier stopped
+    being resolved ahead of the formula: apify, chatbot-arena, patronus-evaluation-platform,
+    artificial-analysis-intelligence-index and confer all record a `source` value the
+    software ladder settles on its own, and were abstained on a license no rung deciding
+    them was going to read. All five reproduce their recorded 2/source_available."""
     computed, deferred = local_scores(None)
-    assert len(deferred) == 72
-    assert len(computed) == 400
+    assert len(deferred) == 67
+    assert len(computed) == 405
     assert not set(computed) & set(deferred)
-    # Every one of the 392 reproduces today, so none should abstain.
+    # Every one of the 405 reproduces today, so none should abstain.
     assert [key for key, value in computed.items() if value is None] == []
 
 

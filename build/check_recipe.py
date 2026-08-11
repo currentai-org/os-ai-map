@@ -43,7 +43,6 @@ import yaml
 
 from build.check_rubric import (
     ROOT,
-    apply_formula,
     check_category,
     components_of,
     components_string,
@@ -51,11 +50,11 @@ from build.check_rubric import (
     dimension_value,
     head,
     license_read_keys,
-    license_tier,
     load_product_types,
     load_shared,
     recipe_for,
     resolve_recipe_variants,
+    score_openness,
     split_components,
 )
 from build.check_verification import rule_outcomes
@@ -337,6 +336,12 @@ def stale_deferrals(
     to the `competition_restricted` tier, so it produced its recorded 2/source_available
     exactly. That one went stale in about a week; at forty categories, on prose nobody
     re-reads, they would accumulate silently.
+
+    This used to skip any product whose license mapped to no tier, which made it blind to
+    exactly the deferrals the eager tier gate had created: five products deferred on the
+    claim that no tier resolved, every one of them recording a `source` state the ladder
+    settles without a license. `score_openness` decides for itself whether the tier is
+    needed, so nothing is skipped merely for carrying a license the lookup cannot read.
     """
     problems = []
     for product in sorted(deferred):
@@ -347,15 +352,7 @@ def stale_deferrals(
         if recipe is None:
             continue
         openness = (yaml.safe_load(path.read_text()) or {}).get("openness") or {}
-        components = components_of(openness)
-        raw = next((components[k] for k in license_read_keys(recipe) if components.get(k)), "")
-        tier = license_tier(raw, recipe)
-        if tier is None:
-            continue
-        declared = _dimensions(recipe)
-        facts = {name: dimension_value(components, name, recipe) for name in declared}
-        facts["license_tier"] = tier
-        got = apply_formula(recipe, facts)
+        got = score_openness(recipe, components_of(openness)).result
         if got is not None and got == (openness.get("score"), openness.get("class")):
             problems.append(
                 f"category '{slug}' defers '{product}', but the ladder now reproduces its "
@@ -435,7 +432,7 @@ def check_one(slug: str, verbose: bool) -> tuple[list[str], list[str]]:
     # abstention, which is the exact convention violation the safeguards review found -- 11
     # auto-abstaining products, invisible in the category YAML, while all 41 of their
     # counterparts elsewhere were declared. Nothing caught it.
-    reproduced, total, problems, deferrals = check_category(slug, verbose=False)
+    reproduced, total, problems, deferrals, tierless = check_category(slug, verbose=False)
     silent = [entry for entry in deferrals if "recipe does not decide it" in entry]
     for entry in silent:
         failures.append(
@@ -464,7 +461,20 @@ def check_one(slug: str, verbose: bool) -> tuple[list[str], list[str]]:
         f"{len([f for f in failures if 'has no key so the parser' in f])} blocking",
         f"  undeclared keys .......... {undeclared_total} "
         f"(context, reported by serialize_rubric)",
+        f"  scored with no tier ...... {len(tierless):<4}"
+        f"(context, itemized by check_rubric)",
     ]
+    # Reported, never gated, and for the same reason the reproduction mismatches below are:
+    # every one of these is a score the ladder produced correctly. The finding is that it
+    # rests on a license the tier lookup could not read, so if that license is later mapped
+    # the product may move. Gating would fail on the day it landed - five products score
+    # this way right now - and this repo's convention is that a gate failing on day one gets
+    # switched off rather than acted on.
+    #
+    # The names print unconditionally from `check_rubric` as `~ no tier` lines; the count
+    # here is so the set is visible in the gate's own summary rather than only in the other
+    # tool's output.
+    lines += [f"  ~ scored with no tier: {line}" for line in tierless]
     if verbose:
         lines += [f"  ~ {line}" for line in reported]
     # `problems` is check_rubric's reproduction mismatch list. Reported, never gated: a

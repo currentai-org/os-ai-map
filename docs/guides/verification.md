@@ -389,6 +389,16 @@ What it took, beyond the generic resolution:
 - **The tier-free allowance.** The unmapped-license guard now fires only for ladders that ask
   about a license. `sources/rubrics/hardware.yaml` declares no `license_tier` and none of the
   20 edge products records one, so applied unconditionally the guard nulls all 20.
+- **The per-rung tier rule, still outstanding in the warehouse.** The repo narrowed the same
+  guard a second time: `check_rubric` resolves a license tier only for a rung that actually
+  tests one, so a product the software ladder settles on `source` alone is scored whether or
+  not its license maps. Five products score that way today — `apify`, `chatbot-arena`,
+  `patronus-evaluation-platform`, `artificial-analysis-intelligence-index` and `confer`, all
+  at 2/source_available — and the SQL in `currentai.scores.openness_computed` still resolves
+  the tier up front. Until it carries the same rule, those five reproduce in the repo and
+  abstain in the warehouse, and `check_parity` will report them as a repo/warehouse
+  disagreement. That is the safe direction and a loud one, which is the reason to leave it
+  reported rather than suppress it.
 - **`dims_recorded` and `all_recorded_dims_from_dataset`.** `dims_relied_on` counts only what
   the winning rule reads, which is the wrong denominator — this guide requires every dimension
   the score *records*. The new columns are the precondition for step 3, and for openness the
