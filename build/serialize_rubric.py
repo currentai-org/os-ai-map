@@ -69,6 +69,7 @@ from build.check_rubric import (
     components_of,
     dimension_read_map,
     license_read_keys,
+    normalize_dimension_value,
     resolve_dimension,
     split_value,
 )
@@ -569,6 +570,14 @@ def build_rubric(sources: dict, policy: dict, routing: dict) -> tuple[dict[str, 
                         continue
                     resolved_keys[dimension] = key
                     bare, detail = split_value(components[key])
+                    # Translated before it leaves, so the warehouse joins a rule's
+                    # `condition_value` against the declared vocabulary and never has to
+                    # learn the synonym table. `self-host:none` goes out as the `core_gated`
+                    # dimension valued `gated`; the recorded spelling is not lost, because
+                    # the traceability pass below still emits `self-host` under its own name.
+                    # Normalizing here rather than in the SQL is what keeps this change off
+                    # check_parity's list.
+                    bare = normalize_dimension_value(bare, spec or {})
                     allowed = (spec or {}).get("values")
                     in_enum = bare in allowed if allowed else ""
                     if in_enum is False:

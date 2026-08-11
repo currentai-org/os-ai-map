@@ -201,6 +201,49 @@ assembled components keep their own terms went unseen. Reading the whole value m
 published score — `flan-collection` from 4 to 3 — and left the other two where the analysts
 had already put them by hand.
 
+### `self-host` and `core-gated` are one question
+
+The software ladder asks whether functionality is withheld from the published source for a
+paid tier, and records the answer under `core-gated` with values `gated` and `ungated`. The
+corpus also answered that question 54 times under `self-host`, in a vocabulary of its own:
+`yes`, `primary`, `only` on one side and `no`, `none`, `enterprise-only`, `enterprise-tier`
+on the other. Whether a vendor lets you run the published thing yourself *is* whether the
+core is withheld, so these were never two facts.
+
+Twenty-three records carry both keys, and they never disagree — 11 `yes`/`ungated`, 10
+`primary`/`ungated`, 2 `only`/`ungated`, and no contradictions in either direction. That
+agreement is what licenses the merge. Until 2026-08-11 `self-host` was an undeclared key,
+which meant it was dropped before the formula ran, and the 31 records that used it *instead*
+of `core-gated` left the dimension unanswered.
+
+Two mechanisms carry it, and they do different jobs:
+
+- **`reads:`** widens which recorded KEY answers a dimension. `core_gated` now reads
+  `[core-gated, self-host]`, first key whose value lands in the enum winning.
+- **`value_aliases:`** widens which recorded VALUE does. `reads:` selects a key and takes its
+  value verbatim, so a synonym key with its own vocabulary still reads as unanswered without
+  a translation table. `dataset.yaml`'s `availability` handles the same problem the other way
+  round, by declaring every spelling as its own value and writing rules that test only one
+  polarity — which works there because the other polarity falls through to the license rungs.
+  `core_gated` has a rung on both sides, so nothing falls through and the spellings have to
+  collapse onto the two declared values.
+
+A spelling with no entry in `value_aliases` is not guessed at. It stays outside the enum, the
+dimension reads as unanswered, and the formula abstains, which is the same treatment an
+unmapped license part gets and for the same reason: the software ladder declares no
+`otherwise`, so abstaining is what the ladder does with evidence it does not understand.
+
+The merge is conservative by construction, and the numbers say so. Of the 31 records whose
+answer changed, 28 kept the score they had: 26 of those are hosted products recording
+`source: closed`, where the first rung fires on `source` alone and `core_gated` is never
+read, and the software ladder already says the dimension is "only meaningful where `source`
+is public". This is the case worth being careful about — a hosted service has no core to gate
+— and rule ordering already neutralizes it. The remaining three had been deferred with the
+same sentence, that core-gated is not recorded in a form the ladder can read, while recording
+it under `self-host` all along. Two of them, `syfthub` and `thunderbolt`, reproduce their
+recorded 5/open_source exactly. One published score moved: `otari` from 4/open_core to
+5/open_source.
+
 ## How the buckets relate to MOF and OSAID
 
 The Model Openness Framework and the OSI's Open Source AI Definition are both **binary**.

@@ -83,6 +83,67 @@ class TestDimensionValue:
         assert dimension_value(components, "data", RECIPE) == "open"
 
 
+ALIAS_RECIPE = {
+    "openness": {
+        "dimensions": {
+            "core_gated": {
+                "values": ["gated", "ungated"],
+                "reads": ["core-gated", "self-host"],
+                "value_aliases": {
+                    "yes": "ungated", "primary": "ungated", "only": "ungated",
+                    "no": "gated", "none": "gated", "enterprise-only": "gated",
+                },
+            },
+        },
+    }
+}
+
+
+class TestValueAliases:
+    """`reads` widens which KEY answers a dimension; `value_aliases` widens which VALUE
+    does. Both are needed for a synonym key that carries its own vocabulary, which is what
+    `self-host` is to `core-gated`.
+    """
+
+    def test_a_synonym_value_resolves_to_the_declared_one(self):
+        components = split_components("self-host:none")
+        assert dimension_value(components, "core_gated", ALIAS_RECIPE) == "gated"
+
+    def test_the_declared_value_is_returned_unchanged(self):
+        components = split_components("core-gated:ungated")
+        assert dimension_value(components, "core_gated", ALIAS_RECIPE) == "ungated"
+
+    def test_parenthetical_detail_is_stripped_before_translation(self):
+        """`enterprise-only(hybrid)` and `no(managed only)` are both real recordings, and
+        the alias table holds bare tokens rather than every phrasing around them."""
+        components = split_components("self-host:enterprise-only(hybrid)")
+        assert dimension_value(components, "core_gated", ALIAS_RECIPE) == "gated"
+
+    def test_the_preferred_key_still_wins_when_both_are_recorded(self):
+        """23 records carry both keys. `core-gated` is declared first and is the
+        dimension's own vocabulary, so it decides."""
+        components = split_components("self-host:yes;core-gated:gated")
+        assert dimension_value(components, "core_gated", ALIAS_RECIPE) == "gated"
+
+    def test_a_synonym_key_wins_when_the_preferred_one_is_out_of_enum(self):
+        """The in-enum preference has to survive translation, or a garbled `core-gated`
+        would shadow a `self-host` that answers cleanly."""
+        components = split_components("core-gated:see pricing page;self-host:none")
+        assert dimension_value(components, "core_gated", ALIAS_RECIPE) == "gated"
+
+    def test_an_unmapped_value_is_not_guessed_at(self):
+        """It comes back untranslated, lands outside the enum, and the formula abstains.
+        The software ladder declares no `otherwise`, so abstaining is the safe default and
+        inventing a polarity from an unrecognized word is the failure that would not
+        surface."""
+        components = split_components("self-host:byoc")
+        assert dimension_value(components, "core_gated", ALIAS_RECIPE) == "byoc"
+
+    def test_a_dimension_with_no_aliases_is_unaffected(self):
+        components = split_components("data:closed;post-training-data:open")
+        assert dimension_value(components, "data", RECIPE) == "open"
+
+
 class TestRecordedLicenseAliases:
     @pytest.mark.parametrize(
         ("recorded", "canonical"),
@@ -363,3 +424,37 @@ def test_a_ladder_WITH_tiers_still_fails_an_unmappable_license(tmp_path, monkeyp
     reproduced, total, problems, deferred = check_category("tools", verbose=False)
 
     assert len(problems) == 1 and "maps to no tier" in problems[0]
+
+
+def test_every_recorded_self_host_value_is_mapped():
+    """A ratchet on the real corpus, not a unit test of the mechanism.
+
+    `value_aliases` is a hand-written table over vocabulary contributors keep adding to, and
+    an unmapped spelling fails quietly by design: the dimension reads as unanswered and the
+    product abstains, which looks exactly like a product nobody has researched yet. This
+    turns the quiet case loud at the moment the spelling is introduced, which is the only
+    moment anyone knows what it was meant to mean.
+
+    All eight recorded spellings map today. Adding a ninth means adding it here too, or
+    recording `core-gated` directly.
+    """
+    import yaml as _yaml
+
+    from build.check_rubric import components_of, head
+
+    aliases = _yaml.safe_load(
+        (ROOT / "sources/rubrics/software.yaml").read_text()
+    )["openness"]["dimensions"]["core_gated"]["value_aliases"]
+
+    unmapped = {}
+    for path in sorted((ROOT / "sources/scores").glob("*.yaml")):
+        components = components_of(_yaml.safe_load(path.read_text()).get("openness") or {})
+        value = components.get("self-host")
+        if value is not None and head(value) not in aliases:
+            unmapped[path.stem] = head(value)
+
+    assert unmapped == {}, (
+        f"unmapped `self-host` spellings: {unmapped}. Map each to `gated` or `ungated` in "
+        "software.yaml's core_gated.value_aliases, or record `core-gated` on the product."
+    )
+    assert set(aliases.values()) == {"gated", "ungated"}
