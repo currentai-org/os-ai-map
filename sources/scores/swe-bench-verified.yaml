@@ -2,15 +2,33 @@ product: swe-bench-verified
 openness:
   score: 4
   class: open
-  components: license:undeclared on HF dataset card (underlying SWE-bench harness repo is MIT);redistributability:full(downloadable
-    parquet, ungated);datasheet:yes(dataset card + arXiv:2310.06770);held-out:no hidden split in Verified
-    itself (the public 500-instance set is fully released; gold patches + tests included);data-source:real
-    GitHub PR/issue pairs
+  components:
+    license:
+      value: undeclared on HF dataset card
+      detail: underlying SWE-bench harness repo is MIT
+      raw: undeclared on HF dataset card (underlying SWE-bench harness repo is MIT)
+    redistributability:
+      value: full
+      detail: downloadable parquet, ungated
+    datasheet:
+      value: 'yes'
+      detail: dataset card + arXiv:2310.06770
+    held-out:
+      value: no hidden split in Verified itself
+      detail: the public 500-instance set is fully released; gold patches + tests included
+      raw: no hidden split in Verified itself (the public 500-instance set is fully released; gold patches
+        + tests included)
+    data-source:
+      value: real GitHub PR/issue pairs
   confidence: medium
   note: Effectively open (ungated, downloadable, full gold patches and tests, datasheet present) but
     the HF dataset card declares NO explicit license field, so the data-license class is inferred from
     the MIT harness repo and public redistribution rather than a stated data license. Scored 4 not 5 on
     that ambiguity. (Distinct from SWE-bench's broader/hidden variants which can carry held-out splits.)
+  raw: license:undeclared on HF dataset card (underlying SWE-bench harness repo is MIT);redistributability:full(downloadable
+    parquet, ungated);datasheet:yes(dataset card + arXiv:2310.06770);held-out:no hidden split in Verified
+    itself (the public 500-instance set is fully released; gold patches + tests included);data-source:real
+    GitHub PR/issue pairs
   sources:
   - url: https://huggingface.co/datasets/princeton-nlp/SWE-bench_Verified
     shows: 500 instances, ~2.1 MB, not gated, dataset card present, gold patch + FAIL_TO_PASS/PASS_TO_PASS

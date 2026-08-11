@@ -2,12 +2,25 @@ product: aws-lambda
 openness:
   score: 1
   class: closed
-  components: license:Proprietary;service:proprietary AWS-only SaaS (no self-host);underlying-microVM:Firecracker is
-    Apache-2.0 OSS but the Lambda control/data plane is closed;weights:n/a;source:closed
+  components:
+    license:
+      value: Proprietary
+    service:
+      value: proprietary AWS-only SaaS
+      detail: no self-host
+      raw: proprietary AWS-only SaaS (no self-host)
+    underlying-microVM:
+      value: Firecracker is Apache-2.0 OSS but the Lambda control/data plane is closed
+    weights:
+      value: n/a
+    source:
+      value: closed
   confidence: high
   note: Lambda is a proprietary managed serverless service (closed), per recipe's explicit 'Lambda as
     closed counterpart'. Firecracker (the microVM substrate) is separately open source but is a different
     artifact; Lambda itself is not self-hostable.
+  raw: license:Proprietary;service:proprietary AWS-only SaaS (no self-host);underlying-microVM:Firecracker
+    is Apache-2.0 OSS but the Lambda control/data plane is closed;weights:n/a;source:closed
   sources:
   - url: https://aws.amazon.com/blogs/aws/firecracker-lightweight-virtualization-for-serverless-computing/
     shows: Firecracker microVM powers Lambda; Lambda is AWS-managed proprietary service

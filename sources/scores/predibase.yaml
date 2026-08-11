@@ -2,10 +2,22 @@ product: predibase
 openness:
   score: 2
   class: source_available
-  components: core-platform:closed(proprietary post-training stack + turbo serving);source:partial(LoRAX
-    and Ludwig are adjacent OSS; the fine-tuning platform does not ship);OSS-components:LoRAX(open source
-    multi-LoRA serving)+Ludwig(open source);runs-on:Predibase-SaaS-or-customer-VPC;license:Proprietary(managed)
-    with Apache-licensed LoRAX/Ludwig adjuncts
+  components:
+    core-platform:
+      value: closed
+      detail: proprietary post-training stack + turbo serving
+    source:
+      value: partial
+      detail: LoRAX and Ludwig are adjacent OSS; the fine-tuning platform does not ship
+    OSS-components:
+      value: LoRAX
+      detail: open source multi-LoRA serving)+Ludwig(open source
+    runs-on:
+      value: Predibase-SaaS-or-customer-VPC
+    license:
+      value: Proprietary
+      detail: managed) with Apache-licensed LoRAX/Ludwig adjuncts
+      raw: Proprietary(managed) with Apache-licensed LoRAX/Ludwig adjuncts
   confidence: high
   note: The founders created and maintain OSS LoRAX (multi-LoRA serving) and Ludwig, but the Predibase fine-tuning/RFT
     platform, which is the thing being scored, is proprietary managed SaaS running on Predibase's own cloud
@@ -14,6 +26,10 @@ openness:
     and there is no open core here, only an open periphery. A repo that exists while the runtime does not
     ship is source:partial, which the ladder scores 2/source_available. The score itself was already 2.
   last_verified: '2026-08-09'
+  raw: core-platform:closed(proprietary post-training stack + turbo serving);source:partial(LoRAX and Ludwig
+    are adjacent OSS; the fine-tuning platform does not ship);OSS-components:LoRAX(open source multi-LoRA
+    serving)+Ludwig(open source);runs-on:Predibase-SaaS-or-customer-VPC;license:Proprietary(managed) with
+    Apache-licensed LoRAX/Ludwig adjuncts
   sources:
   - url: https://pypi.org/pypi/predibase/json
     shows: 'The JSON API''s info object records license: null, classifiers: [], summary: null, and home_page:
