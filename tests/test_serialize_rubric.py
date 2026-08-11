@@ -719,7 +719,15 @@ def test_real_sources_serialize_without_errors():
         # inference_code 47 -> 64 when the sweep read the category: four stale deferrals came
         # off (a deferred product publishes no openness evidence at all), and several products
         # that had described their gating in prose gained a readable `source:`/`core-gated:`.
-        "finetuning_code": 124, "inference_code": 65, "ml_frameworks": 80,
+        #
+        # Three categories then rose by 14 rows in total when five vendor licenses joined the
+        # `competition_restricted` tier and the deferrals waiting on them came off:
+        # inference_code +4 (max, which records repo-license and commercial-tier beside the two
+        # dimensions), orchestration_agents +4 (autogpt and dify, two rows each) and ui_api +6
+        # (open-webui and lobe-chat, each with a tier key beside the two). Every row is a
+        # deferral coming off; no product that was already computed gained a key, which is why
+        # the other twelve categories hold.
+        "finetuning_code": 124, "inference_code": 69, "ml_frameworks": 80,
         # orchestration_agents rose by 3 when n8n's stale deferral was removed: a deferred
         # product publishes no openness evidence, and n8n had been deferred as "not recorded"
         # while recording everything the ladder needed. Then by 6 more (140 -> 146) when
@@ -737,7 +745,7 @@ def test_real_sources_serialize_without_errors():
         # coming off at 5 rows each, less nothing: syfthub in orchestration_agents,
         # thunderbolt and otari in ui_api. A deferred product publishes no openness evidence
         # at all, so a removed deferral is always the larger of the two effects.
-        "orchestration_agents": 159, "telemetry_observability": 94, "ui_api": 154,
+        "orchestration_agents": 163, "telemetry_observability": 94, "ui_api": 160,
         # training_synthetic_datasets is unchanged at 158 across the ladder widening, which
         # is the check that mattered: benchmark_eval_data's new dimensions and rungs did not
         # disturb the category the ladder was derived from.

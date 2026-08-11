@@ -423,9 +423,11 @@ def test_a_rung_that_TESTS_the_tier_still_fails_an_unmappable_license(tmp_path, 
     A ladder whose deciding rung turns on `license_tier` and meets a license outside its
     vocabulary must still report that, or "resolve the tier only when a rung needs one"
     would quietly become an escape hatch for every unmapped license on the map. `dify`,
-    `max`, `open-webui`, `lobe-chat` and `autogpt` are the real cases: all record
+    `max`, `open-webui`, `lobe-chat` and `autogpt` were the real cases: all record
     `source:public`, which reaches a rung that tests the tier, so their vendor licenses
-    still block them.
+    blocked them until those licenses were mapped to `competition_restricted`. Mapping the
+    license is the fix this gate is meant to force; the gate itself is unchanged, which is
+    why the assertion below stands on a fixture rather than on any of the five.
     """
     report = _tier_gate_fixture(
         tmp_path, monkeypatch,

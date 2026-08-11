@@ -119,8 +119,34 @@ openness:
         # and running it needs a paid license key. That is this tier's definition almost
         # word for word, and it is why the tier is NOT `proprietary` - proprietary here
         # means the source is not published, and n8n's is.
+        #
+        # The five vendor licenses below join on the same reading, each confirmed against the
+        # terms its product's score records rather than against the marketing:
+        #   * `Modular-Community-License` caps capacity by device architecture - eight devices
+        #     on any accelerator other than X86/ARM/NVIDIA-PTX - and grants only "a limited
+        #     right to redistribute certain components of the SDK". Scale, not attribution.
+        #   * `Dify-Open-Source-License` is Apache-2.0 plus a multi-tenant service restriction
+        #     and branding conditions. The multi-tenant clause is the anti-compete clause.
+        #   * `Open-WebUI-License` is BSD-3-Clause plus a branding-retention clause that binds
+        #     above 50 end-users per 30 days unless an enterprise license is bought. A
+        #     threshold above which production use is charged for.
+        #   * `LobeHub-Community-License` is Apache-2.0 plus a requirement to buy a commercial
+        #     license before distributing a derivative work. This one restricts DISTRIBUTION
+        #     rather than running, so it is the loosest fit of the five - but a paid gate on
+        #     derivatives is still a class of use charged for, and it is plainly neither OSI
+        #     nor `permissive_non_osi`, which admits attribution and naming and nothing more.
+        #   * `PolyForm-Shield` forbids use in anything competing with the licensor's product,
+        #     which is this tier's first clause stated directly. It governs `autogpt_platform/`,
+        #     AutoGPT's active product; the legacy MIT components do not lift it.
+        #
+        # Every one of the five is recorded by exactly one product, so adding them here moved
+        # no other score. That is worth checking before extending this list rather than after:
+        # the list is shared across eleven categories, and a name added for one product tiers
+        # every product that happens to record it.
         examples: [BSL-1.1, SSPL-1.0, FCL-1.0-ALv2, Elastic-License-2.0,
-          Elastic License 2.0, Sustainable-Use-License, n8n-Enterprise-License]
+          Elastic License 2.0, Sustainable-Use-License, n8n-Enterprise-License,
+          Modular-Community-License, Dify-Open-Source-License, Open-WebUI-License,
+          LobeHub-Community-License, PolyForm-Shield]
       proprietary:
         definition: No license to the source, because the source is not published.
         # `commercial` is how the closed observability vendors record it.

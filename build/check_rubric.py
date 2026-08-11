@@ -572,11 +572,19 @@ class CategoryReport(NamedTuple):
 
     `tierless` is the set the tier-gate fix made possible: products that SCORE while their
     recorded license maps to no tier, because no rung the walk reached asked for one. They
-    are correct scores and they must stay countable — four of them are held up by vendor
-    licenses (`Modular-Community-License`, `Dify-Open-Source-License`, `Open-WebUI-License`,
-    `LobeHub-Community-License`) that a category note calls competition-restricted in
-    substance, and the moment such a license IS mapped, the product may move. A score whose
-    license nobody could read is a score standing on less evidence than its neighbours.
+    are correct scores and they must stay countable, because a score whose license nobody
+    could read is a score standing on less evidence than its neighbours. What remains here
+    is licenses nobody has NAMED — `apify`'s `mixed(platform closed, SDK open)`, `confer`'s
+    `none-declared`, three products recording no license key at all. That is a curation
+    prompt, not a rubric gap: there is nothing to map until someone reads the card.
+
+    It is deliberately not the same set as the products blocked ON a tier. Those reach a
+    rung that asks, and they stay deferred until their license joins a tier — which is what
+    happened to the five vendor licenses (`Modular-Community-License`,
+    `Dify-Open-Source-License`, `Open-WebUI-License`, `LobeHub-Community-License`,
+    `PolyForm-Shield`) that were held for exactly that reason. All five landed on
+    `competition_restricted` and none of the five products moved a score, because the rung
+    they reach produces the 2/source_available they already recorded.
     """
 
     reproduced: int

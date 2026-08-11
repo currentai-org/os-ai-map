@@ -63,12 +63,18 @@ def test_local_scores_matches_check_rubrics_split():
     being resolved ahead of the formula: apify, chatbot-arena, patronus-evaluation-platform,
     artificial-analysis-intelligence-index and confer all record a `source` value the
     software ladder settles on its own, and were abstained on a license no rung deciding
-    them was going to read. All five reproduce their recorded 2/source_available."""
+    them was going to read. All five reproduce their recorded 2/source_available. Then
+    405/67 -> 410/62 when five vendor licenses joined the `competition_restricted` tier:
+    max, dify, open-webui, lobe-chat and autogpt all record `source:public`, which reaches
+    the rung that tests the tier, so mapping the license was the only thing left. autogpt
+    needed its license recorded by name first - it said `DUAL`, which names no license. That
+    rung produces 2/source_available, which is what all five already recorded, so again no
+    score moved."""
     computed, deferred = local_scores(None)
-    assert len(deferred) == 67
-    assert len(computed) == 405
+    assert len(deferred) == 62
+    assert len(computed) == 410
     assert not set(computed) & set(deferred)
-    # Every one of the 405 reproduces today, so none should abstain.
+    # Every one of the 410 reproduces today, so none should abstain.
     assert [key for key, value in computed.items() if value is None] == []
 
 
