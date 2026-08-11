@@ -73,8 +73,48 @@ def split_components(text: str) -> dict[str, str]:
 
 
 def head(value: str) -> str:
-    """The bare value, before any parenthetical or comma-separated detail."""
+    """The bare value, before any parenthetical or comma-separated detail.
+
+    Reads a DIMENSION value — `open(downloadable on HF, gated)` -> `open`. Dimension
+    vocabularies are single tokens, so cutting at the first `(` or `,` is the whole job.
+
+    It is deliberately NOT the first statement of license resolution any more. A license
+    value is not a single token: `Apache-2.0(code, OSI) + custom weights license(non-OSI)`
+    is two licenses, and cutting it here resolved the product on its first half and never
+    saw the restrictive one. `license_parts` splits first and this runs per part, on a
+    fragment that IS a single token followed by its annotation.
+    """
     return re.split(r"[(,]", value)[0].strip()
+
+
+def license_parts(raw: str) -> list[str]:
+    """The `+`-joined halves of a compound license, split at paren depth zero.
+
+    Depth zero because annotations carry their own punctuation —
+    `Sustainable-Use-License(fair-code,non-OSI: internal-use-only,no-resale/SaaS)+n8n-Enterprise-License`
+    is two licenses, and a naive split on `+` or on `,` invents fragments out of the
+    parenthetical.
+
+    Only `+` separates licenses. A depth-zero comma does not: every one in the corpus is
+    prose trailing a single license (`Proprietary, proprietary service`,
+    `MIT(Maple-client)+AGPL-3.0(OpenSecret-platform),both-OSI`), which is why the comma
+    stays `head`'s business, inside a part, rather than becoming a separator here.
+    """
+    parts: list[str] = []
+    depth = 0
+    current = ""
+    for char in raw:
+        if char == "(":
+            depth += 1
+        elif char == ")":
+            depth = max(0, depth - 1)
+        if char == "+" and depth == 0:
+            parts.append(current)
+            current = ""
+        else:
+            current += char
+    parts.append(current)
+    return [part.strip() for part in parts if part.strip()]
 
 
 def split_value(raw: str) -> tuple[str, str]:
@@ -229,12 +269,13 @@ def recorded_license_aliases() -> dict[str, str]:
 
 
 def normalize_license(raw: str) -> str:
-    """Reduce a recorded license string to the license that governs the weights.
+    """Reduce ONE recorded license to the name the tier examples are written in.
 
-    Two forms in the data need flattening, both spelled out in the recipe's
-    `normalization` list:
-      * `code MIT + model DeepSeek-Model-License` — the model license governs,
-        because it is the one attached to the artifact being scored.
+    Runs on a single part, after `license_parts` has split a compound. Three
+    mechanical steps, all spelled out in the recipe's `normalization` list:
+      * the annotation is dropped — `Apache-2.0(code, OSI)` is Apache-2.0;
+      * a `code ` or `model ` scope prefix is dropped, because the scope is which
+        artifact the license covers, not a different license;
       * `assumed-Modified-MIT` — the `assumed-` prefix marks confidence, not a
         different license.
 
@@ -242,25 +283,33 @@ def normalize_license(raw: str) -> str:
     name. Applied last, so it sees the value after the mechanical steps rather
     than having to enumerate every prefixed variant.
 
+    The `code X + model Y` rule that used to live here — the MODEL license governs —
+    is now a consequence rather than a special case: both halves resolve and the most
+    restrictive wins, and a weights license is the restrictive half in every recorded
+    instance. Where it would not be, the old rule was wrong anyway: a permissive
+    weights license does not buy back a restrictive code license.
+
     Purely mechanical. Anything needing judgment is left alone to be flagged.
     """
     value = head(raw)
-    if "+" in value and "model" in value.lower():
-        value = value.split("+")[-1]
-        value = re.sub(r"(?i)^\s*model\s+", "", value)
-    value = re.sub(r"(?i)^assumed-", "", value.strip()).strip()
+    value = re.sub(r"(?i)^\s*(code|model)\s+", "", value.strip()).strip()
+    value = re.sub(r"(?i)^assumed-", "", value).strip()
     return recorded_license_aliases().get(value.lower(), value)
 
 
-def license_tier(raw: str, recipe: dict) -> str | None:
-    """Map a license string onto a tier from the recipe's own examples.
+def tier_rank(tiers: dict) -> dict[str, int]:
+    """Tier name -> position in the recipe's declaration order.
 
-    Returns None when the license is unmapped, which is a finding rather than an
-    error — an unmapped license means the rubric has not yet been told how to
-    treat it, and `mixed` means the evidence never recorded the outcome.
+    Declaration order IS restrictiveness order, ascending — every ladder declares
+    `ordered_by: restrictiveness_ascending` and `check_recipe` requires it. A name the
+    recipe does not declare ranks last, so an unrecognized tier can never be treated as
+    the more permissive of a pair.
     """
-    tiers = ((recipe.get("openness") or {}).get("license_tier") or {}).get("values") or {}
-    needle = normalize_license(raw).lower()
+    return {name: rank for rank, name in enumerate(tiers)}
+
+
+def _tier_of(needle: str, tiers: dict) -> str | None:
+    """The tier whose examples contain `needle`, already normalized and lowercased."""
     for name, spec in tiers.items():
         for example in (spec or {}).get("examples") or []:
             if example.lower() == needle:
@@ -269,6 +318,52 @@ def license_tier(raw: str, recipe: dict) -> str | None:
     if needle in ("proprietary", "closed", "none"):
         return "proprietary"
     return None
+
+
+def license_tier(raw: str, recipe: dict) -> str | None:
+    """Map a license string onto a tier from the recipe's own examples.
+
+    A compound license resolves on ALL its parts, most restrictive governing. That is
+    what `docs/guides/identity.md` already says openness does across a release's SKUs —
+    "a product is as open as the most restrictive license you must accept to use it" —
+    and a `+` in a recorded value is that same fact written on one line. Before this,
+    resolution truncated at the first `(` or `,` and so read only the first half:
+    `internlm` records Apache-2.0 code plus a custom application-gated weights license
+    and resolved as `osi`, never seeing the license that actually governs the weights.
+
+    Two things this deliberately does not do:
+
+      * It does not skip a part it cannot map. Every part must resolve or the whole
+        value abstains, because an unmapped part can only ever be MORE restrictive than
+        the tier the mapped parts reached — ignoring it is exactly how partial coverage
+        overstates openness.
+      * It does not decompose a compound the recipe declared as a single name. The
+        whole, untruncated value is looked up first, so a phrase whose `+` is English
+        rather than a join — `follows mC4 + OSCAR-2301 terms`, where neither operand is
+        a license — resolves as the one thing the curator recorded. A compound whose
+        operands ARE license names does not belong in a tier's examples: it is a
+        per-product override, and decomposition handles it once each operand is
+        declared on its own.
+
+    Returns None when the license is unmapped, which is a finding rather than an
+    error — an unmapped license means the rubric has not yet been told how to
+    treat it, and `mixed` means the evidence never recorded the outcome.
+    """
+    tiers = ((recipe.get("openness") or {}).get("license_tier") or {}).get("values") or {}
+    if not tiers:
+        return None
+
+    declared = _tier_of(
+        recorded_license_aliases().get(raw.strip().lower(), raw.strip()).lower(), tiers
+    )
+    if declared is not None:
+        return declared
+
+    resolved = [_tier_of(normalize_license(part).lower(), tiers) for part in license_parts(raw)]
+    if not resolved or any(tier is None for tier in resolved):
+        return None
+    rank = tier_rank(tiers)
+    return max(resolved, key=lambda name: rank.get(name, len(tiers)))
 
 
 def resolve_dimension(components: dict[str, str], dimension: str, recipe: dict) -> str | None:

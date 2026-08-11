@@ -13,10 +13,10 @@ scoring_recipe:
   version: 1
   derived_from:
     method: reverse-engineered from hand-authored scores, then verified
-    scores_reproduced: 31
+    scores_reproduced: 32
     scores_total: 38
-    scores_deferred: 7
-    verified_on: '2026-07-31'
+    scores_deferred: 6
+    verified_on: '2026-08-11'
     checker: build/check_rubric.py
   note: >-
     First DATASET category, and the source the shared ladder was derived from. Chosen over
@@ -31,14 +31,6 @@ scoring_recipe:
 
   extends: dataset
   deferred:
-    smoltalk:
-      because: >-
-        The ladder computes 5/open and the score says 4/open. The 4 rests on
-        `license:apache-2.0(new-subsets)+per-component` - newly created subsets are
-        Apache-2.0 while incorporated datasets keep their own terms - but `head()` splits the
-        license value at the first parenthesis, so the ladder reads a clean `apache-2.0` and
-        the qualifier that justifies the 4 never reaches it. Either the per-component scope
-        belongs in a key of its own or the score is a level high; it needs a human.
     openhermes-2-5:
       because: >-
         License `not-clearly-stated-on-card` resolves to the `unstated` tier, which carries no

@@ -139,9 +139,16 @@ openness:
         # curation fix, not a rubric one.
         # `Apache-2.0/MIT` is `livebench` dual-licensing under two open licenses, so either
         # branch lands on this rung. `Etalab-2.0` is the French government's open license.
+        #
+        # `CommonCrawl-ToU` replaces the compound `CommonCrawl-ToU+Apache-2.0`, which was
+        # `redpajama-data-v2`'s license string copied verbatim into the ladder - a
+        # per-product override, and one that only worked because resolution truncated at
+        # the first `(`. Compounds now resolve on both halves, so the operand is what
+        # belongs here. The tier is unchanged and deliberate: Common Crawl's terms permit
+        # redistribution and reuse, commercial use included, which is this tier's test.
         examples: [ODC-BY, odc-by, ODC-BY-1.0, CC-BY-4.0, CC-BY-SA-4.0, cc0-1.0, Apache-2.0,
           apache-2.0, MIT, mit, Apache-2.0/MIT, Etalab-2.0, permissive, open,
-          NVIDIA-Open-Data, CommonCrawl-ToU+Apache-2.0]
+          NVIDIA-Open-Data, CommonCrawl-ToU]
       noncommercial:
         definition: >-
           Permits redistribution but forbids commercial use. Capped at 2 by the universal
@@ -163,7 +170,18 @@ openness:
           restriction you can read is a smaller problem than an unbounded one you have to
           audit per subset, and above `unstated` because at least the obligation is
           locatable.
-        examples: [mixed-per-subset, inherits-the-stack-v2, follows mC4 + OSCAR-2301 terms]
+        # `per-task` and `per-component` are the same conclusion as `mixed-per-subset`, in
+        # the words the curator happened to use, and they appear as the SECOND half of a
+        # compound - `Apache-2.0(recipe)+per-task` on `flan-collection`. The recipe is
+        # Apache-2.0; the tasks it assembles are not, and until compounds resolved on both
+        # halves that half was invisible.
+        #
+        # `follows mC4 + OSCAR-2301 terms` stays a whole-value example, and the `+` in it is
+        # why: it is English, joining two CORPUS names rather than two licenses, so there is
+        # nothing there to decompose. That is the line between a legitimate compound example
+        # and a per-product override - whether its operands are licenses.
+        examples: [mixed-per-subset, inherits-the-stack-v2, follows mC4 + OSCAR-2301 terms,
+          per-task, per-component]
       unstated:
         definition: >-
           No license recorded on the card at all. The most restrictive tier, because absent
@@ -262,12 +280,23 @@ openness:
       A documented, ungated release whose license points somewhere else. Not 5, because
       establishing what you may do with it means reading another corpus's terms - and for
       `stack-edu` those terms are The Stack v2's, which is itself gated.
+  - when: {license_tier: deferred_to_components, documentation: partial}
+    then: {score: 3, class: open}
+    because: >-
+      Both discounts at once: the license points at somebody else's terms AND the card does
+      not describe the artifact people actually use. `flan-collection` is the case - the
+      Apache-2.0 covers the recipe while the tasks it assembles keep their own terms, and
+      the widely used HF conversion is documented by whoever converted it. Scored beside
+      `the-pile` rather than beside `stack-edu`, because a deferred license with a card you
+      cannot rely on is the-pile's situation whether the card is stale or merely partial.
   - when: {license_tier: open_data, documentation: partial}
     then: {score: 4, class: open}
     because: >-
       A clean license and an ungated download, but the card does not describe the artifact
-      people actually use. `flan-collection` documents the Apache-2.0 recipe while the
-      widely used conversion is documented by whoever converted it.
+      people actually use. One step below the rung under it for the card alone. No product
+      sits here today - `flan-collection` did, on a license the resolver truncated to a
+      clean `Apache-2.0`, and moved to the deferred-license rung above once the whole value
+      was read.
   - when: {license_tier: open_data, documentation: present}
     then: {score: 5, class: open}
     because: One license covering the release, an open download, and a card. Nothing withheld.

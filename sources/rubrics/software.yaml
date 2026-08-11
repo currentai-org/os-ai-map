@@ -67,9 +67,11 @@ openness:
         # Spelling variants and dual forms are listed literally rather than normalized:
         # whether `GPLv3` is OSI is a fact, and a fact is cheaper to look up than a regex
         # is to get right. `LGPL-3.0/GPL-3.0` is openfn dual-licensing under two OSI
-        # licenses, so either branch lands on this rung.
+        # licenses, so either branch lands on this rung. `Apache-2.0/MIT` is the same shape
+        # on `megatron-lm`'s vendored components, and is already declared verbatim in
+        # `dataset.yaml` for `livebench` - one spelling, one tier, in both ladders.
         examples: [Apache-2.0, MIT, BSD-3-Clause, GPL-3.0, AGPL-3.0, LGPL-3.0, MPL-2.0,
-          GPL-3.0-or-later, GPLv3, LGPL-3.0/GPL-3.0]
+          GPL-3.0-or-later, GPLv3, LGPL-3.0/GPL-3.0, Apache-2.0/MIT]
       permissive_non_osi:
         definition: >-
           Not OSI-approved, but imposes no restriction on WHO may use the software or AT
@@ -82,8 +84,13 @@ openness:
           use before a delayed conversion date. The reader can audit the code and still
           not be free to run it, which is why this sits below the OSI tiers rather than
           beside them. Delayed-conversion licenses are scored on their terms TODAY.
+        # `n8n-Enterprise-License` covers the `ee/` directories n8n ships in the same public
+        # repo as its Sustainable-Use-License core: the source is published and readable,
+        # and running it needs a paid license key. That is this tier's definition almost
+        # word for word, and it is why the tier is NOT `proprietary` - proprietary here
+        # means the source is not published, and n8n's is.
         examples: [BSL-1.1, SSPL-1.0, FCL-1.0-ALv2, Elastic-License-2.0,
-          Elastic License 2.0, Sustainable-Use-License]
+          Elastic License 2.0, Sustainable-Use-License, n8n-Enterprise-License]
       proprietary:
         definition: No license to the source, because the source is not published.
         # `commercial` is how the closed observability vendors record it.
