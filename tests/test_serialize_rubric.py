@@ -734,7 +734,15 @@ def test_real_sources_serialize_without_errors():
         # 164 -> 169: `smoltalk`'s deferral was the ladder reading only the first half of
         # `apache-2.0(new-subsets)+per-component`. Reading both halves reproduces its
         # recorded 4/open, the deferral went, and its five component keys publish.
-        "training_synthetic_datasets": 169, "benchmark_eval_data": 111,
+        # 169 -> 194: the five remaining parser deferrals came off together. Each of
+        # cosmopedia, openthoughts-114k, synth, tulu-3-sft-mixture and wildchat-1m now
+        # publishes five rows - license, the gate key and the card key, plus the
+        # `availability` and `documentation` dimensions those two normalize onto - and a
+        # deferred product publishes none at all, so 5 x 5 is the whole of the move. The
+        # promotion added no key to a product that was already computed, which is why
+        # benchmark_eval_data holds at 111: compar-ia-datasets got the same `dataset_card`
+        # key and stays deferred on its unrelated gate-vocabulary defect.
+        "training_synthetic_datasets": 194, "benchmark_eval_data": 111,
         # safeguards 90 -> 103 and training_synthetic_datasets 158 -> 164: the universal
         # license scale retired five deferrals, and a deferred product publishes no
         # openness evidence at all.
