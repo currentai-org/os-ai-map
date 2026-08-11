@@ -17,7 +17,9 @@ when the two disagree the guide wins.
     the field landed, and watching that fill in is how we measure the automation.
   * **The score file's last commit date** — the fallback. Somebody committed this
     file on that date and left the score standing, which git records and nobody can
-    inflate. Weaker than a re-check and *not* presented as one.
+    inflate. Weaker than a re-check and *not* presented as one. Read `commit_dates` for
+    why "committed this file" has to mean a commit that changed what the file claims,
+    and not simply one that touched it.
 
 `last_verified` is deliberately NOT backfilled from `sources[].accessed`. Someone
 opening a URL is a weaker claim than the conclusion being re-confirmed, and copying
@@ -46,6 +48,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import copy
 import subprocess
 from collections import defaultdict
 from datetime import date, datetime
@@ -53,8 +56,18 @@ from pathlib import Path
 
 import yaml
 
+from build.check_rubric import FREE_TEXT, _clauses, components_of
+
 ROOT = Path(__file__).resolve().parents[1]
 AXES = ("openness", "adoption", "capability")
+
+# `git log --raw` writes this in the old- or new-blob column for an add or a delete.
+NULL_SHA = "0" * 40
+
+# The walk parses roughly a thousand historical blobs, which is the whole cost of dating
+# by content rather than by touch. libyaml does it in roughly a quarter of the time and is
+# already present; falling back keeps the module importable where it is not.
+_LOADER = getattr(yaml, "CSafeLoader", yaml.SafeLoader)
 
 
 def parse_date(value: object) -> date | None:
@@ -68,8 +81,157 @@ def parse_date(value: object) -> date | None:
     return None
 
 
+def score_projection(text: str) -> object | None:
+    """The claim-bearing content of a score file, invariant to how it is stored.
+
+    Two revisions with equal projections say the same thing about the product, however
+    differently they spell it. That is the test for whether a commit reviewed anything.
+
+    Only one storage choice is normalized away, because only one exists: `openness.
+    components` is either the flat `k:v;k:v` string or the Phase 1a mapping plus its
+    verbatim `openness.raw` sibling. `components_of` is the single reader for both
+    (#186), so this reduces each shape to the same key -> clause dict and drops `raw`,
+    which is the migration's own bookkeeping rather than a claim. `free_text` rides
+    along because the keyless clauses `split_components` discards are still published in
+    the flat string, so losing one is not score-neutral.
+
+    Everything else in the document is compared as it stands. The normalization is narrow
+    on purpose: any field this ignored could then be changed without moving the date, and
+    nothing would report it.
+
+    **The blind spot, and the maintenance rule it implies.** A component ENTRY is compared
+    only through `recompose`, which reads `entry["raw"]` when there is one and otherwise
+    `f"{value}({detail})"`. Nothing else inside an entry reaches this comparison. So adding
+    `license_tier: 3` to an entry does not move the date, and neither does changing
+    `entry["value"]` on an entry that carries a `raw` — `recompose` returns the `raw` and
+    never looks. That is inert today because no reader reads any other per-entry key, but
+    Phase 1a exists to make entries structured, so the first real field added under one
+    would land silently unversioned. **When a per-entry field lands, add it here in the
+    same change.** This is a different case from the paragraph above, which is about
+    top-level fields; neither note covers the other.
+
+    Returns None for a revision that will not parse. A blob nothing can read cannot be
+    shown score-neutral, and the caller treats that as a change rather than a match.
+    """
+    try:
+        doc = yaml.load(text, Loader=_LOADER)
+    except yaml.YAMLError:
+        return None
+    if not isinstance(doc, dict):
+        return None
+    doc = copy.deepcopy(doc)
+    openness = doc.get("openness")
+    if isinstance(openness, dict) and "components" in openness:
+        components = openness.get("components")
+        if isinstance(components, dict):
+            free = list(components.get(FREE_TEXT) or [])
+        else:
+            free = [c.strip() for c in _clauses(str(components or "")) if ":" not in c.strip()]
+        openness["components"] = {"clauses": components_of(openness), FREE_TEXT: free}
+        openness.pop("raw", None)
+    return doc
+
+
+class _Blobs:
+    """Blob text by sha, from one long-lived `git cat-file --batch`.
+
+    One process for the whole walk. The alternative — `git show` per revision — is a
+    process spawn per blob, and `commit_dates` runs inside `serialize`, which runs in CI.
+    """
+
+    def __init__(self, root: Path) -> None:
+        self._proc = subprocess.Popen(
+            ["git", "cat-file", "--batch"],
+            cwd=root,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+        )
+        self._cache: dict[str, str | None] = {}
+
+    def text(self, sha: str) -> str | None:
+        if sha not in self._cache:
+            self._proc.stdin.write(f"{sha}\n".encode())
+            self._proc.stdin.flush()
+            header = self._proc.stdout.readline().split()
+            if len(header) < 3:
+                # "<sha> missing". Nothing to read back, and the caller must not treat
+                # an unreadable revision as equal to anything.
+                self._cache[sha] = None
+            else:
+                data = self._proc.stdout.read(int(header[2]))
+                self._proc.stdout.read(1)  # the batch record's trailing newline
+                self._cache[sha] = data.decode("utf-8", "replace")
+        return self._cache[sha]
+
+    def close(self) -> None:
+        self._proc.stdin.close()
+        self._proc.stdout.close()
+        self._proc.wait()
+
+
+def _score_history(root: Path) -> dict[str, list[tuple[date, str, str]]]:
+    """slug -> [(commit date, old blob, new blob)], newest first.
+
+    One `git log` for the whole directory rather than 472 invocations, and `--raw` rather
+    than `--name-only` so each entry carries the blob shas the walk needs — no second
+    round trip to find out what a commit did to a file.
+
+    `--no-renames` on purpose: a rename then reads as a delete plus an add, and an add is
+    where a slug's history honestly starts. With detection on, a pure rename would be
+    score-neutral for the new slug and the walk would run off the end of its history.
+    """
+    result = subprocess.run(
+        ["git", "log", "--format=%x01%cs", "--raw", "--no-abbrev", "--no-renames",
+         "--", "sources/scores"],
+        cwd=root,
+        capture_output=True,
+        text=True,
+    )
+    history: dict[str, list[tuple[date, str, str]]] = defaultdict(list)
+    current: date | None = None
+    for line in result.stdout.splitlines():
+        if line.startswith("\x01"):
+            current = parse_date(line[1:].strip())
+            continue
+        if current is None or not line.startswith(":"):
+            continue
+        meta, _, path = line.partition("\t")
+        path = path.split("\t")[-1].strip()
+        if not (path.startswith("sources/scores/") and path.endswith(".yaml")):
+            continue
+        fields = meta.split()
+        if len(fields) < 4:
+            continue
+        history[path[len("sources/scores/") : -len(".yaml")]].append(
+            (current, fields[2], fields[3])
+        )
+    return history
+
+
+def _last_substantive(entries: list[tuple[date, str, str]], blobs: _Blobs) -> date | None:
+    """The newest commit in `entries` that changed what the file claims.
+
+    Walks newest-first and skips a commit whose two revisions of this file project to the
+    same thing. An add or a delete is never skipped: there is no other revision to compare
+    against, and both are real events in the file's life.
+
+    If every commit in reach is structural the oldest one is returned rather than nothing,
+    which only happens when history has been truncated beneath the file's add.
+    """
+    for when, old_sha, new_sha in entries:
+        if old_sha == NULL_SHA or new_sha == NULL_SHA:
+            return when
+        old_text, new_text = blobs.text(old_sha), blobs.text(new_sha)
+        if old_text is None or new_text is None:
+            return when
+        before, after = score_projection(old_text), score_projection(new_text)
+        if before is None or after is None or before != after:
+            return when
+    return entries[-1][0] if entries else None
+
+
 def commit_dates(root: Path | None = None) -> dict[str, date]:
-    """Most recent commit date per score file, from one pass over git history.
+    """Date of the last commit that changed what each score file CLAIMS.
 
     This is the fallback when an axis carries no `last_verified`, and it is a better
     one than `max(sources[].accessed)`. Committing a score file is somebody asserting
@@ -84,34 +246,36 @@ def commit_dates(root: Path | None = None) -> dict[str, date]:
     nobody has revisited this - which is why the label says `commit` and not
     `verified`.
 
-    One `git log` for the whole directory rather than 495 invocations. Walking
-    newest-first, the first time a path appears is its latest commit.
+    ## Why it is not simply the last commit that touched the file
+
+    Because some commits touch a file without reviewing it. The Phase 1a migration
+    reshapes `openness.components` from a string into a mapping in all 472 files while
+    carrying a byte-identical `raw:` copy of the string, so nothing a reader would call
+    a claim moves — and the naive fallback would republish every one of them as freshly
+    reviewed on the migration day. A commit date is only defensible here because it
+    dates a review; a commit that reviewed nothing must not supply one, or the fallback
+    starts making the same category error `sources[].accessed` made.
+
+    So the walk goes newest-first per file and skips any commit whose two revisions of
+    that file have the same `score_projection`. This needs no convention and no trailer:
+    a commit cannot claim to have reviewed something the content says it did not touch,
+    and it works on history already written.
+
+    One `git log` for the whole directory and one `git cat-file --batch` for the blobs,
+    rather than a process per file.
 
     `root` defaults to this module's own repository root, which is what every existing
     caller in this file wants. `build.freshness_payload` passes its own `root` through
     explicitly so it can be pointed at a different checkout (a test fixture, a shallow-
     clone probe) without silently reading this repository's history instead.
     """
-    result = subprocess.run(
-        ["git", "log", "--format=%cs", "--name-only", "--", "sources/scores"],
-        cwd=root or ROOT,
-        capture_output=True,
-        text=True,
-    )
-    latest: dict[str, date] = {}
-    current: date | None = None
-    for line in result.stdout.splitlines():
-        line = line.strip()
-        if not line:
-            continue
-        # A `%cs` line parses as a date; a path line does not. That is the whole
-        # discriminator, so no state machine is needed.
-        parsed = parse_date(line)
-        if parsed is not None:
-            current = parsed
-        elif current is not None and line.startswith("sources/scores/") and line.endswith(".yaml"):
-            latest.setdefault(line[len("sources/scores/") : -len(".yaml")], current)
-    return latest
+    history = _score_history(root or ROOT)
+    blobs = _Blobs(root or ROOT)
+    try:
+        dates = {slug: _last_substantive(entries, blobs) for slug, entries in history.items()}
+    finally:
+        blobs.close()
+    return {slug: when for slug, when in dates.items() if when is not None}
 
 
 def collect() -> tuple[dict[str, list[tuple[str, str, date, bool]]], list[str]]:
