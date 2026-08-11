@@ -2,14 +2,24 @@ product: mastra
 openness:
   score: 4
   class: open_core
-  components: license:Apache-2.0(OSI, everything outside
-    `ee/`);source:public;ee/-auth-directories-under-Mastra-Enterprise-License;Mastra-Platform-hosted-tier-commercial;core-gated:gated
+  components:
+    license:
+      value: Apache-2.0
+      detail: OSI, everything outside `ee/`
+    source:
+      value: public
+    core-gated:
+      value: gated
+    free_text:
+    - ee/-auth-directories-under-Mastra-Enterprise-License
+    - Mastra-Platform-hosted-tier-commercial
   confidence: high
   note: Open-core in the LangGraph/LlamaIndex shape rather than the n8n one - the framework itself is a real
     OSI license, not fair-code. LICENSE.md scopes the commercial carve-out narrowly to `ee/` auth directories,
     so the agent, workflow, memory and eval surfaces a user actually builds on are Apache-2.0. Not 5 because
     the enterprise auth code is source-available and the managed platform is closed.
   last_verified: '2026-07-30'
+  raw: license:Apache-2.0(OSI, everything outside `ee/`);source:public;ee/-auth-directories-under-Mastra-Enterprise-License;Mastra-Platform-hosted-tier-commercial;core-gated:gated
   sources:
   - url: https://github.com/mastra-ai/mastra/blob/main/LICENSE.md
     shows: 'LICENSE.md: "All content that resides under any directory named ''ee/'' within this repository"
