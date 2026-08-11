@@ -54,10 +54,15 @@ def test_local_scores_matches_check_rubrics_split():
     recorded 4, and reading the whole value makes it reproduce. Then 392/80 -> 395/77 when
     `core_gated` started reading `self-host`: syfthub, thunderbolt and otari were all deferred
     with the same text, that core-gated is not recorded in a form the ladder can read, and all
-    three had recorded it under `self-host`."""
+    three had recorded it under `self-host`. Then 395/77 -> 400/72 when the keyless clauses
+    that were a dimension's only record were promoted to keys: cosmopedia, openthoughts-114k,
+    synth, tulu-3-sft-mixture and wildchat-1m all recorded `dataset card present`, and four of
+    them `ungated`, as clauses with no colon, which the parser discards. Their five deferral
+    texts named that defect and prescribed the fix. No score moved - all five already recorded
+    the 5/open the ladder now computes."""
     computed, deferred = local_scores(None)
-    assert len(deferred) == 77
-    assert len(computed) == 395
+    assert len(deferred) == 72
+    assert len(computed) == 400
     assert not set(computed) & set(deferred)
     # Every one of the 392 reproduces today, so none should abstain.
     assert [key for key, value in computed.items() if value is None] == []
