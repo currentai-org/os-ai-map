@@ -10,16 +10,52 @@ openness:
       value: NextChat Enterprise
       detail: permission controls, team resource mgmt, internal knowledge base/RAG
       raw: NextChat Enterprise (permission controls, team resource mgmt, internal knowledge base/RAG)
+    source:
+      value: public
+      detail: the app IS the repo; README ships one-click Vercel/Zeabur/Gitpod deploy, a Dockerfile and
+        docker-compose, and desktop builds via src-tauri
+    core-gated:
+      value: gated
+      detail: Enterprise Edition withholds the admin panel, member/resource/knowledge-base permission control,
+        internal knowledge-base integration and security auditing from the MIT repo
   confidence: high
   note: OSI MIT core with a separate proprietary Enterprise Edition for multi-user permissions and internal-KB
     RAG -> open_core (calibrated to the LiteLLM open_core anchor).
   raw: license:MIT(core, public source);enterprise-tier:NextChat Enterprise (permission controls, team resource
-    mgmt, internal knowledge base/RAG)
+    mgmt, internal knowledge base/RAG);source:public(the app IS the repo; README ships one-click Vercel/Zeabur/Gitpod
+    deploy, a Dockerfile and docker-compose, and desktop builds via src-tauri);core-gated:gated(Enterprise
+    Edition withholds the admin panel, member/resource/knowledge-base permission control, internal knowledge-base
+    integration and security auditing from the MIT repo)
   sources:
   - url: https://github.com/ChatGPTNextWeb/NextChat
     shows: MIT license; cross-platform chat client; Enterprise Edition (permissions, team mgmt, internal
       knowledge base)
     accessed: '2026-06-04'
+    establishes:
+    - license
+  - url: https://api.github.com/repos/ChatGPTNextWeb/NextChat/contents/
+    shows: Repository root read for the source dimension. The repo license endpoint returns MIT, and the
+      tree is the whole application - app, src-tauri, public, docs, plus Dockerfile, docker-compose.yml,
+      vercel.json and .env.template. There is no `ee/` or `enterprise/` directory, so the Enterprise
+      Edition is not in this repository at all. The README's deploy buttons for Vercel, Zeabur and Gitpod
+      run this source, which is what the ladder means by a public source.
+    accessed: '2026-08-11'
+    establishes:
+    - source
+  - url: https://github.com/ChatGPTNextWeb/NextChat/blob/main/README.md
+    shows: 'The README''s own Enterprise Edition section, quoted rather than paraphrased, lists what the
+      paid edition adds - Brand Customization, Resource Integration described as "unified configuration
+      and management of dozens of AI resources by company administrators", Permission Control described
+      as "clearly defined member permissions, resource permissions, and knowledge base permissions, all
+      controlled via a corporate-grade Admin Panel", Knowledge Integration "combining your internal
+      knowledge base with AI capabilities", Security Auditing, Private Deployment, and Continuous
+      Updates. Contact is business@nextchat.club. None of that admin panel, permission model or
+      knowledge base exists in the MIT repository, whose own Features list describes the opposite design:
+      "Privacy first, all data is stored locally in the browser". So this is functionality withheld from
+      the published source rather than a hosted service beside it, which is the gated reading.'
+    accessed: '2026-08-11'
+    establishes:
+    - core-gated
 adoption:
   level: 3
   reach: 100K-1M

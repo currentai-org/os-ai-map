@@ -103,10 +103,21 @@ def test_local_scores_matches_check_rubrics_split():
     epoch-ai-benchmarks records `partial`, its org publishing a client library and component
     repos while the engine behind the dashboard and the FrontierMath problems stay unpublished,
     and scale-evaluation records `closed`, its VPC option being a customer-cloud deployment of a
-    proprietary product rather than published source."""
+    proprietary product rather than published source.
+
+    Then 432/40 -> 437/35 when the sweep reached `ui_api` and all five of its deferrals came
+    off, every one reproducing its recorded score. deepseek-chat, doubao and meta-ai record
+    `source:closed` and settle on rung 0 alone - Meta's own AI Terms grant "rights of access
+    and use" to a service Meta runs and nothing more. nextchat records `source:public` and
+    `core-gated:gated`: its Enterprise Edition sells a private deployment with an admin panel,
+    permission control and an internal knowledge base, none of which is in the MIT repo, whose
+    own features list says all data stays local in the browser. continue records
+    `core-gated:ungated` - the whole monorepo is Apache-2.0 with no ee/ directory, and its
+    "Enterprise License Key" turns out to be published Apache-2.0 code carrying only a
+    customerId, an expiry and a control-plane apiUrl, unlocking no client feature."""
     computed, deferred = local_scores(None)
-    assert len(deferred) == 40
-    assert len(computed) == 432
+    assert len(deferred) == 35
+    assert len(computed) == 437
     assert not set(computed) & set(deferred)
     # Every one of the 410 reproduces today, so none should abstain.
     assert [key for key, value in computed.items() if value is None] == []

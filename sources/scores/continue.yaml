@@ -15,17 +15,58 @@ openness:
     hub:
       value: continue.dev
       detail: hosted config/model hub adjacent, core OSS
+    core-gated:
+      value: ungated
+      detail: Apache-2.0 across the whole monorepo, no ee/ or enterprise directory; the enterprise license
+        key is itself published Apache-2.0 code carrying only customerId/expiresAt/apiUrl and unlocks no
+        client feature
   note: Apache-2.0, full source public for the IDE extensions and CLI; no feature-gated core in the editor
     itself (a hosted Hub exists alongside but the assistant is OSS).
   raw: license:Apache-2.0(OSI);source:public(github.com/continuedev/continue);clients:VSCode+JetBrains+CLI;hub:continue.dev(hosted
-    config/model hub adjacent, core OSS)
+    config/model hub adjacent, core OSS);core-gated:ungated(Apache-2.0 across the whole monorepo, no ee/
+    or enterprise directory; the enterprise license key is itself published Apache-2.0 code carrying only
+    customerId/expiresAt/apiUrl and unlocks no client feature)
   sources:
   - url: https://github.com/continuedev/continue
     shows: Apache-2.0; public source; AI code assistant (chat/edit/autocomplete + agent)
     accessed: '2026-06-04'
+    establishes:
+    - license
+    - source
   - url: https://marketplace.visualstudio.com/items?itemName=Continue.continue
     shows: open source AI code agent extension listing
     accessed: '2026-06-04'
+  - url: https://api.github.com/repos/continuedev/continue/contents/
+    shows: Repository root listing read for this dimension. The tree is actions, binary, core, docs,
+      eval, extensions, gui, manual-testing-sandbox, media, packages, scripts, skills, sync - there is
+      no `ee/`, no `enterprise/`, and no second license. `extensions/` holds cli, intellij and vscode;
+      `packages/` holds config-types, config-yaml, continue-sdk, fetch, llm-info, openai-adapters and
+      terminal-security. The repo license endpoint returns Apache-2.0.
+    accessed: '2026-08-11'
+    establishes:
+    - core-gated
+  - url: https://github.com/continuedev/continue/blob/main/core/control-plane/mdm/mdm.ts
+    shows: The one thing in this repo that looks like a gate, read directly rather than assumed. Continue
+      does ship an "Enterprise License Key" - `continue.enterEnterpriseLicenseKey` in
+      extensions/vscode/src/commands.ts and an AddLicenseKey action in the IntelliJ extension. But the
+      whole validator is published Apache-2.0 code in this file, and the signed payload it verifies
+      carries only `customerId`, `createdAt`, `expiresAt` and an `apiUrl`. The key is read from
+      MDM-managed OS configuration (a macOS plist, a Windows registry path, a Linux json file), and its
+      effect is to point the client at an enterprise control-plane URL. No client feature is switched on
+      by it - nothing in the extension is compiled out, withheld, or refused without one. That is the
+      langchain shape, a paid platform beside a complete open core, not the langgraph shape of a closed
+      package behind a key.
+    accessed: '2026-08-11'
+    establishes:
+    - core-gated
+  - url: https://www.continue.dev/
+    shows: The vendor's own site now leads with Continue having been acquired by Cursor and states "our
+      open-source codebase remains freely available as a foundation for others". No pricing page is
+      linked from it any more, and https://www.continue.dev/pricing returns HTTP 404 - so there is no
+      live paid tier left to withhold anything for.
+    accessed: '2026-08-11'
+    establishes:
+    - core-gated
 adoption:
   level: 4
   reach: 1M-10M
