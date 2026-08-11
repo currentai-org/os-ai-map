@@ -291,19 +291,33 @@ def test_no_score_file_mints_a_phantom_dimension_key():
     corrupts every corpus-wide key inventory and would carry into the structured form.
     A phantom key is recognizable: real dimension keys are short, lowercase, and contain
     no spaces or parentheses.
+
+    Reads keys via `components_of`, not `split_components` directly on the raw field:
+    `components_of` reads either shape, while a migrated record's `components` is a dict
+    and handing that straight to `split_components` (which iterates its argument
+    character by character) silently yields no keys at all rather than erroring. Left
+    that way, this test's coverage would have shrunk to nothing as the migration
+    proceeded, without ever failing loudly.
     """
-    from build.check_rubric import split_components
+    from build.check_rubric import components_of
 
     root = Path(__file__).resolve().parents[1]
     offenders = []
+    inspected = 0
     for path in sorted((root / "sources" / "scores").glob("*.yaml")):
-        components = (yaml.safe_load(path.read_text()).get("openness") or {}).get("components")
-        if not components:
-            continue
-        for key in split_components(components):
+        openness = (yaml.safe_load(path.read_text()) or {}).get("openness") or {}
+        for key in components_of(openness):
+            inspected += 1
             if " " in key or "(" in key or ")" in key:
                 offenders.append(f"{path.stem}: {key!r}")
 
+    # A floor, not an exact count, for the same reason as the sibling equivalence test in
+    # test_serialize_rubric.py: the corpus only grows as products are scored, so more keys
+    # inspected than this is ordinary curation. This guard is here because `offenders == []`
+    # alone cannot tell "nothing to flag" from "nothing was inspected" — which is exactly
+    # how this test passed green while checking zero keys from every migrated record before
+    # the `components_of` fix above.
+    assert inspected >= 1_754, f"only {inspected} keys inspected; the corpus walk is broken"
     assert offenders == [], "phantom dimension keys minted from prose:\n  " + "\n  ".join(offenders)
 
 
