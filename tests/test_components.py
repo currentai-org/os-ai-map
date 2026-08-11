@@ -386,6 +386,8 @@ def test_structure_round_trips_every_recorded_components_string():
     for path in sorted((root / "sources" / "scores").glob("*.yaml")):
         block = (yaml.safe_load(path.read_text()) or {}).get("openness") or {}
         components = block.get("components")
+        if isinstance(components, dict):
+            components = block.get("raw")
         if not isinstance(components, str) or not components:
             continue
         walked += 1
