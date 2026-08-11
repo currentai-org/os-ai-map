@@ -768,7 +768,13 @@ def test_real_sources_serialize_without_errors():
         # their evidence, they were simply publishing none of it. Five rows each, four
         # products, +20 exactly - and the count is the check that no FIFTH product moved with
         # them, langgraph included.
-        "orchestration_agents": 207, "telemetry_observability": 94, "ui_api": 160,
+        #
+        # ui_api 160 -> 184 on the 2026-08-11 evidence sweep of that category. All five of its
+        # deferrals came off and a newly-computed product publishes its whole openness evidence
+        # set rather than none of it: continue and nextchat contribute five rows each, doubao
+        # five, and deepseek-chat and meta-ai four apiece, those two recording no license.
+        # litellm was already computed and gained nothing when its bare `gated` was evidenced.
+        "orchestration_agents": 207, "telemetry_observability": 94, "ui_api": 184,
         # training_synthetic_datasets is unchanged at 158 across the ladder widening, which
         # is the check that mattered: benchmark_eval_data's new dimensions and rungs did not
         # disturb the category the ladder was derived from.
@@ -944,6 +950,11 @@ def test_license_is_emitted_under_the_name_the_warehouse_joins_on():
         ("artificial-analysis-intelligence-index", "evaluation_code"),
         ("epoch-ai-benchmarks", "evaluation_code"),
         ("scale-evaluation", "evaluation_code"),
+        # deepseek-chat and meta-ai joined on the ui_api sweep for the same reason: both are
+        # hosted assistants recording `source: closed`, decided by rung 0, which tests no tier.
+        # doubao is not here because it happens to record `license: Proprietary` as well.
+        ("deepseek-chat", "ui_api"),
+        ("meta-ai", "ui_api"),
     }
     assert unlicensed <= scored, "a pinned no-license product stopped scoring"
     missing = scored - licensed

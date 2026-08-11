@@ -12,18 +12,88 @@ openness:
       value: public
     core-gated:
       value: gated
+      detail: the enterprise/ directory ships under the proprietary BerriAI Enterprise License requiring
+        a paid subscription for production use, and the proxy gates premium features on a LITELLM_LICENSE
+        key verified against license.litellm.ai
   confidence: high
-  note: license:MIT(core);enterprise-dir:LiteLLM-Commercial-License;source:public
-  raw: license:MIT(core);enterprise-dir:LiteLLM-Commercial-License;source:public;core-gated:gated
+  note: 'MIT core with a proprietary enterprise directory in the same repository. `core-gated: gated` verified
+    2026-08-11 by a direct read, and it does NOT rest on BerriAI selling a hosted gateway. The root LICENSE
+    is explicitly split - "All content that resides under the ''enterprise/'' directory of this repository,
+    if that directory exists, is licensed under the license defined in ''enterprise/LICENSE''" - and everything
+    outside it is MIT. That enterprise license says the software "may only be used in production, if you
+    (and any entity that you represent) have agreed to, and are in compliance with, the BerriAI Subscription
+    Terms of Service ... and otherwise have a valid BerriAI Enterprise license for the correct number of
+    user seats", with copying, distribution and sale forbidden. The directory is not a stub: it ships litellm_enterprise,
+    enterprise_hooks, enterprise_ui and a cloudformation_stack. The proxy then enforces it in code - litellm/proxy/auth/litellm_license.py
+    reads a LITELLM_LICENSE environment variable and verifies it against license.litellm.ai to set premium_user.
+    A license key you must hold for the paid features to run is the dimension''s question answered directly,
+    so the 4 holds. This is the other side of the line from langchain, llama-index, pydantic-ai, zed and
+    otari, which sell a platform beside a complete open core and moved to 5.'
+  raw: license:MIT(core);enterprise-dir:LiteLLM-Commercial-License;source:public;core-gated:gated(the enterprise/
+    directory ships under the proprietary BerriAI Enterprise License requiring a paid subscription for production
+    use, and the proxy gates premium features on a LITELLM_LICENSE key verified against license.litellm.ai)
+  last_verified: '2026-08-11'
   sources:
-  - url: https://github.com/BerriAI/litellm/blob/main/LICENSE
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
-  - url: https://github.com/BerriAI/litellm
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
+  - url: https://raw.githubusercontent.com/BerriAI/litellm/main/LICENSE
+    shows: 'Root LICENSE body, read rather than assumed. It opens "Portions of this software are licensed
+      as follows:" and then splits the repository in two - "All content that resides under the ''enterprise/''
+      directory of this repository, if that directory exists, is licensed under the license defined in
+      ''enterprise/LICENSE''" and "Content outside of the above mentioned directories or restrictions above
+      is available under the MIT license as defined below", followed by the full MIT text. So the tier-setting
+      license is MIT and the gate is a carve-out named in the license itself.'
+    accessed: '2026-08-11'
+    http_status: 200
+    content_sha256: b170d6bf8e8835dd357e011681db028f4d51e2fb0ea892058f56e01fb39b8273
+    establishes:
+    - license
+    - core-gated
+  - url: https://api.github.com/repos/BerriAI/litellm/contents/enterprise
+    shows: The carved-out directory exists and is not a stub. It contains LICENSE.md, README.md, __init__.py,
+      cloudformation_stack, dist, enterprise_hooks, enterprise_ui, litellm_enterprise and its own pyproject.toml
+      - hooks, a UI and a deployment stack, i.e. shipped functionality. The repository license endpoint
+      returns NOASSERTION rather than MIT, which is GitHub declining to classify the split root LICENSE.
+    accessed: '2026-08-11'
+    http_status: 200
+    content_sha256: 37244ca54271ed92f2f615aca46af53c0f9e8094d1619d1838c3741e07599d48
+    establishes:
+    - core-gated
+  - url: https://raw.githubusercontent.com/BerriAI/litellm/main/enterprise/LICENSE.md
+    shows: The enterprise license body. It states the software "may only be used in production, if you (and
+      any entity that you represent) have agreed to, and are in compliance with, the BerriAI Subscription
+      Terms of Service ... or other agreement governing the use of the Software, as agreed by you and BerriAI,
+      and otherwise have a valid BerriAI Enterprise license for the correct number of user seats". Copying
+      for development and testing is allowed; "it is forbidden to copy, merge, publish, distribute, sublicense,
+      and/or sell the Software". Production use behind a seat-counted paid license is functionality withheld
+      from the MIT source.
+    accessed: '2026-08-11'
+    http_status: 200
+    content_sha256: a3160d1176cb556447255ca8652855486d681f8025550291828796a439e1b2f9
+    establishes:
+    - core-gated
+  - url: https://raw.githubusercontent.com/BerriAI/litellm/main/litellm/proxy/auth/litellm_license.py
+    shows: The enforcement, in code. The module's own header comment is "If litellm license in env, checks
+      if it's valid". LicenseCheck reads a LITELLM_LICENSE environment variable, carries a bundled public_key.pem
+      for air-gapped verification, and otherwise checks the key against base_url https://license.litellm.ai,
+      setting the premium_user flag the proxy tests before serving paid features. A key you must hold for
+      functionality to run, which is the rubric's own wording for a gate.
+    accessed: '2026-08-11'
+    http_status: 200
+    content_sha256: 5e23bc01f166b884f01a4c891be8b0e0e9cf7348684963b77c0c1ebe322cdcda
+    establishes:
+    - core-gated
+  - url: https://api.github.com/repos/BerriAI/litellm
+    shows: Repository root. The published tree is the whole gateway and proxy - litellm, gateway, ui, backend,
+      helm, terraform, docker, migrations, tests - and self-hosting it needs nothing that is not in the repo,
+      so the source dimension is public. Retained from the phase-C pass with a real reading in place of the
+      placeholder.
+    accessed: '2026-08-11'
+    http_status: 200
+    content_sha256: 2caffe731172f8176152bf5f7e71585d13729d88d69799e7602a0c61db793071
+    establishes:
+    - source
   - url: https://www.litellm.ai/
-    shows: flagship phase-C verification source
+    shows: Vendor site, kept for context only. It establishes that BerriAI sells a hosted product, which
+      under the settled rule is NOT evidence for or against core-gated and is not what the 4 rests on.
     accessed: '2026-06-04'
 adoption:
   level: 3
