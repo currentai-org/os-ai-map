@@ -9,11 +9,25 @@ openness:
         commercial use restricted until conversion). Earlier v1/v2 were AGPL-3.0.
       raw: FCL-1.0-ALv2 (Fair Core License, NOT OSI; converts to Apache-2.0 two years after each release;
         competing/hosted commercial use restricted until conversion). Earlier v1/v2 were AGPL-3.0.
+    source:
+      value: public
+      detail: full TypeScript monorepo, packages/api + frontend + widget + agentic + graph + cli, docker/
+        compose
   confidence: high
-  note: Fair Core License is a delayed-open / fair-code model, so the current core is source-available
-    rather than open source.
+  note: 'Fair Core License is a delayed-open / fair-code model, so the current core is source-available
+    rather than open source. `source: public` transcribed 2026-08-11 from a read of the repo: Hexastack/Hexabot
+    publishes the whole runtime as a pnpm/turbo TypeScript monorepo (packages/api, frontend, widget, agentic,
+    graph, cli) with docker/ compose files, 55MB, GitHub reporting language TypeScript. The ladder settles
+    this on rung 2 (competition_restricted + public), so core-gated is never consulted. Worth recording
+    that a read of the pricing page found a license-key mechanism that the ladder does not see here: Community
+    is free and self-hosted with no key, and the $19/$59/$149 plans raise user, workflow and activation
+    quotas via license-key activations, while LICENSE.md forbids circumventing that key functionality. That
+    is a capacity cap rather than a withheld feature, and since no rung reads it on this product it is left
+    unrecorded rather than guessed at.'
+  last_verified: '2026-08-11'
   raw: license:FCL-1.0-ALv2 (Fair Core License, NOT OSI; converts to Apache-2.0 two years after each release;
-    competing/hosted commercial use restricted until conversion). Earlier v1/v2 were AGPL-3.0.
+    competing/hosted commercial use restricted until conversion). Earlier v1/v2 were AGPL-3.0.;source:public(full
+    TypeScript monorepo, packages/api + frontend + widget + agentic + graph + cli, docker/ compose)
   sources:
   - url: https://github.com/Hexastack/Hexabot
     shows: Licensed under FCL-1.0-ALv2; GitHub reports license as 'Other'
@@ -21,6 +35,42 @@ openness:
   - url: https://hexabot.ai/
     shows: 'Fair Core License: converts to Apache-2.0 after 2 years; competing commercial use restricted'
     accessed: '2026-06-22'
+  - url: https://api.github.com/repos/Hexastack/Hexabot/contents/packages
+    shows: packages/ holds agentic, api, cli, frontend, graph, types, widget - the whole runtime, not a
+      client.
+    accessed: '2026-08-11'
+    http_status: 200
+    content_sha256: 47fd391e7e1afb498c84396c05caa6c2aaaf8469af0e91a7db0fb2ec23de2fc1
+    establishes:
+    - source
+  - url: https://api.github.com/repos/Hexastack/Hexabot
+    shows: 'Repo metadata: language TypeScript, size 55,744 KB, license spdx_id NOASSERTION (GitHub cannot
+      place FCL), 1,161 stars.'
+    accessed: '2026-08-11'
+    http_status: 200
+    content_sha256: 14185b7b191004b625920bde6409bfe409437fdd40d2fba34b07e9ea28119d0e
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/Hexastack/Hexabot/main/LICENSE.md
+    shows: Full text of 'Fair Core License, Version 1.0, ALv2 Future License', abbreviation FCL-1.0-ALv2,
+      Copyright 2025 Hexastack. Grants use for any 'Permitted Purpose', defined as any purpose other than
+      a 'Competing Use' - making the Software available in a commercial product or service that substitutes
+      for it or offers substantially similar functionality. Also forbids circumventing the license key functionality.
+    accessed: '2026-08-11'
+    http_status: 200
+    content_sha256: dbd8bc28359eec017002639f110da21a179c0287aa58af236d47bc6b7f018378
+    establishes:
+    - license
+  - url: https://hexabot.ai/pricing
+    shows: '''Community is self-hosted and free with no license key. Paid plans start at $19/month and use
+      license-key activations''. Starter $19 (3 activations / 3 users / 25 workflows), Pro $59 (10/10/150),
+      Unlimited $149 (25 activations / 25 users / unlimited workflows). ''Hexabot remains source-available
+      under FCL-1.0-ALv2''. All tiers self-hosted.'
+    accessed: '2026-08-11'
+    http_status: 200
+    content_sha256: 82eda9991d37564968ec2d7e56d7f19cc3cac98b494d84f2b89e7e017e8919f8
+    establishes:
+    - license
 adoption:
   level: 3
   reach: niche

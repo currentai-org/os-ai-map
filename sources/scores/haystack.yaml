@@ -10,13 +10,70 @@ openness:
       value: Haystack-Enterprise
     source:
       value: public
+    core-gated:
+      value: gated
+      detail: deepset names the free tier a Community Edition and sells Haystack Enterprise Starter with
+        a private template/Helm repo plus early access to security features not yet in OSS
   confidence: high
-  note: Apache-2.0 self-hostable core with a commercial enterprise tier.
-  raw: license:Apache-2.0(core);commercial:Haystack-Enterprise;source:public
+  note: 'Apache-2.0 self-hostable core with a commercial enterprise tier. `core-gated: gated` transcribed
+    2026-08-11 from a read of the repo and deepset''s own product pages. The repo itself is clean - a full
+    untruncated recursive tree of deepset-ai/haystack@main carries one governing Apache-2.0 LICENSE and
+    no enterprise/ or ee/ directory - so this is not the LiteLLM shape. What makes it gated is that the
+    withheld directory is a separate private REPOSITORY rather than a subdirectory: Haystack Enterprise
+    Starter ships ''curated pipeline templates'', a ''Helm chart and guides'', and ''early access to enterprise-grade
+    features ... like prompt injection countermeasures and other security-oriented features ahead of broader
+    release''. deepset''s own tiering calls the free product ''Haystack OSS (Community Edition)'', and a
+    commercial edition is one of the three things the rubric''s gated definition names. Distinguished from
+    the otari precedent deliberately: otari''s paid offering was a hosted platform running the same published
+    code, whereas this is code and features that the published source does not contain at the time they
+    are sold.'
+  last_verified: '2026-08-11'
+  raw: license:Apache-2.0(core);commercial:Haystack-Enterprise;source:public;core-gated:gated(deepset names
+    the free tier a Community Edition and sells Haystack Enterprise Starter with a private template/Helm
+    repo plus early access to security features not yet in OSS)
   sources:
   - url: https://github.com/deepset-ai/haystack
     shows: Apache-2.0, ~25.6k stars, Haystack Enterprise tiers
     accessed: '2026-06-17'
+  - url: https://api.github.com/repos/deepset-ai/haystack/git/trees/main?recursive=1
+    shows: Full untruncated recursive tree, 11,007 entries. Only license-related paths are the root `LICENSE`,
+      `license-header.txt`, `licenserc.toml` and a `.github/workflows/license_compliance.yml`. No enterprise/,
+      ee/, commercial/ or proprietary/ path anywhere.
+    accessed: '2026-08-11'
+    http_status: 200
+    content_sha256: ad9a6efe3493eeb42097d8bbe70ac151122907c6ce96fcbd78ac9f597f5a8520
+    establishes:
+    - source
+    - core-gated
+  - url: https://api.github.com/repos/deepset-ai/haystack
+    shows: 'Repo metadata: language Python, license spdx_id Apache-2.0, size 249,631 KB, 26,179 stars, default
+      branch main.'
+    accessed: '2026-08-11'
+    http_status: 200
+    content_sha256: c815a780271925a4918a94bdd1ba14ae62bc0fe6548f457c3debfa23ba3bfdbd
+    establishes:
+    - license
+    - source
+  - url: https://haystack.deepset.ai/blog/announcing-haystack-enterprise
+    shows: 'Lists what Haystack Enterprise Starter adds over OSS: ''Curated pipeline templates'', ''Helm
+      chart and guides for secure deployments'', and ''Early access to enterprise-grade features - Take
+      advantage of capabilities like prompt injection countermeasures and other security-oriented features
+      ahead of broader release.'' Also states ''Haystack ... will always remain an open source framework''.'
+    accessed: '2026-08-11'
+    http_status: 200
+    content_sha256: be96166cb05c45d80d99c690fc3e4c5bbfae29e2a009462c474ace54eb54f525
+    establishes:
+    - core-gated
+  - url: https://www.deepset.ai/blog/introducing-haystack-enterprise
+    shows: 'deepset''s own three-tier framing: ''Haystack OSS (Community Edition): 100% open source, self-supported.''
+      / ''Haystack Enterprise Starter: The power of Haystack with added enterprise pipeline and deployment
+      templates, direct and private support'' / ''Haystack Enterprise Platform (Cloud or on-prem)''. Pricing
+      ''based on the size of your organization''.'
+    accessed: '2026-08-11'
+    http_status: 200
+    content_sha256: 638c53b52207610717ca1fcc882b336557d79cec6cb6806b9968ccc125b5c58f
+    establishes:
+    - core-gated
 adoption:
   level: 4
   signal_type: usage_volume

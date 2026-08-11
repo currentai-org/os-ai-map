@@ -11,13 +11,50 @@ openness:
       value: multi-provider
       detail: OpenAI/Anthropic/Gemini/xAI) but the product is proprietary
       raw: multi-provider (OpenAI/Anthropic/Gemini/xAI) but the product is proprietary
-  note: Fully proprietary commercial product; no open source license or public source.
+    source:
+      value: closed
+      detail: cursor/cursor holds only .github, README.md and SECURITY.md; no license, no language, no editor
+        source
+  note: 'Fully proprietary commercial product; no open source license or public source. `source: closed`
+    transcribed 2026-08-11 from a read of the repo and the terms: the GitHub contents API shows `cursor/cursor`
+    holds exactly three entries (`.github`, `README.md`, `SECURITY.md`), the repo API reports `license:
+    null` and `language: null`, and the Terms of Service state that Anysphere and its licensors retain all
+    right, title and interest in the Service and reserve all rights not granted. Nothing of the editor runtime
+    is published, so the ladder settles on `source` alone and `core-gated` stays unrecorded.'
+  last_verified: '2026-08-11'
   raw: license:Proprietary(closed SaaS IDE, no public source);model:multi-provider (OpenAI/Anthropic/Gemini/xAI)
-    but the product is proprietary
+    but the product is proprietary;source:closed(cursor/cursor holds only .github, README.md and SECURITY.md;
+    no license, no language, no editor source)
   sources:
   - url: https://www.cursor.com/
     shows: proprietary commercial IDE, no OSS licensing, enterprise/Fortune-500 positioning
     accessed: '2026-06-04'
+  - url: https://api.github.com/repos/cursor/cursor/contents/
+    shows: 'Root listing of cursor/cursor is exactly three entries: .github, README.md, SECURITY.md. No
+      editor source.'
+    accessed: '2026-08-11'
+    http_status: 200
+    content_sha256: f8b18d2b7749499dd22755b60a8560622c926de09ed0aa1e063fc5ac258c99ea
+    establishes:
+    - source
+  - url: https://api.github.com/repos/cursor/cursor
+    shows: 'Repo metadata: license null, language null, description null, 33,098 stars. The public repo
+      declares no license and contains no code in any language.'
+    accessed: '2026-08-11'
+    http_status: 200
+    content_sha256: 66876c0b12d304b1db412a8fb626c34111df6b62886530b0b00d70bb78e747b0
+    establishes:
+    - source
+    - license
+  - url: https://cursor.com/terms-of-service
+    shows: 'Section 5.1 Service: ''Anysphere and its licensors shall own and retain all right, title and
+      interest in and to the Service'' and ''Anysphere reserves all rights to the Service not granted in
+      these Terms.'''
+    accessed: '2026-08-11'
+    http_status: 200
+    content_sha256: 25b6aa5e095ce3d4f43fc80ab07db35cad64b7f4444e6659107cf8fcd27a1163
+    establishes:
+    - license
 adoption:
   level: 4
   reach: 1M-10M

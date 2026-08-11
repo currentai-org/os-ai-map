@@ -11,14 +11,63 @@ openness:
     commercial:
       value: Zed-Pro/Business
       detail: hosted AI
+    core-gated:
+      value: ungated
+      detail: the whole editor and the collab server are in the repo under GPL/Apache; Pro and Business
+        sell Zed-hosted model inference and a hosted admin dashboard
   confidence: high
-  note: Fully open editor core under GPL/AGPL; paid hosted-AI and governance tiers make the overall offering open-core.
+  note: 'Fully open editor core under GPL/Apache; the paid tiers sell Zed-hosted AI and an org admin layer
+    over it. `core-gated: ungated` transcribed 2026-08-11 from a read of the repo and the pricing page,
+    and it does not reproduce the recorded 4/open_core - the ladder computes 5/open_source from it, so the
+    product stays deferred for a human. What the read found: a full untruncated recursive tree of zed-industries/zed@main
+    is 5,130 entries in which every crate carries LICENSE-GPL or LICENSE-APACHE, including crates/collab,
+    the collaboration server - so the server is published too - and there is no enterprise/, ee/, commercial/
+    or proprietary/ path. zed.dev/pricing sells Personal $0 (2,000 accepted edit predictions, unlimited
+    use with your own API keys or external agents), Pro $10 (unlimited edit predictions, Zed-hosted models,
+    $5 of tokens), Business $30/seat (org-wide AI model policies, data governance, RBAC). Zed states of
+    the Business controls that ''Since Zed is open source, these controls govern Zed''s hosted services
+    specifically'', the admin surface lives at dashboard.zed.dev, and the FAQ confirms you can bring your
+    own keys or disable AI entirely. Hosted inference quota and a hosted admin dashboard are the otari shape,
+    not a withheld editor feature. TWO THINGS A HUMAN SHOULD LOOK AT. First, the conflict above. Second,
+    the recorded license string names AGPL-3.0 for the collab server, and the tree read finds no AGPL file
+    at all - crates/collab now carries LICENSE-GPL. That does not move the tier, both being osi, so it is
+    left uncorrected here rather than edited in a sweep, and it is why this axis carries no last_verified.'
   raw: license:GPL-3.0-or-later(editor)+AGPL-3.0(collab-server)+Apache-2.0(GPUI);source:public;commercial:Zed-Pro/Business(hosted
-    AI)
+    AI);core-gated:ungated(the whole editor and the collab server are in the repo under GPL/Apache; Pro
+    and Business sell Zed-hosted model inference and a hosted admin dashboard)
   sources:
   - url: https://github.com/zed-industries/zed
     shows: Rust, ~85k stars, GPL/AGPL/Apache licensing
     accessed: '2026-06-18'
+  - url: https://api.github.com/repos/zed-industries/zed/git/trees/main?recursive=1
+    shows: Full untruncated recursive tree, 5,130 entries. Root LICENSE-GPL and LICENSE-APACHE; every crate
+      under crates/ carries one or the other, including crates/collab/LICENSE-GPL (the collaboration server)
+      and crates/gpui/LICENSE-APACHE. Zero paths containing AGPL. No enterprise/, ee/, commercial/ or proprietary/
+      path.
+    accessed: '2026-08-11'
+    http_status: 200
+    content_sha256: c922b1adbd496d23073226c9d906bce1aeb459d2ee135a02808d03951cfafea5
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/zed-industries/zed/main/LICENSE-GPL
+    shows: GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 - the full GPL-3.0 text, 34,357 bytes.
+    accessed: '2026-08-11'
+    http_status: 200
+    content_sha256: 0aa0322ea494da441088e4d9144c6720bf99d9e2e1eefcd29d1f58b19b5c4246
+    establishes:
+    - license
+  - url: https://zed.dev/pricing
+    shows: 'Personal $0 forever: ''2,000 accepted edit predictions'', ''Unlimited use with your API keys
+      or external agents like Claude Agent, Codex CLI''. Pro $10/mo: unlimited edit predictions, $5 of tokens,
+      Zed-hosted models. Business $30/seat: org-wide AI model policies, data governance controls, RBAC.
+      FAQ: ''Since Zed is open source, these controls govern Zed''s hosted services specifically'', admin
+      surface at dashboard.zed.dev, and ''Can I use Zed without the AI features? Yes!'''
+    accessed: '2026-08-11'
+    http_status: 200
+    content_sha256: 796fbd20feb7c00a566b339283d030bd20a732b9ff87cf014388901240808e47
+    establishes:
+    - core-gated
 adoption:
   level: 4
   signal_type: reported_traction
