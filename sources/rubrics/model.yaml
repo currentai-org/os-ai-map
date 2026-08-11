@@ -85,8 +85,14 @@ openness:
         # it "use-restricted", which is looser language than the tier names use: an
         # acceptable-use policy is not a use CAP, and #117 was opened precisely because that
         # conflation had scored one OpenRAIL family two different ways.
+        # `Cohere-Acceptable-Use-Policy` is an acceptable-use policy and nothing else, which
+        # is the case #117 settled: it forbids classes of conduct without capping who may
+        # use the weights or at what scale. It rides alongside CC-BY-NC on `command-r`, and
+        # the compound resolves on the more restrictive half regardless, so its tier decides
+        # nothing there - it is declared so the compound resolves at all.
         examples: [Modified-MIT, minimax-community, NVIDIA-Open-Model-License, BigCode-OpenRAIL-M,
-          zentropi-openrail-m, DeepSeek-Model-License, TII-Falcon-License-2.0]
+          zentropi-openrail-m, DeepSeek-Model-License, TII-Falcon-License-2.0,
+          Cohere-Acceptable-Use-Policy]
       use_bounded:
         definition: >
           Commercial use is permitted, but bounded - a monthly-active-user ceiling, an annual
@@ -100,9 +106,13 @@ openness:
           the distinction the map exists to draw. Renamed with the cap change so that a stale
           reference to `use_restricted` fails loudly rather than resolving to a tier whose
           meaning moved underneath it.
+        # `InternLM-Free-Commercial-License` is the bound written as a process rather than a
+        # number: commercial use costs nothing and is granted on an application form. Still
+        # a bound, because permission is asked for rather than given, and still well inside
+        # this tier's test - commerce is available, to practically everyone who asks.
         examples: [Llama-2-Community-License, Llama-3-Community-License, Llama-3.1-Community-License,
           Llama-3.2-Community-License, Llama-4-Community, Gemma-License, GLM-4-License,
-          Qwen-License-Agreement, Jamba-Open-Model-License]
+          Qwen-License-Agreement, Jamba-Open-Model-License, InternLM-Free-Commercial-License]
       commercial_forbidden:
         definition: >
           Weights are published and commercial use is prohibited, or reserved to the vendor.

@@ -40,7 +40,7 @@ def run(monkeypatch, published, category=None, verbose=False):
 
 
 def test_local_scores_matches_check_rubrics_split():
-    """391 products the ladders decide, 81 the categories defer. The same 472 the warehouse
+    """392 products the ladders decide, 80 the categories defer. The same 472 the warehouse
     publishes, so a change to either number should show up as a failure here first. Was 384
     before Luciole (base_pretrained) and OpenRAG (orchestration_agents) were added, both
     computed rather than deferred, and 386/86 until the verification sweep read megatron-lm
@@ -48,12 +48,15 @@ def test_local_scores_matches_check_rubrics_split():
     when the sweep reached `inference_code`: reading vllm, apple-core-ml-runtime,
     google-cloud-tpu-inference and qualcomm-ai-engine-direct recorded the `source` and
     `core-gated` values their deferrals had been waiting on, and check_recipe failed until
-    the four stale deferrals were removed."""
+    the four stale deferrals were removed. Then 391/81 -> 392/80 when compound licenses
+    started resolving on all their parts: `smoltalk`'s deferral existed because the ladder
+    could not see the `+per-component` half of its license and computed a 5 against a
+    recorded 4, and reading the whole value makes it reproduce."""
     computed, deferred = local_scores(None)
-    assert len(deferred) == 81
-    assert len(computed) == 391
+    assert len(deferred) == 80
+    assert len(computed) == 392
     assert not set(computed) & set(deferred)
-    # Every one of the 391 reproduces today, so none should abstain.
+    # Every one of the 392 reproduces today, so none should abstain.
     assert [key for key, value in computed.items() if value is None] == []
 
 

@@ -163,6 +163,44 @@ Two things worth knowing about the shape of it:
   type with no word between `open` and `gated`, which is exactly how a non-commercial corpus
   came to sit in the `open` bucket.
 
+### A compound license resolves on all of its parts
+
+Plenty of products ship under more than one license at once — Apache-2.0 code beside a
+custom weights license, an OSI core beside a paid enterprise tier, an Apache-2.0 recipe
+assembling tasks that keep their own terms. Those are recorded on one line, joined by `+`:
+
+```
+license:Apache-2.0(code, OSI) + custom weights license(non-OSI, application step)
+```
+
+**Every part resolves, and the most restrictive one governs the cap.** This is the same rule
+`docs/guides/identity.md` states for a tier that ships several SKUs, applied within a single
+recorded value: a product is as open as the most restrictive license you have to accept.
+
+Two properties of it are load-bearing:
+
+- **A part that maps to no tier makes the whole value abstain.** It is not skipped. An
+  unmapped part can only turn out to be more restrictive than the tier the mapped parts
+  reached, so skipping it publishes an overstatement, and abstaining is the signal to
+  extend the rubric — the same thing an unmapped single license already does.
+- **A `+` inside a parenthetical is not a separator**, and neither is a comma. Every
+  depth-zero comma in the corpus trails prose after one license (`Proprietary, proprietary
+  service`), so only `+` at paren depth zero joins two licenses.
+
+A recipe may still declare a compound as a single tier example, but only where the `+` is
+not joining licenses: `follows mC4 + OSCAR-2301 terms` names two corpora in a sentence, and
+there is nothing in it to decompose. A compound whose operands *are* license names does not
+belong in an `examples` list — that is a per-product override, and the operands belong there
+individually instead.
+
+Until 2026-08-11 resolution truncated the recorded value at its first `(` or `,` and so read
+only the first license. `internlm` resolved as `osi` on its Apache-2.0 code while the
+application-gated weights license that actually governs the download was never read;
+`smoltalk` and `flan-collection` both resolved as clean Apache-2.0 while the half saying the
+assembled components keep their own terms went unseen. Reading the whole value moved one
+published score — `flan-collection` from 4 to 3 — and left the other two where the analysts
+had already put them by hand.
+
 ## How the buckets relate to MOF and OSAID
 
 The Model Openness Framework and the OSI's Open Source AI Definition are both **binary**.
