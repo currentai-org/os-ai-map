@@ -93,10 +93,20 @@ def test_local_scores_matches_check_rubrics_split():
     (`source:partial`, computing 2 against a recorded 1), unsloth (`core-gated:gated` from a
     pricing page selling multi-GPU the free tier does not have, computing 4 against a recorded
     5) and nemo-data-designer (Apache-2.0 and public per NVIDIA's own docs, so the recorded
-    1/closed is unreachable at either value of core-gated)."""
+    1/closed is unreachable at either value of core-gated).
+
+    Then 425/47 -> 432/40 when the sweep reached `evaluation_code` and all seven of its
+    deferrals came off, every one reproducing its recorded score. Five are research or public
+    artifacts with no vendor at all - bigcodebench, osworld, simpleaudit, open-llm-leaderboard
+    and the publicly-funded compar-ia - so `core-gated:ungated` there is an absence of anything
+    to sell rather than a judgment about what is sold. The other two settle on `source` alone:
+    epoch-ai-benchmarks records `partial`, its org publishing a client library and component
+    repos while the engine behind the dashboard and the FrontierMath problems stay unpublished,
+    and scale-evaluation records `closed`, its VPC option being a customer-cloud deployment of a
+    proprietary product rather than published source."""
     computed, deferred = local_scores(None)
-    assert len(deferred) == 47
-    assert len(computed) == 425
+    assert len(deferred) == 40
+    assert len(computed) == 432
     assert not set(computed) & set(deferred)
     # Every one of the 410 reproduces today, so none should abstain.
     assert [key for key, value in computed.items() if value is None] == []

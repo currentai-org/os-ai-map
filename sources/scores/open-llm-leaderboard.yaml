@@ -11,13 +11,32 @@ openness:
       detail: open
     source:
       value: public
+    core-gated:
+      value: ungated
+      detail: Space source public and docker-compose deployable, no paid tier
   confidence: high
   note: Open Apache-2.0 leaderboard built on open eval backends (now archived).
-  raw: license:Apache-2.0(HF-Space);backend:lm-eval-harness/lighteval(open);source:public
+  raw: license:Apache-2.0(HF-Space);backend:lm-eval-harness/lighteval(open);source:public;core-gated:ungated(Space
+    source public and docker-compose deployable, no paid tier)
   sources:
   - url: https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard
     shows: Apache-2.0 Space, ~14k likes
     accessed: '2026-06-17'
+    establishes:
+    - license
+    - source
+  - url: https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard/raw/main/README.md
+    shows: 'Space README frontmatter declares ''license: apache-2.0'' and ''sdk: docker''; the body documents
+      bringing the React frontend and FastAPI backend up with `docker-compose up`. The Space''s files are
+      readable and downloadable over the raw endpoint, and no feature is described as paid, licensed, or
+      restricted.'
+    accessed: '2026-08-11'
+    http_status: 200
+    content_sha256: 506aed8ab5aeccd01310992962de01898974545083e3c38170203d52b7e57214
+    establishes:
+    - core-gated
+    - license
+    - source
 adoption:
   level: 4
   signal_type: reported_traction

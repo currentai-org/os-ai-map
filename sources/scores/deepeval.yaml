@@ -1,7 +1,7 @@
 product: deepeval
 openness:
-  score: 4
-  class: open_core
+  score: 5
+  class: open_source
   components:
     license:
       value: Apache-2.0
@@ -12,16 +12,44 @@ openness:
     commercial-tier:
       value: Confident AI managed eval/observability cloud on top
     core-gated:
-      value: gated
+      value: ungated
+      detail: Confident AI is a separate hosted platform scored as its own product, the library evaluates
+        locally without an account, no enterprise directory in the repo
   confidence: high
-  note: Apache-2.0 OSS core + proprietary Confident AI cloud -> open_core (recipe names Confident AI as
-    the open_core exemplar); the library itself is OSI.
+  note: Apache-2.0 library whose metrics and test runs execute locally with no account. Confident AI is
+    a separate hosted platform, scored on the map as its own product; selling it alongside does not gate
+    the library, and no component is withheld from the published source.
   raw: license:Apache-2.0(OSI, OSS framework);source:public(GitHub);commercial-tier:Confident AI managed
-    eval/observability cloud on top;core-gated:gated
+    eval/observability cloud on top;core-gated:ungated(Confident AI is a separate hosted platform scored
+    as its own product, the library evaluates locally without an account, no enterprise directory in the
+    repo)
   sources:
   - url: https://github.com/confident-ai/deepeval
     shows: Apache-2.0 license; Confident AI commercial cloud platform
     accessed: '2026-06-04'
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/confident-ai/deepeval/main/README.md
+    shows: README states the metrics 'run locally on your machine', and directs readers to 'Sign up for
+      Confident AI, the enterprise AI evals and observability platform' only to 'compare iterations, share
+      evaluation reports, and monitor your AI in production'. The account section says using the platform
+      'will allow you to generate sharable testing reports on the cloud. It is free, takes no additional
+      code to setup' - optional, and not a gate on any metric.
+    accessed: '2026-08-11'
+    http_status: 200
+    content_sha256: 88d983b58c4725a6aaa88488a79029acc9e41046c0095fb15a492b643fa5b949
+    establishes:
+    - core-gated
+  - url: https://api.github.com/repos/confident-ai/deepeval/contents
+    shows: 'Repository root listing: deepeval, docs, examples, tests, typescript, scripts, skills, assets
+      and packaging files. No ee/, enterprise/, or cloud/ directory under a second license. The repo''s
+      declared license is Apache-2.0.'
+    accessed: '2026-08-11'
+    http_status: 200
+    establishes:
+    - core-gated
+    - license
 adoption:
   level: 4
   reach: 1M-10M

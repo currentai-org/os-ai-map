@@ -715,7 +715,12 @@ def test_real_sources_serialize_without_errors():
         # record no license key - which is what `check_rubric`'s `~ no tier` report exists
         # to keep visible.
         "base_pretrained": 116, "finetuned_chat": 173, "deployment": 131,
-        "agent_tools_protocols": 113, "dataset_processing_tools": 86, "evaluation_code": 78,
+        #
+        # evaluation_code 78 -> 107 with the 2026-08-11 evidence sweep of that category: all
+        # seven of its deferrals came off, and a product that stops being deferred publishes its
+        # whole openness evidence set rather than none of it. deepeval was already publishing and
+        # gained no rows when its `core-gated` moved gated -> ungated.
+        "agent_tools_protocols": 113, "dataset_processing_tools": 86, "evaluation_code": 107,
         # inference_code 47 -> 64 when the sweep read the category: four stale deferrals came
         # off (a deferred product publishes no openness evidence at all), and several products
         # that had described their gating in prose gained a readable `source:`/`core-gated:`.
@@ -928,10 +933,17 @@ def test_license_is_emitted_under_the_name_the_warehouse_joins_on():
     # `currentai.scores.openness_computed` resolves the tier up front and joins license
     # evidence, so until it carries the same rule these three will abstain there while
     # reproducing here.
+    #
+    # epoch-ai-benchmarks and scale-evaluation joined them on the 2026-08-11 evidence sweep,
+    # which recorded the `source` key their deferrals were waiting on and no license: `partial`
+    # and `closed` are settled by rungs 1 and 0, and neither rung tests a tier, so there was
+    # nothing to map a license for.
     unlicensed = {
         ("chatbot-arena", "evaluation_code"),
         ("patronus-evaluation-platform", "evaluation_code"),
         ("artificial-analysis-intelligence-index", "evaluation_code"),
+        ("epoch-ai-benchmarks", "evaluation_code"),
+        ("scale-evaluation", "evaluation_code"),
     }
     assert unlicensed <= scored, "a pinned no-license product stopped scoring"
     missing = scored - licensed

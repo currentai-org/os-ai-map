@@ -9,15 +9,33 @@ openness:
     source:
       value: public
       detail: GitHub
+    core-gated:
+      value: ungated
+      detail: no paid tier or license key, harness runs locally with --execution local
     free_text:
     - execution harness + leaderboard public
   confidence: high
   note: Apache-2.0, fully public; OSI -> open_source.
-  raw: license:Apache-2.0(OSI);source:public(GitHub);execution harness + leaderboard public
+  raw: license:Apache-2.0(OSI);source:public(GitHub);execution harness + leaderboard public;core-gated:ungated(no
+    paid tier or license key, harness runs locally with --execution local)
   sources:
   - url: https://github.com/bigcode-project/bigcodebench
     shows: Apache-2.0 license, public harness, 1140 tasks
     accessed: '2026-06-04'
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/bigcode-project/bigcodebench/main/README.md
+    shows: README's evaluation command declares `--execution [e2b|gradio|local]`, so the harness runs end
+      to end on the reader's own machine; the default `gradio` backend is a public Hugging Face evaluator
+      Space the README tells you to clone for speed, and `e2b` is an optional third-party sandbox. Nothing
+      in the README offers a paid tier, a commercial edition, or a license key, and the repo root carries
+      no enterprise directory.
+    accessed: '2026-08-11'
+    http_status: 200
+    content_sha256: 4aa8cbfa3111e92db886583d554a3c9e8f14561d47261d6441c069835e3bdc28
+    establishes:
+    - core-gated
 adoption:
   level: 2
   reach: 10K-100K
