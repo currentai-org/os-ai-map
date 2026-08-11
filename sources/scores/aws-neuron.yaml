@@ -2,8 +2,17 @@ product: aws-neuron
 openness:
   score: 1
   class: closed
-  components: license:mixed/proprietary-core;runtime:proprietary(Neuron Runtime+Compiler not open sourced);open-glue:Linux
-    kernel driver(GPL-2.0),vLLM-Neuron integration(Apache-2.0,vllm-project org),NKI library,samples(MIT-0);hardware-lock:AWS-Inferentia/Trainium-only
+  components:
+    license:
+      value: mixed/proprietary-core
+    runtime:
+      value: proprietary
+      detail: Neuron Runtime+Compiler not open sourced
+    open-glue:
+      value: Linux kernel driver
+      detail: GPL-2.0),vLLM-Neuron integration(Apache-2.0,vllm-project org),NKI library,samples(MIT-0
+    hardware-lock:
+      value: AWS-Inferentia/Trainium-only
   confidence: high
   note: Headline inference path (Neuron Compiler + Neuron Runtime) has no open-source release anywhere in
     AWS's own OSS repository catalog; surrounding glue (driver, vLLM integration, NKI, samples) is open
@@ -11,6 +20,8 @@ openness:
     the previously recorded Apache-2.0 to GPL-2.0, confirmed against the repo today; this does not change
     the score since the driver was already 'open-glue', not the license-bearing headline component.
   last_verified: '2026-08-09'
+  raw: license:mixed/proprietary-core;runtime:proprietary(Neuron Runtime+Compiler not open sourced);open-glue:Linux
+    kernel driver(GPL-2.0),vLLM-Neuron integration(Apache-2.0,vllm-project org),NKI library,samples(MIT-0);hardware-lock:AWS-Inferentia/Trainium-only
   sources:
   - url: https://awsdocs-neuron.readthedocs-hosted.com/en/latest/general/oss/index.html
     shows: AWS Neuron provides open source code and samples for some of its components, libraries, and tools

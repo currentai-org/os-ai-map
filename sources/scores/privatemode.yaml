@@ -2,11 +2,22 @@ product: privatemode
 openness:
   score: 2
   class: source_available
-  components: license:custom-source-available(audit-only)+MIT-subdirs(proxy/web/internal-oss);source:TCB-public(github.com/edgelesssys/privatemode-public);service:proprietary-hosted;models:third-party-open-weight
+  components:
+    license:
+      value: custom-source-available
+      detail: audit-only)+MIT-subdirs(proxy/web/internal-oss
+    source:
+      value: TCB-public
+      detail: github.com/edgelesssys/privatemode-public
+    service:
+      value: proprietary-hosted
+    models:
+      value: third-party-open-weight
   confidence: high
   note: 'Not open source: the security-critical Trusted Computing Base is publicly readable (and the client
     proxy + web app are MIT), but the main license permits only viewing/compiling for audit, and the operational
     service is a proprietary hosted offering. More open than a black-box API, less than open-core.'
+  raw: license:custom-source-available(audit-only)+MIT-subdirs(proxy/web/internal-oss);source:TCB-public(github.com/edgelesssys/privatemode-public);service:proprietary-hosted;models:third-party-open-weight
   sources:
   - url: https://github.com/edgelesssys/privatemode-public
     shows: TCB source (attestation agent, proxy, web app, SDK) under a custom audit-only license with MIT-licensed
