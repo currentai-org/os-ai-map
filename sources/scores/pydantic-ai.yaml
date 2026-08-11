@@ -10,13 +10,58 @@ openness:
       value: Pydantic-Logfire
     source:
       value: public
+    core-gated:
+      value: ungated
+      detail: every package in pydantic/pydantic-ai is MIT with no enterprise directory; Logfire and the
+        AI Gateway are separately sold services
   confidence: high
-  note: MIT type-first agent library with a commercial Logfire observability platform.
-  raw: license:MIT(library);commercial:Pydantic-Logfire;source:public
+  note: 'MIT type-first agent library with a commercial Logfire observability platform. `core-gated: ungated`
+    transcribed 2026-08-11 from a read of the repo and the pricing page, and it does not reproduce the recorded
+    4/open_core - the ladder computes 5/open_source from it, so the product stays deferred for a human.
+    What the read found: a full untruncated recursive tree of pydantic/pydantic-ai@main is 2,664 entries
+    with six LICENSE files, the root MIT and per-package copies for clai, examples, pydantic_ai_slim, pydantic_evals
+    and pydantic_graph, and no enterprise/, ee/, commercial/ or proprietary/ path; and pydantic.dev/pricing
+    is headed ''Pydantic Logfire Pricing'' with the strapline ''10M logs/spans/metrics free. Every feature.
+    Any tier.'' - the tiers sell observability seats, retention and gateway markup, not agent-library features.
+    Nothing is withheld from the published library. The recorded 4 rests on `commercial:Pydantic-Logfire`,
+    that is, on the vendor having a paid product at all, which is the test the otari precedent was corrected
+    for using.'
+  last_verified: '2026-08-11'
+  raw: license:MIT(library);commercial:Pydantic-Logfire;source:public;core-gated:ungated(every package in
+    pydantic/pydantic-ai is MIT with no enterprise directory; Logfire and the AI Gateway are separately
+    sold services)
   sources:
   - url: https://github.com/pydantic/pydantic-ai
     shows: MIT, ~17.8k stars, Logfire integration
     accessed: '2026-06-17'
+  - url: https://api.github.com/repos/pydantic/pydantic-ai/git/trees/main?recursive=1
+    shows: 'Full untruncated recursive tree, 2,664 entries. Six LICENSE files: root, clai/, examples/, pydantic_ai_slim/,
+      pydantic_evals/, pydantic_graph/. No enterprise/, ee/, commercial/ or proprietary/ path anywhere.'
+    accessed: '2026-08-11'
+    http_status: 200
+    content_sha256: a9f41b34161da1d2d1e61fef24108f0dced1466989bf91a6c8770ba4619edf35
+    establishes:
+    - source
+    - core-gated
+  - url: https://api.github.com/repos/pydantic/pydantic-ai
+    shows: 'Repo metadata: language Python, license spdx_id MIT, size 226,885 KB, 19,231 stars, default
+      branch main.'
+    accessed: '2026-08-11'
+    http_status: 200
+    content_sha256: cbcef7945209b5d388a82b4e47f8701f4b290056d54cf07b03c4371a549cfa63
+    establishes:
+    - license
+    - source
+  - url: https://pydantic.dev/pricing
+    shows: Titled 'Pydantic Logfire Pricing', strapline '10M logs/spans/metrics free. Every feature. Any
+      tier.' Tiers are Personal $0, Team $49/mo, Growth $249/mo, Enterprise custom, and they sell observability
+      seats, projects, record volume, data retention and AI Gateway markup. Pydantic AI is listed as a separate
+      product in the nav. No paid tier of the agent library.
+    accessed: '2026-08-11'
+    http_status: 200
+    content_sha256: 6e8c4ca400d450e2778aa9118d97bbb16339e7132fbc5358ac424fc0b2de615f
+    establishes:
+    - core-gated
 adoption:
   level: 5
   signal_type: usage_volume

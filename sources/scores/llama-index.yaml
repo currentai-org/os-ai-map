@@ -10,13 +10,59 @@ openness:
       value: LlamaCloud/LlamaParse
     source:
       value: public
+    core-gated:
+      value: ungated
+      detail: every package in run-llama/llama_index is MIT with no enterprise directory; LlamaParse/LlamaCloud
+        is a separately sold document-processing service
   confidence: high
-  note: MIT self-hostable core with a commercial managed cloud.
-  raw: license:MIT(core);commercial:LlamaCloud/LlamaParse;source:public
+  note: 'MIT self-hostable core with a commercial managed cloud. `core-gated: ungated` transcribed 2026-08-11
+    from a read of the repo and the pricing page, and it does not reproduce the recorded 4/open_core - the
+    ladder computes 5/open_source from it, so the product stays deferred for a human. What the read found:
+    a full untruncated recursive tree of run-llama/llama_index@main is 13,820 entries whose license files
+    are the root MIT plus a per-package copy in every llama-index-integrations/* and llama-index-core package,
+    with no enterprise/, ee/, commercial/ or proprietary/ path anywhere; and llamaindex.ai/pricing prices
+    LlamaParse alone, in document-processing credits (Free 10K, Starter $50/40K, Pro $500/400K, Enterprise
+    custom), listing LlamaIndex, Workflows and LiteParse separately under ''Open Source''. Nothing is withheld
+    from the published library - LlamaParse is a different product sold beside it, which is what the otari
+    precedent calls ungated rather than gated. The recorded 4 rests on `commercial:LlamaCloud/LlamaParse`,
+    that is, on the vendor having a paid product at all, and that is the test otari was corrected for using.'
+  last_verified: '2026-08-11'
+  raw: license:MIT(core);commercial:LlamaCloud/LlamaParse;source:public;core-gated:ungated(every package
+    in run-llama/llama_index is MIT with no enterprise directory; LlamaParse/LlamaCloud is a separately
+    sold document-processing service)
   sources:
   - url: https://github.com/run-llama/llama_index
     shows: MIT, ~50.2k stars, LlamaCloud commercial tier
     accessed: '2026-06-17'
+  - url: https://api.github.com/repos/run-llama/llama_index/git/trees/main?recursive=1
+    shows: Full untruncated recursive tree, 13,820 entries. License files are the root LICENSE, llama-dev/LICENSE,
+      llama-index-core/LICENSE and a per-package LICENSE in each llama-index-integrations/* package. No
+      enterprise/, ee/, commercial/ or proprietary/ path anywhere.
+    accessed: '2026-08-11'
+    http_status: 200
+    content_sha256: d070385f9d480134a184cbe674316c995c97adb211f34937b05787147543666f
+    establishes:
+    - source
+    - core-gated
+  - url: https://api.github.com/repos/run-llama/llama_index
+    shows: 'Repo metadata: language Python, license spdx_id MIT, size 482,901 KB, 51,564 stars, default
+      branch main.'
+    accessed: '2026-08-11'
+    http_status: 200
+    content_sha256: 9b86dd5f69bcc414a32348cc167dfddc028822e08a3d14528b748d4862d38c0b
+    establishes:
+    - license
+    - source
+  - url: https://www.llamaindex.ai/pricing
+    shows: 'Titled ''LlamaParse Pricing: Compare Plans & Credits''. Prices only LlamaParse document-processing
+      credits: Free $0 / 10K credits, Starter $50 / 40K, Pro $500 / 400K, Enterprise custom with SSO and
+      hybrid deployment. The nav lists LlamaIndex, Workflows and LiteParse separately under ''Open Source
+      - OSS repos trusted by millions of developers''. No paid tier of the llama_index library.'
+    accessed: '2026-08-11'
+    http_status: 200
+    content_sha256: 3c4527059c30cff4944b879e0e7986db182b2fd6ec20b2443da200ef6d6eba6a
+    establishes:
+    - core-gated
 adoption:
   level: 5
   signal_type: usage_volume

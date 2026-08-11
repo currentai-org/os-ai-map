@@ -12,14 +12,43 @@ openness:
       detail: proprietary, API-only
     note:
       value: Agent SDK published but the product is closed SaaS
-  note: Closed/proprietary product gated behind an Anthropic subscription; the coding agent itself is
-    not open source.
+    source:
+      value: closed
+      detail: anthropics/claude-code ships plugins, examples and scripts; no runtime source and LICENSE.md
+        is all-rights-reserved
+  note: 'Closed/proprietary product gated behind an Anthropic subscription; the coding agent itself is not
+    open source. `source: closed` transcribed 2026-08-11 from a read of the repo: the GitHub contents API
+    lists only `.claude-plugin`, `.claude`, `.devcontainer`, `Script`, `examples`, `plugins`, `scripts`
+    and docs at the root, and LICENSE.md is a bare all-rights-reserved notice pointing at Anthropic''s Commercial
+    Terms. The published Agent SDK is a client that spawns the closed CLI, which the corpus already treats
+    as `closed` rather than `partial` (braintrust, promptlayer, openrouter, tavily-search-api all record
+    client SDKs under `source: closed`). `core-gated` is left unrecorded because the rubric says it is meaningful
+    only where source is public.'
+  last_verified: '2026-08-11'
   raw: license:Proprietary(closed-source CLI/app, requires Claude subscription or Console account);model:Claude(proprietary,
-    API-only);note:Agent SDK published but the product is closed SaaS
+    API-only);note:Agent SDK published but the product is closed SaaS;source:closed(anthropics/claude-code
+    ships plugins, examples and scripts; no runtime source and LICENSE.md is all-rights-reserved)
   sources:
   - url: https://code.claude.com/docs/en/overview
     shows: requires Claude subscription or Anthropic Console account; proprietary surfaces
     accessed: '2026-06-04'
+  - url: https://api.github.com/repos/anthropics/claude-code/contents/
+    shows: 'Root listing of anthropics/claude-code: .claude-plugin, .claude, .devcontainer, .gitattributes,
+      .github, .gitignore, .vscode, CHANGELOG.md, LICENSE.md, README.md, SECURITY.md, Script, demo.gif,
+      examples, feed.xml, plugins, scripts. No source tree for the CLI agent.'
+    accessed: '2026-08-11'
+    http_status: 200
+    content_sha256: 10b1c0faab05f24403d0fb3a36ba019adeb35572a1e312612c78b0aecddd8c48
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/anthropics/claude-code/main/LICENSE.md
+    shows: 'Entire file: "(c) Anthropic PBC. All rights reserved. Use is subject to Anthropic''s Commercial
+      Terms of Service." No grant to the source.'
+    accessed: '2026-08-11'
+    http_status: 200
+    content_sha256: 728158fd1037143fad6907e8fa34804177e598b7326519503fe83cafdef849e6
+    establishes:
+    - license
 adoption:
   level: 4
   reach: 1M-10M

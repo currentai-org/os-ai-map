@@ -10,9 +10,30 @@ openness:
       value: LangSmith-platform/cloud
     source:
       value: public
+    core-gated:
+      value: ungated
+      detail: every package in langchain-ai/langchain is MIT with no enterprise directory; LangSmith is
+        a separately sold observability and deployment platform
   confidence: high
-  note: license:MIT(langchain-core,langgraph,integrations);commercial:LangSmith-platform/cloud;source:public
-  raw: license:MIT(langchain-core,langgraph,integrations);commercial:LangSmith-platform/cloud;source:public
+  note: 'MIT core with LangSmith sold separately. `core-gated: ungated` transcribed 2026-08-11 from a read
+    of the repo and the pricing page, and it does not reproduce the recorded 4/open_core - the ladder computes
+    5/open_source from it, so the product stays deferred for a human. What the read found: a full untruncated
+    recursive tree of langchain-ai/langchain@master is 3,587 entries whose only license files are the root
+    MIT and per-package copies under libs/ (core, langchain, langchain_v1, model-profiles, seventeen partners,
+    standard-tests, text-splitters), with no enterprise/, ee/ or commercial/ path anywhere; and langchain.com/pricing
+    sells LangSmith - observability, evaluation, deployment, sandboxes, gateway - by seat and by metered
+    compute, listing langchain, langgraph and deepagents separately under ''Open Source Frameworks''. A
+    paid platform sold alongside an unwithheld core is what the otari precedent calls ungated. The open
+    question a human should settle is SCOPE, not evidence: this product''s own description reads ''MIT core
+    (langchain-core, langgraph, integrations)'', which pulls langgraph inside langchain even though langgraph
+    is a separate product on this map with its own score - and langgraph IS gated, by the Elastic-2.0 langgraph-api
+    server. On the narrow scope (the langchain repo) this is 5; on the description''s wider scope it inherits
+    langgraph''s 4. Recorded on the narrow scope because that is what the repo evidence supports, and deferred
+    because the wider scope is a curation decision rather than something a page read can answer.'
+  last_verified: '2026-08-11'
+  raw: license:MIT(langchain-core,langgraph,integrations);commercial:LangSmith-platform/cloud;source:public;core-gated:ungated(every
+    package in langchain-ai/langchain is MIT with no enterprise directory; LangSmith is a separately sold
+    observability and deployment platform)
   sources:
   - url: https://github.com/langchain-ai/langchain
     shows: flagship phase-C verification source
@@ -23,6 +44,37 @@ openness:
   - url: https://rvernica.github.io/2026/03/langchain-license
     shows: flagship phase-C verification source
     accessed: '2026-06-04'
+  - url: https://api.github.com/repos/langchain-ai/langchain/git/trees/master?recursive=1
+    shows: 'Full untruncated recursive tree, 3,587 entries. Only license files are the root LICENSE and
+      per-package copies under libs/: core, langchain, langchain_v1, model-profiles, seventeen partners/*,
+      standard-tests, text-splitters. No enterprise/, ee/, commercial/ or proprietary/ path. Top-level directories
+      are .devcontainer, .github, .vscode, libs.'
+    accessed: '2026-08-11'
+    http_status: 200
+    content_sha256: e7134bbd4a5c72cadbf4fe408abcb6e831722dedef5047dc77b40df1f7b64acf
+    establishes:
+    - source
+    - core-gated
+  - url: https://api.github.com/repos/langchain-ai/langchain
+    shows: 'Repo metadata: default_branch master, language Python, license spdx_id MIT, size 588,758 KB,
+      143,996 stars.'
+    accessed: '2026-08-11'
+    http_status: 200
+    content_sha256: 5f39a6a46f09552389609f7e4efe5d2516881c7dbacba6fc4a77f830841c5d14
+    establishes:
+    - license
+    - source
+  - url: https://www.langchain.com/pricing
+    shows: 'Page is titled ''LangSmith Plans and Pricing'' and prices only LangSmith: Developer $0/seat,
+      Plus $39/seat, Enterprise custom, plus metered LangChain Compute Units ($1.50/LCU) and Storage Units
+      ($1.00/LSU) for Deployment, Fleet, Engine, Sandboxes and LLM Gateway. The nav lists langchain, langgraph
+      and deepagents separately under ''Open Source Frameworks''. No paid tier of the langchain library
+      itself.'
+    accessed: '2026-08-11'
+    http_status: 200
+    content_sha256: 55f457245dd637cd290edc1ea6be35168b134d6cd1d401ca0a72e7c3867861e2
+    establishes:
+    - core-gated
 adoption:
   level: 5
   reach: '>10M'

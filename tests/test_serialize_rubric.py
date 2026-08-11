@@ -745,7 +745,14 @@ def test_real_sources_serialize_without_errors():
         # coming off at 5 rows each, less nothing: syfthub in orchestration_agents,
         # thunderbolt and otari in ui_api. A deferred product publishes no openness evidence
         # at all, so a removed deferral is always the larger of the two effects.
-        "orchestration_agents": 163, "telemetry_observability": 94, "ui_api": 160,
+        #
+        # orchestration_agents 163 -> 187 on the 2026-08-11 evidence sweep, which is both
+        # effects at once. Six deferrals came off - codex-cli, claude-code, cursor, haystack,
+        # langgraph, hexabot - and each newly-computed product starts publishing its rows.
+        # The four that stayed deferred (langchain, llama-index, pydantic-ai, zed) recorded a
+        # `core-gated` key too, but a deferred product publishes nothing, so they contribute
+        # zero rows and the whole rise is the six.
+        "orchestration_agents": 187, "telemetry_observability": 94, "ui_api": 160,
         # training_synthetic_datasets is unchanged at 158 across the ladder widening, which
         # is the check that mattered: benchmark_eval_data's new dimensions and rungs did not
         # disturb the category the ladder was derived from.

@@ -69,10 +69,16 @@ def test_local_scores_matches_check_rubrics_split():
     the rung that tests the tier, so mapping the license was the only thing left. autogpt
     needed its license recorded by name first - it said `DUAL`, which names no license. That
     rung produces 2/source_available, which is what all five already recorded, so again no
-    score moved."""
+    score moved. Then 410/62 -> 416/56 when the orchestration_agents evidence sweep read the
+    repo and pricing page behind ten deferrals: codex-cli, claude-code, cursor, haystack,
+    langgraph and hexabot gained the `source` or `core-gated` key their deferral was waiting
+    on and every one reproduced its recorded score, so six deferrals came off. The other four
+    - langchain, llama-index, pydantic-ai and zed - recorded their evidence too but compute
+    5/open_source against a recorded 4/open_core, so they stay deferred with the conflict
+    written into the reason instead."""
     computed, deferred = local_scores(None)
-    assert len(deferred) == 62
-    assert len(computed) == 410
+    assert len(deferred) == 56
+    assert len(computed) == 416
     assert not set(computed) & set(deferred)
     # Every one of the 410 reproduces today, so none should abstain.
     assert [key for key, value in computed.items() if value is None] == []
