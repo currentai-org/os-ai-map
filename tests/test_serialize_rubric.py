@@ -752,7 +752,13 @@ def test_real_sources_serialize_without_errors():
         # The four that stayed deferred (langchain, llama-index, pydantic-ai, zed) recorded a
         # `core-gated` key too, but a deferred product publishes nothing, so they contribute
         # zero rows and the whole rise is the six.
-        "orchestration_agents": 187, "telemetry_observability": 94, "ui_api": 160,
+        #
+        # 187 -> 207 later the same day, when those same four were ruled ungated and moved to
+        # 5/open_source. This rise is purely deferrals coming off: all four already recorded
+        # their evidence, they were simply publishing none of it. Five rows each, four
+        # products, +20 exactly - and the count is the check that no FIFTH product moved with
+        # them, langgraph included.
+        "orchestration_agents": 207, "telemetry_observability": 94, "ui_api": 160,
         # training_synthetic_datasets is unchanged at 158 across the ladder widening, which
         # is the check that mattered: benchmark_eval_data's new dimensions and rungs did not
         # disturb the category the ladder was derived from.

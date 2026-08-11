@@ -62,9 +62,9 @@ scoring_recipe:
   extends: software
   derived_from:
     method: shared software ladder, verified against the hand-authored scores
-    scores_reproduced: 46
-    scores_total: 46
-    scores_deferred: 5
+    scores_reproduced: 50
+    scores_total: 50
+    scores_deferred: 1
     verified_on: '2026-08-11'
     checker: build/check_rubric.py
   # Held back rather than scored. The shared ladder has no `otherwise` rule, so
@@ -74,55 +74,30 @@ scoring_recipe:
   #
   # Six of the eleven deferrals here were closed on 2026-08-11 by an evidence sweep that
   # read each repo and pricing page and transcribed `source` and `core-gated` into keys the
-  # ladder reads: codex-cli, claude-code, cursor, haystack, langgraph, hexabot. What the
-  # sweep left is one shape of disagreement, and it is the same shape four times over.
+  # ladder reads: codex-cli, claude-code, cursor, haystack, langgraph, hexabot. Four more
+  # closed the same day on a ruling rather than on new evidence.
   #
-  # langchain, llama-index, pydantic-ai and zed each record 4/open_core on the strength of
+  # langchain, llama-index, pydantic-ai and zed each recorded 4/open_core on the strength of
   # a `commercial:` clause naming a paid product the vendor also sells - LangSmith,
   # LlamaCloud, Logfire, Zed Pro. A read of all four repos found no enterprise directory and
   # no package the published source cannot build, and a read of all four pricing pages found
-  # the paid tier selling a SEPARATE service rather than a withheld feature. That is what
-  # `otari` was corrected for on 2026-08-11: a hosted offering beside an ungated core is not
-  # gating, and LiteLLM's open_core rests on an `enterprise-dir` these four do not have. So
-  # the ladder now computes 5/open_source for each, against a recorded 4.
+  # the paid tier selling a SEPARATE service rather than a withheld feature. The owner ruled
+  # that selling something alongside an ungated core is not gating, following the `otari`
+  # correction, and all four moved to 5/open_source. The rule is now written down in
+  # sources/rubrics/software.yaml under `core_gated` and in docs/guides/openness-spectrum.md,
+  # so the next sweep reads it instead of having to infer it from otari's record - which is
+  # how these four were found, and is not a method that scales to a parallel sweep.
   #
-  # They are held rather than restated because the question is no longer evidential. Either
-  # these four scores were authored on "the vendor sells something" and should follow otari
-  # to 5, or the ladder's `gated` is meant to cover an adjacent commercial product and its
-  # definition needs to say so. One reading settles all four, and it is a call for a human.
-  # langgraph is the useful control: it looks identical from outside and is genuinely gated,
-  # because its Agent Server ships as a closed Elastic-2.0 wheel behind a license key.
+  # langgraph is the control and did not move: it looks identical from outside and is
+  # genuinely gated, because its Agent Server ships as a closed Elastic-2.0 wheel behind a
+  # LANGGRAPH_CLOUD_LICENSE_KEY. LiteLLM is the other side of the same line, its open_core
+  # resting on an `enterprise-dir` these four do not have.
   deferred:
     openhands:
       because: >-
-        ladder computes 5/open_source from the recorded evidence but the score says
-        4/open_core; one of the two is wrong and it needs a human
-    langchain:
-      because: >-
-        ladder computes 5/open_source from the evidence read on 2026-08-11 but the score says
-        4/open_core. The langchain repo is MIT throughout with no enterprise directory and
-        langchain.com/pricing sells only LangSmith, so nothing is withheld from the published
-        source. A human also needs to settle SCOPE: this product's own description reads 'MIT
-        core (langchain-core, langgraph, integrations)', which pulls in langgraph - a separate
-        product on this map, and one that IS gated.
-    pydantic-ai:
-      because: >-
-        ladder computes 5/open_source from the evidence read on 2026-08-11 but the score says
-        4/open_core. pydantic/pydantic-ai is MIT throughout with no enterprise directory, and
-        pydantic.dev/pricing sells Logfire observability under the strapline 'Every feature.
-        Any tier.' Same shape as llama-index, langchain and zed; one reading settles all four.
-    llama-index:
-      because: >-
-        ladder computes 5/open_source from the evidence read on 2026-08-11 but the score says
-        4/open_core. run-llama/llama_index is MIT throughout with no enterprise directory, and
-        llamaindex.ai/pricing sells LlamaParse credits, a separate document-processing service.
-        Same shape as langchain, pydantic-ai and zed; one reading settles all four.
-    zed:
-      because: >-
-        ladder computes 5/open_source from the evidence read on 2026-08-11 but the score says
-        4/open_core. Every crate in zed-industries/zed carries LICENSE-GPL or LICENSE-APACHE,
-        the collab server included, and zed.dev/pricing sells Zed-hosted inference and an admin
-        dashboard which Zed's own FAQ says 'govern Zed's hosted services specifically'. The same
-        read also found the recorded license names AGPL-3.0 for a collab server that now carries
-        GPL; that does not move the tier, but it is why the axis carries no last_verified.
+        The score says 4/open_core and the ladder abstains, because neither `core-gated` nor
+        `self-host` is recorded: the gate is under `enterprise-dir: separate-license`, a key
+        the software ladder does not read. Under the `core_gated` rule a separately licensed
+        enterprise directory IS a gated core, so the 4 looks right and what is missing is the
+        transcription - but that is a repo read, not a restatement, so it stays held.
 comments: ''

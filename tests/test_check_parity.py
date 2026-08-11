@@ -72,13 +72,16 @@ def test_local_scores_matches_check_rubrics_split():
     score moved. Then 410/62 -> 416/56 when the orchestration_agents evidence sweep read the
     repo and pricing page behind ten deferrals: codex-cli, claude-code, cursor, haystack,
     langgraph and hexabot gained the `source` or `core-gated` key their deferral was waiting
-    on and every one reproduced its recorded score, so six deferrals came off. The other four
-    - langchain, llama-index, pydantic-ai and zed - recorded their evidence too but compute
-    5/open_source against a recorded 4/open_core, so they stay deferred with the conflict
-    written into the reason instead."""
+    on and every one reproduced its recorded score, so six deferrals came off. Then 416/56 ->
+    420/52 when the other four of those ten were ruled on rather than re-read: langchain,
+    llama-index, pydantic-ai and zed each rested a 4/open_core on a `commercial:` clause naming
+    a paid product sold beside an unwithheld core, which `core_gated` does not ask about, and
+    all four moved to the 5/open_source the ladder computes. This is the one recent step where
+    published scores MOVED rather than deferrals merely coming off. langgraph did not move: its
+    gate is a closed Elastic-2.0 package behind a license key, not a product beside the core."""
     computed, deferred = local_scores(None)
-    assert len(deferred) == 56
-    assert len(computed) == 416
+    assert len(deferred) == 52
+    assert len(computed) == 420
     assert not set(computed) & set(deferred)
     # Every one of the 410 reproduces today, so none should abstain.
     assert [key for key, value in computed.items() if value is None] == []
