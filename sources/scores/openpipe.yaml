@@ -1,7 +1,7 @@
 product: openpipe
 openness:
-  score: 4
-  class: open_core
+  score: 5
+  class: open_source
   components:
     license:
       value: Apache-2.0
@@ -15,29 +15,41 @@ openness:
     managed-tier:
       value: OpenPipe hosted training/serving SaaS on top of the OSS lib
     core-gated:
-      value: gated
+      value: ungated
+      detail: ART FAQ commits to maintaining ART as a full-featured open source project and calls the hosted
+        ART backend optional, for users who do not want to manage GPU infrastructure; no ART feature is
+        withheld from the self-hostable LocalBackend
   confidence: high
-  note: ART's own FAQ and backend docs (fetched 2026-08-09) describe the hosted ServerlessBackend as an
-    optional convenience alongside a fully self-hostable LocalBackend, with no ART feature withheld from
-    the free path. The OSI-licensed, self-hostable core is the whole product, which the software ladder's
-    rule for {license_tier:osi, source:public, core_gated:ungated} scores 5/open_source rather than 4/open_core.
-  last_verified: '2026-08-09'
+  note: List B re-read, 2026-08-11. The value on file was the single token `gated` while this record's own
+    note already argued the opposite, so the recorded value was the thing under suspicion rather than a
+    gap. The ART FAQ commits to "maintaining ART as a full-featured open source project" and calls the hosted
+    backend "an optional hosted ART backend for users who don't want to manage GPU infrastructure on their
+    own"; the backend docs describe a fully self-hostable LocalBackend alongside it. Nothing is withheld
+    from the published Apache-2.0 source -- no ee/ directory, no closed package, no license key -- and OpenPipe's
+    hosted training and serving SaaS is a separate product sold beside the open core, which software.yaml
+    explicitly does not count as gating. core-gated corrected to ungated with that evidence in the value,
+    moving the score 4/open_core -> 5/open_source, the same correction already applied to langchain, llama-index,
+    pydantic-ai, zed and otari.
+  last_verified: '2026-08-11'
   raw: license:Apache-2.0(OSI, OpenPipe Inc.; some vendored code LGPL-3.0);source:public;methods:RL(GRPO)+SFT
-    trajectory training;managed-tier:OpenPipe hosted training/serving SaaS on top of the OSS lib;core-gated:gated
+    trajectory training;managed-tier:OpenPipe hosted training/serving SaaS on top of the OSS lib;core-gated:ungated(ART
+    FAQ commits to maintaining ART as a full-featured open source project and calls the hosted ART backend
+    optional, for users who do not want to manage GPU infrastructure; no ART feature is withheld from the
+    self-hostable LocalBackend)
   sources:
   - url: https://github.com/OpenPipe/ART
     shows: Repo metadata reads `"isPrivate":false`, `"isArchived":false`, `"visibilityLabel":"Public"`,
       and `"license":{"spdxId":"Apache-2.0","name":"Apache License 2.0"}`.
-    accessed: '2026-08-09'
+    accessed: '2026-08-11'
     http_status: 200
-    content_sha256: 469010d00db146ff546c8510e596dcd376d4550af478994f26f9f596832d18ea
+    content_sha256: 96b2f051e8dcd461059aba162185eed44731254e885863af4d99b1e919fec4ac
     establishes:
     - source
   - url: https://raw.githubusercontent.com/OpenPipe/ART/main/LICENSE
     shows: Full Apache License 2.0 text; appendix reads "Copyright 2025, OpenPipe, Inc." followed by an
       "Additional License Notice" stating the distribution "includes a small portion of code adapted from
       a third-party project licensed under the GNU Lesser General Public License v3.0."
-    accessed: '2026-08-09'
+    accessed: '2026-08-11'
     http_status: 200
     content_sha256: d39185043a0ec089a0e5f88350f1f3eec10fbb34578e04aca3e2dab5b3a5f6cb
     establishes:
@@ -51,10 +63,11 @@ openness:
     establishes:
     - source
   - url: https://art.openpipe.ai/getting-started/faq.md
-    shows: 'FAQ answer to "Which pieces of ART are open source?": "We are committed to maintaining ART as
-      a full-featured open source project. We will also deploy an optional hosted ART backend for users
-      who don''t want to manage GPU infrastructure on their own."'
-    accessed: '2026-08-09'
+    shows: ART FAQ states "We are committed to maintaining ART as a full-featured open source project" and
+      "We've included an open-source ART backend". On the hosted option it says "We will also deploy an
+      optional hosted ART backend for users who don't want to manage GPU infrastructure on their own." The
+      FAQ names no paid OpenPipe plan and no feature paywall.
+    accessed: '2026-08-11'
     http_status: 200
     content_sha256: 41cdd194495331be3b7cdfe7b778531da1f753f35c2bd46466ee36a1b7a878f4
     establishes:

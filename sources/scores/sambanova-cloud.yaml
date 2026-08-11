@@ -5,6 +5,10 @@ openness:
   components:
     license:
       value: proprietary
+    source:
+      value: closed
+      detail: managed cloud API, the EULA states Customer has no right to obtain a copy of the underlying
+        computer code for any Service
     software-stack:
       value: closed
       detail: SambaFlow compiler/runtime not open
@@ -14,19 +18,27 @@ openness:
       value: managed-cloud-API
   confidence: high
   note: Proprietary managed cloud inference on SambaNova's own RDU silicon; no open source software disclosed.
-    The Cloud EULA confirms a non-exclusive, non-transferable, limited license to use the hosted service
-    only -- not a redistribution or source grant. Scored closed.
-  last_verified: '2026-08-09'
-  raw: license:proprietary;software-stack:closed(SambaFlow compiler/runtime not open);hardware:SN40L-RDU-only;delivery:managed-cloud-API
+    The Cloud EULA grants only a limited license to use the software embodied in the Service and states
+    that Customer has no right to obtain a copy of the underlying computer code, so there is no self-hostable
+    implementation and source is closed. Rung 0 of the software ladder decides it on source alone.
+  last_verified: '2026-08-11'
+  raw: license:proprietary;source:closed(managed cloud API, the EULA states Customer has no right to obtain
+    a copy of the underlying computer code for any Service);software-stack:closed(SambaFlow compiler/runtime
+    not open);hardware:SN40L-RDU-only;delivery:managed-cloud-API
   sources:
   - url: https://sambanova.ai/cloud-end-user-license-agreement
-    shows: SambaNova hereby grants to Customer a non-exclusive, non-transferable, limited license during
-      the Term to use the software embodied in the Service
-    accessed: '2026-08-09'
+    shows: 'SambaNova hereby grants to Customer a non-exclusive, non-transferable, limited license during
+      the Term to use the software embodied in the Service. The same agreement states: "Customer acknowledges
+      that the Service is offered as an online, hosted solution, and that Customer has no right to obtain
+      a copy of the underlying computer code for any Service", and forbids Customer to "reverse engineer,
+      disassemble or decompile any Service or otherwise seek to obtain the source code of any software
+      included in the Service".'
+    accessed: '2026-08-11'
     establishes:
     - license
+    - source
     http_status: 200
-    content_sha256: ba2fd4ebee6a698fd26af51f4eecce486b09fcf3ae3208c2673a38ee06cf7b2d
+    content_sha256: e5ad2763b15c5889d1af8381c7ccbf990b5c1f885040850e9a715666820adf1f
   - url: https://sambanova.ai/blog/sn40l-chip-best-inference-solution
     shows: The RDU is also the only AI accelerator with a tightly coupled three-tier memory system comprising
       SRAM, HBM, and DDR DRAM.

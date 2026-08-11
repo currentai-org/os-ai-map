@@ -78,10 +78,25 @@ def test_local_scores_matches_check_rubrics_split():
     a paid product sold beside an unwithheld core, which `core_gated` does not ask about, and
     all four moved to the 5/open_source the ladder computes. This is the one recent step where
     published scores MOVED rather than deferrals merely coming off. langgraph did not move: its
-    gate is a closed Elastic-2.0 package behind a license key, not a product beside the core."""
+    gate is a closed Elastic-2.0 package behind a license key, not a product beside the core.
+
+    Then 420/52 -> 425/47 when the evidence sweep reached inference_code,
+    dataset_processing_tools and finetuning_code. Five deferrals came off: sglang,
+    text-generation-inference and axolotl recorded `core-gated:ungated` and reproduced their
+    5/open_source, while sambanova-cloud and anyscale-fine-tuning recorded `source:closed` and
+    reproduced their 1/closed on rung 0 alone. anyscale-fine-tuning is the one worth
+    remembering - it already recorded a `source` key, spelled `not-public`, which is outside
+    the dimension's enum and carries no value_alias, so the deferral was vocabulary drift
+    rather than a missing read. openpipe moved 4/open_core -> 5/open_source on the langchain
+    reading: its hosted ART backend is an optional service beside a full-featured open core.
+    Three deferrals stayed and had their reasons rewritten as conflicts: aws-neuron
+    (`source:partial`, computing 2 against a recorded 1), unsloth (`core-gated:gated` from a
+    pricing page selling multi-GPU the free tier does not have, computing 4 against a recorded
+    5) and nemo-data-designer (Apache-2.0 and public per NVIDIA's own docs, so the recorded
+    1/closed is unreachable at either value of core-gated)."""
     computed, deferred = local_scores(None)
-    assert len(deferred) == 52
-    assert len(computed) == 420
+    assert len(deferred) == 47
+    assert len(computed) == 425
     assert not set(computed) & set(deferred)
     # Every one of the 410 reproduces today, so none should abstain.
     assert [key for key, value in computed.items() if value is None] == []

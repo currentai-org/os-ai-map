@@ -5,6 +5,10 @@ openness:
   components:
     license:
       value: mixed/proprietary-core
+    source:
+      value: partial
+      detail: aws-neuron-sdk is a documentation and issue-tracker repo carrying no Runtime or Compiler source,
+        while the kernel driver, NKI kernel library, vLLM-for-Neuron and NKI samples do ship as source
     runtime:
       value: proprietary
       detail: Neuron Runtime+Compiler not open sourced
@@ -14,24 +18,37 @@ openness:
     hardware-lock:
       value: AWS-Inferentia/Trainium-only
   confidence: high
-  note: Headline inference path (Neuron Compiler + Neuron Runtime) has no open-source release anywhere in
-    AWS's own OSS repository catalog; surrounding glue (driver, vLLM integration, NKI, samples) is open
-    under various OSI licenses but does not make the engine open_source. Corrects the driver's license from
-    the previously recorded Apache-2.0 to GPL-2.0, confirmed against the repo today; this does not change
-    the score since the driver was already 'open-glue', not the license-bearing headline component.
-  last_verified: '2026-08-09'
-  raw: license:mixed/proprietary-core;runtime:proprietary(Neuron Runtime+Compiler not open sourced);open-glue:Linux
+  note: 'Headline inference path (Neuron Compiler + Neuron Runtime) has no open-source release anywhere
+    in AWS''s own OSS repository catalog; surrounding glue (kernel driver GPL-2.0, vLLM-for-Neuron, NKI
+    kernel library, MIT-0 samples) is open under various OSI licenses but does not make the engine open_source.
+    CONFLICT, left deferred: the sweep of 2026-08-11 recorded the missing `source` key and it reads `partial`,
+    not `closed`. software.yaml defines `closed` as "a managed service with no self-hostable implementation"
+    and Neuron is not a managed service -- the SDK installs and runs on the customer''s own EC2 instance
+    from proprietary packages. It defines `partial` as "a repo exists but the runtime does not ship - a
+    client, an SDK, or an issue tracker standing in for the engine", which is aws-neuron-sdk exactly: a
+    docs-and-issues repo whose compiler/ and neuron-runtime/ directories hold documentation rather than
+    source, alongside four genuinely open functional components. On that reading the ladder computes 2/source_available
+    against the recorded 1/closed, matching how `webcontainers` is already scored for the same shape. Neither
+    side was adjusted; a human decides which reading the map wants.'
+  last_verified: '2026-08-11'
+  raw: license:mixed/proprietary-core;source:partial(aws-neuron-sdk is a documentation and issue-tracker
+    repo carrying no Runtime or Compiler source, while the kernel driver, NKI kernel library, vLLM-for-Neuron
+    and NKI samples do ship as source);runtime:proprietary(Neuron Runtime+Compiler not open sourced);open-glue:Linux
     kernel driver(GPL-2.0),vLLM-Neuron integration(Apache-2.0,vllm-project org),NKI library,samples(MIT-0);hardware-lock:AWS-Inferentia/Trainium-only
   sources:
   - url: https://awsdocs-neuron.readthedocs-hosted.com/en/latest/general/oss/index.html
     shows: AWS Neuron provides open source code and samples for some of its components, libraries, and tools
       under the Apache 2.0 license. The current public repositories open to contribution at this time are
-      listed below.
-    accessed: '2026-08-09'
+      listed below. Re-read on 2026-08-11 (the URL now redirects to /about-neuron/oss/index.html), the
+      catalog lists exactly six public repositories -- TorchNeuron PyTorch Extension, Neuron Agentic Development,
+      Neuron Explorer CDK, Neuron Kernel Library, vLLM for Neuron, NKI Samples -- and neither the Neuron
+      Runtime nor the Neuron Compiler appears among them.
+    accessed: '2026-08-11'
     establishes:
     - license
+    - source
     http_status: 200
-    content_sha256: a9c893f47176f8940696baea2322c2a22aa307088a80a46ed295c2e4c11fa298
+    content_sha256: 902920d0c593e68d7657bfd7a70c2a1252a5b4cdb1b8363eefd478d8b547f8c7
   - url: https://awsdocs-neuron.readthedocs-hosted.com/en/latest/about-neuron/what-is-neuron.html
     shows: 'Neuron Compiler and Neuron Runtime entries in the ''AWS Neuron Core Components'' list carry
       no ''Open Source'' bullet, unlike the Native PyTorch entry (''Open Source : Released as an open source
@@ -45,12 +62,17 @@ openness:
   - url: https://github.com/aws-neuron/aws-neuron-sdk
     shows: '"path":"LICENSE-DOCUMENTATION","preferredFileType":"license","tabName":"License" alongside "path":"LICENSE-SAMPLECODE",..."tabName":"MIT-0"
       -- repo carries a generic, GitHub-unclassified license for docs and a separate MIT-0 license for sample
-      code, i.e. no single OSI license covers the SDK repo'
-    accessed: '2026-08-09'
+      code, i.e. no single OSI license covers the SDK repo. Re-read on 2026-08-11, the repo''s top-level
+      directories are .github, compiler, frameworks, deploy, general, libraries, neuron-runtime, neuron-customops,
+      nki, release-notes, setup and tools -- the "compiler" and "neuron-runtime" directories hold documentation
+      for those components, not their source. The repo points readers at the hosted Neuron SDK documentation
+      site and carries an open issue tracker.'
+    accessed: '2026-08-11'
     establishes:
     - license
+    - source
     http_status: 200
-    content_sha256: be6f9ed742514b2a4d21efde088a3380d01218f3ef3e8b2f194eeb479150b62f
+    content_sha256: 078aca323c5731e013b9f241d89be23809990a687dffbf12177892ed53b84c62
   - url: https://github.com/aws-neuron/aws-neuron-driver
     shows: '"license":{"spdxId":"GPL-2.0","name":"GNU General Public License v2.0"}'
     accessed: '2026-08-09'

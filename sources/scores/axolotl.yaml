@@ -9,29 +9,40 @@ openness:
     source:
       value: public
       detail: axolotl-ai-cloud/axolotl
+    core-gated:
+      value: ungated
+      detail: Apache-2.0 across the repo, no ee/ or enterprise directory, no license key and no closed package;
+        the only paid thing offered is dedicated support by email
   confidence: high
-  note: Fully OSI-licensed (Apache-2.0); no proprietary managed training service, only deployment templates
-    for third-party clouds.
-  last_verified: '2026-08-09'
-  raw: license:Apache-2.0(OSI);source:public(axolotl-ai-cloud/axolotl)
+  note: 'Fully OSI-licensed (Apache-2.0) with no proprietary managed training service, only deployment templates
+    for third-party clouds. core-gated recorded ungated on 2026-08-11: the repo has no ee/ or enterprise
+    directory, no license-key gate and no closed package the open one depends on, and the only paid offering
+    is dedicated support. Closes the deferral without moving the score.'
+  last_verified: '2026-08-11'
+  raw: license:Apache-2.0(OSI);source:public(axolotl-ai-cloud/axolotl);core-gated:ungated(Apache-2.0 across
+    the repo, no ee/ or enterprise directory, no license key and no closed package; the only paid thing
+    offered is dedicated support by email)
   sources:
   - url: https://raw.githubusercontent.com/axolotl-ai-cloud/axolotl/main/LICENSE
     shows: The body is the standard, unmodified Apache License, Version 2.0 text, with no custom copyright
       line or added restriction layered on top.
-    accessed: '2026-08-09'
+    accessed: '2026-08-11'
     http_status: 200
     content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
     establishes:
     - license
   - url: https://github.com/axolotl-ai-cloud/axolotl
-    shows: Repository metadata reports isArchived:false and license spdxId Apache-2.0; this is the same
-      axolotl-ai-cloud/axolotl codebase pyproject.toml's Repository field and the PyPI project page point
-      back to, i.e. the running product builds from this published repo.
-    accessed: '2026-08-09'
+    shows: Repo page for Axolotl, licensed Apache-2.0; the README states "This project is licensed under
+      the Apache 2.0 License." Top-level directories are .github, .runpod, .vscode, cicd, deepspeed_configs,
+      devtools, docker, docs, examples, image, scripts, src/axolotl, tests -- no ee/ or enterprise directory,
+      no closed dependency and no license key. The only commercial line is "Need dedicated support? Please
+      contact wing@axolotl.ai for options".
+    accessed: '2026-08-11'
     http_status: 200
-    content_sha256: a37395d7f09ea24fc797a1054f12cfca6ce1b5313b97c1ce6b3fa70c08b10697
+    content_sha256: 456b92cd6e991d86ddc1919cdd1d3ebf36f9df426d3fe7b721e1085fda6ca35a
     establishes:
     - source
+    - core-gated
   - url: https://raw.githubusercontent.com/axolotl-ai-cloud/axolotl/main/README.md
     shows: Documents pip and Docker installation for self-hosting (uv pip install axolotl; docker run axolotlai/axolotl:main-latest)
       and lists third-party cloud deployment templates (RunPod, Vast.ai, PRIME Intellect, Modal, Novita,
