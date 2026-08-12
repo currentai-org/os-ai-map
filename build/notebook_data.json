@@ -25347,11 +25347,11 @@
           "type": "model",
           "description": "Alibaba's Qwen3-based safety moderation model family (0.6B / 4B / 8B) that classifies prompts and responses as safe, controversial, or unsafe across 119 languages, with a token-level streaming variant for real-time moderation. Deployable via vLLM, SGLang, and HF inference.",
           "openness": {
-            "score": 4,
+            "score": 3,
             "class": "open_weights",
             "components": "weights:open(Qwen3Guard 0.6B/4B/8B on HF);data:not-released;license:Apache-2.0(OSI)",
             "confidence": "medium",
-            "note": "Open weights under Apache-2.0 (OSI); training data not released, so open_weights (4) rather than open_source. Unusually broad multilingual coverage (119 languages) plus a streaming variant.",
+            "note": "Open weights under Apache-2.0 (OSI). Scored 3 because the 4-rung requires both the post-training data and the fine-tuning pipeline to be released, and neither is. The card records the training data as not released and publishes no recipe. Apache-2.0 weights over a closed recipe scores 3 everywhere else on the map. Unusually broad multilingual coverage (119 languages) plus a streaming variant.",
             "sources": [
               {
                 "url": "https://huggingface.co/Qwen/Qwen3Guard-Gen-8B",
@@ -25393,7 +25393,7 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-08",
+            "date": "2026-08-11",
             "basis": "commit"
           },
           "version_note": "Qwen3Guard (0.6B/4B/8B), Apache-2.0 open weights; 119 languages; generative + streaming variants. 8B ~74.7K HF downloads/month, 119 likes (June 2026). Verified live June 2026."
@@ -25406,16 +25406,36 @@
           "type": "model",
           "description": "Ai2's open safety moderation model (7B, fine-tuned from Mistral-7B) that jointly detects harmful prompts, harmful responses, and model refusals across 13 risk subcategories. Trained on the open WildGuardMix corpus and benchmarked above GPT-4 on several moderation tasks.",
           "openness": {
-            "score": 4,
+            "score": 3,
             "class": "open_weights",
-            "components": "weights:open(allenai/wildguard on HF);data:open(WildGuardMix corpus public);base:Mistral-7B;license:Apache-2.0(OSI)",
+            "components": "weights:open(allenai/wildguard on HF);data:open(WildGuardMix corpus public);code:partial(inference/serving package only; no training pipeline);base:Mistral-7B;license:Apache-2.0(OSI)",
             "confidence": "medium",
-            "note": "Open weights under Apache-2.0 with the WildGuardMix training corpus published; from Ai2, which sits at the open end of the spectrum. Scored open_weights (4); a strong open release, just short of the full open_source pipeline tier.",
+            "note": "Open weights under Apache-2.0 with the WildGuardMix training corpus published, which is more than most guardrail models release. The fine-tuning pipeline is not published, though. The allenai/wildguard repo ships an inference package only (nine files, no trainer or training config), the companion Safety-Eval repo is an evaluation suite, and the model card refers readers to the paper appendix for training details rather than to code. The 4-rung requires released data and released code, so this scores 3. Recorded 4 until the components were completed; open data alone does not lift the rung.",
             "sources": [
               {
                 "url": "https://huggingface.co/allenai/wildguard",
                 "shows": "Apache-2.0; 7B Mistral fine-tune; prompt/response/refusal detection; open WildGuardMix corpus; ~265K downloads/month",
                 "accessed": "2026-06-29"
+              },
+              {
+                "url": "https://api.github.com/repos/allenai/wildguard/contents",
+                "shows": "Root listing of the project's own repo, which is the whole of what it ships as code. Nine entries (.gitignore, LICENSE.md, README.md, docs, examples, pyproject.toml, requirements.txt, tests, wildguard). No training directory, no trainer entrypoint, no SFT or DPO config. The `wildguard` package is the classifier wrapper and `examples/wildguard_filter` is a serving demo, so the published code is inference and serving only.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "c4fb6dc1020ec916c47d6d6a90161fa20226b7bac3f147f26da9521c542a26e6",
+                "establishes": [
+                  "code"
+                ]
+              },
+              {
+                "url": "https://github.com/allenai/wildguard/blob/main/README.md",
+                "shows": "The project's own README installs with `pip install wildguard` and documents `load_wildguard()` plus `classify()`. Its only outbound links are the paper, the WildGuardMix dataset, the model, and the Safety-Eval companion repo, which it describes as holding \"the details of evaluations run in the WildGuard paper\". No training pipeline is offered or linked.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "e9b46a0e3e74792e8cebe692f444607e21767d1888a2ade3785d3657fd33c699",
+                "establishes": [
+                  "code"
+                ]
               }
             ],
             "bucket": "open-ish"
@@ -25452,7 +25472,7 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-08",
+            "date": "2026-08-11",
             "basis": "commit"
           },
           "version_note": "WildGuard (7B, Mistral-based), Apache-2.0 open weights; trained on the open WildGuardMix dataset. ~265K HF downloads/month, 52 likes (June 2026). Verified live June 2026."
@@ -25937,11 +25957,11 @@
           "type": "model",
           "description": "IBM's open guardrail model family for detecting risks in prompts and responses, plus RAG-specific checks. It covers harm, social bias, jailbreaking, violence, profanity and sexual content, and adds hallucination checks for retrieval pipelines (context relevance, groundedness, answer relevance).",
           "openness": {
-            "score": 4,
+            "score": 3,
             "class": "open_weights",
             "components": "weights:open(granite-guardian-3.2-5b on HF);data:not-released;license:Apache-2.0(OSI)",
             "confidence": "medium",
-            "note": "Open weights under Apache-2.0 (permissive, OSI), but the training data is not released, so it stops short of the open_source (5) tier; a strong open_weights release at 4.",
+            "note": "Open weights under Apache-2.0 (permissive, OSI), but neither the post-training data nor the fine-tuning pipeline is released. The 4-rung requires both, so this scores 3, the rung every comparable Apache-2.0 guardrail model sits on. A strong open-weights release even so, and the license is not what holds it back.",
             "sources": [
               {
                 "url": "https://huggingface.co/ibm-granite/granite-guardian-3.2-5b",
@@ -25983,7 +26003,7 @@
           "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-08",
+            "date": "2026-08-11",
             "basis": "commit"
           },
           "version_note": "Granite Guardian 3.2 (5B, distilled from the 8B); Apache-2.0 open weights. ~1.4K HF downloads/month, 14 likes (June 2026). Verified live June 2026."
@@ -25996,11 +26016,11 @@
           "type": "model",
           "description": "OpenAI's open safety reasoning model, built on gpt-oss and released with Hugging Face and ROOST. Rather than emitting a fixed label, it reasons over a safety policy you supply and returns a reasoned decision, with configurable reasoning effort. Shipped in 20b and 120b variants under Apache 2.0.",
           "openness": {
-            "score": 4,
+            "score": 3,
             "class": "open_weights",
             "components": "weights:open(gpt-oss-safeguard-20b/120b on HF);data:not-released;license:Apache-2.0(OSI)",
             "confidence": "medium",
-            "note": "Open weights under Apache-2.0 (OSI), training data not released, so open_weights (4) rather than open_source. Notable as a policy-conditioned safety reasoning model rather than a fixed classifier.",
+            "note": "Open weights under Apache-2.0 (OSI) with no released training data and no published fine-tuning pipeline. The 4-rung requires both, so this scores 3, the same rung as every other model that ships permissive weights without a recipe. Notable as a policy-conditioned safety reasoning model rather than a fixed classifier, but that shapes capability, not openness.",
             "sources": [
               {
                 "url": "https://huggingface.co/openai/gpt-oss-safeguard-20b",
@@ -26042,7 +26062,7 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-08",
+            "date": "2026-08-11",
             "basis": "commit"
           },
           "version_note": "gpt-oss-safeguard (20b / 120b), Apache-2.0 open weights; released by OpenAI with Hugging Face and ROOST, distributed via the ROOST Model Community (RMC). 20b ~131K HF downloads/month, 235 likes (June 2026). Verified live June 2026."
