@@ -43,31 +43,16 @@ scoring_recipe:
   extends: software
   derived_from:
     method: shared software ladder, verified against the hand-authored scores
-    scores_reproduced: 27
+    scores_reproduced: 32
     scores_total: 32
-    verified_on: '2026-07-30'
+    verified_on: '2026-08-12'
     checker: build/check_rubric.py
-  # Held back rather than scored. The shared ladder has no `otherwise` rule, so
-  # these already abstain; declaring them here records WHY, and keeps the
-  # reproduction count honest by excluding them from it rather than counting
-  # them as passes.
-  deferred:
-    model-context-protocol:
-      because: >-
-        source and core-gated were read and recorded on 2026-08-12, and the license question
-        has moved on one step since. The LICENSE really does split three ways - Apache-2.0 for
-        new code and specifications, CC-BY-4.0 for documentation other than the specifications,
-        MIT retained for pre-transition contributions whose authors did not consent to
-        relicensing - and CC-BY-4.0 used to sit in no tier at all, so the compound resolved to
-        nothing and the walk hit a rung it could not evaluate. On the owner's ruling of
-        2026-08-12 that a protocol may license its documentation under Creative Commons,
-        CC-BY-4.0 is now declared in permissive_non_osi in sources/rubrics/software.yaml, with
-        the reasoning recorded there. The compound resolves on every part and the most
-        restrictive wins, so this product now resolves to permissive_non_osi rather than to
-        nothing. That tier has no rung, deliberately: a non-OSI license cannot reach the open
-        bucket under either the Model Openness Framework or OSAID, so a rung here cannot emit
-        open_source and nobody has ruled on what it should emit instead. The deferral therefore
-        stands on a rubric gap with a known shape rather than on an unrecognized license, and
-        the decision it waits on is what class a permissive non-OSI software license earns
-        - which is a rubric question for a human, not a per-product fix
+  # Nothing is deferred here any more. `model-context-protocol` was the last one, and it
+  # closed on a recording fix rather than on the rubric change it appeared to be waiting
+  # for: its CC-BY-4.0 documentation license was recorded inside the `license` compound,
+  # where most-restrictive-wins applied a license covering the project's PROSE to the
+  # artifact you run, and demoted it to 3/source_available. `autogen` had the identical
+  # facts recorded the other way - MIT under `license`, CC-BY-4.0 under a separate `docs:`
+  # key the ladder does not read - and kept its 5. MCP now matches autogen and reproduces
+  # at 5/open_source.
 comments: ''

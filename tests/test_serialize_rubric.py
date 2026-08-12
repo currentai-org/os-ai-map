@@ -680,10 +680,17 @@ def test_real_sources_serialize_without_errors():
     # accessory tracks the platform it completes. It decides a different KIND of product
     # rather than a better one - `raspberry-pi-ai-hat-plus` is a HAT, and the four rungs
     # below it all assume the thing being scored is a board.
+    # Software is 13 since 2026-08-12, and `safeguards` 23, because `permissive_non_osi`
+    # got a rung back. Three rows, not one: it tests `license_tier`, `source` and
+    # `core_gated`, and a three-condition rung serializes as three. Note the shape of the
+    # history here - the tier lost 6 rows when its two rungs came out for emitting an
+    # open-bucket class from a non-OSI license, and regained 3 for one rung emitting
+    # 3/source_available, which is open-ISH. The rows came back; the boundary violation
+    # did not.
     assert per_category("category_scoring_rules") == {
-        "base_pretrained": 12, "finetuned_chat": 10, "safeguards": 20,
+        "base_pretrained": 12, "finetuned_chat": 10, "safeguards": 23,
         "benchmark_eval_data": 24, "training_synthetic_datasets": 24, "edge_hardware": 7,
-        **{c: 10 for c in SOFTWARE},
+        **{c: 13 for c in SOFTWARE},
     }
     # Both fell with the slug migration: release-level products collapsed into the
     # tier the vendor sells, so 25 products left the roster and the closed frontier
@@ -754,7 +761,14 @@ def test_real_sources_serialize_without_errors():
         # model-context-protocol still publishes nothing: CC-BY-4.0 now has a tier, so it
         # resolves to permissive_non_osi instead of nothing, and that tier deliberately has no
         # rung.
-        "agent_tools_protocols": 127, "dataset_processing_tools": 90, "evaluation_code": 107,
+        # agent_tools_protocols rose 127 -> 134 on 2026-08-12 when the category's last
+        # deferral came off. All seven rows are `model-context-protocol`, and they are
+        # what a deferral was suppressing: `source`, `core_gated`, two `license` parts,
+        # `docs`, `governance` and the raw `core-gated` key. `docs` publishes as an
+        # undeclared-key row, exactly as `autogen`'s CC-BY-4.0 documentation license
+        # already did - which is the evidence that MCP was made to match an existing
+        # convention rather than given a new one.
+        "agent_tools_protocols": 134, "dataset_processing_tools": 90, "evaluation_code": 107,
         # inference_code 47 -> 64 when the sweep read the category: four stale deferrals came
         # off (a deferred product publishes no openness evidence at all), and several products
         # that had described their gating in prose gained a readable `source:`/`core-gated:`.

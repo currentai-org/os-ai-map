@@ -146,6 +146,40 @@ def test_no_rung_reaches_the_open_bucket_from_a_restricted_license():
     assert not stale, f"KNOWN_VIOLATIONS entries no longer violate anything: {sorted(stale)}"
 
 
+def test_permissive_non_osi_rung_is_pinned():
+    """The software ladder's `permissive_non_osi` rung, pinned because nothing exercises it.
+
+    Added 2026-08-12 on a ruling about the license class. No product reaches it: MCP was
+    the product it was ruled for, and MCP turned out to have recorded a DOCUMENTATION
+    license inside its `license` compound, where most-restrictive-wins let a license over
+    the project's prose decide the score of the artifact you run. `autogen` records the
+    same facts under a `docs:` key the ladder does not read and scores 5. MCP now matches
+    it, and this tier is empty of products again.
+
+    A rung no product exercises is a dead rule, and this file's sibling comment in
+    software.yaml is about how the last two dead rules here went unnoticed until one of
+    them would have silently emitted 5/open_source for a non-OSI license. So the outcome
+    is pinned rather than left to `check_rubric`, which can only test rungs that fire.
+    Change the numbers here deliberately or not at all.
+    """
+    recipe = yaml.safe_load((ROOT / "sources" / "rubrics" / "software.yaml").read_text())
+    rungs = [
+        rule
+        for rule in recipe["openness"]["formula"]
+        if (rule.get("when") or {}).get("license_tier") == "permissive_non_osi"
+    ]
+    assert len(rungs) == 1, f"expected exactly one permissive_non_osi rung, found {len(rungs)}"
+
+    when, then = rungs[0]["when"], rungs[0]["then"]
+    assert when == {"license_tier": "permissive_non_osi", "source": "public", "core_gated": "ungated"}
+    assert then == {"score": 3, "class": "source_available"}
+
+    # The bucket invariant is tested generally above; asserted here too because THIS is the
+    # rung that would break it, and a general test passing tells you nothing about which
+    # specific rung it examined.
+    assert then["class"] not in set(_bucket_map()["buckets"]["open"]["classes"])
+
+
 def test_an_otherwise_rule_never_lands_in_the_open_bucket():
     """`otherwise` tests no license tier, so it cannot establish one.
 
