@@ -173,10 +173,24 @@ def test_local_scores_matches_check_rubrics_split():
     recorded `source:partial`. Four of the five moved a published score, in both
     directions. nemo-data-designer stayed deferred - both rungs it can reach test
     core-gated, nobody has read what the NeMo Platform withholds from the published
-    library, and a value was not invented to close it."""
+    library, and a value was not invented to close it.
+
+    Then 453/19 -> 460/12 when the owner ruled on the ten deferrals of the first resolution
+    batch, on 2026-08-12. Seven closed. Five were transcription and four of those moved no
+    score - gaia's unstated license, humanitys-last-exam's MIT out of a compound key,
+    compar-ia-datasets' gate as a token, openhands' enterprise directory as `core-gated:
+    gated`. math moved 2 -> 1: recording the DMCA takedown as `access:closed` lands it on the
+    rung for data that is not distributed rather than the gated rung the record assumed.
+    swe-bench-verified moved 4 -> 5 and nemo-data-designer 1 -> 5, the first on the ruling
+    that a repository license governs over a distribution point that states none, the second
+    on a read that established the NeMo Platform withholds nothing from the published
+    library. Three stayed deferred and each on a rubric gap rather than a missing fact:
+    livecodebench and openhermes-2-5 record 3 on unstated licenses the ladder gives no rung,
+    and multipl-e records the repository's BSD-3-with-ML-restriction, which this ladder has
+    no tier for."""
     computed, deferred = local_scores(None)
-    assert len(deferred) == 19
-    assert len(computed) == 453
+    assert len(deferred) == 12
+    assert len(computed) == 460
     assert not set(computed) & set(deferred)
     # Every one of the 410 reproduces today, so none should abstain.
     assert [key for key, value in computed.items() if value is None] == []
