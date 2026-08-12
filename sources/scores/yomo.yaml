@@ -8,17 +8,32 @@ openness:
       detail: declared in Cargo.toml+README
     source:
       value: public
+    core-gated:
+      value: ungated
+      detail: the whole runtime is in src/ - router zipper serverless host tool invoker LLM and model providers
+        auth and TLS - with no second license and no license key. Vivgrid sells a separate hosted serverless
+        platform that the repo neither references nor requires
     free_text:
     - full-runtime-in-repo(Rust core+QUIC+multi-language SDKs)
     - managed-hosting-by-Vivgrid-optional
   confidence: medium
-  note: Cargo.toml declares license = "Apache-2.0" and the README states Apache License 2.0, but no LICENSE
-    file is committed at the repo root, so GitHub's detector reports no license. The full runtime (Rust
-    core, QUIC transport, serverless SDKs) is in the open repo; Vivgrid's managed platform is optional
-    hosting of the same open framework rather than a gated core. Scored open_source with medium confidence
-    pending a committed LICENSE file.
-  raw: license:Apache-2.0(declared in Cargo.toml+README);source:public;full-runtime-in-repo(Rust core+QUIC+multi-language
-    SDKs);managed-hosting-by-Vivgrid-optional
+  note: 'Cargo.toml declares license = "Apache-2.0" at v2.0.6 and the README''s License section still points
+    at Apache License 2.0, but no LICENSE file is committed at the repo root, so the GitHub API reports
+    license null. That is the weakest part of this record and it is unchanged. `core-gated: ungated` transcribed
+    2026-08-12 from a read of the repo and of Vivgrid. What is published is the whole runtime rather than
+    a client to a hosted one: src/ carries router.rs, zipper.rs, serverless.rs, agent_loop.rs, tool_invoker.rs,
+    tool_mgr.rs, llm_provider/, model_api_provider/, auth.rs, http_auth.rs, tls.rs and connector.rs - routing,
+    the serverless host, tool invocation, the OpenAI-compatible surface, auth and transport - with no ee/
+    directory, no second license and no license-key path. Vivgrid sells "serverless LLM function calling
+    that lets enterprise AI agents run their tools in the cloud - with observability, evaluation, and globally
+    distributed inference built in", on a free tier plus credits; its landing page does not mention YoMo
+    and the current YoMo README does not mention Vivgrid. A hosted platform sold beside a complete open
+    core is the langchain shape, not a gate.'
+  raw: license:Apache-2.0(declared in Cargo.toml+README);source:public;core-gated:ungated(the whole runtime
+    is in src/ - router zipper serverless host tool invoker LLM and model providers auth and TLS - with
+    no second license and no license key. Vivgrid sells a separate hosted serverless platform that the repo
+    neither references nor requires);full-runtime-in-repo(Rust core+QUIC+multi-language SDKs);managed-hosting-by-Vivgrid-optional
+  last_verified: '2026-08-12'
   sources:
   - url: https://github.com/yomorun/yomo/blob/main/Cargo.toml
     shows: license = "Apache-2.0", name = "yomo", version = "2.0.4"
@@ -26,6 +41,38 @@ openness:
   - url: https://github.com/yomorun/yomo
     shows: README License section links Apache License 2.0; Rust core, QUIC, serverless SDKs public
     accessed: '2026-07-09'
+  - url: https://raw.githubusercontent.com/yomorun/yomo/main/Cargo.toml
+    shows: '[package] name = "yomo", version = "2.0.6", edition = "2024", license = "Apache-2.0", description
+      "A QUIC-based runtime for AI-LLM tool routing and serverless execution". The license is declared here
+      rather than in a root LICENSE file, which is why the GitHub API reports license null for this repo.'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 6ea01fafd6d3be812d16ac1e5311b51b784c6c4472b46a9a2a8afc64b78d0b3f
+    establishes:
+    - license
+  - url: https://api.github.com/repos/yomorun/yomo/contents/src
+    shows: 'The published runtime, module by module: agent_loop.rs, auth.rs, bridge.rs, client.rs, connector.rs,
+      http_auth.rs, llm_api.rs, llm_provider/, llm_stream_mapper.rs, metadata_mgr.rs, model_api.rs, model_api_provider/,
+      openai_http_mapping.rs, router.rs, serve_config.rs, serverless.rs, tls.rs, tool_api.rs, tool_invoker.rs,
+      tool_mgr.rs, zipper.rs and bin/. Routing, the serverless host, tool invocation, the OpenAI-compatible
+      surface, auth and transport are all here; nothing is stubbed out to a hosted service.'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: f8daafafbf3b5e9a7eca5349d759f65c39e07331e5f103983426ef97ebedf72d
+    establishes:
+    - source
+    - core-gated
+  - url: https://vivgrid.com/
+    shows: Vivgrid sells "serverless LLM function calling that lets enterprise AI agents run their tools
+      in the cloud - with observability, evaluation, and globally distributed inference built in", with
+      a free tier and $200/month in credits for maintainers of approved open-source projects. The landing
+      page does not mention YoMo at all, so what is sold is a hosted platform beside the framework rather
+      than a piece of it.
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: e9a351d735ab01dd0784220cfe5f2b9f97af9afc0e18a75352761f5ac5809482
+    establishes:
+    - core-gated
 adoption:
   level: 3
   reach: null

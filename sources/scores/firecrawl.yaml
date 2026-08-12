@@ -12,11 +12,31 @@ openness:
       value: firecrawl.dev with 'additional features' beyond OSS = open-core split
     core-gated:
       value: gated
+      detail: Fire-engine is closed and its source is in no public repo - the tree ships only a client at
+        apps/api/src/scraper/scrapeURL/engines/fire-engine and .env.example calls FIRE_ENGINE_BETA_URL the
+        fire engine closed beta. Screenshots and page actions are unavailable in the self-hosted stack because
+        both require Fire-engine
   confidence: high
-  note: AGPL-3.0 OSI core is fully open, but the managed cloud carries features beyond the OSS build,
-    making this open-core rather than pure open_source.
+  note: 'AGPL-3.0 OSI core is fully open, but a piece of the product is withheld from it. `core-gated: gated`
+    verified 2026-08-12 by a direct read, replacing a justification that rested on the managed cloud carrying
+    "additional features" - an inference from the pricing page, which the rubric does not accept as evidence.
+    The mechanism has a name: Fire-engine, Firecrawl''s scraping engine, whose source is in no public repo.
+    What firecrawl/firecrawl ships at apps/api/src/scraper/scrapeURL/engines/fire-engine is a client - index.ts,
+    scrape.ts, checkStatus.ts, delete.ts, brandingScript.ts - pointed at a URL you must be given, and apps/api/.env.example
+    says so in one line: "# set if you''d like to use the fire engine closed beta" above FIRE_ENGINE_BETA_URL=.
+    The self-hosting guide then states what the open build cannot do without it - screenshots and page actions
+    are "Not available in the default stack. Fetch and Playwright both report no support; both require Fire-engine",
+    Fire-engine must be "run and configured separately; it is not included", and the agent, browser, interact
+    and specialty product/audio/video formats need Cloud or another external service. The same .env.example
+    shows the pattern twice more - the product format needs "an external product-extraction service", as
+    do the audio and video formats. Features of the product itself, withheld from the published source behind
+    a closed beta, so the 4 holds.'
   raw: license:AGPL-3.0(OSI, self-host core);source:public;managed-cloud:firecrawl.dev with 'additional
-    features' beyond OSS = open-core split;core-gated:gated
+    features' beyond OSS = open-core split;core-gated:gated(Fire-engine is closed and its source is in no
+    public repo - the tree ships only a client at apps/api/src/scraper/scrapeURL/engines/fire-engine and
+    .env.example calls FIRE_ENGINE_BETA_URL the fire engine closed beta. Screenshots and page actions are
+    unavailable in the self-hosted stack because both require Fire-engine)
+  last_verified: '2026-08-12'
   sources:
   - url: https://github.com/mendableai/firecrawl/blob/main/LICENSE
     shows: AGPL-3.0 license text, Sideguide Technologies Inc.
@@ -24,6 +44,47 @@ openness:
   - url: https://www.firecrawl.dev/pricing
     shows: 6 paid managed-cloud tiers (Free/Hobby/Standard/Growth/Scale/Enterprise)
     accessed: '2026-06-04'
+  - url: https://raw.githubusercontent.com/firecrawl/firecrawl/main/apps/api/.env.example
+    shows: The gate, in the shipped configuration. "# set if you'd like to use the fire engine closed beta"
+      immediately above FIRE_ENGINE_BETA_URL=. Two entries later, the product scrape format "extracts a
+      structured product from a page's HTML via an external product-extraction service; point this at that
+      service's base URL. If unset, requesting the product format returns a warning and no product (same
+      pattern as the audio/video formats and AVGRAB_SERVICE_URL)."
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 833dcfe3448829dc86757f7310b538ea8c4c90e8d7703640266920c2a473573e
+    establishes:
+    - core-gated
+  - url: https://api.github.com/repos/firecrawl/firecrawl/contents/apps/api/src/scraper/scrapeURL/engines/fire-engine
+    shows: 'The whole of Fire-engine in the public repo: branding-script, brandingScript.ts, checkStatus.ts,
+      delete.ts, index.ts, scrape.ts. A request/poll/delete client against a remote base URL. The engine
+      it calls is not in this repository or any other public one.'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 651608abd6922ca3a67637b3f1bcb9529543ef52a74fd465fe3759f0b68b5444
+    establishes:
+    - core-gated
+  - url: https://docs.firecrawl.dev/contributing/self-host
+    shows: 'What the open build cannot do. Screenshots and page actions: "Not available in the default stack.
+      Fetch and Playwright both report no support; both require Fire-engine." Fire-engine and advanced anti-bot
+      behavior must be "run and configured separately; it is not included." Agent, browser, interact and
+      feedback features and the specialty product, menu, audio and video formats require Firecrawl Cloud
+      or a separate external service.'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 19f3b8f80c3745fbe7a786f55b4c4d435c09294e9b2515928774042076e933b2
+    establishes:
+    - core-gated
+  - url: https://api.github.com/repos/firecrawl/firecrawl
+    shows: 'Repo metadata: license spdx_id AGPL-3.0, default branch main, 165,882 stars, not archived. One
+      license across the tree - the carve-out is not a directory under other terms but an engine that is
+      absent from it.'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 9018a61ffa5df4cad738490beac65d1ba8cd6396a35864d08b93e6821d9a8250
+    establishes:
+    - license
+    - source
 adoption:
   level: 3
   reach: 100K-1M

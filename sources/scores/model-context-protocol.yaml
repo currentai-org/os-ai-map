@@ -3,19 +3,41 @@ openness:
   score: 5
   class: open_source
   components:
-    spec+reference-SDKs:
+    source:
       value: public
+      detail: spec schema and docs in one repo plus reference SDKs in separate public repos
     license:
       value: Apache-2.0
       detail: OSI, new code/spec)+MIT(OSI, legacy contributions)+CC-BY-4.0(docs
     governance:
       value: Linux-Foundation/AAIF
       detail: open, co-founded Anthropic/Block/OpenAI
+    core-gated:
+      value: ungated
+      detail: spec schema and docs ship in the one LF/AAIF-governed repo and every reference SDK is a public
+        modelcontextprotocol repo - there is no vendor tier to withhold anything for
   confidence: high
-  note: Open protocol with OSI-licensed reference implementations and open foundation governance; no feature-gated
-    core.
-  raw: spec+reference-SDKs:public;license:Apache-2.0(OSI, new code/spec)+MIT(OSI, legacy contributions)+CC-BY-4.0(docs);governance:Linux-Foundation/AAIF(open,
-    co-founded Anthropic/Block/OpenAI)
+  note: 'Open protocol with OSI-licensed reference implementations and open foundation governance; no feature-gated
+    core. Two keys were re-read on 2026-08-12 and the record STILL does not score - see the category''s
+    deferral, which has been rewritten to say why. (1) `source` was recorded under the key `spec+reference-SDKs`,
+    which no dimension''s `reads:` list names, so the right answer sat under a key the ladder never looks
+    at and the dimension read as unanswered. Renamed to `source`. (2) `core-gated: ungated` added: the spec,
+    the JSON/TypeScript schema and the docs are in the one repo, every reference SDK is a separate public
+    modelcontextprotocol repo (mcp-python-sdk and mcp-typescript-sdk are already on the map at 5), and the
+    project is governed by the Linux Foundation''s AAIF with no vendor tier to withhold anything for. (3)
+    The actual blocker is the LICENSE, and it is not a recording error - the file really does split three
+    ways, Apache-2.0 for new code and specifications, CC-BY-4.0 for documentation other than the specifications,
+    and MIT retained for pre-transition contributions whose authors did not consent to relicensing. `license_tier`
+    resolves a compound on every part and abstains if any part is unmapped, and CC-BY-4.0 appears in no
+    tier''s examples in sources/rubrics/software.yaml, so the value resolves to nothing and the walk cannot
+    pass the rung that tests it. Whether a documentation license belongs in a software ladder at all is
+    a shared-rubric question across eleven categories and was left for a human.'
+  raw: source:public(spec schema and docs in one repo plus reference SDKs in separate public repos);license:Apache-2.0(OSI,
+    new code/spec)+MIT(OSI, legacy contributions)+CC-BY-4.0(docs);governance:Linux-Foundation/AAIF(open,
+    co-founded Anthropic/Block/OpenAI);core-gated:ungated(spec schema and docs ship in the one LF/AAIF-governed
+    repo and every reference SDK is a public modelcontextprotocol repo - there is no vendor tier to withhold
+    anything for)
+  last_verified: '2026-08-12'
   sources:
   - url: https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/LICENSE
     shows: Apache-2.0 (new code/spec) + MIT (legacy) + CC-BY-4.0 (docs) license text
@@ -23,6 +45,27 @@ openness:
   - url: https://en.wikipedia.org/wiki/Model_Context_Protocol
     shows: Anthropic origin; donated to Linux Foundation AAIF Dec 2025
     accessed: '2026-06-04'
+  - url: https://raw.githubusercontent.com/modelcontextprotocol/modelcontextprotocol/main/LICENSE
+    shows: The three-way split, read rather than assumed. New code and specifications are under the Apache
+      License, Version 2.0; documentation other than the specifications is under CC-BY-4.0; contributions
+      made before the transition whose authors did not give relicensing consent remain under the MIT License,
+      with "no rights beyond those granted by the applicable original license" conveyed. Copyright (c) 2024-2025
+      Model Context Protocol a Series of LF Projects, LLC.
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 0382b0057770ca05e9c350a50aa3b1c1fea84da0bc81d723bf00b9aa841be58a
+    establishes:
+    - license
+  - url: https://api.github.com/repos/modelcontextprotocol/modelcontextprotocol
+    shows: Repo metadata for the spec repo. It holds the specification, the protocol schema (TypeScript,
+      emitted as JSON Schema) and the documentation; the reference SDKs are separate repos in the same public
+      org. Nothing is withheld from it and there is no second, differently-licensed tree.
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 69a785256bb7fd3dde4cb56e056f1917efba60e839afe08f7309a887ac9c8aa6
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 5
   reach: '>10M'

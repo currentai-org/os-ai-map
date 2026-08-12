@@ -1,7 +1,7 @@
 product: qdrant
 openness:
-  score: 4
-  class: open_core
+  score: 5
+  class: open_source
   components:
     license:
       value: Apache-2.0
@@ -14,12 +14,34 @@ openness:
       detail: hosted, paid + free tier
       raw: Qdrant Cloud (hosted, paid + free tier)
     core-gated:
-      value: gated
+      value: ungated
+      detail: no ee/ path no second license and zero repo-wide hits for enterprise or license key. The two
+        engine features the pricing table marks absent from OSS are both in the open tree - GPU indexing
+        as the lib/gpu crate and resharding across four lib/collection modules with eight consensus tests
+        - so what is sold is control plane rather than engine
   confidence: high
-  note: Engine core is Apache-2.0 OSI, but a managed Qdrant Cloud tier sits on top; recipe explicitly
-    classes Qdrant Cloud as open_core, so scored 4 rather than the pure-OSS 5 the Milvus anchor carries.
+  note: 'CORRECTION 2026-08-12: `core-gated` was `gated` with no evidence, justified by a managed Qdrant
+    Cloud tier sitting on top - which the rubric settles as not a gate - and by the recipe already classing
+    it open_core, which is circular. A read of the repo and the pricing page finds no mechanism, so the
+    value is `ungated` and the score moves 4 -> 5. Across the whole repository a code search for `enterprise`
+    returns zero hits and one for "license key" returns zero; there is a single Apache-2.0 LICENSE at the
+    root and no ee/, enterprise/ or second-licensed path in the tree. The pricing table is where a careless
+    read goes wrong: it marks GPU Indexing and Shard Splitting as absent from OSS, and both are in the open
+    engine. GPU indexing is its own crate at lib/gpu (Cargo.toml, src/, nvidia_icd.json) beside segment,
+    quantization and sparse; resharding is implemented and consensus-tested at lib/collection/src/collection/resharding.rs,
+    lib/collection/src/shards/resharding.rs, lib/collection/src/shards/shard_holder/resharding.rs and lib/collection/src/shards/transfer/resharding_stream_records.rs
+    with eight tests/consensus_tests/test_resharding*.py files. What the table actually compares is the
+    managed offering: uptime SLAs, managed backup and disaster recovery against "custom automation" you
+    run yourself, multi-AZ topology, disk encryption with customer keys, and Enterprise SSO on the Qdrant
+    Cloud console. Hybrid Cloud is described as running "managed Qdrant clusters on your own infrastructure"
+    - the same engine, someone else''s operator. A managed service beside a complete open core is the langchain
+    shape, not a gate.'
   raw: license:Apache-2.0(OSI, engine core);source:public(Rust);managed-tier:Qdrant Cloud (hosted, paid
-    + free tier);core-gated:gated
+    + free tier);core-gated:ungated(no ee/ path no second license and zero repo-wide hits for enterprise
+    or license key. The two engine features the pricing table marks absent from OSS are both in the open
+    tree - GPU indexing as the lib/gpu crate and resharding across four lib/collection modules with eight
+    consensus tests - so what is sold is control plane rather than engine)
+  last_verified: '2026-08-12'
   sources:
   - url: https://github.com/qdrant/qdrant/blob/master/LICENSE
     shows: Apache-2.0 license text
@@ -27,6 +49,41 @@ openness:
   - url: https://github.com/qdrant/qdrant
     shows: v1.18.2 (4 Jun 2026); Qdrant Cloud managed tier with free option
     accessed: '2026-06-04'
+  - url: https://api.github.com/repos/qdrant/qdrant/contents
+    shows: 'Root tree: one LICENSE beside Cargo.toml, config, docs, lib, openapi, pkg, src, tests and tools.
+      No ee/, enterprise/, commercial/ or proprietary/ path and no second license file, so no part of the
+      engine ships under different terms.'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 51e6e9f7f3e531723ccca47d30d99ec65b3a5e9ed234e89d56090684c2592963
+    establishes:
+    - license
+    - source
+    - core-gated
+  - url: https://api.github.com/repos/qdrant/qdrant/contents/lib
+    shows: 'The engine''s crates: api, blobstore, bm25, collection, common, edge, gpu, macros, posting_list,
+      quantization, segment, shard, sparse, storage, trififo, uio-grpc-client, wal. GPU indexing is the
+      gpu crate, published here, which is the first of the two features the pricing table marks as absent
+      from OSS.'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: d013ec1713962a5a1e26e776883f0383db3f993854db7385bd02021fc62e2010
+    establishes:
+    - source
+    - core-gated
+  - url: https://qdrant.tech/pricing/
+    shows: 'Read for a mechanism and found none. Its OSS-versus-paid comparison is control plane: no uptime
+      SLA for OSS against 99.5% free tier and 99.9% (99.95% multi-AZ) on Standard/Premium, "custom automation"
+      backups against managed backup and disaster recovery, multi-AZ topology, disk encryption with custom
+      keys on AWS/GCP, and "Enterprise SSO Authentication" on Premium+. It also marks GPU Indexing and Shard
+      Splitting as absent from OSS - both are in the open tree, so those rows describe the managed offering
+      rather than the engine. Hybrid Cloud is "Run managed Qdrant clusters on your own infrastructure";
+      Private Cloud is a "Dedicated, isolated deployment".'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: ed19cca4db9f8b796b5a3160cbfc55873d5df934af3c8226be55a0323c148460
+    establishes:
+    - core-gated
 adoption:
   level: 5
   reach: '>10M'

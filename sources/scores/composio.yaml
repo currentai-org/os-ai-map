@@ -15,15 +15,76 @@ openness:
       raw: Composio hosted platform + Rube MCP server (auth, hosted tool execution) is the commercial layer
     core-gated:
       value: gated
+      detail: the execution engine is in no public repo. The MIT tree is SDKs and provider adapters only
+        and toolkit execution the app catalog and managed OAuth all run on the hosted platform at backend.composio.dev
+        behind a COMPOSIO_API_KEY with no self-host option documented
   confidence: high
-  note: SDK/core is MIT and public; the hosted multi-app integration/auth platform is the proprietary
-    tier, classic open-core.
+  note: 'SDK/core is MIT and public; the hosted multi-app integration/auth platform is the proprietary tier,
+    classic open-core. `core-gated: gated` verified 2026-08-12 by a direct read, and it does NOT rest on
+    Composio selling a hosted platform. The gate is not a directory but an absence: the execution engine
+    is in no public repo. What is published is SDKs and provider adapters - python/composio with providers/,
+    and ts/packages/ holding core, cli, cli-local-tools, cli-keyring, providers, slim, experimental and
+    the schema converters. Toolkit execution, the 1000+ app catalog and managed OAuth all run on Composio''s
+    servers: the README''s first instruction is to "Grab a COMPOSIO_API_KEY from the dashboard first", sessions
+    are created against the hosted API, the docs give the REST base URL as https://backend.composio.dev/api/v3.1
+    and describe Composio-managed auth as the default, and no self-hosting or on-premise option is documented.
+    Nothing in the published source executes a toolkit without that platform. FLAG FOR A HUMAN: the same
+    evidence bears on `source`, which this record still gives as public. software.yaml defines partial as
+    "a repo exists but the runtime does not ship - a client, an SDK, or an issue tracker standing in for
+    the engine", which describes what Composio publishes, and partial fires at rung 1 for 2/source_available.
+    Re-reading `source` was outside this sweep''s remit so the value was left alone, but it should be looked
+    at.'
   raw: license:MIT(OSI, SDK/core public on GitHub);source:public(Python + TypeScript SDKs);managed-tier:Composio
-    hosted platform + Rube MCP server (auth, hosted tool execution) is the commercial layer;core-gated:gated
+    hosted platform + Rube MCP server (auth, hosted tool execution) is the commercial layer;core-gated:gated(the
+    execution engine is in no public repo. The MIT tree is SDKs and provider adapters only and toolkit execution
+    the app catalog and managed OAuth all run on the hosted platform at backend.composio.dev behind a COMPOSIO_API_KEY
+    with no self-host option documented)
+  last_verified: '2026-08-12'
   sources:
   - url: https://github.com/ComposioHQ/composio
     shows: MIT LICENSE, public SDK source, 1000+ toolkits, ~28.6k stars
     accessed: '2026-06-04'
+  - url: https://raw.githubusercontent.com/ComposioHQ/composio/next/README.md
+    shows: '"Create a session for a user, hand its tools to your agent, and let the agent take action across
+      1000+ apps. Grab a COMPOSIO_API_KEY from the dashboard (dashboard.composio.dev/settings) first." Also
+      offers a hosted MCP endpoint per session - "Pass mcp: true to composio.create() and point Claude,
+      Cursor, or any MCP client at session.mcp.url". Every path to running a tool goes through the hosted
+      platform and a key issued by it.'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 8c723e06bec36f55f3aaff4e2933834856a87dff5f6acd94f0a091b85457d94f
+    establishes:
+    - core-gated
+  - url: https://api.github.com/repos/ComposioHQ/composio/contents/ts/packages
+    shows: 'The published TypeScript tree is client-side only: cli, cli-keyring, cli-local-tools, core,
+      experimental, json-schema-to-effect-schema, json-schema-to-zod, providers, slim, ts-builders. The
+      python/ tree is the same shape - composio plus providers. There is no server, no toolkit runtime and
+      no auth service anywhere in the repository, which is the functionality the paid platform holds.'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: f4f9c9d81c79ecd7533bf98be8d7c988a3fcc792dba0ea2758ec5602c6dfe239
+    establishes:
+    - core-gated
+  - url: https://docs.composio.dev/docs/welcome
+    shows: Documents the REST API served at https://backend.composio.dev/api/v3.1, "Composio-managed auth"
+      as the default in which "the agent connects accounts at runtime through the session", and session
+      creation via composio.create(user_id) against that hosted API. No self-hosting or on-premise deployment
+      option is documented anywhere in it.
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: c9a2887c9a76300f53c2cb609c7e038457703b9629fb2e5ef8197454114571cf
+    establishes:
+    - core-gated
+  - url: https://api.github.com/repos/ComposioHQ/composio
+    shows: 'Repo metadata: license spdx_id MIT, default branch next, 29,636 stars, not archived. The published
+      tree is the SDK monorepo - python/ and ts/ - which is what `source: public` refers to; it is not the
+      tool-execution platform, which is not published anywhere.'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 861c607a1a550bb533a6cd236f543b6d800a2ca473f55e59532d66c4930c1a52
+    establishes:
+    - license
+    - source
 adoption:
   level: 4
   reach: 1M-10M

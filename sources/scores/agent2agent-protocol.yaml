@@ -13,15 +13,61 @@ openness:
       value: Linux Foundation
       detail: vendor-neutral, Google-contributed
       raw: Linux Foundation (vendor-neutral, Google-contributed)
+    core-gated:
+      value: ungated
+      detail: the Linux Foundation project sells nothing - one Apache-2.0 LICENSE at the root, no ee/ or
+        enterprise/ path, and all six reference SDKs published as public a2aproject repos on public package
+        registries
   confidence: high
-  note: Reference spec and SDKs are Apache-2.0 under neutral LF governance; for a protocol this is the
-    openness ceiling.
+  note: 'Reference spec and SDKs are Apache-2.0 under neutral LF governance; for a protocol this is the
+    openness ceiling. `core-gated: ungated` transcribed 2026-08-12 from a read of the repo, and it rests
+    on there being nothing to gate with rather than on a pricing page saying so. The root tree is LICENSE,
+    GOVERNANCE.md, MAINTAINERS.md, specification/, docs/ and adrs/ with no ee/, enterprise/ or commercial/
+    path, and the README''s closing section reads "The A2A Protocol is an open source project under the
+    Linux Foundation, contributed by Google. It is licensed under the Apache License 2.0 and is open to
+    contributions from the community." All six reference SDKs are separate public a2aproject repos installable
+    from public registries - a2a-sdk on PyPI, github.com/a2aproject/a2a-go, @a2a-js/sdk on npm, Maven, NuGet
+    and a2a-lf on crates.io. There is no vendor product beside the protocol, so there is no paid tier, no
+    license key and no closed package.'
   raw: license:Apache-2.0(OSI);source:public(spec + reference SDKs in 6 languages);governance:Linux Foundation
-    (vendor-neutral, Google-contributed)
+    (vendor-neutral, Google-contributed);core-gated:ungated(the Linux Foundation project sells nothing -
+    one Apache-2.0 LICENSE at the root, no ee/ or enterprise/ path, and all six reference SDKs published
+    as public a2aproject repos on public package registries)
+  last_verified: '2026-08-12'
   sources:
   - url: https://github.com/a2aproject/A2A
     shows: Apache-2.0 license, LF-hosted open protocol, spec v1.0.1 + 6-language SDKs, ~24k stars
     accessed: '2026-06-04'
+  - url: https://api.github.com/repos/a2aproject/A2A
+    shows: 'Repo metadata: license spdx_id Apache-2.0, default branch main, 25,300 stars, not archived.'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: b6aa35b1973e5b05540d48cae54ce7bdec07fc64ec644c36da657e05f8df55b7
+    establishes:
+    - license
+    - source
+  - url: https://api.github.com/repos/a2aproject/A2A/contents
+    shows: Root tree. LICENSE, CODE_OF_CONDUCT.md, CONTRIBUTING.md, GOVERNANCE.md, MAINTAINERS.md, SECURITY.md,
+      adrs, docs, scripts, specification. No ee/, enterprise/, commercial/ or proprietary/ path, and no
+      second LICENSE anywhere at the root.
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 968614648966c72470d22d30ed4122ae33a728ecdc06ac9248e5edf05410a5a3
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/a2aproject/A2A/main/README.md
+    shows: 'Closing section: "The A2A Protocol is an open source project under the Linux Foundation, contributed
+      by Google. It is licensed under the Apache License 2.0 and is open to contributions from the community."
+      The SDK list links six separate public repos - a2a-python (pip install a2a-sdk), a2a-go, a2a-js (npm),
+      a2a-java (maven), a2a-dotnet (NuGet) and a2a-rs (cargo add a2a-lf). No paid tier, hosted service or
+      enterprise edition is mentioned.'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 5ec9c7a4afbf200562b8d539c8cf2c146c17a72bfe6ce086d47280eadfd048bb
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 4
   reach: 1M-10M

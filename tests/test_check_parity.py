@@ -128,10 +128,22 @@ def test_local_scores_matches_check_rubrics_split():
     evidence ungated with a cloud tier the vendor charges nothing for, computing 5 against a
     recorded 4) and weave (the Apache-2.0 repo publishes an SDK and a trace-server library but
     no UI, no deployment manifest and not the HTTP service, which its own README places in
-    W&B's closed core repo - `source:partial`, computing 2 against a recorded 4)."""
+    W&B's closed core repo - `source:partial`, computing 2 against a recorded 4).
+
+    Then 438/34 -> 442/30 when the sweep reached `agent_tools_protocols` and `ml_frameworks`.
+    Four of those five deferrals came off, each reproducing its recorded 5/open_source on a
+    `core-gated:ungated` that rests on there being no vendor at all rather than on a pricing
+    page: agent2agent-protocol is an LF project whose six reference SDKs are separate public
+    repos, yomo publishes its whole Rust runtime in src/ while Vivgrid sells a hosted platform
+    that the README does not mention, feluda ships all nine of its operators under one GPL-3.0
+    license for a civic-tech non-profit, and pysyft publishes eleven syft-* packages and runs
+    on cloud storage the user already owns. model-context-protocol stayed, and its reason was
+    rewritten: source and core-gated are now recorded, but its LICENSE splits three ways and
+    the CC-BY-4.0 documentation branch maps to no tier, so the ladder abstains on the license
+    rather than on the missing keys the old reason blamed."""
     computed, deferred = local_scores(None)
-    assert len(deferred) == 34
-    assert len(computed) == 438
+    assert len(deferred) == 30
+    assert len(computed) == 442
     assert not set(computed) & set(deferred)
     # Every one of the 410 reproduces today, so none should abstain.
     assert [key for key, value in computed.items() if value is None] == []
