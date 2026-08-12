@@ -13,17 +13,71 @@ openness:
       detail: free tier available
     core-gated:
       value: gated
+      detail: the root LICENSE carves every ee/ directory out of MIT and under ee/LICENSE, the Agenta Enterprise
+        License, which permits production use only with a valid Agenta Enterprise License; api/ee, web/ee
+        and services/ee each ship source, docker and tests beside the MIT api/oss half
     free_text:
     - self-hostable
   confidence: high
-  note: MIT/OSI core, self-hostable via GitHub, with a managed cloud tier, open_core. (Borderline open_source;
-    scored open_core for the hosted commercial tier.)
-  raw: license:MIT(OSI, core);source:public;self-hostable;commercial:Agenta-Cloud-managed-tier(free tier
-    available);core-gated:gated
+  note: 'MIT core with a commercially licensed enterprise half in the same repository, self-hostable either
+    way. `core-gated: gated` verified 2026-08-12 by a direct read, and it does NOT rest on Agenta Cloud
+    existing. The root LICENSE splits the repo: "All content that resides under any ''ee/'' directory of
+    this repository, if such directories exist, are licensed under the license defined in ''ee/LICENSE''",
+    everything else MIT Expat. ee/LICENSE is the Agenta Enterprise License - the software "may only be used
+    in production, if you (and any entity that you represent) have agreed to, and are in compliance with,
+    the Agenta Subscription Terms of Service ... and otherwise have a valid Agenta Enterprise License";
+    copying and modifying for development and testing is allowed without a subscription, and "it is forbidden
+    to copy, merge, publish, distribute, sublicense, and/or sell the Software". The carve-out is real code,
+    not a stub: the api tree is split into api/oss and api/ee, and web/ee and services/ee exist alongside.
+    This also settles how the two recorded clauses relate. `self-hostable` and `core-gated: gated` were
+    never in tension: the MIT oss half is genuinely self-hostable, and the ee half is the part you may not
+    run in production without paying. Both are true of the same repository.'
+  raw: license:MIT(OSI, core);source:public;commercial:Agenta-Cloud-managed-tier(free tier available);core-gated:gated(the
+    root LICENSE carves every ee/ directory out of MIT and under ee/LICENSE, the Agenta Enterprise License,
+    which permits production use only with a valid Agenta Enterprise License; api/ee, web/ee and services/ee
+    each ship source, docker and tests beside the MIT api/oss half);self-hostable
+  last_verified: '2026-08-12'
   sources:
   - url: https://github.com/Agenta-AI/agenta
     shows: MIT license; self-host + Agenta Cloud managed tier
     accessed: '2026-06-04'
+  - url: https://raw.githubusercontent.com/Agenta-AI/agenta/main/LICENSE
+    shows: 'Root LICENSE. "Portions of this software are licensed as follows: - All content that resides
+      under any ''ee/'' directory of this repository, if such directories exist, are licensed under the
+      license defined in ''ee/LICENSE''. ... - Content outside of the above mentioned directories or restrictions
+      above is available under the ''MIT Expat'' license", followed by the full MIT text. The tier-setting
+      license is MIT and the carve-out is named in the license itself. GitHub''s license endpoint returns
+      NOASSERTION for this repo, which is GitHub declining to classify the split file.'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: efd1323753fcbf4d4fc74c82d5d469263b0641dbee4a65b4690ccb0c3d12b68b
+    establishes:
+    - license
+    - core-gated
+  - url: https://raw.githubusercontent.com/Agenta-AI/agenta/main/ee/LICENSE
+    shows: The Agenta Enterprise License. The software "may only be used in production, if you (and any
+      entity that you represent) have agreed to, and are in compliance with, the Agenta Subscription Terms
+      of Service, available at https://agenta.ai/terms ... and otherwise have a valid Agenta Enterprise
+      License." You may copy and modify it "for development and testing purposes, without requiring a subscription",
+      and "it is forbidden to copy, merge, publish, distribute, sublicense, and/or sell the Software". Production
+      use behind a paid license is functionality withheld from the MIT source.
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: c84b4eeea0dc5b1ab240a53e497d1c18d7edbb3114b8772728152ea6ac81f722
+    establishes:
+    - core-gated
+  - url: https://api.github.com/repos/Agenta-AI/agenta/contents/api/ee
+    shows: The carve-out is shipped code rather than a placeholder. api/ee holds LICENSE, __init__.py, databases,
+      docker, src and tests, mirroring the MIT api/oss tree beside it (__init__.py, databases, docker, src,
+      tests). web/ee and services/ee exist on the same pattern, web/ee carrying its own next.config.ts,
+      package.json, public and src. The top-level ee/ directory contains only the LICENSE the root file
+      points at.
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 34706be8f29e43c940db0a60df0335a26ff5fd071a463e895a31051461521f42
+    establishes:
+    - core-gated
+    - source
 adoption:
   level: 2
   reach: 10K-100K

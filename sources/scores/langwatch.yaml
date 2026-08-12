@@ -10,18 +10,71 @@ openness:
       value: public
     core-gated:
       value: gated
+      detail: NOTICE and platform/app/ee/LICENSE.md put platform/app/ee under the LangWatch Enterprise License,
+        covering SSO, SCIM, audit-log reading, governance, webhooks, billing, licensing, managed providers
+        and back-office admin, each of which "verifies a license at runtime before it can be used"
     free_text:
     - enterprise modules(SCIM,audit-logs,license/billing) under langwatch/ee/ require commercial license
       for production
   confidence: high
-  note: 'Explicit open-core: Apache-2.0 core + MIT SDKs, with an /ee enterprise directory (SCIM, audit
-    logs, billing) commercially licensed, same pattern as the Langfuse O4 anchor.'
-  raw: license:Apache-2.0(core)+MIT(SDKs);enterprise modules(SCIM,audit-logs,license/billing) under langwatch/ee/
-    require commercial license for production;source:public;core-gated:gated
+  note: 'Explicit open core: Apache-2.0 platform, MIT SDKs, and an enterprise directory under a commercial
+    license. `core-gated: gated` verified 2026-08-12 by a direct read, and it does NOT rest on LangWatch
+    selling a hosted tier. NOTICE names the split component by component - "platform/app/ee/ LangWatch Enterprise
+    License (platform/app/ee/LICENSE.md)" against MIT sdks/typescript, sdks/python and mcp/typescript, with
+    everything else Apache-2.0. That license says the enterprise directory "implements the enterprise capabilities
+    of LangWatch, including single sign-on, SCIM provisioning, audit logging, gateway webhooks, licensing,
+    billing, and back-office tooling" and that "each verifies a license at runtime before it can be used".
+    A runtime license check on shipped features is the dimension''s question answered directly. The recorded
+    path has moved since the last pass - the directory is platform/app/ee/ rather than langwatch/ee/ - and
+    the license now names governance, managed-providers, event-sourcing and webhooks alongside the SCIM,
+    audit-log and billing modules already recorded.'
+  raw: license:Apache-2.0(core)+MIT(SDKs);source:public;core-gated:gated(NOTICE and platform/app/ee/LICENSE.md
+    put platform/app/ee under the LangWatch Enterprise License, covering SSO, SCIM, audit-log reading, governance,
+    webhooks, billing, licensing, managed providers and back-office admin, each of which "verifies a license
+    at runtime before it can be used");enterprise modules(SCIM,audit-logs,license/billing) under langwatch/ee/
+    require commercial license for production
+  last_verified: '2026-08-12'
   sources:
   - url: https://github.com/langwatch/langwatch
     shows: Apache-2.0 core, MIT SDKs, langwatch/ee/ enterprise modules requiring commercial license
     accessed: '2026-06-04'
+  - url: https://raw.githubusercontent.com/langwatch/langwatch/main/NOTICE
+    shows: 'The license split, stated by the vendor per directory: "This product is licensed under the Apache
+      License, Version 2.0 (see LICENSE.md), with the following components separately licensed in their
+      respective directories: platform/app/ee/ LangWatch Enterprise License (platform/app/ee/LICENSE.md);
+      sdks/typescript/ MIT; sdks/python/ MIT; mcp/typescript/ MIT." So the tier-setting licenses are Apache-2.0
+      and MIT, and the gate is one named directory.'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 6043f1be6c0235c2cbdd141b57ddae9fbe849851d27acc1acae62c3f7b4d65ab
+    establishes:
+    - license
+    - core-gated
+  - url: https://raw.githubusercontent.com/langwatch/langwatch/main/platform/app/ee/LICENSE.md
+    shows: The LangWatch Enterprise License. "The Enterprise Software implements the enterprise capabilities
+      of LangWatch, including single sign-on, SCIM provisioning, audit logging, gateway webhooks, licensing,
+      billing, and back-office tooling. The enterprise capabilities are the surfaces the software enables
+      only for licensed deployments; each verifies a license at runtime before it can be used." It adds
+      that some keep recording on an unlicensed deployment so no history is lost, audit logging in particular,
+      and that "Reading, exporting, or otherwise making use of what they record is the enterprise capability,
+      and that is what a license is required for."
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 5b46ca052ab5745b2b61296f74c97077034a28365012f9b82f1eab56a5cf73be
+    establishes:
+    - core-gated
+  - url: https://api.github.com/repos/langwatch/langwatch/contents/platform/app/ee
+    shows: 'What the enterprise license actually covers, listed rather than characterized: admin, audit-log,
+      billing, event-sourcing, governance, licensing, managed-providers, saas, scim, sso, webhooks, plus
+      LICENSE.md and README.md. The rest of the repository - cmd, pkg, platform, packages, sdks, mcp, charts,
+      infra, services, plugins - carries no second license, so the published Apache-2.0 tree is otherwise
+      the whole product.'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: b9c9257050a63157226d9b55b4303f6822091dead93c9468e7927a2f33c2842e
+    establishes:
+    - core-gated
+    - source
 adoption:
   level: 2
   reach: 10K-100K

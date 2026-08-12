@@ -1,7 +1,7 @@
 product: helicone
 openness:
-  score: 4
-  class: open_core
+  score: 5
+  class: open_source
   components:
     license:
       value: Apache-2.0
@@ -9,19 +9,96 @@ openness:
     source:
       value: public
     core-gated:
-      value: gated
+      value: ungated
+      detail: Apache-2.0 across the whole recursive tree with a single LICENSE, no ee/ or enterprise directory,
+        no license-key or premium flag; the five services self-host from the published docker/docker-compose.yml,
+        and the free-tier quotas are themselves published Apache-2.0 code governing Helicone Cloud billing
     free_text:
     - self-host supported
     - hosted Helicone Cloud with paid tiers(free=10k req/mo) = commercial SaaS layer atop OSS core
   confidence: high
-  note: Apache-2.0 OSS core with a hosted commercial cloud (tiered pricing), classic open-core, same
-    shelf as Langfuse/LangWatch (O4).
-  raw: license:Apache-2.0(OSI);source:public;self-host supported;hosted Helicone Cloud with paid tiers(free=10k
-    req/mo) = commercial SaaS layer atop OSS core;core-gated:gated
+  note: 'Apache-2.0 throughout, self-hostable in full, with a hosted Helicone Cloud sold beside it. Moved
+    from 4/open_core to 5/open_source on 2026-08-12 under the settled rule that a separate hosted product
+    is not a gated core. The bare `gated` this record used to carry rested on the cloud''s tiered pricing,
+    which the rubric explicitly says is not evidence for this dimension. The read that replaced it: the
+    recursive git tree of the default branch (untruncated, so the whole repository) contains exactly one
+    LICENSE, the Apache-2.0 root file. There is no ee/ path, no enterprise/ directory, no second license,
+    no license-key module, and no premium or entitlement flag. The README''s self-host path is the published
+    docker/docker-compose.yml covering all five services - web, worker, jawn, Supabase, ClickHouse, plus
+    Minio. What does exist is plan gating, and it is published Apache-2.0 code: web/lib/features.ts declares
+    ADDON_FEATURES and NON_FREE_FEATURES, web/lib/freeTierLimits.ts sets the quotas, and web/hooks/useFreeTierLimit.ts
+    reads them. Those enforce Helicone Cloud''s billing plan against a hosted account, ship in the source,
+    and are modifiable under Apache-2.0 - the `continue` shape, where the thing that looks like a gate turns
+    out to withhold nothing. One datum points the other way and is recorded rather than smoothed over: the
+    pricing page lists SAML SSO on the Enterprise tier and the repository contains no SAML, SSO, OAuth-IdP,
+    Okta or WorkOS implementation anywhere. That is an absence, not a carve-out or a closed package, and
+    the Enterprise tier''s other named item - "On-prem deployment" - is support for a deployment the repo
+    already ships for free. So it does not meet any of the three tests the rubric names for a gate. It is
+    the weakest point in this record and a later reader disagreeing on it has the same facts in front of
+    them.'
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated(Apache-2.0 across the whole recursive tree
+    with a single LICENSE, no ee/ or enterprise directory, no license-key or premium flag; the five services
+    self-host from the published docker/docker-compose.yml, and the free-tier quotas are themselves published
+    Apache-2.0 code governing Helicone Cloud billing);self-host supported;hosted Helicone Cloud with paid
+    tiers(free=10k req/mo) = commercial SaaS layer atop OSS core
+  last_verified: '2026-08-12'
   sources:
   - url: https://github.com/Helicone/helicone
     shows: Apache-2.0 license; full source; hosted cloud paid tiers + self-host
     accessed: '2026-06-04'
+  - url: https://api.github.com/repos/Helicone/helicone/git/trees/main?recursive=1
+    shows: 'The whole repository as one tree, `truncated: false`, so this is every path rather than a root
+      listing. Searched for the gating mechanisms the rubric names: no path contains `/ee/`, none contains
+      `enterprise` outside bifrost marketing pages and static images, there is exactly one `LICENSE` (the
+      Apache-2.0 root file), and nothing matches `premium`, `entitle`, `saml`, `okta`, `workos` or `oauth`.
+      The paths matching `tier` are packages/pricing/tiers.ts, web/lib/freeTierLimits.ts, web/hooks/useFreeTierLimit.ts,
+      web/components/shared/FreeTierLimit*.tsx and two SQL migrations - all published.'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: e058d9875ff5bb192edc2fbced0c798ffe483d3e3fdfcfd95d974c88aaf0970a
+    establishes:
+    - core-gated
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/Helicone/helicone/main/README.md
+    shows: 'The vendor''s own self-host instructions and architecture. "Helicone is simple to self-host
+      and update. To get started locally, just use our docker-compose file", with a clone-and-`./helicone-compose.sh
+      helicone up` recipe and no caveat about a reduced edition. It lists the services that make up the
+      product - Web, Worker, Jawn, Supabase, ClickHouse, Minio - all of which are directories in this repository,
+      and states "Helicone is licensed under the Apache v2.0 License". The one paid item named here is a
+      Helm chart: "For Enterprise workloads, we also have a production-ready Helm chart available. To access,
+      contact us at enterprise@helicone.ai" - packaging for a deployment the published docker-compose already
+      performs.'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 80c63bc9e4335ab1b4174a452b1fe77074c819d58e982279cacaea2e1efd2a6f
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/Helicone/helicone/main/web/lib/features.ts
+    shows: The plan gating, read rather than inferred from its file name. It declares `ADDON_FEATURES =
+      ["evals", "experiments", "prompts"]` and `NON_FREE_FEATURES = ["sessions", "properties", "users",
+      "datasets", "alerts"]`, with subfeature quotas resolved in web/lib/freeTierLimits.ts (10 prompt runs,
+      10 playground runs, 3 experiments and so on, each with an upgrade message). Every one of those features
+      is implemented in this repository; the code decides what a Helicone Cloud account on the free plan
+      may do, and it is itself Apache-2.0 and modifiable. Nothing is withheld from the published source.
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 4be8ab58511904ced046aed8ab4f89a96571dd89d5cda226573b8d58b2b43139
+    establishes:
+    - core-gated
+  - url: https://www.helicone.ai/pricing
+    shows: The paid tiers, listed for the record and against the dimension rather than for it. Pro $79/mo
+      adds unlimited seats, alerts and reports, and HQL; Team $799/mo adds five organizations, SOC-2 and
+      HIPAA compliance and a dedicated Slack channel; Enterprise adds a custom MSA, SAML SSO, on-prem deployment
+      and bulk cloud discounts. These price a hosted account and a support relationship. The single item
+      here the published source cannot build is SAML SSO, which is recorded in the note as the one datum
+      arguing the other way.
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: dbdc33458d37a020b398d9b95bbebd9a5b1fb3c5ba06fcb82462d90251682f4f
+    establishes:
+    - core-gated
 adoption:
   level: 3
   reach: 100K-1M

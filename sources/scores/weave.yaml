@@ -14,15 +14,79 @@ openness:
     eval+tracing-client:
       value: OSS
   confidence: high
-  note: Apache-2.0 OSS instrumentation SDK (@weave.op tracing + eval scoring) but the trace store / dashboards
-    / monitoring backend is the proprietary W&B SaaS platform, open-core, calibrated below MLflow O5
-    (fully-OSS core) and at/with Langfuse O4 (OSS core + commercial backend).
+  note: 'Apache-2.0 SDK and trace-server library from Weights & Biases, with the runnable Weave application
+    not published. Left DEFERRED after the 2026-08-12 read, because the read undercuts `source: public`
+    rather than filling the core-gated gap, and the two cannot both stand. What is published, and it is
+    more than an SDK: wandb/weave is Apache-2.0 and weave/trace_server/ holds a real ClickHouse-backed implementation
+    - clickhouse_trace_server_batched.py, a schema, migrations, query builders, workers, kafka, file storage
+    and OpenTelemetry ingest. What is not published: any web UI, any deployment manifest (no docker-compose,
+    no chart, bin/ holds two codex setup scripts), and the HTTP service that fronts the trace server - the
+    repository''s own weave/trace_server/README.md diagrams it as "(in core) trace_server.py TraceWebServer",
+    core being W&B''s closed repository. sdks/ contains only node. The README''s stated prerequisite is
+    "A Weights & Biases account", and W&B''s deployment docs say a self-managed install needs a W&B Server
+    license obtained before installation, with "Some features and functionality require an Enterprise license."
+    So you cannot stand the product up from the published repository, which is software.yaml''s definition
+    of `partial` - the webcontainers shape, a core published and the engine withheld - and `partial` computes
+    2/source_available against a recorded 4. The record''s own prose already says as much ("the trace store
+    / dashboards / monitoring backend is the proprietary W&B SaaS platform, ... self-host is enterprise")
+    while its `source` key says `public`; the key and the note disagree. Recording `core-gated: gated` would
+    make the recorded components compute exactly 4 and close this, which is why it was not done - the 4
+    would then rest on a `source` value this read does not support. A human should settle `source` first;
+    core-gated only matters if it stays `public`.'
   raw: license:Apache-2.0(OSI, SDK/client repo wandb/weave);source:public;backend:commercial(W&B SaaS platform
     hosts traces/evals; full platform is proprietary, self-host is enterprise);eval+tracing-client:OSS
+  last_verified: '2026-08-12'
   sources:
   - url: https://github.com/wandb/weave
     shows: Apache-2.0 license on the Weave SDK repo; LLM logging/tracing/eval toolkit
     accessed: '2026-06-04'
+  - url: https://api.github.com/repos/wandb/weave/contents/
+    shows: Repository root, listed to establish what ships. LICENSE (Apache-2.0 per the license endpoint),
+      Makefile, noxfile.py, pyproject.toml, bin, dev_docs, examples, scripts, sdks, tests, trace_server_mock,
+      weave. There is no docker-compose, no chart, no deploy or infra directory, and no web/ or ui/ - so
+      no published way to run the application. sdks/ contains only `node`. bin/ contains only codex_setup.sh
+      and run_setup_in_codex.sh. The server-side code that does ship is the library under weave/trace_server/,
+      which includes clickhouse_trace_server_batched.py, clickhouse_schema.py, migrations, workers, kafka.py,
+      file_storage.py and an opentelemetry package.
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 099e76f39c0b60aa2deb06f3be1657deb01947289229d4434d5af3b96023c1f2
+    establishes:
+    - source
+    - license
+  - url: https://raw.githubusercontent.com/wandb/weave/master/weave/trace_server/README.md
+    shows: The repository's own architecture diagram, which names the piece that is missing. The call-start
+      sequence runs UserCode -> OpExecution -> GraphClientTrace -> RemoteHTTPTraceServer -> "(in core) trace_server.py
+      TraceWebServer <FlaskApp>" -> ClickHouseTraceServer -> ClickHouseDB. The web service tier is annotated
+      as living in core, W&B's closed repository, not in this one. The published RemoteHTTPTraceServer is
+      the client that posts to it.
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 6136cc31b33793f95de67aa389e20a92d899a2676826fea7edfe5ff7b1f7b89d
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/wandb/weave/master/README.md
+    shows: 'The vendor''s own prerequisite for using the published package, stated plainly under Prerequisites:
+      "Python 3.10 or higher" and "A Weights & Biases account (free tier available)". The quick start is
+      `pip install weave` then `weave.init("my-project-name")`, which registers against that account. Nothing
+      in the README describes running Weave without W&B.'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: a80ad86bad9feeb77a2f784c145270583a93314d75b9895a0ed1fa774418e6ed
+    establishes:
+    - source
+  - url: https://docs.wandb.ai/guides/hosting/
+    shows: 'W&B''s deployment options: Multi-tenant Cloud, Dedicated Cloud and Self-Managed. On licensing
+      it states "Some features and functionality require an Enterprise license" and routes readers to an
+      Enterprise trial. The self-managed page adds "A W&B Server license authorizes your deployment. You
+      must obtain a license before installation." So the on-premises route runs a licensed W&B Server distribution
+      rather than a build of wandb/weave.'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 17e6dd1f897b73aac6bec88fff076dbbbc8a3b92d9dda25f941cacce26dd6edd
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 4
   reach: 1M-10M

@@ -114,10 +114,24 @@ def test_local_scores_matches_check_rubrics_split():
     own features list says all data stays local in the browser. continue records
     `core-gated:ungated` - the whole monorepo is Apache-2.0 with no ee/ directory, and its
     "Enterprise License Key" turns out to be published Apache-2.0 code carrying only a
-    customerId, an expiry and a control-plane apiUrl, unlocking no client feature."""
+    customerId, an expiry and a control-plane apiUrl, unlocking no client feature.
+
+    Then 437/35 -> 438/34 when the sweep reached `telemetry_observability`, where only one of
+    four deferrals came off. langfuse closed at the 4 it already had: its root LICENSE carves
+    ee/, web/src/ee/ and worker/src/ee/ out of MIT and under an Enterprise License, ee/src
+    ships a license check, and web/src/ee/features holds multi-tenant SSO, the audit-log
+    viewer, the admin API and billing. The other three each turned out to be blocked on
+    something other than the missing key and stayed deferred as conflicts: agentops (app/
+    ships the whole self-hostable platform, so nothing is gated, but app/LICENSE is Elastic
+    2.0 rather than the recorded MIT, so the ladder reaches 5 or 2 and never 4), langtrace
+    (abstains on the tier, its license recorded as the unmappable `app=AGPL-3.0`, and on the
+    evidence ungated with a cloud tier the vendor charges nothing for, computing 5 against a
+    recorded 4) and weave (the Apache-2.0 repo publishes an SDK and a trace-server library but
+    no UI, no deployment manifest and not the HTTP service, which its own README places in
+    W&B's closed core repo - `source:partial`, computing 2 against a recorded 4)."""
     computed, deferred = local_scores(None)
-    assert len(deferred) == 35
-    assert len(computed) == 437
+    assert len(deferred) == 34
+    assert len(computed) == 438
     assert not set(computed) & set(deferred)
     # Every one of the 410 reproduces today, so none should abstain.
     assert [key for key, value in computed.items() if value is None] == []

@@ -12,13 +12,78 @@ openness:
     commercial:
       value: app.agentops.ai-SaaS-dashboard-is-the-primary-product
   confidence: medium
-  note: SDK is MIT/OSI and self-host is possible, but the hosted dashboard is the product surface, closer
-    to open_core than pure open_source. Scored 4.
+  note: 'MIT SDK plus a self-hostable app, and the read on 2026-08-12 found the recorded license does not
+    describe the product. Left DEFERRED rather than closed, because the evidence does not reproduce the
+    4. What the read established, in order. (1) Nothing is withheld from the published source: app/ ships
+    the whole platform - api, dashboard, clickhouse, opentelemetry-collector, supabase, deploy, landing,
+    compose.yaml - and app/README.md walks through bringing it up on docker compose with a local ClickHouse.
+    There is no ee/ or enterprise directory, no license-key check and no premium flag anywhere in the tree,
+    so on the core_gated question alone this is `ungated`, which against the recorded MIT would compute
+    5/open_source, not 4. (2) But the app is not MIT. app/LICENSE is the Elastic License 2.0, added in the
+    "AgentOps OSS release" (#1190) on 2025-08-09, and it forbids providing the software "to third parties
+    as a hosted or managed service, where the service provides users with access to any substantial set
+    of the features or functionality of the software". That is this ladder''s competition_restricted tier
+    stated directly, and with source public it lands on the 2/source_available rung. The root MIT LICENSE
+    covers the agentops SDK. So the recorded `license: MIT(OSI, SDK)` is accurate about the SDK and silent
+    about the observability app, which is what the map scores under this slug. The vendor''s own README
+    makes the same slip, saying "The AgentOps app is open source under the MIT license" while app/LICENSE
+    says Elastic 2.0; the LICENSE file governs. Neither reading reaches 4 - `ungated` on the recorded MIT
+    gives 5, and the app''s actual license gives 2 - so the components are left untouched and this needs
+    a human to decide which SKU the slug is scored on.'
   raw: license:MIT(OSI, SDK);source:public(SDK + self-hostable app dir);commercial:app.agentops.ai-SaaS-dashboard-is-the-primary-product
+  last_verified: '2026-08-12'
   sources:
   - url: https://github.com/AgentOps-AI/agentops
     shows: MIT-licensed SDK; complementary SaaS dashboard at app.agentops.ai; self-host option
     accessed: '2026-06-04'
+  - url: https://raw.githubusercontent.com/AgentOps-AI/agentops/main/app/LICENSE
+    shows: 'The license on the AgentOps app, which is not the license this record carries. The file is the
+      Elastic License 2.0 verbatim. Its Limitations: "You may not provide the software to third parties
+      as a hosted or managed service, where the service provides users with access to any substantial set
+      of the features or functionality of the software", and "You may not move, change, disable, or circumvent
+      the license key functionality in the software, and you may not remove or obscure any functionality
+      in the software that is protected by the license key." Elastic-License-2.0 is declared in software.yaml''s
+      competition_restricted examples. The only commit touching this path is "AgentOps OSS release (#1190)",
+      2025-08-09, so it is the license the app was published under rather than a later change.'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: a8f8f19b2ff2d9ebbc8eb8fb4c490399c6acbe027d81cfda7f2aec109fb983d0
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/AgentOps-AI/agentops/main/LICENSE
+    shows: The root LICENSE, which is plain MIT with no carve-out clause of any kind - unlike langfuse,
+      agenta or litellm, it does not name a directory it excludes. It therefore governs the repository root,
+      where the agentops Python SDK lives, and says nothing about app/, which carries its own LICENSE. GitHub's
+      license endpoint reports MIT for the repo on the strength of this file.
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: cd65bda1266925500c05493e89638258193b73b213617d81514f9f7979a32985
+    establishes:
+    - license
+  - url: https://api.github.com/repos/AgentOps-AI/agentops/contents/app
+    shows: The app directory, listed to test whether anything is withheld. It holds LICENSE, README.md,
+      SETUP_GUIDE.md, api, dashboard, clickhouse, opentelemetry-collector, deploy, e2e, graphana, landing,
+      supabase, scripts and compose.yaml. There is no ee/, no enterprise/ and no second license below it.
+      The published tree is the running platform, so on the core_gated question nothing is held back.
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 023d3c45814e0b6066fc58537cf4412036621952d27b06c610e116a8e1ab39c5
+    establishes:
+    - core-gated
+    - source
+  - url: https://raw.githubusercontent.com/AgentOps-AI/agentops/main/README.md
+    shows: 'The vendor''s own claims, recorded including the one the LICENSE contradicts. Under "Open Source":
+      "The AgentOps app is open source under the MIT license. Explore the code in our app directory." Under
+      "Self-Hosting": "Looking to run the full AgentOps app (Dashboard + API backend) on your machine? Follow
+      the setup guide in app/README.md", and the feature table lists "Self-Host: Want to run AgentOps on
+      your own cloud? You''re covered". The self-host claim checks out against app/; the MIT claim does
+      not check out against app/LICENSE.'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 6cf775117207bfda15954e839da8a8cd64fa7f95325db682c2512ffad1d90c41
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 3
   reach: 100K-1M
