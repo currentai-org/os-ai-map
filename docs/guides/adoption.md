@@ -223,6 +223,47 @@ it does not make the claim automatic, it makes it falsifiable.
 - **MLPerf and Artificial Analysis** — capability instruments, not adoption. Recorded here only
   so nobody re-proposes them; see `signal_routing.yaml` for why both are unbridged anyway.
 
+## The mirror trap: a channel that is not counted at all
+
+Attribution has two failure modes and only one of them was written down. The `cohere-rerank-api`
+case above is **over**-attribution — one SDK's downloads credited wholly to one of the N products
+it serves. The opposite is **under**-coverage, and it is the more common one:
+
+> **If the declared artifact is not the product's primary distribution channel, banding on it is
+> a substitution, not a measurement.**
+
+`n8n` is the case that established the rule. It records `usage_volume`, and its declared artifact
+is the npm package at 393,738 downloads a month, which bands at level 3. But n8n is deployed
+overwhelmingly as a self-hosted Docker container, and Docker Hub reports **246 million cumulative
+pulls** — averaging about 2.9 million a month over the image's lifetime. Banding on npm alone
+published a precise number for the wrong channel, and the note said so in its own second sentence
+before recording the band anyway.
+
+That is exactly what `sources/signal_routing.yaml` forbids: "Abstain rather than substitute. When
+the authoritative signal for a dimension is missing or unusable, the rule is to produce NO
+evidence." A partial channel is an unusable signal wearing a usable one's clothes, and it is worse
+than an absent one, because it carries a `last_verified` date asserting that somebody confirmed it.
+
+**What to do instead**, in order of preference:
+
+1. **Count every channel the product actually ships through** and sum them, which is what the unit
+   already says — "summed across declared artifacts". Declare the missing artifact so the sum is
+   reproducible rather than hand-assembled.
+2. Where a channel reports only a **cumulative** total — Docker Hub's `pull_count` is the case —
+   a lifetime average is admissible as a floor, provided the note says it is a lifetime average
+   and therefore understates a growing product. It is not a trailing-30-day figure and must not be
+   presented as one.
+3. Where the primary channel publishes nothing at all, use `reported_traction` and abstain on
+   `reach`, rather than banding on the minority channel that happens to be countable.
+
+`langflow` is the same shape and moved with it: PyPI alone gave level 2, PyPI plus the Docker
+average gives about 166,000 a month and level 3. `semantic-kernel` is a third — its Python package
+reaches level 4 on its own, and the .NET/NuGet channel is larger and uncounted, so its band is a
+floor and its note says so.
+
+The tell to look for when reviewing: **a note that describes the signal as understating the
+product, followed by a band recorded on that signal anyway.**
+
 ## Checklist
 
 - [ ] `level` is 1-5 and follows the band table for the product's **type**.
