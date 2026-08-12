@@ -11361,11 +11361,11 @@
           "type": "dataset",
           "description": "500 human-verified instances drawn from the broader SWE-bench dataset, each a real GitHub issue paired with a test-verified solution patch. Created through collaboration between Princeton NLP and OpenAI to reduce noise in the original 2,294-instance set. The gold-standard benchmark for evaluating coding agents on realistic software engineering tasks. Leaderboard results drive agent development across the industry. As of April 2026, OpenAI's internal audit found 59.4% of the hardest unsolved problems had flawed test cases and that frontier models can reproduce gold patches verbatim. OpenAI now prefers SWE-bench Pro for headline coding evaluations.",
           "openness": {
-            "score": 4,
+            "score": 5,
             "class": "open",
             "components": "license:MIT(SWE-bench repository states MIT over its code and data; the HF card for Verified still declares no license field);redistributability:full(downloadable parquet, ungated);datasheet:yes(dataset card + arXiv:2310.06770);held-out:no hidden split in Verified itself(the public 500-instance set is fully released; gold patches + tests included);data-source:real GitHub PR/issue pairs",
             "confidence": "medium",
-            "note": "Effectively open - ungated, downloadable, full gold patches and tests, datasheet present. The HF card for Verified declares no license field, which is what the recorded 4 rests on, but a card read on 2026-08-12 found the canonical SWE-bench repository stating MIT over the artifact rather than only over the harness. Its README calls the repository \"Code and data for the following works\", lists SWE-bench among them, and its \"Citation & license\" section says \"MIT license\", with the citation block directly beneath headed \"For SWE-bench (Verified)\". Verified is a 500-instance human-validated subset of that same test set, released with OpenAI Preparedness. On that reading the license is stated rather than inferred and the ladder computes 5; the recorded 4 has been left alone and the disagreement is carried as a deferral. (Distinct from SWE-bench's broader/hidden variants which can carry held-out splits.)",
+            "note": "Ungated, downloadable, full gold patches and tests, datasheet present, and the license is stated. The canonical SWE-bench repository calls itself \"Code and data for the following works\", lists SWE-bench among them, and its \"Citation & license\" section says \"MIT license\" with the citation block directly beneath headed \"For SWE-bench (Verified)\". The HF card for Verified still declares no license field, and where a repository license and a distribution-point license differ the repository license governs, so the recorded 4 moves to the 5/open the ladder computes. (Distinct from SWE-bench broader/hidden variants, which can carry held-out splits.)",
             "sources": [
               {
                 "url": "https://huggingface.co/datasets/princeton-nlp/SWE-bench_Verified",
@@ -11440,7 +11440,7 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-11",
+            "date": "2026-08-12",
             "basis": "commit"
           },
           "version_note": "SWE-bench Verified (princeton-nlp/SWE-bench_Verified), 500 human-validated GitHub issue-resolution task instances (~2.1 MB) curated by OpenAI from the SWE-bench test set. Leaderboard at swebench.com. Verified live on HF June 2026 (~914k downloads last month)."
@@ -11557,11 +11557,11 @@
           "type": "dataset",
           "description": "Continuously updated benchmark that scrapes fresh LeetCode/Codeforces/AtCoder problems after a model's training cutoff, ensuring contamination-free evaluation across code generation, self-repair, execution, and test-output prediction. v6 includes 1,000+ problems collected May 2023–2025. Per Artificial Analysis (May 2026), Gemini 3 Pro Preview leads at 91.7%, followed by Gemini 3 Flash Reasoning at 90.8% and DeepSeek V3.2 Speciale at 89.6%; DeepSeek V4-Pro-Max reached 93.5% on a later snapshot. ~870 GitHub stars but disproportionate influence as the trusted dynamic complement to HumanEval/MBPP.",
           "openness": {
-            "score": 4,
-            "class": "open",
+            "score": 3,
+            "class": "gated",
             "components": "data:downloadable(HF parquet);license:cc(the card YAML names the Creative Commons family and no variant; no variant is stated on the card, the GitHub repository, the project site or the paper);datasheet:present(README documents versions/sources/structure);redistributable:yes;splits:public problems with hidden test cases bundled",
             "confidence": "medium",
-            "note": "Open and downloadable with a datasheet, but the HF card declares only a generic 'cc' license (no specific CC variant), so the exact reuse terms are ambiguous. Scored open but not a clean CC-BY; capped at 4. A card read on 2026-08-12 went looking for the variant and did not find one. The bare 'cc' is the only license statement the project makes about the corpus, and it is repeated identically on code_generation and test_generation. The MIT LICENSE in the GitHub repository covers the lcb_runner harness code, not the problems; the CC-BY-4.0 on the arXiv posting covers the paper. The problems themselves are collected from LeetCode, AtCoder and Codeforces, which is a plausible reason the project has not committed to a variant. Recording CC-BY here would be a guess, and CC-BY and CC-BY-NC sit two tiers apart, so the abstention stands.",
+            "note": "Downloadable with a datasheet, but the only license statement the project makes about the corpus is a bare cc naming no variant, and CC-BY and CC-BY-NC sit two tiers apart. A read on 2026-08-12 went looking for the variant across the card front matter, the Hub API, the sibling code_generation and test_generation corpora, the repository LICENSE (MIT, covering the lcb_runner harness rather than the problems), the README, ERRATA.md, the project site, the leaderboard and the paper, and did not find one. Files that download freely without a grant are not open, and not closed either, so the recorded 4/open drops to 3/gated: the barrier is the missing permission rather than a login. The problems are collected from LeetCode, AtCoder and Codeforces, which is a plausible reason no variant has been committed to.",
             "sources": [
               {
                 "url": "https://huggingface.co/datasets/livecodebench/code_generation_lite",
@@ -11613,7 +11613,7 @@
                 ]
               }
             ],
-            "bucket": "open"
+            "bucket": "open-ish"
           },
           "adoption": {
             "level": 4,
@@ -11645,7 +11645,7 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-11",
+            "date": "2026-08-12",
             "basis": "commit"
           },
           "version_note": "LiveCodeBench code_generation_lite, release_v5 = 880 problems (May 2023-Jan 2025); a 'live', continuously-updated contamination-free coding benchmark (problems from LeetCode/AtCoder/Codeforces) covering code generation, self-repair, test-output prediction, execution. HF dataset verified live June 2026 (71,393 monthly downloads)."
@@ -11722,9 +11722,9 @@
           "openness": {
             "score": 4,
             "class": "open",
-            "components": "data:downloadable(HF parquet, 47 subsets);license:MIT(on HF dataset card);datasheet:present(card documents prompts/doctests/tests/stop-tokens);redistributable:yes(HF);caveat:GitHub repo LICENSE is a non-OSI 'BSD-3-Clause + no-ML-training' modified license, conflicting with the MIT on the HF data artifact",
+            "components": "data:downloadable(HF parquet, 47 subsets);license:BSD-3-Clause-with-ML-Restriction(the nuprl/MultiPL-E repository LICENSE, whose clause 4 forbids using the contents as training data for any machine learning model; the HF data artifact carries MIT);datasheet:present(card documents prompts/doctests/tests/stop-tokens);redistributable:yes(HF)",
             "confidence": "medium",
-            "note": "The scored artifact (HF dataset) is MIT and openly downloadable with a datasheet, open class. But the source repo carries a modified BSD-3 with an explicit 'may not be used as training data for ML' clause (non-OSI), a conflict worth flagging; scored on the data artifact's MIT terms, capped at 4 for the licensing inconsistency.",
+            "note": "Where a repository license and a distribution-point license differ the repository license governs, and nuprl/MultiPL-E ships a LICENSE headed \"BSD 3-Clause License with Machine Learning Restriction\" whose clause 4 says \"The contents of this repository may not be used as training data for any machine learning model, including but not limited to neural networks.\" That is the license recorded here; the MIT on the HF data artifact is the weaker statement of the two. It was previously recorded under a caveat key no dimension reads, which left the ladder seeing clean MIT and computing 5/open. The dataset ladder declares no tier for a license that permits redistribution while bounding what you may use the corpus FOR, so the tier lookup abstains and the score stays where the curator put it rather than being invented.",
             "sources": [
               {
                 "url": "https://huggingface.co/datasets/nuprl/MultiPL-E",
@@ -11733,8 +11733,13 @@
               },
               {
                 "url": "https://github.com/nuprl/MultiPL-E/blob/main/LICENSE",
-                "shows": "modified BSD-3-Clause with no-ML-training-data restriction (non-OSI)",
-                "accessed": "2026-06-04"
+                "shows": "LICENSE headed \"BSD 3-Clause License with Machine Learning Restriction\"; clause 4 forbids use of the repository contents as training data for any machine learning model",
+                "accessed": "2026-08-12",
+                "establishes": [
+                  "license"
+                ],
+                "http_status": 200,
+                "content_sha256": "6891bf32c7df59f0665d45a22bc09224ed122394eae4404048e0e4c7e4bc2f23"
               }
             ],
             "bucket": "open"
@@ -11769,7 +11774,7 @@
           "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-06-24",
+            "date": "2026-08-12",
             "basis": "commit"
           },
           "version_note": "MultiPL-E: translations of HumanEval (161 problems) and MBPP (397 problems) into 22-23 programming languages (Ada, Clojure, C++, C#, D, Dart, Elixir, Go, Haskell, Java, Julia, JS, Lua, OCaml, PHP, Perl, R, Ruby, Racket, Rust, Scala, Shell, Swift, TS). HF dataset (nuprl/MultiPL-E, 47 subsets) verified live June 2026; integrated into the BigCode evaluation harness. arXiv 2208.08227 (IEEE TSE)."
@@ -11834,11 +11839,11 @@
           "type": "dataset",
           "description": "A 12,500-problem benchmark of competition-style mathematics questions spanning algebra, counting, geometry, number theory, prealgebra, precalculus, and more. It is the standard hard math benchmark for measuring reasoning depth beyond GSM8K.",
           "openness": {
-            "score": 2,
-            "class": "gated",
-            "components": "data:NOT downloadable from canonical HF repo (access disabled, DMCA takedown);license:MIT(declared);datasheet:present(card still documents schema);redistributability:BLOCKED on the primary registry; problems sourced from AMC/AIME competitions, takedown reflects unresolved rights",
+            "score": 1,
+            "class": "closed",
+            "components": "license:MIT(declared);access:closed(canonical HF repo access-disabled under a DMCA takedown);data:NOT downloadable from canonical HF repo (access disabled, DMCA takedown);datasheet:present(card still documents schema);redistributability:BLOCKED on the primary registry;problems sourced from AMC/AIME competitions, takedown reflects unresolved rights",
             "confidence": "medium",
-            "note": "Declared MIT, but the canonical HF dataset is access-disabled under a DMCA takedown, so it is not currently redistributable from the primary registry; scored gated/blocked rather than open. Mirrors and eval harnesses still embed it, but the primary source is walled; revisit if the takedown is resolved.",
+            "note": "Declared MIT, but the canonical HF dataset is access-disabled under a DMCA takedown over AMC/AIME problem rights, so the corpus is not distributed from its primary registry. The takedown was recorded only as prose; it is now recorded as access:closed, which is the ladder rung for data that is not distributed however it came to be that way, and that rung produces 1/closed rather than the 2/gated this record carried. Mirrors and eval harnesses still embed the problems; revisit if the takedown is resolved.",
             "sources": [
               {
                 "url": "https://huggingface.co/datasets/hendrycks/competition_math",
@@ -11846,7 +11851,7 @@
                 "accessed": "2026-06-04"
               }
             ],
-            "bucket": "open-ish"
+            "bucket": "closed"
           },
           "adoption": {
             "level": 4,
@@ -11873,7 +11878,7 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-06-24",
+            "date": "2026-08-12",
             "basis": "commit"
           },
           "version_note": "MATH (Hendrycks et al., NeurIPS 2021, arXiv 2103.03874): 12,500 competition math problems (7,500 train / 5,000 test) with step-by-step LaTeX solutions, Level 1-5, 7 subjects. Original HF dataset (hendrycks/competition_math) verified June 2026 but ACCESS DISABLED via DMCA takedown; no longer redistributable from the canonical registry; license tag is MIT."
@@ -12711,14 +12716,24 @@
           "openness": {
             "score": 2,
             "class": "gated",
-            "components": "questions:public(val);answers:held-out(300-Q test,private);access:HF-gated(accept-terms,anti-resharing)",
+            "components": "license:not-clearly-stated-on-card(the Hub API cardData carries no license key and no license tag; the card states only the no-resharing condition, and the paper states no release terms);questions:public(val);answers:held-out(300-Q test,private);access:HF-gated(accept-terms,anti-resharing)",
             "confidence": "high",
-            "note": "Test answers are private and the dataset itself is access-gated.",
+            "note": "Test answers are private and the dataset itself is access-gated. A read on 2026-08-12 established that no license is stated anywhere the project publishes: the Hub API returns no license field and no license tag, the gated card states only the no-resharing condition, and the paper states no release terms. Recorded as unstated, which is a fact rather than a guess; the held-out answers decide the score either way.",
             "sources": [
               {
                 "url": "https://huggingface.co/datasets/gaia-benchmark/GAIA",
                 "shows": "gated access, private test answers",
                 "accessed": "2026-06-17"
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/gaia-benchmark/GAIA",
+                "shows": "cardData carries no license key and the tags array carries no license tag; gating is auto with a no-resharing condition",
+                "accessed": "2026-08-12",
+                "establishes": [
+                  "license"
+                ],
+                "http_status": 200,
+                "content_sha256": "0bcfa21e0181419fa7c6c33c382a5e50ac59e8d343ab40a9ad4557a33377c4f0"
               }
             ],
             "bucket": "open-ish"
@@ -12753,7 +12768,7 @@
           "maturity": 4.4,
           "mature": false,
           "freshness": {
-            "date": "2026-06-17",
+            "date": "2026-08-12",
             "basis": "commit"
           },
           "version_note": "Double-gated: test-set answers held out (server-side scoring) AND the HF dataset is access-gated (accept terms, anti-resharing clause). ~42k monthly downloads."
@@ -12768,9 +12783,9 @@
           "openness": {
             "score": 2,
             "class": "gated",
-            "components": "questions+answers:public(MIT,2500-Q);access:HF-gated(accept-conditions,no-redistribution,canary);holdout:private",
+            "components": "license:MIT(the public 2,500-question set);questions+answers:public(2500-Q);access:HF-gated(accept-conditions,no-redistribution,canary);holdout:private",
             "confidence": "medium",
-            "note": "Public set is MIT-licensed with answers, but access is gated and a private held-out set exists - judgment call (could be open under a license-weighted reading).",
+            "note": "Public set is MIT-licensed with answers, but access is gated and a private held-out set exists. The MIT was recorded inside the compound questions+answers key, where no dimension could read it; it is now recorded under license, and the private holdout is what decides the score.",
             "sources": [
               {
                 "url": "https://huggingface.co/datasets/cais/hle",
@@ -12810,7 +12825,7 @@
           "maturity": 4.4,
           "mature": false,
           "freshness": {
-            "date": "2026-06-17",
+            "date": "2026-08-12",
             "basis": "commit"
           },
           "version_note": "The 2,500 public questions include answers under MIT, but the HF dataset is access-gated (accept conditions, no-redistribution + canary string) and a separate private held-out set detects overfitting -> scored gated (a license-weighted reading could argue open). ~35k monthly downloads."
@@ -12825,9 +12840,9 @@
           "openness": {
             "score": 3,
             "class": "gated",
-            "components": "license:Etalab-2.0(permissive French-gov open license);gated:HF contact-info agreement required;dataset_card:present",
+            "components": "license:Etalab-2.0(permissive French-gov open license);gated:terms-acceptance+contact-info(HF contact-info agreement required);dataset_card:present",
             "confidence": "high",
-            "note": "Open license and documented, but gated access requiring agreement caps it at gated.",
+            "note": "Open license and documented, but gated access requiring agreement caps it at gated. The gate was recorded as a sentence rather than a token; it is a click-through agreement that also collects contact details, which is terms-acceptance+contact-info.",
             "sources": [
               {
                 "url": "https://huggingface.co/datasets/ministere-culture/comparia-votes",
@@ -12862,7 +12877,7 @@
           "maturity": 2.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-11",
+            "date": "2026-08-12",
             "basis": "commit"
           },
           "version_note": "Verified live 2026-06-22 via primary sources. Open license and documented, but gated access requiring agreement caps it at gated."
@@ -14217,11 +14232,11 @@
           "type": "dataset",
           "description": "OpenHermes 2.5 is a large synthetic instruction-following dataset of ~1M conversational examples compiled and generated primarily from GPT-4 outputs across math, code, roleplay, and general-knowledge tasks. Created by Teknium as an expansion of OpenHermes 1, it was used to train the popular OpenHermes 2.5 fine-tunes and is widely used as a base SFT mix for open instruction-tuned models.",
           "openness": {
-            "score": 5,
-            "class": "open",
+            "score": 3,
+            "class": "gated",
             "components": "license:not-clearly-stated-on-card(no license field in the card YAML, no license section in the card body, no LICENSE file in the repository and no license tag on the Hub API);card:present;ungated:yes;format:JSON/Parquet;rows:~1M",
             "confidence": "medium",
-            "note": "Publicly downloadable and ungated with a full card, though an explicit license string is not stated on the card. A card read on 2026-08-12 confirms there is no license anywhere the publisher controls - the card front matter carries language, pretty_name and tags and no license key, the 126-line body runs from the source list through the format description to the citation without a terms section, the repository holds only .gitattributes, README.md and openhermes2_5.json so there is no LICENSE file, and the Hub API returns no license for it. The 'commonly cited as permissive' detail this record used to carry was a third-party reading and has been dropped.",
+            "note": "Publicly downloadable and ungated with a full card, and no license anywhere the publisher controls. A read on 2026-08-12 confirmed it: the card front matter carries language, pretty_name and tags and no license key, the 126-line body runs from the source list through the format description to the citation without a terms section, the repository holds only .gitattributes, README.md and openhermes2_5.json so there is no LICENSE file, and the Hub API returns no license. Files that download freely without a grant are not open, and not closed either, so the recorded 5/open drops to 3/gated. The commonly cited as permissive detail this record used to carry was a third-party reading and has been dropped.",
             "sources": [
               {
                 "url": "https://huggingface.co/datasets/teknium/OpenHermes-2.5",
@@ -14248,7 +14263,7 @@
                 ]
               }
             ],
-            "bucket": "open"
+            "bucket": "open-ish"
           },
           "adoption": {
             "level": 3,
@@ -14282,7 +14297,7 @@
           "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-11",
+            "date": "2026-08-12",
             "basis": "commit"
           },
           "version_note": "Verified live 2026-06-22 via primary sources. Publicly downloadable and ungated with a full card, though an explicit license string is not stated on the card.",
@@ -16642,12 +16657,12 @@
           "type": "software",
           "description": "NVIDIA's proprietary synthetic-data generation service for building structured and unstructured training data with transformation and augmentation workflows. The productized form of Gretel's technology after NVIDIA's 2025 acquisition.",
           "openness": {
-            "score": 1,
-            "class": "closed",
-            "components": "license:Apache-2.0(OSI, NVIDIA-NeMo/DataDesigner LICENSE);source:public(pip install data-designer, the published framework runs locally against any configured inference provider);the archived gretel-synthetics OSS repo (Apache-2.0) is a separate legacy artifact, not this product",
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI, NVIDIA-NeMo/DataDesigner LICENSE);source:public(pip install data-designer, the published framework runs locally against any configured inference provider);core-gated:ungated(the NeMo Platform adds infrastructure around the published library rather than withholding generation from it);the archived gretel-synthetics OSS repo (Apache-2.0) is a separate legacy artifact, not this product",
             "confidence": "medium",
-            "note": "Still deferred, and the reason has changed. The prior 1/closed described this as a proprietary NeMo microservice on the strength of a single TechCrunch article, and NVIDIA's own documentation contradicts it: the NeMo microservices Data Designer page states \"The service is built on the open-source NVIDIA NeMo Data Designer library\" and links to github.com/NVIDIA-NeMo/DataDesigner, which is Apache-2.0, installs with `pip install data-designer`, and ships the whole generation framework rather than a client for a hosted service. So `source` is public and the license is OSI, the closed rung cannot fire, and the recorded 1 is not reproducible at any value of core-gated. What keeps it deferred is that the ladder's remaining rungs both test core-gated, and no read has yet established what, if anything, the NeMo Platform withholds from the published library. The product is somewhere in {4, 5} and a value was deliberately not invented to close it. Score and class are left at the unreproducible 1 rather than guessed, which is what the deferral records.",
-            "last_verified": "2026-08-11",
+            "note": "The prior 1/closed described this as a proprietary NeMo microservice on the strength of a single TechCrunch article, and NVIDIA's own documentation contradicts it: the NeMo microservices Data Designer page states \"The service is built on the open-source NVIDIA NeMo Data Designer library\" and links to github.com/NVIDIA-NeMo/DataDesigner, which is Apache-2.0 and installs with pip install data-designer. A read on 2026-08-12 settled the core-gated question the deferral was held on: the repository ships data-designer-config, data-designer-engine and data-designer, so the generation engine itself is published, and what the NeMo Platform adds over it is infrastructure - inference routed through the NMP gateway, distributed job execution with monitoring, NMP fileset seeds, NMP artifact storage and the NMP Secrets service. None of that is functionality withheld from the published source, which is the test this ladder applies; it is a managed service sold alongside a complete open core, the langchain and otari shape rather than the langgraph one. So core-gated is ungated and the product scores 5/open_source.",
+            "last_verified": "2026-08-12",
             "sources": [
               {
                 "url": "https://docs.nvidia.com/nemo/microservices/latest/data-designer/index.html",
@@ -16684,9 +16699,21 @@
                 "url": "https://techcrunch.com/2025/03/19/nvidia-reportedly-acquires-synthetic-data-startup-gretel/",
                 "shows": "NVIDIA acquired Gretel (Mar 2025); tech now shipped as NeMo Data Designer / NeMo microservices. Third-party summary, retained only for the acquisition history, and not relied on for any recorded key.",
                 "accessed": "2026-07-21"
+              },
+              {
+                "url": "https://github.com/NVIDIA-NeMo/DataDesigner",
+                "shows": "Apache-2.0, 2.1k stars, packages/ ships data-designer-config, data-designer-engine and data-designer; README documents pip install data-designer and local generation against NVIDIA Build, OpenAI or OpenRouter providers",
+                "accessed": "2026-08-12",
+                "establishes": [
+                  "core-gated",
+                  "source",
+                  "license"
+                ],
+                "http_status": 200,
+                "content_sha256": "57e66c991213a59848bc5e27b4eff0dc8306096adc8d43b881c6b6de301a818b"
               }
             ],
-            "bucket": "closed"
+            "bucket": "open"
           },
           "adoption": {
             "level": 3,
@@ -16719,7 +16746,7 @@
           "maturity": 3.4,
           "mature": false,
           "freshness": {
-            "date": "2026-08-11",
+            "date": "2026-08-12",
             "basis": "verified"
           },
           "version_note": "NVIDIA NeMo Data Designer (NeMo microservices), proprietary. Represents the synthetic-data capability of Gretel, which NVIDIA acquired in March 2025; the Gretel brand is retired (gretel.ai redirects to NVIDIA) and the gretel-synthetics OSS repo (Apache-2.0) was archived Feb 2026. Substituted for Gretel, which no longer exists as a standalone product. Confirmed 2026-07-21."
@@ -18681,9 +18708,10 @@
           "openness": {
             "score": 4,
             "class": "open_core",
-            "components": "license:MIT(core);enterprise-dir:separate-license;source:public;OpenHands-Cloud-managed-tier",
+            "components": "license:MIT(core);source:public;core-gated:gated(the enterprise server is PolyForm Free Trial 1.0.0, not an OSI license);enterprise-dir:separate-license;OpenHands-Cloud-managed-tier",
             "confidence": "high",
-            "note": "license:MIT(core);enterprise-dir:separate-license;source:public;OpenHands-Cloud-managed-tier",
+            "note": "MIT core with a separately licensed enterprise server, which is what open_core means here. A repo read on 2026-08-12 confirmed it: the monorepo LICENSE opens \"Portions of this software are licensed as follows\" and carves out everything under enterprise/ to enterprise/LICENSE, which is PolyForm Free Trial License 1.0.0, and that directory README says outright \"This is NOT an open source license. Usage is limited to 30 days per calendar year without a commercial license.\" The enterprise server now lives in its own active repo, OpenHands/OpenHands-Cloud, under the same PolyForm license, while OpenHands/OpenHands stays MIT. Functionality is withheld from the published source for a paid tier, so core-gated is gated.",
+            "last_verified": "2026-08-12",
             "sources": [
               {
                 "url": "https://github.com/All-Hands-AI/OpenHands",
@@ -18694,6 +18722,28 @@
                 "url": "https://docs.openhands.dev/sdk",
                 "shows": "flagship phase-C verification source",
                 "accessed": "2026-06-04"
+              },
+              {
+                "url": "https://github.com/OpenHands/legacy/blob/main/LICENSE",
+                "shows": "the monorepo LICENSE opens \"Portions of this software are licensed as follows\" and carves everything under enterprise/ out to enterprise/LICENSE, with everything else under MIT",
+                "accessed": "2026-08-12",
+                "establishes": [
+                  "license",
+                  "source",
+                  "core-gated"
+                ],
+                "http_status": 200,
+                "content_sha256": "90bd960a6d24cce8f64f3f2b9be5923d5b33e2650afd6fb683ced4be83e5bb94"
+              },
+              {
+                "url": "https://github.com/OpenHands/OpenHands-Cloud/blob/main/LICENSE",
+                "shows": "PolyForm Free Trial License 1.0.0 on the live enterprise/cloud server repo, while OpenHands/OpenHands stays MIT",
+                "accessed": "2026-08-12",
+                "establishes": [
+                  "core-gated"
+                ],
+                "http_status": 200,
+                "content_sha256": "6aa0ab5bdfcb32eb7d4d60d76ac6bb665afac574aae2d1700bd91ab580f17197"
               }
             ],
             "bucket": "open"
@@ -18745,8 +18795,8 @@
           "maturity": 4.4,
           "mature": false,
           "freshness": {
-            "date": "2026-08-08",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "Active 2026 (All-Hands AI); ~75.8k GitHub stars; SWE-bench Verified ~77.6"
         },
