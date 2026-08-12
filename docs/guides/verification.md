@@ -55,6 +55,24 @@ is migrating to, one dimension at a time; every reader in this repo goes through
 `build.check_rubric.components_of`, which returns the same key -> clause dict whichever
 shape a given file carries, so the audit chain above holds unchanged either way.
 
+A license is recorded differently from a dimension: as a LIST of parts, one per license the
+product makes you accept.
+
+```yaml
+license:
+- name: Apache-2.0
+  detail: OSI
+- name: per-task
+```
+
+`license_tier` resolves every part and the most restrictive governs, and it never splits a
+value itself — so how many licenses there are is something the curator states rather than
+something a reader infers from a `+`. Record one part when the product is governed by one
+thing, even where the name contains a `+`: `culturax` records `follows mC4 + OSCAR-2301
+terms` as a single part because that phrase is one declared name and neither operand is a
+license. Every part must map to a tier or the whole value abstains, since an unmapped part
+can only be more restrictive than the ones that mapped.
+
 Three of those four links hold today. **The third does not.** `sources` is a flat list per
 axis, so nothing records WHICH source establishes WHICH dimension. Measured on 2026-07-30:
 324 of 470 openness axes cite exactly one source, asserted to establish `weights`, `data`,

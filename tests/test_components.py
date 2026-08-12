@@ -354,12 +354,51 @@ def test_structure_records_raw_when_value_and_detail_cannot_round_trip():
     from build.check_rubric import structure
 
     assert structure("rows:169,352")["rows"] == {"value": "169", "detail": "352", "raw": "169,352"}
-    assert structure("license:Apache-2.0(OSI) for the framework")["license"]["raw"] == (
-        "Apache-2.0(OSI) for the framework"
-    )
     assert structure("toolchain:open (fully open (MaixPy, Apache-2.0))")["toolchain"]["raw"] == (
         "open (fully open (MaixPy, Apache-2.0))"
     )
+    # A license takes the part list, and `raw` sits on the part rather than on the entry.
+    assert structure("license:Apache-2.0(OSI) for the framework")["license"] == [
+        {
+            "name": "Apache-2.0",
+            "detail": "OSI) for the framework",
+            "raw": "Apache-2.0(OSI) for the framework",
+        }
+    ]
+
+
+def test_structure_cuts_a_license_into_parts():
+    """The one place the `+` split runs. Every reader is handed the parts as recorded.
+
+    A part keeps its own annotation as `detail`, and `name` keeps the recorded spelling —
+    `normalize_license` drops a `code `/`model ` scope prefix when it resolves a tier, but
+    the record carries what the LICENSE file said.
+    """
+    from build.check_rubric import structure
+
+    assert structure("license:Apache-2.0(OSI)+per-task")["license"] == [
+        {"name": "Apache-2.0", "detail": "OSI"},
+        {"name": "per-task"},
+    ]
+    assert structure("license:none")["license"] == [{"name": "none"}]
+    # A `+` inside an annotation is not a separator.
+    assert structure("license:MIT(bundles A + B)")["license"] == [
+        {"name": "MIT", "detail": "bundles A + B"}
+    ]
+
+
+def test_a_spaced_join_round_trips_through_the_parts_raw():
+    """`internlm` is the one record whose `+` is written with spaces around it.
+
+    `recompose` joins parts on a bare `+`, so the padding has to live somewhere: each part
+    carries the verbatim segment it was cut from, padding included. Without this the
+    record recomposes to a string one byte off what the file says, and `check_components`
+    fails the whole migration on a space.
+    """
+    from build.check_rubric import recompose, split_components, structure
+
+    text = "license:Apache-2.0(code, OSI) + custom weights license(non-OSI, application step)"
+    assert recompose(structure(text)) == split_components(text)
 
 
 def test_components_of_reads_both_shapes_identically():
@@ -430,6 +469,28 @@ def test_check_components_flags_a_mapping_that_disagrees_with_its_raw(tmp_path):
     failures = check(tmp_path)
     assert len(failures) == 1
     assert "mangled.weights" in failures[0]
+
+
+def test_check_components_flags_a_license_left_in_the_dimension_shape(tmp_path):
+    """A `{value, detail}` license recomposes to the right string and still scores wrong.
+
+    `license_tier` resolves the parts a curator recorded and never splits a value itself,
+    so a compound left in the dimension shape arrives as one part whose `name` is a whole
+    compound and abstains. The raw comparison cannot see it — the recomposed clause is
+    correct — so the shape has to be asserted on its own.
+    """
+    from build.check_components import check
+
+    scores = tmp_path / "sources" / "scores"
+    scores.mkdir(parents=True)
+    (scores / "unstructured.yaml").write_text(yaml.safe_dump({"openness": {
+        "components": {"license": {"value": "Apache-2.0", "detail": "OSI"}},
+        "raw": "license:Apache-2.0(OSI)",
+    }}, sort_keys=False))
+
+    failures = check(tmp_path)
+    assert len(failures) == 1
+    assert "unstructured.license" in failures[0]
 
 
 def test_check_components_requires_raw_on_a_migrated_record_and_forbids_it_otherwise(tmp_path):

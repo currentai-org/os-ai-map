@@ -79,17 +79,21 @@ def head(value: str) -> str:
     Reads a DIMENSION value — `open(downloadable on HF, gated)` -> `open`. Dimension
     vocabularies are single tokens, so cutting at the first `(` or `,` is the whole job.
 
-    It is deliberately NOT the first statement of license resolution any more. A license
-    value is not a single token: `Apache-2.0(code, OSI) + custom weights license(non-OSI)`
-    is two licenses, and cutting it here resolved the product on its first half and never
-    saw the restrictive one. `license_parts` splits first and this runs per part, on a
-    fragment that IS a single token followed by its annotation.
+    It has no part in license resolution. A license value is not a single token, and
+    cutting one here resolved the product on its first half and never saw the restrictive
+    one. Licenses are now recorded as parts (see `license_segments`), so the reader is
+    handed a bare name and has nothing left to cut.
     """
     return re.split(r"[(,]", value)[0].strip()
 
 
-def license_parts(raw: str) -> list[str]:
-    """The `+`-joined halves of a compound license, split at paren depth zero.
+def license_segments(raw: str) -> list[str]:
+    """A recorded license clause cut into its `+`-joined segments, at paren depth zero.
+
+    RECORDING-time only. This is the one place the mechanical split lives, and it runs
+    when a clause is first structured into parts — never when a score is read. Reading
+    resolves the parts the curator recorded, so a compound the curator meant as one
+    declared name stays one part and nothing has to infer that from punctuation.
 
     Depth zero because annotations carry their own punctuation —
     `Sustainable-Use-License(fair-code,non-OSI: internal-use-only,no-resale/SaaS)+n8n-Enterprise-License`
@@ -98,10 +102,15 @@ def license_parts(raw: str) -> list[str]:
 
     Only `+` separates licenses. A depth-zero comma does not: every one in the corpus is
     prose trailing a single license (`Proprietary, proprietary service`,
-    `MIT(Maple-client)+AGPL-3.0(OpenSecret-platform),both-OSI`), which is why the comma
-    stays `head`'s business, inside a part, rather than becoming a separator here.
+    `MIT(Maple-client)+AGPL-3.0(OpenSecret-platform),both-OSI`), which is why the comma is
+    left inside a segment, to be split off as that part's `detail`.
+
+    Segments come back VERBATIM, padding included, and empties are kept. `+`.join of them
+    is the clause byte-for-byte, which is what lets a part carry its own `raw` and
+    `recompose` still reproduce what the file said — `internlm` is the one record whose
+    join is written ` + ` rather than `+`.
     """
-    parts: list[str] = []
+    segments: list[str] = []
     depth = 0
     current = ""
     for char in raw:
@@ -110,12 +119,12 @@ def license_parts(raw: str) -> list[str]:
         elif char == ")":
             depth = max(0, depth - 1)
         if char == "+" and depth == 0:
-            parts.append(current)
+            segments.append(current)
             current = ""
         else:
             current += char
-    parts.append(current)
-    return [part.strip() for part in parts if part.strip()]
+    segments.append(current)
+    return segments
 
 
 def split_value(raw: str) -> tuple[str, str]:
@@ -135,6 +144,96 @@ def split_value(raw: str) -> tuple[str, str]:
 
 
 FREE_TEXT = "free_text"
+
+
+def is_license_key(key: str) -> bool:
+    """Whether a recorded `components` key carries a license.
+
+    Five keys in the corpus do — `license`, `model-license`, `repo-license`,
+    `license-terms`, `per-dataset-licenses` — and three of them are named in some ladder's
+    `license_tier.reads`. The substring test covers all five and any future spelling,
+    which matters because the alternative is a hardcoded list that a new key silently
+    falls off, landing a license back in the unstructured shape.
+
+    All five take the structured part list, not just the three a ladder reads. One shape
+    for a recorded license wherever it appears; a reader should never have to know which
+    keys a recipe happens to consult to know what shape the value is in.
+    """
+    return "license" in key.lower()
+
+
+def render_license_part(part: dict) -> str:
+    """One recorded license part back as the text it was cut from.
+
+    `raw` wins where it is present, for the same reason it does on a dimension entry: the
+    `{name, detail}` split cannot reproduce a clause whose prose runs past the closing
+    paren (`Apache-2.0(OSI) for the framework`) or whose comma is a separator rather than
+    a value boundary (`Proprietary, proprietary service`).
+    """
+    if "raw" in part:
+        return part["raw"]
+    detail = part.get("detail")
+    return f"{part['name']}({detail})" if detail else part["name"]
+
+
+def license_part(segment: str) -> dict:
+    """One verbatim segment as `{name, detail?, raw?}`.
+
+    `name` is the bare license as recorded — `code `/`model ` prefixes and `assumed-`
+    included. Those are reading rules (`normalize_license` applies them), not recording
+    rules, and stripping them here would turn re-derivable evidence into a conclusion.
+
+    `raw` is the segment VERBATIM, padding included, for the segments `{name, detail}`
+    cannot reproduce. Padding is part of that: `internlm` writes its join as ` + `, and
+    since `recompose` joins on a bare `+` the spaces have to be carried by the segments
+    either side or the record recomposes one byte off what its file says.
+    """
+    bare, detail = split_value(segment.strip())
+    part: dict = {"name": bare}
+    if detail:
+        part["detail"] = detail
+    if render_license_part(part) != segment:
+        part["raw"] = segment
+    return part
+
+
+def license_entry(value: str) -> list[dict]:
+    """A recorded license clause as the list of parts a ladder resolves.
+
+    The mechanical split, applied once when the clause is structured. A curator who
+    recorded a compound-looking string that is genuinely ONE declared name overrides this
+    by hand, to a single-element list — which is the whole point of structuring: the
+    intent lives in the data rather than being re-inferred from a `+` on every read.
+    """
+    return [license_part(segment) for segment in license_segments(value)]
+
+
+def render_entry(entry: dict | list) -> str:
+    """One structured `components` entry back as its raw clause.
+
+    Both shapes: a license is a list of parts joined on `+`, anything else is the
+    `{value, detail?, raw?}` mapping.
+    """
+    if isinstance(entry, list):
+        return "+".join(render_license_part(part) for part in entry)
+    if "raw" in entry:
+        return entry["raw"]
+    detail = entry.get("detail")
+    return f"{entry['value']}({detail})" if detail else entry["value"]
+
+
+def license_parts_of(entry: object) -> list[dict]:
+    """The parts a ladder resolves, from whatever shape the entry is in.
+
+    A list is already parts. A mapping is an unmigrated license — the gate in
+    `check_components` rejects one, so this is for tools and tests rather than the corpus,
+    and it structures the recomposed clause rather than growing a second splitter.
+    """
+    if isinstance(entry, list):
+        return entry
+    if isinstance(entry, dict):
+        return license_entry(render_entry(entry))
+    return []
 
 
 def _clauses(text: str) -> list[str]:
@@ -165,6 +264,9 @@ def _clauses(text: str) -> list[str]:
 def structure(text: str) -> dict:
     """The flat `k:v;k:v` string as a mapping of key -> {value, detail?, raw?}.
 
+    A license key takes the other shape — a LIST of `{name, detail?, raw?}` parts, one per
+    `+`-joined segment. This is the only place that split runs.
+
     `raw` appears only when `f"{value}({detail})"` does not reproduce the clause
     byte-for-byte. 155 entries on 81 products need one, in three shapes: text after the
     closing paren ('Apache-2.0(OSI) for the framework'), a comma that is a list separator
@@ -185,6 +287,9 @@ def structure(text: str) -> dict:
             continue
         key, value = clause.split(":", 1)
         key, value = key.strip(), value.strip()
+        if is_license_key(key):
+            out[key] = license_entry(value)
+            continue
         bare, detail = split_value(value)
         entry: dict = {"value": bare}
         if detail:
@@ -203,16 +308,7 @@ def recompose(mapping: dict) -> dict[str, str]:
     This is the join that makes the migration score-neutral: every reader keeps seeing the
     exact strings it saw before the shape changed.
     """
-    out: dict[str, str] = {}
-    for key, entry in mapping.items():
-        if key == FREE_TEXT:
-            continue
-        if "raw" in entry:
-            out[key] = entry["raw"]
-            continue
-        detail = entry.get("detail")
-        out[key] = f"{entry['value']}({detail})" if detail else entry["value"]
-    return out
+    return {key: render_entry(entry) for key, entry in mapping.items() if key != FREE_TEXT}
 
 
 def components_of(openness: dict) -> dict[str, str]:
@@ -225,6 +321,19 @@ def components_of(openness: dict) -> dict[str, str]:
     if isinstance(components, dict):
         return recompose(components)
     return split_components(components or "")
+
+
+def structured_components_of(openness: dict) -> dict:
+    """The components as the structured mapping, from either shape.
+
+    The counterpart to `components_of` for the one reader that needs structure rather than
+    a clause: license resolution, which consumes recorded parts. A string-shaped record is
+    structured on the way past, so there is still exactly one splitter.
+    """
+    components = (openness or {}).get("components")
+    if isinstance(components, dict):
+        return components
+    return structure(components or "")
 
 
 def components_string(openness: dict) -> str:
@@ -270,11 +379,11 @@ def recorded_license_aliases() -> dict[str, str]:
 
 
 def normalize_license(raw: str) -> str:
-    """Reduce ONE recorded license to the name the tier examples are written in.
+    """Reduce ONE recorded license NAME to the spelling the tier examples use.
 
-    Runs on a single part, after `license_parts` has split a compound. Three
-    mechanical steps, all spelled out in the recipe's `normalization` list:
-      * the annotation is dropped — `Apache-2.0(code, OSI)` is Apache-2.0;
+    Runs on a part's `name`, which the record already carries bare — the annotation is
+    `detail` and no reader has to cut it off. Two mechanical steps, both spelled out in
+    the recipe's `normalization` list:
       * a `code ` or `model ` scope prefix is dropped, because the scope is which
         artifact the license covers, not a different license;
       * `assumed-Modified-MIT` — the `assumed-` prefix marks confidence, not a
@@ -284,16 +393,19 @@ def normalize_license(raw: str) -> str:
     name. Applied last, so it sees the value after the mechanical steps rather
     than having to enumerate every prefixed variant.
 
+    It does NOT truncate. It used to open with `head`, which cut at the first `(` or `,`;
+    on a structured name there is nothing to cut, and a name that still contains one is a
+    recording error that should abstain rather than resolve on its first token.
+
     The `code X + model Y` rule that used to live here — the MODEL license governs —
-    is now a consequence rather than a special case: both halves resolve and the most
+    is now a consequence rather than a special case: both parts resolve and the most
     restrictive wins, and a weights license is the restrictive half in every recorded
     instance. Where it would not be, the old rule was wrong anyway: a permissive
     weights license does not buy back a restrictive code license.
 
     Purely mechanical. Anything needing judgment is left alone to be flagged.
     """
-    value = head(raw)
-    value = re.sub(r"(?i)^\s*(code|model)\s+", "", value.strip()).strip()
+    value = re.sub(r"(?i)^\s*(code|model)\s+", "", raw.strip()).strip()
     value = re.sub(r"(?i)^assumed-", "", value).strip()
     return recorded_license_aliases().get(value.lower(), value)
 
@@ -321,30 +433,27 @@ def _tier_of(needle: str, tiers: dict) -> str | None:
     return None
 
 
-def license_tier(raw: str, recipe: dict) -> str | None:
-    """Map a license string onto a tier from the recipe's own examples.
+def license_tier(parts: list[dict], recipe: dict) -> str | None:
+    """Map the recorded license parts onto a tier from the recipe's own examples.
 
-    A compound license resolves on ALL its parts, most restrictive governing. That is
-    what `docs/guides/identity.md` already says openness does across a release's SKUs —
-    "a product is as open as the most restrictive license you must accept to use it" —
-    and a `+` in a recorded value is that same fact written on one line. Before this,
-    resolution truncated at the first `(` or `,` and so read only the first half:
-    `internlm` records Apache-2.0 code plus a custom application-gated weights license
-    and resolved as `osi`, never seeing the license that actually governs the weights.
+    Every part is resolved and the most restrictive governs. That is what
+    `docs/guides/identity.md` already says openness does across a release's SKUs — "a
+    product is as open as the most restrictive license you must accept to use it" — and a
+    product recording two licenses is that same fact written on one axis.
 
-    Two things this deliberately does not do:
+    It takes PARTS, not a string, and that is the whole design. There is no split here and
+    no whole-value pre-check: the curator recorded how many licenses there are, so a
+    compound-looking phrase that is really one declared name — `follows mC4 + OSCAR-2301
+    terms`, where neither operand is a license — arrives as a single part and resolves as
+    the one thing it is. Inferring that from punctuation is what needed the pre-check, and
+    what made this rubric expensive to state twice: `build/serialize_rubric.py` published
+    the same values through a splitter that cut at the first `(` and scored two products
+    differently from the repo.
 
-      * It does not skip a part it cannot map. Every part must resolve or the whole
-        value abstains, because an unmapped part can only ever be MORE restrictive than
-        the tier the mapped parts reached — ignoring it is exactly how partial coverage
-        overstates openness.
-      * It does not decompose a compound the recipe declared as a single name. The
-        whole, untruncated value is looked up first, so a phrase whose `+` is English
-        rather than a join — `follows mC4 + OSCAR-2301 terms`, where neither operand is
-        a license — resolves as the one thing the curator recorded. A compound whose
-        operands ARE license names does not belong in a tier's examples: it is a
-        per-product override, and decomposition handles it once each operand is
-        declared on its own.
+    One thing this deliberately does not do: skip a part it cannot map. Every part must
+    resolve or the whole value abstains, because an unmapped part can only ever be MORE
+    restrictive than the tier the mapped parts reached — ignoring it is exactly how
+    partial coverage overstates openness.
 
     Returns None when the license is unmapped, which is a finding rather than an
     error — an unmapped license means the rubric has not yet been told how to
@@ -354,13 +463,9 @@ def license_tier(raw: str, recipe: dict) -> str | None:
     if not tiers:
         return None
 
-    declared = _tier_of(
-        recorded_license_aliases().get(raw.strip().lower(), raw.strip()).lower(), tiers
-    )
-    if declared is not None:
-        return declared
-
-    resolved = [_tier_of(normalize_license(part).lower(), tiers) for part in license_parts(raw)]
+    resolved = [
+        _tier_of(normalize_license(part.get("name", "")).lower(), tiers) for part in parts
+    ]
     if not resolved or any(tier is None for tier in resolved):
         return None
     rank = tier_rank(tiers)
@@ -533,8 +638,12 @@ class Outcome(NamedTuple):
     blocked_on_tier: bool
 
 
-def score_openness(recipe: dict, components: dict[str, str]) -> Outcome:
-    """Replay one ladder against one product's recorded components.
+def score_openness(recipe: dict, openness: dict) -> Outcome:
+    """Replay one ladder against one product's recorded openness axis.
+
+    Takes the axis BLOCK rather than the recomposed clause dict it used to take, because
+    the license is resolved from its recorded parts and a clause dict has thrown that
+    structure away. Every caller had the block in hand already.
 
     The tier is resolved eagerly for REPORTING — `tier is None` on a product that still
     scores is what `check_recipe` counts and names — but it is only ever REQUIRED by
@@ -547,14 +656,17 @@ def score_openness(recipe: dict, components: dict[str, str]) -> Outcome:
     `license_tier` condition with no declared tiers, so such a ladder cannot have a rung
     that needs one.
     """
+    components = components_of(openness)
     has_tiers = bool(((recipe.get("openness") or {}).get("license_tier") or {}).get("values"))
     raw_license = ""
     tier = None
     if has_tiers:
-        raw_license = next(
-            (components[key] for key in license_read_keys(recipe) if components.get(key)), ""
-        )
-        tier = license_tier(raw_license, recipe)
+        # The key is chosen once and both the clause and the parts come from it. Choosing
+        # twice is how the reported license and the resolved one could name different keys.
+        key = next((key for key in license_read_keys(recipe) if components.get(key)), None)
+        if key is not None:
+            raw_license = components[key]
+            tier = license_tier(license_parts_of(structured_components_of(openness).get(key)), recipe)
 
     # Facts come from the dimensions the recipe DECLARES, not a fixed list. The model
     # categories ask about weights/data/code; software categories ask whether the source is
@@ -652,7 +764,7 @@ def check_category(slug: str, verbose: bool) -> CategoryReport:
         # zero rows and only requires `ordered_by` above one tier. Both allowances change
         # shared resolution semantics, so the warehouse mirror in
         # `currentai.scores.openness_computed` needs them too.
-        outcome = score_openness(recipe, components)
+        outcome = score_openness(recipe, openness)
         facts, tier, has_tiers = outcome.facts, outcome.tier, outcome.has_tiers
         if outcome.blocked_on_tier:
             problems.append(

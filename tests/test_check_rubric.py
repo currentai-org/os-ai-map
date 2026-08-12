@@ -21,6 +21,7 @@ from build.check_rubric import (
     ROOT,
     check_category,
     dimension_value,
+    license_entry,
     license_tier,
     normalize_license,
     recorded_license_aliases,
@@ -169,22 +170,30 @@ class TestRecordedLicenseAliases:
         assert normalize_license("model glm-4") == "GLM-4-License"
 
     def test_alias_applies_across_a_compound_split(self):
-        """The compound itself is `license_tier`'s job. What used to be a special case -
-        `code X + model Y`, the model license governs - is now a consequence of resolving
-        both halves and keeping the more restrictive."""
-        assert license_tier("code MIT + model glm-4", RECIPE) == "use_restricted"
+        """What used to be a special case - `code X + model Y`, the model license governs -
+        is now a consequence of resolving both parts and keeping the more restrictive."""
+        assert license_tier(license_entry("code MIT + model glm-4"), RECIPE) == "use_restricted"
+
+    def test_a_name_is_never_truncated(self):
+        """`normalize_license` used to open with `head`, which cut at the first `(` or `,`.
+        A structured `name` is already bare, so the cut had nothing left to do and every
+        remaining case for it was a recording error resolving on its first token."""
+        assert normalize_license("MIT(code)") == "MIT(code)"
+        assert normalize_license("Apache-2.0, and others") == "Apache-2.0, and others"
 
     def test_canonical_names_pass_through_untouched(self):
         assert normalize_license("Apache-2.0") == "Apache-2.0"
 
     def test_an_aliased_name_reaches_a_tier(self):
         """The whole point: the spelling must not cost the product its tier."""
-        assert license_tier("Gemma-Terms-of-Use(custom,non-OSI)", RECIPE) == "use_restricted"
+        assert license_tier(license_entry("Gemma-Terms-of-Use(custom,non-OSI)"), RECIPE) == (
+            "use_restricted"
+        )
 
     def test_an_unaliased_unknown_license_still_abstains(self):
         """Aliases resolve names, never tiers. An unknown license must keep
         abstaining so it shows up as a finding rather than a guess."""
-        assert license_tier("Some-New-Vendor-License", RECIPE) is None
+        assert license_tier(license_entry("Some-New-Vendor-License"), RECIPE) is None
 
     def test_no_alias_maps_onto_a_different_canonical_name(self):
         """An alias whose target is itself an alias key would make resolution
@@ -204,32 +213,43 @@ class TestCompoundLicense:
     """
 
     def test_the_restrictive_half_governs_whichever_side_it_is_on(self):
-        assert license_tier("MIT(code)+Gemma-License(weights)", RECIPE) == "use_restricted"
-        assert license_tier("Gemma-License(weights)+MIT(code)", RECIPE) == "use_restricted"
+        assert license_tier(license_entry("MIT(code)+Gemma-License(weights)"), RECIPE) == (
+            "use_restricted"
+        )
+        assert license_tier(license_entry("Gemma-License(weights)+MIT(code)"), RECIPE) == (
+            "use_restricted"
+        )
 
     def test_all_permissive_parts_stay_permissive(self):
-        assert license_tier("Apache-2.0(core)+MIT(SDKs)", RECIPE) == "osi"
+        assert license_tier(license_entry("Apache-2.0(core)+MIT(SDKs)"), RECIPE) == "osi"
 
     def test_a_part_is_split_on_plus_only_never_on_a_comma(self):
         """Every depth-zero comma in the corpus trails prose after a single license -
         `Proprietary, proprietary service`. Treating one as a separator would invent a
         second license out of the annotation."""
-        assert license_tier("MIT(client)+Gemma-License(weights),both-published", RECIPE) == (
-            "use_restricted"
-        )
+        assert license_tier(
+            license_entry("MIT(client)+Gemma-License(weights),both-published"), RECIPE
+        ) == "use_restricted"
 
     def test_a_plus_inside_an_annotation_is_not_a_separator(self):
-        assert license_tier("MIT(bundles A + B)", RECIPE) == "osi"
+        assert license_tier(license_entry("MIT(bundles A + B)"), RECIPE) == "osi"
 
     def test_an_unmapped_part_abstains_rather_than_being_skipped(self):
         """The whole point. An unmapped part can only be MORE restrictive than the tier
         the mapped parts reached, so ignoring it publishes an overstatement."""
-        assert license_tier("Apache-2.0(code)+Some-New-Vendor-License(weights)", RECIPE) is None
+        assert license_tier(
+            license_entry("Apache-2.0(code)+Some-New-Vendor-License(weights)"), RECIPE
+        ) is None
 
-    def test_a_declared_compound_is_not_decomposed(self):
+    def test_a_declared_compound_is_recorded_as_one_part(self):
         """A recipe may declare a compound as one name - `follows mC4 + OSCAR-2301 terms`,
-        where the `+` is English joining two CORPUS names and neither operand is a
-        license. The whole, untruncated value is looked up before any split."""
+        where the `+` is English joining two CORPUS names and neither operand is a license.
+
+        `license_tier` has no whole-value pre-check to catch that any more, and does not
+        need one: the curator records ONE part, and one part is what resolves. The intent
+        is in the data instead of being re-inferred from punctuation on every read, which
+        is what let the repo and the warehouse disagree about the same value.
+        """
         recipe = {
             "openness": {
                 "license_tier": {
@@ -240,13 +260,29 @@ class TestCompoundLicense:
                 }
             }
         }
-        assert license_tier("follows mC4 + OSCAR-2301 terms", recipe) == "deferred"
+        assert license_tier([{"name": "follows mC4 + OSCAR-2301 terms"}], recipe) == "deferred"
+
+    def test_the_same_phrase_split_into_parts_abstains(self):
+        """The other half of the contract, and the reason `culturax` is recorded by hand.
+        Mechanically structured, the phrase becomes two parts that name no license, and
+        every part must resolve or the value abstains."""
+        recipe = {
+            "openness": {
+                "license_tier": {
+                    "values": {
+                        "osi": {"examples": ["MIT"]},
+                        "deferred": {"examples": ["follows mC4 + OSCAR-2301 terms"]},
+                    }
+                }
+            }
+        }
+        assert license_tier(license_entry("follows mC4 + OSCAR-2301 terms"), recipe) is None
 
     def test_a_single_license_is_unaffected(self):
-        assert license_tier("Apache-2.0(OSI, see LICENSE)", RECIPE) == "osi"
+        assert license_tier(license_entry("Apache-2.0(OSI, see LICENSE)"), RECIPE) == "osi"
 
     def test_a_ladder_with_no_tiers_still_abstains(self):
-        assert license_tier("Apache-2.0", {"openness": {}}) is None
+        assert license_tier(license_entry("Apache-2.0"), {"openness": {}}) is None
 
 
 class TestRealCategories:
