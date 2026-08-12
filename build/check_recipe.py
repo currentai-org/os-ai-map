@@ -361,6 +361,77 @@ def stale_deferrals(
     return problems
 
 
+def deferral_reasons_name_the_real_blocker(
+    slug: str, variants: dict, product_types: dict[str, str], deferrals: dict
+) -> list[str]:
+    """Does a deferral's stated cause match the one the ladder actually abstains on?
+
+    A deferral reason is hand-written prose and nothing verified it, so the queue that drives
+    the work could lie about why the work exists. Roughly six of twenty reasons examined
+    closely across two sessions misdescribed their own cause, and one nearly produced a wrong
+    ruling: `arduino-uno-q`'s reason claimed it was held at 3 for a proprietary SoC, which is
+    a reason the hardware ladder never applies — every board in that category runs on
+    proprietary silicon, so a cap on it would flatten all twenty. The reason was invented
+    after the fact to explain a number.
+
+    `model-context-protocol` was the same shape one session later. Its reason said the product
+    was blocked on a rubric ruling about non-OSI licenses. It was actually blocked on having
+    recorded a DOCUMENTATION license inside the `license` compound, which `autogen` records
+    under a `docs:` key the ladder does not read. Nobody had compared the two, and the reason
+    read plausibly enough that it survived several reviews.
+
+    So this replays the ladder and requires the prose to mention what actually stopped it.
+    There are exactly three ways a walk fails to produce a score, and each has a token the
+    reason has to contain:
+
+      * blocked ON a tier — a rung tests `license_tier` and nothing resolved;
+      * a tier resolved but no rung consumes it, which is the `unstated` case;
+      * a declared dimension is unanswered, so no rung's conditions are met.
+
+    Matching is deliberately loose — a substring, case-folded. The goal is to catch a reason
+    describing a DIFFERENT mechanism, not to dictate phrasing. A reason that names the real
+    blocker and then argues at length about what should happen next still passes, which is
+    what the good ones already do.
+    """
+    problems = []
+    for product, block in sorted(deferrals.items()):
+        path = ROOT / "sources" / "scores" / f"{product}.yaml"
+        if not path.exists():
+            continue
+        recipe, _ = recipe_for(variants, product_types.get(product, ""))
+        if recipe is None:
+            continue
+        because = str((block or {}).get("because") or "").strip().lower()
+        if not because:
+            continue  # the empty-reason check owns this one
+
+        outcome = score_openness(recipe, (yaml.safe_load(path.read_text()) or {}).get("openness") or {})
+        if outcome.result is not None:
+            continue  # stale_deferrals owns this one
+
+        if outcome.blocked_on_tier:
+            expected, described = "license tier", ("tier" in because or "license" in because)
+        elif outcome.tier is not None:
+            expected = f"tier {outcome.tier!r}, which no rung consumes"
+            described = outcome.tier.lower() in because or "rung" in because or "tier" in because
+        else:
+            unanswered = [name for name, value in outcome.facts.items() if not value]
+            expected = f"unanswered dimension(s) {unanswered}"
+            described = any(
+                name.lower() in because or name.replace("_", "-").lower() in because
+                for name in unanswered
+            )
+
+        if not described:
+            problems.append(
+                f"category '{slug}' defers '{product}' with a reason that does not name what "
+                f"the ladder actually abstains on: {expected}. A deferral queue drives the "
+                f"work, so a reason that describes the wrong mechanism sends somebody at the "
+                f"wrong fix."
+            )
+    return problems
+
+
 def check_one(slug: str, verbose: bool) -> tuple[list[str], list[str]]:
     """Check one category. Returns (failures, report_lines)."""
     category = yaml.safe_load(
@@ -446,6 +517,9 @@ def check_one(slug: str, verbose: bool) -> tuple[list[str], list[str]]:
                 f"honest state; silence is not."
             )
     failures += stale_deferrals(slug, variants, product_types, deferred)
+    failures += deferral_reasons_name_the_real_blocker(
+        slug, variants, product_types, (category.get("scoring_recipe") or {}).get("deferred") or {}
+    )
 
     lines = [
         f"  dimensions declared ...... {dimension_count:<4}"
