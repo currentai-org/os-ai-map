@@ -4,9 +4,9 @@ openness:
   class: open
   components:
     license:
-      value: undeclared on HF dataset card
-      detail: underlying SWE-bench harness repo is MIT
-      raw: undeclared on HF dataset card (underlying SWE-bench harness repo is MIT)
+      value: MIT
+      detail: SWE-bench repository states MIT over its code and data; the HF card for Verified still declares
+        no license field
     redistributability:
       value: full
       detail: downloadable parquet, ungated
@@ -16,19 +16,23 @@ openness:
     held-out:
       value: no hidden split in Verified itself
       detail: the public 500-instance set is fully released; gold patches + tests included
-      raw: no hidden split in Verified itself (the public 500-instance set is fully released; gold patches
-        + tests included)
     data-source:
       value: real GitHub PR/issue pairs
   confidence: medium
-  note: Effectively open (ungated, downloadable, full gold patches and tests, datasheet present) but
-    the HF dataset card declares NO explicit license field, so the data-license class is inferred from
-    the MIT harness repo and public redistribution rather than a stated data license. Scored 4 not 5 on
-    that ambiguity. (Distinct from SWE-bench's broader/hidden variants which can carry held-out splits.)
-  raw: license:undeclared on HF dataset card (underlying SWE-bench harness repo is MIT);redistributability:full(downloadable
-    parquet, ungated);datasheet:yes(dataset card + arXiv:2310.06770);held-out:no hidden split in Verified
-    itself (the public 500-instance set is fully released; gold patches + tests included);data-source:real
-    GitHub PR/issue pairs
+  note: Effectively open - ungated, downloadable, full gold patches and tests, datasheet present. The
+    HF card for Verified declares no license field, which is what the recorded 4 rests on, but a card
+    read on 2026-08-12 found the canonical SWE-bench repository stating MIT over the artifact rather
+    than only over the harness. Its README calls the repository "Code and data for the following works",
+    lists SWE-bench among them, and its "Citation & license" section says "MIT license", with the
+    citation block directly beneath headed "For SWE-bench (Verified)". Verified is a 500-instance human-validated
+    subset of that same test set, released with OpenAI Preparedness. On that reading the license is
+    stated rather than inferred and the ladder computes 5; the recorded 4 has been left alone and the
+    disagreement is carried as a deferral. (Distinct from SWE-bench's broader/hidden variants which
+    can carry held-out splits.)
+  raw: license:MIT(SWE-bench repository states MIT over its code and data; the HF card for Verified still
+    declares no license field);redistributability:full(downloadable parquet, ungated);datasheet:yes(dataset
+    card + arXiv:2310.06770);held-out:no hidden split in Verified itself(the public 500-instance set is
+    fully released; gold patches + tests included);data-source:real GitHub PR/issue pairs
   sources:
   - url: https://huggingface.co/datasets/princeton-nlp/SWE-bench_Verified
     shows: 500 instances, ~2.1 MB, not gated, dataset card present, gold patch + FAIL_TO_PASS/PASS_TO_PASS
@@ -40,6 +44,31 @@ openness:
   - url: https://huggingface.co/datasets/princeton-nlp/SWE-bench_Verified/blob/main/README.md
     shows: dataset card metadata has no license field declared
     accessed: '2026-06-04'
+  - url: https://huggingface.co/datasets/princeton-nlp/SWE-bench_Verified/raw/main/README.md
+    shows: card front matter carries dataset_info, splits and configs and no `license:` key; body describes
+      the 500 human-validated instances and the swebench.com leaderboard. Re-read on 2026-08-12 and
+      still unlicensed at source. The repository holds only .gitattributes, README.md and one parquet
+      file, so there is no LICENSE file alongside the data either
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 6edb58b1b2c44ce858426c4ebc90077827713b75cebc243661e4433c81fd57f5
+    establishes: [license]
+  - url: https://raw.githubusercontent.com/SWE-bench/SWE-bench/main/README.md
+    shows: '"Code and data for the following works:" listing SWE-bench and SWE-bench Multimodal; the
+      "Citation & license" section reads "MIT license. Check `LICENSE.md`." and the citation immediately
+      under it is headed "For SWE-bench (Verified)"; the news entry for Aug. 13, 2024 introduces Verified
+      as a 500-problem subset produced with OpenAI Preparedness'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 56438c6b147990c0fd93d81fefcecaa94c909d379037487a49d48ac4990a4573
+    establishes: [license]
+  - url: https://raw.githubusercontent.com/SWE-bench/SWE-bench/main/LICENSE
+    shows: 'MIT License, copyright 2023 the SWE-bench authors. Note the README points at `LICENSE.md`,
+      which 404s; the file is `LICENSE`'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 2bd2e08df7147f67a69b42c10efae09bd4bf119df397371036187d5dd1b02f57
+    establishes: [license]
 adoption:
   level: 4
   reach: 1M-10M

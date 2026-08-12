@@ -10,13 +10,53 @@ openness:
       detail: ground_truth released
     license:
       value: Apache-2.0/MIT
+      detail: repo LICENSE is Apache-2.0, carried over from FastChat; DATASHEET.md states the benchmark
+        suite is distributed under the Apache License 2.0
+    datasheet:
+      value: present
+      detail: docs/DATASHEET.md, a full datasheets-for-datasets questionnaire covering motivation, composition,
+        collection and distribution
+    access:
+      value: ungated
+      detail: HF datasets download without a gate
   confidence: high
   note: All questions, answers, and code are released openly; rotation is for freshness, not access control.
-  raw: questions:public;answers:public(ground_truth released);license:Apache-2.0/MIT
+    The documentation is a full datasheets-for-datasets questionnaire in the repository rather than a
+    Hugging Face card, and it states the distribution license outright.
+  raw: questions:public;answers:public(ground_truth released);license:Apache-2.0/MIT(repo LICENSE is Apache-2.0,
+    carried over from FastChat; DATASHEET.md states the benchmark suite is distributed under the Apache
+    License 2.0);datasheet:present(docs/DATASHEET.md, a full datasheets-for-datasets questionnaire covering
+    motivation, composition, collection and distribution);access:ungated(HF datasets download without a
+    gate)
+  last_verified: '2026-08-12'
   sources:
   - url: https://huggingface.co/datasets/livebench/reasoning
     shows: public ground_truth column, release/removal dates
     accessed: '2026-06-17'
+  - url: https://huggingface.co/datasets/livebench/reasoning/raw/main/README.md
+    shows: card describing the benchmark and linking the paper, leaderboard and datasheet; the declared
+      features include a `ground_truth` string column alongside `turns`, so the answers ship with the
+      questions; no gate and no license field in the card metadata
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 88c6f322d82d166840b4f622ea07b06a77d50ffb1f6b7c2eec08f91dee786440
+    establishes: [access, answers]
+  - url: https://raw.githubusercontent.com/LiveBench/LiveBench/main/docs/DATASHEET.md
+    shows: 'the datasheets-for-datasets questionnaire, covering motivation, composition, collection,
+      preprocessing, uses, distribution and maintenance; under "When will the dataset be released/first
+      distributed? What license (if any) is it distributed under?": "The benchmark suite is public as
+      of June 12, 2024, distributed under the Apache License 2.0."'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 8f5036b7330c01de1a9cd5a9f02a0e6f5d359bd08b210d7dde0635731fbce1f4
+    establishes: [datasheet, license]
+  - url: https://raw.githubusercontent.com/LiveBench/LiveBench/main/LICENSE
+    shows: Apache License 2.0, prefaced "The original LICENSE from https://github.com/lm-sys/FastChat
+      is copied below"
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 8fb1d09632b9c03b426c87654d62c5d8fb953643e51e6866f3446401903005c3
+    establishes: [license]
 adoption:
   level: 4
   signal_type: usage_volume

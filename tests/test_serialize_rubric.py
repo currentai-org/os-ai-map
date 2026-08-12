@@ -804,9 +804,13 @@ def test_real_sources_serialize_without_errors():
         # `availability` and `documentation` dimensions those two normalize onto - and a
         # deferred product publishes none at all, so 5 x 5 is the whole of the move. The
         # promotion added no key to a product that was already computed, which is why
-        # benchmark_eval_data holds at 111: compar-ia-datasets got the same `dataset_card`
+        # benchmark_eval_data held at 111: compar-ia-datasets got the same `dataset_card`
         # key and stays deferred on its unrelated gate-vocabulary defect.
-        "training_synthetic_datasets": 194, "benchmark_eval_data": 111,
+        # 111 -> 125 when the card read closed mt-bench and livebench. Each recorded a
+        # license and an answer state and nothing else, and each gained a `datasheet` and an
+        # `access` key plus the `availability` and `documentation` dimensions they normalize
+        # onto - so both go from publishing nothing to publishing seven rows.
+        "training_synthetic_datasets": 194, "benchmark_eval_data": 125,
         # safeguards 90 -> 103 and training_synthetic_datasets 158 -> 164: the universal
         # license scale retired five deferrals, and a deferred product publishes no
         # openness evidence at all.
