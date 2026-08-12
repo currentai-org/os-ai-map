@@ -810,7 +810,12 @@ def test_real_sources_serialize_without_errors():
         # safeguards 90 -> 103 and training_synthetic_datasets 158 -> 164: the universal
         # license scale retired five deferrals, and a deferred product publishes no
         # openness evidence at all.
-        "safeguards": 103,
+        # safeguards 103 -> 117 when the four guardrail-model deferrals came off. Each of
+        # qwen3guard, granite-guardian, gpt-oss-safeguard and wildguard dropped from a
+        # recorded 4 to the 3 the ladder computes, and a product that no longer defers
+        # publishes its component keys. wildguard carries four of the fourteen rows because
+        # the read that settled it added `code:partial` to the three keys it already had.
+        "safeguards": 117,
         # 17 scored hardware products across the five recorded dimensions, less the keys
         # individual products do not record. No license row among them, by design -
         # `edge_hardware` is the only category whose ladder declares no `license_tier`.
