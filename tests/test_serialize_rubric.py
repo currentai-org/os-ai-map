@@ -746,7 +746,12 @@ def test_real_sources_serialize_without_errors():
         # ml_frameworks 80 -> 88 with the same sweep: pysyft and feluda were its only two
         # deferrals and both closed on a `core-gated:ungated` read, so the category now defers
         # nothing at all.
-        "finetuning_code": 133, "inference_code": 84, "ml_frameworks": 88,
+        # finetuning_code 133 -> 137 and inference_code 84 -> 89 when the last two conflicts in
+        # those categories were ruled on rather than re-read, on 2026-08-12. unsloth and
+        # aws-neuron each already recorded the deciding dimension and were publishing nothing
+        # because a deferred product publishes nothing; the score moved to what the ladder
+        # computes and the rows appeared.
+        "finetuning_code": 137, "inference_code": 89, "ml_frameworks": 88,
         # orchestration_agents rose by 3 when n8n's stale deferral was removed: a deferred
         # product publishes no openness evidence, and n8n had been deferred as "not recorded"
         # while recording everything the ladder needed. Then by 6 more (140 -> 146) when
@@ -791,7 +796,12 @@ def test_real_sources_serialize_without_errors():
         # count is the check on that. The three bare-`gated` products in the category were
         # already computed: agenta and langwatch kept their 4 with the gate now evidenced, and
         # helicone moved 4 -> 5 on `core-gated:ungated`, none of which adds or removes a row.
-        "orchestration_agents": 207, "telemetry_observability": 99, "ui_api": 184,
+        #
+        # telemetry_observability 99 -> 112 when the last three came off on 2026-08-12. Each
+        # publishes its rows for the first time: agentops five (license, source, commercial,
+        # core-gated and the normalized core_gated), langtrace four and weave four. The
+        # category now defers nothing.
+        "orchestration_agents": 207, "telemetry_observability": 112, "ui_api": 184,
         # training_synthetic_datasets is unchanged at 158 across the ladder widening, which
         # is the check that mattered: benchmark_eval_data's new dimensions and rungs did not
         # disturb the category the ladder was derived from.

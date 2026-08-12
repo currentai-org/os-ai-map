@@ -160,10 +160,23 @@ def test_local_scores_matches_check_rubrics_split():
     is real, the WildGuardMix corpus is public, but `allenai/wildguard` ships nine files with
     no trainer and no training config, its companion Safety-Eval repo is an evaluation suite,
     and the card sends readers to the paper appendix for training details. That is
-    `code:partial`, the 4-rung still fails, and open data on its own does not carry it."""
+    `code:partial`, the 4-rung still fails, and open data on its own does not carry it.
+
+    Then 448/24 -> 453/19 when the five conflicts the sweep had left open were ruled on
+    rather than re-read, on 2026-08-12. Two were factual errors in the record: agentops
+    carried the root MIT that covers only its SDK while app/LICENSE is Elastic 2.0, and
+    langtrace spelled its license `app=AGPL-3.0`, a scope prefix matching no tier example
+    and so blocking every rung that tests one. One was a read recorded but not acted on:
+    weave's `source` said `public` while the read established `partial`. The other two
+    already computed a score the record disagreed with, and the record moved: unsloth
+    4/open_core on its recorded `core-gated:gated`, aws-neuron 2/source_available on its
+    recorded `source:partial`. Four of the five moved a published score, in both
+    directions. nemo-data-designer stayed deferred - both rungs it can reach test
+    core-gated, nobody has read what the NeMo Platform withholds from the published
+    library, and a value was not invented to close it."""
     computed, deferred = local_scores(None)
-    assert len(deferred) == 24
-    assert len(computed) == 448
+    assert len(deferred) == 19
+    assert len(computed) == 453
     assert not set(computed) & set(deferred)
     # Every one of the 410 reproduces today, so none should abstain.
     assert [key for key, value in computed.items() if value is None] == []

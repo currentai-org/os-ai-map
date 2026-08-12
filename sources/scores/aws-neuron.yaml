@@ -1,7 +1,7 @@
 product: aws-neuron
 openness:
-  score: 1
-  class: closed
+  score: 2
+  class: source_available
   components:
     license:
       value: mixed/proprietary-core
@@ -18,18 +18,17 @@ openness:
     hardware-lock:
       value: AWS-Inferentia/Trainium-only
   confidence: high
-  note: 'Headline inference path (Neuron Compiler + Neuron Runtime) has no open-source release anywhere
-    in AWS''s own OSS repository catalog; surrounding glue (kernel driver GPL-2.0, vLLM-for-Neuron, NKI
-    kernel library, MIT-0 samples) is open under various OSI licenses but does not make the engine open_source.
-    CONFLICT, left deferred: the sweep of 2026-08-11 recorded the missing `source` key and it reads `partial`,
-    not `closed`. software.yaml defines `closed` as "a managed service with no self-hostable implementation"
-    and Neuron is not a managed service -- the SDK installs and runs on the customer''s own EC2 instance
-    from proprietary packages. It defines `partial` as "a repo exists but the runtime does not ship - a
-    client, an SDK, or an issue tracker standing in for the engine", which is aws-neuron-sdk exactly: a
-    docs-and-issues repo whose compiler/ and neuron-runtime/ directories hold documentation rather than
-    source, alongside four genuinely open functional components. On that reading the ladder computes 2/source_available
-    against the recorded 1/closed, matching how `webcontainers` is already scored for the same shape. Neither
-    side was adjusted; a human decides which reading the map wants.'
+  note: '2/source_available on `source: partial`. software.yaml defines `closed` as a managed service with
+    no self-hostable implementation, and Neuron is not one - the SDK installs and runs on the customer''s
+    own EC2 instance, from proprietary packages. It defines `partial` as a repo existing while the runtime
+    does not ship, a client, an SDK or an issue tracker standing in for the engine, and aws-neuron-sdk is
+    that exactly: a docs-and-issues repo whose compiler/ and neuron-runtime/ directories hold documentation
+    rather than source. AWS''s own OSS catalog lists six public repositories and neither the Neuron Runtime
+    nor the Neuron Compiler is among them, while the kernel driver (GPL-2.0), the NKI kernel library, vLLM-for-Neuron
+    (Apache-2.0) and the MIT-0 samples do ship as source. The headline inference path is still closed, which
+    is why this is not an open rung; `webcontainers` is already scored 2/source_available for the same shape.
+    The license value `mixed/proprietary-core` maps to no tier, and none is needed: the partial-source rung
+    fires above every rung that tests one.'
   last_verified: '2026-08-11'
   raw: license:mixed/proprietary-core;source:partial(aws-neuron-sdk is a documentation and issue-tracker
     repo carrying no Runtime or Compiler source, while the kernel driver, NKI kernel library, vLLM-for-Neuron

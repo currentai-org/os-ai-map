@@ -1,36 +1,39 @@
 product: agentops
 openness:
-  score: 4
-  class: open_core
+  score: 2
+  class: source_available
   components:
     license:
-      value: MIT
-      detail: OSI, SDK
+      value: Elastic-License-2.0
+      detail: app/LICENSE, the AgentOps application
+      raw: Elastic-License-2.0(app/LICENSE, the AgentOps application)+MIT(OSI, root LICENSE, the agentops
+        SDK)
     source:
       value: public
       detail: SDK + self-hostable app dir
     commercial:
       value: app.agentops.ai-SaaS-dashboard-is-the-primary-product
+    core-gated:
+      value: ungated
+      detail: app/ ships the whole platform - api, dashboard, clickhouse, opentelemetry-collector, supabase,
+        deploy, landing and compose.yaml - with no ee/ or enterprise directory, no license-key check and
+        no premium flag
   confidence: medium
-  note: 'MIT SDK plus a self-hostable app, and the read on 2026-08-12 found the recorded license does not
-    describe the product. Left DEFERRED rather than closed, because the evidence does not reproduce the
-    4. What the read established, in order. (1) Nothing is withheld from the published source: app/ ships
-    the whole platform - api, dashboard, clickhouse, opentelemetry-collector, supabase, deploy, landing,
-    compose.yaml - and app/README.md walks through bringing it up on docker compose with a local ClickHouse.
-    There is no ee/ or enterprise directory, no license-key check and no premium flag anywhere in the tree,
-    so on the core_gated question alone this is `ungated`, which against the recorded MIT would compute
-    5/open_source, not 4. (2) But the app is not MIT. app/LICENSE is the Elastic License 2.0, added in the
-    "AgentOps OSS release" (#1190) on 2025-08-09, and it forbids providing the software "to third parties
-    as a hosted or managed service, where the service provides users with access to any substantial set
-    of the features or functionality of the software". That is this ladder''s competition_restricted tier
-    stated directly, and with source public it lands on the 2/source_available rung. The root MIT LICENSE
-    covers the agentops SDK. So the recorded `license: MIT(OSI, SDK)` is accurate about the SDK and silent
-    about the observability app, which is what the map scores under this slug. The vendor''s own README
-    makes the same slip, saying "The AgentOps app is open source under the MIT license" while app/LICENSE
-    says Elastic 2.0; the LICENSE file governs. Neither reading reaches 4 - `ungated` on the recorded MIT
-    gives 5, and the app''s actual license gives 2 - so the components are left untouched and this needs
-    a human to decide which SKU the slug is scored on.'
-  raw: license:MIT(OSI, SDK);source:public(SDK + self-hostable app dir);commercial:app.agentops.ai-SaaS-dashboard-is-the-primary-product
+  note: Scored on app/LICENSE, which is the Elastic License 2.0 and forbids providing the software to third
+    parties as a hosted or managed service. That is this ladder's competition_restricted tier stated directly,
+    and with the source published it lands on the 2/source_available rung. The root LICENSE is plain MIT
+    with no carve-out, so it governs the repository root where the agentops SDK lives and says nothing about
+    app/; both licenses are now recorded as a compound so the ladder applies its own most-restrictive rule
+    rather than reading only the first half. The record previously carried the root MIT alone, which described
+    the SDK and not the observability application this slug is scored on. Nothing is withheld for a paid
+    tier - app/ ships api, dashboard, ClickHouse, the OTel collector, Supabase, deploy and a compose file,
+    with no ee/ directory and no license key - so core-gated is now recorded as `ungated`, but the license
+    rung fires above any rung that reads it. The vendor's README calls the app MIT; app/LICENSE says Elastic
+    2.0, and the LICENSE file governs.
+  raw: license:Elastic-License-2.0(app/LICENSE, the AgentOps application)+MIT(OSI, root LICENSE, the agentops
+    SDK);source:public(SDK + self-hostable app dir);commercial:app.agentops.ai-SaaS-dashboard-is-the-primary-product;core-gated:ungated(app/
+    ships the whole platform - api, dashboard, clickhouse, opentelemetry-collector, supabase, deploy, landing
+    and compose.yaml - with no ee/ or enterprise directory, no license-key check and no premium flag)
   last_verified: '2026-08-12'
   sources:
   - url: https://github.com/AgentOps-AI/agentops
