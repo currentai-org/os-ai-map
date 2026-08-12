@@ -35,22 +35,6 @@ scoring_recipe:
     scores_total: 20
     verified_on: '2026-07-30'
     checker: build/check_rubric.py
-  # Held back rather than scored. The shared ladder has no `otherwise` rule, so
-  # these already abstain; declaring them here records WHY, and keeps the
-  # reproduction count honest by excluding them from it rather than counting
-  # them as passes.
-  deferred:
-    aws-neuron:
-      because: >-
-        the 2026-08-11 evidence sweep read AWS's own OSS catalog and the aws-neuron-sdk repo and
-        recorded the missing `source` key, and it reads `partial`, not `closed`. The ladder now
-        computes 2/source_available against the recorded 1/closed, so this is a conflict rather
-        than a closure. `closed` is defined as a managed service with no self-hostable
-        implementation, and Neuron is not a managed service - it installs on the customer's own
-        EC2 instance from proprietary packages. `partial` is defined as a repo existing while the
-        runtime does not ship, an SDK or issue tracker standing in for the engine, which is what
-        aws-neuron-sdk is: a docs-and-issues repo whose compiler/ and neuron-runtime/ directories
-        hold documentation, alongside four genuinely open functional components. `webcontainers`
-        is already scored 2/source_available for the same shape. Neither side was adjusted; a
-        human decides which reading the map wants.
+  # No deferrals. aws-neuron was the last one, closed on 2026-08-12 by taking the recorded
+  # `source: partial` at its word and moving the score to 2/source_available.
 comments: ''

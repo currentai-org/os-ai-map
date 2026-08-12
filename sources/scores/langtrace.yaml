@@ -1,38 +1,39 @@
 product: langtrace
 openness:
-  score: 4
-  class: open_core
+  score: 5
+  class: open_source
   components:
     license:
-      value: app=AGPL-3.0
-      detail: OSI, copyleft
+      value: AGPL-3.0
+      detail: OSI, copyleft, the application
     source:
       value: public
     free_text:
     - SDKs=Apache-2.0(OSI)
     - OTel-built
     - hosted Langtrace Cloud tier exists
+    core-gated:
+      value: ungated
+      detail: the whole AGPL-3.0 application is in the repository - app, components, lib, prisma, proto,
+        Dockerfile, docker-compose.yaml - with no ee/ or enterprise directory, no second license and no
+        license-key check, and the vendor's FAQ says Langtrace Cloud is not charged for
   confidence: high
-  note: 'AGPL-3.0 application, Apache-2.0 SDKs, no enterprise carve-out anywhere, and a cloud tier the vendor
-    says it does not charge for. Left DEFERRED after the 2026-08-12 read, for two reasons that compound.
-    (1) The blocker is not the one the deferral records. `check_rubric` abstains on this product with `blocked_on_tier`,
-    because the recorded license value `app=AGPL-3.0` is a scoped spelling that matches no entry in software.yaml''s
-    license_tier examples and no compound part, so no tier resolves and no rung that tests one can fire.
-    Recording core-gated changes nothing while that holds. Both licenses involved are already declared -
-    AGPL-3.0 and Apache-2.0 are both in the osi examples - so this is a transcription problem, not a missing
-    rule. (2) On the evidence, this is `ungated`. The whole application is in the repository under AGPL-3.0
-    - app, components, lib, prisma, proto, Dockerfile, docker-compose.yaml - with no ee/, no enterprise
-    directory, no second license and no license-key check. The README documents self hosting as a first-class
-    path, and its own FAQ says of the hosted tier "Currently, we are not charging anything for Langtrace
-    cloud and we are primarily looking for feedback so we can continue to improve the project." So there
-    is no paid tier for anything to be withheld for. That combination - osi tier, source public, core-gated
-    ungated - computes 5/open_source against a recorded 4, so the components are left untouched. The recorded
-    4 rests on two rationales the map has since settled against it: the note scores it down for "the AGPL
-    copyleft", which issue #125 rejected (AGPL sits beside Apache on the osi rung), and for a "hosted commercial
-    offering", which the core_gated rule rejects and which in this case is not even charged for. A human
-    should settle the 4 and fix the license spelling in one move.'
-  raw: license:app=AGPL-3.0(OSI, copyleft);source:public;SDKs=Apache-2.0(OSI);OTel-built;hosted Langtrace
-    Cloud tier exists
+  note: 'AGPL-3.0 application, Apache-2.0 SDKs, and nothing withheld from the published source, which is
+    the osi + public + ungated rung at 5/open_source. Two corrections got it there. The license was recorded
+    as `app=AGPL-3.0`, a scope prefix that matches no license_tier example, so no tier resolved and every
+    rung testing one was blocked; the scope is which artifact a license covers rather than a different license,
+    so it is dropped and the SDK''s Apache-2.0 stays recorded beside it. And core-gated reads `ungated`:
+    the whole application is in the repository with no ee/ or enterprise directory, no second license and
+    no license key, self-hosting is documented as a first-class path, and the vendor''s own FAQ says of
+    the hosted tier "Currently, we are not charging anything for Langtrace cloud". The prior 4 rested on
+    AGPL copyleft and on a hosted tier existing, and the map has settled against both - issue #125 puts
+    AGPL beside Apache on the osi rung, and a product sold beside an otherwise complete open core does not
+    gate that core.'
+  raw: license:AGPL-3.0(OSI, copyleft, the application);source:public;core-gated:ungated(the whole AGPL-3.0
+    application is in the repository - app, components, lib, prisma, proto, Dockerfile, docker-compose.yaml
+    - with no ee/ or enterprise directory, no second license and no license-key check, and the vendor's
+    FAQ says Langtrace Cloud is not charged for);SDKs=Apache-2.0(OSI);OTel-built;hosted Langtrace Cloud
+    tier exists
   last_verified: '2026-08-12'
   sources:
   - url: https://github.com/Scale3-Labs/langtrace

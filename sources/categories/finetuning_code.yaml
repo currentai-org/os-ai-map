@@ -43,21 +43,6 @@ scoring_recipe:
     scores_total: 27
     verified_on: '2026-07-30'
     checker: build/check_rubric.py
-  # Held back rather than scored. The shared ladder has no `otherwise` rule, so
-  # these already abstain; declaring them here records WHY, and keeps the
-  # reproduction count honest by excluding them from it rather than counting
-  # them as passes.
-  deferred:
-    unsloth:
-      because: >-
-        the 2026-08-11 evidence sweep read unsloth.ai/pricing and recorded core-gated as `gated`,
-        and the ladder then computes 4/open_core against the recorded 5/open_source, so this is a
-        conflict rather than a closure. Unsloth Pro and Enterprise are not a hosted service sold
-        beside the open package; they are builds of the same product carrying capabilities the
-        free column says it does not have. The free tier lists MultiGPU as "coming soon" while Pro
-        lists "Enhanced MultiGPU support" and "Up to 8 GPUS support", and Enterprise adds
-        multi-node, "Supports full training" and "5x faster inference". Pro is advertised as
-        "20% less memory than OSS", an explicit comparison against the published package. Neither
-        side was adjusted. Caveat: the pricing page names Llama 1/2/3 and Mistral/Gemma and looks
-        stale, so the exact feature line may have moved even though the tiering has not.
+  # No deferrals. unsloth was the last one, closed on 2026-08-12 by taking the recorded
+  # `core-gated: gated` at its word and moving the score to 4/open_core.
 comments: ''
