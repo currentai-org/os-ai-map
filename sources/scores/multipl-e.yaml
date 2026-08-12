@@ -7,35 +7,39 @@ openness:
       value: downloadable
       detail: HF parquet, 47 subsets
     license:
-    - name: MIT
-      detail: on HF dataset card
+    - name: BSD-3-Clause-with-ML-Restriction
+      detail: the nuprl/MultiPL-E repository LICENSE, whose clause 4 forbids using the contents as training
+        data for any machine learning model; the HF data artifact carries MIT
     datasheet:
       value: present
       detail: card documents prompts/doctests/tests/stop-tokens
     redistributable:
       value: 'yes'
       detail: HF
-    caveat:
-      value: GitHub repo LICENSE is a non-OSI 'BSD-3-Clause + no-ML-training' modified license
-      detail: conflicting with the MIT on the HF data artifact
-      raw: GitHub repo LICENSE is a non-OSI 'BSD-3-Clause + no-ML-training' modified license, conflicting
-        with the MIT on the HF data artifact
   confidence: medium
-  note: The scored artifact (HF dataset) is MIT and openly downloadable with a datasheet, open class.
-    But the source repo carries a modified BSD-3 with an explicit 'may not be used as training data for
-    ML' clause (non-OSI), a conflict worth flagging; scored on the data artifact's MIT terms, capped at
-    4 for the licensing inconsistency.
-  raw: data:downloadable(HF parquet, 47 subsets);license:MIT(on HF dataset card);datasheet:present(card
-    documents prompts/doctests/tests/stop-tokens);redistributable:yes(HF);caveat:GitHub repo LICENSE is
-    a non-OSI 'BSD-3-Clause + no-ML-training' modified license, conflicting with the MIT on the HF data
-    artifact
+  note: Where a repository license and a distribution-point license differ the repository license governs,
+    and nuprl/MultiPL-E ships a LICENSE headed "BSD 3-Clause License with Machine Learning Restriction"
+    whose clause 4 says "The contents of this repository may not be used as training data for any machine
+    learning model, including but not limited to neural networks." That is the license recorded here; the
+    MIT on the HF data artifact is the weaker statement of the two. It was previously recorded under a caveat
+    key no dimension reads, which left the ladder seeing clean MIT and computing 5/open. The dataset ladder
+    declares no tier for a license that permits redistribution while bounding what you may use the corpus
+    FOR, so the tier lookup abstains and the score stays where the curator put it rather than being invented.
+  raw: data:downloadable(HF parquet, 47 subsets);license:BSD-3-Clause-with-ML-Restriction(the nuprl/MultiPL-E
+    repository LICENSE, whose clause 4 forbids using the contents as training data for any machine learning
+    model; the HF data artifact carries MIT);datasheet:present(card documents prompts/doctests/tests/stop-tokens);redistributable:yes(HF)
   sources:
   - url: https://huggingface.co/datasets/nuprl/MultiPL-E
     shows: MIT license, 47 subsets across 22-23 languages, downloadable parquet, documented schema
     accessed: '2026-06-04'
   - url: https://github.com/nuprl/MultiPL-E/blob/main/LICENSE
-    shows: modified BSD-3-Clause with no-ML-training-data restriction (non-OSI)
-    accessed: '2026-06-04'
+    shows: LICENSE headed "BSD 3-Clause License with Machine Learning Restriction"; clause 4 forbids use
+      of the repository contents as training data for any machine learning model
+    accessed: '2026-08-12'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: 6891bf32c7df59f0665d45a22bc09224ed122394eae4404048e0e4c7e4bc2f23
 adoption:
   level: 3
   reach: 100K-1M

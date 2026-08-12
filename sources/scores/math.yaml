@@ -1,15 +1,18 @@
 product: math
 openness:
-  score: 2
-  class: gated
+  score: 1
+  class: closed
   components:
+    license:
+    - name: MIT
+      detail: declared
+    access:
+      value: closed
+      detail: canonical HF repo access-disabled under a DMCA takedown
     data:
       value: NOT downloadable from canonical HF repo
       detail: access disabled, DMCA takedown
       raw: NOT downloadable from canonical HF repo (access disabled, DMCA takedown)
-    license:
-    - name: MIT
-      detail: declared
     datasheet:
       value: present
       detail: card still documents schema
@@ -18,12 +21,15 @@ openness:
     free_text:
     - problems sourced from AMC/AIME competitions, takedown reflects unresolved rights
   confidence: medium
-  note: Declared MIT, but the canonical HF dataset is access-disabled under a DMCA takedown, so it is
-    not currently redistributable from the primary registry; scored gated/blocked rather than open. Mirrors
-    and eval harnesses still embed it, but the primary source is walled; revisit if the takedown is resolved.
-  raw: data:NOT downloadable from canonical HF repo (access disabled, DMCA takedown);license:MIT(declared);datasheet:present(card
-    still documents schema);redistributability:BLOCKED on the primary registry; problems sourced from AMC/AIME
-    competitions, takedown reflects unresolved rights
+  note: Declared MIT, but the canonical HF dataset is access-disabled under a DMCA takedown over AMC/AIME
+    problem rights, so the corpus is not distributed from its primary registry. The takedown was recorded
+    only as prose; it is now recorded as access:closed, which is the ladder rung for data that is not distributed
+    however it came to be that way, and that rung produces 1/closed rather than the 2/gated this record
+    carried. Mirrors and eval harnesses still embed the problems; revisit if the takedown is resolved.
+  raw: license:MIT(declared);access:closed(canonical HF repo access-disabled under a DMCA takedown);data:NOT
+    downloadable from canonical HF repo (access disabled, DMCA takedown);datasheet:present(card still documents
+    schema);redistributability:BLOCKED on the primary registry;problems sourced from AMC/AIME competitions,
+    takedown reflects unresolved rights
   sources:
   - url: https://huggingface.co/datasets/hendrycks/competition_math
     shows: MIT tag, 12,500 problems, but 'Access Disabled' DMCA takedown notice (discussions/5)

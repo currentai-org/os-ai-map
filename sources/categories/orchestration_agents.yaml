@@ -62,10 +62,10 @@ scoring_recipe:
   extends: software
   derived_from:
     method: shared software ladder, verified against the hand-authored scores
-    scores_reproduced: 50
-    scores_total: 50
-    scores_deferred: 1
-    verified_on: '2026-08-11'
+    scores_reproduced: 51
+    scores_total: 51
+    scores_deferred: 0
+    verified_on: '2026-08-12'
     checker: build/check_rubric.py
   # Held back rather than scored. The shared ladder has no `otherwise` rule, so
   # these already abstain; declaring them here records WHY, and keeps the
@@ -92,12 +92,14 @@ scoring_recipe:
   # genuinely gated, because its Agent Server ships as a closed Elastic-2.0 wheel behind a
   # LANGGRAPH_CLOUD_LICENSE_KEY. LiteLLM is the other side of the same line, its open_core
   # resting on an `enterprise-dir` these four do not have.
-  deferred:
-    openhands:
-      because: >-
-        The score says 4/open_core and the ladder abstains, because neither `core-gated` nor
-        `self-host` is recorded: the gate is under `enterprise-dir: separate-license`, a key
-        the software ladder does not read. Under the `core_gated` rule a separately licensed
-        enterprise directory IS a gated core, so the 4 looks right and what is missing is the
-        transcription - but that is a repo read, not a restatement, so it stays held.
+  #
+  # The last one, `openhands`, closed on 2026-08-12 and it is litellm's shape rather than
+  # langchain's. The gate was recorded under `enterprise-dir: separate-license`, a key the
+  # ladder does not read. A repo read confirmed it: the monorepo LICENSE opens "Portions of
+  # this software are licensed as follows" and carves everything under enterprise/ out to
+  # enterprise/LICENSE, which is PolyForm Free Trial License 1.0.0, and that directory's
+  # README says outright "This is NOT an open source license. Usage is limited to 30 days per
+  # calendar year without a commercial license." The enterprise server now lives in its own
+  # active repo under the same license while the core stays MIT. `core-gated: gated`
+  # transcribed, and the recorded 4/open_core reproduces. Nothing deferred here now.
 comments: ''

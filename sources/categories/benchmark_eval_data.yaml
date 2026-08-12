@@ -11,9 +11,9 @@ scoring_recipe:
   derived_from:
     method: shared dataset ladder, widened by this category, then verified against the
       hand-authored scores
-    scores_reproduced: 20
+    scores_reproduced: 25
     scores_total: 27
-    scores_deferred: 7
+    scores_deferred: 2
     verified_on: '2026-08-12'
     checker: build/check_rubric.py
   note: >-
@@ -33,13 +33,23 @@ scoring_recipe:
     datasheets-for-datasets questionnaire for the other - and recording that reproduces the
     5/open both already carried.
 
-    Seven are left and they now split three ways. Four are still recording defects
-    (`gaia`, `humanitys-last-exam`, `compar-ia-datasets`, `multipl-e`). `math` is scored on
-    a DMCA takedown the ladder has no way to see. And two are the license question answered
-    rather than avoided: `livecodebench`'s bare `cc` was researched to the point of
-    exhaustion and the variant genuinely is not published anywhere, while
-    `swe-bench-verified` turned out to have a stated MIT after all, which turns its deferral
-    from an unreadable value into a live 4-versus-5 disagreement.
+    Five more closed on 2026-08-12. Three were pure transcription and moved no score:
+    `gaia`'s license was recorded nowhere and is recorded as unstated now that a read has
+    established nobody has granted anything, `humanitys-last-exam`'s MIT was buried inside a
+    `questions+answers:` compound, and `compar-ia-datasets` recorded its gate as a sentence
+    where `terms-acceptance+contact-info` is the token. `swe-bench-verified` moved 4 to 5 on
+    the owner's ruling that a repository license governs over a distribution point that
+    states none. `math` moved 2 to 1: recording the DMCA takedown as `access:closed` lands it
+    on the rung for data that is not distributed, which is a step below the gated rung the
+    hand-authored score had assumed.
+
+    Two are left and neither is a recording defect. `livecodebench` has no published license
+    at all and now records 3/gated on the curation rule that a free download without a grant
+    is not open; the ladder declares no rung for the `unstated` tier, so it abstains rather
+    than agreeing. `multipl-e` records the repository's BSD-3-with-ML-restriction under the
+    same repository-governs ruling, and this ladder has no tier for a license that permits
+    redistribution while bounding what the corpus may be used FOR. Both are rubric gaps
+    rather than open questions about the products.
 
     A tenth, `gpqa`, was corrected rather than deferred: it recorded 4/gated, a pair no rung
     produces, and the ladder's answer of 3 is what the other nine gated corpora on the map
@@ -48,27 +58,6 @@ scoring_recipe:
 
   extends: dataset
   deferred:
-    math:
-      because: >-
-        Recorded 2/gated; the ladder computes 5/open, and this is the one place the ladder
-        gets a confidently wrong answer rather than abstaining. Both facts that justify the 2
-        are recorded as prose - `data:NOT downloadable from canonical HF repo` and
-        `redistributability:BLOCKED on the primary registry` - so `head()` reduces neither to
-        a token, `availability` matches no rung, and the product falls through to the license
-        rungs which do not test it. The underlying fact is a DMCA takedown on the canonical HF
-        repo over AMC/AIME problem rights. Recording `access:closed` would settle it.
-    swe-bench-verified:
-      because: >-
-        Now a live disagreement rather than an unreadable value. The card read on 2026-08-12
-        confirmed the HF card for Verified still declares no license, but found the license
-        stated where the deferral had assumed it was only inferred: the canonical SWE-bench
-        repository describes itself as "Code and data for the following works", lists SWE-bench
-        among them, and its "Citation & license" section says "MIT license", with the citation
-        directly beneath headed "For SWE-bench (Verified)". Recording `license:MIT` resolves
-        the `open_data` tier and, with `datasheet:yes`, the ladder computes 5/open against a
-        recorded 4. Neither side has been adjusted. The 4 rests on the reading that a license
-        stated by the project but absent from the distribution point is weaker than one stated
-        on the card; the ladder does not draw that distinction. Someone has to pick.
     livecodebench:
       because: >-
         Researched and genuinely unstated. The bare `cc` names no terms - CC-BY and CC-BY-NC
@@ -79,34 +68,29 @@ scoring_recipe:
         problems), the 217-line repository README, ERRATA.md, the project site and
         leaderboard, and the paper. The repo discussions never raise it. The problems are
         collected from LeetCode, AtCoder and Codeforces, which is a plausible reason no
-        variant has been committed to. An artifact whose publisher has not named its terms
-        is a real state of the world; the abstention is the right answer and not a gap in
-        the research.
+        variant has been committed to. The curation call that followed dropped the record from
+        4/open to 3/gated on the same rule applied to `openhermes-2-5`: files that download
+        freely without a grant are not open, and not closed either. The deferral stands
+        because the ladder has nothing to say either way - the only rungs that read a tier
+        test `noncommercial`, `deferred_to_components` and `open_data`, so an `unstated`
+        corpus with an open download matches nothing and the formula abstains. Giving
+        `unstated` a rung is a rubric change, not a per-product fix.
     multipl-e:
       because: >-
-        Recorded 4/open; the ladder computes 5/open. The 4 rests on a `caveat:` key recording
-        that the source repo carries a modified BSD-3 with a no-ML-training clause conflicting
-        with the MIT on the HF data artifact. `caveat` is not a key any dimension reads, so the
-        ladder sees clean MIT. This is the multi-SKU problem in dataset form: two licenses on
-        two artifacts of one product, and the ladder scores whichever one is recorded under
-        `license`.
-    gaia:
-      because: >-
-        No license key is recorded at all, so no tier resolves and the product abstains before
-        the formula runs. The evidence the ladder WOULD use is present and correct -
-        `answers:held-out` reaches the 2/gated rung, which is the recorded score - so this is
-        one missing key away from reproducing.
-    humanitys-last-exam:
-      because: >-
-        The license is recorded inside a compound key, `questions+answers:public(MIT,2500-Q)`,
-        which no dimension reads and which the license lookup cannot see. Same shape as `gaia`:
-        `holdout:private` already reaches the 2/gated rung, so recording `license:MIT` would
-        settle it.
-    compar-ia-datasets:
-      because: >-
-        The gate is recorded as `gated:HF contact-info agreement required`, a sentence rather
-        than a token, so `head()` returns the whole phrase and it matches no rung. The recorded
-        3/gated is what `terms-acceptance+contact-info` produces. A vocabulary fix, not research.
+        No longer a recording defect. The owner's ruling of 2026-08-12 is that where a
+        repository license and a distribution-point license differ, the repository license
+        governs, so the modified BSD-3 that used to sit under a `caveat:` key is now recorded
+        under `license` and the MIT on the HF artifact is carried as its detail. The
+        repository LICENSE is headed "BSD 3-Clause License with Machine Learning Restriction"
+        and its clause 4 reads "The contents of this repository may not be used as training
+        data for any machine learning model, including but not limited to neural networks."
+        That is what keeps it deferred: this ladder's tiers turn on redistribution and on
+        commercial use, and it declares none for a license that permits both while bounding
+        what you may use the corpus FOR. `model.yaml` has the word for it, `use_bounded`, and
+        the dataset ladder does not. So the tier lookup abstains, the walk blocks on the first
+        rung that tests a tier, and the recorded 4 stands rather than being replaced by a
+        number nobody derived. Extending the dataset ladder with a use-bounded tier is the fix
+        and it is a rubric change.
 products:
 - humaneval
 - gsm8k

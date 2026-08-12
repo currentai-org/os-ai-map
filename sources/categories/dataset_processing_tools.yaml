@@ -36,9 +36,9 @@ scoring_recipe:
   extends: software
   derived_from:
     method: shared software ladder, verified against the hand-authored scores
-    scores_reproduced: 19
+    scores_reproduced: 20
     scores_total: 21
-    verified_on: '2026-07-30'
+    verified_on: '2026-08-12'
     checker: build/check_rubric.py
   # Held back rather than scored. The shared ladder has no `otherwise` rule, so
   # these already abstain; declaring them here records WHY, and keeps the
@@ -53,19 +53,6 @@ scoring_recipe:
         deciding rule reads `source` alone, but check_rubric resolves a license tier before
         applying the formula, so it abstains. Adding the license to a tier is a rubric change,
         held for Phase 1.
-    nemo-data-designer:
-      because: >-
-        `source` is public and the license is OSI, so the recorded 1/closed is not reproducible at
-        any value of core-gated - NVIDIA's own NeMo microservices docs state "The service is built
-        on the open-source NVIDIA NeMo Data Designer library" and link to
-        github.com/NVIDIA-NeMo/DataDesigner, which is Apache-2.0, installs with
-        `pip install data-designer`, and ships the whole generation framework rather than a client
-        for a hosted service. The prior 1 rested on a single TechCrunch article. It stays deferred
-        because both remaining rungs test core-gated and no read has established what, if
-        anything, the NeMo Platform withholds from the published library, so the product is
-        somewhere in {4, 5} and a core-gated value was deliberately not invented to close it.
-        Reviewed 2026-08-12 alongside five other sweep conflicts; the other five closed and this
-        one did not.
 comments: 'The software that produces the training_synthetic_datasets row (Columbia model-components layer;
   MOF ''Data Preprocessing Code''). Scoped to data-processing software; human-data / RLHF labor marketplaces (Scale, Surge, Mercor) are
   out of scope -- per the Columbia framework their output is data (the datasets category) and their labor

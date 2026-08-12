@@ -1,7 +1,7 @@
 product: nemo-data-designer
 openness:
-  score: 1
-  class: closed
+  score: 5
+  class: open_source
   components:
     license:
     - name: Apache-2.0
@@ -10,24 +10,29 @@ openness:
       value: public
       detail: pip install data-designer, the published framework runs locally against any configured inference
         provider
+    core-gated:
+      value: ungated
+      detail: the NeMo Platform adds infrastructure around the published library rather than withholding
+        generation from it
     free_text:
     - the archived gretel-synthetics OSS repo (Apache-2.0) is a separate legacy artifact, not this product
   confidence: medium
-  note: 'Still deferred, and the reason has changed. The prior 1/closed described this as a proprietary
-    NeMo microservice on the strength of a single TechCrunch article, and NVIDIA''s own documentation contradicts
-    it: the NeMo microservices Data Designer page states "The service is built on the open-source NVIDIA
-    NeMo Data Designer library" and links to github.com/NVIDIA-NeMo/DataDesigner, which is Apache-2.0, installs
-    with `pip install data-designer`, and ships the whole generation framework rather than a client for
-    a hosted service. So `source` is public and the license is OSI, the closed rung cannot fire, and the
-    recorded 1 is not reproducible at any value of core-gated. What keeps it deferred is that the ladder''s
-    remaining rungs both test core-gated, and no read has yet established what, if anything, the NeMo Platform
-    withholds from the published library. The product is somewhere in {4, 5} and a value was deliberately
-    not invented to close it. Score and class are left at the unreproducible 1 rather than guessed, which
-    is what the deferral records.'
+  note: 'The prior 1/closed described this as a proprietary NeMo microservice on the strength of a single
+    TechCrunch article, and NVIDIA''s own documentation contradicts it: the NeMo microservices Data Designer
+    page states "The service is built on the open-source NVIDIA NeMo Data Designer library" and links to
+    github.com/NVIDIA-NeMo/DataDesigner, which is Apache-2.0 and installs with pip install data-designer.
+    A read on 2026-08-12 settled the core-gated question the deferral was held on: the repository ships
+    data-designer-config, data-designer-engine and data-designer, so the generation engine itself is published,
+    and what the NeMo Platform adds over it is infrastructure - inference routed through the NMP gateway,
+    distributed job execution with monitoring, NMP fileset seeds, NMP artifact storage and the NMP Secrets
+    service. None of that is functionality withheld from the published source, which is the test this ladder
+    applies; it is a managed service sold alongside a complete open core, the langchain and otari shape
+    rather than the langgraph one. So core-gated is ungated and the product scores 5/open_source.'
   raw: license:Apache-2.0(OSI, NVIDIA-NeMo/DataDesigner LICENSE);source:public(pip install data-designer,
-    the published framework runs locally against any configured inference provider);the archived gretel-synthetics
-    OSS repo (Apache-2.0) is a separate legacy artifact, not this product
-  last_verified: '2026-08-11'
+    the published framework runs locally against any configured inference provider);core-gated:ungated(the
+    NeMo Platform adds infrastructure around the published library rather than withholding generation from
+    it);the archived gretel-synthetics OSS repo (Apache-2.0) is a separate legacy artifact, not this product
+  last_verified: '2026-08-12'
   sources:
   - url: https://docs.nvidia.com/nemo/microservices/latest/data-designer/index.html
     shows: NVIDIA's own NeMo microservices documentation for Data Designer states that "The service is built
@@ -62,6 +67,17 @@ openness:
       Third-party summary, retained only for the acquisition history, and not relied on for any recorded
       key.
     accessed: '2026-07-21'
+  - url: https://github.com/NVIDIA-NeMo/DataDesigner
+    shows: Apache-2.0, 2.1k stars, packages/ ships data-designer-config, data-designer-engine and data-designer;
+      README documents pip install data-designer and local generation against NVIDIA Build, OpenAI or OpenRouter
+      providers
+    accessed: '2026-08-12'
+    establishes:
+    - core-gated
+    - source
+    - license
+    http_status: 200
+    content_sha256: 57e66c991213a59848bc5e27b4eff0dc8306096adc8d43b881c6b6de301a818b
 adoption:
   level: 3
   reach: enterprise

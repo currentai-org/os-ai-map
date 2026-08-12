@@ -736,7 +736,13 @@ def test_real_sources_serialize_without_errors():
         # the last of which now records source and core-gated but abstains on a three-way
         # license), and a product that stops being deferred publishes its whole openness
         # evidence set rather than none of it.
-        "agent_tools_protocols": 122, "dataset_processing_tools": 86, "evaluation_code": 107,
+        #
+        # dataset_processing_tools 86 -> 90 when nemo-data-designer's deferral came off on
+        # 2026-08-12. A read of NVIDIA-NeMo/DataDesigner established `core-gated: ungated` -
+        # the repository ships the generation engine itself and the NeMo Platform adds
+        # infrastructure around it rather than withholding anything from it - and the record
+        # moved from an unreproducible 1/closed to the 5/open_source the ladder computes.
+        "agent_tools_protocols": 122, "dataset_processing_tools": 90, "evaluation_code": 107,
         # inference_code 47 -> 64 when the sweep read the category: four stale deferrals came
         # off (a deferred product publishes no openness evidence at all), and several products
         # that had described their gating in prose gained a readable `source:`/`core-gated:`.
@@ -811,7 +817,13 @@ def test_real_sources_serialize_without_errors():
         # publishes its rows for the first time: agentops five (license, source, commercial,
         # core-gated and the normalized core_gated), langtrace four and weave four. The
         # category now defers nothing.
-        "orchestration_agents": 210, "telemetry_observability": 114, "ui_api": 184,
+        #
+        # orchestration_agents 210 -> 215 when openhands, its last deferral, closed on
+        # 2026-08-12. Its gate had been recorded under `enterprise-dir`, a key the ladder does
+        # not read; a repo read confirmed the enterprise directory is carved out to PolyForm
+        # Free Trial 1.0.0 while the core stays MIT, `core-gated: gated` was transcribed, and
+        # the recorded 4/open_core reproduces. Five rows, and the category now defers nothing.
+        "orchestration_agents": 215, "telemetry_observability": 114, "ui_api": 184,
         # training_synthetic_datasets is unchanged at 158 across the ladder widening, which
         # is the check that mattered: benchmark_eval_data's new dimensions and rungs did not
         # disturb the category the ladder was derived from.
@@ -830,7 +842,12 @@ def test_real_sources_serialize_without_errors():
         # license and an answer state and nothing else, and each gained a `datasheet` and an
         # `access` key plus the `availability` and `documentation` dimensions they normalize
         # onto - so both go from publishing nothing to publishing seven rows.
-        "training_synthetic_datasets": 197, "benchmark_eval_data": 125,
+        # 125 -> 154 when the owner's rulings of 2026-08-12 closed five of the seven
+        # deferrals here. gaia, humanitys-last-exam, compar-ia-datasets, math and
+        # swe-bench-verified each start publishing their whole openness evidence set, having
+        # published none of it while deferred. livecodebench and multipl-e stay deferred and
+        # so still publish nothing, which is what keeps the rise to those five.
+        "training_synthetic_datasets": 197, "benchmark_eval_data": 154,
         # safeguards 90 -> 103 and training_synthetic_datasets 158 -> 164: the universal
         # license scale retired five deferrals, and a deferred product publishes no
         # openness evidence at all.
