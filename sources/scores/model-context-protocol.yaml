@@ -11,8 +11,10 @@ openness:
       detail: OSI, new code/spec
     - name: MIT
       detail: OSI, legacy contributions
-    - name: CC-BY-4.0
-      detail: docs
+    docs:
+      value: CC-BY-4.0
+      detail: documentation other than the specifications; not read by the openness ladder, which scores
+        the artifact the product ships
     governance:
       value: Linux-Foundation/AAIF
       detail: open, co-founded Anthropic/Block/OpenAI
@@ -22,22 +24,23 @@ openness:
         modelcontextprotocol repo - there is no vendor tier to withhold anything for
   confidence: high
   note: 'Open protocol with OSI-licensed reference implementations and open foundation governance; no feature-gated
-    core. Two keys were re-read on 2026-08-12 and the record STILL does not score - see the category''s
-    deferral, which has been rewritten to say why. (1) `source` was recorded under the key `spec+reference-SDKs`,
-    which no dimension''s `reads:` list names, so the right answer sat under a key the ladder never looks
-    at and the dimension read as unanswered. Renamed to `source`. (2) `core-gated: ungated` added: the spec,
-    the JSON/TypeScript schema and the docs are in the one repo, every reference SDK is a separate public
-    modelcontextprotocol repo (mcp-python-sdk and mcp-typescript-sdk are already on the map at 5), and the
-    project is governed by the Linux Foundation''s AAIF with no vendor tier to withhold anything for. (3)
-    The actual blocker is the LICENSE, and it is not a recording error - the file really does split three
-    ways, Apache-2.0 for new code and specifications, CC-BY-4.0 for documentation other than the specifications,
-    and MIT retained for pre-transition contributions whose authors did not consent to relicensing. `license_tier`
-    resolves a compound on every part and abstains if any part is unmapped, and CC-BY-4.0 appears in no
-    tier''s examples in sources/rubrics/software.yaml, so the value resolves to nothing and the walk cannot
-    pass the rung that tests it. Whether a documentation license belongs in a software ladder at all is
-    a shared-rubric question across eleven categories and was left for a human.'
+    core. The record reproduces at 5/open_source as of 2026-08-12, after three fixes. (1) `source` was recorded
+    under the key `spec+reference-SDKs`, which no dimension''s `reads:` list names, so the right answer
+    sat under a key the ladder never looks at and the dimension read as unanswered. Renamed to `source`.
+    (2) `core-gated: ungated` added: the spec, the JSON/TypeScript schema and the docs are in the one repo,
+    every reference SDK is a separate public modelcontextprotocol repo (mcp-python-sdk and mcp-typescript-sdk
+    are already on the map at 5), and the project is governed by the Linux Foundation''s AAIF with no vendor
+    tier to withhold anything for. (3) The LICENSE really does split three ways - Apache-2.0 for new code
+    and specifications, CC-BY-4.0 for documentation other than the specifications, and MIT retained for
+    pre-transition contributions whose authors did not consent to relicensing. Recording all three under
+    `license` was the defect: `license_tier` resolves a compound on every part and takes the most restrictive,
+    so a license covering the project''s PROSE governed the artifact you run and pulled the product down
+    to 3/source_available. The documentation license now sits under a `docs:` key, which the openness ladder
+    does not read, matching how `autogen` records the identical situation - MIT code, CC-BY-4.0 docs, 5/open_source.
+    The license dimension answers a question about the shipped artifact.'
   raw: source:public(spec schema and docs in one repo plus reference SDKs in separate public repos);license:Apache-2.0(OSI,
-    new code/spec)+MIT(OSI, legacy contributions)+CC-BY-4.0(docs);governance:Linux-Foundation/AAIF(open,
+    new code/spec)+MIT(OSI, legacy contributions);docs:CC-BY-4.0(documentation other than the specifications;
+    not read by the openness ladder, which scores the artifact the product ships);governance:Linux-Foundation/AAIF(open,
     co-founded Anthropic/Block/OpenAI);core-gated:ungated(spec schema and docs ship in the one LF/AAIF-governed
     repo and every reference SDK is a public modelcontextprotocol repo - there is no vendor tier to withhold
     anything for)

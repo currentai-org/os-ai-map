@@ -149,14 +149,27 @@ openness:
         # inside them either. Checked before adding, per the note on the tier below: a
         # name added for one product tiers every product that happens to record it.
         #
-        # This tier still has NO rung, and MCP therefore still abstains rather than
-        # scoring. That is deliberate and is explained at the foot of the formula: a
-        # non-OSI license cannot reach the `open` bucket under either MOF or OSAID, so a
-        # rung here would have to emit something other than open_source, and nobody has
-        # ruled on what. Declaring the tier is still the right half of the fix, because
-        # it converts "the map has never heard of this license" into "the map has placed
-        # this license and has no rung for where it landed" - a rubric gap with an owner
-        # rather than an unknown.
+        # This tier gained a rung on 2026-08-12 - 3/source_available on a public,
+        # ungated source - and NO product currently reaches it. Both halves are
+        # deliberate, and the second one is the surprise.
+        #
+        # MCP was the product the rung was ruled for, and it turned out not to need it.
+        # Its CC-BY-4.0 covers documentation other than the specifications, and it had
+        # been recorded inside the `license` compound, where most-restrictive-wins made
+        # a license over the project's PROSE decide the score of the artifact you run.
+        # `autogen` records the identical facts the other way - MIT under `license`,
+        # CC-BY-4.0 under a `docs:` key this ladder does not read - and scores 5. The
+        # convention already existed; MCP was the record that departed from it. Moving
+        # the docs license out returned MCP to 5/open_source and left this tier empty of
+        # products again.
+        #
+        # So the rung is currently unexercised, which this file elsewhere calls a place
+        # for a later edit to hide. It is kept rather than reverted for two reasons: the
+        # ruling it encodes is about the license class and not about MCP, so it stands
+        # whoever arrives next; and unlike the two rungs deleted before it, this one
+        # emits an open-ISH class, so `test_openness_buckets` bounds the damage a bad
+        # edit could do. `test_permissive_non_osi_rung_is_pinned` pins its outcome so a
+        # silent change is a test failure rather than a score move.
         examples: [CC-BY-4.0]
       competition_restricted:
         definition: >-
@@ -233,8 +246,28 @@ openness:
     because: >-
       The published source is the whole product. A managed offering alongside it does not
       change that.
-  # `permissive_non_osi` deliberately has NO rung, so a product landing there abstains and
-  # is deferred for a human. Two rungs used to sit here, emitting 4/open_core and
+  - when: {license_tier: permissive_non_osi, source: public, core_gated: ungated}
+    then: {score: 3, class: source_available}
+    because: >-
+      Attribution is all the license asks, so the published source is the whole product and
+      is freely runnable - but it is not OSI-approved, and no non-OSI license reaches the
+      open bucket under either the Model Openness Framework or OSAID. Above
+      competition_restricted because nothing here caps who may use the software or at what
+      scale, which is the line between those two tiers stated directly.
+  # The rung above is `permissive_non_osi`'s only one, added 2026-08-12 on the owner's
+  # ruling. It emits 3/source_available: above `competition_restricted`'s 2 because
+  # attribution asks less than a no-compete clause or a paid production threshold, and
+  # below the OSI rungs because no non-OSI license reaches the `open` bucket under MOF or
+  # OSAID. `source_available` is not a compromise word chosen for the bucket - it is the
+  # only class between `open_core` and `closed` that the software vocabulary in
+  # build/validate.py declares, so the alternative was inventing one.
+  #
+  # There is no gated counterpart. A second rung emitting 2/source_available for a gated
+  # permissive-non-OSI core would be dead on arrival, and dead rules are the hazard this
+  # comment block exists to record.
+  #
+  # Until 2026-08-12 the tier had no rung at all, so a product landing there abstained
+  # and was deferred for a human. Two rungs used to sit here, emitting 4/open_core and
   # 5/open_source. Both were unreachable, because this tier's `examples` list is empty and
   # no software product resolves into it - and both were wrong in the same way: they handed
   # a non-OSI license an open_source or open_core class, and openness-class-map.json puts

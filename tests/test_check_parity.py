@@ -208,10 +208,23 @@ def test_local_scores_matches_check_rubrics_split():
     board in the category runs on it, so the cap would flatten all 20 to 3 and leave the 4 and 5
     rungs unreachable. Of the six that remain, model-context-protocol and txt360-pipeline both had
     their licenses recorded properly and both still abstain, which is now the finding rather than
-    a defect."""
+    a defect.
+
+    Then 466/6 -> 467/5 on 2026-08-12, when model-context-protocol closed. It did NOT close on
+    the rubric ruling it looked like it was waiting for. `permissive_non_osi` did gain a rung
+    that day - 3/source_available, on the reasoning that attribution asks less than a
+    no-compete clause but a non-OSI license still cannot enter the open bucket under MOF or
+    OSAID - and MCP does not reach it. Its CC-BY-4.0 covers documentation other than the
+    specifications and had been recorded inside the `license` compound, where
+    most-restrictive-wins let a license over the project's PROSE decide the score of the
+    artifact you run, pulling a 5 down to a 3. `autogen` records the identical facts under a
+    separate `docs:` key the ladder does not read and has always scored 5. MCP now matches it
+    and reproduces at 5/open_source, so the published score did not move. The rung stays,
+    unexercised and pinned by tests/test_openness_buckets.py, because the ruling it encodes is
+    about a license class rather than about one product."""
     computed, deferred = local_scores(None)
-    assert len(deferred) == 6
-    assert len(computed) == 466
+    assert len(deferred) == 5
+    assert len(computed) == 467
     assert not set(computed) & set(deferred)
     # Every one of the 410 reproduces today, so none should abstain.
     assert [key for key, value in computed.items() if value is None] == []
