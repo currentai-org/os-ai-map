@@ -8,9 +8,26 @@ openness:
       detail: OSI permissive
     source:
       value: public
+    core-gated:
+      value: ungated
+      detail: every runtime piece is published - eleven syft-* packages under packages/ plus syft_client
+        under one Apache-2.0 license - and PySyft runs on cloud storage the user already has rather than
+        on an OpenMined-operated plane. No enterprise path and no license key in the tree
   confidence: high
-  note: Apache-2.0 licensed with full public source code.
-  raw: license:Apache-2.0(OSI permissive);source:public
+  note: 'Apache-2.0 licensed with full public source code. `core-gated: ungated` transcribed 2026-08-12
+    from a read of the repo. PySyft''s architecture is the opposite of a gate: the README''s pitch is that
+    data scientists submit computations run by data owners "through cloud storage their organizations already
+    use (Google Drive, Microsoft 365, etc.). No new infrastructure required", so there is no OpenMined-operated
+    plane that could be withheld. Every runtime piece is published - packages/ holds eleven syft-* packages
+    (syft-bg, syft-datasets, syft-enclave, syft-job, syft-migration, syft-notebook-ui, syft-permissions,
+    syft-perms, syft-rds, syft-restrict and an enclave example) beside syft_client - under one Apache-2.0
+    LICENSE. A repo-wide code search for `enterprise` returns nothing and there is no license-key path.
+    OpenMined is a non-profit and sells no tier.'
+  raw: license:Apache-2.0(OSI permissive);source:public;core-gated:ungated(every runtime piece is published
+    - eleven syft-* packages under packages/ plus syft_client under one Apache-2.0 license - and PySyft
+    runs on cloud storage the user already has rather than on an OpenMined-operated plane. No enterprise
+    path and no license key in the tree)
+  last_verified: '2026-08-12'
   sources:
   - url: https://github.com/OpenMined/PySyft
     shows: Apache-2.0 license, public source, 9.9k stars
@@ -18,6 +35,28 @@ openness:
   - url: https://pypi.org/project/syft/
     shows: PyPI metadata lists License Apache-2.0, source OpenMined/PySyft
     accessed: '2026-06-22'
+  - url: https://api.github.com/repos/OpenMined/PySyft/contents/packages
+    shows: 'The published component set: enclave-model-api-example, syft-bg, syft-datasets, syft-enclave,
+      syft-job, syft-migration, syft-notebook-ui, syft-permissions, syft-perms, syft-rds, syft-restrict.
+      Together with syft_client at the root this is the whole runtime, under one Apache-2.0 LICENSE, with
+      no ee/, enterprise/ or second-licensed directory anywhere in the tree.'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: fd7eecd51a6a881015f48492fa519e8c87219a1222f0e947c745121d1e478211
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/OpenMined/PySyft/dev/README.md
+    shows: License badge and closing section both give Apache License 2.0. The description is that "PySyft
+      lets data scientists submit computations which are ran by data owners on private data - all through
+      cloud storage their organizations already use (Google Drive, Microsoft 365, etc.). No new infrastructure
+      required." No hosted OpenMined service, paid tier or enterprise edition appears anywhere in it.
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: ee46bfd7bbc137089c7779d4f3e6a227dccb9ceb3bc2bda65013b0cd2c8f6f4e
+    establishes:
+    - license
+    - core-gated
 adoption:
   level: 3
   reach: broad

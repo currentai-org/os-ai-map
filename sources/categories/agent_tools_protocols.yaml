@@ -54,18 +54,18 @@ scoring_recipe:
   deferred:
     model-context-protocol:
       because: >-
-        source or core-gated is not recorded in a form the ladder can read; needs a read of
-        the repo and pricing page
+        source and core-gated were read and recorded on 2026-08-12, and the record still does
+        not score. The blocker is the license, and it is not a recording error: the LICENSE
+        really does split three ways - Apache-2.0 for new code and specifications, CC-BY-4.0
+        for documentation other than the specifications, MIT retained for pre-transition
+        contributions whose authors did not consent to relicensing. license_tier resolves a
+        compound on every part and abstains if any part is unmapped, and CC-BY-4.0 is in no
+        tier's examples in sources/rubrics/software.yaml, so the whole value resolves to
+        nothing and the walk cannot pass the rung that tests it. Whether a documentation
+        license belongs in a ladder shared by eleven software categories is a rubric question
+        for a human, not a per-product fix
     jina-reader:
       because: >-
         ladder computes 4/open_core from the recorded evidence but the score says
         5/open_source; one of the two is wrong and it needs a human
-    agent2agent-protocol:
-      because: >-
-        source or core-gated is not recorded in a form the ladder can read; needs a read of
-        the repo and pricing page
-    yomo:
-      because: >-
-        source or core-gated is not recorded in a form the ladder can read; needs a read of
-        the repo and pricing page
 comments: ''

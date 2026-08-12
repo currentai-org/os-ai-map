@@ -39,19 +39,11 @@ scoring_recipe:
     scores_total: 22
     verified_on: '2026-07-30'
     checker: build/check_rubric.py
-  # Held back rather than scored. The shared ladder has no `otherwise` rule, so
-  # these already abstain; declaring them here records WHY, and keeps the
-  # reproduction count honest by excluding them from it rather than counting
-  # them as passes.
-  deferred:
-    pysyft:
-      because: >-
-        source or core-gated is not recorded in a form the ladder can read; needs a read of
-        the repo and pricing page
-    feluda:
-      because: >-
-        source or core-gated is not recorded in a form the ladder can read; needs a read of
-        the repo and pricing page
+  # Nothing deferred. The two that were - pysyft and feluda - were missing only
+  # `core-gated`, and a read of each repo on 2026-08-12 recorded `ungated`: OpenMined
+  # and Tattle are non-profits with no paid tier and nothing withheld from either tree.
+  # Both then reproduced their recorded 5/open_source. Keeping the key with an empty map
+  # would read as "we defer nothing yet"; removing it says the question was answered.
 comments: 'Horizontal dependencies the model/inference/fine-tuning/UI rows are built on
   top of: DL frameworks, the HF library stack, file formats, and optimization/runtime
   libraries. Software openness vocabulary. Dedup note: peft/trl/torchtune/axolotl/

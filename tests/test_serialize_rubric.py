@@ -720,7 +720,13 @@ def test_real_sources_serialize_without_errors():
         # seven of its deferrals came off, and a product that stops being deferred publishes its
         # whole openness evidence set rather than none of it. deepeval was already publishing and
         # gained no rows when its `core-gated` moved gated -> ungated.
-        "agent_tools_protocols": 113, "dataset_processing_tools": 86, "evaluation_code": 107,
+        #
+        # agent_tools_protocols 113 -> 122 with the 2026-08-12 sweep of that category: three of
+        # its four deferrals came off (agent2agent-protocol, yomo and model-context-protocol,
+        # the last of which now records source and core-gated but abstains on a three-way
+        # license), and a product that stops being deferred publishes its whole openness
+        # evidence set rather than none of it.
+        "agent_tools_protocols": 122, "dataset_processing_tools": 86, "evaluation_code": 107,
         # inference_code 47 -> 64 when the sweep read the category: four stale deferrals came
         # off (a deferred product publishes no openness evidence at all), and several products
         # that had described their gating in prose gained a readable `source:`/`core-gated:`.
@@ -737,7 +743,10 @@ def test_real_sources_serialize_without_errors():
         # text-generation-inference, axolotl, sambanova-cloud, anyscale-fine-tuning), and a
         # product that stops being deferred publishes its whole openness evidence set rather
         # than none of it. openpipe was already publishing and gained no rows.
-        "finetuning_code": 133, "inference_code": 84, "ml_frameworks": 80,
+        # ml_frameworks 80 -> 88 with the same sweep: pysyft and feluda were its only two
+        # deferrals and both closed on a `core-gated:ungated` read, so the category now defers
+        # nothing at all.
+        "finetuning_code": 133, "inference_code": 84, "ml_frameworks": 88,
         # orchestration_agents rose by 3 when n8n's stale deferral was removed: a deferred
         # product publishes no openness evidence, and n8n had been deferred as "not recorded"
         # while recording everything the ladder needed. Then by 6 more (140 -> 146) when

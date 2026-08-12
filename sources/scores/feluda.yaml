@@ -8,13 +8,46 @@ openness:
       detail: OSI copyleft
     source:
       value: public
+    core-gated:
+      value: ungated
+      detail: all nine analysis operators ship in operators/ under the one GPL-3.0 license. Tattle offers
+        no hosted edition and no paid tier
   confidence: high
-  note: GPL-3.0 licensed open source project with public source.
-  raw: license:GPL-3.0(OSI copyleft);source:public
+  note: 'GPL-3.0 licensed open source project with public source. `core-gated: ungated` transcribed 2026-08-12
+    from a read of the repo. Feluda is Tattle''s civic-tech content-analysis library and there is no commercial
+    side to gate with: no hosted edition, no pricing page and no enterprise path in the tree. Every operator
+    the engine offers ships in operators/ - classify_video_zero_shot, cluster_embeddings, detect_lewd_images,
+    detect_text_in_image, dimension_reduction, image_vec_rep, vid_vec_rep and video_hash - under the one
+    GPL-3.0 LICENSE.md that the GitHub API also classifies as GPL-3.0. The README''s only mention of a paid
+    service runs the other way: an OpenCV-based operator exists so that users who "don''t want to use a
+    google product" can avoid the Cloud Vision API.'
+  raw: license:GPL-3.0(OSI copyleft);source:public;core-gated:ungated(all nine analysis operators ship in
+    operators/ under the one GPL-3.0 license. Tattle offers no hosted edition and no paid tier)
+  last_verified: '2026-08-12'
   sources:
   - url: https://github.com/tattle-made/feluda
     shows: GPL-3.0 license, public source under tattle-made org
     accessed: '2026-06-22'
+  - url: https://api.github.com/repos/tattle-made/feluda
+    shows: 'Repo metadata: license spdx_id GPL-3.0, default branch main, 95 stars, not archived, under the
+      tattle-made org.'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: b8e56ed0ac226849c8daf1fd4a26404b423cb090049b48b708dbc1ad550c2a13
+    establishes:
+    - license
+    - source
+  - url: https://api.github.com/repos/tattle-made/feluda/contents/operators
+    shows: 'Every operator the README advertises is published here: classify_video_zero_shot, cluster_embeddings,
+      detect_lewd_images, detect_text_in_image, dimension_reduction, image_vec_rep, vid_vec_rep, video_hash.
+      Nothing is held back for a paid edition, and the root tree carries a single LICENSE.md with no ee/
+      or enterprise/ path beside it.'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: a43769694d6bbdb70934b0de3a4123425d638893444c81ee8f314cb87928a652
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 2
   reach: niche
