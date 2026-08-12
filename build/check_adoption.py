@@ -81,10 +81,40 @@ def declared_scales(sources: dict) -> dict[tuple[str, str], dict[str, int]]:
     return scales
 
 
+# Instruments whose bands are read in downloads, and which may therefore fall back to the
+# product type's declared download scale. Everything else measures something else entirely.
+#
+# `unknown` is absent deliberately: it means nobody has decided which instrument applies, so
+# there is no scale to check against and no basis for guessing one.
+_DOWNLOAD_INSTRUMENTS = {"usage_volume", ""}
+
+
 def scale_for(scales: dict, product_type: str, signal_type: str) -> dict[str, int] | None:
-    """The most specific scale that applies, signal first."""
+    """The scale that applies, or None when the instrument declares none.
+
+    ABSTAIN RATHER THAN SUBSTITUTE. `sources/signal_routing.yaml` states the rule directly:
+    "When the authoritative signal for a dimension is missing or unusable, the rule is to
+    produce NO evidence. Falling through to a less authoritative signal is how the failure
+    above happens." `docs/guides/adoption.md` says the same thing about this exact check —
+    "a `reported_traction` or `active_users` band is measuring something else entirely.
+    Comparing it against a download count is a category error, and a check must SKIP it
+    rather than flag or waive it."
+
+    The first version of this function did exactly that, and it is worth recording why the
+    bug was invisible: it read `if the signal declares its own scale use it, otherwise use
+    the product type's`, which is correct for `stars_fallback` and for `usage_volume` and
+    silently wrong for the two instruments that have no scale at all. It manufactured a
+    download-scale finding for all 93 `reported_traction` products and every `active_users`
+    one, and those findings looked exactly like the real ones.
+
+    So the fallback is now allowed only for instruments actually denominated in downloads.
+    `reported_traction` and `active_users` return None and are skipped, which is not a
+    waiver — it is the checker declining to compare a user count against a download band.
+    """
     if signal_type and ("*", signal_type) in scales:
         return scales[("*", signal_type)]
+    if signal_type not in _DOWNLOAD_INSTRUMENTS:
+        return None
     return scales.get((product_type, "*"))
 
 
