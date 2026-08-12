@@ -1,0 +1,147 @@
+"""Does every recorded adoption band match the scale its own rubric declares?
+
+## Why this gate did not exist, and why that is the interesting part
+
+`adoption_bands` are declared per product type in `sources/rubrics/*.yaml`, serialized into
+`currentai.registry.adoption_bands` by `build/serialize_rubric.py`, and read by the scoring
+SQL. Tests cover the declaration's shape and the serializer's output. Nothing has ever
+compared a PRODUCT's recorded `(level, reach)` against them.
+
+So the bands were authoritative for the warehouse and advisory for the corpus, and the two
+drifted in exactly the way `check_parity` exists to catch one axis over. 93 of 472 products
+record a `reach` label that is not a band their own product type declares.
+
+The dataset scale is the clearest case. It sits one order of magnitude below software and
+model — deliberately, and measured: across 66 Hugging Face dataset artifacts, the median was
+27,648 downloads and NONE exceeded 10M, so on the software scale level 5 is unreachable. Its
+top band is therefore `>1M`. Thirteen benchmark corpora nonetheless record `1M-10M` or `>10M`,
+which are labels off the software scale, and `mmlu` recorded level 5 against 477,890 monthly
+downloads — a level the dataset scale reserves for figures its own note does not claim.
+
+`dataset.yaml` predicted this in a comment: "14 dataset products record level 4 against a
+reach of 1M-10M, which is level 5 on this scale ... They are a work list, not a migration."
+The work list was written down and never turned into a check, so it grew.
+
+## What is checked
+
+1. **The reach label is one the applicable scale declares.** Catches the wrong scale being
+   used for a type, case drift (`10k-100k` for `10K-100K`), and free text (`niche`,
+   `~1.4M/mo`) that carries a figure but not a band.
+2. **The recorded level is the level that label denotes.** Catches the internally
+   inconsistent pair — level 5 against a `100K-1M` reach — which no band can produce and
+   which the warehouse would compute differently.
+
+Which scale applies is keyed on `(product_type, signal_type)`, not type alone, because
+`stars_fallback` has its own labels and its own ceiling: stars cap adoption at level 3, since
+a star is not a use. `validate.py` already enforces that ceiling; this checks the label too.
+
+## What is deliberately NOT checked
+
+Whether the recorded figure is CURRENT. That needs a fetch, and it is `check_freshness`'s
+question. A product can be perfectly banded against a figure from March.
+
+## Exit status
+
+0 unless `--strict`, matching `check_freshness`. Gating today would fail on a backlog that
+predates the bands being declared at all, and a gate that fails on day one teaches people to
+skip it. Turn on `--strict` in CI once the backlog is cleared.
+"""
+
+from __future__ import annotations
+
+import argparse
+import sys
+from pathlib import Path
+
+from build.validate import load_sources
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def declared_scales(sources: dict) -> dict[tuple[str, str], dict[str, int]]:
+    """(product_type, signal_type) -> {reach label: level}.
+
+    A `*` product type means the scale applies to every type, which is how the stars
+    fallback is declared: it is a property of the SIGNAL, not of the thing measured.
+    """
+    scales: dict[tuple[str, str], dict[str, int]] = {}
+    for name, rubric in (sources.get("rubrics") or {}).items():
+        adoption = (rubric or {}).get("adoption") or {}
+        for band in adoption.get("bands") or []:
+            scales.setdefault((name, "*"), {})[band["reach"]] = band["level"]
+
+    # The stars scale lives in signal_routing.yaml rather than a rubric, because it is a
+    # property of the SIGNAL and applies to every product type. Read through the serializer's
+    # own loader so the two cannot disagree about where it lives.
+    from build.serialize_rubric import load_routing, stars_bands
+
+    rows, _warnings = stars_bands(load_routing(ROOT))
+    for band in rows:
+        scales.setdefault(("*", band["signal_type"]), {})[band["reach"]] = band["level"]
+    return scales
+
+
+def scale_for(scales: dict, product_type: str, signal_type: str) -> dict[str, int] | None:
+    """The most specific scale that applies, signal first."""
+    if signal_type and ("*", signal_type) in scales:
+        return scales[("*", signal_type)]
+    return scales.get((product_type, "*"))
+
+
+def collect(sources: dict) -> tuple[list[str], int]:
+    scales = declared_scales(sources)
+    types = {slug: (doc or {}).get("type") for slug, doc in sources["products"].items()}
+
+    findings: list[str] = []
+    examined = 0
+    for slug, score in sorted(sources["scores"].items()):
+        adoption = (score or {}).get("adoption") or {}
+        level, reach = adoption.get("level"), adoption.get("reach")
+        if level is None and reach is None:
+            continue
+        signal = adoption.get("signal_type") or ""
+        scale = scale_for(scales, types.get(slug), signal)
+        if scale is None:
+            continue  # hardware declares no adoption scale, by design
+        examined += 1
+
+        if reach is None:
+            findings.append(f"{slug}: level {level} with no reach label to justify it")
+            continue
+        if reach not in scale:
+            findings.append(
+                f"{slug} [{types.get(slug)}/{signal or 'no signal_type'}]: reach {reach!r} is not a "
+                f"declared band; this scale offers {sorted(scale)}"
+            )
+            continue
+        if level != scale[reach]:
+            findings.append(
+                f"{slug} [{types.get(slug)}/{signal or 'no signal_type'}]: records level {level} "
+                f"against reach {reach!r}, which this scale puts at level {scale[reach]}"
+            )
+    return findings, examined
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--strict", action="store_true", help="exit 1 if anything is off-scale")
+    args = parser.parse_args()
+
+    sources = load_sources(ROOT)
+    findings, examined = collect(sources)
+
+    # A corpus walk that silently narrows passes green. Two did, earlier in this repo.
+    if examined < 300:
+        print(f"check_adoption: only examined {examined} products; the walk has drifted", file=sys.stderr)
+        return 1
+
+    for line in findings:
+        print(f"  x {line}")
+    status = "OK" if not findings else f"{len(findings)} off-scale"
+    print(f"\ncheck_adoption  {examined} products with an adoption band  [{status}]")
+
+    return 1 if findings and args.strict else 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
