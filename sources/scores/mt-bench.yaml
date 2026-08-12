@@ -5,18 +5,52 @@ openness:
   components:
     questions:
       value: public
+      detail: question.jsonl in the public FastChat git tree
     answers:
       value: public
       detail: GPT-4 references in FastChat
     license:
       value: Apache-2.0
+      detail: FastChat repository LICENSE
+    datasheet:
+      value: present
+      detail: fastchat/llm_judge/README.md documents the data, the judging protocol and the released judgment
+        sets; arXiv:2306.05685 documents composition
+    access:
+      value: ungated
+      detail: questions and reference answers sit in the public git tree, no download barrier
   confidence: high
-  note: Both questions and reference answers are public and openly licensed.
-  raw: questions:public;answers:public(GPT-4 references in FastChat);license:Apache-2.0
+  note: Both questions and reference answers are public and openly licensed. MT-Bench ships inside FastChat
+    rather than as a standalone dataset repo, so its documentation is the llm_judge package README and
+    the LLM-as-a-Judge paper rather than a Hugging Face card, and its access state is a public git tree
+    rather than a Hub download.
+  raw: questions:public(question.jsonl in the public FastChat git tree);answers:public(GPT-4 references
+    in FastChat);license:Apache-2.0(FastChat repository LICENSE);datasheet:present(fastchat/llm_judge/README.md
+    documents the data, the judging protocol and the released judgment sets; arXiv:2306.05685 documents
+    composition);access:ungated(questions and reference answers sit in the public git tree, no download
+    barrier)
+  last_verified: '2026-08-12'
   sources:
   - url: https://github.com/lm-sys/FastChat/tree/main/fastchat/llm_judge/data/mt_bench
     shows: public questions + GPT-4 references
     accessed: '2026-06-17'
+    establishes: [access, answers]
+  - url: https://raw.githubusercontent.com/lm-sys/FastChat/main/LICENSE
+    shows: the FastChat repository, which contains the MT-Bench questions and reference answers, is
+      licensed Apache License 2.0
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes: [license]
+  - url: https://raw.githubusercontent.com/lm-sys/FastChat/main/fastchat/llm_judge/README.md
+    shows: '"MT-bench is a set of challenging multi-turn open-ended questions for evaluating chat assistants";
+      documents the data files, the GPT-4 judging protocol, the pre-generated model answers and judgments,
+      and the agreement computation. The reference answers and judgments are downloaded from the public
+      repo by `download_mt_bench_pregenerated.py` with no credential or approval step'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 4104f9e877fe04a4a87a5b6618114adc8604f09ceca09be198f96189c4c2238e
+    establishes: [datasheet, answers, access]
 adoption:
   level: 3
   signal_type: stars_fallback

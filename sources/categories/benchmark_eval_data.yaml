@@ -11,10 +11,10 @@ scoring_recipe:
   derived_from:
     method: shared dataset ladder, widened by this category, then verified against the
       hand-authored scores
-    scores_reproduced: 18
+    scores_reproduced: 20
     scores_total: 27
-    scores_deferred: 9
-    verified_on: '2026-08-01'
+    scores_deferred: 7
+    verified_on: '2026-08-12'
     checker: build/check_rubric.py
   note: >-
     Second DATASET category. The shared ladder as first written could not read this category
@@ -24,10 +24,22 @@ scoring_recipe:
     adding the `answers` dimension fixed both, and training_synthetic_datasets reproduces
     identically before and after.
 
-    Nine products are deferred and eight of the nine are recording defects rather than open
-    questions - a license inside a compound key, a gate written as a sentence, a bare `cc`
-    naming no terms. The one that is not is `math`, scored on a DMCA takedown the ladder has
-    no way to see.
+    Nine products were deferred at the outset and most were recording defects rather than
+    open questions - a license inside a compound key, a gate written as a sentence, a bare
+    `cc` naming no terms. Two have since resolved on a card read: `mt-bench` and `livebench`
+    each recorded a license and an answer state and nothing about their documentation or
+    access, and the top rung asks for a card deliberately. Both document themselves in the
+    repository rather than on a Hub card - FastChat's llm_judge README for one, a full
+    datasheets-for-datasets questionnaire for the other - and recording that reproduces the
+    5/open both already carried.
+
+    Seven are left and they now split three ways. Four are still recording defects
+    (`gaia`, `humanitys-last-exam`, `compar-ia-datasets`, `multipl-e`). `math` is scored on
+    a DMCA takedown the ladder has no way to see. And two are the license question answered
+    rather than avoided: `livecodebench`'s bare `cc` was researched to the point of
+    exhaustion and the variant genuinely is not published anywhere, while
+    `swe-bench-verified` turned out to have a stated MIT after all, which turns its deferral
+    from an unreadable value into a live 4-versus-5 disagreement.
 
     A tenth, `gpqa`, was corrected rather than deferred: it recorded 4/gated, a pair no rung
     produces, and the ladder's answer of 3 is what the other nine gated corpora on the map
@@ -47,18 +59,29 @@ scoring_recipe:
         repo over AMC/AIME problem rights. Recording `access:closed` would settle it.
     swe-bench-verified:
       because: >-
-        License `undeclared on HF dataset card` resolves to the `unstated` tier, which carries
-        no rung: absent a grant there is no permission to rely on, however freely the files
-        download. Recorded 4/open, and its note explicitly scores 4 rather than 5 on that
-        ambiguity - which is the same reasoning the `unstated` tier encodes, so the disagreement
-        is only about whether an inferred license can support a 4 at all. Note
-        `openhermes-2-5` in training_synthetic_datasets is deferred for the same tier and
-        recorded 5, so the two disagree with each other; one answer should cover both.
+        Now a live disagreement rather than an unreadable value. The card read on 2026-08-12
+        confirmed the HF card for Verified still declares no license, but found the license
+        stated where the deferral had assumed it was only inferred: the canonical SWE-bench
+        repository describes itself as "Code and data for the following works", lists SWE-bench
+        among them, and its "Citation & license" section says "MIT license", with the citation
+        directly beneath headed "For SWE-bench (Verified)". Recording `license:MIT` resolves
+        the `open_data` tier and, with `datasheet:yes`, the ladder computes 5/open against a
+        recorded 4. Neither side has been adjusted. The 4 rests on the reading that a license
+        stated by the project but absent from the distribution point is weaker than one stated
+        on the card; the ladder does not draw that distinction. Someone has to pick.
     livecodebench:
       because: >-
-        License recorded as a bare `cc`, which names no terms - CC-BY and CC-BY-NC are both
-        `cc`, and they sit two tiers apart. Resolves to `unstated`, which carries no rung.
-        Recorded 4/open on exactly that ambiguity. Reading the card for the variant settles it.
+        Researched and genuinely unstated. The bare `cc` names no terms - CC-BY and CC-BY-NC
+        are both `cc` and sit two tiers apart - and a read on 2026-08-12 could not find the
+        variant anywhere the project publishes it: the card front matter, the Hub API
+        cardData and tags, the sibling `code_generation` and `test_generation` corpora, the
+        repository LICENSE (MIT, and it covers the lcb_runner harness rather than the
+        problems), the 217-line repository README, ERRATA.md, the project site and
+        leaderboard, and the paper. The repo discussions never raise it. The problems are
+        collected from LeetCode, AtCoder and Codeforces, which is a plausible reason no
+        variant has been committed to. An artifact whose publisher has not named its terms
+        is a real state of the world; the abstention is the right answer and not a gap in
+        the research.
     multipl-e:
       because: >-
         Recorded 4/open; the ladder computes 5/open. The 4 rests on a `caveat:` key recording
@@ -84,16 +107,6 @@ scoring_recipe:
         The gate is recorded as `gated:HF contact-info agreement required`, a sentence rather
         than a token, so `head()` returns the whole phrase and it matches no rung. The recorded
         3/gated is what `terms-acceptance+contact-info` produces. A vocabulary fix, not research.
-    mt-bench:
-      because: >-
-        Records neither a card nor an availability key - only `license:Apache-2.0` and
-        `answers:public`. The top rung requires documentation deliberately, so that a product
-        recording nothing cannot reach 5 by default. Recorded 5/open; needs its card and
-        access state recorded.
-    livebench:
-      because: >-
-        As `mt-bench`: `license:Apache-2.0/MIT` and `answers:public` and nothing else. Recorded
-        5/open, and the ladder declines to award it on an unrecorded card.
 products:
 - humaneval
 - gsm8k

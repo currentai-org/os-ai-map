@@ -5,7 +5,8 @@ openness:
   components:
     license:
       value: not-clearly-stated-on-card
-      detail: commonly cited as permissive
+      detail: no license field in the card YAML, no license section in the card body, no LICENSE file in
+        the repository and no license tag on the Hub API
     card:
       value: present
     ungated:
@@ -16,12 +17,32 @@ openness:
       value: ~1M
   confidence: medium
   note: Publicly downloadable and ungated with a full card, though an explicit license string is not stated
-    on the card.
-  raw: license:not-clearly-stated-on-card(commonly cited as permissive);card:present;ungated:yes;format:JSON/Parquet;rows:~1M
+    on the card. A card read on 2026-08-12 confirms there is no license anywhere the publisher controls
+    - the card front matter carries language, pretty_name and tags and no license key, the 126-line body
+    runs from the source list through the format description to the citation without a terms section,
+    the repository holds only .gitattributes, README.md and openhermes2_5.json so there is no LICENSE
+    file, and the Hub API returns no license for it. The 'commonly cited as permissive' detail this record
+    used to carry was a third-party reading and has been dropped.
+  raw: license:not-clearly-stated-on-card(no license field in the card YAML, no license section in the card
+    body, no LICENSE file in the repository and no license tag on the Hub API);card:present;ungated:yes;format:JSON/Parquet;rows:~1M
   sources:
   - url: https://huggingface.co/datasets/teknium/OpenHermes-2.5
     shows: Public ungated dataset card, ~1M rows, synthetic/GPT-4 tags
     accessed: '2026-06-22'
+  - url: https://huggingface.co/datasets/teknium/OpenHermes-2.5/raw/main/README.md
+    shows: 'card front matter is language, pretty_name and tags only, with no `license:` key; the 126-line
+      body covers the dataset description, the Lilac integration, the full list of constituent source
+      datasets, the sharegpt format and a citation, and contains no occurrence of "license" or "terms"'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 92fd711b9f0f6f8c7312d18d93ad412af415cd25a207584554c8e72c0cfe9f64
+    establishes: [license]
+  - url: https://huggingface.co/api/datasets/teknium/OpenHermes-2.5
+    shows: cardData carries no license and the repository has no `license:` tag; siblings are .gitattributes,
+      README.md and openhermes2_5.json, so no LICENSE file ships with the data
+    accessed: '2026-08-12'
+    http_status: 200
+    establishes: [license]
 adoption:
   level: 3
   reach: 10k-100k

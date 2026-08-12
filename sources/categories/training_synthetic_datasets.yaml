@@ -34,16 +34,27 @@ scoring_recipe:
     `dataset_card:present` and `ungated` became `access:ungated`, which is the same evidence
     under a name the ladder reads. No score moved.
 
-    One is left, `openhermes-2-5`, and it is the one that does need an answer rather than a key.
+    One is left, `openhermes-2-5`, and it is the one that needed an answer rather than a key.
+    The answer came back on 2026-08-12 and it is that there is no license: not in the card
+    front matter, not in the card body, not as a file in the repository, not on the Hub API.
+    The deferral stands, and what it now records is a finding rather than a question. Whether
+    a corpus nobody has licensed can carry 5/open is a curation call.
 
   extends: dataset
   deferred:
     openhermes-2-5:
       because: >-
-        License `not-clearly-stated-on-card` resolves to the `unstated` tier, which carries no
-        rung: absent a grant there is no permission to rely on, however freely the files
-        download. Recorded 5/open with the note conceding no explicit license string exists.
-        Either the license is findable, in which case record it, or a 5 is not supportable.
+        Researched and genuinely unstated, so the deferral stands on a finding rather than on
+        an open question. A read on 2026-08-12 checked everywhere the publisher could state
+        terms: the card front matter carries language, pretty_name and tags and no `license:`
+        key; the 126-line body runs from the constituent source list through the sharegpt
+        format description to the citation with no terms section and no occurrence of the word
+        "license"; the repository holds only .gitattributes, README.md and openhermes2_5.json,
+        so no LICENSE file ships with the data; and the Hub API returns no license and no
+        `license:` tag. The `commonly cited as permissive` detail was a third-party reading and
+        has been dropped. Nobody has granted anything, so the `unstated` tier is correct and
+        the recorded 5/open is not supportable on the license. Moving it is a curation call,
+        not a research one.
 products:
 - fineweb
 - fineweb-edu

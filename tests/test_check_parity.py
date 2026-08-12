@@ -142,7 +142,15 @@ def test_local_scores_matches_check_rubrics_split():
     the CC-BY-4.0 documentation branch maps to no tier, so the ladder abstains on the license
     rather than on the missing keys the old reason blamed.
 
-    Then 442/30 -> 446/26 when the four guardrail-model deferrals in `safeguards` came off.
+    Then 446/26 -> 448/24 when a card read closed mt-bench and livebench in
+    `benchmark_eval_data`. Neither needed a license: both already recorded one the ladder
+    reads, and what the top rung was missing was a documentation key, which it asks for
+    deliberately so a product recording nothing cannot reach 5 by default. Both document
+    themselves in the repository rather than on a Hub card - FastChat's llm_judge README for
+    mt-bench, a datasheets-for-datasets questionnaire for livebench - and recording that
+    reproduces the 5/open each already carried.
+
+    Before that, 442/30 -> 446/26 when the four guardrail-model deferrals in `safeguards` came off.
     All four were recorded 4/open_weights against a ladder computing 3, and all four dropped
     to 3 rather than the ladder bending. qwen3guard, granite-guardian and gpt-oss-safeguard
     were one case argued once - Apache-2.0 weights, `data:not-released`, no recipe published -
@@ -154,8 +162,8 @@ def test_local_scores_matches_check_rubrics_split():
     and the card sends readers to the paper appendix for training details. That is
     `code:partial`, the 4-rung still fails, and open data on its own does not carry it."""
     computed, deferred = local_scores(None)
-    assert len(deferred) == 26
-    assert len(computed) == 446
+    assert len(deferred) == 24
+    assert len(computed) == 448
     assert not set(computed) & set(deferred)
     # Every one of the 410 reproduces today, so none should abstain.
     assert [key for key, value in computed.items() if value is None] == []
