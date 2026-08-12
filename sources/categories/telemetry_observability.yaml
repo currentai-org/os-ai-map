@@ -45,21 +45,47 @@ scoring_recipe:
   # these already abstain; declaring them here records WHY, and keeps the
   # reproduction count honest by excluding them from it rather than counting
   # them as passes.
+  #
+  # All four were read on 2026-08-12. langfuse closed and now scores; the other three
+  # each turned out to be held back by something other than the missing core-gated key,
+  # so their reasons now say what the read actually found. The evidence is recorded on
+  # each score file with `establishes` tags either way - what is deferred is the
+  # judgment, not the research.
   deferred:
     agentops:
       because: >-
-        source or core-gated is not recorded in a form the ladder can read; needs a read of
-        the repo and pricing page
+        read 2026-08-12 and it does not reproduce the 4. Nothing is withheld from the
+        published source - app/ ships api, dashboard, ClickHouse, the OTel collector,
+        Supabase and a compose file, with no ee/ directory and no license key - so
+        core-gated reads `ungated`, which against the recorded MIT computes 5. But the
+        recorded MIT is the SDK's: app/LICENSE is the Elastic License 2.0, which forbids
+        offering the software as a hosted service and so tiers as competition_restricted,
+        landing on the 2/source_available rung. 5 or 2, not 4. Needs a human to settle
+        which SKU this slug is scored on; the vendor's README calls the app MIT and its
+        LICENSE file does not
     langtrace:
       because: >-
-        source or core-gated is not recorded in a form the ladder can read; needs a read of
-        the repo and pricing page
+        read 2026-08-12, and the recorded blocker was the wrong one - check_rubric
+        abstains on `blocked_on_tier`, because the license value `app=AGPL-3.0` is a
+        scoped spelling matching no license_tier example, so no rung testing a tier can
+        fire whatever core-gated says. On the evidence it is ungated: the whole AGPL-3.0
+        application is in the repo with no ee/ or enterprise directory, self-hosting is
+        documented, and the vendor's own FAQ says Langtrace Cloud is not charged for. That
+        computes 5/open_source against a recorded 4 whose stated grounds - AGPL copyleft
+        and a hosted tier - are both rationales the map has since rejected (#125 and the
+        core_gated rule). Needs a human to settle the 4 and fix the license spelling
+        together
     weave:
       because: >-
-        source or core-gated is not recorded in a form the ladder can read; needs a read of
-        the repo and pricing page
-    langfuse:
-      because: >-
-        source or core-gated is not recorded in a form the ladder can read; needs a read of
-        the repo and pricing page
+        read 2026-08-12, and the finding lands on `source` rather than on core-gated. The
+        Apache-2.0 repo publishes the SDK and a real ClickHouse trace-server library, but
+        no UI, no deployment manifest, and not the HTTP service - the repo's own
+        trace_server README diagrams that as "(in core)", W&B's closed repository - while
+        the README's prerequisite is a W&B account and W&B's docs require a purchased
+        Server license to self-manage. That is software.yaml's `partial`, the
+        webcontainers shape, which computes 2/source_available against a recorded 4. The
+        record's own note already says the backend is proprietary while its `source` key
+        says public. Recording core-gated would make the components compute exactly 4 and
+        close this on a `source` value the read does not support, so it was not recorded.
+        Needs a human to settle `source` first
 comments: ''

@@ -774,7 +774,15 @@ def test_real_sources_serialize_without_errors():
         # set rather than none of it: continue and nextchat contribute five rows each, doubao
         # five, and deepseek-chat and meta-ai four apiece, those two recording no license.
         # litellm was already computed and gained nothing when its bare `gated` was evidenced.
-        "orchestration_agents": 207, "telemetry_observability": 94, "ui_api": 184,
+        #
+        # telemetry_observability 94 -> 99 on the 2026-08-12 evidence sweep of that category.
+        # Exactly one deferral came off - langfuse, which now publishes its five openness rows
+        # instead of none. agentops, langtrace and weave stayed deferred as conflicts and so
+        # still publish nothing, however much evidence their score files now carry, and the
+        # count is the check on that. The three bare-`gated` products in the category were
+        # already computed: agenta and langwatch kept their 4 with the gate now evidenced, and
+        # helicone moved 4 -> 5 on `core-gated:ungated`, none of which adds or removes a row.
+        "orchestration_agents": 207, "telemetry_observability": 99, "ui_api": 184,
         # training_synthetic_datasets is unchanged at 158 across the ladder widening, which
         # is the check that mattered: benchmark_eval_data's new dimensions and rungs did not
         # disturb the category the ladder was derived from.

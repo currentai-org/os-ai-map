@@ -11,19 +11,88 @@ openness:
       detail: SCIM,audit-logs,data-retention
     source:
       value: public
+    core-gated:
+      value: gated
+      detail: the root LICENSE carves ee/, web/src/ee/ and worker/src/ee/ out of MIT and under ee/LICENSE,
+        the Langfuse Enterprise License; ee/src ships an ee-license-check module and web/src/ee/features
+        holds multi-tenant SSO, SSO settings, the audit-log viewer, the admin API, billing, verified domains
+        and UI customization
   confidence: high
-  note: license:MIT(core:tracing/integrations/API/data-model/exports/evals/playground/SSO);commercial:enterprise-security(SCIM,audit-logs,data-retention);source:public
-  raw: license:MIT(core:tracing/integrations/API/data-model/exports/evals/playground/SSO);commercial:enterprise-security(SCIM,audit-logs,data-retention);source:public
+  note: 'MIT core with a commercially licensed enterprise directory in the same repository. `core-gated:
+    gated` verified 2026-08-12 by a direct read, and it does NOT rest on Langfuse Cloud or on the ClickHouse
+    acquisition. The root LICENSE splits the repo itself: "All content that resides under the ''ee/'', ''web/src/ee/'',
+    and/or ''worker/src/ee/'' directories of this repository, if these directories exist, is licensed under
+    the license defined in ''ee/LICENSE''", and everything outside them is MIT Expat. ee/LICENSE opens by
+    calling Langfuse "an open core project" and requires "a valid Langfuse Enterprise License". The carve-out
+    is not a stub: ee/src holds an ee-license-check module and web/src/ee/features holds admin-api, audit-log-viewer,
+    billing, multi-tenant-sso, sfdc-sync, sso-settings, ui-customization and verified-domains. That is the
+    litellm side of the line, not the langchain side. One correction the read forces on this record''s own
+    prose: the license clause below claims SSO is in the MIT core, and it is not - multi-tenant-sso and
+    sso-settings are both under web/src/ee/.'
+  raw: license:MIT(core:tracing/integrations/API/data-model/exports/evals/playground/SSO);commercial:enterprise-security(SCIM,audit-logs,data-retention);source:public;core-gated:gated(the
+    root LICENSE carves ee/, web/src/ee/ and worker/src/ee/ out of MIT and under ee/LICENSE, the Langfuse
+    Enterprise License; ee/src ships an ee-license-check module and web/src/ee/features holds multi-tenant
+    SSO, SSO settings, the audit-log viewer, the admin API, billing, verified domains and UI customization)
+  last_verified: '2026-08-12'
   sources:
-  - url: https://github.com/langfuse/langfuse
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
   - url: https://langfuse.com/blog/2025-06-04-open-sourcing-langfuse-product
     shows: flagship phase-C verification source
     accessed: '2026-06-04'
   - url: https://clickhouse.com/blog/clickhouse-acquires-langfuse-open-source-llm-observability
     shows: flagship phase-C verification source
     accessed: '2026-06-04'
+  - url: https://raw.githubusercontent.com/langfuse/langfuse/main/LICENSE
+    shows: 'Root LICENSE body, read rather than assumed. It opens "Portions of this software are licensed
+      as follows:" and splits the repository: "All content that resides under the ''ee/'', ''web/src/ee/'',
+      and/or ''worker/src/ee/'' directories of this repository, if these directories exist, is licensed
+      under the license defined in ''ee/LICENSE''", while "Content outside of the above mentioned directories
+      or restrictions above is available under the ''MIT Expat'' license", whose full text follows. So the
+      tier-setting license is MIT and the gate is a carve-out named in the license itself.'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 7605d1b4ea8a8cb4775fb71a15611cecf71852ca2c6d4b5313effb1cde5acd9d
+    establishes:
+    - license
+    - core-gated
+  - url: https://raw.githubusercontent.com/langfuse/langfuse/main/ee/LICENSE
+    shows: 'The Langfuse Enterprise License. Its preamble states "Langfuse is an open core project. Langfuse''s
+      core is permissively licensed (MIT license). Certain parts of the periphery of Langfuse are commercially
+      licensed and governed by this Enterprise License." The grant itself: the software "may only be used,
+      if you (and any entity that you represent) have agreed to, and are in compliance with, the applicable
+      Langfuse Terms of Service ... or other agreement governing the use of the Software, as agreed by you
+      and Langfuse, and otherwise have a valid Langfuse Enterprise License."'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 592171b77b3b1443871b539664fc88eec6b9ec82c76016762c8cf1975b2378ce
+    establishes:
+    - core-gated
+  - url: https://api.github.com/repos/langfuse/langfuse/contents/web/src/ee/features
+    shows: 'What the carve-out actually withholds, listed rather than characterized: admin-api, audit-log-viewer,
+      billing, multi-tenant-sso, sfdc-sync, sso-settings, ui-customization, verified-domains. These are
+      features of the Langfuse product, not a separate hosted service beside it, which is the distinction
+      the core_gated dimension turns on.'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 2c96e96d7f05c807c3cd360f7898de9814bce2d592f3effe4ace278ab6c1baab
+    establishes:
+    - core-gated
+  - url: https://api.github.com/repos/langfuse/langfuse/contents/ee/src
+    shows: The enforcement point. ee/src contains ee-license-check, env.ts and index.ts - a license check
+      module in the enterprise-licensed half of the tree, which is the rubric's own wording for a gate.
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 3013607ddb54140baa7401f836f386d923f53f057331d3995e19c2d2593fcb19
+    establishes:
+    - core-gated
+  - url: https://api.github.com/repos/langfuse/langfuse/contents/
+    shows: Repository root. The published tree is the whole platform - web, worker, packages, fern, and
+      docker-compose files for dev and prod - so self-hosting the MIT core needs nothing outside the repo
+      and the source dimension is public. `ee` sits beside them as its own top-level directory.
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 60726e134958140b6fca750eaf6bc42dbd7ef0f03d56ab9f7809fff5065ecc54
+    establishes:
+    - source
 adoption:
   level: 3
   reach: 100K-1M
