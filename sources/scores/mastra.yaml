@@ -10,46 +10,90 @@ openness:
       value: public
     core-gated:
       value: gated
+      detail: RBAC, SSO and FGA live in ee/-scoped directories under the Mastra Enterprise License and are
+        switched on at runtime by MASTRA_LICENSE_KEY, validated against the Mastra license server
     free_text:
     - ee/-auth-directories-under-Mastra-Enterprise-License
     - Mastra-Platform-hosted-tier-commercial
   confidence: high
-  note: Open-core in the LangGraph/LlamaIndex shape rather than the n8n one - the framework itself is a real
-    OSI license, not fair-code. LICENSE.md scopes the commercial carve-out narrowly to `ee/` auth directories,
-    so the agent, workflow, memory and eval surfaces a user actually builds on are Apache-2.0. Not 5 because
-    the enterprise auth code is source-available and the managed platform is closed.
-  last_verified: '2026-07-30'
-  raw: license:Apache-2.0(OSI, everything outside `ee/`);source:public;ee/-auth-directories-under-Mastra-Enterprise-License;Mastra-Platform-hosted-tier-commercial;core-gated:gated
+  note: 'Open-core in the LangGraph/LlamaIndex shape rather than the n8n one - the framework itself is a
+    real OSI license, not fair-code. LICENSE.md scopes the commercial carve-out narrowly to `ee/` auth directories,
+    so the agent, workflow, memory and eval surfaces a user actually builds on are Apache-2.0. The bare
+    `gated` was transcribed 2026-08-12 to a named mechanism: ee/LICENSE is a separate Enterprise Edition
+    license forbidding production use without a written agreement with Kepler Software, and packages/_internals/auth/src/ee/license.ts
+    disables the EE features unless MASTRA_LICENSE_KEY validates against the Mastra license server, which
+    returns entitlements for rbac, sso and fga. So functionality is withheld from the published source by
+    a license key, not merely sold beside it. Not 5 for that reason; the managed Mastra Cloud is separate
+    and is not what decides this.'
+  last_verified: '2026-08-12'
+  raw: license:Apache-2.0(OSI, everything outside `ee/`);source:public;ee/-auth-directories-under-Mastra-Enterprise-License;Mastra-Platform-hosted-tier-commercial;core-gated:gated(RBAC,
+    SSO and FGA live in ee/-scoped directories under the Mastra Enterprise License and are switched on at
+    runtime by MASTRA_LICENSE_KEY, validated against the Mastra license server)
   sources:
   - url: https://github.com/mastra-ai/mastra/blob/main/LICENSE.md
     shows: 'LICENSE.md: "All content that resides under any directory named ''ee/'' within this repository"
       - listing packages/core/src/auth/ee/ and packages/server/src/server/auth/ee/ - "is licensed under
-      the license defined in ee/LICENSE", while everything "not mentioned" in those directories or
-      restrictions "is available under the ''Apache License 2.0''". This preamble ahead of the Apache
-      text is why GitHub''s classifier reports NOASSERTION for the repo.'
+      the license defined in ee/LICENSE", while everything "not mentioned" in those directories or restrictions
+      "is available under the ''Apache License 2.0''". This preamble ahead of the Apache text is why GitHub''s
+      classifier reports NOASSERTION for the repo.'
     accessed: '2026-07-30'
     http_status: 200
     content_sha256: f3e088854ab54991f81a9b4a0b8343d33a80124c091dfb5c962e67b589f0e1bd
-    establishes: [license, core-gated]
+    establishes:
+    - license
+    - core-gated
   - url: https://registry.npmjs.org/@mastra/core
-    shows: 'Registry metadata declares `license: Apache-2.0`, latest 1.55.0 (was 1.54.0 on 2026-07-29),
-      confirming the framework ships to consumers under the OSI license rather than only being licensed
-      that way in-repo. Cited previously as the npmjs.com package page, which answers 403 to any
-      non-browser fetch behind a Cloudflare interstitial; the registry endpoint serves the same fact
-      and can actually be re-checked.'
-    accessed: '2026-07-30'
+    shows: 'Registry metadata declares `license: Apache-2.0`, latest 1.57.0 (was 1.55.0 on 2026-07-30),
+      confirming the framework still ships to consumers under the OSI license rather than only being licensed
+      that way in-repo. The npmjs.com package page answers 403 to any non-browser fetch behind a Cloudflare
+      interstitial; this registry endpoint serves the same fact and can actually be re-checked.'
+    accessed: '2026-08-12'
     http_status: 200
-    content_sha256: 374b1995706041a57a638521d51bfef0ea265ca0acfd323e412b3b3d90e9980f
-    establishes: [license]
+    content_sha256: a4361185051f473caffd3e3cd222e17f108be4f873c688dca43548149dbba9c1
+    establishes:
+    - license
   - url: https://mastra.ai/
-    shows: 'Site FAQ states "Mastra''s core framework is open source under the Apache 2.0 license.
-      Enterprise features are source-available under the Mastra Enterprise License", and describes
-      Mastra Cloud as the hosted commercial tier you can "deploy the same app to" after running it
-      locally - so the published framework is what self-hosts.'
+    shows: Site FAQ states "Mastra's core framework is open source under the Apache 2.0 license. Enterprise
+      features are source-available under the Mastra Enterprise License", and describes Mastra Cloud as
+      the hosted commercial tier you can "deploy the same app to" after running it locally - so the published
+      framework is what self-hosts.
     accessed: '2026-07-30'
     http_status: 200
     content_sha256: c1458faa3a17755659530882810b981eaa4849f8e2135f48e2c7efe7cc8ce82b
-    establishes: [source, core-gated]
+    establishes:
+    - source
+    - core-gated
+  - url: https://api.github.com/repos/mastra-ai/mastra/git/trees/main?recursive=1
+    shows: Full untruncated recursive tree, 16,790 entries. A top-level ee/LICENSE sits beside the root
+      LICENSE.md, and the ee/-named source lives at packages/_internals/auth/src/ee/ (capabilities.ts, fga-check.ts,
+      license.ts, defaults/rbac/) re-exported through packages/core/src/auth/ee/ and packages/editor/src/ee/.
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 6aba676525def05671991978ba682502d6edc429084b9a79c823a88ae8aa46cc
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/mastra-ai/mastra/main/ee/LICENSE
+    shows: '"Mastra Enterprise Edition (EE) License". The Software "may only be used in production if you
+      (and any entity that you represent) have entered into, and remain in compliance with, a written agreement
+      with Kepler Software, Inc. explicitly permitting the use of the Software in production", and it is
+      otherwise "forbidden to copy, merge, publish, distribute, sublicense, and/or sell the Software".'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: d949aa063ea2a9a626d9f635ea44c212edd780875568f03d092315522c41da58
+    establishes:
+    - core-gated
+  - url: https://raw.githubusercontent.com/mastra-ai/mastra/main/packages/_internals/auth/src/ee/license.ts
+    shows: '"License validation for EE features." Validation is a POST to {MASTRA_LICENSE_URL}/validate;
+      "No license key configured -> EE features disabled"; "Server says invalid/revoked/expired -> EE features
+      disabled". The success payload carries "Feature entitlements granted by the license (e.g. rbac, sso,
+      fga)" and a planTier of teams or enterprise. MASTRA_LICENSE_KEY is the primary env var, MASTRA_EE_LICENSE
+      a legacy alias.'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 774f3dede2eeeceb7e0f212021fb25ea3df1a8bb9285d4f8b54bb47f3c85d99f
+    establishes:
+    - core-gated
 adoption:
   level: 4
   reach: 1M-10M

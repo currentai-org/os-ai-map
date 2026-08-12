@@ -13,12 +13,26 @@ openness:
       value: Blaxel proprietary perpetual-standby platform
     core-gated:
       value: gated
+      detail: the control plane that creates, suspends and resumes sandboxes - the perpetual-standby platform
+        Blaxel sells - exists in no public repo; the MIT repo publishes only the in-sandbox HTTP API and
+        a hub of image templates
   confidence: medium
-  note: MIT sandbox API that is self-hostable via Docker Compose, with a proprietary managed perpetual-standby
-    platform, so open-core. The open component carries a maximally permissive MIT license; the standby/scale
-    platform is the closed value-add. Open surface is narrower than E2B's full self-hostable infra.
+  note: 'MIT sandbox API and image hub with a proprietary managed platform. Confirmed `gated` 2026-08-12
+    on a named mechanism rather than on the paid tier existing, and it is the firecrawl/composio shape rather
+    than the litellm one: nothing is carved out inside the repo, but the piece that makes Blaxel a sandbox
+    product is not in any repo. blaxel-ai/sandbox is 419 entries of sandbox-api - the HTTP API running inside
+    a sandbox - plus about thirty Dockerfile templates under hub/, and the README calls it "Sandbox Hub
+    ... a collection of development environment templates". The scheduler that allocates a micro VM, and
+    the perpetual-standby and sub-25ms resume the product is sold on, appear nowhere across all 29 public
+    repos in the org, which hold SDKs, plugins and forks of third-party infrastructure. Deliberately not
+    decided by analogy with the other three sandbox slugs in this batch: e2b publishes the infra powering
+    its cloud and beta9 publishes its whole gateway, and both moved to 5, while this one and tensorlake
+    did not.'
   raw: license:MIT(OSI);source:public(sandbox API, self-hostable via Docker Compose);managed-tier:Blaxel
-    proprietary perpetual-standby platform;core-gated:gated
+    proprietary perpetual-standby platform;core-gated:gated(the control plane that creates, suspends and
+    resumes sandboxes - the perpetual-standby platform Blaxel sells - exists in no public repo; the MIT
+    repo publishes only the in-sandbox HTTP API and a hub of image templates)
+  last_verified: '2026-08-12'
   sources:
   - url: https://github.com/blaxel-ai/sandbox
     shows: MIT license; sandbox API self-hostable via Docker Compose (port 8080)
@@ -26,6 +40,46 @@ openness:
   - url: https://blaxel.ai/sandbox
     shows: perpetual sandbox platform for AI agents; standby at zero compute cost, sub-25ms resume
     accessed: '2026-07-09'
+  - url: https://api.github.com/repos/blaxel-ai/sandbox/git/trees/main?recursive=1
+    shows: 'Full untruncated recursive tree, 419 entries, one MIT LICENSE. The entire tree is sandbox-api/
+      (the HTTP API that runs inside a sandbox: filesystem, process, network), hub/ (about thirty Dockerfile
+      templates - base-image, py-app, ts-app, chromium, jupyter, claude-code), docker/, e2e/ and a docker-compose.yaml
+      for building and testing those images. There is no scheduler, allocator, control plane or standby/resume
+      implementation anywhere in it.'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: b1b612cf67f5b4d781e27a43e706b30fe681e5a176efe3158aa56144d1a1e44a
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/blaxel-ai/sandbox/main/README.md
+    shows: The repo describes itself as "Sandbox Hub ... a collection of development environment templates
+      for creating secure, isolated micro VM environments", and its prerequisites and installation steps
+      are Docker Compose for building and running those template images locally. It documents no way to
+      run the Blaxel platform itself.
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 6f76844494b52dacdaca2da7a70976c7fa4ce9c7d832a8b6abeb4be864d2c7d8
+    establishes:
+    - core-gated
+  - url: https://api.github.com/orgs/blaxel-ai/repos?per_page=100
+    shows: All 29 public repos in the org. They are SDKs and clients (sdk-python, sdk-typescript, sdk-go,
+      toolkit, blaxel-mcp-server), integration plugins, image bases and forks of third-party infrastructure
+      (virtual-kubelet, fluent-bit, kubernetes-event-exporter). No repo implements the sandbox control plane
+      the SDKs call; bl-controller is a Kubernetes controller for legacy Beamlit resources.
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: c8cac64d3d4add4f1b6d5f16abc41dc30a4c5dae8c991c572afe9194b0332208
+    establishes:
+    - core-gated
+  - url: https://api.github.com/repos/blaxel-ai/sandbox
+    shows: 'Repo metadata: language Go, license spdx_id MIT, 26 stars, default branch main.'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 34751a56a7043e97258a45b5636fcd529040374c4c135509c607605af692a379
+    establishes:
+    - license
+    - source
 adoption:
   level: 1
   reach: null

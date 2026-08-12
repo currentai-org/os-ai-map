@@ -13,15 +13,56 @@ openness:
       value: Premium/Enterprise paid features for large teams under separate Coder enterprise license
     core-gated:
       value: gated
+      detail: the enterprise/ tree - audit logs, groups/RBAC, AI seat tracking - is governed by LICENSE.enterprise
+        rather than the AGPL root, and that license forbids circumventing the license key protecting those
+        features
   confidence: high
-  note: AGPL-3.0 OSI core (Community Edition) with a separate proprietary Premium/Enterprise tier => open_core,
-    calibrated identically to the Ray anchor (O4 open_core).
+  note: 'AGPL-3.0 OSI core (Community Edition) with a separate proprietary Premium/Enterprise tier => open_core.
+    The bare `gated` was transcribed 2026-08-12 from a read of the repo and both LICENSE files, and it holds
+    on a named mechanism rather than on the paid tier existing. coder/coder carries two top-level licenses:
+    the root AGPL-3.0 and LICENSE.enterprise, the latter scoped by its own text to "directory named enterprise".
+    That directory is in the published tree but not under the open license, it contains the audit log, group/RBAC
+    and AI seat-tracking implementations, and the enterprise license forbids circumventing the license key
+    that unlocks them. This is the litellm shape - a carve-out inside the repo - not the otari one.'
   raw: license:AGPL-3.0(OSI, Community Edition);source:public(GitHub);commercial-tier:Premium/Enterprise
-    paid features for large teams under separate Coder enterprise license;core-gated:gated
+    paid features for large teams under separate Coder enterprise license;core-gated:gated(the enterprise/
+    tree - audit logs, groups/RBAC, AI seat tracking - is governed by LICENSE.enterprise rather than the
+    AGPL root, and that license forbids circumventing the license key protecting those features)
+  last_verified: '2026-08-12'
   sources:
   - url: https://github.com/coder/coder
     shows: AGPL-3.0 Community Edition + Premium paid tier (compare-plans), self-hosted workspaces
     accessed: '2026-06-04'
+  - url: https://api.github.com/repos/coder/coder/git/trees/main?recursive=1
+    shows: Full untruncated recursive tree, 13,459 entries. A top-level enterprise/ directory holds the
+      paid surface - enterprise/audit/ with postgres and slog backends, enterprise/aiseats/tracker.go, enterprise/cli/licenses.go,
+      enterprise/cli/features.go, enterprise/cli/group*.go - and a second top-level LICENSE.enterprise sits
+      beside the root LICENSE.
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 96005634bca8410613b06b50aa5bca3ec072ac5035c36fc30b707576222357e7
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/coder/coder/main/LICENSE.enterprise
+    shows: 'Scopes itself to "any software and associated documentation files under Coder Technologies Inc.’s
+      ("Coder") directory named "enterprise"", and states under Limitations: "You may not move, change,
+      disable, or circumvent the license key functionality in the software, and you may not remove or obscure
+      any functionality in the software that is protected by the license key." Production use additionally
+      requires agreement to Coder’s Terms of Service.'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: b8768592764cbd705a1a314ff5359f422c8febb38d9f0cc476ad041829d9fe58
+    establishes:
+    - core-gated
+  - url: https://raw.githubusercontent.com/coder/coder/main/LICENSE
+    shows: Root license is the GNU Affero General Public License v3, verbatim, governing everything the
+      enterprise carve-out does not name.
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef
+    establishes:
+    - license
 adoption:
   level: 3
   signal_type: stars_fallback

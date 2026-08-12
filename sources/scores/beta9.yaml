@@ -1,7 +1,7 @@
 product: beta9
 openness:
-  score: 4
-  class: open_core
+  score: 5
+  class: open_source
   components:
     license:
       value: AGPL-3.0
@@ -13,18 +13,60 @@ openness:
       detail: beam.cloud) fully-managed GPU cloud (proprietary
       raw: Beam (beam.cloud) fully-managed GPU cloud (proprietary)
     core-gated:
-      value: gated
+      value: ungated
+      detail: the whole AGPL-3.0 stack is in the repo - gateway, scheduler, worker, proto, deploy manifests
+        and even the billing service - with no second license file and no license-key module, and Beam sells
+        concurrency, seats and retention on the hosted cloud
   confidence: high
-  note: >-
-    AGPL-3.0 (OSI copyleft) engine plus the proprietary managed Beam cloud => open_core. Scored
-    4 on the same footing as the Apache-licensed open-core peers. Corrected from 3, which had
-    followed Daytona in penalizing copyleft; both are corrected together.
+  note: AGPL-3.0 (OSI copyleft) engine with the managed Beam cloud sold beside it. Corrected 2026-08-12
+    from a bare `gated` to `ungated` on a read of the repo and beam.cloud/pricing. The 1,281-entry untruncated
+    tree carries one governing LICENSE plus a single vendored one, no enterprise or ee/ directory, and no
+    license-key module; the whole server stack ships - gateway, scheduler, worker, protos, Docker and Kubernetes
+    manifests - and even pkg/gateway/services/compute/billing.go, the metering the hosted product runs on,
+    is inside the AGPL tree. Beam’s pricing tiers concurrency, seats and log retention on the hosted cloud,
+    names no capability the source lacks, and advertises a self-hosted product that "runs entirely in your
+    own environment". That is a separate managed service around a complete open core, which the rubric says
+    does not gate it.
   raw: license:AGPL-3.0(OSI, copyleft);source:public;managed-tier:Beam (beam.cloud) fully-managed GPU cloud
-    (proprietary);core-gated:gated
+    (proprietary);core-gated:ungated(the whole AGPL-3.0 stack is in the repo - gateway, scheduler, worker,
+    proto, deploy manifests and even the billing service - with no second license file and no license-key
+    module, and Beam sells concurrency, seats and retention on the hosted cloud)
+  last_verified: '2026-08-12'
   sources:
   - url: https://github.com/beam-cloud/beta9
     shows: AGPL-3.0 license; open source serverless AI runtime; engine powering managed Beam cloud (beam.cloud)
     accessed: '2026-06-04'
+  - url: https://api.github.com/repos/beam-cloud/beta9/git/trees/main?recursive=1
+    shows: 'Full untruncated recursive tree, 1,281 entries. Two license paths: the root LICENSE and one
+      vendored sdk/src/beta9/vendor/pathspec/LICENSE. No ee/, enterprise/, commercial/ or proprietary/ directory.
+      The top level carries the complete server stack - cmd/, pkg/, proto/, deploy/, manifests/, docker/,
+      sdk/ - and the paid-service plumbing is open too: pkg/gateway/services/compute/billing.go is in the
+      AGPL tree.'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 7925ec17b49e02a708df59bd3c318e6f1de6c19c7d4c0c9dbf3dc922beb932a1
+    establishes:
+    - source
+    - core-gated
+  - url: https://api.github.com/repos/beam-cloud/beta9
+    shows: 'Repo metadata: language Go, license spdx_id AGPL-3.0, 1,741 stars, default branch main.'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: a45b451d6f6e110fb1a0dbf40ba6dc2737b67d8c07599423b1c8feb9ee59ba80
+    establishes:
+    - license
+    - source
+  - url: https://www.beam.cloud/pricing
+    shows: 'Three tiers - Developer ($0 + usage), Team ($89/mo + usage), Growth (contact). They differ on
+      concurrency, seats and log retention: 5 vs 50 vs 1,000+ concurrent GPU containers, 1 vs 3 vs unlimited
+      seats, 30-day vs 1-year retention. No feature is named as absent from the open source, and the page
+      states "We also offer a self-hosted product which runs entirely in your own environment, ensuring
+      that no data leaves your VPC."'
+    accessed: '2026-08-12'
+    http_status: 200
+    establishes:
+    - core-gated
+    content_sha256: c4923b4b478215eaa2d47106d6bf04b8537651d823ec50da432a935539d7356f
 adoption:
   level: 2
   reach: 10K-100K

@@ -1,7 +1,7 @@
 product: e2b-sandbox
 openness:
-  score: 4
-  class: open_core
+  score: 5
+  class: open_source
   components:
     license:
       value: Apache-2.0
@@ -14,16 +14,65 @@ openness:
       detail: proprietary
       raw: e2b.dev hosted sandbox cloud (proprietary)
     core-gated:
-      value: gated
+      value: ungated
+      detail: the infrastructure powering E2B Cloud is itself published Apache-2.0 as e2b-dev/infra with
+        no carve-out, and the paid tiers are capacity and session-length limits on the hosted service rather
+        than features held back from the source
   confidence: high
-  note: Apache-2.0 OSS core (SDKs + self-hostable infra) with a proprietary managed cloud; classic open-core
-    per recipe (E2B named as open-core example).
+  note: 'Apache-2.0 SDKs and infrastructure with a managed cloud sold beside them. Corrected 2026-08-12
+    from a bare `gated` to `ungated` on a read of both repos and the pricing page. e2b-dev/E2B carries four
+    Apache-2.0 LICENSE files, all copies of the root, and no carve-out - but the decisive fact is the second
+    repo: e2b-dev/infra, described by the org as "Infrastructure that is powering E2B Cloud", is public,
+    Apache-2.0 and equally free of an enterprise directory. The managed product runs the published code,
+    which is the otari precedent. The pricing tiers sell capacity and session length - CPU/RAM customisation,
+    24-hour sessions, 100 concurrent sandboxes rising to 1,100 - and name no capability the source withholds.'
   raw: license:Apache-2.0(OSI);source:public(SDKs+infra, Terraform self-host);managed-tier:e2b.dev hosted
-    sandbox cloud (proprietary);core-gated:gated
+    sandbox cloud (proprietary);core-gated:ungated(the infrastructure powering E2B Cloud is itself published
+    Apache-2.0 as e2b-dev/infra with no carve-out, and the paid tiers are capacity and session-length limits
+    on the hosted service rather than features held back from the source)
+  last_verified: '2026-08-12'
   sources:
   - url: https://github.com/e2b-dev/E2B
     shows: Apache-2.0 license; open source sandbox infra + Terraform self-host; managed cloud at e2b.dev
     accessed: '2026-06-04'
+  - url: https://api.github.com/repos/e2b-dev/E2B/git/trees/main?recursive=1
+    shows: 'Full untruncated recursive tree, 993 entries. Four license paths, all Apache-2.0 copies of the
+      root: LICENSE, packages/cli/LICENSE, packages/js-sdk/LICENSE, packages/python-sdk/LICENSE. No ee/,
+      enterprise/, commercial/ or proprietary/ path.'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 961864fd57c8dbde38b48c10faf509a194b06a082d570f106cbd056a22603e52
+    establishes:
+    - source
+    - core-gated
+  - url: https://api.github.com/repos/e2b-dev/infra/git/trees/main?recursive=1
+    shows: 'The repo the org describes as "Infrastructure that’s powering E2B Cloud" is public and Apache-2.0:
+      2,809-entry untruncated tree, one LICENSE, no enterprise/, ee/, commercial/ or proprietary/ path.
+      The control plane behind the managed product is therefore the same published code, not a closed package
+      beside it.'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 74799f810074f47cac60524254103abe540c5d36762cfb2a02082887fa80c9fc
+    establishes:
+    - core-gated
+  - url: https://e2b.dev/pricing
+    shows: 'Three tiers - Hobby (free + usage), Pro ($150/mo + usage), Ultimate (custom). What Pro adds
+      is capacity, not capability: "Customize your Sandbox CPU & RAM", "Up to 24-hour sandbox session length",
+      "Up to 100 concurrently running sandboxes", "Ability to purchase extra concurrency up to 1,100". The
+      page names no feature absent from the open source and mentions no enterprise edition.'
+    accessed: '2026-08-12'
+    http_status: 200
+    establishes:
+    - core-gated
+    content_sha256: b8dc751df17f9f50aca70e8c64920473d9fb4d4a69c96fa6a6dbf30ee02d8332
+  - url: https://api.github.com/repos/e2b-dev/E2B
+    shows: 'Repo metadata: language Python, license spdx_id Apache-2.0, 13,357 stars, default branch main.'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 08d29ae1b0d8bcbfdd60550459eda53238ff24f5a3abf798bc9ed1db7eda486c
+    establishes:
+    - license
+    - source
 adoption:
   level: 4
   reach: 1M-10M
