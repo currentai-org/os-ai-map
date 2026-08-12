@@ -18410,11 +18410,12 @@
           "type": "software",
           "description": "Active 2026; ~52.4k GitHub stars (late May 2026)",
           "openness": {
-            "score": 4,
-            "class": "open_core",
-            "components": "license:MIT(framework);source:public;CrewAI-Enterprise/AMP-managed-platform-tier;core-gated:gated",
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(framework);source:public;CrewAI-Enterprise/AMP-managed-platform-tier;core-gated:ungated(a full 29,439-entry tree carries one MIT LICENSE and no ee/ or separately licensed directory; the enterprise-named paths are docs images and an MIT CLI client that points at an AMP URL, and the paid product is the AMP platform sold beside the framework)",
             "confidence": "high",
-            "note": "license:MIT(framework);source:public;CrewAI-Enterprise/AMP-managed-platform-tier",
+            "note": "MIT framework with the CrewAI AMP platform sold beside it. Corrected 2026-08-12 from a bare `gated` to `ungated` on a read of the repo and the vendor pricing page. The 29,439-entry untruncated tree of crewAIInc/crewAI@main carries a single MIT LICENSE and no second license file anywhere; the only enterprise-named source, lib/cli/src/crewai_cli/enterprise/main.py, is an MIT CLI client that fetches OAuth2 parameters from whatever AMP URL you give it, unlocking nothing. The pricing page tiers the AMP platform - visual editor and executions free, SSO/RBAC/PII-redaction/deployment options paid - and makes no claim about a capability the Python framework lacks. That is the langchain shape: the paid thing is a platform around a complete open core, so the ladder scores 5.",
+            "last_verified": "2026-08-12",
             "sources": [
               {
                 "url": "https://github.com/crewAIInc/crewAI/blob/main/LICENSE",
@@ -18430,6 +18431,48 @@
                 "url": "https://crewai.com/open-source",
                 "shows": "flagship phase-C verification source",
                 "accessed": "2026-06-04"
+              },
+              {
+                "url": "https://api.github.com/repos/crewAIInc/crewAI/git/trees/main?recursive=1",
+                "shows": "Full untruncated recursive tree, 29,439 entries. The only license path is the root LICENSE. The enterprise-named paths are docs/images/enterprise/*.png, lib/cli/src/crewai_cli/enterprise/ and its tests - no separately licensed directory, no license-key module, no closed package the framework imports.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "d0691ce47eb94259d3fb1c8612e106084567fcb61baab4b8f8e15fcbe89ad4e7",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/crewAIInc/crewAI/main/lib/cli/src/crewai_cli/enterprise/main.py",
+                "shows": "The enterprise-named module is a 125-line CLI client, MIT like the rest of the repo. EnterpriseConfigureCommand.configure(enterprise_url) does an HTTP GET of {enterprise_url}/auth/parameters and writes the returned OAuth2 settings locally. It unlocks nothing and checks no license key.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "1aa0884e17e7743c1bd59a209a1c0bb7bf8b731054544b3de0f68e263fbaada9",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://www.crewai.com/pricing",
+                "shows": "Tiers are Basic (free) and Enterprise (custom). What Enterprise adds is platform and governance - SSO, RBAC, workload identity, PII redaction, policies, deployment to \"CrewAI cloud, your own VPC, or your own infrastructure\", onboarding and support - against a Basic tier described by visual editor, AI copilot, GitHub integration and 50 monthly executions. The page describes a \"unified build and runtime platform\" and nowhere claims a capability missing from the open-source Python framework.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "establishes": [
+                  "core-gated"
+                ],
+                "content_sha256": "b12952e2b24c6ef1f1edd337c5f6734b8550c24818a9607b0e235c248cdd5946"
+              },
+              {
+                "url": "https://api.github.com/repos/crewAIInc/crewAI",
+                "shows": "Repo metadata: language Python, license spdx_id MIT, 56,955 stars, default branch main.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "113f333e1c053035a0d80ff08353001838a2bde9d83c1b53c46b3e5f9d82bbaf",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
               }
             ],
             "bucket": "open"
@@ -18475,8 +18518,8 @@
           "maturity": 3.3,
           "mature": false,
           "freshness": {
-            "date": "2026-07-30",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "Active 2026; ~52.4k GitHub stars (late May 2026)"
         },
@@ -20348,10 +20391,10 @@
           "openness": {
             "score": 4,
             "class": "open_core",
-            "components": "license:Apache-2.0(OSI, everything outside `ee/`);source:public;ee/-auth-directories-under-Mastra-Enterprise-License;Mastra-Platform-hosted-tier-commercial;core-gated:gated",
+            "components": "license:Apache-2.0(OSI, everything outside `ee/`);source:public;ee/-auth-directories-under-Mastra-Enterprise-License;Mastra-Platform-hosted-tier-commercial;core-gated:gated(RBAC, SSO and FGA live in ee/-scoped directories under the Mastra Enterprise License and are switched on at runtime by MASTRA_LICENSE_KEY, validated against the Mastra license server)",
             "confidence": "high",
-            "note": "Open-core in the LangGraph/LlamaIndex shape rather than the n8n one - the framework itself is a real OSI license, not fair-code. LICENSE.md scopes the commercial carve-out narrowly to `ee/` auth directories, so the agent, workflow, memory and eval surfaces a user actually builds on are Apache-2.0. Not 5 because the enterprise auth code is source-available and the managed platform is closed.",
-            "last_verified": "2026-07-30",
+            "note": "Open-core in the LangGraph/LlamaIndex shape rather than the n8n one - the framework itself is a real OSI license, not fair-code. LICENSE.md scopes the commercial carve-out narrowly to `ee/` auth directories, so the agent, workflow, memory and eval surfaces a user actually builds on are Apache-2.0. The bare `gated` was transcribed 2026-08-12 to a named mechanism: ee/LICENSE is a separate Enterprise Edition license forbidding production use without a written agreement with Kepler Software, and packages/_internals/auth/src/ee/license.ts disables the EE features unless MASTRA_LICENSE_KEY validates against the Mastra license server, which returns entitlements for rbac, sso and fga. So functionality is withheld from the published source by a license key, not merely sold beside it. Not 5 for that reason; the managed Mastra Cloud is separate and is not what decides this.",
+            "last_verified": "2026-08-12",
             "sources": [
               {
                 "url": "https://github.com/mastra-ai/mastra/blob/main/LICENSE.md",
@@ -20366,10 +20409,10 @@
               },
               {
                 "url": "https://registry.npmjs.org/@mastra/core",
-                "shows": "Registry metadata declares `license: Apache-2.0`, latest 1.55.0 (was 1.54.0 on 2026-07-29), confirming the framework ships to consumers under the OSI license rather than only being licensed that way in-repo. Cited previously as the npmjs.com package page, which answers 403 to any non-browser fetch behind a Cloudflare interstitial; the registry endpoint serves the same fact and can actually be re-checked.",
-                "accessed": "2026-07-30",
+                "shows": "Registry metadata declares `license: Apache-2.0`, latest 1.57.0 (was 1.55.0 on 2026-07-30), confirming the framework still ships to consumers under the OSI license rather than only being licensed that way in-repo. The npmjs.com package page answers 403 to any non-browser fetch behind a Cloudflare interstitial; this registry endpoint serves the same fact and can actually be re-checked.",
+                "accessed": "2026-08-12",
                 "http_status": 200,
-                "content_sha256": "374b1995706041a57a638521d51bfef0ea265ca0acfd323e412b3b3d90e9980f",
+                "content_sha256": "a4361185051f473caffd3e3cd222e17f108be4f873c688dca43548149dbba9c1",
                 "establishes": [
                   "license"
                 ]
@@ -20382,6 +20425,37 @@
                 "content_sha256": "c1458faa3a17755659530882810b981eaa4849f8e2135f48e2c7efe7cc8ce82b",
                 "establishes": [
                   "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/mastra-ai/mastra/git/trees/main?recursive=1",
+                "shows": "Full untruncated recursive tree, 16,790 entries. A top-level ee/LICENSE sits beside the root LICENSE.md, and the ee/-named source lives at packages/_internals/auth/src/ee/ (capabilities.ts, fga-check.ts, license.ts, defaults/rbac/) re-exported through packages/core/src/auth/ee/ and packages/editor/src/ee/.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "6aba676525def05671991978ba682502d6edc429084b9a79c823a88ae8aa46cc",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/mastra-ai/mastra/main/ee/LICENSE",
+                "shows": "\"Mastra Enterprise Edition (EE) License\". The Software \"may only be used in production if you (and any entity that you represent) have entered into, and remain in compliance with, a written agreement with Kepler Software, Inc. explicitly permitting the use of the Software in production\", and it is otherwise \"forbidden to copy, merge, publish, distribute, sublicense, and/or sell the Software\".",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "d949aa063ea2a9a626d9f635ea44c212edd780875568f03d092315522c41da58",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/mastra-ai/mastra/main/packages/_internals/auth/src/ee/license.ts",
+                "shows": "\"License validation for EE features.\" Validation is a POST to {MASTRA_LICENSE_URL}/validate; \"No license key configured -> EE features disabled\"; \"Server says invalid/revoked/expired -> EE features disabled\". The success payload carries \"Feature entitlements granted by the license (e.g. rbac, sso, fga)\" and a planTier of teams or enterprise. MASTRA_LICENSE_KEY is the primary env var, MASTRA_EE_LICENSE a legacy alias.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "774f3dede2eeeceb7e0f212021fb25ea3df1a8bb9285d4f8b54bb47f3c85d99f",
+                "establishes": [
                   "core-gated"
                 ]
               }
@@ -20424,7 +20498,7 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-07-30",
+            "date": "2026-08-12",
             "basis": "verified"
           },
           "version_note": "Apache-2.0 framework by Kepler Software, Inc., trading as Mastra. LICENSE.md splits the repo - everything outside `ee/` directories is Apache-2.0 (Copyright 2025 Kepler Software, Inc.), while `ee/` paths such as packages/core/src/auth/ee/ fall under the Mastra Enterprise License. GitHub's classifier reports NOASSERTION because of that preamble, so the license was read from the LICENSE.md body and confirmed against npm package metadata (both @mastra/core and mastra declare Apache-2.0). Verified live 2026-07-29; @mastra/core at v1.54.0."
@@ -26138,12 +26212,44 @@
             "class": "open_core",
             "components": "license:Apache-2.0(OSI) for the framework;source:public;hub:Guardrails Hub validator registry;commercial:hosted/enterprise tier;core-gated:gated",
             "confidence": "medium",
-            "note": "Apache-2.0 framework that is fully self-hostable, with a Hub of validators and a commercial tier on top; classed open_core alongside other OSS-core-plus-commercial tools.",
+            "note": "INCONCLUSIVE, reported rather than resolved. Read 2026-08-12 and the bare `gated` is not supported, but neither is the 4 it produces. On core-gated itself nothing is withheld from the published source: the 661-entry tree of guardrails-ai/guardrails carries one Apache-2.0 LICENSE and no ee/ or enterprise directory, the FastAPI server ships as its own public repo with a Dockerfile and compose file, and the private validator registry that used to need a token is gone - 0.11.0 moved every Guardrails-AI validator from pypi.guardrailsai.com to public PyPI, the vendor's own migration guide tabulating \"Private registry pypi.guardrailsai.com (token required)\" against \"Public PyPI (no token)\". The commercial product beside it is Snowglobe, a separate simulation product. That reads ungated and would compute 5. What stops it is the license component, not this one: guardrails-ai/guardrails-api, the server the main package's `guardrails start` launches, is NOT Apache-2.0 - its LICENSE is adopted from the Elastic License and forbids providing the software to third parties as a hosted or managed service. That is the competition_restricted tier, which fires the rung above and computes 2/source_available. So the read supports 5 or 2, not the recorded 4, exactly the agentops shape. core-gated was left as recorded rather than transcribed, because recording ungated against an unexamined Apache-2.0 would manufacture a 5 on the favourable half of a multi-SKU license question. A human settles which SKU this slug is scored on first.",
+            "last_verified": "2026-08-12",
             "sources": [
               {
                 "url": "https://github.com/guardrails-ai/guardrails",
                 "shows": "Apache-2.0 framework; ~7.1k stars; Guardrails Hub validators; commercial offerings",
                 "accessed": "2026-06-29"
+              },
+              {
+                "url": "https://api.github.com/repos/guardrails-ai/guardrails/git/trees/main?recursive=1",
+                "shows": "Full untruncated recursive tree, 661 entries. One license path, the root LICENSE. No ee/, enterprise/, commercial/ or proprietary/ directory, and no license-key module. server_ci/ carries a Dockerfile, fastapi-entry.sh and compose scripts for running the server yourself.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "25bc6170f996e51ebca3d6ddc356cbf560bf89bb60a125826c73986349a418fa",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/guardrails-ai/guardrails/main/docs/migration_guides/hub-to-public-pypi.md",
+                "shows": "The token-gated validator registry is gone. \"As of Guardrails 0.11.0, Guardrails-AI-owned validators have moved from the private Guardrails registry (pypi.guardrailsai.com, installed via guardrails hub install) to public PyPI.\" The change table reads \"Private registry pypi.guardrailsai.com (token required)\" -> \"Public PyPI (no token)\".",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "c335d818b052fd514021fa010d80c4524a4d0f94e8d4fcfeb325e91c67517133",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/guardrails-ai/guardrails-api/main/LICENSE",
+                "shows": "The server package is not Apache-2.0. \"THE FOLLOWING LICENSE HAS BEEN ADOPTED FROM THE ELSSTIC LICENSE\" [sic], with the limitation \"You may not provide the software to third parties as a hosted or managed service, where the service provides users with access to any substantial set of the features or functionality of the software.\" The repo describes itself as the \"FastAPI server for hosting Guardrails AI in your own environment\" and its 149-entry tree contains no license-key module, so the source is published in full - the restriction is on redistribution as a service, not on what ships.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "552b98bc84235d75a10f486ce1b071777dd6d0e2ce12457bc7ae2f82f0a7f23b",
+                "establishes": [
+                  "license"
+                ]
               }
             ],
             "bucket": "open"
@@ -26180,8 +26286,8 @@
           "maturity": 3.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-08",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "Guardrails AI framework, Apache-2.0, ~7.1K GitHub stars (June 2026); plus Guardrails Hub (validator registry) and commercial offerings. Verified live June 2026."
         },
@@ -30325,16 +30431,59 @@
           "type": "software",
           "description": "Open-source secure cloud runtime that gives AI agents an ephemeral Linux microVM (Firecracker-based) controlled via a Python/TypeScript SDK. Picked over hyperscaler functions for sub-150ms cold starts, agent-native lifecycle (create/use/destroy), and the fact that the SDK + core are open and self-hostable via the e2b-dev/infra repo. ~12.3k stars on the SDK repo, used by major coding-agent products and growing fast in the agent-infra category.",
           "openness": {
-            "score": 4,
-            "class": "open_core",
-            "components": "license:Apache-2.0(OSI);source:public(SDKs+infra, Terraform self-host);managed-tier:e2b.dev hosted sandbox cloud (proprietary);core-gated:gated",
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public(SDKs+infra, Terraform self-host);managed-tier:e2b.dev hosted sandbox cloud (proprietary);core-gated:ungated(the infrastructure powering E2B Cloud is itself published Apache-2.0 as e2b-dev/infra with no carve-out, and the paid tiers are capacity and session-length limits on the hosted service rather than features held back from the source)",
             "confidence": "high",
-            "note": "Apache-2.0 OSS core (SDKs + self-hostable infra) with a proprietary managed cloud; classic open-core per recipe (E2B named as open-core example).",
+            "note": "Apache-2.0 SDKs and infrastructure with a managed cloud sold beside them. Corrected 2026-08-12 from a bare `gated` to `ungated` on a read of both repos and the pricing page. e2b-dev/E2B carries four Apache-2.0 LICENSE files, all copies of the root, and no carve-out - but the decisive fact is the second repo: e2b-dev/infra, described by the org as \"Infrastructure that is powering E2B Cloud\", is public, Apache-2.0 and equally free of an enterprise directory. The managed product runs the published code, which is the otari precedent. The pricing tiers sell capacity and session length - CPU/RAM customisation, 24-hour sessions, 100 concurrent sandboxes rising to 1,100 - and name no capability the source withholds.",
+            "last_verified": "2026-08-12",
             "sources": [
               {
                 "url": "https://github.com/e2b-dev/E2B",
                 "shows": "Apache-2.0 license; open source sandbox infra + Terraform self-host; managed cloud at e2b.dev",
                 "accessed": "2026-06-04"
+              },
+              {
+                "url": "https://api.github.com/repos/e2b-dev/E2B/git/trees/main?recursive=1",
+                "shows": "Full untruncated recursive tree, 993 entries. Four license paths, all Apache-2.0 copies of the root: LICENSE, packages/cli/LICENSE, packages/js-sdk/LICENSE, packages/python-sdk/LICENSE. No ee/, enterprise/, commercial/ or proprietary/ path.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "961864fd57c8dbde38b48c10faf509a194b06a082d570f106cbd056a22603e52",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/e2b-dev/infra/git/trees/main?recursive=1",
+                "shows": "The repo the org describes as \"Infrastructure that’s powering E2B Cloud\" is public and Apache-2.0: 2,809-entry untruncated tree, one LICENSE, no enterprise/, ee/, commercial/ or proprietary/ path. The control plane behind the managed product is therefore the same published code, not a closed package beside it.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "74799f810074f47cac60524254103abe540c5d36762cfb2a02082887fa80c9fc",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://e2b.dev/pricing",
+                "shows": "Three tiers - Hobby (free + usage), Pro ($150/mo + usage), Ultimate (custom). What Pro adds is capacity, not capability: \"Customize your Sandbox CPU & RAM\", \"Up to 24-hour sandbox session length\", \"Up to 100 concurrently running sandboxes\", \"Ability to purchase extra concurrency up to 1,100\". The page names no feature absent from the open source and mentions no enterprise edition.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "establishes": [
+                  "core-gated"
+                ],
+                "content_sha256": "b8dc751df17f9f50aca70e8c64920473d9fb4d4a69c96fa6a6dbf30ee02d8332"
+              },
+              {
+                "url": "https://api.github.com/repos/e2b-dev/E2B",
+                "shows": "Repo metadata: language Python, license spdx_id Apache-2.0, 13,357 stars, default branch main.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "08d29ae1b0d8bcbfdd60550459eda53238ff24f5a3abf798bc9ed1db7eda486c",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
               }
             ],
             "bucket": "open"
@@ -30382,8 +30531,8 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-08",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "E2B open source sandbox infra for running AI-generated code; CLI @e2b/cli@2.10.3 (Jun 3 2026) confirmed live on GitHub June 2026. Isolation via Firecracker microVMs. OSS core + managed cloud (e2b.dev)."
         },
@@ -30397,14 +30546,57 @@
           "openness": {
             "score": 4,
             "class": "open_core",
-            "components": "license:AGPL-3.0(OSI, copyleft);source:public;managed-tier:app.daytona.io hosted cloud + hybrid (proprietary);core-gated:gated",
+            "components": "license:AGPL-3.0(OSI, copyleft);source:public;managed-tier:app.daytona.io hosted cloud + hybrid (proprietary);core-gated:gated(core development moved to a private codebase in June 2026 - daytonaio/daytona now holds only a README and logos, and the daytona org publishes SDKs and clients but no server or runtime)",
             "confidence": "high",
-            "note": "AGPL-3.0 (OSI-approved copyleft) core plus a proprietary managed cloud => open_core. Scored 4 alongside the Apache-licensed open-core peers (E2B, Ray, Coder): OSI copyleft is not treated as less open on this map, since a copyleft obligation binds redistributors rather than capping who may use the software or at what scale. Corrected from 3, which had penalized copyleft for 'constraining commercial reuse' - a rationale the other 22 copyleft software products do not apply.",
+            "note": "CONFLICT, reported rather than resolved. The recorded AGPL-3.0 / source:public / gated combination describes Daytona as it stood at v0.190.0, not as it ships now. The upstream repo carries a notice that \"as of June 2026, Daytona’s core development has moved to a private codebase\", and its default branch is down to a README and two logo files with no source and no LICENSE. The daytona org publishes SDKs, clients and legacy provider plugins only - no server or sandbox runtime. core-gated is therefore `gated` on the strongest possible reading: the whole current product is withheld from the published source, which is a frozen abandoned snapshot. That also puts source:public in doubt - on a current-release reading this is closer to source:partial, which would score 2/source_available rather than 4/open_core - but changing source is outside this sweep’s remit, so it is left as recorded and flagged for a human.",
+            "last_verified": "2026-08-12",
             "sources": [
               {
                 "url": "https://github.com/daytonaio/daytona",
                 "shows": "AGPL-3.0 license; secure runtime for AI-generated code; managed cloud at app.daytona.io",
                 "accessed": "2026-06-04"
+              },
+              {
+                "url": "https://api.github.com/repos/daytonaio/daytona/git/trees/main?recursive=1",
+                "shows": "Full untruncated recursive tree of the default branch: 5 entries in total - README.md, assets/, assets/images/ and two logo PNGs. No source, no LICENSE file. The repo is not archived and was last pushed 2026-07-24.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "c74e6d23cbdca0c1ee85dc1095518f3af94c7186491a2523a94a6445f9aea95e",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/daytonaio/daytona/main/README.md",
+                "shows": "\"This repository is no longer maintained. As of June 2026, Daytona’s core development has moved to a private codebase. This repository will receive no further updates, fixes, or releases. It remains public and free to use, fork, and build on under the LICENSE (linked at tag v0.190.0), as is and without support or warranty.\"",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "7e1a14b044fe1bb8f8af50d6de6d8b306d97507a278809184af58af4b1fb8054",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://api.github.com/orgs/daytona/repos?per_page=100",
+                "shows": "The org the README redirects to publishes SDKs and clients (daytona/sdk, daytona/clients - \"Official SDKs, API clients, and CLI/MCP tools\"), legacy provider plugins and samples. No server, control plane or sandbox runtime repository.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "establishes": [
+                  "core-gated"
+                ],
+                "content_sha256": "f048643dfaeac3f268725d5483063f2a0a09dea62d31b7cabed9e60438f9a88d"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/daytonaio/daytona/v0.190.0/LICENSE",
+                "shows": "The GNU Affero General Public License v3, verbatim. This is the tag the unmaintained README points at, and it is the only place the AGPL-3.0 grant now lives - the default branch carries no LICENSE file at all, and GitHub's repo metadata reports a null license for daytonaio/daytona as a result. So the recorded AGPL-3.0 is a fact about v0.190.0, not about anything Daytona currently ships.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "4df3c306dddaaf4baffdff5ca820cc679ac8cd6dc263c6a74517783e42fa7a3b",
+                "establishes": [
+                  "license"
+                ]
               }
             ],
             "bucket": "open"
@@ -30445,8 +30637,8 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-07-30",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "Daytona secure/elastic runtime for AI-generated code execution; v0.184.0 (Jun 3 2026) live on GitHub June 2026. Repo now AGPL-3.0 (note: Daytona pivoted from dev-environments to agent code-execution sandboxes). Sub-90ms sandbox spin-up; managed cloud at app.daytona.io."
         },
@@ -30637,16 +30829,49 @@
           "type": "software",
           "description": "Open-source Docker-based sandbox runtime positioned as a self-hostable E2B alternative, with first-class GPU support, Python and Node.js runtimes, and no session time limits. Picked when teams need to keep agent execution on their own infra (HIPAA/SOC2/BYOC) and want GPU workloads alongside CPU sandboxes. ~1.6k stars, AGPL-3.0 licensed with a managed cloud offering.",
           "openness": {
-            "score": 4,
-            "class": "open_core",
-            "components": "license:AGPL-3.0(OSI, copyleft);source:public;managed-tier:Beam (beam.cloud) fully-managed GPU cloud (proprietary);core-gated:gated",
+            "score": 5,
+            "class": "open_source",
+            "components": "license:AGPL-3.0(OSI, copyleft);source:public;managed-tier:Beam (beam.cloud) fully-managed GPU cloud (proprietary);core-gated:ungated(the whole AGPL-3.0 stack is in the repo - gateway, scheduler, worker, proto, deploy manifests and even the billing service - with no second license file and no license-key module, and Beam sells concurrency, seats and retention on the hosted cloud)",
             "confidence": "high",
-            "note": "AGPL-3.0 (OSI copyleft) engine plus the proprietary managed Beam cloud => open_core. Scored 4 on the same footing as the Apache-licensed open-core peers. Corrected from 3, which had followed Daytona in penalizing copyleft; both are corrected together.",
+            "note": "AGPL-3.0 (OSI copyleft) engine with the managed Beam cloud sold beside it. Corrected 2026-08-12 from a bare `gated` to `ungated` on a read of the repo and beam.cloud/pricing. The 1,281-entry untruncated tree carries one governing LICENSE plus a single vendored one, no enterprise or ee/ directory, and no license-key module; the whole server stack ships - gateway, scheduler, worker, protos, Docker and Kubernetes manifests - and even pkg/gateway/services/compute/billing.go, the metering the hosted product runs on, is inside the AGPL tree. Beam’s pricing tiers concurrency, seats and log retention on the hosted cloud, names no capability the source lacks, and advertises a self-hosted product that \"runs entirely in your own environment\". That is a separate managed service around a complete open core, which the rubric says does not gate it.",
+            "last_verified": "2026-08-12",
             "sources": [
               {
                 "url": "https://github.com/beam-cloud/beta9",
                 "shows": "AGPL-3.0 license; open source serverless AI runtime; engine powering managed Beam cloud (beam.cloud)",
                 "accessed": "2026-06-04"
+              },
+              {
+                "url": "https://api.github.com/repos/beam-cloud/beta9/git/trees/main?recursive=1",
+                "shows": "Full untruncated recursive tree, 1,281 entries. Two license paths: the root LICENSE and one vendored sdk/src/beta9/vendor/pathspec/LICENSE. No ee/, enterprise/, commercial/ or proprietary/ directory. The top level carries the complete server stack - cmd/, pkg/, proto/, deploy/, manifests/, docker/, sdk/ - and the paid-service plumbing is open too: pkg/gateway/services/compute/billing.go is in the AGPL tree.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "7925ec17b49e02a708df59bd3c318e6f1de6c19c7d4c0c9dbf3dc922beb932a1",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/beam-cloud/beta9",
+                "shows": "Repo metadata: language Go, license spdx_id AGPL-3.0, 1,741 stars, default branch main.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "a45b451d6f6e110fb1a0dbf40ba6dc2737b67d8c07599423b1c8feb9ee59ba80",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://www.beam.cloud/pricing",
+                "shows": "Three tiers - Developer ($0 + usage), Team ($89/mo + usage), Growth (contact). They differ on concurrency, seats and log retention: 5 vs 50 vs 1,000+ concurrent GPU containers, 1 vs 3 vs unlimited seats, 30-day vs 1-year retention. No feature is named as absent from the open source, and the page states \"We also offer a self-hosted product which runs entirely in your own environment, ensuring that no data leaves your VPC.\"",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "establishes": [
+                  "core-gated"
+                ],
+                "content_sha256": "c4923b4b478215eaa2d47106d6bf04b8537651d823ec50da432a935539d7356f"
               }
             ],
             "bucket": "open"
@@ -30687,8 +30912,8 @@
           "maturity": 2.4,
           "mature": false,
           "freshness": {
-            "date": "2026-07-30",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "Beta9, open source serverless AI runtime (sandboxes, serverless inference endpoints, task queues); worker v0.1.597 (Jun 4 2026) confirmed live on GitHub. OSS engine powering managed Beam cloud (beam.cloud)."
         },
@@ -30881,14 +31106,46 @@
           "openness": {
             "score": 4,
             "class": "open_core",
-            "components": "license:AGPL-3.0(OSI, Community Edition);source:public(GitHub);commercial-tier:Premium/Enterprise paid features for large teams under separate Coder enterprise license;core-gated:gated",
+            "components": "license:AGPL-3.0(OSI, Community Edition);source:public(GitHub);commercial-tier:Premium/Enterprise paid features for large teams under separate Coder enterprise license;core-gated:gated(the enterprise/ tree - audit logs, groups/RBAC, AI seat tracking - is governed by LICENSE.enterprise rather than the AGPL root, and that license forbids circumventing the license key protecting those features)",
             "confidence": "high",
-            "note": "AGPL-3.0 OSI core (Community Edition) with a separate proprietary Premium/Enterprise tier => open_core, calibrated identically to the Ray anchor (O4 open_core).",
+            "note": "AGPL-3.0 OSI core (Community Edition) with a separate proprietary Premium/Enterprise tier => open_core. The bare `gated` was transcribed 2026-08-12 from a read of the repo and both LICENSE files, and it holds on a named mechanism rather than on the paid tier existing. coder/coder carries two top-level licenses: the root AGPL-3.0 and LICENSE.enterprise, the latter scoped by its own text to \"directory named enterprise\". That directory is in the published tree but not under the open license, it contains the audit log, group/RBAC and AI seat-tracking implementations, and the enterprise license forbids circumventing the license key that unlocks them. This is the litellm shape - a carve-out inside the repo - not the otari one.",
+            "last_verified": "2026-08-12",
             "sources": [
               {
                 "url": "https://github.com/coder/coder",
                 "shows": "AGPL-3.0 Community Edition + Premium paid tier (compare-plans), self-hosted workspaces",
                 "accessed": "2026-06-04"
+              },
+              {
+                "url": "https://api.github.com/repos/coder/coder/git/trees/main?recursive=1",
+                "shows": "Full untruncated recursive tree, 13,459 entries. A top-level enterprise/ directory holds the paid surface - enterprise/audit/ with postgres and slog backends, enterprise/aiseats/tracker.go, enterprise/cli/licenses.go, enterprise/cli/features.go, enterprise/cli/group*.go - and a second top-level LICENSE.enterprise sits beside the root LICENSE.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "96005634bca8410613b06b50aa5bca3ec072ac5035c36fc30b707576222357e7",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/coder/coder/main/LICENSE.enterprise",
+                "shows": "Scopes itself to \"any software and associated documentation files under Coder Technologies Inc.’s (\"Coder\") directory named \"enterprise\"\", and states under Limitations: \"You may not move, change, disable, or circumvent the license key functionality in the software, and you may not remove or obscure any functionality in the software that is protected by the license key.\" Production use additionally requires agreement to Coder’s Terms of Service.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "b8768592764cbd705a1a314ff5359f422c8febb38d9f0cc476ad041829d9fe58",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/coder/coder/main/LICENSE",
+                "shows": "Root license is the GNU Affero General Public License v3, verbatim, governing everything the enterprise carve-out does not name.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef",
+                "establishes": [
+                  "license"
+                ]
               }
             ],
             "bucket": "open"
@@ -30924,8 +31181,8 @@
           "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-07-30",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "coder/coder, v2.33.6 released 23 May 2026. Self-hosted Cloud Development Environment platform (Terraform-defined workspaces, Wireguard tunnel); now marketed as 'Secure environments for developers and their agents' with native AI-agent workspace support. Verified live on GitHub June 2026. NOTE: primarily a CDE/workspace manager rather than an ephemeral agent code-execution sandbox."
         },
@@ -31747,11 +32004,12 @@
           "type": "software",
           "description": "Ray-2.55.1, released April 22, 2026 (GitHub). Ray joined the PyTorch Foundation (per Anyscale 2026 announcement). Confirmed to exist as of June 2026.",
           "openness": {
-            "score": 4,
-            "class": "open_core",
-            "components": "license:Apache-2.0(OSI);source:public(all Ray libraries OSS);commercial-tier:Anyscale managed SaaS on top;core-gated:gated",
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public(all Ray libraries OSS);commercial-tier:Anyscale managed SaaS on top;core-gated:ungated(a full 11,885-entry tree carries one Apache-2.0 LICENSE and no enterprise/ or ee/ path, no license-key machinery, and Anyscale sells managed infrastructure rather than a Ray feature the open project lacks)",
             "confidence": "high",
-            "note": "license:Apache-2.0(OSI);source:public(all Ray libraries OSS);commercial-tier:Anyscale managed SaaS on top",
+            "note": "Apache-2.0 throughout with a managed platform sold beside it. Corrected 2026-08-12 from a bare `gated` to `ungated` on a read of the repo and Anyscale’s own page. The 11,885-entry untruncated tree of ray-project/ray@master carries a single governing Apache-2.0 LICENSE plus three vendored third-party ones, and no enterprise/, ee/, commercial/ or proprietary/ path; the only Anyscale-named files are CI image definitions and release-test harnesses, not a closed package the open tree depends on. Anyscale’s Ray page sells infrastructure management - \"Ray runs anywhere. Or choose Anyscale, and leave the infrastructure to us\" - and claims no Ray capability the open project withholds. That is the langchain/otari shape, so the published source is the whole product and the ladder scores 5. Ray is also governed by the PyTorch Foundation rather than by Anyscale, which is why the managed platform can be moved out of the openness question entirely.",
+            "last_verified": "2026-08-12",
             "sources": [
               {
                 "url": "https://github.com/ray-project/ray",
@@ -31760,13 +32018,40 @@
               },
               {
                 "url": "https://www.anyscale.com/product/open-source/ray",
-                "shows": "flagship phase-C verification source",
-                "accessed": "2026-06-04"
+                "shows": "Anyscale positions its offering as managed infrastructure, not a fuller Ray: \"Scale on any cloud or private data centers, bare metal, Kubernetes cluster - Ray runs anywhere. Or choose Anyscale, and leave the infrastructure to us.\" The page makes no claim that open-source Ray lacks a feature the paid platform adds.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "establishes": [
+                  "core-gated"
+                ],
+                "content_sha256": "f128508e406bc5e9b53c90fa4a7fdda0d5b84d33bfdc1d796efbdd639bd9a143"
               },
               {
                 "url": "https://www.anyscale.com/blog/ray-by-anyscale-joins-pytorch-foundation",
                 "shows": "flagship phase-C verification source",
                 "accessed": "2026-06-04"
+              },
+              {
+                "url": "https://api.github.com/repos/ray-project/ray/git/trees/master?recursive=1",
+                "shows": "Full untruncated recursive tree of the default branch master, 11,885 entries. The only license paths are the root LICENSE, python/LICENSE.txt and three vendored third-party licenses (dacite, pathspec, speedscope). No enterprise/, ee/, commercial/ or proprietary/ path. The only anyscale-named paths are CI and release-test tooling (ci/docker/ray-anyscale-*.wanda.yaml, release/ray_release/anyscale_job_runner.py); no closed package the open tree depends on.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "2aecd5502b10a32e08b4859fa8d9e03d40cebb58e9bd929226e47b06c9b16ce5",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/ray-project/ray",
+                "shows": "Repo metadata: language Python, license spdx_id Apache-2.0, 43,497 stars, default branch master, size 779,592 KB.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "0dcd4c4730bccec7add6b3a1dd250a06e31ac8fbbab2230cac1ec9df6a4e0edc",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
               }
             ],
             "bucket": "open"
@@ -31812,8 +32097,8 @@
           "maturity": 4.6,
           "mature": true,
           "freshness": {
-            "date": "2026-07-30",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "Ray-2.55.1, released April 22, 2026 (GitHub). Ray joined the PyTorch Foundation (per Anyscale 2026 announcement). Confirmed to exist as of June 2026."
         },
@@ -31948,9 +32233,10 @@
           "openness": {
             "score": 4,
             "class": "open_core",
-            "components": "license:Apache-2.0(OSI);source:public(runtime+SDK, BYOC self-host in your own AWS/GCP/Azure);managed-tier:Tensorlake hosted cloud + proprietary Lattice scheduler;core-gated:gated",
+            "components": "license:Apache-2.0(OSI);source:public(runtime+SDK, BYOC self-host in your own AWS/GCP/Azure);managed-tier:Tensorlake hosted cloud + proprietary Lattice scheduler;core-gated:gated(the MicroVM runtime and the Lattice cluster scheduler that creates sandboxes exist in no public repo - the Apache-2.0 tree publishes the SDK, the tl CLI and client crates, which authenticate to cloud.tensorlake.ai with an API key)",
             "confidence": "medium",
-            "note": "Apache-2.0 runtime and SDK with a genuine bring-your-own-cloud self-host path, plus a proprietary managed scheduler, so open-core on par with the permissive-Apache peers (E2B). The open part is permissive and self-hostable; the managed scheduler is the closed value-add.",
+            "note": "Apache-2.0 SDK and CLI with a proprietary managed runtime. Confirmed `gated` 2026-08-12 on a named mechanism, the firecrawl/composio shape: not a carve-out inside the repo but a component that is in no repo at all. The 2,350-entry tree is entirely client side - the Python SDK around cloud_client.py, the tl CLI, and nine crates that are all clients, codecs or bindings - and the README attributes sub-second creation to \"Lattice, a dynamic cluster scheduler\", along with snapshots, cloning, auto suspend/resume and live migration, none of which appear in any of the org’s 58 public repos. Onboarding is an API key from cloud.tensorlake.ai. Secondary finding, NOT acted on: the recorded source detail \"runtime+SDK, BYOC self-host in your own AWS/GCP/Azure\" is not supported - the runtime is not published, and BYOC means the vendor’s closed control plane runs in your account rather than open self-hosting, so `source` may belong at `partial`, which would score 2 rather than 4. Left as recorded and flagged.",
+            "last_verified": "2026-08-12",
             "sources": [
               {
                 "url": "https://github.com/tensorlakeai/tensorlake",
@@ -31961,6 +32247,48 @@
                 "url": "https://www.tensorlake.ai/",
                 "shows": "sandbox-native cloud for AI agents; run sandboxes in your own cloud account",
                 "accessed": "2026-07-09"
+              },
+              {
+                "url": "https://api.github.com/repos/tensorlakeai/tensorlake/git/trees/main?recursive=1",
+                "shows": "Full untruncated recursive tree, 2,350 entries, one governing LICENSE plus five vendored third-party ones. Everything in it is client side: src/tensorlake/ is the SDK around cloud_client.py, and all nine crates/ are cli, cloud-sdk, function-agent-core, gsvc-codec, gsvc-fs-client, gsvc-mount and the node/py bindings. platform/ holds only macos/tlfs, a FUSE mount helper. No scheduler, allocator, VMM or control plane, and no ee/ or enterprise/ path.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "a4de4f39e5c21d00d8e819401ad807a870cade478ee78f037b7b16713f97334c",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/tensorlakeai/tensorlake/main/README.md",
+                "shows": "The capabilities the product is sold on are server side and named as such: \"Sandboxes created in under a second via Lattice, a dynamic cluster scheduler\", plus snapshots and cloning, auto suspend/resume, live migration between machines, and \"up to 5 million sandboxes in a single project\". Getting started is \"Sign up at cloud.tensorlake.ai and get your API key\", export TENSORLAKE_API_KEY, tl login. The repo documents no way to run any of it yourself.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "bfeab32d22bca998ed41593ac902ac5fa9300488849e56fa8650067b1d558ce2",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://api.github.com/orgs/tensorlakeai/repos?per_page=100",
+                "shows": "All 58 public repos in the org. Beyond the SDK they are skills, cookbooks, examples, benchmarks, integration plugins and forks of third-party projects (cloud-hypervisor, vllm, arrow-rs, moka, fuser). The former open compute engine survives only as archived clients - indexify-typescript-client and indexify-extractor-template, both archived. Nothing implements Lattice or the sandbox runtime.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "316dcac5a6696a620a11e300e6f8670de4f2a6baf4f94f6c6d870ff140cf885e",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/tensorlakeai/tensorlake",
+                "shows": "Repo metadata: language Python, license spdx_id Apache-2.0, 986 stars, default branch main.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "0754ae4e1a72d17195b997e9613f471b62020c995adbd212e34cec7ae352a7ca",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
               }
             ],
             "bucket": "open"
@@ -32001,8 +32329,8 @@
           "maturity": 2.8,
           "mature": false,
           "freshness": {
-            "date": "2026-07-30",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "Tensorlake sandbox-native cloud for AI agents; repo Apache-2.0 (Python + Rust), CLI v0.5.65 live on GitHub July 2026. Firecracker microVMs with BYOC self-host; managed scheduler (Lattice) proprietary."
         },
@@ -32016,9 +32344,10 @@
           "openness": {
             "score": 4,
             "class": "open_core",
-            "components": "license:MIT(OSI);source:public(sandbox API, self-hostable via Docker Compose);managed-tier:Blaxel proprietary perpetual-standby platform;core-gated:gated",
+            "components": "license:MIT(OSI);source:public(sandbox API, self-hostable via Docker Compose);managed-tier:Blaxel proprietary perpetual-standby platform;core-gated:gated(the control plane that creates, suspends and resumes sandboxes - the perpetual-standby platform Blaxel sells - exists in no public repo; the MIT repo publishes only the in-sandbox HTTP API and a hub of image templates)",
             "confidence": "medium",
-            "note": "MIT sandbox API that is self-hostable via Docker Compose, with a proprietary managed perpetual-standby platform, so open-core. The open component carries a maximally permissive MIT license; the standby/scale platform is the closed value-add. Open surface is narrower than E2B's full self-hostable infra.",
+            "note": "MIT sandbox API and image hub with a proprietary managed platform. Confirmed `gated` 2026-08-12 on a named mechanism rather than on the paid tier existing, and it is the firecrawl/composio shape rather than the litellm one: nothing is carved out inside the repo, but the piece that makes Blaxel a sandbox product is not in any repo. blaxel-ai/sandbox is 419 entries of sandbox-api - the HTTP API running inside a sandbox - plus about thirty Dockerfile templates under hub/, and the README calls it \"Sandbox Hub ... a collection of development environment templates\". The scheduler that allocates a micro VM, and the perpetual-standby and sub-25ms resume the product is sold on, appear nowhere across all 29 public repos in the org, which hold SDKs, plugins and forks of third-party infrastructure. Deliberately not decided by analogy with the other three sandbox slugs in this batch: e2b publishes the infra powering its cloud and beta9 publishes its whole gateway, and both moved to 5, while this one and tensorlake did not.",
+            "last_verified": "2026-08-12",
             "sources": [
               {
                 "url": "https://github.com/blaxel-ai/sandbox",
@@ -32029,6 +32358,48 @@
                 "url": "https://blaxel.ai/sandbox",
                 "shows": "perpetual sandbox platform for AI agents; standby at zero compute cost, sub-25ms resume",
                 "accessed": "2026-07-09"
+              },
+              {
+                "url": "https://api.github.com/repos/blaxel-ai/sandbox/git/trees/main?recursive=1",
+                "shows": "Full untruncated recursive tree, 419 entries, one MIT LICENSE. The entire tree is sandbox-api/ (the HTTP API that runs inside a sandbox: filesystem, process, network), hub/ (about thirty Dockerfile templates - base-image, py-app, ts-app, chromium, jupyter, claude-code), docker/, e2e/ and a docker-compose.yaml for building and testing those images. There is no scheduler, allocator, control plane or standby/resume implementation anywhere in it.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "b1b612cf67f5b4d781e27a43e706b30fe681e5a176efe3158aa56144d1a1e44a",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/blaxel-ai/sandbox/main/README.md",
+                "shows": "The repo describes itself as \"Sandbox Hub ... a collection of development environment templates for creating secure, isolated micro VM environments\", and its prerequisites and installation steps are Docker Compose for building and running those template images locally. It documents no way to run the Blaxel platform itself.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "6f76844494b52dacdaca2da7a70976c7fa4ce9c7d832a8b6abeb4be864d2c7d8",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://api.github.com/orgs/blaxel-ai/repos?per_page=100",
+                "shows": "All 29 public repos in the org. They are SDKs and clients (sdk-python, sdk-typescript, sdk-go, toolkit, blaxel-mcp-server), integration plugins, image bases and forks of third-party infrastructure (virtual-kubelet, fluent-bit, kubernetes-event-exporter). No repo implements the sandbox control plane the SDKs call; bl-controller is a Kubernetes controller for legacy Beamlit resources.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "c8cac64d3d4add4f1b6d5f16abc41dc30a4c5dae8c991c572afe9194b0332208",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/blaxel-ai/sandbox",
+                "shows": "Repo metadata: language Go, license spdx_id MIT, 26 stars, default branch main.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "34751a56a7043e97258a45b5636fcd529040374c4c135509c607605af692a379",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
               }
             ],
             "bucket": "open"
@@ -32069,8 +32440,8 @@
           "maturity": 1.8,
           "mature": false,
           "freshness": {
-            "date": "2026-07-30",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "Blaxel sandbox API (MIT, self-hostable via Docker Compose on port 8080) over a proprietary managed standby platform; microVM isolation, sub-25ms resume from standby. Sandbox repo ~22 stars June/July 2026."
         }
