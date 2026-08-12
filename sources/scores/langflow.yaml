@@ -23,14 +23,33 @@ openness:
     shows: MIT, ~149.8k stars, visual agent builder
     accessed: '2026-06-18'
 adoption:
-  level: 4
+  level: 3
   signal_type: usage_volume
   confidence: medium
-  note: ~150k stars and ~71k PyPI downloads/month (modest pip volume; mostly Docker/desktop).
+  note: 'About 166,141 downloads a month across the product''s real distribution channels, read 2026-08-12.
+    Docker Hub reports 3,408,830 cumulative pulls of langflowai/langflow since 2023-02-08, which over 42
+    months averages roughly 81,003 a month; 85,138 come from PyPI  in the trailing 30 days. Bands at level
+    3 (100K-1M).
+
+
+    Langflow is distributed mainly as a Docker image and a desktop app; the PyPI package is one of several
+    install paths. Banding on the registry package ALONE gave a materially lower level, and recording it
+    would have been a substitution rather than a measurement - the same error signal_routing.yaml names
+    as ''abstain rather than substitute''. The Docker component is a LIFETIME AVERAGE, not a trailing-30-day
+    figure, so for a growing product it understates the current rate and this level is a floor.'
+  reach: 100K-1M
+  last_verified: '2026-08-12'
   sources:
-  - url: https://pypi.org/project/langflow/
-    shows: package langflow, MIT
-    accessed: '2026-06-18'
+  - url: https://hub.docker.com/v2/repositories/langflowai/langflow/
+    shows: 3,408,830 cumulative pulls of langflowai/langflow
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: ce5f93f3d56a780551761bf26dc80f677ba1c295852273c0e2284e5c37c58f4f
+  - url: https://pypistats.org/api/packages/langflow/recent
+    shows: 85,138 downloads in the trailing 30 days
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: fe77af64ce6d8c92b3ee05f55636bc8954b23cbfaa2d2e8117f502663898b7c5
 capability:
   score: 4
   basis: feature_matrix
