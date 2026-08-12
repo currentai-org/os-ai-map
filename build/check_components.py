@@ -21,6 +21,12 @@ narrowed past, which meant a new or reverted string-shaped record passed every g
 including this one, and silently returned the corpus to mixed shape. The mapping is now the
 only shape this field may take.
 
+A FOURTH thing is a failure since the license was structured into parts: a license key
+recorded as a `{value, detail}` mapping rather than a list of `{name, detail?, raw?}`.
+`license_tier` resolves the parts a curator recorded and never splits a value itself, so a
+license left in the dimension shape is a compound nobody decomposed — which is the failure
+this repo has now had twice, once per reader.
+
 Exit status is 1 on any failure, so CI can gate on it.
 """
 
@@ -31,7 +37,7 @@ from pathlib import Path
 
 import yaml
 
-from build.check_rubric import FREE_TEXT, _clauses, recompose, split_components
+from build.check_rubric import FREE_TEXT, _clauses, is_license_key, recompose, split_components
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -69,6 +75,20 @@ def check(root: Path = ROOT) -> list[str]:
                         f"{slug}.{key}: mapping recomposes to {actual.get(key)!r}, "
                         f"raw says {expected.get(key)!r}"
                     )
+
+        for key, entry in components.items():
+            if key == FREE_TEXT or not is_license_key(key):
+                continue
+            if not isinstance(entry, list):
+                failures.append(
+                    f"{slug}.{key}: a license is recorded as a LIST of "
+                    f"{{name, detail?, raw?}} parts, one per license the product makes you "
+                    f"accept, not as {type(entry).__name__}. `license_tier` resolves the "
+                    f"parts as recorded and never splits a value itself; a mapping here "
+                    f"would abstain or resolve on the wrong half. Structure it with "
+                    f"build.check_rubric.license_entry and write it through "
+                    f"build/components.py."
+                )
 
         keyless = [c.strip() for c in _clauses(raw) if ":" not in c.strip()]
         recorded = components.get(FREE_TEXT, [])

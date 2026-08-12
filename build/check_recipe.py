@@ -352,7 +352,7 @@ def stale_deferrals(
         if recipe is None:
             continue
         openness = (yaml.safe_load(path.read_text()) or {}).get("openness") or {}
-        got = score_openness(recipe, components_of(openness)).result
+        got = score_openness(recipe, openness).result
         if got is not None and got == (openness.get("score"), openness.get("class")):
             problems.append(
                 f"category '{slug}' defers '{product}', but the ladder now reproduces its "

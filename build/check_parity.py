@@ -118,7 +118,7 @@ def local_scores(category_filter: str | None) -> tuple[dict, dict]:
             # `currentai.scores.openness_computed` carries the same rule: the SQL still
             # resolves the tier up front, so the five products that score without one will
             # read as local-scored / warehouse-abstained until it is updated.
-            computed[key] = score_openness(recipe, components_of(openness)).result
+            computed[key] = score_openness(recipe, openness).result
     return computed, deferred
 
 
