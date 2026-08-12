@@ -80,14 +80,29 @@ openness:
     http_status: 200
     content_sha256: ead02dec46f813c10d8ff4b7884f5d83f41d05a27ce94edbbaaaee2f18212d68
 adoption:
-  level: 3
-  signal_type: stars_fallback
+  level: 1
+  signal_type: usage_volume
   confidence: medium
-  note: ~14.6k stars on RWKV-LM; HF download volume low/noisy - stars_fallback (capped at 3).
+  note: '4,652 downloads in the trailing 30 days (BlinkDL/rwkv-7-world 4,395; RWKV/RWKV7-Goose-World3-1.5B-HF
+    257), read 2026-08-12. Bands at level 1 (<10K) on the software and model adoption scale. Moved off the
+    stars fallback: a real download signal exists, and docs/guides/adoption.md says to re-band when one
+    does. The package is summed across the two repos the product DECLARES, per the tier rule in docs/guides/identity.md.
+    Widening to every repo under the BlinkDL and RWKV orgs would give about 71k and level 2; the declared
+    reading is the one the map''s own identity rule supports. This LOWERS the recorded level from 3 - the
+    star count had been flattering it.'
+  reach: <10K
+  last_verified: '2026-08-12'
   sources:
-  - url: https://github.com/BlinkDL/RWKV-LM
-    shows: ~14.6k stars, RWKV-7 Goose
-    accessed: '2026-06-18'
+  - url: https://huggingface.co/api/models/BlinkDL/rwkv-7-world
+    shows: 4,395 downloads in the trailing 30 days for BlinkDL/rwkv-7-world
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 4f60fc41bc58e3b748a32611b10c254f02baa5de74429fbb87b8b0e91e90c298
+  - url: https://huggingface.co/api/models/RWKV/RWKV7-Goose-World3-1.5B-HF
+    shows: 257 downloads in the trailing 30 days for RWKV/RWKV7-Goose-World3-1.5B-HF
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 5d732a40ffed05782e80c9a78279b3070f74a4fa261b85d81e202ab57d8384ad
 capability:
   score: 4
   basis: benchmark
