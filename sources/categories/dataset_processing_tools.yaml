@@ -47,12 +47,18 @@ scoring_recipe:
   deferred:
     txt360-pipeline:
       because: >-
-        the license is recorded as prose - `Apache-2.0 asserted in README only, no LICENSE file in
-        repo` - so the tier lookup reads a sentence rather than a license name. Confirmed
-        2026-07-30: the repo still ships no LICENSE file and the GitHub license endpoint 404s. The
-        deciding rule reads `source` alone, but check_rubric resolves a license tier before
-        applying the formula, so it abstains. Adding the license to a tier is a rubric change,
-        held for Phase 1.
+        the license is genuinely unstated and the ladder has no tier for that. The record used to
+        carry it as prose - `Apache-2.0 asserted in README only, no LICENSE file in repo` - which
+        made the abstention look like a recording defect. On the owner's ruling of 2026-08-12 it
+        now reads `none-declared`, the same form gaia and openhermes-2-5 use, so the tier lookup
+        reads a license name rather than a sentence. The finding behind it stands: confirmed
+        2026-07-30 that the repo ships no LICENSE file and the GitHub license endpoint 404s, so
+        the README badge is an assertion with no grant behind it. The outcome is unchanged and is
+        now the answer rather than an artifact - `source: public` carries the walk past the two
+        rungs that read source alone and into the rung that tests a license tier, `none-declared`
+        is in no tier, and the walk stops there. A tier for unstated licenses is a rubric change
+        across eleven software categories, and it is the same open question `livecodebench` and
+        `openhermes-2-5` are waiting on one ladder over.
 comments: 'The software that produces the training_synthetic_datasets row (Columbia model-components layer;
   MOF ''Data Preprocessing Code''). Scoped to data-processing software; human-data / RLHF labor marketplaces (Scale, Surge, Mercor) are
   out of scope -- per the Columbia framework their output is data (the datasets category) and their labor

@@ -187,10 +187,31 @@ def test_local_scores_matches_check_rubrics_split():
     library. Three stayed deferred and each on a rubric gap rather than a missing fact:
     livecodebench and openhermes-2-5 record 3 on unstated licenses the ladder gives no rung,
     and multipl-e records the repository's BSD-3-with-ML-restriction, which this ladder has
-    no tier for."""
+    no tier for.
+
+    Then 460/12 -> 465/7 when the second resolution batch ran, on 2026-08-12. Five closed and
+    none of them moved a published score. Three were evidence reads whose deferral texts had
+    gone stale: jina-reader, maple-ai and privatemode were all recorded as computing a score
+    that disagreed with the record, and none of them computed anything by the time they were
+    read - #201 and #203 had turned all three into ordinary unanswered dimensions. jina-reader
+    and maple-ai gained `core-gated:ungated` on repo and pricing reads, and privatemode gained
+    `source:partial`, its recorded `TCB-public` being outside the dimension's enum. The other
+    two were rulings. llamafirewall transcribed `source` and `license` off its `framework` and
+    `self-host` keys, on the rule that a product is scored on the artifact it ships rather than
+    on what it can load - the bundled guard models are separate products here with their own
+    scores. raspberry-pi-ai-hat-plus kept its 4 through a new `accessory_host` dimension in the
+    hardware ladder, because an accessory tracks the platform it completes. arduino-uno-q is the
+    sixth and the only published score that moved, 3/documented -> the 5/open_hardware the ladder
+    computes: its design files are openly licensed under CC-BY-SA 4.0, which is the same
+    `schematics: open` that puts beagley-ai at 5, and the proprietary SoC the old note cited is a
+    reason no rung applies. A cap on proprietary silicon was considered and rejected because every
+    board in the category runs on it, so the cap would flatten all 20 to 3 and leave the 4 and 5
+    rungs unreachable. Of the six that remain, model-context-protocol and txt360-pipeline both had
+    their licenses recorded properly and both still abstain, which is now the finding rather than
+    a defect."""
     computed, deferred = local_scores(None)
-    assert len(deferred) == 12
-    assert len(computed) == 460
+    assert len(deferred) == 6
+    assert len(computed) == 466
     assert not set(computed) & set(deferred)
     # Every one of the 410 reproduces today, so none should abstain.
     assert [key for key, value in computed.items() if value is None] == []
@@ -229,24 +250,34 @@ def test_a_missing_row_fails(monkeypatch, capsys):
     assert "no row in the warehouse at all" in capsys.readouterr().out
 
 
+# Both tests below need a category that actually defers something, and the category they
+# named is chosen by the corpus rather than by them. They ran against `safeguards` and
+# `ui_api` until 2026-08-12, when the second resolution batch took both to zero deferrals -
+# at which point one raised IndexError and the other passed while asserting "0 abstain on
+# both sides", which is the silent-narrowing failure this repo has already been bitten by
+# three times. `edge_hardware` holds the two deferrals least likely to close soon: one waits
+# on the form_factor taxonomy proposal (#219) and one on a direction for the whole hardware
+# ladder. Re-point them rather than loosening them if that stops being true.
 def test_scoring_a_deferred_product_fails(monkeypatch, capsys):
     """The safeguards bug: a ladder ending in `otherwise` scoring what the repo declined."""
-    computed, deferred = local_scores("safeguards")
+    computed, deferred = local_scores("edge_hardware")
+    assert deferred, "pick a category that still defers something"
     published = {
         key: row(key[0], key[1], value[0], value[1], rule=0) for key, value in computed.items()
     }
     published.update({key: row(key[0], key[1], deferred=True) for key in deferred})
     victim = sorted(deferred)[0]
     published[victim] = row(victim[0], victim[1], 3, "open_weights", deferred=False, rule=6)
-    assert run(monkeypatch, published, "safeguards") == 1
+    assert run(monkeypatch, published, "edge_hardware") == 1
     assert "repo defers it, the warehouse does not know" in capsys.readouterr().out
 
 
 def test_a_shared_abstention_is_not_a_divergence(monkeypatch, capsys):
     """Both sides declining is a curation work list, not a parity failure."""
-    _, deferred = local_scores("ui_api")
+    _, deferred = local_scores("edge_hardware")
+    assert deferred, "pick a category that still defers something"
     published = {key: row(key[0], key[1], deferred=True) for key in deferred}
-    assert run(monkeypatch, published, "ui_api") == 1  # the scored products are missing
+    assert run(monkeypatch, published, "edge_hardware") == 1  # the scored products are missing
     out = capsys.readouterr().out
     assert f"{len(deferred)} abstain on both sides" in out
 

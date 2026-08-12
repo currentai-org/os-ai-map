@@ -286,6 +286,48 @@ gate as a managed cloud "on top" of a complete OSI core — the shape this secti
 A `gated` value is not evidence that somebody applied this rule; check what the record says is
 actually withheld.
 
+### A product is scored on the artifact it ships, not on what it can load
+
+A harness that runs against a model you supply is scored on the harness. The model it happens to
+be shipped alongside is a different product with its own score, and scoring the harness down for
+it would count the same license twice.
+
+`llamafirewall` is the case the rule was settled on (2026-08-12). It is an MIT firewall that
+inspects prompts and code and calls out to whatever guard model you point it at; the PurpleLlama
+monorepo ships it next to Prompt Guard 2 and Llama Guard, which carry the use-restricted Llama
+Community License. The repository makes the split explicit — the root `LICENSE` is the Llama 3.2
+Community License and `LlamaFirewall/LICENSE` is plain MIT — and both guard models are separately
+scored on this map at 3/open_weights. So the restrictive terms are not being overlooked; they are
+recorded against the artifact they actually govern. `llamafirewall` is 5/open_source.
+
+`openai-evals` was already resolved this way before the rule was written: it records
+`license: MIT`, `source: public(full framework + registry)` and
+`per-dataset-licenses: mixed(CC/CC0/Apache for bundled data)`, and scores 5 on the framework.
+Those two are the only bundles of this shape in the corpus today.
+
+The rule does have an edge, and it is worth stating so nobody stretches it. It applies where the
+bundled artifact is *substitutable* — you can point LlamaFirewall at a different model and it
+still works. Where the published thing genuinely cannot run without the restricted component, the
+component is not a bundle but a dependency, and `core_gated` is the dimension that asks about it.
+
+### An accessory tracks the platform it completes
+
+An add-on is not a board, and asking board questions of one answers about the wrong artifact.
+What a builder gets from a HAT or a carrier is the openness of the system it completes.
+
+`raspberry-pi-ai-hat-plus` is the case (2026-08-12). It publishes a HAT+ mechanical specification
+rather than board design files, and its toolchain is half open — the Pi driver integration is
+open, Hailo's Dataflow Compiler is registration-gated. Both of its own answers are `partial` and
+neither describes the system anyone runs. It plugs into a `raspberry-pi-5`, which scores
+4/open_toolchain, and so does it.
+
+This is recorded as an `accessory_host` dimension in `sources/rubrics/hardware.yaml` rather than
+as an extra rung. The rung version — `{schematics: partial, toolchain: partial}` → 4 — would have
+reproduced the same number and been non-monotonic: `ti-am67a` and
+`qualcomm-dragonwing-rb3-gen-2` both record `{partial, open}` and score 3, so it would have ranked
+strictly weaker evidence strictly higher. One product records `accessory-host` today; the next
+accessory records its host rather than needing another rung.
+
 ## How the buckets relate to MOF and OSAID
 
 The Model Openness Framework and the OSI's Open Source AI Definition are both **binary**.

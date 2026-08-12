@@ -9,8 +9,9 @@ openness:
     - name: MIT-subdirs
       detail: proxy/web/internal-oss
     source:
-      value: TCB-public
-      detail: github.com/edgelesssys/privatemode-public
+      value: partial
+      detail: the TCB components are published and reproducibly buildable at github.com/edgelesssys/privatemode-public;
+        the service around them is not, and the license permits building only to audit
     service:
       value: proprietary-hosted
     models:
@@ -18,13 +19,44 @@ openness:
   confidence: high
   note: 'Not open source: the security-critical Trusted Computing Base is publicly readable (and the client
     proxy + web app are MIT), but the main license permits only viewing/compiling for audit, and the operational
-    service is a proprietary hosted offering. More open than a black-box API, less than open-core.'
-  raw: license:custom-source-available(audit-only)+MIT-subdirs(proxy/web/internal-oss);source:TCB-public(github.com/edgelesssys/privatemode-public);service:proprietary-hosted;models:third-party-open-weight
+    service is a proprietary hosted offering. More open than a black-box API, less than open-core. A read
+    on 2026-08-12 recorded source as partial rather than public or closed, which is what the ladder was
+    missing. The repo README scopes itself to "all components of Privatemode that are part of the TCB",
+    so the operating service around them - accounts, billing, orchestration - is not published, and the
+    LICENSE grants permission "to view, analyze, and compile this source code solely for the purpose of
+    auditing and for verifying its reproducibility and cryptographic hashes", with redistribution,
+    modification and use for any other purpose prohibited. There is no self-hostable implementation, so
+    source is not public; a real component set does ship, so it is not closed either. That is the same
+    shape as lumo, apify and confer, which the ladder already places at 2.'
+  raw: license:custom-source-available(audit-only)+MIT-subdirs(proxy/web/internal-oss);source:partial(the
+    TCB components are published and reproducibly buildable at github.com/edgelesssys/privatemode-public;
+    the service around them is not, and the license permits building only to audit);service:proprietary-hosted;models:third-party-open-weight
+  last_verified: '2026-08-12'
   sources:
   - url: https://github.com/edgelesssys/privatemode-public
     shows: TCB source (attestation agent, proxy, web app, SDK) under a custom audit-only license with MIT-licensed
       subdirectories
     accessed: '2026-06-17'
+  - url: https://github.com/edgelesssys/privatemode-public/blob/main/README.md
+    shows: 'the repo "contains the source code of all components of Privatemode that are part of the TCB",
+      that "the build is reproducible", and that this "allows users to fully verify the Privatemode service"
+      - verification, not deployment'
+    accessed: '2026-08-12'
+    establishes:
+    - source
+    http_status: 200
+    content_sha256: e4c9a73f76e9969ccaec1d9fd459d542108f32f1a15502cd25a7872a8cb0483b
+  - url: https://github.com/edgelesssys/privatemode-public/blob/main/LICENSE
+    shows: 'permission is granted "to view, analyze, and compile this source code solely for the purpose
+      of auditing and for verifying its reproducibility and cryptographic hashes", and "Redistribution,
+      modification, and use of the software for any other purpose are prohibited unless explicitly permitted
+      by the copyright holder"; privatemode-proxy/, app/web/ and internal/oss/ are additionally MIT'
+    accessed: '2026-08-12'
+    establishes:
+    - license
+    - source
+    http_status: 200
+    content_sha256: e8fab96ce879946cf49f66f752947da7f0a4dca4dc180dd70bf5a4dd41451bef
 adoption:
   level: 2
   signal_type: reported_traction

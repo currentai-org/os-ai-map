@@ -9,19 +9,59 @@ openness:
     source:
       value: public
       detail: TypeScript, stateless mode self-hostable via Docker
+    core-gated:
+      value: ungated
+      detail: no enterprise directory or license key; the paid tiers buy rate limit on the hosted endpoint
     managed-tier:
       value: r.jina.ai/s.jina.ai hosted SaaS
       detail: free tier + paid API key) on top of the same OSS core
       raw: r.jina.ai/s.jina.ai hosted SaaS (free tier + paid API key) on top of the same OSS core
   confidence: high
-  note: Repo is Apache-2.0 with the full reader pipeline public and self-hostable; hosted Jina API is
-    convenience hosting, not a gated core.
-  raw: license:Apache-2.0(OSI);source:public(TypeScript, stateless mode self-hostable via Docker);managed-tier:r.jina.ai/s.jina.ai
+  note: 'Apache-2.0 throughout with no enterprise directory and no license key, and a read on 2026-08-12
+    found the paid tiers buying throughput on the hosted endpoint rather than functionality: jina.ai/reader
+    lists Reader at 20 RPM without a key, 500 RPM with a free key and 5,000 RPM on Premium, with PDF,
+    MS-Office, image captioning and search available at every tier. The published branch does have the
+    MongoDB-backed SaaS storage layer stripped out, which the README states plainly, but it is accounting
+    and persistence for the hosted service rather than a piece of the reader the open build needs - the
+    README says the branch "runs in stateless mode out of the box, with optional MinIO/S3-compatible bucket
+    caching". Nothing is withheld from the published source, so core-gated is ungated.'
+  raw: license:Apache-2.0(OSI);source:public(TypeScript, stateless mode self-hostable via Docker);core-gated:ungated(no
+    enterprise directory or license key; the paid tiers buy rate limit on the hosted endpoint);managed-tier:r.jina.ai/s.jina.ai
     hosted SaaS (free tier + paid API key) on top of the same OSS core
+  last_verified: '2026-08-12'
   sources:
   - url: https://github.com/jina-ai/reader
     shows: Apache-2.0 license, public source, self-host Docker instructions, ~11k stars
     accessed: '2026-06-04'
+  - url: https://github.com/jina-ai/reader/blob/main/LICENSE
+    shows: the repository LICENSE is the Apache License, Version 2.0, headed "Copyright 2020-2024 Jina
+      AI Limited"; the GitHub repo API reports the SPDX id Apache-2.0
+    accessed: '2026-08-12'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: ee3aeb6c37d4222522d759df6c7014542880b6af1b55cdc5b3bfb11f160e9210
+  - url: https://github.com/jina-ai/reader/blob/main/README.md
+    shows: 'the repo is "the open source branch of the codebase behind https://r.jina.ai and https://s.jina.ai";
+      it "runs in stateless or bucket-cached mode; the MongoDB-backed SaaS storage layer is not included
+      here"; the 2026-04 entry adds that the oss branch "runs in stateless mode out of the box, with optional
+      MinIO/S3-compatible bucket caching via docker compose"'
+    accessed: '2026-08-12'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: 583b250f78916c63a244eeb2903077548bcc39e9245f471947857fe84c70536c
+  - url: https://jina.ai/reader
+    shows: 'the pricing and rate-limit table: Reader 20 RPM with no key, 500 RPM with a free API key, 5,000
+      RPM on Premium, and Search 100/1,000 RPM; the feature list (PDF reading, image captioning, web search)
+      is the same at every tier, so the tiers differ on throughput rather than on features. No enterprise
+      or commercial edition is offered.'
+    accessed: '2026-08-12'
+    establishes:
+    - core-gated
+    http_status: 200
+    content_sha256: 90bd4a738a01b7cfba9b2005d7d281aeee056650aced9eab573172dce4f9d188
 adoption:
   level: 3
   reach: 100K-1M

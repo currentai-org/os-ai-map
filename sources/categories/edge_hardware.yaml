@@ -11,10 +11,10 @@ scoring_recipe:
   version: 1
   derived_from:
     method: reverse-engineered from hand-authored scores, then verified
-    scores_reproduced: 17
+    scores_reproduced: 19
     scores_total: 20
-    scores_deferred: 3
-    verified_on: '2026-08-01'
+    scores_deferred: 1
+    verified_on: '2026-08-12'
     checker: build/check_rubric.py
   note: >-
     First HARDWARE category, and the only ladder in the map with no `license_tier` - none of
@@ -29,8 +29,17 @@ scoring_recipe:
     inferred `schematics` value, which is the honest way to surface that the ladder asks a
     board question of a bare chipset.
 
-    The other two deferrals are real disagreements between the ladder and a recorded score,
-    and both survived the normalization unchanged.
+    The other two deferrals were real disagreements between the ladder and a recorded score,
+    and the owner ruled on both on 2026-08-12. `arduino-uno-q` moved 3 to 5, matching
+    `beagley-ai` on openly licensed design files: this ladder scores design-file openness
+    rather than silicon, and the proprietary QRB2210 the old note cited is a reason no rung
+    applies. A cap on proprietary silicon was considered and rejected - every board here runs
+    on it, so the cap would flatten all 20 products to 3 and make the 4 and 5 rungs
+    unreachable, which check_recipe's no_unreachable_rule gate treats as a defect.
+    `raspberry-pi-ai-hat-plus` kept its 4 and the ladder was extended to say why: an accessory
+    tracks the platform it completes, which is now the `accessory_host` dimension in
+    sources/rubrics/hardware.yaml rather than a rung on a pair of partials that would have
+    ranked weaker evidence higher.
 
   extends: hardware
   deferred:
@@ -41,29 +50,12 @@ scoring_recipe:
         rather than a negative one. Recording `none` would conflate "not applicable" with
         "withheld", and would be inferring evidence from the product description rather than
         transcribing what the openness axis records. The other four chip-class products all
-        record a schematics clause of their own and so are scored normally; this one does not.
-        A `form_factor` key distinguishing board / module / chipset would let the ladder ask
-        the right question of each, and is a curation proposal rather than something to infer.
-    arduino-uno-q:
-      because: >-
-        Recorded 3/documented; the ladder computes 5/open_hardware. Its board schematics and
-        gerbers are CC-BY-SA-4.0 and its toolchain is open, which is the same combination that
-        earns `beagley-ai` a 5. The recorded note gives the reason for the 3 as the proprietary
-        QRB2210 SoC needing firmware blobs - but that is equally true of `beagley-ai` (TI
-        AM67A, DSP and WiFi blobs), `orange-pi-5`, `khadas-edge2` and `sipeed-maixcam`, all of
-        which score above 3. Either this is scored low, or `beagley-ai`'s 5 rests on OSHWA
-        certification specifically, in which case that is a rung condition nobody has written
-        down. Needs a human.
-    raspberry-pi-ai-hat-plus:
-      because: >-
-        Recorded 4/open_toolchain; the ladder computes 3/documented. It records a HAT+
-        mechanical spec rather than board design files, and a partial toolchain - the Pi
-        driver integration is open while the Hailo model compiler is registration-gated.
-        Nothing about the accessory itself is open at the level the other 4s are; what it
-        inherits is the Pi ecosystem around it. A rung for `{schematics: partial, toolchain:
-        partial}` would reproduce it and would exist solely because one product needs it,
-        which this ladder does not do. Whether an accessory's score should track its host
-        platform is a curation question.
+        record a schematics clause of their own and so are scored normally; this one does not,
+        which means the line between scored and deferred for a chipset currently falls wherever
+        a curator happened to write something in that field. The owner ruled on 2026-08-12 not
+        to score it and to raise the taxonomy change instead: a `form_factor` key distinguishing
+        board / module / chipset would let the ladder ask the right question of each. That is
+        issue #219, and this deferral stands until it lands.
 products:
 - raspberry-pi-5
 - raspberry-pi-ai-hat-plus
