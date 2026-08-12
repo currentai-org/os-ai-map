@@ -3,6 +3,12 @@ openness:
   score: 5
   class: open_source
   components:
+    license:
+    - name: MIT
+      detail: LlamaFirewall/LICENSE, covering the LlamaFirewall and CodeShield code
+    source:
+      value: public
+      detail: github.com/meta-llama/PurpleLlama, LlamaFirewall/
     framework:
       value: open
       detail: LlamaFirewall + CodeShield code, MIT-licensed in PurpleLlama
@@ -14,14 +20,54 @@ openness:
       raw: bundled guard models (Prompt Guard 2, Llama Guard) carry the Llama Community License
   confidence: high
   note: The firewall framework and CodeShield are open-source (MIT) and self-hostable; it orchestrates
-    Meta's Llama-licensed guard models. Scored on the framework, which is genuinely open source (5).
-  raw: framework:open(LlamaFirewall + CodeShield code, MIT-licensed in PurpleLlama);self-host:yes;note:bundled
+    Meta's Llama-licensed guard models. Scored on the artifact it ships, which is the rule the owner
+    settled on 2026-08-12 - a product is scored on what it distributes, not on what it can load. A repo
+    read the same day confirmed the split is a real one in the tree rather than a reading of it. PurpleLlama's
+    root LICENSE is the Llama 3.2 Community License and governs the guard-model directories; LlamaFirewall/LICENSE
+    is plain MIT and governs the harness. The bundled Prompt Guard 2 and Llama Guard are separate products
+    on this map carrying their own scores, both 3/open_weights, so nothing about their terms goes unscored
+    by scoring the harness on its own.
+  raw: license:MIT(LlamaFirewall/LICENSE, covering the LlamaFirewall and CodeShield code);source:public(github.com/meta-llama/PurpleLlama,
+    LlamaFirewall/);framework:open(LlamaFirewall + CodeShield code, MIT-licensed in PurpleLlama);self-host:yes;note:bundled
     guard models (Prompt Guard 2, Llama Guard) carry the Llama Community License
+  last_verified: '2026-08-12'
   sources:
   - url: https://github.com/meta-llama/PurpleLlama
     shows: 'PurpleLlama: MIT evals + Llama-licensed safeguard models; ~4.2k stars; LlamaFirewall, Prompt
       Guard, CodeShield components'
     accessed: '2026-06-29'
+  - url: https://github.com/meta-llama/PurpleLlama/blob/main/LlamaFirewall/README.md
+    shows: 'the whole product installs and runs locally - prerequisites are Python 3.10, pip and a HuggingFace
+      account for the Llama models, installation is `pip install llamafirewall`, and the basic usage example
+      instantiates LlamaFirewall in-process. No paid tier, no hosted service and no license key appears
+      anywhere in the document; the scanners it lists (PromptGuard 2, AlignmentCheck, regex/custom, CodeShield)
+      are all in the published package'
+    accessed: '2026-08-12'
+    establishes:
+    - self-host
+    - source
+    http_status: 200
+    content_sha256: 9bf4c794eae9870c6d9403490949eec85568c275229775f9477a72e48b679d12
+  - url: https://github.com/meta-llama/PurpleLlama/blob/main/LlamaFirewall/LICENSE
+    shows: the LlamaFirewall directory carries a plain MIT License, "Copyright (c) Meta Platforms, Inc.
+      and affiliates", granting use, copy, modify, merge, publish, distribute, sublicense and sell without
+      restriction
+    accessed: '2026-08-12'
+    establishes:
+    - license
+    - source
+    http_status: 200
+    content_sha256: da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93
+  - url: https://github.com/meta-llama/PurpleLlama/blob/main/LICENSE
+    shows: 'the monorepo root LICENSE is the LLAMA 3.2 COMMUNITY LICENSE AGREEMENT, which is what covers
+      the guard-model directories alongside the harness: the repo tree holds Llama-Guard, Llama-Guard2,
+      Llama-Guard3, Llama-Guard4, Llama-Prompt-Guard-2 and Prompt-Guard beside LlamaFirewall and CodeShield,
+      and GitHub reports the repo license as NOASSERTION'
+    accessed: '2026-08-12'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: 8cc15535a8a34b41888f644b339a1a9eb428af793a4f5e24df58a3e5b1487d74
 adoption:
   level: 3
   reach: 10K-100K

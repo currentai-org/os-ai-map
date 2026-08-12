@@ -12,18 +12,31 @@ openness:
     source:
       value: public
       detail: github.com/OpenSecretCloud
+    core-gated:
+      value: ungated
+      detail: billing and feature-flag APIs are optional and external; no enterprise directory, no license
+        key
     models:
       value: open-weight
     hosted-tier:
       value: paid
       detail: managed-enclaves
   confidence: medium
-  note: Both halves of the stack are open under standard OSI licenses (Maple client MIT, OpenSecret platform
+  note: 'Both halves of the stack are open under standard OSI licenses (Maple client MIT, OpenSecret platform
     AGPL-3.0) and the served models are open-weight - unusually clean for a "private AI" product. Scored
-    open_source because the privacy guarantee is only credible because the code is open and attestable. A
-    defensible alternative is open_core, since the delivered offering is a paid hosted service over managed
-    enclaves.
-  raw: license:MIT(Maple-client)+AGPL-3.0(OpenSecret-platform),both-OSI;source:public(github.com/OpenSecretCloud);models:open-weight;hosted-tier:paid(managed-enclaves)
+    open_source because the privacy guarantee is only credible because the code is open and attestable.
+    A repo read on 2026-08-12 settled the open_core alternative against itself. The Maple README makes
+    the billing and feature-flag services optional external clients, VITE_MAPLE_BILLING_API_URL and
+    VITE_OS_FLAGS_BASE_URL, and the OpenSecret README says their "server implementations are not part
+    of this repository setup"; a self-hosted backend runs without either, so what the subscription buys
+    is usage on the hosted enclaves rather than functionality withheld from the source. Neither repo has
+    an enterprise directory or a license key. The one closed-looking artifact is the 15MB
+    continuum-proxy-x86_64 binary vendored into opensecret, and it is the third-party TEE proxy from
+    Edgeless Systems, carried alongside a git submodule of edgelesssys/privatemode-public rather than
+    being anything OpenSecret withholds from a self-hoster.'
+  raw: license:MIT(Maple-client)+AGPL-3.0(OpenSecret-platform),both-OSI;source:public(github.com/OpenSecretCloud);core-gated:ungated(billing
+    and feature-flag APIs are optional and external; no enterprise directory, no license key);models:open-weight;hosted-tier:paid(managed-enclaves)
+  last_verified: '2026-08-12'
   sources:
   - url: https://github.com/OpenSecretCloud/Maple
     shows: MIT-licensed Maple client (Tauri/Rust/TS), active; multi-platform
@@ -31,6 +44,42 @@ openness:
   - url: https://github.com/OpenSecretCloud/opensecret
     shows: AGPL-3.0 OpenSecret platform; AWS Nitro enclave / TEE confidential-computing architecture
     accessed: '2026-06-17'
+  - url: https://github.com/OpenSecretCloud/Maple/blob/master/LICENSE
+    shows: the Maple client repository LICENSE is a plain MIT License; the GitHub repo API reports the
+      SPDX id MIT
+    accessed: '2026-08-12'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: 076f3390f6342f51a64feadb9cd84d4ca41f56ebc6c2f9f1fe98fa255d853ad8
+  - url: https://github.com/OpenSecretCloud/opensecret/blob/master/LICENSE
+    shows: the OpenSecret platform repository LICENSE is the GNU Affero General Public License Version
+      3; the GitHub repo API reports the SPDX id AGPL-3.0
+    accessed: '2026-08-12'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: 8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef
+  - url: https://github.com/OpenSecretCloud/Maple/blob/master/README.md
+    shows: 'the configuration surface lists VITE_OS_FLAGS_BASE_URL as "an optional feature-flags API" and
+      VITE_MAPLE_BILLING_API_URL as "an optional billing API", and states "Flags and billing are independent
+      clients"; the quick start runs the client against a local OpenSecret backend at 127.0.0.1:3000 with
+      no paid component'
+    accessed: '2026-08-12'
+    establishes:
+    - core-gated
+    http_status: 200
+    content_sha256: 278de0205fecb4841f4c6ce7ec2df9e2e16eb9f0306dd03f671b32e5767be1b4
+  - url: https://github.com/OpenSecretCloud/opensecret/blob/master/README.md
+    shows: 'the backend is "the open-source Rust backend for confidential AI applications such as Maple"
+      and builds from the Nix flake; "Billing and feature flags are optional external HTTP APIs whose administrative
+      credentials remain in the backend; their server implementations are not part of this repository setup"'
+    accessed: '2026-08-12'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: 41dbc79949c8be048aa6d719ee168312648bcbfe59cf75ecbf04f9f50c14901b
 adoption:
   level: 3
   signal_type: reported_traction

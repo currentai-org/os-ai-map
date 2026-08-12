@@ -7,6 +7,9 @@ openness:
       value: partial
       detail: HAT+ mechanical spec public
       raw: partial (HAT+ mechanical spec public)
+    accessory-host:
+      value: open_toolchain
+      detail: Raspberry Pi 5, which scores 4/open_toolchain
     toolchain:
       value: partial
       detail: open Pi driver integration, Hailo compiler gated
@@ -25,10 +28,15 @@ openness:
       raw: open_market (mass-market)
   confidence: medium
   note: Officially supported open Pi software stack and public product page, globally purchasable, but
-    the underlying Hailo model-compiler toolchain is registration-gated.
-  raw: schematics:partial (HAT+ mechanical spec public);toolchain:partial (open Pi driver integration, Hailo
-    compiler gated);datasheets:brief (public brief);blobs:required (Hailo firmware required);retail:open_market
-    (mass-market)
+    the underlying Hailo model-compiler toolchain is registration-gated. Scored as an accessory on the
+    owner's ruling of 2026-08-12 - an add-on tracks the platform it completes, and what a builder gets
+    from this HAT is the openness of the Raspberry Pi 5 it plugs into, which is 4/open_toolchain. Its
+    own design and toolchain answers are both partial and neither describes the system anyone actually
+    uses, so accessory-host is what the ladder now reads. See the dimension of that name in
+    sources/rubrics/hardware.yaml for why the principle is an axis rather than an extra rung.
+  raw: schematics:partial (HAT+ mechanical spec public);accessory-host:open_toolchain(Raspberry Pi 5, which
+    scores 4/open_toolchain);toolchain:partial (open Pi driver integration, Hailo compiler gated);datasheets:brief
+    (public brief);blobs:required (Hailo firmware required);retail:open_market (mass-market)
   sources:
   - url: https://www.raspberrypi.com/products/ai-hat/
     shows: 'Official product page: Hailo-8 (26 TOPS) / Hailo-8L (13 TOPS), HAT+ form factor, from $70'

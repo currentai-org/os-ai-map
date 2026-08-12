@@ -674,11 +674,15 @@ def test_real_sources_serialize_without_errors():
     # a different number means it stopped inheriting.
     #
     # `edge_hardware` is the first HARDWARE category and the only ladder with no
-    # `license_tier`: 4 rungs, each a single condition on `schematics` except the two that
-    # also test `toolchain`, so 6 rows.
+    # `license_tier`. It was 6: 4 rungs, each a single condition on `schematics` except the
+    # two that also test `toolchain`. It is 7 since 2026-08-12, when a single-condition
+    # `accessory_host` rung was added at the top of the formula on the ruling that an
+    # accessory tracks the platform it completes. It decides a different KIND of product
+    # rather than a better one - `raspberry-pi-ai-hat-plus` is a HAT, and the four rungs
+    # below it all assume the thing being scored is a board.
     assert per_category("category_scoring_rules") == {
         "base_pretrained": 12, "finetuned_chat": 10, "safeguards": 20,
-        "benchmark_eval_data": 24, "training_synthetic_datasets": 24, "edge_hardware": 6,
+        "benchmark_eval_data": 24, "training_synthetic_datasets": 24, "edge_hardware": 7,
         **{c: 10 for c in SOFTWARE},
     }
     # Both fell with the slug migration: release-level products collapsed into the
@@ -742,7 +746,15 @@ def test_real_sources_serialize_without_errors():
         # the repository ships the generation engine itself and the NeMo Platform adds
         # infrastructure around it rather than withholding anything from it - and the record
         # moved from an unreproducible 1/closed to the 5/open_source the ladder computes.
-        "agent_tools_protocols": 122, "dataset_processing_tools": 90, "evaluation_code": 107,
+        #
+        # agent_tools_protocols 122 -> 127 when jina-reader's deferral closed on 2026-08-12. A
+        # repo and pricing read recorded `core-gated: ungated` - Apache-2.0 throughout with no
+        # enterprise directory and paid tiers that buy rate limit on the hosted endpoint - and
+        # its recorded 5/open_source reproduces. Five rows, from none while deferred.
+        # model-context-protocol still publishes nothing: CC-BY-4.0 now has a tier, so it
+        # resolves to permissive_non_osi instead of nothing, and that tier deliberately has no
+        # rung.
+        "agent_tools_protocols": 127, "dataset_processing_tools": 90, "evaluation_code": 107,
         # inference_code 47 -> 64 when the sweep read the category: four stale deferrals came
         # off (a deferred product publishes no openness evidence at all), and several products
         # that had described their gating in prose gained a readable `source:`/`core-gated:`.
@@ -823,7 +835,16 @@ def test_real_sources_serialize_without_errors():
         # not read; a repo read confirmed the enterprise directory is carved out to PolyForm
         # Free Trial 1.0.0 while the core stays MIT, `core-gated: gated` was transcribed, and
         # the recorded 4/open_core reproduces. Five rows, and the category now defers nothing.
-        "orchestration_agents": 215, "telemetry_observability": 114, "ui_api": 184,
+        #
+        # ui_api 184 -> 196 when both of its remaining deferrals closed on 2026-08-12, six rows
+        # each. Neither was the conflict its reason claimed: maple-ai and privatemode had both
+        # been abstaining on an unanswered dimension since #201 and #203, not disagreeing with
+        # a computed score. maple-ai gained `core-gated: ungated` on a read of the Maple and
+        # OpenSecret repos, whose billing and feature-flag services are optional external
+        # clients; privatemode gained `source: partial`, its recorded `TCB-public` having been
+        # outside the dimension's enum. Both reproduce the score they carried. The category now
+        # defers nothing.
+        "orchestration_agents": 215, "telemetry_observability": 114, "ui_api": 196,
         # training_synthetic_datasets is unchanged at 158 across the ladder widening, which
         # is the check that mattered: benchmark_eval_data's new dimensions and rungs did not
         # disturb the category the ladder was derived from.
@@ -856,11 +877,28 @@ def test_real_sources_serialize_without_errors():
         # recorded 4 to the 3 the ladder computes, and a product that no longer defers
         # publishes its component keys. wildguard carries four of the fourteen rows because
         # the read that settled it added `code:partial` to the three keys it already had.
-        "safeguards": 117,
+        # safeguards 117 -> 123 when llamafirewall, its last deferral, closed on 2026-08-12 on
+        # the ruling that a product is scored on the artifact it ships rather than on what it
+        # can load. Its MIT facts had been sitting under `framework` and `self-host`;
+        # transcribing `source` and `license` reproduces the recorded 5/open_source, and the
+        # six rows it now publishes include the `framework` and `note` keys it already carried.
+        # The category now defers nothing.
+        "safeguards": 123,
         # 17 scored hardware products across the five recorded dimensions, less the keys
         # individual products do not record. No license row among them, by design -
         # `edge_hardware` is the only category whose ladder declares no `license_tier`.
-        "edge_hardware": 83,
+        #
+        # 83 -> 90 when raspberry-pi-ai-hat-plus's deferral closed on 2026-08-12. It had been
+        # publishing nothing while deferred and now publishes its six recorded keys plus the
+        # new `accessory-host`, which is the dimension that reproduces its 4: an accessory
+        # tracks the platform it completes.
+        #
+        # 90 -> 95 the same day when arduino-uno-q moved 3/documented to the 5/open_hardware
+        # the ladder computes, on openly licensed CC-BY-SA 4.0 design files - the same
+        # `schematics: open` as beagley-ai. Five rows, from none while deferred.
+        # rockchip-rk3588 stays deferred pending the form_factor proposal (#219) and so still
+        # publishes nothing, which is what holds the rise to the one product.
+        "edge_hardware": 95,
     }
     assert {r["grade"] for r in tables["product_openness_evidence"]} == {"document"}
 

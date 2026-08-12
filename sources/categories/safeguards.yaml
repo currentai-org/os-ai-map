@@ -16,9 +16,9 @@ scoring_recipe:
   derived_from:
     method: per-type extends over the shared ladders; evidence transcribed into the keys the
       ladders read, then verified
-    scores_reproduced: 25
+    scores_reproduced: 26
     scores_total: 26
-    scores_deferred: 1
+    scores_deferred: 0
     verified_on: '2026-08-12'
     checker: build/check_rubric.py
   note: >-
@@ -45,19 +45,13 @@ scoring_recipe:
     readers to the paper appendix for training details, so `code` is `partial` and the 4-rung
     still fails. Open data on its own does not carry the rung.
 
-    One remains. It needs a decision about which artifact a bundled product is scored on.
-  deferred:
-    llamafirewall:
-      because: >-
-        Recorded 5/open_source; the ladders abstain, because neither `source` nor `license` is
-        recorded under a key the software ladder reads - the MIT framework facts sit under
-        `framework` and `self-host`. Deliberately left untranscribed, unlike the other sixteen:
-        the same components string records that the bundled guard models (Prompt Guard 2, Llama
-        Guard) carry the use-restricted Llama Community License, so transcribing only the
-        favourable half would manufacture a 5 while ignoring the question. Which artifact a
-        bundled product is scored on is the multi-SKU rule applied to a case where "SKU" is
-        arguable - the harness is MIT and runs against whatever model you point it at.
-        Needs a human.
+    The last one, `llamafirewall`, needed a decision about which artifact a bundled product is
+    scored on, and the owner gave it on 2026-08-12: a product is scored on the artifact it
+    ships, not on what it can load. The harness is MIT in its own LICENSE file and the bundled
+    Prompt Guard 2 and Llama Guard are separate products here with their own scores, so
+    transcribing `source` and `license` off the `framework` and `self-host` keys reproduces the
+    recorded 5 without leaving the Llama Community License unscored. The rule is written down in
+    docs/guides/openness-spectrum.md.
 
 products:
 - aegis-guard

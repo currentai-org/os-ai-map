@@ -73,6 +73,44 @@ openness:
       # therefore a discriminator between none of them.
       values: [none, minimal, required]
       machine_signal: none - requires reading the BSP
+    accessory_host:
+      question: >-
+        Is this an add-on rather than a board, and if so, what does the host platform it
+        plugs into score?
+      reads: [accessory-host]
+      values: [open_hardware, open_toolchain, documented]
+      # WHY THIS DIMENSION EXISTS, and why it is not the obvious alternative.
+      #
+      # The owner ruled on 2026-08-12 that an accessory's openness should track its host
+      # platform: what a HAT or a carrier board offers a builder is the openness of the
+      # system it completes, and asking the board questions of a thing that is not a board
+      # answers about the wrong artifact. `raspberry-pi-ai-hat-plus` is the case and, today,
+      # the only one - it publishes the HAT+ mechanical specification rather than board
+      # design files, and its toolchain is half open, the Pi driver integration being open
+      # while Hailo's Dataflow Compiler is registration-gated.
+      #
+      # The obvious way to reproduce its 4 was a rung on `{schematics: partial, toolchain:
+      # partial}`, and that was rejected after checking what it would say. Across the 20
+      # products in the category that pair is unique to this one product, so it would fire
+      # for exactly one thing either way - but it would ALSO be non-monotonic: `ti-am67a`
+      # and `qualcomm-dragonwing-rb3-gen-2` both record `{partial, open}` and score 3, so a
+      # rung handing `{partial, partial}` a 4 would rank strictly weaker evidence strictly
+      # higher. A rule that is false as a general statement is the thing this repo has
+      # already been bitten by twice (issues #132 and #133), and a curator reading the
+      # ladder later has no way to know it was meant narrowly.
+      #
+      # So the principle is recorded as its own axis instead. It says what it means, it is
+      # orthogonal to the design and toolchain questions rather than contradicting them,
+      # and the next accessory records its host rather than needing another rung. The
+      # narrowness is real and is not hidden: one product records this key today.
+      evidence:
+      - '`open_toolchain`: the accessory completes a platform scoring 4/open_toolchain.
+        `raspberry-pi-ai-hat-plus` plugs into `raspberry-pi-5`, whose schematics are
+        published and whose stack builds from open source'
+      - '`open_hardware` and `documented` are declared for symmetry with the classes a host
+        can hold, and no product records either yet. Neither has a rung, so an accessory
+        landing there abstains and is deferred rather than being scored by analogy'
+      machine_signal: none - needs a human to identify the host and read its score
     retail:
       question: Can anyone buy one?
       # Declared, tested by no rung. Two products record nothing here and the rest split
@@ -94,6 +132,14 @@ openness:
   # #133 is what that looks like when it goes wrong. The tier is described in the category's
   # comments so the vocabulary is not lost; it becomes a rung when a part needs it.
   formula:
+  - when: {accessory_host: open_toolchain}
+    then: {score: 4, class: open_toolchain}
+    because: >-
+      An accessory tracks the platform it completes. A HAT is not a board and the design
+      questions below answer about the wrong artifact when asked of one: what a builder gets
+      from `raspberry-pi-ai-hat-plus` is the openness of the Raspberry Pi 5 it plugs into,
+      which is 4/open_toolchain. Placed first because it decides a different KIND of product,
+      not a better one - the rungs below assume the thing being scored is the board.
   - when: {schematics: open, toolchain: open}
     then: {score: 5, class: open_hardware}
     because: >-
