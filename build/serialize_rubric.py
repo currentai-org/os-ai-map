@@ -49,7 +49,8 @@ Emitted tables (CSVs into `build/registry/`, alongside the registry's own):
   category_deferrals          products a category has declared its ladder does not decide
   license_aliases             a source's license slug -> canonical license name
   evidence_abstentions        values that mean "this source has no answer"
-  product_openness_evidence   per-dimension values parsed from `components`
+  product_openness_evidence   per-dimension values read off `components`, and one row per
+                              part of a recorded license
   product_score_sources       per-axis sources, each with an admission verdict
 
 Usage:
@@ -68,10 +69,12 @@ import yaml
 from build.check_rubric import (
     components_of,
     dimension_read_map,
+    license_parts_of,
     license_read_keys,
     normalize_dimension_value,
     resolve_dimension,
     split_value,
+    structured_components_of,
 )
 from build.rubrics import load_product_types, recipe_for, resolve_recipe_variants
 from build.serialize_registry import write_tables
@@ -147,10 +150,31 @@ TABLES: dict[str, tuple[str, ...]] = {
     "adoption_bands": ("product_type", "signal_type", "level", "above", "reach", "unit"),
     "license_aliases": ("source", "license_slug", "license_name"),
     "evidence_abstentions": ("source", "column_name", "abstain_value"),
+    # Grain: one row per (product_slug, category_slug, dimension, part_index).
+    #
+    # `part_index` exists for the license and is 0 everywhere else. A license is recorded
+    # as a LIST of parts — `GPL-3.0-or-later(editor) + AGPL-3.0(collab-server)` is two
+    # licenses, and `check_rubric.license_tier` resolves each and takes the most
+    # restrictive. Publishing it as one row meant publishing one license, because the row's
+    # `value` came out of `split_value`, which severs a compound at the first `(`. The
+    # warehouse then resolved half a license and scored `flan-collection`, `smoltalk` and
+    # `redpajama-data-v2` differently from the repo.
+    #
+    # One row per part rather than a joined string, so the warehouse never splits anything:
+    # a join per part, a COUNT for the abstain rule, a MAX on tier rank. Any string
+    # manipulation on the far side would be this same rubric written twice, which is what
+    # check_parity keeps catching.
+    #
+    # The index carries ORDER, not identity — the parts of one license associate by
+    # (product_slug, category_slug, dimension) alone. It is here because two parts can be
+    # byte-identical, which would otherwise collapse the abstain COUNT, and because the
+    # warehouse reassembles the recorded license for `fact_input` and that reassembly must
+    # read the way the file does.
     "product_openness_evidence": (
         "product_slug",
         "category_slug",
         "dimension",
+        "part_index",
         "value",
         "value_detail",
         "grade",
@@ -549,6 +573,10 @@ def build_rubric(sources: dict, policy: dict, routing: dict) -> tuple[dict[str, 
 
                 openness = record.get("openness") or {}
                 components = components_of(openness)
+                # Both shapes of the same record. `components` is key -> raw clause, which
+                # every dimension reader wants; `structured` keeps the license's parts
+                # apart, and only the license block below needs it.
+                structured = structured_components_of(openness)
                 if not components:
                     warnings.append(
                         f"product '{product_slug}' in '{slug}' records no openness components"
@@ -590,6 +618,8 @@ def build_rubric(sources: dict, policy: dict, routing: dict) -> tuple[dict[str, 
                             "product_slug": product_slug,
                             "category_slug": slug,
                             "dimension": dimension,
+                            # A dimension answers once. Only the license is a list.
+                            "part_index": 0,
                             "value": bare,
                             "value_detail": detail,
                             "grade": "document",
@@ -605,21 +635,37 @@ def build_rubric(sources: dict, policy: dict, routing: dict) -> tuple[dict[str, 
                 # as `model-license`, the SQL looked only for `license`, and the product
                 # abstained in the warehouse while reproducing locally. Same drift as the
                 # dimension resolution above, one key over.
+                #
+                # One row per recorded PART, because a license can be several licenses and
+                # the tier is the most restrictive of them. The parts come from the record
+                # rather than from a splitter run here, which is the point of the structured
+                # shape: `culturax` writes `follows mC4 + OSCAR-2301 terms` as ONE part,
+                # neither operand being a license, and it goes out as one row. A serializer
+                # that split on punctuation could not tell that from a genuine compound, and
+                # the pre-check that used to paper over it is what made this rubric
+                # expensive enough to state twice.
                 license_key = next((k for k in license_keys if components.get(k)), None)
                 if license_key:
-                    bare, detail = split_value(components[license_key])
-                    tables["product_openness_evidence"].append(
-                        {
-                            "product_slug": product_slug,
-                            "category_slug": slug,
-                            "dimension": "license",
-                            "value": bare,
-                            "value_detail": detail,
-                            "grade": "document",
-                            # No enum: `license` is the raw input the tier lookup consumes.
-                            "in_declared_enum": "",
-                        }
-                    )
+                    parts = license_parts_of(structured.get(license_key))
+                    for index, part in enumerate(parts):
+                        tables["product_openness_evidence"].append(
+                            {
+                                "product_slug": product_slug,
+                                "category_slug": slug,
+                                "dimension": "license",
+                                "part_index": index,
+                                # The name as recorded, `code `/`model ` prefix and
+                                # `assumed-` included. Those are reading rules that
+                                # `normalize_license` applies, and the warehouse mirrors,
+                                # so stripping them here would publish a conclusion in
+                                # place of the evidence.
+                                "value": part.get("name", ""),
+                                "value_detail": part.get("detail", ""),
+                                "grade": "document",
+                                # No enum: `license` is the raw input the tier lookup consumes.
+                                "in_declared_enum": "",
+                            }
+                        )
 
                 # Then every recorded key that is not itself a dimension name, so nothing
                 # the repo recorded is dropped. This carries the license the tier lookup
@@ -667,6 +713,7 @@ def build_rubric(sources: dict, policy: dict, routing: dict) -> tuple[dict[str, 
                             "product_slug": product_slug,
                             "category_slug": slug,
                             "dimension": key,
+                            "part_index": 0,
                             "value": bare,
                             "value_detail": detail,
                             "grade": "document",

@@ -714,7 +714,17 @@ def test_real_sources_serialize_without_errors():
         # Note the three evaluation_code products publish no `license` row at all - they
         # record no license key - which is what `check_rubric`'s `~ no tier` report exists
         # to keep visible.
-        "base_pretrained": 116, "finetuned_chat": 173, "deployment": 131,
+        #
+        # Then +13 rows across seven categories when the license started publishing one row
+        # per recorded PART instead of one truncated row per product. Twelve products record a
+        # compound license: eleven in two parts and `zed` in three. No product gained a
+        # component and none lost one - the same licenses were always in the files, the
+        # serializer was publishing the first of them. The split is base_pretrained +1
+        # (internlm), finetuned_chat +1 (command-r), inference_code +1 (llamafile),
+        # finetuning_code +2 (megatron-lm, unsloth), orchestration_agents +3 (n8n, zed's two
+        # extra), telemetry_observability +2 (agentops, langwatch) and
+        # training_synthetic_datasets +3 (flan-collection, redpajama-data-v2, smoltalk).
+        "base_pretrained": 117, "finetuned_chat": 174, "deployment": 131,
         #
         # evaluation_code 78 -> 107 with the 2026-08-11 evidence sweep of that category: all
         # seven of its deferrals came off, and a product that stops being deferred publishes its
@@ -751,7 +761,7 @@ def test_real_sources_serialize_without_errors():
         # aws-neuron each already recorded the deciding dimension and were publishing nothing
         # because a deferred product publishes nothing; the score moved to what the ladder
         # computes and the rows appeared.
-        "finetuning_code": 137, "inference_code": 89, "ml_frameworks": 88,
+        "finetuning_code": 139, "inference_code": 90, "ml_frameworks": 88,
         # orchestration_agents rose by 3 when n8n's stale deferral was removed: a deferred
         # product publishes no openness evidence, and n8n had been deferred as "not recorded"
         # while recording everything the ladder needed. Then by 6 more (140 -> 146) when
@@ -801,7 +811,7 @@ def test_real_sources_serialize_without_errors():
         # publishes its rows for the first time: agentops five (license, source, commercial,
         # core-gated and the normalized core_gated), langtrace four and weave four. The
         # category now defers nothing.
-        "orchestration_agents": 207, "telemetry_observability": 112, "ui_api": 184,
+        "orchestration_agents": 210, "telemetry_observability": 114, "ui_api": 184,
         # training_synthetic_datasets is unchanged at 158 across the ladder widening, which
         # is the check that mattered: benchmark_eval_data's new dimensions and rungs did not
         # disturb the category the ladder was derived from.
@@ -820,7 +830,7 @@ def test_real_sources_serialize_without_errors():
         # license and an answer state and nothing else, and each gained a `datasheet` and an
         # `access` key plus the `availability` and `documentation` dimensions they normalize
         # onto - so both go from publishing nothing to publishing seven rows.
-        "training_synthetic_datasets": 194, "benchmark_eval_data": 125,
+        "training_synthetic_datasets": 197, "benchmark_eval_data": 125,
         # safeguards 90 -> 103 and training_synthetic_datasets 158 -> 164: the universal
         # license scale retired five deferrals, and a deferred product publishes no
         # openness evidence at all.
@@ -1000,9 +1010,57 @@ def test_license_is_emitted_under_the_name_the_warehouse_joins_on():
     assert len(deepseek) == 1 and deepseek[0]["value"] == "DeepSeek-Model-License"
 
 
+def test_a_compound_license_publishes_every_part():
+    """The three products check_parity was diverging on, and the one that must NOT split.
+
+    `serialize_rubric` used to publish the license through `split_value`, which severs a
+    clause at the first `(`. `zed` went out as `GPL-3.0-or-later` alone and the warehouse
+    resolved a tier for a third of the license; `flan-collection`, `smoltalk` and
+    `redpajama-data-v2` were the three products where that changed the published score.
+    `check_rubric.license_tier` reads all the parts and takes the most restrictive, so the
+    parts have to cross the bridge.
+
+    `culturax` is the control. `follows mC4 + OSCAR-2301 terms` is one declared name with a
+    `+` inside it — neither operand is a license — and the curator recorded it as a single
+    part. A serializer that split on punctuation cannot tell it from `zed`; one that
+    publishes what the record says does not have to.
+    """
+    from pathlib import Path
+
+    from build.serialize_rubric import load_policy, load_routing
+
+    root = Path(__file__).resolve().parents[1]
+    tables, _, _ = build_rubric(_real_sources(root), load_policy(root), load_routing(root))
+
+    def license_parts(product):
+        return [
+            r["value"]
+            for r in sorted(
+                (
+                    r
+                    for r in tables["product_openness_evidence"]
+                    if r["product_slug"] == product and r["dimension"] == "license"
+                ),
+                key=lambda r: r["part_index"],
+            )
+        ]
+
+    assert license_parts("zed") == ["GPL-3.0-or-later", "AGPL-3.0", "Apache-2.0"]
+    assert license_parts("flan-collection") == ["Apache-2.0", "per-task"]
+    assert license_parts("smoltalk") == ["apache-2.0", "per-component"]
+    assert license_parts("redpajama-data-v2") == ["CommonCrawl-ToU", "Apache-2.0"]
+    assert license_parts("culturax") == ["follows mC4 + OSCAR-2301 terms"]
+
+
 def test_evidence_never_puts_two_values_on_one_grain():
-    """One product/category/dimension must carry one value. Two would let the
+    """One product/category/dimension/part must carry one value. Two would let the
     warehouse pick between a base corpus and a post-training mixture by row order.
+
+    `part_index` is in the grain because the license is a LIST — twelve products record a
+    compound one and each part gets a row, so the warehouse can resolve every part and take
+    the most restrictive. Every other dimension answers once and pins the index at 0, which
+    this asserts separately: a dimension that started emitting a second row would otherwise
+    hide behind the license's allowance.
     """
     from collections import Counter
     from pathlib import Path
@@ -1011,12 +1069,27 @@ def test_evidence_never_puts_two_values_on_one_grain():
 
     root = Path(__file__).resolve().parents[1]
     tables, _, _ = build_rubric(_real_sources(root), load_policy(root), load_routing(root))
+    rows = tables["product_openness_evidence"]
 
     counts = Counter(
-        (r["product_slug"], r["category_slug"], r["dimension"])
-        for r in tables["product_openness_evidence"]
+        (r["product_slug"], r["category_slug"], r["dimension"], r["part_index"]) for r in rows
     )
     assert [key for key, n in counts.items() if n > 1] == []
+    assert [r for r in rows if r["dimension"] != "license" and r["part_index"] != 0] == []
+    # Contiguous from zero, because the index is the recorded order and the warehouse joins
+    # the names back together in it to report which license it could not map.
+    parts = Counter(
+        (r["product_slug"], r["category_slug"]) for r in rows if r["dimension"] == "license"
+    )
+    for (product, category), n in parts.items():
+        indexes = sorted(
+            r["part_index"]
+            for r in rows
+            if r["dimension"] == "license"
+            and r["product_slug"] == product
+            and r["category_slug"] == category
+        )
+        assert indexes == list(range(n)), f"{product}/{category} part indexes are {indexes}"
 
 
 def test_real_license_aliases_cover_every_slug_the_hub_actually_returns():
