@@ -11363,9 +11363,9 @@
           "openness": {
             "score": 4,
             "class": "open",
-            "components": "license:undeclared on HF dataset card (underlying SWE-bench harness repo is MIT);redistributability:full(downloadable parquet, ungated);datasheet:yes(dataset card + arXiv:2310.06770);held-out:no hidden split in Verified itself (the public 500-instance set is fully released; gold patches + tests included);data-source:real GitHub PR/issue pairs",
+            "components": "license:MIT(SWE-bench repository states MIT over its code and data; the HF card for Verified still declares no license field);redistributability:full(downloadable parquet, ungated);datasheet:yes(dataset card + arXiv:2310.06770);held-out:no hidden split in Verified itself(the public 500-instance set is fully released; gold patches + tests included);data-source:real GitHub PR/issue pairs",
             "confidence": "medium",
-            "note": "Effectively open (ungated, downloadable, full gold patches and tests, datasheet present) but the HF dataset card declares NO explicit license field, so the data-license class is inferred from the MIT harness repo and public redistribution rather than a stated data license. Scored 4 not 5 on that ambiguity. (Distinct from SWE-bench's broader/hidden variants which can carry held-out splits.)",
+            "note": "Effectively open - ungated, downloadable, full gold patches and tests, datasheet present. The HF card for Verified declares no license field, which is what the recorded 4 rests on, but a card read on 2026-08-12 found the canonical SWE-bench repository stating MIT over the artifact rather than only over the harness. Its README calls the repository \"Code and data for the following works\", lists SWE-bench among them, and its \"Citation & license\" section says \"MIT license\", with the citation block directly beneath headed \"For SWE-bench (Verified)\". Verified is a 500-instance human-validated subset of that same test set, released with OpenAI Preparedness. On that reading the license is stated rather than inferred and the ladder computes 5; the recorded 4 has been left alone and the disagreement is carried as a deferral. (Distinct from SWE-bench's broader/hidden variants which can carry held-out splits.)",
             "sources": [
               {
                 "url": "https://huggingface.co/datasets/princeton-nlp/SWE-bench_Verified",
@@ -11381,6 +11381,36 @@
                 "url": "https://huggingface.co/datasets/princeton-nlp/SWE-bench_Verified/blob/main/README.md",
                 "shows": "dataset card metadata has no license field declared",
                 "accessed": "2026-06-04"
+              },
+              {
+                "url": "https://huggingface.co/datasets/princeton-nlp/SWE-bench_Verified/raw/main/README.md",
+                "shows": "card front matter carries dataset_info, splits and configs and no `license:` key; body describes the 500 human-validated instances and the swebench.com leaderboard. Re-read on 2026-08-12 and still unlicensed at source. The repository holds only .gitattributes, README.md and one parquet file, so there is no LICENSE file alongside the data either",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "6edb58b1b2c44ce858426c4ebc90077827713b75cebc243661e4433c81fd57f5",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/SWE-bench/SWE-bench/main/README.md",
+                "shows": "\"Code and data for the following works:\" listing SWE-bench and SWE-bench Multimodal; the \"Citation & license\" section reads \"MIT license. Check `LICENSE.md`.\" and the citation immediately under it is headed \"For SWE-bench (Verified)\"; the news entry for Aug. 13, 2024 introduces Verified as a 500-problem subset produced with OpenAI Preparedness",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "56438c6b147990c0fd93d81fefcecaa94c909d379037487a49d48ac4990a4573",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/SWE-bench/SWE-bench/main/LICENSE",
+                "shows": "MIT License, copyright 2023 the SWE-bench authors. Note the README points at `LICENSE.md`, which 404s; the file is `LICENSE`",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "2bd2e08df7147f67a69b42c10efae09bd4bf119df397371036187d5dd1b02f57",
+                "establishes": [
+                  "license"
+                ]
               }
             ],
             "bucket": "open"
@@ -11410,7 +11440,7 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-06-24",
+            "date": "2026-08-11",
             "basis": "commit"
           },
           "version_note": "SWE-bench Verified (princeton-nlp/SWE-bench_Verified), 500 human-validated GitHub issue-resolution task instances (~2.1 MB) curated by OpenAI from the SWE-bench test set. Leaderboard at swebench.com. Verified live on HF June 2026 (~914k downloads last month)."
@@ -11529,9 +11559,9 @@
           "openness": {
             "score": 4,
             "class": "open",
-            "components": "data:downloadable(HF parquet);license:cc(generic CC tag, specific variant unspecified on dataset card);datasheet:present(README documents versions/sources/structure);redistributable:yes;splits:public problems with hidden test cases bundled",
+            "components": "data:downloadable(HF parquet);license:cc(the card YAML names the Creative Commons family and no variant; no variant is stated on the card, the GitHub repository, the project site or the paper);datasheet:present(README documents versions/sources/structure);redistributable:yes;splits:public problems with hidden test cases bundled",
             "confidence": "medium",
-            "note": "Open and downloadable with a datasheet, but the HF card declares only a generic 'cc' license (no specific CC variant), so the exact reuse terms are ambiguous. Scored open but not a clean CC-BY; capped at 4.",
+            "note": "Open and downloadable with a datasheet, but the HF card declares only a generic 'cc' license (no specific CC variant), so the exact reuse terms are ambiguous. Scored open but not a clean CC-BY; capped at 4. A card read on 2026-08-12 went looking for the variant and did not find one. The bare 'cc' is the only license statement the project makes about the corpus, and it is repeated identically on code_generation and test_generation. The MIT LICENSE in the GitHub repository covers the lcb_runner harness code, not the problems; the CC-BY-4.0 on the arXiv posting covers the paper. The problems themselves are collected from LeetCode, AtCoder and Codeforces, which is a plausible reason the project has not committed to a variant. Recording CC-BY here would be a guess, and CC-BY and CC-BY-NC sit two tiers apart, so the abstention stands.",
             "sources": [
               {
                 "url": "https://huggingface.co/datasets/livecodebench/code_generation_lite",
@@ -11542,6 +11572,45 @@
                 "url": "https://huggingface.co/datasets/livecodebench/code_generation_lite/blob/main/README.md",
                 "shows": "YAML metadata license: cc",
                 "accessed": "2026-06-04"
+              },
+              {
+                "url": "https://huggingface.co/datasets/livecodebench/code_generation_lite/raw/main/README.md",
+                "shows": "card front matter is `license: cc` with tags, pretty_name and size_categories, and nothing naming a Creative Commons variant; the body is a change log of release_v1..v5, a dataset description and usage instructions. Re-read 2026-08-12",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "fbf0df23c9fb430778f037691bd191ece41d49373c0695151d87549b6f45d809",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/livecodebench/code_generation_lite",
+                "shows": "cardData.license is the string \"cc\" and the repository tags carry `license:cc`; the sibling corpora code_generation and test_generation carry the same bare `cc`, and execution carries no license at all. The open discussions on the repo are about loading, parquet conversion and version sizes - none asks or answers what the CC variant is",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/LiveCodeBench/LiveCodeBench/main/LICENSE",
+                "shows": "MIT License, copyright 2024 LiveCodeBench. This is the repository holding lcb_runner, the evaluation harness; the problems are distributed from the Hugging Face repos and this file makes no statement about them",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "104099948b78ebc36f2e951b3a7973b956adfa7d39aaec0d1512f97a2686d15d",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/LiveCodeBench/LiveCodeBench/main/README.md",
+                "shows": "217 lines covering install, running the harness, scenarios and submissions, with no licensing or terms section at all",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "ee0029cddc1d9051f35818f3348a4327819a3e35a9e597732519245605195cf6",
+                "establishes": [
+                  "license"
+                ]
               }
             ],
             "bucket": "open"
@@ -11576,7 +11645,7 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-06-24",
+            "date": "2026-08-11",
             "basis": "commit"
           },
           "version_note": "LiveCodeBench code_generation_lite, release_v5 = 880 problems (May 2023-Jan 2025); a 'live', continuously-updated contamination-free coding benchmark (problems from LeetCode/AtCoder/Codeforces) covering code generation, self-repair, test-output prediction, execution. HF dataset verified live June 2026 (71,393 monthly downloads)."
@@ -12468,14 +12537,41 @@
           "openness": {
             "score": 5,
             "class": "open",
-            "components": "questions:public;answers:public(GPT-4 references in FastChat);license:Apache-2.0",
+            "components": "questions:public(question.jsonl in the public FastChat git tree);answers:public(GPT-4 references in FastChat);license:Apache-2.0(FastChat repository LICENSE);datasheet:present(fastchat/llm_judge/README.md documents the data, the judging protocol and the released judgment sets; arXiv:2306.05685 documents composition);access:ungated(questions and reference answers sit in the public git tree, no download barrier)",
             "confidence": "high",
-            "note": "Both questions and reference answers are public and openly licensed.",
+            "note": "Both questions and reference answers are public and openly licensed. MT-Bench ships inside FastChat rather than as a standalone dataset repo, so its documentation is the llm_judge package README and the LLM-as-a-Judge paper rather than a Hugging Face card, and its access state is a public git tree rather than a Hub download.",
+            "last_verified": "2026-08-12",
             "sources": [
               {
                 "url": "https://github.com/lm-sys/FastChat/tree/main/fastchat/llm_judge/data/mt_bench",
                 "shows": "public questions + GPT-4 references",
-                "accessed": "2026-06-17"
+                "accessed": "2026-06-17",
+                "establishes": [
+                  "access",
+                  "answers"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/lm-sys/FastChat/main/LICENSE",
+                "shows": "the FastChat repository, which contains the MT-Bench questions and reference answers, is licensed Apache License 2.0",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/lm-sys/FastChat/main/fastchat/llm_judge/README.md",
+                "shows": "\"MT-bench is a set of challenging multi-turn open-ended questions for evaluating chat assistants\"; documents the data files, the GPT-4 judging protocol, the pre-generated model answers and judgments, and the agreement computation. The reference answers and judgments are downloaded from the public repo by `download_mt_bench_pregenerated.py` with no credential or approval step",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "4104f9e877fe04a4a87a5b6618114adc8604f09ceca09be198f96189c4c2238e",
+                "establishes": [
+                  "datasheet",
+                  "answers",
+                  "access"
+                ]
               }
             ],
             "bucket": "open"
@@ -12510,8 +12606,8 @@
           "maturity": 3.4,
           "mature": false,
           "freshness": {
-            "date": "2026-06-17",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "Questions + GPT-4 reference answers public in FastChat (Apache-2.0); companion human-judgments dataset is CC-BY-4.0. Small (80 Q) and partly saturated now."
         },
@@ -12525,14 +12621,47 @@
           "openness": {
             "score": 5,
             "class": "open",
-            "components": "questions:public;answers:public(ground_truth released);license:Apache-2.0/MIT",
+            "components": "questions:public;answers:public(ground_truth released);license:Apache-2.0/MIT(repo LICENSE is Apache-2.0, carried over from FastChat; DATASHEET.md states the benchmark suite is distributed under the Apache License 2.0);datasheet:present(docs/DATASHEET.md, a full datasheets-for-datasets questionnaire covering motivation, composition, collection and distribution);access:ungated(HF datasets download without a gate)",
             "confidence": "high",
-            "note": "All questions, answers, and code are released openly; rotation is for freshness, not access control.",
+            "note": "All questions, answers, and code are released openly; rotation is for freshness, not access control. The documentation is a full datasheets-for-datasets questionnaire in the repository rather than a Hugging Face card, and it states the distribution license outright.",
+            "last_verified": "2026-08-12",
             "sources": [
               {
                 "url": "https://huggingface.co/datasets/livebench/reasoning",
                 "shows": "public ground_truth column, release/removal dates",
                 "accessed": "2026-06-17"
+              },
+              {
+                "url": "https://huggingface.co/datasets/livebench/reasoning/raw/main/README.md",
+                "shows": "card describing the benchmark and linking the paper, leaderboard and datasheet; the declared features include a `ground_truth` string column alongside `turns`, so the answers ship with the questions; no gate and no license field in the card metadata",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "88c6f322d82d166840b4f622ea07b06a77d50ffb1f6b7c2eec08f91dee786440",
+                "establishes": [
+                  "access",
+                  "answers"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/LiveBench/LiveBench/main/docs/DATASHEET.md",
+                "shows": "the datasheets-for-datasets questionnaire, covering motivation, composition, collection, preprocessing, uses, distribution and maintenance; under \"When will the dataset be released/first distributed? What license (if any) is it distributed under?\": \"The benchmark suite is public as of June 12, 2024, distributed under the Apache License 2.0.\"",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "8f5036b7330c01de1a9cd5a9f02a0e6f5d359bd08b210d7dde0635731fbce1f4",
+                "establishes": [
+                  "datasheet",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/LiveBench/LiveBench/main/LICENSE",
+                "shows": "Apache License 2.0, prefaced \"The original LICENSE from https://github.com/lm-sys/FastChat is copied below\"",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "8fb1d09632b9c03b426c87654d62c5d8fb953643e51e6866f3446401903005c3",
+                "establishes": [
+                  "license"
+                ]
               }
             ],
             "bucket": "open"
@@ -12567,8 +12696,8 @@
           "maturity": 4.4,
           "mature": false,
           "freshness": {
-            "date": "2026-06-17",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "Questions and ground-truth answers public (Apache-2.0/MIT). ~1.2k stars; multi-category HF dataset downloads. Monthly rotation is freshness management, not gating."
         },
@@ -14090,14 +14219,33 @@
           "openness": {
             "score": 5,
             "class": "open",
-            "components": "license:not-clearly-stated-on-card(commonly cited as permissive);card:present;ungated:yes;format:JSON/Parquet;rows:~1M",
+            "components": "license:not-clearly-stated-on-card(no license field in the card YAML, no license section in the card body, no LICENSE file in the repository and no license tag on the Hub API);card:present;ungated:yes;format:JSON/Parquet;rows:~1M",
             "confidence": "medium",
-            "note": "Publicly downloadable and ungated with a full card, though an explicit license string is not stated on the card.",
+            "note": "Publicly downloadable and ungated with a full card, though an explicit license string is not stated on the card. A card read on 2026-08-12 confirms there is no license anywhere the publisher controls - the card front matter carries language, pretty_name and tags and no license key, the 126-line body runs from the source list through the format description to the citation without a terms section, the repository holds only .gitattributes, README.md and openhermes2_5.json so there is no LICENSE file, and the Hub API returns no license for it. The 'commonly cited as permissive' detail this record used to carry was a third-party reading and has been dropped.",
             "sources": [
               {
                 "url": "https://huggingface.co/datasets/teknium/OpenHermes-2.5",
                 "shows": "Public ungated dataset card, ~1M rows, synthetic/GPT-4 tags",
                 "accessed": "2026-06-22"
+              },
+              {
+                "url": "https://huggingface.co/datasets/teknium/OpenHermes-2.5/raw/main/README.md",
+                "shows": "card front matter is language, pretty_name and tags only, with no `license:` key; the 126-line body covers the dataset description, the Lilac integration, the full list of constituent source datasets, the sharegpt format and a citation, and contains no occurrence of \"license\" or \"terms\"",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "92fd711b9f0f6f8c7312d18d93ad412af415cd25a207584554c8e72c0cfe9f64",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/teknium/OpenHermes-2.5",
+                "shows": "cardData carries no license and the repository has no `license:` tag; siblings are .gitattributes, README.md and openhermes2_5.json, so no LICENSE file ships with the data",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "establishes": [
+                  "license"
+                ]
               }
             ],
             "bucket": "open"
@@ -14134,7 +14282,7 @@
           "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-08",
+            "date": "2026-08-11",
             "basis": "commit"
           },
           "version_note": "Verified live 2026-06-22 via primary sources. Publicly downloadable and ungated with a full card, though an explicit license string is not stated on the card.",
