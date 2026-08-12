@@ -358,16 +358,33 @@
             "bucket": "open-ish"
           },
           "adoption": {
-            "level": 3,
-            "reach": "100K-1M",
+            "level": 1,
+            "reach": "<10K",
             "signal_type": "usage_volume",
             "confidence": "medium",
-            "note": "Modest direct HF downloads (~7.5k/mo, confirmed); the research-only license caps commercial deployment, limiting reach vs permissively-licensed peers. Placed at 3.",
+            "note": "5,971 downloads in the trailing 30 days (mistralai/Mistral-Large-Instruct-2407 4,714; mistralai/Mistral-Large-3-675B-Base-2512 80; mistralai/Mistral-Large-3-675B-Instruct-2512 1,177), read 2026-08-12. Bands at level 1 (<10K). Corrected from level 3. Summed across the 2407 release and both Mistral Large 3 repos. The flagship is consumed via API rather than downloaded, so this understates real use - but the map bands on the declared artifacts, and the honest label is the one they support.",
+            "last_verified": "2026-08-12",
             "sources": [
               {
-                "url": "https://huggingface.co/mistralai/Mistral-Large-Instruct-2407",
-                "shows": "live repo 7,455 downloads/mo",
-                "accessed": "2026-06-04"
+                "url": "https://huggingface.co/api/models/mistralai/Mistral-Large-Instruct-2407",
+                "shows": "4,714 downloads in the trailing 30 days for mistralai/Mistral-Large-Instruct-2407",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "fca5ce204e5d434a3cc028fd2402ff94e1b85709d8c846bcf8a0ea6e4676af89"
+              },
+              {
+                "url": "https://huggingface.co/api/models/mistralai/Mistral-Large-3-675B-Base-2512",
+                "shows": "80 downloads in the trailing 30 days for mistralai/Mistral-Large-3-675B-Base-2512",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "7a3993be512c8b213d0e91cebc0a19a566887808a2173a3d88388b451f0a644c"
+              },
+              {
+                "url": "https://huggingface.co/api/models/mistralai/Mistral-Large-3-675B-Instruct-2512",
+                "shows": "1,177 downloads in the trailing 30 days for mistralai/Mistral-Large-3-675B-Instruct-2512",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "9965699b0cd9cc3593386dbb8d3abd7359e326fbc1567db7cffaf11760eebc62"
               }
             ]
           },
@@ -386,11 +403,11 @@
               }
             ]
           },
-          "maturity": 3.7,
+          "maturity": 3.1,
           "mature": false,
           "freshness": {
-            "date": "2026-08-08",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "Mistral Large 3 (mistral-large-3-25-12), announced 2 Dec 2025. Sparse MoE, 41B active / 675B total params. Base + instruct released; reasoning variant announced but not shipped as of mid-2026. Consolidated on 2026-07-29 from mistral-large-2; openness follows mistral-large-3, the release that currently governs. See docs/guides/identity.md."
         },
@@ -1862,15 +1879,26 @@
             "bucket": "open-ish"
           },
           "adoption": {
-            "level": 3,
-            "signal_type": "stars_fallback",
+            "level": 1,
+            "signal_type": "usage_volume",
             "confidence": "medium",
-            "note": "~14.6k stars on RWKV-LM; HF download volume low/noisy - stars_fallback (capped at 3).",
+            "note": "4,652 downloads in the trailing 30 days (BlinkDL/rwkv-7-world 4,395; RWKV/RWKV7-Goose-World3-1.5B-HF 257), read 2026-08-12. Bands at level 1 (<10K) on the software and model adoption scale. Moved off the stars fallback: a real download signal exists, and docs/guides/adoption.md says to re-band when one does. The package is summed across the two repos the product DECLARES, per the tier rule in docs/guides/identity.md. Widening to every repo under the BlinkDL and RWKV orgs would give about 71k and level 2; the declared reading is the one the map's own identity rule supports. This LOWERS the recorded level from 3 - the star count had been flattering it.",
+            "reach": "<10K",
+            "last_verified": "2026-08-12",
             "sources": [
               {
-                "url": "https://github.com/BlinkDL/RWKV-LM",
-                "shows": "~14.6k stars, RWKV-7 Goose",
-                "accessed": "2026-06-18"
+                "url": "https://huggingface.co/api/models/BlinkDL/rwkv-7-world",
+                "shows": "4,395 downloads in the trailing 30 days for BlinkDL/rwkv-7-world",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "4f60fc41bc58e3b748a32611b10c254f02baa5de74429fbb87b8b0e91e90c298"
+              },
+              {
+                "url": "https://huggingface.co/api/models/RWKV/RWKV7-Goose-World3-1.5B-HF",
+                "shows": "257 downloads in the trailing 30 days for RWKV/RWKV7-Goose-World3-1.5B-HF",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "5d732a40ffed05782e80c9a78279b3070f74a4fa261b85d81e202ab57d8384ad"
               }
             ]
           },
@@ -1889,10 +1917,10 @@
               }
             ]
           },
-          "maturity": 3.7,
+          "maturity": 3.1,
           "mature": false,
           "freshness": {
-            "date": "2026-07-30",
+            "date": "2026-08-12",
             "basis": "verified"
           },
           "version_note": "Apache-2.0 with open weights and open training code. The pretraining data is documented rather than released - an itemized machine-readable index naming every component dataset with a resolvable URL, plus 100k and 1M preview subsamples, but no corpus and no reconstruction scripts (corrected 2026-07-28, see the openness note; this comment previously claimed an open 3.1T-token corpus). The RWKV Project is an LF AI & Data (Generative AI Commons) non-profit led by Bo Peng (BlinkDL). ~14.6k stars on RWKV-LM."
@@ -1978,15 +2006,19 @@
             "bucket": "open-ish"
           },
           "adoption": {
-            "level": 4,
+            "level": 2,
             "signal_type": "usage_volume",
             "confidence": "medium",
-            "note": "~66,027 HF downloads last month, 651 likes, plus third-party quantizations (unsloth GGUF, MLX, vLLM).",
+            "note": "59,525 Hugging Face downloads in the trailing 30 days for XiaomiMiMo/MiMo-V2.5-Pro, read 2026-08-12. Bands at level 2 (10K-100K) on the software and model adoption scale. Recorded 4 against its own cited figure of 66,027, which is level 2 on this scale. Corrected from level 4, which the recorded evidence did not support.",
+            "reach": "10K-100K",
+            "last_verified": "2026-08-12",
             "sources": [
               {
-                "url": "https://huggingface.co/XiaomiMiMo/MiMo-V2.5-Pro",
-                "shows": "66,027 downloads last month, 651 likes",
-                "accessed": "2026-06-18"
+                "url": "https://huggingface.co/api/models/XiaomiMiMo/MiMo-V2.5-Pro",
+                "shows": "59,525 downloads in the trailing 30 days for XiaomiMiMo/MiMo-V2.5-Pro",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "a2aaae84dbf0cee839884669a0b3da7dfbd40d6d2969342831c10c7f9c44594d"
               }
             ]
           },
@@ -2005,11 +2037,11 @@
               }
             ]
           },
-          "maturity": 4.0,
+          "maturity": 3.4,
           "mature": false,
           "freshness": {
-            "date": "2026-08-08",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "Open weights, MIT per the HF model card (an older MiMo GitHub repo lists Apache-2.0; the model card is authoritative for this release). ~1.02T/42B MoE, 1M context. ~66k HF downloads/month plus third-party quantizations."
         },
@@ -2493,12 +2525,36 @@
             "reach": "100K-1M",
             "signal_type": "usage_volume",
             "confidence": "medium",
-            "note": "Weights downloadable under Meta's non-OSI Llama-2 Community license. Marketed as open, which the openness class deliberately does not accept at face value. Moved from 2/restricted on 2026-08-01 by the universal license scale, which caps a bounded commercial license at 3 rather than 2. The test at that boundary is whether the license permits commercial use AT ALL: this one does, for everyone inside the bound. A license that forbids commerce outright - CC-BY-NC, Mistral Non-Production - stays at 2. Nine other products carry a bounded license and all now score 3; four of them were already recorded there, which is the inconsistency this resolves.",
+            "note": "110,069 Hugging Face downloads in the trailing 30 days summed across the four Code Llama Instruct SKUs the tier covers, read 2026-08-12 (codellama/CodeLlama-34b-Instruct-hf 24,545; codellama/CodeLlama-7b-Instruct-hf 73,688; codellama/CodeLlama-13b-Instruct-hf 11,336; codellama/CodeLlama-70b-Instruct-hf 500). Bands at level 3 (100K-1M). All 4 repos are now DECLARED in the product file: the band was previously read on the family while only one repo was declared, so it could not be re-derived by machine. Slugs on this map are tier-level, and docs/guides/identity.md sums adoption across a tier’s releases.",
+            "last_verified": "2026-08-12",
             "sources": [
               {
-                "url": "https://huggingface.co/codellama/CodeLlama-13b-Instruct-hf",
-                "shows": "~3,294 downloads last month for 13B-Instruct; large adapter/finetune ecosystem",
-                "accessed": "2026-06-04"
+                "url": "https://huggingface.co/api/models/codellama/CodeLlama-34b-Instruct-hf",
+                "shows": "24,545 downloads in the trailing 30 days for codellama/CodeLlama-34b-Instruct-hf",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "69f7f3cfa3b3c7df136b10a2805b842a406eac8123ff385052beb75d1750300c"
+              },
+              {
+                "url": "https://huggingface.co/api/models/codellama/CodeLlama-7b-Instruct-hf",
+                "shows": "73,688 downloads in the trailing 30 days for codellama/CodeLlama-7b-Instruct-hf",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "75a8b89099355c55b5ac983c36af08d692551dded6a957fc13d399bd3aa9659c"
+              },
+              {
+                "url": "https://huggingface.co/api/models/codellama/CodeLlama-13b-Instruct-hf",
+                "shows": "11,336 downloads in the trailing 30 days for codellama/CodeLlama-13b-Instruct-hf",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "de01b409617f87e82479dad3fac928243ae289e9f443316223d2a9decb0414c4"
+              },
+              {
+                "url": "https://huggingface.co/api/models/codellama/CodeLlama-70b-Instruct-hf",
+                "shows": "500 downloads in the trailing 30 days for codellama/CodeLlama-70b-Instruct-hf",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "ec7fe450fa8b577e2d76ca3deadbffae6463a02563d2d5ac196898202beafabb"
               }
             ]
           },
@@ -2520,8 +2576,8 @@
           "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-08",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "Code Llama Instruct (instruct-tuned coding variant; 7B/13B/34B/70B; scored on the 13B-Instruct SKU as representative). Trained Jan-Jul 2023, paper arXiv:2308.12950 (Aug 2023). >12 months old and superseded by Llama 3.x/Codestral-class coders, but foundational open coding-instruct model; verified live on HF June 2026."
         },
@@ -4237,12 +4293,15 @@
             "reach": "<10K",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "Weights downloadable under the Jamba Open Model License: non-OSI, with a $50M annual-revenue cap that bars large-entity commercial use. The 'Open Model' branding overstates it. Moved from 2/restricted on 2026-08-01 by the universal license scale, which caps a bounded commercial license at 3 rather than 2. The test at that boundary is whether the license permits commercial use AT ALL: this one does, for everyone inside the bound. A license that forbids commerce outright - CC-BY-NC, Mistral Non-Production - stays at 2. Nine other products carry a bounded license and all now score 3; four of them were already recorded there, which is the inconsistency this resolves.",
+            "note": "45 Hugging Face downloads in the trailing 30 days summed across the scored release, read 2026-08-12 (ai21labs/AI21-Jamba-1.5-Large 45). Bands at level 1 (<10K). All 1 repos are now DECLARED in the product file: the band was previously read on the family while only none was declared, so it could not be re-derived by machine. Slugs on this map are tier-level, and docs/guides/identity.md sums adoption across a tier’s releases.",
+            "last_verified": "2026-08-12",
             "sources": [
               {
-                "url": "https://huggingface.co/ai21labs/AI21-Jamba-1.5-Large",
-                "shows": "~1,072 downloads last month on the official model card",
-                "accessed": "2026-06-04"
+                "url": "https://huggingface.co/api/models/ai21labs/AI21-Jamba-1.5-Large",
+                "shows": "45 downloads in the trailing 30 days for ai21labs/AI21-Jamba-1.5-Large",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "5118a5c9b6f70f83b2359d33add1d92985c010cffb495a89cf58b2c53c6d97e5"
               }
             ]
           },
@@ -4269,8 +4328,8 @@
           "maturity": 2.4,
           "mature": false,
           "freshness": {
-            "date": "2026-08-08",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "AI21-Jamba-1.5-Large (ai21labs/AI21-Jamba-1.5-Large on HF), hybrid SSM-Transformer (Mamba+Attention) MoE, 398B total / 94B active, 256K context, instruction-tuned chat model with tool use / grounded-RAG / JSON mode. Announced 22 Aug 2024 under the Jamba Open Model License. Verified live on HF June 2026, but stale: superseded by Jamba 1.6 (Mar 2025) and the Jamba2/Jamba Reasoning 3B generation now headlined on ai21.com/jamba. Recategorized from base_pretrained -> finetuned_chat: this is the instruct/chat SKU (post-trained for downstream chat/agentic use), not a raw base model."
         },
@@ -4300,12 +4359,44 @@
             "level": 2,
             "signal_type": "usage_volume",
             "confidence": "medium",
-            "note": "Open weights under Google's custom Gemma terms, with no open training data or code. Was 3, corrected to 2 on 2026-07-29 on the rule that a use cap lands at 2 in every category, and returned to 3 on 2026-08-01 when the universal license scale replaced that rule: a bounded commercial license caps at 3, and a license forbidding commerce outright caps at 2. Gemma's terms are the former. The 2026-07-29 note cited gemma-2 and gemma-3 as siblings scoring 2/restricted on the same license. Neither slug exists after the slug migration, and the surviving `gemma` records an Apache-2.0 license rather than Gemma terms, so that comparison no longer holds - and whether `gemma`'s recorded license is right is a separate question worth a look.",
+            "note": "28,295 Hugging Face downloads in the trailing 30 days summed across the five CodeGemma repos the tier covers, read 2026-08-12 (google/codegemma-7b-it 4,573; google/codegemma-7b 4,262; google/codegemma-2b 19,078; google/codegemma-1.1-7b-it 50; google/codegemma-1.1-2b 332). Bands at level 2 (10K-100K). All 5 repos are now DECLARED in the product file: the band was previously read on the family while only one repo was declared, so it could not be re-derived by machine. Slugs on this map are tier-level, and docs/guides/identity.md sums adoption across a tier’s releases.",
+            "reach": "10K-100K",
+            "last_verified": "2026-08-12",
             "sources": [
               {
-                "url": "https://huggingface.co/google/codegemma-7b-it",
-                "shows": "~1,929 downloads last month",
-                "accessed": "2026-06-17"
+                "url": "https://huggingface.co/api/models/google/codegemma-7b-it",
+                "shows": "4,573 downloads in the trailing 30 days for google/codegemma-7b-it",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "8a625ed552bfe66381237c80781644f18951d7d0c702581415a92cfadd995fb1"
+              },
+              {
+                "url": "https://huggingface.co/api/models/google/codegemma-7b",
+                "shows": "4,262 downloads in the trailing 30 days for google/codegemma-7b",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "f49b8dada2443e8398df05482753792fddb0fb53e01fba08deaa60b7c1256a2d"
+              },
+              {
+                "url": "https://huggingface.co/api/models/google/codegemma-2b",
+                "shows": "19,078 downloads in the trailing 30 days for google/codegemma-2b",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "8596453ff8b02a87f305cbbc9ea803465d5b7fbfd801d6e71078122c64d7c6b8"
+              },
+              {
+                "url": "https://huggingface.co/api/models/google/codegemma-1.1-7b-it",
+                "shows": "50 downloads in the trailing 30 days for google/codegemma-1.1-7b-it",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "99d9d15be6e6cb8f78602724fe55e90dec3986245af63f53b927fac1f2faa2ef"
+              },
+              {
+                "url": "https://huggingface.co/api/models/google/codegemma-1.1-2b",
+                "shows": "332 downloads in the trailing 30 days for google/codegemma-1.1-2b",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "c16edbe90e4bbda5169a911e5572f0d5f6bfe6e1f014c6b4bf06a883468e8e56"
               }
             ]
           },
@@ -4327,8 +4418,8 @@
           "maturity": 2.7,
           "mature": false,
           "freshness": {
-            "date": "2026-08-08",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "Gemma Terms of Use (custom, use-restricted, NOT OSI). Training data and recipe not released. Largely superseded by Qwen2.5-Coder / Gemma 3 for coding."
         },
@@ -7480,26 +7571,19 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 4,
-            "reach": "100K-1M",
+            "level": 2,
+            "reach": "10K-100K",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "~81,606 PyPI downloads last month (pypistats, 2026-08-09), down from ~96.7K in June and now inside the 10K-100K band rather than 100K-1M. Still the reference high-throughput RL post-training library for reasoning-RL work -- used to train Seed-Thinking-v1.5 and Doubao, and adopted/contributed to by the Qwen team, Moonshot/Kimi, NVIDIA research, Microsoft Research, Amazon, LinkedIn and many more labs per the README -- but download volume alone places it at level 3, in line with datatrove's precedent for this band.",
-            "last_verified": "2026-08-09",
+            "note": "82,590 downloads in the trailing 30 days (verl 82,590), read 2026-08-12. Bands at level 2 (10K-100K). Corrected from level 4. A reinforcement-learning training framework; the note recorded 4 while citing ~81,606, which is level 2 on this scale.",
+            "last_verified": "2026-08-12",
             "sources": [
               {
-                "url": "https://pypistats.org/packages/verl",
-                "shows": "pypistats page for verl, rendered server-side. Header block gives License \"Apache-2.0\" and Latest version \"0.8.0\"; footer reads \"Downloads last day: 3,129\", \"Downloads last week: 20,560\", \"Downloads last month: 81,606\". 81,606 sits inside the 10K-100K band rather than the 100K-1M band the prior read used.",
-                "accessed": "2026-08-09",
+                "url": "https://pypistats.org/api/packages/verl/recent",
+                "shows": "82,590 downloads in the trailing 30 days for verl",
+                "accessed": "2026-08-12",
                 "http_status": 200,
-                "content_sha256": "fa594b9e43bc3ae639c9f1c253e8cec01654dfb13a7c3883e25d8433f433d758"
-              },
-              {
-                "url": "https://raw.githubusercontent.com/volcengine/verl/main/README.md",
-                "shows": "The Citation and acknowledgement section states: \"The project is adopted and contributed by Bytedance, Anyscale, LMSys.org, Alibaba Qwen team, Shanghai AI Lab, Tsinghua University, UC Berkeley, UCLA, UIUC, University of Hong Kong, ke.com, All Hands AI, ModelBest, JD AI Lab, Microsoft Research, StepFun, Amazon, LinkedIn, Meituan, Camel-AI, OpenManus, Xiaomi, NVIDIA research, Baichuan, RedNote, SwissAI, Moonshot AI (Kimi), Baidu, Snowflake, Skywork.ai, JetBrains, IceSword Lab, and many more.\" The News section credits verl with training Seed-Thinking-v1.5 (April 2025) and Doubao-1.5-pro (January 2025). Corroborating only; the level rests on the download figure above.",
-                "accessed": "2026-08-09",
-                "http_status": 200,
-                "content_sha256": "a6c46bb67d246942d214cb590e0d7d10bc51256f613a5625687d5fcf32714fe6"
+                "content_sha256": "03648a7840f841e450fa39a1cae04073f710cd2189d636bb79b668817b1a0970"
               }
             ]
           },
@@ -7517,10 +7601,10 @@
               }
             ]
           },
-          "maturity": 4.5,
-          "mature": true,
+          "maturity": 3.5,
+          "mature": false,
           "freshness": {
-            "date": "2026-08-09",
+            "date": "2026-08-12",
             "basis": "verified"
           },
           "version_note": "The recorded GitHub URL (volcengine/verl) 301-redirects to verl-project/verl following a January 2026 org migration noted in the README; repository content is unchanged. Verified 2026-08-09 via GitHub, the LICENSE body, the README, and PyPI."
@@ -12634,15 +12718,19 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 3,
-            "signal_type": "stars_fallback",
+            "level": 2,
+            "signal_type": "usage_volume",
             "confidence": "medium",
-            "note": "Ships in FastChat (~39.5k stars, shared across the platform) - stars_fallback (capped at 3).",
+            "note": "2,361 downloads in the trailing 30 days (lmsys/mt_bench_human_judgments 2,361), read 2026-08-12. Bands at level 2 (1K-10K) on the dataset adoption scale, whose top band is >1M. Moved off the stars fallback: a real download signal exists, and docs/guides/adoption.md says to re-band when one does. The package is the dataset itself rather than FastChat, whose 39.5k stars are shared across the whole platform. This LOWERS the recorded level from 3 - the star count had been flattering it.",
+            "reach": "1K-10K",
+            "last_verified": "2026-08-12",
             "sources": [
               {
-                "url": "https://github.com/lm-sys/FastChat",
-                "shows": "Apache-2.0, ~39.5k stars, MT-Bench in llm_judge",
-                "accessed": "2026-06-17"
+                "url": "https://huggingface.co/api/datasets/lmsys/mt_bench_human_judgments",
+                "shows": "2,361 downloads in the trailing 30 days for lmsys/mt_bench_human_judgments",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "bb5032889aa6e0b79acc62edb60394b16ae50d4fb0a2359bad79d155cb4d7bf2"
               }
             ]
           },
@@ -12660,7 +12748,7 @@
               }
             ]
           },
-          "maturity": 3.4,
+          "maturity": 2.8,
           "mature": false,
           "freshness": {
             "date": "2026-08-12",
@@ -12724,15 +12812,82 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 4,
+            "level": 3,
             "signal_type": "usage_volume",
             "confidence": "medium",
-            "note": "~1.2k GitHub stars plus multi-category HF dataset downloads (genuine multi-source adoption).",
+            "note": "36,032 Hugging Face downloads in the trailing 30 days summed across the ten LiveBench category corpora, read 2026-08-12 (livebench/math 6,923; livebench/reasoning 5,633; livebench/model_judgment 5,365; livebench/coding 4,761; livebench/data_analysis 4,270; livebench/instruction_following 4,250; livebench/language 4,165; livebench/liveswebench 370; livebench/model_answer 150; livebench/liveswebench-patches 145). Bands at level 3 (10K-100K). All 10 repos are now DECLARED in the product file: the band was previously read on the family while only one repo was declared, so it could not be re-derived by machine. Slugs on this map are tier-level, and docs/guides/identity.md sums adoption across a tier’s releases.",
+            "reach": "10K-100K",
+            "last_verified": "2026-08-12",
             "sources": [
               {
-                "url": "https://github.com/livebench/livebench",
-                "shows": "~1.2k stars, six categories, monthly releases",
-                "accessed": "2026-06-17"
+                "url": "https://huggingface.co/api/datasets/livebench/math",
+                "shows": "6,923 downloads in the trailing 30 days for livebench/math",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "f19046fafba4eaa934e8bb0f477d26616b491f5c246abd8e63486a3126cf97f8"
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/livebench/reasoning",
+                "shows": "5,633 downloads in the trailing 30 days for livebench/reasoning",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "12325f04306c8f3c1519bcef430ab6ee50128dbca3098d2c7f4602a1915a95bd"
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/livebench/model_judgment",
+                "shows": "5,365 downloads in the trailing 30 days for livebench/model_judgment",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "8b464fa0fdd0999cd95a094c39ea637f728f61a22182825a0d4ac25370343723"
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/livebench/coding",
+                "shows": "4,761 downloads in the trailing 30 days for livebench/coding",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "779bfbe4450557b6a3f2715bf60b421a107cbd4af428c3cf33e29bd1cfc12494"
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/livebench/data_analysis",
+                "shows": "4,270 downloads in the trailing 30 days for livebench/data_analysis",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "af53f3245e4073e475bd86d055f7674cd6fad5699342ec39a97e5c1d4d24ca41"
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/livebench/instruction_following",
+                "shows": "4,250 downloads in the trailing 30 days for livebench/instruction_following",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "1af05cb4a606879f8948fad55871762030582c7b74f97319c757d6bc21e085a3"
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/livebench/language",
+                "shows": "4,165 downloads in the trailing 30 days for livebench/language",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "7f36a8001545ee952d44cb320b2381a88d51a742a9d2d49cb82f730706eea80a"
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/livebench/liveswebench",
+                "shows": "370 downloads in the trailing 30 days for livebench/liveswebench",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "8acd1ddf09aff5749cf0893eedc9ca5cfb438c1459e00ab5fbaee530ab39212e"
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/livebench/model_answer",
+                "shows": "150 downloads in the trailing 30 days for livebench/model_answer",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "a776a848f1f13f6c2267fddf28e496f13cbe70bdce94587ec64858eb4b6a8610"
+              },
+              {
+                "url": "https://huggingface.co/api/datasets/livebench/liveswebench-patches",
+                "shows": "145 downloads in the trailing 30 days for livebench/liveswebench-patches",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "30cc3108d8d653424b31bff4d2643d1590558ab46b4153d0e6feaa5bfc8504b7"
               }
             ]
           },
@@ -12750,7 +12905,7 @@
               }
             ]
           },
-          "maturity": 4.4,
+          "maturity": 3.8,
           "mature": false,
           "freshness": {
             "date": "2026-08-12",
@@ -12791,15 +12946,19 @@
             "bucket": "open-ish"
           },
           "adoption": {
-            "level": 4,
+            "level": 3,
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "~42k monthly HF downloads; widely cited and integrated into agent eval harnesses.",
+            "note": "17,975 Hugging Face downloads in the trailing 30 days for gaia-benchmark/GAIA, read 2026-08-12. Bands at level 3 (10K-100K) on the dataset adoption scale, whose top band is >1M - one order of magnitude below software and model. Cited across agent evaluation harnesses; the figure has fallen sharply since June. Corrected from level 4, which the recorded evidence did not support.",
+            "reach": "10K-100K",
+            "last_verified": "2026-08-12",
             "sources": [
               {
-                "url": "https://huggingface.co/datasets/gaia-benchmark/GAIA",
-                "shows": "~42,218 downloads/month",
-                "accessed": "2026-06-17"
+                "url": "https://huggingface.co/api/datasets/gaia-benchmark/GAIA",
+                "shows": "17,975 downloads in the trailing 30 days for gaia-benchmark/GAIA",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "0bcfa21e0181419fa7c6c33c382a5e50ac59e8d343ab40a9ad4557a33377c4f0"
               }
             ]
           },
@@ -12817,11 +12976,11 @@
               }
             ]
           },
-          "maturity": 4.4,
+          "maturity": 3.8,
           "mature": false,
           "freshness": {
             "date": "2026-08-12",
-            "basis": "commit"
+            "basis": "verified"
           },
           "version_note": "Double-gated: test-set answers held out (server-side scoring) AND the HF dataset is access-gated (accept terms, anti-resharing clause). ~42k monthly downloads."
         },
@@ -12848,15 +13007,19 @@
             "bucket": "open-ish"
           },
           "adoption": {
-            "level": 4,
+            "level": 3,
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "~35k monthly HF downloads; ~1.6k GitHub stars on the eval code.",
+            "note": "34,715 Hugging Face downloads in the trailing 30 days for cais/hle, read 2026-08-12. Bands at level 3 (10K-100K) on the dataset adoption scale, whose top band is >1M - one order of magnitude below software and model. A frontier-difficulty benchmark; volume essentially flat since June. Corrected from level 4, which the recorded evidence did not support.",
+            "reach": "10K-100K",
+            "last_verified": "2026-08-12",
             "sources": [
               {
-                "url": "https://huggingface.co/datasets/cais/hle",
-                "shows": "~34,984 downloads/month",
-                "accessed": "2026-06-17"
+                "url": "https://huggingface.co/api/datasets/cais/hle",
+                "shows": "34,715 downloads in the trailing 30 days for cais/hle",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "27e476a04eaa2d4c5c81ec22ec8f6707e50eff416228060b26d01a70d5cae230"
               }
             ]
           },
@@ -12874,11 +13037,11 @@
               }
             ]
           },
-          "maturity": 4.4,
+          "maturity": 3.8,
           "mature": false,
           "freshness": {
             "date": "2026-08-12",
-            "basis": "commit"
+            "basis": "verified"
           },
           "version_note": "The 2,500 public questions include answers under MIT, but the HF dataset is access-gated (accept conditions, no-redistribution + canary string) and a separate private held-out set detects overfitting -> scored gated (a license-weighted reading could argue open). ~35k monthly downloads."
         },
@@ -19038,12 +19201,16 @@
             "level": 5,
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "~58M PyPI downloads/month (directional - largely transitive via LangChain).",
+            "note": "72,717,229 PyPI downloads in the trailing 30 days for langgraph, read 2026-08-12. Bands at level 5 (>10M) on the software and model adoption scale. Largely transitive via LangChain, so directional.",
+            "reach": ">10M",
+            "last_verified": "2026-08-12",
             "sources": [
               {
-                "url": "https://pypistats.org/packages/langgraph",
-                "shows": "~58.6M downloads/month",
-                "accessed": "2026-06-17"
+                "url": "https://pypistats.org/api/packages/langgraph/recent",
+                "shows": "72,717,229 downloads in the trailing 30 days for langgraph",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "b5b8dd765664584f8b02f32960ea0c619c1f139340e6bfc2515e4e155b2aebd4"
               }
             ]
           },
@@ -19064,7 +19231,7 @@
           "maturity": 5.0,
           "mature": true,
           "freshness": {
-            "date": "2026-08-11",
+            "date": "2026-08-12",
             "basis": "verified"
           },
           "version_note": "MIT core; commercial LangGraph Platform / LangSmith is the managed layer (open-core). ~35k stars, ~58M PyPI downloads/month (heavily transitive via LangChain)."
@@ -19095,12 +19262,16 @@
             "level": 4,
             "signal_type": "usage_volume",
             "confidence": "medium",
-            "note": "~1.37M downloads/month for autogen-agentchat; trajectory flat as it enters maintenance mode.",
+            "note": "1,058,837 PyPI downloads in the trailing 30 days for autogen-agentchat, read 2026-08-12. Bands at level 4 (1M-10M) on the software and model adoption scale. Trajectory is flat to declining as the project enters maintenance.",
+            "reach": "1M-10M",
+            "last_verified": "2026-08-12",
             "sources": [
               {
-                "url": "https://pypistats.org/packages/autogen-agentchat",
-                "shows": "~1.37M downloads/month",
-                "accessed": "2026-06-17"
+                "url": "https://pypistats.org/api/packages/autogen-agentchat/recent",
+                "shows": "1,058,837 downloads in the trailing 30 days for autogen-agentchat",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "e50d25c7c06508c17569a42cb0abc1884124c3022d8617cd967b1ff4cb878555"
               }
             ]
           },
@@ -19121,8 +19292,8 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-07-30",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "Code is MIT (LICENSE-CODE; the repo's root LICENSE is CC-BY-4.0 for docs, which mislabels the GitHub license field). In maintenance mode - Microsoft now directs new work to the Microsoft Agent Framework (Semantic Kernel + AutoGen merge). ~59k stars."
         },
@@ -19185,12 +19356,16 @@
             "level": 5,
             "signal_type": "usage_volume",
             "confidence": "medium",
-            "note": "~31M PyPI downloads/month (heavily transitive/CI-driven; directional).",
+            "note": "15,835,159 PyPI downloads in the trailing 30 days for pydantic-ai, read 2026-08-12. Bands at level 5 (>10M) on the software and model adoption scale. Heavily transitive and CI-driven, so directional.",
+            "reach": ">10M",
+            "last_verified": "2026-08-12",
             "sources": [
               {
-                "url": "https://pypistats.org/packages/pydantic-ai",
-                "shows": "~31M downloads/month",
-                "accessed": "2026-06-17"
+                "url": "https://pypistats.org/api/packages/pydantic-ai/recent",
+                "shows": "15,835,159 downloads in the trailing 30 days for pydantic-ai",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "1f1796b2592a6d06063327626327f152cd5f4e36b7a7db791e9aa03ec945fb80"
               }
             ]
           },
@@ -19211,7 +19386,7 @@
           "maturity": 4.3,
           "mature": false,
           "freshness": {
-            "date": "2026-08-11",
+            "date": "2026-08-12",
             "basis": "verified"
           },
           "version_note": "MIT library; commercially-operated Pydantic Logfire platform makes the overall offering open-core. ~18k stars."
@@ -19282,15 +19457,19 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 4,
+            "level": 3,
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "~883k PyPI downloads/month for the 2.x haystack-ai package.",
+            "note": "933,408 PyPI downloads in the trailing 30 days for haystack-ai, read 2026-08-12. Bands at level 3 (100K-1M) on the software and model adoption scale. The 2.x package; sits just under the 1M boundary and could cross either way. Corrected from level 4, which the recorded evidence did not support.",
+            "reach": "100K-1M",
+            "last_verified": "2026-08-12",
             "sources": [
               {
-                "url": "https://pypistats.org/packages/haystack-ai",
-                "shows": "~883k downloads/month",
-                "accessed": "2026-06-17"
+                "url": "https://pypistats.org/api/packages/haystack-ai/recent",
+                "shows": "933,408 downloads in the trailing 30 days for haystack-ai",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "cd271f2fc8ad6efc82d7e7cf9393f509a8b4e1e72499b043adc3f0b6c32e285e"
               }
             ]
           },
@@ -19308,10 +19487,10 @@
               }
             ]
           },
-          "maturity": 4.7,
-          "mature": true,
+          "maturity": 4.4,
+          "mature": false,
           "freshness": {
-            "date": "2026-08-11",
+            "date": "2026-08-12",
             "basis": "verified"
           },
           "version_note": "Apache-2.0 core; commercial Haystack Enterprise (managed/governance) makes the overall offering open-core. ~26k stars, ~883k PyPI downloads/month (haystack-ai)."
@@ -19372,15 +19551,19 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 5,
+            "level": 4,
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "~10.18M PyPI downloads/month.",
+            "note": "7,203,303 PyPI downloads in the trailing 30 days for llama-index, read 2026-08-12. Bands at level 4 (1M-10M) on the software and model adoption scale. Briefly cleared 10M when the score was authored and has since fallen back. Corrected from level 5, which the recorded evidence did not support.",
+            "reach": "1M-10M",
+            "last_verified": "2026-08-12",
             "sources": [
               {
-                "url": "https://pypistats.org/packages/llama-index",
-                "shows": "~10.18M downloads/month",
-                "accessed": "2026-06-17"
+                "url": "https://pypistats.org/api/packages/llama-index/recent",
+                "shows": "7,203,303 downloads in the trailing 30 days for llama-index",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "0be5ce7e60b07f70c9234e044ac044e188073166d161caef1a13638c7dca2c7a"
               }
             ]
           },
@@ -19398,10 +19581,10 @@
               }
             ]
           },
-          "maturity": 5.0,
+          "maturity": 4.7,
           "mature": true,
           "freshness": {
-            "date": "2026-08-11",
+            "date": "2026-08-12",
             "basis": "verified"
           },
           "version_note": "MIT core; commercial LlamaCloud / LlamaParse (parse/extract/index APIs) makes the overall offering open-core. ~50k stars, ~10M PyPI downloads/month."
@@ -19489,12 +19672,16 @@
             "level": 4,
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "~6.36M PyPI downloads/month for the dspy package.",
+            "note": "6,589,078 PyPI downloads in the trailing 30 days for dspy, read 2026-08-12. Bands at level 4 (1M-10M) on the software and model adoption scale. A widely used prompt-programming framework.",
+            "reach": "1M-10M",
+            "last_verified": "2026-08-12",
             "sources": [
               {
-                "url": "https://pypistats.org/packages/dspy",
-                "shows": "~6.36M downloads/month",
-                "accessed": "2026-06-17"
+                "url": "https://pypistats.org/api/packages/dspy/recent",
+                "shows": "6,589,078 downloads in the trailing 30 days for dspy",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "3a399a8f7f92d24ac1056f2740853ff1d13ddec4817b96acd552ee5a86f36346"
               }
             ]
           },
@@ -19515,8 +19702,8 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-07-30",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "MIT, no commercial cloud from the project. ~35k stars, ~6.4M PyPI downloads/month."
         },
@@ -19600,15 +19787,19 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 4,
+            "level": 3,
             "signal_type": "usage_volume",
             "confidence": "medium",
-            "note": "~251k PyPI downloads/month (lightrag-hku) corroborating ~37k stars.",
+            "note": "313,096 PyPI downloads in the trailing 30 days for lightrag-hku, read 2026-08-12. Bands at level 3 (100K-1M) on the software and model adoption scale. Corroborated by a large star count. Corrected from level 4, which the recorded evidence did not support.",
+            "reach": "100K-1M",
+            "last_verified": "2026-08-12",
             "sources": [
               {
-                "url": "https://pepy.tech/projects/lightrag-hku",
-                "shows": "~251k downloads/month",
-                "accessed": "2026-06-17"
+                "url": "https://pypistats.org/api/packages/lightrag-hku/recent",
+                "shows": "313,096 downloads in the trailing 30 days for lightrag-hku",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "8ee7b8603e5b195abf7a2044fccf9863b7372dacb117601b5124e2443589d68d"
               }
             ]
           },
@@ -19626,11 +19817,11 @@
               }
             ]
           },
-          "maturity": 4.0,
+          "maturity": 3.7,
           "mature": false,
           "freshness": {
-            "date": "2026-07-30",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "MIT. ~37k stars, ~251k monthly PyPI downloads (lightrag-hku)."
         },
@@ -19657,15 +19848,19 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 2,
-            "signal_type": "stars_fallback",
+            "level": 1,
+            "signal_type": "usage_volume",
             "confidence": "medium",
-            "note": "~3.9k stars and ~1.7k monthly PyPI; no release since Oct 2024 (likely stale) - stars_fallback.",
+            "note": "1,334 downloads in the trailing 30 days (nano-graphrag 1,334), read 2026-08-12. Bands at level 1 (<10K) on the software and model adoption scale. Moved off the stars fallback: a real download signal exists, and docs/guides/adoption.md says to re-band when one does. The package is first-party; no release since October 2024 and the figure is declining. This LOWERS the recorded level from 2 - the star count had been flattering it.",
+            "reach": "<10K",
+            "last_verified": "2026-08-12",
             "sources": [
               {
-                "url": "https://pypi.org/project/nano-graphrag/",
-                "shows": "v0.0.8.2, last release Oct 2024",
-                "accessed": "2026-06-17"
+                "url": "https://pypistats.org/api/packages/nano-graphrag/recent",
+                "shows": "1,334 downloads in the trailing 30 days for nano-graphrag",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "e7bb3b153afa60c0307b03f4f402fc7974481fde5d5d7f89499382e8da1ab49e"
               }
             ]
           },
@@ -19683,11 +19878,11 @@
               }
             ]
           },
-          "maturity": 2.7,
+          "maturity": 2.4,
           "mature": false,
           "freshness": {
-            "date": "2026-07-30",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "MIT. ~3.9k stars. Likely stale - no release since Oct 2024."
         },
@@ -19772,15 +19967,19 @@
             "bucket": "open-ish"
           },
           "adoption": {
-            "level": 3,
+            "level": 2,
             "signal_type": "usage_volume",
             "confidence": "medium",
-            "note": "~30k monthly PyPI downloads alongside ~63k stars (star count inflated for an infra repo).",
+            "note": "14,405 PyPI downloads in the trailing 30 days for pathway, read 2026-08-12. Bands at level 2 (10K-100K) on the software and model adoption scale. Down by roughly half since the score was authored. Corrected from level 3, which the recorded evidence did not support.",
+            "reach": "10K-100K",
+            "last_verified": "2026-08-12",
             "sources": [
               {
-                "url": "https://pypi.org/project/pathway/",
-                "shows": "BSL, active releases, download stats",
-                "accessed": "2026-06-17"
+                "url": "https://pypistats.org/api/packages/pathway/recent",
+                "shows": "14,405 downloads in the trailing 30 days for pathway",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "fbca237c76ce79189a2aab6be94c71819d79f2dffe25d5aea4c384d6816faafa"
               }
             ]
           },
@@ -19798,11 +19997,11 @@
               }
             ]
           },
-          "maturity": 3.7,
+          "maturity": 3.4,
           "mature": false,
           "freshness": {
-            "date": "2026-06-17",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "Business Source License 1.1 (BSL, NOT OSI): single-machine production limit + no-compete clause, converts to Apache-2.0 on 2027-07-20. Commercial Scale/Enterprise tiers. ~63k stars."
         },
@@ -19886,15 +20085,19 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 3,
-            "signal_type": "stars_fallback",
+            "level": 4,
+            "signal_type": "usage_volume",
             "confidence": "medium",
-            "note": "~28k stars; PyPI volume not surfaced. Entering maintenance as Microsoft Agent Framework becomes the successor - stars_fallback (capped at 3).",
+            "note": "2,638,796 downloads in the trailing 30 days (semantic-kernel 2,638,796), read 2026-08-12. Bands at level 4 (1M-10M) on the software and model adoption scale. Moved off the stars fallback: a real download signal exists, and docs/guides/adoption.md says to re-band when one does. The package is the Python package only, so this is a floor: the .NET/NuGet channel is larger and is not counted. Recorded level was 3.",
+            "reach": "1M-10M",
+            "last_verified": "2026-08-12",
             "sources": [
               {
-                "url": "https://github.com/microsoft/semantic-kernel",
-                "shows": "~28.2k stars; MAF-successor banner",
-                "accessed": "2026-06-18"
+                "url": "https://pypistats.org/api/packages/semantic-kernel/recent",
+                "shows": "2,638,796 downloads in the trailing 30 days for semantic-kernel",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "acc750ee23cbeb87faff1d76d10d7089671c9d615dca1e1d5a63e839d7a65b7f"
               }
             ]
           },
@@ -19912,11 +20115,11 @@
               }
             ]
           },
-          "maturity": 3.7,
+          "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-07-30",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "MIT. ~28k stars. Microsoft has converged Semantic Kernel + AutoGen into the Microsoft Agent Framework (the successor); SK is now in maintenance mode (bug/security fixes only), supported ~1 year past MAF GA."
         },
@@ -19943,15 +20146,26 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 3,
-            "signal_type": "stars_fallback",
+            "level": 2,
+            "signal_type": "usage_volume",
             "confidence": "medium",
-            "note": "~3.3k stars; package download volume not retrievable - stars_fallback (capped at 3).",
+            "note": "63,527 downloads in the trailing 30 days (beeai-framework 49,921; beeai-framework 13,606), read 2026-08-12. Bands at level 2 (10K-100K) on the software and model adoption scale. Moved off the stars fallback: a real download signal exists, and docs/guides/adoption.md says to re-band when one does. The package is both language bindings, summed. This LOWERS the recorded level from 3 - the star count had been flattering it.",
+            "reach": "10K-100K",
+            "last_verified": "2026-08-12",
             "sources": [
               {
-                "url": "https://github.com/i-am-bee/beeai-framework",
-                "shows": "~3.3k stars",
-                "accessed": "2026-06-18"
+                "url": "https://pypistats.org/api/packages/beeai-framework/recent",
+                "shows": "49,921 downloads in the trailing 30 days for beeai-framework",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "6d4373d31982e807ef70aaf65aebfb21deca5ea4499aa38e0c9619e9ca45fd75"
+              },
+              {
+                "url": "https://api.npmjs.org/downloads/point/last-month/beeai-framework",
+                "shows": "13,606 downloads in the trailing 30 days for beeai-framework",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "15f8dde1c5a6aac9fef53c9defa6c2f83f196ffa05a024f1d35a03168f98c764"
               }
             ]
           },
@@ -19969,11 +20183,11 @@
               }
             ]
           },
-          "maturity": 3.7,
+          "maturity": 3.4,
           "mature": false,
           "freshness": {
-            "date": "2026-07-30",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "Apache-2.0. IBM-originated, now under the Linux Foundation (LF AI & Data), alongside Docling and Data Prep Kit. ~3.3k stars."
         },
@@ -20000,15 +20214,19 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 5,
+            "level": 4,
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "~2.86M npm downloads/month for @google/gemini-cli, plus ~105k stars.",
+            "note": "1,850,744 npm downloads in the trailing 30 days for @google/gemini-cli, read 2026-08-12. Bands at level 4 (1M-10M) on the software and model adoption scale. Google's first-party terminal agent. Corrected from level 5, which the recorded evidence did not support.",
+            "reach": "1M-10M",
+            "last_verified": "2026-08-12",
             "sources": [
               {
                 "url": "https://api.npmjs.org/downloads/point/last-month/@google/gemini-cli",
-                "shows": "~2.86M downloads/month",
-                "accessed": "2026-06-18"
+                "shows": "1,850,744 downloads in the trailing 30 days for @google/gemini-cli",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "c260288dbd7a0681b5ddfd027049c62ec7837b530672241393db101de2c95086"
               }
             ]
           },
@@ -20026,11 +20244,11 @@
               }
             ]
           },
-          "maturity": 5.0,
+          "maturity": 4.7,
           "mature": true,
           "freshness": {
-            "date": "2026-07-30",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "Apache-2.0. ~105k stars, ~2.86M npm downloads/month. Free tier via personal Google account; paid via AI Studio/Vertex."
         },
@@ -20145,15 +20363,19 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 3,
-            "signal_type": "stars_fallback",
+            "level": 2,
+            "signal_type": "usage_volume",
             "confidence": "medium",
-            "note": "~113k stars but git-distributed with no download telemetry - stars_fallback (capped at 3; true usage higher).",
+            "note": "76,423 downloads in the trailing 30 days (specify-cli 76,423), read 2026-08-12. Bands at level 2 (10K-100K) on the software and model adoption scale. Moved off the stars fallback: a real download signal exists, and docs/guides/adoption.md says to re-band when one does. The package is PyPI carries the same version as the repository's latest tag, so the recorded claim of no telemetry was wrong. This LOWERS the recorded level from 3 - the star count had been flattering it.",
+            "reach": "10K-100K",
+            "last_verified": "2026-08-12",
             "sources": [
               {
-                "url": "https://api.github.com/repos/github/spec-kit",
-                "shows": "~113k stars, SPDX MIT",
-                "accessed": "2026-06-18"
+                "url": "https://pypistats.org/api/packages/specify-cli/recent",
+                "shows": "76,423 downloads in the trailing 30 days for specify-cli",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "5242eef398d1a146162f9b3952bd5e72e1328cff3a1b00adb6532bd6c1f5bd73"
               }
             ]
           },
@@ -20171,11 +20393,11 @@
               }
             ]
           },
-          "maturity": 3.7,
+          "maturity": 3.4,
           "mature": false,
           "freshness": {
-            "date": "2026-07-30",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "MIT (c) GitHub. ~113k stars. Git-based distribution (uv tool install from the repo); no PyPI telemetry. No paid tier."
         },
@@ -20202,15 +20424,26 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 4,
+            "level": 3,
             "signal_type": "usage_volume",
             "confidence": "medium",
-            "note": "~150k stars and ~71k PyPI downloads/month (modest pip volume; mostly Docker/desktop).",
+            "note": "About 166,141 downloads a month across the product's real distribution channels, read 2026-08-12. Docker Hub reports 3,408,830 cumulative pulls of langflowai/langflow since 2023-02-08, which over 42 months averages roughly 81,003 a month; 85,138 come from PyPI  in the trailing 30 days. Bands at level 3 (100K-1M).\n\nLangflow is distributed mainly as a Docker image and a desktop app; the PyPI package is one of several install paths. Banding on the registry package ALONE gave a materially lower level, and recording it would have been a substitution rather than a measurement - the same error signal_routing.yaml names as 'abstain rather than substitute'. The Docker component is a LIFETIME AVERAGE, not a trailing-30-day figure, so for a growing product it understates the current rate and this level is a floor.",
+            "reach": "100K-1M",
+            "last_verified": "2026-08-12",
             "sources": [
               {
-                "url": "https://pypi.org/project/langflow/",
-                "shows": "package langflow, MIT",
-                "accessed": "2026-06-18"
+                "url": "https://hub.docker.com/v2/repositories/langflowai/langflow/",
+                "shows": "3,408,830 cumulative pulls of langflowai/langflow",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "ce5f93f3d56a780551761bf26dc80f677ba1c295852273c0e2284e5c37c58f4f"
+              },
+              {
+                "url": "https://pypistats.org/api/packages/langflow/recent",
+                "shows": "85,138 downloads in the trailing 30 days",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "fe77af64ce6d8c92b3ee05f55636bc8954b23cbfaa2d2e8117f502663898b7c5"
               }
             ]
           },
@@ -20228,11 +20461,11 @@
               }
             ]
           },
-          "maturity": 4.0,
+          "maturity": 3.7,
           "mature": false,
           "freshness": {
-            "date": "2026-07-30",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "MIT. ~150k stars, ~71k PyPI downloads/month. Began as Logspace; acquired by DataStax (2024), now an IBM company (IBM->DataStax announced Feb 2025); IBM committed to the OSS community. Commercial managed cloud exists but does not gate the core."
         },
@@ -20373,15 +20606,26 @@
             "bucket": "open-ish"
           },
           "adoption": {
-            "level": 5,
+            "level": 4,
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "~193k stars (one of the most-starred repos) and ~316k npm downloads/month.",
+            "note": "About 3,265,167 downloads a month across the product's real distribution channels, read 2026-08-12. Docker Hub reports 246,014,721 cumulative pulls of n8nio/n8n since 2019-06-22, which over 86 months averages roughly 2,871,429 a month; 393,738 come from npm  in the trailing 30 days. Bands at level 4 (1M-10M).\n\nn8n is deployed overwhelmingly as a self-hosted Docker container; the npm package is a minority install path. Banding on the registry package ALONE gave a materially lower level, and recording it would have been a substitution rather than a measurement - the same error signal_routing.yaml names as 'abstain rather than substitute'. The Docker component is a LIFETIME AVERAGE, not a trailing-30-day figure, so for a growing product it understates the current rate and this level is a floor.",
+            "reach": "1M-10M",
+            "last_verified": "2026-08-12",
             "sources": [
               {
-                "url": "https://www.npmjs.com/package/n8n",
-                "shows": "npm n8n, ~316k downloads/month",
-                "accessed": "2026-06-18"
+                "url": "https://hub.docker.com/v2/repositories/n8nio/n8n/",
+                "shows": "246,014,721 cumulative pulls of n8nio/n8n",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "443317d706fae67fc827690787da7558d2d7538e95937279b26f6aecf727eb43"
+              },
+              {
+                "url": "https://api.npmjs.org/downloads/point/last-month/n8n",
+                "shows": "393,738 downloads in the trailing 30 days",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "4d8af9b72a5edf2b987040b3944f4741405d95144b1e9e7bfc57d4e142e9b88e"
               }
             ]
           },
@@ -20399,11 +20643,11 @@
               }
             ]
           },
-          "maturity": 4.3,
+          "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-06-18",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "Sustainable Use License (fair-code, NOT OSI: internal-business-use only, no resale/hosting-as-a-service) + n8n Enterprise License; GitHub reports NOASSERTION. ~193k stars, ~316k npm downloads/month. n8n Cloud + Enterprise are the commercial tiers."
         },
@@ -23463,15 +23707,26 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 3,
-            "signal_type": "stars_fallback",
+            "level": 2,
+            "signal_type": "usage_volume",
             "confidence": "medium",
-            "note": "~77k stars but reduced maintenance since early 2025 - stars_fallback (capped at 3).",
+            "note": "60,336 downloads in the trailing 30 days (gpt4all 58,808; gpt4all 1,528), read 2026-08-12. Bands at level 2 (10K-100K) on the software and model adoption scale. Moved off the stars fallback: a real download signal exists, and docs/guides/adoption.md says to re-band when one does. The package is the Python bindings plus the Node bindings from the same org. This LOWERS the recorded level from 3 - the star count had been flattering it.",
+            "reach": "10K-100K",
+            "last_verified": "2026-08-12",
             "sources": [
               {
-                "url": "https://github.com/nomic-ai/gpt4all",
-                "shows": "~77.4k stars; last major release Feb 2025",
-                "accessed": "2026-06-17"
+                "url": "https://pypistats.org/api/packages/gpt4all/recent",
+                "shows": "58,808 downloads in the trailing 30 days for gpt4all",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "c93a986c8356e8e726ea6930a3e0275a0c25030cb610d62505fb17aeab6c3a8a"
+              },
+              {
+                "url": "https://api.npmjs.org/downloads/point/last-month/gpt4all",
+                "shows": "1,528 downloads in the trailing 30 days for gpt4all",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "b5eea2fec708240747384a6f83f7f47f1506a97c284f7b57cb5f43424130bfe7"
               }
             ]
           },
@@ -23489,11 +23744,11 @@
               }
             ]
           },
-          "maturity": 3.0,
+          "maturity": 2.3,
           "mature": false,
           "freshness": {
-            "date": "2026-07-30",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "MIT. ~77k stars. Reduced maintenance - last notable release Feb 2025, community reports of stalled development through 2025 (no official deprecation)."
         },
@@ -23523,12 +23778,16 @@
             "level": 5,
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "~379k stars and ~10.26M npm downloads/month - exceptional for a project under a year old.",
+            "note": "11,365,016 npm downloads in the trailing 30 days for openclaw, read 2026-08-12. Bands at level 5 (>10M) on the software and model adoption scale. Exceptional growth for a project under a year old.",
+            "reach": ">10M",
+            "last_verified": "2026-08-12",
             "sources": [
               {
-                "url": "https://www.npmjs.com/package/openclaw",
-                "shows": "npm openclaw, ~10.26M downloads/month",
-                "accessed": "2026-06-18"
+                "url": "https://api.npmjs.org/downloads/point/last-month/openclaw",
+                "shows": "11,365,016 downloads in the trailing 30 days for openclaw",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "49283dfed7eefb87e0a2220bbaf8f33343950dc1fbc6e6fb3c836137d09dcc4e"
               }
             ]
           },
@@ -23549,8 +23808,8 @@
           "maturity": 5.0,
           "mature": true,
           "freshness": {
-            "date": "2026-07-30",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "MIT (repo LICENSE body is MIT; GitHub shows NOASSERTION due to a custom 'OpenClaw Foundation' copyright line; npm declares MIT). Community project led by Peter Steinberger (steipete). Created Nov 2025; ~379k stars, ~10.3M npm downloads/month."
         },
@@ -25507,15 +25766,19 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 4,
+            "level": 3,
             "signal_type": "usage_volume",
             "confidence": "medium",
-            "note": "~38.7k PyPI downloads/month (pypistats) alongside ~3.4k stars.",
+            "note": "111,932 PyPI downloads in the trailing 30 days for trulens, read 2026-08-12. Bands at level 3 (100K-1M) on the software and model adoption scale. Nearly tripled since the score was authored and still bands at 3. Corrected from level 4, which the recorded evidence did not support.",
+            "reach": "100K-1M",
+            "last_verified": "2026-08-12",
             "sources": [
               {
-                "url": "https://pypistats.org/packages/trulens",
-                "shows": "38,729 downloads last month",
-                "accessed": "2026-06-18"
+                "url": "https://pypistats.org/api/packages/trulens/recent",
+                "shows": "111,932 downloads in the trailing 30 days for trulens",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "66d265d6d06e2346fcd90076a68430a33dc3174d202e33c39e42be1c267f130c"
               }
             ]
           },
@@ -25533,11 +25796,11 @@
               }
             ]
           },
-          "maturity": 4.0,
+          "maturity": 3.5,
           "mature": false,
           "freshness": {
-            "date": "2026-07-30",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "MIT. Created by TruEra, which Snowflake acquired in 2024; now maintained by Snowflake (the GitHub org remains 'truera'). A separate hosted Snowflake Cortex AI Observability product exists; the library stays fully open. ~3.4k stars, ~39k PyPI downloads/month."
         }
@@ -25761,16 +26024,19 @@
             "bucket": "open-ish"
           },
           "adoption": {
-            "level": 4,
-            "reach": "100K-1M",
+            "level": 2,
+            "reach": "10K-100K",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "8B variant ~74.7K HF downloads/month (June 2026); cumulative across the three sizes is higher. Strong, fast-growing adoption.",
+            "note": "39,581 downloads in the trailing 30 days (Qwen/Qwen3Guard-Gen-8B 39,581), read 2026-08-12. Bands at level 2 (10K-100K). Corrected from level 4. A guardrail model; recorded 4 against a figure that has never reached level 3.",
+            "last_verified": "2026-08-12",
             "sources": [
               {
-                "url": "https://huggingface.co/Qwen/Qwen3Guard-Gen-8B",
-                "shows": "~74,669 downloads/month, 119 likes (June 2026)",
-                "accessed": "2026-06-29"
+                "url": "https://huggingface.co/api/models/Qwen/Qwen3Guard-Gen-8B",
+                "shows": "39,581 downloads in the trailing 30 days for Qwen/Qwen3Guard-Gen-8B",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "347d93d3d09d3b0cbb7f7bb6bb3b64e7a04996ed1f76788e1801a0ffa7e2309e"
               }
             ]
           },
@@ -25789,11 +26055,11 @@
               }
             ]
           },
-          "maturity": 4.0,
+          "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-11",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "Qwen3Guard (0.6B/4B/8B), Apache-2.0 open weights; 119 languages; generative + streaming variants. 8B ~74.7K HF downloads/month, 119 likes (June 2026). Verified live June 2026."
         },
@@ -26348,16 +26614,19 @@
             "bucket": "open-ish"
           },
           "adoption": {
-            "level": 3,
-            "reach": "10K-100K",
+            "level": 1,
+            "reach": "<10K",
             "signal_type": "usage_volume",
             "confidence": "medium",
-            "note": "2B variant ~8.5K HF downloads/month, 124 likes (June 2026); solid adoption across the three sizes.",
+            "note": "4,761 downloads in the trailing 30 days (google/shieldgemma-2b 4,761), read 2026-08-12. Bands at level 1 (<10K). Corrected from level 3. A guardrail model with modest standalone pull-through; most use is via the Gemma tooling rather than direct download.",
+            "last_verified": "2026-08-12",
             "sources": [
               {
-                "url": "https://huggingface.co/google/shieldgemma-2b",
-                "shows": "~8,555 downloads/month, 124 likes (June 2026)",
-                "accessed": "2026-06-29"
+                "url": "https://huggingface.co/api/models/google/shieldgemma-2b",
+                "shows": "4,761 downloads in the trailing 30 days for google/shieldgemma-2b",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "bd6ea284a4aba53fafe8136ae0eea165dc11ad5d78375b4b8c3db58e93e6d066"
               }
             ]
           },
@@ -26376,11 +26645,11 @@
               }
             ]
           },
-          "maturity": 3.0,
+          "maturity": 2.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-08",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "ShieldGemma (2B/9B/27B) on Gemma 2; Gemma license (NOT OSI). 2B variant ~8.5K HF downloads/month, 124 likes (June 2026). Verified live June 2026."
         },
@@ -26466,16 +26735,19 @@
             "bucket": "open-ish"
           },
           "adoption": {
-            "level": 4,
+            "level": 3,
             "reach": "100K-1M",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "20b variant ~131K HF downloads/month, 235 likes, 100+ Spaces (June 2026); strong early adoption for a recent release.",
+            "note": "100,632 downloads in the trailing 30 days (openai/gpt-oss-safeguard-20b 100,632), read 2026-08-12. Bands at level 3 (100K-1M). Corrected from level 4. Sits barely above the 100K boundary, so this level is fragile in either direction.",
+            "last_verified": "2026-08-12",
             "sources": [
               {
-                "url": "https://huggingface.co/openai/gpt-oss-safeguard-20b",
-                "shows": "~131,038 downloads/month, 235 likes, 100+ Spaces (June 2026)",
-                "accessed": "2026-06-29"
+                "url": "https://huggingface.co/api/models/openai/gpt-oss-safeguard-20b",
+                "shows": "100,632 downloads in the trailing 30 days for openai/gpt-oss-safeguard-20b",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "58148783c94a8c908682233ec3be7fb9e0ae18eaa89282271c1a08049b035d63"
               }
             ]
           },
@@ -26494,11 +26766,11 @@
               }
             ]
           },
-          "maturity": 4.0,
+          "maturity": 3.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-11",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "gpt-oss-safeguard (20b / 120b), Apache-2.0 open weights; released by OpenAI with Hugging Face and ROOST, distributed via the ROOST Model Community (RMC). 20b ~131K HF downloads/month, 235 likes (June 2026). Verified live June 2026."
         },
@@ -28820,15 +29092,19 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 3,
-            "signal_type": "stars_fallback",
+            "level": 5,
+            "signal_type": "usage_volume",
             "confidence": "medium",
-            "note": "~23k stars; PyPI download volume not retrievable - stars_fallback (true usage likely higher as the reference SDK).",
+            "note": "333,111,291 downloads in the trailing 30 days (mcp 333,111,291), read 2026-08-12. Bands at level 5 (>10M) on the software and model adoption scale. Moved off the stars fallback: a real download signal exists, and docs/guides/adoption.md says to re-band when one does. The package is PyPI `mcp` carries Repository = github.com/modelcontextprotocol/python-sdk and author 'Model Context Protocol a Series of LF Projects, LLC', so the name is first-party rather than squatted. Recorded level was 3.",
+            "reach": ">10M",
+            "last_verified": "2026-08-12",
             "sources": [
               {
-                "url": "https://github.com/modelcontextprotocol/python-sdk",
-                "shows": "MIT, ~23.4k stars",
-                "accessed": "2026-06-17"
+                "url": "https://pypistats.org/api/packages/mcp/recent",
+                "shows": "333,111,291 downloads in the trailing 30 days for mcp",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "f969df13f1c89b38b15d36d7e3580fd78143d04c39f3d5062f979b737e318dfb"
               }
             ]
           },
@@ -28846,11 +29122,11 @@
               }
             ]
           },
-          "maturity": 3.8,
-          "mature": false,
+          "maturity": 5.0,
+          "mature": true,
           "freshness": {
-            "date": "2026-07-30",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "MIT (package 'mcp', author Anthropic PBC). ~23k stars; very actively released."
         },
@@ -28880,12 +29156,16 @@
             "level": 5,
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "~154M npm downloads in the last 30 days.",
+            "note": "198,046,096 npm downloads in the trailing 30 days for @modelcontextprotocol/sdk, read 2026-08-12. Bands at level 5 (>10M) on the software and model adoption scale. The reference TypeScript MCP SDK, and the highest download figure on the map.",
+            "reach": ">10M",
+            "last_verified": "2026-08-12",
             "sources": [
               {
-                "url": "https://www.npmjs.com/package/@modelcontextprotocol/sdk",
-                "shows": "~154.2M downloads/last-30-days",
-                "accessed": "2026-06-17"
+                "url": "https://api.npmjs.org/downloads/point/last-month/@modelcontextprotocol/sdk",
+                "shows": "198,046,096 downloads in the trailing 30 days for @modelcontextprotocol/sdk",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "a5daab95266dd756f2c613e07ac16b5636554268822c6a8c52e7caebcb051610"
               }
             ]
           },
@@ -28906,8 +29186,8 @@
           "maturity": 5.0,
           "mature": true,
           "freshness": {
-            "date": "2026-07-30",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "MIT (@modelcontextprotocol/sdk). ~13k stars, ~154M npm downloads/last-30-days."
         },
@@ -28934,15 +29214,19 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 4,
+            "level": 3,
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "~847k npm downloads in the last 30 days.",
+            "note": "905,396 npm downloads in the trailing 30 days for @modelcontextprotocol/inspector, read 2026-08-12. Bands at level 3 (100K-1M) on the software and model adoption scale. The reference MCP debugging tool; sits just under the 1M boundary. Corrected from level 4, which the recorded evidence did not support.",
+            "reach": "100K-1M",
+            "last_verified": "2026-08-12",
             "sources": [
               {
-                "url": "https://www.npmjs.com/package/@modelcontextprotocol/inspector",
-                "shows": "~847k downloads/last-30-days",
-                "accessed": "2026-06-17"
+                "url": "https://api.npmjs.org/downloads/point/last-month/@modelcontextprotocol/inspector",
+                "shows": "905,396 downloads in the trailing 30 days for @modelcontextprotocol/inspector",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "d513a70d78821ec8158634ede139d79b0affcc55517f8282cadf4e26c22c8c94"
               }
             ]
           },
@@ -28960,11 +29244,11 @@
               }
             ]
           },
-          "maturity": 4.0,
+          "maturity": 3.4,
           "mature": false,
           "freshness": {
-            "date": "2026-07-30",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "MIT. ~10k stars, ~847k npm downloads/last-30-days."
         },
@@ -29048,15 +29332,19 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 2,
-            "signal_type": "stars_fallback",
+            "level": 3,
+            "signal_type": "usage_volume",
             "confidence": "medium",
-            "note": "~1.7k stars (smaller community project) - stars_fallback.",
+            "note": "111,307 downloads in the trailing 30 days (slack-mcp-server 111,307), read 2026-08-12. Bands at level 3 (100K-1M) on the software and model adoption scale. Moved off the stars fallback: a real download signal exists, and docs/guides/adoption.md says to re-band when one does. The package is the npm package, whose registry metadata points at korotovsky/slack-mcp-server; the PyPI package of the same name is an unedited template and is NOT this product. Recorded level was 2.",
+            "reach": "100K-1M",
+            "last_verified": "2026-08-12",
             "sources": [
               {
-                "url": "https://github.com/korotovsky/slack-mcp-server",
-                "shows": "~1.7k stars",
-                "accessed": "2026-06-17"
+                "url": "https://api.npmjs.org/downloads/point/last-month/slack-mcp-server",
+                "shows": "111,307 downloads in the trailing 30 days for slack-mcp-server",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "210197fc526457e516f3a4c0c248e6119d0653e9a7921b7b35db711579fb2698"
               }
             ]
           },
@@ -29074,11 +29362,11 @@
               }
             ]
           },
-          "maturity": 2.8,
+          "maturity": 3.4,
           "mature": false,
           "freshness": {
-            "date": "2026-07-30",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "MIT. ~1.7k stars. There is no first-party official Slack MCP server - the original reference server was archived (servers-archived), making this the most popular maintained one."
         },
@@ -29166,15 +29454,19 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 3,
-            "signal_type": "stars_fallback",
+            "level": 4,
+            "signal_type": "usage_volume",
             "confidence": "low",
-            "note": "Bundled reference server; monorepo ~87k stars are shared across servers - stars_fallback (capped at 3).",
+            "note": "1,945,615 downloads in the trailing 30 days (@modelcontextprotocol/server-filesystem 1,945,615), read 2026-08-12. Bands at level 4 (1M-10M) on the software and model adoption scale. Moved off the stars fallback: a real download signal exists, and docs/guides/adoption.md says to re-band when one does. The package is a per-server npm package, which resolves the recorded objection that the monorepo's stars are shared across every server in it. Recorded level was 3.",
+            "reach": "1M-10M",
+            "last_verified": "2026-08-12",
             "sources": [
               {
-                "url": "https://github.com/modelcontextprotocol/servers",
-                "shows": "~87.4k monorepo stars, filesystem among active reference servers",
-                "accessed": "2026-06-17"
+                "url": "https://api.npmjs.org/downloads/point/last-month/@modelcontextprotocol/server-filesystem",
+                "shows": "1,945,615 downloads in the trailing 30 days for @modelcontextprotocol/server-filesystem",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "cda748d40b5be539d16128ed592a15d1ffc6bf0d98f5cc43619bbbc78ba84faf"
               }
             ]
           },
@@ -29192,11 +29484,11 @@
               }
             ]
           },
-          "maturity": 3.4,
+          "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-07-30",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "MIT. One of the active reference servers; the monorepo has ~87k stars shared across all bundled servers, so per-server adoption isn't separable."
         },
@@ -29224,14 +29516,18 @@
           },
           "adoption": {
             "level": 3,
-            "signal_type": "stars_fallback",
+            "signal_type": "usage_volume",
             "confidence": "medium",
-            "note": "~2.9k stars plus PyPI distribution - stars_fallback (capped at 3).",
+            "note": "491,612 downloads in the trailing 30 days (postgres-mcp 491,612), read 2026-08-12. Bands at level 3 (100K-1M) on the software and model adoption scale. Moved off the stars fallback: a real download signal exists, and docs/guides/adoption.md says to re-band when one does. The package is first-party.",
+            "reach": "100K-1M",
+            "last_verified": "2026-08-12",
             "sources": [
               {
-                "url": "https://github.com/crystaldba/postgres-mcp",
-                "shows": "~2.9k stars",
-                "accessed": "2026-06-17"
+                "url": "https://pypistats.org/api/packages/postgres-mcp/recent",
+                "shows": "491,612 downloads in the trailing 30 days for postgres-mcp",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "a9378ebd2f817ccaf79903e8c3fecd1294079472497f71f5cbf273e06e23e2f5"
               }
             ]
           },
@@ -29252,8 +29548,8 @@
           "maturity": 3.4,
           "mature": false,
           "freshness": {
-            "date": "2026-07-30",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "MIT. ~2.9k stars. The original reference Postgres server was archived (read-only since May 2025) and only did read-only queries, so this is the canonical maintained one."
         },
@@ -29280,15 +29576,19 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 3,
-            "signal_type": "stars_fallback",
+            "level": 5,
+            "signal_type": "usage_volume",
             "confidence": "medium",
-            "note": "~62k stars (exceptionally high) but PyPI download volume not surfaced - stars_fallback (capped at 3; true usage almost certainly higher).",
+            "note": "12,493,111 downloads in the trailing 30 days (docling 12,493,111), read 2026-08-12. Bands at level 5 (>10M) on the software and model adoption scale. Moved off the stars fallback: a real download signal exists, and docs/guides/adoption.md says to re-band when one does. The package is the first-party package; docling-core adds more again. Recorded level was 3.",
+            "reach": ">10M",
+            "last_verified": "2026-08-12",
             "sources": [
               {
-                "url": "https://github.com/docling-project/docling",
-                "shows": "~61.8k stars",
-                "accessed": "2026-06-18"
+                "url": "https://pypistats.org/api/packages/docling/recent",
+                "shows": "12,493,111 downloads in the trailing 30 days for docling",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "c81ce393cb034f9bc8db666fdff640be75b337519a7dee035dee389236c80bc9"
               }
             ]
           },
@@ -29306,11 +29606,11 @@
               }
             ]
           },
-          "maturity": 3.8,
-          "mature": false,
+          "maturity": 5.0,
+          "mature": true,
           "freshness": {
-            "date": "2026-07-30",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "MIT; originated at IBM Research, inducted into the Linux Foundation AI & Data Foundation (Docling Project) on 2025-04-29 under community governance. ~62k stars (exceptionally high)."
         },
@@ -29337,15 +29637,19 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 3,
-            "signal_type": "stars_fallback",
+            "level": 5,
+            "signal_type": "usage_volume",
             "confidence": "medium",
-            "note": "~155k stars; PyPI monthly volume not retrievable - stars_fallback (capped at 3; true usage higher given the Microsoft-backed package).",
+            "note": "12,755,994 downloads in the trailing 30 days (markitdown 12,755,994), read 2026-08-12. Bands at level 5 (>10M) on the software and model adoption scale. Moved off the stars fallback: a real download signal exists, and docs/guides/adoption.md says to re-band when one does. The package is the PyPI package, not the unrelated npm package of the same name. Recorded level was 3.",
+            "reach": ">10M",
+            "last_verified": "2026-08-12",
             "sources": [
               {
-                "url": "https://github.com/microsoft/markitdown",
-                "shows": "~155k stars, MIT, file->Markdown converter",
-                "accessed": "2026-06-18"
+                "url": "https://pypistats.org/api/packages/markitdown/recent",
+                "shows": "12,755,994 downloads in the trailing 30 days for markitdown",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "025a87c7a3124469fe5107a8e72afee552a23c481035a3fe810186d13d94ff98"
               }
             ]
           },
@@ -29363,11 +29667,11 @@
               }
             ]
           },
-          "maturity": 3.4,
-          "mature": false,
+          "maturity": 4.6,
+          "mature": true,
           "freshness": {
-            "date": "2026-07-30",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "MIT (PyPI license field is null but the repo LICENSE and pyproject declare MIT). ~155k stars. Lighter than Docling on layout/table depth but broader format coverage."
         },
