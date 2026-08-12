@@ -16,14 +16,60 @@ openness:
     core-gated:
       value: gated
   confidence: medium
-  note: Apache-2.0 framework that is fully self-hostable, with a Hub of validators and a commercial tier
-    on top; classed open_core alongside other OSS-core-plus-commercial tools.
+  note: 'INCONCLUSIVE, reported rather than resolved. Read 2026-08-12 and the bare `gated` is not supported,
+    but neither is the 4 it produces. On core-gated itself nothing is withheld from the published source:
+    the 661-entry tree of guardrails-ai/guardrails carries one Apache-2.0 LICENSE and no ee/ or enterprise
+    directory, the FastAPI server ships as its own public repo with a Dockerfile and compose file, and the
+    private validator registry that used to need a token is gone - 0.11.0 moved every Guardrails-AI validator
+    from pypi.guardrailsai.com to public PyPI, the vendor''s own migration guide tabulating "Private registry
+    pypi.guardrailsai.com (token required)" against "Public PyPI (no token)". The commercial product beside
+    it is Snowglobe, a separate simulation product. That reads ungated and would compute 5. What stops it
+    is the license component, not this one: guardrails-ai/guardrails-api, the server the main package''s
+    `guardrails start` launches, is NOT Apache-2.0 - its LICENSE is adopted from the Elastic License and
+    forbids providing the software to third parties as a hosted or managed service. That is the competition_restricted
+    tier, which fires the rung above and computes 2/source_available. So the read supports 5 or 2, not the
+    recorded 4, exactly the agentops shape. core-gated was left as recorded rather than transcribed, because
+    recording ungated against an unexamined Apache-2.0 would manufacture a 5 on the favourable half of a
+    multi-SKU license question. A human settles which SKU this slug is scored on first.'
   raw: license:Apache-2.0(OSI) for the framework;source:public;hub:Guardrails Hub validator registry;commercial:hosted/enterprise
     tier;core-gated:gated
+  last_verified: '2026-08-12'
   sources:
   - url: https://github.com/guardrails-ai/guardrails
     shows: Apache-2.0 framework; ~7.1k stars; Guardrails Hub validators; commercial offerings
     accessed: '2026-06-29'
+  - url: https://api.github.com/repos/guardrails-ai/guardrails/git/trees/main?recursive=1
+    shows: Full untruncated recursive tree, 661 entries. One license path, the root LICENSE. No ee/, enterprise/,
+      commercial/ or proprietary/ directory, and no license-key module. server_ci/ carries a Dockerfile,
+      fastapi-entry.sh and compose scripts for running the server yourself.
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 25bc6170f996e51ebca3d6ddc356cbf560bf89bb60a125826c73986349a418fa
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/guardrails-ai/guardrails/main/docs/migration_guides/hub-to-public-pypi.md
+    shows: The token-gated validator registry is gone. "As of Guardrails 0.11.0, Guardrails-AI-owned validators
+      have moved from the private Guardrails registry (pypi.guardrailsai.com, installed via guardrails hub
+      install) to public PyPI." The change table reads "Private registry pypi.guardrailsai.com (token required)"
+      -> "Public PyPI (no token)".
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: c335d818b052fd514021fa010d80c4524a4d0f94e8d4fcfeb325e91c67517133
+    establishes:
+    - core-gated
+  - url: https://raw.githubusercontent.com/guardrails-ai/guardrails-api/main/LICENSE
+    shows: The server package is not Apache-2.0. "THE FOLLOWING LICENSE HAS BEEN ADOPTED FROM THE ELSSTIC
+      LICENSE" [sic], with the limitation "You may not provide the software to third parties as a hosted
+      or managed service, where the service provides users with access to any substantial set of the features
+      or functionality of the software." The repo describes itself as the "FastAPI server for hosting Guardrails
+      AI in your own environment" and its 149-entry tree contains no license-key module, so the source is
+      published in full - the restriction is on redistribution as a service, not on what ships.
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 552b98bc84235d75a10f486ce1b071777dd6d0e2ce12457bc7ae2f82f0a7f23b
+    establishes:
+    - license
 adoption:
   level: 3
   reach: 10K-100K

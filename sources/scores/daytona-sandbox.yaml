@@ -14,19 +14,66 @@ openness:
       raw: app.daytona.io hosted cloud + hybrid (proprietary)
     core-gated:
       value: gated
+      detail: core development moved to a private codebase in June 2026 - daytonaio/daytona now holds only
+        a README and logos, and the daytona org publishes SDKs and clients but no server or runtime
   confidence: high
-  note: >-
-    AGPL-3.0 (OSI-approved copyleft) core plus a proprietary managed cloud => open_core. Scored
-    4 alongside the Apache-licensed open-core peers (E2B, Ray, Coder): OSI copyleft is not
-    treated as less open on this map, since a copyleft obligation binds redistributors rather
-    than capping who may use the software or at what scale. Corrected from 3, which had
-    penalized copyleft for 'constraining commercial reuse' - a rationale the other 22 copyleft
-    software products do not apply.
-  raw: license:AGPL-3.0(OSI, copyleft);source:public;managed-tier:app.daytona.io hosted cloud + hybrid (proprietary);core-gated:gated
+  note: 'CONFLICT, reported rather than resolved. The recorded AGPL-3.0 / source:public / gated combination
+    describes Daytona as it stood at v0.190.0, not as it ships now. The upstream repo carries a notice that
+    "as of June 2026, Daytona’s core development has moved to a private codebase", and its default branch
+    is down to a README and two logo files with no source and no LICENSE. The daytona org publishes SDKs,
+    clients and legacy provider plugins only - no server or sandbox runtime. core-gated is therefore `gated`
+    on the strongest possible reading: the whole current product is withheld from the published source,
+    which is a frozen abandoned snapshot. That also puts source:public in doubt - on a current-release reading
+    this is closer to source:partial, which would score 2/source_available rather than 4/open_core - but
+    changing source is outside this sweep’s remit, so it is left as recorded and flagged for a human.'
+  raw: license:AGPL-3.0(OSI, copyleft);source:public;managed-tier:app.daytona.io hosted cloud + hybrid (proprietary);core-gated:gated(core
+    development moved to a private codebase in June 2026 - daytonaio/daytona now holds only a README and
+    logos, and the daytona org publishes SDKs and clients but no server or runtime)
+  last_verified: '2026-08-12'
   sources:
   - url: https://github.com/daytonaio/daytona
     shows: AGPL-3.0 license; secure runtime for AI-generated code; managed cloud at app.daytona.io
     accessed: '2026-06-04'
+  - url: https://api.github.com/repos/daytonaio/daytona/git/trees/main?recursive=1
+    shows: 'Full untruncated recursive tree of the default branch: 5 entries in total - README.md, assets/,
+      assets/images/ and two logo PNGs. No source, no LICENSE file. The repo is not archived and was last
+      pushed 2026-07-24.'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: c74e6d23cbdca0c1ee85dc1095518f3af94c7186491a2523a94a6445f9aea95e
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/daytonaio/daytona/main/README.md
+    shows: '"This repository is no longer maintained. As of June 2026, Daytona’s core development has moved
+      to a private codebase. This repository will receive no further updates, fixes, or releases. It remains
+      public and free to use, fork, and build on under the LICENSE (linked at tag v0.190.0), as is and without
+      support or warranty."'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 7e1a14b044fe1bb8f8af50d6de6d8b306d97507a278809184af58af4b1fb8054
+    establishes:
+    - source
+    - core-gated
+  - url: https://api.github.com/orgs/daytona/repos?per_page=100
+    shows: The org the README redirects to publishes SDKs and clients (daytona/sdk, daytona/clients - "Official
+      SDKs, API clients, and CLI/MCP tools"), legacy provider plugins and samples. No server, control plane
+      or sandbox runtime repository.
+    accessed: '2026-08-12'
+    http_status: 200
+    establishes:
+    - core-gated
+    content_sha256: f048643dfaeac3f268725d5483063f2a0a09dea62d31b7cabed9e60438f9a88d
+  - url: https://raw.githubusercontent.com/daytonaio/daytona/v0.190.0/LICENSE
+    shows: The GNU Affero General Public License v3, verbatim. This is the tag the unmaintained README points
+      at, and it is the only place the AGPL-3.0 grant now lives - the default branch carries no LICENSE
+      file at all, and GitHub's repo metadata reports a null license for daytonaio/daytona as a result.
+      So the recorded AGPL-3.0 is a fact about v0.190.0, not about anything Daytona currently ships.
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 4df3c306dddaaf4baffdff5ca820cc679ac8cd6dc263c6a74517783e42fa7a3b
+    establishes:
+    - license
 adoption:
   level: 4
   reach: 1M-10M

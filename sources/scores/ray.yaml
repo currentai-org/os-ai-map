@@ -1,7 +1,7 @@
 product: ray
 openness:
-  score: 4
-  class: open_core
+  score: 5
+  class: open_source
   components:
     license:
       value: Apache-2.0
@@ -12,22 +12,63 @@ openness:
     commercial-tier:
       value: Anyscale managed SaaS on top
     core-gated:
-      value: gated
+      value: ungated
+      detail: a full 11,885-entry tree carries one Apache-2.0 LICENSE and no enterprise/ or ee/ path, no
+        license-key machinery, and Anyscale sells managed infrastructure rather than a Ray feature the open
+        project lacks
   confidence: high
-  note: license:Apache-2.0(OSI);source:public(all Ray libraries OSS);commercial-tier:Anyscale managed
-    SaaS on top
+  note: Apache-2.0 throughout with a managed platform sold beside it. Corrected 2026-08-12 from a bare `gated`
+    to `ungated` on a read of the repo and Anyscale’s own page. The 11,885-entry untruncated tree of ray-project/ray@master
+    carries a single governing Apache-2.0 LICENSE plus three vendored third-party ones, and no enterprise/,
+    ee/, commercial/ or proprietary/ path; the only Anyscale-named files are CI image definitions and release-test
+    harnesses, not a closed package the open tree depends on. Anyscale’s Ray page sells infrastructure management
+    - "Ray runs anywhere. Or choose Anyscale, and leave the infrastructure to us" - and claims no Ray capability
+    the open project withholds. That is the langchain/otari shape, so the published source is the whole
+    product and the ladder scores 5. Ray is also governed by the PyTorch Foundation rather than by Anyscale,
+    which is why the managed platform can be moved out of the openness question entirely.
   raw: license:Apache-2.0(OSI);source:public(all Ray libraries OSS);commercial-tier:Anyscale managed SaaS
-    on top;core-gated:gated
+    on top;core-gated:ungated(a full 11,885-entry tree carries one Apache-2.0 LICENSE and no enterprise/
+    or ee/ path, no license-key machinery, and Anyscale sells managed infrastructure rather than a Ray feature
+    the open project lacks)
+  last_verified: '2026-08-12'
   sources:
   - url: https://github.com/ray-project/ray
     shows: flagship phase-C verification source
     accessed: '2026-06-04'
   - url: https://www.anyscale.com/product/open-source/ray
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
+    shows: 'Anyscale positions its offering as managed infrastructure, not a fuller Ray: "Scale on any cloud
+      or private data centers, bare metal, Kubernetes cluster - Ray runs anywhere. Or choose Anyscale, and
+      leave the infrastructure to us." The page makes no claim that open-source Ray lacks a feature the
+      paid platform adds.'
+    accessed: '2026-08-12'
+    http_status: 200
+    establishes:
+    - core-gated
+    content_sha256: f128508e406bc5e9b53c90fa4a7fdda0d5b84d33bfdc1d796efbdd639bd9a143
   - url: https://www.anyscale.com/blog/ray-by-anyscale-joins-pytorch-foundation
     shows: flagship phase-C verification source
     accessed: '2026-06-04'
+  - url: https://api.github.com/repos/ray-project/ray/git/trees/master?recursive=1
+    shows: Full untruncated recursive tree of the default branch master, 11,885 entries. The only license
+      paths are the root LICENSE, python/LICENSE.txt and three vendored third-party licenses (dacite, pathspec,
+      speedscope). No enterprise/, ee/, commercial/ or proprietary/ path. The only anyscale-named paths
+      are CI and release-test tooling (ci/docker/ray-anyscale-*.wanda.yaml, release/ray_release/anyscale_job_runner.py);
+      no closed package the open tree depends on.
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 2aecd5502b10a32e08b4859fa8d9e03d40cebb58e9bd929226e47b06c9b16ce5
+    establishes:
+    - source
+    - core-gated
+  - url: https://api.github.com/repos/ray-project/ray
+    shows: 'Repo metadata: language Python, license spdx_id Apache-2.0, 43,497 stars, default branch master,
+      size 779,592 KB.'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 0dcd4c4730bccec7add6b3a1dd250a06e31ac8fbbab2230cac1ec9df6a4e0edc
+    establishes:
+    - license
+    - source
 adoption:
   level: 5
   reach: '>10M'

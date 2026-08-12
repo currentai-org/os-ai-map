@@ -1,7 +1,7 @@
 product: crewai
 openness:
-  score: 4
-  class: open_core
+  score: 5
+  class: open_source
   components:
     license:
       value: MIT
@@ -9,12 +9,26 @@ openness:
     source:
       value: public
     core-gated:
-      value: gated
+      value: ungated
+      detail: a full 29,439-entry tree carries one MIT LICENSE and no ee/ or separately licensed directory;
+        the enterprise-named paths are docs images and an MIT CLI client that points at an AMP URL, and
+        the paid product is the AMP platform sold beside the framework
     free_text:
     - CrewAI-Enterprise/AMP-managed-platform-tier
   confidence: high
-  note: license:MIT(framework);source:public;CrewAI-Enterprise/AMP-managed-platform-tier
-  raw: license:MIT(framework);source:public;CrewAI-Enterprise/AMP-managed-platform-tier;core-gated:gated
+  note: 'MIT framework with the CrewAI AMP platform sold beside it. Corrected 2026-08-12 from a bare `gated`
+    to `ungated` on a read of the repo and the vendor pricing page. The 29,439-entry untruncated tree of
+    crewAIInc/crewAI@main carries a single MIT LICENSE and no second license file anywhere; the only enterprise-named
+    source, lib/cli/src/crewai_cli/enterprise/main.py, is an MIT CLI client that fetches OAuth2 parameters
+    from whatever AMP URL you give it, unlocking nothing. The pricing page tiers the AMP platform - visual
+    editor and executions free, SSO/RBAC/PII-redaction/deployment options paid - and makes no claim about
+    a capability the Python framework lacks. That is the langchain shape: the paid thing is a platform around
+    a complete open core, so the ladder scores 5.'
+  raw: license:MIT(framework);source:public;CrewAI-Enterprise/AMP-managed-platform-tier;core-gated:ungated(a
+    full 29,439-entry tree carries one MIT LICENSE and no ee/ or separately licensed directory; the enterprise-named
+    paths are docs images and an MIT CLI client that points at an AMP URL, and the paid product is the AMP
+    platform sold beside the framework)
+  last_verified: '2026-08-12'
   sources:
   - url: https://github.com/crewAIInc/crewAI/blob/main/LICENSE
     shows: flagship phase-C verification source
@@ -25,6 +39,44 @@ openness:
   - url: https://crewai.com/open-source
     shows: flagship phase-C verification source
     accessed: '2026-06-04'
+  - url: https://api.github.com/repos/crewAIInc/crewAI/git/trees/main?recursive=1
+    shows: Full untruncated recursive tree, 29,439 entries. The only license path is the root LICENSE. The
+      enterprise-named paths are docs/images/enterprise/*.png, lib/cli/src/crewai_cli/enterprise/ and its
+      tests - no separately licensed directory, no license-key module, no closed package the framework imports.
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: d0691ce47eb94259d3fb1c8612e106084567fcb61baab4b8f8e15fcbe89ad4e7
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/crewAIInc/crewAI/main/lib/cli/src/crewai_cli/enterprise/main.py
+    shows: The enterprise-named module is a 125-line CLI client, MIT like the rest of the repo. EnterpriseConfigureCommand.configure(enterprise_url)
+      does an HTTP GET of {enterprise_url}/auth/parameters and writes the returned OAuth2 settings locally.
+      It unlocks nothing and checks no license key.
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 1aa0884e17e7743c1bd59a209a1c0bb7bf8b731054544b3de0f68e263fbaada9
+    establishes:
+    - core-gated
+  - url: https://www.crewai.com/pricing
+    shows: Tiers are Basic (free) and Enterprise (custom). What Enterprise adds is platform and governance
+      - SSO, RBAC, workload identity, PII redaction, policies, deployment to "CrewAI cloud, your own VPC,
+      or your own infrastructure", onboarding and support - against a Basic tier described by visual editor,
+      AI copilot, GitHub integration and 50 monthly executions. The page describes a "unified build and
+      runtime platform" and nowhere claims a capability missing from the open-source Python framework.
+    accessed: '2026-08-12'
+    http_status: 200
+    establishes:
+    - core-gated
+    content_sha256: b12952e2b24c6ef1f1edd337c5f6734b8550c24818a9607b0e235c248cdd5946
+  - url: https://api.github.com/repos/crewAIInc/crewAI
+    shows: 'Repo metadata: language Python, license spdx_id MIT, 56,955 stars, default branch main.'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 113f333e1c053035a0d80ff08353001838a2bde9d83c1b53c46b3e5f9d82bbaf
+    establishes:
+    - license
+    - source
 adoption:
   level: 4
   reach: 1M-10M

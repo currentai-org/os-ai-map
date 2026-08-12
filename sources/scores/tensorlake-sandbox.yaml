@@ -13,12 +13,25 @@ openness:
       value: Tensorlake hosted cloud + proprietary Lattice scheduler
     core-gated:
       value: gated
+      detail: the MicroVM runtime and the Lattice cluster scheduler that creates sandboxes exist in no public
+        repo - the Apache-2.0 tree publishes the SDK, the tl CLI and client crates, which authenticate to
+        cloud.tensorlake.ai with an API key
   confidence: medium
-  note: Apache-2.0 runtime and SDK with a genuine bring-your-own-cloud self-host path, plus a proprietary
-    managed scheduler, so open-core on par with the permissive-Apache peers (E2B). The open part is permissive
-    and self-hostable; the managed scheduler is the closed value-add.
+  note: 'Apache-2.0 SDK and CLI with a proprietary managed runtime. Confirmed `gated` 2026-08-12 on a named
+    mechanism, the firecrawl/composio shape: not a carve-out inside the repo but a component that is in
+    no repo at all. The 2,350-entry tree is entirely client side - the Python SDK around cloud_client.py,
+    the tl CLI, and nine crates that are all clients, codecs or bindings - and the README attributes sub-second
+    creation to "Lattice, a dynamic cluster scheduler", along with snapshots, cloning, auto suspend/resume
+    and live migration, none of which appear in any of the org’s 58 public repos. Onboarding is an API key
+    from cloud.tensorlake.ai. Secondary finding, NOT acted on: the recorded source detail "runtime+SDK,
+    BYOC self-host in your own AWS/GCP/Azure" is not supported - the runtime is not published, and BYOC
+    means the vendor’s closed control plane runs in your account rather than open self-hosting, so `source`
+    may belong at `partial`, which would score 2 rather than 4. Left as recorded and flagged.'
   raw: license:Apache-2.0(OSI);source:public(runtime+SDK, BYOC self-host in your own AWS/GCP/Azure);managed-tier:Tensorlake
-    hosted cloud + proprietary Lattice scheduler;core-gated:gated
+    hosted cloud + proprietary Lattice scheduler;core-gated:gated(the MicroVM runtime and the Lattice cluster
+    scheduler that creates sandboxes exist in no public repo - the Apache-2.0 tree publishes the SDK, the
+    tl CLI and client crates, which authenticate to cloud.tensorlake.ai with an API key)
+  last_verified: '2026-08-12'
   sources:
   - url: https://github.com/tensorlakeai/tensorlake
     shows: Apache-2.0 license; sandbox runtime + SDK (Python + Rust); BYOC self-host
@@ -26,6 +39,47 @@ openness:
   - url: https://www.tensorlake.ai/
     shows: sandbox-native cloud for AI agents; run sandboxes in your own cloud account
     accessed: '2026-07-09'
+  - url: https://api.github.com/repos/tensorlakeai/tensorlake/git/trees/main?recursive=1
+    shows: 'Full untruncated recursive tree, 2,350 entries, one governing LICENSE plus five vendored third-party
+      ones. Everything in it is client side: src/tensorlake/ is the SDK around cloud_client.py, and all
+      nine crates/ are cli, cloud-sdk, function-agent-core, gsvc-codec, gsvc-fs-client, gsvc-mount and the
+      node/py bindings. platform/ holds only macos/tlfs, a FUSE mount helper. No scheduler, allocator, VMM
+      or control plane, and no ee/ or enterprise/ path.'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: a4de4f39e5c21d00d8e819401ad807a870cade478ee78f037b7b16713f97334c
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/tensorlakeai/tensorlake/main/README.md
+    shows: 'The capabilities the product is sold on are server side and named as such: "Sandboxes created
+      in under a second via Lattice, a dynamic cluster scheduler", plus snapshots and cloning, auto suspend/resume,
+      live migration between machines, and "up to 5 million sandboxes in a single project". Getting started
+      is "Sign up at cloud.tensorlake.ai and get your API key", export TENSORLAKE_API_KEY, tl login. The
+      repo documents no way to run any of it yourself.'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: bfeab32d22bca998ed41593ac902ac5fa9300488849e56fa8650067b1d558ce2
+    establishes:
+    - core-gated
+  - url: https://api.github.com/orgs/tensorlakeai/repos?per_page=100
+    shows: All 58 public repos in the org. Beyond the SDK they are skills, cookbooks, examples, benchmarks,
+      integration plugins and forks of third-party projects (cloud-hypervisor, vllm, arrow-rs, moka, fuser).
+      The former open compute engine survives only as archived clients - indexify-typescript-client and
+      indexify-extractor-template, both archived. Nothing implements Lattice or the sandbox runtime.
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 316dcac5a6696a620a11e300e6f8670de4f2a6baf4f94f6c6d870ff140cf885e
+    establishes:
+    - core-gated
+  - url: https://api.github.com/repos/tensorlakeai/tensorlake
+    shows: 'Repo metadata: language Python, license spdx_id Apache-2.0, 986 stars, default branch main.'
+    accessed: '2026-08-12'
+    http_status: 200
+    content_sha256: 0754ae4e1a72d17195b997e9613f471b62020c995adbd212e34cec7ae352a7ca
+    establishes:
+    - license
+    - source
 adoption:
   level: 2
   reach: 10K-100K
