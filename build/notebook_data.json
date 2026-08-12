@@ -23508,12 +23508,55 @@
             "class": "open_core",
             "components": "license:MIT(OSI, SDK);source:public(SDK + self-hostable app dir);commercial:app.agentops.ai-SaaS-dashboard-is-the-primary-product",
             "confidence": "medium",
-            "note": "SDK is MIT/OSI and self-host is possible, but the hosted dashboard is the product surface, closer to open_core than pure open_source. Scored 4.",
+            "note": "MIT SDK plus a self-hostable app, and the read on 2026-08-12 found the recorded license does not describe the product. Left DEFERRED rather than closed, because the evidence does not reproduce the 4. What the read established, in order. (1) Nothing is withheld from the published source: app/ ships the whole platform - api, dashboard, clickhouse, opentelemetry-collector, supabase, deploy, landing, compose.yaml - and app/README.md walks through bringing it up on docker compose with a local ClickHouse. There is no ee/ or enterprise directory, no license-key check and no premium flag anywhere in the tree, so on the core_gated question alone this is `ungated`, which against the recorded MIT would compute 5/open_source, not 4. (2) But the app is not MIT. app/LICENSE is the Elastic License 2.0, added in the \"AgentOps OSS release\" (#1190) on 2025-08-09, and it forbids providing the software \"to third parties as a hosted or managed service, where the service provides users with access to any substantial set of the features or functionality of the software\". That is this ladder's competition_restricted tier stated directly, and with source public it lands on the 2/source_available rung. The root MIT LICENSE covers the agentops SDK. So the recorded `license: MIT(OSI, SDK)` is accurate about the SDK and silent about the observability app, which is what the map scores under this slug. The vendor's own README makes the same slip, saying \"The AgentOps app is open source under the MIT license\" while app/LICENSE says Elastic 2.0; the LICENSE file governs. Neither reading reaches 4 - `ungated` on the recorded MIT gives 5, and the app's actual license gives 2 - so the components are left untouched and this needs a human to decide which SKU the slug is scored on.",
+            "last_verified": "2026-08-12",
             "sources": [
               {
                 "url": "https://github.com/AgentOps-AI/agentops",
                 "shows": "MIT-licensed SDK; complementary SaaS dashboard at app.agentops.ai; self-host option",
                 "accessed": "2026-06-04"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/AgentOps-AI/agentops/main/app/LICENSE",
+                "shows": "The license on the AgentOps app, which is not the license this record carries. The file is the Elastic License 2.0 verbatim. Its Limitations: \"You may not provide the software to third parties as a hosted or managed service, where the service provides users with access to any substantial set of the features or functionality of the software\", and \"You may not move, change, disable, or circumvent the license key functionality in the software, and you may not remove or obscure any functionality in the software that is protected by the license key.\" Elastic-License-2.0 is declared in software.yaml's competition_restricted examples. The only commit touching this path is \"AgentOps OSS release (#1190)\", 2025-08-09, so it is the license the app was published under rather than a later change.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "a8f8f19b2ff2d9ebbc8eb8fb4c490399c6acbe027d81cfda7f2aec109fb983d0",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/AgentOps-AI/agentops/main/LICENSE",
+                "shows": "The root LICENSE, which is plain MIT with no carve-out clause of any kind - unlike langfuse, agenta or litellm, it does not name a directory it excludes. It therefore governs the repository root, where the agentops Python SDK lives, and says nothing about app/, which carries its own LICENSE. GitHub's license endpoint reports MIT for the repo on the strength of this file.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "cd65bda1266925500c05493e89638258193b73b213617d81514f9f7979a32985",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/AgentOps-AI/agentops/contents/app",
+                "shows": "The app directory, listed to test whether anything is withheld. It holds LICENSE, README.md, SETUP_GUIDE.md, api, dashboard, clickhouse, opentelemetry-collector, deploy, e2e, graphana, landing, supabase, scripts and compose.yaml. There is no ee/, no enterprise/ and no second license below it. The published tree is the running platform, so on the core_gated question nothing is held back.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "023d3c45814e0b6066fc58537cf4412036621952d27b06c610e116a8e1ab39c5",
+                "establishes": [
+                  "core-gated",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/AgentOps-AI/agentops/main/README.md",
+                "shows": "The vendor's own claims, recorded including the one the LICENSE contradicts. Under \"Open Source\": \"The AgentOps app is open source under the MIT license. Explore the code in our app directory.\" Under \"Self-Hosting\": \"Looking to run the full AgentOps app (Dashboard + API backend) on your machine? Follow the setup guide in app/README.md\", and the feature table lists \"Self-Host: Want to run AgentOps on your own cloud? You're covered\". The self-host claim checks out against app/; the MIT claim does not check out against app/LICENSE.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "6cf775117207bfda15954e839da8a8cd64fa7f95325db682c2512ffad1d90c41",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
               }
             ],
             "bucket": "open"
@@ -23554,8 +23597,8 @@
           "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-06-24",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "agentops v0.4.21 (last release 29 Aug 2025, PyPI), no 2026 release at scoring time (>9 months stale). SDK MIT-licensed; primary product is the app.agentops.ai SaaS dashboard."
         },
@@ -23569,14 +23612,47 @@
           "openness": {
             "score": 4,
             "class": "open_core",
-            "components": "license:MIT(OSI, core);source:public;self-hostable;commercial:Agenta-Cloud-managed-tier(free tier available);core-gated:gated",
+            "components": "license:MIT(OSI, core);source:public;commercial:Agenta-Cloud-managed-tier(free tier available);core-gated:gated(the root LICENSE carves every ee/ directory out of MIT and under ee/LICENSE, the Agenta Enterprise License, which permits production use only with a valid Agenta Enterprise License; api/ee, web/ee and services/ee each ship source, docker and tests beside the MIT api/oss half);self-hostable",
             "confidence": "high",
-            "note": "MIT/OSI core, self-hostable via GitHub, with a managed cloud tier, open_core. (Borderline open_source; scored open_core for the hosted commercial tier.)",
+            "note": "MIT core with a commercially licensed enterprise half in the same repository, self-hostable either way. `core-gated: gated` verified 2026-08-12 by a direct read, and it does NOT rest on Agenta Cloud existing. The root LICENSE splits the repo: \"All content that resides under any 'ee/' directory of this repository, if such directories exist, are licensed under the license defined in 'ee/LICENSE'\", everything else MIT Expat. ee/LICENSE is the Agenta Enterprise License - the software \"may only be used in production, if you (and any entity that you represent) have agreed to, and are in compliance with, the Agenta Subscription Terms of Service ... and otherwise have a valid Agenta Enterprise License\"; copying and modifying for development and testing is allowed without a subscription, and \"it is forbidden to copy, merge, publish, distribute, sublicense, and/or sell the Software\". The carve-out is real code, not a stub: the api tree is split into api/oss and api/ee, and web/ee and services/ee exist alongside. This also settles how the two recorded clauses relate. `self-hostable` and `core-gated: gated` were never in tension: the MIT oss half is genuinely self-hostable, and the ee half is the part you may not run in production without paying. Both are true of the same repository.",
+            "last_verified": "2026-08-12",
             "sources": [
               {
                 "url": "https://github.com/Agenta-AI/agenta",
                 "shows": "MIT license; self-host + Agenta Cloud managed tier",
                 "accessed": "2026-06-04"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/Agenta-AI/agenta/main/LICENSE",
+                "shows": "Root LICENSE. \"Portions of this software are licensed as follows: - All content that resides under any 'ee/' directory of this repository, if such directories exist, are licensed under the license defined in 'ee/LICENSE'. ... - Content outside of the above mentioned directories or restrictions above is available under the 'MIT Expat' license\", followed by the full MIT text. The tier-setting license is MIT and the carve-out is named in the license itself. GitHub's license endpoint returns NOASSERTION for this repo, which is GitHub declining to classify the split file.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "efd1323753fcbf4d4fc74c82d5d469263b0641dbee4a65b4690ccb0c3d12b68b",
+                "establishes": [
+                  "license",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/Agenta-AI/agenta/main/ee/LICENSE",
+                "shows": "The Agenta Enterprise License. The software \"may only be used in production, if you (and any entity that you represent) have agreed to, and are in compliance with, the Agenta Subscription Terms of Service, available at https://agenta.ai/terms ... and otherwise have a valid Agenta Enterprise License.\" You may copy and modify it \"for development and testing purposes, without requiring a subscription\", and \"it is forbidden to copy, merge, publish, distribute, sublicense, and/or sell the Software\". Production use behind a paid license is functionality withheld from the MIT source.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "c84b4eeea0dc5b1ab240a53e497d1c18d7edbb3114b8772728152ea6ac81f722",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/Agenta-AI/agenta/contents/api/ee",
+                "shows": "The carve-out is shipped code rather than a placeholder. api/ee holds LICENSE, __init__.py, databases, docker, src and tests, mirroring the MIT api/oss tree beside it (__init__.py, databases, docker, src, tests). web/ee and services/ee exist on the same pattern, web/ee carrying its own next.config.ts, package.json, public and src. The top-level ee/ directory contains only the LICENSE the root file points at.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "34706be8f29e43c940db0a60df0335a26ff5fd071a463e895a31051461521f42",
+                "establishes": [
+                  "core-gated",
+                  "source"
+                ]
               }
             ],
             "bucket": "open"
@@ -23619,8 +23695,8 @@
           "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-08",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "agenta v0.101.1 (released 4 Jun 2026, GitHub); confirmed live June 2026. LLMOps platform; self-hostable OSS + Agenta Cloud managed tier."
         },
@@ -23755,9 +23831,10 @@
           "openness": {
             "score": 4,
             "class": "open_core",
-            "components": "license:app=AGPL-3.0(OSI, copyleft);SDKs=Apache-2.0(OSI);source:public;OTel-built;hosted Langtrace Cloud tier exists",
+            "components": "license:app=AGPL-3.0(OSI, copyleft);source:public;SDKs=Apache-2.0(OSI);OTel-built;hosted Langtrace Cloud tier exists",
             "confidence": "high",
-            "note": "App is AGPL-3.0 (OSI-approved but strong copyleft, which deters proprietary embedding) and SDKs Apache-2.0; a managed cloud tier exists. Scored open_core/4 rather than 5 given the AGPL copyleft + hosted commercial offering.",
+            "note": "AGPL-3.0 application, Apache-2.0 SDKs, no enterprise carve-out anywhere, and a cloud tier the vendor says it does not charge for. Left DEFERRED after the 2026-08-12 read, for two reasons that compound. (1) The blocker is not the one the deferral records. `check_rubric` abstains on this product with `blocked_on_tier`, because the recorded license value `app=AGPL-3.0` is a scoped spelling that matches no entry in software.yaml's license_tier examples and no compound part, so no tier resolves and no rung that tests one can fire. Recording core-gated changes nothing while that holds. Both licenses involved are already declared - AGPL-3.0 and Apache-2.0 are both in the osi examples - so this is a transcription problem, not a missing rule. (2) On the evidence, this is `ungated`. The whole application is in the repository under AGPL-3.0 - app, components, lib, prisma, proto, Dockerfile, docker-compose.yaml - with no ee/, no enterprise directory, no second license and no license-key check. The README documents self hosting as a first-class path, and its own FAQ says of the hosted tier \"Currently, we are not charging anything for Langtrace cloud and we are primarily looking for feedback so we can continue to improve the project.\" So there is no paid tier for anything to be withheld for. That combination - osi tier, source public, core-gated ungated - computes 5/open_source against a recorded 4, so the components are left untouched. The recorded 4 rests on two rationales the map has since settled against it: the note scores it down for \"the AGPL copyleft\", which issue #125 rejected (AGPL sits beside Apache on the osi rung), and for a \"hosted commercial offering\", which the core_gated rule rejects and which in this case is not even charged for. A human should settle the 4 and fix the license spelling in one move.",
+            "last_verified": "2026-08-12",
             "sources": [
               {
                 "url": "https://github.com/Scale3-Labs/langtrace",
@@ -23768,6 +23845,29 @@
                 "url": "https://github.com/Scale3-Labs/langtrace/releases",
                 "shows": "app v4.0.11 release 17 Apr 2026 (active)",
                 "accessed": "2026-06-04"
+              },
+              {
+                "url": "https://api.github.com/repos/Scale3-Labs/langtrace/contents/",
+                "shows": "Repository root, listed to test for a carve-out. Dockerfile, LICENSE, README.md, SECURITY.md, app, components, lib, prisma, proto, public, scripts, middleware.ts, docker-compose.yaml and the Next.js config files. There is no ee/, no enterprise/, no second LICENSE below the root, and no license-key module. GitHub's license endpoint returns AGPL-3.0 for the single root LICENSE. The published tree is the whole application and it self-hosts from the docker-compose file in it.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "ef3cfcd706edc387b3db1fe1910e572b6b8f5858b2ad53761dbf3f18a2b77e64",
+                "establishes": [
+                  "source",
+                  "core-gated",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/Scale3-Labs/langtrace/main/README.md",
+                "shows": "The vendor's own statement of the split and of the cloud tier. License section: \"Langtrace application(this repository) is licensed under the AGPL 3.0 License\" and \"Langtrace SDKs are licensed under the Apache 2.0 License.\" The feature list includes \"Self-hosting Option: Deploy on your own infrastructure\", and the FAQ answers \"Can I self host and run Langtrace in my own cloud?\" affirmatively. On price: \"What is the pricing for Langtrace cloud? Currently, we are not charging anything for Langtrace cloud and we are primarily looking for feedback so we can continue to improve the project. We will inform our users when we decide to monetize it.\" A cloud tier that charges nothing cannot be the paid tier a core is withheld for.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "eb4d0b1bcf210ead1c9c4d67efbb620b5af1b8ec651b582c296649155d6be918",
+                "establishes": [
+                  "license",
+                  "core-gated"
+                ]
               }
             ],
             "bucket": "open"
@@ -23803,8 +23903,8 @@
           "maturity": 2.5,
           "mature": false,
           "freshness": {
-            "date": "2026-06-09",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "Langtrace app v4.0.11 (17 Apr 2026); langtrace-python-sdk v3.8.12 (8 Apr 2026). Active and maintained as of June 2026 (initial fetch misread release year; corrected via release pages)."
         },
@@ -23818,14 +23918,47 @@
           "openness": {
             "score": 4,
             "class": "open_core",
-            "components": "license:Apache-2.0(core)+MIT(SDKs);enterprise modules(SCIM,audit-logs,license/billing) under langwatch/ee/ require commercial license for production;source:public;core-gated:gated",
+            "components": "license:Apache-2.0(core)+MIT(SDKs);source:public;core-gated:gated(NOTICE and platform/app/ee/LICENSE.md put platform/app/ee under the LangWatch Enterprise License, covering SSO, SCIM, audit-log reading, governance, webhooks, billing, licensing, managed providers and back-office admin, each of which \"verifies a license at runtime before it can be used\");enterprise modules(SCIM,audit-logs,license/billing) under langwatch/ee/ require commercial license for production",
             "confidence": "high",
-            "note": "Explicit open-core: Apache-2.0 core + MIT SDKs, with an /ee enterprise directory (SCIM, audit logs, billing) commercially licensed, same pattern as the Langfuse O4 anchor.",
+            "note": "Explicit open core: Apache-2.0 platform, MIT SDKs, and an enterprise directory under a commercial license. `core-gated: gated` verified 2026-08-12 by a direct read, and it does NOT rest on LangWatch selling a hosted tier. NOTICE names the split component by component - \"platform/app/ee/ LangWatch Enterprise License (platform/app/ee/LICENSE.md)\" against MIT sdks/typescript, sdks/python and mcp/typescript, with everything else Apache-2.0. That license says the enterprise directory \"implements the enterprise capabilities of LangWatch, including single sign-on, SCIM provisioning, audit logging, gateway webhooks, licensing, billing, and back-office tooling\" and that \"each verifies a license at runtime before it can be used\". A runtime license check on shipped features is the dimension's question answered directly. The recorded path has moved since the last pass - the directory is platform/app/ee/ rather than langwatch/ee/ - and the license now names governance, managed-providers, event-sourcing and webhooks alongside the SCIM, audit-log and billing modules already recorded.",
+            "last_verified": "2026-08-12",
             "sources": [
               {
                 "url": "https://github.com/langwatch/langwatch",
                 "shows": "Apache-2.0 core, MIT SDKs, langwatch/ee/ enterprise modules requiring commercial license",
                 "accessed": "2026-06-04"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/langwatch/langwatch/main/NOTICE",
+                "shows": "The license split, stated by the vendor per directory: \"This product is licensed under the Apache License, Version 2.0 (see LICENSE.md), with the following components separately licensed in their respective directories: platform/app/ee/ LangWatch Enterprise License (platform/app/ee/LICENSE.md); sdks/typescript/ MIT; sdks/python/ MIT; mcp/typescript/ MIT.\" So the tier-setting licenses are Apache-2.0 and MIT, and the gate is one named directory.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "6043f1be6c0235c2cbdd141b57ddae9fbe849851d27acc1acae62c3f7b4d65ab",
+                "establishes": [
+                  "license",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/langwatch/langwatch/main/platform/app/ee/LICENSE.md",
+                "shows": "The LangWatch Enterprise License. \"The Enterprise Software implements the enterprise capabilities of LangWatch, including single sign-on, SCIM provisioning, audit logging, gateway webhooks, licensing, billing, and back-office tooling. The enterprise capabilities are the surfaces the software enables only for licensed deployments; each verifies a license at runtime before it can be used.\" It adds that some keep recording on an unlicensed deployment so no history is lost, audit logging in particular, and that \"Reading, exporting, or otherwise making use of what they record is the enterprise capability, and that is what a license is required for.\"",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "5b46ca052ab5745b2b61296f74c97077034a28365012f9b82f1eab56a5cf73be",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/langwatch/langwatch/contents/platform/app/ee",
+                "shows": "What the enterprise license actually covers, listed rather than characterized: admin, audit-log, billing, event-sourcing, governance, licensing, managed-providers, saas, scim, sso, webhooks, plus LICENSE.md and README.md. The rest of the repository - cmd, pkg, platform, packages, sdks, mcp, charts, infra, services, plugins - carries no second license, so the published Apache-2.0 tree is otherwise the whole product.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "b9c9257050a63157226d9b55b4303f6822091dead93c9468e7927a2f33c2842e",
+                "establishes": [
+                  "core-gated",
+                  "source"
+                ]
               }
             ],
             "bucket": "open"
@@ -23863,8 +23996,8 @@
           "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-08",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "langwatch/langwatch monorepo active June 2026 (skills component v0.6.0, 3 Jun 2026). Confirmed live on GitHub."
         },
@@ -23934,16 +24067,60 @@
           "type": "software",
           "description": "LLM proxy that captures logs, costs, and latency with a one-line integration (swap your API base URL). Clean dashboard for monitoring request volumes, token usage, costs, and error rates. Positioned as the lowest-friction entry point for LLM monitoring, no SDK needed, just a proxy URL change. YC W23. Code is open source (Apache-2.0) but primarily used as a cloud service.",
           "openness": {
-            "score": 4,
-            "class": "open_core",
-            "components": "license:Apache-2.0(OSI);source:public;self-host supported;hosted Helicone Cloud with paid tiers(free=10k req/mo) = commercial SaaS layer atop OSS core;core-gated:gated",
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI);source:public;core-gated:ungated(Apache-2.0 across the whole recursive tree with a single LICENSE, no ee/ or enterprise directory, no license-key or premium flag; the five services self-host from the published docker/docker-compose.yml, and the free-tier quotas are themselves published Apache-2.0 code governing Helicone Cloud billing);self-host supported;hosted Helicone Cloud with paid tiers(free=10k req/mo) = commercial SaaS layer atop OSS core",
             "confidence": "high",
-            "note": "Apache-2.0 OSS core with a hosted commercial cloud (tiered pricing), classic open-core, same shelf as Langfuse/LangWatch (O4).",
+            "note": "Apache-2.0 throughout, self-hostable in full, with a hosted Helicone Cloud sold beside it. Moved from 4/open_core to 5/open_source on 2026-08-12 under the settled rule that a separate hosted product is not a gated core. The bare `gated` this record used to carry rested on the cloud's tiered pricing, which the rubric explicitly says is not evidence for this dimension. The read that replaced it: the recursive git tree of the default branch (untruncated, so the whole repository) contains exactly one LICENSE, the Apache-2.0 root file. There is no ee/ path, no enterprise/ directory, no second license, no license-key module, and no premium or entitlement flag. The README's self-host path is the published docker/docker-compose.yml covering all five services - web, worker, jawn, Supabase, ClickHouse, plus Minio. What does exist is plan gating, and it is published Apache-2.0 code: web/lib/features.ts declares ADDON_FEATURES and NON_FREE_FEATURES, web/lib/freeTierLimits.ts sets the quotas, and web/hooks/useFreeTierLimit.ts reads them. Those enforce Helicone Cloud's billing plan against a hosted account, ship in the source, and are modifiable under Apache-2.0 - the `continue` shape, where the thing that looks like a gate turns out to withhold nothing. One datum points the other way and is recorded rather than smoothed over: the pricing page lists SAML SSO on the Enterprise tier and the repository contains no SAML, SSO, OAuth-IdP, Okta or WorkOS implementation anywhere. That is an absence, not a carve-out or a closed package, and the Enterprise tier's other named item - \"On-prem deployment\" - is support for a deployment the repo already ships for free. So it does not meet any of the three tests the rubric names for a gate. It is the weakest point in this record and a later reader disagreeing on it has the same facts in front of them.",
+            "last_verified": "2026-08-12",
             "sources": [
               {
                 "url": "https://github.com/Helicone/helicone",
                 "shows": "Apache-2.0 license; full source; hosted cloud paid tiers + self-host",
                 "accessed": "2026-06-04"
+              },
+              {
+                "url": "https://api.github.com/repos/Helicone/helicone/git/trees/main?recursive=1",
+                "shows": "The whole repository as one tree, `truncated: false`, so this is every path rather than a root listing. Searched for the gating mechanisms the rubric names: no path contains `/ee/`, none contains `enterprise` outside bifrost marketing pages and static images, there is exactly one `LICENSE` (the Apache-2.0 root file), and nothing matches `premium`, `entitle`, `saml`, `okta`, `workos` or `oauth`. The paths matching `tier` are packages/pricing/tiers.ts, web/lib/freeTierLimits.ts, web/hooks/useFreeTierLimit.ts, web/components/shared/FreeTierLimit*.tsx and two SQL migrations - all published.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "e058d9875ff5bb192edc2fbced0c798ffe483d3e3fdfcfd95d974c88aaf0970a",
+                "establishes": [
+                  "core-gated",
+                  "license",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/Helicone/helicone/main/README.md",
+                "shows": "The vendor's own self-host instructions and architecture. \"Helicone is simple to self-host and update. To get started locally, just use our docker-compose file\", with a clone-and-`./helicone-compose.sh helicone up` recipe and no caveat about a reduced edition. It lists the services that make up the product - Web, Worker, Jawn, Supabase, ClickHouse, Minio - all of which are directories in this repository, and states \"Helicone is licensed under the Apache v2.0 License\". The one paid item named here is a Helm chart: \"For Enterprise workloads, we also have a production-ready Helm chart available. To access, contact us at enterprise@helicone.ai\" - packaging for a deployment the published docker-compose already performs.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "80c63bc9e4335ab1b4174a452b1fe77074c819d58e982279cacaea2e1efd2a6f",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/Helicone/helicone/main/web/lib/features.ts",
+                "shows": "The plan gating, read rather than inferred from its file name. It declares `ADDON_FEATURES = [\"evals\", \"experiments\", \"prompts\"]` and `NON_FREE_FEATURES = [\"sessions\", \"properties\", \"users\", \"datasets\", \"alerts\"]`, with subfeature quotas resolved in web/lib/freeTierLimits.ts (10 prompt runs, 10 playground runs, 3 experiments and so on, each with an upgrade message). Every one of those features is implemented in this repository; the code decides what a Helicone Cloud account on the free plan may do, and it is itself Apache-2.0 and modifiable. Nothing is withheld from the published source.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "4be8ab58511904ced046aed8ab4f89a96571dd89d5cda226573b8d58b2b43139",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://www.helicone.ai/pricing",
+                "shows": "The paid tiers, listed for the record and against the dimension rather than for it. Pro $79/mo adds unlimited seats, alerts and reports, and HQL; Team $799/mo adds five organizations, SOC-2 and HIPAA compliance and a dedicated Slack channel; Enterprise adds a custom MSA, SAML SSO, on-prem deployment and bulk cloud discounts. These price a hosted account and a support relationship. The single item here the published source cannot build is SAML SSO, which is recorded in the note as the one datum arguing the other way.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "dbdc33458d37a020b398d9b95bbebd9a5b1fb3c5ba06fcb82462d90251682f4f",
+                "establishes": [
+                  "core-gated"
+                ]
               }
             ],
             "bucket": "open"
@@ -23986,8 +24163,8 @@
           "maturity": 3.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-08",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "Helicone/helicone monorepo active June 2026 (5,477 commits on main). Confirmed live on GitHub; hosted cloud + self-host."
         },
@@ -24061,12 +24238,55 @@
             "class": "open_core",
             "components": "license:Apache-2.0(OSI, SDK/client repo wandb/weave);source:public;backend:commercial(W&B SaaS platform hosts traces/evals; full platform is proprietary, self-host is enterprise);eval+tracing-client:OSS",
             "confidence": "high",
-            "note": "Apache-2.0 OSS instrumentation SDK (@weave.op tracing + eval scoring) but the trace store / dashboards / monitoring backend is the proprietary W&B SaaS platform, open-core, calibrated below MLflow O5 (fully-OSS core) and at/with Langfuse O4 (OSS core + commercial backend).",
+            "note": "Apache-2.0 SDK and trace-server library from Weights & Biases, with the runnable Weave application not published. Left DEFERRED after the 2026-08-12 read, because the read undercuts `source: public` rather than filling the core-gated gap, and the two cannot both stand. What is published, and it is more than an SDK: wandb/weave is Apache-2.0 and weave/trace_server/ holds a real ClickHouse-backed implementation - clickhouse_trace_server_batched.py, a schema, migrations, query builders, workers, kafka, file storage and OpenTelemetry ingest. What is not published: any web UI, any deployment manifest (no docker-compose, no chart, bin/ holds two codex setup scripts), and the HTTP service that fronts the trace server - the repository's own weave/trace_server/README.md diagrams it as \"(in core) trace_server.py TraceWebServer\", core being W&B's closed repository. sdks/ contains only node. The README's stated prerequisite is \"A Weights & Biases account\", and W&B's deployment docs say a self-managed install needs a W&B Server license obtained before installation, with \"Some features and functionality require an Enterprise license.\" So you cannot stand the product up from the published repository, which is software.yaml's definition of `partial` - the webcontainers shape, a core published and the engine withheld - and `partial` computes 2/source_available against a recorded 4. The record's own prose already says as much (\"the trace store / dashboards / monitoring backend is the proprietary W&B SaaS platform, ... self-host is enterprise\") while its `source` key says `public`; the key and the note disagree. Recording `core-gated: gated` would make the recorded components compute exactly 4 and close this, which is why it was not done - the 4 would then rest on a `source` value this read does not support. A human should settle `source` first; core-gated only matters if it stays `public`.",
+            "last_verified": "2026-08-12",
             "sources": [
               {
                 "url": "https://github.com/wandb/weave",
                 "shows": "Apache-2.0 license on the Weave SDK repo; LLM logging/tracing/eval toolkit",
                 "accessed": "2026-06-04"
+              },
+              {
+                "url": "https://api.github.com/repos/wandb/weave/contents/",
+                "shows": "Repository root, listed to establish what ships. LICENSE (Apache-2.0 per the license endpoint), Makefile, noxfile.py, pyproject.toml, bin, dev_docs, examples, scripts, sdks, tests, trace_server_mock, weave. There is no docker-compose, no chart, no deploy or infra directory, and no web/ or ui/ - so no published way to run the application. sdks/ contains only `node`. bin/ contains only codex_setup.sh and run_setup_in_codex.sh. The server-side code that does ship is the library under weave/trace_server/, which includes clickhouse_trace_server_batched.py, clickhouse_schema.py, migrations, workers, kafka.py, file_storage.py and an opentelemetry package.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "099e76f39c0b60aa2deb06f3be1657deb01947289229d4434d5af3b96023c1f2",
+                "establishes": [
+                  "source",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/wandb/weave/master/weave/trace_server/README.md",
+                "shows": "The repository's own architecture diagram, which names the piece that is missing. The call-start sequence runs UserCode -> OpExecution -> GraphClientTrace -> RemoteHTTPTraceServer -> \"(in core) trace_server.py TraceWebServer <FlaskApp>\" -> ClickHouseTraceServer -> ClickHouseDB. The web service tier is annotated as living in core, W&B's closed repository, not in this one. The published RemoteHTTPTraceServer is the client that posts to it.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "6136cc31b33793f95de67aa389e20a92d899a2676826fea7edfe5ff7b1f7b89d",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/wandb/weave/master/README.md",
+                "shows": "The vendor's own prerequisite for using the published package, stated plainly under Prerequisites: \"Python 3.10 or higher\" and \"A Weights & Biases account (free tier available)\". The quick start is `pip install weave` then `weave.init(\"my-project-name\")`, which registers against that account. Nothing in the README describes running Weave without W&B.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "a80ad86bad9feeb77a2f784c145270583a93314d75b9895a0ed1fa774418e6ed",
+                "establishes": [
+                  "source"
+                ]
+              },
+              {
+                "url": "https://docs.wandb.ai/guides/hosting/",
+                "shows": "W&B's deployment options: Multi-tenant Cloud, Dedicated Cloud and Self-Managed. On licensing it states \"Some features and functionality require an Enterprise license\" and routes readers to an Enterprise trial. The self-managed page adds \"A W&B Server license authorizes your deployment. You must obtain a license before installation.\" So the on-premises route runs a licensed W&B Server distribution rather than a build of wandb/weave.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "17e6dd1f897b73aac6bec88fff076dbbbc8a3b92d9dda25f941cacce26dd6edd",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
               }
             ],
             "bucket": "open"
@@ -24104,8 +24324,8 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-08",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "W&B Weave; OSS SDK v0.52.42 (Jun 2, 2026) confirmed live on GitHub (wandb/weave). LLM tracing + evaluation + monitoring layered onto the commercial W&B platform."
         },
@@ -24750,15 +24970,11 @@
           "openness": {
             "score": 4,
             "class": "open_core",
-            "components": "license:MIT(core:tracing/integrations/API/data-model/exports/evals/playground/SSO);commercial:enterprise-security(SCIM,audit-logs,data-retention);source:public",
+            "components": "license:MIT(core:tracing/integrations/API/data-model/exports/evals/playground/SSO);commercial:enterprise-security(SCIM,audit-logs,data-retention);source:public;core-gated:gated(the root LICENSE carves ee/, web/src/ee/ and worker/src/ee/ out of MIT and under ee/LICENSE, the Langfuse Enterprise License; ee/src ships an ee-license-check module and web/src/ee/features holds multi-tenant SSO, SSO settings, the audit-log viewer, the admin API, billing, verified domains and UI customization)",
             "confidence": "high",
-            "note": "license:MIT(core:tracing/integrations/API/data-model/exports/evals/playground/SSO);commercial:enterprise-security(SCIM,audit-logs,data-retention);source:public",
+            "note": "MIT core with a commercially licensed enterprise directory in the same repository. `core-gated: gated` verified 2026-08-12 by a direct read, and it does NOT rest on Langfuse Cloud or on the ClickHouse acquisition. The root LICENSE splits the repo itself: \"All content that resides under the 'ee/', 'web/src/ee/', and/or 'worker/src/ee/' directories of this repository, if these directories exist, is licensed under the license defined in 'ee/LICENSE'\", and everything outside them is MIT Expat. ee/LICENSE opens by calling Langfuse \"an open core project\" and requires \"a valid Langfuse Enterprise License\". The carve-out is not a stub: ee/src holds an ee-license-check module and web/src/ee/features holds admin-api, audit-log-viewer, billing, multi-tenant-sso, sfdc-sync, sso-settings, ui-customization and verified-domains. That is the litellm side of the line, not the langchain side. One correction the read forces on this record's own prose: the license clause below claims SSO is in the MIT core, and it is not - multi-tenant-sso and sso-settings are both under web/src/ee/.",
+            "last_verified": "2026-08-12",
             "sources": [
-              {
-                "url": "https://github.com/langfuse/langfuse",
-                "shows": "flagship phase-C verification source",
-                "accessed": "2026-06-04"
-              },
               {
                 "url": "https://langfuse.com/blog/2025-06-04-open-sourcing-langfuse-product",
                 "shows": "flagship phase-C verification source",
@@ -24768,6 +24984,57 @@
                 "url": "https://clickhouse.com/blog/clickhouse-acquires-langfuse-open-source-llm-observability",
                 "shows": "flagship phase-C verification source",
                 "accessed": "2026-06-04"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/langfuse/langfuse/main/LICENSE",
+                "shows": "Root LICENSE body, read rather than assumed. It opens \"Portions of this software are licensed as follows:\" and splits the repository: \"All content that resides under the 'ee/', 'web/src/ee/', and/or 'worker/src/ee/' directories of this repository, if these directories exist, is licensed under the license defined in 'ee/LICENSE'\", while \"Content outside of the above mentioned directories or restrictions above is available under the 'MIT Expat' license\", whose full text follows. So the tier-setting license is MIT and the gate is a carve-out named in the license itself.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "7605d1b4ea8a8cb4775fb71a15611cecf71852ca2c6d4b5313effb1cde5acd9d",
+                "establishes": [
+                  "license",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/langfuse/langfuse/main/ee/LICENSE",
+                "shows": "The Langfuse Enterprise License. Its preamble states \"Langfuse is an open core project. Langfuse's core is permissively licensed (MIT license). Certain parts of the periphery of Langfuse are commercially licensed and governed by this Enterprise License.\" The grant itself: the software \"may only be used, if you (and any entity that you represent) have agreed to, and are in compliance with, the applicable Langfuse Terms of Service ... or other agreement governing the use of the Software, as agreed by you and Langfuse, and otherwise have a valid Langfuse Enterprise License.\"",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "592171b77b3b1443871b539664fc88eec6b9ec82c76016762c8cf1975b2378ce",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/langfuse/langfuse/contents/web/src/ee/features",
+                "shows": "What the carve-out actually withholds, listed rather than characterized: admin-api, audit-log-viewer, billing, multi-tenant-sso, sfdc-sync, sso-settings, ui-customization, verified-domains. These are features of the Langfuse product, not a separate hosted service beside it, which is the distinction the core_gated dimension turns on.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "2c96e96d7f05c807c3cd360f7898de9814bce2d592f3effe4ace278ab6c1baab",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/langfuse/langfuse/contents/ee/src",
+                "shows": "The enforcement point. ee/src contains ee-license-check, env.ts and index.ts - a license check module in the enterprise-licensed half of the tree, which is the rubric's own wording for a gate.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "3013607ddb54140baa7401f836f386d923f53f057331d3995e19c2d2593fcb19",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/langfuse/langfuse/contents/",
+                "shows": "Repository root. The published tree is the whole platform - web, worker, packages, fern, and docker-compose files for dev and prod - so self-hosting the MIT core needs nothing outside the repo and the source dimension is public. `ee` sits beside them as its own top-level directory.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "60726e134958140b6fca750eaf6bc42dbd7ef0f03d56ab9f7809fff5065ecc54",
+                "establishes": [
+                  "source"
+                ]
               }
             ],
             "bucket": "open"
@@ -24813,8 +25080,8 @@
           "maturity": 3.5,
           "mature": false,
           "freshness": {
-            "date": "2026-06-24",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "Active 2026; acquired by ClickHouse Mar 2026; MIT core"
         },
@@ -36141,7 +36408,7 @@
     }
   },
   "n_total": 472,
-  "generated": "2026-08-11",
+  "generated": "2026-08-12",
   "long_tail": {
     "counts": {
       "repos": 15375,
