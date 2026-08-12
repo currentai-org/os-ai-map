@@ -16543,9 +16543,9 @@
           "openness": {
             "score": 2,
             "class": "source_available",
-            "components": "license:Apache-2.0 asserted in README only, no LICENSE file in repo (GitHub reports null); source:public(LLM360/TxT360)",
+            "components": "license:none-declared(the README badge asserts Apache-2.0 but the repo ships no LICENSE file and the GitHub license endpoint 404s);source:public(LLM360/TxT360)",
             "confidence": "low",
-            "note": "The README badge asserts Apache-2.0 but the repo ships no LICENSE file, so there is no actual redistribution grant. Re-checked 2026-07-30: still no LICENSE file, and the GitHub license endpoint returns 404 while the repo API reports a null license. Scored on that rather than on the badge. Score corrected from 3 to 2 on 2026-07-30. The software ladder has rungs at 1, 2, 4 and 5 and none at 3, so 3/source_available was not a pair any rule could produce; the ladder scores \"you can read it and not run it freely\" at 2.",
+            "note": "The README badge asserts Apache-2.0 but the repo ships no LICENSE file, so there is no actual redistribution grant. Re-checked 2026-07-30: still no LICENSE file, and the GitHub license endpoint returns 404 while the repo API reports a null license. Scored on that rather than on the badge. Score corrected from 3 to 2 on 2026-07-30. The software ladder has rungs at 1, 2, 4 and 5 and none at 3, so 3/source_available was not a pair any rule could produce; the ladder scores \"you can read it and not run it freely\" at 2. On 2026-08-12 the license was moved from prose to the unstated form the corpus already uses for gaia and openhermes-2-5, so the tier lookup reads a license name rather than a sentence. The value of the fix is that the abstention is now about the map rather than about the record: none-declared is in no tier, and no software category declares a tier for a license nobody granted.",
             "sources": [
               {
                 "url": "https://github.com/LLM360/TxT360",
@@ -16586,7 +16586,7 @@
           "maturity": 1.8,
           "mature": false,
           "freshness": {
-            "date": "2026-07-30",
+            "date": "2026-08-12",
             "basis": "commit"
           },
           "version_note": "LLM360 TxT360 pipeline code (distinct from the dataset on HF); reference/replication drop, last push 2024-12. README asserts Apache-2.0 but the repo ships NO LICENSE file (GitHub reports null) -- scored open_source on the asserted license + LLM360's open track record, with the missing file flagged."
@@ -22261,9 +22261,10 @@
           "openness": {
             "score": 5,
             "class": "open_source",
-            "components": "license:MIT(Maple-client)+AGPL-3.0(OpenSecret-platform),both-OSI;source:public(github.com/OpenSecretCloud);models:open-weight;hosted-tier:paid(managed-enclaves)",
+            "components": "license:MIT(Maple-client)+AGPL-3.0(OpenSecret-platform),both-OSI;source:public(github.com/OpenSecretCloud);core-gated:ungated(billing and feature-flag APIs are optional and external; no enterprise directory, no license key);models:open-weight;hosted-tier:paid(managed-enclaves)",
             "confidence": "medium",
-            "note": "Both halves of the stack are open under standard OSI licenses (Maple client MIT, OpenSecret platform AGPL-3.0) and the served models are open-weight - unusually clean for a \"private AI\" product. Scored open_source because the privacy guarantee is only credible because the code is open and attestable. A defensible alternative is open_core, since the delivered offering is a paid hosted service over managed enclaves.",
+            "note": "Both halves of the stack are open under standard OSI licenses (Maple client MIT, OpenSecret platform AGPL-3.0) and the served models are open-weight - unusually clean for a \"private AI\" product. Scored open_source because the privacy guarantee is only credible because the code is open and attestable. A repo read on 2026-08-12 settled the open_core alternative against itself. The Maple README makes the billing and feature-flag services optional external clients, VITE_MAPLE_BILLING_API_URL and VITE_OS_FLAGS_BASE_URL, and the OpenSecret README says their \"server implementations are not part of this repository setup\"; a self-hosted backend runs without either, so what the subscription buys is usage on the hosted enclaves rather than functionality withheld from the source. Neither repo has an enterprise directory or a license key. The one closed-looking artifact is the 15MB continuum-proxy-x86_64 binary vendored into opensecret, and it is the third-party TEE proxy from Edgeless Systems, carried alongside a git submodule of edgelesssys/privatemode-public rather than being anything OpenSecret withholds from a self-hoster.",
+            "last_verified": "2026-08-12",
             "sources": [
               {
                 "url": "https://github.com/OpenSecretCloud/Maple",
@@ -22274,6 +22275,47 @@
                 "url": "https://github.com/OpenSecretCloud/opensecret",
                 "shows": "AGPL-3.0 OpenSecret platform; AWS Nitro enclave / TEE confidential-computing architecture",
                 "accessed": "2026-06-17"
+              },
+              {
+                "url": "https://github.com/OpenSecretCloud/Maple/blob/master/LICENSE",
+                "shows": "the Maple client repository LICENSE is a plain MIT License; the GitHub repo API reports the SPDX id MIT",
+                "accessed": "2026-08-12",
+                "establishes": [
+                  "license"
+                ],
+                "http_status": 200,
+                "content_sha256": "076f3390f6342f51a64feadb9cd84d4ca41f56ebc6c2f9f1fe98fa255d853ad8"
+              },
+              {
+                "url": "https://github.com/OpenSecretCloud/opensecret/blob/master/LICENSE",
+                "shows": "the OpenSecret platform repository LICENSE is the GNU Affero General Public License Version 3; the GitHub repo API reports the SPDX id AGPL-3.0",
+                "accessed": "2026-08-12",
+                "establishes": [
+                  "license"
+                ],
+                "http_status": 200,
+                "content_sha256": "8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef"
+              },
+              {
+                "url": "https://github.com/OpenSecretCloud/Maple/blob/master/README.md",
+                "shows": "the configuration surface lists VITE_OS_FLAGS_BASE_URL as \"an optional feature-flags API\" and VITE_MAPLE_BILLING_API_URL as \"an optional billing API\", and states \"Flags and billing are independent clients\"; the quick start runs the client against a local OpenSecret backend at 127.0.0.1:3000 with no paid component",
+                "accessed": "2026-08-12",
+                "establishes": [
+                  "core-gated"
+                ],
+                "http_status": 200,
+                "content_sha256": "278de0205fecb4841f4c6ce7ec2df9e2e16eb9f0306dd03f671b32e5767be1b4"
+              },
+              {
+                "url": "https://github.com/OpenSecretCloud/opensecret/blob/master/README.md",
+                "shows": "the backend is \"the open-source Rust backend for confidential AI applications such as Maple\" and builds from the Nix flake; \"Billing and feature flags are optional external HTTP APIs whose administrative credentials remain in the backend; their server implementations are not part of this repository setup\"",
+                "accessed": "2026-08-12",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ],
+                "http_status": 200,
+                "content_sha256": "41dbc79949c8be048aa6d719ee168312648bcbfe59cf75ecbf04f9f50c14901b"
               }
             ],
             "bucket": "open"
@@ -22308,8 +22350,8 @@
           "maturity": 3.3,
           "mature": false,
           "freshness": {
-            "date": "2026-06-17",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "Maple client is MIT-licensed; the underlying OpenSecret platform is AGPL-3.0 - both fully open so anyone can rebuild and compare hashes against the live attestation. Launched Jan 2025. Serves open-weight models (gpt-oss-120b, kimi-k2.5, deepseek-r1, llama-3.3-70b, qwen3-vl, gemma-3). The consumer offering at trymaple.ai is a paid hosted service - openness applies to the code/architecture, not free unlimited usage."
         },
@@ -22323,14 +22365,36 @@
           "openness": {
             "score": 2,
             "class": "source_available",
-            "components": "license:custom-source-available(audit-only)+MIT-subdirs(proxy/web/internal-oss);source:TCB-public(github.com/edgelesssys/privatemode-public);service:proprietary-hosted;models:third-party-open-weight",
+            "components": "license:custom-source-available(audit-only)+MIT-subdirs(proxy/web/internal-oss);source:partial(the TCB components are published and reproducibly buildable at github.com/edgelesssys/privatemode-public; the service around them is not, and the license permits building only to audit);service:proprietary-hosted;models:third-party-open-weight",
             "confidence": "high",
-            "note": "Not open source: the security-critical Trusted Computing Base is publicly readable (and the client proxy + web app are MIT), but the main license permits only viewing/compiling for audit, and the operational service is a proprietary hosted offering. More open than a black-box API, less than open-core.",
+            "note": "Not open source: the security-critical Trusted Computing Base is publicly readable (and the client proxy + web app are MIT), but the main license permits only viewing/compiling for audit, and the operational service is a proprietary hosted offering. More open than a black-box API, less than open-core. A read on 2026-08-12 recorded source as partial rather than public or closed, which is what the ladder was missing. The repo README scopes itself to \"all components of Privatemode that are part of the TCB\", so the operating service around them - accounts, billing, orchestration - is not published, and the LICENSE grants permission \"to view, analyze, and compile this source code solely for the purpose of auditing and for verifying its reproducibility and cryptographic hashes\", with redistribution, modification and use for any other purpose prohibited. There is no self-hostable implementation, so source is not public; a real component set does ship, so it is not closed either. That is the same shape as lumo, apify and confer, which the ladder already places at 2.",
+            "last_verified": "2026-08-12",
             "sources": [
               {
                 "url": "https://github.com/edgelesssys/privatemode-public",
                 "shows": "TCB source (attestation agent, proxy, web app, SDK) under a custom audit-only license with MIT-licensed subdirectories",
                 "accessed": "2026-06-17"
+              },
+              {
+                "url": "https://github.com/edgelesssys/privatemode-public/blob/main/README.md",
+                "shows": "the repo \"contains the source code of all components of Privatemode that are part of the TCB\", that \"the build is reproducible\", and that this \"allows users to fully verify the Privatemode service\" - verification, not deployment",
+                "accessed": "2026-08-12",
+                "establishes": [
+                  "source"
+                ],
+                "http_status": 200,
+                "content_sha256": "e4c9a73f76e9969ccaec1d9fd459d542108f32f1a15502cd25a7872a8cb0483b"
+              },
+              {
+                "url": "https://github.com/edgelesssys/privatemode-public/blob/main/LICENSE",
+                "shows": "permission is granted \"to view, analyze, and compile this source code solely for the purpose of auditing and for verifying its reproducibility and cryptographic hashes\", and \"Redistribution, modification, and use of the software for any other purpose are prohibited unless explicitly permitted by the copyright holder\"; privatemode-proxy/, app/web/ and internal/oss/ are additionally MIT",
+                "accessed": "2026-08-12",
+                "establishes": [
+                  "license",
+                  "source"
+                ],
+                "http_status": 200,
+                "content_sha256": "e8fab96ce879946cf49f66f752947da7f0a4dca4dc180dd70bf5a4dd41451bef"
               }
             ],
             "bucket": "open-ish"
@@ -22365,8 +22429,8 @@
           "maturity": 2.6,
           "mature": false,
           "freshness": {
-            "date": "2026-06-17",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "Launched Feb 2025. The privatemode-public repo holds the auditable Trusted Computing Base under a custom source-available license (view/compile for audit only); the privatemode-proxy, web app, and internal/oss subdirectories are dual-licensed MIT. The operational service itself is proprietary/hosted. Serves third-party open-weight models (e.g. gpt-oss-120b, Gemma, Kimi K2, Qwen embeddings, Whisper/Voxtral) - trains none of its own."
         },
@@ -25818,14 +25882,47 @@
           "openness": {
             "score": 5,
             "class": "open_source",
-            "components": "framework:open(LlamaFirewall + CodeShield code, MIT-licensed in PurpleLlama);self-host:yes;note:bundled guard models (Prompt Guard 2, Llama Guard) carry the Llama Community License",
+            "components": "license:MIT(LlamaFirewall/LICENSE, covering the LlamaFirewall and CodeShield code);source:public(github.com/meta-llama/PurpleLlama, LlamaFirewall/);framework:open(LlamaFirewall + CodeShield code, MIT-licensed in PurpleLlama);self-host:yes;note:bundled guard models (Prompt Guard 2, Llama Guard) carry the Llama Community License",
             "confidence": "high",
-            "note": "The firewall framework and CodeShield are open-source (MIT) and self-hostable; it orchestrates Meta's Llama-licensed guard models. Scored on the framework, which is genuinely open source (5).",
+            "note": "The firewall framework and CodeShield are open-source (MIT) and self-hostable; it orchestrates Meta's Llama-licensed guard models. Scored on the artifact it ships, which is the rule the owner settled on 2026-08-12 - a product is scored on what it distributes, not on what it can load. A repo read the same day confirmed the split is a real one in the tree rather than a reading of it. PurpleLlama's root LICENSE is the Llama 3.2 Community License and governs the guard-model directories; LlamaFirewall/LICENSE is plain MIT and governs the harness. The bundled Prompt Guard 2 and Llama Guard are separate products on this map carrying their own scores, both 3/open_weights, so nothing about their terms goes unscored by scoring the harness on its own.",
+            "last_verified": "2026-08-12",
             "sources": [
               {
                 "url": "https://github.com/meta-llama/PurpleLlama",
                 "shows": "PurpleLlama: MIT evals + Llama-licensed safeguard models; ~4.2k stars; LlamaFirewall, Prompt Guard, CodeShield components",
                 "accessed": "2026-06-29"
+              },
+              {
+                "url": "https://github.com/meta-llama/PurpleLlama/blob/main/LlamaFirewall/README.md",
+                "shows": "the whole product installs and runs locally - prerequisites are Python 3.10, pip and a HuggingFace account for the Llama models, installation is `pip install llamafirewall`, and the basic usage example instantiates LlamaFirewall in-process. No paid tier, no hosted service and no license key appears anywhere in the document; the scanners it lists (PromptGuard 2, AlignmentCheck, regex/custom, CodeShield) are all in the published package",
+                "accessed": "2026-08-12",
+                "establishes": [
+                  "self-host",
+                  "source"
+                ],
+                "http_status": 200,
+                "content_sha256": "9bf4c794eae9870c6d9403490949eec85568c275229775f9477a72e48b679d12"
+              },
+              {
+                "url": "https://github.com/meta-llama/PurpleLlama/blob/main/LlamaFirewall/LICENSE",
+                "shows": "the LlamaFirewall directory carries a plain MIT License, \"Copyright (c) Meta Platforms, Inc. and affiliates\", granting use, copy, modify, merge, publish, distribute, sublicense and sell without restriction",
+                "accessed": "2026-08-12",
+                "establishes": [
+                  "license",
+                  "source"
+                ],
+                "http_status": 200,
+                "content_sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93"
+              },
+              {
+                "url": "https://github.com/meta-llama/PurpleLlama/blob/main/LICENSE",
+                "shows": "the monorepo root LICENSE is the LLAMA 3.2 COMMUNITY LICENSE AGREEMENT, which is what covers the guard-model directories alongside the harness: the repo tree holds Llama-Guard, Llama-Guard2, Llama-Guard3, Llama-Guard4, Llama-Prompt-Guard-2 and Prompt-Guard beside LlamaFirewall and CodeShield, and GitHub reports the repo license as NOASSERTION",
+                "accessed": "2026-08-12",
+                "establishes": [
+                  "license"
+                ],
+                "http_status": 200,
+                "content_sha256": "8cc15535a8a34b41888f644b339a1a9eb428af793a4f5e24df58a3e5b1487d74"
               }
             ],
             "bucket": "open"
@@ -25862,8 +25959,8 @@
           "maturity": 3.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-08",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "LlamaFirewall, in meta-llama/PurpleLlama (~4.2K stars). PurpleLlama licensing is mixed: evals/benchmarks MIT, safeguard models under the Llama Community License. Components: Prompt Guard 2, Agent Alignment Checks, CodeShield. Verified live June 2026."
         },
@@ -27467,14 +27564,46 @@
           "openness": {
             "score": 5,
             "class": "open_source",
-            "components": "license:Apache-2.0(OSI);source:public(TypeScript, stateless mode self-hostable via Docker);managed-tier:r.jina.ai/s.jina.ai hosted SaaS (free tier + paid API key) on top of the same OSS core",
+            "components": "license:Apache-2.0(OSI);source:public(TypeScript, stateless mode self-hostable via Docker);core-gated:ungated(no enterprise directory or license key; the paid tiers buy rate limit on the hosted endpoint);managed-tier:r.jina.ai/s.jina.ai hosted SaaS (free tier + paid API key) on top of the same OSS core",
             "confidence": "high",
-            "note": "Repo is Apache-2.0 with the full reader pipeline public and self-hostable; hosted Jina API is convenience hosting, not a gated core.",
+            "note": "Apache-2.0 throughout with no enterprise directory and no license key, and a read on 2026-08-12 found the paid tiers buying throughput on the hosted endpoint rather than functionality: jina.ai/reader lists Reader at 20 RPM without a key, 500 RPM with a free key and 5,000 RPM on Premium, with PDF, MS-Office, image captioning and search available at every tier. The published branch does have the MongoDB-backed SaaS storage layer stripped out, which the README states plainly, but it is accounting and persistence for the hosted service rather than a piece of the reader the open build needs - the README says the branch \"runs in stateless mode out of the box, with optional MinIO/S3-compatible bucket caching\". Nothing is withheld from the published source, so core-gated is ungated.",
+            "last_verified": "2026-08-12",
             "sources": [
               {
                 "url": "https://github.com/jina-ai/reader",
                 "shows": "Apache-2.0 license, public source, self-host Docker instructions, ~11k stars",
                 "accessed": "2026-06-04"
+              },
+              {
+                "url": "https://github.com/jina-ai/reader/blob/main/LICENSE",
+                "shows": "the repository LICENSE is the Apache License, Version 2.0, headed \"Copyright 2020-2024 Jina AI Limited\"; the GitHub repo API reports the SPDX id Apache-2.0",
+                "accessed": "2026-08-12",
+                "establishes": [
+                  "license"
+                ],
+                "http_status": 200,
+                "content_sha256": "ee3aeb6c37d4222522d759df6c7014542880b6af1b55cdc5b3bfb11f160e9210"
+              },
+              {
+                "url": "https://github.com/jina-ai/reader/blob/main/README.md",
+                "shows": "the repo is \"the open source branch of the codebase behind https://r.jina.ai and https://s.jina.ai\"; it \"runs in stateless or bucket-cached mode; the MongoDB-backed SaaS storage layer is not included here\"; the 2026-04 entry adds that the oss branch \"runs in stateless mode out of the box, with optional MinIO/S3-compatible bucket caching via docker compose\"",
+                "accessed": "2026-08-12",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ],
+                "http_status": 200,
+                "content_sha256": "583b250f78916c63a244eeb2903077548bcc39e9245f471947857fe84c70536c"
+              },
+              {
+                "url": "https://jina.ai/reader",
+                "shows": "the pricing and rate-limit table: Reader 20 RPM with no key, 500 RPM with a free API key, 5,000 RPM on Premium, and Search 100/1,000 RPM; the feature list (PDF reading, image captioning, web search) is the same at every tier, so the tiers differ on throughput rather than on features. No enterprise or commercial edition is offered.",
+                "accessed": "2026-08-12",
+                "establishes": [
+                  "core-gated"
+                ],
+                "http_status": 200,
+                "content_sha256": "90bd4a738a01b7cfba9b2005d7d281aeee056650aced9eab573172dce4f9d188"
               }
             ],
             "bucket": "open"
@@ -27510,8 +27639,8 @@
           "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-06-09",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "Open-source branch of the r.jina.ai / s.jina.ai URL-to-markdown reader service; repo jina-ai/reader re-synced with the SaaS codebase Apr 2026 (MongoDB layer decoupled, local Docker deploy enabled). Confirmed live on GitHub June 2026."
         },
@@ -32731,9 +32860,9 @@
           "openness": {
             "class": "open_toolchain",
             "score": 4,
-            "components": "schematics:partial (HAT+ mechanical spec public);toolchain:partial (open Pi driver integration, Hailo compiler gated);datasheets:brief (public brief);blobs:required (Hailo firmware required);retail:open_market (mass-market)",
+            "components": "schematics:partial (HAT+ mechanical spec public);accessory-host:open_toolchain(Raspberry Pi 5, which scores 4/open_toolchain);toolchain:partial (open Pi driver integration, Hailo compiler gated);datasheets:brief (public brief);blobs:required (Hailo firmware required);retail:open_market (mass-market)",
             "confidence": "medium",
-            "note": "Officially supported open Pi software stack and public product page, globally purchasable, but the underlying Hailo model-compiler toolchain is registration-gated.",
+            "note": "Officially supported open Pi software stack and public product page, globally purchasable, but the underlying Hailo model-compiler toolchain is registration-gated. Scored as an accessory on the owner's ruling of 2026-08-12 - an add-on tracks the platform it completes, and what a builder gets from this HAT is the openness of the Raspberry Pi 5 it plugs into, which is 4/open_toolchain. Its own design and toolchain answers are both partial and neither describes the system anyone actually uses, so accessory-host is what the ladder now reads. See the dimension of that name in sources/rubrics/hardware.yaml for why the principle is an axis rather than an extra rung.",
             "sources": [
               {
                 "url": "https://www.raspberrypi.com/products/ai-hat/",
@@ -32774,7 +32903,7 @@
           "maturity": 3.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-01",
+            "date": "2026-08-12",
             "basis": "commit"
           },
           "version_note": "Verified live 2026-06-22 via primary sources. Officially supported open Pi software stack and public product page, globally purchasable, but the underlying Hailo model-compiler toolchain is registration-gated."
@@ -33654,11 +33783,11 @@
           "type": "hardware",
           "description": "A hybrid single-board computer in the UNO form factor that pairs a Qualcomm Dragonwing QRB2210 quad-core applications processor (Adreno GPU, dual ISP, running Debian Linux) with an STM32U585 microcontroller for real-time control. It targets AI-accelerated vision and sound applications, programmed via the open source Arduino App Lab. Made by Arduino (now a Qualcomm company), it ships in 2GB/16GB and 4GB/32GB variants around EUR 47-65, a low-cost on-ramp to Qualcomm edge-AI silicon for the maker community.",
           "openness": {
-            "class": "documented",
-            "score": 3,
+            "class": "open_hardware",
+            "score": 5,
             "components": "schematics:open (gerbers + schematics CC-BY-SA 4.0);toolchain:open (open App Lab);datasheets:public;blobs:required (proprietary Qualcomm SoC firmware);retail:open_market (global)",
             "confidence": "high",
-            "note": "Board schematics and gerbers are CC-BY-SA 4.0 and tooling is open, but the QRB2210 SoC remains proprietary silicon needing firmware blobs.",
+            "note": "Board schematics and gerbers are openly licensed under CC-BY-SA 4.0 and the App Lab toolchain is open, which is the same open-and-open pair that puts beagley-ai at 5. Corrected from 3/documented on 2026-08-12. This ladder scores design-file openness rather than silicon: the level-5 rung says so in its own text, and every board in the category runs on proprietary silicon, so the QRB2210 firmware blobs the old note cited are a reason no rung applies.",
             "sources": [
               {
                 "url": "https://www.arduino.cc/product-uno-q",
@@ -33666,7 +33795,7 @@
                 "accessed": "2026-06-22"
               }
             ],
-            "bucket": "closed"
+            "bucket": "open"
           },
           "adoption": {
             "level": 4,
@@ -33699,7 +33828,7 @@
           "maturity": 3.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-01",
+            "date": "2026-08-12",
             "basis": "commit"
           },
           "version_note": "Verified live 2026-06-22 via primary sources. Board schematics and gerbers are CC-BY-SA 4.0 and tooling is open, but the QRB2210 SoC remains proprietary silicon needing firmware blobs."
