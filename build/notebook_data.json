@@ -26728,9 +26728,10 @@
           "openness": {
             "score": 5,
             "class": "open_source",
-            "components": "spec+reference-SDKs:public;license:Apache-2.0(OSI, new code/spec)+MIT(OSI, legacy contributions)+CC-BY-4.0(docs);governance:Linux-Foundation/AAIF(open, co-founded Anthropic/Block/OpenAI)",
+            "components": "source:public(spec schema and docs in one repo plus reference SDKs in separate public repos);license:Apache-2.0(OSI, new code/spec)+MIT(OSI, legacy contributions)+CC-BY-4.0(docs);governance:Linux-Foundation/AAIF(open, co-founded Anthropic/Block/OpenAI);core-gated:ungated(spec schema and docs ship in the one LF/AAIF-governed repo and every reference SDK is a public modelcontextprotocol repo - there is no vendor tier to withhold anything for)",
             "confidence": "high",
-            "note": "Open protocol with OSI-licensed reference implementations and open foundation governance; no feature-gated core.",
+            "note": "Open protocol with OSI-licensed reference implementations and open foundation governance; no feature-gated core. Two keys were re-read on 2026-08-12 and the record STILL does not score - see the category's deferral, which has been rewritten to say why. (1) `source` was recorded under the key `spec+reference-SDKs`, which no dimension's `reads:` list names, so the right answer sat under a key the ladder never looks at and the dimension read as unanswered. Renamed to `source`. (2) `core-gated: ungated` added: the spec, the JSON/TypeScript schema and the docs are in the one repo, every reference SDK is a separate public modelcontextprotocol repo (mcp-python-sdk and mcp-typescript-sdk are already on the map at 5), and the project is governed by the Linux Foundation's AAIF with no vendor tier to withhold anything for. (3) The actual blocker is the LICENSE, and it is not a recording error - the file really does split three ways, Apache-2.0 for new code and specifications, CC-BY-4.0 for documentation other than the specifications, and MIT retained for pre-transition contributions whose authors did not consent to relicensing. `license_tier` resolves a compound on every part and abstains if any part is unmapped, and CC-BY-4.0 appears in no tier's examples in sources/rubrics/software.yaml, so the value resolves to nothing and the walk cannot pass the rung that tests it. Whether a documentation license belongs in a software ladder at all is a shared-rubric question across eleven categories and was left for a human.",
+            "last_verified": "2026-08-12",
             "sources": [
               {
                 "url": "https://github.com/modelcontextprotocol/modelcontextprotocol/blob/main/LICENSE",
@@ -26741,6 +26742,27 @@
                 "url": "https://en.wikipedia.org/wiki/Model_Context_Protocol",
                 "shows": "Anthropic origin; donated to Linux Foundation AAIF Dec 2025",
                 "accessed": "2026-06-04"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/modelcontextprotocol/modelcontextprotocol/main/LICENSE",
+                "shows": "The three-way split, read rather than assumed. New code and specifications are under the Apache License, Version 2.0; documentation other than the specifications is under CC-BY-4.0; contributions made before the transition whose authors did not give relicensing consent remain under the MIT License, with \"no rights beyond those granted by the applicable original license\" conveyed. Copyright (c) 2024-2025 Model Context Protocol a Series of LF Projects, LLC.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "0382b0057770ca05e9c350a50aa3b1c1fea84da0bc81d723bf00b9aa841be58a",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/modelcontextprotocol/modelcontextprotocol",
+                "shows": "Repo metadata for the spec repo. It holds the specification, the protocol schema (TypeScript, emitted as JSON Schema) and the documentation; the reference SDKs are separate repos in the same public org. Nothing is withheld from it and there is no second, differently-licensed tree.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "69a785256bb7fd3dde4cb56e056f1917efba60e839afe08f7309a887ac9c8aa6",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
               }
             ],
             "bucket": "open"
@@ -26775,8 +26797,8 @@
           "maturity": 5.0,
           "mature": true,
           "freshness": {
-            "date": "2026-06-09",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "Open wire protocol for connecting LLMs/agents to tools and data; created by Anthropic (David Soria Parra, Justin Spahr-Summers), launched 25 Nov 2024. Reference spec + SDKs (Python/TypeScript/C#/Java/Go/Rust/Ruby) verified live on GitHub June 2026. Governance donated to the Linux Foundation's Agentic AI Foundation (AAIF) Dec 2025."
         },
@@ -26790,9 +26812,10 @@
           "openness": {
             "score": 4,
             "class": "open_core",
-            "components": "license:AGPL-3.0(OSI, self-host core);source:public;managed-cloud:firecrawl.dev with 'additional features' beyond OSS = open-core split;core-gated:gated",
+            "components": "license:AGPL-3.0(OSI, self-host core);source:public;managed-cloud:firecrawl.dev with 'additional features' beyond OSS = open-core split;core-gated:gated(Fire-engine is closed and its source is in no public repo - the tree ships only a client at apps/api/src/scraper/scrapeURL/engines/fire-engine and .env.example calls FIRE_ENGINE_BETA_URL the fire engine closed beta. Screenshots and page actions are unavailable in the self-hosted stack because both require Fire-engine)",
             "confidence": "high",
-            "note": "AGPL-3.0 OSI core is fully open, but the managed cloud carries features beyond the OSS build, making this open-core rather than pure open_source.",
+            "note": "AGPL-3.0 OSI core is fully open, but a piece of the product is withheld from it. `core-gated: gated` verified 2026-08-12 by a direct read, replacing a justification that rested on the managed cloud carrying \"additional features\" - an inference from the pricing page, which the rubric does not accept as evidence. The mechanism has a name: Fire-engine, Firecrawl's scraping engine, whose source is in no public repo. What firecrawl/firecrawl ships at apps/api/src/scraper/scrapeURL/engines/fire-engine is a client - index.ts, scrape.ts, checkStatus.ts, delete.ts, brandingScript.ts - pointed at a URL you must be given, and apps/api/.env.example says so in one line: \"# set if you'd like to use the fire engine closed beta\" above FIRE_ENGINE_BETA_URL=. The self-hosting guide then states what the open build cannot do without it - screenshots and page actions are \"Not available in the default stack. Fetch and Playwright both report no support; both require Fire-engine\", Fire-engine must be \"run and configured separately; it is not included\", and the agent, browser, interact and specialty product/audio/video formats need Cloud or another external service. The same .env.example shows the pattern twice more - the product format needs \"an external product-extraction service\", as do the audio and video formats. Features of the product itself, withheld from the published source behind a closed beta, so the 4 holds.",
+            "last_verified": "2026-08-12",
             "sources": [
               {
                 "url": "https://github.com/mendableai/firecrawl/blob/main/LICENSE",
@@ -26803,6 +26826,47 @@
                 "url": "https://www.firecrawl.dev/pricing",
                 "shows": "6 paid managed-cloud tiers (Free/Hobby/Standard/Growth/Scale/Enterprise)",
                 "accessed": "2026-06-04"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/firecrawl/firecrawl/main/apps/api/.env.example",
+                "shows": "The gate, in the shipped configuration. \"# set if you'd like to use the fire engine closed beta\" immediately above FIRE_ENGINE_BETA_URL=. Two entries later, the product scrape format \"extracts a structured product from a page's HTML via an external product-extraction service; point this at that service's base URL. If unset, requesting the product format returns a warning and no product (same pattern as the audio/video formats and AVGRAB_SERVICE_URL).\"",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "833dcfe3448829dc86757f7310b538ea8c4c90e8d7703640266920c2a473573e",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/firecrawl/firecrawl/contents/apps/api/src/scraper/scrapeURL/engines/fire-engine",
+                "shows": "The whole of Fire-engine in the public repo: branding-script, brandingScript.ts, checkStatus.ts, delete.ts, index.ts, scrape.ts. A request/poll/delete client against a remote base URL. The engine it calls is not in this repository or any other public one.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "651608abd6922ca3a67637b3f1bcb9529543ef52a74fd465fe3759f0b68b5444",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://docs.firecrawl.dev/contributing/self-host",
+                "shows": "What the open build cannot do. Screenshots and page actions: \"Not available in the default stack. Fetch and Playwright both report no support; both require Fire-engine.\" Fire-engine and advanced anti-bot behavior must be \"run and configured separately; it is not included.\" Agent, browser, interact and feedback features and the specialty product, menu, audio and video formats require Firecrawl Cloud or a separate external service.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "19f3b8f80c3745fbe7a786f55b4c4d435c09294e9b2515928774042076e933b2",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/firecrawl/firecrawl",
+                "shows": "Repo metadata: license spdx_id AGPL-3.0, default branch main, 165,882 stars, not archived. One license across the tree - the carve-out is not a directory under other terms but an engine that is absent from it.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "9018a61ffa5df4cad738490beac65d1ba8cd6396a35864d08b93e6821d9a8250",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
               }
             ],
             "bucket": "open"
@@ -26838,8 +26902,8 @@
           "maturity": 3.4,
           "mature": false,
           "freshness": {
-            "date": "2026-07-30",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "Web scrape/crawl/search API that returns LLM-ready data (markdown/JSON/structured). Self-hostable OSS + managed cloud (firecrawl.dev). v2.10 released 15 May 2026; verified live on GitHub June 2026. Copyright Sideguide Technologies Inc."
         },
@@ -26972,11 +27036,12 @@
           "type": "software",
           "description": "High-performance vector database and search engine built in Rust, designed for the next generation of AI applications. Stores vectors with rich payloads and supports advanced filtering, making it ideal for RAG retrieval pipelines that agents call to access knowledge bases. 31K+ GitHub stars, available as open source self-hosted or managed cloud. The leading Rust-native vector DB, competing with Milvus and Pinecone.",
           "openness": {
-            "score": 4,
-            "class": "open_core",
-            "components": "license:Apache-2.0(OSI, engine core);source:public(Rust);managed-tier:Qdrant Cloud (hosted, paid + free tier);core-gated:gated",
+            "score": 5,
+            "class": "open_source",
+            "components": "license:Apache-2.0(OSI, engine core);source:public(Rust);managed-tier:Qdrant Cloud (hosted, paid + free tier);core-gated:ungated(no ee/ path no second license and zero repo-wide hits for enterprise or license key. The two engine features the pricing table marks absent from OSS are both in the open tree - GPU indexing as the lib/gpu crate and resharding across four lib/collection modules with eight consensus tests - so what is sold is control plane rather than engine)",
             "confidence": "high",
-            "note": "Engine core is Apache-2.0 OSI, but a managed Qdrant Cloud tier sits on top; recipe explicitly classes Qdrant Cloud as open_core, so scored 4 rather than the pure-OSS 5 the Milvus anchor carries.",
+            "note": "CORRECTION 2026-08-12: `core-gated` was `gated` with no evidence, justified by a managed Qdrant Cloud tier sitting on top - which the rubric settles as not a gate - and by the recipe already classing it open_core, which is circular. A read of the repo and the pricing page finds no mechanism, so the value is `ungated` and the score moves 4 -> 5. Across the whole repository a code search for `enterprise` returns zero hits and one for \"license key\" returns zero; there is a single Apache-2.0 LICENSE at the root and no ee/, enterprise/ or second-licensed path in the tree. The pricing table is where a careless read goes wrong: it marks GPU Indexing and Shard Splitting as absent from OSS, and both are in the open engine. GPU indexing is its own crate at lib/gpu (Cargo.toml, src/, nvidia_icd.json) beside segment, quantization and sparse; resharding is implemented and consensus-tested at lib/collection/src/collection/resharding.rs, lib/collection/src/shards/resharding.rs, lib/collection/src/shards/shard_holder/resharding.rs and lib/collection/src/shards/transfer/resharding_stream_records.rs with eight tests/consensus_tests/test_resharding*.py files. What the table actually compares is the managed offering: uptime SLAs, managed backup and disaster recovery against \"custom automation\" you run yourself, multi-AZ topology, disk encryption with customer keys, and Enterprise SSO on the Qdrant Cloud console. Hybrid Cloud is described as running \"managed Qdrant clusters on your own infrastructure\" - the same engine, someone else's operator. A managed service beside a complete open core is the langchain shape, not a gate.",
+            "last_verified": "2026-08-12",
             "sources": [
               {
                 "url": "https://github.com/qdrant/qdrant/blob/master/LICENSE",
@@ -26987,6 +27052,39 @@
                 "url": "https://github.com/qdrant/qdrant",
                 "shows": "v1.18.2 (4 Jun 2026); Qdrant Cloud managed tier with free option",
                 "accessed": "2026-06-04"
+              },
+              {
+                "url": "https://api.github.com/repos/qdrant/qdrant/contents",
+                "shows": "Root tree: one LICENSE beside Cargo.toml, config, docs, lib, openapi, pkg, src, tests and tools. No ee/, enterprise/, commercial/ or proprietary/ path and no second license file, so no part of the engine ships under different terms.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "51e6e9f7f3e531723ccca47d30d99ec65b3a5e9ed234e89d56090684c2592963",
+                "establishes": [
+                  "license",
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/qdrant/qdrant/contents/lib",
+                "shows": "The engine's crates: api, blobstore, bm25, collection, common, edge, gpu, macros, posting_list, quantization, segment, shard, sparse, storage, trififo, uio-grpc-client, wal. GPU indexing is the gpu crate, published here, which is the first of the two features the pricing table marks as absent from OSS.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "d013ec1713962a5a1e26e776883f0383db3f993854db7385bd02021fc62e2010",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://qdrant.tech/pricing/",
+                "shows": "Read for a mechanism and found none. Its OSS-versus-paid comparison is control plane: no uptime SLA for OSS against 99.5% free tier and 99.9% (99.95% multi-AZ) on Standard/Premium, \"custom automation\" backups against managed backup and disaster recovery, multi-AZ topology, disk encryption with custom keys on AWS/GCP, and \"Enterprise SSO Authentication\" on Premium+. It also marks GPU Indexing and Shard Splitting as absent from OSS - both are in the open tree, so those rows describe the managed offering rather than the engine. Hybrid Cloud is \"Run managed Qdrant clusters on your own infrastructure\"; Private Cloud is a \"Dedicated, isolated deployment\".",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "ed19cca4db9f8b796b5a3160cbfc55873d5df934af3c8226be55a0323c148460",
+                "establishes": [
+                  "core-gated"
+                ]
               }
             ],
             "bucket": "open"
@@ -27030,8 +27128,8 @@
           "maturity": 4.6,
           "mature": true,
           "freshness": {
-            "date": "2026-08-08",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "High-performance Rust vector database / vector search engine (dense, sparse, multi-vector, hybrid search, quantization). Apache-2.0 core + Qdrant Cloud managed tier (free tier available). v1.18.2 released 4 Jun 2026; verified live June 2026. Calibrated against frozen anchor Milvus (O5 open_source/A3/C4)."
         },
@@ -27103,14 +27201,48 @@
           "openness": {
             "score": 5,
             "class": "open_source",
-            "components": "license:Apache-2.0(OSI);source:public(spec + reference SDKs in 6 languages);governance:Linux Foundation (vendor-neutral, Google-contributed)",
+            "components": "license:Apache-2.0(OSI);source:public(spec + reference SDKs in 6 languages);governance:Linux Foundation (vendor-neutral, Google-contributed);core-gated:ungated(the Linux Foundation project sells nothing - one Apache-2.0 LICENSE at the root, no ee/ or enterprise/ path, and all six reference SDKs published as public a2aproject repos on public package registries)",
             "confidence": "high",
-            "note": "Reference spec and SDKs are Apache-2.0 under neutral LF governance; for a protocol this is the openness ceiling.",
+            "note": "Reference spec and SDKs are Apache-2.0 under neutral LF governance; for a protocol this is the openness ceiling. `core-gated: ungated` transcribed 2026-08-12 from a read of the repo, and it rests on there being nothing to gate with rather than on a pricing page saying so. The root tree is LICENSE, GOVERNANCE.md, MAINTAINERS.md, specification/, docs/ and adrs/ with no ee/, enterprise/ or commercial/ path, and the README's closing section reads \"The A2A Protocol is an open source project under the Linux Foundation, contributed by Google. It is licensed under the Apache License 2.0 and is open to contributions from the community.\" All six reference SDKs are separate public a2aproject repos installable from public registries - a2a-sdk on PyPI, github.com/a2aproject/a2a-go, @a2a-js/sdk on npm, Maven, NuGet and a2a-lf on crates.io. There is no vendor product beside the protocol, so there is no paid tier, no license key and no closed package.",
+            "last_verified": "2026-08-12",
             "sources": [
               {
                 "url": "https://github.com/a2aproject/A2A",
                 "shows": "Apache-2.0 license, LF-hosted open protocol, spec v1.0.1 + 6-language SDKs, ~24k stars",
                 "accessed": "2026-06-04"
+              },
+              {
+                "url": "https://api.github.com/repos/a2aproject/A2A",
+                "shows": "Repo metadata: license spdx_id Apache-2.0, default branch main, 25,300 stars, not archived.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "b6aa35b1973e5b05540d48cae54ce7bdec07fc64ec644c36da657e05f8df55b7",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/a2aproject/A2A/contents",
+                "shows": "Root tree. LICENSE, CODE_OF_CONDUCT.md, CONTRIBUTING.md, GOVERNANCE.md, MAINTAINERS.md, SECURITY.md, adrs, docs, scripts, specification. No ee/, enterprise/, commercial/ or proprietary/ path, and no second LICENSE anywhere at the root.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "968614648966c72470d22d30ed4122ae33a728ecdc06ac9248e5edf05410a5a3",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/a2aproject/A2A/main/README.md",
+                "shows": "Closing section: \"The A2A Protocol is an open source project under the Linux Foundation, contributed by Google. It is licensed under the Apache License 2.0 and is open to contributions from the community.\" The SDK list links six separate public repos - a2a-python (pip install a2a-sdk), a2a-go, a2a-js (npm), a2a-java (maven), a2a-dotnet (NuGet) and a2a-rs (cargo add a2a-lf). No paid tier, hosted service or enterprise edition is mentioned.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "5ec9c7a4afbf200562b8d539c8cf2c146c17a72bfe6ce086d47280eadfd048bb",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
               }
             ],
             "bucket": "open"
@@ -27151,8 +27283,8 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-06-09",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "A2A open protocol for inter-agent interoperability; contributed by Google, hosted by the Linux Foundation (launched June 2025). Spec v1.0.1 released May 28, 2026 (v1.0 = first stable spec, adds Signed Agent Cards). SDKs in Python/Go/JS/Java/.NET/Rust. Verified live on GitHub June 2026."
         },
@@ -27166,14 +27298,56 @@
           "openness": {
             "score": 4,
             "class": "open_core",
-            "components": "license:MIT(OSI, SDK/core public on GitHub);source:public(Python + TypeScript SDKs);managed-tier:Composio hosted platform + Rube MCP server (auth, hosted tool execution) is the commercial layer;core-gated:gated",
+            "components": "license:MIT(OSI, SDK/core public on GitHub);source:public(Python + TypeScript SDKs);managed-tier:Composio hosted platform + Rube MCP server (auth, hosted tool execution) is the commercial layer;core-gated:gated(the execution engine is in no public repo. The MIT tree is SDKs and provider adapters only and toolkit execution the app catalog and managed OAuth all run on the hosted platform at backend.composio.dev behind a COMPOSIO_API_KEY with no self-host option documented)",
             "confidence": "high",
-            "note": "SDK/core is MIT and public; the hosted multi-app integration/auth platform is the proprietary tier, classic open-core.",
+            "note": "SDK/core is MIT and public; the hosted multi-app integration/auth platform is the proprietary tier, classic open-core. `core-gated: gated` verified 2026-08-12 by a direct read, and it does NOT rest on Composio selling a hosted platform. The gate is not a directory but an absence: the execution engine is in no public repo. What is published is SDKs and provider adapters - python/composio with providers/, and ts/packages/ holding core, cli, cli-local-tools, cli-keyring, providers, slim, experimental and the schema converters. Toolkit execution, the 1000+ app catalog and managed OAuth all run on Composio's servers: the README's first instruction is to \"Grab a COMPOSIO_API_KEY from the dashboard first\", sessions are created against the hosted API, the docs give the REST base URL as https://backend.composio.dev/api/v3.1 and describe Composio-managed auth as the default, and no self-hosting or on-premise option is documented. Nothing in the published source executes a toolkit without that platform. FLAG FOR A HUMAN: the same evidence bears on `source`, which this record still gives as public. software.yaml defines partial as \"a repo exists but the runtime does not ship - a client, an SDK, or an issue tracker standing in for the engine\", which describes what Composio publishes, and partial fires at rung 1 for 2/source_available. Re-reading `source` was outside this sweep's remit so the value was left alone, but it should be looked at.",
+            "last_verified": "2026-08-12",
             "sources": [
               {
                 "url": "https://github.com/ComposioHQ/composio",
                 "shows": "MIT LICENSE, public SDK source, 1000+ toolkits, ~28.6k stars",
                 "accessed": "2026-06-04"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/ComposioHQ/composio/next/README.md",
+                "shows": "\"Create a session for a user, hand its tools to your agent, and let the agent take action across 1000+ apps. Grab a COMPOSIO_API_KEY from the dashboard (dashboard.composio.dev/settings) first.\" Also offers a hosted MCP endpoint per session - \"Pass mcp: true to composio.create() and point Claude, Cursor, or any MCP client at session.mcp.url\". Every path to running a tool goes through the hosted platform and a key issued by it.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "8c723e06bec36f55f3aaff4e2933834856a87dff5f6acd94f0a091b85457d94f",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/ComposioHQ/composio/contents/ts/packages",
+                "shows": "The published TypeScript tree is client-side only: cli, cli-keyring, cli-local-tools, core, experimental, json-schema-to-effect-schema, json-schema-to-zod, providers, slim, ts-builders. The python/ tree is the same shape - composio plus providers. There is no server, no toolkit runtime and no auth service anywhere in the repository, which is the functionality the paid platform holds.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "f4f9c9d81c79ecd7533bf98be8d7c988a3fcc792dba0ea2758ec5602c6dfe239",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://docs.composio.dev/docs/welcome",
+                "shows": "Documents the REST API served at https://backend.composio.dev/api/v3.1, \"Composio-managed auth\" as the default in which \"the agent connects accounts at runtime through the session\", and session creation via composio.create(user_id) against that hosted API. No self-hosting or on-premise deployment option is documented anywhere in it.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "c9a2887c9a76300f53c2cb609c7e038457703b9629fb2e5ef8197454114571cf",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/ComposioHQ/composio",
+                "shows": "Repo metadata: license spdx_id MIT, default branch next, 29,636 stars, not archived. The published tree is the SDK monorepo - python/ and ts/ - which is what `source: public` refers to; it is not the tool-execution platform, which is not published anywhere.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "861c607a1a550bb533a6cd236f543b6d800a2ca473f55e59532d66c4930c1a52",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
               }
             ],
             "bucket": "open"
@@ -27219,8 +27393,8 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-07-30",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "Agent tool-integration SDK + managed platform: 1000+ toolkits, tool search, auth, sandboxed workbench; Rube MCP server connects 500+ apps. Python SDK v0.13.1 (May 14, 2026); @composio/claude-agent-sdk 0.9.2 (May 13, 2026). Verified live on GitHub/PyPI June 2026."
         },
@@ -27928,16 +28102,49 @@
           "type": "software",
           "description": "Open-source agent framework that makes websites accessible to AI agents, enabling autonomous web browsing, form filling, data extraction, and multi-step online task completion. Built on Playwright, it provides a structured way for LLMs to observe page state, plan actions, and execute browser interactions. 95K GitHub stars with 315 contributors, one of the fastest-growing projects in the agent space, filling the crucial gap of web-native agent capabilities.",
           "openness": {
-            "score": 4,
-            "class": "open_core",
-            "components": "license:MIT(OSI, library core fully open);source:public;managed-tier:Browser-Use-Cloud(proxies/stealth/captcha/hosted browsers, proprietary);core-gated:gated",
+            "score": 5,
+            "class": "open_source",
+            "components": "license:MIT(OSI, library core fully open);source:public;managed-tier:Browser-Use-Cloud(proxies/stealth/captcha/hosted browsers, proprietary);core-gated:ungated(one MIT LICENSE and no ee/ path. The pricing page prices hosted capacity only and states that cloud usage and the open-source browser-use Python library are separate products with different APIs. The four modules reading BROWSER_USE_API_KEY - browser/cloud sandbox skills and llm/browser_use - are published clients to that hosted product and the local agent needs no key)",
             "confidence": "high",
-            "note": "Core library is fully MIT/OSI open (no feature-gated core); a separate proprietary Browser Use Cloud adds managed infra. Scored open_core at 4 because the OSS core is complete and the cloud is optional hosting, not a gated core.",
+            "note": "CORRECTION 2026-08-12: `core-gated` was `gated` with no evidence behind it, and the note beside it already said the core was not feature-gated. A read of the repo and the pricing page confirms the note, so the value is now `ungated` and the score moves 4 -> 5. The repo root has one MIT LICENSE and no ee/, enterprise/ or commercial/ path. The pricing page prices hosted capacity only - Dev $29/mo for 25 concurrent sessions and 20 browser profiles, Business $299/mo, Scaleup $999/mo, Enterprise custom, plus pay-as-you-go credits - and states outright that \"Cloud usage and the open-source browser-use Python library are separate products with different APIs.\" The one thing that could have gone the other way is that four library modules read BROWSER_USE_API_KEY: browser_use/browser/cloud/cloud.py, browser_use/sandbox/sandbox.py, browser_use/skills/service.py and browser_use/llm/browser_use/chat.py. Each is a published client to the separate hosted product rather than a withheld feature - SkillService fetches skills from the Browser Use API through the browser_use_sdk package, sandbox posts to the hosted sandbox, and chat.py is the ChatBrowserUse endpoint - and the local agent, browser session and tools run with any LLM and no key at all. Selling a separate hosted product is the langchain/LangSmith shape, which the rubric settles as ungated.",
+            "last_verified": "2026-08-12",
             "sources": [
               {
                 "url": "https://github.com/browser-use/browser-use",
                 "shows": "MIT (OSI) license, full public source; Browser Use Cloud as optional managed tier",
                 "accessed": "2026-06-04"
+              },
+              {
+                "url": "https://api.github.com/repos/browser-use/browser-use/contents",
+                "shows": "Root tree: a single LICENSE (MIT per the repo metadata) beside browser_use/, docker/, examples/, skills/, static/, tests/, bin/ and scripts/. No ee/, enterprise/ or commercial/ directory and no second license, so nothing in the published tree is carved out under different terms.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "43ce7ac688b6b93225ac26aab983bf7d02a0ddb82ad29ea38522cf7c16601d86",
+                "establishes": [
+                  "license",
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://browser-use.com/pricing",
+                "shows": "Prices hosted cloud capacity only: Dev $29/mo (25 concurrent sessions, 20 browser profiles, premium proxy pool, bring-your-own model key, scheduled jobs), Business $299/mo (200 concurrent sessions), Scaleup $999/mo (500 concurrent sessions), Enterprise on negotiated annual credits and SLAs, plus a pay-as-you-go credit option. States \"Cloud usage and the open-source browser-use Python library are separate products with different APIs.\"",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "6f0cc8b97e4131f591a227c8d66cef1cf2cc74aa86378bc388a9e356aa74617d",
+                "establishes": [
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/browser-use/browser-use/main/CLOUD.md",
+                "shows": "Describes Browser Use Cloud as \"the fully hosted product made by Browser Use made for users to automate web-based tasks\", billed per usage through an API key, with its own v2 REST API at api.browser-use.com, hosted Sessions and Browsers, cloud Browser Profiles and a chromium fork carrying \"proprietary optimizations\". All of it is hosted infrastructure sold beside the library; none of it is a feature removed from the MIT library, which drives a local browser with any LLM.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "8340abd8d96d663fd25427c446555a29f7478b698ceab3831ef1e8b5a4706e3f",
+                "establishes": [
+                  "core-gated"
+                ]
               }
             ],
             "bucket": "open"
@@ -27978,8 +28185,8 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-07-30",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "Browser Use, verified live June 2026 (GitHub + PyPI). OSS Python library making websites accessible to AI agents (navigate/click/fill/extract). MIT license. Recategorized into agent_tools_protocols (browser/scrape sub-segment) per assignment. Managed Browser Use Cloud tier also exists."
         },
@@ -28642,9 +28849,10 @@
           "openness": {
             "score": 5,
             "class": "open_source",
-            "components": "license:Apache-2.0(declared in Cargo.toml+README);source:public;full-runtime-in-repo(Rust core+QUIC+multi-language SDKs);managed-hosting-by-Vivgrid-optional",
+            "components": "license:Apache-2.0(declared in Cargo.toml+README);source:public;core-gated:ungated(the whole runtime is in src/ - router zipper serverless host tool invoker LLM and model providers auth and TLS - with no second license and no license key. Vivgrid sells a separate hosted serverless platform that the repo neither references nor requires);full-runtime-in-repo(Rust core+QUIC+multi-language SDKs);managed-hosting-by-Vivgrid-optional",
             "confidence": "medium",
-            "note": "Cargo.toml declares license = \"Apache-2.0\" and the README states Apache License 2.0, but no LICENSE file is committed at the repo root, so GitHub's detector reports no license. The full runtime (Rust core, QUIC transport, serverless SDKs) is in the open repo; Vivgrid's managed platform is optional hosting of the same open framework rather than a gated core. Scored open_source with medium confidence pending a committed LICENSE file.",
+            "note": "Cargo.toml declares license = \"Apache-2.0\" at v2.0.6 and the README's License section still points at Apache License 2.0, but no LICENSE file is committed at the repo root, so the GitHub API reports license null. That is the weakest part of this record and it is unchanged. `core-gated: ungated` transcribed 2026-08-12 from a read of the repo and of Vivgrid. What is published is the whole runtime rather than a client to a hosted one: src/ carries router.rs, zipper.rs, serverless.rs, agent_loop.rs, tool_invoker.rs, tool_mgr.rs, llm_provider/, model_api_provider/, auth.rs, http_auth.rs, tls.rs and connector.rs - routing, the serverless host, tool invocation, the OpenAI-compatible surface, auth and transport - with no ee/ directory, no second license and no license-key path. Vivgrid sells \"serverless LLM function calling that lets enterprise AI agents run their tools in the cloud - with observability, evaluation, and globally distributed inference built in\", on a free tier plus credits; its landing page does not mention YoMo and the current YoMo README does not mention Vivgrid. A hosted platform sold beside a complete open core is the langchain shape, not a gate.",
+            "last_verified": "2026-08-12",
             "sources": [
               {
                 "url": "https://github.com/yomorun/yomo/blob/main/Cargo.toml",
@@ -28655,6 +28863,37 @@
                 "url": "https://github.com/yomorun/yomo",
                 "shows": "README License section links Apache License 2.0; Rust core, QUIC, serverless SDKs public",
                 "accessed": "2026-07-09"
+              },
+              {
+                "url": "https://raw.githubusercontent.com/yomorun/yomo/main/Cargo.toml",
+                "shows": "[package] name = \"yomo\", version = \"2.0.6\", edition = \"2024\", license = \"Apache-2.0\", description \"A QUIC-based runtime for AI-LLM tool routing and serverless execution\". The license is declared here rather than in a root LICENSE file, which is why the GitHub API reports license null for this repo.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "6ea01fafd6d3be812d16ac1e5311b51b784c6c4472b46a9a2a8afc64b78d0b3f",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/yomorun/yomo/contents/src",
+                "shows": "The published runtime, module by module: agent_loop.rs, auth.rs, bridge.rs, client.rs, connector.rs, http_auth.rs, llm_api.rs, llm_provider/, llm_stream_mapper.rs, metadata_mgr.rs, model_api.rs, model_api_provider/, openai_http_mapping.rs, router.rs, serve_config.rs, serverless.rs, tls.rs, tool_api.rs, tool_invoker.rs, tool_mgr.rs, zipper.rs and bin/. Routing, the serverless host, tool invocation, the OpenAI-compatible surface, auth and transport are all here; nothing is stubbed out to a hosted service.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "f8daafafbf3b5e9a7eca5349d759f65c39e07331e5f103983426ef97ebedf72d",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://vivgrid.com/",
+                "shows": "Vivgrid sells \"serverless LLM function calling that lets enterprise AI agents run their tools in the cloud - with observability, evaluation, and globally distributed inference built in\", with a free tier and $200/month in credits for maintainers of approved open-source projects. The landing page does not mention YoMo at all, so what is sold is a hosted platform beside the framework rather than a piece of it.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "e9a351d735ab01dd0784220cfe5f2b9f97af9afc0e18a75352761f5ac5809482",
+                "establishes": [
+                  "core-gated"
+                ]
               }
             ],
             "bucket": "open"
@@ -28695,8 +28934,8 @@
           "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-07-19",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "Apache-2.0 framework/runtime for the agent-tooling layer (function calling, skill deployment, edge orchestration), not a model. Maintained since 2020; v2.0.4 released 7 Jul 2026 (Rust rewrite). Backed by Vivgrid (https://vivgrid.com), which operates it as a managed geo-distributed platform. Added from contributor issue"
         }
@@ -29882,9 +30121,10 @@
           "openness": {
             "score": 5,
             "class": "open_source",
-            "components": "license:Apache-2.0(OSI permissive);source:public",
+            "components": "license:Apache-2.0(OSI permissive);source:public;core-gated:ungated(every runtime piece is published - eleven syft-* packages under packages/ plus syft_client under one Apache-2.0 license - and PySyft runs on cloud storage the user already has rather than on an OpenMined-operated plane. No enterprise path and no license key in the tree)",
             "confidence": "high",
-            "note": "Apache-2.0 licensed with full public source code.",
+            "note": "Apache-2.0 licensed with full public source code. `core-gated: ungated` transcribed 2026-08-12 from a read of the repo. PySyft's architecture is the opposite of a gate: the README's pitch is that data scientists submit computations run by data owners \"through cloud storage their organizations already use (Google Drive, Microsoft 365, etc.). No new infrastructure required\", so there is no OpenMined-operated plane that could be withheld. Every runtime piece is published - packages/ holds eleven syft-* packages (syft-bg, syft-datasets, syft-enclave, syft-job, syft-migration, syft-notebook-ui, syft-permissions, syft-perms, syft-rds, syft-restrict and an enclave example) beside syft_client - under one Apache-2.0 LICENSE. A repo-wide code search for `enterprise` returns nothing and there is no license-key path. OpenMined is a non-profit and sells no tier.",
+            "last_verified": "2026-08-12",
             "sources": [
               {
                 "url": "https://github.com/OpenMined/PySyft",
@@ -29895,6 +30135,28 @@
                 "url": "https://pypi.org/project/syft/",
                 "shows": "PyPI metadata lists License Apache-2.0, source OpenMined/PySyft",
                 "accessed": "2026-06-22"
+              },
+              {
+                "url": "https://api.github.com/repos/OpenMined/PySyft/contents/packages",
+                "shows": "The published component set: enclave-model-api-example, syft-bg, syft-datasets, syft-enclave, syft-job, syft-migration, syft-notebook-ui, syft-permissions, syft-perms, syft-rds, syft-restrict. Together with syft_client at the root this is the whole runtime, under one Apache-2.0 LICENSE, with no ee/, enterprise/ or second-licensed directory anywhere in the tree.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "fd7eecd51a6a881015f48492fa519e8c87219a1222f0e947c745121d1e478211",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/OpenMined/PySyft/dev/README.md",
+                "shows": "License badge and closing section both give Apache License 2.0. The description is that \"PySyft lets data scientists submit computations which are ran by data owners on private data - all through cloud storage their organizations already use (Google Drive, Microsoft 365, etc.). No new infrastructure required.\" No hosted OpenMined service, paid tier or enterprise edition appears anywhere in it.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "ee46bfd7bbc137089c7779d4f3e6a227dccb9ceb3bc2bda65013b0cd2c8f6f4e",
+                "establishes": [
+                  "license",
+                  "core-gated"
+                ]
               }
             ],
             "bucket": "open"
@@ -29935,8 +30197,8 @@
           "maturity": 3.4,
           "mature": false,
           "freshness": {
-            "date": "2026-06-22",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "Verified live 2026-06-22 via primary sources. Apache-2.0 licensed with full public source code."
         },
@@ -29950,14 +30212,37 @@
           "openness": {
             "score": 5,
             "class": "open_source",
-            "components": "license:GPL-3.0(OSI copyleft);source:public",
+            "components": "license:GPL-3.0(OSI copyleft);source:public;core-gated:ungated(all nine analysis operators ship in operators/ under the one GPL-3.0 license. Tattle offers no hosted edition and no paid tier)",
             "confidence": "high",
-            "note": "GPL-3.0 licensed open source project with public source.",
+            "note": "GPL-3.0 licensed open source project with public source. `core-gated: ungated` transcribed 2026-08-12 from a read of the repo. Feluda is Tattle's civic-tech content-analysis library and there is no commercial side to gate with: no hosted edition, no pricing page and no enterprise path in the tree. Every operator the engine offers ships in operators/ - classify_video_zero_shot, cluster_embeddings, detect_lewd_images, detect_text_in_image, dimension_reduction, image_vec_rep, vid_vec_rep and video_hash - under the one GPL-3.0 LICENSE.md that the GitHub API also classifies as GPL-3.0. The README's only mention of a paid service runs the other way: an OpenCV-based operator exists so that users who \"don't want to use a google product\" can avoid the Cloud Vision API.",
+            "last_verified": "2026-08-12",
             "sources": [
               {
                 "url": "https://github.com/tattle-made/feluda",
                 "shows": "GPL-3.0 license, public source under tattle-made org",
                 "accessed": "2026-06-22"
+              },
+              {
+                "url": "https://api.github.com/repos/tattle-made/feluda",
+                "shows": "Repo metadata: license spdx_id GPL-3.0, default branch main, 95 stars, not archived, under the tattle-made org.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "b8e56ed0ac226849c8daf1fd4a26404b423cb090049b48b708dbc1ad550c2a13",
+                "establishes": [
+                  "license",
+                  "source"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/tattle-made/feluda/contents/operators",
+                "shows": "Every operator the README advertises is published here: classify_video_zero_shot, cluster_embeddings, detect_lewd_images, detect_text_in_image, dimension_reduction, image_vec_rep, vid_vec_rep, video_hash. Nothing is held back for a paid edition, and the root tree carries a single LICENSE.md with no ee/ or enterprise/ path beside it.",
+                "accessed": "2026-08-12",
+                "http_status": 200,
+                "content_sha256": "a43769694d6bbdb70934b0de3a4123425d638893444c81ee8f314cb87928a652",
+                "establishes": [
+                  "source",
+                  "core-gated"
+                ]
               }
             ],
             "bucket": "open"
@@ -29993,8 +30278,8 @@
           "maturity": 2.4,
           "mature": false,
           "freshness": {
-            "date": "2026-06-24",
-            "basis": "commit"
+            "date": "2026-08-12",
+            "basis": "verified"
           },
           "version_note": "Verified live 2026-06-22 via primary sources. GPL-3.0 licensed open source project with public source."
         }
