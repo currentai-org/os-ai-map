@@ -140,10 +140,22 @@ def test_local_scores_matches_check_rubrics_split():
     on cloud storage the user already owns. model-context-protocol stayed, and its reason was
     rewritten: source and core-gated are now recorded, but its LICENSE splits three ways and
     the CC-BY-4.0 documentation branch maps to no tier, so the ladder abstains on the license
-    rather than on the missing keys the old reason blamed."""
+    rather than on the missing keys the old reason blamed.
+
+    Then 442/30 -> 446/26 when the four guardrail-model deferrals in `safeguards` came off.
+    All four were recorded 4/open_weights against a ladder computing 3, and all four dropped
+    to 3 rather than the ladder bending. qwen3guard, granite-guardian and gpt-oss-safeguard
+    were one case argued once - Apache-2.0 weights, `data:not-released`, no recipe published -
+    and the 4-rung needs the post-training data AND the fine-tuning pipeline, so the recorded
+    4 was crediting a recipe the products' own cards say does not exist. wildguard looked
+    different and was settled by reading the project rather than by judgment: its `data:open`
+    is real, the WildGuardMix corpus is public, but `allenai/wildguard` ships nine files with
+    no trainer and no training config, its companion Safety-Eval repo is an evaluation suite,
+    and the card sends readers to the paper appendix for training details. That is
+    `code:partial`, the 4-rung still fails, and open data on its own does not carry it."""
     computed, deferred = local_scores(None)
-    assert len(deferred) == 30
-    assert len(computed) == 442
+    assert len(deferred) == 26
+    assert len(computed) == 446
     assert not set(computed) & set(deferred)
     # Every one of the 410 reproduces today, so none should abstain.
     assert [key for key, value in computed.items() if value is None] == []

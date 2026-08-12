@@ -16,10 +16,10 @@ scoring_recipe:
   derived_from:
     method: per-type extends over the shared ladders; evidence transcribed into the keys the
       ladders read, then verified
-    scores_reproduced: 21
+    scores_reproduced: 25
     scores_total: 26
-    scores_deferred: 5
-    verified_on: '2026-08-01'
+    scores_deferred: 1
+    verified_on: '2026-08-12'
     checker: build/check_rubric.py
   note: >-
     Was 0/26. Sixteen products were not disagreeing with the ladders at all - they recorded the
@@ -35,33 +35,18 @@ scoring_recipe:
     bounded commercial licence at 2, and the scale sets that tier to 3. Four hand-authored
     scores already agreeing with the scale was part of the evidence for it.
 
-    Five remain. Four are scored 4 where the recorded evidence supports 3 - three of them the
-    same `data:not-released` case, so one reading settles all three. One needs a decision about
-    which artifact a bundled product is scored on.
+    Four more were scored 4 where the evidence supported 3, and all four dropped to 3.
+    `qwen3guard`, `granite-guardian` and `gpt-oss-safeguard` were the same `data:not-released`
+    case, and the ruling was that the rung is right as written - Apache-2.0 weights with no
+    released training recipe is a 3, which is how every comparable model here is scored.
+    `wildguard` had a different cause and was settled by reading the project rather than by
+    judgment. Its `data:open` is correct, the WildGuardMix corpus really is public, but the
+    `allenai/wildguard` repo ships an inference package with no trainer and the card sends
+    readers to the paper appendix for training details, so `code` is `partial` and the 4-rung
+    still fails. Open data on its own does not carry the rung.
+
+    One remains. It needs a decision about which artifact a bundled product is scored on.
   deferred:
-    qwen3guard:
-      because: >-
-        Recorded 4/open_weights; the ladders compute 3/open_weights. Apache-2.0, so the license
-        is not the constraint: model.yaml's 4-rung needs BOTH post-training data and the
-        fine-tuning pipeline released, and this records `data:not-released` with no `code` at
-        all. Either the 4 is crediting a recipe the product's own record says is not published,
-        or the 4-rung is the wrong test for a guardrail model. Same shape as `granite-guardian`
-        and `gpt-oss-safeguard`; one reading should settle all three.
-    granite-guardian:
-      because: >-
-        Recorded 4/open_weights; the ladders compute 3/open_weights. As `qwen3guard`: an
-        OSI license, `data:not-released`, no `code` recorded, and the 4-rung needs both.
-    gpt-oss-safeguard:
-      because: >-
-        Recorded 4/open_weights; the ladders compute 3/open_weights. As `qwen3guard`: an
-        OSI license, `data:not-released`, no `code` recorded, and the 4-rung needs both.
-    wildguard:
-      because: >-
-        Recorded 4/open_weights; the ladders compute 3/open_weights. Different cause from the
-        three above: `data:open` is genuinely correct, since the WildGuardMix corpus is public,
-        but `code` was never recorded and the 4-rung needs both. This is the one of the four
-        that a repo read could settle rather than a judgment call - if the fine-tuning pipeline
-        is published, recording it makes the 4 reproduce.
     llamafirewall:
       because: >-
         Recorded 5/open_source; the ladders abstain, because neither `source` nor `license` is
