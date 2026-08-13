@@ -82,6 +82,29 @@ def declared_scales(sources: dict) -> dict[tuple[str, str], dict[str, int]]:
     return scales
 
 
+def declared_vocabularies(root: Path = ROOT) -> dict[str, set[str]]:
+    """signal_type -> the words it may record as `reach`, for instruments with no bands.
+
+    A VOCABULARY is not a scale, and the difference is the point. A scale maps a label to a
+    level and a mismatch between them is a finding. A vocabulary says only which words exist:
+    `reported_traction` records what KIND of standing was claimed, while the level says how
+    much, and the two are allowed to disagree because neither is derived from the other.
+
+    Measured 2026-08-13 on the 110 records carrying `reported_traction`: `niche` ran 85%
+    level 3, `broad` 80% level 4, `mass-market` 67% level 5. Forcing agreement would flatten
+    the residual signal those spreads represent, so this check asserts membership only.
+    """
+    from build.serialize_rubric import load_routing
+
+    routing = load_routing(root)
+    routes = ((routing.get("dimensions") or {}).get("adoption") or {}).get("routes") or []
+    return {
+        route["signal_type"]: set(route["vocabulary"])
+        for route in routes
+        if route.get("signal_type") and route.get("vocabulary")
+    }
+
+
 # Instruments whose bands are read in downloads, and which may therefore fall back to the
 # product type's declared download scale. Everything else measures something else entirely.
 #
@@ -127,6 +150,7 @@ def scale_for(scales: dict, product_type: str, signal_type: str) -> dict[str, in
 
 def collect(sources: dict) -> tuple[list[str], int]:
     scales = declared_scales(sources)
+    vocabularies = declared_vocabularies()
     types = {slug: (doc or {}).get("type") for slug, doc in sources["products"].items()}
 
     findings: list[str] = []
@@ -137,6 +161,24 @@ def collect(sources: dict) -> tuple[list[str], int]:
         if level is None and reach is None:
             continue
         signal = adoption.get("signal_type") or ""
+
+        # An instrument with a vocabulary rather than bands. `reach` is optional here —
+        # omitting it is the honest default and 15 records already do — so the only thing
+        # to check is that a word, if present, is one the instrument declares. Crucially
+        # this is where a NUMERIC label gets caught: `100K-1M` is not in the vocabulary, and
+        # on an instrument defined by having nothing to count it is a measurement claim the
+        # instrument cannot make.
+        if signal in vocabularies:
+            examined += 1
+            if reach is not None and reach not in vocabularies[signal]:
+                findings.append(
+                    f"{slug} [{types.get(slug)}/{signal}]: reach {reach!r} is not in this "
+                    f"instrument's vocabulary {sorted(vocabularies[signal])}; a "
+                    f"{signal} record has no count behind it, so a numeric band claims a "
+                    f"measurement that was never made"
+                )
+            continue
+
         scale = scale_for(scales, types.get(slug), signal)
         if scale is None:
             continue  # hardware declares no adoption scale, by design

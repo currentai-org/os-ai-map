@@ -51,6 +51,69 @@ def test_the_stars_scale_is_chosen_by_signal_not_by_type(sources):
     assert downloads is not None and downloads != stars
 
 
+def test_reported_traction_records_a_word_and_never_a_number(sources):
+    """68 of its 110 records carried a numeric download label until 2026-08-13.
+
+    They were perfectly collinear with the level beside them — `100K-1M` was level 3 on all 33
+    of its records, `1M-10M` level 4 on all 23 — so they carried nothing the level did not.
+    And they carried something false: `aws-neuron` read `100K-1M` beneath a note saying "no
+    download/user count is published for Neuron". A reader sees a numeric band and concludes
+    somebody counted something. On an instrument defined by having nothing to count, nobody did.
+    """
+    from build.check_adoption import declared_vocabularies
+
+    vocab = declared_vocabularies()
+    assert vocab["reported_traction"] == {"niche", "broad", "mass-market"}
+
+    # The words are hardware's, which declares `qualitative: true` with an empty bands list and
+    # has used exactly these since before the route existed. Sharing beats a parallel set.
+    hardware = (sources["rubrics"]["hardware"] or {}).get("adoption") or {}
+    assert hardware.get("qualitative") and not hardware.get("bands")
+
+    offenders = []
+    for slug, score in sources["scores"].items():
+        adoption = (score or {}).get("adoption") or {}
+        if adoption.get("signal_type") != "reported_traction":
+            continue
+        reach = adoption.get("reach")
+        # Omitting `reach` is the honest default here, so None is legal on purpose.
+        if reach is not None and reach not in vocab["reported_traction"]:
+            offenders.append((slug, reach))
+    assert not offenders, (
+        f"{offenders} record a reach outside the vocabulary. A reported_traction record has no "
+        f"count behind it, so a numeric band claims a measurement that was never made."
+    )
+
+
+def test_a_vocabulary_is_not_a_scale_and_does_not_constrain_the_level(sources):
+    """The reason `vocabulary` exists as a separate concept from `bands`.
+
+    A scale maps a label to a level, and a disagreement is a finding. A vocabulary says only
+    which words exist: the word says what KIND of standing was claimed, the level says how
+    much. Measured 2026-08-13, `niche` ran 85% level 3, `broad` 80% level 4, `mass-market` 67%
+    level 5 — spreads that a bands table would flatten by forcing agreement.
+
+    Asserted as a real property rather than a comment: at least one word must appear against
+    more than one level, or the distinction this design rests on is not doing any work and the
+    words may as well be bands.
+    """
+    from collections import defaultdict
+
+    from build.check_adoption import declared_vocabularies
+
+    words = declared_vocabularies()["reported_traction"]
+    levels = defaultdict(set)
+    for score in sources["scores"].values():
+        adoption = (score or {}).get("adoption") or {}
+        if adoption.get("signal_type") == "reported_traction" and adoption.get("reach") in words:
+            levels[adoption["reach"]].add(adoption.get("level"))
+
+    assert any(len(seen) > 1 for seen in levels.values()), (
+        f"every word maps to exactly one level ({dict(levels)}) — if that holds, the words "
+        f"are bands in disguise and should be declared as bands"
+    )
+
+
 def test_an_instrument_with_no_scale_abstains_rather_than_borrowing_one(sources):
     """The rule the first version of this checker broke.
 
@@ -64,11 +127,18 @@ def test_an_instrument_with_no_scale_abstains_rather_than_borrowing_one(sources)
     did, for all 93 `reported_traction` products, and the false findings were indistinguishable
     from real ones because they had the same shape.
 
-    `active_users` was the second such instrument until 2026-08-13, and it is asserted below
-    rather than here for a reason worth keeping: the skip was correct and it was also what hid
-    the problem. 22 of the 23 products carrying the instrument were wearing labels off the
-    download vocabulary, and a checker that declines to look never says so. Abstention is the
-    right answer to a missing scale and the wrong answer to a scale nobody has declared yet.
+    This still holds after 2026-08-13, and the distinction is the interesting part.
+    `reported_traction` now has a VOCABULARY, so it is checked — but it still has no SCALE, so
+    `scale_for` must keep returning None for it. A vocabulary constrains which words may be
+    recorded; only a scale can say a level is wrong. Conflating the two would reintroduce the
+    original bug wearing new clothes.
+
+    `active_users` went the other way on the same day: it declares a real scale and resolves
+    below. Both moves came out of the same finding, which is the one worth keeping — the skip
+    was correct AND it was what hid the problem. 22 of 23 `active_users` records and 68 of 110
+    `reported_traction` ones were wearing download labels, and a checker that declines to look
+    never says so. Abstention is the right answer to a missing scale and the wrong answer to a
+    scale nobody has declared yet.
     """
     scales = declared_scales(sources)
     for product_type in ("software", "model", "dataset"):

@@ -185,7 +185,7 @@ how much weight it carries:
 |---|---|---|
 | `usage_volume` | a download or install count | **yes**, where the artifact is declared |
 | `active_users` | vendor-disclosed MAU or WAU. **Its own scale**, sharing the download thresholds | no |
-| `reported_traction` | a credible third-party or vendor figure | no |
+| `reported_traction` | a credible vendor or third-party claim, with **no count behind it**. A word vocabulary, never a number | no |
 | `stars_fallback` | GitHub stars. Last resort, and **capped at level 3** | yes, once stars are banded |
 | `unknown` | instrument not recorded | no |
 
@@ -194,15 +194,43 @@ load-bearing rule in this guide:
 
 - A `usage_volume` band **claims to be a download count**. If a computed count disagrees, one
   of them is wrong — in either direction — and it is a finding, not a judgment call.
-- A `reported_traction` band is measuring **something else entirely**. Comparing it against a
-  download count is a category error, and a check must **skip** it rather than flag or waive
-  it. This was true of `active_users` too until it got a scale on 2026-08-13 — and the skip is
-  worth remembering, because it was correct *and* it was what hid the problem. 22 of the 23
-  products were wearing download labels, and a checker that declines to look never says so.
-  **Abstention is the right answer to a missing scale and the wrong answer to a scale nobody
-  has declared yet.**
+- A `reported_traction` record claims **no count at all**, so it may carry a word and never a
+  number. See the vocabulary below.
 - An `active_users` band claims a count of people, on the scale above. It may be compared only
   against another user count.
+
+Both of the latter were skipped entirely by `check_adoption` until 2026-08-13, on the ground
+that comparing them against a download count is a category error. That was correct, and it is
+also what hid the problem — 22 of 23 `active_users` records and 68 of 110 `reported_traction`
+ones were wearing download labels, and a checker that declines to look never says so.
+**Abstention is the right answer to a missing scale and the wrong answer to a scale nobody has
+declared yet.**
+
+### `reported_traction` records a word, never a number
+
+| may record | `niche` · `broad` · `mass-market` — or nothing at all |
+|---|---|
+
+**A vocabulary, not a scale, and the difference is the point.** A scale maps a label to a level
+and a disagreement between them is a finding. A vocabulary says only which words exist: the word
+says what *kind* of standing was claimed, the level says *how much*, and neither is derived from
+the other. Measured 2026-08-13, `niche` ran 85% level 3, `broad` 80% level 4, `mass-market` 67%
+level 5 — forcing agreement would flatten exactly the residual signal those spreads represent.
+
+**Numeric labels are illegal here, and 68 of 110 records carried one.** They were perfectly
+collinear with the level beside them: `100K-1M` was level 3 on all 33 of its records, `1M-10M`
+level 4 on all 23, `10K-100K` level 2 on all 7. So they carried nothing the level did not —
+and they carried something false. `amazon-nova` read `1M-10M` beneath a note saying "no
+standalone per-model user count published"; `aws-neuron` read `100K-1M` beneath "no
+download/user count is published for Neuron". A reader sees a numeric band and concludes
+somebody counted something. **Nobody did.** A number here is a measurement claim the instrument
+is defined by being unable to make. All 68 were stripped on 2026-08-13; the levels stand.
+
+**Omitting `reach` is the honest default** — 15 records already did. Record a word only where
+it says something the level does not, which is usually the *shape* of the traction rather than
+its size: `osprey` at 446 GitHub stars but running in production at Discord is `niche` in a way
+that matters. The words are hardware's, which has used exactly these since before this route
+existed; sharing them beats minting a parallel set.
 - A `stars_fallback` band means no download signal existed when it was set. If one exists now,
   re-band on it.
 
@@ -329,7 +357,10 @@ product, followed by a band recorded on that signal anyway.**
 - [ ] `signal_type` names the instrument actually used, not the one that sounds strongest.
 - [ ] `stars_fallback` never exceeds level 3.
 - [ ] A `usage_volume` band has a countable, **declared** artifact behind it.
-- [ ] A `reported_traction` band cites a source with a figure, a date and a digest.
+- [ ] A `reported_traction` record cites a source with a date and a digest, and records a word
+      from the vocabulary or no `reach` at all — never a number.
+- [ ] An `active_users` band names the quantity it actually banded, if that quantity is not an
+      active count (an all-time total, a device base, a paid-seat count).
 - [ ] The band follows from the figure in the note, in the same direction and order of
       magnitude.
 - [ ] No band was copied from a computed signal — those are observations, not scores.
