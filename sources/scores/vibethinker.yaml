@@ -16,22 +16,40 @@ openness:
     - name: MIT
   confidence: medium
   note: MIT-licensed weights, but a fine-tune of the open-weight Qwen2.5 line without a fully open/reproducible
-    data+training pipeline -> open_weights tier, not open_source.
+    data+training pipeline -> open_weights tier, not open_source. Re-read 2026-08-13 - the card still carries
+    `license:mit` with `"gated":false` and `base_model - Qwen/Qwen2.5-Coder-3B`, and still publishes no
+    RL or SFT mixture and no training pipeline. No change.
   raw: weights:open(MIT);base:open_weights(Qwen2.5);data:partial(RL/SFT data not fully released);license:MIT
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/WeiboAI/VibeThinker-3B
-    shows: VibeThinker-3B; MIT license; fine-tuned from Qwen2.5-3B / Qwen2.5-Coder-3B
-    accessed: '2026-06-30'
+    shows: '`license:mit` in the card data and `"gated":false`; `base_model - Qwen/Qwen2.5-Coder-3B`; no
+      RL/SFT mixture and no training pipeline published'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c9a7309f31307ea11639a6ecd2a026703844139653a6987371c9bb50c05ae63d
+    establishes: [weights, data, license]
 adoption:
   level: 2
   signal_type: reported_traction
   confidence: low
   note: Recently released specialist model with early attention for its size; directional estimate (not
-    a measured usage figure).
+    a measured usage figure). Re-read 2026-08-13, and the instrument no longer fits. The product declares
+    a Hugging Face model artifact, which every adoption signal model reads, and it returns 149,008 downloads
+    in the trailing 30 days - a real count, banding at level 3 (100K-1M) on usage_volume. A reported_traction
+    record is defined by having no count behind it, and there is now a count. ESCALATED rather than changed
+    - level, signal_type and reach would all move together, so no last_verified is claimed on this axis.
   sources:
+  - url: https://huggingface.co/api/models/WeiboAI/VibeThinker-3B
+    shows: 149,008 downloads in the trailing 30 days for WeiboAI/VibeThinker-3B, ungated
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 76cdf7c09f348a466041f82ba569567c2cef6343648894b26bde80fd15045426
   - url: https://huggingface.co/WeiboAI/VibeThinker-3B
-    shows: active HF repo; early traction as a small reasoning specialist
-    accessed: '2026-06-30'
+    shows: active HF repo; 822 likes; early traction as a small reasoning specialist
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c9a7309f31307ea11639a6ecd2a026703844139653a6987371c9bb50c05ae63d
 capability:
   score: 3
   basis: benchmark
@@ -39,8 +57,15 @@ capability:
   value: AIME 2026 94.3, GPQA Diamond 70.2, IMO-AnswerBench 76.4, LeetCode 96.1% accept
   confidence: medium
   note: Frontier-range on narrow verifiable math/code reasoning despite 3B, but explicitly not for general/agentic
-    use -> mid-tier on a general-capability scale.
+    use -> mid-tier on a general-capability scale. Re-read 2026-08-13 - the card's model-index still records
+    MathArena/aime_2026 94.3 and GPQA Diamond 70.2, and the Key Performance Data section still claims 76.4
+    on IMO-AnswerBench at 3B parameters. No change.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/WeiboAI/VibeThinker-3B
-    shows: reports AIME 2026 94.3, GPQA Diamond 70.2, IMO-AnswerBench 76.4; not for tool/agent use
-    accessed: '2026-06-30'
+    shows: 'model-index - MathArena/aime_2026 94.3, Idavidrein/gpqa diamond 70.2; Key Performance Data -
+      "VibeThinker-3B reaches 76.4 on IMO-AnswerBench ... with only 3B parameters"; not positioned for
+      tool or agent use'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c9a7309f31307ea11639a6ecd2a026703844139653a6987371c9bb50c05ae63d

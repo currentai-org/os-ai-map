@@ -21,17 +21,27 @@ openness:
   confidence: high
   note: 'Fully-open MoE: Apache-2.0 weights + open pretraining data (OLMoE-mix-0924, on
     Dolma/DataComp) + open post-training data + open code + 244 intermediate checkpoints.
-    Open_source tier 5.'
+    Open_source tier 5. Re-read 2026-08-13 - the card still reads "OLMoE is 100% open-source" and still
+    links checkpoints, code, data and logs separately for pretraining, SFT and DPO/KTO, with
+    `license:apache-2.0` in the repo tags. No change.'
   raw: weights:open(Apache-2.0);data:open(OLMoE-mix-0924 pretraining + Tulu/UltraFeedback post-training);code:open(OLMoE
     training code, SFT/DPO/KTO recipes);checkpoints:open(244 intermediate);license:Apache-2.0(OSI)
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/allenai/OLMoE-1B-7B-0924-Instruct
-    shows: License Apache-2.0; SFT+DPO instruct; open data and code
-    accessed: '2026-06-25'
+    shows: '`license:apache-2.0` in the repo tags; "OLMoE is 100% open-source"; the card links Checkpoints,
+      Code, Data and Logs for pretraining, for SFT, and for DPO/KTO separately, and names
+      allenai/ultrafeedback_binarized_cleaned as the preference data'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: bcb2b0e5af0862689a775809399adf30e8fa5ff6d7ac0395d3b48371a7cd77b7
+    establishes: [weights, data, code, checkpoints, license]
   - url: https://allenai.org/blog/olmoe-an-open-small-and-state-of-the-art-mixture-of-experts-model-c258432d0514
     shows: released with open data, code, evaluations, logs, and intermediate training
       checkpoints
-    accessed: '2026-06-25'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: a3d2691fa16b3fd9b1b7ef5f4e6582b195674de7f287c967f9b1747eb22844e1
 adoption:
   level: 2
   reach: 10K-100K
@@ -65,10 +75,20 @@ capability:
     low-tier vs full-size 2026 chat models given the 1.3B active budget. Scored 2 on
     absolute capability. Exact per-competitor numbers live in arXiv 2409.02060 (blog
     charts are images), so the comparative claims are directional -- hence medium confidence.
+    Re-read 2026-08-13 - the card's Evaluation Snapshot still gives the +DPO row MMLU 51.9,
+    GSM8k 45.5, HumanEval 54.8, Alpaca-Eval 1.0 84.0 and IFEval 48.1, every figure unchanged,
+    and still claims parity with Llama2-13B-Chat at 1B active. No change.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/allenai/OLMoE-1B-7B-0924-Instruct
-    shows: MMLU 51.9, GSM8k 45.5, HumanEval 54.8, AlpacaEval 84.0, IFEval 48.1
-    accessed: '2026-06-25'
+    shows: 'Evaluation Snapshot, OLMoE +DPO row - MMLU 51.9, GSM8k 45.5, HumanEval 54.8, Alpaca-Eval 1.0
+      84.0, IFEval 48.1, Avg 57.7; card claims "state-of-the-art performance among models with a similar
+      cost (1B)" and competitiveness with Llama2-13B-Chat'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: bcb2b0e5af0862689a775809399adf30e8fa5ff6d7ac0395d3b48371a7cd77b7
   - url: https://allenai.org/blog/olmoe-an-open-small-and-state-of-the-art-mixture-of-experts-model-c258432d0514
     shows: positioned state-of-the-art at the ~1B-active cost class
-    accessed: '2026-06-25'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: a3d2691fa16b3fd9b1b7ef5f4e6582b195674de7f287c967f9b1747eb22844e1

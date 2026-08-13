@@ -17,16 +17,27 @@ openness:
   note: Proprietary and API-only across the Flash line, no downloadable weights, so 1/closed. Gemini 3.5 Flash governs
     as the current release and is a genuine capability jump - it scores 5 where 2.5 Flash scored 3 - which is why
     the versions were worth combining rather than keeping the older figure. Held apart from Gemini Pro, which Google
-    prices and positions as a separate tier.
+    prices and positions as a separate tier. Re-read 2026-08-13 - the Gemini 3.5 launch post still offers no
+    weight download, and DeepMind's own model index still files Gemini under the API and app products while
+    putting Gemma under a separate "Open models" heading, so the line is still drawn by the vendor rather
+    than inferred. No change.
   raw: weights:closed;data:closed;code:closed;license:Proprietary(Gemini app/Search/API/enterprise, no downloadable
     weights)
+  last_verified: '2026-08-13'
   sources:
   - url: https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-5/
-    shows: proprietary launch across Gemini app/Search/API/enterprise, no open weights
-    accessed: '2026-06-04'
+    shows: proprietary launch across Gemini app/Search/API/enterprise, no open weights and no corpus or
+      training code
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: bcfcef8f1a7ca1f6a43f67d199a3686d96f50a066e159a5e464bc2107a47e5bd
+    establishes: [weights, data, code, license]
   - url: https://deepmind.google/models/gemini/
-    shows: DeepMind model listing for the Gemini family; served via API and apps only, no weight downloads
-    accessed: '2026-06-04'
+    shows: DeepMind's model index lists Gemini under the API and app products and files Gemma separately
+      under an "Open models" heading; no weight download for Gemini
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: e2cdef7176ad7a1743962bc074f7b4bbe003b3f84f35f53d76858e22f1e92c24
 adoption:
   level: 5
   reach: '>10M users'
@@ -34,14 +45,23 @@ adoption:
   confidence: medium
   note: High-volume cheap tier powering the Gemini app and AI Mode in Search plus heavy API/Vertex traffic; Gemini
     app >750M MAU (TechCrunch, Feb 2026). Flash is the default high-volume serving model so its real usage is firmly
-    >10M-equivalent. Attributed to the app/Search surface, not a standalone download count.
+    >10M-equivalent. Attributed to the app/Search surface, not a standalone download count. Re-read 2026-08-13
+    - the TechCrunch headline still reads "Google's Gemini app has surpassed 750M monthly active users",
+    which is roughly two orders above the >10M users floor, so the band is unambiguous. The banded quantity
+    is the app's monthly active users and the note says so out loud, which is what the active_users scale
+    requires. No change.
+  last_verified: '2026-08-13'
   sources:
   - url: https://techcrunch.com/2026/02/04/googles-gemini-app-has-surpassed-750m-monthly-active-users/
-    shows: Gemini app >750M MAU
-    accessed: '2026-06-04'
+    shows: '"Google''s Gemini app has surpassed 750M monthly active users"'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: ddcedf22d574f93d4d64b7400cd5c4e6bbb569d1fb99d13ebef5a73275cbd34c
   - url: https://ai.google.dev/gemini-api/docs/models
-    shows: Gemini 2.5 Flash positioned as high-volume low-latency production model
-    accessed: '2026-06-04'
+    shows: Google's API model index, where the Flash line is the high-volume low-latency production tier
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: b2f43cfceed731afbe89c5a753836ecad6c0eda2b7ce73532975c6e0ed855141
 capability:
   score: 5
   basis: benchmark
@@ -50,8 +70,15 @@ capability:
     Opus 4.7 and GPT-5.5 on several agentic/multimodal suites
   confidence: high
   note: Frontier-tier; top-right of Artificial Analysis Intelligence Index. Scored 5, consistent with the flagship
-    anchor (cap 5). Google-reported figures.
+    anchor (cap 5). Google-reported figures. Re-read 2026-08-13 - all four figures are still on the launch
+    post in one sentence, and the "top-right quadrant of the Artificial Analysis" claim is still there too.
+    No change.
+  last_verified: '2026-08-13'
   sources:
   - url: https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-5/
-    shows: Terminal-Bench 2.1 76.2, MCP Atlas 83.6, CharXiv 84.2, GDPval-AA 1656 Elo
-    accessed: '2026-06-04'
+    shows: '"outperforming Gemini 3.1 Pro on challenging coding and agentic benchmarks like Terminal-Bench
+      2.1 (76.2%), GDPval-AA (1656 Elo) and MCP Atlas (83.6%), and leading in multimodal understanding
+      (84.2% on CharXiv Reasoning)"; "Landing in the top-right quadrant of the Artificial Analysis" index'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: bcfcef8f1a7ca1f6a43f67d199a3686d96f50a066e159a5e464bc2107a47e5bd

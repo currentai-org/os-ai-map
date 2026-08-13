@@ -17,14 +17,22 @@ openness:
       detail: OSI-style permissive, no use restrictions
   confidence: high
   note: MIT-licensed open weights with distillation rights, but RL/SFT post-training data and full training
-    code are not released -> open_weights.
+    code are not released -> open_weights. Re-read 2026-08-13 - the card still carries `license:mit`, still
+    reads `"gated":false`, and still publishes evaluation tables and inference instructions with no RL
+    training pipeline and no SFT or RL mixture. No change.
   raw: weights:open(MIT, on HF; distillation explicitly permitted);data:closed(RL/SFT training data not
     released);code:partial(inference; no full RL training pipeline);license:MIT(OSI-style permissive, no
     use restrictions)
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/deepseek-ai/DeepSeek-R1
-    shows: MIT license (commercial use + distillation permitted), 671B-A37B MoE reasoning model card
-    accessed: '2026-06-04'
+    shows: '`license:mit` in the repo tags and `"gated":false` in the embedded repo state, so the 671B-A37B
+      MoE weights download without a barrier; the card carries evaluation tables and local-inference
+      instructions only, with no RL training pipeline and no post-training mixture released'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: ef3d4cf617864129aeec4c06be33343d55ceacb1780e8425f5c45488917749fa
+    establishes: [weights, data, code, license]
 adoption:
   level: 4
   reach: 1M-10M
@@ -33,11 +41,16 @@ adoption:
   note: ~5.58M downloads last month for the base R1 repo on HF, plus a very large family of R1 distills
     and the DeepSeek app/API surface. The R1 release was a landmark open-reasoning event; measured monthly
     downloads place it firmly in 1-10M, with broader app/API/derivative reach pushing toward the top of
-    the band.
+    the band. Re-read 2026-08-13 - the base R1 repo now reads 8,316,405 downloads in the trailing 30 days,
+    and summed with the declared R1-0528 SKU (148,234) the tier reads 8,464,639, still inside 1M-10M. No
+    change.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/deepseek-ai/DeepSeek-R1
-    shows: ~5,577,155 downloads last month
-    accessed: '2026-06-04'
+    shows: 8,316,405 downloads in the trailing 30 days
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: ef3d4cf617864129aeec4c06be33343d55ceacb1780e8425f5c45488917749fa
 capability:
   score: 4
   basis: benchmark
@@ -48,9 +61,13 @@ capability:
   note: 'Frontier open reasoning model at its Jan 2025 release (o1-class: matched/beat o1 on AIME, MATH-500,
     LiveCodeBench). As of June 2026 it is surpassed by DeepSeek-V3.2-Speciale/V4 and other 2026 frontier
     reasoners, so a 4 rather than a category-5 in mid-2026 terms. Figures are DeepSeek-reported on the
-    HF card.'
+    HF card. Re-read 2026-08-13 - the card''s evaluation table still reports AIME 2024 pass@1 79.8 and SWE
+    Verified 49.2 for DeepSeek-R1 against the OpenAI o1 column, unchanged. No change.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/deepseek-ai/DeepSeek-R1
     shows: AIME 79.8 / MATH-500 97.3 / GPQA 71.5 / MMLU 90.8 / SWE-bench Verified 49.2 / LiveCodeBench
       65.9
-    accessed: '2026-06-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: ef3d4cf617864129aeec4c06be33343d55ceacb1780e8425f5c45488917749fa

@@ -22,26 +22,41 @@ openness:
     -- Nemotron-Pretraining-Specialized-v1.2 ships 53.6GB of synthetic data, but Nemotron-Pretraining-Code-v3 ships
     metadata parquet describing the code corpus rather than the corpus, so the earlier "~10T-token pretraining released"
     wording overstated it and has been narrowed. Score is unaffected: the post-training answer is what this category
-    asks for.'
+    asks for. Re-read 2026-08-13 - the Nemotron 3 page still lists Nemotron-SFT-Data and Nemotron-RL-Data
+    under Data with a Model Recipes section beside them, and the developer blog still says Nemotron 3 Super
+    is "fully open with open weights, datasets, and recipes". The pretraining-side caveat also still holds
+    - Nemotron-Pretraining-Code-v3 still ships only Nemotron-Code-Metadata parquet. No change.'
   raw: weights:open;data:open(~40M post-training/SFT+RL samples released as Nemotron-SFT-Data/Nemotron-RL-Data;
     pretraining sets only partly released);code:open(training recipes + RL env configs);license:NVIDIA-Nemotron-Open-Model-License(permissive,commercial,non-OSI)
+  last_verified: '2026-08-13'
   sources:
   - url: https://research.nvidia.com/labs/nemotron/Nemotron-3/
-    shows: Nemotron 3 Nano/Super/Ultra family; post-trained models; Nemotron-SFT-Data + Nemotron-RL-Data + training
-      recipes released
-    accessed: '2026-06-04'
+    shows: Nemotron 3 Nano/Super/Ultra family; the Data section still lists Nemotron-SFT-Data ("Collection
+      of new Nemotron 3 Nano SFT datasets") and Nemotron-RL-Data alongside the pretraining corpora, followed
+      by a Model Recipes section
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: f360f7fcd8f90ba7393ff3f8ee23f8f74be542a779d5073dc8dda2f359707826
+    establishes: [weights, data, code]
   - url: https://developer.nvidia.com/blog/introducing-nemotron-3-super-an-open-hybrid-mamba-transformer-moe-for-agentic-reasoning/
-    shows: 'NVIDIA primary blog: Nemotron 3 Super ''fully open with open weights, datasets, and recipes''; license
+    shows: 'NVIDIA primary blog - "Nemotron 3 Super is fully open-weights, datasets, and recipes"; license
       = NVIDIA Nemotron Open Model License (non-OSI)'
-    accessed: '2026-06-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 7f84f39a8504d6b3ff1c628c504050669c349a6f99c02416c546a43267bde5d7
+    establishes: [license]
   - url: https://huggingface.co/api/datasets/nvidia/Nemotron-Pretraining-Specialized-v1.2
     shows: 92 files, 53.62GB, ungated. Nemotron-Pretraining-Fact-Seeking/*.parquet and related synthetic pretraining
       sets.
-    accessed: '2026-07-28'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 6fefc8d4b32e2a832f9b01909eff6edd3fde15de305b21ace735c861dd855155
   - url: https://huggingface.co/api/datasets/nvidia/Nemotron-Pretraining-Code-v3
     shows: 67 files, 1.20GB, ungated, all under Nemotron-Code-Metadata/*.parquet -- metadata describing the code
       corpus, not the corpus itself
-    accessed: '2026-07-28'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: a91c62d06a941ad247cb87b6655e7cfc21773c67a45c361cee5833e84950a291
 adoption:
   level: 4
   reach: 1M-10M
@@ -53,20 +68,31 @@ adoption:
     Summing the family''s distributed SKUs, which is what the category''s adoption recipe specifies: Nano BF16 994,374
     + Super BF16 855,265 + Ultra BF16 339,360 = 2,188,999 monthly downloads, squarely in the 1M-10M band. The NVFP4/FP8/GGUF
     quantizations are excluded to avoid double counting the same weights. Also distributed free via OpenRouter (nemotron-3-super-120b-a12b:free)
-    and NVIDIA build/NIM, which the band does not capture, so 4 is a floor.'
+    and NVIDIA build/NIM, which the band does not capture, so 4 is a floor. Re-read 2026-08-13 - the three
+    BF16 repos now sum to 2,226,055 downloads in the trailing 30 days (Nano 914,120 + Super 870,782 +
+    Ultra 441,153), still squarely 1M-10M. No change.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://research.nvidia.com/labs/nemotron/Nemotron-3/
     shows: official distribution via NVIDIA build/NIM + HF for agentic use
-    accessed: '2026-06-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: f360f7fcd8f90ba7393ff3f8ee23f8f74be542a779d5073dc8dda2f359707826
   - url: https://huggingface.co/api/models/nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-BF16
-    shows: 994,374 downloads last month, ungated, 63.2GB of weight files, HTTP 200
-    accessed: '2026-07-29'
+    shows: 914,120 downloads in the trailing 30 days, ungated
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: fdac009f39e148db9d505b9aa41a7bc8f0b505eecea69b067ce9381527928c13
   - url: https://huggingface.co/api/models/nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-BF16
-    shows: 855,265 downloads last month, ungated, 247.2GB of weight files, HTTP 200
-    accessed: '2026-07-29'
+    shows: 870,782 downloads in the trailing 30 days, ungated
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 9f78d758c58aa246d08a7172ea72d35108c52420155bb7a9e9d500c824afdd49
   - url: https://huggingface.co/api/models/nvidia/NVIDIA-Nemotron-3-Ultra-550B-A55B-BF16
-    shows: 339,360 downloads last month, ungated, 2,242.1GB of weight files, HTTP 200
-    accessed: '2026-07-29'
+    shows: 441,153 downloads in the trailing 30 days, ungated
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: ac3d3f393f9dd514140fed21ee7a748103ca30f500227762c364a8deebd9e300
 capability:
   score: 5
   basis: benchmark
@@ -74,14 +100,29 @@ capability:
   value: 'Nemotron 3 Super (per NVIDIA tech report): SWE-Bench Verified 60.47, AIME 2025 90.21, GPQA (no tools)
     79.23, MMLU-Pro 83.73; ~2.2x inference throughput vs GPT-OSS-120B'
   confidence: high
-  note: Frontier-tier among open instruct models on the Super SKU. SWE-bench Verified 60.47 confirmed as highest
-    open-weight score via NVIDIA technical report + developer blog. Nano is much smaller and would score lower,
-    but the family's headline SKU defines the score.
+  note: >-
+    Frontier-tier among open instruct models on the Super SKU. Nano is much smaller and would score
+    lower, but the family's headline SKU defines the score.
+
+    Re-read 2026-08-13 - every recorded figure is still in the technical report's Agentic Reasoning
+    Benchmark table, unchanged (MMLU-Pro 83.73, AIME25 no tools 90.21, GPQA no tools 79.23, SWE-Bench
+    OpenHands 60.47). One claim in the note did NOT survive - it said 60.47 was "the highest
+    open-weight score", and the same table's Qwen3.5-122B-A10B column reads 66.40 on that row and
+    86.70 on MMLU-Pro. Removed rather than re-dated, because it was our gloss rather than a figure
+    the report published. Whether a 5 still follows from second place on the report's own comparison
+    is a scoring question, not a freshness one, and is FLAGGED for the orchestrator.
+  last_verified: '2026-08-13'
   sources:
   - url: https://research.nvidia.com/labs/nemotron/Nemotron-3/
-    shows: Nemotron 3 reasoning/agentic benchmark positioning vs GPT-OSS-20B/Qwen3
-    accessed: '2026-06-04'
+    shows: Nemotron 3 reasoning/agentic positioning - Nano "more accurate than GPT-OSS-20B and
+      Qwen3-30B-A3B-Thinking-2507 on popular benchmarks"; Ultra released
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: f360f7fcd8f90ba7393ff3f8ee23f8f74be542a779d5073dc8dda2f359707826
   - url: https://research.nvidia.com/labs/nemotron/files/NVIDIA-Nemotron-3-Super-Technical-Report.pdf
-    shows: NVIDIA Nemotron 3 Super Technical Report (Apr 2026) with SWE-bench Verified 60.47 and full benchmark
-      suite
-    accessed: '2026-06-04'
+    shows: 'Agentic Reasoning Benchmark table, N-3-Super column - MMLU-Pro 83.73, AIME25 (no tools) 90.21,
+      GPQA (no tools) 79.23, SWE-Bench (OpenHands) 60.47; the Qwen3.5-122B-A10B column on the same rows
+      reads 86.70 and 66.40, and the GPT-OSS-120B column 81.00 and 41.9'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 73ea5d737b9c7c62a39ed3edefbecb82e5a23681bc2c4167e202eeee7b3d254d

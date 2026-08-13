@@ -17,25 +17,41 @@ openness:
       detail: OSI
   confidence: high
   note: MIT-licensed open weights on a Qwen 3.5 base, but no open training data or recipe -> open_weights.
+    Re-read 2026-08-13 - the card still carries `license:mit` with `"gated":false` and the qwen3_5
+    architecture, and still publishes no training data and no recipe. Note the repo is now served under
+    the org `ornith-ai` rather than `deepreinforce-ai`; the declared URL still resolves. No change.
   raw: weights:open(MIT);base:Qwen3.5;data:closed;recipe:closed;license:MIT(OSI)
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/deepreinforce-ai/Ornith-1.0-9B
-    shows: license:mit tag; qwen3_5 architecture; safetensors weights
-    accessed: '2026-07-03'
+    shows: '`license:mit` and `"gated":false`; `Qwen3_5ForConditionalGeneration` architecture; safetensors
+      weights; no training data and no recipe published; repo now served as ornith-ai/Ornith-1.0-9B'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: f2dce9e8bb7989a0b62e72f438d129d927af9aeed17a1016842828e12ce2148e
+    establishes: [weights, data, recipe, license]
 adoption:
   level: 3
   reach: 100K-1M
   signal_type: usage_volume
   confidence: medium
   note: ~352k HF downloads last month combined across the primary weights repo (~64k) and the GGUF quant
-    (~288k), July 2026; 361 + 407 likes. Squarely in the 100k-1M band.
+    (~288k), July 2026; 361 + 407 likes. Squarely in the 100k-1M band. Re-read 2026-08-13 and the figure
+    has moved by an order of magnitude - the two declared repos now sum to 6,978,753 downloads in the
+    trailing 30 days (Ornith-1.0-9B 2,383,936; Ornith-1.0-9B-GGUF 4,594,817), which bands at level 4
+    (1M-10M), not 3. Both were re-read against the API rather than the rendered card. ESCALATED rather
+    than changed - no last_verified claimed on this axis.
   sources:
-  - url: https://huggingface.co/deepreinforce-ai/Ornith-1.0-9B
-    shows: 64,051 downloads last month, 361 likes
-    accessed: '2026-07-03'
-  - url: https://huggingface.co/deepreinforce-ai/Ornith-1.0-9B-GGUF
-    shows: 287,942 downloads last month, 407 likes
-    accessed: '2026-07-03'
+  - url: https://huggingface.co/api/models/deepreinforce-ai/Ornith-1.0-9B
+    shows: 2,383,936 downloads in the trailing 30 days (repo now served as ornith-ai/Ornith-1.0-9B)
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 8aee69ec2c62ebb5bc23e29e79c8aabd73508b3546591f84b856060971ea4047
+  - url: https://huggingface.co/api/models/deepreinforce-ai/Ornith-1.0-9B-GGUF
+    shows: 4,594,817 downloads in the trailing 30 days (repo now served as ornith-ai/Ornith-1.0-9B-GGUF)
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: a2b3db90e293353fb7ee493242b87c9fc37408e13a233ff484dc6af1ee9434b6
 capability:
   score: 4
   basis: benchmark
@@ -44,8 +60,15 @@ capability:
     Code); agentic coding with reasoning and tool-calling
   confidence: medium
   note: Strong agentic-coding scores for a 9B and competitive within the category, but below the frontier
-    coders; benchmarks are vendor-reported on the model card.
+    coders; benchmarks are vendor-reported on the model card. Re-read 2026-08-13 - the card's model-index
+    still records SWE-bench Verified 69.4 and SWE-bench Pro 42.9, and now also carries SWE-bench
+    Multilingual 52.0 and Claw-Eval 63.1. The Terminal-Bench figures in the recorded value are not in the
+    model-index and were not re-derivable from it. No change to the score.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/deepreinforce-ai/Ornith-1.0-9B
-    shows: reported SWE-Bench Verified / Pro and Terminal-Bench results
-    accessed: '2026-07-03'
+    shows: 'model-index - SWE-bench/SWE-bench_Verified 69.4 (% resolved), ScaleAI/SWE-bench_Pro 42.9,
+      SWE-bench/SWE-bench_Multilingual 52, claw-eval/Claw-Eval 63.1; no Terminal-Bench row'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: f2dce9e8bb7989a0b62e72f438d129d927af9aeed17a1016842828e12ce2148e

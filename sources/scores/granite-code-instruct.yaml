@@ -27,24 +27,42 @@ openness:
   confidence: high
   note: OSI Apache-2.0 + downloadable weights + paper + model card, but training/post-training data only
     described (not redistributable) and no full training pipeline => open_weights, not open_source. Strong
-    within the open_weights class (genuinely permissive, no use caps).
+    within the open_weights class (genuinely permissive, no use caps). Re-read 2026-08-13 - the card still
+    carries `license:apache-2.0` and `"gated":false`, still NAMES its training sets as dataset tags
+    (bigcode/commitpackft, TIGER-Lab/MathInstruct, meta-math/MetaMathQA, glaiveai/glaive-code-assistant-v3,
+    garage-bAInd/Open-Platypus, nvidia/HelpSteer) without publishing the processed mixture, and the repo
+    still ships only inference and fine-tune samples via Dolomite Engine. The card now opens with a
+    "DEPRECATION WARNING - NOT RECOMMENDED FOR USE IN NEW PROJECTS" banner, which does not move openness.
+    No change.
   raw: weights:open(Apache-2.0,on HF);code:partial(inference + fine-tune sample scripts via Dolomite Engine;
     no full training pipeline in repo);data:described_not_released(CommitPackFT/MathInstruct/Glaive/HelpSteer/Open-Platypus
     named in card but processed corpus not redistributable);post-training-data:described(SFT mixture named,
     not released);paper:open(arXiv 2405.04324);model_card:open;license:Apache-2.0(OSI)
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/ibm-granite/granite-3b-code-instruct-2k
-    shows: Apache-2.0 license, instruction-tuned model card, named training-data sources, HumanEvalSynthesis
-      scores
-    accessed: '2026-06-04'
+    shows: '`license:apache-2.0` in the repo tags and `"gated":false`; training sets NAMED as dataset tags
+      (bigcode/commitpackft, TIGER-Lab/MathInstruct, meta-math/MetaMathQA, glaiveai/glaive-code-assistant-v3,
+      garage-bAInd/Open-Platypus, nvidia/HelpSteer) with no processed mixture published; arxiv:2405.04324;
+      model-index with HumanEvalSynthesis scores; a DEPRECATION WARNING banner at the top of the card'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 266018c64507e094b1b70b9fbaf284eee5c343b3fc3b69e00f8ad28e4b7c43dd
+    establishes: [weights, license, post-training-data]
   - url: https://github.com/ibm-granite/granite-code-models
     shows: repo with Apache-2.0, fine-tune sample scripts (Dolomite Engine), but no training data download
       and no full training pipeline
-    accessed: '2026-06-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 6d940f660654098abc9bbc82b86d57232b1e846a7241e22e337a1d3b84750d86
+    establishes: [code]
   - url: https://research.ibm.com/blog/granite-code-models-open-source
     shows: IBM describes data sources (GitHub Code Clean, StarCoderData, CodeNet) but does not release
       the processed datasets
-    accessed: '2026-06-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 29dc9b4c146eb3d038bf89cb1c3e7f16b98ce2594b0dc56db8c55894965db665
+    establishes: [data]
 adoption:
   level: 1
   reach: <10K
@@ -52,11 +70,23 @@ adoption:
   confidence: medium
   note: HF shows ~1,925 downloads/month on the granite-3b-code-instruct-2k variant; model is officially
     deprecated and superseded by Granite 4.x. Even summed across the four Instruct sizes the active monthly
-    pull volume is small. Hobbyist/legacy-research tier.
+    pull volume is small. Hobbyist/legacy-research tier. Re-read 2026-08-13 - the declared artifact,
+    granite-34b-code-instruct-8k, reads 628 downloads in the trailing 30 days and the 3b SKU the note
+    banded on reads 5,601. Both are level 1 (<10K) and so is any sum of the family's Instruct SKUs, so
+    the band holds on either reading. No change.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/ibm-granite/granite-3b-code-instruct-2k
-    shows: ~1,925 downloads last month; deprecation notice
-    accessed: '2026-06-04'
+    shows: 5,601 downloads in the trailing 30 days; DEPRECATION WARNING banner
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 266018c64507e094b1b70b9fbaf284eee5c343b3fc3b69e00f8ad28e4b7c43dd
+  - url: https://huggingface.co/api/models/ibm-granite/granite-34b-code-instruct-8k
+    shows: 628 downloads in the trailing 30 days for ibm-granite/granite-34b-code-instruct-8k, the declared
+      artifact
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 299e17cff2c74971dc29cf7a628af1f3a7a482d2bcd4763c5691e0bfe82b5d81
 capability:
   score: 2
   basis: benchmark
@@ -66,11 +96,20 @@ capability:
   confidence: high
   note: Strong-for-size 2024 code SLMs (matched open code LLMs of their era), but sub-13B and ~51% HumanEval
     Python is far below 2026 frontier chat/agentic coders (Opus 4.8 88.6 SWE-bench). Low-mid on a frontier-relative
-    scale.
+    scale. Re-read 2026-08-13 - the card's model-index still records HumanEvalSynthesis(Python) pass@1
+    51.2 for granite-3b-code-instruct, alongside the HumanEvalExplain and HumanEvalFix rows, unchanged.
+    No change.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/ibm-granite/granite-3b-code-instruct-2k
-    shows: HumanEvalSynthesis pass@1 per-language scores
-    accessed: '2026-06-04'
+    shows: 'model-index over bigcode/humanevalpack - HumanEvalSynthesis(Python) pass@1 51.2, plus
+      HumanEvalExplain and HumanEvalFix rows per language'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 266018c64507e094b1b70b9fbaf284eee5c343b3fc3b69e00f8ad28e4b7c43dd
   - url: https://research.ibm.com/blog/granite-code-models-open-source
-    shows: Granite-8B-Code matches SOTA among open source code LLMs on HumanEvalPack at 2024 release
-    accessed: '2026-06-04'
+    shows: IBM's release post for the Granite code model family, positioning them against open source
+      code LLMs at their 2024 release
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 29dc9b4c146eb3d038bf89cb1c3e7f16b98ce2594b0dc56db8c55894965db665

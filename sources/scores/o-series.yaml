@@ -13,15 +13,25 @@ openness:
     - name: Proprietary
       detail: API+ChatGPT only
   confidence: high
-  note: Proprietary OpenAI reasoning models; no weights, data, or code released.
+  note: Proprietary OpenAI reasoning models; no weights, data, or code released. Re-read 2026-08-13 - both
+    sources still describe models served only through ChatGPT and the API, and OpenAI has still published
+    no weights, corpus or training code for the line. No change.
   raw: weights:closed;data:closed;code:closed;license:Proprietary(API+ChatGPT only)
+  last_verified: '2026-08-13'
   sources:
   - url: https://en.wikipedia.org/wiki/OpenAI_o3
-    shows: o3/o4-mini are proprietary reasoning models served via ChatGPT/API, released Apr 16 2025
-    accessed: '2026-06-04'
+    shows: o3-mini released 2025-01-31, o3 and o4-mini 2025-04-16, o3-pro 2025-06-10; served through
+      ChatGPT tiers and the API, with no weights, corpus or code published
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 47314bbf2b7d69b81230804757e9225ccce4b8142114fed9ee41958d59d128e9
+    establishes: [weights, data, code, license]
   - url: https://cdn.openai.com/pdf/2221c875-02dc-4789-800b-e7758f3722c1/o3-and-o4-mini-system-card.pdf
-    shows: OpenAI o3 and o4-mini System Card, Apr 16 2025 (primary)
-    accessed: '2026-06-04'
+    shows: '"OpenAI o3 and o4-mini System Card, OpenAI April 16, 2025" - still live and still the primary
+      release document; a safety card rather than a weights or data release'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 32d7ca19fff2ed0dc2d06f84e3143900bbd7898bb6f443c094477fb4ce0fc4ab
 adoption:
   level: 5
   reach: '>10M users'
@@ -29,11 +39,18 @@ adoption:
   confidence: medium
   note: o3/o4-mini were rolled out as selectable models inside ChatGPT (Plus/Pro and some free) plus the API; ChatGPT
     reached ~900M WAU (Feb 2026) rising toward ~1B (May 2026). Reach attributed to the ChatGPT surface these models
-    power, not a standalone o3 count. Now superseded as default by GPT-5.x but still used at scale.
+    power, not a standalone o3 count. Now superseded as default by GPT-5.x but still used at scale. Re-read
+    2026-08-13 - the page still records o3-mini going to all ChatGPT users including the free tier, and
+    o3/o3-pro to paid tiers and the API, so the surface the band is attributed to is unchanged. The banded
+    quantity is the ChatGPT active-user count, not an o3 count, and the note says so. No change.
+  last_verified: '2026-08-13'
   sources:
   - url: https://en.wikipedia.org/wiki/OpenAI_o3
-    shows: o3/o4-mini available to ChatGPT users and API
-    accessed: '2026-06-04'
+    shows: '"OpenAI released o3-mini to all ChatGPT users (including free-tier) and some API users";
+      o3 and o3-pro on the paid tiers; no standalone per-model user count published'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 47314bbf2b7d69b81230804757e9225ccce4b8142114fed9ee41958d59d128e9
 capability:
   score: 4
   basis: benchmark
@@ -43,10 +60,22 @@ capability:
   confidence: high
   note: Frontier-class reasoning at Apr 2025 launch (SOTA on Codeforces/SWE-bench/MMMU at the time). By June 2026
     surpassed by GPT-5.x / Opus 4.8 (88.6 SWE-bench) / Gemini 3.5, so frontier-relative score is 4, not 5.
+    Re-read 2026-08-13 - all three o3 figures are still on the page verbatim (SWE-bench Verified 71.7 against
+    o1's 48.9, GPQA Diamond 87.7, Codeforces Elo 2727 against o1's 1891). The o4-mini half of the recorded
+    value is NOT on that page - "99.5" does not appear on it at all - so that half rests on the system card
+    alone. Flagged in the report; it does not move the score, which is set by the o3 figures.
+  last_verified: '2026-08-13'
   sources:
   - url: https://en.wikipedia.org/wiki/OpenAI_o3
-    shows: o3 SWE-bench Verified 71.7, GPQA 87.7, Codeforces 2727; o4-mini AIME/GPQA figures
-    accessed: '2026-06-04'
+    shows: '"o3 achieved a score of 87.7% on the GPQA Diamond benchmark"; "On SWE-bench Verified ... o3
+      scored 71.7%, compared to 48.9% for o1. On Codeforces, o3 reached an Elo score of 2727, whereas o1
+      scored 1891". No o4-mini AIME figure on the page.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 47314bbf2b7d69b81230804757e9225ccce4b8142114fed9ee41958d59d128e9
   - url: https://cdn.openai.com/pdf/2221c875-02dc-4789-800b-e7758f3722c1/o3-and-o4-mini-system-card.pdf
-    shows: primary system-card benchmark evaluations
-    accessed: '2026-06-04'
+    shows: primary system card, still resolving; models described as combining "state-of-the-art reasoning
+      with full tool capabilities"
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 32d7ca19fff2ed0dc2d06f84e3143900bbd7898bb6f443c094477fb4ce0fc4ab

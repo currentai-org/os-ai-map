@@ -15,24 +15,40 @@ openness:
     - name: Apache-2.0
       detail: OSI permissive
   confidence: high
-  note: Apache-2.0 open weights; instruction-tuning data and recipe undisclosed -> open_weights.
+  note: Apache-2.0 open weights; instruction-tuning data and recipe undisclosed -> open_weights. Re-read
+    2026-08-13 - the card still carries `license:apache-2.0`, still reads `"gated":false`, and still describes
+    the instruction fine-tune in one paragraph with no SFT mixture, no RLHF data and no training code.
+    No change.
   raw: weights:open(Apache-2.0, on HF);data:closed;code:closed(no training/post-training pipeline);license:Apache-2.0(OSI
     permissive)
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2
-    shows: live card; license=apache-2.0; 7B instruct; 32k context; 2,504,301 downloads last month
-    accessed: '2026-06-04'
+    shows: '`license:apache-2.0` in the repo tags and `"gated":false` in the embedded repo state, so the
+      7B weights download without a barrier; the card describes the instruction fine-tune in prose and
+      publishes neither the mixture nor any training or post-training code'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: daadeec0ca458ae992f1e880dde598177bfd5998c9a2b01ab4d407ca0ec29c9f
+    establishes: [weights, data, code, license]
 adoption:
   level: 4
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
   note: ~2.5M downloads last month on HF plus a very large derivative ecosystem (~1,089 finetunes, 1,256 adapters,
-    349 merges); still a heavily used permissive 7B instruct base years after release.
+    349 merges); still a heavily used permissive 7B instruct base years after release. Re-read 2026-08-13
+    - the single declared SKU now reads 1,206,680 downloads in the trailing 30 days, still level 4, and
+    the model tree still shows roughly 1,100 finetunes, 1,200 adapters and 351 merges. The download figure
+    has roughly halved since the last read but stays inside 1M-10M. No change.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2
-    shows: 2,504,301 downloads last month; 1,089 finetunes / 1,256 adapters
-    accessed: '2026-06-04'
+    shows: 1,206,680 downloads in the trailing 30 days; model tree reads 1,100 finetunes / 1,200 adapters
+      / 351 merges
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: daadeec0ca458ae992f1e880dde598177bfd5998c9a2b01ab4d407ca0ec29c9f
 capability:
   score: 2
   basis: benchmark
@@ -40,8 +56,15 @@ capability:
   value: Mistral 7B Instruct v0.2 ~MT-Bench ~7.6 / MMLU ~60 class; 2023-era 7B chat quality
   confidence: medium
   note: Excellent for a 7B in 2023-24; clearly below 2026 frontier and below modern small instruct models (Phi-4-mini,
-    Qwen 3.x small). Capability low on a frontier-anchored scale.
+    Qwen 3.x small). Capability low on a frontier-anchored scale. Re-read 2026-08-13 - the card carries no
+    benchmark table at all. It links arXiv:2310.06825, which is the base "Mistral 7B" paper rather than an
+    evaluation of this instruct tune, so neither the ~MT-Bench 7.6 nor the ~MMLU 60 in the recorded value is
+    re-derivable from the cited source. The 2 is not in doubt on the evidence, but the figures have no source
+    behind them. ESCALATED rather than changed - no last_verified claimed on this axis.
   sources:
   - url: https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2
-    shows: 7B instruct model card; arXiv:2310.06825
-    accessed: '2026-06-04'
+    shows: 7B instruct model card, 32k context; links arxiv:2310.06825 "Mistral 7B", the base-model paper.
+      No benchmark table on the card.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: daadeec0ca458ae992f1e880dde598177bfd5998c9a2b01ab4d407ca0ec29c9f

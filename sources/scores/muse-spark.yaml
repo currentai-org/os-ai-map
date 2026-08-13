@@ -13,17 +13,32 @@ openness:
     - name: Proprietary
       detail: meta.ai/Meta AI app + private API preview; no downloadable weights
   confidence: high
-  note: No weights released, a closed assistant-surface model; only a private API preview. Fully closed.
+  note: >-
+    No weights released, a closed assistant-surface model; only a private API preview. Fully closed.
+
+    Re-read 2026-08-13 - the Meta newsroom post still says Muse Spark "currently powers the Meta AI app and
+    website" and that "We will also be offering the model in private preview via API to select partners",
+    with no weights, corpus or training code anywhere on it. Two corrections to what this file recorded.
+    The clause about hoping to open source future versions is not on the page and has been dropped from the
+    source's `shows`. And the ai.meta.com blog answers HTTP 400 to a plain fetch on both attempts, so it
+    was not re-dated. No change to the score.
   raw: weights:closed;data:closed;code:closed;license:Proprietary(meta.ai/Meta AI app + private API preview;
     no downloadable weights)
+  last_verified: '2026-08-13'
   sources:
   - url: https://ai.meta.com/blog/introducing-muse-spark-msl/
-    shows: Muse Spark available at meta.ai and Meta AI app + private API preview; no open weights
+    shows: Meta's engineering blog for Muse Spark. Returned HTTP 400 to a plain fetch on 2026-08-13, so
+      not re-dated.
     accessed: '2026-06-04'
   - url: https://about.fb.com/news/2026/04/introducing-muse-spark-meta-superintelligence-labs/
-    shows: 'Meta primary newsroom post: Muse Spark proprietary (hope to open source future versions);
-      powers Meta AI app/meta.ai + private API preview to select partners'
-    accessed: '2026-06-04'
+    shows: 'Meta primary newsroom post - "Muse Spark is our most powerful model yet. It currently powers
+      the Meta AI app and website, and will be rolling out to WhatsApp, Instagram, Facebook, Messenger,
+      and AI glasses"; "We will also be offering the model in private preview via API to select partners".
+      No weights, corpus or training code.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: b4da0bd8ec45f87c8e9286e187e29d136a5b4238efbe5b45f13b600c70aa2620
+    establishes: [weights, data, code, license]
 adoption:
   level: 4
   reach: 1M-10M users
@@ -33,10 +48,25 @@ adoption:
     glasses), an enormous consumer surface, but Meta discloses no Muse Spark-specific user count, and
     at scoring time it is not yet the model behind the full family of surfaces. Placed at 4 on the consumer-app
     surface it powers; not 5 because no standalone figure and rollout incomplete. Attributed honestly
-    to the surface, not the model.
+    to the surface, not the model. Re-read 2026-08-13 - the newsroom post now carries a 2026-05-12 update
+    saying the rollout the note called incomplete has happened ("When we launched Muse Spark last month,
+    we said we'd bring it everywhere. Today, we are"), covering WhatsApp, Instagram, Facebook, Messenger
+    and the Ray-Ban and Oakley glasses. The "rollout incomplete" half of the reason for holding this at 4
+    rather than 5 no longer holds; the "no standalone figure" half still does, and Meta still publishes no
+    Muse Spark user count. That is a scoring question rather than a freshness one and is FLAGGED. The band
+    is dated on the surface evidence, which was re-read in full.
+  last_verified: '2026-08-13'
   sources:
+  - url: https://about.fb.com/news/2026/04/introducing-muse-spark-meta-superintelligence-labs/
+    shows: '"It currently powers the Meta AI app and website, and will be rolling out to WhatsApp, Instagram,
+      Facebook, Messenger, and AI glasses"; 2026-05-12 update - "When we launched Muse Spark last month,
+      we said we''d bring it everywhere. Today, we are". No Muse Spark user count published.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: b4da0bd8ec45f87c8e9286e187e29d136a5b4238efbe5b45f13b600c70aa2620
   - url: https://ai.meta.com/blog/introducing-muse-spark-msl/
-    shows: Muse Spark powers Meta AI assistant in Meta AI app / meta.ai, rolling out across Meta surfaces
+    shows: Meta's engineering blog for Muse Spark. Returned HTTP 400 to a plain fetch on 2026-08-13, so
+      not re-dated.
     accessed: '2026-06-04'
 capability:
   score: 5
@@ -45,13 +75,26 @@ capability:
   value: 'LMArena #6 overall (~1487 Elo, mid-2026); Humanity''s Last Exam 58%, FrontierScience Research
     38% (Contemplating mode); positioned vs Gemini Deep Think / GPT Pro extreme-reasoning modes'
   confidence: medium
-  note: 'Bumped 4 -> 5: the independent confirmation the prior note awaited now exists - LMArena ranks Muse
-    Spark #6 overall (top of the non-Anthropic/Google frontier), corroborating Meta''s vendor-reported reasoning
-    scores.'
+  note: >-
+    Bumped 4 -> 5 on the strength of an LMArena placement that no longer exists.
+
+    Re-read 2026-08-13, and NEITHER source supports the record any more. The LMArena leaderboard does not
+    list Muse Spark at all - the string does not appear on the page - and it has changed instrument, now
+    ranking by win share with a confidence interval rather than by Elo, so the "~1487 Elo, #6 overall"
+    figure is gone in both senses. The top of the Agent board reads Claude Opus 5 (High) 12.01%, Claude
+    Opus 5 (Max) 12.00%, Claude Fable 5 (High) 11.98%. The Meta engineering blog that carried the HLE 58%
+    and FrontierScience 38% figures answers HTTP 400 to a plain fetch, so those are unsourced too. This is
+    exactly the failure the bump was meant to close, in reverse. ESCALATED rather than changed - no
+    last_verified claimed on this axis.
   sources:
   - url: https://ai.meta.com/blog/introducing-muse-spark-msl/
-    shows: Meta-reported HLE 58% and FrontierScience 38% for Muse Spark Contemplating mode
+    shows: the source of the HLE 58% and FrontierScience 38% figures. Returned HTTP 400 to a plain fetch on
+      2026-08-13, so not re-dated and the figures are currently unsourced.
     accessed: '2026-06-04'
   - url: https://lmarena.ai/leaderboard
-    shows: Muse Spark ranked #6 overall on the LMArena text leaderboard (~1487 Elo), mid-2026
-    accessed: '2026-06-18'
+    shows: 'Muse Spark does not appear on the leaderboard; the board now ranks by win share rather than
+      Elo, reading "1 Claude Opus 5 (High) 12.01% ±1.45%, 2 Claude Opus 5 (Max) 12.00%, 3 Claude Fable 5
+      (High) 11.98%"'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: df9431725e3e0df9b133361d4fc3e2db85d2ec360a36555be56864896318502b

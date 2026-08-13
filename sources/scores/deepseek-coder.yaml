@@ -21,28 +21,48 @@ openness:
     military, illegal and discriminatory use and requires those terms to propagate to derivatives, but permits commercial
     use at any scale - a conduct restriction, not a commercial one. This also removes the contradiction that opened
     #117: base_pretrained already tiered the same license permissive_non_osi, so the same terms were producing a
-    3 in one category and a 2 in another. Now consistent with the `deepseek` tier, which reaches 3 under plain MIT.'
+    3 in one category and a 2 in another. Now consistent with the `deepseek` tier, which reaches 3 under plain MIT.
+    Re-read 2026-08-13 - the card''s License section still splits the two (code repository under the MIT License,
+    model use subject to the Model License), the repo still reads `"gated":false`, and the LICENSE-MODEL body
+    still carries the Attachment A use-based restrictions with commercial use permitted. Nothing on the card
+    releases a corpus. No change.'
   raw: weights:open(downloadable on HF);data:closed;code:open(MIT, repo code);model-license:DeepSeek-Model-License(non-OSI;
     Attachment A acceptable-use restrictions - military/illegal/discrimination/etc.; commercial allowed
     but use-based restrictions must propagate to derivatives)
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/deepseek-ai/DeepSeek-Coder-V2-Instruct
-    shows: model license = 'DeepSeek Model Agreement', code license = MIT, 236B-A21B MoE instruct coder
-    accessed: '2026-06-04'
+    shows: 'License section - "This code repository is licensed under the MIT License. The use of DeepSeek-Coder-V2
+      Base/Instruct models is subject to the Model License"; `"gated":false` in the embedded repo state, so
+      the 236B-A21B MoE weights download without a barrier; no training corpus published on the card'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 84a8982c532466f685c721096ac025186d86d74e9dd22eeed64588c3f56ac577
+    establishes: [weights, data, license]
   - url: https://github.com/deepseek-ai/DeepSeek-Coder-V2/blob/main/LICENSE-MODEL
-    shows: DeepSeek Model License with Attachment A use-based restrictions; non-OSI custom license
-    accessed: '2026-06-04'
+    shows: 'DEEPSEEK LICENSE AGREEMENT Version 1.0, 23 October 2023 - preamble states it "added use-based
+      restrictions"; Attachment A carries them; non-OSI custom license'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: a3a0e9449cb691a12f4de1d03725fd41326614fdeaf5d80b28c51187da0bed0e
+    establishes: [code, model-license]
 adoption:
   level: 2
   reach: 10K-100K
   signal_type: usage_volume
   confidence: high
   note: ~15.7K downloads last month on HF for this 236B SKU; superseded by DeepSeek-V2.5/V3/R1 coders and 2026 coders.
-    Modest, declining usage -> low band (~10K-100K including quants/derivatives).
+    Modest, declining usage -> low band (~10K-100K including quants/derivatives). Re-read 2026-08-13 - the
+    236B SKU has fallen to 7,143 downloads in the trailing 30 days, but the Lite SKU declared alongside it
+    reads 587,824, so the tier sums to 594,967 and lands at level 3 (100K-1M), not 2. The band was set on
+    the flagship SKU alone while identity.md sums across the tier's releases. ESCALATED rather than changed
+    - no last_verified claimed on this axis.
   sources:
   - url: https://huggingface.co/deepseek-ai/DeepSeek-Coder-V2-Instruct
-    shows: ~15,679 downloads last month
-    accessed: '2026-06-04'
+    shows: 7,143 downloads in the trailing 30 days
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 84a8982c532466f685c721096ac025186d86d74e9dd22eeed64588c3f56ac577
 capability:
   score: 3
   basis: benchmark
@@ -52,8 +72,15 @@ capability:
   confidence: medium
   note: GPT-4-Turbo-class open coder at its 2024 release, but a 2024-generation model now mid-tier vs 2026 frontier
     coders (Qwen3-Coder, DeepSeek-V4, GLM-5.1, Kimi K2.6). HF card defers exact HumanEval/MBPP/SWE-bench numbers
-    to the paper; scored 3 with medium confidence on vendor positioning.
+    to the paper; scored 3 with medium confidence on vendor positioning. Re-read 2026-08-13 - the card still
+    claims "superior performance compared to closed-source models such as GPT4-Turbo, Claude 3 Opus, and Gemini
+    1.5 Pro in coding and math benchmarks" and still records the 86 -> 338 language expansion, with the numbers
+    still deferred to the paper. No change.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/deepseek-ai/DeepSeek-Coder-V2-Instruct
-    shows: vendor claim of GPT-4-Turbo-comparable code performance, 338 languages
-    accessed: '2026-06-04'
+    shows: vendor claim of performance superior to GPT4-Turbo, Claude 3 Opus and Gemini 1.5 Pro on coding
+      and math; support expanded from 86 to 338 programming languages, context 16K -> 128K
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 84a8982c532466f685c721096ac025186d86d74e9dd22eeed64588c3f56ac577

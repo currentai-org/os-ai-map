@@ -27,38 +27,82 @@ openness:
     a substitute for the flagship - and here the base is a free choice. Anyone wanting Apache-licensed Hermes 4
     takes the 36B or 14B build and gets it, so the family genuinely offers open weights. Not 4 or 5: the post-training
     corpus is proprietary and only inference code ships, so the recipe is not reproducible. Corrected from 2/restricted
-    on 2026-07-29 after the tier consolidation initially applied most-restrictive across all four bases.'
+    on 2026-07-29 after the tier consolidation initially applied most-restrictive across all four bases.
+
+    Re-read 2026-08-13. The axis records `governing_release - hermes-4-3-36b` and scores the Apache build,
+    but the only source it cited was the 405B FP8 repo, which is `license:llama3`. The governing repo is
+    now cited alongside it - NousResearch/Hermes-4.3-36B carries `license:apache-2.0`, `"gated":false` and
+    base ByteDance-Seed/Seed-OSS-36B-Base, which is the fact the 3 rests on and which the file previously
+    asserted with no source behind it. Nothing on either card releases the post-training corpus. No change
+    to the score.'
   raw: weights:open(Apache-2.0);base:Seed-OSS-36B-Base;post-training-data:closed(proprietary ~5M-sample
     corpus);code:partial(inference only);license:Apache-2.0(OSI)
+  last_verified: '2026-08-13'
   sources:
+  - url: https://huggingface.co/NousResearch/Hermes-4.3-36B
+    shows: 'the governing release - `license:apache-2.0` in the repo tags, `"gated":false`, and
+      `base_model:ByteDance-Seed/Seed-OSS-36B-Base`; the card publishes prompt format and benchmarks only,
+      with no post-training mixture and no training code'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: b93017fa014e25a8da29d2b18da45299384163ce102bb20fad3cbb08fedf5a74
+    establishes: [weights, license, post-training-data, code]
   - url: https://huggingface.co/NousResearch/Hermes-4-405B-FP8
-    shows: 'License: Llama3, base Meta-Llama/Llama-3.1-405B'
-    accessed: '2026-06-04'
+    shows: the Llama-based build of the same recipe - `license:llama3`, base Meta-Llama/Llama-3.1-405B;
+      the SKU whose terms do NOT govern, because a user wanting Apache takes the Seed-OSS or Qwen build
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: a81364e2616072fb9ef1adfb28a40d4b81396aa552b2f08eefb6415ac3fbf15a
 adoption:
   level: 2
   reach: 10K-100K
   signal_type: usage_volume
   confidence: high
   note: ~35,066 HF downloads/mo, the most-downloaded Hermes 4 SKU (small size + permissive license drive uptake).
-    Early-adopter scale.
+    Early-adopter scale. Re-read 2026-08-13 - the four declared SKUs now sum to 34,445 downloads in the
+    trailing 30 days (Hermes-4.3-36B 18,158; Hermes-3-Llama-3.1-70B 10,217; Hermes-4-14B 5,401;
+    Hermes-3-Llama-3.1-405B 669), still level 2. The most-downloaded SKU is now the 36B rather than the
+    14B, which does not move the band. No change.
+  last_verified: '2026-08-13'
   sources:
-  - url: https://huggingface.co/NousResearch/Hermes-4-14B
-    shows: 35,066 downloads last month
-    accessed: '2026-06-04'
+  - url: https://huggingface.co/api/models/NousResearch/Hermes-4.3-36B
+    shows: 18,158 downloads in the trailing 30 days for NousResearch/Hermes-4.3-36B
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 5be6be337d301a2daf48f2e59733bd3c301de7279cee1d7778ac4da4a1bde2f9
+  - url: https://huggingface.co/api/models/NousResearch/Hermes-4-14B
+    shows: 5,401 downloads in the trailing 30 days for NousResearch/Hermes-4-14B
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: eb639f15ee01f3ceaf1b3b8f005fec5c0cacccb73b877309410cdbb4eadb0c4c
 capability:
   score: 4
   basis: benchmark
   basis_detail: AIME/MMLU-Pro/LiveCodeBench
-  value: MATH-500 96.2, AIME'24 81.9, AIME'25 78.1, GPQA Diamond 70.6, MMLU-Pro 80.6, LiveCodeBench 61.3, BBH 86.3
-    (tech report / OpenRouter)
+  value: MATH-500 96.2, AIME'24 81.9, AIME'25 78.1, GPQA Diamond 70.6, MMLU-Pro 80.6, LCBv6 61.4, BBH 86.3
+    (Hermes 4 technical report, 405B reasoning column)
   confidence: medium
-  note: Strongest Hermes 4 SKU; near-frontier on math/knowledge for an open instruct model, though coding (LiveCodeBench
-    61.3) trails the 2026 frontier coders. Not a category-defining 5 (those are DeepSeek-V4/Qwen3.6/Kimi-class).
-    Vendor/tech-report figures, corroborated by OpenRouter.
+  note: >-
+    Strongest Hermes 4 SKU; near-frontier on math/knowledge for an open instruct model, though coding
+    trails the 2026 frontier coders. Not a category-defining 5 (those are DeepSeek-V4/Qwen3.6/Kimi-class).
+
+    Re-read 2026-08-13 against the technical report, which carries every figure in the reasoning column
+    unchanged. Two corrections that do not move the score. The coding row is LCBv6 (Aug2024+) at 61.4,
+    not 61.3, so the value was off by a tenth against its own source. And the OpenRouter model page no
+    longer renders any benchmark figure to a fetch, so it corroborates nothing; it is kept as evidence
+    of distribution rather than of capability.
+  last_verified: '2026-08-13'
   sources:
   - url: https://arxiv.org/pdf/2508.18255
-    shows: Hermes 4 technical report with comprehensive benchmark evaluation across math/code/knowledge
-    accessed: '2026-06-04'
+    shows: 'Hermes 4 technical report, 405B reasoning column - MATH-500 96.2, AIME''24 81.9, AIME''25
+      78.1, GPQA Diamond 70.6, BBH 86.3, LCBv6 (Aug2024+) 61.4, MMLU 87.2, MMLU-Pro 80.6, with
+      non-reasoning figures in parentheses beside each'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 4894603dc7c8fe3f4757e3c7c3c9ac75c6dc41d8cd6e824de5bf9e2e8ced695c
   - url: https://openrouter.ai/nousresearch/hermes-4-405b
-    shows: Hermes 4 405B benchmark figures (AIME, MMLU-Pro, LiveCodeBench)
-    accessed: '2026-06-04'
+    shows: Hermes 4 405B listed and routable on OpenRouter; the page renders no benchmark figures to a
+      plain fetch, so it evidences distribution rather than capability
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 7bebfe514791353b387c0d345a66ff8205941b77b452e6a577af3314537a2179

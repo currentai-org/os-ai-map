@@ -24,16 +24,34 @@ openness:
     commerce outright - CC-BY-NC, Mistral Non-Production - stays at 2. Nine other products carry a
     bounded license and all now score 3; four of them were already recorded there, which is the
     inconsistency this resolves.
+
+    Re-read 2026-08-13 - the license body still carries the clause verbatim ("if at any time You and/or
+    Your affiliate(s) ... generate more than fifty million US Dollars (USD $50,000,000) in annual
+    revenue"), and the card still describes the terms as "a permissive license allowing full research
+    use and commercial use under the license terms", with `"gated":"auto"` and no training corpus or
+    pipeline published. No change.
   raw: 'weights:open(downloadable on HF, contact-info gate);data:closed;code:partial(inference/usage only,
     no training pipeline);license:Jamba-Open-Model-License(non-OSI: $50M annual-revenue commercial cap +
     AUP + naming/attribution requirements)'
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/ai21labs/AI21-Jamba-1.5-Large
-    shows: Jamba Open Model License + downloadable Safetensors weights, instruction-following model card
-    accessed: '2026-06-04'
+    shows: '"The models are released under the Jamba Open Model License, a permissive license allowing
+      full research use and commercial use under the license terms"; `license:other` in the repo tags
+      with `"gated":"auto"`; downloadable safetensors; inference and usage instructions only, no training
+      corpus or pipeline'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 4f9386faf0cf4cfedcdd29946abffb4f5130ad98cdd861316c6eabe6d335155d
+    establishes: [weights, data, code]
   - url: https://www.ai21.com/licenses/jamba-open-model-license
-    shows: 'non-OSI license text: $50M annual-revenue commercial cap, AUP, naming/attribution clauses'
-    accessed: '2026-06-04'
+    shows: 'license text - "if at any time You and/or Your affiliate(s), whether individually or in
+      aggregate, generate more than fifty million US Dollars (USD $50,000,000) in annual revenue ...
+      then You" must license separately; non-OSI'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 70f9c2303656bbd9b8b8736096c88fa67709da61fe8614bb4560ca8de2bf639c
+    establishes: [license]
 adoption:
   level: 1
   reach: <10K
@@ -59,18 +77,25 @@ capability:
     RULER 256K effective context (93.9% at full length)
   confidence: medium
   note: >-
-    Weights downloadable under the Jamba Open Model License: non-OSI, with a $50M annual-revenue
-    cap that bars large-entity commercial use. The 'Open Model' branding overstates it. Moved from
-    2/restricted on 2026-08-01 by the universal license scale, which caps a bounded commercial
-    license at 3 rather than 2. The test at that boundary is whether the license permits
-    commercial use AT ALL: this one does, for everyone inside the bound. A license that forbids
-    commerce outright - CC-BY-NC, Mistral Non-Production - stays at 2. Nine other products carry a
-    bounded license and all now score 3; four of them were already recorded there, which is the
-    inconsistency this resolves.
+    A 2024 hybrid SSM-Transformer that led open models on long context at release and is now
+    mid-tier against the 2026 frontier. The note that stood here until 2026-08-13 was a verbatim
+    copy of the openness note and described the license rather than the capability; it is replaced.
+
+    Re-read 2026-08-13 - the AI21 blog still reads "Jamba 1.5 Large, with a score of 65.4, outpaces
+    both Llama 3.1 70B and 405B", and the card's benchmark table still gives the Jamba 1.5 Large
+    column Arena Hard 65.4, MMLU (CoT) 81.2 and MMLU Pro (CoT) 53.5, with a RULER effective-context
+    section beneath it. Every recorded figure holds. No change.
+  last_verified: '2026-08-13'
   sources:
   - url: https://www.ai21.com/blog/announcing-jamba-model-family/
-    shows: Arena Hard 65.4 for Jamba 1.5 Large, beats Llama 3.1 70B/405B; Jamba Open Model License
-    accessed: '2026-06-04'
+    shows: '"Jamba 1.5 Large, with a score of 65.4, outpaces both Llama 3.1 70B and 405B" on Arena Hard;
+      Jamba Open Model License'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 2ca00764c726077a8e76fb60a5ba259d4b6c3d580b6331db0eec1b9cc1aa71ce
   - url: https://huggingface.co/ai21labs/AI21-Jamba-1.5-Large
-    shows: MMLU 81.2, GSM-8K 87, 256K RULER context on model card
-    accessed: '2026-06-04'
+    shows: 'benchmark table, Jamba 1.5 Large column - Arena Hard 65.4, Wild Bench 48.5, MMLU (CoT) 81.2,
+      MMLU Pro (CoT) 53.5; a RULER Benchmark effective-context-length section'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 4f9386faf0cf4cfedcdd29946abffb4f5130ad98cdd861316c6eabe6d335155d

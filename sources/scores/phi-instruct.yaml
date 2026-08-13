@@ -16,13 +16,22 @@ openness:
     - name: MIT
       detail: OSI permissive
   confidence: high
-  note: MIT-licensed open weights; training/post-training data and code not released -> open_weights.
+  note: MIT-licensed open weights; training/post-training data and code not released -> open_weights. Re-read
+    2026-08-13 - the card still carries `license:mit` and `"gated":false`, and still describes the training
+    mixture in prose (synthetic "textbook-like" data, filtered public web) without releasing it or any
+    training code. No change.
   raw: weights:open(MIT, on HF);data:closed(synthetic-heavy training data undisclosed);code:closed(no training
     pipeline);license:MIT(OSI permissive)
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/microsoft/Phi-4-mini-instruct
-    shows: live card; license=MIT; 3.8B instruct; 1,537,561 downloads last month
-    accessed: '2026-06-04'
+    shows: '`license:mit` in the repo tags and `"gated":false` in the embedded repo state, so the 3.8B
+      weights download without a barrier; the card describes the data mixture in prose and publishes
+      neither the corpus nor any training or post-training code'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 1d856731bfdfa8199bb220cceeb0a64573e508f641c3a472902e4f6ff785cf3a
+    establishes: [weights, data, code, license]
 adoption:
   level: 3
   reach: 100K-1M
@@ -45,8 +54,15 @@ capability:
   value: MMLU 67.3, MMLU-Pro 52.8, GPQA 25.2, GSM8K 88.6, MATH 64.0 (overall 63.5)
   confidence: high
   note: Strong-for-size 3.8B with good math (GSM8K 88.6) but low GPQA (25.2) and overall well below 2026 frontier
-    chat models; small-model tier on a frontier-anchored scale.
+    chat models; small-model tier on a frontier-anchored scale. Re-read 2026-08-13 - the card's quality
+    table still gives the Phi-4 mini-Ins column MMLU 67.3, MMLU-Pro 52.8, GPQA 25.2, GSM8K 88.6, MATH
+    64.0 and Overall 63.5, against GPT-4o-mini at 75.5 overall. Every figure unchanged. No change.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/microsoft/Phi-4-mini-instruct
-    shows: 'benchmark table: MMLU-Pro 52.8, GPQA 25.2, GSM8K 88.6, overall 63.5'
-    accessed: '2026-06-04'
+    shows: 'quality table, Phi-4 mini-Ins column - MMLU (5-shot) 67.3, MMLU-Pro (0-shot, CoT) 52.8, GPQA
+      (0-shot, CoT) 25.2, GSM8K (8-shot, CoT) 88.6, MATH (0-shot, CoT) 64.0, Overall 63.5; GPT-4o-mini
+      column Overall 75.5'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 1d856731bfdfa8199bb220cceeb0a64573e508f641c3a472902e4f6ff785cf3a

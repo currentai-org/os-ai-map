@@ -15,14 +15,32 @@ openness:
     - name: CC-BY-NC
       detail: non-commercial, non-OSI
     - name: Cohere-Acceptable-Use-Policy
-  note: Weights downloadable but under CC-BY-NC, a non-commercial, non-OSI license with field-of-use
-    restrictions => restricted. Marketed as 'open weights' despite the non-commercial cap.
+  note: 'Weights downloadable but under CC-BY-NC, a non-commercial, non-OSI license with field-of-use
+    restrictions => restricted. Marketed as ''open weights'' despite the non-commercial cap. Re-read
+    2026-08-13, and the axis is a release behind. The scored source, c4ai-command-r-plus, is still
+    `license:cc-by-nc-4.0` with `"gated":"auto"`, so nothing about THAT checkpoint has changed - but it
+    is the 2024 release, and identity.md says the CURRENT release governs openness. The line''s current
+    release is Command A+ (command-a-plus-05-2026), which the product already declares as an artifact
+    and whose card reads "Command A+ is an open source model" with "License - Apache 2.0" and
+    `"gated":false`. On the governing release the license tier is osi rather than commercial_forbidden,
+    which takes the ladder off the 2/restricted rung. ESCALATED rather than changed - no last_verified
+    claimed on this axis.'
   raw: weights:open(gated, contact-info required);data:closed;code:closed;license:CC-BY-NC(non-commercial,
     non-OSI)+Cohere-Acceptable-Use-Policy
   sources:
   - url: https://huggingface.co/CohereLabs/c4ai-command-r-plus
-    shows: License CC-BY-NC + Acceptable Use Policy, gated access, 104B instruct model
-    accessed: '2026-06-04'
+    shows: '`license:cc-by-nc-4.0` in the repo tags with `"gated":"auto"`; 104B instruct model; the 2024
+      release'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 70d2416a50e55f040f0f6ecea57b06d0b329d939c56b40c43377b45f2369651f
+  - url: https://huggingface.co/CohereLabs/command-a-plus-05-2026-bf16
+    shows: 'the governing release - "Command A+ is an open source model with 25 billion active parameters
+      and 218B total parameters"; "License - Apache 2.0"; `license:apache-2.0` in the repo tags and
+      `"gated":false`; BF16, FP8 and W4A4 quantizations offered'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: fe00eed9a9f1089f5d699e85b55675b09c82c26e70b340935b9b1127a9455723
 adoption:
   level: 3
   reach: 100K-1M
@@ -39,12 +57,27 @@ adoption:
     line is now anchored by Command A+. Declared artifacts are command-a-plus-05-2026-bf16 (84,821) and c4ai-
     command-r-v01 (24,775), summed per sum_across_artifacts. DELIBERATELY EXCLUDED: command-a-vision-07-2025,
     the transcribe models and the embed models, which are separate Cohere product lines rather than SKUs of
-    this one - including them would be over-attribution. No last_verified claimed: only the figure was re-
-    read.'
+    this one - including them would be over-attribution. Re-read in full 2026-08-13 and the sum reproduces
+    exactly - command-a-plus-05-2026-bf16 84,821 plus c4ai-command-r-v01 24,775 is 109,596, level 3. The
+    2024 checkpoint the old band was read on has fallen further, to 707. No change.'
+  last_verified: '2026-08-13'
   sources:
+  - url: https://huggingface.co/api/models/CohereLabs/command-a-plus-05-2026-bf16
+    shows: 84,821 downloads in the trailing 30 days for CohereLabs/command-a-plus-05-2026-bf16
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 36e3403fb4581011e902c4c4f52f2bb5cbc65a1784d7b36a5d7e1e37f0208ced
+  - url: https://huggingface.co/api/models/CohereLabs/c4ai-command-r-v01
+    shows: 24,775 downloads in the trailing 30 days for CohereLabs/c4ai-command-r-v01
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: fed6ff72251552bbc21ff1c04a08208df15e28c113c15c177b35c6d232161610
   - url: https://huggingface.co/CohereLabs/c4ai-command-r-plus
-    shows: 3,258 downloads/month, gated, newer revision available
-    accessed: '2026-06-04'
+    shows: 707 downloads in the trailing 30 days on the superseded 2024 checkpoint the old band was read
+      on; gated auto
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 70d2416a50e55f040f0f6ecea57b06d0b329d939c56b40c43377b45f2369651f
 capability:
   score: 2
   basis: benchmark
@@ -54,8 +87,21 @@ capability:
   confidence: medium
   note: A 2024-era frontier-ish chat/RAG model, now well below the 2026 open instruct frontier (no modern
     reasoning/agentic coding scores; legacy MMLU-class benchmarks only). Scored 2 against a 2026 comparison
-    set despite being capable for its time.
+    set despite being capable for its time. Re-read 2026-08-13 - like openness, this is scored on the
+    2024 Command R+ checkpoint while identity.md takes the MAX across a tier's releases. The tier's
+    current release is Command A+ (05-2026), a 218B-total / 25B-active model Cohere positions for
+    "agentic, multilingual, and reasoning-heavy tasks" with vision input and a 128K context, which is
+    not a 2-tier model on a 2026 comparison set. ESCALATED rather than changed - no last_verified claimed
+    on this axis.
   sources:
   - url: https://huggingface.co/CohereLabs/c4ai-command-r-plus
-    shows: Open LLM Leaderboard avg 74.6 with per-benchmark breakdown
-    accessed: '2026-06-04'
+    shows: the 2024 checkpoint the score reads, with its legacy Open LLM Leaderboard breakdown
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 70d2416a50e55f040f0f6ecea57b06d0b329d939c56b40c43377b45f2369651f
+  - url: https://huggingface.co/CohereLabs/command-a-plus-05-2026-bf16
+    shows: 'the governing release - 25B active / 218B total, "optimized for agentic, multilingual, and
+      reasoning-heavy tasks with a focus on enterprise performance", vision inputs, 128K context'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: fe00eed9a9f1089f5d699e85b55675b09c82c26e70b340935b9b1127a9455723

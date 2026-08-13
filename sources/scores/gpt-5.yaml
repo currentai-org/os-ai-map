@@ -17,15 +17,25 @@ openness:
   note: No downloadable weights, no published training data or code. Served through the OpenAI API and ChatGPT only,
     so 1/closed. Kept apart from GPT-4o and GPT-4.1 because OpenAI markets those as distinct products rather than
     versions of a single line, which is the same reason their slugs keep their version tokens. Adoption 5 reflects
-    ChatGPT-scale reach.
+    ChatGPT-scale reach. Re-read 2026-08-13 - the line is still distributed only through ChatGPT, Microsoft
+    Copilot and the OpenAI API, with no weights, corpus or training code published for any release in it,
+    and TechCrunch still records GPT-5.5 Instant as the current ChatGPT default. No change.
   raw: weights:closed;data:closed;code:closed;license:Proprietary(API + ChatGPT only)
+  last_verified: '2026-08-13'
   sources:
   - url: https://en.wikipedia.org/wiki/GPT-5
-    shows: GPT-5 (Aug 7 2025) is OpenAI's proprietary unified model, free-tier + paid via ChatGPT, API access
-    accessed: '2026-06-04'
+    shows: GPT-5 "launched on August 7, 2025 ... publicly accessible to users of the chatbot ... Microsoft
+      Copilot as well as to developers through the OpenAI API"; no weights, corpus or training code released
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: cb63d94def8c6dc56a6a6eb59885619dd73c7e347e63f3f589ac6cfa951f2a3e
+    establishes: [weights, data, code, license]
   - url: https://techcrunch.com/2026/05/05/openai-releases-gpt-5-5-instant-a-new-default-model-for-chatgpt/
-    shows: GPT-5.5 Instant is the new default ChatGPT model (proprietary)
-    accessed: '2026-06-04'
+    shows: '"OpenAI releases GPT-5.5 Instant, a new default model for ChatGPT" - the current governing
+      release of the line, still proprietary'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: d6c2a3b6ecc1adffc3d49faefb7b75463466d0886f85e62a41564d6cb94781f9
 adoption:
   level: 5
   reach: '>10M users'
@@ -33,13 +43,20 @@ adoption:
   confidence: high
   note: GPT-5 was rolled out as the default model for logged-in ChatGPT users (Aug 2025). ChatGPT reached ~900M
     weekly active users (Feb 2026) and ~1B by May 2026, far exceeding the >10M threshold. Adoption attributed to
-    the surface GPT-5 powers, not a standalone GPT-5 download count.
+    the surface GPT-5 powers, not a standalone GPT-5 download count. Re-read 2026-08-13 - the source still
+    states ChatGPT "crossed 900 million weekly active users in February 2026", which is two orders above
+    the >10M users floor, so the band is unambiguous whichever way the figure has since moved. The second
+    source returned HTTP 403 to a plain fetch and was not re-dated. No change.
+  last_verified: '2026-08-13'
   sources:
   - url: https://almcorp.com/blog/chatgpt-900-million-weekly-active-users/
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
+    shows: '"ChatGPT crossed 900 million weekly active users in February 2026" with a growth timeline'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 36a725f2b702f9589be963dce5c0bd331512809aa07a9f7997fce3949f718acc
   - url: https://www.demandsage.com/chatgpt-statistics/
-    shows: flagship phase-C verification source
+    shows: ChatGPT usage statistics aggregator. Returned HTTP 403 to a plain fetch on 2026-08-13, so not
+      re-dated.
     accessed: '2026-06-04'
 capability:
   score: 5
@@ -48,8 +65,12 @@ capability:
   value: null
   confidence: high
   note: 'OpenAI-reported at launch: SWE-bench Verified 74.9%, MMMU 84.2%, AIME 2025 94.6% (no tools), Aider Polyglot
-    88%. Frontier-tier coding/reasoning. Vendor-reported figures.'
+    88%. Frontier-tier coding/reasoning. Vendor-reported figures. NOT RE-VERIFIED on 2026-08-13 - the only
+    source this axis cites, openai.com/index/introducing-gpt-5/, returned HTTP 403 to a plain fetch on both
+    attempts, and none of the four figures appears on the GPT-5 Wikipedia article, so nothing corroborates
+    them. No last_verified claimed; the axis needs a reachable primary source.'
   sources:
   - url: https://openai.com/index/introducing-gpt-5/
-    shows: flagship phase-C verification source
+    shows: OpenAI's GPT-5 launch post, the source of the four recorded figures. Returned HTTP 403 to a
+      plain fetch on 2026-08-13, so not re-dated.
     accessed: '2026-06-04'

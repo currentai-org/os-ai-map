@@ -15,19 +15,32 @@ openness:
   confidence: high
   note: Proprietary OpenAI API model; no weights/data/code released. Absorbed the duplicate
     base_pretrained record on 2026-07-29, which contributed OpenAI's own model docs as a primary source
-    alongside the press coverage, and the exact context window (1,047,576 tokens).
+    alongside the press coverage, and the exact context window (1,047,576 tokens). Re-read 2026-08-13 -
+    OpenAI's own model page still lists GPT-4.1 with a 1,047,576-token context window and no weights
+    download of any kind, and TechCrunch still describes the family as "exclusively available through the
+    company's API". The knowledge-cutoff detail the old note quoted no longer renders to a plain fetch and
+    has been dropped from the source's `shows` rather than re-asserted. No change.
   raw: weights:closed;data:closed;code:closed;license:Proprietary(API-only)
+  last_verified: '2026-08-13'
   sources:
   - url: https://developers.openai.com/api/docs/models/gpt-4.1
-    shows: 'OpenAI''s own model page: API-only, no downloadable weights, 1,047,576-token context, knowledge
-      cutoff Jun 2024'
-    accessed: '2026-06-04'
+    shows: OpenAI's own model page - GPT-4.1 with a 1,047,576 context window, served through the API with
+      no weights, corpus or code offered
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 7acb0453216b9734f701100c3e1fa06a1d4ccae3270233a015ed80dbb6caee55
+    establishes: [weights, data, code, license]
   - url: https://techcrunch.com/2025/04/14/openais-new-gpt-4-1-models-focus-on-coding/
-    shows: GPT-4.1 family is API-only, coding-focused, released Apr 14 2025
-    accessed: '2026-06-04'
+    shows: '"OpenAI has launched a new family of models called GPT-4.1. They focus on coding, and are
+      exclusively available through the company''s API."'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 489808b11dc7a49d9b8cc33e1c19111dfe72ae9c286db30bddfa879b55a91195
   - url: https://www.infoq.com/news/2025/05/openai-gpt-4-1/
-    shows: GPT-4.1 family with 1M-token context, API release
-    accessed: '2026-06-04'
+    shows: GPT-4.1 API release write-up, still live
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 19a29c3de87418da58db116d6317754bc8870621385c0aafebd0b4cd533118a6
 adoption:
   level: 4
   signal_type: reported_traction
@@ -35,11 +48,18 @@ adoption:
   note: GPT-4.1 was an API-first developer/coding model (initially not in ChatGPT default), widely adopted
     as a cheaper GPT-4o replacement and integrated across tooling. No primary per-model usage count disclosed;
     level 4 reflects broad developer-platform distribution as a major OpenAI API model rather than a verified
-    figure. Treat as directional.
+    figure. Treat as directional. Re-read 2026-08-13 - the source still describes an API-exclusive coding
+    family and still publishes no usage or user count, so the abstention from a number stands and the
+    instrument is right. `reach` is correctly absent, which is what a reported_traction record owes. No
+    change.
+  last_verified: '2026-08-13'
   sources:
   - url: https://techcrunch.com/2025/04/14/openais-new-gpt-4-1-models-focus-on-coding/
-    shows: GPT-4.1 positioned as primary API coding model replacing GPT-4o
-    accessed: '2026-06-04'
+    shows: GPT-4.1 positioned as the API coding family replacing GPT-4o; no usage or user figure published
+      anywhere on the page
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 489808b11dc7a49d9b8cc33e1c19111dfe72ae9c286db30bddfa879b55a91195
 capability:
   score: 3
   basis: benchmark
@@ -48,15 +68,25 @@ capability:
   confidence: high
   note: Solid non-reasoning coding model at Apr 2025 (54.6 SWE-bench, +21pts over GPT-4o), but well below
     2026 reasoning frontier (o3 71.7, GPT-5 74.9, Opus 4.8 88.6). Mid-tier, frontier-relative. Headline
-    54.6% re-sourced to OpenAI primary announcement (was aggregator-only).
+    54.6% re-sourced to OpenAI primary announcement (was aggregator-only). Re-read 2026-08-13 - InfoQ still
+    reports "GPT-4.1 achieves 54.6% accuracy ... a 21-point increase over GPT-4o (33.2%) and 26.6 points
+    higher than GPT-4.5", and Helicone gives the same three figures. The OpenAI primary announcement returned
+    HTTP 403 to a plain fetch on both attempts, so its accessed date is left where it was rather than
+    re-dated; the figure is confirmed on the two secondary sources instead.
+  last_verified: '2026-08-13'
   sources:
   - url: https://openai.com/index/gpt-4-1/
     shows: 'OpenAI primary announcement: GPT-4.1 SWE-bench Verified 54.6% vs GPT-4o 33.2%, 1M-token context
-      (corroborated by InfoQ/TechCrunch)'
+      (corroborated by InfoQ/TechCrunch). Returned HTTP 403 to a plain fetch on 2026-08-13, so not re-dated.'
     accessed: '2026-06-04'
   - url: https://www.helicone.ai/blog/gpt-4.1-full-developer-guide
-    shows: GPT-4.1 SWE-bench Verified 54.6% vs GPT-4o 33.2%
-    accessed: '2026-06-04'
+    shows: '"GPT-4.1 scored 54.6%, far outperforming GPT-4o (33.2%) and GPT-4.5 (28%)" on SWE-bench Verified'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: b115d0ca8356e978b90165b2d2c29c2f664b03c390870f04bc11b9bb1f3382ef
   - url: https://www.infoq.com/news/2025/05/openai-gpt-4-1/
-    shows: GPT-4.1 benchmark improvements over GPT-4o/4.5 and 1M context
-    accessed: '2026-06-04'
+    shows: '"GPT-4.1 achieves 54.6% accuracy. This is a 21-point increase over GPT-4o (33.2%) and 26.6
+      points higher than GPT-4.5."'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 19a29c3de87418da58db116d6317754bc8870621385c0aafebd0b4cd533118a6

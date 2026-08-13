@@ -15,24 +15,36 @@ openness:
     - name: Apache-2.0
       detail: OSI permissive
   confidence: high
-  note: OSI Apache-2.0 open weights; post-training data and training code closed -> open_weights.
+  note: OSI Apache-2.0 open weights; post-training data and training code closed -> open_weights. Re-read
+    2026-08-13 - the card still carries `license:apache-2.0`, still reads `"gated":false`, and still ships
+    only a quickstart and chat template with no post-training pipeline or SFT/RLHF mixture. No change.
   raw: weights:open(Apache-2.0, on HF);data:closed;code:partial(inference/chat template; no training pipeline
     or SFT/RLHF data);license:Apache-2.0(OSI permissive)
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/Qwen/Qwen2.5-14B-Instruct
-    shows: Apache-2.0 license, 14.7B instruct model card, downloadable BF16 weights
-    accessed: '2026-06-04'
+    shows: '`license:apache-2.0` in the repo tags and `"gated":false` in the embedded repo state, so the
+      14.7B BF16 weights download without a barrier; the card carries a quickstart and chat template only,
+      with no post-training pipeline or SFT/RLHF mixture'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: de4c1243bea053455f4fe34d0337a962c2a12b5901f486c260f73d57a6f0671d
+    establishes: [weights, data, code, license]
 adoption:
   level: 4
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
   note: ~2.22M downloads last month for the 14B-Instruct SKU on HF; one of the most-pulled mid-size instruct models
-    in the dominant Qwen2.5 family. Solidly in the 1-10M band on measured monthly downloads.
+    in the dominant Qwen2.5 family. Solidly in the 1-10M band on measured monthly downloads. Re-read 2026-08-13
+    - the single declared SKU now reads 3,137,049 downloads in the trailing 30 days, still level 4. No change.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/Qwen/Qwen2.5-14B-Instruct
-    shows: ~2,216,468 downloads last month
-    accessed: '2026-06-04'
+    shows: 3,137,049 downloads in the trailing 30 days
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: de4c1243bea053455f4fe34d0337a962c2a12b5901f486c260f73d57a6f0671d
 capability:
   score: 3
   basis: benchmark
@@ -42,7 +54,13 @@ capability:
   confidence: medium
   note: Capable mid-size (14B) 2024 general chat model; strong-for-size but well below 2026 frontier and below larger
     Qwen2.5/3 SKUs. HF card does not inline MMLU/MMLU-Pro numbers; scored 3 on size/class with medium confidence.
+    Re-read 2026-08-13 - the card still lists the same vendor claims (coding, mathematics, instruction following,
+    long-text generation, 128K context, 29+ languages) and still defers the numbers to the Qwen2.5 blog. No
+    change.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/Qwen/Qwen2.5-14B-Instruct
     shows: 14B instruct general-chat model card, vendor capability claims; defers benchmarks to Qwen2.5 blog
-    accessed: '2026-06-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: de4c1243bea053455f4fe34d0337a962c2a12b5901f486c260f73d57a6f0671d

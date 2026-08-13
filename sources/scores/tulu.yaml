@@ -34,43 +34,67 @@ openness:
     3/restricted, a pair no rule in the category ladder could produce. The universal license scale
     now caps a bounded commercial license at 3/open_weights, which IS producible, so the score
     returns while the objection that removed it stays answered.
+
+    Re-read 2026-08-13 - the 8B checkpoint still carries `license:llama3.1` and reads `"gated":false`,
+    the Tulu 3 blog still publishes the data mixes, recipe and eval framework, and open-instruct is still
+    Apache-2.0. No change.
   raw: weights:open(downloadable);license:Llama-3.1-Community(non-OSI;700M-MAU cap + use policy);post-training-data:open(Apache-2.0/ODC-BY);code:open(open-instruct
     Apache-2.0);recipe:open(SFT->DPO->RLVR);evals:open(OLMES)
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/allenai/Llama-3.1-Tulu-3-8B
-    shows: 'License: Llama 3.1 Community License Agreement (non-OSI); base meta-llama/Llama-3.1-8B'
-    accessed: '2026-06-25'
+    shows: '`license:llama3.1` in the repo tags, so the checkpoint ships under the Llama 3.1 Community
+      License Agreement rather than Ai2''s own terms; `"gated":false`, so the weights download without
+      a barrier; base meta-llama/Llama-3.1-8B'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: f74ddccb2a10fdac503d87abba4052b9e28d8ad7eaa1798bec479f32abe9a126
+    establishes: [weights, license]
   - url: https://allenai.org/blog/tulu-3
     shows: fully-transparent post-training release -- open data + data mixes, training code/recipe, eval framework,
       and weights
-    accessed: '2026-06-25'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 300f60775e3b5486566281c4cfdc6f64d47fb606d793213805315ef65713c3ad
+    establishes: [post-training-data, recipe]
   - url: https://github.com/allenai/open-instruct
     shows: Apache-2.0; Tulu 3 SFT/DPO/RLVR post-training framework + decontamination tools
-    accessed: '2026-06-25'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 7bf1c8b05e23c3ecf58a94c3c915b01cc583640175a53965f21c066190726818
+    establishes: [code]
 adoption:
   level: 2
   reach: 10K-100K
   signal_type: usage_volume
   confidence: high
   note: >-
-    The released weights inherit Meta's Llama 3.1 Community License (non-OSI, 700M-MAU cap), so
-    the license governs what a user downloading THIS checkpoint is bound by, not Ai2's post-
-    training layer. That layer is genuinely open - data, code, RLVR recipe and eval framework, all
-    Apache-2.0 - and it is credited where it lives: tulu-3-sft-mixture carries 5/open in
-    training_synthetic_datasets, and the same recipe produces olmo-3-instruct at 5/open_source on
-    an open base. Scoring the method on the checkpoint would score two things at once. Was 3,
-    corrected to 2 on 2026-07-29, and now 3 again on 2026-08-01 - but not a reversal to the
-    original reasoning. The 2026-07-29 correction was right at the time: the 3 it removed was
-    3/restricted, a pair no rule in the category ladder could produce. The universal license scale
-    now caps a bounded commercial license at 3/open_weights, which IS producible, so the score
-    returns while the objection that removed it stays answered.
+    Research-scale reach. The note that stood here until 2026-08-13 was a verbatim copy of the
+    openness note and described the license rather than the adoption; it is replaced.
+
+    Re-read 2026-08-13 - the three declared model SKUs sum to 10,342 downloads in the trailing 30
+    days (Llama-3.1-Tulu-3-8B 9,421; -70B 680; -405B 241), which bands at level 2 (10K-100K) on
+    the model scale. The tulu-3-sft-mixture dataset the product also declares reads 36,267, but
+    the route takes the sum WITHIN the winning kind and the Hugging Face model route wins, so the
+    corpus is not added here; it is scored as its own product in training_synthetic_datasets. No
+    change.
+  last_verified: '2026-08-13'
   sources:
-  - url: https://huggingface.co/allenai/Llama-3.1-Tulu-3-8B
-    shows: ~3,109 downloads last month; 179 likes
-    accessed: '2026-06-25'
-  - url: https://huggingface.co/allenai/Llama-3.1-Tulu-3-405B
-    shows: ~832 downloads last month; 112 likes
-    accessed: '2026-06-25'
+  - url: https://huggingface.co/api/models/allenai/Llama-3.1-Tulu-3-8B
+    shows: 9,421 downloads in the trailing 30 days for allenai/Llama-3.1-Tulu-3-8B
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 1474277f14c035efed6844dd79d36bbb1187a3eab2753de3fa07bd724a54c355
+  - url: https://huggingface.co/api/models/allenai/Llama-3.1-Tulu-3-70B
+    shows: 680 downloads in the trailing 30 days for allenai/Llama-3.1-Tulu-3-70B
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 6208c9dda66c1683bc287f6882e9c608236bc7540fd808dc1a54ff1cc7be503d
+  - url: https://huggingface.co/api/models/allenai/Llama-3.1-Tulu-3-405B
+    shows: 241 downloads in the trailing 30 days for allenai/Llama-3.1-Tulu-3-405B
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 078bbe59c0721827673157971c8556fd7053e24bb0d67905f97d34b777e2240f
 capability:
   score: 3
   basis: benchmark
@@ -78,21 +102,26 @@ capability:
   value: Tulu-3-405B MMLU 87.0, GSM8K 95.5, IFEval 86.0, HumanEval 95.9, MATH 67.3
   confidence: high
   note: >-
-    The released weights inherit Meta's Llama 3.1 Community License (non-OSI, 700M-MAU cap), so
-    the license governs what a user downloading THIS checkpoint is bound by, not Ai2's post-
-    training layer. That layer is genuinely open - data, code, RLVR recipe and eval framework, all
-    Apache-2.0 - and it is credited where it lives: tulu-3-sft-mixture carries 5/open in
-    training_synthetic_datasets, and the same recipe produces olmo-3-instruct at 5/open_source on
-    an open base. Scoring the method on the checkpoint would score two things at once. Was 3,
-    corrected to 2 on 2026-07-29, and now 3 again on 2026-08-01 - but not a reversal to the
-    original reasoning. The 2026-07-29 correction was right at the time: the 3 it removed was
-    3/restricted, a pair no rule in the category ladder could produce. The universal license scale
-    now caps a bounded commercial license at 3/open_weights, which IS producible, so the score
-    returns while the objection that removed it stays answered.
+    A 2025 post-training recipe on a Llama 3.1 base, at the top of its own generation and below
+    the 2026 frontier. The note that stood here until 2026-08-13 was a verbatim copy of the
+    openness note and described the license rather than the capability; it is replaced.
+
+    Re-read 2026-08-13 - the 405B card's results table still gives the Tülu 3 405B column MMLU
+    (5 shot, CoT) 87.0, GSM8K 95.5, IFEval 86.0, HumanEval 95.9 and MATH 67.3, against GPT-4o
+    (11-24) at 87.9 / 91.7 / 84.8 / 97.0 / 68.8. Every figure unchanged, and the GPT-4o column it
+    is scored against is now two model generations old, which is what keeps this at 3 rather than
+    higher. No change.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/allenai/Llama-3.1-Tulu-3-405B
-    shows: MMLU 87.0, GSM8K 95.5, IFEval 86.0, HumanEval 95.9, MATH 67.3; vs GPT-4o comparison
-    accessed: '2026-06-25'
+    shows: 'results table, Tülu 3 405B column - MMLU (5 shot, CoT) 87.0, GSM8K (8 shot, CoT) 95.5, IFEval
+      (prompt loose) 86.0, HumanEval (pass@10) 95.9, MATH (4 shot, Flex) 67.3, against a GPT 4o (11-24)
+      column at 87.9 / 91.7 / 84.8 / 97.0 / 68.8'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 08e20975373e43bfbf5889abdb2af9961635b795621860ef1c2a8086306834f6
   - url: https://huggingface.co/allenai/Llama-3.1-Tulu-3-8B
-    shows: MMLU 68.2, GSM8K 87.6, IFEval 82.4
-    accessed: '2026-06-25'
+    shows: 8B card, the smaller SKU of the same release
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: f74ddccb2a10fdac503d87abba4052b9e28d8ad7eaa1798bec479f32abe9a126

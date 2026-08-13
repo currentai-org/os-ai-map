@@ -25,24 +25,37 @@ openness:
     the base pretraining corpus being documented rather than packaged, but this category scores the post-training
     data -- what the tuner released -- and zephyr scores 5/open_source on these same two datasets while sitting
     on Mistral-7B, whose corpus is closed outright. Judging TinyLlama by its base while judging zephyr by its post-training
-    set penalized the more open of the two bases. Strongest openness in this batch alongside Nemotron.'
+    set penalized the more open of the two bases. Strongest openness in this batch alongside Nemotron.
+    Re-read 2026-08-13 - the card still carries `license:apache-2.0` and `"gated":false`, and still names
+    both alignment sets (HuggingFaceH4/ultrachat_200k for SFT, HuggingFaceH4/ultrafeedback_binarized for
+    DPO) with the TinyLlama pretraining project linked. No change.'
   raw: weights:open(Apache-2.0);base:TinyLlama-1.1B(open, 3T-token pretrain documented);post-training-data:open(SFT
     on UltraChat + DPO on UltraFeedback, both public datasets);code:open(pretraining project public);license:Apache-2.0(OSI)
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/TinyLlama/TinyLlama-1.1B-Chat-v1.0
-    shows: Apache-2.0; base TinyLlama-1.1B; SFT on UltraChat + DPO on UltraFeedback
-    accessed: '2026-06-04'
+    shows: '`license:apache-2.0` in the repo tags and `"gated":false`; base TinyLlama-1.1B; SFT on
+      HuggingFaceH4/ultrachat_200k and DPO on HuggingFaceH4/ultrafeedback_binarized, both public; the
+      TinyLlama pretraining project linked from the card'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 84460b9051e509ac5cb87f3db20f42b11d54c2b4c50519dd905cbd9c4452d75c
+    establishes: [weights, post-training-data, code, license]
 adoption:
   level: 4
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
   note: ~2.31M HF downloads last month, a workhorse tiny-chat model for edge/testing/CI and educational use. Solidly
-    in the 1-10M monthly-download band.
+    in the 1-10M monthly-download band. Re-read 2026-08-13 - the single declared SKU now reads 2,415,028
+    downloads in the trailing 30 days, still level 4. No change.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/TinyLlama/TinyLlama-1.1B-Chat-v1.0
-    shows: 2,314,508 downloads last month
-    accessed: '2026-06-04'
+    shows: 2,415,028 downloads in the trailing 30 days
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 84460b9051e509ac5cb87f3db20f42b11d54c2b4c50519dd905cbd9c4452d75c
 capability:
   score: 1
   basis: benchmark
@@ -50,8 +63,15 @@ capability:
   value: 1.1B Llama-2-era model; intended for lightweight/edge use, not competitive on 2026 capability benchmarks
   confidence: high
   note: Intentionally tiny (1.1B, 2023 Llama-2 architecture). Its value is footprint and openness, not capability;
-    scored 1 against a 2026 frontier comparison set. Not built to compete on reasoning/coding suites.
+    scored 1 against a 2026 frontier comparison set. Not built to compete on reasoning/coding suites. Re-read
+    2026-08-13 - the card still publishes no benchmark table of any kind, only the 1.1B Llama 2 architecture,
+    the 3-trillion-token pretraining claim and the alignment pipeline. Nothing on it supports a higher band.
+    No change.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/TinyLlama/TinyLlama-1.1B-Chat-v1.0
-    shows: 1.1B params, Llama 2 architecture, chat-optimized lightweight model
-    accessed: '2026-06-04'
+    shows: 1.1B params, Llama 2 architecture, 3 trillion pretraining tokens, chat-optimized lightweight
+      model; no benchmark table on the card
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 84460b9051e509ac5cb87f3db20f42b11d54c2b4c50519dd905cbd9c4452d75c

@@ -19,26 +19,48 @@ openness:
       detail: OSI
   confidence: high
   note: '360-open / fully reproducible: Apache-2.0 weights + complete TxT360 data + training code + checkpoints.
-    A clean fully-open exemplar at 70B.'
+    A clean fully-open exemplar at 70B. Re-read 2026-08-13 - the card still carries `license:apache-2.0`,
+    reads `"gated":false`, and still links Training Code, Evaluation Code and all three data mixtures
+    (TxT360 pretraining, TxT360-Midas midtraining, TxT360-3efforts SFT) with a "Using specific checkpoints"
+    section. Note the repo now renders under the org `IFM` rather than `LLM360`; the LLM360 URL still
+    resolves. No change to the score.'
   raw: weights:open(Apache-2.0);data:open(TxT360 pretraining + midtraining + SFT);code:open(k2v2_train);checkpoints:open;license:Apache-2.0(OSI)
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/LLM360/K2-V2
-    shows: K2-V2 70B; Apache-2.0; open data/code/checkpoints
-    accessed: '2026-06-30'
+    shows: '`license:apache-2.0` and `"gated":false`; card links Tech Report, Training Code and Evaluation
+      Code, and names Pretraining Data TxT360, Midtraining Data TxT360-Midas and SFT Data TxT360-3efforts;
+      a "Using specific checkpoints" section; repo now shown under the org IFM'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 2a794ffb621dd3acb98496e56d6d4d6e05d40cd59c0620a8bb4891aacfc19da2
+    establishes: [weights, data, code, checkpoints, license]
   - url: https://arxiv.org/abs/2512.06201
-    shows: 'K2-V2: A 360-Open, Reasoning-Enhanced LLM (Dec 2025); TxT360 data fully released'
-    accessed: '2026-06-30'
+    shows: '"K2-V2: A 360-Open, Reasoning-Enhanced LLM", submitted 5 Dec 2025, revised 26 Jan 2026'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 1a9dc871188b8cf153a88ad4e24a25f01c88b004b202892b85f810c22241afdf
 adoption:
   level: 2
   reach: 10K-100K
   signal_type: usage_volume
   confidence: medium
   note: New (Dec 2025) and still niche, like its K2 predecessor; included as a clean fully-open 70B exemplar rather
-    than on popularity.
+    than on popularity. Re-read 2026-08-13 - the two declared SKUs sum to 2,970 downloads in the trailing
+    30 days (K2-V2 223; K2-V2-Instruct 2,747), which bands at level 1 (<10K), not 2. The recorded band was
+    never read off a figure - the note says so in its own second clause - and this is the first time a count
+    has been put against it. ESCALATED rather than changed - no last_verified claimed on this axis.
   sources:
-  - url: https://huggingface.co/LLM360/K2-V2
-    shows: K2-V2 repo live on HF; niche download volume
-    accessed: '2026-06-30'
+  - url: https://huggingface.co/api/models/LLM360/K2-V2
+    shows: 223 downloads in the trailing 30 days for K2-V2 (repo now served as IFM/K2-V2)
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 95f46932511c135a6e3d521e9594742b87a180c326f65a2b3d2db2de338c5fb6
+  - url: https://huggingface.co/api/models/LLM360/K2-V2-Instruct
+    shows: 2,747 downloads in the trailing 30 days for K2-V2-Instruct (repo now served as IFM/K2-V2-Instruct)
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 6bc1e2bfaf5b1c78cd8e3ea900b81eb740a122d3e25fe35541e53b24b1262a5f
 capability:
   score: 4
   basis: benchmark
@@ -46,8 +68,15 @@ capability:
   value: Outperforms Qwen2.5-72B; approaches Qwen3-235B
   confidence: medium
   note: Strongest fully-open model by parameter scale (70B dense), with strong long-context and math/reasoning;
-    OLMo 3 still leads on fully-open evals. Card/report-reported numbers -> medium confidence.
+    OLMo 3 still leads on fully-open evals. Card/report-reported numbers -> medium confidence. Re-read
+    2026-08-13 - the abstract still reads "It stands as the strongest fully open model, rivals open-weight
+    leaders in its size class, outperforms Qwen2.5-72B and approaches the performance of Qwen3-235B",
+    which is the recorded value verbatim. No change.
+  last_verified: '2026-08-13'
   sources:
   - url: https://arxiv.org/abs/2512.06201
-    shows: outperforms Qwen2.5-72B, approaches Qwen3-235B
-    accessed: '2026-06-30'
+    shows: 'abstract - "It stands as the strongest fully open model, rivals open-weight leaders in its
+      size class, outperforms Qwen2.5-72B and approaches the performance of Qwen3-235B"'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 1a9dc871188b8cf153a88ad4e24a25f01c88b004b202892b85f810c22241afdf
