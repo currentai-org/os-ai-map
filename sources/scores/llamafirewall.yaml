@@ -92,8 +92,24 @@ capability:
     checks, and insecure-code filtering (CodeShield) in one real-time firewall.'
   confidence: medium
   note: One of the few guardrail systems aimed specifically at agent security, with alignment checks and
-    code filtering beyond I/O moderation.
+    code filtering beyond I/O moderation. Re-read 2026-08-13. The PurpleLlama root README no longer names
+    LlamaFirewall or the alignment checks at all - its component table now lists only the Llama Guard
+    family, Prompt Guard and Code Shield - so the LlamaFirewall directory README is cited alongside it as
+    the source that actually carries the scanner list. The band is unchanged.
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/meta-llama/PurpleLlama
-    shows: Prompt Guard 2 + Agent Alignment Checks + CodeShield
-    accessed: '2026-06-29'
+    shows: Root README describes Purple Llama as an umbrella project and tables its components - Cyber
+      Security Eval under MIT, the Llama Guard family and Prompt Guard under Llama Community licenses, and
+      Code Shield under MIT, which it describes as inference-time filtering of insecure generated code,
+      code-interpreter abuse prevention and secure command execution. It does not mention LlamaFirewall.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 507ec485f07e6b4ebe6f32218b9a72c84f01c769127022fe77a496b41c10669b
+  - url: https://github.com/meta-llama/PurpleLlama/blob/main/LlamaFirewall/README.md
+    shows: The directory README lists the scanners the harness composes - PromptGuard 2, AlignmentCheck,
+      regex/custom and CodeShield - all in the published package, installed with `pip install
+      llamafirewall` and instantiated in-process. Re-fetched 2026-08-13 with an unchanged digest.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 9bf4c794eae9870c6d9403490949eec85568c275229775f9477a72e48b679d12

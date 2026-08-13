@@ -21,18 +21,28 @@ openness:
   confidence: high
   note: OSI MIT core with a separate proprietary Enterprise Edition for multi-user permissions and internal-KB
     RAG -> open_core (calibrated to the LiteLLM open_core anchor).
+    Re-read 2026-08-13. The repository still carries MIT and the root tree is still the whole
+    application - app, src-tauri, public, docs, scripts and test, with no ee/ or enterprise/ directory
+    anywhere in it. The README still carries the Enterprise Edition section quoted below verbatim,
+    unchanged, with the same business@nextchat.club contact, so the admin panel, the member and
+    knowledge-base permission model and the security auditing are still withheld from the published
+    source. The repository-root reading recorded on 2026-08-11 could not be refetched today because
+    api.github.com declined the request, so the source dimension was re-derived from the repository
+    page, whose embedded root listing shows the same tree. Value unchanged at 4 / open_core.
   raw: license:MIT(core, public source);enterprise-tier:NextChat Enterprise (permission controls, team resource
     mgmt, internal knowledge base/RAG);source:public(the app IS the repo; README ships one-click Vercel/Zeabur/Gitpod
     deploy, a Dockerfile and docker-compose, and desktop builds via src-tauri);core-gated:gated(Enterprise
     Edition withholds the admin panel, member/resource/knowledge-base permission control, internal knowledge-base
     integration and security auditing from the MIT repo)
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/ChatGPTNextWeb/NextChat
     shows: MIT license; cross-platform chat client; Enterprise Edition (permissions, team mgmt, internal
       knowledge base)
-    accessed: '2026-06-04'
-    establishes:
-    - license
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 3c4898066733a56c76b9d44103e06da64cc6a4600eb24eee32dec7f0d6a0b79f
+    establishes: [license, source]
   - url: https://api.github.com/repos/ChatGPTNextWeb/NextChat/contents/
     shows: Repository root read for the source dimension. The repo license endpoint returns MIT, and the
       tree is the whole application - app, src-tauri, public, docs, plus Dockerfile, docker-compose.yml,
@@ -53,9 +63,10 @@ openness:
       knowledge base exists in the MIT repository, whose own Features list describes the opposite design:
       "Privacy first, all data is stored locally in the browser". So this is functionality withheld from
       the published source rather than a hosted service beside it, which is the gated reading.'
-    accessed: '2026-08-11'
-    establishes:
-    - core-gated
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: a2e48c50a9c32392e67397a67f66a6e3bdcaeb7c5bb051629a9fb5133927916a
+    establishes: [core-gated]
 adoption:
   level: 3
   reach: '>10K stars'
@@ -69,11 +80,19 @@ adoption:
     declares no artifacts at all, so a stars_fallback band had no stars source behind it and the count lived
     only in this note. Declaring ChatGPTNextWeb/NextChat would fix it, and is deliberately not done here
     because a declared code repo also re-routes the openness license dimension. No last_verified claimed: a
-    star count is volatile.'
+    star count is volatile.
+    Re-read 2026-08-13 - ChatGPTNextWeb/NextChat shows 88,616 stars, still banding at >10K stars, level
+    3 on the stars scale, and v2.16.1 of 29 July 2025 is still the latest tagged release, so the
+    stalled-release observation above holds a year on. No download or MAU figure has appeared. This
+    supersedes the refusal to claim a date - the axis was re-read rather than aggregated. Level
+    unchanged.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/ChatGPTNextWeb/NextChat
     shows: 88.2k stars; v2.16.1 latest release; cross-platform deployment
-    accessed: '2026-06-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 3c4898066733a56c76b9d44103e06da64cc6a4600eb24eee32dec7f0d6a0b79f
 capability:
   score: 3
   basis: feature_matrix
@@ -82,7 +101,14 @@ capability:
   confidence: medium
   note: Solid lightweight cross-platform client with plugins/MCP/vision, but RAG and multi-user are gated
     to Enterprise; thinner OSS feature surface than Open WebUI/LibreChat/AnythingLLM.
+    Re-read 2026-08-13. The README still shows the open surface the band rests on - many providers,
+    plugins from v2.15.0, artifacts from v2.14.0, realtime chat from v2.15.8, vision through the
+    VISION_MODELS setting, and MCP behind an ENABLE_MCP build flag - while stating that all data is
+    stored locally in the browser, so RAG and multi-user remain Enterprise-only. Band unchanged at 3.
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/ChatGPTNextWeb/NextChat
     shows: multi-provider, plugins, vision, MCP, artifacts; RAG/multi-user in Enterprise Edition
-    accessed: '2026-06-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 3c4898066733a56c76b9d44103e06da64cc6a4600eb24eee32dec7f0d6a0b79f

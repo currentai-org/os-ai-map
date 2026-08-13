@@ -15,12 +15,33 @@ openness:
       detail: HF card; older GitHub repo shows Apache-2.0
   confidence: medium
   note: Open weights under a permissive license (MIT per the model card); no open training data -> open_weights.
+    Re-read 2026-08-13 - the Hub still reports `mit` and ungated for MiMo-V2.5-Pro, the card names no
+    training corpus, and XiaomiMiMo/MiMo is still a public Apache-2.0 repository. The recorded
+    license note already flags that split and it still holds.
+  last_verified: '2026-08-13'
   raw: weights:open(MIT per HF card);data:closed;code:open;license:MIT(HF card; older GitHub repo shows
     Apache-2.0)
   sources:
   - url: https://huggingface.co/XiaomiMiMo/MiMo-V2.5-Pro
-    shows: MIT, 1.02T/42B MoE, 1M context, benchmarks
-    accessed: '2026-06-18'
+    shows: MIT, 1.02T/42B MoE, 1M context, benchmark tables; no training corpus named on the card
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 49f797c15d88a6c2e9c5057cf7c118303d07aaec08fa8a7af0669539c4e71324
+    establishes: [weights, data, license]
+  - url: https://huggingface.co/api/models/XiaomiMiMo/MiMo-V2.5-Pro
+    shows: 'card license `mit`, `gated: false`, `private: false`, 61,546 downloads and 736 likes.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 420cc501c5a9bb1ccfe85ccb147167b160fe6ce497ebf209b33cf342c611b252
+    establishes: [weights, license]
+  - url: https://api.github.com/repos/XiaomiMiMo/MiMo
+    shows: '`private: false`, `archived: false`, license `Apache-2.0`, 2,294 stars, description
+      "MiMo: Unlocking the Reasoning Potential of Language Model - From Pretraining to Posttraining".
+      This is the older repo whose Apache-2.0 the license note contrasts with the card MIT.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 1c115a9259f3b47509f3923137efc00b06578c41bf3d2eebec59c5ce35d3559d
+    establishes: [code]
 adoption:
   level: 2
   signal_type: usage_volume
@@ -45,7 +66,23 @@ capability:
     band (~#29 per mirrors)
   confidence: medium
   note: Frontier open-weights model, efficiency-focused; official benchmarks, Arena rank mirror-reported.
+    Re-read 2026-08-13, and the evidence moved even though the band did not. Xiaomi's own page now
+    defers the numbers - "See the model card on Hugging Face for architecture details, evaluation
+    tables" - so all four recorded figures were re-derived from the model card instead, where MMLU
+    89.4, MMLU-Pro 68.5, GSM8K 99.6 and HumanEval+ 75.6 are all present. The LMArena rank in the value
+    is mirror-reported and was NOT re-confirmed; it has no cited source and the band does not rest on
+    it, resting instead on the card benchmarks.
+  last_verified: '2026-08-13'
   sources:
+  - url: https://huggingface.co/XiaomiMiMo/MiMo-V2.5-Pro
+    shows: MMLU 89.4, MMLU-Pro 68.5, GSM8K 99.6 and HumanEval+ 75.6 on the official model card
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 49f797c15d88a6c2e9c5057cf7c118303d07aaec08fa8a7af0669539c4e71324
   - url: https://mimo.xiaomi.com/mimo-v2-5-pro
-    shows: official architecture + benchmarks, Apr 2026 release
-    accessed: '2026-06-18'
+    shows: official architecture and Apr 27 2026 release announcement. The benchmark figures are no
+      longer readable on this page - it now points to the Hugging Face model card for the evaluation
+      tables.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 169c17e63ed923dde2ec4bcf53abeaef2de46d38412488aeea8f9c697fdff03f

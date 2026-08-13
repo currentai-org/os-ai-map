@@ -93,23 +93,42 @@ adoption:
   signal_type: usage_volume
   confidence: high
   note: agentops ~585k PyPI downloads/month; multi-framework integrations (CrewAI, AG2, OpenAI Agents
-    SDK, LangChain, Camel); ~5.6k stars corroborates only. 100K-1M monthly-download band.
+    SDK, LangChain, Camel); ~5.6k stars corroborates only. 100K-1M monthly-download band. Re-read
+    2026-08-13 - pypistats now reports 275,111 downloads last month for agentops, roughly half the 584,603
+    recorded and still inside the 100K-1M band, so level 3 is unchanged. The fall is consistent with the
+    stalled release cadence already recorded on the capability axis.
+  last_verified: '2026-08-13'
   sources:
   - url: https://pypistats.org/packages/agentops
-    shows: ~584,603 downloads last month
-    accessed: '2026-06-04'
+    shows: Downloads last month 275,111 for agentops (last week 59,009)
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 8cddc6c42d60c71606a66493a59f8b83d4e72d3e806f4c2793df7328397323fa
   - url: https://github.com/AgentOps-AI/agentops
-    shows: ~5.6k stars; agent tracing + cost tracking + integrations
-    accessed: '2026-06-04'
+    shows: 5,771 stars; agent tracing, cost tracking and framework integrations in the README
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 4c31c24d2c744e9d73ed70103f34689c83cc67b42824c39894cdcfa3e13b7912
 capability:
   score: 3
   basis: feature_matrix
   value: agent execution tracing + session replays, LLM cost tracking, multi-framework integrations, monitoring/debug
     dashboards, custom eval metrics; lighter on prompt versioning + dataset/annotation than full platforms
   confidence: medium
+  relative_to: langfuse
+  relation: one_below
   note: Solid agent-tracing + cost + basic evals, but narrower feature matrix than MLflow/Langfuse/Opik/Phoenix;
-    stale SDK (no 2026 release) reinforces a mid score.
+    stale SDK (no 2026 release) reinforces a mid score. The comparison is now recorded rather than left in
+    prose - one rung below the langfuse anchor at 4. Re-read 2026-08-13 on the repository README, whose
+    feature table is Replay Analytics and Debugging, LLM Cost Management, Agent Benchmarking, integrations
+    and Self-Host, with evaluations still carried as a roadmap table rather than a shipped surface.
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/AgentOps-AI/agentops
-    shows: tracing, session replays, cost tracking, eval metrics, integrations
-    accessed: '2026-06-04'
+    shows: 'Repository README - "AgentOps helps developers build, evaluate, and monitor AI agents", with a
+      feature table covering step-by-step agent execution graphs, LLM cost management, framework integrations
+      and Self-Host, and an "Evaluations Roadmap" table in which several eval rows are still marked as
+      in-progress rather than shipped.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 4c31c24d2c744e9d73ed70103f34689c83cc67b42824c39894cdcfa3e13b7912

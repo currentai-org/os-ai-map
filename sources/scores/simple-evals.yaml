@@ -14,12 +14,35 @@ openness:
     free_text:
     - no managed tier
   confidence: high
-  note: Fully OSI (MIT); purely a reference-implementation library, no gated core.
+  last_verified: '2026-08-13'
+  note: Fully OSI (MIT); purely a reference-implementation library, no gated core. Re-read 2026-08-13
+    - the license endpoint still reports MIT and the README is unchanged apart from carrying the same
+    July 2025 deprecation notice. A frozen repo is still a published one, so `source` and `core-gated`
+    are unaffected.
   raw: license:MIT(OSI);source:public(reference eval implementations); no managed tier;core-gated:ungated
   sources:
   - url: https://github.com/openai/simple-evals
     shows: MIT license; lightweight eval library; deprecation notice (July 2025); ~4.5k stars
     accessed: '2026-06-04'
+  - url: https://api.github.com/repos/openai/simple-evals/license
+    shows: GitHub's license endpoint reports spdx_id MIT for openai/simple-evals and returns the MIT text
+      as the LICENSE body.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 42b64dab65f25affe35be4e3c5b7442f1caa0041bcc2a9148313fec222311ee1
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/openai/simple-evals/main/README.md
+    shows: 'README opens with a deprecation notice - ''July 2025: simple-evals will no longer be updated
+      for new models or benchmark results. The repo will continue to host reference implementations for
+      HealthBench, BrowseComp, and SimpleQA'' - and the eval scripts are in the repo. No paid tier, managed
+      service or license key is offered anywhere in it.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: d9647c4a0e34cd9b2b528ff6986141734aac6f5f2f18a068eeadb2af0b29786f
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 2
   reach: 1K-10K stars
@@ -31,21 +54,44 @@ adoption:
     rather than as a live harness. Stars read 2026-08-13: 4,598 across the 1 declared repo, which bands at
     1K-10K stars, level 2 on the stars scale in signal_routing.yaml. The previous reach ''10K-100K'' was not a
     label this instrument offers - stars have their own vocabulary because a star is not a download. No
-    last_verified claimed: a star count is volatile, so a digest of it would read as drift on every refetch,
-    and the rest of the axis was not re-read.'
+    Re-read against the GitHub API on 2026-08-13 - 4,598 stars and 503 forks, and the README still leads
+    with the July 2025 deprecation notice, so both halves of the level hold.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/openai/simple-evals
     shows: ~4.5k stars, 490 forks; deprecation notice
     accessed: '2026-06-04'
+  - url: https://api.github.com/repos/openai/simple-evals
+    shows: stargazers_count = 4,598, forks 503, pushed_at 2026-04-22
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 91a1314636db06ee60fa04ca1863ba4ad41c3c983ba78ded50711dc579678a1b
+  - url: https://raw.githubusercontent.com/openai/simple-evals/main/README.md
+    shows: deprecation notice still first in the README; only HealthBench, BrowseComp and SimpleQA reference
+      implementations remain maintained
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: d9647c4a0e34cd9b2b528ff6986141734aac6f5f2f18a068eeadb2af0b29786f
 capability:
   score: 2
   basis: feature_matrix
   value: ~9 bundled benchmarks, zero-shot/CoT only; no plugin task system, no agentic-eval support, no
     model-backend abstraction beyond direct API calls; deprecated/frozen.
   confidence: medium
+  last_verified: '2026-08-13'
   note: Deliberately minimal reference harness, now frozen; narrow coverage and feature set vs category
-    leaders (HELM, Inspect AI, lm-eval-harness).
+    leaders (HELM, Inspect AI, lm-eval-harness). Feature matrix re-read 2026-08-13 and unchanged - the
+    README still lists the same nine bundled benchmarks and still says the repo is not actively maintained
+    and takes no new evals. No `relative_to` is recorded because the note's comparison is to three leaders
+    at once, three rungs above, which the relation vocabulary cannot express.
   sources:
   - url: https://github.com/openai/simple-evals
     shows: bundled benchmark list (MMLU/MATH/GPQA/HumanEval/HealthBench/etc.); zero-shot CoT approach
     accessed: '2026-06-04'
+  - url: https://raw.githubusercontent.com/openai/simple-evals/main/README.md
+    shows: bundled benchmarks MMLU, MATH, GPQA, DROP, MGSM, HumanEval, SimpleQA, BrowseComp and HealthBench,
+      each with its upstream license; 'We will not be actively maintaining this repository ... we're not
+      accepting new evals'.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: d9647c4a0e34cd9b2b528ff6986141734aac6f5f2f18a068eeadb2af0b29786f

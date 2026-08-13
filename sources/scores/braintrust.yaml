@@ -17,31 +17,60 @@ openness:
   confidence: high
   note: Open SDKs but a closed SaaS core (Brainstore backend, dashboards, automation are proprietary);
     no OSS core, so 'closed' (not open_core) like LangSmith/Galileo per recipe's closed examples. The
-    Apache-2.0 client SDK is instrumentation only and does not open the product.
+    Apache-2.0 client SDK is instrumentation only and does not open the product. Re-read 2026-08-13 and
+    unchanged on the score. One detail has moved - braintrustdata/braintrust-sdk now states that it holds
+    "Braintrust's JavaScript/TypeScript SDKs and integrations" rather than the five-language set the
+    components clause records, so that clause overstates what this repository covers. It remains Apache-2.0
+    and it remains a client SDK, so neither the score nor the class turns on it.
   raw: source:closed;license:Apache-2.0(OSI, client SDKs only, Python/TS/Go/Ruby/C#);platform:proprietary(Brainstore
     custom DB, evals/tracing/automation all SaaS);self-host:enterprise-only(hybrid)
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/braintrustdata/braintrust-sdk
-    shows: Apache-2.0 license on client SDK; platform itself at braintrust.dev
-    accessed: '2026-06-04'
+    shows: 'Repository README - "This repository contains Braintrust''s JavaScript/TypeScript SDKs and
+      integrations", with the core SDK described as being "for logging, tracing, evals, and CLI". Its
+      License section reads Apache-2.0. Nothing in the repository is the platform itself.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 67b40e12540ea77b2a06da3181f07e9ca2e0141b8bd13d3a5f8afb00bec74722
+    establishes:
+    - license
   - url: https://www.braintrust.dev/
-    shows: proprietary backend (Brainstore custom DB), SaaS + hybrid enterprise deployment
-    accessed: '2026-06-04'
+    shows: 'The platform, and the proprietary backend the class rests on - "Brainstore, the database built
+      for AI data at scale ... designed specifically for agent observability so you can query millions of
+      traces quickly", with no source published for it. The only self-host route offered is a hybrid one -
+      "Deploy Brainstore data plane on your own infrastructure" - alongside SOC 2 Type II certification.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 81e7f43fc2016ea0c9378347ceec7ac9aa125c72f0396a7b4adca861bcdc381d
+    establishes:
+    - source
+    - self-host
 adoption:
   level: 4
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
   note: '~6.08M PyPI downloads in the last month for the `braintrust` package (primary: pypistats); named
-    production users incl. Vercel, Notion, Coursera, Dropbox, Replit. 1-10M monthly-download band; strongest
-    adoption of the closed-platform set here.'
+    production users. 1-10M monthly-download band; strongest adoption of the closed-platform set here.
+    Re-read 2026-08-13 - pypistats now reports 7,366,065 downloads last month, up from the 6,080,857
+    recorded and still inside the 1M-10M band, so level 4 is unchanged. The customer roster on the homepage
+    has changed: Notion and Coursera are still named, Vercel, Dropbox and Replit are not, and those three
+    are dropped from this note rather than carried forward. The band rests on the download count anyway.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://pypistats.org/packages/braintrust
-    shows: 6,080,857 downloads last month for the braintrust package
-    accessed: '2026-06-04'
+    shows: Downloads last month 7,366,065 for the braintrust package (last week 1,612,417)
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 4364f112b0e6223709993e4332612a76b7106db6ba62c31c57d5c8d14e161676
   - url: https://www.braintrust.dev/
-    shows: named customers Vercel, Notion, Coursera, Dropbox, Replit
-    accessed: '2026-06-04'
+    shows: Named customer stories on the homepage - "How Coursera builds next-generation learning tools"
+      and "How Notion evaluates AI at scale across 70 engineers". Vercel, Dropbox and Replit no longer
+      appear anywhere on the page.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 81e7f43fc2016ea0c9378347ceec7ac9aa125c72f0396a7b4adca861bcdc381d
 capability:
   score: 5
   basis: feature_matrix
@@ -54,9 +83,15 @@ capability:
   confidence: high
   note: Deepest eval+automation feature surface in this batch (CI-style quality gates, Topics auto-clustering,
     continuous scoring), a frontier-definer for eval-first LLM observability; rated 5 above the MLflow/Langfuse
-    C4 anchors on feature breadth.
+    C4 anchors on feature breadth. Re-read 2026-08-13 - Topics, continuous online scoring and quality gates
+    are all still front-of-page and still the thing no anchor matches, so the one-above comparison holds.
+  last_verified: '2026-08-13'
   sources:
   - url: https://www.braintrust.dev/
-    shows: tracing, evals (LLM/code/human), automation (Topics, quality gates), prompt mgmt, OTel/MCP
-      integrations
-    accessed: '2026-06-04'
+    shows: 'Homepage feature copy - "Automate pattern discovery with Topics", "Topics surfaces patterns in
+      real time across task, issues, and sentiment, online scoring catches regressions, and quality gates
+      block bad releases", plus "Trace everything - Inspect prompts, responses, and tool calls in real
+      time" and scoring "with LLMs, code, or humans" against versioned datasets.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 81e7f43fc2016ea0c9378347ceec7ac9aa125c72f0396a7b4adca861bcdc381d

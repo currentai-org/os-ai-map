@@ -41,10 +41,20 @@ AXES = ("openness", "adoption", "capability")
 # Five left the list on 2026-08-13, in the finetuned_chat re-read: codegemma, codellama,
 # jamba-large, llama-instruct and tulu each had the openness note re-derived into a real
 # capability or adoption judgment. `llama` and `personahub` are still outstanding.
-KNOWN_SHARED_NOTES = {
-    "llama",
-    "personahub",
-}
+KNOWN_SHARED_NOTES: set[str] = set()
+"""EMPTY as of 2026-08-13, and the emptying is the point.
+
+It held seven on the morning of 2026-08-13 — codegemma, codellama, jamba-large, llama,
+llama-instruct, personahub, tulu. Every one was cleared by a category verification pass, not
+by anybody working this list: rewriting a duplicated note is unavoidable once you actually
+re-derive the axis it was pasted onto, and the ratchet below then failed until the slug came
+out. Four different passes removed slugs without coordinating.
+
+That is the argument for the shape of this test. The finding was written into a handoff note
+first, where it sat and grew; written as a gate, it became a thing that had to be resolved to
+make CI pass, and it resolved itself as a side effect of ordinary work.
+
+Keep it empty. An eighth instance now fails the suite on arrival."""
 
 
 @pytest.fixture(scope="module")

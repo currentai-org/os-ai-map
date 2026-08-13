@@ -19,9 +19,14 @@ openness:
     free_text:
     - no-unified-OSI-harness-product
   confidence: medium
+  last_verified: '2026-08-13'
   note: 'Mixed-tier: public results dashboard plus some MIT/Apache-licensed eval components, but the headline
     benchmark (FrontierMath) is deliberately private and there is no single OSI-licensed end-to-end harness,
-    closer to source_available than fully open_source.'
+    closer to source_available than fully open_source. Re-read 2026-08-13 and unchanged. The org listing
+    still shows a scatter of separately-licensed component repos - SWE-bench and SWE-bench-c7d4d9d4 (MIT),
+    eci-public (MIT), MirrorCode (MIT) with MirrorCode-data carrying no license, epochutils, ftm, benchmark-stitching
+    - and no unified harness among the 33. FrontierMath is still ''a benchmark of several hundred unpublished,
+    highly challenging mathematics problems''. Source stays partial.'
   raw: dashboard:public(free to browse);eval-code:partial-open(several org repos MIT/Apache - SWE-bench
     docker registry, eci-public, MirrorCode-data);benchmark-data:mixed(FrontierMath gated/private to prevent
     contamination; some public);no-unified-OSI-harness-product;source:partial(public dashboard and MIT component
@@ -44,19 +49,48 @@ openness:
     accessed: '2026-08-11'
     establishes:
     - source
+  - url: https://api.github.com/orgs/epoch-research/repos
+    shows: '33 public repos in the epoch-research org. Licensed eval components include SWE-bench and
+      SWE-bench-c7d4d9d4 (MIT), eci-public (MIT), MirrorCode (MIT), benchmark-stitching (MIT), epochutils
+      (MIT), ftm (MIT) and timelines-direct-approach (Apache-2.0); MirrorCode-data and many others carry
+      no license at all. There is no single end-to-end harness repo among them.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 04d116304264a51ecde5660e26f718f424101ec7fc25551d77f9fcbd4df7d19f
+    establishes:
+    - source
+  - url: https://epoch.ai/frontiermath
+    shows: 'Re-read 2026-08-13: still ''A benchmark of several hundred unpublished, highly challenging
+      mathematics problems'', with Tiers 1-3 and Tier 4 deliberately withheld, so the headline benchmark
+      behind the dashboard still cannot be run by a reader.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 4a967d0a80e23496af0898979877b10ee40a79ff36432c59a8629acc47f835f6
+    establishes:
+    - source
 adoption:
   level: 3
   signal_type: reported_traction
   confidence: medium
+  last_verified: '2026-08-13'
   note: Epoch's benchmark results (esp. FrontierMath) are a widely-referenced capability signal cited
     across frontier-model coverage and research; the public dashboard is a recognized trends source. No
     standalone usage/traffic count published, so reported_traction; level 3 reflects broad authoritative
-    reference rather than a measured figure. No stars-only fallback used.
+    reference rather than a measured figure. No stars-only fallback used. Re-read 2026-08-13 - the dashboard
+    is still free to browse and now spans roughly 60 benchmarks across Epoch-run, creator-run and developer-run
+    sets. It still publishes no visitor or usage count of any kind, so the level's basis is unchanged.
   sources:
   - url: https://epoch.ai/benchmarks
     shows: public database of leading-model benchmark results positioned as authoritative AI-capability
       tracker
     accessed: '2026-06-04'
+  - url: https://epoch.ai/benchmarks
+    shows: 'Re-read 2026-08-13: free public dashboard letting a reader ''explore trends in AI capabilities
+      across time, by benchmark, or by model'', spanning roughly 60 benchmarks in three groups. No traffic,
+      visitor or usage figure is published on it.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 05cf0f548e1d61fe4914055c2aca1febbac1bf4f476328bab38e86573d048367
 capability:
   score: 4
   basis: feature_matrix
@@ -65,11 +99,25 @@ capability:
     major frontier labs; reproducibility via contamination-resistant held-out math; agentic eval = coding
     (SWE-bench) but primarily static-task scoring.'
   confidence: medium
+  relative_to: lm-evaluation-harness
+  relation: one_below
+  last_verified: '2026-08-13'
   note: Strong feature_matrix on hard/frontier benchmark coverage and trusted standardized results, especially
     math. Not a general agentic-eval harness; held-out design limits self-serve reproducibility. Placed
-    at 4, authoritative but not a frontier-defining general harness like lm-eval-harness.
+    at 4, authoritative but not a frontier-defining general harness like lm-eval-harness. Feature matrix
+    re-read 2026-08-13 and if anything wider - the Epoch-run set is now eleven benchmarks, adding MirrorCode,
+    Earthborne Rangers and Mystery Game Puzzles and splitting FrontierMath into Tier 4 (v2) and Tiers
+    1-3 (v2). The comparison to lm-eval-harness the note already makes is now recorded structurally.
   sources:
   - url: https://epoch.ai/benchmarks
     shows: 'operated benchmarks list: FrontierMath, GPQA Diamond, SWE-bench Verified, SimpleQA Verified,
       MATH Level 5, OTIS Mock AIME, Chess Puzzles'
     accessed: '2026-06-04'
+  - url: https://epoch.ai/benchmarks
+    shows: 'Epoch AI-run benchmarks as listed 2026-08-13: FrontierMath Tier 4 (v2), FrontierMath Tiers
+      1-3 (v2), SWE-bench Verified, MirrorCode, Chess Puzzles, Earthborne Rangers (EBR-bench), Mystery
+      Game Puzzles, SimpleQA Verified, GPQA Diamond, OTIS Mock AIME 2024-2025 and MATH Level 5, plus an
+      expansion of FrontierMath into 50 unsolved research problems.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 05cf0f548e1d61fe4914055c2aca1febbac1bf4f476328bab38e86573d048367

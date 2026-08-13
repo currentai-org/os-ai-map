@@ -14,8 +14,15 @@ openness:
     eval-harness:
       value: closed
   confidence: high
-  note: Closed third-party eval platform; benchmarks deliberately held private to prevent dataset leakage,
-    eval infra not open sourced.
+  note: 'Closed third-party eval platform; benchmarks deliberately held private to prevent dataset leakage,
+    eval infra not open sourced. NO last_verified claimed and the axis is ESCALATED, because the re-read
+    on 2026-08-13 contradicts the recorded value. The about page now says Vals has open-sourced ''Valkyrie,
+    a distributed system to run agentic benchmarks, and our model library, a free standard API to call
+    models with'', and both repos are live and actively pushed - vals-ai/valkyrie under AGPL-3.0 and vals-ai/model-library
+    under MIT. That makes ''source:closed(SaaS-only,no public repo)'' and ''eval-harness:closed'' wrong
+    as written. The likely correct record is source:partial, which the software ladder scores 2/source_available:
+    a real harness is published while the Vals Index runtime and its held-out datasets still do not ship.
+    That is a score change, so it is reported rather than made here.'
   raw: license:proprietary;source:closed(SaaS-only,no public repo);benchmarks:proprietary/private-held-out(Vals
     Index on non-public datasets);eval-harness:closed
   sources:
@@ -26,6 +33,15 @@ openness:
   - url: https://www.vals.ai/about
     shows: runs evaluations in-house on private/held-out datasets as neutral third party
     accessed: '2026-06-04'
+  - url: https://www.vals.ai/about
+    shows: 'Re-read 2026-08-13: Vals still describes itself as ''the independent evaluator of artificial
+      intelligence'' running evaluations in-house on ''privately held test sets''. It now ALSO states
+      it has open-sourced Valkyrie, a distributed system for running agentic benchmarks, and a model library
+      offering a free standard API for calling models, both linked to GitHub. This contradicts the recorded
+      source:closed.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: deb010de89092a2071bc5e3e8168d9b85e7bfa3887d7105476aba611c90234fc
 adoption:
   level: 3
   signal_type: reported_traction
@@ -34,12 +50,23 @@ adoption:
     2026-06-04); benchmark figures (e.g. GLM-5.1) are referenced in the project''s own flagship scoring
     sources and across third-party model coverage; partnered with Legaltech Hub for industry studies.
     No standalone user/traffic count published, so reported_traction; level 3 reflects broad referenced
-    use as a benchmark authority rather than a measured usage figure.'
+    use as a benchmark authority rather than a measured usage figure. Re-read 2026-08-13 - the benchmarks
+    page now tracks 43 models across the Vals Index, an RSI Index, the Multimodal Index and legal/finance/healthcare/math/academic/education/coding
+    families, with results dated 2026-08-13, so the leaderboard is broader and current. Still no user,
+    traffic or customer figure of any kind, so the level stays reported_traction at 3.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://www.vals.ai/benchmarks
     shows: live multi-domain leaderboards (Vals Index, Multimodal Index) tracking 24+ frontier models,
       updated June 2026
     accessed: '2026-06-04'
+  - url: https://www.vals.ai/benchmarks
+    shows: 'Re-read 2026-08-13: 43 models tested; Vals Index, RSI Index and Vals Multimodal Index plus
+      legal, finance, healthcare, math, academic, education, coding, cybersecurity and games benchmarks;
+      several results dated 2026-08-13. No usage, traffic or customer figure is published on the page.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 68b57a0a93207cd98932ef7bb54e1e638db27450bbb70d5e8fb6cae4841d5a6f
 capability:
   score: 4
   basis: feature_matrix
@@ -48,11 +75,25 @@ capability:
     held-out sets (anti-leakage); agentic-eval support (Finance Agent v2). Pointwise scoring + composite
     indices.'
   confidence: medium
+  last_verified: '2026-08-13'
   note: 'Strong feature_matrix: leading independent/blind benchmark suite with deep vertical coverage
     and agentic-eval, but narrower than a general harness (no self-host, fixed proprietary task set).
-    Not a frontier-definer (5) on standardization since methodology is closed; placed at 4.'
+    Not a frontier-definer (5) on standardization since methodology is closed; placed at 4. Feature matrix
+    re-read 2026-08-13 and the vertical coverage holds, with cybersecurity and games benchmarks added
+    since. The ''no self-host'' clause in this note is the part now under review - see the openness axis,
+    where two Vals repos have appeared - but self-hosting the index is still not offered, so the band
+    is unchanged.'
   sources:
   - url: https://www.vals.ai
     shows: Vals Index + Multimodal Index + domain benchmarks (finance/law/healthcare/coding/math/education)
       incl TaxEval, CorpFin, MedCode, LegalBench
     accessed: '2026-06-04'
+  - url: https://www.vals.ai
+    shows: 'Re-read 2026-08-13: Vals Index and Vals Multimodal Index over finance (CorpFin v2, Finance
+      Agent v2, TaxEval v2), legal (LegalBench, Case Law v2, Legal Research Bench), healthcare (MedCode,
+      MedScribe, MedQA), coding (SWE-bench Verified, Terminal-Bench, Vibe Code Bench, IOI, LiveCodeBench),
+      math (ProofBench, AIME, GPQA Diamond) and education (SAGE, MMLU Pro, MMMU). ''We run all of our
+      own evaluations and create many of our benchmarks in-house''.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 303bde67a1b32448cbe8de1ef60414a71472450740363231f8cdda41ef4423db

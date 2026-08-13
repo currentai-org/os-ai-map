@@ -23,10 +23,18 @@ openness:
   confidence: high
   note: 'Closed managed service. The Sandbox SDK is Apache-2.0, but execution requires Cloudflare''s proprietary
     managed edge network (no self-host of the isolate/container plane); an open client SDK over a closed
-    runtime is not open_core. Reclassified from open_core.'
+    runtime is not open_core. Reclassified from open_core. Re-read 2026-08-13 - the Dynamic Workers
+    post still describes an API onto Cloudflare''s own Workers platform, priced at $0.002 per unique
+    Worker loaded per day on top of ordinary Workers charges, with no self-hosted form of the isolate
+    or container plane. The SDK half also still holds, with one wrinkle worth recording - GitHub
+    classifies cloudflare/sandbox-sdk as NOASSERTION because the root LICENSE file is a one-line
+    pointer to packages/sandbox/LICENSE; that file is the verbatim Apache License 2.0, so the SDK is
+    Apache-2.0 as recorded and the classifier is simply defeated by the redirect. Source and license
+    both read as recorded.'
   raw: license:Proprietary;source:closed;service:proprietary Cloudflare edge (Workers/Durable Objects/Dynamic
     Worker Loader - no self-host of the isolate/container plane);open-part:Sandbox SDK only (@cloudflare/sandbox
     Apache-2.0, cloudflare/sandbox-sdk on GitHub);pricing:Workers paid plan, Dynamic Workers $0.002/unique-worker/day
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/cloudflare/sandbox-sdk
     shows: Apache-2.0 SDK; runs on Cloudflare Containers/Workers/Durable Objects (managed edge)
@@ -34,6 +42,34 @@ openness:
   - url: https://blog.cloudflare.com/dynamic-workers/
     shows: Dynamic Worker Loader open beta, isolate sandboxing, post-beta $0.002/worker/day pricing
     accessed: '2026-06-04'
+  - url: https://blog.cloudflare.com/dynamic-workers/
+    shows: 'Dynamic Worker Loader is an API by which a Cloudflare Worker instantiates another Worker in
+      its own sandbox, running on Cloudflare''s platform; open beta to all paid Workers users; priced
+      at $0.002 per unique Worker loaded per day on top of normal Workers CPU and invocation charges.
+      No self-hosted deployment of the isolate or container plane is offered.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: cdc47b64a241214658a4c701464ca4f358d099314884db539eae4077c8f7e632
+    establishes:
+    - source
+    - license
+  - url: https://api.github.com/repos/cloudflare/sandbox-sdk
+    shows: 'Repository public and unarchived, described as "Run sandboxed code environments on
+      Cloudflare''s edge network"; license reported as NOASSERTION because the root LICENSE is a
+      pointer file.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: e7830b0a5afa9835b918215a3d8dcb9a0cbaafd50277ec378850cd9a5ef71d97
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/cloudflare/sandbox-sdk/main/packages/sandbox/LICENSE
+    shows: The verbatim Apache License 2.0 body, governing the published SDK package that the root
+      LICENSE pointer names.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a
+    establishes:
+    - source
 adoption:
   level: 3
   reach: 100K-1M
@@ -67,7 +103,16 @@ capability:
     code) at ~1.8s median cold-start, 18th of 19 sandbox providers, degrading to ~4.3s under 100-concurrent
     burst; the sub-ms figures apply to the JS/TS Dynamic Workers path, not the arbitrary-code sandbox the
     benchmark exercises. On measured full-sandbox latency alone this would be a 3; held at 4 on the strength
-    of the dual isolate-plus-container isolation model.
+    of the dual isolate-plus-container isolation model. Re-read 2026-08-13 - the Dynamic Workers post
+    still claims ms-scale isolate start, ~100x the density of containers and no global concurrency or
+    creation-rate limit, and the SDK repository still exposes the container-backed path for arbitrary
+    commands, files, background processes and exposed services. The latency picture has got worse
+    rather than better - ComputeSDK''s 2026-08-07 run puts the container-backed sandbox at a 4.42s
+    median TTI, 21st of 24 providers, against the ~1.76s/18th-of-19 recorded above. The band is held
+    at 4 on the same reasoning as before, that the isolate path is a genuinely different and
+    much faster instrument than the one the benchmark exercises, but the measured gap is now wide
+    enough that the hold is the weakest part of this score.
+  last_verified: '2026-08-13'
   sources:
   - url: https://blog.cloudflare.com/dynamic-workers/
     shows: V8 isolate sandboxing, ~ms start, 100x faster/100x more memory-efficient than containers
@@ -79,3 +124,22 @@ capability:
     shows: 'ComputeSDK TTI leaderboard (independent, 100 iters/day, 2026-07-09 run): container-backed sandbox
       median time-to-interactive ~1760ms sequential / ~4290ms burst @100 concurrent; 18th of 19 providers'
     accessed: '2026-07-09'
+  - url: https://blog.cloudflare.com/dynamic-workers/
+    shows: V8 isolate sandboxing with ms-scale start and ~100x the memory efficiency of containers;
+      no limit on global concurrent sandboxes or creation rate; network access blockable or
+      interceptable per loaded Worker.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: cdc47b64a241214658a4c701464ca4f358d099314884db539eae4077c8f7e632
+  - url: https://api.github.com/repos/cloudflare/sandbox-sdk
+    shows: 'Repository active and unarchived, described as "Run sandboxed code environments on
+      Cloudflare''s edge network" - the container-backed path for arbitrary code.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: e7830b0a5afa9835b918215a3d8dcb9a0cbaafd50277ec378850cd9a5ef71d97
+  - url: https://www.computesdk.com/benchmarks/sandboxes/
+    shows: 'ComputeSDK TTI leaderboard, run of 2026-08-07 across 24 providers - Cloudflare median
+      4.42s, P95 5.63s, P99 5.77s, 100% success, composite 50.8; 21st of 24 by median.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: cbb96170184f9c48e5c5f0a9834e15ab2a87a083132581c8a632f0cdc6e42e85

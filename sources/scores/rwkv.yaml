@@ -17,7 +17,7 @@ openness:
     - name: Apache-2.0
       detail: OSI
   confidence: high
-  last_verified: '2026-07-30'
+  last_verified: '2026-08-13'
   note: 'Corrected from 5/open_source on 2026-07-28, then re-examined the same day after challenge.
     The correction stands but it is a close call, and RWKV published more than a first look suggests.
     What IS released: an itemized, machine-readable index (index/train.jsonl, train.csv) naming every
@@ -35,7 +35,12 @@ openness:
     a genuine rubric gap. "Every component named and publicly resolvable, but the mixture not
     reproducible" is meaningfully more open than prose documentation and less than a released corpus,
     and the data enum has no value for it. Nemotron 3''s partial release hits the same gap, so two of
-    the nine products checked fall between the available values.'
+    the nine products checked fall between the available values. Re-read 2026-08-13. The component
+    index digests identically to the 2026-07-30 read, so the listing has not changed at all; the
+    Goose-World repo still holds only the index, the two preview subsamples, two READMEs and a figure,
+    with no corpus shards; RWKV-LM is still public Apache-2.0 at 14,661 stars with no data-prep
+    directory; and rwkv-7-world is still ungated apache-2.0. Nothing moved, and the rubric gap the
+    note describes is still open.'
   raw: weights:open(Apache-2.0);data:documented-not-released(itemized machine-readable component index with
     resolvable links to public datasets, but no released corpus and no reconstruction pipeline);code:open(github.com/BlinkDL/RWKV-LM);license:Apache-2.0(OSI)
   sources:
@@ -44,7 +49,7 @@ openness:
       resolvable link. Notes defer exact sampling to unpublished supplementary material ("see wiki.txt
       in the supplementary material for exact" amounts) and include the unresolved question "peS2o -
       Which version out of the 3?".'
-    accessed: '2026-07-30'
+    accessed: '2026-08-13'
     http_status: 200
     content_sha256: b017936cd892fab763f650c6d9ee11cb375faaa0240f4ee313866960310ab03d
     establishes: [data]
@@ -52,33 +57,33 @@ openness:
     shows: '`gated: false`, `private: false`, 217 downloads. Files are `index/train.jsonl`, `train.csv`,
       `100k/subsample_100k.jsonl`, `1m/subsample_1m.jsonl`, two READMEs and one figure. No corpus
       shards, which is what holds `data` at documented-not-released.'
-    accessed: '2026-07-30'
+    accessed: '2026-08-13'
     http_status: 200
-    content_sha256: d5d229aa8e6b2381fd7cc987d6f9203b3bc3a8e7837ccab9fe2055f036ed6db0
+    content_sha256: 6eb12fd74e2421f22bc9efd63151490f6aecffd043ae57b0470cef84171db5e7
     establishes: [data]
   - url: https://api.github.com/repos/BlinkDL/RWKV-LM
     shows: '`private: false`, license `Apache-2.0`, 14,642 stars, pushed 2026-07-23. Model and training
       code by version (RWKV-v1..v8). No data-prep or corpus-reconstruction directory.'
-    accessed: '2026-07-30'
+    accessed: '2026-08-13'
     http_status: 200
-    content_sha256: 756686a7592173285002c7f9a7315216e500ff3aecebd1bea8a9b950804eec9a
+    content_sha256: cd92f52601e7771174a5709bbd8767b6de507813ce89fde15a62f66016d7f9f1
     establishes: [code]
   - url: https://huggingface.co/api/models/BlinkDL/rwkv-7-world
     shows: '`gated: false`, `private: false`, card license `apache-2.0`, 4,537 downloads. Weight files
       downloadable as `RWKV-x070-World-{0.1B,0.4B,1.5B}-*.pth`. Added on the 2026-07-30 re-read: the
       axis recorded `weights:open(Apache-2.0)` while citing only the code repo and the dataset, so
       nothing on file actually established the weights.'
-    accessed: '2026-07-30'
+    accessed: '2026-08-13'
     http_status: 200
-    content_sha256: ed3f89200a3bfc477a6e76310016fee4adeafc7577883f6b1e5a12906c3dbe7d
+    content_sha256: 3bcb5837ccdeac036c4d7ba6df9f10c98462c0d01eda7321c3005492ef352da5
     establishes: [weights, license]
   - url: https://arxiv.org/abs/2503.14456
     shows: 'RWKV-7 Goose paper abstract: "we also present an extended open source 3.1 trillion token
       multilingual corpus". No arXiv ancillary files are attached, so the supplementary material the
       dataset notes point to is not obtainable from the paper either.'
-    accessed: '2026-07-30'
+    accessed: '2026-08-13'
     http_status: 200
-    content_sha256: ead02dec46f813c10d8ff4b7884f5d83f41d05a27ce94edbbaaaee2f18212d68
+    content_sha256: 40573f508270ee99b48e0ad83a2ed56fbc500141d00e931910bfaabb2dad6323
 adoption:
   level: 1
   signal_type: usage_volume
@@ -111,8 +116,14 @@ capability:
     tokens; MMLU rose to ~43% across generations'
   confidence: medium
   note: Strong intelligence-per-token for its size via a linear-time RNN architecture; not at frontier absolute
-    capability.
+    capability. Re-read 2026-08-13 - the paper still makes the 3B-scale multilingual claim and the
+    efficiency argument, and still makes no frontier-scale claim, which is exactly the shape of a 4
+    rather than a 5 here.
+  last_verified: '2026-08-13'
   sources:
   - url: https://arxiv.org/abs/2503.14456
-    shows: RWKV-7 3B SoTA-multilingual claims, Pareto vs transformers
-    accessed: '2026-06-18'
+    shows: RWKV-7 Goose paper - 3B SoTA-multilingual claims on far fewer training tokens, and the
+      extended 3.1-trillion-token multilingual corpus
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 40573f508270ee99b48e0ad83a2ed56fbc500141d00e931910bfaabb2dad6323

@@ -15,14 +15,28 @@ openness:
     free_text:
     - no self-hostable open runtime
   confidence: high
-  note: Proprietary managed deployment/sandbox platform; no open source runtime published.
+  note: Proprietary managed deployment/sandbox platform; no open source runtime published. Re-read 2026-08-13
+    - northflank.com and the Sandboxes product page still sell a commercial SaaS running on Northflank Cloud
+    or a customer VPC, with no source release and no self-hostable runtime; the microVM layer is built on
+    third-party projects (Kata Containers, gVisor) rather than anything Northflank publishes.
   raw: license:Proprietary;service:proprietary(Northflank managed SaaS);source:closed;isolation:microVM;no
     self-hostable open runtime
+  last_verified: '2026-08-13'
   sources:
   - url: https://northflank.com/
     shows: Northflank Sandboxes = secure microVM sandbox for untrusted/code-gen execution; proprietary
       commercial SaaS
-    accessed: '2026-06-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: e45e80af144a4bf67b989939802974b1ae2262eb317cc2eb9d9e6ef670304352
+    establishes: [source, license]
+  - url: https://northflank.com/product/sandboxes
+    shows: Sandboxes run on Northflank infrastructure or inside a customer VPC; Kata Containers and gVisor
+      named as the isolation layer; no self-hostable runtime or source offered
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 0976a4c6d9b2bf28425711a51fface149fdb2d09a945e6af29c7b36fe346f1fb
+    establishes: [source, license]
 adoption:
   level: 3
   signal_type: reported_traction
@@ -30,11 +44,25 @@ adoption:
   note: 'Northflank (platform-wide, primary): 2,000+ organizations, 80,000+ developers in production,
     130B+ requests, millions of containers, 330+ availability zones. These are platform-level figures
     (not Sandboxes-specific); the Sandboxes product is newer. Placed at 3 on the developer/org base; the
-    Sandboxes feature alone is likely lower.'
+    Sandboxes feature alone is likely lower. Re-read 2026-08-13 - the homepage counters have moved up, now
+    reading 2,000+ start-ups and enterprises, 100k+ developers in production, 130B+ requests and 330+
+    availability zones, and the Sandboxes product page adds the first Sandboxes-specific claim, millions
+    of microVMs run monthly since 2021. Still a vendor claim with no countable artifact behind it, so the
+    record stays reported_traction with no reach word.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://northflank.com/
-    shows: 2,000+ orgs, 80,000+ developers in production, 130B+ requests, millions of containers (platform-level)
-    accessed: '2026-06-04'
+    shows: 2,000+ start-ups and enterprises, 100k+ developers in production, 130B+ requests, millions of
+      containers, 330+ availability zones (platform-level)
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: e45e80af144a4bf67b989939802974b1ae2262eb317cc2eb9d9e6ef670304352
+  - url: https://northflank.com/product/sandboxes
+    shows: Sandboxes-specific claim of millions of microVMs run monthly since 2021; SOC 2 Type 2 and HIPAA
+      badges; no per-customer or per-session usage figure
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 0976a4c6d9b2bf28425711a51fface149fdb2d09a945e6af29c7b36fe346f1fb
 capability:
   score: 4
   basis: feature_matrix
@@ -46,12 +74,28 @@ capability:
     support for untrusted code-gen at scale. Just below frontier on proven sandbox-specific scale vs the
     dedicated leaders; isolation+latency are top-tier. Independent ComputeSDK TTI benchmarks confirm the
     top-tier latency, measuring ~100ms median cold-start (3rd-fastest of 19 sandbox providers), beating
-    the ~200ms spec.'
+    the ~200ms spec. Re-read 2026-08-13 - the homepage still shows the microVM 200ms spin-up figure, and
+    the Sandboxes product page names Kata Containers and gVisor, boots a microVM in under a second, imposes
+    no forced session time limit, and offers deployment inside a customer VPC. The ComputeSDK leaderboard
+    has been rerun since (2026-08-07, 24 providers) and now measures Northflank at 0.25s median
+    time-to-interactive, still 3rd by composite score, so the top-tier latency reading holds at a slower
+    absolute number.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://northflank.com/
     shows: microVM 200ms isolation, untrusted code at scale, millions of containers, 330+ AZs
-    accessed: '2026-06-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: e45e80af144a4bf67b989939802974b1ae2262eb317cc2eb9d9e6ef670304352
+  - url: https://northflank.com/product/sandboxes
+    shows: Kata Containers and gVisor isolation, microVM boot in under a second, no forced session time
+      limits, bring-your-own-cloud VPC deployment
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 0976a4c6d9b2bf28425711a51fface149fdb2d09a945e6af29c7b36fe346f1fb
   - url: https://www.computesdk.com/benchmarks/sandboxes/
-    shows: 'ComputeSDK TTI leaderboard (independent, 100 iters/day, 2026-07-09 run): median time-to-interactive
-      ~100ms sequential / ~190ms burst @100 concurrent; 3rd-fastest of 19 providers'
-    accessed: '2026-07-09'
+    shows: 'ComputeSDK TTI leaderboard (independent, 2026-08-07 run, 24 providers): Northflank median time-to-interactive
+      0.25s, P95 0.29s, P99 0.30s, 100% success; 3rd by composite score'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 639836bfee0970c31367878466528cb5290b9e4c85f1bea8d19affbc9361bc58

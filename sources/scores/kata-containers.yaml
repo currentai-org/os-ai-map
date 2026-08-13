@@ -17,36 +17,130 @@ openness:
     free_text:
     - no-feature-gated-core
   confidence: high
-  note: Fully Apache-2.0, source public, vendor-neutral open-foundation governance, no managed-tier gating
-    from the project itself.
+  note: 'Fully Apache-2.0, source public, vendor-neutral open-foundation governance, no managed-tier gating
+    from the project itself. Re-read 2026-08-13. The LICENSE body is the verbatim Apache License 2.0 with
+    nothing appended, and the README states the same in prose. The untruncated default-branch tree carries
+    one LICENSE and the whole product - src/ holds runtime, runtime-rs, agent and the built-in Dragonball
+    VMM, with tools/, tests/ and docs/ beside them - and there is no ee/, enterprise/, commercial/ or
+    proprietary/ path. katacontainers.io sells nothing - it is a community site stewarded by the OpenInfra
+    Foundation that points at GitHub for the code and at a user survey for feedback - so there is no managed
+    tier to gate against and core-gated stays ungated.'
   raw: license:Apache-2.0(OSI);source:public;governance:open community (OpenInfra Foundation);no-feature-gated-core;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/kata-containers/kata-containers
     shows: Apache-2.0 license; lightweight VMs with container UX + VM isolation; v3.31.0 (May 19 2026)
     accessed: '2026-06-04'
+  - url: https://raw.githubusercontent.com/kata-containers/kata-containers/main/LICENSE
+    shows: The verbatim Apache License 2.0, complete and with no appended notices, exceptions or additional
+      terms.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://api.github.com/repos/kata-containers/kata-containers/git/trees/main
+    shows: 'Untruncated default-branch tree, 32 entries. One LICENSE. src/ carries the whole product - runtime,
+      runtime-rs, agent and the Dragonball VMM - with tools/, tests/, ci/ and docs/ beside it, and there
+      is no ee/, enterprise/, commercial/ or proprietary/ path.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c8e654e4818032043bfab3a07af19009b590049a79c5eb46db251d69211c5548
+    establishes:
+    - source
+    - core-gated
+  - url: https://api.github.com/repos/kata-containers/kata-containers
+    shows: 'Repo metadata - language Rust, license spdx_id Apache-2.0, default branch main, not archived,
+      pushed 2026-08-13, 8,531 stars, 1,431 forks.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 098b629b7fa0ad04cdaea38763ad46b2092eddffc7bf0b1a4ca60c7b4320f9ce
+    establishes:
+    - license
+    - source
+  - url: https://katacontainers.io/
+    shows: '"The Kata Containers community is stewarded by the Open Infrastructure Foundation... The code
+      is hosted at GitHub under the Apache 2 license." The site offers documentation, releases, mailing
+      lists and a user survey, and sells no product, subscription or supported edition of its own.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: dcd594a9b40c82506bd48ff80bebc1f2af084e3f7ab1054edc88ee74e7b024e6
+    establishes:
+    - core-gated
 adoption:
   level: 3
   signal_type: reported_traction
   confidence: medium
-  note: Established CNCF/OpenInfra-adjacent container-runtime project integrated into Kubernetes runtimeclass
+  note: 'Established CNCF/OpenInfra-adjacent container-runtime project integrated into Kubernetes runtimeclass
     deployments; broad but operator-concentrated infrastructure adoption rather than a mass per-user count.
     No clean download/user figure verified; ~8k stars (corroborate only, not the basis). Level 3 reflects
-    specialist infra reach.
+    specialist infra reach. Re-read 2026-08-13 and the abstention from a numeric reach still holds. katacontainers.io
+    publishes no download, install, cluster or user count anywhere - what it publishes instead is a running
+    user survey asking operators to self-report, plus one named production deployment (Baidu, for Function
+    Computing, Cloud Container Instances and Edge Computing). The project ships as release tarballs and a
+    kata-deploy Helm chart rather than through a countable package registry, so there is no channel to band
+    on. Stars read 2026-08-13 - 8,531, unchanged in magnitude and still corroboration only. No reach recorded,
+    which is what reported_traction requires absent a published figure.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/kata-containers/kata-containers
     shows: standard implementation of lightweight VM containers; integrated runtime; 8k stars
     accessed: '2026-06-04'
+  - url: https://katacontainers.io/
+    shows: 'The project site publishes no usage, download or deployment figure. It names one production
+      user in prose - "Baidu is running Kata Containers in production to support Function Computing, Cloud
+      Container Instances, and Edge Computing" - and otherwise asks operators to "Take the Kata Containers
+      User Survey", which is the project asking for the number rather than reporting one.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: dcd594a9b40c82506bd48ff80bebc1f2af084e3f7ab1054edc88ee74e7b024e6
+  - url: https://api.github.com/repos/kata-containers/kata-containers
+    shows: 'Repo metadata - 8,531 stars, 1,431 forks, 99 watchers, pushed 2026-08-13, not archived. Corroborates
+      an active specialist infrastructure project; the level does not rest on it.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 098b629b7fa0ad04cdaea38763ad46b2092eddffc7bf0b1a4ca60c7b4320f9ce
+  - url: https://raw.githubusercontent.com/kata-containers/kata-containers/main/README.md
+    shows: 'Distribution is by release tarball and the kata-deploy Helm chart on Kubernetes, or build from
+      source - no package-registry channel that would yield a countable download figure.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 326a9123397a42cd6b56acfce60884c119f5b70250f2ec62ae3bde877ff03895
 capability:
   score: 4
   basis: feature_matrix
+  relative_to: firecracker
+  relation: one_below
   value: isolation:hardware VM (pluggable VMM, QEMU/Firecracker/Cloud Hypervisor), strong VM-class isolation;
     cold-start:VM boot (slower than pure userspace); language/runtime breadth:any OCI container (language-agnostic,
     K8s-native); persistence:container lifecycle; scale:K8s clusters
   confidence: high
-  note: VM-grade isolation with OCI/Kubernetes compatibility and pluggable hypervisors; very strong isolation
-    but higher cold-start than microVM/userspace frontier-definers, so 4.
+  note: 'VM-grade isolation with OCI/Kubernetes compatibility and pluggable hypervisors; very strong isolation
+    but higher cold-start than microVM/userspace frontier-definers, so 4. Re-read 2026-08-13. The feature
+    matrix still reads as described - the README states lightweight VMs "that feel and perform like containers,
+    but provide the workload isolation and security advantages of VMs", on x86_64, aarch64, ppc64le and
+    s390x, with a containerd shimv2 runtime and an in-VM agent; docs/hypervisors.md still lists five pluggable
+    VMMs (QEMU, Cloud Hypervisor, Firecracker, Dragonball, StratoVirt), with QEMU the best-supported for
+    NVIDIA GPUs and confidential computing. The prose comparison to the frontier-definers is now recorded
+    as relative_to firecracker with relation `one_below`, which holds arithmetically - Firecracker is 5,
+    Kata is 4, and Firecracker''s capability was re-derived the same day. Score unchanged at 4.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/kata-containers/kata-containers
     shows: lightweight VMs performing like containers with VM workload-isolation/security; integrated
       with Firecracker
     accessed: '2026-06-04'
+  - url: https://raw.githubusercontent.com/kata-containers/kata-containers/main/README.md
+    shows: 'Lightweight VMs "that feel and perform like containers, but provide the workload isolation and
+      security advantages of VMs", on x86_64/amd64, aarch64, ppc64le and s390x. Core components are a containerd
+      shimv2 runtime (Go and Rust), an in-VM agent, and the optional built-in Dragonball VMM.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 326a9123397a42cd6b56acfce60884c119f5b70250f2ec62ae3bde877ff03895
+  - url: https://raw.githubusercontent.com/kata-containers/kata-containers/main/docs/hypervisors.md
+    shows: 'Five supported hypervisors - Cloud Hypervisor, Firecracker, QEMU, Dragonball and StratoVirt -
+      selected per runtime through a configuration file. QEMU is the only one with GPU, Intel TDX and AMD
+      SEV-SNP support, and is where the project focuses its GPU runtimes.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: bdc51950b28822cdcbe98525bfd5156482bed2b1b9be420c9e92a8964bf246bb

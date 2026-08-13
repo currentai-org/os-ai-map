@@ -20,27 +20,89 @@ openness:
     with a Prohibited-Use-Policy and scored 2, while all six Gemma 4 SKUs are Apache-2.0 and ungated, verified against
     the Hub on 2026-07-29. The current release governs, so a family that becomes more open is recorded as such rather
     than pinned to its worst historical release. Adoption 5 is carried from Gemma 2, which still out-downloads Gemma
-    4.'
+    4. Re-read 2026-08-13, and the re-read corrected a source rather than a value. The releases page
+    cited for the Apache-2.0 claim does not carry it - the only Apache text on that page is the site
+    footer covering code samples - so the license now rests on the Gemma 4 model card front matter and
+    on ai.google.dev/gemma/docs/gemma_4_license, which redirects to ai.google.dev/gemma/apache_2. The
+    card documents the pretraining mixture without releasing it and links no training pipeline, so
+    data and code are unchanged. The closing sentence about adoption being carried from Gemma 2 no
+    longer holds either - Gemma 4 now supplies 99% of the downloads.'
+  last_verified: '2026-08-13'
   raw: weights:open(Apache-2.0);data:closed;code:closed;license:Apache-2.0(OSI,but no open data/code)
   sources:
+  - url: https://huggingface.co/google/gemma-4-31B-it/raw/main/README.md
+    shows: 'front matter `license: apache-2.0` with `license_link` to ai.google.dev/gemma/docs/gemma_4_license;
+      a Model Data section describing the pretraining mixture as "web documents, code, images, audio,
+      with a cutoff date of January 2025" without releasing it; no training-pipeline repository linked.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: e209f5c435b1e66055bd6d7c29185103ae8d2027a03a96b359335154f206b82b
+    establishes: [weights, data, code, license]
+  - url: https://huggingface.co/api/models/google/gemma-4-31B-it
+    shows: 'card license `apache-2.0`, `gated: false`, `private: false`, 9,915,701 downloads. The
+      Gemma 4 SKUs are ungated, unlike the Gemma 2 and 3 repos which are still `gated: manual`.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 708691572354c890c5b1cd409d2dd9c8824773712ee2e44d8d6acdcbe62ca113
+    establishes: [weights, license]
+  - url: https://ai.google.dev/gemma/docs/gemma_4_license
+    shows: The Gemma 4 license URL redirects to ai.google.dev/gemma/apache_2, which is what settles
+      the relicensing rather than a Gemma Terms of Use page.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: b68286e35c25d3293e8013e7d988db561ba8100c1cc5308988640c948d60e193
+    establishes: [license]
   - url: https://ai.google.dev/gemma/docs/releases
-    shows: Gemma 4 sizes, release dates, Apache-2.0 license
-    accessed: '2026-06-17'
+    shows: Gemma 4 sizes and release dates. Re-read 2026-08-13 - it does NOT carry an Apache-2.0
+      statement for the models; the only Apache text is the site footer covering code samples. The
+      earlier `shows` claimed more than the page says.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 1bba6e91a79dd4550686b2372bd3515627156c92e56776b15ef672931b9ecc33
 adoption:
   level: 5
   reach: '>10M'
   signal_type: usage_volume
   confidence: medium
-  note: Among the most-downloaded open model families; the 27B-IT shows ~133.6k downloads/mo and the family runs
-    widely via HF, Ollama, Kaggle, Google AI tooling (27 finetunes, 14 quantizations, 10 adapters listed on the
-    base card). Family-level reach in the tens-of-millions; calibrated to the Gemma 3 anchor (A5).
+  note: 20,118,549 downloads in the trailing 30 days summed across the 6 declared artifact(s), read
+    2026-08-13 (google/gemma-2-27b 6,087; google/gemma-2-9b 77,700; google/gemma-3-27b-pt 10,455;
+    google/gemma-3-12b-pt 34,590; google/gemma-4-31B-it 9,915,701; google/gemma-4-26B-A4B-it
+    10,074,016). Bands at level 5 (>10M) on the software and model adoption scale, unchanged. The
+    composition inverts what the openness note assumed - the two Gemma 4 SKUs are 99.4% of the total
+    and the Gemma 2 repos are now a rounding error, so adoption is no longer carried from an older
+    generation.
+  last_verified: '2026-08-13'
   sources:
-  - url: https://huggingface.co/google/gemma-2-27b-it
-    shows: ~133.6k downloads/mo for Gemma 2 27B-IT
-    accessed: '2026-06-04'
-  - url: https://huggingface.co/google/gemma-2-27b
-    shows: 27B base 5,893 downloads/mo, 27 finetunes / 14 quantizations / 10 adapters, broad multi-platform distribution
-    accessed: '2026-06-04'
+  - url: https://huggingface.co/api/models/google/gemma-2-27b
+    shows: 6,087 downloads in the trailing 30 days for google/gemma-2-27b
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 29df3358c33da9d3076977d72f9f14234f179d1d932926982344c5ff39217649
+  - url: https://huggingface.co/api/models/google/gemma-2-9b
+    shows: 77,700 downloads in the trailing 30 days for google/gemma-2-9b
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 0eba324935ffea5a28757072344cd96a36f6b6553dbe633553c2c2ebf628857f
+  - url: https://huggingface.co/api/models/google/gemma-3-27b-pt
+    shows: 10,455 downloads in the trailing 30 days for google/gemma-3-27b-pt
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c219082a514350b97a13d40d8ffb66b59f1742d7776a746b5e16ee5af4d531f1
+  - url: https://huggingface.co/api/models/google/gemma-3-12b-pt
+    shows: 34,590 downloads in the trailing 30 days for google/gemma-3-12b-pt
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 22195a0f364a82f283cdb992a85369af3c8474b2e5bcadab04280bad5502265c
+  - url: https://huggingface.co/api/models/google/gemma-4-31B-it
+    shows: 9,915,701 downloads in the trailing 30 days for google/gemma-4-31B-it
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 708691572354c890c5b1cd409d2dd9c8824773712ee2e44d8d6acdcbe62ca113
+  - url: https://huggingface.co/api/models/google/gemma-4-26B-A4B-it
+    shows: 10,074,016 downloads in the trailing 30 days for google/gemma-4-26B-A4B-it
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 9a7a52ed6eaeeb36aafabd7d6b42f330d746b3f885b78fd37229ccf4bb1cae37
 capability:
   score: 5
   basis: benchmark

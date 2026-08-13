@@ -15,26 +15,42 @@ openness:
     core-gated:
       value: ungated
   confidence: high
-  note: 'Fully open source: Apache-2.0 red-teaming framework, self-hostable.'
+  note: 'Fully open source: Apache-2.0 red-teaming framework, self-hostable. Re-read 2026-08-13 and
+    unchanged. Confident AI sells a hosted place for red-teaming results to live, but that is a separate
+    product beside an ungated core rather than functionality withheld from it.'
   raw: license:Apache-2.0(OSI);source:public;self-host:yes;service:none;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/confident-ai/deepteam
-    shows: Apache-2.0; ~1.9k stars; 50+ vuln checks, 20+ attacks; OWASP/NIST/MITRE aligned
-    accessed: '2026-06-29'
+    shows: 'Repo metadata records license spdxId - Apache-2.0. README states DeepTeam ''runs locally on
+      your machine and is built on DeepEval, the open-source LLM evaluation framework''; the hosted
+      Confident AI offering is pitched as somewhere for results to live, not as a tier that unlocks the
+      framework. No enterprise directory, commercial edition or license key on the page.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 8bdb58e7a0fbaf43eed2aaffcf179d6fc49ff534e58424b0365bbddb914c7e36
+    establishes:
+    - source
+    - core-gated
+    - license
 adoption:
   level: 2
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: low
-  note: '~1.9K GitHub stars (June 2026); stars-only proxy, capped per methodology. Stars read 2026-08-13:
-    2,442 across the 1 declared repo, which bands at 1K-10K stars, level 2 on the stars scale in
-    signal_routing.yaml. The previous reach ''1K-10K'' was not a label this instrument offers - stars have
-    their own vocabulary because a star is not a download. No last_verified claimed: a star count is volatile,
-    so a digest of it would read as drift on every refetch, and the rest of the axis was not re-read.'
+  note: 'Stars-only proxy, capped at 3 because a star is not a use. Re-read 2026-08-13 - the repo shows
+    2,442 stargazers, which bands at 1K-10K stars, level 2 on the stars scale in signal_routing.yaml. The
+    download route was checked rather than assumed away: the deepteam package on PyPI shows 85,819
+    downloads in the trailing 30 days, level 2 on the software scale, so both instruments agree on the
+    band. Re-banding onto downloads needs a declared PyPI artifact and is raised rather than taken here.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/confident-ai/deepteam
-    shows: ~1.9k stars (June 2026)
-    accessed: '2026-06-29'
+    shows: stargazerCount 2442 for confident-ai/deepteam; no download, install or customer figure appears
+      on the page.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 8bdb58e7a0fbaf43eed2aaffcf179d6fc49ff534e58424b0365bbddb914c7e36
 capability:
   score: 4
   basis: feature_matrix
@@ -43,7 +59,13 @@ capability:
     OWASP Top 10 for LLMs, NIST AI RMF, and MITRE ATLAS, plus production guardrails.
   confidence: medium
   note: Strong standards alignment (OWASP/NIST/MITRE) and broad attack coverage; also ships runtime guardrails.
+    Re-read 2026-08-13 and unchanged, with the framework mapping added since to OWASP Top 10 for Agents 2026.
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/confident-ai/deepteam
-    shows: 50+ vulnerabilities, 20+ attacks, OWASP/NIST/MITRE
-    accessed: '2026-06-29'
+    shows: README lists '50+ ready-to-use vulnerabilities', '20+ research-backed adversarial attack methods
+      for both single-turn and multi-turn', mappings to OWASP Top 10 for LLMs 2025, OWASP Top 10 for Agents
+      2026, NIST AI RMF and MITRE ATLAS, and '7 production-ready guardrails'.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 8bdb58e7a0fbaf43eed2aaffcf179d6fc49ff534e58424b0365bbddb914c7e36

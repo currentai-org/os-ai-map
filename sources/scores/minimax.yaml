@@ -19,15 +19,31 @@ openness:
   note: Weights distributed under the custom minimax-community license with a closed corpus, so 3. M3 governs as
     the current release. Capability 5 is carried from M2.5 because M3 records no capability score at all, so the
     tier's capability describes the older release and should be re-read when M3 is benchmarked - it is the one axis
-    here not sourced to the governing release.
+    here not sourced to the governing release. Re-read 2026-08-13 - the M3 repository is still ungated
+    and still names minimax-community as its license, created 2026-06-02, and the card ships
+    deployment instructions for vLLM and SGLang but no corpus and no training pipeline. Nothing moved.
+  last_verified: '2026-08-13'
   raw: weights:open(on HF; ungated; safetensors/BF16; MoE);data:closed;code:partial(inference only; no training
     pipeline/data);license:minimax-community(custom, see HF LICENSE)
   sources:
   - url: https://huggingface.co/api/models/MiniMaxAI/MiniMax-M3
-    shows: Public ungated weights repo (safetensors/MoE), license=minimax-community, created 2026-06-02
-    accessed: '2026-06-23'
+    shows: 'Public ungated weights repo (safetensors/MoE), `license: other` with
+      `license_name: minimax-community`, `gated: false`, created 2026-06-02, 169,325 downloads.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c5804063a0f65eed5245aebcab37289d78eb2c6e861e9918754e2129a34e4642
+    establishes: [weights, license]
+  - url: https://huggingface.co/MiniMaxAI/MiniMax-M3
+    shows: M3 model card with a bundled LICENSE and vLLM / SGLang deployment guides; no training
+      corpus named and no training pipeline linked, which is what holds data at closed and code at
+      partial.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 4ec7abb96a3e52ca379834d74b8352101ac5de0b391b70a2b2c7af0fc6ffc393
+    establishes: [weights, data, code, license]
   - url: https://venturebeat.com/technology/minimax-m3-debuts-eclipsing-gpt-5-5-and-gemini-3-1-pro-on-key-benchmark-performance-for-just-5-10-of-the-cost
-    shows: flagship phase-C verification source
+    shows: flagship phase-C verification source; answered HTTP 429 to the 2026-08-13 re-read after
+      retries, so it was not re-confirmed and is not part of this date
     accessed: '2026-06-04'
 adoption:
   level: 3
@@ -40,9 +56,17 @@ adoption:
     at 100K-1M, level 3. This record previously claimed usage_volume - a download count - while declaring no
     artifact any signal model reads, so no computed figure existed for the recorded band to disagree with.
     Declared artifact is MiniMaxAI/MiniMax-M3, the release the product record says currently governs. Level
-    unchanged; the note''s previous ~693k figure was not re-derivable by anything. No last_verified claimed:
-    only the figure was re-read.'
+    unchanged; the note''s previous ~693k figure was not re-derivable by anything. Re-derived again from
+    the API endpoint on 2026-08-13 as part of the category pass, giving the same 169,325 and the same
+    level-3 band, so the axis is now confirmed rather than part-read.'
+  last_verified: '2026-08-13'
   sources:
+  - url: https://huggingface.co/api/models/MiniMaxAI/MiniMax-M3
+    shows: 169,325 downloads in the trailing 30 days for MiniMaxAI/MiniMax-M3, the single declared
+      artifact
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c5804063a0f65eed5245aebcab37289d78eb2c6e861e9918754e2129a34e4642
   - url: https://huggingface.co/MiniMaxAI/MiniMax-M2.5
     shows: ~693,331 downloads last month on the official HF model page
     accessed: '2026-06-04'
@@ -55,8 +79,15 @@ capability:
   confidence: medium
   note: Frontier-tier among open-weights agentic chat models (SWE-bench Verified 80.2% with strong reasoning/browse
     scores), at very low serving cost. Figures are MiniMax-reported on the HF card; not independently audited but
-    consistent with peer open models (Kimi K2.6, DeepSeek-V4).
+    consistent with peer open models (Kimi K2.6, DeepSeek-V4). Re-read 2026-08-13 - all five figures
+    are still on the M2.5 card, so the band is re-derived and unchanged at 5. The caveat the openness
+    note raises still stands and is the real limit here - this describes M2.5 while M3 governs the
+    tier, and MiniMax has published no comparable table for M3.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/MiniMaxAI/MiniMax-M2.5
-    shows: MiniMax-reported SWE-bench Verified 80.2%, GPQA-D 85.2%, AIME25 86.3% on the official HF card
-    accessed: '2026-06-04'
+    shows: MiniMax-reported SWE-bench Verified 80.2%, SWE-bench Pro 55.4%, GPQA-D 85.2%, AIME25 86.3%
+      and BrowseComp 76.3% on the official HF card
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 1ea8ebb0f7108c23ae67eeb9bd98a527c3c68f034d2c4d9f63e695403e1384f5

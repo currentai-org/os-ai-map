@@ -13,12 +13,31 @@ openness:
     free_text:
     - no-feature-gated-core
   confidence: high
-  note: Fully MIT, first-party Notion server.
+  note: 'Fully MIT, first-party Notion server, no feature-gated core. Re-read 2026-08-13: the repository LICENSE
+    is the MIT permission grant, "Copyright (c) 2025 Notion Labs, Inc.", and the repo page carries the matching
+    badge. The whole server is in the tree and installs from npm with no key. Notion also runs a hosted MCP
+    endpoint documented at developers.notion.com, and that is a managed deployment of this same server rather
+    than a tier withholding tools from it, which the ladder settles as ungated.'
   raw: license:MIT(OSI);source:public;no-feature-gated-core;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
+  - url: https://raw.githubusercontent.com/makenotion/notion-mcp-server/main/LICENSE
+    shows: 'MIT permission grant: "Copyright (c) 2025 Notion Labs, Inc."'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 2fd3e5272a40483e9cc8140136b4438708a496ea2da2537b98f0f2bbb68148ee
+    establishes:
+    - license
   - url: https://github.com/makenotion/notion-mcp-server
-    shows: MIT, ~4.4k stars, official Notion server
-    accessed: '2026-06-17'
+    shows: Repo page - MIT badge, 4,588 stargazers, the whole server in the tree, installed from npm. The
+      hosted Notion MCP is pointed at as documentation rather than as a paid tier; no license key, second
+      license or enterprise directory.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 2551411540a29e3a7bafa33a61391a5cfb155ad2d0296ae021c2af21e94232f8
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 3
   signal_type: usage_volume
@@ -39,10 +58,24 @@ adoption:
 capability:
   score: 4
   basis: feature_matrix
-  value: ~22 tools across search, data sources, pages, blocks, comments; agent-optimized output
+  value: tools across search, data sources, pages, blocks and comments, with data sources the primary database
+    abstraction since v2.0.0; OAuth installation; token-optimized responses and Markdown page editing
   confidence: medium
-  note: Comprehensive single-product Notion API coverage.
+  note: 'Comprehensive single-product Notion API coverage. Re-read 2026-08-13: v2.0.0 migrated the server
+    to the Notion API 2025-09-03, "which introduces data sources as the primary abstraction for databases",
+    adding seven tools around query-data-source, retrieve-a-data-source, update-a-data-source and create-a-data-source.
+    The README also now leads on "Easy installation via standard OAuth. No need to fiddle with JSON or API
+    tokens anymore" and on tools "designed with optimized token consumption in mind". The recorded "~22 tools"
+    count is not stated on the page any more, so the value drops the number and keeps the surface; the band
+    is unchanged at 4.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/makenotion/notion-mcp-server
-    shows: 22-tool feature set
-    accessed: '2026-06-17'
+    shows: '"Version 2.0.0 migrates to the Notion API 2025-09-03 which introduces data sources as the primary
+      abstraction for databases", with seven new tools listed. "Easy installation via standard OAuth"; "Powerful
+      tools tailored to AI agents, including editing pages in Markdown. These tools are designed with optimized
+      token consumption in mind." Worked examples call v1/search and v1/comments. NOT on the page: a tool
+      count of 22 or any other number.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 2551411540a29e3a7bafa33a61391a5cfb155ad2d0296ae021c2af21e94232f8

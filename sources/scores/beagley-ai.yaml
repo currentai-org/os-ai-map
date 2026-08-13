@@ -21,28 +21,69 @@ openness:
       raw: required (TI DSP/WiFi firmware blobs a caveat)
   confidence: high
   note: Full board design files published under Creative Commons and OSHWA-certified with an open toolchain
-    and public datasheet, though proprietary AM67A silicon and firmware blobs are a caveat.
+    and public datasheet, though proprietary AM67A silicon and firmware blobs are a caveat. Re-read
+    2026-08-13 - the OSHWA certification directory still carries US002616 for BeagleY-AI (certified
+    2024-03-27) recording Hardware CC-BY-4.0, Software GPL and Documentation CC-BY-SA-4.0, the repo is
+    still CC-BY-4.0 and still links that certificate, the design page still says design materials and
+    license live in the BeagleY-AI git repository, and TI still publishes the AM67x datasheet (Rev. B)
+    openly. No dimension moved. One drift worth recording - the design page no longer prints the OSHWA
+    UID itself; the certificate and the repo README still do.
   raw: schematics:open (schematics + 3D/mechanical files, CC-BY/CC-BY-SA-4.0, OSHWA-certified US002616);toolchain:open
     (open Linux/U-Boot BSP);datasheets:public (public TI AM67A datasheet);blobs:required (TI DSP/WiFi firmware
     blobs a caveat)
+  last_verified: '2026-08-13'
   sources:
+  - url: https://certification.oshwa.org/us002616.html
+    shows: OSHWA UID US002616 for BeagleY-AI by the BeagleBoard.org Foundation, certified March 27 2024,
+      licences recorded as Hardware CC-BY-4.0, Software GPL, Documentation CC-BY-SA-4.0
+    accessed: '2026-08-13'
+    establishes:
+    - schematics
+    - toolchain
+    http_status: 200
+    content_sha256: 2863573852c2ebfa8cf746eef592e52abd6fd1434365bba08fa1b170536499bf
   - url: https://github.com/beagleboard/beagley-ai
-    shows: repo with design files, 3D models, OSHWA cert, schematic PDF, CC-BY-4.0 license
-    accessed: '2026-06-22'
+    shows: repository under a CC-BY-4.0 license with design and 3D directories and a link to
+      https://certification.oshwa.org/us002616.html
+    accessed: '2026-08-13'
+    establishes:
+    - schematics
+    http_status: 200
+    content_sha256: 183e772403b13f95f9d76e3d9e09bc849038d0484dd80f46b902a66c790d5bfc
   - url: https://docs.beagleboard.org/boards/beagley/ai/03-design.html
-    shows: CC-BY-SA-4.0 license, OSHWA cert US002616, open design-file hosting
-    accessed: '2026-06-22'
+    shows: '"This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International
+      License" and "Design materials and license can be found in the BeagleY-AI git repository"; the
+      board carries 2x C7x DSPs with MMA and a Beagle BM3301 wireless module based on the TI CC3301,
+      the two firmware-bearing subsystems behind the recorded blob caveat'
+    accessed: '2026-08-13'
+    establishes:
+    - blobs
+    http_status: 200
+    content_sha256: bd680e33d099217f6507e6b74cb36f2eb817386f3b0d748b0e4aa5bba491c772
+  - url: https://www.ti.com/product/AM67A
+    shows: '"AM67x Processors datasheet (Rev. B)" published openly on the part page, status ACTIVE'
+    accessed: '2026-08-13'
+    establishes:
+    - datasheets
+    http_status: 200
+    content_sha256: 147b265e34a7b894413ce9cfc9883a4594de7d689d575a46948de2265eafaf9a
 adoption:
   level: 4
   reach: niche
   signal_type: reported_traction
   confidence: medium
   note: In stock at $71.99 with volume pricing at Seeed and orderable via TI, backed by the established
-    BeagleBoard.org community, though recent (2024) so installed base trails Raspberry Pi.
+    BeagleBoard.org community, though recent (2024) so installed base trails Raspberry Pi. Re-read
+    2026-08-13 - still in stock at Seeed, now listed at $70.00 rather than $71.99, and the AM67A it is
+    built on is still ACTIVE at TI with evaluation boards in stock. Level and reach unchanged; the price
+    figure in the note is a cent-level drift, corrected here rather than escalated.
+  last_verified: '2026-08-13'
   sources:
   - url: https://www.seeedstudio.com/BeagleYr-AI-beagleboard-orgr-4-TOPS-AI-Acceleration-powered-by-TI-AM67A.html
-    shows: $71.99, in stock, with volume pricing
-    accessed: '2026-06-22'
+    shows: $70.00, "In stock"
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c4c536f7f6f5746f1182721bf5c51bbad54a5f95181f75f0b25d0d408e77c6c9
 capability:
   score: 3
   basis: feature_matrix
@@ -50,8 +91,14 @@ capability:
     classification models
   confidence: high
   note: 4 TOPS plus an IMG BXS GPU suits edge vision and quantized CNNs, but fixed 4GB RAM and modest
-    TOPS rule out large LLMs.
+    TOPS rule out large LLMs. Re-derived 2026-08-13 - the board page still reads "Dual general-purpose
+    C7x DSP with Matrix Multiply Accelerator (MMA) capable of 4 TOPs" and 4GB LPDDR4, which sits below
+    the 6 TOPS RK3588 boards and well below the Jetson Orin line.
+  last_verified: '2026-08-13'
   sources:
   - url: https://www.beagleboard.org/boards/beagley-ai
-    shows: dual C7x DSP + MMA at 4 TOPS, 4GB LPDDR4, quad Cortex-A53
-    accessed: '2026-06-22'
+    shows: '"Dual general-purpose C7x DSP with Matrix Multiply Accelerator (MMA) capable of 4 TOPs";
+      4GB LPDDR4; Texas Instruments AM67A Arm-based vision processor'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: bdd173a87d3c94b1b3965b244c0e076b89045edeee1c54b2d4a015853d228d03

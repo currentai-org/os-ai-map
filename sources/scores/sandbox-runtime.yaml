@@ -17,13 +17,44 @@ openness:
     - no managed/proprietary tier(it is a local library, not a service)
   confidence: high
   note: Apache-2.0 OS-level sandboxing library, fully open and self-contained; no feature-gated core or
-    paid tier.
+    paid tier. Re-read 2026-08-13 - the GitHub API reports the repository public, unarchived and
+    licensed Apache-2.0, the LICENSE body is the verbatim Apache License 2.0, and the README installs
+    the whole tool with a single ``npm install -g @anthropic-ai/sandbox-runtime`` and documents no
+    hosted plan, license key or withheld capability. It is labeled a beta research preview, which is a
+    maturity statement rather than a gate.
   raw: license:Apache-2.0(OSI);source:public(GitHub);distribution:npm package;no managed/proprietary tier(it
     is a local library, not a service);core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/anthropic-experimental/sandbox-runtime
     shows: Apache-2.0 license; OS-level (bubblewrap/seatbelt) sandbox library, no container required
     accessed: '2026-06-04'
+  - url: https://api.github.com/repos/anthropic-experimental/sandbox-runtime
+    shows: Repository metadata - public, not archived, license spdx_id Apache-2.0, pushed to the same
+      day.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: a581f8a50fcd16edbcb883042f3bacdb3b79cd93c44f77a2d7a8160d422f7242
+    establishes:
+    - source
+    - license
+  - url: https://raw.githubusercontent.com/anthropic-experimental/sandbox-runtime/main/LICENSE
+    shows: The verbatim Apache License 2.0 body, with no added terms or field-of-use restrictions.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 1210bc93eb85dd786c33192d5bcb7153a93922fa99fbc1512af6a7199cb41080
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/anthropic-experimental/sandbox-runtime/main/README.md
+    shows: Installs entirely from npm as a CLI and library; documents settings, filesystem/network/unix-socket
+      restrictions and violation monitoring with no paid tier, license key or hosted component. Labeled
+      a beta research preview built for Claude Code and released as an open source preview.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 9ec3d585692e4bd6aff8dd807784d6d97595bc5fe48d6824ca2dd823c874776b
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 2
   reach: 10K-100K
@@ -50,8 +81,20 @@ capability:
   confidence: medium
   note: Best-in-class for low-overhead, no-container process isolation with fine-grained fs+network allow/deny
     and pre-built seccomp filters; but a process-level sandbox is a weaker security boundary than the
-    microVM/gVisor frontier and offers no managed scale, so 3.
+    microVM/gVisor frontier and offers no managed scale, so 3. Re-read 2026-08-13 - the README still
+    describes bubblewrap on Linux and sandbox-exec on macOS with proxy-based network filtering, still
+    documents seccomp filters as x64/arm64 only and warns that unix sockets go unrestricted where
+    seccomp is unavailable, and still ships no managed or multi-host mode. The feature matrix reads as
+    recorded and the band holds at 3.
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/anthropic-experimental/sandbox-runtime
     shows: bubblewrap+seccomp / sandbox-exec isolation, filesystem+network restriction model, no container
     accessed: '2026-06-04'
+  - url: https://raw.githubusercontent.com/anthropic-experimental/sandbox-runtime/main/README.md
+    shows: Native OS primitives (sandbox-exec on macOS, bubblewrap on Linux) plus a filtering proxy;
+      filesystem, network and unix-socket restrictions; seccomp filters limited to x64/arm64 with a
+      warning when unavailable; single-host CLI and library, no fleet or managed tier.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 9ec3d585692e4bd6aff8dd807784d6d97595bc5fe48d6824ca2dd823c874776b

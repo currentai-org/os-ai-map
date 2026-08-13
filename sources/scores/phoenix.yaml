@@ -17,30 +17,56 @@ openness:
     open source platform" (open_washed). Source-available and self-hostable, with Arize AX as a separate
     closed SaaS product. Score corrected from 3 to 2 on 2026-07-30. The software ladder has rungs at 1,
     2, 4 and 5 and none at 3, so 3/source_available was not a pair any rule could produce; the ladder scores
-    "you can read it and not run it freely" at 2.
+    "you can read it and not run it freely" at 2. Re-read 2026-08-13 and unchanged - the LICENSE file is
+    still ELv2 verbatim, and the vendor page still calls Phoenix "the open-source platform" while stating
+    "ELv2 licensed" in the same breath.
   raw: 'license:Elastic-License-2.0(ELv2, non-OSI: prohibits offering as a managed/hosted service to third
     parties);source:public;self-hostable;commercial:Arize-AX-SaaS-is-separate-closed-product'
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/Arize-ai/phoenix/blob/main/LICENSE
-    shows: Elastic License 2.0 (ELv2) full text
-    accessed: '2026-06-04'
+    shows: 'Elastic License 2.0 (ELv2) full text, read rather than assumed. It opens "Elastic License 2.0
+      (ELv2)" and its Limitations state "You may not provide the software to third parties as a hosted or
+      managed service, where the service provides users with access to any substantial set of the features
+      or functionality of the software." That is the non-OSI restriction the record scores on.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 1c5916f5112e30e92f291002bb02cf4f4851c9d1dbdf3360f9f745b7de2d775f
+    establishes:
+    - license
   - url: https://arize.com/phoenix/
-    shows: marketed as 'the open source platform'; 'ELv2 licensed. 9k+ GitHub stars'
-    accessed: '2026-06-04'
+    shows: 'The vendor page, which markets Phoenix as "The open-source platform for agent development and
+      evaluation" while its own OSS Community block reads "ELv2 licensed. 10k+ GitHub stars." Self-hosting
+      is a first-class path - "Self-Host ... your data on your own infrastructure" and a Helm/Kubernetes
+      deployment option - so the published source is what you run. The stars figure has moved from the 9k+
+      recorded at the last read to 10k+; the license statement has not moved.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 01c6f8260364929b913065905be2539960548046b2fec5c1442e8135495fee73
+    establishes:
+    - license
+    - source
 adoption:
   level: 4
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
   note: arize-phoenix ~2.46M PyPI downloads/month; broad OTel-based framework integrations; ~10k GitHub
-    stars corroborates only.
+    stars corroborates only. Re-read 2026-08-13 - pypistats now reports 2,313,184 downloads last month
+    for arize-phoenix, down slightly from the 2,458,129 recorded and still inside the 1M-10M band, so
+    level 4 is unchanged.
+  last_verified: '2026-08-13'
   sources:
   - url: https://pypistats.org/packages/arize-phoenix
-    shows: ~2,458,129 downloads last month
-    accessed: '2026-06-04'
+    shows: Downloads last month 2,313,184 for arize-phoenix (last week 517,110)
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 568bdc3eef702a15e064240cb622941494fc8a9d503d2ad0d5461fdc0328332d
   - url: https://github.com/Arize-ai/phoenix
-    shows: ~10k stars; OTel tracing, evals, datasets, prompt mgmt, playground
-    accessed: '2026-06-04'
+    shows: 11,033 stars; OTel-based tracing, evaluation, playground and prompt management in the README
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: dcf536b4e91cd985fcd5c380bc4a342f500937963f342456abfbab1b06d0977a
 capability:
   score: 4
   basis: feature_matrix
@@ -50,8 +76,15 @@ capability:
     cost/latency, broad framework integrations (OpenAI/Claude/LangGraph/LlamaIndex/CrewAI)
   confidence: high
   note: Full-coverage observability/eval platform across all six feature-matrix dimensions; on par with
-    MLflow/Langfuse anchors (C4).
+    MLflow/Langfuse anchors (C4). Re-read 2026-08-13 - the README still lists Tracing (OpenTelemetry-based
+    instrumentation), Evaluation (response and retrieval evals), Playground and Prompt Management as
+    first-class features, so the comparison with the langfuse anchor at 4 still holds.
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/Arize-ai/phoenix
-    shows: tracing, evals, datasets, prompt management, playground, OTel integrations
-    accessed: '2026-06-04'
+    shows: 'README feature list - Tracing "using OpenTelemetry-based instrumentation", Evaluation with
+      "response and retrieval evals", Playground and Prompt Management, plus the arize-phoenix-evals and
+      arize-phoenix-otel packages.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: dcf536b4e91cd985fcd5c380bc4a342f500937963f342456abfbab1b06d0977a

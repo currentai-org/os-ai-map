@@ -4,8 +4,14 @@ openness:
   class: open_source
   components:
     license:
+    - name: Apache-2.0
+      detail: OSI, new code under the monorepo's transition LICENSE
     - name: MIT
-      detail: OSI
+      detail: OSI, legacy contributions not yet relicensed; also what this server's own README states
+    docs:
+      value: CC-BY-4.0
+      detail: documentation other than the specifications; not read by the openness ladder, which scores the
+        artifact the product ships
     source:
       value: public
     core-gated:
@@ -13,12 +19,51 @@ openness:
     free_text:
     - no-feature-gated-core
   confidence: high
-  note: Fully MIT reference server.
-  raw: license:MIT(OSI);source:public;no-feature-gated-core;core-gated:ungated
+  note: 'Fully OSI-licensed reference server, no feature-gated core. LICENSE CORRECTED 2026-08-13, and the
+    two available statements disagree. This record said MIT on the strength of the server''s own README,
+    which still says "This MCP server is licensed under the MIT License ... please see the LICENSE file in
+    the project repository". That LICENSE file is no longer MIT: modelcontextprotocol/servers now carries
+    the MCP project''s transition text, byte-identical to the spec repo''s - Apache-2.0 for new code, CC-BY-4.0
+    for documentation other than specifications, MIT retained only for pre-transition contributions not yet
+    relicensed. So the README points at a file that contradicts it. Both code licenses are recorded, the
+    documentation license sits under a `docs:` key the ladder does not read, and since every part is OSI
+    the tier and the 5/open_source are unchanged. The disagreement is the finding, not a re-scoring.'
+  raw: license:Apache-2.0(OSI, new code under the monorepo's transition LICENSE)+MIT(OSI, legacy contributions
+    not yet relicensed; also what this server's own README states);docs:CC-BY-4.0(documentation other than
+    the specifications; not read by the openness ladder, which scores the artifact the product ships);source:public;no-feature-gated-core;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
+  - url: https://raw.githubusercontent.com/modelcontextprotocol/servers/main/LICENSE
+    shows: 'The monorepo LICENSE, digest byte-identical to the MCP spec repo''s: "The MCP project is undergoing
+      a licensing transition from the MIT License to the Apache License, Version 2.0. All new code and specification
+      contributions to the project are licensed under Apache-2.0. Documentation contributions (excluding specifications)
+      are licensed under CC-BY-4.0. Contributions made by authors who originally licensed their work under
+      the MIT License and who have not yet granted explicit permission to relicense remain licensed under
+      the MIT License." Followed by the full Apache-2.0 text.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 0382b0057770ca05e9c350a50aa3b1c1fea84da0bc81d723bf00b9aa841be58a
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/modelcontextprotocol/servers/main/src/filesystem/README.md
+    shows: 'License section - "This MCP server is licensed under the MIT License. This means you are free
+      to use, modify, and distribute the software, subject to the terms and conditions of the MIT License.
+      For more details, please see the LICENSE file in the project repository." The whole server ships here
+      and installs as @modelcontextprotocol/server-filesystem; nothing is withheld and there is no paid tier.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: df276d57efc04b85fa1e8163fe1aa3d5b11d5b2a7de5ec51ba083e5cb04019cd
+    establishes:
+    - license
+    - source
+    - core-gated
   - url: https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem
-    shows: MIT, reference filesystem server
-    accessed: '2026-06-17'
+    shows: The server's directory in the monorepo, rendering the README above.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 25d203fcb2f09a85d3d04932e4eb5222f66a2b9e02b734e0ddb50952ef89354a
+    establishes:
+    - source
 adoption:
   level: 4
   signal_type: usage_volume
@@ -42,8 +87,25 @@ capability:
   value: granular read/write/edit; directory tree; search; media reads; sandboxed allowed-directory access; Roots
     support
   confidence: high
-  note: Full local-filesystem surface with sandboxed access controls.
+  note: 'Full local-filesystem surface with sandboxed access controls. Re-read 2026-08-13 against the server''s
+    README and every clause of the recorded value holds. The tool table runs read_text_file (with head/tail),
+    read_media_file returning base64 with a MIME type, read_multiple_files, list_directory, list_directory_with_sizes,
+    directory_tree, get_file_info, plus write, edit, create, move, delete and search. Access is confined
+    to Allowed directories set either by command-line argument or, preferred, dynamically by the client through
+    the MCP Roots protocol, and the server refuses to initialize if neither is provided. Band unchanged at
+    4.'
+  last_verified: '2026-08-13'
   sources:
+  - url: https://raw.githubusercontent.com/modelcontextprotocol/servers/main/src/filesystem/README.md
+    shows: 'Features - read/write files, create/list/delete directories, move, search, file metadata, "Dynamic
+      directory access control via Roots". Per-tool table with readOnlyHint and destructiveHint columns; read_media_file
+      streams a file back as a base64 content block with its MIME type. Without command-line arguments and
+      without client Roots support "the server will throw an error during initialization".'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: df276d57efc04b85fa1e8163fe1aa3d5b11d5b2a7de5ec51ba083e5cb04019cd
   - url: https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem
-    shows: tool list
-    accessed: '2026-06-17'
+    shows: The server's directory in the monorepo, rendering the tool list above.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 25d203fcb2f09a85d3d04932e4eb5222f66a2b9e02b734e0ddb50952ef89354a

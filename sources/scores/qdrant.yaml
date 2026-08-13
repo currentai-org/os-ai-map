@@ -94,11 +94,18 @@ adoption:
     the reach as 1M-10M). The map''s prevailing usage_volume level-5 floor is
     >10M/mo (cf. pydantic-ai ~31M, langgraph ~58M at level 5); Qdrant''s client
     volume clears it. It remains one above the Milvus anchor (A3) on download
-    volume, a leading open vector DB for RAG/agent retrieval.'
+    volume, a leading open vector DB for RAG/agent retrieval. Re-derived 2026-08-13: last_month = 19,077,155
+    for qdrant-client, down from the 23,061,488 recorded but still well clear of the >10M level-5 floor,
+    so the level and the >10M reach are both unchanged. The figure is the Python client rather than the
+    server, which is what the product''s artifact_exceptions block declares and why it is the usage signal
+    here.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://pypistats.org/api/packages/qdrant-client/recent
-    shows: last_month downloads = 23,061,488
-    accessed: '2026-06-25'
+    shows: last_month = 19,077,155 downloads for qdrant-client (last_week 4,271,948, last_day 681,811).
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 1a02e7e2d8e098c2eeace43ebe454d513986d5564f20dea113fb621ca0a4d08b
 capability:
   score: 4
   basis: benchmark
@@ -109,13 +116,29 @@ capability:
     highest RPS and lowest latency in almost all scenarios vs Milvus/Weaviate/Elasticsearch/Redis at matched
     precision; advanced filtered-search query planning.'
   confidence: medium
-  note: Top-tier ANN engine on RPS/latency; tied with the Milvus anchor at C4 (frontier vector-DB capability).
-    Headline comparison is vendor-run (qdrant.tech/benchmarks); ANN-Benchmarks corroborates inclusion
-    but its interactive plots did not yield a clean ranking number this run, hence medium confidence.
+  note: 'Top-tier ANN engine on RPS/latency; tied with the Milvus anchor at C4 (frontier vector-DB capability).
+    Headline comparison is vendor-run (qdrant.tech/benchmarks); ANN-Benchmarks corroborates inclusion but
+    its interactive plots did not yield a clean ranking number this run, hence medium confidence. Re-read
+    2026-08-13, and both halves still hold. ANN-Benchmarks lists 38 algorithms rather than the 37 recorded,
+    with qdrant and Milvus(Knowhere) both among them, and it still publishes only interactive recall-versus-QPS
+    plots, no ranking table - so it corroborates inclusion and nothing more, exactly as the note says. The
+    vendor page still states "Qdrant achieves highest RPS and lowest latencies in almost all the scenarios,
+    no matter the precision threshold and the metric we choose", against Milvus, Weaviate, Elasticsearch
+    and Redis. The Milvus anchor was re-read and re-dated the same day and also holds at 4, so the recorded
+    relation `at` remains arithmetically true.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://ann-benchmarks.com/
-    shows: Qdrant included among 37 benchmarked ANN algorithms
-    accessed: '2026-06-04'
+    shows: Qdrant listed among 38 benchmarked ANN algorithms, alongside Milvus(Knowhere), faiss-ivf, scann,
+      hnswlib and weaviate. Results published as interactive recall-versus-queries-per-second plots per dataset;
+      no ranking table.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 13d5e2d00070ba5ec7dc53d4ce89e86c86cb7c0ef43803a4fe565f397c956861
   - url: https://qdrant.tech/benchmarks/
-    shows: Qdrant highest RPS/lowest latency vs Milvus/Weaviate/Elasticsearch/Redis (vendor benchmark)
-    accessed: '2026-06-04'
+    shows: 'Vendor benchmark, Observations section - "Qdrant achieves highest RPS and lowest latencies in
+      almost all the scenarios, no matter the precision threshold and the metric we choose. It has also shown
+      4x RPS gains on one of the datasets." Compared against Milvus, Weaviate, Elasticsearch and Redis.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: fd5094d6c8c1b0c729e2725a7b28cda8292b6b0979c2cd058d50f998cea21c0e

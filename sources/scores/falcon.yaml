@@ -19,31 +19,64 @@ openness:
     It therefore sits in permissive_non_osi beside attribution requirements rather than in the capped tier beside
     Llama''s 700M-MAU ceiling. Not 4 or 5: the corpus and the pipeline are both closed, and the license is non-OSI
     regardless, since the OSD forbids discriminating against a field of endeavor. The Hub reports this license as
-    `other`, an abstention rather than an answer, so the tier rests on TII''s published text.'
+    `other`, an abstention rather than an answer, so the tier rests on TII''s published text. Re-read
+    2026-08-13 - the Hub still reports `other` and ungated for Falcon3-10B-Base, and the release blog
+    still describes a single 14-trillion-token pretraining run over "web, code, STEM, and curated
+    high-quality and multilingual data" without releasing either the corpus or the pipeline. Nothing
+    moved.'
+  last_verified: '2026-08-13'
   raw: weights:open;data:closed;code:closed;license:TII-Falcon-License-2.0(Apache-based+AUP,non-OSI)
   sources:
   - url: https://huggingface.co/api/models/tiiuae/Falcon3-10B-Base
-    shows: ungated, 41.2GB of weight files, 7,688 downloads last month; cardData.license is `other`, so the Hub
-      does not name the license and the tier rests on the TII text
-    accessed: '2026-07-29'
+    shows: '`gated: false`, `private: false`, safetensors weight files, 5,292 downloads and 41 likes;
+      cardData.license is `other`, so the Hub does not name the license and the tier rests on the TII
+      text.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: a30e8c22259eeba58788b6836ec9c25dd7a988e565317f1bb9e2ca40875d89d1
+    establishes: [weights, license]
   - url: https://huggingface.co/blog/falcon3
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
+    shows: '"We conducted a single large-scale pretraining run on the 7B model, using 1024 H100 GPU
+      chips, leveraging 14 trillion tokens featuring web, code, STEM, and curated high-quality and
+      multilingual data" - the corpus is characterized but not released, and no training pipeline is
+      published.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: f7bf9e947619dfc4f669054a27a47a0a90eca891b864ed3b11231fb968ffb301
+    establishes: [data, code]
   - url: https://huggingface.co/tiiuae/Falcon3-7B-Base
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
+    shows: Falcon3-7B-Base model card, weights downloadable under the TII Falcon License 2.0
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: f286e99aea47863b73154415b0a1f3f235edf8946d05a2775dc6af0be2013acb
   - url: https://www.tii.ae/news/falcon-3-uaes-technology-innovation-institute-launches-worlds-most-powerful-small-ai-models
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
+    shows: TII launch announcement for the Falcon 3 family of sub-13B models
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 99e013f6a80aa589f34e241d369a9a072929e4f5cc14fff157d05dde3b4816dd
 adoption:
   level: 2
   signal_type: reported_traction
   confidence: high
   note: Available on Hugging Face with moderate uptake at launch as a sub-13B SLM; no large verified usage figures
-    and relevance has faded against newer SLMs. Level 2 reflects modest reported traction.
+    and relevance has faded against newer SLMs. Level 2 reflects modest reported traction. Attempted
+    re-read 2026-08-13, and two things came out of it. The article the level rests on answered HTTP
+    429 after retries, so the reported-traction reading was not re-confirmed. And a download signal
+    now exists where the record assumed none - the declared artifact tiiuae/Falcon3-10B-Base shows
+    5,292 downloads in the trailing 30 days, which is level 1 on the usage_volume scale rather than
+    level 2, and docs/guides/adoption.md says to re-band when a real download signal appears. NOT
+    changed here and NOT confirmed - the instrument switch and the level move are flagged for review
+    rather than applied.
   sources:
+  - url: https://huggingface.co/api/models/tiiuae/Falcon3-10B-Base
+    shows: 5,292 downloads in the trailing 30 days for tiiuae/Falcon3-10B-Base, the single declared
+      artifact
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: a30e8c22259eeba58788b6836ec9c25dd7a988e565317f1bb9e2ca40875d89d1
   - url: https://venturebeat.com/ai/uaes-falcon-3-challenges-open-source-leaders-amid-surging-demand-for-small-ai-models
-    shows: flagship phase-C verification source
+    shows: flagship phase-C verification source; answered HTTP 429 to the 2026-08-13 re-read after
+      retries, so it was not re-confirmed
     accessed: '2026-06-04'
   - url: https://huggingface.co/tiiuae/Falcon3-7B-Base
     shows: flagship phase-C verification source
@@ -55,8 +88,13 @@ capability:
   value: null
   confidence: high
   note: 'Falcon3-10B-Base: MMLU 73.1, MMLU-Pro 42.5, GSM8K 83.0; Falcon3-7B-Base: MMLU 67.4, MMLU-Pro 39.2. Competitive
-    among sub-13B in 2024 but low vs 2026 frontier.'
+    among sub-13B in 2024 but low vs 2026 frontier. Re-read 2026-08-13 - all five recorded figures
+    are still in the release blog benchmark tables, so the band is re-derived and unchanged at 2.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/blog/falcon3
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
+    shows: 'Falcon3-10B-Base MMLU 73.1, MMLU-Pro 42.5, GSM8K 83.0; Falcon3-7B-Base MMLU 67.4, MMLU-Pro
+      39.2 - all five present.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: f7bf9e947619dfc4f669054a27a47a0a90eca891b864ed3b11231fb968ffb301

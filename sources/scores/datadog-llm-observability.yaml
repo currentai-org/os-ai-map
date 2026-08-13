@@ -15,25 +15,44 @@ openness:
     - product itself closed
   confidence: high
   note: Closed proprietary SaaS; only Datadog's tracing client libraries are open, the LLM Observability
-    product and backend are closed.
+    product and backend are closed. Re-read 2026-08-13 and unchanged - the documentation still describes
+    a hosted Datadog product configured from the Datadog app, with no repository, no license and no
+    self-hosted build offered for the LLM Observability backend anywhere in it.
   raw: license:Proprietary;source:closed;platform:proprietary SaaS(no source);only the ddtrace instrumentation
     SDK is open;product itself closed
+  last_verified: '2026-08-13'
   sources:
   - url: https://docs.datadoghq.com/llm_observability/
-    shows: Datadog LLM Observability described as a proprietary cloud SaaS platform for monitoring LLM
-      apps/agents
-    accessed: '2026-06-04'
+    shows: 'LLM Observability documentation, sitting inside the wider Datadog docs alongside APM, Log
+      Management and Cloud SIEM. The navigation covers Agent Monitoring, MCP Clients, Prompt Tracking,
+      Prompt Management, Quality Monitoring and correlation with APM. Nothing on the page links a source
+      repository or a self-hosted distribution of the product itself.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 7c4484c17defe958a80e8a00096c3510f84cf5c94e4a7be4008c01c6a37b4297
+    establishes:
+    - license
+    - source
 adoption:
   level: 4
   signal_type: reported_traction
   confidence: low
-  note: Rides the large installed base of Datadog APM (a major enterprise observability vendor); LLM Observability
-    is a newer add-on with no disclosed standalone user/usage count. Placed at 4 on parent-platform enterprise
-    reach as a directional estimate, not a measured figure for this module specifically.
+  note: 'Rides the large installed base of Datadog APM (a major enterprise observability vendor); LLM
+    Observability is a newer add-on with no disclosed standalone user/usage count. Placed at 4 on
+    parent-platform enterprise reach as a directional estimate, not a measured figure for this module
+    specifically. Re-read 2026-08-13 and still true in both directions - the quantity actually banded here
+    is the reach of the Datadog platform, not usage of the LLM Observability module, and the docs still
+    disclose no figure of any kind for the module. Stating that plainly - the band is a substitution, and
+    the substituted quantity is named.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://docs.datadoghq.com/llm_observability/
-    shows: shipped product within the Datadog enterprise platform; no standalone usage numbers in docs
-    accessed: '2026-06-04'
+    shows: The module's documentation, read for a usage figure and containing none - no customer count, no
+      account count, no ingested-span volume. It sits inside the Datadog docs beside APM, Log Management,
+      Cloud SIEM and the rest of the platform, which is the only thing on the page that speaks to reach.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 7c4484c17defe958a80e8a00096c3510f84cf5c94e4a7be4008c01c6a37b4297
 capability:
   score: 4
   basis: feature_matrix
@@ -42,11 +61,19 @@ capability:
     (Patterns); anomaly detection (Insights); framework integrations (OpenAI, LangChain, Bedrock, Anthropic)
     via auto-instrumentation.'
   confidence: medium
+  relative_to: langfuse
+  relation: at
   note: Broad enterprise-grade feature matrix (tracing, evals, cost, security/redaction, clustering, anomaly
     detection) integrated with the wider Datadog APM suite; comparable to C4 anchors. Closed, but capability
-    scored independently.
+    scored independently. The comparison is now recorded rather than left in prose - at the langfuse anchor.
+    Re-read 2026-08-13 - the documentation navigation still carries Quality Monitoring, Agent Monitoring,
+    Prompt Tracking, Prompt Management, Patterns and correlation with APM, so the breadth is intact.
+  last_verified: '2026-08-13'
   sources:
   - url: https://docs.datadoghq.com/llm_observability/
-    shows: 'feature list: tracing, evaluations, cost dashboards, data redaction/prompt-injection detection,
-      Patterns clustering, Insights anomaly detection'
-    accessed: '2026-06-04'
+    shows: 'Documentation navigation for the module - Quality Monitoring, Jobs Monitoring, Agent Monitoring,
+      MCP Clients, Prompt Tracking, Prompt Management, "Querying spans and traces", "Correlate with APM"
+      and Patterns - plus Sensitive Data Scanner and Watchdog Insights on the wider platform.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 7c4484c17defe958a80e8a00096c3510f84cf5c94e4a7be4008c01c6a37b4297

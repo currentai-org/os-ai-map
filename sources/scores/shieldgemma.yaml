@@ -13,12 +13,31 @@ openness:
       detail: NOT OSI, use-restricted
   confidence: medium
   note: Open weights under the Gemma license, which is use-restricted and not OSI-approved (per the openness
-    rubric, Gemma = open_weights, not open_source), so it sits at 3.
+    rubric, Gemma = open_weights, not open_source), so it sits at 3. Re-read 2026-08-13 and unchanged.
   raw: weights:open(shieldgemma 2B/9B/27B on HF);data:not-released;license:Gemma(NOT OSI, use-restricted)
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/google/shieldgemma-2b
-    shows: Gemma license (not OSI); open weights; four harm categories; ~8,555 downloads/month, 124 likes
-    accessed: '2026-06-29'
+    shows: 'Repo shows License - gemma, gated manual, and two safetensors shards, so the weights are
+      downloadable after accepting the Gemma terms. The card describes the models as ''available in English
+      with open weights'' and declares no training datasets.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c4fa465c0ca19e904d98a1169315bb9db23a7eacdb58ddbaeb30f4a44bfcc9a0
+    establishes:
+    - weights
+    - data
+    - license
+  - url: https://huggingface.co/api/models/google/shieldgemma-2b
+    shows: tags include license:gemma; gated - manual; siblings list model-00001-of-00002.safetensors and
+      model-00002-of-00002.safetensors; cardData carries no datasets key.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 4feb99736791295afcb2cbb848f16a5dfd7f0f335135e8978f08e1180daa2251
+    establishes:
+    - weights
+    - data
+    - license
 adoption:
   level: 1
   reach: <10K
@@ -38,12 +57,20 @@ capability:
   score: 3
   basis: feature_matrix
   basis_detail: hazard coverage
+  relative_to: llama-guard
+  relation: one_below
   value: Four harm categories (sexual, dangerous, hate, harassment), yes/no policy classifier in 2B/9B/27B;
     narrower taxonomy than Llama Guard but multiple sizes.
   confidence: medium
   note: Competent four-category classifier with a size ladder; narrower hazard taxonomy than Llama Guard
-    / Granite Guardian.
+    / Granite Guardian. That comparison is the instrument, so it is recorded rather than left in prose -
+    four categories against Llama Guard's fourteen, one rung below. Re-read 2026-08-13 and unchanged.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/google/shieldgemma-2b
-    shows: four harm categories; 2B/9B/27B sizes
-    accessed: '2026-06-29'
+    shows: Card describes 'a series of safety content moderation models built upon Gemma 2 that target four
+      harm categories (sexually explicit, dangerous content, hate, and harassment)', in 2B, 9B and 27B
+      sizes, English only.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c4fa465c0ca19e904d98a1169315bb9db23a7eacdb58ddbaeb30f4a44bfcc9a0

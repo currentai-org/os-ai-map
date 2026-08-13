@@ -14,14 +14,36 @@ openness:
     free_text:
     - no feature-gated core observed (acquired by OpenAI, stated to remain MIT/open source)
   confidence: high
+  last_verified: '2026-08-13'
   note: MIT-licensed, fully public; OSI -> open_source. OpenAI ownership noted but does not change the
-    OSS license at scoring time.
+    OSS license at scoring time. Re-read 2026-08-13 - the license endpoint still reports MIT and the README
+    still says 'Promptfoo remains open source and MIT licensed' under OpenAI, with no paid tier or license
+    key in it.
   raw: license:MIT(OSI);source:public(GitHub);no feature-gated core observed (acquired by OpenAI, stated
     to remain MIT/open source);core-gated:ungated
   sources:
   - url: https://github.com/promptfoo/promptfoo
     shows: MIT license; 'remains open source and MIT licensed' under OpenAI; v0.121.14
     accessed: '2026-06-04'
+  - url: https://api.github.com/repos/promptfoo/promptfoo/license
+    shows: GitHub's license endpoint reports spdx_id MIT for promptfoo/promptfoo and returns the MIT text
+      as the LICENSE body.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 9e2e7d4a78cf4660e6591244d49e3b8458188252ac10bacaf68f7ee76b2da8f3
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/promptfoo/promptfoo/main/README.md
+    shows: README states 'Promptfoo is now part of OpenAI. Promptfoo remains open source and MIT licensed'
+      and lists 'Open source - MIT licensed, with an active community' among its properties. The CLI installs
+      and runs from npm with no account, and nothing in the README offers a paid tier, an enterprise edition
+      or a license key.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 426270e1b7c45d0bf456b1284cdc1af055218db73869864b9590b1e0bdaab5cb
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 4
   reach: 1M-10M
@@ -36,14 +58,25 @@ adoption:
     docs/guides/adoption.md - if the declared artifact is not the product''s primary distribution channel,
     banding on it is a substitution rather than a measurement - applied before the mistake rather than after.
     The band stands on the evidence already cited here; what this record needs is a route to its real channel,
-    not a convenient one.'
+    not a convenient one. Re-read 2026-08-13 - the npm registry reports 2,277,977 downloads for the window
+    2026-07-11 to 2026-08-09, still inside the 1M-10M band, and the PyPI package is now at 13,629 a month,
+    unchanged as a minority channel.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://api.npmjs.org/downloads/point/last-month/promptfoo
-    shows: 1,176,340 monthly npm downloads
-    accessed: '2026-06-04'
+    shows: 2,277,977 npm downloads for 2026-07-11 to 2026-08-09 (was 1,176,340 when first read)
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 682df629e9b291c6dfbd63d26d684f0fe2bfe26e605a15614e93877facf46352
   - url: https://github.com/promptfoo/promptfoo
     shows: 21.9k stars; '10M+ users in production' claim
     accessed: '2026-06-04'
+  - url: https://raw.githubusercontent.com/promptfoo/promptfoo/main/README.md
+    shows: README re-read 2026-08-13; the repo carries 24.2k stars and the README still positions the
+      tool as used by OpenAI and Anthropic. No standalone user count is published beyond that.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 426270e1b7c45d0bf456b1284cdc1af055218db73869864b9590b1e0bdaab5cb
 capability:
   score: 4
   basis: feature_matrix
@@ -51,9 +84,20 @@ capability:
     scanning, CI/CD integration, caching/live-reload; agentic + app eval plus a security dimension peers
     lack'
   confidence: high
+  relative_to: lm-evaluation-harness
+  relation: one_below
+  last_verified: '2026-08-13'
   note: Very broad eval coverage plus a distinctive red-teaming/security axis; top-tier for application
-    eval, below the academic-benchmark standardization references on raw benchmark coverage.
+    eval, below the academic-benchmark standardization references on raw benchmark coverage. Feature matrix
+    re-read 2026-08-13 and unchanged; the comparison to the standardization references is now recorded
+    structurally against lm-evaluation-harness.
   sources:
   - url: https://github.com/promptfoo/promptfoo
     shows: eval + red-teaming + model comparison + CI/CD features
     accessed: '2026-06-04'
+  - url: https://raw.githubusercontent.com/promptfoo/promptfoo/main/README.md
+    shows: README lists red teaming and vulnerability scanning, side-by-side model comparison across OpenAI/Anthropic/Azure/Bedrock/Ollama,
+      CI/CD automation, and 'live reload and caching' - the same feature set the band was placed on.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 426270e1b7c45d0bf456b1284cdc1af055218db73869864b9590b1e0bdaab5cb

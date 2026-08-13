@@ -17,27 +17,49 @@ openness:
     core-gated:
       value: ungated
   confidence: high
-  note: 'Fully open source: Apache-2.0, complete source, self-hostable with no proprietary tier.'
+  note: 'Fully open source: Apache-2.0, complete source, self-hostable with no proprietary tier. Re-read
+    2026-08-13 and unchanged. Two things about the read are worth recording. The cited URL now redirects to
+    NVIDIA-NeMo/Guardrails, which is the repo the product declares. And GitHub''s own metadata reports the
+    license as NOASSERTION rather than Apache-2.0, which is a detection artifact of the LICENSE file rather
+    than a relicense - the README states in as many words that ''the NeMo Guardrails library is licensed
+    under the Apache License, Version 2.0''.'
   raw: license:Apache-2.0(OSI);source:public(full Python implementation);self-host:yes(library/CLI/Docker/server);service:none;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/NVIDIA/NeMo-Guardrails
-    shows: Apache-2.0; full Python source; self-hostable as library/CLI/Docker/server; ~6.6k stars
-    accessed: '2026-06-29'
+    shows: 'Redirects to NVIDIA-NeMo/Guardrails. README states ''The NeMo Guardrails library is licensed
+      under the Apache License, Version 2.0'' and describes it as ''an open-source toolkit for easily
+      adding programmable guardrails to LLM-based conversational applications'', installable and runnable
+      yourself. Repo metadata reports spdxId NOASSERTION, which is GitHub failing to classify the file
+      rather than a different license. No enterprise directory, commercial edition or license key on the
+      page.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 44efd86e89b427836a7bfac706a5625812cb1bbac87ff3e425f52415c7115bcb
+    establishes:
+    - source
+    - core-gated
+    - license
 adoption:
-  level: 2
-  reach: 1K-10K stars
-  signal_type: stars_fallback
-  confidence: low
-  note: '~6.6K GitHub stars (June 2026); stars-only proxy, capped per methodology; broadly referenced
-    guardrail framework. Stars read 2026-08-13: 6,936 across the 1 declared repo, which bands at 1K-10K stars,
-    level 2 on the stars scale in signal_routing.yaml. Level corrected from 3. The previous reach ''10K-100K''
-    was not a label this instrument offers - stars have their own vocabulary because a star is not a download.
-    No last_verified claimed: a star count is volatile, so a digest of it would read as drift on every
-    refetch, and the rest of the axis was not re-read.'
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: '401,369 downloads in the trailing 30 days on the newly declared PyPI artifact `nemoguardrails`,
+    read live 2026-08-13. Bands at 100K-1M, level 3. LEVEL CORRECTED FROM 2, and the cause is that
+    the band was set on the wrong instrument: it read stars_fallback, which adoption.md defines as
+    meaning no download signal existed when it was set, and which caps at 3 for the good reason that
+    a star is not a use. A download signal does exist, and the guide is explicit that a stars band
+    re-bands once one appears. The package is the product''s own rather than a same-named stranger -
+    its PyPI project_urls point at https://github.com/NVIDIA-NeMo/Guardrails - and for a Python library PyPI is the primary channel,
+    not a minority one.'
+  last_verified: '2026-08-13'
   sources:
-  - url: https://github.com/NVIDIA/NeMo-Guardrails
-    shows: ~6.6k stars (June 2026)
-    accessed: '2026-06-29'
+  - url: https://pypistats.org/api/packages/nemoguardrails/recent
+    shows: 'last_month 401,369'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: b0bfdbeaf0fb889b4fb3dda64601a56c6d36c3427570dde74823d8d6fb978921
 capability:
   score: 4
   basis: feature_matrix
@@ -46,8 +68,15 @@ capability:
     control via Colang; multi-provider.
   confidence: medium
   note: One of the most feature-complete open guardrail orchestration layers; the Colang policy language
-    adds flexibility beyond simple scanners.
+    adds flexibility beyond simple scanners, and two bands in this category are recorded relative to it.
+    Re-read 2026-08-13 and unchanged.
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/NVIDIA/NeMo-Guardrails
-    shows: I/O moderation, dialog control, retrieval filtering, tool-use control
-    accessed: '2026-06-29'
+    shows: README describes programmable guardrails for LLM applications, with dialog rails operating on
+      canonical-form messages via the Colang Guide, fact-checking and output moderation over retrieval
+      pipelines, keeping an assistant on topic, and deciding whether an action should be executed - that
+      is I/O moderation, dialog control, retrieval filtering and tool-use control.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 44efd86e89b427836a7bfac706a5625812cb1bbac87ff3e425f52415c7115bcb

@@ -25,24 +25,73 @@ openness:
       raw: open_market (global)
   confidence: high
   note: Khadas publishes versioned board schematics and an open toolchain with mainline Armbian, but proprietary
-    Rockchip silicon and required blobs keep it at open_toolchain.
+    Rockchip silicon and required blobs keep it at open_toolchain. Re-read 2026-08-13 - the schematics
+    directory still lists edge2-sch-v11/v12/v13 plus silkscreen PDFs, Fenix is still GPL-2.0, the product
+    page still publishes the full RK3588S2 spec and carries Buy Now links, and Rockchip's rkbin still
+    ships the boot binaries as prebuilt files. The recorded datasheets detail names an S2 TRM; what is
+    re-readable today is Rockchip's public RK3588 brief datasheet plus Khadas's own published spec, which
+    is flagged in the pass report rather than silently rewritten. No dimension moved.
   raw: schematics:published (versioned PDFs published);toolchain:open (open GPL-2.0 Fenix + mainline Armbian);datasheets:public
     (public SoC TRM);blobs:required (Rockchip NPU/boot blobs required);retail:open_market (global)
+  last_verified: '2026-08-13'
   sources:
   - url: https://dl.khadas.com/products/edge2/schematics/
-    shows: versioned schematic PDFs (edge2-sch-v11/12/13)
-    accessed: '2026-06-22'
+    shows: directory index of /products/edge2/schematics/ listing edge2-sch-v11.pdf, edge2-sch-v12.pdf,
+      edge2-sch-v13.pdf and matching silkscreen PDFs
+    accessed: '2026-08-13'
+    establishes:
+    - schematics
+    http_status: 200
+    content_sha256: 32fb979dda95231cd393dee14d5a7c3c78e4bcf74164524ac216c880d4923be2
   - url: https://github.com/khadas/fenix
-    shows: Fenix build system (GPL-2.0) with Edge2 as a target
-    accessed: '2026-06-22'
+    shows: '"One-stop script set to build Ubuntu/Debian images" under a GPL-2.0 license'
+    accessed: '2026-08-13'
+    establishes:
+    - toolchain
+    http_status: 200
+    content_sha256: dfed2a94f2dc68ae9fbf5320d19d124d05d00ccbf1e9247c7c0f8a0c2b4721aa
+  - url: https://www.khadas.com/edge2
+    shows: full published RK3588S2 spec (6 TOPS NPU, Mali-G610 MC4, Basic 8GB / Pro 16GB LPDDR4X) with
+      Buy Now buttons and a Distributor Program link
+    accessed: '2026-08-13'
+    establishes:
+    - datasheets
+    - retail
+    http_status: 200
+    content_sha256: c337940ef0497a6efa3d2b77da5a44b2c3502a764107f68bf046abd6c8a98029
+  - url: https://github.com/rockchip-linux/rkbin
+    shows: Rockchip's own "Firmware and Tool Binarys" repository - prebuilt SPL/DDR/UsbPlug/BL31/BL32/OPTEE
+      boot binaries distributed as binaries rather than source
+    accessed: '2026-08-13'
+    establishes:
+    - blobs
+    http_status: 200
+    content_sha256: 43abb5977b081df3eaebfcdeb7f2bef288daab407fbf1b0f6935236c1e026cff
 adoption:
   level: 4
   reach: niche
   signal_type: reported_traction
   confidence: high
   note: Sold on Amazon US and Newegg (Basic and Pro), with an active community forum and mainline Armbian
-    support, but smaller than Raspberry Pi-class platforms.
+    support, but smaller than Raspberry Pi-class platforms. Re-read 2026-08-13 - the Amazon listing could
+    not be re-read (the host returns a "Click the button below to continue shopping" interstitial to an
+    automated fetch), so availability was re-derived from Khadas's own store, which sells both the Basic
+    8GB and Pro 16GB SKUs and runs a distributor programme. An independent Armbian community comparison
+    still ranks the Edge 2 Pro alongside the other RK3588 boards. Level and reach unchanged.
+  last_verified: '2026-08-13'
   sources:
+  - url: https://www.khadas.com/edge2
+    shows: Buy Now against Basic (8GB LPDDR4X + 32GB eMMC) and Pro (16GB + 64GB) SKUs, plus a Distributor
+      Program link
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c337940ef0497a6efa3d2b77da5a44b2c3502a764107f68bf046abd6c8a98029
+  - url: https://forum.armbian.com/topic/26398-video-comparing-rk3588-sbcs-nanopi-r6s-khadas-edge2-radxa-rock5b-mekotronics-r58-mini-r58x-4g-orange-pi-5/
+    shows: independent community comparison table placing "Khadas Edge 2 Pro, Rockchip RK3588S, 16 GB
+      LPDDR4X" against four other RK3588 boards
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 2db7eb01547612cc0257308c05c7d80607c84d2cb6b2d692a7121897a90456f3
   - url: https://www.amazon.com/khadas-Computer-RK3588S-Portable-Compact/dp/B0BFVSC2D5
     shows: Edge2 Pro 16GB retail listing on Amazon US
     accessed: '2026-06-22'
@@ -53,8 +102,14 @@ capability:
     via RKNN
   confidence: high
   note: The RK3588S2 NPU delivers 6 TOPS, handling real-time CV and small quantized LLMs, mid-tier versus
-    Jetson Orin.
+    Jetson Orin. Re-derived 2026-08-13 - the product page still reads "up to 6 TOPS" on the RK3588S2 NPU
+    with 8GB or 16GB LPDDR4X, which is level with orange-pi-5 (also 6 TOPS, also 3) and below radxa-rock-5b,
+    whose 32GB LPDDR5 option carries it to 4.
+  last_verified: '2026-08-13'
   sources:
   - url: https://www.khadas.com/edge2
-    shows: 6 TOPS NPU; 8GB/16GB LPDDR4X options
-    accessed: '2026-06-22'
+    shows: '"The RK3588S2 has a built-in NPU which provides up to 6 TOPS"; Basic 8GB / Pro 16GB 64-bit
+      LPDDR4X'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c337940ef0497a6efa3d2b77da5a44b2c3502a764107f68bf046abd6c8a98029

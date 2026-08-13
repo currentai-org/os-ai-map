@@ -17,17 +17,30 @@ openness:
   confidence: high
   note: Fully open (MIT, full source). Openness scored straightforwardly; the issue is category fit, not
     openness.
+    Re-read 2026-08-13. The repository still carries MIT and still publishes the whole server,
+    installable in one line or by pip, with nothing held back for a paid tier and no hosted edition
+    offered. The tagged release has moved on from the v1.0.2 recorded in the source line to v1.3.0 of 7
+    August 2026, and the star count is 8,420. The rename announcement still describes the move from
+    Llama Stack to a model-agnostic, multi-SDK server that routes to inference backends rather than
+    serving weights. Value unchanged at 5 / open_source.
   raw: license:MIT(OSI);source:public;no-feature-gated-core;implements OpenAI + Anthropic API surfaces;
     23 pluggable inference providers;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/ogx-ai/ogx
     shows: MIT license; v1.0.2 (May 13 2026); ~8.4k stars; agentic API server composing inference providers
       + vector stores + tools
-    accessed: '2026-06-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: de5ccf9111c512af57e35cf2ea36eba5654a9bfd774638f9a409611448d6535b
+    establishes: [license, source, core-gated]
   - url: https://ogx-ai.github.io/blog/from-llama-stack-to-ogx
     shows: renamed from Llama Stack; model-agnostic, multi-SDK, routes to inference backends rather than
       serving weights itself
-    accessed: '2026-06-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: af49c5ef04b44dae891b2ac66d7a92805045bebe4c9c9c27499e5afe3505d39c
+    establishes: [source]
 adoption:
   level: 2
   reach: 1K-10K stars
@@ -40,11 +53,19 @@ adoption:
     download. THE REAL DEFECT is upstream: this product declares no artifacts at all, so a stars_fallback band
     had no stars source behind it and the count lived only in this note. Declaring ogx-ai/ogx would fix it,
     and is deliberately not done here because a declared code repo also re-routes the openness license
-    dimension. No last_verified claimed: a star count is volatile.'
+    dimension. No last_verified claimed: a star count is volatile.
+    Re-read 2026-08-13 - ogx-ai/ogx shows 8,420 stars, which still bands at 1K-10K stars, level 2 on the
+    stars scale, and the README still publishes no download or usage figure. The artifact defect
+    described above is unchanged and still the right thing to fix upstream. This supersedes the refusal
+    to claim a date - the axis was re-read rather than aggregated, and drift in the digest is expected
+    for the reason the earlier note gives.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/ogx-ai/ogx
     shows: ~8.4k stars; no download/usage figure published
-    accessed: '2026-06-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: de5ccf9111c512af57e35cf2ea36eba5654a9bfd774638f9a409611448d6535b
 capability:
   score: 3
   basis: feature_matrix
@@ -54,8 +75,19 @@ capability:
   note: Capability is gateway/agentic-server breadth (multi-API-surface, provider composition), not inference
     throughput. As an inference engine it scores low because it does no forward pass itself; scored on
     its actual feature set in its true category. See recategorize.
+    Re-read 2026-08-13. The README still shows the gateway breadth the band rests on - chat completions,
+    completions and embeddings, a Responses API doing server-side agentic orchestration with tool
+    calling and MCP integration, vector stores and files, batches, and a pluggable provider architecture
+    spanning local Ollama through to production vLLM and managed services. Two things have moved since
+    the band was set - the multi-SDK surface now includes the Google GenAI SDK alongside the Anthropic
+    one, and a versioned Skills endpoint has appeared - while the README no longer states the provider
+    count of 23 in the source line, deferring to the provider documentation instead. Neither changes the
+    tier. Band unchanged at 3.
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/ogx-ai/ogx
     shows: composes 23 inference providers + vector/safety/tool/file backends behind OpenAI/Anthropic-compatible
       API
-    accessed: '2026-06-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: de5ccf9111c512af57e35cf2ea36eba5654a9bfd774638f9a409611448d6535b

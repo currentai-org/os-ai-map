@@ -12,34 +12,56 @@ openness:
     code:
       value: apache-2.0-toolkit
   confidence: high
-  note: Permissively licensed (ODC-BY), ungated download with a full dataset card and replication toolkit.
+  note: 'Permissively licensed (ODC-BY), ungated download with a full dataset card and replication toolkit.
+    Re-read 2026-08-13: odc-by, gated false, card intact, and the allenai/dolma toolkit repo still public.'
   raw: license:ODC-BY;ungated:yes;dataset_card:yes;code:apache-2.0-toolkit
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/datasets/allenai/dolma
     shows: ODC-BY license, ungated access, dataset card, ~3T tokens
-    accessed: '2026-06-22'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: f7e7100a96a1c05cd2614c4ac4c2640ebf69f1708b04fce0792435a50d9fdf6f
+    establishes:
+    - availability
+    - documentation
+    - license
 adoption:
   level: 2
   reach: 1K-10K
   signal_type: usage_volume
   confidence: high
-  note: 4,015 monthly downloads on Hugging Face, graded on the training-corpus bands.
+  note: 2,724 downloads in the trailing 30 days summed across the 1 declared artifact(s), read 2026-08-13
+    (allenai/dolma 2,724). Bands at level 2 (1K-10K) on the dataset adoption scale, whose top band is >1M.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/api/datasets/allenai/dolma
-    shows: downloads field = 4,015 (30-day)
-    accessed: '2026-07-04'
+    shows: 2,724 downloads in the trailing 30 days for allenai/dolma
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 364dbfecfba2f6cc23e7eeb6976c8f47a356d12c3de0ed9e7365c3e4a5bbae38
 capability:
   score: 3
   basis: training_value
   basis_detail: superseded
   value: null
   confidence: high
-  note: Proven training corpus for OLMo 1/2 and OLMoE, but loses to FineWeb in the canonical FineWeb ablation
-    and is superseded by Dolma 3.
+  note: 'Proven training corpus for OLMo 1/2 and OLMoE, but loses to FineWeb in the canonical FineWeb ablation
+    and is superseded by Dolma 3. Re-read 2026-08-13: the FineWeb listing still claims better-performing
+    LLMs than other open pretraining datasets, and the OLMo 3 announcement still runs on Dolma 3 rather
+    than this.'
+  relative_to: fineweb
+  relation: one_below
+  last_verified: '2026-08-13'
   sources:
   - url: https://arxiv.org/abs/2406.17557
-    shows: FineWeb outperforms Dolma v1.6 and v1.7 in the 1.82B/350B ablation
-    accessed: '2026-07-04'
+    shows: Abstract - FineWeb produces better-performing LLMs than other open pretraining datasets. The
+      Dolma v1.6/v1.7 ablation rows are in the paper body, not on this page
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: a12bfcd47f835ad4a2c5630a228778370ed54509afa65bed1c6dfc264f2182da
   - url: https://allenai.org/blog/olmo3
     shows: Dolma superseded by Dolma 3 for OLMo 3
-    accessed: '2026-07-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: e103633d087ef9092a2aee2dc599cf609ca13209d21a3a7b1ac45f1a5d01fe49

@@ -16,21 +16,46 @@ openness:
     - multi-backend (Accelerate/vLLM/SGLang/TGI/LiteLLM/inspect-ai)
     - 1000+ tasks
   confidence: high
+  last_verified: '2026-08-13'
   note: Fully OSI-licensed (MIT), full source public, no managed/commercial tier gating the eval engine.
+    Re-read 2026-08-13 - the license endpoint still reports MIT and the README still runs every backend
+    locally with no paid tier or license key.
   raw: license:MIT(OSI);source:public(github.com/huggingface/lighteval);no feature-gated core; multi-backend
     (Accelerate/vLLM/SGLang/TGI/LiteLLM/inspect-ai); 1000+ tasks;core-gated:ungated
   sources:
   - url: https://github.com/huggingface/lighteval
     shows: MIT license, public source, v0.13.0 (Nov 2025), 1000+ tasks, multi-backend support
     accessed: '2026-06-04'
+  - url: https://api.github.com/repos/huggingface/lighteval/license
+    shows: GitHub's license endpoint reports spdx_id MIT for huggingface/lighteval and returns the MIT
+      text as the LICENSE body.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 1ac1ffb3c88d2fb0a5dc70c064a785075d599a364a6788572506782982f7ec4a
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/huggingface/lighteval/main/README.md
+    shows: README carries the MIT badge and documents running the whole toolkit locally through `lighteval
+      eval`, `lighteval vllm`, `lighteval sglang` and `lighteval endpoint`, with the 1000+ tasks shipping
+      in the package. The optional endpoints are third-party inference providers, not a paid edition of
+      lighteval. No pricing, enterprise tier or license key appears in it.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 5147e564c99edeb6cb2c01f34602f05bcdda77bbae5b60f43eb251485e01c056
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 2
   reach: 10K-100K
   signal_type: usage_volume
   confidence: medium
+  last_verified: '2026-08-13'
   note: ~37,239 PyPI downloads in the last month (pypistats). Powers the HF Open LLM Leaderboard and is
     the reproducible eval suite behind it; meaningful in the eval/research community but a smaller install
     base than general-purpose harnesses. 2.4k GitHub stars corroborate only. Headline = PyPI volume (primary).
+    Re-read 2026-08-13 - the pypistats API now reports 24,962 lighteval downloads in the trailing 30 days,
+    down from 37,239 but still inside the same 10K-100K band, so level 2 stands. 2.5k stars.
   sources:
   - url: https://pypistats.org/packages/lighteval
     shows: ~37,239 lighteval downloads in the last month
@@ -38,6 +63,17 @@ adoption:
   - url: https://github.com/huggingface/lighteval
     shows: stated as the toolkit powering the HF Open LLM Leaderboard; 2.4k stars (corroboration)
     accessed: '2026-06-04'
+  - url: https://pypistats.org/api/packages/lighteval/recent
+    shows: last_month = 24,962 downloads of the lighteval package (last_week 6,698, last_day 978)
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: e1b02ba3b772a99fc7d6c8cd718152d33f8a8cd734351c0a592ef02661d24b02
+  - url: https://raw.githubusercontent.com/huggingface/lighteval/main/README.md
+    shows: README still bills the project as coming 'from Hugging Face's Leaderboard and Evals Team',
+      which is the leaderboard tie the corroborating half of this level rests on.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 5147e564c99edeb6cb2c01f34602f05bcdda77bbae5b60f43eb251485e01c056
 capability:
   score: 4
   basis: feature_matrix
@@ -46,10 +82,22 @@ capability:
     Endpoints/custom; reproducibility: standardized suite reproducing the HF Open LLM Leaderboard; agentic-eval:
     via inspect-ai backend'
   confidence: high
+  relative_to: lm-evaluation-harness
+  relation: one_below
+  last_verified: '2026-08-13'
   note: Strong across the recipe's feature-matrix dimensions (coverage, backend breadth, reproducibility,
     some agentic support). Not a 5; lm-evaluation-harness remains the broader de-facto standard cited
-    in more frontier release reports; lighteval is the HF-leaderboard-tied counterpart.
+    in more frontier release reports; lighteval is the HF-leaderboard-tied counterpart. Feature matrix
+    re-read 2026-08-13 and unchanged, and the comparison the note already made to lm-eval is now recorded
+    structurally.
   sources:
   - url: https://github.com/huggingface/lighteval
     shows: 1000+ tasks, 8+ model backends, reproduces Open LLM Leaderboard evals
     accessed: '2026-06-04'
+  - url: https://raw.githubusercontent.com/huggingface/lighteval/main/README.md
+    shows: '''Lighteval supports 1000+ evaluation tasks across multiple domains''; backends invoked as
+      `lighteval eval` (inspect-ai, preferred), `vllm`, `sglang` and `endpoint` including HF inference
+      providers; custom task and custom metric authoring documented.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 5147e564c99edeb6cb2c01f34602f05bcdda77bbae5b60f43eb251485e01c056

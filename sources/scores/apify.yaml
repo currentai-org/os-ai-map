@@ -21,18 +21,37 @@ openness:
     most value stays behind the managed cloud. Class corrected from open_core on 2026-07-30. In this ladder
     open_core means an OSI core with functionality withheld for a paid tier, and there is no open core here,
     only an open periphery. A repo that exists while the runtime does not ship is source:partial, which
-    the ladder scores 2/source_available. The score itself was already 2.
+    the ladder scores 2/source_available. The score itself was already 2. Re-read 2026-08-13 and the shape
+    holds exactly. apify.com still files Crawlee under a navigation heading literally labelled "Open source"
+    - "Web scraping and crawling library" - beside the closed platform pieces, Actors, Proxy, Anti-blocking,
+    Integrations and the MCP server. Crawlee's own repo confirms Apache-2.0 in both the badge and the GitHub
+    metadata (spdxId Apache-2.0). Nothing that RUNS an Actor is published anywhere, so `source - partial`
+    stands and so does 2/source_available.
   raw: platform:proprietary(Apify-Cloud,Actor-store,managed);source:partial(Crawlee SDK published, the platform
     that runs Actors is not);oss-sdk:Crawlee(Apache-2.0,OSI, JS+Python);license:mixed(platform closed, SDK
     open)
+  last_verified: '2026-08-13'
   sources:
   - url: https://apify.com
-    shows: proprietary full-stack scraping platform with 35,000+ Actors; Crawlee called out as their OSS
-      contribution
-    accessed: '2026-06-04'
+    shows: Proprietary full-stack platform - Apify Store, Actors ("Build and run serverless programs"), Integrations,
+      an MCP server, Anti-blocking and Proxy - with a single "Open source" navigation heading holding Crawlee
+      alone. The store now advertises 59,817 Actors, up from the 35,000+ this record carried. No self-hosted
+      Actor runtime is offered.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: a8381edef66756b2b7e4d919e2b66baa313e00b95311d5cd85e015905977c21d
+    establishes:
+    - source
+    - license
   - url: https://github.com/apify/crawlee
-    shows: Crawlee Apache-2.0 license (OSI), Apify's open source scraping library
-    accessed: '2026-06-04'
+    shows: Crawlee repo - Apache-2.0 license badge and repo metadata spdxId Apache-2.0, "Apache License 2.0";
+      LICENSE.md at the root. The library only; it is not the Actor platform.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: ec88f295f5cacae7903e4e3d7884b7d33f1e709f2441d3a0dcfd44e2bf48e9e8
+    establishes:
+    - license
+    - source
 adoption:
   level: 3
   reach: 100K-1M
@@ -41,27 +60,53 @@ adoption:
   note: Crawlee at 23.7k GitHub stars (corroborating, not basis); platform serves named enterprises (T-Mobile,
     Microsoft, Accenture) and a 15,000+ member Discord. 35,000+ published Actors implies a sizable active
     developer base. No precise account/API-call count published; placed at 3 on combined developer/usage
-    signal across platform + OSS SDK.
+    signal across platform + OSS SDK. Re-read 2026-08-13, and the Actor count has moved a long way - the
+    store now says 59,817 Actors against the 35,000+ recorded, and Crawlee is at 25,373 stars against 23.7k.
+    The named enterprises are still on the page. The 15,000+ Discord figure is NOT - the page links to a
+    Discord invite without stating a member count, so that clause has been dropped from the note rather than
+    carried on nothing. None of these is a usage figure in the scale''s sense; Apify still publishes no account,
+    run or API-call count, so the level remains an aggregate judgment and stays at 3.
+  last_verified: '2026-08-13'
   sources:
   - url: https://apify.com
-    shows: 35,000+ Actors, named enterprise users (T-Mobile, Microsoft, Accenture), 15,000+ Discord members
-    accessed: '2026-06-04'
+    shows: '"Browse 59,817 Actors" in the store; T-Mobile and Accenture among named enterprise users; a Discord
+      invite link. NOT on the page: a Discord member count, an account count, a run count or an API-call
+      figure.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: a8381edef66756b2b7e4d919e2b66baa313e00b95311d5cd85e015905977c21d
   - url: https://github.com/apify/crawlee
-    shows: 23.7k stars on the OSS Crawlee library (corroborating signal)
-    accessed: '2026-06-04'
+    shows: 25,373 stargazers on the OSS Crawlee library. Corroborating attention signal, not the basis.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: ec88f295f5cacae7903e4e3d7884b7d33f1e709f2441d3a0dcfd44e2bf48e9e8
 capability:
   score: 4
   basis: feature_matrix
-  value: 'coverage: 35,000+ prebuilt Actors; HTTP + headless (Playwright/Puppeteer/Selenium); proxy rotation/session
-    mgmt; structured output; serverless custom Actors; MCP-client integration'
+  value: 'coverage - 59,817 prebuilt Actors in the store; HTTP + headless via Puppeteer, Playwright, Cheerio
+    and JSDOM; proxy rotation and session management; anti-blocking; structured output of tabular data and
+    files; serverless custom Actors; an Apify MCP server for agent clients'
   confidence: high
-  note: Broad scrape/browse feature matrix, multi-engine crawling, proxy/anti-block, structured extraction,
-    serverless deploy, and MCP integration for agents. Among the most complete scrape platforms; rated
-    4 (frontier-adjacent for the browser/scrape sub-segment).
+  note: 'Broad scrape/browse feature matrix, multi-engine crawling, proxy/anti-block, structured extraction,
+    serverless deploy, and MCP integration for agents. Among the most complete scrape platforms; rated 4
+    (frontier-adjacent for the browser/scrape sub-segment). Re-read 2026-08-13. Every dimension holds and
+    two figures were corrected upward - the store now advertises 59,817 Actors, and Crawlee''s own description
+    names Puppeteer, Playwright, Cheerio, JSDOM and raw HTTP rather than the Selenium this record had, in
+    both headful and headless mode with integrated proxy rotation and session management. The Apify MCP server
+    is now a first-class navigation item, "Give your AI access to Actors". Band unchanged at 4.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://apify.com
-    shows: multi-engine crawling, proxy rotation, Actor store, MCP-client integration
-    accessed: '2026-06-04'
+    shows: '"Browse 59,817 Actors"; navigation items for Actors, Integrations, MCP ("Give your AI access to
+      Actors"), Anti-blocking ("Scrape without getting blocked") and Proxy ("Rotate scraper IP addresses");
+      "Configure your Apify MCP server with Actors and tools for seamless integration with MCP clients".'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: a8381edef66756b2b7e4d919e2b66baa313e00b95311d5cd85e015905977c21d
   - url: https://github.com/apify/crawlee
-    shows: Crawlee multi-engine (Playwright/Puppeteer/Cheerio/JSDOM), proxy + session management
-    accessed: '2026-06-04'
+    shows: '"Works with Puppeteer, Playwright, Cheerio, JSDOM, and raw HTTP. Both headful and headless mode.
+      With proxy rotation." Feature list adds structured storage of tabular data and files, automatic scaling,
+      "Integrated proxy rotation and session management", hooks and a bootstrap CLI. NOT named: Selenium.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: ec88f295f5cacae7903e4e3d7884b7d33f1e709f2441d3a0dcfd44e2bf48e9e8

@@ -13,44 +13,97 @@ openness:
     managed:
       value: Cohere+Azure/AWS/Oracle
   confidence: high
-  note: Proprietary closed reranking models served via API and cloud marketplaces; no open weights or
-    source. Marketed as 'open' in search-relevance contexts but is not OSS.
+  note: 'Proprietary closed reranking models served via API and cloud marketplaces; no open weights or source.
+    Marketed as ''open'' in search-relevance contexts but is not OSS. Re-read 2026-08-13: the overview documents
+    rerank-v4.0-pro, rerank-v4.0-fast, rerank-v3.5 and the 3.0 pair as hosted models called through the API
+    and billed in search units. No weights download, no model card on a hub and no self-hosted build is offered
+    for any of them; the only "open" thing on the page is the list of open-source vector stores it integrates
+    with. weights stay not-released and the score stays 1.'
   raw: license:proprietary(hosted-API; also cloud-marketplace deploy);source:closed;weights:not-released;managed:Cohere+Azure/AWS/Oracle
+  last_verified: '2026-08-13'
   sources:
   - url: https://docs.cohere.com/docs/rerank-overview
-    shows: commercial Rerank API; models 4.0/3.5/3.0, no source or weight release
-    accessed: '2026-06-04'
+    shows: 'Model lineup - "Rerank 4.0 (both ''fast'' and ''pro''): A single multilingual model (rerank-v4.0-pro
+      and rerank-v4.0-fast). Rerank 3.5: A single multilingual model (rerank-v3.5). Rerank 3.0: Separate
+      English-only and multilingual models." Calls are billed in search_units. No weights download, hub model
+      card or self-hosted build for any of them.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 5b1e58e8c25f9e9eb88003ff18eae6ba717fed6c443354731a282a7a8f88071f
+    establishes:
+    - license
+    - source
+    - weights
   - url: https://docs.cohere.com/changelog/rerank-v3.5
-    shows: Rerank v3.5 announced as a hosted proprietary model
-    accessed: '2026-06-04'
+    shows: Release notes for Rerank 3.5 as a hosted model reached through the API, with a context length of
+      4096. No weights release accompanies it.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: bc5906343e711e89148a704a2e771f0e3e453737f4b433bdc6d55960675960e1
+    establishes:
+    - weights
 adoption:
   level: 3
   signal_type: reported_traction
   confidence: medium
   note: De facto default managed reranker for RAG, distributed across Azure AI Foundry, AWS SageMaker
     JumpStart / OpenSearch, and Oracle GenAI in addition to Cohere's API. No hard call-volume/user count
-    published; placed at 3 on broad multi-cloud distribution (reported_traction).
+    published; placed at 3 on broad multi-cloud distribution (reported_traction). Re-read 2026-08-13. The
+    AWS Big Data blog is still published, co-written with Cohere, on integrating Rerank 3.5 with Amazon OpenSearch
+    Service; the Azure AI Foundry catalog still carries Cohere as a model provider and describes deploying
+    "Command or Rerank side-by-side with Azure AI Search". Neither publishes a call volume, a customer count
+    or a developer count, which is what was looked for and not found, so the instrument stays reported_traction
+    and the level stays 3.
+  last_verified: '2026-08-13'
   sources:
   - url: https://aws.amazon.com/blogs/big-data/enhancing-search-relevancy-with-cohere-rerank-3-5-and-amazon-opensearch-service/
-    shows: Rerank 3.5 integrated/distributed via Amazon OpenSearch Service
-    accessed: '2026-06-04'
+    shows: '"Enhancing Search Relevancy with Cohere Rerank 3.5 and Amazon OpenSearch Service", co-written
+      with Cohere. Establishes distribution through OpenSearch; carries no usage figure.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 5da7eec30262747394e823efb3715dbadd6c7f6d43d2174373dbdd376d6768bb
   - url: https://ai.azure.com/catalog/models/Cohere-rerank-v3.5
-    shows: Rerank v3.5 available in Azure AI Foundry model catalog
-    accessed: '2026-06-04'
+    shows: Azure AI Foundry catalog, Cohere provider entry - "Built around large-language-model families such
+      as Command R/R+, Command A, and high-precision Rerank APIs"; "Deploy Command or Rerank side-by-side
+      with Azure AI Search". Establishes availability; carries no usage figure.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 39dc99efde987fcac5f5730366364488971b102379f7b362534ce26b49aab623
 capability:
   score: 4
   basis: feature_matrix
-  value: SOTA on BEIR + multilingual retrieval (nDCG@10), 100+ languages with SOTA on 10 business languages;
-    up to ~25% gain over embedding-only retrieval; multimodal/long-context in newer variants
+  value: vendor-claimed SOTA on BEIR and on multilingual retrieval, plus reasoning capability and a 4096-token
+    context, on the 3.5 release; +26.4% on cross-lingual search against the previous Rerank 3, measured by
+    nDCG@10 over an in-house 18-language suite; trained across 100+ languages, with 4.0 shipping fast and
+    pro variants
   confidence: medium
-  note: Vendor reports SOTA on BEIR and multilingual nDCG@10; widely treated as the reference managed
-    reranker. Concrete nDCG numbers not disclosed on primary pages (claims are vendor-run, not an independent
-    leaderboard), so rated 4 rather than 5. Capability basis is feature_matrix as no standard public reranker
-    leaderboard applies.
+  note: 'Vendor reports SOTA on BEIR and multilingual nDCG@10; widely treated as the reference managed reranker.
+    Concrete nDCG numbers not disclosed on primary pages (claims are vendor-run, not an independent leaderboard),
+    so rated 4 rather than 5. Capability basis is feature_matrix as no standard public reranker leaderboard
+    applies. Re-read 2026-08-13, and the value needed re-attributing and one figure correcting. The BEIR
+    claim is real but lives on the CHANGELOG, not the blog this record cited it to - "Rerank 3.5 has SOTA
+    performance on BEIR and domains such as Finance, E-commerce, Hospitality, Project Management, and Email/Messaging
+    Retrieval tasks" - and the string BEIR appears nowhere on the blog page. The recorded "~25% gain over
+    embedding-only retrieval" is not on either page; what the blog says is "+26.4% improvement on cross-lingual
+    search" against Cohere''s own previous Rerank 3, which is a different comparison against a different baseline,
+    so the value now states it that way. The vendor-run caveat is if anything stronger than recorded - the
+    multilingual suite is Cohere''s own, "external datasets covering 18 different languages" scored by nDCG@10
+    - so the 4 rather than 5 stands.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://cohere.com/blog/rerank-3pt5
-    shows: vendor SOTA claims on BEIR + multilingual retrieval, ~25% gain over embedding search
-    accessed: '2026-06-04'
+    shows: '"Cohere''s multilingual evaluation suite consists of external datasets covering 18 different languages
+      in a variety of monolingual and cross-lingual settings. Multilingual performance is measured by nDCG@10";
+      "When compared to our previous Rerank 3 model, Rerank 3.5 delivers a +26.4% improvement on cross-lingual
+      search". NOT on this page: BEIR, or any comparison against embedding-only retrieval.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: cd2f77a145b96ffb93c20e6778b9c61c240fe787d5bb294013034b3ea460f9b1
   - url: https://docs.cohere.com/changelog/rerank-v3.5
-    shows: multilingual 100+ language reranking, nDCG@10 evaluation
-    accessed: '2026-06-04'
+    shows: '"Rerank 3.5 has a context length of 4096, SOTA performance on Multilingual Retrieval tasks and
+      Reasoning Capabilities. In addition, Rerank 3.5 has SOTA performance on BEIR and domains such as Finance,
+      E-commerce, Hospitality, Project Management, and Email/Messaging Retrieval tasks." No nDCG figure is
+      given here.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: bc5906343e711e89148a704a2e771f0e3e453737f4b433bdc6d55960675960e1
