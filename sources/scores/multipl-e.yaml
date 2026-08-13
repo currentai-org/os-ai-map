@@ -25,41 +25,56 @@ openness:
     key no dimension reads, which left the ladder seeing clean MIT and computing 5/open. The dataset ladder
     declares no tier for a license that permits redistribution while bounding what you may use the corpus
     FOR, so the tier lookup abstains and the score stays where the curator put it rather than being invented.
+    Re-read 2026-08-13 - the repository LICENSE still carries clause 4 verbatim, the HF repo still tags
+    `license:mit` with `"gated":false`, and the card still documents the 47 subsets. No change.
   raw: data:downloadable(HF parquet, 47 subsets);license:BSD-3-Clause-with-ML-Restriction(the nuprl/MultiPL-E
     repository LICENSE, whose clause 4 forbids using the contents as training data for any machine learning
     model; the HF data artifact carries MIT);datasheet:present(card documents prompts/doctests/tests/stop-tokens);redistributable:yes(HF)
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/datasets/nuprl/MultiPL-E
-    shows: MIT license, 47 subsets across 22-23 languages, downloadable parquet, documented schema
-    accessed: '2026-06-04'
+    shows: '`license:mit` in the repo tags; the embedded repo state reads `"gated":false`, so the parquet
+      downloads without a barrier; the card documents the 47 subsets and the prompt/doctests/tests/stop_tokens
+      schema; 33,673 downloads in the trailing 30 days'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 139bc9f97a3374a56283c91458ea94337b79577231751690bcdc70ea8594bf08
+    establishes: [license, data, datasheet]
   - url: https://github.com/nuprl/MultiPL-E/blob/main/LICENSE
-    shows: LICENSE headed "BSD 3-Clause License with Machine Learning Restriction"; clause 4 forbids use
-      of the repository contents as training data for any machine learning model
-    accessed: '2026-08-12'
+    shows: LICENSE headed "BSD 3-Clause License with Machine Learning Restriction"; clause 4 still reads
+      "The contents of this repository may not be used as training data for any machine learning model,
+      including but not limited to neural networks." Re-fetched 2026-08-13 with an unchanged digest
+    accessed: '2026-08-13'
     establishes:
     - license
     http_status: 200
     content_sha256: 6891bf32c7df59f0665d45a22bc09224ed122394eae4404048e0e4c7e4bc2f23
 adoption:
   level: 3
-  signal_type: reported_traction
-  confidence: low
-  note: 'The standard multilingual code-generation benchmark: integrated into the BigCode Code Generation
-    LM Harness and HF''s multilingual code-model evaluation, cited in multilingual code-model release
-    reports (e.g. StarCoder2/CodeQwen). HF page did not surface a clean monthly-download count this run
-    (showed likes only), and GitHub stars (~308) are last-resort and cannot exceed 3. Level 3 on harness-adoption
-    / release-report traction; no verified usage_volume number, hence low confidence.'
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: 'INSTRUMENT CORRECTED on 2026-08-13, level unchanged at 3. The note said the HF page "did not surface a clean monthly-download count"; it does now - 33,673 in the trailing 30 days, which bands at 10K-100K, the same level 3 the record already carried. What changes is that the band is now RECOMPUTABLE rather than asserted: it moves off reported_traction, which has no scale and which nothing could check, onto usage_volume against a declared artifact a signal model can read.'
+  last_verified: '2026-08-13'
   sources:
-  - url: https://huggingface.co/datasets/nuprl/MultiPL-E
-    shows: BigCode harness integration; multilingual code eval standard
-    accessed: '2026-06-04'
-  - url: https://github.com/nuprl/MultiPL-E
-    shows: BigCode harness integration; ~308 stars (last-resort signal)
-    accessed: '2026-06-04'
+  - url: https://huggingface.co/api/datasets/nuprl/MultiPL-E
+    shows: downloads 33,673 in the trailing 30 days on the declared dataset artifact
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 7a85639b17ac4a2b25d2f5e29159554dabdb4b78159c5b975cf36715820a7db6
 capability:
   score: null
   basis: n/a
   value: null
   confidence: high
-  note: Dataset/translation framework, not capability-scored.
-  sources: []
+  note: Dataset/translation framework, not capability-scored. Re-read 2026-08-13 and the abstention
+    stands - the corpus is a static translation of HumanEval and MBPP into other languages, with no
+    performance or feature claim the capability axis could band.
+  last_verified: '2026-08-13'
+  sources:
+  - url: https://huggingface.co/datasets/nuprl/MultiPL-E
+    shows: a static set of translated problem prompts and tests across 22-23 languages; no performance,
+      throughput or feature claim on the page for the capability axis to read
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 139bc9f97a3374a56283c91458ea94337b79577231751690bcdc70ea8594bf08

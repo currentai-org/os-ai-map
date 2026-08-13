@@ -25,16 +25,24 @@ openness:
     beneath headed "For SWE-bench (Verified)". The HF card for Verified still declares no license field,
     and where a repository license and a distribution-point license differ the repository license governs,
     so the recorded 4 moves to the 5/open the ladder computes. (Distinct from SWE-bench broader/hidden variants,
-    which can carry held-out splits.)
+    which can carry held-out splits.) Re-read 2026-08-13 - the repository README still carries the
+    "Citation & license" section reading "MIT license" with the "For SWE-bench (Verified)" citation
+    directly beneath, the LICENSE file re-fetched with an unchanged digest, and the HF repo is still
+    ungated with a rendering card and no license field.
   raw: license:MIT(SWE-bench repository states MIT over its code and data; the HF card for Verified still
     declares no license field);redistributability:full(downloadable parquet, ungated);datasheet:yes(dataset
     card + arXiv:2310.06770);held-out:no hidden split in Verified itself(the public 500-instance set is
     fully released; gold patches + tests included);data-source:real GitHub PR/issue pairs
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/datasets/princeton-nlp/SWE-bench_Verified
-    shows: 500 instances, ~2.1 MB, not gated, dataset card present, gold patch + FAIL_TO_PASS/PASS_TO_PASS
-      tests included, leaderboard swebench.com
-    accessed: '2026-06-04'
+    shows: 'the embedded repo state reads `"gated":false` and the tags array carries no license tag;
+      the dataset card renders over the 500-instance test split with the gold patch and the
+      FAIL_TO_PASS/PASS_TO_PASS test lists; 413,323 downloads in the trailing 30 days'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 21a9ae799b810fb5b73f025632c12b0858475dabbdc756309dad62af5af1d184
+    establishes: [datasheet]
   - url: https://github.com/SWE-bench/SWE-bench/blob/main/LICENSE
     shows: MIT License for the SWE-bench harness
     accessed: '2026-06-04'
@@ -45,8 +53,9 @@ openness:
     shows: card front matter carries dataset_info, splits and configs and no `license:` key; body describes
       the 500 human-validated instances and the swebench.com leaderboard. Re-read on 2026-08-12 and
       still unlicensed at source. The repository holds only .gitattributes, README.md and one parquet
-      file, so there is no LICENSE file alongside the data either
-    accessed: '2026-08-12'
+      file, so there is no LICENSE file alongside the data either. Re-fetched 2026-08-13 with an
+      unchanged digest
+    accessed: '2026-08-13'
     http_status: 200
     content_sha256: 6edb58b1b2c44ce858426c4ebc90077827713b75cebc243661e4433c81fd57f5
     establishes: [license]
@@ -54,15 +63,17 @@ openness:
     shows: '"Code and data for the following works:" listing SWE-bench and SWE-bench Multimodal; the
       "Citation & license" section reads "MIT license. Check `LICENSE.md`." and the citation immediately
       under it is headed "For SWE-bench (Verified)"; the news entry for Aug. 13, 2024 introduces Verified
-      as a 500-problem subset produced with OpenAI Preparedness'
-    accessed: '2026-08-12'
+      as a 500-problem subset produced with OpenAI Preparedness. Re-read 2026-08-13 and all three
+      statements are still present; the digest moved (the README picked up unrelated edits), which
+      is why the whole section was re-read rather than assumed'
+    accessed: '2026-08-13'
     http_status: 200
-    content_sha256: 56438c6b147990c0fd93d81fefcecaa94c909d379037487a49d48ac4990a4573
+    content_sha256: 910cf1bd353b898e9c6299d8e805c1a115d00c1b877e1239753be8d9caa4275f
     establishes: [license]
   - url: https://raw.githubusercontent.com/SWE-bench/SWE-bench/main/LICENSE
     shows: 'MIT License, copyright 2023 the SWE-bench authors. Note the README points at `LICENSE.md`,
-      which 404s; the file is `LICENSE`'
-    accessed: '2026-08-12'
+      which 404s; the file is `LICENSE`. Re-fetched 2026-08-13 with an unchanged digest'
+    accessed: '2026-08-13'
     http_status: 200
     content_sha256: 2bd2e08df7147f67a69b42c10efae09bd4bf119df397371036187d5dd1b02f57
     establishes: [license]
@@ -76,12 +87,16 @@ adoption:
     Verified). ~914k HF downloads/month plus a live, heavily-submitted leaderboard at swebench.com. Strongest
     ''citation-as-standard'' signal in the batch. Read live 2026-08-13: 413,323 Hugging Face downloads in the
     trailing 30 days across the declared artifact(s), which bands at 100K-1M, level 4. The previous reach
-    ''1M-10M'' was a band off a different scale. No last_verified claimed: only the figure was re-read, not
-    the whole axis.'
+    ''1M-10M'' was a band off a different scale. Re-read against the Hub API on 2026-08-13: still 413,323
+    downloads in the trailing 30 days, so level 4 / 100K-1M stands and the axis is now dated. The ~914k
+    figure the June source cited no longer appears anywhere on the dataset page.'
+  last_verified: '2026-08-13'
   sources:
-  - url: https://huggingface.co/datasets/princeton-nlp/SWE-bench_Verified
-    shows: ~914k downloads last month; leaderboard at swebench.com
-    accessed: '2026-06-04'
+  - url: https://huggingface.co/api/datasets/princeton-nlp/SWE-bench_Verified
+    shows: 413,323 downloads in the trailing 30 days for princeton-nlp/SWE-bench_Verified
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: e7239207ea1aa7e72552da32855ef449cabd79f850fb7b0060878d17a89c9254
 capability:
   score: null
   basis: n/a
@@ -89,5 +104,13 @@ capability:
   confidence: high
   note: Dataset, not 'capable'. Notably high contamination-resistance and discriminating power for coding
     agents (real repo state, executable tests), but per recipe capability is n/a; the quality proxy is
-    noted, not numerically scored.
-  sources: []
+    noted, not numerically scored. Re-read 2026-08-13 and the abstention stands - the page publishes
+    a static instance set and no performance or feature claim the capability axis could band.
+  last_verified: '2026-08-13'
+  sources:
+  - url: https://huggingface.co/datasets/princeton-nlp/SWE-bench_Verified
+    shows: a static 500-instance corpus of repo state, issue text, gold patch and tests; no performance,
+      throughput or feature claim on the page for the capability axis to read
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 21a9ae799b810fb5b73f025632c12b0858475dabbdc756309dad62af5af1d184

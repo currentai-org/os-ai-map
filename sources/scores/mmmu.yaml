@@ -19,17 +19,28 @@ openness:
   confidence: high
   note: 'Fully open: Apache-2.0, ungated, redistributable, comprehensive card. Test-set answers were released
     2026-02-12 (previously held out via EvalAI), so there is no longer a held-out element; scored 5 as
-    a fully-public benchmark.'
+    a fully-public benchmark. Re-read 2026-08-13: the card news list still carries the 2026-02-12 entry
+    releasing the test answers, the EvalAI submission instruction is still struck through, `license:apache-2.0`
+    is still in the repo tags and the embedded repo state reads `"gated":false`. No change.'
   raw: license:Apache-2.0(OSI/open,redistributable);access:public(not gated);datasheet:present(comprehensive
     card);splits:dev+validation+test all public (test answers released 2026-02-12; previously EvalAI-gated)
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/datasets/MMMU/MMMU
-    shows: Apache-2.0, not gated, 11,550 questions (dev 150/val 900/test 10,500); test answers released
-      2026-02-12 (no longer EvalAI-held-out); 86,107 downloads last month
-    accessed: '2026-06-04'
+    shows: '`license:apache-2.0` in the repo tags; the embedded repo state reads `"gated":false`; the
+      card news list still reads "[2026-02-12]: We have released the answers for the test set!" and
+      the EvalAI submission paragraph is struck through; dev/validation/test splits all present;
+      51,175 downloads in the trailing 30 days'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 7057a20a71e1426366385d1b5ed6e058b8b43a9fe24ef728096ac7aebf23492a
+    establishes: [license, access, datasheet]
   - url: https://arxiv.org/abs/2311.16502
-    shows: MMMU paper documenting 30 subjects, 183 subfields, multimodal benchmark
-    accessed: '2026-06-04'
+    shows: the abstract still describes 11.5K multimodal questions across six core disciplines from
+      college exams, quizzes and textbooks
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 85fd6a90544ed216d08f7aae4c5f6deef14edaf82b2b03a6daf4ffb24eb6595b
 adoption:
   level: 3
   reach: 10K-100K
@@ -51,5 +62,14 @@ capability:
   basis: n/a
   value: null
   confidence: high
-  note: Dataset, not 'capable'; openness and adoption carry this category per recipe.
-  sources: []
+  note: Dataset, not 'capable'; openness and adoption carry this category per recipe. Re-read 2026-08-13
+    and the abstention stands - the page publishes a static multimodal question set and no performance
+    or feature claim the capability axis could band.
+  last_verified: '2026-08-13'
+  sources:
+  - url: https://huggingface.co/datasets/MMMU/MMMU
+    shows: a static image+text question corpus across 30 subjects; no performance, throughput or feature
+      claim on the page for the capability axis to read
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 7057a20a71e1426366385d1b5ed6e058b8b43a9fe24ef728096ac7aebf23492a

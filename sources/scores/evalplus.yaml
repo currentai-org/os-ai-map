@@ -19,16 +19,28 @@ openness:
       detail: Apache-2.0
   confidence: high
   note: 'Clean open data: Apache-2.0 on both datasets and the evaluation framework, downloadable with
-    a documented schema, full open class.'
+    a documented schema, full open class. Re-read 2026-08-13: `license:apache-2.0` is still in the
+    humanevalplus repo tags with `"gated":false`, and the evalplus repository still shows Apache-2.0
+    as its license tab. No change.'
   raw: 'data:downloadable(HF parquet, evalplus/humanevalplus + mbppplus);license:Apache-2.0(OSI/open, on
     both framework and datasets);datasheet:present(card documents structure: task_id/prompt/canonical_solution/test);redistributable:yes;framework-code:open(Apache-2.0)'
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/datasets/evalplus/humanevalplus
-    shows: Apache-2.0 license, 164 problems, 25,817 monthly downloads, documented schema
-    accessed: '2026-06-04'
+    shows: '`license:apache-2.0` in the repo tags; the embedded repo state reads `"gated":false`, so
+      the parquet downloads without a barrier; the card documents the task_id/prompt/canonical_solution/test
+      schema; 27,670 downloads in the trailing 30 days'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: dd5901cd0974e2d11a5899be082dfcc4cac9cedb5e8bc15ce18105fa120366c8
+    establishes: [license, data, datasheet]
   - url: https://github.com/evalplus/evalplus
-    shows: Apache-2.0 framework; HumanEval+/MBPP+ described
-    accessed: '2026-06-04'
+    shows: the repository's license tab still reads Apache-2.0, and the README still describes the
+      HumanEval+ and MBPP+ variants and the bigcode-evaluation-harness integration
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 296d020aff1b8ec8a232401a6e1c6e81ba10d0703d04cd92ad0be903d8497256
+    establishes: [license]
 adoption:
   level: 3
   reach: 10K-100K
@@ -57,5 +69,14 @@ capability:
   value: null
   confidence: high
   note: Dataset, not capability-scored. Its distinguishing quality (far denser test suites that catch
-    overfitting vs base HumanEval/MBPP) is a quality strength, noted but not on the 1-5 axis.
-  sources: []
+    overfitting vs base HumanEval/MBPP) is a quality strength, noted but not on the 1-5 axis. Re-read
+    2026-08-13 and the abstention stands - the corpora are static problem sets and no performance or
+    feature claim on the page is something the capability axis could band.
+  last_verified: '2026-08-13'
+  sources:
+  - url: https://huggingface.co/datasets/evalplus/humanevalplus
+    shows: a static problem corpus with denser tests; no performance, throughput or feature claim on
+      the page for the capability axis to read
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: dd5901cd0974e2d11a5899be082dfcc4cac9cedb5e8bc15ce18105fa120366c8
