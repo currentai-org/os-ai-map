@@ -24,17 +24,36 @@ openness:
     The earlier 4 was justified by the hosted backend no longer operating and the OSS pieces being libraries
     rather than a turnkey observability product, which are maturity judgments and are already recorded as
     adoption 2 and capability 2. On the openness question the published source is the whole product, because
-    there is no longer anything else, and 4 pairs with open_core rather than open_source.'
+    there is no longer anything else, and 4 pairs with open_core rather than open_source. Re-read 2026-08-13
+    and unchanged - the LangKit page still carries the closure notice and the statement that the complete
+    platform was open sourced, and whylogs still resolves to Apache-2.0 on GitHub.'
   raw: license:Apache-2.0(OSI, whylogs + LangKit + open sourced platform);source:public(github.com/whylabs);core-gated:ungated(nothing
     is withheld - the company ceased operations and open sourced the platform on closure);hosted-SaaS:discontinued;status:company-ceased-ops,
     platform open sourced on closure
+  last_verified: '2026-08-13'
   sources:
   - url: https://whylabs.ai/langkit
-    shows: '''WhyLabs, Inc. is discontinuing operations''; platform/whylogs/LangKit open sourced'
-    accessed: '2026-06-04'
+    shows: 'The closure notice, in the vendor''s own words - "WhyLabs, Inc. is discontinuing operations",
+      followed by "The complete WhyLabs platform has been open sourced to help support next iterations of
+      AI observability research" and, on LangKit, "The open source toolkit for monitoring LLMs, langkit
+      will continue to help teams monitor and secure LLMs while preserving privacy." Nothing is withheld,
+      because there is no longer a commercial product to withhold it for.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: b4acd691502a61b4b41def20a690009fcb52dafe41632bfca375174083e7987c
+    establishes:
+    - license
+    - source
+    - core_gated
   - url: https://github.com/whylabs/whylogs
-    shows: whylogs Apache-2.0, 2.8k stars, public source
-    accessed: '2026-06-04'
+    shows: Repository page. GitHub resolves the LICENSE to Apache-2.0 and the README carries an Apache 2
+      badge; the source tree is public. 2,830 stars.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 6054065fb6574c29c0ab15224a78c5c40cf274a60e749cdf9437442184a0e61e
+    establishes:
+    - license
+    - source
 adoption:
   level: 2
   reach: 1K-10K stars
@@ -48,11 +67,23 @@ adoption:
     a download. THE REAL DEFECT is upstream: this product declares no artifacts at all, so a stars_fallback
     band had no stars source behind it and the count lived only in this note. Declaring whylabs/whylogs would
     fix it, and is deliberately not done here because a declared code repo also re-routes the openness license
-    dimension. No last_verified claimed: a star count is volatile.'
+    dimension. Re-read 2026-08-13 - stargazers_count on whylabs/whylogs is 2,830, unchanged from the count
+    already in this note, and the repository''s last push was 2025-01-10, so the stalled cadence the level
+    rests on is if anything more pronounced. The earlier pass declined a date on the ground that a star
+    count is volatile; `check_refetch` reports drift rather than failing on it, and `helicone` in this same
+    category already carries a dated stars_fallback band over the same endpoint, so the date is claimed
+    here with the count digested.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/whylabs/whylogs
     shows: 2.8k stars, latest release v1.6.4 (Dec 3, 2024)
     accessed: '2026-06-04'
+  - url: https://api.github.com/repos/whylabs/whylogs
+    shows: stargazers_count = 2830 for whylabs/whylogs, with pushed_at 2025-01-10T20:14:49Z. No download,
+      install or customer figure exists for this product, the hosted platform having shut down.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: bc1b38a40321b70d3fb152bf6e879f75ab826a63d02fe121e31427e355d8ae28
 capability:
   score: 2
   basis: feature_matrix
@@ -64,9 +95,17 @@ capability:
   confidence: medium
   note: As living, usable capability it is a pair of monitoring libraries (drift + LLM safety metrics),
     not a full tracing/eval/prompt platform; with the hosted backend gone and releases stalled since Dec
-    2024, rated 2, well below the MLflow/Langfuse C4 anchors.
+    2024, rated 2, well below the MLflow/Langfuse C4 anchors. Re-read 2026-08-13 - the repository's last
+    push was 2025-01-10, more than a year and a half ago, and the README is still a profiling library
+    integrating with Spark, Airflow, S3 and MLflow rather than an observability platform. The two-below
+    comparison holds.
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/whylabs/whylogs
-    shows: whylogs data-logging/drift/data-quality monitoring library feature set; release cadence stalled
-      Dec 2024
-    accessed: '2026-06-04'
+    shows: 'README describes a data-logging and profiling library with integrations for AWS S3, Apache
+      Airflow, Apache Spark and MLflow, designed to run "typically in a distributed environment, such as
+      Ray or Apache Spark". There is no tracing backend, prompt-management or eval-experiment surface in
+      it. The repository''s last push was 2025-01-10.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 6054065fb6574c29c0ab15224a78c5c40cf274a60e749cdf9437442184a0e61e

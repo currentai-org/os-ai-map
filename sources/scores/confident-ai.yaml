@@ -15,32 +15,58 @@ openness:
       value: enterprise-tier
   confidence: high
   note: The scored entity is the Confident AI platform itself, which is proprietary SaaS. DeepEval (the
-    open Apache-2.0 framework, ~15.9k stars) is a distinct product; do not credit the platform with the
-    framework's openness.
+    open Apache-2.0 framework) is a distinct product; do not credit the platform with the framework's
+    openness. Re-read 2026-08-13 and unchanged - the platform's own FAQ still puts self-hosting behind the
+    Enterprise plan and a demo booking, and publishes no source for the platform, while DeepEval's
+    repository still resolves to Apache-2.0.
   raw: license:proprietary(platform);source:closed(platform);note:companion OSS framework DeepEval is Apache-2.0
     but is a separate registry-scope product;self-host:enterprise-tier
+  last_verified: '2026-08-13'
   sources:
   - url: https://www.confident-ai.com/
-    shows: proprietary cloud platform distinct from open source DeepEval; self-hosted enterprise option
-    accessed: '2026-06-04'
+    shows: 'The platform''s own FAQ - "Can I self-host Confident AI? Yes. Confident AI offers a fully
+      self-hosted deployment option alongside the managed cloud. You can run the entire platform in your
+      own VPC or on-prem infrastructure ... Self-hosting is available on our Enterprise plan - book a demo
+      to get started." No source, repository or license for the platform appears anywhere on the page.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: d5c7cfa0224d33af5a770d97a928d588eaba3f40ffd9339d13dc23c4245add9d
+    establishes:
+    - license
+    - source
+    - self-host
   - url: https://github.com/confident-ai/deepeval
-    shows: DeepEval (the separate framework) is Apache-2.0; platform is the integrated paid companion
-    accessed: '2026-06-04'
+    shows: The separate framework. GitHub resolves LICENSE.md to Apache-2.0 and the README states "DeepEval
+      is licensed under Apache 2.0". This is the companion product, not the platform scored here.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: b30ab51a3d103da62d2af93fb6cabac0d90d22e894e58ec7d94ac25f83c9f3ec
 adoption:
   level: 3
   signal_type: reported_traction
   confidence: medium
-  note: Vendor discloses '500+ leading AI companies' incl. Panasonic, Samsung, Epic Games, Humach. Corroborated
-    by the strong pull of its open source funnel DeepEval (~15.9k GitHub stars, used-by 1.3k repos), which
-    drives platform signups. Level 3 on disclosed named-customer traction; no precise active-user/usage-volume
-    number for the platform itself.
+  note: Vendor discloses '500+ leading AI companies'. Corroborated by the strong pull of its open source
+    funnel DeepEval, which drives platform signups. Level 3 on disclosed customer-count traction; no precise
+    active-user/usage-volume number for the platform itself. Re-read 2026-08-13 - the "TRUSTED BY 500+
+    LEADING AI COMPANIES" line is still on the page and still carries no figure behind it, and DeepEval's
+    repository has grown to 17,578 stars. The named roster has changed, though - Humach is still quoted,
+    while Panasonic, Samsung and Epic Games are no longer on the page, and those three are dropped from
+    this note rather than carried forward. The 500+ claim on its own still places the band at 3.
+  last_verified: '2026-08-13'
   sources:
   - url: https://www.confident-ai.com/
-    shows: '''500+ leading AI companies'' incl Panasonic, Samsung, Epic Games, Humach'
-    accessed: '2026-06-04'
+    shows: '"TRUSTED BY 500+ LEADING AI COMPANIES" as a banner, with named testimonials from Sean Austin
+      (Chief AI Officer, Humach) and an unnamed Senior Director of Engineering at a Fortune 500 medical
+      device company. Community stats on the page read "GITHUB 14K+ STARS" and "DISCORD 2,500+ MEMBERS",
+      both dated 12/01/25 on the page itself. No user or account count for the platform appears.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: d5c7cfa0224d33af5a770d97a928d588eaba3f40ffd9339d13dc23c4245add9d
   - url: https://github.com/confident-ai/deepeval
-    shows: ~15.9k stars, used-by 1.3k repos (OSS funnel corroboration)
-    accessed: '2026-06-04'
+    shows: 17,578 stars on the DeepEval repository, the open source funnel this band cites as corroboration
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: b30ab51a3d103da62d2af93fb6cabac0d90d22e894e58ec7d94ac25f83c9f3ec
 capability:
   score: 4
   basis: feature_matrix
@@ -49,10 +75,21 @@ capability:
     + prompt mgmt (git-based versioning/branching) + monitoring/alerts (regression detection) + red teaming
     (OWASP) + annotations. Covers the full recipe matrix.'
   confidence: medium
+  relative_to: langfuse
+  relation: at
   note: Broad coverage across all recipe dimensions; the deep DeepEval metric library (50+ incl LLM-as-judge)
     and red-teaming are strengths. Capped at 4 alongside the OSS anchors; not a frontier-definer over
-    MLflow/Langfuse.
+    MLflow/Langfuse. The comparison is now recorded rather than left in prose - at the langfuse anchor.
+    Re-read 2026-08-13 - the product menu is still LLM Evaluation, LLM Observability, AI Red Teaming and
+    AI Governance, with dataset management, tracing, real-time monitoring and CI regression gating beneath.
+  last_verified: '2026-08-13'
   sources:
   - url: https://www.confident-ai.com/
-    shows: tracing, evals, datasets, prompt mgmt, monitoring, red teaming, annotations
-    accessed: '2026-06-04'
+    shows: 'Product menu - LLM Evaluation, LLM Observability ("Trace, monitor, and alert on production LLM
+      systems"), AI Red Teaming ("Stress-test LLM apps against adversarial attacks") and AI Governance.
+      The platform is described as layering "collaboration, dataset management, tracing, real-time
+      monitoring, and dashboards" on the open framework, and integrating into CI so that "you can run
+      regression tests on every pull request".'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: d5c7cfa0224d33af5a770d97a928d588eaba3f40ffd9339d13dc23c4245add9d

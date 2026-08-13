@@ -86,12 +86,22 @@ adoption:
     signal, so capped at level 2 via stars fallback (cannot exceed 3 on stars regardless). Stars read
     2026-08-13: 3,486 across the 1 declared repo, which bands at 1K-10K stars, level 2 on the stars scale in
     signal_routing.yaml. The previous reach ''10K-100K'' was not a label this instrument offers - stars have
-    their own vocabulary because a star is not a download. No last_verified claimed: a star count is volatile,
-    so a digest of it would read as drift on every refetch, and the rest of the axis was not re-read.'
+    their own vocabulary because a star is not a download. The earlier pass declined to claim a date on the
+    ground that a star count is volatile and would read as drift on every refetch. That is true and it is not
+    a reason to leave the axis unconfirmed - `check_refetch` reports drift rather than failing on it, and
+    `helicone` in this same category already carries a dated stars_fallback band over the same endpoint. The
+    count was re-read from the repository API on 2026-08-13 and is recorded with its digest.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/langwatch/langwatch
     shows: ~3.3k GitHub stars; no disclosed usage numbers
     accessed: '2026-06-04'
+  - url: https://api.github.com/repos/langwatch/langwatch
+    shows: stargazers_count = 3486 for langwatch/langwatch. No download, install, customer or user figure
+      is published for this product anywhere the record cites, so stars remain the only signal.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 2bd045bcb34729a38ddc42633ca30f41ae707dbb7ff2478e3cc9081ee08137eb
 capability:
   score: 4
   basis: feature_matrix
@@ -103,8 +113,16 @@ capability:
   confidence: high
   note: Full feature matrix across all six recipe dimensions plus distinctive agent-simulation/scenario
     testing and a built-in gateway; on par with Langfuse C4. Held at 4 (no frontier-definer claim over
-    the anchors).
+    the anchors). Re-read 2026-08-13 - the README still leads on end-to-end agent simulations and on
+    "Eval + observability + prompts in one loop", so the breadth the band rests on is intact and the
+    recorded comparison at the langfuse anchor still holds.
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/langwatch/langwatch
-    shows: 'feature list: tracing, evals, simulations, prompt mgmt, datasets/annotation, AI Gateway, OTel'
-    accessed: '2026-06-04'
+    shows: 'README - "The platform for LLM evaluations and AI agent testing. We help teams test, simulate,
+      evaluate, and monitor LLM-powered agents end-to-end", with headline sections for "End-to-end agent
+      simulations" ("Run realistic scenarios against your full stack") and "Eval + observability + prompts
+      in one loop".'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 01df8119b46f1e2956eacd00810976a4eadec3399e5a5dacd7ccc1685482e057

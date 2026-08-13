@@ -17,30 +17,55 @@ openness:
     - self-hostable-full-stack
   confidence: high
   note: Apache-2.0, full platform self-hostable; cloud is managed hosting rather than a feature-gated
-    proprietary core.
+    proprietary core. Re-read 2026-08-13 and unchanged - both the PyPI project page and the repository
+    README now say in the vendor's own words that the server, web application and evaluation components
+    are all Apache-2.0 and free to self-host, which is the core_gated question answered directly.
   raw: license:Apache-2.0(OSI);source:public;self-hostable-full-stack;commercial:Comet-cloud-hosting(not
     a gated core);core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://pypi.org/project/opik/
-    shows: 'License: Apache 2.0; v2.0.57 (4 Jun 2026)'
-    accessed: '2026-06-04'
+    shows: 'opik 2.2.28 on PyPI. The long description states "Apache-2.0 licensed, free to self-host the
+      full platform", and its FAQ answers "Is Opik open source?" with "Opik is licensed under Apache 2.0.
+      Its server, web application, and core observability and evaluation components" are covered.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 0b8d9de89c8ceb800ddeecb3f899db4ddf5dcc355ca1f8f56cc79bc01b92bd97
+    establishes:
+    - license
+    - source
+    - core_gated
   - url: https://github.com/comet-ml/opik
-    shows: Apache-2.0; self-hosted + cloud deployment
-    accessed: '2026-06-04'
+    shows: Repository README, carrying the same statement - "Apache-2.0 licensed, free to self-host the
+      full platform" - alongside the tracing, LLM-as-a-judge, dataset and integration sections. 21,353 stars.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 081be18d9854c64b346cca6bab84ff3285205f5d499bf70b1af100ee86380262
+    establishes:
+    - license
+    - source
+    - core_gated
 adoption:
   level: 4
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: opik ~6.19M PyPI downloads/month (highest in this batch); 60-70+ framework integrations; platform
-    reports 40M+ traces/day; ~19.4k stars corroborates only.
+  note: opik ~6.19M PyPI downloads/month; 60-70+ framework integrations; ~19.4k stars corroborates only.
+    Re-read 2026-08-13 - pypistats now reports 3,512,727 downloads last month for opik, down from the
+    6,192,885 recorded and still inside the 1M-10M band, so level 4 is unchanged. The 40M+ traces/day
+    figure is no longer on the repository README and is dropped from this note rather than carried forward.
+  last_verified: '2026-08-13'
   sources:
   - url: https://pypistats.org/packages/opik
-    shows: ~6,192,885 downloads last month
-    accessed: '2026-06-04'
+    shows: Downloads last month 3,512,727 for opik (last week 770,341)
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 97f7f350b62dc797994f340b9e36d3de97f057f2e2cd4a436507e60515243241
   - url: https://github.com/comet-ml/opik
-    shows: ~19.4k stars; 70+ integrations; 40M+ traces/day
-    accessed: '2026-06-04'
+    shows: 21,353 stars; README still describes extensive third-party integrations for observability
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 081be18d9854c64b346cca6bab84ff3285205f5d499bf70b1af100ee86380262
 capability:
   score: 4
   basis: feature_matrix
@@ -50,8 +75,15 @@ capability:
     metrics(hallucination/moderation/relevance/context-precision), prompt playground, datasets, cost tracking
   confidence: high
   note: Covers all six feature-matrix dimensions; on par with MLflow/Langfuse anchors (C4). Not scored
-    5; closed Arize AX leads category capability.
+    5; closed Arize AX leads category capability. Re-read 2026-08-13 - the README still covers trace
+    logging, LLM-as-a-judge scoring, feedback annotation on traces and spans, datasets and third-party
+    integrations, so the recorded comparison at the langfuse anchor still holds.
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/comet-ml/opik
-    shows: tracing, evals, LLM-as-judge, prompt management, datasets, OTel
-    accessed: '2026-06-04'
+    shows: 'README sections - "Track all LLM calls and traces with detailed context during development and
+      in production", LLM-as-a-judge scoring, "Annotate traces and spans with feedback scores", datasets
+      and "Extensive 3rd-party integrations for easy observability".'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 081be18d9854c64b346cca6bab84ff3285205f5d499bf70b1af100ee86380262
