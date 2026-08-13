@@ -22,15 +22,49 @@ openness:
   confidence: high
   note: 'Fully open source: an Apache-2.0 Rust implementation that is self-hostable as a standalone CLI
     or library with no proprietary service tier. A clean contrast with the managed sandbox clouds (Vercel,
-    Cloudflare, Modal), which publish only a client SDK over a closed runtime.'
+    Cloudflare, Modal), which publish only a client SDK over a closed runtime. Re-read 2026-08-13 and
+    unchanged. The LICENSE body at repository head is a verbatim Apache License 2.0, the repository
+    metadata reports spdx_id Apache-2.0 on a public, unarchived Rust repository, and the README closes
+    on a bare "License - Apache-2.0". The README still installs the whole tool free by curl or Homebrew
+    with Debian, Fedora, Arch, RHEL, openSUSE, WSL2 and Nix listed alongside, still documents the policy
+    engine, credential proxy, L7 filtering and brokered tool sandboxes as ordinary features, and still
+    points the FFI bindings at nono-py, nono-ts and nono-go. Nothing is held back for a paid tier and no
+    license key or hosted dependency appears, so core-gated stays ungated. One change since the last
+    read - the registry namespace moved from always-further to nolabs-ai, which is a rename rather than
+    a gate.'
   raw: license:Apache-2.0(OSI);source:public(full Rust implementation, self-hostable);distribution:curl
     / Homebrew / Debian-Ubuntu-Fedora-Arch-RHEL-openSUSE-Nix + FFI bindings (nono-py, nono-ts, nono-go);service:none(standalone
     CLI/library, no proprietary backend);core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
-  - url: https://github.com/nolabs-ai/nono
-    shows: Apache-2.0 license; full Rust source; self-hostable; install via curl / Homebrew / Linux package
-      managers; FFI bindings nono-py / nono-ts / nono-go
-    accessed: '2026-06-29'
+  - url: https://raw.githubusercontent.com/nolabs-ai/nono/main/LICENSE
+    shows: Verbatim Apache License 2.0 body at repository head
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 7310e9389f298b89bb2f90ac4b6081ed5b6a1c4a7b8547df5d52966a57cb0929
+    establishes:
+    - license
+  - url: https://api.github.com/repos/nolabs-ai/nono
+    shows: 'Repository metadata - nolabs-ai/nono, language Rust, license spdx_id Apache-2.0, public and
+      not archived, 3,644 stars, 241 forks, last push 2026-08-13'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 6b7060b790a56fb537cbaae122f68a2a333e795f8022e640de096fb96b6fb463
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/nolabs-ai/nono/main/README.md
+    shows: 'Install with curl or Homebrew, with Debian/Ubuntu, Fedora, Arch, RHEL, openSUSE, WSL2 and
+      Nix linked; the profile system, brokered tool sandboxes, credential proxy and L7 endpoint filtering
+      are documented as ordinary features; FFI bindings for Rust, Python, TypeScript and Go published as
+      nono-py, nono-ts and nono-go; registry namespace migrated from always-further to nolabs-ai; the
+      License section reads Apache-2.0. No paid tier, license key or hosted dependency is described.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 040dc4d074176f2aa875923f07e90b15a2c66748a8f293b8acb00018b8b5c8e2
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 2
   reach: 1K-10K stars
@@ -42,11 +76,29 @@ adoption:
     which bands at 1K-10K stars, level 2 on the stars scale in signal_routing.yaml. The previous reach
     ''1K-10K'' was not a label this instrument offers - stars have their own vocabulary because a star is not
     a download. No last_verified claimed: a star count is volatile, so a digest of it would read as drift on
-    every refetch, and the rest of the axis was not re-read.'
+    every refetch, and the rest of the axis was not re-read. That last sentence is superseded - the rest
+    of the axis has now been re-read. Stars read again 2026-08-13 from the repository metadata endpoint
+    at 3,644, four above the earlier same-day reading and still inside the 1K-10K stars band at level 2,
+    and the reasoning under the band was re-derived rather than copied. The README confirms stars remain
+    the only public proxy - no download, install or user figure is published, and the closest thing to a
+    usage claim is unattributed marketing prose about engineers at large companies running nono in
+    production, which is not bandable. The digest-drift objection stands and is accepted rather than
+    avoided; the digested source below is the metadata endpoint, and a later refetch showing a different
+    hash means the count moved, which is what a star signal does.'
+  last_verified: '2026-08-13'
   sources:
-  - url: https://github.com/nolabs-ai/nono
-    shows: ~2,900 stars (June 2026)
-    accessed: '2026-06-29'
+  - url: https://api.github.com/repos/nolabs-ai/nono
+    shows: 'Repository metadata - stargazers_count 3,644 and forks_count 241 for nolabs-ai/nono, public
+      and not archived, last push 2026-08-13'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 6b7060b790a56fb537cbaae122f68a2a333e795f8022e640de096fb96b6fb463
+  - url: https://raw.githubusercontent.com/nolabs-ai/nono/main/README.md
+    shows: No download, install or user count is published; the only traction language is unattributed
+      prose about engineers at large companies using nono in production, with no named adopter
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 040dc4d074176f2aa875923f07e90b15a2c66748a8f293b8acb00018b8b5c8e2
 capability:
   score: 3
   basis: feature_matrix
@@ -57,8 +109,29 @@ capability:
   confidence: medium
   note: 'Solid, cross-platform sandbox with very low setup friction; scored mid-range for the category
     -- below the heavier microVM / OS-isolation options on hard isolation depth, but broad and easy to
-    adopt locally.'
+    adopt locally. Re-read 2026-08-13 and the band holds. nono.sh still leads on kernel-level isolation
+    for Linux, macOS and Windows with zero setup and zero latency, lists per-language sandboxes for
+    Python, Node.js and Go, and keeps the registry at registry.nono.sh. Both pages are explicit that the
+    mechanism is OS-level allow-lists rather than a virtual machine - the README says no daemon, no
+    container, no VM and no disk space usage - which is what holds this one below the microVM peers.
+    The feature surface has widened since the band was set, with brokered per-tool child sandboxes,
+    credential proxying with L7 endpoint policy, hash-chained audit records under a SHA-256 Merkle root,
+    rollback and Sigstore provenance. That is real depth in a different direction from hard isolation,
+    so it is recorded here rather than treated as a reason to move the score.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://nono.sh
-    shows: zero-setup, cross-platform least-privilege agent sandboxing; agent registry
-    accessed: '2026-06-29'
+    shows: 'Kernel isolation for Linux, macOS and Windows; ephemeral micro sandboxes with zero setup and
+      zero latency; per-language OS/Python/Node.js/Go sandboxes; brokered tool execution with scoped
+      credentials and L7 endpoint policy; hash-chained audit log sealed with a SHA-256 Merkle root;
+      undo/rollback snapshots; Sigstore provenance; registry linked'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: adfa836384380e3230dd2c78b2efebc4226ea759ca39134d809a514210b4d542
+  - url: https://raw.githubusercontent.com/nolabs-ai/nono/main/README.md
+    shows: '"no daemon, no container, no VM, and no disk space usage" with a least-privilege sandbox
+      enforced out of the box on macOS, Linux and Windows (WSL2); FFI bindings for Rust, Python,
+      TypeScript and Go; profiles pulled from the nono registry and composable as JSON'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 040dc4d074176f2aa875923f07e90b15a2c66748a8f293b8acb00018b8b5c8e2

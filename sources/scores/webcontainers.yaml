@@ -25,18 +25,37 @@ openness:
   confidence: high
   note: The MIT 'open' repo holds no implementation; the runtime is closed and gated by a commercial
     license for production use. Best classed source_available leaning closed; flag open_washed for the
-    MIT-issue-tracker-as-open source framing.
+    MIT-issue-tracker-as-open source framing. Re-read 2026-08-13 - stackblitz/webcontainer-core is still
+    MIT and still holds no runtime implementation, its last push predating this check by well over a year,
+    and the WebContainer enterprise licensing page still states that prototypes and proofs of concept need
+    no commercial license while production use in a commercial, for-profit setting does. That page no longer
+    states the 10k-requests-per-month threshold the recorded detail cites.
   raw: source:partial;public-repo:webcontainer-core is MIT but issue-tracker only (no runtime source);actual-runtime:proprietary(StackBlitz);license-terms:Proprietary,
     free for OSS/prototypes, commercial license required for for-profit production(charge beyond 10k API
     req/mo);distribution:@webcontainer/api npm (proprietary binary)
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/stackblitz/webcontainer-core
     shows: MIT repo is a central hub for issues/bug reports, not the runtime implementation
-    accessed: '2026-06-04'
-  - url: https://www.npmjs.com/package/@webcontainer/api
-    shows: WebContainer API distributed as npm package; commercial license required for for-profit production
-      use (free for OSS/POC, charge beyond 10k req/mo)
-    accessed: '2026-06-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: ce5ff93731e216464b087350af07f7dd155ce5e4b8ae9188f88dedc7d5c14518
+    establishes: [source]
+  - url: https://registry.npmjs.org/@webcontainer/api
+    shows: '@webcontainer/api is the published client package for the runtime, pointing back at stackblitz/webcontainer-core;
+      the package manifest carries MIT while the runtime it calls is a StackBlitz-hosted service'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: d14b05851da03cc3ae27e09ec5143439740b9debb99d09233e1f903faf9fd366
+    establishes: [source]
+  - url: https://webcontainers.io/enterprise
+    shows: prototypes and proofs of concept require no commercial license, but production use of the API
+      in a commercial for-profit setting does, and access may be revoked for use in violation of those
+      terms; no request-count threshold is stated
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 40ef1df1874e3ea160f0facfcfca4e2179de739cbd7ac86efdfa00f6779b1d6d
+    establishes: [license-terms]
 adoption:
   level: 3
   signal_type: reported_traction
@@ -44,11 +63,18 @@ adoption:
   note: Powers StackBlitz's own IDE and is embedded by named projects (SvelteKit, Astro, Scrimba, egghead.io,
     Xata) for in-browser code experiences. No disclosed download/MAU figure on the primary pages; placed
     at 3 on named-integration reported traction. No hard usage_volume number found, so confidence low.
+    Re-read 2026-08-13 - webcontainers.io still names the same integrations and adds Suborbital, re-tune
+    and Touchy Studios, and still publishes no download, user or session figure. The npm client package
+    does carry a countable download series, which is a candidate signal the record does not currently use;
+    it is left as reported_traction pending a ruling on whether npm is the product primary channel.
+  last_verified: '2026-08-13'
   sources:
   - url: https://webcontainers.io/
-    shows: WebContainers used by SvelteKit, Astro, Scrimba, egghead.io, Xata (named integrations); no
-      quantitative usage figure
-    accessed: '2026-06-04'
+    shows: WebContainers used by SvelteKit, Astro, Scrimba, egghead.io, Xata, Suborbital, re-tune and
+      Touchy Studios (named integrations); no quantitative usage figure
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 9b41968dec5ce3c459e6f6cf23a757f6db3d3b9b9d12169a6da573f12d8358df
 capability:
   score: 3
   basis: feature_matrix
@@ -59,8 +85,14 @@ capability:
   confidence: medium
   note: Unique in-browser execution with instant start and zero server cost, but Node/JS-only and not
     a general-purpose server-side code sandbox for arbitrary languages, a different (narrower) capability
-    profile than microVM/container peers. Mid-tier within deployment.
+    profile than microVM/container peers. Mid-tier within deployment. Re-read 2026-08-13 - webcontainers.io
+    still claims native npm, pnpm and yarn running in the browser up to 10x faster than local, support in
+    all major browsers, disposable environments for any modern framework, and Wasm out of the box, with
+    nothing added that would broaden it toward general server-side execution.
+  last_verified: '2026-08-13'
   sources:
   - url: https://webcontainers.io/
     shows: runs Node.js/npm and WASM fully in-browser, 'up to 10x faster than local', any modern framework
-    accessed: '2026-06-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 9b41968dec5ce3c459e6f6cf23a757f6db3d3b9b9d12169a6da573f12d8358df

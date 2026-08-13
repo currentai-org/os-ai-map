@@ -73,12 +73,30 @@ adoption:
     base, but reach is unverified by usage_volume. Stars read 2026-08-13: 14,142 across the 1 declared repo,
     which bands at >10K stars, level 3 on the stars scale in signal_routing.yaml. The previous reach
     ''100K-1M'' was not a label this instrument offers - stars have their own vocabulary because a star is not
-    a download. No last_verified claimed: a star count is volatile, so a digest of it would read as drift on
-    every refetch, and the rest of the axis was not re-read.'
+    a download. Re-read 2026-08-13 against the GitHub API - 14,143 stars, still >10K stars and still level 3.
+    The absence of a download channel was re-checked too, and it holds for a second reason now - the
+    codercom/coder Docker Hub repository is deprecated, its description redirecting to GitHub Container
+    Registry, and it has taken 31,179 pulls in total since 2021 with no push since 2024. GHCR publishes
+    no pull count, so no usage_volume signal exists to re-band on and stars_fallback remains the
+    instrument. A digest over a star count drifts on every refetch by construction; that is noise on
+    this endpoint rather than evidence of change.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/coder/coder
     shows: ~13.4k stars; self-hosted CDE used by enterprises; no usage_volume figure
     accessed: '2026-06-04'
+  - url: https://api.github.com/repos/coder/coder
+    shows: 14,143 stargazers; repository public and unarchived; no download or install count is exposed
+      by the API.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: b869ee1ac186f8606d5af55d475f1910dbf68fc70d13d533064c2363f82d7986
+  - url: https://hub.docker.com/v2/repositories/codercom/coder
+    shows: 'Deprecated image - full_description reads "Looking for v2 releases? We now publish our images
+      on GitHub''s container registry"; pull_count 31,179 lifetime, last_updated 2024-08-20.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c0bffad9c45a60ad1b704ee6ea509ad093c1f4b18f3b106afb5ef42e57d40baf
 capability:
   score: 3
   basis: feature_matrix
@@ -90,8 +108,21 @@ capability:
   note: Strong as a persistent governed dev-environment platform but a poor fit for the deployment litmus
     'safely run arbitrary agent-generated code in an ephemeral sandbox' - isolation/cold-start depend
     on the infra template, not a purpose-built sandbox; scored 3. Belongs more in a dev-environment shelf
-    than the agent-sandbox sub-segment.
+    than the agent-sandbox sub-segment. Re-read 2026-08-13 - the README still defines workspaces in
+    Terraform over EC2 VMs, Kubernetes pods or Docker containers, still connects them over a Wireguard
+    tunnel, and still describes long-lived environments that idle-shut-down rather than ephemeral
+    per-task sandboxes. The agent story has grown - Coder Agents now runs the agent loop in the control
+    plane so no model credentials sit in the workspace - but that is governance rather than isolation
+    strength or cold-start, so the band holds at 3.
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/coder/coder
     shows: Terraform-defined persistent workspaces, Wireguard tunnel, AI-agent workspace support
     accessed: '2026-06-04'
+  - url: https://raw.githubusercontent.com/coder/coder/main/README.md
+    shows: Terraform-defined workspaces on EC2 VMs, Kubernetes pods or Docker containers; Wireguard
+      tunnel; idle shutdown; Coder Agents executing the agent loop in the control plane with no LLM
+      credentials in workspaces, plus centralized model governance and audit logging.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: ce14cf14d213dee2fb26716b51cd2c048d622909497f81941f7ef68b1d3752aa
