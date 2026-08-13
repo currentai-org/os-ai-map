@@ -80,27 +80,53 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: ~27M PyPI downloads in the last month (browser-use), strong real install/usage volume, not stars.
-    97.2k GitHub stars corroborate but are not the basis. Solidly in the 1-10M+ monthly-download band;
-    one of the most-used agent browser-automation libraries.
+  note: '~27M PyPI downloads in the last month (browser-use), strong real install/usage volume, not stars.
+    97.2k GitHub stars corroborate but are not the basis. Solidly in the 1-10M+ monthly-download band; one
+    of the most-used agent browser-automation libraries. FLAGGED FOR A HUMAN 2026-08-13 and deliberately
+    NOT applied: the recorded level does not follow from the recorded figure, and did not before this pass
+    either. The pypistats API reports last_month = 53,142,086 downloads for browser-use, and the ~27M already
+    on the record was itself above the >10M level-5 floor - so this axis has been sitting at 4/1M-10M under
+    a figure that bands at 5/>10M by the software scale in sources/rubrics/software.yaml, twice over. Both
+    the level and the reach need correcting; a level change is not this pass''s to make, so the axis carries
+    no last_verified. The repo now shows 109,104 stars, still corroborating rather than the basis.'
   sources:
+  - url: https://pypistats.org/api/packages/browser-use/recent
+    shows: last_month = 53,142,086 downloads for browser-use (last_week 14,575,579, last_day 2,624,999).
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 9d86d983650b3dc84598d2efb324087b0f5c04845286f5d6a1fdcb86fc83b23c
   - url: https://pypistats.org/packages/browser-use
-    shows: ~26.96M PyPI downloads last month
-    accessed: '2026-06-04'
+    shows: The rendered pypistats page for browser-use; figures read from its API endpoint above.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: e9d88ad1daef6a77a29d1f5c82064bdb571f67c782878a2427278ba71d73c49a
   - url: https://github.com/browser-use/browser-use
-    shows: 97.2k GitHub stars (corroborating)
-    accessed: '2026-06-04'
+    shows: Repo page, 109,104 stargazers (corroborating).
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: be8cf11dbbe465f67c9957830b2d7adbce0f871d8c2c5663d243251b941da575
 capability:
   score: 4
   basis: feature_matrix
   value: 'agent browser control: navigate/click/fill-forms/extract/multi-step tasks; LLM-driven DOM interaction;
     cloud infra adds proxy rotation, stealth fingerprinting, CAPTCHA solving, 1000+ integrations'
   confidence: medium
-  note: Leading OSS browser-automation-for-agents library with broad action coverage and a production
-    cloud tier; widely adopted as the default agent browsing layer. Rated 4 on feature_matrix (multi-step
-    web tasks, structured extraction, anti-block infra); no standard benchmark applies to a browser-control
-    library.
+  note: 'Leading OSS browser-automation-for-agents library with broad action coverage and a production cloud
+    tier; widely adopted as the default agent browsing layer. Rated 4 on feature_matrix (multi-step web tasks,
+    structured extraction, anti-block infra); no standard benchmark applies to a browser-control library.
+    Re-read 2026-08-13: the README still describes the same surface - a CLI for one-off tasks and a Python
+    library for repeatable automation, "custom tools, custom system prompts, structured output, fine-grained
+    browser control", with a skills/ directory in the tree - and it still places stealth and proxy rotation
+    on the cloud browsers rather than in the library, which is what the recorded value says. No standardized
+    benchmark for browser-control libraries has appeared, so the basis stays feature_matrix and the band
+    stays 4.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/browser-use/browser-use
-    shows: agent browser automation feature set + cloud capabilities (proxies, stealth, CAPTCHA, integrations)
-    accessed: '2026-06-04'
+    shows: 'README - CLI for one-off tasks, Python library for repeatable automation; "Custom tools, custom
+      system prompts, structured output, fine-grained browser control"; skills/ in the root tree. Stealth,
+      proxy rotation and scaling are attributed to the hosted cloud browsers - "We recommend pairing it with
+      our cloud browsers for leading stealth, proxy rotation, and scaling".'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: be8cf11dbbe465f67c9957830b2d7adbce0f871d8c2c5663d243251b941da575

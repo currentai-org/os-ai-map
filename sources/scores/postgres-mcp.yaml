@@ -13,12 +13,30 @@ openness:
     free_text:
     - no-feature-gated-core
   confidence: high
-  note: Fully MIT.
+  note: 'Fully MIT, no feature-gated core. Re-read 2026-08-13: the repository LICENSE is the plain MIT License,
+    "Copyright (c) 2025, Crystal Corp.", and the repo page carries the matching badge. Despite the "Pro"
+    in the product name there is no paid edition - the whole server, index tuning and health checks included,
+    ships in the tree and runs from PyPI or the crystaldba/postgres-mcp Docker image with only a DATABASE_URI.
+    No license key, second license or enterprise directory.'
   raw: license:MIT(OSI);source:public;no-feature-gated-core;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
+  - url: https://raw.githubusercontent.com/crystaldba/postgres-mcp/main/LICENSE
+    shows: 'Plain MIT License text: "Copyright (c) 2025, Crystal Corp."'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 013c8daa80c427b5f98cf7ff16c0c79f2adc2a5bd29e05aef7775f43f6c00fdd
+    establishes:
+    - license
   - url: https://github.com/crystaldba/postgres-mcp
-    shows: MIT, ~2.9k stars, Postgres MCP Pro
-    accessed: '2026-06-17'
+    shows: Repo page - MIT badge, 3,188 stargazers, the whole server in the tree. Runs from PyPI or the crystaldba/postgres-mcp
+      Docker image with a DATABASE_URI and an --access-mode flag; nothing is withheld for a paid tier.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 0fe59606d32afd588b7354d4e3f694c1c685117ef745f8a5adf3562a0cbefe53
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 3
   signal_type: usage_volume
@@ -40,8 +58,21 @@ capability:
   value: '9 tools: schema/object inspection, execute_sql w/ access modes, EXPLAIN + hypothetical indexes, slow-query
     analysis, index advising, health checks'
   confidence: medium
-  note: Richest open Postgres MCP surface, well beyond the archived read-only reference server.
+  note: 'Richest open Postgres MCP surface, well beyond the archived read-only reference server. Re-read 2026-08-13
+    and every clause of the recorded value holds. The README''s own subtitle is "A Postgres MCP server with
+    index tuning, explain plans, health checks, and safe sql execution", and the feature list runs Database
+    Health, Index Tuning ("explore thousands of possible indexes ... using industrial-strength algorithms"),
+    Query Plans with hypothetical-index simulation, Schema Intelligence and Safe SQL Execution via the --access-mode
+    flag. The tool table still carries explain_query, get_top_queries and analyze_db_health. Band unchanged
+    at 4.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/crystaldba/postgres-mcp
-    shows: 9-tool feature set
-    accessed: '2026-06-17'
+    shows: '"A Postgres MCP server with index tuning, explain plans, health checks, and safe sql execution."
+      Tool table - explain_query "Can be invoked with hypothetical indexes to simulate the behavior after
+      adding indexes"; get_top_queries "Reports the slowest SQL queries based on total execution time";
+      analyze_db_health "buffer cache hit rates, connection health, constraint validation, index health
+      (duplicate/unused/invalid), sequence limits, and vacuum health". Access modes set by --access-mode.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 0fe59606d32afd588b7354d4e3f694c1c685117ef745f8a5adf3562a0cbefe53

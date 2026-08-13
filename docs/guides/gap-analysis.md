@@ -71,13 +71,20 @@ That fallback is right for the case it was written for. 21 of the 26 null-capabi
 are in `benchmark_eval_data`, where downloads plausibly *are* the quality signal — a corpus
 everyone evaluates against is, by that fact, a good corpus.
 
-**Every other category inherits it by accident.** The live consequence on 2026-08-13 is
-`model-context-protocol`: adoption 5, capability null, `open_source`, so maturity computes to
-5.0, it counts as a mature open product, and one mature open product is the entire `stage >= 4`
-threshold. `agent_tools_protocols` therefore rests a stage-4 claim on a product whose capability
-nobody has scored. No other null-capability product is close — the remaining 22 sit at adoption
-3–4, below the mature bar, where they can move `best_open` but cannot trigger a stage on their
-own.
+**Every other category inherits it by accident.** `model-context-protocol` is the clearest
+live case: adoption 5, capability null, `open_source`, so maturity computes to 5.0 and it counts
+as a mature open product on one axis while a reader assumes two.
+
+**A correction, because this guide got the stakes wrong on first writing.** It claimed that
+`agent_tools_protocols`'s stage rested on that null, on the reasoning that one mature open
+product is the entire `stage >= 4` threshold. The rule is real but the inference was not
+checked against the category: it has **seven** mature open products, not one — MCP, `fastmcp`,
+`qdrant`, `mcp-python-sdk`, `mcp-typescript-sdk`, `docling`, `markitdown` — and six of them
+reach 4.5 from a real adoption *and* a real capability score with no null in the arithmetic.
+Seven clears `_STAGE5_MIN_MATURE = 4`, so the category is **stage 5**, and deleting MCP
+entirely leaves six and changes nothing. The methodological defect is unaffected; the claim
+that a stage depended on it was wrong, and was caught by re-deriving it against
+`build/serialize.py` rather than reasoning from the threshold.
 
 So the open question is whether "graded on adoption alone" should be a **per-category
 declaration**, like `disclosure` below, rather than a global fallback. It is deliberately not

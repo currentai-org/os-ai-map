@@ -14,36 +14,80 @@ openness:
     - no-feature-gated-core
     - maintained-by-Prefect
   confidence: high
-  note: Fully OSI-licensed, no open-core split observed on the repo.
+  note: 'Fully OSI-licensed, no open-core split observed on the repo. Re-read 2026-08-13: the repository
+    LICENSE resolves to the full Apache License 2.0 text and the repo page carries the matching badge. The
+    whole framework - servers, apps and clients - is in the published tree and installs from PyPI with no
+    key; Prefect maintains it rather than selling a tier of it, so there is nothing withheld from the source.'
   raw: license:Apache-2.0(OSI);source:public;no-feature-gated-core;maintained-by-Prefect;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/jlowin/fastmcp
-    shows: Apache-2.0 license, v3.4.0 (3 Jun 2026), maintained by Prefect
-    accessed: '2026-06-04'
+    shows: Repo page - Apache-2.0 badge, 27,203 stargazers, the whole framework in the tree, maintained by
+      Prefect. No enterprise directory, license key or paid tier.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 6d6f8c232f68238fe065bd4f1feb7c9ea73fe1d5970402aaa6edc4f3d89ae300
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/jlowin/fastmcp/main/LICENSE
+    shows: The full Apache License, Version 2.0 text.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1
+    establishes:
+    - license
 adoption:
   level: 5
   reach: '>10M'
   signal_type: usage_volume
   confidence: high
-  note: fastmcp ~72.7M PyPI downloads in the last month; README reports ~1M downloads/day, used by ~10k
-    dependent projects, and powering ~70% of MCP servers across languages. Mass-market reach for MCP server
-    tooling.
+  note: 'fastmcp ~72.7M PyPI downloads in the last month; README reports ~1M downloads/day and powering
+    ~70% of MCP servers across languages. Mass-market reach for MCP server tooling. Re-derived 2026-08-13
+    from the pypistats API rather than the rendered page: last_month = 94,141,215 downloads for fastmcp,
+    up from the 72.7M recorded and still comfortably above the >10M level-5 floor, so level 5 and reach
+    >10M are unchanged. The README''s own claims re-read the same day and both still stand as written -
+    "downloaded a million times a day, and some version of FastMCP powers 70% of MCP servers across all
+    languages" - and both remain vendor statements, corroborating rather than carrying the band. The
+    "~10k dependent projects" clause was dropped: it appears nowhere on the repo page now.'
+  last_verified: '2026-08-13'
   sources:
+  - url: https://pypistats.org/api/packages/fastmcp/recent
+    shows: last_month = 94,141,215 downloads for fastmcp (last_week 24,037,435, last_day 4,222,355).
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 8659beeba41a5031bc369d200e3d0e32fc36a635160b6cd98cac65737b1d52f9
   - url: https://pypistats.org/packages/fastmcp
-    shows: ~72.7M monthly PyPI downloads
-    accessed: '2026-06-04'
+    shows: The rendered pypistats page for fastmcp; the figures are read from its API endpoint above rather
+      than from the chart.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: b2d55be6d54dea465f1a978227cbc9797563c9e0112df98242009dbfedc98d48
   - url: https://github.com/jlowin/fastmcp
-    shows: ~25.5k stars, ~10k dependents, README claims ~1M downloads/day and ~70% of MCP servers
-    accessed: '2026-06-04'
+    shows: '27,203 stargazers; README - "the actively maintained standalone project is downloaded a million
+      times a day, and some version of FastMCP powers 70% of MCP servers across all languages". No dependent-project
+      count is stated on the page.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 6d6f8c232f68238fe065bd4f1feb7c9ea73fe1d5970402aaa6edc4f3d89ae300
 capability:
   score: 4
   basis: feature_matrix
   value: auto schema generation/validation, tool/resource/prompt primitives, server+client, auth, deployment,
     protocol lifecycle management; the standard high-level MCP server framework
   confidence: medium
-  note: Most feature-complete framework for authoring the tool-protocol layer (MCP); scored 4 on protocol-tooling
-    feature breadth; a 5 is reserved for the protocol/category-definer (MCP itself).
+  note: 'Most feature-complete framework for authoring the tool-protocol layer (MCP); scored 4 on protocol-tooling
+    feature breadth; a 5 is reserved for the protocol/category-definer (MCP itself). Re-read 2026-08-13:
+    the README now organizes the framework around "three pillars" - Servers exposing tools, resources and
+    prompts; Apps giving those tools an interactive surface; and the client side - which is the same surface
+    the recorded value describes rather than a new one. FastMCP 1.0 remains upstreamed into the official
+    Python SDK, with this the standalone successor. Band unchanged at 4.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/jlowin/fastmcp
-    shows: 'framework feature set: schema gen/validation, server+client, auth, deployment'
-    accessed: '2026-06-04'
+    shows: 'README - "FastMCP is the standard framework for working with MCP. FastMCP 1.0 was incorporated
+      into the official MCP Python SDK in 2024." Three pillars: Servers, Apps, clients. Schema generation
+      and validation, tool/resource/prompt primitives, auth and deployment.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 6d6f8c232f68238fe065bd4f1feb7c9ea73fe1d5970402aaa6edc4f3d89ae300
