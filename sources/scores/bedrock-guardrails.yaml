@@ -15,23 +15,42 @@ openness:
     license:
     - name: proprietary
   confidence: high
-  note: Closed managed cloud service; no weights or source.
+  note: Closed managed cloud service; no weights or source. Re-read 2026-08-13 and unchanged. One wrinkle
+    worth recording - the ApplyGuardrail API can now be pointed at self-hosted models, but that is the
+    managed guardrail reaching outward, not a self-hostable guardrail, so source stays closed.
   raw: service:proprietary managed AWS service(no self-host);features:denied topics, content filters, PII
     redaction, contextual grounding;source:closed;license:proprietary
+  last_verified: '2026-08-13'
   sources:
   - url: https://aws.amazon.com/bedrock/guardrails/
-    shows: 'managed guardrails: denied topics, content filters, PII redaction, grounding; proprietary'
-    accessed: '2026-06-29'
+    shows: 'An AWS-run service with no source repository and no self-hostable implementation; use is
+      governed by the AWS service terms rather than a published license. ''The ApplyGuardrail API allows
+      you to use the configurable safeguards offered by Bedrock Guardrails with any foundation model
+      whether hosted on Amazon Bedrock or self-hosted models'' - the guardrail itself still runs at AWS.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 237c942fa1b375b11755e72685df1c96006fb5f240c89b9f19136c0f5653a99a
+    establishes:
+    - source
+    - license
 adoption:
   level: 3
   reach: 100K-1M
   signal_type: usage_volume
   confidence: low
-  note: Default guardrail layer for the Amazon Bedrock customer base; broad enterprise reach.
+  note: 'NOT confirmed on 2026-08-13. usage_volume claims a download or install count and AWS publishes
+    none for this service - the page names customers (''Companies like Chime Financial, KONE, Panorama,
+    Strava, Remitly, and PwC trust Bedrock Guardrails for their AI applications'') but gives no count of
+    anything. Named logos are exactly the reported_traction shape, and the 100K-1M label asserts a
+    measurement nobody made. Recommend reported_traction with no reach; the level is an owner call and is
+    not taken here.'
   sources:
   - url: https://aws.amazon.com/bedrock/guardrails/
-    shows: managed guardrails across Bedrock models
-    accessed: '2026-06-29'
+    shows: Names six customers by logo and quote. No customer count, request volume or developer count
+      appears on the page.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 237c942fa1b375b11755e72685df1c96006fb5f240c89b9f19136c0f5653a99a
 capability:
   score: 4
   basis: feature_matrix
@@ -39,8 +58,15 @@ capability:
   value: Denied topics, content filters, PII redaction, word filters, and contextual-grounding checks
     across any Bedrock model.
   confidence: low
-  note: Broad configurable managed guardrail set; strong coverage, closed.
+  note: Broad configurable managed guardrail set; strong coverage, closed. Re-read 2026-08-13 and unchanged,
+    with Automated Reasoning checks now listed as a sixth policy beside the five the value names.
+  last_verified: '2026-08-13'
   sources:
   - url: https://aws.amazon.com/bedrock/guardrails/
-    shows: denied topics, filters, PII redaction, contextual grounding
-    accessed: '2026-06-29'
+    shows: 'Page lists content moderation (content and word filters), prompt attack detection, topic
+      classification (denied topics), PII redaction (sensitive information filters), and hallucination
+      detection (contextual grounding and Automated Reasoning checks), applied ''consistently across any
+      foundation model''.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 237c942fa1b375b11755e72685df1c96006fb5f240c89b9f19136c0f5653a99a

@@ -15,13 +15,31 @@ openness:
   note: Open weights under Apache-2.0 (permissive, OSI), but neither the post-training data nor the fine-tuning
     pipeline is released. The 4-rung requires both, so this scores 3, the rung every comparable Apache-2.0
     guardrail model sits on. A strong open-weights release even so, and the license is not what holds
-    it back.
+    it back. Re-read 2026-08-13 and unchanged - the card has a Training Data section that names the
+    ingredients without publishing the mixture, which is the state the rung was set on.
   raw: weights:open(granite-guardian-3.2-5b on HF);data:not-released;license:Apache-2.0(OSI)
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/ibm-granite/granite-guardian-3.2-5b
-    shows: Apache-2.0; open weights; harm/bias/jailbreak + RAG groundedness checks; ~1,377 downloads/month,
-      14 likes
-    accessed: '2026-06-29'
+    shows: 'Repo shows License - apache-2.0, ungated, with three safetensors shards downloadable. The
+      Training Data section says the model is ''trained on a combination of human annotated and synthetic
+      data'' drawing samples from hh-rlhf, but publishes no mixture and declares no datasets in cardData.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 788fbad9e1598d2067b9d9bef82529062b46025a9f14bac36a1597b133058cbb
+    establishes:
+    - weights
+    - data
+    - license
+  - url: https://huggingface.co/ibm-granite/granite-guardian-3.2-5b/raw/main/README.md
+    shows: Raw card front matter records license - apache-2.0 and no datasets key; the Training Data
+      section describes human-annotated and synthetic data rather than a released corpus.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 0aa1bea6d0e99e9b534cb9bc54e851ff2385cbf8031e5e5bb2b6fd71c7407017
+    establishes:
+    - data
+    - license
 adoption:
   level: 1
   reach: <10K
@@ -45,8 +63,13 @@ capability:
     relevance, groundedness, answer relevance); broader than pure I/O moderation.
   confidence: medium
   note: 'One of the broadest open guardrails: standard harm taxonomy plus RAG-specific groundedness/hallucination
-    checks.'
+    checks. Re-read 2026-08-13 and unchanged.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/ibm-granite/granite-guardian-3.2-5b
-    shows: harm/bias/jailbreak + RAG groundedness/answer-relevance checks
-    accessed: '2026-06-29'
+    shows: Card enumerates Harm, Social Bias, Jailbreaking, Violence, Profanity and Sexual Content, plus
+      RAG hallucination risks - context relevance, groundedness and answer relevance - and function-calling
+      risk detection in agentic workflows.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 788fbad9e1598d2067b9d9bef82529062b46025a9f14bac36a1597b133058cbb

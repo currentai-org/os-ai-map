@@ -15,13 +15,31 @@ openness:
   note: Open weights under Apache-2.0 (OSI) with no released training data and no published fine-tuning
     pipeline. The 4-rung requires both, so this scores 3, the same rung as every other model that ships
     permissive weights without a recipe. Notable as a policy-conditioned safety reasoning model rather
-    than a fixed classifier, but that shapes capability, not openness.
+    than a fixed classifier, but that shapes capability, not openness. Re-read 2026-08-13 and unchanged -
+    the card still carries no training-data section at all.
   raw: weights:open(gpt-oss-safeguard-20b/120b on HF);data:not-released;license:Apache-2.0(OSI)
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/openai/gpt-oss-safeguard-20b
-    shows: Apache-2.0; open weights; policy-conditioned safety reasoning; 20b/120b; ~131K downloads/month,
-      235 likes
-    accessed: '2026-06-29'
+    shows: 'Repo shows License - apache-2.0, ungated, with safetensors shards downloadable. The card
+      documents the 20b and 120b variants and their use, and says nothing about training data - no
+      dataset link, no mixture, and no datasets key in cardData.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 4dce270a5eb178984beab90b786af8b82d7ab7bf7d73ede5712dd1f06beca1ce
+    establishes:
+    - weights
+    - data
+    - license
+  - url: https://huggingface.co/openai/gpt-oss-safeguard-20b/raw/main/README.md
+    shows: Raw card front matter records license - apache-2.0 and base_model - openai/gpt-oss-20b, with no
+      datasets key; the body has no training-data section.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 1a3a493bbb99dd2935e6e61c902be60ba326d7627958f5f78279259bb77027e9
+    establishes:
+    - data
+    - license
 adoption:
   level: 3
   reach: 100K-1M
@@ -45,8 +63,14 @@ capability:
     scores, configurable reasoning effort; 20b and 120b.
   confidence: medium
   note: 'A different shape from fixed classifiers: reasons over an arbitrary supplied policy, which generalizes
-    to novel categories at some latency cost.'
+    to novel categories at some latency cost. Re-read 2026-08-13 and unchanged.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/openai/gpt-oss-safeguard-20b
-    shows: reasoned decisions, configurable reasoning effort, bring-your-own-policy
-    accessed: '2026-06-29'
+    shows: Card describes gpt-oss-safeguard-120b and gpt-oss-safeguard-20b as 'safety reasoning models
+      built-upon gpt-oss' that classify against a policy you supply, with a 'Bring your own policy' feature
+      that 'interprets your written policy, so it generalizes across products and use cases', and reasoned
+      rather than bare-label decisions.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 4dce270a5eb178984beab90b786af8b82d7ab7bf7d73ede5712dd1f06beca1ce

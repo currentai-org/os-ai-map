@@ -15,23 +15,39 @@ openness:
     license:
     - name: proprietary
   confidence: high
-  note: Closed managed cloud service; no weights or source.
+  note: Closed managed cloud service; no weights or source. Re-read 2026-08-13 and unchanged.
   raw: service:proprietary managed Azure service(no self-host);features:text/image moderation, prompt shields,
     groundedness;source:closed;license:proprietary
+  last_verified: '2026-08-13'
   sources:
   - url: https://azure.microsoft.com/en-us/products/ai-services/ai-content-safety
-    shows: 'managed content-safety APIs: moderation, prompt shields, groundedness; proprietary'
-    accessed: '2026-06-29'
+    shows: 'Sold as an Azure service on consumption pricing - ''Flexible pricing to meet your needs'',
+      ''Pay for only what you use - no upfront costs'' priced on analysis volume. The word self-host does
+      not appear anywhere on the page, no source repository is linked, and use is governed by the Azure
+      product terms rather than any published license.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: f41d64cba9a9c0fa1315c942dbcf83985b347ec510a9ee5bce207c8b8cfdf83c
+    establishes:
+    - source
+    - license
 adoption:
   level: 3
   reach: 100K-1M
   signal_type: usage_volume
   confidence: low
-  note: Default content-safety layer for Azure OpenAI and Azure AI customers; broad enterprise reach.
+  note: 'NOT confirmed on 2026-08-13. usage_volume claims a download or install count and Microsoft
+    publishes none for this service - the product page carries no customer count, no request volume and no
+    developer count. The 100K-1M label therefore asserts a measurement nobody made, which adoption.md rules
+    out on this instrument. The reading underneath it - the default content-safety layer in front of the
+    Azure AI customer base - is a reported_traction claim. Recommend reported_traction with no reach; the
+    level is an owner call and is not taken here.'
   sources:
   - url: https://azure.microsoft.com/en-us/products/ai-services/ai-content-safety
-    shows: managed service for the Azure AI customer base
-    accessed: '2026-06-29'
+    shows: Product and pricing page. No usage figure of any kind appears on it.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: f41d64cba9a9c0fa1315c942dbcf83985b347ec510a9ee5bce207c8b8cfdf83c
 capability:
   score: 4
   basis: feature_matrix
@@ -40,7 +56,15 @@ capability:
     in one managed service.
   confidence: low
   note: Broad managed feature set (moderation + prompt shields + groundedness); strong coverage, closed.
+    Re-read 2026-08-13 and unchanged, with protected-material detection listed alongside the three the
+    value names.
+  last_verified: '2026-08-13'
   sources:
   - url: https://azure.microsoft.com/en-us/products/ai-services/ai-content-safety
-    shows: moderation + prompt shields + groundedness
-    accessed: '2026-06-29'
+    shows: 'Page lists blocking harmful inputs and outputs across violence, hate, sexual and self-harm for
+      text and images; custom AI filters; ''Identify and mitigate both direct and indirect threats with
+      prompt shields''; ''Identify and correct generative AI hallucinations ... with groundedness
+      detection''; and protected-material detection for copyrighted text and code.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: f41d64cba9a9c0fa1315c942dbcf83985b347ec510a9ee5bce207c8b8cfdf83c

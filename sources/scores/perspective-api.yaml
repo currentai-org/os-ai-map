@@ -16,23 +16,45 @@ openness:
     - name: proprietary
   confidence: high
   note: Closed, API-only hosted classifier; no weights or source. Long-standing and influential, but proprietary.
+    Re-read 2026-08-13 and the openness reading is unchanged, but the product is ending - the site now leads
+    with a sunset notice, and the API goes out of service after 2026. That is an availability fact rather
+    than an openness one, so the 1/closed stands; the consequences are on adoption, capability and the prose.
   raw: service:proprietary hosted API by Jigsaw/Google(no weights, no self-host);access:free with quota;scores:toxicity
     + related attributes;source:closed;license:proprietary
+  last_verified: '2026-08-13'
   sources:
   - url: https://perspectiveapi.com/
-    shows: Jigsaw (Google) free hosted toxicity-scoring API; no weights or self-host
-    accessed: '2026-06-29'
+    shows: 'Jigsaw''s hosted API, governed by its own API Terms with no source or self-hostable
+      implementation offered anywhere on the site; access is by quota, and the page handles usage and
+      increased-quota requests. It now opens ''Important Notice - Perspective API is sunsetting and service
+      is officially ending after 2026'', with ''The service will remain active until December 31, 2026''
+      and no migration support.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c40c721ce2b0d461023e5f36699ce3be9a39da5493b51eff326dccd938ba1b8f
+    establishes:
+    - source
+    - license
 adoption:
   level: 4
   reach: 1M-10M
   signal_type: usage_volume
   confidence: medium
-  note: One of the most widely-adopted moderation APIs since 2017, used across major platforms and research;
-    free with quota.
+  note: 'NOT confirmed on 2026-08-13, and the record has two problems rather than one. First the
+    instrument: usage_volume claims a download or install count, and Jigsaw has never published one for
+    Perspective - the 1M-10M label asserts a measurement nobody made, which is what adoption.md forbids on
+    a claim of this kind. Second the level: the site now announces the API is sunsetting, out of service
+    after December 31, 2026, and gives as the reason that ''AI capabilities have evolved, and there is now
+    less demand for a standalone tool specific to this area''. A level 4 on a discontinued free API is a
+    claim about the past. Recommend reported_traction with no reach and a level the owner sets; not taken
+    here.'
   sources:
   - url: https://perspectiveapi.com/
-    shows: widely-used free hosted moderation API since 2017
-    accessed: '2026-06-29'
+    shows: Sunset announcement and transition period. No usage figure of any kind - no request volume, no
+      customer count, no developer count - appears on the page.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c40c721ce2b0d461023e5f36699ce3be9a39da5493b51eff326dccd938ba1b8f
 capability:
   score: 3
   basis: feature_matrix
@@ -40,9 +62,17 @@ capability:
   value: Scores toxicity and related attributes (insult, threat, profanity, identity attack) for text,
     multilingual; established but a fixed attribute set.
   confidence: low
-  note: Mature toxicity scoring with broad real-world use; narrower than full safety taxonomies and policy-conditioned
-    models.
+  note: 'Mature toxicity scoring with broad real-world use; narrower than full safety taxonomies and policy-conditioned
+    models. NOT confirmed on 2026-08-13 - the cited page no longer carries the attribute list at all, having
+    been replaced by the sunset notice, so nothing on it supports the recorded value. The developer site
+    that does carry the attributes renders client-side and returned no readable content, so the fact could
+    not be re-derived from a fetch rather than being found absent. A source that still shows the attributes
+    is needed, and the sunset raises the separate question of whether a product leaving service in 2026
+    should carry a live capability band at all.'
   sources:
   - url: https://perspectiveapi.com/
-    shows: toxicity + insult/threat/identity-attack scoring, multilingual
-    accessed: '2026-06-29'
+    shows: Sunset notice only. The toxicity and attribute scoring the value describes is no longer
+      documented anywhere on this page.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c40c721ce2b0d461023e5f36699ce3be9a39da5493b51eff326dccd938ba1b8f

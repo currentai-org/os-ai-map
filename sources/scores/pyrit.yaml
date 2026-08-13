@@ -16,12 +16,23 @@ openness:
     core-gated:
       value: ungated
   confidence: high
-  note: 'Fully open source: MIT-licensed automation framework, self-hostable, no proprietary tier.'
+  note: 'Fully open source: MIT-licensed automation framework, self-hostable, no proprietary tier. Re-read
+    2026-08-13 and unchanged.'
   raw: license:MIT(OSI);source:public(full Python framework);self-host:yes;service:none;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/microsoft/PyRIT
-    shows: MIT; open red-teaming framework from the Microsoft AI Red Team
-    accessed: '2026-06-29'
+    shows: 'Repo metadata records license spdxId - MIT. README describes PyRIT as ''an open source
+      framework built to empower security professionals and engineers to proactively identify risks in
+      generative AI systems'' and points at the docs site for install and use; no hosted tier, no
+      enterprise directory and no license key on the page.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 01dbf8952a2e317f65ccfaacc72ff4da657369b277aa8cd92d1b529af35dbd0a
+    establishes:
+    - source
+    - core-gated
+    - license
 adoption:
   level: 2
   reach: 1K-10K stars
@@ -46,8 +57,23 @@ capability:
   value: Automated adversarial prompting, attack-strategy orchestration, and scoring to identify harms
     across providers.
   confidence: medium
-  note: A leading open red-teaming harness; strong automation and scoring, multi-provider.
+  note: A leading open red-teaming harness; strong automation and scoring, multi-provider. Re-read
+    2026-08-13. The README has been trimmed to a pointer at the docs site and no longer names the pieces,
+    so the package listing is cited alongside it - the modules are what the band was read off.
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/microsoft/PyRIT
-    shows: automated adversarial prompting, attack orchestration, scoring
-    accessed: '2026-06-29'
+    shows: README describes 'an open source framework built to empower security professionals and engineers
+      to proactively identify risks in generative AI systems'; the component detail it used to carry now
+      lives on the docs site.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 01dbf8952a2e317f65ccfaacc72ff4da657369b277aa8cd92d1b529af35dbd0a
+  - url: https://api.github.com/repos/microsoft/PyRIT/contents/pyrit
+    shows: Top-level package listing carries converter, datasets and prompt_normalizer (adversarial prompt
+      generation), executor and scenario (attack-strategy orchestration), score (scoring), and
+      prompt_target with backend and auth (multi-provider targets) - the three things the band is recorded
+      on, as shipped modules.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: d297705f9544fd3110ef50f9d507ec0009463771d1e11294457b448af9f50876
