@@ -13,12 +13,34 @@ openness:
     free_text:
     - no-feature-gated-core
   confidence: high
-  note: Fully MIT; optional Azure/LLM features are pluggable, not gating.
+  note: 'Fully MIT; optional Azure/LLM features are pluggable, not gating. Re-read 2026-08-13, and the pluggable
+    claim was checked rather than assumed. The LICENSE is the plain MIT License, "Copyright (c) Microsoft
+    Corporation", and the repo page carries the matching badge. Azure Document Intelligence and Azure Content
+    Understanding are optional extras - the `[az-doc-intel]` and `[az-content-understanding]` install groups
+    - sitting in a capability table beside the built-in converters, which the README describes as offline
+    and format-specific. So the conversion the product exists to do runs entirely in the published package;
+    the Azure paths are alternatives you may buy, not a core withheld from it. core-gated stays ungated.'
   raw: license:MIT(OSI; repo LICENSE + pyproject, PyPI field null);source:public;no-feature-gated-core;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://raw.githubusercontent.com/microsoft/markitdown/main/LICENSE
-    shows: MIT, Copyright Microsoft Corporation
-    accessed: '2026-06-18'
+    shows: 'Plain MIT License text: "Copyright (c) Microsoft Corporation".'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383
+    establishes:
+    - license
+  - url: https://github.com/microsoft/markitdown
+    shows: Repo page - MIT badge, root tree carrying LICENSE, Dockerfile and packages/. A capability table
+      compares "Built-in converters" (offline, format-specific) against Azure Document Intelligence and Azure
+      Content Understanding, both installed as optional extras `[az-doc-intel]` and `[az-content-understanding]`.
+      No license key, second license or enterprise directory.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 0d8669638b70573b34edd1d33c32c3120695f1c25466cd087ac848083108d0e9
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 5
   signal_type: usage_volume
@@ -41,8 +63,20 @@ capability:
   value: converts PDF/DOCX/PPTX/XLSX/images(OCR)/audio/HTML/CSV/JSON/XML/ZIP/EPub/YouTube -> Markdown; CLI + Python
     API + Docker; plugins; optional Azure Doc Intelligence + LLM vision
   confidence: medium
-  note: Broadest format coverage among RAG ingestion tools; lighter on deep layout parsing than Docling.
+  note: 'Broadest format coverage among RAG ingestion tools; lighter on deep layout parsing than Docling.
+    Re-read 2026-08-13 and the recorded value holds clause for clause: the format list still runs PDF, Office
+    documents, images with OCR, audio with speech transcription, HTML, CSV/JSON/XML, ZIP (iterating over
+    contents), YouTube URLs and EPubs, and the optional-extra list still carries `[audio-transcription]`,
+    `[youtube-transcription]`, `[az-doc-intel]` and `[az-content-understanding]` alongside a plugin section
+    and a Dockerfile. Band unchanged at 4 - the depth gap against Docling on layout and table structure is
+    the same one.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/microsoft/markitdown
-    shows: format coverage + interfaces
-    accessed: '2026-06-18'
+    shows: 'Format list - PDF, Office documents, images (OCR), audio (speech transcription), HTML, text-based
+      formats (CSV, JSON, XML), "ZIP files (iterates over contents)", YouTube URLs, EPubs. Optional extras
+      `[audio-transcription]`, `[youtube-transcription]`, `[az-doc-intel]`, `[az-content-understanding]`;
+      a Plugins section; a Dockerfile in the root tree.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 0d8669638b70573b34edd1d33c32c3120695f1c25466cd087ac848083108d0e9

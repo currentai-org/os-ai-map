@@ -11,35 +11,60 @@ openness:
     dataset_card:
       value: 'yes'
   confidence: high
-  note: Requires acceptance of terms and sharing contact info before download, so access is gated.
+  note: 'Requires acceptance of terms and sharing contact info before download, so access is gated. Re-read
+    2026-08-13: the Hub still shows “You need to agree to share your contact information to access this
+    dataset” and the API reports gated auto, so the terms-acceptance-plus-contact-info gate stands.'
   raw: license:permissive(SPDX);gated:terms-acceptance+contact-info;dataset_card:yes
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/datasets/bigcode/the-stack-v2
     shows: gated access requiring terms acceptance and contact-info sharing, permissive licenses, dataset
       card
-    accessed: '2026-06-22'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c607560a82e7612f2c9910103a8fc60df49a592398a31fde9fc82189d9962ce9
+    establishes:
+    - availability
+    - documentation
+    - license
 adoption:
   level: 3
   reach: 10K-100K
   signal_type: usage_volume
   confidence: high
-  note: 28,469 monthly downloads on Hugging Face, graded on the training-corpus bands.
+  note: 13,060 downloads in the trailing 30 days summed across the 1 declared artifact(s), read 2026-08-13
+    (bigcode/the-stack-v2 13,060). Bands at level 3 (10K-100K) on the dataset adoption scale, whose top
+    band is >1M.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/api/datasets/bigcode/the-stack-v2
-    shows: downloads field = 28,469 (30-day)
-    accessed: '2026-07-04'
+    shows: 13,060 downloads in the trailing 30 days for bigcode/the-stack-v2
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 40f9244fc2ee4ad2ec453ee5c0ba5cedf209cc6640b5c05b9d467a3a13f33ba6
 capability:
   score: 4
   basis: training_value
   basis_detail: downstream
   value: null
   confidence: high
-  note: Trained StarCoder2 (2024) and is the code base of SmolLM3 (2025) plus the source for Stack-Edu;
-    as the raw corpus it is beaten by its own edu-filtered slice in ablations.
+  note: 'Trained StarCoder2 (2024) and is the code base of SmolLM3 (2025) plus the source for Stack-Edu;
+    as the raw corpus it is beaten by its own edu-filtered slice in ablations. Re-read 2026-08-13: the StarCoder2
+    listing still records The Stack v2 at 619 programming languages and 4x the first StarCoder dataset,
+    and the SmolLM3 post still names it as the code source. Its edu-filtered slice remains the better corpus
+    in ablation, which is why this sits a band below Stack-Edu.'
+  relative_to: stack-edu
+  relation: one_below
+  last_verified: '2026-08-13'
   sources:
   - url: https://arxiv.org/abs/2402.19173
-    shows: StarCoder2 trained on The Stack v2 (900B+ tokens, 619 languages)
-    accessed: '2026-07-04'
+    shows: Abstract - The Stack v2 spans 619 programming languages and is 4x the first StarCoder dataset;
+      StarCoder2 3B/7B/15B train on 3.3-4.3T tokens of it
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 1be42d8177c7f4a82830445b6292e49204520395a26f84de16249eb580609856
   - url: https://huggingface.co/blog/smollm3
     shows: SmolLM3 code data is The Stack v2
-    accessed: '2026-07-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 0bda4e81844892caf115c991b5f50c8ca57f4e4e42aeeefba89d1f5cd8065edc

@@ -15,7 +15,11 @@ openness:
     free_text:
     - execution harness + leaderboard public
   confidence: high
-  note: Apache-2.0, fully public; OSI -> open_source.
+  last_verified: '2026-08-13'
+  note: Apache-2.0, fully public; OSI -> open_source. Re-read 2026-08-13 - the license endpoint still
+    reports Apache-2.0 and the README still offers `--execution local`. The repo has since been ARCHIVED
+    (read-only, last push 2026-01-03), which freezes the source rather than withdrawing it, so both `source`
+    and `core-gated` are unchanged.
   raw: license:Apache-2.0(OSI);source:public(GitHub);execution harness + leaderboard public;core-gated:ungated(no
     paid tier or license key, harness runs locally with --execution local)
   sources:
@@ -36,6 +40,24 @@ openness:
     content_sha256: 4aa8cbfa3111e92db886583d554a3c9e8f14561d47261d6441c069835e3bdc28
     establishes:
     - core-gated
+  - url: https://api.github.com/repos/bigcode-project/bigcodebench/license
+    shows: GitHub's license endpoint reports spdx_id Apache-2.0 for bigcode-project/bigcodebench and returns
+      the Apache-2.0 text as the LICENSE body.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 3ba3f912356b99d0ec10ae73ccbea48484efd7c182db1f9feda26d0a56ffdf45
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/bigcode-project/bigcodebench/main/README.md
+    shows: 'Re-read 2026-08-13: the evaluation command still declares `--execution [e2b|gradio|local]`,
+      so the harness still runs end to end on the reader''s own machine, and nothing in the README offers
+      a paid tier, a commercial edition or a license key.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 4aa8cbfa3111e92db886583d554a3c9e8f14561d47261d6441c069835e3bdc28
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 2
   reach: 1K-10K stars
@@ -46,8 +68,11 @@ adoption:
     capped at level 3, set to 2 on the modest star + leaderboard footprint. Stars read 2026-08-13: 1,573
     across the 2 declared repos, which bands at 1K-10K stars, level 2 on the stars scale in
     signal_routing.yaml. The previous reach ''10K-100K'' was not a label this instrument offers - stars have
-    their own vocabulary because a star is not a download. No last_verified claimed: a star count is volatile,
-    so a digest of it would read as drift on every refetch, and the rest of the axis was not re-read.'
+    their own vocabulary because a star is not a download. Re-read against the GitHub API for both declared
+    repos on 2026-08-13 - bigcodebench 519 stars and bigcode-evaluation-harness 1,054, 1,573 together, so
+    the band is unchanged. The bigcodebench repo is now archived and read-only (last push 2026-01-03),
+    which is a reason the star count will stop moving rather than a reason to move the level.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/bigcode-project/bigcodebench
     shows: 503 stars; leaderboard with 163 models
@@ -55,15 +80,38 @@ adoption:
   - url: https://huggingface.co/spaces/bigcode/bigcodebench-leaderboard
     shows: active leaderboard ranking evaluated models
     accessed: '2026-06-04'
+  - url: https://api.github.com/repos/bigcode-project/bigcodebench
+    shows: stargazers_count = 519, forks 75, archived = true, pushed_at 2026-01-03 for bigcode-project/bigcodebench
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: bebda17678b2d1c7f8b2deb692937ead3b4e73a135683940be4db6f947762561
+  - url: https://api.github.com/repos/bigcode-project/bigcode-evaluation-harness
+    shows: stargazers_count = 1,054, forks 261 for bigcode-project/bigcode-evaluation-harness, the second
+      declared repo
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: f36d7d39467a86266ac743ad9e39ac8eea1e94c8b7ec9ec7d1cd89aaf24fa1ed
 capability:
   score: 3
   basis: feature_matrix
   value: 1140 function-level code-gen tasks with diverse library calls + complex instructions; two splits
     (Complete/Instruct); execution-based scoring; single-domain (code generation) vs multi-benchmark harnesses
   confidence: medium
+  relative_to: opencompass
+  relation: one_below
+  last_verified: '2026-08-13'
   note: Solid, rigorous code-gen eval but single-benchmark scope -- below the broad multi-task harnesses
-    (lm-eval, OpenCompass) on coverage breadth.
+    (lm-eval, OpenCompass) on coverage breadth. Feature matrix re-read 2026-08-13 and unchanged - the
+    README still describes 1140 tasks and the Complete/Instruct splits. The peer comparison in that sentence
+    is now recorded structurally against OpenCompass, whose 4 sits one rung above this 3.
   sources:
   - url: https://github.com/bigcode-project/bigcodebench
     shows: 1140 tasks, Complete/Instruct splits, execution-based eval
     accessed: '2026-06-04'
+  - url: https://raw.githubusercontent.com/bigcode-project/bigcodebench/main/README.md
+    shows: '''a new benchmark for code generation with 1140 software-engineering-oriented programming
+      tasks''; Complete and Instruct splits described; generation and execution-based grading run through
+      `--split [complete|instruct]`.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 4aa8cbfa3111e92db886583d554a3c9e8f14561d47261d6441c069835e3bdc28

@@ -13,12 +13,42 @@ openness:
     free_text:
     - no-feature-gated-core
   confidence: high
-  note: Fully MIT reference SDK.
+  note: 'Fully MIT reference SDK. Re-read 2026-08-13. The repository LICENSE is still the plain MIT License,
+    "Copyright (c) 2024 Anthropic, PBC" - worth stating because the sibling MCP repos are not: modelcontextprotocol/typescript-sdk
+    and modelcontextprotocol/servers have both moved to the project''s Apache-2.0 transition license, and
+    this one has not. PyPI agrees, classifying `mcp` as "OSI Approved :: MIT License", though its Author
+    field now reads "Model Context Protocol a Series of LF Projects, LLC" where this record had Anthropic
+    PBC. The whole SDK is in the published repo and installs from PyPI with no key or paid tier, so core-gated
+    stays ungated.'
   raw: license:MIT(OSI);source:public;no-feature-gated-core;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://pypi.org/project/mcp/
-    shows: MIT, package 'mcp', author Anthropic PBC
-    accessed: '2026-06-17'
+    shows: 'Package `mcp`. "License MIT License (MIT)", classifier "OSI Approved :: MIT License", "This project
+      is licensed under the MIT License." Author - Model Context Protocol a Series of LF Projects, LLC; maintainer
+      David Soria Parra. Latest release 2026-07-28.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c0d00a07217e5f2d73c1b99250d1c8643d56fceeb9eef530ac6c15a9c833f5f6
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/modelcontextprotocol/python-sdk/main/LICENSE
+    shows: 'Plain MIT License text: "Copyright (c) 2024 Anthropic, PBC". No Apache-2.0 transition preamble,
+      unlike the typescript-sdk and servers repositories.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 5e13dbbc1d120fc2a03cecde7c91424ae2d7de11b63d58ded2f4431e261ee50d
+    establishes:
+    - license
+  - url: https://github.com/modelcontextprotocol/python-sdk
+    shows: Repo page, 24,000 stargazers. The whole SDK is in the tree; install is `uv add "mcp[cli]"` with
+      no key. No enterprise directory, second license or paid tier.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 95eba3f326fa703f49d41a7e7a3a254b7d4545d0fbcd5f5376cea16404ac4cde
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 5
   signal_type: usage_volume
@@ -39,10 +69,23 @@ adoption:
 capability:
   score: 5
   basis: feature_matrix
-  value: client+server; stdio/SSE/Streamable-HTTP; FastMCP; structured output; OAuth 2.1; elicitation
+  value: client+server; every standard transport - stdio, Streamable HTTP and SSE; tools, resources and prompts;
+    an `mcp` CLI (dev/run/install)
   confidence: high
-  note: Most complete Python MCP toolkit.
+  note: 'Most complete Python MCP toolkit. Re-read 2026-08-13, and the recorded value did not fully survive
+    it. The README has been trimmed to three bullets - build servers exposing "tools, resources, and prompts
+    to any MCP host", build clients, and "Speak every standard transport: stdio, Streamable HTTP, and SSE"
+    - and no longer mentions FastMCP, structured output, OAuth 2.1 or elicitation anywhere on the page. Those
+    clauses are removed rather than restated elsewhere, because a capability value has to be traceable to
+    the source under it and these now are not. The band is left at 5: what the page does show is still the
+    reference implementation of the protocol in Python, carrying every transport the spec defines, and nothing
+    suggests capability was lost - only that the README stopped enumerating it.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/modelcontextprotocol/python-sdk
-    shows: 'feature set: client/server, transports, FastMCP, OAuth'
-    accessed: '2026-06-17'
+    shows: 'README - build MCP servers exposing tools, resources and prompts to any host; build MCP clients;
+      "Speak every standard transport: stdio, Streamable HTTP, and SSE". The `cli` extra adds `mcp dev`,
+      `mcp run` and `mcp install`. NOT on the page: FastMCP, OAuth 2.1, structured output or elicitation.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 95eba3f326fa703f49d41a7e7a3a254b7d4545d0fbcd5f5376cea16404ac4cde

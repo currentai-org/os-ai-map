@@ -12,32 +12,55 @@ openness:
     format:
       value: parquet
   confidence: high
-  note: Permissive ODC-BY license with ungated download and a full dataset card.
+  note: 'Permissive ODC-BY license with ungated download and a full dataset card. Re-read 2026-08-13: the
+    Hub still tags the release odc-by, the API reports gated false, and the card is intact, so licence,
+    availability and documentation are unchanged.'
   raw: license:ODC-BY;gated:false;dataset_card:present;format:parquet
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/datasets/HuggingFaceFW/fineweb
     shows: Dataset card present, ODC-BY license, public ungated download
-    accessed: '2026-06-22'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: b0ff0817716949392d60da6d371225b56d8acf7ad74a01f590facffc399dfb69
+    establishes:
+    - availability
+    - documentation
+    - license
 adoption:
   level: 4
   reach: 100K-1M
   signal_type: usage_volume
   confidence: high
-  note: 337,208 monthly downloads on Hugging Face, graded on the training-corpus bands.
+  note: 418,578 downloads in the trailing 30 days summed across the 1 declared artifact(s), read 2026-08-13
+    (HuggingFaceFW/fineweb 418,578). Bands at level 4 (100K-1M) on the dataset adoption scale, whose top
+    band is >1M.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/api/datasets/HuggingFaceFW/fineweb
-    shows: downloads field = 337,208 (30-day)
-    accessed: '2026-07-04'
+    shows: 418,578 downloads in the trailing 30 days for HuggingFaceFW/fineweb
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 832c71de7436632998ea10a8da34d982f975284817fa3ec502b997883acad48a
 capability:
   score: 4
   basis: training_value
   basis_detail: ablation
   value: null
   confidence: high
-  note: The FineWeb paper's 1.7B ablation beats C4, RefinedWeb, RedPajama, Dolma, The Pile, and OSCAR;
-    but its FineWeb-Edu subset is the preferred quality source.
+  note: 'The FineWeb paper''s 1.7B ablation beats C4, RefinedWeb, RedPajama, Dolma, The Pile, and OSCAR;
+    but its FineWeb-Edu subset is the preferred quality source. Re-read 2026-08-13: the arXiv listing still
+    describes FineWeb as a 15T-token Common Crawl dataset that produces better-performing LLMs than other
+    open pretraining datasets, and still introduces FineWeb-Edu as the filtered subset with dramatically
+    better MMLU and ARC results, which is the reason this sits a band below it.'
+  relative_to: fineweb-edu
+  relation: one_below
+  last_verified: '2026-08-13'
   sources:
   - url: https://arxiv.org/abs/2406.17557
-    shows: FineWeb 1.7B ablation outperforms C4/RefinedWeb/RedPajama/Dolma/Pile/OSCAR on the aggregate
-      suite
-    accessed: '2026-07-04'
+    shows: Abstract - FineWeb, 15T tokens from 96 Common Crawl snapshots, produces better-performing LLMs
+      than other open pretraining datasets. The per-corpus ablation table is in the paper body, not on this
+      page
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: a12bfcd47f835ad4a2c5630a228778370ed54509afa65bed1c6dfc264f2182da

@@ -13,12 +13,37 @@ openness:
     free_text:
     - no-feature-gated-core
   confidence: high
-  note: Fully Apache-2.0.
+  last_verified: '2026-08-13'
+  note: Fully Apache-2.0. Re-read 2026-08-13 - the license endpoint reports Apache-2.0 against a single
+    LICENSE file, and a directory listing of the repo shows no DATA_LICENSE beside it. Worth recording
+    because the README's header carries a 'Data License CC By NC 4.0' badge, but both badges link to
+    the sibling tatsu-lab/alpaca_farm repo rather than to anything in this one, so the NC term is not
+    a license this product makes you accept. The README installs and runs the whole evaluator locally
+    with no paid tier.
   raw: license:Apache-2.0(OSI);source:public;no-feature-gated-core;core-gated:ungated
   sources:
   - url: https://github.com/tatsu-lab/alpaca_eval
     shows: Apache-2.0, ~2.0k stars
     accessed: '2026-06-17'
+  - url: https://api.github.com/repos/tatsu-lab/alpaca_eval/license
+    shows: GitHub's license endpoint reports spdx_id Apache-2.0 for tatsu-lab/alpaca_eval at path LICENSE,
+      and returns the Apache-2.0 body. The repo's root listing carries no second license file.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 52ed013ccd784fedadc9da5bd63d1542e5756f7807f18cec89ac95fde733ac2b
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/tatsu-lab/alpaca_eval/main/README.md
+    shows: README installs the evaluator with `pip install alpaca-eval` or straight from the git repo
+      and runs it against the reader's own model outputs, printing a leaderboard locally; the annotator
+      configs and reference outputs ship in the package. The only external cost named is the reader's
+      own OpenAI credits, roughly $10 a run. No paid tier, hosted edition or license key appears in it.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 27576663fb6f13adf5b3adea8d7840f47ffe366fca74177fe6aac92e8b6ff11c
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 2
   signal_type: stars_fallback
@@ -40,8 +65,19 @@ capability:
   basis: feature_matrix
   value: LLM-as-judge win-rate; length-controlled metric; reference-model comparison; leaderboard
   confidence: medium
+  last_verified: '2026-08-13'
   note: De-facto standard for its niche with an influential LC metric; narrower than multi-task harnesses.
+    Feature matrix re-read 2026-08-13 and unchanged - length-controlled win rates are still the default,
+    the reference-model comparison and leaderboard are still there. No `relative_to` is recorded because
+    the note names no peer, only a class of harness.
   sources:
   - url: https://github.com/tatsu-lab/alpaca_eval
     shows: AlpacaEval 2.0 LC win-rate
     accessed: '2026-06-17'
+  - url: https://raw.githubusercontent.com/tatsu-lab/alpaca_eval/main/README.md
+    shows: '''Length-controlled Win Rates are out and used by default'', raising correlation with Chatbot
+      Arena from 0.93 to 0.98; LLM-as-judge auto-annotator against a reference baseline, plus a public
+      leaderboard and tooling for building and analyzing new automatic evaluators.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 27576663fb6f13adf5b3adea8d7840f47ffe366fca74177fe6aac92e8b6ff11c

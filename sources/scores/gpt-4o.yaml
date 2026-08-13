@@ -13,13 +13,21 @@ openness:
     - name: Proprietary
       detail: API-only
   confidence: high
-  note: No downloadable weights; API/ChatGPT-only, like the GPT-5 anchor (O1 closed). Confirmed API-only
-    with 128K context and Oct 2023 cutoff on OpenAI docs 2026-06-04.
+  note: No downloadable weights; API/ChatGPT-only, like the GPT-5 anchor (O1 closed). Re-read
+    2026-08-13 - the model page still lists a 128,000 context window and an Oct 01, 2023 knowledge
+    cutoff, describes GPT-4o as accepting text and image inputs, and offers no weight download,
+    dataset or training code anywhere on it. Nothing moved.
+  last_verified: '2026-08-13'
   raw: weights:closed;data:closed;code:closed;license:Proprietary(API-only)
   sources:
   - url: https://developers.openai.com/api/docs/models/gpt-4o
-    shows: GPT-4o API-only model, 128K context, text+image input, no open weights, Oct 2023 cutoff
-    accessed: '2026-06-04'
+    shows: 'API-only model page - "our most capable model outside of our o-series models", 128,000
+      context window, Oct 01, 2023 knowledge cutoff, text and image input. No weight download, no
+      corpus, no training code.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 80ac3e6e39a11987789554ba126f173559240c70a2817dc2b8713ebf4a8c5ec0
+    establishes: [weights, data, code, license]
 adoption:
   level: 5
   reach: '>10M users'
@@ -28,13 +36,20 @@ adoption:
   note: GPT-4o was the default ChatGPT model for much of 2024-2025 before GPT-5; ChatGPT crossed ~900M
     WAU (Feb 2026) and ~1B (May 2026). Attributed honestly to the ChatGPT surface GPT-4o powered, not
     a standalone GPT-4o count; well above the >10M threshold. WAU figure corroborated via aggregator (demandsage),
-    not a primary OpenAI disclosure, but the threshold is not close so no downgrade.
+    not a primary OpenAI disclosure, but the threshold is not close so no downgrade. Attempted re-read
+    2026-08-13 - the aggregator that carries the WAU figure answered HTTP 403 after retries, so the
+    only source for the number the band rests on could not be opened and this axis carries no
+    confirmation. The OpenAI docs page was re-read and still establishes that GPT-4o is an API and
+    ChatGPT model, but it publishes no usage figure and never did.
   sources:
   - url: https://developers.openai.com/api/docs/models/gpt-4o
-    shows: GPT-4o served as a primary OpenAI API/ChatGPT model
-    accessed: '2026-06-04'
+    shows: GPT-4o served as a primary OpenAI API/ChatGPT model; no usage figure published on the page
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 80ac3e6e39a11987789554ba126f173559240c70a2817dc2b8713ebf4a8c5ec0
   - url: https://www.demandsage.com/chatgpt-statistics/
-    shows: ChatGPT ~900M+ weekly active users (aggregator, corroborating surface scale)
+    shows: ChatGPT ~900M+ weekly active users (aggregator, corroborating surface scale). Answered HTTP
+      403 to the 2026-08-13 re-read after retries, so the figure was not re-confirmed.
     accessed: '2026-06-04'
 capability:
   score: 3
@@ -47,9 +62,15 @@ capability:
     recipe, a mid-2025-and-earlier model that has been surpassed scores 3, not 5. Caveat: the cited OpenAI
     docs page (verified 2026-06-04) shows NO benchmark figures; it only calls GPT-4o ''our most capable
     model outside our o-series''; the MMLU/MMMU values are launch-era external numbers and need a primary
-    benchmark source to back the headline.'
+    benchmark source to back the headline. Re-read 2026-08-13 - the caveat still holds exactly as
+    written. The page carries the phrase "our most capable model outside of our o-series models" and
+    zero benchmark figures, so what is confirmed is the positioning the 3 rests on, not the MMLU and
+    MMMU numbers in the value.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://developers.openai.com/api/docs/models/gpt-4o
-    shows: GPT-4o positioned as 'most capable model outside o-series', 128K context, text+image; no benchmark
-      figures present
-    accessed: '2026-06-04'
+    shows: 'GPT-4o positioned as "our most capable model outside of our o-series models", 128,000
+      context window, text+image; no benchmark figures present anywhere on the page.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 80ac3e6e39a11987789554ba126f173559240c70a2817dc2b8713ebf4a8c5ec0

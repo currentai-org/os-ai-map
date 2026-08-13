@@ -23,21 +23,31 @@ openness:
     repo ships an inference package only (nine files, no trainer or training config), the companion Safety-Eval
     repo is an evaluation suite, and the model card refers readers to the paper appendix for training
     details rather than to code. The 4-rung requires released data and released code, so this scores 3.
-    Recorded 4 until the components were completed; open data alone does not lift the rung.
+    Recorded 4 until the components were completed; open data alone does not lift the rung. Re-read
+    2026-08-13 and unchanged on all four dimensions; both GitHub sources returned byte-identical digests.
   raw: weights:open(allenai/wildguard on HF);data:open(WildGuardMix corpus public);code:partial(inference/serving
     package only; no training pipeline);base:Mistral-7B;license:Apache-2.0(OSI)
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/allenai/wildguard
-    shows: Apache-2.0; 7B Mistral fine-tune; prompt/response/refusal detection; open WildGuardMix corpus;
-      ~265K downloads/month
-    accessed: '2026-06-29'
+    shows: 'Repo shows License - apache-2.0 and a dataset tag allenai/wildguardmix, gated auto (access
+      granted on accepting the AI2 Responsible Use policy), with safetensors and pytorch_model shards
+      downloadable. cardData declares datasets - allenai/wildguardmix, which is the published training
+      corpus.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: e3ea0e4834fe03c2d117e52296aa840d649fe4e08b4674b294aaf680a286eb05
+    establishes:
+    - weights
+    - data
+    - license
   - url: https://api.github.com/repos/allenai/wildguard/contents
     shows: Root listing of the project's own repo, which is the whole of what it ships as code. Nine entries
       (.gitignore, LICENSE.md, README.md, docs, examples, pyproject.toml, requirements.txt, tests, wildguard).
       No training directory, no trainer entrypoint, no SFT or DPO config. The `wildguard` package is the
       classifier wrapper and `examples/wildguard_filter` is a serving demo, so the published code is inference
-      and serving only.
-    accessed: '2026-08-12'
+      and serving only. Re-fetched 2026-08-13 - the digest is unchanged, so the listing is the same one.
+    accessed: '2026-08-13'
     http_status: 200
     content_sha256: c4fb6dc1020ec916c47d6d6a90161fa20226b7bac3f147f26da9521c542a26e6
     establishes:
@@ -46,8 +56,9 @@ openness:
     shows: The project's own README installs with `pip install wildguard` and documents `load_wildguard()`
       plus `classify()`. Its only outbound links are the paper, the WildGuardMix dataset, the model, and
       the Safety-Eval companion repo, which it describes as holding "the details of evaluations run in
-      the WildGuard paper". No training pipeline is offered or linked.
-    accessed: '2026-08-12'
+      the WildGuard paper". No training pipeline is offered or linked. Re-fetched 2026-08-13 - the digest
+      is unchanged.
+    accessed: '2026-08-13'
     http_status: 200
     content_sha256: e9b46a0e3e74792e8cebe692f444607e21767d1888a2ade3785d3657fd33c699
     establishes:
@@ -75,7 +86,13 @@ capability:
     GPT-4 and prior open baselines, with low over-blocking on benign traffic.
   confidence: medium
   note: Strong precision and low over-refusal; the joint refusal-detection head is a useful differentiator.
+    Re-read 2026-08-13 and unchanged.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/allenai/wildguard
-    shows: prompt/response/refusal detection; 13 subcategories; beats GPT-4 on benchmarks
-    accessed: '2026-06-29'
+    shows: Card describes a one-stop moderation tool detecting prompt harm, response harm and model
+      refusal across 13 risk subcategories, reported above GPT-4 on the paper's moderation benchmarks;
+      tagged classifier, safety, moderation and arxiv 2406.18495.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: e3ea0e4834fe03c2d117e52296aa840d649fe4e08b4674b294aaf680a286eb05

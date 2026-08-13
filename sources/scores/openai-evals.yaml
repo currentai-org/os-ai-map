@@ -17,8 +17,12 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
+  last_verified: '2026-08-13'
   note: Framework code is fully OSI (MIT); the included eval datasets carry their own open licenses, which
-    is standard for a harness.
+    is standard for a harness. Re-read 2026-08-13 - LICENSE.md is still the unmodified MIT text, copyright
+    2023 OpenAI, followed by the per-dataset carve-out that the components already record. GitHub's own
+    detector reports NOASSERTION because of that appended section, which is a detector artifact rather
+    than a second license over the framework code.
   raw: license:MIT(OSI);source:public(full framework + registry);per-dataset-licenses:mixed(CC/CC0/Apache
     for bundled data); no feature-gated core;core-gated:ungated
   sources:
@@ -28,6 +32,26 @@ openness:
   - url: https://github.com/openai/evals
     shows: open framework for evaluating LLMs with open benchmark registry; MIT badge; 18.6k stars
     accessed: '2026-06-04'
+  - url: https://raw.githubusercontent.com/openai/evals/main/LICENSE.md
+    shows: 'LICENSE.md opens ''MIT License / Copyright (c) 2023 OpenAI'' with the full unmodified MIT
+      body, then ''NOTE: This license applies to all parts of this repository except for the datasets
+      specified below'' followed by the per-dataset license table.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 055f213a5784ecbe4d24df5f539bd134490e327d5e83c51c2ba4e9d5cf308757
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/openai/evals/main/README.md
+    shows: README documents cloning the repo, `pip install -e .`, and pulling the bundled eval registry
+      over Git-LFS, so the whole framework and its benchmark registry run from the published source. The
+      only requirement it adds is the reader's own OPENAI_API_KEY. No pricing, paid tier, enterprise edition
+      or license key appears in it.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: f0b50bd53e2fbc81be774a6bfb0cf20997aa7509bd22925ae779a87d57c7c914
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 3
   reach: '>10K stars'
@@ -41,11 +65,19 @@ adoption:
     instrument does not offer - a star is not a download. THE REAL DEFECT is upstream: this product declares
     no artifacts at all, so a stars_fallback band had no stars source behind it and the count lived only in
     this note. Declaring openai/evals would fix it, and is deliberately not done here because a declared code
-    repo also re-routes the openness license dimension. No last_verified claimed: a star count is volatile.'
+    repo also re-routes the openness license dimension. Re-read against the GitHub API on 2026-08-13 -
+    19,161 stars and 3,052 forks, last push 2026-04-14, so the band is unchanged and the repo has gone
+    four months without a commit.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/openai/evals
     shows: 18.6k stars, 3k forks, 691 commits
     accessed: '2026-06-04'
+  - url: https://api.github.com/repos/openai/evals
+    shows: stargazers_count = 19,161, forks 3,052, pushed_at 2026-04-14, archived = false
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 83027d82d0f08c3f337a0cc7a2e917098f42c197d05e7a41c3a4a7d959851bcd
 capability:
   score: 3
   basis: feature_matrix
@@ -53,9 +85,22 @@ capability:
     and exact/fuzzy-match graders. Coverage breadth modest vs lm-eval-harness/HELM; no built-in agentic-eval
     harness; maintenance has slowed.
   confidence: medium
+  relative_to: lm-evaluation-harness
+  relation: two_below
+  last_verified: '2026-08-13'
   note: Solid general-purpose authoring framework but not frontier on task coverage, backend breadth,
-    or agentic-eval support relative to category leaders.
+    or agentic-eval support relative to category leaders. Feature matrix re-read 2026-08-13 and unchanged
+    - the README still describes a registry of evals plus custom-eval authoring, and the repo has not
+    been pushed since 2026-04-14, which is the slowed maintenance the value already records. The comparison
+    to lm-eval-harness is now recorded structurally.
   sources:
   - url: https://github.com/openai/evals
     shows: framework + registry of benchmarks, custom eval authoring, model-graded grading
     accessed: '2026-06-04'
+  - url: https://raw.githubusercontent.com/openai/evals/main/README.md
+    shows: 'README: ''We offer an existing registry of evals to test different dimensions of OpenAI models
+      and the ability to write your own custom evals''; private evals over your own data supported. No
+      agentic-eval harness and no multi-backend abstraction described.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: f0b50bd53e2fbc81be774a6bfb0cf20997aa7509bd22925ae779a87d57c7c914

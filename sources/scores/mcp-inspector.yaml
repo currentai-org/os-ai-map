@@ -13,12 +13,40 @@ openness:
     free_text:
     - no-feature-gated-core
   confidence: high
-  note: Fully MIT.
+  note: 'Fully MIT, no feature-gated core. Re-read 2026-08-13, and the cited evidence had to be replaced:
+    this record said "MIT license file" and there is no LICENSE file in the repository at all - not at LICENSE,
+    not at LICENSE.md, and not in the root listing. MIT is still the right answer and is now sourced where
+    the project actually states it, in the README''s License section ("MIT.") and in package.json ("license":
+    "MIT"). Worth noting alongside the sibling repos: typescript-sdk and servers have both moved to the MCP
+    Apache-2.0 transition license and this one has not, so the org is no longer uniform. The whole tool is
+    in the published tree and runs via `npx @modelcontextprotocol/inspector` with no key or paid tier.'
   raw: license:MIT(OSI);source:public;no-feature-gated-core;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
+  - url: https://raw.githubusercontent.com/modelcontextprotocol/inspector/main/README.md
+    shows: 'License section reads, in full - "MIT." The repository root carries no LICENSE file; raw.githubusercontent
+      answers 404 for both main/LICENSE and main/LICENSE.md.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 60e4c9ed29f5a27f39d0251d5e8a6457698b43238e50689ad710f9e7e9838315
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/modelcontextprotocol/inspector/main/package.json
+    shows: '"license": "MIT" - the machine-readable declaration, agreeing with the README.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 4ac78f0c8f933d02b13ad440fbceca0552a45c83aeac0c97ead664eeb891cbdb
+    establishes:
+    - license
   - url: https://github.com/modelcontextprotocol/inspector
-    shows: MIT license file
-    accessed: '2026-06-17'
+    shows: Repo page, 10,660 stargazers. Web, CLI and TUI clients plus shared core all in the tree, run from
+      one `npx @modelcontextprotocol/inspector` binary. No paid tier, license key or enterprise directory.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: ec7659bf41d4f9d37567c99cc494440d40d669d79edd9167076c65e1f54c87f0
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 3
   signal_type: usage_volume
@@ -37,10 +65,31 @@ adoption:
 capability:
   score: 4
   basis: feature_matrix
-  value: visual + CLI MCP debugging; all transports; request history/visualization; auth; multi-server config
+  value: three MCP debugging surfaces from one binary - a React web UI, a scriptable CLI for automation and
+    CI, and an Ink terminal UI; all transports including stateless streamable-HTTP; OAuth with discovery and
+    mid-session recovery; multi-server config
   confidence: high
-  note: Best-in-class for its debugging niche; narrower scope than the SDKs by design.
+  note: 'Best-in-class for its debugging niche; narrower scope than the SDKs by design. Re-read 2026-08-13
+    and the surface has GROWN since this value was written, so it has been restated rather than confirmed.
+    The tool is now at v2 and ships three clients from one `mcp-inspector` binary - Web (Vite + React + Mantine),
+    CLI ("a scriptable command-line client for automation, CI, and fast agent feedback loops") and TUI (Ink)
+    - where the record had only "visual + CLI". OAuth has grown into providers, discovery, storage and mid-session
+    recovery, and the connection can negotiate the modern 2026-07-28 protocol era alongside the legacy one.
+    The one clause dropped is "request history/visualization", which the README no longer mentions. The band
+    stays 4: this is still a debugger rather than a runtime, which is what puts it a rung under the SDKs.'
+  last_verified: '2026-08-13'
   sources:
+  - url: https://raw.githubusercontent.com/modelcontextprotocol/inspector/main/README.md
+    shows: '"three ways to inspect a server: Web - a Vite + React + Mantine single-page app with a Node backend.
+      CLI - a scriptable command-line client for automation, CI, and fast agent feedback loops. TUI - an interactive
+      terminal UI built with Ink." core/auth covers "OAuth: providers, discovery, storage, mid-session recovery".
+      A streamable-HTTP server can serve the modern 2026-07-28 protocol era or dual-era. NOT on the page:
+      request history or visualization.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 60e4c9ed29f5a27f39d0251d5e8a6457698b43238e50689ad710f9e7e9838315
   - url: https://github.com/modelcontextprotocol/inspector
-    shows: 'feature set: web UI + CLI debugging, all transports'
-    accessed: '2026-06-17'
+    shows: Repo page for the same README.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: ec7659bf41d4f9d37567c99cc494440d40d669d79edd9167076c65e1f54c87f0

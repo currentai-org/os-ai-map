@@ -21,35 +21,86 @@ openness:
       raw: open_market (global)
   confidence: high
   note: Schematics and mechanical files are publicly downloadable and the BSP is open, but the RK3588
-    needs proprietary Rockchip blobs and editable PCB source is not released.
+    needs proprietary Rockchip blobs and editable PCB source is not released. Re-read 2026-08-13 - the
+    Hardware Design section still offers v1.3/v1.42 schematic PDFs, SMD maps, 2D DXF and 3D STP plus CE
+    EMC test reports, and still publishes no editable PCB source; the Radxa BSP build tool is still
+    GPL-3.0; and Rockchip's rkbin still ships the DDR/BL31 boot binaries as prebuilt files. No dimension
+    moved.
   raw: schematics:published (PDF + SMD maps + DXF + 3D STP + CE/FCC public);toolchain:open (open BSP/kernel/U-Boot);blobs:required
     (Rockchip rkbin/DDR/TF-A required);retail:open_market (global)
+  last_verified: '2026-08-13'
   sources:
   - url: https://docs.radxa.com/en/rock5/rock5b/download
-    shows: downloadable schematic PDFs, SMD maps, DXF, 3D STP, CE/FCC reports
-    accessed: '2026-06-22'
+    shows: Hardware Design section listing "v1.3 Schematic pdf", "v1.42 Schematic pdf", "v1.3 SMD pdf",
+      "v1.3 2D Top&Bottom dxf", "v1.42 3D Figure stp" and a Quality certification section with CE EMC
+      test reports; no editable PCB source offered
+    accessed: '2026-08-13'
+    establishes:
+    - schematics
+    http_status: 200
+    content_sha256: 5be2c030020841b46a9db971a60695cb5e30415494eabed3d8d53e166dbd4ec5
   - url: https://github.com/radxa-repo/bsp
-    shows: official open Radxa BSP build tool with ROCK 5B profile
-    accessed: '2026-06-22'
+    shows: '"bsp - Radxa BSP Build Tool" under a GPL-3.0 license, 1,163 commits'
+    accessed: '2026-08-13'
+    establishes:
+    - toolchain
+    http_status: 200
+    content_sha256: ec98d2d600aa5285dc3de2c9f003ffd66c67a4b6c759fdc990b8bb23db326943
+  - url: https://github.com/rockchip-linux/rkbin
+    shows: Rockchip's own "Firmware and Tool Binarys" repository - prebuilt SPL/DDR/UsbPlug/BL31/BL32/OPTEE
+      boot binaries distributed as binaries rather than source
+    accessed: '2026-08-13'
+    establishes:
+    - blobs
+    http_status: 200
+    content_sha256: 43abb5977b081df3eaebfcdeb7f2bef288daab407fbf1b0f6935236c1e026cff
+  - url: https://ameridroid.com/products/rock5-model-b
+    shows: ROCK 5 Model B listed for sale at an authorized US distributor at $289.95 across three RAM
+      variants
+    accessed: '2026-08-13'
+    establishes:
+    - retail
+    http_status: 200
+    content_sha256: c7089f9d114cd738cbd5fb155da7279fe780ea6bf73f0cc19869a3c0a61a0f5c
 adoption:
   level: 5
   reach: mass-market
   signal_type: reported_traction
   confidence: high
   note: One of the most popular RK3588 SBCs, sold globally through authorized distributors with 15+ third-party
-    OS ports and an active community.
+    OS ports and an active community. Re-read 2026-08-13 - the ameriDroid listing is still live at $289.95
+    though every RAM variant currently reads "Sold out" at that distributor, and Radxa's own docs still
+    list the third-party OS ports (Armbian, Arch, DietPi, openFyde, Batocera, RebornOS and others). The
+    stock-out is one distributor's inventory rather than a discontinuation; level and reach unchanged.
+  last_verified: '2026-08-13'
   sources:
   - url: https://ameridroid.com/products/rock5-model-b
-    shows: live retail listing at an authorized US distributor
-    accessed: '2026-06-22'
+    shows: ROCK 5 Model B listing live at an authorized US distributor, $289.95, with "Sold out" against
+      the RAM variants
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c7089f9d114cd738cbd5fb155da7279fe780ea6bf73f0cc19869a3c0a61a0f5c
+  - url: https://docs.radxa.com/en/rock5/rock5b/download
+    shows: third-party OS images listed for ROCK 5B including Armbian, Arch Linux, DietPi, RebornOS,
+      openFyde and Batocera
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 5be2c030020841b46a9db971a60695cb5e30415494eabed3d8d53e166dbd4ec5
 capability:
   score: 4
   basis: feature_matrix
   value: 6 TOPS NPU; up to 16GB LPDDR4X (5B) / 32GB LPDDR5 (5B+); RK3588 8-core CPU
   confidence: high
   note: 6 TOPS INT8 plus up to 16-32GB RAM runs quantized small/mid LLMs and real-time vision via RKNN,
-    strong for an edge SBC.
+    strong for an edge SBC. Re-derived 2026-08-13 - the introduction still reads "up to 6TOPs" with
+    INT4/INT8/INT16/FP16/BF16/TF32 support and 4/8/16 LPDDR4X on the 5B and 4/8/16/32 LPDDR5 on the 5B+.
+    The 32GB ceiling is what places it a step above the other 6 TOPS RK3588 boards here (orange-pi-5,
+    khadas-edge2, both at 3), and still below the Jetson Orin NX.
+  last_verified: '2026-08-13'
   sources:
   - url: https://docs.radxa.com/en/rock5/rock5b/getting-started/introduction
-    shows: 6 TOPS NPU; RAM up to 16GB (5B) / 32GB LPDDR5 (5B+)
-    accessed: '2026-06-22'
+    shows: '"NPU supports INT4/INT8/INT16/FP16/BF16 and TF32 acceleration with up to 6TOPs of computation
+      power"; 4/8/16 64-bit LPDDR4X and 4/8/16/32 64-bit LPDDR5'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c4082e4fc55f4b3f7e7e77341a5e53f58cd024a09dd9f9518eda4c8f05e14614

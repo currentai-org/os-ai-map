@@ -12,20 +12,41 @@ openness:
     free_text:
     - core-fully-OSS(Databricks-Managed-MLflow is third-party hosting, not gated core)
   confidence: high
-  note: license:Apache-2.0;source:public;core-fully-OSS(Databricks-Managed-MLflow is third-party hosting,
-    not gated core)
+  note: Apache-2.0 across a fully published core; Databricks Managed MLflow is third-party hosting rather
+    than a gated core. Re-read 2026-08-13 and unchanged - LICENSE.txt is the Apache License 2.0 verbatim,
+    the repository publishes the whole platform, and mlflow.org still describes itself as "the leading
+    open source AI engineering platform" with observability, evaluations, prompt registry and gateway all
+    listed as features of it rather than of a paid tier.
   raw: license:Apache-2.0;source:public;core-fully-OSS(Databricks-Managed-MLflow is third-party hosting,
     not gated core);core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/mlflow/mlflow/blob/master/LICENSE.txt
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
+    shows: The LICENSE file body, read rather than assumed. It carries the Databricks copyright line
+      followed by the Apache License Version 2.0 text in full, including the "How to apply the Apache
+      License to your work" appendix.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 6395355de6f391afff35996a30fb41b189b4991a4cb54993ace35ab69a0bfa28
+    establishes:
+    - license
   - url: https://github.com/mlflow/mlflow
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
+    shows: Repository page for the published platform. 27,501 stars, source public, one root license.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 0b6b0617716a4d8cf8ba818888e97f4396167da6f40bfbaaf542c7b96609523b
+    establishes:
+    - source
   - url: https://mlflow.org/
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
+    shows: Project site, describing "The leading open source AI engineering platform" with Observability,
+      Evaluations, Prompt Registry, AI Gateway and Model Training as its features. Nothing is named as
+      withheld for a paid tier.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 9f97efb8efaf8618ccd282261af5b738302403c42d453442562649e3a82b495a
+    establishes:
+    - core_gated
+    - source
 adoption:
   level: 5
   reach: '>10M'
@@ -35,26 +56,47 @@ adoption:
     pypistats; the prior note already reported 25-30M+ but mislabeled the reach as
     1M-10M). The map''s prevailing usage_volume level-5 floor is >10M/mo (cf.
     pydantic-ai ~31M, langgraph ~58M at level 5). MLflow is the de facto open
-    experiment-tracking / ML-lifecycle platform and clears the floor comfortably.'
+    experiment-tracking / ML-lifecycle platform and clears the floor comfortably. Re-read 2026-08-13 - the
+    pypistats endpoint now returns last_month 42,050,608, up from the 37,102,636 recorded and still well
+    clear of the >10M floor, so level 5 is unchanged.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://pypistats.org/api/packages/mlflow/recent
-    shows: last_month downloads = 37,102,636
-    accessed: '2026-06-25'
+    shows: '{"data":{"last_day":1564540,"last_month":42050608,"last_week":10170289},"package":"mlflow","type":"recent_downloads"}'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 1feb9bedc6172bfaa1eab9dad7fae62eadab4a1c1f5a2764798e04081d7b4dc5
   - url: https://github.com/mlflow/mlflow
-    shows: mlflow/mlflow repo (experiment-tracking platform) confirmed live
-    accessed: '2026-06-25'
+    shows: mlflow/mlflow repository live, 27,501 stars
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 0b6b0617716a4d8cf8ba818888e97f4396167da6f40bfbaaf542c7b96609523b
 capability:
   score: 4
   basis: feature_matrix
   value: null
   confidence: high
+  relative_to: langfuse
+  relation: at
   note: Single open platform combining distributed tracing, prompt versioning, automated evaluation, and
     trace replay for agents/LLMs plus classic ML tracking. No standard benchmark for observability; rated
-    on feature matrix.
+    on feature matrix. The comparison is now recorded rather than left in prose - at the langfuse anchor,
+    the two being the pair the rest of this category is placed against. Re-read 2026-08-13 - the GenAI page
+    still lists observability, evaluation, prompt registry and AI gateway as one platform.
+  last_verified: '2026-08-13'
   sources:
   - url: https://mlflow.org/genai/
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
+    shows: '"Built-in observability, evaluation, prompt management, and monitoring. 100+ integrations",
+      with the feature nav reading Observability, Evaluations, Prompt Registry, AI Gateway and Model
+      Training, and the LLMs & Agents copy offering "production-grade tracing, evaluation, prompt
+      management, and much more".'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 4e5ff078259f6c077a7b78db085a589d54db161a4583760b8646b1f01cbc229a
   - url: https://mlflow.org/top-5-agent-observability-tools/
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
+    shows: '"Top 5 LLM and Agent Observability Tools in 2026", the vendor''s own comparison piece placing
+      MLflow among the category leaders. Vendor-authored and read as positioning rather than as an
+      independent ranking.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 6c98689c40f423c54ffaa9f031ab9255c72d44ff812e4cc48bad0b061fe061fe

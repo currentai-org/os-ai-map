@@ -10,17 +10,29 @@ openness:
     dataset_card:
       value: legacy-repo-only
   confidence: medium
-  note: Ungated download via the deduplicated HF repo; the original EleutherAI/pile repo is a loading
-    script whose mirrors are dead. The card defers licensing to per-subset terms and Books3 has been withdrawn
-    from circulation.
+  note: 'Ungated download via the deduplicated HF repo; the original EleutherAI/pile repo is a loading script
+    whose mirrors are dead. The card defers licensing to per-subset terms and Books3 has been withdrawn
+    from circulation. Re-read 2026-08-13: the deduplicated repo still downloads without a gate, and the
+    legacy EleutherAI/pile card still says to refer to the specific licence of whichever subset you use,
+    so the deferred licence and the legacy-repo-only card both stand.'
   raw: access:ungated;license:mixed-per-subset;dataset_card:legacy-repo-only
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/datasets/EleutherAI/the_pile_deduplicated
     shows: hosts the working parquet data (451 GB), ungated
-    accessed: '2026-07-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 145a48d02a24e18319785e4b8848a4c8e889a1c90bb2068ddea1c3a5c8fc7a20
+    establishes:
+    - availability
   - url: https://huggingface.co/datasets/EleutherAI/pile
     shows: 'legacy card: per-subset licensing, loading script only'
-    accessed: '2026-07-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 58e374c699b8ce290e307ffbf5a5ae0ebeb2dbc90f0ef7a20e84f724cd461f11
+    establishes:
+    - license
+    - documentation
 adoption:
   level: 2
   reach: 1K-10K
@@ -37,12 +49,21 @@ capability:
   basis_detail: superseded
   value: null
   confidence: high
-  note: The foundational 2020-era template, proven for a wide 2022-23 family (Pythia, GPT-NeoX-20B, GPT-J,
-    Cerebras-GPT), but dated and beaten by modern web corpora in FineWeb ablations.
+  note: 'The foundational 2020-era template, proven for a wide 2022-23 family (Pythia, GPT-NeoX-20B, GPT-J,
+    Cerebras-GPT), but dated and beaten by modern web corpora in FineWeb ablations. Re-read 2026-08-13:
+    the Cerebras-GPT paper still records training on the Pile alongside GPT-J, GPT-NeoX and Pythia, and
+    the FineWeb HTML still reports the newer corpus ahead of it.'
+  relative_to: fineweb
+  relation: one_below
+  last_verified: '2026-08-13'
   sources:
   - url: https://arxiv.org/pdf/2304.03208
     shows: The Pile trained GPT-NeoX-20B, GPT-J, Pythia, and Cerebras-GPT
-    accessed: '2026-07-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 49194d92e1053d71540ec7b71bfe73507def09eb409c0f5d560ea5b8923b0aa9
   - url: https://arxiv.org/html/2406.17557v1
     shows: FineWeb outperforms The Pile in its ablation
-    accessed: '2026-07-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 28d264b3ae7dbd20cd0a2c49daaaff89df04fc2a503eca83adf13afac90cd7d1

@@ -16,14 +16,35 @@ openness:
   confidence: medium
   note: Open-weights safety classifier under Meta's Llama Community License, which carries use restrictions
     and is not OSI-approved, so it lands at the open_weights tier (3) like the rest of the Llama family
-    rather than open_source.
+    rather than open_source. Re-read 2026-08-13 and unchanged on every recorded dimension.
   raw: weights:open(Llama-Guard-3-8B safetensors on HF);data:not-released;code:inference recipe public;license:Llama-3.1-Community(NOT
     OSI, >700M-MAU restriction)
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/meta-llama/Llama-Guard-3-8B
-    shows: Llama 3.1 Community License; open weights; 14 hazard categories; I/O classifier; ~237K downloads/month,
-      307 likes
-    accessed: '2026-06-29'
+    shows: 'Repo carries license - llama3.1 and four safetensors shards, gated manual, so the weights are
+      downloadable after accepting Meta''s terms. The card has a Training Data section but publishes no
+      mixture and links no dataset, and cardData declares no datasets. It points readers at Llama Recipes
+      on Meta''s GitHub for configuration, which is the inference recipe rather than a training pipeline.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: cd2912534013d08615c9d4f92ab119e18959a9c9119e33eb075d64f5c70acdca
+    establishes:
+    - weights
+    - data
+    - code
+    - license
+  - url: https://huggingface.co/api/models/meta-llama/Llama-Guard-3-8B
+    shows: tags include license:llama3.1; gated - manual; private - false; siblings list
+      model-00001-of-00004.safetensors through model-00004-of-00004.safetensors; cardData carries no
+      datasets key.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: ea08b74f11b6f5ffe559707f73e146ef1e3922a8605ed4abf37ce02785dfb14e
+    establishes:
+    - weights
+    - data
+    - license
 adoption:
   level: 3
   reach: 100K-1M
@@ -47,8 +68,15 @@ capability:
     and widely-benchmarked safety classifier, the reference open baseline.
   confidence: medium
   note: Broad hazard taxonomy and multilingual coverage; the reference open guardrail others are measured
-    against.
+    against, and several bands in this category are recorded relative to it. Re-read 2026-08-13 - the
+    card's chat template still enumerates S1 to S14 and the card still claims moderation in 8 languages
+    against the MLCommons taxonomy.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/meta-llama/Llama-Guard-3-8B
-    shows: 14 hazard categories, 8 languages, I/O moderation
-    accessed: '2026-06-29'
+    shows: Chat template lists the unsafe content categories S1 Violent Crimes through S14 Code Interpreter
+      Abuse - fourteen. Card states it 'was aligned to safeguard against the MLCommons standardized hazards
+      taxonomy' and 'provides content moderation in 8 languages'.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: cd2912534013d08615c9d4f92ab119e18959a9c9119e33eb075d64f5c70acdca

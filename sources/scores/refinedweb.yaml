@@ -12,36 +12,60 @@ openness:
     note:
       value: public_extract
   confidence: high
-  note: Permissive ODC-BY 1.0 license, ungated download, with a dataset card (a public extract of the
-    full corpus).
+  note: 'Permissive ODC-BY 1.0 license, ungated download, with a dataset card (a public extract of the full
+    corpus). Re-read 2026-08-13: odc-by, gated false, and the card still describes the public 600B-token
+    extract.'
   raw: license:ODC-BY-1.0;gated:false;dataset_card:present;note:public_extract
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/datasets/tiiuae/falcon-refinedweb
     shows: Dataset card, ODC-By 1.0 license, ungated public download
-    accessed: '2026-06-22'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 08bf700c8bdeb26d2404053257124b57f2496294c37581ea5fd3fb2794108b4b
+    establishes:
+    - availability
+    - documentation
+    - license
 adoption:
   level: 3
   reach: 10K-100K
   signal_type: usage_volume
   confidence: high
-  note: 12,934 monthly downloads on Hugging Face, graded on the training-corpus bands.
+  note: 93,929 downloads in the trailing 30 days summed across the 1 declared artifact(s), read 2026-08-13
+    (tiiuae/falcon-refinedweb 93,929). Bands at level 3 (10K-100K) on the dataset adoption scale, whose
+    top band is >1M.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/api/datasets/tiiuae/falcon-refinedweb
-    shows: downloads field = 12,934 (30-day)
-    accessed: '2026-07-04'
+    shows: 93,929 downloads in the trailing 30 days for tiiuae/falcon-refinedweb
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: ef160991f9f592012cfb711057b386509add898900ddd43c9827e09d06058cfe
 capability:
   score: 3
   basis: training_value
   basis_detail: superseded
   value: null
   confidence: high
-  note: Filtered web alone beat The Pile and was the best legacy corpus in DCLM's tests; powered Falcon
-    (2023-24) but is now a component inside newer pipelines rather than a standalone default.
+  note: 'Filtered web alone beat The Pile and was the best legacy corpus in DCLM''s tests; powered Falcon
+    (2023-24) but is now a component inside newer pipelines rather than a standalone default. Re-read 2026-08-13:
+    the RefinedWeb listing still states that filtered and deduplicated web data alone significantly outperforms
+    state-of-the-art models trained on The Pile, and DCLM-Baseline still reports the stronger result, which
+    is why this sits two bands below it.'
+  relative_to: dclm-baseline
+  relation: two_below
+  last_verified: '2026-08-13'
   sources:
   - url: https://arxiv.org/abs/2306.01116
     shows: 'RefinedWeb: filtered/deduplicated web alone outperforms models trained on The Pile'
-    accessed: '2026-07-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: ff401c9e67db2503c67320fc867f3d245f796802154da023cfedd5d7febf4998
   - url: https://arxiv.org/abs/2406.11794
-    shows: In DCLM's controlled ablations RefinedWeb is the best legacy corpus but DCLM-Baseline surpasses
-      it
-    accessed: '2026-07-04'
+    shows: Abstract - DCLM-Baseline reaches 64% MMLU at 2.6T tokens, 6.6 points over the prior open-data
+      state of the art. The legacy-corpus ranking that places RefinedWeb is in the paper body, not on this
+      page
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: f665620bfe7fe32ea36cf6f4daab947bd13e925c191d80444c02c8ceb14fd974

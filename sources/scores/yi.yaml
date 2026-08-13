@@ -17,31 +17,51 @@ openness:
       detail: OSI, permissive, no use restrictions
   confidence: high
   note: Permissive Apache-2.0 weights but training data and full training code are not released, so open_weights
-    not open_source. Apache-2.0 confirmed on HF base cards 2026-06-04.
+    not open_source. Re-read 2026-08-13 - both base cards still read apache-2.0 with downloadable
+    weights and name no training corpus, and 01-ai/Yi-1.5 is still an Apache-2.0 usage repository whose
+    README now defers even the benchmarks to the model card. Nothing moved.
+  last_verified: '2026-08-13'
   raw: weights:open(Apache-2.0, on HF);data:closed(pretraining corpus not released);code:partial(inference/usage
     examples; no training pipeline);license:Apache-2.0(OSI, permissive, no use restrictions)
   sources:
   - url: https://huggingface.co/01-ai/Yi-1.5-34B
-    shows: Apache-2.0 license, 34B base model (base vs chat variants listed), downloadable weights
-    accessed: '2026-06-04'
+    shows: license apache-2.0, 34B base model (base vs chat variants listed), downloadable weights,
+      no training corpus named on the card
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: cf578a970ea0b9b37672d9b81f62bc3f4aa2a1ca2cc4003a5029c527e12fb607
+    establishes: [weights, data, license]
   - url: https://huggingface.co/01-ai/Yi-1.5-9B
-    shows: Apache-2.0 license, 9B base model, base/chat variants listed
-    accessed: '2026-06-04'
+    shows: license apache-2.0, 9B base model, base/chat variants listed
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 8258a7b7c45c12462ce06b6dbba59a490d97a10313e9cc6feb72f5cfbf418fbb
+    establishes: [weights, license]
+  - url: https://api.github.com/repos/01-ai/Yi-1.5
+    shows: '`private: false`, `archived: false`, license `Apache-2.0`, 561 stars, last pushed
+      2024-11-11. Usage examples only, no training pipeline, which is what holds `code` at partial.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: b67e948fb9e43e6b4a83bd0a41b17a0c3f333274720211f6b6b38f5fa1513a4f
+    establishes: [code]
 adoption:
   level: 2
   reach: 10K-100K
   signal_type: usage_volume
   confidence: medium
-  note: HF monthly downloads are modest in 2026 (Yi-1.5-34B 10,925/mo, Yi-1.5-9B 16,052/mo, both confirmed 2026-06-04)
-    as a 2024-era family superseded by Qwen/Llama/DeepSeek generations. Cumulative reach across variants + ModelScope/wisemodel
-    mirrors lands in the early-adopter band; relevance has faded.
+  note: 10,283 downloads in the trailing 30 days summed across the 1 declared artifact(s), read
+    2026-08-13 (01-ai/Yi-1.5-34B 10,283). Bands at level 2 (10K-100K) on the software and model
+    adoption scale, unchanged, though it now sits barely over the 10K floor - a 2024-era family
+    superseded by the Qwen, Llama and DeepSeek generations, and one more month of decline would move
+    it. Yi-1.5-9B is cited in the note this replaces but is not a declared artifact, so it is not
+    summed.
+  last_verified: '2026-08-13'
   sources:
-  - url: https://huggingface.co/01-ai/Yi-1.5-34B
-    shows: 10,925 downloads last month
-    accessed: '2026-06-04'
-  - url: https://huggingface.co/01-ai/Yi-1.5-9B
-    shows: 16,052 downloads last month
-    accessed: '2026-06-04'
+  - url: https://huggingface.co/api/models/01-ai/Yi-1.5-34B
+    shows: 10,283 downloads in the trailing 30 days for 01-ai/Yi-1.5-34B
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 7995bea2a4c7e5273457e3551350c700fed3ea8a77eff41d34800d0b4639f913
 capability:
   score: 2
   basis: benchmark
@@ -52,8 +72,17 @@ capability:
     near Falcon 3 (C2) on the dated-generation ladder. Benchmarks from the 01-ai GitHub repo (not the HF card).
   sources:
   - url: https://arxiv.org/abs/2403.04652
-    shows: Yi foundation-models tech report with benchmark methodology
-    accessed: '2026-06-04'
+    shows: Yi foundation-models tech report. Re-read 2026-08-13 - the abstract states "Our base models
+      achieve strong performance on a wide range of benchmarks like MMLU" but carries none of the
+      recorded figures.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 4363a0464da4eaa37bbec1a2fdb2e6ac134ccac26184e2e0089c47a601c927e3
   - url: https://github.com/01-ai/Yi-1.5
-    shows: Yi-1.5 base benchmark results (MMLU 76.3, BBH 54.3, C-Eval 81.4)
-    accessed: '2026-06-04'
+    shows: Cited for "Yi-1.5 base benchmark results (MMLU 76.3, BBH 54.3, C-Eval 81.4)". Re-read
+      2026-08-13 - the README no longer carries a benchmark table; it now says "For model details and
+      benchmarks, see Model Card", and none of the three figures appears on either base card either.
+      The recorded value has no live source, which is why this axis carries no confirmation.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 56e1ad80901e3a4bccc2edf102da9d65fdb64b07a905d012bec1520b532389c7

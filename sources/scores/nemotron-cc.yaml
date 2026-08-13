@@ -11,36 +11,57 @@ openness:
     dataset_card:
       value: present
   confidence: high
-  note: Manually gated behind the NVIDIA Data Agreement for Model Training; synthetic portions may inherit
-    generator-model license terms.
+  note: 'Manually gated behind the NVIDIA Data Agreement for Model Training; synthetic portions may inherit
+    generator-model license terms. Re-read 2026-08-13: the Hub still shows “You need to agree to share your
+    contact information to access this dataset” and the API reports gated manual under the NVIDIA open-data
+    terms.'
   raw: license:NVIDIA-Open-Data;gated:manual(model-training-use);dataset_card:present
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/datasets/nvidia/Nemotron-CC-v2
     shows: gated (manual), NVIDIA Open Data License, dataset card
-    accessed: '2026-07-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 1f9e347d51771b831029e1baa663c31adea4b0b774f3380187f62aaeb3990c60
+    establishes:
+    - availability
+    - documentation
+    - license
 adoption:
   level: 3
   reach: 10K-100K
   signal_type: usage_volume
   confidence: high
-  note: 16,100 monthly downloads on Hugging Face, graded on the training-corpus bands.
+  note: 45,663 downloads in the trailing 30 days summed across the 1 declared artifact(s), read 2026-08-13
+    (nvidia/Nemotron-CC-v2 45,663). Bands at level 3 (10K-100K) on the dataset adoption scale, whose top
+    band is >1M.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/api/datasets/nvidia/Nemotron-CC-v2
-    shows: downloads field = 16,100 (30-day)
-    accessed: '2026-07-04'
+    shows: 45,663 downloads in the trailing 30 days for nvidia/Nemotron-CC-v2
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: bddb99506d4c7fb39f2a2017d5391dbdf4bc80ee97b50634ab100b0ef0e75876
 capability:
   score: 5
   basis: training_value
   basis_detail: ablation
   value: null
   confidence: high
-  note: Wins vs DCLM at a long token horizon (Nemotron-CC-HQ +5.6 MMLU over DCLM; a 15T-token 8B beats
-    Llama 3.1 8B); current default for NVIDIA Nemotron models and Marin 8B late phases.
+  note: 'Wins vs DCLM at a long token horizon (Nemotron-CC-HQ +5.6 MMLU over DCLM; a 15T-token 8B beats
+    Llama 3.1 8B); current default for NVIDIA Nemotron models and Marin 8B late phases. Re-read 2026-08-13:
+    the Nemotron-CC listing still reports +5.6 MMLU over DCLM on the high-quality subset and an 8B trained
+    for 15T tokens beating Llama 3.1 8B by +5 MMLU, and the Marin retro report still records the switch
+    to Nemotron-CC in later phases.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://arxiv.org/abs/2412.02595
-    shows: Nemotron-CC-HQ improves MMLU by 5.6 over DCLM; an 8B on 15T tokens beats Llama 3.1 8B by +5
-      MMLU
-    accessed: '2026-07-04'
+    shows: Nemotron-CC-HQ improves MMLU by 5.6 over DCLM; an 8B on 15T tokens beats Llama 3.1 8B by +5 MMLU
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 4231d6de42496ec9f36b44c8be8bc791367ccbe5e5c41439d7e6077eebd0df98
   - url: https://marin.readthedocs.io/en/latest/reports/marin-8b-retro/
     shows: Marin 8B adopted Nemotron-CC as its primary source in later phases
-    accessed: '2026-07-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: ef12b7a5e2815e65c6436d4fcadfd69c3d9b78b03718928e0bb19b22cd420f8e

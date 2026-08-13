@@ -15,12 +15,25 @@ openness:
     - no enterprise-gated core observed
   confidence: high
   note: Fully Apache-2.0, OpenTelemetry-native, no feature-gated core; vendor-neutral by design (exports
-    to any OTel backend).
+    to any OTel backend). Re-read 2026-08-13 and unchanged - GitHub's license endpoint still resolves the
+    repository to Apache-2.0, the root listing carries a docker-compose.yml and no ee/ or enterprise
+    directory, and the README presents guardrails, evaluations, prompt management and the vault as
+    features of the published stack rather than of a paid tier.
   raw: license:Apache-2.0(OSI);source:public;OTel-native SDKs(Python/TS/Go);no enterprise-gated core observed;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/openlit/openlit
-    shows: Apache-2.0 license; OTel-native SDKs; full feature source
-    accessed: '2026-06-04'
+    shows: 'Repository page. License resolves to Apache-2.0 (spdxId "Apache-2.0"); the README strapline
+      reads "OpenTelemetry-native LLM Observability, GPU Monitoring, Guardrails, Evaluations, Prompt
+      Management, Vault, Playground" and the root listing includes docker-compose.yml with no ee/ or
+      enterprise directory beside it. 2,686 stars.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 97eb864c78858527d9aa2996af235c33c964c5fb443591012c16eb2ef8d6b31a
+    establishes:
+    - license
+    - source
+    - core_gated
 adoption:
   level: 2
   reach: 10K-100K
@@ -40,11 +53,21 @@ capability:
     Prompt Hub (versioning); cost tracking incl custom/fine-tuned pricing; guardrails; secrets Vault;
     50+ provider/framework integrations.'
   confidence: high
+  relative_to: langfuse
+  relation: at
   note: Broad feature matrix covering all six recipe dimensions (tracing, prompt mgmt, evals, datasets/annotation-adjacent,
     cost, OTel+integrations) plus GPU observability; comparable to Langfuse C4. Held at 4 (not 5) as no
-    observability product is a clear frontier-definer over MLflow/Langfuse anchors.
+    observability product is a clear frontier-definer over MLflow/Langfuse anchors. The comparison is now
+    recorded rather than left in prose - at the langfuse anchor. Re-read 2026-08-13 - the README strapline
+    still names observability, GPU monitoring, guardrails, evaluations, prompt management, vault and
+    playground together, so the breadth the band rests on is intact.
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/openlit/openlit
-    shows: 'feature list: tracing/metrics, 11 eval types, Prompt Hub, cost tracking, guardrails, vault,
-      50+ integrations'
-    accessed: '2026-06-04'
+    shows: 'README strapline - "OpenTelemetry-native LLM Observability, GPU Monitoring, Guardrails,
+      Evaluations, Prompt Management, Vault, Playground" - and a section headed "Observability, Evaluations,
+      Rule Engine, Guardrails, Prompts, Vault, Playground", with integrations across 50+ LLM providers and
+      vector databases.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 97eb864c78858527d9aa2996af235c33c964c5fb443591012c16eb2ef8d6b31a

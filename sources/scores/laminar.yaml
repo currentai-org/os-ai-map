@@ -18,16 +18,33 @@ openness:
     - managed Laminar Cloud is hosting not a gated tier
   confidence: medium
   note: Repo and SDKs Apache-2.0 with full source; a hosted cloud exists but no enterprise-gated module
-    split was visible in the repo (less explicit open-core boundary than Langfuse/LangWatch).
+    split was visible in the repo (less explicit open-core boundary than Langfuse/LangWatch). Re-read
+    2026-08-13 and unchanged - GitHub's license endpoint still resolves the single root LICENSE.md to
+    Apache-2.0, the PyPI SDK still declares the Apache-2.0 license expression, and the repository root
+    still carries five docker-compose files, so the published tree is what a self-hoster runs.
   raw: license:Apache-2.0(OSI);source:public(Rust core + TS UI);SDKs:Apache-2.0;no feature-gated core observed
     in repo;managed Laminar Cloud is hosting not a gated tier;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/lmnr-ai/lmnr
-    shows: Apache-2.0 license; Rust+TS source public; OTel-native tracing/evals/datasets features
-    accessed: '2026-06-04'
+    shows: 'Repository page. The license sidebar resolves LICENSE.md to Apache-2.0 (spdxId "Apache-2.0"),
+      there is no ee/ or enterprise directory in the root listing, and the root carries docker-compose.yml
+      plus four variants (full, local-build, local-dev, local-dev-full), which is the self-host path.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 49fb50ae757fad987cecba03257c1e834fa1499bd5e561efbb43c46e2e6e5b53
+    establishes:
+    - license
+    - source
+    - core_gated
   - url: https://pypi.org/project/lmnr/
-    shows: lmnr v0.7.52 (27 May 2026), open source LLM engineering platform SDK
-    accessed: '2026-06-04'
+    shows: lmnr 0.7.59, "Python SDK for Laminar", uploaded 11 Aug 2026, with the License expression field
+      reading Apache-2.0. The version recorded at the last read was 0.7.52.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 2197e2955a8f64b22acde34f813ef826a56e03a4c18742751588cadadcd66275
+    establishes:
+    - license
 adoption:
   level: 3
   reach: 100K-1M
@@ -48,9 +65,19 @@ capability:
     (SDK+CLI, CI/CD); datasets + annotation UI; SQL query over traces; dashboards. Lighter on: prompt
     versioning/management and explicit cost tracking (not surfaced in repo).'
   confidence: medium
+  relative_to: langfuse
+  relation: one_below
   note: Solid tracing+evals+datasets coverage with a differentiated SQL/dashboard layer; below Langfuse/MLflow
-    (C4 anchors) on prompt management and cost-tracking breadth, hence 3.
+    (C4 anchors) on prompt management and cost-tracking breadth, hence 3. The comparison is now recorded
+    rather than left in prose - one rung below the langfuse anchor at 4. Re-read 2026-08-13 - the README
+    checklist still covers evals via SDK and CLI, an eval-comparison UI and SQL query over traces, spans,
+    metrics and events, with no prompt-versioning section.
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/lmnr-ai/lmnr
-    shows: 'feature list: tracing, evals SDK/CLI, datasets/annotation, SQL editor, dashboards'
-    accessed: '2026-06-04'
+    shows: 'README feature checklist - "Evals. Unopinionated, extensible SDK and CLI for running evals
+      locally or in CI/CD pipeline", "UI for visualizing evals and comparing results", and "Query traces,
+      spans, metrics, and events with SQL". No prompt-versioning or prompt-management item appears.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 49fb50ae757fad987cecba03257c1e834fa1499bd5e561efbb43c46e2e6e5b53

@@ -13,12 +13,32 @@ openness:
     free_text:
     - no-feature-gated-core
   confidence: high
-  note: Fully MIT, first-party GitHub server.
+  note: 'Fully MIT, first-party GitHub server, no feature-gated core. Re-read 2026-08-13: the repository LICENSE
+    is the plain MIT License, "Copyright (c) 2025 GitHub", and the repo page carries the matching badge.
+    The whole Go server is in the tree with a Dockerfile and a goreleaser config beside it, so the self-hosted
+    build is the published build. GitHub also runs a hosted Remote GitHub MCP Server, and that is a managed
+    endpoint for the same server rather than a tier holding features back - the toolset list is the same
+    one, configured by header instead of by flag - which is the langchain shape the ladder settles as ungated.'
   raw: license:MIT(OSI);source:public;no-feature-gated-core;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
+  - url: https://raw.githubusercontent.com/github/github-mcp-server/main/LICENSE
+    shows: 'Plain MIT License text: "Copyright (c) 2025 GitHub".'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 9e48ecfa18e2b15169746a3c97beda4d1d6c6796097038498ca434ca7e0ccd44
+    establishes:
+    - license
   - url: https://github.com/github/github-mcp-server
-    shows: MIT, ~30.8k stars, official GitHub server
-    accessed: '2026-06-17'
+    shows: Repo page - MIT badge, 32,220 stargazers, root tree carrying LICENSE, Dockerfile, .goreleaser.yaml
+      and the Go source. The Remote GitHub MCP Server section documents GitHub's hosted endpoint for the same
+      server and the same toolsets; no separate license, no license key, no enterprise directory.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 8be6c1224a3de08b51eeb4296ccd3f1bbfabcb637898be33a25ea27f32fa988c
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 3
   reach: '>10K stars'
@@ -27,19 +47,39 @@ adoption:
   note: '~31k stars; no download metric for Go/Docker distribution - stars_fallback (first-party backing
     implies higher real usage). Stars read 2026-08-13: 32,212 across the 1 declared repo, which bands at >10K
     stars, level 3 on the stars scale in signal_routing.yaml. The record carried no reach label at all before
-    this. No last_verified claimed: a star count is volatile, so a digest of it would read as drift on every
-    refetch, and the rest of the axis was not re-read.'
+    this. Re-read in full 2026-08-13: the repo page reports 32,220 stargazers, the same band, and the fallback
+    is still forced rather than chosen - the server is distributed as a Go binary and a Docker image plus
+    GitHub''s own hosted remote endpoint, none of which publishes a count, and there is no npm or PyPI package
+    to read. So the stars instrument and its level-3 cap both stand. The digest below is of a page carrying
+    a live star counter and will not match on a later refetch; that is expected drift on this source rather
+    than a signal about the claim.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/github/github-mcp-server
-    shows: ~30.8k stars
-    accessed: '2026-06-17'
+    shows: Repo page, 32,220 stargazers. Distribution is a Go binary, a Docker image and GitHub's hosted remote
+      endpoint; no package-registry download count exists for any of them.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 8be6c1224a3de08b51eeb4296ccd3f1bbfabcb637898be33a25ea27f32fa988c
 capability:
   score: 5
   basis: feature_matrix
   value: '20+ toolsets: repos, issues, PRs, Actions, code security, Dependabot, Discussions, Projects, Copilot'
   confidence: high
-  note: The most comprehensive GitHub-platform tool surface among MCP servers.
+  note: 'The most comprehensive GitHub-platform tool surface among MCP servers. Re-read 2026-08-13: the toolset
+    table still spans repositories, issues, pull requests, Actions, code security, Dependabot, discussions,
+    projects and Copilot, grouped in the README as repository management, CI/CD intelligence, code analysis
+    and team collaboration, with a default toolset applied when none is named and an Insiders mode for the
+    rest. It runs locally as a binary or Docker image and remotely against GitHub''s hosted endpoint with
+    the same toolsets. Band unchanged at 5.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/github/github-mcp-server
-    shows: toolset list
-    accessed: '2026-06-17'
+    shows: 'Toolset table with per-toolset icons, including dependabot; README groups them as repository management,
+      "CI/CD intelligence: Monitor GitHub Actions workflow runs, analyze build failures, manage releases",
+      "Code Analysis: Examine security findings, review Dependabot alerts" and "Team Collaboration: Access
+      discussions, manage notifications". Default toolsets apply when none is specified; Insiders mode and
+      the remote server documentation cover the rest.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 8be6c1224a3de08b51eeb4296ccd3f1bbfabcb637898be33a25ea27f32fa988c

@@ -26,20 +26,47 @@ openness:
     commerce outright - CC-BY-NC, Mistral Non-Production - stays at 2. Nine other products carry a
     bounded license and all now score 3; four of them were already recorded there, which is the
     inconsistency this resolves.
+    Re-read 2026-08-13. The Llama 4 Community License text is still on the Scout card verbatim,
+    including the 700M-MAU clause; the card's Training Data section describes the corpus without
+    releasing it; and the llama-models repository is still utilities rather than a training
+    pipeline. Every component holds and the score is unchanged.
+  last_verified: '2026-08-13'
   raw: 'weights:open(downloadable on HF);data:closed;code:partial(inference/utils via llama-models, no training
     code);license:Llama-4-Community(non-OSI: 700M MAU commercial cap as of Apr 2025 + no-compete/no-train-competing-LLM
     clause)'
   sources:
   - url: https://huggingface.co/api/models/meta-llama/Llama-4-Scout-17B-16E
-    shows: gated (manual approval), 217.3GB of weight files, 32,527 downloads last month; cardData.license is `other`,
-      so the Llama-4-Community tier rests on Meta's text
-    accessed: '2026-07-29'
+    shows: '`gated: manual`, `private: false`, safetensors weight shards listed, 18,815 downloads
+      and 261 likes; `cardData.license` is `other`, so the Llama-4-Community tier rests on Meta''s
+      text rather than on a Hub label.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: e902b7aba05eda623d584e2caa969a1066b16e80419943a5a0ac481755976bb5
+    establishes: [weights, license]
   - url: https://huggingface.co/meta-llama/Llama-4-Scout-17B-16E
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
+    shows: 'Model card carries the LLAMA 4 COMMUNITY LICENSE AGREEMENT in full - "greater than
+      700 million monthly active users in the preceding calendar month, you must request a license
+      from Meta" - and a Training Data section reading "~40 trillion tokens ... from a mix of
+      publicly available, licensed data and information from Meta''s products and services", which
+      describes the corpus without releasing it.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: e8b3b57cc7cede76c05200e58d1a7aff1a8ed61c891b62128158d4818516f3c1
+    establishes: [weights, data, license]
+  - url: https://api.github.com/repos/meta-llama/llama-models
+    shows: '`private: false`, `archived: false`, description "Utilities intended for use with Llama
+      models", license `NOASSERTION`. Utilities and inference helpers, no pretraining pipeline,
+      which is what holds `code` at partial.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 5731f42b1494cd5ef7970a35c272ef5e1c3e0116ab71f8164e2532a38d46a5df
+    establishes: [code]
   - url: https://ai.meta.com/blog/llama-4-multimodal-intelligence/
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
+    shows: Now answers HTTP 400 to a plain request; it was cited as a corroborating launch post and
+      establishes no dimension, so nothing in the score rests on it.
+    accessed: '2026-08-13'
+    http_status: 400
+    content_sha256: dd43073cac40b5602838549abd73fee8eb3b94209bc393d4f43b4b0d29b3ffc2
   - url: https://huggingface.co/blog/llama4-release
     shows: flagship phase-C verification source
     accessed: '2026-06-04'
@@ -51,23 +78,41 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: medium
-  note: >-
-    Weights downloadable under Meta's Llama-4-Community terms: a 700M-MAU commercial cap, an
-    acceptable-use policy and naming requirements. No relicensing to record - Llama 3.1 carried
-    the equivalent terms, and Llama 4 Scout and Maverick govern as the current release. Moved from
-    2/restricted on 2026-08-01 by the universal license scale, which caps a bounded commercial
-    license at 3 rather than 2. The test at that boundary is whether the license permits
-    commercial use AT ALL: this one does, for everyone inside the bound. A license that forbids
-    commerce outright - CC-BY-NC, Mistral Non-Production - stays at 2. Nine other products carry a
-    bounded license and all now score 3; four of them were already recorded there, which is the
-    inconsistency this resolves.
+  note: 1,335,865 downloads in the trailing 30 days summed across the 5 declared artifact(s), read
+    2026-08-13 (meta-llama/Llama-3.1-405B 114,146; meta-llama/Llama-3.1-70B 41,103;
+    meta-llama/Llama-3.1-8B 1,158,435; meta-llama/Llama-4-Scout-17B-16E 18,815;
+    meta-llama/Llama-4-Maverick-17B-128E 3,366). Bands at level 4 (1M-10M) on the software and
+    model adoption scale, unchanged. The 3.1 8B checkpoint still carries the family, which is worth
+    recording alongside the capability axis reading on Llama 4 - reach and capability sit on
+    different releases of the same tier. The note this replaces was a duplicate of the openness
+    note and described a license rather than a usage figure.
+  last_verified: '2026-08-13'
   sources:
-  - url: https://huggingface.co/meta-llama/Llama-3.1-8B
-    shows: live HF page for 3.1 8B base, 1.29M+ downloads last month
-    accessed: '2026-06-04'
-  - url: https://huggingface.co/meta-llama
-    shows: Meta Llama org lists 3.1 (8B-405B) among active families; latest is Llama 4
-    accessed: '2026-06-04'
+  - url: https://huggingface.co/api/models/meta-llama/Llama-3.1-405B
+    shows: 114,146 downloads in the trailing 30 days for meta-llama/Llama-3.1-405B
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 3bb4e6e3e070cc09b747fefe51108b6f286b5c12f564b7b2c5997ad3fdd0eaf1
+  - url: https://huggingface.co/api/models/meta-llama/Llama-3.1-70B
+    shows: 41,103 downloads in the trailing 30 days for meta-llama/Llama-3.1-70B
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: eaa05436c07cec24bb1bafaee719b668e1bc0bdd5b0320ecc525f4ed9c70a953
+  - url: https://huggingface.co/api/models/meta-llama/Llama-3.1-8B
+    shows: 1,158,435 downloads in the trailing 30 days for meta-llama/Llama-3.1-8B
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c6552a2f244c59284f3b53ba6098ebe27a65dc138591c6f535970d235c485707
+  - url: https://huggingface.co/api/models/meta-llama/Llama-4-Scout-17B-16E
+    shows: 18,815 downloads in the trailing 30 days for meta-llama/Llama-4-Scout-17B-16E
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: e902b7aba05eda623d584e2caa969a1066b16e80419943a5a0ac481755976bb5
+  - url: https://huggingface.co/api/models/meta-llama/Llama-4-Maverick-17B-128E
+    shows: 3,366 downloads in the trailing 30 days for meta-llama/Llama-4-Maverick-17B-128E
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 99b5628a11f0951b0eeeb38e53ad4a4ac91fe29133ef424e3c7255a68f1aca2e
 capability:
   score: 3
   basis: benchmark

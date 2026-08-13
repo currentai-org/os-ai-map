@@ -14,18 +14,37 @@ openness:
     managed:
       value: Pinecone-Cloud
   confidence: high
-  note: Fully proprietary managed vector DB; no open source core (contrast Milvus/Qdrant which are OSI-licensed).
-    BYOC is still closed-source software run in customer cloud.
+  note: 'Fully proprietary managed vector DB; no open source core (contrast Milvus/Qdrant which are OSI-licensed).
+    BYOC is still closed-source software run in customer cloud. Re-read 2026-08-13, and the BYOC judgment
+    in particular was checked rather than carried forward. The pricing page describes BYOC as "Pinecone in
+    your cloud account and VPC" with "Zero-access operations - no SSH, VPN, or inbound access required" -
+    which is Pinecone''s own software running on your infrastructure, not source you receive, so it does not
+    make the core self-hostable and `self-host: none` holds. The tier list is unchanged at Starter, Builder,
+    Standard and Enterprise, and the words "open source" appear nowhere on the page. Score stays 1.'
   raw: license:proprietary(SaaS);source:closed;self-host:none(BYOC runs Pinecone-managed in customer VPC,
     not OSS);managed:Pinecone-Cloud
+  last_verified: '2026-08-13'
   sources:
   - url: https://www.pinecone.io/pricing/
-    shows: proprietary tiered SaaS pricing (Starter/Builder/Standard/Enterprise/BYOC); no OSS/self-host
-      license
-    accessed: '2026-06-04'
+    shows: 'Tiers Starter, Builder, Standard and Enterprise, plus BYOC: "Bring-your-own-cloud (BYOC) runs
+      Pinecone in your cloud account and VPC. Pinecone does not need SSH, VPN, or inbound network access
+      to operate the system." Enterprise adds a 99.95% uptime SLA, private endpoints and customer-managed
+      keys. The phrase "open source" does not appear on the page.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: d686117aacefb4fe49f4977205748e7233f1b2914b875a897642db44761f46dc
+    establishes:
+    - license
+    - source
+    - self-host
   - url: https://docs.pinecone.io/guides/get-started/overview
-    shows: described as 'fully managed vector database', billions of items searched in ms
-    accessed: '2026-06-04'
+    shows: Pinecone documented as a fully managed vector database reached through an API key; no source release
+      or self-hostable build offered.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 0438b9bbff90bd6f1bc61afe2c4e91234944fa4b2426eb94a6073c33329bc9b4
+    establishes:
+    - source
 adoption:
   level: 4
   reach: 1M-10M
@@ -34,14 +53,29 @@ adoption:
   note: Leading managed vector DB; production deployments cited at 1.4B vectors / 5,700 QPS for a single
     e-commerce customer and 135M vectors / 2,200 QPS load-tested for another. Broad enterprise/developer
     base via serverless + AWS Marketplace PAYG. No single hard user count published; placed at 4 on aggregate
-    production usage_volume. (Some churn noted, e.g. Notion left over cost.)
+    production usage_volume. (Some churn noted, e.g. Notion left over cost.) Re-read 2026-08-13 and both cited
+    deployments are still on the page verbatim - "5,700 queries per second with a P50 latency of just 26
+    milliseconds across a database of 1.4 billion vectors" for the e-commerce customer, and 600 QPS at 45ms
+    across 135 million vectors with a load test reaching "2,200 queries per second with a P50 latency of
+    just 60 milliseconds" for the design platform. Still no single published user or customer count, which
+    is what was looked for; the band remains an aggregate judgment over production deployments and stays
+    at 4.
+  last_verified: '2026-08-13'
   sources:
   - url: https://siliconangle.com/2025/12/01/pinecone-scales-vector-database-support-demanding-workloads/
-    shows: billion-scale production workloads, multi-thousand QPS customer deployments
-    accessed: '2026-06-04'
+    shows: 'Two named-shape customer deployments: 600 QPS at 45ms over 135 million vectors, load-tested to
+      "2,200 queries per second with a P50 latency of just 60 milliseconds"; and "5,700 queries per second
+      with a P50 latency of just 26 milliseconds across a database of 1.4 billion vectors". No user or customer
+      count.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 065aca152e1b956651a4e7c6637129f8e68e42f7c3c1a9332564ea6f684c23b2
   - url: https://aws.amazon.com/marketplace/pp/prodview-xhgyscinlz4jk
-    shows: Pinecone PAYG distribution via AWS Marketplace (broad enterprise availability)
-    accessed: '2026-06-04'
+    shows: Pinecone listed on AWS Marketplace with pay-as-you-go availability. Distribution breadth only;
+      no usage figure.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 9b7f9b8d0bd8d3b225d0887a5c1749ef139f07c79649e5f0dd8ad706205d8e63
 capability:
   score: 4
   basis: benchmark
@@ -51,13 +85,27 @@ capability:
   value: P50 latency ~26-60ms at 1.4B-vector scale, 5,700 QPS; serverless auto-indexing, dedicated read
     nodes
   confidence: medium
-  note: Top-tier managed ANN search at billion-vector scale with strong latency/QPS. No independent ANN-Benchmarks/VectorDBBench
-    submission found (closed system, vendor-reported figures); rated 4 (peer to Milvus C4), reserving
-    5 for benchmark-proven frontier.
+  note: 'Top-tier managed ANN search at billion-vector scale with strong latency/QPS. No independent ANN-Benchmarks/VectorDBBench
+    submission found (closed system, vendor-reported figures); rated 4 (peer to Milvus C4), reserving 5 for
+    benchmark-proven frontier. Re-read 2026-08-13. The latency and QPS figures in the recorded value are
+    still on the page as written - 26ms P50 at 5,700 QPS over 1.4 billion vectors, 60ms P50 at 2,200 QPS
+    on a load test - and Dedicated Read Nodes are still the mechanism described. Re-checked the absence too:
+    ann-benchmarks.com was fetched the same day and lists 38 algorithms, none of them Pinecone, so the "no
+    independent submission" half of this note is a confirmed finding rather than an assumption. The Milvus
+    anchor was re-read and re-dated the same day and also holds at 4, so `relation: at` remains arithmetically
+    true.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://www.infoq.com/news/2025/12/pinecone-drn-vector-workloads/
-    shows: dedicated read nodes for predictable vector workloads, serverless scaling
-    accessed: '2026-06-04'
+    shows: Dedicated read nodes for predictable vector workloads; serverless scaling.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 2a84fad84298a7a3621b4a6f9a0de72c2a80f447e146bebca16bd1d161b6dcd7
   - url: https://siliconangle.com/2025/12/01/pinecone-scales-vector-database-support-demanding-workloads/
-    shows: 26-60ms P50 latency, thousands of QPS at billion-vector scale
-    accessed: '2026-06-04'
+    shows: '"5,700 queries per second with a P50 latency of just 26 milliseconds across a database of 1.4
+      billion vectors"; and 600 QPS at 45ms over 135 million vectors, load-tested to "2,200 queries per second
+      with a P50 latency of just 60 milliseconds". Vendor-sourced figures reported by a trade outlet, not
+      an independent harness.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 065aca152e1b956651a4e7c6637129f8e68e42f7c3c1a9332564ea6f684c23b2

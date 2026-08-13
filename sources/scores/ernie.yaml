@@ -15,23 +15,35 @@ openness:
     free_text:
     - API-only(ERNIE 4.5 was open, 5.x flagship closed)
   confidence: high
-  note: No weights distributed for the 5.x flagship; closed API model.
+  note: No weights distributed for the 5.x flagship; closed API model. Re-read 2026-08-13 - the Baidu
+    org on the Hub still publishes only ERNIE-4.5 variants and the ERNIE-Image line, with no 5.x
+    repository of any kind, so the closed reading for the flagship holds.
+  last_verified: '2026-08-13'
   raw: weights:closed;data:closed;code:closed;license:proprietary(Baidu Qianfan API);API-only(ERNIE 4.5
     was open, 5.x flagship closed)
   sources:
   - url: https://huggingface.co/baidu
-    shows: Baidu HF org lists only ERNIE 4.5 + Image open, no 5.x weights
-    accessed: '2026-06-18'
+    shows: Baidu HF org lists ERNIE-4.5 (21B-A3B-Thinking, VL-28B-A3B, VL-424B-A47B) and the
+      ERNIE-Image models; no ERNIE 5.x repository, so no 5.x weights, corpus or code are distributed
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: b5fa7ec28cf52c672179aaa2820dac4f9275bf077c2e87812725e6058c572528
+    establishes: [weights, data, code, license]
 adoption:
   level: 4
   signal_type: reported_traction
   confidence: low
   note: Baidu's ERNIE/Wenxiaoyan assistant app reported ~200M MAUs around the 5.0 launch (app-level, not 5.1-specific);
-    not on HF.
+    not on HF. Attempted re-read 2026-08-13 - the ~200M MAU figure is not on the cited release post
+    and no user, MAU or request count appears on it anywhere. The band therefore has no live source
+    and this axis carries no confirmation until one is found.
   sources:
   - url: https://ernie.baidu.com/blog/posts/ernie-5.1-0508-release/
-    shows: ERNIE 5.1 release; API access
-    accessed: '2026-06-18'
+    shows: ERNIE 5.1 release and API access. Re-read 2026-08-13 - it carries no usage figure, so it
+      does not support the ~200M MAU number the level rests on
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: f0e1b7863cab4e1ae612b3f7c9a959bf7f418cd666fa202995865a35ba52f8fd
 capability:
   score: 5
   basis: benchmark
@@ -40,7 +52,18 @@ capability:
     Text)'
   confidence: medium
   note: Frontier proprietary model; Arena rank disputed between mirrors (#28) and Baidu's own claim (#13 Text).
+    Attempted re-read 2026-08-13 - two of the three recorded facts hold and one does not. AIME26 with
+    tool use at 99.6 is on the page, and so is the GPQA / MMLU-Pro framing. The '#13 Text' claim is
+    not - the post now says ERNIE 5.1 scored 1,223 to claim 4th place globally and 1st among Chinese
+    models on the Arena Search leaderboard, which is a different leaderboard and a different rank. The
+    128K context figure is not on this page either. The value needs rewriting against what the page
+    says, so this axis carries no confirmation.
   sources:
   - url: https://ernie.baidu.com/blog/posts/ernie-5.1-0508-release/
-    shows: official MoE design, benchmarks, training-cost efficiency
-    accessed: '2026-06-18'
+    shows: 'official MoE design and training-cost efficiency ("Pre-training Compute Cost at Only 6% of
+      Comparable Models"); "On AIME26 (with tool use) ... ERNIE 5.1 scores 99.6 - second only to
+      Gemini 3.1 Pro"; "on May 9, ERNIE 5.1 scored 1,223 to claim 4th place globally and 1st among
+      Chinese models on the Arena Search leaderboard". No #13 Text ranking and no 128K context figure.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: f0e1b7863cab4e1ae612b3f7c9a959bf7f418cd666fa202995865a35ba52f8fd

@@ -78,17 +78,44 @@ adoption:
   reach: '>10M'
   signal_type: usage_volume
   confidence: high
-  note: De facto standard agent tool protocol. ~97M monthly SDK downloads in Mar 2026 (up from ~2M at
-    Nov 2024 launch); adopted natively by OpenAI (ChatGPT), Google DeepMind (Gemini), Microsoft, AWS;
-    >16,000 MCP servers in the wild (Nerq Q1 2026 census indexed 17,468). Native client/agent support
-    breadth is the headline MCP signal per recipe.
+  note: 'De facto standard agent tool protocol, adopted natively by OpenAI (ChatGPT, Agents SDK, Responses
+    API), Google DeepMind (Gemini), Microsoft and AWS, with more than 16,000 MCP servers in the wild. Re-read
+    2026-08-13, and one recorded figure did not survive it: the note claimed "~97M monthly SDK downloads
+    in Mar 2026 (up from ~2M at Nov 2024 launch)" and "4,750% growth since launch" on the strength of the
+    Zuplo retrospective. That page carries neither figure and never could have - it is dated 2025-11-24,
+    four months before the month it was cited for. What it does say is "Over 16,000 MCP servers exist in
+    the wild" and the vendor-adoption list, both of which the note keeps. The download claim has been replaced
+    with a measured one from the two reference SDK registries, read the same day: 335,363,270 PyPI downloads
+    in the trailing 30 days for `mcp` and 198,046,096 npm downloads for @modelcontextprotocol/sdk. Either
+    alone clears the >10M level-5 floor by more than an order of magnitude, so level 5 and reach >10M are
+    unchanged and now rest on a countable figure rather than on an aggregator sentence that was not there.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://en.wikipedia.org/wiki/Model_Context_Protocol
-    shows: adoption by OpenAI/Google DeepMind/Microsoft/AWS; SDKs across 7+ languages
-    accessed: '2026-06-04'
+    shows: Adoption by OpenAI, Google DeepMind, Microsoft and AWS; reference SDKs across seven-plus languages;
+      donation to the Linux Foundation.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 53d1b3c1bf371857fef3867e51fbdda5dc4b0a968746d50382ac9938dda69e1b
   - url: https://zuplo.com/blog/one-year-of-mcp
-    shows: ~97M monthly SDK downloads Mar 2026, 4,750% growth since launch (corroborating aggregator)
-    accessed: '2026-06-04'
+    shows: 'Dated 2025-11-24. "Over 16,000 MCP servers exist in the wild. OpenAI has adopted it across ChatGPT
+      (sort of), their Agents SDK, and their Responses API. Google DeepMind announced MCP support for Gemini.
+      Companies like GitHub, Block, Apollo, Replit, Sourcegraph, Linear, Zapier and many others have integrated
+      it into their platforms." NOT on this page, contrary to what this source previously claimed: any SDK
+      download figure, the number 97M, or a 4,750% growth rate.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: fb54a9906933810c9dfd626a702c5cbd300c0c7fd3e96d1dc55c3637322604cb
+  - url: https://pypistats.org/api/packages/mcp/recent
+    shows: last_month = 335,363,270 downloads for the reference Python SDK package `mcp`.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 1a7debd70ebcd757caf055a242507ec284a8172fd0e452e2e0d79999bb79c79f
+  - url: https://api.npmjs.org/downloads/point/last-month/@modelcontextprotocol/sdk
+    shows: 198,046,096 downloads for the window 2026-07-11 to 2026-08-09 for the reference TypeScript SDK.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: a5daab95266dd756f2c613e07ac16b5636554268822c6a8c52e7caebcb051610
 capability:
   score: null
   basis: n/a
@@ -97,16 +124,48 @@ capability:
   note: 'A wire protocol is not benchmarked; capability is not a meaningful axis per recipe. Openness +
     adoption carry the signal.
 
-    LOAD-BEARING NULL, flagged 2026-08-13 and to be settled in the agent_tools_protocols verification
-    pass. A null capability does not abstain the way a null adoption does - build/serialize.py falls
-    through to adoption alone rather than dropping the product - so this record computes maturity 5.0
-    from its adoption 5, counts as a mature open product, and one mature open product IS the entire
-    stage>=4 threshold. This category''s stage-4 claim currently rests on an axis nobody has scored.
+    A NULL WORTH SETTLING, flagged 2026-08-13. A null capability does not abstain the way a
+    null adoption does - build/serialize.py falls through to adoption alone rather than dropping the
+    product - so this record computes maturity 5.0 from its adoption 5 and counts as a mature open
+    product on one axis while a reader assumes two.
 
-    The claim may well be right; a protocol every major vendor implements is not obviously immature.
-    But it is presently unfalsifiable, and the two ways out are different decisions: score capability
-    here on some defensible basis (implementation breadth, say), or declare adoption-only grading as a
-    per-category attribute the way `disclosure` already is, so that a category OPTS IN to it rather
-    than inheriting it from a fallback written for benchmark corpora. See docs/guides/gap-analysis.md,
-    "The two nulls are not symmetric".'
+    CORRECTION, recorded because the first version of this note overstated it: it said the category''s
+    stage rested on this null, on the reasoning that one mature open product is the entire stage>=4
+    threshold. Re-derived against build/serialize.py during the category pass, agent_tools_protocols
+    has SEVEN mature open products, six of which reach 4.5 with no null in the arithmetic. That clears
+    _STAGE5_MIN_MATURE, so the category is stage 5 and deleting this record entirely would leave six
+    and change nothing. The defect is policy hygiene, not a threshold rescue.
+
+    The recommendation from that pass is to DECLARE adoption-only grading for protocols rather than
+    score capability here, because implementation breadth is adoption wearing a capability label -
+    the map already bands this product''s adoption on SDK downloads, so putting breadth in capability
+    makes the blend (adoption + adoption) / 2. agent2agent-protocol has the identical shape. See
+    docs/guides/gap-analysis.md, "The two nulls are not symmetric".
+
+
+    RE-DERIVED 2026-08-13 in the agent_tools_protocols pass, and the premise above is WRONG on the
+    facts, which changes what is at stake rather than whether it matters. The null is not load-bearing
+    for the category. Counting the rule in build/serialize.py against the current corpus, seven fully-open
+    products in this category clear the 4.5 maturity floor - model-context-protocol, fastmcp, qdrant,
+    mcp-python-sdk, mcp-typescript-sdk, docling and markitdown - and six of the seven get there from a
+    real adoption AND a real capability score with no null anywhere in the arithmetic. Seven is at or
+    above _STAGE5_MIN_MATURE, so the category is at stage 5 rather than stage 4, and striking this record
+    out entirely leaves six, still above the threshold. So the claim "this category''s stage-4 claim rests
+    on an axis nobody has scored" was an error; the stage does not move either way.
+
+    What remains true is the methodological defect, and it should still be settled - a record that
+    computes a maturity of 5.0 from one axis, while a reader assumes two, is wrong in a way that will
+    matter in a category with fewer mature products. The recommendation from this pass is the SECOND
+    option, declaring adoption-only grading, and against the first. Every candidate basis for a score
+    fails a different test. Implementation breadth is adoption wearing a capability label: the map already
+    bands MCP''s adoption on SDK downloads and A2A''s on the count of supporting organizations, so putting
+    breadth here would let one instrument vote twice and make the blend (adoption + adoption) / 2. Spec
+    maturity is genuinely independent of uptake, but there is no ladder for it anywhere in the four
+    rubrics, it would be a fifth instrument sharing the `capability` field name with benchmark,
+    feature_matrix and internal-eval - the collision docs/guides/verification.md already names as the
+    reason not to structure this field - and with only two protocols on the map there is nothing to
+    anchor a `relative_to` against. A two-product feature matrix against agent2agent-protocol is the only
+    option the existing machinery could enforce, and it requires un-nulling A2A first, so it is not a
+    smaller change than the declaration. Declaring the exclusion fixes both protocols and every future
+    one in a single move, and it converts a fallback nobody chose into a policy someone can argue with.'
   sources: []

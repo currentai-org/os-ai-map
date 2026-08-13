@@ -19,21 +19,67 @@ openness:
   note: 'MIT weights on the current release, data closed, no training pipeline, so 3. Z.ai moved to MIT partway
     through the family: GLM-4 and GLM-4-9B carried the GLM-4 License, which requires commercial-use registration
     and a ''Built with GLM'' attribution and scored 2, while GLM-4.6, GLM-5.1 and GLM-5.2 are plain MIT. GLM-5.2
-    governs as the current release. Capability 5 comes from the GLM-5 line; the GLM-4 line scored 2.'
+    governs as the current release. Capability 5 comes from the GLM-5 line; the GLM-4 line scored 2.
+    Re-read 2026-08-13 - the GLM-5.2 LICENSE file is still a plain MIT License, Copyright (c) 2026
+    Zhipu AI, the Hub card still reads `mit` and ungated, and zai-org/GLM-5 is still a public
+    Apache-2.0 inference and deployment repository with no training pipeline or corpus. Nothing moved.'
+  last_verified: '2026-08-13'
   raw: weights:open(MIT);data:closed;code:open(inference);license:MIT(OSI)
   sources:
   - url: https://huggingface.co/zai-org/GLM-5.2/blob/main/LICENSE
-    shows: MIT, (c) Zhipu AI 2026
-    accessed: '2026-06-18'
+    shows: '"MIT License / Copyright (c) 2026 Zhipu AI / Permission is hereby granted, free of charge
+      ... without restriction" - the unmodified MIT text.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 33cc77e2eea44d80990be22430aadee6ef78df2854f0dee99aa36c272569215c
+    establishes: [license]
+  - url: https://huggingface.co/api/models/zai-org/GLM-5.2
+    shows: 'card license `mit`, `gated: false`, `private: false`, 2,662,328 downloads and 4,944 likes;
+      no corpus declared on the card.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 8e5a09b75c4c1dfd1104da3303ff61fc55526981554ff390a3d81a7d0063d573
+    establishes: [weights, data, license]
+  - url: https://api.github.com/repos/zai-org/GLM-5
+    shows: '`private: false`, `archived: false`, license `Apache-2.0`, 6,943 stars, description
+      "GLM-5: From Vibe Coding to Agentic Engineering". Inference and deployment code, published.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: cf67038b2f1a7eb9bbc452f883e9be11f6cdf6121d5169fbff4555a311c1af95
+    establishes: [code]
 adoption:
   level: 3
   reach: 100K-1M
   signal_type: usage_volume
   confidence: medium
-  note: HF model card shows 121,169 downloads in the last month (100K-1M band), confirming the level-3 placement
-    on a primary usage figure. Adoption has shifted to the newer GLM-4.5/5/5.1 generations, but GLM-4-9B-Chat remains
-    a meaningfully-pulled small Chinese open model. Headline figure is the HF monthly download count.
+  note: 'Recomputed 2026-08-13 across the 4 declared artifact(s) - 2,774,206 downloads in the trailing
+    30 days (zai-org/GLM-4.6 28,016; THUDM/glm-4-9b 11,688; zai-org/GLM-5.1 72,174; zai-org/GLM-5.2
+    2,662,328). That is level 4 (1M-10M) on the software and model adoption scale, not the recorded
+    level 3. The recorded band was set on GLM-4-9B-Chat alone, which is not a declared artifact and is
+    a generation behind; GLM-5.2 now supplies 96% of the family total. NOT changed here and NOT
+    confirmed - the level move is flagged for review rather than applied, and only the figure was
+    re-read.'
   sources:
+  - url: https://huggingface.co/api/models/zai-org/GLM-4.6
+    shows: 28,016 downloads in the trailing 30 days for zai-org/GLM-4.6
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 3bf6ae9fd5bd0733cb6e3396431f57667b373ce0edb1c6f95e7e75e2641b9fb5
+  - url: https://huggingface.co/api/models/THUDM/glm-4-9b
+    shows: 11,688 downloads in the trailing 30 days for THUDM/glm-4-9b
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: b5482c0131beb5943874af286912ebbbf4f3dbf080b31559e80904c6ad67c85f
+  - url: https://huggingface.co/api/models/zai-org/GLM-5.1
+    shows: 72,174 downloads in the trailing 30 days for zai-org/GLM-5.1
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: dda4a0188863fdd38e54137b36bb262aef5a5416a5a339e3a388a72c03460c16
+  - url: https://huggingface.co/api/models/zai-org/GLM-5.2
+    shows: 2,662,328 downloads in the trailing 30 days for zai-org/GLM-5.2
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 8e5a09b75c4c1dfd1104da3303ff61fc55526981554ff390a3d81a7d0063d573
   - url: https://huggingface.co/zai-org/GLM-4-9B-Chat
     shows: 'GLM-4-9B-Chat model card: 121,169 downloads last month (primary usage figure)'
     accessed: '2026-06-04'
@@ -44,14 +90,27 @@ capability:
   value: null
   confidence: high
   note: 'SWE-Bench Pro 58.4 (reported #1 at release, edging GPT-5.4 57.7 and Claude Opus 4.6 57.3); Terminal-Bench
-    2.0 63.5. Frontier-tier agentic coding for an open-weights model.'
+    2.0 63.5. Frontier-tier agentic coding for an open-weights model. Re-read 2026-08-13 - all four
+    figures are still on the serenitiesai comparison and the SWE-bench Pro number is corroborated by
+    modemguides, so the band is re-derived and unchanged at 5. The third source has gone (see below)
+    and nothing rested on it alone.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://serenitiesai.com/articles/glm-5-1-zhipu-coding-benchmark-claude-opus-comparison-2026
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
+    shows: SWE-Bench Pro 58.4 against GPT-5.4 57.7 and Claude Opus 4.6 57.3, and Terminal-Bench 2.0
+      63.5 - all four figures the band rests on
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 4e842b40dbfd67df6f6db4c749a34d2e59f254a5dadf7831097b026f7fb2b7c6
   - url: https://www.modemguides.com/blogs/ai-news/glm-5-1-open-source-benchmarks-local-ai
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
+    shows: SWE-Bench Pro 58.4 present; corroborates the serenitiesai reading. Does not carry the
+      Terminal-Bench figure.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 085dfa43e483cf6c070ab17dcff0ca703b6034aedac439ce215bbaba6505b646
   - url: https://www.vals.ai/models/zai_glm-5.1-thinking
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
+    shows: Returned HTTP 404 on the 2026-08-13 re-read - the page has gone. It establishes nothing and
+      the band does not rest on it.
+    accessed: '2026-08-13'
+    http_status: 404
+    content_sha256: 3a10a4f308f993b3d25a0750a8a5597ded7e2e8ce11f5552853d1b083301e835

@@ -12,35 +12,65 @@ openness:
       value: Serper-Cloud
       detail: key-gated
   confidence: high
-  note: Proprietary commercial SERP API; no source or self-host. Closed counterpart to OSS-adjacent search
-    tools, like Tavily/Exa per the recipe.
+  note: 'Proprietary commercial SERP API; no source or self-host. Closed counterpart to OSS-adjacent search
+    tools, like Tavily/Exa per the recipe. Re-read 2026-08-13: serper.dev is still a key-gated hosted API
+    priced per query - "2,500 free queries" then "starting at $0.30 per 1,000 queries" - with no repository,
+    no license, and no self-host or on-premise option offered anywhere on the page. source stays closed and
+    the score stays 1.'
   raw: license:proprietary(API-only);source:closed;managed:Serper-Cloud(key-gated)
+  last_verified: '2026-08-13'
   sources:
   - url: https://serper.dev
-    shows: commercial key-gated Google Search API, JSON output, 2,500 free queries then paid; no OSS license
-    accessed: '2026-06-04'
+    shows: Key-gated hosted Google Search API returning structured JSON. "Get 2,500 free queries"; pricing
+      "starting at $0.30 per 1,000 queries". No license, repository link, self-host or on-premise option.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: cbf8b2324e279fbab25e51bde39a73084618b4d43d17bdc061cb6f5060180ba0
+    establishes:
+    - license
+    - source
+    - core-gated
 adoption:
   level: null
   reach: null
   signal_type: unknown
   confidence: low
-  note: Popular low-cost SERP API widely wired into agent stacks (LangChain/CrewAI tool integrations),
-    but vendor publishes no hard user/query-volume figure and no primary download/API-call count is verifiable.
-    Declining to score adoption rather than rely on marketing 'fastest & cheapest' claims.
+  note: 'Popular low-cost SERP API widely wired into agent stacks (LangChain/CrewAI tool integrations), but
+    vendor publishes no hard user/query-volume figure and no primary download/API-call count is verifiable.
+    Declining to score adoption rather than rely on marketing ''fastest & cheapest'' claims. Abstention re-confirmed
+    2026-08-13. What was looked for on serper.dev and not found - a user count, a customer count, a developer
+    count, a total or monthly query volume, or a named-customer list. What is there is price and speed copy
+    only - "The World''s Fastest and Cheapest Google Search API", "search results in 1-2 seconds, at an unbeatable
+    price starting at $0.30 per 1,000 queries" - and $0.30 per 1,000 queries is a rate card, not a volume.
+    There is no package, repository or registry artifact to band either. So the abstention stands and is
+    now dated rather than merely unfilled.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://serper.dev
-    shows: no published user/query-volume figures, only marketing speed/price claims
-    accessed: '2026-06-04'
+    shows: '"The World''s Fastest and Cheapest Google Search API"; "search results in 1-2 seconds, at an unbeatable
+      price starting at $0.30 per 1,000 queries"; "Get 2,500 free queries". No user, customer, developer
+      or query-volume figure appears anywhere on the page.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: cbf8b2324e279fbab25e51bde39a73084618b4d43d17bdc061cb6f5060180ba0
 capability:
   score: 3
   basis: feature_matrix
   value: 'coverage: web/images/news/maps/shopping/video/scholar/patents/autocomplete; structured JSON
     output; ~1-2s latency; freshness=live Google index'
   confidence: medium
-  note: Broad search-type coverage with structured output and live freshness; solid feature matrix for
-    a search API, but thinner than full agent-search tools (no built-in extraction/answer synthesis like
-    Tavily/Exa). Rated 3 on coverage/freshness/structured-output dimensions.
+  note: 'Broad search-type coverage with structured output and live freshness; solid feature matrix for a
+    search API, but thinner than full agent-search tools (no built-in extraction/answer synthesis like Tavily/Exa).
+    Rated 3 on coverage/freshness/structured-output dimensions. Re-read 2026-08-13 and every element of the
+    recorded value is still on the page, including the latency figure: the vertical tabs still run through
+    Scholar and Patents, output is still structured JSON, and the meta description still promises "search
+    results in 1-2 seconds". Still no extraction or answer-synthesis endpoint, which is what keeps it a rung
+    under Tavily and Exa. Band unchanged at 3.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://serper.dev
-    shows: 9 search verticals, structured JSON, 1-2s latency
-    accessed: '2026-06-04'
+    shows: Vertical tabs including Scholar and Patents with worked structured-JSON responses; "search results
+      in 1-2 seconds". No extraction, crawl or answer-synthesis endpoint offered.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: cbf8b2324e279fbab25e51bde39a73084618b4d43d17bdc061cb6f5060180ba0

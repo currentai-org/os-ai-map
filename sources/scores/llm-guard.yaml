@@ -18,27 +18,43 @@ openness:
       value: ungated
   confidence: high
   note: 'Fully open source: MIT-licensed, complete source, self-hostable. (Protect AI''s commercial platform
-    is a separate product; this is the standalone OSS toolkit.)'
+    is a separate product; this is the standalone OSS toolkit.) Re-read 2026-08-13 and unchanged.'
   raw: license:MIT(OSI);source:public(full Python implementation);self-host:yes;service:none(the OSS toolkit;
     Protect AI's platform is separate);core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/protectai/llm-guard
-    shows: MIT; full Python source; input/output scanners; ~3.1k stars
-    accessed: '2026-06-29'
+    shows: 'Repo metadata records license spdxId - MIT. README calls it ''an open source solution'',
+      documents installing and customizing it yourself and deploying it as an API, and enumerates the
+      prompt and output scanners in the published package; there is no enterprise directory, commercial
+      edition or license key on the page.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: a0b8359138ed75effcda2ac312c76ac68b3954e5579fa6715a25700a0e9ee6b4
+    establishes:
+    - source
+    - core-gated
+    - license
 adoption:
-  level: 2
-  reach: 1K-10K stars
-  signal_type: stars_fallback
-  confidence: low
-  note: '~3.1K GitHub stars (June 2026); stars-only proxy, capped per methodology. Stars read 2026-08-13:
-    3,202 across the 1 declared repo, which bands at 1K-10K stars, level 2 on the stars scale in
-    signal_routing.yaml. The previous reach ''10K-100K'' was not a label this instrument offers - stars have
-    their own vocabulary because a star is not a download. No last_verified claimed: a star count is volatile,
-    so a digest of it would read as drift on every refetch, and the rest of the axis was not re-read.'
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: '212,987 downloads in the trailing 30 days on the newly declared PyPI artifact `llm-guard`,
+    read live 2026-08-13. Bands at 100K-1M, level 3. LEVEL CORRECTED FROM 2, and the cause is that
+    the band was set on the wrong instrument: it read stars_fallback, which adoption.md defines as
+    meaning no download signal existed when it was set, and which caps at 3 for the good reason that
+    a star is not a use. A download signal does exist, and the guide is explicit that a stars band
+    re-bands once one appears. The package is the product''s own rather than a same-named stranger -
+    its PyPI project_urls point at https://github.com/protectai/llm-guard - and for a Python library PyPI is the primary channel,
+    not a minority one.'
+  last_verified: '2026-08-13'
   sources:
-  - url: https://github.com/protectai/llm-guard
-    shows: ~3.1k stars (June 2026)
-    accessed: '2026-06-29'
+  - url: https://pypistats.org/api/packages/llm-guard/recent
+    shows: 'last_month 212,987'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: ca84b65d7acf8681a45ac0cea3ab88bea80a49fe26bccd68ded5a4fe9d1a8cc7
 capability:
   score: 3
   basis: feature_matrix
@@ -47,8 +63,19 @@ capability:
     with sanitization.
   confidence: medium
   note: Solid set of I/O scanners; lighter-weight orchestration than NeMo Guardrails but easy to drop
-    in.
+    in. That comparison is the instrument, so it is recorded rather than left in prose - a scanner library
+    without a policy language or dialog control sits one rung below NeMo Guardrails. Re-read 2026-08-13 and
+    unchanged.
+  relative_to: nemo-guardrails
+  relation: one_below
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/protectai/llm-guard
-    shows: 'input/output scanners: injection, PII, toxicity, harmful content'
-    accessed: '2026-06-29'
+    shows: 'README lists the prompt scanners (Anonymize, BanCode, BanCompetitors, BanSubstrings, BanTopics,
+      Code, Gibberish, InvisibleText, Language, PromptInjection, Regex, Secrets, Sentiment, TokenLimit,
+      Toxicity) and the output scanners (BanCode, BanCompetitors, BanSubstrings, BanTopics, Bias, Code,
+      Deanonymize, JSON, ...), and frames the toolkit as sanitization, detection of harmful language,
+      prevention of data leakage and resistance to prompt injection.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: a0b8359138ed75effcda2ac312c76ac68b3954e5579fa6715a25700a0e9ee6b4

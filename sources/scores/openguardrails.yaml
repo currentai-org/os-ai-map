@@ -18,31 +18,55 @@ openness:
       value: ungated
   confidence: high
   note: 'Fully open source: both the guardrails platform and the safety model are Apache-2.0 and self-hostable,
-    including on-prem deployment.'
+    including on-prem deployment. Re-read 2026-08-13 and both halves still check out, but the repo has been
+    reshaped since the last read - it is now the monorepo for the OpenGuardrails (OGR) specification and
+    its reference implementations, with the Python and JavaScript SDKs and the integrations beside it. The
+    licence, the public source and the ungated core are unchanged, so the score is unaffected; what the
+    product IS has moved, and that is raised on the prose rather than settled here.'
   raw: license:Apache-2.0(OSI) for both platform and model;source:public;self-host:yes(on-prem/private);model:OpenGuardrails-Text-2510
     open weights Apache-2.0;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/openguardrails/openguardrails
-    shows: Apache-2.0 platform; ~80 stars; on-prem deployment
-    accessed: '2026-06-29'
+    shows: 'Repo metadata records license spdxId - Apache-2.0 and the README closes ''License. Apache-2.0''.
+      The monorepo holds specification/ and schema/, packages/python and packages/javascript, integrations/,
+      benchmarks/ and examples/, and the development section builds and tests the whole thing locally. The
+      project describes itself as foundation-governed and neutral; there is no paid tier, enterprise
+      directory or license key on the page.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 14ec01d401f346717c75189035fdaa88a10c829893ac5a02d59f96b1c8c2cf2b
+    establishes:
+    - source
+    - core-gated
+    - license
   - url: https://huggingface.co/openguardrails/OpenGuardrails-Text-2510
-    shows: Apache-2.0; 3.3B quantized safety model; 119 languages
-    accessed: '2026-06-29'
+    shows: 'Model repo is ungated and carries License - apache-2.0 with a LICENSE file and two safetensors
+      shards; cardData records base_model - Qwen/Qwen3-14B and quantization - GPTQ-4bit, which is the 3.3B
+      quantized safety model the score records.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 159fabd963ebd48e27ae04bc4a9424930f514c22a9e9a6020ac894baeb8d0a9f
+    establishes:
+    - license
 adoption:
   level: 1
   reach: <1K stars
   signal_type: stars_fallback
   confidence: low
-  note: 'New (late 2025) project, ~80 GitHub stars (June 2026); stars-only proxy, capped per methodology;
-    early-stage adoption. Stars read 2026-08-13: 23 across the 1 declared repo, which bands at <1K stars,
-    level 1 on the stars scale in signal_routing.yaml. Level corrected from 2. The previous reach ''1K-10K''
-    was not a label this instrument offers - stars have their own vocabulary because a star is not a download.
-    No last_verified claimed: a star count is volatile, so a digest of it would read as drift on every
-    refetch, and the rest of the axis was not re-read.'
+  note: 'Early-stage project; stars-only proxy, capped at 3 because a star is not a use. Re-read 2026-08-13
+    - the repo shows 24 stargazers, which bands at <1K stars, level 1 on the stars scale in
+    signal_routing.yaml. The project publishes SDKs to PyPI and npm, so a download route may exist; PyPI
+    stats were rate-limited at the time of the read and no figure was obtained, which says nothing about
+    whether one exists. The stars band is what was re-derived.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/openguardrails/openguardrails
-    shows: ~80 stars (June 2026)
-    accessed: '2026-06-29'
+    shows: stargazerCount 24 for openguardrails/openguardrails; no download, install or customer figure
+      appears on the page.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 14ec01d401f346717c75189035fdaa88a10c829893ac5a02d59f96b1c8c2cf2b
 capability:
   score: 4
   basis: feature_matrix
@@ -52,9 +76,21 @@ capability:
     leakage across 119 languages.
   confidence: low
   note: 'Unusually complete for its age: ships both an open safety model and an on-prem platform, with
-    broad multilingual coverage.'
+    broad multilingual coverage. Re-read 2026-08-13 against the paper, which still supports every clause of
+    the value. Worth flagging that the repo has since repositioned as a vendor-neutral protocol and
+    benchmark rather than a detector - "we do not build detection capability" - so the platform the paper
+    describes and the thing the repo now ships are drifting apart. The published model and the paper are
+    what the band rests on.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://arxiv.org/abs/2510.19169
-    shows: context-aware guardrails platform + safety model; 119 languages; content safety, manipulation,
-      data leakage
-    accessed: '2026-06-29'
+    shows: 'Abstract (v2, revised 29 Oct 2025) presents OpenGuardrails as ''the first fully open-source
+      platform that unifies large-model-based safety detection, manipulation defense, and deployable
+      guardrail infrastructure'', covering content-safety violations, model-manipulation attacks including
+      prompt injection, jailbreaks and code-interpreter abuse, and data leakage. It records Configurable
+      Policy Adaptation, a unified LLM-based guard architecture, a 14B base compressed to 3.3B via GPTQ,
+      support for 119 languages, deployment as a secure gateway or API service, and Apache 2.0 for all
+      models, datasets and deployment scripts.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 97ec399725a27452a94b88ff57ed91fcad24d13ec2afac82ba80079c7da58020
