@@ -13,33 +13,69 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: Apache-2.0 license body confirmed; full source public on GitHub.
+  note: 'Apache-2.0 license body confirmed; full source public on GitHub. Re-read 2026-08-13: the cited
+    LICENSE body still carries the Apache-2.0 terms, the GitHub API reports the repository public, unarchived
+    and licensed Apache-2.0, and the README describes the whole library with no paid, enterprise or hosted
+    tier beside it, so source stays public and core-gated stays ungated.'
   raw: license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/onnx/onnx/blob/main/LICENSE
-    shows: Apache License Version 2.0 full text
-    accessed: '2026-06-22'
+    shows: LICENSE file is the verbatim Apache License Version 2.0 text
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+    establishes:
+    - license
+  - url: https://api.github.com/repos/onnx/onnx
+    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main
+      - for onnx/onnx.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 4920d88b95ed8977195f77607a139ced5200353110e98f9596c178e3dab72c21
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/onnx/onnx/main/README.md
+    shows: README describes the open format, computation-graph model and built-in operators as an open ecosystem
+      under LF AI & Data. No paid tier appears.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 11b444d407b1e6c33af8d0b0090a72c06704cf15f80999d02fd3c1740064ecfe
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 5
   reach: '>10M'
   signal_type: usage_volume
   confidence: high
-  note: 'Re-scored 4->5. 20.65M PyPI downloads in the last 30 days. The map''s
-    prevailing usage_volume level-5 floor is >10M/mo (cf. pydantic-ai ~31M,
-    llama-index ~10.18M at level 5; the companion onnxruntime is already level 5 at
-    ~74.7M); the prior level 4 applied the stricter ml_frameworks-batch band. ONNX
-    is the de facto cross-framework model-exchange standard and clears the floor.'
+  note: 'Re-scored 4->5. 20.65M PyPI downloads in the last 30 days. The map''s prevailing usage_volume level-5
+    floor is >10M/mo (cf. pydantic-ai ~31M, llama-index ~10.18M at level 5; the companion onnxruntime is
+    already level 5 at ~74.7M); the prior level 4 applied the stricter ml_frameworks-batch band. ONNX is
+    the de facto cross-framework model-exchange standard and clears the floor. Re-read 2026-08-13 from the
+    cited pepy.tech reading of the declared PyPI artifact `onnx`: 19,619,971 downloads in the trailing 30
+    days, which bands at >10M, level 5 on the software scale. Unchanged. `onnxruntime` is a separate product
+    with its own package and is not summed in here.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://pepy.tech/projects/onnx
-    shows: 20,653,241 downloads in last 30 days
-    accessed: '2026-06-25'
+    shows: 19,619,971 downloads in the last 30 days for onnx
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: d40357bd4b8ff12766b3da11775b564f7fb7d93bbdcba33c415ad64fe7330565
 capability:
   score: 5
   basis: feature_matrix
   value: Foundational open model-exchange format and operator spec underpinning cross-framework interoperability.
   confidence: high
-  note: Defines the graph model, operators, and data types used as the de-facto interchange standard.
+  note: 'Defines the graph model, operators, and data types used as the de-facto interchange standard. Re-read
+    2026-08-13: the cited repository page still describes the product as recorded, so the band is unchanged.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/onnx/onnx
-    shows: 'README: open format with extensible computation graph, built-in operators'
-    accessed: '2026-06-22'
+    shows: README still describes an open format with an extensible computation graph and built-in operators
+      as a cross-framework interchange standard
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: d49e12644fe921dde261ccd69627395cc822fdcfc0e61b404d5c747d08d3cacf

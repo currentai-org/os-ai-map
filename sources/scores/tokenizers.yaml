@@ -13,33 +13,69 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: LICENSE body is verbatim Apache License 2.0; full Rust/Python source public.
+  note: 'LICENSE body is verbatim Apache License 2.0; full Rust/Python source public. Re-read 2026-08-13:
+    the cited LICENSE body still carries the Apache-2.0 terms, the GitHub API reports the repository public,
+    unarchived and licensed Apache-2.0, and the README describes the whole library with no paid, enterprise
+    or hosted tier beside it, so source stays public and core-gated stays ungated.'
   raw: license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/huggingface/tokenizers/blob/main/LICENSE
-    shows: LICENSE file is the verbatim Apache License Version 2.0
-    accessed: '2026-06-22'
+    shows: LICENSE file is the verbatim Apache License Version 2.0 text
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://api.github.com/repos/huggingface/tokenizers
+    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main
+      - for huggingface/tokenizers.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: e501dafd4cc582b859aef9635a2fda2841304166b690c48c32d5ef91a48b0a33
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/huggingface/tokenizers/main/README.md
+    shows: README lists the trainable BPE/WordPiece/Unigram implementations and the Rust/Python/Node/Ruby
+      bindings as published. No paid tier appears.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 3f468113e6783aa06593399ea4bae20321eb778a1be7ed028db33fc7228c3ef5
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 5
   reach: '>10M'
   signal_type: usage_volume
   confidence: high
   note: 'PyPI last-month downloads of 189,770,639 exceed the 50M+ threshold. Read live 2026-08-13: 252,452,945
-    PyPI downloads in the trailing 30 days across the declared artifact(s), which bands at >10M, level 5. The
-    previous reach ''189M+/month'' was free text carrying a figure rather than a band the scale declares, so
-    nothing could check it against the level beside it. No last_verified claimed: only the figure was re-read,
-    not the whole axis.'
+    PyPI downloads in the trailing 30 days across the declared artifact(s), which bands at >10M, level 5.
+    The previous reach ''189M+/month'' was free text carrying a figure rather than a band the scale declares,
+    so nothing could check it against the level beside it. No last_verified claimed: only the figure was
+    re-read, not the whole axis. Re-read 2026-08-13 from the cited pypistats reading of the declared PyPI
+    artifact `tokenizers`: 252,452,945 downloads in the trailing 30 days, which bands at >10M, level 5 on
+    the software scale. Unchanged.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://pypistats.org/api/packages/tokenizers/recent
-    shows: last_month = 189,770,639 PyPI downloads
-    accessed: '2026-06-22'
+    shows: last_month downloads = 252,452,945 for tokenizers
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 9470d717602b625240a6d565ab275cfac5723995e1d9c694dbb3780d19dad443
 capability:
   score: 5
   basis: feature_matrix
   value: Foundational, fast multi-algorithm tokenization with training, normalization, and pre/post-processing.
   confidence: high
-  note: Broad feature set and central dependency of the Transformers ecosystem.
+  note: 'Broad feature set and central dependency of the Transformers ecosystem. Re-read 2026-08-13: the
+    cited repository page still describes the product as recorded, so the band is unchanged.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/huggingface/tokenizers
-    shows: README lists BPE/WordPiece/Unigram, normalization, multi-language bindings
-    accessed: '2026-06-22'
+    shows: README still lists trainable BPE/WordPiece/Unigram tokenizers with normalization and alignment
+      tracking, in Rust with multi-language bindings
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 17bffe4cd0fd560c6129e554ff413d4831922f0e5a1b13834eedbf72688f90b9

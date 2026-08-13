@@ -13,33 +13,68 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: Apache-2.0 license body confirmed; full source public.
+  note: 'Apache-2.0 license body confirmed; full source public. Re-read 2026-08-13: the cited LICENSE body
+    still carries the Apache-2.0 terms, the GitHub API reports the repository public, unarchived and licensed
+    Apache-2.0, and the README describes the whole library with no paid, enterprise or hosted tier beside
+    it, so source stays public and core-gated stays ungated.'
   raw: license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/deepspeedai/DeepSpeed/blob/master/LICENSE
-    shows: Apache License Version 2.0 full text
-    accessed: '2026-06-22'
+    shows: LICENSE file is the verbatim Apache License Version 2.0 text
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://api.github.com/repos/deepspeedai/DeepSpeed
+    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch master
+      - for deepspeedai/DeepSpeed.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 8e789386652fe49fc9c73d51af9b8dffabf04e2e5cd04123f28e7a0afb43791d
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/deepspeedai/DeepSpeed/master/README.md
+    shows: README describes the training and inference optimization stack - ZeRO, 3D parallelism, MoE -
+      with everything installed from the public package. No paid tier appears.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: d206dd2d2ed67d0b39a60dc18161fb66c6e290ac4f05e6ed9a0467e5b80b75a2
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 4
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: 'PyPI last_month downloads ~1.37M. Read live 2026-08-13: 1,112,723 PyPI downloads in the trailing 30
-    days across the declared artifact(s), which bands at 1M-10M, level 4. Level corrected from 3. The previous
-    reach ''~1.4M/mo'' was free text carrying a figure rather than a band the scale declares, so nothing could
-    check it against the level beside it. No last_verified claimed: only the figure was re-read, not the whole
-    axis.'
+  note: 'PyPI last_month downloads ~1.37M. Read live 2026-08-13: 1,112,723 PyPI downloads in the trailing
+    30 days across the declared artifact(s), which bands at 1M-10M, level 4. Level corrected from 3. The
+    previous reach ''~1.4M/mo'' was free text carrying a figure rather than a band the scale declares, so
+    nothing could check it against the level beside it. No last_verified claimed: only the figure was re-read,
+    not the whole axis. Re-read 2026-08-13 from the cited pypistats reading of the declared PyPI artifact
+    `deepspeed`: 1,112,723 downloads in the trailing 30 days, which bands at 1M-10M, level 4 on the software
+    scale. Unchanged.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://pypistats.org/api/packages/deepspeed/recent
-    shows: last_month=1,374,390 downloads
-    accessed: '2026-06-22'
+    shows: last_month downloads = 1,112,723 for deepspeed
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: ec741051f55ed991149a32b71e42553589efda31c69e238f64ec1013476e5bf3
 capability:
   score: 5
   basis: feature_matrix
   value: Large-scale distributed training/inference optimization library (ZeRO, 3D parallelism, MoE).
   confidence: high
-  note: Foundational scale-out training stack used for many of the largest published models.
+  note: 'Foundational scale-out training stack used for many of the largest published models. Re-read 2026-08-13:
+    the cited repository page still describes the product as recorded, so the band is unchanged.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/deepspeedai/DeepSpeed
-    shows: 'README: ZeRO, ZeRO-Infinity, 3D-Parallelism, MoE; powered BLOOM 176B'
-    accessed: '2026-06-22'
+    shows: README still describes ZeRO, ZeRO-Infinity, 3D parallelism and MoE, and the models it trained
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: bcacf9cd6dc72bbb4c3adbe07f3bdfe354d78354393fbe1fa336369bea4ed0e2

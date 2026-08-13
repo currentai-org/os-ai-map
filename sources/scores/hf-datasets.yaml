@@ -13,12 +13,38 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: LICENSE file is the standard, unmodified Apache 2.0 text.
+  note: 'LICENSE file is the standard, unmodified Apache 2.0 text. Re-read 2026-08-13: the cited LICENSE
+    body still carries the Apache-2.0 terms, the GitHub API reports the repository public, unarchived and
+    licensed Apache-2.0, and the README describes the whole library with no paid, enterprise or hosted tier
+    beside it, so source stays public and core-gated stays ungated.'
   raw: license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/huggingface/datasets/blob/main/LICENSE
-    shows: Standard Apache License 2.0 full text
-    accessed: '2026-06-22'
+    shows: LICENSE file is the verbatim Apache License Version 2.0 text
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+    establishes:
+    - license
+  - url: https://api.github.com/repos/huggingface/datasets
+    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main
+      - for huggingface/datasets.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 6c179f069db6c71b8f8c93f9e0b14a42f6e473d0e8b6640f976ae4721556f86e
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/huggingface/datasets/main/README.md
+    shows: README describes one-line dataloaders and efficient preprocessing across formats and modalities.
+      No paid tier or feature-gated build appears.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 29908587cbd9c4f062d01573ec58e909822c58b5a8a5664045fe0c968639a399
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 5
   reach: '>10M'
@@ -27,20 +53,30 @@ adoption:
   note: 'PyPI last_month downloads of 120,316,114 exceed the 50M+ Level 5 threshold. Read live 2026-08-13:
     159,958,389 PyPI downloads in the trailing 30 days across the declared artifact(s), which bands at >10M,
     level 5. The previous reach ''120M+/month'' was free text carrying a figure rather than a band the scale
-    declares, so nothing could check it against the level beside it. No last_verified claimed: only the figure
-    was re-read, not the whole axis.'
+    declares, so nothing could check it against the level beside it. No last_verified claimed: only the
+    figure was re-read, not the whole axis. Re-read 2026-08-13 from the cited pypistats reading of the declared
+    PyPI artifact `datasets`: 159,958,389 downloads in the trailing 30 days, which bands at >10M, level
+    5 on the software scale. Unchanged.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://pypistats.org/api/packages/datasets/recent
-    shows: last_month downloads = 120,316,114
-    accessed: '2026-06-22'
+    shows: last_month downloads = 159,958,389 for datasets
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 1c17ec70474bebb9c67f000ff01778c7e3b2f82b0568ae6f0f8c1de3f388a999
 capability:
   score: 4
   basis: feature_matrix
   value: 'Data loading and preprocessing library: one-line dataset loading from the Hub plus fast manipulation
     of multi-format, multi-modal data with streaming.'
   confidence: high
-  note: Broad and central to data pipelines but scoped to data handling rather than modeling.
+  note: 'Broad and central to data pipelines but scoped to data handling rather than modeling. Re-read 2026-08-13:
+    the cited repository page still describes the product as recorded, so the band is unchanged.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/huggingface/datasets
-    shows: Describes one-line dataloaders and efficient preprocessing
-    accessed: '2026-06-22'
+    shows: README still describes one-line dataloaders and efficient preprocessing across text, image, audio,
+      video and 3D medical data with streaming
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 2e8a4da42807f561dfe9c905451fc70f852fbf644e982fd3dedd27a783c62ae3

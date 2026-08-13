@@ -13,32 +13,70 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: MIT license body confirmed (Tillet/OpenAI copyright); full source public.
+  note: 'MIT license body confirmed (Tillet/OpenAI copyright); full source public. Re-read 2026-08-13: the
+    cited LICENSE body still carries the MIT terms, the GitHub API reports the repository public, unarchived
+    and licensed MIT, and the README describes the whole library with no paid, enterprise or hosted tier
+    beside it, so source stays public and core-gated stays ungated.'
   raw: license:MIT(OSI);source:public;no feature-gated core;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/triton-lang/triton/blob/main/LICENSE
-    shows: MIT License text, Copyright 2018-2020 Philippe Tillet / 2020-2022 OpenAI
-    accessed: '2026-06-22'
+    shows: LICENSE file is the verbatim MIT License text, Copyright 2018-2020 Philippe Tillet / 2020-2022
+      OpenAI
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 92640fb97222fd0a698ff28ce0c3782c172623f8d6c609b557636a80f28fb946
+    establishes:
+    - license
+  - url: https://api.github.com/repos/triton-lang/triton
+    shows: Repo metadata - license spdx_id MIT, private false, archived false, default branch main - for
+      triton-lang/triton.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 67d686999f89636e1157a54de6fc702c4a06466e2092fd112b37c36fdb50a937
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/triton-lang/triton/main/README.md
+    shows: README describes the language and MLIR-based compiler and points at the public nightly wheels.
+      No paid tier or feature-gated build appears.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 091b198c18d6c8433ba83f848af0f5e022cf82004e87c845f486180dd1c840f6
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 5
   reach: '>10M'
   signal_type: usage_volume
   confidence: high
-  note: 'PyPI last_month downloads ~64.7M. Read live 2026-08-13: 69,538,627 PyPI downloads in the trailing 30
-    days across the declared artifact(s), which bands at >10M, level 5. The previous reach ''50M+/mo'' was
-    free text carrying a figure rather than a band the scale declares, so nothing could check it against the
-    level beside it. No last_verified claimed: only the figure was re-read, not the whole axis.'
+  note: 'PyPI last_month downloads ~64.7M. Read live 2026-08-13: 69,538,627 PyPI downloads in the trailing
+    30 days across the declared artifact(s), which bands at >10M, level 5. The previous reach ''50M+/mo''
+    was free text carrying a figure rather than a band the scale declares, so nothing could check it against
+    the level beside it. No last_verified claimed: only the figure was re-read, not the whole axis. Re-read
+    2026-08-13 from the cited pypistats reading of the declared PyPI artifact `triton`: 69,538,627 downloads
+    in the trailing 30 days, which bands at >10M, level 5 on the software scale. Unchanged. Most of these
+    installs arrive as a PyTorch dependency rather than a direct request; the wheel is still the product''s
+    own distribution channel, and no adjustment is made for it.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://pypistats.org/api/packages/triton/recent
-    shows: last_month=64,708,650 downloads
-    accessed: '2026-06-22'
+    shows: last_month downloads = 69,538,627 for triton
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 593c1e545a76533887bafa16357be6e831af992e9568860e587391825bd2157e
 capability:
   score: 5
   basis: feature_matrix
   value: GPU kernel language and MLIR-based compiler for custom high-performance deep-learning operators.
   confidence: high
-  note: Foundational kernel-authoring layer (e.g. PyTorch inductor backend) across NVIDIA/AMD GPUs.
+  note: 'Foundational kernel-authoring layer (e.g. PyTorch inductor backend) across NVIDIA/AMD GPUs. Re-read
+    2026-08-13: the cited repository page still describes the product as recorded, so the band is unchanged.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/triton-lang/triton
-    shows: 'README: language+compiler for fast custom DL primitives, MLIR-based'
-    accessed: '2026-06-22'
+    shows: README still describes the GPU kernel language and MLIR-based compiler, with public nightly wheels
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 87ca7ff3346319ef0113b4f84c7a4ca7b29d0ee0380b6f35a1e5b1c716641b90

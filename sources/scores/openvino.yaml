@@ -13,34 +13,75 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: Apache-2.0 license body confirmed; full source public.
+  note: 'Apache-2.0 license body confirmed; full source public. Re-read 2026-08-13: the cited LICENSE body
+    still carries the Apache-2.0 terms, the GitHub API reports the repository public, unarchived and licensed
+    Apache-2.0, and the README describes the whole library with no paid, enterprise or hosted tier beside
+    it, so source stays public and core-gated stays ungated. The README''s only ''enterprise'' string is
+    inside a third-party LLMWare integration blurb rather than an OpenVINO tier.'
   raw: license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/openvinotoolkit/openvino/blob/master/LICENSE
-    shows: Apache License Version 2.0 full text
-    accessed: '2026-06-22'
+    shows: LICENSE file is the verbatim Apache License Version 2.0 text
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://api.github.com/repos/openvinotoolkit/openvino
+    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch master
+      - for openvinotoolkit/openvino.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: ce0884d89b27d8f08bd8b5544d4c63f3a40bebd3be2474e199d0ddfe1d6174e7
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/openvinotoolkit/openvino/master/README.md
+    shows: README describes the inference optimization and deployment toolkit and its distribution channels
+      (PyPI, npm, conda-forge, Homebrew). Its only 'enterprise' string sits inside a third-party integration
+      blurb for LLMWare, not an OpenVINO tier.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 7e8b6d2d0411cfcd3b0dfc143253fe2da2693a87c19c0191f4b8a0d309fe6388
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 4
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: 'PyPI last_month downloads ~1.38M. Read live 2026-08-13: 1,869,817 PyPI downloads in the trailing 30
-    days across the declared artifact(s), which bands at 1M-10M, level 4. Level corrected from 3. The previous
-    reach ''~1.4M/mo'' was free text carrying a figure rather than a band the scale declares, so nothing could
-    check it against the level beside it. No last_verified claimed: only the figure was re-read, not the whole
-    axis.'
+  note: 'PyPI last_month downloads ~1.38M. Read live 2026-08-13: 1,869,817 PyPI downloads in the trailing
+    30 days across the declared artifact(s), which bands at 1M-10M, level 4. Level corrected from 3. The
+    previous reach ''~1.4M/mo'' was free text carrying a figure rather than a band the scale declares, so
+    nothing could check it against the level beside it. No last_verified claimed: only the figure was re-read,
+    not the whole axis. Re-read 2026-08-13 from the cited pypistats reading of the declared PyPI artifact
+    `openvino`: 1,869,817 downloads in the trailing 30 days, which bands at 1M-10M, level 4 on the software
+    scale. Unchanged. OpenVINO also ships through conda-forge, Homebrew, npm, Docker and Intel''s own archives,
+    none of them counted here, so 1.87M/mo is a floor for the 1M-10M band rather than a full count of the
+    product''s distribution.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://pypistats.org/api/packages/openvino/recent
-    shows: last_month=1,379,327 downloads
-    accessed: '2026-06-22'
+    shows: last_month downloads = 1,869,817 for openvino
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: bcafe84d5844d798a8222639d91af9c61eefa59179f5b72b42586a855d387ad2
 capability:
   score: 4
   basis: feature_matrix
   value: Inference optimization/deployment toolkit across Intel CPU/GPU/NPU with multi-framework model
     conversion.
   confidence: high
-  note: Broad inference runtime with model conversion and GenAI API, primarily Intel-hardware oriented.
+  note: 'Broad inference runtime with model conversion and GenAI API, primarily Intel-hardware oriented.
+    Re-read 2026-08-13: the cited repository page still describes the product as recorded, so the band is
+    unchanged.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/openvinotoolkit/openvino
-    shows: 'README: optimize/deploy inference, convert from PyTorch/TF/ONNX, CPU/GPU/NPU targets'
-    accessed: '2026-06-22'
+    shows: README still describes inference optimization and deployment across Intel CPU, GPU and NPU with
+      conversion from PyTorch, TensorFlow and ONNX
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: a14e8dae9600cfab00f871e2d62ccd80445622eff33f4201a8860caa33598f28

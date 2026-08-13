@@ -13,34 +13,70 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: LICENSE file is the standard, unmodified Apache 2.0 text.
+  note: 'LICENSE file is the standard, unmodified Apache 2.0 text. Re-read 2026-08-13: the cited LICENSE
+    body still carries the Apache-2.0 terms, the GitHub API reports the repository public, unarchived and
+    licensed Apache-2.0, and the README describes the whole library with no paid, enterprise or hosted tier
+    beside it, so source stays public and core-gated stays ungated.'
   raw: license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/huggingface/diffusers/blob/main/LICENSE
-    shows: Standard Apache License 2.0 full text
-    accessed: '2026-06-22'
+    shows: LICENSE file is the verbatim Apache License Version 2.0 text
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: f9e2070c247517b1ddf65f7b11b393484a18da91a958fd18a97bd0f241c3125c
+    establishes:
+    - license
+  - url: https://api.github.com/repos/huggingface/diffusers
+    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main
+      - for huggingface/diffusers.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 412f3191f7fa2dc5cd16af1376786163518107b3d813af380c9d9fb992a13d48
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/huggingface/diffusers/main/README.md
+    shows: README describes the three core components - pipelines, schedulers and pretrained models - as
+      the whole toolbox. No paid tier or feature-gated build appears.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c5cdf07c057b50eab0850bc8ae3501559eb53ca27cdb99c86f1039ee99fc762e
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 4
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: 'PyPI last_month downloads of 7,406,705 fall in the 5M-50M Level 4 band. Read live 2026-08-13:
-    8,248,209 PyPI downloads in the trailing 30 days across the declared artifact(s), which bands at 1M-10M,
-    level 4. The previous reach ''7M+/month'' was free text carrying a figure rather than a band the scale
-    declares, so nothing could check it against the level beside it. No last_verified claimed: only the figure
-    was re-read, not the whole axis.'
+  note: 'PyPI last_month downloads of 7,406,705 fall in the 5M-50M Level 4 band. Read live 2026-08-13: 8,248,209
+    PyPI downloads in the trailing 30 days across the declared artifact(s), which bands at 1M-10M, level
+    4. The previous reach ''7M+/month'' was free text carrying a figure rather than a band the scale declares,
+    so nothing could check it against the level beside it. No last_verified claimed: only the figure was
+    re-read, not the whole axis. Re-read 2026-08-13 from the cited pypistats reading of the declared PyPI
+    artifact `diffusers`: 8,248,209 downloads in the trailing 30 days, which bands at 1M-10M, level 4 on
+    the software scale. Unchanged.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://pypistats.org/api/packages/diffusers/recent
-    shows: last_month downloads = 7,406,705
-    accessed: '2026-06-22'
+    shows: last_month downloads = 8,248,209 for diffusers
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 6b1f78a79281c3dd702f7a7d8fbc6819bbd8842e4f1f6309d5d865c69210e17e
 capability:
   score: 4
   basis: feature_matrix
   value: 'Diffusion-model toolkit: inference pipelines, swappable schedulers, and pretrained models for
     image, audio, and 3D generation.'
   confidence: high
-  note: Deep but domain-specific to diffusion/generative models rather than general-purpose ML.
+  note: 'Deep but domain-specific to diffusion/generative models rather than general-purpose ML. Re-read
+    2026-08-13: the cited repository page still describes the product as recorded, so the band is unchanged.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/huggingface/diffusers
-    shows: Describes pipelines, schedulers, and pretrained diffusion models
-    accessed: '2026-06-22'
+    shows: README still describes pipelines, interchangeable schedulers and pretrained diffusion models
+      for image, audio and 3D generation
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 1aaf1e8397091bc798fb94d6c711b06e18243bffb9e90e9d36cd21038b13e2ec
