@@ -22,29 +22,42 @@ openness:
         client feature
   note: Apache-2.0, full source public for the IDE extensions and CLI; no feature-gated core in the editor
     itself (a hosted Hub exists alongside but the assistant is OSS).
+    Re-read 2026-08-13. The repository root still holds actions, binary, core, docs, eval, extensions,
+    gui, media, packages, scripts, skills and sync with a single LICENSE and no ee/ or enterprise/
+    directory. mdm.ts is still published Apache-2.0 code whose validated payload carries only
+    customerId, createdAt, expiresAt and apiUrl, read out of MDM-managed OS configuration, and it still
+    switches on no client feature. continue.dev now leads with the Cursor acquisition and still states
+    that the open-source codebase remains freely available as a foundation for others, with no pricing
+    page. The VS Code Marketplace listing still shows the licence as Apache 2.0. Value unchanged at 5 /
+    open_source.
   raw: license:Apache-2.0(OSI);source:public(github.com/continuedev/continue);clients:VSCode+JetBrains+CLI;hub:continue.dev(hosted
     config/model hub adjacent, core OSS);core-gated:ungated(Apache-2.0 across the whole monorepo, no ee/
     or enterprise directory; the enterprise license key is itself published Apache-2.0 code carrying only
     customerId/expiresAt/apiUrl and unlocks no client feature)
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/continuedev/continue
     shows: Apache-2.0; public source; AI code assistant (chat/edit/autocomplete + agent)
-    accessed: '2026-06-04'
-    establishes:
-    - license
-    - source
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c5e978602c04d12d338af0b23836088605b6c317ef4f2808544c1d6d5582c615
+    establishes: [license, source]
   - url: https://marketplace.visualstudio.com/items?itemName=Continue.continue
     shows: open source AI code agent extension listing
-    accessed: '2026-06-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 7c078511d59cadc777c86aacdf757eb9984376eb3c7bdba0ad800c8bbfb6a209
+    establishes: [license]
   - url: https://api.github.com/repos/continuedev/continue/contents/
     shows: Repository root listing read for this dimension. The tree is actions, binary, core, docs,
       eval, extensions, gui, manual-testing-sandbox, media, packages, scripts, skills, sync - there is
       no `ee/`, no `enterprise/`, and no second license. `extensions/` holds cli, intellij and vscode;
       `packages/` holds config-types, config-yaml, continue-sdk, fetch, llm-info, openai-adapters and
       terminal-security. The repo license endpoint returns Apache-2.0.
-    accessed: '2026-08-11'
-    establishes:
-    - core-gated
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: b8185dd293a250979c3f36c1d0a8db7d453c53b59fde4c3e85290e3c2a6b00c2
+    establishes: [core-gated, source]
   - url: https://github.com/continuedev/continue/blob/main/core/control-plane/mdm/mdm.ts
     shows: The one thing in this repo that looks like a gate, read directly rather than assumed. Continue
       does ship an "Enterprise License Key" - `continue.enterEnterpriseLicenseKey` in
@@ -56,17 +69,19 @@ openness:
       by it - nothing in the extension is compiled out, withheld, or refused without one. That is the
       langchain shape, a paid platform beside a complete open core, not the langgraph shape of a closed
       package behind a key.
-    accessed: '2026-08-11'
-    establishes:
-    - core-gated
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 10d3ad9d53fcfabe9a36a64bfc60dea7410644df6bf1157715ee4c70f3b64f18
+    establishes: [core-gated]
   - url: https://www.continue.dev/
     shows: The vendor's own site now leads with Continue having been acquired by Cursor and states "our
       open-source codebase remains freely available as a foundation for others". No pricing page is
       linked from it any more, and https://www.continue.dev/pricing returns HTTP 404 - so there is no
       live paid tier left to withhold anything for.
-    accessed: '2026-08-11'
-    establishes:
-    - core-gated
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: e6976b8790d347de0255b6aa09ac5c81a097cd3cd903c2e91d12fe71b2f507d4
+    establishes: [core-gated]
 adoption:
   level: 4
   reach: 1M-10M
@@ -75,13 +90,21 @@ adoption:
   note: VS Code Marketplace shows ~3.21M installs of the Continue extension; plus JetBrains plugin and
     CLI installs on top. Install volume places it solidly in the 1-10M band. 33.5k GitHub stars corroborates
     only.
+    Re-read 2026-08-13 - the VS Code Marketplace listing now reports 3,907,333 installs, up from the
+    3,209,395 recorded, and the repo shows 35,474 stars. JetBrains and CLI installs still sit on top and
+    are still uncounted. Comfortably inside 1M-10M. Level unchanged at 4.
+  last_verified: '2026-08-13'
   sources:
   - url: https://marketplace.visualstudio.com/items?itemName=Continue.continue
     shows: 3,209,395 installs
-    accessed: '2026-06-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 7c078511d59cadc777c86aacdf757eb9984376eb3c7bdba0ad800c8bbfb6a209
   - url: https://github.com/continuedev/continue
     shows: 33.5k stars (corroborating)
-    accessed: '2026-06-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c5e978602c04d12d338af0b23836088605b6c317ef4f2808544c1d6d5582c615
 capability:
   score: 4
   basis: feature_matrix
@@ -91,10 +114,19 @@ capability:
   note: Leading open source in-IDE AI assistant; broad model-agnostic coverage with chat/edit/autocomplete/agent
     and codebase RAG. Strong feature breadth for an open editor assistant, just below the polished closed
     frontier (Copilot/Cursor).
+    Re-read 2026-08-13. The Marketplace listing still breaks the product into Agent, Chat, Edit and
+    Autocomplete plus source-controlled AI checks enforceable in CI, and the repository is still
+    model-agnostic across VS Code, JetBrains and the CLI. Nothing in the Cursor acquisition has
+    withdrawn a feature. Band unchanged at 4.
+  last_verified: '2026-08-13'
   sources:
   - url: https://marketplace.visualstudio.com/items?itemName=Continue.continue
     shows: agent, chat, edit, autocomplete features
-    accessed: '2026-06-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 7c078511d59cadc777c86aacdf757eb9984376eb3c7bdba0ad800c8bbfb6a209
   - url: https://github.com/continuedev/continue
     shows: model-agnostic AI code assistant feature set
-    accessed: '2026-06-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c5e978602c04d12d338af0b23836088605b6c317ef4f2808544c1d6d5582c615
