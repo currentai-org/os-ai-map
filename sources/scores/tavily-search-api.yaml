@@ -14,14 +14,29 @@ openness:
       detail: credits, rate limits
       raw: cloud SaaS with API keys, credits, rate limits
   confidence: high
-  note: Closed search/scrape API (the recipe's closed counterpart to Milvus/Qdrant); only client SDKs
-    are open, the search service itself is proprietary.
+  note: 'Closed search/scrape API (the recipe''s closed counterpart to Milvus/Qdrant); only client SDKs are
+    open, the search service itself is proprietary. Re-read 2026-08-13: the docs are organized around API
+    credits and rate limits with hosted Search, Extract, Crawl, Map and Research endpoints, and the only
+    Open Source section in the navigation is a gallery of example projects BUILT WITH the API, not the API
+    itself. No self-host, on-premise or source-available option is documented anywhere in it. So source stays
+    closed and the score stays 1.'
   raw: license:Proprietary(API-only);source:closed(no self-hostable core; only thin client SDKs are public);managed:cloud
     SaaS with API keys, credits, rate limits
+  last_verified: '2026-08-13'
   sources:
   - url: https://docs.tavily.com/
-    shows: API keys, credits, rate limits, hosted endpoints, no self-hostable open core
-    accessed: '2026-06-04'
+    shows: 'Hosted Search, Extract, Crawl, Map and Research endpoints behind an API key. Developer Resources
+      lead with "API Credits Overview - Learn how Tavily API credits work" and "Rate Limits - Understand
+      Tavily''s rate limits and policies". The navigation''s Open Source group is "popular open source projects
+      that showcase Tavily''s use cases", i.e. consumers of the API. No self-hosting or source-available option
+      documented.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 1bc9cddc56bca559ab891442291b6e2c633258084e35f89f5313586d043f5204
+    establishes:
+    - license
+    - source
+    - core-gated
 adoption:
   level: 4
   reach: 1M-10M
@@ -30,24 +45,43 @@ adoption:
   note: Tavily's own homepage states 2M+ developers and 300M+ monthly requests, billions of pages crawled
     (both figures re-confirmed on the live homepage 2026-06-04); it is the default search provider wired
     into LangChain/CrewAI/LlamaIndex agent stacks. Developer reach solidly in 1-10M band; request volume
-    is far higher. Acquisition by Nebius corroborates enterprise traction.
+    is far higher. Acquisition by Nebius corroborates enterprise traction. Re-read 2026-08-13 and both figures
+    are still on the homepage unchanged - "Trusted by 2M+ developers around the world" and a stats grid reading
+    300M+ "monthly requests handled" and Billions of pages extracted. The band is taken on the developer
+    count, which is what puts it at 1M-10M; the request figure would band higher but requests are not the
+    quantity this scale measures, and it stays in the note as context rather than as the basis. Level 4 unchanged.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://www.tavily.com/
-    shows: vendor-stated 2M+ developers, 300M+ monthly requests, billions of pages crawled
-    accessed: '2026-06-04'
+    shows: '"Trusted by 2M+ developers around the world"; stats grid - 300M+ "monthly requests handled", Billions
+      of pages "extracted without downtime".'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 987a586cfe2beef1f4c25a7e0cd6876e1898e948b737a62e1061be81d7155236
   - url: https://nebius.com/newsroom/nebius-announces-agreement-to-acquire-tavily-to-add-agentic-search-to-its-ai-cloud-platform
-    shows: Nebius agreement to acquire Tavily (Feb 2026), Tavily serving Fortune 500 / leading AI companies
-    accessed: '2026-06-04'
+    shows: Nebius agreement to acquire Tavily, positioning it as agentic search for the Nebius AI cloud. Corroborating
+      enterprise traction; carries no usage figure of its own.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 75aba5a8ab16b90ffdfbb4e23e31c2839e0688e680e4fec6b9bce1edc47a6f0c
 capability:
   score: 4
   basis: feature_matrix
   value: search + extract + crawl + map + research endpoints; real-time freshness; structured/LLM-ready
     output; SLA + rate limits; default integration across major agent frameworks
   confidence: medium
-  note: Full {coverage, freshness, structured output, rate limits} feature set purpose-built for agents
-    and the de-facto default in agent frameworks; near-frontier among agent search APIs but not the single
-    category-definer.
+  note: 'Full {coverage, freshness, structured output, rate limits} feature set purpose-built for agents and
+    the de-facto default in agent frameworks; near-frontier among agent search APIs but not the single category-definer.
+    Re-read 2026-08-13: the documented endpoint set is unchanged - Search, Extract, Crawl, Map and Research
+    - and the Research API now shows structured JSON-schema output with a citation_format option, which is
+    the structured-output dimension the band rests on. Rate limits and credits are still first-class documented
+    concerns. No independent benchmark for agent search APIs has appeared, so the basis stays feature_matrix
+    and the band stays 4.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://docs.tavily.com/
-    shows: search/extract/crawl/map/research endpoints with rate limits and credits
-    accessed: '2026-06-04'
+    shows: Search, Extract, Crawl, Map and Research endpoints; a Research API example returning a JSON schema
+      with `citation_format - numbered`; Credits and Rate Limits documented as developer resources.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 1bc9cddc56bca559ab891442291b6e2c633258084e35f89f5313586d043f5204

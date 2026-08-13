@@ -14,26 +14,45 @@ openness:
       detail: usage-based pricing
       raw: cloud SaaS with API keys, usage-based pricing
   confidence: high
-  note: Closed neural-search API; no self-hostable core, the index and ranking models are proprietary.
+  note: 'Closed neural-search API; no self-hostable core, the index and ranking models are proprietary. Re-read
+    2026-08-13: the about page still describes Exa as a search engine sold as a service - "Exa: The Search
+    Engine for Developers" - powering search for named customers through an API, with Websets layered on
+    top. It offers no self-host, on-premise or source-available path, and neither the index nor the ranking
+    models are published. source stays closed and the score stays 1.'
   raw: license:Proprietary(API-only);source:closed(neural search models + index proprietary; only client
     SDKs public);managed:cloud SaaS with API keys, usage-based pricing
+  last_verified: '2026-08-13'
   sources:
   - url: https://exa.ai/about
-    shows: search-as-a-service, API dashboard, no self-host/open source option
-    accessed: '2026-06-04'
+    shows: '"Exa: The Search Engine for Developers & Custom AI Search Solution"; "search for Cursor, Cognition,
+      HubSpot, OpenRouter, Monday.com and over 400,000 developers"; Websets described as a product on top.
+      No self-hosting, on-premise or source-available option anywhere on the page.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c8499eb43fde80934b39abebb7c4a8a363a3c29fc163c9359dfa3c8ee8d3bb74
+    establishes:
+    - license
+    - source
+    - core-gated
 adoption:
   level: 3
   reach: 100K-1M
   signal_type: usage_volume
   confidence: high
   note: Exa's own about page states it powers search for Cursor, Cognition, HubSpot, OpenRouter, Monday.com
-    and 400,000+ developers. Developer reach in the 100K-1M band; large enterprise/agent customers but
-    below the 1M-developer Tavily tier.
+    and 400,000+ developers. Developer reach in the 100K-1M band; large enterprise/agent customers but below
+    the 1M-developer Tavily tier. Re-read 2026-08-13 and the sentence is still there verbatim - "search for
+    Cursor, Cognition, HubSpot, OpenRouter, Monday.com and over 400,000 developers" - so the figure, the
+    named customers and the 100K-1M band are all unchanged, as is the comparison to Tavily, whose 2M+ developer
+    claim was re-read the same day.
+  last_verified: '2026-08-13'
   sources:
   - url: https://exa.ai/about
-    shows: vendor-stated 400,000+ developers; named customers Cursor, Cognition, HubSpot, OpenRouter,
-      Monday.com
-    accessed: '2026-06-04'
+    shows: '"search for Cursor, Cognition, HubSpot, OpenRouter, Monday.com and over 400,000 developers". No
+      request, query or revenue figure is published.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c8499eb43fde80934b39abebb7c4a8a363a3c29fc163c9359dfa3c8ee8d3bb74
 capability:
   score: 4
   basis: feature_matrix
@@ -41,9 +60,16 @@ capability:
     entity lists); positioned for high-compute complex queries; scaling to hundreds of thousands of searches/sec
     (vendor)
   confidence: medium
-  note: Strong on {coverage, structured output}; Websets' verify-and-enrich pipeline is a differentiated
-    capability beyond plain search; near-frontier among agent search APIs.
+  note: 'Strong on {coverage, structured output}; Websets'' verify-and-enrich pipeline is a differentiated
+    capability beyond plain search; near-frontier among agent search APIs. Re-read 2026-08-13: the about
+    page still positions Exa as a neural search engine for developers with Websets on top, and still frames
+    the roadmap around search volume growing as agents rather than people issue the queries. No independent
+    benchmark for semantic search APIs exists, so the basis stays feature_matrix and the band stays 4.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://exa.ai/about
-    shows: neural search + Websets verify/enrich; high-compute search positioning
-    accessed: '2026-06-04'
+    shows: Neural/semantic search plus contents retrieval; Websets named as the verify-and-enrich product
+      on top; positioning around AI-issued rather than human-issued search volume.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c8499eb43fde80934b39abebb7c4a8a363a3c29fc163c9359dfa3c8ee8d3bb74

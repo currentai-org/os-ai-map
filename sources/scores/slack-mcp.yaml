@@ -13,12 +13,29 @@ openness:
     free_text:
     - no-feature-gated-core
   confidence: high
-  note: Fully MIT.
+  note: 'Fully MIT, no feature-gated core. Re-read 2026-08-13: the repository LICENSE is the plain MIT License,
+    "Copyright (c) 2025 Dmitrii Korotovskii", and the repo page carries the matching badge. The whole Go
+    server ships in the tree, installs from npm or Docker with no key, and the maintainer sells nothing beside
+    it - there is no hosted tier, enterprise directory or second license.'
   raw: license:MIT(OSI);source:public;no-feature-gated-core;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
+  - url: https://raw.githubusercontent.com/korotovsky/slack-mcp-server/master/LICENSE
+    shows: 'Plain MIT License text: "Copyright (c) 2025 Dmitrii Korotovskii".'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c9c83612abe6c352b95a2fc1146638accdd5b348b21cdef333cc78f756e22397
+    establishes:
+    - license
   - url: https://github.com/korotovsky/slack-mcp-server
-    shows: MIT, ~1.7k stars, v1.3.0
-    accessed: '2026-06-17'
+    shows: Repo page - MIT badge, 1,782 stargazers, the whole server in the tree. No paid tier, hosted service,
+      license key or enterprise directory.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: f38b737fc78075988b9677af13bebb862515ad41b6bfe040f4284135f1ae4c5d
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 3
   signal_type: usage_volume
@@ -42,8 +59,19 @@ capability:
   value: '18 tools: history/replies/search, posting, reactions, channel/user/usergroup management, saved items;
     stealth + OAuth modes'
   confidence: medium
-  note: Broad Slack read/write surface with an unusual no-permission stealth mode.
+  note: 'Broad Slack read/write surface with an unusual no-permission stealth mode. Re-read 2026-08-13: the
+    README still leads on the two access modes - "Run the server without requiring additional permissions
+    or bot installations (stealth mode), or use secure OAuth tokens" - and still lists stdio, SSE and HTTP
+    transports, proxy settings, DMs and group DMs, and Smart History fetch by date or count, alongside the
+    Tools table. Enterprise workspace support is named too, which the recorded value does not mention. Band
+    unchanged at 4.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/korotovsky/slack-mcp-server
-    shows: 18-tool feature set
-    accessed: '2026-06-17'
+    shows: 'README - "supports Stdio, SSE and HTTP transports, proxy settings, DMs, Group DMs, Smart History
+      fetch (by date or count), may work via OAuth or in complete stealth mode with no permissions and scopes
+      in Workspace". Feature list opens with "Stealth and OAuth Modes" and "Enterprise Workspaces Support";
+      a Tools section enumerates the tool set.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: f38b737fc78075988b9677af13bebb862515ad41b6bfe040f4284135f1ae4c5d

@@ -15,13 +15,25 @@ openness:
     managed:
       value: Algolia-Cloud
   confidence: high
-  note: Closed proprietary hosted search engine; only client/UI integration libraries are open. Core ranking/index
-    engine is not OSS or self-hostable.
+  note: 'Closed proprietary hosted search engine; only client/UI integration libraries are open. Core ranking/index
+    engine is not OSS or self-hostable. Re-read 2026-08-13: the product page sells a hosted platform - NeuralSearch,
+    AI ranking, personalization - reached through an API, and offers no self-host, on-premise or source-available
+    build of the engine anywhere on it. The open InstantSearch family remains client-side UI, which cannot
+    reclassify the closed core. source stays closed and the score stays 1.'
   raw: license:proprietary(SaaS, API-first);source:closed(search engine core);oss:client/UI-libraries-only(InstantSearch);managed:Algolia-Cloud
+  last_verified: '2026-08-13'
   sources:
   - url: https://www.algolia.com/products/ai-search/
-    shows: proprietary API-first cloud search platform; OSS limited to client/integration libraries
-    accessed: '2026-06-04'
+    shows: Hosted API-first search platform with NeuralSearch hybrid retrieval, AI ranking and personalization.
+      No self-host, on-premise or source-available option for the engine; the open libraries are client-side
+      UI only.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: e8262ce5ec1ddb656d1cf610bb513a9fb37f6e2acb92ef0ca71f95e4b68df350
+    establishes:
+    - license
+    - source
+    - core-gated
 adoption:
   level: 4
   reach: 1M-10M
@@ -29,22 +41,43 @@ adoption:
   confidence: high
   note: 18,000+ customers across 150+ countries; processes over 1 billion queries every 5 seconds at sub-20ms
     average latency. Named users incl. Stripe, Decathlon, Ubisoft. Query volume is enormous; end-user
-    reach (consumers hitting Algolia-powered search) is effectively mass-scale, but as a B2B tool the
-    direct customer base sits in the heavy-trending band; placed at 4 on verified query-volume.
+    reach (consumers hitting Algolia-powered search) is effectively mass-scale, but as a B2B tool the direct
+    customer base sits in the heavy-trending band; placed at 4 on verified query-volume. Re-read 2026-08-13
+    and both headline figures are still on the page as written - "More than 18,000 customers in 150+ countries
+    trust Algolia" and "Algolia processes more than 1 billion queries every 5 seconds, with an average response
+    time under 20 milliseconds" - with Stripe, Decathlon and Ubisoft still named. The customer count is what
+    the band actually rests on and 18,000 is nowhere near the 1M-10M reach label recorded beside it; that
+    label reads as an estimate of downstream end users rather than of anything counted here, and it is worth
+    a ruling on whether this axis should carry a numeric reach at all. Level 4 unchanged.
+  last_verified: '2026-08-13'
   sources:
   - url: https://www.algolia.com/products/ai-search/
-    shows: 18,000+ customers, 1B+ queries/5s, sub-20ms latency, named enterprise users
-    accessed: '2026-06-04'
+    shows: '"More than 18,000 customers in 150+ countries trust Algolia"; "Algolia processes more than 1 billion
+      queries every 5 seconds, with an average response time under 20 milliseconds"; Stripe, Decathlon and
+      Ubisoft named.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: e8262ce5ec1ddb656d1cf610bb513a9fb37f6e2acb92ef0ca71f95e4b68df350
 capability:
   score: 4
   basis: feature_matrix
   value: hybrid vector+keyword (NeuralSearch), NLP/typo-tolerance/autocomplete, AI ranking + personalization,
     sub-20ms latency at 1B+ queries/5s, multi-content-type
   confidence: high
-  note: Mature hybrid search feature matrix (semantic + keyword, personalization, AI ranking) at very
-    low latency and massive scale, frontier-adjacent for managed site/retrieval search. Rated 4; closed
-    system so no independent ANN-Benchmarks number, basis is feature_matrix.
+  note: 'Mature hybrid search feature matrix (semantic + keyword, personalization, AI ranking) at very low
+    latency and massive scale, frontier-adjacent for managed site/retrieval search. Rated 4; closed system
+    so no independent ANN-Benchmarks number, basis is feature_matrix. Re-read 2026-08-13: NeuralSearch, AI
+    ranking and personalization are all still on the page, and the latency-at-scale claim is stated as "more
+    than 1 billion queries every 5 seconds, with an average response time under 20 milliseconds". The absence
+    was re-checked too - ann-benchmarks.com was fetched the same day and lists 38 algorithms, none of them
+    Algolia - so the "no independent number" half of this note is a confirmed finding. Band unchanged at
+    4.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://www.algolia.com/products/ai-search/
-    shows: hybrid vector+keyword NeuralSearch, AI ranking, personalization, sub-20ms at 1B+ queries/5s
-    accessed: '2026-06-04'
+    shows: NeuralSearch hybrid vector-plus-keyword retrieval, AI ranking, personalization; "Algolia processes
+      more than 1 billion queries every 5 seconds, with an average response time under 20 milliseconds".
+      All figures vendor-stated.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: e8262ce5ec1ddb656d1cf610bb513a9fb37f6e2acb92ef0ca71f95e4b68df350
