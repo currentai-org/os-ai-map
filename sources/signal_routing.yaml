@@ -37,39 +37,52 @@ verified_on: '2026-07-28'
 # registry; a source with no key cannot be used until a bridge exists.
 sources:
   github:
+    artifact_key: github
     table: currentai.signal_github.repo_state
     key: product_slug
     evidence_url: https://github.com/{repo}
     bridged: true
   huggingface_model:
+    artifact_key: huggingface_model
     table: currentai.signal_huggingface.hub_state
     key: product_slug
     filter: artifact_kind = 'huggingface_model'
     evidence_url: https://huggingface.co/{artifact_id}
     bridged: true
   huggingface_dataset:
+    artifact_key: huggingface_dataset
     table: currentai.signal_huggingface.hub_state
     key: product_slug
     filter: artifact_kind = 'huggingface_dataset'
     evidence_url: https://huggingface.co/datasets/{artifact_id}
     bridged: true
   pypi:
+    artifact_key: pypi
     table: currentai.signal_pypi.package_downloads
     key: product_slug
     evidence_url: https://pypistats.org/packages/{package}
     bridged: true
   npm:
+    artifact_key: npm
     table: null
     key: null
     evidence_url: https://www.npmjs.com/package/{package}
     bridged: false
     bridge_note: >
-      12 products declare an npm package and no signal model reads the npm registry, so their
-      adoption falls through to the stars scale and its cap of 3 - four of them, including
-      `gemini-cli` and `openclaw`, record 5. npm download counts are a direct analogue of the
-      pypi route, so this is a missing model rather than a missing method. Declared here so
-      the gap is a backlog entry instead of a silent cap.
+      13 products declare an npm package and no signal model reads the npm registry. npm
+      download counts are a direct analogue of the pypi route, so this is a missing model
+      rather than a missing method. Declared here so the gap is a backlog entry rather than
+      an invisible one.
+
+      CORRECTED 2026-08-13. This note used to say those products "fall through to the stars
+      scale and its cap of 3", which is not what happened and was the more comfortable
+      reading. 11 of the 13 record `usage_volume` - they claim a DOWNLOAD COUNT on a registry
+      nothing in the pipeline can read, `mcp-typescript-sdk` and `openclaw` at level 5. An
+      unbridged route does not produce a capped band; it produces an unfalsifiable one,
+      because there is no computed figure for the recorded one to disagree with.
+      `build/check_instrument.py` now gates the general case.
   crates:
+    artifact_key: crates
     table: null
     key: null
     evidence_url: https://crates.io/crates/{package}
@@ -78,6 +91,7 @@ sources:
       One product (`yomo`) declares a crates package. Same shape as npm: crates.io publishes
       download counts and no model reads them.
   semanticscholar:
+    artifact_key: arxiv
     table: currentai.signal_semanticscholar.paper_citations
     key: product_slug
     evidence_url: https://www.semanticscholar.org/paper/{paper_id}
@@ -331,6 +345,9 @@ dimensions:
       #
       # No cap. Unlike stars, this measures use directly; it is unmeasurable by
       # machine, which is a question about confidence rather than about ceiling.
+      # Same reasoning as reported_traction below: no artifact can back a hand-read MAU
+      # disclosure, so the claim has to be re-checkable and has to age instead.
+      requires_evidence: [accessed, content_sha256]
       unit: monthly active users of the surface the product is, or that it powers
       bands:
       - {level: 5, above: 10000000, reach: '>10M users'}
@@ -379,6 +396,18 @@ dimensions:
       # an empty bands list and has used exactly these since before this route existed.
       # Sharing them rather than minting a parallel set is the same reasoning as
       # declaring any scale once.
+      # What this instrument must have instead of an artifact. It claims no count, so
+      # nothing can recompute it; the only thing that can keep it honest is that the claim
+      # is re-checkable and AGES. A digest gives both - `check_refetch` re-fetches a sample
+      # and reports drift, and drift on a vendor claim page is informative rather than
+      # noise: it means the claim may have moved and should be re-read.
+      #
+      # This is the price of the instrument, and it exists so that switching TO
+      # reported_traction is not free. Without it, a `usage_volume` record with nothing
+      # countable behind it could satisfy check_instrument by relabelling itself into the
+      # one instrument with no scale at all, which would move an unverifiable claim
+      # somewhere even less checked. Measured 2026-08-13: 95 of 110 records fall short.
+      requires_evidence: [accessed, content_sha256]
       vocabulary: [niche, broad, mass-market]
       vocabulary_note: >
         `reach` is OPTIONAL on this instrument and omitting it is the honest default -
