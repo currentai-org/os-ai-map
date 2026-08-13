@@ -12,34 +12,55 @@ openness:
     dataset_card:
       value: present
   confidence: high
-  note: Ungated; newly created subsets are Apache-2.0, incorporated public datasets keep their own licenses.
+  note: 'Ungated; newly created subsets are Apache-2.0, incorporated public datasets keep their own licenses.
+    Re-read 2026-08-13: the card''s License section still puts the four new subsets under Apache 2.0 and
+    defers the rest to their original datasets, and the API reports gated false.'
   raw: access:ungated;license:apache-2.0(new-subsets)+per-component;dataset_card:present
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/datasets/HuggingFaceTB/smoltalk
     shows: ungated, mixed licensing documented on card
-    accessed: '2026-07-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: a406e598a0b07d4604d81da7c04f376eab3c3078a6ed9458dae6344a0d3df958
+    establishes:
+    - availability
+    - documentation
+    - license
 adoption:
   level: 3
   reach: 10K-100K
   signal_type: usage_volume
   confidence: high
-  note: 17,489 monthly downloads on Hugging Face, graded on the training-corpus bands.
+  note: 30,281 downloads in the trailing 30 days summed across the 1 declared artifact(s), read 2026-08-13
+    (HuggingFaceTB/smoltalk 30,281). Bands at level 3 (10K-100K) on the dataset adoption scale, whose top
+    band is >1M.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/api/datasets/HuggingFaceTB/smoltalk
-    shows: downloads field = 17,489 (30-day)
-    accessed: '2026-07-04'
+    shows: 30,281 downloads in the trailing 30 days for HuggingFaceTB/smoltalk
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 82ea4fe6554250f7411d73feabe8ff8a08f022570fdf6dc8418d0a954b602b79
 capability:
   score: 5
   basis: training_value
   basis_detail: ablation
   value: null
   confidence: high
-  note: Leads head-to-head SFT-mixture ablations (beats OpenHermes-2.5, UltraChat, MagPie-Pro) and is
-    the current default across SmolLM2/3 and Marin 8B Instruct.
+  note: 'Leads head-to-head SFT-mixture ablations (beats OpenHermes-2.5, UltraChat, MagPie-Pro) and is the
+    current default across SmolLM2/3 and Marin 8B Instruct. Re-read 2026-08-13: the SmolLM2 paper still
+    reports SmolTalk ahead of OpenHermes-2.5, UltraChat and MagPie-Pro, and the Marin 8B Instruct card still
+    lists it.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://arxiv.org/html/2502.02737v1
     shows: 'SmolLM2 paper: SmolTalk surpasses OpenHermes-2.5, UltraChat, and MagPie-Pro'
-    accessed: '2026-07-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: be627c24bbc0d0c4084648798877bced224b189e12ca4c03a2e25e277986fbbb
   - url: https://huggingface.co/marin-community/marin-8b-instruct
     shows: Marin 8B Instruct lists SmolTalk in its SFT mix
-    accessed: '2026-07-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: d39bfdb79bd31d571df1d9c13a14ce4de34aad157b467c76ef8956aaf4daa3c4

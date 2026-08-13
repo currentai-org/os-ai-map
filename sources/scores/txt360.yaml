@@ -10,31 +10,51 @@ openness:
     dataset_card:
       value: present
   confidence: high
-  note: ODC-BY, ungated, documented pipeline on GitHub.
+  note: 'ODC-BY, ungated, documented pipeline on GitHub. Re-read 2026-08-13: odc-by, gated false, card intact.
+    The LLM360 path now redirects to the IFM org on the Hub, same repo.'
   raw: license:ODC-BY;gated:false;dataset_card:present
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/datasets/LLM360/TxT360
     shows: ODC-BY license, ungated, dataset card
-    accessed: '2026-07-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 39cc3cbc04b685eb028700bce426cd4777afcddb4124f495d8bbb2f88c21b7b5
+    establishes:
+    - availability
+    - documentation
+    - license
 adoption:
   level: 2
   reach: 1K-10K
   signal_type: usage_volume
   confidence: high
-  note: 4,218 monthly downloads on Hugging Face, graded on the training-corpus bands.
+  note: 9,230 downloads in the trailing 30 days summed across the 1 declared artifact(s), read 2026-08-13
+    (IFM/TxT360 9,230). Bands at level 2 (1K-10K) on the dataset adoption scale, whose top band is >1M.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/api/datasets/LLM360/TxT360
-    shows: downloads field = 4,218 (30-day)
-    accessed: '2026-07-04'
+    shows: 9,230 downloads in the trailing 30 days for IFM/TxT360
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 573d800a8e60c8d9dfa8f09e400c1afed36fc4240f4e9bea70203cf5db441468
 capability:
   score: 4
   basis: training_value
   basis_detail: ablation
   value: null
   confidence: medium
-  note: A self-reported controlled ablation beats FineWeb (8x8B MoE, 1.5T tokens) but without published
-    numeric scores; trains K2 / K2-V2 (LLM360, 2024-25).
+  note: 'A self-reported controlled ablation beats FineWeb (8x8B MoE, 1.5T tokens) but without published
+    numeric scores; trains K2 / K2-V2 (LLM360, 2024-25). Re-read 2026-08-13: the card still describes ~5T
+    globally deduplicated tokens and a mixing recipe reaching 15T+, still reports the 1.5T-token ablation
+    against FineWeb on an 8x8B mixture-of-experts with no published scores, and the K2-V2 collection still
+    lists it.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/datasets/LLM360/TxT360
-    shows: 5.7T deduplicated tokens upsampled to 15T+, claimed to outperform FineWeb 15T; trains K2/K2-V2
-    accessed: '2026-07-04'
+    shows: Card - ~5T globally deduplicated tokens across 99 Common Crawl snapshots and 14 non-web sources,
+      a recipe reaching 15T+ tokens, and a 1.5T-token 8x8B MoE ablation against FineWeb reported without
+      numeric scores; listed in the K2-V2 collection
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 39cc3cbc04b685eb028700bce426cd4777afcddb4124f495d8bbb2f88c21b7b5

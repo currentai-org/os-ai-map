@@ -22,46 +22,69 @@ openness:
     without a terms section, the repository holds only .gitattributes, README.md and openhermes2_5.json
     so there is no LICENSE file, and the Hub API returns no license. Files that download freely without
     a grant are not open, and not closed either, so the recorded 5/open drops to 3/gated. The commonly cited
-    as permissive detail this record used to carry was a third-party reading and has been dropped.'
+    as permissive detail this record used to carry was a third-party reading and has been dropped. Re-read
+    2026-08-13: the card, its raw README and the Hub API all still carry no licence field, no licence section
+    and no licence tag, and the API reports gated false.'
   raw: license:not-clearly-stated-on-card(no license field in the card YAML, no license section in the card
     body, no LICENSE file in the repository and no license tag on the Hub API);card:present;ungated:yes;format:JSON/Parquet;rows:~1M
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/datasets/teknium/OpenHermes-2.5
     shows: Public ungated dataset card, ~1M rows, synthetic/GPT-4 tags
-    accessed: '2026-06-22'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 2efb56ae792898ddb1c34693d174654799ef050d66e0033611b1b0839d1ae08d
+    establishes:
+    - availability
+    - documentation
+    - license
   - url: https://huggingface.co/datasets/teknium/OpenHermes-2.5/raw/main/README.md
-    shows: 'card front matter is language, pretty_name and tags only, with no `license:` key; the 126-line
-      body covers the dataset description, the Lilac integration, the full list of constituent source
-      datasets, the sharegpt format and a citation, and contains no occurrence of "license" or "terms"'
-    accessed: '2026-08-12'
+    shows: card front matter is language, pretty_name and tags only, with no `license:` key; the 126-line
+      body covers the dataset description, the Lilac integration, the full list of constituent source datasets,
+      the sharegpt format and a citation, and contains no occurrence of "license" or "terms"
+    accessed: '2026-08-13'
     http_status: 200
     content_sha256: 92fd711b9f0f6f8c7312d18d93ad412af415cd25a207584554c8e72c0cfe9f64
-    establishes: [license]
+    establishes:
+    - license
+    - documentation
   - url: https://huggingface.co/api/datasets/teknium/OpenHermes-2.5
     shows: cardData carries no license and the repository has no `license:` tag; siblings are .gitattributes,
       README.md and openhermes2_5.json, so no LICENSE file ships with the data
-    accessed: '2026-08-12'
+    accessed: '2026-08-13'
     http_status: 200
-    establishes: [license]
+    establishes:
+    - availability
+    - license
+    content_sha256: c723e6000d4da3d6b6feeba4953647b8e924b22a3e6d3da4ae487dbf6ec9f835
 adoption:
   level: 3
   reach: 10K-100K
   signal_type: usage_volume
   confidence: high
-  note: 14,982 monthly downloads on Hugging Face, graded on the training-corpus bands.
+  note: 17,420 downloads in the trailing 30 days summed across the 1 declared artifact(s), read 2026-08-13
+    (teknium/OpenHermes-2.5 17,420). Bands at level 3 (10K-100K) on the dataset adoption scale, whose top
+    band is >1M.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/api/datasets/teknium/OpenHermes-2.5
-    shows: downloads field = 14,982 (30-day)
-    accessed: '2026-07-04'
+    shows: 17,420 downloads in the trailing 30 days for teknium/OpenHermes-2.5
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c723e6000d4da3d6b6feeba4953647b8e924b22a3e6d3da4ae487dbf6ec9f835
 capability:
   score: 3
   basis: training_value
   basis_detail: superseded
   value: null
   confidence: high
-  note: Attributed gains inside SmolTalk (MMLU/BBH/WinoGrande) but no standalone ablation; superseded
-    by Hermes 3 and survives as a 100k SmolTalk slice.
+  note: 'Attributed gains inside SmolTalk (MMLU/BBH/WinoGrande) but no standalone ablation; superseded by
+    Hermes 3 and survives as a 100k SmolTalk slice. Re-read 2026-08-13: the SmolLM2 paper still credits
+    a 100k OpenHermes-2.5 subset inside SmolTalk rather than any standalone ablation.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://arxiv.org/html/2502.02737v1
     shows: SmolLM2 paper credits a 100k OpenHermes-2.5 subset with MMLU/WinoGrande/BBH gains
-    accessed: '2026-07-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: be627c24bbc0d0c4084648798877bced224b189e12ca4c03a2e25e277986fbbb
