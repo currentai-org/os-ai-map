@@ -13,34 +13,79 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: BSD 3-Clause license with multiple contributor copyright lines; full source public.
+  note: 'BSD 3-Clause license with multiple contributor copyright lines; full source public. Re-read 2026-08-13:
+    the cited LICENSE body still carries the BSD-3-Clause terms, the GitHub API reports the repository public,
+    unarchived and licensed NOASSERTION, and the README describes the whole library with no paid, enterprise
+    or hosted tier beside it, so source stays public and core-gated stays ungated. The GitHub API reports
+    spdx_id NOASSERTION because the LICENSE prepends per-contributor copyright lines to the BSD text, so
+    the license was read from the body rather than the API field.'
   raw: license:BSD-3-Clause(OSI);source:public;no feature-gated core;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/pytorch/pytorch/blob/main/LICENSE
-    shows: BSD 3-Clause license body with Facebook/contributor copyright lines
-    accessed: '2026-06-22'
+    shows: LICENSE body carries the three BSD 3-Clause conditions and the 'Neither the names ... may be
+      used to endorse' clause, under per-contributor copyright lines (Facebook, Idiap, Deepmind, NEC, NYU
+      and others)
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: bd018feef8825e88181c84eb7e3aa4eafb8f08a20d9fd6ef948569610c4a3e43
+    establishes:
+    - license
+  - url: https://api.github.com/repos/pytorch/pytorch
+    shows: Repo metadata - license spdx_id NOASSERTION, private false, archived false, default branch main
+      - for pytorch/pytorch.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: e1981405fed40203958accf42f2755e7cea4144205812c78602a69faca875ada
+    establishes:
+    - source
+  - url: https://raw.githubusercontent.com/pytorch/pytorch/main/README.md
+    shows: README describes the whole package - tensor computation with GPU acceleration and tape-based
+      autograd - plus build-from-source instructions. No paid, enterprise or hosted PyTorch tier appears;
+      the one 'Enterprise' string is Visual Studio Enterprise in the Windows build notes.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 6f993564b6d153b2adf82d9d434e57374766da4bf398269f4fe358fcf9dd4115
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 5
   reach: '>10M'
   signal_type: usage_volume
   confidence: high
   note: '88.6M PyPI downloads in the last 30 days. Read live 2026-08-13: 95,449,310 PyPI downloads in the
-    trailing 30 days across the declared artifact(s), which bands at >10M, level 5. The previous reach
-    ''88M+/mo'' was free text carrying a figure rather than a band the scale declares, so nothing could check
-    it against the level beside it. No last_verified claimed: only the figure was re-read, not the whole
-    axis.'
+    trailing 30 days across the declared artifact(s), which bands at >10M, level 5. The previous reach ''88M+/mo''
+    was free text carrying a figure rather than a band the scale declares, so nothing could check it against
+    the level beside it. No last_verified claimed: only the figure was re-read, not the whole axis. Re-read
+    2026-08-13 from the cited pepy.tech reading of the declared PyPI artifact `torch`: 98,643,378 downloads
+    in the trailing 30 days, which bands at >10M, level 5 on the software scale. Unchanged. PyPI is one
+    of several channels here - conda and PyTorch''s own wheel index are not counted - so the figure is a
+    floor. It is already the top band, so the undercount cannot move the level.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://pepy.tech/projects/torch
-    shows: 88,636,352 downloads in last 30 days
-    accessed: '2026-06-22'
+    shows: 98,643,378 downloads in the last 30 days for torch
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 783ebdf6992595e18ffb7dacad1e1072aa1d0cae842fe324eb0a21cfb0e63fd4
 capability:
   score: 5
   basis: feature_matrix
   value: 'Foundational deep learning framework: GPU-accelerated tensors, dynamic autograd, neural network
     primitives, distributed training.'
   confidence: high
-  note: Defines the model-training layer alongside TensorFlow.
+  note: 'Defines the model-training layer alongside TensorFlow. Re-read 2026-08-13: the cited repository
+    page still describes the product as recorded, so the band is unchanged. The ''alongside TensorFlow''
+    placement this note already made is now recorded as relative_to/relation - both define the model-training
+    layer and both sit at 5.'
+  relative_to: tensorflow
+  relation: at
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/pytorch/pytorch
-    shows: README describes tensor computation with GPU acceleration and tape-based autograd
-    accessed: '2026-06-22'
+    shows: README still describes tensor computation with strong GPU acceleration and deep neural networks
+      on a tape-based autograd system
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: fd73e5856bd6f3f78797f5ad09f5fc1fb3a94d89805f4236c0faa86f362d1173

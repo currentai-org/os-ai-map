@@ -13,33 +13,73 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: LICENSE body is verbatim Apache License 2.0; full source public.
+  note: 'LICENSE body is verbatim Apache License 2.0; full source public. Re-read 2026-08-13: the cited
+    LICENSE body still carries the Apache-2.0 terms, the GitHub API reports the repository public, unarchived
+    and licensed Apache-2.0, and the README describes the whole library with no paid, enterprise or hosted
+    tier beside it, so source stays public and core-gated stays ungated.'
   raw: license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/huggingface/optimum/blob/main/LICENSE
-    shows: LICENSE file is the verbatim Apache License Version 2.0
-    accessed: '2026-06-22'
+    shows: LICENSE file is the verbatim Apache License Version 2.0 text
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://api.github.com/repos/huggingface/optimum
+    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main
+      - for huggingface/optimum.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 4dfd78eeb42d96c58ab0e09ab27b84c31860e1ca3ba780f596b8f714cb0b6831
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/huggingface/optimum/main/README.md
+    shows: README describes Optimum as an extension of Transformers, Diffusers, TIMM and Sentence-Transformers
+      with per-accelerator extras, all pip-installable. No paid tier appears.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: da4ec25313652b0fa242d042107b2d04d2e09c71cb0ba401a926a586af42caac
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 4
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
   note: 'PyPI last-month downloads of 1,759,764 fall in the 500k-5M range. Read live 2026-08-13: 1,919,623
-    PyPI downloads in the trailing 30 days across the declared artifact(s), which bands at 1M-10M, level 4.
-    Level corrected from 3. The previous reach ''1.7M+/month'' was free text carrying a figure rather than a
-    band the scale declares, so nothing could check it against the level beside it. No last_verified claimed:
-    only the figure was re-read, not the whole axis.'
+    PyPI downloads in the trailing 30 days across the declared artifact(s), which bands at 1M-10M, level
+    4. Level corrected from 3. The previous reach ''1.7M+/month'' was free text carrying a figure rather
+    than a band the scale declares, so nothing could check it against the level beside it. No last_verified
+    claimed: only the figure was re-read, not the whole axis. Re-read 2026-08-13 from the cited pypistats
+    reading of the declared PyPI artifact `optimum`: 1,919,623 downloads in the trailing 30 days, which
+    bands at 1M-10M, level 4 on the software scale. Unchanged.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://pypistats.org/api/packages/optimum/recent
-    shows: last_month = 1,759,764 PyPI downloads
-    accessed: '2026-06-22'
+    shows: last_month downloads = 1,919,623 for optimum
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 831da9d2686963bf0a7534e36860d6be5f7132b1a1ece0a4719a4cf1fbac0420
 capability:
   score: 4
   basis: feature_matrix
   value: Hardware-targeted optimization, export, and quantization across multiple accelerators/runtimes.
   confidence: high
-  note: Broad multi-backend optimization layer, though dependent on the core Transformers stack.
+  note: 'Broad multi-backend optimization layer, though dependent on the core Transformers stack. Re-read
+    2026-08-13: the cited repository page still describes the product as recorded, so the band is unchanged.
+    The ''dependent on the core Transformers stack'' placement this note already made is now recorded as
+    relative_to/relation - one below Transformers'' 5.'
+  relative_to: transformers
+  relation: one_below
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/huggingface/optimum
-    shows: README lists ONNX Runtime, OpenVINO, Gaudi, Trainium/Inferentia, TensorRT-LLM support
-    accessed: '2026-06-22'
+    shows: README still describes hardware-targeted optimization, export and quantization across ONNX Runtime,
+      OpenVINO, Gaudi, Trainium/Inferentia and TensorRT-LLM
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 88d4eb3a37229e17adeb96d4265718bd976ab9d94e49bdc19dae73abbafb63f2

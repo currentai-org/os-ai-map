@@ -13,33 +13,69 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: LICENSE body is verbatim Apache License 2.0; full source public.
+  note: 'LICENSE body is verbatim Apache License 2.0; full source public. Re-read 2026-08-13: the cited
+    LICENSE body still carries the Apache-2.0 terms, the GitHub API reports the repository public, unarchived
+    and licensed Apache-2.0, and the README describes the whole library with no paid, enterprise or hosted
+    tier beside it, so source stays public and core-gated stays ungated.'
   raw: license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/huggingface/huggingface_hub/blob/main/LICENSE
-    shows: LICENSE file is the verbatim Apache License Version 2.0
-    accessed: '2026-06-22'
+    shows: LICENSE file is the verbatim Apache License Version 2.0 text
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://api.github.com/repos/huggingface/huggingface_hub
+    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main
+      - for huggingface/huggingface_hub.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: bd299eb186b7f7db4ed5ea0a70236932134a007dbecfc1a9bf45ea9709c48bf9
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/huggingface/huggingface_hub/main/README.md
+    shows: README describes the official CLI and Python client for the Hub - up/download, repo management,
+      inference, search - as published. The paid product is the Hub subscription, not this client.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 8c77b9f44339ce377dea262879ee735e34aa8491ad65727d5db1e35c96a3dce3
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 5
   reach: '>10M'
   signal_type: usage_volume
   confidence: high
   note: 'PyPI last-month downloads of 331,796,503 exceed the 50M+ threshold. Read live 2026-08-13: 493,557,521
-    PyPI downloads in the trailing 30 days across the declared artifact(s), which bands at >10M, level 5. The
-    previous reach ''331M+/month'' was free text carrying a figure rather than a band the scale declares, so
-    nothing could check it against the level beside it. No last_verified claimed: only the figure was re-read,
-    not the whole axis.'
+    PyPI downloads in the trailing 30 days across the declared artifact(s), which bands at >10M, level 5.
+    The previous reach ''331M+/month'' was free text carrying a figure rather than a band the scale declares,
+    so nothing could check it against the level beside it. No last_verified claimed: only the figure was
+    re-read, not the whole axis. Re-read 2026-08-13 from the cited pypistats reading of the declared PyPI
+    artifact `huggingface-hub`: 493,557,521 downloads in the trailing 30 days, which bands at >10M, level
+    5 on the software scale. Unchanged.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://pypistats.org/api/packages/huggingface-hub/recent
-    shows: last_month = 331,796,503 PyPI downloads
-    accessed: '2026-06-22'
+    shows: last_month downloads = 493,557,521 for huggingface-hub
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 22caa0500709cb24be98654ce2c01900d839ef2b36bc9cf56b02640906a0b32c
 capability:
   score: 5
   basis: feature_matrix
   value: Foundational client for Hub up/download, repo management, inference, and library integration.
   confidence: high
-  note: Central dependency across the Hugging Face ecosystem.
+  note: 'Central dependency across the Hugging Face ecosystem. Re-read 2026-08-13: the cited repository
+    page still describes the product as recorded, so the band is unchanged.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/huggingface/huggingface_hub
-    shows: README describes downloading/uploading, repo management, inference, search
-    accessed: '2026-06-22'
+    shows: README still describes the official CLI and Python client for Hub up/download, repo management,
+      inference and search
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 89e890635a6c04db384e0c179857054f73e9858a9fc718b18931650d05936b33

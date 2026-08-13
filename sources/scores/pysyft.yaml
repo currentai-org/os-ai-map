@@ -62,27 +62,42 @@ adoption:
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: medium
-  note: '9.9k GitHub stars (capped at 3 per stars-fallback rule); ~10.8k monthly PyPI downloads and 1M+ all-
-    time. Stars read 2026-08-13: 9,938 across the 1 declared repo, which bands at 1K-10K stars, level 2 on the
-    stars scale in signal_routing.yaml. Level corrected from 3. The previous reach ''broad'' was not a label
-    this instrument offers - stars have their own vocabulary because a star is not a download. No
-    last_verified claimed: a star count is volatile, so a digest of it would read as drift on every refetch,
-    and the rest of the axis was not re-read.'
+  note: '9.9k GitHub stars (capped at 3 per stars-fallback rule); ~10.8k monthly PyPI downloads and 1M+
+    all-time. Stars read 2026-08-13: 9,938 across the 1 declared repo, which bands at 1K-10K stars, level
+    2 on the stars scale in signal_routing.yaml. Level corrected from 3. The previous reach ''broad'' was
+    not a label this instrument offers - stars have their own vocabulary because a star is not a download.
+    No last_verified claimed: a star count is volatile, so a digest of it would read as drift on every refetch,
+    and the rest of the axis was not re-read. Re-read 2026-08-13: the GitHub API reports 9,937 stargazers
+    on OpenMined/PySyft, which bands at 1K-10K stars, level 2 on the stars scale in signal_routing.yaml.
+    pepy.tech reports 15,527 PyPI downloads of `syft` in the trailing 30 days, which lands at 10K-100K,
+    also level 2 on the software download scale - so the band holds on either instrument. Whether the record
+    should switch from stars_fallback to usage_volume now that a download signal exists is raised as a separate
+    question; it would change reach without changing level.'
+  last_verified: '2026-08-13'
   sources:
-  - url: https://github.com/OpenMined/PySyft
-    shows: 9.9k GitHub stars
-    accessed: '2026-06-22'
+  - url: https://api.github.com/repos/OpenMined/PySyft
+    shows: stargazers_count = 9937 for OpenMined/PySyft
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 4109e58bf5c9d3f4d9c19b50f9cafccf3a461e933b01df3bb83dff380a1d216e
   - url: https://pepy.tech/project/syft
-    shows: 1,043,989 total downloads; 10,846 last 30 days
-    accessed: '2026-06-22'
+    shows: 1,066,264 total downloads; 15,527 in the last 30 days for syft
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 492e1f3fdf052386c03da9270a24c424e5a79608d03a45ee84aa823d8448fed8
 capability:
   score: 4
   basis: feature_matrix
   value: 'Remote/privacy-preserving data science: submit computations to private datasets via Datasite
     servers, NumPy-like remote analysis, sandboxed job execution, cross-platform.'
   confidence: high
-  note: Mature, feature-rich platform for remote data science on private data.
+  note: 'Mature, feature-rich platform for remote data science on private data. Re-read 2026-08-13: the
+    PyPI project page still describes remote data science over Datasite servers with a NumPy-like remote
+    analysis interface, so the band is unchanged.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://pypi.org/project/syft/
-    shows: remote data science, Datasite servers, NumPy-like analysis
-    accessed: '2026-06-22'
+    shows: PyPI page describes remote data science, Datasite servers and NumPy-like remote analysis
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 20f28d2fced8a3931e2a5594fd0aa88910f7974d104155520cc4937a971d69b4
