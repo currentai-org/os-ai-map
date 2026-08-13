@@ -16,37 +16,62 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: Fully OSI-licensed (Apache-2.0), full source public. Repo is the framework; the Marin model is
-    a separate artifact.
+  note: Fully OSI-licensed (Apache-2.0), full source public. Repo is the framework; the Marin model is a
+    separate artifact. Re-read 2026-08-13 - the LICENSE body still carries the same license and the README
+    still builds the whole product from the published repo, with no paid tier, enterprise edition or license
+    key anywhere in it.
   raw: license:Apache-2.0(OSI);source:public(marin-community/marin);governance:Marin community/Stanford
     CRFM;no feature-gated core;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/marin-community/marin/blob/main/LICENSE
     shows: Apache License Version 2.0 text
-    accessed: '2026-07-21'
+    accessed: '2026-08-13'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+  - url: https://raw.githubusercontent.com/marin-community/marin/main/README.md
+    shows: README documents the whole pipeline building and installing from the published
+      repo; no paid tier, enterprise edition or license key appears anywhere in it, so
+      nothing is withheld from the source
+    accessed: '2026-08-13'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: b70e415b672f9995436c6d77981e11081bbc6cebda8d8ac1885bb6b6545924fb
 adoption:
   level: 2
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: medium
-  note: '~1.2k GitHub stars and very active development; a research framework with adoption concentrated
-    around the Marin project rather than broad external use. Stars read 2026-08-13: 1,261 across the 1
-    declared repo, which bands at 1K-10K stars, level 2 on the stars scale in signal_routing.yaml. The
-    previous reach ''<10K'' was not a label this instrument offers - stars have their own vocabulary because a
-    star is not a download. No last_verified claimed: a star count is volatile, so a digest of it would read
-    as drift on every refetch, and the rest of the axis was not re-read.'
+  note: 1,261 GitHub stars on marin-community/marin, read 2026-08-13 from the repository API. Bands at level
+    2 (1K-10K stars) on the stars fallback scale in signal_routing.yaml, which caps at 3 because a star
+    is not a use. A research framework with adoption concentrated around the Marin project rather than broad
+    external use, and no published package. The API response is digested here the way bigcode-dataset and
+    ungoliant already are in this category; a star count drifts, so a later digest mismatch reads as drift
+    rather than as fabrication.
+  last_verified: '2026-08-13'
   sources:
-  - url: https://github.com/marin-community/marin
-    shows: 1.2k stars
-    accessed: '2026-07-21'
+  - url: https://api.github.com/repos/marin-community/marin
+    shows: stargazers_count = 1261 for marin-community/marin
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 3949155ba45e10ef4d2b58642c4fc964b4bc3c2d4f2dfdaa073d145897dca0cb
 capability:
   score: 4
   basis: feature_matrix
   value: End-to-end reproducible data curation + mixture orchestration + training/eval with step-dependency
     execution scaled to TPU clusters.
   confidence: medium
-  note: Broad end-to-end framework; adoption, not capability, is its weak axis.
+  note: Broad end-to-end framework; adoption, not capability, is its weak axis. Re-read 2026-08-13 - the
+    README still describes the feature set above.
+  last_verified: '2026-08-13'
   sources:
-  - url: https://github.com/marin-community/marin
-    shows: marin-framework repo feature set confirmed
-    accessed: '2026-07-21'
+  - url: https://raw.githubusercontent.com/marin-community/marin/main/README.md
+    shows: README still describes one framework covering data curation, transformation, filtering,
+      tokenization, pretraining, posttraining and evaluation
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: b70e415b672f9995436c6d77981e11081bbc6cebda8d8ac1885bb6b6545924fb

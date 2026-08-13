@@ -13,35 +13,60 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: Fully OSI-licensed (Apache-2.0), full source public.
+  note: Fully OSI-licensed (Apache-2.0), full source public. Re-read 2026-08-13 - the LICENSE body still
+    carries the same license and the README still builds the whole product from the published repo, with
+    no paid tier, enterprise edition or license key anywhere in it.
   raw: license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/togethercomputer/RedPajama-Data/blob/main/LICENSE
     shows: Apache License Version 2.0 text
-    accessed: '2026-07-21'
+    accessed: '2026-08-13'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+  - url: https://raw.githubusercontent.com/togethercomputer/RedPajama-Data/main/README.md
+    shows: README documents the whole pipeline building and installing from the published
+      repo; no paid tier, enterprise edition or license key appears anywhere in it, so
+      nothing is withheld from the source
+    accessed: '2026-08-13'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: fdcf4b7907eade3e747f3c707c34f3a76738c4a353c11fc4219b7fa591797169
 adoption:
   level: 2
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: medium
-  note: '~4,969 GitHub stars; pipeline repo, no PyPI package. Widely referenced quality-signal pipeline;
-    dormant since Dec 2024. Stars read 2026-08-13: 4,977 across the 1 declared repo, which bands at 1K-10K
-    stars, level 2 on the stars scale in signal_routing.yaml. The previous reach ''<10K'' was not a label this
-    instrument offers - stars have their own vocabulary because a star is not a download. No last_verified
-    claimed: a star count is volatile, so a digest of it would read as drift on every refetch, and the rest of
-    the axis was not re-read.'
+  note: 4,977 GitHub stars on togethercomputer/RedPajama-Data, read 2026-08-13 from the repository API.
+    Bands at level 2 (1K-10K stars) on the stars fallback scale in signal_routing.yaml, which caps at 3
+    because a star is not a use. No PyPI package, and the last real commit was December 2024; widely referenced
+    as the RedPajama-v2 quality-signal pipeline. The API response is digested here the way bigcode-dataset
+    and ungoliant already are in this category; a star count drifts, so a later digest mismatch reads as
+    drift rather than as fabrication.
+  last_verified: '2026-08-13'
   sources:
-  - url: https://github.com/togethercomputer/RedPajama-Data
-    shows: 4,969 stars; last real commit Dec 2024
-    accessed: '2026-07-21'
+  - url: https://api.github.com/repos/togethercomputer/RedPajama-Data
+    shows: stargazers_count = 4977 for togethercomputer/RedPajama-Data
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 5834bd2feda701b41541000a6fade34aa158389e27df1702546a74dc76aabe0a
 capability:
   score: 4
   basis: feature_matrix
   value: 'Three-stage pipeline: quality classifiers, quality-signal + dedup annotation (perplexity, toxicity,
     importance weights), and exact + fuzzy dedup (bloom/LSH); produced the 30T-token RedPajama-v2.'
   confidence: medium
-  note: Comprehensive quality-signal pipeline; produced a frontier-scale open corpus, but dormant.
+  note: Comprehensive quality-signal pipeline; produced a frontier-scale open corpus, but dormant. Re-read
+    2026-08-13 - the README still describes the feature set above.
+  last_verified: '2026-08-13'
   sources:
-  - url: https://github.com/togethercomputer/RedPajama-Data
-    shows: RedPajama-v2 quality-signal + dedup pipeline (30T tokens)
-    accessed: '2026-07-21'
+  - url: https://raw.githubusercontent.com/togethercomputer/RedPajama-Data/main/README.md
+    shows: README documents the RedPajama-v2 quality-signal annotations and the exact plus fuzzy
+      dedup stages over 30T tokens
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: fdcf4b7907eade3e747f3c707c34f3a76738c4a353c11fc4219b7fa591797169

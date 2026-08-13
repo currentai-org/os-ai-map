@@ -16,34 +16,59 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: Fully OSI-licensed (Apache-2.0), full source public.
+  note: Fully OSI-licensed (Apache-2.0), full source public. Re-read 2026-08-13 - the LICENSE body still
+    carries the same license and the README still builds the whole product from the published repo, with
+    no paid tier, enterprise edition or license key anywhere in it.
   raw: license:Apache-2.0(OSI);source:public(allenai/datamap-rs);governance:Allen Institute for AI;no feature-gated
     core;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/allenai/datamap-rs/blob/main/LICENSE
     shows: Apache License Version 2.0 text
-    accessed: '2026-07-21'
+    accessed: '2026-08-13'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+  - url: https://raw.githubusercontent.com/allenai/datamap-rs/main/README.md
+    shows: README documents the whole pipeline building and installing from the published
+      repo; no paid tier, enterprise edition or license key appears anywhere in it, so
+      nothing is withheld from the source
+    accessed: '2026-08-13'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: 56ec67f99ee8e28d93af11b16afd262ec865f0b5a7bceb9a70b149f6946ca611
 adoption:
   level: 1
   reach: <1K stars
   signal_type: stars_fallback
   confidence: medium
-  note: 'New (2026) single-purpose Rust CLI, ~56 GitHub stars; real but niche, used in the Dolma 3 pipeline.
-    Stars read 2026-08-13: 56 across the 1 declared repo, which bands at <1K stars, level 1 on the stars scale
-    in signal_routing.yaml. The previous reach ''<10K'' was not a label this instrument offers - stars have
-    their own vocabulary because a star is not a download. No last_verified claimed: a star count is volatile,
-    so a digest of it would read as drift on every refetch, and the rest of the axis was not re-read.'
+  note: 56 GitHub stars on allenai/datamap-rs, read 2026-08-13 from the repository API. Bands at level 1
+    (<1K stars) on the stars fallback scale in signal_routing.yaml, which caps at 3 because a star is not
+    a use. A 2026 single-purpose Rust CLI used in the Dolma 3 pipeline; real but niche. The API response
+    is digested here the way bigcode-dataset and ungoliant already are in this category; a star count drifts,
+    so a later digest mismatch reads as drift rather than as fabrication.
+  last_verified: '2026-08-13'
   sources:
-  - url: https://github.com/allenai/datamap-rs
-    shows: 56 stars
-    accessed: '2026-07-21'
+  - url: https://api.github.com/repos/allenai/datamap-rs
+    shows: stargazers_count = 56 for allenai/datamap-rs
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: b368be2a01ab07d93942cc7fd8452e53b3f1300ceb796fa3af54693aa2d3c606
 capability:
   score: 3
   basis: feature_matrix
   value: Single-purpose JSONL map/filter/annotate cleaning stage; focused, not a full pipeline.
   confidence: medium
-  note: One capability slot (cleaning) of the Dolma 3 toolchain.
+  note: One capability slot (cleaning) of the Dolma 3 toolchain. Re-read 2026-08-13 - the README still describes
+    the feature set above.
+  last_verified: '2026-08-13'
   sources:
-  - url: https://github.com/allenai/datamap-rs
-    shows: datamap-rs repo feature set confirmed
-    accessed: '2026-07-21'
+  - url: https://raw.githubusercontent.com/allenai/datamap-rs/main/README.md
+    shows: README documents a Rust JSONL map/filter/annotate pipeline with configurable per-document
+      processors, still one cleaning stage rather than a full pipeline
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 56ec67f99ee8e28d93af11b16afd262ec865f0b5a7bceb9a70b149f6946ca611

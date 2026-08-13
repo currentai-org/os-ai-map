@@ -18,13 +18,30 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: Fully OSI-licensed (Apache-2.0), full source public, no proprietary core or managed gate.
+  note: Fully OSI-licensed (Apache-2.0), full source public, no proprietary core or managed gate. Re-read
+    2026-08-13 - the LICENSE body still carries the same license and the README still builds the whole product
+    from the published repo, with no paid tier, enterprise edition or license key anywhere in it.
   raw: license:Apache-2.0(OSI);source:public(huggingface/datatrove);governance:Hugging Face;no feature-gated
     core;managed-tier:none;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/huggingface/datatrove/blob/main/LICENSE
     shows: Apache License Version 2.0 text
-    accessed: '2026-07-21'
+    accessed: '2026-08-13'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+  - url: https://raw.githubusercontent.com/huggingface/datatrove/main/README.md
+    shows: README documents the whole pipeline building and installing from the published
+      repo; no paid tier, enterprise edition or license key appears anywhere in it, so
+      nothing is withheld from the source
+    accessed: '2026-08-13'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: 65add2bcb9e8405396d81f2b6b7ae97a08afe67fc454c4508a11acf0122f5860
 adoption:
   level: 2
   reach: 10K-100K
@@ -48,9 +65,17 @@ capability:
     filter lifts MMLU ~33->37 and ARC ~46->57.
   confidence: high
   note: 'Benchmark-anchored on the output corpus (a proxy for the tool): FineWeb-Edu leads public pretraining
-    corpora on the FineWeb ablation suite.'
+    corpora on the FineWeb ablation suite. Re-read 2026-08-13 - the arXiv abstract still states that FineWeb
+    outperforms other open pretraining datasets and that FineWeb-Edu lifts MMLU and ARC sharply. The per-task
+    ablation numbers in the value above are plotted in the paper rather than printed on the abstract page,
+    so this re-read confirms the ranking claim rather than the exact figures.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://arxiv.org/abs/2406.17557
-    shows: 'FineWeb ablation: FineWeb-Edu tops public datasets on an 8-task aggregate (identical 1.82B
-      model, equal tokens)'
-    accessed: '2026-07-21'
+    shows: FineWeb abstract - FineWeb produces better-performing LLMs than other open pretraining
+      datasets, and FineWeb-Edu lifts knowledge and reasoning benchmarks such as MMLU and ARC
+      dramatically. The per-task ablation figures behind the aggregate are plots in the paper
+      rather than text on this page.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: a12bfcd47f835ad4a2c5630a228778370ed54509afa65bed1c6dfc264f2182da

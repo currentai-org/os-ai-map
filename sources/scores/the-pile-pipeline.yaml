@@ -16,35 +16,60 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: Fully OSI-licensed (MIT), full source public.
+  note: Fully OSI-licensed (MIT), full source public. Re-read 2026-08-13 - the LICENSE body still carries
+    the same license and the README still builds the whole product from the published repo, with no paid
+    tier, enterprise edition or license key anywhere in it.
   raw: license:MIT(OSI);source:public(EleutherAI/the-pile);governance:EleutherAI;no feature-gated core;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/EleutherAI/the-pile/blob/master/LICENSE
     shows: MIT License text
-    accessed: '2026-07-21'
+    accessed: '2026-08-13'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: a806e42547620dffbc2ec0333322c8b3523b4af11e059be14ef81aa5b1ae021f
+  - url: https://raw.githubusercontent.com/EleutherAI/the-pile/master/README.md
+    shows: README documents the whole pipeline building and installing from the published
+      repo; no paid tier, enterprise edition or license key appears anywhere in it, so
+      nothing is withheld from the source
+    accessed: '2026-08-13'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: 808e3b8cd6a49ea20c6e129740c591f3bae3897f8dd8b7cca9b40a40a1590b30
 adoption:
   level: 2
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: medium
-  note: '~1.7k GitHub stars; frozen since 2023 but the canonical, widely-cited documented-corpus construction
-    pipeline (GPT-Neo/J, Pythia). Stars read 2026-08-13: 1,674 across the 1 declared repo, which bands at
-    1K-10K stars, level 2 on the stars scale in signal_routing.yaml. The previous reach ''<10K'' was not a
-    label this instrument offers - stars have their own vocabulary because a star is not a download. No
-    last_verified claimed: a star count is volatile, so a digest of it would read as drift on every refetch,
-    and the rest of the axis was not re-read.'
+  note: 1,674 GitHub stars on EleutherAI/the-pile, read 2026-08-13 from the repository API. Bands at level
+    2 (1K-10K stars) on the stars fallback scale in signal_routing.yaml, which caps at 3 because a star
+    is not a use. Frozen since April 2023 but the canonical documented-corpus construction pipeline behind
+    GPT-Neo, GPT-J and Pythia, so the level is directional. The API response is digested here the way bigcode-dataset
+    and ungoliant already are in this category; a star count drifts, so a later digest mismatch reads as
+    drift rather than as fabrication.
+  last_verified: '2026-08-13'
   sources:
-  - url: https://github.com/EleutherAI/the-pile
-    shows: 1.7k stars
-    accessed: '2026-07-21'
+  - url: https://api.github.com/repos/EleutherAI/the-pile
+    shows: stargazers_count = 1674 for EleutherAI/the-pile
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 9c644926dd183f1921d0a2d691abf489e3f950f4270eb2e359b47571fb4a6bde
 capability:
   score: 3
   basis: feature_matrix
   value: Assemble, weight/upsample, and format the 22-component Pile corpus; historically important, now
     dated.
   confidence: medium
-  note: Origin-node construction pipeline; not actively developed.
+  note: Origin-node construction pipeline; not actively developed. Re-read 2026-08-13 - the README still
+    describes the feature set above.
+  last_verified: '2026-08-13'
   sources:
-  - url: https://github.com/EleutherAI/the-pile
-    shows: the-pile-pipeline repo feature set confirmed
-    accessed: '2026-07-21'
+  - url: https://raw.githubusercontent.com/EleutherAI/the-pile/master/README.md
+    shows: README is replication code for the 22-component Pile, with the per-component weight and
+      epoch table; it directs dataset users elsewhere
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 808e3b8cd6a49ea20c6e129740c591f3bae3897f8dd8b7cca9b40a40a1590b30
