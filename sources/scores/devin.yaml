@@ -11,27 +11,49 @@ openness:
     self-host:
       value: 'no'
   confidence: high
-  note: Proprietary subscription SaaS; no source or self-hosting, matching the recipe's 'closed' example
-    (Devin).
+  note: 'Proprietary subscription SaaS; no source or self-hosting, matching the recipe''s ''closed'' example
+    (Devin). Re-read 2026-08-13 - the docs still describe a hosted product across Cloud, CLI, Desktop,
+    Enterprise, API and Federal with no self-hostable implementation and no published source, and the
+    pricing page still sells the whole thing as a subscription. Nothing moved.'
   raw: source:closed;license:proprietary(SaaS-only);self-host:no
+  last_verified: '2026-08-13'
   sources:
   - url: https://docs.devin.ai
-    shows: proprietary SaaS coding agent, app.devin.ai signup, Individual/Teams plans
-    accessed: '2026-06-04'
+    shows: proprietary SaaS coding agent documented across Cloud, CLI, Desktop, Enterprise, API and Federal;
+      no source distribution and no self-host path
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 39517dbe744137565f2052d242a77729dc8731e1b689fb2e32044fa06b79516f
+    establishes:
+    - source
+    - self-host
   - url: https://devin.ai/pricing
-    shows: paid tiers Free/$20 Pro/$200 Max/Teams/Enterprise, proprietary SaaS
-    accessed: '2026-06-04'
+    shows: 'paid tiers - Free $0, Pro $20/mo, Max $200/mo, Teams $80/mo plus $40 per dev seat, Enterprise
+      via contact sales; proprietary SaaS throughout'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: bd096a543738392225bca21a5f03ae94c35603d9139ab9aa538bf940a6835aaf
+    establishes:
+    - license
+    - source
+    - self-host
 adoption:
   level: 3
   signal_type: reported_traction
   confidence: low
-  note: Widely adopted commercial coding agent with paid Individual/Teams/Enterprise tiers, but Cognition
+  note: 'Widely adopted commercial coding agent with paid Individual/Teams/Enterprise tiers, but Cognition
     discloses no hard user count. Placed at 3 on reported commercial traction; no verified usage_volume
-    figure.
+    figure. Re-read 2026-08-13 - the pricing page still runs Free, Pro $20, Max $200, Teams $80 plus $40
+    per dev seat and Enterprise, and still publishes no user, seat or install figure of any kind. The
+    standing claim holds and the level is unchanged.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://devin.ai/pricing
-    shows: multiple commercial tiers incl. Teams/Enterprise indicating broad paid adoption
-    accessed: '2026-06-04'
+    shows: individual, team and enterprise commercial tiers indicating broad paid adoption; no user or
+      seat count published
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: bd096a543738392225bca21a5f03ae94c35603d9139ab9aa538bf940a6835aaf
 capability:
   score: 3
   basis: benchmark
@@ -41,12 +63,30 @@ capability:
   value: 'Cognition''s own technical report: 13.86% (2024, 570-problem subset); Devin 2.0 ~45.8% SWE-bench
     Verified (unassisted single-agent, vendor-reported and corroborated)'
   confidence: medium
-  note: Devin 2.0 at 45.8% SWE-bench Verified is independently corroborated (single-agent, no human-in-loop),
-    mid-tier, well below the OpenHands SWE-bench-Verified SOTA anchor. Scored 3.
+  note: 'Devin 2.0 at 45.8% SWE-bench Verified is independently corroborated (single-agent, no human-in-loop),
+    mid-tier, well below the OpenHands SWE-bench-Verified SOTA anchor. Scored 3. Re-read 2026-08-13 -
+    Cognition''s own technical report still states Devin resolves 13.86% of SWE-bench issues under its
+    unassisted methodology. The 45.8% figure has DISAPPEARED from the Tembo post that used to carry it,
+    so it was re-derived from the awesomeagents SWE-bench coding-agent leaderboard, which lists Devin
+    2.0 at 45.8% Verified and 35.6% Full in row 7. The band is unchanged and the two_below relation to
+    the openhands anchor still holds.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://cognition.ai/blog/swe-bench-technical-report
-    shows: Cognition-reported 13.86% SWE-bench, unassisted end-to-end methodology
-    accessed: '2026-06-04'
+    shows: 'Cognition team, 2024-03-15 - "In SWE-bench, Devin successfully resolves 13.86% of issues,
+      far exceeding the previous highest unassisted baseline of 1.96%"'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 9e1c937f6e75754f30533cc0f6893d73d2e2154009545ed40f9b0c1ffbc877c0
   - url: https://www.tembo.io/blog/devin-alternatives-2025
-    shows: Devin 2.0 scores 45.8% on SWE-Bench Verified, standard unassisted single-agent eval (corroborating)
-    accessed: '2026-06-04'
+    shows: 'previously cited for Devin 2.0 at 45.8% SWE-Bench Verified. Re-read 2026-08-13 - the figure
+      no longer appears anywhere on the page.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c3dabd1bbfed02db1d036e2a329c7244c333fcee05db7f509a147a3cf281e3ad
+  - url: https://awesomeagents.ai/leaderboards/swe-bench-coding-agent-leaderboard/
+    shows: 'row 7 - Devin 2.0, proprietary, SWE-Bench Verified 45.8%, SWE-Bench Full 35.6%, Cognition
+      AI, unassisted standard eval'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c009a1d2e1fc26bd03376df66ac74ed136ca30362c1628be7a231bc5db57fed0

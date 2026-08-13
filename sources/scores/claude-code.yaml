@@ -55,14 +55,25 @@ adoption:
   confidence: medium
   note: 'Reuters (Feb 2026): Claude Code exceeded ~$2.5B run-rate revenue, with business subscriptions
     quadrupled since the start of 2026 and enterprise now >half of Claude Code revenue. No clean user-count,
-    so reported_traction; revenue scale implies well into the 1-10M+ developer band.'
+    so reported_traction; revenue scale implies well into the 1-10M+ developer band. Re-read 2026-08-13
+    - the SaaStr piece still carries the figure under its own heading, "Claude Code - $2.5 Billion ARR.
+    Doubled Since January", against $14B Anthropic ARR, and the product docs still describe a paid multi-surface
+    product across terminal, VS Code, desktop, web, Slack and mobile, most surfaces requiring a Claude
+    subscription or Console account. Anthropic still discloses no user count, so the instrument stays
+    reported_traction and the level is unchanged.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://code.claude.com/docs/en/overview
-    shows: broad multi-surface paid product (terminal/IDE/desktop/web/CI)
-    accessed: '2026-06-04'
+    shows: broad multi-surface paid product across terminal, VS Code, desktop app, web, Slack and mobile;
+      most surfaces require a Claude subscription or Anthropic Console account
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: e9d5ad36b1ed006a03f9d2c666cf7c6866c30a3aa2e2772d6461dbc14fd0604d
   - url: https://www.saastr.com/anthropic-just-hit-14-billion-in-arr-up-from-1-billion-just-14-months-ago/
-    shows: Anthropic $14B ARR Feb 2026; Claude Code a major component (corroborating Reuters)
-    accessed: '2026-06-04'
+    shows: 'Anthropic $14B ARR; section headed "Claude Code - $2.5 Billion ARR. Doubled Since January."'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: a05aa9a278a174acfa0d938f653d38ec9bb59beab78e354ee5842e64d8e943f7
 capability:
   score: 5
   basis: benchmark
@@ -70,14 +81,31 @@ capability:
   value: Backed by frontier Claude Opus models leading SWE-bench Verified (Claude Opus 4.8 ~88.6%, 4.7
     ~87.6%); Claude Code is the reference agent harness for these scores.
   confidence: high
-  note: Frontier-defining coding agent, pairs the leading SWE-bench Verified models with a mature multi-surface
+  note: 'Frontier-defining coding agent, pairs the leading SWE-bench Verified models with a mature multi-surface
     agent harness (sub-agents, hooks, MCP, scheduling). One of the 1-2 capability frontier-definers in
-    this category. Headline SWE-bench Verified 88.6% triangulated to Anthropic primary source.
+    this category. Re-read 2026-08-13, and two of the three cited sources no longer serve the figure to
+    a fetcher - llm-stats.com now answers with a "confirm you''re human" interstitial rather than the
+    leaderboard, and the Anthropic Opus 4.8 announcement renders its comparison table outside the fetched
+    HTML, so neither can be digested for the 88.6%. The claim was re-derived instead from the Marktechpost
+    benchmark-driven ranking, which places Claude Code first of the field at 87.6% SWE-bench Verified
+    on Opus 4.7 and 80.8% on Opus 4.6, above every other agent it ranks. The band is unchanged; what moved
+    is which source carries it.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://llm-stats.com/benchmarks/swe-bench-verified
-    shows: Claude Opus 4.8 88.6% / 4.7 87.6% lead SWE-bench Verified
+    shows: 'Claude Opus 4.8 88.6% / 4.7 87.6% lead SWE-bench Verified. Not re-fetchable - the host now
+      answers a bot-check interstitial instead of the leaderboard.'
     accessed: '2026-06-04'
   - url: https://www.anthropic.com/news/claude-opus-4-8
-    shows: Anthropic primary announcement of Claude Opus 4.8 (headline coding model behind Claude Code);
-      SWE-bench Verified 88.6%
-    accessed: '2026-06-04'
+    shows: 'Anthropic primary announcement of Claude Opus 4.8, the headline coding model behind Claude
+      Code, stating improvements across benchmarks and a dynamic-workflows feature in Claude Code. The
+      benchmark table itself is not in the fetched HTML.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 706d4252cc67e84ce245aaa45820e79f2740491824a24c03c412e04a5c0735c9
+  - url: https://www.marktechpost.com/2026/05/15/best-ai-agents-for-software-development-ranked-a-benchmark-driven-look-at-the-current-field/
+    shows: 'ranks Claude Code first of the field - SWE-bench Verified 87.6% on Opus 4.7 and 80.8% on Opus
+      4.6, Terminal-Bench 2.0 69.4%, and describes it as the leader on code-quality metrics'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 23bf3425bd6189ef3102febb9729c3b872e4ed016743245201473178cf140f44
