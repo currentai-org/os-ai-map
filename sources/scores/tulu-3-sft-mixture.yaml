@@ -11,35 +11,58 @@ openness:
     dataset_card:
       value: present
   confidence: high
-  note: ODC-BY licensed and ungated with a full dataset card, though some subsets carry non-commercial
-    licenses.
+  note: 'ODC-BY licensed and ungated with a full dataset card, though some subsets carry non-commercial
+    licenses. Re-read 2026-08-13: odc-by on the Hub, gated false, card intact and still flagging the non-commercial
+    subsets.'
   raw: license:odc-by(mixed subset licenses incl CC-BY-NC);access:ungated;dataset_card:present
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/datasets/allenai/tulu-3-sft-mixture
     shows: ODC-BY-1.0 license, ~939k rows, dataset card
-    accessed: '2026-06-22'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 579445329317f747a4780e6e767577245dca7492ec5911d20cb1f7eb63f33995
+    establishes:
+    - availability
+    - documentation
+    - license
 adoption:
   level: 3
   reach: 10K-100K
   signal_type: usage_volume
   confidence: high
-  note: 18,317 monthly downloads on Hugging Face, graded on the training-corpus bands.
+  note: 36,267 downloads in the trailing 30 days summed across the 1 declared artifact(s), read 2026-08-13
+    (allenai/tulu-3-sft-mixture 36,267). Bands at level 3 (10K-100K) on the dataset adoption scale, whose
+    top band is >1M.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/api/datasets/allenai/tulu-3-sft-mixture
-    shows: downloads field = 18,317 (30-day)
-    accessed: '2026-07-04'
+    shows: 36,267 downloads in the trailing 30 days for allenai/tulu-3-sft-mixture
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 752228726c89c5310823b34bb63ee456e48937383365cc901ac70353c4ffe0e0
 capability:
   score: 4
   basis: training_value
   basis_detail: downstream
   value: null
   confidence: high
-  note: Current multi-org SFT default (Marin, SmolLM3, OLMo 2) with SOTA open-recipe claims, but a reused
-    component rather than the head-to-head leader; Dolci now leads the fully-open frontier.
+  note: 'Current multi-org SFT default (Marin, SmolLM3, OLMo 2) with SOTA open-recipe claims, but a reused
+    component rather than the head-to-head leader; Dolci now leads the fully-open frontier. Re-read 2026-08-13:
+    the Tulu 3 listing still claims results surpassing the instruct versions of Llama 3.1, Qwen 2.5, Mistral
+    and GPT-4o-mini, and the Marin 8B Instruct card still lists this mixture among its SFT sources. Dolci
+    remains the fully-open leader above it.'
+  relative_to: dolci
+  relation: one_below
+  last_verified: '2026-08-13'
   sources:
   - url: https://arxiv.org/abs/2411.15124
     shows: The Tulu 3 recipe surpasses instruct versions of Llama 3.1, Qwen 2.5, and GPT-4o-mini
-    accessed: '2026-07-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: b09d632f6108756e4a3fc59de2fb15acc5cd1152a2b873d90eba51008e6ee883
   - url: https://huggingface.co/marin-community/marin-8b-instruct
     shows: Marin 8B Instruct lists tulu-3-sft-mixture among its SFT sources
-    accessed: '2026-07-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: d39bfdb79bd31d571df1d9c13a14ce4de34aad157b467c76ef8956aaf4daa3c4

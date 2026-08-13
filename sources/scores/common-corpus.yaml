@@ -11,34 +11,57 @@ openness:
     dataset_card:
       value: 'yes'
   confidence: high
-  note: Ungated with a full dataset card and built exclusively from uncopyrighted or openly licensed sources.
+  note: 'Ungated with a full dataset card and built exclusively from uncopyrighted or openly licensed sources.
+    Re-read 2026-08-13: the card still states that all data is either uncopyrighted or freely licensed and
+    usable commercially, the per-row licence column carries only Public Domain, CC0, CC-BY-SA and open-source
+    licences, and the API reports gated false.'
   raw: license:open(uncopyrighted/freely-licensed only);ungated:yes;dataset_card:yes
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/datasets/PleIAs/common_corpus
     shows: open-license-only content, ungated access, dataset card, 2.27T tokens
-    accessed: '2026-06-22'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 66bf38e0bfbdab4f583b58f1fc86b54139e44408b24757ff356cabdc9bacdf4e
+    establishes:
+    - availability
+    - documentation
+    - license
 adoption:
   level: 3
   reach: 10K-100K
   signal_type: usage_volume
   confidence: high
-  note: 91,700 monthly downloads on Hugging Face, graded on the training-corpus bands.
+  note: 61,684 downloads in the trailing 30 days summed across the 1 declared artifact(s), read 2026-08-13
+    (PleIAs/common_corpus 61,684). Bands at level 3 (10K-100K) on the dataset adoption scale, whose top
+    band is >1M.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/api/datasets/PleIAs/common_corpus
-    shows: downloads field = 91,700 (30-day)
-    accessed: '2026-07-04'
+    shows: 61,684 downloads in the trailing 30 days for PleIAs/common_corpus
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: f56dd7a3cac857572d9b8626c59c6d8f19066509ec8742edd8136d15a2589dd7
 capability:
   score: 3
   basis: training_value
   basis_detail: downstream
   value: null
   confidence: high
-  note: Trains the Pleias 1.0 SLM family and several European models (2024-25), but small demonstrator
-    models with no controlled ablation wins; leads on ethical sourcing rather than capability.
+  note: 'Trains the Pleias 1.0 SLM family and several European models (2024-25), but small demonstrator
+    models with no controlled ablation wins; leads on ethical sourcing rather than capability. Re-read 2026-08-13:
+    the paper still lists the Pleias 1.0 family and the European models trained on Common Corpus, and the
+    card still puts the corpus at 2.27 trillion tokens with no controlled ablation win claimed.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://arxiv.org/html/2506.01732v1
     shows: Pleias 1.0 family and ~7 European models trained on Common Corpus
-    accessed: '2026-07-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 3be2b6059b40e7a214148e772458e40003bc71434466b91115c4f2169427c4c4
   - url: https://huggingface.co/blog/Pclanglais/common-corpus
-    shows: Common Corpus is the largest fully-open licensed pretraining corpus (2.27T tokens)
-    accessed: '2026-07-04'
+    shows: Common Corpus presented as the largest open licensed pretraining corpus; the 2.27T-token figure
+      is on the dataset card
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 652ad30c002134edea52ce23b7d884d28db5c40559934435c35a7c3075799aab

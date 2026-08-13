@@ -10,34 +10,57 @@ openness:
     dataset_card:
       value: present
   confidence: high
-  note: ODC-BY 1.0, ungated, full dataset card.
+  note: 'ODC-BY 1.0, ungated, full dataset card. Re-read 2026-08-13: the card''s License section still reads
+    ODC-By 1.0 alongside the Common Crawl ToU, the Hub metadata still tags odc-by, and the API reports gated
+    false.'
   raw: license:ODC-BY;gated:false;dataset_card:present
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/datasets/open-web-math/open-web-math
     shows: ODC-BY 1.0 license, ungated, dataset card
-    accessed: '2026-07-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 76eb95120b7d8a970c69a58ef702f3774deae1582d2c13aa4e32c3319f6f2044
+    establishes:
+    - availability
+    - documentation
+    - license
 adoption:
   level: 3
   reach: 10K-100K
   signal_type: usage_volume
   confidence: high
-  note: 31,502 monthly downloads on Hugging Face, graded on the training-corpus bands.
+  note: 33,285 downloads in the trailing 30 days summed across the 1 declared artifact(s), read 2026-08-13
+    (open-web-math/open-web-math 33,285). Bands at level 3 (10K-100K) on the dataset adoption scale, whose
+    top band is >1M.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/api/datasets/open-web-math/open-web-math
-    shows: downloads field = 31,502 (30-day)
-    accessed: '2026-07-04'
+    shows: 33,285 downloads in the trailing 30 days for open-web-math/open-web-math
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 8511f6d3e6cd1daacaacd19c2e8ae207513e2ac1fed26079f870a8107e7720c4
 capability:
   score: 3
   basis: training_value
   basis_detail: superseded
   value: null
   confidence: high
-  note: Proven math corpus (Llemma/Proof-Pile-2, OLMoE, StarCoder2 math supplement) but Oct-2023 vintage
-    and now the baseline that FineMath, MegaMath, and Nemotron-CC-Math beat in ablations.
+  note: 'Proven math corpus (Llemma/Proof-Pile-2, OLMoE, StarCoder2 math supplement) but Oct-2023 vintage
+    and now the baseline that FineMath, MegaMath, and Nemotron-CC-Math beat in ablations. Re-read 2026-08-13:
+    the Nemotron-CC-Math paper still reports surpassing prior open math corpora including OpenWebMath, and
+    the FineMath card still reports beating it on GSM8k and MATH.'
+  relative_to: finemath
+  relation: two_below
+  last_verified: '2026-08-13'
   sources:
   - url: https://arxiv.org/html/2508.15096v1
     shows: Nemotron-CC-Math surpasses all prior open math datasets including OpenWebMath
-    accessed: '2026-07-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 718da622dde6cf84bfd756b01d6ff84552f013b33f1f5a6d35fd3dfde71b83ef
   - url: https://huggingface.co/datasets/HuggingFaceTB/finemath
     shows: FineMath-3+ outperforms OpenWebMath on GSM8k and MATH
-    accessed: '2026-07-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 87c966a146400047c9e611ee52409d5bec6232079c0f2954bd23d9143f3f3acd

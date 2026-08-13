@@ -12,34 +12,56 @@ openness:
     format:
       value: parquet
   confidence: high
-  note: Permissive ODC-BY license with ungated download and full dataset card.
+  note: 'Permissive ODC-BY license with ungated download and full dataset card. Re-read 2026-08-13: odc-by
+    on the Hub, gated false on the API, card intact.'
   raw: license:ODC-BY;gated:false;dataset_card:present;format:parquet
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/datasets/HuggingFaceFW/fineweb-edu
     shows: Dataset card present, ODC-BY license, public ungated download
-    accessed: '2026-06-22'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 129ceef57c14b00a83f0b837a4693a7d3c30fef2fc8e56a4b0839be39d99e519
+    establishes:
+    - availability
+    - documentation
+    - license
 adoption:
   level: 4
   reach: 100K-1M
   signal_type: usage_volume
   confidence: high
-  note: 384,910 monthly downloads on Hugging Face, graded on the training-corpus bands.
+  note: 395,837 downloads in the trailing 30 days summed across the 1 declared artifact(s), read 2026-08-13
+    (HuggingFaceFW/fineweb-edu 395,837). Bands at level 4 (100K-1M) on the dataset adoption scale, whose
+    top band is >1M.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/api/datasets/HuggingFaceFW/fineweb-edu
-    shows: downloads field = 384,910 (30-day)
-    accessed: '2026-07-04'
+    shows: 395,837 downloads in the trailing 30 days for HuggingFaceFW/fineweb-edu
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 5a10685bcab3d243109892516aad03867ccc7eaa98624a181e866a015942d63a
 capability:
   score: 5
   basis: training_value
   basis_detail: ablation
   value: null
   confidence: high
-  note: Dominates FineWeb and all peers on MMLU/ARC, matching full FineWeb with ~10x fewer tokens; current
-    default web corpus for SmolLM2/3 and Apertus.
+  note: 'Dominates FineWeb and all peers on MMLU/ARC, matching full FineWeb with ~10x fewer tokens; current
+    default web corpus for SmolLM2/3 and Apertus. Re-read 2026-08-13: the FineWeb listing still states that
+    LLMs pretrained on FineWeb-Edu do dramatically better on MMLU and ARC, and the SmolLM2 listing still
+    describes an 11T-token mix of web text with specialised math, code and instruction data.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://arxiv.org/abs/2406.17557
-    shows: FineWeb-Edu matches full FineWeb on MMLU/ARC at ~10x fewer tokens
-    accessed: '2026-07-04'
+    shows: Abstract - LLMs pretrained on FineWeb-Edu, a 1.3T-token educational subset, do dramatically better
+      on MMLU and ARC. The ~10x token-efficiency figure is in the paper body, not on this page
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: a12bfcd47f835ad4a2c5630a228778370ed54509afa65bed1c6dfc264f2182da
   - url: https://arxiv.org/abs/2502.02737
-    shows: SmolLM2 uses FineWeb-Edu as its English web component
-    accessed: '2026-07-04'
+    shows: Abstract - SmolLM2 is overtrained on ~11T tokens mixing web text with specialised math, code
+      and instruction data. The named FineWeb-Edu component is in the paper body, not on this page
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: f19a89b93bdd5a66445878803fa6ad900599fe4792c84080a02b4dae77699a1d
