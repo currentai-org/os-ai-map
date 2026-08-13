@@ -42,9 +42,18 @@ question. A product can be perfectly banded against a figure from March.
 
 ## Exit status
 
-0 unless `--strict`, matching `check_freshness`. Gating today would fail on a backlog that
-predates the bands being declared at all, and a gate that fails on day one teaches people to
-skip it. Turn on `--strict` in CI once the backlog is cleared.
+0 unless `--strict`. CI runs `--strict` as of 2026-08-13; the flag stays optional so a local
+run can survey without failing.
+
+It shipped non-strict on 2026-08-11 against 217 off-scale records, because a gate that fails on
+day one teaches people to skip it. That backlog is now zero — 217 to 71 across #224 to #230,
+then 71 to 0 by declaring the two instruments that had no vocabulary at all and re-reading every
+remaining figure live rather than inferring it from the stale text of the label being replaced.
+
+**The escape hatch is to declare a band, never to edit a level until CI passes.** A record that
+needs a label no scale offers IS the finding: `character-ai` invented `10M-100M`, and because
+nothing could check an undeclared label, it sat at level 4 while its own cited ~20M MAU cleared
+the top threshold outright.
 """
 
 from __future__ import annotations

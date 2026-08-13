@@ -65,6 +65,21 @@ jobs:
       # claim. See build/check_rubric.py's module docstring.
       - name: Rubric gate (recorded scores reproduce)
         run: uv run python -m build.check_rubric
+
+      # Does every recorded (level, reach) pair exist on the scale its own instrument
+      # declares? `check_adoption` shipped non-strict on 2026-08-11 against a backlog of 217
+      # off-scale records, because a gate that fails on day one teaches people to skip it. The
+      # backlog is now zero, so --strict goes on: 217 -> 71 across #224-#230, then 71 -> 0 on
+      # 2026-08-13 by declaring the two instruments that had no vocabulary (`active_users`,
+      # `reported_traction`) and re-reading every remaining figure live rather than inferring
+      # it from the stale text of the label being replaced.
+      #
+      # The escape hatch is to declare a band, not to edit a level until CI passes. If a record
+      # needs a label no scale offers, that is the finding — `character-ai` invented `10M-100M`
+      # and sat a level below what its own figure supported for exactly as long as nothing
+      # could check it.
+      - name: Adoption gate (every band exists on its instrument's scale)
+        run: uv run python -m build.check_adoption --strict
       - name: Serialize dry-run
         run: uv run python -m build.serialize --date ci-dry-run
 
