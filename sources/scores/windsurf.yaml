@@ -11,29 +11,55 @@ openness:
     self-host:
       value: 'no'
   confidence: high
-  note: Proprietary agentic IDE; now part of Cognition's Devin Desktop. Closed source, subscription SaaS.
+  note: 'Proprietary agentic IDE; now part of Cognition''s Devin Desktop. Closed source, subscription SaaS.
+    Re-read 2026-08-13 - the Devin Desktop page still sells the product as a paid download across Free,
+    Pro, Teams and Enterprise tiers with no source and no self-host path, and Cognition''s own acquisition
+    post still records that it bought Windsurf''s IP, product, trademark and brand. Nothing moved.'
   raw: source:closed;license:proprietary(SaaS, Cognition);self-host:no
+  last_verified: '2026-08-13'
   sources:
   - url: https://devin.ai/desktop
-    shows: Windsurf rebranded as Devin Desktop, proprietary agentic IDE (Cognition)
-    accessed: '2026-06-04'
+    shows: Windsurf shipped as Devin Desktop, a proprietary agentic IDE sold on Free/Pro/Teams/Enterprise
+      tiers; no source and no self-host option
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 6d83160e58f379e67158d6b4f99b35a72c4aeb39981b2f2fc61efe4b6fd441b2
+    establishes:
+    - source
+    - license
+    - self-host
   - url: https://cognition.ai/blog/windsurf
-    shows: Cognition's own acquisition announcement of Windsurf (IP, product, trademark, brand)
-    accessed: '2026-06-04'
+    shows: 'Cognition''s own acquisition announcement - "the acquisition includes Windsurf''s IP, product,
+      trademark and brand"'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 8aec9c9a04e49bfc92d91618de57f1af55ef115609d48aecc9b62c59cfaf1e63
+    establishes:
+    - license
 adoption:
   level: 4
   signal_type: reported_traction
   confidence: medium
-  note: Devin Desktop (Windsurf) page reports '1M+ Users' and '4000+ Enterprise Customers'. Vendor-reported
+  note: 'Devin Desktop (Windsurf) page reports ''1M+ Users'' and ''4000+ Enterprise Customers''. Vendor-reported
     headline count places it in the 1-10M band. Cognition-reported Windsurf ARR ~$82M corroborates commercial
-    scale.
+    scale. Re-read 2026-08-13 - the stats block on the page still reads "1M+ Users - trusted by over a
+    million developers worldwide" and "4000+ Enterprise Customers", and the acquisition post still records
+    $82M of ARR with enterprise ARR doubling quarter-over-quarter. WHAT WAS BANDED - a vendor headline
+    user total with no period attached, so it is not an active count and the instrument stays reported_traction
+    rather than active_users. Level unchanged.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://devin.ai/desktop
-    shows: vendor-stated '1M+ Users' and '4000+ Enterprise Customers'
-    accessed: '2026-06-04'
+    shows: 'stats block - "1M+ Users - trusted by over a million developers worldwide" and "4000+ Enterprise
+      Customers"; no period attached to the user figure'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 6d83160e58f379e67158d6b4f99b35a72c4aeb39981b2f2fc61efe4b6fd441b2
   - url: https://cognition.ai/blog/windsurf
-    shows: Windsurf reached $82M ARR, enterprise ARR doubling QoQ (corroborating scale)
-    accessed: '2026-06-04'
+    shows: Windsurf brought $82M of ARR and a fast-growing business with enterprise ARR doubling quarter-over-quarter
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 8aec9c9a04e49bfc92d91618de57f1af55ef115609d48aecc9b62c59cfaf1e63
 capability:
   score: 4
   basis: feature_matrix
@@ -41,9 +67,19 @@ capability:
     run Codex/Claude side-by-side), Devin Local (Rust), Spaces shared context, in-house SWE-1.6 model;
     no public SWE-bench number for the IDE
   confidence: medium
-  note: Mature agentic-IDE feature set (multi-agent orchestration, model-agnostic via ACP) but no first-party
-    SWE-bench score published; scored on feature matrix, a notch below the benchmark anchor.
+  note: 'Mature agentic-IDE feature set (multi-agent orchestration, model-agnostic via ACP) but no first-party
+    SWE-bench score published; scored on feature matrix, a notch below the benchmark anchor. Re-read 2026-08-13
+    - the page still leads on an Agent Command Center dispatching a team of agents, work across models
+    and agents over the Agent Client Protocol, Fast Context codebase retrieval and Supercomplete, with
+    named customers including Ramp and Intact Financial. Still no first-party benchmark, so the feature-matrix
+    band stands one below the openhands anchor.'
+  relative_to: openhands
+  relation: one_below
+  last_verified: '2026-08-13'
   sources:
   - url: https://devin.ai/desktop
-    shows: Command Center, multi-agent ACP support (Codex/Claude), Spaces, SWE-1.6 features
-    accessed: '2026-06-04'
+    shows: Agent Command Center, multi-agent and multi-model work over the Agent Client Protocol, Fast
+      Context codebase retrieval, Supercomplete; no benchmark figure published
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 6d83160e58f379e67158d6b4f99b35a72c4aeb39981b2f2fc61efe4b6fd441b2

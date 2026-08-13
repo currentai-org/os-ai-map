@@ -70,16 +70,34 @@ adoption:
   level: 4
   signal_type: reported_traction
   confidence: high
-  note: OpenAI confirmed Codex surpassed 4M weekly developers (Apr 21 2026 announcement; 5M+ reported
-    more recently). Firmly in the 1-10M+ reach band on disclosed developer count. Primary OpenAI announcement
-    now cited as the basis (was previously sourced only to a distribution page).
+  note: 'OpenAI confirmed Codex surpassed 4M weekly developers (Apr 21 2026 announcement). Firmly in the
+    1-10M band on disclosed developer count. Re-read 2026-08-13 - openai.com now answers 403 to any non-browser
+    fetch, so the original announcement cannot be digested and the figure was re-derived instead from
+    the Wikipedia article on the agent, which tracks the disclosures with citations and now records more
+    than 6 million weekly active users alongside named enterprise deployments. That is a larger number
+    than the one recorded here and lands in the same band, so the level is unchanged. WHAT WAS BANDED
+    - a weekly active user count, which is an active figure rather than a cumulative one, but weekly rather
+    than the monthly the scale is written in, so it understates a monthly reading if anything. The instrument
+    is left at reported_traction rather than moved to active_users, which is a call for a curator rather
+    than a re-read.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://openai.com/index/scaling-codex-to-enterprises-worldwide/
-    shows: 'OpenAI: Codex surpassed 4M weekly developers (Apr 2026)'
+    shows: 'OpenAI: Codex surpassed 4M weekly developers (Apr 2026). Not re-fetchable - openai.com answers
+      403 to a non-browser request.'
     accessed: '2026-06-04'
+  - url: https://en.wikipedia.org/wiki/OpenAI_Codex_(AI_agent)
+    shows: tracks the disclosed figures with citations - more than 2 million weekly active users by March
+      2026, rising to 6 million weekly active users, with Cisco, Nvidia, Ramp, Rakuten and Harvey named
+      as deployments
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 303daec82c5fbade2438d4472a85c8c9a63353441c6f79c0ff9f2962327847ce
   - url: https://github.com/openai/codex
-    shows: 88.6k stars, broad active install base (corroborating)
-    accessed: '2026-06-04'
+    shows: 105.7k stars, 16.0k forks, broad active install base (corroborating)
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 333ccb8ea2d0cca2396f982843ade672c2153c52a878d57415a89dc4e407b48a
 capability:
   score: 4
   basis: feature_matrix
@@ -87,10 +105,21 @@ capability:
     yes (parallel sessions); model-agnostic: largely OpenAI-locked; reliability: sandboxed exec. No agent-attributed
     SWE-bench number on the April 2026 leaderboard.'
   confidence: medium
-  note: Capable, heavily-used coding agent backed by frontier OpenAI models, but no standalone agent SWE-bench
+  note: 'Capable, heavily-used coding agent backed by frontier OpenAI models, but no standalone agent SWE-bench
     placement published. Scored on feature matrix; high but not the open-agent benchmark frontier-definer
-    (OpenHands 68.4%).
+    (OpenHands 68.4%). Re-read 2026-08-13 - the OpenAI Codex CLI docs still document the same surface,
+    now with named sections for sandboxing and writable roots, permissions and profiles, agent approvals,
+    auto-review, MCP and connectors, skills and plugins, and desktop apps for Linux and Windows. Still
+    no first-party SWE-bench placement for the agent itself, so the band stays a feature-matrix judgment
+    one below the openhands benchmark anchor.'
+  relative_to: openhands
+  relation: one_below
+  last_verified: '2026-08-13'
   sources:
   - url: https://developers.openai.com/codex/cli
-    shows: 'autonomous terminal agent: plan, edit, run commands, MCP, sandboxed exec'
-    accessed: '2026-06-04'
+    shows: autonomous terminal agent documented across sandboxing and writable roots, permissions and
+      profiles, agent approvals and security, auto-review, MCP and connectors, skills and plugins, and
+      Linux/Windows desktop apps; no benchmark figure published for the agent
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: b8a2154ce23817932ae0d610d0f5d933a7dfae45e647ca3ef2326be38cff045e
