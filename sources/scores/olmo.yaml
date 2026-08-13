@@ -20,32 +20,43 @@ openness:
       detail: OSI
   confidence: high
   note: 'Fully open: Apache-2.0 weights + the complete Dolma 3 corpus + training code + intermediate checkpoints.
-    The reference fully-open model line.'
-  last_verified: '2026-07-30'
+    The reference fully-open model line. Re-read 2026-08-13: Dolma is still ungated and `odc-by`
+    (2,724 downloads, 1,070 likes), the Olmo 3 blog still carries the Dolma 3 and open-checkpoint
+    claims, and the 7B card still reads apache-2.0 with safetensors and `isGated: false`. Nothing
+    moved.'
+  last_verified: '2026-08-13'
   raw: weights:open(Apache-2.0);data:open(Dolma 3, 9.3T tokens, all stages);code:open(training code+recipes+logs);checkpoints:open(intermediate);license:Apache-2.0(OSI)
   sources:
   - url: https://huggingface.co/api/datasets/allenai/dolma
-    shows: '`gated: false`, `private: false`, 2,767 downloads, 1,064 likes, card license `odc-by`.
+    shows: '`gated: false`, `private: false`, 2,724 downloads, 1,070 likes, card license `odc-by`.
       The Dolma corpus is published and ungated.'
-    accessed: '2026-07-30'
+    accessed: '2026-08-13'
     http_status: 200
-    content_sha256: 6f3da060ba808471df1fcbbf40725022dc3778c4b994ec1ed490991230ff869a
+    content_sha256: 364dbfecfba2f6cc23e7eeb6976c8f47a356d12c3de0ed9e7365c3e4a5bbae38
     establishes: [data]
   - url: https://allenai.org/blog/olmo3
     shows: '"Olmo 3 is pretrained on Dolma 3, a new ~9.3-trillion-token corpus"; "Because the Olmo 3
       data recipes, training pipeline, and checkpoints are open, independent teams can connect model
       behavior back to measurable" training decisions; "Olmo 3-Base delivers the strongest performance
       among fully open base models - where training data, code, and weights are all publicly available".'
-    accessed: '2026-07-30'
+    accessed: '2026-08-13'
     http_status: 200
-    content_sha256: fc5d9ecb2b5ed673bac303a0a171c28183c19c3a4805d26e4676b6d112ceb94b
+    content_sha256: e103633d087ef9092a2aee2dc599cf609ca13209d21a3a7b1ac45f1a5d01fe49
     establishes: [data, code, checkpoints]
   - url: https://huggingface.co/allenai/Olmo-3-1025-7B
     shows: 'OLMo 3 7B base model card: License apache-2.0, safetensors weight files, `isGated: false`.'
-    accessed: '2026-07-30'
+    accessed: '2026-08-13'
     http_status: 200
-    content_sha256: e8e02a24fb65c9b97ede3bc582e78689a9a12c0ca7f16effc953e5a57bbd24f3
+    content_sha256: 06da5bb4162473959564b21c20890b82a328eccba9e93f50d50edc2877bc9bad
     establishes: [weights, license]
+  - url: https://api.github.com/repos/allenai/OLMo
+    shows: '`private: false`, `archived: false`, license `Apache-2.0`, 6,625 stars, description
+      "Modeling, training, eval, and inference code for OLMo" - the training pipeline itself, not
+      an inference wrapper.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 7110ea1b77f3e0785fdb74ea93c92137a6fe90a031e4865c9a10220baaeae7f7
+    establishes: [code]
 adoption:
   level: 3
   reach: 100K-1M
@@ -73,9 +84,16 @@ capability:
   value: OLMo 3-Think 32B narrows the gap to Qwen3-32B on reasoning at ~6x fewer tokens
   confidence: high
   note: Strongest fully-open base/reasoning model to date; competitive with Qwen2.5/Gemma3 and approaching Qwen3-32B,
-    but still a step below the trillion-param open-weight frontier (=5).
+    but still a step below the trillion-param open-weight frontier (=5). Re-read 2026-08-13 - the
+    blog still carries both claims the band rests on, and the comparison it draws is to open-weight
+    models of similar scale rather than to the trillion-parameter frontier, which is the gap the 4
+    encodes.
+  last_verified: '2026-08-13'
   sources:
   - url: https://allenai.org/blog/olmo3
-    shows: OLMo 3-Think 32B strongest fully-open reasoning model; OLMo 3-Base beats fully-open peers (K2, Marin,
-      Apertus)
-    accessed: '2026-06-30'
+    shows: '"the strongest fully open thinking model we''re aware of, narrowing the gap to the best
+      open-weight models of similar scale - such as Qwen 3 32B - while training on roughly 6x fewer
+      tokens"; and "Olmo 3-Base delivers the strongest performance among fully open base models".'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: e103633d087ef9092a2aee2dc599cf609ca13209d21a3a7b1ac45f1a5d01fe49

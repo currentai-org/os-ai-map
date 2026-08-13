@@ -20,16 +20,38 @@ openness:
     governs and both it and V4-Pro-Base are plain MIT, which keeps the tier clear of an unsettled question: the
     retired deepseek-v3-base record carried a compound `code MIT + model DeepSeek-Model-License`, and whether that
     license''s acceptable-use restrictions count as use-restricting is open in issue #117. The tier does not depend
-    on that ruling. Adoption 5 is carried from V3.2, the most downloaded release.'
+    on that ruling. Re-read 2026-08-13 - the V4-Pro card still says "This repository and the model
+    weights are licensed under the MIT License", still describes pretraining as "more than 32T diverse
+    and high-quality tokens" without releasing the corpus, and the DeepSeek-V3 repository is still
+    public MIT inference and serving code with no training pipeline. Nothing moved. The old closing
+    sentence about adoption is dropped rather than carried - the adoption axis was recomputed on
+    2026-08-13 across six declared artifacts and now sits at level 4, not 5.'
+  last_verified: '2026-08-13'
   raw: weights:open(MIT, on HF, both Pro and Flash);data:closed;code:partial(inference/serving; no training
     pipeline or data);license:MIT(permissive, no use restrictions)
   sources:
   - url: https://huggingface.co/api/models/deepseek-ai/DeepSeek-V4-Pro
-    shows: license mit, ungated, 864.8GB of weight files, 1,635,092 downloads last month
-    accessed: '2026-07-29'
+    shows: 'card license `mit`, `gated: false`, `private: false`, safetensors weight shards listed,
+      1,385,596 downloads and 5,437 likes.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c757fe8046a0775a5f9e458b3c9291a0add239d61c8fe2c5201ffd2e260d5af4
+    establishes: [weights, license]
   - url: https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
+    shows: 'Model card - "This repository and the model weights are licensed under the MIT License";
+      "We pre-train both models on more than 32T diverse and high-quality tokens", which describes
+      the corpus without releasing it.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: e8b054d7e86dd85311b3be80a81e02692a15d40d33d92596a8d72bc354aea9c6
+    establishes: [weights, data, license]
+  - url: https://api.github.com/repos/deepseek-ai/DeepSeek-V3
+    shows: '`private: false`, `archived: false`, license `MIT`, 104,190 stars. Inference and serving
+      code, no pretraining pipeline, which is what holds `code` at partial.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 8d1a25a796adfe7e4302d989666326119c0f701f742fe1746cc66eb9513d63d5
+    establishes: [code]
   - url: https://api-docs.deepseek.com/news/news260424
     shows: flagship phase-C verification source
     accessed: '2026-06-04'
@@ -86,14 +108,23 @@ capability:
   confidence: high
   note: SWE-bench Verified 80.6% (trails Claude Opus 4.6 by ~0.2), MMLU-Pro 87.5, GPQA Diamond 90.1, LiveCodeBench
     Pass@1 93.5 (reported best of any model). V4-Pro-Max described as the strongest open source model available,
-    at/near closed frontier on coding and reasoning.
+    at/near closed frontier on coding and reasoning. Re-read 2026-08-13 - benchlm still carries all
+    four headline figures and codersera carries two of them, so the band is re-derived and unchanged
+    at 5. The third source could not be reached and nothing rests on it alone.
+  last_verified: '2026-08-13'
   sources:
-  - url: https://codersera.com/blog/deepseek-v4-pro-review-benchmarks-pricing-2026/
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
   - url: https://benchlm.ai/models/deepseek-v4-pro-high
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
+    shows: SWE-bench Verified 80.6, MMLU-Pro 87.5, GPQA Diamond 90.1 and LiveCodeBench Pass@1 93.5 all
+      present - the four figures the band rests on.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 21dd1a4cab515c7b1986a70fb799d4f34e9f4d86467859bddfb2a8895d9cf8fd
+  - url: https://codersera.com/blog/deepseek-v4-pro-review-benchmarks-pricing-2026/
+    shows: SWE-bench Verified 80.6 and LiveCodeBench 93.5 present; corroborates the benchlm reading.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 0654905390b5684a1e914f5646453f7c86f5d4128ba1e12a44aaf4f737cc4f33
   - url: https://www.morphllm.com/deepseek-v4
-    shows: flagship phase-C verification source
+    shows: flagship phase-C verification source; answered HTTP 429 to the 2026-08-13 re-read after
+      retries, so it was not re-confirmed and is not part of this date
     accessed: '2026-06-04'

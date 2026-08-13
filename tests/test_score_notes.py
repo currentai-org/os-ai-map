@@ -42,7 +42,6 @@ KNOWN_SHARED_NOTES = {
     "codegemma",
     "codellama",
     "jamba-large",
-    "llama",
     "llama-instruct",
     "tulu",
 }

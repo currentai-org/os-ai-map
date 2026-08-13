@@ -23,40 +23,44 @@ openness:
     corpus together with dataloader tools that reconstruct the exact token order, training and analysis code on
     GitHub, and 154 intermediate checkpoints per model size. Every dimension the rubric asks about is answered by
     something downloadable, which is what separates 5 from the open-weights tier: the run is reproducible, not merely
-    the model usable.'
-  last_verified: '2026-07-30'
+    the model usable. Re-read 2026-08-13: the Pile is still ungated on the Hub (2,601 downloads, 502
+    likes), the paper abstract still promises "154 checkpoints for each one of the 16 models,
+    alongside tools to download and reconstruct their exact training dataloaders", the pythia
+    repository is still public Apache-2.0, and the 12B card front matter still reads apache-2.0 with
+    datasets EleutherAI/pile. Nothing moved.'
+  last_verified: '2026-08-13'
   raw: weights:open(Apache-2.0);data:open(the Pile, with dataloader reconstruction tools);code:open(training+analysis
     code, GitHub);checkpoints:open(154 per model);license:Apache-2.0(OSI)
   sources:
   - url: https://huggingface.co/api/datasets/EleutherAI/pile
     shows: '`gated: false`, `private: false`, 2,308 downloads, 502 likes. The Pile is published and
       ungated on the Hub.'
-    accessed: '2026-07-30'
+    accessed: '2026-08-13'
     http_status: 200
-    content_sha256: 9371eeb13e004a16509da436da0b3ef00eed76096078a82766cb980dc657c9ca
+    content_sha256: bf7ecc040065bb06afed8833e9cb9bec78988395576971e2e8b5e586b95dd02f
     establishes: [data]
   - url: https://arxiv.org/abs/2304.01373
     shows: 'Abstract: "We provide public access to 154 checkpoints for each one of the 16 models,
       alongside tools to download and reconstruct their exact training dataloaders" - which is both
       the checkpoint claim and the reconstruction tooling that makes the corpus reproducible in token
       order.'
-    accessed: '2026-07-30'
+    accessed: '2026-08-13'
     http_status: 200
-    content_sha256: 4a9c75245714d244bd57fdac23e8cc59ccf7b12a72594e32941b7e9c26de3983
+    content_sha256: a4ed5e7d70ff9ae90237a5421aabea072396346e2f70406e23257078d28eddf1
     establishes: [checkpoints, data]
   - url: https://github.com/EleutherAI/pythia
     shows: 'Repository page, described as "The hub for EleutherAI''s work on interpretability and
       learning dynamics" - training and analysis code, public.'
-    accessed: '2026-07-30'
+    accessed: '2026-08-13'
     http_status: 200
-    content_sha256: 34d20875f3ddcdae5b25e04fb188e300e5faf94eddfc1b59cd4002b846f1866e
+    content_sha256: 2c220abd598d80b75e362a7a2fabdb3877c0066cb0471697070bde6ddb53f8d5
     establishes: [code]
   - url: https://huggingface.co/EleutherAI/pythia-12b/blob/main/README.md
     shows: 'Model card front matter: `license: apache-2.0`, `datasets: [EleutherAI/pile]`; License
       apache-2.0 in the repo sidebar.'
-    accessed: '2026-07-30'
+    accessed: '2026-08-13'
     http_status: 200
-    content_sha256: e5da5801a6a437bf051cdaa442810bf7d832b3b3b7a8af62546755322fdb2a0f
+    content_sha256: 26110dcb21c54a03aed4ab48b96b7e33df0e0b8cf8fea5659df6d42442dfaf03
     establishes: [weights, license]
 adoption:
   level: 2
@@ -80,8 +84,16 @@ capability:
   confidence: high
   note: Not built for capability. Pythia models (max 12B, 2023-era Pile training) are intentionally research instruments
     for studying scaling/learning dynamics, not competitive on modern capability benchmarks. Scored 1 on a capability
-    axis where the comparison set is 2026 frontier models.
+    axis where the comparison set is 2026 frontier models. Re-read 2026-08-13 - the abstract still
+    frames Pythia as a suite built to study how models "develop and evolve over the course of
+    training" and presents case studies in memorization, term frequency and bias rather than
+    capability results. The 1 records what the suite is for, and that has not changed.
+  last_verified: '2026-08-13'
   sources:
   - url: https://arxiv.org/abs/2304.01373
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
+    shows: '"we introduce Pythia, a suite of 16 LLMs all trained on public data seen in the exact same
+      order and ranging in size from 70M to 12B parameters"; the presented results are case studies in
+      memorization, term frequency and bias, not capability benchmarks.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: a4ed5e7d70ff9ae90237a5421aabea072396346e2f70406e23257078d28eddf1

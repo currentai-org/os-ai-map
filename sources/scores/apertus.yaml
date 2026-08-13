@@ -23,8 +23,11 @@ openness:
     scripts rather than a raw dump, to respect opt-out/robots.txt and strip personal data), open training
     code/recipe, intermediate checkpoints, a technical report (arXiv 2509.14233), and EU AI Act + Swiss
     data-protection/copyright compliance docs. All Apache-2.0. Sits in the OLMo/Pythia full-openness
-    tier.'
-  last_verified: '2026-07-30'
+    tier. Re-read 2026-08-13: the reconstruction-scripts repository is still public and Apache-2.0,
+    the 70B card still carries the "Fully open model" statement, the Megatron-LM framework link and
+    the intermediate-checkpoint branches, and the ETH press release still frames the release as
+    fully open. Nothing moved.'
+  last_verified: '2026-08-13'
   raw: weights:open(Apache-2.0, BF16 safetensors);data:open(full pretraining-data reconstruction scripts,
     github.com/swiss-ai/pretrain-data);code:open(Megatron-LM training recipe + reconstruction scripts);checkpoints:open(intermediate
     checkpoints on HF branches);license:Apache-2.0(OSI)
@@ -33,32 +36,32 @@ openness:
     shows: '`private: false`, `archived: false`, license `Apache-2.0`, description "Pretraining data
       reconstruction scripts for Apertus". The reconstruction scripts are published, which is what
       satisfies data:open by reconstruction rather than by a released corpus.'
-    accessed: '2026-07-30'
+    accessed: '2026-08-13'
     http_status: 200
-    content_sha256: 22e9345c0f44c7324c2929ca38e9408ec556575ea2ff4c4b7ebb538fe1d69e2e
+    content_sha256: 4ddecf19dff644e1b5c05f298f7d94cd042d7bed86e9b4bb234016a8269471f8
     establishes: [data]
   - url: https://huggingface.co/swiss-ai/Apertus-70B-2509
     shows: 'Model card: "Fully open model: open weights + open data + full training details including
       all data and training recipes"; "Training Framework: Megatron-LM" linking github.com/swiss-ai/Megatron-LM;
       "The training intermediate checkpoints are available on the different branches of this same
       repository"; license apache-2.0; BF16 safetensors.'
-    accessed: '2026-07-30'
+    accessed: '2026-08-13'
     http_status: 200
-    content_sha256: e8de05e747aaf6672a8eb9207609722e7b7f310340f30af75bf22fdd6daa489a
+    content_sha256: 83519a7a58348a6eee782da98685939d8d3bb93d4396069f819715e7dab0a233
     establishes: [weights, license, code, checkpoints]
   - url: https://ethz.ch/en/news-and-events/eth-news/news/2025/09/press-release-apertus-a-fully-open-transparent-multilingual-language-model.html
     shows: 'ETH Zurich press release, title "Apertus: a fully open, transparent, multilingual language
       model", dated 2 September 2025 (EPFL/ETH/CSCS). Corroborates the release framing; establishes
       no dimension on its own, since a press release describes rather than exhibits the artifacts.'
-    accessed: '2026-07-30'
+    accessed: '2026-08-13'
     http_status: 200
-    content_sha256: fbd3f61a6bbf347b973e0bab0b366ba30fbf24002de216fc1a9e5d3ff458be3b
+    content_sha256: b2dc7253334c3bcc9acb07aab37a99b895ce92d229a23a3e14b7d471be0257ca
   - url: https://github.com/swiss-ai/pretrain-data
     shows: Repository page for the pretraining-data reconstruction scripts; "reconstruction" appears
       throughout the tree and README.
-    accessed: '2026-07-30'
+    accessed: '2026-08-13'
     http_status: 200
-    content_sha256: 713a1393fe21e68bf2fffbcd11d9f4d395aacf16b55fc9852f511ee4549cb579
+    content_sha256: 373f562475371da6a35ea0e56fab543cb5520c2feaee0f9f7daeeb24eb97049e
     establishes: [data]
 adoption:
   level: 1
@@ -88,11 +91,22 @@ capability:
   note: 'Mid-tier capability: competitive with the prior open generation (Llama 3.1-70B class) on pretraining
     benchmarks and unusually strong multilingually, but below the 2026 frontier on MMLU-style reasoning/knowledge.
     The value proposition is full openness + multilingual breadth + legal compliance, not raw SOTA, same
-    profile as OLMo 2.'
+    profile as OLMo 2. Re-read 2026-08-13 - the card''s pretraining table still shows 67.5% against
+    Llama 3.1-70B''s 67.3% and MMLU 69.6% for the Instruct variant, so the `at` relation to the
+    llama tier still holds arithmetically and in substance. Worth stating precisely, because the
+    llama record moved the same day: llama''s capability reading is now Llama 4 Maverick rather than
+    Llama 3.1 405B, and both tiers score 3, so the relation survives a change in what the peer is
+    measured on.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/swiss-ai/Apertus-70B-2509
-    shows: 'pretraining benchmark table: Apertus-70B avg 67.5% vs Llama 3.1-70B 67.3%'
-    accessed: '2026-06-08'
+    shows: 'pretraining benchmark table: Apertus-70B avg 67.5% vs Llama 3.1-70B 67.3%; Apertus-70B-Instruct
+      MMLU 69.6%'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 83519a7a58348a6eee782da98685939d8d3bb93d4396069f819715e7dab0a233
   - url: https://arxiv.org/pdf/2509.14233
     shows: Apertus technical report, benchmark results and methodology
-    accessed: '2026-06-08'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 692729497efde76e0e1801b128ea7e8b310a20fb275c9e7c6429258ff3fa0b5f
