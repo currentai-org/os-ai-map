@@ -41,23 +41,25 @@ openness:
     - core-gated
     - license
 adoption:
-  level: 2
-  reach: 1K-10K stars
-  signal_type: stars_fallback
-  confidence: low
-  note: 'Stars-only proxy, capped at 3 because a star is not a use. Stars re-read 2026-08-13 - 6,937
-    stargazers, which bands at 1K-10K stars, level 2 on the stars scale in signal_routing.yaml. NOT
-    confirmed, and the level is contested rather than stale: the nemoguardrails package on PyPI shows
-    401,369 downloads in the trailing 30 days, which is level 3 (100K-1M) on the software scale.
-    adoption.md says a stars_fallback band means no download signal existed when it was set, and to re-band
-    if one exists now. Declaring the PyPI artifact and moving the level is an owner call, so it is raised
-    rather than taken, and no last_verified is claimed while the two instruments disagree.'
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: '401,369 downloads in the trailing 30 days on the newly declared PyPI artifact `nemoguardrails`,
+    read live 2026-08-13. Bands at 100K-1M, level 3. LEVEL CORRECTED FROM 2, and the cause is that
+    the band was set on the wrong instrument: it read stars_fallback, which adoption.md defines as
+    meaning no download signal existed when it was set, and which caps at 3 for the good reason that
+    a star is not a use. A download signal does exist, and the guide is explicit that a stars band
+    re-bands once one appears. The package is the product''s own rather than a same-named stranger -
+    its PyPI project_urls point at https://github.com/NVIDIA-NeMo/Guardrails - and for a Python library PyPI is the primary channel,
+    not a minority one.'
+  last_verified: '2026-08-13'
   sources:
-  - url: https://github.com/NVIDIA/NeMo-Guardrails
-    shows: stargazerCount 6937 for NVIDIA-NeMo/Guardrails.
+  - url: https://pypistats.org/api/packages/nemoguardrails/recent
+    shows: 'last_month 401,369'
     accessed: '2026-08-13'
     http_status: 200
-    content_sha256: 44efd86e89b427836a7bfac706a5625812cb1bbac87ff3e425f52415c7115bcb
+    content_sha256: b0bfdbeaf0fb889b4fb3dda64601a56c6d36c3427570dde74823d8d6fb978921
 capability:
   score: 4
   basis: feature_matrix

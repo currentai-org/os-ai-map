@@ -36,23 +36,25 @@ openness:
     - core-gated
     - license
 adoption:
-  level: 2
-  reach: 1K-10K stars
-  signal_type: stars_fallback
-  confidence: low
-  note: 'Stars-only proxy, capped at 3 because a star is not a use. Stars re-read 2026-08-13 - 3,202
-    stargazers, which bands at 1K-10K stars, level 2 on the stars scale in signal_routing.yaml. NOT
-    confirmed, and the level is contested rather than stale: the llm-guard package on PyPI shows 212,987
-    downloads in the trailing 30 days, which is level 3 (100K-1M) on the software scale. adoption.md says a
-    stars_fallback band means no download signal existed when it was set, and to re-band if one exists now.
-    Declaring the PyPI artifact and moving the level is an owner call, so it is raised rather than taken,
-    and no last_verified is claimed while the two instruments disagree.'
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: '212,987 downloads in the trailing 30 days on the newly declared PyPI artifact `llm-guard`,
+    read live 2026-08-13. Bands at 100K-1M, level 3. LEVEL CORRECTED FROM 2, and the cause is that
+    the band was set on the wrong instrument: it read stars_fallback, which adoption.md defines as
+    meaning no download signal existed when it was set, and which caps at 3 for the good reason that
+    a star is not a use. A download signal does exist, and the guide is explicit that a stars band
+    re-bands once one appears. The package is the product''s own rather than a same-named stranger -
+    its PyPI project_urls point at https://github.com/protectai/llm-guard - and for a Python library PyPI is the primary channel,
+    not a minority one.'
+  last_verified: '2026-08-13'
   sources:
-  - url: https://github.com/protectai/llm-guard
-    shows: stargazerCount 3202 for protectai/llm-guard.
+  - url: https://pypistats.org/api/packages/llm-guard/recent
+    shows: 'last_month 212,987'
     accessed: '2026-08-13'
     http_status: 200
-    content_sha256: a0b8359138ed75effcda2ac312c76ac68b3954e5579fa6715a25700a0e9ee6b4
+    content_sha256: ca84b65d7acf8681a45ac0cea3ab88bea80a49fe26bccd68ded5a4fe9d1a8cc7
 capability:
   score: 3
   basis: feature_matrix
