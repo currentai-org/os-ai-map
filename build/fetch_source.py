@@ -35,7 +35,7 @@ from urllib.parse import quote
 
 import requests
 
-from build.check_refetch import USER_AGENT
+from build.check_refetch import USER_AGENT, canonical
 
 # Statuses that mean "not now" rather than "not here". A single un-retried 429 in the pilot
 # was promoted into the justification for a confirmation — the agent read the rate limit as
@@ -46,22 +46,6 @@ from build.check_refetch import USER_AGENT
 # an absent fact look identical at the call site and only one of them is a finding.
 TRANSIENT = {403, 408, 425, 429, 500, 502, 503, 504}
 
-BLOB = re.compile(r"^https://github\.com/([^/]+)/([^/]+)/blob/(.+)$")
-
-
-def canonical(url: str) -> str:
-    """Rewrite a GitHub blob URL to its raw form.
-
-    A rendered blob page embeds a per-request CSRF token, so its digest differs on every
-    fetch and the weekly sampled re-fetch reports drift forever. The raw file is the same
-    bytes every time, which is what makes a digest worth recording. Six of the pilot's cited
-    pages were this shape.
-    """
-    match = BLOB.match(url)
-    if not match:
-        return url
-    owner, repo, rest = match.groups()
-    return f"https://raw.githubusercontent.com/{owner}/{repo}/{rest}"
 
 
 def fetch(

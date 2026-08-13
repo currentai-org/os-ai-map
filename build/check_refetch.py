@@ -36,9 +36,12 @@ stable URLs included.
 So the report separates *confirmed* from *drifted* and never fails on drift. What it does
 fail on is the small set of things that admit no innocent reading:
 
-- **A digest reused across two different URLs.** Two distinct pages with byte-identical
-  bodies is possible but rare; the same sixty-four characters pasted twice is the ordinary
-  explanation, and it is fabrication.
+- **A digest reused across two different URLs whose bodies genuinely differ.** The claim is
+  tested rather than assumed — see `resolve_duplicates`. The old rule failed on the mere
+  fact of a shared digest, reasoning that byte-identical bodies are "possible but rare", and
+  that failed `main` on 2026-08-13 against five repos sharing one digest for their Apache-2.0
+  LICENSE. A standard license IS the same bytes everywhere; that is what standard means.
+  Re-fetching the group settles it either way, and only a real difference is fabrication.
 - **A malformed digest.** `validate.py` enforces the schema pattern, so this should be
   unreachable — it is here because a gate that trusts another gate is how both stop working.
 
@@ -67,6 +70,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import random
+import re
 from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
@@ -83,6 +87,28 @@ USER_AGENT = (
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) "
     "Chrome/126.0.0.0 Safari/537.36 os-ai-map-verification/1.0"
 )
+
+# The GitHub blob -> raw rewrite. It lives HERE, beside USER_AGENT, for the reason
+# fetch_source's docstring already gives: "this module does not describe how to fetch. It
+# imports USER_AGENT and re-uses the same requests call, and a change there changes both
+# sides at once." Canonicalization is part of how to fetch, so keeping it in fetch_source
+# left this module free to fetch differently — and it did.
+#
+# A rendered blob page embeds a per-request CSRF token, so its digest differs on every fetch.
+# The raw file is the same bytes every time, which is what makes a digest worth recording.
+# 86 cited sources are blob URLs; re-fetching them uncanonicalized reported drift forever and
+# resolve_duplicates read one as fabrication.
+BLOB = re.compile(r"^https://github\.com/([^/]+)/([^/]+)/blob/(.+)$")
+
+
+def canonical(url: str) -> str:
+    """Rewrite a GitHub blob URL to its raw form."""
+    match = BLOB.match(url)
+    if not match:
+        return url
+    owner, repo, rest = match.groups()
+    return f"https://raw.githubusercontent.com/{owner}/{repo}/{rest}"
+
 
 
 @dataclass(frozen=True)
@@ -140,25 +166,104 @@ def offline_failures(sources: list[Source]) -> list[str]:
                 f"SHA-256. Nothing that fetched a body would produce it."
             )
 
+    return problems
+
+
+def duplicate_digest_groups(sources: list[Source]) -> list[tuple[str, list[str]]]:
+    """Digests recorded against more than one URL, for the resolver below."""
     by_digest: dict[str, set[str]] = defaultdict(set)
     for source in sources:
         by_digest[source.digest].add(source.url)
-    for digest, urls in sorted(by_digest.items()):
-        if len(urls) > 1:
-            listed = ", ".join(sorted(urls))
-            problems.append(
-                f"digest {digest[:12]}… is recorded for {len(urls)} different URLs "
-                f"({listed}). Two pages with byte-identical bodies is possible; the same "
-                f"digest pasted twice is likelier, and it means at least one was not fetched."
+    return [(d, sorted(u)) for d, u in sorted(by_digest.items()) if len(u) > 1]
+
+
+def resolve_duplicates(
+    groups: list[tuple[str, list[str]]], timeout: float
+) -> tuple[list[str], list[str]]:
+    """(failures, benign) — decided by fetching, not by guessing.
+
+    THE HEURISTIC THIS REPLACES WAS WRONG, and it failed `main` on 2026-08-13.
+
+    The old rule read: a digest against two URLs is fabrication, because "two distinct pages
+    with byte-identical bodies is possible but rare." Both halves of that turned out false in
+    the corpus, in two different ways:
+
+    - **Canonical texts.** Five repos — NeMo RL, peft, FastChat, ms-swift, vllm — recorded one
+      digest for their LICENSE. Fetching all five live reproduced it exactly over an identical
+      11,357-byte body: the unmodified Apache-2.0 text. A standard license IS the same bytes
+      everywhere; that is what "standard" means, and a repo that changed it would no longer be
+      under that license. Byte-identical is the expected result, not a rare coincidence.
+    - **Host aliases.** `docs.developer.apple.com/…/coreml.md` 301s to
+      `developer.apple.com/…/coreml.md`. Two URLs, one document. Nothing was pasted; the
+      fetcher followed a redirect, which is what it is supposed to do.
+
+    A gate that fails on both of those is not detecting fabrication, it is detecting the
+    internet. And a gate whose failures are usually wrong stops being read, which costs more
+    than the check was ever worth.
+
+    So the claim is now TESTED rather than assumed. The old message asserted "it means at
+    least one was not fetched" — that is a falsifiable statement, so falsify it: fetch every
+    URL in the group and compare. If the bodies really are identical, the recorded digest is
+    exactly what an honest fetch produces and there is nothing to report. If they differ, at
+    least one digest could not have come from its URL, and that is fabrication with no
+    innocent reading left.
+    """
+    failures, benign = [], []
+    for digest, urls in groups:
+        seen: dict[str, list[str]] = defaultdict(list)
+        unreachable = []
+        for url in urls:
+            try:
+                # Through `canonical`, exactly as build/fetch_source does. A GitHub blob URL
+                # rewrites to its raw form, and comparing a rendered HTML page against the
+                # plain file it points at is comparing two different documents. The first
+                # draft of this resolver skipped that and reported `maple-ai` as fabrication:
+                # its recorded digests were right all along, and the resolver was reading the
+                # blob page. fetch_source's own docstring warns about precisely this —
+                # "a digest taken with curl and re-checked with requests differs for reasons
+                # that have nothing to do with whether anybody read the page."
+                response = requests.get(
+                    canonical(url), timeout=timeout, headers={"User-Agent": USER_AGENT},
+                    allow_redirects=True,
+                )
+            except requests.RequestException:
+                unreachable.append(url)
+                continue
+            if response.status_code >= 400:
+                unreachable.append(url)
+                continue
+            seen[hashlib.sha256(response.content).hexdigest()].append(url)
+
+        listed = ", ".join(urls)
+        if len(seen) > 1:
+            split = " | ".join(
+                f"{d[:12]}…: {', '.join(u)}" for d, u in sorted(seen.items())
             )
-    return problems
+            failures.append(
+                f"digest {digest[:12]}… is recorded for {len(urls)} URLs ({listed}), and "
+                f"re-fetching them returns DIFFERENT bodies ({split}). At least one digest "
+                f"could not have come from the URL it is recorded against."
+            )
+        elif seen:
+            live = next(iter(seen))
+            note = "" if live == digest else f" (both now hash to {live[:12]}…, so the pair has drifted together)"
+            benign.append(
+                f"digest {digest[:12]}… is shared by {len(urls)} URLs ({listed}), and "
+                f"re-fetching confirms their bodies really are identical{note}."
+            )
+        if unreachable:
+            benign.append(
+                f"digest {digest[:12]}…: could not re-fetch {', '.join(unreachable)} this "
+                f"run, so the group is unresolved rather than cleared."
+            )
+    return failures, benign
 
 
 def refetch(source: Source, timeout: float) -> tuple[str, str]:
     """(outcome, detail). Outcome is one of confirmed / drifted / gone / unreachable."""
     try:
         response = requests.get(
-            source.url,
+            canonical(source.url),
             timeout=timeout,
             headers={"User-Agent": USER_AGENT},
             allow_redirects=True,
@@ -203,6 +308,14 @@ def main() -> int:
 
     failures = offline_failures(sources)
 
+    # Duplicate digests are resolved by fetching rather than assumed to be fabrication. See
+    # resolve_duplicates: the old heuristic failed main on canonical LICENSE texts and on a
+    # host alias, neither of which is anybody pasting anything.
+    dup_failures, dup_benign = resolve_duplicates(
+        duplicate_digest_groups(sources), args.timeout
+    )
+    failures.extend(dup_failures)
+
     chosen = sources
     if not args.all and len(sources) > args.sample:
         chosen = random.Random(args.seed).sample(sources, args.sample)
@@ -211,6 +324,11 @@ def main() -> int:
     for source in sorted(chosen, key=lambda s: (s.product, s.axis, s.url)):
         outcome, detail = refetch(source, args.timeout)
         buckets[outcome].append((source, detail))
+
+    if dup_benign:
+        print("\nSHARED DIGESTS — resolved by fetching, not a failure")
+        for line in dup_benign:
+            print(f"  {line}")
 
     for outcome, label in (
         ("gone", "DEAD — recorded as reachable, now an error"),
