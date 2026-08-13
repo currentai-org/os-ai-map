@@ -16,26 +16,46 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: Fully OSI-licensed (Apache-2.0), full source public, no proprietary core.
+  note: Fully OSI-licensed (Apache-2.0), full source public, no proprietary core. Re-read 2026-08-13 - the
+    LICENSE body still carries the same license and the README still builds the whole product from the published
+    repo, with no paid tier, enterprise edition or license key anywhere in it.
   raw: license:Apache-2.0(OSI);source:public(argilla-io/distilabel);governance:Argilla/Hugging Face;no feature-gated
     core;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/argilla-io/distilabel/blob/main/LICENSE
     shows: Apache License Version 2.0 text
-    accessed: '2026-07-21'
+    accessed: '2026-08-13'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: c7fe111b594f1e5d0e20edc35c8779490c76125484987b241c07ebac93c25ed7
+  - url: https://raw.githubusercontent.com/argilla-io/distilabel/main/README.md
+    shows: README documents the whole pipeline building and installing from the published
+      repo; no paid tier, enterprise edition or license key appears anywhere in it, so
+      nothing is withheld from the source
+    accessed: '2026-08-13'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: f69c2e49527588ee013624892d47237f1995b48fb1b85efc3075ca1ee69c07a8
 adoption:
   level: 2
   reach: 10K-100K
   signal_type: usage_volume
   confidence: high
-  note: '~6.5k PyPI downloads/month; established in the HF synthetic-data workflow but modest raw volume. Read
-    live 2026-08-13: 16,308 PyPI downloads in the trailing 30 days across the declared artifact(s), which
-    bands at 10K-100K, level 2. The previous reach ''1K-10K'' was a band off a different scale. No
-    last_verified claimed: only the figure was re-read, not the whole axis.'
+  note: 16,308 downloads in the trailing 30 days for distilabel, read 2026-08-13 from the pypistats API.
+    Bands at level 2 (10K-100K) on the software and model adoption scale. The previous reach '1K-10K' was
+    a band off a different scale. Established in the Hugging Face synthetic-data workflow, though the README
+    now says the original authors have moved on and community collaborators maintain the project.
+  last_verified: '2026-08-13'
   sources:
-  - url: https://pypistats.org/packages/distilabel
-    shows: 'Downloads last month: 6,510'
-    accessed: '2026-07-21'
+  - url: https://pypistats.org/api/packages/distilabel/recent
+    shows: 16,308 downloads in the trailing 30 days for distilabel
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 9a532424aa22518f1387258d359b9d46bd9978467bfe62eca00f626cd6597993
 capability:
   score: 4
   basis: training_value
@@ -45,13 +65,21 @@ capability:
     90.60; a distilabel-curated Orca-DPO set (46% of the data) beats full-data DPO on the Nous suite (54.04
     vs 53.51).
   confidence: medium
-  note: 'Indirect proxy: tool quality inferred from models where distilabel-curated data was the only
-    changed variable. Confidence capped because there is no head-to-head against other synthetic-data
-    frameworks.'
+  note: 'Indirect proxy: tool quality inferred from models where distilabel-curated data was the only changed
+    variable. Confidence capped because there is no head-to-head against other synthetic-data frameworks.
+    Re-read 2026-08-13 - both model cards still carry the numbers cited, 91.42 against 90.60 on AlpacaEval
+    and 54.04 against 53.51 on the Nous suite.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/argilla/notus-7b-v1
-    shows: 'Notus-7B (distilabel-recurated UltraFeedback): 91.42 AlpacaEval vs Zephyr 90.60'
-    accessed: '2026-07-21'
+    shows: 'Notus-7b-v1 (distilabel-recurated UltraFeedback) - 91.42 AlpacaEval against Zephyr-7b-beta
+      90.60 in the model card table'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: fe893fded6c16772e768c3f9f3339edeafaa93a6bce6a36c592c983806fbe416
   - url: https://huggingface.co/argilla/distilabeled-Hermes-2.5-Mistral-7B
-    shows: 'distilabel Orca-DPO curation (46% of data): 54.04 Nous avg vs 53.51 full-data DPO'
-    accessed: '2026-07-21'
+    shows: 'distilabel Orca-DPO curation, a 54% reduction in samples - 54.04 Nous average against 53.51
+      for the original full-data recipe'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 47a0ab9d93584d24398e807b4fecea91e51ec22880141059eb97e4df0277986b

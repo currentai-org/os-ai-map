@@ -80,23 +80,44 @@ openness:
     content_sha256: 57e66c991213a59848bc5e27b4eff0dc8306096adc8d43b881c6b6de301a818b
 adoption:
   level: 3
-  reach: niche
-  signal_type: reported_traction
-  confidence: low
-  note: Backed by NVIDIA and distributed through the NeMo platform; Gretel had a large synthetic-data
-    user base pre-acquisition. Directional; hard to separate from NeMo overall.
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: '416,634 downloads in the trailing 30 days on the declared PyPI artifact `data-designer`,
+    read live 2026-08-13. Bands at 100K-1M, level 3. LEVEL UNCHANGED - what changed is that it is now
+    RECOMPUTABLE. The record previously read `reported_traction` at the same level against a page that
+    publishes no figure at all, so nothing could confirm or refute it; a model can now derive this one
+    independently and disagree with it. The package is unambiguously the product''s own rather than a
+    same-named stranger: NVIDIA-NeMo/DataDesigner''s README quick start is `pip install data-designer`,
+    and for a Python library PyPI is the primary channel, not a minority one.'
+  last_verified: '2026-08-13'
   sources:
-  - url: https://www.nvidia.com/en-us/ai-data-science/products/nemo/
-    shows: NeMo synthetic-data / Data Designer service under the NVIDIA NeMo platform
-    accessed: '2026-07-21'
+  - url: https://pypistats.org/api/packages/data-designer/recent
+    shows: 'last_month 416,634 (last_week 145,088; last_day 24,257)'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: a57243860147ece39542a0ad55de6958bb1488cf83b676a94cae6ca286a2b8d8
+  - url: https://raw.githubusercontent.com/NVIDIA-NeMo/DataDesigner/main/README.md
+    shows: 'quick start reads `pip install data-designer`, tying the PyPI package to this product'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 9accba59e9b3c83360b79d4d70b4fe6b5df275e44c294d38b1ab6a6c892d5b8e
 capability:
   score: 4
   basis: feature_matrix
-  value: Synthetic-data generation for structured/unstructured data with transformation and augmentation;
-    differential-privacy heritage from Gretel.
+  value: Synthetic-data generation for structured and unstructured data, building domain-specific datasets
+    from scratch for training and evaluating specialized agents.
   confidence: medium
-  note: Capable synthetic-data engine; scored on the current NVIDIA-productized form.
+  note: Capable synthetic-data engine; scored on the current NVIDIA-productized form. Re-read 2026-08-13
+    - the NVIDIA NeMo page still lists Data Designer under synthetic data generation. Its earlier claims
+    about transformation and augmentation workflows and a differential-privacy heritage from Gretel are
+    no longer on that page, so they were dropped from the value rather than carried forward. The band is
+    unchanged.
+  last_verified: '2026-08-13'
   sources:
   - url: https://www.nvidia.com/en-us/ai-data-science/products/nemo/
-    shows: NVIDIA NeMo Data Designer product/feature description
-    accessed: '2026-07-21'
+    shows: NeMo Data Designer is described as creating domain-specific synthetic datasets from scratch
+      for building and evaluating specialized agents
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 99f7a56d165b1dc6fbf406d9899f3864fe58b80f0eb7d31fcf306649b885272b

@@ -13,35 +13,60 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: Fully OSI-licensed (MIT), full source public.
+  note: Fully OSI-licensed (MIT), full source public. Re-read 2026-08-13 - the LICENSE body still carries
+    the same license and the README still builds the whole product from the published repo, with no paid
+    tier, enterprise edition or license key anywhere in it.
   raw: license:MIT(OSI);source:public;no feature-gated core;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/facebookresearch/cc_net/blob/main/LICENSE
     shows: MIT License text
-    accessed: '2026-07-21'
+    accessed: '2026-08-13'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: 52412d7bc7ce4157ea628bbaacb8829e0a9cb3c58f57f99176126bc8cf2bfc85
+  - url: https://raw.githubusercontent.com/facebookresearch/cc_net/main/README.md
+    shows: README documents the whole pipeline building and installing from the published
+      repo; no paid tier, enterprise edition or license key appears anywhere in it, so
+      nothing is withheld from the source
+    accessed: '2026-08-13'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: 3b9abc643e55ae84fa42a6731dc34eecd9f1badcca15ed77a2f93e6ccc64498e
 adoption:
   level: 2
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: medium
-  note: '~1,000 GitHub stars; research repo, no PyPI package. Archived since 2023 but a foundational, widely-
-    reused pipeline. Stars read 2026-08-13: 1,045 across the 1 declared repo, which bands at 1K-10K stars,
-    level 2 on the stars scale in signal_routing.yaml. The previous reach ''<10K'' was not a label this
-    instrument offers - stars have their own vocabulary because a star is not a download. No last_verified
-    claimed: a star count is volatile, so a digest of it would read as drift on every refetch, and the rest of
-    the axis was not re-read.'
+  note: 1,045 GitHub stars on facebookresearch/cc_net, read 2026-08-13 from the repository API. Bands at
+    level 2 (1K-10K stars) on the stars fallback scale in signal_routing.yaml, which caps at 3 because a
+    star is not a use. Archived read-only since October 2023 but foundational and widely reused; no PyPI
+    package, so stars are the only signal. The API response is digested here the way bigcode-dataset and
+    ungoliant already are in this category; a star count drifts, so a later digest mismatch reads as drift
+    rather than as fabrication.
+  last_verified: '2026-08-13'
   sources:
-  - url: https://github.com/facebookresearch/cc_net
-    shows: ~1,000 stars; archived read-only 2023-10-31
-    accessed: '2026-07-21'
+  - url: https://api.github.com/repos/facebookresearch/cc_net
+    shows: stargazers_count = 1045 for facebookresearch/cc_net
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c921aef8b94dcdc6dcbc723af0b06dac7e9947d79d70088f848a6d4132021171
 capability:
   score: 3
   basis: feature_matrix
   value: Language ID + KenLM perplexity filtering + dedup to build monolingual corpora from Common Crawl;
     single-approach, foundational, now dated.
   confidence: medium
-  note: Historically foundational (CC-100), but a single-method pipeline and frozen since 2023.
+  note: Historically foundational (CC-100), but a single-method pipeline and frozen since 2023. Re-read
+    2026-08-13 - the README still describes the feature set above.
+  last_verified: '2026-08-13'
   sources:
-  - url: https://github.com/facebookresearch/cc_net
-    shows: CCNet perplexity-filtering pipeline (built CC-100)
-    accessed: '2026-07-21'
+  - url: https://raw.githubusercontent.com/facebookresearch/cc_net/main/README.md
+    shows: README documents the language-ID plus KenLM perplexity plus dedup pipeline of the CCNet
+      paper; the repo is archived read-only
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 3b9abc643e55ae84fa42a6731dc34eecd9f1badcca15ed77a2f93e6ccc64498e

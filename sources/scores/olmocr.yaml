@@ -16,13 +16,30 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: Fully OSI-licensed (Apache-2.0), full source public.
+  note: Fully OSI-licensed (Apache-2.0), full source public. Re-read 2026-08-13 - the LICENSE body still
+    carries the same license and the README still builds the whole product from the published repo, with
+    no paid tier, enterprise edition or license key anywhere in it.
   raw: license:Apache-2.0(OSI);source:public(allenai/olmocr);governance:Allen Institute for AI;no feature-gated
     core;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/allenai/olmocr/blob/main/LICENSE
     shows: Apache License Version 2.0 text
-    accessed: '2026-07-21'
+    accessed: '2026-08-13'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: 62fb8a3a9621dc2388174caaabe9c2317b694bb9a1d46c98bcf5655b68f51be3
+  - url: https://raw.githubusercontent.com/allenai/olmocr/main/README.md
+    shows: README documents the whole pipeline building and installing from the published
+      repo; no paid tier, enterprise edition or license key appears anywhere in it, so
+      nothing is withheld from the source
+    accessed: '2026-08-13'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: 1383b3f0f5a10cc9a7eebab46e929cddaedf370a80d17b379d21dc380b31ada3
 adoption:
   level: 2
   reach: 10K-100K
@@ -41,16 +58,27 @@ adoption:
 capability:
   score: 4
   basis: benchmark
-  value: olmOCR 2 (v0.4.0) scores 82.4 on olmOCR-Bench, ahead of Marker (76.1), MinerU (75.2), Mistral
-    OCR (72.0), and GPT-4o (69.9); on the third-party OmniDocBench it is mid-pack (~85.7, near GPT-4o)
-    behind MinerU2.5-Pro and Gemini-3 Pro.
+  value: olmOCR v0.4.0 scores 82.4 on olmOCR-Bench, ahead of Marker 1.10.1 (76.1), MinerU 2.5.4 (75.2) and
+    Mistral OCR (72.0), but now behind Chandra OCR 0.1.0 (83.1) and Infinity-Parser 7B (82.5); on the third-party
+    OmniDocBench it is mid-pack (85.74), behind MinerU-2.5 (93.04), Gemini 3 Pro (92.91) and GPT-5.2 (86.59).
   confidence: high
-  note: 'Benchmark-anchored: leads open document-extraction tools on olmOCR-Bench but sits mid-pack on
-    the neutral OmniDocBench, so near-SOTA rather than SOTA. Snapshot; extraction leaderboards move.'
+  note: 'Benchmark-anchored: leads open document-extraction tools on olmOCR-Bench but sits mid-pack on the
+    neutral OmniDocBench, so near-SOTA rather than SOTA. Snapshot; extraction leaderboards move. Re-read
+    2026-08-13 - the olmOCR-Bench table has dropped GPT-4o and now places Chandra OCR and Infinity-Parser
+    above olmOCR, and OmniDocBench lists olmOCR at 85.74. The band stays at 4, which the note already read
+    as near-SOTA rather than SOTA.'
+  last_verified: '2026-08-13'
   sources:
-  - url: https://github.com/allenai/olmocr
-    shows: 'olmOCR 2 (v0.4.0): 82.4 on olmOCR-Bench, ahead of Marker/MinerU/Mistral OCR/GPT-4o'
-    accessed: '2026-07-21'
-  - url: https://github.com/opendatalab/OmniDocBench
-    shows: 'OmniDocBench: olmOCR ~85.7, mid-pack behind MinerU2.5-Pro and Gemini-3 Pro'
-    accessed: '2026-07-21'
+  - url: https://raw.githubusercontent.com/allenai/olmocr/main/README.md
+    shows: 'olmOCR-Bench table in the README - olmOCR v0.4.0 scores 82.4, ahead of Marker 1.10.1 76.1,
+      MinerU 2.5.4 75.2 and Mistral OCR 72.0, but now behind Chandra OCR 0.1.0 83.1 and
+      Infinity-Parser 7B 82.5. GPT-4o has been dropped from the table.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 1383b3f0f5a10cc9a7eebab46e929cddaedf370a80d17b379d21dc380b31ada3
+  - url: https://raw.githubusercontent.com/opendatalab/OmniDocBench/main/README.md
+    shows: 'OmniDocBench leaderboard - olmOCR 85.74 overall, mid-pack behind MinerU-2.5 93.04,
+      Gemini 3 Pro 92.91 and GPT-5.2 86.59, and level with Mistral OCR 85.66'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 1c3f6f7e0dc6027e96161fd368f68b41b1e797b2329a4decbefdd4f2d2ec31eb

@@ -16,37 +16,65 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: Fully OSI-licensed (Apache-2.0), full source public.
+  note: Fully OSI-licensed (Apache-2.0), full source public. Re-read 2026-08-13 - the LICENSE body still
+    carries the same license and the README still builds the whole product from the published repo, with
+    no paid tier, enterprise edition or license key anywhere in it.
   raw: license:Apache-2.0(OSI);source:public(allenai/dolma);governance:Allen Institute for AI;no feature-gated
     core;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/allenai/dolma/blob/main/LICENSE
     shows: Apache License Version 2.0 text
-    accessed: '2026-07-21'
+    accessed: '2026-08-13'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+  - url: https://raw.githubusercontent.com/allenai/dolma/main/README.md
+    shows: README documents the whole pipeline building and installing from the published
+      repo; no paid tier, enterprise edition or license key appears anywhere in it, so
+      nothing is withheld from the source
+    accessed: '2026-08-13'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: a4abd5c5baf3f9f57eb09e1332daeb3168d4d23429d6c474f8c9c57e908b144e
 adoption:
   level: 1
   reach: <10K
   signal_type: usage_volume
   confidence: high
-  note: '~5.1k PyPI downloads/month; the curation toolkit behind the Dolma corpus and OLMo family. Read live
-    2026-08-13: 4,390 PyPI downloads in the trailing 30 days across the declared artifact(s), which bands at
-    <10K, level 1. Level corrected from 2. The previous reach ''1K-10K'' was a band off a different scale. No
-    last_verified claimed: only the figure was re-read, not the whole axis.'
+  note: 4,390 downloads in the trailing 30 days for dolma, read 2026-08-13 from the pypistats API. Bands
+    at level 1 (<10K) on the software and model adoption scale, corrected from level 2. The curation toolkit
+    behind the Dolma corpus and the OLMo family, so its importance runs ahead of its raw volume.
+  last_verified: '2026-08-13'
   sources:
-  - url: https://pypistats.org/packages/dolma
-    shows: 'Downloads last month: 5,097'
-    accessed: '2026-07-21'
+  - url: https://pypistats.org/api/packages/dolma/recent
+    shows: 4,390 downloads in the trailing 30 days for dolma
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 6696ad3c661dd15027602f2fd1df3d7c3470fac93e15df4c1a1176a98f553c7d
 capability:
   score: 3
   basis: benchmark
+  relative_to: datatrove
+  relation: two_below
   value: Dolma, the corpus the toolkit builds, scores 35.0 CORE on DataComp-LM (7B-1x), below RefinedWeb
     (36.9) and well under DCLM-baseline, and is among the lower performers in the FineWeb ablation. A
     foundational, fully-documented open pipeline whose released output sits a tier below the current curation
     frontier.
   confidence: high
   note: 'Benchmark-anchored on the output corpus (proxy): capable and fully open, but its released corpus
-    trails the datatrove / NeMo Curator frontier on DCLM. Down from a feature-only read of 4.'
+    trails the datatrove / NeMo Curator frontier on DCLM. Down from a feature-only read of 4. Re-read 2026-08-13
+    against the DataComp-LM full text, where Table 2 still shows Dolma-V1 at 35.0 Core against RefinedWeb
+    36.9 at the 7B-1x scale. The cited abstract page never carried that table, so the source now points
+    at the HTML full text. The gap to the datatrove frontier is recorded as relative_to.'
+  last_verified: '2026-08-13'
   sources:
-  - url: https://arxiv.org/abs/2406.11794
-    shows: 'DataComp-LM Table 2: Dolma-V1 35.0 CORE vs RefinedWeb 36.9 at 7B-1x scale'
-    accessed: '2026-07-21'
+  - url: https://arxiv.org/html/2406.11794v3
+    shows: 'DataComp-LM Table 2 in the full text - Dolma-V1 scores 35.0 Core and 18.4 Extended at the
+      7B-1x scale, below RedPajama 35.3 and RefinedWeb 36.9'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 8938d7969b69269b54000eb3c42bf0bbef14981580547b3fb86c3c7f5d5a54ec

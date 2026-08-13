@@ -16,12 +16,29 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: Fully OSI-licensed (Apache-2.0), full source public. Vendor-backed but not gated.
+  note: Fully OSI-licensed (Apache-2.0), full source public. Vendor-backed but not gated. Re-read 2026-08-13
+    - the LICENSE body still carries the same license and the README still builds the whole product from
+    the published repo, with no paid tier, enterprise edition or license key anywhere in it.
   raw: license:Apache-2.0(OSI);source:public(NVIDIA/NeMo-Curator);governance:NVIDIA;no feature-gated core;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/NVIDIA/NeMo-Curator/blob/main/LICENSE
     shows: Apache License Version 2.0 text
-    accessed: '2026-07-21'
+    accessed: '2026-08-13'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: 5ec35ae50c7dd084f7e18d375305012159dccf9bb77ddb3f488061d7fc2abdef
+  - url: https://raw.githubusercontent.com/NVIDIA-NeMo/Curator/main/README.md
+    shows: README documents the whole pipeline building and installing from the published
+      repo; no paid tier, enterprise edition or license key appears anywhere in it, so
+      nothing is withheld from the source
+    accessed: '2026-08-13'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: 5566f79f9b7dab43257604985b133039e4027438ed9dd959170c26b3077942ce
 adoption:
   level: 1
   reach: <10K
@@ -47,8 +64,15 @@ capability:
     ~4x more unique tokens than DCLM/FineWeb-Edu.
   confidence: high
   note: 'Benchmark-anchored on the output corpus (proxy): Nemotron-CC matches or beats the DCLM/FineWeb-Edu
-    frontier, especially at long-horizon token budgets.'
+    frontier, especially at long-horizon token budgets. Re-read 2026-08-13 - the arXiv abstract still reports
+    +5.6 MMLU over DCLM at 8B/1T, four times more unique real tokens than DCLM, and the 15T-token run beating
+    Llama 3.1 8B. The recorded comparison to dclm holds, both sitting at 5.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://arxiv.org/abs/2412.02595
-    shows: Nemotron-CC-HQ +5.6 MMLU over DCLM at 8B/1T; 70.3 vs 65.3 MMLU at 15T tokens
-    accessed: '2026-07-21'
+    shows: Nemotron-CC abstract - a high-quality subset improves MMLU by 5.6 over DCLM at 8B/1T, the
+      full 6.3T-token set matches DCLM on MMLU with four times more unique real tokens, and an 8B
+      model trained on 15T tokens beats Llama 3.1 8B by +5 MMLU
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 4231d6de42496ec9f36b44c8be8bc791367ccbe5e5c41439d7e6077eebd0df98

@@ -13,26 +13,48 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: Fully OSI-licensed (MIT), full source public.
+  note: Fully OSI-licensed (MIT), full source public. Re-read 2026-08-13 - the LICENSE body still carries
+    the same license and the README still builds the whole product from the published repo, with no paid
+    tier, enterprise edition or license key anywhere in it.
   raw: license:MIT(OSI);source:public;no feature-gated core;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/mlfoundations/dclm/blob/main/LICENSE
     shows: MIT License text
-    accessed: '2026-07-21'
+    accessed: '2026-08-13'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: f6f22e7ddf73c6acc94c82555d60f33f26df2aea3be34d65c2f10c9d9c95e3ff
+  - url: https://raw.githubusercontent.com/mlfoundations/dclm/main/README.md
+    shows: README documents the whole pipeline building and installing from the published
+      repo; no paid tier, enterprise edition or license key appears anywhere in it, so
+      nothing is withheld from the source
+    accessed: '2026-08-13'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: 21462d622ec7fe97c9299532feda5c9c5dc7d8d95807f5a92fa74a9e24ce9bfe
 adoption:
   level: 2
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: medium
-  note: '~1,454 GitHub stars; no PyPI package (source install). The reference DataComp-LM toolkit. Stars read
-    2026-08-13: 1,463 across the 1 declared repo, which bands at 1K-10K stars, level 2 on the stars scale in
-    signal_routing.yaml. The previous reach ''<10K'' was not a label this instrument offers - stars have their
-    own vocabulary because a star is not a download. No last_verified claimed: a star count is volatile, so a
-    digest of it would read as drift on every refetch, and the rest of the axis was not re-read.'
+  note: 1,463 GitHub stars on mlfoundations/dclm, read 2026-08-13 from the repository API. Bands at level
+    2 (1K-10K stars) on the stars fallback scale in signal_routing.yaml, which caps at 3 because a star
+    is not a use. No PyPI package is published, so the toolkit installs from source and stars are the only
+    signal; as the reference DataComp-LM harness its importance runs well ahead of its adoption, and the
+    level is directional. The API response is digested here the way bigcode-dataset and ungoliant already
+    are in this category; a star count drifts, so a later digest mismatch reads as drift rather than as
+    fabrication.
+  last_verified: '2026-08-13'
   sources:
-  - url: https://github.com/mlfoundations/dclm
-    shows: 1,454 stars; not published to PyPI
-    accessed: '2026-07-21'
+  - url: https://api.github.com/repos/mlfoundations/dclm
+    shows: stargazers_count = 1463 for mlfoundations/dclm
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: e85e8de3ba278a040a34ca6cec86887e7d11d9afef00834f346deaa09d1b2c0e
 capability:
   score: 5
   basis: benchmark
@@ -40,8 +62,14 @@ capability:
     7B model on 2.6T tokens reaches ~64% MMLU, beating RefinedWeb/C4/Dolma), so it defines the curation
     frontier the other tools are scored against.
   confidence: high
-  note: 'Benchmark-defining: DCLM-baseline is the reference-topping corpus of the DataComp-LM leaderboard.'
+  note: 'Benchmark-defining: DCLM-baseline is the reference-topping corpus of the DataComp-LM leaderboard.
+    Re-read 2026-08-13 - the arXiv abstract still reports the 64% MMLU result at 7B on 2.6T tokens and the
+    6.6-point lead over MAP-Neo.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://arxiv.org/abs/2406.11794
-    shows: 'DataComp-LM: DCLM-baseline tops existing corpora; 7B/2.6T ~64% MMLU'
-    accessed: '2026-07-21'
+    shows: 'DataComp-LM abstract - DCLM-baseline trains a 7B model to 64% 5-shot MMLU on 2.6T tokens,
+      6.6 points above MAP-Neo, the previous open-data state of the art'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: f665620bfe7fe32ea36cf6f4daab947bd13e925c191d80444c02c8ceb14fd974
