@@ -25,13 +25,30 @@ openness:
     accessed: '2026-06-18'
 adoption:
   level: 3
-  signal_type: stars_fallback
+  signal_type: usage_volume
   confidence: medium
-  note: ~83k stars; Docker-distributed with no download metric retrieved - stars_fallback (capped at 3).
+  note: 'About 129,133 downloads a month across the product’s real distribution channels, read 2026-08-13
+    (Docker Hub 3,590,166 cumulative since 2023-12-12, about 112,087 a month; ragflow-sdk 17,046 in the
+    trailing 30 days). Bands at level 3 (100K-1M). RAGFlow ships as a Docker Compose stack; ragflow-sdk
+    on PyPI is an API client rather than the server, so it measures a different thing and is added only
+    as a minor component. Moved off the stars fallback under the under-coverage rule in docs/guides/adoption.md:
+    banding on a channel the product does not ship through is a substitution rather than a measurement.
+    The level is UNCHANGED at 3 - the stars cap happened to give the right answer here - but it now rests
+    on a measured figure instead of a capped proxy. The Docker component is a lifetime average, not a trailing-30-day
+    count, so this is a floor.'
+  reach: 100K-1M
+  last_verified: '2026-08-13'
   sources:
-  - url: https://ragflow.io
-    shows: official site, InfiniFlow, self-host + cloud
-    accessed: '2026-06-18'
+  - url: https://hub.docker.com/v2/repositories/infiniflow/ragflow/
+    shows: 3,590,166 cumulative pulls of infiniflow/ragflow
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 095ef0ed513ee365aae263321c77599f65537b6f30a29eea5e584be1231b937b
+  - url: https://pypistats.org/api/packages/ragflow-sdk/recent
+    shows: 17,046 downloads in the trailing 30 days for ragflow-sdk
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 465245cf97ae8442f7e3a072ca91a6df1c2d135be904b006807329b1381eaec5
 capability:
   score: 4
   basis: feature_matrix

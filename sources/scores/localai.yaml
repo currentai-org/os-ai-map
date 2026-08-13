@@ -38,17 +38,24 @@ openness:
     content_sha256: 6ef142557058a6a02274d19b448082c83e9bb84566c8d2c093de9bf86c8dcb80
 adoption:
   level: 3
-  signal_type: stars_fallback
+  signal_type: usage_volume
   confidence: medium
-  note: 48,349 GitHub stars as of 2026-08-09; no clean download telemetry for a self-hosted server, so stars_fallback
-    applies (capped at 3, per the adoption banding rule).
-  last_verified: '2026-08-09'
+  note: 'About 156,880 downloads a month across the product’s real distribution channels, read 2026-08-13
+    (Docker Hub 6,411,259 cumulative since 2023-03-18, about 156,880 a month). Bands at level 3 (100K-1M).
+    LocalAI is distributed as a Docker image; it publishes no first-party PyPI or npm package. Moved off
+    the stars fallback under the under-coverage rule in docs/guides/adoption.md: banding on a channel the
+    product does not ship through is a substitution rather than a measurement. The level is UNCHANGED at
+    3 - the stars cap happened to give the right answer here - but it now rests on a measured figure instead
+    of a capped proxy. The Docker component is a lifetime average, not a trailing-30-day count, so this
+    is a floor.'
+  last_verified: '2026-08-13'
+  reach: 100K-1M
   sources:
-  - url: https://github.com/mudler/LocalAI
-    shows: aria-label="48349 users starred this repository"
-    accessed: '2026-08-09'
+  - url: https://hub.docker.com/v2/repositories/localai/localai/
+    shows: 6,411,259 cumulative pulls of localai/localai
+    accessed: '2026-08-13'
     http_status: 200
-    content_sha256: 6ef142557058a6a02274d19b448082c83e9bb84566c8d2c093de9bf86c8dcb80
+    content_sha256: 7d0a2bfff9c13e1e35ac9bb191c5e493cd13534596c8eae77131eb576adbfbb3
 capability:
   score: 5
   basis: feature_matrix
