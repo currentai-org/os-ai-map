@@ -54,26 +54,42 @@ adoption:
 capability:
   score: 4
   basis: benchmark
-  basis_detail: ArtificialAnalysis(provider-speed)
-  value: '3rd-fastest provider for gpt-oss-120b on the Artificial Analysis leaderboard at 658.8 output tokens/sec
-    (top GPU-based provider; behind wafer/LPU-class Cerebras 1,726.0 and SambaNova 692.5) as of the last
-    confirmed read (2026-06-04). Customer case studies re-confirmed 2026-08-09: Notion ~2s -> 350ms latency
-    (Sarah Sachs, AI Lead), Quora 3x speedup (Spencer Chan, Product Lead). NOT re-derivable today - see
-    held_because.'
+  basis_detail: ArtificialAnalysis(provider page)
+  value: 'Serves 10 models on Artificial Analysis, topping out at 459 output tokens/sec (Nemotron 3.5
+    Lightning BF16), then MiniMax-M2.7 at 206 t/s and DeepSeek V4 Flash at 115 t/s; best time-to-first-token
+    0.93s (Kimi K2.6). AA notes a 448% spread between its fastest and slowest model. That peak sits below
+    the wafer/LPU speed frontier on the same site''s gpt-oss-120b board - Cerebras 1,820.3, SambaNova
+    701.3, Groq 475.9 - and around the GPU-class providers, which is what places this at 4 rather than 5.
+    Customer case studies, re-confirmed 2026-08-13: Notion ~2s -> 350ms latency (Sarah Sachs, AI Lead),
+    Quora 3x speedup (Spencer Chan, Product Lead).'
   confidence: medium
-  note: 'Top-tier GPU-based inference (FireAttention) and previously the fastest GPU provider on the AA
-    gpt-oss-120b board (658.8 t/s, 3rd overall as of 2026-06-04), but below the wafer/LPU speed-frontier
-    (Cerebras). Held rather than re-dated: Fireworks does not appear on the current AA gpt-oss-120b providers
-    page at all (checked 2026-08-09), so the benchmark basis could not be re-confirmed.'
+  note: 'Top-tier GPU-based inference (FireAttention), below the wafer/LPU speed frontier. SCORE UNCHANGED
+    AT 4; what changed is that it can now be re-derived. The 2026-08-09 pass held this axis undated rather
+    than re-date it, because the basis it cited - 3rd on the AA gpt-oss-120b providers board at 658.8 t/s,
+    read 2026-06-04 - had ceased to exist: Fireworks no longer appears on that board at all. Refusing the
+    date was right, and it left the axis stuck, because the missing evidence was never replaced.
+
+    Re-derived 2026-08-13 on AA''s own Fireworks PROVIDER page, which does carry current figures for the
+    10 models it serves. The model board and the provider page are the same instrument read from two
+    directions; a product dropping off a per-model board is a fact about that board''s coverage, not about
+    the product. The gpt-oss-120b page is kept as a cited source because it is what establishes where the
+    speed frontier sits, and it is now re-read rather than remembered.'
+  last_verified: '2026-08-13'
   sources:
-  - url: https://artificialanalysis.ai/models/gpt-oss-120b/providers
-    shows: 'current output-speed chart data (medianOutputSpeed): Cerebras 1941.96, SambaNova 705.67, Groq
-      476.75, Google Vertex 395.82, Azure 323.19, Baseten 194.67, DeepInfra (Turbo) 174.52, Scaleway 166.05,
-      Nebius (Base) 138.69, Parasail 106.70, Novita 103.90, Amazon 94.26 - no Fireworks entry in this or
-      any of the page''s other chart data blocks'
-    accessed: '2026-08-09'
+  - url: https://artificialanalysis.ai/providers/fireworks
+    shows: 10 models served; output speed 459 t/s (Nemotron 3.5 Lightning BF16), 206 t/s (MiniMax-M2.7),
+      115 t/s (DeepSeek V4 Flash), 107 t/s (Kimi K2.6); latency 0.93s best (Kimi K2.6); "448% difference
+      between the fastest and slowest"
+    accessed: '2026-08-13'
     http_status: 200
-    content_sha256: 082d6179bce956957d776b3d9543cb423760838a29999065f98bf22788d5514b
+    content_sha256: 7eb36fe33f25847786dcfc510fb3783d4447d433122bf1f0b895bdc53912fb7d
+  - url: https://artificialanalysis.ai/models/gpt-oss-120b/providers
+    shows: 'the speed frontier this band is placed against, re-read 2026-08-13: Cerebras 1,820.3, SambaNova
+      701.3, Groq 475.9, Google Vertex 362.7, Azure 310.5 output t/s - and still no Fireworks entry, which
+      is why the provider page rather than this one carries the basis'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 5071ab85b53372112bbdfe4b54e7e94e570db319d44f626ae098d9d3538a20ca
   - url: https://fireworks.ai/
     shows: 'Notion (Sarah Sachs, AI Lead): "we reduced latency from about 2 seconds to 350 milliseconds";
       Quora (Spencer Chan, Product Lead): "we noticed a 3x speedup in response time"'
