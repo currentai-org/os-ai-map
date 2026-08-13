@@ -13,14 +13,33 @@ openness:
       detail: NOT OSI
   confidence: medium
   note: Open weights under Meta's Llama 4 Community License, which is use-restricted and not OSI-approved,
-    so open_weights (3) like the rest of the Llama family.
+    so open_weights (3) like the rest of the Llama family. Re-read 2026-08-13 and unchanged.
   raw: weights:open(Llama-Prompt-Guard-2-86M/22M on HF);data:not-released;license:Llama-4-Community(NOT
     OSI)
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/meta-llama/Llama-Prompt-Guard-2-86M
-    shows: Llama 4 Community License; open weights; 86M/22M; prompt-injection/jailbreak classifier; ~90,441
-      downloads/month, 149 likes
-    accessed: '2026-06-29'
+    shows: 'Repo shows License - llama4 and carries the full LLAMA 4 COMMUNITY LICENSE AGREEMENT text,
+      including the 700 million monthly active user threshold above which a separate Meta license is
+      required. Gated manual, with model.safetensors downloadable on acceptance. The card publishes no
+      training set and declares no datasets.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 2b82c90d52e77871e862698d8e3fd040a85c707fb7e2fda394446ab5a17ee62a
+    establishes:
+    - weights
+    - data
+    - license
+  - url: https://huggingface.co/api/models/meta-llama/Llama-Prompt-Guard-2-86M
+    shows: cardData records license - other with license_name - llama4; gated - manual; siblings list
+      model.safetensors; no datasets key.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 8dbd4ab1eb0ead190135b8aa992de63edc25bb3f7437f18243f2f278a560a0b6
+    establishes:
+    - weights
+    - data
+    - license
 adoption:
   level: 3
   reach: 100K-1M
@@ -44,8 +63,14 @@ capability:
     8 languages, sub-100ms latency; narrow but best-in-class at its job.
   confidence: medium
   note: Specialized injection/jailbreak classifier with strong accuracy and very low latency; complements
-    full-taxonomy guards.
+    full-taxonomy guards. Re-read 2026-08-13 and the numbers still stand as recorded.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/meta-llama/Llama-Prompt-Guard-2-86M
-    shows: 99.8% AUC, 97.5% recall @1% FPR; 8 languages; sub-100ms
-    accessed: '2026-06-29'
+    shows: 'Card evaluation table gives Llama Prompt Guard 2 86M an English AUC of .998, recall at 1% FPR
+      of 97.5%, multilingual AUC .995 and 92.4 ms per classification on an A100; the 22M variant is listed
+      at .995/88.7% and 19.3 ms. Repo is tagged 8 languages, and the card frames the task as prompt
+      injection and jailbreak detection.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 2b82c90d52e77871e862698d8e3fd040a85c707fb7e2fda394446ab5a17ee62a

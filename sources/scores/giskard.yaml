@@ -17,27 +17,43 @@ openness:
       value: ungated
   confidence: high
   note: 'Fully open source: Apache-2.0 Python library, self-hostable; no commercial tier mentioned on
-    the repo.'
+    the repo. Re-read 2026-08-13 and unchanged. The cited URL now redirects to Giskard-AI/giskard-oss,
+    which is the repo the product declares, and the project has shipped a v3 rewrite since the last read;
+    neither moves the score.'
   raw: license:Apache-2.0(OSI);source:public;self-host:yes;service:none(per the repo);core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/Giskard-AI/giskard
-    shows: Apache-2.0; ~5.5k stars; automated scan + scenario checks; adversarial/injection testing
-    accessed: '2026-06-29'
+    shows: 'Redirects to Giskard-AI/giskard-oss, whose metadata records license spdxId - Apache-2.0. The
+      README installs the whole thing with pip and documents running it locally; the only paid-adjacent
+      ask on the page is GitHub sponsorship, and there is no enterprise directory, commercial edition or
+      license key, so nothing is withheld from the published source.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: dfb7a90ded7d700544e2d5a6c686c6cdce6c16ebac69ef59eb4b260ea2a98505
+    establishes:
+    - source
+    - core-gated
+    - license
 adoption:
   level: 2
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: low
-  note: '~5.5K GitHub stars (June 2026); stars-only proxy, capped per methodology. Stars read 2026-08-13:
-    5,748 across the 1 declared repo, which bands at 1K-10K stars, level 2 on the stars scale in
-    signal_routing.yaml. Level corrected from 3. The previous reach ''10K-100K'' was not a label this
-    instrument offers - stars have their own vocabulary because a star is not a download. No last_verified
-    claimed: a star count is volatile, so a digest of it would read as drift on every refetch, and the rest of
-    the axis was not re-read.'
+  note: 'Stars-only proxy, capped at 3 because a star is not a use. Re-read 2026-08-13 - the repo shows
+    5,748 stargazers, which bands at 1K-10K stars, level 2 on the stars scale in signal_routing.yaml. A
+    download route does exist and was checked rather than assumed away: the giskard package on PyPI shows
+    24,423 downloads in the trailing 30 days, which is level 2 on the software scale, so both instruments
+    agree on the band. Re-banding onto downloads needs a declared PyPI artifact and is raised rather than
+    taken here.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/Giskard-AI/giskard
-    shows: ~5.5k stars (June 2026)
-    accessed: '2026-06-29'
+    shows: stargazerCount 5748 for Giskard-AI/giskard-oss; no download, install or customer figure appears
+      on the page.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: dfb7a90ded7d700544e2d5a6c686c6cdce6c16ebac69ef59eb4b260ea2a98505
 capability:
   score: 4
   basis: feature_matrix
@@ -46,8 +62,16 @@ capability:
     and multi-turn agent evaluations.
   confidence: medium
   note: Combines automated red-team scanning with structured evaluation; broad coverage for both safety
-    and reliability.
+    and reliability. Re-read 2026-08-13. The v3 rewrite renamed Scan to vulnerability_scan and shipped it
+    in giskard-scan alongside knowledge-base and RAG evaluation, so the shape of the coverage moved but
+    not its breadth, and the band holds.
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/Giskard-AI/giskard
-    shows: Scan + Checks; adversarial, injection, multi-turn agent validation
-    accessed: '2026-06-29'
+    shows: README describes 'Evals, Red Teaming and Test Generation for Agentic Systems' and a
+      vulnerability scanner covering 'red teaming, prompt injection, jailbreaks & harmful content'
+      (vulnerability_scan, successor of v2 Scan) plus knowledge-base and RAG quality evaluation, with v3
+      built for dynamic multi-turn testing of agents.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: dfb7a90ded7d700544e2d5a6c686c6cdce6c16ebac69ef59eb4b260ea2a98505

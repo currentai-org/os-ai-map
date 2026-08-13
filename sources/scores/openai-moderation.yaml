@@ -13,23 +13,50 @@ openness:
     license:
     - name: proprietary
   confidence: high
-  note: Closed, API-only hosted classifier; no weights or source.
+  note: Closed, API-only hosted classifier; no weights or source. Re-read 2026-08-13 and unchanged. The
+    cited URL now redirects to developers.openai.com and the page renders client-side, so the markdown
+    edition of the same document is cited beside it - that is the body the reading was taken from.
   raw: service:proprietary hosted API(no weights, no self-host);access:free moderation endpoint;source:closed;license:proprietary
+  last_verified: '2026-08-13'
   sources:
   - url: https://platform.openai.com/docs/guides/moderation
-    shows: free hosted moderation API; OpenAI content-policy categories; no weights
-    accessed: '2026-06-29'
+    shows: Still resolves, now via a 301 to developers.openai.com/api/docs/guides/moderation. The page is
+      client-rendered, so the readable body is the markdown edition cited below.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 2f5e205846ca303482c9e7af37053f59ec2cb5a01bd71bdb5f10bacf2847260a
+    establishes:
+    - source
+    - license
+  - url: https://developers.openai.com/api/docs/guides/moderation.md
+    shows: 'Markdown edition of the cited guide. The product is an endpoint - ''Use OpenAI moderation
+      models to detect harmful content in text and images'' via the moderation endpoint or alongside a
+      generated response - with no weights, no download and no self-hostable implementation offered. Use is
+      governed by OpenAI''s API terms; ''The moderation endpoint is free to use''.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 5a072092c75e9bd875eb821597f128f1d67d6f78f5e5a7a69573ff0d0774e205
+    establishes:
+    - source
+    - license
 adoption:
   level: 4
-  reach: 1M-10M
-  signal_type: usage_volume
+  signal_type: reported_traction
   confidence: medium
-  note: Free, default moderation endpoint for the large OpenAI developer base; widely used as a first-line
-    filter.
+  note: 'INSTRUMENT CORRECTED on 2026-08-13, level unchanged. usage_volume claims a download or install count and OpenAI publishes
+    none for this endpoint - the guide carries no request volume, no developer count and no customer count,
+    and neither does anything else cited here. The 1M-10M label therefore asserts a measurement nobody
+    made, which adoption.md rules out on this instrument. The underlying reading is sound - it is the free
+    default filter in front of a very large developer base - but that is a reported_traction claim, not a
+    counted one. The instrument now reads reported_traction, which is what a credible claim with no count behind it is for, and the illegal numeric reach is gone. The LEVEL is deliberately unchanged: correcting how a band was read is not a reason to move where it sits, and nothing re-read today argues the standing is different. What changes is that the record no longer claims a measurement nobody made.'
+  last_verified: '2026-08-13'
   sources:
-  - url: https://platform.openai.com/docs/guides/moderation
-    shows: free hosted moderation endpoint
-    accessed: '2026-06-29'
+  - url: https://developers.openai.com/api/docs/guides/moderation.md
+    shows: Guide documents the endpoint and states it is free to use. No usage figure of any kind appears
+      on the page.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 5a072092c75e9bd875eb821597f128f1d67d6f78f5e5a7a69573ff0d0774e205
 capability:
   score: 3
   basis: feature_matrix
@@ -38,7 +65,15 @@ capability:
     fixed taxonomy.
   confidence: low
   note: Convenient broad-category moderation; fixed policy, no customization vs policy-conditioned models.
+    Re-read 2026-08-13 and unchanged.
+  last_verified: '2026-08-13'
   sources:
-  - url: https://platform.openai.com/docs/guides/moderation
-    shows: multi-category text/image moderation
-    accessed: '2026-06-29'
+  - url: https://developers.openai.com/api/docs/guides/moderation.md
+    shows: 'omni-moderation-latest ''accepts text and image inputs. It doesn''t classify audio.'' Thirteen
+      fixed categories - harassment, harassment/threatening, hate, hate/threatening, illicit,
+      illicit/violent, self-harm, self-harm/intent, self-harm/instructions, sexual, sexual/minors, violence,
+      violence/graphic - of which six apply to images and the rest to text only. No mechanism for supplying
+      your own policy.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 5a072092c75e9bd875eb821597f128f1d67d6f78f5e5a7a69573ff0d0774e205
