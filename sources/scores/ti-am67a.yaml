@@ -25,36 +25,73 @@ openness:
       raw: distributor (active via TI and partners)
   confidence: high
   note: Public datasheet and open SDK/TIDL tools on GitHub, commercially active, but proprietary silicon
-    and firmware keep it short of fully open hardware.
+    and firmware keep it short of fully open hardware. Re-read 2026-08-13 - the part page still reads
+    ACTIVE, still publishes "AM67x Processors datasheet (Rev. B)" openly, still offers evaluation boards
+    in stock with an Order now path, still links Jacinto 7 LPDDR4 board design and layout guidelines
+    rather than the design of any product board, and still ships a FIRMWARE-BUILDER-AM67A alongside the
+    Linux SDKs; edgeai-tidl-tools is still a public repository. No dimension moved.
   raw: schematics:partial (reference designs (BeagleY-AI board files open));toolchain:open (open SDK + TIDL
     tools + Edge AI Studio);datasheets:public (Rev B);blobs:required (proprietary silicon + TIDL firmware);retail:distributor
     (active via TI and partners)
+  last_verified: '2026-08-13'
   sources:
   - url: https://www.ti.com/product/AM67A
-    shows: 'official page: 4 TOPS C7x+MMA, quad A53, public datasheet, ACTIVE status, SDKs'
-    accessed: '2026-06-22'
+    shows: status ACTIVE; "AM67x Processors datasheet (Rev. B)"; "Jacinto 7 LPDDR4 Board Design and
+      Layout Guidelines (Rev. F)" and evaluation boards rather than product board files; Order now with
+      evaluation boards "In stock"; FIRMWARE-BUILDER-AM67A and PROCESSOR-SDK Linux/Android SDKs
+    accessed: '2026-08-13'
+    establishes:
+    - schematics
+    - datasheets
+    - blobs
+    - retail
+    http_status: 200
+    content_sha256: 147b265e34a7b894413ce9cfc9883a4594de7d689d575a46948de2265eafaf9a
   - url: https://github.com/TexasInstruments/edgeai-tidl-tools
-    shows: open source TIDL deep-learning toolchain for AM67A-class processors
-    accessed: '2026-06-22'
+    shows: public "Edgeai TIDL Tools and Examples" repository, 736 commits, with a Supported Devices
+      and Compatibility table and a LICENSE in-tree
+    accessed: '2026-08-13'
+    establishes:
+    - toolchain
+    http_status: 200
+    content_sha256: 8d14944f1a52942d6632cedaff3b02631744e3347c7852b795278e6ce07a7b8c
 adoption:
   level: 3
   reach: broad
   signal_type: reported_traction
   confidence: high
   note: ACTIVE production part available from TI and distributors, and the basis of the widely sold BeagleY-AI
-    board, giving solid commercial and community reach.
+    board, giving solid commercial and community reach. Re-read 2026-08-13 - BeagleY-AI still names the
+    "Texas Instruments AM67A Arm-based vision processor" as its processor and is still in stock at Seeed,
+    and TI's own part page still reads ACTIVE with evaluation boards in stock. Level and reach unchanged.
+  last_verified: '2026-08-13'
   sources:
   - url: https://www.beagleboard.org/boards/beagley-ai
-    shows: AM67A powers the BeagleY-AI SBC
-    accessed: '2026-06-22'
+    shows: '"Texas Instruments AM67A Arm-based vision processor" as the BeagleY-AI processor, with the
+      dual C7x DSP and MMA rated at 4 TOPs'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: bdd173a87d3c94b1b3965b244c0e076b89045edeee1c54b2d4a015853d228d03
+  - url: https://www.ti.com/product/AM67A
+    shows: status ACTIVE with evaluation boards "In stock" and an Order now path
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 147b265e34a7b894413ce9cfc9883a4594de7d689d575a46948de2265eafaf9a
 capability:
   score: 4
   basis: feature_matrix
   value: 4 TOPS (dual C7x+MMA); quad A53 1.4 GHz; up to 8GB LPDDR4
   confidence: high
   note: 4 TOPS plus a strong vision/ISP pipeline and 8GB memory make it a capable dedicated edge-AI vision
-    SoC.
+    SoC. Re-derived 2026-08-13 - the part page still reads "up to 4 TOPS total" from 2x C7x DSP with MMA,
+    quad Cortex-A53 at up to 1.4GHz, max LPDDR4 size of 8GB and a 600MP/s ISP feeding four cameras. It
+    sits a step above beagley-ai, the 4 TOPS board built on it, because the SoC supports 8GB where that
+    board fixes 4GB.
+  last_verified: '2026-08-13'
   sources:
   - url: https://www.ti.com/product/AM67A
-    shows: 4 TOPS deep-learning, quad A53, 8GB LPDDR4, 600MP/s ISP
-    accessed: '2026-06-22'
+    shows: '"up to 4 TOPS total" from 2x C7x DSPs with MMA at up to 1.0GHz; quad-core Cortex-A53 at up
+      to 1.4GHz; "Max LPDDR4 size of 8GB"; 600MP/s ISP'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 147b265e34a7b894413ce9cfc9883a4594de7d689d575a46948de2265eafaf9a

@@ -23,35 +23,75 @@ openness:
       raw: open_market (mass-market)
   confidence: high
   note: Public datasheets and globally purchasable, but the SDK requires proprietary NVIDIA drivers/blobs
-    under license, so it sits in the documented tier despite the community OE4T BSP.
+    under license, so it sits in the documented tier despite the community OE4T BSP. Re-read 2026-08-13 -
+    the developer-kit page still publishes a datasheet link and directs buyers to worldwide partners,
+    the Jetson Orin family page still points designers at the Product Design Guide rather than releasing
+    the kit's own board files, and Jetson Linux 39.2.1 still ships its kernel, UEFI bootloader and NVIDIA
+    drivers under the NVIDIA Software License Agreement. No dimension moved.
   raw: schematics:partial (carrier design guide public);toolchain:closed (JetPack/Jetson Linux free but
     NVIDIA-SLA proprietary);datasheets:public;blobs:required (proprietary GPU drivers/bootloader required);retail:open_market
     (mass-market)
+  last_verified: '2026-08-13'
   sources:
   - url: https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/nano-super-developer-kit/
-    shows: 'Official spec: 67 INT8 TOPS, 1024-core Ampere GPU, 6-core A78AE, 8GB LPDDR5, $249'
-    accessed: '2026-06-22'
+    shows: 67 INT8 TOPS - 1024-core Ampere GPU with 32 tensor cores, 6-core Arm Cortex-A78AE, 8GB 128-bit
+      LPDDR5, a "View the Jetson Orin Nano Super Developer Kit Datasheet" link, and "purchased through
+      NVIDIA authorized distributors worldwide"
+    accessed: '2026-08-13'
+    establishes:
+    - datasheets
+    - retail
+    http_status: 200
+    content_sha256: bfc0f0b3900815dcad4c93c9b773b1eaafd9be69c143f0e1002f9fd1f507d952
+  - url: https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin
+    shows: '"See the Product Design Guide for supported UPHY configurations" and "See Module Data Sheets" -
+      a carrier design guide rather than the design of the board being sold'
+    accessed: '2026-08-13'
+    establishes:
+    - schematics
+    http_status: 200
+    content_sha256: 99efa728010da0ac785f54233fbef4e621123d6f61ca67f2df5deee3d3df3fe2
   - url: https://developer.nvidia.com/embedded/jetson-linux
-    shows: Jetson Linux (L4T) BSP under NVIDIA Software License Agreement
-    accessed: '2026-06-22'
+    shows: NVIDIA Jetson Linux Driver Package 39.2.1 - "includes Linux Kernel, UEFI bootloader, NVIDIA
+      drivers, flashing utilities" - published under the NVIDIA Software License Agreement
+    accessed: '2026-08-13'
+    establishes:
+    - toolchain
+    - blobs
+    http_status: 200
+    content_sha256: 4915cb65cc6950978689d2412ffca1557126b2228f5fa4c877bfe1d56f75616e
 adoption:
   level: 4
   reach: mass-market
   signal_type: reported_traction
   confidence: high
   note: Widely available developer kit at a low $249 price with a large NVIDIA Jetson developer community
-    and global distribution.
+    and global distribution. Re-read 2026-08-13 - the product page no longer prints any price at all,
+    so the $249 figure the note rests on is no longer published there; what the page still shows is
+    "the most powerful and affordable embedded computer for generative AI. It can be purchased through
+    NVIDIA authorized distributors worldwide", which is the distribution the mass-market reach was
+    banded on. Level and reach unchanged; the price figure is flagged for a curator ruling.
+  last_verified: '2026-08-13'
   sources:
   - url: https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/nano-super-developer-kit/
-    shows: Official $249 pricing and developer-kit positioning
-    accessed: '2026-06-22'
+    shows: '"It can be purchased through NVIDIA authorized distributors worldwide" plus a Where to Buy
+      partner list; no price is printed on the page'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: bfc0f0b3900815dcad4c93c9b773b1eaafd9be69c143f0e1002f9fd1f507d952
 capability:
   score: 3
   basis: feature_matrix
   value: 67 INT8 (sparse) TOPS; 8GB LPDDR5; runs small LLMs (~7B quantized) and VLMs locally
   confidence: high
   note: Solid entry-tier generative-AI compute, but 8GB RAM caps model size versus higher Orin tiers.
+    Re-derived 2026-08-13 against the spec table, which still reads 67 INT8 TOPS and 8GB 128-bit LPDDR5,
+    against the 157 TOPS / 16GB Orin NX and the 275 TOPS / 64GB AGX Orin on the same family page. The
+    entry position in the Orin line is unchanged.
+  last_verified: '2026-08-13'
   sources:
   - url: https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/nano-super-developer-kit/
-    shows: 67 INT8 TOPS and 8GB LPDDR5 spec
-    accessed: '2026-06-22'
+    shows: 67 INT8 TOPS, 1024-core Ampere GPU with 32 tensor cores, 8GB 128-bit LPDDR5, 6-core Cortex-A78AE
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: bfc0f0b3900815dcad4c93c9b773b1eaafd9be69c143f0e1002f9fd1f507d952

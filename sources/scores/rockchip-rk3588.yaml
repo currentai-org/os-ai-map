@@ -19,27 +19,64 @@ openness:
   confidence: high
   note: Documentation is unusually open (full TRM and datasheet public) and the RKNN toolkit is openly
     distributed, but the SDK ships as prebuilt binaries under a proprietary license with closed firmware.
+    Re-read 2026-08-13 - the RK3588 brief datasheet is still downloadable straight from rock-chips.com
+    with no registration or NDA, the RKNN SDK licence in airockchip/rknn-toolkit2 is still the proprietary
+    "RKNN SDK License" (no reverse engineering, use restricted to Rockchip products), and rkbin still
+    distributes the DDR/BL31/OPTEE firmware as prebuilt binaries. No dimension moved.
   raw: toolchain:partial (NPU SDK on GitHub but proprietary RKNN license + prebuilt blobs, rknpu kernel
     driver open);datasheets:public (full TRM + datasheet public, no NDA);blobs:required (proprietary GPU/NPU
     firmware)
+  last_verified: '2026-08-13'
   sources:
-  - url: https://www.rock-chips.com/a/en/products/RK35_Series/2022/0926/1660.html
-    shows: 'official RK3588 page: 8-core A76+A55, 6 TOPS triple-core NPU, Mali-G610 MC4'
-    accessed: '2026-06-22'
+  - url: https://www.rock-chips.com/uploads/pdf/2022.8.26/192/RK3588%20Brief%20Datasheet.pdf
+    shows: Rockchip's own RK3588 brief datasheet, downloadable from rock-chips.com with no registration
+      or NDA - block diagram, quad Cortex-A76 + quad Cortex-A55, Mali-G610 MP4, High Performance NPU,
+      LPDDR4/LPDDR4X/LPDDR5 quad-channel
+    accessed: '2026-08-13'
+    establishes:
+    - datasheets
+    http_status: 200
+    content_sha256: 81aff61337ab10bf0f7c9234450703816037af169bf6657d3d62b868bd61fd1a
   - url: https://github.com/airockchip/rknn-toolkit2/blob/master/LICENSE
-    shows: SDK under a proprietary RKNN SDK License
-    accessed: '2026-06-22'
+    shows: '"RKNN SDK License" - a Rockchip proprietary agreement granting use only for applications
+      compatible with Rockchip products and forbidding decompiling or reverse-engineering the Software'
+    accessed: '2026-08-13'
+    establishes:
+    - toolchain
+    http_status: 200
+    content_sha256: d005b4a9a787ac1023fc7d353d9f263047e892b4edb9207303915e4a29b93c8e
+  - url: https://github.com/rockchip-linux/rkbin
+    shows: Rockchip's own "Firmware and Tool Binarys" repository - prebuilt SPL/DDR/UsbPlug/BL31/BL32/OPTEE
+      boot binaries distributed as binaries rather than source
+    accessed: '2026-08-13'
+    establishes:
+    - blobs
+    http_status: 200
+    content_sha256: 43abb5977b081df3eaebfcdeb7f2bef288daab407fbf1b0f6935236c1e026cff
+  - url: https://www.rock-chips.com/a/en/products/RK35_Series/2022/0926/1660.html
+    shows: '"6TOPS NPU, triple core, support int4/int8/int16/FP16/BF16/TF32 acceleration"; 8nm process,
+      quad-core Cortex-A76 + quad-core Cortex-A55; ARM Mali-G610 MC4'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: b5ca75ad042e019b490b1627bd74996fe02a72a320a1d292db2accd549e0dd71
 adoption:
   level: 5
   reach: mass-market
   signal_type: reported_traction
   confidence: high
   note: Powers a very large multi-vendor set of SBCs and modules (Orange Pi, Radxa, Khadas, FriendlyELEC,
-    Firefly), widely available at retail and broadly supported in community Linux.
+    Firefly), widely available at retail and broadly supported in community Linux. Re-read 2026-08-13 -
+    the Armbian community comparison still tabulates five RK3588/RK3588S boards from five different
+    vendors, and three of them (orange-pi-5, radxa-rock-5b, khadas-edge2) are separately on this map and
+    were separately confirmed on sale today. Level and reach unchanged.
+  last_verified: '2026-08-13'
   sources:
   - url: https://forum.armbian.com/topic/26398-video-comparing-rk3588-sbcs-nanopi-r6s-khadas-edge2-radxa-rock5b-mekotronics-r58-mini-r58x-4g-orange-pi-5/
-    shows: independent comparison of many RK3588 SBCs from multiple vendors
-    accessed: '2026-06-22'
+    shows: comparison table of Khadas Edge 2 Pro, NanoPi R6S, Radxa Rock5B, Mekotronics R58 Mini and
+      R58X-4G and Orange Pi 5, all on Rockchip RK3588 or RK3588S
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 2db7eb01547612cc0257308c05c7d80607c84d2cb6b2d692a7121897a90456f3
 capability:
   score: 4
   basis: feature_matrix
@@ -47,8 +84,20 @@ capability:
     on-device LLMs via RKNN-LLM
   confidence: high
   note: The 6 TOPS NPU is genuine edge-AI capability and the RKLLM SDK runs quantized LLMs on-chip, but
-    modest versus dedicated accelerators.
+    modest versus dedicated accelerators. Re-derived 2026-08-13 - the RKLLM repository still ships an
+    RK3588-series runtime and toolkit with working w8a8 demos for Qwen2.5-VL-3B, Qwen3-VL-2B, InternVL3-1B
+    and DeepSeek-OCR, and Rockchip's own product page still reads 6 TOPS triple-core NPU. Generative
+    workloads actually running on-chip is what keeps this a step above the 6 TOPS boards built on it.
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/airockchip/rknn-llm
-    shows: official RKLLM SDK running LLMs on RK3588-series NPU
-    accessed: '2026-06-22'
+    shows: rkllm-toolkit and rkllm-runtime for the Rockchip NPU, with RK3588 Series listed and w8a8
+      demos for Qwen2.5-VL-3B, Qwen3-VL-2B, InternVL3-1B and DeepSeek-OCR
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 142f5003024aefe672326a42bce336888f7cacc10cc0ec89ca17d5f05b357cb2
+  - url: https://www.rock-chips.com/a/en/products/RK35_Series/2022/0926/1660.html
+    shows: '"6TOPS NPU, triple core, support int4/int8/int16/FP16/BF16/TF32 acceleration"'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: b5ca75ad042e019b490b1627bd74996fe02a72a320a1d292db2accd549e0dd71
