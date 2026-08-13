@@ -38,12 +38,77 @@ def test_clean_sources_have_no_offline_failures():
     assert offline_failures(sources) == []
 
 
-def test_reused_digest_across_urls_is_fabrication():
-    """The same digest on two different URLs means at least one was never fetched."""
+def test_a_reused_digest_is_a_question_for_the_resolver_not_an_offline_failure():
+    """Changed 2026-08-13, after the old rule failed `main` on facts about the internet.
+
+    It read: a digest on two URLs means at least one was never fetched. Both of its
+    counterexamples are ordinary, and the corpus has plenty of each.
+
+    - **Canonical texts.** Five repos shared one digest for their Apache-2.0 LICENSE.
+      Re-fetching all five reproduced it exactly over an identical 11,357-byte body. A
+      standard license IS the same bytes everywhere; a repo that changed the text would no
+      longer be under that license.
+    - **Host aliases.** `docs.developer.apple.com/…/coreml.md` 301s to
+      `developer.apple.com/…/coreml.md`. Two URLs, one document, no paste.
+
+    So the offline pass no longer decides it. `resolve_duplicates` fetches the group and
+    lets the bytes answer, which is what the old message's own wording invited — "it means
+    at least one was not fetched" is falsifiable, so falsify it.
+    """
     sources = [src("https://a.example/x", DIGEST_A), src("https://b.example/y", DIGEST_A)]
-    problems = offline_failures(sources)
-    assert len(problems) == 1
-    assert "2 different URLs" in problems[0]
+    assert offline_failures(sources) == []
+
+    from build.check_refetch import duplicate_digest_groups
+
+    groups = duplicate_digest_groups(sources)
+    assert groups == [(DIGEST_A, ["https://a.example/x", "https://b.example/y"])]
+
+
+def test_the_resolver_fails_only_when_the_bodies_actually_differ(monkeypatch):
+    """The claim is tested, and it still fails when it should.
+
+    Identical bodies clear the group; differing bodies are fabrication with no innocent
+    reading left, because no honest fetch of two different documents yields one digest.
+    """
+    import build.check_refetch as mod
+
+    class Resp:
+        def __init__(self, body): self.content, self.status_code = body, 200
+
+    bodies = {"https://a.example/x": b"same", "https://b.example/y": b"same"}
+    monkeypatch.setattr(mod.requests, "get", lambda url, **kw: Resp(bodies[url]))
+    failures, benign = mod.resolve_duplicates(
+        [(DIGEST_A, ["https://a.example/x", "https://b.example/y"])], 5.0
+    )
+    assert failures == [] and len(benign) == 1
+    assert "really are identical" in benign[0]
+
+    bodies["https://b.example/y"] = b"different"
+    failures, _benign = mod.resolve_duplicates(
+        [(DIGEST_A, ["https://a.example/x", "https://b.example/y"])], 5.0
+    )
+    assert len(failures) == 1
+    assert "DIFFERENT bodies" in failures[0]
+
+
+def test_the_resolver_fetches_through_canonical_like_every_other_fetch():
+    """A blob URL and its raw form are one document, and comparing them is comparing two.
+
+    The first draft of the resolver fetched `source.url` directly and reported `maple-ai`
+    as fabrication: its digests were of the RAW bodies, correctly, while the resolver was
+    hashing the rendered blob page. `fetch_source` warns about exactly this — a digest taken
+    one way and re-checked another "differs for reasons that have nothing to do with whether
+    anybody read the page." So `canonical` now lives beside USER_AGENT here, and both
+    modules go through it.
+    """
+    from build import fetch_source
+    from build.check_refetch import canonical
+
+    assert fetch_source.canonical is canonical, "the two fetch paths can diverge again"
+    assert canonical("https://github.com/o/r/blob/main/LICENSE") == (
+        "https://raw.githubusercontent.com/o/r/main/LICENSE"
+    )
+    assert canonical("https://example.com/x") == "https://example.com/x"
 
 
 def test_same_digest_on_the_same_url_twice_is_fine():
