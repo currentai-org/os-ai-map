@@ -25,24 +25,67 @@ openness:
       raw: open_market (global)
   confidence: high
   note: Proprietary Rockchip silicon with an open GPL-2.0 BSP, public datasheet and schematics, and global
-    retail availability, but bootable images depend on Rockchip firmware blobs.
+    retail availability, but bootable images depend on Rockchip firmware blobs. Re-read 2026-08-13 - the
+    official support page still offers a Schematic download alongside the user manual and Android/Linux
+    source, orangepi-build is still GPL-2.0 and still lists Orange Pi 5 under RK3588S, the product page
+    still carries AliExpress and Amazon store links, and Rockchip's rkbin repository still holds the
+    prebuilt DDR/SPL/BL31 boot binaries a bootable image needs. No dimension moved.
   raw: schematics:published (published PDF);toolchain:open (open GPL-2.0 BSP/build system);datasheets:public
     (public RK3588S);blobs:required (Rockchip firmware required);retail:open_market (global)
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/orangepi-xunlong/orangepi-build
-    shows: official GPL-2.0 build system supporting Orange Pi 5 / RK3588S
-    accessed: '2026-06-22'
+    shows: GPL-2.0 licensed "Orange Pi build for H2+, H3, H5, H6, H616, RK3328, RK3399 and RK3588(s)",
+      listing Orange Pi 5/5B/5Pro under Rockchip RK3588S
+    accessed: '2026-08-13'
+    establishes:
+    - toolchain
+    http_status: 200
+    content_sha256: 3538a07acad94c2a7bc3b272dd3fd501a68887c41ce61449521e9dec78c7a321
   - url: http://www.orangepi.org/html/hardWare/computerAndMicrocontrollers/service-and-support/Orange-pi-5.html
-    shows: official support page with schematic, manual, and source downloads
-    accessed: '2026-06-22'
+    shows: Official Resources list with Schematic, User Manual, Ubuntu/Debian/Android images, Android Source
+      Code and Linux Source code downloads
+    accessed: '2026-08-13'
+    establishes:
+    - schematics
+    http_status: 200
+    content_sha256: 7ec3c2f9804599a7c34cb88593e2fa8244a87ab7e97a4170d1d2dc3994445068
+  - url: http://www.orangepi.org/html/hardWare/computerAndMicrocontrollers/details/Orange-Pi-5.html
+    shows: Full published parameter table for the RK3588S (8nm LP, quad A76 + quad A55, Mali-G610 MC4,
+      6 TOPS NPU with INT4/INT8/INT16 support, 4/8/16GB LPDDR4/4X) and "Aliexpress Store BUY" / "Amazon
+      Store BUY" links
+    accessed: '2026-08-13'
+    establishes:
+    - datasheets
+    - retail
+    http_status: 200
+    content_sha256: 9477dddc0147a7932d0959d44d7e687e5d09d047b76aa181786e08c88917fc94
+  - url: https://github.com/rockchip-linux/rkbin
+    shows: Rockchip's own "Firmware and Tool Binarys" repository - prebuilt SPL/DDR/UsbPlug/BL31/BL32/OPTEE
+      boot binaries distributed as binaries rather than source
+    accessed: '2026-08-13'
+    establishes:
+    - blobs
+    http_status: 200
+    content_sha256: 43abb5977b081df3eaebfcdeb7f2bef288daab407fbf1b0f6935236c1e026cff
 adoption:
   level: 5
   reach: mass-market
   signal_type: reported_traction
   confidence: high
   note: Sold directly on AliExpress and Amazon at ~$69-$115 across multiple SKUs, with a large third-party
-    software/community ecosystem.
+    software/community ecosystem. Re-read 2026-08-13 - the Amazon listing could not be re-read (the host
+    returns a "Click the button below to continue shopping" interstitial to an automated fetch, not the
+    listing), so the availability check was re-derived from Orange Pi's own product page, which carries
+    live Aliexpress, Amazon and Xunlong store links and the 4/8/16GB SKUs. Level and reach unchanged.
+  last_verified: '2026-08-13'
   sources:
+  - url: http://www.orangepi.org/html/hardWare/computerAndMicrocontrollers/details/Orange-Pi-5.html
+    shows: '"Aliexpress Store BUY", "Amazon Store BUY", Xunlong Store and Orange Pi Store links against
+      the 4GB/8GB/16GB SKUs'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 9477dddc0147a7932d0959d44d7e687e5d09d047b76aa181786e08c88917fc94
   - url: https://www.amazon.com/Orange-Pi-Frequency-Development-Android12/dp/B0BN16ZLXB
     shows: Orange Pi 5 retail listing on Amazon
     accessed: '2026-06-22'
@@ -52,8 +95,14 @@ capability:
   value: 6 TOPS NPU; up to 16GB LPDDR4/4X; runs quantized LLMs up to ~8B (W4A16) and CV models via RKNN/RKLLM
   confidence: high
   note: The RK3588S NPU does 6 TOPS with mixed-precision support and runs small on-device LLMs, but well
-    below discrete GPUs and dedicated NPUs.
+    below discrete GPUs and dedicated NPUs. Re-derived 2026-08-13 - the spec table still reads 6 TOPS
+    with INT4/INT8/INT16 mixed operation and 4/8/16GB LPDDR4/4X, which is the same tier as khadas-edge2
+    (also 6 TOPS RK3588S2) and well under the 67-275 TOPS Jetson Orin parts.
+  last_verified: '2026-08-13'
   sources:
   - url: http://www.orangepi.org/html/hardWare/computerAndMicrocontrollers/details/Orange-Pi-5.html
-    shows: 'official spec: RK3588S, 6 TOPS NPU, 4/8/16GB'
-    accessed: '2026-06-22'
+    shows: '"Built-in AI accelerator NPU with up to 6 TOPS, supports INT4/INT8/INT16 mixed operation";
+      RK3588S with 4GB/8GB/16GB LPDDR4/4X'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 9477dddc0147a7932d0959d44d7e687e5d09d047b76aa181786e08c88917fc94
