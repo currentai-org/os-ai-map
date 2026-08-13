@@ -199,6 +199,56 @@ load-bearing rule in this guide:
 - An `active_users` band claims a count of people, on the scale above. It may be compared only
   against another user count.
 
+### The instrument is itself a claim, and it needs backing
+
+`check_adoption` gates the **label**. `build/check_instrument.py` gates the **instrument**: a
+`signal_type` asserts *how* a band was read, and that assertion needs whatever would make it
+falsifiable.
+
+**One rule, two ways to satisfy it.** A record must be re-checkable by somebody other than its
+author, and there are exactly two ways to be:
+
+| route | how | who can use it |
+|---|---|---|
+| **recomputation** | declares an artifact of a kind some signal model **reads**, so a model derives the number independently | `usage_volume` (pypi, HF model/dataset, arxiv), `stars_fallback` (github) |
+| **re-fetch** | one source carries an `accessed` date **and** a `content_sha256`, so `check_refetch` pulls it again and reports drift | any instrument |
+
+The instrument decides which route is *preferred*, never which is *required*. Recomputation is
+strictly better — it is automatic, and it can disagree with the recorded band — but a digested
+source is a real check, and a record failing **both** is the only thing the gate calls a finding.
+
+None of it is hardcoded in the checker. `signal_routing.yaml` declares which source feeds which
+instrument and whether it is `bridged`; `artifact_key` names what a product must declare for
+that source to have anything to read, and `requires_evidence` carries the re-fetch fields.
+
+**The first draft required recomputation for `usage_volume` outright, and its own test caught
+the error.** 15 of the 55 unrouted records already carry a digested source —
+`agent-infra-sandbox` cites `api.npmjs.org/downloads/point/last-month` showing 4,670 downloads,
+with a digest. That claim is perfectly checkable; it just is not re-derivable by a pipeline that
+reads no npm. Failing it would have told 15 authors their careful evidence did not count.
+
+**Why the escape hatch stays shut.** Without the re-fetch leg, an unbacked record could pass by
+relabelling itself `reported_traction` — moving an unverifiable claim into the one instrument
+with no scale at all. With it, relabelling costs a dated, digested source. What no gate can
+decide is whether a declared artifact is the product's *primary* channel; that is the
+under-coverage judgment below, and it is why a relabel can still be wrong for honest-looking
+reasons.
+
+**A known cost of the re-fetch route.** A digest over a *count* endpoint drifts every time the
+count moves, so `check_refetch` reports drift that means nothing. Drift on a vendor claim page
+is informative; drift on `api.npmjs.org/downloads/point/last-month` is just Tuesday. That is an
+argument for bridging npm (#163), not for rejecting the evidence.
+
+Measured 2026-08-13, the backlog: **40** `usage_volume` records failing both routes, **95**
+`reported_traction` and **20** `active_users` with no digest, **6** `stars_fallback` with no
+repo. Every one passes `check_adoption --strict` green, because their labels are valid. The
+label was checkable; the claim underneath it was not.
+
+This class had been written down before. The section below recorded it as **48** products on
+2026-08-10, and it grew to 55 in prose. Hence a gate.
+
+---
+
 Both of the latter were skipped entirely by `check_adoption` until 2026-08-13, on the ground
 that comparing them against a download count is a category error. That was correct, and it is
 also what hid the problem — 22 of 23 `active_users` records and 68 of 110 `reported_traction`

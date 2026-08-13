@@ -80,6 +80,19 @@ jobs:
       # could check it.
       - name: Adoption gate (every band exists on its instrument's scale)
         run: uv run python -m build.check_adoption --strict
+
+      # check_adoption above gates the LABEL. This gates the CLAIM underneath it: a record has
+      # to be re-checkable by somebody other than its author, either by recomputation (an
+      # artifact some signal model reads) or by re-fetch (a source with a date and a digest).
+      # Failing BOTH is the finding. 40 records do, and every one passes check_adoption green
+      # because its label is perfectly valid.
+      #
+      # Non-strict on purpose, exactly as check_adoption shipped: the backlog predates the
+      # rule being written down, and a gate that fails on day one teaches people to skip it.
+      # `adoption.md` had recorded this class as 48 products on 2026-08-10 and it grew while
+      # sitting in prose, which is the argument for counting it here instead.
+      - name: Instrument gate (every signal_type claim has what it needs to be falsifiable)
+        run: uv run python -m build.check_instrument
       - name: Serialize dry-run
         run: uv run python -m build.serialize --date ci-dry-run
 
