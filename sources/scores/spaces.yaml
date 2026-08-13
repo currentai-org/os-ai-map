@@ -19,15 +19,51 @@ openness:
   confidence: medium
   note: 'Closed managed hosting service. Apps are built with OSS SDKs (Gradio etc.) that run anywhere,
     but Spaces itself - the managed host/orchestration - is proprietary and not self-hostable; those SDKs
-    are separate products, not a Spaces open core. Reclassified from open_core (borderline).'
+    are separate products, not a Spaces open core. Reclassified from open_core (borderline).
+    Re-read 2026-08-13 and unchanged. The Hub docs still describe Spaces only as apps hosted on Hugging
+    Face infrastructure - Gradio, arbitrary Dockerfile, static HTML/JS, with GPU hardware upgrades, dev
+    mode and persistent storage - and document no way to run the Spaces host anywhere else. The pricing
+    page sells that host as metered HF compute (CPU Basic free, CPU Upgrade $0.03/hr, ZeroGPU free with
+    a PRO quota, T4/L4/A100 hourly), and the terms of service reserve ownership of the service outright
+    - "we retain ownership of all of our intellectual property rights related to the Website and the
+    Services" - which is what the Proprietary license part records. No source repository or self-host
+    distribution for Spaces itself appeared.'
   raw: license:Proprietary;source:closed;platform:proprietary(HF-managed hosting/orchestration, no self-hostable
     Spaces);open-part:app SDKs only (Gradio Apache-2.0, Streamlit) which are separate, portable OSS products;hardware-tiers:CPU
     free + paid GPU upgrades
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/docs/hub/spaces
     shows: Spaces hosts apps via Gradio (OSS SDK), Streamlit, arbitrary Dockerfile, or static HTML on
       HF-managed infra with paid GPU upgrades
-    accessed: '2026-06-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 4550e77bee16ae854ce07a3e7f5ec9a29d617fb720e35cc44e993acbb68a31ae
+    establishes:
+    - source
+  - url: https://huggingface.co/pricing
+    shows: 'Spaces Hardware table - the Spaces host is sold as metered Hugging Face compute. CPU Basic
+      (2 vCPU / 16 GB) free, CPU Upgrade $0.03/hr, ZeroGPU free on a shared Blackwell pool with an 8x
+      quota for PRO, then hourly Nvidia T4 / L4 / A100 tiers. PRO and Team plans are described as hosting
+      "your own ZeroGPU, Gradio & Docker Spaces on compute" - HF compute, with no self-hosted option
+      offered anywhere on the page.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 42b3bdf9e77f964b2105c7ad07a58ba79d6bd24428e066a5668239d7f0486650
+    establishes:
+    - source
+  - url: https://huggingface.co/terms-of-service
+    shows: 'Intellectual Property section - "Proprietary Rights. We retain ownership of all of our intellectual
+      property rights related to the Website and the Services, including all improvements to the Services.
+      All materials that we produce, including the Website, design, code, graphics, interfaces, trademarks"
+      are Hugging Face''s. Spaces is one of the Services, so the platform itself is governed by these
+      proprietary terms rather than by an open license.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: ee161973aba14a28f6c1666189e322e258bca4f3a79e9c6db24be4d517083b4c
+    establishes:
+    - license
+    - source
 adoption:
   level: 5
   reach: '>10M'
@@ -36,11 +72,24 @@ adoption:
   note: 'Hugging Face homepage (primary): Spaces hosts 1M+ AI applications, on a platform used by 50,000+
     organizations. 1M+ hosted apps plus the broad end-user traffic to those demos puts served reach into
     the >10M band. Headline (1M+ Spaces) cites HF''s own homepage; per-Space user totals not individually
-    disclosed so confidence medium.'
+    disclosed so confidence medium. Re-read 2026-08-13 and both cited figures are still on the homepage
+    - the Spaces panel ends in "Browse 1M+ applications" and the organizations band still reads "More
+    than 50,000 organizations are using Hugging Face" - so the level stands unchanged. INSTRUMENT CAVEAT,
+    recorded rather than worked around - this record uses usage_volume, which claims a count, while the
+    product declares no artifact any signal model can recompute from. The instrument is not being
+    relabeled to dodge that and no artifact is being declared, because a Space is not a package and the
+    1M+ figure is the vendor''s own count of hosted apps rather than a countable channel. The axis now
+    carries a digested source so the claim can at least be re-checked and will age; a real route to a
+    countable Spaces signal is an open backlog item.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co
-    shows: Spaces = 1M+ AI applications hosted; 50,000+ organizations on Hugging Face
-    accessed: '2026-06-04'
+    shows: 'Spaces panel closes with "Browse 1M+ applications"; the customer band reads "More than 50,000
+      organizations are using Hugging Face" over Ai2, Meta, Amazon, Google, Intel, Microsoft. No per-Space
+      or aggregate visitor figure is published.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: b7ad167d3383abb482dd5a940e157b8ab0d7af54ebda64543f987c22334239f8
 capability:
   score: 3
   basis: feature_matrix
@@ -51,8 +100,23 @@ capability:
   confidence: medium
   note: Excellent for hosting/demoing ML apps with broad SDK and GPU support, but it is an app-hosting
     platform rather than a hardened arbitrary-untrusted-code sandbox (container, not microVM isolation),
-    and free Spaces sleep. Mid-tier within the deployment sandbox lens.
+    and free Spaces sleep. Mid-tier within the deployment sandbox lens. Re-read 2026-08-13 - the Hub
+    docs still list Gradio, Streamlit, Docker and static HTML Spaces, GPU upgrades, ZeroGPU, dev mode,
+    and disk usage and storage, and the pricing page still starts the hardware ladder at a free 2 vCPU
+    CPU Basic tier. Nothing in either page claims microVM or hardened multi-tenant isolation, so the
+    band is unchanged. New since the last read - Spaces as MCP servers, agent tools and API endpoints
+    now have their own doc pages, which widens the surface without moving the isolation ceiling the
+    band rests on.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/docs/hub/spaces
     shows: Gradio/Streamlit/Docker/static hosting, GPU hardware upgrades, persistent storage and dev mode
-    accessed: '2026-06-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 4550e77bee16ae854ce07a3e7f5ec9a29d617fb720e35cc44e993acbb68a31ae
+  - url: https://huggingface.co/pricing
+    shows: Spaces Hardware ladder - free CPU Basic, $0.03/hr CPU Upgrade, free ZeroGPU shared pool, then
+      hourly T4 / L4 / A100 tiers
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 42b3bdf9e77f964b2105c7ad07a58ba79d6bd24428e066a5668239d7f0486650

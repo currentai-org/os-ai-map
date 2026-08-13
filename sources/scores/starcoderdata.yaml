@@ -11,34 +11,59 @@ openness:
     dataset_card:
       value: present
   confidence: high
-  note: Terms-gated like its parent The Stack v1; permissively licensed source files.
+  note: 'Terms-gated like its parent The Stack v1; permissively licensed source files. Re-read 2026-08-13:
+    the Hub still shows “You need to agree to share your contact information to access this dataset” and
+    the API reports gated auto, with the card present.'
   raw: license:permissive(SPDX per file);gated:terms-acceptance;dataset_card:present
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/datasets/bigcode/starcoderdata
     shows: gated (auto) access with terms, dataset card
-    accessed: '2026-07-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 4d46742a06f9fcbd830d3b2e5628ef54a4057e0ec4744bca64d266bad9953717
+    establishes:
+    - availability
+    - documentation
+    - license
 adoption:
   level: 3
   reach: 10K-100K
   signal_type: usage_volume
   confidence: high
-  note: 20,254 monthly downloads on Hugging Face, graded on the training-corpus bands.
+  note: 28,873 downloads in the trailing 30 days summed across the 1 declared artifact(s), read 2026-08-13
+    (bigcode/starcoderdata 28,873). Bands at level 3 (10K-100K) on the dataset adoption scale, whose top
+    band is >1M.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/api/datasets/bigcode/starcoderdata
-    shows: downloads field = 20,254 (30-day)
-    accessed: '2026-07-04'
+    shows: 28,873 downloads in the trailing 30 days for bigcode/starcoderdata
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 1ae3094e2c425aed5e0822dcb9b62c22a01ac2b2a4777bed388aa8c9122fa786
 capability:
   score: 3
   basis: training_value
   basis_detail: superseded
   value: null
   confidence: high
-  note: Proven pretraining component (TinyLlama, Granite Code, ALIA, OLMoE) but drawn from The Stack v1
-    and functionally superseded by The Stack v2 / Stack-Edu.
+  note: 'Proven pretraining component (TinyLlama, Granite Code, ALIA, OLMoE) but drawn from The Stack v1
+    and functionally superseded by The Stack v2 / Stack-Edu. Re-read 2026-08-13: the OLMoE mix card still
+    lists Starcoder at 101B tokens, and the StarCoder2 listing still describes The Stack v2 as 4x the first
+    StarCoder dataset, which is the supersession the band rests on.'
+  relative_to: the-stack-v2
+  relation: one_below
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/datasets/allenai/OLMoE-mix-0924
-    shows: StarCoderData is a documented component of TinyLlama, Granite Code, ALIA, Apertus, Marin, OLMoE
-    accessed: '2026-07-04'
+    shows: Mix statistics - Starcoder contributes 101B tokens (78.7M docs) to the OLMoE-mix-0924 pretraining
+      mix
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: d651c52f7dcdbb3df49d24e4eef3f0f013667db773e903415d2e543c698c5a7b
   - url: https://arxiv.org/abs/2402.19173
-    shows: The Stack v2/StarCoder2 is the successor to the Stack v1 lineage
-    accessed: '2026-07-04'
+    shows: Abstract - The Stack v2 is 4x larger than the first StarCoder dataset, and StarCoder2 supersedes
+      the StarCoder lineage
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 1be42d8177c7f4a82830445b6292e49204520395a26f84de16249eb580609856

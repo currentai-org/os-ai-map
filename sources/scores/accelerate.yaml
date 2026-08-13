@@ -13,35 +13,70 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: LICENSE file is the standard, unmodified Apache 2.0 text.
+  note: 'LICENSE file is the standard, unmodified Apache 2.0 text. Re-read 2026-08-13: the cited LICENSE
+    body still carries the Apache-2.0 terms, the GitHub API reports the repository public, unarchived and
+    licensed Apache-2.0, and the README describes the whole library with no paid, enterprise or hosted tier
+    beside it, so source stays public and core-gated stays ungated.'
   raw: license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/huggingface/accelerate/blob/main/LICENSE
-    shows: Standard Apache License 2.0 full text
-    accessed: '2026-06-22'
+    shows: LICENSE file is the verbatim Apache License Version 2.0 text
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://api.github.com/repos/huggingface/accelerate
+    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main
+      - for huggingface/accelerate.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 7d9a27c9bd3a34515344fb3ac3a62dcaef796904b93d3a8e735d934cdfd719bc
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/huggingface/accelerate/main/README.md
+    shows: README describes running raw PyTorch training on any device with a few lines changed, and the
+      accelerate CLI. No paid tier or feature-gated build appears.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c201cf5121bea21d8c0d9621803d50379b85facb2bc5719e11d181d595d93a53
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 5
   reach: '>10M'
   signal_type: usage_volume
   confidence: high
-  note: 'Re-scored 4->5. 25.01M PyPI downloads in the last 30 days. The map''s
-    prevailing usage_volume level-5 floor is >10M/mo (cf. pydantic-ai ~31M,
-    llama-index ~10.18M at level 5); the prior note bucketed it into a 5M-50M=L4
-    band used only in one ml_frameworks batch, below map peers of equal volume.
-    Accelerate is the standard distributed-training launcher under the HF stack
-    (TRL/PEFT depend on it) and clears the prevailing floor.'
+  note: 'Re-scored 4->5. 25.01M PyPI downloads in the last 30 days. The map''s prevailing usage_volume level-5
+    floor is >10M/mo (cf. pydantic-ai ~31M, llama-index ~10.18M at level 5); the prior note bucketed it
+    into a 5M-50M=L4 band used only in one ml_frameworks batch, below map peers of equal volume. Accelerate
+    is the standard distributed-training launcher under the HF stack (TRL/PEFT depend on it) and clears
+    the prevailing floor. Re-read 2026-08-13 from the cited pepy.tech reading of the declared PyPI artifact
+    `accelerate`: 27,451,175 downloads in the trailing 30 days, which bands at >10M, level 5 on the software
+    scale. Unchanged.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://pepy.tech/projects/accelerate
-    shows: 25,013,751 downloads in last 30 days
-    accessed: '2026-06-25'
+    shows: 27,451,175 downloads in the last 30 days for accelerate
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: e6eae1d385b6af3365434b3c44b829d6f971ee0ac96ccac5d86a7814a251db95
 capability:
   score: 4
   basis: feature_matrix
   value: 'Distributed-training abstraction: launches and runs PyTorch training on CPU/GPU/multi-GPU/TPU
     with mixed precision via minimal code changes.'
   confidence: high
-  note: Central infrastructure for distributed training but scoped to orchestration, not modeling.
+  note: 'Central infrastructure for distributed training but scoped to orchestration, not modeling. Re-read
+    2026-08-13: the cited repository page still describes the product as recorded, so the band is unchanged.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/huggingface/accelerate
-    shows: Describes few-line distributed/mixed-precision training across devices
-    accessed: '2026-06-22'
+    shows: README still describes running raw PyTorch training across CPU, multi-GPU and TPU with mixed
+      precision from a few lines of change
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: cfea9f3018826db8aa75755b06bf20678774df531143b8e5ba98581602c972eb

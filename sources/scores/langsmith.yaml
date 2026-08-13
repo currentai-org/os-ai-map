@@ -16,15 +16,28 @@ openness:
   confidence: high
   note: LangSmith the observability/eval platform is closed/proprietary; only the LangChain/LangGraph
     frameworks (separate registry entries) are open. Self-host/BYOC are licensed deployments of closed
-    software, not source-available.
+    software, not source-available. Re-read 2026-08-13 and unchanged - the page's Open Source Frameworks
+    section still names deepagents and the LangChain/LangGraph line rather than LangSmith itself, and its
+    FAQ answers "Can I self-host LangSmith?" with managed cloud, BYOC and self-hosted options for data
+    residency, which is a deployment choice rather than published source.
   raw: license:Proprietary;source:closed;platform:proprietary(no public source for LangSmith itself);self-hosting=licensed
     enterprise deployment of closed software, not OSS;OSS siblings(LangChain/LangGraph) are separate products
     not scored here
+  last_verified: '2026-08-13'
   sources:
   - url: https://www.langchain.com/langsmith
-    shows: LangSmith described as managed SaaS with BYOC/self-host enterprise options; open source items
-      are LangChain/LangGraph frameworks, not LangSmith
-    accessed: '2026-06-04'
+    shows: 'The product page. Its Open Source Frameworks menu lists deepagents and the LangChain/LangGraph
+      line; LangSmith is not among them and no repository is linked for it. The FAQ reads "Can I self-host
+      LangSmith? Yes. LangSmith offers managed cloud, bring-your-own-cloud (BYOC), and self-hosted options
+      for teams with data residency requirements", and the self-host copy describes shipping "SmithDB
+      inside your VPC" as "three stateless components on object storage and Postgres" - a licensed
+      deployment of closed software rather than a published source tree.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 7443d54e8fdbb35b8f12fa25af760959718e020972374a0cbe5c006b07953fce
+    establishes:
+    - license
+    - source
 adoption:
   level: 4
   signal_type: reported_traction
@@ -44,9 +57,21 @@ capability:
     evals, alerts; evaluation/scoring; prompt + dataset workflows; deployment/fleet/sandbox tooling for
     agents.'
   confidence: medium
+  relative_to: langfuse
+  relation: at
   note: Mature, broad feature matrix across tracing/evals/prompt/datasets/cost plus agent deployment surface;
-    comparable to the C4 anchors. Closed-source, but capability is assessed independently of openness.
+    comparable to the C4 anchors. Closed-source, but capability is assessed independently of openness. The
+    comparison is now recorded rather than left in prose - at the langfuse anchor. Re-read 2026-08-13 - the
+    four product pillars on the page are still Observability, Evaluation, Agent Infrastructure Deployment
+    and Sandboxes, with monitoring carrying cost tracking and online LLM-as-judge evals.
+  last_verified: '2026-08-13'
   sources:
   - url: https://www.langchain.com/langsmith
-    shows: 'feature list: tracing, monitoring/cost, LLM-as-judge evals, evaluation, deployment/fleet/sandboxes'
-    accessed: '2026-06-04'
+    shows: 'Product pillars named on the page - Observability ("See exactly what your agents are doing"),
+      Evaluation ("Score and improve agent performance"), Agent Infrastructure Deployment and Sandboxes.
+      Tracing offers "Native tracing for popular agent frameworks and OpenTelemetry SDKs"; Monitoring lists
+      cost tracking, "Online LLM-as-judge and code evals", tool and agent trajectory monitoring, and
+      webhook/PagerDuty alerts.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 7443d54e8fdbb35b8f12fa25af760959718e020972374a0cbe5c006b07953fce

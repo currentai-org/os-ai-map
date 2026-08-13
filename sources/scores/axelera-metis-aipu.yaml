@@ -23,35 +23,72 @@ openness:
       raw: open_market (webstore + partners)
   confidence: medium
   note: Proprietary in-memory-compute silicon with a publicly available Voyager SDK on GitHub and retail
-    purchasing, but board design files are not open.
+    purchasing, but board design files are not open. Re-read 2026-08-13 - axelera.ai still publishes
+    product briefs and a Shop, still describes D-IMC as its own silicon, and offers no board design
+    files anywhere in its document set; voyager-sdk is still a public repository shipping a v1.8
+    production release. No dimension moved.
   raw: schematics:none;toolchain:open (Voyager SDK on public GitHub);datasheets:brief (product pages/briefs
     public);blobs:required (proprietary AIPU silicon + firmware);retail:open_market (webstore + partners)
+  last_verified: '2026-08-13'
   sources:
   - url: https://www.axelera.ai/
-    shows: Metis AIPU form factors, ~214 TOPS, Voyager SDK, webstore availability
-    accessed: '2026-06-22'
+    shows: Metis AIPU product pages and a Shop, "D-IMC technology performs matrix-vector multiplications
+      in-place, delivering 50+ TOPs per core" and "At 15 TOPs/W" - marketing briefs and a store, with
+      no board design files offered anywhere in the document set
+    accessed: '2026-08-13'
+    establishes:
+    - schematics
+    - datasheets
+    - blobs
+    - retail
+    http_status: 200
+    content_sha256: 1cbac435bb57fb831cfc088ab93b95edfdf022785053c407b19fd78c53dd2192
   - url: https://github.com/axelera-ai-hub/voyager-sdk
-    shows: publicly available Voyager SDK repo under Axelera's official org
-    accessed: '2026-06-22'
+    shows: public voyager-sdk repository under Axelera's own org, "This is a production-ready release
+      of Voyager SDK" at v1.8, with release notes and a compatibility matrix in-tree
+    accessed: '2026-08-13'
+    establishes:
+    - toolchain
+    http_status: 200
+    content_sha256: 559b91d229931fb3cdeceb79ef04bb76fa04381ba99c45edffc851c5dd26854f
 adoption:
   level: 3
   reach: niche
   signal_type: reported_traction
   confidence: medium
   note: Commercially available via webstore and partners with a public, versioned SDK, but a younger ecosystem
-    than Hailo/Coral.
+    than Hailo/Coral. Re-read 2026-08-13 - the SDK is at v1.8 with release notes and a release
+    compatibility matrix in-tree, the site still carries a Shop, and it now also announces an ASRock
+    Industrial collaboration integrating Metis AIPU cards into edge platforms. Level and reach unchanged.
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/axelera-ai-hub/voyager-sdk
-    shows: actively released SDK branches indicating developer traction
-    accessed: '2026-06-22'
+    shows: v1.8 production release with RELEASE_NOTES.md and RELEASE_COMPATIBILITY_MATRIX.md in-tree
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 559b91d229931fb3cdeceb79ef04bb76fa04381ba99c45edffc851c5dd26854f
+  - url: https://www.axelera.ai/
+    shows: a Shop link and an announcement that "ASRock Industrial ... integrates Axelera Metis AIPU
+      cards into ASRock Industrial's edge AI platforms"
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 1cbac435bb57fb831cfc088ab93b95edfdf022785053c407b19fd78c53dd2192
 capability:
   score: 4
   basis: feature_matrix
   value: ~214 TOPS per quad-core Metis; PCIe x4 scales across 4 units; Voyager SDK with 100+ CV models
   confidence: medium
   note: High raw inference throughput via in-memory compute, currently oriented toward CNN/computer-vision
-    pipelines.
+    pipelines. Re-read 2026-08-13 - the site no longer prints the ~214 TOPS aggregate the recorded value
+    quotes; it now states "50+ TOPs per core" and "15 TOPs/W" for the quad-core Metis, and Voyager still
+    claims "100+ supported models". Four cores at 50+ TOPS is the same order as the recorded aggregate
+    and the band is unchanged, but the specific 214 figure is no longer citable and the wording of the
+    recorded value is flagged for a curator ruling.
+  last_verified: '2026-08-13'
   sources:
   - url: https://www.axelera.ai/
-    shows: ~214 TOPS Metis, PCIe scaling, Voyager SDK model coverage
-    accessed: '2026-06-22'
+    shows: '"delivering 50+ TOPs per core at FP32-equivalent accuracy with zero data movement", "At 15
+      TOPs/W", and "100+ supported models and a single toolchain" for Voyager'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 1cbac435bb57fb831cfc088ab93b95edfdf022785053c407b19fd78c53dd2192

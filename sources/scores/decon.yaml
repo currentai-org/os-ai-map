@@ -16,34 +16,59 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: Fully OSI-licensed (Apache-2.0), full source public.
+  note: Fully OSI-licensed (Apache-2.0), full source public. Re-read 2026-08-13 - the LICENSE body still
+    carries the same license and the README still builds the whole product from the published repo, with
+    no paid tier, enterprise edition or license key anywhere in it.
   raw: license:Apache-2.0(OSI);source:public(allenai/decon);governance:Allen Institute for AI;no feature-gated
     core;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/allenai/decon/blob/main/LICENSE
     shows: Apache License Version 2.0 text
-    accessed: '2026-07-21'
+    accessed: '2026-08-13'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: 5b8ddfadb2d72c64c066821fdd424f5024ce2555e2808fb2bfb0856e65e65c7d
+  - url: https://raw.githubusercontent.com/allenai/decon/main/README.md
+    shows: README documents the whole pipeline building and installing from the published
+      repo; no paid tier, enterprise edition or license key appears anywhere in it, so
+      nothing is withheld from the source
+    accessed: '2026-08-13'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: d85e1eed763781ec01b923008c07a1bb0547f1b8cdc6f92b635c467f6b9fee68
 adoption:
   level: 1
   reach: <1K stars
   signal_type: stars_fallback
   confidence: medium
-  note: 'New (2026) single-purpose Rust CLI, ~35 GitHub stars; niche, used in the Dolma 3 pipeline. Stars read
-    2026-08-13: 36 across the 1 declared repo, which bands at <1K stars, level 1 on the stars scale in
-    signal_routing.yaml. The previous reach ''<10K'' was not a label this instrument offers - stars have their
-    own vocabulary because a star is not a download. No last_verified claimed: a star count is volatile, so a
-    digest of it would read as drift on every refetch, and the rest of the axis was not re-read.'
+  note: 36 GitHub stars on allenai/decon, read 2026-08-13 from the repository API. Bands at level 1 (<1K
+    stars) on the stars fallback scale in signal_routing.yaml, which caps at 3 because a star is not a use.
+    A 2026 single-purpose Rust CLI used in the Dolma 3 pipeline; niche. The API response is digested here
+    the way bigcode-dataset and ungoliant already are in this category; a star count drifts, so a later
+    digest mismatch reads as drift rather than as fabrication.
+  last_verified: '2026-08-13'
   sources:
-  - url: https://github.com/allenai/decon
-    shows: 35 stars
-    accessed: '2026-07-21'
+  - url: https://api.github.com/repos/allenai/decon
+    shows: stargazers_count = 36 for allenai/decon
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 370848f63a496708bf9d1fd7c19b99c6a784b865aadee3c9e1353531feaaf55a
 capability:
   score: 3
   basis: feature_matrix
   value: Flags/removes train docs overlapping eval benchmarks; focused decontamination tool.
   confidence: medium
-  note: One capability slot (decontamination) of the Dolma 3 toolchain.
+  note: One capability slot (decontamination) of the Dolma 3 toolchain. Re-read 2026-08-13 - the README
+    still describes the feature set above.
+  last_verified: '2026-08-13'
   sources:
-  - url: https://github.com/allenai/decon
-    shows: decon repo feature set confirmed
-    accessed: '2026-07-21'
+  - url: https://raw.githubusercontent.com/allenai/decon/main/README.md
+    shows: README documents token-based detection of training documents overlapping eval instances,
+      producing contamination reports and cleaned datasets
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: d85e1eed763781ec01b923008c07a1bb0547f1b8cdc6f92b635c467f6b9fee68

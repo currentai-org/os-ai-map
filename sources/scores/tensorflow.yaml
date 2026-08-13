@@ -13,36 +13,73 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: Apache-2.0 licensed with full public source.
+  note: 'Apache-2.0 licensed with full public source. Re-read 2026-08-13: the cited repo page still carries
+    the Apache-2.0 terms, the GitHub API reports the repository public, unarchived and licensed Apache-2.0,
+    and the README describes the whole library with no paid, enterprise or hosted tier beside it, so source
+    stays public and core-gated stays ungated.'
   raw: license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/tensorflow/tensorflow
-    shows: Repo shows Apache License 2.0 and full source
-    accessed: '2026-06-22'
+    shows: Repo page still shows the Apache-2.0 license and the full public source tree
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 330ed3ff69ab3d11e6ae30403717de67cb67162a7b24486df4d0b370b4302b4f
+    establishes:
+    - license
+    - source
+  - url: https://api.github.com/repos/tensorflow/tensorflow
+    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch master
+      - for tensorflow/tensorflow.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 5c74a6282c5bd341f6f639dbfaf5a864961ba351877dcd7e6770a4b2f6936ce1
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/tensorflow/tensorflow/master/README.md
+    shows: README describes the end-to-end ML platform and its install paths (pip, Docker, source build).
+      No paid tier, hosted edition or feature-gated build appears.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: cd490686cd4ad6355aff49d75431f2cc00a101c61f60c3065b7c88cab7f557a4
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 5
   reach: '>10M'
   signal_type: usage_volume
   confidence: high
-  note: 'Re-scored 4->5. 21.06M PyPI downloads in the last 30 days. The map''s prevailing
-    usage_volume level-5 floor is >10M/mo (cf. pydantic-ai ~31M, llama-index ~10.18M,
-    langgraph ~58M, fastmcp ~72.7M, all level 5); the prior level 4 here applied a
-    stricter 5M-50M band used only in one ml_frameworks scoring batch, which placed
-    these frameworks inconsistently below map peers of equal or lower volume.
-    TensorFlow at 21M/mo is one of the two foundational training frameworks and
-    clears the prevailing floor.'
+  note: 'Re-scored 4->5. 21.06M PyPI downloads in the last 30 days. The map''s prevailing usage_volume level-5
+    floor is >10M/mo (cf. pydantic-ai ~31M, llama-index ~10.18M, langgraph ~58M, fastmcp ~72.7M, all level
+    5); the prior level 4 here applied a stricter 5M-50M band used only in one ml_frameworks scoring batch,
+    which placed these frameworks inconsistently below map peers of equal or lower volume. TensorFlow at
+    21M/mo is one of the two foundational training frameworks and clears the prevailing floor. Re-read 2026-08-13
+    from the cited pepy.tech reading of the declared PyPI artifact `tensorflow`: 19,669,609 downloads in
+    the trailing 30 days, which bands at >10M, level 5 on the software scale. Unchanged. The `tensorflow-cpu`
+    wheel, conda and the official Docker images are separate uncounted channels, so the figure is a floor
+    for the top band rather than a full count.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://pepy.tech/projects/tensorflow
-    shows: 21,057,167 downloads in last 30 days
-    accessed: '2026-06-25'
+    shows: 19,669,609 downloads in the last 30 days for tensorflow
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: fc68111b97132ded775eed9a18eb32cc56966ca35fdcbeaea2a32fffdc50563c
 capability:
   score: 5
   basis: feature_matrix
   value: 'Foundational ML platform: numerical computation graph engine, neural network training, multi-device
     (CPU/GPU/TPU) and edge deployment.'
   confidence: high
-  note: Defines the model-training layer alongside PyTorch.
+  note: 'Defines the model-training layer alongside PyTorch. Re-read 2026-08-13: the cited repository page
+    still describes the product as recorded, so the band is unchanged.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/tensorflow/tensorflow
-    shows: README describes end-to-end ML platform with stable Python/C++ APIs
-    accessed: '2026-06-22'
+    shows: README still describes an end-to-end ML platform with stable Python and C++ APIs across CPU,
+      GPU and TPU
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 330ed3ff69ab3d11e6ae30403717de67cb67162a7b24486df4d0b370b4302b4f

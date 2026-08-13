@@ -13,12 +13,41 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: LICENSE file is the standard, unmodified Apache 2.0 text.
+  note: 'LICENSE file is the standard, unmodified Apache 2.0 text. Re-read 2026-08-13: the cited LICENSE
+    body still carries the Apache-2.0 terms, the GitHub API reports the repository public, unarchived and
+    licensed Apache-2.0, and the README describes the whole library with no paid, enterprise or hosted tier
+    beside it, so source stays public and core-gated stays ungated. The README''s only ''Enterprise'' string
+    links to the separate Hugging Face Enterprise Hub subscription rather than a feature withheld from this
+    library.'
   raw: license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/huggingface/transformers/blob/main/LICENSE
-    shows: Standard Apache License 2.0 full text
-    accessed: '2026-06-22'
+    shows: LICENSE file is the verbatim Apache License Version 2.0 text
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 77fd4710def9ec3c0f6225800e0235f15a425abd4a8b03559127fcd782612049
+    establishes:
+    - license
+  - url: https://api.github.com/repos/huggingface/transformers
+    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main
+      - for huggingface/transformers.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 6fd1abbb2e578f93f5830520a47ea3851eb14e05b0f60a359f3445871c6db845
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/huggingface/transformers/main/README.md
+    shows: README describes Transformers as the model-definition framework for inference and training. Its
+      only 'Enterprise' string is a banner link to the separate Hugging Face Enterprise Hub subscription,
+      not a feature withheld from the library.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 4882b6ecd6e7c866ca7a7d2c3517eca22d6ef8fce18601958e19092cb63afd51
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 5
   reach: '>10M'
@@ -27,21 +56,31 @@ adoption:
   note: 'PyPI last_month downloads of 150,245,308 exceed the 50M+ Level 5 threshold. Read live 2026-08-13:
     192,709,895 PyPI downloads in the trailing 30 days across the declared artifact(s), which bands at >10M,
     level 5. The previous reach ''150M+/month'' was free text carrying a figure rather than a band the scale
-    declares, so nothing could check it against the level beside it. No last_verified claimed: only the figure
-    was re-read, not the whole axis.'
+    declares, so nothing could check it against the level beside it. No last_verified claimed: only the
+    figure was re-read, not the whole axis. Re-read 2026-08-13 from the cited pypistats reading of the declared
+    PyPI artifact `transformers`: 192,709,895 downloads in the trailing 30 days, which bands at >10M, level
+    5 on the software scale. Unchanged.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://pypistats.org/api/packages/transformers/recent
-    shows: last_month downloads = 150,245,308
-    accessed: '2026-06-22'
+    shows: last_month downloads = 192,709,895 for transformers
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 8f00f19f86856bcd58955e8b6c08baf08e7ce7619ba21bf5c2c8b88cad779377
 capability:
   score: 5
   basis: feature_matrix
   value: Unified framework for defining, loading, fine-tuning, and running 1M+ pretrained models across
     text, vision, audio, and multimodal tasks.
   confidence: high
-  note: Centralizes model definitions across training frameworks and inference engines; foundational to
-    the ecosystem.
+  note: 'Centralizes model definitions across training frameworks and inference engines; foundational to
+    the ecosystem. Re-read 2026-08-13: the cited repository page still describes the product as recorded,
+    so the band is unchanged.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/huggingface/transformers
-    shows: Describes multimodal model-definition framework, 1M+ checkpoints
-    accessed: '2026-06-22'
+    shows: README still describes the model-definition framework for text, vision, audio, video and multimodal
+      models, for inference and training
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: a4080cd0ade4b4ba1859cbc701c2ed91357db31ce09b27e57a5cc67a54ed7f70

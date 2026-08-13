@@ -12,35 +12,59 @@ openness:
     dataset_card:
       value: 'yes'
   confidence: high
-  note: Ungated with a full dataset card; redistributable per Common Crawl ToU with Apache-2.0 processing
-    code.
+  note: 'Ungated with a full dataset card; redistributable per Common Crawl ToU with Apache-2.0 processing
+    code. Re-read 2026-08-13: the card''s License section still reads Common Crawl Foundation Terms of Use
+    for the data and Apache 2.0 for the processing code, and the API reports gated false.'
   raw: license:CommonCrawl-ToU+Apache-2.0(code);ungated:yes;dataset_card:yes
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/datasets/togethercomputer/RedPajama-Data-V2
     shows: Common Crawl ToU + Apache-2.0 code license, ungated access, dataset card
-    accessed: '2026-06-22'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 8c7f0238258c2d1ca2d35aa37b7144a08dc0e9cc4629d07219b82cb2fa3ba4cb
+    establishes:
+    - availability
+    - documentation
+    - license
 adoption:
   level: 2
   reach: 1K-10K
   signal_type: usage_volume
   confidence: high
-  note: 9,452 monthly downloads on Hugging Face, graded on the training-corpus bands.
+  note: 5,035 downloads in the trailing 30 days summed across the 1 declared artifact(s), read 2026-08-13
+    (togethercomputer/RedPajama-Data-V2 5,035). Bands at level 2 (1K-10K) on the dataset adoption scale,
+    whose top band is >1M.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/api/datasets/togethercomputer/RedPajama-Data-V2
-    shows: downloads field = 9,452 (30-day)
-    accessed: '2026-07-04'
+    shows: 5,035 downloads in the trailing 30 days for togethercomputer/RedPajama-Data-V2
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 8f7f2180180fbf71e4018a652ce94ee914ba9f53e76ccfbe7b3241650c48ea6b
 capability:
   score: 3
   basis: training_value
   basis_detail: superseded
   value: null
   confidence: high
-  note: Competitive in its own filtered ablation but loses to FineWeb in FineWeb's 1.82B run; primarily
-    a 2023 base (RedPajama-INCITE), superseded by DCLM/FineWeb.
+  note: 'Competitive in its own filtered ablation but loses to FineWeb in FineWeb''s 1.82B run; primarily
+    a 2023 base (RedPajama-INCITE), superseded by DCLM/FineWeb. Re-read 2026-08-13: the RedPajama listing
+    still describes V2 as raw unfiltered web text plus quality signals rather than a filtered corpus, and
+    FineWeb still claims the stronger result.'
+  relative_to: fineweb
+  relation: one_below
+  last_verified: '2026-08-13'
   sources:
   - url: https://arxiv.org/abs/2411.12372
-    shows: RPv2 with Gopher filtering is competitive vs C4/Dolma but trails RefinedWeb
-    accessed: '2026-07-04'
+    shows: Abstract - RedPajama-V2 is a raw, unfiltered web corpus of over 100T tokens shipped with quality
+      signals for downstream filtering. The Gopher-filtered ablation against C4/Dolma/RefinedWeb is in the
+      paper body, not on this page
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 2267c9f00b499961cb995dad139f932a0567bb1b326ddbb22ed75b19b718f9cf
   - url: https://arxiv.org/abs/2406.17557
     shows: FineWeb outperforms RedPajama2 in the FineWeb ablation
-    accessed: '2026-07-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: a12bfcd47f835ad4a2c5630a228778370ed54509afa65bed1c6dfc264f2182da

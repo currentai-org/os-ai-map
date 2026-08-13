@@ -16,38 +16,60 @@ openness:
     the repo API reports a null license. Scored on that rather than on the badge. Score corrected from 3
     to 2 on 2026-07-30. The software ladder has rungs at 1, 2, 4 and 5 and none at 3, so 3/source_available
     was not a pair any rule could produce; the ladder scores "you can read it and not run it freely" at
-    2. On 2026-08-12 the license was moved from prose to the unstated form the corpus already uses for
-    gaia and openhermes-2-5, so the tier lookup reads a license name rather than a sentence. The value
-    of the fix is that the abstention is now about the map rather than about the record: none-declared
-    is in no tier, and no software category declares a tier for a license nobody granted.'
+    2. On 2026-08-12 the license was moved from prose to the unstated form the corpus already uses for gaia
+    and openhermes-2-5, so the tier lookup reads a license name rather than a sentence. The value of the
+    fix is that the abstention is now about the map rather than about the record: none-declared is in no
+    tier, and no software category declares a tier for a license nobody granted. Re-read 2026-08-13 - the
+    repository API still reports a null license and the README badge still links to a LICENSE in a different
+    repository, so the abstention stands.'
   raw: license:none-declared(the README badge asserts Apache-2.0 but the repo ships no LICENSE file and
     the GitHub license endpoint 404s);source:public(LLM360/TxT360)
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/LLM360/TxT360
     shows: README asserts Apache-2.0; no LICENSE file in repo (GitHub reports null license)
-    accessed: '2026-07-21'
+    accessed: '2026-08-13'
+    establishes:
+    - source
+    http_status: 200
+    content_sha256: 0c17814d371ec307dcab0b74abe4655aeb79e0bdb6af0c0df49892322ea44072
+  - url: https://api.github.com/repos/LLM360/TxT360
+    shows: the repository API reports a null license for LLM360/TxT360, so the repo still ships
+      no LICENSE file; public, not archived, last push 2024-12-18
+    accessed: '2026-08-13'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: 1a6f9d347eed1f7e0757ed2125877d8bf51fc0b411fcea20e200e8c9e88909bc
 adoption:
   level: 1
   reach: <1K stars
   signal_type: stars_fallback
   confidence: medium
-  note: '~25 GitHub stars on the pipeline repo; the value is the 5.7T-token corpus it builds, not the tool''s
-    own adoption. Stars read 2026-08-13: 25 across the 1 declared repo, which bands at <1K stars, level 1 on
-    the stars scale in signal_routing.yaml. The previous reach ''<10K'' was not a label this instrument offers
-    - stars have their own vocabulary because a star is not a download. No last_verified claimed: a star count
-    is volatile, so a digest of it would read as drift on every refetch, and the rest of the axis was not re-
-    read.'
+  note: 25 GitHub stars on LLM360/TxT360, read 2026-08-13 from the repository API. Bands at level 1 (<1K
+    stars) on the stars fallback scale in signal_routing.yaml, which caps at 3 because a star is not a use.
+    The value here is the 5.7T-token corpus the scripts build rather than the tool's own adoption. The API
+    response is digested here the way bigcode-dataset and ungoliant already are in this category; a star
+    count drifts, so a later digest mismatch reads as drift rather than as fabrication.
+  last_verified: '2026-08-13'
   sources:
-  - url: https://github.com/LLM360/TxT360
-    shows: 25 stars
-    accessed: '2026-07-21'
+  - url: https://api.github.com/repos/LLM360/TxT360
+    shows: stargazers_count = 25 for LLM360/TxT360
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 1a6f9d347eed1f7e0757ed2125877d8bf51fc0b411fcea20e200e8c9e88909bc
 capability:
   score: 3
   basis: feature_matrix
   value: Scripts for global-dedup construction of TxT360 from 99 Common Crawl snapshots + 14 curated sources.
   confidence: medium
-  note: Replication-oriented construction scripts rather than an evolving tool.
+  note: Replication-oriented construction scripts rather than an evolving tool. Re-read 2026-08-13 - the
+    README still describes the feature set above.
+  last_verified: '2026-08-13'
   sources:
-  - url: https://github.com/LLM360/TxT360
-    shows: txt360-pipeline repo feature set confirmed
-    accessed: '2026-07-21'
+  - url: https://raw.githubusercontent.com/LLM360/TxT360/main/README.md
+    shows: README describes global deduplication across 99 Common Crawl snapshots and 14 curated
+      sources, framed as a construction recipe for the released corpus
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 7f068c9c3f0d8fa2f1010e6d42f4132a838ab529268de690908f5cc56978f70a

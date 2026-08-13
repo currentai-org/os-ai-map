@@ -17,13 +17,46 @@ openness:
     - no feature-gated core observed
   confidence: high
   note: Apache-2.0, fully self-hostable single-container runtime; no separate proprietary/managed tier
-    gating the core.
+    gating the core. Re-read 2026-08-13 - the GitHub API reports the repository public, unarchived
+    and licensed Apache-2.0, the root LICENSE body is the verbatim Apache License 2.0, and the README
+    ships the entire runtime as one public image (ghcr.io/agent-infra/sandbox, with a mainland-China
+    mirror) plus Docker Compose and Kubernetes deployment manifests, with no paid, hosted or
+    feature-gated tier anywhere in it.
   raw: license:Apache-2.0(OSI);source:public(GitHub);packaging:self-hostable Docker image + K8s deploy examples;no
     feature-gated core observed;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/agent-infra/sandbox
     shows: Apache-2.0 license, single-Docker-container all-in-one agent sandbox, self-hostable
     accessed: '2026-06-04'
+  - url: https://api.github.com/repos/agent-infra/sandbox
+    shows: 'Repository metadata - public (private false), not archived, license spdx_id Apache-2.0,
+      described as an all-in-one sandbox combining Browser, Shell, File, MCP and VSCode Server in a
+      single Docker container.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c9fbadf39d95ad4dda225e4d17cd7bb45c460b5aa21e0b87619242c9ec867a25
+    establishes:
+    - source
+    - license
+  - url: https://raw.githubusercontent.com/agent-infra/sandbox/main/LICENSE
+    shows: The verbatim Apache License 2.0 body, with no added terms or field-of-use restrictions.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/agent-infra/sandbox/main/README.md
+    shows: 'Single ``docker run ghcr.io/agent-infra/sandbox`` quick start plus Docker Compose and
+      Kubernetes Deployment manifests; Python, TypeScript and Go SDKs; closes with "AIO Sandbox is
+      released under the Apache License 2.0". No paid tier, hosted plan or license key is mentioned
+      anywhere in the document.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 0fe34cd605e492c4c93f760e9caefd194f9c8ec7cfc3d4d4a927a1ac1613e51c
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 1
   reach: <10K
@@ -49,7 +82,20 @@ capability:
   note: Unusually broad multi-modal feature set (browser+shell+file+MCP+IDE in one) but isolation is container-level
     only, below the Firecracker/gVisor isolation strength of the frontier deployment runtimes; scored
     3.
+    Re-read 2026-08-13 - the README still describes one Docker container carrying Browser/VNC, Shell,
+    File, MCP, Jupyter and VSCode Server over a shared filesystem, still deploys through Compose or a
+    plain Kubernetes Deployment, and still names no isolation primitive stronger than the container
+    (the quick start actually relaxes one, running with seccomp unconfined). Breadth and isolation
+    both read as recorded, so the band holds at 3.
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/agent-infra/sandbox
     shows: 'feature list: Browser/VNC, Shell, File, MCP, Jupyter, VSCode in one Docker container'
     accessed: '2026-06-04'
+  - url: https://raw.githubusercontent.com/agent-infra/sandbox/main/README.md
+    shows: Browser/VNC, Terminal, File, VSCode Server, Jupyter and MCP services in one container behind
+      a shared filesystem; Docker Compose and Kubernetes Deployment examples; no concurrency limit or
+      isolation primitive beyond the container is published.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 0fe34cd605e492c4c93f760e9caefd194f9c8ec7cfc3d4d4a927a1ac1613e51c

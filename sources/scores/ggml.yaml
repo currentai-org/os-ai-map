@@ -13,35 +13,78 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: MIT license body confirmed (Copyright 2023-2026 The ggml authors); full source public.
+  note: 'MIT license body confirmed (Copyright 2023-2026 The ggml authors); full source public. Re-read
+    2026-08-13: the cited LICENSE body still carries the MIT terms, the GitHub API reports the repository
+    public, unarchived and licensed MIT, and the README describes the whole library with no paid, enterprise
+    or hosted tier beside it, so source stays public and core-gated stays ungated.'
   raw: license:MIT(OSI);source:public;no feature-gated core;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/ggml-org/ggml/blob/master/LICENSE
-    shows: MIT License text, Copyright (c) 2023-2026 The ggml authors
-    accessed: '2026-06-22'
+    shows: LICENSE file is the verbatim MIT License text, Copyright (c) 2023-2026 The ggml authors
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 94f29bbed6a22c35b992c5c6ebf0e7c92f13b836b90f36f461c9cf2f0f1d010d
+    establishes:
+    - license
+  - url: https://api.github.com/repos/ggml-org/ggml
+    shows: Repo metadata - license spdx_id MIT, private false, archived false, default branch master - for
+      ggml-org/ggml.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 423079352e1cdc8f27b9b0efb85470546ebee8ecc4832e646d64e6e5fdf99c8d
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/ggml-org/ggml/master/README.md
+    shows: README describes the tensor library's feature list - quantization, autodiff, optimizers, no third-party
+      dependencies - and notes that some development now happens in the llama.cpp and whisper.cpp repos.
+      No paid tier appears.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 8bd38148d910179bf2f0975121ce27ee25c5e7457ce214331aad895123ad9105
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 3
   reach: '>10K stars'
   signal_type: stars_fallback
   confidence: medium
-  note: 'No PyPI package; GitHub shows ~14.9k stars (and underpins much higher-adoption llama.cpp). Stars read
-    2026-08-13: 15,159 across the 1 declared repo, which bands at >10K stars, level 3 on the stars scale in
-    signal_routing.yaml. The previous reach ''~14.9k stars'' was not a label this instrument offers - stars
-    have their own vocabulary because a star is not a download. No last_verified claimed: a star count is
-    volatile, so a digest of it would read as drift on every refetch, and the rest of the axis was not re-
-    read.'
+  note: 'No PyPI package; GitHub shows ~14.9k stars (and underpins much higher-adoption llama.cpp). Stars
+    read 2026-08-13: 15,159 across the 1 declared repo, which bands at >10K stars, level 3 on the stars
+    scale in signal_routing.yaml. The previous reach ''~14.9k stars'' was not a label this instrument offers
+    - stars have their own vocabulary because a star is not a download. No last_verified claimed: a star
+    count is volatile, so a digest of it would read as drift on every refetch, and the rest of the axis
+    was not re-read. Re-read 2026-08-13: the GitHub API reports 15,159 stargazers on ggml-org/ggml, which
+    bands at >10K stars, level 3 on the stars scale in signal_routing.yaml. ggml publishes no package of
+    its own - it is vendored as source into llama.cpp and whisper.cpp - so stars remain the only available
+    signal and the level stays directional and capped at 3. Unchanged.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/ggml-org/ggml
-    shows: GitHub repo ~14,900 stars
-    accessed: '2026-06-22'
+    shows: GitHub repo page for ggml-org/ggml, 15.2k stars
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: fae72ba36afa5050f231cdc0265b300de427ef921371ec2f451ed428230ed161
+  - url: https://api.github.com/repos/ggml-org/ggml
+    shows: stargazers_count = 15159 for ggml-org/ggml
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 423079352e1cdc8f27b9b0efb85470546ebee8ecc4832e646d64e6e5fdf99c8d
 capability:
   score: 5
   basis: feature_matrix
   value: Dependency-free C tensor library with quantization and autodiff; backbone of llama.cpp/whisper.cpp
     inference.
   confidence: high
-  note: Foundational low-level runtime enabling efficient on-device LLM/ASR inference.
+  note: 'Foundational low-level runtime enabling efficient on-device LLM/ASR inference. Re-read 2026-08-13:
+    the cited repository page still describes the product as recorded, so the band is unchanged.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/ggml-org/ggml
-    shows: 'README: tensor library, quantization, autodiff, no deps, zero runtime allocs'
-    accessed: '2026-06-22'
+    shows: README still describes a dependency-free C tensor library with integer quantization, autodiff
+      and optimizers, backing llama.cpp and whisper.cpp
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: fae72ba36afa5050f231cdc0265b300de427ef921371ec2f451ed428230ed161

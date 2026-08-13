@@ -13,34 +13,70 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: LICENSE body is verbatim Apache License 2.0; full C++/Python source public.
+  note: 'LICENSE body is verbatim Apache License 2.0; full C++/Python source public. Re-read 2026-08-13:
+    the cited LICENSE body still carries the Apache-2.0 terms, the GitHub API reports the repository public,
+    unarchived and licensed Apache-2.0, and the README describes the whole library with no paid, enterprise
+    or hosted tier beside it, so source stays public and core-gated stays ungated.'
   raw: license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/google/sentencepiece/blob/master/LICENSE
-    shows: LICENSE file is the verbatim Apache License Version 2.0
-    accessed: '2026-06-22'
+    shows: LICENSE file is the verbatim Apache License Version 2.0 text
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+    establishes:
+    - license
+  - url: https://api.github.com/repos/google/sentencepiece
+    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch master
+      - for google/sentencepiece.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 433ee1c45af86e6f88565cb5eae7e26958436ddb9385128411e474e697eac2e9
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/google/sentencepiece/master/README.md
+    shows: README describes the unsupervised subword tokenizer/detokenizer, with the C++ build and the Python
+      wheel both published. No paid tier appears.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: d5b3b8f0b79151e24069dfc10f68b1441ab91853a04afe4cb993379efa7bd7d6
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 5
   reach: '>10M'
   signal_type: usage_volume
   confidence: high
-  note: 'Re-scored 4->5. 37.65M PyPI downloads in the last 30 days. The map''s
-    prevailing usage_volume level-5 floor is >10M/mo (cf. pydantic-ai ~31M,
-    langgraph ~58M at level 5); the prior note bucketed it into a 5M-50M=L4 band
-    used only in one ml_frameworks batch, leaving a 37M/mo tokenizer below map peers
-    of equal or lower volume. SentencePiece is the de facto subword tokenizer
-    underpinning most LLM/NMT pipelines and clears the prevailing floor.'
+  note: 'Re-scored 4->5. 37.65M PyPI downloads in the last 30 days. The map''s prevailing usage_volume level-5
+    floor is >10M/mo (cf. pydantic-ai ~31M, langgraph ~58M at level 5); the prior note bucketed it into
+    a 5M-50M=L4 band used only in one ml_frameworks batch, leaving a 37M/mo tokenizer below map peers of
+    equal or lower volume. SentencePiece is the de facto subword tokenizer underpinning most LLM/NMT pipelines
+    and clears the prevailing floor. Re-read 2026-08-13 from the cited pepy.tech reading of the declared
+    PyPI artifact `sentencepiece`: 36,642,180 downloads in the trailing 30 days, which bands at >10M, level
+    5 on the software scale. Unchanged. The C++ library is also vendored directly into other projects and
+    is not counted here, so the figure is a floor for the top band.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://pepy.tech/projects/sentencepiece
-    shows: 37,654,106 downloads in last 30 days
-    accessed: '2026-06-25'
+    shows: 36,642,180 downloads in the last 30 days for sentencepiece
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c8ef147ccbb0cc166428bd339ea915e0e086e5f555c3ea3a59551b181cfb89b2
 capability:
   score: 4
   basis: feature_matrix
   value: Language-independent subword tokenization (BPE/unigram) trained directly from raw text.
   confidence: high
-  note: Widely used tokenizer underpinning many LLM and NMT models, though narrow in scope.
+  note: 'Widely used tokenizer underpinning many LLM and NMT models, though narrow in scope. Re-read 2026-08-13:
+    the cited repository page still describes the product as recorded, so the band is unchanged.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/google/sentencepiece
-    shows: README describes BPE and unigram subword units, language-independent tokenization
-    accessed: '2026-06-22'
+    shows: README still describes language-independent subword tokenization (BPE and unigram) trained from
+      raw text
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: e0931803173008c40671bccad66a6ed1580c8ccdaf789443fd140eb9e068fd87

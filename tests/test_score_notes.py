@@ -43,7 +43,6 @@ KNOWN_SHARED_NOTES = {
     "codellama",
     "jamba-large",
     "llama-instruct",
-    "personahub",
     "tulu",
 }
 

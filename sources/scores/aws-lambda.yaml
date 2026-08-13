@@ -18,25 +18,56 @@ openness:
   confidence: high
   note: Lambda is a proprietary managed serverless service (closed), per recipe's explicit 'Lambda as
     closed counterpart'. Firecracker (the microVM substrate) is separately open source but is a different
-    artifact; Lambda itself is not self-hostable.
+    artifact; Lambda itself is not self-hostable. Re-read 2026-08-13 on the Lambda FAQ, which describes
+    deployment only as uploading .zip archives or container images to AWS and offers no self-hosted or
+    source-available build of the service. It confirms the substrate relationship from the other side -
+    Lambda MicroVMs are "built on the same Firecracker virtualization" - while publishing nothing of the
+    control or data plane. Score and class unchanged.
   raw: license:Proprietary;service:proprietary AWS-only SaaS (no self-host);underlying-microVM:Firecracker
     is Apache-2.0 OSS but the Lambda control/data plane is closed;weights:n/a;source:closed
+  last_verified: '2026-08-13'
   sources:
   - url: https://aws.amazon.com/blogs/aws/firecracker-lightweight-virtualization-for-serverless-computing/
     shows: Firecracker microVM powers Lambda; Lambda is AWS-managed proprietary service
     accessed: '2026-06-04'
+  - url: https://aws.amazon.com/lambda/faqs/
+    shows: 'Lambda is sold only as an AWS-run service. Deployment is "package and deploy functions as .zip
+      file archives that you can upload directly through the console, CLI, or SDKs, or as container images",
+      with no self-hosted distribution and no published source for the service; the page carries no license
+      other than AWS terms. The MicroVMs section states Lambda MicroVMs are "built on the same Firecracker
+      virtualization powering 15 trillion+ monthly Lambda Function invocations", which is the open substrate
+      under a closed service rather than an open Lambda.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: b6e63c3e539a8940cacba06291d5f8b3288b75182d4051c745d40664fcbd4cba
+    establishes:
+    - license
+    - source
 adoption:
   level: 5
   reach: '>10M'
   signal_type: usage_volume
   confidence: high
-  note: AWS states Lambda 'processes trillions of executions for hundreds of thousands of active customers
-    every month' - mass-market serverless deployment substrate, unambiguously >10M reach. (Adoption attributed
-    to general serverless usage, not specifically agent-code-execution.)
+  note: 'AWS states Lambda ''processes trillions of executions for hundreds of thousands of active customers
+    every month'' - mass-market serverless deployment substrate, unambiguously >10M reach. (Adoption attributed
+    to general serverless usage, not specifically agent-code-execution.) Re-read 2026-08-13 and the figure
+    has been superseded upward on AWS''s own current page - the Lambda FAQ now states "15 trillion+ monthly
+    Lambda Function invocations", against the 2018 launch post''s "trillions". Level unchanged at 5.
+    Instrument caveat, recorded rather than fixed: `usage_volume` names a count and Lambda has no countable
+    artifact - it is a hosted AWS service with no package, repo or registry entry any signal model reads.
+    The invocation figure is a vendor-reported platform total, not a per-user count, so the instrument is
+    flagged for a human ruling rather than relabelled here.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://aws.amazon.com/blogs/aws/firecracker-lightweight-virtualization-for-serverless-computing/
     shows: trillions of executions / hundreds of thousands of active customers monthly
     accessed: '2026-06-04'
+  - url: https://aws.amazon.com/lambda/faqs/
+    shows: '"Built on the same Firecracker virtualization powering 15 trillion+ monthly Lambda Function
+      invocations". AWS publishes no customer or developer count on this page.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: b6e63c3e539a8940cacba06291d5f8b3288b75182d4051c745d40664fcbd4cba
 capability:
   score: 5
   basis: feature_matrix
@@ -46,8 +77,28 @@ capability:
     storage (EFS, /tmp); scale:trillions of executions/mo, effectively unbounded autoscale
   confidence: high
   note: 'Frontier-definer for this category: microVM-grade isolation, the widest runtime breadth, and
-    the largest proven scale of any deployment runtime here. Scored 5.'
+    the largest proven scale of any deployment runtime here. Scored 5. Re-read 2026-08-13 on the Lambda
+    FAQ, which confirms every part of the recorded matrix and adds one thing to it. Runtime breadth is
+    still the widest here - "Java, Go, PowerShell, Node.js, C#, Python, and Ruby" natively plus a Runtime
+    API for any other language, and both .zip archives and container images. Isolation is per-function
+    and Firecracker-backed. Since the last read AWS has shipped Lambda MicroVMs, a primitive explicitly
+    "purpose-built for workloads that execute user- or AI-generated code" with VM-level isolation,
+    near-instant launch and resume, and state persistence across interactions, which puts Lambda directly
+    on the agent-sandbox feature axis this category scores rather than only adjacent to it. Score unchanged
+    at 5.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://aws.amazon.com/blogs/aws/firecracker-lightweight-virtualization-for-serverless-computing/
     shows: Firecracker microVM isolation, ~125ms start, ~5MiB/VM, trillions of executions
     accessed: '2026-06-04'
+  - url: https://aws.amazon.com/lambda/faqs/
+    shows: '"AWS Lambda natively supports Java, Go, PowerShell, Node.js, C#, Python, and Ruby code, and
+      provides a Runtime API which allows you to use any additional programming languages"; functions
+      deploy "as .zip file archives ... or as container images. Both methods provide the same execution
+      environment"; "Each AWS Lambda function runs in its own isolated environment". Lambda MicroVMs
+      "combines VM-level isolation, near-instant launch and resume, and state persistence across
+      interactions ... purpose-built for workloads that execute user- or AI-generated code", built on
+      "the same Firecracker virtualization powering 15 trillion+ monthly Lambda Function invocations".'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: b6e63c3e539a8940cacba06291d5f8b3288b75182d4051c745d40664fcbd4cba

@@ -13,12 +13,39 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: Apache-2.0 licensed with full public source.
+  note: 'Apache-2.0 licensed with full public source. Re-read 2026-08-13: the cited repo page still carries
+    the Apache-2.0 terms, the GitHub API reports the repository public, unarchived and licensed Apache-2.0,
+    and the README describes the whole library with no paid, enterprise or hosted tier beside it, so source
+    stays public and core-gated stays ungated.'
   raw: license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/google/flax
-    shows: Repo displays Apache-2.0 license and full source
-    accessed: '2026-06-22'
+    shows: Repo page still shows the Apache-2.0 license and the full public source tree
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 537f59efae01c0a7cac8aacedb1a2786f6b5412be4c189acd1c6728577df9bf1
+    establishes:
+    - license
+    - source
+  - url: https://api.github.com/repos/google/flax
+    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main
+      - for google/flax.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: ffd6f9e2cc70a06a4e878eeccdf471c312a540c83147fcbf58ec4a17acb392d2
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/google/flax/main/README.md
+    shows: README describes Flax as a neural network library and ecosystem for JAX, including the Flax NNX
+      API, installed from PyPI. No paid tier or hosted edition appears.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 7ace6342f93e247b1b5e229bca173edd5388de9b63f6d38fd066cab9618af88c
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 4
   reach: 1M-10M
@@ -27,19 +54,33 @@ adoption:
   note: '5.3M PyPI downloads in the last 30 days, just above the 5M Level-4 threshold. Read live 2026-08-13:
     4,482,096 PyPI downloads in the trailing 30 days across the declared artifact(s), which bands at 1M-10M,
     level 4. The previous reach ''5M+/mo'' was free text carrying a figure rather than a band the scale
-    declares, so nothing could check it against the level beside it. No last_verified claimed: only the figure
-    was re-read, not the whole axis.'
+    declares, so nothing could check it against the level beside it. No last_verified claimed: only the
+    figure was re-read, not the whole axis. Re-read 2026-08-13 from the cited pepy.tech reading of the declared
+    PyPI artifact `flax`: 4,666,653 downloads in the trailing 30 days, which bands at 1M-10M, level 4 on
+    the software scale. Unchanged.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://pepy.tech/projects/flax
-    shows: 5,302,085 downloads in last 30 days
-    accessed: '2026-06-22'
+    shows: 4,666,653 downloads in the last 30 days for flax
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: dd7225e701d6770a0afddb6fc4fc516099e1f84060bf549766ac181612afbc39
 capability:
   score: 4
   basis: feature_matrix
   value: 'Neural network library on top of JAX: layers, attention, training utilities, Flax NNX API.'
   confidence: high
-  note: Key NN layer for the JAX ecosystem but built atop JAX rather than foundational itself.
+  note: 'Key NN layer for the JAX ecosystem but built atop JAX rather than foundational itself. Re-read
+    2026-08-13: the cited repository page still describes the product as recorded, so the band is unchanged.
+    The ''built atop JAX rather than foundational itself'' placement this note already made is now recorded
+    as relative_to/relation - one below JAX''s 5.'
+  relative_to: jax
+  relation: one_below
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/google/flax
-    shows: README describes neural network library and ecosystem for JAX
-    accessed: '2026-06-22'
+    shows: README still describes a neural network library and ecosystem for JAX, including the Flax NNX
+      API
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 537f59efae01c0a7cac8aacedb1a2786f6b5412be4c189acd1c6728577df9bf1

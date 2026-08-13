@@ -18,7 +18,10 @@ openness:
     free_text:
     - no managed/gated tier
   confidence: high
-  note: Fully OSI (MIT), government-backed, no proprietary core, full pipeline open.
+  last_verified: '2026-08-13'
+  note: Fully OSI (MIT), government-backed, no proprietary core, full pipeline open. Re-read 2026-08-13
+    - the license endpoint still reports MIT and the README still builds and runs the whole framework,
+    web UI included, from the checkout with no paid tier.
   raw: license:MIT(OSI);source:public(full framework, 200+ evals);governance:public-sector(UK AISI)+Meridian
     Labs; no managed/gated tier;core-gated:ungated
   sources:
@@ -26,26 +29,64 @@ openness:
     shows: MIT license; framework for LLM evals with 200+ pre-built evals; UK AISI maintainer; 2.2k stars,
       5,886 commits
     accessed: '2026-06-04'
+  - url: https://api.github.com/repos/UKGovernmentBEIS/inspect_ai/license
+    shows: GitHub's license endpoint reports spdx_id MIT for UKGovernmentBEIS/inspect_ai and returns the
+      MIT text as the LICENSE body.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 06df7177dede41e1d2949700e98e6e099fdaea893798c5f93ba95ceae6ef2415
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/UKGovernmentBEIS/inspect_ai/main/README.md
+    shows: README is a build-from-source guide - clone the repo, `pip install -e ".[dev]"`, build the
+      React web UI from the checked-in submodule, render the docs locally. It names UK AISI as the creator
+      and points at 'over 200 pre-built evaluations ready to run on any model'. There is no pricing, no
+      hosted tier, no enterprise edition and no license key anywhere in it.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: a9a1e07b955d869137d8ad109f1c238268f361dcdfac30cfcc94983a51a99b17
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 4
   signal_type: reported_traction
   confidence: high
+  last_verified: '2026-08-13'
   note: 'Headline signal (per recipe: adoption by frontier labs / cited in release-grade safety work):
     adopted as the evaluation framework of choice by major labs incl. Anthropic, Google DeepMind, and
     xAI/Grok, and powers nearly all of UK AISI''s automated frontier-model evaluations. Corroborated by
     ~9.9M PyPI downloads in the last 30 days (pepy.tech) / 10.5M (pypistats), though that figure is inflated
     by CI/dependency traffic, so lab adoption is treated as the primary basis. Placed at level 4, not
-    5, because the human-operator base (eval engineers at labs/AISI) is far smaller than mass-market scale.'
+    5, because the human-operator base (eval engineers at labs/AISI) is far smaller than mass-market scale.
+    Re-read 2026-08-13, with one correction. The AISI post cited here does NOT say AISI runs thousands
+    of evaluations on Inspect - it reports evaluating 16 models in its first year, and says of Inspect
+    only that ''now it is used by other governments and some of the leading AI developers''. The lab
+    names in this note come from elsewhere and are not established by the cited page, so the basis is
+    narrowed to what the post actually asserts. The download corroboration holds and got sharper: 9,278,867
+    inspect-ai downloads in the trailing 30 days on pypistats, against the 9.86M pepy figure recorded
+    before. Level 4 unchanged. The inspect-ai PyPI package is not declared as an artifact on this product
+    and should be; flagged rather than declared here.'
   sources:
   - url: https://www.aisi.gov.uk/blog/our-first-year
-    shows: AISI runs thousands of frontier-model evaluations on Inspect; broad lab adoption
-    accessed: '2026-06-04'
+    shows: 'Re-read 2026-08-13: ''we open sourced our evaluations platform, Inspect ... now it is used
+      by other governments and some of the leading AI developers''. The post reports evaluations on 16
+      models in AISI''s first year. It does NOT carry the ''thousands of evaluations'' figure this source
+      was previously recorded as showing.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 607848ae11534d6e9699c8073624bfef2c07f2be9899531adde35ef981639f65
   - url: https://inspect.aisi.org.uk/
     shows: framework for frontier AI evaluations by UK AISI + Meridian Labs; adopted by major labs
     accessed: '2026-06-04'
   - url: https://pepy.tech/projects/inspect-ai
     shows: 87.89M total / 9,856,617 last-30-day PyPI downloads (corroboration)
     accessed: '2026-06-04'
+  - url: https://pypistats.org/api/packages/inspect-ai/recent
+    shows: last_month = 9,278,867 downloads of the inspect-ai package (last_week 1,494,033, last_day 262,149)
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 228f6935b869c9af11e7bfe49a8f34e6f160dc3846e86fba6b2b7885d77d5d3a
 capability:
   score: 5
   basis: feature_matrix
@@ -53,8 +94,12 @@ capability:
     model-graded scoring; broadest model-backend abstraction in the category (OpenAI/Anthropic/Google/Groq/Mistral/xAI/Bedrock/Azure/Together/Cloudflare
     + local vLLM/Ollama/llama-cpp); reproducibility tooling for large-scale frontier evals.
   confidence: high
+  last_verified: '2026-08-13'
   note: 'Frontier-defining for this category: combines the broadest backend coverage, agentic-eval support,
-    and de-facto-standard status among frontier-safety labs. One of the 1-2 leaders, so scored 5.'
+    and de-facto-standard status among frontier-safety labs. One of the 1-2 leaders, so scored 5. Feature
+    matrix re-read 2026-08-13 and unchanged, and if anything wider - the providers page now also lists
+    Mistral, DeepSeek, Moonshot, Perplexity, SageMaker, Fireworks, SambaNova, SGLang and TransformerLens
+    behind the same interface.'
   sources:
   - url: https://inspect.aisi.org.uk/models.html
     shows: single interface over OpenAI/Anthropic/Google/xAI/Bedrock/Azure/local vLLM/Ollama/llama-cpp
@@ -62,3 +107,17 @@ capability:
   - url: https://github.com/UKGovernmentBEIS/inspect_ai
     shows: 200+ pre-built evals; tool use, multi-turn, model-graded eval components
     accessed: '2026-06-04'
+  - url: https://inspect.aisi.org.uk/models.html
+    shows: 'Re-read 2026-08-13: one naming convention (`openai/gpt-4o`, `anthropic/claude-sonnet-4-0`)
+      over lab APIs (OpenAI, Anthropic, Google, Grok, Mistral, DeepSeek, Moonshot, Perplexity), cloud
+      APIs (Bedrock, SageMaker, Azure AI), hosted open models (Groq, Together, Fireworks, Cloudflare,
+      HF Inference Providers, SambaNova) and local ones (HF, vLLM, Ollama, llama-cpp-python, SGLang, TransformerLens).'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 587a29f7b185efc120a0692c0b7d308d4c45d1971a4dd6926d5227492d1a6e4e
+  - url: https://raw.githubusercontent.com/UKGovernmentBEIS/inspect_ai/main/README.md
+    shows: 'README: built-in components for prompt engineering, tool usage, multi-turn dialog and model-graded
+      evaluations, plus ''a collection of over 200 pre-built evaluations ready to run on any model''.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: a9a1e07b955d869137d8ad109f1c238268f361dcdfac30cfcc94983a51a99b17

@@ -91,11 +91,29 @@ adoption:
     scored honestly. Low confidence. Stars read 2026-08-13: 27 across the 1 declared repo, which bands at <1K
     stars, level 1 on the stars scale in signal_routing.yaml. The record carried no reach label at all before
     this. No last_verified claimed: a star count is volatile, so a digest of it would read as drift on every
-    refetch, and the rest of the axis was not re-read.'
+    refetch, and the rest of the axis was not re-read. That last sentence is superseded - the rest of
+    the axis has now been re-read. The repository metadata endpoint reports 27 stars and 13 forks on
+    2026-08-13, which is the <1K stars band and level 1, and the vendor page was re-read for anything
+    bandable rather than the count being copied forward. Nothing bandable appeared. blaxel.ai/sandbox
+    publishes no customer, request or sandbox-count figure at all, and the "billions of agent requests"
+    line the note records is not on it today; the page sells on 25ms resumes and perpetual standby
+    instead. So stars remain the only signal, the level is unchanged, and the digest-drift objection is
+    accepted rather than avoided - a later refetch showing a different hash means the count moved, which
+    is what a star signal does.'
+  last_verified: '2026-08-13'
   sources:
-  - url: https://github.com/blaxel-ai/sandbox
-    shows: ~22 stars / 11 forks; MIT sandbox API
-    accessed: '2026-07-09'
+  - url: https://api.github.com/repos/blaxel-ai/sandbox
+    shows: 'Repository metadata - stargazers_count 27 and forks_count 13 for blaxel-ai/sandbox, language
+      Go, license spdx_id MIT, public and not archived'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 771e22e12b88d8dfff6936c657894733cd2e5d8b60853ead2c912934d0c2dcdb
+  - url: https://blaxel.ai/sandbox
+    shows: No usage, customer or request figure is published anywhere on the product page; it sells on
+      25ms resumes, perpetual standby and auto-suspend after 15s of inactivity
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 58bc1b3f5c3a3695c9a6935235d47d6414740d4dc1cd2a9f7ab7116bab547ca6
 capability:
   score: 3
   basis: feature_matrix
@@ -103,15 +121,33 @@ capability:
     breadth:agent code execution; persistence:perpetual standby with full FS/memory state; scale:vendor-claimed
     billions of agent requests (unverified)
   confidence: medium
-  note: MicroVM isolation and the perpetual-standby resume model are a genuinely strong, distinctive feature
+  note: 'MicroVM isolation and the perpetual-standby resume model are a genuinely strong, distinctive feature
     set, but proven scale is unverified and the product is early, so held at 3 rather than level with
     the proven microVM 4s. Independent ComputeSDK TTI benchmarks measure ~450ms median fresh cold-start
-    (11th of 19 sandbox providers), mid-pack.
+    (11th of 19 sandbox providers), mid-pack. Re-read 2026-08-13. The vendor page still carries every
+    recorded feature - microVMs, ~25ms resume from standby, full filesystem and memory snapshots,
+    auto-suspend after 15s idle, and persistence across months - and now also lists batch jobs across
+    thousands of sandboxes, outbound allow-lists, static IPs and self-hosted and VPC deployment options.
+    BENCHMARK FIGURE SUPERSEDED - the ComputeSDK leaderboard has re-run since (last run 7 August 2026)
+    and now covers 24 providers, so the cited "~450ms, 11th of 19" no longer appears. Blaxel now reads
+    0.51s median time-to-interactive, 0.60s P95, 0.61s P99, 100% success and a composite of 94.5, which
+    is 9th of 24 and still mid-pack, still sub-second, and ahead of E2B, Modal, Vercel and Cloud Run. The
+    band is unchanged and the reason it is held at 3 is unchanged too, since the missing evidence is
+    proven scale rather than latency.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://blaxel.ai/sandbox
-    shows: microVM sandboxes, perpetual standby, sub-25ms resume with full FS/memory state
-    accessed: '2026-07-09'
+    shows: 'MicroVMs that boot in milliseconds and resume in ~25ms from standby with full filesystem and
+      memory snapshots; sandboxes auto-suspend after 15s of inactivity and persist across sessions;
+      batch jobs spawn thousands of tasks; outbound allow-lists, static IPs and proxy routing; managed
+      cloud, self-hosting and VPC deployment options'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 58bc1b3f5c3a3695c9a6935235d47d6414740d4dc1cd2a9f7ab7116bab547ca6
   - url: https://www.computesdk.com/benchmarks/sandboxes/
-    shows: 'ComputeSDK TTI leaderboard (independent, 100 iters/day, 2026-07-09 run): median time-to-interactive
-      ~450ms sequential / ~910ms burst @100 concurrent; 11th of 19 providers'
-    accessed: '2026-07-09'
+    shows: 'ComputeSDK TTI leaderboard, independent, 100 iterations per run, last run 7 August 2026, 24
+      providers on 4 vCPU / 16GB in Northern Virginia. Blaxel records 0.51s median, 0.60s P95, 0.61s P99,
+      100% success, composite 94.5, ranking 9th of 24 by composite score.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: ec3f48b2ca3c1877605154422671c020935c0bfebdfc9aff268d06799ae865f7

@@ -1,12 +1,12 @@
 name: cloudflare-sandboxes
 display_name: Cloudflare Sandboxes
 type: software
-description: 'Cloudflare''s two-tier sandboxing for AI agents, shipped during Agents Week 2026: Dynamic
-  Workers (V8 isolates, ms-scale cold start, ~100x faster and more memory-efficient than containers, open
-  beta April 2026) and Sandboxes (persistent Linux environments, GA April 2026 for full-OS workloads).
-  Runs on Cloudflare''s global edge network and is available to paid Workers users. Execution is tied
-  to Cloudflare''s proprietary platform; only the Sandbox SDK is open source.'
-comments: 'Two related 2026 offerings: (a) Cloudflare Sandbox SDK (cloudflare/sandbox-sdk, @cloudflare/sandbox
-  v0.11.0, 1 Jun 2026) - container-backed sandboxes on Workers/Durable Objects; (b) Dynamic Workers /
-  Worker Loader (open beta announced 24 Mar 2026) - V8-isolate-based per-runtime sandboxing, ~100x faster
-  than containers. Open SDK over Cloudflare''s proprietary edge network. Verified live June 2026.'
+description: 'Cloudflare offers two paths for running agent-generated code on its own network. Dynamic
+  Workers lets a Worker load fresh code at runtime into a separate V8 isolate, starting in milliseconds
+  with network access blocked or intercepted per load; the Sandbox SDK backs the same idea with
+  containers on Workers and Durable Objects, for arbitrary commands, files, background processes and
+  exposed services. Both are reached only through Cloudflare''s platform.'
+comments: 'Scored as one product per the registry name, though the two paths differ sharply in
+  performance and in what they can run: the isolate path is JavaScript and TypeScript, the container
+  path is general. Verified 2026-08-13 via Cloudflare''s "Sandboxing AI agents, 100x faster" post and
+  the cloudflare/sandbox-sdk repository.'

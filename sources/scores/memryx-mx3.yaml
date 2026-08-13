@@ -21,35 +21,93 @@ openness:
       raw: open_market (Amazon/Mouser ~$149)
   confidence: high
   note: Proprietary dataflow silicon with public datasheets, retail availability, and several open source
-    runtime/driver repos, though the compiler core is closed.
+    runtime/driver repos, though the compiler core is closed. Re-read 2026-08-13 - the M.2 datasheet is
+    still published openly and still offers module specification, pinout, placement and strap-pin tables
+    and no board design files; MxAccl is still MPL-2.0 and still directs users to the MemryX SDK for
+    "precompiled libraries, drivers, and tools", which is the closed half of `toolchain - partial`. No
+    dimension moved.
   raw: schematics:none;toolchain:partial (open runtime (MxAccl) + utils + driver mirror, closed NeuralCompiler);datasheets:public;blobs:required
     (proprietary silicon);retail:open_market (Amazon/Mouser ~$149)
+  last_verified: '2026-08-13'
   sources:
   - url: https://developer.memryx.com/specs/M.2_datasheet.html
-    shows: 'MX3 M.2 datasheet: chip count, TOPS, data formats, power'
-    accessed: '2026-06-22'
+    shows: openly published MX3 M.2 module datasheet - "MemryX MX3 (x4)" AI processor, PCIe Gen 3 2-lane
+      interface, M.2-2280-D5-M form factor, operating range and CE/FCC Class A and RoHS compliance, plus
+      pinout, placement, power-rail, clock and strap-pin tables; no board design files are offered
+    accessed: '2026-08-13'
+    establishes:
+    - schematics
+    - datasheets
+    http_status: 200
+    content_sha256: 14d338f59a212d65ca4cae04933e6643e1cedba983b98f5ad9963f4bb88e9479
   - url: https://github.com/memryx/MxAccl
-    shows: open source MemryX C++ runtime library
-    accessed: '2026-06-22'
+    shows: '"open-source code for both the MemryX C++ runtime library and the acclBench benchmarking
+      tool" under MPL-2.0, with the SDK it depends on supplying "precompiled libraries, drivers, and
+      tools"'
+    accessed: '2026-08-13'
+    establishes:
+    - toolchain
+    - blobs
+    http_status: 200
+    content_sha256: 74aa33db22861ebf50548724dae3614917d9ac0453b02f0b28008d79f7fc097f
+  - url: https://www.tomshardware.com/tech-industry/artificial-intelligence/memryx-launches-usd149-mx3-m-2-ai-accelerator-module-capable-of-24-tops-compute-power
+    shows: '"The MX3 M.2 module is available for $149 USD, making it an affordable option for developers
+      and organizations seeking to add AI processing capabilities to edge devices"'
+    accessed: '2026-08-13'
+    establishes:
+    - retail
+    http_status: 200
+    content_sha256: 0918df1ac7c17e40b3119558e772225fd427599ea6f2fa5a993c419060d2f7c6
 adoption:
   level: 3
   reach: niche
   signal_type: reported_traction
   confidence: medium
   note: Low-cost retail availability (Amazon, Mouser), independent reviews, a 2025 industry award, and
-    an active GitHub org point to growing but emerging traction.
+    an active GitHub org point to growing but emerging traction. Re-read 2026-08-13 - the Tom's Hardware
+    launch coverage still stands and still puts the module at $149, and MxAccl is still a live public
+    repo. The article names no distributor, so the Amazon/Mouser half of the note rests on the earlier
+    read rather than on anything re-confirmed today. Level and reach unchanged.
+  last_verified: '2026-08-13'
   sources:
   - url: https://www.tomshardware.com/tech-industry/artificial-intelligence/memryx-launches-usd149-mx3-m-2-ai-accelerator-module-capable-of-24-tops-compute-power
-    shows: retail launch at $149 with broad distribution
-    accessed: '2026-06-22'
+    shows: '"The MX3 M.2 module is available for $149 USD"; a technology start-up originating from the
+      University of Michigan; no distributor is named'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 0918df1ac7c17e40b3119558e772225fd427599ea6f2fa5a993c419060d2f7c6
+  - url: https://github.com/memryx/MxAccl
+    shows: live public repository for the MemryX C++ runtime and acclBench benchmarking tool
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 74aa33db22861ebf50548724dae3614917d9ac0453b02f0b28008d79f7fc097f
 capability:
   score: 3
   basis: feature_matrix
   value: 6 TOPS/chip, up to 24 TOPS (4-chip M.2); 4/8/16-bit weights + BFloat16; ~42M params per module
   confidence: high
   note: Moderate throughput with flexible precision, but on-chip parameter capacity caps deployable model
-    size.
+    size. Re-read 2026-08-13 - the M.2 datasheet no longer carries a TOPS figure, a data-format list or
+    a parameter-capacity number at all; its specification table is now system, electrical, mechanical,
+    environmental and compliance only. The throughput half of the recorded value was re-derived instead
+    from the launch coverage, which still reads "Each MX3 chip is said to deliver 6 TOPS ... offering a
+    total of up to 24 TOPS" and "particularly those optimized for 8-bit weights". The 4/8/16-bit plus
+    BFloat16 formats and the ~42M-parameter capacity are no longer supported by any cited source and are
+    flagged for a curator ruling. The band is unchanged - 24 TOPS still sits above the 6 TOPS SBCs and
+    below the Jetson Orin line.
+  last_verified: '2026-08-13'
   sources:
+  - url: https://www.tomshardware.com/tech-industry/artificial-intelligence/memryx-launches-usd149-mx3-m-2-ai-accelerator-module-capable-of-24-tops-compute-power
+    shows: '"Each MX3 chip is said to deliver 6 TOPS (Tera Operations Per Second), offering a total of
+      up to 24 TOPS of compute power"; four MX3 chips on a standard M.2 2280 module; "particularly those
+      optimized for 8-bit weights"'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 0918df1ac7c17e40b3119558e772225fd427599ea6f2fa5a993c419060d2f7c6
   - url: https://developer.memryx.com/specs/M.2_datasheet.html
-    shows: per-chip/module TOPS, supported data formats, parameter capacity
-    accessed: '2026-06-22'
+    shows: '"MemryX MX3 (x4)" as the module''s AI processor and "The 4 MX3 chips appear as one logical
+      unit to the NeuralCompiler and runtime software stack"; the table no longer lists TOPS, data
+      formats or parameter capacity'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 14d338f59a212d65ca4cae04933e6643e1cedba983b98f5ad9963f4bb88e9479

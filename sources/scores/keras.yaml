@@ -13,35 +13,71 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: Apache-2.0 licensed with full public source.
+  note: 'Apache-2.0 licensed with full public source. Re-read 2026-08-13: the cited repo page still carries
+    the Apache-2.0 terms, the GitHub API reports the repository public, unarchived and licensed Apache-2.0,
+    and the README describes the whole library with no paid, enterprise or hosted tier beside it, so source
+    stays public and core-gated stays ungated.'
   raw: license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/keras-team/keras
-    shows: Repo shows Apache-2.0 license and full source
-    accessed: '2026-06-22'
+    shows: Repo page still shows the Apache-2.0 license and the full public source tree
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 24c8b16376442c950f2adf34d722cc63861320de7bd53cad554e4962b1ca85a7
+    establishes:
+    - license
+    - source
+  - url: https://api.github.com/repos/keras-team/keras
+    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch master
+      - for keras-team/keras.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: f1199bec1ce7bc499381b2642d2eb769b53e7cc1f638841fc1afb819ea1d9e04
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/keras-team/keras/master/README.md
+    shows: README describes Keras 3 as a multi-backend deep learning framework over JAX, TensorFlow, PyTorch
+      and OpenVINO, installed with pip. No paid tier or hosted edition appears.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 40b7d47ea7fa5b58b1250f330c08e351b746f3105b011edac1b2da03409715f1
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 5
   reach: '>10M'
   signal_type: usage_volume
   confidence: high
-  note: 'Re-scored 4->5. 21.53M PyPI downloads in the last 30 days. The map''s
-    prevailing usage_volume level-5 floor is >10M/mo (cf. pydantic-ai ~31M,
-    llama-index ~10.18M at level 5); the prior level 4 applied a stricter 5M-50M
-    band used only in one ml_frameworks batch, below map peers of equal volume.
-    Keras is the standard high-level training API across TF/JAX/PyTorch and clears
-    the prevailing floor.'
+  note: 'Re-scored 4->5. 21.53M PyPI downloads in the last 30 days. The map''s prevailing usage_volume level-5
+    floor is >10M/mo (cf. pydantic-ai ~31M, llama-index ~10.18M at level 5); the prior level 4 applied a
+    stricter 5M-50M band used only in one ml_frameworks batch, below map peers of equal volume. Keras is
+    the standard high-level training API across TF/JAX/PyTorch and clears the prevailing floor. Re-read
+    2026-08-13 from the cited pepy.tech reading of the declared PyPI artifact `keras`: 18,774,405 downloads
+    in the trailing 30 days, which bands at >10M, level 5 on the software scale. Unchanged.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://pepy.tech/projects/keras
-    shows: 21,532,407 downloads in last 30 days
-    accessed: '2026-06-25'
+    shows: 18,774,405 downloads in the last 30 days for keras
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 005ce57a04004eae15970b059c1c8e5ca9ee4de00386b8663d2abe8f6dfdc220
 capability:
   score: 4
   basis: feature_matrix
   value: High-level multi-backend deep learning API for building/training models over JAX, TensorFlow,
     PyTorch, and OpenVINO.
   confidence: high
-  note: Central API layer but sits atop lower-level frameworks rather than defining the compute layer.
+  note: 'Central API layer but sits atop lower-level frameworks rather than defining the compute layer.
+    Re-read 2026-08-13: the cited repository page still describes the product as recorded, so the band is
+    unchanged.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/keras-team/keras
-    shows: README describes multi-backend deep learning framework
-    accessed: '2026-06-22'
+    shows: README still describes Keras 3 as a multi-backend deep learning framework over JAX, TensorFlow,
+      PyTorch and OpenVINO
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 24c8b16376442c950f2adf34d722cc63861320de7bd53cad554e4962b1ca85a7

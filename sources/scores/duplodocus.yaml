@@ -16,34 +16,59 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: Fully OSI-licensed (Apache-2.0), full source public.
+  note: Fully OSI-licensed (Apache-2.0), full source public. Re-read 2026-08-13 - the LICENSE body still
+    carries the same license and the README still builds the whole product from the published repo, with
+    no paid tier, enterprise edition or license key anywhere in it.
   raw: license:Apache-2.0(OSI);source:public(allenai/duplodocus);governance:Allen Institute for AI;no feature-gated
     core;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/allenai/duplodocus/blob/main/LICENSE
     shows: Apache License Version 2.0 text
-    accessed: '2026-07-21'
+    accessed: '2026-08-13'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+  - url: https://raw.githubusercontent.com/allenai/duplodocus/main/README.md
+    shows: README documents the whole pipeline building and installing from the published
+      repo; no paid tier, enterprise edition or license key appears anywhere in it, so
+      nothing is withheld from the source
+    accessed: '2026-08-13'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: 18f8045f83995f2cd9063ac47b100f510a1295c8a4fa3313cfccdadc1a328bf1
 adoption:
   level: 1
   reach: <1K stars
   signal_type: stars_fallback
   confidence: medium
-  note: 'New (2026) single-purpose Rust CLI, ~90 GitHub stars; niche, used in the Dolma 3 pipeline. Stars read
-    2026-08-13: 93 across the 1 declared repo, which bands at <1K stars, level 1 on the stars scale in
-    signal_routing.yaml. The previous reach ''<10K'' was not a label this instrument offers - stars have their
-    own vocabulary because a star is not a download. No last_verified claimed: a star count is volatile, so a
-    digest of it would read as drift on every refetch, and the rest of the axis was not re-read.'
+  note: 93 GitHub stars on allenai/duplodocus, read 2026-08-13 from the repository API. Bands at level 1
+    (<1K stars) on the stars fallback scale in signal_routing.yaml, which caps at 3 because a star is not
+    a use. A 2026 single-purpose Rust CLI used in the Dolma 3 pipeline; niche. The API response is digested
+    here the way bigcode-dataset and ungoliant already are in this category; a star count drifts, so a later
+    digest mismatch reads as drift rather than as fabrication.
+  last_verified: '2026-08-13'
   sources:
-  - url: https://github.com/allenai/duplodocus
-    shows: 90 stars
-    accessed: '2026-07-21'
+  - url: https://api.github.com/repos/allenai/duplodocus
+    shows: stargazers_count = 93 for allenai/duplodocus
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: bc7a7225ab16d2597be31f1b5145b64b0c576e0134807c1c7a27374923c3a967
 capability:
   score: 3
   basis: feature_matrix
   value: Exact + fuzzy MinHash-LSH deduplication; focused single-purpose tool.
   confidence: medium
-  note: One capability slot (dedup) of the Dolma 3 toolchain.
+  note: One capability slot (dedup) of the Dolma 3 toolchain. Re-read 2026-08-13 - the README still describes
+    the feature set above.
+  last_verified: '2026-08-13'
   sources:
-  - url: https://github.com/allenai/duplodocus
-    shows: duplodocus repo feature set confirmed
-    accessed: '2026-07-21'
+  - url: https://raw.githubusercontent.com/allenai/duplodocus/main/README.md
+    shows: README documents exact and MinHash-LSH fuzzy deduplication in memory- and disk-based
+      variants, a single-purpose dedup tool
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 18f8045f83995f2cd9063ac47b100f510a1295c8a4fa3313cfccdadc1a328bf1

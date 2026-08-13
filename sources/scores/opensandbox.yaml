@@ -17,14 +17,60 @@ openness:
     - no-managed-tier-observed
     - no-feature-gated-core
   confidence: high
-  note: Apache-2.0, fully self-hostable, no managed/enterprise gating observed => open_source (not open_core).
-    Alibaba says it open sourced the sandbox infra used internally.
+  note: 'Apache-2.0, fully self-hostable, no managed/enterprise gating observed => open_source (not open_core).
+    Alibaba says it open sourced the sandbox infra used internally. Re-read 2026-08-13 and all three recorded
+    dimensions hold. The repository has moved from the alibaba org to opensandbox-group - the old URL 301s
+    to the new one and both return the same body - and the root LICENSE is the verbatim Apache License
+    2.0 with nothing appended. The untruncated tree is 2,642 entries with the whole product public - server/,
+    components/, kubernetes/, cli/, sdks/, specs/ - carrying ten LICENSE paths, all Apache-2.0 copies sitting
+    beside per-SDK and per-component roots, and no ee/, enterprise/, commercial/ or proprietary/ path.
+    open-sandbox.ai is a documentation site with no pricing page, no hosted offering and no sign-up, closing
+    with "Released under the Apache 2.0 License", so there is still no managed tier to gate against.'
   raw: license:Apache-2.0(OSI);source:public(Go execd + multi-language SDKs);runtimes:Docker/Kubernetes;no-managed-tier-observed;no-feature-gated-core;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/alibaba/OpenSandbox
     shows: Apache-2.0 license; general-purpose AI-agent sandbox; Docker/K8s runtimes; multi-language SDKs;
       self-host
     accessed: '2026-06-04'
+  - url: https://raw.githubusercontent.com/opensandbox-group/OpenSandbox/main/LICENSE
+    shows: The verbatim Apache License 2.0, complete and with no appended notices, exceptions or additional
+      terms.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 50e6751797c50dedd75ef1b8a0d9e42f5f8472e9fbce91f34718e9f97b0c780a
+    establishes:
+    - license
+  - url: https://api.github.com/repos/opensandbox-group/OpenSandbox/git/trees/main?recursive=1
+    shows: 'Untruncated recursive tree, 2,642 entries. Ten LICENSE paths, all Apache-2.0 copies of the root
+      placed beside the CLI, the server and each SDK. The whole product is public - server/, components/,
+      kubernetes/, cli/, sdks/, specs/, sandboxes/ - and there is no ee/, enterprise/, commercial/ or proprietary/
+      path.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 96de8bab4273bb81e622ba457def36967e0d815a7a41cf1bb10d19efc170334e
+    establishes:
+    - source
+    - core-gated
+  - url: https://api.github.com/repos/opensandbox-group/OpenSandbox
+    shows: 'Repo metadata - license spdx_id Apache-2.0, default branch main, not archived, pushed 2026-08-13,
+      homepage open-sandbox.ai. The repository now lives under the opensandbox-group org; the alibaba/OpenSandbox
+      path redirects here and returns an identical body.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 013a649819f1ef44a2bf21c8d0db9288478dcf4e98595bc9fcc60fcee159f9f5
+    establishes:
+    - license
+    - source
+  - url: https://open-sandbox.ai
+    shows: 'The project site is documentation only - getting started, guides, SDK and API references, specs,
+      CLI, components, Kubernetes and migration guides. It offers no hosted service, pricing page, sign-up
+      or enterprise edition, and its footer reads "Released under the Apache 2.0 License."'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 0470380f7fd841e3a5ffc9705480d1c600ddc82e81b49f53adc443a8c597c706
+    establishes:
+    - core-gated
 adoption:
   level: 3
   reach: '>10K stars'
@@ -35,12 +81,23 @@ adoption:
     early stars but no usage volume yet. Revisit as usage data emerges. Stars read 2026-08-13: 12,516 across
     the 1 declared repo, which bands at >10K stars, level 3 on the stars scale in signal_routing.yaml. Level
     corrected from 2. The previous reach ''10K-100K'' was not a label this instrument offers - stars have
-    their own vocabulary because a star is not a download. No last_verified claimed: a star count is volatile,
-    so a digest of it would read as drift on every refetch, and the rest of the axis was not re-read.'
+    their own vocabulary because a star is not a download. Re-read in full 2026-08-13 against the GitHub
+    API - 12,522 stars, 1,056 forks - which is the same >10K stars band and the same level 3. The digest
+    below will drift on every refetch because a star count moves daily; that is expected of this instrument
+    and does not weaken the band, which depends only on the order of magnitude. One thing did change and
+    is escalated rather than applied - a Python SDK is now published on PyPI as `opensandbox`, so this
+    record may no longer need the stars fallback at all. It is not declared here.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/alibaba/OpenSandbox
     shows: 11.3k GitHub stars; released Mar 2026; no usage/download figures
     accessed: '2026-06-04'
+  - url: https://api.github.com/repos/opensandbox-group/OpenSandbox
+    shows: 'Repo metadata - 12,522 stars, 1,056 forks, 51 watchers, pushed 2026-08-13. Bands at >10K stars,
+      level 3 on the stars scale in signal_routing.yaml.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 013a649819f1ef44a2bf21c8d0db9288478dcf4e98595bc9fcc60fcee159f9f5
 capability:
   score: 3
   basis: feature_matrix

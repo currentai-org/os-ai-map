@@ -1,10 +1,11 @@
 name: vercel-sandbox
 display_name: Vercel Sandbox
 type: software
-description: Closed-source compute primitive (GA in 2026) that runs untrusted/agent-generated code in
-  isolated Firecracker microVMs with millisecond startup, default Node 24 + Python 3.13 runtimes, filesystem
-  and shell access. Picked by teams already on Vercel building AI agents that need a managed sandbox tightly
-  integrated with the AI SDK. The execution layer behind Vercel Open Agents.
-comments: Vercel Sandbox - GA ephemeral compute primitive for running untrusted/AI-generated code in isolated
-  Firecracker microVMs; docs last updated 29 May 2026. Open SDK/CLI (vercel/sandbox on GitHub, @vercel/sandbox
-  npm + vercel.sandbox Python) over Vercel's proprietary managed cloud. Verified live June 2026.
+description: Vercel Sandbox runs untrusted or agent-generated code in a Firecracker microVM with its own
+  filesystem and network, started from a Vercel managed Linux image or a custom OCI image held in the
+  Vercel Container Registry. Sandboxes persist by default, resuming where they stopped, and can be
+  snapshotted, tagged, given root and system privileges, or split per agent by Linux user. JavaScript
+  and Python SDKs and a CLI drive it.
+comments: The execution layer behind Vercel Open Agents. Runtime duration and concurrency are quota
+  fields rather than product limits - a Hobby sandbox stops at 45 minutes where Pro and Enterprise run
+  to 24 hours. Verified 2026-08-13 via the Vercel Sandbox documentation and its pricing and quotas page.

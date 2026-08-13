@@ -14,7 +14,11 @@ openness:
     free_text:
     - Python
   confidence: high
-  note: Permissive OSI (MIT) license with full public source.
+  last_verified: '2026-08-13'
+  note: Permissive OSI (MIT) license with full public source. Re-read 2026-08-13 - the LICENSE body is
+    still the MIT text with Simula Research Laboratory's copyright, and the README still states 'MIT License'
+    and still describes a local-first framework that ships its scenario packs and needs no account. No
+    paid tier, hosted edition or license key appears in the 39KB of it.
   raw: license:MIT(OSI; verified LICENSE body, copyright Simula);source:public;Python;core-gated:ungated(local
     execution is the default mode, all scenario packs ship in the package)
   sources:
@@ -35,6 +39,25 @@ openness:
     http_status: 200
     content_sha256: 6c851942b0521b6cbf776a4b1b4905d8255fb261eff3cfcb3aa7abf07df09c46
     establishes:
+    - core-gated
+  - url: https://raw.githubusercontent.com/kelkalot/simpleaudit/main/LICENSE
+    shows: 'Re-read 2026-08-13: LICENSE body is still ''MIT License'', copyright Simula Research Laboratory.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 6a48f8bb76cd134073d1231f140425f5695b0659cc1fba3ea5596a0a0879fe19
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/kelkalot/simpleaudit/main/README.md
+    shows: 'Re-read 2026-08-13: ''SimpleAudit is a simple, extensible, local-first framework for multilingual
+      auditing and red-teaming of AI systems via adversarial probing. It supports open models running
+      locally (no APIs required)'', and it closes ''MIT License - see LICENSE for details''. The scenario
+      packs, rubric, auditor and judge configuration ship in the package; the only external dependency
+      is the reader''s own model API key if they choose to use one.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 6c851942b0521b6cbf776a4b1b4905d8255fb261eff3cfcb3aa7abf07df09c46
+    establishes:
+    - source
     - core-gated
 adoption:
   level: 1
@@ -58,8 +81,21 @@ capability:
   value: Multilingual adversarial probing with local/open-model support; scenario packs (safety, RAG,
     healthcare) plus a broken-premise evaluator.
   confidence: high
-  note: Focused but functional red-teaming toolkit with a distinctive broken-premise mode.
+  last_verified: '2026-08-13'
+  note: Focused but functional red-teaming toolkit with a distinctive broken-premise mode. Feature matrix
+    re-read 2026-08-13 and unchanged in kind, though the README has grown a validation section reporting
+    AUROC 0.89-1.00 for safe-versus-unsafe separation and a direct comparison against Petri. Still a single-purpose
+    adversarial-probing tool rather than a general harness, so the band holds. No `relative_to` is recorded
+    because Petri is not a product in this category.
   sources:
   - url: https://github.com/kelkalot/simpleaudit
     shows: 'README: adversarial probing, local-first, scenario packs, broken-premise runner'
     accessed: '2026-06-22'
+  - url: https://raw.githubusercontent.com/kelkalot/simpleaudit/main/README.md
+    shows: multilingual adversarial probing with local open models or optional API-hosted ones; a fixed
+      default scenario pack, rubric, auditor, judge and sampling configuration so reruns are comparable;
+      reported responsiveness of AUROC 0.89-1.00 across judge-auditor cells; results reported as a bundle
+      rather than a leaderboard rank.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 6c851942b0521b6cbf776a4b1b4905d8255fb261eff3cfcb3aa7abf07df09c46

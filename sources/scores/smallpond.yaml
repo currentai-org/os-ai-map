@@ -16,30 +16,56 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: Fully OSI-licensed (MIT), full source public.
+  note: Fully OSI-licensed (MIT), full source public. Re-read 2026-08-13 - the LICENSE body still carries
+    the same license and the README still builds the whole product from the published repo, with no paid
+    tier, enterprise edition or license key anywhere in it.
   raw: license:MIT(OSI);source:public(deepseek-ai/smallpond);governance:DeepSeek;no feature-gated core;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/deepseek-ai/smallpond/blob/main/LICENSE
     shows: MIT License text (Copyright 2025 DeepSeek)
-    accessed: '2026-07-21'
+    accessed: '2026-08-13'
+    establishes:
+    - license
+    http_status: 200
+    content_sha256: afdfb05d986ee753149860dcddbc7a20121a38165de7ef6bb522ddd028234752
+  - url: https://raw.githubusercontent.com/deepseek-ai/smallpond/main/README.md
+    shows: README documents the whole pipeline building and installing from the published
+      repo; no paid tier, enterprise edition or license key appears anywhere in it, so
+      nothing is withheld from the source
+    accessed: '2026-08-13'
+    establishes:
+    - source
+    - core-gated
+    http_status: 200
+    content_sha256: 8ad6562a5fec22837fbab87a5047d66acd2b31f5901e9e1221daade507c1af4e
 adoption:
   level: 1
   reach: <10K
   signal_type: usage_volume
   confidence: high
-  note: ~250 PyPI downloads/month; large star count from the DeepSeek open-infra launch but little sustained
-    adoption, dormant since March 2025.
+  note: 244 downloads in the trailing 30 days for smallpond, read 2026-08-13 from the pypistats API. Bands
+    at level 1 (<10K) on the software and model adoption scale. A large star count from the DeepSeek open-infra
+    launch with little sustained use, and no repo commit since March 2025.
+  last_verified: '2026-08-13'
   sources:
-  - url: https://pypistats.org/packages/smallpond
-    shows: 'Downloads last month: 254'
-    accessed: '2026-07-21'
+  - url: https://pypistats.org/api/packages/smallpond/recent
+    shows: 244 downloads in the trailing 30 days for smallpond
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 5aba479bdcf3a106dc972b239c0619408b8bbfda8b25cc17a8d0630dab035f0d
 capability:
   score: 3
   basis: feature_matrix
   value: Distributed preprocessing on DuckDB + 3FS for PB-scale data; capable but early-stage and unmaintained.
   confidence: medium
-  note: Promising design, but not proven on downstream corpora and dormant.
+  note: Promising design, but not proven on downstream corpora and dormant. Re-read 2026-08-13 - the README
+    still describes the feature set above.
+  last_verified: '2026-08-13'
   sources:
-  - url: https://github.com/deepseek-ai/smallpond
-    shows: smallpond repo feature set confirmed
-    accessed: '2026-07-21'
+  - url: https://raw.githubusercontent.com/deepseek-ai/smallpond/main/README.md
+    shows: README documents DuckDB- and 3FS-backed distributed processing scaling to PB, with a
+      GraySort result; no commit to the repo since March 2025
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 8ad6562a5fec22837fbab87a5047d66acd2b31f5901e9e1221daade507c1af4e

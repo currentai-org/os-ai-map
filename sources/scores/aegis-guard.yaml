@@ -15,13 +15,37 @@ openness:
   confidence: medium
   note: Open-weights at the adapter level but the LlamaGuard base is access-gated through Meta and the
     license is the non-OSI Llama 2 Community License, so it lands at open_weights (3) with a gating caveat.
+    Re-read 2026-08-13 and unchanged - the card still opens with 'The use of this model is governed by the
+    Llama 2 Community License Agreement', the repo is ungated and ships adapter_model.safetensors, and the
+    Aegis-AI-Content-Safety-Dataset-1.0 is still the declared training set.
   raw: weights:adapter-open(HF) but base LlamaGuard gated via Meta access;data:Aegis safety dataset documented;license:Llama-2-Community(NOT
     OSI)
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/nvidia/Aegis-AI-Content-Safety-LlamaGuard-Defensive-1.0
-    shows: Llama 2 Community License; adapter weights public, base gated via Meta; 13 risk categories;
-      built on LlamaGuard/Llama2-7B
-    accessed: '2026-06-29'
+    shows: 'License section reads ''The use of this model is governed by the Llama 2 Community License
+      Agreement''. The repo is not gated and carries adapter_model.safetensors, so the adapter is
+      downloadable; the model is a parameter-efficient tune of Llama Guard, whose own repo is
+      access-gated. cardData declares datasets - nvidia/Aegis-AI-Content-Safety-Dataset-1.0, covering the
+      13-category taxonomy.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: ab9c3aa2d2819e023f40b2ca113420822607685ae6cbd87be35b088e52507eeb
+    establishes:
+    - weights
+    - data
+    - license
+  - url: https://huggingface.co/nvidia/Aegis-AI-Content-Safety-LlamaGuard-Defensive-1.0/raw/main/README.md
+    shows: Card front matter records license - llama2 and datasets - nvidia/Aegis-AI-Content-Safety-Dataset-1.0;
+      the body describes a parameter-efficient instruction-tuned Llama Guard over Nvidia's taxonomy of 13
+      critical safety risk categories.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 83a52739aa090021f29f2669a534a4a52e9983ccd8ed2096df5401422cd355ff
+    establishes:
+    - weights
+    - data
+    - license
 adoption:
   level: 1
   reach: <10K
@@ -41,12 +65,21 @@ capability:
   score: 4
   basis: feature_matrix
   basis_detail: risk coverage
+  relative_to: llama-guard
+  relation: at
   value: 13 critical safety risk categories across prompts and responses, with an open safety dataset
     and a defensive/permissive variant pair.
   confidence: low
   note: Broad risk taxonomy with a documented training dataset; comparable coverage to Llama Guard, its
-    base.
+    base. The peer comparison the band rests on is recorded rather than left in prose - it is a tune of
+    Llama Guard over a taxonomy of the same order (13 categories against 14), so it sits at the same rung.
+    Re-read 2026-08-13 - the card still describes 13 critical safety risk categories and the Defensive
+    variant.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/nvidia/Aegis-AI-Content-Safety-LlamaGuard-Defensive-1.0
-    shows: 13 risk categories; defensive variant
-    accessed: '2026-06-29'
+    shows: Card describes Llama Nemotron Safety Guard Defensive V1 as an instruction-tuned Llama Guard
+      covering Nvidia's taxonomy of 13 critical safety risk categories.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: ab9c3aa2d2819e023f40b2ca113420822607685ae6cbd87be35b088e52507eeb

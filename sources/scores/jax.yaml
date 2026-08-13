@@ -13,35 +13,71 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: Apache-2.0 licensed with full public source.
+  note: 'Apache-2.0 licensed with full public source. Re-read 2026-08-13: the cited repo page still carries
+    the Apache-2.0 terms, the GitHub API reports the repository public, unarchived and licensed Apache-2.0,
+    and the README describes the whole library with no paid, enterprise or hosted tier beside it, so source
+    stays public and core-gated stays ungated.'
   raw: license:Apache-2.0(OSI);source:public;no feature-gated core;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/jax-ml/jax
-    shows: Repo shows Apache-2.0 license and full source
-    accessed: '2026-06-22'
+    shows: Repo page still shows the Apache-2.0 license and the full public source tree
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: b5807b7b8816457198f5618d025643e1369ffb3a39b83f9ecaf063842a198d77
+    establishes:
+    - license
+    - source
+  - url: https://api.github.com/repos/jax-ml/jax
+    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main
+      - for jax-ml/jax.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 72dabce31266110e57c3b7c416f6acef6644030058ec928ea37f384d8bfb3ed5
+    establishes:
+    - license
+    - source
+  - url: https://raw.githubusercontent.com/jax-ml/jax/main/README.md
+    shows: README describes JAX as a Python library for accelerator-oriented array computation and program
+      transformation, installable from PyPI. No paid tier or hosted edition appears.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: d87694b9a8f2c5ac1704bf0e1d4299c4cd7bc317fac59de9433bf094f161302f
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 5
   reach: '>10M'
   signal_type: usage_volume
   confidence: high
-  note: 'Re-scored 4->5. 18.92M PyPI downloads in the last 30 days. The map''s
-    prevailing usage_volume level-5 floor is >10M/mo (cf. pydantic-ai ~31M,
-    llama-index ~10.18M, langgraph ~58M, all level 5); the prior level 4 applied a
-    stricter 5M-50M band used only in one ml_frameworks batch, which sat below map
-    peers of equal volume. JAX at ~19M/mo is the foundation of a major ML ecosystem
-    (Flax, the Google research stack) and clears the prevailing floor.'
+  note: 'Re-scored 4->5. 18.92M PyPI downloads in the last 30 days. The map''s prevailing usage_volume level-5
+    floor is >10M/mo (cf. pydantic-ai ~31M, llama-index ~10.18M, langgraph ~58M, all level 5); the prior
+    level 4 applied a stricter 5M-50M band used only in one ml_frameworks batch, which sat below map peers
+    of equal volume. JAX at ~19M/mo is the foundation of a major ML ecosystem (Flax, the Google research
+    stack) and clears the prevailing floor. Re-read 2026-08-13 from the cited pypistats reading of the declared
+    PyPI artifact `jax`: 20,195,276 downloads in the trailing 30 days, which bands at >10M, level 5 on the
+    software scale. Unchanged.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://pypistats.org/api/packages/jax/recent
-    shows: last_month downloads = 18,921,715
-    accessed: '2026-06-25'
+    shows: last_month downloads = 20,195,276 for jax
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: b25face37309138ee5f77848c4a6cbe4a9fcd3513acad5e56634c0008fad3f18
 capability:
   score: 5
   basis: feature_matrix
   value: 'Composable function transforms over array code: autodiff, XLA JIT compilation for GPU/TPU, vectorization;
     foundation of a major ML ecosystem.'
   confidence: high
-  note: Defines the functional/accelerated-compute layer for ML research.
+  note: 'Defines the functional/accelerated-compute layer for ML research. Re-read 2026-08-13: the cited
+    repository page still describes the product as recorded, so the band is unchanged.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/jax-ml/jax
-    shows: README describes accelerator-oriented array computation and program transformation
-    accessed: '2026-06-22'
+    shows: README still describes accelerator-oriented array computation and program transformation - autodiff,
+      XLA JIT, vectorization
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: b5807b7b8816457198f5618d025643e1369ffb3a39b83f9ecaf063842a198d77
