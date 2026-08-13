@@ -21,17 +21,30 @@ openness:
     note that only the clients are open. Corrected from 3/open_core on 2026-07-30, and both values were
     wrong: the ladder has no rung at 3, and a published client standing in for an unpublished engine is
     source:partial, which it scores 2/source_available. open_core would mean an OSI core with a paid tier
-    withheld.'
+    withheld.
+    Re-read 2026-08-13. The iOS client is still GPLv3 and its README makes the split unusually clear -
+    the app is a SwiftUI shell around a WKWebView pointed at lumo.proton.me, with native payment and
+    speech handling, so what is published is a client and the service behind it is not. isitreallyfoss
+    still concludes the same, that only the mobile and web apps are open and that no source for the
+    service or for the model interaction could be found, and it still quotes the European Open Source AI
+    Index reaching that conclusion independently. Value unchanged at 2 / source_available.'
   raw: source:partial(GPLv3 clients only; backend, routing and model-serving are not published);clients:open(GPLv3
     - web in ProtonMail/WebClients, iOS/Android in ProtonLumo);service:closed(backend, routing, model-serving
     not public);license:GPLv3(clients)
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/ProtonLumo/ios-lumo
     shows: iOS client source under GPLv3
-    accessed: '2026-06-17'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 4242413b80de9342fe27611809a28982c9a038a5d6e708e2e05676dd92721f4c
+    establishes: [license, source]
   - url: https://isitreallyfoss.com/projects/lumo/
     shows: only the Lumo mobile/web apps are open; service + model interaction code not public
-    accessed: '2026-06-17'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 04d0c62528b017a7f6c114584d5562d86ba331d508c10f450ab1d9dde49c89f5
+    establishes: [source]
 adoption:
   level: 3
   signal_type: reported_traction
@@ -39,10 +52,18 @@ adoption:
   note: Launched July 2025 with Lumo 1.1 following; distributed across Proton's large account base (100M+
     Proton accounts) and available on web + iOS + Android with no account required. No Lumo-specific usage
     numbers disclosed, so reported_traction at a mid level.
+    Re-read 2026-08-13. The July 2025 launch announcement is still up and still discloses no
+    Lumo-specific usage figure, and none has appeared since - the only number Proton attaches is its own
+    account base, which is the distribution channel rather than a measure of Lumo. So the abstention
+    from a counted signal stands and reported_traction with no numeric reach remains the right
+    instrument. Level unchanged at 3.
+  last_verified: '2026-08-13'
   sources:
   - url: https://proton.me/blog/lumo-ai
     shows: Proton's launch announcement for Lumo
-    accessed: '2026-06-17'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 6eb81a315131a22fb23233e2343149fe760ab76532e2dd2a045fa9e2f187ff92
 capability:
   score: 3
   basis: feature_matrix
@@ -53,7 +74,15 @@ capability:
   note: Capable privacy assistant with file upload, web search, and a reasoning mode, but confined to
     open-weight models and the Proton ecosystem; lighter on multimodal/plugins than frontier consumer
     apps. Mid-tier on the chat-UI feature matrix.
+    Re-read 2026-08-13. The Lumo 1.1 post is still up and still describes the same upgrade the band
+    rests on - faster and more thorough answers, better awareness of recent events, multi-step planning
+    and better code generation, funded by more GPUs and Lumo Plus subscriptions. Still confined to
+    open-weight models Proton serves itself, still single-user, still light on multimodal. Band
+    unchanged at 3.
+  last_verified: '2026-08-13'
   sources:
   - url: https://proton.me/blog/lumo-1-1
     shows: Lumo 1.1 adds faster, advanced reasoning
-    accessed: '2026-06-17'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: e5a12c14b9bfa84baae2a486c7ac2dca1dd1ef3bb7b7996e043d0f05c9dc37a5
