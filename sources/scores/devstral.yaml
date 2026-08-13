@@ -15,34 +15,87 @@ openness:
     - name: Apache-2.0
       detail: OSI permissive, no use restrictions
   confidence: high
-  note: Apache-2.0 open weights, but training/post-training data and pipeline undisclosed -> open_weights,
-    not open_source.
+  note: 'Apache-2.0 open weights, but training/post-training data and pipeline undisclosed -> open_weights,
+    not open_source. Re-read 2026-08-13, and the whole record is a release behind. The scored source is
+    Devstral Small 1.1 (2507); the tier now ships Devstral 2 (2512), which is what the product file declares
+    as its artifacts. Under identity.md the CURRENT release governs openness and resolves most-restrictive
+    across that release''s distributed SKUs, and the two 2512 SKUs are not licensed alike - Devstral Small
+    2 24B is Apache 2.0, Devstral 2 123B is a Modified MIT License. Modified-MIT is a declared
+    permissive_non_osi example in the ladder, so the resolved tier for the governing release is
+    permissive_non_osi rather than osi. The score does not move: with data closed and code partial the
+    ladder falls through to 3/open_weights either way. What moves is the recorded license and the missing
+    governing_release. ESCALATED rather than changed - no last_verified claimed on this axis.'
   raw: weights:open(Apache-2.0, on HF);data:closed;code:partial(inference/serving; no training or post-training
     data);license:Apache-2.0(OSI permissive, no use restrictions)
   sources:
   - url: https://huggingface.co/mistralai/Devstral-Small-2507
-    shows: live card; license=apache-2.0; 24B agentic coding model; SWE-bench Verified 53.6%
-    accessed: '2026-06-04'
+    shows: live card; license=apache-2.0; 24B agentic coding model; SWE-bench Verified 53.6%; superseded
+      by the 2512 release
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: e37b7fbf657dce4ba2c9773ca7769af7e515891b01c9de2664c9d9a8729c3a60
+  - url: https://huggingface.co/mistralai/Devstral-Small-2-24B-Instruct-2512
+    shows: 'License section - "This model is licensed under the Apache 2.0 License"; `"gated":false`; 24B
+      FP8 instruct SKU of the governing Devstral 2 release'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 630096d44de6e679a6b1023302feadf0874e9d834a81a9337216259ad8b20f55
+  - url: https://huggingface.co/mistralai/Devstral-2-123B-Instruct-2512
+    shows: 'License section - "This model is licensed under a Modified MIT License"; `license:other` in
+      the repo tags with a LICENSE file; `"gated":false`; the flagship SKU of the governing release'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 0b733df51d9087dc9a8425ab5ff1e94cfffc4267b884ec0759b9b7b12c9d8907
 adoption:
   level: 2
   reach: 10K-100K
   signal_type: usage_volume
   confidence: medium
   note: ~37k downloads last month for the Small-2507 SKU on HF; specialist coding-agent model with moderate
-    uptake (OpenHands/coding-agent niche), not a mass-market chat model.
+    uptake (OpenHands/coding-agent niche), not a mass-market chat model. Re-read 2026-08-13 - the band
+    was set on a superseded SKU. The two DECLARED artifacts are the Devstral 2 (2512) pair and they sum
+    to 221,596 downloads in the trailing 30 days (Devstral-Small-2-24B-Instruct-2512 188,901; Devstral-2-123B-Instruct-2512
+    32,695), which bands at level 3 (100K-1M) under sum_across_artifacts. The 2507 SKU on its own has
+    also risen, to 97,969, which is still level 2. ESCALATED rather than changed - no last_verified claimed
+    on this axis.
   sources:
   - url: https://huggingface.co/mistralai/Devstral-Small-2507
-    shows: ~37,129 downloads last month
-    accessed: '2026-06-04'
+    shows: 97,969 downloads in the trailing 30 days
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: e37b7fbf657dce4ba2c9773ca7769af7e515891b01c9de2664c9d9a8729c3a60
+  - url: https://huggingface.co/api/models/mistralai/Devstral-Small-2-24B-Instruct-2512
+    shows: 188,901 downloads in the trailing 30 days for mistralai/Devstral-Small-2-24B-Instruct-2512
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 46c88753b9f80faed149f868072e6b19f1caf41b5b199ac0c1f91ed3c5fef8c0
+  - url: https://huggingface.co/api/models/mistralai/Devstral-2-123B-Instruct-2512
+    shows: 32,695 downloads in the trailing 30 days for mistralai/Devstral-2-123B-Instruct-2512
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: d266650f615ae4211cc4067f773c6cdd251d0d343531fdf5dd812ae7ace67d34
 capability:
   score: 3
   basis: benchmark
   basis_detail: SWE-bench Verified
   value: 'Devstral Small 1.1 SWE-bench Verified 53.6% (OpenHands scaffold); #1 open source at its release'
   confidence: high
-  note: Best open coding model in its release window at a small 24B size, but below 2026 frontier coders
-    (Qwen3.6 27B 77.2, GLM-5.1, Kimi K2.6 80%+). Strong-for-size, mid-tier overall.
+  note: 'Best open coding model in its release window at a small 24B size, but below 2026 frontier coders
+    (Qwen3.6 27B 77.2, GLM-5.1, Kimi K2.6 80%+). Strong-for-size, mid-tier overall. Re-read 2026-08-13
+    - the 53.6% still stands on the 2507 card, but that is a superseded release and identity.md takes the
+    MAX across a tier''s releases. The governing Devstral 2 card reports SWE-bench Verified 72.2% for the
+    123B and 68.0% for Devstral Small 2 24B, which is a different position against the frontier comparison
+    the 3 rests on. ESCALATED rather than changed - no last_verified claimed on this axis.'
   sources:
   - url: https://huggingface.co/mistralai/Devstral-Small-2507
-    shows: 'SWE-bench Verified table: Devstral Small 1.1 = 53.6%, top open source'
-    accessed: '2026-06-04'
+    shows: 'SWE-bench Verified table: Devstral Small 1.1 = 53.6% under the OpenHands scaffold, against
+      46.8 for Devstral Small 1.0 and 42.2 for DeepSWE'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: e37b7fbf657dce4ba2c9773ca7769af7e515891b01c9de2664c9d9a8729c3a60
+  - url: https://huggingface.co/mistralai/Devstral-Small-2-24B-Instruct-2512
+    shows: 'Benchmark Results table - Devstral 2 123B SWE Bench Verified 72.2% / SWE Bench Multilingual
+      61.3% / Terminal Bench 2 32.6%; Devstral Small 2 24B 68.0% / 55.7% / 22.5%'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 630096d44de6e679a6b1023302feadf0874e9d834a81a9337216259ad8b20f55

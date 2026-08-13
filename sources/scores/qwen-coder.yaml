@@ -20,14 +20,23 @@ openness:
   note: Apache-2.0 weights with a closed corpus and inference code only, so 3, consistent across both generations
     - Qwen2.5-Coder and Qwen3-Coder are both plain Apache with no use restrictions. Qwen3-Coder governs and contributes
     capability 4; adoption 4 is carried from Qwen2.5-Coder, which has had longer to accumulate downloads. Kept apart
-    from the base Qwen tier because Alibaba ships and markets the Coder line separately.
+    from the base Qwen tier because Alibaba ships and markets the Coder line separately. Re-read 2026-08-13
+    - the governing Qwen3-Coder card still carries the `license:apache-2.0` tag and reads `"gated":false`
+    with safetensors weights listed, and it still documents only inference, quickstart and agentic-coding
+    usage with no post-training pipeline or SFT/RL mixture published. No change.
   raw: weights:open(Apache-2.0, on HF);data:closed(no training corpus released);code:partial(inference/usage
     + chat template; no training pipeline or post-training/SFT data);license:Apache-2.0(OSI permissive,
     no use restrictions)
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/Qwen/Qwen3-Coder-480B-A35B-Instruct
-    shows: Apache-2.0 license, 480B-A35B MoE instruct model card, downloadable BF16 weights
-    accessed: '2026-06-04'
+    shows: '`license:apache-2.0` in the repo tags and `"gated":false` in the embedded repo state, so the
+      BF16 weights download without a barrier; the card documents quickstart, tool-calling and agentic-coding
+      usage only, with no post-training pipeline and no SFT/DPO/RL mixture named or released'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 37afad5c82173e287aaa519b3d2e02b1c45f681e80f5564ee5df7d4cb53a8c18
+    establishes: [weights, data, code, license]
 adoption:
   level: 4
   reach: 1M-10M
@@ -35,10 +44,17 @@ adoption:
   confidence: high
   note: ~1.36M downloads last month for the 32B-Instruct SKU alone on HF; the broader Qwen2.5-Coder family (0.5B-32B
     base+instruct) multiplies this. Squarely in the 1-10M reach band on measured monthly download volume.
+    Re-read 2026-08-13 - the 32B-Instruct SKU now reads 1,242,001 downloads in the trailing 30 days, which
+    bands at 4 on its own; summed across the four declared SKUs the family reads 4,715,952 (32B-Instruct
+    1,242,001; 7B-Instruct 1,926,647; Qwen3-Coder-30B-A3B-Instruct 1,198,501; Qwen3-Coder-480B-A35B-Instruct-FP8
+    348,803), also level 4. No change.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/Qwen/Qwen2.5-Coder-32B-Instruct
-    shows: ~1,360,411 downloads last month
-    accessed: '2026-06-04'
+    shows: 1,242,001 downloads in the trailing 30 days
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: a594c2f0a721aece8997fba00f1cb43fce9a211199273c65451badb3f2bef090
 capability:
   score: 4
   basis: benchmark
@@ -48,8 +64,14 @@ capability:
   confidence: medium
   note: Strong open-weight coding model (Claude Sonnet-class agentic coding per vendor card), a notch below 2026
     frontier coders (DeepSeek-V4-Pro/Kimi K2.6/GLM-5.1). HF card is vendor-reported; no independent SWE-bench number
-    captured this run, so capped at 4 with medium confidence.
+    captured this run, so capped at 4 with medium confidence. Re-read 2026-08-13 - the card still claims
+    "results comparable to Claude Sonnet" on agentic coding and browser-use among open models, and still
+    inlines no independent SWE-bench figure. No change.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/Qwen/Qwen3-Coder-480B-A35B-Instruct
-    shows: vendor claim of Claude-Sonnet-class agentic coding; MoE architecture and long-context coding focus
-    accessed: '2026-06-04'
+    shows: vendor claim of results "comparable to Claude Sonnet" on agentic coding and agentic browser-use
+      among open models; 480B-A35B MoE with 256K native context extendable to 1M via Yarn
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 37afad5c82173e287aaa519b3d2e02b1c45f681e80f5564ee5df7d4cb53a8c18

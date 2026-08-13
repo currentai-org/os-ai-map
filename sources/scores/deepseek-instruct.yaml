@@ -16,13 +16,24 @@ openness:
       detail: OSI-style permissive, no use restrictions
   confidence: high
   note: V4-Flash weights are MIT open (matching the V4-Pro anchor's open_weights class); training data/code closed
-    -> open_weights. Consistent with the frozen V4-Pro anchor's openness ladder.
+    -> open_weights. Consistent with the frozen V4-Pro anchor's openness ladder. Re-read 2026-08-13 - the
+    card's License section still reads "This repository and the model weights are licensed under the MIT
+    License", the repo still reads `"gated":false`, and the card ships only an encoding folder and local-inference
+    instructions. The post-training pipeline is described in prose (two-stage expert cultivation via SFT
+    and GRPO, then on-policy distillation) but neither the scripts nor the mixture is released. No change.
   raw: weights:open(MIT, on HF);data:closed;code:partial(inference/serving; no training pipeline or data);license:MIT(OSI-style
     permissive, no use restrictions)
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash
-    shows: MIT license, 284B-A13B MoE, 1M context, downloadable FP4/FP8 weights
-    accessed: '2026-06-04'
+    shows: 'License section - "This repository and the model weights are licensed under the MIT License";
+      `license:mit` in the repo tags and `"gated":false` in the embedded repo state, so the 284B-A13B FP4+FP8
+      weights download without a barrier; encoding and local-inference folders only, with the post-training
+      pipeline described but not released and no SFT/RL mixture published'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: eaaace7b3df6f7a5a8aa1694db46715276c3c445fe0665b4b1797fce9127ce48
+    establishes: [weights, data, code, license]
 adoption:
   level: 4
   reach: 1M-10M
@@ -30,11 +41,16 @@ adoption:
   confidence: high
   note: ~3.50M downloads last month for V4-Flash on HF; the cheaper/faster sibling of V4-Pro is attractive for self-hosting,
     driving strong pull volume. Squarely 1-10M on measured monthly downloads (V4-Pro anchor itself sits at level
-    4).
+    4). Re-read 2026-08-13 - V4-Flash now reads 2,213,519 downloads in the trailing 30 days and the declared
+    V4-Pro repo reads 1,385,596; both sit inside 1M-10M, so the band holds whichever SKU the tier is read
+    on. No change.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash
-    shows: ~3,503,796 downloads last month
-    accessed: '2026-06-04'
+    shows: 2,213,519 downloads in the trailing 30 days
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: eaaace7b3df6f7a5a8aa1694db46715276c3c445fe0665b4b1797fce9127ce48
 capability:
   score: 4
   basis: benchmark
@@ -44,8 +60,14 @@ capability:
   confidence: medium
   note: Near-frontier capability (MMLU-Pro 86.2, LiveCodeBench 91.6) but deliberately the lighter sibling of the
     V4-Pro anchor (capability 5); placed at 4 to keep the family curve consistent - Flash trails Pro. Figures DeepSeek-reported
-    on the HF card.
+    on the HF card. Re-read 2026-08-13 - the "Comparison across Modes" table still gives V4-Flash Max MMLU-Pro
+    86.2, LiveCodeBench 91.6 and MRCR 1M 78.7, each below the V4-Pro Max column (87.5 / 93.5 / 83.5), which
+    is the family curve the 4 encodes. No change.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/deepseek-ai/DeepSeek-V4-Flash
-    shows: MMLU-Pro 86.2, LiveCodeBench 91.6, MRCR-1M 78.7 (Max mode); base MMLU 88.7
-    accessed: '2026-06-04'
+    shows: 'Comparison across Modes - V4-Flash Max MMLU-Pro 86.2, LiveCodeBench 91.6, MRCR 1M 78.7, SWE Verified
+      79.0; base-model table MMLU 88.7, HumanEval 69.5, GSM8K 90.8'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: eaaace7b3df6f7a5a8aa1694db46715276c3c445fe0665b4b1797fce9127ce48

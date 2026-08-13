@@ -23,12 +23,22 @@ openness:
     one does, for everyone inside the bound. A license that forbids commerce outright - CC-BY-NC,
     Mistral Non-Production - stays at 2. Nine other products carry a bounded license and all now
     score 3; four of them were already recorded there, which is the inconsistency this resolves.
+
+    Re-read 2026-08-13 - the 13B-Instruct card still carries `license:llama2` with a LICENSE file in the
+    repo, still reads `"gated":false`, and still ships a usage snippet with no training pipeline and no
+    corpus. No change.
   raw: weights:open(downloadable on HF);data:closed;code:partial(inference utils, no training pipeline);license:Llama-2-Community(custom
     Meta license, non-OSI; AUP + commercial conditions)
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/codellama/CodeLlama-13b-Instruct-hf
-    shows: live model card; license=Llama 2 / custom Meta commercial license; 13B instruct
-    accessed: '2026-06-04'
+    shows: '`license:llama2` in the repo tags with `licenseFilePath - LICENSE`; `"gated":false` in the embedded
+      repo state, so the 13B safetensors download without a barrier; transformers usage snippet only, no
+      training or fine-tuning pipeline and no corpus'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 5c5c6c663591dbb96606babd8813dac5fb1f5e16fba6d5b4ade5c26914dda19c
+    establishes: [weights, data, code, license]
 adoption:
   level: 3
   reach: 100K-1M
@@ -69,14 +79,24 @@ capability:
   value: Code Llama Instruct 13B ~HumanEval pass@1 ~42%; family 34B/70B-Instruct higher but all 2023-era
   confidence: medium
   note: >-
-    Weights downloadable under Meta's non-OSI Llama-2 Community license. Marketed as open, which
-    the openness class deliberately does not accept at face value. Moved from 2/restricted on
-    2026-08-01 by the universal license scale, which caps a bounded commercial license at 3 rather
-    than 2. The test at that boundary is whether the license permits commercial use AT ALL: this
-    one does, for everyone inside the bound. A license that forbids commerce outright - CC-BY-NC,
-    Mistral Non-Production - stays at 2. Nine other products carry a bounded license and all now
-    score 3; four of them were already recorded there, which is the inconsistency this resolves.
+    A 2023-generation code model, state of the art among open models at release and well below the
+    2026 coders in this category. The note that stood here until 2026-08-13 was a verbatim copy of
+    the openness note and described the license rather than the capability; it is replaced.
+
+    Re-read 2026-08-13, and the recorded value did not survive it. The HF card inlines no benchmark
+    table at all, and the paper it links (arXiv:2308.12950) reports "up to 67% and 65% on HumanEval
+    and MBPP" for the family rather than any 13B-Instruct figure. The recorded ~42% appears on
+    neither cited source. ESCALATED rather than changed - no last_verified claimed on this axis.
   sources:
   - url: https://huggingface.co/codellama/CodeLlama-13b-Instruct-hf
-    shows: Code Llama 13B-Instruct coding model card (arXiv:2308.12950)
-    accessed: '2026-06-04'
+    shows: Code Llama 13B-Instruct model card linking arXiv:2308.12950 "Code Llama - Open Foundation
+      Models for Code"; no benchmark table on the card
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 5c5c6c663591dbb96606babd8813dac5fb1f5e16fba6d5b4ade5c26914dda19c
+  - url: https://arxiv.org/abs/2308.12950
+    shows: 'abstract - "Code Llama reaches state-of-the-art performance among open models on several code
+      benchmarks, with scores of up to 67% and 65% on HumanEval and MBPP"; 7B/13B/34B/70B Instruct variants'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 3caaf17354fab6124a427b37397d9b7dbc0f0b5b133d51e4ba0423cfd7233f8e

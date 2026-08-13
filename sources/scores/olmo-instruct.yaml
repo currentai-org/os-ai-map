@@ -19,16 +19,30 @@ openness:
       detail: OSI
   confidence: high
   note: 'Fully-open instruct line: Apache-2.0 weights + open pretraining and post-training data + open training
-    code + checkpoints.'
+    code + checkpoints. Re-read 2026-08-13 - the 7B Instruct card still carries `license:apache-2.0` and
+    reads `"gated":false`, and the Olmo 3 blog still publishes the whole model flow (every stage, checkpoint,
+    dataset and dependency) with the code at allenai/open-instruct. The blog has since added an Olmo 3.1
+    update shipping 32B Think and Instruct checkpoints on the same open recipe, which does not change the
+    class. No change.'
   raw: weights:open(Apache-2.0);data:open(Dolma 3 pretraining + open post-training mixtures);code:open(OLMo
     + open-instruct);checkpoints:open;license:Apache-2.0(OSI)
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/allenai/Olmo-3-7B-Instruct
-    shows: OLMo 3 7B Instruct on HF; Apache-2.0
-    accessed: '2026-06-30'
+    shows: '`license:apache-2.0` in the repo tags and `"gated":false` in the embedded repo state, so the
+      7B Instruct weights download without a barrier'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 1a758290064264b9ee98545b3c04bd94d6d04399779c763fddf59b1450b97e18
+    establishes: [weights, license]
   - url: https://allenai.org/blog/olmo3
-    shows: fully-open instruct models released with data, code, recipes
-    accessed: '2026-06-30'
+    shows: 'the model flow is published in full - "every stage, checkpoint, dataset, and dependency required
+      to create and modify it"; Models / Tech Report / Code / API / Demo links, with Code pointing at
+      github.com/allenai/open-instruct; the 12/12 update adds Olmo 3.1 Instruct 32B on the same recipe'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: e103633d087ef9092a2aee2dc599cf609ca13209d21a3a7b1ac45f1a5d01fe49
+    establishes: [data, code, checkpoints]
 adoption:
   level: 3
   reach: 100K-1M
@@ -38,11 +52,18 @@ adoption:
     workhorses. Downloads still ramping as it supersedes OLMo 2 Instruct. Read live 2026-08-13: 450,053
     Hugging Face downloads in the trailing 30 days across the declared artifact(s), which bands at 100K-1M,
     level 3. The previous reach ''10K-100K'' was a band off a different scale. No last_verified claimed: only
-    the figure was re-read, not the whole axis.'
+    the figure was re-read, not the whole axis. Re-read in full 2026-08-13 and the band holds: allenai/Olmo-3-7B-Instruct
+    reads 450,053 downloads in the trailing 30 days, inside 100K-1M. The other declared artifact,
+    allenai/Olmo-3-1025-32B-Instruct, answers HTTP 401 and contributes nothing to the sum; that is flagged
+    separately as a declared artifact that no longer resolves, and it can only raise the figure, never
+    lower it.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/allenai/Olmo-3-7B-Instruct
-    shows: OLMo 3 Instruct SKUs live on HF
-    accessed: '2026-06-30'
+    shows: 450,053 downloads in the trailing 30 days for allenai/Olmo-3-7B-Instruct
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 1a758290064264b9ee98545b3c04bd94d6d04399779c763fddf59b1450b97e18
 capability:
   score: 4
   basis: benchmark
@@ -50,8 +71,14 @@ capability:
   value: OLMo 3-Instruct 7B ties or surpasses Qwen 2.5, Gemma 3 and Llama 3.1 at its scale
   confidence: high
   note: Strongest fully-open chat line; competitive with same-scale open-weight instruct models but below the 2026
-    frontier (=5).
+    frontier (=5). Re-read 2026-08-13 - the blog still reads "Olmo 3-Instruct ties or surpasses Qwen 2.5,
+    Gemma 3, and Llama 3.1 in our evaluations, and competes with the Qwen 3 family at similar scale", which
+    is the comparison the 4 rests on and still places it below the frontier. No change.
+  last_verified: '2026-08-13'
   sources:
   - url: https://allenai.org/blog/olmo3
-    shows: OLMo 3-Instruct 7B ties/surpasses Qwen 2.5, Gemma 3, Llama 3.1
-    accessed: '2026-06-30'
+    shows: '"Olmo 3-Instruct ties or surpasses Qwen 2.5, Gemma 3, and Llama 3.1 in our evaluations, and
+      competes with the Qwen 3 family at similar scale"'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: e103633d087ef9092a2aee2dc599cf609ca13209d21a3a7b1ac45f1a5d01fe49

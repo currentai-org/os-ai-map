@@ -38,14 +38,12 @@ AXES = ("openness", "adoption", "capability")
 # The seven found on 2026-08-11, each carrying one note under two or more axes. Named
 # individually so that fixing one is a one-line deletion here and adding an eighth is a
 # failure. Do not add to this list to make the suite pass — that is the failure working.
+# Five left the list on 2026-08-13, in the finetuned_chat re-read: codegemma, codellama,
+# jamba-large, llama-instruct and tulu each had the openness note re-derived into a real
+# capability or adoption judgment. `llama` and `personahub` are still outstanding.
 KNOWN_SHARED_NOTES = {
-    "codegemma",
-    "codellama",
-    "jamba-large",
     "llama",
-    "llama-instruct",
     "personahub",
-    "tulu",
 }
 
 

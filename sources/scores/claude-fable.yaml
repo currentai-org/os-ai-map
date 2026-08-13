@@ -15,15 +15,25 @@ openness:
   confidence: high
   note: 'No weights, data or code released. Served through the Anthropic API only, so 1/closed on every dimension.
     Recorded here rather than in base_pretrained because a closed model has no observable base checkpoint to score,
-    which is the convention #114 settled.'
+    which is the convention #114 settled. Re-read 2026-08-13 - the platform docs still list Fable 5 by API
+    model ID only, still designate it a Covered Model with 30-day data retention, and still offer no weights,
+    corpus or training code. No change.'
   raw: weights:closed;data:closed;code:closed;license:Proprietary(API-only)
+  last_verified: '2026-08-13'
   sources:
   - url: https://www.anthropic.com/news/claude-fable-5-mythos-5
     shows: Mythos-class flagship, proprietary, claude-fable-5 via API and cloud marketplaces only
-    accessed: '2026-06-11'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 1a3846b28e45ba402c08faf7719ca1dab8e604f8ddaec268adb1d54159343634
   - url: https://platform.claude.com/docs/en/about-claude/models/introducing-claude-fable-5-and-claude-mythos-5
-    shows: API model id claude-fable-5, no weights release, Covered Model retention policy
-    accessed: '2026-06-11'
+    shows: 'model table - "Claude Fable 5 / claude-fable-5 / Anthropic''s most capable widely released
+      model"; "both are designated Covered Models" with 30-day data retention and no zero-data-retention
+      option; access is by API model ID, with no weights, corpus or training code offered'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: a71ffd2beec0d96e1ac1b8ef3878fafb959bd43da3d33ba08f511719c213b360
+    establishes: [weights, data, code, license]
 adoption:
   level: 4
   reach: null
@@ -32,14 +42,28 @@ adoption:
   note: Directional market-position estimate (not a measured usage figure). Anthropic's most capable GA model, with
     day-one enterprise testimonials (Stripe, GitHub, Cursor, Cognition) and a staged subscription rollout. Capped
     at 4 rather than 5 because it launched Jun 9 2026 (~2 weeks before scoring), so sustained reach is unproven.
-    Overrides the prior frozen-anchor convention (held null) for dominant closed incumbents.
+    Overrides the prior frozen-anchor convention (held null) for dominant closed incumbents. Re-read
+    2026-08-13 - the launch post still carries partner testimonials and no quantitative usage figure, so
+    the abstention from a number stands and `reach` correctly stays null. As on claude-opus, the OpenRouter
+    rankings page renders no model names to a plain fetch, so it corroborates the existence of a usage
+    leaderboard rather than Fable's place on it. Two months past launch the "sustained reach unproven"
+    reason for capping at 4 is weaker than it was, which is a scoring question rather than a freshness one
+    and is flagged. No change made.
+  last_verified: '2026-08-13'
   sources:
   - url: https://www.anthropic.com/news/claude-fable-5-mythos-5
-    shows: launch testimonials and staged availability, no quantitative usage figures
-    accessed: '2026-06-11'
+    shows: launch testimonials (Cursor and others) and staged availability; no usage or user figure anywhere
+      on the page
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 1a3846b28e45ba402c08faf7719ca1dab8e604f8ddaec268adb1d54159343634
   - url: https://openrouter.ai/rankings
-    shows: public per-model token-share leaderboard where Claude flagships rank among the most-used models
-    accessed: '2026-06-23'
+    shows: '"Live LLM rankings based on benchmarks and real data from millions of people using models
+      through OpenRouter" - the leaderboard is client-rendered, so a plain fetch cannot show which models
+      rank where'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: fa884cbecf04568e2855fafd6f56f1ffc0c675ca8eaa74ec249467730bca5f0a
 capability:
   score: 5
   basis: benchmark
@@ -49,11 +73,23 @@ capability:
   note: 'Anthropic-reported: highest among frontier models on Cognition FrontierCode (even at medium effort); top
     on Hebbia Finance Benchmark; SOTA on CursorBench and FrontierBench per partner testing; leads Opus 4.8 on long-horizon
     coding, knowledge work, vision, and memory tasks. Vendor-reported; underlying Mythos weights with classifier
-    fallback on ~5% of sessions.'
+    fallback on ~5% of sessions. Re-read 2026-08-13 - the launch post still states Fable 5 "scores highest
+    among frontier models, even at medium effort" on Cognition''s FrontierCode, still reports the highest
+    score of any model on Hebbia''s Finance Benchmark, and still carries Cursor''s "state of the art model
+    on CursorBench" testimonial. The product page still calls it "our most capable generally available
+    model". No change.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://www.anthropic.com/news/claude-fable-5-mythos-5
-    shows: FrontierCode highest among frontier models; SOTA across software engineering, knowledge work, vision
-    accessed: '2026-06-11'
+    shows: 'on Cognition''s FrontierCode evaluation "Fable 5 scores highest among frontier models, even at
+      medium effort"; "On Hebbia''s Finance Benchmark for senior-level reasoning, Fable 5 has the highest
+      score of any model"; Cursor - "Claude Fable 5 is the state of the art model on CursorBench"'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 1a3846b28e45ba402c08faf7719ca1dab8e604f8ddaec268adb1d54159343634
   - url: https://www.anthropic.com/claude/fable
-    shows: most capable generally available Claude model; long-horizon agentic flagship positioning
-    accessed: '2026-06-11'
+    shows: '"Claude Fable 5 is our most capable generally available model. It''s best for ambitious,
+      long-running, asynchronous work"; long-horizon agentic flagship positioning'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: a2bc5e717c07a881cc2d9ceefc4cf84413aea2ad69fe4262bf6c953f9fd16c00

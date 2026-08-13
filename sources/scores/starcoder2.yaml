@@ -24,17 +24,31 @@ openness:
     the ladder reserves the top score for an OSI license. Class corrected from open_source to open_weights on 2026-07-29:
     the score was right but 4/open_source is a pair this ladder cannot emit, and the mismatch is what flagged it.
     Resolved under issue #117 by tiering RAIL as a conduct restriction, which is what keeps a fully-open pipeline
-    off the 2/restricted floor it would otherwise have hit on the license alone.'
+    off the 2/restricted floor it would otherwise have hit on the license alone. Re-read 2026-08-13 - the
+    instruct card still describes "the very first entirely self-aligned code LLM trained with a fully
+    permissive and transparent pipeline", still links the code (bigcode-project/starcoder2-self-align)
+    and the dataset (bigcode/self-oss-instruct-sc2-exec-filter-50k) by name, still has a Full Data Pipeline
+    section, and both repos still carry `license:bigcode-openrail-m` with `"gated":false`. No change.'
   raw: weights:open;data:open(self-oss-instruct-sc2-exec-filter-50k + 7 documented intermediate datasets);code:open(starcoder2-self-align
     pipeline on GitHub);base-data:open(The Stack v2);license:BigCode-OpenRAIL-M(open but RAIL behavioral-use
     restrictions, not OSI)
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/bigcode/starcoder2-15b-instruct-v0.1
-    shows: self-aligned; open dataset + open self-align code + OpenRAIL-M license
-    accessed: '2026-06-04'
+    shows: '"the very first entirely self-aligned code Large Language Model (LLM) trained with a fully
+      permissive and transparent pipeline"; Code bigcode-project/starcoder2-self-align and Dataset
+      bigcode/self-oss-instruct-sc2-exec-filter-50k named on the card, plus a Full Data Pipeline section;
+      `license:bigcode-openrail-m` in the repo tags and `"gated":false`'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 09525fc2fe12437d9ea3c62a6d23a1394dc51b750a268d956ebdac20bf07e302
+    establishes: [weights, data, code, license]
   - url: https://huggingface.co/bigcode/starcoder2-15b
-    shows: base StarCoder2 trained on open The Stack v2; OpenRAIL-M
-    accessed: '2026-06-04'
+    shows: base StarCoder2 trained on the open The Stack v2; `license:bigcode-openrail-m`; `"gated":false`
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 53ead6b9c586adb9dc60a183daaf29ea6d4509a20f2f2872729784fd69ffc177
+    establishes: [data]
 adoption:
   level: 1
   reach: <10K
@@ -42,13 +56,20 @@ adoption:
   confidence: medium
   note: Instruct SKU ~1.1k downloads/last-month; base StarCoder2-15B ~9.4k/last-month. Research-significant (fully-open
     self-alignment recipe) but low production reach; placed at 1 on the instruct SKU's measured volume.
+    Re-read 2026-08-13 - both SKUs have fallen further, the instruct SKU to 856 downloads in the trailing
+    30 days and the base to 4,425. Level 1 (<10K) on either, and on their sum. No change.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/bigcode/starcoder2-15b-instruct-v0.1
-    shows: ~1,120 downloads last month
-    accessed: '2026-06-04'
+    shows: 856 downloads in the trailing 30 days
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 09525fc2fe12437d9ea3c62a6d23a1394dc51b750a268d956ebdac20bf07e302
   - url: https://huggingface.co/bigcode/starcoder2-15b
-    shows: ~9,449 downloads last month (base)
-    accessed: '2026-06-04'
+    shows: 4,425 downloads in the trailing 30 days (base), the declared artifact
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 53ead6b9c586adb9dc60a183daaf29ea6d4509a20f2f2872729784fd69ffc177
 capability:
   score: 3
   basis: benchmark
@@ -57,7 +78,14 @@ capability:
   confidence: high
   note: Strong HumanEval for a fully-open 16B in 2024 (best fully-self-aligned code model at release), but HumanEval
     is saturated and the model is below 2026 frontier coders on harder agentic benchmarks (SWE-bench). Mid-tier.
+    Re-read 2026-08-13 - the card's model-index still records HumanEval pass@1 72.6 and HumanEval+ 63.4,
+    both unchanged, and the evaluation section still covers EvalPlus, LiveCodeBench and DS-1000 rather
+    than any agentic benchmark. No change.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/bigcode/starcoder2-15b-instruct-v0.1
-    shows: HumanEval pass@1 72.6%, HumanEval+ 63.4%
-    accessed: '2026-06-04'
+    shows: 'model-index - HumanEval pass@1 72.6, HumanEval+ pass@1 63.4; the card evaluates on EvalPlus,
+      LiveCodeBench and DS-1000'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 09525fc2fe12437d9ea3c62a6d23a1394dc51b750a268d956ebdac20bf07e302

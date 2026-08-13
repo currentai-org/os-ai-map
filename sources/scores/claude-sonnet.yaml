@@ -15,24 +15,55 @@ openness:
   confidence: high
   note: Closed by construction and stable across generations - no Sonnet release has ever shipped weights,
     so this axis does not move when the tier advances. Measured against Claude Sonnet 4.6 (released
-    2026-02-17), Anthropic's production default coding tier at the time of scoring.
+    2026-02-17), Anthropic's production default coding tier at the time of scoring. Re-read 2026-08-13 -
+    the launch post still lists availability as "all Claude plans, Claude Cowork, Claude Code, our API,
+    and all major cloud platforms" and offers no weight download, and the tier has since advanced to Sonnet
+    5 (2026-06-30), which is sold the same way at $2/$10 per million tokens. Closed on both releases. No
+    change.
   raw: weights:closed;data:closed;code:closed;license:Proprietary(API-only)
+  last_verified: '2026-08-13'
   sources:
   - url: https://www.anthropic.com/news/claude-sonnet-4-6
-    shows: launch post presents Sonnet 4.6 as available through the Anthropic API and the Claude apps, with
-      no weight download offered
-    accessed: '2026-07-29'
+    shows: '"Claude Sonnet 4.6 is available now on all Claude plans, Claude Cowork, Claude Code, our API,
+      and all major cloud platforms"; access is by API model id claude-sonnet-4-6, with no weights, corpus
+      or training code offered'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 68b253b30af8131679942ad453b5a6ccf9a38c8368f4640442273792fb5ce44c
+    establishes: [weights, data, code, license]
+  - url: https://www.anthropic.com/news/claude-sonnet-5
+    shows: 'the tier''s current release - "Introducing Claude Sonnet 5, Jun 30, 2026"; "priced at $2 per
+      million input tokens and $10 per million output tokens. Developers can use claude-sonnet-5 via the
+      Claude API"; no weights, corpus or training code offered'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 7afd4cde946d0dfd7834f2ecd785a4656c0ca20ef1508413354a1ad983b5d5c5
+    establishes: [weights, data, code, license]
 adoption:
   level: 5
   signal_type: reported_traction
   confidence: medium
   note: Highest-adoption tier of the three Claude model tiers - Sonnet is the production default for coding
     and the model most API traffic lands on. Directional rather than measured; no per-model usage figure is
-    published, so this is a reported-traction judgment.
+    published, so this is a reported-traction judgment. Re-read 2026-08-13 - the post still puts Sonnet 4.6
+    on every Claude plan including a free tier upgraded to it by default, which is the breadth the 5 rests
+    on, and still publishes no usage or user count. The tier has since advanced to Sonnet 5, which is "the
+    default model for Free and Pro plans", so the breadth argument is if anything stronger. `reach` correctly
+    absent. No change.
+  last_verified: '2026-08-13'
   sources:
   - url: https://www.anthropic.com/news/claude-sonnet-4-6
-    shows: positioned as the default coding model across Claude products and the API
-    accessed: '2026-07-29'
+    shows: '"We''ve also upgraded our free tier to Sonnet 4.6 by default"; available on all Claude plans,
+      Claude Cowork, Claude Code, the API and all major cloud platforms; no usage or user figure published'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 68b253b30af8131679942ad453b5a6ccf9a38c8368f4640442273792fb5ce44c
+  - url: https://www.anthropic.com/news/claude-sonnet-5
+    shows: '"From today, Claude Sonnet 5 is available across all plans - it is the default model for Free
+      and Pro plans, and is available to Max, Team, and Enterprise users"; no usage or user figure published'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 7afd4cde946d0dfd7834f2ecd785a4656c0ca20ef1508413354a1ad983b5d5c5
 capability:
   score: 4
   basis: benchmark
@@ -41,8 +72,31 @@ capability:
   confidence: medium
   note: Sonnet 4.6 posts 79.6% on SWE-bench Verified, strong for a mid-tier model but below the Opus and
     Fable tiers, which is why this sits at 4 rather than 5. Confidence is medium because SWE-bench Verified's
-    public leaderboard has had no submissions since 2025-12-15, so recent figures are vendor-reported.
+    public leaderboard has had no submissions since 2025-12-15, so recent figures are vendor-reported. Re-read
+    2026-08-13, with one limitation worth recording - the headline 79.6% sits in a chart the launch page
+    renders client-side, so a plain fetch cannot read it back. What the fetched text does carry is the
+    SWE-bench Verified footnote, "Our score was averaged over 10 trials. With a prompt modification, we saw
+    a score of 80.2%", which puts Sonnet 4.6 in the high seventies to eighty on that benchmark and is
+    consistent with the recorded figure. The chart figure is flagged as not re-derivable from a fetch.
+
+    The larger finding is that the axis is a release behind. The tier now ships Claude Sonnet 5 (2026-06-30),
+    whose launch post says "its performance is close to that of Opus 4.8" and describes a substantial
+    improvement over Sonnet 4.6 on reasoning, tool use, coding and knowledge work. identity.md takes the
+    MAX across a tier's releases, and claude-opus sits at 5, so the reason given for holding this tier at
+    4 - that it is below the Opus tier - no longer reads the same way. ESCALATED rather than changed, and
+    no last_verified is claimed on this axis.
   sources:
   - url: https://www.anthropic.com/news/claude-sonnet-4-6
-    shows: vendor-reported 79.6% on SWE-bench Verified for Sonnet 4.6
-    accessed: '2026-07-29'
+    shows: 'SWE-bench Verified footnote - "Our score was averaged over 10 trials. With a prompt modification,
+      we saw a score of 80.2%". The headline 79.6% is in a client-rendered chart and is not in the fetched
+      body.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 68b253b30af8131679942ad453b5a6ccf9a38c8368f4640442273792fb5ce44c
+  - url: https://www.anthropic.com/news/claude-sonnet-5
+    shows: 'the tier''s current release - "Sonnet 5 narrows the gap: its performance is close to that of
+      Opus 4.8, but at lower prices. It''s a substantial improvement over its predecessor, Sonnet 4.6, on
+      important aspects of agentic performance like reasoning, tool use, coding, and knowledge work."'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 7afd4cde946d0dfd7834f2ecd785a4656c0ca20ef1508413354a1ad983b5d5c5

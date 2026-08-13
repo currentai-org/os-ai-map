@@ -17,16 +17,28 @@ openness:
   note: Proprietary, served through the xAI API, grok.com and X, with no downloadable weights, so 1/closed. Grok
     4.20 governs and contributes capability 4; adoption 3 is carried from Grok 3, which had wider reach. The bare
     `grok` slug names this model line - the consumer chat app is a separate product recorded as grok-app.
+    Re-read 2026-08-13 - the release notes still carry the "Grok 4.20 and Grok 4.20 Multi-agent are live"
+    entry with no weight release beside it, and the model reference is still an API document with no
+    distribution path. Two things to record for the other axes rather than this one - the model reference
+    now headlines grok-4.6 as the flagship, so `governing_release - grok-4-20` is stale, and the vendor now
+    brands itself SpaceXAI. Neither moves a closed score. No change.
   raw: weights:closed;data:closed;code:closed;license:Proprietary(API-only)
+  last_verified: '2026-08-13'
   sources:
   - url: https://docs.x.ai/developers/release-notes
     shows: xAI release notes record "Grok 4.20 and Grok 4.20 Multi-agent are live" and point at the API docs; no
       weight release accompanies the entry
-    accessed: '2026-07-28'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 3469921696576c13caf0adc004075b7b5772b59bb3080d834bc377191b5078de
+    establishes: [weights, data, code, license]
   - url: https://docs.x.ai/docs/models
-    shows: xAI's own model reference for the Grok 4.x line documents pricing, context limits and model-selection
-      guidance only, and states no distribution or download path
-    accessed: '2026-07-28'
+    shows: 'xAI''s model reference now headlines "Meet grok-4.6 ... Our flagship model for code and everything
+      else", with a 500k-token context, and documents pricing and model-selection guidance only, with no
+      distribution or download path'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 1f2a5d22ef487e95b7e5267b5a94a34d4c85ff951dc8526f575a013ae08d3bac
 adoption:
   level: 3
   signal_type: reported_traction
@@ -34,11 +46,25 @@ adoption:
   note: Available to X users and via grok.com/xAI API in 2025 as the flagship Grok generation; now a superseded
     model behind Grok 4.x default. No clean standalone Grok-3 user/usage count published. Placed at 3 on broad X-surface
     availability as a former flagship, downgraded from app-surface 5 because xAI discloses no honest per-model figure
-    and it is no longer the default. Directional.
+    and it is no longer the default. Directional. Re-read 2026-08-13, and the reasoning behind the band no
+    longer holds. It bands the whole `grok` tier on Grok 3, explicitly because Grok 3 is superseded - but
+    identity.md takes the MAX across a tier's releases, so a tier is not marked down for having moved on.
+    The line's current flagship is grok-4.6, the default across the same X and grok.com surfaces. This is
+    the same shape as the command-r and llama corrections. ESCALATED rather than changed - no last_verified
+    claimed on this axis.
   sources:
   - url: https://x.ai/news/grok-3
-    shows: Grok 3 launched as xAI flagship reasoning model on X/grok.com
-    accessed: '2026-06-04'
+    shows: '"Grok 3 Beta - The Age of Reasoning Agents"; the superseded release the band was set on. No
+      usage or user figure published.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: fad30d484e9ef73cbe5ace4f619e5067b088f8ac8a8106cbd4d484a92c3c0b02
+  - url: https://docs.x.ai/docs/models
+    shows: grok-4.6 headlined as the current flagship, which is the release identity.md would have the tier
+      banded on
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 1f2a5d22ef487e95b7e5267b5a94a34d4c85ff951dc8526f575a013ae08d3bac
 capability:
   score: 4
   basis: benchmark
@@ -47,11 +73,28 @@ capability:
   confidence: high
   note: 'Artificial Analysis Intelligence Index v4.0 score of 49, ranked #24 of 150 (median 36); index includes
     GPQA Diamond and SciCode (individual subscores not disclosed). Provisional LMSYS/LMArena Elo ~1505-1535 (vs
-    1483 for Grok 4.1). Strong but a notch below the GPT-5/Gemini 3.5/Opus 4.7 leaders on the AA index.'
+    1483 for Grok 4.1). Strong but a notch below the GPT-5/Gemini 3.5/Opus 4.7 leaders on the AA index.
+
+    Re-read 2026-08-13, and NONE of the AA figures survives. The page now reports Grok 4.20 0309 v2
+    (Reasoning) at 38 on the Artificial Analysis Intelligence Index, ranked #62 of 184, against a median of
+    34 - not 49, not #24 of 150, and not against a median of 36. Artificial Analysis recalibrated the index,
+    so this is not the same number moving; the figure the record cites no longer exists on their scale. The
+    page also banners the model as deprecated and points at Grok 4.3 (high) instead, and xAI''s own docs now
+    headline grok-4.6. The LMArena estimate still stands on the NextBigFuture source, which is an estimate
+    rather than a measurement and says so. ESCALATED rather than changed - no last_verified claimed on this
+    axis, and the score needs re-deriving on a current release.'
   sources:
   - url: https://artificialanalysis.ai/models/grok-4-20
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
+    shows: '"Grok 4.20 0309 v2 (Reasoning) scores 38 on the Artificial Analysis Intelligence Index, placing
+      it above average among comparable models (median: 34)"; Intelligence rank "# 62 / 184"; banner reads
+      "This model is deprecated ... SpaceXAI has launched a newer model, Grok 4.3 (high). We suggest
+      considering it instead."'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: c0357196a41dd4b8a932486be8e01dc9d19446dbc2a568da53b4f62f1e14631d
   - url: https://www.nextbigfuture.com/2026/02/xai-launches-grok-4-20-and-it-has-4-ai-agents-collaborating.html
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
+    shows: '"Estimated Arena (LMArena) Elo for Grok 4.20 - ~1505-1535 provisional ... Grok 4.1 Thinking is
+      already at 1483". An estimate rather than a measured leaderboard position.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: b97eee76687904330fbb120c8bc804848048306853fc8d42e79ae3dfe7f8a830
