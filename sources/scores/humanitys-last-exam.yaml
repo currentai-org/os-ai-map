@@ -17,12 +17,33 @@ openness:
   confidence: medium
   note: Public set is MIT-licensed with answers, but access is gated and a private held-out set exists.
     The MIT was recorded inside the compound questions+answers key, where no dimension could read it; it
-    is now recorded under license, and the private holdout is what decides the score.
+    is now recorded under license, and the private holdout is what decides the score. Re-read 2026-08-13
+    - the HF repo still tags `license:mit`, is still `"gated":"auto"` behind a contact-information
+    agreement, and the card still documents the 2,500 public questions and the BIG-bench-superset canary
+    string. The holdout is NOT stated on the card, so lastexam.ai is now cited for it - it reads "We
+    publicly release these questions, while maintaining a private test set of held out questions to
+    assess model overfitting." All four values stand.
   raw: license:MIT(the public 2,500-question set);questions+answers:public(2500-Q);access:HF-gated(accept-conditions,no-redistribution,canary);holdout:private
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/datasets/cais/hle
-    shows: MIT, gated access, no-redistribution notice
-    accessed: '2026-06-17'
+    shows: '`license:mit` in the repo tags; the page says "You need to agree to share your contact
+      information to access this dataset" and the embedded repo state reads `"gated":"auto"`; the card
+      documents 2,500 questions in a single test split and the canary string "hle:3r2s:26b5c67b-..."
+      that is "a superset of the BIG-bench canary string". The card makes no statement about a private
+      held-out set'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 64abc5e65b5b394c45a265e10bb963b3ae6372519c98f53970ae5d558b9e93cd
+    establishes: [license, access]
+  - url: https://lastexam.ai
+    shows: '"We publicly release these questions, while maintaining a private test set of held out
+      questions to assess model overfitting", over a 2,500-question public set across more than a
+      hundred subjects from nearly 1,000 expert contributors'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 66ba18398df40126f802a10ef6f59da2ed282d38305d8c1880db8781952c0cc4
+    establishes: [holdout, answers]
 adoption:
   level: 3
   signal_type: usage_volume
@@ -45,8 +66,17 @@ capability:
   value: 2,500 expert questions across 100+ subjects; multimodal; private held-out set; designed as successor to
     saturated MMLU/MATH
   confidence: high
-  note: Far harder and broader than MMLU/MATH; GPQA is a narrower difficulty peer.
+  note: Far harder and broader than MMLU/MATH; GPQA is a narrower difficulty peer. Re-read 2026-08-13 -
+    the project site still gives every element of the recorded value, the 2,500 expert questions, the
+    hundred-plus subjects, the multimodal scope and the private held-out set. Band unchanged at 5. The
+    note names gpqa as a peer, but that product's capability is a deliberate null, so there are not two
+    integers for a relation to be arithmetic over and relative_to/relation stay unset.
+  last_verified: '2026-08-13'
   sources:
   - url: https://lastexam.ai
-    shows: ~1,000 experts, 2,500 Q, 100+ subjects, private holdout
-    accessed: '2026-06-17'
+    shows: nearly 1,000 subject-expert contributors across 500+ institutions; 2,500 questions across
+      over a hundred subjects; "maintaining a private test set of held out questions to assess model
+      overfitting"; the 04/03/2025 news entry finalizing the set at 2,500 questions
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 66ba18398df40126f802a10ef6f59da2ed282d38305d8c1880db8781952c0cc4

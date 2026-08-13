@@ -16,14 +16,25 @@ openness:
       value: public
       detail: downloadable, fully released, not held-out
   confidence: high
-  note: Fully open public benchmark dataset under MIT with documented construction methodology.
+  note: Fully open public benchmark dataset under MIT with documented construction methodology. Re-read
+    2026-08-13 - the repository still declares MIT (license tab and the README line "CRUXEval is MIT
+    licensed, as found in the LICENSE file"), the README still documents the 800-sample construction
+    and the two tasks, and the samples are still public. The repo banner now reads "This repository was
+    archived by the owner on Sep 18, 2025. It is now read-only", which changes maintenance rather than
+    openness - an archived public repo is still downloadable and still MIT.
   raw: data:open(800 samples public on GitHub + HF);license:MIT(permissive, redistributable);datasheet:yes(README
     + arXiv paper documenting construction);access:public(downloadable, fully released, not held-out)
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/facebookresearch/cruxeval
-    shows: MIT-licensed 800-sample Python code-reasoning benchmark, publicly downloadable with CRUXEval-I/-O
-      tasks
-    accessed: '2026-06-04'
+    shows: 'the repository''s license tab reads "MIT license" and the README ends "CRUXEval is MIT
+      licensed, as found in the LICENSE file"; the README describes "a benchmark of 800 Python functions
+      and input-output pairs" with the CRUXEval-I and CRUXEval-O tasks and the sampling filter; the repo
+      is public (banner: archived by the owner on Sep 18, 2025, read-only) so the samples still download'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: d8d7e7966208b80243c9ab3f996ce50acf974be9b55e6d107ef90f6073cb6f49
+    establishes: [license, access, datasheet, data]
 adoption:
   level: 3
   signal_type: reported_traction
@@ -31,16 +42,41 @@ adoption:
   note: Established code-reasoning benchmark cited in code-model evaluations and research since 2024;
     from Meta FAIR with a dedicated leaderboard. Solid research/eval-standard traction but a specialist
     code-execution benchmark, not mass-scale; placed at 3 on reported research/citation traction rather
-    than a measured download figure.
+    than a measured download figure. Re-read 2026-08-13 and NOT dated, because the re-read says the value
+    should move. Two findings. First, the repository is no longer maintained - it was archived read-only
+    by its owner on Sep 18, 2025 - so "maintained" in the old shows is false. Second, a measured download
+    figure DOES exist on the artifact this product already declares - the Hub API reports 8,063 downloads
+    in the trailing 30 days for cruxeval-org/cruxeval, which bands at level 2 (1K-10K) on the dataset
+    scale, one below the recorded 3. docs/guides/adoption.md says to re-band when a real download signal
+    appears, which is the mt-bench precedent, so this is escalated for a curator ruling rather than
+    changed here.
   sources:
   - url: https://github.com/facebookresearch/cruxeval
-    shows: maintained Meta FAIR benchmark repo with leaderboard, used as a code reasoning/execution evaluation
-      standard
-    accessed: '2026-06-04'
+    shows: 'Meta FAIR benchmark repo with a leaderboard at crux-eval.github.io/leaderboard.html, used
+      as a code reasoning/execution evaluation standard. NOT maintained - the banner reads "This
+      repository was archived by the owner on Sep 18, 2025. It is now read-only"'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: d8d7e7966208b80243c9ab3f996ce50acf974be9b55e6d107ef90f6073cb6f49
+  - url: https://huggingface.co/api/datasets/cruxeval-org/cruxeval
+    shows: 8,063 downloads in the trailing 30 days for cruxeval-org/cruxeval, the Hugging Face artifact
+      this product declares; bands at 1K-10K, level 2
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 6ba347ef887d0d17c94e845b465d67e0765d5b41adddc2b62afcc2e73e403e7d
 capability:
   score: null
   basis: n/a
   value: null
   confidence: high
-  note: Capability not a meaningful axis for an eval dataset.
-  sources: []
+  note: Capability not a meaningful axis for an eval dataset. Re-read 2026-08-13 and the abstention
+    stands - the repo publishes a static set of 800 function/input/output triples with no performance
+    or feature claim the capability axis could band.
+  last_verified: '2026-08-13'
+  sources:
+  - url: https://github.com/facebookresearch/cruxeval
+    shows: a static 800-sample corpus of Python functions with input and output pairs; the README reports
+      how models score on it, never a capability of the corpus itself
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: d8d7e7966208b80243c9ab3f996ce50acf974be9b55e6d107ef90f6073cb6f49

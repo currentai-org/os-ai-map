@@ -20,14 +20,21 @@ openness:
       raw: hand-written to avoid GitHub-dump overlap (per design)
   confidence: high
   note: 'Fully open: MIT license, ungated, downloadable, with a dataset card. Textbook open-data case
-    for this category.'
+    for this category. Re-read 2026-08-13: the repo still carries the `license:mit` tag, `gated` is
+    false in the embedded repo state, and the dataset card still renders, so all three recorded values
+    stand unchanged.'
   raw: license:MIT(OSI-style permissive, fully redistributable);redistributability:full(downloadable parquet,
     no gating);datasheet:yes(dataset card);size:164 problems/test split;contamination:hand-written to avoid
     GitHub-dump overlap (per design)
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/datasets/openai/openai_humaneval
-    shows: MIT license; not gated; 164 problems; dataset card present; ~287k downloads last month
-    accessed: '2026-06-04'
+    shows: '`license:mit` in the repo tags; the embedded repo state reads `"gated":false`; the dataset
+      card renders with the 164-problem test split; 285,003 downloads in the trailing 30 days'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 283ab4eec30b19d5d750e91c999b9233cfda3416b83c63d12faf1ea2828367ca
+    establishes: [license, datasheet]
 adoption:
   level: 4
   reach: 100K-1M
@@ -51,5 +58,15 @@ capability:
   value: null
   confidence: high
   note: A dataset is not 'capable'. Worth noting it is now largely saturated/contaminated as a discriminator,
-    but per recipe capability is n/a here.
-  sources: []
+    but per recipe capability is n/a here. Re-read 2026-08-13 and the abstention stands - the dataset
+    page publishes a static problem set and no performance, throughput or feature claim the capability
+    axis could band.
+  last_verified: '2026-08-13'
+  sources:
+  - url: https://huggingface.co/datasets/openai/openai_humaneval
+    shows: a static 164-problem corpus with prompt, canonical_solution and test columns; no performance,
+      throughput or feature claim anywhere on the page, so there is nothing for the capability axis
+      to read
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 283ab4eec30b19d5d750e91c999b9233cfda3416b83c63d12faf1ea2828367ca

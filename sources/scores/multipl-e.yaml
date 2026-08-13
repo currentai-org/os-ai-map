@@ -25,17 +25,26 @@ openness:
     key no dimension reads, which left the ladder seeing clean MIT and computing 5/open. The dataset ladder
     declares no tier for a license that permits redistribution while bounding what you may use the corpus
     FOR, so the tier lookup abstains and the score stays where the curator put it rather than being invented.
+    Re-read 2026-08-13 - the repository LICENSE still carries clause 4 verbatim, the HF repo still tags
+    `license:mit` with `"gated":false`, and the card still documents the 47 subsets. No change.
   raw: data:downloadable(HF parquet, 47 subsets);license:BSD-3-Clause-with-ML-Restriction(the nuprl/MultiPL-E
     repository LICENSE, whose clause 4 forbids using the contents as training data for any machine learning
     model; the HF data artifact carries MIT);datasheet:present(card documents prompts/doctests/tests/stop-tokens);redistributable:yes(HF)
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/datasets/nuprl/MultiPL-E
-    shows: MIT license, 47 subsets across 22-23 languages, downloadable parquet, documented schema
-    accessed: '2026-06-04'
+    shows: '`license:mit` in the repo tags; the embedded repo state reads `"gated":false`, so the parquet
+      downloads without a barrier; the card documents the 47 subsets and the prompt/doctests/tests/stop_tokens
+      schema; 33,673 downloads in the trailing 30 days'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 139bc9f97a3374a56283c91458ea94337b79577231751690bcdc70ea8594bf08
+    establishes: [license, data, datasheet]
   - url: https://github.com/nuprl/MultiPL-E/blob/main/LICENSE
-    shows: LICENSE headed "BSD 3-Clause License with Machine Learning Restriction"; clause 4 forbids use
-      of the repository contents as training data for any machine learning model
-    accessed: '2026-08-12'
+    shows: LICENSE headed "BSD 3-Clause License with Machine Learning Restriction"; clause 4 still reads
+      "The contents of this repository may not be used as training data for any machine learning model,
+      including but not limited to neural networks." Re-fetched 2026-08-13 with an unchanged digest
+    accessed: '2026-08-13'
     establishes:
     - license
     http_status: 200
@@ -48,18 +57,40 @@ adoption:
     LM Harness and HF''s multilingual code-model evaluation, cited in multilingual code-model release
     reports (e.g. StarCoder2/CodeQwen). HF page did not surface a clean monthly-download count this run
     (showed likes only), and GitHub stars (~308) are last-resort and cannot exceed 3. Level 3 on harness-adoption
-    / release-report traction; no verified usage_volume number, hence low confidence.'
+    / release-report traction; no verified usage_volume number, hence low confidence. Re-read 2026-08-13:
+    a clean download count IS obtainable now - the Hub API reports 33,673 downloads in the trailing 30
+    days, which bands at level 3 (10K-100K) on the dataset scale, the same level this record already
+    carries, so the value is confirmed unchanged. Flagged for a curator ruling on whether to move the
+    instrument to usage_volume with reach 10K-100K, which is a change to the recorded fields rather
+    than a re-derivation.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/datasets/nuprl/MultiPL-E
-    shows: BigCode harness integration; multilingual code eval standard
-    accessed: '2026-06-04'
+    shows: 33,673 downloads in the trailing 30 days, which bands at 10K-100K, level 3; the card still
+      names the BigCode Code Generation LM Harness integration
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 139bc9f97a3374a56283c91458ea94337b79577231751690bcdc70ea8594bf08
   - url: https://github.com/nuprl/MultiPL-E
-    shows: BigCode harness integration; ~308 stars (last-resort signal)
-    accessed: '2026-06-04'
+    shows: the README still opens with "MultiPL-E is part of the BigCode Code Generation LM Harness.
+      This is the easiest way to use MultiPL-E."; stargazerCount is 313 (last-resort signal, capped
+      at level 3)
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: b639a8197981461de8dd917ec197814b2e6fab804f3365484ce2e1b1fc6199b3
 capability:
   score: null
   basis: n/a
   value: null
   confidence: high
-  note: Dataset/translation framework, not capability-scored.
-  sources: []
+  note: Dataset/translation framework, not capability-scored. Re-read 2026-08-13 and the abstention
+    stands - the corpus is a static translation of HumanEval and MBPP into other languages, with no
+    performance or feature claim the capability axis could band.
+  last_verified: '2026-08-13'
+  sources:
+  - url: https://huggingface.co/datasets/nuprl/MultiPL-E
+    shows: a static set of translated problem prompts and tests across 22-23 languages; no performance,
+      throughput or feature claim on the page for the capability axis to read
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 139bc9f97a3374a56283c91458ea94337b79577231751690bcdc70ea8594bf08
