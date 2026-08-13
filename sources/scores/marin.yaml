@@ -21,26 +21,56 @@ openness:
       detail: OSI
   confidence: high
   note: 'Stanford CRFM ''open lab'': Apache-2.0 weights plus documented code, data, experiments, hyperparameters
-    and training logs, with bit-for-bit reproducible training.'
+    and training logs, with bit-for-bit reproducible training. Re-read 2026-08-13: the announcement
+    still describes every experiment as a tracked GitHub issue with a "full reproducible execution"
+    behind the 8B run, and the model card is still apache-2.0 with downloadable safetensors. Nothing
+    moved.'
+  last_verified: '2026-08-13'
   raw: weights:open(Apache-2.0);data:open(documented mixtures);code:open(marin + Levanter, JAX);checkpoints:open;reproducibility:bit-for-bit;license:Apache-2.0(OSI)
   sources:
   - url: http://marin.community/blog/2025/05/19/announcement/
-    shows: 'Marin open lab: code, data, experiments, logs all shared'
-    accessed: '2026-06-30'
+    shows: '"Marin is an open lab, in which the research and development of models is completely
+      transparent from day 1"; each experiment tracked by a GitHub issue; Marin 8B Base trained for
+      12.7T tokens with a linked "full reproducible execution".'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: b4b8aec99ebda5867d313fb655aa07db8ef086277a46cb7a3bb6b41079901161
+    establishes: [data, code, checkpoints]
   - url: https://huggingface.co/marin-community/marin-8b-base
-    shows: Marin 8B Base on HF; marin-community
-    accessed: '2026-06-30'
+    shows: Marin 8B Base model card, license apache-2.0, safetensors weight files, ungated.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: cd47d7eeab002a38ba6e53bcd3ef84cb640174cc15e55895de92b4afb2233cd9
+    establishes: [weights, license]
+  - url: https://api.github.com/repos/marin-community/marin
+    shows: '`private: false`, `archived: false`, license `Apache-2.0`, description "Open-source
+      framework for the research and development of foundation models", last pushed 2026-08-13.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: ea208b3c3b4492cd897fd2e41947886b9ea21c3f44c1622753bcfb2e4689901b
+    establishes: [code]
 adoption:
   level: 2
   reach: 10K-100K
   signal_type: usage_volume
   confidence: low
-  note: Research-stage fully-open project; modest adoption. Included as a fully-open exemplar and to track
-    Stanford CRFM's entry, not on popularity.
+  note: 12,168 downloads in the trailing 30 days summed across the 2 declared artifact(s), read
+    2026-08-13 (marin-community/marin-8b-base 8,604; marin-community/marin-8b-instruct 3,564). Bands
+    at level 2 (10K-100K) on the software and model adoption scale, unchanged. Research-stage
+    fully-open project; included as a fully-open exemplar rather than on popularity, and the band now
+    rests on a counted figure rather than that judgment.
+  last_verified: '2026-08-13'
   sources:
-  - url: https://huggingface.co/marin-community/marin-8b-base
-    shows: marin-community HF org; research-stage uptake
-    accessed: '2026-06-30'
+  - url: https://huggingface.co/api/models/marin-community/marin-8b-base
+    shows: 8,604 downloads in the trailing 30 days for marin-community/marin-8b-base
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 9cd073f37d65bf8cf84bcc73a7c284a3e57a46b5844e203cdae2a032c59dc8d7
+  - url: https://huggingface.co/api/models/marin-community/marin-8b-instruct
+    shows: 3,564 downloads in the trailing 30 days for marin-community/marin-8b-instruct
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 56b1dc8aed11fc8bedba4625435f61fb624ca4165d440c660065137ee1fb877d
 capability:
   score: 3
   basis: benchmark
@@ -50,7 +80,23 @@ capability:
   value: Marin 8B Base competitive among fully-open models; 32B Base released
   confidence: medium
   note: Mid-tier fully-open capability at 8B/32B; OLMo 3 outperforms it on fully-open model evaluations.
+    Re-read 2026-08-13 - both sides of the comparison still hold. Marin's own announcement puts 8B
+    Base above Llama 3.1 8B Base on 14 of 19 evals and 8B Instruct above OLMo 2 but short of Llama 3.1
+    Tulu, and Ai2's Olmo 3 post claims the strongest performance among fully open base models. So the
+    `one_below` relation to olmo (capability 4) is what both vendors' own pages say, and olmo was
+    re-confirmed the same day.
+  last_verified: '2026-08-13'
   sources:
   - url: https://developers.googleblog.com/stanfords-marin-foundation-model-first-fully-open-model-developed-using-jax/
-    shows: Marin 8B fully-open, JAX/Levanter, 12T tokens
-    accessed: '2026-06-30'
+    shows: Marin-8B-Base and Marin-8B-Instruct released with models, data, code and tokenizer under
+      Apache 2.0; JAX/Levanter; the "Tootsie" process spanned over 12 trillion tokens
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: a440941128a15d402222df36a9bb1f2718fe7db7285904527b6342498d9c42f9
+  - url: http://marin.community/blog/2025/05/19/announcement/
+    shows: '"On 14 out of 19 standard base model evals ... Marin 8B Base outperforms Llama 3.1 8B
+      Base"; Marin 8B Instruct "outperforms OLMo 2 on standard instruct model evals, but still fall
+      short of Llama 3.1 Tulu".'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: b4b8aec99ebda5867d313fb655aa07db8ef086277a46cb7a3bb6b41079901161

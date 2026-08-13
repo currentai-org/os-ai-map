@@ -18,32 +18,50 @@ openness:
   confidence: high
   note: Apache-2.0 weights are OSI-licensed, but training data and full training code are withheld —
     open_weights / 3, not open_source / 5. Press often calls this 'open source' because of the license
-    tag; our spectrum requires open data + code for class open_source.
+    tag; our spectrum requires open data + code for class open_source. Re-read 2026-08-13 - the card
+    still carries the apache-2.0 tag, the 975B/41B MoE description, the day-0 runtime list
+    (transformers/SGLang/vLLM/llama.cpp) and the statement that training data came from public,
+    third-party and synthetic sources without being released. Nothing moved.
+  last_verified: '2026-08-13'
   raw: weights:open(Apache-2.0 on HF, BF16 + NVFP4);data:closed(public+third-party+synthetic, not redistributed);code:partial(day-0
     transformers/SGLang/vLLM/llama.cpp; no training pipeline);license:Apache-2.0(OSI for weights only)
   sources:
   - url: https://huggingface.co/thinkingmachines/Inkling
     shows: Apache-2.0 license tag; 975B/41B MoE; weights downloadable; model card states data from public,
       third-party, and synthetic sources (not released)
-    accessed: '2026-07-19'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: fc8fd3c8fced9158e6a0f5b21137b18bcea627b4d9306cd8da32481feb7d73fc
+    establishes: [weights, data, code, license]
   - url: https://thinkingmachines.ai/news/introducing-inkling/
-    shows: primary announcement — open weights on HF, Tinker availability, Inkling-Small sibling
-    accessed: '2026-07-19'
+    shows: primary announcement - weights on HF, Tinker availability, Inkling-Small sibling, and the
+      Together / Modal / Fireworks inference partners
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 5c786ed9a42afc7b0db42d8569aed70cc27cc316de8d51806cc54d6cd51af460
 adoption:
   level: 3
   reach: 100K-1M
   signal_type: usage_volume
   confidence: medium
-  note: HF card shows ~13K downloads in the first days and 1K+ likes; day-0 serving via Tinker plus
-    partners (Together, Modal, Fireworks, etc.). Early but broad distribution for a ~1T open-weight model;
-    level 3 until cumulative usage settles.
+  note: 368,909 downloads in the trailing 30 days summed across the 2 declared artifact(s), read
+    2026-08-13 (thinkingmachines/Inkling 96,344; thinkingmachines/Inkling-NVFP4 272,565). Bands at
+    level 3 (100K-1M) on the software and model adoption scale, unchanged - the July reading of ~13.5K
+    was days after launch and the band was a forward judgment; a month of accumulation has now put a
+    counted figure under it. The NVFP4 quantization outpulls the BF16 release almost three to one,
+    which is why the tier is summed rather than banded on the headline repo.
+  last_verified: '2026-08-13'
   sources:
-  - url: https://huggingface.co/thinkingmachines/Inkling
-    shows: ~13.5K downloads last month, 1129 likes (as of 2026-07-19)
-    accessed: '2026-07-19'
-  - url: https://thinkingmachines.ai/news/introducing-inkling/
-    shows: Tinker availability and third-party inference partner rollout
-    accessed: '2026-07-19'
+  - url: https://huggingface.co/api/models/thinkingmachines/Inkling
+    shows: 96,344 downloads in the trailing 30 days for thinkingmachines/Inkling
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: fcb6609877d4a8935137b0285f4e79f2bb54cfc29ce51da5a3d34e8085dfc9d6
+  - url: https://huggingface.co/api/models/thinkingmachines/Inkling-NVFP4
+    shows: 272,565 downloads in the trailing 30 days for thinkingmachines/Inkling-NVFP4
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 77ba35d8a79ca6d39d62d50ac6c45cd8437183b02b8ebf65d7689df6ef76b8f2
 capability:
   score: 4
   basis: benchmark
@@ -54,11 +72,20 @@ capability:
   confidence: high
   note: Strong open-weight multimodal base — beats Nemotron 3 Ultra on SWE Verified (77.6 vs 70.7) but
     trails Kimi K2.6 (80.2) and DeepSeek-V4-Pro (80.6). Vendor card is explicit that Inkling is not the
-    strongest overall model; scored 4 (high open-weight tier, not frontier-defining 5).
+    strongest overall model; scored 4 (high open-weight tier, not frontier-defining 5). Re-read
+    2026-08-13 - all four figures are still on the card, the comparison rows against Nemotron 3 Ultra,
+    Kimi K2.6 and DeepSeek-V4-Pro are unchanged, and the `one_below` relation to kimi (capability 5)
+    still holds. kimi was re-confirmed the same day.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/thinkingmachines/Inkling
-    shows: vendor eval table vs Nemotron 3 Ultra / Kimi K2.6 / DeepSeek V4 Pro / closed frontier peers
-    accessed: '2026-07-19'
+    shows: 'vendor eval table vs Nemotron 3 Ultra / Kimi K2.6 / DeepSeek V4 Pro / closed frontier
+      peers, carrying SWE-bench Verified 77.6, SWE-bench Pro 54.3, GPQA Diamond 87.2 and AIME 2026 97.1'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: fc8fd3c8fced9158e6a0f5b21137b18bcea627b4d9306cd8da32481feb7d73fc
   - url: https://thinkingmachines.ai/model-card/inkling/
     shows: model card with architecture and evaluation details
-    accessed: '2026-07-19'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: d197839b0c23b54d838ac4e95d8c2ad629cefa8238744e7e71ccbefda7adaf05

@@ -24,14 +24,30 @@ openness:
     the weights you can download. Qwen 2.5 scored 2 because its distributed 3B and 72B SKUs carried the Qwen License
     Agreement; from Qwen3 onward the distributed set is Apache. Replaces an earlier note that was a copy of the
     components string and recorded the license as `mixed`, a value the rubric forbids because it states that SKUs
-    differ without recording the outcome.'
+    differ without recording the outcome. Re-read 2026-08-13 - Qwen3.6-27B is still apache-2.0 and
+    ungated on the Hub, its card names no training corpus and declares no `datasets` in its front
+    matter, and QwenLM/Qwen3.6 is still an Apache-2.0 usage and deployment repository rather than a
+    training pipeline. Nothing moved.'
+  last_verified: '2026-08-13'
   raw: weights:open(Apache-2.0 for open variants e.g. 27B/35B-A3B);data:closed;code:partial(inference/usage
     code on GitHub; no training pipeline/data);license:Apache-2.0(most restrictive distributed SKU; the
     proprietary Plus/Max tiers are API-only and never distributed, so they fall outside this axis)
   sources:
   - url: https://huggingface.co/api/models/Qwen/Qwen3.6-27B
-    shows: license apache-2.0, ungated, 55.6GB of weight files, 6,232,995 downloads last month
-    accessed: '2026-07-29'
+    shows: 'card license `apache-2.0`, `gated: false`, `private: false`, 6,830,615 downloads and
+      2,252 likes; the card front matter declares no `datasets`, so no corpus is named there.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 7b41b485a8f10317c72fe8c4976c01927cc5a5db61f1b78db0ac8ab909ebd33a
+    establishes: [weights, data, license]
+  - url: https://api.github.com/repos/QwenLM/Qwen3.6
+    shows: '`private: false`, `archived: false`, license `Apache-2.0`, description "Qwen3.6 is the
+      large language model series developed by Qwen team, Alibaba Group". Usage and deployment code,
+      no pretraining pipeline, which is what holds `code` at partial.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: d4fef7005d81de872c63d3bab105d7b59d9c481439168e235b513574668f54e6
+    establishes: [code]
   - url: https://github.com/QwenLM/Qwen3.6
     shows: flagship phase-C verification source
     accessed: '2026-06-04'
@@ -49,13 +65,44 @@ adoption:
   reach: '>10M'
   signal_type: usage_volume
   confidence: medium
-  note: Qwen family ~942M cumulative HF downloads (>50% of all global open source downloads per ATOM); Qwen2.5 was
-    the dominant fine-tune base through 2025. The 72B base alone shows 68,655 downloads/mo (confirmed). Family reach
-    unambiguously >10M; calibrated to Qwen 3.6 anchor (A5).
+  note: 14,030,698 downloads in the trailing 30 days summed across the 6 declared artifact(s), read
+    2026-08-13 (Qwen/Qwen2.5-72B 28,852; Qwen/Qwen2.5-7B 716,344; Qwen/Qwen3.6-27B 6,830,615;
+    Qwen/Qwen3.6-35B-A3B 5,609,980; Qwen/Qwen3-235B-A22B 529,067; Qwen/Qwen3.5-397B-A17B 315,840).
+    Bands at level 5 (>10M) on the software and model adoption scale, unchanged - and now on a counted
+    figure rather than a cumulative third-party estimate. The two Qwen3.6 checkpoints supply 89% of
+    it, so the family reach is current rather than inherited from the 2.5 generation.
+  last_verified: '2026-08-13'
   sources:
-  - url: https://huggingface.co/Qwen/Qwen2.5-72B
-    shows: live 72B base repo, 68,655 downloads/mo
-    accessed: '2026-06-04'
+  - url: https://huggingface.co/api/models/Qwen/Qwen2.5-72B
+    shows: 28,852 downloads in the trailing 30 days for Qwen/Qwen2.5-72B
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 0f5c22c02d39e74cea82841a62e1b55dc429d77515205d64588e293c84f7fca4
+  - url: https://huggingface.co/api/models/Qwen/Qwen2.5-7B
+    shows: 716,344 downloads in the trailing 30 days for Qwen/Qwen2.5-7B
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: b4781da83b7c09a83d17c9de015a96e496db1221ed34c867b62126f8144364d4
+  - url: https://huggingface.co/api/models/Qwen/Qwen3.6-27B
+    shows: 6,830,615 downloads in the trailing 30 days for Qwen/Qwen3.6-27B
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 7b41b485a8f10317c72fe8c4976c01927cc5a5db61f1b78db0ac8ab909ebd33a
+  - url: https://huggingface.co/api/models/Qwen/Qwen3.6-35B-A3B
+    shows: 5,609,980 downloads in the trailing 30 days for Qwen/Qwen3.6-35B-A3B
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 27deb7cb3efc4e276abed96e674d4f3384cf3033d7652f1e784811a0ff8ec912
+  - url: https://huggingface.co/api/models/Qwen/Qwen3-235B-A22B
+    shows: 529,067 downloads in the trailing 30 days for Qwen/Qwen3-235B-A22B
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: b205446c5206695fb56a140aada74d51a6dcb13f7a3f17a38def4275097bc9a4
+  - url: https://huggingface.co/api/models/Qwen/Qwen3.5-397B-A17B
+    shows: 315,840 downloads in the trailing 30 days for Qwen/Qwen3.5-397B-A17B
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 2fb1bf45f215300b053841254bd158f65b525ed62732d21dd82cddc165a1e9e5
 capability:
   score: 5
   basis: benchmark
@@ -64,11 +111,20 @@ capability:
   confidence: high
   note: 'Dense Qwen3.6-27B: SWE-bench Verified 77.2, Terminal-Bench 2.0 59.3 (reported matching Claude 4.5 Opus
     class), outperforming a 397B MoE on agentic coding. Flagship Qwen3.6-Plus reported matching Claude Opus 4.5
-    on SWE-bench/Terminal-Bench. Frontier-tier open family.'
+    on SWE-bench/Terminal-Bench. Frontier-tier open family. Re-read 2026-08-13 - both figures for the
+    dense 27B and the Opus-4.5 comparison for the hosted Plus tier are still on the cited pages, so
+    the band is re-derived and unchanged at 5.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://www.marktechpost.com/2026/04/22/alibaba-qwen-team-releases-qwen3-6-27b-a-dense-open-weight-model-outperforming-397b-moe-on-agentic-coding-benchmarks/
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
+    shows: Qwen3.6-27B SWE-bench Verified 77.2 and Terminal-Bench 2.0 59.3, outperforming a 397B MoE
+      on agentic coding
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 5d10a19286f3982ec02173d497e426bed31f755e851f0bffeaf8922e5d3c0560
   - url: https://www.caixinglobal.com/2026-04-02/alibaba-releases-qwen-36-plus-ai-model-with-enhanced-coding-capabilities-102430395.html
-    shows: flagship phase-C verification source
-    accessed: '2026-06-04'
+    shows: '"Alibaba Group Holding Ltd. released Qwen 3.6-Plus, a multimodal LLM excelling in agentic
+      coding ... rivals Claude Opus 4.5 on SWE-bench"'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 2bedc1f72e1880d6ea7f9432814212b5adcacc144efd7cf590bf4f1eb84dde91

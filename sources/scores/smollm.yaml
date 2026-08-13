@@ -17,27 +17,60 @@ openness:
       detail: OSI
   confidence: high
   note: 'Fully-open small-model line: Apache-2.0 weights with the complete engineering blueprint (architecture,
-    data mixtures, training and post-training recipe) published.'
+    data mixtures, training and post-training recipe) published. Re-read 2026-08-13 - the release post
+    still says "The complete recipe: We are releasing SmolLM3 with our engineering blueprint. It
+    includes architecture details, exact data mixtures ... and the methodology", still describes the
+    11T-token run as built "using public datasets and training frameworks", and the card is still
+    apache-2.0 and ungated. Nothing moved.'
+  last_verified: '2026-08-13'
   raw: weights:open(Apache-2.0);data:open(public data mixtures, ~11T tokens);code:open(training+post-training
     recipe published);license:Apache-2.0(OSI)
   sources:
   - url: https://huggingface.co/blog/smollm3
-    shows: 'fully-open 3B: 11T tokens, 128K context, multilingual, full recipe published'
-    accessed: '2026-06-30'
+    shows: 'fully-open 3B - 11T tokens, long context up to 128k, six languages, and the "complete
+      recipe ... engineering blueprint ... exact data mixtures", built "using public datasets and
+      training frameworks".'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 59b6590b0900f8d68002ca2047c0caf81bda6546e1fea697817a9f315f509b9f
+    establishes: [data, code]
+  - url: https://huggingface.co/api/models/HuggingFaceTB/SmolLM3-3B
+    shows: 'card license `apache-2.0`, `gated: false`, `private: false`, 849,030 downloads and 1,001
+      likes.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 53a2124407f2fe07abcb7559e88d1ebcbaa12eaaa95329bd2d060f59ef4f411b
+    establishes: [weights, license]
+  - url: https://api.github.com/repos/huggingface/smollm
+    shows: '`private: false`, `archived: false`, license `Apache-2.0`, 3,868 stars, description
+      "Everything about the SmolLM and SmolVLM family of models".'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: cc87c0928b131ac15199953372c2dbd7428de39ec64ff55cdc7b5723518703d5
+    establishes: [code]
   - url: https://huggingface.co/HuggingFaceTB/SmolLM3-3B
     shows: SmolLM3-3B on HF; Apache-2.0
-    accessed: '2026-06-30'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: e0345e8fa2b371d68258ab13bfaad16bcca6364d5f666a335d6275873b1f90de
+    establishes: [weights, license]
 adoption:
   level: 3
   reach: 100K-1M
   signal_type: usage_volume
   confidence: medium
-  note: Popular fully-open small model (HF's SmolLM line saw ~184k monthly downloads at the SmolLM2 generation);
-    strong in on-device/edge use, niche vs the large open-weight families.
+  note: 849,030 downloads in the trailing 30 days summed across the 1 declared artifact(s), read
+    2026-08-13 (HuggingFaceTB/SmolLM3-3B 849,030). Bands at level 3 (100K-1M) on the software and
+    model adoption scale, unchanged - though it is now near the top of that band rather than the
+    ~184k the previous note carried from the SmolLM2 generation. Strong in on-device and edge use,
+    niche against the large open-weight families.
+  last_verified: '2026-08-13'
   sources:
-  - url: https://huggingface.co/HuggingFaceTB/SmolLM3-3B
-    shows: active SmolLM3-3B HF repo
-    accessed: '2026-06-30'
+  - url: https://huggingface.co/api/models/HuggingFaceTB/SmolLM3-3B
+    shows: 849,030 downloads in the trailing 30 days for HuggingFaceTB/SmolLM3-3B
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 53a2124407f2fe07abcb7559e88d1ebcbaa12eaaa95329bd2d060f59ef4f411b
 capability:
   score: 3
   basis: benchmark
@@ -45,8 +78,14 @@ capability:
   value: Outperforms Llama-3.2-3B and Qwen2.5-3B; competitive with 4B Qwen3/Gemma3
   confidence: high
   note: Strong intelligence-per-parameter for a 3B model, but small absolute capability vs larger open and open-weight
-    models.
+    models. Re-read 2026-08-13 - the comparison the band rests on is still on the post verbatim, and
+    it is a comparison against other 3B and 4B models rather than against the frontier, which is what
+    the 3 encodes. Unchanged.
+  last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/blog/smollm3
-    shows: beats Llama-3.2-3B and Qwen2.5-3B; competitive with 4B alternatives
-    accessed: '2026-06-30'
+    shows: '"Our 3B model outperforms Llama-3.2-3B and Qwen2.5-3B while staying competitive with
+      larger 4B alternatives (Qwen3 & Gemma3)"'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 59b6590b0900f8d68002ca2047c0caf81bda6546e1fea697817a9f315f509b9f
