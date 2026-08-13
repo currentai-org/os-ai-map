@@ -336,33 +336,50 @@ def license_tiers(slug: str, recipe: dict) -> tuple[list[dict], list[str]]:
     return rows, errors
 
 
-def stars_bands(routing: dict) -> tuple[list[dict], list[str]]:
-    """The stars scale, from the adoption route that produces it.
+_ROUTE_SCALE_UNITS = {"stars_fallback": "GitHub stars"}
 
-    Emitted with product_type '*' because it does not vary by type, and capped: a
-    stars-derived band may never claim levels 4 or 5, since stars measure attention
-    rather than use. The cap is enforced here rather than trusted, so a later edit that
-    adds a level-4 stars band fails the serializer instead of quietly publishing one.
+
+def route_bands(routing: dict) -> tuple[list[dict], list[str]]:
+    """Every adoption scale declared on its own ROUTE rather than per product type.
+
+    Two instruments qualify, for the same reason: what they measure does not vary by
+    what it was measured on. A dataset's downloads run an order below a package's, which
+    is why THOSE bands are per type — but a star is a star whatever it was given to, and
+    a monthly active user is a person whatever they came back to. Declaring such a scale
+    once, on the route that produces it, is also the only way to avoid four copies of a
+    scale that must not drift. Both are emitted with product_type '*'.
+
+    A declared `cap` is enforced here rather than trusted, so a later edit adding a
+    level-4 stars band fails the serializer instead of quietly publishing one. Only the
+    stars route declares one: it may never claim levels 4 or 5, since stars measure
+    attention rather than use. `active_users` measures use directly and has no ceiling.
+
+    Generalized from `stars_bands` on 2026-08-13, when `active_users` became the second
+    such scale. Adding it by copying the function would have been the same duplication
+    one layer up from the one this table exists to prevent.
     """
     routes = ((routing.get("dimensions") or {}).get("adoption") or {}).get("routes") or []
     rows, warnings = [], []
     for route in routes:
-        if route.get("signal_type") != "stars_fallback":
+        signal_type = route.get("signal_type")
+        if not signal_type or not route.get("bands"):
             continue
         cap = route.get("cap")
-        for band in route.get("bands") or []:
+        unit = str(route.get("unit") or _ROUTE_SCALE_UNITS.get(signal_type) or "")
+        for band in route["bands"]:
             if cap is not None and band["level"] > cap:
                 warnings.append(
-                    f"stars band level {band['level']} exceeds the declared cap {cap}; dropped"
+                    f"{signal_type} band level {band['level']} exceeds the declared "
+                    f"cap {cap}; dropped"
                 )
                 continue
             rows.append({
                 "product_type": "*",
-                "signal_type": "stars_fallback",
+                "signal_type": signal_type,
                 "level": band["level"],
                 "above": band["above"],
                 "reach": str(band.get("reach") or ""),
-                "unit": "GitHub stars",
+                "unit": unit,
             })
     return rows, warnings
 
@@ -481,9 +498,9 @@ def build_rubric(sources: dict, policy: dict, routing: dict) -> tuple[dict[str, 
 
     tables["adoption_bands"], band_warnings = adoption_bands(shared_rubrics)
     warnings.extend(band_warnings)
-    star_rows, star_warnings = stars_bands(routing)
-    tables["adoption_bands"].extend(star_rows)
-    warnings.extend(star_warnings)
+    route_rows, route_warnings = route_bands(routing)
+    tables["adoption_bands"].extend(route_rows)
+    warnings.extend(route_warnings)
     tables["license_aliases"] = license_aliases(routing)
     tables["evidence_abstentions"] = evidence_abstentions(routing)
     if not tables["evidence_abstentions"]:

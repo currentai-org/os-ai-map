@@ -54,28 +54,66 @@ def test_the_stars_scale_is_chosen_by_signal_not_by_type(sources):
 def test_an_instrument_with_no_scale_abstains_rather_than_borrowing_one(sources):
     """The rule the first version of this checker broke.
 
-    `docs/guides/adoption.md`: "a `reported_traction` or `active_users` band is measuring
-    something else entirely. Comparing it against a download count is a category error, and a
-    check must SKIP it rather than flag or waive it." `sources/signal_routing.yaml` states the
-    same principle as "abstain rather than substitute".
+    `docs/guides/adoption.md`: "a `reported_traction` band is measuring something else
+    entirely. Comparing it against a download count is a category error, and a check must SKIP
+    it rather than flag or waive it." `sources/signal_routing.yaml` states the same principle
+    as "abstain rather than substitute".
 
-    Neither instrument has a declared band table anywhere in the repo — two of the five values
-    in the `signal_type` enum have no scale — so a checker that falls back to the product
-    type's DOWNLOAD scale manufactures a finding for every one of them. It did, for all 93
-    `reported_traction` products, and the false findings were indistinguishable from real ones
-    because they had the same shape.
+    The instrument has no declared band table anywhere in the repo, so a checker that falls
+    back to the product type's DOWNLOAD scale manufactures a finding for every one of them. It
+    did, for all 93 `reported_traction` products, and the false findings were indistinguishable
+    from real ones because they had the same shape.
+
+    `active_users` was the second such instrument until 2026-08-13, and it is asserted below
+    rather than here for a reason worth keeping: the skip was correct and it was also what hid
+    the problem. 22 of the 23 products carrying the instrument were wearing labels off the
+    download vocabulary, and a checker that declines to look never says so. Abstention is the
+    right answer to a missing scale and the wrong answer to a scale nobody has declared yet.
     """
     scales = declared_scales(sources)
-    for instrument in ("reported_traction", "active_users"):
-        for product_type in ("software", "model", "dataset"):
-            assert scale_for(scales, product_type, instrument) is None, (
-                f"{instrument} borrowed the {product_type} scale; it measures something else"
-            )
+    for product_type in ("software", "model", "dataset"):
+        assert scale_for(scales, product_type, "reported_traction") is None, (
+            f"reported_traction borrowed the {product_type} scale; it measures something else"
+        )
 
-    # And the instruments that ARE denominated in downloads must still resolve, or the
-    # abstention would have been bought by disabling the check.
+    # And the instruments that DO declare a scale must still resolve, or the abstention would
+    # have been bought by disabling the check.
     assert scale_for(scales, "software", "usage_volume") is not None
     assert scale_for(scales, "software", "stars_fallback") is not None
+    assert scale_for(scales, "software", "active_users") is not None
+
+
+def test_the_active_users_scale_shares_download_thresholds_but_never_a_label(sources):
+    """Declared 2026-08-13, on the finding that 22 of 23 records wore a borrowed vocabulary.
+
+    The thresholds are deliberately identical to the download scale, so that a level means one
+    magnitude across the whole map. That decision is exactly what makes the labels load-bearing:
+    when two live scales share every boundary, an unsuffixed `>10M` cannot be told apart, and
+    being unable to tell them apart is how the borrowing went unnoticed.
+    """
+    scales = declared_scales(sources)
+    users = scale_for(scales, "software", "active_users")
+    downloads = scale_for(scales, "software", "usage_volume")
+
+    # 1. The same thresholds as downloads at every level, so a level means one magnitude
+    #    wherever it appears. Asserted against the download scale itself rather than against
+    #    literals, so that moving one scale and not the other fails here.
+    by_level = {level: label for label, level in users.items()}
+    assert by_level[5] == ">10M users" and by_level[4] == "1M-10M users"
+    assert by_level[3] == "100K-1M users" and by_level[2] == "10K-100K users"
+    strip = lambda scale: {label.removesuffix(" users"): level for label, level in scale.items()}
+    assert strip(users) == downloads, "the two scales' thresholds have drifted apart"
+
+    # 2. Every label carries its unit, so no label is shared with the download scale despite
+    #    every boundary being shared. This is what makes a download vocabulary not merely
+    #    discouraged here but unusable, and it is the only thing that can, now that the numbers
+    #    are identical.
+    assert all(label.endswith(" users") for label in users), users
+    assert not (set(users) & set(downloads)), "a label is ambiguous between two live scales"
+
+    # 3. No cap. Unlike stars, this measures use directly — unmeasurable by machine is a
+    #    question about confidence, not about ceiling.
+    assert max(users.values()) == 5, users
 
 
 def test_the_dataset_scale_sits_one_order_below_software(sources):

@@ -70,12 +70,13 @@ def declared_scales(sources: dict) -> dict[tuple[str, str], dict[str, int]]:
         for band in adoption.get("bands") or []:
             scales.setdefault((name, "*"), {})[band["reach"]] = band["level"]
 
-    # The stars scale lives in signal_routing.yaml rather than a rubric, because it is a
-    # property of the SIGNAL and applies to every product type. Read through the serializer's
-    # own loader so the two cannot disagree about where it lives.
-    from build.serialize_rubric import load_routing, stars_bands
+    # Two scales live in signal_routing.yaml rather than a rubric, because they are a
+    # property of the SIGNAL and apply to every product type: `stars_fallback`, and
+    # `active_users` since 2026-08-13. Read through the serializer's own loader so the two
+    # cannot disagree about where they live.
+    from build.serialize_rubric import load_routing, route_bands
 
-    rows, _warnings = stars_bands(load_routing(ROOT))
+    rows, _warnings = route_bands(load_routing(ROOT))
     for band in rows:
         scales.setdefault(("*", band["signal_type"]), {})[band["reach"]] = band["level"]
     return scales
@@ -108,8 +109,14 @@ def scale_for(scales: dict, product_type: str, signal_type: str) -> dict[str, in
     one, and those findings looked exactly like the real ones.
 
     So the fallback is now allowed only for instruments actually denominated in downloads.
-    `reported_traction` and `active_users` return None and are skipped, which is not a
-    waiver — it is the checker declining to compare a user count against a download band.
+    `reported_traction` returns None and is skipped, which is not a waiver — it is the
+    checker declining to compare a user count against a download band.
+
+    `active_users` no longer needs the skip. It DECLARES a scale as of 2026-08-13, so it
+    takes the first branch like stars do, and abstention narrows to the one instrument that
+    still has no vocabulary. Note what the skip had been hiding while it was right: 22 of
+    the 23 products were wearing download labels, and skipping them is what made that
+    invisible for as long as it was.
     """
     if signal_type and ("*", signal_type) in scales:
         return scales[("*", signal_type)]

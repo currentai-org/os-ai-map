@@ -86,10 +86,10 @@ rather than borrow another type's scale. That is the same "abstain rather than s
 rule `sources/signal_routing.yaml` states for sources, and it is why the scoring models LEFT
 JOIN the band table rather than defaulting.
 
-### The stars scale is per instrument, not per type
+### Two scales are per instrument, not per type
 
-Stars get their own scale, declared **once** on the adoption route that produces it in
-`sources/signal_routing.yaml` rather than in the four type rubrics:
+Stars and active users get their own scales, declared **once** on the adoption route that
+produces each in `sources/signal_routing.yaml` rather than in the four type rubrics:
 
 | level | stars |
 |---|---|
@@ -97,10 +97,11 @@ Stars get their own scale, declared **once** on the adoption route that produces
 | 2 | 1K-10K |
 | 1 | <1K |
 
-Two reasons it lives there. A dataset's downloads run an order below a package's, which is
-why *those* bands are per type — but a star is a star whatever it was given to, so the scale
-is a property of the instrument. And declaring it once is the only way to avoid four copies
-of a number that must not drift.
+Two reasons they live there. A dataset's downloads run an order below a package's, which is
+why *those* bands are per type — but a star is a star whatever it was given to, and a monthly
+active user is a person whatever they came back to, so each scale is a property of the
+instrument. And declaring one once is the only way to avoid four copies of a number that must
+not drift.
 
 **Capped at 3, and the cap is enforced rather than trusted.** Stars measure attention rather
 than use, so a stars-derived band may never claim levels 4 or 5 however large the count.
@@ -114,8 +115,59 @@ products with a live GitHub row sit at medians of ~93, ~1,733 and ~15,801 stars 
 **this scale tightens a loose convention rather than describing one**, and applying it will
 move products.
 
-Both scales share `registry.adoption_bands`, distinguished by `signal_type`. A consumer that
-joins without filtering on it will band a package's downloads against the stars scale.
+#### The active-users scale, declared 2026-08-13
+
+| level | monthly active users |
+|---|---|
+| 5 | >10M users |
+| 4 | 1M-10M users |
+| 3 | 100K-1M users |
+| 2 | 10K-100K users |
+| 1 | <10K users |
+
+**Why it did not exist, which is the more useful half.** All 23 products carrying this
+instrument had a real user figure, and 22 of them wore a label off the *download* vocabulary
+— because that was the only vocabulary in the building, and nothing had ever declared it
+applied here. So the labels were not so much wrong as **unfalsifiable**. `character-ai` had
+invented `10M-100M`, a band no scale offered, and nobody could say so.
+
+`character-ai` is the case worth keeping. Its ~20M MAU clears the top threshold outright, but
+the record sat at level **4** — held down by a label with no scale behind it to check the
+label against. Declaring the scale raised it to 5. The same thing had happened to `claude-ai`,
+recording `1M-10M` over a cited figure of ~19–30M. Both were the map disagreeing with itself
+in a place nothing was looking.
+
+**Same thresholds as the download scale**, which is a decision rather than an inheritance. The
+alternative considered was one order higher throughout, so that ChatGPT at ~900M weekly actives
+and Poe at ~18M monthly actives did not both land at 5. That was rejected: **a level has to
+mean one magnitude across the whole map**, or `adoption` stops being comparable between a
+package and an app. 19 of the 23 sit at level 5, and that is the map saying these are all
+mass-market surfaces, which they are. A top band holding a wide range is the ordinary cost of a
+five-point scale, not a defect in this instrument.
+
+**The labels carry `users`** for the same reason the stars labels carry `stars` — and here
+especially, *because* the thresholds match. An unsuffixed `>10M` is ambiguous between two live
+scales at identical boundaries, and that ambiguity is precisely how a download vocabulary
+colonized this instrument unnoticed. The suffix is what makes the two tellable apart when their
+numbers do not differ.
+
+**No cap.** Unlike stars, this measures use directly. That no machine can fetch it is a
+question about *confidence*, not about ceiling.
+
+##### Say what you banded
+
+A model scores on the surface it powers — `gpt-5` on ChatGPT — and its note must say so out
+loud. What the scale will not accept silently is a figure that is **not an active count**: an
+all-time or cumulative user total, a device installed base, a paid-seat count. Those are the
+`active_users` form of the under-coverage error below, a substitution wearing a measurement's
+label, and three records carry one today with the substitution named in the note:
+`github-copilot` and `github-copilot-ide` (20M **all-time**, not active) and
+`apple-core-ml-runtime` (2.5B active **devices** — a person with an iPhone and a Mac is two of
+it). `doubao` used to be a fourth, banding on ~330M *total* users; a measured 382M MAU now
+exists and is *higher* than the total it had been leaning on.
+
+All three scales share `registry.adoption_bands`, distinguished by `signal_type`. A consumer
+that joins without filtering on it will band a package's downloads against the stars scale.
 
 ### The floor admits zero
 
@@ -132,7 +184,7 @@ how much weight it carries:
 | `signal_type` | what it is | machine-re-derivable? |
 |---|---|---|
 | `usage_volume` | a download or install count | **yes**, where the artifact is declared |
-| `active_users` | vendor-disclosed MAU or seats | no |
+| `active_users` | vendor-disclosed MAU or WAU. **Its own scale**, sharing the download thresholds | no |
 | `reported_traction` | a credible third-party or vendor figure | no |
 | `stars_fallback` | GitHub stars. Last resort, and **capped at level 3** | yes, once stars are banded |
 | `unknown` | instrument not recorded | no |
@@ -142,9 +194,15 @@ load-bearing rule in this guide:
 
 - A `usage_volume` band **claims to be a download count**. If a computed count disagrees, one
   of them is wrong — in either direction — and it is a finding, not a judgment call.
-- A `reported_traction` or `active_users` band is measuring **something else entirely**.
-  Comparing it against a download count is a category error, and a check must **skip** it
-  rather than flag or waive it.
+- A `reported_traction` band is measuring **something else entirely**. Comparing it against a
+  download count is a category error, and a check must **skip** it rather than flag or waive
+  it. This was true of `active_users` too until it got a scale on 2026-08-13 — and the skip is
+  worth remembering, because it was correct *and* it was what hid the problem. 22 of the 23
+  products were wearing download labels, and a checker that declines to look never says so.
+  **Abstention is the right answer to a missing scale and the wrong answer to a scale nobody
+  has declared yet.**
+- An `active_users` band claims a count of people, on the scale above. It may be compared only
+  against another user count.
 - A `stars_fallback` band means no download signal existed when it was set. If one exists now,
   re-band on it.
 

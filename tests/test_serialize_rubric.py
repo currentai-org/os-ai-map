@@ -1223,35 +1223,48 @@ def test_dataset_bands_sit_one_order_below_software():
     assert top["dataset"] == 1_000_000
 
 
-def test_stars_bands_are_declared_once_and_capped():
-    """Stars are per INSTRUMENT, not per product type.
+def test_route_scales_are_declared_once_per_instrument_and_stars_stay_capped():
+    """Some scales are per INSTRUMENT, not per product type.
 
-    A dataset's downloads run an order below a package's, which is why those bands are
-    per type. A star is a star whatever it was given to, so the scale is declared once on
-    its route in signal_routing.yaml and emitted with product_type '*'. Four copies in
-    four rubrics is exactly the drift this whole table exists to stop.
+    A dataset's downloads run an order below a package's, which is why THOSE bands are per
+    type. A star is a star whatever it was given to, and a monthly active user is a person
+    whatever they came back to — so both are declared once on their route in
+    signal_routing.yaml and emitted with product_type '*'. Four copies in four rubrics is
+    exactly the drift this whole table exists to stop.
     """
     import yaml
     from pathlib import Path
 
-    from build.serialize_rubric import stars_bands
+    from build.serialize_rubric import route_bands
 
     routing = yaml.safe_load(Path("sources/signal_routing.yaml").read_text())
-    rows, warnings = stars_bands(routing)
+    rows, warnings = route_bands(routing)
 
     assert warnings == []
     assert {r["product_type"] for r in rows} == {"*"}
-    assert {r["signal_type"] for r in rows} == {"stars_fallback"}
+    assert {r["signal_type"] for r in rows} == {"stars_fallback", "active_users"}
+
     # Capped at 3: stars measure attention rather than use, so a stars-derived band may
     # never claim the top two levels however large the count.
-    assert max(r["level"] for r in rows) == 3
-    assert sorted(r["above"] for r in rows) == [-1, 1000, 10000]
+    stars = [r for r in rows if r["signal_type"] == "stars_fallback"]
+    assert max(r["level"] for r in stars) == 3
+    assert sorted(r["above"] for r in stars) == [-1, 1000, 10000]
+
+    # active_users measures use directly, so unlike stars it has no ceiling. Its thresholds
+    # are deliberately the download scale's, so that a level means one magnitude map-wide.
+    users = [r for r in rows if r["signal_type"] == "active_users"]
+    assert max(r["level"] for r in users) == 5
+    assert sorted(r["above"] for r in users) == [-1, 10_000, 100_000, 1_000_000, 10_000_000]
+
+    # Every row carries the unit its band was read in. A band with no unit is the ambiguity
+    # that let the download vocabulary colonize active_users in the first place.
+    assert all(r["unit"] for r in rows), rows
 
 
 def test_a_stars_band_above_the_cap_is_dropped_with_a_warning():
     """The cap is enforced, not trusted. A later edit adding a level-4 stars band should
     fail the serializer rather than quietly publish one."""
-    from build.serialize_rubric import stars_bands
+    from build.serialize_rubric import route_bands
 
     routing = {
         "dimensions": {
@@ -1269,28 +1282,42 @@ def test_a_stars_band_above_the_cap_is_dropped_with_a_warning():
             }
         }
     }
-    rows, warnings = stars_bands(routing)
+    rows, warnings = route_bands(routing)
     assert [r["level"] for r in rows] == [3]
     assert any("exceeds the declared cap" in w for w in warnings)
 
 
-def test_download_bands_and_stars_bands_do_not_collide():
-    """Both live in one table, distinguished by signal_type. A consumer joining without
-    filtering on it would band a package's downloads against the stars scale."""
+def test_download_bands_and_route_bands_do_not_collide():
+    """All three scales live in one table, distinguished by signal_type. A consumer joining
+    without filtering on it would band a package's downloads against the stars scale."""
     from pathlib import Path
 
     import yaml
 
-    from build.serialize_rubric import adoption_bands, stars_bands
+    from build.serialize_rubric import adoption_bands, route_bands
     from build.validate import load_sources
 
     downloads, _ = adoption_bands(load_sources(Path(".")).get("rubrics") or {})
-    stars, _ = stars_bands(yaml.safe_load(Path("sources/signal_routing.yaml").read_text()))
+    per_instrument, _ = route_bands(
+        yaml.safe_load(Path("sources/signal_routing.yaml").read_text())
+    )
 
     assert {r["signal_type"] for r in downloads} == {"usage_volume"}
     assert all(r["product_type"] != "*" for r in downloads)
-    keys = {(r["product_type"], r["signal_type"], r["level"]) for r in downloads + stars}
-    assert len(keys) == len(downloads) + len(stars), "a (type, instrument, level) key repeats"
+    rows = downloads + per_instrument
+    keys = {(r["product_type"], r["signal_type"], r["level"]) for r in rows}
+    assert len(keys) == len(rows), "a (type, instrument, level) key repeats"
+
+    # And no reach LABEL is shared across instruments either. The key above keeps the
+    # warehouse unambiguous; this keeps a human reading a score's `reach` unambiguous, which
+    # is the half that failed — a bare `1M-10M` meant downloads on one record and users on
+    # another, and that ambiguity is how the download vocabulary spread to an instrument it
+    # does not measure.
+    by_label: dict[str, set[str]] = {}
+    for row in rows:
+        by_label.setdefault(row["reach"], set()).add(row["signal_type"])
+    ambiguous = {reach: sorted(kinds) for reach, kinds in by_label.items() if len(kinds) > 1}
+    assert not ambiguous, f"a reach label means different things on different scales: {ambiguous}"
 
 
 def test_split_value_bare_half_matches_head_on_the_whole_corpus():
