@@ -26842,12 +26842,32 @@
             "class": "open_weights",
             "components": "weights:adapter-open(HF) but base LlamaGuard gated via Meta access;data:Aegis safety dataset documented;license:Llama-2-Community(NOT OSI)",
             "confidence": "medium",
-            "note": "Open-weights at the adapter level but the LlamaGuard base is access-gated through Meta and the license is the non-OSI Llama 2 Community License, so it lands at open_weights (3) with a gating caveat.",
+            "note": "Open-weights at the adapter level but the LlamaGuard base is access-gated through Meta and the license is the non-OSI Llama 2 Community License, so it lands at open_weights (3) with a gating caveat. Re-read 2026-08-13 and unchanged - the card still opens with 'The use of this model is governed by the Llama 2 Community License Agreement', the repo is ungated and ships adapter_model.safetensors, and the Aegis-AI-Content-Safety-Dataset-1.0 is still the declared training set.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://huggingface.co/nvidia/Aegis-AI-Content-Safety-LlamaGuard-Defensive-1.0",
-                "shows": "Llama 2 Community License; adapter weights public, base gated via Meta; 13 risk categories; built on LlamaGuard/Llama2-7B",
-                "accessed": "2026-06-29"
+                "shows": "License section reads 'The use of this model is governed by the Llama 2 Community License Agreement'. The repo is not gated and carries adapter_model.safetensors, so the adapter is downloadable; the model is a parameter-efficient tune of Llama Guard, whose own repo is access-gated. cardData declares datasets - nvidia/Aegis-AI-Content-Safety-Dataset-1.0, covering the 13-category taxonomy.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "ab9c3aa2d2819e023f40b2ca113420822607685ae6cbd87be35b088e52507eeb",
+                "establishes": [
+                  "weights",
+                  "data",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/nvidia/Aegis-AI-Content-Safety-LlamaGuard-Defensive-1.0/raw/main/README.md",
+                "shows": "Card front matter records license - llama2 and datasets - nvidia/Aegis-AI-Content-Safety-Dataset-1.0; the body describes a parameter-efficient instruction-tuned Llama Guard over Nvidia's taxonomy of 13 critical safety risk categories.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "83a52739aa090021f29f2669a534a4a52e9983ccd8ed2096df5401422cd355ff",
+                "establishes": [
+                  "weights",
+                  "data",
+                  "license"
+                ]
               }
             ],
             "bucket": "open-ish"
@@ -26873,14 +26893,19 @@
             "score": 4,
             "basis": "feature_matrix",
             "basis_detail": "risk coverage",
+            "relative_to": "llama-guard",
+            "relation": "at",
             "value": "13 critical safety risk categories across prompts and responses, with an open safety dataset and a defensive/permissive variant pair.",
             "confidence": "low",
-            "note": "Broad risk taxonomy with a documented training dataset; comparable coverage to Llama Guard, its base.",
+            "note": "Broad risk taxonomy with a documented training dataset; comparable coverage to Llama Guard, its base. The peer comparison the band rests on is recorded rather than left in prose - it is a tune of Llama Guard over a taxonomy of the same order (13 categories against 14), so it sits at the same rung. Re-read 2026-08-13 - the card still describes 13 critical safety risk categories and the Defensive variant.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://huggingface.co/nvidia/Aegis-AI-Content-Safety-LlamaGuard-Defensive-1.0",
-                "shows": "13 risk categories; defensive variant",
-                "accessed": "2026-06-29"
+                "shows": "Card describes Llama Nemotron Safety Guard Defensive V1 as an instruction-tuned Llama Guard covering Nvidia's taxonomy of 13 critical safety risk categories.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "ab9c3aa2d2819e023f40b2ca113420822607685ae6cbd87be35b088e52507eeb"
               }
             ]
           },
@@ -26890,7 +26915,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "NVIDIA Aegis AI Content Safety (Defensive 1.0), aka Llama Nemotron Safety Guard Defensive V1. Llama 2 Community License (not OSI). Adapter weights public on HF, but the LlamaGuard base must be obtained via Meta's access request, so not fully open-weight. Aegis safety dataset documented. Verified June 2026."
+          "version_note": "NVIDIA Aegis AI Content Safety (Defensive 1.0), aka Llama Nemotron Safety Guard Defensive V1. The adapter weights are public on the Hub, but the Llama Guard base must be obtained through Meta's access request, so it is not fully open-weight. The Aegis safety dataset it was tuned on is published. Verified 2026-08-13 via the HF model card."
         },
         {
           "slug": "openguardrails",
@@ -26898,23 +26923,36 @@
           "org_slug": "openguardrails",
           "org": "OpenGuardrails",
           "type": "software",
-          "description": "An open, context-aware AI guardrails platform that pairs a safety/manipulation-detection model (OpenGuardrails-Text-2510, a 3.3B quantized LLM) with a deployable guardrails platform: APIs, deployment scripts, and modular components for private or on-prem use. Covers content safety, manipulation attacks (prompt injection, jailbreak, code-interpreter abuse), and data leakage across 119 languages.",
+          "description": "An open guardrails project with two halves. It publishes a safety and manipulation-detection model (OpenGuardrails-Text-2510, a 3.3B quantized LLM covering content safety, prompt injection, jailbreak, code-interpreter abuse and data leakage across 119 languages), and it maintains the OpenGuardrails (OGR) specification - a vendor-neutral wire contract for AI agent safety, with reference runtimes, Python and JavaScript SDKs, agent/gateway/sandbox integrations, and a detector benchmark. The specification is deliberately not a detector - it defines the interface and referees the leaderboard so vendors compete behind a common plug.",
           "openness": {
             "score": 5,
             "class": "open_source",
             "components": "license:Apache-2.0(OSI) for both platform and model;source:public;self-host:yes(on-prem/private);model:OpenGuardrails-Text-2510 open weights Apache-2.0;core-gated:ungated",
             "confidence": "high",
-            "note": "Fully open source: both the guardrails platform and the safety model are Apache-2.0 and self-hostable, including on-prem deployment.",
+            "note": "Fully open source: both the guardrails platform and the safety model are Apache-2.0 and self-hostable, including on-prem deployment. Re-read 2026-08-13 and both halves still check out, but the repo has been reshaped since the last read - it is now the monorepo for the OpenGuardrails (OGR) specification and its reference implementations, with the Python and JavaScript SDKs and the integrations beside it. The licence, the public source and the ungated core are unchanged, so the score is unaffected; what the product IS has moved, and that is raised on the prose rather than settled here.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://github.com/openguardrails/openguardrails",
-                "shows": "Apache-2.0 platform; ~80 stars; on-prem deployment",
-                "accessed": "2026-06-29"
+                "shows": "Repo metadata records license spdxId - Apache-2.0 and the README closes 'License. Apache-2.0'. The monorepo holds specification/ and schema/, packages/python and packages/javascript, integrations/, benchmarks/ and examples/, and the development section builds and tests the whole thing locally. The project describes itself as foundation-governed and neutral; there is no paid tier, enterprise directory or license key on the page.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "14ec01d401f346717c75189035fdaa88a10c829893ac5a02d59f96b1c8c2cf2b",
+                "establishes": [
+                  "source",
+                  "core-gated",
+                  "license"
+                ]
               },
               {
                 "url": "https://huggingface.co/openguardrails/OpenGuardrails-Text-2510",
-                "shows": "Apache-2.0; 3.3B quantized safety model; 119 languages",
-                "accessed": "2026-06-29"
+                "shows": "Model repo is ungated and carries License - apache-2.0 with a LICENSE file and two safetensors shards; cardData records base_model - Qwen/Qwen3-14B and quantization - GPTQ-4bit, which is the 3.3B quantized safety model the score records.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "159fabd963ebd48e27ae04bc4a9424930f514c22a9e9a6020ac894baeb8d0a9f",
+                "establishes": [
+                  "license"
+                ]
               }
             ],
             "bucket": "open"
@@ -26924,12 +26962,15 @@
             "reach": "<1K stars",
             "signal_type": "stars_fallback",
             "confidence": "low",
-            "note": "New (late 2025) project, ~80 GitHub stars (June 2026); stars-only proxy, capped per methodology; early-stage adoption. Stars read 2026-08-13: 23 across the 1 declared repo, which bands at <1K stars, level 1 on the stars scale in signal_routing.yaml. Level corrected from 2. The previous reach '1K-10K' was not a label this instrument offers - stars have their own vocabulary because a star is not a download. No last_verified claimed: a star count is volatile, so a digest of it would read as drift on every refetch, and the rest of the axis was not re-read.",
+            "note": "Early-stage project; stars-only proxy, capped at 3 because a star is not a use. Re-read 2026-08-13 - the repo shows 24 stargazers, which bands at <1K stars, level 1 on the stars scale in signal_routing.yaml. The project publishes SDKs to PyPI and npm, so a download route may exist; PyPI stats were rate-limited at the time of the read and no figure was obtained, which says nothing about whether one exists. The stars band is what was re-derived.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://github.com/openguardrails/openguardrails",
-                "shows": "~80 stars (June 2026)",
-                "accessed": "2026-06-29"
+                "shows": "stargazerCount 24 for openguardrails/openguardrails; no download, install or customer figure appears on the page.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "14ec01d401f346717c75189035fdaa88a10c829893ac5a02d59f96b1c8c2cf2b"
               }
             ]
           },
@@ -26939,12 +26980,15 @@
             "basis_detail": "platform + model + multilingual",
             "value": "A safety/manipulation-detection model plus a deployable platform (APIs, deployment scripts, modular components) covering content safety, prompt injection/jailbreak, code-interpreter abuse, and data leakage across 119 languages.",
             "confidence": "low",
-            "note": "Unusually complete for its age: ships both an open safety model and an on-prem platform, with broad multilingual coverage.",
+            "note": "Unusually complete for its age: ships both an open safety model and an on-prem platform, with broad multilingual coverage. Re-read 2026-08-13 against the paper, which still supports every clause of the value. Worth flagging that the repo has since repositioned as a vendor-neutral protocol and benchmark rather than a detector - \"we do not build detection capability\" - so the platform the paper describes and the thing the repo now ships are drifting apart. The published model and the paper are what the band rests on.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://arxiv.org/abs/2510.19169",
-                "shows": "context-aware guardrails platform + safety model; 119 languages; content safety, manipulation, data leakage",
-                "accessed": "2026-06-29"
+                "shows": "Abstract (v2, revised 29 Oct 2025) presents OpenGuardrails as 'the first fully open-source platform that unifies large-model-based safety detection, manipulation defense, and deployable guardrail infrastructure', covering content-safety violations, model-manipulation attacks including prompt injection, jailbreaks and code-interpreter abuse, and data leakage. It records Configurable Policy Adaptation, a unified LLM-based guard architecture, a 14B base compressed to 3.3B via GPTQ, support for 119 languages, deployment as a secure gateway or API service, and Apache 2.0 for all models, datasets and deployment scripts.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "97ec399725a27452a94b88ff57ed91fcad24d13ec2afac82ba80079c7da58020"
               }
             ]
           },
@@ -26952,9 +26996,9 @@
           "mature": false,
           "freshness": {
             "date": "2026-08-13",
-            "basis": "commit"
+            "basis": "verified"
           },
-          "version_note": "OpenGuardrails: Apache-2.0 platform AND model (OpenGuardrails-Text-2510, 3.3B quantized); 119 languages; on-prem/private deployment. ~80 GitHub stars (June 2026); arXiv 2510.19169. The first project to open-source both a large-scale safety LLM and a production guardrails platform. Verified June 2026."
+          "version_note": "The first project to open-source both a large-scale safety LLM and a production guardrails platform, described in arXiv 2510.19169. The repo has since been reshaped into the monorepo for the OGR specification and its reference implementations, so the paper and the repo now describe different things and the paper is the better guide to the model. Verified 2026-08-13 via GitHub, the HF model card and the arXiv abstract."
         },
         {
           "slug": "zentropi-cope",
@@ -26968,12 +27012,19 @@
             "class": "open_weights",
             "components": "weights:open(zentropi-ai/cope-a-9b on HF);base:Gemma-2-9B(LoRA);license:zentropi-openrail-m(OpenRAIL-M, use-restricted, NOT OSI)",
             "confidence": "medium",
-            "note": "Open weights and self-hostable, but under an OpenRAIL-M license with use restrictions (e.g. surveillance), which is not OSI-approved, so open_weights (3).",
+            "note": "Open weights and self-hostable, but under an OpenRAIL-M license with use restrictions (e.g. surveillance), which is not OSI-approved, so open_weights (3). Re-read 2026-08-13 and unchanged.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://huggingface.co/zentropi-ai/cope-a-9b",
-                "shows": "zentropi-openrail-m (OpenRAIL-M, use-restricted); open weights; Gemma-2-9B LoRA; policy-adaptive labeling; 23 likes",
-                "accessed": "2026-06-29"
+                "shows": "Repo header reads License - zentropi-openrail-m and cardData records license - other with license_name - zentropi-openrail-m. The repo is publicly accessible behind a contact-information gate rather than a private one, and ships adapter_model.safetensors; the card tells developers to download google/gemma2-9b and merge the CoPE adapter.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "e7c97fc6e5b6b3a70d5662a77352da9fbafbb6869e4b1b7e11a189b23170854c",
+                "establishes": [
+                  "weights",
+                  "license"
+                ]
               }
             ],
             "bucket": "open-ish"
@@ -26982,12 +27033,15 @@
             "level": 2,
             "signal_type": "reported_traction",
             "confidence": "low",
-            "note": "Niche but notable: a ROOST Model Community partner model (distributed via RMC); 23 HF likes (June 2026), downloads not tracked.",
+            "note": "Niche but notable: a ROOST Model Community partner model (distributed via RMC). Re-read 2026-08-13 - the Hub reports 23 likes and 0 downloads in the trailing 30 days, because the repo distributes a LoRA adapter that most users merge rather than pull, so no download signal exists to band and the instrument stays reported_traction. No reach recorded - the vendor publishes no usage figure, and a numeric label on this instrument would assert a count nobody made.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://huggingface.co/zentropi-ai/cope-a-9b",
-                "shows": "23 likes (June 2026); RMC partner model",
-                "accessed": "2026-06-29"
+                "shows": "23 likes; downloads 0 over the trailing 30 days; no usage figure published anywhere on the card.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "e7c97fc6e5b6b3a70d5662a77352da9fbafbb6869e4b1b7e11a189b23170854c"
               }
             ]
           },
@@ -26995,14 +27049,19 @@
             "score": 4,
             "basis": "feature_matrix",
             "basis_detail": "steerable bring-your-own-policy",
+            "relative_to": "gpt-oss-safeguard",
+            "relation": "at",
             "value": "Policy-adaptive labeling: evaluates content against arbitrary natural-language policies rather than a fixed taxonomy, with strong F1 across hate, sexual, violence, harassment, self-harm, and toxicity.",
             "confidence": "low",
-            "note": "Like gpt-oss-safeguard, a bring-your-own-policy model that generalizes to custom policies; strong reported F1 across harm areas.",
+            "note": "Like gpt-oss-safeguard, a bring-your-own-policy model that generalizes to custom policies; strong reported F1 across harm areas. That comparison is the instrument, so it is recorded rather than left in prose - the same shape of product, at the same rung. Re-read 2026-08-13 and unchanged.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://huggingface.co/zentropi-ai/cope-a-9b",
-                "shows": "policy-adaptive labeling; hate/sexual/violence/harassment/self-harm/toxicity",
-                "accessed": "2026-06-29"
+                "shows": "Card lists 'Policy-adaptive content evaluation', 'Steerable (no fixed taxonomy/definitions)' and binary classification against a supplied policy, with training coverage across hate speech, sexual content, self-harm, harassment and toxicity; evaluation is largely on internal held-out policies besides the Ethos hate-speech benchmark.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "e7c97fc6e5b6b3a70d5662a77352da9fbafbb6869e4b1b7e11a189b23170854c"
               }
             ]
           },
@@ -27010,9 +27069,9 @@
           "mature": false,
           "freshness": {
             "date": "2026-08-13",
-            "basis": "commit"
+            "basis": "verified"
           },
-          "version_note": "Zentropi CoPE-A (9B) on Gemma-2-9B (LoRA); license zentropi-openrail-m (OpenRAIL-M, use-restricted, NOT OSI). Open weights, self-hostable. RMC partner model distributed via the ROOST Model Community. 23 likes (June 2026); arXiv 2512.18027. Verified June 2026."
+          "version_note": "Zentropi CoPE-A (9B) on Gemma-2-9B, trained as a LoRA adapter - the card has developers download the Gemma base and merge the adapter onto it, so the repo ships the adapter rather than a full model. An RMC partner model distributed through the ROOST Model Community; described in arXiv 2512.18027. Verified 2026-08-13 via the HF model card."
         },
         {
           "slug": "qwen3guard",
@@ -27027,11 +27086,30 @@
             "components": "weights:open(Qwen3Guard 0.6B/4B/8B on HF);data:not-released;license:Apache-2.0(OSI)",
             "confidence": "medium",
             "note": "Open weights under Apache-2.0 (OSI). Scored 3 because the 4-rung requires both the post-training data and the fine-tuning pipeline to be released, and neither is. The card records the training data as not released and publishes no recipe. Apache-2.0 weights over a closed recipe scores 3 everywhere else on the map. Unusually broad multilingual coverage (119 languages) plus a streaming variant.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://huggingface.co/Qwen/Qwen3Guard-Gen-8B",
-                "shows": "Apache-2.0; open weights; 0.6B/4B/8B; 119 languages; safe/controversial/unsafe; ~74,669 downloads/month, 119 likes",
-                "accessed": "2026-06-29"
+                "shows": "Card front matter records license - apache-2.0 with a license_link to the repo's own LICENSE; the repo is ungated and ships five safetensors shards. The body says the series is 'trained on a dataset of 1.19 million prompts and responses labeled for safety' but publishes no such dataset and declares none in cardData.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "0c85311a3deeaf9a24a600445ac3cd4a2544fce57980362c46c507e61a2e0294",
+                "establishes": [
+                  "weights",
+                  "data",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/Qwen/Qwen3Guard-Gen-8B/raw/main/README.md",
+                "shows": "Raw card front matter - license - apache-2.0, base_model - Qwen/Qwen3-8B. No datasets key, and the training corpus is described by size only.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "186e45caec39c9c7e25732a399baf142370ffc5173767803a6969079f729e77f",
+                "establishes": [
+                  "data",
+                  "license"
+                ]
               }
             ],
             "bucket": "open-ish"
@@ -27059,22 +27137,25 @@
             "basis_detail": "coverage + multilingual + streaming",
             "value": "Prompt and response classification across 119 languages with a three-level verdict and a token-level streaming variant; size ladder from 0.6B to 8B.",
             "confidence": "medium",
-            "note": "Among the broadest open guardrails on language coverage, with a streaming mode that few others offer.",
+            "note": "Among the broadest open guardrails on language coverage, with a streaming mode that few others offer. Re-read 2026-08-13 and unchanged.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://huggingface.co/Qwen/Qwen3Guard-Gen-8B",
-                "shows": "119 languages; prompt+response; streaming variant",
-                "accessed": "2026-06-29"
+                "shows": "Card lists three sizes (0.6B, 4B, 8B) and two variants, Qwen3Guard-Gen and Qwen3Guard-Stream; 'Qwen3Guard-Gen supports 119 languages and dialects'; verdicts are graded safe, controversial and unsafe.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "0c85311a3deeaf9a24a600445ac3cd4a2544fce57980362c46c507e61a2e0294"
               }
             ]
           },
           "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-12",
+            "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Qwen3Guard (0.6B/4B/8B), Apache-2.0 open weights; 119 languages; generative + streaming variants. 8B ~74.7K HF downloads/month, 119 likes (June 2026). Verified live June 2026."
+          "version_note": "Qwen3Guard ships in three sizes (0.6B, 4B, 8B) and two variants, Qwen3Guard-Gen for instruction-style classification and Qwen3Guard-Stream for token-level moderation, across 119 languages. The card names a 1.19 million-sample training set but does not publish it. Verified 2026-08-13 via the HF model card."
         },
         {
           "slug": "wildguard",
@@ -27088,17 +27169,25 @@
             "class": "open_weights",
             "components": "weights:open(allenai/wildguard on HF);data:open(WildGuardMix corpus public);code:partial(inference/serving package only; no training pipeline);base:Mistral-7B;license:Apache-2.0(OSI)",
             "confidence": "medium",
-            "note": "Open weights under Apache-2.0 with the WildGuardMix training corpus published, which is more than most guardrail models release. The fine-tuning pipeline is not published, though. The allenai/wildguard repo ships an inference package only (nine files, no trainer or training config), the companion Safety-Eval repo is an evaluation suite, and the model card refers readers to the paper appendix for training details rather than to code. The 4-rung requires released data and released code, so this scores 3. Recorded 4 until the components were completed; open data alone does not lift the rung.",
+            "note": "Open weights under Apache-2.0 with the WildGuardMix training corpus published, which is more than most guardrail models release. The fine-tuning pipeline is not published, though. The allenai/wildguard repo ships an inference package only (nine files, no trainer or training config), the companion Safety-Eval repo is an evaluation suite, and the model card refers readers to the paper appendix for training details rather than to code. The 4-rung requires released data and released code, so this scores 3. Recorded 4 until the components were completed; open data alone does not lift the rung. Re-read 2026-08-13 and unchanged on all four dimensions; both GitHub sources returned byte-identical digests.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://huggingface.co/allenai/wildguard",
-                "shows": "Apache-2.0; 7B Mistral fine-tune; prompt/response/refusal detection; open WildGuardMix corpus; ~265K downloads/month",
-                "accessed": "2026-06-29"
+                "shows": "Repo shows License - apache-2.0 and a dataset tag allenai/wildguardmix, gated auto (access granted on accepting the AI2 Responsible Use policy), with safetensors and pytorch_model shards downloadable. cardData declares datasets - allenai/wildguardmix, which is the published training corpus.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "e3ea0e4834fe03c2d117e52296aa840d649fe4e08b4674b294aaf680a286eb05",
+                "establishes": [
+                  "weights",
+                  "data",
+                  "license"
+                ]
               },
               {
                 "url": "https://api.github.com/repos/allenai/wildguard/contents",
-                "shows": "Root listing of the project's own repo, which is the whole of what it ships as code. Nine entries (.gitignore, LICENSE.md, README.md, docs, examples, pyproject.toml, requirements.txt, tests, wildguard). No training directory, no trainer entrypoint, no SFT or DPO config. The `wildguard` package is the classifier wrapper and `examples/wildguard_filter` is a serving demo, so the published code is inference and serving only.",
-                "accessed": "2026-08-12",
+                "shows": "Root listing of the project's own repo, which is the whole of what it ships as code. Nine entries (.gitignore, LICENSE.md, README.md, docs, examples, pyproject.toml, requirements.txt, tests, wildguard). No training directory, no trainer entrypoint, no SFT or DPO config. The `wildguard` package is the classifier wrapper and `examples/wildguard_filter` is a serving demo, so the published code is inference and serving only. Re-fetched 2026-08-13 - the digest is unchanged, so the listing is the same one.",
+                "accessed": "2026-08-13",
                 "http_status": 200,
                 "content_sha256": "c4fb6dc1020ec916c47d6d6a90161fa20226b7bac3f147f26da9521c542a26e6",
                 "establishes": [
@@ -27107,8 +27196,8 @@
               },
               {
                 "url": "https://github.com/allenai/wildguard/blob/main/README.md",
-                "shows": "The project's own README installs with `pip install wildguard` and documents `load_wildguard()` plus `classify()`. Its only outbound links are the paper, the WildGuardMix dataset, the model, and the Safety-Eval companion repo, which it describes as holding \"the details of evaluations run in the WildGuard paper\". No training pipeline is offered or linked.",
-                "accessed": "2026-08-12",
+                "shows": "The project's own README installs with `pip install wildguard` and documents `load_wildguard()` plus `classify()`. Its only outbound links are the paper, the WildGuardMix dataset, the model, and the Safety-Eval companion repo, which it describes as holding \"the details of evaluations run in the WildGuard paper\". No training pipeline is offered or linked. Re-fetched 2026-08-13 - the digest is unchanged.",
+                "accessed": "2026-08-13",
                 "http_status": 200,
                 "content_sha256": "e9b46a0e3e74792e8cebe692f444607e21767d1888a2ade3785d3657fd33c699",
                 "establishes": [
@@ -27141,12 +27230,15 @@
             "basis_detail": "joint detection + benchmarks",
             "value": "Joint prompt-harm, response-harm, and refusal detection across 13 subcategories; reported above GPT-4 and prior open baselines, with low over-blocking on benign traffic.",
             "confidence": "medium",
-            "note": "Strong precision and low over-refusal; the joint refusal-detection head is a useful differentiator.",
+            "note": "Strong precision and low over-refusal; the joint refusal-detection head is a useful differentiator. Re-read 2026-08-13 and unchanged.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://huggingface.co/allenai/wildguard",
-                "shows": "prompt/response/refusal detection; 13 subcategories; beats GPT-4 on benchmarks",
-                "accessed": "2026-06-29"
+                "shows": "Card describes a one-stop moderation tool detecting prompt harm, response harm and model refusal across 13 risk subcategories, reported above GPT-4 on the paper's moderation benchmarks; tagged classifier, safety, moderation and arxiv 2406.18495.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "e3ea0e4834fe03c2d117e52296aa840d649fe4e08b4674b294aaf680a286eb05"
               }
             ]
           },
@@ -27156,7 +27248,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "WildGuard (7B, Mistral-based), Apache-2.0 open weights; trained on the open WildGuardMix dataset. ~265K HF downloads/month, 52 likes (June 2026). Verified live June 2026."
+          "version_note": "WildGuard (7B, Mistral-based), trained on the open WildGuardMix corpus, which is published on the Hub alongside it. The project repo ships an inference and serving package rather than a training pipeline, and the card sends readers to the paper appendix for training detail. Verified 2026-08-13 via the HF model card and the project repo."
         },
         {
           "slug": "llama-prompt-guard",
@@ -27170,12 +27262,32 @@
             "class": "open_weights",
             "components": "weights:open(Llama-Prompt-Guard-2-86M/22M on HF);data:not-released;license:Llama-4-Community(NOT OSI)",
             "confidence": "medium",
-            "note": "Open weights under Meta's Llama 4 Community License, which is use-restricted and not OSI-approved, so open_weights (3) like the rest of the Llama family.",
+            "note": "Open weights under Meta's Llama 4 Community License, which is use-restricted and not OSI-approved, so open_weights (3) like the rest of the Llama family. Re-read 2026-08-13 and unchanged.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://huggingface.co/meta-llama/Llama-Prompt-Guard-2-86M",
-                "shows": "Llama 4 Community License; open weights; 86M/22M; prompt-injection/jailbreak classifier; ~90,441 downloads/month, 149 likes",
-                "accessed": "2026-06-29"
+                "shows": "Repo shows License - llama4 and carries the full LLAMA 4 COMMUNITY LICENSE AGREEMENT text, including the 700 million monthly active user threshold above which a separate Meta license is required. Gated manual, with model.safetensors downloadable on acceptance. The card publishes no training set and declares no datasets.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "2b82c90d52e77871e862698d8e3fd040a85c707fb7e2fda394446ab5a17ee62a",
+                "establishes": [
+                  "weights",
+                  "data",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/models/meta-llama/Llama-Prompt-Guard-2-86M",
+                "shows": "cardData records license - other with license_name - llama4; gated - manual; siblings list model.safetensors; no datasets key.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "8dbd4ab1eb0ead190135b8aa992de63edc25bb3f7437f18243f2f278a560a0b6",
+                "establishes": [
+                  "weights",
+                  "data",
+                  "license"
+                ]
               }
             ],
             "bucket": "open-ish"
@@ -27203,12 +27315,15 @@
             "basis_detail": "injection detection + latency",
             "value": "Dedicated prompt-injection/jailbreak detection at 99.8% AUC and 97.5% recall at 1% FPR (English), 8 languages, sub-100ms latency; narrow but best-in-class at its job.",
             "confidence": "medium",
-            "note": "Specialized injection/jailbreak classifier with strong accuracy and very low latency; complements full-taxonomy guards.",
+            "note": "Specialized injection/jailbreak classifier with strong accuracy and very low latency; complements full-taxonomy guards. Re-read 2026-08-13 and the numbers still stand as recorded.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://huggingface.co/meta-llama/Llama-Prompt-Guard-2-86M",
-                "shows": "99.8% AUC, 97.5% recall @1% FPR; 8 languages; sub-100ms",
-                "accessed": "2026-06-29"
+                "shows": "Card evaluation table gives Llama Prompt Guard 2 86M an English AUC of .998, recall at 1% FPR of 97.5%, multilingual AUC .995 and 92.4 ms per classification on an A100; the 22M variant is listed at .995/88.7% and 19.3 ms. Repo is tagged 8 languages, and the card frames the task as prompt injection and jailbreak detection.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "2b82c90d52e77871e862698d8e3fd040a85c707fb7e2fda394446ab5a17ee62a"
               }
             ]
           },
@@ -27218,7 +27333,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Llama Prompt Guard 2 (86M / 22M); Llama 4 Community License (not OSI). 99.8% AUC, 97.5% recall at 1% FPR on English jailbreaks; 8 languages. 86M ~90.4K HF downloads/month, 149 likes (June 2026). Verified live June 2026."
+          "version_note": "Llama Prompt Guard 2 comes in two sizes, 86M and 22M, the smaller trading a little recall for roughly a quarter of the latency. The card publishes no training data. The weights are behind Meta's access request rather than open to download. Verified 2026-08-13 via the HF model card."
         },
         {
           "slug": "llamafirewall",
@@ -27298,22 +27413,32 @@
             "basis_detail": "layered agent defenses",
             "value": "Layered, agent-focused defenses: jailbreak/injection detection (Prompt Guard 2), agent-alignment/goal-hijack checks, and insecure-code filtering (CodeShield) in one real-time firewall.",
             "confidence": "medium",
-            "note": "One of the few guardrail systems aimed specifically at agent security, with alignment checks and code filtering beyond I/O moderation.",
+            "note": "One of the few guardrail systems aimed specifically at agent security, with alignment checks and code filtering beyond I/O moderation. Re-read 2026-08-13. The PurpleLlama root README no longer names LlamaFirewall or the alignment checks at all - its component table now lists only the Llama Guard family, Prompt Guard and Code Shield - so the LlamaFirewall directory README is cited alongside it as the source that actually carries the scanner list. The band is unchanged.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://github.com/meta-llama/PurpleLlama",
-                "shows": "Prompt Guard 2 + Agent Alignment Checks + CodeShield",
-                "accessed": "2026-06-29"
+                "shows": "Root README describes Purple Llama as an umbrella project and tables its components - Cyber Security Eval under MIT, the Llama Guard family and Prompt Guard under Llama Community licenses, and Code Shield under MIT, which it describes as inference-time filtering of insecure generated code, code-interpreter abuse prevention and secure command execution. It does not mention LlamaFirewall.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "507ec485f07e6b4ebe6f32218b9a72c84f01c769127022fe77a496b41c10669b"
+              },
+              {
+                "url": "https://github.com/meta-llama/PurpleLlama/blob/main/LlamaFirewall/README.md",
+                "shows": "The directory README lists the scanners the harness composes - PromptGuard 2, AlignmentCheck, regex/custom and CodeShield - all in the published package, installed with `pip install llamafirewall` and instantiated in-process. Re-fetched 2026-08-13 with an unchanged digest.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "9bf4c794eae9870c6d9403490949eec85568c275229775f9477a72e48b679d12"
               }
             ]
           },
           "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-12",
+            "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "LlamaFirewall, in meta-llama/PurpleLlama (~4.2K stars). PurpleLlama licensing is mixed: evals/benchmarks MIT, safeguard models under the Llama Community License. Components: Prompt Guard 2, Agent Alignment Checks, CodeShield. Verified live June 2026."
+          "version_note": "LlamaFirewall lives in the meta-llama/PurpleLlama monorepo and composes Prompt Guard 2, AlignmentCheck, regex/custom scanners and CodeShield into one harness, installed as its own package. The guard models it loads are separate products on this map. The monorepo root README no longer mentions LlamaFirewall, so the directory README is the place to read it. Verified 2026-08-13 via the LlamaFirewall README and the PurpleLlama repo."
         },
         {
           "slug": "harmbench",
@@ -27327,12 +27452,20 @@
             "class": "open_source",
             "components": "license:MIT(OSI);source:public;self-host:yes;service:none;core-gated:ungated",
             "confidence": "high",
-            "note": "Fully open source: MIT-licensed standardized red-teaming evaluation framework, self-hostable.",
+            "note": "Fully open source: MIT-licensed standardized red-teaming evaluation framework, self-hostable. Re-read 2026-08-13 and unchanged.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://github.com/centerforaisafety/HarmBench",
-                "shows": "MIT; standardized automated red-teaming eval; 18 attacks x 33 target models; ~993 stars",
-                "accessed": "2026-06-29"
+                "shows": "Repo metadata records license spdxId - MIT. The whole framework is in the public repo and the README is a Quick Start for running it yourself; there is no enterprise or commercial edition, no paid tier and no license key anywhere in the page, so nothing is withheld from the published source.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "a9b480ae0dbe5f731b3811a985674be8c1834a11b8870e8d6725e1b493edad7f",
+                "establishes": [
+                  "source",
+                  "core-gated",
+                  "license"
+                ]
               }
             ],
             "bucket": "open"
@@ -27342,12 +27475,15 @@
             "reach": "1K-10K stars",
             "signal_type": "stars_fallback",
             "confidence": "low",
-            "note": "~1K GitHub stars (June 2026); stars-only proxy. Widely cited as the standardized red-teaming benchmark in research. Stars read 2026-08-13: 1,029 across the 1 declared repo, which bands at 1K-10K stars, level 2 on the stars scale in signal_routing.yaml. The previous reach '1K-10K' was not a label this instrument offers - stars have their own vocabulary because a star is not a download. No last_verified claimed: a star count is volatile, so a digest of it would read as drift on every refetch, and the rest of the axis was not re-read.",
+            "note": "Stars-only proxy, capped at 3 because a star is not a use; widely cited as the standardized red-teaming benchmark in research. Re-read 2026-08-13 - the repo shows 1,029 stargazers, which bands at 1K-10K stars, level 2 on the stars scale in signal_routing.yaml. HarmBench ships no package on PyPI or npm, so there is no download route to re-band onto and stars remain the only signal.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://github.com/centerforaisafety/HarmBench",
-                "shows": "~993 stars (June 2026)",
-                "accessed": "2026-06-29"
+                "shows": "stargazerCount 1029 for centerforaisafety/HarmBench; no download, install or customer figure appears on the page.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "a9b480ae0dbe5f731b3811a985674be8c1834a11b8870e8d6725e1b493edad7f"
               }
             ]
           },
@@ -27357,12 +27493,15 @@
             "basis_detail": "standardized eval coverage",
             "value": "A standardized pipeline spanning 18 automated attack methods and 33 target models, enabling rigorous attack/defense comparison and co-development.",
             "confidence": "medium",
-            "note": "The reference standardized harness for comparing red-team attacks and defenses; research-grade breadth.",
+            "note": "The reference standardized harness for comparing red-team attacks and defenses; research-grade breadth. Re-read 2026-08-13 and unchanged.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://github.com/centerforaisafety/HarmBench",
-                "shows": "18 attack methods, 33 target models, standardized pipeline",
-                "accessed": "2026-06-29"
+                "shows": "README describes 'a fast, scalable, and open-source framework for evaluating automated red teaming methods and LLM attacks/defenses' and records the initial release as covering 33 evaluated LLMs and 18 red teaming methods.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "a9b480ae0dbe5f731b3811a985674be8c1834a11b8870e8d6725e1b493edad7f"
               }
             ]
           },
@@ -27370,9 +27509,9 @@
           "mature": false,
           "freshness": {
             "date": "2026-08-13",
-            "basis": "commit"
+            "basis": "verified"
           },
-          "version_note": "HarmBench, MIT, Center for AI Safety; ~1K GitHub stars (June 2026). Standardized red-teaming eval across 18 attacks and 33 target models. Verified live June 2026."
+          "version_note": "HarmBench, from the Center for AI Safety. A standardized red-teaming evaluation that shipped covering 18 attack methods against 33 target models, run entirely from the public repo. Verified 2026-08-13 via GitHub."
         },
         {
           "slug": "giskard",
@@ -27386,12 +27525,20 @@
             "class": "open_source",
             "components": "license:Apache-2.0(OSI);source:public;self-host:yes;service:none(per the repo);core-gated:ungated",
             "confidence": "high",
-            "note": "Fully open source: Apache-2.0 Python library, self-hostable; no commercial tier mentioned on the repo.",
+            "note": "Fully open source: Apache-2.0 Python library, self-hostable; no commercial tier mentioned on the repo. Re-read 2026-08-13 and unchanged. The cited URL now redirects to Giskard-AI/giskard-oss, which is the repo the product declares, and the project has shipped a v3 rewrite since the last read; neither moves the score.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://github.com/Giskard-AI/giskard",
-                "shows": "Apache-2.0; ~5.5k stars; automated scan + scenario checks; adversarial/injection testing",
-                "accessed": "2026-06-29"
+                "shows": "Redirects to Giskard-AI/giskard-oss, whose metadata records license spdxId - Apache-2.0. The README installs the whole thing with pip and documents running it locally; the only paid-adjacent ask on the page is GitHub sponsorship, and there is no enterprise directory, commercial edition or license key, so nothing is withheld from the published source.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "dfb7a90ded7d700544e2d5a6c686c6cdce6c16ebac69ef59eb4b260ea2a98505",
+                "establishes": [
+                  "source",
+                  "core-gated",
+                  "license"
+                ]
               }
             ],
             "bucket": "open"
@@ -27401,12 +27548,15 @@
             "reach": "1K-10K stars",
             "signal_type": "stars_fallback",
             "confidence": "low",
-            "note": "~5.5K GitHub stars (June 2026); stars-only proxy, capped per methodology. Stars read 2026-08-13: 5,748 across the 1 declared repo, which bands at 1K-10K stars, level 2 on the stars scale in signal_routing.yaml. Level corrected from 3. The previous reach '10K-100K' was not a label this instrument offers - stars have their own vocabulary because a star is not a download. No last_verified claimed: a star count is volatile, so a digest of it would read as drift on every refetch, and the rest of the axis was not re-read.",
+            "note": "Stars-only proxy, capped at 3 because a star is not a use. Re-read 2026-08-13 - the repo shows 5,748 stargazers, which bands at 1K-10K stars, level 2 on the stars scale in signal_routing.yaml. A download route does exist and was checked rather than assumed away: the giskard package on PyPI shows 24,423 downloads in the trailing 30 days, which is level 2 on the software scale, so both instruments agree on the band. Re-banding onto downloads needs a declared PyPI artifact and is raised rather than taken here.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://github.com/Giskard-AI/giskard",
-                "shows": "~5.5k stars (June 2026)",
-                "accessed": "2026-06-29"
+                "shows": "stargazerCount 5748 for Giskard-AI/giskard-oss; no download, install or customer figure appears on the page.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "dfb7a90ded7d700544e2d5a6c686c6cdce6c16ebac69ef59eb4b260ea2a98505"
               }
             ]
           },
@@ -27416,12 +27566,15 @@
             "basis_detail": "scan + checks coverage",
             "value": "Automated vulnerability scanning (injection, harmful output, hallucination) plus scenario-based and multi-turn agent evaluations.",
             "confidence": "medium",
-            "note": "Combines automated red-team scanning with structured evaluation; broad coverage for both safety and reliability.",
+            "note": "Combines automated red-team scanning with structured evaluation; broad coverage for both safety and reliability. Re-read 2026-08-13. The v3 rewrite renamed Scan to vulnerability_scan and shipped it in giskard-scan alongside knowledge-base and RAG evaluation, so the shape of the coverage moved but not its breadth, and the band holds.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://github.com/Giskard-AI/giskard",
-                "shows": "Scan + Checks; adversarial, injection, multi-turn agent validation",
-                "accessed": "2026-06-29"
+                "shows": "README describes 'Evals, Red Teaming and Test Generation for Agentic Systems' and a vulnerability scanner covering 'red teaming, prompt injection, jailbreaks & harmful content' (vulnerability_scan, successor of v2 Scan) plus knowledge-base and RAG quality evaluation, with v3 built for dynamic multi-turn testing of agents.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "dfb7a90ded7d700544e2d5a6c686c6cdce6c16ebac69ef59eb4b260ea2a98505"
               }
             ]
           },
@@ -27429,9 +27582,9 @@
           "mature": false,
           "freshness": {
             "date": "2026-08-13",
-            "basis": "commit"
+            "basis": "verified"
           },
-          "version_note": "Giskard, Apache-2.0, Python; ~5.5K GitHub stars (June 2026). Scan (automated red-teaming) + Checks (scenario evals). Verified live June 2026."
+          "version_note": "Giskard's v3 line is a rewrite aimed at dynamic, multi-turn testing of agents; the v2 Scan is now vulnerability_scan, shipped in giskard-scan alongside knowledge-base and RAG evaluation. The repo is Giskard-AI/giskard-oss, which the old Giskard-AI/giskard path redirects to. Verified 2026-08-13 via GitHub."
         },
         {
           "slug": "deepteam",
@@ -27445,12 +27598,20 @@
             "class": "open_source",
             "components": "license:Apache-2.0(OSI);source:public;self-host:yes;service:none;core-gated:ungated",
             "confidence": "high",
-            "note": "Fully open source: Apache-2.0 red-teaming framework, self-hostable.",
+            "note": "Fully open source: Apache-2.0 red-teaming framework, self-hostable. Re-read 2026-08-13 and unchanged. Confident AI sells a hosted place for red-teaming results to live, but that is a separate product beside an ungated core rather than functionality withheld from it.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://github.com/confident-ai/deepteam",
-                "shows": "Apache-2.0; ~1.9k stars; 50+ vuln checks, 20+ attacks; OWASP/NIST/MITRE aligned",
-                "accessed": "2026-06-29"
+                "shows": "Repo metadata records license spdxId - Apache-2.0. README states DeepTeam 'runs locally on your machine and is built on DeepEval, the open-source LLM evaluation framework'; the hosted Confident AI offering is pitched as somewhere for results to live, not as a tier that unlocks the framework. No enterprise directory, commercial edition or license key on the page.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "8bdb58e7a0fbaf43eed2aaffcf179d6fc49ff534e58424b0365bbddb914c7e36",
+                "establishes": [
+                  "source",
+                  "core-gated",
+                  "license"
+                ]
               }
             ],
             "bucket": "open"
@@ -27460,12 +27621,15 @@
             "reach": "1K-10K stars",
             "signal_type": "stars_fallback",
             "confidence": "low",
-            "note": "~1.9K GitHub stars (June 2026); stars-only proxy, capped per methodology. Stars read 2026-08-13: 2,442 across the 1 declared repo, which bands at 1K-10K stars, level 2 on the stars scale in signal_routing.yaml. The previous reach '1K-10K' was not a label this instrument offers - stars have their own vocabulary because a star is not a download. No last_verified claimed: a star count is volatile, so a digest of it would read as drift on every refetch, and the rest of the axis was not re-read.",
+            "note": "Stars-only proxy, capped at 3 because a star is not a use. Re-read 2026-08-13 - the repo shows 2,442 stargazers, which bands at 1K-10K stars, level 2 on the stars scale in signal_routing.yaml. The download route was checked rather than assumed away: the deepteam package on PyPI shows 85,819 downloads in the trailing 30 days, level 2 on the software scale, so both instruments agree on the band. Re-banding onto downloads needs a declared PyPI artifact and is raised rather than taken here.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://github.com/confident-ai/deepteam",
-                "shows": "~1.9k stars (June 2026)",
-                "accessed": "2026-06-29"
+                "shows": "stargazerCount 2442 for confident-ai/deepteam; no download, install or customer figure appears on the page.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "8bdb58e7a0fbaf43eed2aaffcf179d6fc49ff534e58424b0365bbddb914c7e36"
               }
             ]
           },
@@ -27475,12 +27639,15 @@
             "basis_detail": "vuln + standards coverage",
             "value": "50+ vulnerability checks and 20+ attack methods (jailbreak, injection, multi-turn) mapped to OWASP Top 10 for LLMs, NIST AI RMF, and MITRE ATLAS, plus production guardrails.",
             "confidence": "medium",
-            "note": "Strong standards alignment (OWASP/NIST/MITRE) and broad attack coverage; also ships runtime guardrails.",
+            "note": "Strong standards alignment (OWASP/NIST/MITRE) and broad attack coverage; also ships runtime guardrails. Re-read 2026-08-13 and unchanged, with the framework mapping added since to OWASP Top 10 for Agents 2026.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://github.com/confident-ai/deepteam",
-                "shows": "50+ vulnerabilities, 20+ attacks, OWASP/NIST/MITRE",
-                "accessed": "2026-06-29"
+                "shows": "README lists '50+ ready-to-use vulnerabilities', '20+ research-backed adversarial attack methods for both single-turn and multi-turn', mappings to OWASP Top 10 for LLMs 2025, OWASP Top 10 for Agents 2026, NIST AI RMF and MITRE ATLAS, and '7 production-ready guardrails'.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "8bdb58e7a0fbaf43eed2aaffcf179d6fc49ff534e58424b0365bbddb914c7e36"
               }
             ]
           },
@@ -27488,9 +27655,9 @@
           "mature": false,
           "freshness": {
             "date": "2026-08-13",
-            "basis": "commit"
+            "basis": "verified"
           },
-          "version_note": "DeepTeam, Apache-2.0, Confident AI; ~1.9K GitHub stars (June 2026). 50+ vulnerability checks, 20+ attack methods; OWASP/NIST/MITRE aligned. Verified live June 2026."
+          "version_note": "DeepTeam, from Confident AI, built on their DeepEval evaluation framework and run locally. 50+ vulnerability checks and 20+ attack methods, mapped to OWASP Top 10 for LLMs and for Agents, NIST AI RMF and MITRE ATLAS, plus seven runtime guardrails. Verified 2026-08-13 via GitHub."
         },
         {
           "slug": "perspective-api",
@@ -27498,33 +27665,42 @@
           "org_slug": "jigsaw",
           "org": "Jigsaw",
           "type": "software",
-          "description": "Jigsaw's (Google) free hosted API for scoring the toxicity of text (and related attributes like insult, threat, and identity attack), widely used by platforms and researchers for comment moderation since 2017. Closed, API-only; no weights or self-hosting.",
+          "description": "Jigsaw's (Google) free hosted API for scoring the toxicity of text (and related attributes like insult, threat, and identity attack), widely used by platforms and researchers for comment moderation since 2017. Closed, API-only; no weights or self-hosting. Jigsaw has announced that Perspective is sunsetting and the API will be out of service after 2026.",
           "openness": {
             "score": 1,
             "class": "closed",
             "components": "service:proprietary hosted API by Jigsaw/Google(no weights, no self-host);access:free with quota;scores:toxicity + related attributes;source:closed;license:proprietary",
             "confidence": "high",
-            "note": "Closed, API-only hosted classifier; no weights or source. Long-standing and influential, but proprietary.",
+            "note": "Closed, API-only hosted classifier; no weights or source. Long-standing and influential, but proprietary. Re-read 2026-08-13 and the openness reading is unchanged, but the product is ending - the site now leads with a sunset notice, and the API goes out of service after 2026. That is an availability fact rather than an openness one, so the 1/closed stands; the consequences are on adoption, capability and the prose.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://perspectiveapi.com/",
-                "shows": "Jigsaw (Google) free hosted toxicity-scoring API; no weights or self-host",
-                "accessed": "2026-06-29"
+                "shows": "Jigsaw's hosted API, governed by its own API Terms with no source or self-hostable implementation offered anywhere on the site; access is by quota, and the page handles usage and increased-quota requests. It now opens 'Important Notice - Perspective API is sunsetting and service is officially ending after 2026', with 'The service will remain active until December 31, 2026' and no migration support.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "c40c721ce2b0d461023e5f36699ce3be9a39da5493b51eff326dccd938ba1b8f",
+                "establishes": [
+                  "source",
+                  "license"
+                ]
               }
             ],
             "bucket": "closed"
           },
           "adoption": {
             "level": 4,
-            "reach": "1M-10M",
-            "signal_type": "usage_volume",
+            "signal_type": "reported_traction",
             "confidence": "medium",
-            "note": "One of the most widely-adopted moderation APIs since 2017, used across major platforms and research; free with quota.",
+            "note": "NOT confirmed on 2026-08-13, and the record has two problems rather than one. First the instrument: usage_volume claims a download or install count, and Jigsaw has never published one for Perspective - the 1M-10M label asserts a measurement nobody made, which is what adoption.md forbids on a claim of this kind. Second the level: the site now announces the API is sunsetting, out of service after December 31, 2026, and gives as the reason that 'AI capabilities have evolved, and there is now less demand for a standalone tool specific to this area'. A level 4 on a discontinued free API is a claim about the past. Recommend reported_traction with no reach and a level the owner sets; not taken here. The instrument now reads reported_traction, which is what a credible claim with no count behind it is for, and the illegal numeric reach is gone. The LEVEL is deliberately unchanged: correcting how a band was read is not a reason to move where it sits, and nothing re-read today argues the standing is different. What changes is that the record no longer claims a measurement nobody made.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://perspectiveapi.com/",
-                "shows": "widely-used free hosted moderation API since 2017",
-                "accessed": "2026-06-29"
+                "shows": "Sunset announcement and transition period. No usage figure of any kind - no request volume, no customer count, no developer count - appears on the page.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "c40c721ce2b0d461023e5f36699ce3be9a39da5493b51eff326dccd938ba1b8f"
               }
             ]
           },
@@ -27534,22 +27710,24 @@
             "basis_detail": "attribute coverage",
             "value": "Scores toxicity and related attributes (insult, threat, profanity, identity attack) for text, multilingual; established but a fixed attribute set.",
             "confidence": "low",
-            "note": "Mature toxicity scoring with broad real-world use; narrower than full safety taxonomies and policy-conditioned models.",
+            "note": "Mature toxicity scoring with broad real-world use; narrower than full safety taxonomies and policy-conditioned models. NOT confirmed on 2026-08-13 - the cited page no longer carries the attribute list at all, having been replaced by the sunset notice, so nothing on it supports the recorded value. The developer site that does carry the attributes renders client-side and returned no readable content, so the fact could not be re-derived from a fetch rather than being found absent. A source that still shows the attributes is needed, and the sunset raises the separate question of whether a product leaving service in 2026 should carry a live capability band at all.",
             "sources": [
               {
                 "url": "https://perspectiveapi.com/",
-                "shows": "toxicity + insult/threat/identity-attack scoring, multilingual",
-                "accessed": "2026-06-29"
+                "shows": "Sunset notice only. The toxicity and attribute scoring the value describes is no longer documented anywhere on this page.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "c40c721ce2b0d461023e5f36699ce3be9a39da5493b51eff326dccd938ba1b8f"
               }
             ]
           },
           "maturity": 3.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-08",
-            "basis": "commit"
+            "date": "2026-08-13",
+            "basis": "verified"
           },
-          "version_note": "Perspective API by Jigsaw (Google); free hosted toxicity-scoring API, proprietary (no weights, no self-host). Long-standing comment-moderation API. Verified June 2026."
+          "version_note": "Perspective API by Jigsaw (Google). A free, quota-limited hosted toxicity-scoring API with no weights and no self-hosting. Jigsaw announced a sunset - the service runs until December 31, 2026, new usage and quota requests closed in February 2026, and no migration support is being offered. The reason given is that AI capabilities have evolved and there is less demand for a standalone tool in this area. Verified 2026-08-13 via the Perspective API site."
         },
         {
           "slug": "llama-guard",
@@ -27563,12 +27741,33 @@
             "class": "open_weights",
             "components": "weights:open(Llama-Guard-3-8B safetensors on HF);data:not-released;code:inference recipe public;license:Llama-3.1-Community(NOT OSI, >700M-MAU restriction)",
             "confidence": "medium",
-            "note": "Open-weights safety classifier under Meta's Llama Community License, which carries use restrictions and is not OSI-approved, so it lands at the open_weights tier (3) like the rest of the Llama family rather than open_source.",
+            "note": "Open-weights safety classifier under Meta's Llama Community License, which carries use restrictions and is not OSI-approved, so it lands at the open_weights tier (3) like the rest of the Llama family rather than open_source. Re-read 2026-08-13 and unchanged on every recorded dimension.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://huggingface.co/meta-llama/Llama-Guard-3-8B",
-                "shows": "Llama 3.1 Community License; open weights; 14 hazard categories; I/O classifier; ~237K downloads/month, 307 likes",
-                "accessed": "2026-06-29"
+                "shows": "Repo carries license - llama3.1 and four safetensors shards, gated manual, so the weights are downloadable after accepting Meta's terms. The card has a Training Data section but publishes no mixture and links no dataset, and cardData declares no datasets. It points readers at Llama Recipes on Meta's GitHub for configuration, which is the inference recipe rather than a training pipeline.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "cd2912534013d08615c9d4f92ab119e18959a9c9119e33eb075d64f5c70acdca",
+                "establishes": [
+                  "weights",
+                  "data",
+                  "code",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/models/meta-llama/Llama-Guard-3-8B",
+                "shows": "tags include license:llama3.1; gated - manual; private - false; siblings list model-00001-of-00004.safetensors through model-00004-of-00004.safetensors; cardData carries no datasets key.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "ea08b74f11b6f5ffe559707f73e146ef1e3922a8605ed4abf37ce02785dfb14e",
+                "establishes": [
+                  "weights",
+                  "data",
+                  "license"
+                ]
               }
             ],
             "bucket": "open-ish"
@@ -27596,12 +27795,15 @@
             "basis_detail": "hazard coverage + benchmarks",
             "value": "14 hazard categories across input and output, 8 languages, MLCommons-aligned taxonomy; strong and widely-benchmarked safety classifier, the reference open baseline.",
             "confidence": "medium",
-            "note": "Broad hazard taxonomy and multilingual coverage; the reference open guardrail others are measured against.",
+            "note": "Broad hazard taxonomy and multilingual coverage; the reference open guardrail others are measured against, and several bands in this category are recorded relative to it. Re-read 2026-08-13 - the card's chat template still enumerates S1 to S14 and the card still claims moderation in 8 languages against the MLCommons taxonomy.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://huggingface.co/meta-llama/Llama-Guard-3-8B",
-                "shows": "14 hazard categories, 8 languages, I/O moderation",
-                "accessed": "2026-06-29"
+                "shows": "Chat template lists the unsafe content categories S1 Violent Crimes through S14 Code Interpreter Abuse - fourteen. Card states it 'was aligned to safeguard against the MLCommons standardized hazards taxonomy' and 'provides content moderation in 8 languages'.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "cd2912534013d08615c9d4f92ab119e18959a9c9119e33eb075d64f5c70acdca"
               }
             ]
           },
@@ -27611,7 +27813,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Llama Guard 3 (8B), built on Llama 3.1; Llama 3.1 Community License (not OSI; >700M MAU restriction). ~237K HF downloads/month, 307 likes (June 2026). Verified live June 2026."
+          "version_note": "Llama Guard 3 (8B), built on Llama 3.1. Fourteen hazard categories aligned to the MLCommons taxonomy, in eight languages, applied to both prompts and responses. The weights are behind Meta's access request; the card publishes no training mixture and points at Llama Recipes for inference. Verified 2026-08-13 via the HF model card."
         },
         {
           "slug": "shieldgemma",
@@ -27625,12 +27827,32 @@
             "class": "open_weights",
             "components": "weights:open(shieldgemma 2B/9B/27B on HF);data:not-released;license:Gemma(NOT OSI, use-restricted)",
             "confidence": "medium",
-            "note": "Open weights under the Gemma license, which is use-restricted and not OSI-approved (per the openness rubric, Gemma = open_weights, not open_source), so it sits at 3.",
+            "note": "Open weights under the Gemma license, which is use-restricted and not OSI-approved (per the openness rubric, Gemma = open_weights, not open_source), so it sits at 3. Re-read 2026-08-13 and unchanged.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://huggingface.co/google/shieldgemma-2b",
-                "shows": "Gemma license (not OSI); open weights; four harm categories; ~8,555 downloads/month, 124 likes",
-                "accessed": "2026-06-29"
+                "shows": "Repo shows License - gemma, gated manual, and two safetensors shards, so the weights are downloadable after accepting the Gemma terms. The card describes the models as 'available in English with open weights' and declares no training datasets.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "c4fa465c0ca19e904d98a1169315bb9db23a7eacdb58ddbaeb30f4a44bfcc9a0",
+                "establishes": [
+                  "weights",
+                  "data",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/models/google/shieldgemma-2b",
+                "shows": "tags include license:gemma; gated - manual; siblings list model-00001-of-00002.safetensors and model-00002-of-00002.safetensors; cardData carries no datasets key.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "4feb99736791295afcb2cbb848f16a5dfd7f0f335135e8978f08e1180daa2251",
+                "establishes": [
+                  "weights",
+                  "data",
+                  "license"
+                ]
               }
             ],
             "bucket": "open-ish"
@@ -27656,24 +27878,29 @@
             "score": 3,
             "basis": "feature_matrix",
             "basis_detail": "hazard coverage",
+            "relative_to": "llama-guard",
+            "relation": "one_below",
             "value": "Four harm categories (sexual, dangerous, hate, harassment), yes/no policy classifier in 2B/9B/27B; narrower taxonomy than Llama Guard but multiple sizes.",
             "confidence": "medium",
-            "note": "Competent four-category classifier with a size ladder; narrower hazard taxonomy than Llama Guard / Granite Guardian.",
+            "note": "Competent four-category classifier with a size ladder; narrower hazard taxonomy than Llama Guard / Granite Guardian. That comparison is the instrument, so it is recorded rather than left in prose - four categories against Llama Guard's fourteen, one rung below. Re-read 2026-08-13 and unchanged.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://huggingface.co/google/shieldgemma-2b",
-                "shows": "four harm categories; 2B/9B/27B sizes",
-                "accessed": "2026-06-29"
+                "shows": "Card describes 'a series of safety content moderation models built upon Gemma 2 that target four harm categories (sexually explicit, dangerous content, hate, and harassment)', in 2B, 9B and 27B sizes, English only.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "c4fa465c0ca19e904d98a1169315bb9db23a7eacdb58ddbaeb30f4a44bfcc9a0"
               }
             ]
           },
           "maturity": 2.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-12",
+            "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "ShieldGemma (2B/9B/27B) on Gemma 2; Gemma license (NOT OSI). 2B variant ~8.5K HF downloads/month, 124 likes (June 2026). Verified live June 2026."
+          "version_note": "ShieldGemma (2B/9B/27B) on Gemma 2, an English-only yes/no classifier over four harm categories. The weights are behind an access request rather than open to download, and the card publishes no training data. Verified 2026-08-13 via the HF model card."
         },
         {
           "slug": "granite-guardian",
@@ -27687,12 +27914,31 @@
             "class": "open_weights",
             "components": "weights:open(granite-guardian-3.2-5b on HF);data:not-released;license:Apache-2.0(OSI)",
             "confidence": "medium",
-            "note": "Open weights under Apache-2.0 (permissive, OSI), but neither the post-training data nor the fine-tuning pipeline is released. The 4-rung requires both, so this scores 3, the rung every comparable Apache-2.0 guardrail model sits on. A strong open-weights release even so, and the license is not what holds it back.",
+            "note": "Open weights under Apache-2.0 (permissive, OSI), but neither the post-training data nor the fine-tuning pipeline is released. The 4-rung requires both, so this scores 3, the rung every comparable Apache-2.0 guardrail model sits on. A strong open-weights release even so, and the license is not what holds it back. Re-read 2026-08-13 and unchanged - the card has a Training Data section that names the ingredients without publishing the mixture, which is the state the rung was set on.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://huggingface.co/ibm-granite/granite-guardian-3.2-5b",
-                "shows": "Apache-2.0; open weights; harm/bias/jailbreak + RAG groundedness checks; ~1,377 downloads/month, 14 likes",
-                "accessed": "2026-06-29"
+                "shows": "Repo shows License - apache-2.0, ungated, with three safetensors shards downloadable. The Training Data section says the model is 'trained on a combination of human annotated and synthetic data' drawing samples from hh-rlhf, but publishes no mixture and declares no datasets in cardData.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "788fbad9e1598d2067b9d9bef82529062b46025a9f14bac36a1597b133058cbb",
+                "establishes": [
+                  "weights",
+                  "data",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/ibm-granite/granite-guardian-3.2-5b/raw/main/README.md",
+                "shows": "Raw card front matter records license - apache-2.0 and no datasets key; the Training Data section describes human-annotated and synthetic data rather than a released corpus.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "0aa1bea6d0e99e9b534cb9bc54e851ff2385cbf8031e5e5bb2b6fd71c7407017",
+                "establishes": [
+                  "data",
+                  "license"
+                ]
               }
             ],
             "bucket": "open-ish"
@@ -27720,12 +27966,15 @@
             "basis_detail": "risk coverage + RAG checks",
             "value": "Harm, bias, jailbreak, violence, profanity, sexual content plus RAG hallucination checks (context relevance, groundedness, answer relevance); broader than pure I/O moderation.",
             "confidence": "medium",
-            "note": "One of the broadest open guardrails: standard harm taxonomy plus RAG-specific groundedness/hallucination checks.",
+            "note": "One of the broadest open guardrails: standard harm taxonomy plus RAG-specific groundedness/hallucination checks. Re-read 2026-08-13 and unchanged.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://huggingface.co/ibm-granite/granite-guardian-3.2-5b",
-                "shows": "harm/bias/jailbreak + RAG groundedness/answer-relevance checks",
-                "accessed": "2026-06-29"
+                "shows": "Card enumerates Harm, Social Bias, Jailbreaking, Violence, Profanity and Sexual Content, plus RAG hallucination risks - context relevance, groundedness and answer relevance - and function-calling risk detection in agentic workflows.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "788fbad9e1598d2067b9d9bef82529062b46025a9f14bac36a1597b133058cbb"
               }
             ]
           },
@@ -27735,7 +27984,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Granite Guardian 3.2 (5B, distilled from the 8B); Apache-2.0 open weights. ~1.4K HF downloads/month, 14 likes (June 2026). Verified live June 2026."
+          "version_note": "Granite Guardian 3.2 (5B, distilled from the 8B), covering harm, social bias, jailbreaking, violence, profanity and sexual content, plus RAG context relevance, groundedness and answer relevance and function-calling risk. The card describes the training data as human-annotated and synthetic without publishing the mixture. Verified 2026-08-13 via the HF model card."
         },
         {
           "slug": "gpt-oss-safeguard",
@@ -27749,12 +27998,31 @@
             "class": "open_weights",
             "components": "weights:open(gpt-oss-safeguard-20b/120b on HF);data:not-released;license:Apache-2.0(OSI)",
             "confidence": "medium",
-            "note": "Open weights under Apache-2.0 (OSI) with no released training data and no published fine-tuning pipeline. The 4-rung requires both, so this scores 3, the same rung as every other model that ships permissive weights without a recipe. Notable as a policy-conditioned safety reasoning model rather than a fixed classifier, but that shapes capability, not openness.",
+            "note": "Open weights under Apache-2.0 (OSI) with no released training data and no published fine-tuning pipeline. The 4-rung requires both, so this scores 3, the same rung as every other model that ships permissive weights without a recipe. Notable as a policy-conditioned safety reasoning model rather than a fixed classifier, but that shapes capability, not openness. Re-read 2026-08-13 and unchanged - the card still carries no training-data section at all.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://huggingface.co/openai/gpt-oss-safeguard-20b",
-                "shows": "Apache-2.0; open weights; policy-conditioned safety reasoning; 20b/120b; ~131K downloads/month, 235 likes",
-                "accessed": "2026-06-29"
+                "shows": "Repo shows License - apache-2.0, ungated, with safetensors shards downloadable. The card documents the 20b and 120b variants and their use, and says nothing about training data - no dataset link, no mixture, and no datasets key in cardData.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "4dce270a5eb178984beab90b786af8b82d7ab7bf7d73ede5712dd1f06beca1ce",
+                "establishes": [
+                  "weights",
+                  "data",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/openai/gpt-oss-safeguard-20b/raw/main/README.md",
+                "shows": "Raw card front matter records license - apache-2.0 and base_model - openai/gpt-oss-20b, with no datasets key; the body has no training-data section.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "1a3a493bbb99dd2935e6e61c902be60ba326d7627958f5f78279259bb77027e9",
+                "establishes": [
+                  "data",
+                  "license"
+                ]
               }
             ],
             "bucket": "open-ish"
@@ -27782,22 +28050,25 @@
             "basis_detail": "reasoning + configurable policy",
             "value": "Policy-conditioned safety reasoning (bring-your-own-policy), reasoned decisions rather than just scores, configurable reasoning effort; 20b and 120b.",
             "confidence": "medium",
-            "note": "A different shape from fixed classifiers: reasons over an arbitrary supplied policy, which generalizes to novel categories at some latency cost.",
+            "note": "A different shape from fixed classifiers: reasons over an arbitrary supplied policy, which generalizes to novel categories at some latency cost. Re-read 2026-08-13 and unchanged.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://huggingface.co/openai/gpt-oss-safeguard-20b",
-                "shows": "reasoned decisions, configurable reasoning effort, bring-your-own-policy",
-                "accessed": "2026-06-29"
+                "shows": "Card describes gpt-oss-safeguard-120b and gpt-oss-safeguard-20b as 'safety reasoning models built-upon gpt-oss' that classify against a policy you supply, with a 'Bring your own policy' feature that 'interprets your written policy, so it generalizes across products and use cases', and reasoned rather than bare-label decisions.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "4dce270a5eb178984beab90b786af8b82d7ab7bf7d73ede5712dd1f06beca1ce"
               }
             ]
           },
           "maturity": 3.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-12",
+            "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "gpt-oss-safeguard (20b / 120b), Apache-2.0 open weights; released by OpenAI with Hugging Face and ROOST, distributed via the ROOST Model Community (RMC). 20b ~131K HF downloads/month, 235 likes (June 2026). Verified live June 2026."
+          "version_note": "gpt-oss-safeguard (20b / 120b), released by OpenAI with Hugging Face and ROOST and distributed through the ROOST Model Community. Built on gpt-oss, it interprets a policy you supply rather than a fixed taxonomy and returns a reasoned decision. The card carries no training-data section at all. Verified 2026-08-13 via the HF model card."
         },
         {
           "slug": "nemo-guardrails",
@@ -27811,27 +28082,38 @@
             "class": "open_source",
             "components": "license:Apache-2.0(OSI);source:public(full Python implementation);self-host:yes(library/CLI/Docker/server);service:none;core-gated:ungated",
             "confidence": "high",
-            "note": "Fully open source: Apache-2.0, complete source, self-hostable with no proprietary tier.",
+            "note": "Fully open source: Apache-2.0, complete source, self-hostable with no proprietary tier. Re-read 2026-08-13 and unchanged. Two things about the read are worth recording. The cited URL now redirects to NVIDIA-NeMo/Guardrails, which is the repo the product declares. And GitHub's own metadata reports the license as NOASSERTION rather than Apache-2.0, which is a detection artifact of the LICENSE file rather than a relicense - the README states in as many words that 'the NeMo Guardrails library is licensed under the Apache License, Version 2.0'.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://github.com/NVIDIA/NeMo-Guardrails",
-                "shows": "Apache-2.0; full Python source; self-hostable as library/CLI/Docker/server; ~6.6k stars",
-                "accessed": "2026-06-29"
+                "shows": "Redirects to NVIDIA-NeMo/Guardrails. README states 'The NeMo Guardrails library is licensed under the Apache License, Version 2.0' and describes it as 'an open-source toolkit for easily adding programmable guardrails to LLM-based conversational applications', installable and runnable yourself. Repo metadata reports spdxId NOASSERTION, which is GitHub failing to classify the file rather than a different license. No enterprise directory, commercial edition or license key on the page.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "44efd86e89b427836a7bfac706a5625812cb1bbac87ff3e425f52415c7115bcb",
+                "establishes": [
+                  "source",
+                  "core-gated",
+                  "license"
+                ]
               }
             ],
             "bucket": "open"
           },
           "adoption": {
-            "level": 2,
-            "reach": "1K-10K stars",
-            "signal_type": "stars_fallback",
-            "confidence": "low",
-            "note": "~6.6K GitHub stars (June 2026); stars-only proxy, capped per methodology; broadly referenced guardrail framework. Stars read 2026-08-13: 6,936 across the 1 declared repo, which bands at 1K-10K stars, level 2 on the stars scale in signal_routing.yaml. Level corrected from 3. The previous reach '10K-100K' was not a label this instrument offers - stars have their own vocabulary because a star is not a download. No last_verified claimed: a star count is volatile, so a digest of it would read as drift on every refetch, and the rest of the axis was not re-read.",
+            "level": 3,
+            "reach": "100K-1M",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "401,369 downloads in the trailing 30 days on the newly declared PyPI artifact `nemoguardrails`, read live 2026-08-13. Bands at 100K-1M, level 3. LEVEL CORRECTED FROM 2, and the cause is that the band was set on the wrong instrument: it read stars_fallback, which adoption.md defines as meaning no download signal existed when it was set, and which caps at 3 for the good reason that a star is not a use. A download signal does exist, and the guide is explicit that a stars band re-bands once one appears. The package is the product's own rather than a same-named stranger - its PyPI project_urls point at https://github.com/NVIDIA-NeMo/Guardrails - and for a Python library PyPI is the primary channel, not a minority one.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
-                "url": "https://github.com/NVIDIA/NeMo-Guardrails",
-                "shows": "~6.6k stars (June 2026)",
-                "accessed": "2026-06-29"
+                "url": "https://pypistats.org/api/packages/nemoguardrails/recent",
+                "shows": "last_month 401,369",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "b0bfdbeaf0fb889b4fb3dda64601a56c6d36c3427570dde74823d8d6fb978921"
               }
             ]
           },
@@ -27841,22 +28123,25 @@
             "basis_detail": "feature coverage",
             "value": "Programmable rails for I/O moderation, dialog/topic control, retrieval filtering, and tool-use control via Colang; multi-provider.",
             "confidence": "medium",
-            "note": "One of the most feature-complete open guardrail orchestration layers; the Colang policy language adds flexibility beyond simple scanners.",
+            "note": "One of the most feature-complete open guardrail orchestration layers; the Colang policy language adds flexibility beyond simple scanners, and two bands in this category are recorded relative to it. Re-read 2026-08-13 and unchanged.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://github.com/NVIDIA/NeMo-Guardrails",
-                "shows": "I/O moderation, dialog control, retrieval filtering, tool-use control",
-                "accessed": "2026-06-29"
+                "shows": "README describes programmable guardrails for LLM applications, with dialog rails operating on canonical-form messages via the Colang Guide, fact-checking and output moderation over retrieval pipelines, keeping an assistant on topic, and deciding whether an action should be executed - that is I/O moderation, dialog control, retrieval filtering and tool-use control.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "44efd86e89b427836a7bfac706a5625812cb1bbac87ff3e425f52415c7115bcb"
               }
             ]
           },
-          "maturity": 3.0,
+          "maturity": 3.5,
           "mature": false,
           "freshness": {
             "date": "2026-08-13",
-            "basis": "commit"
+            "basis": "verified"
           },
-          "version_note": "NeMo Guardrails, Apache-2.0, Python; ~6.6K GitHub stars (June 2026). Fully open source and self-hostable. Verified live June 2026."
+          "version_note": "NeMo Guardrails is NVIDIA's programmable guardrail toolkit for LLM applications, self-hostable as a library, CLI, Docker image or server. The repo now lives at NVIDIA-NeMo/Guardrails, which the old NVIDIA/NeMo-Guardrails path redirects to. Verified 2026-08-13 via GitHub."
         },
         {
           "slug": "guardrails-ai",
@@ -27935,22 +28220,25 @@
             "basis_detail": "validator coverage",
             "value": "Input/output guards plus a Hub of pre-built validators (PII, toxicity, injection, structure) and structured-output enforcement.",
             "confidence": "medium",
-            "note": "Broad validator ecosystem via the Hub; strong on structured-output enforcement in addition to safety checks.",
+            "note": "Broad validator ecosystem via the Hub; strong on structured-output enforcement in addition to safety checks. Re-read 2026-08-13 and unchanged.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://github.com/guardrails-ai/guardrails",
-                "shows": "I/O guards, validator Hub, structured-output enforcement",
-                "accessed": "2026-06-29"
+                "shows": "README describes Guardrails Hub as 'a collection of pre-built measures of specific types of risks (called validators)' that 'can be combined together into Input and Output Guards that intercept' model calls, and says 'Guardrails help you generate structured data from LLMs'.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "588c3dd9130c7fa21b31e21f38302de95d30dd034cda0b3b45bb9984a3505d02"
               }
             ]
           },
           "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-12",
+            "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Guardrails AI framework, Apache-2.0, ~7.1K GitHub stars (June 2026); plus Guardrails Hub (validator registry) and commercial offerings. Verified live June 2026."
+          "version_note": "The Guardrails AI framework, plus Guardrails Hub, a registry of pre-built validators that combine into input and output guards around a model call. Guardrails-AI-owned validators moved from the private registry to public PyPI in 0.11.0. A separate commercial product sits alongside it. Verified 2026-08-13 via GitHub."
         },
         {
           "slug": "llm-guard",
@@ -27964,27 +28252,38 @@
             "class": "open_source",
             "components": "license:MIT(OSI);source:public(full Python implementation);self-host:yes;service:none(the OSS toolkit; Protect AI's platform is separate);core-gated:ungated",
             "confidence": "high",
-            "note": "Fully open source: MIT-licensed, complete source, self-hostable. (Protect AI's commercial platform is a separate product; this is the standalone OSS toolkit.)",
+            "note": "Fully open source: MIT-licensed, complete source, self-hostable. (Protect AI's commercial platform is a separate product; this is the standalone OSS toolkit.) Re-read 2026-08-13 and unchanged.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://github.com/protectai/llm-guard",
-                "shows": "MIT; full Python source; input/output scanners; ~3.1k stars",
-                "accessed": "2026-06-29"
+                "shows": "Repo metadata records license spdxId - MIT. README calls it 'an open source solution', documents installing and customizing it yourself and deploying it as an API, and enumerates the prompt and output scanners in the published package; there is no enterprise directory, commercial edition or license key on the page.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "a0b8359138ed75effcda2ac312c76ac68b3954e5579fa6715a25700a0e9ee6b4",
+                "establishes": [
+                  "source",
+                  "core-gated",
+                  "license"
+                ]
               }
             ],
             "bucket": "open"
           },
           "adoption": {
-            "level": 2,
-            "reach": "1K-10K stars",
-            "signal_type": "stars_fallback",
-            "confidence": "low",
-            "note": "~3.1K GitHub stars (June 2026); stars-only proxy, capped per methodology. Stars read 2026-08-13: 3,202 across the 1 declared repo, which bands at 1K-10K stars, level 2 on the stars scale in signal_routing.yaml. The previous reach '10K-100K' was not a label this instrument offers - stars have their own vocabulary because a star is not a download. No last_verified claimed: a star count is volatile, so a digest of it would read as drift on every refetch, and the rest of the axis was not re-read.",
+            "level": 3,
+            "reach": "100K-1M",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "212,987 downloads in the trailing 30 days on the newly declared PyPI artifact `llm-guard`, read live 2026-08-13. Bands at 100K-1M, level 3. LEVEL CORRECTED FROM 2, and the cause is that the band was set on the wrong instrument: it read stars_fallback, which adoption.md defines as meaning no download signal existed when it was set, and which caps at 3 for the good reason that a star is not a use. A download signal does exist, and the guide is explicit that a stars band re-bands once one appears. The package is the product's own rather than a same-named stranger - its PyPI project_urls point at https://github.com/protectai/llm-guard - and for a Python library PyPI is the primary channel, not a minority one.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
-                "url": "https://github.com/protectai/llm-guard",
-                "shows": "~3.1k stars (June 2026)",
-                "accessed": "2026-06-29"
+                "url": "https://pypistats.org/api/packages/llm-guard/recent",
+                "shows": "last_month 212,987",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "ca84b65d7acf8681a45ac0cea3ab88bea80a49fe26bccd68ded5a4fe9d1a8cc7"
               }
             ]
           },
@@ -27994,22 +28293,27 @@
             "basis_detail": "scanner coverage",
             "value": "Input/output scanners for prompt injection, PII/data leakage, toxicity, and harmful content, with sanitization.",
             "confidence": "medium",
-            "note": "Solid set of I/O scanners; lighter-weight orchestration than NeMo Guardrails but easy to drop in.",
+            "note": "Solid set of I/O scanners; lighter-weight orchestration than NeMo Guardrails but easy to drop in. That comparison is the instrument, so it is recorded rather than left in prose - a scanner library without a policy language or dialog control sits one rung below NeMo Guardrails. Re-read 2026-08-13 and unchanged.",
+            "relative_to": "nemo-guardrails",
+            "relation": "one_below",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://github.com/protectai/llm-guard",
-                "shows": "input/output scanners: injection, PII, toxicity, harmful content",
-                "accessed": "2026-06-29"
+                "shows": "README lists the prompt scanners (Anonymize, BanCode, BanCompetitors, BanSubstrings, BanTopics, Code, Gibberish, InvisibleText, Language, PromptInjection, Regex, Secrets, Sentiment, TokenLimit, Toxicity) and the output scanners (BanCode, BanCompetitors, BanSubstrings, BanTopics, Bias, Code, Deanonymize, JSON, ...), and frames the toolkit as sanitization, detection of harmful language, prevention of data leakage and resistance to prompt injection.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "a0b8359138ed75effcda2ac312c76ac68b3954e5579fa6715a25700a0e9ee6b4"
               }
             ]
           },
-          "maturity": 2.5,
+          "maturity": 3.0,
           "mature": false,
           "freshness": {
             "date": "2026-08-13",
-            "basis": "commit"
+            "basis": "verified"
           },
-          "version_note": "LLM Guard, MIT, Python; ~3.1K GitHub stars (June 2026). Maintained by Protect AI (acquired by Palo Alto Networks). Verified live June 2026."
+          "version_note": "LLM Guard, maintained by Protect AI. A library of prompt and output scanners - anonymization, ban lists, prompt injection, secrets, toxicity, bias and more - that you run yourself or deploy as an API. Protect AI's commercial platform is a separate product. Verified 2026-08-13 via GitHub."
         },
         {
           "slug": "pyrit",
@@ -28023,12 +28327,20 @@
             "class": "open_source",
             "components": "license:MIT(OSI);source:public(full Python framework);self-host:yes;service:none;core-gated:ungated",
             "confidence": "high",
-            "note": "Fully open source: MIT-licensed automation framework, self-hostable, no proprietary tier.",
+            "note": "Fully open source: MIT-licensed automation framework, self-hostable, no proprietary tier. Re-read 2026-08-13 and unchanged.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://github.com/microsoft/PyRIT",
-                "shows": "MIT; open red-teaming framework from the Microsoft AI Red Team",
-                "accessed": "2026-06-29"
+                "shows": "Repo metadata records license spdxId - MIT. README describes PyRIT as 'an open source framework built to empower security professionals and engineers to proactively identify risks in generative AI systems' and points at the docs site for install and use; no hosted tier, no enterprise directory and no license key on the page.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "01dbf8952a2e317f65ccfaacc72ff4da657369b277aa8cd92d1b529af35dbd0a",
+                "establishes": [
+                  "source",
+                  "core-gated",
+                  "license"
+                ]
               }
             ],
             "bucket": "open"
@@ -28056,22 +28368,32 @@
             "basis_detail": "red-team coverage",
             "value": "Automated adversarial prompting, attack-strategy orchestration, and scoring to identify harms across providers.",
             "confidence": "medium",
-            "note": "A leading open red-teaming harness; strong automation and scoring, multi-provider.",
+            "note": "A leading open red-teaming harness; strong automation and scoring, multi-provider. Re-read 2026-08-13. The README has been trimmed to a pointer at the docs site and no longer names the pieces, so the package listing is cited alongside it - the modules are what the band was read off.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://github.com/microsoft/PyRIT",
-                "shows": "automated adversarial prompting, attack orchestration, scoring",
-                "accessed": "2026-06-29"
+                "shows": "README describes 'an open source framework built to empower security professionals and engineers to proactively identify risks in generative AI systems'; the component detail it used to carry now lives on the docs site.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "01dbf8952a2e317f65ccfaacc72ff4da657369b277aa8cd92d1b529af35dbd0a"
+              },
+              {
+                "url": "https://api.github.com/repos/microsoft/PyRIT/contents/pyrit",
+                "shows": "Top-level package listing carries converter, datasets and prompt_normalizer (adversarial prompt generation), executor and scenario (attack-strategy orchestration), score (scoring), and prompt_target with backend and auth (multi-provider targets) - the three things the band is recorded on, as shipped modules.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "d297705f9544fd3110ef50f9d507ec0009463771d1e11294457b448af9f50876"
               }
             ]
           },
           "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-12",
+            "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "PyRIT, MIT, maintained by the Microsoft AI Red Team; repo now at github.com/microsoft/PyRIT. Verified live June 2026."
+          "version_note": "PyRIT, maintained by the Microsoft AI Red Team at github.com/microsoft/PyRIT. The package ships prompt converters and datasets, attack executors and scenarios, scorers, and prompt targets for multiple providers. The README is now a pointer at the docs site rather than a description. Verified 2026-08-13 via GitHub."
         },
         {
           "slug": "garak",
@@ -28085,12 +28407,20 @@
             "class": "open_source",
             "components": "license:Apache-2.0(OSI);source:public;self-host:yes;service:none;core-gated:ungated",
             "confidence": "high",
-            "note": "Fully open source: Apache-2.0 scanner, self-hostable, no proprietary tier.",
+            "note": "Fully open source: Apache-2.0 scanner, self-hostable, no proprietary tier. Re-read 2026-08-13 and unchanged.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://github.com/NVIDIA/garak",
-                "shows": "Apache-2.0; ~8.3k stars; probes for injection, leakage, jailbreaks, toxicity across providers",
-                "accessed": "2026-06-29"
+                "shows": "Repo metadata records license spdxId - Apache-2.0. The README is a command-line Get Started for running the scanner locally against your own model endpoints; there is no hosted tier, no enterprise directory and no license key on the page, so nothing is withheld from the published source.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "f6e2381a1b6aa6ca3b136e1885221df7b0bd8b2bbf131cca5c1546794bc30177",
+                "establishes": [
+                  "source",
+                  "core-gated",
+                  "license"
+                ]
               }
             ],
             "bucket": "open"
@@ -28118,22 +28448,25 @@
             "basis_detail": "probe coverage",
             "value": "Large library of vulnerability probes (hallucination, leakage, injection, misinformation, toxicity, jailbreaks) across many model providers.",
             "confidence": "medium",
-            "note": "Broadest open library of LLM vulnerability probes; multi-provider coverage.",
+            "note": "Broadest open library of LLM vulnerability probes; multi-provider coverage. Re-read 2026-08-13 and unchanged.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://github.com/NVIDIA/garak",
-                "shows": "probes: hallucination, leakage, injection, misinformation, toxicity, jailbreaks",
-                "accessed": "2026-06-29"
+                "shows": "README states 'garak probes for hallucination, data leakage, prompt injection, misinformation, toxicity generation, jailbreaks, and many other weaknesses' and positions it as nmap for LLMs, with named probe modules including promptinject and realtoxicityprompts.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "f6e2381a1b6aa6ca3b136e1885221df7b0bd8b2bbf131cca5c1546794bc30177"
               }
             ]
           },
           "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-12",
+            "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "garak LLM vulnerability scanner, Apache-2.0, maintained by NVIDIA; ~8.3K GitHub stars (June 2026). Verified live June 2026."
+          "version_note": "garak, an LLM vulnerability scanner maintained by NVIDIA. It probes for hallucination, data leakage, prompt injection, misinformation, toxicity generation and jailbreaks across many providers, run from the command line against your own endpoints. Verified 2026-08-13 via GitHub."
         },
         {
           "slug": "osprey",
@@ -28147,12 +28480,20 @@
             "class": "open_source",
             "components": "license:Apache-2.0(OSI);source:public;self-host:yes;service:none;core-gated:ungated",
             "confidence": "high",
-            "note": "Fully open source: Apache-2.0 real-time safety rules engine, self-hostable, no proprietary tier. Donated by Discord to ROOST.",
+            "note": "Fully open source: Apache-2.0 real-time safety rules engine, self-hostable, no proprietary tier. Donated by Discord to ROOST. Re-read 2026-08-13 and unchanged.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://github.com/roostorg/osprey",
-                "shows": "Apache-2.0; Rust coordinator + stateless Python workers; SML rules DSL",
-                "accessed": "2026-07-01"
+                "shows": "Repo metadata records license spdxId - Apache-2.0. README brings the full stack up with one Docker Compose command (./demo.sh) and describes it as 'a working system, not a prototype', pointing at the development guide for building it yourself; ROOST is a non-profit and there is no paid tier, enterprise directory or license key on the page.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "592ab20d0b28d1642d82318e38ce104ed1c1f625d061b8669c875182556375b7",
+                "establishes": [
+                  "source",
+                  "core-gated",
+                  "license"
+                ]
               }
             ],
             "bucket": "open"
@@ -28162,12 +28503,22 @@
             "reach": "niche",
             "signal_type": "reported_traction",
             "confidence": "medium",
-            "note": "446 GitHub stars / 52 forks (July 2026) is a modest community signal, but Osprey is in production at Discord (400M daily actions, 2.3M rules/sec), Bluesky, and Matrix. Adoption rests on marquee deployments rather than breadth; open-sourced under ROOST in Sep 2025.",
+            "note": "Community breadth is modest but Osprey runs in production at marquee platforms, which is what the band rests on. Re-read 2026-08-13 and two recorded facts did not survive the read. The repo's 'Adopters' list is now empty - the named production users have been removed from the README - and no source cited here carries the '400M daily actions, 2.3M rules/sec' figure any more; the v1.0 announcement says Osprey 'processes over 50M events daily in production environments like Bluesky'. The named deployments themselves are still confirmed on that announcement, with quotes from Discord, Bluesky and Matrix, so the level and the niche reach stand and only the numbers were corrected. No reach numeral is recorded, because this instrument carries a word or nothing.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://roost.tools/blog/introducing-osprey-v1-0-open-source-infrastructure-for-real-time-abuse-mitigation/",
-                "shows": "v1.0 release; production users (Discord, Bluesky, Matrix)",
-                "accessed": "2026-07-01"
+                "shows": "V1.0 announcement, published January 28, 2026. Osprey 'processes over 50M events daily in production environments like Bluesky and is designed for real-time incident response'. Named production users with attributed quotes - Discord (Savannah Badalich, Global Head of Product Policy), Bluesky (Aaron Rodericks, Head of Trust and Safety) and The Matrix.org Foundation (Jim Mackenzie, VP of Trust & Safety). No download, install or customer count is published.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "d6a88d5ed04eb1fe19fff71b8c8bbdd60ffe36fb3d226608bd8b549f144d2dc2"
+              },
+              {
+                "url": "https://github.com/roostorg/osprey",
+                "shows": "stargazerCount 462 for roostorg/osprey. The README's 'Adopters' section reads 'Osprey is used by:' with nothing under it, so the named production list recorded here on 2026-07-01 is no longer on the page.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "592ab20d0b28d1642d82318e38ce104ed1c1f625d061b8669c875182556375b7"
               }
             ]
           },
@@ -28177,22 +28528,24 @@
             "basis_detail": "throughput / rules coverage",
             "value": "High-performance real-time event-decisioning engine with a Python rules DSL (SML); ~2.3M rules/sec and 400M daily actions at Discord.",
             "confidence": "medium",
-            "note": "Battle-tested at Discord scale; single-purpose Trust & Safety rules engine, not an AI-native guardrail.",
+            "note": "Battle-tested at Discord scale; single-purpose Trust & Safety rules engine, not an AI-native guardrail. NOT confirmed on 2026-08-13, and the reason is in the value rather than the band. The throughput figures the value leads with - ~2.3M rules/sec and 400M daily actions at Discord - appear on no source cited on this product any more. The repo README has been rewritten and no longer describes the Rust coordinator and stateless Python workers either; what it does still carry is the SML rules language, real-time event processing at scale, and the Discord provenance. The v1.0 announcement gives a different and smaller published figure, 'over 50M events daily'. The engine description behind the 4 is intact and the band is not in doubt, but replacing a headline number in a recorded value is an owner call, so it is raised rather than taken and no date is claimed.",
             "sources": [
               {
                 "url": "https://github.com/roostorg/osprey",
-                "shows": "Rust coordinator, stateless Python workers, SML DSL",
-                "accessed": "2026-07-01"
+                "shows": "README describes 'a safety rules engine and investigation console for real-time event processing at scale' where 'human-written rules evaluate each one as it arrives', with rules 'written in SML, Osprey's structured rule language, and extended with user-defined functions (UDFs)', originally built at Discord. It carries no throughput figures and no longer describes the Rust/Python worker split.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "592ab20d0b28d1642d82318e38ce104ed1c1f625d061b8669c875182556375b7"
               }
             ]
           },
           "maturity": 3.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-08",
-            "basis": "commit"
+            "date": "2026-08-13",
+            "basis": "verified"
           },
-          "version_note": "Osprey safety rules engine, Apache-2.0, donated by Discord to ROOST; ~446 GitHub stars (July 2026). In production at Discord (400M daily actions, 2.3M rules/sec), Bluesky, and Matrix. Verified live July 2026."
+          "version_note": "Osprey, a safety rules engine and investigation console donated by Discord to ROOST and now on the V1.0 line. In production at Discord, Bluesky and Matrix; ROOST's V1.0 announcement reports it processing over 50M events daily in production. Rules are written in SML and extended with user-defined functions. Verified 2026-08-13 via GitHub and ROOST's Osprey V1.0 announcement."
         },
         {
           "slug": "coop",
@@ -28206,12 +28559,20 @@
             "class": "open_source",
             "components": "license:Apache-2.0(OSI);source:public(github.com/roostorg/coop);self-host:yes;service:none;core-gated:ungated",
             "confidence": "high",
-            "note": "Fully open source: Apache-2.0 self-hosted moderation review console from ROOST.",
+            "note": "Fully open source: Apache-2.0 self-hosted moderation review console from ROOST. Re-read 2026-08-13 and unchanged.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://github.com/roostorg/coop",
-                "shows": "Apache-2.0; review queues, routing, enforcement rules, REST/GraphQL APIs",
-                "accessed": "2026-07-01"
+                "shows": "Repo metadata records license spdxId - Apache-2.0. README says 'Coop is free and open source so your data stays within your infrastructure', that the codebase is 'auditable, with no hidden logic and no vendor lock-in', and runs it 'with a single command using Docker Compose'. No paid tier, enterprise directory or license key on the page.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "62edfbfeecfc59d655ad77f82b7494dbc384e39a620032d8cc40a4c33c4a746a",
+                "establishes": [
+                  "source",
+                  "core-gated",
+                  "license"
+                ]
               }
             ],
             "bucket": "open"
@@ -28221,22 +28582,29 @@
             "reach": "niche",
             "signal_type": "reported_traction",
             "confidence": "medium",
-            "note": "GitHub breadth is modest (~63 stars / 35 forks, July 2026), but Coop is deployed across varied production environments. Coop is the open-sourced productization of the acquired Cove codebase, and former Cove clients carried over as users. Notion is publicly committed and is likely Coop's largest production deployment to date. The v1.0 announcement adds named production feedback from Kyodo (a 2-person startup whose platform has sent 150M+ messages; CEO testimonial) and an unnamed large-scale adopter (tens of millions of users, ~95% cut in safety-tooling costs), plus NCMEC as a CSAM-reporting integration partner. Adoption rests on named production deployments rather than community breadth, mirroring sibling Osprey. Now on the v1.0 line (v1.0.2, June 2026), no longer the Feb 2026 V.0.",
+            "note": "GitHub breadth is modest, but Coop is deployed across varied production environments. Coop is the open-sourced productization of the acquired Cove codebase, and former Cove clients carried over as users. Notion is publicly committed and is likely Coop's largest production deployment to date. The v1.0 announcement adds named production feedback from Kyodo (a community-first messaging platform with over 150 million messages sent; CEO testimonial) and an unnamed large-scale adopter (tens of millions of users, ~95% cut in safety-tooling costs), plus NCMEC as a CSAM-reporting integration partner. Adoption rests on named production deployments rather than community breadth, mirroring sibling Osprey. Re-read 2026-08-13. The blogs still carry every named deployment; the repo does not - its 'Used in production' list is now empty, so the Notion/Kyodo/Musubi names recorded off GitHub on 2026-07-03 now rest on the announcements alone, and Musubi appears on ROOST's Coop page as a hosted provider rather than an adopter. Stars are 77. The level and the niche reach stand.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://github.com/roostorg/coop",
-                "shows": "\"Used in production\": Notion, Kyodo, Musubi; v1.0.2 (June 30, 2026); 63 stars, 35 forks",
-                "accessed": "2026-07-03"
+                "shows": "stargazerCount 77 for roostorg/coop. The README's 'Used in production' section reads 'Coop is used by:' with nothing under it, so the named list recorded here on 2026-07-03 is no longer on the page.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "62edfbfeecfc59d655ad77f82b7494dbc384e39a620032d8cc40a4c33c4a746a"
               },
               {
                 "url": "https://roost.tools/blog/coop-1-0-world-s-first-free-open-source-child-safety-infrastructure-for-every-platform/",
-                "shows": "v1.0 (June 2026); Kyodo CEO testimonial (150M+ messages); unnamed adopter with tens of millions of users and ~95% safety-cost reduction; NCMEC reporting integration",
-                "accessed": "2026-07-03"
+                "shows": "Coop 1.0 announcement, published June 09, 2026, following v0 in February. Names Kyodo, 'a community-first messaging platform with over 150 million messages sent', with a CEO quote; 'One Coop adopter, which serves tens of millions of users across consumer and enterprise contexts, estimates an ~95% reduction in annual safety tooling costs'; and NCMEC CyberTipline reporting as a shipped integration. No user, install or customer count for Coop itself.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "af3831bafcd055284fc68b8c32ec8f12869e547e7fdd9508298f2c283fcd7507"
               },
               {
                 "url": "https://roost.tools/blog/roost-announces-coop-and-osprey-free-open-source-trust-and-safety-infrastructure-for-the-ai-era/",
-                "shows": "Notion (Head of Platform Security, Dan Pyykonen) quoted on running Cove, now evolving into Coop",
-                "accessed": "2026-07-03"
+                "shows": "Notion quoted as 'an early adopter of Cove's technology', with Dan Pyykonen, Head of Platform Security, on Notion's Trust and Safety program.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "53f39ec42be296849387cee26f1ea346c13d0ff3068e4c414d426d57a89af308"
               }
             ]
           },
@@ -28246,22 +28614,32 @@
             "basis_detail": "feature coverage",
             "value": "Review queues, routing, automated enforcement rules, analytics, and REST/GraphQL APIs, plus child-safety workflows (HMA hash matching, NCMEC reporting) and OpenAI Moderation / Google Content Safety integrations.",
             "confidence": "low",
-            "note": "Broad moderation-console feature set, now on the v1.0 line (v1.0.2, June 2026); functional and proven at named deployments but still young.",
+            "note": "Broad moderation-console feature set, now on the v1.0 line (announced June 2026); functional and proven at named deployments but still young. Re-read 2026-08-13 and unchanged.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://roost.tools/coop/",
-                "shows": "review console, queues, routing, enforcement, analytics, integrations",
-                "accessed": "2026-07-01"
+                "shows": "Key Features list queue management with role-based access and routing rules, manual and automatic actions with complete audit logging, analytics, and review across any policy category. The child-safety workflow is described as 'hash matching via HMA, NCMEC CyberTipline reporting, and integrations with Google Content Safety API and OpenAI Moderation API'.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "107c5a12d16f85a5870be5b947ab7acf6beb0214251f7e3c6829a4e3f8de37dc"
+              },
+              {
+                "url": "https://github.com/roostorg/coop",
+                "shows": "README lists Review Console, Content Processing, Analytics, Rules Engine and 'Simple REST and GraphQL APIs for seamless platform integration'.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "62edfbfeecfc59d655ad77f82b7494dbc384e39a620032d8cc40a4c33c4a746a"
               }
             ]
           },
           "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-08",
-            "basis": "commit"
+            "date": "2026-08-13",
+            "basis": "verified"
           },
-          "version_note": "Coop review/moderation console, Apache-2.0, from ROOST; ~62 GitHub stars (July 2026), released V.0 in Feb 2026. Verified live July 2026."
+          "version_note": "Coop, a review and moderation console from ROOST, self-hosted with Docker Compose. Released as v0 in February 2026 and announced as 1.0 in June 2026, billed as the first free end-to-end CSAM detection, review and NCMEC reporting workflow. Musubi offers a hosted version. Verified 2026-08-13 via GitHub and ROOST's Coop 1.0 announcement."
         },
         {
           "slug": "openai-moderation",
@@ -28275,27 +28653,47 @@
             "class": "closed",
             "components": "service:proprietary hosted API(no weights, no self-host);access:free moderation endpoint;source:closed;license:proprietary",
             "confidence": "high",
-            "note": "Closed, API-only hosted classifier; no weights or source.",
+            "note": "Closed, API-only hosted classifier; no weights or source. Re-read 2026-08-13 and unchanged. The cited URL now redirects to developers.openai.com and the page renders client-side, so the markdown edition of the same document is cited beside it - that is the body the reading was taken from.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://platform.openai.com/docs/guides/moderation",
-                "shows": "free hosted moderation API; OpenAI content-policy categories; no weights",
-                "accessed": "2026-06-29"
+                "shows": "Still resolves, now via a 301 to developers.openai.com/api/docs/guides/moderation. The page is client-rendered, so the readable body is the markdown edition cited below.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "2f5e205846ca303482c9e7af37053f59ec2cb5a01bd71bdb5f10bacf2847260a",
+                "establishes": [
+                  "source",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://developers.openai.com/api/docs/guides/moderation.md",
+                "shows": "Markdown edition of the cited guide. The product is an endpoint - 'Use OpenAI moderation models to detect harmful content in text and images' via the moderation endpoint or alongside a generated response - with no weights, no download and no self-hostable implementation offered. Use is governed by OpenAI's API terms; 'The moderation endpoint is free to use'.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "5a072092c75e9bd875eb821597f128f1d67d6f78f5e5a7a69573ff0d0774e205",
+                "establishes": [
+                  "source",
+                  "license"
+                ]
               }
             ],
             "bucket": "closed"
           },
           "adoption": {
             "level": 4,
-            "reach": "1M-10M",
-            "signal_type": "usage_volume",
+            "signal_type": "reported_traction",
             "confidence": "medium",
-            "note": "Free, default moderation endpoint for the large OpenAI developer base; widely used as a first-line filter.",
+            "note": "INSTRUMENT CORRECTED on 2026-08-13, level unchanged. usage_volume claims a download or install count and OpenAI publishes none for this endpoint - the guide carries no request volume, no developer count and no customer count, and neither does anything else cited here. The 1M-10M label therefore asserts a measurement nobody made, which adoption.md rules out on this instrument. The underlying reading is sound - it is the free default filter in front of a very large developer base - but that is a reported_traction claim, not a counted one. The instrument now reads reported_traction, which is what a credible claim with no count behind it is for, and the illegal numeric reach is gone. The LEVEL is deliberately unchanged: correcting how a band was read is not a reason to move where it sits, and nothing re-read today argues the standing is different. What changes is that the record no longer claims a measurement nobody made.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
-                "url": "https://platform.openai.com/docs/guides/moderation",
-                "shows": "free hosted moderation endpoint",
-                "accessed": "2026-06-29"
+                "url": "https://developers.openai.com/api/docs/guides/moderation.md",
+                "shows": "Guide documents the endpoint and states it is free to use. No usage figure of any kind appears on the page.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "5a072092c75e9bd875eb821597f128f1d67d6f78f5e5a7a69573ff0d0774e205"
               }
             ]
           },
@@ -28305,22 +28703,25 @@
             "basis_detail": "category coverage",
             "value": "Multi-category text (and image) moderation aligned to OpenAI's content policy; convenient but fixed taxonomy.",
             "confidence": "low",
-            "note": "Convenient broad-category moderation; fixed policy, no customization vs policy-conditioned models.",
+            "note": "Convenient broad-category moderation; fixed policy, no customization vs policy-conditioned models. Re-read 2026-08-13 and unchanged.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
-                "url": "https://platform.openai.com/docs/guides/moderation",
-                "shows": "multi-category text/image moderation",
-                "accessed": "2026-06-29"
+                "url": "https://developers.openai.com/api/docs/guides/moderation.md",
+                "shows": "omni-moderation-latest 'accepts text and image inputs. It doesn't classify audio.' Thirteen fixed categories - harassment, harassment/threatening, hate, hate/threatening, illicit, illicit/violent, self-harm, self-harm/intent, self-harm/instructions, sexual, sexual/minors, violence, violence/graphic - of which six apply to images and the rest to text only. No mechanism for supplying your own policy.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "5a072092c75e9bd875eb821597f128f1d67d6f78f5e5a7a69573ff0d0774e205"
               }
             ]
           },
           "maturity": 3.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-08",
-            "basis": "commit"
+            "date": "2026-08-13",
+            "basis": "verified"
           },
-          "version_note": "OpenAI Moderation API; free hosted endpoint, proprietary (no weights, no self-host). Verified live June 2026."
+          "version_note": "OpenAI Moderation API. A free hosted endpoint, omni-moderation-latest, classifying text and images across thirteen fixed content categories; it does not classify audio. No weights and no self-hosting. Moderation scores can also be requested alongside a generated response rather than through a separate call. Verified 2026-08-13 via the OpenAI moderation guide."
         },
         {
           "slug": "azure-content-safety",
@@ -28334,27 +28735,36 @@
             "class": "closed",
             "components": "service:proprietary managed Azure service(no self-host);features:text/image moderation, prompt shields, groundedness;source:closed;license:proprietary",
             "confidence": "high",
-            "note": "Closed managed cloud service; no weights or source.",
+            "note": "Closed managed cloud service; no weights or source. Re-read 2026-08-13 and unchanged.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://azure.microsoft.com/en-us/products/ai-services/ai-content-safety",
-                "shows": "managed content-safety APIs: moderation, prompt shields, groundedness; proprietary",
-                "accessed": "2026-06-29"
+                "shows": "Sold as an Azure service on consumption pricing - 'Flexible pricing to meet your needs', 'Pay for only what you use - no upfront costs' priced on analysis volume. The word self-host does not appear anywhere on the page, no source repository is linked, and use is governed by the Azure product terms rather than any published license.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "f41d64cba9a9c0fa1315c942dbcf83985b347ec510a9ee5bce207c8b8cfdf83c",
+                "establishes": [
+                  "source",
+                  "license"
+                ]
               }
             ],
             "bucket": "closed"
           },
           "adoption": {
             "level": 3,
-            "reach": "100K-1M",
-            "signal_type": "usage_volume",
+            "signal_type": "reported_traction",
             "confidence": "low",
-            "note": "Default content-safety layer for Azure OpenAI and Azure AI customers; broad enterprise reach.",
+            "note": "INSTRUMENT CORRECTED on 2026-08-13, level unchanged. usage_volume claims a download or install count and Microsoft publishes none for this service - the product page carries no customer count, no request volume and no developer count. The 100K-1M label therefore asserts a measurement nobody made, which adoption.md rules out on this instrument. The reading underneath it - the default content-safety layer in front of the Azure AI customer base - is a reported_traction claim. Recommend reported_traction with no reach; the level is an owner call and is not taken here. The instrument now reads reported_traction, which is what a credible claim with no count behind it is for, and the illegal numeric reach is gone. The LEVEL is deliberately unchanged: correcting how a band was read is not a reason to move where it sits, and nothing re-read today argues the standing is different. What changes is that the record no longer claims a measurement nobody made.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://azure.microsoft.com/en-us/products/ai-services/ai-content-safety",
-                "shows": "managed service for the Azure AI customer base",
-                "accessed": "2026-06-29"
+                "shows": "Product and pricing page. No usage figure of any kind appears on it.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "f41d64cba9a9c0fa1315c942dbcf83985b347ec510a9ee5bce207c8b8cfdf83c"
               }
             ]
           },
@@ -28364,22 +28774,25 @@
             "basis_detail": "feature coverage",
             "value": "Text and image moderation, prompt-shield jailbreak/injection detection, and groundedness detection in one managed service.",
             "confidence": "low",
-            "note": "Broad managed feature set (moderation + prompt shields + groundedness); strong coverage, closed.",
+            "note": "Broad managed feature set (moderation + prompt shields + groundedness); strong coverage, closed. Re-read 2026-08-13 and unchanged, with protected-material detection listed alongside the three the value names.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://azure.microsoft.com/en-us/products/ai-services/ai-content-safety",
-                "shows": "moderation + prompt shields + groundedness",
-                "accessed": "2026-06-29"
+                "shows": "Page lists blocking harmful inputs and outputs across violence, hate, sexual and self-harm for text and images; custom AI filters; 'Identify and mitigate both direct and indirect threats with prompt shields'; 'Identify and correct generative AI hallucinations ... with groundedness detection'; and protected-material detection for copyrighted text and code.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "f41d64cba9a9c0fa1315c942dbcf83985b347ec510a9ee5bce207c8b8cfdf83c"
               }
             ]
           },
           "maturity": 3.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-08",
-            "basis": "commit"
+            "date": "2026-08-13",
+            "basis": "verified"
           },
-          "version_note": "Azure AI Content Safety; managed Azure service (text/image moderation, prompt shields, groundedness). Proprietary, no self-host. Verified live June 2026."
+          "version_note": "Azure AI Content Safety, a managed Azure service covering text and image moderation, custom filters, prompt shields for direct and indirect injection, groundedness detection, and protected-material detection for copyrighted text and code. Sold on consumption pricing, with no self-hosted option. Verified 2026-08-13 via the Azure product page."
         },
         {
           "slug": "bedrock-guardrails",
@@ -28393,27 +28806,36 @@
             "class": "closed",
             "components": "service:proprietary managed AWS service(no self-host);features:denied topics, content filters, PII redaction, contextual grounding;source:closed;license:proprietary",
             "confidence": "high",
-            "note": "Closed managed cloud service; no weights or source.",
+            "note": "Closed managed cloud service; no weights or source. Re-read 2026-08-13 and unchanged. One wrinkle worth recording - the ApplyGuardrail API can now be pointed at self-hosted models, but that is the managed guardrail reaching outward, not a self-hostable guardrail, so source stays closed.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://aws.amazon.com/bedrock/guardrails/",
-                "shows": "managed guardrails: denied topics, content filters, PII redaction, grounding; proprietary",
-                "accessed": "2026-06-29"
+                "shows": "An AWS-run service with no source repository and no self-hostable implementation; use is governed by the AWS service terms rather than a published license. 'The ApplyGuardrail API allows you to use the configurable safeguards offered by Bedrock Guardrails with any foundation model whether hosted on Amazon Bedrock or self-hosted models' - the guardrail itself still runs at AWS.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "237c942fa1b375b11755e72685df1c96006fb5f240c89b9f19136c0f5653a99a",
+                "establishes": [
+                  "source",
+                  "license"
+                ]
               }
             ],
             "bucket": "closed"
           },
           "adoption": {
             "level": 3,
-            "reach": "100K-1M",
-            "signal_type": "usage_volume",
+            "signal_type": "reported_traction",
             "confidence": "low",
-            "note": "Default guardrail layer for the Amazon Bedrock customer base; broad enterprise reach.",
+            "note": "INSTRUMENT CORRECTED on 2026-08-13, level unchanged. usage_volume claims a download or install count and AWS publishes none for this service - the page names customers ('Companies like Chime Financial, KONE, Panorama, Strava, Remitly, and PwC trust Bedrock Guardrails for their AI applications') but gives no count of anything. Named logos are exactly the reported_traction shape, and the 100K-1M label asserts a measurement nobody made. The instrument now reads reported_traction, which is what a credible claim with no count behind it is for, and the illegal numeric reach is gone. The LEVEL is deliberately unchanged: correcting how a band was read is not a reason to move where it sits, and nothing re-read today argues the standing is different. What changes is that the record no longer claims a measurement nobody made.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://aws.amazon.com/bedrock/guardrails/",
-                "shows": "managed guardrails across Bedrock models",
-                "accessed": "2026-06-29"
+                "shows": "Names six customers by logo and quote. No customer count, request volume or developer count appears on the page.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "237c942fa1b375b11755e72685df1c96006fb5f240c89b9f19136c0f5653a99a"
               }
             ]
           },
@@ -28423,22 +28845,25 @@
             "basis_detail": "feature coverage",
             "value": "Denied topics, content filters, PII redaction, word filters, and contextual-grounding checks across any Bedrock model.",
             "confidence": "low",
-            "note": "Broad configurable managed guardrail set; strong coverage, closed.",
+            "note": "Broad configurable managed guardrail set; strong coverage, closed. Re-read 2026-08-13 and unchanged, with Automated Reasoning checks now listed as a sixth policy beside the five the value names.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://aws.amazon.com/bedrock/guardrails/",
-                "shows": "denied topics, filters, PII redaction, contextual grounding",
-                "accessed": "2026-06-29"
+                "shows": "Page lists content moderation (content and word filters), prompt attack detection, topic classification (denied topics), PII redaction (sensitive information filters), and hallucination detection (contextual grounding and Automated Reasoning checks), applied 'consistently across any foundation model'.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "237c942fa1b375b11755e72685df1c96006fb5f240c89b9f19136c0f5653a99a"
               }
             ]
           },
           "maturity": 3.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-08",
-            "basis": "commit"
+            "date": "2026-08-13",
+            "basis": "verified"
           },
-          "version_note": "Amazon Bedrock Guardrails; managed AWS service (denied topics, content filters, PII redaction, grounding checks). Proprietary, no self-host. Verified live June 2026."
+          "version_note": "Amazon Bedrock Guardrails, a managed AWS service covering content and word filters, prompt attack detection, denied topics, sensitive-information redaction, contextual grounding and Automated Reasoning checks. The ApplyGuardrail API applies the same safeguards to self-hosted models as well as Bedrock ones, but the guardrail itself runs at AWS and there is no self-hosted build. Verified 2026-08-13 via the AWS product page."
         },
         {
           "slug": "lakera-guard",
@@ -28452,12 +28877,19 @@
             "class": "closed",
             "components": "service:proprietary SaaS API(no self-host);note:vendor Lakera acquired by Check Point Nov 2025;source:closed;license:proprietary",
             "confidence": "high",
-            "note": "Closed SaaS security product; no weights or source. (Lakera also runs the public Gandalf prompt-injection game, but Guard itself is proprietary.)",
+            "note": "Closed SaaS security product; no weights or source. (Lakera also runs the public Gandalf prompt-injection game, but Guard itself is proprietary.) Re-read 2026-08-13 and unchanged. The site has been restructured around a three-product platform - Workforce AI Security, AI Agent Security and AI Red Teaming - and no longer mentions the Check Point acquisition on the front page; neither moves the score.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://www.lakera.ai/",
-                "shows": "proprietary AI security / prompt-injection defense SaaS; Lakera acquired by Check Point (2025)",
-                "accessed": "2026-06-29"
+                "shows": "Commercial platform sold through 'Book a demo' and 'Talk to Sales', described under Integration & Scale as 'Easy deployment and scaling', 'API-first architecture', 'Cloud-native deployment'. No source repository, no weights and no self-hostable build is offered anywhere on the site.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "1e50a96183f0473f391e93b4aa6ee75f89fd614e1f04ff657b6a84e35bc96631",
+                "establishes": [
+                  "source",
+                  "license"
+                ]
               }
             ],
             "bucket": "closed"
@@ -28466,12 +28898,15 @@
             "level": 2,
             "signal_type": "reported_traction",
             "confidence": "low",
-            "note": "Established prompt-injection-defense vendor with notable enterprise customers; acquired by Check Point in 2025. No public usage counts.",
+            "note": "Established prompt-injection-defense vendor with notable enterprise customers; acquired by Check Point in 2025. Re-read 2026-08-13 and the absence holds - the site publishes no customer count, no request volume and no revenue figure, and the only numbers on it are a '1M+ hackers' learning claim from the Gandalf game and 1,000 members of the vendor's Slack community, neither of which is a count of the product's users. reported_traction with no reach is the honest record and it stays. The Check Point acquisition is no longer stated on the front page; it is a corporate event rather than an adoption signal, so nothing rests on it.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://www.lakera.ai/",
-                "shows": "commercial AI security product; Check Point acquisition 2025",
-                "accessed": "2026-06-29"
+                "shows": "Claims 'Trusted by the world's leading AI companies' and 'trusted by industry leaders, from Fortune 500 companies to startups' with unattributed pull-quotes, and no customer count anywhere. The only figures are 'Learning from 1M+ hackers around the world' and a Slack community 'With over 1,000 members'.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "1e50a96183f0473f391e93b4aa6ee75f89fd614e1f04ff657b6a84e35bc96631"
               }
             ]
           },
@@ -28481,12 +28916,15 @@
             "basis_detail": "defense coverage",
             "value": "Real-time prompt-injection, jailbreak, data-leakage, and content-risk defense for LLM apps.",
             "confidence": "low",
-            "note": "Category-defining prompt-injection defense; strong coverage, now part of Check Point's platform.",
+            "note": "Category-defining prompt-injection defense; strong coverage, now part of Check Point's platform. Re-read 2026-08-13 and unchanged, with the runtime defense now sitting beside a red-teaming product and a workforce/shadow-AI product.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://www.lakera.ai/",
-                "shows": "real-time prompt-injection / jailbreak / data-leakage defense",
-                "accessed": "2026-06-29"
+                "shows": "AI Agent Security is described as 'Runtime protection for AI applications' with 'Real-time threat detection', 'Prompt attack prevention' and 'Data leakage protection'; the risks listed are prompt injection attacks, AI data leaks, toxic content generation, indirect prompt injection and multilingual/multimodal attacks, at 'sub-50 ms runtime latency'.",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "1e50a96183f0473f391e93b4aa6ee75f89fd614e1f04ff657b6a84e35bc96631"
               }
             ]
           },
@@ -28494,9 +28932,9 @@
           "mature": false,
           "freshness": {
             "date": "2026-08-13",
-            "basis": "commit"
+            "basis": "verified"
           },
-          "version_note": "Lakera Guard; proprietary SaaS API (prompt-injection/jailbreak defense). Lakera acquired by Check Point (completed Nov 2025). Verified live June 2026."
+          "version_note": "Lakera Guard, a hosted API defending LLM applications against prompt injection, jailbreaks and data leakage at runtime. It now sits inside a three-product platform alongside Lakera's workforce-AI security and red-teaming products, sold through sales rather than self-serve, with no self-hosted build. Verified 2026-08-13 via the Lakera site."
         }
       ]
     },
