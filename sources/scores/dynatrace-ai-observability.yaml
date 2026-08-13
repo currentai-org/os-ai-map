@@ -15,13 +15,25 @@ openness:
       value: closed
   confidence: high
   note: Fully proprietary Dynatrace platform; AI Observability is a commercial app/module. OTel + OpenLLMetry
-    ingestion are open standards consumed by a closed product. Scored closed (1).
+    ingestion are open standards consumed by a closed product. Scored closed (1). Re-read 2026-08-13 and
+    unchanged - the documentation still frames Traceloop OpenLLMetry, OpenTelemetry with GenAI semantic
+    conventions and OpenInference as ways of getting data into Dynatrace, and publishes no source for the
+    product consuming it.
   raw: platform:proprietary-SaaS(Grail-powered, Davis AI);license:commercial;ingestion:OpenTelemetry+OpenLLMetry(via
     Traceloop)+GenAI-semconv(open standards, not open product);source:closed
+  last_verified: '2026-08-13'
   sources:
   - url: https://docs.dynatrace.com/docs/observe/dynatrace-for-ai-observability
-    shows: proprietary Dynatrace platform AI Observability; Grail/Davis AI; OTel + OpenLLMetry ingestion
-    accessed: '2026-06-04'
+    shows: 'Documentation for the capability - "Use Dynatrace with Traceloop OpenLLMetry, OpenTelemetry
+      with GenAI semantic conventions, or OpenInference" to observe AI-powered cloud applications
+      end-to-end. Those are ingestion formats. Nothing on the page publishes source for Dynatrace itself
+      or offers a build of it.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 594c5bae5c4e3a24a31f1a178341d2798725bd57ad74112c38e0fbaa78bf0225
+    establishes:
+    - license
+    - source
 adoption:
   level: null
   reach: null
@@ -30,10 +42,18 @@ adoption:
   note: Dynatrace is a large public observability vendor, but I found no primary, AI-Observability-specific
     usage figure this run (vendor docs confirm the product exists but disclose no module adoption count).
     Declining to assign a level rather than attribute platform-wide numbers I could not source primarily.
+    Re-read 2026-08-13 and the abstention stands - the documentation still carries no customer count, no
+    account count and no ingested-volume figure for this capability. Recorded as a confirmed null rather
+    than an unanswered axis.
+  last_verified: '2026-08-13'
   sources:
   - url: https://docs.dynatrace.com/docs/observe/dynatrace-for-ai-observability
-    shows: product exists and is part of the Dynatrace platform; no module usage count disclosed
-    accessed: '2026-06-04'
+    shows: The capability's documentation, read for a usage figure and containing none. It describes what
+      the product monitors - token consumption, latency, availability, errors, model drift and service
+      fees across Amazon Bedrock, NVIDIA NIM, Ollama and others - and never how many people use it.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 594c5bae5c4e3a24a31f1a178341d2798725bd57ad74112c38e0fbaa78bf0225
 capability:
   score: 4
   basis: feature_matrix
@@ -42,10 +62,20 @@ capability:
     + OpenLLMetry(Traceloop) + GenAI semconv; providers OpenAI/Bedrock/NIM/Ollama/Gemini/Azure AI Foundry
     + LangChain/CrewAI. Lacks dedicated eval/LLM-as-judge + prompt-versioning depth.
   confidence: medium
+  relative_to: langfuse
+  relation: at
   note: Strong full-stack AI observability (no-sampling capture, predictive cost, agentic tracing) at
-    the anchor C4 tier; not an eval/prompt-mgmt frontier-definer, so 4.
+    the anchor C4 tier; not an eval/prompt-mgmt frontier-definer, so 4. The comparison is now recorded
+    rather than left in prose - at the langfuse anchor. Re-read 2026-08-13 - the documentation still covers
+    end-to-end tracing of LLM calls, tool use and RAG, cost as token usage and service fees, model-drift
+    monitoring, and multi-provider coverage, with no eval or prompt-versioning surface of its own.
+  last_verified: '2026-08-13'
   sources:
   - url: https://docs.dynatrace.com/docs/observe/dynatrace-for-ai-observability
-    shows: end-to-end tracing, token/cost metrics, predictive cost (Davis AI), OTel/OpenLLMetry, multi-provider
-      + agentic framework support
-    accessed: '2026-06-04'
+    shows: 'Documentation - trace "LLM calls, tool-use, RAG, and resolve performance, latency, cost, and
+      reliability issues"; Cost covers "Token usage, service fees, or overall resource consumption";
+      drift is anticipated by "monitoring input data stationarity"; and providers named include Amazon
+      Bedrock, NVIDIA NIM and Ollama.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 594c5bae5c4e3a24a31f1a178341d2798725bd57ad74112c38e0fbaa78bf0225

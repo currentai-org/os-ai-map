@@ -18,13 +18,24 @@ openness:
       value: ungated
   confidence: high
   note: MIT library that is fully functional standalone; the Snowflake Cortex hosted product is separate, not a
-    gate on the library.
+    gate on the library. Re-read 2026-08-13 and unchanged - GitHub still resolves the single root LICENSE
+    to MIT, and the repository still carries the whole library with no ee/ or enterprise directory and no
+    second license beneath it.
   raw: license:MIT(OSI);source:public(github.com/truera/trulens);commercial:Snowflake-Cortex-AI-Observability(separate
     hosted product);library:not-feature-gated;core-gated:ungated
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/truera/trulens
-    shows: MIT, ~3.4k stars, LLM eval + tracing
-    accessed: '2026-06-18'
+    shows: 'Repository page. The license sidebar reads "MIT license" and GitHub''s own metadata records
+      license spdxId "MIT", name "MIT License", resolved from the single root LICENSE file. The README
+      still leads on feedback functions and the RAG Triad. 3,508 stars.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: a692e7e08971b32cf73f93470bfb4c1674907e30cac99bbaace1c11d9e46a580
+    establishes:
+    - license
+    - source
+    - core_gated
 adoption:
   level: 3
   signal_type: usage_volume
@@ -47,7 +58,25 @@ capability:
     across versions; Streamlit dashboard; OpenAI/HF/LiteLLM/Cortex providers
   confidence: medium
   note: Eval-first observability; lighter than Langfuse/Helicone on production gateway and prompt management.
+    Re-read 2026-08-13 - the repository still leads on feedback functions and the RAG Triad, with no
+    gateway, prompt-registry or dataset-annotation surface, which is what the note already said. No
+    `relative_to` is recorded here on purpose - the note places TruLens BELOW langfuse and helicone while
+    the score matches theirs at 4, so recording `at` would assert a comparison the prose contradicts and
+    recording `one_below` would change the score. The disagreement is left visible for a ruling.
+  last_verified: '2026-08-13'
   sources:
+  - url: https://github.com/truera/trulens
+    shows: 'README - feedback functions built around "the RAG Triad" (groundedness, context relevance,
+      answer relevance) with links to Snowflake''s RAG-triad benchmarks, and a comparison claiming TruLens
+      leads on three of four ranking metrics ahead of WandB Weave, RAGAS, DeepEval and UpTrain. No AI
+      gateway, prompt registry or annotation-queue feature appears.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: a692e7e08971b32cf73f93470bfb4c1674907e30cac99bbaace1c11d9e46a580
   - url: https://www.snowflake.com/en/blog/trulens-open-source-ai/
-    shows: Snowflake acquired TruEra; TruLens stays open source
-    accessed: '2026-06-18'
+    shows: '"TruLens ❤️ Snowflake OSS", published 2024-06-24, describing Snowflake''s acquisition of
+      TruEra''s AI observability platform and its continued open-source support for LLM app developers.
+      A 2024 post, re-read for what it still says rather than as current news.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 5e10f54f944e9a10f48858fa525ae548905b9a47ec56afacec5f3b28b44e5c81

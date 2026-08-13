@@ -16,13 +16,24 @@ openness:
       value: closed
   confidence: high
   note: Fully proprietary SaaS observability platform; AI Monitoring is a commercial module. OTel ingestion
-    support does not make the product open. Scored closed (1).
+    support does not make the product open. Scored closed (1). Re-read 2026-08-13 and unchanged - the
+    product page still sells AI Monitoring as one capability of the hosted New Relic platform, lists
+    OpenTelemetry only as a way of getting data in, and publishes no source or self-hosted build.
   raw: platform:proprietary-SaaS(closed);license:commercial(Standard/Pro/Enterprise tiers);ingestion:OpenTelemetry-compatible(open
     standard, not open product);source:closed
+  last_verified: '2026-08-13'
   sources:
   - url: https://newrelic.com/platform/ai-monitoring
-    shows: proprietary SaaS AI observability with Standard/Pro/Enterprise tiers; OTel ingestion
-    accessed: '2026-06-04'
+    shows: 'The AI Monitoring product page, sold as one capability among Federated Logs, SAP Monitoring,
+      AIOps, Pipeline Control and the rest of the hosted platform. OpenTelemetry appears in the capability
+      list as "Collect metrics, logs, and traces from any source", which is an ingestion route rather than
+      an open product. No repository, license text or self-hosted distribution is offered anywhere on it.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: b3986cb976b800306128a110c6c6aa9adf8ba4162020b7f0b9a1fe56b23591eb
+    establishes:
+    - license
+    - source
 adoption:
   level: 4
   reach: 1M-10M
@@ -44,10 +55,20 @@ capability:
     detection, response analysis, user feedback); OTel + OpenAI/Pinecone/LangChain integrations; 'no new
     instrumentation'. Lacks dedicated prompt-versioning/dataset-eval depth of eval-first tools.
   confidence: medium
+  relative_to: langfuse
+  relation: at
   note: Broad full-stack AI observability (traces, cost, quality, agentic spans) at the anchor C4 tier
-    on feature breadth; not an eval/prompt-mgmt frontier-definer, so 4 not 5.
+    on feature breadth; not an eval/prompt-mgmt frontier-definer, so 4 not 5. The comparison is now recorded
+    rather than left in prose - at the langfuse anchor. Re-read 2026-08-13 - the page still names AI metrics
+    from response time and quality through tokens and APM golden signals, token cost tracking with custom
+    alerts, and detection of bias, hallucination and toxicity.
+  last_verified: '2026-08-13'
   sources:
   - url: https://newrelic.com/platform/ai-monitoring
-    shows: AI-stack tracing, token cost tracking, bias/hallucination/toxicity detection, OTel + LangChain/OpenAI/Pinecone
-      integrations
-    accessed: '2026-06-04'
+    shows: 'Page copy - a summary of AI metrics "from response time and quality, to tokens, APM golden
+      signals, and infrastructure"; "Spot and solve issues like bias, hallucination, and toxicity with
+      complete visibility"; and "Monitor and control costs easily by tracking request tokens used and
+      setting custom alerts", with model comparison beside it.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: b3986cb976b800306128a110c6c6aa9adf8ba4162020b7f0b9a1fe56b23591eb

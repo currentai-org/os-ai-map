@@ -13,24 +13,42 @@ openness:
         proprietary and cloud-locked
   confidence: high
   note: Proprietary GCP managed offering (Agent Engine + Cloud Trace/Monitoring/Logging). OTel is the
-    wire standard but the service is closed and tied to Google Cloud.
+    wire standard but the service is closed and tied to Google Cloud. Re-read 2026-08-13 and unchanged -
+    the documentation still describes Cloud Trace as the place traces land, with no source, license or
+    self-hostable build of the observability service offered anywhere in it.
   raw: license:proprietary(Google Cloud managed service);source:closed;note:tracing is built on the open
     OTel standard but the observability product/service itself is proprietary and cloud-locked
+  last_verified: '2026-08-13'
   sources:
   - url: https://docs.cloud.google.com/agent-builder/agent-engine/manage/tracing
-    shows: Cloud Trace tracing for Agent Engine as a managed Google Cloud service
-    accessed: '2026-06-04'
+    shows: 'Documentation - "Cloud Trace lets you analyze the performance of your agents by tracing" them,
+      with "A trace is composed of individual spans, which represent a single unit of work, like a function
+      call or an interaction with an LLM." The trace format shown carries trace_id, span_id and span_kind
+      LLM. Everything described runs inside Google Cloud; nothing is published to run elsewhere.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 3d349ddecec96887e8ef1c7740a7d3ca54eda36452ba3d7a33fb32a94e710910
+    establishes:
+    - license
+    - source
 adoption:
   level: 3
   signal_type: reported_traction
   confidence: low
   note: A feature surface within Vertex AI Agent Engine on Google Cloud; no standalone usage figures published
     for the observability capability specifically. Level 3 reflects availability inside a large cloud
-    platform's agent stack, not a measured user count; directional.
+    platform's agent stack, not a measured user count; directional. Re-read 2026-08-13 and unchanged - the
+    quantity actually banded here is the reach of Vertex AI, not usage of its tracing surface, and the
+    documentation still discloses no figure for either.
+  last_verified: '2026-08-13'
   sources:
   - url: https://docs.cloud.google.com/agent-builder/agent-engine/manage/tracing
-    shows: observability shipped as part of the managed Vertex AI Agent Engine platform
-    accessed: '2026-06-04'
+    shows: The tracing documentation, read for a usage figure and containing none. It sits under an
+      Observability section of the Agent Engine docs, beside RAG Engine deployment modes and Model Armor,
+      which places the capability inside the platform without saying how many people use it.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 3d349ddecec96887e8ef1c7740a7d3ca54eda36452ba3d7a33fb32a94e710910
 capability:
   score: 3
   basis: feature_matrix
@@ -39,9 +57,19 @@ capability:
     Gen AI Evaluation service incl User Simulator) + Cloud Logging. Cost/token tracking present; prompt
     management and dedicated annotation queues not evidenced as native.
   confidence: medium
+  relative_to: langfuse
+  relation: one_below
   note: Solid tracing + monitoring + integrated eval, but the observability matrix is thinner than the
-    dedicated OSS platforms on prompt versioning/datasets/annotation; scored 3 below the C4 anchors.
+    dedicated OSS platforms on prompt versioning/datasets/annotation; scored 3 below the C4 anchors. The
+    comparison is now recorded rather than left in prose - one rung below the langfuse anchor at 4.
+    Re-read 2026-08-13 - the documentation still covers traces and spans over LLM and tool calls with no
+    prompt-management or annotation surface of its own.
+  last_verified: '2026-08-13'
   sources:
   - url: https://docs.cloud.google.com/agent-builder/agent-engine/manage/tracing
-    shows: Cloud Trace traces/spans, perf dashboard, Gen AI Evaluation integration
-    accessed: '2026-06-04'
+    shows: 'Documentation covering Cloud Trace spans for ADK agents, with span_kind LLM, parent_id and
+      event fields shown in the example payload, and an Observability section grouping it with monitoring.
+      No prompt-versioning or annotation-queue feature is described.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 3d349ddecec96887e8ef1c7740a7d3ca54eda36452ba3d7a33fb32a94e710910
