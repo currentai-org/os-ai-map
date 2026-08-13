@@ -16,8 +16,11 @@ openness:
     - execution-based eval harness + 369-task environment public
     - multi-platform (VMware/VirtualBox/Docker/AWS)
   confidence: high
+  last_verified: '2026-08-13'
   note: Apache-2.0, full harness + environment public. Scored as the evaluation harness; the bundled 369-task
-    set is also openly redistributable.
+    set is also openly redistributable. Re-read 2026-08-13 - the license endpoint still reports Apache-2.0
+    and the README still sets the benchmark up to run locally under VMware, VirtualBox or Docker with
+    no paid tier.
   raw: license:Apache-2.0(OSI);source:public(github.com/xlang-ai/OSWorld);execution-based eval harness +
     369-task environment public; multi-platform (VMware/VirtualBox/Docker/AWS);core-gated:ungated(full harness
     runs locally on VMware, VirtualBox or Docker, no paid tier)
@@ -40,6 +43,24 @@ openness:
     content_sha256: 83b8684c2f4ac4f31996b8b4752195fcb6cc5429f89d92398177b9b721d787fc
     establishes:
     - core-gated
+  - url: https://api.github.com/repos/xlang-ai/OSWorld/license
+    shows: GitHub's license endpoint reports spdx_id Apache-2.0 for xlang-ai/OSWorld and returns the Apache-2.0
+      text as the LICENSE body.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: f4949be7c5cc1918f147800213fab6f49ccc872b529fea02daed6c8700824988
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/xlang-ai/OSWorld/main/README.md
+    shows: 'Re-read 2026-08-13: unchanged from the 2026-08-11 read - Apache-2.0 badge, full local setup
+      under VMware, VirtualBox or Docker with KVM, AWS and Azure optional for parallel runs, and no paid
+      tier, commercial edition or license key.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 83b8684c2f4ac4f31996b8b4752195fcb6cc5429f89d92398177b9b721d787fc
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 3
   signal_type: reported_traction
@@ -48,14 +69,31 @@ adoption:
     scores reported in OpenAI (CUA 38.1%, GPT-5.4 75.0%), Anthropic (Claude Sonnet 4.5 61.4%, Sonnet 4.6
     72.5%, Opus 4.6 72.7%) computer-use launches through 2026. Reach band is directional. The harness
     is run by a concentrated set of frontier labs/agent teams rather than a mass install base. 2.9k stars
-    corroborate only.'
+    corroborate only. Re-read 2026-08-13, with two notes. The Anthropic Sonnet 4.6 post still reports
+    OSWorld - ''Across sixteen months, our Sonnet models have made steady gains on OSWorld'' - but carries
+    the figure in a chart rather than in text, so the 72.5% in this note is not quotable from that page.
+    And os-world.github.io now 301-redirects to osworld-v1.xlang.ai, which is where the leaderboard lives;
+    the cited URL still resolves through the redirect. Level 3 unchanged; 3.1k stars.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://www.anthropic.com/news/claude-sonnet-4-6
-    shows: Claude Sonnet 4.6 OSWorld score reported in official model release (standard-citation signal)
-    accessed: '2026-06-04'
+    shows: 'Re-read 2026-08-13: the Sonnet 4.6 release post reports OSWorld results and charts Sonnet''s
+      progress on it across sixteen months. The benchmark is cited, which is the standard-citation signal;
+      the numeric score is in the chart rather than the prose.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 589bbbfe76178ca13e5400a385164d4bae550ca83abbd587bb13f2533d9a867a
   - url: https://os-world.github.io/
     shows: best-model vs human baselines; ongoing updates with new LLMs/VLMs
     accessed: '2026-06-04'
+  - url: https://osworld-v1.xlang.ai/
+    shows: 'the site os-world.github.io now redirects here; it still publishes the human-vs-model baselines
+      - ''While humans can accomplish over 72.36% of the tasks, the best model achieves only 12.24% success''
+      for the original v1 setting - and still lists the model families evaluated (Operator, GPT, Gemini,
+      Claude, UI-TARS, Agent-S, Qwen, CogAgent).'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: bf37e00ce23e8c5472d485a6eb3b291ffa2de220b44040402516e41cbc48c516
 capability:
   score: 5
   basis: feature_matrix
@@ -64,9 +102,12 @@ capability:
     trajectories; model-backend breadth: any VLM/LLM agent (Operator, GPT, Gemini, Claude, UI-TARS, Agent-S,
     Qwen, CogAgent baselines); reproducibility: multi-platform virtualization (VMware/VirtualBox/Docker/AWS)'
   confidence: high
+  last_verified: '2026-08-13'
   note: Frontier-defining within evaluation_code for the computer-use/agentic axis. Execution-based,
     real-environment agent evaluation is the hardest eval modality and OSWorld is its reference harness.
-    A 5 here is for the category's frontier-definers; OSWorld qualifies for agentic eval.
+    A 5 here is for the category's frontier-definers; OSWorld qualifies for agentic eval. Feature matrix
+    re-read 2026-08-13 and unchanged - 369 tasks (361 excluding the eight Google Drive ones), 134 execution-based
+    evaluation functions, and the same multi-platform virtualization story.
   sources:
   - url: https://os-world.github.io/
     shows: 369 execution-based real-computer tasks, multi-OS, agent-trajectory evaluation
@@ -74,3 +115,15 @@ capability:
   - url: https://github.com/xlang-ai/OSWorld
     shows: harness + baselines for Operator/GPT/Gemini/Claude/UI-TARS/Agent-S
     accessed: '2026-06-04'
+  - url: https://osworld-v1.xlang.ai/
+    shows: 369 tasks with an official note that the 8 Google Drive tasks may be excluded for a 361-task
+      run; 134 execution-based evaluation functions; 'reliable, reproducible setup and evaluation scripts'.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: bf37e00ce23e8c5472d485a6eb3b291ffa2de220b44040402516e41cbc48c516
+  - url: https://raw.githubusercontent.com/xlang-ai/OSWorld/main/README.md
+    shows: harness runs the environment under VMware, VirtualBox, Docker/KVM, AWS or Azure and evaluates
+      full agent trajectories against any VLM/LLM agent.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 83b8684c2f4ac4f31996b8b4752195fcb6cc5429f89d92398177b9b721d787fc
