@@ -298,6 +298,97 @@ dimensions:
       - {level: 3, above: 10000, reach: '>10K stars'}
       - {level: 2, above: 1000, reach: 1K-10K stars}
       - {level: 1, above: -1, reach: <1K stars}
+    - source: null
+      signal_type: active_users
+      hand_authored: true
+      confidence: medium
+      note: >
+        No machine route, and there will not be one: the figure is a vendor MAU/WAU
+        disclosure read by a person from an earnings call, a launch post or a press
+        report. The scale is declared anyway, for the same reason the stars scale is -
+        an instrument without a declared vocabulary is an instrument whose labels
+        nobody can check.
+      # Declared 2026-08-13, on Carl's ruling, from the 23 products recording this
+      # instrument. All 23 carried a real user figure and 22 wore a label off the
+      # DOWNLOAD vocabulary, which nothing had ever declared applied here. So the
+      # labels were unfalsifiable rather than wrong: `character-ai` had invented
+      # `10M-100M`, which no scale offered, and nobody could say so.
+      #
+      # SAME THRESHOLDS AS THE DOWNLOAD SCALE, which is a decision and not an
+      # inheritance. The alternative considered was one order higher throughout, so
+      # that ChatGPT at ~900M weekly actives and Poe at ~18M monthly actives did not
+      # both land at 5. That was rejected: a level has to mean one magnitude across the
+      # whole map, or `adoption` stops being comparable between a package and an app,
+      # and the top band holding a wide range is the ordinary cost of a five-point
+      # scale rather than a defect in this instrument. 19 of the 23 sit at level 5,
+      # and that is the map saying these are all mass-market surfaces, which they are.
+      #
+      # The labels carry `users` even so - in fact especially so, since the thresholds
+      # now match. An unsuffixed `>10M` is ambiguous between two live scales at
+      # identical boundaries, and that ambiguity is the whole reason a download
+      # vocabulary could colonize this instrument unnoticed. The suffix is what makes
+      # the two scales tellable apart when their numbers do not differ.
+      #
+      # No cap. Unlike stars, this measures use directly; it is unmeasurable by
+      # machine, which is a question about confidence rather than about ceiling.
+      unit: monthly active users of the surface the product is, or that it powers
+      bands:
+      - {level: 5, above: 10000000, reach: '>10M users'}
+      - {level: 4, above: 1000000, reach: 1M-10M users}
+      - {level: 3, above: 100000, reach: 100K-1M users}
+      - {level: 2, above: 10000, reach: 10K-100K users}
+      - {level: 1, above: -1, reach: <10K users}
+      attribution_note: >
+        A model scores on the surface it powers (`gpt-5` on ChatGPT), which the score's
+        note must say out loud. What the scale will NOT accept silently is a figure
+        that is not an active count: an all-time or cumulative user total, a device
+        installed base, a paid-seat count. Those are the `active_users` form of the
+        under-coverage error in docs/guides/adoption.md - a substitution wearing a
+        measurement's label - and the score must either find an active figure or say
+        in its note which quantity it actually banded on.
+    - source: null
+      signal_type: reported_traction
+      hand_authored: true
+      confidence: low
+      note: >
+        The instrument of last resort before abstention: a credible vendor or third-party
+        claim about standing, with no count behind it. Used where the product has no
+        countable artifact at all - a hosted API, a closed model, a feature inside a
+        cloud platform.
+      # Declared 2026-08-13, on Carl's ruling, after measuring what the 110 records
+      # carrying this instrument actually said. 68 of them wore a NUMERIC download
+      # label, and those labels turned out to be perfectly collinear with the level
+      # they sat next to: `100K-1M` was level 3 on all 33 of its records, `1M-10M` was
+      # level 4 on all 23, `10K-100K` was level 2 on all 7. The label carried no
+      # information the level did not already carry.
+      #
+      # Worse, it carried information that was false. `amazon-nova` read `1M-10M` under
+      # a note saying "no standalone per-model user count published"; `aws-neuron` read
+      # `100K-1M` under "no download/user count is published for Neuron". A reader sees
+      # a numeric band and concludes somebody counted something. Nobody did. So the
+      # numeric vocabulary is not merely redundant here, it is a measurement claim the
+      # instrument is defined by NOT being able to make.
+      #
+      # NO LEVEL MAPPING, deliberately, which is what makes this a `vocabulary` rather
+      # than `bands`. The qualitative words are the LESS collinear half of the corpus -
+      # `niche` ran 85% level 3, `broad` 80% level 4, `mass-market` 67% level 5 - so
+      # they carry residual signal a bands table would flatten by forcing agreement.
+      # A word here says what kind of standing was claimed. The level says how much.
+      #
+      # The three words are hardware's, which already declares `qualitative: true` with
+      # an empty bands list and has used exactly these since before this route existed.
+      # Sharing them rather than minting a parallel set is the same reasoning as
+      # declaring any scale once.
+      vocabulary: [niche, broad, mass-market]
+      vocabulary_note: >
+        `reach` is OPTIONAL on this instrument and omitting it is the honest default -
+        15 records already do. A word is worth recording only where it says something
+        the level does not, which is usually the shape of the traction rather than its
+        size: `osprey` at 446 GitHub stars but in production at Discord is `niche` in a
+        way that matters. Three strays were folded in on 2026-08-13 rather than
+        admitted as new words - `enterprise` (snorkel-flow, nemo-data-designer) and
+        `early / niche` (datology-ai) all became `niche`, since the level beside them
+        already carried the distinction they were reaching for.
     sum_across_artifacts: true
     sum_note: >
       A model family ships several SKUs. The map's unit is the family, so

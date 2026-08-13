@@ -42,9 +42,18 @@ question. A product can be perfectly banded against a figure from March.
 
 ## Exit status
 
-0 unless `--strict`, matching `check_freshness`. Gating today would fail on a backlog that
-predates the bands being declared at all, and a gate that fails on day one teaches people to
-skip it. Turn on `--strict` in CI once the backlog is cleared.
+0 unless `--strict`. CI runs `--strict` as of 2026-08-13; the flag stays optional so a local
+run can survey without failing.
+
+It shipped non-strict on 2026-08-11 against 217 off-scale records, because a gate that fails on
+day one teaches people to skip it. That backlog is now zero — 217 to 71 across #224 to #230,
+then 71 to 0 by declaring the two instruments that had no vocabulary at all and re-reading every
+remaining figure live rather than inferring it from the stale text of the label being replaced.
+
+**The escape hatch is to declare a band, never to edit a level until CI passes.** A record that
+needs a label no scale offers IS the finding: `character-ai` invented `10M-100M`, and because
+nothing could check an undeclared label, it sat at level 4 while its own cited ~20M MAU cleared
+the top threshold outright.
 """
 
 from __future__ import annotations
@@ -70,15 +79,39 @@ def declared_scales(sources: dict) -> dict[tuple[str, str], dict[str, int]]:
         for band in adoption.get("bands") or []:
             scales.setdefault((name, "*"), {})[band["reach"]] = band["level"]
 
-    # The stars scale lives in signal_routing.yaml rather than a rubric, because it is a
-    # property of the SIGNAL and applies to every product type. Read through the serializer's
-    # own loader so the two cannot disagree about where it lives.
-    from build.serialize_rubric import load_routing, stars_bands
+    # Two scales live in signal_routing.yaml rather than a rubric, because they are a
+    # property of the SIGNAL and apply to every product type: `stars_fallback`, and
+    # `active_users` since 2026-08-13. Read through the serializer's own loader so the two
+    # cannot disagree about where they live.
+    from build.serialize_rubric import load_routing, route_bands
 
-    rows, _warnings = stars_bands(load_routing(ROOT))
+    rows, _warnings = route_bands(load_routing(ROOT))
     for band in rows:
         scales.setdefault(("*", band["signal_type"]), {})[band["reach"]] = band["level"]
     return scales
+
+
+def declared_vocabularies(root: Path = ROOT) -> dict[str, set[str]]:
+    """signal_type -> the words it may record as `reach`, for instruments with no bands.
+
+    A VOCABULARY is not a scale, and the difference is the point. A scale maps a label to a
+    level and a mismatch between them is a finding. A vocabulary says only which words exist:
+    `reported_traction` records what KIND of standing was claimed, while the level says how
+    much, and the two are allowed to disagree because neither is derived from the other.
+
+    Measured 2026-08-13 on the 110 records carrying `reported_traction`: `niche` ran 85%
+    level 3, `broad` 80% level 4, `mass-market` 67% level 5. Forcing agreement would flatten
+    the residual signal those spreads represent, so this check asserts membership only.
+    """
+    from build.serialize_rubric import load_routing
+
+    routing = load_routing(root)
+    routes = ((routing.get("dimensions") or {}).get("adoption") or {}).get("routes") or []
+    return {
+        route["signal_type"]: set(route["vocabulary"])
+        for route in routes
+        if route.get("signal_type") and route.get("vocabulary")
+    }
 
 
 # Instruments whose bands are read in downloads, and which may therefore fall back to the
@@ -108,8 +141,14 @@ def scale_for(scales: dict, product_type: str, signal_type: str) -> dict[str, in
     one, and those findings looked exactly like the real ones.
 
     So the fallback is now allowed only for instruments actually denominated in downloads.
-    `reported_traction` and `active_users` return None and are skipped, which is not a
-    waiver — it is the checker declining to compare a user count against a download band.
+    `reported_traction` returns None and is skipped, which is not a waiver — it is the
+    checker declining to compare a user count against a download band.
+
+    `active_users` no longer needs the skip. It DECLARES a scale as of 2026-08-13, so it
+    takes the first branch like stars do, and abstention narrows to the one instrument that
+    still has no vocabulary. Note what the skip had been hiding while it was right: 22 of
+    the 23 products were wearing download labels, and skipping them is what made that
+    invisible for as long as it was.
     """
     if signal_type and ("*", signal_type) in scales:
         return scales[("*", signal_type)]
@@ -120,6 +159,7 @@ def scale_for(scales: dict, product_type: str, signal_type: str) -> dict[str, in
 
 def collect(sources: dict) -> tuple[list[str], int]:
     scales = declared_scales(sources)
+    vocabularies = declared_vocabularies()
     types = {slug: (doc or {}).get("type") for slug, doc in sources["products"].items()}
 
     findings: list[str] = []
@@ -130,6 +170,24 @@ def collect(sources: dict) -> tuple[list[str], int]:
         if level is None and reach is None:
             continue
         signal = adoption.get("signal_type") or ""
+
+        # An instrument with a vocabulary rather than bands. `reach` is optional here —
+        # omitting it is the honest default and 15 records already do — so the only thing
+        # to check is that a word, if present, is one the instrument declares. Crucially
+        # this is where a NUMERIC label gets caught: `100K-1M` is not in the vocabulary, and
+        # on an instrument defined by having nothing to count it is a measurement claim the
+        # instrument cannot make.
+        if signal in vocabularies:
+            examined += 1
+            if reach is not None and reach not in vocabularies[signal]:
+                findings.append(
+                    f"{slug} [{types.get(slug)}/{signal}]: reach {reach!r} is not in this "
+                    f"instrument's vocabulary {sorted(vocabularies[signal])}; a "
+                    f"{signal} record has no count behind it, so a numeric band claims a "
+                    f"measurement that was never made"
+                )
+            continue
+
         scale = scale_for(scales, types.get(slug), signal)
         if scale is None:
             continue  # hardware declares no adoption scale, by design

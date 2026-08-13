@@ -46,20 +46,29 @@ adoption:
     shows: downloads field = 7,395 (30-day)
     accessed: '2026-07-04'
 capability:
-  score: 2
+  score: 4
   basis: training_value
   basis_detail: results
   value: null
-  confidence: high
+  confidence: medium
   note: >-
-    Publicly downloadable and ungated, and licensed CC-BY-NC-SA-4.0, which permits redistribution
-    for non-commercial research and forbids commercial use. Moved from 5/open on 2026-08-01 by the
-    universal license scale. The map had answered the non-commercial question two ways:
-    `command-r` is 2/restricted under CC-BY-NC while this was 5/open under CC-BY-NC-SA, on the
-    reasoning that a corpus's openness question is redistributability rather than commercial
-    reuse. The scale settles it on the commercial-use test, and the Open Definition agrees - data
-    is not open unless it may be reused commercially. `restricted` is new to the dataset class
-    vocabulary for this: it was the only product type with no word between `open` and `gated`.
+    The paper's headline training result is the basis: Qwen2-7B fine-tuned on ~1.07M
+    persona-generated math problems reaches 64.9% on MATH, rivaling GPT-4-turbo-preview at the
+    time. Corroborated downstream - Tulu 3's SFT persona-math set conditions on ~250K PersonaHub
+    personas, so the corpus is an ingredient in a mixture the map already scores 4.
+    Placed at 4 rather than 5 on the category's own calibration: the 5s (smoltalk, fineweb-edu,
+    dclm-baseline) lead head-to-head ablations AND are the current default others adopt wholesale,
+    while PersonaHub is a generation method plus seed samples whose adoption runs through
+    derivative sets. That is the same shape as tulu-3-sft-mixture and fineweb, both 4.
+    CORRECTED from 2, which was not a capability judgment at all. On 2026-08-01 the openness
+    re-score to 2/restricted was pasted into this block wholesale: the note recorded here was
+    the openness note verbatim, arguing CC-BY-NC-SA and the commercial-use test, and the score
+    followed it down. Nothing on this axis had been assessed. The tell was `value: null` with
+    `confidence: high` - a null is the category norm here, all 38 members carry one, but a high
+    confidence attached to a reasoning that never mentions training value is not. A licence says
+    what you may do with a corpus; it says nothing about what training on it produces.
+    Re-derived from the sources already cited, which is why no `last_verified` is claimed - they
+    were read on 2026-07-04 and have not been re-fetched.
   sources:
   - url: https://arxiv.org/abs/2406.20094
     shows: Qwen2-7B on ~1.07M persona math problems hits 64.9% MATH, rivaling GPT-4-turbo-preview
