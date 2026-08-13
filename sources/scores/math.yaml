@@ -49,22 +49,36 @@ adoption:
   level: 4
   signal_type: reported_traction
   confidence: medium
-  note: MATH is one of the most-cited math-reasoning standards; MATH / MATH-500 appears as a headline
-    metric across frontier model release reports (the top adoption signal for a benchmark). Despite the
-    canonical HF repo being takedown-walled, the benchmark itself remains pervasively used via mirrors
-    and eval harnesses. Level 4 on release-report standard status; no clean current download count obtainable
-    from the primary repo (disabled), hence reported_traction not usage_volume. Re-read 2026-08-13 and
-    NOT dated - the only cited source is the takedown-disabled Hugging Face page, which establishes the
-    takedown and nothing about release-report standing, and the "12,500-problem, NeurIPS 2021, standard
-    competition-math eval" the shows claimed is no longer rendered on it. The level-4 reported_traction
-    band needs a source that actually shows the release-report citations; escalated for a curator to
-    pick one rather than guessed at here.
+  note: 'MATH is one of the most-cited math-reasoning standards, and the band rests on release-report
+    standing rather than a download count. The canonical Hugging Face repo is takedown-walled and now
+    reports 0 downloads in the trailing 30 days against 1,034,712 all-time, so no usage_volume figure
+    is obtainable from it - which is why the instrument is reported_traction and not usage_volume.
+
+    EVIDENCE REPLACED 2026-08-13. The category pass re-read this axis and correctly REFUSED to date it:
+    the only cited source was the disabled HF page, which establishes the takedown and nothing whatever
+    about release-report standing, and the "12,500-problem, NeurIPS 2021" text its shows quoted is no
+    longer rendered anywhere on it. A band cited to a page that does not support it is unfalsifiable
+    however true the band happens to be.
+
+    So a source that actually shows the standing is now cited: OLMo 3''s official model card carries an
+    evaluation table with MATH as a row (65.1 through 91.6 across nine compared models), alongside AIME
+    2024/2025, GPQA, MMLU, IFEval, LiveCodeBench and thirteen others. That is the claim stated exactly -
+    a frontier open model reporting MATH as a headline metric in its release evaluation - rather than
+    the broader "across frontier model release reports", which one card cannot establish on its own.
+    The takedown page is kept as the second source because it is what rules usage_volume out.'
+  last_verified: '2026-08-13'
   sources:
+  - url: https://huggingface.co/allenai/Olmo-3-7B-Instruct/raw/main/README.md
+    shows: 'evaluation table row "| **Math** | MATH | 65.1 | 79.6 | 87.3 | 82.3 | 91.6 | 71.0 | 30.1
+      | 21.9 | 67.3 |", reported beside AIME 2024, AIME 2025, OMEGA, BigBenchHard, GPQA, MMLU, IFEval,
+      LiveCodeBench v3 and others - MATH carried as a headline metric in a frontier open model release'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 9c7c873ea9bd506db7800e61a0535302106bdc393d72b0d2341197330d25a7fe
   - url: https://huggingface.co/datasets/hendrycks/competition_math
-    shows: 'the access-disabled page and its DMCA notice; it carries the `license:mit` tag and the card,
-      and reports 0 downloads in the trailing 30 days. It does NOT show the 12,500-problem count, the
-      NeurIPS provenance, or any evidence of release-report standing, all of which this shows previously
-      claimed'
+    shows: 'the access-disabled page and its DMCA notice; carries the `license:mit` tag and the card,
+      and reports 0 downloads in the trailing 30 days. This is what rules out a usage_volume band; it
+      establishes nothing about release-report standing'
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 361599c5136cbd9d8bf46f6ac47b56594c406e411fee9413d1ab4c529d06bb01
