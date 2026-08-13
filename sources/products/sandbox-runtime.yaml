@@ -1,13 +1,14 @@
 name: sandbox-runtime
 display_name: sandbox-runtime
 type: software
-description: Open-source lightweight sandboxing tool from Anthropic that enforces filesystem and network
-  restrictions on arbitrary processes at the OS level (Linux bubblewrap, macOS seatbelt) without requiring
-  a container. Picked because it powers the bash tool sandbox inside Claude Code and is the reference
-  design for safe local agent execution. ~4.1k stars and active development (63 commits in 90d).
+description: The Anthropic Sandbox Runtime enforces filesystem, network and unix-socket restrictions on
+  arbitrary local processes without a container, wrapping them in native OS primitives - bubblewrap on
+  Linux, sandbox-exec on macOS - behind a filtering proxy. A CLI named srt and a matching library apply
+  it to agents, local MCP servers and individual shell commands. Anthropic develops it for Claude Code
+  and ships it as a research preview.
 github:
 - url: https://github.com/anthropic-experimental/sandbox-runtime
-comments: anthropic-experimental/sandbox-runtime (npm @anthropic-ai/sandbox-runtime), v0.0.53 released
-  4 Jun 2026. Lightweight OS-level sandbox (Linux bubblewrap + macOS sandbox-exec/Seatbelt) enforcing
-  filesystem + network restrictions on arbitrary processes WITHOUT a container; used to sandbox the Claude
-  Code bash tool. Research preview. Verified live on GitHub June 2026.
+comments: The README notes that seccomp filtering is x64/arm64 only and that unix sockets go
+  unrestricted where it is unavailable, so the boundary is weaker on some hosts than the general
+  description implies. Verified 2026-08-13 via the anthropic-experimental/sandbox-runtime README and
+  the GitHub repository metadata.

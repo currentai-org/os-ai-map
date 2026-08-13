@@ -80,7 +80,13 @@ adoption:
   confidence: high
   note: 'PyPI: ~4.58M downloads last month for the e2b package (primary). Vendor reports 1B+ sandboxes
     started, 94% of Fortune 100 as customers; named users incl. Perplexity, Hugging Face, Manus, Groq.
-    Solidly 1M-10M monthly install band.'
+    Solidly 1M-10M monthly install band. Re-read 2026-08-13 and both legs still hold, with the primary
+    signal up. PyPI now reports 5,845,335 downloads in the trailing 30 days for the e2b package - well
+    inside 1M-10M and nowhere near the 10M level-5 floor. Every vendor figure cited above is still on
+    e2b.dev - "94% of Fortune 100 companies", "1b+ started sandboxes" - and it now also publishes "7M+
+    monthly downloads", which is consistent with the PyPI count once the npm SDK is added and lands in
+    the same band. Level 4 and reach 1M-10M unchanged.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://pypistats.org/packages/e2b
     shows: ~4,583,328 downloads last month
@@ -88,6 +94,19 @@ adoption:
   - url: https://e2b.dev/
     shows: 1B+ sandboxes started; named production customers (Perplexity, Hugging Face, Manus, Groq)
     accessed: '2026-06-04'
+  - url: https://pypistats.org/api/packages/e2b/recent
+    shows: '{"last_day":253438,"last_month":5845335,"last_week":1377059} for the e2b package. 5.85M in
+      the trailing 30 days bands at 1M-10M, level 4 on the software adoption scale.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 60e77747f0ff07e0c614bbe9787515c776d3785465ce0a5194b16df97c2550d3
+  - url: https://e2b.dev/
+    shows: 'The stat band still reads "94% of Fortune 100 companies", "1b+ started sandboxes", and adds
+      "7M+ monthly downloads". Named case studies include Perplexity, Hugging Face, Manus, Groq, Rogo,
+      Lindy and Gumloop.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: e114307a0c219a70e6e5265f92bd5b72a95e95af472e71f5b974ed91cd07491e
 capability:
   score: 4
   basis: feature_matrix
@@ -100,7 +119,17 @@ capability:
   note: VM-grade isolation (Firecracker) is the strongest tier in the feature matrix; broad SDK/runtime
     support and proven scale. Below the frontier-definer Firecracker itself (which it builds on), so 4
     not 5. Independent ComputeSDK TTI benchmarks corroborate the sub-second cold-start (~370ms median
-    time-to-interactive, mid-pack of 19 sandbox providers).
+    time-to-interactive, mid-pack of 19 sandbox providers). Re-read 2026-08-13. The feature matrix is
+    unchanged where it matters - e2b.dev still states "Each sandbox is powered by Firecracker, a microVM
+    made to run untrusted workflows", still offers sessions up to 24 hours, and still reports 1b+ started
+    sandboxes. The relation to the anchor was re-derived rather than carried forward - Firecracker is 5
+    and this is 4, so one_below holds, and Firecracker''s capability was re-confirmed the same day. The
+    corroborating benchmark has moved and is recorded here rather than left implied - on the ComputeSDK
+    run of 2026-08-07 E2B posts a 0.66s median against 24 providers, 12th by median, where the 2026-07-09
+    read had it at ~370ms and 7th of 19. Still sub-second, so the recorded cold-start class survives, but
+    the corroboration is weaker than when it was written and the band now rests on isolation strength and
+    scale rather than on speed.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://e2b.dev/
     shows: each sandbox powered by Firecracker microVM; 1B+ sandboxes started
@@ -109,3 +138,17 @@ capability:
     shows: 'ComputeSDK TTI leaderboard (independent, 100 iters/day, 2026-07-09 run): median time-to-interactive
       ~370ms sequential / ~470ms burst @100 concurrent; 7th-fastest of 19 providers'
     accessed: '2026-07-09'
+  - url: https://e2b.dev/
+    shows: '"Each sandbox is powered by Firecracker, a microVM made to run untrusted workflows." Sessions
+      run up to 24 hours, sandboxes expose configurable CPU and RAM, and the stat band reports 1b+ started
+      sandboxes.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: e114307a0c219a70e6e5265f92bd5b72a95e95af472e71f5b974ed91cd07491e
+  - url: https://www.computesdk.com/benchmarks/sandboxes/
+    shows: 'ComputeSDK TTI leaderboard, run of 2026-08-07, now 24 providers. E2B posts a 0.66s median,
+      0.96s P95, 1.02s P99 and 100% success for a composite of 92.1 - 12th by median. The ~370ms/7th-of-19
+      figure cited from the 2026-07-09 run is no longer on the page.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: a93049e6dc408dda2d08cbbce798b369c3378ba12289a3a161fe0609b5f29416

@@ -1,11 +1,10 @@
 name: openai-code-interpreter
 display_name: OpenAI Code Interpreter
 type: software
-description: Closed-source code-execution tool exposed via the Responses API and Assistants API, runs
-  Python (and bash in newer versions) in a fully sandboxed VM with attached files, so the model can compute,
-  analyze data, and iterate on solutions. Picked when teams want a turnkey 'agent can run code' primitive
-  bundled directly with the OpenAI model API rather than wiring up E2B/Modal themselves.
-comments: OpenAI Code Interpreter, a tool (Assistants API, migrating to Responses API) that writes and
-  runs Python in a proprietary OpenAI-managed sandbox; processes files up to 512MB, sessions billed at
-  $0.03/session (1-hour default). Confirmed live June 2026 via OpenAI developer docs. Proprietary; isolation
-  mechanism undisclosed.
+description: Writes and runs Python inside an OpenAI-managed sandbox, exposed as a tool on the Assistants
+  and Responses APIs so a model can compute, analyze attached files, and retry code that fails. Sessions
+  are billed individually and stay active for an hour by default, and attached files are capped at 512
+  MB. OpenAI documents no isolation mechanism and distributes no runtime.
+comments: The same sandbox underlies ChatGPT data analysis, which is the surface the adoption band is
+  attributed to; OpenAI publishes no standalone figure for the tool. Verified 2026-08-13 via the OpenAI
+  Code Interpreter developer documentation.

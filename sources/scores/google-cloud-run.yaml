@@ -18,18 +18,28 @@ openness:
     - managed-only(no self-host)
   confidence: high
   note: Proprietary managed serverless platform; only the underlying gVisor sandbox runtime is OSS, not
-    Cloud Run itself.
+    Cloud Run itself. Re-read 2026-08-13 - cloud.google.com/run still presents Cloud Run as a fully managed
+    Google platform billed only while code runs, with no source release and no self-hostable edition offered,
+    and google/gvisor remains a separately maintained Apache-2.0 repository rather than the Cloud Run
+    control plane.
   raw: license:Proprietary;service:proprietary(Google SaaS);source:closed;isolation-runtime:gVisor(open
     source, github.com/google/gvisor) but the Cloud Run product/control-plane is proprietary;managed-only(no
     self-host)
+  last_verified: '2026-08-13'
   sources:
   - url: https://cloud.google.com/run
     shows: Cloud Run described as fully-managed Google serverless container product (proprietary SaaS)
-    accessed: '2026-06-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: f41bd86fa912bee53e3335a5b3edb117cd78a067931b0b9af50aa3de0b8571c8
+    establishes: [source, license]
   - url: https://github.com/google/gvisor
     shows: gVisor (Cloud Run's isolation runtime) is the open source component, distinct from the closed
       product
-    accessed: '2026-06-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 339661507268dd04b1d14b0ed4f58fc72ca4180285157c49d2256e7aba2de94c
+    establishes: [source]
 adoption:
   level: 5
   reach: '>10M'
@@ -38,12 +48,18 @@ adoption:
   note: 'Google Next ''26 blog (primary, verified verbatim): external active developers and apps on Cloud
     Run doubled YoY, more new customers/apps in 2025 than its first 6 years combined; Replit VP quote:
     >1M live projects hosted on Replit with Cloud Run as primary target. Hyperscaler serverless reach
-    is well into the >10M band.'
+    is well into the >10M band. Re-read 2026-08-13 - both claims are still on the Next ''26 post verbatim,
+    the developer/app doubling and the Replit VP quote about over 1 million live projects. Instrument caveat
+    - the record is labeled usage_volume but Cloud Run publishes no countable artifact any signal model
+    can read, so the band rests on the vendor claim rather than a recomputable count.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://cloud.google.com/blog/products/serverless/whats-new-for-cloud-run-at-next26
     shows: active developers/apps doubled YoY; more new customers in 2025 than first 6 years combined;
       Replit >1M live projects on Cloud Run
-    accessed: '2026-06-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 50db99cb77a285efa78ba6edbb4706c8f9f5202309e9e7846bf649eeaa28eadd
 capability:
   score: 4
   basis: feature_matrix
@@ -56,16 +72,28 @@ capability:
     Next '26, 'coming soon') adds first-class AI-code-execution via a `sandbox do --` command. gVisor
     isolation is process/syscall-level rather than full microVM (Sprites/Northflank), so not the top isolation
     tier. Strong but not the single frontier-definer. Independent ComputeSDK TTI benchmarks corroborate
-    the sub-second cold-start (~430ms median, 10th of 19 sandbox providers).
+    the sub-second cold-start (~430ms median, 10th of 19 sandbox providers). Re-read 2026-08-13 - the Next
+    '26 post still describes the built-in `sandbox` tool as coming soon and adds Cloud Run instances in
+    preview for long-running background agents, and cloud.google.com/run still shows any-container deploy,
+    scale-to-zero and 20+ regions. The ComputeSDK leaderboard has been rerun since (2026-08-07, 24 providers)
+    and now places Cloud Run at 0.65s median time-to-interactive, 13th by composite score, still sub-second
+    and still mid-field.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://cloud.google.com/blog/products/serverless/whats-new-for-cloud-run-at-next26
     shows: built-in `sandbox` tool for agents to run AI-generated code in ephemeral isolated envs; container
       model, autoscale 0->thousands
-    accessed: '2026-06-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 50db99cb77a285efa78ba6edbb4706c8f9f5202309e9e7846bf649eeaa28eadd
   - url: https://cloud.google.com/run
     shows: OCI container deploy, scale-to-zero, broad runtime support
-    accessed: '2026-06-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: f41bd86fa912bee53e3335a5b3edb117cd78a067931b0b9af50aa3de0b8571c8
   - url: https://www.computesdk.com/benchmarks/sandboxes/
-    shows: 'ComputeSDK TTI leaderboard (independent, 100 iters/day, 2026-07-09 run): median time-to-interactive
-      ~430ms sequential / ~510ms burst @100 concurrent; 10th of 19 providers'
-    accessed: '2026-07-09'
+    shows: 'ComputeSDK TTI leaderboard (independent, 2026-08-07 run, 24 providers): Cloud Run median time-to-interactive
+      0.65s, P95 1.05s, P99 1.15s, 100% success; 13th by composite score'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 639836bfee0970c31367878466528cb5290b9e4c85f1bea8d19affbc9361bc58

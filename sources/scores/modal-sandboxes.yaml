@@ -23,10 +23,15 @@ openness:
   note: 'Closed managed service. The client SDK is open, but the execution substrate is a proprietary
     managed cloud with no self-host; an open client over a closed runtime is not open_core. Corrects a
     prior mis-calibration that grouped Modal with the genuinely self-hostable E2B (E2B ships self-hostable
-    infra; Modal does not).'
+    infra; Modal does not). Re-read 2026-08-13 - the pricing page still sells only metered access to
+    Modal''s own cloud across Starter, Team and Enterprise plans, with Sandbox compute billed per core-
+    and GiB-second and no self-hosted, on-premises or source-available option offered at any tier; the
+    Sandboxes guide still drives everything through Modal SDKs against that cloud. Source and license
+    both read as recorded.'
   raw: license:Proprietary;source:closed;service:proprietary Modal managed cloud (no self-host of the gVisor
     execution plane);open-part:client SDK only (modal Python/JS client libraries);pricing:pay-as-you-go
     usage, free starter credits
+  last_verified: '2026-08-13'
   sources:
   - url: https://modal.com/pricing
     shows: Modal is a managed proprietary cloud platform, pay-per-CPU-cycle, $30/mo free credits
@@ -34,17 +39,57 @@ openness:
   - url: https://modal.com/docs/guide/sandbox
     shows: Sandboxes = secure containers for untrusted agent code, driven via Modal SDK
     accessed: '2026-06-04'
+  - url: https://modal.com/pricing
+    shows: 'Three plans - Starter ($0 + compute, $30/mo free credits), Team ($250 + compute) and
+      Enterprise (custom) - all metered against Modal''s own cloud, with a separate Sandbox and
+      Notebooks compute rate per core-second and GiB-second. Nothing on the page offers a self-hosted,
+      on-premises or source-available deployment.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: e5534b204d7123a8e32b35614459209769e6131bcc52ba113c8ac93a0369d876
+    establishes:
+    - source
+    - license
+  - url: https://modal.com/docs/guide/sandbox
+    shows: 'Redirects to /docs/guide/sandboxes. Sandboxes are still "secure containers for executing
+      untrusted user or agent code on Modal", created only through the Python, JavaScript or Go SDK
+      against Modal''s service; no runtime is distributed to run elsewhere.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: d55d885d0e1f6088bc4f133942161b9e9605aaff32cb1375d3f6f6d543fd38f3
+    establishes:
+    - source
 adoption:
   level: 3
   signal_type: reported_traction
   confidence: low
   note: No disclosed Modal Sandboxes user/usage count on primary pages; Modal is a well-known managed
     AI-compute platform with broad developer use and a documented free tier. Placed at 3 on reported multi-customer
-    traction, not a measured usage_volume figure (kept conservative absent a hard number).
+    traction, not a measured usage_volume figure (kept conservative absent a hard number). Re-read
+    2026-08-13 - still no Sandboxes user, session or job count anywhere on the docs or pricing pages,
+    and no free-tier signup number. The nearest figure Modal publishes is platform-wide rather than
+    per-product - its sandbox comparison page claims Modal "powers infrastructure for over 10,000
+    teams" and names Lovable and Quora as production users running untrusted code - which is a
+    reported-traction claim of exactly the kind already banded, not a count of Sandboxes use. The
+    abstention on reach and the level 3 both stand.
+  last_verified: '2026-08-13'
   sources:
   - url: https://modal.com/docs/guide/sandbox
     shows: documented production sandbox feature on a widely-used managed platform
     accessed: '2026-06-04'
+  - url: https://modal.com/resources/best-code-execution-sandboxes-ai-agents
+    shows: '''Modal powers infrastructure for over 10,000 teams, with production users like Lovable and
+      Quora running millions of untrusted code snippets daily''. No Sandboxes-specific user or usage
+      count is given.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: eb0fb2ec1e5f12aca248e6389998745b0ba48a21edfd9b211bd1474d98eea34e
+  - url: https://modal.com/docs/guide/sandbox
+    shows: Sandboxes guide publishes lifecycle, image and timeout documentation and no usage, session
+      or customer count.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: d55d885d0e1f6088bc4f133942161b9e9605aaff32cb1375d3f6f6d543fd38f3
 capability:
   score: 4
   basis: feature_matrix
@@ -59,7 +104,16 @@ capability:
   note: 'Strong, purpose-built agent sandbox: gVisor isolation + arbitrary images + high concurrency.
     Sits just below the Firecracker-microVM frontier (Lambda/Vercel) on isolation strength; scored 4,
     level with the Ray/Ollama capability anchors. Independent ComputeSDK TTI benchmarks measure ~470ms
-    median cold-start (13th of 19 sandbox providers), consistent with the fast-container-stack claim.'
+    median cold-start (13th of 19 sandbox providers), consistent with the fast-container-stack claim.
+    Re-read 2026-08-13 - the Sandboxes guide still documents arbitrary custom images, named lookup and
+    a 5-minute default lifetime extendable to 24 hours, and Modal''s own comparison page still states
+    gVisor isolation and 50,000+ concurrent sessions. The ComputeSDK leaderboard has moved on from the
+    run cited above - its 2026-08-07 run covers 24 providers and puts Modal at a 0.76s median TTI
+    (0.82s P95, composite 92.1), 14th by median rather than the ~470ms/13th-of-19 recorded here. Slower
+    in absolute terms and unchanged in placement - still mid-field, still short of the sub-0.3s leaders
+    and well clear of the multi-second tail. The comparison to the ray anchor (capability 4, confirmed
+    2026-08-13) is unchanged, so the band holds at 4.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://modal.com/docs/guide/sandbox
     shows: sandbox lifecycle, custom images, timeouts up to 24h, untrusted-code execution
@@ -71,3 +125,21 @@ capability:
     shows: 'ComputeSDK TTI leaderboard (independent, 100 iters/day, 2026-07-09 run): median time-to-interactive
       ~470ms sequential / ~570ms burst @100 concurrent; 13th of 19 providers'
     accessed: '2026-07-09'
+  - url: https://modal.com/docs/guide/sandbox
+    shows: Sandbox lifecycle through the SDK, arbitrary custom images, named/ID lookup, 5-minute
+      default timeout extendable to 24 hours, untrusted-code framing.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: d55d885d0e1f6088bc4f133942161b9e9605aaff32cb1375d3f6f6d543fd38f3
+  - url: https://modal.com/resources/best-code-execution-sandboxes-ai-agents
+    shows: 'Still states gVisor container isolation for Modal against microVM competitors, and "can
+      scale to 50,000+ concurrent sessions".'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: eb0fb2ec1e5f12aca248e6389998745b0ba48a21edfd9b211bd1474d98eea34e
+  - url: https://www.computesdk.com/benchmarks/sandboxes/
+    shows: 'ComputeSDK TTI leaderboard, run of 2026-08-07 across 24 providers - Modal median 0.76s, P95
+      0.82s, P99 0.85s, 100% success, composite 92.1; 14th of 24 by median.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: cbb96170184f9c48e5c5f0a9834e15ab2a87a083132581c8a632f0cdc6e42e85

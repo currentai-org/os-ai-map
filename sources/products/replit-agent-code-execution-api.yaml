@@ -1,13 +1,11 @@
 name: replit-agent-code-execution-api
 display_name: Replit Agent / Code Execution API
 type: software
-description: Closed-source cloud dev platform with Nix-based environments supporting 30,000+ OS packages,
-  exposing a Code Execution API that runs untrusted/AI-generated code in sandboxed VMs. Picked when teams
-  want a tightly integrated build+run+deploy story (Replit Agent 4 leans heavily on this) rather than
-  an unbundled SDK. Raised $400M Series D in March 2026 at a $9B valuation; 50M+ users.
-comments: 'Replit Code Execution API for AI agents (replit.com/blog/ai-agents-code-execution), a stateless
-  sandboxed API for running untrusted (primarily Python) code, isolated via omegajail (Replit''s unprivileged
-  container sandbox) on Autoscale Deployments, ~100ms start. Confirmed live June 2026; `replit-code-exec`
-  PyPI client exists. Proprietary service. NOTE: ''Replit Agent'' is an autonomous coding agent (orchestration),
-  but the deployment-relevant artifact here is the code-execution sandbox, scored as deployment per the
-  recipe litmus.'
+description: Runs untrusted and model-generated code, primarily Python, through a stateless API on Replit's
+  cloud development platform. Each call executes inside an ephemeral unprivileged container created on
+  Replit Autoscale Deployments and sandboxed by omegajail, returning whatever the code prints. The capability
+  now sits inside the Replit Agent surface rather than being consumed through a standalone client.
+comments: The public self-serve client was archived read-only in 2025, so this entry is verified against
+  the archived repository rather than a maintained one, and the Replit blog posts behind it now refuse
+  automated fetches. The deployment-relevant artifact is the code-execution sandbox, not the agent that
+  calls it. Verified 2026-08-13 via the replit/replit-code-exec repository and its README.

@@ -19,30 +19,46 @@ openness:
       detail: Firecracker itself is OSS/AWS, but the Sprites product/orchestration is proprietary
   confidence: high
   note: Proprietary managed sandbox SaaS; no open source runtime published (only client SDKs). Underlying
-    Firecracker is OSS but the product is not.
+    Firecracker is OSS but the product is not. Re-read 2026-08-13 - sprites.dev now redirects to fly.io/sprites,
+    which still ships only client surfaces (a CLI installer, a REST API, and JavaScript, Go, Elixir and
+    Python SDKs) against a hosted Fly.io control plane, with metered CPU, memory and storage pricing and
+    no self-hostable runtime or source release.
   raw: license:Proprietary;service:proprietary(Fly.io managed);source:closed;clients:CLI/REST/JS/Go SDKs
     (client libs only, no open runtime);isolation:Firecracker(Firecracker itself is OSS/AWS, but the Sprites
     product/orchestration is proprietary)
+  last_verified: '2026-08-13'
   sources:
   - url: https://sprites.dev/
     shows: Sprites = hardware-isolated Firecracker execution env for arbitrary code; managed service,
       CLI/REST/JS/Go clients; no self-hostable open runtime
-    accessed: '2026-06-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 76614642c9a97b9d25c56253cdc6446269d1469303a64fc78b49e21e9109b0af
+    establishes: [source, license]
 adoption:
   level: 1
   signal_type: reported_traction
   confidence: low
   note: Launched Jan 2026 (~5 months at scoring time) as Fly.io's answer to E2B. No disclosed user/customer/usage
     counts on the product page or launch coverage; positioned for AI coding-agent sessions (Claude Code/Codex).
-    Early-stage; placed at 1 on reported traction with low confidence pending real numbers.
+    Early-stage; placed at 1 on reported traction with low confidence pending real numbers. Re-read 2026-08-13
+    - the product page (now fly.io/sprites) still publishes no user, customer, session or sprite count of
+    any kind; the only numbers on it are the per-CPU-hour, per-GB-hour and per-GB-hour-storage prices, which
+    are unchanged at $0.07/CPU-hr. The abstention from a count is re-confirmed, so the record stays
+    reported_traction with no reach word.
+  last_verified: '2026-08-13'
   sources:
   - url: https://sprites.dev/
     shows: product live, usage-based pricing ($0.07/CPU-hr); no user/customer figures disclosed
-    accessed: '2026-06-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 76614642c9a97b9d25c56253cdc6446269d1469303a64fc78b49e21e9109b0af
   - url: https://simonwillison.net/2026/Jan/9/sprites-dev/
     shows: Sprites launched early Jan 2026 as Fly.io's E2B competitor (corroborating recency, not a usage
       figure)
-    accessed: '2026-06-04'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: a5c79a56fa16fd2dce61da68579c3473947de20d4ccfe0a698c13b8a23cbb7c9
 capability:
   score: 4
   basis: feature_matrix
@@ -53,8 +69,26 @@ capability:
   confidence: medium
   note: Top-tier microVM isolation plus persistent stateful sandboxes (explicitly anti-ephemeral) is a
     strong, differentiated feature set. Not a 5 only because it is brand-new with unproven scale vs incumbents;
-    isolation + persistence are best-in-class.
+    isolation + persistence are best-in-class. Re-read 2026-08-13 - the product page moved to fly.io/sprites
+    and was rewritten around persistence and checkpointing; it now describes tiered storage backed by object
+    storage, a 100 GB POSIX volume, live copy-on-write checkpoints taken automatically on idle and shutdown,
+    per-sprite URLs and an outbound API gateway, but it no longer states the isolation mechanism or the
+    1-12s cold and sub-1s restore latencies the band was written against. Those were re-derived instead
+    from the vendor Sprites overview, which states that each Sprite is a Firecracker microVM with its own
+    kernel and filesystem, isolated in hardware from every other Sprite, and that it spins up in seconds.
+    Vendor prose no longer publishes a bounded cold-start figure.
+  last_verified: '2026-08-13'
   sources:
   - url: https://sprites.dev/
-    shows: Firecracker isolation, persistent ext4 filesystem, sub-1s restore, arbitrary Linux code
-    accessed: '2026-06-04'
+    shows: persistent 100 GB ext4/POSIX volume surviving sleep and machine moves, live copy-on-write checkpoint
+      and restore, arbitrary Linux code, usage-metered pricing; no isolation mechanism or latency figure
+      stated
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 76614642c9a97b9d25c56253cdc6446269d1469303a64fc78b49e21e9109b0af
+  - url: https://fly.io/agents-need-a-computer/
+    shows: each Sprite is a Firecracker microVM with its own kernel and durable Linux filesystem, isolated
+      in hardware from every other Sprite, spinning up in seconds and sleeping when idle
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 0244a2dd2997a18146c0e9e35a431c2212d77840040698944ae2c2ba7b3e893f
