@@ -28,9 +28,17 @@ adoption:
   reach: '>10M'
   signal_type: usage_volume
   confidence: high
-  note: Underpins Google Cloud Run ('Powered by gVisor' on gvisor.dev) and is the sandbox layer for GKE
-    Sandbox / App Engine / Cloud Functions, billions of container executions across Google Cloud. Reach
-    far exceeds >10M end-equivalent. (18.5k stars corroborate only.)
+  note: 'Underpins Google Cloud Run (''Powered by gVisor'' on gvisor.dev) and is the sandbox layer for GKE
+    Sandbox / App Engine / Cloud Functions, billions of container executions across Google Cloud. Reach far
+    exceeds >10M end-equivalent. (18.5k stars corroborate only.) ARTIFACT DELIBERATELY NOT DECLARED, checked
+    2026-08-13. A PyPI package named `gvisor` exists and is genuinely this project''s, so declaring it would
+    satisfy check_instrument and would be wrong. gVisor is a Go application-kernel shipped as a binary (runsc)
+    and consumed through container runtimes; the PyPI package sees 223 downloads a month. Banding on it would
+    take this record from 5 to 1 on a channel almost nobody uses. That is the under-coverage rule in
+    docs/guides/adoption.md - if the declared artifact is not the product''s primary distribution channel,
+    banding on it is a substitution rather than a measurement - applied before the mistake rather than after.
+    The band stands on the evidence already cited here; what this record needs is a route to its real channel,
+    not a convenient one.'
   sources:
   - url: https://gvisor.dev/docs/
     shows: '''Powered by gVisor'' linking to Google Cloud Run as a production user'
