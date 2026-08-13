@@ -308,6 +308,42 @@ inventing the number, so the axis abstains instead.
 Every real claim already cites a source. The work is not finding evidence; it is re-reading
 what is cited. And the re-read surface is 1106 fetches, not 1370, because sources are shared.
 
+### A null axis can earn a `last_verified`, and should
+
+Settled 2026-08-13, because practice had diverged from silence: 9 of the 46 null axes carried
+a date and 37 did not, with nothing saying which was right.
+
+The table above excludes nulls from "real claims to verify", and that framing is correct about
+one thing and misleading about another. A null is not a **claim** — nobody asserted a level. But
+it *is* a **finding**: somebody went and looked, and the vendor publishes nothing. That finding
+can be wrong, it can go stale, and it is exactly as re-checkable as any other:
+
+> Re-read the page. If a figure has appeared, the abstention is over and the axis gets a band.
+> If it has not, the abstention is re-confirmed and earns the date, the same way an unchanged
+> value does.
+
+This follows from a rule already stated above — *"a re-check that changes nothing still earns
+the date"* — and refusing to date nulls would contradict it, treating "the answer is none" as
+the one answer that cannot be confirmed.
+
+**It is also load-bearing for coverage.** 43 products carry at least one null axis. If a null
+can never be dated, none of those 43 can ever be fully verified, however carefully anyone reads
+them — and the unreachable set is not random. It is almost entirely the hosted features sold
+inside a larger platform, which is a real and interesting part of the map, not a rounding error.
+
+Two things a dated abstention must still do:
+
+- **Cite the page that publishes nothing**, with an `accessed` date and a `content_sha256`, so
+  the absence decays like any other claim. An abstention with no source is not verifiable; it
+  is just an empty field.
+- **Say in the note what was looked for and not found** — "no jobs run, customers tuning or
+  developer count is published" — so a later reader can tell a searched absence from an
+  unexamined one.
+
+What this does NOT license is abstaining to avoid work. `signal_routing.yaml`'s rule still
+governs which way the doubt runs: abstain rather than substitute, but never abstain rather than
+measure. If a figure exists and is countable, the axis owes a band.
+
 **None of the 6 satisfied the invariant as first written**, which is worth recording because it
 is the clearest evidence the invariant does something. `establishes` did not exist when those
 dates were set, and beyond that the 2026-07-28 pass on the four model flagships re-read only
