@@ -21,6 +21,7 @@ openness:
     free_text:
     - ranking methodology + crowd-vote dataset not fully open
   confidence: medium
+  last_verified: '2026-08-13'
   note: 'Scored as the hosted platform: the live evaluation product, its vote stream and the current ranking
     pipeline are closed, while substantial OSS heritage (FastChat) and an OSS automatic-eval companion (Arena-Hard-Auto)
     exist. The OSS code is stale relative to the operating platform, which is what makes this source_available
@@ -28,7 +29,10 @@ openness:
     from open_core on 2026-07-30. In this ladder open_core means an OSI core with functionality withheld
     for a paid tier, and there is no open core here, only an open periphery. A repo that exists while the
     runtime does not ship is source:partial, which the ladder scores 2/source_available. The score itself
-    was already 2.'
+    was already 2. Re-read 2026-08-13 and unchanged. FastChat still says it powers the arena and its newest
+    release is still v0.2.36 from February 2024, so the staleness the class rests on has widened rather
+    than closed. The hosted platform''s canonical domain is now arena.ai, with lmarena.ai redirecting
+    to it, and the ranking pipeline behind it still does not ship.'
   raw: platform:closed(hosted arena.ai, proprietary live leaderboard + private vote data); source:partial(FastChat
     is a real arena implementation but stale relative to the operating platform; the current ranking pipeline
     does not ship); reference-code:FastChat Apache-2.0 (powers Chatbot Arena but stale, last release Feb
@@ -46,15 +50,39 @@ openness:
     shows: hosted 'Official AI Ranking & LLM Leaderboard' with Battle Mode; conversations disclosed to
       providers (proprietary platform)
     accessed: '2026-06-04'
+  - url: https://raw.githubusercontent.com/lm-sys/FastChat/main/README.md
+    shows: 'README still opens ''FastChat powers Chatbot Arena (lmarena.ai), serving over 10 million chat
+      requests for 70+ LLMs'' and documents launching an arena instance locally. Apache-2.0. The repo''s
+      newest release is v0.2.36, published 2024-02-11, so the published arena implementation is more than
+      two years behind the operating platform: a real implementation, not the running one.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: fba2bace33da09a922bfb8f2f49463f958c7cecfdb77a98a07c04e758a09b694
+    establishes:
+    - source
+  - url: https://arena.ai/
+    shows: 'Re-read 2026-08-13: still the hosted ranking and battle platform, and now the canonical domain
+      - lmarena.ai 301-redirects here. It offers no repository, no self-hostable ranking pipeline and
+      no license to the evaluation code, and states that conversations are disclosed to the relevant AI
+      providers.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 3961d21eeadc354e9fb8622a2371ea206f9a6b30f509892498a48f6fe0b443e0
+    establishes:
+    - source
 adoption:
   level: 4
   reach: 1M-10M
   signal_type: usage_volume
   confidence: medium
+  last_verified: '2026-08-13'
   note: FastChat README (primary) states Chatbot Arena has served 'over 10 million chat requests for 70+
     LLMs'; Arena Elo is the most-cited human-preference leaderboard in frontier model releases (LMArena
     Elo appears across vendor launch posts). Headline = the 10M+ chat-request figure (primary, FastChat
-    repo). Banded 1M-10M conservatively on request volume; could be higher cumulatively.
+    repo). Banded 1M-10M conservatively on request volume; could be higher cumulatively. Re-read 2026-08-13
+    - the FastChat README still carries the same 10M chat requests and 1.5M human votes figures, unchanged
+    since 2024, and the platform is still operating at arena.ai. The band is confirmed, and the figure
+    behind it is a frozen one, which is why it stays banded conservatively.
   sources:
   - url: https://github.com/lm-sys/FastChat
     shows: '''serving over 10 million chat requests for 70+ LLMs'''
@@ -62,6 +90,19 @@ adoption:
   - url: https://arena.ai/
     shows: hosted live leaderboard / battle platform in active operation June 2026
     accessed: '2026-06-04'
+  - url: https://raw.githubusercontent.com/lm-sys/FastChat/main/README.md
+    shows: '''FastChat powers Chatbot Arena (lmarena.ai), serving over 10 million chat requests for 70+
+      LLMs'' and ''Chatbot Arena has collected over 1.5M human votes from side-by-side LLM battles''.
+      39.5k stars on the repo.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: fba2bace33da09a922bfb8f2f49463f958c7cecfdb77a98a07c04e758a09b694
+  - url: https://arena.ai/
+    shows: hosted live leaderboard and battle platform still in active operation 2026-08-13; no standalone
+      user or traffic figure is published on it.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 3961d21eeadc354e9fb8622a2371ea206f9a6b30f509892498a48f6fe0b443e0
 capability:
   score: 4
   basis: feature_matrix
@@ -70,9 +111,12 @@ capability:
     (preference-based, not task-execution); reproducibility: Arena-Hard-Auto provides an automatic-judge
     approximation'
   confidence: medium
+  last_verified: '2026-08-13'
   note: Reference platform for human-preference evaluation and the de-facto Elo standard cited everywhere;
     not a 5 because as eval CODE it is largely closed/hosted and narrower than execution-based harnesses
-    on agentic/task coverage. Capability assessed on its evaluation methodology breadth.
+    on agentic/task coverage. Capability assessed on its evaluation methodology breadth. Feature matrix
+    re-read 2026-08-13 and unchanged - Arena-Hard-Auto v2.0 still ships 500 hard queries plus 250 creative
+    writing ones with GPT-4.1 and Gemini-2.5 judges, and the hosted arena still runs blind pairwise battles.
   sources:
   - url: https://github.com/lmarena/arena-hard-auto
     shows: 500 SWE/math queries + 250 creative prompts, GPT-4.1/Gemini-2.5 judges, highest correlation
@@ -81,3 +125,11 @@ capability:
   - url: https://arena.ai/
     shows: battle-mode pairwise comparison across many models
     accessed: '2026-06-04'
+  - url: https://raw.githubusercontent.com/lmarena/arena-hard-auto/main/README.md
+    shows: '''V2.0 contains 500 fresh, challenging real-world user queries ... and 250 creative writing
+      queries sourced from Chatbot Arena. We employs automatic judges, GPT-4.1 and Gemini-2.5''; the README
+      also claims the ''highest correlation and separability to LMArena ... among popular open-ended LLM
+      benchmarks''.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: f0563c344399179df0fb7abbb2503762b0446584ace78039f1f792058e0ab0dc

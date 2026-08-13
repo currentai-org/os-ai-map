@@ -15,12 +15,17 @@ openness:
     free_text:
     - eval engine + proprietary evaluators not self-hostable
   confidence: medium
+  last_verified: '2026-08-13'
   note: The open-source SDK is a thin client to a closed hosted evaluation backend; the core scoring engine
     and the managed Lynx/Glider evaluators are proprietary and not self-hostable. License text is not displayed
     on the SDK repo page. Class corrected from open_core on 2026-07-30. In this ladder open_core means an
     OSI core with functionality withheld for a paid tier, and there is no open core here, only an open periphery.
     A repo that exists while the runtime does not ship is source:partial, which the ladder scores 2/source_available.
-    The score itself was already 2.
+    The score itself was already 2. Re-read 2026-08-13 and unchanged. The SDK README still carries the
+    comment 'This evaluator runs remotely on Patronus infrastructure', the repo still declares no license
+    at all (GitHub's license field is null), it is at 8 stars and has not been pushed since 2026-01-09,
+    and the docs still describe Lynx and Glider as evaluators the hosted platform runs. No self-hostable
+    engine has appeared.
   raw: platform:closed(hosted SaaS; remote Judge/Lynx/Glider evaluators run on Patronus infrastructure);source:partial(patronus-py
     is a client wiring to the hosted API, not the engine);client-SDKs:open(patronus-py public on GitHub,
     v0.1.25, but only 7 stars and wires to the hosted API);eval engine + proprietary evaluators not self-hostable
@@ -33,18 +38,60 @@ openness:
     shows: 'hosted platform: built-in Lynx/Glider evaluators, experiments, production monitoring, SDK
       access to cloud service'
     accessed: '2026-06-04'
+  - url: https://raw.githubusercontent.com/patronus-ai/patronus-py/main/README.md
+    shows: 'SDK README''s own example carries the comment ''# This evaluator runs remotely on Patronus
+      infrastructure.'' - the published code wires to the hosted engine rather than being it.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 636a0ea4f152a29c35f5b00282d27f714a16239a7d2452e33136f9ba97f5d254
+    establishes:
+    - source
+  - url: https://api.github.com/repos/patronus-ai/patronus-py
+    shows: stargazers_count = 8, pushed_at 2026-01-09, and the repo's `license` field is null - GitHub
+      detects no license file on the SDK at all.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 4d6878b7a74e8c2501ca2c48d3ab4ea05b883f23053bb4b2197f0fd4465e5eff
+    establishes:
+    - source
+  - url: https://docs.patronus.ai/docs
+    shows: 'Re-read 2026-08-13: still an end-to-end hosted system for evaluating, monitoring and improving
+      performance, with Lynx and Glider as in-house evaluators, experiments, real-time production monitoring
+      and Python/TypeScript SDKs into the cloud service. No self-hostable or open-source evaluation engine
+      is offered anywhere in it.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 757070b285359722c692ea3a97d1b9447e0603af24f72cbe73d131587e65e13e
+    establishes:
+    - source
 adoption:
   level: null
   reach: null
   signal_type: unknown
   confidence: low
+  last_verified: '2026-08-13'
   note: No disclosed user/customer counts or usage volume found on the docs/homepage this run; open source
     SDK has only 7 GitHub stars (stars_fallback would cap at hobbyist and is not an honest signal for
-    a hosted platform). Declining to assign a level rather than infer from marketing.
+    a hosted platform). Declining to assign a level rather than infer from marketing. Re-read 2026-08-13
+    - looked on the docs for a customer count, an evaluation-run count or a seat count and found none.
+    The docs name three case studies (Nova AI, Etsy, Weaviate) and attach no figures to them. The SDK
+    is now at 8 stars. The abstention is re-confirmed rather than lifted.
   sources:
   - url: https://github.com/patronus-ai/patronus-py
     shows: 7 stars on the public SDK (no honest usage figure for the hosted platform)
     accessed: '2026-06-04'
+  - url: https://docs.patronus.ai/docs
+    shows: 'Re-read 2026-08-13: no customer count, no usage volume and no seat count published. Three
+      named case studies (Nova AI, Etsy, Weaviate) carry no quantitative adoption data.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 757070b285359722c692ea3a97d1b9447e0603af24f72cbe73d131587e65e13e
+  - url: https://api.github.com/repos/patronus-ai/patronus-py
+    shows: stargazers_count = 8 on the public SDK, which is not an honest usage figure for the hosted
+      platform
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 4d6878b7a74e8c2501ca2c48d3ab4ea05b883f23053bb4b2197f0fd4465e5eff
 capability:
   score: 3
   basis: feature_matrix
@@ -53,10 +100,21 @@ capability:
     proprietary evaluators: Lynx (hallucination), Glider; reproducibility: hosted/standardized but not
     independently reproducible (closed engine)'
   confidence: medium
+  last_verified: '2026-08-13'
   note: Solid, broad commercial eval feature set (evaluators + experiments + monitoring + agent eval)
     but not frontier-defining within the category and the closed backend limits reproducibility. Mid-tier
-    on the feature matrix.
+    on the feature matrix. Feature matrix re-read 2026-08-13 and unchanged. No `relative_to` is recorded
+    because the note names no peer - 'mid-tier' is a position in the category rather than a comparison
+    to a product.
   sources:
   - url: https://docs.patronus.ai/docs
     shows: Lynx/Glider evaluators, RAG/agent/NLP/OWASP metrics, experiments, red-teaming, monitoring
     accessed: '2026-06-04'
+  - url: https://docs.patronus.ai/docs
+    shows: 'Re-read 2026-08-13: Lynx and Glider in-house evaluators plus custom ones, experiments for
+      A/B testing, real-time production monitoring through tracing and alerts, and Python/TypeScript SDKs.
+      Agent evaluation and Percival still present. Nothing independently reproducible, the engine being
+      closed.'
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 757070b285359722c692ea3a97d1b9447e0603af24f72cbe73d131587e65e13e

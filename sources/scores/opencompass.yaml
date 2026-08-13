@@ -14,32 +14,81 @@ openness:
     free_text:
     - no feature-gated core
   confidence: high
-  note: Apache-2.0, fully public; OSI -> open_source.
+  last_verified: '2026-08-13'
+  note: Apache-2.0, fully public; OSI -> open_source. Re-read 2026-08-13 - the license endpoint still
+    reports Apache-2.0 and the README still installs and runs the whole platform locally with no paid
+    tier.
   raw: license:Apache-2.0(OSI);source:public(GitHub);no feature-gated core;core-gated:ungated
   sources:
   - url: https://github.com/open-compass/opencompass
     shows: Apache-2.0 license, public source, v0.5.2 (Feb 2026)
     accessed: '2026-06-04'
+  - url: https://api.github.com/repos/open-compass/opencompass/license
+    shows: GitHub's license endpoint reports spdx_id Apache-2.0 for open-compass/opencompass and returns
+      the Apache-2.0 text as the LICENSE body.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 4c98cbd9e68d93f3b5ad7b08688d170d9f10d2f02578441432ad6e439a12610d
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/open-compass/opencompass/main/README.md
+    shows: README installs the platform with `pip install -U opencompass` or editable from a clone and
+      runs evaluations locally against local weights or model APIs; all dataset and model configs ship
+      inside the package. CompassRank and CompassHub are free public leaderboard and dataset sites beside
+      it. No pricing, enterprise edition, paid tier or license key appears in the README.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 9c9258560278da5596691646e561998a38f663b67ec448a34ada47a5f2b4119c
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 3
   signal_type: reported_traction
   confidence: medium
+  last_verified: '2026-08-13'
   note: Widely used eval framework, especially in the China/HF ecosystem; 7.1k GitHub stars and broad
     dataset+backend coverage. No clean PyPI/download headline located this run; level 3 on reported_traction
-    (framework distribution + star footprint), not on stars alone past the cap.
+    (framework distribution + star footprint), not on stars alone past the cap. Re-read 2026-08-13 - 7,299
+    stars and 837 forks, still actively pushed. A PyPI package `opencompass` does exist and is genuinely
+    this project's, and it is deliberately NOT declared as an artifact - it sees 5,728 downloads a month
+    against a project whose documented path is a git clone and a config tree, so banding on it would drop
+    this record to level 1 on a minority channel. Flagged for a ruling rather than declared here.
   sources:
   - url: https://github.com/open-compass/opencompass
     shows: 7.1k stars; 100+ datasets, multi-backend eval framework
     accessed: '2026-06-04'
+  - url: https://api.github.com/repos/open-compass/opencompass
+    shows: stargazers_count = 7,299, forks 837, pushed_at 2026-08-12, license Apache-2.0
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 1f0dfda7086a66d4dd6a83f1c4e1ebefcc6745b61883877e75c76787dc16e6a7
+  - url: https://raw.githubusercontent.com/open-compass/opencompass/main/README.md
+    shows: README still describes 100+ supported datasets and the CompassRank public leaderboards that
+      carry the project's reported traction.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 9c9258560278da5596691646e561998a38f663b67ec448a34ada47a5f2b4119c
 capability:
   score: 4
   basis: feature_matrix
   value: 100+ datasets (70+ with ~400k questions); 20+ HF models pre-supported + OpenAI/Gemini/Claude
     API backends; broad multi-task coverage and standardized reporting
   confidence: medium
+  relative_to: lm-evaluation-harness
+  relation: one_below
+  last_verified: '2026-08-13'
   note: Very broad multi-benchmark coverage and backend breadth -- just below lm-eval as the standardization
-    reference; strong but not the single de-facto global standard.
+    reference; strong but not the single de-facto global standard. Feature matrix re-read 2026-08-13 and
+    unchanged - the README still claims 100+ datasets and lists HF, LMDeploy, vLLM and API backends as
+    install extras. The comparison the note already made to lm-eval is now recorded structurally.
   sources:
   - url: https://github.com/open-compass/opencompass
     shows: 100+ datasets, 20+ HF + API model backends
     accessed: '2026-06-04'
+  - url: https://raw.githubusercontent.com/open-compass/opencompass/main/README.md
+    shows: 100+ supported datasets; model backends offered as install extras (`opencompass[full]`, `[lmdeploy]`,
+      `[vllm]`, `[api]`); subjective and objective scoring modes documented.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 9c9258560278da5596691646e561998a38f663b67ec448a34ada47a5f2b4119c

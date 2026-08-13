@@ -17,7 +17,11 @@ openness:
     free_text:
     - no gated core
   confidence: high
+  last_verified: '2026-08-13'
   note: Fully OSI (Apache-2.0); framework, standardized data formats, web UI, and leaderboards all public.
+    Re-read 2026-08-13 - the license endpoint still reports Apache-2.0 and the README still documents
+    reproducing every published leaderboard from the framework itself. HELM entered maintenance mode on
+    2026-06-01, which slows the code without withdrawing or gating any of it.
   raw: license:Apache-2.0(OSI);source:public(framework + standardized datasets + web UI + leaderboard code);governance:Stanford
     CRFM(academic); no gated core;core-gated:ungated
   sources:
@@ -25,16 +29,40 @@ openness:
     shows: Apache-2.0 license; holistic eval framework with standardized datasets, web UI, leaderboards;
       v0.5.16; 2.8k stars
     accessed: '2026-06-04'
+  - url: https://api.github.com/repos/stanford-crfm/helm/license
+    shows: GitHub's license endpoint reports spdx_id Apache-2.0 for stanford-crfm/helm and returns the
+      Apache-2.0 text as the LICENSE body.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 5cfe39272d6f06a2ce38e0a41f119b99e0fc77c9f548b3347cabab9aa55bac07
+    establishes:
+    - license
+  - url: https://raw.githubusercontent.com/stanford-crfm/helm/main/README.md
+    shows: README describes HELM as 'an open source Python framework created by the Center for Research
+      on Foundation Models (CRFM) at Stanford', ships the web leaderboard UI in the same repo, and documents
+      reproducing the published leaderboards from the framework. It carries a maintenance-mode note dated
+      2026-06-01 and no pricing, paid tier, enterprise edition or license key.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 465390a907127138096869b49fd79c817392f5404d23d98161d881f2e408a303
+    establishes:
+    - source
+    - core-gated
 adoption:
   level: 3
   signal_type: reported_traction
   confidence: medium
+  last_verified: '2026-08-13'
   note: 'Headline signal is influence/standard-setting, not install volume: HELM is a widely-cited standardized
     public leaderboard from Stanford CRFM spanning multiple modalities (capabilities/safety/vision/medical),
     referenced across the research community. PyPI distribution (crfm-helm) is only ~3,142 downloads/month;
     most usage is via the hosted leaderboard and academic citation rather than pip, so download volume
     understates reach. Level 3 reflects meaningful research/standard adoption short of mass production
-    deployment.'
+    deployment. Re-read 2026-08-13 - the README still lists the flagship HELM Capabilities, Safety, VHELM,
+    HEIM, ToRR, MedHELM and audio leaderboards with their papers, and crfm-helm is now at 5,097 downloads
+    a month. That download figure would band at level 1 on its own; it is deliberately not the instrument
+    here, for the reason already recorded, and the 5,097 is offered as the same corroboration the 3,142
+    was.'
   sources:
   - url: https://github.com/stanford-crfm/helm
     shows: multiple public leaderboards (HELM Capabilities/Safety/VHELM/HEIM/MedHELM); Stanford CRFM standardized
@@ -43,6 +71,18 @@ adoption:
   - url: https://pypistats.org/packages/crfm-helm
     shows: 3,142 PyPI downloads last month (low because usage is leaderboard/citation-driven, not pip)
     accessed: '2026-06-04'
+  - url: https://pypistats.org/api/packages/crfm-helm/recent
+    shows: last_month = 5,097 downloads of the crfm-helm package (last_week 2,327, last_day 714)
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 413fbe6c3f3b21a3b1de4571f754470a9fc511e58863b4d1e79f7c138ef6ca80
+  - url: https://raw.githubusercontent.com/stanford-crfm/helm/main/README.md
+    shows: README lists the maintained public leaderboards - HELM Capabilities, HELM Safety, VHELM, HEIM,
+      ToRR, MedHELM and audio - each with its published paper, which is the standard-setting evidence
+      the level rests on.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 465390a907127138096869b49fd79c817392f5404d23d98161d881f2e408a303
 capability:
   score: 5
   basis: feature_matrix
@@ -51,11 +91,24 @@ capability:
     medical (MedHELM), audio, and enterprise; unified model access across OpenAI/Anthropic/Google/etc.;
     metrics beyond accuracy; standardized reproducible format + web UI.'
   confidence: high
+  relative_to: inspect-ai
+  relation: at
+  last_verified: '2026-08-13'
   note: Frontier-defining on coverage and standardization, the holistic multi-modality leaderboard standard.
     One of the 1-2 category leaders, scored 5. (Weaker than Inspect AI on agentic-eval support, but broader
-    on benchmark/modality coverage.)
+    on benchmark/modality coverage.) That trade is why the recorded comparison is `at` rather than above
+    or below Inspect AI. Feature matrix re-read 2026-08-13 and unchanged - the same leaderboard family
+    across text, vision-language, text-to-image, table reasoning, medical and audio. HELM entered maintenance
+    mode on 2026-06-01, which caps future breadth without narrowing what is there.
   sources:
   - url: https://github.com/stanford-crfm/helm
     shows: standardized datasets, unified model access, metrics beyond accuracy, web UI, multi-modal leaderboards
       (MMLU-Pro/GPQA/IFEval/WildBench)
     accessed: '2026-06-04'
+  - url: https://raw.githubusercontent.com/stanford-crfm/helm/main/README.md
+    shows: standardized scenario/adapter/metric framework with a web leaderboard UI; leaderboards span
+      text (Capabilities, Safety, ToRR), vision-language (VHELM), text-to-image (HEIM), medical (MedHELM),
+      audio and enterprise benchmarks; maintenance-mode notice dated 2026-06-01.
+    accessed: '2026-08-13'
+    http_status: 200
+    content_sha256: 465390a907127138096869b49fd79c817392f5404d23d98161d881f2e408a303
