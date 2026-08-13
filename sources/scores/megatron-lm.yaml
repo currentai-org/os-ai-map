@@ -151,11 +151,14 @@ capability:
     weak-scaling benchmark to a 462B-parameter GPT on 6,144 H100 GPUs at 47–48% MFU, strong scaling of a
     ~175B GPT-3 from 96 to 4,608 H100 GPUs.'
   confidence: high
-  note: Reference-grade large-scale transformer training infrastructure, and the capability anchor the rest
+  note: 'Reference-grade large-scale transformer training infrastructure, and the capability anchor the rest
     of this category places itself against. The parallelism, precision and scaling facts now sit in `value`
-    with establishing sources rather than being asserted here. No MLPerf-Training submission verified for
-    the library itself, so the basis is feature_matrix plus NVIDIA-reported scaling benchmarks.
-  last_verified: '2026-08-09'
+    with establishing sources rather than being asserted here. No MLPerf-Training submission verified for the
+    library itself, so the basis is feature_matrix plus NVIDIA-reported scaling benchmarks. Re-read 2026-08-13
+    as the anchor for this category''s closing pass. Nothing moved; the date is bumped because three products
+    in finetuning_code now record a relation against this score, and check_capability will not let a derived
+    band claim a confirmation more recent than the anchor it derives from.'
+  last_verified: '2026-08-13'
   sources:
   - url: https://github.com/NVIDIA/Megatron-LM
     shows: 'The README describes Megatron Core as providing "transformer building blocks, advanced parallelism
@@ -167,9 +170,9 @@ capability:
       strong-scaling paragraph scales a GPT-3 model of slightly more than 175 billion parameters from 96
       H100 GPUs to 4,608 GPUs at a fixed batch size of 1,152 sequences, MFU falling 47% to 42%. Results
       are noted as measured without training to convergence.'
-    accessed: '2026-08-09'
+    accessed: '2026-08-13'
     http_status: 200
-    content_sha256: 81dc3e5166bb2ca313461fbbe4e65b98d383e89464bc0053c4e2a45947643555
+    content_sha256: 85c0d4238ff0e5fc4b96219981648f8ae09941fc6939bc6f0ba81e34fb3b2874
   - url: https://developer.nvidia.com/megatron-core
     shows: 'NVIDIA''s own scaling documentation, and the second independent statement of the anchor figure:
       "In the weak scaling experiments below, with GPT models ranging from 2 billion to 462 billion parameters,

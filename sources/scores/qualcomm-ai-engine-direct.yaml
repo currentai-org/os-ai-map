@@ -18,20 +18,33 @@ openness:
   note: 'Re-read against the ladder''s controlled vocabulary: source is closed (the core engine has no published
     repo and ships only as an EULA-gated download from the Qualcomm Software Center), so the formula settles
     on source alone and the BSD-3 wrapper does not change the class. The wrapper repo has moved from quic/ai-engine-direct-helper
-    to qualcomm/qai-appbuilder; both names now redirect to the same place.'
+    to qualcomm/qai-appbuilder; both names now redirect to the same place.
+
+    Re-derived 2026-08-13 against the repo under its CURRENT name rather than the redirect, which is what
+    earns the date: qualcomm/qai-appbuilder is BSD-3-Clause and states that "Some libraries from the
+    Qualcomm AI Runtime SDK are required to use QAI AppBuilder". So the open thing is a wrapper whose
+    dependency is still an EULA-gated binary download, the source dimension is still closed, and the
+    formula still settles on source alone. Score unchanged at 1/closed.'
   raw: source:closed(no published source for the QNN/Qualcomm AI Runtime SDK core engine; distributed as
     a proprietary binary via the Qualcomm Software Center under an EULA);license:proprietary(no license
     to the source since it is not published);open-wrapper:BSD-3-Clause(qualcomm/qai-appbuilder, formerly
     quic/ai-engine-direct-helper -- a convenience API layer that requires the proprietary SDK libraries)
+  last_verified: '2026-08-13'
   sources:
-  - url: https://github.com/quic/ai-engine-direct-helper
-    shows: QAI AppBuilder is an extension of the Qualcomm® AI Runtime SDK, which is used to simplify the
-      deployment of QNN models. Some libraries from the Qualcomm® AI Runtime SDK are required to use QAI
-      AppBuilder.
-    accessed: '2026-08-09'
+  - url: https://github.com/qualcomm/qai-appbuilder
+    shows: 'the wrapper under its current name, re-read 2026-08-13: BSD 3-Clause, and "Some libraries from
+      the Qualcomm® AI Runtime SDK are required to use QAI AppBuilder" - an open wrapper over a
+      proprietary SDK that must be downloaded separately from Qualcomm''s Software Center'
+    accessed: '2026-08-13'
     establishes:
     - source
     - license
+    http_status: 200
+    content_sha256: d4fdac732158fc8b3bebed36fd79d55b20bb0e2b4c41f54b65bb354ec881a6fc
+  - url: https://github.com/quic/ai-engine-direct-helper
+    shows: the former name, kept because the openness note turns on the move; redirects to
+      qualcomm/qai-appbuilder
+    accessed: '2026-08-09'
     http_status: 200
     content_sha256: e0a3c0d0547d1ba10c0733b575a5253a5bd6a55661f72fd36f68e84a4d72ea46
 adoption:

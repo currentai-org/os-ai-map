@@ -55,6 +55,35 @@ is graded on adoption alone. A product is **mature** when its score clears a hig
 near-best-on-both-axes bar). The bar is intentionally demanding: because the map curates the
 most prominent products in each category, a low bar would call almost everything mature.
 
+### The two nulls are not symmetric, and one of them is not an abstention
+
+Worth stating plainly, because the code makes them look alike and they behave oppositely:
+
+- **Null adoption abstains.** `_maturity_score` returns `None`, and `_stage_and_gaps` drops the
+  product — "we can't judge what we can't measure, so they neither advance nor depress the
+  category's stage." Measured 2026-08-13: 20 products, 19 of them `closed`, which the open-only
+  counting rule already excluded. The abstention is real and costs nothing.
+- **Null capability does not abstain.** It falls through to adoption alone, which silently
+  reweights maturity from a blend to a single axis rather than declining to score. The product
+  keeps counting toward the stage.
+
+That fallback is right for the case it was written for. 21 of the 26 null-capability products
+are in `benchmark_eval_data`, where downloads plausibly *are* the quality signal — a corpus
+everyone evaluates against is, by that fact, a good corpus.
+
+**Every other category inherits it by accident.** The live consequence on 2026-08-13 is
+`model-context-protocol`: adoption 5, capability null, `open_source`, so maturity computes to
+5.0, it counts as a mature open product, and one mature open product is the entire `stage >= 4`
+threshold. `agent_tools_protocols` therefore rests a stage-4 claim on a product whose capability
+nobody has scored. No other null-capability product is close — the remaining 22 sit at adoption
+3–4, below the mature bar, where they can move `best_open` but cannot trigger a stage on their
+own.
+
+So the open question is whether "graded on adoption alone" should be a **per-category
+declaration**, like `disclosure` below, rather than a global fallback. It is deliberately not
+settled here: it is to be resolved during the `agent_tools_protocols` verification pass, when
+`model-context-protocol` gets a real capability score and the question stops being hypothetical.
+
 ## Dataset categories
 
 Datasets are scored on both axes like everything else, but each axis is read specifically for a
