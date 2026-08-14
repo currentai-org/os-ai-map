@@ -20969,22 +20969,37 @@
         },
         {
           "slug": "snorkel-flow",
-          "product": "Snorkel Flow",
+          "product": "Snorkel AI Data Development Platform",
           "org_slug": "snorkel-ai",
           "org": "Snorkel AI",
           "type": "software",
-          "description": "Snorkel AI's commercial data-development platform: programmatic labeling and weak supervision (heuristic and LLM-generated labeling functions), plus curation, slicing, filtering, and fine-tuning/evaluation data workflows.",
+          "description": "Snorkel AI's commercial data-development platform, shipping as version 26.1: programmatic labeling and weak supervision (heuristic and LLM-generated labeling functions), plus curation, slicing, filtering, and fine-tuning/evaluation data workflows. Deployed by the customer rather than consumed as a service - the documentation carries an administrator guide covering installation, users, roles and permissions.",
           "openness": {
             "score": 1,
             "class": "closed",
-            "components": "license:Proprietary;source:closed;proprietary enterprise SaaS; the original 'snorkel' weak-supervision library is a separate Apache-2.0 OSS repo (stale), not the shipped product",
+            "components": "source:closed(no published source; the platform is installed from a licensed enterprise distribution);license:Proprietary;self-host:yes(customer-deployed, but from a proprietary distribution rather than published source)",
             "confidence": "high",
-            "note": "The commercial Snorkel Flow product is closed; the open snorkel library is separate and effectively in maintenance/wind-down.",
+            "note": "Re-read 2026-08-14 against docs.snorkel.ai, which is the source the record should have cited all along. The documentation carries an administrator guide - \"Find out how to install the Snorkel AI Data Development Platform and manage users, roles, and permissions\" - so the product IS customer-deployed, which the previous record did not capture. That does not make it open: nothing on the documentation site offers source, a repository or a license grant, and the footer carries Terms of Use, SOC and HIPAA compliance badges rather than any OSI license. Self-hostable and closed-source are not in tension; the software ladder settles on `source` regardless of deployment model. Score unchanged at 1/closed.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
-                "url": "https://snorkel.ai",
-                "shows": "Commercial enterprise data-development platform; separate OSS snorkel library is stale",
-                "accessed": "2026-07-21"
+                "url": "https://docs.snorkel.ai/docs/26.1/administration/installation/prior-to-installing/installation-overview-and-conventions",
+                "shows": "installation guide for the platform - establishes a customer-deployed product, and offers no source, repository or license grant anywhere",
+                "accessed": "2026-08-14",
+                "establishes": [
+                  "source",
+                  "license",
+                  "self-host"
+                ],
+                "http_status": 200,
+                "content_sha256": "cf25e5cf908549825c3f57d97ddb9e625b0754fdf2820896ea81422e900b14a0"
+              },
+              {
+                "url": "https://docs.snorkel.ai/",
+                "shows": "product documented as \"Snorkel AI Data Development Platform\" v26.1, with User Guide, Admin Guide and SDK sections; no open-source statement anywhere, footer carries Terms of Use plus AICPA SOC and HIPAA badges",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "7d4603438e0f609f1f3559eb10a5d8209046008b88e29c744d9436ae4ae03774"
               }
             ],
             "bucket": "closed"
@@ -20993,37 +21008,44 @@
             "level": 3,
             "reach": "niche",
             "signal_type": "reported_traction",
-            "confidence": "medium",
-            "note": "~$237M raised at a ~$1.3B valuation (Series D, May 2025); established enterprise/government adoption rather than frontier-lab pretraining use. Directional.",
+            "confidence": "low",
+            "note": "Re-read 2026-08-14. Snorkel publishes no usage figure of any kind - no customer count, no deployment count, no download count - so reported_traction with a qualitative reach is the correct instrument and there is nothing to band on. Held at 3 on established enterprise/government traction. THE PREVIOUS BASIS IS WITHDRAWN: the band cited a ~$1.3B Series D valuation that is not on any page the record cites, and funding is not adoption in any case. What the live documentation does establish is that the product is actively maintained and shipping - v26.1, with dated release notes - which is what a level-3 reported_traction band rests on here.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
-                "url": "https://snorkel.ai",
-                "shows": "Enterprise data-development platform; ~$1.3B valuation (Series D, 2025)",
-                "accessed": "2026-07-21"
+                "url": "https://docs.snorkel.ai/",
+                "shows": "actively maintained commercial platform at v26.1 with release notes; no customer count, deployment count or usage figure appears anywhere on the documentation site",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "7d4603438e0f609f1f3559eb10a5d8209046008b88e29c744d9436ae4ae03774"
               }
             ]
           },
           "capability": {
             "score": 4,
             "basis": "feature_matrix",
-            "value": "Programmatic labeling / weak supervision at scale plus curation, slicing, filtering, and fine-tuning/eval data workflows.",
+            "value": "Programmatic labeling and weak supervision via heuristic and LLM-generated labeling functions, with curation, slicing and filtering; a documented Python SDK; and role-based multi-user administration over a customer-installed deployment. Documented at v26.1 with a separate legacy Predictive ML line ending at v25.4.",
             "confidence": "medium",
-            "note": "Broad enterprise data-development coverage; less oriented to frontier-scale pretraining corpora.",
+            "note": "Re-derived 2026-08-14 from the live documentation rather than the marketing site. The feature surface the score rests on - programmatic labeling, curation, an SDK, multi-user administration - is all documented and current at v26.1. Score unchanged at 4: a mature, well-documented commercial data development platform, below the open frontier tooling this category scores 5 on breadth of published method rather than on product polish.",
+            "last_verified": "2026-08-14",
+            "basis_detail": "Documentation sections for User Guide, Admin Guide and SDK at v26.1, plus a legacy Predictive ML line ending at v25.4.",
             "sources": [
               {
-                "url": "https://snorkel.ai",
-                "shows": "Snorkel Flow product/feature description",
-                "accessed": "2026-07-21"
+                "url": "https://docs.snorkel.ai/",
+                "shows": "User Guide, Admin Guide and SDK Overview sections at v26.1; legacy \"Predictive ML\" line documented through v25.4",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "7d4603438e0f609f1f3559eb10a5d8209046008b88e29c744d9436ae4ae03774"
               }
             ]
           },
           "maturity": 3.4,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
-            "basis": "commit"
+            "date": "2026-08-14",
+            "basis": "verified"
           },
-          "version_note": "Snorkel Flow, proprietary enterprise platform (distinct from the Apache-2.0 snorkel-team/snorkel OSS library, which is stale: last release 0.10.0, Feb 2024). Confirmed 2026-07-21. ~$237M raised, ~$1.3B valuation (Series D, May 2025); enterprise/government rather than frontier-lab customers."
+          "version_note": "Verified live 2026-08-14 via docs.snorkel.ai. RENAMED, NOT RETIRED: the product ships today as the \"Snorkel AI Data Development Platform\" (v26.1); \"Snorkel Flow\" is the former name and still labels the archived doc versions. The slug stays `snorkel-flow` because slugs are immutable identities rather than labels - see docs/guides/identity.md - and the rename is carried by display_name and here. A 2026-08-13 pass read only the marketing site, where /snorkel-flow/ now 301s to /data-development/ and the copy sells data services, and concluded the platform was gone; the documentation site shows it is not. A vendor reorganising its marketing is not evidence a product has been withdrawn. Distinct from the Apache-2.0 snorkel-team/snorkel OSS library, which is stale (last release 0.10.0, Feb 2024) and is not this entry."
         },
         {
           "slug": "nemo-data-designer",
@@ -47174,7 +47196,7 @@
     }
   },
   "n_total": 472,
-  "generated": "2026-08-13",
+  "generated": "2026-08-14",
   "long_tail": {
     "counts": {
       "repos": 15375,
