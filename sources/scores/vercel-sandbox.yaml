@@ -97,21 +97,48 @@ capability:
   relative_to: aws-lambda
   relation: one_below
   value: isolation:Firecracker microVM with dedicated kernel (stronger than container/gVisor); cold-start:starts
-    in milliseconds; runtime breadth:moderate (Amazon Linux 2023; node22/24/26 + python3.13 runtimes,
-    sudo+root, install any package, can run Docker/VPN/FUSE); persistence:persistent-by-default (auto-save
-    state on stop) + explicit snapshotting; scale:managed autoscale, up to 45min execution
+    in milliseconds; runtime breadth:high (any Linux distribution, Vercel Managed Images or custom OCI
+    images from Vercel Container Registry, sudo+root, install any package, can run Docker/VPN/FUSE);
+    persistence:persistent-by-default (auto-save state on stop) + explicit snapshotting + attachable
+    drives; scale:managed autoscale to 10,000 concurrent sandboxes, 24h max duration, 32 vCPU / 64GB
+    ceiling, single region (iad1)
   confidence: high
-  note: Firecracker microVM isolation (top tier) + ms cold-start + persistence/snapshots make it a strong
-    agent sandbox; held at 4 rather than 5 because the managed-runtime breadth is narrower (Node/Python
-    first-class) than Lambda's any-runtime/any-image frontier and scale is not at Lambda's proven level.
-    Independent ComputeSDK TTI benchmarks measure ~390ms median cold-start (9th of 19 sandbox providers);
-    the vendor's 'ms startup' framing is optimistic versus the measured hundreds of ms, though still solidly
-    sub-second.
+  note: 'Firecracker microVM isolation (top tier) + ms cold-start + persistence/snapshots make it a strong
+    agent sandbox; held at 4 rather than 5. Independent ComputeSDK TTI benchmarks measure ~390ms median
+    cold-start (9th of 19 sandbox providers); the vendor''s ''ms startup'' framing is optimistic versus
+    the measured hundreds of ms, though still solidly sub-second. Re-derived 2026-08-14 because half the
+    recorded reason for the hold had expired. The old note held it below Lambda on runtime breadth AND
+    scale, and recorded "up to 45min execution". Breadth is no longer a difference - the docs now read
+    "Sandboxes run Linux images, with Ubuntu, Arch Linux, or any other Linux distribution you need" and
+    offer "your own OCI images stored in Vercel Container Registry", which is the same any-image story
+    that made Lambda the frontier. The 45 minutes was the Hobby tier - the limits table gives Pro and
+    Enterprise 24 hours. So the band now rests on scale alone, and on scale it still holds: 10,000
+    concurrent sandboxes and a 5,000 vCPU/min allocation ceiling against Lambda''s 15 trillion monthly
+    invocations and 1000 additional concurrent executions every 10 seconds, and one region, iad1, against
+    Lambda everywhere. A hard regional cap is a stronger constraint than the 45 minutes ever was. Score
+    unchanged at 4, one_below aws-lambda, on a narrower and better-evidenced reason.'
+  last_verified: '2026-08-14'
   sources:
   - url: https://vercel.com/docs/sandbox
-    shows: Firecracker microVM per sandbox, ms startup, persistent+snapshot, node/python runtimes, up
-      to 45m
-    accessed: '2026-06-04'
+    shows: '"Sandboxes run Linux images, with Ubuntu, Arch Linux, or any other Linux distribution you
+      need"; images come from Vercel Managed Images "or your own OCI images stored in Vercel Container
+      Registry"; "Each sandbox runs in a secure Firecracker microVM with its own filesystem and
+      network"; "Sandboxes start in milliseconds"; system-privileged processes "such as container
+      runtimes like Docker, VPN clients, and FUSE filesystem drivers"; persistence is the default with
+      snapshotting and attachable drives alongside it. The runtime-breadth half of the old hold is gone
+      from the page'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 0c0ba060749a68551b6c2105808d57c4dbbdac425cd62f79145ab46132a475de
+  - url: https://vercel.com/docs/sandbox/pricing
+    shows: 'The limits tables, which are where the 45 minutes came from and where it stops. Maximum
+      duration is 45 minutes on Hobby and 24 hours on Pro and Enterprise; concurrent sandboxes 10, 10,000
+      and 10,000; maximum vCPUs 4, 8 and 32 with 8GB, 16GB and 64GB of memory; maximum vCPU allocation
+      rate 40/min, 5,000/min and 5,000/min. "Currently, Vercel Sandbox is only available in the `iad1`
+      region."'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 29ff300d36dd3416ce6e9ab05bb1b3a0b58886d221c85c1be804cdb4aaaf2ba0
   - url: https://www.computesdk.com/benchmarks/sandboxes/
     shows: 'ComputeSDK TTI leaderboard (independent, 100 iters/day, 2026-07-09 run): median time-to-interactive
       ~390ms sequential / ~490ms burst @100 concurrent; 9th of 19 providers'

@@ -27,9 +27,22 @@ openness:
     matching rpi5 path 404s, and the documentation index lists for the Pi 5 only a mechanical
     drawing (RP-008347-DS) and two STEP files, one with silkscreen. That set is a mechanical spec -
     what a HAT or a case is designed against - so the ladder reads it as `partial`, and a partial
-    design scores 3/documented however open the kernel tree is.'
+    design scores 3/documented however open the kernel tree is. The three components that pass did
+    not carry the date are read on 2026-08-14 and the axis is dated on all five. `datasheets` rests
+    on the RP1 Peripherals datasheet, RP-008370-DS, 93 pages of register-level documentation for the
+    Pi 5''s own I/O controller, served without registration under CC BY-ND with no NDA or
+    confidentiality notice anywhere in it. `blobs` rests on the raspberrypi/firmware README, which
+    splits the tree by licence - "start*.elf, fixup*.dat and bootcode.bin are the GPU firmwares and
+    bootloader", licensed under boot/LICENCE.broadcom, against kernel images, device trees and
+    modules under the GPL. `retail` rests on The Pi Hut listing all five SKUs in stock with an add to
+    cart and no account gate. One thing to flag rather than change - `minimal` is this product''s
+    reading of a proprietary Broadcom boot chain, and all nineteen other boards in the category
+    record `required` for the same shape of fact, `beagley-ai` included. Nothing scored turns on it,
+    since no rung in hardware.yaml reads `blobs`, so the word is left as recorded and the
+    inconsistency is raised rather than resolved here.'
   raw: schematics:partial (mechanical drawing + STEP files only, no schematic);toolchain:open (open
     kernel tree + Raspberry Pi OS);datasheets:public;blobs:minimal;retail:open_market (mass-market)
+  last_verified: '2026-08-14'
   sources:
   - url: https://datasheets.raspberrypi.com/rpi5/raspberry-pi-5-mechanical-drawing.pdf
     shows: RP-008347-DS, the Pi 5 mechanical drawing, the only board-level design document Raspberry
@@ -38,19 +51,60 @@ openness:
     accessed: '2026-08-14'
     http_status: 200
     content_sha256: 5dd680d6c1f5e7aa9c7b020695e315d04aac862df82ff01d4e9041cd0668d7f2
+    establishes:
+    - schematics
   - url: https://datasheets.raspberrypi.com/rpi4/raspberry-pi-4-reduced-schematics.pdf
     shows: The Pi 4 reduced schematics, live, which is the document the old `reduced published`
       value described; no Pi 5 equivalent exists
     accessed: '2026-08-14'
     http_status: 200
     content_sha256: 0ee3fd2b4976b1d614fc817b0d28564226d3ee8656a9108ccb69c099715d2374
+    establishes:
+    - schematics
   - url: https://github.com/raspberrypi/linux
     shows: Official Raspberry Pi kernel source tree (open BSP), GPL-2.0, still active
     accessed: '2026-08-14'
     http_status: 200
     content_sha256: b55ae2f77a69f017c58eff70f5fc0d4a7164baa186f9d081467c12a84429334b
+    establishes:
+    - toolchain
+  - url: https://datasheets.raspberrypi.com/rp1/rp1-peripherals.pdf
+    shows: RP1 Peripherals, RP-008370-DS, the register-level datasheet for the I/O controller the Pi 5
+      is built around - 93 pages, downloadable without registration, colophon "This documentation is
+      licensed under a Creative Commons Attribution-NoDerivatives 4.0 International (CC BY-ND)" and a
+      legal notice that disclaims warranties and asserts no confidentiality obligation. A public
+      datasheet rather than a marketing brief
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 87fb7b24e8d9add075b849d095a107827610c0409ea194785af624c1ea986c3d
+    establishes:
+    - datasheets
+  - url: https://raw.githubusercontent.com/raspberrypi/firmware/master/README.md
+    shows: The firmware tree read by licence - "start*.elf, fixup*.dat and bootcode.bin are the GPU
+      firmwares and bootloader. Their licence is described in `boot/LICENCE.broadcom`", while the
+      kernel images, the dtbs and overlays and the pre-built modules are all "released under the GPL".
+      Proprietary firmware is confined to the GPU and boot path; the kernel side of the stack the
+      `toolchain` value describes is GPL throughout
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 3a26b725dda9591997a51c0497a63001c669d3654c0fcc923fe8159684499871
+    establishes:
+    - blobs
+    - toolchain
+  - url: https://thepihut.com/products/raspberry-pi-5
+    shows: 'The Pi 5 in stock at a mass-market reseller with all five SKUs on the same listing - 1GB
+      GBP43.20, 2GB GBP62.40, 4GB GBP105.60, 8GB GBP168.00, 16GB GBP292.80 inc VAT - selectable and
+      addable to a cart with no account, approval or minimum order. Open-market rather than
+      distributor availability'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: f93c7d601b4e335ed7a8e8582cd83dc557bedf4f8d4e9d754e29adbeb9c9908b
+    establishes:
+    - retail
   - url: https://www.raspberrypi.com/products/raspberry-pi-5/
-    shows: 'Official product page: BCM2712, Cortex-A76, RAM options, production until 2036'
+    shows: 'Official product page: BCM2712, Cortex-A76, RAM options, production until 2036. Not
+      re-fetchable - raspberrypi.com answered HTTP 403 to six consecutive requests on 2026-08-14, so
+      the source keeps its 2026-06-22 read'
     accessed: '2026-06-22'
 adoption:
   level: 5

@@ -33,18 +33,38 @@ openness:
     soon" - but that sentence is now stale. github.com/arduino/arduino-app-lab is public under
     GPL-3.0, 19MB of Go and TypeScript with the app, ui-packages and standalone-apps trees, last
     pushed 2026-08-12, and github.com/arduino/app-bricks-py is public under MPL-2.0, pushed
-    2026-08-13. The 5 stands and now rests on the repositories rather than on the promise of them.'
+    2026-08-13. The 5 stands and now rests on the repositories rather than on the promise of them.
+    The remaining three components were read the same day and the axis is dated on all five.
+    `datasheets` is `public` on the 109-page UNO Q user manual for ABX00162-ABX00173, modified
+    12/08/2026, served from docs.arduino.cc as a plain PDF with no registration, alongside the
+    schematics, pinout, CAD and STEP downloads. `retail` is `open_market` on the FAQ naming the
+    channels - "UNO Q is available to order from the official Arduino Store, RS Components, Digikey,
+    Mouser, Macfos" - and on the store still selling both SKUs at EUR59,90 and EUR82,90. `blobs` stays
+    `required` on the proprietary Dragonwing QRB2210 the board is built around, which is what every
+    other part in this category records for the same fact, but the manual narrows what that covers and
+    the narrowing is worth recording - the Adreno 702 graphics stack is open, "hardware-accelerated 3D
+    graphics rendering through open-source Mesa drivers", freedreno for OpenGL and turnip for Vulkan,
+    with video encode and decode reached through plain V4L2. What remains closed is the SoC boot chain,
+    which Arduino publishes nothing of.'
   raw: schematics:open (gerbers + schematics CC-BY-SA 4.0);toolchain:open (App Lab GPL-3.0 + App
     Bricks MPL-2.0, source published);datasheets:public;blobs:required (proprietary Qualcomm SoC
     firmware);retail:open_market (global)
+  last_verified: '2026-08-14'
   sources:
   - url: https://www.arduino.cc/product-uno-q
     shows: '"Yes, UNO Q schematics and gerbers are available under the CC-BY-SA 4.0 license"; and, of
       the toolchain, "Yes, App Lab and the App Bricks library are open source; we are working to
-      publish corresponding source code repositories, they will become available soon"'
+      publish corresponding source code repositories, they will become available soon". The same FAQ
+      names the sales channels - "UNO Q is available to order from the official Arduino Store, RS
+      Components, Digikey, Mouser, Macfos, and in the future from other Authorized Distributors and
+      Resellers"'
     accessed: '2026-08-14'
     http_status: 200
     content_sha256: 76f7fce92f89c4793b7e61204d917fd8abf3dc2c94d4cb88bc6dbeb56c6d591f
+    establishes:
+    - schematics
+    - toolchain
+    - retail
   - url: https://github.com/arduino/arduino-app-lab
     shows: '"The cross-platform IDE for developing Arduino Apps, built with Wails" - public, GPL-3.0,
       ~19MB, Go plus TypeScript source in app/, ui-packages/ and standalone-apps/, last pushed
@@ -52,11 +72,39 @@ openness:
     accessed: '2026-08-14'
     http_status: 200
     content_sha256: 8fb102888dadaed7bbf33369218fc64c739d4ecbe61ac616ce5b7563a8aad48b
+    establishes:
+    - toolchain
   - url: https://github.com/arduino/app-bricks-py
     shows: '"The code of the Arduino App Lab Bricks" - public, MPL-2.0, last pushed 2026-08-13'
     accessed: '2026-08-14'
     http_status: 200
     content_sha256: b46b01f5a0d4d387b7fe2ddd3fa4230e2bb7cecf3d64a082b23b541e6f37ef43
+    establishes:
+    - toolchain
+  - url: https://docs.arduino.cc/resources/datasheets/ABX00162-ABX00173-datasheet.pdf
+    shows: 'The UNO Q user manual for SKU ABX00162-ABX00173, 109 pages, modified 12/08/2026, served
+      without registration next to the schematics, pinout, CAD and STEP downloads on the same docs
+      page. It is the source of the blob picture as well as the datasheet one - the board is built on
+      the "Qualcomm Dragonwing QRB2210 - System-on-Chip (SoC)" running a vendor Debian image, and
+      Arduino publishes no boot firmware for it, while section 8 records the graphics side as open -
+      "The Adreno 702 GPU provides hardware-accelerated 3D graphics rendering through open-source Mesa
+      drivers", freedreno for OpenGL and OpenGL ES, turnip for Vulkan, and video encode/decode through
+      V4L2 GStreamer elements'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 0e23edc6a7c3b98dd9f63b5acf48130be798bd5f3491aa8a9fee9215521a1cb5
+    establishes:
+    - datasheets
+    - blobs
+  - url: https://store.arduino.cc/pages/uno-q
+    shows: Both SKUs still on sale from Arduino directly, UNO Q 2GB at EUR59,90 and UNO Q 4GB at
+      EUR82,90, each with a BUY NOW route and an Official Distributors link, no account or approval
+      gate
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 73b0dc0409e09587efe671fff41fdc0099225331b4099f592a99ec6c932d7f3c
+    establishes:
+    - retail
 adoption:
   level: 4
   reach: broad

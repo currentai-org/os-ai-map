@@ -36,13 +36,95 @@ openness:
     the principle is an axis rather than an extra rung. Moved 4 to 3 on 2026-08-14 with no new evidence
     about the HAT - the host moved. `raspberry-pi-5` was corrected to 3/documented when it turned out
     to publish no schematic, only a mechanical drawing, and an accessory cannot offer more openness
-    than the system it completes.
+    than the system it completes. All six components were re-read on 2026-08-14 and the axis is dated.
+    raspberrypi.com answers 403 to every automated request, so the product page it used to rest on was
+    replaced by Raspberry Pi''s own AI HAT+ product brief, RP-008133-DS, on datasheets.raspberrypi.com,
+    which carries four of the six on its own. `datasheets` is `brief` because that document is what it
+    says it is - six pages of overview, a specification table, a dimensioned drawing and safety text,
+    against the 93-page register-level datasheet the Pi 5 gets. `schematics` stays `partial` on the
+    HAT+ Specification, which describes itself as "A guide to designing Hardware-Attached-on-Top of a
+    Raspberry Pi" and licenses its contents for use "solely in conjunction with the Raspberry Pi
+    products" - an interface standard for building your own board, not this board''s design.
+    `accessory-host` off the brief pairing the HAT to one host and no other - it "communicates using
+    Raspberry Pi 5''s PCIe Gen 3 interface" and ships a stacking kit "to enable fitting on Raspberry
+    Pi 5". `toolchain` and `blobs` off Hailo''s own repositories rather than the vendor page, HailoRT
+    carrying the open half and the Model Zoo naming the customer-gated compiler. `retail` off The Pi
+    Hut stocking both variants. No value moved.
   raw: schematics:partial (HAT+ mechanical spec public);accessory-host:documented(Raspberry Pi 5, which
     scores 3/documented);toolchain:partial (open Pi driver integration, Hailo compiler gated);datasheets:brief
     (public brief);blobs:required (Hailo firmware required);retail:open_market (mass-market)
+  last_verified: '2026-08-14'
   sources:
+  - url: https://datasheets.raspberrypi.com/ai-hat-plus/raspberry-pi-ai-hat-plus-product-brief.pdf
+    shows: 'Raspberry Pi''s own AI HAT+ product brief, RP-008133-DS, published October 2024 - six
+      pages, of which one is the specification table and one a dimensioned drawing marked "All
+      dimensions are approximate and for reference purposes only ... should not be used for producing
+      production data". Its own text ties the HAT to a single host - "an add-on board with a built-in
+      Hailo AI accelerator for Raspberry Pi 5", "communicates using Raspberry Pi 5''s PCIe Gen 3
+      interface", "Supplied with 16mm stacking header, spacers, and screws to enable fitting on
+      Raspberry Pi 5 with Raspberry Pi Active Cooler in place" - and records "Conforms to Raspberry Pi
+      HAT+ specification" plus "Fully integrated into Raspberry Pi''s camera software stack"'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 433d7494ec6d1c8396f991fc74bea7080a7cade398a67420a0adf9efbb6008af
+    establishes:
+    - datasheets
+    - accessory-host
+    - schematics
+    - toolchain
+  - url: https://datasheets.raspberrypi.com/hat/hat-plus-specification.pdf
+    shows: The Raspberry Pi HAT+ Specification, RP-008281-DS, 21 pages dated 2024-12-05 - "A guide to
+      designing Hardware-Attached-on-Top of a Raspberry Pi", covering power states, the ID EEPROM,
+      HAT+ classes and stackability. CC BY-ND, and the legal notice grants use "solely in conjunction
+      with the Raspberry Pi products. All other use of the RESOURCES is prohibited". A mechanical and
+      electrical interface standard for building your own add-on, which is the rubric's `partial`, and
+      not the design of the board being sold
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 3a0932253767147038383162ac9f4b5aac3adb048c30bd1f9177a462a054ca1e
+    establishes:
+    - schematics
+  - url: https://datasheets.raspberrypi.com/rpi5/raspberry-pi-5-mechanical-drawing.pdf
+    shows: RP-008347-DS, the only board-level design document Raspberry Pi publishes for the Pi 5, and
+      the evidence that puts the host at 3/documented rather than 4/open_toolchain. The reduced
+      schematics path under the same rpi5 prefix 404s while the rpi4 one answers 200
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 5dd680d6c1f5e7aa9c7b020695e315d04aac862df82ff01d4e9041cd0668d7f2
+    establishes:
+    - accessory-host
+  - url: https://raw.githubusercontent.com/hailo-ai/hailort/master/README.md
+    shows: The open half of the toolchain and the source of the firmware requirement - "libhailort,
+      pyhailort & hailortcli - distributed under the MIT license" with hailonet under LGPL 2.1, while
+      the HailoRT PCIe driver "includes the Hailo-8 firmware that runs on the Hailo device and manages
+      its boot and control"
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: dada62b1fccdb1234e034247e65b4e43011ef053da545bf824fb23a4a56d8bb4
+    establishes:
+    - toolchain
+    - blobs
+  - url: https://raw.githubusercontent.com/hailo-ai/hailo_model_zoo/master/README.rst
+    shows: The gated half - "Install Hailo Dataflow Compiler and enter the virtualenv. In case you are
+      not Hailo customer please contact hailo.ai". The model compiler this accelerator needs is
+      customer-gated even though the Model Zoo itself "is released under the MIT license"
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 73017c8683874a3a6634b038a63d1d7ba3bf0e2bdc13247b9dbfa61759190dad
+    establishes:
+    - toolchain
+  - url: https://thepihut.com/products/raspberry-pi-ai-hat-plus
+    shows: 'Both variants in stock at a mass-market reseller and addable to a cart with no account or
+      approval - 13 TOPS at GBP67.20 and 26 TOPS at GBP105.60 inc VAT'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: c189ecc6d6752dfbd5e631cf2dc0bd4b1672283b7bd0c3595cca853a71823954
+    establishes:
+    - retail
   - url: https://www.raspberrypi.com/products/ai-hat/
-    shows: 'Official product page: Hailo-8 (26 TOPS) / Hailo-8L (13 TOPS), HAT+ form factor, from $70'
+    shows: 'Official product page: Hailo-8 (26 TOPS) / Hailo-8L (13 TOPS), HAT+ form factor, from $70.
+      Not re-fetchable - raspberrypi.com answered HTTP 403 to six consecutive requests on 2026-08-14,
+      so the source keeps its 2026-06-22 read'
     accessed: '2026-06-22'
 adoption:
   level: 4
