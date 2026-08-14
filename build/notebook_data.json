@@ -41022,8 +41022,8 @@
             "basis": "feature_matrix",
             "value": "isolation:Firecracker microVM (per-invocation hardware-virtualized, KVM) - strongest isolation tier, ~125ms VM start, ~5MiB/VM; cold-start:ms-to-sub-second; runtime breadth:very high (managed runtimes Node/Python/Java/Go/Ruby/.NET + custom runtimes/container images, arbitrary code); persistence:stateless+attachable storage (EFS, /tmp); scale:trillions of executions/mo, effectively unbounded autoscale",
             "confidence": "high",
-            "note": "Frontier-definer for this category: microVM-grade isolation, the widest runtime breadth, and the largest proven scale of any deployment runtime here. Scored 5. Re-read 2026-08-13 on the Lambda FAQ, which confirms every part of the recorded matrix and adds one thing to it. Runtime breadth is still the widest here - \"Java, Go, PowerShell, Node.js, C#, Python, and Ruby\" natively plus a Runtime API for any other language, and both .zip archives and container images. Isolation is per-function and Firecracker-backed. Since the last read AWS has shipped Lambda MicroVMs, a primitive explicitly \"purpose-built for workloads that execute user- or AI-generated code\" with VM-level isolation, near-instant launch and resume, and state persistence across interactions, which puts Lambda directly on the agent-sandbox feature axis this category scores rather than only adjacent to it. Score unchanged at 5.",
-            "last_verified": "2026-08-13",
+            "note": "Frontier-definer for this category: microVM-grade isolation, the widest runtime breadth, and the largest proven scale of any deployment runtime here. Scored 5. Re-read 2026-08-13 on the Lambda FAQ, which confirms every part of the recorded matrix and adds one thing to it. Runtime breadth is still the widest here - \"Java, Go, PowerShell, Node.js, C#, Python, and Ruby\" natively plus a Runtime API for any other language, and both .zip archives and container images. Isolation is per-function and Firecracker-backed. Since the last read AWS has shipped Lambda MicroVMs, a primitive explicitly \"purpose-built for workloads that execute user- or AI-generated code\" with VM-level isolation, near-instant launch and resume, and state persistence across interactions, which puts Lambda directly on the agent-sandbox feature axis this category scores rather than only adjacent to it. Score unchanged at 5. Read again 2026-08-14, as the anchor for `vercel-sandbox`, which records `one_below` and cannot be dated ahead of what it derives from. The FAQ carries the same matrix and puts numbers on the two parts of it a peer comparison turns on - Lambda MicroVMs persist state up to 8 hours and take containers to 32GB and 16 vCPUs on Amazon Linux 2023, and functions scale \"at a rate of up to 1000 concurrent executions every 10 seconds\" on top of the 15 trillion monthly invocations. Score unchanged at 5.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
                 "url": "https://aws.amazon.com/blogs/aws/firecracker-lightweight-virtualization-for-serverless-computing/",
@@ -41032,17 +41032,17 @@
               },
               {
                 "url": "https://aws.amazon.com/lambda/faqs/",
-                "shows": "\"AWS Lambda natively supports Java, Go, PowerShell, Node.js, C#, Python, and Ruby code, and provides a Runtime API which allows you to use any additional programming languages\"; functions deploy \"as .zip file archives ... or as container images. Both methods provide the same execution environment\"; \"Each AWS Lambda function runs in its own isolated environment\". Lambda MicroVMs \"combines VM-level isolation, near-instant launch and resume, and state persistence across interactions ... purpose-built for workloads that execute user- or AI-generated code\", built on \"the same Firecracker virtualization powering 15 trillion+ monthly Lambda Function invocations\".",
-                "accessed": "2026-08-13",
+                "shows": "\"AWS Lambda natively supports Java, Go, PowerShell, Node.js, C#, Python, and Ruby code, and provides a Runtime API which allows you to use any additional programming languages\"; functions deploy \"as .zip file archives ... or as container images. Both methods provide the same execution environment\"; \"Each AWS Lambda function runs in its own isolated environment\". Lambda MicroVMs \"combines VM-level isolation, near-instant launch and resume, and state persistence across interactions ... purpose-built for workloads that execute user- or AI-generated code\", built on \"the same Firecracker virtualization powering 15 trillion+ monthly Lambda Function invocations\". Read again 2026-08-14 - every quote above still stands, and the page also states that functions scale \"at a rate of up to 1000 concurrent executions every 10 seconds\", and that MicroVMs persist state up to 8 hours with containers up to 32 GB memory and 16 vCPUs on Amazon Linux 2023.",
+                "accessed": "2026-08-14",
                 "http_status": 200,
-                "content_sha256": "b6e63c3e539a8940cacba06291d5f8b3288b75182d4051c745d40664fcbd4cba"
+                "content_sha256": "f75cb1da877f31f25f580f27df64810d86cf59c98f0fdad546b0aec9aaa13e0d"
               }
             ]
           },
           "maturity": 5.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "The service itself is proprietary and AWS-hosted; Firecracker, the microVM it runs on, is a separate open-source entry on this map. Verified 2026-08-13 via the AWS Lambda FAQ."
@@ -41263,14 +41263,24 @@
             "basis": "feature_matrix",
             "relative_to": "aws-lambda",
             "relation": "one_below",
-            "value": "isolation:Firecracker microVM with dedicated kernel (stronger than container/gVisor); cold-start:starts in milliseconds; runtime breadth:moderate (Amazon Linux 2023; node22/24/26 + python3.13 runtimes, sudo+root, install any package, can run Docker/VPN/FUSE); persistence:persistent-by-default (auto-save state on stop) + explicit snapshotting; scale:managed autoscale, up to 45min execution",
+            "value": "isolation:Firecracker microVM with dedicated kernel (stronger than container/gVisor); cold-start:starts in milliseconds; runtime breadth:high (any Linux distribution, Vercel Managed Images or custom OCI images from Vercel Container Registry, sudo+root, install any package, can run Docker/VPN/FUSE); persistence:persistent-by-default (auto-save state on stop) + explicit snapshotting + attachable drives; scale:managed autoscale to 10,000 concurrent sandboxes, 24h max duration, 32 vCPU / 64GB ceiling, single region (iad1)",
             "confidence": "high",
-            "note": "Firecracker microVM isolation (top tier) + ms cold-start + persistence/snapshots make it a strong agent sandbox; held at 4 rather than 5 because the managed-runtime breadth is narrower (Node/Python first-class) than Lambda's any-runtime/any-image frontier and scale is not at Lambda's proven level. Independent ComputeSDK TTI benchmarks measure ~390ms median cold-start (9th of 19 sandbox providers); the vendor's 'ms startup' framing is optimistic versus the measured hundreds of ms, though still solidly sub-second.",
+            "note": "Firecracker microVM isolation (top tier) + ms cold-start + persistence/snapshots make it a strong agent sandbox; held at 4 rather than 5. Independent ComputeSDK TTI benchmarks measure ~390ms median cold-start (9th of 19 sandbox providers); the vendor's 'ms startup' framing is optimistic versus the measured hundreds of ms, though still solidly sub-second. Re-derived 2026-08-14 because half the recorded reason for the hold had expired. The old note held it below Lambda on runtime breadth AND scale, and recorded \"up to 45min execution\". Breadth is no longer a difference - the docs now read \"Sandboxes run Linux images, with Ubuntu, Arch Linux, or any other Linux distribution you need\" and offer \"your own OCI images stored in Vercel Container Registry\", which is the same any-image story that made Lambda the frontier. The 45 minutes was the Hobby tier - the limits table gives Pro and Enterprise 24 hours. So the band now rests on scale alone, and on scale it still holds: 10,000 concurrent sandboxes and a 5,000 vCPU/min allocation ceiling against Lambda's 15 trillion monthly invocations and 1000 additional concurrent executions every 10 seconds, and one region, iad1, against Lambda everywhere. A hard regional cap is a stronger constraint than the 45 minutes ever was. Score unchanged at 4, one_below aws-lambda, on a narrower and better-evidenced reason.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
                 "url": "https://vercel.com/docs/sandbox",
-                "shows": "Firecracker microVM per sandbox, ms startup, persistent+snapshot, node/python runtimes, up to 45m",
-                "accessed": "2026-06-04"
+                "shows": "\"Sandboxes run Linux images, with Ubuntu, Arch Linux, or any other Linux distribution you need\"; images come from Vercel Managed Images \"or your own OCI images stored in Vercel Container Registry\"; \"Each sandbox runs in a secure Firecracker microVM with its own filesystem and network\"; \"Sandboxes start in milliseconds\"; system-privileged processes \"such as container runtimes like Docker, VPN clients, and FUSE filesystem drivers\"; persistence is the default with snapshotting and attachable drives alongside it. The runtime-breadth half of the old hold is gone from the page",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "0c0ba060749a68551b6c2105808d57c4dbbdac425cd62f79145ab46132a475de"
+              },
+              {
+                "url": "https://vercel.com/docs/sandbox/pricing",
+                "shows": "The limits tables, which are where the 45 minutes came from and where it stops. Maximum duration is 45 minutes on Hobby and 24 hours on Pro and Enterprise; concurrent sandboxes 10, 10,000 and 10,000; maximum vCPUs 4, 8 and 32 with 8GB, 16GB and 64GB of memory; maximum vCPU allocation rate 40/min, 5,000/min and 5,000/min. \"Currently, Vercel Sandbox is only available in the `iad1` region.\"",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "29ff300d36dd3416ce6e9ab05bb1b3a0b58886d221c85c1be804cdb4aaaf2ba0"
               },
               {
                 "url": "https://www.computesdk.com/benchmarks/sandboxes/",
@@ -41285,7 +41295,7 @@
             "date": "2026-08-14",
             "basis": "verified"
           },
-          "version_note": "The execution layer behind Vercel Open Agents. Runtime duration and concurrency are quota fields rather than product limits - a Hobby sandbox stops at 45 minutes where Pro and Enterprise run to 24 hours. Verified 2026-08-13 via the Vercel Sandbox documentation and its pricing and quotas page."
+          "version_note": "The execution layer behind Vercel Open Agents. Runtime duration and concurrency are quota fields rather than product limits - a Hobby sandbox stops at 45 minutes where Pro and Enterprise run to 24 hours. The real ceiling is regional - Sandbox runs only in iad1. Verified 2026-08-14 via the Vercel Sandbox documentation and its pricing and quotas page."
         },
         {
           "slug": "cloudflare-sandboxes",
@@ -42833,32 +42843,73 @@
             "score": 3,
             "components": "schematics:partial (mechanical drawing + STEP files only, no schematic);toolchain:open (open kernel tree + Raspberry Pi OS);datasheets:public;blobs:minimal;retail:open_market (mass-market)",
             "confidence": "high",
-            "note": "Open Linux kernel tree and public datasheets, globally purchasable, but Raspberry Pi publishes no schematic for the Pi 5 at all. Corrected from 4/open_toolchain on 2026-08-14: the record said \"reduced published\", which is true of the Pi 4 and not of the Pi 5. datasheets.raspberrypi.com/rpi4/raspberry-pi-4-reduced-schematics.pdf answers 200 and the matching rpi5 path 404s, and the documentation index lists for the Pi 5 only a mechanical drawing (RP-008347-DS) and two STEP files, one with silkscreen. That set is a mechanical spec - what a HAT or a case is designed against - so the ladder reads it as `partial`, and a partial design scores 3/documented however open the kernel tree is.",
+            "note": "Open Linux kernel tree and public datasheets, globally purchasable, but Raspberry Pi publishes no schematic for the Pi 5 at all. Corrected from 4/open_toolchain on 2026-08-14: the record said \"reduced published\", which is true of the Pi 4 and not of the Pi 5. datasheets.raspberrypi.com/rpi4/raspberry-pi-4-reduced-schematics.pdf answers 200 and the matching rpi5 path 404s, and the documentation index lists for the Pi 5 only a mechanical drawing (RP-008347-DS) and two STEP files, one with silkscreen. That set is a mechanical spec - what a HAT or a case is designed against - so the ladder reads it as `partial`, and a partial design scores 3/documented however open the kernel tree is. The three components that pass did not carry the date are read on 2026-08-14 and the axis is dated on all five. `datasheets` rests on the RP1 Peripherals datasheet, RP-008370-DS, 93 pages of register-level documentation for the Pi 5's own I/O controller, served without registration under CC BY-ND with no NDA or confidentiality notice anywhere in it. `blobs` rests on the raspberrypi/firmware README, which splits the tree by licence - \"start*.elf, fixup*.dat and bootcode.bin are the GPU firmwares and bootloader\", licensed under boot/LICENCE.broadcom, against kernel images, device trees and modules under the GPL. `retail` rests on The Pi Hut listing all five SKUs in stock with an add to cart and no account gate. One thing to flag rather than change - `minimal` is this product's reading of a proprietary Broadcom boot chain, and all nineteen other boards in the category record `required` for the same shape of fact, `beagley-ai` included. Nothing scored turns on it, since no rung in hardware.yaml reads `blobs`, so the word is left as recorded and the inconsistency is raised rather than resolved here.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
                 "url": "https://datasheets.raspberrypi.com/rpi5/raspberry-pi-5-mechanical-drawing.pdf",
                 "shows": "RP-008347-DS, the Pi 5 mechanical drawing, the only board-level design document Raspberry Pi publishes for this model; the reduced-schematics path under the same rpi5 prefix 404s while the rpi4 one answers 200",
                 "accessed": "2026-08-14",
                 "http_status": 200,
-                "content_sha256": "5dd680d6c1f5e7aa9c7b020695e315d04aac862df82ff01d4e9041cd0668d7f2"
+                "content_sha256": "5dd680d6c1f5e7aa9c7b020695e315d04aac862df82ff01d4e9041cd0668d7f2",
+                "establishes": [
+                  "schematics"
+                ]
               },
               {
                 "url": "https://datasheets.raspberrypi.com/rpi4/raspberry-pi-4-reduced-schematics.pdf",
                 "shows": "The Pi 4 reduced schematics, live, which is the document the old `reduced published` value described; no Pi 5 equivalent exists",
                 "accessed": "2026-08-14",
                 "http_status": 200,
-                "content_sha256": "0ee3fd2b4976b1d614fc817b0d28564226d3ee8656a9108ccb69c099715d2374"
+                "content_sha256": "0ee3fd2b4976b1d614fc817b0d28564226d3ee8656a9108ccb69c099715d2374",
+                "establishes": [
+                  "schematics"
+                ]
               },
               {
                 "url": "https://github.com/raspberrypi/linux",
                 "shows": "Official Raspberry Pi kernel source tree (open BSP), GPL-2.0, still active",
                 "accessed": "2026-08-14",
                 "http_status": 200,
-                "content_sha256": "b55ae2f77a69f017c58eff70f5fc0d4a7164baa186f9d081467c12a84429334b"
+                "content_sha256": "b55ae2f77a69f017c58eff70f5fc0d4a7164baa186f9d081467c12a84429334b",
+                "establishes": [
+                  "toolchain"
+                ]
+              },
+              {
+                "url": "https://datasheets.raspberrypi.com/rp1/rp1-peripherals.pdf",
+                "shows": "RP1 Peripherals, RP-008370-DS, the register-level datasheet for the I/O controller the Pi 5 is built around - 93 pages, downloadable without registration, colophon \"This documentation is licensed under a Creative Commons Attribution-NoDerivatives 4.0 International (CC BY-ND)\" and a legal notice that disclaims warranties and asserts no confidentiality obligation. A public datasheet rather than a marketing brief",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "87fb7b24e8d9add075b849d095a107827610c0409ea194785af624c1ea986c3d",
+                "establishes": [
+                  "datasheets"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/raspberrypi/firmware/master/README.md",
+                "shows": "The firmware tree read by licence - \"start*.elf, fixup*.dat and bootcode.bin are the GPU firmwares and bootloader. Their licence is described in `boot/LICENCE.broadcom`\", while the kernel images, the dtbs and overlays and the pre-built modules are all \"released under the GPL\". Proprietary firmware is confined to the GPU and boot path; the kernel side of the stack the `toolchain` value describes is GPL throughout",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "3a26b725dda9591997a51c0497a63001c669d3654c0fcc923fe8159684499871",
+                "establishes": [
+                  "blobs",
+                  "toolchain"
+                ]
+              },
+              {
+                "url": "https://thepihut.com/products/raspberry-pi-5",
+                "shows": "The Pi 5 in stock at a mass-market reseller with all five SKUs on the same listing - 1GB GBP43.20, 2GB GBP62.40, 4GB GBP105.60, 8GB GBP168.00, 16GB GBP292.80 inc VAT - selectable and addable to a cart with no account, approval or minimum order. Open-market rather than distributor availability",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "f93c7d601b4e335ed7a8e8582cd83dc557bedf4f8d4e9d754e29adbeb9c9908b",
+                "establishes": [
+                  "retail"
+                ]
               },
               {
                 "url": "https://www.raspberrypi.com/products/raspberry-pi-5/",
-                "shows": "Official product page: BCM2712, Cortex-A76, RAM options, production until 2036",
+                "shows": "Official product page: BCM2712, Cortex-A76, RAM options, production until 2036. Not re-fetchable - raspberrypi.com answered HTTP 403 to six consecutive requests on 2026-08-14, so the source keeps its 2026-06-22 read",
                 "accessed": "2026-06-22"
               }
             ],
@@ -42911,7 +42962,7 @@
           "maturity": 3.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "Verified live 2026-08-14 via primary sources. Runs an open Linux kernel tree (github.com/raspberrypi/linux) and ships public datasheets, globally purchasable, though no schematic is published for the Pi 5 - only a mechanical drawing and STEP files - and some firmware remains closed. No representative GitHub artifact is declared; the product is hardware, and the kernel fork is a general-purpose OS mirror whose commit and contributor signal is unrelated to the board as an AI platform (tracked in issue 54)."
@@ -42928,11 +42979,76 @@
             "score": 3,
             "components": "schematics:partial (HAT+ mechanical spec public);accessory-host:documented(Raspberry Pi 5, which scores 3/documented);toolchain:partial (open Pi driver integration, Hailo compiler gated);datasheets:brief (public brief);blobs:required (Hailo firmware required);retail:open_market (mass-market)",
             "confidence": "medium",
-            "note": "Officially supported open Pi software stack and public product page, globally purchasable, but the underlying Hailo model-compiler toolchain is registration-gated. Scored as an accessory on the owner's ruling of 2026-08-12 - an add-on tracks the platform it completes, and what a builder gets from this HAT is the openness of the Raspberry Pi 5 it plugs into. Its own design and toolchain answers are both partial and neither describes the system anyone actually uses, so accessory-host is what the ladder reads. See the dimension of that name in sources/rubrics/hardware.yaml for why the principle is an axis rather than an extra rung. Moved 4 to 3 on 2026-08-14 with no new evidence about the HAT - the host moved. `raspberry-pi-5` was corrected to 3/documented when it turned out to publish no schematic, only a mechanical drawing, and an accessory cannot offer more openness than the system it completes.",
+            "note": "Officially supported open Pi software stack and public product page, globally purchasable, but the underlying Hailo model-compiler toolchain is registration-gated. Scored as an accessory on the owner's ruling of 2026-08-12 - an add-on tracks the platform it completes, and what a builder gets from this HAT is the openness of the Raspberry Pi 5 it plugs into. Its own design and toolchain answers are both partial and neither describes the system anyone actually uses, so accessory-host is what the ladder reads. See the dimension of that name in sources/rubrics/hardware.yaml for why the principle is an axis rather than an extra rung. Moved 4 to 3 on 2026-08-14 with no new evidence about the HAT - the host moved. `raspberry-pi-5` was corrected to 3/documented when it turned out to publish no schematic, only a mechanical drawing, and an accessory cannot offer more openness than the system it completes. All six components were re-read on 2026-08-14 and the axis is dated. raspberrypi.com answers 403 to every automated request, so the product page it used to rest on was replaced by Raspberry Pi''s own AI HAT+ product brief, RP-008133-DS, on datasheets.raspberrypi.com, which carries four of the six on its own. `datasheets` is `brief` because that document is what it says it is - six pages of overview, a specification table, a dimensioned drawing and safety text, against the 93-page register-level datasheet the Pi 5 gets. `schematics` stays `partial` on the HAT+ Specification, which describes itself as \"A guide to designing Hardware-Attached-on-Top of a Raspberry Pi\" and licenses its contents for use \"solely in conjunction with the Raspberry Pi products\" - an interface standard for building your own board, not this board''s design. `accessory-host` off the brief pairing the HAT to one host and no other - it \"communicates using Raspberry Pi 5''s PCIe Gen 3 interface\" and ships a stacking kit \"to enable fitting on Raspberry Pi 5\". `toolchain` and `blobs` off Hailo''s own repositories rather than the vendor page, HailoRT carrying the open half and the Model Zoo naming the customer-gated compiler. `retail` off The Pi Hut stocking both variants. No value moved.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
+                "url": "https://datasheets.raspberrypi.com/ai-hat-plus/raspberry-pi-ai-hat-plus-product-brief.pdf",
+                "shows": "Raspberry Pi's own AI HAT+ product brief, RP-008133-DS, published October 2024 - six pages, of which one is the specification table and one a dimensioned drawing marked \"All dimensions are approximate and for reference purposes only ... should not be used for producing production data\". Its own text ties the HAT to a single host - \"an add-on board with a built-in Hailo AI accelerator for Raspberry Pi 5\", \"communicates using Raspberry Pi 5's PCIe Gen 3 interface\", \"Supplied with 16mm stacking header, spacers, and screws to enable fitting on Raspberry Pi 5 with Raspberry Pi Active Cooler in place\" - and records \"Conforms to Raspberry Pi HAT+ specification\" plus \"Fully integrated into Raspberry Pi's camera software stack\"",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "433d7494ec6d1c8396f991fc74bea7080a7cade398a67420a0adf9efbb6008af",
+                "establishes": [
+                  "datasheets",
+                  "accessory-host",
+                  "schematics",
+                  "toolchain"
+                ]
+              },
+              {
+                "url": "https://datasheets.raspberrypi.com/hat/hat-plus-specification.pdf",
+                "shows": "The Raspberry Pi HAT+ Specification, RP-008281-DS, 21 pages dated 2024-12-05 - \"A guide to designing Hardware-Attached-on-Top of a Raspberry Pi\", covering power states, the ID EEPROM, HAT+ classes and stackability. CC BY-ND, and the legal notice grants use \"solely in conjunction with the Raspberry Pi products. All other use of the RESOURCES is prohibited\". A mechanical and electrical interface standard for building your own add-on, which is the rubric's `partial`, and not the design of the board being sold",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "3a0932253767147038383162ac9f4b5aac3adb048c30bd1f9177a462a054ca1e",
+                "establishes": [
+                  "schematics"
+                ]
+              },
+              {
+                "url": "https://datasheets.raspberrypi.com/rpi5/raspberry-pi-5-mechanical-drawing.pdf",
+                "shows": "RP-008347-DS, the only board-level design document Raspberry Pi publishes for the Pi 5, and the evidence that puts the host at 3/documented rather than 4/open_toolchain. The reduced schematics path under the same rpi5 prefix 404s while the rpi4 one answers 200",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "5dd680d6c1f5e7aa9c7b020695e315d04aac862df82ff01d4e9041cd0668d7f2",
+                "establishes": [
+                  "accessory-host"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/hailo-ai/hailort/master/README.md",
+                "shows": "The open half of the toolchain and the source of the firmware requirement - \"libhailort, pyhailort & hailortcli - distributed under the MIT license\" with hailonet under LGPL 2.1, while the HailoRT PCIe driver \"includes the Hailo-8 firmware that runs on the Hailo device and manages its boot and control\"",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "dada62b1fccdb1234e034247e65b4e43011ef053da545bf824fb23a4a56d8bb4",
+                "establishes": [
+                  "toolchain",
+                  "blobs"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/hailo-ai/hailo_model_zoo/master/README.rst",
+                "shows": "The gated half - \"Install Hailo Dataflow Compiler and enter the virtualenv. In case you are not Hailo customer please contact hailo.ai\". The model compiler this accelerator needs is customer-gated even though the Model Zoo itself \"is released under the MIT license\"",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "73017c8683874a3a6634b038a63d1d7ba3bf0e2bdc13247b9dbfa61759190dad",
+                "establishes": [
+                  "toolchain"
+                ]
+              },
+              {
+                "url": "https://thepihut.com/products/raspberry-pi-ai-hat-plus",
+                "shows": "Both variants in stock at a mass-market reseller and addable to a cart with no account or approval - 13 TOPS at GBP67.20 and 26 TOPS at GBP105.60 inc VAT",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "c189ecc6d6752dfbd5e631cf2dc0bd4b1672283b7bd0c3595cca853a71823954",
+                "establishes": [
+                  "retail"
+                ]
+              },
+              {
                 "url": "https://www.raspberrypi.com/products/ai-hat/",
-                "shows": "Official product page: Hailo-8 (26 TOPS) / Hailo-8L (13 TOPS), HAT+ form factor, from $70",
+                "shows": "Official product page: Hailo-8 (26 TOPS) / Hailo-8L (13 TOPS), HAT+ form factor, from $70. Not re-fetchable - raspberrypi.com answered HTTP 403 to six consecutive requests on 2026-08-14, so the source keeps its 2026-06-22 read",
                 "accessed": "2026-06-22"
               }
             ],
@@ -42975,10 +43091,10 @@
           "maturity": 3.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
-          "version_note": "Verified live 2026-08-13 via primary sources. Officially supported open Pi software stack and public product page, globally purchasable, but the underlying Hailo model-compiler toolchain is registration-gated."
+          "version_note": "Verified live 2026-08-14 via primary sources. Officially supported open Pi software stack and a public product brief, globally purchasable, but the underlying Hailo model-compiler toolchain is registration-gated. Read against Raspberry Pi's own AI HAT+ product brief and HAT+ Specification on datasheets.raspberrypi.com rather than the product page, which answers 403 to every automated request."
         },
         {
           "slug": "nvidia-jetson-orin-nano-super-developer-kit",
@@ -44058,41 +44174,85 @@
             "score": 3,
             "components": "schematics:published (baseboard schematic + Altium source + Allegro layout, Apache-2.0; SoM withheld);toolchain:partial (open runtime (libedgetpu) + TFLite, closed Edge TPU compiler);datasheets:public;blobs:required (proprietary Edge TPU ASIC + closed compiler);retail:open_market (broadly purchasable)",
             "confidence": "high",
-            "note": "Public datasheet, published baseboard design files and an open runtime/TFLite path, but the Edge TPU silicon and the model compiler are proprietary closed binaries. The `schematics: none` this record used to carry was wrong from the first pass rather than stale - its own cited datasheet page has linked design files throughout. Corrected 2026-08-14: the datasheet offers a baseboard schematic PDF, the Altium schematic source, an Allegro .brd layout and a STEP model of baseboard and SoM together, all served from github.com/google-coral/electricals, which carries an Apache-2.0 LICENSE. That is more than `radxa-rock-5b` releases, and it stops short of `open` because only half the product is covered - the SoM that carries the i.MX 8M and the Edge TPU has no design files. The score does not move: `published` reaches 4 only with a stack that builds from source, and the Edge TPU compiler is a closed binary, so the ladder lands on 3/documented either way. What changes is that the 3 is now derived from what Google actually publishes.",
+            "note": "RETAIL RESOLVED 2026-08-14 and the axis dated. `retail` had blocked this confirmation because no declared value described the board's actual state - Seeed marks both variants Discontinued and out of stock, and coral.ai/products/dev-board 302s to a page naming no hardware. `restricted` was the nearest word and is wrong: it means gated by NDA or design win, which is a part somebody CAN buy under terms. A withdrawn part is a different fact, so `discontinued` was added to the vocabulary - score-neutral, since no rung reads `retail`. Public datasheet, published baseboard design files and an open runtime/TFLite path, but the Edge TPU silicon and the model compiler are proprietary closed binaries. The `schematics: none` this record used to carry was wrong from the first pass rather than stale - its own cited datasheet page has linked design files throughout. Corrected 2026-08-14: the datasheet offers a baseboard schematic PDF, the Altium schematic source, an Allegro .brd layout and a STEP model of baseboard and SoM together, all served from github.com/google-coral/electricals, which carries an Apache-2.0 LICENSE. That is more than `radxa-rock-5b` releases, and it stops short of `open` because only half the product is covered - the SoM that carries the i.MX 8M and the Edge TPU has no design files. The score does not move: `published` reaches 4 only with a stack that builds from source, and the Edge TPU compiler is a closed binary, so the ladder lands on 3/documented either way. What changes is that the 3 is now derived from what Google actually publishes. The remaining four components were read on 2026-08-14 and three of them hold. `datasheets` is `public` on the same v1.7 datasheet. `toolchain` is `partial` on libedgetpu shipping its runtime source under Apache-2.0 against an Edge TPU Compiler distributed only as an apt binary from packages.cloud.google.com with no source anywhere - archived is not closed, so the value does not move. `blobs` is `required` on the same closed compiler standing between any model and the proprietary Edge TPU. THE AXIS IS NOT DATED, and `retail` is the component that blocks it. The board reads as withdrawn rather than open-market - Seeed, which is its named reseller, marks both the 1GB at $129.99 and the 4GB at $169.99 Discontinued and out of stock; coral.ai/products/dev-board now 302s to developers.google.com/coral, a page that names no hardware and links no purchase route; and no reachable distributor confirms stock, Mouser serving a bot-denial page and Farnell and Digi-Key 403. The rubric's vocabulary is open_market/distributor/restricted and none of the three describes a discontinued part, so this is escalated for a ruling rather than guessed at. Escalated with it - `adoption` below, which rests on the same wind-down.",
+            "last_verified": "2026-08-14",
             "sources": [
+              {
+                "url": "https://coral.ai/products/dev-board",
+                "shows": "the product page for this board 302-redirects to developers.google.com/coral, which names no hardware and links no purchase route - establishes that the vendor no longer offers the board for sale",
+                "accessed": "2026-08-14",
+                "establishes": [
+                  "retail"
+                ],
+                "http_status": 200,
+                "content_sha256": "742e938d7767e603fbd75f179e6e59d07848af2c697af365166f596412fbd888"
+              },
               {
                 "url": "https://coral.ai/docs/dev-board/datasheet/",
                 "shows": "Datasheet v1.7 (December 2022) - 4 TOPS, 2 TOPS/W, SoM form factor, TFLite, Google-designed Edge TPU; its \"Schematic and layout files\" section links Coral-Dev-Board-baseboard-schematic.pdf, Coral-Dev-Board-baseboard-schematic-Altium.zip, Coral-Dev-Board-baseboard-layout-Allegro.brd and Dev Board.STEP, and points anyone wanting the SoM on custom hardware at the SoM datasheet rather than at design files",
                 "accessed": "2026-08-14",
                 "http_status": 200,
-                "content_sha256": "b47ca1ecbc39b2f0c88cdbb55dd3c5053b77728971901027092192c617b494d2"
+                "content_sha256": "b47ca1ecbc39b2f0c88cdbb55dd3c5053b77728971901027092192c617b494d2",
+                "establishes": [
+                  "schematics",
+                  "datasheets"
+                ]
               },
               {
                 "url": "https://github.com/google-coral/electricals",
                 "shows": "\"Electrical designs for coral.ai projects\", Apache-2.0, public; dev_board/ holds Coral-Dev-Board-baseboard-schematic.pdf, -schematic-Altium.zip and -layout-Allegro.brd, which is where the datasheet download links resolve to",
                 "accessed": "2026-08-14",
                 "http_status": 200,
-                "content_sha256": "fac5f1fe51996515123e7d918121814ae551c800a60f2cb7cde914bb72935c1f"
+                "content_sha256": "fac5f1fe51996515123e7d918121814ae551c800a60f2cb7cde914bb72935c1f",
+                "establishes": [
+                  "schematics"
+                ]
+              },
+              {
+                "url": "https://coral.ai/docs/edgetpu/compiler/",
+                "shows": "The Edge TPU Compiler is distributed as an apt package from packages.cloud.google.com and nothing else - installation is an apt-key add plus apt-get install, the page publishes a version history to 16.0 and points at no source repository, no build instructions and no license. It \"compiles a TensorFlow Lite model (.tflite file)\" and nothing else. The closed half of the toolchain, and the blob that stands between any model and the Edge TPU",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "c0b209933007e1cf5115af2945f372853abcbb8961e30860312acfa9a4b35d87",
+                "establishes": [
+                  "toolchain",
+                  "blobs"
+                ]
               },
               {
                 "url": "https://github.com/google-coral/libedgetpu",
-                "shows": "open source Edge TPU userspace runtime driver",
-                "accessed": "2026-06-22"
+                "shows": "\"The userspace level runtime driver for Coral devices\", Apache-2.0, source published - the open half of the toolchain. Read again 2026-08-14 and it now carries \"This repository was archived by the owner on Oct 14, 2025. It is now read-only\", last pushed 2024-08-11. The source is still published under the same licence, so the openness value is unaffected; what the archive bears on is adoption",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "ab0cd769440985d0def6244a30fc16778c6d0a1e727a2cab92b998339545eaa7",
+                "establishes": [
+                  "toolchain"
+                ]
+              },
+              {
+                "url": "https://www.seeedstudio.com/Coral-4GB-Dev-Board-Version-p-4683.html",
+                "shows": "Coral Dev Board 4GB, SKU 102110458, $169.99, marked Discontinued and Out of stock at the board's named reseller. The 1GB listing at Coral-Dev-Board-p-2900 reads the same way, $129.99, Discontinued and out of stock. Read for `retail` and it does not support `open_market`, which is why the openness axis above is left undated",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "8e8c23e68d32b865f3728a9d244ebb8906243ddd0227d051a7d903ee0914b162"
               }
             ],
             "bucket": "closed"
           },
           "adoption": {
-            "level": 4,
-            "reach": "broad",
+            "level": 3,
+            "reach": "niche",
             "signal_type": "reported_traction",
             "confidence": "medium",
-            "note": "Long-established, widely distributed edge-AI dev platform with an active google-coral GitHub org; the older edgetpu repo was archived April 2026 with libedgetpu now maintained.",
+            "note": "LEVEL CORRECTED 4/broad -> 3/niche on 2026-08-14, because the previous note's own stated reason is false. It said the older edgetpu repo was archived \"with libedgetpu now maintained\". libedgetpu was archived read-only on 2025-10-14, six months BEFORE the tracker repo, and the org API read today shows 34 of 40 repositories archived - the entire Edge TPU stack, libedgetpu, libcoral, pycoral, tflite, examples-camera and tutorials among them, all last pushed 2024-08-11. The six live repositories are a different product line: coralnpu, coralnpu-compiler, coralnpu-mpact, coralmicro and two project demos.\nCombined with retail, this is a wound-down platform rather than a niche one. Seeed marks both variants Discontinued and out of stock, and coral.ai/products/dev-board now 302s to a page that names no hardware and links no purchase route. The category already places nvidia-jetson-agx-orin and memryx-mx3 at 3/niche on stronger evidence than this board can now show. Held at 3 rather than lower because the hardware remains in use and the archived stack still functions.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
-                "url": "https://github.com/google-coral/libedgetpu",
-                "shows": "maintained official runtime repo; broad ecosystem",
-                "accessed": "2026-06-22"
+                "url": "https://api.github.com/orgs/google-coral/repos?per_page=100",
+                "shows": "34 of 40 repositories archived, including the whole Edge TPU stack (libedgetpu archived 2025-10-14, libcoral, pycoral, tflite, examples-camera, tutorials), all last pushed 2024-08-11; the six live repos are coralnpu/coralnpu-compiler/coralnpu-mpact/coralmicro plus two demos, a different product line",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "09fb2a86689a959896da1555f6b94f82dde6bf56c1dd8b9532c9cf8adf9b087b"
               }
             ]
           },
@@ -44113,13 +44273,13 @@
               }
             ]
           },
-          "maturity": 3.0,
+          "maturity": 2.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
-          "version_note": "Verified live 2026-08-14 via primary sources. Public datasheet, baseboard design files (schematic PDF, Altium source and Allegro layout, Apache-2.0) and an open runtime/TFLite path, but the SoM design is withheld and the Edge TPU silicon and model compiler are proprietary closed binaries."
+          "version_note": "Verified live 2026-08-14 via primary sources. Public datasheet, baseboard design files (schematic PDF, Altium source and Allegro layout, Apache-2.0) and an open runtime/TFLite path, but the SoM design is withheld and the Edge TPU silicon and model compiler are proprietary closed binaries. The platform is winding down and the score does not yet say so - libedgetpu and every other Edge TPU library were archived read-only, the google-coral issue tracker followed in April 2026, and Seeed marks both board variants Discontinued. Adoption and the retail component are escalated for a ruling."
         },
         {
           "slug": "axelera-metis-aipu",
@@ -44432,28 +44592,61 @@
             "score": 5,
             "components": "schematics:open (gerbers + schematics CC-BY-SA 4.0);toolchain:open (App Lab GPL-3.0 + App Bricks MPL-2.0, source published);datasheets:public;blobs:required (proprietary Qualcomm SoC firmware);retail:open_market (global)",
             "confidence": "high",
-            "note": "Board schematics and gerbers are openly licensed under CC-BY-SA 4.0 and the App Lab toolchain is open, which is the same open-and-open pair that puts beagley-ai at 5. Corrected from 3/documented on 2026-08-12. This ladder scores design-file openness rather than silicon: the level-5 rung says so in its own text, and every board in the category runs on proprietary silicon, so the QRB2210 firmware blobs the old note cited are a reason no rung applies. Re-derived 2026-08-14, because the toolchain half of the pair rested on a vendor claim rather than on source. The FAQ still answers \"Is UNO Q open source?\" with schematics and gerbers only, and its App Lab answer still reads \"we are working to publish corresponding source code repositories, they will become available soon\" - but that sentence is now stale. github.com/arduino/arduino-app-lab is public under GPL-3.0, 19MB of Go and TypeScript with the app, ui-packages and standalone-apps trees, last pushed 2026-08-12, and github.com/arduino/app-bricks-py is public under MPL-2.0, pushed 2026-08-13. The 5 stands and now rests on the repositories rather than on the promise of them.",
+            "note": "Board schematics and gerbers are openly licensed under CC-BY-SA 4.0 and the App Lab toolchain is open, which is the same open-and-open pair that puts beagley-ai at 5. Corrected from 3/documented on 2026-08-12. This ladder scores design-file openness rather than silicon: the level-5 rung says so in its own text, and every board in the category runs on proprietary silicon, so the QRB2210 firmware blobs the old note cited are a reason no rung applies. Re-derived 2026-08-14, because the toolchain half of the pair rested on a vendor claim rather than on source. The FAQ still answers \"Is UNO Q open source?\" with schematics and gerbers only, and its App Lab answer still reads \"we are working to publish corresponding source code repositories, they will become available soon\" - but that sentence is now stale. github.com/arduino/arduino-app-lab is public under GPL-3.0, 19MB of Go and TypeScript with the app, ui-packages and standalone-apps trees, last pushed 2026-08-12, and github.com/arduino/app-bricks-py is public under MPL-2.0, pushed 2026-08-13. The 5 stands and now rests on the repositories rather than on the promise of them. The remaining three components were read the same day and the axis is dated on all five. `datasheets` is `public` on the 109-page UNO Q user manual for ABX00162-ABX00173, modified 12/08/2026, served from docs.arduino.cc as a plain PDF with no registration, alongside the schematics, pinout, CAD and STEP downloads. `retail` is `open_market` on the FAQ naming the channels - \"UNO Q is available to order from the official Arduino Store, RS Components, Digikey, Mouser, Macfos\" - and on the store still selling both SKUs at EUR59,90 and EUR82,90. `blobs` stays `required` on the proprietary Dragonwing QRB2210 the board is built around, which is what every other part in this category records for the same fact, but the manual narrows what that covers and the narrowing is worth recording - the Adreno 702 graphics stack is open, \"hardware-accelerated 3D graphics rendering through open-source Mesa drivers\", freedreno for OpenGL and turnip for Vulkan, with video encode and decode reached through plain V4L2. What remains closed is the SoC boot chain, which Arduino publishes nothing of.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
                 "url": "https://www.arduino.cc/product-uno-q",
-                "shows": "\"Yes, UNO Q schematics and gerbers are available under the CC-BY-SA 4.0 license\"; and, of the toolchain, \"Yes, App Lab and the App Bricks library are open source; we are working to publish corresponding source code repositories, they will become available soon\"",
+                "shows": "\"Yes, UNO Q schematics and gerbers are available under the CC-BY-SA 4.0 license\"; and, of the toolchain, \"Yes, App Lab and the App Bricks library are open source; we are working to publish corresponding source code repositories, they will become available soon\". The same FAQ names the sales channels - \"UNO Q is available to order from the official Arduino Store, RS Components, Digikey, Mouser, Macfos, and in the future from other Authorized Distributors and Resellers\"",
                 "accessed": "2026-08-14",
                 "http_status": 200,
-                "content_sha256": "76f7fce92f89c4793b7e61204d917fd8abf3dc2c94d4cb88bc6dbeb56c6d591f"
+                "content_sha256": "76f7fce92f89c4793b7e61204d917fd8abf3dc2c94d4cb88bc6dbeb56c6d591f",
+                "establishes": [
+                  "schematics",
+                  "toolchain",
+                  "retail"
+                ]
               },
               {
                 "url": "https://github.com/arduino/arduino-app-lab",
                 "shows": "\"The cross-platform IDE for developing Arduino Apps, built with Wails\" - public, GPL-3.0, ~19MB, Go plus TypeScript source in app/, ui-packages/ and standalone-apps/, last pushed 2026-08-12. The repositories the FAQ says are coming are already here",
                 "accessed": "2026-08-14",
                 "http_status": 200,
-                "content_sha256": "8fb102888dadaed7bbf33369218fc64c739d4ecbe61ac616ce5b7563a8aad48b"
+                "content_sha256": "8fb102888dadaed7bbf33369218fc64c739d4ecbe61ac616ce5b7563a8aad48b",
+                "establishes": [
+                  "toolchain"
+                ]
               },
               {
                 "url": "https://github.com/arduino/app-bricks-py",
                 "shows": "\"The code of the Arduino App Lab Bricks\" - public, MPL-2.0, last pushed 2026-08-13",
                 "accessed": "2026-08-14",
                 "http_status": 200,
-                "content_sha256": "b46b01f5a0d4d387b7fe2ddd3fa4230e2bb7cecf3d64a082b23b541e6f37ef43"
+                "content_sha256": "b46b01f5a0d4d387b7fe2ddd3fa4230e2bb7cecf3d64a082b23b541e6f37ef43",
+                "establishes": [
+                  "toolchain"
+                ]
+              },
+              {
+                "url": "https://docs.arduino.cc/resources/datasheets/ABX00162-ABX00173-datasheet.pdf",
+                "shows": "The UNO Q user manual for SKU ABX00162-ABX00173, 109 pages, modified 12/08/2026, served without registration next to the schematics, pinout, CAD and STEP downloads on the same docs page. It is the source of the blob picture as well as the datasheet one - the board is built on the \"Qualcomm Dragonwing QRB2210 - System-on-Chip (SoC)\" running a vendor Debian image, and Arduino publishes no boot firmware for it, while section 8 records the graphics side as open - \"The Adreno 702 GPU provides hardware-accelerated 3D graphics rendering through open-source Mesa drivers\", freedreno for OpenGL and OpenGL ES, turnip for Vulkan, and video encode/decode through V4L2 GStreamer elements",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "0e23edc6a7c3b98dd9f63b5acf48130be798bd5f3491aa8a9fee9215521a1cb5",
+                "establishes": [
+                  "datasheets",
+                  "blobs"
+                ]
+              },
+              {
+                "url": "https://store.arduino.cc/pages/uno-q",
+                "shows": "Both SKUs still on sale from Arduino directly, UNO Q 2GB at EUR59,90 and UNO Q 4GB at EUR82,90, each with a BUY NOW route and an Official Distributors link, no account or approval gate",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "73b0dc0409e09587efe671fff41fdc0099225331b4099f592a99ec6c932d7f3c",
+                "establishes": [
+                  "retail"
+                ]
               }
             ],
             "bucket": "open"
@@ -44500,7 +44693,7 @@
           "maturity": 3.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "Verified live 2026-08-14 via primary sources. Board schematics and gerbers are CC-BY-SA 4.0 and the App Lab toolchain is published as source (GPL-3.0, with the App Bricks library MPL-2.0), but the QRB2210 SoC remains proprietary silicon needing firmware blobs."
