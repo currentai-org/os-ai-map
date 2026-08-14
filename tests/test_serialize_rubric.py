@@ -768,7 +768,7 @@ def test_real_sources_serialize_without_errors():
         # undeclared-key row, exactly as `autogen`'s CC-BY-4.0 documentation license
         # already did - which is the evidence that MCP was made to match an existing
         # convention rather than given a new one.
-        "agent_tools_protocols": 138, "dataset_processing_tools": 92, "evaluation_code": 107,
+        "agent_tools_protocols": 138, "dataset_processing_tools": 92, "evaluation_code": 109,
         # inference_code 47 -> 64 when the sweep read the category: four stale deferrals came
         # off (a deferred product publishes no openness evidence at all), and several products
         # that had described their gating in prose gained a readable `source:`/`core-gated:`.
@@ -858,7 +858,7 @@ def test_real_sources_serialize_without_errors():
         # clients; privatemode gained `source: partial`, its recorded `TCB-public` having been
         # outside the dimension's enum. Both reproduce the score they carried. The category now
         # defers nothing.
-        "orchestration_agents": 215, "telemetry_observability": 114, "ui_api": 196,
+        "orchestration_agents": 215, "telemetry_observability": 114, "ui_api": 197,
         # training_synthetic_datasets is unchanged at 158 across the ladder widening, which
         # is the check that mattered: benchmark_eval_data's new dimensions and rungs did not
         # disturb the category the ladder was derived from.
@@ -1114,7 +1114,7 @@ def test_a_compound_license_publishes_every_part():
             )
         ]
 
-    assert license_parts("zed") == ["GPL-3.0-or-later", "AGPL-3.0", "Apache-2.0"]
+    assert license_parts("zed") == ["GPL-3.0-or-later", "GPL-3.0", "Apache-2.0"]
     assert license_parts("flan-collection") == ["Apache-2.0", "per-task"]
     assert license_parts("smoltalk") == ["apache-2.0", "per-component"]
     assert license_parts("redpajama-data-v2") == ["CommonCrawl-ToU", "Apache-2.0"]

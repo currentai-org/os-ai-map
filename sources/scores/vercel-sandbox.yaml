@@ -54,17 +54,40 @@ openness:
     - source
     - license
 adoption:
-  level: 4
-  reach: 1M-10M
+  level: 5
+  reach: '>10M'
   signal_type: usage_volume
   confidence: medium
-  note: npm @vercel/sandbox ~9.06M downloads in the last 30 days (npm registry API). Package-manager pulls
-    include CI/mirror inflation and overstate distinct human users, so reach is placed at the 1M-10M band
-    (level 4) rather than >10M; GA status + large Vercel install base corroborate genuine production use.
+  note: 'npm @vercel/sandbox ~9.06M downloads in the last 30 days (npm registry API). Package-manager pulls
+    include CI/mirror inflation and overstate distinct human users; GA status + large Vercel install base
+    corroborate genuine production use. Re-banded 2026-08-14. The npm downloads API reports 13,197,882
+    downloads of @vercel/sandbox over 2026-07-11 to 2026-08-09, clear of the 10M floor, which bands at
+    level 5 / >10M on the software adoption scale rather than the 1M-10M placed on the older ~9.06M
+    reading. The package is the product''s own - its registry metadata describes it as the "Software
+    Development Kit for Vercel Sandbox" and points at github.com/vercel/sandbox. Per the 2026-08-14
+    ruling this figure is re-fetchable but NOT pipeline-recomputable, because npm is an unbridged route
+    (issue #163); no signal model reads it, so nothing computed can disagree with it and a later reader
+    must not mistake this for a computed band. Confidence stays medium rather than high on the
+    CI/mirror-inflation caveat above.'
+  last_verified: '2026-08-14'
   sources:
   - url: https://api.npmjs.org/downloads/point/last-month/@vercel/sandbox
     shows: ~9,062,145 downloads May 4-Jun 2 2026
     accessed: '2026-06-04'
+  - url: https://api.npmjs.org/downloads/point/last-month/@vercel%2Fsandbox
+    shows: 13,197,882 downloads of package @vercel/sandbox over the window start 2026-07-11 to end
+      2026-08-09. The scoped name is URL-encoded because the npm point endpoint requires it.
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 1501d8d65011025ec4e6f0fb7cdddbd56c4643b968b0898c0ee5979ada9817fc
+  - url: https://registry.npmjs.org/@vercel%2Fsandbox
+    shows: 'Registry metadata for the package - description "Software Development Kit for Vercel
+      Sandbox", repository git+https://github.com/vercel/sandbox.git (directory packages/vercel-sandbox),
+      homepage vercel.com/docs/vercel-sandbox/sdk-reference, latest 3.0.0. Confirms the package is the
+      product''s own primary client, not a same-name match.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 1aa475ece94f99c78b233b26f2004c6cbe4326cbb34b0f8c2758e33159d3960b
   - url: https://vercel.com/docs/sandbox
     shows: GA ephemeral compute primitive, JS+Python SDK
     accessed: '2026-06-04'

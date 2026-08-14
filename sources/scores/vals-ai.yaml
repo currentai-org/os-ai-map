@@ -1,30 +1,42 @@
 product: vals-ai
 openness:
-  score: 1
-  class: closed
+  score: 2
+  class: source_available
   components:
     license:
     - name: proprietary
+      detail: the Vals Index platform and its held-out sets
+    - name: AGPL-3.0
+      detail: OSI, vals-ai/Valkyrie
+    - name: MIT
+      detail: OSI, vals-ai/model-library
     source:
-      value: closed
-      detail: SaaS-only,no public repo
+      value: partial
+      detail: harness repos public, Index runtime and datasets do not ship
     benchmarks:
       value: proprietary/private-held-out
       detail: Vals Index on non-public datasets
     eval-harness:
-      value: closed
+      value: published
+      detail: Valkyrie AGPL-3.0 + model-library MIT
   confidence: high
-  note: 'Closed third-party eval platform; benchmarks deliberately held private to prevent dataset leakage,
-    eval infra not open sourced. NO last_verified claimed and the axis is ESCALATED, because the re-read
-    on 2026-08-13 contradicts the recorded value. The about page now says Vals has open-sourced ''Valkyrie,
-    a distributed system to run agentic benchmarks, and our model library, a free standard API to call
-    models with'', and both repos are live and actively pushed - vals-ai/valkyrie under AGPL-3.0 and vals-ai/model-library
-    under MIT. That makes ''source:closed(SaaS-only,no public repo)'' and ''eval-harness:closed'' wrong
-    as written. The likely correct record is source:partial, which the software ladder scores 2/source_available:
-    a real harness is published while the Vals Index runtime and its held-out datasets still do not ship.
-    That is a score change, so it is reported rather than made here.'
-  raw: license:proprietary;source:closed(SaaS-only,no public repo);benchmarks:proprietary/private-held-out(Vals
-    Index on non-public datasets);eval-harness:closed
+  note: 'Third-party eval platform whose benchmarks are deliberately held private to prevent dataset
+    leakage, with part of the infrastructure now published. Re-read 2026-08-14 and the correction the
+    2026-08-13 read escalated is applied. The about page states ''We have built, and even open-sourced,
+    the infrastructure we rely on to run these evaluations reproducibly and at scale across labs. This
+    includes Valkyrie, a distributed system to run agentic benchmarks, and our model library, a free
+    standard API to call models with''. Both repos are live, public and actively pushed - vals-ai/Valkyrie
+    is AGPL-3.0, pushed 2026-08-14, and vals-ai/model-library is MIT, pushed 2026-07-30. So
+    ''source:closed'' and ''eval-harness:closed'' were both wrong as written.
+    What has NOT changed is the part the tier turns on. Scores are still ''based on our privately held
+    test sets'', the Vals Index runtime is still a hosted service with no self-hostable implementation,
+    and the held-out datasets still do not ship. That is `source: partial` in the software ladder''s own
+    words - a repo exists but the runtime does not - and the ladder scores it 2/source_available. Moved
+    from 1/closed.'
+  raw: license:proprietary(the Vals Index platform and its held-out sets)+AGPL-3.0(OSI, vals-ai/Valkyrie)+MIT(OSI,
+    vals-ai/model-library);source:partial(harness repos public, Index runtime and datasets do not ship);benchmarks:proprietary/private-held-out(Vals
+    Index on non-public datasets);eval-harness:published(Valkyrie AGPL-3.0 + model-library MIT)
+  last_verified: '2026-08-14'
   sources:
   - url: https://www.vals.ai
     shows: proprietary SaaS eval platform, 'proprietary benchmarks' require contact, no GitHub/self-host
@@ -42,6 +54,37 @@ openness:
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: deb010de89092a2071bc5e3e8168d9b85e7bfa3887d7105476aba611c90234fc
+  - url: https://www.vals.ai/about
+    shows: 'Re-read 2026-08-14. ''We have built, and even open-sourced, the infrastructure we rely on
+      to run these evaluations reproducibly and at scale across labs. This includes Valkyrie, a distributed
+      system to run agentic benchmarks, and our model library, a free standard API to call models with.''
+      Beside it, ''Scores are based on our privately held test sets to preserve the integrity and signal
+      of our results'' - the harness ships, the sets and the Index runtime do not.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: b90f2049e69c80ab973b902ea1524b11f79ea594d00ebf24b6d1fae7c7a7342a
+    establishes:
+    - source
+    - license
+  - url: https://api.github.com/repos/vals-ai/valkyrie
+    shows: 'Repo metadata for vals-ai/Valkyrie - license spdx_id AGPL-3.0, public, not archived, 31 stars,
+      pushed 2026-08-14, described as ''Scalable, cloud-native infrastructure for evaluating AI agents
+      across any benchmark''. A live published harness rather than an abandoned mirror.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 6d480b6159ce4afd19ac71b172d88324af29308273bca24f45f25d047eb8f540
+    establishes:
+    - license
+    - source
+  - url: https://api.github.com/repos/vals-ai/model-library
+    shows: 'Repo metadata for vals-ai/model-library - license spdx_id MIT, public, not archived, 21 stars,
+      pushed 2026-07-30, ''Simple provider agnostic LLM gateway''.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 10bd99910f93875f3779f9bbc24e8e8778cc6278fb66499ce753ef3cbfc8894e
+    establishes:
+    - license
+    - source
 adoption:
   level: 3
   signal_type: reported_traction

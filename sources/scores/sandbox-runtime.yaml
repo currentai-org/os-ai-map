@@ -56,18 +56,43 @@ openness:
     - source
     - core-gated
 adoption:
-  level: 2
-  reach: 10K-100K
+  level: 4
+  reach: 1M-10M
   signal_type: usage_volume
-  confidence: medium
-  note: npm @anthropic-ai/sandbox-runtime ~558.8k downloads in the last 30 days (npm registry API), plus
-    403 GitHub dependents and 4.3k stars. Package-manager pulls overstate distinct users (CI/mirror inflation)
-    and it is a young research preview shipped alongside Claude Code, so reach placed conservatively at
-    10K-100K distinct users / level 2.
+  confidence: low
+  note: 'npm @anthropic-ai/sandbox-runtime ~558.8k downloads in the last 30 days (npm registry API), plus
+    403 GitHub dependents and 4.3k stars. Package-manager pulls overstate distinct users (CI/mirror
+    inflation) and it is a young research preview shipped alongside Claude Code, which is why the
+    earlier reading was placed conservatively at 10K-100K / level 2. Re-banded 2026-08-14, two levels.
+    The npm downloads API reports 1,000,104 downloads of @anthropic-ai/sandbox-runtime over 2026-07-11
+    to 2026-08-09. The bands are read on the figure, not on a judgement about how many of those pulls
+    are people, and 1,000,104 clears the 1M floor, so the band is 1M-10M / level 4. Two caveats travel
+    with it. First, the margin is 104 downloads, 0.01% over the floor - this is the thinnest boundary
+    crossing in the corpus, a re-fetch on another day could as easily read level 3, and confidence is
+    dropped to low to say so. Second, per the 2026-08-14 ruling the figure is re-fetchable but NOT
+    pipeline-recomputable, because npm is an unbridged route (issue #163); no signal model reads it, so
+    it must not be mistaken for a computed band. The package is the product''s own - registry metadata
+    points at github.com/anthropic-experimental/sandbox-runtime, the repository the openness axis reads.'
+  last_verified: '2026-08-14'
   sources:
   - url: https://api.npmjs.org/downloads/point/last-month/@anthropic-ai/sandbox-runtime
     shows: ~558,800 downloads May 4-Jun 2 2026
     accessed: '2026-06-04'
+  - url: https://api.npmjs.org/downloads/point/last-month/@anthropic-ai%2Fsandbox-runtime
+    shows: 1,000,104 downloads of package @anthropic-ai/sandbox-runtime over the window start
+      2026-07-11 to end 2026-08-09 - 104 above the 1M band floor. The scoped name is URL-encoded
+      because the npm point endpoint requires it.
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 1a80488002aafa187457d7b690bae55224d82d22795e6ef19bd95bb449d8509e
+  - url: https://registry.npmjs.org/@anthropic-ai%2Fsandbox-runtime
+    shows: 'Registry metadata for the package - repository
+      git+https://github.com/anthropic-experimental/sandbox-runtime.git, described as "Anthropic
+      Sandbox Runtime (ASRT) - A general-purpose tool for wrapping security boundaries around arbitrary
+      processes", latest 0.0.73. Confirms the package is the product itself, which ships only from npm.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 83ff3ad21da48ca61ca8262c030ef6f83ad9830af4a8c1ac9f9b405f97539f43
   - url: https://github.com/anthropic-experimental/sandbox-runtime
     shows: 403 dependents, 4.3k stars
     accessed: '2026-06-04'

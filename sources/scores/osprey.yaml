@@ -67,8 +67,9 @@ capability:
   score: 4
   basis: feature_matrix
   basis_detail: throughput / rules coverage
-  value: High-performance real-time event-decisioning engine with a Python rules DSL (SML); ~2.3M rules/sec
-    and 400M daily actions at Discord.
+  value: High-performance real-time event-decisioning engine with a Python-flavoured rules DSL (SML) and an
+    investigation console; human-written rules evaluate every event as it arrives; ROOST reports it
+    processing over 50M events daily in production environments like Bluesky, and it was built at Discord.
   confidence: medium
   note: 'Battle-tested at Discord scale; single-purpose Trust & Safety rules engine, not an AI-native guardrail.
     NOT confirmed on 2026-08-13, and the reason is in the value rather than the band. The throughput figures
@@ -78,7 +79,18 @@ capability:
     processing at scale, and the Discord provenance. The v1.0 announcement gives a different and smaller
     published figure, ''over 50M events daily''. The engine description behind the 4 is intact and the band
     is not in doubt, but replacing a headline number in a recorded value is an owner call, so it is raised
-    rather than taken and no date is claimed.'
+    rather than taken and no date is claimed.
+    REPLACED 2026-08-14, on the owner''s ruling, and the band does not move. The two vanished figures are
+    gone from the value and the only published throughput number takes their place - ROOST''s v1.0
+    announcement, re-read today and byte-identical to the 2026-08-13 read, says Osprey "processes over 50M
+    events daily in production environments like Bluesky". A fresh read of the README confirms the figures
+    are not there to recover - it carries no occurrence of 2.3M or 400M at all - while the engine
+    description the 4 rests on is intact - "a safety rules engine and investigation console for real-time
+    event processing at scale", rules "written in SML, Osprey''s structured rule language, and extended
+    with user-defined functions (UDFs)", built at Discord. A single-purpose Trust and Safety rules engine
+    running at that scale is still a 4 and still not an AI-native guardrail; the correction is to the
+    number quoted, not to the judgment.'
+  last_verified: '2026-08-14'
   sources:
   - url: https://github.com/roostorg/osprey
     shows: README describes 'a safety rules engine and investigation console for real-time event processing
@@ -88,3 +100,18 @@ capability:
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 592ab20d0b28d1642d82318e38ce104ed1c1f625d061b8669c875182556375b7
+  - url: https://roost.tools/blog/introducing-osprey-v1-0-open-source-infrastructure-for-real-time-abuse-mitigation/
+    shows: 'The published throughput figure that replaces the vanished ones - Osprey "processes over 50M
+      events daily in production environments like Bluesky and is designed for real-time incident
+      response". Re-fetched 2026-08-14, digest byte-identical to the 2026-08-13 read.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: d6a88d5ed04eb1fe19fff71b8c8bbdd60ffe36fb3d226608bd8b549f144d2dc2
+  - url: https://github.com/roostorg/osprey
+    shows: 'Re-read 2026-08-14. The README carries no occurrence of "2.3M" or "400M" anywhere, so the
+      figures the recorded value led with are not recoverable from it. What it does still carry is the
+      engine the band rests on - "a safety rules engine and investigation console for real-time event
+      processing at scale", rules written in SML and extended with user-defined functions.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 2b4b9c4fbe979ebb60ab3348cc1e9e721142f685dfc8b3cdbaa20109fac9886f
