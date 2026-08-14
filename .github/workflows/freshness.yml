@@ -1,0 +1,56 @@
+name: freshness
+
+# The age gate: no category's oldest axis may be more than 30 days old.
+#
+# The window is 30 days, decided 2026-08-09. docs/guides/verification.md step 5 owns the number
+# and the reasoning; it is a judgment about how much re-reading the map is worth rather than
+# something derivable, and it is not re-argued per category.
+#
+# Deliberately NOT a step in validate.yml, and this is the difference that decides it: every
+# other gate in this repo fails on something in the diff in front of you. This one fails on the
+# passage of time. Per pull request it would block work unrelated to the stale category, and the
+# person looking at the red check could not clear it from inside their own PR either — the remedy
+# is to re-read a category against its sources, which is a research pass ending in a PR of its
+# own. An outside contributor adding one product would get a failure for a category they have
+# never touched. That is the failure mode parity.yml is written to avoid: a gate that fails for a
+# reason the person in front of it cannot act on gets switched off, which is how gates die.
+#
+# Weekly rather than daily for the same reason parity is weekly — the cadence has to match the
+# work it polices. A category is re-read in one run, so all of its axes carry one date and all of
+# them age out together; sixteen categories on a 30-day window is about four crossing the line
+# per week. A daily gate would re-report the same cliff every day until the re-read landed, which
+# is nagging rather than information.
+#
+# validate.yml runs the same report with no threshold, so it prints and cannot fail. That is
+# where a re-read PR sees whether the category it refreshed came back inside the window.
+
+on:
+  schedule:
+    # Monday 08:00 UTC. This needs no warehouse, so unlike parity.yml it is not tied to the
+    # Monday recompute chain; it sits after it so the week's queue of categories to re-read
+    # appears in one place at the start of the week.
+    - cron: "0 8 * * 1"
+  workflow_dispatch:
+    inputs:
+      max-age-days:
+        description: "Window in days. Leave at 30 unless testing what a different one would say."
+        default: "30"
+
+jobs:
+  freshness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Full history, for the same reason validate.yml needs it: an axis with no
+          # last_verified is dated from the last commit that changed what its score file
+          # claims, and a shallow clone collapses every one of those onto the tip commit —
+          # which reads as freshly verified and would turn this gate green on nothing.
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --locked
+      - name: Age gate (no category's oldest axis over the window)
+        run: uv run python -m build.check_freshness --max-age-days "${{ inputs.max-age-days || 30 }}"

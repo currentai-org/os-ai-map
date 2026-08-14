@@ -139,6 +139,13 @@ cites it. Neither is a hard failure on its own — pages legitimately change —
 reasons to re-check, and a *missing* digest on a newly claimed confirmation is a hard
 failure, because it means the tool did not fetch anything.
 
+**A digest is only ever the output of a fetch, and there is no other way to obtain one.** A
+fabricated digest is worse than an absent one: an absent one fails the gate, while a fabricated
+one passes it and then defeats the sampled re-fetch, which is the only thing that ever goes back
+and checks whether a cited page says what it was recorded as saying. Three were fabricated on
+2026-08-13 by padding truncated prefixes out to 64 characters, which is why this is stated here
+rather than assumed. `docs/runbooks/verification-pass.md` carries the command that produces one.
+
 ## The gates, and why they ratchet
 
 Every failure mode this project has actually hit gets a mechanism, not a note. Cheap ones
@@ -152,14 +159,26 @@ gate every PR. The ones needing the network run periodically.
 | refetch | fabricated or rotted sources | sampled re-fetch, digest and `shows` token match | network, weekly |
 | parity | repo and warehouse drifting apart | `build/check_parity.py`, a per-product differential | network, weekly |
 | capability-anchors | a recorded peer comparison that does not hold | `relation` must agree with both scores, and a dated band's peer must be confirmed at least as recently | free |
+| age | a corpus that was confirmed once and then quietly aged | `build/check_freshness.py --max-age-days 30`, scheduled weekly | free, weekly |
 
 These were numbered G1-G6 until 2026-08-08. Older PRs and commit messages use the numbers.
 
+The age gate is the last one on this table to arrive (2026-08-14) and the only one that fails on
+the passage of time rather than on something in a diff. That is why it is scheduled rather than
+per-pull-request: a contributor adding one product cannot re-read a category to turn it green, and
+a gate nobody in front of it can act on is a gate that gets ignored. Step 5 below has the window
+and its owner; `docs/guides/freshness.md` has the shape.
+
 **They ratchet rather than switch on.** The invariant and the digest requirement apply only to
-axes that carry a `last_verified`, which is 137 today and grows as the re-read pass proceeds. So
-they cover exactly what has been done, never block progress, and never permit a regression on
-ground already taken. A big-bang gate over all 1370 axes would fail on day one and get switched
-off, which is how gates die.
+axes that carry a `last_verified`. So they cover exactly what has been done, never block progress,
+and never permit a regression on ground already taken. A big-bang gate over every axis at once
+would have failed on day one and been switched off, which is how gates die.
+
+**The ratchet has now closed.** That count was 137 when this section was written and is **1,416 as
+of 2026-08-14 — every axis in the corpus.** So the invariant and the digest requirement now apply
+everywhere, and the age gate above became possible only because of it: gating on age while most
+axes carried no date at all would have measured the backlog rather than staleness. Read the count
+from `check_freshness` rather than from this paragraph, which will drift again.
 
 The producible-pair check and the parity gate apply in full immediately — nothing has to be
 populated first.
@@ -526,10 +545,12 @@ score for this reason.
 
 ### 5. Turn on the age gate
 
-`build/check_freshness.py --max-age-days 30` becomes a CI gate. This is the entire point of
-having the field: a category whose oldest axis is 50 days old is a category to go and look
-at. Gating earlier would only fail on the pre-automation backlog rather than on genuine
-staleness.
+**Done 2026-08-14.** `build/check_freshness.py --max-age-days 30` gates in
+`.github/workflows/freshness.yml`, weekly. This is the entire point of having the field: a
+category whose oldest axis is 50 days old is a category to go and look at. Gating earlier would
+only have failed on the pre-automation backlog rather than on genuine staleness; step 4 closed
+that, and on the day the gate landed all 1,416 axes carried a real `last_verified` and the
+oldest category read 6 days.
 
 **The window is 30 days, decided 2026-08-09.** It is a judgment about how much re-reading the
 map is worth rather than anything derivable, so it is recorded here with its date and its owner
@@ -543,6 +564,9 @@ than drifting past the line one product at a time — that is the shape of the w
 backlog. And the sampled re-fetch will keep reporting drift on pages that change daily;
 at this window that drift is noise, and a digest that *matches* remains the only thing it
 positively proves.
+
+The cliff is also why the gate is scheduled rather than per-pull-request, and weekly rather than
+daily. `docs/guides/freshness.md` has that argument and the shape of the workflow.
 
 ## Related
 
