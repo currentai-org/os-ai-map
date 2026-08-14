@@ -39437,12 +39437,10 @@
       "arc": "Infrastructure",
       "layer": "infrastructure",
       "stage": {
-        "num": 4,
-        "name": "Competitive Open Ecosystem"
+        "num": 5,
+        "name": "Mature Open Ecosystem"
       },
-      "gaps": [
-        "maturity"
-      ],
+      "gaps": [],
       "products": [
         {
           "slug": "e2b-sandbox",
@@ -39653,16 +39651,31 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 4,
-            "reach": "1M-10M",
+            "level": 5,
+            "reach": ">10M",
             "signal_type": "usage_volume",
-            "confidence": "high",
-            "note": "PyPI: ~8.31M downloads last month for the daytona package (primary). Note part of this volume is inherited from the prior dev-environment product line, but the package now ships the sandbox SDK. Solidly 1M-10M band.",
+            "confidence": "medium",
+            "note": "PyPI - ~8.31M downloads last month for the daytona package (primary). Part of this volume is inherited from the prior dev-environment product line, but the package now ships the sandbox SDK. Re-banded 2026-08-14. The pypistats API reports 10,225,169 downloads in the trailing month, which crosses the 10M floor and bands at level 5 / >10M rather than the 1M-10M recorded. This is a near-boundary crossing and is recorded as one, the way `synth` and `the-pile` were - the figure clears the floor by 2.25%, a month of ordinary variance would put it back at level 4, and the trailing-month window moves daily, so the digest below will drift on every refetch and confidence is dropped from high to medium. Unlike the npm bands re-read in the same pass, this one is on a bridged route - the product declares a pypi artifact, so a signal model can recompute the figure from downloads_30d and disagree with it. The package is the product's own; its PyPI metadata gives the author as Daytona Platforms Inc. at support@daytona.io and the summary as \"Python SDK for Daytona\", so this is not a same-name match.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
                 "url": "https://pypistats.org/packages/daytona",
                 "shows": "~8,313,410 downloads last month",
                 "accessed": "2026-06-04"
+              },
+              {
+                "url": "https://pypistats.org/api/packages/daytona/recent",
+                "shows": "recent_downloads for package daytona - last_month 10,225,169, last_week 2,311,963, last_day 423,576. The trailing-month figure is the one the software adoption scale bands on.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "c14d67ca9bcea5049b8524737d20a1e69e35ac0db003f93a48faa27bd56e7ae6"
+              },
+              {
+                "url": "https://pypi.org/pypi/daytona/json",
+                "shows": "Package metadata - name daytona, summary \"Python SDK for Daytona\", author \"Daytona Platforms Inc.\", author_email support@daytona.io, license Apache-2.0, version 0.204.0. Confirms the banded package is the product's own SDK.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "5492efec3b58403e8c1aec52e54c48b7816708e7e5ad54e68a65ffe4183ec755"
               }
             ]
           },
@@ -39700,8 +39713,8 @@
               }
             ]
           },
-          "maturity": 4.0,
-          "mature": false,
+          "maturity": 4.6,
+          "mature": true,
           "freshness": {
             "date": "2026-08-14",
             "basis": "verified"
@@ -40326,23 +40339,26 @@
             ]
           },
           "capability": {
-            "score": 3,
+            "score": 4,
             "basis": "feature_matrix",
-            "value": "isolation:container (Docker/Kubernetes runtimes, not VM/microVM); cold-start:container launch; language/runtime breadth:Python/TS/Go/Java SDKs, unified sandbox API, MCP server (Claude Code/Cursor); persistence:file ops; scale:K8s",
+            "value": "isolation:pluggable secure runtimes - gVisor (runsc), Kata QEMU (full VM), Kata Firecracker (microVM), Kata CLH, with runc as fallback, selected once at server level; cold-start:vendor planning estimates only (~550ms gVisor, ~625ms Kata/Firecracker), no independent measurement; language/runtime breadth:Python/TS/Go/Java SDKs, unified sandbox API, MCP server (Claude Code/Cursor); persistence:file ops; scale:K8s",
             "confidence": "medium",
-            "note": "Broad multi-language SDK surface and MCP integration with K8s scale, but container-level isolation (no VM/microVM tier observed) keeps it mid-tier on the isolation-strength dimension vs Firecracker/gVisor/Kata. Strong breadth, moderate isolation.",
+            "note": "LEVEL CORRECTED 3 -> 4 on 2026-08-14. The band rested entirely on \"container-level isolation (no VM/microVM tier observed)\", and that clause is false. OSEP-0004 \"Pluggable Secure Container Runtime Support\" carries status `implementing`, and the capability is SHIPPED rather than proposed: `server/opensandbox_server/services/runtime_resolver.py` holds SecureRuntimeResolver with a Docker map (gvisor -> runsc, kata -> kata-runtime) and a Kubernetes RuntimeClass map (gvisor -> gvisor, kata -> kata-qemu, firecracker -> kata-fc), plus startup validation. Corroborated by a gVisor e2e suite with its own RuntimeClass fixtures and an AKS + Kata deployment walkthrough with a matching examples/aks-kata/ directory. Verified by reading that file directly rather than from the OSEP.\nNOT ABOVE 4, for two reasons recorded so the ceiling is arguable rather than asserted. OpenSandbox explicitly does not install the runtimes - an OSEP non-goal - so the microVM tier depends on operator-supplied infrastructure, and one server supports exactly one runtime at a time. And there is no independent latency measurement: the only figures are the OSEP's own planning estimates. Level with daytona-sandbox, which scores 4 on the same shape - container by default, VM classes opt-in - on a weaker openness story.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
-                "url": "https://github.com/alibaba/OpenSandbox",
-                "shows": "Docker/Kubernetes runtimes; multi-language SDKs (Python/TS/Go/Java); unified API; MCP server",
-                "accessed": "2026-06-04"
+                "url": "https://raw.githubusercontent.com/opensandbox-group/OpenSandbox/main/server/opensandbox_server/services/runtime_resolver.py",
+                "shows": "SecureRuntimeResolver as shipped code: Docker runtime map (gvisor -> runsc, kata -> kata-runtime) and Kubernetes RuntimeClass map (gvisor, kata-qemu, kata-fc), with startup validation - the VM/microVM tier the record said was absent",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "3193ac44cebe3e45435273bd49487b21878d4b338e71adce5671df9cbd33164e"
               }
             ]
           },
-          "maturity": 3.0,
+          "maturity": 3.4,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "The repository moved out of the alibaba org into the neutral opensandbox-group org, which the old path now redirects to; the Alibaba origin survives in the package coordinates. Verified 2026-08-13 via the OpenSandbox README, the secure container runtime guide, and open-sandbox.ai."
@@ -40505,16 +40521,31 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 2,
-            "reach": "10K-100K",
+            "level": 4,
+            "reach": "1M-10M",
             "signal_type": "usage_volume",
-            "confidence": "medium",
-            "note": "npm @anthropic-ai/sandbox-runtime ~558.8k downloads in the last 30 days (npm registry API), plus 403 GitHub dependents and 4.3k stars. Package-manager pulls overstate distinct users (CI/mirror inflation) and it is a young research preview shipped alongside Claude Code, so reach placed conservatively at 10K-100K distinct users / level 2.",
+            "confidence": "low",
+            "note": "npm @anthropic-ai/sandbox-runtime ~558.8k downloads in the last 30 days (npm registry API), plus 403 GitHub dependents and 4.3k stars. Package-manager pulls overstate distinct users (CI/mirror inflation) and it is a young research preview shipped alongside Claude Code, which is why the earlier reading was placed conservatively at 10K-100K / level 2. Re-banded 2026-08-14, two levels. The npm downloads API reports 1,000,104 downloads of @anthropic-ai/sandbox-runtime over 2026-07-11 to 2026-08-09. The bands are read on the figure, not on a judgement about how many of those pulls are people, and 1,000,104 clears the 1M floor, so the band is 1M-10M / level 4. Two caveats travel with it. First, the margin is 104 downloads, 0.01% over the floor - this is the thinnest boundary crossing in the corpus, a re-fetch on another day could as easily read level 3, and confidence is dropped to low to say so. Second, per the 2026-08-14 ruling the figure is re-fetchable but NOT pipeline-recomputable, because npm is an unbridged route (issue #163); no signal model reads it, so it must not be mistaken for a computed band. The package is the product's own - registry metadata points at github.com/anthropic-experimental/sandbox-runtime, the repository the openness axis reads.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
                 "url": "https://api.npmjs.org/downloads/point/last-month/@anthropic-ai/sandbox-runtime",
                 "shows": "~558,800 downloads May 4-Jun 2 2026",
                 "accessed": "2026-06-04"
+              },
+              {
+                "url": "https://api.npmjs.org/downloads/point/last-month/@anthropic-ai%2Fsandbox-runtime",
+                "shows": "1,000,104 downloads of package @anthropic-ai/sandbox-runtime over the window start 2026-07-11 to end 2026-08-09 - 104 above the 1M band floor. The scoped name is URL-encoded because the npm point endpoint requires it.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "1a80488002aafa187457d7b690bae55224d82d22795e6ef19bd95bb449d8509e"
+              },
+              {
+                "url": "https://registry.npmjs.org/@anthropic-ai%2Fsandbox-runtime",
+                "shows": "Registry metadata for the package - repository git+https://github.com/anthropic-experimental/sandbox-runtime.git, described as \"Anthropic Sandbox Runtime (ASRT) - A general-purpose tool for wrapping security boundaries around arbitrary processes\", latest 0.0.73. Confirms the package is the product itself, which ships only from npm.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "83ff3ad21da48ca61ca8262c030ef6f83ad9830af4a8c1ac9f9b405f97539f43"
               },
               {
                 "url": "https://github.com/anthropic-experimental/sandbox-runtime",
@@ -40545,10 +40576,10 @@
               }
             ]
           },
-          "maturity": 2.4,
+          "maturity": 3.6,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "The README notes that seccomp filtering is x64/arm64 only and that unix sockets go unrestricted where it is unavailable, so the boundary is weaker on some hosts than the general description implies. Verified 2026-08-13 via the anthropic-experimental/sandbox-runtime README and the GitHub repository metadata."
@@ -40930,16 +40961,31 @@
             "bucket": "closed"
           },
           "adoption": {
-            "level": 4,
-            "reach": "1M-10M",
+            "level": 5,
+            "reach": ">10M",
             "signal_type": "usage_volume",
             "confidence": "medium",
-            "note": "npm @vercel/sandbox ~9.06M downloads in the last 30 days (npm registry API). Package-manager pulls include CI/mirror inflation and overstate distinct human users, so reach is placed at the 1M-10M band (level 4) rather than >10M; GA status + large Vercel install base corroborate genuine production use.",
+            "note": "npm @vercel/sandbox ~9.06M downloads in the last 30 days (npm registry API). Package-manager pulls include CI/mirror inflation and overstate distinct human users; GA status + large Vercel install base corroborate genuine production use. Re-banded 2026-08-14. The npm downloads API reports 13,197,882 downloads of @vercel/sandbox over 2026-07-11 to 2026-08-09, clear of the 10M floor, which bands at level 5 / >10M on the software adoption scale rather than the 1M-10M placed on the older ~9.06M reading. The package is the product's own - its registry metadata describes it as the \"Software Development Kit for Vercel Sandbox\" and points at github.com/vercel/sandbox. Per the 2026-08-14 ruling this figure is re-fetchable but NOT pipeline-recomputable, because npm is an unbridged route (issue #163); no signal model reads it, so nothing computed can disagree with it and a later reader must not mistake this for a computed band. Confidence stays medium rather than high on the CI/mirror-inflation caveat above.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
                 "url": "https://api.npmjs.org/downloads/point/last-month/@vercel/sandbox",
                 "shows": "~9,062,145 downloads May 4-Jun 2 2026",
                 "accessed": "2026-06-04"
+              },
+              {
+                "url": "https://api.npmjs.org/downloads/point/last-month/@vercel%2Fsandbox",
+                "shows": "13,197,882 downloads of package @vercel/sandbox over the window start 2026-07-11 to end 2026-08-09. The scoped name is URL-encoded because the npm point endpoint requires it.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "1501d8d65011025ec4e6f0fb7cdddbd56c4643b968b0898c0ee5979ada9817fc"
+              },
+              {
+                "url": "https://registry.npmjs.org/@vercel%2Fsandbox",
+                "shows": "Registry metadata for the package - description \"Software Development Kit for Vercel Sandbox\", repository git+https://github.com/vercel/sandbox.git (directory packages/vercel-sandbox), homepage vercel.com/docs/vercel-sandbox/sdk-reference, latest 3.0.0. Confirms the package is the product's own primary client, not a same-name match.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "1aa475ece94f99c78b233b26f2004c6cbe4326cbb34b0f8c2758e33159d3960b"
               },
               {
                 "url": "https://vercel.com/docs/sandbox",
@@ -40969,10 +41015,10 @@
               }
             ]
           },
-          "maturity": 4.0,
+          "maturity": 4.6,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "The execution layer behind Vercel Open Agents. Runtime duration and concurrency are quota fields rather than product limits - a Hobby sandbox stops at 45 minutes where Pro and Enterprise run to 24 hours. Verified 2026-08-13 via the Vercel Sandbox documentation and its pricing and quotas page."
@@ -41037,16 +41083,31 @@
             "bucket": "closed"
           },
           "adoption": {
-            "level": 3,
-            "reach": "100K-1M",
+            "level": 4,
+            "reach": "1M-10M",
             "signal_type": "usage_volume",
             "confidence": "medium",
-            "note": "npm @cloudflare/sandbox ~533k downloads in the last 30 days (npm registry API); Dynamic Workers in open beta to all paid Workers users with a named customer (Zite) reporting 'millions of execution requests daily.' Package pulls + young beta status => reach placed at 100K-1M (level 3); execution-request volume is per-customer, not distinct-user adoption.",
+            "note": "npm @cloudflare/sandbox ~533k downloads in the last 30 days (npm registry API); Dynamic Workers in open beta to all paid Workers users with a named customer (Zite) reporting 'millions of execution requests daily.' Execution-request volume is per-customer, not distinct-user adoption. Re-banded 2026-08-14. The npm downloads API reports 1,136,848 downloads of @cloudflare/sandbox over 2026-07-11 to 2026-08-09, roughly double the June reading and past the 1M floor, which bands at level 4 / 1M-10M rather than the 100K-1M recorded. The package is the product's own - registry metadata points at github.com/cloudflare/sandbox-sdk, the same repository the openness axis reads. Per the 2026-08-14 ruling this figure is re-fetchable but NOT pipeline-recomputable, because npm is an unbridged route (issue #163); no signal model reads it, so it must not be mistaken for a computed band. Confidence stays medium - the margin over the floor is modest and package pulls carry the usual CI and mirror inflation.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
                 "url": "https://api.npmjs.org/downloads/point/last-month/@cloudflare/sandbox",
                 "shows": "~533,043 downloads May 4-Jun 2 2026",
                 "accessed": "2026-06-04"
+              },
+              {
+                "url": "https://api.npmjs.org/downloads/point/last-month/@cloudflare%2Fsandbox",
+                "shows": "1,136,848 downloads of package @cloudflare/sandbox over the window start 2026-07-11 to end 2026-08-09. The scoped name is URL-encoded because the npm point endpoint requires it.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "9c5768fa01c5619f3ed03c46dbe53bb7ecb2b6c02aa71d84e3ea9cd0333eefb6"
+              },
+              {
+                "url": "https://registry.npmjs.org/@cloudflare%2Fsandbox",
+                "shows": "Registry metadata for the package - repository git+https://github.com/cloudflare/sandbox-sdk.git, homepage github.com/cloudflare/sandbox-sdk#readme, described as \"A sandboxed environment for running commands\", latest 0.12.5. Confirms the package is the product's own SDK rather than a same-name match.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "b46b9f358e9acc9826481dd6d7beef825389e073f4ff6da370446ab706897765"
               },
               {
                 "url": "https://blog.cloudflare.com/dynamic-workers/",
@@ -41101,10 +41162,10 @@
               }
             ]
           },
-          "maturity": 3.4,
+          "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "Scored as one product per the registry name, though the two paths differ sharply in performance and in what they can run: the isolate path is JavaScript and TypeScript, the container path is general. Verified 2026-08-13 via Cloudflare's \"Sandboxing AI agents, 100x faster\" post and the cloudflare/sandbox-sdk repository."
@@ -41363,26 +41424,27 @@
           "capability": {
             "score": 3,
             "basis": "feature_matrix",
-            "value": "isolation: omegajail unprivileged container (process/container-level, weaker than microVM); cold-start: ~100ms (very fast); language/runtime breadth: primarily Python, customizable Docker image; persistence: stateless (prior stateful-Repl experiment discontinued); scale: Replit Autoscale Deployments",
+            "value": "isolation: omegajail unprivileged container (process/container-level, weaker than microVM); cold-start: not recorded - the only figure ever published for it has no surviving readable source; language/runtime breadth: primarily Python, customizable Docker image; persistence: stateless; scale: Replit Autoscale Deployments",
             "confidence": "medium",
-            "note": "Fast container-level execution tuned for agent code-eval, but container (not microVM) isolation, narrow language focus, and no persistence put it mid-tier vs microVM-backed peers. Note: the public self-serve client (replit-code-exec) is archived (2025-02-11); the capability now lives inside the Replit Agent surface. Not dated 2026-08-13 - the only source this band cites, the Replit blog post, returned 403 to every fetch attempt, so the ~100ms figure was not re-confirmed. The archived client README was re-read instead and still supports the rest of the band, an ephemeral unprivileged container sandboxed by omegajail, stateless, Python-focused, running on Replit Autoscale Deployments. STILL NOT DATED on 2026-08-14 after a substitute hunt, and the reason is now specific rather than general. Three of the value's four elements re-derive from two independent fetchable channels - the archived README and the package's own PyPI metadata both describe an ephemeral unprivileged container using omegajail, stateless, Python, on Replit Deployments. The ~100ms cold start is the one element that does not: replit.com and blog.replit.com answer 403 to every request under every header set tried, and the Wayback availability API reports no capture of the post at all (\"archived_snapshots\": {}), so there is no surviving copy of the document that carries the figure. Worth noting for whoever rules on it that the band does not rest on that number - 100ms is a point in the product's favour, and the 3 is placed on container-rather-than-microVM isolation, narrow language focus and no persistence, all three of which re-derive. The axis stays undated because the value as written is not fully re-derivable, not because the score is in doubt.",
+            "note": "Fast container-level execution tuned for agent code-eval, but container (not microVM) isolation, narrow language focus, and no persistence put it mid-tier vs microVM-backed peers. Note: the public self-serve client (replit-code-exec) is archived (2025-02-11); the capability now lives inside the Replit Agent surface. Not dated 2026-08-13 - the only source this band cites, the Replit blog post, returned 403 to every fetch attempt, so the ~100ms figure was not re-confirmed. The archived client README was re-read instead and still supports the rest of the band, an ephemeral unprivileged container sandboxed by omegajail, stateless, Python-focused, running on Replit Autoscale Deployments. STILL NOT DATED on 2026-08-14 after a substitute hunt, and the reason is now specific rather than general. Three of the value's four elements re-derive from two independent fetchable channels - the archived README and the package's own PyPI metadata both describe an ephemeral unprivileged container using omegajail, stateless, Python, on Replit Deployments. The ~100ms cold start is the one element that does not: replit.com and blog.replit.com answer 403 to every request under every header set tried, and the Wayback availability API reports no capture of the post at all (\"archived_snapshots\": {}), so there is no surviving copy of the document that carries the figure. Worth noting for whoever rules on it that the band does not rest on that number - 100ms is a point in the product's favour, and the 3 is placed on container-rather-than-microVM isolation, narrow language focus and no persistence, all three of which re-derive. RESOLVED AND DATED 2026-08-14 by dropping the unsourceable figure rather than by finding a source for it. The ~100ms cold start and the \"prior stateful-Repl experiment discontinued\" parenthetical both came only from the dead blog post, and the value string no longer asserts either. What remains is what two independent fetchable channels state today - the archived README and the package's own PyPI metadata, re-fetched this morning byte-identical to their recorded digests, both describing execution inside an ephemeral unprivileged container created on the fly on Replit Deployments with omegaup/omegajail as the code sandbox, a stateless API optimized for AI agents, Python, with the container image swappable via evalctl. Every clause of the value now re-derives from a live source, so the axis is dated. The score is unchanged at 3 and rests on the same three re-derivable grounds it always did, container-rather-than-microVM isolation, narrow language focus and no persistence. Losing the 100ms claim removes a point in the product's favour, so if anything it argues against raising the band, never for it. The blog source is kept below, undated and marked dead, so a later reader can see what was lost rather than rediscovering the 403.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
                 "url": "https://replit.com/blog/ai-agents-code-execution",
-                "shows": "omegajail container sandbox, ~100ms start, Python-focused, stateless (stateful-Repl experiment discontinued). Not re-fetchable - HTTP 403 to every attempt on 2026-08-13 and 2026-08-14, and no Wayback capture exists - so the ~100ms figure has no surviving readable source.",
+                "shows": "DEAD SOURCE, retained as a record. Formerly the sole basis for the ~100ms start figure and the discontinued-stateful-Repl note, neither of which the value asserts any more. HTTP 403 to every attempt on 2026-08-13 and 2026-08-14 under every header set tried, and the Wayback availability API reports no capture of the post at all.",
                 "accessed": "2026-06-04"
               },
               {
                 "url": "https://pypi.org/pypi/replit-code-exec/json",
-                "shows": "the package's own metadata, an independent channel for the same description - execution \"inside an ephemeral unprivileged container created on the fly running in Replit Deployments using omegajail as code sandbox\"; carries no latency figure",
+                "shows": "the package's own metadata, an independent channel for the same description - execution \"inside an ephemeral unprivileged container created on the fly running in Replit Deployments using omegajail as code sandbox\"; summary \"A library for interacting with Replit's code-exec API\"; carries no latency figure. Re-fetched 2026-08-14, byte-identical, same digest.",
                 "accessed": "2026-08-14",
                 "http_status": 200,
                 "content_sha256": "271ca1e7ce0ef7396f312a387165972623accc5e1d91f3fde8b55eb834e1c7b9"
               },
               {
                 "url": "https://raw.githubusercontent.com/replit/replit-code-exec/main/README.md",
-                "shows": "stateless API optimized for AI agents, executing untrusted Python inside an ephemeral unprivileged container created on the fly on Replit Deployments using omegaup/omegajail as the code sandbox; no latency figure stated",
-                "accessed": "2026-08-13",
+                "shows": "stateless API optimized for AI agents, executing untrusted Python inside an ephemeral unprivileged container created on the fly on Replit Deployments using omegaup/omegajail as the code sandbox; the container image is swappable via `evalctl image`; Autoscale Deployments only; no latency figure stated. Re-fetched 2026-08-14, byte-identical, same digest.",
+                "accessed": "2026-08-14",
                 "http_status": 200,
                 "content_sha256": "6a18761274efe9b9002120f29b64bea36c34476550c08be8a930c56be3b3b0a9"
               }
@@ -41391,7 +41453,7 @@
           "maturity": 3.6,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "The public self-serve client was archived read-only in 2025, so this entry is verified against the archived repository rather than a maintained one, and the Replit blog posts behind it now refuse automated fetches. The deployment-relevant artifact is the code-execution sandbox, not the agent that calls it. Verified 2026-08-13 via the replit/replit-code-exec repository and its README."
@@ -42325,30 +42387,31 @@
           "capability": {
             "score": 4,
             "basis": "feature_matrix",
-            "value": "isolation:Firecracker microVM (top tier); cold-start:sub-second; runtime breadth:arbitrary agent sandboxes; persistence:snapshot/suspend/resume + durable-execution orchestration; scale:reported thousands of concurrent sandboxes",
+            "value": "isolation:Firecracker microVM (top tier); cold-start:vendor claims sub-second creation via the Lattice scheduler, independently measured at 1.35s median time-to-interactive; runtime breadth:arbitrary agent sandboxes; persistence:snapshot/suspend/resume + durable-execution orchestration; scale:reported thousands of concurrent sandboxes",
             "confidence": "medium",
-            "note": "Firecracker microVM isolation plus durable-execution orchestration and snapshot/resume make for a rich agent-runtime feature set, level with the microVM peers. Independent ComputeSDK TTI benchmarks measure ~460ms median cold-start (12th of 19 sandbox providers), mid-pack and consistent with the sub-second claim. NOT VERIFIED ON 2026-08-13 - deliberately left undated and escalated, because the benchmark half of this band no longer reads as recorded. The ComputeSDK leaderboard has re-run since (last run 7 August 2026) and now covers 24 providers. Tensorlake reads 1.35s median time-to-interactive, 1.44s P95, 1.44s P99, composite 86.1, 15th of 24 - not ~460ms and not 12th of 19. That is roughly three times the recorded figure and it contradicts the \"cold-start - sub-second\" clause in the value string above, which was the measured half of a band otherwise resting on feature breadth. Note also that 460ms is the number the vendor site itself animates in its demo, so the earlier record may have read the vendor claim and the leaderboard as agreeing when only one of them was measured. The feature half does still hold - tensorlake.ai still leads on Firecracker isolation with each tool call and harness in its own microVM, snapshots with pause/fork/resume, versioned mountable volumes, durable serverless functions with queues, timers and retries, and cloud dev boxes. Whether a 1.35s time-to-interactive should pull this off 4 is a score decision and is not being taken here.",
+            "note": "Firecracker microVM isolation plus durable-execution orchestration and snapshot/resume make for a rich agent-runtime feature set, level with the microVM peers. Independent ComputeSDK TTI benchmarks measure ~460ms median cold-start (12th of 19 sandbox providers), mid-pack and consistent with the sub-second claim. NOT VERIFIED ON 2026-08-13 - deliberately left undated and escalated, because the benchmark half of this band no longer reads as recorded. The ComputeSDK leaderboard has re-run since (last run 7 August 2026) and now covers 24 providers. Tensorlake reads 1.35s median time-to-interactive, 1.44s P95, 1.44s P99, composite 86.1, 15th of 24 - not ~460ms and not 12th of 19. That is roughly three times the recorded figure and it contradicts the \"cold-start - sub-second\" clause in the value string above, which was the measured half of a band otherwise resting on feature breadth. Note also that 460ms is the number the vendor site itself animates in its demo, so the earlier record may have read the vendor claim and the leaderboard as agreeing when only one of them was measured. The feature half does still hold - tensorlake.ai still leads on Firecracker isolation with each tool call and harness in its own microVM, snapshots with pause/fork/resume, versioned mountable volumes, durable serverless functions with queues, timers and retries, and cloud dev boxes. Whether a 1.35s time-to-interactive should pull this off 4 is a score decision and is not being taken here. DATED 2026-08-14 after re-deriving against the current leaderboard rerun. Both cited sources were re-fetched and both read as the day before - tensorlake.ai returns a byte-identical body, and the leaderboard still shows the 7 August 2026 run over 24 providers with Tensorlake at 86.1 composite, 1.35s median, 1.44s P95, 1.44s P99, 100% success. So the ~3x discrepancy against the recorded ~460ms is a stable reading of a settled run, not a transient page state. The one change made here is to the value string, which claimed \"cold-start - sub-second\" as if measured; it now records the vendor claim and the measured figure separately, which is what the two sources actually support. The 4 is left exactly where it was and the question of whether 1.35s should pull it down is escalated rather than taken.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
                 "url": "https://www.tensorlake.ai/",
-                "shows": "Firecracker microVM sandboxes, snapshot/suspend/resume, durable execution, scale to thousands",
-                "accessed": "2026-08-13",
+                "shows": "Firecracker microVM sandboxes, snapshot/suspend/resume, durable execution, scale to thousands. Re-fetched 2026-08-14, byte-identical body, same digest.",
+                "accessed": "2026-08-14",
                 "http_status": 200,
                 "content_sha256": "7522474f25c2864dae63f26e180926d421d634994f2ba2b3f4405d4882578456"
               },
               {
                 "url": "https://www.computesdk.com/benchmarks/sandboxes/",
-                "shows": "ComputeSDK TTI leaderboard, independent, 100 iterations per run, last run 7 August 2026, 24 providers on 4 vCPU / 16GB in Northern Virginia. Tensorlake records 1.35s median, 1.44s P95, 1.44s P99, 100% success, composite 86.1, ranking 15th of 24 by composite score. The previously cited ~460ms / 12th of 19 reading is not on the page.",
-                "accessed": "2026-08-13",
+                "shows": "ComputeSDK TTI leaderboard, independent, 100 iterations per run, last run 7 August 2026, 24 providers on 4 vCPU / 16GB in Northern Virginia. Tensorlake records 1.35s median, 1.44s P95, 1.44s P99, 100% success, composite 86.1 - 15th of 24 by composite and 17th of 24 by median. The previously cited ~460ms / 12th of 19 reading is not on the page. Digest differs from the 2026-08-13 read (ec3f48b2...) because the page shell moves between builds; the Tensorlake row and the run date are unchanged.",
+                "accessed": "2026-08-14",
                 "http_status": 200,
-                "content_sha256": "ec3f48b2ca3c1877605154422671c020935c0bfebdfc9aff268d06799ae865f7"
+                "content_sha256": "297068ee668b6e539692c74bbafde6ab456fe2121a28ad2a1d4bd9a5ce23e949"
               }
             ]
           },
           "maturity": 2.2,
           "mature": false,
           "freshness": {
-            "date": "2026-08-12",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "The repository publishes the SDK and CLI; the microVM runtime and the Lattice scheduler behind them are in no public repository. Verified 2026-08-13 via tensorlake.ai and the ComputeSDK sandbox benchmark leaderboard."
