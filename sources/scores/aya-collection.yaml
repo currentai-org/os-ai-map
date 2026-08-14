@@ -45,12 +45,30 @@ capability:
   basis_detail: downstream
   value: null
   confidence: high
-  note: Instruction collection behind Aya 101 (2024), Aya 23, and Aya Expanse, which beat Gemma 2 / Qwen
-    2.5 / Llama 3.1 in their size class; strong, multiple notable open models.
+  note: 'Instruction collection behind Aya 101 (2024), Aya 23, and Aya Expanse, which beat Gemma 2 / Qwen
+    2.5 / Llama 3.1 in their size class; strong, multiple notable open models. Re-read 2026-08-14 - the
+    HF blog post no longer carries the 76.6% figure this axis cited. It now reports the 8B range only,
+    "win rates ranging from 60.4% to 70.6%" against Gemma 2 9B, Llama 3.1 8B and Ministral 8B. The
+    figure survives on the Aya Expanse paper, whose abstract states 8B and 32B outperform Gemma 2, Qwen
+    2.5 and Llama 3.1 in their parameter classes "achieving up to a 76.6% win-rate", and whose body
+    pins that maximum to the 32B against Mixtral 8x22B on m-ArenaHard. Both the old and the new
+    comparison sets are open models this collection fed, so the band of 4 is unaffected and only the
+    citation moves. FLAGGED for a later pass, not for this one - no primary source states that the Aya
+    COLLECTION specifically trained Aya Expanse. The Expanse paper does not name it, and neither does
+    the CohereLabs/aya-expanse-8b card; the lineage rests on the Medium secondary already cited.'
+  last_verified: '2026-08-14'
   sources:
+  - url: https://arxiv.org/abs/2412.04261
+    shows: 'Aya Expanse paper abstract - "Aya Expanse 8B and 32B outperform leading open-weight models in
+      their respective parameter classes, including Gemma 2, Qwen 2.5, and Llama 3.1, achieving up to a
+      76.6% win-rate" on Arena-Hard-Auto translated into 23 languages, and "Aya Expanse 32B outperforms
+      Llama 3.1 70B ... achieving a 54.0% win-rate"'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 061c6359ac9b1a00d36b521f7179ec338370ca420d44d3b0c4254aa4b518baa0
   - url: https://huggingface.co/blog/aya-expanse
-    shows: Aya Expanse 8B/32B outperform Gemma 2, Qwen 2.5, Llama 3.1 in class (up to 76.6% win-rate on
-      Arena-Hard-Auto)
+    shows: no longer carries the 76.6% figure; now reports the 8B only, with "win rates ranging from
+      60.4% to 70.6%" against Gemma 2 9B, Llama 3.1 8B and Ministral 8B
     accessed: '2026-07-04'
   - url: https://ritvik19.medium.com/papers-explained-151-aya-23-d01605c3ee80
     shows: Aya Collection (513M examples, 114+ langs) feeds Aya 101 and Aya 23/Expanse instruction data

@@ -89,17 +89,48 @@ adoption:
 capability:
   score: 4
   basis: feature_matrix
-  value: isolation:dedicated kernel/filesystem/network stack per sandbox (VM-class, 'full composable computer');
-    cold-start:<90ms; language/runtime breadth:Python+TypeScript+JS; persistence:persistent state across
-    sessions; scale:elastic
+  value: isolation:dedicated kernel/filesystem/network stack per sandbox ('full composable computer'),
+    Linux container by default with opt-in Linux VM and Windows VM classes; cold-start:<90ms (container
+    class); language/runtime breadth:Python+TypeScript+JS; persistence:fork, pause/resume and memory
+    snapshots on VM sandboxes; scale:elastic
   confidence: high
-  note: Strong isolation (dedicated kernel + isolated net/fs, allocated vCPU/RAM/disk) with sub-90ms cold-start
+  note: 'Strong isolation (dedicated kernel + isolated net/fs, allocated vCPU/RAM/disk) with sub-90ms cold-start
     and persistent sessions; among the strongest agent-runtime feature sets, just below the kernel/microVM
     frontier-definers. Independent ComputeSDK TTI benchmarks corroborate the sub-100ms-class cold-start
-    (~140ms median, 4th-fastest of 19 sandbox providers).
+    (~140ms median, 4th-fastest of 19 sandbox providers). Replacement found 2026-08-14 - the cited GitHub
+    repo is now a stub, but Daytona''s docs carry the isolation claim almost word for word - "Each sandbox
+    runs in isolation, giving it a dedicated kernel, filesystem, network stack, and allocated vCPU, RAM,
+    and disk", and the docs index gives "spinning up in under 90ms from code to execution". Two
+    corrections the docs force. The "VM-class" parenthetical in the recorded value is wrong as a blanket
+    claim - sandboxes run as Linux containers by default and the sub-90ms figure attaches to that
+    container class, with Linux VM and Windows VM as separate opt-in runtimes. And "persistent state
+    across sessions" is scoped to the VM class, which is what carries fork, pause/resume and memory
+    snapshots; GPU sandboxes are explicitly ephemeral. The docs name no isolation technology - no gVisor,
+    no Firecracker - only OCI/Docker compatibility, so no microVM mechanism is asserted. The feature
+    matrix behind the 4 survives; only its scoping got sharper. Score unchanged.'
+  last_verified: '2026-08-14'
   sources:
+  - url: https://daytona.io/docs/en/sandboxes
+    shows: '"Daytona provides full composable computers - sandboxes - for AI agents. Sandboxes are
+      isolated runtime environments you can manage programmatically to run code."; "Each sandbox runs in
+      isolation, giving it a dedicated kernel, filesystem, network stack, and allocated vCPU, RAM, and
+      disk."; "Sandboxes run as Linux containers by default. Daytona also provides VM sandboxes with a
+      dedicated Linux VM or Windows operating system, and GPU sandboxes"; runtime comparison table rows
+      Container (default, <90ms, dynamic builds, Docker images), Linux VM and Windows; "GPU sandboxes are
+      ephemeral"; fork, pause/resume and snapshot-from-sandbox are documented sandbox operations'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: c44edb2f1ea133bbd4a5de0e11e65be6011be0716c0e82232c86b846f3052de3
+  - url: https://daytona.io/docs/
+    shows: 'docs index - "Sandboxes - for AI agents with complete isolation, a dedicated kernel,
+      filesystem, network stack, and allocated vCPU, RAM, and disk", "spinning up in under 90ms from code
+      to execution and running any code in Python, TypeScript, and JavaScript. Built on OCI/Docker"
+      compatibility'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 1244f92fdcfaa0323932987dc27599fec1fda593bd65f65795a4efb43d6b3fc3
   - url: https://github.com/daytonaio/daytona
-    shows: dedicated kernel/filesystem/network stack per sandbox; <90ms spin-up; persistent state; Python/TS/JS
+    shows: former source of the isolation and spin-up claims; now a README stub carrying neither
     accessed: '2026-06-04'
   - url: https://www.computesdk.com/benchmarks/sandboxes/
     shows: 'ComputeSDK TTI leaderboard (independent, 100 iters/day, 2026-07-09 run): median time-to-interactive

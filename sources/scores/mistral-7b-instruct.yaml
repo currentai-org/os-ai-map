@@ -53,15 +53,38 @@ capability:
   score: 2
   basis: benchmark
   basis_detail: MT-Bench/MMLU
-  value: Mistral 7B Instruct v0.2 ~MT-Bench ~7.6 / MMLU ~60 class; 2023-era 7B chat quality
+  value: Mistral 7B Instruct v0.2 MT-Bench 7.6 (Mistral-reported); underlying Mistral 7B base MMLU 60.1%;
+    v0.1-Instruct MT-Bench 6.84. 2023-era 7B chat quality
   confidence: medium
   note: Excellent for a 7B in 2023-24; clearly below 2026 frontier and below modern small instruct models (Phi-4-mini,
     Qwen 3.x small). Capability low on a frontier-anchored scale. Re-read 2026-08-13 - the card carries no
     benchmark table at all. It links arXiv:2310.06825, which is the base "Mistral 7B" paper rather than an
     evaluation of this instruct tune, so neither the ~MT-Bench 7.6 nor the ~MMLU 60 in the recorded value is
     re-derivable from the cited source. The 2 is not in doubt on the evidence, but the figures have no source
-    behind them. ESCALATED rather than changed - no last_verified claimed on this axis.
+    behind them. Both figures were found on 2026-08-14 and both needed re-attributing. The MT-Bench 7.6
+    is Mistral's own and is specifically about this tune - the La Plateforme launch post says
+    "Mistral-tiny. Our most cost-effective endpoint currently serves Mistral 7B Instruct v0.2 ... It
+    obtains 7.6 on MT-Bench." That it is version-specific matters, because Table 3 of the paper gives
+    v0.1-Instruct at 6.84, so the citation has to point at the post rather than the paper. The MMLU
+    ~60 is real at 60.1% but belongs to the Mistral 7B BASE model in Table 2 of the paper; Mistral
+    publishes no MMLU for the v0.2 instruct tune anywhere found, so the value now attributes it to the
+    base. Score unchanged at 2.
+  last_verified: '2026-08-14'
   sources:
+  - url: https://mistral.ai/news/la-plateforme
+    shows: 'Mistral''s La Plateforme launch post - "Mistral-tiny. Our most cost-effective endpoint
+      currently serves Mistral 7B Instruct v0.2, a new minor release of Mistral 7B Instruct. Mistral-tiny
+      only works in English. It obtains 7.6 on MT-Bench."'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 0a9a105ac8f1c7ff38d6a307e7ae2d87e0950d40f5b2042c9b3196dee7a162e3
+  - url: https://arxiv.org/pdf/2310.06825
+    shows: 'Mistral 7B paper full text. Table 2 gives the BASE model at MMLU 60.1%, HellaSwag 81.3%,
+      WinoGrande 75.3%; Table 3 gives "Mistral 7B Instruct" (v0.1) an MT-Bench of 6.84 +/- 0.07. Neither
+      table covers the v0.2 instruct tune.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: dfbac4e7035344b305c947481f2e7e8a02f7a24a563917eb6e47f6591d14c5ae
   - url: https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2
     shows: 7B instruct model card, 32k context; links arxiv:2310.06825 "Mistral 7B", the base-model paper.
       No benchmark table on the card.
