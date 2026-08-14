@@ -93,6 +93,16 @@ jobs:
       # sitting in prose, which is the argument for counting it here instead.
       - name: Instrument gate (every signal_type claim has what it needs to be falsifiable)
         run: uv run python -m build.check_instrument
+      # How stale is every axis, per category. Informational on purpose: no --max-age-days, so
+      # it prints and cannot fail. The gate at 30 days is `.github/workflows/freshness.yml`,
+      # weekly, and it is the one gate here that must not run per PR — it fails on the passage
+      # of time, so it would block work unrelated to the stale category and nobody could clear
+      # it from inside their own PR. What this step is for is the other half: a re-read PR
+      # seeing, in its own log, whether the category it just refreshed came back inside the
+      # window. See docs/guides/freshness.md.
+      - name: Freshness report (informational, does not gate)
+        run: uv run python -m build.check_freshness
+
       - name: Serialize dry-run
         run: uv run python -m build.serialize --date ci-dry-run
 

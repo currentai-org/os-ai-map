@@ -290,7 +290,9 @@ The unit of work is therefore per product, not per axis:
    `http_status`, `license_*`, `is_archived`, `is_gated`, `downloads_30d` and `fetched_at`.
 2. Fetch each cited URL a signal does not already cover; record `http_status`,
    `content_sha256`, and a `shows` extract that actually appears in the body. A cited URL that
-   404s is a finding, not something to paper over.
+   404s is a finding, not something to paper over — and so is a cited figure that no longer
+   appears in a page which still resolves. One product in the 2026-08 sweep cited a leaderboard
+   position that had ceased to exist at all, on a URL returning 200.
 3. Re-derive each recorded dimension and attribute it: `establishes: [...]`.
    On capability, that means the peer comparison: if the band was placed against another
    product, record it as `relative_to` + `relation` rather than leaving it in the note, and
@@ -304,11 +306,39 @@ The unit of work is therefore per product, not per axis:
 6. Stamp `last_verified` only once every recorded dimension has an establishing source.
    Otherwise `deferred` with a real reason. Never both, and never silently absent.
 
+**Order the batch anchors first, which is not optional.** `check_capability` enforces transitive
+freshness: a band recording `relative_to: X` may not claim a `last_verified` more recent than
+X's, so an anchor confirmed yesterday fails a band dated today. Find the anchors inside the batch
+with `grep -l relative_to sources/scores/*.yaml` intersected with the roster, and date them in the
+same run.
+
+**Four rules a pass may not bend.** Each of these is a defect this project shipped rather than a
+precaution against one.
+
+1. **Never invent a digest.** The only thing that produces a `content_sha256` is
+   `uv run python -m build.fetch_source <url>`, and what it prints is the full 64 characters.
+   Three were fabricated on 2026-08-13 by padding truncated prefixes out to full length. If a URL
+   cannot be fetched, record no digest for it and leave the axis undated.
+2. **`accessed`, `http_status` and `content_sha256` travel together** on the same source. A fresh
+   `accessed` with nothing under it fails `check_verification`, so re-dating a source and
+   digesting it are one edit rather than two.
+3. **An unreachable host says nothing about whether the fact is true.** A 403, a 429 or a dead URL
+   means the axis stays undated and the host gets reported. It never means the value is wrong.
+4. **A plain YAML scalar cannot contain `": "`.** Write ` - ` instead, or single-quote the whole
+   scalar. This cost four separate parse failures in one day.
+
+**A null axis is a finding, and it earns a date too.** `level: null` over a note saying no figure
+is published is a deliberate abstention rather than missing work. Re-read the page, confirm
+nothing has appeared, and date it — citing the page that publishes nothing and saying in the note
+what was looked for. `verification.md`, "A null axis can earn a `last_verified`", is the rule
+(#236).
+
 Batch by category so `check_rubric` gives a clean signal per batch, and run
-`check_verification` after each batch rather than at the end. One PR per category, prose and
-scores together, with every moved score itemized against its evidence. Categories go in order
-of **worst signal coverage first**, so no manual reading duplicates what Phase 3's write-back
-would have earned for free.
+`check_verification` after each batch rather than at the end. The full gate list for a batch is
+step 6 of `skills/refresh-category/SKILL.md`, and that is the only copy of it. One PR per
+category, prose and scores together, with every moved score itemized against its evidence.
+Categories go in order of **worst signal coverage first**, so no manual reading duplicates what
+Phase 3's write-back would have earned for free.
 
 **On agent execution.** This is 1106 fetches and it is the step most exposed to
 rubber-stamping — an agent that "confirms" without reading would reproduce #108's failure at
@@ -316,6 +346,40 @@ fifty times the scale while looking legitimate. Three things make that not work:
 requires the `accessed` bump on every dimension, the digest requirement requires a digest that
 only fetching produces, and the sampled re-fetch goes back to the network for a sample and
 compares. Do not relax any of the three to make a batch finish.
+
+### Running the pass in parallel
+
+One agent per category, several categories at once, is what closed all 472 products between
+2026-08-13 and 2026-08-14. `skills/refresh-category/SKILL.md` is the orchestration — the batch
+shape, the concurrency cap, the research / audit / apply split, and the reading list each agent
+gets. Four things belong to the agent rather than the orchestrator, and each is a defect the sweep
+actually hit:
+
+- **Namespace scratch files per agent.** The session scratchpad is shared. Two passes had a fetch
+  log and a helper script overwritten mid-run by a sibling agent using the same filenames, and had
+  to re-fetch everything to be sure the digests they were about to record were their own. Write
+  only under a private subdirectory named for the category.
+- **Touch only your own category's files** — `sources/scores/<member>.yaml` and
+  `sources/products/<member>.yaml` for members of that category. Never `docs/`, `tests/`,
+  `.github/`, `build/notebook_data.json`, `notebooks/`, or another category's products.
+- **Escalate anything that moves a level.** Step 5 above says a moved value is the valuable
+  output, and it is, but the agent that finds one is not the one who applies it. Escalate any
+  change to a `score`, `level`, `class` or `reach`, declaring a new artifact, refusing an artifact
+  that exists, an axis whose evidence is gone and needs new sources found, and anything you are
+  guessing at. Then carry on: escalating one product does not block the other twenty.
+- **Where the entity moved rather than the evidence, it is a curation call.** A product that
+  merged, split into tiers or was renamed is `docs/guides/identity.md` work, not a re-read. Record
+  the finding and leave the slug alone.
+
+**The escalations are where the pass earns its money.** Agents refusing to date
+`fireworks-inference`, `math`, `muse-spark`, `grok` and `doubao-seed` is how the sweep found
+evidence that had quietly vanished. A batch escalating nothing is more suspicious than one
+escalating five things.
+
+When the escalation is an adoption re-band, `docs/guides/adoption.md`, "When a re-read may
+re-band", carries the standing answers: measured signal against a hand-set band, `stars_fallback`,
+relabelling to `reported_traction`, declaring a new artifact, and SDK attribution. Rule from there
+rather than deciding it again per category.
 
 **Expect scores to move.** The RWKV correction in #105 came out of a pass like this. Movement
 is the return on the work, not a problem with it — `apply_scores --check` exits non-zero on a
@@ -330,7 +394,7 @@ moved score deliberately.
 ## Phase 5 — Close the ratchet
 
 ```bash
-uv run python -m build.check_freshness --max-age-days 90     # tune, then gate
+uv run python -m build.check_freshness --max-age-days 30     # the gate, run by hand
 ```
 
 **The sampled re-fetch landed early**, in #148, because Phase 4 is the step it exists to police
@@ -340,8 +404,11 @@ and running that without it would be the rubber-stamp risk with nothing undernea
 legitimately change. A digest that **matches** is the proof — one that differs proves nothing on
 its own.
 
-What remains here: turn `--max-age-days` into a CI gate once coverage makes it fail on genuine
-staleness rather than on backlog, and drop the digest requirement's exemption list.
+**The age gate is on** as of 2026-08-14, at 30 days, weekly in
+`.github/workflows/freshness.yml` rather than per-pull-request — it fails on the passage of time,
+so nobody can clear it from inside an unrelated PR. `docs/guides/freshness.md` has the argument.
+
+What remains here: drop the digest requirement's exemption list.
 
 **Exit criteria:** the five definition-of-done conditions hold, and each is enforced by
 something that runs without being remembered.
@@ -355,6 +422,13 @@ Every one of these has happened. They are not hypotheticals.
 | hazard | tell | guard |
 |---|---|---|
 | Derived date sold as a confirmation | any aggregate of `accessed` reaching `last_verified` | `tests/test_apply_scores.py`; the invariant validates, never derives |
+| Fabricated digest | a full-length `content_sha256` on a source nobody could fetch | only `build.fetch_source` produces one; the sampled re-fetch compares it |
+| A re-dated source with nothing under it | a fresh `accessed`, no `http_status` or `content_sha256` | `check_verification`'s digest requirement |
+| A parse failure from a `": "` in a scalar | `validate` cannot read a file the pass just wrote | write ` - `, or single-quote the whole scalar |
+| Parallel agents sharing a scratch directory | a fetch log or helper script rewritten mid-run | one private subdirectory per category |
+| A 404 read as a product being gone | a retirement resting on one dead URL | check the URL first: `arduino/app-lab` 404s, `arduino/arduino-app-lab` is public, GPL-3.0 and actively pushed |
+| A marketing reorganization read as a withdrawal | the vendor site stops listing it; the docs still ship it | `snorkel-flow` was nearly retired off its marketing site while `docs.snorkel.ai` had it at v26.1 with an install guide |
+| A test whose setup depends on the bug | the test dies when the bug is fixed | build the fixture; never borrow a live failing record, as `test_relabelling_to_reported_traction_does_not_buy_a_pass` did |
 | Stale warehouse read | identical query text returning a pre-materialization answer | the nonce helper (0.4) |
 | Unreleased revision | "my SQL change had no effect", no error | the release assertion (0.5) |
 | Repo/warehouse drift | local reproduces, warehouse abstains | the parity gate (Phase 2) |
@@ -367,5 +441,8 @@ Every one of these has happened. They are not hypotheticals.
 
 - `docs/guides/verification.md` — normative: the invariant, the gates, who may write a date
 - `docs/guides/freshness.md` — normative: what `last_verified` means
+- `docs/guides/adoption.md` — normative: the bands, the instrument vocabulary, and when a re-read
+  may re-band
 - `docs/runbooks/deploy-udms.md` — revision → release → run
+- `skills/refresh-category/SKILL.md` — the orchestration for one category of Phase 4
 - `AGENTS.md` — the layer-2 loop and the evidence grading rule

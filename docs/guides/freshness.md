@@ -46,12 +46,17 @@ staleness of 55 days when the files had in fact been revised a median of 35 days
 
 ## The fallback: the score file's last commit date
 
-Most axes carry no `last_verified` yet. For those, freshness falls back to **the date of
-the last commit that changed what `sources/scores/<slug>.yaml` claims**.
+Where an axis carries no `last_verified`, freshness falls back to **the date of the last
+commit that changed what `sources/scores/<slug>.yaml` claims**.
 
 Somebody committed that file on that date and left the score standing, which is a
 review rather than a reading. Git records it, and nobody can inflate it. As #102 put
 it, the git history of a score file *is* its verification record.
+
+As of 2026-08-14 every one of the 1,416 axes carries a real `last_verified`, so nothing on
+the map is currently read through the fallback. It remains the rule rather than history: a
+product added tomorrow has no date until somebody confirms it, and the age gate below reads
+whichever signal an axis has.
 
 **Changed what it claims, not merely touched.** Some commits move a file without
 reviewing it. The Phase 1a migration reshapes `openness.components` from a string into a
@@ -104,10 +109,44 @@ can never be conflated.
 ## What it is for
 
 Triage. A category whose oldest axis is 50 days old is a category to go and look at.
-`build/check_freshness.py` reports per-category median and oldest, names the stalest
-product, and takes `--max-age-days` to become a CI gate once enough axes carry a real
-`last_verified` that gating would fail on genuine staleness rather than on the
-pre-automation backlog.
+`build/check_freshness.py` reports per-category median and oldest and names the stalest
+product. `--max-age-days N` turns that report into a gate: it exits non-zero if any
+category's oldest axis is older than N days.
+
+**The window is 30 days**, decided 2026-08-09; `docs/guides/verification.md` step 5 holds the
+reasoning and owns the number.
+
+### Where the gate runs, and why not in `validate.yml`
+
+**`.github/workflows/freshness.yml`, weekly, and nowhere else.** It is the only gate here that
+fails on the passage of time rather than on something in a diff, and that difference decides
+where it belongs.
+
+Per-pull-request it would block work that has nothing to do with the stale category. Nobody can
+clear it from within the offending pull request either: the remedy is to re-read a category
+against its sources, which is a research pass (`skills/refresh-category`) ending in a pull
+request of its own. An outside contributor adding one product would be handed a red check for a
+category they have never touched and no way to turn it green. That is the failure mode
+`parity.yml` is written to avoid — a gate that fails for a reason the person in front of it
+cannot act on gets switched off.
+
+Weekly rather than daily for the same reason parity is weekly: the cadence has to match the work
+it polices. A category is re-read in one run, so all of its axes carry one date and all of them
+age out together, and about four categories cross a 30-day line per week. A daily gate would
+re-report the same cliff for as many days as the re-read takes, which is nagging rather than
+information.
+
+`validate.yml` runs the same report per pull request **without** `--max-age-days`, so it prints
+and cannot fail. That is what makes a re-read pull request show, in its own check log, whether
+the category it refreshed came back inside the window.
+
+### What the fallback means under a gate
+
+An axis with no `last_verified` is measured by its commit date, so a product added last week
+passes the age gate without anybody having confirmed it. That is not the gate leaking: age and
+confirmation are different questions, and "never confirmed" is `build/sweep_status.py`'s and
+`build/check_verification.py`'s. The report prints how many of its ages rest on the fallback so
+a pass can never quietly be resting on the weaker signal.
 
 ## Who may write `last_verified`
 

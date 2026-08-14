@@ -1,7 +1,7 @@
 """Report how stale the map's scores are.
 
-The map's value depends on its numbers being current, and until now there was no
-way to check that without reading 501 files. A score last touched in June looks
+The map's value depends on its numbers being current, and until this existed there was no
+way to check that without reading 472 files. A score last touched in June looks
 exactly like one touched yesterday.
 
 **`docs/guides/freshness.md` is the normative definition.** The rule is one sentence:
@@ -13,8 +13,9 @@ when the two disagree the guide wins.
 
   * **`last_verified`** — the most recent date on which everything in the score was
     confirmed still correct. Written when an axis is re-checked against its sources,
-    whether or not the value changed. 137 of 1,370 axes carry one, up from zero when
-    the field landed, and watching that fill in is how we measure the automation.
+    whether or not the value changed. All 1,416 axes carry one as of 2026-08-14, up from
+    zero when the field landed and 137 when this module did, and watching that fill in is
+    how the automation was measured.
   * **The score file's last commit date** — the fallback. Somebody committed this
     file on that date and left the score standing, which git records and nobody can
     inflate. Weaker than a re-check and *not* presented as one. Read `commit_dates` for
@@ -35,9 +36,25 @@ the commit date dates the import, which still answers "has anyone revisited this
 This report labels which signal each number came from, and never lets the weaker one
 be read as the stronger.
 
-Exit status is 0 unless `--max-age-days` is given, so it is safe to run for
-information. Pass a threshold to turn it into a CI gate once layer-2 is keeping
-scores fresh; gating today would only fail on the pre-automation backlog.
+Exit status is 0 unless `--max-age-days` is given, so it is safe to run for information.
+With a threshold it is a gate, and it fails if any category's oldest axis is over the
+window, or if any axis has no date at all for the window to be measured against.
+
+## Where the gate runs
+
+`.github/workflows/freshness.yml`, weekly, at 30 days — the window decided 2026-08-09 and
+owned by `docs/guides/verification.md` step 5. Not in `validate.yml`, and that is the one
+design decision in this file worth knowing about.
+
+Every other gate in this repo fails on something in a diff. This one fails on the passage of
+time, so per pull request it would block work unrelated to the stale category, and nobody
+could clear it from inside that pull request either: the remedy is to re-read a category
+against its sources, which is a research pass ending in a pull request of its own. Weekly
+rather than daily because a category is re-read in a single run, so its axes all age out
+together and roughly four categories cross the line per week; a daily gate would re-report
+the same cliff every day until the re-read finished. `validate.yml` runs the report without
+a threshold, so a re-read pull request can see its own effect without anything being able to
+fail on the clock.
 
 Usage:
     uv run python -m build.check_freshness
@@ -278,20 +295,27 @@ def commit_dates(root: Path | None = None) -> dict[str, date]:
     return {slug: when for slug, when in dates.items() if when is not None}
 
 
-def collect() -> tuple[dict[str, list[tuple[str, str, date, bool]]], list[str]]:
+def collect(
+    root: Path | None = None,
+) -> tuple[dict[str, list[tuple[str, str, date, bool]]], list[str]]:
     """Return (category -> [(product, axis, when, is_verified)], axes with no date).
 
     `is_verified` separates a real `last_verified` from a commit-date fallback, so
     the report can never present the weaker signal as the stronger one.
+
+    `root` defaults to this module's own repository, which is what the command line wants.
+    The tests pass a fixture checkout, so the gate's behavior can be asserted against dates
+    they construct rather than against whatever the corpus happens to say today.
     """
-    committed = commit_dates()
+    root = root or ROOT
+    committed = commit_dates(root)
     by_category: dict[str, list[tuple[str, str, date, bool]]] = defaultdict(list)
     undated: list[str] = []
 
-    for path in sorted((ROOT / "sources" / "categories").glob("*.yaml")):
+    for path in sorted((root / "sources" / "categories").glob("*.yaml")):
         category = yaml.safe_load(path.read_text())
         for product in category.get("products") or []:
-            score_path = ROOT / "sources" / "scores" / f"{product}.yaml"
+            score_path = root / "sources" / "scores" / f"{product}.yaml"
             if not score_path.exists():
                 continue
             scores = yaml.safe_load(score_path.read_text()) or {}
@@ -315,7 +339,7 @@ def collect() -> tuple[dict[str, list[tuple[str, str, date, bool]]], list[str]]:
     return by_category, undated
 
 
-def main() -> int:
+def main(argv: list[str] | None = None, root: Path | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--category", help="limit to one category slug")
     parser.add_argument(
@@ -324,10 +348,12 @@ def main() -> int:
         help="exit 1 if any category's oldest axis exceeds this. Omit to report only.",
     )
     parser.add_argument("--today", help="override today's date, YYYY-MM-DD, for testing")
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
+    if args.max_age_days is not None and args.max_age_days < 1:
+        parser.error("--max-age-days must be at least 1; a window of zero days fails everything")
 
     today = parse_date(args.today) or date.today()
-    by_category, undated = collect()
+    by_category, undated = collect(root)
     if args.category:
         by_category = {k: v for k, v in by_category.items() if k == args.category}
 
@@ -353,13 +379,19 @@ def main() -> int:
     )
 
     verified_n = sum(1 for _, _, _, is_verified in rows if is_verified)
-    print(
-        f"\n{verified_n} of {len(rows)} axes carry a real last_verified. "
-        f"The other {len(rows) - verified_n} fall back to the score file's last commit "
-        "date, which dates the last time somebody committed the file and left the score "
-        "standing. For a file untouched since it was added that dates the import, not a "
-        "review, so read those ages as 'nobody has revisited this'."
-    )
+    if verified_n == len(rows):
+        print(
+            f"\nall {len(rows)} axes carry a real last_verified, so no age above rests on "
+            "the commit-date fallback."
+        )
+    else:
+        print(
+            f"\n{verified_n} of {len(rows)} axes carry a real last_verified. "
+            f"The other {len(rows) - verified_n} fall back to the score file's last commit "
+            "date, which dates the last time somebody committed the file and left the score "
+            "standing. For a file untouched since it was added that dates the import, not a "
+            "review, so read those ages as 'nobody has revisited this'."
+        )
     if undated:
         print(
             f"{len(undated)} axes have no date at all: {', '.join(undated[:6])}"
@@ -368,13 +400,35 @@ def main() -> int:
 
     if args.max_age_days is None:
         return 0
+
     over = [(age, cat, what) for age, cat, what in stalest if age > args.max_age_days]
-    if over:
-        print(f"\n{len(over)} categor(ies) exceed {args.max_age_days}d:")
-        for age, cat, what in sorted(over, reverse=True):
-            print(f"  ! {cat:<28} {age}d  ({what})")
+    if over or undated:
+        if over:
+            print(f"\n{len(over)} of {len(by_category)} categories are over {args.max_age_days}d:")
+            for age, cat, what in sorted(over, reverse=True):
+                print(f"  ! {cat:<28} {age}d  ({what})")
+        # An undated axis is unmeasurable, so the gate cannot vouch for it either way. This
+        # list is repo-wide even under --category, because a missing date is not a fact about
+        # the category you asked about. In CI it should be empty: it is only reachable for a
+        # file git has never seen.
+        if undated:
+            print(
+                f"\n{len(undated)} axes have no date for the window to measure: "
+                f"{', '.join(undated)}"
+            )
+        print(
+            "\nRe-read each category named above against its sources and stamp a fresh\n"
+            "last_verified per axis: `skills/refresh-category` drives that, one category per\n"
+            "PR. Editing a date without re-reading is the failure this gate exists to catch;\n"
+            "docs/guides/verification.md says what a confirmation has to consist of.\n"
+            "\n"
+            "Several categories aging out at once is expected rather than a backlog. A category\n"
+            "is re-read in one run, so all of its axes carry one date and all of them cross the\n"
+            f"line together. {len(by_category)} categories on a {args.max_age_days}d window is "
+            f"about {round(len(by_category) * 7 / args.max_age_days)} a week."
+        )
         return 1
-    print(f"\nall categories within {args.max_age_days}d")
+    print(f"\nall {len(by_category)} categories within {args.max_age_days}d")
     return 0
 
 

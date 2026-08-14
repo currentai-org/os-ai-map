@@ -281,8 +281,31 @@ it says something the level does not, which is usually the *shape* of the tracti
 its size: `osprey` at 446 GitHub stars but running in production at Discord is `niche` in a way
 that matters. The words are hardware's, which has used exactly these since before this route
 existed; sharing them beats minting a parallel set.
-- A `stars_fallback` band means no download signal existed when it was set. If one exists now,
-  re-band on it.
+
+### When a re-read may re-band, and when it may not
+
+Settled 2026-08-14, at the end of the verification sweep, because the same five questions
+arrived once per category and got answered from scratch each time. These are curation rules and
+no gate enforces them; `docs/runbooks/verification-pass.md` is where a pass applies them.
+
+- **A measured signal on an already-declared artifact beats a hand-set band.** The artifact was
+  declared, so the count is the instrument the record already claims to have been read with, and
+  the band follows the count. Re-band, and put the figure in the note.
+- **A `stars_fallback` band means no download signal existed when it was set.** If one exists
+  now, re-band on it.
+- **A `usage_volume` record over a page publishing no count at all is on the wrong instrument.**
+  Move it to `reported_traction`, drop the numeric `reach`, and **leave the level alone.** What
+  was wrong is the claim to have counted something, not the reading of the product's standing.
+  Re-deriving the level is a separate judgment and needs its own evidence.
+- **Declaring a NEW artifact requires it to be provably the product's own AND its primary
+  channel.** Both, not either. Refused on 2026-08-14 for `gvisor`, `ollama`, `promptfoo` and
+  `opencompass`: each has a findable package, and banding on it would have moved a level on a
+  minority channel. That is the under-coverage error below, met from the other direction.
+- **An SDK's downloads band the hosted platform it talks to**, with two exceptions. A package
+  that is a transitive dependency of a *different* product measures that product's reach —
+  `langsmith` is pulled in by `langchain-core`. And one SDK spanning N products may not be
+  attributed to one of them, which is `cohere-rerank-api` banded on the whole `cohere` package.
+  In both the count is real and is counting something other than the product.
 
 Measured 2026-08-10, 49 of the 60 products whose recorded band exceeded the computed one
 declared `usage_volume` while their own notes cited figures that matched the warehouse almost
@@ -351,7 +374,8 @@ it does not make the claim automatic, it makes it falsifiable.
   API integration, and the trap is attribution. `cohere-rerank-api` is currently banded on
   37.9M downloads of the `cohere` package, which is the SDK for Cohere's entire API surface
   rather than the rerank product. **An SDK covering N products may not be attributed wholly to
-  one**, and no such rule exists yet.
+  one** — the rule is in "When a re-read may re-band" above, along with the
+  transitive-dependency case it did not originally anticipate.
 - **OpenRouter rankings** — the only true API-channel signal, via
   `/api/v1/datasets/rankings-daily`. Two limits: it returns the top 50 models per day, and its
   `hugging_face_id` bridge is empty for exactly the closed and API-first models that need it
