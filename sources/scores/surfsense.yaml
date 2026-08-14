@@ -1,11 +1,13 @@
 product: surfsense
 openness:
-  score: 5
-  class: open_source
+  score: 2
+  class: source_available
   components:
     license:
     - name: Apache-2.0
-      detail: OSI
+      detail: OSI, everything outside the proprietary directory
+    - name: BSL-1.1
+      detail: Business Source License 1.1 - surfsense_backend/app/proprietary
     source:
       value: public
       detail: github.com/MODSetter/SurfSense
@@ -17,17 +19,59 @@ openness:
     free_text:
     - no-feature-gated-core-found
   confidence: high
-  note: Permissive OSI license (Apache-2.0), complete source public, self-host-first via Docker/Compose.
-    No paid tier or gated features found on the repo or site (mild uncertainty - treated as fully open until
-    a commercial tier appears).
-  raw: license:Apache-2.0(OSI);source:public(github.com/MODSetter/SurfSense);self-host:primary(Docker/Compose);no-feature-gated-core-found;core-gated:ungated
+  note: 'Re-read 2026-08-14 and the license is a two-part compound, not the single Apache-2.0 this record
+    carried. The root LICENSE opens ''Portions of this software are licensed as follows'' and puts all
+    content under surfsense_backend/app/proprietary/ under the Business Source License 1.1 defined in that
+    directory''s own LICENSE, with content outside it under Apache-2.0. The directory is live and is not a
+    stub - it holds LICENSE, __init__.py, platforms/ and web_crawler/, which is the live-data connector
+    surface the product now leads on. GitHub reads the split file as spdxId NOASSERTION, the same way it
+    declines to classify agenta''s.
+    The universal license cap settles the tier from there - BSL-1.1 is competition_restricted in the
+    software ladder, most-restrictive-wins across the recorded parts, and a public source under a
+    competition_restricted license is 2/source_available. You can read the whole tree and you may not run
+    the proprietary half in production on the license''s terms. `core-gated` stays `ungated` on the
+    ladder''s own definition - nothing is withheld FROM the published source, the restricted directory
+    ships in it - and the repo still says self-hosting stays free and open source, with self-hosted
+    installs running with billing off. Moved from 5/open_source, which had read the Apache half as the
+    whole license.'
+  raw: license:Apache-2.0(OSI, everything outside the proprietary directory)+BSL-1.1(Business Source License
+    1.1 - surfsense_backend/app/proprietary);source:public(github.com/MODSetter/SurfSense);self-host:primary(Docker/Compose);no-feature-gated-core-found;core-gated:ungated
+  last_verified: '2026-08-14'
   sources:
   - url: https://github.com/MODSetter/SurfSense/blob/main/LICENSE
     shows: Apache License 2.0
     accessed: '2026-06-17'
+  - url: https://raw.githubusercontent.com/MODSetter/SurfSense/main/LICENSE
+    shows: 'Root LICENSE, read rather than assumed. ''Portions of this software are licensed as follows -
+      All content that resides under the "surfsense_backend/app/proprietary/" directory of this repository
+      is licensed under the Business Source License 1.1 as defined in "surfsense_backend/app/proprietary/LICENSE".
+      ... Content outside of the above-mentioned directory is available under the Apache License, Version
+      2.0'', followed by the full Apache text. Two governing licenses, one repository.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: b2392d46b23884d3731d9780c8948458acf74d10b47b8475d5b7baa467e9cf24
+    establishes:
+    - license
+  - url: https://api.github.com/repos/MODSetter/SurfSense/contents/surfsense_backend/app/proprietary
+    shows: The BSL-covered directory exists and ships code - LICENSE, __init__.py, platforms/ and web_crawler/.
+      It is the connector surface rather than a placeholder.
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 4d5ec0907f175c11911ce6fea78195550c2c94f9c6350762dfe8291fd32e94e6
+    establishes:
+    - source
   - url: https://github.com/MODSetter/SurfSense
-    shows: ~15k stars; open privacy-focused NotebookLM/Perplexity alternative; Docker self-host
-    accessed: '2026-06-17'
+    shows: 'Repository page, 15,906 stars. GitHub records the license as spdxId NOASSERTION / ''Other'',
+      which is GitHub declining to classify the split LICENSE file. The page still reads ''self-hosting
+      stays free and open source'' and ''Self-hosted installs run with billing off'', so nothing is
+      withheld from the published tree for a paid tier.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 66cf56f96c8a0d50d5d3bffc5d2d10755b086e4b46ad5bcc73d02ad605b5a8aa
+    establishes:
+    - source
+    - core-gated
+    - self-host
 adoption:
   level: 3
   reach: '>10K stars'
