@@ -25,13 +25,53 @@ openness:
       raw: distributor (via Thundercomm/distributors)
   confidence: high
   note: Proprietary Qualcomm silicon with public docs and a Linux SDK, sold through distributors, but
-    the board itself is not fully open hardware.
+    the board itself is not fully open hardware. Re-read 2026-08-14. www.qualcomm.com serves a
+    client-rendered 9KB shell to a fetcher and no header set changes that, but the fact it was cited
+    for is published elsewhere by Qualcomm itself - docs.qualcomm.com serves the kit''s actual product
+    brief as a PDF, and that document carries four of the five components on its own. `datasheets` is
+    it - a public brief, document 87-74789-1 Rev. A. `schematics` reads partial off "The hardware
+    development kit is also compliant with the 96Boards open hardware specification to support a range
+    of mezzanine-board expansions", an open interface standard published with a block diagram but no
+    board files. `toolchain` off "Support for Linux, Android" plus the Intelligent Multimedia, Robotics,
+    Neural Processing and Hexagon SDKs, and off Qualcomm AI Hub Models being a BSD-3-Clause repo at
+    1,183 stars. `blobs` off the whole stack sitting on the proprietary QCS6490 with vendor SDKs.
+    `retail` from Edge Impulse, which names Advantech, Tria, Thundercomm and Quectel as manufacturers
+    of QCS6490 kits. One thing worth flagging for the corpus rather than for this score - the first
+    product-brief URL tried resolved 200 to a Snapdragon 8 Gen 3 brief instead, and was discarded
+    rather than cited. No change.
   raw: schematics:partial (96Boards mezzanine standard);toolchain:open (open Qualcomm Linux + AI Hub);datasheets:brief
     (public brief);blobs:required (proprietary silicon + firmware);retail:distributor (via Thundercomm/distributors)
+  last_verified: '2026-08-14'
   sources:
   - url: https://www.qualcomm.com/developer/hardware/rb3-gen-2-development-kit
-    shows: 'official page: QCS6490, up to 12 TOPS, 96Boards design, Qualcomm Linux stack'
+    shows: 'official page: QCS6490, up to 12 TOPS, 96Boards design, Qualcomm Linux stack. Not
+      re-fetchable as a document - the URL returns 200 but the body is a ~9KB client-rendered shell
+      with no product content in it, which no header set changes - so it keeps its 2026-06-22 read.'
     accessed: '2026-06-22'
+  - url: https://docs.qualcomm.com/doc/87-74789-1/87-74789-1_REV_A_Qualcomm_RB3_Gen_2_Development_Kit_Product_Brief.pdf
+    shows: 'Qualcomm''s own "Qualcomm RB3 Gen 2 Development Kit" product brief, 87-74789-1 Rev. A -
+      "The hardware development kit is also compliant with the 96Boards open hardware specification to
+      support a range of mezzanine-board expansions"; software "Support for Linux, Android", Qualcomm
+      Intelligent Multimedia, Intelligent Robotics, Neural Processing and Hexagon SDKs; spec table
+      Chipset QCS6490, Octa-core CPU, AI 12 TOPS'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: b74769821c1cd5d01d3d7b947392c8af80aa68f2f69a49f95f5775a3b05c75f0
+    establishes: [datasheets, schematics, toolchain, blobs]
+  - url: https://api.github.com/repos/quic/ai-hub-models
+    shows: 'Qualcomm AI Hub Models, license spdx_id BSD-3-Clause, 1183 stars, last pushed 2026-08-13 -
+      the open half of the toolchain'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 1d1fadcc0e83d1634b0370fe55ff48e19e90f038277315c41d2b8232f69c6b1f
+    establishes: [toolchain]
+  - url: https://docs.edgeimpulse.com/hardware/boards/qualcomm-rb3-gen-2-dev-kit
+    shows: '"Other QCS6490-based kits are available from various manufacturers such as Advantech, Tria,
+      Thundercomm, and Quectel" - distributor rather than open-market availability'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 4344a8c8cd1b2aa27ba29687fcd502dcd353641dc9a07d37acdbf58594a87561
+    establishes: [retail]
 adoption:
   level: 3
   reach: niche

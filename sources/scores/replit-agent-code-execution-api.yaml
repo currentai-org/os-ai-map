@@ -92,12 +92,31 @@ capability:
     Replit Agent surface. Not dated 2026-08-13 - the only source this band cites, the Replit blog post,
     returned 403 to every fetch attempt, so the ~100ms figure was not re-confirmed. The archived client
     README was re-read instead and still supports the rest of the band, an ephemeral unprivileged container
-    sandboxed by omegajail, stateless, Python-focused, running on Replit Autoscale Deployments.'
+    sandboxed by omegajail, stateless, Python-focused, running on Replit Autoscale Deployments.
+    STILL NOT DATED on 2026-08-14 after a substitute hunt, and the reason is now specific rather than
+    general. Three of the value''s four elements re-derive from two independent fetchable channels -
+    the archived README and the package''s own PyPI metadata both describe an ephemeral unprivileged
+    container using omegajail, stateless, Python, on Replit Deployments. The ~100ms cold start is the
+    one element that does not: replit.com and blog.replit.com answer 403 to every request under every
+    header set tried, and the Wayback availability API reports no capture of the post at all
+    ("archived_snapshots": {}), so there is no surviving copy of the document that carries the figure.
+    Worth noting for whoever rules on it that the band does not rest on that number - 100ms is a point
+    in the product''s favour, and the 3 is placed on container-rather-than-microVM isolation, narrow
+    language focus and no persistence, all three of which re-derive. The axis stays undated because
+    the value as written is not fully re-derivable, not because the score is in doubt.'
   sources:
   - url: https://replit.com/blog/ai-agents-code-execution
     shows: omegajail container sandbox, ~100ms start, Python-focused, stateless (stateful-Repl experiment
-      discontinued)
+      discontinued). Not re-fetchable - HTTP 403 to every attempt on 2026-08-13 and 2026-08-14, and no
+      Wayback capture exists - so the ~100ms figure has no surviving readable source.
     accessed: '2026-06-04'
+  - url: https://pypi.org/pypi/replit-code-exec/json
+    shows: 'the package''s own metadata, an independent channel for the same description - execution
+      "inside an ephemeral unprivileged container created on the fly running in Replit Deployments
+      using omegajail as code sandbox"; carries no latency figure'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 271ca1e7ce0ef7396f312a387165972623accc5e1d91f3fde8b55eb834e1c7b9
   - url: https://raw.githubusercontent.com/replit/replit-code-exec/main/README.md
     shows: stateless API optimized for AI agents, executing untrusted Python inside an ephemeral unprivileged
       container created on the fly on Replit Deployments using omegaup/omegajail as the code sandbox; no

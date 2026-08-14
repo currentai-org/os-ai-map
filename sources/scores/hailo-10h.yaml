@@ -23,35 +23,114 @@ openness:
       raw: open_market (M.2 modules purchasable)
   confidence: high
   note: Proprietary silicon with published datasheets and an open GenAI model zoo, but the silicon and
-    full toolchain are closed.
+    full toolchain are closed. Re-read 2026-08-14 against substitutes, hailo.ai being unfetchable at
+    403. Each component re-derived - the GenAI model zoo is still MIT by the GitHub API's own
+    `spdx_id`, and HailoRT is MIT/LGPL-2.1 with the developer-zone documentation behind registration
+    and the Dataflow Compiler behind a customer relationship, which is the closed half of `toolchain`;
+    `blobs` from HailoRT's driver shipping device firmware; `datasheets` from AAEON's UP page carrying
+    the full published spec table for the module; `retail` from the same page plus Geniatech shipping
+    an independent Hailo-10 module. No change.
   raw: schematics:none;toolchain:partial (open runtime + MIT GenAI model zoo);datasheets:public (June 2025);blobs:required
     (proprietary silicon/firmware);retail:open_market (M.2 modules purchasable)
+  last_verified: '2026-08-14'
   sources:
   - url: https://hailo.ai/products/ai-accelerators/hailo-10h-m-2-ai-acceleration-module/
-    shows: official module product page for Hailo-10H
+    shows: official module product page for Hailo-10H. Not re-fetchable - hailo.ai answered HTTP 403
+      to every automated request on 2026-08-14 under every header set tried - so it keeps its
+      2026-06-22 read.
     accessed: '2026-06-22'
-  - url: https://github.com/hailo-ai/hailo_model_zoo_genai
-    shows: MIT-licensed GenAI model zoo for Hailo-10H
-    accessed: '2026-06-22'
+  - url: https://api.github.com/repos/hailo-ai/hailo_model_zoo_genai
+    shows: '"Model zoo for Gen AI models for Hailo products" with license spdx_id MIT, 100 stars'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 11aec3f6aed9f4ed6bf96fb2d596e8372754b192772ff708280e7a22ce935c1e
+    establishes: [toolchain]
+  - url: https://raw.githubusercontent.com/hailo-ai/hailort/master/README.md
+    shows: '"The master branch supports only the Hailo-10 and Hailo-15 device families"; MIT for
+      libhailort/pyhailort/hailortcli and LGPL 2.1 for hailonet; developer-zone documentation
+      "registration is required"; the PCIe driver ships device firmware'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: dada62b1fccdb1234e034247e65b4e43011ef053da545bf824fb23a4a56d8bb4
+    establishes: [toolchain, blobs]
+  - url: https://up-board.org/hailo-10h-m2-ai-acceleration-module/
+    shows: 'AAEON/UP''s published spec table for the module - chipset, AI performance, interface,
+      memory and speed, power, supported OS, host architectures, frameworks and model types. What it
+      does NOT publish is any board file - "Package Contents - 1 x Quick Start Guide" is the whole of
+      what ships, and no schematic, gerber or BOM is offered anywhere on the page, which is the
+      evidence for schematics:none.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: d70178bfb0c8e89a1d7a283be27db74b083aea6c9155b4edb41be277b30097eb
+    establishes: [datasheets, retail, schematics]
+  - url: https://www.geniatech.com/product/aim-m-h10/
+    shows: 'a second vendor''s purchasable Hailo-10 M.2 module - "Up to 40 TOPS AI performance",
+      "M.2 Key-M form factor"'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 29afccd27df1e9dd276570c6d559930d30a53baab391c79f000ce9f6e8e23242
+    establishes: [retail]
 adoption:
   level: 3
   reach: niche
   signal_type: reported_traction
   confidence: medium
   note: Newer generative-AI part; purchasable M.2 modules and a dedicated GenAI repo, but smaller install
-    base than the Hailo-8.
+    base than the Hailo-8. Re-read 2026-08-14 against substitutes. Both halves hold - the part is
+    productized and purchasable through at least two independent module vendors (AAEON/UP, Geniatech),
+    and it is still visibly the smaller surface next to the Hailo-8, with the GenAI model zoo at 100
+    stars and last pushed 2026-04-15 against HailoRT's 215 stars and 2026-08-11. Niche at level 3,
+    one below the Hailo-8, is unchanged.
+  last_verified: '2026-08-14'
   sources:
   - url: https://hailo.ai/products/ai-accelerators/hailo-10h-m-2-ai-acceleration-module/
-    shows: productized, purchasable M.2 generative-AI module
+    shows: productized, purchasable M.2 generative-AI module. Not re-fetchable - HTTP 403 on
+      2026-08-14 - so it keeps its 2026-06-22 read.
     accessed: '2026-06-22'
+  - url: https://up-board.org/hailo-10h-m2-ai-acceleration-module/
+    shows: AAEON/UP shipping the Hailo-10H M.2 module as a listed product with full specifications
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: d70178bfb0c8e89a1d7a283be27db74b083aea6c9155b4edb41be277b30097eb
+  - url: https://www.geniatech.com/product/aim-m-h10/
+    shows: '"Hailo-10 M.2 AI Accelerator Card" - a second independent vendor productizing the part'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 29afccd27df1e9dd276570c6d559930d30a53baab391c79f000ce9f6e8e23242
+  - url: https://api.github.com/repos/hailo-ai/hailo_model_zoo_genai
+    shows: the dedicated GenAI repo at 100 stars, 20 forks, last pushed 2026-04-15 - real but well
+      behind HailoRT's 215 stars and 2026-08-11 push
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 11aec3f6aed9f4ed6bf96fb2d596e8372754b192772ff708280e7a22ce935c1e
 capability:
   score: 4
   basis: feature_matrix
   value: 40 TOPS INT4 / 20 TOPS INT8; runs LLMs & VLMs via direct DDR interface
   confidence: high
   note: Edge-first part that runs generative models locally via a DDR interface, a step beyond CNN-only
-    edge accelerators.
+    edge accelerators. Re-derived 2026-08-14 against substitutes, hailo.ai being unfetchable. AAEON/UP
+    reproduces the recorded value exactly - "AI Performance 40 TOPS @ INT4 | 20 TOPS @ INT8" and
+    "Hailo-10H includes a direct DDR interface, allowing it to scale for large models such as LLMs,
+    VLMs, Stable Diffusion" - and Geniatech independently states up to 40 TOPS running LLMs and VLMs
+    locally. Still one band above the Hailo-8, which is CNN/vision-only and bounded by on-die memory.
+    No change.
+  last_verified: '2026-08-14'
   sources:
   - url: https://hailo.ai/products/ai-accelerators/hailo-10h-m-2-ai-acceleration-module/
-    shows: 40 TOPS INT4 / 20 TOPS INT8, DDR interface, LLM/VLM support
+    shows: 40 TOPS INT4 / 20 TOPS INT8, DDR interface, LLM/VLM support. Not re-fetchable - HTTP 403
+      on 2026-08-14 - so it keeps its 2026-06-22 read.
     accessed: '2026-06-22'
+  - url: https://up-board.org/hailo-10h-m2-ai-acceleration-module/
+    shows: '"AI Performance 40 TOPS @ INT4 | 20 TOPS @ INT8"; "Hailo-10H includes a direct DDR
+      interface, allowing it to scale for large models such as LLMs, VLMs, Stable Diffusion";
+      "Supported AI Models Vision Models (> 150+), GenAI Models (LLM, VLM, Whisper)"'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: d70178bfb0c8e89a1d7a283be27db74b083aea6c9155b4edb41be277b30097eb
+  - url: https://www.geniatech.com/product/aim-m-h10/
+    shows: '"Up to 40 TOPS AI performance"; "Generative AI ready - Runs LLMs, VLMs, and Stable
+      Diffusion locally"; "AI Model Types CNN, Transformer, Vision Transformer, Generative AI Models"'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 29afccd27df1e9dd276570c6d559930d30a53baab391c79f000ce9f6e8e23242

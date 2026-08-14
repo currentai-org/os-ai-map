@@ -23,35 +23,124 @@ openness:
       raw: open_market (global modules)
   confidence: high
   note: Proprietary silicon with an open source runtime and public product briefs, but the model-compiler
-    toolchain requires registration and silicon is closed.
+    toolchain requires registration and silicon is closed. Re-read 2026-08-14 against substitutes,
+    because hailo.ai answers 403 to every automated request and is not re-fetchable. Every component
+    re-derived - HailoRT's README carries the open half of `toolchain` ('libhailort, pyhailort &
+    hailortcli - distributed under the MIT license', hailonet under LGPL 2.1) and the gated half is
+    named by the Model Zoo README, which instructs 'Install Hailo Dataflow Compiler ... In case you
+    are not Hailo customer please contact hailo.ai'; `blobs` by the same README noting the PCIe driver
+    'includes the Hailo-8 firmware that runs on the Hailo device'; `datasheets` by Hailo's own Hailo-8
+    M.2 data sheet Rev 1.1, mirrored publicly by distributor Premio and stamped 'Hailo proprietary -
+    unauthorized reproduction prohibited', which is also why `schematics` stays none; `retail` by
+    Waveshare listing the module at $179.99 with Add to Cart. No change.
   raw: schematics:none;toolchain:partial (open runtime (HailoRT) + closed/registration Dataflow Compiler);datasheets:brief
     (public briefs);blobs:required (proprietary silicon + firmware);retail:open_market (global modules)
+  last_verified: '2026-08-14'
   sources:
   - url: https://hailo.ai/products/ai-accelerators/hailo-8-ai-accelerator/
-    shows: 'official product page: form factors, frameworks, software suite'
+    shows: 'official product page: form factors, frameworks, software suite. Not re-fetchable - hailo.ai
+      answered HTTP 403 to eight consecutive requests on 2026-08-14 under every header set tried, so
+      the source keeps its 2026-06-22 read.'
     accessed: '2026-06-22'
-  - url: https://github.com/hailo-ai/hailort
-    shows: open source HailoRT inference runtime
-    accessed: '2026-06-22'
+  - url: https://raw.githubusercontent.com/hailo-ai/hailort/master/README.md
+    shows: '"HailoRT uses 2 licenses - libhailort, pyhailort & hailortcli - distributed under the MIT
+      license" and hailonet under LGPL 2.1; the PCIe driver "includes the Hailo-8 firmware that runs
+      on the Hailo device"; developer-zone documentation "registration is required"'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: dada62b1fccdb1234e034247e65b4e43011ef053da545bf824fb23a4a56d8bb4
+    establishes: [toolchain, blobs]
+  - url: https://raw.githubusercontent.com/hailo-ai/hailo_model_zoo/master/README.rst
+    shows: '"Install Hailo Dataflow Compiler and enter the virtualenv. In case you are not Hailo customer
+      please contact hailo.ai" - the compiler half of the toolchain is customer-gated, while the Model
+      Zoo itself "is released under the MIT license"'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 73017c8683874a3a6634b038a63d1d7ba3bf0e2bdc13247b9dbfa61759190dad
+    establishes: [toolchain]
+  - url: https://premio.blob.core.windows.net/premio/uploads/resource/data-sheet/Hailo-8/Hailo-8%20M.2%20Key%20B_M%20Datasheet%20Rev1.1.pdf
+    shows: 'Hailo''s own "Hailo-8 M.2 AI Acceleration Module Data Sheet" Rev 1.1, publicly mirrored by
+      distributor Premio - PCIe Gen 3 2-lane, NGFF M.2 Key B+M, TDP 8.65W, and the footer "Hailo
+      proprietary - unauthorized reproduction prohibited"'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: b4b4953effe80c43eeafe323505d4d71ba4ab9f5612c05f9ce71e65c6008256c
+    establishes: [datasheets, schematics]
+  - url: https://www.waveshare.com/hailo-8.htm
+    shows: 'the module on open sale - "Hailo-8 M.2 AI Accelerator Module, based on the 26TOPS Hailo-8
+      AI processor", SKU 27812, $179.99, Add to Cart'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 91792ad2f7dea71019d1d5428c595704cb5773d29f4235ece123bd83803b9027
+    establishes: [retail]
 adoption:
   level: 4
   reach: broad
   signal_type: reported_traction
   confidence: high
   note: Retail-available modules and a large developer base; vendor reports 100K+ users and hundreds of
-    deployed customer products, with an active GitHub org.
+    deployed customer products, with an active GitHub org. Re-read 2026-08-14. The vendor's own
+    100K-users figure is NOT re-derivable - hailo.ai answers 403 to every automated request - and no
+    substitute publishes it, so that number rests on the 2026-06-22 read and nothing here refreshes it.
+    What the substitutes do re-establish is the standing the band was placed on - the part is stocked
+    and sold by several independent distributors on three continents (Waveshare at $179.99, Geniatech
+    AIM-M-H8, AAEON/UP, Advantech via Mouser), and HailoRT is a live repo at 215 stars and 80 forks
+    last pushed 2026-08-11. That is broad standing for an edge accelerator, so level 4 / broad is
+    unchanged. `reported_traction` claims no count, which is exactly why the missing figure does not
+    move it.
+  last_verified: '2026-08-14'
   sources:
   - url: https://hailo.ai/products/ai-accelerators/hailo-8-ai-accelerator/
-    shows: vendor claim of >100K users and hundreds of customer products
+    shows: vendor claim of >100K users and hundreds of customer products. Not re-fetchable - HTTP 403
+      to eight consecutive requests on 2026-08-14 - so the claim keeps its 2026-06-22 read and is not
+      counted as refreshed.
     accessed: '2026-06-22'
+  - url: https://www.waveshare.com/hailo-8.htm
+    shows: 'the module in open retail - SKU 27812, $179.99, Add to Cart, listed under Raspberry Pi 5
+      accessories'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 91792ad2f7dea71019d1d5428c595704cb5773d29f4235ece123bd83803b9027
+  - url: https://www.geniatech.com/product/aim-m-h8/
+    shows: 'a second, independent module vendor shipping the same silicon - "Geniatech AIM-M-H8 is an
+      M.2 AI acceleration module powered by the Hailo-8 NPU"'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 1014072e0b7ecd5bf4e9abaa4d3bba3bb667102c7f32fd85294ef0b89b6dee03
+  - url: https://api.github.com/repos/hailo-ai/hailort
+    shows: HailoRT at 215 stars, 80 forks, last pushed 2026-08-11 - the active developer surface the
+      note describes
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 89d58ace98bd288ae8bb2f54a6e1925bbcd0020ebe59146916cd3b3ccd2a9d8c
 capability:
   score: 3
   basis: feature_matrix
   value: 26 TOPS; CNN/vision inference; supports TF/TFLite/PyTorch/ONNX; on-die memory
   confidence: high
   note: Strong dedicated CNN inference throughput for the edge, but vision-oriented and limited to models
-    that fit on-die memory.
+    that fit on-die memory. Re-derived 2026-08-14 against substitutes, hailo.ai being unfetchable.
+    Every element of the recorded value reproduces - Geniatech's AIM-M-H8 spec table reads "AI
+    performance 26 TOPS(INT8)", "AI Model Frameworks Supported TensorFlow,TensorFlow Lite,Keras,
+    PyTorch&ONNX" and "Memory - Processor integration", which is the on-die claim stated as a
+    specification rather than as marketing; Waveshare independently lists 26 TOPS at 2.5W typical.
+    Still one band below the Hailo-10H, which adds a DDR interface and generative-model support.
+    No change.
+  last_verified: '2026-08-14'
   sources:
   - url: https://hailo.ai/products/ai-accelerators/hailo-8-ai-accelerator/
-    shows: 26 TOPS, 2.5W typical, on-die memory
+    shows: 26 TOPS, 2.5W typical, on-die memory. Not re-fetchable - HTTP 403 to eight consecutive
+      requests on 2026-08-14 - so it keeps its 2026-06-22 read.
     accessed: '2026-06-22'
+  - url: https://www.geniatech.com/product/aim-m-h8/
+    shows: 'spec table - "AI performance 26 TOPS(INT8)", "AI Model Frameworks Supported TensorFlow,
+      TensorFlow Lite,Keras,PyTorch&ONNX", "Memory Processor integration", M.2 Key M, PCIe Gen3'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 1014072e0b7ecd5bf4e9abaa4d3bba3bb667102c7f32fd85294ef0b89b6dee03
+  - url: https://www.waveshare.com/hailo-8.htm
+    shows: '"AI performance 26 TOPS", "Power consumption 2.5W (Typ.) 8.65W (Max.)", "Interface PCIe
+      Gen3, 4-lane"'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 91792ad2f7dea71019d1d5428c595704cb5773d29f4235ece123bd83803b9027

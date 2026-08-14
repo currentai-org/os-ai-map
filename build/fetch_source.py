@@ -35,16 +35,25 @@ from urllib.parse import quote
 
 import requests
 
-from build.check_refetch import USER_AGENT, canonical
+from build.check_refetch import (
+    BACKOFF,
+    RETRIES,
+    TRANSIENT,
+    USER_AGENT,  # noqa: F401 — re-exported by import on purpose; a private copy would drift
+    canonical,
+    http_get,
+)
 
-# Statuses that mean "not now" rather than "not here". A single un-retried 429 in the pilot
-# was promoted into the justification for a confirmation — the agent read the rate limit as
+# TRANSIENT means "not now" rather than "not here". A single un-retried 429 in the pilot was
+# promoted into the justification for a confirmation — the agent read the rate limit as
 # evidence that no download figure existed, banded the axis on a fallback signal, and marked
 # it confirmed. The figure was there; one retry would have found it.
 #
 # This is the failure mode worth building a mechanism against, because a transient failure and
 # an absent fact look identical at the call site and only one of them is a finding.
-TRANSIENT = {403, 408, 425, 429, 500, 502, 503, 504}
+#
+# The set, the retry count and the request itself now all live in check_refetch beside
+# USER_AGENT and `canonical`, so the writer and the gate cannot drift apart on any of them.
 
 
 
@@ -52,8 +61,8 @@ def fetch(
     url: str,
     timeout: float = 20.0,
     body_dir: Path | None = None,
-    retries: int = 2,
-    backoff: float = 2.0,
+    retries: int = RETRIES,
+    backoff: float = BACKOFF,
     sleep=time.sleep,
 ) -> dict:
     """Fetch one URL and return what the score file needs to record about it.
@@ -73,31 +82,16 @@ def fetch(
     if url != requested:
         record["rewritten_from"] = requested
 
-    attempts = 0
-    while True:
-        attempts += 1
-        try:
-            response = requests.get(
-                url,
-                timeout=timeout,
-                headers={"User-Agent": USER_AGENT},
-                allow_redirects=True,
-            )
-        except requests.RequestException as exc:
-            if attempts <= retries:
-                sleep(backoff * attempts)
-                continue
-            record["http_status"] = None
-            record["transient"] = True
-            record["error"] = f"{type(exc).__name__}: {exc}"
-            record["attempts"] = attempts
-            return record
+    try:
+        response = http_get(url, timeout=timeout, retries=retries, backoff=backoff, sleep=sleep)
+    except requests.RequestException as exc:
+        record["http_status"] = None
+        record["transient"] = True
+        record["error"] = f"{type(exc).__name__}: {exc}"
+        record["attempts"] = retries + 1
+        return record
 
-        if response.status_code in TRANSIENT and attempts <= retries:
-            sleep(backoff * attempts)
-            continue
-        break
-
+    attempts = getattr(response, "attempts", 1)
     record["http_status"] = response.status_code
     record["attempts"] = attempts
 

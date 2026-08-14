@@ -25,13 +25,54 @@ openness:
       raw: distributor (commercial via NXP and SoM partners)
   confidence: high
   note: Public datasheets and a Linux BSP with broad commercial availability, but proprietary silicon
-    with no open board files.
+    with no open board files. Re-read 2026-08-14 against substitutes, www.nxp.com being unfetchable -
+    it answers 404 to every path tried including its own root, and browser headers change nothing, so
+    this is the host and not the URL. Every component re-derived. `datasheets` is the strongest of
+    them - the document the component names by part number, "Document Number IMX8MPCEC, Rev. 2.1,
+    07/2023, i.MX 8M Plus Applications Processor Datasheet for Consumer Products", is mirrored in full
+    and openly downloadable from DigiKey, 111 pages of electrical characteristics, boot modes and pin
+    assignments. `toolchain` and `blobs` both come from NXP's own Yocto layer repo - the BSP is public
+    and buildable, and the same README states "The NXP i.MX End User License Agreement (EULA) is
+    displayed during the setup process ... The license must be accepted to allow access to the NXP
+    EULA-licensed recipes", which is the gated-blob half stated by the vendor. `schematics` stays none
+    - what the BSP publishes is machine configurations for NXP's own EVK and FRDM reference boards,
+    and what the datasheet publishes is package and pin data, neither of which is a board file.
+    `retail` from Toradex shipping a Verdin SoM around the part and DigiKey stocking the silicon. No
+    change.
   raw: schematics:none (EVK reference designs only);toolchain:open (Linux/Yocto BSP);datasheets:public (IMX8MPCEC);blobs:required
     (proprietary silicon + NPU firmware);retail:distributor (commercial via NXP and SoM partners)
+  last_verified: '2026-08-14'
   sources:
   - url: https://www.nxp.com/products/i.MX8MPLUS
-    shows: 'official page: Cortex-A53/M7, up to 2.3 TOPS NPU, ML/vision focus'
+    shows: 'official page: Cortex-A53/M7, up to 2.3 TOPS NPU, ML/vision focus. Not re-fetchable -
+      www.nxp.com answers HTTP 404 to every automated request including its own root, under every
+      header set tried - so it keeps its 2026-06-22 read.'
     accessed: '2026-06-22'
+  - url: https://mm.digikey.com/Volume0/opasdata/d220001/medias/docus/5783/IMX8MPCEC.pdf
+    shows: 'the named datasheet in full, openly mirrored by DigiKey - "NXP Semiconductors Data Sheet -
+      Technical Data, Document Number IMX8MPCEC, Rev. 2.1, 07/2023"; "a powerful quad Arm Cortex-A53
+      processor with speed up to 1.8 GHz integrated with a NPU of 2.3 TOPS"; an integrated 800 MHz
+      Cortex-M7; package and pin assignments but no board schematics'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 6cfe20059a1d3bec77bd89893c3db75bcf0fd99b7742f3730adb528f091911d1
+    establishes: [datasheets, schematics]
+  - url: https://raw.githubusercontent.com/nxp-imx/meta-imx/master/README.md
+    shows: '"Yocto Project BSP for NXP i.MX Linux Release LF6.18.20_2.0.0", with i.MX 8M Plus machines
+      imx8mp-lpddr4-evk, imx8mp-ddr4-evk and imx8mp-lpddr4-frdm; and "The NXP i.MX End User License
+      Agreement (EULA) is displayed during the setup process ... The license must be accepted to allow
+      access to the NXP EULA-licensed recipes"'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 0c240eaf8e2fd17eca458b9be29f759b79eeb5504ed3e8aaa2f71a05f0843d23
+    establishes: [toolchain, blobs, schematics]
+  - url: https://www.toradex.com/computer-on-modules/verdin-arm-family/nxp-imx-8m-plus
+    shows: a SoM partner shipping the part commercially - the Verdin iMX8M Plus module with a Configure
+      Your Own path and availability listed to 2036+
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 3773c4317b33b9e41e7e371e449f09560caf40de6d18a39e4bd1f4e5bcab89bf
+    establishes: [retail]
 adoption:
   level: 4
   reach: broad
