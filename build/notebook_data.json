@@ -1239,43 +1239,44 @@
             "bucket": "open-ish"
           },
           "adoption": {
-            "level": 3,
-            "reach": "100K-1M",
+            "level": 4,
+            "reach": "1M-10M",
             "signal_type": "usage_volume",
-            "confidence": "medium",
-            "note": "Recomputed 2026-08-13 across the 4 declared artifact(s) - 2,774,206 downloads in the trailing 30 days (zai-org/GLM-4.6 28,016; THUDM/glm-4-9b 11,688; zai-org/GLM-5.1 72,174; zai-org/GLM-5.2 2,662,328). That is level 4 (1M-10M) on the software and model adoption scale, not the recorded level 3. The recorded band was set on GLM-4-9B-Chat alone, which is not a declared artifact and is a generation behind; GLM-5.2 now supplies 96% of the family total. NOT changed here and NOT confirmed - the level move is flagged for review rather than applied, and only the figure was re-read.",
+            "confidence": "high",
+            "note": "RE-BANDED 2026-08-14 from 3/100K-1M to 4/1M-10M. The old band had been set on GLM-4-9B-Chat alone - a SKU that is not a declared artifact and is a generation behind - which is both the wrong release under the max-across-releases rule in docs/guides/identity.md and the wrong scope under sum_across_artifacts. Recomputed across the 4 declared artifacts, the family sums to 2,774,206 downloads in the trailing 30 days (zai-org/GLM-4.6 28,016; zai-org/glm-4-9b 11,688; zai-org/GLM-5.1 72,174; zai-org/GLM-5.2 2,662,328), which lands in 1M-10M on the model scale in sources/rubrics/model.yaml. GLM-5.2 supplies 96% of that total, so this is the current release carrying the tier, which is what the rule intends. All four were re-read against the API on 2026-08-14; three digests are byte-identical to the 2026-08-13 read and GLM-5.2's moved without its download figure changing. THUDM/glm-4-9b now redirects to zai-org.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
                 "url": "https://huggingface.co/api/models/zai-org/GLM-4.6",
-                "shows": "28,016 downloads in the trailing 30 days for zai-org/GLM-4.6",
-                "accessed": "2026-08-13",
+                "shows": "28,016 downloads in the trailing 30 days for zai-org/GLM-4.6; 1,230 likes",
+                "accessed": "2026-08-14",
                 "http_status": 200,
                 "content_sha256": "3bf6ae9fd5bd0733cb6e3396431f57667b373ce0edb1c6f95e7e75e2641b9fb5"
               },
               {
                 "url": "https://huggingface.co/api/models/THUDM/glm-4-9b",
-                "shows": "11,688 downloads in the trailing 30 days for THUDM/glm-4-9b",
-                "accessed": "2026-08-13",
+                "shows": "11,688 downloads in the trailing 30 days for THUDM/glm-4-9b (now served as zai-org/glm-4-9b)",
+                "accessed": "2026-08-14",
                 "http_status": 200,
                 "content_sha256": "b5482c0131beb5943874af286912ebbbf4f3dbf080b31559e80904c6ad67c85f"
               },
               {
                 "url": "https://huggingface.co/api/models/zai-org/GLM-5.1",
-                "shows": "72,174 downloads in the trailing 30 days for zai-org/GLM-5.1",
-                "accessed": "2026-08-13",
+                "shows": "72,174 downloads in the trailing 30 days for zai-org/GLM-5.1; 1,839 likes",
+                "accessed": "2026-08-14",
                 "http_status": 200,
                 "content_sha256": "dda4a0188863fdd38e54137b36bb262aef5a5416a5a339e3a388a72c03460c16"
               },
               {
                 "url": "https://huggingface.co/api/models/zai-org/GLM-5.2",
-                "shows": "2,662,328 downloads in the trailing 30 days for zai-org/GLM-5.2",
-                "accessed": "2026-08-13",
+                "shows": "2,662,328 downloads in the trailing 30 days for zai-org/GLM-5.2; 4,948 likes; gated false",
+                "accessed": "2026-08-14",
                 "http_status": 200,
-                "content_sha256": "8e5a09b75c4c1dfd1104da3303ff61fc55526981554ff390a3d81a7d0063d573"
+                "content_sha256": "66827b3edf90a8b36fdd5bc1bd2c96c0ceda07d5c799866825c178ac15a88b8e"
               },
               {
                 "url": "https://huggingface.co/zai-org/GLM-4-9B-Chat",
-                "shows": "GLM-4-9B-Chat model card: 121,169 downloads last month (primary usage figure)",
+                "shows": "GLM-4-9B-Chat model card: 121,169 downloads last month; the undeclared, generation-behind SKU the old band was read on",
                 "accessed": "2026-06-04"
               }
             ]
@@ -1312,10 +1313,10 @@
               }
             ]
           },
-          "maturity": 4.4,
+          "maturity": 4.7,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "MIT-licensed open weights (HF model card + LICENSE, (c) Zhipu AI 2026). ~753B-param MoE, 1M context. Consolidated on 2026-07-29 from glm-4, glm-4-6, glm-4-9b, glm-5-1; openness follows glm-5-2, the release that currently governs. See docs/guides/identity.md. GLM-5.2 has pulled away sharply since July and now supplies most of the family's downloads, so the adoption band, which was set on the GLM-4 generation, is a level low and flagged for review. Verified 2026-08-13 via the GLM-5.2 LICENSE file, its HF model card and the zai-org/GLM-5 repository."
@@ -1330,11 +1331,34 @@
           "openness": {
             "score": 3,
             "class": "open_weights",
-            "components": "weights:pending(scheduled 2026-07-27; API live today);data:closed;code:partial(inference/deploy expected; no training data or full pipeline);license:assumed-Modified-MIT(continuity with Kimi K2.x; confirm on weight release)",
+            "components": "weights:open(shipped 2026-07-27, ungated, 96 safetensors shards);data:closed;code:partial(inference/deploy only; no training data or full pipeline);license:Modified-MIT(non-OSI; MIT below a 100M-MAU and $20M-monthly-revenue threshold, plus a prominent-display attribution requirement)",
             "governing_release": "kimi-k3",
-            "confidence": "medium",
-            "note": "Modified-MIT weights - standard MIT below a 100M-MAU and $20M-monthly-revenue threshold - with a closed corpus, so 3. Confidence is medium rather than high on purpose: K3 governs as the current release, and its license is recorded as `assumed-Modified-MIT` by continuity with K2.x rather than confirmed against a published file. K2.6's Modified-MIT is confirmed, so the tier's openness firms up as soon as K3's terms are read directly. Adoption 4 is carried from K2.6.",
+            "confidence": "high",
+            "note": "Modified-MIT weights - standard MIT below a 100M-MAU and $20M-monthly-revenue threshold - with a closed corpus, so 3. RESOLVED 2026-08-14, and the score does not move. The record had `weights - pending, scheduled 2026-07-27` and a license recorded as `assumed-Modified-MIT` by continuity with K2.x rather than read. K3 shipped on the scheduled day, so both placeholders are now answered by direct reads instead of by inference. The Hub API for moonshotai/Kimi-K3 reads `\"gated\":false` and `\"private\":false` over 96 safetensors shards, so the weights are open and downloadable. Its own LICENSE file carries the Modified-MIT terms rather than an inherited assumption - MIT text, with the grant excepted for a licensee's commercial products or services having \"more than 100 million monthly active users, or more than 20 million US dollars\" of monthly revenue, and a prominent-display attribution clause. That is the same instrument K2.6 carries, so the continuity assumption was correct; it is now confirmed, which is why confidence moves medium -> high. The tier still publishes no corpus and only inference and deployment code, so the ladder still falls through to 3/open_weights.",
+            "last_verified": "2026-08-14",
             "sources": [
+              {
+                "url": "https://huggingface.co/api/models/moonshotai/Kimi-K3",
+                "shows": "`\"gated\":false`, `\"private\":false`, `license:other` in the repo tags with a LICENSE file in the sibling list, and 96 model-000NN-of-000096.safetensors shards, so the K3 weights shipped and download without a barrier. 1,871,575 downloads in the trailing 30 days; 10,621 likes. No corpus and no training pipeline appear in the tree - only configuration, processor and encoding modules.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "1d124012b8f86b3db9194b9ab99f3d964e0e82904f23471e7b853f964f63b0bd",
+                "establishes": [
+                  "weights",
+                  "data",
+                  "code"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/moonshotai/Kimi-K3/blob/main/LICENSE",
+                "shows": "K3's own license file, read directly rather than assumed from K2.x. MIT text with the Modified-MIT carve-out - the grant is excepted where the licensee's commercial products or services have \"more than 100 million monthly active users, or more than 20 million US dollars (or equivalent in other currencies)\" - and a prominent-display attribution requirement.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "038709cf2befa10d37a07f559d2dc018bbf8a5190eda4d092e51c5a6bb0727fe",
+                "establishes": [
+                  "license"
+                ]
+              },
               {
                 "url": "https://www.kimi.com/blog/kimi-k3",
                 "shows": "primary announcement — 2.8T MoE, 1M context, native vision; API live; full weights by 2026-07-27",
@@ -1342,7 +1366,7 @@
               },
               {
                 "url": "https://huggingface.co/moonshotai/Kimi-K2.6",
-                "shows": "prior Kimi open-weight release under Modified MIT (assumed continuity for K3 license class)",
+                "shows": "prior Kimi open-weight release under Modified MIT (the continuity the old record assumed from)",
                 "accessed": "2026-07-19"
               }
             ],
@@ -1407,7 +1431,7 @@
           "maturity": 4.7,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "Kimi K3, 2.8T total MoE, Stable LatentMoE (16/896 experts), 1M context, native multimodal. Consolidated on 2026-07-29 from kimi-k2-6; openness follows kimi-k3, the release that currently governs. See docs/guides/identity.md. The K3 weights landed on 2026-07-27 as promised - 96 safetensors shards, ungated - under a \"Kimi K3 License\" that is MIT plus a Model-as-a-Service revenue threshold and an attribution requirement above 100M MAU. The openness axis still records `weights - pending` and an assumed license, so it is behind the artifact and is flagged for correction. Capability still describes K2.6, which is the release with a published benchmark table. Verified 2026-08-13 via the Kimi-K3 HF model card and its LICENSE file."
@@ -2178,15 +2202,17 @@
             "bucket": "open-ish"
           },
           "adoption": {
-            "level": 2,
-            "signal_type": "reported_traction",
+            "level": 1,
+            "reach": "<10K",
+            "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "Available on Hugging Face with moderate uptake at launch as a sub-13B SLM; no large verified usage figures and relevance has faded against newer SLMs. Level 2 reflects modest reported traction. Attempted re-read 2026-08-13, and two things came out of it. The article the level rests on answered HTTP 429 after retries, so the reported-traction reading was not re-confirmed. And a download signal now exists where the record assumed none - the declared artifact tiiuae/Falcon3-10B-Base shows 5,292 downloads in the trailing 30 days, which is level 1 on the usage_volume scale rather than level 2, and docs/guides/adoption.md says to re-band when a real download signal appears. NOT changed here and NOT confirmed - the instrument switch and the level move are flagged for review rather than applied.",
+            "note": "RE-BANDED 2026-08-14 from 2/reported_traction under the measured-figure ruling in docs/guides/adoption.md, and the instrument moved with the level. The old record assumed no download signal existed, but the single declared artifact tiiuae/Falcon3-10B-Base returns 5,292 downloads in the trailing 30 days (41 likes), which lands in <10K on the model scale in sources/rubrics/model.yaml. A measured count outranks a reported-traction reading, and the reported-traction reading could not be re-confirmed in any case - the VentureBeat article the old level rested on has answered HTTP 429 after retries on both the 2026-08-13 and 2026-08-14 attempts, so it is left dated where it was. The band now matches what the note already said, that relevance has faded against newer SLMs. The digest is byte-identical to the 2026-08-13 read.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
                 "url": "https://huggingface.co/api/models/tiiuae/Falcon3-10B-Base",
                 "shows": "5,292 downloads in the trailing 30 days for tiiuae/Falcon3-10B-Base, the single declared artifact",
-                "accessed": "2026-08-13",
+                "accessed": "2026-08-14",
                 "http_status": 200,
                 "content_sha256": "a30e8c22259eeba58788b6836ec9c25dd7a988e565317f1bb9e2ca40875d89d1"
               },
@@ -2220,10 +2246,10 @@
               }
             ]
           },
-          "maturity": 2.0,
+          "maturity": 1.7,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "Falcon 3 family (1B, 3B, 7B, 10B), released 17 Dec 2024 by TII. Trained on 14T tokens. Sub-13B SLMs; now a dated generation relative to 2026 frontier. The Hub reports the license as `other`, so the TII Falcon License 2.0 tier rests on TII's own published text rather than a Hub label. Adoption is still recorded as reported traction, but the declared checkpoint now carries a real download count, which is a lower band - flagged for review. Verified 2026-08-13 via the Falcon 3 release blog, the Falcon3-10B-Base and Falcon3-7B-Base model cards and the TII launch announcement."
@@ -3335,18 +3361,26 @@
             "bucket": "open-ish"
           },
           "adoption": {
-            "level": 2,
-            "reach": "10K-100K",
+            "level": 3,
+            "reach": "100K-1M",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "~15.7K downloads last month on HF for this 236B SKU; superseded by DeepSeek-V2.5/V3/R1 coders and 2026 coders. Modest, declining usage -> low band (~10K-100K including quants/derivatives). Re-read 2026-08-13 - the 236B SKU has fallen to 7,143 downloads in the trailing 30 days, but the Lite SKU declared alongside it reads 587,824, so the tier sums to 594,967 and lands at level 3 (100K-1M), not 2. The band was set on the flagship SKU alone while identity.md sums across the tier's releases. ESCALATED rather than changed - no last_verified claimed on this axis.",
+            "note": "RE-BANDED 2026-08-14 from 2/10K-100K under the measured-figure ruling in docs/guides/adoption.md. The old band was set on the flagship 236B SKU alone, which has fallen to 7,143 downloads in the trailing 30 days - but the Lite SKU declared alongside it reads 587,824, and sources/rubrics/model.yaml bands on the sum across the family's SKUs. The tier sums to 594,967, which lands in 100K-1M. The line is still superseded by DeepSeek-V2.5/V3/R1 and the 2026 coders, and the flagship's decline is real; what moved is that the band now counts the SKU people actually run.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
-                "url": "https://huggingface.co/deepseek-ai/DeepSeek-Coder-V2-Instruct",
-                "shows": "7,143 downloads in the trailing 30 days",
-                "accessed": "2026-08-13",
+                "url": "https://huggingface.co/api/models/deepseek-ai/DeepSeek-Coder-V2-Instruct",
+                "shows": "downloads field = 7,143 in the trailing 30 days; 698 likes; gated false",
+                "accessed": "2026-08-14",
                 "http_status": 200,
-                "content_sha256": "84a8982c532466f685c721096ac025186d86d74e9dd22eeed64588c3f56ac577"
+                "content_sha256": "eb45418686eaab442ea3e5105f9744c7f21c1404be054f72188b815864bc0b91"
+              },
+              {
+                "url": "https://huggingface.co/api/models/deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct",
+                "shows": "downloads field = 587,824 in the trailing 30 days; 631 likes; gated false",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "0c25d5211566b5a422d8535a5a4be2c62434bd72d6f73af2ea08366ebe172a1a"
               }
             ]
           },
@@ -3368,10 +3402,10 @@
               }
             ]
           },
-          "maturity": 2.7,
+          "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "DeepSeek-Coder-V2-Instruct (236B total / 21B active DeepSeekMoE, 128K context), instruction-tuned coder built on a DeepSeek-V2 checkpoint + 6T additional code tokens; arXiv 2401.06066. A dated (2024-gen) coder. The code repository and the weights carry different licenses; the openness score follows the Model License on the weights. Verified live 2026-08-13 via the HF model card and the LICENSE-MODEL body."
@@ -3643,95 +3677,114 @@
           "openness": {
             "score": 3,
             "class": "open_weights",
-            "components": "weights:open(Apache-2.0, on HF);data:closed;code:partial(inference/serving; no training or post-training data);license:Apache-2.0(OSI permissive, no use restrictions)",
+            "components": "weights:open(Apache-2.0, on HF);data:closed;code:partial(inference/serving; no training or post-training data);license:Modified-MIT(non-OSI, resolved most-restrictive across the governing release's SKUs (Devstral 2 123B))+Apache-2.0(OSI, Devstral Small 2 24B SKU only)",
             "confidence": "high",
-            "note": "Apache-2.0 open weights, but training/post-training data and pipeline undisclosed -> open_weights, not open_source. Re-read 2026-08-13, and the whole record is a release behind. The scored source is Devstral Small 1.1 (2507); the tier now ships Devstral 2 (2512), which is what the product file declares as its artifacts. Under identity.md the CURRENT release governs openness and resolves most-restrictive across that release's distributed SKUs, and the two 2512 SKUs are not licensed alike - Devstral Small 2 24B is Apache 2.0, Devstral 2 123B is a Modified MIT License. Modified-MIT is a declared permissive_non_osi example in the ladder, so the resolved tier for the governing release is permissive_non_osi rather than osi. The score does not move: with data closed and code partial the ladder falls through to 3/open_weights either way. What moves is the recorded license and the missing governing_release. ESCALATED rather than changed - no last_verified claimed on this axis.",
+            "governing_release": "devstral-2-2512",
+            "note": "Open weights, but training and post-training data and the pipeline are undisclosed -> open_weights, not open_source. RESCORED 2026-08-14 onto the governing release. The record had been read on Devstral Small 1.1 (2507); the tier now ships Devstral 2 (2512), which is what the product declares as its artifacts. Under docs/guides/identity.md the CURRENT release governs openness and resolves most-restrictive across that release's distributed SKUs, and the two 2512 SKUs are not licensed alike - Devstral Small 2 24B reads \"This model is licensed under the Apache 2.0 License\", Devstral 2 123B reads \"This model is licensed under a Modified MIT License\" with `license:other` in the repo tags. These are sizes of one release rather than substitutable alternatives, so most-restrictive applies and the resolved tier is permissive_non_osi rather than osi. THE SCORE DOES NOT MOVE - with data closed and code partial the ladder falls through to 3/open_weights on either tier - so what this rescore actually changes is the recorded license, which had been claiming OSI terms the flagship SKU does not offer, and the previously missing governing_release. A search of the Hub newest-first confirms 2512 is still the latest first-party Devstral; everything newer is a community quant or LoRA.",
+            "last_verified": "2026-08-14",
             "sources": [
+              {
+                "url": "https://huggingface.co/mistralai/Devstral-Small-2-24B-Instruct-2512",
+                "shows": "License section - \"This model is licensed under the Apache 2.0 License\"; `\"gated\":false`; 24B FP8 instruct SKU of the governing Devstral 2 release",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "88ca78ebd3f6ed759fa46ab95df1a679f2d12bcbba0a89eb9085f739bfa020cf",
+                "establishes": [
+                  "weights",
+                  "data",
+                  "code"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/mistralai/Devstral-2-123B-Instruct-2512",
+                "shows": "License section - \"This model is licensed under a Modified MIT License\"; `license:other` in the repo tags with a LICENSE file; `\"gated\":false`; the flagship SKU of the governing release",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "b92dd3fc7b4007eb52c04fa5a335eec6ab71fb8a8951e24dffdd416ce0ac4779",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/models?search=Devstral&sort=createdAt&direction=-1&limit=30",
+                "shows": "Hub search for Devstral, newest first. No first-party mistralai repo newer than the 2512 pair appears - everything above them is a community quantization, GGUF conversion or LoRA - so Devstral 2 (2512) is still the governing release.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "840cd47d88b06a76305589d42f49d190c05b642fc4439261569f33aff4274e68"
+              },
               {
                 "url": "https://huggingface.co/mistralai/Devstral-Small-2507",
                 "shows": "live card; license=apache-2.0; 24B agentic coding model; SWE-bench Verified 53.6%; superseded by the 2512 release",
                 "accessed": "2026-08-13",
                 "http_status": 200,
                 "content_sha256": "e37b7fbf657dce4ba2c9773ca7769af7e515891b01c9de2664c9d9a8729c3a60"
-              },
-              {
-                "url": "https://huggingface.co/mistralai/Devstral-Small-2-24B-Instruct-2512",
-                "shows": "License section - \"This model is licensed under the Apache 2.0 License\"; `\"gated\":false`; 24B FP8 instruct SKU of the governing Devstral 2 release",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "630096d44de6e679a6b1023302feadf0874e9d834a81a9337216259ad8b20f55"
-              },
-              {
-                "url": "https://huggingface.co/mistralai/Devstral-2-123B-Instruct-2512",
-                "shows": "License section - \"This model is licensed under a Modified MIT License\"; `license:other` in the repo tags with a LICENSE file; `\"gated\":false`; the flagship SKU of the governing release",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "0b733df51d9087dc9a8425ab5ff1e94cfffc4267b884ec0759b9b7b12c9d8907"
               }
             ],
             "bucket": "open-ish"
           },
           "adoption": {
-            "level": 2,
-            "reach": "10K-100K",
+            "level": 3,
+            "reach": "100K-1M",
             "signal_type": "usage_volume",
-            "confidence": "medium",
-            "note": "~37k downloads last month for the Small-2507 SKU on HF; specialist coding-agent model with moderate uptake (OpenHands/coding-agent niche), not a mass-market chat model. Re-read 2026-08-13 - the band was set on a superseded SKU. The two DECLARED artifacts are the Devstral 2 (2512) pair and they sum to 221,596 downloads in the trailing 30 days (Devstral-Small-2-24B-Instruct-2512 188,901; Devstral-2-123B-Instruct-2512 32,695), which bands at level 3 (100K-1M) under sum_across_artifacts. The 2507 SKU on its own has also risen, to 97,969, which is still level 2. ESCALATED rather than changed - no last_verified claimed on this axis.",
+            "confidence": "high",
+            "note": "Specialist coding-agent model with real but non-mass-market uptake, in the OpenHands / coding-agent niche rather than the chat mainstream. RE-BANDED 2026-08-14 from 2/10K-100K on the max-across-releases rule in docs/guides/identity.md - the old band was read on the superseded Small-2507 SKU at ~37k. The two DECLARED artifacts are the Devstral 2 (2512) pair and they sum to 221,596 downloads in the trailing 30 days (Devstral-Small-2-24B-Instruct-2512 188,901; Devstral-2-123B-Instruct-2512 32,695), which lands in 100K-1M under sum_across_artifacts. Both figures were re-read against the API on 2026-08-14 and both digests are byte-identical to the 2026-08-13 read. The superseded 2507 SKU has itself risen to 97,969, which would still be level 2 on its own - so the move comes from reading the right release rather than from growth.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
-                "url": "https://huggingface.co/mistralai/Devstral-Small-2507",
-                "shows": "97,969 downloads in the trailing 30 days",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "e37b7fbf657dce4ba2c9773ca7769af7e515891b01c9de2664c9d9a8729c3a60"
-              },
-              {
                 "url": "https://huggingface.co/api/models/mistralai/Devstral-Small-2-24B-Instruct-2512",
-                "shows": "188,901 downloads in the trailing 30 days for mistralai/Devstral-Small-2-24B-Instruct-2512",
-                "accessed": "2026-08-13",
+                "shows": "188,901 downloads in the trailing 30 days for mistralai/Devstral-Small-2-24B-Instruct-2512; 641 likes; gated false",
+                "accessed": "2026-08-14",
                 "http_status": 200,
                 "content_sha256": "46c88753b9f80faed149f868072e6b19f1caf41b5b199ac0c1f91ed3c5fef8c0"
               },
               {
                 "url": "https://huggingface.co/api/models/mistralai/Devstral-2-123B-Instruct-2512",
-                "shows": "32,695 downloads in the trailing 30 days for mistralai/Devstral-2-123B-Instruct-2512",
-                "accessed": "2026-08-13",
+                "shows": "32,695 downloads in the trailing 30 days for mistralai/Devstral-2-123B-Instruct-2512; 333 likes; gated false",
+                "accessed": "2026-08-14",
                 "http_status": 200,
                 "content_sha256": "d266650f615ae4211cc4067f773c6cdd251d0d343531fdf5dd812ae7ace67d34"
+              },
+              {
+                "url": "https://huggingface.co/mistralai/Devstral-Small-2507",
+                "shows": "97,969 downloads in the trailing 30 days on the superseded SKU the old band was read on",
+                "accessed": "2026-08-13",
+                "http_status": 200,
+                "content_sha256": "e37b7fbf657dce4ba2c9773ca7769af7e515891b01c9de2664c9d9a8729c3a60"
               }
             ]
           },
           "capability": {
-            "score": 3,
+            "score": 4,
             "basis": "benchmark",
             "basis_detail": "SWE-bench Verified",
-            "value": "Devstral Small 1.1 SWE-bench Verified 53.6% (OpenHands scaffold); #1 open source at its release",
+            "value": "Devstral 2 123B SWE-bench Verified 72.2% / SWE-bench Multilingual 61.3% / Terminal-Bench 2 32.6%; Devstral Small 2 24B 68.0% / 55.7% / 22.5%",
             "confidence": "high",
-            "note": "Best open coding model in its release window at a small 24B size, but below 2026 frontier coders (Qwen3.6 27B 77.2, GLM-5.1, Kimi K2.6 80%+). Strong-for-size, mid-tier overall. Re-read 2026-08-13 - the 53.6% still stands on the 2507 card, but that is a superseded release and identity.md takes the MAX across a tier's releases. The governing Devstral 2 card reports SWE-bench Verified 72.2% for the 123B and 68.0% for Devstral Small 2 24B, which is a different position against the frontier comparison the 3 rests on. ESCALATED rather than changed - no last_verified claimed on this axis.",
+            "note": "RESCORED 2026-08-14 from 3 to 4 on the max-across-releases rule in docs/guides/identity.md. The old score read Devstral Small 1.1 (2507) at SWE-bench Verified 53.6%, which is still on that card and was a fair mid-tier placement - but 2507 is superseded, and a tier scores on its BEST release. The governing Devstral 2 (2512) card reports SWE-bench Verified 72.2% for the 123B and 68.0% for Devstral Small 2 24B, which is a materially different position against the same comparison set. 4 rather than 5 because the frontier open coders still sit clearly above it on the same benchmark - kimi at 80.2% and glm at SWE-bench Pro 58.4 both score 5 here - and 72.2% lands beside qwen-coder, also 4. It is also above the 69.4% ornith reports at 4, so 4 is the floor this evidence supports rather than a generous reading. No relative_to is recorded because no peer at this level carries a last_verified on or after this date, and check_capability's transitive-freshness rule would reject the anchor.",
+            "last_verified": "2026-08-14",
             "sources": [
-              {
-                "url": "https://huggingface.co/mistralai/Devstral-Small-2507",
-                "shows": "SWE-bench Verified table: Devstral Small 1.1 = 53.6% under the OpenHands scaffold, against 46.8 for Devstral Small 1.0 and 42.2 for DeepSWE",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "e37b7fbf657dce4ba2c9773ca7769af7e515891b01c9de2664c9d9a8729c3a60"
-              },
               {
                 "url": "https://huggingface.co/mistralai/Devstral-Small-2-24B-Instruct-2512",
                 "shows": "Benchmark Results table - Devstral 2 123B SWE Bench Verified 72.2% / SWE Bench Multilingual 61.3% / Terminal Bench 2 32.6%; Devstral Small 2 24B 68.0% / 55.7% / 22.5%",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "88ca78ebd3f6ed759fa46ab95df1a679f2d12bcbba0a89eb9085f739bfa020cf"
+              },
+              {
+                "url": "https://huggingface.co/mistralai/Devstral-Small-2507",
+                "shows": "SWE-bench Verified table: Devstral Small 1.1 = 53.6% under the OpenHands scaffold, against 46.8 for Devstral Small 1.0 and 42.2 for DeepSWE; the superseded release the old score read",
                 "accessed": "2026-08-13",
                 "http_status": 200,
-                "content_sha256": "630096d44de6e679a6b1023302feadf0874e9d834a81a9337216259ad8b20f55"
+                "content_sha256": "e37b7fbf657dce4ba2c9773ca7769af7e515891b01c9de2664c9d9a8729c3a60"
               }
             ]
           },
-          "maturity": 2.7,
+          "maturity": 3.7,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
-            "basis": "commit"
+            "date": "2026-08-14",
+            "basis": "verified"
           },
-          "version_note": "All three axes are still scored on Devstral Small 1.1 (mistralai/Devstral-Small-2507), a superseded release; the declared artifacts are the Devstral 2 (2512) pair. The two 2512 SKUs are not licensed alike - Small 2 24B is Apache 2.0, the 123B is a Modified MIT License - so the governing release resolves to a non-OSI tier. Flagged for rescoring. Verified live 2026-08-13 via the HF model cards for 2507, Devstral Small 2 24B and Devstral 2 123B."
+          "version_note": "All three axes were rescored onto the governing Devstral 2 (2512) release on 2026-08-14, having been read on the superseded Devstral Small 1.1 (mistralai/Devstral-Small-2507). The two 2512 SKUs are not licensed alike - Small 2 24B is Apache 2.0, the 123B is a Modified MIT License - so the governing release resolves most-restrictive to a non-OSI tier. Verified live 2026-08-14 via the HF model cards for Devstral Small 2 24B and Devstral 2 123B."
         },
         {
           "slug": "mistral-7b-instruct",
@@ -4350,23 +4403,24 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 2,
-            "reach": "10K-100K",
+            "level": 1,
+            "reach": "<10K",
             "signal_type": "usage_volume",
-            "confidence": "medium",
-            "note": "New (Dec 2025) and still niche, like its K2 predecessor; included as a clean fully-open 70B exemplar rather than on popularity. Re-read 2026-08-13 - the two declared SKUs sum to 2,970 downloads in the trailing 30 days (K2-V2 223; K2-V2-Instruct 2,747), which bands at level 1 (<10K), not 2. The recorded band was never read off a figure - the note says so in its own second clause - and this is the first time a count has been put against it. ESCALATED rather than changed - no last_verified claimed on this axis.",
+            "confidence": "high",
+            "note": "New (Dec 2025) and still niche, like its K2 predecessor; included as a clean fully-open 70B exemplar rather than on popularity. RE-BANDED 2026-08-14 from 2/10K-100K under the measured-figure ruling in docs/guides/adoption.md. The two declared SKUs sum to 2,970 downloads in the trailing 30 days (K2-V2 223; K2-V2-Instruct 2,747), which lands in <10K on the model scale in sources/rubrics/model.yaml. The old band had never been read off a figure at all - the note said so in its own second clause - and this is the first count put against it, so confidence moves medium -> high. Both digests are byte-identical to the 2026-08-13 read. The repos now render under the org IFM; the LLM360 URLs still resolve.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
                 "url": "https://huggingface.co/api/models/LLM360/K2-V2",
                 "shows": "223 downloads in the trailing 30 days for K2-V2 (repo now served as IFM/K2-V2)",
-                "accessed": "2026-08-13",
+                "accessed": "2026-08-14",
                 "http_status": 200,
                 "content_sha256": "95f46932511c135a6e3d521e9594742b87a180c326f65a2b3d2db2de338c5fb6"
               },
               {
                 "url": "https://huggingface.co/api/models/LLM360/K2-V2-Instruct",
                 "shows": "2,747 downloads in the trailing 30 days for K2-V2-Instruct (repo now served as IFM/K2-V2-Instruct)",
-                "accessed": "2026-08-13",
+                "accessed": "2026-08-14",
                 "http_status": 200,
                 "content_sha256": "6bc1e2bfaf5b1c78cd8e3ea900b81eb740a122d3e25fe35541e53b24b1262a5f"
               }
@@ -4390,10 +4444,10 @@
               }
             ]
           },
-          "maturity": 3.4,
+          "maturity": 3.1,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "Apache-2.0; open weights + open TxT360 data + open training code + checkpoints. Outperforms Qwen2.5-72B and approaches Qwen3-235B; strongest fully-open model by parameter scale, though OLMo 3 leads on fully-open evals. The Hub repos now render under the org IFM rather than LLM360; the declared LLM360 URLs still resolve. Verified live 2026-08-13 via the HF model card and the arXiv abstract."
@@ -5083,24 +5137,25 @@
             "bucket": "closed"
           },
           "adoption": {
-            "level": 3,
+            "level": 5,
             "signal_type": "reported_traction",
             "confidence": "low",
-            "note": "Available to X users and via grok.com/xAI API in 2025 as the flagship Grok generation; now a superseded model behind Grok 4.x default. No clean standalone Grok-3 user/usage count published. Placed at 3 on broad X-surface availability as a former flagship, downgraded from app-surface 5 because xAI discloses no honest per-model figure and it is no longer the default. Directional. Re-read 2026-08-13, and the reasoning behind the band no longer holds. It bands the whole `grok` tier on Grok 3, explicitly because Grok 3 is superseded - but identity.md takes the MAX across a tier's releases, so a tier is not marked down for having moved on. The line's current flagship is grok-4.6, the default across the same X and grok.com surfaces. This is the same shape as the command-r and llama corrections. ESCALATED rather than changed - no last_verified claimed on this axis.",
+            "note": "RE-BANDED 2026-08-14 from 3 to 5 on the max-across-releases rule in docs/guides/identity.md. The old band was set on Grok 3 and marked the tier DOWN explicitly because Grok 3 is superseded - which inverts the rule, since a tier scores on its BEST release and is never penalized for having moved on. Re-read 2026-08-14, xAI's model reference still headlines \"Meet grok-4.6 ... Our flagship model for code and everything else\" and lists grok-4.3, grok-4.5 and grok-4.6 above the grok-4.20 the record is named for, so the tier's current release is grok-4.6 and it is the default across the same X and grok.com surfaces the old note credited at app-surface 5 before discounting them away. SAY WHAT WAS BANDED, per docs/guides/adoption.md - this is the surface the tier powers, not a per-model count. xAI publishes no standalone per-model user or usage figure, so the instrument stays reported_traction, no reach is recorded (the honest default), and confidence stays low. This is the same treatment claude-sonnet and gemini-pro already carry - reported_traction, level 5, no reach, attributed to the surfaces the tier powers - and the same shape as the command-r correction. The consumer app itself is a separate product, grok-app; the bare `grok` slug is the model line.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
-                "url": "https://x.ai/news/grok-3",
-                "shows": "\"Grok 3 Beta - The Age of Reasoning Agents\"; the superseded release the band was set on. No usage or user figure published.",
-                "accessed": "2026-08-13",
+                "url": "https://docs.x.ai/docs/models",
+                "shows": "xAI's model reference headlines \"Meet grok-4.6 ... Our flagship model for code and everything else - agentic tool calling\", and lists grok-4.3, grok-4.5 and grok-4.6 alongside the older grok-4.20. No user, usage or per-model traffic figure appears anywhere on it. The URL now redirects to /developers/models.",
+                "accessed": "2026-08-14",
                 "http_status": 200,
-                "content_sha256": "fad30d484e9ef73cbe5ace4f619e5067b088f8ac8a8106cbd4d484a92c3c0b02"
+                "content_sha256": "aa061c217a377f8b6567a3abe7c29c8bbc2ab07fb8d89c557cfa944454c5bfbc"
               },
               {
-                "url": "https://docs.x.ai/docs/models",
-                "shows": "grok-4.6 headlined as the current flagship, which is the release identity.md would have the tier banded on",
-                "accessed": "2026-08-13",
+                "url": "https://x.ai/news/grok-3",
+                "shows": "\"Grok 3 Beta - The Age of Reasoning Agents\"; the superseded release the old band was set on. No usage or user figure published.",
+                "accessed": "2026-08-14",
                 "http_status": 200,
-                "content_sha256": "1f2a5d22ef487e95b7e5267b5a94a34d4c85ff951dc8526f575a013ae08d3bac"
+                "content_sha256": "3fe5555880dc7fdd9dcd75ac68cb1620fd9c71ccab517ac9f5ef7530edb94072"
               }
             ]
           },
@@ -5135,10 +5190,10 @@
               }
             ]
           },
-          "maturity": 3.7,
+          "maturity": 4.3,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "xAI Grok 4.20; beta Feb 17, 2026, API GA Mar 10, 2026 (Grok 4.20 + Multi-agent). Revision '4.20 0309 v2' dated Apr 7, 2026. Multi-agent architecture (4 parallel agents); 2M-token context. Consolidated on 2026-07-29 from grok-3; openness follows grok-4-20, the release that currently governs. See docs/guides/identity.md. Two axes are flagged for rescoring - xAI's docs now headline grok-4.6 as the flagship, and Artificial Analysis has recalibrated its Intelligence Index, so the index score the capability record cites no longer exists on their scale. The vendor now brands itself SpaceXAI. Verified live 2026-08-13 via the xAI release notes, the xAI model reference and the Artificial Analysis model page."
@@ -5774,28 +5829,46 @@
           "type": "model",
           "description": "Cohere's enterprise foundation model line, currently anchored by Command A+ (released May 20, 2026), a 218B-parameter sparse MoE (25B active) with native citation generation, W4A4 lossless quantization, and the company's first fully Apache 2.0 licensed frontier model. Runs on a single B200 or two H100s. Positioned for sovereign AI and enterprise RAG with native support for 48 languages and explicit grounding spans linking every factual claim to source documents. Earlier Command R+ (104B, 2024) is the predecessor; with Command A+ the line has flipped from API-only to open-weights.",
           "openness": {
-            "score": 2,
-            "class": "restricted",
+            "score": 3,
+            "class": "open_weights",
             "confidence": "high",
-            "components": "weights:open(gated, contact-info required);data:closed;code:closed;license:CC-BY-NC(non-commercial, non-OSI)+Cohere-Acceptable-Use-Policy",
-            "note": "Weights downloadable but under CC-BY-NC, a non-commercial, non-OSI license with field-of-use restrictions => restricted. Marketed as 'open weights' despite the non-commercial cap. Re-read 2026-08-13, and the axis is a release behind. The scored source, c4ai-command-r-plus, is still `license:cc-by-nc-4.0` with `\"gated\":\"auto\"`, so nothing about THAT checkpoint has changed - but it is the 2024 release, and identity.md says the CURRENT release governs openness. The line's current release is Command A+ (command-a-plus-05-2026), which the product already declares as an artifact and whose card reads \"Command A+ is an open source model\" with \"License - Apache 2.0\" and `\"gated\":false`. On the governing release the license tier is osi rather than commercial_forbidden, which takes the ladder off the 2/restricted rung. ESCALATED rather than changed - no last_verified claimed on this axis.",
+            "governing_release": "command-a-plus-05-2026",
+            "components": "weights:open(ungated, Apache-2.0);data:closed;code:closed;license:Apache-2.0(OSI)",
+            "note": "RESCORED 2026-08-14 onto the governing release, from 2/restricted to 3/open_weights. The axis had been read on c4ai-command-r-plus, the 2024 104B checkpoint, which is still `license:cc-by-nc-4.0` with `\"gated\":\"auto\"` - nothing about THAT checkpoint changed. What was wrong is which checkpoint the axis read. docs/guides/identity.md says the CURRENT release governs openness, and the line's current release is Command A+ (command-a-plus-05-2026), which the product already declares as an artifact. Its card reads \"Command A+ is an open source model with 25 billion active parameters and 218B total parameters\" under \"License - Apache 2.0\", with `license:apache-2.0` in the repo tags and `\"gated\":false`. The CohereLabs org listing confirms it is the newest Command release and that all three of its SKUs - bf16, fp8 and w4a4 - carry `license:apache-2.0`, so most-restrictive across the governing release's SKUs is still Apache-2.0. That moves the license tier from commercial_forbidden to osi, which takes the ladder off the 2/restricted rung. It does NOT reach 4 or 5 - the post-training mixture and the fine-tuning pipeline are both unpublished, so the formula falls through to the open-weights centre of gravity at 3. The Cohere Acceptable Use Policy has been dropped from the license list because it does not attach to Apache-2.0 weights.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
+                "url": "https://huggingface.co/CohereLabs/command-a-plus-05-2026-bf16",
+                "shows": "the governing release - \"Command A+ is an open source model with 25 billion active parameters and 218B total parameters ... optimized for agentic, multilingual, and reasoning-heavy tasks with a focus on enterprise performance\"; \"License - Apache 2.0\" and `\"gated\":false`; BF16, FP8 and W4A4 quantizations offered; no post-training mixture and no fine-tuning pipeline published",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "2191d6228eed7e11b5a2fd523ee716e8123e97d78600b71e9227f61e77cb96e0",
+                "establishes": [
+                  "weights",
+                  "data",
+                  "code",
+                  "license"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/api/models?author=CohereLabs&sort=createdAt&direction=-1&limit=40",
+                "shows": "CohereLabs newest-first. The Command line's newest release is command-a-plus-05-2026, shipped 2026-05-11 (bf16), 2026-05-18 (fp8, w4a4), all three tagged `license:apache-2.0`. Nothing newer in the Command line exists; the 2026-06/07/08 repos are the separate North line and the transcribe models. Every pre-2026-03 Cohere checkpoint, including c4ai-command-r-plus, is `license:cc-by-nc-4.0`.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "797c2486d3cc556ee61e46a58c96062b48e86c85c286b2e44ad1d95b40d1309b",
+                "establishes": [
+                  "license"
+                ]
+              },
+              {
                 "url": "https://huggingface.co/CohereLabs/c4ai-command-r-plus",
-                "shows": "`license:cc-by-nc-4.0` in the repo tags with `\"gated\":\"auto\"`; 104B instruct model; the 2024 release",
+                "shows": "`license:cc-by-nc-4.0` in the repo tags with `\"gated\":\"auto\"`; 104B instruct model; the 2024 release, superseded and no longer governing",
                 "accessed": "2026-08-13",
                 "http_status": 200,
                 "content_sha256": "70d2416a50e55f040f0f6ecea57b06d0b329d939c56b40c43377b45f2369651f"
-              },
-              {
-                "url": "https://huggingface.co/CohereLabs/command-a-plus-05-2026-bf16",
-                "shows": "the governing release - \"Command A+ is an open source model with 25 billion active parameters and 218B total parameters\"; \"License - Apache 2.0\"; `license:apache-2.0` in the repo tags and `\"gated\":false`; BF16, FP8 and W4A4 quantizations offered",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "fe00eed9a9f1089f5d699e85b55675b09c82c26e70b340935b9b1127a9455723"
               }
             ],
-            "bucket": "closed"
+            "bucket": "open-ish"
           },
           "adoption": {
             "level": 3,
@@ -5829,36 +5902,36 @@
             ]
           },
           "capability": {
-            "score": 2,
-            "basis": "benchmark",
-            "basis_detail": "MMLU",
-            "value": "Open LLM Leaderboard avg 74.6 (MMLU 75.7, ARC-C 70.99, HellaSwag 88.6, GSM8K 70.7, TruthfulQA 56.3), strong vs 2024 peers (DBRX, Mixtral 8x7B)",
+            "score": 3,
+            "basis": "feature_matrix",
+            "value": "Command A+ (05-2026) - 218B total / 25B active sparse MoE, 128K context, conversational tool use, vision inputs, 48-language coverage, native citation and grounding spans; no vendor benchmark table",
             "confidence": "medium",
-            "note": "A 2024-era frontier-ish chat/RAG model, now well below the 2026 open instruct frontier (no modern reasoning/agentic coding scores; legacy MMLU-class benchmarks only). Scored 2 against a 2026 comparison set despite being capable for its time. Re-read 2026-08-13 - like openness, this is scored on the 2024 Command R+ checkpoint while identity.md takes the MAX across a tier's releases. The tier's current release is Command A+ (05-2026), a 218B-total / 25B-active model Cohere positions for \"agentic, multilingual, and reasoning-heavy tasks\" with vision input and a 128K context, which is not a 2-tier model on a 2026 comparison set. ESCALATED rather than changed - no last_verified claimed on this axis.",
+            "note": "RESCORED 2026-08-14 from 2 to 3, on the max-across-releases rule in docs/guides/identity.md. The old score read the 2024 Command R+ 104B checkpoint and its legacy Open LLM Leaderboard breakdown (avg 74.6, MMLU 75.7), which is a fair 2 against a 2026 comparison set - but a tier scores on its BEST release, not its oldest. The tier's current release is Command A+ (05-2026), a 218B-total / 25B-active MoE Cohere positions for \"agentic, multilingual, and reasoning-heavy tasks with a focus on enterprise performance\", with vision inputs, a 128K context and trained-in conversational tool use. The basis moves from benchmark to feature_matrix, and that is the honest part of this rescore - the Command A+ card publishes NO benchmark table at all, so the placement rests on the released feature surface rather than on a number. 3 rather than 4 for that reason and because the 2026 reasoning frontier in this category sits above it on published scores - nemotron at 5, deepseek-r1 and hermes at 4, all on AIME / GPQA / SWE-bench evidence Cohere does not publish. It lands level with the other capable-but-unbenchmarked general instruct models here, llama-instruct and qwen-instruct, both at 3. No relative_to is recorded because no peer at this level carries a last_verified on or after this date, and check_capability's transitive-freshness rule would reject the anchor.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
+                "url": "https://huggingface.co/CohereLabs/command-a-plus-05-2026-bf16",
+                "shows": "the governing release - 25B active / 218B total, \"optimized for agentic, multilingual, and reasoning-heavy tasks with a focus on enterprise performance\", vision inputs, 128K context, and a tool-use section stating the model \"has been specifically trained with conversational tool use capabilities\". No evaluation or benchmark table anywhere on the card.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "2191d6228eed7e11b5a2fd523ee716e8123e97d78600b71e9227f61e77cb96e0"
+              },
+              {
                 "url": "https://huggingface.co/CohereLabs/c4ai-command-r-plus",
-                "shows": "the 2024 checkpoint the score reads, with its legacy Open LLM Leaderboard breakdown",
+                "shows": "the 2024 checkpoint the old score read, with its legacy Open LLM Leaderboard breakdown; superseded",
                 "accessed": "2026-08-13",
                 "http_status": 200,
                 "content_sha256": "70d2416a50e55f040f0f6ecea57b06d0b329d939c56b40c43377b45f2369651f"
-              },
-              {
-                "url": "https://huggingface.co/CohereLabs/command-a-plus-05-2026-bf16",
-                "shows": "the governing release - 25B active / 218B total, \"optimized for agentic, multilingual, and reasoning-heavy tasks with a focus on enterprise performance\", vision inputs, 128K context",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "fe00eed9a9f1089f5d699e85b55675b09c82c26e70b340935b9b1127a9455723"
               }
             ]
           },
-          "maturity": 2.3,
+          "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
-          "version_note": "Correctly an instruct model, belongs in finetuned_chat (was miscategorized as base elsewhere). Openness and capability are both still scored on the 2024 c4ai-command-r-plus checkpoint (CC-BY-NC, gated) while the description and the declared artifacts follow Command A+ (Apache 2.0, ungated). Both axes are flagged for rescoring on the governing release; adoption already reads it. Verified live 2026-08-13 via the Command A+ and Command R+ model cards."
+          "version_note": "Correctly an instruct model, belongs in finetuned_chat (was miscategorized as base elsewhere). Openness and capability were both rescored onto the governing release, Command A+ (Apache 2.0, ungated), on 2026-08-14; all three axes now read the same release the description and the declared artifacts follow. Verified live 2026-08-14 via the Command A+ model card and the CohereLabs org listing."
         },
         {
           "slug": "jamba-large",
@@ -6083,15 +6156,17 @@
             "bucket": "open-ish"
           },
           "adoption": {
-            "level": 2,
-            "signal_type": "reported_traction",
-            "confidence": "low",
-            "note": "Recently released specialist model with early attention for its size; directional estimate (not a measured usage figure). Re-read 2026-08-13, and the instrument no longer fits. The product declares a Hugging Face model artifact, which every adoption signal model reads, and it returns 149,008 downloads in the trailing 30 days - a real count, banding at level 3 (100K-1M) on usage_volume. A reported_traction record is defined by having no count behind it, and there is now a count. ESCALATED rather than changed - level, signal_type and reach would all move together, so no last_verified is claimed on this axis.",
+            "level": 3,
+            "reach": "100K-1M",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "RE-BANDED 2026-08-14 from 2/reported_traction under the measured-figure ruling in docs/guides/adoption.md, and the instrument moved with the level. The old record was a directional estimate for a recently released specialist model, but the product declares a Hugging Face model artifact, which every adoption signal model reads, and it returns 149,008 downloads in the trailing 30 days - which lands in 100K-1M on the model scale in sources/rubrics/model.yaml. A reported_traction record is defined by having no count behind it, and there is now a count, so the instrument becomes usage_volume and confidence moves low -> high. The digest is byte-identical to the 2026-08-13 read.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
                 "url": "https://huggingface.co/api/models/WeiboAI/VibeThinker-3B",
                 "shows": "149,008 downloads in the trailing 30 days for WeiboAI/VibeThinker-3B, ungated",
-                "accessed": "2026-08-13",
+                "accessed": "2026-08-14",
                 "http_status": 200,
                 "content_sha256": "76cdf7c09f348a466041f82ba569567c2cef6343648894b26bde80fd15045426"
               },
@@ -6122,10 +6197,10 @@
               }
             ]
           },
-          "maturity": 2.7,
+          "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "MIT-licensed weights, but a fine-tune of the open-weight Qwen2.5 line without a fully open data/training pipeline -> open_weights, not open_source. Narrow specialist. The adoption axis records reported_traction while a countable Hub artifact exists; flagged for re-banding. Verified live 2026-08-13 via the HF model card."
@@ -6162,23 +6237,24 @@
             "bucket": "open-ish"
           },
           "adoption": {
-            "level": 3,
-            "reach": "100K-1M",
+            "level": 4,
+            "reach": "1M-10M",
             "signal_type": "usage_volume",
-            "confidence": "medium",
-            "note": "~352k HF downloads last month combined across the primary weights repo (~64k) and the GGUF quant (~288k), July 2026; 361 + 407 likes. Squarely in the 100k-1M band. Re-read 2026-08-13 and the figure has moved by an order of magnitude - the two declared repos now sum to 6,978,753 downloads in the trailing 30 days (Ornith-1.0-9B 2,383,936; Ornith-1.0-9B-GGUF 4,594,817), which bands at level 4 (1M-10M), not 3. Both were re-read against the API rather than the rendered card. ESCALATED rather than changed - no last_verified claimed on this axis.",
+            "confidence": "high",
+            "note": "Banded on the sum of Hugging Face downloads across the two declared repos, which is what sources/rubrics/model.yaml asks for. RE-BANDED 2026-08-14 from 3/100K-1M under the measured-figure ruling in docs/guides/adoption.md - the record was set on ~352k combined in July 2026 and the figure has moved an order of magnitude since. The API now answers 2,383,936 for Ornith-1.0-9B and 4,594,817 for Ornith-1.0-9B-GGUF, summing to 6,978,753 in the trailing 30 days, which lands in 1M-10M. Both were read against the API rather than the rendered card, and both digests are byte-identical to the 2026-08-13 read. Confidence moves medium -> high; the two repos now carry 528 and 638 likes.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
                 "url": "https://huggingface.co/api/models/deepreinforce-ai/Ornith-1.0-9B",
                 "shows": "2,383,936 downloads in the trailing 30 days (repo now served as ornith-ai/Ornith-1.0-9B)",
-                "accessed": "2026-08-13",
+                "accessed": "2026-08-14",
                 "http_status": 200,
                 "content_sha256": "8aee69ec2c62ebb5bc23e29e79c8aabd73508b3546591f84b856060971ea4047"
               },
               {
                 "url": "https://huggingface.co/api/models/deepreinforce-ai/Ornith-1.0-9B-GGUF",
                 "shows": "4,594,817 downloads in the trailing 30 days (repo now served as ornith-ai/Ornith-1.0-9B-GGUF)",
-                "accessed": "2026-08-13",
+                "accessed": "2026-08-14",
                 "http_status": 200,
                 "content_sha256": "a2b3db90e293353fb7ee493242b87c9fc37408e13a233ff484dc6af1ee9434b6"
               }
@@ -6202,10 +6278,10 @@
               }
             ]
           },
-          "maturity": 3.7,
+          "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "MIT-licensed open weights (HF tag license:mit), Qwen 3.5 architecture (qwen3_5), released 2026 by DeepReinforce. Reported coding benchmarks in the card's model-index are SWE-bench Verified 69.4, SWE-bench Pro 42.9, SWE-bench Multilingual 52.0 and Claw-Eval 63.1; the Terminal-Bench figure the record used to quote is not in the model-index. The repos are now served under the org ornith-ai; the declared deepreinforce-ai URLs still resolve. Verified live 2026-08-13 via the HF model cards."
@@ -6283,28 +6359,29 @@
             "basis_detail": "SWE-bench Verified",
             "value": null,
             "confidence": "medium",
-            "note": "Sonnet 4.6 posts 79.6% on SWE-bench Verified, strong for a mid-tier model but below the Opus and Fable tiers, which is why this sits at 4 rather than 5. Confidence is medium because SWE-bench Verified's public leaderboard has had no submissions since 2025-12-15, so recent figures are vendor-reported. Re-read 2026-08-13, with one limitation worth recording - the headline 79.6% sits in a chart the launch page renders client-side, so a plain fetch cannot read it back. What the fetched text does carry is the SWE-bench Verified footnote, \"Our score was averaged over 10 trials. With a prompt modification, we saw a score of 80.2%\", which puts Sonnet 4.6 in the high seventies to eighty on that benchmark and is consistent with the recorded figure. The chart figure is flagged as not re-derivable from a fetch.\nThe larger finding is that the axis is a release behind. The tier now ships Claude Sonnet 5 (2026-06-30), whose launch post says \"its performance is close to that of Opus 4.8\" and describes a substantial improvement over Sonnet 4.6 on reasoning, tool use, coding and knowledge work. identity.md takes the MAX across a tier's releases, and claude-opus sits at 5, so the reason given for holding this tier at 4 - that it is below the Opus tier - no longer reads the same way. ESCALATED rather than changed, and no last_verified is claimed on this axis.",
+            "note": "RE-DERIVED 2026-08-14 on the governing release, and the band is unchanged at 4. The axis had been read on Sonnet 4.6, which docs/guides/identity.md would not accept - a tier scores on the MAX across its releases and the tier now ships Claude Sonnet 5 (2026-06-30). Read on Sonnet 5 the answer is the same, and Anthropic's own framing is why. The launch post says \"Sonnet 5 narrows the gap - its performance is close to that of Opus 4.8, but at lower prices\", calls Opus 4.8 \"a more generally capable model, for reference\", and describes Sonnet 5 as \"approaching Opus 4.8's capability levels\" while outperforming it only \"on some tasks\". Close to, approaching, and better on some tasks is not level with, and the reason this tier sat at 4 - it is below the Opus and Fable tiers, which sit at 5 - survives the move to the newer release intact. The evidence for a 5 would have to be the vendor placing Sonnet at or above its own flagship, and the vendor does the opposite. Two limitations worth keeping. Sonnet 4.6's headline 79.6% on SWE-bench Verified is in a client-rendered chart a plain fetch cannot read back, and the Sonnet 5 post publishes no SWE-bench figure in its fetchable body at all (only OSWorld-Verified 78.5%, 46.8% and 34.6% appear as plain text), so basis_detail names the benchmark the judgment tracks rather than a number this fetch re-derived. And SWE-bench Verified's public leaderboard has had no submissions since 2025-12-15, so recent figures are vendor-reported either way. Confidence stays medium for both reasons.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
+                "url": "https://www.anthropic.com/news/claude-sonnet-5",
+                "shows": "the tier's governing release - \"Sonnet 5 narrows the gap: its performance is close to that of Opus 4.8, but at lower prices. It's a substantial improvement over its predecessor, Sonnet 4.6, on important aspects of agentic performance like reasoning, tool use, coding, and knowledge work.\" Opus 4.8 is described as \"a more generally capable model, for reference\"; Sonnet 5 is \"approaching Opus 4.8's capability levels\" and outperforms it \"on some tasks\". OSWorld-Verified figures of 78.5%, 46.8% and 34.6% are the only benchmark numbers in the fetchable body; no SWE-bench figure appears.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "7afd4cde946d0dfd7834f2ecd785a4656c0ca20ef1508413354a1ad983b5d5c5"
+              },
+              {
                 "url": "https://www.anthropic.com/news/claude-sonnet-4-6",
-                "shows": "SWE-bench Verified footnote - \"Our score was averaged over 10 trials. With a prompt modification, we saw a score of 80.2%\". The headline 79.6% is in a client-rendered chart and is not in the fetched body.",
+                "shows": "the superseded release the old score read. SWE-bench Verified footnote - \"Our score was averaged over 10 trials. With a prompt modification, we saw a score of 80.2%\". The headline 79.6% is in a client-rendered chart and is not in the fetched body.",
                 "accessed": "2026-08-13",
                 "http_status": 200,
                 "content_sha256": "68b253b30af8131679942ad453b5a6ccf9a38c8368f4640442273792fb5ce44c"
-              },
-              {
-                "url": "https://www.anthropic.com/news/claude-sonnet-5",
-                "shows": "the tier's current release - \"Sonnet 5 narrows the gap: its performance is close to that of Opus 4.8, but at lower prices. It's a substantial improvement over its predecessor, Sonnet 4.6, on important aspects of agentic performance like reasoning, tool use, coding, and knowledge work.\"",
-                "accessed": "2026-08-13",
-                "http_status": 200,
-                "content_sha256": "7afd4cde946d0dfd7834f2ecd785a4656c0ca20ef1508413354a1ad983b5d5c5"
               }
             ]
           },
           "maturity": 4.3,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "Tier product. Anthropic ships a new Sonnet roughly every few months, so a versioned entry goes stale faster than it can be reviewed; the slug is stable and the score carries the release it was measured against. Supersedes the separate claude-sonnet-4 and claude-sonnet-4-6 entries. The scores are still measured against Sonnet 4.6 while Sonnet 5 (2026-06-30) is shipping; capability is flagged for rescoring on it. The headline SWE-bench figure sits in a client-rendered chart on the 4.6 launch page and is not re-derivable from a fetch. Verified live 2026-08-13 via the Sonnet 4.6 and Sonnet 5 launch posts."
@@ -17806,16 +17883,19 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 3,
-            "reach": "10K-100K",
+            "level": 4,
+            "reach": "100K-1M",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "73,774 monthly downloads on Hugging Face, graded on the training-corpus bands.",
+            "note": "Banded on Hugging Face downloads of the declared dataset, on the dataset scale in sources/rubrics/dataset.yaml. RE-BANDED 2026-08-14 from 3/10K-100K under the measured-figure ruling in docs/guides/adoption.md - the figure has grown past a band boundary since the 2026-07-04 read. The datasets API now answers downloads = 107,269 in the trailing 30 days (901 likes, ungated), against the 73,774 the record was set on, which moves it from 10K-100K to 100K-1M.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
                 "url": "https://huggingface.co/api/datasets/open-thoughts/OpenThoughts-114k",
-                "shows": "downloads field = 73,774 (30-day)",
-                "accessed": "2026-07-04"
+                "shows": "downloads field = 107,269 in the trailing 30 days; 901 likes; gated false",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "a4f05b5b3d8bffe9e84f04e00e26cf3589f056704a133ec6f682062b4cdfa1b2"
               }
             ]
           },
@@ -17844,10 +17924,10 @@
               }
             ]
           },
-          "maturity": 3.0,
+          "maturity": 3.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "Verified live 2026-08-13 via primary sources. Apache-2.0 licensed, ungated, with dataset card, code repo, and paper.",
@@ -18448,16 +18528,19 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 2,
-            "reach": "1K-10K",
+            "level": 3,
+            "reach": "10K-100K",
             "signal_type": "usage_volume",
-            "confidence": "high",
-            "note": "6,105 monthly downloads on Hugging Face, graded on the training-corpus bands.",
+            "confidence": "medium",
+            "note": "Banded on Hugging Face downloads of the declared dataset, on the dataset scale in sources/rubrics/dataset.yaml. RE-BANDED 2026-08-14 from 2/1K-10K under the measured-figure ruling in docs/guides/adoption.md - the datasets API now answers downloads = 10,111 in the trailing 30 days (273 likes, ungated), against the 6,105 the record was set on. NEAR-BOUNDARY CROSSING, and a later reader should treat it as one - 10,111 clears the 10,000 floor of the 10K-100K band by 1.1%, so a month of ordinary variation could put this back at level 2. Confidence is medium for that reason rather than because of anything wrong with the measurement.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
                 "url": "https://huggingface.co/api/datasets/PleIAs/SYNTH",
-                "shows": "downloads field = 6,105 (30-day)",
-                "accessed": "2026-07-04"
+                "shows": "downloads field = 10,111 in the trailing 30 days; 273 likes; gated false",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "7217bc21e779056d8e4b10aaf70fa96783f6bed28fb31974f1fe6ce69d1dc019"
               }
             ]
           },
@@ -18486,10 +18569,10 @@
               }
             ]
           },
-          "maturity": 3.0,
+          "maturity": 3.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "Verified live 2026-08-13 via primary sources. Permissively licensed, ungated dataset with a documented card.",
@@ -18542,16 +18625,19 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 2,
-            "reach": "1K-10K",
+            "level": 3,
+            "reach": "10K-100K",
             "signal_type": "usage_volume",
-            "confidence": "high",
-            "note": "9,980 monthly downloads on Hugging Face, graded on the training-corpus bands.",
+            "confidence": "medium",
+            "note": "Banded on Hugging Face downloads of the declared deduplicated repo, on the dataset scale in sources/rubrics/dataset.yaml. RE-BANDED 2026-08-14 from 2/1K-10K under the measured-figure ruling in docs/guides/adoption.md - the datasets API now answers downloads = 13,360 in the trailing 30 days (116 likes, ungated), against the 9,980 the record was set on. NEAR-BOUNDARY CROSSING, and a later reader should treat it as one - 13,360 clears the 10,000 floor of the 10K-100K band by 34%, and the old figure sat 0.2% below it, so this corpus has been sitting on the boundary for months. Confidence is medium for that reason rather than because of anything wrong with the measurement.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
                 "url": "https://huggingface.co/api/datasets/EleutherAI/the_pile_deduplicated",
-                "shows": "downloads field = 9,980 (30-day)",
-                "accessed": "2026-07-04"
+                "shows": "downloads field = 13,360 in the trailing 30 days; 116 likes; gated false",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "55f3991da8dc5c4ae68b7e1f196eb5525a1e41f1d1e138cd36709941e6401637"
               }
             ]
           },
@@ -18582,10 +18668,10 @@
               }
             ]
           },
-          "maturity": 2.5,
+          "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "Covers the Pile family (original + deduplicated). Verified live 2026-08-13; canonical hosting moved to the deduplicated repo after the original mirrors went offline.",
@@ -24709,16 +24795,19 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 3,
-            "reach": ">10K stars",
-            "signal_type": "stars_fallback",
-            "confidence": "medium",
-            "note": "~34k stars; no published download telemetry - stars_fallback (capped at 3). Stars read 2026-08-13: 35,476 across the 1 declared repo, which bands at >10K stars, level 3 on the stars scale in signal_routing.yaml. The record carried no reach label at all before this. No last_verified claimed: a star count is volatile, so a digest of it would read as drift on every refetch, and the rest of the axis was not re-read.",
+            "level": 2,
+            "reach": "10K-100K",
+            "signal_type": "usage_volume",
+            "confidence": "high",
+            "note": "RE-BANDED 2026-08-14 from 3/stars_fallback to 2/usage_volume under the measured-figure ruling in docs/guides/adoption.md. The record had assumed no published download telemetry existed, but the product already declares the PyPI package graphrag, which every adoption signal model reads. The pypistats API answers last_month = 69,377 downloads (last_week 13,302, last_day 2,016), which bands at 10K-100K, level 2 on the software scale in sources/rubrics/software.yaml. A download count outranks a star count, and docs/guides/adoption.md says outright that a stars_fallback band means no download signal existed when it was set and to re-band if one exists now. The ~35.5k stars still recorded on the openness axis now corroborate rather than carry the band.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
-                "url": "https://github.com/microsoft/graphrag",
-                "shows": "~33.8k stars",
-                "accessed": "2026-06-17"
+                "url": "https://pypistats.org/api/packages/graphrag/recent",
+                "shows": "last_month = 69,377 downloads for graphrag (last_week 13,302, last_day 2,016).",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "e3d32bf09b5b9b02b46a88336d5f3a3f022bb26077a32586a53ba0482d739fb5"
               }
             ]
           },
@@ -24741,10 +24830,10 @@
               }
             ]
           },
-          "maturity": 3.7,
+          "maturity": 3.4,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "Verified live 2026-08-13 via primary sources. MIT, no feature-gated core. 35.5k stars, about 69k PyPI downloads a month. Indexing is compute/cost-intensive."
@@ -30517,8 +30606,15 @@
             "reach": "100K-1M",
             "signal_type": "usage_volume",
             "confidence": "low",
-            "note": "pypistats reports ~17M lmnr downloads/mo, but this is anomalously high for a ~3k-star project and almost certainly CI/mirror-inflated (common for OTel auto-instrumentation SDKs pulled transitively); discounting to level 3 rather than treating 17M as honest end-user reach. GitHub ~3k stars corroborates a smaller real user base. Treat as directional.",
+            "note": "pypistats reports ~17M lmnr downloads/mo, but this is anomalously high for a ~3k-star project and almost certainly CI/mirror-inflated (common for OTel auto-instrumentation SDKs pulled transitively); discounting to level 3 rather than treating 17M as honest end-user reach. GitHub ~3k stars corroborates a smaller real user base. Treat as directional. ESCALATED 2026-08-14 and deliberately NOT re-banded, so the axis carries no last_verified. The SDK-is-the-platform ruling of 2026-08-14 covers this product, and on its face it moves the band to 5 - the pypistats API now answers last_month = 34,084,386 downloads for lmnr (last_week 9,210,651, last_day 1,617,970), double the figure the record was set on and comfortably past the >10M level-5 floor. The ruling settles ATTRIBUTION, which was never this record's objection. This record's objection is that the count is not real end-user reach, and the fresh figure sharpens it rather than answering it - lmnr at 1,617,970 downloads a day now outruns langfuse at 1,118,108, which is not credible for a project an order of magnitude smaller by every other measure. Applying the ruling here would contradict the note, so the level stands at 3 pending a decision on whether to discount the figure, find a de-mirrored count, or take it at face value.",
             "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/lmnr/recent",
+                "shows": "last_month = 34,084,386 downloads for lmnr (last_week 9,210,651, last_day 1,617,970); recorded as a measurement of the channel, not as the basis of the band.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "aa10188d675f0504f79dac9f41d84fa85384cec1f0e4c07b7b12526adb5aba7a"
+              },
               {
                 "url": "https://pypistats.org/packages/lmnr",
                 "shows": "~17.06M lmnr downloads in last month (flagged as likely mirror-inflated)",
@@ -30584,16 +30680,19 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 2,
-            "reach": "10K-100K",
+            "level": 3,
+            "reach": "100K-1M",
             "signal_type": "usage_volume",
-            "confidence": "medium",
-            "note": "~590K openlit PyPI downloads/mo; modest but real. As an OTel auto-instrumentation lib some downloads are CI/transitive, so placed conservatively at level 2 (early adopters). ~2.5k GitHub stars corroborates a smaller community vs Langfuse/MLflow.",
+            "confidence": "high",
+            "note": "RE-BANDED 2026-08-14 from 2/10K-100K under the ruling of 2026-08-14 that an SDK's download count is the hosted platform's reach, read together with the measured-figure rule in docs/guides/adoption.md. The old record held the band at 2 on a discretionary discount - the note recorded ~590K downloads and then banded a full order of magnitude below them because some share of an OTel auto-instrumentation library's installs are CI or transitive. That discount was never quantified, and a band is supposed to follow the figure. The pypistats API answers last_month = 414,172 downloads for openlit (last_week 97,995, last_day 20,112), which lands in 100K-1M on the software scale in sources/rubrics/software.yaml. The figure has come down since the 2026-06-04 read and still bands at 3. The ~2.7k GitHub stars still corroborate a smaller community than Langfuse or MLflow, and the level says so - 3 against langfuse's 5.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
-                "url": "https://pypistats.org/packages/openlit",
-                "shows": "~590,377 openlit downloads in last month",
-                "accessed": "2026-06-04"
+                "url": "https://pypistats.org/api/packages/openlit/recent",
+                "shows": "last_month = 414,172 downloads for openlit (last_week 97,995, last_day 20,112).",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "7c58e659d33e9000c058104c8fb3b8ec9cc16b47c3a196e3d7bec65e03f5618b"
               }
             ]
           },
@@ -30616,10 +30715,10 @@
               }
             ]
           },
-          "maturity": 3.0,
+          "maturity": 3.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "Verified 2026-08-13 via the openlit/openlit repository."
@@ -30856,12 +30955,15 @@
             "level": 4,
             "signal_type": "reported_traction",
             "confidence": "medium",
-            "note": "Default observability/eval platform for the very widely used LangChain ecosystem; vendor lists 25+ named enterprise customers (Klarna, Lyft, Cloudflare, LinkedIn, Coinbase, Nvidia, Workday, etc.). No quantitative user count disclosed, so reported_traction; placed at 4 on ecosystem reach + enterprise roster (directional).",
+            "note": "Default observability/eval platform for the very widely used LangChain ecosystem, placed at 4 on ecosystem reach plus the published enterprise roster. RE-SOURCED 2026-08-14 rather than re-banded. The band had been resting on an undated, undigested 2026-06-04 read, which is the class docs/guides/adoption.md calls unfalsifiable, so the vendor page was re-fetched and digested and the axis now decays against the refresh window like any other. What the page still shows - a named enterprise roster including Klarna, Lyft, LinkedIn, Coinbase, Nvidia, Workday, Rakuten, Elastic and Harvey, and no quantitative user, customer or download count anywhere on it. Two corrections the re-read forces on the old prose - the \"25+\" count is not stated on the page and could not be re-derived from it, and Cloudflare is no longer among the names, so both have been dropped from this note. The instrument stays reported_traction and the record carries no reach, which is the honest default for it. DELIBERATELY NOT re-banded on the langsmith PyPI package under the SDK-is-the-platform ruling of 2026-08-14, which excludes this product by name - langsmith is a hard dependency of langchain-core, so its download count measures LangChain installs rather than LangSmith use. A transitive dependency of a DIFFERENT product measures that product.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
                 "url": "https://www.langchain.com/langsmith",
-                "shows": "25+ named enterprise customers; positioned as the LangChain-ecosystem observability platform",
-                "accessed": "2026-06-04"
+                "shows": "Named enterprise roster still published - Klarna, Lyft, LinkedIn, Coinbase, Nvidia, Workday, Rakuten, Elastic and Harvey among them - and positioned as the LangChain-ecosystem observability platform. No user, customer or download count is stated anywhere on the page, and no \"25+\" figure appears. The URL now redirects to /langsmith/observability.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "046b9dce62b37762fe777db0bfd87a26c316e72e180a7778835d2cf32ebc5d59"
               }
             ]
           },
@@ -30887,7 +30989,7 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "The declared langsmith PyPI package is a hard dependency of langchain-core, so its download count measures LangChain installs rather than platform use and is not used to band adoption. Verified 2026-08-13 via langchain.com/langsmith."
@@ -32080,11 +32182,20 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 3,
-            "signal_type": "reported_traction",
+            "level": 5,
+            "reach": ">10M",
+            "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "Described as the most widely adopted open source LLM engineering platform; acquired by ClickHouse Mar 2026. No precise verified download/active-user count, rated 3 on reported traction.",
+            "note": "RE-BANDED 2026-08-14 from 3/reported_traction to 5/usage_volume, and the instrument moved with the level. The old record asserted no precise download or active-user count existed, but the product declares the PyPI package langfuse, its own client SDK, and the ruling of 2026-08-14 settles that where a hosted platform has no other countable channel its client SDK's downloads band the platform - the same treatment qdrant already gets on qdrant-client. The pypistats API answers last_month = 26,611,793 downloads for langfuse (last_week 6,315,194, last_day 1,118,108), which clears the >10M level-5 floor in sources/rubrics/software.yaml. This is instrumentation traffic rather than a seat count, which is exactly what an observability platform's reach looks like. The product is still described as the most widely adopted open source LLM engineering platform, and was acquired by ClickHouse in March 2026.",
+            "last_verified": "2026-08-14",
             "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/langfuse/recent",
+                "shows": "last_month = 26,611,793 downloads for langfuse (last_week 6,315,194, last_day 1,118,108).",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "fd23c891c72acb7c1cef3c5e11560f7b38497d4e1435158f8decd487d5670775"
+              },
               {
                 "url": "https://github.com/langfuse/langfuse",
                 "shows": "flagship phase-C verification source",
@@ -32121,10 +32232,10 @@
             ],
             "last_verified": "2026-08-13"
           },
-          "maturity": 3.5,
-          "mature": false,
+          "maturity": 4.5,
+          "mature": true,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "Verified 2026-08-13 via the langfuse/langfuse repository and the Langfuse observability docs."
@@ -34595,11 +34706,12 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 4,
-            "reach": "1M-10M",
+            "level": 5,
+            "reach": ">10M",
             "signal_type": "usage_volume",
-            "confidence": "medium",
-            "note": "@playwright/mcp is a widely distributed npm package and the de facto browser-automation MCP server, shipped/recommended across major MCP clients (VS Code, Cursor, Claude Desktop). npm download page returned HTTP 403 this run so an exact weekly-download figure could not be fetched; level 4 rests on broad multi-client native integration plus 33.5k stars (corroborating, not basis). Confidence medium pending a clean download number. FLAGGED FOR A HUMAN 2026-08-13, and deliberately NOT applied: the clean number now exists. api.npmjs.org reports 25,901,643 downloads of @playwright/mcp for the window 2026-07-11 to 2026-08-09, which bands at level 5 (>10M) rather than the recorded 4, at high confidence rather than medium. Changing a level is not this pass's to make, so the axis carries no last_verified either - the recorded value is the one that was NOT re-derived. The product also declares an npm artifact of @anthropic-ai/mcp-playwright, which api.npmjs.org answers 404 for; the real package is @playwright/mcp, and that declaration needs correcting before any fetcher bands this product automatically.",
+            "confidence": "high",
+            "note": "@playwright/mcp is the de facto browser-automation MCP server, shipped or recommended across the major MCP clients (VS Code, Cursor, Claude Code). RE-BANDED 2026-08-14 from 4/1M-10M to 5/>10M under the measured-figure ruling in docs/guides/adoption.md. api.npmjs.org still answers 25,901,643 downloads of @playwright/mcp for the window 2026-07-11 to 2026-08-09, byte-identical to the 2026-08-13 read, which clears the >10M level-5 floor in sources/rubrics/software.yaml. Confidence moves medium -> high because the band now rests on a count rather than on integration breadth plus stars. The declared npm artifact was @anthropic-ai/mcp-playwright, which api.npmjs.org answers 404 for; it has been corrected to @playwright/mcp in the product record, so the artifact a fetcher would read is now the one this band was measured on.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
                 "url": "https://github.com/microsoft/playwright-mcp",
@@ -34611,7 +34723,7 @@
               {
                 "url": "https://api.npmjs.org/downloads/point/last-month/@playwright/mcp",
                 "shows": "25,901,643 downloads for the window 2026-07-11 to 2026-08-09.",
-                "accessed": "2026-08-13",
+                "accessed": "2026-08-14",
                 "http_status": 200,
                 "content_sha256": "b843947758b2887b19551acc31f41829b49cd4de630b81189b79412a6a0539fb"
               }
@@ -34634,13 +34746,13 @@
               }
             ]
           },
-          "maturity": 4.0,
-          "mature": false,
+          "maturity": 4.6,
+          "mature": true,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
-          "version_note": "The declared npm artifact, @anthropic-ai/mcp-playwright, does not resolve on the registry; the package the README installs is @playwright/mcp, and the adoption score file records the discrepancy. Verified 2026-08-13 via GitHub and the repository LICENSE."
+          "version_note": "The npm artifact was corrected 2026-08-14 from @anthropic-ai/mcp-playwright, which the registry answers 404 for, to @playwright/mcp, the package the README installs and the one api.npmjs.org reports 25,901,643 monthly downloads for. Verified 2026-08-13 via GitHub and the repository LICENSE."
         },
         {
           "slug": "fastmcp",
@@ -36090,16 +36202,17 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 4,
-            "reach": "1M-10M",
+            "level": 5,
+            "reach": ">10M",
             "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "~27M PyPI downloads in the last month (browser-use), strong real install/usage volume, not stars. 97.2k GitHub stars corroborate but are not the basis. Solidly in the 1-10M+ monthly-download band; one of the most-used agent browser-automation libraries. FLAGGED FOR A HUMAN 2026-08-13 and deliberately NOT applied: the recorded level does not follow from the recorded figure, and did not before this pass either. The pypistats API reports last_month = 53,142,086 downloads for browser-use, and the ~27M already on the record was itself above the >10M level-5 floor - so this axis has been sitting at 4/1M-10M under a figure that bands at 5/>10M by the software scale in sources/rubrics/software.yaml, twice over. Both the level and the reach need correcting; a level change is not this pass's to make, so the axis carries no last_verified. The repo now shows 109,104 stars, still corroborating rather than the basis.",
+            "note": "Banded on PyPI downloads of the declared browser-use package, one of the most-used agent browser-automation libraries. GitHub stars corroborate but are not the basis. RE-BANDED 2026-08-14 from 4/1M-10M to 5/>10M under the measured-figure ruling in docs/guides/adoption.md - a live figure on an already-declared artifact overrides a hand-set band. The pypistats API still answers last_month = 53,142,086 downloads for browser-use, byte-identical to the 2026-08-13 read (same content_sha256), which is more than five times the >10M level-5 floor in sources/rubrics/software.yaml. The record had been sitting at 4 under a figure that banded at 5 even on the older ~27M reading, so this closes a discrepancy that predated the flag.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
                 "url": "https://pypistats.org/api/packages/browser-use/recent",
                 "shows": "last_month = 53,142,086 downloads for browser-use (last_week 14,575,579, last_day 2,624,999).",
-                "accessed": "2026-08-13",
+                "accessed": "2026-08-14",
                 "http_status": 200,
                 "content_sha256": "9d86d983650b3dc84598d2efb324087b0f5c04845286f5d6a1fdcb86fc83b23c"
               },
@@ -36136,10 +36249,10 @@
               }
             ]
           },
-          "maturity": 4.0,
-          "mature": false,
+          "maturity": 4.6,
+          "mature": true,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "Stealth, proxy rotation and CAPTCHA handling belong to the separate Browser Use Cloud product rather than to the MIT library, which is why the openness score reads the core as ungated. The adoption axis is flagged - the recorded level does not follow from the recorded download figure - and carries no confirmation date until that is settled. Verified 2026-08-13 via GitHub and the pypistats API."
@@ -36194,12 +36307,20 @@
             "bucket": "open"
           },
           "adoption": {
-            "level": 3,
-            "signal_type": "reported_traction",
+            "level": 4,
+            "reach": "1M-10M",
+            "signal_type": "usage_volume",
             "confidence": "high",
-            "note": "Described as the default open source engine for billion-scale semantic search; LF AI & Data graduate. No precise verified deployment/download count, rated 3 on reported traction. Re-read 2026-08-13: Zilliz's own page still describes Milvus as an \"Open-source vector database built for billion-scale vector similarity search\" and publishes no user, deployment or download figure; the repo page publishes only a star count (45,627), which is a different instrument and may not be banded as usage volume. The reported-traction level 3 therefore stands unchanged and the absence of a countable figure is re-confirmed. FLAG FOR A HUMAN, raised in this pass and deliberately not acted on: the product DOES declare a pypi artifact, pymilvus, with an artifact_exception saying in terms that \"the client's downloads are the best available usage signal for the server\". pymilvus reported 5,976,463 downloads in the trailing 30 days on 2026-08-13, which bands at level 4 (1M-10M) as usage_volume. Qdrant - the same product shape, the same client-not-server artifact_exception - bands on qdrant-client as usage_volume and scores 5. So milvus is abstaining from a figure the map elsewhere treats as countable, and either milvus should move to usage_volume 4 or qdrant should not be on usage_volume either. That is a ruling about the instrument rather than about this product, so the level was left alone.",
-            "last_verified": "2026-08-13",
+            "note": "RE-BANDED 2026-08-14 from 3/reported_traction to 4/usage_volume, and the instrument moved with the level. The ruling of 2026-08-14 settles the question the 2026-08-13 pass raised and left open - where a server has no other countable channel, its own client SDK's downloads band it. The product declares pymilvus with an artifact_exception saying in terms that \"the client's downloads are the best available usage signal for the server\", and the pypistats API answers last_month = 5,976,463 downloads (last_week 1,484,328, last_day 241,978), which lands in 1M-10M on the software scale in sources/rubrics/software.yaml. This also removes the inconsistency with qdrant, the same product shape carrying the same client-not-server artifact_exception, which has been banded on qdrant-client as usage_volume all along. Milvus is still the default open source engine for billion-scale semantic search and an LF AI & Data graduate; what changed is that the record now bands on a count rather than on that description. Zilliz still publishes no server-side deployment figure, and the repo's 45,627 stars remain a different instrument that may not be banded as usage volume.",
+            "last_verified": "2026-08-14",
             "sources": [
+              {
+                "url": "https://pypistats.org/api/packages/pymilvus/recent",
+                "shows": "last_month = 5,976,463 downloads for pymilvus (last_week 1,484,328, last_day 241,978).",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "e62537e90c3437d4fd801680c6c1d923160f60a3627162e363c29c09d471fcfc"
+              },
               {
                 "url": "https://github.com/milvus-io/milvus",
                 "shows": "Repo page, 45,627 stargazers. No download, deployment or customer figure of any kind.",
@@ -36241,10 +36362,10 @@
               }
             ]
           },
-          "maturity": 3.4,
+          "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "The declared pypi artifact is pymilvus, the Python client rather than the server; see artifact_exceptions above for why its downloads are used as the usage signal. Verified 2026-08-13 via GitHub, milvus.io and the Wikipedia entry."
@@ -41591,7 +41712,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "The declared GitHub artifact is the Gradio repository, an app SDK that runs anywhere, rather than the Spaces host, which publishes no source. Verified 2026-08-13 via the Hugging Face Spaces Hub documentation, the Hugging Face pricing page, and the Hugging Face terms of service."
+          "version_note": "The GitHub artifact declared here was gradio-app/gradio, and it was removed 2026-08-14. That repository is an app SDK that runs anywhere rather than the Spaces host, and it is already the declared artifact of `gradio`, a separate product on this map - so the declaration double-counted one repo across two products and would have banded Spaces on Gradio's stars. Spaces publishes no source of its own and no countable channel, so nothing replaces it; a route to a real Spaces signal is a backlog item, and repointing without evidence would repeat the error. Verified 2026-08-13 via the Hugging Face Spaces Hub documentation, the Hugging Face pricing page, and the Hugging Face terms of service."
         },
         {
           "slug": "ollama",
