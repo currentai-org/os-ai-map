@@ -135,7 +135,14 @@ openness:
       # between open_market and distributor, neither of which any rung distinguishes. It is
       # the other half of the future `restricted` tier: an NDA/design-win part is one nobody
       # can buy AND whose docs nobody can read.
-      values: [open_market, distributor, restricted]
+      # `discontinued` added 2026-08-14 for google-coral-dev-board, which no reachable
+      # source describes as buyable: Seeed marks both variants Discontinued and out of
+      # stock, coral.ai/products/dev-board 302s to a page naming no hardware and linking
+      # no purchase route. None of open_market/distributor/restricted fits - `restricted`
+      # means gated by NDA or design win, which is a part somebody CAN buy under terms,
+      # and a withdrawn part is a different fact about a different question. Score-neutral:
+      # no rung reads `retail`.
+      values: [open_market, distributor, restricted, discontinued]
       machine_signal: none - a listing on a distributor site is checkable in principle,
         but absence of a listing does not establish restriction
 

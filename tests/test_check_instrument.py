@@ -79,24 +79,29 @@ def test_relabelling_to_reported_traction_does_not_buy_a_pass(sources):
     carry one. Whether such a record SHOULD relabel rather than declare its artifact is the
     primary-channel judgment in `adoption.md`, which no gate can make.
     """
-    offenders, _ = collect(sources)
-    assert offenders, "nothing to relabel; this test needs a live example"
-
-    failing = {f.split(":", 1)[0] for f in offenders}
-    slug = next(
-        s for s in failing
-        if ((sources["scores"].get(s) or {}).get("adoption") or {}).get("signal_type")
-        == "usage_volume"
-    )
-    patched = {
+    # BUILD the offender rather than borrowing one from the corpus. The first version of
+    # this test picked a live failing record, and on 2026-08-14 the corpus ran out of them —
+    # so a test asserting the gate still bites failed because the gate had done its job. A
+    # test whose setup depends on the bug still existing expires the moment the bug is fixed.
+    slug = next(iter(sources["scores"]))
+    unbacked = {
         **sources,
+        "products": {**sources["products"], slug: {"type": "software"}},
         "scores": {
             **sources["scores"],
-            slug: {
-                **sources["scores"][slug],
-                "adoption": {**sources["scores"][slug]["adoption"],
-                             "signal_type": "reported_traction"},
-            },
+            slug: {"adoption": {"level": 4, "signal_type": "usage_volume", "sources": []}},
+        },
+    }
+    offenders, _ = collect(unbacked)
+    assert any(f.startswith(f"{slug}:") for f in offenders), (
+        "a usage_volume record with no readable artifact and no digested source should fail"
+    )
+
+    patched = {
+        **unbacked,
+        "scores": {
+            **unbacked["scores"],
+            slug: {"adoption": {"level": 4, "signal_type": "reported_traction", "sources": []}},
         },
     }
     findings, _ = collect(patched)
