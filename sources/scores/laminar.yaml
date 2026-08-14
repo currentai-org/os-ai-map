@@ -50,11 +50,26 @@ adoption:
   reach: 100K-1M
   signal_type: usage_volume
   confidence: low
-  note: pypistats reports ~17M lmnr downloads/mo, but this is anomalously high for a ~3k-star project
+  note: 'pypistats reports ~17M lmnr downloads/mo, but this is anomalously high for a ~3k-star project
     and almost certainly CI/mirror-inflated (common for OTel auto-instrumentation SDKs pulled transitively);
     discounting to level 3 rather than treating 17M as honest end-user reach. GitHub ~3k stars corroborates
-    a smaller real user base. Treat as directional.
+    a smaller real user base. Treat as directional. ESCALATED 2026-08-14 and deliberately NOT re-banded, so
+    the axis carries no last_verified. The SDK-is-the-platform ruling of 2026-08-14 covers this product, and
+    on its face it moves the band to 5 - the pypistats API now answers last_month = 34,084,386 downloads for
+    lmnr (last_week 9,210,651, last_day 1,617,970), double the figure the record was set on and comfortably
+    past the >10M level-5 floor. The ruling settles ATTRIBUTION, which was never this record''s objection.
+    This record''s objection is that the count is not real end-user reach, and the fresh figure sharpens it
+    rather than answering it - lmnr at 1,617,970 downloads a day now outruns langfuse at 1,118,108, which is
+    not credible for a project an order of magnitude smaller by every other measure. Applying the ruling here
+    would contradict the note, so the level stands at 3 pending a decision on whether to discount the figure,
+    find a de-mirrored count, or take it at face value.'
   sources:
+  - url: https://pypistats.org/api/packages/lmnr/recent
+    shows: last_month = 34,084,386 downloads for lmnr (last_week 9,210,651, last_day 1,617,970); recorded
+      as a measurement of the channel, not as the basis of the band.
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: aa10188d675f0504f79dac9f41d84fa85384cec1f0e4c07b7b12526adb5aba7a
   - url: https://pypistats.org/packages/lmnr
     shows: ~17.06M lmnr downloads in last month (flagged as likely mirror-inflated)
     accessed: '2026-06-04'

@@ -94,12 +94,26 @@ openness:
     establishes:
     - source
 adoption:
-  level: 3
-  signal_type: reported_traction
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
   confidence: high
-  note: Described as the most widely adopted open source LLM engineering platform; acquired by ClickHouse
-    Mar 2026. No precise verified download/active-user count, rated 3 on reported traction.
+  note: 'RE-BANDED 2026-08-14 from 3/reported_traction to 5/usage_volume, and the instrument moved with the
+    level. The old record asserted no precise download or active-user count existed, but the product
+    declares the PyPI package langfuse, its own client SDK, and the ruling of 2026-08-14 settles that where
+    a hosted platform has no other countable channel its client SDK''s downloads band the platform - the
+    same treatment qdrant already gets on qdrant-client. The pypistats API answers last_month = 26,611,793
+    downloads for langfuse (last_week 6,315,194, last_day 1,118,108), which clears the >10M level-5 floor in
+    sources/rubrics/software.yaml. This is instrumentation traffic rather than a seat count, which is
+    exactly what an observability platform''s reach looks like. The product is still described as the most
+    widely adopted open source LLM engineering platform, and was acquired by ClickHouse in March 2026.'
+  last_verified: '2026-08-14'
   sources:
+  - url: https://pypistats.org/api/packages/langfuse/recent
+    shows: last_month = 26,611,793 downloads for langfuse (last_week 6,315,194, last_day 1,118,108).
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: fd23c891c72acb7c1cef3c5e11560f7b38497d4e1435158f8decd487d5670775
   - url: https://github.com/langfuse/langfuse
     shows: flagship phase-C verification source
     accessed: '2026-06-04'
