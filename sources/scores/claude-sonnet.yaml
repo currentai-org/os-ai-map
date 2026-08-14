@@ -70,33 +70,37 @@ capability:
   basis_detail: SWE-bench Verified
   value: null
   confidence: medium
-  note: Sonnet 4.6 posts 79.6% on SWE-bench Verified, strong for a mid-tier model but below the Opus and
-    Fable tiers, which is why this sits at 4 rather than 5. Confidence is medium because SWE-bench Verified's
-    public leaderboard has had no submissions since 2025-12-15, so recent figures are vendor-reported. Re-read
-    2026-08-13, with one limitation worth recording - the headline 79.6% sits in a chart the launch page
-    renders client-side, so a plain fetch cannot read it back. What the fetched text does carry is the
-    SWE-bench Verified footnote, "Our score was averaged over 10 trials. With a prompt modification, we saw
-    a score of 80.2%", which puts Sonnet 4.6 in the high seventies to eighty on that benchmark and is
-    consistent with the recorded figure. The chart figure is flagged as not re-derivable from a fetch.
-
-    The larger finding is that the axis is a release behind. The tier now ships Claude Sonnet 5 (2026-06-30),
-    whose launch post says "its performance is close to that of Opus 4.8" and describes a substantial
-    improvement over Sonnet 4.6 on reasoning, tool use, coding and knowledge work. identity.md takes the
-    MAX across a tier's releases, and claude-opus sits at 5, so the reason given for holding this tier at
-    4 - that it is below the Opus tier - no longer reads the same way. ESCALATED rather than changed, and
-    no last_verified is claimed on this axis.
+  note: 'RE-DERIVED 2026-08-14 on the governing release, and the band is unchanged at 4. The axis had been
+    read on Sonnet 4.6, which docs/guides/identity.md would not accept - a tier scores on the MAX across its
+    releases and the tier now ships Claude Sonnet 5 (2026-06-30). Read on Sonnet 5 the answer is the same,
+    and Anthropic''s own framing is why. The launch post says "Sonnet 5 narrows the gap - its performance is
+    close to that of Opus 4.8, but at lower prices", calls Opus 4.8 "a more generally capable model, for
+    reference", and describes Sonnet 5 as "approaching Opus 4.8''s capability levels" while outperforming it
+    only "on some tasks". Close to, approaching, and better on some tasks is not level with, and the reason
+    this tier sat at 4 - it is below the Opus and Fable tiers, which sit at 5 - survives the move to the
+    newer release intact. The evidence for a 5 would have to be the vendor placing Sonnet at or above its own
+    flagship, and the vendor does the opposite. Two limitations worth keeping. Sonnet 4.6''s headline 79.6%
+    on SWE-bench Verified is in a client-rendered chart a plain fetch cannot read back, and the Sonnet 5 post
+    publishes no SWE-bench figure in its fetchable body at all (only OSWorld-Verified 78.5%, 46.8% and 34.6%
+    appear as plain text), so basis_detail names the benchmark the judgment tracks rather than a number this
+    fetch re-derived. And SWE-bench Verified''s public leaderboard has had no submissions since 2025-12-15,
+    so recent figures are vendor-reported either way. Confidence stays medium for both reasons.'
+  last_verified: '2026-08-14'
   sources:
+  - url: https://www.anthropic.com/news/claude-sonnet-5
+    shows: 'the tier''s governing release - "Sonnet 5 narrows the gap: its performance is close to that of
+      Opus 4.8, but at lower prices. It''s a substantial improvement over its predecessor, Sonnet 4.6, on
+      important aspects of agentic performance like reasoning, tool use, coding, and knowledge work." Opus
+      4.8 is described as "a more generally capable model, for reference"; Sonnet 5 is "approaching Opus
+      4.8''s capability levels" and outperforms it "on some tasks". OSWorld-Verified figures of 78.5%, 46.8%
+      and 34.6% are the only benchmark numbers in the fetchable body; no SWE-bench figure appears.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 7afd4cde946d0dfd7834f2ecd785a4656c0ca20ef1508413354a1ad983b5d5c5
   - url: https://www.anthropic.com/news/claude-sonnet-4-6
-    shows: 'SWE-bench Verified footnote - "Our score was averaged over 10 trials. With a prompt modification,
-      we saw a score of 80.2%". The headline 79.6% is in a client-rendered chart and is not in the fetched
-      body.'
+    shows: 'the superseded release the old score read. SWE-bench Verified footnote - "Our score was averaged
+      over 10 trials. With a prompt modification, we saw a score of 80.2%". The headline 79.6% is in a
+      client-rendered chart and is not in the fetched body.'
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 68b253b30af8131679942ad453b5a6ccf9a38c8368f4640442273792fb5ce44c
-  - url: https://www.anthropic.com/news/claude-sonnet-5
-    shows: 'the tier''s current release - "Sonnet 5 narrows the gap: its performance is close to that of
-      Opus 4.8, but at lower prices. It''s a substantial improvement over its predecessor, Sonnet 4.6, on
-      important aspects of agentic performance like reasoning, tool use, coding, and knowledge work."'
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: 7afd4cde946d0dfd7834f2ecd785a4656c0ca20ef1508413354a1ad983b5d5c5

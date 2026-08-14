@@ -48,40 +48,44 @@ openness:
     content_sha256: cf67038b2f1a7eb9bbc452f883e9be11f6cdf6121d5169fbff4555a311c1af95
     establishes: [code]
 adoption:
-  level: 3
-  reach: 100K-1M
+  level: 4
+  reach: 1M-10M
   signal_type: usage_volume
-  confidence: medium
-  note: 'Recomputed 2026-08-13 across the 4 declared artifact(s) - 2,774,206 downloads in the trailing
-    30 days (zai-org/GLM-4.6 28,016; THUDM/glm-4-9b 11,688; zai-org/GLM-5.1 72,174; zai-org/GLM-5.2
-    2,662,328). That is level 4 (1M-10M) on the software and model adoption scale, not the recorded
-    level 3. The recorded band was set on GLM-4-9B-Chat alone, which is not a declared artifact and is
-    a generation behind; GLM-5.2 now supplies 96% of the family total. NOT changed here and NOT
-    confirmed - the level move is flagged for review rather than applied, and only the figure was
-    re-read.'
+  confidence: high
+  note: 'RE-BANDED 2026-08-14 from 3/100K-1M to 4/1M-10M. The old band had been set on GLM-4-9B-Chat alone -
+    a SKU that is not a declared artifact and is a generation behind - which is both the wrong release under
+    the max-across-releases rule in docs/guides/identity.md and the wrong scope under sum_across_artifacts.
+    Recomputed across the 4 declared artifacts, the family sums to 2,774,206 downloads in the trailing 30
+    days (zai-org/GLM-4.6 28,016; zai-org/glm-4-9b 11,688; zai-org/GLM-5.1 72,174; zai-org/GLM-5.2
+    2,662,328), which lands in 1M-10M on the model scale in sources/rubrics/model.yaml. GLM-5.2 supplies
+    96% of that total, so this is the current release carrying the tier, which is what the rule intends. All
+    four were re-read against the API on 2026-08-14; three digests are byte-identical to the 2026-08-13 read
+    and GLM-5.2''s moved without its download figure changing. THUDM/glm-4-9b now redirects to zai-org.'
+  last_verified: '2026-08-14'
   sources:
   - url: https://huggingface.co/api/models/zai-org/GLM-4.6
-    shows: 28,016 downloads in the trailing 30 days for zai-org/GLM-4.6
-    accessed: '2026-08-13'
+    shows: 28,016 downloads in the trailing 30 days for zai-org/GLM-4.6; 1,230 likes
+    accessed: '2026-08-14'
     http_status: 200
     content_sha256: 3bf6ae9fd5bd0733cb6e3396431f57667b373ce0edb1c6f95e7e75e2641b9fb5
   - url: https://huggingface.co/api/models/THUDM/glm-4-9b
-    shows: 11,688 downloads in the trailing 30 days for THUDM/glm-4-9b
-    accessed: '2026-08-13'
+    shows: 11,688 downloads in the trailing 30 days for THUDM/glm-4-9b (now served as zai-org/glm-4-9b)
+    accessed: '2026-08-14'
     http_status: 200
     content_sha256: b5482c0131beb5943874af286912ebbbf4f3dbf080b31559e80904c6ad67c85f
   - url: https://huggingface.co/api/models/zai-org/GLM-5.1
-    shows: 72,174 downloads in the trailing 30 days for zai-org/GLM-5.1
-    accessed: '2026-08-13'
+    shows: 72,174 downloads in the trailing 30 days for zai-org/GLM-5.1; 1,839 likes
+    accessed: '2026-08-14'
     http_status: 200
     content_sha256: dda4a0188863fdd38e54137b36bb262aef5a5416a5a339e3a388a72c03460c16
   - url: https://huggingface.co/api/models/zai-org/GLM-5.2
-    shows: 2,662,328 downloads in the trailing 30 days for zai-org/GLM-5.2
-    accessed: '2026-08-13'
+    shows: 2,662,328 downloads in the trailing 30 days for zai-org/GLM-5.2; 4,948 likes; gated false
+    accessed: '2026-08-14'
     http_status: 200
-    content_sha256: 8e5a09b75c4c1dfd1104da3303ff61fc55526981554ff390a3d81a7d0063d573
+    content_sha256: 66827b3edf90a8b36fdd5bc1bd2c96c0ceda07d5c799866825c178ac15a88b8e
   - url: https://huggingface.co/zai-org/GLM-4-9B-Chat
-    shows: 'GLM-4-9B-Chat model card: 121,169 downloads last month (primary usage figure)'
+    shows: 'GLM-4-9B-Chat model card: 121,169 downloads last month; the undeclared, generation-behind SKU
+      the old band was read on'
     accessed: '2026-06-04'
 capability:
   score: 5

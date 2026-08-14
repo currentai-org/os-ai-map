@@ -47,22 +47,28 @@ openness:
     content_sha256: a3a0e9449cb691a12f4de1d03725fd41326614fdeaf5d80b28c51187da0bed0e
     establishes: [code, model-license]
 adoption:
-  level: 2
-  reach: 10K-100K
+  level: 3
+  reach: 100K-1M
   signal_type: usage_volume
   confidence: high
-  note: ~15.7K downloads last month on HF for this 236B SKU; superseded by DeepSeek-V2.5/V3/R1 coders and 2026 coders.
-    Modest, declining usage -> low band (~10K-100K including quants/derivatives). Re-read 2026-08-13 - the
-    236B SKU has fallen to 7,143 downloads in the trailing 30 days, but the Lite SKU declared alongside it
-    reads 587,824, so the tier sums to 594,967 and lands at level 3 (100K-1M), not 2. The band was set on
-    the flagship SKU alone while identity.md sums across the tier's releases. ESCALATED rather than changed
-    - no last_verified claimed on this axis.
+  note: 'RE-BANDED 2026-08-14 from 2/10K-100K under the measured-figure ruling in docs/guides/adoption.md.
+    The old band was set on the flagship 236B SKU alone, which has fallen to 7,143 downloads in the trailing
+    30 days - but the Lite SKU declared alongside it reads 587,824, and sources/rubrics/model.yaml bands on
+    the sum across the family''s SKUs. The tier sums to 594,967, which lands in 100K-1M. The line is still
+    superseded by DeepSeek-V2.5/V3/R1 and the 2026 coders, and the flagship''s decline is real; what moved
+    is that the band now counts the SKU people actually run.'
+  last_verified: '2026-08-14'
   sources:
-  - url: https://huggingface.co/deepseek-ai/DeepSeek-Coder-V2-Instruct
-    shows: 7,143 downloads in the trailing 30 days
-    accessed: '2026-08-13'
+  - url: https://huggingface.co/api/models/deepseek-ai/DeepSeek-Coder-V2-Instruct
+    shows: downloads field = 7,143 in the trailing 30 days; 698 likes; gated false
+    accessed: '2026-08-14'
     http_status: 200
-    content_sha256: 84a8982c532466f685c721096ac025186d86d74e9dd22eeed64588c3f56ac577
+    content_sha256: eb45418686eaab442ea3e5105f9744c7f21c1404be054f72188b815864bc0b91
+  - url: https://huggingface.co/api/models/deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct
+    shows: downloads field = 587,824 in the trailing 30 days; 631 likes; gated false
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 0c25d5211566b5a422d8535a5a4be2c62434bd72d6f73af2ea08366ebe172a1a
 capability:
   score: 3
   basis: benchmark

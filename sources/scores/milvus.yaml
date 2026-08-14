@@ -48,25 +48,29 @@ openness:
     establishes:
     - license
 adoption:
-  level: 3
-  signal_type: reported_traction
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
   confidence: high
-  note: 'Described as the default open source engine for billion-scale semantic search; LF AI & Data graduate.
-    No precise verified deployment/download count, rated 3 on reported traction. Re-read 2026-08-13: Zilliz''s
-    own page still describes Milvus as an "Open-source vector database built for billion-scale vector similarity
-    search" and publishes no user, deployment or download figure; the repo page publishes only a star count
-    (45,627), which is a different instrument and may not be banded as usage volume. The reported-traction
-    level 3 therefore stands unchanged and the absence of a countable figure is re-confirmed. FLAG FOR A
-    HUMAN, raised in this pass and deliberately not acted on: the product DOES declare a pypi artifact,
-    pymilvus, with an artifact_exception saying in terms that "the client''s downloads are the best available
-    usage signal for the server". pymilvus reported 5,976,463 downloads in the trailing 30 days on 2026-08-13,
-    which bands at level 4 (1M-10M) as usage_volume. Qdrant - the same product shape, the same client-not-server
-    artifact_exception - bands on qdrant-client as usage_volume and scores 5. So milvus is abstaining from
-    a figure the map elsewhere treats as countable, and either milvus should move to usage_volume 4 or qdrant
-    should not be on usage_volume either. That is a ruling about the instrument rather than about this product,
-    so the level was left alone.'
-  last_verified: '2026-08-13'
+  note: 'RE-BANDED 2026-08-14 from 3/reported_traction to 4/usage_volume, and the instrument moved with the
+    level. The ruling of 2026-08-14 settles the question the 2026-08-13 pass raised and left open - where a
+    server has no other countable channel, its own client SDK''s downloads band it. The product declares
+    pymilvus with an artifact_exception saying in terms that "the client''s downloads are the best available
+    usage signal for the server", and the pypistats API answers last_month = 5,976,463 downloads (last_week
+    1,484,328, last_day 241,978), which lands in 1M-10M on the software scale in sources/rubrics/software.yaml.
+    This also removes the inconsistency with qdrant, the same product shape carrying the same
+    client-not-server artifact_exception, which has been banded on qdrant-client as usage_volume all along.
+    Milvus is still the default open source engine for billion-scale semantic search and an LF AI & Data
+    graduate; what changed is that the record now bands on a count rather than on that description. Zilliz
+    still publishes no server-side deployment figure, and the repo''s 45,627 stars remain a different
+    instrument that may not be banded as usage volume.'
+  last_verified: '2026-08-14'
   sources:
+  - url: https://pypistats.org/api/packages/pymilvus/recent
+    shows: last_month = 5,976,463 downloads for pymilvus (last_week 1,484,328, last_day 241,978).
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: e62537e90c3437d4fd801680c6c1d923160f60a3627162e363c29c09d471fcfc
   - url: https://github.com/milvus-io/milvus
     shows: Repo page, 45,627 stargazers. No download, deployment or customer figure of any kind.
     accessed: '2026-08-13'

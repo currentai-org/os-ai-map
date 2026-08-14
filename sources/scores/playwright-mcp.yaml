@@ -39,21 +39,20 @@ openness:
     establishes:
     - license
 adoption:
-  level: 4
-  reach: 1M-10M
+  level: 5
+  reach: '>10M'
   signal_type: usage_volume
-  confidence: medium
-  note: '@playwright/mcp is a widely distributed npm package and the de facto browser-automation MCP server,
-    shipped/recommended across major MCP clients (VS Code, Cursor, Claude Desktop). npm download page
-    returned HTTP 403 this run so an exact weekly-download figure could not be fetched; level 4 rests
-    on broad multi-client native integration plus 33.5k stars (corroborating, not basis). Confidence medium
-    pending a clean download number. FLAGGED FOR A HUMAN 2026-08-13, and deliberately NOT applied: the clean
-    number now exists. api.npmjs.org reports 25,901,643 downloads of @playwright/mcp for the window 2026-07-11
-    to 2026-08-09, which bands at level 5 (>10M) rather than the recorded 4, at high confidence rather than
-    medium. Changing a level is not this pass''s to make, so the axis carries no last_verified either - the
-    recorded value is the one that was NOT re-derived. The product also declares an npm artifact of
-    @anthropic-ai/mcp-playwright, which api.npmjs.org answers 404 for; the real package is @playwright/mcp,
-    and that declaration needs correcting before any fetcher bands this product automatically.'
+  confidence: high
+  note: '@playwright/mcp is the de facto browser-automation MCP server, shipped or recommended across the
+    major MCP clients (VS Code, Cursor, Claude Code). RE-BANDED 2026-08-14 from 4/1M-10M to 5/>10M under
+    the measured-figure ruling in docs/guides/adoption.md. api.npmjs.org still answers 25,901,643 downloads
+    of @playwright/mcp for the window 2026-07-11 to 2026-08-09, byte-identical to the 2026-08-13 read, which
+    clears the >10M level-5 floor in sources/rubrics/software.yaml. Confidence moves medium -> high because
+    the band now rests on a count rather than on integration breadth plus stars. The declared npm artifact
+    was @anthropic-ai/mcp-playwright, which api.npmjs.org answers 404 for; it has been corrected to
+    @playwright/mcp in the product record, so the artifact a fetcher would read is now the one this band
+    was measured on.'
+  last_verified: '2026-08-14'
   sources:
   - url: https://github.com/microsoft/playwright-mcp
     shows: 36,089 stargazers; integration instructions across VS Code, Cursor, Claude Code and other MCP
@@ -63,7 +62,7 @@ adoption:
     content_sha256: 798fec7303430fec1d0b5046dbac0a4da612ae0c8518a72a41c5b70cad0d4478
   - url: https://api.npmjs.org/downloads/point/last-month/@playwright/mcp
     shows: 25,901,643 downloads for the window 2026-07-11 to 2026-08-09.
-    accessed: '2026-08-13'
+    accessed: '2026-08-14'
     http_status: 200
     content_sha256: b843947758b2887b19551acc31f41829b49cd4de630b81189b79412a6a0539fb
 capability:
