@@ -8,7 +8,7 @@ The style, format, and tone of a product's **prose** fields — `description` an
 > *score* earns a `last_verified` date, its evidence, and its gates live in
 > `docs/reference/evidence-and-freshness.md` and `docs/reference/evidence-and-freshness.md`, and this guide never
 > overrides them. When a rule here changes, change the guide first and make the reviewer
-> (and the `verify-product` skill) follow.
+> (and the `update-product` skill) follow.
 
 Both fields are reader-facing. `serialize.py` emits `description` into the payload as
 `description` and `comments` as `version_note`; both render in the notebook. So neither is
@@ -341,7 +341,7 @@ relicense, weights pulled, a dataset gated), that is a score change: stop, and f
 
 ## Updating a product — procedure
 
-Use this to refresh an existing product's prose (the `verify-product` skill automates it):
+Use this to refresh an existing product's prose (the `update-product` skill automates it):
 
 1. **Open the primary source(s)** the product points at — its `github`/`huggingface_*`/
    `pypi` URLs, and the vendor blog or registry. Never refresh from memory or a secondary
@@ -386,7 +386,7 @@ Use this to refresh an existing product's prose (the `verify-product` skill auto
 
 ## Related
 
-- `skills/verify-product/SKILL.md` — the procedure above, as an agent-runnable skill
+- `skills/update-product/SKILL.md` — the procedure above, as an agent-runnable skill
 - `skills/add-product/SKILL.md` — creating a product (step 7 is the same primary-source rule)
 - `docs/reference/evidence-and-freshness.md` — normative: how a *score* earns `last_verified`
 - `docs/reference/evidence-and-freshness.md` — normative: what `last_verified` means

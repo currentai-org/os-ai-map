@@ -128,4 +128,4 @@ honest residue of the sweep, and working it is a different job from running it.
 
 - `skills/refresh-category/SKILL.md` — the unit of work this drives
 - `build/sweep_status.py` — the derived state, and its own docstring on what "done" means
-- `docs/runbooks/verification-pass.md` — the phases the sweep is executing
+- `docs/workflows/refresh-category.md` — the per-category procedure the sweep executes

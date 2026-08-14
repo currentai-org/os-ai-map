@@ -38,7 +38,7 @@ Validate: `uv run python -m build.validate` and `uv run python -m build.check_ar
 This is a **prose** change: it never touches scores and never writes `last_verified`. Rewrite
 `description`/`comments` to [`../reference/product-copy.md`](../reference/product-copy.md) against
 primary sources, strip any hardcoded star/download count, and keep the load-bearing facts.
-Run standalone, this is the `verify-product`… now `update-product`… prose pass. Validate:
+Run standalone, this is the prose pass (formerly the `verify-product` skill). Validate:
 `uv run python -m build.validate`.
 
 ### Re-verify the affected axes — a score's evidence or value moved

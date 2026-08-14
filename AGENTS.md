@@ -229,38 +229,45 @@ open PRs. They do not:
 - Upload or revise UDMs or static models.
 - Push to main directly.
 
-All warehouse write operations are maintainer steps. See `docs/runbooks/`.
+All warehouse write operations are maintainer steps. See `docs/operations/`.
 
-## Skills
+## Skills and workflows
 
-Editor skills live in `skills/`. They compose: the sweep drives a category, a category
-drives its products, and a product's prose has its own procedure.
+`docs/README.md` is the task router. Each editor skill is a thin wrapper that points at one
+workflow document under `docs/workflows/` and adds agent-specific orchestration; the rules live
+once in `docs/reference/`, not in the skill. Skills are registered under `.claude/skills/` so a
+Claude Code session discovers them by name; if yours does not list them, read
+`skills/<name>/SKILL.md` directly.
 
-| Skill | When to use |
-|-------|------------|
-| `curate-category` | Edit a category's `description`, `strapline`, weights, or product roster |
-| `add-product` | Add a new product (scaffolds product + score YAML, updates roster) |
-| `build-rubric` | Derive a category's openness ladder, or extend a shared one to it |
-| `verify-product` | Refresh one product's `description` and `comments` against its sources |
-| `refresh-category` | Re-verify a whole category: scores and prose together, to the PR |
-| `refresh-all-categories` | Drive the sweep — report progress, pick the next category |
-| `add-data-source` | Register a new external data source and add a fetcher |
-| `pyoso-analyst` | Query `currentai.*` tables via `pyoso` (read-only analysis) |
+**Five primary editor skills** (the contributor front door):
 
-Invoke the relevant skill before doing editor work. Skills enforce the read-only boundary
-and walk through validation + preview steps.
+| Skill | When to use | Workflow |
+|-------|------------|----------|
+| `add-product` | Add a new product | `docs/workflows/add-product.md` |
+| `update-product` | Change an existing product (identity, prose, a score, rosters, retirement) | `docs/workflows/update-product.md` |
+| `edit-category` | Create a category, or change its definition/weights/roster | `docs/workflows/edit-category.md` |
+| `refresh-category` | Re-verify a whole category, scores and prose, to the PR | `docs/workflows/refresh-category.md` |
+| `migrate-axis` | Change an axis's schema or meaning corpus-wide (script-only) | `docs/workflows/migrate-axis.md` |
 
-## Maintainer runbooks
+**Advanced / internal skills** (off the primary path): `build-rubric` (derive a category's
+openness ladder), `add-data-source` (register a fetcher), `refresh-all-categories` (drive the
+whole-corpus sweep), `pyoso-analyst` (read-only warehouse analysis).
+
+Invoke the relevant skill before doing editor work. Skills enforce the read-only boundary and
+walk through validation + preview steps.
+
+## Maintainer operations
 
 After a PR merges, a maintainer (OSO MCP write access) may need to:
 
-- `docs/workflows/refresh-category.md`: the plan for getting every score auditable --
-  gates first, then coverage, then the re-read pass. Start here for score-verification
-  work; it names the failure modes each step is guarding against.
-- `docs/operations/deploy-models.md`: revise, release, and run UDM SQL changes.
+- `docs/operations/deploy-models.md`: revise, release, and run the warehouse models — and the
+  truth about the scoring-chain schedule (declared but not firing; recompute is manual).
 - `docs/operations/refresh-data.md`: run fetchers and reload static models.
-- `docs/operations/publish-map.md`: serialize, render, upload, and publish the live
-  notebook to `/currentai/ai-stack-map` (id `7b29bf47`).
+- `docs/operations/publish-map.md`: serialize, render, upload, and publish the live notebook to
+  `/currentai/ai-stack-map` (id `7b29bf47`).
+
+For the score-verification procedure itself, see `docs/workflows/refresh-category.md` and the
+normative `docs/reference/evidence-and-freshness.md`.
 
 ## Environment
 

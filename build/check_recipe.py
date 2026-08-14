@@ -7,7 +7,7 @@ on, no evidence discarded by the parser. The distinction matters because the two
 different reasons and want different fixes: a reproduction mismatch is a finding about a
 product, while everything here is a defect in the ladder or its wiring.
 
-It exists because `skills/curate-category/SKILL.md` said "edit any of … `scoring_recipe` …"
+It exists because `skills/edit-category/SKILL.md` said "edit any of … `scoring_recipe` …"
 and gave no guidance, so every ladder so far was authored from scratch by whoever happened to
 be doing it. The taxonomy expansion event will add roughly twenty-four more categories, each
 born needing a recipe. `skills/build-rubric/SKILL.md` is the procedure; this is the part of it

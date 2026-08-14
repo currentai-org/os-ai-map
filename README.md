@@ -144,7 +144,7 @@ signals. Contributors work read-only here; only maintainers write.
 - `warehouse/ingest/` — Python fetchers writing CSVs to `warehouse/catalog/`.
 - `warehouse/sources.yaml` — manifest linking each external source to its fetcher.
 
-**Runbooks** (require OSO MCP write access — see `docs/runbooks/`):
+**Operations** (require OSO MCP write access — see `docs/operations/`):
 
 - `deploy-models.md` — revise and release UDM SQL changes
 - `refresh-data.md` — run fetchers and reload static models
@@ -153,10 +153,10 @@ signals. Contributors work read-only here; only maintainers write.
 **Editor skills.** Eight skills in `skills/` mirror the CONTRIBUTING recipes and enforce the same
 read-only warehouse boundary:
 
-- `curate-category` — edit a category's description, strapline, weights, or product roster
+- `edit-category` — create a category, or edit its description, strapline, weights, or roster
 - `add-product` — add a new product (scaffolds product + score YAML, updates the roster)
 - `build-rubric` — derive a category's openness ladder, or extend a shared one to it
-- `verify-product` — refresh one product's `description` and `comments` against its sources
+- `update-product` — change an existing product (identity, prose, a score, rosters, retirement)
 - `refresh-category` — re-verify a whole category: scores and prose together, to the PR
 - `refresh-all-categories` — drive the sweep: report progress, pick the next category
 - `add-data-source` — register a new external data source and add a fetcher
