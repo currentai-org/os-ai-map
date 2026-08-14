@@ -137,7 +137,7 @@ def recipe_vocabulary(recipe: dict) -> set[str]:
         `core-gated` are how the evidence is actually written down and attributing to
         the recorded key is more precise than attributing to the dimension;
       * the license keys. `license_tier` is derived rather than recorded, so a source
-        establishes the LICENSE, which is what `docs/guides/verification.md` writes in
+        establishes the LICENSE, which is what `docs/reference/evidence-and-freshness.md` writes in
         its worked example. Omitting it would reject the guide's own illustration.
     """
     openness = (recipe.get("openness") or {}) if recipe else {}

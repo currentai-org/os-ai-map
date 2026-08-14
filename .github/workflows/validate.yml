@@ -27,7 +27,7 @@ jobs:
       # The invariant, the digest requirement and the producible-pair check. Free, no
       # network, and scoped so they cover exactly what has been done: invariant and digests
       # apply only to axes claiming a last_verified, producible-pairs to every scored product
-      # in a category with a recipe. See docs/guides/verification.md.
+      # in a category with a recipe. See docs/reference/evidence-and-freshness.md.
       - name: Verification gates (invariant, digests, producible-pairs)
         run: uv run python -m build.check_verification --verbose
 
@@ -36,7 +36,7 @@ jobs:
       # it. This requires the recorded relation to agree with the two recorded scores, and a
       # dated band's peer to be confirmed at least as recently. It ratchets the same way the
       # verification gates do: it covers the products that record a comparison, which grows
-      # as the axis is curated. See docs/guides/verification.md.
+      # as the axis is curated. See docs/reference/evidence-and-freshness.md.
       - name: Capability gate (recorded comparisons hold)
         run: uv run python -m build.check_capability
 
@@ -99,7 +99,7 @@ jobs:
       # of time, so it would block work unrelated to the stale category and nobody could clear
       # it from inside their own PR. What this step is for is the other half: a re-read PR
       # seeing, in its own log, whether the category it just refreshed came back inside the
-      # window. See docs/guides/freshness.md.
+      # window. See docs/reference/evidence-and-freshness.md.
       - name: Freshness report (informational, does not gate)
         run: uv run python -m build.check_freshness
 

@@ -24,7 +24,7 @@ Two of the three need no network. `signal_github.resolved_via_redirect` and
 
 ## Reports rather than fails, by default
 
-Following the parity gate, and for the reason `verification.md` gives: a gate whose
+Following the parity gate, and for the reason `evidence-and-freshness.md` gives: a gate whose
 schedule does not match its chain's fails for reasons that are not drift, and a gate that
 cries wolf gets switched off. The signals refresh weekly, so this runs after them, and
 `--strict` is what CI would use once the backlog is clear.

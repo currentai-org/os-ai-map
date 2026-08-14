@@ -4,7 +4,7 @@ Executable plan for reaching the state where every score can be re-derived from 
 the failure modes this project has actually hit are prevented by a mechanism rather than by
 remembering.
 
-> **Read `docs/guides/verification.md` first.** It is normative: what `last_verified` means,
+> **Read `docs/reference/evidence-and-freshness.md` first.** It is normative: what `last_verified` means,
 > who may write one, the `establishes` invariant, and the gate table. This runbook is only
 > the order of operations and the commands.
 
@@ -34,7 +34,7 @@ afterwards would be gates written to fit whatever the bulk edits happened to pro
 > - **The producible-pair check caught 17 impossible pairs, not 2.** `vellum` and `whylabs`
 >   were the known ones. `tensorrt-llm` made a third `4 / open_source`, five products were
 >   `2 / open_core`, and nine carried a score of 3, which the software ladder cannot emit at
->   all. All were fixed as score corrections. `docs/guides/verification.md` has the three
+>   all. All were fixed as score corrections. `docs/reference/evidence-and-freshness.md` has the three
 >   groups and the reasoning. The ladder was not touched.
 > - **The exemption list for the digest requirement is empty.** All 6 dated axes qualified
 >   for it, and none of them satisfied the invariant either, because the 2026-07-28 pass on
@@ -161,7 +161,7 @@ category's stage or gaps moved (diff the serialized output before and after).
 
 ## Phase 2 — Generalize the scoring SQL, once ✅ done 2026-08-05
 
-Landed as two models. `docs/guides/verification.md` step 2 carries the full account; this is
+Landed as two models. `docs/reference/evidence-and-freshness.md` step 2 carries the full account; this is
 the operational half.
 
 `currentai.scores.openness_computed` resolved `weights`, `data`, `code` and `license` by name,
@@ -304,7 +304,7 @@ The unit of work is therefore per product, not per axis:
    On capability, that means the peer comparison: if the band was placed against another
    product, record it as `relative_to` + `relation` rather than leaving it in the note, and
    confirm the peer at least as recently. A capability date attests to less than the other two
-   axes — `verification.md`, "What a capability confirmation attests to", says exactly what.
+   axes — `evidence-and-freshness.md`, "What a capability confirmation attests to", says exactly what.
 4. **Rewrite the prose** per `product-copy.md` — `description` load-bearing and within the
    length band, `comments` a footnote ending in the canonical verification line. Delete rather
    than research a superlative, a corporate event, or a curator rationale clause; the guide's
@@ -337,7 +337,7 @@ precaution against one.
 **A null axis is a finding, and it earns a date too.** `level: null` over a note saying no figure
 is published is a deliberate abstention rather than missing work. Re-read the page, confirm
 nothing has appeared, and date it — citing the page that publishes nothing and saying in the note
-what was looked for. `verification.md`, "A null axis can earn a `last_verified`", is the rule
+what was looked for. `evidence-and-freshness.md`, "A null axis can earn a `last_verified`", is the rule
 (#236).
 
 Batch by category so `check_rubric` gives a clean signal per batch, and run
@@ -413,7 +413,7 @@ its own.
 
 **The age gate is on** as of 2026-08-14, at 30 days, weekly in
 `.github/workflows/freshness.yml` rather than per-pull-request — it fails on the passage of time,
-so nobody can clear it from inside an unrelated PR. `docs/guides/freshness.md` has the argument.
+so nobody can clear it from inside an unrelated PR. `docs/reference/evidence-and-freshness.md` has the argument.
 
 What remains here: drop the digest requirement's exemption list.
 
@@ -446,8 +446,8 @@ Every one of these has happened. They are not hypotheticals.
 
 ## Related
 
-- `docs/guides/verification.md` — normative: the invariant, the gates, who may write a date
-- `docs/guides/freshness.md` — normative: what `last_verified` means
+- `docs/reference/evidence-and-freshness.md` — normative: the invariant, the gates, who may write a date
+- `docs/reference/evidence-and-freshness.md` — normative: what `last_verified` means
 - `docs/reference/adoption.md` — normative: the bands, the instrument vocabulary, and when a re-read
   may re-band
 - `docs/operations/deploy-models.md` — revision → release → run

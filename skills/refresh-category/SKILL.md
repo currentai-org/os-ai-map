@@ -30,9 +30,9 @@ change the guide. Never the prompt.
 
 **You** read all of these before dispatching:
 
-- `docs/guides/verification.md` — how an axis earns `last_verified`, the invariant, the gates,
+- `docs/reference/evidence-and-freshness.md` — how an axis earns `last_verified`, the invariant, the gates,
   and what a capability confirmation attests to
-- `docs/guides/freshness.md` — what `last_verified` means
+- `docs/reference/evidence-and-freshness.md` — what `last_verified` means
 - `docs/reference/product-copy.md` — the prose spec and the claim-class table
 - `docs/reference/identity.md` — slugs, aliases, and the combine rules when releases merge
 - `docs/runbooks/verification-pass.md` Phase 4 — the per-product unit of work
@@ -43,12 +43,12 @@ twenty-two to read all nine documents cost 2,049 lines apiece and dominated the 
 wall-clock.
 
 - `docs/reference/product-copy.md` — it is writing the prose
-- `docs/guides/verification.md` — it is earning the date
+- `docs/reference/evidence-and-freshness.md` — it is earning the date
 
 Add `docs/reference/identity.md` only for a product whose slug covers a tier or family, where the
 combine rules actually bite. Do not send the rest: `verification-pass.md` and this file are
 orchestration, and the agent is not orchestrating; `verify-product` restates `product-copy.md`;
-`freshness.md` is covered by `verification.md` for a research agent's purposes; and the rubric
+`evidence-and-freshness.md` is covered by `evidence-and-freshness.md` for a research agent's purposes; and the rubric
 is unnecessary because preflight already computes the recorded dimensions and hands them over.
 That is 866 lines instead of 2,049.
 

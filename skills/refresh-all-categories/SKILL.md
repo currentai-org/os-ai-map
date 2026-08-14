@@ -56,7 +56,7 @@ does both — pass the window straight through to `refresh-category`, which refr
 products it returns.
 
 **The window is 30 days**, decided 2026-08-09 by the person paying for the re-reading. So
-`--max-age-days 30` is the maintenance-mode invocation, and `docs/guides/verification.md` step 5
+`--max-age-days 30` is the maintenance-mode invocation, and `docs/reference/evidence-and-freshness.md` step 5
 turns the age gate on at the same number. It had been an unmade decision carrying a suggested 90;
 this replaces it rather than adding an option.
 

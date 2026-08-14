@@ -210,7 +210,7 @@ def clauses_parse(
 
     `split_components` discards any clause without a colon, silently. Across the map that is
     170 of 470 products, and asserting on all of them would fail the gate on day one — which
-    `docs/guides/verification.md` already identifies as how a gate dies. Narrowing by hand
+    `docs/reference/evidence-and-freshness.md` already identifies as how a gate dies. Narrowing by hand
     found three populations, and only one is a defect:
 
     - a clause matching nothing in the category's vocabulary: a free-text tail, harmless

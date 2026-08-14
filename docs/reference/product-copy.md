@@ -6,7 +6,7 @@ The style, format, and tone of a product's **prose** fields — `description` an
 > This guide governs the two hand-authored strings in `sources/products/<slug>.yaml`.
 > It is the prose companion to the scoring machinery, which is a different thing: how a
 > *score* earns a `last_verified` date, its evidence, and its gates live in
-> `docs/guides/verification.md` and `docs/guides/freshness.md`, and this guide never
+> `docs/reference/evidence-and-freshness.md` and `docs/reference/evidence-and-freshness.md`, and this guide never
 > overrides them. When a rule here changes, change the guide first and make the reviewer
 > (and the `verify-product` skill) follow.
 
@@ -21,7 +21,7 @@ plus the two label fields around them (`display_name`, and how they relate to `n
 
 Out of scope, and deliberately: **anything a score records.** `openness`, `adoption`,
 `capability`, their `sources[]`, and `last_verified` live in
-`sources/scores/<slug>.yaml`, are governed by `verification.md`/`freshness.md`, and are
+`sources/scores/<slug>.yaml`, are governed by `evidence-and-freshness.md`/`evidence-and-freshness.md`, and are
 partly machine-written (`build/apply_scores.py`). Do not encode a score judgment in the
 prose (see "Keep judgments on the axes" below), and do not treat the `comments`
 verification line as a freshness date — the two are related in spirit and separate in
@@ -227,7 +227,7 @@ read via `components_of` rather than assumed to be either shape — with `source
 behind it and the invariant and the digest requirement in front of it.
 
 Restating it in `comments` creates a second copy with none of that. The two then drift in
-one direction only: a relicense flows correctly through `verification.md`, the score
+one direction only: a relicense flows correctly through `evidence-and-freshness.md`, the score
 updates, and the prose is quietly left wrong with nothing to catch it. That is the same
 "liability with no owner" the volatile-facts rule names, made worse by the copy *looking*
 authoritative.
@@ -242,7 +242,7 @@ So: **read the LICENSE body, and do not write it into prose.** Reading it stays 
 the GitHub classifier lies (a custom copyright line makes a genuine MIT/Apache repo report
 `NOASSERTION`), and the OSI / not-OSI call is exactly what the score turns on. But when the
 body disagrees with the recorded score, that is a **score** finding: stop and follow
-`verification.md`. Do not reconcile it by editing the product file.
+`evidence-and-freshness.md`. Do not reconcile it by editing the product file.
 
 The same applies to any other scored dimension. Adoption, capability, and the openness
 class are axes with evidence; prose describes what the product is and lets them carry the
@@ -324,7 +324,7 @@ later release — it is score evidence with a `sources[].accessed` date, not a p
 ## Provenance vs. `last_verified`
 
 These look alike and are not the same, and conflating them is the exact error
-`freshness.md` exists to prevent. Keep them straight:
+`evidence-and-freshness.md` exists to prevent. Keep them straight:
 
 - The **`comments` verification line** is *editorial provenance for the prose* in the
   product file. It says "an editor last confirmed these descriptive facts on this day." It
@@ -332,12 +332,12 @@ These look alike and are not the same, and conflating them is the exact error
 - **`last_verified`** lives in the *score* file, per axis, and is a confirmation that a
   *score* is still correct, re-derivable from `sources[].establishes`, and gated by the
   invariant and the digest requirement. Only a person writes it, and only per the rules in
-  `verification.md`.
+  `evidence-and-freshness.md`.
 
 Writing the `comments` line **does not** earn a `last_verified`, and updating a product's
 prose is not a score re-check. If a prose re-read turns up a fact that moves a *score* (a
 relicense, weights pulled, a dataset gated), that is a score change: stop, and follow
-`verification.md` — do not edit the score from the product file.
+`evidence-and-freshness.md` — do not edit the score from the product file.
 
 ## Updating a product — procedure
 
@@ -359,7 +359,7 @@ Use this to refresh an existing product's prose (the `verify-product` skill auto
    footnotes about the reading itself. Set the verification line to today's date and the
    document you read.
 5. **If a fact moves a score**, do not touch the score file here — record it and hand off
-   to the `verification.md` flow.
+   to the `evidence-and-freshness.md` flow.
 6. **Validate:** `uv run python -m build.validate` prints `0 error(s)`. Preview only; do
    not commit `build/notebook_data.json` or `notebooks/ai-stack-map.py` (bot-owned).
 
@@ -388,7 +388,7 @@ Use this to refresh an existing product's prose (the `verify-product` skill auto
 
 - `skills/verify-product/SKILL.md` — the procedure above, as an agent-runnable skill
 - `skills/add-product/SKILL.md` — creating a product (step 7 is the same primary-source rule)
-- `docs/guides/verification.md` — normative: how a *score* earns `last_verified`
-- `docs/guides/freshness.md` — normative: what `last_verified` means
+- `docs/reference/evidence-and-freshness.md` — normative: how a *score* earns `last_verified`
+- `docs/reference/evidence-and-freshness.md` — normative: what `last_verified` means
 - `docs/methodology.md` — the register these fields borrow ("no marketing cadence")
 - `docs/schemas/product.schema.json` — the field definitions

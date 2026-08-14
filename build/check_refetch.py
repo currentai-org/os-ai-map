@@ -1,6 +1,6 @@
 """The sampled re-fetch: independent evidence that a recorded fetch actually happened.
 
-`docs/guides/verification.md` is normative. This module implements the gate. It is the third
+`docs/reference/evidence-and-freshness.md` is normative. This module implements the gate. It is the third
 leg of the anti-rubber-stamping defense the runbook names, and until now the only one that
 was missing.
 

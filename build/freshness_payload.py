@@ -1,6 +1,6 @@
 """Per-product freshness for the serialized payload.
 
-docs/guides/freshness.md is normative. Two tiers, and the payload says which one it used
+docs/reference/evidence-and-freshness.md is normative. Two tiers, and the payload says which one it used
 so the page can label the weaker claim rather than passing it off as the stronger one:
 
   verified  the score file carries last_verified. 6 of 470 today.
@@ -8,7 +8,7 @@ so the page can label the weaker claim rather than passing it off as the stronge
             claims. Commits that only changed how a score is stored are skipped, so a
             shape migration cannot republish a product as freshly reviewed.
 
-A date is NEVER derived from sources[].accessed (freshness.md:30).
+A date is NEVER derived from sources[].accessed (evidence-and-freshness.md:30).
 
 There is nothing to fix in this module for that last point: it takes the commit tier
 from `check_freshness.commit_dates`, which is where the skip lives, so the report and

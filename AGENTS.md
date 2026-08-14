@@ -36,8 +36,11 @@ warehouse/sources.yaml Manifest: each external source declares EITHER a fetcher
 build/                 Python pipeline, see below
 notebooks/             Generated ai-stack-map.py and standalone companion notebooks (pypi-geo-trends, oss-ai-trends, long-tail-explorer)
 docs/methodology.md    Canonical methodology copy, rendered into the notebook (a build input)
-docs/guides/           Query conventions, notebook style, freshness and verification
-docs/runbooks/         Maintainer deploy runbooks
+docs/README.md         Task router: which workflow/skill for which change
+docs/workflows/        Task-oriented how-to, one per contributor intent
+docs/reference/        Concepts + normative rules (openness, adoption, capability,
+                       identity, evidence-and-freshness, gap-analysis, queries, notebook-design)
+docs/operations/       Maintainer deploy/publish runbooks
 docs/schemas/          JSON Schemas for the source files (four concerns + taxonomy)
 skills/                Agent skills for common editor workflows
 tests/                 pytest suite for build helpers and serializer behavior
@@ -66,7 +69,7 @@ Scores back in      apply_scores.py   reads computed scores from OSO, writes
                                       openness.score and openness.class into
                                       sources/scores/ and nothing else. The ONLY
                                       inbound data path. It writes no dates -- see
-                                      docs/guides/verification.md.
+                                      docs/reference/evidence-and-freshness.md.
 
 Editing library     components.py     the ONLY supported way to edit an
                                       openness.components field in place. Never
@@ -194,8 +197,8 @@ Three rules worth knowing before editing any of it:
   an aggregate of `sources[].accessed` anyway — #108 the MIN, #115 the MAX — and between
   them they put a derived date on 19 of the 26 axes that carried one. **Do not reintroduce
   it**, under any aggregation or column name; `tests/test_apply_scores.py` asserts the
-  absence. The rule is in `docs/guides/freshness.md`, who may write it in
-  `docs/guides/verification.md`.
+  absence. The rule is in `docs/reference/evidence-and-freshness.md`, who may write it in
+  `docs/reference/evidence-and-freshness.md`.
 
 `notebooks/pypi-geo-trends.py`, `notebooks/oss-ai-trends.py`, and `notebooks/long-tail-explorer.py`
 are **fully standalone**: no build-pipeline coupling, no generated payload. Each queries

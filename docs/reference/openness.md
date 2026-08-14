@@ -56,7 +56,7 @@ Three caveats, because "a formula exists" is easy to over-read:
   to the warehouse. `uv run python -m build.check_recipe` prints the live split.
 
 So openness is part computed and part editorial, and which one you are looking at depends on
-the category and the product. `docs/guides/verification.md` tracks the work to close that gap.
+the category and the product. `docs/reference/evidence-and-freshness.md` tracks the work to close that gap.
 
 ## Why the raw score is not comparable across categories
 

@@ -3,7 +3,7 @@
 What a product's slug is, how far to collapse it, and what happens to scores when releases
 merge. Normative. When a rule here changes, change the guide first and make the code follow.
 
-> Companion to `docs/guides/verification.md`, which owns how a score earns its date, and
+> Companion to `docs/reference/evidence-and-freshness.md`, which owns how a score earns its date, and
 > `docs/reference/openness.md`, which owns the ladders. This guide owns identity: the slug,
 > its aliases, and the combine rules that apply when one slug covers several releases.
 
@@ -133,7 +133,7 @@ with no forwarding address breaks a join rather than a link.
 
 ## Related
 
-- `docs/guides/verification.md` — how a score earns `last_verified`, and the gates
+- `docs/reference/evidence-and-freshness.md` — how a score earns `last_verified`, and the gates
 - `docs/reference/openness.md` — the ladders, and the multi-SKU rule the rubric applies
 - `docs/reference/product-copy.md` — the prose fields, and why a curation rationale is not a
   description

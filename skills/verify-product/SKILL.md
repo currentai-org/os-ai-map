@@ -19,7 +19,7 @@ openness/adoption/capability value.
 re-read (`docs/runbooks/verification-pass.md`, Phase 4): one agent opens a product's sources
 once and writes both halves from them, and one PR carries the category. This skill stays the
 prose half, and the boundary below still holds — the score half follows
-`docs/guides/verification.md`, which is gated and evidence-attributed. Run standalone, the
+`docs/reference/evidence-and-freshness.md`, which is gated and evidence-attributed. Run standalone, the
 skill is unchanged.
 
 **How far to verify.** The guide's claim-class table is the rule. Two consequences worth
@@ -102,11 +102,11 @@ value — a relicense, weights pulled, a dataset newly gated, an OSI call that w
 
 - Do NOT edit `sources/scores/<slug>.yaml` from here, and do NOT write `last_verified`.
 - Record the finding (in the PR description, or as a note), and hand off to the flow in
-  `docs/guides/verification.md`, which is gated and evidence-attributed.
+  `docs/reference/evidence-and-freshness.md`, which is gated and evidence-attributed.
 
 The `comments` verification line is editorial provenance for the *prose*; it is not a
 freshness date and earns no `last_verified`. Keeping these separate is the whole point
-(see `freshness.md`).
+(see `evidence-and-freshness.md`).
 
 ## Verifying in batches
 

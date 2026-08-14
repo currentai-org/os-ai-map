@@ -16,7 +16,7 @@ That is the whole list.
 
 ## Why it does not write `last_verified`
 
-`docs/guides/freshness.md` is normative: `last_verified` is the most recent date on
+`docs/reference/evidence-and-freshness.md` is normative: `last_verified` is the most recent date on
 which EVERYTHING in the score was confirmed still correct, and "everything" means
 every dimension the score records, not only the ones the winning rule happens to read.
 

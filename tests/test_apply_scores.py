@@ -8,7 +8,7 @@ The regression these pin is not hypothetical. Two separate releases taught the t
 write `openness.last_verified` from an aggregate of source access dates — #108 the MIN,
 #115 the MAX — and between them they put a derived date on 19 of the 26 axes that
 carried one, in six cases overwriting a date a person had established by checking. The
-normative rule is in `docs/guides/freshness.md`: `last_verified` is a human's
+normative rule is in `docs/reference/evidence-and-freshness.md`: `last_verified` is a human's
 confirmation that everything in the score is still correct, and no aggregation of
 readings produces it.
 

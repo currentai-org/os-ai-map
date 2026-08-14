@@ -1,6 +1,6 @@
 """The capability axis's gates: a recorded comparison must be consistent, and must be fresh.
 
-`docs/guides/verification.md` is normative. This module implements what that guide says about
+`docs/reference/evidence-and-freshness.md` is normative. This module implements what that guide says about
 capability, and where the two disagree the guide wins.
 
 ## Why this exists
