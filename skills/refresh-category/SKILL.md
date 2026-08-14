@@ -143,7 +143,12 @@ curl and never WebFetch, so the digest recorded is one the weekly sampled re-fet
 
 Give every agent these. Each is a defect the pilot actually produced:
 
-- **A transient status is not an absence.** `fetch_source` retries and returns
+- **The four rules a pass may not bend** — `docs/runbooks/verification-pass.md`, Phase 4: digests,
+  the three fetch fields traveling together, unreachable hosts, and `": "` in a plain scalar.
+  Point the agent at that section rather than restating them here, or there are two copies to
+  keep true.
+- **A transient status is not an absence**, which is that section's third rule in
+  `fetch_source`'s own terms. `fetch_source` retries and returns
   `"transient": true` with no digest when one survives. That means retry or defer. It never
   means the fact is missing. One un-retried 429 was promoted into the ground for a confirmation;
   the figure was there.
@@ -227,10 +232,16 @@ uv run python -m build.validate
 uv run python -m build.check_verification --verbose
 uv run python -m build.check_capability
 uv run python -m build.check_recipe
+uv run python -m build.check_adoption --strict
 uv run python -m build.check_refetch --product <one you just wrote>
 uv run python -m build.check_freshness --category <slug>
 uv run python -m pytest tests/ -q
 ```
+
+This is the canonical list for a category batch; the runbook's Phase 4 points at it rather than
+carrying a second copy. `validate` must print `0 error(s)`, `check_verification` must report all
+three gates OK, and `check_adoption --strict` must exit 0. **Do not commit while a gate is
+failing** — report the failure instead.
 
 Expect gates to **fail first and tell you something**. On the pilot, `validate` rejected an
 `establishes` naming a components key no ladder reads, and `check_recipe` demanded a stale
