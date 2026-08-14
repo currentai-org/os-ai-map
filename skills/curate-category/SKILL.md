@@ -1,18 +1,23 @@
 ---
 name: curate-category
-description: Use when an editor owns a category and wants to edit its definition, litmus, axis weights, scoring recipe, or curate (add/remove/reorder) its product roster in os-ai-map.
+description: Use when an editor owns a category and wants to edit its description, strapline, axis weights, scoring recipe, or curate (add/remove/reorder) its product roster in os-ai-map.
 ---
 
 # Curate a Category
 
 A category editor owns one file: `sources/categories/<slug>.yaml`. It holds the
-category's definition, litmus test, axis weights, scoring recipe, and the **ordered
+category's `description` and `strapline`, axis weights, scoring recipe, and the **ordered
 product roster** (the array order is the display order).
+
+There is no `litmus` field. `category.schema.json` sets `additionalProperties: false`, so
+inventing one fails `validate`. The membership boundary test — the reasoning for why a
+borderline product sits in this category and not a neighbour — is prose: record it in the
+category's `comments`, and in the product's own `comments` for the specific call.
 
 ## Steps
 
 1. Open `sources/categories/<slug>.yaml`.
-2. Edit any of: `display_name`, `strapline`, `weights.{adopt,cap}`,
+2. Edit any of: `display_name`, `description`, `strapline`, `weights.{adopt,cap}`,
    `scoring_recipe`, `comments`, and the `products:` roster. The `name` field is the
    slug; do not rename it after creation. For `scoring_recipe` — deriving a new openness
    ladder, or extending a shared one to this category — use the `build-rubric` skill; it

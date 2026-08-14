@@ -153,7 +153,7 @@ signals. Contributors work read-only here; only maintainers write.
 **Editor skills.** Eight skills in `skills/` mirror the CONTRIBUTING recipes and enforce the same
 read-only warehouse boundary:
 
-- `curate-category` — edit a category's definition, weights, litmus, or product roster
+- `curate-category` — edit a category's description, strapline, weights, or product roster
 - `add-product` — add a new product (scaffolds product + score YAML, updates the roster)
 - `build-rubric` — derive a category's openness ladder, or extend a shared one to it
 - `verify-product` — refresh one product's `description` and `comments` against its sources
