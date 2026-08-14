@@ -85,8 +85,16 @@ capability:
     OpenHands, and the AI Agent Index describes the All Hands leaderboard over 33 model configurations
     without giving a headline number. 72% is the highest figure any cited source gives an open agent
     and sits above Devin 2.0 and Cursor Background Agent, so the band is unchanged and only the figure
-    in this note moved.'
-  last_verified: '2026-08-13'
+    in this note moved. Replacement evidence found 2026-08-14 - All Hands AI publishes the OpenHands
+    Index itself, and its Issue Resolution board carries a "Swe-Bench Score" column per model run
+    inside the OpenHands SDK. The best run reads 95.8 (claude-fable-5, SDK v1.18.1) and the best
+    non-outlier 83.8 (claude-opus-4-8), with MiniMax-M3 at 76.4 the highest open-weights model of the
+    17 open and 16 closed models listed. That is a vendor-run harness rather than an independent
+    leaderboard, so what it establishes is narrower than the old claim - it places OpenHands at 83.8
+    on SWE-bench Verified on the scaffold''s own numbers, not "at or above proprietary agents" in
+    general. The 5 rests on that placement plus the same-model head-to-head on the Index''s
+    alternative-agents view; the marktechpost 72% stays as the independent floor.'
+  last_verified: '2026-08-14'
   sources:
   - url: https://github.com/All-Hands-AI/OpenHands
     shows: MIT, sandboxed agent runtime, 100+ LLM providers via BYOK
@@ -104,3 +112,13 @@ capability:
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 23bf3425bd6189ef3102febb9729c3b872e4ed016743245201473178cf140f44
+  - url: https://index.openhands.dev/issue-resolution
+    shows: 'All Hands AI''s own OpenHands Index, Issue Resolution board. The board carries a "Swe-Bench
+      Score" column for each language model run inside the OpenHands SDK - claude-fable-5 (SDK v1.18.1)
+      95.800, claude-opus-4-8 83.800, claude-opus-4-7 81.600, MiniMax-M3 76.400 as the best open-weights
+      entry - with a filter reading "Show only open models (17 open, 16 closed)". The rows are in the
+      fetched body as embedded Gradio JSON, not chart images. Vendor-run harness, not an independent
+      leaderboard.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 8fe170d299824b63991e8525bbe856d6d34448d96d10137fcdaf5012a18e02bc

@@ -4,32 +4,59 @@ openness:
   class: open_weights
   components:
     weights:
-      value: pending
-      detail: scheduled 2026-07-27; API live today
+      value: open
+      detail: shipped 2026-07-27, ungated, 96 safetensors shards
     data:
       value: closed
     code:
       value: partial
-      detail: inference/deploy expected; no training data or full pipeline
+      detail: inference/deploy only; no training data or full pipeline
     license:
-    - name: assumed-Modified-MIT
-      detail: continuity with Kimi K2.x; confirm on weight release
+    - name: Modified-MIT
+      detail: non-OSI; MIT below a 100M-MAU and $20M-monthly-revenue threshold, plus a prominent-display
+        attribution requirement
   governing_release: kimi-k3
-  confidence: medium
-  note: 'Modified-MIT weights - standard MIT below a 100M-MAU and $20M-monthly-revenue threshold - with a closed
-    corpus, so 3. Confidence is medium rather than high on purpose: K3 governs as the current release, and its license
-    is recorded as `assumed-Modified-MIT` by continuity with K2.x rather than confirmed against a published file.
-    K2.6''s Modified-MIT is confirmed, so the tier''s openness firms up as soon as K3''s terms are read directly.
-    Adoption 4 is carried from K2.6.'
-  raw: weights:pending(scheduled 2026-07-27; API live today);data:closed;code:partial(inference/deploy expected;
-    no training data or full pipeline);license:assumed-Modified-MIT(continuity with Kimi K2.x; confirm on
-    weight release)
+  confidence: high
+  note: 'Modified-MIT weights - standard MIT below a 100M-MAU and $20M-monthly-revenue threshold - with a
+    closed corpus, so 3. RESOLVED 2026-08-14, and the score does not move. The record had `weights - pending,
+    scheduled 2026-07-27` and a license recorded as `assumed-Modified-MIT` by continuity with K2.x rather
+    than read. K3 shipped on the scheduled day, so both placeholders are now answered by direct reads
+    instead of by inference. The Hub API for moonshotai/Kimi-K3 reads `"gated":false` and `"private":false`
+    over 96 safetensors shards, so the weights are open and downloadable. Its own LICENSE file carries the
+    Modified-MIT terms rather than an inherited assumption - MIT text, with the grant excepted for a
+    licensee''s commercial products or services having "more than 100 million monthly active users, or more
+    than 20 million US dollars" of monthly revenue, and a prominent-display attribution clause. That is the
+    same instrument K2.6 carries, so the continuity assumption was correct; it is now confirmed, which is
+    why confidence moves medium -> high. The tier still publishes no corpus and only inference and
+    deployment code, so the ladder still falls through to 3/open_weights.'
+  raw: weights:open(shipped 2026-07-27, ungated, 96 safetensors shards);data:closed;code:partial(inference/deploy
+    only; no training data or full pipeline);license:Modified-MIT(non-OSI; MIT below a 100M-MAU and $20M-monthly-revenue
+    threshold, plus a prominent-display attribution requirement)
+  last_verified: '2026-08-14'
   sources:
+  - url: https://huggingface.co/api/models/moonshotai/Kimi-K3
+    shows: '`"gated":false`, `"private":false`, `license:other` in the repo tags with a LICENSE file in the
+      sibling list, and 96 model-000NN-of-000096.safetensors shards, so the K3 weights shipped and download
+      without a barrier. 1,871,575 downloads in the trailing 30 days; 10,621 likes. No corpus and no
+      training pipeline appear in the tree - only configuration, processor and encoding modules.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 1d124012b8f86b3db9194b9ab99f3d964e0e82904f23471e7b853f964f63b0bd
+    establishes: [weights, data, code]
+  - url: https://huggingface.co/moonshotai/Kimi-K3/blob/main/LICENSE
+    shows: 'K3''s own license file, read directly rather than assumed from K2.x. MIT text with the Modified-MIT
+      carve-out - the grant is excepted where the licensee''s commercial products or services have "more
+      than 100 million monthly active users, or more than 20 million US dollars (or equivalent in other
+      currencies)" - and a prominent-display attribution requirement.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 038709cf2befa10d37a07f559d2dc018bbf8a5190eda4d092e51c5a6bb0727fe
+    establishes: [license]
   - url: https://www.kimi.com/blog/kimi-k3
     shows: primary announcement — 2.8T MoE, 1M context, native vision; API live; full weights by 2026-07-27
     accessed: '2026-07-19'
   - url: https://huggingface.co/moonshotai/Kimi-K2.6
-    shows: prior Kimi open-weight release under Modified MIT (assumed continuity for K3 license class)
+    shows: prior Kimi open-weight release under Modified MIT (the continuity the old record assumed from)
     accessed: '2026-07-19'
 adoption:
   level: 4

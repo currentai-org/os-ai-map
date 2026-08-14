@@ -30,19 +30,25 @@ openness:
     - source
     - core-gated
 adoption:
-  level: 3
-  reach: '>10K stars'
-  signal_type: stars_fallback
-  confidence: medium
-  note: '~34k stars; no published download telemetry - stars_fallback (capped at 3). Stars read 2026-08-13:
-    35,476 across the 1 declared repo, which bands at >10K stars, level 3 on the stars scale in
-    signal_routing.yaml. The record carried no reach label at all before this. No last_verified claimed: a
-    star count is volatile, so a digest of it would read as drift on every refetch, and the rest of the axis
-    was not re-read.'
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: 'RE-BANDED 2026-08-14 from 3/stars_fallback to 2/usage_volume under the measured-figure ruling in
+    docs/guides/adoption.md. The record had assumed no published download telemetry existed, but the product
+    already declares the PyPI package graphrag, which every adoption signal model reads. The pypistats API
+    answers last_month = 69,377 downloads (last_week 13,302, last_day 2,016), which bands at 10K-100K, level
+    2 on the software scale in sources/rubrics/software.yaml. A download count outranks a star count, and
+    docs/guides/adoption.md says outright that a stars_fallback band means no download signal existed when
+    it was set and to re-band if one exists now. The ~35.5k stars still recorded on the openness axis now
+    corroborate rather than carry the band.'
+  last_verified: '2026-08-14'
   sources:
-  - url: https://github.com/microsoft/graphrag
-    shows: ~33.8k stars
-    accessed: '2026-06-17'
+  - url: https://pypistats.org/api/packages/graphrag/recent
+    shows: last_month = 69,377 downloads for graphrag (last_week 13,302, last_day 2,016).
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: e3d32bf09b5b9b02b46a88336d5f3a3f022bb26077a32586a53ba0482d739fb5
 capability:
   score: 4
   basis: feature_matrix

@@ -106,12 +106,40 @@ adoption:
 capability:
   score: 5
   basis: benchmark
-  basis_detail: LMArena
-  value: high intelligence-per-parameter; multimodal (vision+audio); Google claims top-tier Arena rankings vs much
-    larger models
+  basis_detail: model-card evaluation table (MMLU Pro / GPQA Diamond / AIME / LiveCodeBench)
+  value: 'gemma-4-31B-it model card - MMLU Pro 85.2%, GPQA Diamond 84.3%, AIME 2026 (no tools) 89.2%,
+    LiveCodeBench v6 80.0%, MMMU Pro 76.9%; multimodal on text and image across all sizes, audio native
+    only on E2B/E4B/12B'
   confidence: medium
-  note: Frontier-class for an open model; benchmark ranking is vendor-reported.
+  note: 'Frontier-class for an open model. Re-read 2026-08-14, and the cited Google Cloud post turned out
+    to be a deployment-availability announcement carrying neither the multimodal statement nor any
+    ranking, so both halves of the recorded value were unsourced. Replaced with the gemma-4-31B-it model
+    card, which carries the multimodal statement verbatim and a real evaluation table in text. Two
+    corrections the card forces. Audio is not native on the 31B - the card scopes it to E2B, E4B and 12B
+    - so "vision+audio" overstated the flagship SKU. And the "top-tier Arena rankings" clause is dropped
+    rather than re-sourced - lmarena.ai now 301s to arena.ai, where gemma-4-31b sits at rank 60 of 391
+    with a score of 1451 +/-8, roughly sixth among openly-licensed entries and behind glm-5.2-max,
+    mimo-v2.5-pro, glm-5.1, glm-5 and hy3. That is a strong open placement and not a top-tier one. The
+    basis_detail moves off LMArena to the card''s own table for the same reason. The 5 rests on the
+    benchmark table, which is what the card actually publishes.'
+  last_verified: '2026-08-14'
   sources:
+  - url: https://huggingface.co/google/gemma-4-31B-it
+    shows: '"Gemma 4 models are multimodal, handling text and image input (with audio supported on E2B,
+      E4B, and 12B) and generating text output"; evaluation table, 31B column - MMLU Pro 85.2%, AIME 2026
+      (no tools) 89.2%, LiveCodeBench v6 80.0%, GPQA Diamond 84.3%, MMMLU 88.4%, MMMU Pro 76.9%,
+      MATH-Vision 85.6%. Neither "Arena" nor "LMArena" appears on the card.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 7b0c0a8c018346ca266733edf3dae57f2b34fc3abe4cd4e57730ec9276c874ab
+  - url: https://arena.ai/leaderboard/text
+    shows: 'successor to lmarena.ai, which 301s here - "gemma-4-31b", Google, Apache 2.0, rank 60 at
+      1451 +/-8, with gemma-4-26b-a4b at rank 80; several openly-licensed models rank above it. Does not
+      support a top-tier Arena claim.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 14ae18a07dd83608b55f1bbb8e73355f68ea9091ce3af5c8e2e8942fc943d164
   - url: https://cloud.google.com/blog/products/ai-machine-learning/gemma-4-available-on-google-cloud
-    shows: Gemma 4 capabilities and rankings
+    shows: Gemma 4 availability on Google Cloud. Carries no multimodal statement and no Arena ranking, so
+      it does not establish either half of what this axis cited it for.
     accessed: '2026-06-17'

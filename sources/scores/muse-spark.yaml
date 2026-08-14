@@ -72,8 +72,8 @@ capability:
   score: 5
   basis: benchmark
   basis_detail: LMArena/HLE
-  value: 'LMArena #6 overall (~1487 Elo, mid-2026); Humanity''s Last Exam 58%, FrontierScience Research
-    38% (Contemplating mode); positioned vs Gemini Deep Think / GPT Pro extreme-reasoning modes'
+  value: 'arena.ai text leaderboard - muse-spark-1.2 (xHigh) ranked 4 of 391 models at 1498 +/-10;
+    Artificial Analysis Intelligence Index 57, rank #14 of 188'
   confidence: medium
   note: >-
     Bumped 4 -> 5 on the strength of an LMArena placement that no longer exists.
@@ -84,17 +84,37 @@ capability:
     figure is gone in both senses. The top of the Agent board reads Claude Opus 5 (High) 12.01%, Claude
     Opus 5 (Max) 12.00%, Claude Fable 5 (High) 11.98%. The Meta engineering blog that carried the HLE 58%
     and FrontierScience 38% figures answers HTTP 400 to a plain fetch, so those are unsourced too. This is
-    exactly the failure the bump was meant to close, in reverse. ESCALATED rather than changed - no
-    last_verified claimed on this axis.
+    exactly the failure the bump was meant to close, in reverse.
+
+    Replacement found 2026-08-14, and the band survives on it. lmarena.ai now 301s to arena.ai, whose
+    TEXT board still ranks by an Elo-style score - the win-share board hit on 2026-08-13 was the Agent
+    board, a different instrument on the same site. On the text board Muse Spark IS present, as
+    muse-spark-1.2 (xHigh), ranked 4 of 391 models at 1498 +/-10, behind only three Anthropic entries.
+    Artificial Analysis corroborates independently at 57 on their Intelligence Index, #14 of 188.
+
+    Two narrowings the new evidence forces. The placement belongs to the 1.2 xHigh release rather than
+    to "mid-2026" generally, and the value has been rewritten to say so. And the HLE 58% /
+    FrontierScience 38% figures still have no fetchable home - ai.meta.com answers HTTP 400 to the
+    repo's own fetcher on a third attempt, so those numbers are dropped from the value rather than
+    carried unsourced. The 5 now rests on a top-5 arena placement and a #14/188 index rank, both
+    re-derivable.
+  last_verified: '2026-08-14'
   sources:
-  - url: https://ai.meta.com/blog/introducing-muse-spark-msl/
-    shows: the source of the HLE 58% and FrontierScience 38% figures. Returned HTTP 400 to a plain fetch on
-      2026-08-13, so not re-dated and the figures are currently unsourced.
-    accessed: '2026-06-04'
-  - url: https://lmarena.ai/leaderboard
-    shows: 'Muse Spark does not appear on the leaderboard; the board now ranks by win share rather than
-      Elo, reading "1 Claude Opus 5 (High) 12.01% ±1.45%, 2 Claude Opus 5 (Max) 12.00%, 3 Claude Fable 5
-      (High) 11.98%"'
-    accessed: '2026-08-13'
+  - url: https://arena.ai/leaderboard/text
+    shows: 'arena.ai text leaderboard (lmarena.ai 301s here) - rank 4 "muse-spark-1.2 (xHigh)", Meta,
+      Proprietary, score 1498 +/-10 over 3,280 votes, behind claude-fable-5 1506, claude-opus-4-6-high
+      1505 and claude-opus-4-7-high 1502, out of 391 models and 7,779,985 votes'
+    accessed: '2026-08-14'
     http_status: 200
-    content_sha256: df9431725e3e0df9b133361d4fc3e2db85d2ec360a36555be56864896318502b
+    content_sha256: 14ae18a07dd83608b55f1bbb8e73355f68ea9091ce3af5c8e2e8942fc943d164
+  - url: https://artificialanalysis.ai/models/muse-spark-1-2
+    shows: '"scores 57 on the Artificial Analysis Intelligence Index, placing it well above average among
+      comparable models (median - 34)"; Intelligence rank "# 14 / 188". No deprecation banner.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: efd6d68244a9fbe139a9ab0b4851ad821fa126f8de802ce720b7dd1319915d3c
+  - url: https://ai.meta.com/blog/introducing-muse-spark-msl/
+    shows: the former source of the HLE 58% and FrontierScience 38% figures. Answered HTTP 400 to the
+      repo's fetcher again on 2026-08-14, so those figures remain unsourced and have been dropped from
+      the value.
+    accessed: '2026-06-04'

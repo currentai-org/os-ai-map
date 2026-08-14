@@ -55,23 +55,25 @@ openness:
     http_status: 200
     content_sha256: 99e013f6a80aa589f34e241d369a9a072929e4f5cc14fff157d05dde3b4816dd
 adoption:
-  level: 2
-  signal_type: reported_traction
+  level: 1
+  reach: <10K
+  signal_type: usage_volume
   confidence: high
-  note: Available on Hugging Face with moderate uptake at launch as a sub-13B SLM; no large verified usage figures
-    and relevance has faded against newer SLMs. Level 2 reflects modest reported traction. Attempted
-    re-read 2026-08-13, and two things came out of it. The article the level rests on answered HTTP
-    429 after retries, so the reported-traction reading was not re-confirmed. And a download signal
-    now exists where the record assumed none - the declared artifact tiiuae/Falcon3-10B-Base shows
-    5,292 downloads in the trailing 30 days, which is level 1 on the usage_volume scale rather than
-    level 2, and docs/guides/adoption.md says to re-band when a real download signal appears. NOT
-    changed here and NOT confirmed - the instrument switch and the level move are flagged for review
-    rather than applied.
+  note: 'RE-BANDED 2026-08-14 from 2/reported_traction under the measured-figure ruling in
+    docs/guides/adoption.md, and the instrument moved with the level. The old record assumed no download
+    signal existed, but the single declared artifact tiiuae/Falcon3-10B-Base returns 5,292 downloads in the
+    trailing 30 days (41 likes), which lands in <10K on the model scale in sources/rubrics/model.yaml. A
+    measured count outranks a reported-traction reading, and the reported-traction reading could not be
+    re-confirmed in any case - the VentureBeat article the old level rested on has answered HTTP 429 after
+    retries on both the 2026-08-13 and 2026-08-14 attempts, so it is left dated where it was. The band now
+    matches what the note already said, that relevance has faded against newer SLMs. The digest is
+    byte-identical to the 2026-08-13 read.'
+  last_verified: '2026-08-14'
   sources:
   - url: https://huggingface.co/api/models/tiiuae/Falcon3-10B-Base
     shows: 5,292 downloads in the trailing 30 days for tiiuae/Falcon3-10B-Base, the single declared
       artifact
-    accessed: '2026-08-13'
+    accessed: '2026-08-14'
     http_status: 200
     content_sha256: a30e8c22259eeba58788b6836ec9c25dd7a988e565317f1bb9e2ca40875d89d1
   - url: https://venturebeat.com/ai/uaes-falcon-3-challenges-open-source-leaders-amid-surging-demand-for-small-ai-models

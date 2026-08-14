@@ -40,31 +40,38 @@ openness:
     http_status: 200
     content_sha256: 1f2a5d22ef487e95b7e5267b5a94a34d4c85ff951dc8526f575a013ae08d3bac
 adoption:
-  level: 3
+  level: 5
   signal_type: reported_traction
   confidence: low
-  note: Available to X users and via grok.com/xAI API in 2025 as the flagship Grok generation; now a superseded
-    model behind Grok 4.x default. No clean standalone Grok-3 user/usage count published. Placed at 3 on broad X-surface
-    availability as a former flagship, downgraded from app-surface 5 because xAI discloses no honest per-model figure
-    and it is no longer the default. Directional. Re-read 2026-08-13, and the reasoning behind the band no
-    longer holds. It bands the whole `grok` tier on Grok 3, explicitly because Grok 3 is superseded - but
-    identity.md takes the MAX across a tier's releases, so a tier is not marked down for having moved on.
-    The line's current flagship is grok-4.6, the default across the same X and grok.com surfaces. This is
-    the same shape as the command-r and llama corrections. ESCALATED rather than changed - no last_verified
-    claimed on this axis.
+  note: 'RE-BANDED 2026-08-14 from 3 to 5 on the max-across-releases rule in docs/guides/identity.md. The old
+    band was set on Grok 3 and marked the tier DOWN explicitly because Grok 3 is superseded - which inverts
+    the rule, since a tier scores on its BEST release and is never penalized for having moved on. Re-read
+    2026-08-14, xAI''s model reference still headlines "Meet grok-4.6 ... Our flagship model for code and
+    everything else" and lists grok-4.3, grok-4.5 and grok-4.6 above the grok-4.20 the record is named for,
+    so the tier''s current release is grok-4.6 and it is the default across the same X and grok.com surfaces
+    the old note credited at app-surface 5 before discounting them away. SAY WHAT WAS BANDED, per
+    docs/guides/adoption.md - this is the surface the tier powers, not a per-model count. xAI publishes no
+    standalone per-model user or usage figure, so the instrument stays reported_traction, no reach is
+    recorded (the honest default), and confidence stays low. This is the same treatment claude-sonnet and
+    gemini-pro already carry - reported_traction, level 5, no reach, attributed to the surfaces the tier
+    powers - and the same shape as the command-r correction. The consumer app itself is a separate product,
+    grok-app; the bare `grok` slug is the model line.'
+  last_verified: '2026-08-14'
   sources:
-  - url: https://x.ai/news/grok-3
-    shows: '"Grok 3 Beta - The Age of Reasoning Agents"; the superseded release the band was set on. No
-      usage or user figure published.'
-    accessed: '2026-08-13'
-    http_status: 200
-    content_sha256: fad30d484e9ef73cbe5ace4f619e5067b088f8ac8a8106cbd4d484a92c3c0b02
   - url: https://docs.x.ai/docs/models
-    shows: grok-4.6 headlined as the current flagship, which is the release identity.md would have the tier
-      banded on
-    accessed: '2026-08-13'
+    shows: 'xAI''s model reference headlines "Meet grok-4.6 ... Our flagship model for code and everything
+      else - agentic tool calling", and lists grok-4.3, grok-4.5 and grok-4.6 alongside the older grok-4.20.
+      No user, usage or per-model traffic figure appears anywhere on it. The URL now redirects to
+      /developers/models.'
+    accessed: '2026-08-14'
     http_status: 200
-    content_sha256: 1f2a5d22ef487e95b7e5267b5a94a34d4c85ff951dc8526f575a013ae08d3bac
+    content_sha256: aa061c217a377f8b6567a3abe7c29c8bbc2ab07fb8d89c557cfa944454c5bfbc
+  - url: https://x.ai/news/grok-3
+    shows: '"Grok 3 Beta - The Age of Reasoning Agents"; the superseded release the old band was set on. No
+      usage or user figure published.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 3fe5555880dc7fdd9dcd75ac68cb1620fd9c71ccab517ac9f5ef7530edb94072
 capability:
   score: 4
   basis: benchmark
@@ -82,7 +89,18 @@ capability:
     page also banners the model as deprecated and points at Grok 4.3 (high) instead, and xAI''s own docs now
     headline grok-4.6. The LMArena estimate still stands on the NextBigFuture source, which is an estimate
     rather than a measurement and says so. ESCALATED rather than changed - no last_verified claimed on this
-    axis, and the score needs re-deriving on a current release.'
+    axis, and the score needs re-deriving on a current release.
+
+    Re-derived on the current release 2026-08-14, as that note asked. Artificial Analysis publishes a
+    grok-4.6 page with no deprecation banner - "Grok 4.6 (high) scores 61 on the Artificial Analysis
+    Intelligence Index", Intelligence rank "# 6 / 188", median 34. On that same recalibrated scale the
+    leaders are Claude Opus 5 (max/xhigh) at 63 and Claude Fable 5 at 62, and grok-4.6 ties GPT-5.6 Sol
+    (max) at 61 while sitting above Kimi K3 (max) 60, GPT-5.6 Sol (xhigh) 59, Muse Spark 1.2 57 and every
+    Gemini entry. So the replacement source exists and is clean, but it does not support the recorded
+    band: "a notch below the GPT-5/Gemini/Opus leaders" is no longer true of the tier''s flagship, which
+    is two index points off the top and inside the leading group. That is a band question rather than a
+    freshness one. ESCALATED for a ruling on 4 -> 5 - no last_verified claimed, because dating a 4 on a
+    source that reads #6 of 188 would be the rubber stamp this gate exists to catch.'
   sources:
   - url: https://artificialanalysis.ai/models/grok-4-20
     shows: '"Grok 4.20 0309 v2 (Reasoning) scores 38 on the Artificial Analysis Intelligence Index, placing
@@ -98,3 +116,11 @@ capability:
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: b97eee76687904330fbb120c8bc804848048306853fc8d42e79ae3dfe7f8a830
+  - url: https://artificialanalysis.ai/models/grok-4-6
+    shows: '"Grok 4.6 (high) scores 61 on the Artificial Analysis Intelligence Index, placing it well
+      above average among comparable models (median - 34)"; Intelligence rank "# 6 / 188"; no deprecation
+      banner, unlike the grok-4-20 page. The current release for the tier, on the recalibrated scale that
+      replaced the one the old 49 was recorded against.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: c2773a64aef99b6926d22f7fd870e6ab5d327197d6c8b8bae33ef923497fa238

@@ -48,17 +48,42 @@ adoption:
 capability:
   score: 5
   basis: benchmark
-  basis_detail: LMArena/GPQA-Diamond/HLE
+  basis_detail: GPQA-Diamond/HLE/SWE-bench Verified/LiveCodeBench Pro
   value: null
   confidence: medium
-  note: Frontier tier. Gemini 3 Pro is competitive at the top of LMArena, GPQA-Diamond and HLE, and the 3.1
+  note: 'Frontier tier. Gemini 3 Pro is competitive at the top of LMArena, GPQA-Diamond and HLE, and the 3.1
     Pro preview leads LiveCodeBench Pro with 80.6% on SWE-bench Verified. Confidence medium because the
     strongest coding figures come from a preview checkpoint that is deliberately not tracked as a product.
     Re-read 2026-08-13, and the cited source does NOT carry any of the figures in the note - the DeepMind
     model index is a product listing, and the LMArena, GPQA-Diamond, HLE and SWE-bench claims appear nowhere
     on it. The 5 rests on frontier positioning the page does support, but the specific numbers have no
-    source behind them on this axis. No last_verified claimed; the axis needs a benchmark source.
+    source behind them on this axis.
+
+    Replacement found 2026-08-14 - the family index carries nothing, but the Pro page one level down
+    carries a full benchmark table in text, and it is DeepMind''s own. Gemini 3.1 Pro (Thinking High)
+    reads GPQA Diamond 94.3%, Humanity''s Last Exam 44.4% no tools, SWE-Bench Verified 80.6% single
+    attempt, LiveCodeBench Pro 2887 Elo, ARC-AGI-2 77.1%, Terminal-Bench 2.0 68.5%, against Sonnet 4.6,
+    Opus 4.6 and GPT-5.2 in the same table. It tops the comparison set on HLE, GPQA Diamond, ARC-AGI-2,
+    Terminal-Bench and LiveCodeBench Pro, which is what a 5 rests on.
+
+    Two things the page corrects. The old note said Gemini "leads LiveCodeBench Pro with 80.6% on
+    SWE-bench Verified", which conflated two benchmarks - the LiveCodeBench Pro lead is real at 2887 vs
+    2439 and 2393, but the 80.6% is SWE-bench Verified and is SECOND to Opus 4.6''s 80.8%, not leading.
+    And the reason confidence was held at medium - that the strongest figures came from a preview
+    checkpoint not tracked as a product - no longer holds, since 3.1 Pro is GA on DeepMind''s own Pro
+    page. Confidence is left at medium and FLAGGED for a ruling rather than raised here. The LMArena
+    clause is dropped from basis_detail and the note - arena.ai''s text board carries no Gemini Pro entry
+    in its top ten, so that claim has no source.'
+  last_verified: '2026-08-14'
   sources:
+  - url: https://deepmind.google/models/gemini/pro/
+    shows: 'DeepMind''s Gemini Pro page, Performance table in body text. Gemini 3.1 Pro (Thinking High) -
+      Humanity''s Last Exam 44.4% no tools, GPQA Diamond 94.3% no tools, ARC-AGI-2 77.1%, SWE-Bench
+      Verified 80.6% single attempt, LiveCodeBench Pro 2887 Elo, Terminal-Bench 2.0 68.5%, MMMLU 92.6%.
+      Comparison columns Sonnet 4.6, Opus 4.6, GPT-5.2 - Opus 4.6 leads SWE-Bench Verified at 80.8%.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: a61e8e87c170b874697552062b72480281ec5a1bfc0685af01b44b74ea3586e0
   - url: https://deepmind.google/models/gemini/
     shows: Pro presented as the flagship reasoning tier of the Gemini family. Re-read 2026-08-13 - a product
       listing only, carrying no benchmark figures.

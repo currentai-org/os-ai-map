@@ -76,7 +76,8 @@ capability:
   score: 3
   basis: benchmark
   basis_detail: HumanEval
-  value: Code Llama Instruct 13B ~HumanEval pass@1 ~42%; family 34B/70B-Instruct higher but all 2023-era
+  value: Code Llama - Instruct 13B HumanEval pass@1 42.7%, MBPP pass@1 49.4%; 70B-Instruct higher at 67.8%
+    HumanEval, 34B-Instruct lower at 41.5%; all 2023-era
   confidence: medium
   note: >-
     A 2023-generation code model, state of the art among open models at release and well below the
@@ -86,8 +87,25 @@ capability:
     Re-read 2026-08-13, and the recorded value did not survive it. The HF card inlines no benchmark
     table at all, and the paper it links (arXiv:2308.12950) reports "up to 67% and 65% on HumanEval
     and MBPP" for the family rather than any 13B-Instruct figure. The recorded ~42% appears on
-    neither cited source. ESCALATED rather than changed - no last_verified claimed on this axis.
+    neither cited source.
+
+    Replacement found 2026-08-14, and it vindicates the figure. The abstract carries only the family
+    headline; Table 2 of the paper PDF, "Code Llama pass@ scores on HumanEval and MBPP", carries the
+    per-size rows, and Code Llama - Instruct 13B reads 42.7% HumanEval pass@1 and 49.4% MBPP pass@1. The
+    recorded ~42% was right and was simply cited to a page that does not show it. One clause corrected
+    while the table is open - "family 34B/70B-Instruct higher" is only half true. 70B-Instruct is higher
+    at 67.8%, but 34B-Instruct is 41.5%, BELOW the 13B, and only its MBPP column (57.0%) beats the 13B.
+    The value now says so. Score unchanged at 3.
+  last_verified: '2026-08-14'
   sources:
+  - url: https://arxiv.org/pdf/2308.12950
+    shows: 'Code Llama paper full text. Table 2, "Code Llama pass@ scores on HumanEval and MBPP",
+      Instruct rows - 7B 34.8% / 44.4%, 13B 42.7% / 49.4%, 34B 41.5% / 57.0%, 70B 67.8% / 62.2%
+      (HumanEval pass@1 / MBPP pass@1). The per-size figures are in the PDF text, not on the abstract
+      page.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 05ed05d2d76c420b6af4a1afe6e1dec99939ccf62c5a0c0a258b09cbe1889346
   - url: https://huggingface.co/codellama/CodeLlama-13b-Instruct-hf
     shows: Code Llama 13B-Instruct model card linking arXiv:2308.12950 "Code Llama - Open Foundation
       Models for Code"; no benchmark table on the card

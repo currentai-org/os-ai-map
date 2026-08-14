@@ -36,8 +36,21 @@ adoption:
   note: Baidu's ERNIE/Wenxiaoyan assistant app reported ~200M MAUs around the 5.0 launch (app-level, not 5.1-specific);
     not on HF. Attempted re-read 2026-08-13 - the ~200M MAU figure is not on the cited release post
     and no user, MAU or request count appears on it anywhere. The band therefore has no live source
-    and this axis carries no confirmation until one is found.
+    and this axis carries no confirmation until one is found. Replacement found 2026-08-14 - Baidu's
+    own Q4/FY2025 earnings release states "ERNIE Assistant's MAU reached 202 million in December
+    2025", which is a dated, first-party, app-level figure and is what the ~200M in this note was
+    always reaching for. App-level rather than 5.1-specific, which is how the note already framed it.
+    The Q1 2026 release gives no ERNIE MAU at all, only Baidu App at 655M for March 2026, so December
+    2025 is the freshest published ERNIE figure; Q2 2026 results are due 2026-08-18 and may carry a
+    newer one.
+  last_verified: '2026-08-14'
   sources:
+  - url: https://www.prnewswire.com/news-releases/baidu-announces-fourth-quarter-and-fiscal-year-2025-results-302698026.html
+    shows: 'Baidu Q4/FY2025 results, released 2026-02-26 - "ERNIE Assistant''s MAU reached 202 million
+      in December 2025"; for scale, "Baidu App''s MAUs reached 679 million in December 2025"'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 0c9367297e14ad3eb49187931abcf73a8dbd6e46bd8f6f65c93f57a37f070d92
   - url: https://ernie.baidu.com/blog/posts/ernie-5.1-0508-release/
     shows: ERNIE 5.1 release and API access. Re-read 2026-08-13 - it carries no usage figure, so it
       does not support the ~200M MAU number the level rests on
@@ -48,8 +61,9 @@ capability:
   score: 5
   basis: benchmark
   basis_detail: LMArena/AIME
-  value: 'AIME 2026 (with tools) 99.6, strong GPQA/MMLU-Pro; MoE, 128K context; LMArena frontier (Baidu claims #13
-    Text)'
+  value: 'AIME 2026 (with tools) 99.6, strong GPQA/MMLU-Pro; MoE; LMArena frontier - Baidu states ERNIE
+    5.1 ranks first among Chinese models on the text leaderboard and fourth globally on the search
+    leaderboard'
   confidence: medium
   note: Frontier proprietary model; Arena rank disputed between mirrors (#28) and Baidu's own claim (#13 Text).
     Attempted re-read 2026-08-13 - two of the three recorded facts hold and one does not. AIME26 with
@@ -57,8 +71,24 @@ capability:
     not - the post now says ERNIE 5.1 scored 1,223 to claim 4th place globally and 1st among Chinese
     models on the Arena Search leaderboard, which is a different leaderboard and a different rank. The
     128K context figure is not on this page either. The value needs rewriting against what the page
-    says, so this axis carries no confirmation.
+    says, so this axis carries no confirmation. Replacement found 2026-08-14, and the value is rewritten
+    against it. Baidu's Q1 2026 earnings release states "Recently on LMArena, ERNIE 5.1 ranked first
+    among Chinese models on the text leaderboard and topped the LMArena search leaderboard among Chinese
+    models, ranking fourth globally", which is the same shape of claim as the dead '#13 Text' but with a
+    dated first-party home, and consistent with the 1,223 / 4th-globally figure on the release post.
+    Both remain vendor claims rather than leaderboard reads, which is why confidence stays medium. The
+    128K context figure is dropped - the only 128K evidence is on an ERNIE-4.5 card, a different model
+    line - and the AIME26 99.6 figure keeps its existing source. Score unchanged at 5.
+  last_verified: '2026-08-14'
   sources:
+  - url: https://www.prnewswire.com/news-releases/baidu-announces-first-quarter-2026-results-302774476.html
+    shows: 'Baidu Q1 2026 results, released 2026-05-18 - "Baidu launched ERNIE 5.1 in May 2026 ...
+      Recently on LMArena, ERNIE 5.1 ranked first among Chinese models on the text leaderboard and topped
+      the LMArena search leaderboard among Chinese models, ranking fourth globally." No ERNIE MAU figure
+      on this release.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 603c8ce34c6397ec899ccd31c017bf24914db82d0fe7de1ace02f07c483e966b
   - url: https://ernie.baidu.com/blog/posts/ernie-5.1-0508-release/
     shows: 'official MoE design and training-cost efficiency ("Pre-training Compute Cost at Only 6% of
       Comparable Models"); "On AIME26 (with tool use) ... ERNIE 5.1 scores 99.6 - second only to
