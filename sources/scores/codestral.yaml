@@ -61,8 +61,9 @@ capability:
   score: 3
   basis: benchmark
   basis_detail: HumanEval/MBPP
-  value: HumanEval pass@1 ~86.6%, MBPP ~91.2%; strong on completion/FIM and RepoBench long-context, but
-    ~22B specialist, weak on agentic SWE-bench (single-run resolves only a small fraction)
+  value: Codestral-2501 HumanEval 86.6%, MBPP 80.2%, RepoBench 38.0%, HumanEvalFIM average 85.9%, 256k
+    context; Codestral-2405 22B HumanEval 81.1%, MBPP 78.2%, RepoBench 34.0%, 32k context. Strong on
+    completion and FIM, but a code-completion specialist rather than an agentic coder
   confidence: medium
   note: Strong code-completion specialist for its size, but a narrow FIM model, mid-tier on a chat/agentic
     capability axis where the comparison set is 2026 frontier agentic coders. Re-read 2026-08-13, and the
@@ -70,9 +71,26 @@ capability:
     sanitised pass@1, CruxEval, RepoBench EM, Spider, plus six-language HumanEval and FIM - and publishes
     the scores as charts, so neither the ~86.6% HumanEval nor the ~91.2% MBPP is anywhere in the fetched
     body. What the text does support is the qualitative claim that Codestral "outperforms all other models
-    in RepoBench" on a 32k context. ESCALATED rather than changed - no last_verified claimed on this axis,
-    and the figures need a source that publishes them as text.
+    in RepoBench" on a 32k context. Replacement found 2026-08-14 - the later Codestral 25.01 post
+    publishes the same suite as HTML tables rather than charts, so the numbers are in the fetched body.
+    Three corrections it forces. HumanEval 86.6% is real but belongs to Codestral-2501 at 256k context,
+    not to the 22B, whose row reads 81.1%. MBPP ~91.2% is on no Mistral page at all; the 2501 table
+    gives MBPP 80.2% for 2501 and 78.2% for the 22B, and the nearest 91.x on the page is the 22B FIM
+    pass@1 average of 91.8%, a different metric, which is the likely source of the transcription. And no
+    SWE-bench figure for Codestral exists on any Mistral page, so the "weak on agentic SWE-bench" clause
+    is dropped rather than carried unsourced. The value now records both releases explicitly. Score
+    unchanged at 3.
+  last_verified: '2026-08-14'
   sources:
+  - url: https://mistral.ai/news/codestral-2501
+    shows: 'Codestral 25.01 launch post, benchmarks published as HTML tables in the body. Codestral-2501
+      row - 256k context, HumanEval 86.6%, MBPP 80.2%, CruxEval 55.5%, LiveCodeBench 37.9%, RepoBench
+      38.0%, Spider 66.5%, CanItEdit 50.5%, HumanEval average 71.4%, HumanEvalFIM average 85.9%.
+      Codestral-2405 22B row - 32k context, HumanEval 81.1%, MBPP 78.2%, RepoBench 34.0%, HumanEvalFIM
+      average 82.1%. No MBPP 91.2% and no SWE-bench figure anywhere on the page.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 442684d0e806d2790eda5f92c08368c4bca58f20722cfd79b95ed8c848856999
   - url: https://mistral.ai/news/codestral/
     shows: 'names the benchmark suite (HumanEval pass@1, MBPP sanitised pass@1, CruxEval, RepoBench EM,
       Spider, six-language HumanEval, FIM) and the claim that "Codestral outperforms all other models in

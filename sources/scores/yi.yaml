@@ -66,11 +66,27 @@ capability:
   score: 2
   basis: benchmark
   basis_detail: MMLU/GSM8K
-  value: 'Yi-1.5-34B base: MMLU 76.3, C-Eval 81.4, BBH 54.3; 34B-Chat GSM8K 90.2. Competitive in 2024 mid-size class.'
+  value: 'Yi-34B base - MMLU 76.3, BBH 54.3, C-Eval 81.4. Competitive in the 2024 mid-size class.'
   confidence: medium
-  note: Strong for a 2024 sub-35B model but well below 2026 frontier open models (DeepSeek-V4, Qwen 3.6); calibrates
-    near Falcon 3 (C2) on the dated-generation ladder. Benchmarks from the 01-ai GitHub repo (not the HF card).
+  note: 'Strong for a 2024 sub-35B model but well below 2026 frontier open models (DeepSeek-V4, Qwen 3.6); calibrates
+    near Falcon 3 (C2) on the dated-generation ladder. Replacement found 2026-08-14, and it corrects the
+    attribution rather than the numbers. All three figures are real and in text - Table 2 of the Yi tech
+    report gives MMLU 76.3, BBH 54.3 and C-Eval 81.4 - but the row is Yi-34B, the original 2023 model,
+    not Yi-1.5-34B as the value claimed. The value is relabelled to Yi-34B. Two things dropped rather
+    than re-sourced. There is no text source anywhere for Yi-1.5-34B''s MMLU/BBH/C-Eval; the HF card
+    carries only prose and chart images and the 01-ai/Yi-1.5 README defers to the card. And the
+    34B-Chat GSM8K 90.2 figure appears on none of the pages searched, so it is removed. The score of 2
+    and the dated-generation framing hold on either release, since the tier takes the max across its
+    releases and Yi-1.5 is the stronger of the two.'
+  last_verified: '2026-08-14'
   sources:
+  - url: https://arxiv.org/html/2403.04652v1
+    shows: 'Yi tech report full text. Table 2, "Overall performance on grouped academic benchmarks
+      compared to open-source base models", Yi-34B row - MMLU 76.3, BBH 54.3, C-Eval 81.4. Yi-6B row
+      63.2 / 42.8 / 72.0. These are Yi-34B figures, not Yi-1.5-34B.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: d3233c6470af203bed646b708278c9c60fc96edb9170dc5cade6be8f945a464a
   - url: https://arxiv.org/abs/2403.04652
     shows: Yi foundation-models tech report. Re-read 2026-08-13 - the abstract states "Our base models
       achieve strong performance on a wide range of benchmarks like MMLU" but carries none of the

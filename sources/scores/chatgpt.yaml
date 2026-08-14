@@ -49,13 +49,45 @@ adoption:
 capability:
   score: 5
   basis: feature_matrix
-  value: 'model breadth: frontier (GPT-5 family + variants); RAG/file upload: yes; multimodal: yes (vision,
-    voice, image-gen); plugins/tools: yes (tools, code interpreter, web search, connectors); multi-user:
-    yes (Team/Enterprise); memory + custom GPTs'
+  value: 'model breadth: frontier (GPT-5.6 Sol/Terra/Luna family); multimodal: yes (photo upload,
+    Advanced Voice Mode, image generation); custom GPTs with document knowledge and third-party actions;
+    connectors (OpenAI-maintained MCP wrappers, as in ChatGPT)'
   confidence: high
   note: 'Frontier consumer chat product within ui_api: full multimodal, code execution, web search, custom
-    GPTs, memory, Team/Enterprise multi-user. Sets the bar for the category''s chat-UI feature matrix.'
+    GPTs, memory, Team/Enterprise multi-user. Sets the bar for the category''s chat-UI feature matrix.
+    Re-read 2026-08-14 - the cited page was an NBER-style usage study that enumerates none of the recorded
+    features, so the whole feature matrix was unsourced. Replaced with the two OpenAI-primary surfaces
+    that are actually reachable. openai.com and chatgpt.com return HTTP 403 to the repo''s fetcher after
+    three attempts, which is a host declining rather than an absence, so the consumer marketing pages
+    could not be read at all. What the reachable pages establish - the frontier model family
+    (gpt-5.6-sol "Frontier model for complex professional work", gpt-5.6-terra, gpt-5.6-luna), custom
+    GPTs with attached document knowledge and third-party actions, connectors described as the ones
+    "available in ChatGPT", and image generation, Advanced Voice Mode and photo upload from OpenAI''s own
+    App Store listing. Three clauses NOT re-sourced and dropped from the value - memory, Team/Enterprise
+    multi-user, and code interpreter and web search AS CHATGPT FEATURES. The last two are documented as
+    model tools on the API docs, which never mention ChatGPT, and the only reachable plan list shows
+    consumer tiers only (Go, Plus, Pro). The 5 rests on the surviving matrix, which is still the broadest
+    in the category. The note keeps the original claim above for history; the value now records only what
+    a source shows.'
+  last_verified: '2026-08-14'
   sources:
+  - url: https://developers.openai.com/api/docs/actions/introduction
+    shows: '"Custom GPTs enable users to customize ChatGPT for specific use cases by providing
+      instructions, attaching documents as knowledge, and connecting to 3rd party services." The
+      companion connectors page reads "Connectors are OpenAI-maintained MCP wrappers for popular services
+      like Google Workspace or Dropbox, like the connectors available in ChatGPT."'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 83b15db5783a1da334e06e46c595e286039fa906b1766969a07d8f6bcd511f50
+  - url: https://apps.apple.com/us/app/chatgpt/id6448311069
+    shows: 'OpenAI''s own ChatGPT iOS listing - "Image generation-Generate original images from a
+      description, or transform existing ones with a few simple words.", "Advanced Voice Mode-Tap the
+      soundwave icon to have a real-time convo on the go.", "Photo upload-Snap or upload a picture to
+      transcribe a handwritten recipe or get info about a landmark." Plan list shows ChatGPT Go, Plus and
+      Pro only, with no Team or Enterprise tier.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: e3784db5b64d1be6dbc2fd3ccda90127ea07519cce752a58f86427868cc3ebb1
   - url: https://openai.com/index/how-people-are-using-chatgpt/
-    shows: ChatGPT capabilities/usage report
+    shows: a usage study. Enumerates none of the features this axis cited it for.
     accessed: '2026-06-04'

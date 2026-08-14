@@ -13,13 +13,46 @@ openness:
     self-host:
       value: none
   confidence: high
-  note: The Le Chat product/service is proprietary SaaS (closed), distinct from Mistral's open-weight
-    models scored elsewhere; closed counterpart on the shelf.
+  note: 'The Le Chat product/service is proprietary SaaS (closed), distinct from Mistral''s open-weight
+    models scored elsewhere; closed counterpart on the shelf. Re-read 2026-08-14 - the only source this
+    axis carried was a TechCrunch download-milestone brief that establishes none of the openness
+    components. Replaced with Mistral primaries, which confirm the class and add one thing the record
+    did not have. Mistral''s EU consumer terms, which govern this product, read "As between you and
+    Mistral AI, we own all right, title, and interest in and to the Mistral AI Products" and grant only
+    "a non-exclusive right to access and use", with no source and no self-host offer on the product
+    page. So 1/closed holds. FLAGGED, not changed - the product was RENAMED. Mistral''s help centre says
+    "Le Chat has become Vibe" and "Same URL, same login. Open chat.mistral.ai and you will land in Vibe
+    with your existing conversations." The slug and the product record still say le-chat, which is a
+    naming question for the orchestrator. Also worth a ruling - the Vibe Code CLI shipped as
+    mistralai/mistral-vibe under Apache-2.0, so a component of the same product family is now genuinely
+    open, which source - closed for the hosted surface does not capture on its own.'
+  last_verified: '2026-08-14'
   raw: license:proprietary(SaaS app);source:closed(the Le Chat product; underlying Mistral models are open-weights
     but the chat UI/service is not);self-host:none
   sources:
+  - url: https://legal.mistral.ai/terms/eu-consumers-terms-of-service
+    shows: '"As between you and Mistral AI, we own all right, title, and interest in and to the Mistral
+      AI Products. We grant you a non-exclusive right to access and use the Mistral AI Products solely in
+      your personal capacity". These consumer terms govern the hosted product.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 21421d17af2d57dc0d8a8a8e34c58f25525fd92c66aa4ca23c0d7a2e6debb5e1
+    establishes: [license, source, self-host]
+  - url: https://help.mistral.ai/en/articles/682992-le-chat-is-now-vibe
+    shows: '"Le Chat has become Vibe, Mistral''s unified agent for productivity and coding"; "Same URL,
+      same login. Open chat.mistral.ai and you will land in Vibe with your existing conversations."
+      Establishes the rename, not an openness component.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 28d412e9985c2716865c81162c978e0d76b82cb564247e0c27afd47c5cb5f32f
+  - url: https://api.github.com/repos/mistralai/mistral-vibe
+    shows: 'mistralai/mistral-vibe, "Minimal CLI coding agent by Mistral", Apache-2.0, 4,820 stars. The
+      Vibe Code CLI is open source; the hosted surface this axis scores is not.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 70a1f029400d5c3aaf8fafd269f39b9ce5aa7bc198b9b8a4802284c91f0b6894
   - url: https://techcrunch.com/2025/02/19/mistrals-le-chat-tops-1m-downloads-in-just-14-days/
-    shows: Le Chat is Mistral's proprietary consumer chat app (product profile)
+    shows: a download-milestone brief. Establishes none of the openness components this axis cited it for.
     accessed: '2026-06-04'
 adoption:
   level: 4
@@ -56,9 +89,38 @@ capability:
     document/Flash answers (fast inference), connectors/agents, enterprise (Le Chat Enterprise) + flash-fast
     responses on Cerebras. Locked primarily to Mistral models (limited provider breadth).'
   confidence: medium
-  note: Feature-broad general assistant UI (search, multimodal, code, enterprise) with a speed differentiator;
-    high breadth but single-provider-leaning, not the category frontier-definer.
+  note: 'Feature-broad general assistant UI (search, multimodal, code, enterprise) with a speed differentiator;
+    high breadth but single-provider-leaning, not the category frontier-definer. Re-read 2026-08-14 - the
+    TechCrunch brief this rested on carries a downloads milestone and nothing else, so the whole feature
+    matrix was unsourced. Replaced with Mistral''s own product and docs pages, which corroborate every
+    clause of the recorded value and then some. The product is now called Vibe, and the surface the
+    record describes is Vibe Work. Documented there - Connectors, Libraries, Skills, Files and Canvas,
+    web search and Open URL, image generation, voice mode, Projects, Workflows and scheduled tasks; the
+    product page adds deep research, spreadsheet and database analysis, and "100+ tools including email,
+    calendar, Slack, GitHub, Jira ... through connectors and full MCP compatibility", with voice "powered
+    by Voxtral". The single-provider-leaning judgment that holds this at 4 rather than 5 is unchanged -
+    the docs name no model choice beyond Mistral''s own. Score unchanged at 4. The rename is FLAGGED on
+    the openness axis.'
+  last_verified: '2026-08-14'
   sources:
+  - url: https://docs.mistral.ai/vibe/work
+    shows: 'Vibe Work docs, the surface formerly called le Chat. "Files and Canvas - upload documents,
+      spreadsheets, presentations, PDFs, or images for Work to read, summarize, extract, or turn into
+      reviewable outputs."; "Web search and Open URL - use public information or ask Work to read a
+      specific web page."; navigation lists Connectors, Libraries, Skills, Workflows, Schedule tasks,
+      Projects, Generate images and Use Voice mode.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: efed6015b8f8e3d8b8030e5c470edc5544110781da554fb60fe74b3ae5d23df0
+  - url: https://mistral.ai/products/vibe/
+    shows: '"an AI assistant (Vibe for work, formerly Le Chat) and an AI coding agent (Vibe for code) in
+      a single product for individuals, teams, and enterprises"; "Run deep research. Search across the
+      web, internal docs, and connected tools"; "Upload spreadsheets or connect databases"; "Vibe
+      supports voice input powered by Voxtral"; "Vibe integrates with 100+ tools including email,
+      calendar, Slack, GitHub, Jira, and more through connectors and full MCP compatibility"'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 47d87bee6fbadb77042f82fc3d3e10b393274c25a6836f3581ed3848b844c5e0
   - url: https://techcrunch.com/2025/02/19/mistrals-le-chat-tops-1m-downloads-in-just-14-days/
-    shows: Le Chat consumer assistant feature set (web search, multimodal, fast answers)
+    shows: a download-milestone brief. Enumerates none of the features this axis cited it for.
     accessed: '2026-06-04'

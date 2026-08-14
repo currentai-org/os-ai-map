@@ -45,12 +45,25 @@ capability:
   basis_detail: downstream
   value: null
   confidence: high
-  note: Proven with ongoing downstream use (Guanaco, Tulu 3, OLMo 3 Dolci) but dated, reduced to a fractional
-    ingredient, with no comparative results isolating its value.
+  note: 'Proven with ongoing downstream use (Guanaco, Tulu 3, OLMo 3 Dolci) but dated, reduced to a fractional
+    ingredient, with no comparative results isolating its value. Re-read 2026-08-14 - the QLoRA citation
+    was pointed at the arXiv abstract page, which never mentions OASST1, so the Guanaco lineage this axis
+    rests on had no live source. It is repointed to the paper PDF, where the string OASST1 occurs 19
+    times. The load-bearing sentence reads "the top QLoRA tuned model, Guanaco 65B, which we finetune on
+    a variant of OASST1, is the best-performing open-source chatbot model", and the dataset appendix
+    pins that variant at 9,209 examples, being the top reply at each level of the conversation tree. The
+    band is unchanged; only the pointer moved from the abstract to the full text.'
+  last_verified: '2026-08-14'
   sources:
-  - url: https://arxiv.org/abs/2305.14314
-    shows: Guanaco/QLoRA fine-tuned on OASST1
-    accessed: '2026-07-04'
+  - url: https://arxiv.org/pdf/2305.14314
+    shows: 'QLoRA paper full text, where OASST1 occurs 19 times. "the top QLoRA tuned model, Guanaco 65B,
+      which we finetune on a variant of OASST1, is the best-performing open-source chatbot model and
+      offers performance competitive to ChatGPT"; the dataset appendix gives the variant as 9,209
+      examples - "we only use the top reply at each level in the conversation tree. This limits the
+      dataset to 9,209 examples." The arXiv abstract page carries none of this.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 33a4e757c19d6ea8d3cca8958fce8fe405e290272e135c99ee66065c775d5bd1
   - url: https://huggingface.co/datasets/allenai/Dolci-Instruct-SFT
     shows: OpenAssistant Guanaco appears as a small fraction of OLMo 3 Dolci SFT
     accessed: '2026-07-04'
