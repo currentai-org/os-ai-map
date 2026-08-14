@@ -7,7 +7,7 @@ description: Use when driving the verification sweep toward its goal — every p
 
 The objective: **every product on the map gate-clean** — each axis dated or deliberately
 abstaining, each source carrying a status and a digest, each product's prose satisfying
-`product-info.md`.
+`product-copy.md`.
 
 This skill is the driver. It holds no verification logic of its own: it works out where the
 sweep has got to, picks what is next, and hands one category to `refresh-category`.

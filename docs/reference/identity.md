@@ -4,7 +4,7 @@ What a product's slug is, how far to collapse it, and what happens to scores whe
 merge. Normative. When a rule here changes, change the guide first and make the code follow.
 
 > Companion to `docs/guides/verification.md`, which owns how a score earns its date, and
-> `docs/guides/openness-spectrum.md`, which owns the ladders. This guide owns identity: the slug,
+> `docs/reference/openness.md`, which owns the ladders. This guide owns identity: the slug,
 > its aliases, and the combine rules that apply when one slug covers several releases.
 
 ## The slug is the identity
@@ -134,8 +134,8 @@ with no forwarding address breaks a join rather than a link.
 ## Related
 
 - `docs/guides/verification.md` — how a score earns `last_verified`, and the gates
-- `docs/guides/openness-spectrum.md` — the ladders, and the multi-SKU rule the rubric applies
-- `docs/guides/product-info.md` — the prose fields, and why a curation rationale is not a
+- `docs/reference/openness.md` — the ladders, and the multi-SKU rule the rubric applies
+- `docs/reference/product-copy.md` — the prose fields, and why a curation rationale is not a
   description
 - `docs/schemas/product.schema.json` — `aliases` and `version_in_identity`
 - `docs/schemas/score.schema.json` — `openness.governing_release`

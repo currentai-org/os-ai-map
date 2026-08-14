@@ -200,7 +200,7 @@ Three rules worth knowing before editing any of it:
 `notebooks/pypi-geo-trends.py`, `notebooks/oss-ai-trends.py`, and `notebooks/long-tail-explorer.py`
 are **fully standalone**: no build-pipeline coupling, no generated payload. Each queries
 `currentai.*` warehouse tables live via `pyoso`, so the bot never touches them. They share the
-AI Stack Map design system; when editing, keep them aligned with `docs/guides/notebook-design.md`
+AI Stack Map design system; when editing, keep them aligned with `docs/reference/notebook-design.md`
 (Noto Serif / Plus Jakarta Sans / DM Mono, the navy + salmon-ramp palette, sharp corners). These
 mirror notebooks also published on the OSO platform.
 
@@ -254,9 +254,9 @@ After a PR merges, a maintainer (OSO MCP write access) may need to:
 - `docs/runbooks/verification-pass.md`: the plan for getting every score auditable --
   gates first, then coverage, then the re-read pass. Start here for score-verification
   work; it names the failure modes each step is guarding against.
-- `docs/runbooks/deploy-udms.md`: revise, release, and run UDM SQL changes.
-- `docs/runbooks/refresh-data.md`: run fetchers and reload static models.
-- `docs/runbooks/publish-notebook.md`: serialize, render, upload, and publish the live
+- `docs/operations/deploy-models.md`: revise, release, and run UDM SQL changes.
+- `docs/operations/refresh-data.md`: run fetchers and reload static models.
+- `docs/operations/publish-map.md`: serialize, render, upload, and publish the live
   notebook to `/currentai/ai-stack-map` (id `7b29bf47`).
 
 ## Environment
@@ -268,10 +268,10 @@ After a PR merges, a maintainer (OSO MCP write access) may need to:
 
 ## Common references
 
-- Query conventions: `docs/guides/queries.md`
-- Notebook style: `docs/guides/notebook-design.md`
+- Query conventions: `docs/reference/queries.md`
+- Notebook style: `docs/reference/notebook-design.md`
 - Methodology copy (rendered into the notebook): `docs/methodology.md`
-- Openness scoring: `docs/guides/openness-spectrum.md`
-- Gap analysis (stages + gaps): `docs/guides/gap-analysis.md`
+- Openness scoring: `docs/reference/openness.md`
+- Gap analysis (stages + gaps): `docs/reference/gap-analysis.md`
 - Coverage backlog: tracked in GitHub issues
 - Warehouse models this repo maintains: `warehouse/models/README.md`

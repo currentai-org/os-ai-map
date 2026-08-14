@@ -128,7 +128,7 @@ def scale_for(scales: dict, product_type: str, signal_type: str) -> dict[str, in
     ABSTAIN RATHER THAN SUBSTITUTE. `sources/signal_routing.yaml` states the rule directly:
     "When the authoritative signal for a dimension is missing or unusable, the rule is to
     produce NO evidence. Falling through to a less authoritative signal is how the failure
-    above happens." `docs/guides/adoption.md` says the same thing about this exact check —
+    above happens." `docs/reference/adoption.md` says the same thing about this exact check —
     "a `reported_traction` or `active_users` band is measuring something else entirely.
     Comparing it against a download count is a category error, and a check must SKIP it
     rather than flag or waive it."

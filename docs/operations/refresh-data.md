@@ -4,5 +4,5 @@
 2. Load the CSV into the `currentai` warehouse as a static model (MCP):
    `createStaticModelUploadUrl`, upload, then `createStaticModelRunRequest`. For a brand-new
    source, `createStaticModel` first; then `createDataModelRelease`.
-3. Re-run dependent UDMs (see `deploy-udms.md`).
-4. Re-serialize + re-render + re-publish (see `publish-notebook.md`).
+3. Re-run dependent UDMs (see `deploy-models.md`).
+4. Re-serialize + re-render + re-publish (see `publish-map.md`).

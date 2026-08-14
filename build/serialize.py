@@ -32,7 +32,7 @@ _STAGE_NAMES = {0: "Void", 1: "Open Experiments", 2: "Emerging Alternatives",
                 5: "Mature Open Ecosystem"}
 # Plain-language definitions of each stage and gap, emitted into the payload's
 # top-level `descriptions` block so downstream consumers render a legend without
-# re-deriving the methodology. Kept verbatim from docs/guides/gap-analysis.md
+# re-deriving the methodology. Kept verbatim from docs/reference/gap-analysis.md
 # (the prose source of truth); edit both together.
 _STAGE_DESC = {
     0: "no usable open option exists (and nothing is mature anywhere)",
@@ -54,7 +54,7 @@ _GAP_DESC = {
                   "equivalent is undisclosed: labs publish neither their proprietary and licensed "
                   "data nor their exact training-data recipe. The gap is the invisibility of the "
                   "frontier's data, not the absence of open data. Declared per category (see "
-                  "docs/guides/gap-analysis.md), not inferred from the roster.",
+                  "docs/reference/gap-analysis.md), not inferred from the roster.",
 }
 
 
@@ -89,7 +89,7 @@ def _stage_and_gaps(rows: list[dict], weights: dict, disclosure: bool = False) -
     """Assign a maturity stage (0-5) and the set of gaps for one category.
 
     Strict open-only: only fully-open products count toward maturity/stage;
-    open-ish only serves to detect the openness gap. See docs/guides/gap-analysis.md.
+    open-ish only serves to detect the openness gap. See docs/reference/gap-analysis.md.
     `disclosure` is a declared per-category attribute (not inferred): set it where the
     closed frontier's equivalent to these open products is structurally undisclosed.
     """
@@ -136,7 +136,7 @@ def _stage_and_gaps(rows: list[dict], weights: dict, disclosure: bool = False) -
     # (its proprietary data and recipe). Declared rather than inferred so it can't silently
     # toggle on a curation change, and so training data (declared) and benchmark data (not
     # declared -- open benchmarks are the shared public standard) are treated deliberately.
-    # See docs/guides/gap-analysis.md.
+    # See docs/reference/gap-analysis.md.
     if disclosure:
         gaps.append("disclosure")
 
@@ -288,7 +288,7 @@ def _aliases(prods: dict, orgs: dict) -> dict:
     as an alias is actively wrong: `grok` was renamed to `grok-app` and has since been
     REUSED for a different live product, so a redirect would 308 that live page onto
     another one. build/validate.py now rejects an alias that collides with a live slug,
-    which is the mechanism that used to be this docstring. See docs/guides/identity.md.
+    which is the mechanism that used to be this docstring. See docs/reference/identity.md.
 
     Sorted, because this payload feeds a daily automated PR in another repo and
     unsorted keys would show up there as a phantom diff.

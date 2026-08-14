@@ -125,9 +125,9 @@ Warehouse queries (via `pyoso`) need `OSO_API_KEY`; with `direnv`, place it in `
 | `skills/` | Agent skills mirroring the contribution recipes |
 | `tests/` | pytest suite for build helpers |
 
-Guides worth knowing: [openness scoring](docs/guides/openness-spectrum.md),
-[adoption scoring](docs/guides/adoption.md), [gap analysis](docs/guides/gap-analysis.md),
-and [query conventions](docs/guides/queries.md).
+Guides worth knowing: [openness scoring](docs/reference/openness.md),
+[adoption scoring](docs/reference/adoption.md), [gap analysis](docs/reference/gap-analysis.md),
+and [query conventions](docs/reference/queries.md).
 See [AGENTS.md](AGENTS.md) for agent-oriented project context.
 
 ---
@@ -146,9 +146,9 @@ signals. Contributors work read-only here; only maintainers write.
 
 **Runbooks** (require OSO MCP write access — see `docs/runbooks/`):
 
-- `deploy-udms.md` — revise and release UDM SQL changes
+- `deploy-models.md` — revise and release UDM SQL changes
 - `refresh-data.md` — run fetchers and reload static models
-- `publish-notebook.md` — serialize, render, and publish the live notebook
+- `publish-map.md` — serialize, render, and publish the live notebook
 
 **Editor skills.** Eight skills in `skills/` mirror the CONTRIBUTING recipes and enforce the same
 read-only warehouse boundary:

@@ -47,4 +47,4 @@ directly by `currentai.signal_goodailist.repo_catalog`.
 
 ## Maintainer step (not in this skill)
 Loading the CSV into the `currentai` warehouse (static model or UDM) requires MCP write
-access. See `docs/runbooks/refresh-data.md` and `docs/runbooks/deploy-udms.md`.
+access. See `docs/operations/refresh-data.md` and `docs/operations/deploy-models.md`.

@@ -177,7 +177,7 @@ license:Apache-2.0(code, OSI) + custom weights license(non-OSI, application step
 ```
 
 **Every part resolves, and the most restrictive one governs the cap.** This is the same rule
-`docs/guides/identity.md` states for a tier that ships several SKUs, applied within a single
+`docs/reference/identity.md` states for a tier that ships several SKUs, applied within a single
 recorded value: a product is as open as the most restrictive license you have to accept.
 
 Two properties of it are load-bearing:

@@ -13,7 +13,7 @@ Creates four coordinated edits: a product file, a score file, a category roster 
    (`OLMo 2` becomes `olmo`; `Command R` becomes `command-r`). The slug becomes the `name`
    field, it is permanent, and public deep links are built on it. Do not append the org or a
    numeric suffix — `build/validate.py` rejects both. A retired slug may only be recorded as
-   an `aliases` entry on the product that replaced it. See `docs/guides/identity.md`.
+   an `aliases` entry on the product that replaced it. See `docs/reference/identity.md`.
 2. **Product**: create `sources/products/<slug>.yaml`. Use `name` for the slug and
    `display_name` for the human label. Declare open artifacts as typed top-level arrays of
    `{url: ...}` objects, one key per source type. Only include keys the product actually
@@ -75,7 +75,7 @@ Creates four coordinated edits: a product file, a score file, a category roster 
 
 ## Openness class & score quick-reference
 
-`docs/guides/openness-spectrum.md` is authoritative; this is a shortlist of calls that are
+`docs/reference/openness.md` is authoritative; this is a shortlist of calls that are
 easy to get wrong, not a second policy. Two things to hold onto before using it:
 
 - **The score is computed, not assigned.** Every category carries a `scoring_recipe` whose
@@ -83,7 +83,7 @@ easy to get wrong, not a second policy. Two things to hold onto before using it:
   new product is to record the evidence and let the ladder decide; hand-assign only where
   the category has declared the product `deferred`.
 - **A class is legal at more than one score.** `gated`, for instance, appears at both 2 and 3;
-  `open` spans 3 through 5. See the score-by-class cross-tab in `openness-spectrum.md`; the
+  `open` spans 3 through 5. See the score-by-class cross-tab in `openness.md`; the
   single mappings below are the common case, not a rule.
 
 - **Models:** `closed` (proprietary/API-only, no weights) = 1; `open_weights` (weights
@@ -119,7 +119,7 @@ re-checked:** category **straplines** (see the `curate-category` skill) and the
 `build/_frozen_long_tail.json` dedup counts (`scored` / `overlap` / `uncategorized`).
 
 ## Related
-- `docs/guides/product-info.md` — style/format/tone for the `description` and `comments`
+- `docs/reference/product-copy.md` — style/format/tone for the `description` and `comments`
   prose written in step 2; `skills/verify-product` refreshes those fields later.
 
 ## Boundaries

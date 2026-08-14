@@ -11,7 +11,7 @@ applying the house style. This is a **prose** refresh, not a score re-check: it 
 writes `last_verified`, never edits `sources/scores/<slug>.yaml`, and never adjusts an
 openness/adoption/capability value.
 
-> Read `docs/guides/product-info.md` first — it is the normative style/format/tone spec
+> Read `docs/reference/product-copy.md` first — it is the normative style/format/tone spec
 > and the source of the rules below. This skill is the procedure; the guide is the
 > authority.
 

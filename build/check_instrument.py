@@ -7,7 +7,7 @@ declares. It went to zero findings on 2026-08-13 and gates strict in CI. That ch
 the LABEL.
 
 Nothing checks the INSTRUMENT. `signal_type` is a claim about how the band was read, and
-`docs/guides/adoption.md` states what the claim means: "A `usage_volume` band **claims to be
+`docs/reference/adoption.md` states what the claim means: "A `usage_volume` band **claims to be
 a download count**." Measured 2026-08-13, **56 products claim exactly that with no artifact
 any signal model can read** — 12 declare npm or crates, which no model reads, and 44 declare
 nothing at all. Twelve of the 56 sit at level 5: `mcp-typescript-sdk`, `openclaw`, `langchain`,

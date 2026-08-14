@@ -207,6 +207,6 @@ readings, so it is consistent with the rule above.
 ## Related
 
 - `docs/guides/verification.md` — how an axis earns `last_verified`, and the gates
-- `docs/guides/adoption.md` — the adoption axis, and why a band nothing can measure still
+- `docs/reference/adoption.md` — the adoption axis, and why a band nothing can measure still
   has to age
-- `docs/guides/openness-spectrum.md` — the openness ladders
+- `docs/reference/openness.md` — the openness ladders

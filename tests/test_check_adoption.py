@@ -117,7 +117,7 @@ def test_a_vocabulary_is_not_a_scale_and_does_not_constrain_the_level(sources):
 def test_an_instrument_with_no_scale_abstains_rather_than_borrowing_one(sources):
     """The rule the first version of this checker broke.
 
-    `docs/guides/adoption.md`: "a `reported_traction` band is measuring something else
+    `docs/reference/adoption.md`: "a `reported_traction` band is measuring something else
     entirely. Comparing it against a download count is a category error, and a check must SKIP
     it rather than flag or waive it." `sources/signal_routing.yaml` states the same principle
     as "abstain rather than substitute".

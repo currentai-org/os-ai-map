@@ -42,7 +42,7 @@ Invariants (validated in CI):
    (`OLMo 2` → `olmo`, `Command R` → `command-r`). A slug is permanent and deep links are
    built on it, so it must not carry a version. If the natural slug is genuinely taken by a
    different product, pick a distinguishing word from the product's own name rather than
-   appending the org. `build/validate.py` enforces this and `docs/guides/identity.md` is
+   appending the org. `build/validate.py` enforces this and `docs/reference/identity.md` is
    normative.
 2. **Create `sources/products/<slug>.yaml`**:
 
@@ -63,7 +63,7 @@ Invariants (validated in CI):
    `org:` field — org membership lives in the org file.
 
    For the style, length, and tone of `description`/`comments` — and the canonical
-   `Verified <YYYY-MM-DD> via <source>.` line — see `docs/guides/product-info.md`.
+   `Verified <YYYY-MM-DD> via <source>.` line — see `docs/reference/product-copy.md`.
    To refresh those fields on an existing product, use the `verify-product` skill.
 3. **Create `sources/scores/<slug>.yaml`** (see scoring rubric below). The file
    starts with `product: <slug>`; openness requires both `score` and `class`,

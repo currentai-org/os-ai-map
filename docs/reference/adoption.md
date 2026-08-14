@@ -4,7 +4,7 @@ How a product's adoption band is set, which instrument it was read with, and whi
 a machine can re-derive. Normative. When a rule here changes, change the guide first and make
 the code follow.
 
-> Companion to `docs/guides/openness-spectrum.md`, which owns the openness ladders, and to
+> Companion to `docs/reference/openness.md`, which owns the openness ladders, and to
 > `docs/guides/verification.md`, which owns how any axis earns a `last_verified`. This guide
 > owns the adoption axis: the bands, the instrument vocabulary, and what may be compared to
 > what.
@@ -443,7 +443,7 @@ product, followed by a band recorded on that signal anyway.**
 
 - `docs/guides/verification.md` — how any axis earns `last_verified`, and the gates
 - `docs/guides/freshness.md` — what `last_verified` means, and the refresh window
-- `docs/guides/openness-spectrum.md` — the openness ladders, the other scored axis
+- `docs/reference/openness.md` — the openness ladders, the other scored axis
 - `sources/rubrics/<type>.yaml` — where the bands are declared
 - `sources/signal_routing.yaml` — which signal is authoritative for which dimension
 - `docs/schemas/score.schema.json` — the field definitions and the `signal_type` enum

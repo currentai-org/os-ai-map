@@ -437,7 +437,7 @@ def license_tier(parts: list[dict], recipe: dict) -> str | None:
     """Map the recorded license parts onto a tier from the recipe's own examples.
 
     Every part is resolved and the most restrictive governs. That is what
-    `docs/guides/identity.md` already says openness does across a release's SKUs — "a
+    `docs/reference/identity.md` already says openness does across a release's SKUs — "a
     product is as open as the most restrictive license you must accept to use it" — and a
     product recording two licenses is that same fact written on one axis.
 

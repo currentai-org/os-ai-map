@@ -33,8 +33,8 @@ change the guide. Never the prompt.
 - `docs/guides/verification.md` — how an axis earns `last_verified`, the invariant, the gates,
   and what a capability confirmation attests to
 - `docs/guides/freshness.md` — what `last_verified` means
-- `docs/guides/product-info.md` — the prose spec and the claim-class table
-- `docs/guides/identity.md` — slugs, aliases, and the combine rules when releases merge
+- `docs/reference/product-copy.md` — the prose spec and the claim-class table
+- `docs/reference/identity.md` — slugs, aliases, and the combine rules when releases merge
 - `docs/runbooks/verification-pass.md` Phase 4 — the per-product unit of work
 
 **A research agent reads two**, and this matters more than it looks: every agent loads its
@@ -42,12 +42,12 @@ reading list before its first fetch, so the list is multiplied by the batch size
 twenty-two to read all nine documents cost 2,049 lines apiece and dominated the first run's
 wall-clock.
 
-- `docs/guides/product-info.md` — it is writing the prose
+- `docs/reference/product-copy.md` — it is writing the prose
 - `docs/guides/verification.md` — it is earning the date
 
-Add `docs/guides/identity.md` only for a product whose slug covers a tier or family, where the
+Add `docs/reference/identity.md` only for a product whose slug covers a tier or family, where the
 combine rules actually bite. Do not send the rest: `verification-pass.md` and this file are
-orchestration, and the agent is not orchestrating; `verify-product` restates `product-info.md`;
+orchestration, and the agent is not orchestrating; `verify-product` restates `product-copy.md`;
 `freshness.md` is covered by `verification.md` for a research agent's purposes; and the rubric
 is unnecessary because preflight already computes the recorded dimensions and hands them over.
 That is 866 lines instead of 2,049.
@@ -56,7 +56,7 @@ That is 866 lines instead of 2,049.
 
 - every axis carries a real `last_verified`, or abstains deliberately, or the product is held;
 - every source behind a claimed date records `http_status` and `content_sha256`;
-- `description` and `comments` satisfy `product-info.md`, with the canonical verification line;
+- `description` and `comments` satisfy `product-copy.md`, with the canonical verification line;
 - `capability.relative_to` + `relation` recorded where the note places the band against a peer.
 
 A product whose evidence cannot be settled is **held**, not forced. Held is a legitimate
@@ -159,7 +159,7 @@ Give every agent these. Each is a defect the pilot actually produced:
   letting someone else check the work.
 - **Inventory the prose before rewriting it.** List every factual claim in the current
   `description` and `comments` and mark each keep / move / drop with a reason from
-  `product-info.md`. The commonest pilot defect was a rewrite that silently dropped a true,
+  `product-copy.md`. The commonest pilot defect was a rewrite that silently dropped a true,
   durable fact. Return the ledger.
 - **One spelling per dimension** in `establishes`, using the recorded key, and only on openness
   unless the routing file gives the axis a vocabulary.

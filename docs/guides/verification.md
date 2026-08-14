@@ -525,11 +525,11 @@ re-check that earns its `last_verified`; done as two passes it is the same pages
 twice, and it re-verifies scores that are about to change.
 
 **The prose refresh folds in on the same argument.** A product's `description` and `comments`
-are brought up to `docs/guides/product-info.md` in the same read, because refreshing them means
+are brought up to `docs/reference/product-copy.md` in the same read, because refreshing them means
 opening the pages this pass already fetches, and because a prose pass run on its own does not
 open primary sources at all. One PR per category carries both halves. The runbook's Phase 4 has
 the unit of work; the split of authority is unchanged — this guide governs the score and the
-date, `product-info.md` governs the prose, and the `comments` verification line still earns no
+date, `product-copy.md` governs the prose, and the `comments` verification line still earns no
 `last_verified`.
 
 That backlog is the declared deferrals: 5 products across 4 categories as of 2026-08-14, down
@@ -579,10 +579,10 @@ daily. `docs/guides/freshness.md` has that argument and the shape of the workflo
   criteria per phase, and the standing-hazards table
 - `docs/guides/freshness.md` — what `last_verified` means, and the two divergences already
   closed
-- `docs/guides/openness-spectrum.md` — the openness ladders themselves
-- `docs/guides/adoption.md` — the adoption bands, the instrument vocabulary, and which
+- `docs/reference/openness.md` — the openness ladders themselves
+- `docs/reference/adoption.md` — the adoption bands, the instrument vocabulary, and which
   signals may be compared to which
-- `docs/guides/product-info.md` — the prose companion: style/tone for a product's
+- `docs/reference/product-copy.md` — the prose companion: style/tone for a product's
   `description`/`comments`, and why the `comments` verification line is NOT a `last_verified`
 - `sources/rubrics/` — shared ladders; `build/rubrics.py` for how `extends` resolves (#126)
 - `AGENTS.md` — the layer-2 loop and the evidence grading rule

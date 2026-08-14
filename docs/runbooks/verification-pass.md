@@ -105,7 +105,7 @@ on, that `latestRevision.revisionNumber == latestRelease.revision.revisionNumber
 A run materializes the latest **released** revision. Creating a revision changes nothing
 until `createDataModelRelease` points at it, and the symptom is "my change had no effect"
 rather than an error — three runs were spent on that, concluding a column drop had broken
-materialization when the new SQL had never executed. See `docs/runbooks/deploy-udms.md`.
+materialization when the new SQL had never executed. See `docs/operations/deploy-models.md`.
 
 **Exit criteria for Phase 0:** `check_verification` passes, `validate.yml` runs it, the
 components helper has the folded-scalar test, and what the producible-pair check caught is
@@ -285,7 +285,7 @@ them first** (5 across 4 categories as of 2026-08-14) — reading a product's so
 trusting the number here.)
 
 **The prose comes with it.** The pass refreshes a product's `description` and `comments` to
-`docs/guides/product-info.md` in the same unit of work, for the same reason the deferral
+`docs/reference/product-copy.md` in the same unit of work, for the same reason the deferral
 backlog folds in: refreshing the prose means opening the repository, model card and vendor docs
 this phase already fetches. Run separately it is the same pages twice — and worse, a prose pass
 that does not open primary sources produces a provenance line naming a *method*
@@ -305,7 +305,7 @@ The unit of work is therefore per product, not per axis:
    product, record it as `relative_to` + `relation` rather than leaving it in the note, and
    confirm the peer at least as recently. A capability date attests to less than the other two
    axes — `verification.md`, "What a capability confirmation attests to", says exactly what.
-4. **Rewrite the prose** per `product-info.md` — `description` load-bearing and within the
+4. **Rewrite the prose** per `product-copy.md` — `description` load-bearing and within the
    length band, `comments` a footnote ending in the canonical verification line. Delete rather
    than research a superlative, a corporate event, or a curator rationale clause; the guide's
    claim-class table is the rule.
@@ -375,7 +375,7 @@ actually hit:
   that exists, an axis whose evidence is gone and needs new sources found, and anything you are
   guessing at. Then carry on: escalating one product does not block the other twenty.
 - **Where the entity moved rather than the evidence, it is a curation call.** A product that
-  merged, split into tiers or was renamed is `docs/guides/identity.md` work, not a re-read. Record
+  merged, split into tiers or was renamed is `docs/reference/identity.md` work, not a re-read. Record
   the finding and leave the slug alone.
 
 **The escalations are where the pass earns its money.** Agents refusing to date
@@ -383,7 +383,7 @@ actually hit:
 evidence that had quietly vanished. A batch escalating nothing is more suspicious than one
 escalating five things.
 
-When the escalation is an adoption re-band, `docs/guides/adoption.md`, "When a re-read may
+When the escalation is an adoption re-band, `docs/reference/adoption.md`, "When a re-read may
 re-band", carries the standing answers: measured signal against a hand-set band, `stars_fallback`,
 relabelling to `reported_traction`, declaring a new artifact, and SDK attribution. Rule from there
 rather than deciding it again per category.
@@ -394,7 +394,7 @@ moved score deliberately.
 
 **Exit criteria:** every one of the 1370 real claims either carries a confirmed
 `last_verified` or sits in `deferred` with a reason, and every product's prose satisfies
-`product-info.md`. Zero silently absent.
+`product-copy.md`. Zero silently absent.
 
 ---
 
@@ -448,8 +448,8 @@ Every one of these has happened. They are not hypotheticals.
 
 - `docs/guides/verification.md` — normative: the invariant, the gates, who may write a date
 - `docs/guides/freshness.md` — normative: what `last_verified` means
-- `docs/guides/adoption.md` — normative: the bands, the instrument vocabulary, and when a re-read
+- `docs/reference/adoption.md` — normative: the bands, the instrument vocabulary, and when a re-read
   may re-band
-- `docs/runbooks/deploy-udms.md` — revision → release → run
+- `docs/operations/deploy-models.md` — revision → release → run
 - `skills/refresh-category/SKILL.md` — the orchestration for one category of Phase 4
 - `AGENTS.md` — the layer-2 loop and the evidence grading rule

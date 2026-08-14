@@ -12,7 +12,7 @@ The bar agreed on 2026-08-08, and it is per product rather than per axis:
   * every axis carries a real `last_verified`, or abstains deliberately (a null value, which
     `verification.md` explains for the 46 axes that have one), or the product is held;
   * `comments` ends in the canonical verification line, which is the prose half's proxy —
-    `product-info.md` has rules a checker cannot enforce, but the line is the one thing a
+    `product-copy.md` has rules a checker cannot enforce, but the line is the one thing a
     finished product always has;
   * held products count as resolved, not as remaining. A product whose evidence cannot be
     settled goes into `sources/verification_queue.yaml` with a reason and stops blocking its
