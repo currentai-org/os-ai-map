@@ -26,18 +26,31 @@ openness:
   dimensions:
     schematics:
       question: Are the board design files published, and may they be reused?
-      # THE deciding dimension. Every rung turns on it, which is not an accident: openness
-      # for a board is a question about the design, and the toolchain only breaks the tie
-      # between `open` and `published`.
+      # THE deciding dimension. Every board rung turns on it, which is not an accident:
+      # openness for a board is a question about the design. It sets the ceiling and the
+      # toolchain decides whether the product reaches it - `open` reaches 5 and `published`
+      # reaches 4 only with a stack that builds from source, and `published` falls to 3
+      # without one. Below `published` the toolchain stops mattering, because a design you
+      # cannot see is not redeemed by an SDK you can. `open` schematics with a non-open
+      # toolchain has no rung on purpose: no product records that pair, and a rule that
+      # cannot fire is a place for a later edit to hide.
       values: [open, published, partial, none]
       evidence:
-      - '`open`: design files under terms permitting reuse, or OSHWA certification.
-        `beagley-ai` is CC-BY/CC-BY-SA plus OSHWA US002616; `arduino-uno-q` is CC-BY-SA-4.0
-        gerbers'
-      - '`published`: schematics readable and not reusable. `radxa-rock-5b` ships PDFs, SMD
-        maps, DXF and 3D STP and explicitly does not release editable PCB source'
+      - '`open`: design files for the WHOLE product under terms permitting reuse, or OSHWA
+        certification. `beagley-ai` is CC-BY/CC-BY-SA plus OSHWA US002616; `arduino-uno-q`
+        is CC-BY-SA-4.0 gerbers. Coverage is part of the test: publishing a reusable design
+        for one half of a two-part product is `published`, not `open`, on the same reasoning
+        that makes a partly-mapped SKU set abstain elsewhere in the corpus'
+      - '`published`: the design of the product sold is readable, but you cannot rebuild the
+        whole of it from what is released - either the terms do not permit reuse or part of
+        the product is withheld. `radxa-rock-5b` ships PDFs, SMD maps, DXF and 3D STP and
+        explicitly does not release editable PCB source; `google-coral-dev-board` publishes
+        the baseboard schematic, its Altium source and the Allegro layout under Apache-2.0
+        and withholds the SoM that carries the SoC and the Edge TPU'
       - '`partial`: a mechanical spec, a carrier reference design or an EVK design - the
-        documentation for building your OWN board, not the design of the product sold'
+        documentation for building your OWN board, not the design of the product sold.
+        `raspberry-pi-5` publishes a mechanical drawing and two STEP files, which is what a
+        HAT or a case is designed against, and no schematic of the Pi itself'
       - '`none`: no design files. For an accelerator module that means withheld; for a bare
         chipset it means there is no board to have designed. See the note on form factor'
       machine_signal: none - needs a human to find a design-file repo and read its license.
@@ -107,9 +120,14 @@ openness:
       - '`open_toolchain`: the accessory completes a platform scoring 4/open_toolchain.
         `raspberry-pi-ai-hat-plus` plugs into `raspberry-pi-5`, whose schematics are
         published and whose stack builds from open source'
-      - '`open_hardware` and `documented` are declared for symmetry with the classes a host
-        can hold, and no product records either yet. Neither has a rung, so an accessory
-        landing there abstains and is deferred rather than being scored by analogy'
+      - '`documented`: the accessory completes a platform scoring 3/documented.
+        `raspberry-pi-ai-hat-plus` landed here on 2026-08-14 when `raspberry-pi-5` was
+        corrected to 3 - the Pi publishes no schematic, only a mechanical drawing - which is
+        the whole point of recording the host rather than a fixed number: the accessory
+        follows it'
+      - '`open_hardware` is declared for symmetry with the classes a host can hold and no
+        product records it yet. It has no rung, so an accessory landing there abstains and
+        is deferred rather than being scored by analogy'
       machine_signal: none - needs a human to identify the host and read its score
     retail:
       question: Can anyone buy one?
@@ -140,6 +158,15 @@ openness:
       from `raspberry-pi-ai-hat-plus` is the openness of the Raspberry Pi 5 it plugs into,
       which is 4/open_toolchain. Placed first because it decides a different KIND of product,
       not a better one - the rungs below assume the thing being scored is the board.
+  - when: {accessory_host: documented}
+    then: {score: 3, class: documented}
+    because: >-
+      The same principle one rung down, and the reason the principle is an axis at all. When
+      `raspberry-pi-5` was corrected to 3/documented on 2026-08-14 - it publishes a
+      mechanical drawing and no schematic - the HAT that plugs into it followed, because an
+      accessory cannot offer a builder more openness than the system it completes. Reading
+      the HAT's own answers instead would score the wrong artifact, which is what this
+      dimension exists to prevent.
   - when: {schematics: open, toolchain: open}
     then: {score: 5, class: open_hardware}
     because: >-
@@ -154,6 +181,16 @@ openness:
       Schematics readable but not reusable, which is the distinction the class name draws:
       what is open here is the toolchain. `radxa-rock-5b` publishes PDFs, DXF and STP and
       explicitly withholds editable PCB source.
+  - when: {schematics: published}
+    then: {score: 3, class: documented}
+    because: >-
+      A design you can read and a stack you cannot build. The rung above is a claim about the
+      toolchain - `open_toolchain` is its name - so a product whose model compiler is closed
+      or registration-gated does not reach it however much of the board it releases.
+      `google-coral-dev-board` is the case: baseboard schematic, Altium source and Allegro
+      layout all published, Edge TPU compiler a closed binary. `documented` is the word the
+      category's own ladder already uses for a closed or registration-gated SDK, so this
+      rung names the state rather than inventing one.
   - when: {schematics: partial}
     then: {score: 3, class: documented}
     because: >-

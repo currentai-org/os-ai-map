@@ -318,15 +318,36 @@ What a builder gets from a HAT or a carrier is the openness of the system it com
 `raspberry-pi-ai-hat-plus` is the case (2026-08-12). It publishes a HAT+ mechanical specification
 rather than board design files, and its toolchain is half open — the Pi driver integration is
 open, Hailo's Dataflow Compiler is registration-gated. Both of its own answers are `partial` and
-neither describes the system anyone runs. It plugs into a `raspberry-pi-5`, which scores
-4/open_toolchain, and so does it.
+neither describes the system anyone runs. It plugs into a `raspberry-pi-5`, and takes that board's
+score.
 
 This is recorded as an `accessory_host` dimension in `sources/rubrics/hardware.yaml` rather than
 as an extra rung. The rung version — `{schematics: partial, toolchain: partial}` → 4 — would have
-reproduced the same number and been non-monotonic: `ti-am67a` and
+reproduced the number the HAT then held and been non-monotonic: `ti-am67a` and
 `qualcomm-dragonwing-rb3-gen-2` both record `{partial, open}` and score 3, so it would have ranked
 strictly weaker evidence strictly higher. One product records `accessory-host` today; the next
 accessory records its host rather than needing another rung.
+
+The dimension earned itself on 2026-08-14, sooner than expected. `raspberry-pi-5` was corrected
+from 4 to 3 — it publishes a mechanical drawing and two STEP files and no schematic of the board,
+where the record had claimed reduced schematics, which is a Pi 4 document — and the HAT followed
+it to 3/documented without any new evidence about the HAT. A frozen number would have left the
+accessory reading more open than the system it completes. That is why `accessory_host` now has a
+rung for each host class the corpus has seen, `open_toolchain` and `documented`, and none for
+`open_hardware`, which no accessory has met.
+
+### The toolchain gates the ceiling, the design sets it
+
+Hardware's level 4 is a claim about the toolchain — `open_toolchain` is the class name — so a
+board whose model compiler is closed or registration-gated does not reach it however much of the
+design it publishes. `google-coral-dev-board` is the case: the baseboard schematic, its Altium
+source and the Allegro layout are all public in an Apache-2.0 repository, and the Edge TPU
+compiler is a closed binary, so it sits at 3/documented, which the category's own ladder defines
+to include a closed or registration-gated SDK. It stops short of the top schematics value for a
+second reason worth stating: only the baseboard is covered, and the SoM that carries the SoC and
+the Edge TPU has no design files. Publishing a reusable design for half a two-part product is
+`published`, not `open` — the same reasoning that makes a partly-mapped SKU set abstain elsewhere
+in the corpus.
 
 ## How the buckets relate to MOF and OSAID
 

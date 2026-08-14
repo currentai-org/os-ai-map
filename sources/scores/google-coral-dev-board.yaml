@@ -4,9 +4,9 @@ openness:
   score: 3
   components:
     schematics:
-      value: none
-      detail: no full board files
-      raw: none (no full board files)
+      value: published
+      detail: baseboard schematic + Altium source + Allegro layout, Apache-2.0; SoM withheld
+      raw: published (baseboard schematic + Altium source + Allegro layout, Apache-2.0; SoM withheld)
     toolchain:
       value: partial
       detail: open runtime (libedgetpu) + TFLite, closed Edge TPU compiler
@@ -22,15 +22,37 @@ openness:
       detail: broadly purchasable
       raw: open_market (broadly purchasable)
   confidence: high
-  note: Public datasheet and open runtime/TFLite path, but the Edge TPU silicon and the model compiler
-    are proprietary closed binaries.
-  raw: schematics:none (no full board files);toolchain:partial (open runtime (libedgetpu) + TFLite, closed
-    Edge TPU compiler);datasheets:public;blobs:required (proprietary Edge TPU ASIC + closed compiler);retail:open_market
-    (broadly purchasable)
+  note: 'Public datasheet, published baseboard design files and an open runtime/TFLite path, but the
+    Edge TPU silicon and the model compiler are proprietary closed binaries. The `schematics: none`
+    this record used to carry was wrong from the first pass rather than stale - its own cited
+    datasheet page has linked design files throughout. Corrected 2026-08-14: the datasheet offers a
+    baseboard schematic PDF, the Altium schematic source, an Allegro .brd layout and a STEP model of
+    baseboard and SoM together, all served from github.com/google-coral/electricals, which carries an
+    Apache-2.0 LICENSE. That is more than `radxa-rock-5b` releases, and it stops short of `open`
+    because only half the product is covered - the SoM that carries the i.MX 8M and the Edge TPU has
+    no design files. The score does not move: `published` reaches 4 only with a stack that builds from
+    source, and the Edge TPU compiler is a closed binary, so the ladder lands on 3/documented either
+    way. What changes is that the 3 is now derived from what Google actually publishes.'
+  raw: schematics:published (baseboard schematic + Altium source + Allegro layout, Apache-2.0; SoM
+    withheld);toolchain:partial (open runtime (libedgetpu) + TFLite, closed Edge TPU compiler);datasheets:public;blobs:required
+    (proprietary Edge TPU ASIC + closed compiler);retail:open_market (broadly purchasable)
   sources:
   - url: https://coral.ai/docs/dev-board/datasheet/
-    shows: 'datasheet: 4 TOPS, 2 TOPS/W, SoM form factor, TFLite, Google-designed Edge TPU'
-    accessed: '2026-06-22'
+    shows: 'Datasheet v1.7 (December 2022) - 4 TOPS, 2 TOPS/W, SoM form factor, TFLite,
+      Google-designed Edge TPU; its "Schematic and layout files" section links
+      Coral-Dev-Board-baseboard-schematic.pdf, Coral-Dev-Board-baseboard-schematic-Altium.zip,
+      Coral-Dev-Board-baseboard-layout-Allegro.brd and Dev Board.STEP, and points anyone wanting the
+      SoM on custom hardware at the SoM datasheet rather than at design files'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: b47ca1ecbc39b2f0c88cdbb55dd3c5053b77728971901027092192c617b494d2
+  - url: https://github.com/google-coral/electricals
+    shows: '"Electrical designs for coral.ai projects", Apache-2.0, public; dev_board/ holds
+      Coral-Dev-Board-baseboard-schematic.pdf, -schematic-Altium.zip and -layout-Allegro.brd, which is
+      where the datasheet download links resolve to'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: fac5f1fe51996515123e7d918121814ae551c800a60f2cb7cde914bb72935c1f
   - url: https://github.com/google-coral/libedgetpu
     shows: open source Edge TPU userspace runtime driver
     accessed: '2026-06-22'
