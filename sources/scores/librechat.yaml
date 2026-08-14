@@ -42,12 +42,39 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: medium
-  note: 23M+ cumulative Docker pulls by early 2026 (includes CI/upgrades, so a soft upper bound); 38.1k
+  note: '23M+ cumulative Docker pulls by early 2026 (includes CI/upgrades, so a soft upper bound); 38.1k
     GitHub stars, 6,800+ forks, 9,000+ Discord members; ClickHouse acquisition signals enterprise deployment.
     Placed at 4 on Docker-pull volume; medium confidence because pulls overcount unique deployments.
+    Re-read 2026-08-14, and the signal the band rests on does not exist in any checkable form. Three
+    numbers, none of which agree. Docker Hub''s API reports 372,272 pulls on librechat/librechat and
+    roughly 732,090 summed across all nine librechat org repos. LibreChat''s own site counter now claims
+    47.3M Docker pulls, not the 23M recorded, and nothing corroborates it - the primary image is on
+    GHCR, which publishes no pull count at all, so the vendor figure cannot be checked against any
+    registry. The site''s star counter, by contrast, matches the GitHub API exactly (42k against 41,995),
+    so the counter is live rather than invented; it is the pull number specifically that has no
+    reachable basis. What IS countable today is 41,995 GitHub stars and 8,686 forks. ESCALATED rather
+    than changed - a usage_volume band of 4 at reach 1M-10M sits above the ~732k that Docker Hub can
+    actually account for and far below the 47.3M the vendor claims, and choosing between them is a
+    banding decision, not a freshness one. No last_verified claimed. Recommendation - re-band on the
+    GitHub star signal, or re-route the axis off usage_volume, rather than keep a Docker-pull band that
+    no registry can produce.'
   sources:
+  - url: https://api.github.com/repos/danny-avila/LibreChat
+    shows: 'GitHub API for danny-avila/LibreChat - 41,995 stars, 8,686 forks, 201 watchers, MIT. A
+      countable signal; no user or deployment count is published anywhere.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 957b025965cba8d0cf6ceb3934a22c819604d302a798c4a57ea5059941656eb5
+  - url: https://www.librechat.ai/
+    shows: 'vendor counter reading "42k GitHub Stars", "47.3M Docker Pulls", "387 Contributors". The star
+      figure matches the GitHub API; the pull figure is roughly 65x what Docker Hub''s own API accounts
+      for across the whole librechat org and cannot be checked, since the primary image is on GHCR.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 97b2e85dd5b23f871218f02dfc3bb861f604ac670e298e765b51f1f944b26bf5
   - url: https://github.com/danny-avila/LibreChat
-    shows: 38.1k stars; MIT self-hosted chat platform with broad provider support
+    shows: MIT self-hosted chat platform with broad provider support. Carries no Docker-pull figure, so it
+      never supported the 23M this band was placed on.
     accessed: '2026-06-04'
 capability:
   score: 5
