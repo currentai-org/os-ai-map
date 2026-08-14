@@ -186,7 +186,7 @@
     },
     "capability": {
       "type": "object",
-      "description": "How good the product is at what it does. The same shape once more: `score` is the graded judgment, `basis` with `basis_detail` is the instrument (adoption's `signal_type`), and `relative_to` with `relation` are the recorded inputs (openness's `components`). Two differences matter. No rubric declares a capability ladder, so nothing derives the score from what is recorded; and the bands are comparable within a category only, never across one. What places most bands is a comparison to a peer, which is why the recorded-inputs slot here is a pair of pointers rather than an evidence string. docs/reference/evidence-and-freshness.md, 'What a capability confirmation attests to', is normative on what a date on this axis does and does not claim.",
+      "description": "How good the product is at what it does. The same shape once more: `score` is the graded judgment, `basis` with `basis_detail` is the instrument (adoption's `signal_type`), and `relative_to` with `relation` are the recorded inputs (openness's `components`). Two differences matter. No rubric declares a capability ladder, so nothing derives the score from what is recorded; and the bands are comparable within a category only, never across one. What places many bands is a comparison to a peer, which is why the recorded-inputs slot here is a pair of pointers rather than an evidence string. docs/reference/evidence-and-freshness.md, 'What a capability confirmation attests to', is normative on what a date on this axis does and does not claim.",
       "required": [
         "score",
         "basis"
@@ -235,7 +235,7 @@
           "items": {
             "$ref": "#/definitions/source"
           },
-          "description": "The evidence behind the band, at least one required for a non-null score (build/validate.py). Leaderboards and papers where a benchmark exists - Artificial Analysis, LMArena, Epoch AI, the Open LLM Leaderboard lineage, domain benchmarks such as ANN-Benchmarks - and documentation or feature pages where none does. Weaker than the other two axes' evidence by construction: the peer comparison that places most bands has no cited source of its own, so a capability source usually corroborates the band rather than establishing it."
+          "description": "The evidence behind the band, at least one required for a non-null score (build/validate.py). Leaderboards and papers where a benchmark exists - Artificial Analysis, LMArena, Epoch AI, the Open LLM Leaderboard lineage, domain benchmarks such as ANN-Benchmarks - and documentation or feature pages where none does. Weaker than the other two axes' evidence by construction: the peer comparison that places many bands has no cited source of its own, so a capability source usually corroborates the band rather than establishing it."
         },
         "last_verified": {
           "type": "string",
@@ -248,7 +248,7 @@
         },
         "relative_to": {
           "type": "string",
-          "description": "The slug of the product THIS band was placed against, when it was placed by comparison rather than measured. Peer-relative placement is the map's dominant capability instrument - the note usually says something like 'one tier below the Megatron-LM anchor' - and until this field existed that comparison lived in an English sentence where nothing could check it, refresh it, or notice when it went stale. Recording it makes the claim falsifiable: build/check_capability.py requires the relation to be arithmetically consistent with both recorded scores, and requires the target's confirmation to be at least as recent as this one's. Same category as this product. Normative definition in docs/reference/evidence-and-freshness.md. Declared on capability only, and `additionalProperties: false` on all three axes keeps it there: a `relation` written onto openness or adoption used to validate silently and be read by nothing, which a sweep run produced on four axes before this was closed."
+          "description": "The slug of the product THIS band was placed against, when it was placed by comparison rather than measured. Peer-relative placement is a major capability instrument - the note usually says something like 'one tier below the Megatron-LM anchor' - and until this field existed that comparison lived in an English sentence where nothing could check it, refresh it, or notice when it went stale. Recording it makes the claim falsifiable: build/check_capability.py requires the relation to be arithmetically consistent with both recorded scores, and requires the target's confirmation to be at least as recent as this one's. Same category as this product. Normative definition in docs/reference/evidence-and-freshness.md. Declared on capability only, and `additionalProperties: false` on all three axes keeps it there: a `relation` written onto openness or adoption used to validate silently and be read by nothing, which a sweep run produced on four axes before this was closed."
         },
         "relation": {
           "enum": [

@@ -56,10 +56,11 @@ Somebody committed that file on that date and left the score standing, which is 
 review rather than a reading. Git records it, and nobody can inflate it. As #102 put
 it, the git history of a score file *is* its verification record.
 
-As of 2026-08-14 every one of the 1,416 axes carries a real `last_verified`, so nothing on
-the map is currently read through the fallback. It remains the rule rather than history: a
-product added tomorrow has no date until somebody confirms it, and the age gate below reads
-whichever signal an axis has.
+As of 2026-08-14, 1,408 of the 1,416 axes carry a real `last_verified`; the other **eight are
+explicitly held** in `sources/verification_queue.yaml` and read through the fallback (the sweep
+dated them, then the audit removed those eight unsupported confirmations — see Part 3). So the
+fallback is not idle: a held axis and a product added tomorrow both rely on it until somebody
+confirms them, and the age gate below reads whichever signal an axis has.
 
 **Changed what it claims, not merely touched.** Some commits move a file without
 reviewing it. The Phase 1a migration reshapes `openness.components` from a string into a
@@ -380,11 +381,15 @@ axes that carry a `last_verified`. So they cover exactly what has been done, nev
 and never permit a regression on ground already taken. A big-bang gate over every axis at once
 would have failed on day one and been switched off, which is how gates die.
 
-**The ratchet has now closed.** That count was 137 when this section was written and is **1,416 as
-of 2026-08-14 — every axis in the corpus.** So the invariant and the digest requirement now apply
-everywhere, and the age gate above became possible only because of it: gating on age while most
-axes carried no date at all would have measured the backlog rather than staleness. Read the count
-from `check_freshness` rather than from this paragraph, which will drift again.
+**The ratchet has effectively closed.** That count was 137 when this section was written; the
+08-13/14 sweep dated all 1,416 axes, and the subsequent audit removed eight unsupported
+confirmations, leaving **1,408 confirmed and eight explicitly held** as of 2026-08-14. So the
+invariant and the digest requirement cover the 1,408 confirmed axes — not literally every axis —
+and the eight holds are governed instead by the queue-consistency gate (they may not carry a date
+at all). "Closed" now means there are no *silent* gaps, not that every axis is confirmed. The age
+gate above became possible only because coverage got this close: gating on age while most axes
+carried no date would have measured the backlog rather than staleness. Read the live count from
+`check_freshness` rather than from this paragraph, which will drift again.
 
 The producible-pair check and the parity gate apply in full immediately — nothing has to be
 populated first.
@@ -471,7 +476,7 @@ the four rubrics, and `signal_routing.yaml` records the axis as effectively unro
 external anchors are unbridged, and both rank *models*, so neither can say anything about a
 training framework or a sandbox.
 
-What actually places most bands is a comparison to a peer. Roughly a hundred products in the
+What actually places many bands is a comparison to a peer. Roughly a hundred products in the
 corpus put themselves against another product in their own category — "one tier below the
 Megatron-LM anchor", "mid-tier next to langfuse" — and in `finetuning_code` every one of the
 27 notes does it. That comparison was the instrument, and it lived in an English sentence.
@@ -521,10 +526,11 @@ work the way openness got four.
 | deliberately null — not claims | 46 (26 capability, 20 adoption) |
 | **real claims to verify** | **1370** |
 | of those, citing at least one source URL | 1370 |
-| carrying a real `last_verified` | 1416 |
+| carrying a real `last_verified` | 1408 |
+| explicitly held in `verification_queue.yaml` (read via commit fallback) | 8 |
 | distinct source URLs behind all of it | 1824 |
 
-`check_freshness` reports median age 1d, oldest 6d, and no axis resting on the commit-date
+`check_freshness` reports median age 1d, oldest 6d, with eight axes resting on the commit-date
 fallback. Regenerate these rather than trusting them; the corpus grows most weeks, and the
 figures in this table have already been wrong once for exactly that reason.
 
@@ -727,8 +733,9 @@ run unattended and why it must be fenced to those axes only.
 
 ### 4. The re-read pass — roughly 1106 URLs ✅ **done 2026-08-14**
 
-Closed by the 08-13/14 all-corpus sweep: all 1416 axes now carry a real `last_verified`,
-median age 1d. The description below is kept as the standing procedure for re-running it.
+Closed by the 08-13/14 all-corpus sweep, which dated all 1,416 axes; a follow-up audit then
+removed eight unsupported confirmations, leaving **1,408 confirmed and eight held** (median age
+1d). The description below is kept as the standing procedure for re-running it.
 
 Everything else, all of openness included. **Fold the deferral backlog into this pass rather
 than clearing it first.** Reading a product's sources to determine `core-gated` *is* the
@@ -766,7 +773,9 @@ score for this reason.
 category whose oldest axis is 50 days old is a category to go and look at. Gating earlier would
 only have failed on the pre-automation backlog rather than on genuine staleness; step 4 closed
 that, and on the day the gate landed all 1,416 axes carried a real `last_verified` and the
-oldest category read 6 days.
+oldest category read 6 days. (A later audit removed eight unsupported confirmations, so the
+current state is 1,408 confirmed and eight held — the eight ride the commit-date fallback and do
+not evade the age gate.)
 
 **The window is 30 days, decided 2026-08-09.** It is a judgment about how much re-reading the
 map is worth rather than anything derivable, so it is recorded here with its date and its owner

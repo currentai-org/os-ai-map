@@ -1,7 +1,7 @@
 # Capability Guide
 
-What the capability axis records, the instrument behind most of it, and what it
-deliberately does not claim. This is normative on the fields and the vocabulary. For how a
+What the capability axis records, the peer-comparison instrument behind many of its bands,
+and what it deliberately does not claim. This is normative on the fields and the vocabulary. For how a
 capability band earns a `last_verified` and the gates that hold it, see
 `docs/reference/evidence-and-freshness.md`; for the reader-facing account see
 `docs/methodology.md`.

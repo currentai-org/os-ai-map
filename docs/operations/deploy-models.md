@@ -75,24 +75,38 @@ grading at 06:00. Those crons were written onto the model **revisions** via
 
 **The platform schedules from the *dataset*, not the model revision.** The observed fact,
 which does not age: **of the 72 `evidence` and `scores` runs inspected on 2026-08-14, none had
-a `SCHEDULED` trigger** — every one was requested by hand. Only the five `signal_*` datasets and
-`aiid` carry a dataset-level cron today. The mechanism works (`signal_goodailist` fired
-`SCHEDULED` on 2026-08-09); the chain was simply never joined to it. Dataset cron settings are
-now inspectable directly (the dataset listing exposes each dataset's cron), so this claim is
-re-checkable rather than a one-time observation.
+a `SCHEDULED` trigger** — every one was requested by hand. Those crons were written onto the
+model revisions, which the scheduler does not read.
 
-So, until T4 of the audit lands (`updateDataModelSchedule` on the `evidence` and `scores`
-datasets, keeping the 03/04/05 spacing so parity stays downstream):
+**A set cron is not a firing cron — check the run history, not the `cron` field.** This is the
+part that surprises people, verified against the platform on 2026-08-14:
+
+| dataset | `cron` field | actually fired `SCHEDULED`? |
+|---|---|---|
+| `signal_goodailist` | `0 3 * * 0` (Sun) | **Yes** — 2026-08-09, `requestedBy: null` |
+| `signal_github` | `0 3 * * 6` (Sat) | **No** — 7/7 runs MANUAL, though `lastRunAt` shows a 07:00 slot with no matching run row |
+| `signal_huggingface` | `0 3 * * 6` (Sat) | cron set; no confirmed scheduled run |
+| `signal_pypi` | **null** | no cron to fire |
+| `evidence`, `scores` | none | No — 72/72 MANUAL |
+
+So the mechanism demonstrably works (goodailist), but a populated `cron`/`lastRunAt`/`nextRunAt`
+tells you nothing on its own — only a run whose `triggerType` is `SCHEDULED` proves the schedule
+fires. Read the dataset's run history, the same way `GetRun` status can read stale.
+
+Until T4 of the audit lands (`updateDataModelSchedule` on the `evidence` and `scores` datasets,
+keeping the 03/04/05 spacing so parity stays downstream):
 
 - **Treat every scoring-chain recompute as manual.** A merge that changes a score does not
   reach the warehouse until someone walks the chain above.
 - **Do not trust a "the warehouse recomputes weekly" statement** anywhere it survives — check
   the dataset's run history for a `SCHEDULED` trigger before believing it.
 
-**What no schedule refreshes either way: the signals.** `signal_huggingface.hub_state` and
-`signal_github.repo_state` are `@manual`, so even a firing chain recomputes the same fetched
-facts. Scheduling those is a larger decision than a cron expression — it is the point at which
-scores start moving on their own, which is what `apply_scores --check` exits non-zero for.
+**The signal fetchers are the same story.** `signal_github` and `signal_huggingface` carry a
+weekly cron but have not been observed firing it (their tables refresh when someone runs them by
+hand); `signal_pypi` carries no cron at all; only `signal_goodailist` genuinely refreshes on its
+own. So the fetched facts under the scoring chain are, in practice, hand-refreshed too — which is
+why scheduling them is a larger decision than a cron expression: it is the point at which scores
+start moving on their own, which is what `apply_scores --check` exits non-zero for.
 
 ## A publish is only half a refresh
 
