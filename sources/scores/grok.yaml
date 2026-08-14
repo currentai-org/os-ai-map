@@ -73,10 +73,12 @@ adoption:
     http_status: 200
     content_sha256: 3fe5555880dc7fdd9dcd75ac68cb1620fd9c71ccab517ac9f5ef7530edb94072
 capability:
-  score: 4
+  score: 5
   basis: benchmark
   basis_detail: Artificial Analysis Intelligence Index
-  value: null
+  value: 'Grok 4.6 (high) scores 61 on the Artificial Analysis Intelligence Index against a median of 34;
+    the only distinct models above it are Claude Opus 5 at 63 and Claude Fable 5 at 62, and it is level
+    with GPT-5.6 Sol at 61'
   confidence: high
   note: 'Artificial Analysis Intelligence Index v4.0 score of 49, ranked #24 of 150 (median 36); index includes
     GPQA Diamond and SciCode (individual subscores not disclosed). Provisional LMSYS/LMArena Elo ~1505-1535 (vs
@@ -100,7 +102,22 @@ capability:
     band: "a notch below the GPT-5/Gemini/Opus leaders" is no longer true of the tier''s flagship, which
     is two index points off the top and inside the leading group. That is a band question rather than a
     freshness one. ESCALATED for a ruling on 4 -> 5 - no last_verified claimed, because dating a 4 on a
-    source that reads #6 of 188 would be the rubber stamp this gate exists to catch.'
+    source that reads #6 of 188 would be the rubber stamp this gate exists to catch.
+
+    RE-BANDED 4 -> 5 on 2026-08-14, on the owner''s ruling, and re-confirmed against the page rather
+    than against the escalation. Artificial Analysis publishes "Grok 4.6 (high) scores 61 on the
+    Artificial Analysis Intelligence Index, placing it well above average among comparable models
+    (median - 34)", and the page''s own model record carries `deprecated - false`, unlike the grok-4-20
+    page that banners a replacement. Ranking the 456 model records the page embeds by their index, the
+    only distinct models scoring above Grok 4.6 (high) at 60.92 are Claude Opus 5 at 63.05 and Claude
+    Fable 5 at 62.07, with GPT-5.6 Sol level at 60.93 and Kimi K3 next at 59.70. The rank badge itself
+    is drawn client-side and is not in the served body, so this is re-derived from the embedded data
+    rather than read off the badge - it agrees with the "# 6 / 188" the 2026-08-13 read recorded.
+    grok-4.6 is the release the band is taken on, which docs/guides/identity.md licenses directly -
+    adoption and capability take the MAX across a tier''s releases - and xAI''s own model reference
+    still headlines "Meet grok-4.6" above grok-4.3, grok-4.5 and the older grok-4.20. A model inside the
+    top three of the index it is scored on is not a 4.'
+  last_verified: '2026-08-14'
   sources:
   - url: https://artificialanalysis.ai/models/grok-4-20
     shows: '"Grok 4.20 0309 v2 (Reasoning) scores 38 on the Artificial Analysis Intelligence Index, placing
@@ -124,3 +141,23 @@ capability:
     accessed: '2026-08-14'
     http_status: 200
     content_sha256: c2773a64aef99b6926d22f7fd870e6ab5d327197d6c8b8bae33ef923497fa238
+  - url: https://artificialanalysis.ai/models/grok-4-6
+    shows: 'Re-fetched for the 4 -> 5 ruling. Body carries "Grok 4.6 (high) scores 61 on the Artificial
+      Analysis Intelligence Index, placing it well above average among comparable models (median - 34)"
+      and the model record `"deprecated":false,"deprecatedTo":null`. Ranking the 456 embedded model
+      records by `intelligenceIndex`, Grok 4.6 (high) is at 60.92 behind only Claude Opus 5 (63.05) and
+      Claude Fable 5 (62.07), level with GPT-5.6 Sol (60.93) and ahead of Kimi K3 (59.70). The digest
+      differs from the read four hours earlier because the page carries live pricing and throughput
+      figures.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 113b8be449d39724cbc969e08846bdb98da6729fd3203cd2be64c6b80a5ac63b
+  - url: https://docs.x.ai/developers/models
+    shows: 'xAI''s model reference, the page docs.x.ai/docs/models now redirects to. It still headlines
+      "Meet grok-4.6" and lists grok-4.3, grok-4.5 and grok-4.6 above the grok-4.20 this record''s
+      openness axis is named for, which is what makes grok-4.6 the release the max-across-releases rule
+      takes capability on. The served body carries a per-request token, so its digest drifts between
+      fetches without the page changing.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 4765d54b4b0d19cb1f60ca8d6642df388a3404d2d419ee0e7ade3e0ac4da1ec7

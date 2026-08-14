@@ -47,8 +47,7 @@ openness:
     - license
 adoption:
   level: 3
-  reach: 100K-1M
-  signal_type: usage_volume
+  signal_type: reported_traction
   confidence: low
   note: 'pypistats reports ~17M lmnr downloads/mo, but this is anomalously high for a ~3k-star project
     and almost certainly CI/mirror-inflated (common for OTel auto-instrumentation SDKs pulled transitively);
@@ -62,7 +61,23 @@ adoption:
     rather than answering it - lmnr at 1,617,970 downloads a day now outruns langfuse at 1,118,108, which is
     not credible for a project an order of magnitude smaller by every other measure. Applying the ruling here
     would contradict the note, so the level stands at 3 pending a decision on whether to discount the figure,
-    find a de-mirrored count, or take it at face value.'
+    find a de-mirrored count, or take it at face value.
+
+    RESOLVED 2026-08-14 on the owner''s ruling by moving the INSTRUMENT rather than the level. The axis
+    is now reported_traction, the numeric reach 100K-1M is dropped, and level 3 stands. The point is to
+    stop asserting a measurement this record itself disputes: a usage_volume band claims a count somebody
+    can recompute, and the only count available here is a PyPI figure the note has said since it was
+    written is mirror-inflated. Keeping the instrument while discounting the figure by an order of
+    magnitude was the incoherent part.
+    The measured figure is recorded as a dated, digested source rather than as the basis of the band -
+    re-fetched 2026-08-14, pypistats answers last_month 34,062,990 for lmnr (last_week 9,228,203, last_day
+    1,293,104). That is a level-5 figure on the download scale and it is not believed: at ~1.3M downloads
+    a day lmnr outruns langfuse, a project an order of magnitude larger by stars, contributors and
+    customers, which is the tell for transitive or mirror pulls of an OTel auto-instrumentation SDK. What
+    the band actually rests on is the standing an Apache-2.0 tracing platform of this size has - a real
+    but small user base, ~3k GitHub stars - which is what reported_traction is the instrument for. No
+    `reach` word is recorded; omitting it is the honest default here.'
+  last_verified: '2026-08-14'
   sources:
   - url: https://pypistats.org/api/packages/lmnr/recent
     shows: last_month = 34,084,386 downloads for lmnr (last_week 9,210,651, last_day 1,617,970); recorded
@@ -70,6 +85,13 @@ adoption:
     accessed: '2026-08-14'
     http_status: 200
     content_sha256: aa10188d675f0504f79dac9f41d84fa85384cec1f0e4c07b7b12526adb5aba7a
+  - url: https://pypistats.org/api/packages/lmnr/recent
+    shows: 'Re-fetched for the instrument change - `{"data":{"last_day":1293104,"last_month":34062990,"last_week":9228203},"package":"lmnr"}`.
+      Recorded as a measurement of the PyPI channel, explicitly NOT as the basis of the band; the digest
+      differs from the earlier read the same day because the counters move.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 652866567c724684a441cbee54a76c05b64249d3e60253faedf3f55ab00f46cd
   - url: https://pypistats.org/packages/lmnr
     shows: ~17.06M lmnr downloads in last month (flagged as likely mirror-inflated)
     accessed: '2026-06-04'
