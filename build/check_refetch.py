@@ -71,6 +71,7 @@ import argparse
 import hashlib
 import random
 import re
+import time
 from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
@@ -87,6 +88,33 @@ USER_AGENT = (
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) "
     "Chrome/126.0.0.0 Safari/537.36 os-ai-map-verification/1.0"
 )
+
+# NO Accept / Accept-Language / Sec-Fetch-* here, and that is a finding rather than an
+# omission. On 2026-08-14 the full browser header set was measured against every host that
+# was blocking a verification pass — hailo.ai, www.demandsage.com, replit.com, openai.com,
+# www.qualcomm.com, www.nxp.com — and it moved nothing: 403 stayed 403, the NXP 404 stayed
+# 404, and Qualcomm's client-rendered shell merely grew from 8.7KB to 9.1KB of the same
+# shell. Adding headers that fix nothing would still re-digest the whole corpus, because a
+# body served under a different Accept can differ byte-for-byte, so every recorded digest
+# would drift at once. The cost is real and the benefit measured zero.
+#
+# Accept-Encoding in particular must NEVER be set here. urllib3 advertises only the codecs
+# it can decode, and this environment has no brotli; forcing `br` returned a 200 whose
+# `.content` was raw compressed bytes. Every digest taken that way would be a digest of
+# ciphertext-looking garbage that no re-fetch could reproduce or read.
+
+# Statuses that mean "not now" rather than "not here" — a WAF, a rate limiter or a bad
+# gateway, none of which say anything about whether the page exists.
+TRANSIENT = {403, 408, 425, 429, 500, 502, 503, 504}
+
+# openai.com sits behind a challenge that lets roughly one request in eight through: eight
+# consecutive plain GETs on 2026-08-14 returned 403 403 403 403 403 200 403 403, with no
+# header set changing the odds. Three attempts (the old default) clear that about a third of
+# the time, which is why `gpt-5` capability kept reading as unfetchable. Six attempts clear
+# it about two thirds of the time, and the cost of the extra attempts is paid only by hosts
+# that were failing anyway.
+RETRIES = 5
+BACKOFF = 2.0
 
 # The GitHub blob -> raw rewrite. It lives HERE, beside USER_AGENT, for the reason
 # fetch_source's docstring already gives: "this module does not describe how to fetch. It
@@ -108,6 +136,46 @@ def canonical(url: str) -> str:
         return url
     owner, repo, rest = match.groups()
     return f"https://raw.githubusercontent.com/{owner}/{repo}/{rest}"
+
+
+def http_get(
+    url: str,
+    timeout: float = 20.0,
+    retries: int = RETRIES,
+    backoff: float = BACKOFF,
+    sleep=time.sleep,
+) -> requests.Response:
+    """One canonicalized GET, retrying the statuses that mean "not now".
+
+    This is "how to fetch", and it lives here for the reason USER_AGENT and `canonical` do:
+    `build/fetch_source` records a digest and this module re-checks it, and the comparison
+    only means something if both sides performed the same operation. Retry policy is part of
+    that. Before this existed only fetch_source retried, so an intermittently-challenged host
+    could be recorded at 200 by the writer and then reported DEAD by the gate on a single
+    unlucky roll — the gate calling a live page dead is exactly the noise its own docstring
+    warns kills a gate.
+
+    Raises `requests.RequestException` like a plain `requests.get`; a status is returned, not
+    raised on, because a 404 is a finding to record rather than a crash.
+    """
+    url = canonical(url)
+    attempts = 0
+    while True:
+        attempts += 1
+        try:
+            response = requests.get(
+                url, timeout=timeout, headers={"User-Agent": USER_AGENT}, allow_redirects=True
+            )
+        except requests.RequestException:
+            if attempts <= retries:
+                sleep(backoff * attempts)
+                continue
+            raise
+        if response.status_code in TRANSIENT and attempts <= retries:
+            sleep(backoff * attempts)
+            continue
+        response.attempts = attempts  # type: ignore[attr-defined]
+        return response
 
 
 
@@ -222,10 +290,7 @@ def resolve_duplicates(
                 # blob page. fetch_source's own docstring warns about precisely this —
                 # "a digest taken with curl and re-checked with requests differs for reasons
                 # that have nothing to do with whether anybody read the page."
-                response = requests.get(
-                    canonical(url), timeout=timeout, headers={"User-Agent": USER_AGENT},
-                    allow_redirects=True,
-                )
+                response = http_get(url, timeout=timeout)
             except requests.RequestException:
                 unreachable.append(url)
                 continue
@@ -262,12 +327,7 @@ def resolve_duplicates(
 def refetch(source: Source, timeout: float) -> tuple[str, str]:
     """(outcome, detail). Outcome is one of confirmed / drifted / gone / unreachable."""
     try:
-        response = requests.get(
-            canonical(source.url),
-            timeout=timeout,
-            headers={"User-Agent": USER_AGENT},
-            allow_redirects=True,
-        )
+        response = http_get(source.url, timeout=timeout)
     except requests.RequestException as exc:
         return "unreachable", f"{type(exc).__name__}: {exc}"
 
@@ -275,6 +335,11 @@ def refetch(source: Source, timeout: float) -> tuple[str, str]:
     # make the gate fail on GitHub's rate limiter, which is how a gate earns a reputation
     # for lying. The first run of this module reported a live Mastra LICENSE as dead for
     # exactly that reason.
+    #
+    # 403 is deliberately NOT in this branch even though `http_get` retries it, and
+    # `tests/test_check_refetch.py::test_client_errors_are_dead` pins that. A source that
+    # answers 403 to six attempts is one nobody can re-read, which is precisely what a
+    # re-read pass needs surfaced loudly rather than filed under "retry later".
     if response.status_code == 429 or response.status_code >= 500:
         return "unreachable", f"HTTP {response.status_code} (transient; retry)"
     if response.status_code >= 400:

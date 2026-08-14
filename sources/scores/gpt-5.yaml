@@ -65,12 +65,17 @@ capability:
   value: null
   confidence: high
   note: 'OpenAI-reported at launch: SWE-bench Verified 74.9%, MMMU 84.2%, AIME 2025 94.6% (no tools), Aider Polyglot
-    88%. Frontier-tier coding/reasoning. Vendor-reported figures. NOT RE-VERIFIED on 2026-08-13 - the only
-    source this axis cites, openai.com/index/introducing-gpt-5/, returned HTTP 403 to a plain fetch on both
-    attempts, and none of the four figures appears on the GPT-5 Wikipedia article, so nothing corroborates
-    them. No last_verified claimed; the axis needs a reachable primary source.'
+    88%. Frontier-tier coding/reasoning. Vendor-reported figures. Re-read 2026-08-14 - the launch post
+    was unreachable on 2026-08-13 only because openai.com challenges most automated requests; it lets
+    roughly one in eight through, and the fetcher now retries far enough to catch one. The retrieved body
+    carries all four figures verbatim - "74.9% on SWE-bench Verified", "84.2% on MMMU", "94.6% on AIME 2025
+    without tools", "88% on Aider Polyglot" - so every recorded number re-derives from the cited primary
+    source. No change.'
+  last_verified: '2026-08-14'
   sources:
   - url: https://openai.com/index/introducing-gpt-5/
-    shows: OpenAI's GPT-5 launch post, the source of the four recorded figures. Returned HTTP 403 to a
-      plain fetch on 2026-08-13, so not re-dated.
-    accessed: '2026-06-04'
+    shows: OpenAI's GPT-5 launch post, the source of the four recorded figures, all four present in the
+      body as fetched
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: fdbead6ccf1f09cdb2cd08222520612468823c7923dd42bdf952b2658f974958

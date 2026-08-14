@@ -68,7 +68,20 @@ capability:
     that does carry the attributes renders client-side and returned no readable content, so the fact could
     not be re-derived from a fetch rather than being found absent. A source that still shows the attributes
     is needed, and the sunset raises the separate question of whether a product leaving service in 2026
-    should carry a live capability band at all.'
+    should carry a live capability band at all.
+    Re-derived 2026-08-14 against substitutes. The developer site genuinely cannot be fetched - it is
+    a client-rendered Salesforce Experience site that serves an empty body, which no header changes,
+    so the fact was established elsewhere. The Comment Analyzer discovery document, the API''s own
+    machine-readable definition and still served at 200, shows the service live and multilingual,
+    taking "ISO and BCP-47 language codes" and detecting language per comment. The fixed attribute
+    set is corroborated by Lasso''s write-up, which names it exactly as the value does - "The
+    production attributes (TOXICITY, SEVERE_TOXICITY, IDENTITY_ATTACK, INSULT, PROFANITY, THREAT)" -
+    plus experimental ones. Provenance caveat kept in view - Lasso sells a competing moderation
+    product, so it is a document rather than a re-derivable dataset, and confidence stays low. The
+    band is unchanged, but the ESCALATION STANDS - the same page states Perspective "will sunset
+    after December 31, 2026, with no migration path provided", so whether a sunsetting product should
+    carry a live capability band is still a ruling for the orchestrator, not a fetch problem.'
+  last_verified: '2026-08-14'
   sources:
   - url: https://perspectiveapi.com/
     shows: Sunset notice only. The toxicity and attribute scoring the value describes is no longer
@@ -76,3 +89,17 @@ capability:
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: c40c721ce2b0d461023e5f36699ce3be9a39da5493b51eff326dccd938ba1b8f
+  - url: https://commentanalyzer.googleapis.com/$discovery/rest?version=v1alpha1
+    shows: 'the API''s own discovery document, live at 200 - a comment-scoring service whose requests
+      carry "language(s) of the comment and context", accepting "Both ISO and BCP-47 language codes",
+      with per-comment language detection'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 57ec1f01254148fb14e4c2ee0642749dcaa9a62e4b2476fcf7aca73878519e37
+  - url: https://www.lassomoderation.com/blog/perspective-api-toxicity/
+    shows: '"The production attributes (TOXICITY, SEVERE_TOXICITY, IDENTITY_ATTACK, INSULT, PROFANITY,
+      THREAT) are stable and well-tested", with experimental attributes beyond them; and "Google
+      announced that Perspective API will sunset after December 31, 2026"'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 229db4df846ebea0130a8c5c50d601a63e315d90e42975c75f407bb0d4433702
