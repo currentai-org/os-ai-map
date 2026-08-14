@@ -254,7 +254,7 @@ and walk through validation + preview steps.
 
 After a PR merges, a maintainer (OSO MCP write access) may need to:
 
-- `docs/runbooks/verification-pass.md`: the plan for getting every score auditable --
+- `docs/workflows/refresh-category.md`: the plan for getting every score auditable --
   gates first, then coverage, then the re-read pass. Start here for score-verification
   work; it names the failure modes each step is guarding against.
 - `docs/operations/deploy-models.md`: revise, release, and run UDM SQL changes.

@@ -350,7 +350,7 @@ fabricated digest is worse than an absent one: an absent one fails the gate, whi
 one passes it and then defeats the sampled re-fetch, which is the only thing that ever goes back
 and checks whether a cited page says what it was recorded as saying. Three were fabricated on
 2026-08-13 by padding truncated prefixes out to 64 characters, which is why this is stated here
-rather than assumed. `docs/runbooks/verification-pass.md` carries the command that produces one.
+rather than assumed. `docs/workflows/refresh-category.md` carries the command that produces one.
 
 ## The gates, and why they ratchet
 

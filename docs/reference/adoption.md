@@ -286,7 +286,7 @@ existed; sharing them beats minting a parallel set.
 
 Settled 2026-08-14, at the end of the verification sweep, because the same five questions
 arrived once per category and got answered from scratch each time. These are curation rules and
-no gate enforces them; `docs/runbooks/verification-pass.md` is where a pass applies them.
+no gate enforces them; `docs/workflows/refresh-category.md` is where a pass applies them.
 
 - **A measured signal on an already-declared artifact beats a hand-set band.** The artifact was
   declared, so the count is the instrument the record already claims to have been read with, and

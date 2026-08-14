@@ -1,7 +1,7 @@
 """The three free gates: is a claimed confirmation supported, and is a score even possible.
 
 `docs/reference/evidence-and-freshness.md` is normative for all three. This module implements them; when
-the two disagree the guide wins. `docs/runbooks/verification-pass.md` has the order of
+the two disagree the guide wins. `docs/workflows/refresh-category.md` has the order of
 operations and why the gates land before any bulk editing of `sources/scores/`.
 
 ## The invariant

@@ -179,7 +179,7 @@ Examples:
 ## Global rules
 
 1. **American English everywhere** — `license` not `licence`, `penalized`, `labeled`,
-   `behavior`. This is a standing hazard in `verification-pass.md` and applies to prose
+   `behavior`. This is a standing hazard in `workflows/refresh-category.md` and applies to prose
    too, not just identifiers.
 2. **No marketing cadence.** Same register as the methodology copy.
 3. **Never assert from memory.** Any factual claim — version, release date, license,
@@ -195,7 +195,7 @@ Examples:
 ## How far to verify a claim
 
 A prose refresh runs *inside* the score re-read — one pass per product, described in
-`docs/runbooks/verification-pass.md` Phase 4. The same repository, model card and vendor docs
+`docs/workflows/refresh-category.md` Phase 4. The same repository, model card and vendor docs
 are opened once and both halves are written from what they show. So prose carries no separate
 research budget, and the only question left is what to do with the claims that sit outside the
 score's evidence.
