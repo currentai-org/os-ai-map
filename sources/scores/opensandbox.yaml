@@ -105,10 +105,68 @@ capability:
     language/runtime breadth:Python/TS/Go/Java SDKs, unified sandbox API, MCP server (Claude Code/Cursor);
     persistence:file ops; scale:K8s
   confidence: medium
-  note: Broad multi-language SDK surface and MCP integration with K8s scale, but container-level isolation
+  note: 'Broad multi-language SDK surface and MCP integration with K8s scale, but container-level isolation
     (no VM/microVM tier observed) keeps it mid-tier on the isolation-strength dimension vs Firecracker/gVisor/Kata.
     Strong breadth, moderate isolation.
+    NOT DATED ON 2026-08-14 and ESCALATED, because the re-derivation says this record UNDERSTATES the
+    product and the correction is a level move, which is not mine to take. The "no VM/microVM tier
+    observed" clause is what the whole band rests on and it no longer holds. OSEP-0004, status
+    `implementing`, specifies pluggable secure container runtimes selected once at server level - gVisor
+    via runsc, Kata Containers on QEMU, on Firecracker and on Cloud Hypervisor - with runc the fallback
+    when none is configured. That is not a proposal sitting in a docs folder. SecureRuntimeResolver ships
+    in the server and maps the configured type onto a Docker OCI runtime and a Kubernetes RuntimeClass
+    (gvisor to runsc / gvisor, kata to kata-runtime / kata-qemu, firecracker to kata-fc), validates the
+    runtime exists at startup, and the repository carries a gVisor e2e suite with its own RuntimeClass
+    fixtures plus a full AKS + Kata deployment walkthrough in docs and a matching example directory. So
+    the strongest isolation available here is a microVM, operator-selected, exactly like the tier the
+    band was marked down for lacking. Recommendation - move this to 4, level with daytona-sandbox, which
+    already scores 4 on the same shape of evidence (container by default, VM classes opt-in) and with a
+    weaker openness story. Two things argue against going past 4. OpenSandbox explicitly does not
+    install or configure the secure runtime (OSEP-0004 non-goal 1), so the microVM tier depends on
+    infrastructure the operator provides, and one server instance supports exactly one runtime at a
+    time. And there is no independent latency measurement - the OSEP''s own table is labeled planning
+    estimates, putting gVisor at ~550ms and Kata/Firecracker at ~625ms cold start, so the frontier
+    claim on isolation is not matched by a measured claim on speed. The rest of the recorded value -
+    SDK breadth, MCP, K8s scale - re-derives unchanged.'
   sources:
   - url: https://github.com/alibaba/OpenSandbox
     shows: Docker/Kubernetes runtimes; multi-language SDKs (Python/TS/Go/Java); unified API; MCP server
     accessed: '2026-06-04'
+  - url: https://raw.githubusercontent.com/opensandbox-group/OpenSandbox/main/oseps/0004-secure-container-runtime.md
+    shows: 'OSEP-0004 "Pluggable Secure Container Runtime Support", status implementing, last updated
+      2026-02-09. Enables sandboxes to run in gVisor, Firecracker and Kata Containers for
+      hardware-level isolation of untrusted AI-generated code, configured once at server level in a
+      [secure_runtime] block. Runtime table covers gVisor (user-space kernel), Kata QEMU (full VM),
+      Kata Firecracker (microVM) and Kata CLH (Cloud Hypervisor), with runc the default fallback.
+      Non-goals state OpenSandbox will not install the runtimes and one server supports exactly one.
+      Planning-estimate latencies - gVisor ~550ms cold / ~100ms warm, Kata QEMU ~1000ms / ~200ms, Kata
+      Firecracker ~625ms / ~125ms - explicitly not a performance guarantee.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 0e78ff9ac47232d5547d46f75d2892ec2b81042a4bb658be00cec7700b1b7763
+  - url: https://raw.githubusercontent.com/opensandbox-group/OpenSandbox/main/server/opensandbox_server/services/runtime_resolver.py
+    shows: 'The shipped implementation, not the proposal. SecureRuntimeResolver holds the Docker map
+      gvisor to runsc and kata to kata-runtime, and the Kubernetes RuntimeClass map gvisor to gvisor,
+      kata to kata-qemu and firecracker to kata-fc, with get_docker_runtime, get_k8s_runtime_class and
+      validate_secure_runtime_on_startup checking the runtime or RuntimeClass exists before serving.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 3193ac44cebe3e45435273bd49487b21878d4b338e71adce5671df9cbd33164e
+  - url: https://raw.githubusercontent.com/opensandbox-group/OpenSandbox/main/docs/examples/aks-kata.md
+    shows: 'A documented end-to-end deployment onto an AKS cluster with Kata VM isolation - prerequisite
+      is a cluster where `kubectl get runtimeclass` shows `kata-vm-isolation`, with Helm values, a
+      BatchSandbox template pinning pods onto Kata nodes, and a CLI walkthrough covering ingress,
+      egress and the Credential Vault. Evidence the VM tier is a supported deployment shape rather than
+      a design note.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 2190b35cd0906233868f51d9c5198c8594d86be4a01bac5338f6a636ee00e2cf
+  - url: https://api.github.com/repos/opensandbox-group/OpenSandbox/git/trees/main?recursive=1
+    shows: 'Untruncated recursive tree, 2,642 entries. Carries kubernetes/test/e2e_runtime/gvisor/ with
+      its own suite and RuntimeClass fixtures, kubernetes/test/e2e/testdata/runtimeclass/gvisor.yaml,
+      examples/aks-kata/ with Helm values and a BatchSandbox template, and
+      server/opensandbox_server/services/runtime_resolver.py - the runtime support is implemented and
+      tested, not merely specified.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 96de8bab4273bb81e622ba457def36967e0d815a7a41cf1bb10d19efc170334e

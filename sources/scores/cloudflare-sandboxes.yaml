@@ -71,18 +71,40 @@ openness:
     establishes:
     - source
 adoption:
-  level: 3
-  reach: 100K-1M
+  level: 4
+  reach: 1M-10M
   signal_type: usage_volume
   confidence: medium
-  note: npm @cloudflare/sandbox ~533k downloads in the last 30 days (npm registry API); Dynamic Workers
-    in open beta to all paid Workers users with a named customer (Zite) reporting 'millions of execution
-    requests daily.' Package pulls + young beta status => reach placed at 100K-1M (level 3); execution-request
-    volume is per-customer, not distinct-user adoption.
+  note: 'npm @cloudflare/sandbox ~533k downloads in the last 30 days (npm registry API); Dynamic Workers
+    in open beta to all paid Workers users with a named customer (Zite) reporting ''millions of execution
+    requests daily.'' Execution-request volume is per-customer, not distinct-user adoption. Re-banded
+    2026-08-14. The npm downloads API reports 1,136,848 downloads of @cloudflare/sandbox over
+    2026-07-11 to 2026-08-09, roughly double the June reading and past the 1M floor, which bands at
+    level 4 / 1M-10M rather than the 100K-1M recorded. The package is the product''s own - registry
+    metadata points at github.com/cloudflare/sandbox-sdk, the same repository the openness axis reads.
+    Per the 2026-08-14 ruling this figure is re-fetchable but NOT pipeline-recomputable, because npm is
+    an unbridged route (issue #163); no signal model reads it, so it must not be mistaken for a computed
+    band. Confidence stays medium - the margin over the floor is modest and package pulls carry the
+    usual CI and mirror inflation.'
+  last_verified: '2026-08-14'
   sources:
   - url: https://api.npmjs.org/downloads/point/last-month/@cloudflare/sandbox
     shows: ~533,043 downloads May 4-Jun 2 2026
     accessed: '2026-06-04'
+  - url: https://api.npmjs.org/downloads/point/last-month/@cloudflare%2Fsandbox
+    shows: 1,136,848 downloads of package @cloudflare/sandbox over the window start 2026-07-11 to end
+      2026-08-09. The scoped name is URL-encoded because the npm point endpoint requires it.
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 9c5768fa01c5619f3ed03c46dbe53bb7ecb2b6c02aa71d84e3ea9cd0333eefb6
+  - url: https://registry.npmjs.org/@cloudflare%2Fsandbox
+    shows: 'Registry metadata for the package - repository git+https://github.com/cloudflare/sandbox-sdk.git,
+      homepage github.com/cloudflare/sandbox-sdk#readme, described as "A sandboxed environment for
+      running commands", latest 0.12.5. Confirms the package is the product''s own SDK rather than a
+      same-name match.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: b46b9f358e9acc9826481dd6d7beef825389e073f4ff6da370446ab706897765
   - url: https://blog.cloudflare.com/dynamic-workers/
     shows: open beta to all paid Workers users; Zite millions of execution requests/day
     accessed: '2026-06-04'
