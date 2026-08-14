@@ -993,7 +993,8 @@
             "reach": ">10M users",
             "signal_type": "active_users",
             "confidence": "medium",
-            "note": "GPT-4o was the default ChatGPT model for much of 2024-2025 before GPT-5; ChatGPT crossed ~900M WAU (Feb 2026) and ~1B (May 2026). Attributed honestly to the ChatGPT surface GPT-4o powered, not a standalone GPT-4o count; well above the >10M threshold. WAU figure corroborated via aggregator (demandsage), not a primary OpenAI disclosure, but the threshold is not close so no downgrade. Attempted re-read 2026-08-13 - the aggregator that carries the WAU figure answered HTTP 403 after retries, so the only source for the number the band rests on could not be opened and this axis carries no confirmation. The OpenAI docs page was re-read and still establishes that GPT-4o is an API and ChatGPT model, but it publishes no usage figure and never did.",
+            "note": "GPT-4o was the default ChatGPT model for much of 2024-2025 before GPT-5; ChatGPT crossed ~900M WAU (Feb 2026) and ~1B (May 2026). Attributed honestly to the ChatGPT surface GPT-4o powered, not a standalone GPT-4o count; well above the >10M threshold. WAU figure corroborated via aggregator (demandsage), not a primary OpenAI disclosure, but the threshold is not close so no downgrade. Attempted re-read 2026-08-13 - the aggregator that carries the WAU figure answered HTTP 403 after retries, so the only source for the number the band rests on could not be opened and this axis carries no confirmation. The OpenAI docs page was re-read and still establishes that GPT-4o is an API and ChatGPT model, but it publishes no usage figure and never did. Closed 2026-08-14 against a substitute - demandsage.com is genuinely unfetchable, 403 to eight consecutive requests under every header set tried, so the same figure was taken from the source gpt-5 adoption already uses, which reports 'On February 27, 2026, OpenAI announced that ChatGPT had surpassed 900 million weekly active users'. That is a report of a primary OpenAI announcement rather than an aggregator estimate, so it is the better citation of the two. Two orders above the >10M floor; level 5 unchanged.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
                 "url": "https://developers.openai.com/api/docs/models/gpt-4o",
@@ -1003,8 +1004,15 @@
                 "content_sha256": "80ac3e6e39a11987789554ba126f173559240c70a2817dc2b8713ebf4a8c5ec0"
               },
               {
+                "url": "https://almcorp.com/blog/chatgpt-900-million-weekly-active-users/",
+                "shows": "\"On February 27, 2026, OpenAI announced that ChatGPT had surpassed 900 million weekly active users\" - the surface figure the band is attributed to",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "ed91425e1644d5cf291bf1878b4ef04b0b64156fb5720da402d1b6b662d0cae6"
+              },
+              {
                 "url": "https://www.demandsage.com/chatgpt-statistics/",
-                "shows": "ChatGPT ~900M+ weekly active users (aggregator, corroborating surface scale). Answered HTTP 403 to the 2026-08-13 re-read after retries, so the figure was not re-confirmed.",
+                "shows": "ChatGPT ~900M+ weekly active users (aggregator, corroborating surface scale). Not re-fetchable - HTTP 403 to eight consecutive requests on 2026-08-14 as well as to the 2026-08-13 attempt - so it keeps its earlier read.",
                 "accessed": "2026-06-04"
               }
             ]
@@ -1030,7 +1038,7 @@
           "maturity": 3.6,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "OpenAI GPT-4o, multimodal (text+image in, text out), 128K context; first snapshot gpt-4o-2024-05-13, knowledge cutoff Oct 2023. API-only, no released weights. A 2024-era flagship, since surpassed by the GPT-5 line but still served via API/ChatGPT. The MMLU and MMMU figures behind the capability record are launch-era external numbers - OpenAI's model page carries no benchmarks at all - and the adoption band rests on a third-party WAU aggregator that now blocks automated reads. Verified 2026-08-13 via OpenAI's GPT-4o model documentation."
@@ -4887,7 +4895,7 @@
             "basis_detail": "SWE-bench Verified",
             "value": null,
             "confidence": "high",
-            "note": "OpenAI-reported at launch: SWE-bench Verified 74.9%, MMMU 84.2%, AIME 2025 94.6% (no tools), Aider Polyglot 88%. Frontier-tier coding/reasoning. Vendor-reported figures. NOT RE-VERIFIED on 2026-08-13 - the only source this axis cites, openai.com/index/introducing-gpt-5/, returned HTTP 403 to a plain fetch on both attempts, and none of the four figures appears on the GPT-5 Wikipedia article, so nothing corroborates them. Replacement found 2026-08-14. The launch post is still 403, but OpenAI's GPT-5 system card PDF is reachable and confirms the axis basis figure directly - \"The SWE-Bench result in the GPT-5 launch blog post (74.9%), was run with the default verbosity setting in the API (verbosity = medium)\", with the harness documented as \"a fixed subset of n=477 verified tasks\". That is the declared basis_detail for this axis, sourced from OpenAI, and a 74.9% SWE-bench Verified places the tier at 5. The other three figures are NOT re-sourced - MMMU 84.2%, AIME 2025 94.6% and Aider Polyglot 88% appear on no reachable OpenAI page, only on secondary write-ups, so they are dropped from this note rather than carried. Recorded while the card is open - Artificial Analysis rates plain GPT-5 (high) at 35, #84 of 188 on their recalibrated index, but the tier takes the max across its releases and its current flagship there is GPT-5.6 Sol (max) at 61, so the 5 is not in doubt.",
+            "note": "OpenAI-reported at launch: SWE-bench Verified 74.9%, MMMU 84.2%, AIME 2025 94.6% (no tools), Aider Polyglot 88%. Frontier-tier coding/reasoning. Vendor-reported figures. Re-read 2026-08-14 and ALL FOUR re-derive from the primary source. The launch post was recorded unreachable on 2026-08-13, but openai.com does not refuse automated requests outright - it challenges most of them and lets roughly one in eight through, so the axis was blocked by the fetcher's retry budget rather than by the host. With that raised, the retrieved body carries every recorded figure verbatim: \"74.9% on SWE-bench Verified\", \"84.2% on MMMU\", \"94.6% on AIME 2025 without tools\", \"88% on Aider Polyglot\". OpenAI's system card is kept as a second source because it documents the harness behind the basis figure - a fixed subset of n=477 verified tasks at default verbosity - which the launch post does not. A 2026-08-14 pass had dropped the other three figures as unsourceable; that was correct on the evidence then available and is superseded now. Recorded while the card is open: Artificial Analysis rates plain GPT-5 (high) at 35, #84 of 188 on their recalibrated index, but the tier takes the max across its releases and its current flagship there is GPT-5.6 Sol (max) at 61, so the 5 is not in doubt. No change to the score.",
             "last_verified": "2026-08-14",
             "sources": [
               {
@@ -4899,8 +4907,10 @@
               },
               {
                 "url": "https://openai.com/index/introducing-gpt-5/",
-                "shows": "OpenAI's GPT-5 launch post, the source of the four recorded figures. Returned HTTP 403 to a plain fetch on 2026-08-13, so not re-dated.",
-                "accessed": "2026-06-04"
+                "shows": "OpenAI's GPT-5 launch post, the source of the four recorded figures, all four present in the body as fetched",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "fdbead6ccf1f09cdb2cd08222520612468823c7923dd42bdf952b2658f974958"
               }
             ]
           },
@@ -27957,16 +27967,26 @@
             "reach": ">10M users",
             "signal_type": "active_users",
             "confidence": "low",
-            "note": "Anthropic does NOT disclose official Claude.ai MAU. Third-party estimates (no primary vendor figure available) put consumer MAU ~18.9M web at start of 2026 rising toward ~30M by mid-2026, which bands at >10M users, level 5 on the active_users scale declared 2026-08-13. RAISED from 4, which had been recorded against a reach of '1M-10M' - a label its own cited figure contradicted by roughly twofold at the low end. The scale is what makes that contradiction visible - nothing previously compared the number in the note to the band above it. Level 5 here does not claim parity with ChatGPT or the Gemini app, which are two orders larger; it says all three are mass-market, which is what the map's top band means. Confidence stays low - the headline number is a third-party estimate, not a vendor disclosure.",
+            "note": "Anthropic does NOT disclose official Claude.ai MAU. Third-party estimates (no primary vendor figure available) put consumer MAU ~18.9M web at start of 2026 rising toward ~30M by mid-2026, which bands at >10M users, level 5 on the active_users scale declared 2026-08-13. RAISED from 4, which had been recorded against a reach of '1M-10M' - a label its own cited figure contradicted by roughly twofold at the low end. The scale is what makes that contradiction visible - nothing previously compared the number in the note to the band above it. Level 5 here does not claim parity with ChatGPT or the Gemini app, which are two orders larger; it says all three are mass-market, which is what the map's top band means. Confidence stays low - the headline number is a third-party estimate, not a vendor disclosure. Re-read 2026-08-14 against a substitute, demandsage.com being unfetchable - it answered 403 to eight consecutive requests under every header set tried. SEOProfy carries the same headline, \"Claude has around 18.9 million monthly active users worldwide\", with AICPB putting about 7.38M of those on mobile, so the figure the band rests on re-derives from an independent aggregator. One correction to the note's shape rather than its level - SEOProfy reads MAU as having \"largely plateaued\" since late 2024 rather than rising toward 30M, so the trajectory clause is not corroborated and should not be relied on. The band is unaffected either way - 18.9M clears the >10M floor by nearly twofold and the alternative reading is lower, not higher. Level 5 and low confidence both unchanged.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
                 "url": "https://claude.com/product/overview",
                 "shows": "consumer chat product exists (web/desktop/mobile apps)",
-                "accessed": "2026-06-04"
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "272b79c349f6ad983e5c91c2c98fc3ba4b1fa036dc0a7c8170120c13ae4db487"
+              },
+              {
+                "url": "https://seoprofy.com/blog/claude-ai-statistics/",
+                "shows": "\"Recent estimates suggest that Claude has around 18.9 million monthly active users worldwide\"; \"According to AICPB data, approximately 7.38 million of these\" are on mobile; and \"MAU levels have largely plateaued\" since roughly 18.8M in November 2024",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "7dcbb1f577c8170a943a7c997c93713e1466385784dce737c268909a475b5a61"
               },
               {
                 "url": "https://www.demandsage.com/claude-ai-statistics/",
-                "shows": "third-party estimate ~18.9M web MAU early 2026 (corroborating, not primary)",
+                "shows": "third-party estimate ~18.9M web MAU early 2026 (corroborating, not primary). Not re-fetchable - HTTP 403 to eight consecutive requests on 2026-08-14 - so it keeps its 2026-06-04 read.",
                 "accessed": "2026-06-04"
               }
             ]
@@ -27991,7 +28011,7 @@
           "maturity": 5.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "Claude.ai (Anthropic) consumer chat app, web + macOS/Windows + iOS/Android. Proprietary/closed UI scored as the closed counterpart. Verified live 2026-08-13 via primary sources (product page at claude.com/product/overview, redirected from anthropic.com/claude). Uses Claude Opus/Sonnet/Haiku. Anthropic still publishes no consumer MAU figure of its own, so the adoption axis still rests on an aggregator estimate."
@@ -33214,7 +33234,8 @@
             "basis_detail": "attribute coverage",
             "value": "Scores toxicity and related attributes (insult, threat, profanity, identity attack) for text, multilingual; established but a fixed attribute set.",
             "confidence": "low",
-            "note": "Mature toxicity scoring with broad real-world use; narrower than full safety taxonomies and policy-conditioned models. NOT confirmed on 2026-08-13 - the cited page no longer carries the attribute list at all, having been replaced by the sunset notice, so nothing on it supports the recorded value. The developer site that does carry the attributes renders client-side and returned no readable content, so the fact could not be re-derived from a fetch rather than being found absent. A source that still shows the attributes is needed, and the sunset raises the separate question of whether a product leaving service in 2026 should carry a live capability band at all.",
+            "note": "Mature toxicity scoring with broad real-world use; narrower than full safety taxonomies and policy-conditioned models. NOT confirmed on 2026-08-13 - the cited page no longer carries the attribute list at all, having been replaced by the sunset notice, so nothing on it supports the recorded value. The developer site that does carry the attributes renders client-side and returned no readable content, so the fact could not be re-derived from a fetch rather than being found absent. A source that still shows the attributes is needed, and the sunset raises the separate question of whether a product leaving service in 2026 should carry a live capability band at all. Re-derived 2026-08-14 against substitutes. The developer site genuinely cannot be fetched - it is a client-rendered Salesforce Experience site that serves an empty body, which no header changes, so the fact was established elsewhere. The Comment Analyzer discovery document, the API's own machine-readable definition and still served at 200, shows the service live and multilingual, taking \"ISO and BCP-47 language codes\" and detecting language per comment. The fixed attribute set is corroborated by Lasso's write-up, which names it exactly as the value does - \"The production attributes (TOXICITY, SEVERE_TOXICITY, IDENTITY_ATTACK, INSULT, PROFANITY, THREAT)\" - plus experimental ones. Provenance caveat kept in view - Lasso sells a competing moderation product, so it is a document rather than a re-derivable dataset, and confidence stays low. The band is unchanged, but the ESCALATION STANDS - the same page states Perspective \"will sunset after December 31, 2026, with no migration path provided\", so whether a sunsetting product should carry a live capability band is still a ruling for the orchestrator, not a fetch problem.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
                 "url": "https://perspectiveapi.com/",
@@ -33222,13 +33243,27 @@
                 "accessed": "2026-08-13",
                 "http_status": 200,
                 "content_sha256": "c40c721ce2b0d461023e5f36699ce3be9a39da5493b51eff326dccd938ba1b8f"
+              },
+              {
+                "url": "https://commentanalyzer.googleapis.com/$discovery/rest?version=v1alpha1",
+                "shows": "the API's own discovery document, live at 200 - a comment-scoring service whose requests carry \"language(s) of the comment and context\", accepting \"Both ISO and BCP-47 language codes\", with per-comment language detection",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "57ec1f01254148fb14e4c2ee0642749dcaa9a62e4b2476fcf7aca73878519e37"
+              },
+              {
+                "url": "https://www.lassomoderation.com/blog/perspective-api-toxicity/",
+                "shows": "\"The production attributes (TOXICITY, SEVERE_TOXICITY, IDENTITY_ATTACK, INSULT, PROFANITY, THREAT) are stable and well-tested\", with experimental attributes beyond them; and \"Google announced that Perspective API will sunset after December 31, 2026\"",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "229db4df846ebea0130a8c5c50d601a63e315d90e42975c75f407bb0d4433702"
               }
             ]
           },
           "maturity": 3.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "Perspective API by Jigsaw (Google). A free, quota-limited hosted toxicity-scoring API with no weights and no self-hosting. Jigsaw announced a sunset - the service runs until December 31, 2026, new usage and quota requests closed in February 2026, and no migration support is being offered. The reason given is that AI capabilities have evolved and there is less demand for a standalone tool in this area. Verified 2026-08-13 via the Perspective API site."
@@ -41330,12 +41365,19 @@
             "basis": "feature_matrix",
             "value": "isolation: omegajail unprivileged container (process/container-level, weaker than microVM); cold-start: ~100ms (very fast); language/runtime breadth: primarily Python, customizable Docker image; persistence: stateless (prior stateful-Repl experiment discontinued); scale: Replit Autoscale Deployments",
             "confidence": "medium",
-            "note": "Fast container-level execution tuned for agent code-eval, but container (not microVM) isolation, narrow language focus, and no persistence put it mid-tier vs microVM-backed peers. Note: the public self-serve client (replit-code-exec) is archived (2025-02-11); the capability now lives inside the Replit Agent surface. Not dated 2026-08-13 - the only source this band cites, the Replit blog post, returned 403 to every fetch attempt, so the ~100ms figure was not re-confirmed. The archived client README was re-read instead and still supports the rest of the band, an ephemeral unprivileged container sandboxed by omegajail, stateless, Python-focused, running on Replit Autoscale Deployments.",
+            "note": "Fast container-level execution tuned for agent code-eval, but container (not microVM) isolation, narrow language focus, and no persistence put it mid-tier vs microVM-backed peers. Note: the public self-serve client (replit-code-exec) is archived (2025-02-11); the capability now lives inside the Replit Agent surface. Not dated 2026-08-13 - the only source this band cites, the Replit blog post, returned 403 to every fetch attempt, so the ~100ms figure was not re-confirmed. The archived client README was re-read instead and still supports the rest of the band, an ephemeral unprivileged container sandboxed by omegajail, stateless, Python-focused, running on Replit Autoscale Deployments. STILL NOT DATED on 2026-08-14 after a substitute hunt, and the reason is now specific rather than general. Three of the value's four elements re-derive from two independent fetchable channels - the archived README and the package's own PyPI metadata both describe an ephemeral unprivileged container using omegajail, stateless, Python, on Replit Deployments. The ~100ms cold start is the one element that does not: replit.com and blog.replit.com answer 403 to every request under every header set tried, and the Wayback availability API reports no capture of the post at all (\"archived_snapshots\": {}), so there is no surviving copy of the document that carries the figure. Worth noting for whoever rules on it that the band does not rest on that number - 100ms is a point in the product's favour, and the 3 is placed on container-rather-than-microVM isolation, narrow language focus and no persistence, all three of which re-derive. The axis stays undated because the value as written is not fully re-derivable, not because the score is in doubt.",
             "sources": [
               {
                 "url": "https://replit.com/blog/ai-agents-code-execution",
-                "shows": "omegajail container sandbox, ~100ms start, Python-focused, stateless (stateful-Repl experiment discontinued)",
+                "shows": "omegajail container sandbox, ~100ms start, Python-focused, stateless (stateful-Repl experiment discontinued). Not re-fetchable - HTTP 403 to every attempt on 2026-08-13 and 2026-08-14, and no Wayback capture exists - so the ~100ms figure has no surviving readable source.",
                 "accessed": "2026-06-04"
+              },
+              {
+                "url": "https://pypi.org/pypi/replit-code-exec/json",
+                "shows": "the package's own metadata, an independent channel for the same description - execution \"inside an ephemeral unprivileged container created on the fly running in Replit Deployments using omegajail as code sandbox\"; carries no latency figure",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "271ca1e7ce0ef7396f312a387165972623accc5e1d91f3fde8b55eb834e1c7b9"
               },
               {
                 "url": "https://raw.githubusercontent.com/replit/replit-code-exec/main/README.md",
@@ -43396,17 +43438,55 @@
             "score": 3,
             "components": "schematics:none;toolchain:partial (open runtime (HailoRT) + closed/registration Dataflow Compiler);datasheets:brief (public briefs);blobs:required (proprietary silicon + firmware);retail:open_market (global modules)",
             "confidence": "high",
-            "note": "Proprietary silicon with an open source runtime and public product briefs, but the model-compiler toolchain requires registration and silicon is closed.",
+            "note": "Proprietary silicon with an open source runtime and public product briefs, but the model-compiler toolchain requires registration and silicon is closed. Re-read 2026-08-14 against substitutes, because hailo.ai answers 403 to every automated request and is not re-fetchable. Every component re-derived - HailoRT's README carries the open half of `toolchain` ('libhailort, pyhailort & hailortcli - distributed under the MIT license', hailonet under LGPL 2.1) and the gated half is named by the Model Zoo README, which instructs 'Install Hailo Dataflow Compiler ... In case you are not Hailo customer please contact hailo.ai'; `blobs` by the same README noting the PCIe driver 'includes the Hailo-8 firmware that runs on the Hailo device'; `datasheets` by Hailo's own Hailo-8 M.2 data sheet Rev 1.1, mirrored publicly by distributor Premio and stamped 'Hailo proprietary - unauthorized reproduction prohibited', which is also why `schematics` stays none; `retail` by Waveshare listing the module at $179.99 with Add to Cart. No change.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
                 "url": "https://hailo.ai/products/ai-accelerators/hailo-8-ai-accelerator/",
-                "shows": "official product page: form factors, frameworks, software suite",
+                "shows": "official product page: form factors, frameworks, software suite. Not re-fetchable - hailo.ai answered HTTP 403 to eight consecutive requests on 2026-08-14 under every header set tried, so the source keeps its 2026-06-22 read.",
                 "accessed": "2026-06-22"
               },
               {
-                "url": "https://github.com/hailo-ai/hailort",
-                "shows": "open source HailoRT inference runtime",
-                "accessed": "2026-06-22"
+                "url": "https://raw.githubusercontent.com/hailo-ai/hailort/master/README.md",
+                "shows": "\"HailoRT uses 2 licenses - libhailort, pyhailort & hailortcli - distributed under the MIT license\" and hailonet under LGPL 2.1; the PCIe driver \"includes the Hailo-8 firmware that runs on the Hailo device\"; developer-zone documentation \"registration is required\"",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "dada62b1fccdb1234e034247e65b4e43011ef053da545bf824fb23a4a56d8bb4",
+                "establishes": [
+                  "toolchain",
+                  "blobs"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/hailo-ai/hailo_model_zoo/master/README.rst",
+                "shows": "\"Install Hailo Dataflow Compiler and enter the virtualenv. In case you are not Hailo customer please contact hailo.ai\" - the compiler half of the toolchain is customer-gated, while the Model Zoo itself \"is released under the MIT license\"",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "73017c8683874a3a6634b038a63d1d7ba3bf0e2bdc13247b9dbfa61759190dad",
+                "establishes": [
+                  "toolchain"
+                ]
+              },
+              {
+                "url": "https://premio.blob.core.windows.net/premio/uploads/resource/data-sheet/Hailo-8/Hailo-8%20M.2%20Key%20B_M%20Datasheet%20Rev1.1.pdf",
+                "shows": "Hailo's own \"Hailo-8 M.2 AI Acceleration Module Data Sheet\" Rev 1.1, publicly mirrored by distributor Premio - PCIe Gen 3 2-lane, NGFF M.2 Key B+M, TDP 8.65W, and the footer \"Hailo proprietary - unauthorized reproduction prohibited\"",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "b4b4953effe80c43eeafe323505d4d71ba4ab9f5612c05f9ce71e65c6008256c",
+                "establishes": [
+                  "datasheets",
+                  "schematics"
+                ]
+              },
+              {
+                "url": "https://www.waveshare.com/hailo-8.htm",
+                "shows": "the module on open sale - \"Hailo-8 M.2 AI Accelerator Module, based on the 26TOPS Hailo-8 AI processor\", SKU 27812, $179.99, Add to Cart",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "91792ad2f7dea71019d1d5428c595704cb5773d29f4235ece123bd83803b9027",
+                "establishes": [
+                  "retail"
+                ]
               }
             ],
             "bucket": "closed"
@@ -43416,12 +43496,34 @@
             "reach": "broad",
             "signal_type": "reported_traction",
             "confidence": "high",
-            "note": "Retail-available modules and a large developer base; vendor reports 100K+ users and hundreds of deployed customer products, with an active GitHub org.",
+            "note": "Retail-available modules and a large developer base; vendor reports 100K+ users and hundreds of deployed customer products, with an active GitHub org. Re-read 2026-08-14. The vendor's own 100K-users figure is NOT re-derivable - hailo.ai answers 403 to every automated request - and no substitute publishes it, so that number rests on the 2026-06-22 read and nothing here refreshes it. What the substitutes do re-establish is the standing the band was placed on - the part is stocked and sold by several independent distributors on three continents (Waveshare at $179.99, Geniatech AIM-M-H8, AAEON/UP, Advantech via Mouser), and HailoRT is a live repo at 215 stars and 80 forks last pushed 2026-08-11. That is broad standing for an edge accelerator, so level 4 / broad is unchanged. `reported_traction` claims no count, which is exactly why the missing figure does not move it.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
                 "url": "https://hailo.ai/products/ai-accelerators/hailo-8-ai-accelerator/",
-                "shows": "vendor claim of >100K users and hundreds of customer products",
+                "shows": "vendor claim of >100K users and hundreds of customer products. Not re-fetchable - HTTP 403 to eight consecutive requests on 2026-08-14 - so the claim keeps its 2026-06-22 read and is not counted as refreshed.",
                 "accessed": "2026-06-22"
+              },
+              {
+                "url": "https://www.waveshare.com/hailo-8.htm",
+                "shows": "the module in open retail - SKU 27812, $179.99, Add to Cart, listed under Raspberry Pi 5 accessories",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "91792ad2f7dea71019d1d5428c595704cb5773d29f4235ece123bd83803b9027"
+              },
+              {
+                "url": "https://www.geniatech.com/product/aim-m-h8/",
+                "shows": "a second, independent module vendor shipping the same silicon - \"Geniatech AIM-M-H8 is an M.2 AI acceleration module powered by the Hailo-8 NPU\"",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "1014072e0b7ecd5bf4e9abaa4d3bba3bb667102c7f32fd85294ef0b89b6dee03"
+              },
+              {
+                "url": "https://api.github.com/repos/hailo-ai/hailort",
+                "shows": "HailoRT at 215 stars, 80 forks, last pushed 2026-08-11 - the active developer surface the note describes",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "89d58ace98bd288ae8bb2f54a6e1925bbcd0020ebe59146916cd3b3ccd2a9d8c"
               }
             ]
           },
@@ -43430,22 +43532,37 @@
             "basis": "feature_matrix",
             "value": "26 TOPS; CNN/vision inference; supports TF/TFLite/PyTorch/ONNX; on-die memory",
             "confidence": "high",
-            "note": "Strong dedicated CNN inference throughput for the edge, but vision-oriented and limited to models that fit on-die memory.",
+            "note": "Strong dedicated CNN inference throughput for the edge, but vision-oriented and limited to models that fit on-die memory. Re-derived 2026-08-14 against substitutes, hailo.ai being unfetchable. Every element of the recorded value reproduces - Geniatech's AIM-M-H8 spec table reads \"AI performance 26 TOPS(INT8)\", \"AI Model Frameworks Supported TensorFlow,TensorFlow Lite,Keras, PyTorch&ONNX\" and \"Memory - Processor integration\", which is the on-die claim stated as a specification rather than as marketing; Waveshare independently lists 26 TOPS at 2.5W typical. Still one band below the Hailo-10H, which adds a DDR interface and generative-model support. No change.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
                 "url": "https://hailo.ai/products/ai-accelerators/hailo-8-ai-accelerator/",
-                "shows": "26 TOPS, 2.5W typical, on-die memory",
+                "shows": "26 TOPS, 2.5W typical, on-die memory. Not re-fetchable - HTTP 403 to eight consecutive requests on 2026-08-14 - so it keeps its 2026-06-22 read.",
                 "accessed": "2026-06-22"
+              },
+              {
+                "url": "https://www.geniatech.com/product/aim-m-h8/",
+                "shows": "spec table - \"AI performance 26 TOPS(INT8)\", \"AI Model Frameworks Supported TensorFlow, TensorFlow Lite,Keras,PyTorch&ONNX\", \"Memory Processor integration\", M.2 Key M, PCIe Gen3",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "1014072e0b7ecd5bf4e9abaa4d3bba3bb667102c7f32fd85294ef0b89b6dee03"
+              },
+              {
+                "url": "https://www.waveshare.com/hailo-8.htm",
+                "shows": "\"AI performance 26 TOPS\", \"Power consumption 2.5W (Typ.) 8.65W (Max.)\", \"Interface PCIe Gen3, 4-lane\"",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "91792ad2f7dea71019d1d5428c595704cb5773d29f4235ece123bd83803b9027"
               }
             ]
           },
           "maturity": 3.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-01",
-            "basis": "commit"
+            "date": "2026-08-14",
+            "basis": "verified"
           },
-          "version_note": "Verified live 2026-06-22 via primary sources. Proprietary silicon with an open source runtime and public product briefs, but the model-compiler toolchain requires registration and silicon is closed."
+          "version_note": "Verified live 2026-08-14 via substitute sources - hailo.ai answers 403 to every automated request, so the description was re-checked against Geniatech's AIM-M-H8 spec table (26 TOPS INT8, TensorFlow/TFLite/Keras/PyTorch/ONNX, memory by processor integration), Waveshare's listing (2.5W typical, M.2), Hailo's own M.2 data sheet as mirrored by Premio, and the HailoRT and Model Zoo READMEs for the runtime and Dataflow Compiler split. Every claim in the description holds. Proprietary silicon with an open source runtime and public product briefs, but the model-compiler toolchain requires registration and silicon is closed."
         },
         {
           "slug": "hailo-10h",
@@ -43459,17 +43576,56 @@
             "score": 3,
             "components": "schematics:none;toolchain:partial (open runtime + MIT GenAI model zoo);datasheets:public (June 2025);blobs:required (proprietary silicon/firmware);retail:open_market (M.2 modules purchasable)",
             "confidence": "high",
-            "note": "Proprietary silicon with published datasheets and an open GenAI model zoo, but the silicon and full toolchain are closed.",
+            "note": "Proprietary silicon with published datasheets and an open GenAI model zoo, but the silicon and full toolchain are closed. Re-read 2026-08-14 against substitutes, hailo.ai being unfetchable at 403. Each component re-derived - the GenAI model zoo is still MIT by the GitHub API's own `spdx_id`, and HailoRT is MIT/LGPL-2.1 with the developer-zone documentation behind registration and the Dataflow Compiler behind a customer relationship, which is the closed half of `toolchain`; `blobs` from HailoRT's driver shipping device firmware; `datasheets` from AAEON's UP page carrying the full published spec table for the module; `retail` from the same page plus Geniatech shipping an independent Hailo-10 module. No change.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
                 "url": "https://hailo.ai/products/ai-accelerators/hailo-10h-m-2-ai-acceleration-module/",
-                "shows": "official module product page for Hailo-10H",
+                "shows": "official module product page for Hailo-10H. Not re-fetchable - hailo.ai answered HTTP 403 to every automated request on 2026-08-14 under every header set tried - so it keeps its 2026-06-22 read.",
                 "accessed": "2026-06-22"
               },
               {
-                "url": "https://github.com/hailo-ai/hailo_model_zoo_genai",
-                "shows": "MIT-licensed GenAI model zoo for Hailo-10H",
-                "accessed": "2026-06-22"
+                "url": "https://api.github.com/repos/hailo-ai/hailo_model_zoo_genai",
+                "shows": "\"Model zoo for Gen AI models for Hailo products\" with license spdx_id MIT, 100 stars",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "11aec3f6aed9f4ed6bf96fb2d596e8372754b192772ff708280e7a22ce935c1e",
+                "establishes": [
+                  "toolchain"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/hailo-ai/hailort/master/README.md",
+                "shows": "\"The master branch supports only the Hailo-10 and Hailo-15 device families\"; MIT for libhailort/pyhailort/hailortcli and LGPL 2.1 for hailonet; developer-zone documentation \"registration is required\"; the PCIe driver ships device firmware",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "dada62b1fccdb1234e034247e65b4e43011ef053da545bf824fb23a4a56d8bb4",
+                "establishes": [
+                  "toolchain",
+                  "blobs"
+                ]
+              },
+              {
+                "url": "https://up-board.org/hailo-10h-m2-ai-acceleration-module/",
+                "shows": "AAEON/UP's published spec table for the module - chipset, AI performance, interface, memory and speed, power, supported OS, host architectures, frameworks and model types. What it does NOT publish is any board file - \"Package Contents - 1 x Quick Start Guide\" is the whole of what ships, and no schematic, gerber or BOM is offered anywhere on the page, which is the evidence for schematics:none.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "d70178bfb0c8e89a1d7a283be27db74b083aea6c9155b4edb41be277b30097eb",
+                "establishes": [
+                  "datasheets",
+                  "retail",
+                  "schematics"
+                ]
+              },
+              {
+                "url": "https://www.geniatech.com/product/aim-m-h10/",
+                "shows": "a second vendor's purchasable Hailo-10 M.2 module - \"Up to 40 TOPS AI performance\", \"M.2 Key-M form factor\"",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "29afccd27df1e9dd276570c6d559930d30a53baab391c79f000ce9f6e8e23242",
+                "establishes": [
+                  "retail"
+                ]
               }
             ],
             "bucket": "closed"
@@ -43479,12 +43635,34 @@
             "reach": "niche",
             "signal_type": "reported_traction",
             "confidence": "medium",
-            "note": "Newer generative-AI part; purchasable M.2 modules and a dedicated GenAI repo, but smaller install base than the Hailo-8.",
+            "note": "Newer generative-AI part; purchasable M.2 modules and a dedicated GenAI repo, but smaller install base than the Hailo-8. Re-read 2026-08-14 against substitutes. Both halves hold - the part is productized and purchasable through at least two independent module vendors (AAEON/UP, Geniatech), and it is still visibly the smaller surface next to the Hailo-8, with the GenAI model zoo at 100 stars and last pushed 2026-04-15 against HailoRT's 215 stars and 2026-08-11. Niche at level 3, one below the Hailo-8, is unchanged.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
                 "url": "https://hailo.ai/products/ai-accelerators/hailo-10h-m-2-ai-acceleration-module/",
-                "shows": "productized, purchasable M.2 generative-AI module",
+                "shows": "productized, purchasable M.2 generative-AI module. Not re-fetchable - HTTP 403 on 2026-08-14 - so it keeps its 2026-06-22 read.",
                 "accessed": "2026-06-22"
+              },
+              {
+                "url": "https://up-board.org/hailo-10h-m2-ai-acceleration-module/",
+                "shows": "AAEON/UP shipping the Hailo-10H M.2 module as a listed product with full specifications",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "d70178bfb0c8e89a1d7a283be27db74b083aea6c9155b4edb41be277b30097eb"
+              },
+              {
+                "url": "https://www.geniatech.com/product/aim-m-h10/",
+                "shows": "\"Hailo-10 M.2 AI Accelerator Card\" - a second independent vendor productizing the part",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "29afccd27df1e9dd276570c6d559930d30a53baab391c79f000ce9f6e8e23242"
+              },
+              {
+                "url": "https://api.github.com/repos/hailo-ai/hailo_model_zoo_genai",
+                "shows": "the dedicated GenAI repo at 100 stars, 20 forks, last pushed 2026-04-15 - real but well behind HailoRT's 215 stars and 2026-08-11 push",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "11aec3f6aed9f4ed6bf96fb2d596e8372754b192772ff708280e7a22ce935c1e"
               }
             ]
           },
@@ -43493,22 +43671,37 @@
             "basis": "feature_matrix",
             "value": "40 TOPS INT4 / 20 TOPS INT8; runs LLMs & VLMs via direct DDR interface",
             "confidence": "high",
-            "note": "Edge-first part that runs generative models locally via a DDR interface, a step beyond CNN-only edge accelerators.",
+            "note": "Edge-first part that runs generative models locally via a DDR interface, a step beyond CNN-only edge accelerators. Re-derived 2026-08-14 against substitutes, hailo.ai being unfetchable. AAEON/UP reproduces the recorded value exactly - \"AI Performance 40 TOPS @ INT4 | 20 TOPS @ INT8\" and \"Hailo-10H includes a direct DDR interface, allowing it to scale for large models such as LLMs, VLMs, Stable Diffusion\" - and Geniatech independently states up to 40 TOPS running LLMs and VLMs locally. Still one band above the Hailo-8, which is CNN/vision-only and bounded by on-die memory. No change.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
                 "url": "https://hailo.ai/products/ai-accelerators/hailo-10h-m-2-ai-acceleration-module/",
-                "shows": "40 TOPS INT4 / 20 TOPS INT8, DDR interface, LLM/VLM support",
+                "shows": "40 TOPS INT4 / 20 TOPS INT8, DDR interface, LLM/VLM support. Not re-fetchable - HTTP 403 on 2026-08-14 - so it keeps its 2026-06-22 read.",
                 "accessed": "2026-06-22"
+              },
+              {
+                "url": "https://up-board.org/hailo-10h-m2-ai-acceleration-module/",
+                "shows": "\"AI Performance 40 TOPS @ INT4 | 20 TOPS @ INT8\"; \"Hailo-10H includes a direct DDR interface, allowing it to scale for large models such as LLMs, VLMs, Stable Diffusion\"; \"Supported AI Models Vision Models (> 150+), GenAI Models (LLM, VLM, Whisper)\"",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "d70178bfb0c8e89a1d7a283be27db74b083aea6c9155b4edb41be277b30097eb"
+              },
+              {
+                "url": "https://www.geniatech.com/product/aim-m-h10/",
+                "shows": "\"Up to 40 TOPS AI performance\"; \"Generative AI ready - Runs LLMs, VLMs, and Stable Diffusion locally\"; \"AI Model Types CNN, Transformer, Vision Transformer, Generative AI Models\"",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "29afccd27df1e9dd276570c6d559930d30a53baab391c79f000ce9f6e8e23242"
               }
             ]
           },
           "maturity": 3.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-01",
-            "basis": "commit"
+            "date": "2026-08-14",
+            "basis": "verified"
           },
-          "version_note": "Verified live 2026-06-22 via primary sources. Proprietary silicon with published datasheets and an open GenAI model zoo, but the silicon and full toolchain are closed."
+          "version_note": "Verified live 2026-08-14 via substitute sources - hailo.ai answers 403 to every automated request, so the description was re-checked against AAEON/UP's published spec table, which reproduces 40 TOPS at INT4 and 20 TOPS at INT8, 2.5W typical, M.2 2280 Key-M, and the direct DDR interface that lets it run LLMs and VLMs on-device, and against Geniatech's independent Hailo-10 module listing. Every claim in the description holds. Proprietary silicon with published datasheets and an open GenAI model zoo, but the silicon and full toolchain are closed."
         },
         {
           "slug": "google-coral-dev-board",
@@ -43784,12 +43977,46 @@
             "score": 3,
             "components": "schematics:partial (96Boards mezzanine standard);toolchain:open (open Qualcomm Linux + AI Hub);datasheets:brief (public brief);blobs:required (proprietary silicon + firmware);retail:distributor (via Thundercomm/distributors)",
             "confidence": "high",
-            "note": "Proprietary Qualcomm silicon with public docs and a Linux SDK, sold through distributors, but the board itself is not fully open hardware.",
+            "note": "Proprietary Qualcomm silicon with public docs and a Linux SDK, sold through distributors, but the board itself is not fully open hardware. Re-read 2026-08-14. www.qualcomm.com serves a client-rendered 9KB shell to a fetcher and no header set changes that, but the fact it was cited for is published elsewhere by Qualcomm itself - docs.qualcomm.com serves the kit''s actual product brief as a PDF, and that document carries four of the five components on its own. `datasheets` is it - a public brief, document 87-74789-1 Rev. A. `schematics` reads partial off \"The hardware development kit is also compliant with the 96Boards open hardware specification to support a range of mezzanine-board expansions\", an open interface standard published with a block diagram but no board files. `toolchain` off \"Support for Linux, Android\" plus the Intelligent Multimedia, Robotics, Neural Processing and Hexagon SDKs, and off Qualcomm AI Hub Models being a BSD-3-Clause repo at 1,183 stars. `blobs` off the whole stack sitting on the proprietary QCS6490 with vendor SDKs. `retail` from Edge Impulse, which names Advantech, Tria, Thundercomm and Quectel as manufacturers of QCS6490 kits. One thing worth flagging for the corpus rather than for this score - the first product-brief URL tried resolved 200 to a Snapdragon 8 Gen 3 brief instead, and was discarded rather than cited. No change.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
                 "url": "https://www.qualcomm.com/developer/hardware/rb3-gen-2-development-kit",
-                "shows": "official page: QCS6490, up to 12 TOPS, 96Boards design, Qualcomm Linux stack",
+                "shows": "official page: QCS6490, up to 12 TOPS, 96Boards design, Qualcomm Linux stack. Not re-fetchable as a document - the URL returns 200 but the body is a ~9KB client-rendered shell with no product content in it, which no header set changes - so it keeps its 2026-06-22 read.",
                 "accessed": "2026-06-22"
+              },
+              {
+                "url": "https://docs.qualcomm.com/doc/87-74789-1/87-74789-1_REV_A_Qualcomm_RB3_Gen_2_Development_Kit_Product_Brief.pdf",
+                "shows": "Qualcomm's own \"Qualcomm RB3 Gen 2 Development Kit\" product brief, 87-74789-1 Rev. A - \"The hardware development kit is also compliant with the 96Boards open hardware specification to support a range of mezzanine-board expansions\"; software \"Support for Linux, Android\", Qualcomm Intelligent Multimedia, Intelligent Robotics, Neural Processing and Hexagon SDKs; spec table Chipset QCS6490, Octa-core CPU, AI 12 TOPS",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "b74769821c1cd5d01d3d7b947392c8af80aa68f2f69a49f95f5775a3b05c75f0",
+                "establishes": [
+                  "datasheets",
+                  "schematics",
+                  "toolchain",
+                  "blobs"
+                ]
+              },
+              {
+                "url": "https://api.github.com/repos/quic/ai-hub-models",
+                "shows": "Qualcomm AI Hub Models, license spdx_id BSD-3-Clause, 1183 stars, last pushed 2026-08-13 - the open half of the toolchain",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "1d1fadcc0e83d1634b0370fe55ff48e19e90f038277315c41d2b8232f69c6b1f",
+                "establishes": [
+                  "toolchain"
+                ]
+              },
+              {
+                "url": "https://docs.edgeimpulse.com/hardware/boards/qualcomm-rb3-gen-2-dev-kit",
+                "shows": "\"Other QCS6490-based kits are available from various manufacturers such as Advantech, Tria, Thundercomm, and Quectel\" - distributor rather than open-market availability",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "4344a8c8cd1b2aa27ba29687fcd502dcd353641dc9a07d37acdbf58594a87561",
+                "establishes": [
+                  "retail"
+                ]
               }
             ],
             "bucket": "closed"
@@ -43836,10 +44063,10 @@
           "maturity": 3.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
-          "version_note": "Verified live 2026-06-22 via primary sources. Proprietary Qualcomm silicon with public docs and a Linux SDK, sold through distributors, but the board itself is not fully open hardware."
+          "version_note": "Verified live 2026-08-14 via substitute sources - www.qualcomm.com serves a client-rendered shell to a fetcher, so the description was re-checked against Qualcomm's own product brief 87-74789-1 Rev. A on docs.qualcomm.com, which carries the QCS6490 chipset, Kryo 670 CPU, Adreno 643L GPU, 12 TOPS AI, 96Boards mezzanine compliance and the Linux/Android SDK stack, and against Edge Impulse's board page for the Edge Impulse support claim. Two clauses were NOT re-derived and rest on the earlier read - the QCS5430 variant and Foundries.io support appear in neither substitute. Proprietary Qualcomm silicon with public docs and a Linux SDK, sold through distributors, but the board itself is not fully open hardware."
         },
         {
           "slug": "arduino-uno-q",
@@ -44012,12 +44239,46 @@
             "score": 3,
             "components": "schematics:none (EVK reference designs only);toolchain:open (Linux/Yocto BSP);datasheets:public (IMX8MPCEC);blobs:required (proprietary silicon + NPU firmware);retail:distributor (commercial via NXP and SoM partners)",
             "confidence": "high",
-            "note": "Public datasheets and a Linux BSP with broad commercial availability, but proprietary silicon with no open board files.",
+            "note": "Public datasheets and a Linux BSP with broad commercial availability, but proprietary silicon with no open board files. Re-read 2026-08-14 against substitutes, www.nxp.com being unfetchable - it answers 404 to every path tried including its own root, and browser headers change nothing, so this is the host and not the URL. Every component re-derived. `datasheets` is the strongest of them - the document the component names by part number, \"Document Number IMX8MPCEC, Rev. 2.1, 07/2023, i.MX 8M Plus Applications Processor Datasheet for Consumer Products\", is mirrored in full and openly downloadable from DigiKey, 111 pages of electrical characteristics, boot modes and pin assignments. `toolchain` and `blobs` both come from NXP's own Yocto layer repo - the BSP is public and buildable, and the same README states \"The NXP i.MX End User License Agreement (EULA) is displayed during the setup process ... The license must be accepted to allow access to the NXP EULA-licensed recipes\", which is the gated-blob half stated by the vendor. `schematics` stays none - what the BSP publishes is machine configurations for NXP's own EVK and FRDM reference boards, and what the datasheet publishes is package and pin data, neither of which is a board file. `retail` from Toradex shipping a Verdin SoM around the part and DigiKey stocking the silicon. No change.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
                 "url": "https://www.nxp.com/products/i.MX8MPLUS",
-                "shows": "official page: Cortex-A53/M7, up to 2.3 TOPS NPU, ML/vision focus",
+                "shows": "official page: Cortex-A53/M7, up to 2.3 TOPS NPU, ML/vision focus. Not re-fetchable - www.nxp.com answers HTTP 404 to every automated request including its own root, under every header set tried - so it keeps its 2026-06-22 read.",
                 "accessed": "2026-06-22"
+              },
+              {
+                "url": "https://mm.digikey.com/Volume0/opasdata/d220001/medias/docus/5783/IMX8MPCEC.pdf",
+                "shows": "the named datasheet in full, openly mirrored by DigiKey - \"NXP Semiconductors Data Sheet - Technical Data, Document Number IMX8MPCEC, Rev. 2.1, 07/2023\"; \"a powerful quad Arm Cortex-A53 processor with speed up to 1.8 GHz integrated with a NPU of 2.3 TOPS\"; an integrated 800 MHz Cortex-M7; package and pin assignments but no board schematics",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "6cfe20059a1d3bec77bd89893c3db75bcf0fd99b7742f3730adb528f091911d1",
+                "establishes": [
+                  "datasheets",
+                  "schematics"
+                ]
+              },
+              {
+                "url": "https://raw.githubusercontent.com/nxp-imx/meta-imx/master/README.md",
+                "shows": "\"Yocto Project BSP for NXP i.MX Linux Release LF6.18.20_2.0.0\", with i.MX 8M Plus machines imx8mp-lpddr4-evk, imx8mp-ddr4-evk and imx8mp-lpddr4-frdm; and \"The NXP i.MX End User License Agreement (EULA) is displayed during the setup process ... The license must be accepted to allow access to the NXP EULA-licensed recipes\"",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "0c240eaf8e2fd17eca458b9be29f759b79eeb5504ed3e8aaa2f71a05f0843d23",
+                "establishes": [
+                  "toolchain",
+                  "blobs",
+                  "schematics"
+                ]
+              },
+              {
+                "url": "https://www.toradex.com/computer-on-modules/verdin-arm-family/nxp-imx-8m-plus",
+                "shows": "a SoM partner shipping the part commercially - the Verdin iMX8M Plus module with a Configure Your Own path and availability listed to 2036+",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "3773c4317b33b9e41e7e371e449f09560caf40de6d18a39e4bd1f4e5bcab89bf",
+                "establishes": [
+                  "retail"
+                ]
               }
             ],
             "bucket": "closed"
@@ -44064,10 +44325,10 @@
           "maturity": 3.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
-          "version_note": "Verified live 2026-06-22 via primary sources. Public datasheets and a Linux BSP with broad commercial availability, but proprietary silicon with no open board files."
+          "version_note": "Verified live 2026-08-14 via substitute sources - www.nxp.com answers 404 to every automated request including its own root, so the description was re-checked against NXP's own IMX8MPCEC datasheet as mirrored openly by DigiKey, which carries the quad Cortex-A53 at up to 1.8 GHz, the 800 MHz Cortex-M7, the 2.3 TOPS NPU and the dual-ISP two-camera vision engine, and against NXP's meta-imx Yocto BSP repo and Toradex's Verdin module for the BSP and SoM-availability claims. Every claim in the description holds. Public datasheets and a Linux BSP with broad commercial availability, but proprietary silicon with no open board files."
         },
         {
           "slug": "sipeed-maixcam",
