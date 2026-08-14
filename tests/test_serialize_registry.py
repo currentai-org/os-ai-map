@@ -29,6 +29,19 @@ def test_artifact_id_reduces_urls_to_api_identifiers():
         == "allenai/Olmo-3-1025-7B"
     )
     assert artifact_id("pypi", "https://pypi.org/project/accelerate/") == "accelerate"
+    assert artifact_id("npm", "https://www.npmjs.com/package/@playwright/mcp") == "@playwright/mcp"
+
+
+def test_crates_urls_reduce_to_the_bare_crate_name():
+    """The crates signal model builds its request URL out of this column.
+
+    There was no crates pattern until 2026-08-14, so the whole URL was stored as the
+    identifier — fine for a link, and wrong for anything that joins or fetches on it. The
+    product schema had recorded the defect in prose for a week.
+    """
+    assert artifact_id("crates", "https://crates.io/crates/yomo") == "yomo"
+    assert artifact_id("crates", "https://crates.io/crates/yomo/") == "yomo"
+    assert artifact_id("crates", "https://crates.io/crates/tokio-util/2.1.0") == "tokio-util"
 
 
 def test_artifact_id_rejects_org_level_github_urls():

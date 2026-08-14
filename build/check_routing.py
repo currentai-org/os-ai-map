@@ -39,6 +39,11 @@ SOURCE_ARTIFACT = {
     "huggingface_dataset": "huggingface_dataset",
     "pypi": "pypi",
     "semanticscholar": "arxiv",  # citations are reached via the paper id
+    # Mapped while still unbridged, so the coverage these routes buy is readable
+    # before the deploy rather than after it, and so flipping `bridged` cannot fail
+    # the structural check below on a missing mapping.
+    "npm": "npm",
+    "crates": "crates",
 }
 
 
@@ -72,8 +77,12 @@ def load() -> tuple[dict, dict, dict, dict]:
 def route_usable(route: dict, sources: dict) -> tuple[bool, str]:
     """Is this route executable at all, before considering any product?"""
     source = sources.get(route.get("source")) or {}
-    if route.get("blocked_by") == "bridge" or source.get("bridged") is False:
-        return False, "unbridged"
+    # Any `blocked_by` value blocks. It used to test for the single value `bridge`,
+    # so a route declaring a different blocker - `deploy`, for the npm and crates
+    # models, which are written and not materialized - would have read as usable on
+    # the strength of a field saying it is not.
+    if route.get("blocked_by") or source.get("bridged") is False:
+        return False, route.get("blocked_by") or "unbridged"
     if not source:
         return False, "unknown source"
     return True, ""
@@ -94,6 +103,15 @@ def main() -> int:
     for dim, spec in dimensions.items():
         for route in spec.get("routes") or []:
             name = route.get("source")
+            # `source: null` is a declaration, not an omission: it is how adoption
+            # declares its two hand-authored instruments, `active_users` and
+            # `reported_traction`, whose scales exist so their labels are checkable
+            # even though no machine can produce one. This checker reported both as
+            # "unknown source None" and exited 1 from the day they landed on
+            # 2026-08-13, which nothing noticed because check_routing runs in no
+            # workflow.
+            if name is None and route.get("hand_authored"):
+                continue
             if name not in sources:
                 problems.append(f"{dim}: route names unknown source {name!r}")
                 continue

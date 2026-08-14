@@ -93,6 +93,12 @@ _ID_PATTERNS = {
     "huggingface_dataset": r"huggingface\.co/datasets/(.+)",
     "pypi": r"pypi\.org/project/([^/]+)",
     "npm": r"npmjs\.com/package/(.+)",
+    # Added 2026-08-14 with the crates route. Without a pattern the whole URL was
+    # stored as the identifier, so the one crates row read
+    # `https://crates.io/crates/yomo` where every other kind carries a bare name —
+    # fine for a link and wrong for a join, and the crates signal model builds its
+    # request URL out of this column.
+    "crates": r"crates\.io/crates/([^/]+)",
     # Accept an abs/pdf URL or a bare id, and normalize to the bare id so the
     # DOI is derivable as 10.48550/arXiv.<id> without further parsing.
     "arxiv": r"(?:arxiv\.org/(?:abs|pdf)/)?(\d{4}\.\d{4,5})(?:v\d+)?",

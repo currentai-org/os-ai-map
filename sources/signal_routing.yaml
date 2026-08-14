@@ -35,6 +35,29 @@ verified_on: '2026-07-28'
 
 # Where each artifact kind's facts live. `key` is the join column back to the
 # registry; a source with no key cannot be used until a bridge exists.
+#
+# `bridged: false` covers two different blockers and `blocked_by` says which:
+#
+#   * `blocked_by: key` — the table exists and nothing joins it to a product.
+#     artificialanalysis and lmarena are keyed on names the vendor publishes, and
+#     no product -> name map exists. Closing this needs a curation decision.
+#   * `blocked_by: deploy` — the join key is `product_slug` and the model is
+#     written, reviewed and not yet materialized. Closing it is a deploy.
+#
+# The distinction is worth a field because the two cost different things and only
+# one of them is somebody's judgment. What neither may do is set `bridged: true`
+# early: `build/check_instrument.py` reads that flag as "a model reads this", so
+# flipping it before a run exists would mark 12 unfalsifiable `usage_volume`
+# records as recomputable without a single number being computed.
+#
+# `model_source` names the file in THIS repo that a source's table is authored in,
+# and `fetched_by` the file that fetches its history where one is needed, since a
+# source whose registry publishes no global dataset takes two models rather than
+# one. Issue #173 is that `warehouse/models/` claims to hold every UDM source and
+# holds none of the signal models, and that gap is how the hardcoded adoption bands
+# in `signal_pypi` stayed invisible. Every path here is checked by
+# `tests/test_signal_routing.py`, so a declaration cannot name a model whose source
+# has been moved or deleted.
 sources:
   github:
     artifact_key: github
@@ -62,12 +85,24 @@ sources:
     key: product_slug
     evidence_url: https://pypistats.org/packages/{package}
     bridged: true
+    successor: currentai.signal_packages.package_downloads
+    successor_note: >
+      The registry-neutral table below covers PyPI too, on the same window and under the same
+      column names, plus `artifact_kind` and download history. This route stays pointed at
+      `signal_pypi` until the successor is deployed and verified, because that table is live
+      and `build/check_artifacts.py` reads its `missing_from_pypi` column. Repointing is a
+      follow-up PR, and nothing is renamed in place: `signal_pypi` is retired after its
+      readers move, so no reader ever queries a column that has already gone.
   npm:
     artifact_key: npm
-    table: null
-    key: null
+    table: currentai.signal_packages.package_downloads
+    key: product_slug
+    filter: artifact_kind = 'npm'
+    model_source: warehouse/models/signal_packages_package_downloads.sql
+    fetched_by: warehouse/models/signal_packages_package_downloads_daily.py
     evidence_url: https://www.npmjs.com/package/{package}
     bridged: false
+    blocked_by: deploy
     bridge_note: >
       13 products declare an npm package and no signal model reads the npm registry. npm
       download counts are a direct analogue of the pypi route, so this is a missing model
@@ -81,15 +116,62 @@ sources:
       unbridged route does not produce a capped band; it produces an unfalsifiable one,
       because there is no computed figure for the recorded one to disagree with.
       `build/check_instrument.py` now gates the general case.
+
+      MODELS WRITTEN 2026-08-14 and not yet deployed, so this stays `bridged: false` and
+      `blocked_by` moves from a missing method to a deploy. Two files: `fetched_by` reads
+      api.npmjs.org itself and stores 18 months of daily history, and `model_source` windows
+      it. The fetch takes the `signal_github` shape rather than the `signal_pypi` one, because
+      `signal_pypi` is plain SQL over the `oso.pypi_downloads` marketplace dataset and there
+      is no marketplace dataset for npm. It reads its roster from `registry.product_artifacts`
+      filtered to this kind, and records a per-package `http_status` rather than failing a run
+      on one dead package.
+
+      History rather than a point read, because a trailing total cannot tell a collapse from a
+      step change that happened months ago - the `lmdeploy` case in #163, where 165K -> 50K
+      turned out to be one step in May that had held for three months. npm serves at most 18
+      months and SILENTLY CLIPS a longer request, so the served window is read from the
+      response and never assumed.
+
+      Grain is one row per (product, artifact_kind, package): 13 products carry 14 npm
+      artifacts, because `mastra` declares both `@mastra/core` and `mastra`. The band is not
+      taken here at all - see `rollup` below, which sums across a product's artifacts because
+      that is what the unit says.
+
+      All 14 answered HTTP 200 on 2026-08-14. Bridging makes these figures recomputable; it
+      does NOT date the axis. `check_verification` requires a `content_sha256` and only a
+      fetch produces one, so a warehouse count can corroborate a band and still not earn it a
+      `last_verified`. Whether a computed figure may stand in for a digest is an open
+      decision and is not settled here.
   crates:
     artifact_key: crates
-    table: null
-    key: null
+    table: currentai.signal_packages.package_downloads
+    key: product_slug
+    filter: artifact_kind = 'crates'
+    model_source: warehouse/models/signal_packages_package_downloads.sql
+    fetched_by: warehouse/models/signal_packages_package_downloads_daily.py
     evidence_url: https://crates.io/crates/{package}
     bridged: false
+    blocked_by: deploy
     bridge_note: >
       One product (`yomo`) declares a crates package. Same shape as npm: crates.io publishes
       download counts and no model reads them.
+
+      MODELS WRITTEN 2026-08-14, same files and same deploy blocker as npm, since one neutral
+      table serves all three registries and `filter` picks the kind out - the idiom
+      `huggingface_model` and `huggingface_dataset` already use over `hub_state`.
+
+      One thing about this source is NOT the same, and it is why the model sums a daily series
+      rather than reading the field that looks right: `/api/v1/crates/{name}` returns
+      `downloads` (all time) and `recent_downloads`, and `recent_downloads` covers 90 DAYS.
+      Measured 2026-08-14, `yomo` reports 347 there, its daily series sums to exactly 347
+      across 90 days, and its trailing 30 days are 96. Banding 347 on a monthly scale would
+      overstate the crate by 3.6x while looking like a measurement.
+
+      crates.io asks for a descriptive User-Agent and answers 404 for an unknown crate. Its
+      daily series omits zero days rather than reporting them, which is the opposite of npm's
+      habit, so a `days_observed` below 30 is normal here and is not a gap. It serves 90 days
+      and no more: `before_date` does not page further back, so a crates trend is three months
+      long whatever anyone needs.
   semanticscholar:
     artifact_key: arxiv
     table: currentai.signal_semanticscholar.paper_citations
@@ -101,6 +183,7 @@ sources:
     key: null
     evidence_url: https://artificialanalysis.ai/models/{aa_slug}
     bridged: false
+    blocked_by: key
     bridge_note: >
       Keyed on `aa_slug`, with no product_slug column. A product -> aa_slug
       bridge must exist before capability can be routed here. Until then this
@@ -110,6 +193,7 @@ sources:
     key: null
     evidence_url: https://lmarena.ai/leaderboard
     bridged: false
+    blocked_by: key
     bridge_note: >
       Keyed on `model_name` as published by the arena, which does not match our
       slugs. Same bridge problem as artificialanalysis.
@@ -266,15 +350,53 @@ dimensions:
     - source: huggingface_model
       column: downloads_30d
       signal_type: usage_volume
+      governs: huggingface_model_repo
       confidence: high
     - source: huggingface_dataset
       column: downloads_30d
       signal_type: usage_volume
+      governs: huggingface_dataset_repo
       confidence: high
     - source: pypi
       column: downloads_30d
       signal_type: usage_volume
+      governs: pypi_package
       confidence: high
+    # `governs` on an adoption route names the DISTRIBUTION CHANNEL the count is a
+    # count of, for the same reason a license route names the artifact it governs.
+    # The under-coverage rule in docs/guides/adoption.md turns on exactly this: a
+    # count of one channel is not a count of the product unless that channel is how
+    # the product ships. `n8n` records 393,738 npm downloads against a Docker-first
+    # install base, and once this route computes, the map will say so out loud
+    # instead of in a note.
+    - source: npm
+      column: downloads_30d
+      signal_type: usage_volume
+      governs: npm_package
+      confidence: high
+      blocked_by: deploy
+      note: >
+        Declared 2026-08-14 with the model written and not deployed. Placed after pypi and
+        before the stars fallback, so a real install count outranks attention as the rubric
+        already requires. All 14 declared packages answered on 2026-08-14 and 11 of the 13
+        products already record `usage_volume`, so for most of them this route confirms a
+        number rather than supplying a missing one - which is the point, since a confirmable
+        number is one that can disagree.
+    - source: crates
+      column: downloads_30d
+      signal_type: usage_volume
+      governs: crates_package
+      confidence: high
+      blocked_by: deploy
+      note: >
+        One product routes here, and it is the case that shows why bridging a route is not the
+        same as re-banding on it. `yomo` records `stars_fallback` at level 2; its crate returns
+        96 downloads in the trailing 30 days, which is level 1, and its own score note already
+        says no download figure is published for the product. yomo is a Go project shipping a
+        Rust SDK, so the crate is a minority channel and banding on it would be the
+        under-coverage substitution in docs/guides/adoption.md rather than a measurement. The
+        route computes the number; whether it should place the band is #169's question and a
+        person's.
     - source: semanticscholar
       column: citation_count
       signal_type: usage_volume
@@ -418,6 +540,48 @@ dimensions:
         admitted as new words - `enterprise` (snorkel-flow, nemo-data-designer) and
         `early / niche` (datology-ai) all became `niche`, since the level beside them
         already carried the distinction they were reaching for.
+    never:
+    - route: a window longer than a month -> a monthly band
+      because: >
+        Every band on this axis is monthly, so a wider window is not a bigger number,
+        it is a different quantity. crates.io's `recent_downloads` is the live case:
+        it covers 90 days and says so nowhere in the payload, and reading it as
+        monthly overstates `yomo` by 3.6x. The crates model sums a 30-day slice of
+        the daily series instead, and carries the 90-day figure under a name that
+        says 90.
+    - route: an all-time or cumulative total -> a monthly band
+      because: >
+        Same error one order worse. `searxng` recorded "50M+ total Docker pulls" as a
+        monthly reach until 2026-08-13. Where only a cumulative total is published,
+        docs/guides/adoption.md admits a lifetime average as a DECLARED FLOOR whose
+        note says it is one; nothing admits the total itself.
+    # Where the sum below is actually taken, and the only place a package-channel band is
+    # computed. Declared here because `sum_across_artifacts` is a rule about the DIMENSION and
+    # the model that obeys it should be nameable from the same place.
+    #
+    # It spans the three package registries rather than banding each one, because the software
+    # / usage_volume unit in sources/rubrics/software.yaml is "package downloads in the
+    # trailing 30 days, summed across declared artifacts" and all three publish that same
+    # quantity. `beeai` declares an npm package and a PyPI package, so a per-registry band
+    # would give one product two levels over two partial figures. That is also why
+    # `artifact_kind` is a column on the per-artifact table and cannot be one here; the
+    # roll-up carries `kinds_counted` instead, so a level built from npm plus PyPI is
+    # distinguishable from one built on PyPI alone.
+    #
+    # It abstains rather than banding a short sum: a declared package artifact with no figure
+    # leaves `adoption_level` null with a reason. And it reads the thresholds from
+    # registry.adoption_bands, filtering on signal_type as well as product_type, instead of
+    # carrying them - the defect issue #173 records in signal_pypi, a hardcoded CASE applying
+    # the software scale to every product type.
+    #
+    # Scope is the package channel only. Hub downloads and stars have their own banded
+    # roll-ups, and consolidating all three into one adoption authority is #169's question.
+    rollup:
+      table: currentai.signal_packages.product_adoption
+      model_source: warehouse/models/signal_packages_product_adoption.sql
+      covers: [pypi, npm, crates]
+      bands_from: currentai.registry.adoption_bands
+      deployed: false
     sum_across_artifacts: true
     sum_note: >
       A model family ships several SKUs. The map's unit is the family, so

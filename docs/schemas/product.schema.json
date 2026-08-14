@@ -61,21 +61,21 @@
       "items": {
         "$ref": "#/definitions/url"
       },
-      "description": "The npm package page. Reaches registry/product_artifacts.csv as an artifact of kind `npm`, reduced to the package name, and therefore reaches the warehouse \u2014 but sources/signal_routing.yaml declares no npm source, so as of 2026-08-08 it routes no dimension and buys no adoption number. Recording it now is what makes an npm downloads source a table away rather than a curation pass. 12 products declare one on 2026-08-08."
+      "description": "The npm package page. Reaches registry/product_artifacts.csv as an artifact of kind `npm`, reduced to the package name, and from there into the roster the signal model reads. sources/signal_routing.yaml routes `adoption` here (`downloads_30d`, signal type `usage_volume`) against currentai.signal_packages.package_downloads, filtered on `artifact_kind = 'npm'` \u2014 declared with `bridged: false` and `blocked_by: deploy` on 2026-08-14, because the model is written and not yet materialized. Until it runs, an npm package satisfies no recomputation route in build/check_instrument.py, which is why 11 of these products record a `usage_volume` band nothing can confirm or refute. Downloads are summed across ALL of a product's package artifacts and banded once, across npm, PyPI and crates together, because the unit says \"summed across declared artifacts\" and `beeai` declares two registries. 13 products declare one on 2026-08-14, carrying 14 artifacts: `mastra` declares both `@mastra/core` and `mastra`. A scoped name keeps its `@scope/` prefix \u2014 api.npmjs.org answers the unencoded form and 404s the encoded one."
     },
     "pypi": {
       "type": "array",
       "items": {
         "$ref": "#/definitions/url"
       },
-      "description": "The PyPI project page, and the adoption workhorse for the software half of the map: sources/signal_routing.yaml routes `adoption` to currentai.signal_pypi.package_downloads (`downloads_30d`, signal type `usage_volume`, high confidence) for any product that declares one. Reduced to the bare project name for registry/product_artifacts.csv. Downloads sum across a product's artifacts rather than taking the largest, because the map's unit is the family and a family ships several packages. 66 of 472 products declare one on 2026-08-08."
+      "description": "The PyPI project page, and the adoption workhorse for the software half of the map: sources/signal_routing.yaml routes `adoption` to currentai.signal_pypi.package_downloads (`downloads_30d`, signal type `usage_volume`, high confidence) for any product that declares one. Reduced to the bare project name for registry/product_artifacts.csv. Downloads sum across a product's artifacts rather than taking the largest, because the map's unit is the family and a family ships several packages — and across REGISTRIES as well as within one, which currentai.signal_packages.product_adoption does and the per-package band in signal_pypi cannot. 66 of 472 products declare one on 2026-08-08; the registry held 106 pypi artifacts on 2026-08-14 against 98 in the signal table, so read coverage off the signal rather than the roster."
     },
     "crates": {
       "type": "array",
       "items": {
         "$ref": "#/definitions/url"
       },
-      "description": "The crates.io page for a Rust crate. Same registry treatment and same routing status as `npm`: carried into registry/product_artifacts.csv, routed by nothing, because signal_routing.yaml declares no crates source. It also has no id pattern in build/serialize_registry.py, so the whole URL is stored as the artifact identifier rather than the crate name; that is fine for a link and would need fixing before anything joined on it. One product declares one on 2026-08-08."
+      "description": "The crates.io page for a Rust crate. Same registry treatment and same routing status as `npm`: carried into registry/product_artifacts.csv, routed to currentai.signal_packages.package_downloads filtered on `artifact_kind = 'crates'`, and `blocked_by: deploy` until that model runs. The missing id pattern in build/serialize_registry.py was fixed on 2026-08-14 — the whole URL used to be stored as the identifier, which is fine for a link and wrong for a join, and the model builds its request URL out of this column. One thing about this source differs from npm and is recorded on the route: `/api/v1/crates/{name}` publishes `recent_downloads` over 90 DAYS while looking monthly, so the model sums a 30-day slice of the daily series instead. crates.io serves 90 days of history and will not page further back. One product declares one on 2026-08-14 (`yomo`), and its crate is a Rust SDK for a Go project, so banding on it is the under-coverage judgment in docs/guides/adoption.md rather than an automatic re-band."
     },
     "go": {
       "type": "array",

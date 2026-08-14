@@ -301,6 +301,50 @@ Both read the bands from `registry.adoption_bands` and band on the product's dec
 Neither writes anything back to `sources/`: **a computed band is an observation, never a
 score.** Only a person sets `level`, and only per `verification.md`.
 
+**Coverage is read off the signal table, not off the roster.** The registry declared 106 PyPI
+artifacts on 2026-08-14 while `signal_pypi` held 98, and the gap is not cron lag: the roster
+grew during the verification sweep and the model has not caught up. Counting from
+`registry.product_artifacts` overstates what is measured, and every signal model sits behind the
+registry this way between runs.
+
+### npm and crates.io: authored, not yet deployed
+
+`sources/signal_routing.yaml` declared both as `bridged: false` with no model behind them until
+2026-08-14. Three models now exist in `warehouse/models/`, and the routes stay `bridged: false`
+with `blocked_by: deploy` until they run.
+
+| model | grain | covers |
+|---|---|---|
+| `signal_packages.package_downloads_daily` | (product, kind, package, **day**) | 14 npm + crates artifacts, 13 products |
+| `signal_packages.package_downloads` | (product, kind, package) | the same 14, plus every PyPI artifact |
+| `signal_packages.product_adoption` | **product** | one band per product, summed across registries |
+
+Four decisions in there are normative, and each is a rule this guide already states applied to a
+new source:
+
+1. **One band per product, not one per registry.** The `usage_volume` unit is "summed across
+   declared artifacts", and npm, PyPI and crates.io all publish package downloads over a
+   trailing 30 days. `beeai` declares an npm package and a PyPI package, so a per-registry band
+   would give one product two levels over two partial figures. `kinds_counted` records which
+   registries contributed, so a level 5 built from npm plus PyPI is distinguishable from one
+   built on PyPI alone.
+2. **Partial coverage abstains.** A declared artifact with no figure leaves `adoption_level`
+   null with an `abstain_reason`. A sum over some of a product's channels is the under-coverage
+   error below wearing a measurement's label.
+3. **A 90-day figure is not a monthly one.** crates.io's `recent_downloads` covers 90 days and
+   says so nowhere: `yomo` reports 347 there, its daily series sums to exactly 347 across 90
+   days, and its trailing 30 days are 96. Banding the first would overstate the crate by 3.6x.
+   `signal_routing.yaml` records this under the dimension's `never:` block, beside the older
+   version of the same error — `searxng` recording "50M+ total Docker pulls" as a monthly reach.
+4. **History, not a point read.** Both fetched registries are stored as daily series, because a
+   trailing total cannot tell a collapse from a step change months old. npm serves 18 months and
+   silently clips a longer request; crates.io serves 90 days and will not page further back.
+
+Bridging makes these figures **recomputable**. It does not date the axis: `check_verification`
+requires a `content_sha256`, only a fetch produces one, and a warehouse count can corroborate a
+band without earning it a `last_verified`. Whether a computed figure may stand in for a digest is
+an open decision.
+
 ### Sum across the family, not per artifact
 
 `signal_routing.yaml` declares `sum_across_artifacts: true` for adoption, because the map's
@@ -313,9 +357,15 @@ packages), and the hole is latent there rather than closed.
 
 ### Route order, and taking the sum WITHIN the winning route
 
-Adoption routes Hugging Face model → Hugging Face dataset → PyPI → stars, first artifact the
-product has wins. The sum is taken within the winning kind, so a product shipping both a model
-and its training corpus is not credited with the corpus twice.
+Adoption routes Hugging Face model → Hugging Face dataset → PyPI → npm → crates → stars, first
+artifact the product has wins. The sum is taken within the winning kind, so a product shipping
+both a model and its training corpus is not credited with the corpus twice.
+
+**The three package registries are one route, not three.** They share a unit, so
+`signal_packages.product_adoption` sums across them and bands once; the route order matters
+between the Hub, the package registries and stars, not among npm, PyPI and crates. All 14
+products on the npm and crates routes also declare a GitHub repo, so every one of them has a
+`stars_fallback` route available today and two record it: `hexabot` and `yomo`.
 
 ## Products with no machine signal
 
