@@ -724,14 +724,29 @@
           "capability": {
             "score": 5,
             "basis": "benchmark",
-            "basis_detail": "LMArena",
-            "value": "high intelligence-per-parameter; multimodal (vision+audio); Google claims top-tier Arena rankings vs much larger models",
+            "basis_detail": "model-card evaluation table (MMLU Pro / GPQA Diamond / AIME / LiveCodeBench)",
+            "value": "gemma-4-31B-it model card - MMLU Pro 85.2%, GPQA Diamond 84.3%, AIME 2026 (no tools) 89.2%, LiveCodeBench v6 80.0%, MMMU Pro 76.9%; multimodal on text and image across all sizes, audio native only on E2B/E4B/12B",
             "confidence": "medium",
-            "note": "Frontier-class for an open model; benchmark ranking is vendor-reported.",
+            "note": "Frontier-class for an open model. Re-read 2026-08-14, and the cited Google Cloud post turned out to be a deployment-availability announcement carrying neither the multimodal statement nor any ranking, so both halves of the recorded value were unsourced. Replaced with the gemma-4-31B-it model card, which carries the multimodal statement verbatim and a real evaluation table in text. Two corrections the card forces. Audio is not native on the 31B - the card scopes it to E2B, E4B and 12B - so \"vision+audio\" overstated the flagship SKU. And the \"top-tier Arena rankings\" clause is dropped rather than re-sourced - lmarena.ai now 301s to arena.ai, where gemma-4-31b sits at rank 60 of 391 with a score of 1451 +/-8, roughly sixth among openly-licensed entries and behind glm-5.2-max, mimo-v2.5-pro, glm-5.1, glm-5 and hy3. That is a strong open placement and not a top-tier one. The basis_detail moves off LMArena to the card's own table for the same reason. The 5 rests on the benchmark table, which is what the card actually publishes.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
+                "url": "https://huggingface.co/google/gemma-4-31B-it",
+                "shows": "\"Gemma 4 models are multimodal, handling text and image input (with audio supported on E2B, E4B, and 12B) and generating text output\"; evaluation table, 31B column - MMLU Pro 85.2%, AIME 2026 (no tools) 89.2%, LiveCodeBench v6 80.0%, GPQA Diamond 84.3%, MMMLU 88.4%, MMMU Pro 76.9%, MATH-Vision 85.6%. Neither \"Arena\" nor \"LMArena\" appears on the card.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "7b0c0a8c018346ca266733edf3dae57f2b34fc3abe4cd4e57730ec9276c874ab"
+              },
+              {
+                "url": "https://arena.ai/leaderboard/text",
+                "shows": "successor to lmarena.ai, which 301s here - \"gemma-4-31b\", Google, Apache 2.0, rank 60 at 1451 +/-8, with gemma-4-26b-a4b at rank 80; several openly-licensed models rank above it. Does not support a top-tier Arena claim.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "14ae18a07dd83608b55f1bbb8e73355f68ea9091ce3af5c8e2e8942fc943d164"
+              },
+              {
                 "url": "https://cloud.google.com/blog/products/ai-machine-learning/gemma-4-available-on-google-cloud",
-                "shows": "Gemma 4 capabilities and rankings",
+                "shows": "Gemma 4 availability on Google Cloud. Carries no multimodal statement and no Arena ranking, so it does not establish either half of what this axis cited it for.",
                 "accessed": "2026-06-17"
               }
             ]
@@ -739,7 +754,7 @@
           "maturity": 5.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "Unlike CodeGemma/Gemma 3, which use the Gemma Terms of Use, the Gemma 4 SKUs are ungated and the license link resolves to Apache 2.0. Training data and recipe not released. Consolidated on 2026-07-29 from gemma-2, gemma-3; openness follows gemma-4, the release that currently governs. See docs/guides/identity.md. The Google Cloud post cited for the capability band is an availability announcement and carries no ranking, so the Arena claim in that record has no live source behind it. Verified 2026-08-13 via the gemma-4-31B-it model card and the Gemma releases page."
@@ -816,10 +831,18 @@
             "score": 2,
             "basis": "benchmark",
             "basis_detail": "MMLU/GSM8K",
-            "value": "Yi-1.5-34B base: MMLU 76.3, C-Eval 81.4, BBH 54.3; 34B-Chat GSM8K 90.2. Competitive in 2024 mid-size class.",
+            "value": "Yi-34B base - MMLU 76.3, BBH 54.3, C-Eval 81.4. Competitive in the 2024 mid-size class.",
             "confidence": "medium",
-            "note": "Strong for a 2024 sub-35B model but well below 2026 frontier open models (DeepSeek-V4, Qwen 3.6); calibrates near Falcon 3 (C2) on the dated-generation ladder. Benchmarks from the 01-ai GitHub repo (not the HF card).",
+            "note": "Strong for a 2024 sub-35B model but well below 2026 frontier open models (DeepSeek-V4, Qwen 3.6); calibrates near Falcon 3 (C2) on the dated-generation ladder. Replacement found 2026-08-14, and it corrects the attribution rather than the numbers. All three figures are real and in text - Table 2 of the Yi tech report gives MMLU 76.3, BBH 54.3 and C-Eval 81.4 - but the row is Yi-34B, the original 2023 model, not Yi-1.5-34B as the value claimed. The value is relabelled to Yi-34B. Two things dropped rather than re-sourced. There is no text source anywhere for Yi-1.5-34B's MMLU/BBH/C-Eval; the HF card carries only prose and chart images and the 01-ai/Yi-1.5 README defers to the card. And the 34B-Chat GSM8K 90.2 figure appears on none of the pages searched, so it is removed. The score of 2 and the dated-generation framing hold on either release, since the tier takes the max across its releases and Yi-1.5 is the stronger of the two.",
+            "last_verified": "2026-08-14",
             "sources": [
+              {
+                "url": "https://arxiv.org/html/2403.04652v1",
+                "shows": "Yi tech report full text. Table 2, \"Overall performance on grouped academic benchmarks compared to open-source base models\", Yi-34B row - MMLU 76.3, BBH 54.3, C-Eval 81.4. Yi-6B row 63.2 / 42.8 / 72.0. These are Yi-34B figures, not Yi-1.5-34B.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "d3233c6470af203bed646b708278c9c60fc96edb9170dc5cade6be8f945a464a"
+              },
               {
                 "url": "https://arxiv.org/abs/2403.04652",
                 "shows": "Yi foundation-models tech report. Re-read 2026-08-13 - the abstract states \"Our base models achieve strong performance on a wide range of benchmarks like MMLU\" but carries none of the recorded figures.",
@@ -839,7 +862,7 @@
           "maturity": 2.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "Yi-1.5 base family (6B/9B/34B + 32K context variants), open sourced 2024-05-13 by 01.AI. Continuously pre-trained on Yi with +500B tokens (3.6T total). Base SKUs (Yi-1.5-9B, Yi-1.5-34B) scored here; Yi-1.5-*-Chat are the instruct SKUs (finetuned_chat). A dated 2024-era generation against the 2026 frontier, and adoption now sits barely above the 10K band floor. The benchmark figures behind the capability record are no longer on the 01-ai/Yi-1.5 README, which defers to the model card; the model cards do not carry them either, so that record needs a new source. Verified 2026-08-13 via the Yi-1.5-34B and Yi-1.5-9B HF model cards and the 01-ai/Yi-1.5 repository."
@@ -2666,8 +2689,16 @@
             "level": 4,
             "signal_type": "reported_traction",
             "confidence": "low",
-            "note": "Baidu's ERNIE/Wenxiaoyan assistant app reported ~200M MAUs around the 5.0 launch (app-level, not 5.1-specific); not on HF. Attempted re-read 2026-08-13 - the ~200M MAU figure is not on the cited release post and no user, MAU or request count appears on it anywhere. The band therefore has no live source and this axis carries no confirmation until one is found.",
+            "note": "Baidu's ERNIE/Wenxiaoyan assistant app reported ~200M MAUs around the 5.0 launch (app-level, not 5.1-specific); not on HF. Attempted re-read 2026-08-13 - the ~200M MAU figure is not on the cited release post and no user, MAU or request count appears on it anywhere. The band therefore has no live source and this axis carries no confirmation until one is found. Replacement found 2026-08-14 - Baidu's own Q4/FY2025 earnings release states \"ERNIE Assistant's MAU reached 202 million in December 2025\", which is a dated, first-party, app-level figure and is what the ~200M in this note was always reaching for. App-level rather than 5.1-specific, which is how the note already framed it. The Q1 2026 release gives no ERNIE MAU at all, only Baidu App at 655M for March 2026, so December 2025 is the freshest published ERNIE figure; Q2 2026 results are due 2026-08-18 and may carry a newer one.",
+            "last_verified": "2026-08-14",
             "sources": [
+              {
+                "url": "https://www.prnewswire.com/news-releases/baidu-announces-fourth-quarter-and-fiscal-year-2025-results-302698026.html",
+                "shows": "Baidu Q4/FY2025 results, released 2026-02-26 - \"ERNIE Assistant's MAU reached 202 million in December 2025\"; for scale, \"Baidu App's MAUs reached 679 million in December 2025\"",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "0c9367297e14ad3eb49187931abcf73a8dbd6e46bd8f6f65c93f57a37f070d92"
+              },
               {
                 "url": "https://ernie.baidu.com/blog/posts/ernie-5.1-0508-release/",
                 "shows": "ERNIE 5.1 release and API access. Re-read 2026-08-13 - it carries no usage figure, so it does not support the ~200M MAU number the level rests on",
@@ -2681,10 +2712,18 @@
             "score": 5,
             "basis": "benchmark",
             "basis_detail": "LMArena/AIME",
-            "value": "AIME 2026 (with tools) 99.6, strong GPQA/MMLU-Pro; MoE, 128K context; LMArena frontier (Baidu claims #13 Text)",
+            "value": "AIME 2026 (with tools) 99.6, strong GPQA/MMLU-Pro; MoE; LMArena frontier - Baidu states ERNIE 5.1 ranks first among Chinese models on the text leaderboard and fourth globally on the search leaderboard",
             "confidence": "medium",
-            "note": "Frontier proprietary model; Arena rank disputed between mirrors (#28) and Baidu's own claim (#13 Text). Attempted re-read 2026-08-13 - two of the three recorded facts hold and one does not. AIME26 with tool use at 99.6 is on the page, and so is the GPQA / MMLU-Pro framing. The '#13 Text' claim is not - the post now says ERNIE 5.1 scored 1,223 to claim 4th place globally and 1st among Chinese models on the Arena Search leaderboard, which is a different leaderboard and a different rank. The 128K context figure is not on this page either. The value needs rewriting against what the page says, so this axis carries no confirmation.",
+            "note": "Frontier proprietary model; Arena rank disputed between mirrors (#28) and Baidu's own claim (#13 Text). Attempted re-read 2026-08-13 - two of the three recorded facts hold and one does not. AIME26 with tool use at 99.6 is on the page, and so is the GPQA / MMLU-Pro framing. The '#13 Text' claim is not - the post now says ERNIE 5.1 scored 1,223 to claim 4th place globally and 1st among Chinese models on the Arena Search leaderboard, which is a different leaderboard and a different rank. The 128K context figure is not on this page either. The value needs rewriting against what the page says, so this axis carries no confirmation. Replacement found 2026-08-14, and the value is rewritten against it. Baidu's Q1 2026 earnings release states \"Recently on LMArena, ERNIE 5.1 ranked first among Chinese models on the text leaderboard and topped the LMArena search leaderboard among Chinese models, ranking fourth globally\", which is the same shape of claim as the dead '#13 Text' but with a dated first-party home, and consistent with the 1,223 / 4th-globally figure on the release post. Both remain vendor claims rather than leaderboard reads, which is why confidence stays medium. The 128K context figure is dropped - the only 128K evidence is on an ERNIE-4.5 card, a different model line - and the AIME26 99.6 figure keeps its existing source. Score unchanged at 5.",
+            "last_verified": "2026-08-14",
             "sources": [
+              {
+                "url": "https://www.prnewswire.com/news-releases/baidu-announces-first-quarter-2026-results-302774476.html",
+                "shows": "Baidu Q1 2026 results, released 2026-05-18 - \"Baidu launched ERNIE 5.1 in May 2026 ... Recently on LMArena, ERNIE 5.1 ranked first among Chinese models on the text leaderboard and topped the LMArena search leaderboard among Chinese models, ranking fourth globally.\" No ERNIE MAU figure on this release.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "603c8ce34c6397ec899ccd31c017bf24914db82d0fe7de1ace02f07c483e966b"
+              },
               {
                 "url": "https://ernie.baidu.com/blog/posts/ernie-5.1-0508-release/",
                 "shows": "official MoE design and training-cost efficiency (\"Pre-training Compute Cost at Only 6% of Comparable Models\"); \"On AIME26 (with tool use) ... ERNIE 5.1 scores 99.6 - second only to Gemini 3.1 Pro\"; \"on May 9, ERNIE 5.1 scored 1,223 to claim 4th place globally and 1st among Chinese models on the Arena Search leaderboard\". No #13 Text ranking and no 128K context figure.",
@@ -2697,7 +2736,7 @@
           "maturity": 4.7,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "Proprietary/API-only (Baidu Qianfan API, ernie.baidu.com, AI Studio). Note ERNIE 4.5 was open sourced (Apache-2.0, June 2025) but the 5.x flagship line is closed, and the Baidu org on Hugging Face still lists no 5.x repository. The release post claims 4th place globally on the Arena Search leaderboard with a score of 1,223, not the \"#13 Text\" placement the capability record carries, and it publishes no usage figure at all - so both the capability value and the adoption band need new sources. Verified 2026-08-13 via the ERNIE 5.1 release post and the Baidu Hugging Face organization page."
@@ -3484,10 +3523,18 @@
             "score": 3,
             "basis": "benchmark",
             "basis_detail": "HumanEval",
-            "value": "Code Llama Instruct 13B ~HumanEval pass@1 ~42%; family 34B/70B-Instruct higher but all 2023-era",
+            "value": "Code Llama - Instruct 13B HumanEval pass@1 42.7%, MBPP pass@1 49.4%; 70B-Instruct higher at 67.8% HumanEval, 34B-Instruct lower at 41.5%; all 2023-era",
             "confidence": "medium",
-            "note": "A 2023-generation code model, state of the art among open models at release and well below the 2026 coders in this category. The note that stood here until 2026-08-13 was a verbatim copy of the openness note and described the license rather than the capability; it is replaced.\nRe-read 2026-08-13, and the recorded value did not survive it. The HF card inlines no benchmark table at all, and the paper it links (arXiv:2308.12950) reports \"up to 67% and 65% on HumanEval and MBPP\" for the family rather than any 13B-Instruct figure. The recorded ~42% appears on neither cited source. ESCALATED rather than changed - no last_verified claimed on this axis.",
+            "note": "A 2023-generation code model, state of the art among open models at release and well below the 2026 coders in this category. The note that stood here until 2026-08-13 was a verbatim copy of the openness note and described the license rather than the capability; it is replaced.\nRe-read 2026-08-13, and the recorded value did not survive it. The HF card inlines no benchmark table at all, and the paper it links (arXiv:2308.12950) reports \"up to 67% and 65% on HumanEval and MBPP\" for the family rather than any 13B-Instruct figure. The recorded ~42% appears on neither cited source.\nReplacement found 2026-08-14, and it vindicates the figure. The abstract carries only the family headline; Table 2 of the paper PDF, \"Code Llama pass@ scores on HumanEval and MBPP\", carries the per-size rows, and Code Llama - Instruct 13B reads 42.7% HumanEval pass@1 and 49.4% MBPP pass@1. The recorded ~42% was right and was simply cited to a page that does not show it. One clause corrected while the table is open - \"family 34B/70B-Instruct higher\" is only half true. 70B-Instruct is higher at 67.8%, but 34B-Instruct is 41.5%, BELOW the 13B, and only its MBPP column (57.0%) beats the 13B. The value now says so. Score unchanged at 3.",
+            "last_verified": "2026-08-14",
             "sources": [
+              {
+                "url": "https://arxiv.org/pdf/2308.12950",
+                "shows": "Code Llama paper full text. Table 2, \"Code Llama pass@ scores on HumanEval and MBPP\", Instruct rows - 7B 34.8% / 44.4%, 13B 42.7% / 49.4%, 34B 41.5% / 57.0%, 70B 67.8% / 62.2% (HumanEval pass@1 / MBPP pass@1). The per-size figures are in the PDF text, not on the abstract page.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "05ed05d2d76c420b6af4a1afe6e1dec99939ccf62c5a0c0a258b09cbe1889346"
+              },
               {
                 "url": "https://huggingface.co/codellama/CodeLlama-13b-Instruct-hf",
                 "shows": "Code Llama 13B-Instruct model card linking arXiv:2308.12950 \"Code Llama - Open Foundation Models for Code\"; no benchmark table on the card",
@@ -3507,7 +3554,7 @@
           "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "Code Llama Instruct (instruct-tuned coding variant; 7B/13B/34B/70B; scored on the 13B-Instruct SKU as representative). Trained Jan-Jul 2023, paper arXiv:2308.12950 (Aug 2023). >12 months old and superseded by Llama 3.x/Codestral-class coders, but foundational open coding-instruct model. The card inlines no benchmark numbers, so capability rests on the paper rather than the card. Verified live 2026-08-13 via the HF model card and the arXiv abstract."
@@ -3738,10 +3785,25 @@
             "score": 2,
             "basis": "benchmark",
             "basis_detail": "MT-Bench/MMLU",
-            "value": "Mistral 7B Instruct v0.2 ~MT-Bench ~7.6 / MMLU ~60 class; 2023-era 7B chat quality",
+            "value": "Mistral 7B Instruct v0.2 MT-Bench 7.6 (Mistral-reported); underlying Mistral 7B base MMLU 60.1%; v0.1-Instruct MT-Bench 6.84. 2023-era 7B chat quality",
             "confidence": "medium",
-            "note": "Excellent for a 7B in 2023-24; clearly below 2026 frontier and below modern small instruct models (Phi-4-mini, Qwen 3.x small). Capability low on a frontier-anchored scale. Re-read 2026-08-13 - the card carries no benchmark table at all. It links arXiv:2310.06825, which is the base \"Mistral 7B\" paper rather than an evaluation of this instruct tune, so neither the ~MT-Bench 7.6 nor the ~MMLU 60 in the recorded value is re-derivable from the cited source. The 2 is not in doubt on the evidence, but the figures have no source behind them. ESCALATED rather than changed - no last_verified claimed on this axis.",
+            "note": "Excellent for a 7B in 2023-24; clearly below 2026 frontier and below modern small instruct models (Phi-4-mini, Qwen 3.x small). Capability low on a frontier-anchored scale. Re-read 2026-08-13 - the card carries no benchmark table at all. It links arXiv:2310.06825, which is the base \"Mistral 7B\" paper rather than an evaluation of this instruct tune, so neither the ~MT-Bench 7.6 nor the ~MMLU 60 in the recorded value is re-derivable from the cited source. The 2 is not in doubt on the evidence, but the figures have no source behind them. Both figures were found on 2026-08-14 and both needed re-attributing. The MT-Bench 7.6 is Mistral's own and is specifically about this tune - the La Plateforme launch post says \"Mistral-tiny. Our most cost-effective endpoint currently serves Mistral 7B Instruct v0.2 ... It obtains 7.6 on MT-Bench.\" That it is version-specific matters, because Table 3 of the paper gives v0.1-Instruct at 6.84, so the citation has to point at the post rather than the paper. The MMLU ~60 is real at 60.1% but belongs to the Mistral 7B BASE model in Table 2 of the paper; Mistral publishes no MMLU for the v0.2 instruct tune anywhere found, so the value now attributes it to the base. Score unchanged at 2.",
+            "last_verified": "2026-08-14",
             "sources": [
+              {
+                "url": "https://mistral.ai/news/la-plateforme",
+                "shows": "Mistral's La Plateforme launch post - \"Mistral-tiny. Our most cost-effective endpoint currently serves Mistral 7B Instruct v0.2, a new minor release of Mistral 7B Instruct. Mistral-tiny only works in English. It obtains 7.6 on MT-Bench.\"",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "0a9a105ac8f1c7ff38d6a307e7ae2d87e0950d40f5b2042c9b3196dee7a162e3"
+              },
+              {
+                "url": "https://arxiv.org/pdf/2310.06825",
+                "shows": "Mistral 7B paper full text. Table 2 gives the BASE model at MMLU 60.1%, HellaSwag 81.3%, WinoGrande 75.3%; Table 3 gives \"Mistral 7B Instruct\" (v0.1) an MT-Bench of 6.84 +/- 0.07. Neither table covers the v0.2 instruct tune.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "dfbac4e7035344b305c947481f2e7e8a02f7a24a563917eb6e47f6591d14c5ae"
+              },
               {
                 "url": "https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2",
                 "shows": "7B instruct model card, 32k context; links arxiv:2310.06825 \"Mistral 7B\", the base-model paper. No benchmark table on the card.",
@@ -3754,7 +3816,7 @@
           "maturity": 2.6,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "Mistral 7B Instruct v0.2, 7B dense, 32k context (up from 8k in v0.1); instruct fine-tune of Mistral-7B-v0.2 (base paper arXiv:2310.06825, Oct 2023). >12 months old and superseded by v0.3 and the Ministral/Mistral Small lines, but foundational permissive instruct model. The capability record's MT-Bench and MMLU figures are not on the card, which links only the base-model paper. Verified live 2026-08-13 via the HF model card."
@@ -4771,8 +4833,16 @@
             "basis_detail": "SWE-bench Verified",
             "value": null,
             "confidence": "high",
-            "note": "OpenAI-reported at launch: SWE-bench Verified 74.9%, MMMU 84.2%, AIME 2025 94.6% (no tools), Aider Polyglot 88%. Frontier-tier coding/reasoning. Vendor-reported figures. NOT RE-VERIFIED on 2026-08-13 - the only source this axis cites, openai.com/index/introducing-gpt-5/, returned HTTP 403 to a plain fetch on both attempts, and none of the four figures appears on the GPT-5 Wikipedia article, so nothing corroborates them. No last_verified claimed; the axis needs a reachable primary source.",
+            "note": "OpenAI-reported at launch: SWE-bench Verified 74.9%, MMMU 84.2%, AIME 2025 94.6% (no tools), Aider Polyglot 88%. Frontier-tier coding/reasoning. Vendor-reported figures. NOT RE-VERIFIED on 2026-08-13 - the only source this axis cites, openai.com/index/introducing-gpt-5/, returned HTTP 403 to a plain fetch on both attempts, and none of the four figures appears on the GPT-5 Wikipedia article, so nothing corroborates them. Replacement found 2026-08-14. The launch post is still 403, but OpenAI's GPT-5 system card PDF is reachable and confirms the axis basis figure directly - \"The SWE-Bench result in the GPT-5 launch blog post (74.9%), was run with the default verbosity setting in the API (verbosity = medium)\", with the harness documented as \"a fixed subset of n=477 verified tasks\". That is the declared basis_detail for this axis, sourced from OpenAI, and a 74.9% SWE-bench Verified places the tier at 5. The other three figures are NOT re-sourced - MMMU 84.2%, AIME 2025 94.6% and Aider Polyglot 88% appear on no reachable OpenAI page, only on secondary write-ups, so they are dropped from this note rather than carried. Recorded while the card is open - Artificial Analysis rates plain GPT-5 (high) at 35, #84 of 188 on their recalibrated index, but the tier takes the max across its releases and its current flagship there is GPT-5.6 Sol (max) at 61, so the 5 is not in doubt.",
+            "last_verified": "2026-08-14",
             "sources": [
+              {
+                "url": "https://cdn.openai.com/gpt-5-system-card.pdf",
+                "shows": "OpenAI GPT-5 system card - \"The SWE-Bench result in the GPT-5 launch blog post (74.9%), was run with the default verbosity setting in the API (verbosity = medium)\"; \"All SWE-bench evaluation runs use a fixed subset of n=477 verified tasks\". Confirms the SWE-bench Verified basis figure from OpenAI directly. Carries no MMMU, AIME 2025 or Aider Polyglot headline.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "f9f9c72d08cba81dcbb189129119357c8c32eca4e0b16c813aca386aed6b0459"
+              },
               {
                 "url": "https://openai.com/index/introducing-gpt-5/",
                 "shows": "OpenAI's GPT-5 launch post, the source of the four recorded figures. Returned HTTP 403 to a plain fetch on 2026-08-13, so not re-dated.",
@@ -4783,7 +4853,7 @@
           "maturity": 5.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "OpenAI GPT-5 line: GPT-5 (Aug 7 2025, became ChatGPT default replacing GPT-4o) through GPT-5.1/5.2/5.4 and GPT-5.5 / GPT-5.5 Instant (the current ChatGPT default as of May 2026). Unified reasoning+chat post-trained model family, closed/API + ChatGPT only. Consolidated on 2026-07-29 from gpt-5; openness follows gpt-5-line, the release that currently governs. See docs/guides/identity.md. OpenAI's own launch post answers HTTP 403 to a plain fetch, so the capability figures currently have no reachable source and that axis is unverified. Verified live 2026-08-13 via the GPT-5 Wikipedia article and TechCrunch."
@@ -5040,7 +5110,7 @@
             "basis_detail": "Artificial Analysis Intelligence Index",
             "value": null,
             "confidence": "high",
-            "note": "Artificial Analysis Intelligence Index v4.0 score of 49, ranked #24 of 150 (median 36); index includes GPQA Diamond and SciCode (individual subscores not disclosed). Provisional LMSYS/LMArena Elo ~1505-1535 (vs 1483 for Grok 4.1). Strong but a notch below the GPT-5/Gemini 3.5/Opus 4.7 leaders on the AA index.\nRe-read 2026-08-13, and NONE of the AA figures survives. The page now reports Grok 4.20 0309 v2 (Reasoning) at 38 on the Artificial Analysis Intelligence Index, ranked #62 of 184, against a median of 34 - not 49, not #24 of 150, and not against a median of 36. Artificial Analysis recalibrated the index, so this is not the same number moving; the figure the record cites no longer exists on their scale. The page also banners the model as deprecated and points at Grok 4.3 (high) instead, and xAI's own docs now headline grok-4.6. The LMArena estimate still stands on the NextBigFuture source, which is an estimate rather than a measurement and says so. ESCALATED rather than changed - no last_verified claimed on this axis, and the score needs re-deriving on a current release.",
+            "note": "Artificial Analysis Intelligence Index v4.0 score of 49, ranked #24 of 150 (median 36); index includes GPQA Diamond and SciCode (individual subscores not disclosed). Provisional LMSYS/LMArena Elo ~1505-1535 (vs 1483 for Grok 4.1). Strong but a notch below the GPT-5/Gemini 3.5/Opus 4.7 leaders on the AA index.\nRe-read 2026-08-13, and NONE of the AA figures survives. The page now reports Grok 4.20 0309 v2 (Reasoning) at 38 on the Artificial Analysis Intelligence Index, ranked #62 of 184, against a median of 34 - not 49, not #24 of 150, and not against a median of 36. Artificial Analysis recalibrated the index, so this is not the same number moving; the figure the record cites no longer exists on their scale. The page also banners the model as deprecated and points at Grok 4.3 (high) instead, and xAI's own docs now headline grok-4.6. The LMArena estimate still stands on the NextBigFuture source, which is an estimate rather than a measurement and says so. ESCALATED rather than changed - no last_verified claimed on this axis, and the score needs re-deriving on a current release.\nRe-derived on the current release 2026-08-14, as that note asked. Artificial Analysis publishes a grok-4.6 page with no deprecation banner - \"Grok 4.6 (high) scores 61 on the Artificial Analysis Intelligence Index\", Intelligence rank \"# 6 / 188\", median 34. On that same recalibrated scale the leaders are Claude Opus 5 (max/xhigh) at 63 and Claude Fable 5 at 62, and grok-4.6 ties GPT-5.6 Sol (max) at 61 while sitting above Kimi K3 (max) 60, GPT-5.6 Sol (xhigh) 59, Muse Spark 1.2 57 and every Gemini entry. So the replacement source exists and is clean, but it does not support the recorded band: \"a notch below the GPT-5/Gemini/Opus leaders\" is no longer true of the tier's flagship, which is two index points off the top and inside the leading group. That is a band question rather than a freshness one. ESCALATED for a ruling on 4 -> 5 - no last_verified claimed, because dating a 4 on a source that reads #6 of 188 would be the rubber stamp this gate exists to catch.",
             "sources": [
               {
                 "url": "https://artificialanalysis.ai/models/grok-4-20",
@@ -5055,6 +5125,13 @@
                 "accessed": "2026-08-13",
                 "http_status": 200,
                 "content_sha256": "b97eee76687904330fbb120c8bc804848048306853fc8d42e79ae3dfe7f8a830"
+              },
+              {
+                "url": "https://artificialanalysis.ai/models/grok-4-6",
+                "shows": "\"Grok 4.6 (high) scores 61 on the Artificial Analysis Intelligence Index, placing it well above average among comparable models (median - 34)\"; Intelligence rank \"# 6 / 188\"; no deprecation banner, unlike the grok-4-20 page. The current release for the tier, on the recalibrated scale that replaced the one the old 49 was recorded against.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "c2773a64aef99b6926d22f7fd870e6ab5d327197d6c8b8bae33ef923497fa238"
               }
             ]
           },
@@ -5124,10 +5201,18 @@
             "score": 3,
             "basis": "benchmark",
             "basis_detail": "HumanEval/MBPP",
-            "value": "HumanEval pass@1 ~86.6%, MBPP ~91.2%; strong on completion/FIM and RepoBench long-context, but ~22B specialist, weak on agentic SWE-bench (single-run resolves only a small fraction)",
+            "value": "Codestral-2501 HumanEval 86.6%, MBPP 80.2%, RepoBench 38.0%, HumanEvalFIM average 85.9%, 256k context; Codestral-2405 22B HumanEval 81.1%, MBPP 78.2%, RepoBench 34.0%, 32k context. Strong on completion and FIM, but a code-completion specialist rather than an agentic coder",
             "confidence": "medium",
-            "note": "Strong code-completion specialist for its size, but a narrow FIM model, mid-tier on a chat/agentic capability axis where the comparison set is 2026 frontier agentic coders. Re-read 2026-08-13, and the recorded figures did not survive. The launch post names the benchmark suite - HumanEval pass@1, MBPP sanitised pass@1, CruxEval, RepoBench EM, Spider, plus six-language HumanEval and FIM - and publishes the scores as charts, so neither the ~86.6% HumanEval nor the ~91.2% MBPP is anywhere in the fetched body. What the text does support is the qualitative claim that Codestral \"outperforms all other models in RepoBench\" on a 32k context. ESCALATED rather than changed - no last_verified claimed on this axis, and the figures need a source that publishes them as text.",
+            "note": "Strong code-completion specialist for its size, but a narrow FIM model, mid-tier on a chat/agentic capability axis where the comparison set is 2026 frontier agentic coders. Re-read 2026-08-13, and the recorded figures did not survive. The launch post names the benchmark suite - HumanEval pass@1, MBPP sanitised pass@1, CruxEval, RepoBench EM, Spider, plus six-language HumanEval and FIM - and publishes the scores as charts, so neither the ~86.6% HumanEval nor the ~91.2% MBPP is anywhere in the fetched body. What the text does support is the qualitative claim that Codestral \"outperforms all other models in RepoBench\" on a 32k context. Replacement found 2026-08-14 - the later Codestral 25.01 post publishes the same suite as HTML tables rather than charts, so the numbers are in the fetched body. Three corrections it forces. HumanEval 86.6% is real but belongs to Codestral-2501 at 256k context, not to the 22B, whose row reads 81.1%. MBPP ~91.2% is on no Mistral page at all; the 2501 table gives MBPP 80.2% for 2501 and 78.2% for the 22B, and the nearest 91.x on the page is the 22B FIM pass@1 average of 91.8%, a different metric, which is the likely source of the transcription. And no SWE-bench figure for Codestral exists on any Mistral page, so the \"weak on agentic SWE-bench\" clause is dropped rather than carried unsourced. The value now records both releases explicitly. Score unchanged at 3.",
+            "last_verified": "2026-08-14",
             "sources": [
+              {
+                "url": "https://mistral.ai/news/codestral-2501",
+                "shows": "Codestral 25.01 launch post, benchmarks published as HTML tables in the body. Codestral-2501 row - 256k context, HumanEval 86.6%, MBPP 80.2%, CruxEval 55.5%, LiveCodeBench 37.9%, RepoBench 38.0%, Spider 66.5%, CanItEdit 50.5%, HumanEval average 71.4%, HumanEvalFIM average 85.9%. Codestral-2405 22B row - 32k context, HumanEval 81.1%, MBPP 78.2%, RepoBench 34.0%, HumanEvalFIM average 82.1%. No MBPP 91.2% and no SWE-bench figure anywhere on the page.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "442684d0e806d2790eda5f92c08368c4bca58f20722cfd79b95ed8c848856999"
+              },
               {
                 "url": "https://mistral.ai/news/codestral/",
                 "shows": "names the benchmark suite (HumanEval pass@1, MBPP sanitised pass@1, CruxEval, RepoBench EM, Spider, six-language HumanEval, FIM) and the claim that \"Codestral outperforms all other models in RepoBench\" with its 32k context; the scores themselves are chart images and are not in the fetched body",
@@ -5140,7 +5225,7 @@
           "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "Codestral 25.08 (released 30 Jul 2025), Mistral's code-completion/FIM specialist; instruction-tuned with a chat mode (+5% instruction following per launch). Distributed via API (console.mistral.ai), VPC, and on-prem; open weights on HF under the Mistral AI Non-Production License (MNPL). NOTE: arguably a coding-specialist model rather than a general chat model; scored best-effort in finetuned_chat per assignment with a category caveat. (Separate 'Codestral 2', Apr 2026, was relicensed Apache-2.0, not the SKU scored here.) Mistral publishes the benchmark scores as chart images rather than text, so the capability figures are not re-derivable from the launch post and are flagged. Verified live 2026-08-13 via the Codestral and Codestral 25.08 launch posts."
@@ -5280,28 +5365,36 @@
             "score": 5,
             "basis": "benchmark",
             "basis_detail": "LMArena/HLE",
-            "value": "LMArena #6 overall (~1487 Elo, mid-2026); Humanity's Last Exam 58%, FrontierScience Research 38% (Contemplating mode); positioned vs Gemini Deep Think / GPT Pro extreme-reasoning modes",
+            "value": "arena.ai text leaderboard - muse-spark-1.2 (xHigh) ranked 4 of 391 models at 1498 +/-10; Artificial Analysis Intelligence Index 57, rank #14 of 188",
             "confidence": "medium",
-            "note": "Bumped 4 -> 5 on the strength of an LMArena placement that no longer exists.\nRe-read 2026-08-13, and NEITHER source supports the record any more. The LMArena leaderboard does not list Muse Spark at all - the string does not appear on the page - and it has changed instrument, now ranking by win share with a confidence interval rather than by Elo, so the \"~1487 Elo, #6 overall\" figure is gone in both senses. The top of the Agent board reads Claude Opus 5 (High) 12.01%, Claude Opus 5 (Max) 12.00%, Claude Fable 5 (High) 11.98%. The Meta engineering blog that carried the HLE 58% and FrontierScience 38% figures answers HTTP 400 to a plain fetch, so those are unsourced too. This is exactly the failure the bump was meant to close, in reverse. ESCALATED rather than changed - no last_verified claimed on this axis.",
+            "note": "Bumped 4 -> 5 on the strength of an LMArena placement that no longer exists.\nRe-read 2026-08-13, and NEITHER source supports the record any more. The LMArena leaderboard does not list Muse Spark at all - the string does not appear on the page - and it has changed instrument, now ranking by win share with a confidence interval rather than by Elo, so the \"~1487 Elo, #6 overall\" figure is gone in both senses. The top of the Agent board reads Claude Opus 5 (High) 12.01%, Claude Opus 5 (Max) 12.00%, Claude Fable 5 (High) 11.98%. The Meta engineering blog that carried the HLE 58% and FrontierScience 38% figures answers HTTP 400 to a plain fetch, so those are unsourced too. This is exactly the failure the bump was meant to close, in reverse.\nReplacement found 2026-08-14, and the band survives on it. lmarena.ai now 301s to arena.ai, whose TEXT board still ranks by an Elo-style score - the win-share board hit on 2026-08-13 was the Agent board, a different instrument on the same site. On the text board Muse Spark IS present, as muse-spark-1.2 (xHigh), ranked 4 of 391 models at 1498 +/-10, behind only three Anthropic entries. Artificial Analysis corroborates independently at 57 on their Intelligence Index, #14 of 188.\nTwo narrowings the new evidence forces. The placement belongs to the 1.2 xHigh release rather than to \"mid-2026\" generally, and the value has been rewritten to say so. And the HLE 58% / FrontierScience 38% figures still have no fetchable home - ai.meta.com answers HTTP 400 to the repo's own fetcher on a third attempt, so those numbers are dropped from the value rather than carried unsourced. The 5 now rests on a top-5 arena placement and a #14/188 index rank, both re-derivable.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
-                "url": "https://ai.meta.com/blog/introducing-muse-spark-msl/",
-                "shows": "the source of the HLE 58% and FrontierScience 38% figures. Returned HTTP 400 to a plain fetch on 2026-08-13, so not re-dated and the figures are currently unsourced.",
-                "accessed": "2026-06-04"
+                "url": "https://arena.ai/leaderboard/text",
+                "shows": "arena.ai text leaderboard (lmarena.ai 301s here) - rank 4 \"muse-spark-1.2 (xHigh)\", Meta, Proprietary, score 1498 +/-10 over 3,280 votes, behind claude-fable-5 1506, claude-opus-4-6-high 1505 and claude-opus-4-7-high 1502, out of 391 models and 7,779,985 votes",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "14ae18a07dd83608b55f1bbb8e73355f68ea9091ce3af5c8e2e8942fc943d164"
               },
               {
-                "url": "https://lmarena.ai/leaderboard",
-                "shows": "Muse Spark does not appear on the leaderboard; the board now ranks by win share rather than Elo, reading \"1 Claude Opus 5 (High) 12.01% ±1.45%, 2 Claude Opus 5 (Max) 12.00%, 3 Claude Fable 5 (High) 11.98%\"",
-                "accessed": "2026-08-13",
+                "url": "https://artificialanalysis.ai/models/muse-spark-1-2",
+                "shows": "\"scores 57 on the Artificial Analysis Intelligence Index, placing it well above average among comparable models (median - 34)\"; Intelligence rank \"# 14 / 188\". No deprecation banner.",
+                "accessed": "2026-08-14",
                 "http_status": 200,
-                "content_sha256": "df9431725e3e0df9b133361d4fc3e2db85d2ec360a36555be56864896318502b"
+                "content_sha256": "efd6d68244a9fbe139a9ab0b4851ad821fa126f8de802ce720b7dd1319915d3c"
+              },
+              {
+                "url": "https://ai.meta.com/blog/introducing-muse-spark-msl/",
+                "shows": "the former source of the HLE 58% and FrontierScience 38% figures. Answered HTTP 400 to the repo's fetcher again on 2026-08-14, so those figures remain unsourced and have been dropped from the value.",
+                "accessed": "2026-06-04"
               }
             ]
           },
           "maturity": 4.7,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "Muse Spark, first model of Meta Superintelligence Labs' new 'Muse' series; released 8 Apr 2026. Natively multimodal reasoning model with tool-use, visual chain-of-thought, and multi-agent 'Contemplating' mode. Proprietary/API-only: powers the Meta AI assistant (meta.ai + Meta AI app), private API preview to select users; no open weights. Meta's engineering blog answers HTTP 400 to a plain fetch and LMArena no longer lists Muse Spark, so both capability sources are currently unusable and that axis is flagged. Verified live 2026-08-13 via Meta's newsroom post."
@@ -6339,11 +6432,19 @@
           "capability": {
             "score": 5,
             "basis": "benchmark",
-            "basis_detail": "LMArena/GPQA-Diamond/HLE",
+            "basis_detail": "GPQA-Diamond/HLE/SWE-bench Verified/LiveCodeBench Pro",
             "value": null,
             "confidence": "medium",
-            "note": "Frontier tier. Gemini 3 Pro is competitive at the top of LMArena, GPQA-Diamond and HLE, and the 3.1 Pro preview leads LiveCodeBench Pro with 80.6% on SWE-bench Verified. Confidence medium because the strongest coding figures come from a preview checkpoint that is deliberately not tracked as a product. Re-read 2026-08-13, and the cited source does NOT carry any of the figures in the note - the DeepMind model index is a product listing, and the LMArena, GPQA-Diamond, HLE and SWE-bench claims appear nowhere on it. The 5 rests on frontier positioning the page does support, but the specific numbers have no source behind them on this axis. No last_verified claimed; the axis needs a benchmark source.",
+            "note": "Frontier tier. Gemini 3 Pro is competitive at the top of LMArena, GPQA-Diamond and HLE, and the 3.1 Pro preview leads LiveCodeBench Pro with 80.6% on SWE-bench Verified. Confidence medium because the strongest coding figures come from a preview checkpoint that is deliberately not tracked as a product. Re-read 2026-08-13, and the cited source does NOT carry any of the figures in the note - the DeepMind model index is a product listing, and the LMArena, GPQA-Diamond, HLE and SWE-bench claims appear nowhere on it. The 5 rests on frontier positioning the page does support, but the specific numbers have no source behind them on this axis.\nReplacement found 2026-08-14 - the family index carries nothing, but the Pro page one level down carries a full benchmark table in text, and it is DeepMind's own. Gemini 3.1 Pro (Thinking High) reads GPQA Diamond 94.3%, Humanity's Last Exam 44.4% no tools, SWE-Bench Verified 80.6% single attempt, LiveCodeBench Pro 2887 Elo, ARC-AGI-2 77.1%, Terminal-Bench 2.0 68.5%, against Sonnet 4.6, Opus 4.6 and GPT-5.2 in the same table. It tops the comparison set on HLE, GPQA Diamond, ARC-AGI-2, Terminal-Bench and LiveCodeBench Pro, which is what a 5 rests on.\nTwo things the page corrects. The old note said Gemini \"leads LiveCodeBench Pro with 80.6% on SWE-bench Verified\", which conflated two benchmarks - the LiveCodeBench Pro lead is real at 2887 vs 2439 and 2393, but the 80.6% is SWE-bench Verified and is SECOND to Opus 4.6's 80.8%, not leading. And the reason confidence was held at medium - that the strongest figures came from a preview checkpoint not tracked as a product - no longer holds, since 3.1 Pro is GA on DeepMind's own Pro page. Confidence is left at medium and FLAGGED for a ruling rather than raised here. The LMArena clause is dropped from basis_detail and the note - arena.ai's text board carries no Gemini Pro entry in its top ten, so that claim has no source.",
+            "last_verified": "2026-08-14",
             "sources": [
+              {
+                "url": "https://deepmind.google/models/gemini/pro/",
+                "shows": "DeepMind's Gemini Pro page, Performance table in body text. Gemini 3.1 Pro (Thinking High) - Humanity's Last Exam 44.4% no tools, GPQA Diamond 94.3% no tools, ARC-AGI-2 77.1%, SWE-Bench Verified 80.6% single attempt, LiveCodeBench Pro 2887 Elo, Terminal-Bench 2.0 68.5%, MMMLU 92.6%. Comparison columns Sonnet 4.6, Opus 4.6, GPT-5.2 - Opus 4.6 leads SWE-Bench Verified at 80.8%.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "a61e8e87c170b874697552062b72480281ec5a1bfc0685af01b44b74ea3586e0"
+              },
               {
                 "url": "https://deepmind.google/models/gemini/",
                 "shows": "Pro presented as the flagship reasoning tier of the Gemini family. Re-read 2026-08-13 - a product listing only, carrying no benchmark figures.",
@@ -6356,7 +6457,7 @@
           "maturity": 5.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "Tier product. Scored against Gemini 3 Pro, the generally available Pro release. Gemini 3.1 Pro Preview leads LiveCodeBench Pro and posts 80.6% on SWE-bench Verified, but preview checkpoints are excluded from the map as separate products because they are not stable; it is noted here so the tier's coding standing is not lost. Supersedes the separate gemini-2-5-pro, gemini-3-pro and gemini-3-1-pro-preview entries. The capability axis cites only the DeepMind model index, which carries no benchmark figures, so the numbers in its note have no source behind them and it is flagged. Verified live 2026-08-13 via the DeepMind model index."
@@ -17462,11 +17563,19 @@
             "basis_detail": "downstream",
             "value": null,
             "confidence": "high",
-            "note": "Instruction collection behind Aya 101 (2024), Aya 23, and Aya Expanse, which beat Gemma 2 / Qwen 2.5 / Llama 3.1 in their size class; strong, multiple notable open models.",
+            "note": "Instruction collection behind Aya 101 (2024), Aya 23, and Aya Expanse, which beat Gemma 2 / Qwen 2.5 / Llama 3.1 in their size class; strong, multiple notable open models. Re-read 2026-08-14 - the HF blog post no longer carries the 76.6% figure this axis cited. It now reports the 8B range only, \"win rates ranging from 60.4% to 70.6%\" against Gemma 2 9B, Llama 3.1 8B and Ministral 8B. The figure survives on the Aya Expanse paper, whose abstract states 8B and 32B outperform Gemma 2, Qwen 2.5 and Llama 3.1 in their parameter classes \"achieving up to a 76.6% win-rate\", and whose body pins that maximum to the 32B against Mixtral 8x22B on m-ArenaHard. Both the old and the new comparison sets are open models this collection fed, so the band of 4 is unaffected and only the citation moves. FLAGGED for a later pass, not for this one - no primary source states that the Aya COLLECTION specifically trained Aya Expanse. The Expanse paper does not name it, and neither does the CohereLabs/aya-expanse-8b card; the lineage rests on the Medium secondary already cited.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
+                "url": "https://arxiv.org/abs/2412.04261",
+                "shows": "Aya Expanse paper abstract - \"Aya Expanse 8B and 32B outperform leading open-weight models in their respective parameter classes, including Gemma 2, Qwen 2.5, and Llama 3.1, achieving up to a 76.6% win-rate\" on Arena-Hard-Auto translated into 23 languages, and \"Aya Expanse 32B outperforms Llama 3.1 70B ... achieving a 54.0% win-rate\"",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "061c6359ac9b1a00d36b521f7179ec338370ca420d44d3b0c4254aa4b518baa0"
+              },
+              {
                 "url": "https://huggingface.co/blog/aya-expanse",
-                "shows": "Aya Expanse 8B/32B outperform Gemma 2, Qwen 2.5, Llama 3.1 in class (up to 76.6% win-rate on Arena-Hard-Auto)",
+                "shows": "no longer carries the 76.6% figure; now reports the 8B only, with \"win rates ranging from 60.4% to 70.6%\" against Gemma 2 9B, Llama 3.1 8B and Ministral 8B",
                 "accessed": "2026-07-04"
               },
               {
@@ -17479,7 +17588,7 @@
           "maturity": 3.5,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "Verified live 2026-08-13 via primary sources. Ungated, Apache-2.0 licensed, with a complete dataset card.",
@@ -19394,12 +19503,15 @@
             "basis_detail": "downstream",
             "value": null,
             "confidence": "high",
-            "note": "Proven with ongoing downstream use (Guanaco, Tulu 3, OLMo 3 Dolci) but dated, reduced to a fractional ingredient, with no comparative results isolating its value.",
+            "note": "Proven with ongoing downstream use (Guanaco, Tulu 3, OLMo 3 Dolci) but dated, reduced to a fractional ingredient, with no comparative results isolating its value. Re-read 2026-08-14 - the QLoRA citation was pointed at the arXiv abstract page, which never mentions OASST1, so the Guanaco lineage this axis rests on had no live source. It is repointed to the paper PDF, where the string OASST1 occurs 19 times. The load-bearing sentence reads \"the top QLoRA tuned model, Guanaco 65B, which we finetune on a variant of OASST1, is the best-performing open-source chatbot model\", and the dataset appendix pins that variant at 9,209 examples, being the top reply at each level of the conversation tree. The band is unchanged; only the pointer moved from the abstract to the full text.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
-                "url": "https://arxiv.org/abs/2305.14314",
-                "shows": "Guanaco/QLoRA fine-tuned on OASST1",
-                "accessed": "2026-07-04"
+                "url": "https://arxiv.org/pdf/2305.14314",
+                "shows": "QLoRA paper full text, where OASST1 occurs 19 times. \"the top QLoRA tuned model, Guanaco 65B, which we finetune on a variant of OASST1, is the best-performing open-source chatbot model and offers performance competitive to ChatGPT\"; the dataset appendix gives the variant as 9,209 examples - \"we only use the top reply at each level in the conversation tree. This limits the dataset to 9,209 examples.\" The arXiv abstract page carries none of this.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "33a4e757c19d6ea8d3cca8958fce8fe405e290272e135c99ee66065c775d5bd1"
               },
               {
                 "url": "https://huggingface.co/datasets/allenai/Dolci-Instruct-SFT",
@@ -19411,7 +19523,7 @@
           "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "Verified live 2026-08-13 via primary sources. Apache-2.0 licensed, ungated, with a full dataset card.",
@@ -23731,8 +23843,8 @@
             "basis_detail": "SWE-bench Verified",
             "value": null,
             "confidence": "high",
-            "note": "Top of the open coding-agent field on SWE-bench Verified, at or above proprietary agents; model-agnostic (100+ LLM providers, BYOK). Re-read 2026-08-13 - the 77.6% this note used to carry appears on none of the cited sources any more. Marktechpost now reports 72% SWE-bench Verified and 67.9% GAIA for OpenHands, and the AI Agent Index describes the All Hands leaderboard over 33 model configurations without giving a headline number. 72% is the highest figure any cited source gives an open agent and sits above Devin 2.0 and Cursor Background Agent, so the band is unchanged and only the figure in this note moved.",
-            "last_verified": "2026-08-13",
+            "note": "Top of the open coding-agent field on SWE-bench Verified, at or above proprietary agents; model-agnostic (100+ LLM providers, BYOK). Re-read 2026-08-13 - the 77.6% this note used to carry appears on none of the cited sources any more. Marktechpost now reports 72% SWE-bench Verified and 67.9% GAIA for OpenHands, and the AI Agent Index describes the All Hands leaderboard over 33 model configurations without giving a headline number. 72% is the highest figure any cited source gives an open agent and sits above Devin 2.0 and Cursor Background Agent, so the band is unchanged and only the figure in this note moved. Replacement evidence found 2026-08-14 - All Hands AI publishes the OpenHands Index itself, and its Issue Resolution board carries a \"Swe-Bench Score\" column per model run inside the OpenHands SDK. The best run reads 95.8 (claude-fable-5, SDK v1.18.1) and the best non-outlier 83.8 (claude-opus-4-8), with MiniMax-M3 at 76.4 the highest open-weights model of the 17 open and 16 closed models listed. That is a vendor-run harness rather than an independent leaderboard, so what it establishes is narrower than the old claim - it places OpenHands at 83.8 on SWE-bench Verified on the scaffold's own numbers, not \"at or above proprietary agents\" in general. The 5 rests on that placement plus the same-model head-to-head on the Index's alternative-agents view; the marktechpost 72% stays as the independent floor.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
                 "url": "https://github.com/All-Hands-AI/OpenHands",
@@ -23754,13 +23866,20 @@
                 "accessed": "2026-08-13",
                 "http_status": 200,
                 "content_sha256": "23bf3425bd6189ef3102febb9729c3b872e4ed016743245201473178cf140f44"
+              },
+              {
+                "url": "https://index.openhands.dev/issue-resolution",
+                "shows": "All Hands AI's own OpenHands Index, Issue Resolution board. The board carries a \"Swe-Bench Score\" column for each language model run inside the OpenHands SDK - claude-fable-5 (SDK v1.18.1) 95.800, claude-opus-4-8 83.800, claude-opus-4-7 81.600, MiniMax-M3 76.400 as the best open-weights entry - with a filter reading \"Show only open models (17 open, 16 closed)\". The rows are in the fetched body as embedded Gradio JSON, not chart images. Vendor-run harness, not an independent leaderboard.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "8fe170d299824b63991e8525bbe856d6d34448d96d10137fcdaf5012a18e02bc"
               }
             ]
           },
           "maturity": 4.4,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "Verified live 2026-08-13 via primary sources. Active 2026 (All-Hands AI); 83.9k GitHub stars; SWE-bench Verified 72% per the current published ranking"
@@ -26497,11 +26616,25 @@
             "reach": "1M-10M",
             "signal_type": "usage_volume",
             "confidence": "medium",
-            "note": "23M+ cumulative Docker pulls by early 2026 (includes CI/upgrades, so a soft upper bound); 38.1k GitHub stars, 6,800+ forks, 9,000+ Discord members; ClickHouse acquisition signals enterprise deployment. Placed at 4 on Docker-pull volume; medium confidence because pulls overcount unique deployments.",
+            "note": "23M+ cumulative Docker pulls by early 2026 (includes CI/upgrades, so a soft upper bound); 38.1k GitHub stars, 6,800+ forks, 9,000+ Discord members; ClickHouse acquisition signals enterprise deployment. Placed at 4 on Docker-pull volume; medium confidence because pulls overcount unique deployments. Re-read 2026-08-14, and the signal the band rests on does not exist in any checkable form. Three numbers, none of which agree. Docker Hub's API reports 372,272 pulls on librechat/librechat and roughly 732,090 summed across all nine librechat org repos. LibreChat's own site counter now claims 47.3M Docker pulls, not the 23M recorded, and nothing corroborates it - the primary image is on GHCR, which publishes no pull count at all, so the vendor figure cannot be checked against any registry. The site's star counter, by contrast, matches the GitHub API exactly (42k against 41,995), so the counter is live rather than invented; it is the pull number specifically that has no reachable basis. What IS countable today is 41,995 GitHub stars and 8,686 forks. ESCALATED rather than changed - a usage_volume band of 4 at reach 1M-10M sits above the ~732k that Docker Hub can actually account for and far below the 47.3M the vendor claims, and choosing between them is a banding decision, not a freshness one. No last_verified claimed. Recommendation - re-band on the GitHub star signal, or re-route the axis off usage_volume, rather than keep a Docker-pull band that no registry can produce.",
             "sources": [
               {
+                "url": "https://api.github.com/repos/danny-avila/LibreChat",
+                "shows": "GitHub API for danny-avila/LibreChat - 41,995 stars, 8,686 forks, 201 watchers, MIT. A countable signal; no user or deployment count is published anywhere.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "957b025965cba8d0cf6ceb3934a22c819604d302a798c4a57ea5059941656eb5"
+              },
+              {
+                "url": "https://www.librechat.ai/",
+                "shows": "vendor counter reading \"42k GitHub Stars\", \"47.3M Docker Pulls\", \"387 Contributors\". The star figure matches the GitHub API; the pull figure is roughly 65x what Docker Hub's own API accounts for across the whole librechat org and cannot be checked, since the primary image is on GHCR.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "97b2e85dd5b23f871218f02dfc3bb861f604ac670e298e765b51f1f944b26bf5"
+              },
+              {
                 "url": "https://github.com/danny-avila/LibreChat",
-                "shows": "38.1k stars; MIT self-hosted chat platform with broad provider support",
+                "shows": "MIT self-hosted chat platform with broad provider support. Carries no Docker-pull figure, so it never supported the 23M this band was placed on.",
                 "accessed": "2026-06-04"
               }
             ]
@@ -26806,8 +26939,23 @@
             "level": 3,
             "signal_type": "reported_traction",
             "confidence": "medium",
-            "note": "Hosted HuggingChat served 1M+ users and 100k+ assistants over its lifetime (HF announcement) before the July 2025 sunset; relaunched as HuggingChat Omni and live again on hf.co/chat. chat-ui repo itself is a modest 10.7k stars (self-host base is niche). Placed at 3 on the disclosed lifetime user reach of the hosted product; the discontinuity + relaunch lowers confidence.",
+            "note": "Hosted HuggingChat served 1M+ users and 100k+ assistants over its lifetime before the July 2025 sunset; relaunched as HuggingChat Omni and live again on hf.co/chat. chat-ui repo itself is a modest 10.7k stars (self-host base is niche). Placed at 3 on the disclosed lifetime user reach of the hosted product; the discontinuity + relaunch lowers confidence. Re-read 2026-08-14, and the attribution was wrong rather than the figure. The sunset article carries no user count of any kind, and neither does the primary sunset announcement, huggingface.co/spaces/huggingchat/chat-ui discussion 747, which was read in full. The figure traces to Victor Mustar, HF Head of Product, on X in July 2025, relayed by trade press - \"HuggingChat has supported over 20 open-source models ... helped more than 1 million users, and powered over 100,000 assistants.\" That is a vendor statement at one remove, not a first-party page, and the note now says so. It is still the only reach figure anyone has published for the hosted product, and reported_traction is the instrument for exactly that, so the band of 3 stands. Countable alongside it today - 10,885 GitHub stars and 1,659 forks on huggingface/chat-ui. The relaunch is confirmed - Omni is live and the model picker reads 132.",
+            "last_verified": "2026-08-14",
             "sources": [
+              {
+                "url": "https://www.thelettertwo.com/2025/07/01/hugging-face-ends-huggingchat-teases-more-integrated-future/",
+                "shows": "\"HuggingChat has supported over 20 open-source models ... helped more than 1 million users, and powered over 100,000 assistants\", attributed in the piece to Victor Mustar, Head of Product at Hugging Face, posted on X. A vendor statement relayed by trade press, not a first-party HF page.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "22a0b23a57da41e6b797221a021a0e983d712a1e83d5f627f4d054e2cad1af1f"
+              },
+              {
+                "url": "https://api.github.com/repos/huggingface/chat-ui",
+                "shows": "GitHub API for huggingface/chat-ui - 10,885 stars, 1,659 forks, 97 watchers, Apache-2.0. The self-host base, countable; the hosted product publishes no user count.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "6d747b9d62c3f934f264a45520c0d3fa92dbed7cc02b3e5223b4af244857fc06"
+              },
               {
                 "url": "https://huggingface.co/chat",
                 "shows": "live HuggingChat Omni interface, Omni router, 123+ open source models, MCP",
@@ -26815,7 +26963,7 @@
               },
               {
                 "url": "https://www.startuphub.ai/ai-news/startup-news/2025/hugging-face-closes-huggingchat-to-make-way-for-next-generation-ai-tools",
-                "shows": "HuggingChat served 1M+ users / 100k+ assistants before July 2025 sunset",
+                "shows": "sunset write-up. Carries no user or assistant figure, so it never supported the reach this band was placed on.",
                 "accessed": "2026-06-04"
               }
             ]
@@ -26849,7 +26997,7 @@
           "maturity": 3.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "chat-ui v0.10.0 (May 11, 2026), Apache-2.0, powers HuggingChat at hf.co/chat. Original HuggingChat was sunset July 1, 2025, then relaunched as 'HuggingChat Omni' (Omni Router + 115-123 open models, 15 inference providers, MCP). Verified live 2026-08-13 via primary sources; hf.co/chat now offers 132 open models and v0.10.0 is still the latest tagged release."
@@ -27572,13 +27720,28 @@
           "capability": {
             "score": 5,
             "basis": "feature_matrix",
-            "value": "model breadth: frontier (GPT-5 family + variants); RAG/file upload: yes; multimodal: yes (vision, voice, image-gen); plugins/tools: yes (tools, code interpreter, web search, connectors); multi-user: yes (Team/Enterprise); memory + custom GPTs",
+            "value": "model breadth: frontier (GPT-5.6 Sol/Terra/Luna family); multimodal: yes (photo upload, Advanced Voice Mode, image generation); custom GPTs with document knowledge and third-party actions; connectors (OpenAI-maintained MCP wrappers, as in ChatGPT)",
             "confidence": "high",
-            "note": "Frontier consumer chat product within ui_api: full multimodal, code execution, web search, custom GPTs, memory, Team/Enterprise multi-user. Sets the bar for the category's chat-UI feature matrix.",
+            "note": "Frontier consumer chat product within ui_api: full multimodal, code execution, web search, custom GPTs, memory, Team/Enterprise multi-user. Sets the bar for the category's chat-UI feature matrix. Re-read 2026-08-14 - the cited page was an NBER-style usage study that enumerates none of the recorded features, so the whole feature matrix was unsourced. Replaced with the two OpenAI-primary surfaces that are actually reachable. openai.com and chatgpt.com return HTTP 403 to the repo's fetcher after three attempts, which is a host declining rather than an absence, so the consumer marketing pages could not be read at all. What the reachable pages establish - the frontier model family (gpt-5.6-sol \"Frontier model for complex professional work\", gpt-5.6-terra, gpt-5.6-luna), custom GPTs with attached document knowledge and third-party actions, connectors described as the ones \"available in ChatGPT\", and image generation, Advanced Voice Mode and photo upload from OpenAI's own App Store listing. Three clauses NOT re-sourced and dropped from the value - memory, Team/Enterprise multi-user, and code interpreter and web search AS CHATGPT FEATURES. The last two are documented as model tools on the API docs, which never mention ChatGPT, and the only reachable plan list shows consumer tiers only (Go, Plus, Pro). The 5 rests on the surviving matrix, which is still the broadest in the category. The note keeps the original claim above for history; the value now records only what a source shows.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
+                "url": "https://developers.openai.com/api/docs/actions/introduction",
+                "shows": "\"Custom GPTs enable users to customize ChatGPT for specific use cases by providing instructions, attaching documents as knowledge, and connecting to 3rd party services.\" The companion connectors page reads \"Connectors are OpenAI-maintained MCP wrappers for popular services like Google Workspace or Dropbox, like the connectors available in ChatGPT.\"",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "83b15db5783a1da334e06e46c595e286039fa906b1766969a07d8f6bcd511f50"
+              },
+              {
+                "url": "https://apps.apple.com/us/app/chatgpt/id6448311069",
+                "shows": "OpenAI's own ChatGPT iOS listing - \"Image generation-Generate original images from a description, or transform existing ones with a few simple words.\", \"Advanced Voice Mode-Tap the soundwave icon to have a real-time convo on the go.\", \"Photo upload-Snap or upload a picture to transcribe a handwritten recipe or get info about a landmark.\" Plan list shows ChatGPT Go, Plus and Pro only, with no Team or Enterprise tier.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "e3784db5b64d1be6dbc2fd3ccda90127ea07519cce752a58f86427868cc3ebb1"
+              },
+              {
                 "url": "https://openai.com/index/how-people-are-using-chatgpt/",
-                "shows": "ChatGPT capabilities/usage report",
+                "shows": "a usage study. Enumerates none of the features this axis cited it for.",
                 "accessed": "2026-06-04"
               }
             ]
@@ -27586,7 +27749,7 @@
           "maturity": 5.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "ChatGPT (OpenAI) consumer chat app, web + iOS/Android + desktop. Proprietary/closed UI scored as the closed counterpart in this category. Verified live 2026-08-13 via primary sources; default model GPT-5 family. (The model SKU is scored separately under base/finetuned categories; this record scores the chat surface.)"
@@ -28423,11 +28586,18 @@
             "reach": ">10M users",
             "signal_type": "active_users",
             "confidence": "low",
-            "note": "CEO/Quora figures (compiled by multiple aggregators) report ~18M Poe MAU in 2026 (~40% using paid features; ~$65M subscription ARR). 18M is comfortably in the >10M 'mass market' band -> level 5. Quora publishes no primary Poe MAU page, so the exact figure remains aggregator-sourced (confidence low), but the order of magnitude is consistent across sources and clearly clears the >10M threshold. The reach label now reads '>10M users' on the active_users scale declared 2026-08-13, which is the band this record has effectively been claiming since it was corrected off an invented '10M-100M' - the difference is that the band is now declared, so the claim can be checked rather than merely asserted.",
+            "note": "CEO/Quora figures (compiled by multiple aggregators) report ~18M Poe MAU in 2026 (~40% using paid features; ~$65M subscription ARR). 18M is comfortably in the >10M 'mass market' band -> level 5. Quora publishes no primary Poe MAU page, so the exact figure remains aggregator-sourced (confidence low), but the order of magnitude is consistent across sources and clearly clears the >10M threshold. The reach label now reads '>10M users' on the active_users scale declared 2026-08-13, which is the band this record has effectively been claiming since it was corrected off an invented '10M-100M' - the difference is that the band is now declared, so the claim can be checked rather than merely asserted.\nRe-read 2026-08-14, and the figure the band rests on appears to be a relabelled downloads number. The cited aggregator no longer carries it, and no first-party figure exists to replace it - poe.com/blog was read post by post and none carries a user, subscriber or revenue number; quorablog.quora.com is 403; and every \"18M MAU\" hit on the open web is an SEO statistics aggregator citing no source, one of which carries an explicit \"where exact figures are unavailable, we use estimates\" disclaimer. The only sourceable 18 million for Poe is TechCrunch on Quora's Series B - \"By October 2023, the Poe app had been downloaded more than 18 million times and had reached over 1 million monthly active users.\" Downloads, not MAU, and the contemporaneous MAU beside it is 1M. That is a level 4 signal at best on an active_users scale, and it is nearly three years stale.\nESCALATED rather than changed. Two defensible readings and this pass will not choose between them - re-band to 4 on the only sourceable active-user figure, accepting that it is from October 2023 and Poe has plainly grown; or keep 5 and re-route the axis to a downloads instrument, where 18M+ cumulative installs is real and dated. No last_verified claimed on either reading.",
             "sources": [
               {
+                "url": "https://techcrunch.com/2024/01/10/quora-ai-poe-analysis/",
+                "shows": "\"By October 2023, the Poe app had been downloaded more than 18 million times and had reached over 1 million monthly active users.\" The only sourceable origin of the 18 million figure, and it is downloads; the MAU beside it is 1M. Also - a16z said users have created more than a million bots on the platform, and the paid tier is $20 per month.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "774828086007df1a661017c03b61bac741e577d574bb19506f61098fca66c306"
+              },
+              {
                 "url": "https://originality.ai/blog/poe-statistics",
-                "shows": "~18M Poe MAU, ~$65M subscription revenue (compiled from Quora reporting)",
+                "shows": "former source of the ~18M MAU and ~$65M revenue figures. No longer carries the MAU figure.",
                 "accessed": "2026-06-04"
               },
               {
@@ -28706,11 +28876,38 @@
             "class": "closed",
             "components": "license:proprietary(SaaS app);source:closed(the Le Chat product; underlying Mistral models are open-weights but the chat UI/service is not);self-host:none",
             "confidence": "high",
-            "note": "The Le Chat product/service is proprietary SaaS (closed), distinct from Mistral's open-weight models scored elsewhere; closed counterpart on the shelf.",
+            "note": "The Le Chat product/service is proprietary SaaS (closed), distinct from Mistral's open-weight models scored elsewhere; closed counterpart on the shelf. Re-read 2026-08-14 - the only source this axis carried was a TechCrunch download-milestone brief that establishes none of the openness components. Replaced with Mistral primaries, which confirm the class and add one thing the record did not have. Mistral's EU consumer terms, which govern this product, read \"As between you and Mistral AI, we own all right, title, and interest in and to the Mistral AI Products\" and grant only \"a non-exclusive right to access and use\", with no source and no self-host offer on the product page. So 1/closed holds. FLAGGED, not changed - the product was RENAMED. Mistral's help centre says \"Le Chat has become Vibe\" and \"Same URL, same login. Open chat.mistral.ai and you will land in Vibe with your existing conversations.\" The slug and the product record still say le-chat, which is a naming question for the orchestrator. Also worth a ruling - the Vibe Code CLI shipped as mistralai/mistral-vibe under Apache-2.0, so a component of the same product family is now genuinely open, which source - closed for the hosted surface does not capture on its own.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
+                "url": "https://legal.mistral.ai/terms/eu-consumers-terms-of-service",
+                "shows": "\"As between you and Mistral AI, we own all right, title, and interest in and to the Mistral AI Products. We grant you a non-exclusive right to access and use the Mistral AI Products solely in your personal capacity\". These consumer terms govern the hosted product.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "21421d17af2d57dc0d8a8a8e34c58f25525fd92c66aa4ca23c0d7a2e6debb5e1",
+                "establishes": [
+                  "license",
+                  "source",
+                  "self-host"
+                ]
+              },
+              {
+                "url": "https://help.mistral.ai/en/articles/682992-le-chat-is-now-vibe",
+                "shows": "\"Le Chat has become Vibe, Mistral's unified agent for productivity and coding\"; \"Same URL, same login. Open chat.mistral.ai and you will land in Vibe with your existing conversations.\" Establishes the rename, not an openness component.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "28d412e9985c2716865c81162c978e0d76b82cb564247e0c27afd47c5cb5f32f"
+              },
+              {
+                "url": "https://api.github.com/repos/mistralai/mistral-vibe",
+                "shows": "mistralai/mistral-vibe, \"Minimal CLI coding agent by Mistral\", Apache-2.0, 4,820 stars. The Vibe Code CLI is open source; the hosted surface this axis scores is not.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "70a1f029400d5c3aaf8fafd269f39b9ce5aa7bc198b9b8a4802284c91f0b6894"
+              },
+              {
                 "url": "https://techcrunch.com/2025/02/19/mistrals-le-chat-tops-1m-downloads-in-just-14-days/",
-                "shows": "Le Chat is Mistral's proprietary consumer chat app (product profile)",
+                "shows": "a download-milestone brief. Establishes none of the openness components this axis cited it for.",
                 "accessed": "2026-06-04"
               }
             ],
@@ -28745,11 +28942,26 @@
             "basis": "feature_matrix",
             "value": "chat-UI matrix: multimodal (vision, image gen via Flux), web search, code interpreter/canvas, document/Flash answers (fast inference), connectors/agents, enterprise (Le Chat Enterprise) + flash-fast responses on Cerebras. Locked primarily to Mistral models (limited provider breadth).",
             "confidence": "medium",
-            "note": "Feature-broad general assistant UI (search, multimodal, code, enterprise) with a speed differentiator; high breadth but single-provider-leaning, not the category frontier-definer.",
+            "note": "Feature-broad general assistant UI (search, multimodal, code, enterprise) with a speed differentiator; high breadth but single-provider-leaning, not the category frontier-definer. Re-read 2026-08-14 - the TechCrunch brief this rested on carries a downloads milestone and nothing else, so the whole feature matrix was unsourced. Replaced with Mistral's own product and docs pages, which corroborate every clause of the recorded value and then some. The product is now called Vibe, and the surface the record describes is Vibe Work. Documented there - Connectors, Libraries, Skills, Files and Canvas, web search and Open URL, image generation, voice mode, Projects, Workflows and scheduled tasks; the product page adds deep research, spreadsheet and database analysis, and \"100+ tools including email, calendar, Slack, GitHub, Jira ... through connectors and full MCP compatibility\", with voice \"powered by Voxtral\". The single-provider-leaning judgment that holds this at 4 rather than 5 is unchanged - the docs name no model choice beyond Mistral's own. Score unchanged at 4. The rename is FLAGGED on the openness axis.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
+                "url": "https://docs.mistral.ai/vibe/work",
+                "shows": "Vibe Work docs, the surface formerly called le Chat. \"Files and Canvas - upload documents, spreadsheets, presentations, PDFs, or images for Work to read, summarize, extract, or turn into reviewable outputs.\"; \"Web search and Open URL - use public information or ask Work to read a specific web page.\"; navigation lists Connectors, Libraries, Skills, Workflows, Schedule tasks, Projects, Generate images and Use Voice mode.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "efed6015b8f8e3d8b8030e5c470edc5544110781da554fb60fe74b3ae5d23df0"
+              },
+              {
+                "url": "https://mistral.ai/products/vibe/",
+                "shows": "\"an AI assistant (Vibe for work, formerly Le Chat) and an AI coding agent (Vibe for code) in a single product for individuals, teams, and enterprises\"; \"Run deep research. Search across the web, internal docs, and connected tools\"; \"Upload spreadsheets or connect databases\"; \"Vibe supports voice input powered by Voxtral\"; \"Vibe integrates with 100+ tools including email, calendar, Slack, GitHub, Jira, and more through connectors and full MCP compatibility\"",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "47d87bee6fbadb77042f82fc3d3e10b393274c25a6836f3581ed3848b844c5e0"
+              },
+              {
                 "url": "https://techcrunch.com/2025/02/19/mistrals-le-chat-tops-1m-downloads-in-just-14-days/",
-                "shows": "Le Chat consumer assistant feature set (web search, multimodal, fast answers)",
+                "shows": "a download-milestone brief. Enumerates none of the features this axis cited it for.",
                 "accessed": "2026-06-04"
               }
             ]
@@ -28757,7 +28969,7 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "Le Chat by Mistral AI, consumer AI chat assistant (web + mobile; app rebranded toward 'Mistral Vibe' by 2026), live June 2026 (mistral.ai). Proprietary chat UI primarily over Mistral's own models; human-in-the-loop assistant. ~1.7M app downloads by May 2026; EU MAU stated below 45M. Verified live 2026-08-13, but only the adoption axis could be re-derived - all three axes cite a single February 2025 TechCrunch brief, which carries the download milestone and nothing about the license, the source or the feature set, so openness and capability are escalated for re-sourcing against mistral.ai."
@@ -30234,12 +30446,21 @@
             "relation": "at",
             "value": "prompt management+versioning(branching/environments, 50+ models), evals(20+ evaluators, UI+API, test cases from prod/CSV), observability/tracing(OTel-native, OpenLLMetry/OpenInference compatible, cost/latency), multi-model playground",
             "confidence": "high",
-            "note": "Broad feature matrix across prompt mgmt, evals, and OTel observability, comparable to Langfuse anchor (C4). Capability is decoupled from its lower adoption.",
+            "note": "Broad feature matrix across prompt mgmt, evals, and OTel observability, comparable to Langfuse anchor (C4). Capability is decoupled from its lower adoption. Re-read 2026-08-14, and the recorded value describes a product that no longer exists. Agenta 2.0 repositioned to an agent workspace - the site headline is now \"The open-source workspace for your agents\" and the docs open \"Agenta is a workspace where you and your team build agents and automations. You do not need to know how to code. You build agents by chatting with them.\" Every clause of the recorded value is gone or reduced. There is no evaluator catalogue anywhere in the docs and the prompt-engineering section 404s; the OTel, OpenLLMetry and OpenInference compatibility claims are gone, leaving \"Tracing and usage. Inspect every model and tool call.\"; the multi-model playground is replaced by harness selection across Claude Code, Codex and Pi. What is there instead is a multiplayer workspace with per-agent folders, 1000+ integrations and MCP servers, reusable skills, permissions with human approval, scheduled and event-triggered background agents, per-agent isolated sandboxes and version history. The blog still carries the old title, which is stale metadata rather than a live product claim.\nThis is not a freshness problem. The comparison CLASS changed, so relative_to - langfuse and relation - at no longer describe anything - Langfuse is an observability and eval platform and Agenta is now an agent workspace. ESCALATED for a re-score against what the product now is, including a new anchor. No last_verified claimed and nothing changed here beyond recording the evidence.",
             "sources": [
               {
+                "url": "https://agenta.ai/docs/",
+                "shows": "\"Agenta is a workspace where you and your team build agents and automations.\"; features listed are a shared multiplayer workspace, a shared folder per agent, \"1000+ Integrations\" via built-ins or MCP servers, reusable skills, human approval and permissions, background agents on a schedule or event, \"Tracing and usage. Inspect every model and tool call.\", and version history. No evaluator catalogue, no prompt-management section, no OTel/OpenLLMetry/OpenInference claim.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "5d642d3f7328864865f1909a64ea2e386d38adfa8a14f9138cfc90c672f770bb"
+              },
+              {
                 "url": "https://github.com/Agenta-AI/agenta",
-                "shows": "prompt management, 20+ evaluators, OTel tracing, playground",
-                "accessed": "2026-06-04"
+                "shows": "repo tagline and README now read \"Agenta is a workspace where you and your team build agents and automations\" and \"The open-source workspace for building and running agents\". The README no longer mentions prompt management, evaluators or LLM observability.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "3d66acb69bfd18abbca6c63500256b6e5da6a145f7e79bf2e0c60fc61e3aaf3e"
               }
             ]
           },
@@ -39292,13 +39513,28 @@
           "capability": {
             "score": 4,
             "basis": "feature_matrix",
-            "value": "isolation:dedicated kernel/filesystem/network stack per sandbox (VM-class, 'full composable computer'); cold-start:<90ms; language/runtime breadth:Python+TypeScript+JS; persistence:persistent state across sessions; scale:elastic",
+            "value": "isolation:dedicated kernel/filesystem/network stack per sandbox ('full composable computer'), Linux container by default with opt-in Linux VM and Windows VM classes; cold-start:<90ms (container class); language/runtime breadth:Python+TypeScript+JS; persistence:fork, pause/resume and memory snapshots on VM sandboxes; scale:elastic",
             "confidence": "high",
-            "note": "Strong isolation (dedicated kernel + isolated net/fs, allocated vCPU/RAM/disk) with sub-90ms cold-start and persistent sessions; among the strongest agent-runtime feature sets, just below the kernel/microVM frontier-definers. Independent ComputeSDK TTI benchmarks corroborate the sub-100ms-class cold-start (~140ms median, 4th-fastest of 19 sandbox providers).",
+            "note": "Strong isolation (dedicated kernel + isolated net/fs, allocated vCPU/RAM/disk) with sub-90ms cold-start and persistent sessions; among the strongest agent-runtime feature sets, just below the kernel/microVM frontier-definers. Independent ComputeSDK TTI benchmarks corroborate the sub-100ms-class cold-start (~140ms median, 4th-fastest of 19 sandbox providers). Replacement found 2026-08-14 - the cited GitHub repo is now a stub, but Daytona's docs carry the isolation claim almost word for word - \"Each sandbox runs in isolation, giving it a dedicated kernel, filesystem, network stack, and allocated vCPU, RAM, and disk\", and the docs index gives \"spinning up in under 90ms from code to execution\". Two corrections the docs force. The \"VM-class\" parenthetical in the recorded value is wrong as a blanket claim - sandboxes run as Linux containers by default and the sub-90ms figure attaches to that container class, with Linux VM and Windows VM as separate opt-in runtimes. And \"persistent state across sessions\" is scoped to the VM class, which is what carries fork, pause/resume and memory snapshots; GPU sandboxes are explicitly ephemeral. The docs name no isolation technology - no gVisor, no Firecracker - only OCI/Docker compatibility, so no microVM mechanism is asserted. The feature matrix behind the 4 survives; only its scoping got sharper. Score unchanged.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
+                "url": "https://daytona.io/docs/en/sandboxes",
+                "shows": "\"Daytona provides full composable computers - sandboxes - for AI agents. Sandboxes are isolated runtime environments you can manage programmatically to run code.\"; \"Each sandbox runs in isolation, giving it a dedicated kernel, filesystem, network stack, and allocated vCPU, RAM, and disk.\"; \"Sandboxes run as Linux containers by default. Daytona also provides VM sandboxes with a dedicated Linux VM or Windows operating system, and GPU sandboxes\"; runtime comparison table rows Container (default, <90ms, dynamic builds, Docker images), Linux VM and Windows; \"GPU sandboxes are ephemeral\"; fork, pause/resume and snapshot-from-sandbox are documented sandbox operations",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "c44edb2f1ea133bbd4a5de0e11e65be6011be0716c0e82232c86b846f3052de3"
+              },
+              {
+                "url": "https://daytona.io/docs/",
+                "shows": "docs index - \"Sandboxes - for AI agents with complete isolation, a dedicated kernel, filesystem, network stack, and allocated vCPU, RAM, and disk\", \"spinning up in under 90ms from code to execution and running any code in Python, TypeScript, and JavaScript. Built on OCI/Docker\" compatibility",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "1244f92fdcfaa0323932987dc27599fec1fda593bd65f65795a4efb43d6b3fc3"
+              },
+              {
                 "url": "https://github.com/daytonaio/daytona",
-                "shows": "dedicated kernel/filesystem/network stack per sandbox; <90ms spin-up; persistent state; Python/TS/JS",
+                "shows": "former source of the isolation and spin-up claims; now a README stub carrying neither",
                 "accessed": "2026-06-04"
               },
               {
@@ -39311,7 +39547,7 @@
           "maturity": 4.0,
           "mature": false,
           "freshness": {
-            "date": "2026-08-12",
+            "date": "2026-08-14",
             "basis": "verified"
           },
           "version_note": "The public repository is no longer maintained - core development moved to a private codebase in June 2026 - so the openness axis reads a frozen snapshot rather than what currently ships. Verified 2026-08-13 via daytona.io and the ComputeSDK sandbox benchmark leaderboard."
