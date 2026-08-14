@@ -768,7 +768,7 @@ def test_real_sources_serialize_without_errors():
         # undeclared-key row, exactly as `autogen`'s CC-BY-4.0 documentation license
         # already did - which is the evidence that MCP was made to match an existing
         # convention rather than given a new one.
-        "agent_tools_protocols": 138, "dataset_processing_tools": 90, "evaluation_code": 107,
+        "agent_tools_protocols": 138, "dataset_processing_tools": 92, "evaluation_code": 107,
         # inference_code 47 -> 64 when the sweep read the category: four stale deferrals came
         # off (a deferred product publishes no openness evidence at all), and several products
         # that had described their gating in prose gained a readable `source:`/`core-gated:`.
