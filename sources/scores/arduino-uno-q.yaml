@@ -9,8 +9,8 @@ openness:
       raw: open (gerbers + schematics CC-BY-SA 4.0)
     toolchain:
       value: open
-      detail: open App Lab
-      raw: open (open App Lab)
+      detail: App Lab GPL-3.0 + App Bricks MPL-2.0, source published
+      raw: open (App Lab GPL-3.0 + App Bricks MPL-2.0, source published)
     datasheets:
       value: public
     blobs:
@@ -26,13 +26,37 @@ openness:
     is open, which is the same open-and-open pair that puts beagley-ai at 5. Corrected from 3/documented
     on 2026-08-12. This ladder scores design-file openness rather than silicon: the level-5 rung says
     so in its own text, and every board in the category runs on proprietary silicon, so the QRB2210
-    firmware blobs the old note cited are a reason no rung applies.'
-  raw: schematics:open (gerbers + schematics CC-BY-SA 4.0);toolchain:open (open App Lab);datasheets:public;blobs:required
-    (proprietary Qualcomm SoC firmware);retail:open_market (global)
+    firmware blobs the old note cited are a reason no rung applies. Re-derived 2026-08-14, because the
+    toolchain half of the pair rested on a vendor claim rather than on source. The FAQ still answers
+    "Is UNO Q open source?" with schematics and gerbers only, and its App Lab answer still reads
+    "we are working to publish corresponding source code repositories, they will become available
+    soon" - but that sentence is now stale. github.com/arduino/arduino-app-lab is public under
+    GPL-3.0, 19MB of Go and TypeScript with the app, ui-packages and standalone-apps trees, last
+    pushed 2026-08-12, and github.com/arduino/app-bricks-py is public under MPL-2.0, pushed
+    2026-08-13. The 5 stands and now rests on the repositories rather than on the promise of them.'
+  raw: schematics:open (gerbers + schematics CC-BY-SA 4.0);toolchain:open (App Lab GPL-3.0 + App
+    Bricks MPL-2.0, source published);datasheets:public;blobs:required (proprietary Qualcomm SoC
+    firmware);retail:open_market (global)
   sources:
   - url: https://www.arduino.cc/product-uno-q
-    shows: QRB2210 + STM32U585, schematics/gerbers under CC-BY-SA 4.0, App Lab open source
-    accessed: '2026-06-22'
+    shows: '"Yes, UNO Q schematics and gerbers are available under the CC-BY-SA 4.0 license"; and, of
+      the toolchain, "Yes, App Lab and the App Bricks library are open source; we are working to
+      publish corresponding source code repositories, they will become available soon"'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 76f7fce92f89c4793b7e61204d917fd8abf3dc2c94d4cb88bc6dbeb56c6d591f
+  - url: https://github.com/arduino/arduino-app-lab
+    shows: '"The cross-platform IDE for developing Arduino Apps, built with Wails" - public, GPL-3.0,
+      ~19MB, Go plus TypeScript source in app/, ui-packages/ and standalone-apps/, last pushed
+      2026-08-12. The repositories the FAQ says are coming are already here'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 8fb102888dadaed7bbf33369218fc64c739d4ecbe61ac616ce5b7563a8aad48b
+  - url: https://github.com/arduino/app-bricks-py
+    shows: '"The code of the Arduino App Lab Bricks" - public, MPL-2.0, last pushed 2026-08-13'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: b46b01f5a0d4d387b7fe2ddd3fa4230e2bb7cecf3d64a082b23b541e6f37ef43
 adoption:
   level: 4
   reach: broad
