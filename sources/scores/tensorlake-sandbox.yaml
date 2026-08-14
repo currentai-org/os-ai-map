@@ -99,9 +99,10 @@ adoption:
 capability:
   score: 4
   basis: feature_matrix
-  value: isolation:Firecracker microVM (top tier); cold-start:sub-second; runtime breadth:arbitrary agent
-    sandboxes; persistence:snapshot/suspend/resume + durable-execution orchestration; scale:reported thousands
-    of concurrent sandboxes
+  value: isolation:Firecracker microVM (top tier); cold-start:vendor claims sub-second creation via the
+    Lattice scheduler, independently measured at 1.35s median time-to-interactive; runtime breadth:arbitrary
+    agent sandboxes; persistence:snapshot/suspend/resume + durable-execution orchestration; scale:reported
+    thousands of concurrent sandboxes
   confidence: medium
   note: 'Firecracker microVM isolation plus durable-execution orchestration and snapshot/resume make for
     a rich agent-runtime feature set, level with the microVM peers. Independent ComputeSDK TTI benchmarks
@@ -117,18 +118,31 @@ capability:
     half does still hold - tensorlake.ai still leads on Firecracker isolation with each tool call and
     harness in its own microVM, snapshots with pause/fork/resume, versioned mountable volumes, durable
     serverless functions with queues, timers and retries, and cloud dev boxes. Whether a 1.35s
-    time-to-interactive should pull this off 4 is a score decision and is not being taken here.'
+    time-to-interactive should pull this off 4 is a score decision and is not being taken here.
+    DATED 2026-08-14 after re-deriving against the current leaderboard rerun. Both cited sources were
+    re-fetched and both read as the day before - tensorlake.ai returns a byte-identical body, and the
+    leaderboard still shows the 7 August 2026 run over 24 providers with Tensorlake at 86.1 composite,
+    1.35s median, 1.44s P95, 1.44s P99, 100% success. So the ~3x discrepancy against the recorded
+    ~460ms is a stable reading of a settled run, not a transient page state. The one change made here
+    is to the value string, which claimed "cold-start - sub-second" as if measured; it now records the
+    vendor claim and the measured figure separately, which is what the two sources actually support.
+    The 4 is left exactly where it was and the question of whether 1.35s should pull it down is
+    escalated rather than taken.'
+  last_verified: '2026-08-14'
   sources:
   - url: https://www.tensorlake.ai/
-    shows: Firecracker microVM sandboxes, snapshot/suspend/resume, durable execution, scale to thousands
-    accessed: '2026-08-13'
+    shows: Firecracker microVM sandboxes, snapshot/suspend/resume, durable execution, scale to thousands.
+      Re-fetched 2026-08-14, byte-identical body, same digest.
+    accessed: '2026-08-14'
     http_status: 200
     content_sha256: 7522474f25c2864dae63f26e180926d421d634994f2ba2b3f4405d4882578456
   - url: https://www.computesdk.com/benchmarks/sandboxes/
     shows: 'ComputeSDK TTI leaderboard, independent, 100 iterations per run, last run 7 August 2026, 24
       providers on 4 vCPU / 16GB in Northern Virginia. Tensorlake records 1.35s median, 1.44s P95, 1.44s
-      P99, 100% success, composite 86.1, ranking 15th of 24 by composite score. The previously cited
-      ~460ms / 12th of 19 reading is not on the page.'
-    accessed: '2026-08-13'
+      P99, 100% success, composite 86.1 - 15th of 24 by composite and 17th of 24 by median. The
+      previously cited ~460ms / 12th of 19 reading is not on the page. Digest differs from the
+      2026-08-13 read (ec3f48b2...) because the page shell moves between builds; the Tensorlake row and
+      the run date are unchanged.'
+    accessed: '2026-08-14'
     http_status: 200
-    content_sha256: ec3f48b2ca3c1877605154422671c020935c0bfebdfc9aff268d06799ae865f7
+    content_sha256: 297068ee668b6e539692c74bbafde6ab456fe2121a28ad2a1d4bd9a5ce23e949
