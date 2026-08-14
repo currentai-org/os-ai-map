@@ -13,10 +13,12 @@ name: artifacts
 # signal_github.resolved_via_redirect and signal_pypi.missing_from_pypi. The other two
 # need the PyPI JSON API, which is what --live turns on.
 #
-# Timed against the chain it depends on rather than the calendar, which is the lesson
-# parity.yml records: the signal user models recompute Monday 03:00-05:00 UTC, so this
-# runs at 07:00 and reads a warehouse that has caught up. Running it before that would
-# report last week's roster and call it drift.
+# Timed to run after the signal datasets it depends on refresh, rather than against the
+# calendar — the lesson parity.yml records. It reads signal_github and signal_pypi, whose
+# datasets DO carry dataset-level crons (unlike the scoring chain; see docs/operations/
+# deploy-models.md). Confirm those crons and their hours from the dataset listing rather than
+# assuming the scoring chain's intended 03:00-05:00 window, which never fires. Running this
+# before the signals refresh would report last week's roster and call it drift.
 #
 # Report-only. `--strict` exists and CI does not pass it yet: the first real run surfaced
 # 4 legitimate client-package cases that needed waivers, and a gate that fails on the day

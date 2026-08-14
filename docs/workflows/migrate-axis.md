@@ -17,17 +17,25 @@ The change is to what an axis *records or means*, not to one product's value (th
 - Agreement that the change is worth a corpus-wide migration — this touches every score file.
 
 ## The impact checklist — all ten, in order
-A migration is not done until every one is addressed. Skipping any of these is how a
-half-migration ships that looks complete until something downstream breaks.
+Skipping any of these is how a half-migration ships that looks complete until something downstream
+breaks. Two thresholds of "done", because they land in different PRs:
+
+- **Repository migration complete** — steps 1–5, 8, 9, 10 (schema, script, checkers, serialization,
+  docs, distributions, old-shape removal). This is what the migration PR must satisfy before it merges.
+- **End-to-end migration complete** — only after the maintainer follow-up: the warehouse deploy
+  (step 6, `docs/operations/deploy-models.md`), front-end coordination (step 7), and a green
+  `check_parity`. A merged repo PR is not the end; the warehouse and front-end contracts have to catch up.
 
 1. **Define the old and new contract.** Write down, precisely, the field shapes before and after
    and the mapping between them. This is the spec the script implements and the reviewer checks.
 2. **Update the score schema.** `docs/schemas/score.schema.json` (and any sibling), so `validate`
    describes the new shape.
-3. **Write a deterministic corpus migration.** One script, using `build/components.py`'s
-   block-safe helpers (`set_field`, `put_field`, `set_document_field`) — never a hand edit and
-   never a `yaml.load`/`dump` round-trip, which rewraps every string in every file. The script
-   must be idempotent and re-runnable.
+3. **Write a deterministic corpus migration.** One idempotent, re-runnable script. **Use or extend
+   the block-safe helpers in `build/components.py`; never round-trip existing corpus files through a
+   YAML loader/dumper** (it rewraps every string in every file). The existing helpers cover setting
+   and replacing a field; a migration that deletes or structurally moves a field will need to extend
+   them — do that in `components.py` with the same reparse assertion, rather than reaching for a hand
+   edit or a load/dump.
 4. **Update the validators and checkers.** Every `build/check_*.py` that reads the axis, plus
    `build/validate.py`'s cross-file rules. The producible-pair, invariant, and axis-specific
    gates must understand the new shape.

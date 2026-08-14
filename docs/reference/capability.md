@@ -29,7 +29,7 @@ them, are not capable of anything the axis measures, and abstain rather than sco
 | `score` | the 1-5 band, or null to abstain. Non-null needs a `sources` entry. |
 | `basis` | which **instrument** the band was read with: `benchmark`, `feature_matrix`, `training_value`, or `n/a`. |
 | `basis_detail` | what that instrument was, in prose (the benchmark's name, the kind of coverage). Free text. |
-| `value` | the reading the band was taken from, quoted rather than interpreted: the figure, the arena placement, or the sentence of coverage a feature judgment rests on. |
+| `value` | the recorded observation the band rests on: exact and quoted for a benchmark or arena placement, and often a synthesized summary of documented features for a `feature_matrix` band, not a verbatim quote. |
 | `relative_to` | the slug of the product this band was placed **against**, when placed by comparison rather than measured. |
 | `relation` | how this band sits against `relative_to`: `at`, `one_below`, `two_below`, `one_above`. Required with `relative_to`, meaningless without it. |
 | `confidence` | the curator's certainty (`high`/`medium`/`low`). Note it does not encode the strength of the instrument — a `high` can sit on a feature-matrix judgment with no measurement under it. |
@@ -50,15 +50,19 @@ evidence, and a checker that could not tell them apart could not route or gate t
   2026-08-08, 322 of 472 products sit here.
 - **`training_value`** — ablation or downstream-model evidence that a dataset or recipe
   improves what is trained on it (`basis_detail` names it `ablation` or `superseded`).
-- **`n/a`** — an honest abstention, paired with a null score.
+- **`n/a`** — an honest abstention. By convention it pairs with a null score, but nothing gates
+  that pairing today, so the corpus is not uniform (e.g. `lamini` carries `score: null` under
+  `basis: feature_matrix`). Treat `score: null` + `basis: n/a` as the intended shape for an
+  abstention until a gate enforces it.
 
 ## The real instrument is a peer comparison
 
-Most bands are not measured at all. Roughly a hundred products place themselves against a
-named peer in the same category — "one tier below the Megatron-LM anchor", "mid-tier next to
-langfuse" — and in `finetuning_code` every one of the 27 notes does it. That comparison **is**
-the instrument for most of the axis, and until 2026-08-08 it lived inside an English sentence
-where nothing could check it, refresh it, or notice when the product it named moved.
+Many bands are not measured at all. As of 2026-08-14, 114 products record a peer comparison
+(with perhaps another ~36 candidates that still live in prose) — "one tier below the Megatron-LM
+anchor", "mid-tier next to langfuse" — and in `finetuning_code` every one of the 27 notes does it.
+Peer comparison is **a major capability instrument**, not demonstrably most of the axis, and until
+2026-08-08 it lived inside an English sentence where nothing could check it, refresh it, or notice
+when the product it named moved.
 
 `relative_to` and `relation` record it as data:
 

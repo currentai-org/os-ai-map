@@ -23,7 +23,10 @@ For any model whose SQL changed:
 2. **Release** — `createDataModelRelease` pointing at that revision. **This is the step that
    gets forgotten.** A run without it executes the *previous* release, and the symptom is "my
    change had no effect" rather than an error — three runs were once spent concluding a column
-   drop had broken materialization when the new SQL had simply never been released.
+   drop had broken materialization when the new SQL had simply never been released. **No automated
+   revision-versus-release assertion exists yet** (that latest-revision == latest-release check was
+   scoped but never landed), so maintainers must verify by hand that the revision they just created
+   is the one that got released before trusting a run.
 3. **Run** — `createUserModelRunRequest` with the dataset ID.
 4. **Prove it** — read the output table back and, for the scoring chain, run
    `build/check_parity.py`.
@@ -70,11 +73,13 @@ UTC, `scores.openness_facts` 04:00, `scores.openness_computed` 05:00, with the p
 grading at 06:00. Those crons were written onto the model **revisions** via
 `deploy_udm.py --cron`.
 
-**The platform schedules from the *dataset*, not the model revision.** Verified against the
-platform API on 2026-08-14: across 72 runs on `evidence` and `scores`, **zero were
-`SCHEDULED`** — every recompute since launch has been a person requesting it by hand. Only the
-five `signal_*` datasets and `aiid` carry a dataset-level cron today. The mechanism works
-(`signal_goodailist` fired `SCHEDULED` on 2026-08-09); the chain was simply never joined to it.
+**The platform schedules from the *dataset*, not the model revision.** The observed fact,
+which does not age: **of the 72 `evidence` and `scores` runs inspected on 2026-08-14, none had
+a `SCHEDULED` trigger** — every one was requested by hand. Only the five `signal_*` datasets and
+`aiid` carry a dataset-level cron today. The mechanism works (`signal_goodailist` fired
+`SCHEDULED` on 2026-08-09); the chain was simply never joined to it. Dataset cron settings are
+now inspectable directly (the dataset listing exposes each dataset's cron), so this claim is
+re-checkable rather than a one-time observation.
 
 So, until T4 of the audit lands (`updateDataModelSchedule` on the `evidence` and `scores`
 datasets, keeping the 03/04/05 spacing so parity stays downstream):

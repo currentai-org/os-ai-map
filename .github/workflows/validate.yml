@@ -106,6 +106,15 @@ jobs:
       - name: Serialize dry-run
         run: uv run python -m build.serialize --date ci-dry-run
 
+      # A slug that leaves the payload must carry a redirect alias. build.validate cannot see
+      # a deletion (it reads live files; a deletion is the absence of one), so this diffs the
+      # freshly serialized payload against the one committed at HEAD and requires every slug
+      # that fell out to be aliased. It has to run AFTER the serialize step above, against a
+      # fresh payload — before 2026-08-14 it ran only in the post-merge regeneration workflow,
+      # too late to protect the PR that removed the product. See build/check_retirement.py.
+      - name: Retirement gate (a removed slug carries a redirect alias)
+        run: uv run python -m build.check_retirement
+
       # The payload's own identity invariants: slugs, org_slug resolution, aliases, and
       # the freshness canary that catches a shallow-clone checkout from the inside. See
       # build/check_payload.py.

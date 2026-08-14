@@ -27,12 +27,17 @@ flowchart TD
 ## The routes
 
 ### Update the product record — identity, artifacts, version bucket
-Edit `sources/products/<slug>.yaml` surgically (never load-modify-dump). Add or change
-`aliases`, `artifacts`, `version_in_identity`. **The slug never changes** — it names the tier,
-and a new release of the same tier extends this record rather than creating a new one (this is
-how a version bump like "add v1.5" is handled). See [`../reference/identity.md`](../reference/identity.md).
-If new artifacts change what adoption should read, follow the axis route below.
-Validate: `uv run python -m build.validate` and `uv run python -m build.check_artifacts`.
+Edit `sources/products/<slug>.yaml` surgically (never load-modify-dump). The editable fields:
+`display_name`, `aliases`, `version_in_identity`, and the **typed artifact arrays**. There is no
+single `artifacts` field — artifacts are declared as top-level arrays of `{url: ...}` per kind:
+`github`, `npm`, `pypi`, `crates`, `go`, `huggingface_model`, `huggingface_dataset`, `arxiv`
+(`product.schema.json` is authoritative). **The slug never changes** — it names the tier, and a
+new release of the same tier extends this record rather than creating a new one (this is how a
+version bump like "add v1.5" is handled). See [`../reference/identity.md`](../reference/identity.md).
+A change to `type` is not a record edit — it can select a different openness ladder, so **escalate
+it** (see the axis route below / `build-rubric`). If new artifacts change what adoption should
+read, follow the axis route. Validate: `uv run python -m build.validate` and `uv run python -m
+build.check_artifacts`.
 
 ### Refresh product prose — description or comments only
 This is a **prose** change: it never touches scores and never writes `last_verified`. Rewrite
@@ -59,8 +64,16 @@ appears in exactly one of each. See [`edit-category.md`](edit-category.md) for t
 A slug is retired only by being recorded as an **alias** on the product that replaced it, never
 deleted — `check_retirement` fails a slug that leaves the payload without a redirect. Add the
 retired slug to the successor's `aliases`, and remove its own files. See
-[`../reference/identity.md`](../reference/identity.md). Validate: `uv run python -m
-build.validate` and `uv run python -m build.check_retirement`.
+[`../reference/identity.md`](../reference/identity.md). Validate:
+```bash
+uv run python -m build.validate
+uv run python -m build.serialize --date ci-dry-run   # regenerate the payload first…
+uv run python -m build.check_retirement              # …or this compares two payloads that both still contain the slug and passes vacuously
+```
+`check_retirement` diffs the freshly serialized payload against the one committed at HEAD, so
+it only sees the removal once you have re-serialized. CI does this for you (the retirement gate
+in `validate.yml` runs after its serialize step), but run it locally to catch a missing alias
+before you push.
 
 ## Files this changes
 Whichever the route above names — never the generated `build/notebook_data.json` or `notebooks/`.

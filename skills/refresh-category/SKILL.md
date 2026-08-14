@@ -27,23 +27,37 @@ Dispatch a `Workflow`, **one agent per product**, in three stages: research → 
 - **Concurrency is `min(16, cores - 2)`, not a number you choose.** Products with the fewest
   artifacts are the *slowest* (no repo to read; the license comes from pricing pages), and
   categories run worst-coverage-first, so the early ones are the slow ones. Budget by the tail.
-- **Model tiers: cheap on the many, expensive on the few.** Research is bounded work (fetch,
-  read a LICENSE, draft sixty words) — cheap tier, many agents. Auditing is adversarial reading
-  — expensive tier, two agents. The orchestrator is expensive. The split is safe because the
-  audit re-verifies from saved bodies rather than trusting the packet.
+- **Research agents return a packet and edit no file.** One agent per product fetches, re-derives,
+  and returns a structured packet; it never writes to `sources/`. The deterministic applier below
+  is the only writer. Each packet carries, per axis: the exact `shows` extract (quoted verbatim
+  from the fetched body, not paraphrased), the **method for any asserted negative** ("grepped the
+  uncompressed sdist for `dpo`; none") — an unmethodded negative is rejected — and a **prose claim
+  ledger** listing every factual claim in the current `description`/`comments` marked keep / move /
+  drop with a reason, so a rewrite cannot silently drop a durable fact.
+- **Model tiers: cheap on the many, expensive on the few.** Research is bounded work (fetch, read a
+  LICENSE, draft sixty words) — cheap tier, many agents. Auditing is adversarial and expensive. The
+  split is safe because the audit re-verifies from saved bodies rather than trusting the packet.
+- **The audit is two-shaped.** Shard the **evidence audit** across up to four workers striped over
+  the packets — one agent re-fetching a whole category's digests died mid-response once, and a dead
+  audit means shipping unverified. Keep the **prose audit single and batch-wide**: it has to compare
+  the batch against itself, which is how it caught two products treating identical vendor language
+  differently, something no per-slice agent can see. A `failed` verdict **holds** the product; a
+  `suspect` verdict applies its **named corrections**. Do not auto-re-run — a second attempt on a
+  systemic prompt defect just fails twice.
 - **Each research agent reads only two docs** — `product-copy.md` (it is writing prose) and
-  `evidence-and-freshness.md` (it is earning the date), plus `identity.md` for a tier/family
-  slug. The reading list is multiplied by the batch size, so do not send the orchestration docs;
-  the agent is not orchestrating. Preflight computes the recorded dimensions and hands them over.
+  `evidence-and-freshness.md` (it is earning the date), plus `identity.md` for a tier/family slug.
+  The reading list is multiplied by the batch size, so do not send the orchestration docs. Preflight
+  computes the recorded dimensions and hands them over.
 - **Fetch only through** `uv run python -m build.fetch_source --body-dir <scratch> <url>`, so the
   digest is one the weekly sampled re-fetch can confirm.
 
 ## Four things that belong to the agent, not the orchestrator
 Each is a defect the sweep actually hit:
 
-- **Namespace scratch files per agent.** The scratchpad is shared; two passes had a fetch log
-  overwritten mid-run by a sibling using the same filename. Write under a private subdirectory
-  named for the category.
+- **Namespace scratch files per agent, `<category>/<product>/`.** The scratchpad is shared; two
+  passes had a fetch log overwritten mid-run by a sibling using the same filename. A directory
+  named for the *category* is not enough — every product agent in the category still shares it, so
+  the scratch path has to descend to the product.
 - **Touch only your own category's files** — `sources/{scores,products}/<member>.yaml`. Never
   `docs/`, `tests/`, `.github/`, `build/notebook_data.json`, `notebooks/`, or another category.
 - **Escalate anything that moves a level.** The agent that finds a moved `score`/`level`/`class`/
@@ -54,8 +68,12 @@ Each is a defect the sweep actually hit:
   was renamed is `docs/reference/identity.md` work, not a re-read. Record it and leave the slug.
 
 ## Apply, then gate
-Apply deterministically with `build/components.py` (never an agent, never by hand — the YAML does
-not round-trip). Then run the canonical gate list from `docs/workflows/refresh-category.md`, and
+**The deterministic applier is the only writer, and it touches only the packet's product.** A
+script, never an agent and never by hand — the YAML does not round-trip. It parses the auditor's
+replacement text (which arrives in three shapes: a bare value, a `description: ...` line, or a
+fragment carrying both prose fields) and edits via `build/components.py`. A held or failed axis is
+not dated; it goes to `sources/verification_queue.yaml` with the reason that would settle it. Then
+run the canonical gate list from `docs/workflows/refresh-category.md`, and
 run `tests/test_components.py` before the full suite (it catches the fragment-nested-as-value bug
 that shipped on seven products once). One PR per category, prose and scores together, every moved
 score itemized against its evidence. Then stop — a human merges.
