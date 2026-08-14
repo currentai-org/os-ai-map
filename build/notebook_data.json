@@ -42760,24 +42760,40 @@
           "type": "hardware",
           "description": "A credit-card-sized single-board computer (SBC) built on the Broadcom BCM2712 SoC with a 2.4GHz quad-core Arm Cortex-A76 CPU and VideoCore VII GPU, offered with 1/2/4/8/16GB LPDDR4X RAM. It has no dedicated NPU, so on-device AI runs on the CPU/GPU or via add-on accelerators (e.g. the AI HAT+). Made by Raspberry Pi, it is a common reference platform for community edge-AI projects.",
           "openness": {
-            "class": "open_toolchain",
-            "score": 4,
-            "components": "schematics:published (reduced published);toolchain:open (open kernel tree + Raspberry Pi OS);datasheets:public;blobs:minimal;retail:open_market (mass-market)",
+            "class": "documented",
+            "score": 3,
+            "components": "schematics:partial (mechanical drawing + STEP files only, no schematic);toolchain:open (open kernel tree + Raspberry Pi OS);datasheets:public;blobs:minimal;retail:open_market (mass-market)",
             "confidence": "high",
-            "note": "Open Linux kernel tree and published datasheets/reduced schematics, globally purchasable, though full board design files and some firmware remain closed.",
+            "note": "Open Linux kernel tree and public datasheets, globally purchasable, but Raspberry Pi publishes no schematic for the Pi 5 at all. Corrected from 4/open_toolchain on 2026-08-14: the record said \"reduced published\", which is true of the Pi 4 and not of the Pi 5. datasheets.raspberrypi.com/rpi4/raspberry-pi-4-reduced-schematics.pdf answers 200 and the matching rpi5 path 404s, and the documentation index lists for the Pi 5 only a mechanical drawing (RP-008347-DS) and two STEP files, one with silkscreen. That set is a mechanical spec - what a HAT or a case is designed against - so the ladder reads it as `partial`, and a partial design scores 3/documented however open the kernel tree is.",
             "sources": [
+              {
+                "url": "https://datasheets.raspberrypi.com/rpi5/raspberry-pi-5-mechanical-drawing.pdf",
+                "shows": "RP-008347-DS, the Pi 5 mechanical drawing, the only board-level design document Raspberry Pi publishes for this model; the reduced-schematics path under the same rpi5 prefix 404s while the rpi4 one answers 200",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "5dd680d6c1f5e7aa9c7b020695e315d04aac862df82ff01d4e9041cd0668d7f2"
+              },
+              {
+                "url": "https://datasheets.raspberrypi.com/rpi4/raspberry-pi-4-reduced-schematics.pdf",
+                "shows": "The Pi 4 reduced schematics, live, which is the document the old `reduced published` value described; no Pi 5 equivalent exists",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "0ee3fd2b4976b1d614fc817b0d28564226d3ee8656a9108ccb69c099715d2374"
+              },
+              {
+                "url": "https://github.com/raspberrypi/linux",
+                "shows": "Official Raspberry Pi kernel source tree (open BSP), GPL-2.0, still active",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "b55ae2f77a69f017c58eff70f5fc0d4a7164baa186f9d081467c12a84429334b"
+              },
               {
                 "url": "https://www.raspberrypi.com/products/raspberry-pi-5/",
                 "shows": "Official product page: BCM2712, Cortex-A76, RAM options, production until 2036",
                 "accessed": "2026-06-22"
-              },
-              {
-                "url": "https://github.com/raspberrypi/linux",
-                "shows": "Official Raspberry Pi kernel source tree (open BSP)",
-                "accessed": "2026-06-22"
               }
             ],
-            "bucket": "open-ish"
+            "bucket": "closed"
           },
           "adoption": {
             "level": 5,
@@ -42829,7 +42845,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Verified live 2026-06-22 via primary sources. Runs an open Linux kernel tree (github.com/raspberrypi/linux) and ships published datasheets/reduced schematics, globally purchasable, though full board design files and some firmware remain closed. No representative GitHub artifact is declared; the product is hardware, and the kernel fork is a general-purpose OS mirror whose commit and contributor signal is unrelated to the board as an AI platform (tracked in issue 54)."
+          "version_note": "Verified live 2026-08-14 via primary sources. Runs an open Linux kernel tree (github.com/raspberrypi/linux) and ships public datasheets, globally purchasable, though no schematic is published for the Pi 5 - only a mechanical drawing and STEP files - and some firmware remains closed. No representative GitHub artifact is declared; the product is hardware, and the kernel fork is a general-purpose OS mirror whose commit and contributor signal is unrelated to the board as an AI platform (tracked in issue 54)."
         },
         {
           "slug": "raspberry-pi-ai-hat-plus",
@@ -42839,11 +42855,11 @@
           "type": "hardware",
           "description": "An AI accelerator HAT+ add-on board for the Raspberry Pi 5 that integrates a Hailo neural-network accelerator: the 13 TOPS Hailo-8L or the 26 TOPS Hailo-8 variant. It conforms to the Raspberry Pi HAT+ specification, connects over PCIe, and integrates with the Pi camera stack for tasks like object detection and segmentation. Made by Raspberry Pi (silicon by Hailo); it is the official first-party way to add meaningful NPU compute to a Pi 5.",
           "openness": {
-            "class": "open_toolchain",
-            "score": 4,
-            "components": "schematics:partial (HAT+ mechanical spec public);accessory-host:open_toolchain(Raspberry Pi 5, which scores 4/open_toolchain);toolchain:partial (open Pi driver integration, Hailo compiler gated);datasheets:brief (public brief);blobs:required (Hailo firmware required);retail:open_market (mass-market)",
+            "class": "documented",
+            "score": 3,
+            "components": "schematics:partial (HAT+ mechanical spec public);accessory-host:documented(Raspberry Pi 5, which scores 3/documented);toolchain:partial (open Pi driver integration, Hailo compiler gated);datasheets:brief (public brief);blobs:required (Hailo firmware required);retail:open_market (mass-market)",
             "confidence": "medium",
-            "note": "Officially supported open Pi software stack and public product page, globally purchasable, but the underlying Hailo model-compiler toolchain is registration-gated. Scored as an accessory on the owner's ruling of 2026-08-12 - an add-on tracks the platform it completes, and what a builder gets from this HAT is the openness of the Raspberry Pi 5 it plugs into, which is 4/open_toolchain. Its own design and toolchain answers are both partial and neither describes the system anyone actually uses, so accessory-host is what the ladder now reads. See the dimension of that name in sources/rubrics/hardware.yaml for why the principle is an axis rather than an extra rung.",
+            "note": "Officially supported open Pi software stack and public product page, globally purchasable, but the underlying Hailo model-compiler toolchain is registration-gated. Scored as an accessory on the owner's ruling of 2026-08-12 - an add-on tracks the platform it completes, and what a builder gets from this HAT is the openness of the Raspberry Pi 5 it plugs into. Its own design and toolchain answers are both partial and neither describes the system anyone actually uses, so accessory-host is what the ladder reads. See the dimension of that name in sources/rubrics/hardware.yaml for why the principle is an axis rather than an extra rung. Moved 4 to 3 on 2026-08-14 with no new evidence about the HAT - the host moved. `raspberry-pi-5` was corrected to 3/documented when it turned out to publish no schematic, only a mechanical drawing, and an accessory cannot offer more openness than the system it completes.",
             "sources": [
               {
                 "url": "https://www.raspberrypi.com/products/ai-hat/",
@@ -42851,7 +42867,7 @@
                 "accessed": "2026-06-22"
               }
             ],
-            "bucket": "open-ish"
+            "bucket": "closed"
           },
           "adoption": {
             "level": 4,
@@ -43971,14 +43987,23 @@
           "openness": {
             "class": "documented",
             "score": 3,
-            "components": "schematics:none (no full board files);toolchain:partial (open runtime (libedgetpu) + TFLite, closed Edge TPU compiler);datasheets:public;blobs:required (proprietary Edge TPU ASIC + closed compiler);retail:open_market (broadly purchasable)",
+            "components": "schematics:published (baseboard schematic + Altium source + Allegro layout, Apache-2.0; SoM withheld);toolchain:partial (open runtime (libedgetpu) + TFLite, closed Edge TPU compiler);datasheets:public;blobs:required (proprietary Edge TPU ASIC + closed compiler);retail:open_market (broadly purchasable)",
             "confidence": "high",
-            "note": "Public datasheet and open runtime/TFLite path, but the Edge TPU silicon and the model compiler are proprietary closed binaries.",
+            "note": "Public datasheet, published baseboard design files and an open runtime/TFLite path, but the Edge TPU silicon and the model compiler are proprietary closed binaries. The `schematics: none` this record used to carry was wrong from the first pass rather than stale - its own cited datasheet page has linked design files throughout. Corrected 2026-08-14: the datasheet offers a baseboard schematic PDF, the Altium schematic source, an Allegro .brd layout and a STEP model of baseboard and SoM together, all served from github.com/google-coral/electricals, which carries an Apache-2.0 LICENSE. That is more than `radxa-rock-5b` releases, and it stops short of `open` because only half the product is covered - the SoM that carries the i.MX 8M and the Edge TPU has no design files. The score does not move: `published` reaches 4 only with a stack that builds from source, and the Edge TPU compiler is a closed binary, so the ladder lands on 3/documented either way. What changes is that the 3 is now derived from what Google actually publishes.",
             "sources": [
               {
                 "url": "https://coral.ai/docs/dev-board/datasheet/",
-                "shows": "datasheet: 4 TOPS, 2 TOPS/W, SoM form factor, TFLite, Google-designed Edge TPU",
-                "accessed": "2026-06-22"
+                "shows": "Datasheet v1.7 (December 2022) - 4 TOPS, 2 TOPS/W, SoM form factor, TFLite, Google-designed Edge TPU; its \"Schematic and layout files\" section links Coral-Dev-Board-baseboard-schematic.pdf, Coral-Dev-Board-baseboard-schematic-Altium.zip, Coral-Dev-Board-baseboard-layout-Allegro.brd and Dev Board.STEP, and points anyone wanting the SoM on custom hardware at the SoM datasheet rather than at design files",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "b47ca1ecbc39b2f0c88cdbb55dd3c5053b77728971901027092192c617b494d2"
+              },
+              {
+                "url": "https://github.com/google-coral/electricals",
+                "shows": "\"Electrical designs for coral.ai projects\", Apache-2.0, public; dev_board/ holds Coral-Dev-Board-baseboard-schematic.pdf, -schematic-Altium.zip and -layout-Allegro.brd, which is where the datasheet download links resolve to",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "fac5f1fe51996515123e7d918121814ae551c800a60f2cb7cde914bb72935c1f"
               },
               {
                 "url": "https://github.com/google-coral/libedgetpu",
@@ -44025,7 +44050,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Verified live 2026-08-13 via primary sources. Public datasheet and open runtime/TFLite path, but the Edge TPU silicon and the model compiler are proprietary closed binaries."
+          "version_note": "Verified live 2026-08-14 via primary sources. Public datasheet, baseboard design files (schematic PDF, Altium source and Allegro layout, Apache-2.0) and an open runtime/TFLite path, but the SoM design is withheld and the Edge TPU silicon and model compiler are proprietary closed binaries."
         },
         {
           "slug": "axelera-metis-aipu",
@@ -44336,14 +44361,30 @@
           "openness": {
             "class": "open_hardware",
             "score": 5,
-            "components": "schematics:open (gerbers + schematics CC-BY-SA 4.0);toolchain:open (open App Lab);datasheets:public;blobs:required (proprietary Qualcomm SoC firmware);retail:open_market (global)",
+            "components": "schematics:open (gerbers + schematics CC-BY-SA 4.0);toolchain:open (App Lab GPL-3.0 + App Bricks MPL-2.0, source published);datasheets:public;blobs:required (proprietary Qualcomm SoC firmware);retail:open_market (global)",
             "confidence": "high",
-            "note": "Board schematics and gerbers are openly licensed under CC-BY-SA 4.0 and the App Lab toolchain is open, which is the same open-and-open pair that puts beagley-ai at 5. Corrected from 3/documented on 2026-08-12. This ladder scores design-file openness rather than silicon: the level-5 rung says so in its own text, and every board in the category runs on proprietary silicon, so the QRB2210 firmware blobs the old note cited are a reason no rung applies.",
+            "note": "Board schematics and gerbers are openly licensed under CC-BY-SA 4.0 and the App Lab toolchain is open, which is the same open-and-open pair that puts beagley-ai at 5. Corrected from 3/documented on 2026-08-12. This ladder scores design-file openness rather than silicon: the level-5 rung says so in its own text, and every board in the category runs on proprietary silicon, so the QRB2210 firmware blobs the old note cited are a reason no rung applies. Re-derived 2026-08-14, because the toolchain half of the pair rested on a vendor claim rather than on source. The FAQ still answers \"Is UNO Q open source?\" with schematics and gerbers only, and its App Lab answer still reads \"we are working to publish corresponding source code repositories, they will become available soon\" - but that sentence is now stale. github.com/arduino/arduino-app-lab is public under GPL-3.0, 19MB of Go and TypeScript with the app, ui-packages and standalone-apps trees, last pushed 2026-08-12, and github.com/arduino/app-bricks-py is public under MPL-2.0, pushed 2026-08-13. The 5 stands and now rests on the repositories rather than on the promise of them.",
             "sources": [
               {
                 "url": "https://www.arduino.cc/product-uno-q",
-                "shows": "QRB2210 + STM32U585, schematics/gerbers under CC-BY-SA 4.0, App Lab open source",
-                "accessed": "2026-06-22"
+                "shows": "\"Yes, UNO Q schematics and gerbers are available under the CC-BY-SA 4.0 license\"; and, of the toolchain, \"Yes, App Lab and the App Bricks library are open source; we are working to publish corresponding source code repositories, they will become available soon\"",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "76f7fce92f89c4793b7e61204d917fd8abf3dc2c94d4cb88bc6dbeb56c6d591f"
+              },
+              {
+                "url": "https://github.com/arduino/arduino-app-lab",
+                "shows": "\"The cross-platform IDE for developing Arduino Apps, built with Wails\" - public, GPL-3.0, ~19MB, Go plus TypeScript source in app/, ui-packages/ and standalone-apps/, last pushed 2026-08-12. The repositories the FAQ says are coming are already here",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "8fb102888dadaed7bbf33369218fc64c739d4ecbe61ac616ce5b7563a8aad48b"
+              },
+              {
+                "url": "https://github.com/arduino/app-bricks-py",
+                "shows": "\"The code of the Arduino App Lab Bricks\" - public, MPL-2.0, last pushed 2026-08-13",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "b46b01f5a0d4d387b7fe2ddd3fa4230e2bb7cecf3d64a082b23b541e6f37ef43"
               }
             ],
             "bucket": "open"
@@ -44393,7 +44434,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Verified live 2026-06-22 via primary sources. Board schematics and gerbers are CC-BY-SA 4.0 and tooling is open, but the QRB2210 SoC remains proprietary silicon needing firmware blobs."
+          "version_note": "Verified live 2026-08-14 via primary sources. Board schematics and gerbers are CC-BY-SA 4.0 and the App Lab toolchain is published as source (GPL-3.0, with the App Bricks library MPL-2.0), but the QRB2210 SoC remains proprietary silicon needing firmware blobs."
         },
         {
           "slug": "ti-am67a",
