@@ -2364,19 +2364,19 @@
           "org_slug": "swiss-ai-initiative",
           "org": "Swiss AI Initiative",
           "type": "model",
-          "description": "Switzerland's national open LLM and one of the most transparent large models released to date, built by the Swiss AI Initiative (EPFL, ETH Zurich, and the CSCS supercomputing center) and shipped 2 Sep 2025 in 8B and 70B variants under Apache 2.0. 'Apertus' is Latin for 'open': the release covers not just weights but the full training data (via reconstruction scripts), the Megatron-LM training recipe, intermediate checkpoints, a technical report, and EU AI Act / Swiss data-protection compliance documentation. Trained on 15T tokens spanning 1,811 languages (~40% non-English, including Swiss German and Romansh) on 4,096 GH200 GPUs. Capability is mid-tier, roughly Llama 3.1-70B class on pretraining benchmarks and exceptionally strong multilingually, though below the 2026 frontier on MMLU-style reasoning, but it sets the bar for fully reproducible, legally compliant open models.",
+          "description": "Apertus is Switzerland's national open LLM family from the Swiss AI Initiative (EPFL, ETH Zurich, CSCS), released under Apache 2.0. Its current 1.5 models, 8B and 70B, take image and audio input alongside text, run a deliberation mode, and handle a 262,144-token context. The line stays fully open (open weights, training-data reconstruction scripts, full recipes) across 1,811 languages, about 40% of them non-English including Swiss German and Romansh.",
           "openness": {
             "score": 5,
             "class": "open_source",
             "components": "weights:open(Apache-2.0, BF16 safetensors);data:open(full pretraining-data reconstruction scripts, github.com/swiss-ai/pretrain-data);code:open(Megatron-LM training recipe + reconstruction scripts);checkpoints:open(intermediate checkpoints on HF branches);license:Apache-2.0(OSI)",
             "confidence": "high",
-            "note": "Among the most transparent large-model releases to date: open weights, open data (reconstruction scripts rather than a raw dump, to respect opt-out/robots.txt and strip personal data), open training code/recipe, intermediate checkpoints, a technical report (arXiv 2509.14233), and EU AI Act + Swiss data-protection/copyright compliance docs. All Apache-2.0. Sits in the OLMo/Pythia full-openness tier. Re-read 2026-08-13: the reconstruction-scripts repository is still public and Apache-2.0, the 70B card still carries the \"Fully open model\" statement, the Megatron-LM framework link and the intermediate-checkpoint branches, and the ETH press release still frames the release as fully open. Nothing moved.",
-            "last_verified": "2026-08-13",
+            "note": "Held at 5 on 2026-08-14 for the Apertus family, whose current release is the multimodal Apertus 1.5 (shipped 2026-07-24). The 1.0/2509 release remains public with its full open stack: pretraining-data reconstruction scripts (respecting opt-out/robots.txt and stripping personal data), the Megatron-LM training recipe, intermediate checkpoints, and the technical report (arXiv 2509.14233), all Apache-2.0, which is the OLMo/Pythia full-openness tier. Apertus 1.5 is likewise Apache-2.0 and declares a \"fully open model: open weights + open data + open values + full training details including all data and training recipes\", but its own multimodal-mix data-reconstruction scripts, training pipelines and intermediate checkpoints are announced as \"coming weeks\" and not yet shipped. The 5 rests on the family's established practice and the still-public 1.0 stack, re-read 2026-08-14; the v1.5-specific artifacts are tracked to confirm on release. An Acceptable Use Policy accompanies the Apache-2.0 grant, restricting conduct (illegal/abusive use) rather than commerce or scale, so the license tier stays OSI.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
                 "url": "https://api.github.com/repos/swiss-ai/pretrain-data",
                 "shows": "`private: false`, `archived: false`, license `Apache-2.0`, description \"Pretraining data reconstruction scripts for Apertus\". The reconstruction scripts are published, which is what satisfies data:open by reconstruction rather than by a released corpus.",
-                "accessed": "2026-08-13",
+                "accessed": "2026-08-14",
                 "http_status": 200,
                 "content_sha256": "4ddecf19dff644e1b5c05f298f7d94cd042d7bed86e9b4bb234016a8269471f8",
                 "establishes": [
@@ -2386,9 +2386,9 @@
               {
                 "url": "https://huggingface.co/swiss-ai/Apertus-70B-2509",
                 "shows": "Model card: \"Fully open model: open weights + open data + full training details including all data and training recipes\"; \"Training Framework: Megatron-LM\" linking github.com/swiss-ai/Megatron-LM; \"The training intermediate checkpoints are available on the different branches of this same repository\"; license apache-2.0; BF16 safetensors.",
-                "accessed": "2026-08-13",
+                "accessed": "2026-08-14",
                 "http_status": 200,
-                "content_sha256": "83519a7a58348a6eee782da98685939d8d3bb93d4396069f819715e7dab0a233",
+                "content_sha256": "85f8f65ee2b570c5b68c7e6b9473bc3ca7a8f801611b7348f32f0e9340274561",
                 "establishes": [
                   "weights",
                   "license",
@@ -2399,37 +2399,62 @@
               {
                 "url": "https://ethz.ch/en/news-and-events/eth-news/news/2025/09/press-release-apertus-a-fully-open-transparent-multilingual-language-model.html",
                 "shows": "ETH Zurich press release, title \"Apertus: a fully open, transparent, multilingual language model\", dated 2 September 2025 (EPFL/ETH/CSCS). Corroborates the release framing; establishes no dimension on its own, since a press release describes rather than exhibits the artifacts.",
-                "accessed": "2026-08-13",
+                "accessed": "2026-08-14",
                 "http_status": 200,
                 "content_sha256": "b2dc7253334c3bcc9acb07aab37a99b895ce92d229a23a3e14b7d471be0257ca"
               },
               {
                 "url": "https://github.com/swiss-ai/pretrain-data",
                 "shows": "Repository page for the pretraining-data reconstruction scripts; \"reconstruction\" appears throughout the tree and README.",
-                "accessed": "2026-08-13",
+                "accessed": "2026-08-14",
                 "http_status": 200,
-                "content_sha256": "373f562475371da6a35ea0e56fab543cb5520c2feaee0f9f7daeeb24eb97049e",
+                "content_sha256": "03241f3303116c1da493d34db84392a3d9bb5f7f2459f2b23b66db2b19d4538d",
                 "establishes": [
                   "data"
+                ]
+              },
+              {
+                "url": "https://huggingface.co/swiss-ai/Apertus-v1.5-70B",
+                "shows": "Apertus-v1.5-70B model card: \"Fully Open Model: Open weights + open data + open values + full training details including all data and training recipes\"; License: apache-2.0; identifies itself as \"Apertus 1.5 Omni, a multimodal assistant ... you understand images and audio and respond in text\"; \"context length up to 262,144 tokens, a four-fold increase from our initial Apertus 1.0 release\"; and notes that \"benchmark results, training pipelines, and intermediate checkpoints will be published in the coming weeks\". Establishes weights and license for the current release; data/code for the v1.5 multimodal mix are declared but not yet shipped.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "266f936d5683231c5c696696d2c2cb4a224d0c95768ddc4105ab401e383853a2",
+                "establishes": [
+                  "weights",
+                  "license"
                 ]
               }
             ],
             "bucket": "open"
           },
           "adoption": {
-            "level": 1,
-            "reach": "<10K",
+            "level": 2,
+            "reach": "10K-100K",
             "signal_type": "usage_volume",
             "confidence": "medium",
-            "note": "546 downloads in the trailing 30 days summed across the 1 declared artifact(s), read 2026-08-13 (swiss-ai/Apertus-70B-2509 546). Bands at level 1 (<10K) on the software and model adoption scale. Corrected from level 2, which the declared artifacts do not support.",
-            "last_verified": "2026-08-13",
+            "note": "17,574 downloads in the trailing 30 days summed across the family's shipped SKUs, read 2026-08-14 (swiss-ai/Apertus-v1.5-8B 11,501; Apertus-v1.5-70B 5,520; Apertus-70B-2509 553). Bands at level 2 (10K-100K) on the model adoption scale, up from level 1 as the multimodal v1.5 release (2026-07-24) drew the bulk of the downloads, while the original 2509 flagship now sees little traffic.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
-                "url": "https://huggingface.co/api/models/swiss-ai/Apertus-70B-2509",
-                "shows": "546 downloads in the trailing 30 days for swiss-ai/Apertus-70B-2509",
-                "accessed": "2026-08-13",
+                "url": "https://huggingface.co/api/models/swiss-ai/Apertus-v1.5-8B",
+                "shows": "`downloads` (trailing 30 days) = 11501 for swiss-ai/Apertus-v1.5-8B; `pipeline_tag` image-text-to-text",
+                "accessed": "2026-08-14",
                 "http_status": 200,
-                "content_sha256": "9fa185ea1eff42b68e584158bedd5dbd8b0facc71da717696554357ed82ccad0"
+                "content_sha256": "14d718d6f9a33a8ed85df22ee7b476de5b2678cb6bf4f9cc3cd2bab5a1c3e854"
+              },
+              {
+                "url": "https://huggingface.co/api/models/swiss-ai/Apertus-v1.5-70B",
+                "shows": "`downloads` (trailing 30 days) = 5520 for swiss-ai/Apertus-v1.5-70B; `pipeline_tag` image-text-to-text",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "babc9dfd6edce808e3b9fe29def461d5d54415ff3908f63c6d04052f0a97544a"
+              },
+              {
+                "url": "https://huggingface.co/api/models/swiss-ai/Apertus-70B-2509",
+                "shows": "`downloads` (trailing 30 days) = 553 for swiss-ai/Apertus-70B-2509",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "684324c83dbec42780c4fce9deb1ba88e572db7ce1dca58c5fca3e6b7b7152e1"
               }
             ]
           },
@@ -2441,7 +2466,7 @@
             "relation": "at",
             "value": "Apertus-70B pretraining-eval avg 67.5% (ARC/HellaSwag/WinoGrande/XNLI/XCOPA/PIQA), ~on par with Llama 3.1-70B (67.3%); Apertus-70B-Instruct MMLU 69.6%, trailing Llama 3.3-70B (87.5%) and Qwen2.5-72B (86.6%) by ~17-20 pts.",
             "confidence": "medium",
-            "note": "Mid-tier capability: competitive with the prior open generation (Llama 3.1-70B class) on pretraining benchmarks and unusually strong multilingually, but below the 2026 frontier on MMLU-style reasoning/knowledge. The value proposition is full openness + multilingual breadth + legal compliance, not raw SOTA, same profile as OLMo 2. Re-read 2026-08-13 - the card's pretraining table still shows 67.5% against Llama 3.1-70B's 67.3% and MMLU 69.6% for the Instruct variant, so the `at` relation to the llama tier still holds arithmetically and in substance. Worth stating precisely, because the llama record moved the same day: llama's capability reading is now Llama 4 Maverick rather than Llama 3.1 405B, and both tiers score 3, so the relation survives a change in what the peer is measured on.",
+            "note": "Mid-tier capability: competitive with the prior open generation (Llama 3.1-70B class) on pretraining benchmarks and unusually strong multilingually, but below the 2026 frontier on MMLU-style reasoning/knowledge. The value proposition is full openness + multilingual breadth + legal compliance, not raw SOTA, same profile as OLMo 2. Re-read 2026-08-13 - the card's pretraining table still shows 67.5% against Llama 3.1-70B's 67.3% and MMLU 69.6% for the Instruct variant, so the `at` relation to the llama tier still holds arithmetically and in substance. Worth stating precisely, because the llama record moved the same day: llama's capability reading is now Llama 4 Maverick rather than Llama 3.1 405B, and both tiers score 3, so the relation survives a change in what the peer is measured on. Noted 2026-08-14: Apertus 1.5 (2026-07-24) adds multimodal input (image + audio), a thinking/deliberation mode, and a 262,144-token context, and claims performance \"comparable to other models of similar size\"; quantified v1.5 benchmarks await the technical report (\"coming weeks\"), so the score stays 3 on the last citable (2509) numbers, and the `at llama` relation stands from the 2026-08-13 joint comparison rather than being re-derived today.",
             "last_verified": "2026-08-13",
             "sources": [
               {
@@ -2457,16 +2482,23 @@
                 "accessed": "2026-08-13",
                 "http_status": 200,
                 "content_sha256": "692729497efde76e0e1801b128ea7e8b310a20fb275c9e7c6429258ff3fa0b5f"
+              },
+              {
+                "url": "https://huggingface.co/swiss-ai/Apertus-v1.5-70B",
+                "shows": "Apertus-v1.5-70B card: multimodal (\"you understand images and audio and respond in text\"), a deliberation/thinking mode, and \"context length up to 262,144 tokens, a four-fold increase\"; corroborates the v1.5 capability additions, with quantified benchmarks pending the report.",
+                "accessed": "2026-08-14",
+                "http_status": 200,
+                "content_sha256": "266f936d5683231c5c696696d2c2cb4a224d0c95768ddc4105ab401e383853a2"
               }
             ]
           },
-          "maturity": 2.4,
+          "maturity": 2.7,
           "mature": false,
           "freshness": {
-            "date": "2026-08-13",
+            "date": "2026-08-14",
             "basis": "verified"
           },
-          "version_note": "Apertus family (8B + 70B, base + Instruct), released 2 Sep 2025 by the Swiss AI Initiative (EPFL, ETH Zurich, CSCS). 15T training tokens across 1,811 natively supported languages (~40% non-English, incl. Swiss German and Romansh), 65,536-token context, trained on 4,096 GH200 GPUs (Alps/CSCS) with Megatron-LM. Openness rests on reconstruction scripts rather than a released corpus, which is the route to a 5 the map accepts and the reason Apertus clears the bar where ALIA-40b does not. Verified 2026-08-13 via the Apertus-70B-2509 HF model card, the swiss-ai/pretrain-data repository and the ETH Zurich press release."
+          "version_note": "Apertus family from the Swiss AI Initiative (EPFL, ETH Zurich, CSCS). Current release Apertus 1.5 (\"Omni\"), shipped 2026-07-24 as v1.5-8B and v1.5-70B: multimodal (image + audio in, text out) via continued pretraining of Apertus 1.0 on a multimodal mix (+4T tokens for the 8B, +2T for the 70B), same decoder-only xIELU architecture, 262,144-token context (4x the 1.0 release), a thinking/deliberation mode, and improved instruction-following and tool use. Apache-2.0 with a separate Acceptable Use Policy. The 1.0 release (2 Sep 2025, Apertus-70B-2509) remains public with its full open stack: pretraining-data reconstruction scripts (github.com/swiss-ai/pretrain-data), the Megatron-LM recipe, intermediate checkpoints, and the technical report (arXiv 2509.14233). v1.5's own benchmark results, training pipelines and intermediate checkpoints are announced as \"coming weeks\" and not yet shipped; openness is held on the family's established fully-open practice and the still-public 1.0 stack (see the score note). Openness rests on reconstruction scripts rather than a released corpus, the route to a 5 the map accepts and the reason Apertus clears the bar where ALIA-40b does not. Verified 2026-08-14 via the Apertus-v1.5-70B and v1.5-8B HF model cards, the swiss-ai/pretrain-data repository, and the HF download API."
         },
         {
           "slug": "smollm",
