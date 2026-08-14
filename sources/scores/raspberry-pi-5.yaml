@@ -1,12 +1,12 @@
 product: raspberry-pi-5
 openness:
-  class: open_toolchain
-  score: 4
+  class: documented
+  score: 3
   components:
     schematics:
-      value: published
-      detail: reduced published
-      raw: published (reduced published)
+      value: partial
+      detail: mechanical drawing + STEP files only, no schematic
+      raw: partial (mechanical drawing + STEP files only, no schematic)
     toolchain:
       value: open
       detail: open kernel tree + Raspberry Pi OS
@@ -20,16 +20,37 @@ openness:
       detail: mass-market
       raw: open_market (mass-market)
   confidence: high
-  note: Open Linux kernel tree and published datasheets/reduced schematics, globally purchasable, though
-    full board design files and some firmware remain closed.
-  raw: schematics:published (reduced published);toolchain:open (open kernel tree + Raspberry Pi OS);datasheets:public;blobs:minimal;retail:open_market
-    (mass-market)
+  note: 'Open Linux kernel tree and public datasheets, globally purchasable, but Raspberry Pi
+    publishes no schematic for the Pi 5 at all. Corrected from 4/open_toolchain on 2026-08-14: the
+    record said "reduced published", which is true of the Pi 4 and not of the Pi 5.
+    datasheets.raspberrypi.com/rpi4/raspberry-pi-4-reduced-schematics.pdf answers 200 and the
+    matching rpi5 path 404s, and the documentation index lists for the Pi 5 only a mechanical
+    drawing (RP-008347-DS) and two STEP files, one with silkscreen. That set is a mechanical spec -
+    what a HAT or a case is designed against - so the ladder reads it as `partial`, and a partial
+    design scores 3/documented however open the kernel tree is.'
+  raw: schematics:partial (mechanical drawing + STEP files only, no schematic);toolchain:open (open
+    kernel tree + Raspberry Pi OS);datasheets:public;blobs:minimal;retail:open_market (mass-market)
   sources:
+  - url: https://datasheets.raspberrypi.com/rpi5/raspberry-pi-5-mechanical-drawing.pdf
+    shows: RP-008347-DS, the Pi 5 mechanical drawing, the only board-level design document Raspberry
+      Pi publishes for this model; the reduced-schematics path under the same rpi5 prefix 404s while
+      the rpi4 one answers 200
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 5dd680d6c1f5e7aa9c7b020695e315d04aac862df82ff01d4e9041cd0668d7f2
+  - url: https://datasheets.raspberrypi.com/rpi4/raspberry-pi-4-reduced-schematics.pdf
+    shows: The Pi 4 reduced schematics, live, which is the document the old `reduced published`
+      value described; no Pi 5 equivalent exists
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 0ee3fd2b4976b1d614fc817b0d28564226d3ee8656a9108ccb69c099715d2374
+  - url: https://github.com/raspberrypi/linux
+    shows: Official Raspberry Pi kernel source tree (open BSP), GPL-2.0, still active
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: b55ae2f77a69f017c58eff70f5fc0d4a7164baa186f9d081467c12a84429334b
   - url: https://www.raspberrypi.com/products/raspberry-pi-5/
     shows: 'Official product page: BCM2712, Cortex-A76, RAM options, production until 2036'
-    accessed: '2026-06-22'
-  - url: https://github.com/raspberrypi/linux
-    shows: Official Raspberry Pi kernel source tree (open BSP)
     accessed: '2026-06-22'
 adoption:
   level: 5

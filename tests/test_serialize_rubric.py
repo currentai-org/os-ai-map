@@ -689,7 +689,7 @@ def test_real_sources_serialize_without_errors():
     # did not.
     assert per_category("category_scoring_rules") == {
         "base_pretrained": 12, "finetuned_chat": 10, "safeguards": 23,
-        "benchmark_eval_data": 24, "training_synthetic_datasets": 24, "edge_hardware": 7,
+        "benchmark_eval_data": 24, "training_synthetic_datasets": 24, "edge_hardware": 9,
         **{c: 13 for c in SOFTWARE},
     }
     # Both fell with the slug migration: release-level products collapsed into the
