@@ -81,6 +81,11 @@ TABLES: dict[str, tuple[str, ...]] = {
         "artifact_kind",
         "artifact_id",
         "artifact_url",
+        # Why this artifact is not how the product ships, or empty. Carried across the
+        # bridge rather than applied here, because the exclusion belongs to the model
+        # that sums downloads and this file only says what exists. Empty for all but 2
+        # of 561 artifacts on 2026-08-14.
+        "not_primary_channel",
     ),
     "product_categories": ("product_slug", "category_slug"),
     "product_organizations": ("product_slug", "org_slug"),
@@ -105,18 +110,28 @@ _ID_PATTERNS = {
 }
 
 
-def _urls(value: object) -> list[str]:
-    """Artifact values are lists of {url: ...}; tolerate a bare string too."""
+def _entries(value: object) -> list[tuple[str, dict]]:
+    """(url, the rest of the entry) pairs. Artifact values are lists of {url: ...}.
+
+    The wrapper object exists so an artifact can carry metadata, and
+    `not_primary_channel` is the first key to use it, so the entry has to survive to
+    the caller rather than being reduced to a URL on the way past.
+    """
     if isinstance(value, str):
-        return [value]
-    out: list[str] = []
+        return [(value, {})]
+    out: list[tuple[str, dict]] = []
     if isinstance(value, list):
         for item in value:
             if isinstance(item, dict) and isinstance(item.get("url"), str):
-                out.append(item["url"])
+                out.append((item["url"], item))
             elif isinstance(item, str):
-                out.append(item)
+                out.append((item, {}))
     return out
+
+
+def _urls(value: object) -> list[str]:
+    """Just the URLs. Kept because several call sites only ever wanted those."""
+    return [url for url, _ in _entries(value)]
 
 
 def artifact_id(kind: str, url: str) -> str | None:
@@ -205,7 +220,7 @@ def build_registry(sources: dict) -> tuple[dict[str, list[dict]], list[str], lis
             }
         )
         for kind in ARTIFACT_KINDS:
-            for url in _urls(product.get(kind)):
+            for url, entry in _entries(product.get(kind)):
                 identifier = artifact_id(kind, url)
                 if identifier is None:
                     warnings.append(f"product '{slug}': {kind} url names no repo: {url}")
@@ -217,6 +232,7 @@ def build_registry(sources: dict) -> tuple[dict[str, list[dict]], list[str], lis
                         "artifact_kind": kind,
                         "artifact_id": identifier,
                         "artifact_url": url,
+                        "not_primary_channel": entry.get("not_primary_channel", "") or "",
                     }
                 )
         lineage = product.get("lineage")

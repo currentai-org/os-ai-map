@@ -68,7 +68,7 @@
       "items": {
         "$ref": "#/definitions/url"
       },
-      "description": "The PyPI project page, and the adoption workhorse for the software half of the map: sources/signal_routing.yaml routes `adoption` to currentai.signal_pypi.package_downloads (`downloads_30d`, signal type `usage_volume`, high confidence) for any product that declares one. Reduced to the bare project name for registry/product_artifacts.csv. Downloads sum across a product's artifacts rather than taking the largest, because the map's unit is the family and a family ships several packages — and across REGISTRIES as well as within one, which currentai.signal_packages.product_adoption does and the per-package band in signal_pypi cannot. 66 of 472 products declare one on 2026-08-08; the registry held 106 pypi artifacts on 2026-08-14 against 98 in the signal table, so read coverage off the signal rather than the roster."
+      "description": "The PyPI project page, and the adoption workhorse for the software half of the map: sources/signal_routing.yaml routes `adoption` to currentai.signal_packages.package_downloads filtered on `artifact_kind = 'pypi'` (`downloads_30d`, signal type `usage_volume`, high confidence) for any product that declares one. That table replaced currentai.signal_pypi.package_downloads on 2026-08-14, absorbing its PyPI leg over the same `oso.pypi_downloads` marketplace dataset; signal_pypi stays deployed until the two have been diffed per product. Reduced to the bare project name for registry/product_artifacts.csv. Downloads sum across a product's artifacts rather than taking the largest, because the map's unit is the family and a family ships several packages — and across REGISTRIES as well as within one, which currentai.signal_packages.product_adoption does and the per-package band in signal_pypi cannot. 66 of 472 products declare one on 2026-08-08; the registry held 106 pypi artifacts on 2026-08-14 against 98 in the signal table, so read coverage off the signal rather than the roster."
     },
     "crates": {
       "type": "array",
@@ -160,12 +160,17 @@
         "url"
       ],
       "additionalProperties": false,
-      "description": "The shape every artifact block's entries take: a single-key object wrapping one URL. An object rather than a bare string because these blocks mirror oss-directory's project files, where the wrapper is where per-artifact metadata would go. Nothing here adds a second key yet, and `additionalProperties: false` means adding one is a schema change rather than a data change. build/serialize_registry.py tolerates a bare string on read, but the schema does not, so write the object form.",
+      "description": "The shape every artifact block's entries take: an object wrapping one URL, plus `not_primary_channel` where the artifact is real but is not how the product ships. An object rather than a bare string because these blocks mirror oss-directory's project files, where the wrapper is where per-artifact metadata would go — this is the first key to use that room, and `additionalProperties: false` means adding another is a schema change rather than a data change. build/serialize_registry.py tolerates a bare string on read, but the schema does not, so write the object form.",
       "properties": {
         "url": {
           "type": "string",
           "pattern": "^https?://",
           "description": "The URL. Only its scheme is checked here; whether it names a resource anything can address is checked downstream by build/serialize_registry.py, which reduces it to the identifier the relevant API expects and warns when it cannot (2 org-level GitHub links on 2026-08-08). Nothing checks that two products do not claim the same URL, and 14 are claimed twice on 2026-08-08, typically a monorepo shared by a dataset and its toolkit; since a route sums across a product's artifacts, a shared repository's signal counts toward both products."
+        },
+        "not_primary_channel": {
+          "type": "string",
+          "minLength": 20,
+          "description": "Why this artifact is NOT how the product is distributed, written as a sentence. The presence of the key is the exclusion and the value is the reason, the same shape as `version_in_identity` and a category's `deferred` block, so the two cannot disagree the way a boolean plus a separate reason field can. Named for the rule it implements: docs/guides/adoption.md holds that if the declared artifact is not the product's primary distribution channel, banding on it is a substitution rather than a measurement. Read by currentai.signal_packages.product_adoption, which excludes these artifacts from the summed figure it bands, so the product falls through to a weaker instrument legitimately instead of being held down by a hand-set level nothing can check. It is NOT a way to hide an inconvenient number: the artifact stays declared, its downloads are still computed and still visible per artifact in currentai.signal_packages.package_downloads, and only the roll-up leaves them out. Two artifacts carry one on 2026-08-14, both established by Carl's standing minority-channel ruling: `@hexabot-ai/widget` is an embeddable widget rather than the self-hosted platform, and `yomo`'s crate is a Rust SDK for a project distributed as a Go binary. Meaningful only on a package artifact (pypi / npm / crates); nothing reads it on a repo or a Hub artifact, where the question is not distribution."
         }
       }
     }

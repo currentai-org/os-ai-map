@@ -294,12 +294,24 @@ not follow from the evidence the score itself recorded.
 
 | model | grain | covers | route |
 |---|---|---|---|
-| `currentai.signal_pypi.package_downloads` | package | 98 software products | PyPI |
+| `currentai.signal_packages.package_downloads` | artifact | 98 software products today | PyPI, and npm + crates once deployed |
 | `currentai.signal_huggingface.product_adoption` | **product** | 112 model / dataset products | Hugging Face |
+
+`signal_packages` replaced `currentai.signal_pypi.package_downloads` on 2026-08-14, absorbing its
+PyPI leg unchanged apart from one fix noted below. `signal_pypi` stays deployed until the
+successor has been diffed against it per product; `docs/runbooks/deploy-udms.md` makes that
+comparison a required step and the deletion the last one.
 
 Both read the bands from `registry.adoption_bands` and band on the product's declared type.
 Neither writes anything back to `sources/`: **a computed band is an observation, never a
 score.** Only a person sets `level`, and only per `verification.md`.
+
+**One fix went in with the port.** `signal_pypi` joined `registry.adoption_bands` on
+`product_type` alone, so it would have taken the maximum level across instruments if a per-type
+band were ever declared for one other than `usage_volume`. The new model filters `signal_type`
+too. Measured 2026-08-14, no such band exists — `active_users` and `stars_fallback` are both
+declared at `product_type: '*'` — so **the fix moves no current band**. It closes a latent
+defect, and it is why old and new are not bit-identical.
 
 **Coverage is read off the signal table, not off the roster.** The registry declared 106 PyPI
 artifacts on 2026-08-14 while `signal_pypi` held 98, and the gap is not cron lag: the roster
@@ -418,12 +430,17 @@ it serves. The opposite is **under**-coverage, and it is the more common one:
 > **If the declared artifact is not the product's primary distribution channel, banding on it is
 > a substitution, not a measurement.**
 
-`n8n` is the case that established the rule. It records `usage_volume`, and its declared artifact
-is the npm package at 393,738 downloads a month, which bands at level 3. But n8n is deployed
-overwhelmingly as a self-hosted Docker container, and Docker Hub reports **246 million cumulative
-pulls** — averaging about 2.9 million a month over the image's lifetime. Banding on npm alone
-published a precise number for the wrong channel, and the note said so in its own second sentence
-before recording the band anyway.
+`n8n` is the case that established the rule. Its declared artifact is the npm package at 393,738
+downloads a month, which bands at level 3. But n8n is deployed overwhelmingly as a self-hosted
+Docker container, and Docker Hub reports **246 million cumulative pulls** — averaging about 2.9
+million a month over the image's lifetime. Banding on npm alone published a precise number for the
+wrong channel, and the note said so in its own second sentence before recording the band anyway.
+
+It recorded `usage_volume` until 2026-08-14, which was the deeper version of the same mistake: the
+level was built mostly from a lifetime average nothing can count, under an instrument that claims a
+download count. The instrument is now `reported_traction` with **no numeric reach** and the level
+unchanged at 4, per rule 3 below. The npm figure stays cited and stays computable; what it no
+longer does is dress a Docker-shaped claim as a package count.
 
 That is exactly what `sources/signal_routing.yaml` forbids: "Abstain rather than substitute. When
 the authoritative signal for a dimension is missing or unusable, the rule is to produce NO
@@ -441,6 +458,21 @@ than an absent one, because it carries a `last_verified` date asserting that som
    presented as one.
 3. Where the primary channel publishes nothing at all, use `reported_traction` and abstain on
    `reach`, rather than banding on the minority channel that happens to be countable.
+
+**Say it in the data, not in a note.** From 2026-08-14 a declared artifact that is not the
+product's distribution channel carries `not_primary_channel` with the reason, on the artifact
+itself in `sources/products/*.yaml`, and `signal_packages.product_adoption` leaves it out of the
+summed figure it bands. `@hexabot-ai/widget` is an embeddable widget rather than the self-hosted
+platform, and `yomo`'s crate is a Rust SDK for a project shipped as a Go binary. Both products then
+have **no primary package channel**, which the roll-up reports as its own abstention — distinct
+from an artifact that 404s and from one nothing has fetched yet — and their bands rest on
+`stars_fallback` legitimately rather than on a level nothing could check. The artifacts stay
+declared and their downloads stay published per artifact, because the figure is not in dispute;
+what it measures is.
+
+This replaces the only alternative, which was to override the computed band. An override hides the
+reason and leaves the computed figure looking like a permanent disagreement, which is how #169's
+work list fills up with entries nobody can close.
 
 `langflow` is the same shape and moved with it: PyPI alone gave level 2, PyPI plus the Docker
 average gives about 166,000 a month and level 3. `semantic-kernel` is a third — its Python package

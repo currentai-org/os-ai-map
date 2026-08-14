@@ -108,7 +108,8 @@ product slugs from a truncated terminal listing.
   (`build.check_verification.recorded_dimensions` over `build.rubrics.recipe_for`). Do not ask
   an agent to re-derive them, and do not paraphrase them into a brief.
 - Warehouse signal rows for the whole category in **one** query — `signal_github.repo_state`,
-  `signal_huggingface.hub_state`, `signal_pypi.package_downloads`. Read
+  `signal_huggingface.hub_state`, `signal_packages.package_downloads` (pypi, npm and crates,
+  discriminated by `artifact_kind`; it replaces `signal_pypi.package_downloads`). Read
   `sources/signal_routing.yaml` for which source governs which dimension, and respect its
   `never` routes: a GitHub license is a fact about the code, never about the weights.
 

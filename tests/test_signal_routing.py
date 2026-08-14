@@ -10,27 +10,11 @@ from pathlib import Path
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
-MODEL_PATH_FIELDS = ("model_source", "fetched_by")
 
 
 def _routing() -> dict:
     return yaml.safe_load((ROOT / "sources" / "signal_routing.yaml").read_text())
 
-
-def _declared_model_paths() -> list[tuple[str, str, str]]:
-    """(where it was declared, field, path) for every model file the routing names."""
-    routing = _routing()
-    found: list[tuple[str, str, str]] = []
-    for name, source in (routing.get("sources") or {}).items():
-        for field in MODEL_PATH_FIELDS:
-            if source.get(field):
-                found.append((f"sources.{name}", field, source[field]))
-    for dimension, spec in (routing.get("dimensions") or {}).items():
-        rollup = spec.get("rollup") or {}
-        for field in MODEL_PATH_FIELDS:
-            if rollup.get(field):
-                found.append((f"dimensions.{dimension}.rollup", field, rollup[field]))
-    return found
 
 
 def test_every_declared_artifact_kind_has_a_route_or_is_declared_unbridged():
@@ -62,48 +46,6 @@ def test_every_declared_artifact_kind_has_a_route_or_is_declared_unbridged():
     )
 
 
-def test_every_declared_model_source_exists():
-    """A route may not name a model file this repo does not have.
-
-    Issue #173 is that `warehouse/models/` claims to be the source of truth for UDM SQL and
-    holds none of the signal models, and that gap is how the hardcoded adoption bands in
-    `signal_pypi` stayed invisible: looking for the SQL where the runbook said it lived turned
-    up nothing, which reads as "no such model" rather than "the directory is incomplete".
-
-    This does not fix that. It stops the two models added here from drifting into it, which is
-    the cheapest possible version of the guarantee.
-    """
-    declared = _declared_model_paths()
-    assert declared, "no model_source declared anywhere in signal_routing.yaml"
-    missing = [
-        f"{where}.{field} -> {path}"
-        for where, field, path in declared
-        if not (ROOT / path).is_file()
-    ]
-    assert not missing, "declared model sources that do not exist:\n" + "\n".join(missing)
-
-
-def test_a_model_source_filename_matches_the_table_it_builds():
-    """`currentai.signal_packages.package_downloads` is built by
-    `signal_packages_package_downloads.<ext>`.
-
-    The convention is already how the 12 SQL models in the directory are named, and it is what
-    makes "where is this table defined" answerable by looking. Asserted because a file renamed
-    for tidiness would otherwise leave the routing pointing at a path that exists and builds
-    something else.
-    """
-    routing = _routing()
-    offences = []
-    for name, source in (routing.get("sources") or {}).items():
-        table = source.get("table")
-        path = source.get("model_source")
-        if not table or not path:
-            continue
-        # currentai.signal_packages.package_downloads -> signal_packages_package_downloads
-        expected = "_".join(table.split(".")[1:])
-        if Path(path).stem != expected:
-            offences.append(f"sources.{name}: {path} does not build {table}")
-    assert not offences, "\n".join(offences)
 
 
 def test_an_undeployed_source_is_not_marked_bridged():

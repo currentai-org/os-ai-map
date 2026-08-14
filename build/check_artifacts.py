@@ -1,6 +1,6 @@
 """Catch a declared artifact that has drifted away from the thing it names.
 
-An artifact_id is a join key. `signal_github` keys on it, `signal_pypi` keys on it, and
+An artifact_id is a join key. `signal_github` keys on it, `signal_packages` keys on it, and
 every adoption band downstream rests on whatever it resolves to. So a stale one does not
 fail loudly — it attaches another project's stars, license and downloads to this product
 and keeps reporting them, which is indistinguishable from a working signal.
@@ -20,7 +20,9 @@ Three drifts, all of which happened in the week this was written:
     do on its own: does the package's own metadata name the repository we declare?
 
 Two of the three need no network. `signal_github.resolved_via_redirect` and
-`signal_pypi.missing_from_pypi` are computed weekly and were simply never read.
+`signal_packages.package_downloads.missing_from_registry` are computed weekly and were
+simply never read. The second was `signal_pypi.missing_from_pypi` until 2026-08-14, when the
+signal moved to a registry-neutral table covering npm and crates as well.
 
 ## Reports rather than fails, by default
 
@@ -108,11 +110,32 @@ def canonical_repo(repo: str) -> str:
 
 
 def pypi_missing(products: dict[str, dict]) -> list[tuple[str, str, str]]:
-    """Declared packages the signal could not find on PyPI at all."""
-    rows = query(
-        "SELECT product_slug, package FROM currentai.signal_pypi.package_downloads "
-        "WHERE missing_from_pypi = true"
-    )
+    """Declared packages the signal could not find on PyPI at all.
+
+    Reads the registry-neutral table, filtered to the pypi kind. `signal_pypi` carried the
+    same fact under `missing_from_pypi`, a column name that would be false for two thirds of
+    the rows in a table also covering npm and crates.
+
+    Tolerates the successor being absent, because this repo migrates its readers in a PR and
+    the model is materialized by a maintainer afterwards. The gap is a few days, and the
+    alternative is a red workflow that says nothing about artifacts. It reports what it did
+    rather than passing quietly: a check that skipped is not a check that found nothing.
+    """
+    try:
+        rows = query(
+            "SELECT product_slug, package "
+            "FROM currentai.signal_packages.package_downloads "
+            "WHERE artifact_kind = 'pypi' AND missing_from_registry = true"
+        )
+    except Exception as exc:  # noqa: BLE001 — any transport or planner error reads the same
+        if "signal_packages" in str(exc):
+            print(
+                "  - pypi_missing SKIPPED: currentai.signal_packages.package_downloads does "
+                "not answer yet. Deploy it (docs/runbooks/deploy-udms.md) and re-run; until "
+                "then this check reports nothing rather than nothing being wrong."
+            )
+            return []
+        raise
     return [(r["product_slug"], r["package"], "absent from PyPI") for r in rows]
 
 

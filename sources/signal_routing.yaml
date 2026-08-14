@@ -50,14 +50,16 @@ verified_on: '2026-07-28'
 # flipping it before a run exists would mark 12 unfalsifiable `usage_volume`
 # records as recomputable without a single number being computed.
 #
-# `model_source` names the file in THIS repo that a source's table is authored in,
-# and `fetched_by` the file that fetches its history where one is needed, since a
-# source whose registry publishes no global dataset takes two models rather than
-# one. Issue #173 is that `warehouse/models/` claims to hold every UDM source and
-# holds none of the signal models, and that gap is how the hardcoded adoption bands
-# in `signal_pypi` stayed invisible. Every path here is checked by
-# `tests/test_signal_routing.py`, so a declaration cannot name a model whose source
-# has been moved or deleted.
+# A source's table is authored on the PLATFORM, not in this repo — that is the
+# standing rule for every `signal_*` model, and #173 is the cleanup of the runbook
+# claim that says otherwise. A source whose registry publishes no global dataset
+# takes two models rather than one: a fetcher that reads the registry API and stores
+# history, and a windowing model over it. Which model builds a table is answered by
+# the `table:` key here plus the platform's revision history. Nothing in this repo
+# mirrors that source, so nothing here can drift from it. The cost is real and worth
+# stating: the hardcoded adoption bands in `signal_pypi` stayed invisible precisely
+# because no reader could see the SQL, and the required post-deploy diff in
+# `docs/runbooks/deploy-udms.md` is what stands in for a test.
 sources:
   github:
     artifact_key: github
@@ -81,25 +83,33 @@ sources:
     bridged: true
   pypi:
     artifact_key: pypi
-    table: currentai.signal_pypi.package_downloads
+    table: currentai.signal_packages.package_downloads
     key: product_slug
+    filter: artifact_kind = 'pypi'
     evidence_url: https://pypistats.org/packages/{package}
     bridged: true
-    successor: currentai.signal_packages.package_downloads
-    successor_note: >
-      The registry-neutral table below covers PyPI too, on the same window and under the same
-      column names, plus `artifact_kind` and download history. This route stays pointed at
-      `signal_pypi` until the successor is deployed and verified, because that table is live
-      and `build/check_artifacts.py` reads its `missing_from_pypi` column. Repointing is a
-      follow-up PR, and nothing is renamed in place: `signal_pypi` is retired after its
-      readers move, so no reader ever queries a column that has already gone.
+    retires: currentai.signal_pypi.package_downloads
+    retires_note: >
+      REPOINTED 2026-08-14. This route read `signal_pypi.package_downloads` until the neutral
+      table absorbed it: same window, same column names, plus `artifact_kind`, download history
+      and `not_primary_channel`. PyPI's leg is a port of the deployed `signal_pypi` revision,
+      because PyPI is the one registry with a marketplace dataset behind it
+      (`oso.pypi_downloads`) and there was nothing to fetch.
+
+      The port is NOT bit-identical, deliberately, and the runbook says so before the
+      comparison step: `signal_pypi` joined `registry.adoption_bands` on `product_type` alone,
+      so it would take the maximum level across instruments if a per-type band were ever
+      declared for one other than usage_volume. Measured 2026-08-14, no such band exists -
+      `active_users` and `stars_fallback` are both declared at `product_type: '*'` - so the
+      fix moves no current band. It is a latent defect closed, not a behavior change.
+
+      `signal_pypi` stays deployed until the successor has run and been diffed against it per
+      product. Dropping it is the last step of the runbook and the only irreversible one.
   npm:
     artifact_key: npm
     table: currentai.signal_packages.package_downloads
     key: product_slug
     filter: artifact_kind = 'npm'
-    model_source: warehouse/models/signal_packages_package_downloads.sql
-    fetched_by: warehouse/models/signal_packages_package_downloads_daily.py
     evidence_url: https://www.npmjs.com/package/{package}
     bridged: false
     blocked_by: deploy
@@ -118,8 +128,8 @@ sources:
       `build/check_instrument.py` now gates the general case.
 
       MODELS WRITTEN 2026-08-14 and not yet deployed, so this stays `bridged: false` and
-      `blocked_by` moves from a missing method to a deploy. Two files: `fetched_by` reads
-      api.npmjs.org itself and stores 18 months of daily history, and `model_source` windows
+      `blocked_by` moves from a missing method to a deploy. Two models: a fetcher reads
+      api.npmjs.org itself and stores 18 months of daily history, and a windowing model over
       it. The fetch takes the `signal_github` shape rather than the `signal_pypi` one, because
       `signal_pypi` is plain SQL over the `oso.pypi_downloads` marketplace dataset and there
       is no marketplace dataset for npm. It reads its roster from `registry.product_artifacts`
@@ -147,8 +157,6 @@ sources:
     table: currentai.signal_packages.package_downloads
     key: product_slug
     filter: artifact_kind = 'crates'
-    model_source: warehouse/models/signal_packages_package_downloads.sql
-    fetched_by: warehouse/models/signal_packages_package_downloads_daily.py
     evidence_url: https://crates.io/crates/{package}
     bridged: false
     blocked_by: deploy
@@ -569,7 +577,12 @@ dimensions:
     # distinguishable from one built on PyPI alone.
     #
     # It abstains rather than banding a short sum: a declared package artifact with no figure
-    # leaves `adoption_level` null with a reason. And it reads the thresholds from
+    # leaves `adoption_level` null with a reason. It also excludes any artifact whose product
+    # file marks it `not_primary_channel`, which is how the minority-channel ruling is applied
+    # in data rather than by overriding a band - `hexabot`'s npm widget and `yomo`'s Rust SDK
+    # crate, both of which then have no primary package channel and fall through to stars. The
+    # figure is still computed and still published per artifact; only the sum leaves it out.
+    # And it reads the thresholds from
     # registry.adoption_bands, filtering on signal_type as well as product_type, instead of
     # carrying them - the defect issue #173 records in signal_pypi, a hardcoded CASE applying
     # the software scale to every product type.
@@ -578,7 +591,6 @@ dimensions:
     # roll-ups, and consolidating all three into one adoption authority is #169's question.
     rollup:
       table: currentai.signal_packages.product_adoption
-      model_source: warehouse/models/signal_packages_product_adoption.sql
       covers: [pypi, npm, crates]
       bands_from: currentai.registry.adoption_bands
       deployed: false

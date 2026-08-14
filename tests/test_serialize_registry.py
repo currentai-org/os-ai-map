@@ -213,5 +213,67 @@ def test_arxiv_artifacts_serialize_like_any_other_kind():
             "artifact_kind": "arxiv",
             "artifact_id": "2110.14168",
             "artifact_url": "https://arxiv.org/abs/2110.14168",
+            "not_primary_channel": "",
         }
     ]
+
+
+def test_a_non_primary_package_artifact_carries_its_reason_across_the_bridge():
+    """The exclusion has to reach the warehouse, or the roll-up cannot honor it.
+
+    `signal_packages.product_adoption` leaves these artifacts out of the summed figure it
+    bands, so the reason travels as data. An empty string rather than a null keeps the CSV
+    column one type.
+    """
+    reason = "A Rust SDK for a runtime distributed as a Go binary, so it measures one binding."
+    sources = _sources(
+        products={
+            "yomo": {
+                "display_name": "YoMo",
+                "type": "software",
+                "crates": [
+                    {"url": "https://crates.io/crates/yomo", "not_primary_channel": reason}
+                ],
+            }
+        },
+        organizations={"vivgrid": {"products": ["yomo"]}},
+        categories={"agents": {"weights": {}, "products": ["yomo"]}},
+        taxonomy={"arcs": [{"name": "Product UX", "layer": "product_ux", "categories": ["agents"]}]},
+    )
+    tables, errors, _ = build_registry(sources)
+    assert errors == []
+    assert tables["product_artifacts"] == [
+        {
+            "product_slug": "yomo",
+            "product_type": "software",
+            "artifact_kind": "crates",
+            "artifact_id": "yomo",
+            "artifact_url": "https://crates.io/crates/yomo",
+            "not_primary_channel": reason,
+        }
+    ]
+
+
+def test_the_two_ruled_artifacts_still_carry_their_reason():
+    """`hexabot` and `yomo` are the ruling. If the reason goes, the band silently moves.
+
+    Their package artifacts are real and stay declared; what is false is that either is how the
+    product ships. Without the marker the package route outranks stars and both recompute to
+    level 1 — which is exactly what Carl refused on 2026-08-14.
+
+    This lives here rather than beside the model tests because the models are deployed from
+    outside the repo, so this is the only layer CI can guard.
+    """
+    import pathlib
+
+    import yaml
+
+    root = pathlib.Path(__file__).resolve().parents[1]
+    for slug, kind in {"hexabot": "npm", "yomo": "crates"}.items():
+        product = yaml.safe_load((root / "sources" / "products" / f"{slug}.yaml").read_text())
+        entries = product.get(kind) or []
+        assert entries, f"{slug} no longer declares a {kind} artifact"
+        assert all(entry.get("not_primary_channel") for entry in entries), (
+            f"{slug}: its {kind} artifact is a minority channel and must say so, or the package "
+            f"route will re-band it away from stars_fallback"
+        )
