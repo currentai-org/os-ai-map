@@ -14,9 +14,41 @@ openness:
       value: multi-provider
       detail: closed orchestration
   confidence: high
-  note: Proprietary SaaS chat/answer engine; closed counterpart on the shelf.
+  note: 'Proprietary SaaS chat/answer engine; closed counterpart on the shelf.
+    Re-checked 2026-08-14. www.perplexity.ai and its terms-of-service page both answer 403, six attempts
+    each under the raised retry budget, so the consumer surface cited below keeps its 2026-06-04 read.
+    The confirmation moves to Perplexity''s own developer docs, which are reachable. They sell hosted
+    access and nothing else - ''Unified access to open-weight models hosted by Perplexity through one
+    OpenAI-compatible endpoint'', plus ''third-party models from OpenAI, Anthropic, Google, and xAI'' -
+    and the FAQ puts the compute on Perplexity''s own infrastructure, ''Our compute is hosted via Amazon
+    Web Services in North America.'' No repository, no self-hostable build and no license grant appear
+    anywhere in the docs, only paid access to a service Perplexity runs. That is the closed rung, and
+    the multi-provider orchestration the record already records. The docs cover the API rather than the
+    consumer app, so this is a narrower surface than the original citation. Score unchanged at 1.'
   raw: license:proprietary(SaaS);source:closed;self-host:none;models:multi-provider(closed orchestration)
+  last_verified: '2026-08-14'
   sources:
+  - url: https://docs.perplexity.ai/
+    shows: 'Perplexity''s own API docs. The product on offer is hosted service only - ''Unified access to
+      open-weight models hosted by Perplexity through one OpenAI-compatible endpoint'' and ''access
+      third-party models from OpenAI, Anthropic, Google, and xAI with web search tools and presets''.
+      The docs offer no source, no repository, no self-hostable build and no license grant, only paid
+      access to a service Perplexity operates.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: a1e88ef85856ce3e1ba8d1592e8e6f5e05c2eb4af2f3ca6cd1c7eee6113ce026
+    establishes:
+    - source
+    - license
+  - url: https://docs.perplexity.ai/docs/resources/faq.md
+    shows: 'Perplexity''s own FAQ on where the models run - ''Where Are Perplexity''s Language Models
+      Hosted? Our compute is hosted via Amazon Web Services in North America.'' Confirms the self-host
+      value of none - the models run on Perplexity''s infrastructure and are reached over its API.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: a7e6053c46d3c9a94705f4a282105dc7263c5155fd489dba11482be6bece640c
+    establishes:
+    - self-host
   - url: https://www.perplexity.ai/
     shows: consumer AI answer/search chat product, proprietary SaaS (no source/self-host)
     accessed: '2026-06-04'
@@ -48,13 +80,46 @@ adoption:
 capability:
   score: 4
   basis: feature_matrix
-  value: 'chat-UI matrix: multi-model access (selectable frontier models incl. GPT/Claude/Gemini + own
-    Sonar), strong web-grounded RAG with citations (its core differentiator), multimodal input, file upload,
-    Spaces/collections, multi-user/enterprise. Search-grounded answering is best-in-class for the category.'
+  value: 'chat-UI and API matrix: multi-provider model access (third-party models from OpenAI, Anthropic,
+    Google and xAI alongside its own Sonar line), strong web-grounded RAG with citations (its core
+    differentiator), a Sonar range from lightweight grounded search to Deep Research, and a paid Pro tier
+    that searches uploaded documents alongside the web. Search-grounded answering is best-in-class for
+    the category.'
   confidence: medium
-  note: Differentiated, capable consumer chat UI (citation-grounded answers, model choice); high feature
+  note: 'Differentiated, capable consumer chat UI (citation-grounded answers, model choice); high feature
     breadth but not the single category frontier-definer.
+    Re-checked 2026-08-14. www.perplexity.ai answers 403 after six attempts, so the feature list was
+    re-derived from Perplexity''s own docs plus the Wikipedia article. The docs carry the model choice
+    and the grounding - ''third-party models from OpenAI, Anthropic, Google, and xAI'' and ''web-grounded
+    answers with built-in citations in one call'' - and list four Sonar variants from lightweight
+    grounded search up to Sonar Deep Research. Wikipedia carries the paid tier searching uploaded
+    documents alongside web content. Two clauses of the old value could not be re-confirmed on any
+    reachable page and were dropped rather than restated - multimodal input, and Spaces/collections. The
+    narrowed value still sits at 4 on the same reasoning, strong breadth, not the frontier-definer.'
+  last_verified: '2026-08-14'
   sources:
+  - url: https://docs.perplexity.ai/docs/getting-started/models
+    shows: 'Perplexity''s own model list - four Sonar variants, ''Sonar'' (lightweight grounded search),
+      ''Sonar Pro'' (advanced search with grounding, complex queries), ''Sonar Reasoning Pro'' (chain of
+      thought) and ''Sonar Deep Research'' (exhaustive searches, comprehensive reports).'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 007e275bec3bbd60998c4b91c2945f94094a4cae2fb6d7f374d5c37286b50aae
+  - url: https://docs.perplexity.ai/
+    shows: 'Model choice and grounding from the vendor''s own docs - ''web-grounded answers with built-in
+      citations in one call'' and ''access third-party models from OpenAI, Anthropic, Google, and xAI
+      with web search tools and presets''.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: a1e88ef85856ce3e1ba8d1592e8e6f5e05c2eb4af2f3ca6cd1c7eee6113ce026
+  - url: https://en.wikipedia.org/wiki/Perplexity_AI
+    shows: 'Paid tier feature depth - Perplexity Pro is ''a more capable paid "enterprise" service ... and
+      additional tools, including the ability to search uploaded documents alongside web content and
+      access to a programmatic application programming interface''. Also lists the selectable frontier
+      models offered in the product.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 8652e097b47fba4e364164aa7cd5791c19ab40a4b98bb0b8cbe05584cab0b367
   - url: https://www.perplexity.ai/
     shows: multi-model selection, web-grounded cited answers, file/multimodal features
     accessed: '2026-06-04'

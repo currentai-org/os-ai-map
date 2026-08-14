@@ -18,15 +18,34 @@ openness:
     source:
       value: closed
       detail: assistant Meta hosts and operates; the Meta AI Terms grant rights of access and use only
-  note: Meta AI the assistant/UI is a closed proprietary consumer product; scored as closed counterpart.
+  note: 'Meta AI the assistant/UI is a closed proprietary consumer product; scored as closed counterpart.
     (Llama-the-model openness is a separate restricted-class score.)
+    Re-checked 2026-08-14. The Meta AI Terms cited below still cannot be fetched - facebook.com answers
+    an automated request with HTTP 400 on every path tried, and so do the meta.com, about.meta.com and
+    whatsapp.com mirrors, so that source keeps its 2026-08-11 read and is not re-dated. The confirmation
+    rests instead on Meta''s own newsroom, which describes Meta AI as an assistant Meta builds and runs,
+    powered by Meta''s own Muse Spark 1.1 and delivered through the Meta AI app and meta.ai. Nothing on
+    that page offers source, a repository or a self-hostable build - a managed service with no
+    self-hostable implementation is the ladder''s closed rung. The demandsage aggregator line that also
+    sat here was dropped - it answers 403 and the terms source already superseded it. Score unchanged
+    at 1.'
   raw: client:proprietary(closed consumer app/embedded surface);backend:hosted-SaaS;note:underlying Llama
     weights are restricted (non-OSI) and model-layer scored elsewhere;the assistant product is closed;source:closed(assistant
     Meta hosts and operates; the Meta AI Terms grant rights of access and use only)
+  last_verified: '2026-08-14'
   sources:
-  - url: https://www.demandsage.com/meta-ai-users/
-    shows: Meta AI described as proprietary consumer assistant embedded across Meta apps + meta.ai
-    accessed: '2026-06-04'
+  - url: https://about.fb.com/news/2026/07/meta-ai-muse-spark-doesnt-just-think-it-acts/
+    shows: 'Meta''s own newsroom on the current Meta AI assistant. It is a service Meta builds and
+      operates - ''Powered by Muse Spark 1.1, Meta AI can now make plans, connect to email and calendar
+      apps, create slides, and handle tasks on your behalf'' - reaching users through Meta''s own
+      surfaces, ''in select markets in the Meta AI app and meta.ai. We''ll bring them to more countries
+      and surfaces, including WhatsApp, in the coming weeks.'' The page offers no source, no repository
+      and no self-hostable build, and names no third-party or open-weight model behind the assistant.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 4bcce1ddd6604f6da83fcd8fc7cba66b792493f1bd147f3e25b3116a9dbf8eba
+    establishes:
+    - source
   - url: https://www.facebook.com/legal/ai-terms
     shows: Meta's own AI Terms of Service, replacing the third-party summary above for this dimension.
       They describe Meta AI as a service Meta provides - 'AIs and Outputs are provided on an ''as is''
@@ -74,13 +93,28 @@ adoption:
 capability:
   score: 3
   basis: feature_matrix
-  value: 'consumer assistant feature set: single-vendor (Llama family) model breadth; multimodal (text
-    + image gen); embedded across messaging surfaces; consumer single-user (no enterprise RAG / multi-provider
-    model hub / org-data grounding); limited plugin/tool breadth vs frontier chat UIs'
+  value: 'consumer assistant feature set: single-vendor first-party models (Muse Spark 1.1); multimodal
+    (text + image gen); agentic task execution with email and calendar connections and slide generation;
+    delivered through the Meta AI app, meta.ai and Meta''s messaging surfaces; consumer single-user (no
+    enterprise RAG / multi-provider model hub / org-data grounding)'
   confidence: medium
-  note: Broad-reach consumer assistant but narrow on the ui_api feature axes, one provider, consumer-only,
-    limited enterprise/RAG/plugin depth. Not a category frontier-definer on capability.
+  note: 'Broad-reach consumer assistant but narrow on the ui_api feature axes, one provider, consumer-only,
+    no enterprise/org-data depth. Not a category frontier-definer on capability.
+    Re-checked 2026-08-14 against Meta''s own newsroom, replacing the demandsage aggregator line, which
+    answers 403 and was in any case a third-party summary. The newsroom post moves two things and
+    narrows a third. The assistant now runs on Muse Spark 1.1 from Meta Superintelligence Labs rather
+    than Llama 4, so the model line is restated. It now connects to email and calendar apps, generates
+    slides and executes multi-step plans, so the old ''limited plugin/tool breadth'' clause is dropped
+    as no longer true. What the page still shows no sign of is enterprise or org-data grounding or any
+    third-party model choice, which is what holds the band down. Score unchanged at 3, but the agentic
+    expansion is worth a re-banding look - FLAGGED, not changed.'
+  last_verified: '2026-08-14'
   sources:
-  - url: https://www.demandsage.com/meta-ai-users/
-    shows: 'Feature scope: embedded multimodal consumer assistant across Meta apps, Llama-powered'
-    accessed: '2026-06-04'
+  - url: https://about.fb.com/news/2026/07/meta-ai-muse-spark-doesnt-just-think-it-acts/
+    shows: 'Feature scope from Meta''s own newsroom - ''Powered by Muse Spark 1.1, Meta AI can now make
+      plans, connect to email and calendar apps, create slides, and handle tasks on your behalf'', with
+      research across the web and real-time steering. No enterprise features, no third-party model
+      options and no open weights appear on the page.'
+    accessed: '2026-08-14'
+    http_status: 200
+    content_sha256: 4bcce1ddd6604f6da83fcd8fc7cba66b792493f1bd147f3e25b3116a9dbf8eba
