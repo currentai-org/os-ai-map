@@ -40,7 +40,7 @@ def test_doc_surface_is_present():
         "docs/README.md",
         "docs/reference/evidence-and-freshness.md",
         "docs/reference/capability.md",
-    ] + [f"docs/workflows/{s if s != 'update-product' else 'update-product'}.md" for s in PRIMARY_SKILLS]:
+    ] + [f"docs/workflows/{s}.md" for s in PRIMARY_SKILLS]:
         assert (REPO / rel).exists(), f"missing expected doc: {rel}"
 
 
@@ -56,8 +56,11 @@ def test_no_dead_path_references():
 
 
 def test_repo_relative_doc_paths_resolve():
-    """Every `docs/.../x.md` path named in the doc surface points at a file that exists."""
-    pat = re.compile(r"docs/(?:reference|operations|workflows|schemas)/[\w./-]+\.(?:md|json)")
+    """Every `docs/.../x.md` path named in the doc surface points at a file that exists.
+
+    Covers top-level docs (docs/README.md, docs/methodology.md) as well as the subtrees.
+    """
+    pat = re.compile(r"docs/[\w./-]+\.(?:md|json)")
     problems = []
     for f in DOC_FILES:
         for m in pat.findall(f.read_text(encoding="utf-8")):
@@ -67,8 +70,12 @@ def test_repo_relative_doc_paths_resolve():
 
 
 def test_markdown_relative_links_resolve():
-    """Markdown links between docs resolve to real files."""
-    link = re.compile(r"\]\(([^)]+?\.md)(?:#[^)]*)?\)")
+    """Markdown links between docs resolve to real files.
+
+    Captures the path up to an optional #anchor, a title (`](x.md "t")`), or the closing
+    paren, so a broken target is not hidden by a link that carries a title.
+    """
+    link = re.compile(r"\]\(\s*([^)\s#]+\.md)")
     problems = []
     for f in DOC_FILES:
         for target in link.findall(f.read_text(encoding="utf-8")):

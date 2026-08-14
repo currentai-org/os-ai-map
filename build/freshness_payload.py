@@ -8,7 +8,8 @@ so the page can label the weaker claim rather than passing it off as the stronge
             claims. Commits that only changed how a score is stored are skipped, so a
             shape migration cannot republish a product as freshly reviewed.
 
-A date is NEVER derived from sources[].accessed (evidence-and-freshness.md:30).
+A date is NEVER derived from sources[].accessed (evidence-and-freshness.md,
+"Why freshness is not max(sources[].accessed)").
 
 There is nothing to fix in this module for that last point: it takes the commit tier
 from `check_freshness.commit_dates`, which is where the skip lives, so the report and
