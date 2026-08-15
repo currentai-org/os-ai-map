@@ -10,7 +10,10 @@ procedure. This test is that enforcement, and it runs in `validate.yml` on every
 import re
 from pathlib import Path
 
+import yaml
+
 REPO = Path(__file__).resolve().parent.parent
+WORKFLOWS = REPO / "docs" / "workflows"
 
 # The hand-maintained documentation surface. Generated files (notebook_data.json,
 # notebooks/*.py) and the gitignored session workspace are not part of it.
@@ -120,3 +123,76 @@ def test_readme_router_lists_every_primary_skill():
     readme = (REPO / "docs" / "README.md").read_text(encoding="utf-8")
     for s in PRIMARY_SKILLS:
         assert f"workflows/{s}.md" in readme, f"docs/README.md router omits {s}"
+
+
+# ── The integrity contract for workflows and the skill registry ──────────────────────────
+
+def _registry() -> dict:
+    return yaml.safe_load((REPO / "skills" / "registry.yaml").read_text())
+
+
+def _validation_section(workflow_md: Path) -> str:
+    """The text of the workflow's `## Validation` section, or '' if absent."""
+    m = re.search(r"^## Validation\s*$(.*?)(?=^## |\Z)", workflow_md.read_text(), re.M | re.S)
+    return m.group(1) if m else ""
+
+
+def test_every_workflow_has_a_validation_section():
+    missing = [
+        s for s in PRIMARY_SKILLS
+        if not re.search(r"^## Validation\s*$", (WORKFLOWS / f"{s}.md").read_text(), re.M)
+    ]
+    assert not missing, f"workflow docs missing a `## Validation` section: {missing}"
+
+
+def test_validation_sections_reference_real_modules():
+    """Any `build.<module>` a Validation section tells a contributor to run must exist."""
+    problems = []
+    for s in PRIMARY_SKILLS:
+        section = _validation_section(WORKFLOWS / f"{s}.md")
+        for mod in re.findall(r"build\.([a-z_]+)", section):
+            if not (REPO / "build" / f"{mod}.py").exists():
+                problems.append(f"{s}.md Validation -> build.{mod} (no build/{mod}.py)")
+    assert not problems, "Validation sections cite nonexistent modules:\n" + "\n".join(problems)
+
+
+def test_registry_classifies_every_skill_exactly_once():
+    reg = _registry()
+    classified = (
+        [e["skill"] for e in reg.get("primary", [])]
+        + list(reg.get("advanced", []))
+        + list(reg.get("internal", []))
+    )
+    on_disk = {p.name for p in (REPO / "skills").iterdir() if (p / "SKILL.md").exists()}
+    dupes = {s for s in classified if classified.count(s) > 1}
+    assert not dupes, f"skills classified more than once in registry.yaml: {sorted(dupes)}"
+    assert set(classified) == on_disk, (
+        f"registry.yaml out of step with skills/: "
+        f"only-in-registry={sorted(set(classified) - on_disk)}, "
+        f"only-on-disk={sorted(on_disk - set(classified))}"
+    )
+
+
+def test_primary_skills_map_one_to_one_to_workflows():
+    """No two primary skills claim the same task, and each names a real, existing workflow."""
+    primary = _registry().get("primary", [])
+    assert {e["skill"] for e in primary} == set(PRIMARY_SKILLS), (
+        "registry.yaml primary set disagrees with PRIMARY_SKILLS"
+    )
+    workflows = [e["workflow"] for e in primary]
+    dupes = {w for w in workflows if workflows.count(w) > 1}
+    assert not dupes, f"two primary skills claim the same workflow: {sorted(dupes)}"
+    missing = [w for w in workflows if not (REPO / w).exists()]
+    assert not missing, f"registry.yaml points at nonexistent workflows: {missing}"
+
+
+def test_every_workflow_file_is_registered():
+    """Discovery-based: a new docs/workflows/*.md must be a registered primary workflow, so an
+    unregistered sixth workflow fails CI rather than sitting orphaned (the other tests iterate the
+    known five, which would not notice a new file)."""
+    on_disk = {p.name for p in WORKFLOWS.glob("*.md")}
+    registered = {Path(e["workflow"]).name for e in _registry().get("primary", [])}
+    orphan = on_disk - registered
+    missing_file = registered - on_disk
+    assert not orphan, f"workflow docs not registered in skills/registry.yaml: {sorted(orphan)}"
+    assert not missing_file, f"registry names workflows with no file: {sorted(missing_file)}"

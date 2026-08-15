@@ -42,10 +42,14 @@ When in doubt about which door, start there.
 | [`reference/queries.md`](reference/queries.md) | Query conventions for the warehouse |
 | [`reference/notebook-design.md`](reference/notebook-design.md) | The published map's visual style |
 
-## Advanced / internal skills
+## Skills off the primary path
 
-Off the primary path, for maintainers and the automation loop: `build-rubric` (derive a
-category's scoring ladder), `add-data-source` (register a fetcher), `refresh-all-categories`
-(drive the whole-corpus sweep), `pyoso-analyst` (read-only warehouse analysis).
+Every skill is classified in `skills/registry.yaml` (validated in CI). Beyond the five primary
+doors above:
+
+- **Advanced** — deep editorial skills for maintainers: `build-rubric` (derive a category's
+  scoring ladder) and `refresh-all-categories` (drive the whole-corpus sweep).
+- **Internal** — infrastructure and analysis, not map-editing: `add-data-source` (register a
+  fetcher) and `pyoso-analyst` (read-only warehouse analysis).
 
 For the repo map, build pipeline, and data model, see `AGENTS.md`.
