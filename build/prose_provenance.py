@@ -97,19 +97,34 @@ def scores() -> dict[str, dict]:
 
 
 def classify(comments: str) -> tuple[str, str | None, str | None]:
-    """(state, date, trailer) for one product's comments."""
+    """(state, date, trailer) for one product's comments.
+
+    **The trailer is tested before the form.** An earlier cut checked `CANONICAL` first and
+    returned, so `Verified 2026-08-13 via primary sources.` classified as `canonical` — the
+    correct shape wrapped around the exact thing this classifier exists to find, which is
+    this module's own subject turned on itself.
+
+    It was latent on the corpus (zero canonical-form lines named a method) and not latent in
+    the migration: the first cut of the class-A rewording removed `live` from four hardware
+    records reading `via substitute sources`, promoting them into canonical form while they
+    still named a method. `generic` now wins over `canonical` whenever the trailer is a
+    method, however the line is worded.
+    """
     text = " ".join(str(comments or "").split())
-    if CANONICAL.search(text):
-        return "canonical", CANONICAL.search(text).group(1), None
     dated = ANY_DATED.search(text)
     if not dated:
         return "missing", None, None
+
     trailer = ""
     match = TRAILER.search(text)
     if match:
         trailer = match.group(1).strip()
-    state = "generic" if METHOD_WORDS.match(trailer) else "named_noncanonical"
-    return state, dated.group(1), trailer
+
+    if METHOD_WORDS.match(trailer):
+        return "generic", dated.group(1), trailer
+    if CANONICAL.search(text):
+        return "canonical", CANONICAL.search(text).group(1), trailer
+    return "named_noncanonical", dated.group(1), trailer
 
 
 def candidates(slug: str, date: str, score: dict) -> list[dict]:

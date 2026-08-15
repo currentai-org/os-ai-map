@@ -104,3 +104,41 @@ def test_refusal_never_falls_back_to_writing_something_else():
     product untouched and goes to the re-read queue."""
     with pytest.raises(Refused):
         check(_packet(source_url="https://example.com/invented"))
+
+
+@pytest.mark.parametrize(
+    "comments",
+    [
+        # The canonical FORM wrapped around a method. An earlier cut checked the form first
+        # and returned `canonical`, which is this module's own subject turned on itself: a
+        # check grading on shape while the thing it exists to find sits in the payload.
+        "Verified 2026-08-13 via primary sources.",
+        "Verified 2026-08-13 via research.",
+        "Verified 2026-08-13 via web search.",
+        # The live case: removing `live` from this would have promoted it into canonical
+        # form. Four hardware records were rewritten that way before this was caught.
+        "Verified 2026-08-13 via substitute sources - hailo.ai answers 403 to every request.",
+    ],
+)
+def test_canonical_form_naming_a_method_is_still_generic(comments):
+    assert classify(comments)[0] == "generic"
+
+
+def test_no_canonical_line_in_the_corpus_names_a_method():
+    """The invariant the classifier now enforces, asserted against the real corpus.
+
+    Zero today. It stays zero only because `generic` outranks `canonical`; without that a
+    rewording pass can manufacture a method-naming line that looks settled.
+    """
+    import glob
+    import os
+
+    offenders = []
+    for path in sorted(glob.glob(str(ROOT / "sources" / "products" / "*.yaml"))):
+        state, _, trailer = classify((yaml.safe_load(open(path)) or {}).get("comments"))
+        if state == "canonical" and trailer:
+            from build.prose_provenance import METHOD_WORDS
+
+            if METHOD_WORDS.match(trailer):
+                offenders.append(os.path.basename(path)[:-5])
+    assert not offenders, f"canonical lines naming a method: {offenders}"
