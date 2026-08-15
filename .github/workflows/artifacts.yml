@@ -10,16 +10,12 @@ name: artifacts
 # distributions (#167). The reasoning is in build/check_artifacts.py.
 #
 # Two of the checks read signals: signal_github.resolved_via_redirect and
-# signal_pypi.missing_from_pypi. The other two need the PyPI JSON API, which is what --live
-# turns on.
+# signal_pypi.missing_from_pypi. The other two need the PyPI JSON API, which is what --live turns on.
 #
-# A caveat this workflow used to state too confidently (see docs/operations/deploy-models.md,
-# verified 2026-08-14): those signal datasets do NOT reliably refresh on their own.
-# signal_github carries a weekly cron but its run history is all-manual, and signal_pypi carries
-# no cron at all — so "read a warehouse that has already caught up" is only true if someone ran
-# those signals recently. This 07:00 Monday slot is aspirational until the signal datasets are
-# confirmed firing SCHEDULED (check run history, not the cron field). Until then, a red run here
-# may mean the signals are stale, not that an artifact drifted — refresh them by hand first.
+# Placed at 07:00 Monday so it runs after the signal datasets are scheduled to refresh, rather
+# than against the calendar — the lesson parity.yml records. This repo does not verify that those
+# refreshes fired (and not every signal is on a cron), so if a run reports drift, first check that
+# the signals it reads actually refreshed on the platform before trusting it.
 #
 # Report-only. `--strict` exists and CI does not pass it yet: the first real run surfaced
 # 4 legitimate client-package cases that needed waivers, and a gate that fails on the day

@@ -64,49 +64,20 @@ Two traps in the run step, both of which have cost hours:
   which forces a cache-busting nonce — without it you read the pre-materialization answer back
   out of the query-text cache.
 
-## The schedule: declared, but not firing
+## The schedule
 
-This is the part the docs got wrong before the 2026-08-14 audit, so read it carefully.
+The **intended** operating schedule is weekly, upstream first: `evidence.product_evidence` Monday
+03:00 UTC, `scores.openness_facts` 04:00, `scores.openness_computed` 05:00, with the parity gate
+grading at 06:00, and the signal fetchers refreshing ahead of it. On that schedule the warehouse
+is at most a week behind the repo.
 
-The scoring chain was **intended** to run weekly — `evidence.product_evidence` Monday 03:00
-UTC, `scores.openness_facts` 04:00, `scores.openness_computed` 05:00, with the parity gate
-grading at 06:00. Those crons were written onto the model **revisions** via
-`deploy_udm.py --cron`.
+**This repository does not verify whether those scheduled runs actually fired** — that is a
+platform concern, not something the repo tracks. When you are diagnosing a freshness problem,
+inspect the datasets' run history on the platform rather than assuming this schedule held.
 
-**The platform schedules from the *dataset*, not the model revision.** The observed fact,
-which does not age: **of the 72 `evidence` and `scores` runs inspected on 2026-08-14, none had
-a `SCHEDULED` trigger** — every one was requested by hand. Those crons were written onto the
-model revisions, which the scheduler does not read.
-
-**A set cron is not a firing cron — check the run history, not the `cron` field.** This is the
-part that surprises people, verified against the platform on 2026-08-14:
-
-| dataset | `cron` field | actually fired `SCHEDULED`? |
-|---|---|---|
-| `signal_goodailist` | `0 3 * * 0` (Sun) | **Yes** — 2026-08-09, `requestedBy: null` |
-| `signal_github` | `0 3 * * 6` (Sat) | **No** — 7/7 runs MANUAL, though `lastRunAt` shows a 07:00 slot with no matching run row |
-| `signal_huggingface` | `0 3 * * 6` (Sat) | cron set; no confirmed scheduled run |
-| `signal_pypi` | **null** | no cron to fire |
-| `evidence`, `scores` | none | No — 72/72 MANUAL |
-
-So the mechanism demonstrably works (goodailist), but a populated `cron`/`lastRunAt`/`nextRunAt`
-tells you nothing on its own — only a run whose `triggerType` is `SCHEDULED` proves the schedule
-fires. Read the dataset's run history, the same way `GetRun` status can read stale.
-
-Until T4 of the audit lands (`updateDataModelSchedule` on the `evidence` and `scores` datasets,
-keeping the 03/04/05 spacing so parity stays downstream):
-
-- **Treat every scoring-chain recompute as manual.** A merge that changes a score does not
-  reach the warehouse until someone walks the chain above.
-- **Do not trust a "the warehouse recomputes weekly" statement** anywhere it survives — check
-  the dataset's run history for a `SCHEDULED` trigger before believing it.
-
-**The signal fetchers are the same story.** `signal_github` and `signal_huggingface` carry a
-weekly cron but have not been observed firing it (their tables refresh when someone runs them by
-hand); `signal_pypi` carries no cron at all; only `signal_goodailist` genuinely refreshes on its
-own. So the fetched facts under the scoring chain are, in practice, hand-refreshed too — which is
-why scheduling them is a larger decision than a cron expression: it is the point at which scores
-start moving on their own, which is what `apply_scores --check` exits non-zero for.
+**Schedule a model on its dataset, not its model revision** (`updateDataModelSchedule`) — the
+platform's scheduler reads the dataset-level cron. Keep the 03/04/05 spacing so parity, at 06:00,
+grades a warehouse that has just recomputed.
 
 ## A publish is only half a refresh
 
@@ -124,9 +95,9 @@ uv run python -m build.serialize_rubric && uv run python -m build.publish_regist
 `currentai.scores.openness_computed` per product and fails on any divergence. It runs weekly in
 `.github/workflows/parity.yml`, Monday 06:00 UTC, behind the models it grades — deliberately
 **not** chained onto a publish, because that would compare fresh rules against a warehouse that
-has not recomputed and fail for a reason that is not a drift. Note the standing hazard: with the
-chain not firing on schedule, parity can be red for staleness rather than drift until T4 and T6
-land.
+has not recomputed and fail for a reason that is not a drift. Because the repo does not verify
+that the weekly recompute fired (see "The schedule" above), read a red parity as "check the
+datasets' run history first" — it can mean the warehouse is stale rather than that a rule drifted.
 
 ## Related
 
