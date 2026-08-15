@@ -69,8 +69,23 @@ def load() -> tuple[dict, dict, dict, dict]:
     return routing, products, categories, category_of
 
 
+def hand_authored(route: dict) -> bool:
+    """Does this route declare that no machine source produces it?
+
+    `source: null` is a DECLARATION, not an omission. Two adoption routes carry it:
+    `reported_traction`, the instrument defined by having no count behind it, and
+    `active_users`, a vendor-disclosed figure no endpoint serves. Both set
+    `hand_authored: true` beside the null, which is what tells a reader the absence was
+    chosen. Reading them as "unknown source" made this checker exit 1 on every run, so
+    the two routes the table is most careful about were the two it called broken.
+    """
+    return route.get("source") is None and route.get("hand_authored") is True
+
+
 def route_usable(route: dict, sources: dict) -> tuple[bool, str]:
     """Is this route executable at all, before considering any product?"""
+    if hand_authored(route):
+        return False, "hand-authored"
     source = sources.get(route.get("source")) or {}
     if route.get("blocked_by") == "bridge" or source.get("bridged") is False:
         return False, "unbridged"
@@ -79,11 +94,11 @@ def route_usable(route: dict, sources: dict) -> tuple[bool, str]:
     return True, ""
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--category", help="limit to one category slug")
     parser.add_argument("--unrouted", action="store_true", help="list products with no route")
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     routing, products, _, category_of = load()
     sources = routing.get("sources") or {}
@@ -91,9 +106,13 @@ def main() -> int:
 
     # Structural check first: a route pointing at nothing is a bug in the table.
     problems: list[str] = []
+    hand_authored_routes: dict[str, list[str]] = defaultdict(list)
     for dim, spec in dimensions.items():
         for route in spec.get("routes") or []:
             name = route.get("source")
+            if hand_authored(route):
+                hand_authored_routes[dim].append(route.get("signal_type") or "unnamed")
+                continue
             if name not in sources:
                 problems.append(f"{dim}: route names unknown source {name!r}")
                 continue
@@ -124,9 +143,12 @@ def main() -> int:
                 only = route.get("applies_to_categories")
                 if only and cat not in only:
                     continue
-                usable, _ = route_usable(route, sources)
+                usable, why = route_usable(route, sources)
                 if not usable:
-                    was_blocked = True
+                    # A hand-authored route is not "blocked": nothing is waiting on a
+                    # bridge, and counting it as blocked would overstate how much of the
+                    # map a bridge could still buy.
+                    was_blocked = was_blocked or why == "unbridged"
                     continue
                 if SOURCE_ARTIFACT.get(route["source"]) in arts:
                     hit = True
@@ -145,6 +167,14 @@ def main() -> int:
         c = covered[dim]
         b = blocked[dim]
         print(f"{dim:<14}{c:>8}{'':>3}{b:>19}{'':>3}{total - c:>10}")
+
+    if hand_authored_routes:
+        print()
+        for dim, kinds in sorted(hand_authored_routes.items()):
+            print(
+                f"{dim}: {len(kinds)} hand-authored route(s) by declaration "
+                f"({', '.join(sorted(kinds))}) — no machine source, so no coverage to count"
+            )
 
     research_only = routing.get("research_only") or {}
     if research_only:

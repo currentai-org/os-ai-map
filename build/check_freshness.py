@@ -295,13 +295,38 @@ def commit_dates(root: Path | None = None) -> dict[str, date]:
     return {slug: when for slug, when in dates.items() if when is not None}
 
 
+def held_axes(root: Path | None = None) -> dict[tuple[str, str], str]:
+    """(product, axis) -> the date it was put on hold, from `sources/verification_queue.yaml`.
+
+    A held axis is one a re-read opened, worked, and honestly could not settle, parked with
+    the condition that would close it. It carries no `last_verified` by design, and
+    `tests/test_verification_queue_consistency.py` enforces that it never carries one.
+
+    Without this, the report could only see the absence, so it dated the axis from its last
+    commit and filed it under "nobody has revisited this" — the one thing that is untrue of
+    a product somebody worked and queued. Measured 2026-08-15, every one of the 8 undated
+    axes in the corpus is held, so this was the whole of that line's population.
+    """
+    path = (root or ROOT) / "sources" / "verification_queue.yaml"
+    if not path.exists():
+        return {}
+    queue = yaml.safe_load(path.read_text()) or {}
+    return {
+        (slug, axis): str((spec or {}).get("since") or "?")
+        for slug, axes in (queue.get("held") or {}).items()
+        for axis, spec in (axes or {}).items()
+    }
+
+
 def collect(
     root: Path | None = None,
-) -> tuple[dict[str, list[tuple[str, str, date, bool]]], list[str]]:
-    """Return (category -> [(product, axis, when, is_verified)], axes with no date).
+) -> tuple[dict[str, list[tuple[str, str, date, bool, str | None]]], list[str]]:
+    """Return (category -> [(product, axis, when, is_verified, held_since)], axes with no date).
 
     `is_verified` separates a real `last_verified` from a commit-date fallback, so
-    the report can never present the weaker signal as the stronger one.
+    the report can never present the weaker signal as the stronger one. `held_since` is
+    non-None where the axis is parked in the verification queue, which is a third state:
+    not confirmed, but not unexamined either.
 
     `root` defaults to this module's own repository, which is what the command line wants.
     The tests pass a fixture checkout, so the gate's behavior can be asserted against dates
@@ -309,7 +334,8 @@ def collect(
     """
     root = root or ROOT
     committed = commit_dates(root)
-    by_category: dict[str, list[tuple[str, str, date, bool]]] = defaultdict(list)
+    held = held_axes(root)
+    by_category: dict[str, list[tuple[str, str, date, bool, str | None]]] = defaultdict(list)
     undated: list[str] = []
 
     for path in sorted((root / "sources" / "categories").glob("*.yaml")):
@@ -326,12 +352,13 @@ def collect(
 
                 verified = parse_date(block.get("last_verified"))
                 if verified is not None:
-                    by_category[category["name"]].append((product, axis, verified, True))
+                    by_category[category["name"]].append((product, axis, verified, True, None))
                     continue
 
                 when = committed.get(product)
                 if when is not None:
-                    by_category[category["name"]].append((product, axis, when, False))
+                    since = held.get((product, axis))
+                    by_category[category["name"]].append((product, axis, when, False, since))
                 else:
                     # Only reachable for a file git has never seen, so in practice an
                     # uncommitted local addition rather than a data problem.
@@ -366,32 +393,46 @@ def main(argv: list[str] | None = None, root: Path | None = None) -> int:
     stalest: list[tuple[int, str, str]] = []
     for name in sorted(by_category):
         entries = by_category[name]
-        ages = sorted((today - when).days for _, _, when, _ in entries)
+        ages = sorted((today - when).days for _, _, when, _, _ in entries)
         median = ages[len(ages) // 2]
-        product, axis, _, _ = max(entries, key=lambda e: (today - e[2]).days)
+        product, axis, _, _, _ = max(entries, key=lambda e: (today - e[2]).days)
         print(f"{name:<30}{len(entries):>6}{median:>8}d{ages[-1]:>8}d  {product}.{axis}")
         stalest.append((ages[-1], name, f"{product}.{axis}"))
 
-    all_ages = sorted((today - when).days for _, _, when, _ in rows)
+    all_ages = sorted((today - when).days for _, _, when, _, _ in rows)
     print(
         f"\n{len(rows)} axes | median {all_ages[len(all_ages) // 2]}d "
         f"| oldest {all_ages[-1]}d | newest {all_ages[0]}d"
     )
 
-    verified_n = sum(1 for _, _, _, is_verified in rows if is_verified)
+    verified_n = sum(1 for _, _, _, is_verified, _ in rows if is_verified)
+    held_rows = [(p, a, since) for p, a, _, is_verified, since in rows if not is_verified and since]
+    fallback_n = len(rows) - verified_n - len(held_rows)
     if verified_n == len(rows):
         print(
             f"\nall {len(rows)} axes carry a real last_verified, so no age above rests on "
             "the commit-date fallback."
         )
     else:
-        print(
-            f"\n{verified_n} of {len(rows)} axes carry a real last_verified. "
-            f"The other {len(rows) - verified_n} fall back to the score file's last commit "
-            "date, which dates the last time somebody committed the file and left the score "
-            "standing. For a file untouched since it was added that dates the import, not a "
-            "review, so read those ages as 'nobody has revisited this'."
-        )
+        print(f"\n{verified_n} of {len(rows)} axes carry a real last_verified.")
+        if fallback_n:
+            print(
+                f"{fallback_n} fall back to the score file's last commit date, which dates "
+                "the last time somebody committed the file and left the score standing. For a "
+                "file untouched since it was added that dates the import, not a review, so "
+                "read those ages as 'nobody has revisited this'."
+            )
+        if held_rows:
+            # These are the opposite of unexamined: somebody worked the axis, could not
+            # settle it, and parked it with the condition that would close it. Reporting
+            # them beside the never-touched ones was the misreading this separates out.
+            print(
+                f"{len(held_rows)} are HELD in sources/verification_queue.yaml — worked, "
+                "unsettled, and deliberately carrying no date. Their age is the commit "
+                "fallback and says nothing about the hold:"
+            )
+            for product, axis, since in sorted(held_rows):
+                print(f"  · {f'{product}.{axis}':<52} held since {since}")
     if undated:
         print(
             f"{len(undated)} axes have no date at all: {', '.join(undated[:6])}"
