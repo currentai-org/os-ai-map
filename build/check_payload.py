@@ -28,8 +28,15 @@ def _is_date(value: object) -> bool:
     A `\d{4}-\d{2}-\d{2}` regex accepts 2026-99-99, which is exactly the class of thing a
     gate claiming to validate a date must not wave through.
     """
+    text = str(value)
+    # Both halves are needed. Shape alone was the original defect — it accepted 2026-99-99.
+    # Parsing alone is also too loose: `date.fromisoformat` takes the compact `20260815` from
+    # Python 3.11, so a second spelling could enter a corpus whose convention, and whose
+    # schema `format: date`, is hyphenated throughout.
+    if len(text) != 10 or text[4] != "-" or text[7] != "-":
+        return False
     try:
-        date.fromisoformat(str(value))
+        date.fromisoformat(text)
     except (TypeError, ValueError):
         return False
     return True

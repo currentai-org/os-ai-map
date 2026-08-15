@@ -38,28 +38,19 @@ and tested, so it stays a decision instead of becoming drift.
     - build/check_payload.py
     - build/validate.py          # inline, in the schema gate itself
     - build/repair_placeholder_shows.py  # inline
+    - build/render.py            # inline
   risk: >-
     A fourth axis narrows ten denominators at once, and a walk that quietly skips an axis
     passes green. None had drifted — no axis has ever been added — so this is the one entry
     fixed before it failed rather than after.
+
+    render.py was briefly EXEMPTED here because it was the only build module invoked as a
+    script, so it could not import from the package. That exemption was unsound: a fourth
+    axis would have left the rendered methodology silently omitting its sources while every
+    other test passed, which is the very defect this entry is about. The invocation moved to
+    `-m` instead — two workflows and three docs — and the exemption is gone.
   disposition: fixed
   regression_test: test_no_module_holds_a_private_copy_of_the_axes
-
-- construct: vocabulary — the three scored axes, in the one script-invoked module
-  canonical_owner: docs/schemas/score.schema.json (via build/vocabulary.axes)
-  duplicates:
-    - build/render.py            # inline, EXEMPT
-  risk: >-
-    render.py is the only build module run as `uv run python build/render.py` rather than
-    with `-m` — in validate.yml, regenerate.yml and docs/operations/publish-map.md — which
-    puts build/ on sys.path instead of the repo root, so it cannot import from the package.
-    Deriving it here broke CI with `ModuleNotFoundError: No module named 'build'`, which is
-    how the exemption was found. Switching the invocation to `-m` is the real fix and is its
-    own change, because it touches the publish runbook.
-  disposition: intentionally_distinct
-  regression_test: >-
-    test_the_only_exemption_is_the_script_invoked_module — asserts render.py is still
-    script-invoked, so the exemption expires automatically if that changes.
 
 - construct: vocabulary — product artifact kinds
   canonical_owner: sources/signal_routing.yaml `artifact_key` (via build/vocabulary.artifact_kinds)
@@ -67,11 +58,15 @@ and tested, so it stays a decision instead of becoming drift.
     - build/propose_artifacts.py  # VERIFIABLE_KINDS, already missing arxiv
   risk: >-
     Already divergent. The same construct as the two check_routing defects, in a third module.
-    Deriving it changes no behavior: `arxiv` is excluded explicitly, because this constant
-    asks "does the product carry an artifact a proposal would target" and a paper id is not a
-    distribution artifact. Whether it should count is a curation question, raised separately.
+
+    The first fix derived it FROM the routing table, which was wrong in the other direction:
+    a newly declared `artifact_key` would have become an accepted `--kind` with no URL
+    pattern, no live check and no renderer behind it. Routed and proposable are different
+    questions, and the two sets being equal today is what made the coincidence look like a
+    definition. Support is now defined by the three handlers a kind needs, and asserted to be
+    an intentional subset of routed kinds with `arxiv` the named gap.
   disposition: fixed
-  regression_test: test_verifiable_kinds_are_derived_with_an_explicit_exclusion
+  regression_test: test_proposer_support_is_defined_by_handlers_not_by_routing
 
 - construct: vocabulary — capability `relation`
   canonical_owner: docs/schemas/score.schema.json
@@ -105,7 +100,13 @@ and tested, so it stays a decision instead of becoming drift.
     on that field is validating a date. The same defect appeared in two modules three days
     apart, the second written after the first was fixed.
   disposition: fixed
-  regression_test: test_dates_are_parsed_not_shape_matched
+  regression_test: >-
+    test_check_payload_rejects_impossible_dates and
+    test_apply_provenance_rejects_impossible_dates — behavioral, calling the validator rather
+    than grepping for `fromisoformat`. The check now requires BOTH the hyphenated shape and a
+    successful parse: shape alone accepted 2026-99-99, and parse alone accepts the compact
+    `20260815` from Python 3.11, which would put a second date spelling into a corpus whose
+    schema declares `format: date`.
 
 - construct: openness class → bucket map
   canonical_owner: docs/openness-class-map.json

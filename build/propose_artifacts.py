@@ -60,14 +60,25 @@ from build.vocabulary import artifact_kinds
 ROOT = Path(__file__).resolve().parents[1]
 USER_AGENT = "os-ai-map-artifact-proposer/1.0"
 
-# Derived from the routing table rather than restated. `arxiv` IS declared there (via
-# `semanticscholar`, whose `artifact_key` is `arxiv`) and is deliberately excluded here: this
-# constant answers "does the product already carry an artifact a proposal would target", and a
-# paper id is not a distribution artifact. Whether it should count is a curation question
-# rather than a sweep one, raised as its own issue. Writing the exclusion down keeps it a
-# decision instead of the silent drift it previously looked like.
+# What this proposer can actually handle, defined by the three behaviors a kind needs to be
+# proposed at all: a URL pattern to mine it out of prose, a live existence check, and a public
+# URL to render. Derived from those handlers rather than from the routing table.
+#
+# The distinction matters and the first cut got it wrong. Deriving from
+# `signal_routing.yaml` made a NEW `artifact_key` an accepted `--kind` the moment somebody
+# declared a source — with no pattern, no verifier and no renderer behind it, so the proposer
+# would accept a flag it cannot service. The two sets are equal today, which is exactly what
+# made the coincidence look like a definition.
+def _supported_kinds() -> tuple[str, ...]:
+    patterned = {kind for kind, _ in PATTERNS}
+    renderable = set(_PUBLIC_URL)
+    return tuple(sorted(patterned & renderable & _VERIFIABLE))
+
+
+# `arxiv` is routed (via `semanticscholar`) and deliberately unsupported here: this tool
+# proposes DISTRIBUTION artifacts, and a paper id is not one. Kept as a named exclusion so the
+# subset check below stays meaningful rather than vacuous.
 NOT_A_DISTRIBUTION_ARTIFACT = frozenset({"arxiv"})
-VERIFIABLE_KINDS = tuple(sorted(artifact_kinds() - NOT_A_DISTRIBUTION_ARTIFACT))
 
 # Hugging Face path segments that are not a model id. Without these, a docs or blog
 # link becomes a confident-looking candidate.
@@ -243,6 +254,12 @@ def check_token(gh_token: str | None) -> str | None:
     return None
 
 
+# The kinds `verify` implements a live existence check for. Named rather than inferred, so a
+# new branch there has to be declared here to count as supported.
+_VERIFIABLE = frozenset({"github", "huggingface_model", "huggingface_dataset",
+                         "pypi", "npm", "crates"})
+
+
 def verify(kind: str, ident: str, gh_token: str | None, hf_token: str | None) -> int:
     """Live existence check. Returns the HTTP status, 0 on transport failure."""
     if kind == "github":
@@ -260,15 +277,18 @@ def verify(kind: str, ident: str, gh_token: str | None, hf_token: str | None) ->
     return 0
 
 
+_PUBLIC_URL = {
+    "github": "https://github.com/{ident}",
+    "huggingface_model": "https://huggingface.co/{ident}",
+    "huggingface_dataset": "https://huggingface.co/datasets/{ident}",
+    "pypi": "https://pypi.org/project/{ident}",
+    "npm": "https://www.npmjs.com/package/{ident}",
+    "crates": "https://crates.io/crates/{ident}",
+}
+
+
 def public_url(kind: str, ident: str) -> str:
-    return {
-        "github": f"https://github.com/{ident}",
-        "huggingface_model": f"https://huggingface.co/{ident}",
-        "huggingface_dataset": f"https://huggingface.co/datasets/{ident}",
-        "pypi": f"https://pypi.org/project/{ident}",
-        "npm": f"https://www.npmjs.com/package/{ident}",
-        "crates": f"https://crates.io/crates/{ident}",
-    }[kind]
+    return _PUBLIC_URL[kind].format(ident=ident)
 
 
 def load_env() -> tuple[str | None, str | None]:
@@ -288,6 +308,9 @@ def load_env() -> tuple[str | None, str | None]:
             if key in ("HF_TOKEN", "HUGGING_FACE_TOKEN") and not hf:
                 hf = value
     return gh, hf
+
+
+VERIFIABLE_KINDS = _supported_kinds()
 
 
 def main() -> int:

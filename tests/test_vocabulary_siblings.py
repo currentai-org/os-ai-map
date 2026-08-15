@@ -10,14 +10,17 @@ each reported success over a narrower question than the one it claimed to answer
     passed as a document name;
   * `check_payload` and `apply_provenance` each validated a date by shape.
 
-These tests are the ratchet. They do not stop a module defining a constant; they stop one
-defining a constant that silently disagrees with the source of truth.
+**These tests inspect the AST and call the code, not the source text.** The first cut matched
+strings — a double-quoted tuple in one exact order, a bare `NAME =` assignment, the substring
+`fromisoformat` anywhere in a file — which reproduced the governing defect one level up: a
+check reporting a semantic guarantee while testing a textual convention. A single-quoted list,
+an annotated assignment, or a reordering would all have passed.
 """
 
 from __future__ import annotations
 
+import ast
 import json
-import re
 from pathlib import Path
 
 import pytest
@@ -25,7 +28,41 @@ import yaml
 
 from build.vocabulary import ROOT, artifact_kinds, axes
 
-AXES_LITERAL = re.compile(r'\(\s*"openness"\s*,\s*"adoption"\s*,\s*"capability"\s*\)')
+BUILD = ROOT / "build"
+
+
+def _module_sources() -> dict[str, str]:
+    return {p.name: p.read_text() for p in sorted(BUILD.glob("*.py"))}
+
+
+def _string_collections(tree: ast.AST) -> list[tuple[int, frozenset[str]]]:
+    """Every literal tuple/list/set of plain strings, as (lineno, frozenset).
+
+    Structure rather than spelling: quote style, ordering and container type all normalize
+    away, which is what makes this a check on the vocabulary rather than on its formatting.
+    """
+    found = []
+    for node in ast.walk(tree):
+        if not isinstance(node, (ast.Tuple, ast.List, ast.Set)):
+            continue
+        values = [
+            e.value for e in node.elts
+            if isinstance(e, ast.Constant) and isinstance(e.value, str)
+        ]
+        if values and len(values) == len(node.elts):
+            found.append((getattr(node, "lineno", 0), frozenset(values)))
+    return found
+
+
+def _assigned_names(tree: ast.AST) -> set[str]:
+    """Module-level names bound by assignment, including annotated ones."""
+    names: set[str] = set()
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Assign):
+            names.update(t.id for t in node.targets if isinstance(t, ast.Name))
+        elif isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name):
+            names.add(node.target.id)
+    return names
 
 
 def test_axes_come_from_the_schema():
@@ -36,40 +73,43 @@ def test_axes_come_from_the_schema():
 
 
 def test_no_module_holds_a_private_copy_of_the_axes():
-    """Seven modules did. A fourth axis would have silently narrowed seven denominators at
-    once, and a walk that quietly skips an axis passes green."""
-    # render.py is the one build module invoked as a SCRIPT rather than with `-m`, so it
-    # cannot import from the package. The exemption is asserted below rather than merely
-    # allowed, so adding a second one is a visible decision.
-    exempt = {"vocabulary.py", "render.py"}
+    """Ten modules did, seven as constants and three inline — including `validate.py`.
+
+    Matched on the SET of strings, so a reordered tuple, a list, a set, or single quotes are
+    all caught. The earlier regex required one exact spelling and would have missed every one
+    of those.
+    """
+    wanted = frozenset(axes())
     offenders = []
-    for path in sorted((ROOT / "build").glob("*.py")):
-        if path.name in exempt:
+    for name, source in _module_sources().items():
+        if name == "vocabulary.py":
             continue
-        if AXES_LITERAL.search(path.read_text()):
-            offenders.append(path.name)
+        for lineno, values in _string_collections(ast.parse(source)):
+            if values == wanted:
+                offenders.append(f"{name}:{lineno}")
     assert not offenders, (
-        "these define the axis triple as a literal instead of importing "
+        "these state the axis vocabulary literally instead of calling "
         f"build.vocabulary.axes(): {offenders}"
     )
 
 
-def test_the_only_exemption_is_the_script_invoked_module():
-    """If render.py ever moves to `-m`, this fails and the exemption comes out."""
-    workflows = " ".join(
-        p.read_text() for p in (ROOT / ".github" / "workflows").glob("*.yml")
+def test_render_is_importable_so_it_needs_no_exemption():
+    """render.py was exempted while it was script-invoked, and the exemption was unsound: a
+    fourth axis would have left the rendered methodology silently omitting its sources while
+    every other test passed. The invocation moved to `-m` instead of the exemption staying."""
+    workflows = " ".join(p.read_text() for p in (ROOT / ".github" / "workflows").glob("*.yml"))
+    docs = " ".join(
+        (ROOT / f).read_text() for f in ("AGENTS.md", "README.md", "docs/operations/publish-map.md")
     )
-    assert "python build/render.py" in workflows, (
-        "render.py no longer appears to be script-invoked; drop its exemption in "
-        "test_no_module_holds_a_private_copy_of_the_axes and import axes() there"
+    assert "python build/render.py" not in workflows + docs, (
+        "render.py is script-invoked again, so it cannot import build.vocabulary and the "
+        "axis vocabulary will silently fork"
     )
 
 
 def test_artifact_kinds_come_from_the_routing_table():
     routing = yaml.safe_load((ROOT / "sources" / "signal_routing.yaml").read_text())
-    declared = {
-        s["artifact_key"] for s in routing["sources"].values() if s.get("artifact_key")
-    }
+    declared = {s["artifact_key"] for s in routing["sources"].values() if s.get("artifact_key")}
     assert artifact_kinds() == declared
     # The layering the first cut of #184 got wrong: a source and an artifact key are
     # different things, and one source may consume a key that shares no name with it.
@@ -77,13 +117,30 @@ def test_artifact_kinds_come_from_the_routing_table():
     assert "arxiv" not in routing["sources"]
 
 
-def test_verifiable_kinds_are_derived_with_an_explicit_exclusion():
-    """`arxiv` is excluded on purpose. The test exists so the exclusion cannot silently widen
-    into the drift it used to look like — if another kind is dropped, this fails."""
-    from build.propose_artifacts import NOT_A_DISTRIBUTION_ARTIFACT, VERIFIABLE_KINDS
+def test_proposer_support_is_defined_by_handlers_not_by_routing():
+    """A routed kind is not automatically a proposable one.
 
-    assert set(VERIFIABLE_KINDS) == artifact_kinds() - NOT_A_DISTRIBUTION_ARTIFACT
-    assert NOT_A_DISTRIBUTION_ARTIFACT == {"arxiv"}
+    Deriving `VERIFIABLE_KINDS` from the routing table made any newly declared `artifact_key`
+    an accepted `--kind` with no pattern, verifier or renderer behind it. The two sets are
+    equal today, which is what made the coincidence look like a definition.
+    """
+    from build.propose_artifacts import (
+        _PUBLIC_URL,
+        _VERIFIABLE,
+        NOT_A_DISTRIBUTION_ARTIFACT,
+        PATTERNS,
+        VERIFIABLE_KINDS,
+    )
+
+    patterned = {kind for kind, _ in PATTERNS}
+    for kind in VERIFIABLE_KINDS:
+        assert kind in patterned, f"{kind} has no URL pattern to mine it from prose"
+        assert kind in _PUBLIC_URL, f"{kind} has no public URL renderer"
+        assert kind in _VERIFIABLE, f"{kind} has no live existence check"
+
+    # Supported must remain an intentional SUBSET of routed, with the gap named.
+    assert set(VERIFIABLE_KINDS) <= artifact_kinds()
+    assert artifact_kinds() - set(VERIFIABLE_KINDS) == NOT_A_DISTRIBUTION_ARTIFACT
 
 
 def test_capability_relation_deltas_match_the_schema_enum():
@@ -93,37 +150,46 @@ def test_capability_relation_deltas_match_the_schema_enum():
 
     schema = json.loads((ROOT / "docs" / "schemas" / "score.schema.json").read_text())
     enum = schema["properties"]["capability"]["properties"]["relation"]["enum"]
-    assert set(DELTA) == set(enum), (
-        "check_capability.DELTA and the schema disagree about the relation vocabulary; a "
-        "relation missing from DELTA would raise, but one missing from the schema would be "
-        "accepted by the gate and rejected by validate"
-    )
+    assert set(DELTA) == set(enum)
 
 
 def test_the_method_vocabulary_has_exactly_one_definition():
-    if not (ROOT / "build" / "prose_provenance.py").exists():
+    """`apply_provenance` held a narrower sibling until 2026-08-15, which is how
+    `substitute sources` passed as a document name.
+
+    AST-based, so an annotated assignment (`METHOD_WORDS: re.Pattern = ...`) is caught; the
+    first cut matched `^METHOD_WORDS\\s*=` and would not have been.
+    """
+    if not (BUILD / "prose_provenance.py").exists():
         pytest.skip("prose_provenance lands with #283; this activates when it merges")
-    """`apply_provenance` held a narrower sibling of `METHOD_WORDS` until 2026-08-15, which is
-    how `substitute sources` passed as a document name."""
-    method_defs = [
-        path.name
-        for path in sorted((ROOT / "build").glob("*.py"))
-        if re.search(r"^METHOD_WORDS\s*=", path.read_text(), re.M)
+    definers = [
+        name for name, source in _module_sources().items()
+        if "METHOD_WORDS" in _assigned_names(ast.parse(source))
     ]
-    assert method_defs == ["prose_provenance.py"], (
-        f"METHOD_WORDS is defined in {method_defs}; it must have one owner"
+    assert definers == ["prose_provenance.py"], (
+        f"METHOD_WORDS is assigned in {definers}; it must have exactly one owner"
     )
 
 
-@pytest.mark.parametrize("module", ["check_payload", "apply_provenance"])
-def test_dates_are_parsed_not_shape_matched(module):
-    """Both validated a date with `\\d{4}-\\d{2}-\\d{2}` and accepted 2026-99-99. The same
-    defect, in two modules, three days apart."""
-    path = ROOT / "build" / f"{module}.py"
-    if not path.exists():
-        pytest.skip(f"{module} lands with #283; this activates when it merges")
-    source = path.read_text()
-    assert "fromisoformat" in source, f"{module} must parse dates, not match their shape"
-    assert not re.search(r'r"\^?\\\\d\{4\}-\\\\d\{2\}-\\\\d\{2\}\$?"', source), (
-        f"{module} still shape-matches a date"
-    )
+def test_check_payload_rejects_impossible_dates():
+    """Behavioral, not textual. The first cut asserted `fromisoformat` appeared somewhere in
+    the file, which a module could satisfy while still shape-matching elsewhere."""
+    from build.check_payload import _is_date
+
+    for bad in ("2026-99-99", "2026-02-30", "not-a-date", "", "20260815", None):
+        assert not _is_date(bad), f"{bad!r} accepted as a date"
+    for good in ("2026-08-15", "2026-02-28"):
+        assert _is_date(good)
+
+
+def test_apply_provenance_rejects_impossible_dates():
+    """The same defect, in the module written three days after the first was fixed."""
+    if not (BUILD / "apply_provenance.py").exists():
+        pytest.skip("apply_provenance lands with #283; this activates when it merges")
+    from build.apply_provenance import Refused, check
+
+    for bad in ("2026-99-99", "2026-02-30", "August"):
+        with pytest.raises(Refused):
+            check({"product": "anythingllm", "verification_date": bad, "source_accessed": bad,
+                   "selected_document": "the README", "source_url": "https://example.com",
+                   "support": "x", "prose_digest": "d"})

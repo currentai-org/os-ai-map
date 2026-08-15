@@ -148,7 +148,7 @@ hyphenated kebab-case (`llama-3-1`).
 ```bash
 uv run python -m build.validate        # validate sources/ (must print "0 error(s)")
 uv run python -m build.serialize       # sources/ -> build/notebook_data.json
-uv run python build/render.py          # -> notebooks/ai-stack-map.py
+uv run python -m build.render          # -> notebooks/ai-stack-map.py
 uv run marimo export html notebooks/ai-stack-map.py -o /tmp/preview.html
 ```
 

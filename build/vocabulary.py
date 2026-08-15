@@ -49,8 +49,9 @@ def axes() -> tuple[str, ...]:
     """The three scored axes, from `docs/schemas/score.schema.json`.
 
     The schema is the declarative owner: it lists them as properties and requires all three.
-    Seven modules held this triple as a literal. None had drifted — a fourth axis has never
-    been added — but a fourth axis is exactly the change that would silently narrow seven
+    Ten modules held this triple as a literal — seven as a named constant and three inline,
+    including `validate.py`, the schema gate itself. None had drifted, because no fourth axis
+    has ever been added; a fourth axis is also exactly the change that would narrow ten
     denominators at once, and a walk that quietly skips an axis passes green.
     """
     schema = json.loads((ROOT / "docs" / "schemas" / "score.schema.json").read_text())
