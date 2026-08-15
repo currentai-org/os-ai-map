@@ -56,11 +56,15 @@ Somebody committed that file on that date and left the score standing, which is 
 review rather than a reading. Git records it, and nobody can inflate it. As #102 put
 it, the git history of a score file *is* its verification record.
 
-As of 2026-08-14, 1,408 of the 1,416 axes carry a real `last_verified`; the other **eight are
+As of 2026-08-15, 1,407 of the 1,416 axes carry a real `last_verified`; the other **nine are
 explicitly held** in `sources/verification_queue.yaml` and read through the fallback (the sweep
-dated them, then the audit removed those eight unsupported confirmations — see Part 3). So the
-fallback is not idle: a held axis and a product added tomorrow both rely on it until somebody
-confirms them, and the age gate below reads whichever signal an axis has.
+dated them, then the audit removed those unsupported confirmations — see Part 3; `falcon.adoption`
+joined them on 2026-08-15 when a fresh fetch disproved its own band). So the fallback is not idle:
+a held axis and a product added tomorrow both rely on it until somebody confirms them, and the age
+gate below reads whichever signal an axis has.
+
+A held axis reaches the payload as `basis: partial` rather than through the fallback — see
+"What the payload publishes" below. The fallback covers products with **no** dated axis at all.
 
 **Changed what it claims, not merely touched.** Some commits move a file without
 reviewing it. The Phase 1a migration reshapes `openness.components` from a string into a
@@ -109,6 +113,44 @@ can never be conflated.
 | `sources[].accessed` | `sources/scores/<slug>.yaml`, per source | When was this specific URL read? Evidence provenance. **Not freshness.** |
 | `last_checked` | `currentai.scores.openness_computed` | When did the pipeline last read *any* admitted evidence. Diagnostic. **Not freshness.** |
 | `fact_accessed` | `currentai.scores.openness_facts`, per dimension | When the evidence behind one dimension was read or fetched. Provenance, per fact. **Not freshness.** |
+
+### What the payload publishes, and the third basis
+
+`build/freshness_payload.py` reduces the three per-axis dates to one per-product record, and
+says which tier it used so the page can label the weaker claim rather than passing it off as
+the stronger one:
+
+| `basis` | means |
+|---|---|
+| `verified` | **every** axis carries a `last_verified`. The date is the **oldest** of them — see below. |
+| `partial` | some axes are confirmed and at least one deliberately is not. The date is the oldest **confirmed** axis; `unconfirmed_axes` names the rest, and `verification_holds` carries the queue's reason where there is one. |
+| `commit` | no axis carries a date. Falls back to the score file's last claim-changing commit — and still carries `unconfirmed_axes` and any holds, because a fully unconfirmed product is exactly where a hold most needs to be visible. |
+
+**`partial` was added 2026-08-15, and its absence was a live defect.** The reduction took
+`max()` over the axes that *had* a date and ignored the ones that did not, under a comment
+claiming the result was "the date on which everything in the score was last standing". For a
+product with a held axis that sentence is false, and three shipped that way — `falcon`,
+`qualcomm-ai-engine-direct` and `aws-neuron` each published `basis: verified` over an axis
+parked in `sources/verification_queue.yaml`.
+
+The holds were honest inside the repo and invisible outside it. A held axis is a real
+editorial state and must not be forced into a score to make a label tidy, so the payload
+carries the state instead: **a product with a hold is publishable and visibly caveated.**
+
+**The product date is the oldest confirmed axis, not the newest.** The rule at the top of this
+document is that `last_verified` is the date on which *everything* was confirmed. Reduced to
+one product-level date, "everything" is the constraint: a product whose axes were confirmed on
+the 9th, 11th and 13th is defensibly current only through the **9th**. Publishing the 13th
+says "at least one axis was confirmed then", which is a weaker claim wearing the stronger
+one's label — the same overstatement as publishing a held axis as verified, in a less obvious
+form. It was `max()` until 2026-08-15, and 176 of the 472 products carry differing axis dates,
+so this is the common case rather than an edge. `latest_axis_confirmation` carries the newest
+date for anyone who wants "when was this last touched", emitted only where it differs.
+
+Note what `partial` does *not* depend on. It follows from an axis being unconfirmed, not from
+a queue entry — a hold explains an unconfirmed axis, and its absence does not make one
+confirmed. An undated axis with no queue entry is still `partial`, and is separately a finding
+for `check_freshness` and `sweep_status`.
 
 ## What it is for
 

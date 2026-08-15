@@ -11,12 +11,80 @@ is worse than no gate at all: it looks like protection nobody is actually gettin
 """
 import json
 import sys
+from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
 _ALIAS_KINDS = ("products", "organizations")
-_FRESHNESS_BASES = {"verified", "commit"}
+_AXES = ("openness", "adoption", "capability")
+
+
+def _is_date(value: object) -> bool:
+    r"""A real calendar date, not a shape that looks like one.
+
+    A `\d{4}-\d{2}-\d{2}` regex accepts 2026-99-99, which is exactly the class of thing a
+    gate claiming to validate a date must not wave through.
+    """
+    try:
+        date.fromisoformat(str(value))
+    except (TypeError, ValueError):
+        return False
+    return True
+
+
+def _check_freshness_caveats(slug: str, fresh: dict) -> None:
+    """Gate the SHAPE of a partial freshness record, not just its presence.
+
+    The defect this whole mechanism exists for was a lossy reduction that no payload gate
+    could see. Adding `partial` without gating it would leave exactly that hole open one
+    shape over: `{"date": ..., "basis": "partial"}` with nothing saying what is partial is
+    strictly worse than `verified`, because it advertises a caveat and then withholds it.
+    """
+    basis = fresh.get("basis")
+    unconfirmed = fresh.get("unconfirmed_axes")
+    holds = fresh.get("verification_holds")
+
+    if basis == "partial" and not unconfirmed:
+        raise PayloadError(
+            f"{slug!r} is basis 'partial' with no unconfirmed_axes — a caveat that does not "
+            "say what it is about"
+        )
+    if basis == "verified" and (unconfirmed or holds):
+        raise PayloadError(
+            f"{slug!r} is basis 'verified' but carries {'unconfirmed_axes' if unconfirmed else 'verification_holds'}; "
+            "an axis cannot be both confirmed and outstanding"
+        )
+
+    if unconfirmed is not None:
+        if not isinstance(unconfirmed, list) or not unconfirmed:
+            raise PayloadError(f"{slug!r} has a non-list or empty unconfirmed_axes")
+        if len(set(unconfirmed)) != len(unconfirmed):
+            raise PayloadError(f"{slug!r} repeats an axis in unconfirmed_axes: {unconfirmed}")
+        unknown = [a for a in unconfirmed if a not in _AXES]
+        if unknown:
+            raise PayloadError(f"{slug!r} names unknown axes in unconfirmed_axes: {unknown}")
+
+    if holds is not None:
+        if not isinstance(holds, list) or not holds:
+            raise PayloadError(f"{slug!r} has a non-list or empty verification_holds")
+        for hold in holds:
+            axis = (hold or {}).get("axis")
+            if axis not in _AXES:
+                raise PayloadError(f"{slug!r} has a hold on unknown axis {axis!r}")
+            # A hold explains an axis that is outstanding. One on a confirmed axis is a
+            # contradiction, and it is how a stale queue entry would reach the page.
+            if axis not in (unconfirmed or []):
+                raise PayloadError(
+                    f"{slug!r} holds axis {axis!r} which is not in unconfirmed_axes"
+                )
+            if not _is_date(hold.get("since")):
+                raise PayloadError(f"{slug!r} hold on {axis!r} has no valid `since` date")
+            if not str(hold.get("reason", "")).strip():
+                raise PayloadError(f"{slug!r} hold on {axis!r} has no reason")
+
+
+_FRESHNESS_BASES = {"verified", "partial", "commit"}
 
 
 class PayloadError(RuntimeError):
@@ -81,6 +149,7 @@ def check(payload: dict) -> None:
         if (not isinstance(fresh, dict) or not fresh.get("date")
                 or fresh.get("basis") not in _FRESHNESS_BASES):
             raise PayloadError(f"{slug!r} has no usable freshness record")
+        _check_freshness_caveats(slug, fresh)
 
     dates = {row["freshness"]["date"] for row in rows}
     if len(dates) <= 1:
