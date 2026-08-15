@@ -294,10 +294,41 @@ def producible_pairs(
     return problems
 
 
+# The `shows` field exists so a reader can tell whether the recorded claim follows from the
+# page. A batch marker in it says only that a batch ran, and nothing else in this file can
+# tell the difference: `digests` asks whether a source was FETCHED, `check_refetch` asks
+# whether it is still fetchable, and a placeholder passes both.
+#
+# 29 sources across the 13 flagship files carried `flagship phase-C verification source` from
+# a June batch. Three of them were re-fetched and re-digested on 2026-08-13 with the string
+# copied forward, so this is not a legacy shape that decays on its own — a pass reproduced it.
+PLACEHOLDER_SHOWS = {
+    "flagship phase-C verification source",
+}
+
+
+def placeholder_shows(scores: dict) -> list[str]:
+    """A `shows` that records a batch marker rather than what the page shows."""
+    problems: list[str] = []
+    for slug, score in sorted(scores.items()):
+        for axis in AXES:
+            for source in (score.get(axis) or {}).get("sources") or []:
+                if not isinstance(source, dict):
+                    continue
+                if str(source.get("shows", "")).strip() in PLACEHOLDER_SHOWS:
+                    problems.append(
+                        f"{slug}:{axis}: source {source.get('url')!r} records a batch marker "
+                        f"as its `shows` rather than what the page shows. Quote the body, or "
+                        f"drop the source"
+                    )
+    return problems
+
+
 GATES = {
     "invariant": "a confirmation with no supporting evidence",
     "digests": "a claimed date with no fetch digest",
     "producible-pairs": "an impossible score/class pair",
+    "placeholder-shows": "a `shows` that records a batch marker, not the page",
 }
 NAME_WIDTH = max(len(name) for name in GATES)
 
@@ -314,6 +345,7 @@ def main() -> int:
         "invariant": invariant(scores, categories, recipes, product_types),
         "digests": digests(scores),
         "producible-pairs": producible_pairs(scores, categories, recipes, product_types),
+        "placeholder-shows": placeholder_shows(scores),
     }
     if args.gate:
         results = {args.gate: results[args.gate]}

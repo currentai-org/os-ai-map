@@ -351,3 +351,79 @@ def format(fields: dict[str, str]) -> str:  # noqa: A001 - the inverse of `parse
     No spaces after the separators, matching what the 470 files already contain.
     """
     return ";".join(f"{key}:{val}" for key, val in fields.items())
+
+
+# --- source entries ------------------------------------------------------------------
+#
+# A `sources:` entry is a list item rather than a mapping field, so `set_field` and
+# `add_field` cannot reach one: both locate a key by name inside an axis block, and every
+# entry in the list carries the same key names. Repairing evidence needs the other
+# operation — find the entry citing a given URL and rewrite it whole.
+#
+# Rewriting the whole entry rather than splicing individual lines is deliberate. The corpus
+# warns that a hand-rolled line splice already shipped a seven-product defect; re-rendering
+# one list item through the dumper and asserting the reparse is the same discipline
+# `set_field` uses, applied one level down.
+
+SOURCE_INDENT = "  "
+
+
+def render_source(entry: dict, width: int = WIDTH) -> list[str]:
+    """The `  - url: ...` lines for one source entry, quoted and folded by PyYAML."""
+    dumped = yaml.safe_dump(
+        [entry], default_flow_style=False, allow_unicode=True, width=width, sort_keys=False
+    )
+    return [f"{SOURCE_INDENT}{line}\n" if line.strip() else "\n" for line in dumped.splitlines()]
+
+
+def _source_span(lines: list[str], bounds: tuple[int, int], url: str) -> tuple[int, int]:
+    """The line span of the `sources:` entry citing `url`, within an axis block."""
+    start, end = bounds
+    anchor = find_key(lines, bounds, "sources")
+    if anchor is None:
+        raise ValueError("axis has no sources list")
+    # YAML permits a sequence to sit at the SAME indent as the key that owns it, and the
+    # corpus uses that style throughout: `sources:` at two spaces with `- url:` also at two.
+    indent = len(lines[anchor]) - len(lines[anchor].lstrip())
+    item_prefix = " " * indent + "- "
+
+    items = [i for i in range(anchor + 1, end) if lines[i].startswith(item_prefix)]
+    if not items:
+        raise ValueError("sources list has no entries at the expected indent")
+
+    for n, first in enumerate(items):
+        last = items[n + 1] if n + 1 < len(items) else end
+        block = "".join(lines[first:last])
+        if url in block:
+            return first, last
+    raise ValueError(f"no source entry citing {url!r}")
+
+
+def set_source(text: str, axis: str, url: str, updates: dict) -> str:
+    """Return `text` with the `axis` source citing `url` updated by `updates`.
+
+    Keys already on the entry are replaced in place; new keys are appended in the order
+    given. The entry is re-rendered whole and the document is reparsed and compared against
+    the expected result, so an edit that lands in a neighboring entry or breaks a folded
+    scalar raises instead of being written.
+    """
+    lines = text.splitlines(keepends=True)
+    bounds = block_bounds(lines, axis)
+    if bounds is None:
+        raise ValueError(f"no top-level {axis!r} block")
+    first, last = _source_span(lines, bounds, url)
+
+    before_doc = yaml.safe_load(text)
+    entries = before_doc[axis]["sources"]
+    index = next(i for i, e in enumerate(entries) if e.get("url") == url)
+    entry = dict(entries[index])
+    entry.update(updates)
+
+    rendered = render_source(entry)
+    new_text = "".join(lines[:first] + rendered + lines[last:])
+
+    expected = copy.deepcopy(before_doc)
+    expected[axis]["sources"][index] = entry
+    if yaml.safe_load(new_text) != expected:
+        raise ValueError(f"rewriting {axis} source {url!r} changed something else; refusing to write")
+    return new_text
