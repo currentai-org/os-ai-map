@@ -16,7 +16,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 _ALIAS_KINDS = ("products", "organizations")
-_FRESHNESS_BASES = {"verified", "commit"}
+_FRESHNESS_BASES = {"verified", "partial", "commit"}
 
 
 class PayloadError(RuntimeError):

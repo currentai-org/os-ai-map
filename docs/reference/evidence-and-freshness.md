@@ -110,6 +110,34 @@ can never be conflated.
 | `last_checked` | `currentai.scores.openness_computed` | When did the pipeline last read *any* admitted evidence. Diagnostic. **Not freshness.** |
 | `fact_accessed` | `currentai.scores.openness_facts`, per dimension | When the evidence behind one dimension was read or fetched. Provenance, per fact. **Not freshness.** |
 
+### What the payload publishes, and the third basis
+
+`build/freshness_payload.py` reduces the three per-axis dates to one per-product record, and
+says which tier it used so the page can label the weaker claim rather than passing it off as
+the stronger one:
+
+| `basis` | means |
+|---|---|
+| `verified` | **every** axis carries a `last_verified`. The date is the most recent of them. |
+| `partial` | some axes are confirmed and at least one deliberately is not. The date is when the confirmed part was confirmed; `unconfirmed_axes` names the rest, and `verification_holds` carries the queue's reason where there is one. |
+| `commit` | no axis carries a date. Falls back to the score file's last claim-changing commit. |
+
+**`partial` was added 2026-08-15, and its absence was a live defect.** The reduction took
+`max()` over the axes that *had* a date and ignored the ones that did not, under a comment
+claiming the result was "the date on which everything in the score was last standing". For a
+product with a held axis that sentence is false, and three shipped that way — `falcon`,
+`qualcomm-ai-engine-direct` and `aws-neuron` each published `basis: verified` over an axis
+parked in `sources/verification_queue.yaml`.
+
+The holds were honest inside the repo and invisible outside it. A held axis is a real
+editorial state and must not be forced into a score to make a label tidy, so the payload
+carries the state instead: **a product with a hold is publishable and visibly caveated.**
+
+Note what `partial` does *not* depend on. It follows from an axis being unconfirmed, not from
+a queue entry — a hold explains an unconfirmed axis, and its absence does not make one
+confirmed. An undated axis with no queue entry is still `partial`, and is separately a finding
+for `check_freshness` and `sweep_status`.
+
 ## What it is for
 
 Triage. A category whose oldest axis is 50 days old is a category to go and look at.
