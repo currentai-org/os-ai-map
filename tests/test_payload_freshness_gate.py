@@ -63,3 +63,13 @@ def test_malformed_caveats_are_rejected(name, record):
 )
 def test_valid_caveats_pass(name, record):
     _check_freshness_caveats("widget", record)
+
+
+@pytest.mark.parametrize("since", ["2026-99-99", "2026-02-30", "not-a-date", "", None])
+def test_a_hold_since_must_be_a_real_calendar_date(since):
+    """The first cut matched `\\d{4}-\\d{2}-\\d{2}`, which accepts 2026-99-99 — exactly the
+    class of thing a gate claiming to validate a date must not wave through."""
+    record = {"date": "d", "basis": "partial", "unconfirmed_axes": ["adoption"],
+              "verification_holds": [{**HOLD, "since": since}]}
+    with pytest.raises(PayloadError):
+        _check_freshness_caveats("widget", record)

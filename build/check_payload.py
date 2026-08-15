@@ -10,15 +10,27 @@ row must never read as "fine". A gate that goes green when it cannot understand 
 is worse than no gate at all: it looks like protection nobody is actually getting.
 """
 import json
-import re
 import sys
+from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
 _ALIAS_KINDS = ("products", "organizations")
 _AXES = ("openness", "adoption", "capability")
-_DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+
+
+def _is_date(value: object) -> bool:
+    r"""A real calendar date, not a shape that looks like one.
+
+    A `\d{4}-\d{2}-\d{2}` regex accepts 2026-99-99, which is exactly the class of thing a
+    gate claiming to validate a date must not wave through.
+    """
+    try:
+        date.fromisoformat(str(value))
+    except (TypeError, ValueError):
+        return False
+    return True
 
 
 def _check_freshness_caveats(slug: str, fresh: dict) -> None:
@@ -66,7 +78,7 @@ def _check_freshness_caveats(slug: str, fresh: dict) -> None:
                 raise PayloadError(
                     f"{slug!r} holds axis {axis!r} which is not in unconfirmed_axes"
                 )
-            if not _DATE.match(str(hold.get("since", ""))):
+            if not _is_date(hold.get("since")):
                 raise PayloadError(f"{slug!r} hold on {axis!r} has no valid `since` date")
             if not str(hold.get("reason", "")).strip():
                 raise PayloadError(f"{slug!r} hold on {axis!r} has no reason")
