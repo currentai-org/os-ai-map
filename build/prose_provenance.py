@@ -15,6 +15,7 @@ whether the line names something a later editor can reopen.
 |---|---|---|
 | `canonical` | `Verified <date> via <document>.` | none |
 | `named_noncanonical` | names a real document behind `live` / `on` / `against` | mechanical rewording |
+| `ambiguous_noncanonical` | dated, but no document identifiable — `Verified 2026-08-13.` | read the record |
 | `generic` | names a METHOD — `primary sources`, `research`, `web search` | evidence matching, or a re-read |
 | `missing` | no dated verification line at all | research |
 
@@ -27,7 +28,7 @@ re-open". Rewording cannot repair them; something has to supply the document.
 Each product's score file records the exact URLs fetched, dated and digested. Where one was
 accessed **on the date the prose line already claims**, and its `shows` describes the product
 rather than a score dimension, that document is what a reader would have to reopen — naming
-it states what the repository already proves was read. Measured 2026-08-15, all 166 `generic`
+it states what the repository already proves was read. Measured 2026-08-15, all 172 `generic`
 products have at least one date-aligned source, so date alignment alone decides nothing; the
 judgment is entirely whether the source is a nameable, authoritative document that supports
 the prose.
@@ -36,9 +37,17 @@ the prose.
 hints, and emits a packet per product for a reviewer to settle. `build/apply_provenance.py`
 then writes only the packets marked `derive`.
 
+## The candidate packet file is derived, and is not committed
+
+Every field in it comes from the corpus, so a committed copy is a second copy of a fact the
+corpus already carries — it drifts the moment a product or score changes and has no parity
+gate. Generate it on demand. What IS committed is a decision manifest under
+`sources/provenance/<category>.yaml`, because those carry human judgment that exists nowhere
+else, split by category so a reviewer reads one batch at a time.
+
 Usage:
-    uv run python -m build.prose_provenance                 # the four-state census
-    uv run python -m build.prose_provenance --packets FILE  # write candidate packets
+    uv run python -m build.prose_provenance                 # the five-state census
+    uv run python -m build.prose_provenance --packets FILE  # candidate packets, on demand
 """
 
 from __future__ import annotations
@@ -56,15 +65,29 @@ CANONICAL = re.compile(r"Verified (\d{4}-\d{2}-\d{2}) via ")
 # Any dated verification, however it is worded. The corpus carries `Verified live <date> via`,
 # `Verified live <date> on`, `... against`, and lowercase `verified`.
 ANY_DATED = re.compile(r"[Vv]erified[^.]{0,45}?(\d{4}-\d{2}-\d{2})")
-# What follows the date, which is where a document name would be.
-TRAILER = re.compile(r"[Vv]erified[^.]{0,45}?\d{4}-\d{2}-\d{2}[,;]?\s*(?:via|on|against|using)?\s*(.*)")
+# What follows the date, which is where a document name would be. The preposition is
+# REQUIRED here: a line that just says "Verified 2026-08-13." names nothing, and treating the
+# rest of the sentence as a document is how the census would claim more than it checked.
+TRAILER = re.compile(r"[Vv]erified[^.]{0,45}?\d{4}-\d{2}-\d{2}[,;]?\s*(?:via|on|against|using)\s+(.*)")
 
 # Words that name a METHOD rather than a document. product-copy.md forbids these outright.
+# A leading article is allowed because "the primary sources" is the same claim as "primary
+# sources" and would otherwise slip through as a document name.
 METHOD_WORDS = re.compile(
-    r"^\s*(primary[- ]source|primary sources|research|web search|websearch|search|"
-    r"primary-source research|substitute sources)",
+    r"^\s*(?:the\s+|a\s+|our\s+)?"
+    r"(primary[- ]sources?|primary-source research|research|web ?search|search|"
+    r"substitute sources|desk research|secondary sources?)\b",
     re.IGNORECASE,
 )
+
+# The dated clause in any of its wordings, removed before digesting the surrounding prose.
+CLAUSE_ANY = re.compile(
+    r"[Vv]erified(?: live)?\s+\d{4}-\d{2}-\d{2}\s*[,;]?\s*(?:via|on|against|using)?\s*[^.;]*[.;]?"
+)
+
+# A document name has to contain an actual word. `Verified 2026-08-13 via .` is canonical in
+# shape and names nothing.
+HAS_WORD = re.compile(r"[A-Za-z0-9]")
 
 # URLs that are machine endpoints or count aggregators rather than documents a person reads.
 # A source like this can establish a score dimension and still say nothing about what the
@@ -115,13 +138,19 @@ def classify(comments: str) -> tuple[str, str | None, str | None]:
     if not dated:
         return "missing", None, None
 
-    trailer = ""
     match = TRAILER.search(text)
-    if match:
-        trailer = match.group(1).strip()
+    trailer = match.group(1).strip() if match else ""
 
     if METHOD_WORDS.match(trailer):
         return "generic", dated.group(1), trailer
+    # A document has to be identifiable before the line can be called one that names one.
+    # `Verified 2026-08-13.` and `Verified live 2026-08-13, but only the adoption axis could
+    # be re-derived` are dated and not methods, and neither names anything to reopen —
+    # `meta-ai` and `le-chat` are the corpus cases. Defaulting those to `named_noncanonical`
+    # would promise a mechanical fix that does not exist, which is the same overstatement
+    # this census was built to remove.
+    if not trailer or not HAS_WORD.search(trailer):
+        return "ambiguous_noncanonical", dated.group(1), trailer
     if CANONICAL.search(text):
         return "canonical", CANONICAL.search(text).group(1), trailer
     return "named_noncanonical", dated.group(1), trailer
@@ -157,6 +186,24 @@ def candidates(slug: str, date: str, score: dict) -> list[dict]:
     return sorted(best.values(), key=lambda c: (not c["looks_like_document"], c["url"]))
 
 
+def prose_digest(product: dict) -> str:
+    """A digest over the prose a verification line is provenance for.
+
+    `product-copy.md` defines the line as editorial provenance for BOTH `description` and
+    `comments`, so both are covered. The dated clause itself is removed first: it is the thing
+    being rewritten, and including it would make every packet invalid the moment it applied.
+
+    Normalized on whitespace so a reflow — which `set_document_field` performs on every write
+    — does not read as a change of claim.
+    """
+    import hashlib
+
+    description = " ".join(str(product.get("description") or "").split())
+    comments = " ".join(str(product.get("comments") or "").split())
+    stripped = CLAUSE_ANY.sub("", comments).strip()
+    return hashlib.sha256(f"{description}\x00{stripped}".encode()).hexdigest()
+
+
 def census() -> dict[str, list[str]]:
     by_state: dict[str, list[str]] = {}
     for slug, product in products().items():
@@ -180,6 +227,8 @@ def packets() -> list[dict]:
             "verification_date": date,
             "current_trailer": trailer,
             "description": " ".join(str(product.get("description") or "").split()),
+            "comments": " ".join(str(product.get("comments") or "").split()),
+            "prose_digest": prose_digest(product),
             "candidates": cands,
             # A packet with no usable candidate cannot be derived from evidence, whatever a
             # reader thinks of it: there is no document in the record to name.
@@ -201,7 +250,8 @@ def main() -> int:
     by_state = census()
     total = sum(len(v) for v in by_state.values())
     print(f"{total} products\n")
-    for state in ("canonical", "named_noncanonical", "generic", "missing"):
+    for state in ("canonical", "named_noncanonical", "ambiguous_noncanonical",
+                  "generic", "missing"):
         n = len(by_state.get(state, []))
         print(f"  {state:22}{n:>5}")
 

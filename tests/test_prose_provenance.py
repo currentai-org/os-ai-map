@@ -25,6 +25,15 @@ from build.prose_provenance import ROOT, census, classify
         ("Verified live 2026-08-13 against the DATASHEET.md.", "named_noncanonical"),
         # The substantive class: names how somebody looked, not what settled it.
         ("Verified live 2026-08-13 via primary sources.", "generic"),
+        ("Verified 2026-08-13 via the primary sources.", "generic"),
+        ("Verified 2026-08-13 via substitute sources - hailo.ai 403s.", "generic"),
+        # Dated, not a method, and naming nothing. Defaulting these to `named_noncanonical`
+        # promised a mechanical fix that does not exist. meta-ai and le-chat are the corpus
+        # cases; 16 products are in this state.
+        ("Verified 2026-08-13.", "ambiguous_noncanonical"),
+        ("Verified 2026-08-13 via .", "ambiguous_noncanonical"),
+        ("Verified live 2026-08-13, but only the adoption axis could be re-derived.",
+         "ambiguous_noncanonical"),
         ("verified live 2026-08-13 via primary sources; v1.2.", "generic"),
         ("Verified live 2026-08-13 via primary-source research.", "generic"),
         ("Some prose with no verification at all.", "missing"),
@@ -46,7 +55,8 @@ def test_the_corpus_has_no_missing_lines_which_is_the_whole_point():
 def test_every_state_is_accounted_for():
     by_state = census()
     assert sum(len(v) for v in by_state.values()) == 472
-    assert set(by_state) <= {"canonical", "named_noncanonical", "generic", "missing"}
+    assert set(by_state) <= {"canonical", "named_noncanonical", "ambiguous_noncanonical",
+                             "generic", "missing"}
 
 
 def test_rewrite_replaces_the_clause_and_keeps_the_rest():
@@ -65,6 +75,10 @@ def test_rewrite_never_moves_the_date():
 
 
 def _packet(**over):
+    """A packet against the live corpus, so the digest and date bindings are real."""
+    from build.prose_provenance import prose_digest
+
+    product = yaml.safe_load((ROOT / "sources" / "products" / "anythingllm.yaml").read_text())
     base = {
         "product": "anythingllm",
         "verification_date": "2026-08-13",
@@ -72,6 +86,7 @@ def _packet(**over):
         "source_url": "https://github.com/Mintplex-Labs/anything-llm",
         "source_accessed": "2026-08-13",
         "support": "The page establishes the app, its providers and its agents.",
+        "prose_digest": prose_digest(product),
         "decision": "derive",
     }
     return {**base, **over}
@@ -91,7 +106,23 @@ def test_a_complete_packet_passes():
         ("no support sentence", _packet(support="   ")),
         ("no document named", _packet(selected_document="")),
         ("document is a method", _packet(selected_document="primary sources")),
+        # The applier kept a narrower sibling regex than the classifier until 2026-08-15, so
+        # this exact phrase — the one behind the four hardware records — passed.
+        ("document is substitute sources", _packet(selected_document="substitute sources")),
+        ("document is 'the primary sources'", _packet(selected_document="the primary sources")),
+        ("document names nothing", _packet(selected_document=" . ")),
         ("verification_date not a date", _packet(verification_date="August")),
+        # Shape-matching accepted these. Same defect as check_payload's hold date, reintroduced.
+        ("impossible date 2026-99-99",
+         _packet(verification_date="2026-99-99", source_accessed="2026-99-99")),
+        ("impossible date 2026-02-30",
+         _packet(verification_date="2026-02-30", source_accessed="2026-02-30")),
+        # Without a prose binding a decision survives every later edit to the prose it was
+        # taken against, and a drifted date would silently ADVANCE the live one.
+        ("prose changed since review", _packet(prose_digest="0" * 64)),
+        ("no prose_digest at all", _packet(prose_digest="")),
+        ("packet date disagrees with the live line",
+         _packet(verification_date="2026-08-12", source_accessed="2026-08-12")),
     ],
 )
 def test_incomplete_packets_are_refused(name, packet):
@@ -142,3 +173,25 @@ def test_no_canonical_line_in_the_corpus_names_a_method():
             if METHOD_WORDS.match(trailer):
                 offenders.append(os.path.basename(path)[:-5])
     assert not offenders, f"canonical lines naming a method: {offenders}"
+
+
+def test_the_digest_ignores_the_clause_it_is_about_to_rewrite():
+    """Otherwise every packet invalidates itself the moment it applies."""
+    from build.prose_provenance import prose_digest
+
+    product = yaml.safe_load((ROOT / "sources" / "products" / "anythingllm.yaml").read_text())
+    rewritten = {**product,
+                 "comments": product["comments"].replace("Verified live 2026-08-13",
+                                                         "Verified 2026-08-13")}
+    assert prose_digest(product) == prose_digest(rewritten)
+
+
+def test_the_digest_catches_an_edit_to_either_prose_field():
+    """product-copy.md defines the line as provenance for description AND comments."""
+    from build.prose_provenance import prose_digest
+
+    product = yaml.safe_load((ROOT / "sources" / "products" / "anythingllm.yaml").read_text())
+    assert prose_digest(product) != prose_digest({**product,
+                                                  "description": product["description"] + " Extra."})
+    assert prose_digest(product) != prose_digest({**product,
+                                                  "comments": product["comments"] + " Extra."})

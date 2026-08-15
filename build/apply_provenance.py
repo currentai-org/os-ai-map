@@ -14,11 +14,28 @@ A packet is applied only if it carries every part of its own justification:
   * a `source_url` that is **in that product's score file**, checked against the corpus
     rather than trusted from the packet;
   * a `source_accessed` equal to the verification date the prose line already claims;
-  * a non-empty `support` sentence.
+  * a non-empty `support` sentence;
+  * a `prose_digest` still matching the live product, so a decision cannot be applied to
+    prose it was not reviewed against.
 
 Refusing on a missing field is the point. A packet that cannot say why a document settled the
 prose has not established that it did, and the honest output is the untouched line plus a
 re-read.
+
+## Binding a decision to the prose it was reviewed against
+
+A packet is a judgment about a specific description and a specific comments field. Without a
+binding it survives every later edit to either, so a decision taken against last week's prose
+could be written over this week's — and because `rewrite` substitutes the whole dated clause,
+a packet whose `verification_date` had drifted would silently ADVANCE the live date, which is
+the one thing this is not allowed to do. Reproduced before the fix: applying a packet dated
+2026-08-13 to a line reading `Verified live 2026-08-12 via primary sources.` produced
+`Verified 2026-08-13 via the README.`
+
+So `prose_digest` covers the normalized description plus comments with the dated clause
+removed, and the applier recomputes it. Any edit to the reviewed prose invalidates the
+packet, and the product goes back for a fresh reading rather than being written blind. It
+also re-checks that the live line is still `generic` and still carries the packet's date.
 
 ## What it never does
 
@@ -40,12 +57,13 @@ from __future__ import annotations
 
 import argparse
 import re
+from datetime import date
 from pathlib import Path
 
 import yaml
 
 from build.components import set_document_field
-from build.prose_provenance import AXES, CANONICAL
+from build.prose_provenance import AXES, HAS_WORD, METHOD_WORDS, classify, prose_digest
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -75,17 +93,19 @@ def score_sources(slug: str) -> dict[str, str]:
 def check(packet: dict) -> None:
     """Raise `Refused` unless the packet carries every part of its own justification."""
     slug = packet.get("product")
-    for field in ("selected_document", "source_url", "source_accessed", "support"):
+    for field in ("selected_document", "source_url", "source_accessed", "support", "prose_digest"):
         if not str(packet.get(field) or "").strip():
             raise Refused(f"{slug}: packet has no {field}")
 
-    date = str(packet.get("verification_date") or "")
-    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", date):
-        raise Refused(f"{slug}: verification_date {date!r} is not a date")
-    if str(packet["source_accessed"]) != date:
+    claimed = str(packet.get("verification_date") or "")
+    try:
+        date.fromisoformat(claimed)
+    except (TypeError, ValueError):
+        raise Refused(f"{slug}: verification_date {claimed!r} is not a real date")
+    if str(packet["source_accessed"]) != claimed:
         raise Refused(
             f"{slug}: source accessed {packet['source_accessed']} but the prose line claims "
-            f"{date}; a document read on another day did not settle this line"
+            f"{claimed}; a document read on another day did not settle this line"
         )
 
     # The URL is checked against the corpus, not believed from the packet. A packet naming a
@@ -94,11 +114,39 @@ def check(packet: dict) -> None:
     url = str(packet["source_url"])
     if url not in recorded:
         raise Refused(f"{slug}: {url} is not a source in that product's score file")
-    if recorded[url] != date:
-        raise Refused(f"{slug}: {url} is recorded as accessed {recorded[url]}, not {date}")
+    if recorded[url] != claimed:
+        raise Refused(f"{slug}: {url} is recorded as accessed {recorded[url]}, not {claimed}")
 
-    if METHOD := re.match(r"\s*(primary sources?|research|web search)", str(packet["selected_document"]), re.I):
-        raise Refused(f"{slug}: {METHOD.group(1)!r} names a method, which is what this repairs")
+    # One vocabulary, shared with the classifier. A sibling regex here was narrower and let
+    # `substitute sources` through — the exact phrase behind the four hardware records pulled
+    # out of the class-A rewording.
+    document = str(packet["selected_document"])
+    if METHOD_WORDS.match(document):
+        raise Refused(f"{slug}: {document!r} names a method, which is what this repairs")
+    if not HAS_WORD.search(document):
+        raise Refused(f"{slug}: selected_document names nothing")
+
+    # The live corpus must still be the prose this decision was taken against.
+    path = ROOT / "sources" / "products" / f"{slug}.yaml"
+    if not path.exists():
+        raise Refused(f"{slug}: no product file")
+    product = yaml.safe_load(path.read_text()) or {}
+    state, live_date, _ = classify(product.get("comments"))
+    if state != "generic":
+        raise Refused(
+            f"{slug}: live line is {state!r}, not generic — it has changed since review"
+        )
+    if live_date != claimed:
+        raise Refused(
+            f"{slug}: live line is dated {live_date}, packet claims {claimed}; applying this "
+            "would move the date"
+        )
+    live_digest = prose_digest(product)
+    if live_digest != str(packet["prose_digest"]):
+        raise Refused(
+            f"{slug}: description/comments changed since the packet was reviewed "
+            f"({live_digest[:12]} != {str(packet['prose_digest'])[:12]})"
+        )
 
 
 def rewrite(comments: str, date: str, document: str) -> str:

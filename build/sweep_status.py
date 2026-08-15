@@ -299,10 +299,12 @@ def main() -> int:
     )
     print(f"\nprose verification lines: "
           + ", ".join(f"{prose[k]} {k}" for k in
-                      ("verified", "named_noncanonical", "generic", "stale", "missing")
+                      ("verified", "named_noncanonical", "ambiguous_noncanonical",
+                       "generic", "stale", "missing")
                       if prose.get(k)))
     print("  `generic` names a method rather than a document (product-copy.md forbids it);\n"
-          "  `named_noncanonical` names a real document behind `live`/`on`/`against`.")
+          "  `named_noncanonical` names a real document behind `live`/`on`/`against`;\n"
+          "  `ambiguous_noncanonical` is dated but names nothing to reopen.")
     print()
     if pending:
         nxt = pending[0]
@@ -336,6 +338,8 @@ def main() -> int:
                     bits.append("prose names a method, not a document")
                 elif state["prose_state"] == "named_noncanonical":
                     bits.append("prose line noncanonical wording")
+                elif state["prose_state"] == "ambiguous_noncanonical":
+                    bits.append("prose line names no document")
                 print(f"  {slug:38} {'; '.join(bits)}")
     return 0
 
