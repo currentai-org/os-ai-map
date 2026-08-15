@@ -73,10 +73,11 @@ from pathlib import Path
 
 import yaml
 
+from build.vocabulary import axes
 from build.check_rubric import FREE_TEXT, _clauses, components_of
 
 ROOT = Path(__file__).resolve().parents[1]
-AXES = ("openness", "adoption", "capability")
+AXES = axes()  # build/vocabulary.py owns this; the score schema declares it
 
 # `git log --raw` writes this in the old- or new-blob column for an add or a delete.
 NULL_SHA = "0" * 40

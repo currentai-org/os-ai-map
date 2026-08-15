@@ -55,10 +55,19 @@ from pathlib import Path
 
 import yaml
 
+from build.vocabulary import artifact_kinds
+
 ROOT = Path(__file__).resolve().parents[1]
 USER_AGENT = "os-ai-map-artifact-proposer/1.0"
 
-VERIFIABLE_KINDS = ("github", "huggingface_model", "huggingface_dataset", "pypi", "npm", "crates")
+# Derived from the routing table rather than restated. `arxiv` IS declared there (via
+# `semanticscholar`, whose `artifact_key` is `arxiv`) and is deliberately excluded here: this
+# constant answers "does the product already carry an artifact a proposal would target", and a
+# paper id is not a distribution artifact. Whether it should count is a curation question
+# rather than a sweep one, raised as its own issue. Writing the exclusion down keeps it a
+# decision instead of the silent drift it previously looked like.
+NOT_A_DISTRIBUTION_ARTIFACT = frozenset({"arxiv"})
+VERIFIABLE_KINDS = tuple(sorted(artifact_kinds() - NOT_A_DISTRIBUTION_ARTIFACT))
 
 # Hugging Face path segments that are not a model id. Without these, a docs or blog
 # link becomes a confident-looking candidate.

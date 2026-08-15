@@ -6,6 +6,8 @@ import json
 import markdown
 import re
 import yaml
+
+from build.vocabulary import axes
 from pathlib import Path
 
 # Repo root is the parent of build/. Read the serialized payload from
@@ -68,7 +70,7 @@ def _methodology_numbers(d):
     _urls = [
         s.get("url")
         for p in _prods
-        for _axis in ("openness", "adoption", "capability")
+        for _axis in axes()
         for s in ((p.get(_axis) or {}).get("sources") or [])
         if s.get("url")
     ]

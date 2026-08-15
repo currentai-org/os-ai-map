@@ -43,6 +43,8 @@ from pathlib import Path
 
 import yaml
 
+from build.vocabulary import axes
+
 from build.components import set_source
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -242,7 +244,7 @@ def remaining() -> list[tuple[str, str, str]]:
     out = []
     for path in sorted((ROOT / "sources" / "scores").glob("*.yaml")):
         score = yaml.safe_load(path.read_text()) or {}
-        for axis in ("openness", "adoption", "capability"):
+        for axis in axes():
             for source in ((score.get(axis) or {}).get("sources") or []):
                 if source.get("shows") == PLACEHOLDER:
                     out.append((path.stem, axis, source.get("url", "?")))

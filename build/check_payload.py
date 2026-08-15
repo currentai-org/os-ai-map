@@ -14,10 +14,12 @@ import sys
 from datetime import date
 from pathlib import Path
 
+from build.vocabulary import axes
+
 ROOT = Path(__file__).resolve().parents[1]
 
 _ALIAS_KINDS = ("products", "organizations")
-_AXES = ("openness", "adoption", "capability")
+_AXES = axes()  # build/vocabulary.py owns this; the score schema declares it
 
 
 def _is_date(value: object) -> bool:

@@ -7,6 +7,8 @@ from pathlib import Path
 import jsonschema
 import yaml
 
+from build.vocabulary import axes
+
 from build.rubrics import dimension_vocabulary
 
 # Maps each sources/ subdir to its docs/schemas/<name>.schema.json basename.
@@ -222,7 +224,7 @@ def validate_sources(data: dict) -> list[str]:
     vocabulary = dimension_vocabulary(cats, data.get("rubrics") or {})
     if vocabulary:
         for slug, score in sorted(scores.items()):
-            for axis in ("openness", "adoption", "capability"):
+            for axis in axes():
                 for source in (score.get(axis) or {}).get("sources") or []:
                     if not isinstance(source, dict):
                         continue
@@ -245,7 +247,7 @@ def validate_sources(data: dict) -> list[str]:
     # the very guard meant to preserve real checks.
     today = date.today()
     for slug, score in sorted(scores.items()):
-        for axis in ("openness", "adoption", "capability"):
+        for axis in axes():
             block = score.get(axis) or {}
             candidates = [("last_verified", block.get("last_verified"))]
             for source in block.get("sources") or []:
