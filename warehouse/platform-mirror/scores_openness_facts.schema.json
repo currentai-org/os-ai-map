@@ -1,0 +1,72 @@
+[
+  {
+    "name": "product_slug",
+    "type": "VARCHAR",
+    "description": "Joins registry.products."
+  },
+  {
+    "name": "category_slug",
+    "type": "VARCHAR",
+    "description": "Which category's ladder asked this question."
+  },
+  {
+    "name": "product_type",
+    "type": "VARCHAR",
+    "description": "The product's own declared type, from registry.products."
+  },
+  {
+    "name": "ladder_product_type",
+    "type": "VARCHAR",
+    "description": "Which ladder variant governs. '*' where one ladder covers the whole category, the product's own type where a category mixes them, null where none covers it - in which case the product carries a single row with a null fact_key rather than vanishing."
+  },
+  {
+    "name": "is_deferred",
+    "type": "BOOLEAN",
+    "description": "Whether the category's scoring_recipe declares that its ladder does not decide this product. 86 of 470 today. The facts are still resolved and published - the refusal is data, and 'why is this one unscored' should be answerable from the table - but openness_computed will not walk the rules for it."
+  },
+  {
+    "name": "deferral_reason",
+    "type": "VARCHAR",
+    "description": "The `because` the repo recorded for a deferral. Null for everything else."
+  },
+  {
+    "name": "fact_key",
+    "type": "VARCHAR",
+    "description": "A dimension the ladder declares, or 'license_tier' for the derived one. Null only on a product no ladder variant covers."
+  },
+  {
+    "name": "fact_value",
+    "type": "VARCHAR",
+    "description": "The value a rule reads. Null means this ladder asked and the product records no answer, which is a curation work list rather than an error - and is deliberately distinguishable from the dimension not being asked about, which produces no row."
+  },
+  {
+    "name": "fact_grade",
+    "type": "VARCHAR",
+    "description": "dataset when a machine-readable route settled it, document when it rests on someone's reading of prose. Null when nothing was recorded."
+  },
+  {
+    "name": "fact_admitted",
+    "type": "BOOLEAN",
+    "description": "Whether the evidence behind the value cites something specific. A document row whose axis cites only 'flagship phase-C verification source' is not admitted."
+  },
+  {
+    "name": "fact_accessed",
+    "type": "DATE",
+    "description": "When the evidence behind this fact was read or fetched. An access date, never a confirmation: see docs/guides/freshness.md."
+  },
+  {
+    "name": "fact_input",
+    "type": "VARCHAR",
+    "description": "For license_tier, the canonical license name the tier lookup consumed, after normalization and aliasing. Lets an unmapped license be read off this table rather than reconstructed. Null for every other fact key."
+  },
+  {
+    "name": "fact_note",
+    "type": "VARCHAR",
+    "description": "Why a dataset-grade route declined in favor of the recorded components: SKUs that disagree, or partial coverage of a most-restrictive aggregate."
+  },
+  {
+    "name": "is_recorded",
+    "type": "BOOLEAN",
+    "description": "Whether this product answers the question at all. Summed downstream into dims_recorded, which is the denominator docs/guides/freshness.md requires for a whole-axis freshness claim."
+  }
+]

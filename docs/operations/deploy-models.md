@@ -9,11 +9,11 @@ different places.
 | Family | Models | Where the SQL lives |
 |---|---|---|
 | Legacy warehouse | `entities`, `events`, `metrics`, and the legacy `scores` stack-map models | `warehouse/models/` — **in this repo** |
-| Scoring chain | `evidence.product_evidence` → `scores.openness_facts` → `scores.openness_computed`, plus the `signal_*` fetchers | On the OSO platform only. The deploy script and `.sql` sit one level up in `currentai-org/{tools,udms}/`, **which is not under version control at all.** |
+| Scoring chain | `evidence.product_evidence` → `scores.openness_facts` → `scores.openness_computed`, plus the `signal_*` fetchers | On the OSO platform. The models are copied **read-only** into `warehouse/platform-mirror/` (with a provenance manifest) so they are legible from the repo; the deploy script and the working copies you push from sit one level up in `currentai-org/{tools,udms}/`, outside version control. **Nothing deploys from `warehouse/platform-mirror/`.** |
 
-Mirroring the scoring-chain SQL into `warehouse/udms/` is tracked as T1 of the 2026-08-14
-audit. Until it lands, treat the copy in `../udms/` as the only copy that exists, and run the
-deploy from that directory.
+The `warehouse/platform-mirror/` copy (T1 of the 2026-08-14 audit) makes the scoring models
+readable without platform access. It is a snapshot, not the source of truth — see
+`warehouse/platform-mirror/README.md` and its `manifest.yaml` for the deployed revision each file reflects.
 
 ## The deploy mechanic: revision → RELEASE → run
 
