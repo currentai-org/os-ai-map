@@ -53,6 +53,7 @@ from __future__ import annotations
 import argparse
 import re
 import sys
+from collections import Counter
 from datetime import date, timedelta
 from pathlib import Path
 
@@ -112,14 +113,23 @@ def product_state(
             axes[axis] = "abstained"
         else:
             axes[axis] = "open"
-    # The canonical verification line carries its own date, so the prose ages on the same clock.
-    match = VERIFIED_LINE.search(str(product.get("comments") or ""))
-    if not match:
+    # The canonical verification line carries its own date, so the prose ages on the same
+    # clock. Four states, not two: measured 2026-08-15 NO product is missing a line and every
+    # date is in August, so a bare missing/verified split reported 245 products as unfinished
+    # when what actually varied was whether the line names a document a reader can reopen.
+    # `named_noncanonical` needs a rewording; `generic` names a method and needs evidence or a
+    # re-read. Collapsing those into one number hid which was which.
+    from build.prose_provenance import classify
+
+    prose_kind, prose_date, _ = classify(product.get("comments"))
+    if prose_kind == "missing":
         prose_state = "missing"
-    elif _on_or_after(match.group(1), cutoff):
+    elif not _on_or_after(prose_date, cutoff):
+        prose_state = "stale"
+    elif prose_kind == "canonical":
         prose_state = "verified"
     else:
-        prose_state = "stale"
+        prose_state = prose_kind
     prose = prose_state == "verified"
     return {
         "axes": axes,
@@ -283,6 +293,16 @@ def main() -> int:
             f"{row['coverage']:10.0%}"
         )
     print(f"{'TOTAL':30}{done:6}{sum(r['held'] for r in rows):6}{total:5}")
+
+    prose = Counter(
+        s["prose_state"] for row in rows for s in row["states"].values()
+    )
+    print(f"\nprose verification lines: "
+          + ", ".join(f"{prose[k]} {k}" for k in
+                      ("verified", "named_noncanonical", "generic", "stale", "missing")
+                      if prose.get(k)))
+    print("  `generic` names a method rather than a document (product-copy.md forbids it);\n"
+          "  `named_noncanonical` names a real document behind `live`/`on`/`against`.")
     print()
     if pending:
         nxt = pending[0]
@@ -312,6 +332,10 @@ def main() -> int:
                     bits.append("no verification line")
                 elif state["prose_state"] == "stale":
                     bits.append("prose line stale")
+                elif state["prose_state"] == "generic":
+                    bits.append("prose names a method, not a document")
+                elif state["prose_state"] == "named_noncanonical":
+                    bits.append("prose line noncanonical wording")
                 print(f"  {slug:38} {'; '.join(bits)}")
     return 0
 
