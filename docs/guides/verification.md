@@ -302,7 +302,7 @@ prose by `check_rubric`'s own measure, against the 71% that stopped `edge_hardwa
 four different instruments sharing one field name, there is no shared ladder at the end of that
 work the way openness got four.
 
-## Current state, 2026-08-08
+## Current state, 2026-08-14
 
 | | count |
 |---|---|
@@ -310,11 +310,12 @@ work the way openness got four.
 | deliberately null — not claims | 46 (26 capability, 20 adoption) |
 | **real claims to verify** | **1370** |
 | of those, citing at least one source URL | 1370 |
-| carrying a real `last_verified` | 6 |
-| of those 6, satisfying the invariant and the digest requirement | 6, after the Phase 0 re-read |
-| distinct source URLs behind all of it | 1106 |
+| carrying a real `last_verified` | 1416 |
+| distinct source URLs behind all of it | 1824 |
 
-Regenerate these rather than trusting them; the corpus grows most weeks.
+`check_freshness` reports median age 1d, oldest 6d, and no axis resting on the commit-date
+fallback. Regenerate these rather than trusting them; the corpus grows most weeks, and the
+figures in this table have already been wrong once for exactly that reason.
 
 The null axes are two different abstentions and both are deliberate. Capability is null where
 the axis does not apply — datasets and a wire protocol are not capable of anything a benchmark
@@ -507,13 +508,16 @@ Three things this step turned up that the plan did not anticipate:
   three tokens are now declared there rather than left to a fallback. Precisely the shape of
   drift `check_parity` exists to catch, and it was caught by the first run of it.
 
-### 3. The automated freshness pass — roughly 400 axes
+### 3. The automated freshness pass — roughly 400 axes ✅ **done 2026-08-13**
 
 Adoption and capability, restricted to axes where every recorded dimension is signal-derived.
 The date is the signal fetch date. No reading and no judgment, which is exactly why it can
 run unattended and why it must be fenced to those axes only.
 
-### 4. The re-read pass — roughly 1106 URLs
+### 4. The re-read pass — roughly 1106 URLs ✅ **done 2026-08-14**
+
+Closed by the 08-13/14 all-corpus sweep: all 1416 axes now carry a real `last_verified`,
+median age 1d. The description below is kept as the standing procedure for re-running it.
 
 Everything else, all of openness included. **Fold the deferral backlog into this pass rather
 than clearing it first.** Reading a product's sources to determine `core-gated` *is* the
@@ -528,8 +532,9 @@ the unit of work; the split of authority is unchanged — this guide governs the
 date, `product-info.md` governs the prose, and the `comments` verification line still earns no
 `last_verified`.
 
-That backlog is currently the 81 declared deferrals. Every category has a recipe now, and
-`safeguards` — which used to contribute all 26 of its products here — is down to 5. The
+That backlog is the declared deferrals: 5 products across 4 categories as of 2026-08-14, down
+from 81. Every category has a recipe now, and `safeguards` — which used to contribute all 26 of
+its products here — defers none. The
 composition is roughly: products whose prose does not settle a dimension the ladder reads,
 products whose recorded license maps to no tier, and a handful where the ladder and the
 recorded score genuinely disagree (`jina-reader`, `openhands`, `maple-ai`, `privatemode`, all

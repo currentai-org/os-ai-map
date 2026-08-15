@@ -40,17 +40,20 @@ than one kind of product maps `extends` per product type.
 Three caveats, because "a formula exists" is easy to over-read:
 
 - **A recipe covers a category, not every product in it.** All sixteen categories carry one as
-  of 2026-08-01, but 81 products are declared in a `deferred:` block, meaning the category has
-  said the ladder does not decide them. Those scores remain editorial. `check_recipe` prints
-  the per-category split and fails if a product abstains without being declared.
+  of 2026-08-01, and a small number of products are declared in a `deferred:` block, meaning the
+  category has said the ladder does not decide them. Those scores remain editorial.
+  `check_recipe` prints the per-category split and fails if a product abstains without being
+  declared — read its output for the current figure rather than trusting a number typed here.
 - **A recipe reproducing a score does not validate it.** It shows the rules describe how the
   category was scored. The document-grade evidence the checker reads was parsed out of the
   same files the scores live in, so agreement is a fidelity check on the formula, not on the
   facts.
 - **A category can hold products back.** `scoring_recipe.deferred` lists products the rules do
-  not decide, usually because a dimension is not recorded in a form the ladder can read. There
-  are 81 such products across 13 categories, and `safeguards` defers 5 of its 26. Deferred
-  products publish no openness evidence to the warehouse.
+  not decide, usually because a dimension is not recorded in a form the ladder can read. As of
+  2026-08-14 there are 5 such products across 4 of the 16 categories (`benchmark_eval_data` 2,
+  `dataset_processing_tools`, `edge_hardware` and `training_synthetic_datasets` 1 each) — down
+  from 81 before the August verification sweep. Deferred products publish no openness evidence
+  to the warehouse. `uv run python -m build.check_recipe` prints the live split.
 
 So openness is part computed and part editorial, and which one you are looking at depends on
 the category and the product. `docs/guides/verification.md` tracks the work to close that gap.
@@ -64,13 +67,13 @@ across all score files shows the overlap:
 | score | classes that appear at this score |
 |-------|-----------------------------------|
 | 5 | `open_source`, `open`, `open_hardware` |
-| 4 | `open_core`, `open_weights`, `open`, `gated`, `open_toolchain` |
+| 4 | `open_core`, `open_weights`, `open`, `open_toolchain` |
 | 3 | `open_weights`, `open`, `documented`, `gated` |
 | 2 | `restricted`, `source_available`, `gated` |
 | 1 | `closed` |
 | 0 | `closed` |
 
-Regenerated 2026-07-30. The overlap is narrower than it was: the producible-pair check added in
+Regenerated 2026-08-14. The overlap is narrower than it was: the producible-pair check added in
 #128 found 17 pairs no rule in any recipe could emit, and correcting them is why `open_core` and
 `source_available` no longer appear at 3 and `open_core` no longer appears at 2. If you are
 reading this table long after that date, regenerate it rather than trusting it — the check is

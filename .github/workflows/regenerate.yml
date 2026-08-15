@@ -20,6 +20,15 @@ on:
 permissions:
   contents: write
 
+# Serialize runs. This workflow commits and pushes to main, so two overlapping runs race:
+# the second one's push is non-fast-forward and fails, leaving the payload on main stale in
+# exactly the way the 2026-08-07 incident above describes. cancel-in-progress stays false
+# because the later run's inputs are the ones we want, and a cancelled run mid-push is worse
+# than a queued one.
+concurrency:
+  group: regenerate
+  cancel-in-progress: false
+
 jobs:
   regenerate:
     runs-on: ubuntu-latest

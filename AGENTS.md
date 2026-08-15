@@ -48,11 +48,15 @@ tests/                 pytest suite for build helpers and serializer behavior
 Every module is a CLI with a docstring that explains why it exists; run any of them with
 `--help`. Grouped by what they are for:
 
+This list is complete as of 2026-08-14 — 30 modules. If you find one missing here, the
+module's own `--help` wins and this map is stale.
+
 ```
-Notebook build      validate.py      sources/ schema + cross-file invariants
-                    serialize.py     sources/ -> build/notebook_data.json
-                    render.py        notebook_data.json -> notebooks/ai-stack-map.py
-                    update_readme.py syncs the README stat badges
+Notebook build      validate.py           sources/ schema + cross-file invariants
+                    serialize.py          sources/ -> build/notebook_data.json
+                    render.py             notebook_data.json -> notebooks/ai-stack-map.py
+                    freshness_payload.py  per-product freshness for the payload
+                    update_readme.py      syncs the README stat badges
 
 Config bridge out   serialize_registry.py  identity: what exists
                     serialize_rubric.py    each category's rubric + recorded evidence
@@ -64,9 +68,31 @@ Scores back in      apply_scores.py   reads computed scores from OSO, writes
                                       inbound data path. It writes no dates -- see
                                       docs/guides/verification.md.
 
-Checkers (CI)       check_rubric.py    does the rubric reproduce the hand-authored scores
-                    check_routing.py   which dimensions have a usable machine signal
-                    check_freshness.py how stale is each axis
+Editing library     components.py     the ONLY supported way to edit an
+                                      openness.components field in place. Never
+                                      load-modify-dump a corpus file (its docstring
+                                      says why a module rather than a re.sub).
+
+Gates (14)          check_rubric.py        does the recipe reproduce the recorded scores
+                    check_recipe.py        is the recipe's form legal (no dead rules, etc.)
+                    check_verification.py  is a claimed confirmation supported; is a
+                                           score/class pair even producible
+                    check_components.py    structured components say what the string said
+                    check_parity.py         repo-computed vs warehouse-published, per product
+                    check_payload.py        the serialized payload's identity invariants
+                    check_retirement.py     a slug left the payload without a redirect
+                    check_freshness.py      how stale is each axis
+                    check_refetch.py        sampled re-fetch: did a recorded fetch happen
+                    check_artifacts.py      a declared artifact drifted from what it names
+                    check_adoption.py       band matches the scale its rubric declares
+                    check_instrument.py     adoption record has what its instrument requires
+                    check_capability.py     capability comparisons consistent and fresh
+                    check_routing.py        how much of the map signal_routing can answer
+
+Shared helpers      rubrics.py       resolves scoring_recipe inheritance
+                    warehouse.py     the ONLY supported way to read OSO from build/
+                    fetch_source.py  fetches a cited source the way check_refetch will
+                    sweep_status.py  where the verification sweep has got to
 
 Proposers           propose_arxiv.py     candidate arXiv ids, verified live
                     propose_artifacts.py candidate artifacts, verified live
@@ -93,8 +119,11 @@ The curated source set is four per-record YAML concerns in `sources/` plus the s
   the org file. No `flags` field; flag-style judgments are left to analyst downstream
   business logic. Open artifacts are declared as typed top-level arrays of `{url: ...}`
   objects: `github`, `npm`, `pypi`, `crates`, `go`, `huggingface_model`,
-  `huggingface_dataset`. Only keys with entries are included. Optional `comments` is a
-  free-text string for provenance and scoring notes (version, license, last release date).
+  `huggingface_dataset`, `arxiv`. Only keys with entries are included; `product.schema.json`
+  is the authoritative list. Four further optional keys are not artifacts and are documented
+  in the schema: `aliases`, `lineage`, `version_in_identity`, `artifact_exceptions`. Optional
+  `comments` is a free-text string for provenance and scoring notes (version, license, last
+  release date).
 - **scores**: one file per product (same slug) with `openness`, `adoption`, `capability`.
   Every non-null score value requires a `sources:` citation entry.
 - **taxonomy.yaml**: owns arc grouping + cross-category display order. The three arcs
@@ -206,7 +235,7 @@ drives its products, and a product's prose has its own procedure.
 
 | Skill | When to use |
 |-------|------------|
-| `curate-category` | Edit category definition, weights, litmus, or product roster |
+| `curate-category` | Edit a category's `description`, `strapline`, weights, or product roster |
 | `add-product` | Add a new product (scaffolds product + score YAML, updates roster) |
 | `build-rubric` | Derive a category's openness ladder, or extend a shared one to it |
 | `verify-product` | Refresh one product's `description` and `comments` against its sources |
@@ -234,8 +263,8 @@ After a PR merges, a maintainer (OSO MCP write access) may need to:
 
 - `OSO_API_KEY` loaded automatically via `direnv` (place in `.env`, which is gitignored).
 - See `.env.example` for the required variable.
-- OSO MCP connects via HTTP to `localhost:8000/mcp` with a Bearer token in `.mcp.json`
-  (maintainer only).
+- OSO MCP connects via HTTP to `https://mcp.oso.xyz/mcp` with a Bearer token in `.mcp.json`
+  (maintainer only; the file is gitignored).
 
 ## Common references
 

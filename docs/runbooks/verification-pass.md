@@ -113,7 +113,7 @@ fixed as score corrections.
 
 ---
 
-## Phase 1 — Finish the recipes: 16/16 categories, 472/472 products
+## Phase 1 — Finish the recipes: 16/16 categories, 472/472 products ✅ done 2026-08-01
 
 111 products, four categories. Do this before Phase 2 or the SQL generalization gets done
 twice.
@@ -208,7 +208,11 @@ uv run python -m build.serialize_rubric && uv run python -m build.publish_regist
 
 # 3. revision -> RELEASE -> run, for a model whose SQL changed. The middle step is the
 #    one that gets forgotten, and a run without it executes the previous release.
-uv run python tools/deploy_udm.py --dataset scores --model openness_facts \
+#    NOTE: deploy_udm.py and the .sql files are NOT in this repo. They sit one level up,
+#    in currentai-org/{tools,udms}/, which is not under version control at all — so run
+#    this from that directory, and treat the SQL there as the only copy that exists.
+#    Folding both into warehouse/udms/ is tracked as T1 of the 2026-08-14 audit.
+cd .. && uv run python tools/deploy_udm.py --dataset scores --model openness_facts \
     --sql udms/scores_openness_facts.sql
 
 # 4. prove it
@@ -248,7 +252,7 @@ deferral count in `category_deferrals` matches the repo's.
 
 ---
 
-## Phase 3 — The automated pass, ~400 axes
+## Phase 3 — The automated pass, ~400 axes ✅ done 2026-08-13
 
 Adoption and capability only, and only where every recorded dimension is signal-derived
 (needs Phase 2's column). The date is the signal fetch date; the establishing source is the
@@ -269,11 +273,14 @@ and `check_freshness` reports them as `verified` rather than `commit`.
 
 ---
 
-## Phase 4 — The re-read pass, ~1106 URLs
+## Phase 4 — The re-read pass, ~1106 URLs ✅ done 2026-08-14
 
-Everything else, all of openness included. **Fold the 81 held-back products in rather than clearing
-them first** — reading a product's sources to settle `core-gated` *is* the re-check that earns
-its date. Two passes means the same pages fetched twice, on scores about to change.
+All 1416 axes now carry a real `last_verified` (median age 1d, oldest 6d). What follows is the
+standing procedure for re-running the pass, not outstanding work.
+
+Everything else, all of openness included. **Fold the held-back products in rather than clearing
+them first** (5 across 4 categories as of 2026-08-14) — reading a product's sources to settle
+`core-gated` *is* the re-check that earns its date. Two passes means the same pages fetched twice, on scores about to change.
 (`check_recipe` prints the current deferral count per category; regenerate it rather than
 trusting the number here.)
 

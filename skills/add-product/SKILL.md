@@ -31,7 +31,9 @@ Creates four coordinated edits: a product file, a score file, a category roster 
    comments: "<release / license / provenance notes>"
    ```
    Supported artifact keys: `github`, `npm`, `pypi`, `crates`, `go`,
-   `huggingface_model`, `huggingface_dataset`. Omit any key with no entries.
+   `huggingface_model`, `huggingface_dataset`, `arxiv`. `docs/schemas/product.schema.json`
+   is the authoritative list — read it rather than this line if they disagree. Omit any key
+   with no entries.
    `comments` is a free-text string for provenance and scoring notes (e.g. version,
    license, last release date). Omit if there is nothing to note. Flag-style judgments
    are left to analyst downstream business logic; there is no `flags` field.
@@ -73,8 +75,16 @@ Creates four coordinated edits: a product file, a score file, a category roster 
 
 ## Openness class & score quick-reference
 
-Assign `class` first, then the 0–5 `score` (full rationale in
-`docs/guides/openness-spectrum.md`). Calls that are easy to get wrong:
+`docs/guides/openness-spectrum.md` is authoritative; this is a shortlist of calls that are
+easy to get wrong, not a second policy. Two things to hold onto before using it:
+
+- **The score is computed, not assigned.** Every category carries a `scoring_recipe` whose
+  ladder derives `(score, class)` from the evidence in `openness.components`. Your job on a
+  new product is to record the evidence and let the ladder decide; hand-assign only where
+  the category has declared the product `deferred`.
+- **A class is legal at more than one score.** `gated`, for instance, appears at both 2 and 3;
+  `open` spans 3 through 5. See the score-by-class cross-tab in `openness-spectrum.md`; the
+  single mappings below are the common case, not a rule.
 
 - **Models:** `closed` (proprietary/API-only, no weights) = 1; `open_weights` (weights
   public but restrictive license and/or no open data) = 3; `open_source` (open weights +
