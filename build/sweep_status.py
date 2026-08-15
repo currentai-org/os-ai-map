@@ -44,6 +44,8 @@ Usage:
     uv run python -m build.sweep_status --next            # just the next category's slug
     uv run python -m build.sweep_status --max-age-days 30 # what has gone stale in a month
     uv run python -m build.sweep_status --since 2026-07-01
+    uv run python -m build.sweep_status --retracting      # notes that correct themselves
+    uv run python -m build.sweep_status --under-coverage  # bands their own note disowns
 """
 
 from __future__ import annotations
@@ -130,6 +132,66 @@ def product_state(
     }
 
 
+# A note that corrects itself in place. Every refresh appends rather than rewrites, so a note
+# can now carry a superseded sentence AND its own retraction, and a reader cannot tell which
+# half is current without reading to the end.
+#
+# NOT A GATE, deliberately. No checker can tell a superseded sentence from a legitimate
+# history, and one that guessed would start deleting the reasoning these files exist to carry.
+# This lists them for the next refresh pass, where a human is already reading the note.
+RETRACTING = re.compile(
+    r"superseded|that last sentence|no longer (?:appears|on (?:the|that) page|carried)"
+    r"|dropped rather than carried forward|is now WRONG|EVIDENCE REPLACED|WITHDRAWN"
+    r"|did not survive the read|is not on the cited page|BENCHMARK FIGURE SUPERSEDED",
+    re.IGNORECASE,
+)
+
+# A note that says, in its own words, that the signal it banded does not measure the product's
+# real use. `docs/reference/adoption.md` names the tell: "a note that describes the signal as
+# understating the product, followed by a band recorded on that signal anyway." Both directions
+# count — a CI-inflated download count is the same defect pointing the other way.
+UNDERSTATES = re.compile(
+    r"understates|minority channel|not the (?:product's )?primary (?:channel|distribution)"
+    r"|primary distribution channel",
+    re.IGNORECASE,
+)
+INFLATED = re.compile(r"inflated|anomalously high|mirror-inflated|CI/dependency traffic", re.IGNORECASE)
+
+
+def _scores() -> dict[str, dict]:
+    return {
+        p.stem: (yaml.safe_load(p.read_text()) or {})
+        for p in sorted((ROOT / "sources" / "scores").glob("*.yaml"))
+    }
+
+
+def retracting_notes() -> list[tuple[str, str, str]]:
+    """(slug, axis, the phrase that matched) for notes that correct themselves in place."""
+    found = []
+    for slug, score in _scores().items():
+        for axis in AXES:
+            note = ((score.get(axis) or {}).get("note")) or ""
+            match = RETRACTING.search(note)
+            if match:
+                found.append((slug, axis, match.group(0)))
+    return found
+
+
+def under_coverage() -> list[tuple[str, str, str]]:
+    """(slug, direction, phrase) for measured bands whose own note disowns the measurement."""
+    found = []
+    for slug, score in _scores().items():
+        adoption = score.get("adoption") or {}
+        if adoption.get("signal_type") not in ("usage_volume", "stars_fallback"):
+            continue
+        note = adoption.get("note") or ""
+        if (m := UNDERSTATES.search(note)):
+            found.append((slug, "understates", m.group(0)))
+        elif (m := INFLATED.search(note)):
+            found.append((slug, "inflated", m.group(0)))
+    return found
+
+
 def survey(cutoff: date | None = None) -> list[dict]:
     cats, prods, scores, held, _ = load()
     rows = []
@@ -166,7 +228,34 @@ def main() -> int:
     parser.add_argument(
         "--since", help="treat a confirmation before this date (YYYY-MM-DD) as needing a refresh"
     )
+    parser.add_argument(
+        "--retracting", action="store_true",
+        help="list notes that correct themselves in place, for the next refresh pass",
+    )
+    parser.add_argument(
+        "--under-coverage", action="store_true",
+        help="list measured bands whose own note disowns the measurement",
+    )
     args = parser.parse_args()
+
+    # Both are worklists rather than status, so they print and exit rather than joining the
+    # per-category table. Exit 0 always: neither is a finding a PR can be asked to clear.
+    if args.retracting:
+        rows = retracting_notes()
+        print(f"{len(rows)} note(s) correct themselves in place. A refresh pass should rewrite")
+        print("each to its current reading — the history is in git.\n")
+        for slug, axis, phrase in rows:
+            print(f"  {f'{slug}.{axis}':<46} {phrase!r}")
+        return 0
+
+    if args.under_coverage:
+        rows = under_coverage()
+        print(f"{len(rows)} measured band(s) whose own note disowns the measurement.")
+        print("docs/reference/adoption.md gives the remedy per case: count every channel and")
+        print("sum, admit a lifetime average as a floor, or move to reported_traction.\n")
+        for slug, direction, phrase in rows:
+            print(f"  {slug:<28} {direction:<12} {phrase!r}")
+        return 0
 
     if args.max_age_days is not None and args.since:
         parser.error("--max-age-days and --since say the same thing two ways; pass one")

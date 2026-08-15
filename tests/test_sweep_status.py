@@ -137,3 +137,39 @@ def test_the_prose_ages_on_the_same_clock():
 def test_a_held_product_stays_resolved_under_any_window():
     state = product_state("p", {}, _dated("2020-01-01"), held={"p": {}}, cutoff=date(2026, 7, 1))
     assert state["done"] is True
+
+
+def test_retracting_notes_finds_the_known_cases():
+    """`blaxel-sandbox` carries the shape this looks for in two axes: an adoption note whose
+    "No last_verified claimed" sentence is retracted three sentences later, and a capability
+    note flagging its own benchmark figure as superseded."""
+    from build.sweep_status import retracting_notes
+
+    found = {(slug, axis) for slug, axis, _ in retracting_notes()}
+    assert ("blaxel-sandbox", "adoption") in found
+    assert ("blaxel-sandbox", "capability") in found
+    assert len(found) > 30, f"only {len(found)} retracting notes; the walk has drifted"
+
+
+def test_under_coverage_finds_the_case_the_guide_names():
+    """`docs/reference/adoption.md` establishes the rule on `n8n` — npm downloads banded while
+    the product ships overwhelmingly as a Docker container. If this stops finding it, the
+    detector no longer matches the class the guide describes."""
+    from build.sweep_status import under_coverage
+
+    found = {slug for slug, _, _ in under_coverage()}
+    assert {"n8n", "mistral-large", "ollama"} <= found
+
+
+def test_under_coverage_only_reads_measured_instruments():
+    """A `reported_traction` band claims no measurement, so it cannot be disowning one.
+    Including it would fold this list into the banded_quantity class, which is a different
+    problem with a different fix."""
+    import yaml
+    from pathlib import Path
+
+    from build.sweep_status import ROOT, under_coverage
+
+    for slug, _, _ in under_coverage():
+        score = yaml.safe_load((Path(ROOT) / "sources" / "scores" / f"{slug}.yaml").read_text())
+        assert score["adoption"]["signal_type"] in ("usage_volume", "stars_fallback")
