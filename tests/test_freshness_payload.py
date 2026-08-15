@@ -128,9 +128,14 @@ def test_commit_dates_are_scoped_to_the_given_root_not_this_repository(tmp_path)
     os-ai-map's own history, for a slug that does not exist in os-ai-map at all. If root
     were ignored, this slug would be missing entirely (real history has no such file)."""
     _init_repo_with_one_score(tmp_path, "throwaway-product", "2020-01-01")
-    assert resolve_freshness(tmp_path) == {
-        "throwaway-product": {"date": "2020-01-01", "basis": "commit"}
-    }
+    result = resolve_freshness(tmp_path)
+    assert set(result) == {"throwaway-product"}, "root must scope which files are read"
+    assert result["throwaway-product"]["date"] == "2020-01-01"
+    assert result["throwaway-product"]["basis"] == "commit"
+    # The record also carries `unconfirmed_axes`, since the fixture's single axis is undated.
+    # That is asserted where it is the subject — see
+    # test_a_product_with_no_confirmed_axis_still_carries_its_hold. Pinning the whole dict
+    # here would make this root-scoping test fail on every unrelated shape change.
 
 
 def _corpus_with(tmp_path, axes: dict, queue: dict | None = None):
@@ -201,3 +206,62 @@ def test_an_undated_axis_with_no_queue_entry_is_still_partial(tmp_path):
 def test_no_axis_dated_falls_back_to_commit(tmp_path):
     root = _corpus_with(tmp_path, {"openness": None, "adoption": None, "capability": None})
     assert resolve_freshness(root)["widget"]["basis"] == "commit"
+
+
+def test_the_product_date_is_the_oldest_confirmed_axis(tmp_path):
+    """`last_verified` means the date EVERYTHING was confirmed. Reduced to one product date,
+    "everything" is the constraint, so the oldest confirmed axis is the defensible answer.
+
+    This was max() until 2026-08-15 — the same overstatement as publishing a held axis as
+    verified, in a less obvious form, and the common case rather than an edge: 176 of the 472
+    products carry differing axis dates.
+    """
+    root = _corpus_with(tmp_path, {"openness": "2026-08-11", "adoption": "2026-08-09",
+                                   "capability": "2026-08-13"})
+    record = resolve_freshness(root)["widget"]
+    assert record["date"] == "2026-08-09", "the product is current only through its oldest axis"
+    assert record["basis"] == "verified"
+    assert record["latest_axis_confirmation"] == "2026-08-13"
+
+
+def test_latest_axis_confirmation_is_omitted_when_it_adds_nothing(tmp_path):
+    root = _corpus_with(tmp_path, {"openness": "2026-08-13", "adoption": "2026-08-13",
+                                   "capability": "2026-08-13"})
+    assert "latest_axis_confirmation" not in resolve_freshness(root)["widget"]
+
+
+def test_a_partial_product_dates_from_its_oldest_CONFIRMED_axis(tmp_path):
+    root = _corpus_with(tmp_path, {"openness": "2026-08-11", "adoption": None,
+                                   "capability": "2026-08-13"})
+    record = resolve_freshness(root)["widget"]
+    assert record["date"] == "2026-08-11"
+    assert record["basis"] == "partial"
+
+
+def test_a_product_with_no_confirmed_axis_still_carries_its_hold(tmp_path):
+    """The commit path dropped holds entirely, which recreated this module's own defect for a
+    fully unconfirmed product: honest in the repo, invisible outside it."""
+    root = _corpus_with(
+        tmp_path,
+        {"openness": None, "adoption": None, "capability": None},
+        queue={"widget": {"adoption": {"since": "2026-08-15", "because": "no figure published"}}},
+    )
+    record = resolve_freshness(root)["widget"]
+    assert record["basis"] == "commit"
+    assert record["unconfirmed_axes"] == ["adoption", "capability", "openness"]
+    assert record["verification_holds"] == [
+        {"axis": "adoption", "since": "2026-08-15", "reason": "no figure published"}
+    ]
+
+
+def test_a_hold_on_a_confirmed_axis_is_not_emitted(tmp_path):
+    """A stale queue entry naming an axis that has since been confirmed must not reach the
+    payload — `check_payload` rejects that shape, so emitting it would be a hard failure."""
+    root = _corpus_with(
+        tmp_path,
+        {"openness": "2026-08-13", "adoption": "2026-08-13", "capability": None},
+        queue={"widget": {"adoption": {"since": "2026-08-01", "because": "stale entry"}}},
+    )
+    record = resolve_freshness(root)["widget"]
+    assert record["unconfirmed_axes"] == ["capability"]
+    assert "verification_holds" not in record

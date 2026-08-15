@@ -122,9 +122,9 @@ the stronger one:
 
 | `basis` | means |
 |---|---|
-| `verified` | **every** axis carries a `last_verified`. The date is the most recent of them. |
-| `partial` | some axes are confirmed and at least one deliberately is not. The date is when the confirmed part was confirmed; `unconfirmed_axes` names the rest, and `verification_holds` carries the queue's reason where there is one. |
-| `commit` | no axis carries a date. Falls back to the score file's last claim-changing commit. |
+| `verified` | **every** axis carries a `last_verified`. The date is the **oldest** of them — see below. |
+| `partial` | some axes are confirmed and at least one deliberately is not. The date is the oldest **confirmed** axis; `unconfirmed_axes` names the rest, and `verification_holds` carries the queue's reason where there is one. |
+| `commit` | no axis carries a date. Falls back to the score file's last claim-changing commit — and still carries `unconfirmed_axes` and any holds, because a fully unconfirmed product is exactly where a hold most needs to be visible. |
 
 **`partial` was added 2026-08-15, and its absence was a live defect.** The reduction took
 `max()` over the axes that *had* a date and ignored the ones that did not, under a comment
@@ -136,6 +136,16 @@ parked in `sources/verification_queue.yaml`.
 The holds were honest inside the repo and invisible outside it. A held axis is a real
 editorial state and must not be forced into a score to make a label tidy, so the payload
 carries the state instead: **a product with a hold is publishable and visibly caveated.**
+
+**The product date is the oldest confirmed axis, not the newest.** The rule at the top of this
+document is that `last_verified` is the date on which *everything* was confirmed. Reduced to
+one product-level date, "everything" is the constraint: a product whose axes were confirmed on
+the 9th, 11th and 13th is defensibly current only through the **9th**. Publishing the 13th
+says "at least one axis was confirmed then", which is a weaker claim wearing the stronger
+one's label — the same overstatement as publishing a held axis as verified, in a less obvious
+form. It was `max()` until 2026-08-15, and 176 of the 472 products carry differing axis dates,
+so this is the common case rather than an edge. `latest_axis_confirmation` carries the newest
+date for anyone who wants "when was this last touched", emitted only where it differs.
 
 Note what `partial` does *not* depend on. It follows from an axis being unconfirmed, not from
 a queue entry — a hold explains an unconfirmed axis, and its absence does not make one

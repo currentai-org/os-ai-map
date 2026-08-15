@@ -4,8 +4,9 @@ docs/reference/evidence-and-freshness.md is normative. Two tiers, and the payloa
 so the page can label the weaker claim rather than passing it off as the stronger one:
 
   verified  every axis in the score file carries last_verified.
-  partial   some axes are confirmed and at least one is deliberately not. The date is when
-            the confirmed part was confirmed, and `verification_holds` names what is missing.
+  partial   some axes are confirmed and at least one is deliberately not. The date covers the
+            confirmed part; `unconfirmed_axes` names the rest and `verification_holds` carries
+            the queue's reason where there is one.
   commit    no axis carries a date. The date of the last commit that changed what
             sources/scores/<slug>.yaml claims. Commits that only changed how a score is
             stored are skipped, so a shape migration cannot republish a product as freshly
@@ -27,6 +28,19 @@ make a label tidy — so the payload says `partial` and carries the holds.
 
 A date is NEVER derived from sources[].accessed (evidence-and-freshness.md,
 "Why freshness is not max(sources[].accessed)").
+
+## The product date is the OLDEST confirmed axis, not the newest
+
+`last_verified` means "the most recent date on which EVERYTHING in the score was confirmed
+still correct". Reduced to one product-level date, "everything" is the constraint: a product
+whose axes were confirmed on the 9th, 11th and 13th is defensibly current only through the
+**9th**. Publishing the 13th says "at least one axis was confirmed then", which is a different
+and weaker claim wearing the stronger one's label.
+
+This was `max()` until 2026-08-15 and it is the same overstatement as publishing a held axis
+as verified, in a less obvious form — 176 of the 472 products carry differing axis dates, so
+it is the common case rather than an edge. `latest_axis_confirmation` carries the newest date
+for anyone who wants "when was this last touched", emitted only where it differs from `date`.
 
 There is nothing to fix in this module for that last point: it takes the commit tier
 from `check_freshness.commit_dates`, which is where the skip lives, so the report and
@@ -135,19 +149,28 @@ def resolve_freshness(root: Path | None) -> dict[str, dict]:
     for slug in sorted(set(axis_dates) | set(commits)):
         dated, undated = axis_dates.get(slug, ({}, []))
         if dated:
-            # The date is still the most recent confirmation, which is what it always was.
-            # What changes is that it no longer claims to cover an axis that has none.
+            # The OLDEST confirmed axis. See the module docstring: a product is current only
+            # through the least recently confirmed thing in it.
             record = {
-                "date": max(dated.values()),
+                "date": min(dated.values()),
                 "basis": "verified" if not undated else "partial",
             }
-            if undated:
-                record["unconfirmed_axes"] = sorted(undated)
-                if slug in holds:
-                    record["verification_holds"] = holds[slug]
+            newest = max(dated.values())
+            if newest != record["date"]:
+                record["latest_axis_confirmation"] = newest
         elif slug in commits:
             record = {"date": commits[slug], "basis": "commit"}
         else:
             continue
+
+        # Attached on EVERY path that has an unconfirmed axis, including `commit`. Emitting
+        # them only when some axis happened to be dated recreated this module's own defect
+        # for a fully unconfirmed product: the hold stayed honest in the repo and invisible
+        # outside it, which is the thing being fixed.
+        if undated:
+            record["unconfirmed_axes"] = sorted(undated)
+            relevant = [h for h in holds.get(slug, []) if h["axis"] in undated]
+            if relevant:
+                record["verification_holds"] = relevant
         out[slug] = record
     return out
