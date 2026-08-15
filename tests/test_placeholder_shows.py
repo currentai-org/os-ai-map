@@ -40,3 +40,32 @@ def test_a_real_shows_passes():
     fine = {"widget": {"openness": {"sources": [{"url": "https://example.com",
                                                  "shows": "LICENSE is the verbatim MIT text"}]}}}
     assert not placeholder_shows(fine)
+
+
+def test_the_gate_catches_a_marker_with_a_real_sentence_appended():
+    """Four of the 33 appended their substance to the marker instead of replacing it —
+    `flagship phase-C verification source; answered HTTP 429 to the 2026-08-13 re-read...`.
+    The first cut compared for equality and reported all four clean, so the gate that exists
+    to prohibit the marker was passing files that still carried it."""
+    marker = next(iter(PLACEHOLDER_SHOWS))
+    planted = {
+        "widget": {
+            "openness": {
+                "sources": [
+                    {"url": "https://example.com",
+                     "shows": f"{marker}; answered HTTP 429 to the re-read after retries"}
+                ]
+            }
+        }
+    }
+    assert placeholder_shows(planted)
+
+
+def test_matching_survives_wrapping():
+    """A `shows` is a folded YAML scalar, so the marker can arrive with its whitespace
+    rewrapped. Matching on the normalized string rather than the raw one is what makes the
+    gate independent of how the file happens to be wrapped."""
+    marker = next(iter(PLACEHOLDER_SHOWS))
+    wrapped = marker.replace(" ", "\n  ", 1)
+    planted = {"widget": {"openness": {"sources": [{"url": "u", "shows": wrapped}]}}}
+    assert placeholder_shows(planted)

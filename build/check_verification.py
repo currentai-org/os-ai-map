@@ -299,9 +299,16 @@ def producible_pairs(
 # tell the difference: `digests` asks whether a source was FETCHED, `check_refetch` asks
 # whether it is still fetchable, and a placeholder passes both.
 #
-# 29 sources across the 13 flagship files carried `flagship phase-C verification source` from
+# 33 sources across the 13 flagship files carried `flagship phase-C verification source` from
 # a June batch. Three of them were re-fetched and re-digested on 2026-08-13 with the string
 # copied forward, so this is not a legacy shape that decays on its own — a pass reproduced it.
+#
+# Matched as a SUBSTRING, not by equality. Four of the 33 had a real sentence appended to the
+# marker rather than replacing it — "flagship phase-C verification source; answered HTTP 429
+# to the 2026-08-13 re-read..." — so an exact-match gate reported clean while the batch
+# marker it exists to prohibit was still in the file. The useful half of those four was kept
+# and the marker dropped; a gate that only caught the unedited form would have let the next
+# half-edit through the same way.
 PLACEHOLDER_SHOWS = {
     "flagship phase-C verification source",
 }
@@ -315,7 +322,8 @@ def placeholder_shows(scores: dict) -> list[str]:
             for source in (score.get(axis) or {}).get("sources") or []:
                 if not isinstance(source, dict):
                     continue
-                if str(source.get("shows", "")).strip() in PLACEHOLDER_SHOWS:
+                shows = " ".join(str(source.get("shows", "")).split())
+                if any(marker in shows for marker in PLACEHOLDER_SHOWS):
                     problems.append(
                         f"{slug}:{axis}: source {source.get('url')!r} records a batch marker "
                         f"as its `shows` rather than what the page shows. Quote the body, or "

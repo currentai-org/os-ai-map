@@ -427,3 +427,30 @@ def set_source(text: str, axis: str, url: str, updates: dict) -> str:
     if yaml.safe_load(new_text) != expected:
         raise ValueError(f"rewriting {axis} source {url!r} changed something else; refusing to write")
     return new_text
+
+
+def drop_field(text: str, axis: str, key: str) -> str:
+    """Return `text` with `axis.key` removed. Raises when it is not there.
+
+    The inverse of `add_field`, and it exists for the same reason: clearing a
+    `last_verified` is a real operation a pass has to perform — an axis whose evidence turns
+    out to contradict its own value must lose the confirmation, not keep it beside a
+    contradiction. `migrate-axis.md` requires a deletion to go through this module with the
+    same reparse assertion rather than through a hand splice.
+    """
+    lines = text.splitlines(keepends=True)
+    bounds = block_bounds(lines, axis)
+    if bounds is None:
+        raise ValueError(f"no top-level {axis!r} block")
+    span = field_span(lines, bounds, key)
+    if span is None:
+        raise ValueError(f"{axis}.{key} is not present")
+    first, last = span
+
+    new_text = "".join(lines[:first] + lines[last:])
+    before_doc = yaml.safe_load(text)
+    expected = copy.deepcopy(before_doc)
+    del expected[axis][key]
+    if yaml.safe_load(new_text) != expected:
+        raise ValueError(f"removing {axis}.{key} changed something else; refusing to write")
+    return new_text

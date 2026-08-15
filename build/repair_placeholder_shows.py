@@ -1,7 +1,8 @@
 """Replace the `shows` placeholder with what each cited page actually shows.
 
-29 sources across 13 score files recorded their evidence as the literal string
-`flagship phase-C verification source`. The field exists so a reader can tell whether the
+33 sources across 13 score files recorded their evidence as the batch marker
+`flagship phase-C verification source` — 29 as the whole field, and four with a real sentence
+appended to it, which an exact-match gate reported clean. The field exists so a reader can tell whether the
 claim follows from the page; that string says only that a batch ran.
 
 They pass every gate. `check_verification` requires a source to carry an `accessed` date and
@@ -202,6 +203,32 @@ SHOWS: dict[tuple[str, str, str], str] = {
 }
 
 
+# Four sources APPENDED a real sentence to the marker rather than replacing it, so the first
+# cut of the gate — an exact-match — reported them clean. The appended half is honest and
+# worth keeping: each names a host that answered 429 and says the source is not part of the
+# axis's date. Only the batch marker is dropped. `refresh-category.md` is explicit that an
+# unreachable host means the source stays undigested and is reported, never that a digest
+# gets invented, so none of these four gains one.
+UNREACHABLE = (
+    "NOT RE-READ: the host answered HTTP 429 to the 2026-08-13 attempt after retries, so this "
+    "source was not re-confirmed and is not part of this axis's date."
+)
+
+SHOWS.update({
+    ("deepseek", "capability", "https://www.morphllm.com/deepseek-v4"): UNREACHABLE,
+    ("falcon", "adoption",
+     "https://venturebeat.com/ai/uaes-falcon-3-challenges-open-source-leaders-amid-surging-demand-for-small-ai-models"): UNREACHABLE,
+    ("minimax", "openness",
+     "https://venturebeat.com/technology/minimax-m3-debuts-eclipsing-gpt-5-5-and-gemini-3-1-pro-on-key-benchmark-performance-for-just-5-10-of-the-cost"): UNREACHABLE,
+    ("phi", "openness",
+     "https://venturebeat.com/ai/microsoft-makes-powerful-phi-4-model-fully-open-source-on-hugging-face"): UNREACHABLE,
+})
+
+# These four keep their original `accessed` date: nothing was re-read, so re-dating them
+# would be the exact overstatement the field exists to prevent.
+KEEP_ACCESSED = {slug_axis_url for slug_axis_url in SHOWS if SHOWS[slug_axis_url] is UNREACHABLE}
+
+
 def load_digests() -> None:
     """Digests captured at repair time, stored beside the map so the pair cannot drift."""
     path = ROOT / "build" / "placeholder_repair_digests.yaml"
@@ -240,7 +267,9 @@ def main() -> int:
     for (slug, axis, url), shows in sorted(SHOWS.items()):
         path = ROOT / "sources" / "scores" / f"{slug}.yaml"
         text = path.read_text()
-        updates: dict[str, object] = {"shows": shows, "accessed": ACCESSED}
+        updates: dict[str, object] = {"shows": shows}
+        if (slug, axis, url) not in KEEP_ACCESSED:
+            updates["accessed"] = ACCESSED
         if url in DIGESTS:
             status, digest = DIGESTS[url]
             updates["http_status"] = status

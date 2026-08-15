@@ -1,32 +1,33 @@
-"""The undigested-source backlog may shrink and may not grow.
+"""Every newly cited source carries a digest. The legacy tail is listed, and may only shrink.
 
 A source with no `content_sha256` cannot be re-fetched, so `check_refetch` — the only gate in
 this repo that goes and looks — is blind to it. `check_verification` requires a digest on any
 source backing a *claimed date*, which is the right scope for a gate that has to be clearable
 inside one PR, and it leaves a tail behind.
 
-Measured 2026-08-15 the tail is 293 of 2,722 sources — 319 before the 26 placeholder sources
-repaired in this same change — and its shape is the reason this is a ratchet rather than a
-sweep:
+**A count budget was the first cut, and it was too weak.** It caps the total, so a pass could
+digest one old source while citing a new undigested one and the number would not move — which
+is exactly the case the invariant is supposed to forbid. `sources/undigested_legacy.txt` lists
+the tail entry by entry instead. Anything not on the list must carry a digest, so a newly
+cited source without a fetch fails on the first assertion rather than being absorbed.
+
+The list is grandfathering, not permission. Measured 2026-08-15 it holds 293 entries — 319
+before the 26 placeholder sources repaired in this same change — and its shape is why the
+remedy is a ratchet rather than a sweep:
 
     accessed 2026-06  270
     accessed 2026-07   18
     accessed 2026-08    5
 
-It is one pre-sweep cohort, not ongoing drift. August discipline is running better than 99%,
-so the discipline does not need a gate — it needs something that stops the cohort growing back
-while it is worked off category by category. Re-fetching 296 URLs and hand-authoring 296
-`shows` extracts in one pass is exactly the rubber-stamping `check_refetch` exists to catch;
-`docs/workflows/refresh-category.md` drives it properly, one category per PR.
-
-**When you clear some, lower the budget in the same PR.** That is the whole mechanism. The
-idiom is `tests/test_openness_buckets.py`'s `KNOWN_VIOLATIONS`: an explicit list of what is
-wrong today, which fails if it stops being accurate in either direction.
+One pre-sweep cohort, with the discipline now running better than 99%. Re-fetching 270 URLs
+and hand-authoring 270 `shows` extracts in one pass is exactly the rubber-stamping
+`check_refetch` exists to catch; `docs/workflows/refresh-category.md` drives it properly, one
+category per PR. **When a pass digests a source, delete its line.** A line that no longer
+describes an undigested source fails too, so the list cannot rot into a standing exemption.
 """
 
 from __future__ import annotations
 
-from collections import Counter
 from pathlib import Path
 
 import pytest
@@ -34,22 +35,27 @@ import yaml
 
 REPO = Path(__file__).resolve().parent.parent
 AXES = ("openness", "adoption", "capability")
-
-# Lower this when a refresh pass digests some. It must never be raised: a new undigested
-# source is a new source somebody cited without fetching, which is the thing being ratcheted.
-BUDGET = 293
+ALLOWLIST = REPO / "sources" / "undigested_legacy.txt"
 
 
-def undigested() -> list[tuple[str, str, str]]:
-    """(slug, axis, url) for every cited source carrying no content digest."""
-    out = []
+def undigested() -> set[str]:
+    """`slug|axis|url` for every cited source carrying no content digest."""
+    out = set()
     for path in sorted((REPO / "sources" / "scores").glob("*.yaml")):
         score = yaml.safe_load(path.read_text()) or {}
         for axis in AXES:
             for source in ((score.get(axis) or {}).get("sources") or []):
                 if not source.get("content_sha256"):
-                    out.append((path.stem, axis, source.get("url", "?")))
+                    out.add(f"{path.stem}|{axis}|{source.get('url', '?')}")
     return out
+
+
+def allowlisted() -> set[str]:
+    return {
+        line.strip()
+        for line in ALLOWLIST.read_text().splitlines()
+        if line.strip() and not line.startswith("#")
+    }
 
 
 @pytest.fixture(scope="module")
@@ -57,38 +63,59 @@ def tail():
     return undigested()
 
 
-def test_the_undigested_tail_does_not_grow(tail):
-    assert len(tail) <= BUDGET, (
-        f"{len(tail)} undigested sources, over the budget of {BUDGET}. A new one means a "
-        "source was cited without being fetched through build.fetch_source. Digest it, or "
-        "cite nothing.\nNewest offenders:\n  "
-        + "\n  ".join(f"{s}.{a} {u}" for s, a, u in tail[-5:])
+@pytest.fixture(scope="module")
+def allowed():
+    return allowlisted()
+
+
+def test_a_newly_cited_source_carries_a_digest(tail, allowed):
+    """The invariant. Not "the total did not grow" — this one."""
+    new = sorted(tail - allowed)
+    assert not new, (
+        f"{len(new)} source(s) cited with no content_sha256 and not in the legacy tail. Only "
+        "build.fetch_source produces a digest, and only an actual fetch produces one — cite "
+        "nothing rather than citing something nobody opened:\n  " + "\n  ".join(new)
     )
 
 
-def test_the_budget_is_not_slack(tail):
-    """A budget far above the real count stops ratcheting. Keep it within 10 of the truth."""
-    assert len(tail) > BUDGET - 10, (
-        f"only {len(tail)} undigested sources against a budget of {BUDGET} — lower BUDGET to "
-        f"{len(tail)} so the ratchet keeps biting."
-    )
+def test_the_allowlist_does_not_rot(tail, allowed):
+    """A line that no longer describes an undigested source is stale and must be deleted.
 
-
-def test_the_tail_is_still_one_legacy_cohort(tail):
-    """If August starts contributing, this is drift and not a backlog, which changes the fix.
-
-    The claim in this module's docstring is that the discipline holds and only the history is
-    dirty. That claim has to be checked, or it becomes a comforting sentence nobody re-measured.
+    Without this the list would silently become a permanent exemption: entries would survive
+    the sources they described, and a future undigested source at the same slug/axis/url
+    would be waved through by a line nobody meant to keep.
     """
-    by_month: Counter = Counter()
+    stale = sorted(allowed - tail)
+    assert not stale, (
+        f"{len(stale)} allowlist line(s) no longer describe an undigested source. Delete "
+        "them — the source was digested or removed:\n  " + "\n  ".join(stale)
+    )
+
+
+def test_the_tail_is_still_one_legacy_cohort():
+    """If recent accesses start contributing, this is drift rather than a backlog.
+
+    The docstring's claim is that the discipline holds and only the history is dirty. That
+    claim has to be re-measured, or it becomes a comforting sentence nobody checked. The
+    threshold is deliberately close to the current 5: the allowlist is what enforces the
+    invariant, and this is the canary on the story told about it.
+    """
+    by_month: dict[str, int] = {}
     for path in sorted((REPO / "sources" / "scores").glob("*.yaml")):
         score = yaml.safe_load(path.read_text()) or {}
         for axis in AXES:
             for source in ((score.get(axis) or {}).get("sources") or []):
                 if not source.get("content_sha256"):
-                    by_month[str(source.get("accessed"))[:7]] += 1
+                    month = str(source.get("accessed"))[:7]
+                    by_month[month] = by_month.get(month, 0) + 1
     recent = sum(n for month, n in by_month.items() if month >= "2026-08")
-    assert recent < 40, (
-        f"{recent} undigested sources accessed since 2026-08 — the tail is growing rather than "
-        f"draining, so it is drift and not a legacy cohort. Distribution: {dict(by_month)}"
+    assert recent <= 10, (
+        f"{recent} undigested sources accessed since 2026-08 — the tail is being added to "
+        f"rather than drained, so it is drift and not a legacy cohort. Distribution: {by_month}"
     )
+
+
+def test_the_allowlist_is_shrinking_ground(allowed):
+    """A sanity bound. If this file ever exceeds what it was grandfathered at, something has
+    been added to it rather than removed, which is the one edit it does not accept."""
+    assert len(allowed) <= 293, f"{len(allowed)} entries; the tail was 293 when it was listed"
