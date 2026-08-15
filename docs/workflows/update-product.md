@@ -75,6 +75,18 @@ it only sees the removal once you have re-serialized. CI does this for you (the 
 in `validate.yml` runs after its serialize step), but run it locally to catch a missing alias
 before you push.
 
+## Validation
+Run the checks named by the route you took (above), plus the baseline that applies to every
+change:
+```bash
+uv run python -m build.validate            # always — 0 error(s)
+# then, per route:
+uv run python -m build.check_artifacts     # identity / artifacts changed
+uv run python -m build.check_retirement    # a retirement alias was recorded
+uv run python -m build.check_verification  # an axis was re-dated
+```
+Never commit `build/notebook_data.json` or `notebooks/` (bot-owned).
+
 ## Files this changes
 Whichever the route above names — never the generated `build/notebook_data.json` or `notebooks/`.
 
