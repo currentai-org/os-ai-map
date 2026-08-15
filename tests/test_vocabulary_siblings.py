@@ -38,15 +38,30 @@ def test_axes_come_from_the_schema():
 def test_no_module_holds_a_private_copy_of_the_axes():
     """Seven modules did. A fourth axis would have silently narrowed seven denominators at
     once, and a walk that quietly skips an axis passes green."""
+    # render.py is the one build module invoked as a SCRIPT rather than with `-m`, so it
+    # cannot import from the package. The exemption is asserted below rather than merely
+    # allowed, so adding a second one is a visible decision.
+    exempt = {"vocabulary.py", "render.py"}
     offenders = []
     for path in sorted((ROOT / "build").glob("*.py")):
-        if path.name == "vocabulary.py":
+        if path.name in exempt:
             continue
         if AXES_LITERAL.search(path.read_text()):
             offenders.append(path.name)
     assert not offenders, (
         "these define the axis triple as a literal instead of importing "
         f"build.vocabulary.axes(): {offenders}"
+    )
+
+
+def test_the_only_exemption_is_the_script_invoked_module():
+    """If render.py ever moves to `-m`, this fails and the exemption comes out."""
+    workflows = " ".join(
+        p.read_text() for p in (ROOT / ".github" / "workflows").glob("*.yml")
+    )
+    assert "python build/render.py" in workflows, (
+        "render.py no longer appears to be script-invoked; drop its exemption in "
+        "test_no_module_holds_a_private_copy_of_the_axes and import axes() there"
     )
 
 

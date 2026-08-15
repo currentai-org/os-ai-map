@@ -7,7 +7,6 @@ import markdown
 import re
 import yaml
 
-from build.vocabulary import axes
 from pathlib import Path
 
 # Repo root is the parent of build/. Read the serialized payload from
@@ -70,7 +69,13 @@ def _methodology_numbers(d):
     _urls = [
         s.get("url")
         for p in _prods
-        for _axis in axes()
+        # NOT build.vocabulary.axes(). render.py is the one build module invoked as a
+        # SCRIPT (`uv run python build/render.py`, in validate.yml, regenerate.yml and
+        # docs/operations/publish-map.md), which puts build/ on sys.path instead of the repo
+        # root, so it cannot import from the package. Switching the invocation to `-m` is the
+        # real fix and is its own change — it touches the publish runbook. Exempted
+        # explicitly in tests/test_vocabulary_siblings.py so this stays a decision.
+        for _axis in ("openness", "adoption", "capability")
         for s in ((p.get(_axis) or {}).get("sources") or [])
         if s.get("url")
     ]

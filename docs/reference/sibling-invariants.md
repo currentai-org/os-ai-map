@@ -37,7 +37,6 @@ and tested, so it stays a decision instead of becoming drift.
     - build/sweep_status.py
     - build/check_payload.py
     - build/validate.py          # inline, in the schema gate itself
-    - build/render.py            # inline
     - build/repair_placeholder_shows.py  # inline
   risk: >-
     A fourth axis narrows ten denominators at once, and a walk that quietly skips an axis
@@ -45,6 +44,22 @@ and tested, so it stays a decision instead of becoming drift.
     fixed before it failed rather than after.
   disposition: fixed
   regression_test: test_no_module_holds_a_private_copy_of_the_axes
+
+- construct: vocabulary — the three scored axes, in the one script-invoked module
+  canonical_owner: docs/schemas/score.schema.json (via build/vocabulary.axes)
+  duplicates:
+    - build/render.py            # inline, EXEMPT
+  risk: >-
+    render.py is the only build module run as `uv run python build/render.py` rather than
+    with `-m` — in validate.yml, regenerate.yml and docs/operations/publish-map.md — which
+    puts build/ on sys.path instead of the repo root, so it cannot import from the package.
+    Deriving it here broke CI with `ModuleNotFoundError: No module named 'build'`, which is
+    how the exemption was found. Switching the invocation to `-m` is the real fix and is its
+    own change, because it touches the publish runbook.
+  disposition: intentionally_distinct
+  regression_test: >-
+    test_the_only_exemption_is_the_script_invoked_module — asserts render.py is still
+    script-invoked, so the exemption expires automatically if that changes.
 
 - construct: vocabulary — product artifact kinds
   canonical_owner: sources/signal_routing.yaml `artifact_key` (via build/vocabulary.artifact_kinds)
