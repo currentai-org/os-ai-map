@@ -135,6 +135,52 @@ def test_a_fallback_age_is_labeled_rather_than_counted_as_confirmed(tmp_path, ca
     assert "3 of 6 axes carry a real last_verified" in out
 
 
+def test_a_held_axis_is_reported_as_held_not_as_never_revisited(tmp_path, capsys):
+    """A queued axis is worked-and-unsettled, which is the opposite of untouched.
+
+    Before 2026-08-15 the report had two buckets, confirmed and fallback, and said of the
+    fallback bucket to "read those ages as 'nobody has revisited this'". Every undated axis
+    in the corpus was in fact held in the verification queue, so that sentence was wrong
+    about all eight of them.
+    """
+    root = _corpus(tmp_path, {"widgets": {"dated": "2026-08-13", "parked": None}})
+    (root / "sources" / "verification_queue.yaml").write_text(
+        yaml.safe_dump(
+            {"version": 1, "held": {"parked": {"adoption": {"since": "2026-08-09",
+                                                            "because": "no figure published"}}}},
+            sort_keys=False,
+        )
+    )
+
+    assert _run(root, "--max-age-days", "30") == 0
+    out = capsys.readouterr().out
+    assert "1 are HELD in sources/verification_queue.yaml" in out
+    assert "parked.adoption" in out
+    assert "held since 2026-08-09" in out
+    # The other two axes on `parked` are undated but NOT queued, so the fallback wording
+    # still applies to them and must survive.
+    assert "nobody has revisited this" in out
+
+
+def test_a_held_axis_does_not_exempt_itself_from_the_window(tmp_path):
+    """A hold explains why an axis is undated; it does not stop the clock.
+
+    Exempting held axes would let a hold hide staleness forever, which is the failure mode
+    the queue's own "it is a queue, not an archive" line warns about.
+    """
+    root = _corpus(tmp_path, {"widgets": {"parked": None}})
+    (root / "sources" / "verification_queue.yaml").write_text(
+        yaml.safe_dump(
+            {"version": 1, "held": {"parked": {"openness": {"since": "2020-01-01",
+                                                            "because": "unreachable primary"}}}},
+            sort_keys=False,
+        )
+    )
+
+    # A clock far enough ahead that the commit-date fallback is unambiguously stale.
+    assert main(["--max-age-days", "30", "--today", "2027-01-01"], root=root) == 1
+
+
 def test_an_axis_with_no_date_at_all_fails_the_gate(tmp_path, capsys):
     """The commit-date fallback is unavailable for a file git has never seen, so the window
     has nothing to measure. Unmeasurable is a failure, not a pass."""

@@ -93,6 +93,16 @@ jobs:
       # sitting in prose, which is the argument for counting it here instead.
       - name: Instrument gate (every signal_type claim has what it needs to be falsifiable)
         run: uv run python -m build.check_instrument
+
+      # Structural check on sources/signal_routing.yaml: a route pointing at a source the
+      # table does not declare is a bug, and should fail here rather than halfway through a
+      # research run. Added to CI 2026-08-15. It had never run anywhere, and it had been
+      # exiting 1 on every invocation since the hand-authored adoption routes were declared
+      # on 2026-08-13 — it read their deliberate `source: null` as an unknown source. Both
+      # halves of that mattered: an unrun gate cannot catch anything, and a permanently red
+      # one teaches everybody to ignore it.
+      - name: Routing table structure
+        run: uv run python -m build.check_routing
       # How stale is every axis, per category. Informational on purpose: no --max-age-days, so
       # it prints and cannot fail. The gate at 30 days is `.github/workflows/freshness.yml`,
       # weekly, and it is the one gate here that must not run per PR — it fails on the passage
