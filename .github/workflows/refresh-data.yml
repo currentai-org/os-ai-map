@@ -31,6 +31,16 @@ jobs:
       GH_TOKEN: ${{ secrets.GH_FETCH_TOKEN }}
     steps:
       - uses: actions/checkout@v4
+      # Two checks, and the second is the one that was missing. Presence proves a secret is
+      # SET; it does not prove it still WORKS, and a PAT expires. This workflow failed on
+      # every scheduled run from 2026-06-22 to 2026-08-10 with `401 - Bad credentials`,
+      # roughly 3.5 hours into each attempt — about 28 hours of runner time spent fetching
+      # data that was then discarded when the job failed, and eight weeks in which
+      # `warehouse/catalog/` silently stopped being refreshed while the workflow still
+      # appeared scheduled and live.
+      #
+      # Both probes are single authenticated GETs and answer in well under a second, so a
+      # dead credential now costs seconds instead of an afternoon.
       - name: Require secrets (fetchers degrade silently without them)
         run: |
           missing=""
@@ -41,6 +51,32 @@ jobs:
             echo "::error::Missing repo secrets:$missing. Without tokens the HF link scan silently drops from ~742 links to ~7; refusing to run."
             exit 1
           fi
+
+      - name: Verify the credentials actually authenticate
+        run: |
+          fail=0
+
+          gh_code=$(curl -sS -o /dev/null -w '%{http_code}' \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/user)
+          if [ "$gh_code" != "200" ]; then
+            echo "::error::GH_FETCH_TOKEN did not authenticate (HTTP $gh_code from api.github.com/user). It is a PAT and PATs expire — mint a new one and update the repo secret. This is what failed every run from 2026-06-22."
+            fail=1
+          fi
+
+          hf_code=$(curl -sS -o /dev/null -w '%{http_code}' \
+            -H "Authorization: Bearer $HF_TOKEN" \
+            https://huggingface.co/api/whoami-v2)
+          if [ "$hf_code" != "200" ]; then
+            echo "::error::HF_TOKEN did not authenticate (HTTP $hf_code from huggingface.co/api/whoami-v2)."
+            fail=1
+          fi
+
+          # OSO_API_KEY stays presence-only: every probe for it is a warehouse round trip
+          # against a live model, which is a heavier and less predictable precondition than
+          # this step should carry. The fetchers surface an OSO failure themselves.
+          exit $fail
       - uses: astral-sh/setup-uv@v5
         with:
           enable-cache: true
