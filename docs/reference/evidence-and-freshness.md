@@ -56,11 +56,15 @@ Somebody committed that file on that date and left the score standing, which is 
 review rather than a reading. Git records it, and nobody can inflate it. As #102 put
 it, the git history of a score file *is* its verification record.
 
-As of 2026-08-14, 1,408 of the 1,416 axes carry a real `last_verified`; the other **eight are
+As of 2026-08-15, 1,407 of the 1,416 axes carry a real `last_verified`; the other **nine are
 explicitly held** in `sources/verification_queue.yaml` and read through the fallback (the sweep
-dated them, then the audit removed those eight unsupported confirmations — see Part 3). So the
-fallback is not idle: a held axis and a product added tomorrow both rely on it until somebody
-confirms them, and the age gate below reads whichever signal an axis has.
+dated them, then the audit removed those unsupported confirmations — see Part 3; `falcon.adoption`
+joined them on 2026-08-15 when a fresh fetch disproved its own band). So the fallback is not idle:
+a held axis and a product added tomorrow both rely on it until somebody confirms them, and the age
+gate below reads whichever signal an axis has.
+
+A held axis reaches the payload as `basis: partial` rather than through the fallback — see
+"What the payload publishes" below. The fallback covers products with **no** dated axis at all.
 
 **Changed what it claims, not merely touched.** Some commits move a file without
 reviewing it. The Phase 1a migration reshapes `openness.components` from a string into a
