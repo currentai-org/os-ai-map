@@ -7,7 +7,7 @@ description: Use when driving the verification sweep toward its goal — every p
 
 The objective: **every product on the map gate-clean** — each axis dated or deliberately
 abstaining, each source carrying a status and a digest, each product's prose satisfying
-`product-info.md`.
+`product-copy.md`.
 
 This skill is the driver. It holds no verification logic of its own: it works out where the
 sweep has got to, picks what is next, and hands one category to `refresh-category`.
@@ -56,7 +56,7 @@ does both — pass the window straight through to `refresh-category`, which refr
 products it returns.
 
 **The window is 30 days**, decided 2026-08-09 by the person paying for the re-reading. So
-`--max-age-days 30` is the maintenance-mode invocation, and `docs/guides/verification.md` step 5
+`--max-age-days 30` is the maintenance-mode invocation, and `docs/reference/evidence-and-freshness.md` step 5
 turns the age gate on at the same number. It had been an unmade decision carrying a suggested 90;
 this replaces it rather than adding an option.
 
@@ -128,4 +128,4 @@ honest residue of the sweep, and working it is a different job from running it.
 
 - `skills/refresh-category/SKILL.md` — the unit of work this drives
 - `build/sweep_status.py` — the derived state, and its own docstring on what "done" means
-- `docs/runbooks/verification-pass.md` — the phases the sweep is executing
+- `docs/workflows/refresh-category.md` — the per-category procedure the sweep executes

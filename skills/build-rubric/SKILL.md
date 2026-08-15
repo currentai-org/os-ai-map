@@ -143,7 +143,7 @@ Framework classes a release under OpenRAIL, a Llama community license or AI2 Imp
 *source-available* rather than open; OSAID requires the freedom to use a system "for any
 purpose". Both lines fall between our `open` and `open-ish` buckets, and levels 4 down to 1
 subdivide what MOF treats as one bucket. A new ladder's top rung must respect it.
-`docs/guides/openness-spectrum.md` has the full reasoning and the two places the map departs
+`docs/reference/openness.md` has the full reasoning and the two places the map departs
 from MOF deliberately.
 
 ## Run the gate

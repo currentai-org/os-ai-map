@@ -1,6 +1,6 @@
 """The commit-date fallback must date a claim, not a reshape.
 
-`docs/guides/freshness.md` says the fallback dates the last commit that left the score
+`docs/reference/evidence-and-freshness.md` says the fallback dates the last commit that left the score
 standing — a review. A commit that only changes how a score is *stored* reviewed nothing,
 so it must not move the date.
 

@@ -56,7 +56,7 @@ Three caveats, because "a formula exists" is easy to over-read:
   to the warehouse. `uv run python -m build.check_recipe` prints the live split.
 
 So openness is part computed and part editorial, and which one you are looking at depends on
-the category and the product. `docs/guides/verification.md` tracks the work to close that gap.
+the category and the product. `docs/reference/evidence-and-freshness.md` tracks the work to close that gap.
 
 ## Why the raw score is not comparable across categories
 
@@ -177,7 +177,7 @@ license:Apache-2.0(code, OSI) + custom weights license(non-OSI, application step
 ```
 
 **Every part resolves, and the most restrictive one governs the cap.** This is the same rule
-`docs/guides/identity.md` states for a tier that ships several SKUs, applied within a single
+`docs/reference/identity.md` states for a tier that ships several SKUs, applied within a single
 recorded value: a product is as open as the most restrictive license you have to accept.
 
 Two properties of it are load-bearing:

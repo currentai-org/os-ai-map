@@ -4,8 +4,8 @@ How a product's adoption band is set, which instrument it was read with, and whi
 a machine can re-derive. Normative. When a rule here changes, change the guide first and make
 the code follow.
 
-> Companion to `docs/guides/openness-spectrum.md`, which owns the openness ladders, and to
-> `docs/guides/verification.md`, which owns how any axis earns a `last_verified`. This guide
+> Companion to `docs/reference/openness.md`, which owns the openness ladders, and to
+> `docs/reference/evidence-and-freshness.md`, which owns how any axis earns a `last_verified`. This guide
 > owns the adoption axis: the bands, the instrument vocabulary, and what may be compared to
 > what.
 >
@@ -286,7 +286,7 @@ existed; sharing them beats minting a parallel set.
 
 Settled 2026-08-14, at the end of the verification sweep, because the same five questions
 arrived once per category and got answered from scratch each time. These are curation rules and
-no gate enforces them; `docs/runbooks/verification-pass.md` is where a pass applies them.
+no gate enforces them; `docs/workflows/refresh-category.md` is where a pass applies them.
 
 - **A measured signal on an already-declared artifact beats a hand-set band.** The artifact was
   declared, so the count is the instrument the record already claims to have been read with, and
@@ -322,7 +322,7 @@ not follow from the evidence the score itself recorded.
 
 Both read the bands from `registry.adoption_bands` and band on the product's declared type.
 Neither writes anything back to `sources/`: **a computed band is an observation, never a
-score.** Only a person sets `level`, and only per `verification.md`.
+score.** Only a person sets `level`, and only per `evidence-and-freshness.md`.
 
 ### Sum across the family, not per artifact
 
@@ -360,7 +360,7 @@ all.** They are not one problem, and each class has a different answer:
 A `reported_traction` band should cite the vendor page carrying the figure, with a URL, an
 `accessed` date and a `content_sha256`, exactly as every other axis does after the
 verification sweep. It is then re-checkable rather than machine-derived, and it ages against
-the refresh window in `verification.md` so an unconfirmed vendor claim decays visibly instead
+the refresh window in `evidence-and-freshness.md` so an unconfirmed vendor claim decays visibly instead
 of sitting unfalsifiable forever.
 
 That is the same move `establishes` made for openness and `relative_to` made for capability:
@@ -441,9 +441,9 @@ product, followed by a band recorded on that signal anyway.**
 
 ## Related
 
-- `docs/guides/verification.md` — how any axis earns `last_verified`, and the gates
-- `docs/guides/freshness.md` — what `last_verified` means, and the refresh window
-- `docs/guides/openness-spectrum.md` — the openness ladders, the other scored axis
+- `docs/reference/evidence-and-freshness.md` — how any axis earns `last_verified`, and the gates
+- `docs/reference/evidence-and-freshness.md` — what `last_verified` means, and the refresh window
+- `docs/reference/openness.md` — the openness ladders, the other scored axis
 - `sources/rubrics/<type>.yaml` — where the bands are declared
 - `sources/signal_routing.yaml` — which signal is authoritative for which dimension
 - `docs/schemas/score.schema.json` — the field definitions and the `signal_type` enum

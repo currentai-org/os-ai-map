@@ -139,7 +139,7 @@ def validate_sources(data: dict) -> list[str]:
     # replaced it. These checks are what make that a rule rather than an intention, and
     # they are why the aliases live on the records: held in one mapping until 2026-08-08,
     # two renames of the same retired slug silently kept whichever came last, because
-    # PyYAML does not error on a duplicate key. See docs/guides/identity.md.
+    # PyYAML does not error on a duplicate key. See docs/reference/identity.md.
     claimed: dict[str, str] = {}
     for slug, product in sorted(prods.items()):
         for alias in product.get("aliases") or []:

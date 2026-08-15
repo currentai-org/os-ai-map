@@ -4,7 +4,7 @@ The map's value depends on its numbers being current, and until this existed the
 way to check that without reading 472 files. A score last touched in June looks
 exactly like one touched yesterday.
 
-**`docs/guides/freshness.md` is the normative definition.** The rule is one sentence:
+**`docs/reference/evidence-and-freshness.md` is the normative definition.** The rule is one sentence:
 `last_verified` is the most recent date on which everything in the score was confirmed
 still correct. This module implements the report; that guide owns the meaning, and
 when the two disagree the guide wins.
@@ -43,7 +43,7 @@ window, or if any axis has no date at all for the window to be measured against.
 ## Where the gate runs
 
 `.github/workflows/freshness.yml`, weekly, at 30 days — the window decided 2026-08-09 and
-owned by `docs/guides/verification.md` step 5. Not in `validate.yml`, and that is the one
+owned by `docs/reference/evidence-and-freshness.md` step 5. Not in `validate.yml`, and that is the one
 design decision in this file worth knowing about.
 
 Every other gate in this repo fails on something in a diff. This one fails on the passage of
@@ -420,7 +420,7 @@ def main(argv: list[str] | None = None, root: Path | None = None) -> int:
             "\nRe-read each category named above against its sources and stamp a fresh\n"
             "last_verified per axis: `skills/refresh-category` drives that, one category per\n"
             "PR. Editing a date without re-reading is the failure this gate exists to catch;\n"
-            "docs/guides/verification.md says what a confirmation has to consist of.\n"
+            "docs/reference/evidence-and-freshness.md says what a confirmation has to consist of.\n"
             "\n"
             "Several categories aging out at once is expected rather than a backlog. A category\n"
             "is re-read in one run, so all of its axes carry one date and all of them cross the\n"

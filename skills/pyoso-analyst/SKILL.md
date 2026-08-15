@@ -37,8 +37,8 @@ If you detect a request that requires write access, you must:
 
 1. **Pick the right table from the registry**
    - Start from [`warehouse/models/README.md`](../../warehouse/models/README.md) for the five datasets this repo maintains.
-   - Use [`docs/guides/queries.md`](../../docs/guides/queries.md) for query conventions and caveats.
-   - Use [`docs/guides/notebook-design.md`](../../docs/guides/notebook-design.md) for marimo notebook structure/style.
+   - Use [`docs/reference/queries.md`](../../docs/reference/queries.md) for query conventions and caveats.
+   - Use [`docs/reference/notebook-design.md`](../../docs/reference/notebook-design.md) for marimo notebook structure/style.
 
 2. **Draft bounded Trino SQL**
    - Prefer `LIMIT`, date windows (e.g. last 90 days), and aggregations.

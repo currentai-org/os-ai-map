@@ -7,7 +7,7 @@ on, no evidence discarded by the parser. The distinction matters because the two
 different reasons and want different fixes: a reproduction mismatch is a finding about a
 product, while everything here is a defect in the ladder or its wiring.
 
-It exists because `skills/curate-category/SKILL.md` said "edit any of … `scoring_recipe` …"
+It exists because `skills/edit-category/SKILL.md` said "edit any of … `scoring_recipe` …"
 and gave no guidance, so every ladder so far was authored from scratch by whoever happened to
 be doing it. The taxonomy expansion event will add roughly twenty-four more categories, each
 born needing a recipe. `skills/build-rubric/SKILL.md` is the procedure; this is the part of it
@@ -210,7 +210,7 @@ def clauses_parse(
 
     `split_components` discards any clause without a colon, silently. Across the map that is
     170 of 470 products, and asserting on all of them would fail the gate on day one — which
-    `docs/guides/verification.md` already identifies as how a gate dies. Narrowing by hand
+    `docs/reference/evidence-and-freshness.md` already identifies as how a gate dies. Narrowing by hand
     found three populations, and only one is a defect:
 
     - a clause matching nothing in the category's vocabulary: a free-text tail, harmless

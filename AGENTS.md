@@ -36,8 +36,11 @@ warehouse/sources.yaml Manifest: each external source declares EITHER a fetcher
 build/                 Python pipeline, see below
 notebooks/             Generated ai-stack-map.py and standalone companion notebooks (pypi-geo-trends, oss-ai-trends, long-tail-explorer)
 docs/methodology.md    Canonical methodology copy, rendered into the notebook (a build input)
-docs/guides/           Query conventions, notebook style, freshness and verification
-docs/runbooks/         Maintainer deploy runbooks
+docs/README.md         Task router: which workflow/skill for which change
+docs/workflows/        Task-oriented how-to, one per contributor intent
+docs/reference/        Concepts + normative rules (openness, adoption, capability,
+                       identity, evidence-and-freshness, gap-analysis, queries, notebook-design)
+docs/operations/       Maintainer deploy/publish runbooks
 docs/schemas/          JSON Schemas for the source files (four concerns + taxonomy)
 skills/                Agent skills for common editor workflows
 tests/                 pytest suite for build helpers and serializer behavior
@@ -66,7 +69,7 @@ Scores back in      apply_scores.py   reads computed scores from OSO, writes
                                       openness.score and openness.class into
                                       sources/scores/ and nothing else. The ONLY
                                       inbound data path. It writes no dates -- see
-                                      docs/guides/verification.md.
+                                      docs/reference/evidence-and-freshness.md.
 
 Editing library     components.py     the ONLY supported way to edit an
                                       openness.components field in place. Never
@@ -194,13 +197,13 @@ Three rules worth knowing before editing any of it:
   an aggregate of `sources[].accessed` anyway — #108 the MIN, #115 the MAX — and between
   them they put a derived date on 19 of the 26 axes that carried one. **Do not reintroduce
   it**, under any aggregation or column name; `tests/test_apply_scores.py` asserts the
-  absence. The rule is in `docs/guides/freshness.md`, who may write it in
-  `docs/guides/verification.md`.
+  absence. The rule is in `docs/reference/evidence-and-freshness.md`, who may write it in
+  `docs/reference/evidence-and-freshness.md`.
 
 `notebooks/pypi-geo-trends.py`, `notebooks/oss-ai-trends.py`, and `notebooks/long-tail-explorer.py`
 are **fully standalone**: no build-pipeline coupling, no generated payload. Each queries
 `currentai.*` warehouse tables live via `pyoso`, so the bot never touches them. They share the
-AI Stack Map design system; when editing, keep them aligned with `docs/guides/notebook-design.md`
+AI Stack Map design system; when editing, keep them aligned with `docs/reference/notebook-design.md`
 (Noto Serif / Plus Jakarta Sans / DM Mono, the navy + salmon-ramp palette, sharp corners). These
 mirror notebooks also published on the OSO platform.
 
@@ -226,38 +229,45 @@ open PRs. They do not:
 - Upload or revise UDMs or static models.
 - Push to main directly.
 
-All warehouse write operations are maintainer steps. See `docs/runbooks/`.
+All warehouse write operations are maintainer steps. See `docs/operations/`.
 
-## Skills
+## Skills and workflows
 
-Editor skills live in `skills/`. They compose: the sweep drives a category, a category
-drives its products, and a product's prose has its own procedure.
+`docs/README.md` is the task router. Each editor skill is a thin wrapper that points at one
+workflow document under `docs/workflows/` and adds agent-specific orchestration; the rules live
+once in `docs/reference/`, not in the skill. Skills are registered under `.claude/skills/` so a
+Claude Code session discovers them by name; if yours does not list them, read
+`skills/<name>/SKILL.md` directly.
 
-| Skill | When to use |
-|-------|------------|
-| `curate-category` | Edit a category's `description`, `strapline`, weights, or product roster |
-| `add-product` | Add a new product (scaffolds product + score YAML, updates roster) |
-| `build-rubric` | Derive a category's openness ladder, or extend a shared one to it |
-| `verify-product` | Refresh one product's `description` and `comments` against its sources |
-| `refresh-category` | Re-verify a whole category: scores and prose together, to the PR |
-| `refresh-all-categories` | Drive the sweep — report progress, pick the next category |
-| `add-data-source` | Register a new external data source and add a fetcher |
-| `pyoso-analyst` | Query `currentai.*` tables via `pyoso` (read-only analysis) |
+**Five primary editor skills** (the contributor front door):
 
-Invoke the relevant skill before doing editor work. Skills enforce the read-only boundary
-and walk through validation + preview steps.
+| Skill | When to use | Workflow |
+|-------|------------|----------|
+| `add-product` | Add a new product | `docs/workflows/add-product.md` |
+| `update-product` | Change an existing product (identity, prose, a score, rosters, retirement) | `docs/workflows/update-product.md` |
+| `edit-category` | Create a category, or change its definition/weights/roster | `docs/workflows/edit-category.md` |
+| `refresh-category` | Re-verify a whole category, scores and prose, to the PR | `docs/workflows/refresh-category.md` |
+| `migrate-axis` | Change an axis's schema or meaning corpus-wide (script-only) | `docs/workflows/migrate-axis.md` |
 
-## Maintainer runbooks
+**Advanced / internal skills** (off the primary path): `build-rubric` (derive a category's
+openness ladder), `add-data-source` (register a fetcher), `refresh-all-categories` (drive the
+whole-corpus sweep), `pyoso-analyst` (read-only warehouse analysis).
+
+Invoke the relevant skill before doing editor work. Skills enforce the read-only boundary and
+walk through validation + preview steps.
+
+## Maintainer operations
 
 After a PR merges, a maintainer (OSO MCP write access) may need to:
 
-- `docs/runbooks/verification-pass.md`: the plan for getting every score auditable --
-  gates first, then coverage, then the re-read pass. Start here for score-verification
-  work; it names the failure modes each step is guarding against.
-- `docs/runbooks/deploy-udms.md`: revise, release, and run UDM SQL changes.
-- `docs/runbooks/refresh-data.md`: run fetchers and reload static models.
-- `docs/runbooks/publish-notebook.md`: serialize, render, upload, and publish the live
-  notebook to `/currentai/ai-stack-map` (id `7b29bf47`).
+- `docs/operations/deploy-models.md`: revise, release, and run the warehouse models — and the
+  truth about the scoring-chain schedule (declared but not firing; recompute is manual).
+- `docs/operations/refresh-data.md`: run fetchers and reload static models.
+- `docs/operations/publish-map.md`: serialize, render, upload, and publish the live notebook to
+  `/currentai/ai-stack-map` (id `7b29bf47`).
+
+For the score-verification procedure itself, see `docs/workflows/refresh-category.md` and the
+normative `docs/reference/evidence-and-freshness.md`.
 
 ## Environment
 
@@ -268,10 +278,10 @@ After a PR merges, a maintainer (OSO MCP write access) may need to:
 
 ## Common references
 
-- Query conventions: `docs/guides/queries.md`
-- Notebook style: `docs/guides/notebook-design.md`
+- Query conventions: `docs/reference/queries.md`
+- Notebook style: `docs/reference/notebook-design.md`
 - Methodology copy (rendered into the notebook): `docs/methodology.md`
-- Openness scoring: `docs/guides/openness-spectrum.md`
-- Gap analysis (stages + gaps): `docs/guides/gap-analysis.md`
+- Openness scoring: `docs/reference/openness.md`
+- Gap analysis (stages + gaps): `docs/reference/gap-analysis.md`
 - Coverage backlog: tracked in GitHub issues
 - Warehouse models this repo maintains: `warehouse/models/README.md`

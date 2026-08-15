@@ -847,7 +847,7 @@ def stages_table(C, DATA, F, ORDER, mo):
     import html as _html  # product display names are contributor-authored
     # The maturity ladder: each category's open ecosystem placed on a 0-5 stage.
     # Only fully-open products count toward a stage (open-ish/closed do not); see
-    # docs/guides/gap-analysis.md. Stages + assignments come straight from the payload.
+    # docs/reference/gap-analysis.md. Stages + assignments come straight from the payload.
     _DEFS = [
         (0, "Void", "No meaningful open products exist."),
         (1, "Open Experiments", "Open experiments exist, but capability and adoption are both limited."),

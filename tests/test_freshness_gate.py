@@ -1,7 +1,7 @@
 """The age gate's exit status.
 
 `--max-age-days N` exits non-zero when a category's oldest axis is over N days old, and zero
-when nothing is. `docs/guides/freshness.md` owns the rule and `docs/guides/verification.md`
+when nothing is. `docs/reference/evidence-and-freshness.md` owns the rule and `docs/reference/evidence-and-freshness.md`
 step 5 owns the window.
 
 Every fixture here is built from dates these tests choose, and `--today` pins the clock. That
@@ -123,7 +123,7 @@ def test_the_failure_names_the_category_and_what_to_do(tmp_path, capsys):
     out = capsys.readouterr().out
     assert "stale" in out
     assert "refresh-category" in out
-    assert "verification.md" in out
+    assert "evidence-and-freshness.md" in out
 
 
 def test_a_fallback_age_is_labeled_rather_than_counted_as_confirmed(tmp_path, capsys):

@@ -1,6 +1,6 @@
 """Compare what the repo computes against what the warehouse published, per product.
 
-The parity gate in `docs/guides/verification.md`. `build/check_rubric.py` walks each
+The parity gate in `docs/reference/evidence-and-freshness.md`. `build/check_rubric.py` walks each
 category's ladder in Python. `currentai.scores.openness_computed` walks the same ladder in
 Trino. The two are separate implementations of one rubric, and nothing but this makes them
 agree.

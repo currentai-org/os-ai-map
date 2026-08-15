@@ -1,10 +1,217 @@
-# Verification Guide
+# Evidence and Freshness
 
-How a score earns a `last_verified` date, and the plan for getting one onto every axis.
+The single normative home for score confirmation: what `last_verified` **means**, how an
+axis **earns** one, and the gates that keep the two honest. For the reader-facing account
+of the three axes see `docs/methodology.md`; when a rule here changes, change it here first
+and make the code follow.
 
-> Companion to `docs/guides/freshness.md`, which defines what `last_verified` *means*.
-> This guide covers who may write one and how. Both are normative. When either changes,
-> change the guide first and make the code follow.
+This document merges the former `freshness.md` (what the date means) and `verification.md`
+(how it is earned). Part 1 is the meaning; Part 2 is the mechanism; Part 3 is coverage
+status and the history behind the rules.
+
+---
+
+# Part 1 — What `last_verified` means
+
+## The rule
+
+**`last_verified` is the most recent date on which everything in the score was
+confirmed still correct.**
+
+That is the whole definition. Three consequences follow from it, and no other reading
+is intended:
+
+1. **"Everything" means every dimension the score records**, not only the ones the
+   winning rule happens to read. A model scores the moment its license resolves to a
+   capped tier — `use_bounded` or `commercial_forbidden` — so its `data` and `code`
+   values never affect the outcome, but
+   they are still published claims, so they still have to be confirmed. A fresh
+   license cannot carry a stale corpus claim.
+2. **Confirmation means the axis was re-checked against its sources**, whether or not
+   the value moved. A re-check that changes nothing is still a confirmation and still
+   earns the date. This is what makes the field fill in as automation lands.
+3. **A date is never derived from `sources[].accessed`.** See below.
+
+## Why freshness is not `max(sources[].accessed)`
+
+`accessed: 2026-06-08` says somebody opened that URL that day. `last_verified:
+2026-06-08` says the conclusion was confirmed that day. The second is a stronger
+claim, and deriving it from the first upgrades weak evidence into strong evidence
+across every axis at once.
+
+This was tried and reverted deliberately (#102). It is worth restating because the
+mistake is easy to re-invent: any aggregate of access dates — max, min, per-dimension
+min — is still a confirmation claim computed from readings. Changing the aggregation
+does not fix the category error.
+
+It is also, as it happens, the less accurate number. `max(accessed)` reported a median
+staleness of 55 days when the files had in fact been revised a median of 35 days ago.
+
+## The fallback: the score file's last commit date
+
+Where an axis carries no `last_verified`, freshness falls back to **the date of the last
+commit that changed what `sources/scores/<slug>.yaml` claims**.
+
+Somebody committed that file on that date and left the score standing, which is a
+review rather than a reading. Git records it, and nobody can inflate it. As #102 put
+it, the git history of a score file *is* its verification record.
+
+As of 2026-08-14, 1,408 of the 1,416 axes carry a real `last_verified`; the other **eight are
+explicitly held** in `sources/verification_queue.yaml` and read through the fallback (the sweep
+dated them, then the audit removed those eight unsupported confirmations — see Part 3). So the
+fallback is not idle: a held axis and a product added tomorrow both rely on it until somebody
+confirms them, and the age gate below reads whichever signal an axis has.
+
+**Changed what it claims, not merely touched.** Some commits move a file without
+reviewing it. The Phase 1a migration reshapes `openness.components` from a string into a
+mapping in all 472 files, carrying a byte-identical `raw:` copy of the string it
+replaced, so no published value moves — and dating by touch would have republished 78 of
+the first batch's 84 products as reviewed on the migration day. A commit date is only
+defensible here because it dates a review, so a commit that reviewed nothing must not
+supply one. Otherwise the fallback makes the same category error as `sources[].accessed`:
+a weak signal promoted into a confirmation claim.
+
+`build/check_freshness.py` decides this by content rather than by convention. It walks a
+file's history newest-first and skips any commit whose two revisions of that file have
+the same `score_projection` — the whole document, with only the two storage shapes of
+`openness.components` reduced to one. Nothing has to be labeled or trailered, a commit
+cannot assert a review the content contradicts, and it works retroactively.
+
+Two exceptions worth knowing before you go looking for them.
+
+**Reordering the clauses of a `components` string does not advance the date**, because the
+projection compares clauses as a key -> clause mapping and a mapping has no order. This is
+the one case where something visible on the page moves — the published string is emitted in
+file order — while the date stands still. It is the right call on the rule as written,
+since clause order is storage rather than claim, but it is a real gap between what a reader
+sees change and what the date says changed.
+
+**A `git mv` of a score file resets its date to the rename commit.** Attribution runs with
+`--no-renames`, so a rename reads as a delete plus an add, and an add is where a slug's
+history starts. A rename is exactly the kind of structural touch this fix exists to skip,
+so the exception is deliberate rather than an oversight: with rename detection on, a pure
+rename is score-neutral for the new path and the walk runs off the end of its history with
+nothing to date it from. The cost is bounded because slugs are tier-level and immutable, so
+a score file should not be renamed in the normal course of things.
+
+**What the fallback does not claim.** For a file untouched since it was added, the
+commit date dates the import, not a review. That is still the answer to the question
+the report exists to ask — has anyone revisited this — but it is not a confirmation,
+and `build/check_freshness.py` labels it `commit` rather than `verified` so the two
+can never be conflated.
+
+## Which date to use
+
+| field | where | what it answers |
+|---|---|---|
+| `last_verified` | `sources/scores/<slug>.yaml`, per axis | Is this score still right? Authoritative. |
+| score file commit date | git | Same question, weaker. Used when `last_verified` is absent. Dates the last commit that changed a claim, skipping ones that only changed storage. |
+| `sources[].accessed` | `sources/scores/<slug>.yaml`, per source | When was this specific URL read? Evidence provenance. **Not freshness.** |
+| `last_checked` | `currentai.scores.openness_computed` | When did the pipeline last read *any* admitted evidence. Diagnostic. **Not freshness.** |
+| `fact_accessed` | `currentai.scores.openness_facts`, per dimension | When the evidence behind one dimension was read or fetched. Provenance, per fact. **Not freshness.** |
+
+## What it is for
+
+Triage. A category whose oldest axis is 50 days old is a category to go and look at.
+`build/check_freshness.py` reports per-category median and oldest and names the stalest
+product. `--max-age-days N` turns that report into a gate: it exits non-zero if any
+category's oldest axis is older than N days.
+
+**The window is 30 days**, decided 2026-08-09; the age-gate section below (Part 3, step 5) holds the
+reasoning and owns the number.
+
+### Where the gate runs, and why not in `validate.yml`
+
+**`.github/workflows/freshness.yml`, weekly, and nowhere else.** It is the only gate here that
+fails on the passage of time rather than on something in a diff, and that difference decides
+where it belongs.
+
+Per-pull-request it would block work that has nothing to do with the stale category. Nobody can
+clear it from within the offending pull request either: the remedy is to re-read a category
+against its sources, which is a research pass (`skills/refresh-category`) ending in a pull
+request of its own. An outside contributor adding one product would be handed a red check for a
+category they have never touched and no way to turn it green. That is the failure mode
+`parity.yml` is written to avoid — a gate that fails for a reason the person in front of it
+cannot act on gets switched off.
+
+Weekly rather than daily for the same reason parity is weekly: the cadence has to match the work
+it polices. A category is re-read in one run, so all of its axes carry one date and all of them
+age out together, and about four categories cross a 30-day line per week. A daily gate would
+re-report the same cliff for as many days as the re-read takes, which is nagging rather than
+information.
+
+`validate.yml` runs the same report per pull request **without** `--max-age-days`, so it prints
+and cannot fail. That is what makes a re-read pull request show, in its own check log, whether
+the category it refreshed came back inside the window.
+
+### What the fallback means under a gate
+
+An axis with no `last_verified` is measured by its commit date, so a product added last week
+passes the age gate without anybody having confirmed it. That is not the gate leaking: age and
+confirmation are different questions, and "never confirmed" is `build/sweep_status.py`'s and
+`build/check_verification.py`'s. The report prints how many of its ages rest on the fallback so
+a pass can never quietly be resting on the weaker signal.
+
+## Who may write `last_verified`
+
+**A person, and only a person.** No tool in this repo writes the field.
+
+`build/apply_scores.py` is the only thing allowed to change a score file without
+somebody typing the value, and it writes `openness.score` and `openness.class`
+exclusively. It cannot earn `last_verified`, and the reason is structural rather than a
+matter of current coverage: of the recorded openness dimensions only `license` and `weights`
+have a dataset route at all. `signal_routing.yaml` declares `data` research-only, and the
+GitHub code route carries `settles_dimension = false`, so both resolve to document grade in
+`currentai.scores.openness_facts`. Document grade means a human read some prose and wrote it
+into the score file — so for those dimensions the pipeline is reading the repo back to itself,
+which confirms nothing.
+
+Nothing hardcodes that any more, which is worth stating because the older wording said the
+scoring model pinned `data` and `code` to document grade by name. It does not: a dataset row
+wins wherever its route carries `settles_dimension`, and those two routes do not. The
+conclusion is unchanged and now rests on a declaration rather than on a special case.
+`all_recorded_dims_from_dataset` in `currentai.scores.openness_computed` reports the outcome
+per axis, and it is the column a guarded write-when-fully-confirmed branch would have to read.
+
+Since "everything confirmed" can never be true of a pipeline run, there is no date for
+it to write.
+
+## Both earlier divergences, and how they were closed
+
+Kept because the mistake is easy to re-invent, and was, twice.
+
+- **`apply_scores` wrote a derived date into the field.** #108 wrote the freshness bound
+  (MIN `accessed`); #115 replaced it with `last_checked` (MAX over the same dates).
+  Between them they put a derived date on **19 of the 26 axes** that carried one. Six
+  overwrote a date a person had established: `apertus`, `lucie-7b`, `olmo` and `pythia`
+  each lost their #105 verification date to a signal fetch one day later.
+
+  Closed by deleting the writer, and reverting what it had written. Tracing every stored
+  date to the commit that set it put the 26 into three groups: **2** set by hand (#105
+  `rwkv`, #113 `mastra`) and kept; **4** restored to the #105 date the tool had
+  overwritten; **20** removed, because no constituent had ever been hand-confirmed. The
+  20 are 15 the tool wrote outright plus 5 the #121 tier merge carried forward from
+  tool-written release files — a merge confirms nothing, so it cannot originate a date.
+
+  Coverage went 26 → 6 axes, which is the honest number: six axes have actually been
+  checked by somebody. The other 20 fall back to their commit date, correctly labeled
+  `commit` rather than `verified`.
+
+  Restoring rather than keeping was the right call because these were never confirmation
+  records. The rule that a stored date is never moved backwards protects a person's
+  observation; it does not protect a tool's arithmetic.
+- **`freshness_floor`** was a per-dimension aggregate of access dates — the reverted
+  backfill under another name. Removed from the model rather than refined.
+
+Where a tier had absorbed several release-level products, the restored date is the
+**oldest** constituent confirmation, because the tier's score covers all of them and one
+stale member bounds the whole thing. That is an aggregate over confirmations, not over
+readings, so it is consistent with the rule above.
+
+
+---
+
+# Part 2 — How an axis earns it, and the gates
 
 ## How an axis earns its date
 
@@ -36,7 +243,7 @@ Three consequences, and no other reading is intended:
 
 No tool that computes over already-recorded values. `build/apply_scores.py` writes
 `openness.score` and `openness.class` and deliberately writes no date at all; the reasoning
-is in its module docstring and in the divergence history in `freshness.md`.
+is in its module docstring and in the divergence history below ("Both earlier divergences").
 
 ## The audit chain, and where it currently breaks
 
@@ -113,7 +320,7 @@ what the content check below verifies.
 and it is easy to erode: someone will eventually notice that the invariant mentions
 `accessed` and "simplify" it into `last_verified = max(accessed)`, which is #115 exactly.
 Deriving the date asserts a confirmation nobody made; validating it rejects a confirmation
-nobody could have made. `freshness.md` forbids the first and requires the second.
+nobody could have made. the freshness rule above forbids the first and requires the second.
 
 Note the aggregation direction, which is also load-bearing: the check is over EVERY recorded
 dimension, so the binding constraint is the *least* recently re-read one. `max(accessed)`
@@ -144,7 +351,7 @@ fabricated digest is worse than an absent one: an absent one fails the gate, whi
 one passes it and then defeats the sampled re-fetch, which is the only thing that ever goes back
 and checks whether a cited page says what it was recorded as saying. Three were fabricated on
 2026-08-13 by padding truncated prefixes out to 64 characters, which is why this is stated here
-rather than assumed. `docs/runbooks/verification-pass.md` carries the command that produces one.
+rather than assumed. `docs/workflows/refresh-category.md` carries the command that produces one.
 
 ## The gates, and why they ratchet
 
@@ -167,37 +374,46 @@ The age gate is the last one on this table to arrive (2026-08-14) and the only o
 the passage of time rather than on something in a diff. That is why it is scheduled rather than
 per-pull-request: a contributor adding one product cannot re-read a category to turn it green, and
 a gate nobody in front of it can act on is a gate that gets ignored. Step 5 below has the window
-and its owner; `docs/guides/freshness.md` has the shape.
+and its owner; the freshness rule above has the shape.
 
 **They ratchet rather than switch on.** The invariant and the digest requirement apply only to
 axes that carry a `last_verified`. So they cover exactly what has been done, never block progress,
 and never permit a regression on ground already taken. A big-bang gate over every axis at once
 would have failed on day one and been switched off, which is how gates die.
 
-**The ratchet has now closed.** That count was 137 when this section was written and is **1,416 as
-of 2026-08-14 — every axis in the corpus.** So the invariant and the digest requirement now apply
-everywhere, and the age gate above became possible only because of it: gating on age while most
-axes carried no date at all would have measured the backlog rather than staleness. Read the count
-from `check_freshness` rather than from this paragraph, which will drift again.
+**The ratchet has effectively closed.** That count was 137 when this section was written; the
+08-13/14 sweep dated all 1,416 axes, and the subsequent audit removed eight unsupported
+confirmations, leaving **1,408 confirmed and eight explicitly held** as of 2026-08-14. So the
+invariant and the digest requirement cover the 1,408 confirmed axes — not literally every axis —
+and the eight holds are governed instead by the queue-consistency gate (they may not carry a date
+at all). "Closed" now means there are no *silent* gaps, not that every axis is confirmed. The age
+gate above became possible only because coverage got this close: gating on age while most axes
+carried no date would have measured the backlog rather than staleness. Read the live count from
+`check_freshness` rather than from this paragraph, which will drift again.
 
 The producible-pair check and the parity gate apply in full immediately — nothing has to be
 populated first.
 
 The parity gate runs on its own weekly schedule rather than inside the publish job, and that
 placement is deliberate rather than a stopgap in disguise. Publishing pushes and materializes the
-static models. The three user models that read them recompute on Monday at 03:00, 04:00 and 05:00
-UTC, upstream first, and parity grades the result at 06:00. If it were chained onto a publish
-instead, the gate would compare fresh rules against a warehouse that has not recomputed and fail
-for a reason that is not a drift.
+static models. The three user models that read them were *intended* to recompute on Monday at
+03:00, 04:00 and 05:00 UTC, upstream first, with parity grading the result at 06:00. If parity
+were chained onto a publish instead, it would compare fresh rules against a warehouse that has
+not recomputed and fail for a reason that is not a drift.
 
-**The gate's schedule has to match the chain's.** A daily gate over a weekly chain fails every
-day between a merge and the following Monday, always saying "the warehouse has not caught up",
-which is not what a parity gate is for and is how a gate earns its way into being ignored. If
-you want a check sooner, refresh the three models and run `check_parity` by hand.
+**But that chain does not currently run on schedule.** The crons were set at the model-revision
+layer, and the platform schedules from the dataset layer — so as of 2026-08-14 the `evidence` and
+`scores` datasets have never fired a `SCHEDULED` run (`docs/operations/deploy-models.md` has the
+evidence and the fix). **Until dataset-level scheduling lands, parity is a weekly drift/staleness
+detector, not the downstream stage of a working scheduled chain, and it can be red because the
+warehouse is stale rather than because a rule drifted.** Treat a parity failure as "re-read run
+history first"; refresh the three models and run `check_parity` by hand for a live check.
 
-The crons bound how stale the warehouse gets. They do not make a publish arrive any faster, so a
-Tuesday merge is scored the following Monday. Move parity into `registry.yml` on the day
-`publish_registry` triggers those three runs and waits for them.
+**The gate's schedule still has to match the chain's** once the chain fires. A daily gate over a
+weekly chain would fail every day between a merge and the following Monday, always saying "the
+warehouse has not caught up", which is how a gate earns its way into being ignored. When the crons
+are fixed, a Tuesday merge is scored the following Monday, and parity can move into `registry.yml`
+on the day `publish_registry` triggers those three runs and waits for them.
 
 The producible-pair check found 17 impossible pairs on its first run, not the two that were
 known. `vellum`, `whylabs` and `tensorrt-llm` were recorded `4 / open_source`, a pair no rule
@@ -260,7 +476,7 @@ the four rubrics, and `signal_routing.yaml` records the axis as effectively unro
 external anchors are unbridged, and both rank *models*, so neither can say anything about a
 training framework or a sandbox.
 
-What actually places most bands is a comparison to a peer. Roughly a hundred products in the
+What actually places many bands is a comparison to a peer. Roughly a hundred products in the
 corpus put themselves against another product in their own category — "one tier below the
 Megatron-LM anchor", "mid-tier next to langfuse" — and in `finetuning_code` every one of the
 27 notes does it. That comparison was the instrument, and it lived in an English sentence.
@@ -310,10 +526,11 @@ work the way openness got four.
 | deliberately null — not claims | 46 (26 capability, 20 adoption) |
 | **real claims to verify** | **1370** |
 | of those, citing at least one source URL | 1370 |
-| carrying a real `last_verified` | 1416 |
+| carrying a real `last_verified` | 1408 |
+| explicitly held in `verification_queue.yaml` (read via commit fallback) | 8 |
 | distinct source URLs behind all of it | 1824 |
 
-`check_freshness` reports median age 1d, oldest 6d, and no axis resting on the commit-date
+`check_freshness` reports median age 1d, oldest 6d, with eight axes resting on the commit-date
 fallback. Regenerate these rather than trusting them; the corpus grows most weeks, and the
 figures in this table have already been wrong once for exactly that reason.
 
@@ -516,8 +733,9 @@ run unattended and why it must be fenced to those axes only.
 
 ### 4. The re-read pass — roughly 1106 URLs ✅ **done 2026-08-14**
 
-Closed by the 08-13/14 all-corpus sweep: all 1416 axes now carry a real `last_verified`,
-median age 1d. The description below is kept as the standing procedure for re-running it.
+Closed by the 08-13/14 all-corpus sweep, which dated all 1,416 axes; a follow-up audit then
+removed eight unsupported confirmations, leaving **1,408 confirmed and eight held** (median age
+1d). The description below is kept as the standing procedure for re-running it.
 
 Everything else, all of openness included. **Fold the deferral backlog into this pass rather
 than clearing it first.** Reading a product's sources to determine `core-gated` *is* the
@@ -525,11 +743,11 @@ re-check that earns its `last_verified`; done as two passes it is the same pages
 twice, and it re-verifies scores that are about to change.
 
 **The prose refresh folds in on the same argument.** A product's `description` and `comments`
-are brought up to `docs/guides/product-info.md` in the same read, because refreshing them means
+are brought up to `docs/reference/product-copy.md` in the same read, because refreshing them means
 opening the pages this pass already fetches, and because a prose pass run on its own does not
 open primary sources at all. One PR per category carries both halves. The runbook's Phase 4 has
 the unit of work; the split of authority is unchanged — this guide governs the score and the
-date, `product-info.md` governs the prose, and the `comments` verification line still earns no
+date, `product-copy.md` governs the prose, and the `comments` verification line still earns no
 `last_verified`.
 
 That backlog is the declared deferrals: 5 products across 4 categories as of 2026-08-14, down
@@ -555,7 +773,9 @@ score for this reason.
 category whose oldest axis is 50 days old is a category to go and look at. Gating earlier would
 only have failed on the pre-automation backlog rather than on genuine staleness; step 4 closed
 that, and on the day the gate landed all 1,416 axes carried a real `last_verified` and the
-oldest category read 6 days.
+oldest category read 6 days. (A later audit removed eight unsupported confirmations, so the
+current state is 1,408 confirmed and eight held — the eight ride the commit-date fallback and do
+not evade the age gate.)
 
 **The window is 30 days, decided 2026-08-09.** It is a judgment about how much re-reading the
 map is worth rather than anything derivable, so it is recorded here with its date and its owner
@@ -571,18 +791,13 @@ at this window that drift is noise, and a digest that *matches* remains the only
 positively proves.
 
 The cliff is also why the gate is scheduled rather than per-pull-request, and weekly rather than
-daily. `docs/guides/freshness.md` has that argument and the shape of the workflow.
+daily. Part 1 above has that argument and the shape of the workflow.
+
 
 ## Related
 
-- `docs/runbooks/verification-pass.md` — the executable plan: gate order, commands, exit
-  criteria per phase, and the standing-hazards table
-- `docs/guides/freshness.md` — what `last_verified` means, and the two divergences already
-  closed
-- `docs/guides/openness-spectrum.md` — the openness ladders themselves
-- `docs/guides/adoption.md` — the adoption bands, the instrument vocabulary, and which
-  signals may be compared to which
-- `docs/guides/product-info.md` — the prose companion: style/tone for a product's
-  `description`/`comments`, and why the `comments` verification line is NOT a `last_verified`
-- `sources/rubrics/` — shared ladders; `build/rubrics.py` for how `extends` resolves (#126)
-- `AGENTS.md` — the layer-2 loop and the evidence grading rule
+- `docs/reference/openness.md` — the openness ladders and license tiers
+- `docs/reference/adoption.md` — the adoption axis, and why a band nothing can measure still has to age
+- `docs/reference/capability.md` — the capability axis and what a capability comparison records
+- `docs/workflows/refresh-category.md` — the procedure for re-reading a category to earn dates
+- `docs/operations/deploy-models.md` — the warehouse chain the parity gate polices

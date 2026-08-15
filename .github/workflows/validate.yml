@@ -27,16 +27,16 @@ jobs:
       # The invariant, the digest requirement and the producible-pair check. Free, no
       # network, and scoped so they cover exactly what has been done: invariant and digests
       # apply only to axes claiming a last_verified, producible-pairs to every scored product
-      # in a category with a recipe. See docs/guides/verification.md.
+      # in a category with a recipe. See docs/reference/evidence-and-freshness.md.
       - name: Verification gates (invariant, digests, producible-pairs)
         run: uv run python -m build.check_verification --verbose
 
-      # Capability's own gate. Most bands on this map were placed against a named peer, and
+      # Capability's own gate. Many bands on this map were placed against a named peer, and
       # until `relative_to` existed that comparison lived in a note where nothing could check
       # it. This requires the recorded relation to agree with the two recorded scores, and a
       # dated band's peer to be confirmed at least as recently. It ratchets the same way the
       # verification gates do: it covers the products that record a comparison, which grows
-      # as the axis is curated. See docs/guides/verification.md.
+      # as the axis is curated. See docs/reference/evidence-and-freshness.md.
       - name: Capability gate (recorded comparisons hold)
         run: uv run python -m build.check_capability
 
@@ -99,12 +99,21 @@ jobs:
       # of time, so it would block work unrelated to the stale category and nobody could clear
       # it from inside their own PR. What this step is for is the other half: a re-read PR
       # seeing, in its own log, whether the category it just refreshed came back inside the
-      # window. See docs/guides/freshness.md.
+      # window. See docs/reference/evidence-and-freshness.md.
       - name: Freshness report (informational, does not gate)
         run: uv run python -m build.check_freshness
 
       - name: Serialize dry-run
         run: uv run python -m build.serialize --date ci-dry-run
+
+      # A slug that leaves the payload must carry a redirect alias. build.validate cannot see
+      # a deletion (it reads live files; a deletion is the absence of one), so this diffs the
+      # freshly serialized payload against the one committed at HEAD and requires every slug
+      # that fell out to be aliased. It has to run AFTER the serialize step above, against a
+      # fresh payload — before 2026-08-14 it ran only in the post-merge regeneration workflow,
+      # too late to protect the PR that removed the product. See build/check_retirement.py.
+      - name: Retirement gate (a removed slug carries a redirect alias)
+        run: uv run python -m build.check_retirement
 
       # The payload's own identity invariants: slugs, org_slug resolution, aliases, and
       # the freshness canary that catches a shallow-clone checkout from the inside. See

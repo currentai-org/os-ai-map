@@ -1,11 +1,9 @@
 # Contributing to os-ai-map
 
-Thanks for helping map the open source AI stack. All curation happens through
-pull requests editing the YAML files in `sources/`. CI validates every PR, so
-you can't break anything that a maintainer won't catch.
-
-This project is [MIT licensed](LICENSE); contributions are accepted under the
-same terms.
+Thanks for helping map the open source AI stack. All curation happens through pull requests
+editing the YAML files in `sources/`. CI validates every PR, so you can't break anything a
+maintainer won't catch. This project is [MIT licensed](LICENSE); contributions are accepted
+under the same terms.
 
 ## Quick start
 
@@ -28,190 +26,36 @@ One YAML file per record, four concerns plus one manifest:
 | `sources/categories/<slug>.yaml` | The category, plus its **ordered** `products:` roster (order = display order) |
 | `sources/taxonomy.yaml` | Arc grouping and cross-category display order |
 
-Machine-readable JSON Schemas for all five file types live in `docs/schemas/`.
+Machine-readable JSON Schemas for all five file types live in `docs/schemas/`. Invariants
+(validated in CI): a product appears in exactly one category roster and exactly one org roster;
+every product has a matching score file; product/org slugs are kebab-case, category slugs
+underscore form.
 
-Invariants (validated in CI):
-- A product appears in **exactly one** category roster and **exactly one** org roster.
-- Every product has a matching score file (same slug).
-- Slugs: products and orgs are kebab-case (`llama-3-1`); categories are
-  underscore form (`base_pretrained`).
+## Find your task
 
-## Recipe: add a product
+The procedures live in [`docs/README.md`](docs/README.md), which routes you to one workflow per
+task. This file no longer restates them, so there is only one copy of each to keep true.
 
-1. **Pick the slug**: kebab-case of the *tier the vendor sells*, not a version or a size
-   (`OLMo 2` → `olmo`, `Command R` → `command-r`). A slug is permanent and deep links are
-   built on it, so it must not carry a version. If the natural slug is genuinely taken by a
-   different product, pick a distinguishing word from the product's own name rather than
-   appending the org. `build/validate.py` enforces this and `docs/guides/identity.md` is
-   normative.
-2. **Create `sources/products/<slug>.yaml`**:
+| I want to… | Go to |
+|---|---|
+| Add a new product | [`docs/workflows/add-product.md`](docs/workflows/add-product.md) |
+| Change an existing product | [`docs/workflows/update-product.md`](docs/workflows/update-product.md) |
+| Create or edit a category | [`docs/workflows/edit-category.md`](docs/workflows/edit-category.md) |
+| Re-verify a category | [`docs/workflows/refresh-category.md`](docs/workflows/refresh-category.md) |
+| Change an axis's schema or meaning | [`docs/workflows/migrate-axis.md`](docs/workflows/migrate-axis.md) |
 
-   ```yaml
-   name: <slug>
-   display_name: <Display Name>
-   type: model | software | dataset | hardware
-   description: <one paragraph: what it is, why it matters>
-   github:
-   - url: https://github.com/org/repo
-   huggingface_model:
-   - url: https://huggingface.co/org/model
-   comments: ''
-   ```
-
-   Artifact keys (include only the ones that exist): `github`, `npm`, `pypi`,
-   `crates`, `go`, `huggingface_model`, `huggingface_dataset`. Do **not** add an
-   `org:` field — org membership lives in the org file.
-
-   For the style, length, and tone of `description`/`comments` — and the canonical
-   `Verified <YYYY-MM-DD> via <source>.` line — see `docs/guides/product-info.md`.
-   To refresh those fields on an existing product, use the `verify-product` skill.
-3. **Create `sources/scores/<slug>.yaml`** (see scoring rubric below). The file
-   starts with `product: <slug>`; openness requires both `score` and `class`,
-   and capability requires `score` and `basis`. If you can't score an axis yet,
-   use `score: null` with a `basis`/`note` explaining why — but openness is
-   usually determinable from the license.
-4. **Add the slug to one category roster** in `sources/categories/<category>.yaml`,
-   at the position where it should display.
-5. **Add the slug to one org roster** in `sources/organizations/<org>.yaml`.
-   If the org doesn't exist, create it:
-
-   ```yaml
-   name: <org-slug>
-   display_name: <Org Name>
-   type: unknown
-   homepage: https://example.com
-   products:
-   - <slug>
-   ```
-6. **Validate**: `uv run python -m build.validate` → `0 error(s)`.
-7. Open a PR. Don't touch `build/notebook_data.json` or
-   `notebooks/ai-stack-map.py` — a bot regenerates those on merge.
-
-## Recipe: edit a category
-
-Category files own the roster and its order. To add/remove/reorder products,
-edit the `products:` array. To move a product between categories, remove it
-from one roster and add it to the other (it must end up in exactly one).
-Arc grouping and cross-category order live in `sources/taxonomy.yaml`.
-
-The category also carries two bits of editorial text: `description` (a neutral
-one-liner — *what the category is*) and `strapline` (the *finding* — what the map
-concludes about its open/closed gap). Both flow into the build, so edit them here
-rather than in the notebook; `description` is also emitted into the payload's
-top-level `descriptions.categories` legend.
-
-## Scoring rubric (summary)
-
-Each score file has three axes. **Every non-null value needs at least one
-`sources:` citation** (`url`, `shows`, `accessed`).
-
-- **openness** (`score:` 0-5, `class:` depends on type):
-  - models: `open_source`, `open_weights`, `restricted`, `closed`
-  - software: `open_source`, `source_available`, `open_core`, `closed`
-  - datasets: `open`, `gated`, `restricted`, `closed`
-  - hardware: `open_hardware`, `open_toolchain`, `documented`, `restricted`
-- **adoption** (`level:` 1-5, `signal_type:` one of `active_users`,
-  `usage_volume`, `reported_traction`, `stars_fallback`, `unknown`): real usage
-  (downloads, active users, deployments) beats stars. `stars_fallback` can
-  never justify a level above 3 (enforced by validation).
-- **capability** (`score:` 1-5, `basis:` e.g. `benchmark:MLPerf`): benchmark or
-  comparative evidence; `null` with a reason if no defensible basis exists. For a
-  training corpus, capability is its **training value under frontier-style
-  evaluation** — how good the models built on it are on standard (largely English,
-  benchmark-driven) evals — graded from controlled ablations and downstream-model
-  evidence (`basis: training_value:ablation` / `:downstream` / `:results` /
-  `:superseded`). A low score means a corpus is not the current pick for *that*
-  objective, **not** that it is low quality: consent, licensing, documentation
-  quality, and language coverage are openness or scope concerns and are deliberately
-  not captured by this axis.
-
-### Adoption level bands
-
-The `adoption.level` is graded against monthly usage volume — package-registry
-downloads (PyPI, npm), Hugging Face downloads, or equivalent active-user / request
-counts. Use the band the product's verified monthly volume falls into:
-
-| Level | Monthly usage volume | Reading |
-|------:|----------------------|---------|
-| **5** | **> 10M / mo** | Ecosystem standard — the default choice for its job (e.g. PyTorch, LangChain, MLflow, Ray). |
-| **4** | 1M – 10M / mo | Widely adopted; a leading option in its category (e.g. vLLM, TRL, Diffusers). |
-| **3** | 100k – 1M / mo | Real, non-trivial usage; established but not dominant. |
-| **2** | 10k – 100k / mo | Emerging; a meaningful user base but still niche. |
-| **1** | < 10k / mo | Early / experimental; little verified usage. |
-
-Notes on applying the bands:
-
-- **Use real usage, not popularity.** Downloads, active users, deployments, and
-  request volume are the basis. **GitHub stars are a weak last-resort signal and
-  never raise adoption above level 3** (`signal_type: stars_fallback`, enforced by
-  validation).
-- **Ecosystem-standard status can stand in for a clean count.** A few infrastructure
-  tools have no single download figure but are unambiguously the default in their
-  category (e.g. a C/C++ engine, a managed platform). These may sit at level 4–5 on
-  documented ecosystem-standard status with `signal_type: reported_traction`; say so
-  in the `note`.
-- **Borderline cases.** When volume sits right at a band edge (e.g. ~10–13M/mo at the
-  level-5 floor), lean on whether the product is genuinely the ecosystem default before
-  promoting, and record the reasoning in the `note`.
-- The `reach` field is a free-text label for the same figure (e.g. `'>10M'`,
-  `1M-10M`); keep it consistent with the chosen level.
-
-Look at `sources/scores/vllm.yaml` for a complete worked example.
-
-#### Training-corpus bands
-
-Download volume for a multi-terabyte corpus is not comparable to a package: a
-corpus is pulled a handful of times per training run, not on every CI job. The same
-logic covers the software that builds those corpora — a curation or processing tool
-is run alongside a corpus build, not pulled on every CI job, so its download volume
-sits an order of magnitude below a normal library for the same real impact. Products
-in the `training_synthetic_datasets` and `dataset_processing_tools` categories are
-therefore graded one order of magnitude below the standard bands:
-
-| Level | Monthly HF downloads | Reading |
-|------:|----------------------|---------|
-| **5** | **> 1M / mo** | Ecosystem-standard corpus — a default choice for building models. |
-| **4** | 100k – 1M / mo | Widely used; a leading corpus in its niche. |
-| **3** | 10k – 100k / mo | Established, real usage. |
-| **2** | 1k – 10k / mo | Emerging; a meaningful user base but still niche. |
-| **1** | < 1k / mo | Early / experimental; little verified usage. |
-
-These bands do **not** apply to `benchmark_eval_data`: benchmark sets are small
-files pulled by evaluation harnesses on every run, so their download counts behave
-like package downloads and the standard bands fit.
-
-Download volume alone under-measures a corpus that model builders mirror once and
-reuse forever. That reuse signal belongs on the **capability** axis, not adoption:
-a corpus's training value is how good the models built on it are, so widespread
-documented reuse and winning controlled ablations are capability evidence. Keep
-adoption to verified download volume and record reuse and ablation results under
-`capability`.
-
-#### Dataset lineage
-
-Dataset products may carry an optional `lineage` block recording filiation — how
-corpora derive from one another, what tooling curated them, and which models they
-verifiably trained:
-
-```yaml
-lineage:
-  derived_from: [fineweb]          # upstream data sources
-  curated_with: [datatrove]        # curation/processing tooling
-  trains: [smollm3, apertus]       # models documented as trained on it
-```
-
-Use map product slugs where the referent is on the map, otherwise a plain name
-(e.g. `Common Crawl`, `datatrove`). Entries must be documented in the product's
-primary sources (model cards, technical reports, dataset cards), not inferred.
+The rules each workflow relies on — scoring ladders, adoption bands, the prose spec, how a
+score earns its date — live once in [`docs/reference/`](docs/reference/).
 
 ## Suggesting without writing YAML
 
-Open an issue instead — there are structured forms for **suggest a product**,
-**report an error**, and **propose a category**. A maintainer (or an agent)
-turns accepted suggestions into PRs.
+Open an issue instead — there are structured forms for **suggest a product**, **report an
+error**, and **propose a category**. A maintainer (or an agent) turns accepted suggestions into
+PRs.
 
 ## For agent-assisted editing
 
-If you use a coding agent, the repo ships skills that automate these recipes:
-`add-product`, `curate-category`, `add-data-source`, `pyoso-analyst`. See
-`AGENTS.md` and `skills/`.
+If you use a coding agent, the repo ships skills that mirror these workflows: `add-product`,
+`update-product`, `edit-category`, `refresh-category`, `migrate-axis`, plus the advanced
+`build-rubric`, `add-data-source`, and `pyoso-analyst`. They are registered under
+`.claude/skills/`. See `AGENTS.md` for the repo map.
