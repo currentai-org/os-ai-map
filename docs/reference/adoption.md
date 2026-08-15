@@ -37,7 +37,55 @@ adoption:
 | `level` | 1-5, the band. The only field a consumer should compare across products. |
 | `reach` | the band's label AND **the unit it was read in**. Not `level` restated. |
 | `signal_type` | **which instrument** the band was read with. Decides what it may be compared to. |
+| `banded_quantity` | **what was actually counted**, where that is not a current usage figure for this product. Optional; absent means nothing was borrowed. |
 | `confidence` | how much the reading is trusted, independent of the level. |
+
+### `banded_quantity` — say what you banded, as a field
+
+Added 2026-08-15. A level read off something other than the product is not a defect on its
+own — often it is the most honest reading available — but it has to be legible. Record what
+the figure counts:
+
+```yaml
+adoption:
+  level: 4
+  signal_type: reported_traction
+  banded_quantity: Replit platform registered users (50M+, March 2026), not an agent active count
+```
+
+**Absent is a real answer**, not an unfilled field. It means the level is a judgment about
+the product itself with no borrowed quantity behind it. `claude-opus` and `claude-fable` both
+record a market-position reading and cite no number at all, and both correctly carry nothing
+here.
+
+Four shapes recur, and they are worth telling apart:
+
+| shape | example |
+|---|---|
+| a parent platform's reach, the product being a feature inside something larger | `azure-ai-foundry-observability` bands Microsoft Foundry |
+| a real count of the product that is not a current active one | `v0`'s 4M+ cumulative users; `codex-cli`'s **weekly** actives against a monthly scale |
+| a proxy of another kind entirely | `claude-code`'s ~$2.5B run-rate; `openhands`'s 83.9k stars |
+| nothing, where the note cites a figure only to reject it | `perspective-api` — Jigsaw has never published one |
+
+**Why a field and not better prose.** The prose was already good. Every one of the 19
+parent-platform records described its own substitution in its note, several in capitals
+(`WHAT WAS BANDED`), and it changed nothing: a consumer reading `level: 4` off the warehouse
+got a number about Replit with nothing attached saying so. `active_users` had solved this
+first — the `attribution_note` on its route in `sources/signal_routing.yaml` requires a
+record to name a figure that is not an active count, and three records do. This is that rule
+generalized to the instrument that needed it most.
+
+**The gate covers the decidable half.** `tests/test_banded_quantity.py` requires a
+`banded_quantity` wherever a `reported_traction` note cites a **magnitude** — a figure with a
+suffix or thousands separators, never a bare integer, so "28 enterprise testimonials" does
+not trip it. A number in the prose of an instrument that claims no count is exactly what a
+reader mistakes for a measurement. What no regex can catch is a parent-platform band citing
+no figure at all; those were backfilled by hand and nothing enforces them, which is the same
+ratchet `check_capability` uses.
+
+Strict from day one, unlike `check_adoption` and `check_instrument`, because there was no
+backlog to meet: all 57 records needing one were filled in by
+`build/migrate_banded_quantity.py` in the change that added the field.
 
 **`reach` is not `level` restated, and deleting it has been tried and reverted.** 20,000 stars
 and 20,000 downloads are not the same reach, and the same level maps to a different label
@@ -433,6 +481,9 @@ product, followed by a band recorded on that signal anyway.**
 - [ ] A `usage_volume` band has a countable, **declared** artifact behind it.
 - [ ] A `reported_traction` record cites a source with a date and a digest, and records a word
       from the vocabulary or no `reach` at all — never a number.
+- [ ] Anything read off something other than the product — a parent platform, a revenue or
+      funding figure, a star count, a cumulative or lifetime total — records
+      `banded_quantity` naming what was counted.
 - [ ] An `active_users` band names the quantity it actually banded, if that quantity is not an
       active count (an all-time total, a device base, a paid-seat count).
 - [ ] The band follows from the figure in the note, in the same direction and order of

@@ -82,6 +82,7 @@ rule being written down, and a gate that fails on day one teaches people to skip
 from __future__ import annotations
 
 import argparse
+import re
 import sys
 from pathlib import Path
 
@@ -134,6 +135,52 @@ def is_refetchable(adoption: dict, required: list[str]) -> bool:
         all(src.get(field) for field in required)
         for src in adoption.get("sources") or []
     )
+
+
+# A quantity a reader would take for a measurement: a number carrying a magnitude suffix or a
+# word, or one grouped with thousands separators. Deliberately NOT a bare integer — a note
+# saying "28 enterprise testimonials" or "five production SDKs" is not making a measurement
+# claim, and a gate that treated it as one would demand a `banded_quantity` for every date.
+# Years are the one thing that slips through the grouping arm, so they are excluded by shape.
+MAGNITUDE = re.compile(
+    r"\b\d[\d,]*\.?\d*\s*(?:million|billion|trillion|[MBK])\b\+?|\b\d{1,3}(?:,\d{3})+\b",
+    re.IGNORECASE,
+)
+YEAR = re.compile(r"^(?:19|20)\d\d$")
+
+
+def magnitudes_in(note: str) -> list[str]:
+    """Every figure in `note` a reader could mistake for a count of the product."""
+    return [m for m in MAGNITUDE.findall(note or "") if not YEAR.match(m.strip())]
+
+
+def unattributed_magnitudes(sources: dict) -> list[str]:
+    """`reported_traction` records citing a figure without saying what it counts.
+
+    `reported_traction` is defined by having no count behind it — `docs/reference/adoption.md`
+    says it "records a word, never a number". That rule was enforced on the `reach` LABEL and
+    68 numeric labels were stripped on 2026-08-13. It was never enforced on the prose, so the
+    numbers simply moved into the note, where a reader still reads them as a measurement of
+    the product and nothing can say otherwise.
+
+    `banded_quantity` is the answer: cite whatever figure the reading rests on, and name what
+    that figure counts. This finds the records that cite one and do not.
+    """
+    findings: list[str] = []
+    for slug, score in sorted(sources["scores"].items()):
+        adoption = (score or {}).get("adoption") or {}
+        if adoption.get("signal_type") != "reported_traction":
+            continue
+        if adoption.get("banded_quantity"):
+            continue
+        found = magnitudes_in(adoption.get("note") or "")
+        if found:
+            findings.append(
+                f"{slug}: reported_traction cites {', '.join(sorted(set(found))[:3])} in its "
+                f"note but records no banded_quantity. This instrument claims no count, so a "
+                f"figure in its prose has to say what it counts"
+            )
+    return findings
 
 
 def collect(sources: dict, root: Path = ROOT) -> tuple[list[str], int]:
@@ -195,15 +242,34 @@ def main() -> int:
         )
         return 1
 
+    # Both classes are findings of this checker, so both decide its status and its exit
+    # code. Reporting one and grading on the other would let a violation print above an
+    # [OK] and exit 0, which is precisely the "the label was checkable, the claim was not"
+    # failure this module was written about, turned on the module itself.
+    unattributed = unattributed_magnitudes(sources)
+
+    if unattributed:
+        print(f"  {len(unattributed)} reported_traction record(s) cite a figure with no "
+              "banded_quantity:")
+        for line in (unattributed if args.verbose else unattributed[:10]):
+            print(f"  x {line}")
+        if len(unattributed) > 10 and not args.verbose:
+            print(f"  ... and {len(unattributed) - 10} more (--verbose for all)")
+
     shown = findings if args.verbose else findings[:15]
     for line in shown:
         print(f"  x {line}")
     if len(findings) > len(shown):
         print(f"  ... and {len(findings) - len(shown)} more (--verbose for all)")
 
-    status = "OK" if not findings else f"{len(findings)} instruments unsupported"
+    problems = []
+    if findings:
+        problems.append(f"{len(findings)} instruments unsupported")
+    if unattributed:
+        problems.append(f"{len(unattributed)} figures unattributed")
+    status = "OK" if not problems else ", ".join(problems)
     print(f"\ncheck_instrument  {examined} adoption records  [{status}]")
-    return 1 if findings and args.strict else 0
+    return 1 if (findings or unattributed) and args.strict else 0
 
 
 if __name__ == "__main__":
