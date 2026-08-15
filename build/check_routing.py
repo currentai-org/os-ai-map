@@ -32,14 +32,25 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 
-# Which artifact key in a product YAML satisfies which routing source.
-SOURCE_ARTIFACT = {
-    "github": "github",
-    "huggingface_model": "huggingface_model",
-    "huggingface_dataset": "huggingface_dataset",
-    "pypi": "pypi",
-    "semanticscholar": "arxiv",  # citations are reached via the paper id
-}
+def source_artifact(sources: dict) -> dict[str, str]:
+    """source name -> the product artifact key it consumes, read from the routing table.
+
+    This was a hardcoded dict until 2026-08-15, and it was a second copy of a fact the table
+    already declares — the repo mirroring a declaration by hand, which is the drift
+    `check_parity` exists to catch one layer over. The copy had already fallen behind: it
+    named five sources where the table declares seven, missing `npm` and `crates`. Both are
+    `bridged: false` so the omission was inert, and it would have stopped being inert the day
+    a bridge landed, which is exactly when nobody would be looking here.
+
+    The two layers are distinct and worth naming: a SOURCE is a signal producer
+    (`semanticscholar`), an ARTIFACT KEY is what a product declares (`arxiv`). One source may
+    consume a key that shares no name with it.
+    """
+    return {
+        name: source["artifact_key"]
+        for name, source in sources.items()
+        if source.get("artifact_key")
+    }
 
 
 def artifacts_of(product: dict) -> set[str]:
@@ -103,6 +114,7 @@ def main(argv: list[str] | None = None) -> int:
     routing, products, _, category_of = load()
     sources = routing.get("sources") or {}
     dimensions = routing.get("dimensions") or {}
+    artifact_of = source_artifact(sources)
 
     # Structural check first: a route pointing at nothing is a bug in the table.
     problems: list[str] = []
@@ -118,7 +130,7 @@ def main(argv: list[str] | None = None) -> int:
                 continue
             # An unbridged source can never resolve to a product, so it needs no
             # artifact mapping. Only a source claiming to be usable must have one.
-            if sources[name].get("bridged") and name not in SOURCE_ARTIFACT:
+            if sources[name].get("bridged") and name not in artifact_of:
                 problems.append(f"{dim}: bridged source {name!r} has no artifact mapping in this checker")
     if problems:
         print("ROUTING TABLE PROBLEMS")
@@ -150,7 +162,7 @@ def main(argv: list[str] | None = None) -> int:
                     # map a bridge could still buy.
                     was_blocked = was_blocked or why == "unbridged"
                     continue
-                if SOURCE_ARTIFACT.get(route["source"]) in arts:
+                if artifact_of.get(route["source"]) in arts:
                     hit = True
                     break
             if hit:

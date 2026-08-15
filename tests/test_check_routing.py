@@ -60,3 +60,46 @@ def test_a_hand_authored_route_is_not_counted_as_blocked_by_a_bridge():
     usable, why = route_usable({"source": "lmarena"}, {"lmarena": {"bridged": False}})
     assert not usable
     assert why == "unbridged"
+
+
+def test_the_source_to_artifact_map_is_read_from_the_table_not_mirrored():
+    """#184: the mapping was a hardcoded dict and had already fallen behind the declaration.
+
+    It named five sources where signal_routing.yaml declares seven — `npm` and `crates` were
+    missing. Both are `bridged: false`, so the omission was inert; it would have stopped being
+    inert the day a bridge landed, which is exactly when nobody would think to look here.
+    """
+    import yaml
+
+    from build.check_routing import source_artifact
+
+    routing = yaml.safe_load((ROOT / "sources" / "signal_routing.yaml").read_text())
+    mapping = source_artifact(routing["sources"])
+
+    assert mapping["semanticscholar"] == "arxiv", "a source may consume a differently-named key"
+    assert {"npm", "crates"} <= set(mapping), "the hardcoded copy was missing exactly these"
+    assert set(mapping) == {
+        name for name, s in routing["sources"].items() if s.get("artifact_key")
+    }
+
+
+def test_a_bridged_source_without_an_artifact_key_is_still_a_finding(tmp_path, monkeypatch, capsys):
+    """The structural check must keep firing when a bridged source declares nothing to read."""
+    import yaml
+
+    routing = yaml.safe_load((ROOT / "sources" / "signal_routing.yaml").read_text())
+    routing["sources"]["invented"] = {"bridged": True}
+    routing["dimensions"]["adoption"]["routes"].append(
+        {"source": "invented", "signal_type": "usage_volume"}
+    )
+
+    (tmp_path / "sources").mkdir()
+    (tmp_path / "sources" / "signal_routing.yaml").write_text(yaml.safe_dump(routing))
+    for sub in ("products", "categories"):
+        (tmp_path / "sources" / sub).mkdir()
+        for path in (ROOT / "sources" / sub).glob("*.yaml"):
+            (tmp_path / "sources" / sub / path.name).write_bytes(path.read_bytes())
+
+    monkeypatch.setattr("build.check_routing.ROOT", tmp_path)
+    assert main([]) == 1
+    assert "no artifact mapping" in capsys.readouterr().out
