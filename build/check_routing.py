@@ -53,14 +53,18 @@ def source_artifact(sources: dict) -> dict[str, str]:
     }
 
 
-def artifacts_of(product: dict) -> set[str]:
-    """Which artifact kinds this product declares."""
-    found: set[str] = set()
-    for key in ("github", "huggingface_model", "huggingface_dataset", "pypi", "npm", "crates", "arxiv"):
-        value = product.get(key)
-        if value:
-            found.add(key)
-    return found
+def artifacts_of(product: dict, kinds: set[str]) -> set[str]:
+    """Which of the declared artifact `kinds` this product carries.
+
+    `kinds` comes from `source_artifact(...).values()` rather than from a literal list. This
+    file held TWO hardcoded copies of the routing table's artifact vocabulary and the first
+    pass at #184 replaced only one of them, which left the more consequential half: a
+    correctly declared new kind — source declared, `artifact_key` set, product carrying it —
+    passed every invariant and was still invisible here, so its routes reported as uncovered
+    and the map understated its own automation. Reproduced with a synthetic `rubygems` kind
+    before the fix; `tests/test_check_routing.py` keeps it reproduced.
+    """
+    return {key for key in kinds if product.get(key)}
 
 
 def load() -> tuple[dict, dict, dict, dict]:
@@ -115,6 +119,7 @@ def main(argv: list[str] | None = None) -> int:
     sources = routing.get("sources") or {}
     dimensions = routing.get("dimensions") or {}
     artifact_of = source_artifact(sources)
+    artifact_kinds = set(artifact_of.values())
 
     # Structural check first: a route pointing at nothing is a bug in the table.
     problems: list[str] = []
@@ -145,7 +150,7 @@ def main(argv: list[str] | None = None) -> int:
     per_product_routed: dict[str, int] = {}
 
     for slug in slugs:
-        arts = artifacts_of(products[slug])
+        arts = artifacts_of(products[slug], artifact_kinds)
         cat = category_of.get(slug)
         n_routed = 0
         for dim, spec in dimensions.items():

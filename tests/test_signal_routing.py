@@ -98,13 +98,22 @@ def test_every_product_key_is_a_declared_artifact_kind_or_declared_metadata(rout
 def test_arxiv_is_covered_by_the_source_that_consumes_it(routing):
     """The case that proved the old form was blind, pinned so it cannot regress.
 
-    24 products declare `arxiv`. It is not a source name and never should be — it is reached
-    through `semanticscholar`, which declares it as its `artifact_key`.
+    24 products declare `arxiv`, and it is covered because `semanticscholar` declares it as
+    its `artifact_key` — a source may consume a key that shares no name with it. That
+    mapping is the invariant.
+
+    What this deliberately does NOT assert is that no source may ever be *named* `arxiv`.
+    An earlier draft did, and it froze today's topology: a direct arXiv signal alongside
+    Semantic Scholar is a perfectly legitimate future route, and a test forbidding it would
+    have made the right change look like a regression.
     """
-    assert "arxiv" in declared_artifact_kinds(routing)
-    assert "arxiv" not in (routing.get("sources") or {}), (
-        "arxiv is an artifact key, not a source. Declaring it as a source would duplicate "
-        "what semanticscholar already reaches."
+    sources = routing.get("sources") or {}
+    assert "arxiv" in declared_artifact_kinds(routing), (
+        "24 products declare arxiv; some source must declare it as an artifact_key"
+    )
+    assert sources.get("semanticscholar", {}).get("artifact_key") == "arxiv", (
+        "semanticscholar is what reaches arxiv today; if that changes, the replacement must "
+        "still declare artifact_key: arxiv"
     )
 
 
