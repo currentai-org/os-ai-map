@@ -8,29 +8,25 @@ name: parity
 
 # Deliberately NOT a step in registry.yml. Publishing pushes the static models and
 # materializes those, but the user models that read them (evidence.product_evidence,
-# scores.openness_facts, scores.openness_computed) were MEANT to recompute on a weekly cron,
-# upstream first, so a parity check chained onto a publish would compare fresh rules against a
-# warehouse that has not recomputed and fail for a reason that is not a drift.
+# scores.openness_facts, scores.openness_computed) are scheduled to recompute weekly, upstream
+# first, so a parity check chained onto a publish would compare fresh rules against a warehouse
+# that has not recomputed and fail for a reason that is not a drift. A gate that cries wolf gets
+# switched off, which is how gates die.
 #
-# IMPORTANT, as of 2026-08-14: that chain does not actually fire on schedule. Its crons were
-# set at the model-revision layer and the platform schedules from the dataset layer, so the
-# evidence and scores datasets have never fired a SCHEDULED run (see docs/operations/
-# deploy-models.md). Until dataset-level scheduling lands, THIS GATE IS A WEEKLY DRIFT/STALENESS
-# DETECTOR, not the downstream stage of a working chain: a red parity can mean the warehouse is
-# stale rather than that a rule drifted. Read the datasets' run history before treating a
-# failure as drift, and refresh the three models by hand for a live check (workflow_dispatch is
-# here for exactly that).
+# A Tuesday merge is scheduled to be scored the following Monday. This can move into registry.yml on the day
+# publish_registry triggers the three downstream runs and waits for them, and not before.
+# Anyone wanting a check sooner should refresh the three models and then run this by hand:
+# workflow_dispatch is here for exactly that.
 #
-# Once the crons are fixed at the dataset level, restore the original intent: a weekly gate one
-# hour behind a weekly chain, moved into registry.yml on the day publish_registry triggers the
-# three downstream runs and waits for them. The gate's cadence must match the chain's — a daily
-# gate over a weekly chain cries "the warehouse has not caught up" six days out of seven.
+# The gate is weekly because the intended chain is weekly, and the two must move together: a daily gate over a
+# weekly chain fails six days out of seven with "the warehouse has not caught up", which is not
+# what a parity gate is for.
 
 on:
   schedule:
-    # Monday 06:00 UTC, one hour behind where scores.openness_computed is meant to recompute.
-    # NB: that recompute does not currently fire on schedule (see the note above), so today
-    # this run grades whatever state the warehouse was last left in by hand.
+    # Monday 06:00 UTC, one hour behind where scores.openness_computed is scheduled to recompute.
+    # This repo does not verify that the recompute fired; if parity is red, check the datasets'
+    # run history on the platform (see docs/operations/deploy-models.md) before treating it as drift.
     - cron: "0 6 * * 1"
   workflow_dispatch:
 
