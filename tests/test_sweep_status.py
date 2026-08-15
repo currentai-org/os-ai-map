@@ -139,37 +139,60 @@ def test_a_held_product_stays_resolved_under_any_window():
     assert state["done"] is True
 
 
-def test_retracting_notes_finds_the_known_cases():
-    """`blaxel-sandbox` carries the shape this looks for in two axes: an adoption note whose
-    "No last_verified claimed" sentence is retracted three sentences later, and a capability
-    note flagging its own benchmark figure as superseded."""
-    from build.sweep_status import retracting_notes
+def test_retracting_detector_matches_the_shapes_it_is_for():
+    """Detector behaviour, on synthetic notes rather than on the corpus.
 
-    found = {(slug, axis) for slug, axis, _ in retracting_notes()}
-    assert ("blaxel-sandbox", "adoption") in found
-    assert ("blaxel-sandbox", "capability") in found
-    assert len(found) > 30, f"only {len(found)} retracting notes; the walk has drifted"
+    An earlier cut asserted that `blaxel-sandbox` still had both defects and that at least
+    30 retracting notes remained. That pins the backlog: the refresh pass these worklists
+    exist to feed would have broken CI by doing its job. Test the detector; smoke-test the
+    traversal; never assert a defect survives.
+    """
+    from build.sweep_status import RETRACTING
+
+    for note in [
+        "That last sentence is superseded - the axis has now been re-read.",
+        "BENCHMARK FIGURE SUPERSEDED - the leaderboard has re-run since.",
+        "EVIDENCE REPLACED 2026-08-13. The category pass found a better source.",
+        "THE PREVIOUS BASIS IS WITHDRAWN: the valuation is not on any cited page.",
+        "the '400M daily actions' figure no longer appears on the announcement",
+    ]:
+        assert RETRACTING.search(note), note
+
+    for note in [
+        "Re-read 2026-08-13 and unchanged; the page still describes the same feature set.",
+        "17,574 downloads in the trailing 30 days summed across the family's shipped SKUs.",
+        "Held at 5 on 2026-08-14 for the Apertus family, whose current release is 1.5.",
+    ]:
+        assert not RETRACTING.search(note), note
 
 
-def test_under_coverage_finds_the_case_the_guide_names():
-    """`docs/reference/adoption.md` establishes the rule on `n8n` — npm downloads banded while
-    the product ships overwhelmingly as a Docker container. If this stops finding it, the
-    detector no longer matches the class the guide describes."""
-    from build.sweep_status import under_coverage
+def test_under_coverage_detector_matches_both_directions():
+    from build.sweep_status import INFLATED, UNDERSTATES
 
-    found = {slug for slug, _, _ in under_coverage()}
-    assert {"n8n", "mistral-large", "ollama"} <= found
+    assert UNDERSTATES.search("this understates real use, but the map bands on the artifact")
+    assert UNDERSTATES.search("banding on the minority channel that happens to be countable")
+    assert UNDERSTATES.search("npm is not the product's primary distribution channel")
+    assert INFLATED.search("almost certainly CI/mirror-inflated for an OTel SDK")
+    assert not UNDERSTATES.search("429,490 downloads in the trailing 30 days, band unchanged")
 
 
-def test_under_coverage_only_reads_measured_instruments():
-    """A `reported_traction` band claims no measurement, so it cannot be disowning one.
-    Including it would fold this list into the banded_quantity class, which is a different
-    problem with a different fix."""
+def test_both_worklists_traverse_the_corpus_without_asserting_a_backlog():
+    """A smoke test over real files: the walk runs, returns well-formed rows, and reads only
+    the axes it claims to. It deliberately does NOT assert how many findings there are —
+    zero is a valid and desirable answer.
+    """
     import yaml
     from pathlib import Path
 
-    from build.sweep_status import ROOT, under_coverage
+    from build.sweep_status import ROOT, retracting_notes, under_coverage
 
-    for slug, _, _ in under_coverage():
+    for slug, axis, phrase in retracting_notes():
+        assert (Path(ROOT) / "sources" / "scores" / f"{slug}.yaml").exists()
+        assert axis in ("openness", "adoption", "capability")
+        assert phrase
+
+    for slug, direction, phrase in under_coverage():
+        assert direction in ("understates", "inflated")
         score = yaml.safe_load((Path(ROOT) / "sources" / "scores" / f"{slug}.yaml").read_text())
+        # A reported_traction band claims no measurement, so it cannot be disowning one.
         assert score["adoption"]["signal_type"] in ("usage_volume", "stars_fallback")
