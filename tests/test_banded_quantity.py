@@ -85,3 +85,31 @@ def test_banded_quantity_is_populated_where_it_was_backfilled(sources):
 )
 def test_what_counts_as_a_magnitude(note, expected):
     assert bool(magnitudes_in(note)) is expected
+
+
+def test_strict_exits_nonzero_on_an_unattributed_figure(tmp_path, monkeypatch, capsys):
+    """The checker's status and exit code must grade on BOTH of its finding classes.
+
+    The first cut printed unattributed figures and then computed status and exit from the
+    older `findings` list alone, so a violation could print above an `[OK]` and exit 0. That
+    is this module's own subject — a label that is checkable over a claim that is not —
+    turned on the module itself.
+    """
+    import build.check_instrument as ci
+
+    monkeypatch.setattr(ci, "unattributed_magnitudes", lambda _s: ["widget: planted finding"])
+    monkeypatch.setattr("sys.argv", ["check_instrument", "--strict"])
+    assert ci.main() == 1
+    out = capsys.readouterr().out
+    assert "planted finding" in out
+    assert "[OK]" not in out
+    assert "1 figures unattributed" in out
+
+
+def test_non_strict_still_exits_zero_on_an_unattributed_figure(monkeypatch, capsys):
+    """Non-strict stays informational, matching how check_adoption and this gate shipped."""
+    import build.check_instrument as ci
+
+    monkeypatch.setattr(ci, "unattributed_magnitudes", lambda _s: ["widget: planted finding"])
+    monkeypatch.setattr("sys.argv", ["check_instrument"])
+    assert ci.main() == 0

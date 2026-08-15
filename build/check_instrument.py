@@ -242,12 +242,19 @@ def main() -> int:
         )
         return 1
 
+    # Both classes are findings of this checker, so both decide its status and its exit
+    # code. Reporting one and grading on the other would let a violation print above an
+    # [OK] and exit 0, which is precisely the "the label was checkable, the claim was not"
+    # failure this module was written about, turned on the module itself.
     unattributed = unattributed_magnitudes(sources)
+
     if unattributed:
         print(f"  {len(unattributed)} reported_traction record(s) cite a figure with no "
               "banded_quantity:")
         for line in (unattributed if args.verbose else unattributed[:10]):
             print(f"  x {line}")
+        if len(unattributed) > 10 and not args.verbose:
+            print(f"  ... and {len(unattributed) - 10} more (--verbose for all)")
 
     shown = findings if args.verbose else findings[:15]
     for line in shown:
@@ -255,9 +262,14 @@ def main() -> int:
     if len(findings) > len(shown):
         print(f"  ... and {len(findings) - len(shown)} more (--verbose for all)")
 
-    status = "OK" if not findings else f"{len(findings)} instruments unsupported"
+    problems = []
+    if findings:
+        problems.append(f"{len(findings)} instruments unsupported")
+    if unattributed:
+        problems.append(f"{len(unattributed)} figures unattributed")
+    status = "OK" if not problems else ", ".join(problems)
     print(f"\ncheck_instrument  {examined} adoption records  [{status}]")
-    return 1 if findings and args.strict else 0
+    return 1 if (findings or unattributed) and args.strict else 0
 
 
 if __name__ == "__main__":
