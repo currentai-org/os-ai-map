@@ -1,0 +1,107 @@
+[
+  {
+    "name": "product_slug",
+    "type": "VARCHAR",
+    "description": "Joins registry.products."
+  },
+  {
+    "name": "category_slug",
+    "type": "VARCHAR",
+    "description": "Which category's rubric produced this score."
+  },
+  {
+    "name": "product_type",
+    "type": "VARCHAR",
+    "description": "The product's own declared type, from registry.products."
+  },
+  {
+    "name": "ladder_product_type",
+    "type": "VARCHAR",
+    "description": "Which ladder variant governed. '*' where one ladder covers the whole category, the product's own type where a category mixes them (safeguards holds guardrail models and guardrail software), null where no ladder covers this type - which suppresses the score and says so in scoring_note."
+  },
+  {
+    "name": "is_deferred",
+    "type": "BOOLEAN",
+    "description": "Whether the category's scoring_recipe declares that its ladder does not decide this product. The rule walk does not run for these, so score, class and winning_rule_index are all null and scoring_note carries the recorded reason. 86 of 470 today."
+  },
+  {
+    "name": "openness_score",
+    "type": "BIGINT",
+    "description": "1-5 from the category's formula. Null in four cases, each with a reason in scoring_note: the category defers the product, no ladder covers the product's type, no rule matched and the ladder declares no otherwise, or the license maps to no declared tier. The last matches check_rubric's behavior of reporting rather than scoring, and applies only to ladders that declare a tier vocabulary - the hardware ladder scores design and toolchain and turns on no license at all."
+  },
+  {
+    "name": "openness_class",
+    "type": "VARCHAR",
+    "description": "closed, restricted, source_available, open_core, open_weights, open_source. Null alongside a null score."
+  },
+  {
+    "name": "dimension_values",
+    "type": "VARCHAR",
+    "description": "Every fact the formula could read, as 'key=value; key=value' sorted by key, with '?' where a dimension is declared but unrecorded. Replaces the former weights / data / code columns: the dimension vocabulary is per-ladder, so a column apiece meant reshaping this model every time a category landed."
+  },
+  {
+    "name": "license_tier",
+    "type": "VARCHAR",
+    "description": "Resolved tier the formula consumed, for ladders that declare tiers. Null means no declared tier matched, which suppresses the score; null on a tier-free ladder means the question was never asked."
+  },
+  {
+    "name": "license_tier_grade",
+    "type": "VARCHAR",
+    "description": "dataset when every reachable SKU mapped to one tier, so most-restrictive was computable; document otherwise."
+  },
+  {
+    "name": "winning_rule_index",
+    "type": "BIGINT",
+    "description": "Which rule of the ordered formula fired, within the governing ladder variant - rule_index is unique only per (category, product_type). Makes a score explainable by pointing at the rule rather than restating it. Null when the ladder abstained."
+  },
+  {
+    "name": "dims_relied_on",
+    "type": "BIGINT",
+    "description": "How many facts the winning rule depends on. A conditional rule depends on its own conditions; `otherwise` depends on all of them, because reaching it means every earlier rule was tested and failed. This is the wrong denominator for a freshness claim - see dims_recorded."
+  },
+  {
+    "name": "dims_sourced",
+    "type": "BIGINT",
+    "description": "How many of those facts cite something specific."
+  },
+  {
+    "name": "dims_from_dataset",
+    "type": "BIGINT",
+    "description": "How many of those came from a machine-readable field rather than a document."
+  },
+  {
+    "name": "dims_recorded",
+    "type": "BIGINT",
+    "description": "How many of the ladder's declared dimensions this product actually records a value for, whether or not the winning rule read them. Mirrors build/check_verification.py:recorded_dimensions, which is the set docs/guides/freshness.md means by 'everything in the score'."
+  },
+  {
+    "name": "dims_recorded_from_dataset",
+    "type": "BIGINT",
+    "description": "How many recorded dimensions rest on a machine-readable field."
+  },
+  {
+    "name": "dims_declared",
+    "type": "BIGINT",
+    "description": "How many dimensions the governing ladder declares, plus the license where it declares tiers. The gap to dims_recorded is the product's unanswered questions, which is a curation work list rather than an error."
+  },
+  {
+    "name": "all_recorded_dims_from_dataset",
+    "type": "BOOLEAN",
+    "description": "Whether EVERY dimension this score records is dataset-grade. The precondition docs/guides/verification.md step 2 requires before any tool may write last_verified: a document is someone's reading of prose, and re-reading the repo confirms nothing. Expected false across nearly all of openness, because signal_routing.yaml declares `data` research-only and the GitHub code route does not settle `code`. That is the honest answer, not a coverage gap."
+  },
+  {
+    "name": "unsourced_dimensions",
+    "type": "VARCHAR",
+    "description": "The relied-on facts backed by nothing specific. This is the work list."
+  },
+  {
+    "name": "last_checked",
+    "type": "DATE",
+    "description": "CHECK EVENT: the most recent date on which any admitted evidence behind this score was actually read - a document source's accessed date, or a signal's fetch. Diagnostic only. It is NOT freshness and must never be written into sources/scores as last_verified: that field is a person's confirmation that everything in the score is still correct, and no aggregate of access dates produces it. Normative rule in docs/guides/freshness.md."
+  },
+  {
+    "name": "scoring_note",
+    "type": "VARCHAR",
+    "description": "Why a score is null, or why a dataset route declined in favor of the recorded components. Deferred products carry no row at all - registry.category_deferrals holds their reasons."
+  }
+]

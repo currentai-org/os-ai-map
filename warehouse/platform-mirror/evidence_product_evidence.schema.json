@@ -1,0 +1,87 @@
+[
+  {
+    "name": "product_slug",
+    "type": "VARCHAR",
+    "description": "Joins registry.products."
+  },
+  {
+    "name": "category_slug",
+    "type": "VARCHAR",
+    "description": "Which category's rubric asked. The same product can be asked different questions by different categories."
+  },
+  {
+    "name": "dimension",
+    "type": "VARCHAR",
+    "description": "weights, data, code, license, checkpoints. Undeclared dimensions pass through and are reported by the serializer."
+  },
+  {
+    "name": "part_index",
+    "type": "BIGINT",
+    "description": "Position of this part within a multi-part recorded value; 0 for every single-valued dimension."
+  },
+  {
+    "name": "value",
+    "type": "VARCHAR",
+    "description": "The answer, in the rubric's vocabulary where one applies. Null when the source abstains."
+  },
+  {
+    "name": "value_detail",
+    "type": "VARCHAR",
+    "description": "Detail the formula ignores but a reviewer needs: gating mode, storage size, the raw hub slug."
+  },
+  {
+    "name": "grade",
+    "type": "VARCHAR",
+    "description": "dataset = a named field in a machine-readable source, re-derived by running a query. document = a URL whose content asserts it, re-derived by reading it. Not an author field: the first pass of sources/scores was itself agent-authored."
+  },
+  {
+    "name": "attribution",
+    "type": "VARCHAR",
+    "description": "artifact = the row names the SKU or repo it came from. axis = sources/scores records sources per axis rather than per dimension, so no single URL can honestly be named."
+  },
+  {
+    "name": "artifact_id",
+    "type": "VARCHAR",
+    "description": "The SKU or repo. Null for document rows. A family ships several and they routinely disagree, which is why stage 2 needs a family-level rule."
+  },
+  {
+    "name": "source_url",
+    "type": "VARCHAR",
+    "description": "Where the observation can be re-derived from."
+  },
+  {
+    "name": "source_table",
+    "type": "VARCHAR",
+    "description": "Dataset grade only: the table the value was read from."
+  },
+  {
+    "name": "source_column",
+    "type": "VARCHAR",
+    "description": "Dataset grade only: the column(s) the value was derived from."
+  },
+  {
+    "name": "source_accessed",
+    "type": "DATE",
+    "description": "When the source was actually read, NOT when this model ran, so a recompute cannot make stale evidence look freshly checked."
+  },
+  {
+    "name": "admitted",
+    "type": "BOOLEAN",
+    "description": "False when the source gives no usable answer. The row is still emitted so the gap is queryable rather than invisible."
+  },
+  {
+    "name": "source_reachable",
+    "type": "BOOLEAN",
+    "description": "Whether the artifact responded at all, held apart from admitted because 'it responded' and 'it answered the question' are different facts. Null for document rows, which are never fetched."
+  },
+  {
+    "name": "reject_reason",
+    "type": "VARCHAR",
+    "description": "Why an observation was not admitted."
+  },
+  {
+    "name": "settles_dimension",
+    "type": "BOOLEAN",
+    "description": "False for the GitHub code route, which shows code exists and is alive but not that it is a full training pipeline."
+  }
+]

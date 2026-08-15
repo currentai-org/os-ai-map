@@ -28,7 +28,10 @@ sources/rubrics/       Shared scoring ladders. A category inherits one with
                        is the example). build/rubrics.py resolves either form.
                        license-to-tier lives here, because whether AGPL is `osi` is
                        a fact about AGPL, not about one category.
-warehouse/models/      UDM SQL (entities, events, metrics, scores)
+warehouse/platform-mirror/  Read-only COPY of the models that run on the OSO platform to
+                       build the gap map's data (evidence, openness scores, signals), with a
+                       provenance manifest. Source of truth is the platform; nothing deploys from here.
+warehouse/models/      SQL for the legacy entities/events/metrics/scores layer (in-repo)
 warehouse/ingest/      Python fetchers that write CSVs to warehouse/catalog/
 warehouse/catalog/     Raw external CSVs (HF benchmarks, incidents, GitHub orgs)
 warehouse/sources.yaml Manifest: each external source declares EITHER a fetcher
