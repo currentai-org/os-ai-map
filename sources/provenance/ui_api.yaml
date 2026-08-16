@@ -1,7 +1,8 @@
 # Provenance decisions for the ui_api category, and how each was resolved.
 #
 # `build/prose_provenance.py` classifies every product's dated verification line. This file is
-# the record of what a reader decided about each unresolved one. All 42 are now `canonical`.
+# the record of what a reader decided about each unresolved one. 40 of the 42 are now
+# `canonical`; the two that are not are named below and are not counted as compliant.
 #
 # ## Two passes, and why the first was wrong
 #
@@ -9,7 +10,7 @@
 # score file. It was reviewed against truncated fields and did not hold. `product-copy.md`
 # makes the verification line provenance for BOTH prose fields, so a document establishing what
 # a product IS does not settle a description that also carries an adoption figure, a funding
-# round or a version number. Every `reread_reason` below is from that reversal, kept because it
+# round or a version number. Every `reason` below is from that reversal, kept because it
 # names the specific blocker in that record.
 #
 # The second pass fixed the prose instead of hunting for evidence to match it. That is the
@@ -24,10 +25,9 @@
 #
 # ## What the pass produced besides prose
 #
-# Eight axes across seven products were held and queued in `sources/verification_queue.yaml`,
-# each because the record's own evidence contradicts the recorded value:
+# Six axes across six products were held and queued in `sources/verification_queue.yaml`, each
+# because the record's own evidence contradicts the recorded value:
 #
-#   le-chat openness + capability   all three axes rest on one 2025 download-milestone brief
 #   openrouter adoption             homepage figures moved 100T/8M/60+ -> 200T+/10M+/80+
 #   poe adoption                    the source no longer carries the MAU figure it was scored on
 #   surfsense openness              connector directory moved to BSL 1.1; score predates the split
@@ -35,12 +35,31 @@
 #   microsoft-copilot adoption      the aggregator restated ~420M to 218M
 #   perplexity adoption             the record's 45M matches neither figure the page carries
 #
-# `perplexica` is recorded but not held: its repository was renamed to Vane, which is an
-# identity question under `docs/reference/identity.md` rather than an evidence one, so the slug
-# stays and the rename is noted in the product's own comments.
+# `le-chat` was held on a first cut of this pass and should not have been. The hold was written
+# from the record's own stale comments, which said openness and capability still rested on a
+# February 2025 download brief. The score file says otherwise: both axes were re-read on
+# 2026-08-14 against Mistral's consumer terms, rename notice and Vibe documentation, and both
+# notes record the values as corroborated. The holds are withdrawn and the dates restored. The
+# Le Chat to Vibe rename is an identity question, not evidence against either axis.
+#
+# `perplexica` is likewise recorded but not held: its repository was renamed to Vane, which is
+# `docs/reference/identity.md` work rather than an evidence problem.
+#
+# ## Two records are NOT compliant, and are not counted as such
+#
+# `character-ai` and `doubao` rest on tertiary sources. Global rule 3 requires a factual claim to
+# be confirmed against a PRIMARY source, and the guide carries no exception for a vendor that
+# publishes nothing reachable. character.ai answers HTTP 403 to six attempts; doubao.com serves a
+# client-rendered shell whose only text is the product name. Both are left with a dated line that
+# names no document - `ambiguous_noncanonical` - so the census reports them as unresolved rather
+# than reading as finished. Changing the rule to admit a named tertiary source is a separate
+# decision, and this pass does not take it.
+#
+# So: 41 of 43 compliant and canonical, 2 held for a primary read.
 #
 # `perplexity` was already canonical and so is not in this file, but its prose carried the same
-# banned content and was rewritten in the same pass. The category is 43/43.
+# banned content and was rewritten in the same pass.
+#
 - product: anythingllm
   current_state: generic
   decision: reread
@@ -68,9 +87,12 @@
   reason: The description carries ~20M MAU and ~6M daily visitors, which the comments themselves say
     the source has replaced with 45M active users; it also carries the 2024 Google acqui-hire. Canonicalizing
     a verification line over figures the record already calls superseded would date the wrong claim.
-  resolved_state: canonical
+  resolved_state: ambiguous_noncanonical
   verified: '2026-08-13'
-  document: the Business of Apps Character
+  document: null
+  still_unresolved_because: character.ai answers HTTP 403, so no primary document could be read. product-copy.md
+    rule 3 requires a primary source for a factual claim and admits no exception for a vendor that
+    publishes nothing reachable, so this record is not called compliant.
 - product: chatgpt
   current_state: generic
   decision: reread
@@ -123,9 +145,12 @@
   reason: The Wikipedia article does not establish the ~100M DAU baseline, ~145M Lunar New Year peak,
     ~345M MAU or 1.9B+ Gala queries in the description; those come from the QuestMobile reporting
     on the adoption axis. The description also carries counts prose may not hold.
-  resolved_state: canonical
+  resolved_state: ambiguous_noncanonical
   verified: '2026-08-13'
-  document: the Wikipedia article on Doubao and ByteDance's own desktop download page
+  document: null
+  still_unresolved_because: ByteDance publishes no English product page beyond a download link, and
+    doubao.com serves a client-rendered shell whose only text is the product name. The feature set
+    in the description has no primary document behind it.
 - product: duck-ai
   current_state: generic
   decision: reread
@@ -222,8 +247,8 @@
     the other is a Perplexity statistics page held only for peer calibration. Nothing in the record
     establishes the proprietary chat UI or the ''Mistral Vibe'' rebrand the comments assert.'
   resolved_state: canonical
-  verified: '2026-08-13'
-  document: the TechCrunch Le Chat launch report
+  verified: '2026-08-14'
+  document: Mistral's rename notice, the Vibe Work documentation and the Vibe product page
 - product: librechat
   current_state: generic
   decision: reread
