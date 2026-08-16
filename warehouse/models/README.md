@@ -84,8 +84,8 @@ The OSAI/Raffi v2 taxonomy layer (scores.taxonomy, scores.investment_ranking) wa
 |-------|-----|----------|------|-------------|
 | `currentai.scores.dependency_graph` | [scores_dependency_graph.sql](scores_dependency_graph.sql) | declared 6am | ~26K | Transitive AI→AI deps (direct + depth-2) |
 | `currentai.scores.fragility` | [scores_fragility.sql](scores_fragility.sql) | declared 6am | ~600 | Dependency reach × maintainer capacity |
-| `currentai.scores.project_summary` | [scores_project_summary.sql](scores_project_summary.sql) | Daily 7am | ~14K | Rolled-up snapshot per project |
-| `currentai.scores.repos_summary` | [scores_repos_summary.sql](scores_repos_summary.sql) | Daily 7am | ~15K | Per-repo snapshot: catalog metadata + 90-day activity + contributors |
+| `currentai.scores.project_summary` | [scores_project_summary.sql](scores_project_summary.sql) | declared 7am | ~14K | Rolled-up snapshot per project |
+| `currentai.scores.repos_summary` | [scores_repos_summary.sql](scores_repos_summary.sql) | declared 7am | ~15K | Per-repo snapshot: catalog metadata + 90-day activity + contributors |
 | `currentai.scores.ossd_coverage` | [scores_ossd_coverage.sql](scores_ossd_coverage.sql) | declared 6am | ~10K | Per-org oss-directory match rates |
 | `currentai.scores.stack_contributors` | [scores_stack_contributors.sql](scores_stack_contributors.sql) | @manual | ~68K | Distinct GitHub code committers (12mo, bots excluded) per scored product, bridged to stack-map category/layer/openness via `catalog.stack_map` |
 
