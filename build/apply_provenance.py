@@ -78,15 +78,24 @@ class Refused(Exception):
     """A packet that cannot justify itself. Never a reason to write something else."""
 
 
-def score_sources(slug: str) -> dict[str, str]:
-    """url -> accessed, for every source in the product's score file."""
+def score_sources(slug: str) -> dict[str, set[str]]:
+    """url -> every date it was accessed on, across all axes of the product's score file.
+
+    A set, not a single date. The same URL is routinely cited on more than one axis with
+    different `accessed` dates — `chatgpt` and `doubao` each cite one on 2026-08-13 for
+    openness and 2026-06-04 for another axis. Flattening to `url -> accessed` kept whichever
+    instance came last in axis order, so the check answered "was the LAST recorded instance
+    accessed on the claimed date?" while reporting an answer to "was one". It refused two
+    correct packets, and would equally have vouched for a URL whose date-aligned instance was
+    not the one under review.
+    """
     path = ROOT / "sources" / "scores" / f"{slug}.yaml"
     score = yaml.safe_load(path.read_text()) or {}
-    return {
-        str(s.get("url")): str(s.get("accessed"))
-        for axis in AXES
-        for s in (score.get(axis) or {}).get("sources") or []
-    }
+    dates: dict[str, set[str]] = {}
+    for axis in AXES:
+        for source in (score.get(axis) or {}).get("sources") or []:
+            dates.setdefault(str(source.get("url")), set()).add(str(source.get("accessed")))
+    return dates
 
 
 def check(packet: dict) -> None:
@@ -114,8 +123,10 @@ def check(packet: dict) -> None:
     url = str(packet["source_url"])
     if url not in recorded:
         raise Refused(f"{slug}: {url} is not a source in that product's score file")
-    if recorded[url] != claimed:
-        raise Refused(f"{slug}: {url} is recorded as accessed {recorded[url]}, not {claimed}")
+    if claimed not in recorded[url]:
+        raise Refused(
+            f"{slug}: {url} is recorded as accessed {sorted(recorded[url])}, not {claimed}"
+        )
 
     # One vocabulary, shared with the classifier. A sibling regex here was narrower and let
     # `substitute sources` through — the exact phrase behind the four hardware records pulled

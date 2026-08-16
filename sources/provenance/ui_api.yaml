@@ -1,0 +1,502 @@
+# Provenance decisions for the ui_api category.
+#
+# `build/prose_provenance.py` classifies every product's dated verification line and gathers
+# the date-aligned sources from its own score file. It decides nothing. This file records what
+# a reader decided, one record at a time, and `build/apply_provenance.py --apply` writes only
+# the `derive` rows.
+#
+# The judgment in every `support` line is the same question: does this document, which the
+# repository already proves was read on this date, establish what the description and comments
+# say the product IS? Date alignment is a precondition, not an argument — all 42 records had at
+# least one date-aligned source, so it separates nothing on its own.
+#
+# 42 of the category's 43 products were unresolved. 35 derive, 7 re-read. Nothing here changes
+# a date: the claim that somebody confirmed these facts on 2026-08-13 is untouched, and only
+# the record of what they read improves.
+#
+# The seven re-reads fall into three shapes, and all three are worth naming because they will
+# recur:
+#
+#   * the only date-aligned source is a machine endpoint (litellm — a pypistats response
+#     cannot say what a product is, and the comments show a README was read and never recorded);
+#   * the record's substantive claim is a LICENCE, and no repository or licence file is among
+#     the date-aligned sources (maple-ai, privatemode, lumo — lumo's claim is an absence, which
+#     is harder still);
+#   * the only date-aligned sources are third-party press about scale rather than documents
+#     about the product (le-chat, meta-ai).
+#
+# perplexica is a fourth and different case: its cited repository has been renamed to Vane and
+# the recorded figures no longer match the sources. That is an identity question, and naming a
+# document would settle the wrong thing.
+#
+# Two records name a source that is not the vendor's own, and say so in `support` rather than
+# quietly: character-ai (Business of Apps) and doubao (Wikipedia). Neither vendor publishes a
+# comparable page in English. Naming a tertiary document a reader can reopen is honest;
+# `primary sources` was not.
+- product: anythingllm
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: b708a443bec08738a21212ad3af0f1d1a551ede336f489ac73af5ae00f1417f9
+  decision: derive
+  selected_document: the anything-llm repository
+  source_url: https://github.com/Mintplex-Labs/anything-llm
+  source_accessed: '2026-08-13'
+  support: The repository page states the provider count, RAG, multi-user permissioning and no-code
+    agents that the description and comments assert, and carries the MIT licence and release the line
+    dates.
+- product: azure-ai-model-inference
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: da219fd1f322da231a25a1ae676d12219c353a8c9771baf00158c930f1ae0732
+  decision: derive
+  selected_document: the Microsoft Foundry Models endpoints documentation
+  source_url: https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/endpoints
+  source_accessed: '2026-08-13'
+  support: Microsoft's own concept page for the endpoint establishes the single managed, OpenAI-compatible
+    inference endpoint over model deployments, and that it is a proprietary Azure resource, which
+    is the whole of the identity and openness claim.
+- product: character-ai
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources.
+  prose_digest: 4b9e00c7716b817bb8e380ffbb3a336c24d2071be00474d7b5ee19aba7e1d46f
+  decision: derive
+  selected_document: the Business of Apps Character.AI statistics page
+  source_url: https://www.businessofapps.com/data/character-ai-statistics/
+  source_accessed: '2026-08-13'
+  support: 'A third-party profile rather than a vendor page, and named as such: it is what the comments
+    actually cite for the 45M active-user figure and for Character.AI being a proprietary companion-chat
+    app. Character.AI publishes no comparable page of its own.'
+- product: chatgpt
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: fee3b0c00b581fa95fcb5f26f6460da2cba702e54d6b8939c568649489d38810
+  decision: derive
+  selected_document: OpenAI's report on how people are using ChatGPT
+  source_url: https://openai.com/index/how-people-are-using-chatgpt/
+  source_accessed: '2026-08-13'
+  support: OpenAI's own publication, establishing ChatGPT as its proprietary consumer chat product
+    and the usage scale the description records.
+- product: claude-ai
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources (product page at claude.com/product/overview,
+    redirected from anthropic.com/claude).
+  prose_digest: 0ea381ba7e2caaed0fa93b5fba9fa46d6f2b3827dce06aa82deee032fba2dbd3
+  decision: derive
+  selected_document: the Claude product overview page
+  source_url: https://claude.com/product/overview
+  source_accessed: '2026-08-13'
+  support: Anthropic's own product page, already named parenthetically in the comments; it establishes
+    the surfaces, Projects, Artifacts and web search the description lists, and that the UI is proprietary.
+- product: confer
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: ffbab082c7f2df62b8647244d62ed953f6cf1be4a6b5fe22f90b9af3bc3a8761
+  decision: derive
+  selected_document: Confer's private-inference architecture post
+  source_url: https://confer.to/blog/2026/01/private-inference/
+  source_accessed: '2026-08-13'
+  support: It establishes the TEE, Noise-pipe and reproducible-build architecture the description
+    asserts, and it names the confer-proxy and confer-image repositories whose licence state the comments
+    then assess.
+- product: continue
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: 99ad896e6bf4b7a75b51850d029a073fc0532093180421ecded263beaa602a9e
+  decision: derive
+  selected_document: the continuedev/continue repository
+  source_url: https://github.com/continuedev/continue
+  source_accessed: '2026-08-13'
+  support: The repository establishes Apache-2.0, public source, and the chat/edit/autocomplete plus
+    agent surface the description and comments describe.
+- product: deepseek-chat
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources.
+  prose_digest: 77d9d32a61a163c54a79a5fcd22ad8be5def0cbdd19985d7d1fb9c0acf7decb8
+  decision: derive
+  selected_document: the DeepSeek product site
+  source_url: https://www.deepseek.com/en/
+  source_accessed: '2026-08-13'
+  support: DeepSeek's own site establishes the hosted chat at chat.deepseek.com and that no source
+    is released for the chat app itself, which is both the identity and the openness claim in the
+    line.
+- product: doubao
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources (Wikipedia + China-market app trackers);
+  prose_digest: e468d695ba219d7206ae11e8b6b9ede9428e9f5c2f427635949185db44e7a13a
+  decision: derive
+  selected_document: the Wikipedia article on Doubao
+  source_url: https://en.wikipedia.org/wiki/Doubao
+  source_accessed: '2026-08-13'
+  support: Tertiary rather than primary, and named as such; the comments already attribute the record
+    to it. It establishes Doubao as ByteDance's proprietary chatbot app on Volcano Engine, which is
+    the claim the line stands behind. ByteDance publishes no English product page beyond a download
+    link.
+- product: duck-ai
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: bb03a53d849d4df6b49225c925b151eb9533f05e8192fc6efc67dd08850e57c2
+  decision: derive
+  selected_document: DuckDuckGo's Duck.ai privacy help page
+  source_url: https://duckduckgo.com/duckduckgo-help-pages/duckai/ai-chat-privacy
+  source_accessed: '2026-08-13'
+  support: DuckDuckGo's own documentation, establishing Duck.ai as a proprietary web-based chat surface
+    with no source and no self-host option.
+- product: gemini
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: ca45b82c238d54e7bc0bbf580ccac2c59d7d973b6210159c5d5a3e2cc54fd33b
+  decision: derive
+  selected_document: Google's Gemini 3.5 announcement
+  source_url: https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-5/
+  source_accessed: '2026-08-13'
+  support: Google's own announcement establishes the Gemini app's multimodal surface and the 3.5 family
+    the comments date to 19 May 2026.
+- product: github-copilot-ide
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: 703410e090e4cc5f9ab4e5f766c5ab5b332d65ee370cdbbb241a4444a10482b0
+  decision: derive
+  selected_document: the GitHub Copilot product page
+  source_url: https://github.com/features/copilot
+  source_accessed: '2026-08-13'
+  support: GitHub's own product page establishes the inline-suggestion, chat and agent surfaces across
+    IDEs that the description lists, and the proprietary distribution the openness score rests on.
+- product: glean-assistant
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: verified live 2026-08-13 via primary sources;
+  prose_digest: 2f3b91a26725d79482edc864a0a03681a50c48f6aa8a8536bd4a5cf9b51c3fd9
+  decision: derive
+  selected_document: the Glean Assistant product page
+  source_url: https://www.glean.com/product/assistant
+  source_accessed: '2026-08-13'
+  support: Glean's own page establishes the Model Hub, Enterprise Graph RAG over 100+ connectors,
+    multimodal output and agentic sub-features that the description and comments describe.
+- product: glean-workplace-search-ai
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: 75d44601c9b88fdea9eb2a1655b57977e5903b696504c359869c07410df7f4d9
+  decision: derive
+  selected_document: the Glean product overview page
+  source_url: https://www.glean.com/product/overview
+  source_accessed: '2026-08-13'
+  support: Glean's own page establishes the Enterprise and Personal Graph, hybrid search across 100+
+    connectors, and permissions-aware results that the description asserts.
+- product: gpt4all
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: 28403fa1d4785fa64738fe3ae1d42b1b8c18e367f03c3b01bbd5b21e5f6c42fa
+  decision: derive
+  selected_document: the nomic-ai/gpt4all repository
+  source_url: https://github.com/nomic-ai/gpt4all
+  source_accessed: '2026-08-13'
+  support: The repository establishes MIT, the star count, LocalDocs RAG and the local API server,
+    and its push history is what the comments' stalled-maintenance note rests on.
+- product: grok-app
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: verified live 2026-08-13 via primary sources (x.ai answered a plain fetch this time,
+    so the earlier bot-block note no longer applies).
+  prose_digest: a9fa83adb42edc09b2cbcee6632123dcdd439e1a01e07ada920f8b7c91740059
+  decision: derive
+  selected_document: the xAI Grok 4.1 release notes
+  source_url: https://x.ai/news/grok-4-1
+  source_accessed: '2026-08-13'
+  support: xAI's own release notes establish Grok as a proprietary assistant product and the consumer
+    surfaces the description lists; the comments record that x.ai answered a plain fetch on this date.
+- product: huggingchat-chat-ui
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: ea1338cbd37996e416fe3be08d3acf48f4662676de8e1db4dfaa8a5a7a05faef
+  decision: derive
+  selected_document: the huggingface/chat-ui repository
+  source_url: https://github.com/huggingface/chat-ui
+  source_accessed: '2026-08-13'
+  support: The repository establishes Apache-2.0, the release the comments date, and the Omni routing,
+    MCP and OpenAI-compatible API the description describes.
+- product: jan
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: 2edad7c10935eb3cf7100ebcfdff707809a0e3da06cf323425c473b11079ab82
+  decision: derive
+  selected_document: the janhq/jan repository
+  source_url: https://github.com/janhq/jan
+  source_accessed: '2026-08-13'
+  support: The repository establishes the local-first desktop app, pluggable cloud providers and OpenAI-compatible
+    local server the description lists, alongside the release and star count in the comments.
+- product: khoj
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources.
+  prose_digest: 17540e3b4120741842dcdffd5999fa76130ed5873b23c9676f8829730f691e7d
+  decision: derive
+  selected_document: the khoj-ai/khoj repository
+  source_url: https://github.com/khoj-ai/khoj
+  source_accessed: '2026-08-13'
+  support: The repository establishes AGPL-3.0, the star count and the multi-provider, personal-document
+    RAG and automation feature set the description asserts.
+- product: le-chat
+  current_state: ambiguous_noncanonical
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13, but only the adoption axis could be re-derived - all three
+    axes cite a single February 2025 TechCrunch brief, which carries the download milestone and nothing
+    about the license, the source or the feature set, so openness and capability are escalated for
+    re-sourcing against mistral.ai.
+  prose_digest: 0db933547b2c49ac17f89e2b695ebfe018bcb041567cfe108cdf9e12513f08b3
+  decision: reread
+  reason: 'Neither date-aligned source is about Le Chat''s identity: one is 2025 launch-download press,
+    the other is a Perplexity statistics page held only for peer calibration. Nothing in the record
+    establishes the proprietary chat UI or the ''Mistral Vibe'' rebrand the comments assert.'
+- product: librechat
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: 32bd9d21ce19707daee81b20c5781f41345b86ffa5840a2f8cbf6c6c930c4fe7
+  decision: derive
+  selected_document: the danny-avila/LibreChat repository
+  source_url: https://github.com/danny-avila/LibreChat
+  source_accessed: '2026-08-13'
+  support: The repository establishes MIT, the star count the comments correct, and the multi-provider,
+    agents, code-interpreter and enterprise-auth feature set the description describes.
+- product: litellm
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: 851d1e3ecaae6c95b5d503769e9a994db56b9b0a2ce6499b28b99b344388d29e
+  decision: reread
+  reason: The only date-aligned source is the pypistats download endpoint, which is a machine response
+    and cannot say what LiteLLM is. The comments state that the README and docs now say 100+ providers,
+    so a document was clearly read on this date and never recorded as a source.
+- product: llm
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources.
+  prose_digest: 506e72b3c51cd332971c8fbb0886dd38a1982dcccf52aeaef9c1bd1a9ebd561e
+  decision: derive
+  selected_document: the simonw/llm repository
+  source_url: https://github.com/simonw/llm
+  source_accessed: '2026-08-13'
+  support: The repository is the canonical one the comments identify, and establishes the star count,
+    the plugin ecosystem and the Apache-2.0 licence body they cite.
+- product: lm-studio
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: 4633a7fd1d9157f8182df5473d1ad0b9b911de46ad2869df7edb09dec85e7d9d
+  decision: derive
+  selected_document: the LM Studio application terms
+  source_url: https://lmstudio.ai/app-terms
+  source_accessed: '2026-08-13'
+  support: 'The terms are what settle the record''s substantive claim: the desktop app is proprietary
+    freeware forbidding modification, reverse-engineering and redistribution, which is why the openness
+    score is 1 rather than higher.'
+- product: lobe-chat
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: bab968be66da09558fc45a05690237b9227a75ff90c26d01e61d16b3d0e11964
+  decision: derive
+  selected_document: the lobehub/lobe-chat LICENSE
+  source_url: https://github.com/lobehub/lobe-chat/blob/main/LICENSE
+  source_accessed: '2026-08-13'
+  support: 'The licence file establishes the headline claim in the comments: a non-OSI LobeHub Community
+    License, Apache-2.0 based, requiring a commercial licence to distribute derivative works.'
+- product: lumo
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: ee8c0d2449088aec8d84071067064e9cd2c34fa81b867f595e7a9a6570175829
+  decision: reread
+  reason: The record's openness conclusion rests on an absence, that the service, models and routing
+    are not open sourced. The iOS client repository establishes only the client, and the strongest
+    candidate for the whole claim is a third-party 'is it really FOSS' assessment. No primary document
+    in the record establishes what is closed.
+- product: maple-ai
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: 8e39b5ce8803b3212575803f1307c4222b10fe608d86312dc87f2f392d1a20e8
+  decision: reread
+  reason: The comments turn on licensing, an MIT client over an AGPL-3.0 OpenSecret platform, and
+    neither date-aligned source is a repository or licence. Both are Maple's own blog posts about
+    models and growth.
+- product: meta-ai
+  current_state: ambiguous_noncanonical
+  verification_date: '2026-08-13'
+  current_clause: Verified 2026-08-13.
+  prose_digest: 6a8ec43ac580f8286ae1b4dcf55ac22bd7fc8f0e2e9a44c04068a41f649e381b
+  decision: reread
+  reason: 'Both date-aligned sources are adoption press: a 2025 MAU announcement and an analyst caveat
+    about it. Neither establishes what Meta AI is or its proprietary status, which is what the line
+    has to point at. Currently dated with no document named at all.'
+- product: microsoft-copilot
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources (Microsoft Learn admin/usage docs).
+  prose_digest: e8bad43e4905169d648f47886c7d319735d6a4cdc749d01fd0afebfc55f0caf3
+  decision: derive
+  selected_document: the Microsoft 365 Copilot Chat admin usage documentation
+  source_url: https://learn.microsoft.com/en-us/microsoft-365/admin/activity-reports/microsoft-copilot-usage?view=o365-worldwide
+  source_accessed: '2026-08-13'
+  support: Microsoft's own documentation, already named generically in the comments; it establishes
+    Copilot Chat as a Microsoft-operated proprietary product and the deployed surfaces the description
+    lists.
+- product: morphic
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources.
+  prose_digest: 6aeb558ee70dccd66b1a5b9dc3609a7271cdb5c72f3d217b333837e2e7068629
+  decision: derive
+  selected_document: the miurla/morphic repository
+  source_url: https://github.com/miurla/morphic
+  source_accessed: '2026-08-13'
+  support: The repository establishes Apache-2.0, the release the comments date, and the generative-UI
+    answer engine with multi-provider and multi-search support the description describes.
+- product: nextchat
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: 1a7fbd9767ee5553ef91c4a49a9ed90a8fc967398da40aab1127b3643b7ac335
+  decision: derive
+  selected_document: the ChatGPTNextWeb/NextChat repository
+  source_url: https://github.com/ChatGPTNextWeb/NextChat
+  source_accessed: '2026-08-13'
+  support: The repository establishes the MIT core, the cross-platform client the description describes,
+    and the Enterprise Edition split; its release history is what the comments' stalled-release note
+    rests on.
+- product: ogx
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: 'Verified live 2026-08-13 via primary sources: v1.3.0 (Aug 7, 2026), MIT-licensed,
+    8.4k GitHub stars, now also speaking the Google GenAI SDK.'
+  prose_digest: 512875cf06a6f28cd4a658d4b8256fb5887601d540ab5ee71dff712dfa3c2f3c
+  decision: derive
+  selected_document: the ogx-ai/ogx repository
+  source_url: https://github.com/ogx-ai/ogx
+  source_accessed: '2026-08-13'
+  support: The repository establishes MIT, the star count and the agentic API server composing inference
+    providers, vector stores and tools that the description and comments describe.
+- product: open-webui
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources.
+  prose_digest: ba66258596b8a24fe1a077930f2bbb137957ebf776c77137c9c4451aacf4c63b
+  decision: derive
+  selected_document: the open-webui/open-webui repository
+  source_url: https://github.com/open-webui/open-webui
+  source_accessed: '2026-08-13'
+  support: The repository establishes the release and star count the comments correct, and the RAG,
+    multimodal and enterprise-auth feature set the description lists.
+- product: openclaw
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: 0fbcd1948b0427991d5f56cd606e6f6bfc7be643898c16c95d89529f007a324f
+  decision: derive
+  selected_document: the openclaw/openclaw LICENSE
+  source_url: https://github.com/openclaw/openclaw/blob/main/LICENSE
+  source_accessed: '2026-08-13'
+  support: 'The licence body is precisely what the comments assess: MIT text under an OpenClaw Foundation
+    copyright line, which is why GitHub reports NOASSERTION while npm declares MIT.'
+- product: openrouter
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: 25db9b6be022cb8df0da368d60c89b13ab4fb2bfad4556c85ab17cc6cfa30b56
+  decision: derive
+  selected_document: the OpenRouter homepage
+  source_url: https://openrouter.ai/
+  source_accessed: '2026-08-13'
+  support: The comments cite the homepage's own figures by name, and it establishes the hosted unified
+    gateway across 400+ models and its proprietary, no-self-host nature.
+- product: otari
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: 23fbfc7be9bde6a362753b2d1e10c3cb559aef962e2d3110837590db4ed35a90
+  decision: derive
+  selected_document: the mozilla-ai/otari repository
+  source_url: https://github.com/mozilla-ai/otari
+  source_accessed: '2026-08-13'
+  support: The repository establishes Apache-2.0, the star count and release the comments date, and
+    the 40+ providers, virtual keys, budgets and usage tracking the description lists.
+- product: perplexica
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources.
+  prose_digest: 374e3b9161f85fb91f66bc11b483bfd09c8b763cf41864cae11b10b48e3d3ba3
+  decision: reread
+  reason: 'The cited repository has been renamed to ItzCrazyKns/Vane while the record is still written
+    as Perplexica, and the figures do not line up: the sources show ~35k stars and 100K+ Docker pulls
+    against the ~36k and 931k lifetime pulls in the comments. That is an identity question, not a
+    prose one, and naming a document would settle the wrong thing.'
+- product: poe
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources (poe.com/about).
+  prose_digest: 4150dfb0bf0f5408a9a87520737673677b0df6326c0e6935788ad378142d8996
+  decision: derive
+  selected_document: the Poe about page
+  source_url: https://poe.com/about
+  source_accessed: '2026-08-13'
+  support: Quora's own page, already named in the comments; it establishes Poe as a proprietary multi-model
+    aggregator with no source or self-host option.
+- product: privatemode
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: e584296b29a09618cd10d973c9d8bda83d82986be015eecefdbe96e21483a1b8
+  decision: reread
+  reason: The comments turn on a licence split across the privatemode-public and privatemode-proxy
+    repositories, and neither date-aligned source is a repository or a licence. Both are Edgeless
+    Systems' own launch and product pages.
+- product: sillytavern
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: 9b1ef075bbf235cf9953c6e13b3b287b00c0cbd3b87e839317c39fab61a697d7
+  decision: derive
+  selected_document: the SillyTavern/SillyTavern repository
+  source_url: https://github.com/SillyTavern/SillyTavern
+  source_accessed: '2026-08-13'
+  support: The repository establishes AGPL-3.0, the release the comments date, and the self-hosted
+    NodeJS front end over many backends the description describes.
+- product: surfsense
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: 64e145c9442796f18df3139346b2fea0b795f398d1190c562b9b59651b4f4c62
+  decision: derive
+  selected_document: the MODSetter/SurfSense repository
+  source_url: https://github.com/MODSetter/SurfSense
+  source_accessed: '2026-08-13'
+  support: The repository establishes the star count and the repositioning the comments record, along
+    with the connector matrix, hybrid RAG and MCP surface the description asserts. The licence split
+    the comments flag is visible on the same repository.
+- product: thunderbolt
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: eca3aff28069bdf466b5bdc8a37129c8f3bf21b1e66cbbc537b06e1018572a05
+  decision: derive
+  selected_document: the thunderbird/thunderbolt repository
+  source_url: https://github.com/thunderbird/thunderbolt
+  source_accessed: '2026-08-13'
+  support: The repository establishes MPL-2.0, the self-hosted multi-provider client the description
+    describes, and the early-stage README warning the comments cite.
