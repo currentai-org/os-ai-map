@@ -11615,7 +11615,7 @@
           "org_slug": "princeton-nlp",
           "org": "Princeton NLP",
           "type": "software",
-          "description": "Docker-based evaluation harness that benchmarks coding agents on 2,294 real GitHub issues from 12 popular Python repositories, producing pass-rate scores against held-out tests. Picked because every frontier lab (Anthropic, OpenAI, Google) reports SWE-bench Verified scores. 5.6k stars on GitHub and Epoch AI maintains an authoritative leaderboard. Note: OpenAI's April 2026 audit flagged that 59.4% of the hardest unsolved problems in SWE-bench Verified had flawed test cases; they now prefer the harder SWE-bench Pro and SWE-bench Bash variants for frontier evaluation.",
+          "description": "Docker-based evaluation harness that benchmarks coding agents on 2,294 real GitHub issues drawn from twelve Python repositories, generating patches and grading them by running each repository's own tests. It documents Verified, Lite and Multimodal splits, and offers cloud execution as an alternative to local Docker.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -11720,7 +11720,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "SWE-bench evaluation harness. PyPI `swebench` v4.1.0 (Sep 11 2025); repo migrated to github.com/SWE-bench/SWE-bench, last headline feature SWE-bench Multimodal (Jan 2025). Verified live 2026-08-13 via primary sources. Scoring the HARNESS (the software that runs models against GitHub-issue tasks); the underlying dataset belongs in benchmark_eval_data."
+          "version_note": "This record is the harness; the underlying dataset is catalogued under benchmark_eval_data. The repository moved from princeton-nlp to the SWE-bench organization. Verified 2026-08-13 via the SWE-bench repository, its license endpoint and its README."
         },
         {
           "slug": "lm-evaluation-harness",
@@ -11728,7 +11728,7 @@
           "org_slug": "eleutherai",
           "org": "EleutherAI",
           "type": "software",
-          "description": "Unified framework for evaluating language models on 200+ academic NLP benchmarks (MMLU, ARC, GSM8K, HellaSwag, etc.) with a single config-driven CLI. Picked as the canonical reference harness; it powers the Hugging Face Open LLM Leaderboard and is the standard tool for reporting reproducible benchmark numbers in papers. 13.6k GitHub stars and 3.5k forks; the repo is still receiving commits.",
+          "description": "Unified framework for evaluating language models across more than 200 academic NLP benchmarks, including MMLU, ARC, GSM8K and HellaSwag, driven by a single config-based CLI. It is the backend behind the Hugging Face Open LLM Leaderboard and is used to report reproducible benchmark numbers in papers.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -11828,7 +11828,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "lm-eval v0.4.12 (May 11 2026); Verified live 2026-08-13 via primary sources. Backend for HuggingFace Open LLM Leaderboard. The de-facto-standard model-eval harness."
+          "version_note": "Verified 2026-08-13 via the EleutherAI/lm-evaluation-harness repository, its license endpoint and its README."
         },
         {
           "slug": "bigcodebench",
@@ -11836,7 +11836,7 @@
           "org_slug": "bigcode-project",
           "org": "BigCode Project",
           "type": "software",
-          "description": "Evaluation harness for code generation models on 1,140 practical programming tasks requiring use of multiple libraries and tools, scored with branch-coverage tests. Picked over HumanEval because it tests real-world library use rather than self-contained algorithmic puzzles. Hosts the BigCode Models Leaderboard; 500+ GitHub stars on the harness, plus 1k+ stars on the sister bigcode-evaluation-harness for code-completion models.",
+          "description": "Evaluation harness for code-generation models over 1,140 practical programming tasks that require using multiple libraries and tools, scored with branch-coverage tests. It tests real library use rather than self-contained algorithmic puzzles, ships Complete and Instruct splits, and runs end to end locally or against a hosted evaluator.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -11952,7 +11952,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "BigCodeBench v0.2.4 (Mar 2 2025); 1140 software-engineering programming tasks (Complete + Instruct splits); active HF leaderboard, 163 models evaluated. Verified live 2026-08-13 via primary sources; the harness repo has since been archived read-only (last push 2026-01-03) while bigcode-evaluation-harness stays open. Borderline: it is primarily a single benchmark+its harness; the dataset itself maps to benchmark_eval_data, but the runnable harness fits here."
+          "version_note": "The harness repository was archived read-only in January 2026 while the sibling bigcode-evaluation-harness stays active. The benchmark data is catalogued under benchmark_eval_data; this record is the runnable harness. Verified 2026-08-13 via the bigcodebench repository, its license endpoint and its README."
         },
         {
           "slug": "opencompass",
@@ -11960,7 +11960,7 @@
           "org_slug": "opencompass-community",
           "org": "OpenCompass Community",
           "type": "software",
-          "description": "Comprehensive evaluation platform supporting 100+ datasets across Llama, Mistral, GPT-4, Claude, Qwen, GLM and more, with subjective (arena-style) and objective scoring modes. Picked over lm-eval-harness for Chinese-language and multimodal coverage; backed by Shanghai AI Lab and updated weekly. 7.3k GitHub stars and 837 forks, still receiving commits.",
+          "description": "Evaluation platform covering more than a hundred datasets across open and API models, with both objective scoring and subjective arena-style comparison. Backed by Shanghai AI Lab, it has notably deeper Chinese-language and multimodal coverage than the English-first harnesses.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -12057,7 +12057,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "OpenCompass v0.5.2 (Feb 14 2026). 100+ datasets / 70+ with ~400k questions; 20+ HF models + API models (OpenAI/Gemini/Claude). Verified live 2026-08-13 via primary sources."
+          "version_note": "Verified 2026-08-13 via the open-compass/opencompass repository and its license endpoint."
         },
         {
           "slug": "deepeval",
@@ -12065,7 +12065,7 @@
           "org_slug": "confident-ai",
           "org": "Confident AI",
           "type": "software",
-          "description": "Pytest-style evaluation framework for LLM apps with 40+ built-in metrics including G-Eval, hallucination, faithfulness and RAG-specific scores. Picked for CI/CD integration; drops into existing test suites and gates merges on metric thresholds. 17.6k stars and 1.8k forks, still one of the most actively committed open source eval frameworks on GitHub.",
+          "description": "Pytest-style evaluation framework for LLM applications, with more than forty built-in metrics including G-Eval, faithfulness, hallucination, task completion and RAG-specific scores. Metrics run locally and drop into an existing test suite, so a merge can be gated on a metric threshold.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -12184,7 +12184,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "DeepEval v4.0.5 ('Opus 4.8 Day-0 Support', May 28 2026). OSS eval framework (Apache-2.0) with commercial Confident AI cloud platform. Verified live 2026-08-13 via primary sources."
+          "version_note": "A commercial cloud platform is sold beside the framework for comparing runs and sharing reports; the metrics themselves do not require it. Verified 2026-08-13 via the confident-ai/deepeval repository, its license endpoint and its README."
         },
         {
           "slug": "promptfoo",
@@ -12192,7 +12192,7 @@
           "org_slug": "promptfoo",
           "org": "promptfoo",
           "type": "software",
-          "description": "Declarative CLI and Node library that tests prompts, agents and RAG pipelines from a YAML config, comparing model outputs side by side and running the same assertions in CI. It also ships a red-teaming mode that scans an application for jailbreaks and other vulnerabilities, which most eval harnesses leave out. Promptfoo became part of OpenAI and remains MIT-licensed; the project reports 24.2k GitHub stars.",
+          "description": "Declarative CLI and Node library that tests prompts, agents and RAG pipelines from a YAML config, comparing model outputs side by side and running the same assertions in CI. It also ships a red-teaming mode that scans an application for jailbreaks and other vulnerabilities, which most eval harnesses leave out.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -12289,7 +12289,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "promptfoo v0.121.14 (Jun 2 2026). CLI + library for LLM eval and red-teaming; now part of OpenAI but remains MIT-licensed open source. Distributed npm-first, so the PyPI package is a minority channel and is deliberately not declared as an artifact. Verified live 2026-08-13 via primary sources."
+          "version_note": "Promptfoo became part of OpenAI and the project continues in the open. It is distributed npm-first, so the PyPI package is a minority channel and is deliberately not declared as an artifact. Verified 2026-08-13 via the promptfoo repository, its license endpoint and its README."
         },
         {
           "slug": "openai-evals",
@@ -12297,7 +12297,7 @@
           "org_slug": "openai",
           "org": "OpenAI",
           "type": "software",
-          "description": "Framework for evaluating LLMs and LLM systems plus a registry of community-contributed benchmarks, published as the original 2023 reference implementation for eval-driven development. Picked because it is the canonical starting point referenced in OpenAI's own docs and many derivative harnesses. 19.2k stars but development has effectively stopped - the repo has not been pushed since April 2026 - as work migrated to the closed OpenAI Evals API, itself now on a sunset path.",
+          "description": "Framework for evaluating language models and the systems built on them, published with a registry of community-contributed benchmarks as the 2023 reference implementation for eval-driven development. It supports custom eval authoring and model-graded grading, and runs against private data as well as the bundled registry.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -12392,7 +12392,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "openai/evals GitHub repo (MIT, 19.2k stars, 3.1k forks). Open-source framework for evaluating LLMs with a community benchmark registry. Verified live 2026-08-13 via primary sources; bundled eval datasets carry their own per-dataset licenses (CC/Apache/CC0), carved out in LICENSE.md."
+          "version_note": "Development has effectively stopped, with no push since April 2026, as work migrated to OpenAI's hosted Evals API, itself now on a sunset path. Bundled eval datasets are carved out of the repository terms. Verified 2026-08-13 via the openai/evals README, its LICENSE.md and the repository metadata."
         },
         {
           "slug": "simple-evals",
@@ -12400,7 +12400,7 @@
           "org_slug": "openai",
           "org": "OpenAI",
           "type": "software",
-          "description": "OpenAI's lightweight reference harness used to produce the model cards for GPT-4o, o1, and successors. Includes MMLU, MATH, GPQA, MGSM, DROP, HumanEval and SimpleQA. Picked when researchers want the exact numbers OpenAI reports rather than community variants. 4.6k stars, used as the authoritative reproduction script for GPT scorecards.",
+          "description": "OpenAI's lightweight reference harness, used to produce the model cards for its GPT and o-series releases. It bundles zero-shot and chain-of-thought implementations of MMLU, MATH, GPQA, DROP, MGSM, HumanEval, SimpleQA, BrowseComp and HealthBench, each carrying its upstream terms.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -12495,7 +12495,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "openai/simple-evals GitHub repo (MIT, 4.6k stars). Lightweight zero-shot/CoT eval library bundling MMLU, MATH, GPQA, DROP, MGSM, HumanEval, SimpleQA, BrowseComp, HealthBench. DEPRECATED July 2025; no longer updated for new models/benchmarks; only HealthBench/BrowseComp/SimpleQA reference impls maintained. Verified live 2026-08-13 via primary sources (still deprecated)."
+          "version_note": "Deprecated in July 2025 and no longer updated for new models or benchmarks; only the HealthBench, BrowseComp and SimpleQA reference implementations remain maintained. Verified 2026-08-13 via the openai/simple-evals repository, its license endpoint and its README."
         },
         {
           "slug": "openai-evals-api-dashboard",
@@ -12503,7 +12503,7 @@
           "org_slug": "openai",
           "org": "OpenAI",
           "type": "software",
-          "description": "Managed evaluation product inside the OpenAI Platform, Evals API plus a Dashboard UI that lets developers define eval datasets, run them against any OpenAI model, grade with custom or built-in graders, and track regressions across versions. Picked by teams already on OpenAI who want the 'measure → improve → ship' loop without standing up infra. Pricing rolls into standard OpenAI API token usage.",
+          "description": "Managed evaluation product inside the OpenAI platform: an Evals API and a dashboard that let developers define eval datasets, run them against OpenAI models, grade with built-in or custom graders, and inspect pass/fail and cost metrics across versions.",
           "openness": {
             "score": 1,
             "class": "closed",
@@ -12581,7 +12581,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Hosted, proprietary evaluation product on the OpenAI platform (API + web dashboard), distinct from the open source openai/evals repo. Lets developers define grading criteria, upload JSONL test sets, run against Chat Completions/Responses APIs, and inspect pass/fail + cost metrics. BEING SUNSET: dashboard read-only 31 Oct 2026, full shutdown 30 Nov 2026 (OpenAI recommends Datasets as replacement). Verified 2026-08-13 via OpenAI developer docs."
+          "version_note": "Being sunset: read-only from 31 October 2026 and shut down on 30 November 2026, with OpenAI directing users to Datasets. Distinct from the openai/evals repository, which is a separate record. Verified 2026-08-13 via the OpenAI Evals guide."
         },
         {
           "slug": "ragas",
@@ -12589,7 +12589,7 @@
           "org_slug": "exploding-gradients",
           "org": "Exploding Gradients",
           "type": "software",
-          "description": "Evaluation framework purpose-built for Retrieval-Augmented Generation pipelines with 30+ metrics covering retrieval quality (context precision/recall), generation faithfulness, and answer relevance. Picked when the system under test is RAG; Ragas decomposes pipeline failure into retrieval vs. generation buckets in a way general harnesses do not. 15.3k stars; the project now sits under the vibrantlabsai GitHub org.",
+          "description": "Evaluation framework built for retrieval-augmented generation pipelines, with more than thirty metrics covering retrieval quality, generation faithfulness and answer relevance, plus automatic test-set generation. It splits pipeline failure into retrieval and generation buckets, which general harnesses do not, and integrates with LangChain and observability tooling.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -12684,7 +12684,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "vibrantlabsai/ragas (formerly explodinggradients/ragas), v0.4.3 (released 13 Jan 2026), Apache-2.0, 15.3k stars. Toolkit for evaluating LLM/RAG applications: LLM-based + traditional metrics, synthetic test-set generation, LangChain/observability integrations. Verified live 2026-08-13 on GitHub + PyPI; the repo has not been pushed since Feb 2026. Note: the maintainer also runs a commercial app.ragas.io cloud tier (open-core), though the core library is fully OSI."
+          "version_note": "The project moved from explodinggradients to the vibrantlabsai organization and has not been pushed since February 2026. A hosted tier is sold beside the library. Verified 2026-08-13 via the vibrantlabsai/ragas repository, its license endpoint and its README."
         },
         {
           "slug": "inspect-ai",
@@ -12692,7 +12692,7 @@
           "org_slug": "uk-ai-security-institute",
           "org": "UK AI Security Institute",
           "type": "software",
-          "description": "Frontier-AI evaluation framework with one interface over OpenAI, Anthropic, Google, xAI, Bedrock and local vLLM/Ollama backends, plus a collection of 200+ pre-built evals (Inspect Evals) co-maintained with Arcadia Impact and the Vector Institute. Picked by AISI, EU AI Office, and many frontier labs as the standard for safety/dangerous-capability evaluations. 2.5k stars but extremely active, with commits landing daily.",
+          "description": "Frontier-AI evaluation framework from the UK AI Security Institute with Meridian Labs, offering one interface over lab APIs, cloud APIs and local vLLM, Ollama and llama.cpp backends. It ships built-in components for prompt engineering, tool use, multi-turn dialogue and model-graded scoring, alongside a collection of more than 200 pre-built evaluations.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -12804,7 +12804,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "UKGovernmentBEIS/inspect_ai (UK AI Security Institute + Meridian Labs), MIT, 2.5k stars, very actively developed. Framework for frontier LLM/agent evaluations: 200+ pre-built evals, tool use, multi-turn, model-graded scoring, one interface over OpenAI/Anthropic/Google/xAI/Bedrock/Azure/local vLLM/Ollama. Verified live 2026-08-13 via primary sources."
+          "version_note": "The Inspect Evals collection is co-maintained with Arcadia Impact and the Vector Institute. Verified 2026-08-13 via the UKGovernmentBEIS/inspect_ai repository, its license endpoint and the Inspect models documentation."
         },
         {
           "slug": "helm",
@@ -12812,7 +12812,7 @@
           "org_slug": "stanford-crfm",
           "org": "Stanford CRFM",
           "type": "software",
-          "description": "Holistic Evaluation of Language Models, Python framework for reproducible, transparent evaluation of foundation models including LLMs and multimodal models, organized around scenarios, adapters, and metrics. Picked for academic-grade reproducibility and breadth (accuracy, robustness, fairness, bias, toxicity). 2.9k stars; HELM entered maintenance mode on 1 June 2026, so the leaderboards keep running while the framework stops gaining features.",
+          "description": "Holistic Evaluation of Language Models: a Python framework for reproducible evaluation of foundation models, organized around scenarios, adapters and metrics, and covering accuracy, robustness, fairness, bias and toxicity. It ships a web leaderboard UI in the same repository and maintains boards spanning text, vision-language, text-to-image, medical, audio and enterprise evaluation.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -12914,7 +12914,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "stanford-crfm/helm, v0.5.16 (released 30 Apr 2026), Apache-2.0, 2.9k stars. Standardized holistic evaluation framework + public leaderboards: HELM Capabilities, HELM Safety, VHELM (vision-language), HEIM (text-to-image), MedHELM, audio-LM, ToRR, enterprise benchmarks; supports MMLU-Pro, GPQA, IFEval, WildBench. Verified live 2026-08-13 via primary sources; in maintenance mode since 1 June 2026."
+          "version_note": "The framework entered maintenance mode on 1 June 2026, so the leaderboards keep running while it stops gaining features. Verified 2026-08-13 via the stanford-crfm/helm repository, its license endpoint and its README."
         },
         {
           "slug": "lighteval",
@@ -12922,7 +12922,7 @@
           "org_slug": "hugging-face",
           "org": "Hugging Face",
           "type": "software",
-          "description": "Lightweight successor to the eval harness HF used internally; supports vLLM, transformers, TGI and OpenAI-compatible backends with a focus on speed and easy custom metric authoring. Picked when teams want a fast, hackable runner that integrates cleanly with the HF ecosystem (datasets, accelerate). 2.5k stars and 1000+ shipped tasks; powers parts of the Open LLM Leaderboard v2.",
+          "description": "Evaluation toolkit from Hugging Face's Leaderboard and Evals team, supporting vLLM, SGLang, transformers and endpoint backends with a focus on speed and easy custom metric authoring. It ships more than a thousand evaluation tasks in the package and powers parts of the Open LLM Leaderboard.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -13024,7 +13024,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "lighteval v0.13.0 (24 Nov 2025), latest GitHub release; Verified live 2026-08-13 via primary sources. All-in-one LLM eval toolkit from HF's Leaderboard & Evals team; powers the HF Open LLM Leaderboard. Columbia extension (model.code.evaluation) caveat applies."
+          "version_note": "The Columbia extension caveat for model code evaluation applies to this record. Verified 2026-08-13 via the huggingface/lighteval repository, its license endpoint and its README."
         },
         {
           "slug": "osworld",
@@ -13032,7 +13032,7 @@
           "org_slug": "xlang-ai-lab",
           "org": "XLang AI Lab",
           "type": "software",
-          "description": "Scalable, real-computer environment for benchmarking multimodal agents on 369 open-ended tasks across Ubuntu, Windows and macOS; agents drive a virtual desktop and are scored by execution-based test scripts. Picked because Claude Computer Use and OpenAI Operator both publish OSWorld scores. 3.1k stars, still actively committed.",
+          "description": "Real-computer environment and execution-based harness for benchmarking multimodal computer-use agents on 369 open-ended tasks across Ubuntu, Windows and macOS. Agents drive a virtual desktop and are scored by 134 execution-based evaluation functions against full trajectories, running under VMware, VirtualBox or Docker with KVM.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -13158,7 +13158,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "OSWorld: scalable real-computer environment + execution-based evaluation harness for multimodal/computer-use agents (NeurIPS 2024). Apache-2.0. 369 tasks (361 excl. 8 problematic Google Drive tasks). De-facto standard for computer-use agents (GPT-5.4 75.0%, Claude Opus 4.6 72.7%, Claude Sonnet 4.6 72.5% on OSWorld-Verified cited in 2026 releases). Verified live 2026-08-13 via primary sources; the project site os-world.github.io now redirects to osworld-v1.xlang.ai. Dual artifact: ships both the task set and the runner; registry placed it in evaluation_code (the harness); note the dataset overlaps benchmark_eval_data."
+          "version_note": "Eight Google Drive tasks may be excluded, leaving a 361-task run, and the project site now redirects to osworld-v1.xlang.ai. It ships both the task set and the runner; this record is the harness. Verified 2026-08-13 via the xlang-ai/OSWorld repository, its license endpoint and the project site."
         },
         {
           "slug": "chatbot-arena",
@@ -13166,7 +13166,7 @@
           "org_slug": "lmarena",
           "org": "LMArena",
           "type": "software",
-          "description": "Hosted arena that ranks language models on blind pairwise human preference, converting crowd votes into an Elo-style leaderboard that vendors cite in launch posts. Where a harness scores a model against fixed tasks, this scores it against another model as judged by whoever is at the keyboard. The platform itself is closed; its historical implementation, FastChat, and an automatic-judge companion, Arena-Hard-Auto, are both Apache-2.0.",
+          "description": "Hosted arena that ranks language models on blind pairwise human preference, turning crowd votes into an Elo-style leaderboard that vendors cite in launch posts. Where a harness scores a model against fixed tasks, this scores it against another model as judged by whoever is at the keyboard.",
           "openness": {
             "score": 2,
             "class": "source_available",
@@ -13280,7 +13280,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Hosted human-preference LLM evaluation platform; rebranded LMSYS Chatbot Arena -> LMArena -> Arena (arena.ai; lmarena.ai 301-redirects to arena.ai). The PRODUCT is the hosted leaderboard/battle platform (closed). Its historical OSS code is FastChat (Apache-2.0) but stale (v0.2.36, Feb 2024); auxiliary OSS eval tooling Arena-Hard-Auto (Apache-2.0) reached v2.0 in Apr 2025 and has not been pushed since Jun 2025. Verified live 2026-08-13 via primary sources."
+          "version_note": "Renamed from LMSYS Chatbot Arena to LMArena to Arena; lmarena.ai redirects to arena.ai. FastChat is its historical implementation and Arena-Hard-Auto its automatic-judge companion, neither pushed since 2025. Verified 2026-08-13 via arena.ai, the FastChat README and the arena-hard-auto README."
         },
         {
           "slug": "patronus-evaluation-platform",
@@ -13288,7 +13288,7 @@
           "org_slug": "patronus-ai",
           "org": "Patronus AI",
           "type": "software",
-          "description": "Managed evaluation platform built around proprietary judge models, Lynx (8B hallucination detector), GLIDER (3.8B explainable rubric judge) and Percival (agent execution-trace analyzer). Picked by enterprises needing managed eval models rather than spinning up their own LLM-as-judge. Raised $20M; usage-based pricing $10-$20 per 1,000 evaluator API calls.",
+          "description": "Managed evaluation platform built around in-house judge models: Lynx for hallucination detection, GLIDER for explainable rubric judging and Percival for analyzing agent execution traces. It runs experiments for A/B testing, real-time production monitoring with tracing and alerts, and red-teaming, reached through Python and TypeScript SDKs.",
           "openness": {
             "score": 2,
             "class": "source_available",
@@ -13397,7 +13397,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Patronus AI hosted GenAI evaluation/optimization platform ('Core Platform'); open source client SDKs (patronus-py, latest v0.1.25 Jan 2026; patronus-api-node) that connect to proprietary hosted infra. Built-in evaluators Lynx (hallucination), Glider; experiments, production monitoring/tracing, Percival, RL Envs. Verified live 2026-08-13 via primary sources; the patronus-py SDK repo has not been pushed since Jan 2026 and carries no license file."
+          "version_note": "The published SDKs wire to hosted infrastructure rather than being the engine, and the Python SDK repository carries no license file and has not been pushed since January 2026. Patronus publishes no customer or usage count. Verified 2026-08-13 via the Patronus documentation and the patronus-py repository."
         },
         {
           "slug": "scale-evaluation",
@@ -13405,7 +13405,7 @@
           "org_slug": "scale-ai",
           "org": "Scale AI",
           "type": "software",
-          "description": "Enterprise evaluation and red-teaming service combining expert human raters, in-house prompt engineers, and proprietary benchmark suites for frontier-model developers and enterprises. Picked because Scale is the third-party evaluator for the US AI Safety Institute and runs custom evals for major labs that cannot be reproduced with OSS tools. March 2026 launch of Scale Labs (expansion of the 2023 SEAL division) consolidates this offering.",
+          "description": "Enterprise evaluation and red-teaming service combining automated scoring, expert human raters and private benchmark suites, sold as part of Scale's GenAI platform and deployable into a customer's own cloud. Its public SEAL leaderboards cover coding, instruction following, math and multilinguality, and SEAL Showdown draws on real-world conversations from a global contributor network.",
           "openness": {
             "score": 1,
             "class": "closed",
@@ -13531,7 +13531,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Scale AI 'Scale Evaluation' platform (the 'Evaluate AI' product line as of Oct 2025), part of Scale GenAI Platform. Proprietary hosted evaluation/monitoring with private SEAL benchmark datasets + expert human-eval workforce ('Trust Feedback Loop'). Public-facing SEAL Leaderboards + SEAL Showdown (millions of real-world conversations across 100+ countries). Verified live 2026-08-13 via primary sources."
+          "version_note": "The benchmark datasets are held private by design, so no result here is externally reproducible. Scale publishes no customer or run count. Verified 2026-08-13 via the Scale GenAI platform page, the leaderboard announcement and the SEAL Showdown post."
         },
         {
           "slug": "artificial-analysis-intelligence-index",
@@ -13539,7 +13539,7 @@
           "org_slug": "artificial-analysis",
           "org": "Artificial Analysis",
           "type": "software",
-          "description": "Independent benchmarking service that runs nine academic and agentic evals (GPQA Diamond, long-context, terminal and agent tasks) against every major model and publishes the Intelligence Index, a composite score with 95% CIs. Picked as a neutral third-party leaderboard for model selection: Index v3 covers 300+ models across 100+ providers. Raised a seed round via the Nat Friedman / Daniel Gross AIGrant program.",
+          "description": "Independent benchmarking service that runs a fixed suite of academic and agentic evaluations against every major model and publishes a composite Intelligence Index with confidence intervals. The composite weights four categories - agents, coding, scientific reasoning and general - unequally, and the methodology is published in full.",
           "openness": {
             "score": 2,
             "class": "source_available",
@@ -13647,7 +13647,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Artificial Analysis Intelligence Index v4.1.1. Composite of 9 evals (GDPval-AA v2, tau-cubed Banking, Terminal-Bench v2.1, SciCode, AA-LCR, AA-Omniscience, Humanity's Last Exam, GPQA Diamond, CritPt) across four weighted categories - Agents 34%, Coding 24%, Scientific Reasoning 24%, General 18%. Independent third-party benchmarking platform with published methodology; partial OSS (Stirrup agent harness, MIT, behind GDPval-AA v2, AA-Briefcase and Harvey LAB-AA) but the Index pipeline + internal dataset copies are proprietary. Verified live 2026-08-13 via primary sources."
+          "version_note": "Several of the evaluations run on the Stirrup agent harness, which is released separately from the index pipeline. Verified 2026-08-13 via the Artificial Analysis benchmarking methodology page and the Stirrup license endpoint."
         },
         {
           "slug": "vals-ai",
@@ -13655,7 +13655,7 @@
           "org_slug": "vals-ai",
           "org": "Vals AI",
           "type": "software",
-          "description": "Domain-specialist benchmarking service that runs proprietary, held-out evals over finance, law, software, and healthcare tasks, including a private Canadian-court-case QA benchmark and the Vals Index. Picked by enterprises that need closed/private benchmarks because public benchmarks suffer from contamination. Publishes a leaderboard of all major frontier models scored on these private sets.",
+          "description": "Independent benchmarking service that runs held-out evaluations over finance, law, healthcare, coding, math, education, cybersecurity and games, and publishes composite indices alongside a leaderboard of frontier models scored on those private sets. The benchmarks stay private specifically because public ones suffer contamination.",
           "openness": {
             "score": 2,
             "class": "source_available",
@@ -13767,7 +13767,7 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-08-14"
           },
-          "version_note": "Vals AI independent LLM evaluation platform; Vals Index + RSI Index + Vals Multimodal Index + domain benchmarks (finance, law, healthcare, coding, math, education, cybersecurity, games). Verified live 2026-08-13 via primary sources - 43 models tested, several results dated the same day. The evaluation service itself is SaaS-only, but Vals has since open-sourced two supporting repos, Valkyrie (AGPL-3.0, agentic-benchmark runner) and model-library (MIT); the openness score has not yet been reconciled with that."
+          "version_note": "The evaluation runtime is hosted and the held-out datasets do not ship, though Vals has released the Valkyrie agentic-benchmark runner and its model library. Verified 2026-08-14 via the Vals AI about page and the two repositories' metadata."
         },
         {
           "slug": "epoch-ai-benchmarks",
@@ -13775,7 +13775,7 @@
           "org_slug": "epoch-ai",
           "org": "Epoch AI",
           "type": "software",
-          "description": "Independent benchmarking lab that runs and maintains canonical leaderboards for high-stakes evals (SWE-bench Verified, FrontierMath, GPQA Diamond) and operates the FrontierMath private math benchmark. Picked when researchers want the authoritative scoreboard for a specific benchmark; Epoch's SWE-bench Verified leaderboard is the one frontier labs reference in announcements. Funded by Open Philanthropy and lab partners.",
+          "description": "Independent benchmarking lab that runs and maintains leaderboards for high-stakes evaluations, including SWE-bench Verified, GPQA Diamond, SimpleQA Verified and MATH Level 5, and operates its own FrontierMath benchmark across four difficulty tiers. Its public dashboard scores frontier models on all of them.",
           "openness": {
             "score": 2,
             "class": "source_available",
@@ -13879,7 +13879,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Epoch AI benchmark database + public dashboard scoring frontier models on hard tasks (FrontierMath Tiers 1-3 and Tier 4, GPQA Diamond, SWE-bench Verified, MirrorCode, SimpleQA Verified, MATH Level 5, OTIS Mock AIME, Chess Puzzles, EBR-bench, Mystery Game Puzzles). Verified live 2026-08-13 via primary sources; org github.com/epoch-research has 33 public repos with MIT/Apache eval components (SWE-bench docker registry, eci-public, MirrorCode), but no unified harness and the FrontierMath problems are held private."
+          "version_note": "The FrontierMath problems are held back by design, so the benchmark behind the dashboard cannot be re-run externally. Verified 2026-08-13 via the Epoch benchmarks dashboard, the FrontierMath page and the organization's repository listing."
         },
         {
           "slug": "amazon-bedrock-evaluations",
@@ -13887,7 +13887,7 @@
           "org_slug": "amazon-web-services",
           "org": "Amazon Web Services",
           "type": "software",
-          "description": "Managed evaluation service inside Amazon Bedrock for scoring foundation models and RAG systems with three modes: automatic (BERTScore, F1, accuracy, robustness, toxicity), LLM-as-a-Judge (correctness, completeness, harmfulness, custom prompts), and human evaluation (internal workforce or AWS-managed reviewer team). Differentiates by being native to the Bedrock model catalog and Knowledge Bases; eval jobs run against any Bedrock-supported model, results tie directly into the model deployment pipeline, and comparative analysis across runs is built in. Bedrock model evaluation went GA April 2024; the LLM-as-a-Judge variant went GA March 2025. Bedrock as a platform serves tens of thousands of customers (per AWS, Dec 2024) including adidas, Intuit, Pfizer, Salesforce, Siemens, Thomson Reuters, and the NYSE.",
+          "description": "Managed evaluation service inside Amazon Bedrock for scoring foundation models and RAG systems. It runs programmatic metrics including BERTScore and F1, a judge model over custom prompt datasets, and human evaluation using either the customer's own workforce or one AWS manages. RAG evaluation covers retrieval and retrieve-and-generate, and bring-your-own inference responses lets external models be scored.",
           "openness": {
             "score": 1,
             "class": "closed",
@@ -13989,7 +13989,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "AWS managed evaluation feature within Amazon Bedrock; model eval (LLM-as-a-judge, programmatic incl BERTScore/F1, human), RAG eval (retrieval + retrieve-and-generate). RAG eval + LLM-as-a-judge GA 2025-03-20 (preview at re:Invent Dec 2024); 'bring your own inference responses' supports external/on-prem models. Verified live 2026-08-13 via primary sources."
+          "version_note": "Model evaluation reached general availability in April 2024 and the judge and RAG variants in March 2025. AWS publishes no usage or job-count figure. Verified 2026-08-13 via the Bedrock Evaluations product page and its general-availability announcement."
         },
         {
           "slug": "vertex-ai-gen-ai-evaluation-service",
@@ -13997,7 +13997,7 @@
           "org_slug": "google-cloud",
           "org": "Google Cloud",
           "type": "software",
-          "description": "Managed evaluation service on Vertex AI (now part of Gemini Enterprise Agent Platform) that scores generative-AI outputs using three approaches: computation-based metrics (ROUGE, BLEU, exact match), LLM-as-judge with Gemini as the judge model (including adaptive rubrics that auto-generate per-prompt pass/fail tests), and AutoSxS pairwise pipelines that A/B test two models with a judge declaring a winner. Differentiates on tight integration with Vertex AI pipelines, Model Garden, Gemini tuning workflows, and LiteLLM for third-party models; eval datasets can be built from production logs or synthetic data and run across seven global regions. Used by Vertex AI customers including Wendy's, Wayfair, Verizon, Mercedes-Benz, and Etsy (per Google Cloud case studies) as the canonical eval surface for Gemini-based applications.",
+          "description": "Managed evaluation service on Vertex AI, part of the Gemini Enterprise Agent Platform, that scores generative-AI outputs three ways: computation-based metrics such as ROUGE and BLEU, model-based autorater metrics with adaptive rubrics that generate per-prompt pass/fail tests, and AutoSxS pairwise pipelines that A/B test two models with a judge declaring a winner. It covers models, agents and RAG grounding, and evaluation datasets can be built from production logs or synthetic data.",
           "openness": {
             "score": 1,
             "class": "closed",
@@ -14077,7 +14077,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Google Cloud Vertex AI managed Gen AI evaluation service; evaluates models, agents, and RAG. Computation-based metrics, model-based/autorater (managed rubric-based + custom judge models), pointwise + pairwise (AutoSxS). Part of Gemini Enterprise Agent Platform. Verified live 2026-08-13 via primary sources (docs current)."
+          "version_note": "Google publishes no usage, customer or run-count figure for the service. Verified 2026-08-13 via the Vertex AI evaluation overview documentation."
         },
         {
           "slug": "alpacaeval",
@@ -14085,7 +14085,7 @@
           "org_slug": "tatsu-lab",
           "org": "Tatsu Lab (Stanford)",
           "type": "software",
-          "description": "Automatic LLM-judge evaluator for instruction-following models: an LLM annotator compares a candidate's outputs against a reference on a fixed instruction set to produce a win-rate and leaderboard. AlpacaEval 2.0 adds a length-controlled win-rate to debias for output length (raising correlation with Chatbot Arena to ~0.98).",
+          "description": "Automatic judge-based evaluator for instruction-following models: a model annotator compares a candidate's outputs against a reference on a fixed instruction set to produce a win rate and a leaderboard. AlpacaEval 2.0 adds a length-controlled win rate to remove the bias toward longer outputs, which raises correlation with Chatbot Arena.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -14169,7 +14169,7 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-08-13"
           },
-          "version_note": "Apache-2.0 (single LICENSE file; the README's CC-BY-NC data badge links to the sibling alpaca_farm repo, not to anything here). ~2k stars, last pushed Aug 2025. A full eval runs in ~5 min for under ~$10. Verified live 2026-08-13 via primary sources."
+          "version_note": "The README's data badge points at a sibling repository rather than anything in this one, which the openness axis resolves. Verified 2026-08-13 via the tatsu-lab/alpaca_eval repository, its license endpoint and its README."
         },
         {
           "slug": "open-llm-leaderboard",
@@ -14177,7 +14177,7 @@
           "org_slug": "hugging-face",
           "org": "Hugging Face",
           "type": "software",
-          "description": "Hugging Face's flagship public leaderboard for comparing open LLMs on a fixed, reproducible benchmark suite run on a shared cluster. v2 (2024) raised difficulty with IFEval, BBH, MATH-L5, GPQA, MuSR, and MMLU-Pro. It evaluated 13,000+ models and drew 2M+ visitors before being archived.",
+          "description": "Hugging Face's public leaderboard for comparing open language models on a fixed, reproducible benchmark suite run on a shared cluster. Its second version raised difficulty with IFEval, BBH, MATH Level 5, GPQA, MuSR and MMLU-Pro, replacing the original six-benchmark suite.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -14304,7 +14304,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "ARCHIVED/retired (announced 2025-03-13); HF redirected users to the OpenEvals hub. HF Space is Apache-2.0 and still public and running, at 14.1k likes; backend used lm-evaluation-harness (v1) and lighteval (v2). Listed for historical significance. Verified live 2026-08-13 via primary sources."
+          "version_note": "Archived in March 2025 with users redirected to the OpenEvals hub, though the Space still runs. Listed for historical significance. Verified 2026-08-13 via the Space README, the Space API and the leaderboard archive page."
         },
         {
           "slug": "compar-ia",
@@ -14312,7 +14312,7 @@
           "org_slug": "betagouv",
           "org": "DINUM / beta.gouv.fr (French Government)",
           "type": "software",
-          "description": "Compar:IA is an open source LLM comparison 'arena' created by the French Government (betagouv / DINUM with the Ministry of Culture). Users blind-compare responses from two anonymous models, vote on the better answer, then see the models' identities and environmental impact, raising awareness of model pluralism, bias, and carbon cost. Its core mission is to build large non-English (predominantly French) human-preference and alignment datasets; it is self-hostable.",
+          "description": "Blind model-comparison arena created by the French government's betagouv and DINUM with the Ministry of Culture. A user types a prompt, two anonymous models reply, and the user votes; the identities and each model's estimated energy cost are revealed afterward. Its purpose is building large non-English human-preference datasets, and it deploys with Docker on a single server.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -14426,7 +14426,7 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-08-13"
           },
-          "version_note": "Verified live 2026-08-13 via primary sources. Permissive OSI license with full public source code. The README now reports over 700,000 conversations and 250,000 votes, and a second instance, AI-arenaen, running in Denmark."
+          "version_note": "A second instance, AI-arenaen, runs in Denmark. Verified 2026-08-13 via the betagouv/ComparIA repository README and its LICENSE."
         },
         {
           "slug": "simpleaudit",
@@ -14434,7 +14434,7 @@
           "org_slug": "simula",
           "org": "Simula Research Laboratory",
           "type": "software",
-          "description": "SimpleAudit is a lightweight, local-first framework for multilingual auditing and red-teaming of AI systems via adversarial probing. Developed by Simula / SimulaMet (Norway) with the Norwegian Directorate of Health, it runs with open models locally (no API required) and ships scenario packs for safety, RAG, healthcare, and epistemic (broken-premise) testing. It is a verified Digital Public Good.",
+          "description": "Local-first framework for multilingual auditing and red-teaming of AI systems through adversarial probing, developed by Simula and SimulaMet in Norway with the Norwegian Directorate of Health. It runs open models locally so prompts, transcripts and policies stay inside the deployment environment, and ships scenario packs for safety, RAG, healthcare and broken-premise testing. It is a verified Digital Public Good.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -14536,7 +14536,7 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-08-13"
           },
-          "version_note": "Verified live 2026-08-13 via primary sources. Permissive OSI (MIT) license with full public source. The README has since added a validation section reporting AUROC 0.89-1.00 for separating safe from unsafe targets, and a comparison against Petri."
+          "version_note": "A fixed default scenario pack, rubric, auditor, judge and sampling configuration make reruns comparable. Verified 2026-08-13 via the simpleaudit repository README and its LICENSE."
         }
       ]
     },
