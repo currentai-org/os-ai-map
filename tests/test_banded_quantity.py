@@ -14,7 +14,7 @@ platform's reach and every one of them said so in a sentence no machine could re
 departure from how `check_adoption` and `check_instrument` both shipped — those met an
 existing backlog and went non-strict so the gate would not fail on the day it landed. There
 is no backlog here: the field arrived with all 57 records that needed one already filled in
-by `build/migrate_banded_quantity.py`, so strict costs nothing and stops the class recurring.
+by a one-off migration, so strict costs nothing and stops the class recurring.
 
 The gate covers only what a machine can decide. A parent-platform band citing NO figure —
 `azure-ai-foundry-observability`, `vertex-ai-model-observability` — is exactly the same

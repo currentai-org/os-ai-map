@@ -84,8 +84,8 @@ no figure at all; those were backfilled by hand and nothing enforces them, which
 ratchet `check_capability` uses.
 
 Strict from day one, unlike `check_adoption` and `check_instrument`, because there was no
-backlog to meet: all 57 records needing one were filled in by
-`build/migrate_banded_quantity.py` in the change that added the field.
+backlog to meet: all 57 records needing one were filled in by a
+one-off migration in the change that added the field.
 
 **`reach` is not `level` restated, and deleting it has been tried and reverted.** 20,000 stars
 and 20,000 downloads are not the same reach, and the same level maps to a different label

@@ -8,10 +8,9 @@ the thing it mirrored:
     seven, so a bridged `npm`/`crates` route would have read as uncovered;
   * `check_routing.artifacts_of` enumerated the same vocabulary a second time in the same
     file, so a correctly declared new kind was invisible to coverage;
-  * `apply_provenance` reimplemented `prose_provenance.METHOD_WORDS` more narrowly, so
+  * the prose applier reimplemented `product_prose.METHOD_WORDS` more narrowly, so
     `substitute sources` passed as a document name;
-  * `check_payload` and `apply_provenance` each validated a date by shape, accepting
-    `2026-99-99`.
+  * two modules each validated a date by shape, accepting `2026-99-99`.
 
 None of them failed loudly. Each reported success over a narrower question than the one it
 claimed to answer, which is the failure mode this module exists to stop repeating.

@@ -6,9 +6,9 @@ each reported success over a narrower question than the one it claimed to answer
   * `check_routing.SOURCE_ARTIFACT` named five sources where the routing table declared seven;
   * `check_routing.artifacts_of` enumerated the same vocabulary again in the same file, so a
     correctly declared new artifact kind was invisible to coverage;
-  * `apply_provenance` reimplemented `METHOD_WORDS` more narrowly, so `substitute sources`
-    passed as a document name;
-  * `check_payload` and `apply_provenance` each validated a date by shape.
+  * a second copy of `METHOD_WORDS` in the (now removed) applier was narrower, so
+    `substitute sources` passed as a document name;
+  * two modules each validated a date by shape, accepting `2026-99-99`.
 
 **These tests inspect the AST and call the code, not the source text.** The first cut matched
 strings — a double-quoted tuple in one exact order, a bare `NAME =` assignment, the substring
@@ -23,7 +23,6 @@ import ast
 import json
 from pathlib import Path
 
-import pytest
 import yaml
 
 from build.vocabulary import ROOT, artifact_kinds, axes
@@ -154,19 +153,18 @@ def test_capability_relation_deltas_match_the_schema_enum():
 
 
 def test_the_method_vocabulary_has_exactly_one_definition():
-    """`apply_provenance` held a narrower sibling until 2026-08-15, which is how
-    `substitute sources` passed as a document name.
+    """A second, narrower copy in the applier is how `substitute sources` passed as a
+    document name. The applier is gone; the rule outlives it, because the next module that
+    needs to recognize a method word will be tempted to spell it out again.
 
     AST-based, so an annotated assignment (`METHOD_WORDS: re.Pattern = ...`) is caught; the
     first cut matched `^METHOD_WORDS\\s*=` and would not have been.
     """
-    if not (BUILD / "prose_provenance.py").exists():
-        pytest.skip("prose_provenance lands with #283; this activates when it merges")
     definers = [
         name for name, source in _module_sources().items()
         if "METHOD_WORDS" in _assigned_names(ast.parse(source))
     ]
-    assert definers == ["prose_provenance.py"], (
+    assert definers == ["product_prose.py"], (
         f"METHOD_WORDS is assigned in {definers}; it must have exactly one owner"
     )
 
@@ -180,16 +178,3 @@ def test_check_payload_rejects_impossible_dates():
         assert not _is_date(bad), f"{bad!r} accepted as a date"
     for good in ("2026-08-15", "2026-02-28"):
         assert _is_date(good)
-
-
-def test_apply_provenance_rejects_impossible_dates():
-    """The same defect, in the module written three days after the first was fixed."""
-    if not (BUILD / "apply_provenance.py").exists():
-        pytest.skip("apply_provenance lands with #283; this activates when it merges")
-    from build.apply_provenance import Refused, check
-
-    for bad in ("2026-99-99", "2026-02-30", "August"):
-        with pytest.raises(Refused):
-            check({"product": "anythingllm", "verification_date": bad, "source_accessed": bad,
-                   "selected_document": "the README", "source_url": "https://example.com",
-                   "support": "x", "prose_digest": "d"})

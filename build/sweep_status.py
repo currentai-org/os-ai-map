@@ -121,7 +121,7 @@ def product_state(
     # when what actually varied was whether the line names a document a reader can reopen.
     # `named_noncanonical` needs a rewording; `generic` names a method and needs evidence or a
     # re-read. Collapsing those into one number hid which was which.
-    from build.prose_provenance import classify
+    from build.product_prose import classify
 
     prose_kind, prose_date, _ = classify(product.get("comments"))
     if prose_kind == "missing":
