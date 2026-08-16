@@ -5,17 +5,21 @@
     Verified <YYYY-MM-DD> via <document>.
 
 The date is what `sweep_status` ages the prose on. The document is what makes the line
-provenance rather than an assertion: it names something a later editor can reopen.
+provenance rather than an assertion: it names something a later editor can reopen. And the
+line ENDS the field, so a claim cannot be appended after it and read as covered by it.
 
 ## The five states
 
 | state | meaning |
 |---|---|
-| `canonical` | `Verified <date> via <document>.` |
-| `named_noncanonical` | names a document, but behind `live` / `on` / `against` |
+| `canonical` | the whole contract: a real calendar date, `via`, a document, a period, end |
+| `named_noncanonical` | names a document, but not in that form — `live` / `on` / `against`, an impossible date, a missing period, or prose after the line |
 | `ambiguous_noncanonical` | dated, but no document identifiable — `Verified 2026-08-13.` |
 | `generic` | names a METHOD — `primary sources`, `research`, `web search` |
 | `missing` | no dated verification line at all |
+
+Only `canonical` passes. The other four are all "go and fix the prose", and they differ in
+what the fix is, which is the whole reason the census reports them separately.
 
 `generic` is the one `product-copy.md` rules out by name: those words "describe how you looked
 rather than what settled it, and leave the next editor nothing to re-open".
@@ -36,9 +40,33 @@ from pathlib import Path
 
 import yaml
 
+from build.vocabulary import is_iso_date
+
 ROOT = Path(__file__).resolve().parents[1]
 
-CANONICAL = re.compile(r"Verified (\d{4}-\d{2}-\d{2}) via ")
+# A sentence-terminating "." is one followed by whitespace or end of string; a dot inside a
+# URL or filename is not, and neither is the dot of an initialism.
+#
+# `[^.;]*` alone stopped inside `huggingface.co`. Adding only the whitespace test then split
+# `the U.S. AI Safety Institute report` into `the U.S` + `. AI Safety Institute report`,
+# which is worse than the URL case, because the result reads as grammatical. The lookbehind
+# fires only on a single capital letter at a word boundary, so `U.` is kept and `README.` —
+# whose `D` has no word boundary before it — correctly ends the clause.
+BOUND = r"(?:[^.;]|\.(?!\s|$)|(?<=\b[A-Z])\.(?=\s))*"
+
+# The canonical line, in full, as `product-copy.md` defines it: the verification form, a real
+# date, `via`, a document, a final period, and nothing after it.
+#
+# Every part of that is load-bearing, and an earlier cut of this module enforced only the
+# first two. `Verified 2026-08-13 via the README` (no period), and
+# `Verified 2026-08-13 via the README. This trailing claim is not covered.` both passed as
+# canonical, so the gate accepted lines weaker than the contract its own failure message
+# quotes. The trailing-prose case is the dangerous one: a claim appended after the line reads
+# as covered by it and is not.
+#
+# `BOUND` is what lets the document keep its dots while trailing prose is still rejected.
+CANONICAL = re.compile(r"Verified (\d{4}-\d{2}-\d{2}) via (" + BOUND + r")\.\s*$")
+
 # Any dated verification, however it is worded. The corpus has carried `Verified live <date>
 # via`, `Verified live <date> on`, `... against`, and lowercase `verified`.
 ANY_DATED = re.compile(r"[Vv]erified[^.]{0,45}?(\d{4}-\d{2}-\d{2})")
@@ -85,27 +113,38 @@ def classify(comments: str) -> tuple[str, str | None, str | None]:
     `via substitute sources`, promoting them into canonical form while they still named a
     method. `generic` wins over `canonical` whenever the trailer is a method, however the
     line is worded.
+
+    **`canonical` requires the whole contract**, not a date-shaped prefix of it: a real
+    calendar date, `via`, a document, a closing period, and the end of the field. A line
+    failing any of those is `named_noncanonical` — it names something, it just does not name
+    it in the form `product-copy.md` requires, which is a prose fix rather than a re-read.
+
+    The returned date is `None` unless it parses. `2026-99-99` is not a date this can age
+    prose on, and handing it back as one is how a downstream freshness sum would quietly get
+    a value it cannot compare.
     """
     text = " ".join(str(comments or "").split())
     dated = ANY_DATED.search(text)
     if not dated:
         return "missing", None, None
+    iso = dated.group(1) if is_iso_date(dated.group(1)) else None
 
     match = TRAILER.search(text)
     trailer = match.group(1).strip() if match else ""
 
     if METHOD_WORDS.match(trailer):
-        return "generic", dated.group(1), trailer
+        return "generic", iso, trailer
     # A document has to be identifiable before the line can be called one that names one.
     # `Verified 2026-08-13.` and `Verified live 2026-08-13, but only the adoption axis could
     # be re-derived` are dated and not methods, and neither names anything to reopen.
     # Defaulting those to `named_noncanonical` would promise a mechanical fix that does not
     # exist.
     if not trailer or not HAS_WORD.search(trailer):
-        return "ambiguous_noncanonical", dated.group(1), trailer
-    if CANONICAL.search(text):
-        return "canonical", CANONICAL.search(text).group(1), trailer
-    return "named_noncanonical", dated.group(1), trailer
+        return "ambiguous_noncanonical", iso, trailer
+    terminal = CANONICAL.search(text)
+    if terminal and is_iso_date(terminal.group(1)):
+        return "canonical", terminal.group(1), terminal.group(2)
+    return "named_noncanonical", iso, trailer
 
 
 def census() -> dict[str, list[str]]:

@@ -59,7 +59,7 @@ from pathlib import Path
 
 import yaml
 
-from build.vocabulary import axes
+from build.vocabulary import axes, parse_date
 
 ROOT = Path(__file__).resolve().parents[1]
 AXES = axes()  # build/vocabulary.py owns this; the score schema declares it
@@ -84,15 +84,15 @@ def load() -> tuple[dict, dict, dict, dict, dict]:
 
 
 def _on_or_after(value: object, cutoff: date | None) -> bool:
-    """True when `value` is a date at or after the cutoff. No cutoff means any date passes."""
+    """True when `value` is a date at or after the cutoff. No cutoff means any date passes.
+
+    An unparseable value is False, deliberately: this decides whether something is fresh
+    enough, and a value that cannot be read as a date has not been shown to be.
+    """
     if cutoff is None:
         return True
-    if isinstance(value, date):
-        return value >= cutoff
-    try:
-        return date.fromisoformat(str(value)) >= cutoff
-    except (TypeError, ValueError):
-        return False
+    when = parse_date(value)
+    return when is not None and when >= cutoff
 
 
 def product_state(

@@ -65,7 +65,7 @@ from pathlib import Path
 
 import yaml
 
-from build.vocabulary import axes
+from build.vocabulary import axes, parse_date
 from build.check_rubric import components_of, license_read_keys, resolve_dimension
 from build.rubrics import load_product_types, load_shared, recipe_for, resolve_recipe_variants
 
@@ -117,13 +117,6 @@ def category_of(categories: dict) -> dict[str, str]:
         for slug, category in categories.items()
         for product in (category.get("products") or [])
     }
-
-
-def parse_date(value: object) -> date | None:
-    try:
-        return date.fromisoformat(str(value))
-    except (TypeError, ValueError):
-        return None
 
 
 def recorded_dimensions(components: dict[str, str], recipe: dict) -> dict[str, str]:

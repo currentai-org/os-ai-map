@@ -169,12 +169,52 @@ def test_the_method_vocabulary_has_exactly_one_definition():
     )
 
 
-def test_check_payload_rejects_impossible_dates():
+def test_date_validation_rejects_impossible_dates():
     """Behavioral, not textual. The first cut asserted `fromisoformat` appeared somewhere in
-    the file, which a module could satisfy while still shape-matching elsewhere."""
-    from build.check_payload import _is_date
+    the file, which a module could satisfy while still shape-matching elsewhere.
 
-    for bad in ("2026-99-99", "2026-02-30", "not-a-date", "", "20260815", None):
-        assert not _is_date(bad), f"{bad!r} accepted as a date"
-    for good in ("2026-08-15", "2026-02-28"):
-        assert _is_date(good)
+    Both halves of the check are exercised: `20260815` parses but is the wrong spelling, and
+    `2026-99-99` has the right spelling and is not a date.
+    """
+    from build.vocabulary import is_iso_date
+
+    for bad in ("2026-99-99", "2026-02-30", "2026-02-29", "not-a-date", "", "20260815", None):
+        assert not is_iso_date(bad), f"{bad!r} accepted as a date"
+    for good in ("2026-08-15", "2026-02-28", "2024-02-29"):
+        assert is_iso_date(good)
+
+
+def test_date_handling_has_exactly_one_owner():
+    """Five modules held four definitions of "a date" between them.
+
+    Two `parse_date` copies were identical except that one accepted a `date` object and the
+    other did not — and PyYAML returns an object for an unquoted date and a string from a
+    payload, so the two answered the same freshness question differently depending on where
+    the value came from. A third module validated by shape, accepting `2026-99-99`. A fourth
+    arrived with the prose classifier's canonical gate, which is what prompted this test
+    instead of a fifth.
+
+    `build/vocabulary.py` now owns both: `is_iso_date` gates a field's spelling,
+    `parse_date` produces something comparable.
+
+    AST-based, and matched on what a function RETURNS rather than on its name. A name test
+    let `validate_sources` through the filter as a false positive — it calls `fromisoformat`
+    inline, which is use rather than a second definition — and the fix for that must not be
+    to name the exception, because then the test passes by listing whatever it happens to
+    find. A function returning a date verdict IS the construct; a function returning
+    `list[str]` that parses a date on the way is not.
+    """
+    def _returns_a_date_verdict(node: ast.FunctionDef) -> bool:
+        returns = ast.unparse(node.returns) if node.returns else ""
+        return returns in ("bool", "date | None", "date") and "fromisoformat" in ast.dump(node)
+
+    definers = sorted(
+        name for name, source in _module_sources().items()
+        if any(
+            isinstance(node, ast.FunctionDef) and _returns_a_date_verdict(node)
+            for node in ast.walk(ast.parse(source))
+        )
+    )
+    assert definers == ["vocabulary.py"], (
+        f"a date helper is defined in {definers}; build/vocabulary.py owns them"
+    )

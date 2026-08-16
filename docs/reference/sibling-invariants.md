@@ -89,22 +89,37 @@ and tested, so it stays a decision instead of becoming drift.
   disposition: fixed
   regression_test: test_the_method_vocabulary_has_exactly_one_definition
 
-- construct: date validation
-  canonical_owner: datetime.date.fromisoformat
+- construct: date handling — validating a field, and parsing one to compare
+  canonical_owner: build/vocabulary.py `is_iso_date` and `parse_date`
   duplicates:
-    - build/check_payload.py      # fixed
-    - the prose applier           # fixed in #283, module retired
+    - build/check_payload.py        # _is_date, fixed then moved here
+    - build/check_capability.py     # parse_date, accepted a date object
+    - build/check_verification.py   # parse_date, did NOT accept a date object
+    - build/sweep_status.py         # _on_or_after, a third spelling of the same parse
+    - the prose applier             # fixed in #283, module retired
   risk: >-
-    A `\d{4}-\d{2}-\d{2}` regex accepts 2026-99-99 and 2026-02-30 in a check whose stated job
-    on that field is validating a date. The same defect appeared in two modules three days
-    apart, the second written after the first was fixed.
+    Five modules, four definitions of "a date". A `\d{4}-\d{2}-\d{2}` regex accepts
+    2026-99-99 and 2026-02-30 in a check whose stated job on that field is validating a date;
+    that defect appeared in two modules three days apart, the second written after the first
+    was fixed, and a fourth copy arrived with the prose classifier's canonical gate.
+
+    The two parse_date copies differed in ONE line: one accepted a `date` object and the other
+    did not. PyYAML returns an object for an unquoted `2026-08-15` and a string from a payload,
+    so the same freshness question was answered differently depending on which side of the
+    pipeline the value came from.
+
+    The split into two functions is deliberate. `is_iso_date` GATES a field's spelling and
+    requires both the hyphenated shape and a successful parse. `parse_date` is permissive and
+    exists to COMPARE: refusing to compare a date because it was spelled unusually would fail
+    a freshness check for a formatting reason, which answers the wrong question.
   disposition: fixed
   regression_test: >-
-    test_check_payload_rejects_impossible_dates — behavioral, calling the validator rather
-    than grepping for `fromisoformat`. The check requires BOTH the hyphenated shape and a
-    successful parse: shape alone accepted 2026-99-99, and parse alone accepts the compact
-    `20260815` from Python 3.11, which would put a second date spelling into a corpus whose
-    schema declares `format: date`.
+    test_date_validation_rejects_impossible_dates — behavioral, calling the validator rather
+    than grepping for `fromisoformat` — and test_date_handling_has_exactly_one_owner, which
+    matches on what a function RETURNS rather than on its name. A name test let
+    `validate_sources` through as a false positive because it parses a date inline, and the
+    fix for that must never be to name the exception: a test that passes by listing whatever
+    it happens to find has stopped being a test.
 
 - construct: openness class → bucket map
   canonical_owner: docs/openness-class-map.json
