@@ -224,9 +224,17 @@ def survey(cutoff: date | None = None) -> list[dict]:
             "coverage": routable / len(roster) if roster else 1.0,
             "states": states,
         })
-    # Worst coverage first; a finished category sorts to the back whatever its coverage.
-    rows.sort(key=lambda r: (r["done"] >= r["products"], r["coverage"], r["category"]))
-    return rows
+    return order_rows(rows)
+
+
+def order_rows(rows: list[dict]) -> list[dict]:
+    """Worst coverage first; a finished category sorts to the back whatever its coverage.
+
+    Extracted so the ordering can be tested against a corpus the test builds. Asserting it on
+    the real corpus needs at least one unfinished category, and a test that needs work left to
+    do fails the moment the work is finished - which is what happened here.
+    """
+    return sorted(rows, key=lambda r: (r["done"] >= r["products"], r["coverage"], r["category"]))
 
 
 def main() -> int:
