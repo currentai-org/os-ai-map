@@ -11,35 +11,14 @@ is worse than no gate at all: it looks like protection nobody is actually gettin
 """
 import json
 import sys
-from datetime import date
 from pathlib import Path
 
-from build.vocabulary import axes
+from build.vocabulary import axes, is_iso_date
 
 ROOT = Path(__file__).resolve().parents[1]
 
 _ALIAS_KINDS = ("products", "organizations")
 _AXES = axes()  # build/vocabulary.py owns this; the score schema declares it
-
-
-def _is_date(value: object) -> bool:
-    r"""A real calendar date, not a shape that looks like one.
-
-    A `\d{4}-\d{2}-\d{2}` regex accepts 2026-99-99, which is exactly the class of thing a
-    gate claiming to validate a date must not wave through.
-    """
-    text = str(value)
-    # Both halves are needed. Shape alone was the original defect — it accepted 2026-99-99.
-    # Parsing alone is also too loose: `date.fromisoformat` takes the compact `20260815` from
-    # Python 3.11, so a second spelling could enter a corpus whose convention, and whose
-    # schema `format: date`, is hyphenated throughout.
-    if len(text) != 10 or text[4] != "-" or text[7] != "-":
-        return False
-    try:
-        date.fromisoformat(text)
-    except (TypeError, ValueError):
-        return False
-    return True
 
 
 def _check_freshness_caveats(slug: str, fresh: dict) -> None:
@@ -87,7 +66,7 @@ def _check_freshness_caveats(slug: str, fresh: dict) -> None:
                 raise PayloadError(
                     f"{slug!r} holds axis {axis!r} which is not in unconfirmed_axes"
                 )
-            if not _is_date(hold.get("since")):
+            if not is_iso_date(hold.get("since")):
                 raise PayloadError(f"{slug!r} hold on {axis!r} has no valid `since` date")
             if not str(hold.get("reason", "")).strip():
                 raise PayloadError(f"{slug!r} hold on {axis!r} has no reason")

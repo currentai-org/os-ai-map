@@ -71,6 +71,8 @@ from pathlib import Path
 
 import yaml
 
+from build.vocabulary import parse_date
+
 ROOT = Path(__file__).resolve().parents[1]
 
 # `at` is not redundant with "no relation recorded". It says the placement was made by
@@ -100,15 +102,6 @@ def load() -> tuple[dict, dict]:
         for product in doc.get("products") or []:
             owner[product] = doc.get("name") or path.stem
     return scores, owner
-
-
-def parse_date(value: object) -> date | None:
-    if isinstance(value, date):
-        return value
-    try:
-        return date.fromisoformat(str(value))
-    except (TypeError, ValueError):
-        return None
 
 
 def check(scores: dict, owner: dict) -> list[str]:
