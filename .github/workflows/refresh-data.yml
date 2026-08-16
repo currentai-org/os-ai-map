@@ -31,12 +31,18 @@ jobs:
       # GH_FETCH_TOKEN stays a PAT rather than ${{ github.token }}: a PR opened with the
       # Actions token does not trigger the validate workflow, so the refresh would arrive
       # unchecked.
+      #
+      # It is NOT in the job env, because "and nothing else" has to be true of the
+      # environment and not only of the prose. A PAT reachable by `uv sync` and by two
+      # fetchers that make outbound HTTP calls is a PAT exposed to every dependency in the
+      # lockfile. It is set on the two steps that need it and nowhere else.
       OSO_API_KEY: ${{ secrets.OSO_API_KEY }}
       HF_TOKEN: ${{ secrets.HF_TOKEN }}
-      GH_TOKEN: ${{ secrets.GH_FETCH_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - name: Preflight credentials (#281)
+        env:
+          GH_TOKEN: ${{ secrets.GH_FETCH_TOKEN }}
         run: |
           # Presence is not validity, and the gap between them cost eight weeks. Every
           # scheduled run from 2026-06-22 to 2026-08-10 died on `401 - Bad credentials`
@@ -93,6 +99,8 @@ jobs:
           uv run python warehouse/ingest/fetch_huggingface.py
           uv run python warehouse/ingest/fetch_model_benchmarks.py
       - name: Open refresh PR
+        env:
+          GH_TOKEN: ${{ secrets.GH_FETCH_TOKEN }}
         run: |
           if [ -z "$(git status --porcelain warehouse/catalog/)" ]; then
             echo "Catalog unchanged; no PR needed."
