@@ -50,6 +50,7 @@ doors above:
 - **Advanced** — deep editorial skills for maintainers: `build-rubric` (derive a category's
   scoring ladder) and `refresh-all-categories` (drive the whole-corpus sweep).
 - **Internal** — infrastructure and analysis, not map-editing: `add-data-source` (register a
-  fetcher) and `pyoso-analyst` (read-only warehouse analysis).
+  fetcher), `pyoso-analyst` (read-only warehouse analysis), and `publish-release` (cut a
+  versioned release and update the changelog; maintainer only).
 
 For the repo map, build pipeline, and data model, see `AGENTS.md`.
