@@ -1,180 +1,74 @@
 # Sibling invariants
 
-A record of every place in `build/` where the same fact was stated twice, and what was done
-about each. Written 2026-08-15 after four defects of that exact shape shipped in a fortnight.
+The rule is in `AGENTS.md` ("One fact, one owner"). This file is what it leaves behind: the
+register of constructs in `build/` that state the same fact in more than one place **and are
+meant to**, each with the reason and the test that holds it.
 
-## Why this exists
+It is a decision register, not an incident log. The four defects that produced the rule in
+August 2026 are fixed and each has a named regression test; git carries the narrative. What a
+future sweep needs is the other half — which duplicates are deliberate — because without it
+the same three constants get rediscovered as findings every time somebody greps for them.
 
-None of the four failed loudly. Each reported success over a **narrower question than the one
-it claimed to answer**:
+## Owned, and derived rather than copied
 
-| defect | the narrower question it actually answered |
-|---|---|
-| `check_routing.SOURCE_ARTIFACT` named five sources; the table declared seven | "is this one of the five sources I know about?" |
-| `check_routing.artifacts_of` enumerated the same vocabulary again, in the same file | "does the product declare one of seven hardcoded keys?" |
-| a second, narrower `METHOD_WORDS` in the prose applier | "is this document name one of three forbidden phrases?" |
-| two modules each validated a date by shape | "does this string look like a date?" |
+| construct | owner | derived via | test |
+|---|---|---|---|
+| the three scored axes | `docs/schemas/score.schema.json` | `build/vocabulary.axes` | `test_no_module_holds_a_private_copy_of_the_axes` |
+| product artifact kinds | `sources/signal_routing.yaml` `artifact_key` | `build/vocabulary.artifact_kinds` | `test_proposer_support_is_defined_by_handlers_not_by_routing` |
+| method words a provenance line may not name | `build/product_prose.py` `METHOD_WORDS` | imported | `test_the_method_vocabulary_has_exactly_one_definition` |
+| date handling | `build/vocabulary.py` — `is_iso_date`, `parse_date` | imported | `test_date_validation_rejects_impossible_dates`, `test_date_handling_has_exactly_one_owner` |
 
-Three were found by review rather than by any gate, and the fourth was found only because the
-third was. The pattern is not carelessness about a particular constant — it is that a fix gets
-applied to the instance in front of the author and the sibling is never searched for.
+Two of these carry a decision worth keeping in view.
 
-**The rule this settles on: a vocabulary with a declarative owner is derived from it, never
-copied.** Where a literal genuinely differs from its source, the difference is written down
-and tested, so it stays a decision instead of becoming drift.
+**`render.py` is not exempt from the axes rule**, though it was briefly, on the grounds that it
+was the only build module invoked as a script and so could not import from the package. That
+exemption was unsound — a fourth axis would have left the rendered methodology silently
+omitting its sources while every other test passed — and the invocation moved to `-m` instead.
 
-## Inventory
+**Proposable is not the same set as routed.** The first fix derived `propose_artifacts`'
+supported kinds *from* the routing table, which fails in the other direction: a newly declared
+`artifact_key` would become an accepted `--kind` with no URL pattern, no live check and no
+renderer behind it. Support is defined by the three handlers a kind needs, and asserted to be
+an intentional subset with `arxiv` the named gap.
 
-```yaml
-- construct: vocabulary — the three scored axes
-  canonical_owner: docs/schemas/score.schema.json (via build/vocabulary.axes)
-  duplicates:
-    - build/check_freshness.py
-    - build/check_refetch.py
-    - build/check_verification.py
-    - build/freshness_payload.py
-    - build/serialize_rubric.py
-    - build/sweep_status.py
-    - build/check_payload.py
-    - build/validate.py          # inline, in the schema gate itself
-    - build/render.py            # inline
-  risk: >-
-    A fourth axis narrows ten denominators at once, and a walk that quietly skips an axis
-    passes green. None had drifted — no axis has ever been added — so this is the one entry
-    fixed before it failed rather than after.
+**There are two date helpers, and the split is deliberate.** `is_iso_date` GATES a field's
+spelling and requires both the hyphenated shape and a successful parse: shape alone accepts
+`2026-99-99`, and parse alone accepts Python 3.11's compact `20260815`, which would put a
+second date spelling into a corpus whose schema declares `format: date`. `parse_date` is the
+permissive one, and exists to COMPARE — refusing to compare a date because it was spelled
+unusually would fail a freshness check for a formatting reason.
 
-    render.py was briefly EXEMPTED here because it was the only build module invoked as a
-    script, so it could not import from the package. That exemption was unsound: a fourth
-    axis would have left the rendered methodology silently omitting its sources while every
-    other test passed, which is the very defect this entry is about. The invocation moved to
-    `-m` instead — two workflows and three docs — and the exemption is gone.
-  disposition: fixed
-  regression_test: test_no_module_holds_a_private_copy_of_the_axes
+Five modules held four definitions between them before 2026-08-16. The two `parse_date` copies
+differed in one line — one accepted a `date` object and the other did not — and PyYAML returns
+an object for an unquoted date and a string from a payload, so the same freshness question was
+answered differently depending on which side of the pipeline the value came from.
 
-- construct: vocabulary — product artifact kinds
-  canonical_owner: sources/signal_routing.yaml `artifact_key` (via build/vocabulary.artifact_kinds)
-  duplicates:
-    - build/propose_artifacts.py  # VERIFIABLE_KINDS, already missing arxiv
-  risk: >-
-    Already divergent. The same construct as the two check_routing defects, in a third module.
+Its regression test matches on what a function RETURNS, not on its name. A name test let
+`validate_sources` through as a false positive because it parses a date inline, and the fix
+for that must never be to name the exception: a test that passes by listing whatever it
+happens to find has stopped being a test.
 
-    The first fix derived it FROM the routing table, which was wrong in the other direction:
-    a newly declared `artifact_key` would have become an accepted `--kind` with no URL
-    pattern, no live check and no renderer behind it. Routed and proposable are different
-    questions, and the two sets being equal today is what made the coincidence look like a
-    definition. Support is now defined by the three handlers a kind needs, and asserted to be
-    an intentional subset of routed kinds with `arxiv` the named gap.
-  disposition: fixed
-  regression_test: test_proposer_support_is_defined_by_handlers_not_by_routing
+## Deliberately distinct — do not "fix" these
 
-- construct: vocabulary — capability `relation`
-  canonical_owner: docs/schemas/score.schema.json
-  duplicates:
-    - build/check_capability.py   # DELTA
-  risk: >-
-    DELTA maps each relation to an integer offset, which the schema cannot express, so the
-    dict stays. What it must not do is disagree about which relations EXIST: a relation in the
-    schema but missing from DELTA is accepted by validate and raises in the gate.
-  disposition: intentionally_distinct
-  regression_test: test_capability_relation_deltas_match_the_schema_enum
+| construct | where | why it stays |
+|---|---|---|
+| capability `relation` → integer offset | `check_capability.DELTA` | the schema cannot express the offset. What DELTA may not do is disagree about which relations *exist*, and `test_capability_relation_deltas_match_the_schema_enum` holds that. |
+| openness class → bucket | `serialize._GAP_OPEN` / `_GAP_OPENISH`, `render._OPEN` | `tests/test_openness_buckets.py` already asserts all three agree with `docs/openness-class-map.json`. Same protection, arrived at first; moving the constants would churn a working invariant for symmetry. |
+| adoption instrument subset | `check_adoption._DOWNLOAD_INSTRUMENTS` | not a mirror of the `signal_type` enum. It names the subset measured on a download scale, and the module states why `unknown` is excluded. A narrower vocabulary with a written reason is a decision. |
 
-- construct: vocabulary — the method words a provenance line may not name
-  canonical_owner: build/product_prose.py METHOD_WORDS
-  duplicates:
-    - the prose applier   # fixed in #283, module retired in the 2026-08 cleanup
-  risk: >-
-    The sibling was narrower and let `substitute sources` through as a document name — the
-    exact phrase behind four hardware records that a rewording pass nearly promoted into
-    canonical form.
-  disposition: fixed
-  regression_test: test_the_method_vocabulary_has_exactly_one_definition
+## Two related shapes, both swept clean
 
-- construct: date handling — validating a field, and parsing one to compare
-  canonical_owner: build/vocabulary.py `is_iso_date` and `parse_date`
-  duplicates:
-    - build/check_payload.py        # _is_date, fixed then moved here
-    - build/check_capability.py     # parse_date, accepted a date object
-    - build/check_verification.py   # parse_date, did NOT accept a date object
-    - build/sweep_status.py         # _on_or_after, a third spelling of the same parse
-    - the prose applier             # fixed in #283, module retired
-  risk: >-
-    Five modules, four definitions of "a date". A `\d{4}-\d{2}-\d{2}` regex accepts
-    2026-99-99 and 2026-02-30 in a check whose stated job on that field is validating a date;
-    that defect appeared in two modules three days apart, the second written after the first
-    was fixed, and a fourth copy arrived with the prose classifier's canonical gate.
+**A status or exit derived from fewer conditions than the printed report.** `check_instrument
+--strict` once printed a violation, followed it with `[OK]`, and exited 0. Every checker was
+read after that: `check_verification` iterates all its sub-gates so its exit covers everything
+it prints, and a line that is deliberately non-gating is marked `~` with a written reason
+(`check_rubric`'s no-tier lines). Held by
+`test_strict_exits_nonzero_on_an_unattributed_figure`.
 
-    The two parse_date copies differed in ONE line: one accepted a `date` object and the other
-    did not. PyYAML returns an object for an unquoted `2026-08-15` and a string from a payload,
-    so the same freshness question was answered differently depending on which side of the
-    pipeline the value came from.
-
-    The split into two functions is deliberate. `is_iso_date` GATES a field's spelling and
-    requires both the hyphenated shape and a successful parse. `parse_date` is permissive and
-    exists to COMPARE: refusing to compare a date because it was spelled unusually would fail
-    a freshness check for a formatting reason, which answers the wrong question.
-  disposition: fixed
-  regression_test: >-
-    test_date_validation_rejects_impossible_dates — behavioral, calling the validator rather
-    than grepping for `fromisoformat` — and test_date_handling_has_exactly_one_owner, which
-    matches on what a function RETURNS rather than on its name. A name test let
-    `validate_sources` through as a false positive because it parses a date inline, and the
-    fix for that must never be to name the exception: a test that passes by listing whatever
-    it happens to find has stopped being a test.
-
-- construct: openness class → bucket map
-  canonical_owner: docs/openness-class-map.json
-  duplicates:
-    - build/serialize.py          # _GAP_OPEN / _GAP_OPENISH
-    - build/render.py             # _OPEN
-  risk: >-
-    A divergence would make the gap stage disagree with the published bucket, silently.
-  disposition: intentionally_distinct
-  regression_test: >-
-    tests/test_openness_buckets.py already asserts all three copies agree. That is the same
-    protection this sweep adds elsewhere, arrived at first; moving the constants would churn a
-    working invariant for symmetry.
-
-- construct: adoption instrument subset
-  canonical_owner: none — not a copy
-  duplicates:
-    - build/check_adoption.py     # _DOWNLOAD_INSTRUMENTS
-  risk: none
-  disposition: intentionally_distinct
-  regression_test: >-
-    Not a mirror of the signal_type enum. It names the subset measured on a download scale,
-    and the module states why `unknown` is excluded. A narrower vocabulary with a written
-    reason is a decision, not a duplicate.
-
-- construct: status/exit derived from fewer conditions than the printed report
-  canonical_owner: n/a
-  duplicates:
-    - build/check_instrument.py   # fixed in #276
-  risk: >-
-    `--strict` printed an unattributed-figure violation, followed it with `[OK]`, and exited
-    0. Every other checker was read: `check_verification` iterates all gates so its exit
-    covers everything it prints, and `check_rubric`'s non-gating lines are marked `~` with a
-    written reason. No further instances.
-  disposition: fixed
-  regression_test: test_strict_exits_nonzero_on_an_unattributed_figure
-
-- construct: malformed or unknown input becoming a pass
-  canonical_owner: n/a
-  duplicates: []
-  risk: >-
-    Swept and clean. The three `except` paths in build/ each record the failure — `False`, an
-    `unreachable` list, or an error — rather than falling through to success.
-  disposition: intentionally_distinct
-  regression_test: none needed
-```
+**Malformed or unknown input becoming a pass.** The `except` paths in `build/` each record the
+failure — `False`, an `unreachable` list, or an error — rather than falling through to success.
 
 ## What was deliberately not done
 
 No new abstraction for the sake of deduplication. `build/vocabulary.py` holds two functions,
 both deriving from a file that already owns the fact.
-
-Three entries were dropped in the 2026-08 cleanup along with the prose applier they described
-— a clause-boundary regex the applier should never have held, a `url -> accessed` map that
-flattened a many-valued fact, and an untested composition. Their lesson is the general one at
-the top of this file, and git carries the detail. Constants that are genuinely local, or
-that already have a working gate, were left where they are — noted above with the reason, so
-the next sweep does not rediscover them as findings.

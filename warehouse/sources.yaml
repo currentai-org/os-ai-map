@@ -1,5 +1,11 @@
 # Registry of external data sources the pipeline ingests.
 # Each entry links a source to its fetcher in warehouse/ingest/.
+#
+# `refresh` is what actually runs, not an intention. Every fetcher below is driven by
+# .github/workflows/refresh-data.yml on one weekly cron (Mondays 05:17 UTC); the per-source
+# monthly and quarterly cadences this file used to declare were never implemented anywhere.
+# A source with no fetcher is read by a UDM on the platform, and a cron set on a UDM is a
+# DECLARATION — see warehouse/models/README.md on why that does not prove it fires.
 sources:
   - id: goodailist
     name: Good AI List
@@ -11,42 +17,42 @@ sources:
     # than the live table, and it was: the frozen CSV still listed 300 repos
     # goodailist.com had delisted.
     ingested_by: currentai.signal_goodailist.repo_catalog
-    refresh: daily (UDM cron)
+    refresh: declared daily on the UDM; verify in run history
 
   - id: huggingface
     name: Hugging Face models and datasets
     homepage: https://huggingface.co/
     provides: Model and dataset catalogs from the Hugging Face Hub
     fetcher: warehouse/ingest/fetch_huggingface.py
-    refresh: monthly
+    refresh: weekly (refresh-data.yml)
 
   - id: huggingface_benchmarks
     name: Hugging Face / Open LLM Leaderboard
     homepage: https://huggingface.co/
     provides: Model and dataset catalogs, benchmark scores
     fetcher: warehouse/ingest/fetch_model_benchmarks.py
-    refresh: monthly
+    refresh: weekly (refresh-data.yml)
 
   - id: github_orgs
     name: GitHub AI org/repo catalog
     homepage: https://github.com/
     provides: AI-tagged repos and orgs
     fetcher: warehouse/ingest/fetch_github_orgs.py
-    refresh: monthly
+    refresh: weekly (refresh-data.yml)
 
   - id: github_ai_repos
     name: GitHub AI repo search
     homepage: https://github.com/
     provides: AI repos discovered via GitHub topic and keyword search
     fetcher: warehouse/ingest/fetch_github_ai_repos.py
-    refresh: monthly
+    refresh: weekly (refresh-data.yml)
 
   - id: ai_incidents
     name: AI Incident Database
     homepage: https://incidentdatabase.ai/
     provides: Safety / safeguards incidents
     fetcher: warehouse/ingest/fetch_incidents.py
-    refresh: quarterly
+    refresh: weekly (refresh-data.yml)
 
   - id: stack_map
     name: Stack-map taxonomy bridge (internal)

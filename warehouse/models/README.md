@@ -5,6 +5,12 @@ This file covers the five that this repo maintains — `catalog`, `entities`, `e
 and `scores` — including the 12 SQL models in this directory. The rest are signal, snapshot and
 raw-ingestion datasets deployed straight to the platform, with no SQL kept here.
 
+**A declared cron is not a schedule.** The `Declared cron` column below records what the
+model revision asks for. The platform schedules from the DATASET, not the revision, and these
+were set at the revision layer — so the fields are populated and the runs do not fire. Before
+believing any freshness claim that rests on a cadence here, read the run history and check
+`triggerType`; treat every recompute as manual until one says SCHEDULED.
+
 ## Dataset Layout
 
 ```
@@ -43,28 +49,28 @@ shown it.
 
 Resolved identities and relationships. `entities.repos` is the foundation — everything chains off it.
 
-| Table | SQL | Schedule | Rows | Description |
+| Table | SQL | Declared cron | Rows | Description |
 |-------|-----|----------|------|-------------|
-| `currentai.entities.repos` | [entities_repos.sql](entities_repos.sql) | Daily 6am | ~15K | Deduped repo catalog + oss_directory IDs and project resolution |
-| `currentai.entities.projects` | [entities_projects.sql](entities_projects.sql) | Daily 6am | ~14K | OSO projects where matched, standalone repos otherwise |
-| `currentai.entities.packages` | [entities_packages.sql](entities_packages.sql) | Daily 6am | ~2.8K | Published packages linked to repos via `package_owners_v0` |
-| `currentai.entities.models` | [entities_models.sql](entities_models.sql) | Daily 6am | ~6.4K | HF models with repo links, benchmarks, foundation model family |
+| `currentai.entities.repos` | [entities_repos.sql](entities_repos.sql) | declared 6am | ~15K | Deduped repo catalog + oss_directory IDs and project resolution |
+| `currentai.entities.projects` | [entities_projects.sql](entities_projects.sql) | declared 6am | ~14K | OSO projects where matched, standalone repos otherwise |
+| `currentai.entities.packages` | [entities_packages.sql](entities_packages.sql) | declared 6am | ~2.8K | Published packages linked to repos via `package_owners_v0` |
+| `currentai.entities.models` | [entities_models.sql](entities_models.sql) | declared 6am | ~6.4K | HF models with repo links, benchmarks, foundation model family |
 
 ## Events (User Defined Models)
 
 Pre-filtered event logs scoped to our catalog repos.
 
-| Table | SQL | Schedule | Rows | Description |
+| Table | SQL | Declared cron | Rows | Description |
 |-------|-----|----------|------|-------------|
-| `currentai.events.github_events` | [events_github_events.sql](events_github_events.sql) | Daily 5am | ~24M | GitHub Archive events for catalog repos, 12-month rolling window |
+| `currentai.events.github_events` | [events_github_events.sql](events_github_events.sql) | declared 5am | ~24M | GitHub Archive events for catalog repos, 12-month rolling window |
 
 ## Metrics (User Defined Models)
 
 Normalized time-series activity.
 
-| Table | SQL | Schedule | Rows | Description |
+| Table | SQL | Declared cron | Rows | Description |
 |-------|-----|----------|------|-------------|
-| `currentai.metrics.daily` | [metrics_daily.sql](metrics_daily.sql) | Daily 6am | ~5M | Long format: repo × day × metric → value (8 metric types) |
+| `currentai.metrics.daily` | [metrics_daily.sql](metrics_daily.sql) | declared 6am | ~5M | Long format: repo × day × metric → value (8 metric types) |
 
 Metric types: `stars`, `forks`, `commits`, `pull_requests`, `issues_opened`, `contributors`, `full_time`, `part_time`
 
@@ -74,13 +80,13 @@ Interpretive layer — taxonomy, dependencies, fragility, rankings, summaries.
 
 The OSAI/Raffi v2 taxonomy layer (scores.taxonomy, scores.investment_ranking) was removed in favor of the sources/categories model.
 
-| Table | SQL | Schedule | Rows | Description |
+| Table | SQL | Declared cron | Rows | Description |
 |-------|-----|----------|------|-------------|
-| `currentai.scores.dependency_graph` | [scores_dependency_graph.sql](scores_dependency_graph.sql) | Daily 6am | ~26K | Transitive AI→AI deps (direct + depth-2) |
-| `currentai.scores.fragility` | [scores_fragility.sql](scores_fragility.sql) | Daily 6am | ~600 | Dependency reach × maintainer capacity |
-| `currentai.scores.project_summary` | [scores_project_summary.sql](scores_project_summary.sql) | Daily 7am | ~14K | Rolled-up snapshot per project |
-| `currentai.scores.repos_summary` | [scores_repos_summary.sql](scores_repos_summary.sql) | Daily 7am | ~15K | Per-repo snapshot: catalog metadata + 90-day activity + contributors |
-| `currentai.scores.ossd_coverage` | [scores_ossd_coverage.sql](scores_ossd_coverage.sql) | Daily 6am | ~10K | Per-org oss-directory match rates |
+| `currentai.scores.dependency_graph` | [scores_dependency_graph.sql](scores_dependency_graph.sql) | declared 6am | ~26K | Transitive AI→AI deps (direct + depth-2) |
+| `currentai.scores.fragility` | [scores_fragility.sql](scores_fragility.sql) | declared 6am | ~600 | Dependency reach × maintainer capacity |
+| `currentai.scores.project_summary` | [scores_project_summary.sql](scores_project_summary.sql) | declared 7am | ~14K | Rolled-up snapshot per project |
+| `currentai.scores.repos_summary` | [scores_repos_summary.sql](scores_repos_summary.sql) | declared 7am | ~15K | Per-repo snapshot: catalog metadata + 90-day activity + contributors |
+| `currentai.scores.ossd_coverage` | [scores_ossd_coverage.sql](scores_ossd_coverage.sql) | declared 6am | ~10K | Per-org oss-directory match rates |
 | `currentai.scores.stack_contributors` | [scores_stack_contributors.sql](scores_stack_contributors.sql) | @manual | ~68K | Distinct GitHub code committers (12mo, bots excluded) per scored product, bridged to stack-map category/layer/openness via `catalog.stack_map` |
 
 ## Subscribed External Datasets
@@ -118,7 +124,7 @@ uv run python warehouse/ingest/fetch_model_benchmarks.py    # then upload via MC
 # The GoodAI roster needs no fetcher: signal_goodailist.repo_catalog reads
 # goodailist.com directly on its own cron.
 
-# UDMs refresh on their daily cron schedule, or trigger manually via MCP:
+# UDMs carry a declared cron, which is NOT evidence that they run. Trigger manually via MCP:
 # createUserModelRunRequest with the dataset ID
 ```
 
