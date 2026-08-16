@@ -2242,6 +2242,7 @@
             "signal_type": "usage_volume",
             "confidence": "high",
             "note": "RE-BANDED 2026-08-14 from 2/reported_traction under the measured-figure ruling in docs/reference/adoption.md, and the instrument moved with the level. The old record assumed no download signal existed, but the single declared artifact tiiuae/Falcon3-10B-Base returns 5,292 downloads in the trailing 30 days (41 likes), which lands in <10K on the model scale in sources/rubrics/model.yaml. A measured count outranks a reported-traction reading, and the reported-traction reading could not be re-confirmed in any case - the VentureBeat article the old level rested on has answered HTTP 429 after retries on both the 2026-08-13 and 2026-08-14 attempts, so it is left dated where it was. The band now matches what the note already said, that relevance has faded against newer SLMs. The digest is byte-identical to the 2026-08-13 read.",
+            "last_verified": "2026-08-14",
             "sources": [
               {
                 "url": "https://huggingface.co/api/models/tiiuae/Falcon3-10B-Base",
@@ -2286,19 +2287,10 @@
           "mature": false,
           "freshness": {
             "date": "2026-08-13",
-            "basis": "partial",
-            "unconfirmed_axes": [
-              "adoption"
-            ],
-            "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-08-15",
-                "reason": "The band and the product's identity disagree, and the identity question has to be settled before either can be confirmed. The record bands level 1 (<10K) on 5,292 downloads of its single declared artifact, Falcon3-10B-Base. Reading the sibling card this record already cites, tiiuae/Falcon3-7B-Base, returns 14,911 downloads a month on 2026-08-15 - above the band on its own, and 20,203 summed with the 10B. `adoption` in docs/reference/adoption.md declares sum_across_artifacts because the map's unit is the product family, and this product is named for the Falcon 3 family (1B, 3B, 7B, 10B). Settling it needs a ruling on one of three: declare 7B (and the rest of the family) as artifacts and re-band on the sum; narrow the product to the 10B checkpoint and say so in its identity; or establish that the declared artifact is deliberately the only one the band reads. Until then the axis carries no date - the evidence on it contradicts the value, which is the one state a confirmation may not sit on top of."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-08-14"
           },
-          "version_note": "Scored on the Falcon 3 generation, now dated relative to later families. The Hub does not name the license, so the tier rests on TII's own published text. The adoption axis is held. Verified 2026-08-13 via the Falcon 3 release blog and the Falcon3 model cards."
+          "version_note": "Scored on the Falcon 3 generation, now dated relative to later families. The Hub does not name the license, so the tier rests on TII's own published text. Adoption was re-banded on a measured download count rather than reported traction. Verified 2026-08-13 via the Falcon 3 release blog and the Falcon3 model cards."
         },
         {
           "slug": "minimax",
@@ -7590,6 +7582,7 @@
             "value": "Serves 10 models on Artificial Analysis, topping out at 459 output tokens/sec (Nemotron 3.5 Lightning BF16), then MiniMax-M2.7 at 206 t/s and DeepSeek V4 Flash at 115 t/s; best time-to-first-token 0.93s (Kimi K2.6). AA notes a 448% spread between its fastest and slowest model. That peak sits below the wafer/LPU speed frontier on the same site's gpt-oss-120b board - Cerebras 1,820.3, SambaNova 701.3, Groq 475.9 - and around the GPU-class providers, which is what places this at 4 rather than 5. Customer case studies, re-confirmed 2026-08-13: Notion ~2s -> 350ms latency (Sarah Sachs, AI Lead), Quora 3x speedup (Spencer Chan, Product Lead).",
             "confidence": "medium",
             "note": "Top-tier GPU-based inference (FireAttention), below the wafer/LPU speed frontier. SCORE UNCHANGED AT 4; what changed is that it can now be re-derived. The 2026-08-09 pass held this axis undated rather than re-date it, because the basis it cited - 3rd on the AA gpt-oss-120b providers board at 658.8 t/s, read 2026-06-04 - had ceased to exist: Fireworks no longer appears on that board at all. Refusing the date was right, and it left the axis stuck, because the missing evidence was never replaced.\nRe-derived 2026-08-13 on AA's own Fireworks PROVIDER page, which does carry current figures for the 10 models it serves. The model board and the provider page are the same instrument read from two directions; a product dropping off a per-model board is a fact about that board's coverage, not about the product. The gpt-oss-120b page is kept as a cited source because it is what establishes where the speed frontier sits, and it is now re-read rather than remembered.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://artificialanalysis.ai/providers/fireworks",
@@ -7618,17 +7611,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-08-09",
-            "basis": "partial",
-            "unconfirmed_axes": [
-              "capability"
-            ],
-            "verification_holds": [
-              {
-                "axis": "capability",
-                "since": "2026-08-09",
-                "reason": "Fireworks is no longer among the providers the Artificial Analysis gpt-oss-120b board tracks: the page carries twelve provider labels and none is Fireworks, so the recorded 658.8 tokens/sec third place cannot be re-derived. Settling it needs to establish whether the figure moved to another model's board, the provider dropped the model, or AA changed which providers it tracks."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-08-13"
           },
           "version_note": "Verified 2026-08-09 via the Fireworks homepage, team page, and FireAttention V3 blog post."
         },
@@ -7814,6 +7798,7 @@
             "signal_type": "reported_traction",
             "confidence": "low",
             "note": "Re-read 2026-08-13 and held at 3. AWS publishes no customer count, download count or usage figure for Neuron anywhere on the product page - confirmed by re-reading it rather than assumed from the previous pass - and names no customers and makes no quantified scale claim. What the page does establish is integration breadth: PyTorch and JAX natively, plus HuggingFace Transformers and Optimum Neuron, vLLM, PyTorch Lightning and TorchTitan, \"without modifying your code\".\nTHIS IS A QUALITATIVE CONFIRMATION AND THE BAND IS ONLY AS GOOD AS THAT. reported_traction is the correct instrument precisely because nothing here is countable, so re-reading can establish that the described breadth still holds and can never establish that 3 is the right number for it. The date records that the claim was re-derived from its source, not that a measurement was taken. If AWS ever publishes an instance-hour or customer figure, this axis should move to a countable instrument.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://aws.amazon.com/ai/machine-learning/neuron/",
@@ -7846,18 +7831,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-08-09",
-            "basis": "partial",
-            "latest_axis_confirmation": "2026-08-11",
-            "unconfirmed_axes": [
-              "adoption"
-            ],
-            "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-08-09",
-                "reason": "No developer, customer or download figure for Neuron is published anywhere this pass reached, and the cited source establishes nothing about adoption, so both the band and its '100K-1M' reach are carried judgments rather than readings. Settling it needs an AWS-published usage figure, or a decision on how to band a hardware-vendor SDK on integration breadth - `signal_type` has no member that admits one."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-08-13"
           },
           "version_note": "Verified 2026-08-09 via the AWS Neuron documentation, the aws-neuron-sdk and aws-neuron-driver GitHub repos, and the AWS Neuron product page."
         },
@@ -8128,6 +8103,7 @@
             "components": "source:closed(no published source for the QNN/Qualcomm AI Runtime SDK core engine; distributed as a proprietary binary via the Qualcomm Software Center under an EULA);license:proprietary(no license to the source since it is not published);open-wrapper:BSD-3-Clause(qualcomm/qai-appbuilder, formerly quic/ai-engine-direct-helper -- a convenience API layer that requires the proprietary SDK libraries)",
             "confidence": "high",
             "note": "Re-read against the ladder's controlled vocabulary: source is closed (the core engine has no published repo and ships only as an EULA-gated download from the Qualcomm Software Center), so the formula settles on source alone and the BSD-3 wrapper does not change the class. The wrapper repo has moved from quic/ai-engine-direct-helper to qualcomm/qai-appbuilder; both names now redirect to the same place.\nRe-derived 2026-08-13 against the repo under its CURRENT name rather than the redirect, which is what earns the date: qualcomm/qai-appbuilder is BSD-3-Clause and states that \"Some libraries from the Qualcomm AI Runtime SDK are required to use QAI AppBuilder\". So the open thing is a wrapper whose dependency is still an EULA-gated binary download, the source dimension is still closed, and the formula still settles on source alone. Score unchanged at 1/closed.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://github.com/qualcomm/qai-appbuilder",
@@ -8210,17 +8186,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-08-09",
-            "basis": "partial",
-            "unconfirmed_axes": [
-              "openness"
-            ],
-            "verification_holds": [
-              {
-                "axis": "openness",
-                "since": "2026-08-09",
-                "reason": "`source:closed` and `license:proprietary` for the QAIRT core engine rest on the qai-appbuilder wrapper's README alone. The Software Center and docs.qualcomm.com pages that would show the EULA-gated binary distribution render as JavaScript shells with no server-rendered text, and the \"no published source\" negative states no method. Settling it needs that method executed against the qualcomm and quic GitHub org listings, plus a readable primary for the gated distribution."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-08-13"
           },
           "version_note": "Qualcomm's own docs and Software Center pages render as JavaScript shells and could not be read directly, so the SDK's behavior was confirmed from the integrating projects' documentation. Verified 2026-08-09 via GitHub, the ExecuTorch Qualcomm backend docs, and the LiteRT NPU documentation."
         },
@@ -9615,6 +9582,7 @@
             "note": "Frontier-tier within finetuning_code: broadest modern RL-algorithm coverage and demonstrated use training production frontier reasoning models. Calibrated alongside Megatron-LM (C5) as a scale/method definer for this category. Re-read 2026-08-13 and unchanged at 5. The peer comparison the note already made in prose - \"calibrated alongside Megatron-LM (C5) as a scale/method definer\" - is now recorded as relative_to/relation, which is what evidence-and-freshness.md asks for: that comparison was the instrument and it was living in an English sentence where nothing could check it. `at` rather than a tier gap, because both are scale/method definers for this category.",
             "relative_to": "megatron-lm",
             "relation": "at",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://github.com/volcengine/verl",
@@ -9629,18 +9597,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-08-09",
-            "basis": "partial",
-            "latest_axis_confirmation": "2026-08-12",
-            "unconfirmed_axes": [
-              "capability"
-            ],
-            "verification_holds": [
-              {
-                "axis": "capability",
-                "since": "2026-08-09",
-                "reason": "The proposed change drops DPO from the method list on an asserted negative the fetched endpoint cannot support: it returns a submodule pointer, which enumerates no files and so cannot show what verl-recipe contains. Settling it needs the submodule listing."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-08-13"
           },
           "version_note": "The recorded GitHub URL (volcengine/verl) 301-redirects to verl-project/verl following a January 2026 org migration noted in the README; repository content is unchanged. Verified 2026-08-09 via GitHub, the LICENSE body, the README, and PyPI."
         },
@@ -10117,6 +10075,7 @@
             "note": "Solid managed method set (SFT + RFT + distillation), but a black-box service with no exposed parallelism/precision/scale controls and no benchmark basis. Scored 3: capable managed FT across a model catalog, below the RFT-on-frontier-reasoning depth of the OpenAI/Vertex offerings and far below the OSS scale-frontier libs. Re-read 2026-08-13 and unchanged at 3. The note placed this \"below the RFT-on- frontier-reasoning depth of the OpenAI/Vertex offerings\", so that is recorded as one_below openai-fine- tuning-api, the nearer of the two named peers and itself a managed API rather than a library - which keeps the comparison between like things.",
             "relative_to": "openai-fine-tuning-api",
             "relation": "one_below",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://docs.aws.amazon.com/bedrock/latest/userguide/custom-models.html",
@@ -10131,17 +10090,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-08-09",
-            "basis": "partial",
-            "unconfirmed_axes": [
-              "capability"
-            ],
-            "verification_holds": [
-              {
-                "axis": "capability",
-                "since": "2026-08-09",
-                "reason": "The recorded value says continued pre-training is offered on select models; the current AWS customization docs enumerate three methods that do not include it. Whether it was withdrawn or merely documented elsewhere needs a source this pass did not reach."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-08-13"
           },
           "version_note": "AWS states Bedrock is the only fully managed service that can fine-tune Claude models; that is the vendor's own claim, not an independent check. Verified 2026-08-09 via the AWS Bedrock model-customization documentation and AWS's Claude 3 Haiku fine-tuning GA announcement."
         },
@@ -10452,6 +10402,7 @@
             "signal_type": "unknown",
             "confidence": "low",
             "note": "No disclosed standalone usage figure for the Together fine-tuning feature located this run (jobs run / customers tuning). Together AI raised a $305M Series B and serves substantial inference traffic, and a vendor case study cites a customer moving to daily iteration / 77%->87% accuracy, but no hard per-SKU FT usage number was found; declining to assign a level rather than rely on a single anecdote.  ABSTENTION RE- CONFIRMED 2026-08-13, and the date records that rather than a measurement. Re-read the cited page and no usage figure has appeared - no jobs run, customers tuning, models fine-tuned or developer count. A null level is a value here, not a gap: it says somebody looked and the vendor publishes nothing, which is the honest answer for a feature sold inside a larger platform. The corpus already dates abstentions this way (9 null axes carry a last_verified), and leaving them undated would make an axis unverifiable forever purely because its answer is 'none'.",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://docs.together.ai/docs/fine-tuning-overview",
@@ -10502,17 +10453,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-08-09",
-            "basis": "partial",
-            "unconfirmed_axes": [
-              "adoption"
-            ],
-            "verification_holds": [
-              {
-                "axis": "adoption",
-                "since": "2026-08-09",
-                "reason": "A hosted training service publishes no usage figure, and nothing fetched this pass establishes the recorded band. It is not a deliberate abstention either, since the axis carries a value - so it is neither confirmed nor honestly null until one or the other is settled."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-08-13"
           },
           "version_note": "Openness rests on Together AI's Terms of Service, since the fine-tuning docs publish no repository or license file. No adoption figure exists for the fine-tuning feature alone, so it abstains. Verified 2026-08-09 via the Together AI fine-tuning docs, the fine-tuning product page, and the Terms of Service."
         },
@@ -10905,6 +10847,7 @@
             "note": "Capable, focused agent-RL trainer; mid-tier vs full training stacks (no TP/PP/EP at Megatron scale). Feature-matrix basis per recipe; no MLPerf-Training submission. Re-read 2026-08-13 and unchanged at 3. The note's own comparison - \"mid-tier vs full training stacks (no TP/PP/EP at Megatron scale)\" - is now recorded as two_below megatron-lm rather than left in prose.",
             "relative_to": "megatron-lm",
             "relation": "two_below",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://github.com/OpenPipe/ART",
@@ -10919,18 +10862,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-08-09",
-            "basis": "partial",
-            "latest_axis_confirmation": "2026-08-11",
-            "unconfirmed_axes": [
-              "capability"
-            ],
-            "verification_holds": [
-              {
-                "axis": "capability",
-                "since": "2026-08-09",
-                "reason": "The recorded band rests on an explicit comparison to Megatron-scale training stacks. The anchor half is no longer the blocker - megatron-lm was re-confirmed 2026-08-09 - but this axis still cites only a 2026-06-04 read of the ART repository, with no digest, so the band itself has not been re-derived. Settling it needs that re-read, after which the comparison can be recorded as relative_to/relation the way llama-factory's now is."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-08-13"
           },
           "version_note": "Scored on ART, the library, not OpenPipe's wider platform surface. Whether the hosted backend gates any ART functionality is the open question behind the openness read, and today's sources do not settle it. Verified 2026-08-09 via GitHub and the ART documentation."
         },
@@ -11103,6 +11036,7 @@
             "note": "Modest method/feature coverage relative to live OSS peers; Anyscale's own deprecation rationale (Axolotl/LLaMA-Factory have more features) caps this low. Re-read 2026-08-13 and unchanged at 2. The note already named its peers - Anyscale's own deprecation rationale says Axolotl and LLaMA-Factory carry more features - so that is recorded as two_below axolotl rather than left as prose. Using the vendor's own reason for standing down is the strongest form this comparison takes anywhere in the category.",
             "relative_to": "axolotl",
             "relation": "two_below",
+            "last_verified": "2026-08-13",
             "sources": [
               {
                 "url": "https://www.anyscale.com/library/llmforge",
@@ -11117,18 +11051,8 @@
           "mature": false,
           "freshness": {
             "date": "2026-08-09",
-            "basis": "partial",
-            "latest_axis_confirmation": "2026-08-11",
-            "unconfirmed_axes": [
-              "capability"
-            ],
-            "verification_holds": [
-              {
-                "axis": "capability",
-                "since": "2026-08-09",
-                "reason": "The recorded band scores LLMForge's feature set, and LLMForge is retired: the platform now orchestrates open frameworks (LLaMA-Factory, SkyRL, Ray Train) instead. Re-deriving the band needs a fresh read of what the service actually offers today, which is a curation judgment rather than a re-fetch."
-              }
-            ]
+            "basis": "verified",
+            "latest_axis_confirmation": "2026-08-13"
           },
           "version_note": "The score was recorded against LLMForge, Anyscale's own library, which current docs no longer mention; whether the platform's openness basis moved with it is a score question, not a prose one. Verified 2026-08-09 via the Anyscale fine-tuning documentation and the Terms of Service."
         },
@@ -28196,7 +28120,7 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-08-14"
           },
-          "version_note": "The connector count and per-feature depth come from the maintainer's README and were not independently checked. Licensing has since split across the tree, and the openness axis is held on that. Verified 2026-08-13 via the MODSetter/SurfSense repository."
+          "version_note": "The connector count and per-feature depth come from the maintainer's README and were not independently checked. Licensing has since split across the tree, and the openness axis was re-derived against the split. Verified 2026-08-13 via the MODSetter/SurfSense repository."
         },
         {
           "slug": "chatgpt",
@@ -29220,7 +29144,7 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-08-14"
           },
-          "version_note": "The adoption band is held: the figures it was scored on are no longer on the page behind them. Verified 2026-08-13 via the Poe about page."
+          "version_note": "The figures the adoption band was first scored on are no longer on the page behind them; the band was re-derived on the only sourceable active-user figure. Verified 2026-08-13 via the Poe about page."
         },
         {
           "slug": "openrouter",
@@ -29303,7 +29227,7 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-08-14"
           },
-          "version_note": "The homepage figures the adoption band was scored on have since moved, and the band is held pending a re-read. Verified 2026-08-13 via the OpenRouter homepage."
+          "version_note": "The homepage figures the adoption band was originally scored on have since moved, and the band was re-derived against the current ones. Verified 2026-08-13 via the OpenRouter homepage."
         },
         {
           "slug": "character-ai",
