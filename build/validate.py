@@ -56,7 +56,7 @@ def load_sources(root: Path) -> dict:
         "scores": _dir("scores"),
         "taxonomy": yaml.safe_load((root / "sources" / "taxonomy.yaml").read_text()),
     }
-    lt = root / "build" / "_frozen_long_tail.json"
+    lt = root / "sources" / "snapshots" / "long_tail.json"
     if lt.exists():
         data["long_tail"] = json.loads(lt.read_text())
     return data
@@ -211,7 +211,7 @@ def validate_sources(data: dict) -> list[str]:
         scored = (lt.get("counts") or {}).get("scored")
         if scored is not None and scored != len(prods):
             errors.append(f"long_tail counts.scored ({scored}) != product count ({len(prods)}); "
-                          f"re-sync build/_frozen_long_tail.json after a batch")
+                          f"re-sync sources/snapshots/long_tail.json after a batch")
 
     # --- `establishes` must name a real dimension ---
     # A source's `establishes` list is what makes a re-check claim checkable: it records

@@ -7,7 +7,7 @@ inside one PR, and it leaves a tail behind.
 
 **A count budget was the first cut, and it was too weak.** It caps the total, so a pass could
 digest one old source while citing a new undigested one and the number would not move — which
-is exactly the case the invariant is supposed to forbid. `sources/undigested_legacy.txt` lists
+is exactly the case the invariant is supposed to forbid. `sources/allowlists/undigested_sources.txt` lists
 the tail entry by entry instead. Anything not on the list must carry a digest, so a newly
 cited source without a fetch fails on the first assertion rather than being absorbed.
 
@@ -35,7 +35,7 @@ import yaml
 
 REPO = Path(__file__).resolve().parent.parent
 AXES = ("openness", "adoption", "capability")
-ALLOWLIST = REPO / "sources" / "undigested_legacy.txt"
+ALLOWLIST = REPO / "sources" / "allowlists" / "undigested_sources.txt"
 
 
 def undigested() -> set[str]:
