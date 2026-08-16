@@ -3408,7 +3408,7 @@
           "org_slug": "deepseek",
           "org": "DeepSeek",
           "type": "model",
-          "description": "Dedicated coding MoE model (seed product) instruction-tuned for code generation, completion, and chat. Available in full (236B) and Lite (16B) variants; the Lite variant carries almost all the remaining traffic. Supports 338 programming languages at 128K context. Predecessor to the V3/R1 generation that proved open source could compete on coding benchmarks.",
+          "description": "Dedicated coding mixture-of-experts model, instruction-tuned for generation, completion and chat, built on a DeepSeek-V2 checkpoint with six trillion additional code tokens. It ships in a 236B-total variant with 21B active parameters and a 16B Lite variant, supports 338 programming languages and a 128K context.",
           "openness": {
             "score": 3,
             "class": "open_weights",
@@ -3492,7 +3492,7 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-08-14"
           },
-          "version_note": "DeepSeek-Coder-V2-Instruct (236B total / 21B active DeepSeekMoE, 128K context), instruction-tuned coder built on a DeepSeek-V2 checkpoint + 6T additional code tokens; arXiv 2401.06066. A dated (2024-gen) coder. The code repository and the weights carry different licenses; the openness score follows the Model License on the weights. Verified 2026-08-13 via the HF model card and the LICENSE-MODEL body."
+          "version_note": "A 2024-generation coder, superseded by the V3 and V4 lines. The code repository and the weights carry different terms; the openness axis follows the ones on the weights. Verified 2026-08-13 via the model card and the model-license body."
         },
         {
           "slug": "deepseek-instruct",
@@ -3500,7 +3500,7 @@
           "org_slug": "deepseek",
           "org": "DeepSeek",
           "type": "model",
-          "description": "DeepSeek's open-weight April 2026 flagship line, replacing V3.2. Released 2026-04-24 with 1M default context and 384K max output. V4-Pro-Max posts 80.6% on SWE-bench Verified (top-10) and a later snapshot reports 93.5% on LiveCodeBench. Available via the `deepseek-chat` (V4-Flash) and `deepseek-reasoner` aliases from 2026-07-24, with weights on Hugging Face under MIT. Demonstrates that open weights can match closed-API frontier coding performance at the same context window.",
+          "description": "DeepSeek's open-weight April 2026 flagship line, replacing the previous V3 generation, with a one-million-token default context and up to 384K output. It is reached through the deepseek-chat and deepseek-reasoner aliases as well as weights published on Hugging Face.",
           "openness": {
             "score": 3,
             "class": "open_weights",
@@ -3566,7 +3566,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Compound SKU. DeepSeek-V4-Pro (1.6T total / 49B active MoE) is a FROZEN flagship anchor (base_pretrained shelf) - NOT rescored here; calibrate to it. This record scores the non-anchor sibling DeepSeek-V4-Flash (284B total / 13B active MoE, 1M context, FP4+FP8, hybrid CSA+HCA attention, mHC, Muon optimizer), the lighter instruct/thinking SKU of the V4 family. Verified 2026-08-13 via the HF model card."
+          "version_note": "A compound record. The V4-Pro flagship is a frozen anchor on the base_pretrained shelf and is not rescored here; this record scores the lighter V4-Flash sibling, a 284B mixture-of-experts with 13B active parameters. Verified 2026-08-13 via the DeepSeek-V4-Flash model card."
         },
         {
           "slug": "codellama",
@@ -3574,7 +3574,7 @@
           "org_slug": "meta",
           "org": "Meta",
           "type": "model",
-          "description": "Code-specialized instruction-tuned Llama 2 family (7B to 70B, seed product) trained on 500B+ tokens of code and fine-tuned for coding chat. Pioneered the open source coding LLM wave in 2023 and catalyzed the entire open code model ecosystem. Still used as a baseline across all four sizes.",
+          "description": "Code-specialized instruction-tuned Llama 2 family at 7B, 13B, 34B and 70B, trained on more than 500 billion tokens of code and fine-tuned for coding chat. It was among the first open coding-instruct models and is still used as a baseline across all four sizes.",
           "openness": {
             "score": 3,
             "class": "open_weights",
@@ -3676,7 +3676,7 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-08-14"
           },
-          "version_note": "Code Llama Instruct (instruct-tuned coding variant; 7B/13B/34B/70B; scored on the 13B-Instruct SKU as representative). Trained Jan-Jul 2023, paper arXiv:2308.12950 (Aug 2023). >12 months old and superseded by Llama 3.x/Codestral-class coders, but foundational open coding-instruct model. The card inlines no benchmark numbers, so capability rests on the paper rather than the card. Verified 2026-08-13 via the HF model card and the arXiv abstract."
+          "version_note": "Scored on the 13B Instruct release as representative. Trained during 2023 and superseded by later coder families; the model card inlines no benchmark numbers, so capability rests on the paper. Verified 2026-08-13 via the model card and the arXiv abstract."
         },
         {
           "slug": "llama-instruct",
@@ -3758,7 +3758,7 @@
           "org_slug": "mistral-ai",
           "org": "Mistral AI",
           "type": "model",
-          "description": "Mistral's dedicated open-weight agentic coding model family, purpose-built for software engineering tasks including SWE-bench. The Small-2 (24B) instruct variant delivers competitive coding performance in a deployable size, running on a single RTX 4090 at a 256k context window. The larger Devstral-2-123B pushes frontier-class performance, reporting 72.2% on SWE-bench Verified.",
+          "description": "Mistral's open-weight agentic coding model family, purpose-built for software-engineering tasks. The Small 2 instruct variant is a 24B model that runs on a single consumer GPU at a 256K context, and the larger 123B variant targets frontier-class coding performance.",
           "openness": {
             "score": 3,
             "class": "open_weights",
@@ -3869,7 +3869,7 @@
             "date": "2026-08-14",
             "basis": "verified"
           },
-          "version_note": "All three axes were rescored onto the governing Devstral 2 (2512) release on 2026-08-14, having been read on the superseded Devstral Small 1.1 (mistralai/Devstral-Small-2507). The two 2512 SKUs are not licensed alike - Small 2 24B is Apache 2.0, the 123B is a Modified MIT License - so the governing release resolves most-restrictive to a non-OSI tier. Verified 2026-08-14 via the HF model cards for Devstral Small 2 24B and Devstral 2 123B."
+          "version_note": "All three axes were rescored onto the governing Devstral 2 release on 2026-08-14, having been read previously on the superseded Small 1.1. Its two SKUs are not licensed alike, so the release resolves most-restrictive. Verified 2026-08-14 via both model cards."
         },
         {
           "slug": "mistral-7b-instruct",
@@ -3877,7 +3877,7 @@
           "org_slug": "mistral-ai",
           "org": "Mistral AI",
           "type": "model",
-          "description": "Instruction-tuned 7B chat model from Mistral that follows user prompts in a dialogue format. It was the first widely adopted European open instruct release (Dec 2023) and remains the canonical 7B chat baseline in eval papers and fine-tuning tutorials. Still one of the most-pulled 7B checkpoints on the Hub nearly 2.5 years after release, with over a thousand finetunes and adapters built on it.",
+          "description": "Instruction-tuned 7B dense chat model from Mistral with a 32K context, fine-tuned from the Mistral 7B base. It was the first widely adopted European open instruct release, in December 2023, and remains a common 7B chat baseline in evaluation papers and fine-tuning tutorials.",
           "openness": {
             "score": 3,
             "class": "open_weights",
@@ -3958,7 +3958,7 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-08-14"
           },
-          "version_note": "Mistral 7B Instruct v0.2, 7B dense, 32k context (up from 8k in v0.1); instruct fine-tune of Mistral-7B-v0.2 (base paper arXiv:2310.06825, Oct 2023). >12 months old and superseded by v0.3 and the Ministral/Mistral Small lines, but foundational permissive instruct model. The capability record's MT-Bench and MMLU figures are not on the card, which links only the base-model paper. Verified 2026-08-13 via the HF model card."
+          "version_note": "Superseded by later point releases and by the Ministral and Mistral Small lines. The card carries no benchmark table and links only the base-model paper, so the capability figures come from the paper and the La Plateforme launch post. Verified 2026-08-13 via the model card."
         },
         {
           "slug": "starcoder2",
@@ -3966,7 +3966,7 @@
           "org_slug": "bigcode-project",
           "org": "BigCode Project",
           "type": "model",
-          "description": "Scored on StarCoder2-15B-Instruct-v0.1 (the instruct SKU; 16B, self-aligned, released 31 Oct 2024, arXiv:2410.24198). NOTE: base StarCoder2-15B (Feb 2024) is a pretrained model belonging in base_pretrained; only the instruct variant fits finetuned_chat.",
+          "description": "BigCode's self-aligned instruct release of StarCoder2 at 16B, trained with a fully transparent pipeline and evaluated on EvalPlus, LiveCodeBench and DS-1000. The base StarCoder2-15B it builds on was trained on The Stack v2 and belongs to the base_pretrained shelf.",
           "openness": {
             "score": 4,
             "class": "open_weights",
@@ -4049,7 +4049,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Scored on StarCoder2-15B-Instruct-v0.1 (the instruct SKU; 16B, self-aligned, released 31 Oct 2024, arXiv:2410.24198). NOTE: base StarCoder2-15B (Feb 2024) is a pretrained model belonging in base_pretrained; only the instruct variant fits finetuned_chat. The declared artifact is the base repo, so the computed adoption figure reads the base rather than the scored instruct SKU; both are level 1 either way. Verified 2026-08-13 via both HF model cards."
+          "version_note": "Scored on the instruct SKU; the declared artifact is the base repository, so the computed adoption figure reads the base rather than the instruct SKU, which lands at the same level either way. Verified 2026-08-13 via both model cards."
         },
         {
           "slug": "olmo-instruct",
@@ -4057,7 +4057,7 @@
           "org_slug": "ai2",
           "org": "Ai2",
           "type": "model",
-          "description": "Instruction-tuned chat SKUs of Ai2's OLMo 3 family (7B/32B-Instruct), post-trained on the fully-open OLMo 3 base. OLMo 3-Instruct 7B ties or surpasses Qwen 2.5, Gemma 3 and Llama 3.1 at its scale. Apache-2.0; open weights, data, recipe and checkpoints. Supersedes OLMo 2 Instruct.",
+          "description": "Instruction-tuned chat releases of Ai2's OLMo 3 family at 7B and 32B, post-trained on the fully open OLMo 3 base with the open Tulu and OLMo recipe. Every stage, checkpoint, dataset and dependency needed to recreate or modify them is published. It supersedes OLMo 2 Instruct.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -4133,7 +4133,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Apache-2.0; fully-open instruct line post-trained with the open Tulu/OLMo recipe. The declared 32B artifact answers HTTP 401, so adoption is read on the 7B alone and is a floor. Verified 2026-08-13 via the HF model card and the Olmo 3 blog."
+          "version_note": "The declared 32B artifact answers HTTP 401, so adoption is read on the 7B alone and is a floor. Verified 2026-08-13 via the model card and the OLMo 3 blog."
         },
         {
           "slug": "olmoe-instruct",
@@ -4141,7 +4141,7 @@
           "org_slug": "ai2",
           "org": "Ai2",
           "type": "model",
-          "description": "Ai2's fully-open Mixture-of-Experts instruct model (OLMoE-1B-7B-0924-Instruct: 1.3B active / 6.9B total, SFT + DPO). Released with open pretraining data (OLMoE-mix-0924, built on Dolma + DataComp), open post-training data, open training code, and 244 intermediate checkpoints.",
+          "description": "Ai2's fully open mixture-of-experts instruct model, with 1.3 billion active parameters out of 6.9 billion total, post-trained with supervised fine-tuning and DPO. It was released with its pretraining data, post-training data, training code, logs and 244 intermediate checkpoints.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -4229,7 +4229,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Apache-2.0; fully-open MoE (weights + data + code + intermediate checkpoints). State-of-the-art among ~1B-active-parameter models at release. Verified 2026-08-13 via the HF model card and the OLMoE blog post."
+          "version_note": "Verified 2026-08-13 via the model card and the OLMoE release post."
         },
         {
           "slug": "tulu",
@@ -4237,7 +4237,7 @@
           "org_slug": "ai2",
           "org": "Ai2",
           "type": "model",
-          "description": "Ai2's open post-training model family (Llama-3.1-Tulu-3 8B / 70B / 405B), the reference fully-open post-training recipe: open SFT + preference data, open training code (open-instruct), and the RLVR (Reinforcement Learning with Verifiable Rewards) method, applied on top of Meta's Llama 3.1 base. Note: the recipe/data/code are Apache-2.0 and fully reproducible, but the released weights inherit Meta's Llama 3.1 Community License (non-OSI), so the artifact is open-recipe over restricted weights.",
+          "description": "Ai2's open post-training model family at 8B, 70B and 405B, applying a fully reproducible recipe on top of Meta's Llama 3.1 base: open supervised and preference data, the open-instruct training code, and reinforcement learning with verifiable rewards. The evaluation framework is released alongside it.",
           "openness": {
             "score": 3,
             "class": "open_weights",
@@ -4343,7 +4343,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Weights under Llama 3.1 Community License (non-OSI); Ai2's post-training data, code, recipe, and eval framework (open-instruct, OLMES) are Apache-2.0. Classed as restricted on the weights license, consistent with how other Llama-Community models are scored. Verified 2026-08-13 via the HF model cards, the Tulu 3 blog and the open-instruct repository."
+          "version_note": "The recipe, data and code are Ai2's own and reproducible, while the released weights inherit the base model's terms, which the openness axis follows. Verified 2026-08-13 via the model cards, the Tulu 3 blog and the open-instruct repository."
         },
         {
           "slug": "zephyr",
@@ -4351,7 +4351,7 @@
           "org_slug": "hugging-face",
           "org": "Hugging Face",
           "type": "model",
-          "description": "Hugging Face H4's fully-open chat model line. The flagship zephyr-7b-beta is a DPO fine-tune of Mistral-7B, trained with the open alignment-handbook recipe on the public UltraChat and UltraFeedback datasets and relicensed MIT. A late-2023 model that remains a widely-downloaded, fully-reproducible 7B open baseline. Also includes the zephyr-orpo-141b MoE variant (Apache-2.0).",
+          "description": "Hugging Face H4's open chat model line. The flagship zephyr-7b-beta is a DPO fine-tune of Mistral 7B trained with the open alignment-handbook recipe on the public UltraChat and UltraFeedback datasets, making the whole run reproducible. The line also includes a 141B mixture-of-experts ORPO variant.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -4447,7 +4447,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Scored on zephyr-7b-beta (MIT; base Mistral-7B Apache-2.0). Fully-open: weights + open DPO datasets (UltraChat/UltraFeedback, MIT) + open training code (alignment-handbook, Apache-2.0). Late-2023 capability. Verified 2026-08-13 via the HF model card and the alignment-handbook repository."
+          "version_note": "Scored on zephyr-7b-beta. A late-2023 model, so its capability reflects that generation. Verified 2026-08-13 via the model card and the alignment-handbook repository."
         },
         {
           "slug": "k2",
@@ -4455,7 +4455,7 @@
           "org_slug": "llm360",
           "org": "LLM360",
           "type": "model",
-          "description": "LLM360 / MBZUAI's K2-V2 (70B dense), released Dec 2025: a 360-open, reasoning-enhanced LLM. Fully reproducible — Apache-2.0 weights plus the complete TxT360 pretraining, midtraining and SFT data, training code and checkpoints. Supersedes the 65B K2 Chat.",
+          "description": "LLM360 and MBZUAI's 70B dense model, released December 2025 as a reasoning-enhanced LLM the project calls 360-open: the weights ship alongside the complete TxT360 pretraining, mid-training and SFT data, the training code and intermediate checkpoints, so the run is reproducible. It supersedes the 65B K2 Chat.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -4537,7 +4537,7 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-08-14"
           },
-          "version_note": "Apache-2.0; open weights + open TxT360 data + open training code + checkpoints. Outperforms Qwen2.5-72B and approaches Qwen3-235B; strongest fully-open model by parameter scale, though OLMo 3 leads on fully-open evals. The Hub repos now render under the org IFM rather than LLM360; the declared LLM360 URLs still resolve. Verified 2026-08-13 via the HF model card and the arXiv abstract."
+          "version_note": "The Hub repositories now render under the IFM organization rather than LLM360, though the declared LLM360 URLs still resolve. Verified 2026-08-13 via the model card and the arXiv abstract."
         },
         {
           "slug": "phi-instruct",
@@ -4619,7 +4619,7 @@
           "org_slug": "ibm",
           "org": "IBM",
           "type": "model",
-          "description": "IBM's enterprise-focused open source code model line, now folded into the unified Granite 4.1 family (3B, 8B, 30B dense, base + instruct, Apache-2.0) released April 29, 2026. Granite 4.1 delivers significant improvements over Granite 4.0 in tool calling, instruction following, coding, and math, while preserving IBM's IP-clean training-data provenance, aimed at enterprises needing legal clarity on training data. Available on watsonx and Hugging Face.",
+          "description": "IBM's enterprise code model line, fine-tuned from Granite Code Base for code instruction-following at 3B, 8B, 20B and 34B with 2K and 128K context variants. It was trained on permissively licensed code, math and natural-language instruction data, which is IBM's stated basis for offering enterprises clarity on training-data provenance.",
           "openness": {
             "score": 3,
             "class": "open_weights",
@@ -4718,7 +4718,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "IBM Granite Code Instruct family (3B/8B/20B/34B, 2K & 128K context), fine-tuned from Granite-Code-Base for code instruction-following; released May 6 2024 (arXiv 2405.04324). Instruct = post-trained (SFT on permissively-licensed code/math/NL instruction data). The card now opens with a DEPRECATION WARNING banner (superseded by Granite 4.x mainline). Verified 2026-08-13 via the HF model card, the granite-code-models repository and IBM's release blog."
+          "version_note": "The model card now opens with a deprecation warning; the line has been folded into the unified Granite 4.x mainline. IBM names its data sources but does not release the processed datasets. Verified 2026-08-13 via the model card, the granite-code-models repository and IBM's release blog."
         },
         {
           "slug": "o-series",
@@ -5008,7 +5008,7 @@
           "org_slug": "anthropic",
           "org": "Anthropic",
           "type": "model",
-          "description": "Anthropic's heavy-reasoning Opus tier, tuned for sustained agentic coding and long-horizon planning across large codebases. Opus 4 scored 72.5% on SWE-bench Verified at release (May 2025 era); the line has iterated through Opus 4.5 (80.9%), Opus 4.6 (80.8%), and Opus 4.7 (April 2026), which hits 87.6% SWE-bench Verified and 98.5% computer-use visual acuity. Opus 4.6 and 4.7 are tied at the top of LMArena (Elo ~1500). A leaked 'Claude Mythos Preview' tops SWE-bench at 93.9% and is presumed to be the next-generation Opus / Claude 5 candidate.",
+          "description": "Anthropic's heavy-reasoning Opus tier, tuned for sustained agentic coding and long-horizon planning across large codebases. The line has iterated from Opus 4 in May 2025 through 4.5, 4.6 and 4.7 to Opus 4.8, the current frontier release, served through the API, Bedrock, Vertex and claude.ai.",
           "openness": {
             "score": 1,
             "class": "closed",
@@ -5096,7 +5096,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Anthropic Claude Opus 4.x flagship line: Opus 4 (May 22 2025) -> 4.5 (Nov 2025) -> 4.6 (Feb 2026) -> 4.7 (Apr 16 2026) -> 4.8 (May 28 2026, current frontier, model id claude-opus-4-8). Post-trained chat/agentic flagship, closed/API + Bedrock + Vertex + claude.ai. Note: Opus 4.7 is a frozen base_pretrained anchor; this record scores the Opus 4.x line in finetuned_chat. Consolidated on 2026-07-29 from claude-opus-4-7; openness follows claude-opus-4-x, the release that currently governs. See docs/reference/identity.md. The capability note used to cite independent Gemini 3.5 comparisons; Google's post names neither Claude nor Opus, so that clause was withdrawn. Verified 2026-08-13 via the Opus 4.8, Opus 4.7 and Claude 4 announcement pages."
+          "version_note": "Opus 4.7 is a frozen base_pretrained anchor; this record scores the Opus 4.x line in finetuned_chat. An earlier capability note cited a Gemini comparison that names neither Claude nor Opus, and was withdrawn. Verified 2026-08-13 via the Opus 4.8, Opus 4.7 and Claude 4 announcements."
         },
         {
           "slug": "gemini-flash",
@@ -5104,7 +5104,7 @@
           "org_slug": "google",
           "org": "Google",
           "type": "model",
-          "description": "Released at Google I/O 2026 (May 19, 2026) as the new default in the Gemini app. Marketed as 'Pro-grade reasoning at Flash-level speed'; #9 on the May 2026 LMArena text leaderboard (Elo 1480) and #2 on LiveCodeBench at 90.8%. Configurable thinking budgets let users trade reasoning depth for latency. Powers Antigravity / Gemini CLI and most Google-side coding-assistant deployments where cost matters.",
+          "description": "Google's price-performance Gemini tier, released at I/O 2026 on 19 May 2026 as the first Gemini 3.5 model and the default in the Gemini app. It is a thinking and agentic instruct model with configurable thinking budgets that trade reasoning depth for latency, reached through the Gemini app, AI Mode in Search, Antigravity, the Gemini API and enterprise surfaces.",
           "openness": {
             "score": 1,
             "class": "closed",
@@ -5185,7 +5185,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Google Gemini 3.5 Flash, launched at I/O 2026 on May 19, 2026 as the first Gemini 3.5 model; price-performance thinking/agentic instruct model. Available via Gemini app, AI Mode in Search, Google Antigravity, Gemini API and enterprise. Proprietary API-only. (Matches the flagship anchor 'Gemini 3.5 Flash'; scored here for the finetuned_chat category, calibrated to that anchor.) Verified 2026-08-13 via the Gemini 3.5 launch post, the DeepMind model index, Google's API model docs and TechCrunch. Consolidated on 2026-07-29 from gemini-2-5-flash; openness follows gemini-3-5-flash, the release that currently governs. See docs/reference/identity.md."
+          "version_note": "Scored here for finetuned_chat, calibrated to the Gemini 3.5 Flash anchor. Consolidated 2026-07-29 from gemini-2-5-flash; openness follows the governing release. Verified 2026-08-13 via the Gemini 3.5 launch post, the DeepMind model index and Google's API model documentation."
         },
         {
           "slug": "grok",
@@ -5311,7 +5311,7 @@
           "org_slug": "mistral-ai-api",
           "org": "Mistral AI (API)",
           "type": "model",
-          "description": "Mistral's proprietary code model, API-only via la Plateforme, Vertex AI, Azure AI Foundry, and Bedrock. Current SKU is Codestral 25.08 (August 2025), 30% more accepted completions and 50% fewer runaway generations versus 25.01. Part of Mistral's broader 2026 coding stack alongside Codestral Embed (retrieval-tuned embeddings), Devstral 2 (open-weight agentic coding counterpart), and Mistral Vibe CLI (Mistral's answer to Claude Code / Gemini CLI). Distributed to thousands of developers through Continue.dev, JetBrains, and VS Code integrations; reported usage trails Anthropic and OpenAI coding models.",
+          "description": "Mistral's code-completion and fill-in-the-middle specialist, instruction-tuned with a chat mode and reached through Mistral's API, a customer VPC or on-premises deployment. It sits in a broader coding stack alongside Codestral Embed for retrieval, Devstral as the open-weight agentic counterpart, and the Mistral Vibe CLI.",
           "openness": {
             "score": 2,
             "class": "restricted",
@@ -5391,7 +5391,7 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-08-14"
           },
-          "version_note": "Codestral 25.08 (released 30 Jul 2025), Mistral's code-completion/FIM specialist; instruction-tuned with a chat mode (+5% instruction following per launch). Distributed via API (console.mistral.ai), VPC, and on-prem; open weights on HF under the Mistral AI Non-Production License (MNPL). NOTE: arguably a coding-specialist model rather than a general chat model; scored best-effort in finetuned_chat per assignment with a category caveat. (Separate 'Codestral 2', Apr 2026, was relicensed Apache-2.0, not the SKU scored here.) Mistral publishes the benchmark scores as chart images rather than text, so the capability figures are not re-derivable from the launch post and are flagged. Verified 2026-08-13 via the Codestral and Codestral 25.08 launch posts."
+          "version_note": "A coding specialist rather than a general chat model, scored here with that caveat. Mistral publishes this SKU's benchmark scores as chart images rather than text, so they are not re-derivable from the launch post. Verified 2026-08-13 via the Codestral and Codestral 25.08 launch posts."
         },
         {
           "slug": "amazon-nova",
@@ -5399,7 +5399,7 @@
           "org_slug": "amazon",
           "org": "Amazon",
           "type": "model",
-          "description": "Amazon's proprietary multimodal model line in AWS Bedrock. Current flagship is Amazon Nova 2 Pro (preview), launched at re:Invent 2025 (December 2, 2025) alongside Nova 2 Lite (speed/cost tier), Nova 2 Omni (unified text/image/video/audio in + text/image out), and Nova 2 Sonic (speech-to-speech). Nova 2 Pro emphasizes agentic capability gains over the original Nova line. No 'Nova 2 Premier' exists as of May 2026; Nova 2 Pro is the top-tier model. Competitive pricing for high-volume AWS-native enterprise deployments with SLA guarantees.",
+          "description": "Amazon's multimodal model line served through AWS Bedrock. The current generation is Nova 2, launched at re:Invent in December 2025, spanning a Pro tier, a Lite speed-and-cost tier, an Omni tier taking text, image, video and audio in, and a Sonic speech-to-speech tier. Nova 2 Pro emphasizes agentic capability over the original line.",
           "openness": {
             "score": 1,
             "class": "closed",
@@ -5464,7 +5464,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Amazon Nova Pro (amazon.nova-pro-v1:0), released 3 Dec 2024; multimodal understanding/instruct model (text+image+video in, text out), 300K context. Proprietary, API-only via Amazon Bedrock. Succeeded by Amazon Nova 2 family (2026) but Nova Pro v1 remains in service. AWS publishes no standardized benchmark scores for Nova, so the capability record deliberately abstains. Verified 2026-08-13 via the AWS Nova user guide and the Nova models page. Consolidated on 2026-07-29 from amazon-nova; openness follows amazon-nova-pro, the release that currently governs. See docs/reference/identity.md."
+          "version_note": "Scores Nova Pro v1, a multimodal understanding model with a 300K context reached only through Bedrock and still in service under Nova 2. AWS publishes no standardized benchmark scores, so capability abstains. Verified 2026-08-13 via the AWS Nova user guide and models page."
         },
         {
           "slug": "muse-spark",
@@ -5472,7 +5472,7 @@
           "org_slug": "meta-superintelligence-labs",
           "org": "Meta Superintelligence Labs",
           "type": "model",
-          "description": "Meta Superintelligence Labs' flagship closed-weight API model, launched April 2026. Closed top-5 on the May 2026 LMArena text leaderboard (Elo 1489), the first non-Anthropic/Google/OpenAI model to break the top 5 in 2026. Represents Meta's parallel closed-weights track alongside the open-weights Llama line (Llama 5, April 2026), effectively splitting Meta into two flagship brands. Chat/instruction-tuned tier sits in Cat 3 alongside other API-only frontier models.",
+          "description": "Meta Superintelligence Labs' closed-weight flagship, launched 8 April 2026 as the first model of the Muse series. It is natively multimodal with tool use, visual chain-of-thought and a multi-agent contemplating mode, and it powers the Meta AI app and website with rollout to WhatsApp, Instagram, Facebook, Messenger and AI glasses. It runs alongside Meta's separate open-weight Llama line.",
           "openness": {
             "score": 1,
             "class": "closed",
@@ -5561,7 +5561,7 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-08-14"
           },
-          "version_note": "Muse Spark, first model of Meta Superintelligence Labs' new 'Muse' series; released 8 Apr 2026. Natively multimodal reasoning model with tool-use, visual chain-of-thought, and multi-agent 'Contemplating' mode. Proprietary/API-only: powers the Meta AI assistant (meta.ai + Meta AI app), private API preview to select users; no open weights. Meta's engineering blog answers HTTP 400 to a plain fetch and LMArena no longer lists Muse Spark, so both capability sources are currently unusable and that axis is flagged. Verified 2026-08-13 via Meta's newsroom post."
+          "version_note": "Meta's engineering blog answers HTTP 400 to a plain fetch, so the figures it once supplied were dropped and capability was re-sourced on 2026-08-14. Verified 2026-08-13 via Meta's newsroom post."
         },
         {
           "slug": "doubao-seed",
@@ -5569,7 +5569,7 @@
           "org_slug": "bytedance-seed-volcano-engine",
           "org": "ByteDance Seed / Volcano Engine",
           "type": "model",
-          "description": "ByteDance's flagship closed-weight instruction-tuned model line, released February 14, 2026 in four variants (Pro, Lite, Mini, Code) via the Volcano Engine API. The Pro tier ($0.47 input / $2.37 output per million tokens) posts frontier-tier benchmarks on ByteDance's own account - gold-medal results in ICPC, IMO and CMO, a higher SuperGPQA score than GPT-5.2, and science-field performance on par with Gemini 3 Pro - at 3.7×–10× lower cost than GPT-5.2 / Claude Opus 4.5. Differentiates on (a) Chinese-language strength and Volcano Engine's mainland-China-native infrastructure, (b) aggressive price-to-performance positioning, and (c) deep distribution via the Doubao consumer chat app, which crossed 100M DAU in early 2026 and reached ~345M MAU by March 2026, the largest consumer AI chat product in China. Doubao Seed 1.6 (October 2025, 256K context) remains in the lineup as the budget tier; ByteDance ships 19 active Doubao API SKUs in 2026.",
+          "description": "ByteDance's closed-weight instruction-tuned model line, released 14 February 2026 in Pro, Lite, Mini and Code variants through the Volcano Engine API. It is a multimodal reasoning and agentic instruct family, positioned on Chinese-language strength and on Volcano Engine's mainland-China infrastructure, and it also powers the Doubao consumer app.",
           "openness": {
             "score": 1,
             "class": "closed",
@@ -5650,7 +5650,7 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-08-14"
           },
-          "version_note": "Doubao Seed 2.0 (ByteDance), foundation model family released 14 Feb 2026; variants Pro / Lite / Mini / Code. Multimodal reasoning/agentic instruct model; proprietary/API-only via Volcano Engine (Volcengine) and the consumer Doubao app. Scored facts are for Seed 2.0 Pro (the flagship). The TechNode article carries neither the user figure nor any individual benchmark score; both were re-sourced on 2026-08-14, adoption to Caixin's launch-day report of 155M weekly active users for the Doubao app (Quest Mobile, December 2025) and capability to ByteDance's own Seed 2.0 launch post. The AIME, Codeforces and VideoMME figures the record used to carry appear on no reachable source and have been dropped. Verified 2026-08-13 via TechNode's coverage of ByteDance's launch June 2026."
+          "version_note": "Scores the Seed 2.0 Pro flagship. The AIME, Codeforces and VideoMME figures this record used to carry appear on no reachable source and were dropped; adoption and capability were re-sourced on 2026-08-14. Verified 2026-08-13 via TechNode's coverage of the launch."
         },
         {
           "slug": "nemotron",
@@ -5783,7 +5783,7 @@
           "org_slug": "nous-research",
           "org": "Nous Research",
           "type": "model",
-          "description": "Nous Research's hybrid-mode reasoning instruct line, one post-training recipe shipped on four independent base models. The Apache-2.0 builds sit on ByteDance's Seed-OSS-36B and Qwen3-14B; the 405B and 70B builds sit on Meta's Llama 3.1 and inherit its community license. A single checkpoint toggles between reasoning and non-reasoning modes.",
+          "description": "Nous Research's hybrid-mode reasoning instruct line, one post-training recipe shipped on four independent base models: ByteDance's Seed-OSS-36B, Qwen3-14B, and Meta's Llama 3.1 at 70B and 405B. A single checkpoint toggles between reasoning and non-reasoning modes.",
           "openness": {
             "score": 3,
             "class": "open_weights",
@@ -5871,7 +5871,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Hermes 4 released Sep 2 2025; tech report arXiv:2508.18255. Consolidated on 2026-07-29 from hermes-4-14b, hermes-4-3-36b, hermes-4-llama-3-1-70b. Openness follows the Apache build hermes-4-3-36b, which is what the score records; this note previously said the 405B governs, contradicting the score file, and has been corrected. The four bases carry different licenses and a user can substitute freely between them, so most-restrictive-across-SKUs does not apply. See docs/reference/identity.md. Verified 2026-08-13 via the HF model cards and the technical report."
+          "version_note": "Consolidated 2026-07-29 from three records. The four bases carry different terms and a user can substitute between them freely, so most-restrictive-across-SKUs does not apply; openness follows the 36B build. Verified 2026-08-13 via the model cards and the technical report."
         },
         {
           "slug": "tinyllama-chat",
@@ -5879,7 +5879,7 @@
           "org_slug": "tinyllama",
           "org": "TinyLlama",
           "type": "model",
-          "description": "A 1.1B instruction-tuned chat model from the TinyLlama project, built on the Llama architecture and trained on 3T tokens for ~90 days on 16 A100-40G GPUs. It became the canonical sub-2B open chat baseline for edge and local-inference research, and is still one of the most-pulled chat checkpoints on the Hub two years after release.",
+          "description": "1.1B instruction-tuned chat model on the Llama 2 architecture, DPO-aligned from a TinyLlama base pretrained on three trillion tokens over about ninety days on sixteen A100 GPUs. It became a common sub-2B open chat baseline for edge and local-inference research.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -5945,7 +5945,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "1.1B chat model (Llama 2 architecture), DPO-aligned finetune of TinyLlama-1.1B (pretrained on 3T tokens). Released 2023/early-2024; v1.0. The card publishes no benchmark table, so capability rests on size and architecture rather than a score. Verified 2026-08-13 via the HF model card."
+          "version_note": "Supervised on UltraChat 200k and aligned on UltraFeedback. The card publishes no benchmark table, so capability rests on size and architecture rather than a score. Verified 2026-08-13 via the model card."
         },
         {
           "slug": "command-r",
@@ -6157,7 +6157,7 @@
           "org_slug": "google",
           "org": "Google",
           "type": "model",
-          "description": "Google's code-specialized Gemma family: a 2B pretrained model for fast code completion (fill-in-the-middle), a 7B pretrained model for infilling + natural language, and a 7B instruction-tuned variant for code chat. Further-trained on 500B-1T tokens of public code, math, and synthetic data.",
+          "description": "Google's code-specialized Gemma family: a 2B pretrained model for fast fill-in-the-middle completion, a 7B pretrained model for infilling and natural language, and a 7B instruction-tuned variant for code chat. All are further-trained on 500 billion to a trillion tokens of public code, mathematics and synthetic data.",
           "openness": {
             "score": 3,
             "class": "open_weights",
@@ -6252,7 +6252,7 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-08-13"
           },
-          "version_note": "Gemma Terms of Use (custom, use-restricted, NOT OSI). Training data and recipe not released. Largely superseded by Qwen2.5-Coder / Gemma 3 for coding. The repos are gated `manual`, so openness was read from the model card rather than a download. Verified 2026-08-13 via the HF model card and Hugging Face's CodeGemma release post."
+          "version_note": "The training data and recipe were not released, and the repositories require an access request, so openness was read from the model card rather than a download. Largely superseded for coding by later families. Verified 2026-08-13 via the model card and Hugging Face's CodeGemma release post."
         },
         {
           "slug": "vibethinker",
@@ -6679,7 +6679,7 @@
           "org_slug": "anthropic",
           "org": "Anthropic",
           "type": "model",
-          "description": "Anthropic's first Mythos-class model for general availability (June 2026), sitting above Opus in capability. Same underlying weights as Claude Mythos 5 but wrapped with safety classifiers that route sensitive cybersecurity, biology/chemistry, and distillation queries to Claude Opus 4.8 (~5% of sessions). Built for long-horizon agentic coding, knowledge work, vision, and scientific research with a 1M-token context window and up to 128K output. Early partner testing reports it topping Cognition FrontierCode and Hebbia Finance among frontier models, and scoring highest on CursorBench and FrontierBench. $10/$50 per Mtok via API, Bedrock, Vertex, and Foundry.",
+          "description": "Anthropic's first Mythos-class model released for general availability in June 2026, sitting above Opus in capability. It shares weights with Claude Mythos 5 but wraps them in safety classifiers that route sensitive cybersecurity, biology, chemistry and distillation queries to Opus. It is built for long-horizon agentic coding, knowledge work, vision and scientific research, with a one-million-token context window and up to 128K output.",
           "openness": {
             "score": 1,
             "class": "closed",
@@ -6766,7 +6766,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Anthropic Claude Fable 5 (model id claude-fable-5), released Jun 9 2026. Mythos-class tier above Opus; generally available counterpart to restricted Claude Mythos 5 (Project Glasswing). 30-day mandatory data retention (Covered Model). Verified 2026-08-13 via the Fable 5 launch post, the Claude platform docs and the Claude Fable product page."
+          "version_note": "Designated a Covered Model, which carries 30-day mandatory data retention. Verified 2026-08-13 via the Fable 5 launch post, the Claude platform documentation and the Claude Fable product page."
         }
       ]
     },
