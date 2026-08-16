@@ -13,9 +13,12 @@ this is the offline half.
 """
 
 import hashlib
+import re
 from pathlib import Path
 
 import yaml
+
+from build.vocabulary import is_iso_date
 
 REPO = Path(__file__).resolve().parent.parent
 MIRROR = REPO / "warehouse" / "platform-mirror"
@@ -55,13 +58,25 @@ def test_local_hashes_bind_the_checked_in_bytes():
 
 
 def test_deployed_entries_have_revision_provenance():
+    """`synced_at` is per entry, and required.
+
+    It was one global date until 2026-08-16, so refetching two models advanced the date on all
+    twelve and implied the other ten had been checked that day. A provenance date that moves
+    for a reason unrelated to the thing it dates is worse than no date at all.
+
+    When #314 deploys the staged signal_packages models, their entries convert from
+    `status: staged` to full provenance — model_id, revision, hash, local_sha256, synced_at —
+    and this test starts covering them automatically.
+    """
     problems = []
     for m in _manifest()["models"]:
         if m.get("status") == "staged":
             continue
-        for field in ("model_id", "revision", "hash"):
+        for field in ("model_id", "revision", "hash", "synced_at"):
             if not m.get(field):
                 problems.append(f"{m['file']} -> {m.get('table')}: missing {field}")
+        if m.get("synced_at") and not is_iso_date(str(m["synced_at"])):
+            problems.append(f"{m['file']}: synced_at {m['synced_at']!r} is not an ISO date")
     assert not problems, "deployed mirror entries lack provenance:\n" + "\n".join(problems)
 
 
@@ -94,21 +109,59 @@ def test_no_table_is_claimed_twice():
     assert not dupes, f"claimed by more than one manifest entry: {dupes}"
 
 
-def test_a_mirrored_sql_model_names_the_table_it_is_listed_against():
-    """Every mirrored `.sql` file names its own table in its header comment, so the manifest
-    can be checked against the bytes rather than against itself.
+HEADER_LINES = 10
+DECLARATION = re.compile(r"^-- (currentai\.[a-z_]+\.[a-z_0-9]+)\s*$", re.MULTILINE)
 
-    This is what makes the duplicate above detectable from inside the repo, with no platform
-    credentials: `packages_product_adoption.sql` says `currentai.signal_packages.product_adoption`
-    on its sixth line, and said so the whole time it was listed against two other tables.
+
+def _declared_table(path: Path) -> str | None:
+    """The table a mirrored `.sql` declares in its HEADER, or None if it does not declare one.
+
+    Scoped to the header on purpose. Searching the whole file was the first cut and it
+    established less than it claimed, on two files in this very folder:
+
+      * `packages_package_downloads.sql` writes `-- currentai.signal_packages.product_adoption`
+        at the start of a line 27 lines in, describing its own consumer. A whole-file search
+        would therefore accept a manifest entry filing it under that table — the two
+        `packages_*` entries could be swapped and the test would stay green.
+      * `scores_openness_facts.sql` opens a line with `-- currentai.registry.category_dimensions`,
+        one of its INPUTS.
+
+    A mention is not a declaration, and only the header is a declaration.
+
+    Exactly one declaration is required. Zero means the file cannot be checked; more than one
+    means the header does not identify a single table, and picking the first would be guessing.
+    """
+    header = "\n".join(path.read_text().split("\n")[:HEADER_LINES])
+    found = DECLARATION.findall(header)
+    return found[0] if len(found) == 1 else None
+
+
+def test_a_mirrored_sql_model_declares_the_table_it_is_listed_against():
+    """Every mirrored `.sql` names its own table on its own line in the header, so the manifest
+    is checked against the BYTES rather than against itself.
+
+    This is what makes the duplicate detectable from inside the repo with no platform
+    credentials: `packages_product_adoption.sql` declares
+    `currentai.signal_packages.product_adoption` on its sixth line, and did so the whole time
+    it was listed against two other tables.
+
+    Only `.sql` is covered, and that is a real limit rather than an oversight: the `.py`
+    mirrors carry a prose docstring naming their INPUT tables and never declare their output,
+    so there is nothing here to compare. Extending this to them means giving them a header
+    convention first.
     """
     problems = []
     for m in _manifest()["models"]:
         if not m["file"].endswith(".sql"):
             continue
-        text = (MIRROR / m["file"]).read_text()
-        if f"-- {m['table']}" not in text:
-            problems.append(f"{m['file']} is listed as {m['table']}, which it does not name")
+        declared = _declared_table(MIRROR / m["file"])
+        if declared is None:
+            problems.append(
+                f"{m['file']}: no single `-- currentai.<dataset>.<table>` line in its first "
+                f"{HEADER_LINES} lines, so the manifest cannot be checked against it"
+            )
+        elif declared != m["table"]:
+            problems.append(f"{m['file']} declares {declared}, manifest says {m['table']}")
     assert not problems, (
         "a mirrored model disagrees with the manifest about which table it builds:\n"
         + "\n".join(problems)
