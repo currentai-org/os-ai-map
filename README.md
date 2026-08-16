@@ -105,7 +105,7 @@ To preview the generated map locally (the output is for preview only — don't c
 
 ```bash
 uv run python -m build.serialize                                          # sources/ → build/notebook_data.json
-uv run python build/render.py                                             # → notebooks/ai-stack-map.py
+uv run python -m build.render                                             # → notebooks/ai-stack-map.py
 uv run marimo export html notebooks/ai-stack-map.py -o /tmp/preview.html
 ```
 

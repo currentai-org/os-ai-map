@@ -59,8 +59,10 @@ from pathlib import Path
 
 import yaml
 
+from build.vocabulary import axes
+
 ROOT = Path(__file__).resolve().parents[1]
-AXES = ("openness", "adoption", "capability")
+AXES = axes()  # build/vocabulary.py owns this; the score schema declares it
 VALUE_KEY = {"openness": "score", "adoption": "level", "capability": "score"}
 ARTIFACTS = ("github", "pypi", "npm", "crates", "huggingface_model", "huggingface_dataset")
 VERIFIED_LINE = re.compile(r"Verified (\d{4}-\d{2}-\d{2}) via ")

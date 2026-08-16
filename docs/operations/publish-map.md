@@ -3,7 +3,7 @@
 1. On `main`, the regenerate workflow has already rebuilt `build/notebook_data.json`
    and `notebooks/ai-stack-map.py` as a bot commit; `git pull` and publish those.
    Rebuild locally only to verify (`uv run python -m build.serialize --date <bot date>
-   && uv run python build/render.py` must produce no diff).
+   && uv run python -m build.render` must produce no diff).
 2. Validate: `uv run python -m build.validate` (must be clean) and
    `uv run marimo check notebooks/ai-stack-map.py`.
 3. Visual sign-off on the exported HTML before publishing (no browser in-container —

@@ -138,7 +138,7 @@ jobs:
       # serialized without ever rendering.
       - name: Render notebook and check it parses
         run: |
-          uv run python build/render.py
+          uv run python -m build.render
           uv run python -c "import ast, pathlib; ast.parse(pathlib.Path('notebooks/ai-stack-map.py').read_text()); print('generated notebook parses')"
           uv run marimo check notebooks/ai-stack-map.py
           git checkout -- notebooks/ai-stack-map.py

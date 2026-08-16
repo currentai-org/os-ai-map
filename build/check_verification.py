@@ -65,11 +65,12 @@ from pathlib import Path
 
 import yaml
 
+from build.vocabulary import axes
 from build.check_rubric import components_of, license_read_keys, resolve_dimension
 from build.rubrics import load_product_types, load_shared, recipe_for, resolve_recipe_variants
 
 ROOT = Path(__file__).resolve().parents[1]
-AXES = ("openness", "adoption", "capability")
+AXES = axes()  # build/vocabulary.py owns this; the score schema declares it
 
 # Axes exempt from the digest requirement because a digest could not have been recorded when
 # their sources were read. A visible list that shrinks, rather than a date comparison that

@@ -79,8 +79,10 @@ from pathlib import Path
 import requests
 import yaml
 
+from build.vocabulary import axes
+
 ROOT = Path(__file__).resolve().parents[1]
-AXES = ("openness", "adoption", "capability")
+AXES = axes()  # build/vocabulary.py owns this; the score schema declares it
 
 # A real browser-ish UA. Several vendor docs sites answer 403 to the default python-requests
 # string, which would otherwise read as a dead source on every run.

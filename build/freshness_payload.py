@@ -51,6 +51,7 @@ from pathlib import Path
 
 import yaml
 
+from build.vocabulary import axes
 from build.check_freshness import commit_dates
 
 
@@ -85,7 +86,7 @@ def _commit_dates(root: Path | None) -> dict[str, str]:
     return {slug: d.isoformat() for slug, d in commit_dates(root).items()}
 
 
-AXES = ("openness", "adoption", "capability")
+AXES = axes()  # build/vocabulary.py owns this; the score schema declares it
 
 
 def _axis_dates(root: Path | None) -> dict[str, tuple[dict[str, str], list[str]]]:

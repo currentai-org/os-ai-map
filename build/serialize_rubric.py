@@ -66,6 +66,7 @@ from pathlib import Path
 
 import yaml
 
+from build.vocabulary import axes
 from build.check_rubric import (
     components_of,
     dimension_read_map,
@@ -83,7 +84,7 @@ from build.validate import load_sources
 ROOT = Path(__file__).resolve().parents[1]
 OUT_DIR = ROOT / "build" / "registry"
 
-AXES = ("openness", "adoption", "capability")
+AXES = axes()  # build/vocabulary.py owns this; the score schema declares it
 
 # `license_tier()` in check_rubric defines the proprietary tier by MEANING rather
 # than by an example list, because no vendor publishes a license called
