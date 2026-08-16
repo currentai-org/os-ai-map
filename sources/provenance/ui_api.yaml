@@ -1,64 +1,57 @@
 # Provenance decisions for the ui_api category, and how each was resolved.
 #
 # `build/prose_provenance.py` classifies every product's dated verification line. This file is
-# the record of what a reader decided about each unresolved one. 40 of the 42 are now
-# `canonical`; the two that are not are named below and are not counted as compliant.
+# the record of what a reader decided about each unresolved one. 40 of the 42 are `canonical`;
+# `character-ai` and `doubao` are not, and are not counted as compliant.
 #
-# ## Two passes, and why the first was wrong
+# ## Three passes, and what each got wrong
 #
-# The first pass marked 35 of these `derive` — keep the prose, name a document already in the
-# score file. It was reviewed against truncated fields and did not hold. `product-copy.md`
-# makes the verification line provenance for BOTH prose fields, so a document establishing what
-# a product IS does not settle a description that also carries an adoption figure, a funding
-# round or a version number. Every `reason` below is from that reversal, kept because it
-# names the specific blocker in that record.
+# **First pass: 35 `derive`.** Reviewed against truncated fields. `product-copy.md` makes the
+# verification line provenance for BOTH prose fields, so a document establishing what a product
+# IS does not settle a description that also carries an adoption figure or a funding round.
+# Every `reason` below is from that reversal, kept because it names the blocker in that record.
 #
-# The second pass fixed the prose instead of hunting for evidence to match it. That is the
-# right order: the descriptions asserted things no document in the record established, and
-# `product-copy.md` bans most of them outright — point-in-time counts, current version numbers,
-# funding and acquisitions, curator rationale, licenses restated in `comments`, and score
-# judgments in prose. Removing them left claims the cited documents do establish.
+# **Second pass: rewrite the prose instead of hunting for evidence to match it.** That is the
+# right order and it holds. But it removed only counts, versions, funding and rationale, and
+# left the openness VERDICTS in - `closed counterpart`, `no source release`, `proprietary`,
+# `source-available`, `not self-hostable`. Those are axis content under the guide's own rules.
+# They are out now; what replaces them is architecture, which is description content.
 #
-# So no date moved and no evidence was manufactured. `verified` is the date the named documents
-# were read, taken from `accessed` in the score file; where a record's documents were read on
-# different days, the line names only same-day documents.
+# **Third pass: seven holds that were all wrong.** Every one was written from a product's own
+# stale `comments` rather than from its score note. The score files already carried the
+# re-derivation:
 #
-# ## What the pass produced besides prose
+#   le-chat        openness + capability re-read 2026-08-14 against Mistral primaries
+#   openrouter     adoption RE-BANDED 4 -> 5 on 2026-08-14 against the current tiles
+#   poe            adoption "RESOLVED 2026-08-14", re-banded 5 -> 4 on the sourceable figure
+#   surfsense      openness fully re-derived 5/open_source -> 2/source_available
+#   character-ai   note: 45M "is still an active count ... the level is unchanged at 5"
+#   microsoft-copilot  note: 218M, "the level is unchanged at 5"
+#   perplexity     note: 45M, "the level is unchanged at 5"
 #
-# Six axes across six products were held and queued in `sources/verification_queue.yaml`, each
-# because the record's own evidence contradicts the recorded value:
+# All seven holds are withdrawn and every `last_verified` restored. THE RULE, WRITTEN DOWN
+# BECAUSE IT WAS BROKEN SEVEN TIMES IN ONE PASS: a product's prose saying an axis is unsettled
+# is not evidence that it is. Read `note` and every source date in the score file before
+# holding an axis. The three aggregator pages that restated their figures had their
+# `sources[].shows` updated to what was actually read, which is what the stale prose was
+# reporting.
 #
-#   openrouter adoption             homepage figures moved 100T/8M/60+ -> 200T+/10M+/80+
-#   poe adoption                    the source no longer carries the MAU figure it was scored on
-#   surfsense openness              connector directory moved to BSL 1.1; score predates the split
-#   character-ai adoption           the page's headline moved from ~20M to 45M
-#   microsoft-copilot adoption      the aggregator restated ~420M to 218M
-#   perplexity adoption             the record's 45M matches neither figure the page carries
+# ## What is left unresolved, and why it is not called compliant
 #
-# `le-chat` was held on a first cut of this pass and should not have been. The hold was written
-# from the record's own stale comments, which said openness and capability still rested on a
-# February 2025 download brief. The score file says otherwise: both axes were re-read on
-# 2026-08-14 against Mistral's consumer terms, rename notice and Vibe documentation, and both
-# notes record the values as corroborated. The holds are withdrawn and the dates restored. The
-# Le Chat to Vibe rename is an identity question, not evidence against either axis.
+# `character-ai` and `doubao` rest on tertiary sources; `perplexity` describes a consumer
+# product whose only reachable documentation covers the API. Global rule 3 requires a PRIMARY
+# source for a factual claim, and the guide carries no exception for a vendor that publishes
+# nothing readable. All three were fetched: character.ai answers 403, doubao.com and
+# perplexity.ai serve client-rendered shells whose only text is the product name.
 #
-# `perplexica` is likewise recorded but not held: its repository was renamed to Vane, which is
-# `docs/reference/identity.md` work rather than an evidence problem.
+# Each carries a dated line naming no document, so the census reports them
+# `ambiguous_noncanonical` rather than reading as finished. Adding a named-tertiary-source
+# exception to `product-copy.md` is a separate decision this pass does not take.
 #
-# ## Two records are NOT compliant, and are not counted as such
+# So: 40 of 43 compliant and canonical, 3 held for a primary read. All 43 are prose-clean.
 #
-# `character-ai` and `doubao` rest on tertiary sources. Global rule 3 requires a factual claim to
-# be confirmed against a PRIMARY source, and the guide carries no exception for a vendor that
-# publishes nothing reachable. character.ai answers HTTP 403 to six attempts; doubao.com serves a
-# client-rendered shell whose only text is the product name. Both are left with a dated line that
-# names no document - `ambiguous_noncanonical` - so the census reports them as unresolved rather
-# than reading as finished. Changing the rule to admit a named tertiary source is a separate
-# decision, and this pass does not take it.
-#
-# So: 41 of 43 compliant and canonical, 2 held for a primary read.
-#
-# `perplexity` was already canonical and so is not in this file, but its prose carried the same
-# banned content and was rewritten in the same pass.
+# `perplexity` and `chatgpt` are both in this file's scope only through the prose pass;
+# `perplexity` was already canonical before it and is now deliberately not.
 #
 - product: anythingllm
   current_state: generic
@@ -90,9 +83,9 @@
   resolved_state: ambiguous_noncanonical
   verified: '2026-08-13'
   document: null
-  still_unresolved_because: character.ai answers HTTP 403, so no primary document could be read. product-copy.md
-    rule 3 requires a primary source for a factual claim and admits no exception for a vendor that
-    publishes nothing reachable, so this record is not called compliant.
+  still_unresolved_because: character.ai answers HTTP 403 to six fetch attempts, so no primary document
+    could be read. product-copy.md rule 3 requires a primary source for a factual claim and admits
+    no exception for a vendor that publishes nothing reachable.
 - product: chatgpt
   current_state: generic
   decision: reread
@@ -100,8 +93,8 @@
     code interpreter, image generation, voice, memory), nor the 900M weekly actives, 50M subscribers
     or $25B run rate. The score file records the same deficiency.
   resolved_state: canonical
-  verified: '2026-08-13'
-  document: OpenAI's report on how people are using ChatGPT
+  verified: '2026-08-14'
+  document: OpenAI's ChatGPT App Store listing and its Custom GPTs documentation
 - product: claude-ai
   current_state: generic
   decision: reread
