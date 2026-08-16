@@ -30,11 +30,13 @@ products have to keep, not a one-time migration: `sweep_status` reports the stat
 and `tests/test_product_prose.py` asserts the corpus-wide invariant.
 
 Usage:
-    uv run python -m build.product_prose        # the five-state census
+    uv run python -m build.product_prose          # the five-state census
+    uv run python -m build.product_prose --quiet  # counts only
 """
 
 from __future__ import annotations
 
+import argparse
 import re
 from pathlib import Path
 
@@ -156,6 +158,11 @@ def census() -> dict[str, list[str]]:
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
+    parser.add_argument("--quiet", action="store_true",
+                        help="counts only; do not list the products behind them")
+    args = parser.parse_args()
+
     by_state = census()
     total = sum(len(v) for v in by_state.values())
     print(f"{total} products\n")
@@ -168,7 +175,7 @@ def main() -> int:
         for s in ("generic", "ambiguous_noncanonical", "named_noncanonical", "missing")
     )
     print(f"\n  {'unresolved':22}{unresolved:>5}")
-    if unresolved:
+    if unresolved and not args.quiet:
         for state in ("generic", "ambiguous_noncanonical", "named_noncanonical", "missing"):
             for slug in by_state.get(state, []):
                 print(f"    {state:22}{slug}")
