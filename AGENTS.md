@@ -51,62 +51,59 @@ tests/                 pytest suite for build helpers and serializer behavior
 
 ### What is in `build/`
 
-Every module is a CLI with a docstring that explains why it exists; run any of them with
-`--help`. Grouped by what they are for:
-
-This list is complete as of 2026-08-14 — 30 modules. If you find one missing here, the
-module's own `--help` wins and this map is stale.
+Every module is a CLI with a docstring that explains why it exists. **`uv run python -m
+build.<module> --help` is the authority on any one of them**; this section is a map of the
+stages, not an inventory. An earlier version of it claimed to be complete, named a count, and
+was wrong within a fortnight.
 
 ```
-Notebook build      validate.py           sources/ schema + cross-file invariants
-                    serialize.py          sources/ -> build/notebook_data.json
-                    render.py             notebook_data.json -> notebooks/ai-stack-map.py
-                    freshness_payload.py  per-product freshness for the payload
-                    update_readme.py      syncs the README stat badges
+Notebook build     validate -> serialize -> render, plus freshness_payload and update_readme.
+                   sources/ in, build/notebook_data.json and notebooks/ai-stack-map.py out.
 
-Config bridge out   serialize_registry.py  identity: what exists
-                    serialize_rubric.py    each category's rubric + recorded evidence
-                    publish_registry.py    pushes both table sets to OSO as static models
+Config bridge out  serialize_registry, serialize_rubric, publish_registry.
+                   Identity and rubric tables, pushed to OSO as static models.
 
-Scores back in      apply_scores.py   reads computed scores from OSO, writes
-                                      openness.score and openness.class into
-                                      sources/scores/ and nothing else. The ONLY
-                                      inbound data path. It writes no dates -- see
-                                      docs/reference/evidence-and-freshness.md.
+Scores back in     apply_scores. Reads computed openness score and class from OSO and writes
+                   nothing else. The ONLY inbound data path, and it writes no dates.
 
-Editing library     components.py     the ONLY supported way to edit an
-                                      openness.components field in place. Never
-                                      load-modify-dump a corpus file (its docstring
-                                      says why a module rather than a re.sub).
+Editing library    components, the only supported way to edit openness.components in place.
+                   Never load-modify-dump a corpus file.
 
-Gates (14)          check_rubric.py        does the recipe reproduce the recorded scores
-                    check_recipe.py        is the recipe's form legal (no dead rules, etc.)
-                    check_verification.py  is a claimed confirmation supported; is a
-                                           score/class pair even producible
-                    check_components.py    structured components say what the string said
-                    check_parity.py         repo-computed vs warehouse-published, per product
-                    check_payload.py        the serialized payload's identity invariants
-                    check_retirement.py     a slug left the payload without a redirect
-                    check_freshness.py      how stale is each axis
-                    check_refetch.py        sampled re-fetch: did a recorded fetch happen
-                    check_artifacts.py      a declared artifact drifted from what it names
-                    check_adoption.py       band matches the scale its rubric declares
-                    check_instrument.py     adoption record has what its instrument requires
-                    check_capability.py     capability comparisons consistent and fresh
-                    check_routing.py        how much of the map signal_routing can answer
+Gates              check_*, one module per question. Four families:
+                     scoring    check_rubric, check_recipe, check_capability, check_adoption,
+                                check_instrument, check_components
+                     evidence   check_verification, check_freshness, check_refetch
+                     payload    check_payload, check_retirement, check_parity
+                     coverage   check_routing, check_artifacts
+                   `check_verification` runs several sub-gates and its exit covers all of
+                   them. A line a gate prints but does not exit on is marked `~` with a
+                   written reason; anything else printed is a failure.
 
-Shared helpers      rubrics.py       resolves scoring_recipe inheritance
-                    warehouse.py     the ONLY supported way to read OSO from build/
-                    fetch_source.py  fetches a cited source the way check_refetch will
-                    sweep_status.py  where the verification sweep has got to
+Shared helpers     vocabulary (the one owner of any vocabulary two modules need), rubrics,
+                   warehouse (the only supported way to read OSO), fetch_source,
+                   product_prose, sweep_status.
 
-Proposers           propose_arxiv.py     candidate arXiv ids, verified live
-                    propose_artifacts.py candidate artifacts, verified live
+Proposers          propose_arxiv, propose_artifacts.
 ```
 
 Proposers deliberately **print rather than write**. Matching artifacts by name measured 2
 correct in 10 on this data, and a wrong artifact attaches another project's license and
 downloads to a product, which is indistinguishable from a real score until someone checks.
+
+### One fact, one owner
+
+The rule that cost this repo four defects in a fortnight, none of which failed loudly:
+
+> **A vocabulary with a declarative owner is derived from it, never copied.** Where a literal
+> genuinely differs from its source, write the difference down and test it, so it stays a
+> decision instead of becoming drift.
+
+Each of the four reported success over a *narrower* question than the one it claimed to
+answer — five sources checked where the table declared seven, a date validated by shape so
+`2026-99-99` passed. `build/vocabulary.py` owns the derivations;
+`tests/test_vocabulary_siblings.py` enforces them by AST and by calling the code, never by
+matching source text. `docs/reference/sibling-invariants.md` has the case-by-case record,
+including the copies that are deliberately kept and why.
 
 ## Data model
 
@@ -222,6 +219,38 @@ retired, the frozen copy still listed 300 repos the site had delisted (169 of th
 `currentai.signal_goodailist.repo_catalog`, on a daily cron. Reserve the fetcher route
 for sources needing credentials or shaping a UDM cannot do, or for genuinely fixed
 reference data.
+
+## Writing to `sources/`
+
+One policy, three cases. Normative:
+
+1. **A new file** — `yaml.safe_dump(..., sort_keys=False, allow_unicode=True)`. Fine; there is
+   no existing formatting to destroy.
+2. **An existing corpus file** — `build/components.py` for `openness.components`, and surgical
+   single-field edits (`set_document_field`) for everything else.
+3. **Never load-modify-dump a file in `sources/`.** The corpus prose is hand-wrapped; a
+   round-trip through PyYAML rewraps every string and buries the one change you meant. A
+   hand-rolled line splice is not the fallback either — it shipped a 7-product defect, which is
+   why `set_document_field` exists.
+
+After any `components` edit, regenerate `raw` or CI fails.
+
+### Traps worth knowing before you start
+
+- **Adding a product touches five files**, not four: product, score, category roster, org
+  roster, and `sources/snapshots/long_tail.json` (gated in `validate.py`).
+- **Every schema sets `additionalProperties: false`.** An invented field fails `validate`
+  rather than being ignored — there is no `litmus` field on a category.
+- **Counts written in prose drift.** Regenerate a number before repeating it; `check_recipe`,
+  `check_freshness` and `sweep_status` print the live ones.
+- **`notebooks/ai-stack-map.py` and `build/notebook_data.json` are bot-owned.** Preview
+  locally, leave them out of the commit; CI blocks hand edits.
+- **The scoring-chain SQL is not in this repo.** It lives on the OSO platform, and its deploy
+  script and `.sql` sit one directory up in `currentai-org/{tools,udms}/`, not under version
+  control. See `docs/operations/deploy-models.md`.
+- **The chain does not run on a schedule.** Its crons were set at the model-revision layer; the
+  platform schedules from the dataset, and zero scheduled runs have ever fired. Treat every
+  scoring-chain recompute as manual, and check run history before believing a freshness claim.
 
 ## Editor posture (read-only on the warehouse)
 
