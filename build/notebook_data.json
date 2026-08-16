@@ -26831,7 +26831,7 @@
           "org_slug": "microsoft-azure",
           "org": "Microsoft Azure",
           "type": "software",
-          "description": "Managed inference service providing a unified API across OpenAI models, open source models (Llama, Mistral, Phi), and Microsoft's own models. Handles model loading, scaling, and hardware allocation behind a single REST API. Supports serverless (pay-per-token) and provisioned (dedicated capacity) deployments. The enterprise default for organizations on Azure, integrated with Azure AD, networking, and compliance controls.",
+          "description": "Managed inference service exposing OpenAI models, open-weights models such as Llama, Mistral and Phi, and Microsoft's own models through one OpenAI-compatible REST endpoint. The endpoint switches between model deployments and applies content filtering, rate limiting and keyless authentication. Deployments run either serverless per token or on provisioned dedicated capacity.",
           "openness": {
             "score": 1,
             "class": "closed",
@@ -26894,7 +26894,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Microsoft Foundry Models unified inference endpoint (Azure AI Model Inference). Proprietary managed cloud service exposing many model deployments through one OpenAI-compatible endpoint; beta Azure AI Inference SDK deprecated, retiring Aug 26 2026 in favor of OpenAI/v1 API. Verified live 2026-08-13 via primary sources; the retirement banner is still on the endpoints doc."
+          "version_note": "The beta Azure AI Inference SDK is deprecated and retires 26 August 2026 in favor of the OpenAI /v1 API; the retirement banner is on the endpoints page. Verified 2026-08-13 via the Microsoft Foundry Models endpoints documentation."
         },
         {
           "slug": "ogx",
@@ -26902,7 +26902,7 @@
           "org_slug": "meta",
           "org": "Meta",
           "type": "software",
-          "description": "Meta's open inference + deployment runtime for LLMs; originally launched as Llama Stack (`meta-llama/llama-stack`) in 2024 and rebranded in 2026 as OGX / Open GenAI Stack (`ogx-ai/ogx`) with model-agnostic positioning. Unified APIs for inference, agents, fine-tuning, and eval; 25+ ecosystem partners including AWS, NVIDIA, Databricks, Groq, and Azure. MIT licensed, 8.4K+ stars with continuous commit history across the rename. Anchors the 1B+ Llama downloads ecosystem.",
+          "description": "Open agentic API server from Meta, launched as Llama Stack in 2024 and rebranded in 2026 as OGX. It is not an inference engine: it composes and routes to inference backends such as vLLM, Ollama and Bedrock, alongside vector stores, safety, tools and file storage, behind OpenAI- and Anthropic-compatible APIs, with unified interfaces for agents, fine-tuning and evaluation.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -26976,7 +26976,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "OGX (Open GenAI Stack), formerly Meta's Llama Stack; renamed/rescoped to a model-agnostic, multi-SDK agentic API server. Verified live 2026-08-13 via primary sources: v1.3.0 (Aug 7, 2026), MIT-licensed, 8.4k GitHub stars, now also speaking the Google GenAI SDK. NOT itself an inference engine: it composes/routes to inference backends (vLLM, Ollama, Bedrock) plus vector stores, safety, tools, file storage."
+          "version_note": "The rebrand carried continuous commit history across the rename, so this is the same project rather than a fork. Verified 2026-08-13 via the ogx-ai/ogx repository and the project's rename announcement."
         },
         {
           "slug": "open-webui",
@@ -26984,7 +26984,7 @@
           "org_slug": "open-webui",
           "org": "Open WebUI",
           "type": "software",
-          "description": "Self-hosted, extensible web UI for chatting with any OpenAI-compatible endpoint or local Ollama model, with built-in RAG, multimodal support, and a tools/plugins marketplace. Picked over alternatives for its breadth of features (knowledge bases, web search, document chat) and very active development; ~138k GitHub stars and 280M+ container pulls by May 2026.",
+          "description": "Extensible web interface for chatting with any OpenAI-compatible endpoint or a local Ollama model, deployed on infrastructure the operator runs. It includes retrieval-augmented generation across nine vector databases, voice and image handling, a Pipelines plugin system, and enterprise access control through RBAC, LDAP, SCIM and SSO.",
           "openness": {
             "score": 2,
             "class": "source_available",
@@ -27056,7 +27056,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Verified live 2026-08-13 via primary sources. Self-hosted chat UI (Ollama + OpenAI-compatible APIs); v0.11.0 is the latest release and the repo now shows ~149k stars, up from the ~138k the description records for May 2026."
+          "version_note": "Verified 2026-08-13 via the open-webui repository and its LICENSE."
         },
         {
           "slug": "librechat",
@@ -27064,7 +27064,7 @@
           "org_slug": "librechat",
           "org": "LibreChat",
           "type": "software",
-          "description": "Open-source ChatGPT clone with native support for OpenAI, Anthropic, Google, Mistral, and local model backends, plus multi-user auth, agents, code interpreter, and prompt sharing. Differentiator is enterprise-grade auth/RBAC and the closest faithful clone of ChatGPT's UX, making it popular for org-wide self-hosted deployments; ~37k GitHub stars by mid-2026.",
+          "description": "Self-hosted chat interface with native support for OpenAI, Anthropic, Google, Mistral and local model backends, plus multi-user authentication, agents, a code interpreter and prompt sharing. It aims at a faithful reproduction of the ChatGPT interaction model with enterprise authentication and role-based access, which suits org-wide deployments. ClickHouse acquired the project in 2025.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -27158,7 +27158,7 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-08-14"
           },
-          "version_note": "Active 2026 (changelog/releases current); MIT-licensed self-hosted multi-provider chat UI. Acquired by ClickHouse in 2025. Verified live 2026-08-13 via primary sources; repo now at ~42k stars, up from the ~37k the description records for mid-2026."
+          "version_note": "Verified 2026-08-13 via the danny-avila/LibreChat repository and the ClickHouse acquisition announcement."
         },
         {
           "slug": "lobe-chat",
@@ -27166,7 +27166,7 @@
           "org_slug": "lobehub",
           "org": "LobeHub",
           "type": "software",
-          "description": "Modern-design open source chat framework supporting OpenAI, Claude, Gemini, Ollama, Azure, DeepSeek and others, with knowledge bases, vision/TTS, plugin marketplace, and one-click deployment. Chosen for its polished UI and breadth of multi-modal/plugin support compared to barebones alternatives; ~77k GitHub stars makes it the second-most-starred OSS chat UI.",
+          "description": "Chat framework supporting OpenAI, Claude, Gemini, Ollama, Azure and DeepSeek among others, with knowledge bases, vision and text-to-speech, an MCP skill marketplace, agent groups and memory. It offers one-click deployment for self-hosting alongside a hosted tier. The repository has been rebranded from lobe-chat to lobehub.",
           "openness": {
             "score": 2,
             "class": "source_available",
@@ -27238,7 +27238,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Verified live 2026-08-13 via primary sources; v2.2.13 (Aug 1, 2026), ~82k stars, repo rebranded lobehub/lobehub. License changed from MIT to a non-OSI 'LobeHub Community License' (Apache-2.0 based + derivative-distribution commercial restriction). Product now markets agent-team orchestration but remains a human-driven chat UI at core."
+          "version_note": "The licensing changed during 2026, so the openness axis follows the current LICENSE rather than the one this record was first written against. Verified 2026-08-13 via the lobehub repository and its LICENSE."
         },
         {
           "slug": "anythingllm",
@@ -27246,7 +27246,7 @@
           "org_slug": "mintplex-labs",
           "org": "Mintplex Labs",
           "type": "software",
-          "description": "All-in-one desktop and Docker app for private, on-device chat with documents (RAG), agents, and 30+ LLM providers including local Ollama. Differentiator is zero-config desktop setup with bundled embedder and vector DB, plus team/Docker mode with RBAC and embeddable widgets; ~60k GitHub stars.",
+          "description": "All-in-one desktop and Docker application for private chat over local documents, combining retrieval-augmented generation, no-code agents with web browsing, and support for 40+ LLM providers including local Ollama. The desktop build bundles an embedder and vector database so it runs without configuration; the Docker build adds multi-user permissioning and embeddable widgets.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -27310,7 +27310,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Verified live 2026-08-13 via primary sources; v1.15.0 (June 25, 2026), ~65k stars and 3.98M Docker pulls. MIT-licensed all-in-one local-first Desktop + Docker AI app (document chat, RAG, agents)."
+          "version_note": "Verified 2026-08-13 via the anything-llm repository and its Docker Hub listing."
         },
         {
           "slug": "nextchat",
@@ -27318,7 +27318,7 @@
           "org_slug": "nextchat",
           "org": "NextChat",
           "type": "software",
-          "description": "Lightweight, cross-platform ChatGPT/Gemini/Claude web client that runs as a single Next.js app deployable to Vercel in one click. Picked for its minimalism and easy personal deployment when full-fat frontends like Open WebUI are overkill; ~88k GitHub stars makes it the single most-starred OSS chat UI repo by raw count.",
+          "description": "Lightweight cross-platform chat client for OpenAI, Gemini and Claude, packaged as a single Next.js app that deploys to Vercel in one click. It runs on the web, desktop and mobile, supports plugins, vision, MCP and artifacts, and offers an Enterprise Edition that adds permissions, team management and an internal knowledge base.",
           "openness": {
             "score": 4,
             "class": "open_core",
@@ -27399,7 +27399,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "v2.16.1 latest release (~mid-2025; release notes cite OpenAI o3/o4-mini + Claude 3.7 support); MIT core. Verified live 2026-08-13 via primary sources; still no release since July 2025, so the freshness flag stands and the gap is now over a year. Cross-platform (web/desktop/mobile) chat client; Enterprise Edition adds permissions/RAG."
+          "version_note": "There has been no release since July 2025, so the freshness flag stands and the gap is over a year. Verified 2026-08-13 via the ChatGPTNextWeb/NextChat repository and its README."
         },
         {
           "slug": "huggingchat-chat-ui",
@@ -27407,7 +27407,7 @@
           "org_slug": "hugging-face",
           "org": "Hugging Face",
           "type": "software",
-          "description": "Open-source chat UI that powers HuggingChat (huggingface.co/chat), giving free public access to open-weights models like Llama, Mistral, Command R+ and others. Differentiator is being the reference SvelteKit chat UI shipped and maintained by Hugging Face itself, with first-class support for TGI/transformers endpoints; ~11k GitHub stars but powers a high-traffic free consumer endpoint.",
+          "description": "SvelteKit chat interface built and maintained by Hugging Face, and the codebase behind HuggingChat at huggingface.co/chat. It routes across open-weights models from several inference providers, exposes an OpenAI-compatible API, supports MCP tools and multimodal input, and has first-class support for text-generation-inference endpoints.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -27498,7 +27498,7 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-08-14"
           },
-          "version_note": "chat-ui v0.10.0 (May 11, 2026), Apache-2.0, powers HuggingChat at hf.co/chat. Original HuggingChat was sunset July 1, 2025, then relaunched as 'HuggingChat Omni' (Omni Router + 115-123 open models, 15 inference providers, MCP). Verified live 2026-08-13 via primary sources; hf.co/chat now offers 132 open models and v0.10.0 is still the latest tagged release."
+          "version_note": "The original HuggingChat was retired on 1 July 2025 and relaunched as HuggingChat Omni, which routes across providers rather than serving one endpoint. Verified 2026-08-13 via the huggingface/chat-ui repository and huggingface.co/chat."
         },
         {
           "slug": "jan",
@@ -27506,7 +27506,7 @@
           "org_slug": "jan",
           "org": "Jan",
           "type": "software",
-          "description": "Cross-platform desktop app (Windows/macOS/Linux) for running open source models 100% offline, with a clean ChatGPT-style UI, optional cloud provider integrations, and a local OpenAI-compatible API server on localhost:1337. Picked over alternatives for its polished native desktop experience and offline-first stance; 5.3M+ downloads and ~43k GitHub stars by May 2026.",
+          "description": "Cross-platform desktop app for running open-weights models entirely offline, with a chat interface, optional cloud provider integrations, and a local OpenAI-compatible API server on localhost:1337. Built by Menlo Research, it runs local GGUF models and ships custom assistants alongside pluggable remote providers.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -27593,7 +27593,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Verified live 2026-08-13 via primary sources; Jan v0.8.4 (23 Jul 2026), 6.1M downloads and ~44k stars. Open-source local-first ChatGPT alternative (desktop chat UI) by Menlo Research / janhq; runs local GGUF models plus pluggable cloud providers, ships an OpenAI-compatible local API server."
+          "version_note": "Verified 2026-08-13 via the janhq/jan repository and the jan.ai product site."
         },
         {
           "slug": "continue",
@@ -27601,7 +27601,7 @@
           "org_slug": "continue",
           "org": "Continue",
           "type": "software",
-          "description": "Open-source AI code assistant for VS Code and JetBrains IDEs offering inline completions, chat, and edit modes against any model (OpenAI, Anthropic, Gemini, Ollama, vLLM). Differentiates from Copilot by being model-agnostic and self-hostable, and from Cursor by living inside existing IDEs; YC-backed with ~$5M seed and ~33k GitHub stars.",
+          "description": "AI code assistant for VS Code and JetBrains, offering inline completion, chat, edit and agent modes against any model backend including OpenAI, Anthropic, Gemini, Ollama and vLLM. It differs from Copilot in being model-agnostic and from Cursor in living inside an existing IDE rather than replacing it. Cursor acquired the project in 2026.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -27719,7 +27719,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Continue (continuedev/continue); VS Code extension v1.2.22 (Mar 2026), JetBrains plugin, and open source `cn` CLI. Open-source AI code assistant, chat + inline edit + autocomplete in the IDE, now also marketing 'AI code agent' (agent mode) and CI checks. Verified live 2026-08-13 via primary sources; 3.9M Marketplace installs, and continue.dev now leads with Continue having been acquired by Cursor while the Apache-2.0 codebase stays available."
+          "version_note": "The repository ships an enterprise key gating managed device policy, which the openness axis weighs. Verified 2026-08-13 via the continuedev/continue repository, the VS Code Marketplace listing and continue.dev."
         },
         {
           "slug": "sillytavern",
@@ -27727,7 +27727,7 @@
           "org_slug": "sillytavern",
           "org": "SillyTavern",
           "type": "software",
-          "description": "Self-hosted chat frontend originally forked from TavernAI, focused on character/roleplay use cases with deep support for prompt engineering, lorebooks, group chats, and any OpenAI-compatible or local backend. Widely used in the open roleplay/character-chat community (~28k GitHub stars), including by users moving off Character.ai to local models.",
+          "description": "Self-hosted chat front end for character and roleplay use, forked from TavernAI in 2023. It runs on Node.js and connects to many backends including KoboldAI, OpenAI, Claude and Mistral, with deep prompt engineering, lorebooks, group chats, image generation, text-to-speech, extensions and a visual-novel mode.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -27791,7 +27791,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "SillyTavern v1.18.0 (released 3 May 2026). Self-hosted local chat front-end (NodeJS) for text-gen LLMs, originally a TavernAI fork (Feb 2023); connects to many backends (KoboldAI, OpenAI, Claude, Mistral, etc.) with character/roleplay focus, image-gen + TTS integration, extensions. Verified live 2026-08-13 via primary sources; v1.18.0 is still the latest release and the repo is at ~32k stars."
+          "version_note": "Verified 2026-08-13 via the SillyTavern/SillyTavern repository."
         },
         {
           "slug": "thunderbolt",
@@ -27799,7 +27799,7 @@
           "org_slug": "mzla-technologies",
           "org": "MZLA Technologies",
           "type": "software",
-          "description": "Open-source, self-hosted AI client from MZLA Technologies (the Mozilla Foundation subsidiary behind Thunderbird), positioned as a sovereign alternative to Microsoft Copilot, ChatGPT Enterprise, and Claude Enterprise. Provides chat, search, research, and task automation across web and native apps (Linux, Windows, macOS, iOS, Android), integrating Anthropic, OpenAI, Mistral, OpenRouter, and local Ollama models with no vendor lock-in. The differentiator is data control - organizations run their own infrastructure rather than renting access.",
+          "description": "AI client from MZLA Technologies, the Mozilla Foundation subsidiary behind Thunderbird, positioned as a sovereign alternative to hosted enterprise assistants. It provides chat, search, research and task automation across web and native apps on Linux, Windows, macOS, iOS and Android, integrating Anthropic, OpenAI, Mistral, OpenRouter and local Ollama models. Organizations run their own infrastructure rather than renting access.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -27872,7 +27872,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Launched April 2026 under MPL-2.0; in active development and mid-security-audit as of mid-2026. Self-hosted multi-provider enterprise AI client. Verified live 2026-08-13 via primary sources; the README still warns the project is early and mid-audit, latest release v0.1.107, ~4.8k stars."
+          "version_note": "The README still warns that the project is early and mid-security-audit. Verified 2026-08-13 via the thunderbird/thunderbolt repository and Phoronix's launch report."
         },
         {
           "slug": "morphic",
@@ -27880,7 +27880,7 @@
           "org_slug": "morphic",
           "org": "Morphic",
           "type": "software",
-          "description": "Open-source AI-powered answer engine with a generative UI - answers render rich, source-credited inline components (images, grids, headings) live from a streamed JSON spec rather than plain markdown. Supports multiple model providers (OpenAI, Anthropic, Google, Ollama) and search backends (Tavily, SearXNG, Brave, Exa), with chat history, shareable result URLs, file upload, and guest mode. The differentiator is the generative-UI answer surface; it is Docker-deployable for self-hosting.",
+          "description": "Answer engine with a generative interface: answers render source-credited inline components such as images, grids and headings from a streamed JSON specification rather than plain markdown. It supports several model providers and search backends, with chat history, shareable result URLs, file upload and guest mode, and deploys with Docker.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -27945,7 +27945,7 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-08-13"
           },
-          "version_note": "Verified live 2026-08-13 via primary sources. Apache-2.0; ~9.0k GitHub stars, latest release v1.5.0. Built on Next.js + the Vercel AI SDK. Self-hostable open generative-search UI."
+          "version_note": "Verified 2026-08-13 via the miurla/morphic repository."
         },
         {
           "slug": "perplexica",
@@ -27953,7 +27953,7 @@
           "org_slug": "itzcrazykns",
           "org": "ItzCrazyKns",
           "type": "software",
-          "description": "Open-source, privacy-focused AI answer engine - a self-hostable alternative to Perplexity. It pairs a bundled SearXNG metasearch layer with local or cloud LLMs to return AI-generated answers with cited sources, all runnable on your own machine so searches stay local. Supports multiple model providers (Ollama, OpenAI, Anthropic, Gemini, Groq, any OpenAI-compatible endpoint), web/academic/discussion/image/video search modes, speed/balanced/quality tiers, and file-upload RAG. The differentiator is full self-hosting and privacy for the Perplexity-style answer-with-sources experience.",
+          "description": "Answer engine that returns answers with citations, pairing a bundled SearXNG metasearch layer with local or cloud models so queries stay on the machine the operator runs. It works with Ollama, OpenAI, Anthropic, Gemini, Groq or any OpenAI-compatible endpoint, and offers web, academic, discussion, image and video search modes plus file-upload retrieval.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -28017,7 +28017,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Verified live 2026-08-13 via primary sources. MIT-licensed; ~36k GitHub stars, and the two Docker images together stand at 931k lifetime pulls. Development has been quiet since April 2026 - both the last commit and the last release (v1.12.2) date from then. NOTE the project was renamed Perplexica -> Vane (~Mar 2026) to avoid name proximity to Perplexity AI; the github.com/ItzCrazyKns/Perplexica URL now redirects to .../Vane. Still widely known and listed as \"Perplexica\". Self-host via a single bundled Docker image (Next.js frontend + API + private SearXNG)."
+          "version_note": "The project was renamed from Perplexica to Vane in 2026 and the old repository URL redirects. The slug here still reads Perplexica; the rename is an identity question, not an evidence one. Verified 2026-08-13 via the ItzCrazyKns/Vane repository."
         },
         {
           "slug": "khoj",
@@ -28025,7 +28025,7 @@
           "org_slug": "khoj-ai",
           "org": "Khoj AI",
           "type": "software",
-          "description": "Open-source, self-hostable \"AI second brain\" / personal assistant. Chat with any cloud or local LLM, get answers grounded in your own documents (PDF, Markdown, org-mode, Word, Notion) and the web, run semantic search, build custom agents with their own knowledge bases, schedule automations, and do deep research. The differentiator is privacy-first personal RAG surfaced across many clients - browser, Obsidian, Emacs, desktop, mobile, and WhatsApp - with everything runnable on your own infrastructure.",
+          "description": "Personal assistant that answers over your own documents and the web, run on infrastructure you operate. It chats with cloud or local models, runs semantic search over PDF, Markdown, org-mode, Word and Notion content, builds agents with their own knowledge bases, schedules automations and performs deep research. Clients cover the browser, Obsidian, Emacs, desktop, mobile and WhatsApp.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -28098,7 +28098,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Verified live 2026-08-13 via primary sources. AGPL-3.0; ~36k GitHub stars and ~20k PyPI downloads/month. Khoj Cloud (the former paid hosted tier) was sunset 2026-04-15; the team directs all users to self-host and states Khoj \"remains fully open source\", so no feature-gating remains in the shipping product. Self-host via Docker or pip."
+          "version_note": "The paid hosted tier was retired on 15 April 2026 and users are directed to run it themselves, so no feature gating remains in the shipping product. Verified 2026-08-13 via the khoj-ai/khoj repository and the Khoj Cloud sunset notice."
         },
         {
           "slug": "surfsense",
@@ -28106,7 +28106,7 @@
           "org_slug": "surfsense",
           "org": "SurfSense",
           "type": "software",
-          "description": "Open-source, privacy-focused AI research assistant positioned as a self-hostable alternative to NotebookLM, Perplexity, and Glean. It connects an LLM to your personal or team knowledge base plus a wide range of external sources and lets you chat over them with hybrid RAG retrieval. The differentiator is unlimited sources and notebooks with no data caps, full freedom to bring your own LLM/embedding/reranker models (including local ones), and a deep connector catalog - all self-hostable so data never leaves your infrastructure.",
+          "description": "AI research assistant that connects a model to a personal or team knowledge base plus external sources and answers over them with hybrid retrieval, reachable through one REST API or an MCP server. Operators bring their own model, embedding and reranker choices, including local ones, and run it on their own infrastructure. It is positioned against NotebookLM, Perplexity and Glean.",
           "openness": {
             "score": 2,
             "class": "source_available",
@@ -28196,7 +28196,7 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-08-14"
           },
-          "version_note": "Verified live 2026-08-13 via primary sources; ~16k GitHub stars. The repo has repositioned as an open web research platform for AI agents with live data connectors, reachable over one REST API or an MCP server. Licensing has SPLIT since this was written - the root LICENSE now places surfsense_backend/app/proprietary/ (the platforms and web_crawler connectors) under Business Source License 1.1 with a non-compete additional use grant, leaving only the rest Apache-2.0. The openness score has not been changed here; it is escalated. Self-host via Docker/Compose (PostgreSQL + pgvector). Connector count and per-feature depth are taken from the maintainer-authored README and not independently verified. Newer/smaller project than the leading open chat UIs."
+          "version_note": "The connector count and per-feature depth come from the maintainer's README and were not independently checked. Licensing has since split across the tree, and the openness axis is held on that. Verified 2026-08-13 via the MODSetter/SurfSense repository."
         },
         {
           "slug": "chatgpt",
@@ -28204,7 +28204,7 @@
           "org_slug": "openai",
           "org": "OpenAI",
           "type": "software",
-          "description": "OpenAI's flagship consumer chat product, web, desktop, and mobile apps for conversing with GPT-5/o-series models, with built-in tools (search, code interpreter, image gen, voice, memory). The category-defining UI by a wide margin: 900M weekly active users and 50M paying subscribers as of Feb 2026, on a $25B annualized run rate.",
+          "description": "OpenAI's consumer ChatGPT product, distributed as an app over a chat interface. It generates original images from a description and transforms existing ones, and offers an advanced voice mode. Custom GPTs let a user tailor ChatGPT to a specific use case with instructions, attached knowledge documents and connections to third-party services.",
           "openness": {
             "score": 1,
             "class": "closed",
@@ -28281,7 +28281,7 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-08-14"
           },
-          "version_note": "ChatGPT (OpenAI) consumer chat app, web + iOS/Android + desktop. Proprietary/closed UI scored as the closed counterpart in this category. Verified live 2026-08-13 via primary sources; default model GPT-5 family. (The model SKU is scored separately under base/finetuned categories; this record scores the chat surface.)"
+          "version_note": "The usage report this record cited enumerates none of the product's features, so these come from OpenAI's own app listing and developer documentation. The model SKUs are scored separately. Verified 2026-08-14 via OpenAI's ChatGPT App Store listing and its Custom GPTs documentation."
         },
         {
           "slug": "github-copilot-ide",
@@ -28289,7 +28289,7 @@
           "org_slug": "github-microsoft",
           "org": "GitHub (Microsoft)",
           "type": "software",
-          "description": "AI pair-programmer integrated into VS Code, JetBrains, Neovim, and Visual Studio, offering inline code completion, chat, and code review against multiple model backends (OpenAI, Anthropic, Google). Differentiator is enterprise distribution via GitHub and tight IDE integration; ~4.7M paid subscribers and ~$1B ARR as of early 2026.",
+          "description": "AI pair-programmer built into VS Code, JetBrains, Neovim and Visual Studio, offering inline completion, chat, agent mode and code review against OpenAI, Anthropic and Google model backends. It is distributed through GitHub with enterprise administration, and now also fronts a desktop app, a CLI and third-party agents reached over MCP.",
           "openness": {
             "score": 1,
             "class": "closed",
@@ -28360,7 +28360,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "GitHub Copilot (GitHub / Microsoft), proprietary in-IDE AI coding assistant (inline suggestions, chat, agent mode) across VS Code/JetBrains/etc. Closed counterpart in ui_api. Verified live 2026-08-13 via primary sources; the product page now also fronts a desktop app, a CLI and third-party agents over MCP."
+          "version_note": "Verified 2026-08-13 via the GitHub Copilot product page."
         },
         {
           "slug": "claude-ai",
@@ -28368,7 +28368,7 @@
           "org_slug": "anthropic",
           "org": "Anthropic",
           "type": "software",
-          "description": "Anthropic's consumer chat product (web, desktop, mobile) for interacting with Claude Sonnet/Opus models, with Projects, Artifacts (live-rendered code/docs), and Computer Use. ~30M monthly active users and adding 1M+ daily signups as of March 2026, third-largest US mobile chatbot.",
+          "description": "Anthropic's consumer chat product on web, desktop and mobile, for working with the Claude model family. The surface adds Projects, Artifacts for live-rendered code and documents, web search, voice, code execution, integrations and multimodal upload.",
           "openness": {
             "score": 1,
             "class": "closed",
@@ -28445,7 +28445,7 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-08-14"
           },
-          "version_note": "Claude.ai (Anthropic) consumer chat app, web + macOS/Windows + iOS/Android. Proprietary/closed UI scored as the closed counterpart. Verified live 2026-08-13 via primary sources (product page at claude.com/product/overview, redirected from anthropic.com/claude). Uses Claude Opus/Sonnet/Haiku. Anthropic still publishes no consumer MAU figure of its own, so the adoption axis still rests on an aggregator estimate."
+          "version_note": "Anthropic publishes no consumer usage figure of its own, so the adoption axis rests on a third-party estimate. Verified 2026-08-13 via the Claude product overview page."
         },
         {
           "slug": "gemini",
@@ -28453,7 +28453,7 @@
           "org_slug": "google",
           "org": "Google",
           "type": "software",
-          "description": "Google's consumer Gemini chat app on web, Android, iOS, and integrated across Google Workspace, with Live (voice), Deep Research, and image/video generation. 900M+ monthly active users by Q1 2026 (up from 750M at end of 2025).",
+          "description": "Google's consumer Gemini chat app on the web, Android and iOS, and embedded across Google Workspace. It offers a live voice mode, Deep Research, and image and video generation, and is integrated with Search's AI Mode.",
           "openness": {
             "score": 1,
             "class": "closed",
@@ -28517,7 +28517,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Gemini app (Google), consumer chat app (web + Android/iOS), proprietary/closed UI scored as the closed counterpart. Verified live 2026-08-13 via primary sources; now powered by the Gemini 3.5 family, launched 19 May 2026. (Model SKUs scored separately; this record scores the app surface.)"
+          "version_note": "The model SKUs behind the app are scored separately; this record covers the app surface. Verified 2026-08-13 via Google's Gemini 3.5 announcement."
         },
         {
           "slug": "microsoft-copilot",
@@ -28525,7 +28525,7 @@
           "org_slug": "microsoft",
           "org": "Microsoft",
           "type": "software",
-          "description": "Microsoft's consumer/enterprise Copilot chat surface on Windows, web, mobile, and embedded across Microsoft 365 (Word, Excel, Teams, Outlook). 15M paid M365 Copilot seats and 33M active users as of Q2 FY2026, though usage share has slipped vs ChatGPT and Gemini.",
+          "description": "Microsoft's Copilot chat surface on Windows, the web and mobile, and embedded across Microsoft 365 in Word, Excel, Teams and Outlook. It runs over OpenAI and Microsoft models and grounds answers in Microsoft Graph content across those applications.",
           "openness": {
             "score": 1,
             "class": "closed",
@@ -28559,7 +28559,7 @@
             "sources": [
               {
                 "url": "https://www.businessofapps.com/data/microsoft-copilot-statistics/",
-                "shows": "~420M MAU all surfaces Q1 2026; ~160M enterprise-licensed (aggregator compiling Microsoft disclosures)",
+                "shows": "218 million active users across Windows, the app and the website, plus 88M downloads since launch, read 2026-08-13; the ~420M all-surfaces and ~160M enterprise-licensed figures this record was scored on are no longer on the page (aggregator compiling Microsoft disclosures)",
                 "accessed": "2026-08-13",
                 "http_status": 200,
                 "content_sha256": "04c097ae27fcca82a43519f2690785da7ec504948cf6ceaf1817f6b08d11f2cd"
@@ -28596,7 +28596,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Microsoft Copilot consumer + M365 Copilot chat assistant surfaces (Windows, Edge, M365, Bing, mobile). Verified live 2026-08-13 via primary sources (Microsoft Learn admin/usage docs). Business of Apps has restated its headline to 218M active users, replacing the ~420M all-surfaces figure the description carries. Proprietary chat UI over OpenAI + Microsoft models; human-in-the-loop assistant (Copilot Studio agents are a separate product). Scored as the chat-UI surface."
+          "version_note": "Scored as the chat surface; Copilot Studio agents are a separate product. Verified 2026-08-13 via the Microsoft 365 Copilot admin usage documentation."
         },
         {
           "slug": "perplexity",
@@ -28604,7 +28604,7 @@
           "org_slug": "perplexity-ai",
           "org": "Perplexity AI",
           "type": "software",
-          "description": "Search-grounded consumer chat product that returns cited answers with live web results, available on web, mobile, and as a Comet browser. 45M+ MAU and ~$200M ARR with a $21B valuation in 2026; the consumer surface (perplexity.ai) is human-driven Q&A, distinct from the Perplexity API (Cat 11) and the agentic Comet browser.",
+          "description": "Search-grounded consumer chat product that answers questions with cited sources. It routes over models from several providers including OpenAI, Anthropic and Meta, and adds guided deep research, a voice mode, and an assistant that drafts messages and makes bookings. It ships as a mobile app that syncs across devices, and is scored separately from the Perplexity API.",
           "openness": {
             "score": 1,
             "class": "closed",
@@ -28652,7 +28652,7 @@
             "sources": [
               {
                 "url": "https://www.businessofapps.com/data/perplexity-ai-statistics/",
-                "shows": "100M+ MAU all products / ~33M standalone chatbot (CEO-attributed, compiled)",
+                "shows": "45 million active users on the website and app, 80M+ downloads since launch and $200M 2025 revenue, read 2026-08-13; the 100M+ all-products and ~33M standalone-chatbot figures this record was scored on are no longer on the page (compiled)",
                 "accessed": "2026-08-13",
                 "http_status": 200,
                 "content_sha256": "91c372e3bb20567064d4bc7a91e257a3de7994e6edfc02f7f1013aeebdaddd80"
@@ -28707,7 +28707,7 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-08-14"
           },
-          "version_note": "Perplexity consumer AI answer/search chat product (web + apps). Verified 2026-08-13 via the Business of Apps compilation rather than the vendor - perplexity.ai still returns HTTP 403 to an automated fetch, six attempts on both the home page and the terms page. That compilation gives 45M active users, 80M+ downloads and ~$200M 2025 revenue. Openness and capability were closed on 2026-08-14 against docs.perplexity.ai, which is reachable; both now describe the API surface plus what the Wikipedia article carries about the paid tier, which is narrower than the consumer app they used to cite. Proprietary chat UI routing over multiple closed + open models; human-in-the-loop search/answer assistant. Comet browser + Computer agent are adjacent surfaces (agentic, scored elsewhere if at all)."
+          "version_note": "perplexity.ai serves a client-rendered shell, so the consumer surface is described from Perplexity's own App Store listing rather than its website. Verified 2026-08-16 via Perplexity's App Store listing."
         },
         {
           "slug": "lumo",
@@ -28715,7 +28715,7 @@
           "org_slug": "proton",
           "org": "Proton",
           "type": "software",
-          "description": "Privacy-first AI assistant from Proton with zero-access encryption, a no-logs policy, and a \"ghost mode\" that discards chats on close. Runs on open-weight models from Proton's European data centers, excluding third-party providers like OpenAI from inference. Web and mobile clients are open source (GPLv3), though the backend service, routing layer, and model serving are not public. The differentiator is confidentiality - no account is required and conversations are never used for training.",
+          "description": "Privacy-focused AI assistant from Proton with zero-access encryption, a no-logs policy and a ghost mode that discards conversations on close. It runs open-weights models in Proton's European data centers rather than sending prompts to third-party providers, and requires no account.",
           "openness": {
             "score": 2,
             "class": "source_available",
@@ -28788,7 +28788,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Launched July 2025; Lumo 1.1 added advanced reasoning. Clients are GPLv3 (web client lives in ProtonMail/WebClients; iOS/Android in ProtonLumo), but the service, models, and routing are not open sourced, so the \"fully open source\" marketing claim is contested. Verified live 2026-08-13 via primary sources; the iOS repo README confirms the client is a WKWebView shell around lumo.proton.me."
+          "version_note": "Proton's own account of Lumo's openness and the axis's reading differ in scope, so the axis carries the evidence. Verified 2026-08-13 via the ProtonLumo iOS client repository and Proton's Lumo announcements."
         },
         {
           "slug": "duck-ai",
@@ -28796,7 +28796,7 @@
           "org_slug": "duckduckgo",
           "org": "DuckDuckGo",
           "type": "software",
-          "description": "DuckDuckGo's free, anonymous AI chat surface. Lets users chat with multiple third-party models without an account - Anthropic's Claude 4.5 Haiku, Meta's Llama 3.3 70B, Mistral Small 3, and OpenAI's GPT-4o mini on the free tier, with frontier models (GPT-5.4, Claude Sonnet 4.6, Llama 4 Maverick) for subscribers. Strips personal metadata (including IP) before prompting providers, and conversations are not used to train models. The differentiator is privacy - a proprietary anonymizing proxy in front of otherwise-closed model APIs.",
+          "description": "DuckDuckGo's anonymous AI chat surface, on the web and inside the DuckDuckGo browser, letting users chat with third-party models without an account. It strips personal metadata including the IP address before prompting a provider, and conversations are not used for training. The proxy sits in front of model APIs DuckDuckGo does not operate.",
           "openness": {
             "score": 1,
             "class": "closed",
@@ -28859,7 +28859,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Proprietary; web-based and integrated into the DuckDuckGo browser. No source, no self-host - the closed counterpart to the privacy-chat surfaces in this shelf. Verified live 2026-08-13 via primary sources; the paid tiers now reach Claude Sonnet 4.6 and Claude Opus 4.8, and Tinfoil has joined the list of providers DuckDuckGo proxies to."
+          "version_note": "The available models change by tier and are listed on a separate help page rather than here, because the list is volatile. Verified 2026-08-13 via DuckDuckGo's Duck.ai privacy help page and its chat-models help page."
         },
         {
           "slug": "maple-ai",
@@ -28867,7 +28867,7 @@
           "org_slug": "opensecret",
           "org": "OpenSecret",
           "type": "software",
-          "description": "End-to-end encrypted, private AI chat assistant. Conversations are encrypted on the user's device and processed inside hardware-isolated Trusted Execution Environments (AWS Nitro Enclaves + Nvidia GPU TEEs) so that even the operator cannot read user data, with remote attestation that users can verify against open source builds. Maple is the flagship app built on the open OpenSecret confidential-computing platform (same team), serves a menu of open-weight models, and ships as web, iOS, Android, and desktop apps. The differentiator is cryptographically verifiable privacy rather than a policy promise.",
+          "description": "End-to-end encrypted AI chat assistant. Conversations are encrypted on the device and processed inside hardware-isolated Trusted Execution Environments, on AWS Nitro Enclaves with Nvidia GPU TEEs, so the operator cannot read them; remote attestation lets users check the running build against published source. It serves open-weights models and ships as web, iOS, Android and desktop apps, built on the OpenSecret confidential-computing platform.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -28970,7 +28970,7 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-08-13"
           },
-          "version_note": "Maple client is MIT-licensed; the underlying OpenSecret platform is AGPL-3.0 - both fully open so anyone can rebuild and compare hashes against the live attestation. Launched Jan 2025. Serves open-weight models (gpt-oss-120b, kimi-k2.5, deepseek-r1, llama-3.3-70b, qwen3-vl, gemma-3). The consumer offering at trymaple.ai is a paid hosted service - openness applies to the code/architecture, not free unlimited usage. Verified live 2026-08-13 via primary sources; the model guide still lists that lineup, and Maple v3.3.3 shipped 12 Aug 2026."
+          "version_note": "The consumer service at trymaple.ai is paid; openness here describes the code and architecture rather than free usage. Verified 2026-08-13 via Maple's model guide and its first-year retrospective."
         },
         {
           "slug": "privatemode",
@@ -28978,7 +28978,7 @@
           "org_slug": "edgeless-systems",
           "org": "Edgeless Systems",
           "type": "software",
-          "description": "Confidential-computing AI inference service from Edgeless Systems. Prompts are encrypted on the user's device and processed inside hardware-based Trusted Execution Environments (confidential VMs + Nvidia H100 GPUs) so data stays encrypted even during inference and the provider cannot see it, with end-to-end remote attestation making the privacy guarantee verifiable in hardware. It serves a rotating menu of open-weight models behind a chat UI and an OpenAI/Anthropic-compatible API, and is positioned for regulated industries (finance, law, healthcare).",
+          "description": "Confidential-computing AI inference service from Edgeless Systems. Prompts are encrypted on the device and processed inside hardware-based Trusted Execution Environments on confidential VMs with Nvidia GPUs, so data stays encrypted during inference and the provider cannot read it; end-to-end remote attestation makes the guarantee checkable. It serves third-party open-weights models behind a chat interface and an OpenAI- and Anthropic-compatible API, aimed at regulated industries.",
           "openness": {
             "score": 2,
             "class": "source_available",
@@ -29056,7 +29056,7 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-08-13"
           },
-          "version_note": "Launched Feb 2025. The privatemode-public repo holds the auditable Trusted Computing Base under a custom source-available license (view/compile for audit only); the privatemode-proxy, web app, and internal/oss subdirectories are dual-licensed MIT. The operational service itself is proprietary/hosted. Serves third-party open-weight models (e.g. gpt-oss-120b, Gemma, Kimi K2, Qwen embeddings, Whisper/Voxtral) - trains none of its own. Verified live 2026-08-13 via primary sources; privatemode-public shipped v1.52.0 the same day and the site now advertises Kimi K2.6."
+          "version_note": "Privatemode runs the service and trains no models of its own. Verified 2026-08-13 via the Privatemode product site."
         },
         {
           "slug": "confer",
@@ -29064,7 +29064,7 @@
           "org_slug": "confer-labs",
           "org": "Confer Labs",
           "type": "software",
-          "description": "End-to-end encrypted AI chat assistant from Confer Labs (founded by Moxie Marlinspike, creator of Signal) whose core claim is that the operator cannot read, train on, or hand over your conversations. Prompts are encrypted on-device and sent via Noise-protocol pipes into a Trusted Execution Environment on a confidential VM, processed by open source LLMs, then re-encrypted before leaving; chat history is encrypted with passkey-derived keys. The differentiator is cryptographically enforced, verifiable privacy backed by remote attestation, reproducible builds, and an append-only transparency log.",
+          "description": "End-to-end encrypted AI chat assistant from Confer Labs. Prompts are encrypted on the device and sent over Noise-protocol pipes into a Trusted Execution Environment on a confidential VM, processed by open-weights models, then re-encrypted before leaving; history is encrypted with passkey-derived keys. Remote attestation, reproducible builds and an append-only transparency log are what make the claim checkable.",
           "openness": {
             "score": 2,
             "class": "source_available",
@@ -29137,7 +29137,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Confer publishes its inference/proxy stack and reproducible confidential-VM image (vLLM-based) openly for verifiability, but NEITHER repo carries a LICENSE file (GitHub reports no declared license), and the end-user client app is not public - so despite \"open source\" marketing the accurate classification is source-available. The service is not self-hostable; its security model depends on Confer's attestation infrastructure. Repos created Dec 2025. Verified live 2026-08-13 via primary sources; confer-proxy still carries no LICENSE, and the product has since added memory, connectors and folder files."
+          "version_note": "The inference stack and the end-user client are distributed differently, and the security model depends on Confer's own attestation infrastructure. Verified 2026-08-13 via Confer's private-inference architecture post and the confer-proxy repository."
         },
         {
           "slug": "poe",
@@ -29145,7 +29145,7 @@
           "org_slug": "quora",
           "org": "Quora",
           "type": "software",
-          "description": "Multi-model chat aggregator letting users talk to GPT-5.2, Claude Opus 4.6, Gemini 3 Pro, image/video generators, and 1M+ user-created bots from one interface, with a points-based unified pricing model. Differentiator is breadth (200+ models in one app) plus a creator economy of custom bots; recently added 200-person group chats. Run by Quora.",
+          "description": "Multi-model chat aggregator from Quora, giving access to many providers' models plus image, video and audio generators from one interface, on a points-based unified pricing model. Alongside the providers' own assistants it carries bots that users build and publish themselves, which is what distinguishes it from a single-vendor chat surface.",
           "openness": {
             "score": 1,
             "class": "closed",
@@ -29220,7 +29220,7 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-08-14"
           },
-          "version_note": "Poe by Quora, multi-model chat aggregator app (web + mobile/desktop). Verified live 2026-08-13 via primary sources (poe.com/about). Single UI fronting many providers' bots (ChatGPT, Claude, Gemini, DeepSeek) + image/video/audio models + millions of user-created bots. Human-in-the-loop chat aggregator; proprietary. The adoption axis is escalated - the ~18M MAU and ~$65M subscription-revenue figures it cites are no longer on the aggregator page behind them."
+          "version_note": "The adoption band is held: the figures it was scored on are no longer on the page behind them. Verified 2026-08-13 via the Poe about page."
         },
         {
           "slug": "openrouter",
@@ -29228,7 +29228,7 @@
           "org_slug": "openrouter",
           "org": "OpenRouter",
           "type": "software",
-          "description": "Commercial API gateway that exposes 400+ models from 60+ providers (OpenAI, Anthropic, Google, Meta, DeepSeek, plus open-weights hosts) behind a single OpenAI-compatible endpoint with automatic failover and unified billing. The largest closed-source LLM aggregator by revenue: ~$50M annualized revenue and reportedly raising $120M at a $1.3B valuation (CapitalG-led) in early 2026.",
+          "description": "Commercial API gateway exposing models from many providers behind one OpenAI-compatible endpoint, with automatic failover, routing and unified billing across them. It runs as a hosted service and is a routing gateway rather than a chat interface.",
           "openness": {
             "score": 1,
             "class": "closed",
@@ -29303,7 +29303,7 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-08-14"
           },
-          "version_note": "OpenRouter unified LLM API gateway/router. Verified live 2026-08-13 via primary sources; the homepage now reads 200T+ monthly tokens, 10M+ global users, 400+ models and 70+ providers, against the 100T/8M/60+ this record was scored on - the adoption band is escalated on that. Routes/aggregates API calls behind one OpenAI-compatible API; not a chat UI but a routing gateway, squarely the ui_api gateway slot alongside the LiteLLM anchor. Proprietary hosted service."
+          "version_note": "The homepage figures the adoption band was scored on have since moved, and the band is held pending a re-read. Verified 2026-08-13 via the OpenRouter homepage."
         },
         {
           "slug": "character-ai",
@@ -29311,7 +29311,7 @@
           "org_slug": "character-ai",
           "org": "Character.AI",
           "type": "software",
-          "description": "Consumer chat product centered on user-created character personas, dialogue roleplay, and conversational entertainment. ~20M MAU and ~6M daily visitors with two hours/day average engagement, one of the stickiest consumer AI surfaces; founders' team was acqui-hired by Google in 2024 but the product continues to operate.",
+          "description": "Consumer chat product built around user-created AI characters. Users create characters with their own personas and hold text or voice conversations with them, and the app carries a large library of characters other users have published. It is built for storytelling, roleplay and conversational entertainment rather than task completion.",
           "openness": {
             "score": 1,
             "class": "closed",
@@ -29345,7 +29345,7 @@
             "sources": [
               {
                 "url": "https://www.businessofapps.com/data/character-ai-statistics/",
-                "shows": "~20M MAU, ~180M monthly visits, peak ~28M mid-2024 (compiled)",
+                "shows": "45 million active users (September 2025) and 75M+ downloads since launch, read 2026-08-13; the ~20M MAU, ~180M monthly visits and ~28M mid-2024 peak this record was scored on are no longer on the page (compiled)",
                 "accessed": "2026-08-13",
                 "http_status": 200,
                 "content_sha256": "3abe2ed8d0992caf18f31685c5447c6233be84052d73a59a1c585eae83bd6a50"
@@ -29375,7 +29375,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Character.AI consumer companion/roleplay chat app (web + mobile). Verified live 2026-08-13 via primary sources. Proprietary chat UI over its own models + (post-Google-deal) licensed models; human-in-the-loop character chat. Business of Apps now reports 45M active users for September 2025 and 75M+ downloads, replacing the ~20M MAU and ~28M mid-2024 peak this record was written against."
+          "version_note": "character.ai answers HTTP 403 to an automated fetch, so the record is described from Character Technologies' own App Store listing rather than the website. Verified 2026-08-16 via Character.AI's App Store listing."
         },
         {
           "slug": "grok-app",
@@ -29383,7 +29383,7 @@
           "org_slug": "xai",
           "org": "xAI",
           "type": "software",
-          "description": "xAI's consumer chat product with a standalone app (grok.com) plus deep integration into X (Twitter), competing on real-time data access and a less-filtered tone. ~64M MAU by early 2026 and ~17.8% US chatbot share, third behind ChatGPT and Gemini.",
+          "description": "xAI's consumer chat product, a standalone app at grok.com with mobile clients and integration into X, competing on real-time access to X content and a less-filtered conversational style. It offers a reasoning mode, real-time search and multimodal input.",
           "openness": {
             "score": 1,
             "class": "closed",
@@ -29461,7 +29461,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Grok consumer AI chat assistant by xAI, the app/UI surface (grok.com + X integration + mobile), verified live 2026-08-13 via primary sources (x.ai answered a plain fetch this time, so the earlier bot-block note no longer applies). Scored here as the chat-UI product, NOT the Grok 4.x model SKU (the model is scored in base_pretrained as Grok 4.20). Proprietary; human-in-the-loop assistant with image gen + X-grounded search."
+          "version_note": "Scored as the chat product rather than the Grok model SKU, which is a separate entry under base_pretrained. Verified 2026-08-13 via the xAI Grok 4.1 release notes."
         },
         {
           "slug": "le-chat",
@@ -29469,7 +29469,7 @@
           "org_slug": "mistral-ai",
           "org": "Mistral AI",
           "type": "software",
-          "description": "Mistral's consumer/enterprise chat product (chat.mistral.ai) running on Mistral Medium/Large with Flash Answers, web search, image gen, and an enterprise on-prem deployment option. 1M downloads in 14 days at app launch; ~10.8M monthly desktop visits in March 2026 with 21% MoM growth, Europe's flagship sovereign-AI chat surface.",
+          "description": "Mistral's consumer and enterprise assistant at chat.mistral.ai, offering web search, deep research across web and internal sources, file and canvas handling for documents, spreadsheets and presentations, and image generation. It runs primarily on Mistral's own models, and an on-premises deployment is offered to enterprises.",
           "openness": {
             "score": 1,
             "class": "closed",
@@ -29572,7 +29572,7 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-08-14"
           },
-          "version_note": "Le Chat by Mistral AI, consumer AI chat assistant (web + mobile; app rebranded toward 'Mistral Vibe' by 2026), live June 2026 (mistral.ai). Proprietary chat UI primarily over Mistral's own models; human-in-the-loop assistant. ~1.7M app downloads by May 2026; EU MAU stated below 45M. Verified live 2026-08-13, but only the adoption axis could be re-derived - all three axes cite a single February 2025 TechCrunch brief, which carries the download milestone and nothing about the license, the source or the feature set, so openness and capability are escalated for re-sourcing against mistral.ai."
+          "version_note": "Mistral renamed Le Chat to Vibe during 2026, on the same URL and login. The slug here still reads le-chat; the rename is an identity question, not an evidence one. Verified 2026-08-14 via Mistral's rename notice, the Vibe Work documentation and the Vibe product page."
         },
         {
           "slug": "deepseek-chat",
@@ -29580,7 +29580,7 @@
           "org_slug": "deepseek",
           "org": "DeepSeek",
           "type": "software",
-          "description": "Chinese consumer chat app from DeepSeek (Hangzhou) on chat.deepseek.com plus iOS/Android apps, exposing DeepSeek V3/R1 models with thinking mode and web search. ~131.5M MAU in January 2026 (90% MoM surge), second only to ChatGPT in global AI DAU rankings, driven by free access to frontier-tier models.",
+          "description": "Hosted consumer chat product from DeepSeek, at chat.deepseek.com and in iOS and Android apps, fronting the company's own model family with long-context handling, file reading and agent capabilities. It runs as a free hosted service, distinct from the model weights of the same name.",
           "openness": {
             "score": 1,
             "class": "closed",
@@ -29657,7 +29657,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Hosted consumer chat UI at chat.deepseek.com (web + iOS/Android apps), currently fronting DeepSeek-V4 Pro (stronger agent + reasoning, Responses API and Codex integration). Verified live 2026-08-13 via primary sources. Note: the underlying DeepSeek-V3/V4 model weights are open (MIT) and scored separately in base_pretrained; this record scores the CHAT PRODUCT/UI itself, which is a proprietary free hosted service, not open source software."
+          "version_note": "The underlying DeepSeek models are scored separately under base_pretrained; this record covers the chat product. Verified 2026-08-13 via the DeepSeek product site."
         },
         {
           "slug": "meta-ai",
@@ -29665,7 +29665,7 @@
           "org_slug": "meta",
           "org": "Meta",
           "type": "software",
-          "description": "Meta's consumer AI assistant, a chat surface embedded directly into WhatsApp, Instagram, Facebook, and Messenger, plus a standalone web app at meta.ai and native iOS/Android apps. Powered by Llama 4/5 across most surfaces with Muse Spark (Meta Superintelligence Labs' new closed-weight model, launched April 8, 2026) backing the standalone app and rolling out to Family-of-Apps in mid-2026. 1B+ monthly active users across Meta's apps, the only consumer AI assistant with native distribution into ~4B existing users; the standalone Meta AI iPhone app has held a top-of-chart App Store position alongside ChatGPT, Claude, and Gemini since the Muse Spark launch.",
+          "description": "Meta's consumer AI assistant, embedded in WhatsApp, Instagram, Facebook and Messenger alongside a standalone web app at meta.ai and native mobile apps. It plans multi-step tasks and connects to email and calendar applications. Meta builds and operates the service; the model weights behind it are use-restricted and scored separately at the model layer.",
           "openness": {
             "score": 1,
             "class": "closed",
@@ -29748,7 +29748,7 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-08-14"
           },
-          "version_note": "Meta's consumer AI assistant embedded across WhatsApp, Instagram, Messenger, Facebook + standalone meta.ai app. Proprietary; powered by Meta's Llama family (the underlying weights are use-restricted and scored separately at the model layer). Verified 2026-08-13. Openness and capability were closed on 2026-08-14 against Meta's own newsroom after their original citations stayed unfetchable - demandsage.com returns 403 and every Meta legal host tried returns 400 - so both axes now rest on first-party product reporting rather than on the AI Terms."
+          "version_note": "Meta's own newsroom replaced the earlier third-party citations for identity and features, after every Meta legal host tried returned an error. Verified 2026-08-14 via Meta's newsroom post on Meta AI."
         },
         {
           "slug": "doubao",
@@ -29756,7 +29756,7 @@
           "org_slug": "bytedance-seed-volcano-engine",
           "org": "ByteDance Seed / Volcano Engine",
           "type": "software",
-          "description": "ByteDance's consumer AI chat app (doubao.com plus iOS/Android) powered by the Doubao Seed model family, with native multimodal support (text, image, audio, video) and a full-duplex real-time voice mode that streams ASR, reasoning, and TTS concurrently for natural barge-in conversation. The largest Chinese consumer AI chat product by daily usage: ~100M DAU baseline with a peak of ~145M DAU during the February 2026 Lunar New Year, ~345M MAU per QuestMobile Q1 2026 (other trackers put it at 220-226M MAU around the same period). Served 1.9B+ queries as the exclusive AI partner of the 2026 CCTV Spring Festival Gala.",
+          "description": "ByteDance's consumer AI assistant, for questions, study help, and work tasks such as summarizing material, analyzing data, writing code and generating documents and presentations. It edits images from a spoken instruction and generates images and video, and takes voice input and photographs as well as text. A work-task mode runs multi-step jobs and scheduled tasks.",
           "openness": {
             "score": 1,
             "class": "closed",
@@ -29839,7 +29839,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "ByteDance's consumer AI assistant (chatbot app: iOS/Android/web), launched Aug 2023, running on Volcano Engine (Doubao models). Proprietary closed product. Introduced a paid Pro subscription tier ~May/Jun 2026. Verified live 2026-08-13 via primary sources (Wikipedia + China-market app trackers); stable release is now Doubao Seed 2.0 (14 Feb 2026)."
+          "version_note": "doubao.com serves a client-rendered shell, so the record is described from ByteDance's own App Store listing rather than the website. Verified 2026-08-16 via Doubao's App Store listing."
         },
         {
           "slug": "glean-assistant",
@@ -29847,7 +29847,7 @@
           "org_slug": "glean",
           "org": "Glean",
           "type": "software",
-          "description": "Enterprise AI coworker that grounds answers, drafts, slides, voice notes, and task execution in company context across apps and permissions. Glean positions it as the front-door work AI layer for employees, with product screenshots and messaging focused on proactive answers, content generation, and action-taking; the company also has a public $7.2B valuation headline and Gartner/G2 recognition, which signals meaningful enterprise adoption.",
+          "description": "Enterprise assistant that grounds answers, drafts, slides and task execution in company context, retrieving over the Glean Enterprise Graph across enterprise connectors and respecting each user's permissions. A model hub routes across several frontier LLMs, and sub-agents and skills carry out multi-step work. It runs as single-tenant SaaS.",
           "openness": {
             "score": 1,
             "class": "closed",
@@ -29910,7 +29910,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Enterprise AI assistant / 'AI coworker' grounded in the Glean Enterprise Graph (RAG over 100+ enterprise connectors), with a Model Hub (multiple frontier LLMs), multimodal output (images/slides/pages), and agentic sub-features (Skills, sub-agent orchestration). Proprietary single-tenant SaaS. May-2026 'enterprise AI coworker' launch verified live 2026-08-13 via primary sources; the site now advertises more than 250 connectors, up from the 100+ recorded here. BORDERLINE: agentic/Skills features touch orchestration_agents, but the product is primarily a human-in-driver enterprise chat/assistant UI grounded in company data, so kept in ui_api per the litmus (AI presented as a tool to the human)."
+          "version_note": "Agentic skills touch orchestration_agents, but the product is a human-driven assistant grounded in company data, so it stays in ui_api under the category litmus. Verified 2026-08-13 via the Glean Assistant product page."
         },
         {
           "slug": "glean-workplace-search-ai",
@@ -29918,7 +29918,7 @@
           "org_slug": "glean",
           "org": "Glean",
           "type": "software",
-          "description": "AI-powered workplace search across 100+ enterprise tools with permissions-aware results, knowledge-graph personalization, and generative answers. Glean’s own product pages and homepage emphasize that it searches everywhere employees work, then turns that context into concise answers and next steps; the company highlights a 141% ROI claim in its Forrester materials as an adoption signal.",
+          "description": "AI-powered workplace search across enterprise tools, returning permissions-aware results with generative answers. It combines an Enterprise Graph of company content with a Personal Graph of each user's context, and runs hybrid retrieval across connectors including Slack, Teams, Zoom, ServiceNow, Zendesk and GitHub. The search layer underpins Glean Assistant.",
           "openness": {
             "score": 1,
             "class": "closed",
@@ -29981,7 +29981,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Glean Search ('the foundation of enterprise AI'), AI-powered enterprise/workplace search UI built on the Enterprise Graph + Personal Graph, hybrid search across 100+ connectors (Slack, Teams, Zoom, ServiceNow, Zendesk, GitHub, etc.), permissions-aware. Proprietary single-tenant SaaS. Verified live 2026-08-13 via primary sources; the connector count on the site now reads 250+. The search layer underpins Glean Assistant; scored here as the human-facing search UI/API product."
+          "version_note": "Scored here as the human-facing search product rather than the assistant built on it. Verified 2026-08-13 via the Glean product overview page."
         },
         {
           "slug": "litellm",
@@ -29989,7 +29989,7 @@
           "org_slug": "berriai",
           "org": "BerriAI",
           "type": "software",
-          "description": "Python SDK and proxy server (AI gateway) that exposes a single OpenAI-format API across 100+ LLM providers (Bedrock, Azure, Vertex, Anthropic, Cohere, vLLM, etc.) with cost tracking, fallback routing, virtual keys, and guardrails. Picked as an open API gateway for organizations that need provider-agnostic LLM access with spend controls; ~48k GitHub stars and adopted as enterprise gateway by many AI platform teams.",
+          "description": "Python SDK and proxy server exposing one OpenAI-format API across a large set of LLM providers including Bedrock, Azure, Vertex, Anthropic, Cohere and vLLM. The proxy translates calls to the chat-completions and responses endpoints and adds routing, fallbacks, virtual keys, guardrails and spend tracking, which is what makes it usable as an organization-wide gateway.",
           "openness": {
             "score": 4,
             "class": "open_core",
@@ -30112,7 +30112,7 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-08-13"
           },
-          "version_note": "Verified live 2026-08-13 via primary sources; v1.96.2 (Aug 11, 2026), ~56k stars, 741M PyPI downloads in the trailing 30 days. The README and docs now say 100+ providers where this record says 140+."
+          "version_note": "An enterprise directory in the tree is carved out with its own terms and a key check enforced in the proxy, which the openness axis weighs. Verified 2026-08-15 via the BerriAI/litellm repository and its documentation site."
         },
         {
           "slug": "otari",
@@ -30120,7 +30120,7 @@
           "org_slug": "mozilla-ai",
           "org": "Mozilla AI",
           "type": "software",
-          "description": "An open, self-hosted OpenAI-compatible LLM gateway from Mozilla AI. It puts one endpoint in front of 40+ providers with virtual API keys, budget enforcement, and usage tracking, and ships server-side, model-agnostic tools including sandboxed code execution via a Docker-isolated Python REPL. Built on Mozilla AI's any-llm; a hosted platform (Otari.ai) runs on the same core.",
+          "description": "Open, self-hosted OpenAI-compatible LLM gateway from Mozilla AI. It puts one endpoint in front of 40+ providers with virtual API keys, budget enforcement and usage tracking, and ships server-side model-agnostic tools including sandboxed code execution in a Docker-isolated Python REPL. Built on Mozilla AI's any-llm, with a hosted platform running on the same core.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -30194,7 +30194,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Otari LLM gateway, Apache-2.0, from Mozilla AI; created April 2026. Built on Mozilla AI's any-llm. Verified live 2026-08-13 via primary sources; 381 GitHub stars, up from ~63 in July, latest release v0.4.0."
+          "version_note": "Verified 2026-08-13 via the mozilla-ai/otari repository and Mozilla AI's Otari announcement."
         },
         {
           "slug": "lm-studio",
@@ -30202,7 +30202,7 @@
           "org_slug": "lm-studio",
           "org": "LM Studio",
           "type": "software",
-          "description": "Desktop app (Windows/macOS/Linux) for discovering, downloading, and running local LLMs with a polished chat GUI, model browser, an OpenAI-compatible local server, headless mode, and native Apple MLX support. The smoothest local-LLM onboarding - but the app itself is closed-source.",
+          "description": "Desktop app for discovering, downloading and running local models, with a chat interface, a model browser, an OpenAI-compatible local server, a headless mode and native Apple MLX support. A headless build is offered separately for servers and continuous integration.",
           "openness": {
             "score": 1,
             "class": "closed",
@@ -30264,7 +30264,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Desktop app is proprietary freeware ('free for home and work use'; ToS forbids modification/reverse-engineering/redistribution). Only the CLI (lms) and JS/Python SDKs are MIT. Score 1 (not 0) because the SDK/CLI source is public. Verified live 2026-08-13 via primary sources; v0.4.21, and there is now a headless build called llmster for servers and CI."
+          "version_note": "The desktop application and the command-line tools are distributed separately, which the openness axis weighs. Verified 2026-08-13 via the LM Studio application terms and product site."
         },
         {
           "slug": "gpt4all",
@@ -30272,7 +30272,7 @@
           "org_slug": "nomic",
           "org": "Nomic AI",
           "type": "software",
-          "description": "Free, cross-platform desktop app from Nomic AI for running LLMs privately on everyday laptops with no API or GPU required. Includes a chat UI, LocalDocs (private RAG over your files), an OpenAI-compatible local API server, and a Python client, with Nomic Vulkan GPU acceleration.",
+          "description": "Cross-platform desktop app from Nomic AI for running LLMs locally on ordinary laptops, without an API key or a GPU. It bundles a chat interface, LocalDocs for retrieval over private files, an OpenAI-compatible local API server and a Python client, with Nomic Vulkan acceleration where a GPU is available.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -30344,7 +30344,7 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-08-13"
           },
-          "version_note": "MIT. ~77k stars. Reduced maintenance - last notable release Feb 2025, community reports of stalled development through 2025 (no official deprecation). Verified live 2026-08-13 via primary sources; the repo has had no push since 27 May 2025, so the stall is now over a year old."
+          "version_note": "Development has stalled: the repository has had no push since 27 May 2025 and there is no official deprecation notice. Verified 2026-08-13 via the nomic-ai/gpt4all repository."
         },
         {
           "slug": "openclaw",
@@ -30352,7 +30352,7 @@
           "org_slug": "openclaw",
           "org": "OpenClaw Foundation",
           "type": "software",
-          "description": "Local-first, self-hosted personal AI assistant ('any OS, any platform'). It runs an agent gateway that answers on the messaging channels you already use - WhatsApp, Telegram, Slack, Discord, Signal, iMessage, Teams, Matrix and ~20 more - with companion apps for macOS/iOS/Android, voice (speak/listen), a live Canvas UI, and a skills/extensions SDK. Model-agnostic: the gateway routes to your chosen LLM backend.",
+          "description": "Local-first personal AI assistant. It runs an agent gateway that answers on messaging channels people already use, including WhatsApp, Telegram, Slack, Discord, Signal, iMessage, Teams and Matrix, with companion apps for macOS, iOS and Android, a live Canvas interface and a skills and extensions SDK. The gateway is model-agnostic and routes to a chosen LLM backend.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -30417,7 +30417,7 @@
             "basis": "verified",
             "latest_axis_confirmation": "2026-08-13"
           },
-          "version_note": "MIT (repo LICENSE body is MIT; GitHub shows NOASSERTION due to a custom 'OpenClaw Foundation' copyright line; npm declares MIT). Community project led by Peter Steinberger (steipete). Created Nov 2025; ~379k stars, ~11.4M npm downloads/month. Verified live 2026-08-13 via primary sources; 386k stars, latest release v2026.7.1-2."
+          "version_note": "GitHub declines to classify this repository, so the openness axis reads the LICENSE body directly. Verified 2026-08-13 via the openclaw/openclaw LICENSE."
         },
         {
           "slug": "llm",
@@ -30425,7 +30425,7 @@
           "org_slug": "datasette",
           "org": "Datasette",
           "type": "software",
-          "description": "Command-line tool and Python library for interacting with large language models. Provides a unified CLI and API to send prompts to remote models (OpenAI, Anthropic, Gemini, Llama, etc.) and to local models, with a plugin architecture for adding new backends. Logs prompts and responses to a local SQLite database and supports embeddings and templated prompts. Part of Simon Willison's Datasette ecosystem (docs at llm.datasette.io).",
+          "description": "Command-line tool and Python library for prompting large language models. It provides one CLI and API across remote providers such as OpenAI, Anthropic and Gemini and across local models, with a plugin architecture for new backends. Prompts and responses are logged to a local SQLite database, and it supports embeddings and templated prompts. Part of Simon Willison's Datasette ecosystem.",
           "openness": {
             "score": 5,
             "class": "open_source",
@@ -30503,7 +30503,7 @@
             "date": "2026-08-13",
             "basis": "verified"
           },
-          "version_note": "Apache-2.0 (verified LICENSE body). Latest release 0.32 (4 Aug 2026, PyPI/GitHub). ~12.4k stars and ~601k PyPI downloads/month. Canonical repo under the personal simonw account; branded under the Datasette ecosystem. Verified live 2026-08-13 via primary sources."
+          "version_note": "The canonical repository sits under a personal account rather than a Datasette organization. Verified 2026-08-13 via the simonw/llm repository and the llm.datasette.io documentation."
         }
       ]
     },
