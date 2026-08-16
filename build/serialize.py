@@ -386,7 +386,7 @@ if __name__ == "__main__":
                         help="value for the payload 'generated' field (default: today)")
     args = parser.parse_args()
     sources = load_sources(ROOT)
-    frozen = json.load(open(ROOT / "build" / "_frozen_long_tail.json"))
+    frozen = json.load(open(ROOT / "sources" / "snapshots" / "long_tail.json"))
     payload = build_payload(sources, frozen, generated=args.date,
                             freshness=resolve_freshness(ROOT))
     (ROOT / "build" / "notebook_data.json").write_text(json.dumps(payload, indent=2, ensure_ascii=False))
