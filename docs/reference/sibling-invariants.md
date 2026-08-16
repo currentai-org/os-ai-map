@@ -128,6 +128,19 @@ and tested, so it stays a decision instead of becoming drift.
     references `re`. A text search would have matched the docstring quoting the very fragments
     it no longer uses, and would then have been weakened until it matched nothing.
 
+- construct: many-valued fact flattened to one value
+  canonical_owner: n/a
+  duplicates:
+    - build/apply_provenance.py   # score_sources
+  risk: >-
+    A URL is routinely cited on more than one axis with different `accessed` dates. `url ->
+    accessed` kept whichever instance came last in axis order, so the check answered "was the
+    LAST instance accessed on the claimed date?" while reporting an answer to "was one". Found
+    by the first real manifest: it refused two correct packets, and in the other direction
+    would have vouched for a URL whose date-aligned instance was not the one under review.
+  disposition: fixed
+  regression_test: test_a_url_cited_on_two_axes_is_checked_against_every_date_it_carries
+
 - construct: a composition nothing exercises
   canonical_owner: n/a
   duplicates:

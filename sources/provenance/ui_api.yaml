@@ -1,0 +1,439 @@
+# Provenance decisions for the ui_api category.
+#
+# `build/prose_provenance.py` classifies every product's dated verification line and gathers
+# the date-aligned sources from its own score file. It decides nothing. This file records what
+# a reader decided, one record at a time, and `build/apply_provenance.py --apply` writes only
+# the `derive` rows.
+#
+# 42 of the category's 43 products are unresolved. **All 42 are re-reads. None derives.**
+#
+# The first pass marked 35 of them `derive`. It was reviewed against truncated prose — the
+# first ~210 characters of `description` and ~240 of `comments` — and nearly every blocker
+# below sits in the part that was cut off. Re-reviewed against the complete fields, the
+# decisions do not hold.
+#
+# The test that matters is the one `product-copy.md` sets, not the one the first pass applied.
+# The verification line is provenance for BOTH prose fields, and "where several sources were
+# needed, name them". So a document that establishes what the product IS does not settle a
+# description that also carries an adoption figure, a funding round or a version number.
+#
+# Three shapes account for all 35 reversals:
+#
+#   1. **The identity document does not establish the description's headline figures.** The
+#      figures rest on the adoption axis's own third-party sources, so naming one document
+#      would vouch for claims it never made. chatgpt, gemini, deepseek-chat, grok-app,
+#      microsoft-copilot, github-copilot-ide, doubao, character-ai.
+#
+#   2. **The prose carries content `product-copy.md` bans**, so canonicalizing the line would
+#      bless prose that has to be rewritten anyway: star and download counts, current version
+#      numbers, funding and acquisitions, curator rationale ("Picked over alternatives"),
+#      licenses restated in `comments`, and score judgments in prose ("Score 1 (not 0)
+#      because…", "the adoption band is escalated"). This is most of the list.
+#
+#   3. **Several documents were needed and the packet validates one.** confer's licence claim
+#      is on the confer-proxy repository, not the architecture post; duck-ai's model lists are
+#      on a second help page; librechat's acquisition is on the ClickHouse announcement.
+#
+# Six records disagree with themselves — the description and the comments state the same count
+# at different values (anythingllm 60k/65k, jan 5.3M/6.1M, librechat 37k/42k, open-webui
+# 138k/149k, sillytavern 28k/32k, openclaw 379k/386k). Three record in their own comments that
+# the figures they cite are no longer on the page behind them (character-ai, poe, surfsense).
+#
+# The seven that were re-reads on the first pass remain re-reads for their original reasons:
+# a machine endpoint as the only date-aligned source (litellm), a licence claim with no licence
+# document (maple-ai, privatemode, lumo), third-party scale press only (le-chat, meta-ai), and
+# perplexica, whose repository has been renamed to Vane while the record still reads Perplexica.
+#
+# **The blocker is prose content, not provenance.** Measured across the corpus on 2026-08-16,
+# 218 of 472 products carry prose that `product-copy.md` rules out — 104 of the 166 unresolved,
+# and 114 of the 306 already canonical, so this predates the pipeline and is not confined to
+# the records it touches. Those are floors: the detector requires the banned noun to sit next
+# to its number, so "900M+ monthly active users" does not match it.
+#
+# The order has to be prose first, provenance second. Repairing a verification line over prose
+# that is about to be rewritten dates a claim nobody will keep.
+- product: anythingllm
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: b708a443bec08738a21212ad3af0f1d1a551ede336f489ac73af5ae00f1417f9
+  decision: reread
+  reason: The description says ~60k GitHub stars and the comments ~65k, plus v1.15.0 and 3.98M Docker
+    pulls; product-copy.md bans counts and current version numbers in prose, and the pull count comes
+    from Docker Hub rather than the repository. Canonicalizing the line would bless prose that has
+    to be rewritten anyway.
+- product: azure-ai-model-inference
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: da219fd1f322da231a25a1ae676d12219c353a8c9771baf00158c930f1ae0732
+  decision: reread
+  reason: Prose is clean, but the endpoints doc's recorded `shows` covers the single OpenAI-compatible
+    endpoint only. The description also asserts serverless and provisioned deployment modes, Azure
+    AD, networking and compliance integration, and that this is the enterprise default on Azure. The
+    last is an unsourced ranking, and none of the four is established by what the record shows was
+    read.
+- product: character-ai
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources.
+  prose_digest: 4b9e00c7716b817bb8e380ffbb3a336c24d2071be00474d7b5ee19aba7e1d46f
+  decision: reread
+  reason: The description carries ~20M MAU and ~6M daily visitors, which the comments themselves say
+    the source has replaced with 45M active users; it also carries the 2024 Google acqui-hire. Canonicalizing
+    a verification line over figures the record already calls superseded would date the wrong claim.
+- product: chatgpt
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: fee3b0c00b581fa95fcb5f26f6460da2cba702e54d6b8939c568649489d38810
+  decision: reread
+  reason: The selected usage report does not establish the built-in tools the description lists (search,
+    code interpreter, image generation, voice, memory), nor the 900M weekly actives, 50M subscribers
+    or $25B run rate. The score file records the same deficiency.
+- product: claude-ai
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources (product page at claude.com/product/overview,
+    redirected from anthropic.com/claude).
+  prose_digest: 0ea381ba7e2caaed0fa93b5fba9fa46d6f2b3827dce06aa82deee032fba2dbd3
+  decision: reread
+  reason: The comments state that Anthropic publishes no consumer MAU figure and that the adoption
+    axis rests on an aggregator estimate, so the product overview page cannot establish the ~30M MAU
+    and 1M+ daily signups in the description. The record contradicts the decision.
+- product: confer
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: ffbab082c7f2df62b8647244d62ed953f6cf1be4a6b5fe22f90b9af3bc3a8761
+  decision: reread
+  reason: The description is clean and the architecture post supports it, but the comments' substantive
+    claim is that neither repo carries a LICENSE file, which only the confer-proxy repository establishes.
+    Two documents are needed and the packet validates one.
+- product: continue
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: 99ad896e6bf4b7a75b51850d029a073fc0532093180421ecded263beaa602a9e
+  decision: reread
+  reason: The description carries YC backing, a ~$5M seed and ~33k stars; the comments add v1.2.22,
+    3.9M Marketplace installs and the Cursor acquisition. Funding, counts and versions are banned
+    in prose, and the installs and acquisition come from the Marketplace listing and continue.dev
+    rather than the repository.
+- product: deepseek-chat
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources.
+  prose_digest: 77d9d32a61a163c54a79a5fcd22ad8be5def0cbdd19985d7d1fb9c0acf7decb8
+  decision: reread
+  reason: The product site establishes identity and that no source is released, not the ~131.5M MAU,
+    the 90% month-on-month surge or the global DAU ranking in the description. Those rest on the QuestMobile
+    report cited on the adoption axis.
+- product: doubao
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources (Wikipedia + China-market app trackers);
+  prose_digest: e468d695ba219d7206ae11e8b6b9ede9428e9f5c2f427635949185db44e7a13a
+  decision: reread
+  reason: The Wikipedia article does not establish the ~100M DAU baseline, ~145M Lunar New Year peak,
+    ~345M MAU or 1.9B+ Gala queries in the description; those come from the QuestMobile reporting
+    on the adoption axis. The description also carries counts prose may not hold.
+- product: duck-ai
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: bb03a53d849d4df6b49225c925b151eb9533f05e8192fc6efc67dd08850e57c2
+  decision: reread
+  reason: The privacy help page establishes the anonymizing proxy, not the free and subscriber model
+    lists in the description, which come from the separate chat-models help page. The comments already
+    record that those tiers have changed, so the list is volatile as well as multi-sourced.
+- product: gemini
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: ca45b82c238d54e7bc0bbf580ccac2c59d7d973b6210159c5d5a3e2cc54fd33b
+  decision: reread
+  reason: The description says 900M+ MAU by Q1 2026 while the dated adoption evidence says 750M, and
+    the Gemini 3.5 announcement establishes neither. The announcement supports the model family and
+    the app surface only.
+- product: github-copilot-ide
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: 703410e090e4cc5f9ab4e5f766c5ab5b332d65ee370cdbbb241a4444a10482b0
+  decision: reread
+  reason: The product page does not establish the ~4.7M paid subscribers or ~$1B ARR in the description.
+    The one dated adoption source reports 20M all-time users, a different figure on a different basis,
+    and revenue claims are banned in prose regardless.
+- product: glean-assistant
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: verified live 2026-08-13 via primary sources;
+  prose_digest: 2f3b91a26725d79482edc864a0a03681a50c48f6aa8a8536bd4a5cf9b51c3fd9
+  decision: reread
+  reason: The description carries a $7.2B valuation and Gartner/G2 recognition offered as an adoption
+    signal - a funding fact and a score judgment, both banned in prose - and the comments record that
+    the connector count on the site has moved past the 100+ the prose states.
+- product: glean-workplace-search-ai
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: 75d44601c9b88fdea9eb2a1655b57977e5903b696504c359869c07410df7f4d9
+  decision: reread
+  reason: The description offers a 141% Forrester ROI claim as an adoption signal, which is a score
+    judgment in prose and rests on Forrester material that is not in the record. The comments also
+    record that the connector count has moved to 250+ against the 100+ in the description.
+- product: gpt4all
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: 28403fa1d4785fa64738fe3ae1d42b1b8c18e367f03c3b01bbd5b21e5f6c42fa
+  decision: reread
+  reason: 'The comments state the license and a ~77k star count, both banned in prose: product-copy.md
+    says the license is a scored field and not to restate it in comments, and counts have no freshness
+    owner. The repository would support a rewritten line, so this is a prose fix ahead of a provenance
+    one.'
+- product: grok-app
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: verified live 2026-08-13 via primary sources (x.ai answered a plain fetch this time,
+    so the earlier bot-block note no longer applies).
+  prose_digest: a9fa83adb42edc09b2cbcee6632123dcdd439e1a01e07ada920f8b7c91740059
+  decision: reread
+  reason: The xAI release notes establish the product surface, not the ~64M MAU or ~17.8% US chatbot
+    share in the description; those rest on the third-party statistics page on the adoption axis.
+- product: huggingchat-chat-ui
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: ea1338cbd37996e416fe3be08d3acf48f4662676de8e1db4dfaa8a5a7a05faef
+  decision: reread
+  reason: The description carries ~11k stars and the comments v0.10.0 and a 132-model count read from
+    hf.co/chat, a second document. Counts and current versions are banned in prose.
+- product: jan
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: 2edad7c10935eb3cf7100ebcfdff707809a0e3da06cf323425c473b11079ab82
+  decision: reread
+  reason: The description says 5.3M+ downloads and ~43k stars, the comments 6.1M and ~44k - the same
+    facts stated twice with different values - and the description opens a clause with 'Picked over
+    alternatives', which product-copy.md classifies as curator rationale and not description content.
+- product: khoj
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources.
+  prose_digest: 17540e3b4120741842dcdffd5999fa76130ed5873b23c9676f8829730f691e7d
+  decision: reread
+  reason: The comments state AGPL-3.0 and ~20k PyPI downloads a month. The license is a scored field
+    that product-copy.md says not to restate here, and the download figure comes from pypistats rather
+    than the repository.
+- product: le-chat
+  current_state: ambiguous_noncanonical
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13, but only the adoption axis could be re-derived - all three
+    axes cite a single February 2025 TechCrunch brief, which carries the download milestone and nothing
+    about the license, the source or the feature set, so openness and capability are escalated for
+    re-sourcing against mistral.ai.
+  prose_digest: 0db933547b2c49ac17f89e2b695ebfe018bcb041567cfe108cdf9e12513f08b3
+  decision: reread
+  reason: 'Neither date-aligned source is about Le Chat''s identity: one is 2025 launch-download press,
+    the other is a Perplexity statistics page held only for peer calibration. Nothing in the record
+    establishes the proprietary chat UI or the ''Mistral Vibe'' rebrand the comments assert.'
+- product: librechat
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: 32bd9d21ce19707daee81b20c5781f41345b86ffa5840a2f8cbf6c6c930c4fe7
+  decision: reread
+  reason: The description says ~37k stars and the comments ~42k, and the comments carry the ClickHouse
+    acquisition, which only the ClickHouse announcement establishes. Counts and corporate events are
+    both banned in prose.
+- product: litellm
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: 851d1e3ecaae6c95b5d503769e9a994db56b9b0a2ce6499b28b99b344388d29e
+  decision: reread
+  reason: The only date-aligned source is the pypistats download endpoint, which is a machine response
+    and cannot say what LiteLLM is. The comments state that the README and docs now say 100+ providers,
+    so a document was clearly read on this date and never recorded as a source.
+- product: llm
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources.
+  prose_digest: 506e72b3c51cd332971c8fbb0886dd38a1982dcccf52aeaef9c1bd1a9ebd561e
+  decision: reread
+  reason: The comments carry the license, release 0.32, ~12.4k stars and ~601k PyPI downloads a month.
+    Three of the four are banned in prose and the download figure comes from pypistats, not the repository.
+- product: lm-studio
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: 4633a7fd1d9157f8182df5473d1ad0b9b911de46ad2869df7edb09dec85e7d9d
+  decision: reread
+  reason: The comments say 'Score 1 (not 0) because the SDK/CLI source is public', which is a score
+    judgment in prose that product-copy.md rules out explicitly, and the description calls the product
+    'the smoothest local-LLM onboarding'. The terms page supports the licensing claim but the line
+    would be vouching for the rest.
+- product: lobe-chat
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: bab968be66da09558fc45a05690237b9227a75ff90c26d01e61d16b3d0e11964
+  decision: reread
+  reason: The description carries ~77k stars and a 'Chosen for' clause, the comments ~82k and v2.2.13.
+    The LICENSE supports the licensing claim, which is the one part of this record that is in order.
+- product: lumo
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: ee8c0d2449088aec8d84071067064e9cd2c34fa81b867f595e7a9a6570175829
+  decision: reread
+  reason: The record's openness conclusion rests on an absence, that the service, models and routing
+    are not open sourced. The iOS client repository establishes only the client, and the strongest
+    candidate for the whole claim is a third-party 'is it really FOSS' assessment. No primary document
+    in the record establishes what is closed.
+- product: maple-ai
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: 8e39b5ce8803b3212575803f1307c4222b10fe608d86312dc87f2f392d1a20e8
+  decision: reread
+  reason: The comments turn on licensing, an MIT client over an AGPL-3.0 OpenSecret platform, and
+    neither date-aligned source is a repository or licence. Both are Maple's own blog posts about
+    models and growth.
+- product: meta-ai
+  current_state: ambiguous_noncanonical
+  verification_date: '2026-08-13'
+  current_clause: Verified 2026-08-13.
+  prose_digest: 6a8ec43ac580f8286ae1b4dcf55ac22bd7fc8f0e2e9a44c04068a41f649e381b
+  decision: reread
+  reason: 'Both date-aligned sources are adoption press: a 2025 MAU announcement and an analyst caveat
+    about it. Neither establishes what Meta AI is or its proprietary status, which is what the line
+    has to point at. Currently dated with no document named at all.'
+- product: microsoft-copilot
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources (Microsoft Learn admin/usage docs).
+  prose_digest: e8bad43e4905169d648f47886c7d319735d6a4cdc749d01fd0afebfc55f0caf3
+  decision: reread
+  reason: The admin documentation does not establish the 15M paid seats or 33M active users in the
+    description. The comments then introduce a third figure, 218M, and refer to a ~420M figure the
+    description does not actually carry, so the record disagrees with itself about what is being verified.
+- product: morphic
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources.
+  prose_digest: 6aeb558ee70dccd66b1a5b9dc3609a7271cdb5c72f3d217b333837e2e7068629
+  decision: reread
+  reason: The comments state the license, a ~9.0k star count and release v1.5.0, all banned in prose.
+    The description is clean and the repository would support a rewritten line.
+- product: nextchat
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: 1a7fbd9767ee5553ef91c4a49a9ed90a8fc967398da40aab1127b3643b7ac335
+  decision: reread
+  reason: The description carries a 'Picked for' clause, ~88k stars and a most-starred-by-raw-count
+    ranking; the comments carry v2.16.1. Curator rationale, counts and rankings are all ruled out
+    by product-copy.md.
+- product: ogx
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: 'Verified live 2026-08-13 via primary sources: v1.3.0 (Aug 7, 2026), MIT-licensed,
+    8.4k GitHub stars, now also speaking the Google GenAI SDK.'
+  prose_digest: 512875cf06a6f28cd4a658d4b8256fb5887601d540ab5ee71dff712dfa3c2f3c
+  decision: reread
+  reason: The description carries 8.4K+ stars, 25+ ecosystem partners and 'Anchors the 1B+ Llama downloads
+    ecosystem'. The download figure is about Llama rather than this product, and none of the three
+    is established by the repository.
+- product: open-webui
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources.
+  prose_digest: ba66258596b8a24fe1a077930f2bbb137957ebf776c77137c9c4451aacf4c63b
+  decision: reread
+  reason: The description carries a 'Picked over alternatives' clause, ~138k stars and 280M+ container
+    pulls; the comments carry ~149k stars and v0.11.0. The pull count comes from a registry, not the
+    repository.
+- product: openclaw
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: 0fbcd1948b0427991d5f56cd606e6f6bfc7be643898c16c95d89529f007a324f
+  decision: reread
+  reason: The comments state ~379k stars in one sentence and 386k in the next, plus ~11.4M npm downloads
+    a month and release v2026.7.1-2. The LICENSE settles the licensing nuance, which is the only part
+    of this record that needs a document.
+- product: openrouter
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: 25db9b6be022cb8df0da368d60c89b13ab4fb2bfad4556c85ab17cc6cfa30b56
+  decision: reread
+  reason: The description carries ~$50M annualized revenue and a reported $120M raise at a $1.3B valuation,
+    which prose may not hold, and states 60+ providers where the comments read 70+. The comments also
+    record that the adoption band is escalated, a score judgment in prose.
+- product: otari
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: 23fbfc7be9bde6a362753b2d1e10c3cb559aef962e2d3110837590db4ed35a90
+  decision: reread
+  reason: The comments state the license, 381 stars against ~63 in July, and release v0.4.0. The description
+    is clean and the repository would support a rewritten line.
+- product: perplexica
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources.
+  prose_digest: 374e3b9161f85fb91f66bc11b483bfd09c8b763cf41864cae11b10b48e3d3ba3
+  decision: reread
+  reason: 'The cited repository has been renamed to ItzCrazyKns/Vane while the record is still written
+    as Perplexica, and the figures do not line up: the sources show ~35k stars and 100K+ Docker pulls
+    against the ~36k and 931k lifetime pulls in the comments. That is an identity question, not a
+    prose one, and naming a document would settle the wrong thing.'
+- product: poe
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources (poe.com/about).
+  prose_digest: 4150dfb0bf0f5408a9a87520737673677b0df6326c0e6935788ad378142d8996
+  decision: reread
+  reason: The comments state that the ~18M MAU and ~$65M subscription-revenue figures the record cites
+    are no longer on the page behind them, and that the adoption axis is escalated. The about page
+    cannot verify figures the record already says are unsupported.
+- product: privatemode
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: e584296b29a09618cd10d973c9d8bda83d82986be015eecefdbe96e21483a1b8
+  decision: reread
+  reason: The comments turn on a licence split across the privatemode-public and privatemode-proxy
+    repositories, and neither date-aligned source is a repository or a licence. Both are Edgeless
+    Systems' own launch and product pages.
+- product: sillytavern
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: 9b1ef075bbf235cf9953c6e13b3b287b00c0cbd3b87e839317c39fab61a697d7
+  decision: reread
+  reason: The description says ~28k stars and the comments ~32k, and the comments carry v1.18.0. The
+    repository would support a rewritten line.
+- product: surfsense
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: 64e145c9442796f18df3139346b2fea0b795f398d1190c562b9b59651b4f4c62
+  decision: reread
+  reason: The comments record that the openness score is escalated and that the connector count and
+    per-feature depth come from a maintainer-authored README and are not independently verified. A
+    verification line naming the repository would assert exactly the confirmation the record says
+    was not obtained.
+- product: thunderbolt
+  current_state: generic
+  verification_date: '2026-08-13'
+  current_clause: Verified live 2026-08-13 via primary sources;
+  prose_digest: eca3aff28069bdf466b5bdc8a37129c8f3bf21b1e66cbbc537b06e1018572a05
+  decision: reread
+  reason: The comments carry release v0.1.107 and ~4.8k stars. The description is clean and the repository
+    would support a rewritten line.

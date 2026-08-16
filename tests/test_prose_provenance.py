@@ -169,6 +169,20 @@ def test_incomplete_packets_are_refused(name, packet):
         check(packet)
 
 
+def test_a_url_cited_on_two_axes_is_checked_against_every_date_it_carries():
+    """`chatgpt` cites its OpenAI usage report on 2026-08-13 for openness and 2026-06-04 for
+    capability. Flattening to `url -> accessed` kept whichever came last in axis order, so the
+    check answered "was the LAST instance accessed then?" while reporting an answer to "was
+    one". It refused two correct packets, and would equally have vouched for a URL whose
+    date-aligned instance was not the one under review."""
+    from build.apply_provenance import score_sources
+
+    dates = score_sources("chatgpt")
+    assert dates["https://openai.com/index/how-people-are-using-chatgpt/"] == {
+        "2026-08-13", "2026-06-04"
+    }
+
+
 def test_refusal_never_falls_back_to_writing_something_else():
     """`Refused` is raised, not swallowed. A packet that cannot justify itself leaves the
     product untouched and goes to the re-read queue."""
