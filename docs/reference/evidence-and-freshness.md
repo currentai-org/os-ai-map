@@ -56,12 +56,14 @@ Somebody committed that file on that date and left the score standing, which is 
 review rather than a reading. Git records it, and nobody can inflate it. As #102 put
 it, the git history of a score file *is* its verification record.
 
-As of 2026-08-15, 1,407 of the 1,416 axes carry a real `last_verified`; the other **nine are
-explicitly held** in `sources/verification_queue.yaml` and read through the fallback (the sweep
-dated them, then the audit removed those unsupported confirmations — see Part 3; `falcon.adoption`
-joined them on 2026-08-15 when a fresh fetch disproved its own band). So the fallback is not idle:
-a held axis and a product added tomorrow both rely on it until somebody confirms them, and the age
-gate below reads whichever signal an axis has.
+**When the fallback applies**, rather than how many axes are on it today: an axis with no
+`last_verified` at all. Two things put an axis in that state — it is explicitly held in
+`sources/verification_queue.yaml`, or nobody has confirmed it yet, which is where every newly
+added product starts. The age gate below reads whichever signal an axis has.
+
+The live count is in "Current state" further down, and `check_freshness` prints it. It is
+recorded once in this document on purpose: the same number written in two places is how this
+section spent a week disagreeing with the table below it.
 
 A held axis reaches the payload as `basis: partial` rather than through the fallback — see
 "What the payload publishes" below. The fallback covers products with **no** dated axis at all.
@@ -439,21 +441,25 @@ this paragraph.
 The producible-pair check and the parity gate apply in full immediately — nothing has to be
 populated first.
 
-The parity gate runs on its own weekly schedule rather than inside the publish job, and that
-placement is deliberate rather than a stopgap in disguise. Publishing pushes and materializes the
-static models. The three user models that read them are scheduled to recompute on Monday at
-03:00, 04:00 and 05:00 UTC, upstream first, with parity grading the result at 06:00. If parity
-were chained onto a publish instead, it would compare fresh rules against a warehouse that has not
-recomputed and fail for a reason that is not a drift. (The repo does not verify that the weekly
-recompute fired — `docs/operations/deploy-models.md` — so a red parity means "check the run
-history first.")
+The parity gate runs on its own weekly schedule rather than inside the publish job.
+Publishing pushes and materializes the static models; the three user models that read them do
+not recompute on their own.
 
-**The gate's schedule has to match the chain's.** A daily gate over a weekly chain would fail
-every day between a merge and the following Monday, always saying "the warehouse has not caught
-up", which is how a gate earns its way into being ignored. A Tuesday merge is scheduled to be
-scored the following Monday; parity can move into `registry.yml` on the day `publish_registry` triggers those three
-runs and waits for them. For a check sooner, refresh the three models and run `check_parity` by
-hand (`docs/operations/deploy-models.md`).
+**The scoring-chain recompute is manual.** Those models carry a declared cron, and a declared
+cron is not a schedule: they were set at the model-revision layer, the platform schedules from
+the dataset, and run history shows every run of the `scores` dataset as `triggerType: MANUAL`.
+Read the run history and check `triggerType` before believing any freshness claim that rests on
+a cadence — see `docs/operations/deploy-models.md`.
+
+**So parity is a drift-and-staleness detector, and it cannot tell those two apart.** A red
+parity means the repo and the warehouse disagree; whether that is because the scoring logic
+drifted or because nobody has recomputed since the last merge is a question for the run
+history, and it is usually the second. That is also why parity is not chained onto a publish:
+it would compare fresh rules against a warehouse that has not recomputed and fail for a reason
+that is not a drift.
+
+For a check now, refresh the three models by hand and run `check_parity`
+(`docs/operations/deploy-models.md`).
 
 The producible-pair check found 17 impossible pairs on its first run, not the two that were
 known. `vellum`, `whylabs` and `tensorrt-llm` were recorded `4 / open_source`, a pair no rule
@@ -558,7 +564,7 @@ prose by `check_rubric`'s own measure, against the 71% that stopped `edge_hardwa
 four different instruments sharing one field name, there is no shared ladder at the end of that
 work the way openness got four.
 
-## Current state, 2026-08-14
+## Current state
 
 | | count |
 |---|---|

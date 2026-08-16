@@ -51,10 +51,14 @@ tests/                 pytest suite for build helpers and serializer behavior
 
 ### What is in `build/`
 
-Every module is a CLI with a docstring that explains why it exists. **`uv run python -m
-build.<module> --help` is the authority on any one of them**; this section is a map of the
-stages, not an inventory. An earlier version of it claimed to be complete, named a count, and
-was wrong within a fortnight.
+This section maps the stages; it is not an inventory. An earlier version claimed to be
+complete, named a count, and was wrong within a fortnight.
+
+Every module carries a docstring explaining why it exists, and that docstring is the
+authority. **The ones that are CLIs answer `uv run python -m build.<module> --help`** — the
+pipeline stages, the gates, the proposers, `sweep_status`, `fetch_source`, `product_prose`.
+The shared helpers are code APIs rather than commands and answer nothing: `vocabulary`,
+`rubrics`, `warehouse`, `components`, `freshness_payload`. Read their docstrings.
 
 ```
 Notebook build     validate -> serialize -> render, plus freshness_payload and update_readme.
