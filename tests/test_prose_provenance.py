@@ -405,13 +405,47 @@ def test_packets_cover_every_unresolved_state():
 
 
 def test_packets_can_be_scoped_to_one_category():
-    """Review happens a category at a time, so the manifest has to be scopeable to a roster."""
+    """Review happens a category at a time, so the manifest has to be scopeable to a roster.
+
+    Twice now a version of this test failed because the work succeeded — first by naming
+    `ui_api`, then by requiring *some* category to still be unresolved, which the last category
+    completed would have broken. Nothing here may depend on the corpus being unfinished: an
+    empty result for every category is a valid, and eventually the expected, outcome.
+
+    So the real corpus is walked only for the scoping IDENTITY, which holds at any state, and
+    the non-empty case is proved on a synthetic corpus below.
+    """
+    from build.prose_provenance import ROOT as R
     from build.prose_provenance import category_roster, packets
 
-    roster = category_roster("ui_api")
-    rows = packets(roster)
-    assert rows and {r["product"] for r in rows} <= roster
-    assert {r["product"] for r in rows} == {r["product"] for r in packets()} & roster
+    unresolved = {r["product"] for r in packets()}
+    for path in sorted((R / "sources" / "categories").glob("*.yaml")):
+        roster = category_roster(path.stem)
+        assert {r["product"] for r in packets(roster)} == unresolved & roster, path.stem
+
+
+def test_scoping_selects_a_subset_when_there_is_one_to_select(tmp_path, monkeypatch):
+    """The non-empty half of scoping, on a corpus this test controls.
+
+    Proving it against the real corpus would mean requiring some category to stay unresolved,
+    which makes finishing the job a test failure.
+    """
+    import build.prose_provenance as pp
+
+    products = tmp_path / "sources" / "products"
+    scores = tmp_path / "sources" / "scores"
+    products.mkdir(parents=True)
+    scores.mkdir(parents=True)
+    for slug in ("in-roster", "out-of-roster"):
+        (products / f"{slug}.yaml").write_text(yaml.safe_dump(
+            {"name": slug, "description": "A widget.",
+             "comments": "Verified 2026-08-13 via primary sources."}))
+        (scores / f"{slug}.yaml").write_text(yaml.safe_dump({"openness": {"sources": []}}))
+    monkeypatch.setattr(pp, "ROOT", tmp_path)
+
+    assert {r["product"] for r in pp.packets()} == {"in-roster", "out-of-roster"}
+    assert {r["product"] for r in pp.packets({"in-roster"})} == {"in-roster"}
+    assert pp.packets(set()) == []
 
 
 @pytest.mark.parametrize("state", ["ambiguous_noncanonical", "named_noncanonical"])
