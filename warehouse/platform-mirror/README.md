@@ -23,15 +23,25 @@ platform to catch drift is a planned follow-up.
 | `evidence_product_evidence.sql` | `currentai.evidence.product_evidence` — the evidence behind each scoring dimension |
 | `scores_openness_facts.sql` | `currentai.scores.openness_facts` — resolves each dimension per product |
 | `scores_openness_computed.sql` | `currentai.scores.openness_computed` — walks each openness ladder in SQL |
-| `github_repo_state.py` | `currentai.signal_github.repo_state` |
-| `huggingface_hub_state.py` | `currentai.signal_huggingface.hub_state` |
+| `github_repo_state.py` | `currentai.signal_github.repo_state` — the fetcher, at repo grain |
+| `github_product_adoption.sql` | `currentai.signal_github.product_adoption` — bands stars, the last-resort adoption route |
+| `huggingface_hub_state.py` | `currentai.signal_huggingface.hub_state` — the fetcher, at artifact grain |
+| `huggingface_product_adoption.sql` | `currentai.signal_huggingface.product_adoption` — bands Hub downloads per product |
 | `pypi_package_downloads.sql` | `currentai.signal_pypi.package_downloads` |
 | `artificialanalysis_models.py` | `currentai.signal_artificialanalysis.model_evaluations` |
 | `lmarena_leaderboard.py` | `currentai.signal_lmarena.text_leaderboard` |
 | `semanticscholar_paper_citations.py` | `currentai.signal_semanticscholar.paper_citations` |
 | `goodailist_repos.py` | `currentai.signal_goodailist.repo_catalog` |
-| `packages_*.{sql,py}` | `currentai.signal_packages.*` — package-adoption successor (staged) |
+| `packages_*.{sql,py}` | `currentai.signal_packages.*` — package-adoption successor (all three staged, see #314) |
 | `*.schema.json` | the output columns each model declares |
+
+Each fetcher is paired with a derivation: the `*_state` model holds a secret and calls an API
+at artifact grain, and the `*_product_adoption` model bands it at product grain, so a rubric
+change re-bands without re-fetching. The three `product_adoption` models are separate tables
+reading separate signals — stars, Hub downloads, package-registry downloads — and one of them
+was mirrored against the other two's names until 2026-08-16. Read the header of a `.sql` file
+rather than its filename to know what it builds; `tests/test_platform_mirror.py` now checks
+that header against this manifest.
 
 The `check_parity` gate is what actually enforces that `scores_openness_computed.sql` and
 `build/check_rubric.py` agree — this copy is for reading, that gate is for correctness. See
