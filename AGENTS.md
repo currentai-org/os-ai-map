@@ -33,7 +33,7 @@ warehouse/platform-mirror/  Read-only COPY of the models that run on the OSO pla
                        provenance manifest. Source of truth is the platform; nothing deploys from here.
 warehouse/models/      SQL for the legacy entities/events/metrics/scores layer (in-repo)
 warehouse/ingest/      Python fetchers that write CSVs to warehouse/catalog/
-warehouse/catalog/     Raw external CSVs (HF benchmarks, incidents, GitHub orgs)
+warehouse/catalog/     Raw external CSVs (HF model catalog, benchmarks, stack-map bridge)
 warehouse/sources.yaml Manifest: each external source declares EITHER a fetcher
                        (writes a CSV) or an ingested_by (a UDM reads it directly)
 build/                 Python pipeline, see below

@@ -20,9 +20,11 @@ sources:
     refresh: declared daily on the UDM; verify in run history
 
   - id: huggingface
-    name: Hugging Face models and datasets
+    name: Hugging Face models
     homepage: https://huggingface.co/
-    provides: Model and dataset catalogs from the Hugging Face Hub
+    provides: >-
+      Model catalog from the Hugging Face Hub. Not uploaded — it is the input list
+      fetch_model_benchmarks scans, and only that fetcher's output reaches the warehouse.
     fetcher: warehouse/ingest/fetch_huggingface.py
     refresh: weekly (refresh-data.yml)
 
@@ -33,26 +35,16 @@ sources:
     fetcher: warehouse/ingest/fetch_model_benchmarks.py
     refresh: weekly (refresh-data.yml)
 
-  - id: github_orgs
-    name: GitHub AI org/repo catalog
-    homepage: https://github.com/
-    provides: AI-tagged repos and orgs
-    fetcher: warehouse/ingest/fetch_github_orgs.py
-    refresh: weekly (refresh-data.yml)
-
-  - id: github_ai_repos
-    name: GitHub AI repo search
-    homepage: https://github.com/
-    provides: AI repos discovered via GitHub topic and keyword search
-    fetcher: warehouse/ingest/fetch_github_ai_repos.py
-    refresh: weekly (refresh-data.yml)
-
   - id: ai_incidents
     name: AI Incident Database
     homepage: https://incidentdatabase.ai/
     provides: Safety / safeguards incidents
-    fetcher: warehouse/ingest/fetch_incidents.py
-    refresh: weekly (refresh-data.yml)
+    # No fetcher and no committed CSV, for the same reason as goodailist above: the
+    # currentai.aiid REST ingestion reads incidentdatabase.ai on its own weekly cron,
+    # and the ai-safety-incidents notebook reads that rather than a mirror. The
+    # committed CSV was removed on 2026-08-16 with nothing pointed at it.
+    ingested_by: currentai.aiid.incidents
+    refresh: declared weekly on the ingestion; verify in run history
 
   - id: stack_map
     name: Stack-map taxonomy bridge (internal)

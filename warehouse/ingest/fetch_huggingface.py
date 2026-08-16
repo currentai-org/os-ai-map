@@ -1,9 +1,16 @@
 """
-Fetch Hugging Face models and datasets linked to tracked AI repos.
+Fetch the Hugging Face models linked to tracked AI repos.
 
-Approach: extract unique authors (GitHub orgs/users) from the GoodAI List,
-then query HF for models and datasets by those authors. This gives us
-the HF artifacts that are relevant to our ecosystem, not the full 2.8M dump.
+Approach: extract unique authors (GitHub orgs/users) from the GoodAI List, then query HF for
+models by those authors. That gives the HF artifacts relevant to this ecosystem rather than
+the full 2.8M dump.
+
+Its two CSVs are not uploaded anywhere. They are the input list that
+`fetch_model_benchmarks.py` scans to build `model_repos.csv`, which IS uploaded and which
+`entities_models.sql` reads. That is the whole reason this fetcher still exists.
+
+It fetched HF DATASETS too until 2026-08-16. Those two CSVs loaded into no static model and
+were read by nothing — four months of weekly author scans producing a file with no consumer.
 
 Usage:
     uv run python warehouse/ingest/fetch_huggingface.py
@@ -14,24 +21,16 @@ import sys
 import time
 from pathlib import Path
 
-from huggingface_hub import list_models, list_datasets
+from huggingface_hub import list_models
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "catalog" / "huggingface"
 MODELS_CSV = DATA_DIR / "tracked_models.csv"
-DATASETS_CSV = DATA_DIR / "tracked_datasets.csv"
 TOP_MODELS_CSV = DATA_DIR / "top_models.csv"
-TOP_DATASETS_CSV = DATA_DIR / "top_datasets.csv"
 
 MODEL_FIELDS = [
     "model_id", "author", "downloads", "likes",
     "pipeline_tag", "library_name", "created_at", "last_modified", "tags",
 ]
-DATASET_FIELDS = [
-    "dataset_id", "author", "downloads", "likes",
-    "created_at", "last_modified", "tags",
-]
-
-
 def get_tracked_authors() -> set[str]:
     """Extract unique GitHub orgs/users from GoodAI List via pyoso."""
     try:
@@ -46,7 +45,7 @@ def get_tracked_authors() -> set[str]:
         return authors
     except Exception as e:
         print(f"Warning: could not fetch authors from OSO ({e})")
-        print("Falling back to top models/datasets by downloads")
+        print("Falling back to top models by downloads")
         return set()
 
 
@@ -94,32 +93,8 @@ def fetch_models_by_authors(authors: set[str]) -> list[dict]:
     return rows
 
 
-def fetch_datasets_by_authors(authors: set[str]) -> list[dict]:
-    """Fetch HF datasets published by tracked authors."""
-    rows = []
-    total = len(authors)
-    for i, author in enumerate(sorted(authors)):
-        if i % 100 == 0:
-            print(f"  Datasets: scanning author {i}/{total} ({len(rows)} found so far)")
-        try:
-            for d in _throttled(lambda: list(list_datasets(author=author, sort="downloads", limit=100))):
-                rows.append({
-                    "dataset_id": d.id or "",
-                    "author": d.author or "",
-                    "downloads": d.downloads or 0,
-                    "likes": d.likes or 0,
-                    "created_at": str(d.created_at or ""),
-                    "last_modified": str(d.last_modified or ""),
-                    "tags": ",".join(d.tags) if d.tags else "",
-                })
-        except Exception:
-            pass
-    rows.sort(key=lambda r: r["downloads"], reverse=True)
-    return rows
-
-
-def fetch_top(limit: int = 5000) -> tuple[list[dict], list[dict]]:
-    """Fallback: fetch top models/datasets by downloads globally."""
+def fetch_top(limit: int = 5000) -> list[dict]:
+    """Fallback: fetch top models by downloads globally."""
     print(f"Fetching top {limit} models by downloads...")
     models = []
     for m in list_models(sort="downloads", limit=limit, full=True):
@@ -135,20 +110,7 @@ def fetch_top(limit: int = 5000) -> tuple[list[dict], list[dict]]:
             "tags": ",".join(m.tags) if m.tags else "",
         })
 
-    print(f"Fetching top {limit} datasets by downloads...")
-    datasets = []
-    for d in list_datasets(sort="downloads", limit=limit, full=True):
-        datasets.append({
-            "dataset_id": d.id or "",
-            "author": d.author or "",
-            "downloads": d.downloads or 0,
-            "likes": d.likes or 0,
-            "created_at": str(d.created_at or ""),
-            "last_modified": str(d.last_modified or ""),
-            "tags": ",".join(d.tags) if d.tags else "",
-        })
-
-    return models, datasets
+    return models
 
 
 def write_csv(path: Path, rows: list[dict], fields: list[str]) -> None:
@@ -172,19 +134,9 @@ def dedup_models(rows: list[dict]) -> list[dict]:
     return out
 
 
-def dedup_datasets(rows: list[dict]) -> list[dict]:
-    seen = set()
-    out = []
-    for r in rows:
-        if r["dataset_id"] not in seen:
-            seen.add(r["dataset_id"])
-            out.append(r)
-    return out
-
-
 def main():
     import argparse
-    parser = argparse.ArgumentParser(description="Fetch Hugging Face models and datasets.")
+    parser = argparse.ArgumentParser(description="Fetch Hugging Face models.")
     parser.add_argument("--top-only", action="store_true", help="Only fetch top 1K global (skip author scan)")
     parser.add_argument("--tracked-only", action="store_true", help="Only fetch tracked authors (skip top 1K)")
     args = parser.parse_args()
@@ -198,20 +150,14 @@ def main():
             tracked_models = fetch_models_by_authors(authors)
             print(f"  Found {len(tracked_models)} models from tracked authors")
 
-            print(f"\nFetching HF datasets for {len(authors)} tracked authors...")
-            tracked_datasets = fetch_datasets_by_authors(authors)
-            print(f"  Found {len(tracked_datasets)} datasets from tracked authors")
-
             write_csv(MODELS_CSV, tracked_models, MODEL_FIELDS)
-            write_csv(DATASETS_CSV, tracked_datasets, DATASET_FIELDS)
 
     if not args.tracked_only:
-        print("\nFetching top 1000 global models and datasets...")
+        print("\nFetching top 1000 global models...")
         try:
-            top_models, top_datasets = fetch_top(limit=1000)
-            print(f"  Found {len(top_models)} top models, {len(top_datasets)} top datasets")
+            top_models = fetch_top(limit=1000)
+            print(f"  Found {len(top_models)} top models")
             write_csv(TOP_MODELS_CSV, top_models, MODEL_FIELDS)
-            write_csv(TOP_DATASETS_CSV, top_datasets, DATASET_FIELDS)
         except Exception as e:
             print(f"  Warning: global top fetch failed ({e})")
             print("  Re-run with --top-only later.")
