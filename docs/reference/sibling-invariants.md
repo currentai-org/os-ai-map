@@ -108,6 +108,38 @@ and tested, so it stays a decision instead of becoming drift.
     `20260815` from Python 3.11, which would put a second date spelling into a corpus whose
     schema declares `format: date`.
 
+- construct: the verification-clause boundary
+  canonical_owner: build/prose_provenance.py BOUND — and only as a PROPOSAL
+  duplicates:
+    - build/apply_provenance.py   # CLAUSE, removed
+  risk: >-
+    The sibling copy re-matched the clause at write time, so every boundary bug became a
+    silent corruption of prose rather than a visible wrong string. `[^.;]*` stopped inside
+    `huggingface.co`; adding a whitespace test then split `the U.S. AI Safety Institute
+    report` into two grammatical-looking halves, which is worse, because nothing looks wrong.
+
+    Deduplicating it would have missed the point. A heuristic good enough to PROPOSE a clause
+    for review is not good enough to rewrite prose unsupervised, so the applier now holds no
+    pattern at all: the boundary is confirmed once by a reviewer in the packet and substituted
+    literally. `BOUND` stays a heuristic and is labelled as one.
+  disposition: fixed
+  regression_test: >-
+    test_the_applier_holds_no_clause_pattern — AST, asserting the module neither imports nor
+    references `re`. A text search would have matched the docstring quoting the very fragments
+    it no longer uses, and would then have been weakened until it matched nothing.
+
+- construct: a composition nothing exercises
+  canonical_owner: n/a
+  duplicates:
+    - build/apply_provenance.py   # apply_one
+  risk: >-
+    `check` and `rewrite` were each tested alone and thoroughly. `apply_one`, which joins
+    them, referenced an undefined `CANONICAL` — so every real application would have raised
+    `NameError` after passing every check it was subjected to. The same shape as the rest of
+    this table, one level up: the parts were verified, the composition was not.
+  disposition: fixed
+  regression_test: test_an_unresolved_packet_of_any_state_applies — end to end, on a synthetic corpus
+
 - construct: openness class → bucket map
   canonical_owner: docs/openness-class-map.json
   duplicates:
