@@ -108,6 +108,16 @@ CLAUSE_ANY = re.compile(
 # shape and names nothing.
 HAS_WORD = re.compile(r"[A-Za-z0-9]")
 
+# The opening a reviewed clause must have. The applier replaces the exact string a packet
+# carries, so without this a packet could nominate any other unique dated sentence in the
+# prose: the rewrite would land there, the real verification line would survive untouched, and
+# a postcondition looking only for "a canonical line somewhere" would still pass.
+CLAUSE_HEAD = re.compile(r"^[Vv]erified(?: live)?\s+(\d{4}-\d{2}-\d{2})\b")
+
+# The three states a packet may be raised against. `canonical` needs nothing and `missing`
+# needs research rather than a document already in the record, so neither is packetable.
+UNRESOLVED = ("generic", "ambiguous_noncanonical", "named_noncanonical")
+
 # URLs that are machine endpoints or count aggregators rather than documents a person reads.
 # A source like this can establish a score dimension and still say nothing about what the
 # product IS, which is what the prose line has to point at.
@@ -243,18 +253,43 @@ def census() -> dict[str, list[str]]:
     return by_state
 
 
-def packets() -> list[dict]:
-    """One decision packet per product needing evidence matching, decision left unset."""
+def category_roster(slug: str) -> set[str]:
+    """The product slugs a category lists. Membership lives on the category, not the product."""
+    path = ROOT / "sources" / "categories" / f"{slug}.yaml"
+    if not path.exists():
+        raise SystemExit(f"no such category: {slug}")
+    return set((yaml.safe_load(path.read_text()) or {}).get("products") or [])
+
+
+def packets(only: set[str] | None = None) -> list[dict]:
+    """One decision packet per UNRESOLVED product, decision left unset.
+
+    All three unresolved states go through this one path, and through the same `derive`
+    decision with the same justification. That is deliberate:
+
+      * `generic` names a method, so something has to supply a document;
+      * `ambiguous_noncanonical` names nothing at all;
+      * `named_noncanonical` names something in prose, but the name has to be a document the
+        record actually cites before it can be written as provenance. A second, weaker
+        "mechanical rewording" path would be exactly the shortcut this exercise is correcting
+        — it would let the prose vouch for itself.
+
+    Where a named record's document is not a date-aligned source in its score file, the honest
+    decision is `reread`, not a reword.
+    """
     all_scores = scores()
     out = []
     for slug, product in products().items():
         state, date, trailer = classify(product.get("comments"))
-        if state not in ("generic",):
+        if state not in UNRESOLVED:
+            continue
+        if only is not None and slug not in only:
             continue
         cands = candidates(slug, date, all_scores.get(slug) or {})
         usable = [c for c in cands if c["looks_like_document"] and not c["shows_is_measurement_only"]]
         out.append({
             "product": slug,
+            "current_state": state,
             "verification_date": date,
             "current_trailer": trailer,
             "description": " ".join(str(product.get("description") or "").split()),
@@ -267,6 +302,10 @@ def packets() -> list[dict]:
             # A packet with no usable candidate cannot be derived from evidence, whatever a
             # reader thinks of it: there is no document in the record to name.
             "hint": "reread" if not usable else "needs-judgment",
+            # What the prose currently offers, for the reviewer to weigh against the
+            # candidates. On a `named_noncanonical` record this is the name already in the
+            # line — which still has to turn out to be a cited document.
+            "current_trailer_names": bool(trailer and not METHOD_WORDS.match(trailer)),
             "decision": None,
             "selected_document": None,
             "source_url": None,
@@ -279,6 +318,7 @@ def packets() -> list[dict]:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--packets", help="write candidate decision packets to this path")
+    parser.add_argument("--category", help="restrict packets to one category's roster")
     args = parser.parse_args()
 
     by_state = census()
@@ -289,15 +329,24 @@ def main() -> int:
         n = len(by_state.get(state, []))
         print(f"  {state:22}{n:>5}")
 
+    unresolved = sum(len(by_state.get(s, [])) for s in UNRESOLVED)
+    print(f"\n  {'unresolved':22}{unresolved:>5}")
+
     if args.packets:
-        rows = packets()
+        only = category_roster(args.category) if args.category else None
+        rows = packets(only)
         Path(args.packets).write_text(yaml.safe_dump(rows, sort_keys=False, allow_unicode=True))
-        hints = {}
+        hints: dict[str, int] = {}
+        states: dict[str, int] = {}
         for r in rows:
             hints[r["hint"]] = hints.get(r["hint"], 0) + 1
-        print(f"\n{len(rows)} packets written to {args.packets}")
+            states[r["current_state"]] = states.get(r["current_state"], 0) + 1
+        scope = f" for {args.category}" if args.category else ""
+        print(f"\n{len(rows)} packets{scope} written to {args.packets}")
+        for state, n in sorted(states.items()):
+            print(f"  {state:22}{n:>5}")
         for hint, n in sorted(hints.items()):
-            print(f"  hint {hint:16}{n:>5}")
+            print(f"  hint {hint:17}{n:>5}")
     return 0
 
 

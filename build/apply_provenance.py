@@ -56,30 +56,22 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import re
 from datetime import date
 from pathlib import Path
 
 import yaml
 
 from build.components import set_document_field
-from build.prose_provenance import (AXES, BOUND, HAS_WORD, METHOD_WORDS, classify,
-                                    prose_digest)
+from build.prose_provenance import (ANY_DATED, AXES, CLAUSE_HEAD, HAS_WORD, METHOD_WORDS,
+                                    UNRESOLVED, classify, prose_digest)
 
 ROOT = Path(__file__).resolve().parents[1]
 
-# The whole dated clause, however it is currently worded, up to its terminator. Replaced
-# wholesale so `Verified live <date> via primary sources` and `verified live <date> via
-# primary-source research` collapse to the one canonical form.
-# A sentence-terminating "." is one followed by whitespace or end of string. A dot inside a
-# URL, a filename or a version number is not, and `[^.;]*` treated them alike: rewriting
-# `Verified live 2026-08-13 on huggingface.co/datasets/allenai/ai2_arc (474 downloads).`
-# stopped at the dot in `huggingface.co` and left `.co/datasets/allenai/ai2_arc (474
-# downloads).` orphaned after the new document name. 71 clauses in the corpus contain an
-# internal dot, so this was not an edge case.
-CLAUSE = re.compile(
-    r"[Vv]erified(?: live)?\s+(\d{4}-\d{2}-\d{2})\s*[,;]?\s*(?:via|on|against|using)?\s*" + BOUND
-)
+# This module deliberately holds NO clause pattern. It used to carry its own copy of the
+# boundary regex and re-match the clause at write time, which made every boundary bug a silent
+# corruption of prose. The boundary is now proposed once by `prose_provenance.clause_span`,
+# confirmed by a reviewer in the packet, and substituted here literally.
+# `tests/test_prose_provenance.py::test_the_applier_holds_no_clause_pattern` keeps it that way.
 
 
 class Refused(Exception):
@@ -101,7 +93,7 @@ def check(packet: dict) -> None:
     """Raise `Refused` unless the packet carries every part of its own justification."""
     slug = packet.get("product")
     for field in ("selected_document", "source_url", "source_accessed", "support",
-                  "prose_digest", "current_clause"):
+                  "prose_digest", "current_clause", "current_state"):
         if not str(packet.get(field) or "").strip():
             raise Refused(f"{slug}: packet has no {field}")
 
@@ -140,15 +132,41 @@ def check(packet: dict) -> None:
         raise Refused(f"{slug}: no product file")
     product = yaml.safe_load(path.read_text()) or {}
     state, live_date, _ = classify(product.get("comments"))
-    if state != "generic":
+    if state not in UNRESOLVED:
         raise Refused(
-            f"{slug}: live line is {state!r}, not generic — it has changed since review"
+            f"{slug}: live line is {state!r}, which this does not repair — it has changed "
+            "since review"
+        )
+    if state != str(packet["current_state"]):
+        raise Refused(
+            f"{slug}: reviewed as {packet['current_state']!r}, live line is now {state!r}"
         )
     if live_date != claimed:
         raise Refused(
             f"{slug}: live line is dated {live_date}, packet claims {claimed}; applying this "
             "would move the date"
         )
+
+    # The packet decides the clause BOUNDARY — a reviewer confirms the exact string. It does
+    # not get to decide which CLAIM is rewritten. Without the three checks below, a packet
+    # could nominate any other unique dated sentence: the rewrite would land there, the real
+    # verification line would survive untouched, and `CANONICAL.search` would still find the
+    # newly written one and call the result a success.
+    comments = " ".join(str(product.get("comments") or "").split())
+    clause = str(packet["current_clause"])
+    if comments.count(clause) != 1:
+        raise Refused(
+            f"{slug}: the reviewed clause appears {comments.count(clause)} times in the live "
+            "prose, not once"
+        )
+    head = CLAUSE_HEAD.match(clause)
+    if not head:
+        raise Refused(f"{slug}: current_clause is not a verification line: {clause[:60]!r}")
+    if head.group(1) != claimed:
+        raise Refused(
+            f"{slug}: current_clause is dated {head.group(1)}, packet claims {claimed}"
+        )
+
     live_digest = prose_digest(product)
     if live_digest != str(packet["prose_digest"]):
         raise Refused(
@@ -157,7 +175,7 @@ def check(packet: dict) -> None:
         )
 
 
-def rewrite(comments: str, clause: str, document: str) -> str:
+def rewrite(comments: str, clause: str, document: str, iso: str) -> str:
     """Replace the EXACT reviewed `clause` with the canonical line. No boundary is re-derived.
 
     The applier used to re-match the clause with a regex at write time, which made every
@@ -169,6 +187,10 @@ def rewrite(comments: str, clause: str, document: str) -> str:
     So the boundary is decided once, in the packet, where a human sees the exact string that
     will be replaced — and this does a literal substitution of that string, refusing if it is
     not present exactly once.
+
+    `date` is passed in already validated rather than scraped back out of the clause. Deriving
+    it here would have meant the written date came from whatever string the packet nominated,
+    while every check upstream was about `verification_date`.
     """
     if not clause:
         raise Refused("packet carries no current_clause")
@@ -178,30 +200,53 @@ def rewrite(comments: str, clause: str, document: str) -> str:
             f"the reviewed clause appears {occurrences} times in the live prose, not once; "
             "the record has changed since review"
         )
-    date_match = re.search(r"\d{4}-\d{2}-\d{2}", clause)
-    if not date_match:
-        raise Refused("the reviewed clause carries no date")
+    try:
+        date.fromisoformat(iso)
+    except (TypeError, ValueError):
+        raise Refused(f"{iso!r} is not a real date")
+    head = CLAUSE_HEAD.match(clause)
+    if not head:
+        raise Refused(f"the reviewed clause is not a verification line: {clause[:60]!r}")
+    if head.group(1) != iso:
+        raise Refused(f"the reviewed clause is dated {head.group(1)}, not {iso}")
     trailing = clause[-1] if clause and clause[-1] in ".;" else "."
     return comments.replace(
-        clause, f"Verified {date_match.group(0)} via {document.rstrip('.')}{trailing}", 1
+        clause, f"Verified {iso} via {document.rstrip('.')}{trailing}", 1
     )
 
 
 def apply_one(packet: dict) -> bool:
     check(packet)
     slug = packet["product"]
+    claimed = str(packet["verification_date"])
     path = ROOT / "sources" / "products" / f"{slug}.yaml"
     text = path.read_text()
     doc = yaml.safe_load(text) or {}
-    comments = str(doc.get("comments") or "")
+
+    # Normalized, because that is the form the clause was proposed and reviewed in: the corpus
+    # wraps `comments` across lines, so a clause spanning a wrap would never match the raw
+    # text literally. `set_document_field` re-wraps on write, and `prose_digest` normalizes,
+    # so this changes the whitespace of the stored line and nothing else.
+    comments = " ".join(str(doc.get("comments") or "").split())
 
     new_comments = rewrite(
-        comments, str(packet.get("current_clause") or ""), str(packet["selected_document"])
+        comments, str(packet["current_clause"]), str(packet["selected_document"]), claimed
     )
     if new_comments == comments:
         return False
-    if not CANONICAL.search(" ".join(new_comments.split())):
-        raise Refused(f"{slug}: rewrite did not produce a canonical line")
+
+    # Postconditions on the RESULT, not on "a canonical line exists somewhere in it".
+    state, live_date, _ = classify(new_comments)
+    if state != "canonical":
+        raise Refused(f"{slug}: rewrite produced a {state!r} line, not a canonical one")
+    if live_date != claimed:
+        raise Refused(f"{slug}: rewrite produced a line dated {live_date}, not {claimed}")
+    if len(ANY_DATED.findall(new_comments)) != 1:
+        raise Refused(
+            f"{slug}: rewrite left {len(ANY_DATED.findall(new_comments))} dated verification "
+            "lines; exactly one must remain"
+        )
+
     path.write_text(set_document_field(text, "comments", new_comments))
     return True
 
