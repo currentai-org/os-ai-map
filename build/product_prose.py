@@ -6,14 +6,15 @@
 
 The date is what `sweep_status` ages the prose on. The document is what makes the line
 provenance rather than an assertion: it names something a later editor can reopen. And the
-line ENDS the field, so a claim cannot be appended after it and read as covered by it.
+line occupies a whole sentence at the end of the field — nothing before `Verified` that could
+negate or qualify it, nothing after the period that could ride on it.
 
 ## The five states
 
 | state | meaning |
 |---|---|
 | `canonical` | the whole contract: a real calendar date, `via`, a document, a period, end |
-| `named_noncanonical` | names a document, but not in that form — `live` / `on` / `against`, an impossible date, a missing period, or prose after the line |
+| `named_noncanonical` | names a document, but not in that form — `live` / `on` / `against`, an impossible date, a missing period, a qualifier before `Verified`, or prose after the line |
 | `ambiguous_noncanonical` | dated, but no document identifiable — `Verified 2026-08-13.` |
 | `generic` | names a METHOD — `primary sources`, `research`, `web search` |
 | `missing` | no dated verification line at all |
@@ -56,18 +57,27 @@ ROOT = Path(__file__).resolve().parents[1]
 # whose `D` has no word boundary before it — correctly ends the clause.
 BOUND = r"(?:[^.;]|\.(?!\s|$)|(?<=\b[A-Z])\.(?=\s))*"
 
-# The canonical line, in full, as `product-copy.md` defines it: the verification form, a real
-# date, `via`, a document, a final period, and nothing after it.
+# The canonical line, in full, as `product-copy.md` defines it: the verification form starting
+# a sentence, a real date, `via`, a document, a final period, and nothing after it.
 #
-# Every part of that is load-bearing, and an earlier cut of this module enforced only the
-# first two. `Verified 2026-08-13 via the README` (no period), and
-# `Verified 2026-08-13 via the README. This trailing claim is not covered.` both passed as
-# canonical, so the gate accepted lines weaker than the contract its own failure message
-# quotes. The trailing-prose case is the dangerous one: a claim appended after the line reads
-# as covered by it and is not.
+# **Both ends are load-bearing, and each was missing in turn.** An earlier cut enforced only a
+# date-shaped prefix, so `Verified 2026-08-13 via the README` (no period) and
+# `Verified 2026-08-13 via the README. This trailing claim is not covered.` both passed. Fixing
+# the end left the start open, and a bare search for `Verified` anywhere accepted the line's own
+# negations:
+#
+#     Not Verified 2026-08-13 via the README.
+#     Last Verified 2026-08-13 via the README.
+#     UnVerified 2026-08-13 via the README.
+#     Verification status: Verified 2026-08-13 via the README.
+#
+# The first three assert the OPPOSITE of what the gate would have read them as, which is worse
+# than the trailing-prose case. So the form has to begin the field or a sentence.
 #
 # `BOUND` is what lets the document keep its dots while trailing prose is still rejected.
-CANONICAL = re.compile(r"Verified (\d{4}-\d{2}-\d{2}) via (" + BOUND + r")\.\s*$")
+CANONICAL = re.compile(
+    r"(?:^|(?<=[.;!?]\s))Verified (\d{4}-\d{2}-\d{2}) via (" + BOUND + r")\.\s*$"
+)
 
 # Any dated verification, however it is worded. The corpus has carried `Verified live <date>
 # via`, `Verified live <date> on`, `... against`, and lowercase `verified`.

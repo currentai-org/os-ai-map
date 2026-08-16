@@ -181,6 +181,23 @@ def test_a_line_short_of_the_full_contract_is_not_canonical(comments, why):
 
 
 @pytest.mark.parametrize(
+    "comments",
+    [
+        # The form must BEGIN the field or a sentence. A bare search for `Verified` anywhere
+        # accepted the line's own negations — and the first three assert the opposite of what
+        # the gate would have read them as, which is worse than trailing prose.
+        "Not Verified 2026-08-13 via the README.",
+        "Last Verified 2026-08-13 via the README.",
+        "UnVerified 2026-08-13 via the README.",
+        "Verification status: Verified 2026-08-13 via the README.",
+        "Never Verified 2026-08-13 via the README.",
+    ],
+)
+def test_a_prefixed_or_negated_form_is_not_canonical(comments):
+    assert classify(comments)[0] != "canonical"
+
+
+@pytest.mark.parametrize(
     "comments, document",
     [
         # Every one of these is a document name containing a period. The boundary has to keep
