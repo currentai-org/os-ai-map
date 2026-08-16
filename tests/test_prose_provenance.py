@@ -98,27 +98,57 @@ def test_rewrite_refuses_a_clause_that_is_not_a_verification_line():
                 "Released 2026-08-13 under MIT.", "the README", "2026-08-13")
 
 
+# A synthetic corpus, deliberately. These once ran against `anythingllm`. A first cut of the
+# ui_api manifest repaired that record, its state stopped being `generic`, and every refusal
+# test here failed — not because the machinery broke, but because the fixture's subject had
+# been fixed. The manifest was withdrawn on other grounds, so `anythingllm` is `generic` again
+# and the tests would pass either way; the coupling is the defect, not the failure it caused.
+# A test for the machinery must not be pinned to a record the machinery exists to change.
+_COMMENTS = ("Verified live 2026-08-13 via primary sources; v1.15.0 and 65k stars. "
+             "MIT-licensed local-first desktop AI app.")
+
+
+@pytest.fixture
+def corpus(tmp_path, monkeypatch):
+    import build.apply_provenance as ap
+    import build.prose_provenance as pp
+
+    products = tmp_path / "sources" / "products"
+    scores = tmp_path / "sources" / "scores"
+    products.mkdir(parents=True)
+    scores.mkdir(parents=True)
+    (products / "widget.yaml").write_text(yaml.safe_dump(
+        {"name": "widget", "description": "A local-first desktop AI app.",
+         "comments": _COMMENTS}))
+    (scores / "widget.yaml").write_text(yaml.safe_dump({
+        "openness": {"sources": [{"url": "https://example.com/repo", "accessed": "2026-08-13"}]},
+    }))
+    monkeypatch.setattr(ap, "ROOT", tmp_path)
+    monkeypatch.setattr(pp, "ROOT", tmp_path)
+    return tmp_path
+
+
 def _packet(**over):
-    """A packet against the live corpus, so the digest and date bindings are real."""
     from build.prose_provenance import prose_digest
 
-    product = yaml.safe_load((ROOT / "sources" / "products" / "anythingllm.yaml").read_text())
+    product = {"name": "widget", "description": "A local-first desktop AI app.",
+               "comments": _COMMENTS}
     base = {
-        "product": "anythingllm",
+        "product": "widget",
         "current_state": "generic",
-        "current_clause": clause_span(product.get("comments")),
+        "current_clause": clause_span(_COMMENTS),
         "verification_date": "2026-08-13",
-        "selected_document": "the anything-llm repository page",
-        "source_url": "https://github.com/Mintplex-Labs/anything-llm",
+        "selected_document": "the widget repository",
+        "source_url": "https://example.com/repo",
         "source_accessed": "2026-08-13",
-        "support": "The page establishes the app, its providers and its agents.",
+        "support": "The repository establishes the app, its providers and its licence.",
         "prose_digest": prose_digest(product),
         "decision": "derive",
     }
     return {**base, **over}
 
 
-def test_a_complete_packet_passes():
+def test_a_complete_packet_passes(corpus):
     check(_packet())
 
 
@@ -156,7 +186,7 @@ def test_a_complete_packet_passes():
         ("clause is not in the live prose", _packet(current_clause="Verified 2026-08-13 via X.")),
         # Present in the live prose, unique, and not the claim under repair.
         ("clause is not a verification line",
-         _packet(current_clause="MIT-licensed all-in-one local-first Desktop + Docker AI app")),
+         _packet(current_clause="MIT-licensed local-first desktop AI app.")),
         ("clause is dated differently from the packet",
          _packet(current_clause="Verified live 2026-08-13 via primary sources;",
                  verification_date="2026-08-12", source_accessed="2026-08-12")),
@@ -164,7 +194,7 @@ def test_a_complete_packet_passes():
         ("reviewed under a different state", _packet(current_state="named_noncanonical")),
     ],
 )
-def test_incomplete_packets_are_refused(name, packet):
+def test_incomplete_packets_are_refused(corpus, name, packet):
     with pytest.raises(Refused):
         check(packet)
 
@@ -183,7 +213,7 @@ def test_a_url_cited_on_two_axes_is_checked_against_every_date_it_carries():
     }
 
 
-def test_refusal_never_falls_back_to_writing_something_else():
+def test_refusal_never_falls_back_to_writing_something_else(corpus):
     """`Refused` is raised, not swallowed. A packet that cannot justify itself leaves the
     product untouched and goes to the re-read queue."""
     with pytest.raises(Refused):
@@ -433,6 +463,94 @@ def test_an_unresolved_packet_of_any_state_applies(tmp_path, monkeypatch, state)
     assert classify(after)[0] == "canonical"
     assert classify(after)[1] == "2026-08-13"
     assert "the widget specification" in after
+
+
+@pytest.mark.parametrize(
+    "rows, expected",
+    [
+        ([{"product": "a", "decision": "derive"}], 0),
+        ([{"product": "a", "decision": "reread", "reason": "no document in the record"}], 0),
+        # A row with no decision is not a row to skip; it is the review being unfinished.
+        # `3 undecided` printed above an exit of 0 made "category finished" mean "the rows
+        # somebody happened to fill in were applied".
+        ([{"product": "a", "decision": None}], 1),
+        ([{"product": "a"}], 1),
+        ([{"product": "a", "decision": "defer"}], 1),
+        # A reread's reason is the only record that the record was READ and found wanting,
+        # rather than passed over.
+        ([{"product": "a", "decision": "reread"}], 1),
+        ([{"product": "a", "decision": "reread", "reason": "   "}], 1),
+    ],
+)
+def test_a_manifest_is_incomplete_until_every_row_is_decided(rows, expected):
+    from build.apply_provenance import completeness
+
+    assert len(completeness(rows)) == expected
+
+
+def test_the_shipped_ui_api_manifest_is_complete():
+    """The manifest in the repo, not a fixture. Every row decided, every reread explained."""
+    from build.apply_provenance import completeness
+    from build.prose_provenance import ROOT as R
+
+    rows = yaml.safe_load((R / "sources" / "provenance" / "ui_api.yaml").read_text())
+    assert not completeness(rows)
+    assert len(rows) == 42
+
+
+def test_a_refusal_anywhere_in_the_batch_writes_nothing(tmp_path, monkeypatch, capsys):
+    """All or nothing. Checking and writing in one pass left packets 1-7 on disk when packet 8
+    refused, so a failed run had to be undone by hand.
+
+    The preflight has to run the REWRITE, not just `check` — a postcondition failure is a
+    refusal `check` alone cannot see.
+    """
+    import build.apply_provenance as ap
+    import build.prose_provenance as pp
+
+    products = tmp_path / "sources" / "products"
+    scores = tmp_path / "sources" / "scores"
+    products.mkdir(parents=True)
+    scores.mkdir(parents=True)
+    packets = []
+    for slug, comments in [
+        ("good", "Verified 2026-08-13 via primary sources."),
+        ("bad", "Verified 2026-08-13 via primary sources. Shipped 2026-08-13 under MIT."),
+    ]:
+        (products / f"{slug}.yaml").write_text(
+            yaml.safe_dump({"name": slug, "description": "A widget.", "comments": comments})
+        )
+        (scores / f"{slug}.yaml").write_text(yaml.safe_dump({
+            "openness": {"sources": [{"url": "https://example.com/spec",
+                                      "accessed": "2026-08-13"}]},
+        }))
+    monkeypatch.setattr(ap, "ROOT", tmp_path)
+    monkeypatch.setattr(pp, "ROOT", tmp_path)
+
+    for slug, clause in [("good", None), ("bad", "Shipped 2026-08-13 under MIT.")]:
+        product = yaml.safe_load((products / f"{slug}.yaml").read_text())
+        packets.append({
+            "product": slug,
+            "current_state": "generic",
+            "current_clause": clause or clause_span(product["comments"]),
+            "verification_date": "2026-08-13",
+            "selected_document": "the widget specification",
+            "source_url": "https://example.com/spec",
+            "source_accessed": "2026-08-13",
+            "support": "The spec describes the widget.",
+            "prose_digest": pp.prose_digest(product),
+            "decision": "derive",
+        })
+
+    manifest = tmp_path / "manifest.yaml"
+    manifest.write_text(yaml.safe_dump(packets, sort_keys=False))
+    monkeypatch.setattr("sys.argv", ["apply_provenance", "--packets", str(manifest), "--apply"])
+
+    assert ap.main() == 1
+    assert "nothing applied" in capsys.readouterr().out
+    # `good` sorts before `bad` in the batch order above, so a per-packet writer would have
+    # written it before reaching the failure.
+    assert "primary sources" in (products / "good.yaml").read_text()
 
 
 def test_apply_refuses_a_packet_that_would_leave_two_dated_lines(tmp_path, monkeypatch):
