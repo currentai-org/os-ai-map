@@ -83,6 +83,8 @@ what you edit.
 | `sources/products/` | Product record (`name`, `type`, `description`, typed artifact URLs) | Org membership lives in the org file, not here |
 | `sources/scores/` | Per-product `openness`, `adoption`, `capability` | Every non-null score value needs a `sources:` citation |
 | `sources/taxonomy.yaml` | Arc grouping + display order; the three arcs are the Columbia ontology layers | Every category appears in exactly one arc |
+| `sources/allowlists/` | `undigested_sources.txt`, the sources grandfathered before the digest discipline | Anything not listed must carry a `content_sha256`; the list only shrinks |
+| `sources/snapshots/` | `long_tail.json`, the frozen dedup counts | Re-sync after a batch, or `validate` fails on the product count |
 
 Category slugs use underscore form (`base_pretrained`); product and org slugs use hyphenated
 kebab-case (`llama-3-1`, `allen-ai`). Artifact keys on products (only those that apply): `github`,
@@ -117,7 +119,7 @@ Warehouse queries (via `pyoso`) need `OSO_API_KEY`; with `direnv`, place it in `
 
 | Path | Role |
 |------|------|
-| `sources/` | Curated YAML you edit: organizations, categories, products, scores, + `taxonomy.yaml` |
+| `sources/` | Curated YAML you edit: organizations, categories, products, scores, plus `taxonomy.yaml`, `allowlists/` and `snapshots/` |
 | `build/` | Deterministic validate → serialize → render pipeline |
 | `notebooks/` | Generated `ai-stack-map.py` + standalone companion notebooks |
 | `docs/` | JSON Schemas, contributor guides, methodology, and maintainer runbooks |

@@ -7,7 +7,7 @@
 # The platform is the source of truth. To re-sync: refetch each model's latest revision,
 # overwrite the file, and update revision/hash/local_sha256/synced_at below.
 org: currentai            # ad7f4c1c-dd2f-430e-a831-e7f1f16e6d9e
-synced_at: '2026-08-15'
+synced_at: '2026-08-16'
 
 models:
   - file: evidence_product_evidence.sql
@@ -76,21 +76,27 @@ models:
     revision: 3
     hash: 27b7de7c1271500612ae0e29163d7661451db4b16352d7ce1b0dd12df1d466a7
     local_sha256: eaee5981530529fc1cbd6c21d2d18b7019b0ed2c15751f43b2d84f4f4bb0ae00
-  - file: packages_product_adoption.sql
+  # Both adoption models were listed against packages_product_adoption.sql until
+  # 2026-08-16 — the same file, twice, pointed at two tables it does not implement.
+  # Refetched from the platform: they are unrelated models. This one bands STARS as
+  # the last-resort route; the Hugging Face one bands Hub downloads; the packages
+  # file below bands package-registry downloads and declares its own table in line 6.
+  - file: github_product_adoption.sql
     table: currentai.signal_github.product_adoption
     model_id: 25538fa7-f956-481c-ac14-474ab1661ac3
-    revision: 2
-    hash: 15e77142a74d89e267b2e341c566f6da0e025bd7bda289183bb376cf5332f1eb
-    local_sha256: 554a229cf3608616c8a1c550b32c89b1d44d76633fa8e2ab956619e94f4c390e
-  - file: packages_product_adoption.sql
+    revision: 3
+    hash: fab87a5e45a70663162a5421eb5037a5bca9cdbd49d4ab0b24d47b3688ed1da8
+    local_sha256: 0ad0c6fe80fcdb546a82552b1b9f860d9f432b2f747ff678388cc95b83763ece
+  - file: huggingface_product_adoption.sql
     table: currentai.signal_huggingface.product_adoption
     model_id: abcf0044-dd9d-4942-a2a1-e047dab8e8b1
-    revision: 2
-    hash: bdc8c2b8231bacd62c6404276a11190b5ab3139a81c9b1bcaededafe23ff24ef
-    local_sha256: 554a229cf3608616c8a1c550b32c89b1d44d76633fa8e2ab956619e94f4c390e
+    revision: 3
+    hash: 6b088f7d0bae8e0d399dc63a44ccbd190d34da27f7cedc21346be4a2dd1ce9b9
+    local_sha256: f303551eafd02b3beca61c0552a4ef7489de7b510e77e048f95b10d4799988e9
 
-  # Staged signal_packages successor (PR #266), not yet a single deployed dataset.
-  # Confirm the exact file->revision mapping on the next re-sync before trusting.
+  # Staged signal_packages successor (PR #266), not yet a deployed dataset. All three
+  # models of that dataset are staged together; the manifest carries the set so a
+  # partial mirror is visible rather than silent.
   - file: packages_package_downloads.sql
     table: currentai.signal_packages.package_downloads
     status: staged
@@ -99,6 +105,10 @@ models:
     table: currentai.signal_packages.package_downloads_daily
     status: staged
     local_sha256: a513593cf14985b9f819e4a64ad60de63ed6d06777b5f492e427c6adea9725ab
+  - file: packages_product_adoption.sql
+    table: currentai.signal_packages.product_adoption
+    status: staged
+    local_sha256: 554a229cf3608616c8a1c550b32c89b1d44d76633fa8e2ab956619e94f4c390e
 
 # TODO (follow-up): a credentialed check job that refetches each model_id's latest
 # revision and compares `hash` to catch platform drift. tests/test_platform_mirror.py

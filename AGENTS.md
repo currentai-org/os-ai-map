@@ -18,6 +18,14 @@ activity there is not a signal of real work.
 ```
 sources/               Curated YAML: organizations, categories, products, scores
 sources/taxonomy.yaml  Arc grouping + cross-category display order
+sources/allowlists/    Draining allowlists. undigested_sources.txt grandfathers the sources
+                       cited before the digest discipline; anything NOT listed must carry a
+                       content_sha256, and a line that stops describing an undigested source
+                       fails, so the list cannot rot into a permanent exemption.
+sources/snapshots/     Hand-frozen inputs to the build. long_tail.json carries the dedup
+                       counts and is the fifth file a product add touches (gated by validate).
+sources/verification_queue.yaml  Axes deliberately held: a value whose evidence contradicts
+                       it carries no date and sits here with a reason instead.
 sources/signal_routing.yaml  Which machine signal is authoritative per dimension, and
                        which values mean "this source has no answer" (abstain_values)
 sources/evidence_policy.yaml  When an observation is admissible as evidence
