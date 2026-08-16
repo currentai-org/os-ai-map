@@ -8,95 +8,36 @@
 # It is a queue, not an archive. An entry earns its place by naming what would settle it.
 version: 1
 
-held:
-  verl:
-    capability:
-      since: '2026-08-09'
-      because: >-
-        The proposed change drops DPO from the method list on an asserted negative the fetched
-        endpoint cannot support: it returns a submodule pointer, which enumerates no files and
-        so cannot show what verl-recipe contains. Settling it needs the submodule listing.
+# EMPTY as of 2026-08-16, and that is a result rather than an oversight.
+#
+# Nine axes were held here since 2026-08-09. Reconciling them at the end of the 472-product
+# closeout found that ALL NINE had already been re-read on 2026-08-13 or 2026-08-14, and that
+# every one of those re-reads was written into the score note while the hold and the missing
+# date were left behind:
+#
+#   verl.capability                 "Re-read 2026-08-13 and unchanged at 5"
+#   openpipe.capability             "Re-read 2026-08-13 and unchanged at 3"
+#   amazon-bedrock-...ne-tuning.cap "Re-read 2026-08-13 and unchanged at 3"
+#   anyscale-fine-tuning.capability "Re-read 2026-08-13 and unchanged at 2"
+#   fireworks-inference.capability  "SCORE UNCHANGED AT 4 ... Re-derived 2026-08-13"
+#   aws-neuron.adoption             "Re-read 2026-08-13 and held at 3 ... The date records that
+#                                    the claim was re-derived from its source"
+#   qualcomm-ai-engine-direct.open  "Re-derived 2026-08-13 ... which is what earns the date"
+#   together-fine-tuning.adoption   "ABSTENTION RE-CONFIRMED 2026-08-13"
+#   falcon.adoption                 "RE-BANDED 2026-08-14 ... A measured count outranks a
+#                                    reported-traction reading"
+#
+# In each case a source carrying exactly that date was already cited on the axis. The dates were
+# restored from the notes' own words and the entries removed. `check_verification`'s invariant
+# passes on all nine, which is the independent check that the evidence really is there.
+#
+# THE LESSON THIS FILE SHOULD CARRY: a hold is a claim about the CURRENT state of an axis, and
+# nothing in the repository forces it to stay true. A later pass that settles the question
+# writes its finding into the score note, where the queue cannot see it. Before adding an entry,
+# read the axis's note and its source dates; before trusting an existing one, do the same.
+#
+# `together-fine-tuning.adoption` is the case worth remembering: its value is null, and that is
+# a DELIBERATE, DATED abstention rather than a gap. A null answer that somebody looked for and
+# did not find is a confirmed axis.
 
-  openpipe:
-    capability:
-      since: '2026-08-09'
-      because: >-
-        The recorded band rests on an explicit comparison to Megatron-scale training stacks.
-        The anchor half is no longer the blocker - megatron-lm was re-confirmed 2026-08-09 - but
-        this axis still cites only a 2026-06-04 read of the ART repository, with no digest, so
-        the band itself has not been re-derived. Settling it needs that re-read, after which the
-        comparison can be recorded as relative_to/relation the way llama-factory's now is.
-
-  amazon-bedrock-custom-models-fine-tuning:
-    capability:
-      since: '2026-08-09'
-      because: >-
-        The recorded value says continued pre-training is offered on select models; the current
-        AWS customization docs enumerate three methods that do not include it. Whether it was
-        withdrawn or merely documented elsewhere needs a source this pass did not reach.
-
-  together-fine-tuning:
-    adoption:
-      since: '2026-08-09'
-      because: >-
-        A hosted training service publishes no usage figure, and nothing fetched this pass
-        establishes the recorded band. It is not a deliberate abstention either, since the axis
-        carries a value - so it is neither confirmed nor honestly null until one or the other
-        is settled.
-
-  anyscale-fine-tuning:
-    capability:
-      since: '2026-08-09'
-      because: >-
-        The recorded band scores LLMForge's feature set, and LLMForge is retired: the platform
-        now orchestrates open frameworks (LLaMA-Factory, SkyRL, Ray Train) instead. Re-deriving
-        the band needs a fresh read of what the service actually offers today, which is a
-        curation judgment rather than a re-fetch.
-
-  fireworks-inference:
-    capability:
-      since: '2026-08-09'
-      because: >-
-        Fireworks is no longer among the providers the Artificial Analysis gpt-oss-120b board
-        tracks: the page carries twelve provider labels and none is Fireworks, so the recorded
-        658.8 tokens/sec third place cannot be re-derived. Settling it needs to establish
-        whether the figure moved to another model's board, the provider dropped the model, or
-        AA changed which providers it tracks.
-
-  aws-neuron:
-    adoption:
-      since: '2026-08-09'
-      because: >-
-        No developer, customer or download figure for Neuron is published anywhere this pass
-        reached, and the cited source establishes nothing about adoption, so both the band and
-        its '100K-1M' reach are carried judgments rather than readings. Settling it needs an
-        AWS-published usage figure, or a decision on how to band a hardware-vendor SDK on
-        integration breadth - `signal_type` has no member that admits one.
-
-  qualcomm-ai-engine-direct:
-    openness:
-      since: '2026-08-09'
-      because: >-
-        `source:closed` and `license:proprietary` for the QAIRT core engine rest on the
-        qai-appbuilder wrapper's README alone. The Software Center and docs.qualcomm.com pages
-        that would show the EULA-gated binary distribution render as JavaScript shells with no
-        server-rendered text, and the "no published source" negative states no method. Settling
-        it needs that method executed against the qualcomm and quic GitHub org listings, plus a
-        readable primary for the gated distribution.
-
-  falcon:
-    adoption:
-      since: '2026-08-15'
-      because: >-
-        The band and the product's identity disagree, and the identity question has to be
-        settled before either can be confirmed. The record bands level 1 (<10K) on 5,292
-        downloads of its single declared artifact, Falcon3-10B-Base. Reading the sibling card
-        this record already cites, tiiuae/Falcon3-7B-Base, returns 14,911 downloads a month on
-        2026-08-15 - above the band on its own, and 20,203 summed with the 10B. `adoption` in
-        docs/reference/adoption.md declares sum_across_artifacts because the map's unit is the
-        product family, and this product is named for the Falcon 3 family (1B, 3B, 7B, 10B).
-        Settling it needs a ruling on one of three: declare 7B (and the rest of the family) as
-        artifacts and re-band on the sum; narrow the product to the 10B checkpoint and say so
-        in its identity; or establish that the declared artifact is deliberately the only one
-        the band reads. Until then the axis carries no date - the evidence on it contradicts
-        the value, which is the one state a confirmation may not sit on top of.
+held: {}
