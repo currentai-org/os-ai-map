@@ -164,7 +164,7 @@ read-only warehouse boundary:
 
 **Companion notebooks.** `pypi-geo-trends.py`, `oss-ai-trends.py`, and `long-tail-explorer.py` are
 standalone marimo notebooks that sit outside the build pipeline and query `currentai.*` warehouse
-tables live via `pyoso`, so the bot never regenerates them. `build/_frozen_long_tail.json` is a
+tables live via `pyoso`, so the bot never regenerates them. `sources/snapshots/long_tail.json` is a
 hand-frozen fixture, not yet derived from live data.
 
 </details>

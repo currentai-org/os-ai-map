@@ -16,7 +16,7 @@ Five, and all in the same PR:
 2. `sources/scores/<slug>.yaml` — its three-axis score.
 3. `sources/categories/<cat>.yaml` — append the slug to the roster.
 4. `sources/organizations/<org>.yaml` — append the slug to the roster (create the org file if new).
-5. `build/_frozen_long_tail.json` — the dedup counts, regenerated (gated by `validate`).
+5. `sources/snapshots/long_tail.json` — the dedup counts, regenerated (gated by `validate`).
 
 `CONTRIBUTING.md` historically listed only the first four. The fifth is real.
 
@@ -41,7 +41,7 @@ Five, and all in the same PR:
 6. **For a batch,** generate the files with a small script (dump for new files, and a helper
    that inserts `- <slug>` lines under existing `products:` blocks so their formatting is
    preserved). Never load-modify-dump an existing corpus file. Re-check the two hand-authored
-   things a batch disturbs: category straplines and `_frozen_long_tail.json`.
+   things a batch disturbs: category straplines and `sources/snapshots/long_tail.json`.
 
 ## Validation
 ```bash
