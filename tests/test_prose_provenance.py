@@ -195,3 +195,38 @@ def test_the_digest_catches_an_edit_to_either_prose_field():
                                                   "description": product["description"] + " Extra."})
     assert prose_digest(product) != prose_digest({**product,
                                                   "comments": product["comments"] + " Extra."})
+
+
+@pytest.mark.parametrize(
+    "before, expected",
+    [
+        # The defect: `[^.;]*` stopped at the dot inside `huggingface.co` and left
+        # `.co/datasets/allenai/ai2_arc (474 downloads).` orphaned after the new document.
+        ("Verified live 2026-08-13 on huggingface.co/datasets/allenai/ai2_arc (474 downloads).",
+         "Verified 2026-08-13 via the dataset card."),
+        ("Verified live 2026-08-13 against the repository DATASHEET.md and arXiv:2406.19314.",
+         "Verified 2026-08-13 via the dataset card."),
+        ("Verified live 2026-08-13 via primary sources; v1.15.0 and 65k stars. MIT-licensed.",
+         "Verified 2026-08-13 via the dataset card; v1.15.0 and 65k stars. MIT-licensed."),
+    ],
+)
+def test_the_clause_bound_survives_a_dot_inside_a_url(before, expected):
+    """A sentence-terminating `.` is one followed by whitespace or end of string; a dot in a
+    URL, filename or version number is not. 71 clauses in the corpus contain an internal dot,
+    so treating them alike was not an edge case — it would have mangled the prose of every
+    one it rewrote."""
+    assert rewrite(before, "2026-08-13", "the dataset card") == expected
+
+
+def test_no_rewrite_leaves_an_orphaned_clause_fragment():
+    """The signature of the bug: a token beginning with `.` immediately after the document."""
+    import glob
+    import re
+
+    for path in sorted(glob.glob(str(ROOT / "sources" / "products" / "*.yaml")))[:60]:
+        comments = str((yaml.safe_load(open(path)) or {}).get("comments") or "")
+        state, date, _ = classify(comments)
+        if state == "missing":
+            continue
+        out = rewrite(" ".join(comments.split()), date, "the document")
+        assert not re.search(r"the document\.\w", out), f"orphaned fragment in {path}"

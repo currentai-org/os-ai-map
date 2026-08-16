@@ -70,8 +70,14 @@ ROOT = Path(__file__).resolve().parents[1]
 # The whole dated clause, however it is currently worded, up to its terminator. Replaced
 # wholesale so `Verified live <date> via primary sources` and `verified live <date> via
 # primary-source research` collapse to the one canonical form.
+# A sentence-terminating "." is one followed by whitespace or end of string. A dot inside a
+# URL, a filename or a version number is not, and `[^.;]*` treated them alike: rewriting
+# `Verified live 2026-08-13 on huggingface.co/datasets/allenai/ai2_arc (474 downloads).`
+# stopped at the dot in `huggingface.co` and left `.co/datasets/allenai/ai2_arc (474
+# downloads).` orphaned after the new document name. 71 clauses in the corpus contain an
+# internal dot, so this was not an edge case.
 CLAUSE = re.compile(
-    r"[Vv]erified(?: live)?\s+(\d{4}-\d{2}-\d{2})\s*[,;]?\s*(?:via|on|against|using)?\s*[^.;]*",
+    r"[Vv]erified(?: live)?\s+(\d{4}-\d{2}-\d{2})\s*[,;]?\s*(?:via|on|against|using)?\s*(?:[^.;]|\.(?!\s|$))*",
 )
 
 

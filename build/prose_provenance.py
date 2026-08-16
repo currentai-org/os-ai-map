@@ -82,9 +82,13 @@ METHOD_WORDS = re.compile(
     re.IGNORECASE,
 )
 
+# A sentence-terminating "." is one followed by whitespace or end of string; a dot inside a
+# URL or filename is not. See apply_provenance.CLAUSE for the defect this bound fixes.
+BOUND = r"(?:[^.;]|\.(?!\s|$))*"
+
 # The dated clause in any of its wordings, removed before digesting the surrounding prose.
 CLAUSE_ANY = re.compile(
-    r"[Vv]erified(?: live)?\s+\d{4}-\d{2}-\d{2}\s*[,;]?\s*(?:via|on|against|using)?\s*[^.;]*[.;]?"
+    r"[Vv]erified(?: live)?\s+\d{4}-\d{2}-\d{2}\s*[,;]?\s*(?:via|on|against|using)?\s*(?:[^.;]|\.(?!\s|$))*[.;]?"
 )
 
 # A document name has to contain an actual word. `Verified 2026-08-13 via .` is canonical in
