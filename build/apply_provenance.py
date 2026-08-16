@@ -226,7 +226,13 @@ def rewrite(comments: str, clause: str, document: str, iso: str) -> str:
     )
 
 
-def apply_one(packet: dict) -> bool:
+def plan_one(packet: dict) -> tuple[Path, str, str] | None:
+    """(path, original text, new comments) for one packet, or None if it is already canonical.
+
+    Every check and every postcondition runs here, and nothing is written. That is what lets a
+    batch be all-or-nothing: `check` alone does not exercise the rewrite, so a preflight built
+    on it would still have let a postcondition fail on packet 8 with 1-7 already on disk.
+    """
     check(packet)
     slug = packet["product"]
     claimed = str(packet["verification_date"])
@@ -244,7 +250,7 @@ def apply_one(packet: dict) -> bool:
         comments, str(packet["current_clause"]), str(packet["selected_document"]), claimed
     )
     if new_comments == comments:
-        return False
+        return None
 
     # Postconditions on the RESULT, not on "a canonical line exists somewhere in it".
     state, live_date, _ = classify(new_comments)
@@ -258,8 +264,37 @@ def apply_one(packet: dict) -> bool:
             "lines; exactly one must remain"
         )
 
+    return path, text, new_comments
+
+
+def apply_one(packet: dict) -> bool:
+    planned = plan_one(packet)
+    if planned is None:
+        return False
+    path, text, new_comments = planned
     path.write_text(set_document_field(text, "comments", new_comments))
     return True
+
+
+def completeness(rows: list[dict]) -> list[str]:
+    """Why this manifest is not a finished category. Empty means it is one.
+
+    A manifest is a claim that a category was reviewed, so a row with no decision is not a row
+    to skip — it is the review being unfinished. Reporting `3 undecided` above an exit of 0
+    made "category finished" mean "the rows somebody happened to fill in were applied".
+
+    A `reread` needs its reason for the same reason a `derive` needs its support: it is the
+    only record that the record was read and found wanting, rather than passed over.
+    """
+    problems = []
+    for row in rows:
+        slug = row.get("product") or "<unnamed>"
+        decision = row.get("decision")
+        if decision not in ("derive", "reread"):
+            problems.append(f"{slug}: decision is {decision!r}, not derive or reread")
+        elif decision == "reread" and not str(row.get("reason") or "").strip():
+            problems.append(f"{slug}: reread with no reason")
+    return problems
 
 
 def main() -> int:
@@ -276,23 +311,40 @@ def main() -> int:
     print(f"{len(rows)} packets: {len(derive)} derive, {len(reread)} reread, "
           f"{len(undecided)} undecided")
 
-    applied, refused = 0, []
+    incomplete = completeness(rows)
+    if incomplete:
+        for line in incomplete:
+            print(f"  incomplete: {line}")
+        print(f"\n{len(incomplete)} row(s) undecided or unexplained; nothing applied")
+        return 1
+
+    # Plan every derive before writing anything. Checking and writing in one pass meant a
+    # refusal on packet 8 left packets 1-7 already on disk, so a failed run had to be undone by
+    # hand and a re-run would report a corpus nobody had decided to create.
+    planned, refused = [], []
     for packet in derive:
         try:
-            if args.apply:
-                applied += apply_one(packet)
-            else:
-                check(packet)
+            plan = plan_one(packet)
         except Refused as e:
             refused.append(str(e))
+            continue
+        if plan is not None:
+            planned.append(plan)
+    if refused:
+        for line in refused:
+            print(f"  refused: {line}")
+        print(f"\n{len(refused)} packet(s) refused; nothing applied")
+        return 1
 
-    for line in refused:
-        print(f"  refused: {line}")
-    if args.apply:
-        print(f"\n{applied} product file(s) rewritten; {len(refused)} refused")
-    else:
-        print(f"\n{len(derive) - len(refused)} packet(s) would apply; {len(refused)} refused")
-    return 1 if refused else 0
+    if not args.apply:
+        print(f"\n{len(planned)} product file(s) would be rewritten of {len(derive)} derive "
+              "decision(s); 0 refused")
+        return 0
+
+    for path, text, new_comments in planned:
+        path.write_text(set_document_field(text, "comments", new_comments))
+    print(f"\n{len(planned)} product file(s) rewritten of {len(derive)} derive decision(s)")
+    return 0
 
 
 if __name__ == "__main__":
