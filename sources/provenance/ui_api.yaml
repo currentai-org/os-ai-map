@@ -1,8 +1,8 @@
 # Provenance decisions for the ui_api category, and how each was resolved.
 #
 # `build/prose_provenance.py` classifies every product's dated verification line. This file is
-# the record of what a reader decided about each unresolved one. 40 of the 42 are `canonical`;
-# `character-ai` and `doubao` are not, and are not counted as compliant.
+# the record of what a reader decided about each unresolved one. All 42 are now `canonical`,
+# and so is `perplexity`, which was in scope for the prose pass but not for this file.
 #
 # ## Three passes, and what each got wrong
 #
@@ -36,22 +36,23 @@
 # `sources[].shows` updated to what was actually read, which is what the stale prose was
 # reporting.
 #
-# ## What is left unresolved, and why it is not called compliant
+# ## The three that looked unresolvable, and were not
 #
-# `character-ai` and `doubao` rest on tertiary sources; `perplexity` describes a consumer
-# product whose only reachable documentation covers the API. Global rule 3 requires a PRIMARY
-# source for a factual claim, and the guide carries no exception for a vendor that publishes
-# nothing readable. All three were fetched: character.ai answers 403, doubao.com and
-# perplexity.ai serve client-rendered shells whose only text is the product name.
+# `character-ai`, `doubao` and `perplexity` all had no readable first-party website:
+# character.ai answers HTTP 403, and doubao.com and perplexity.ai serve client-rendered shells
+# whose only text is the product name. A first cut left all three `ambiguous_noncanonical`
+# rather than cite a tertiary source against global rule 3.
 #
-# Each carries a dated line naming no document, so the census reports them
-# `ambiguous_noncanonical` rather than reading as finished. Adding a named-tertiary-source
-# exception to `product-copy.md` is a separate decision this pass does not take.
+# The fallback order in `refresh-category` resolves them. Each vendor authors an App Store
+# listing, which is a FIRST-PARTY distribution surface: Character Technologies for
+# `character-ai`, Beijing Chuntian Zhiyun (ByteDance) for `doubao`, Perplexity for its own app.
+# Each listing enumerates the product's features in the vendor's own words. All three were read
+# 2026-08-16 and their descriptions rewritten to what the listing establishes.
 #
-# So: 40 of 43 compliant and canonical, 3 held for a primary read. All 43 are prose-clean.
+# The lesson is that an unreachable WEBSITE is not an unreachable VENDOR. Walk the fallback
+# order before declaring a record unresolvable.
 #
-# `perplexity` and `chatgpt` are both in this file's scope only through the prose pass;
-# `perplexity` was already canonical before it and is now deliberately not.
+# So: 43 of 43 compliant and canonical, with no source exceptions and no holds.
 #
 - product: anythingllm
   current_state: generic
@@ -80,12 +81,9 @@
   reason: The description carries ~20M MAU and ~6M daily visitors, which the comments themselves say
     the source has replaced with 45M active users; it also carries the 2024 Google acqui-hire. Canonicalizing
     a verification line over figures the record already calls superseded would date the wrong claim.
-  resolved_state: ambiguous_noncanonical
-  verified: '2026-08-13'
-  document: null
-  still_unresolved_because: character.ai answers HTTP 403 to six fetch attempts, so no primary document
-    could be read. product-copy.md rule 3 requires a primary source for a factual claim and admits
-    no exception for a vendor that publishes nothing reachable.
+  resolved_state: canonical
+  verified: '2026-08-16'
+  document: Character
 - product: chatgpt
   current_state: generic
   decision: reread
@@ -138,12 +136,9 @@
   reason: The Wikipedia article does not establish the ~100M DAU baseline, ~145M Lunar New Year peak,
     ~345M MAU or 1.9B+ Gala queries in the description; those come from the QuestMobile reporting
     on the adoption axis. The description also carries counts prose may not hold.
-  resolved_state: ambiguous_noncanonical
-  verified: '2026-08-13'
-  document: null
-  still_unresolved_because: ByteDance publishes no English product page beyond a download link, and
-    doubao.com serves a client-rendered shell whose only text is the product name. The feature set
-    in the description has no primary document behind it.
+  resolved_state: canonical
+  verified: '2026-08-16'
+  document: Doubao's App Store listing
 - product: duck-ai
   current_state: generic
   decision: reread
