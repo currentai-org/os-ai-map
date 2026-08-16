@@ -72,14 +72,36 @@ def test_an_undated_axis_is_open():
 
 
 def test_the_real_corpus_surveys_and_orders_worst_coverage_first():
+    """The ordering invariant, which holds at every state of the sweep including finished.
+
+    This used to assert `pending`, with the message "the sweep is not finished, so something
+    must be pending" - which made completing the sweep a test failure. It is the fifth test in
+    this repository to fail because the work succeeded, so the rule is now explicit: a
+    real-corpus test may assert an INVARIANT, never that there is work left to do. The
+    non-empty ordering case is proved below on a corpus the test builds.
+    """
     rows = survey()
     assert len(rows) == 16
     assert sum(r["products"] for r in rows) == 472
-    pending = [r for r in rows if r["done"] < r["products"]]
-    assert pending, "the sweep is not finished, so something must be pending"
     # Finished categories sort last whatever their coverage; among the rest, worst first.
     coverages = [r["coverage"] for r in rows if r["done"] < r["products"]]
     assert coverages == sorted(coverages), "pending categories must be worst-coverage first"
+    assert all(r["done"] <= r["products"] for r in rows)
+
+
+def test_pending_categories_sort_worst_coverage_first_and_finished_ones_last():
+    """The ordering with something to order, on a synthetic survey."""
+    from build.sweep_status import order_rows
+
+    rows = [
+        {"category": "finished", "products": 3, "done": 3, "coverage": 1.0},
+        {"category": "mid", "products": 4, "done": 2, "coverage": 0.5},
+        {"category": "worst", "products": 4, "done": 1, "coverage": 0.25},
+        {"category": "best-pending", "products": 4, "done": 3, "coverage": 0.75},
+    ]
+    assert [r["category"] for r in order_rows(rows)] == [
+        "worst", "mid", "best-pending", "finished"
+    ]
 
 
 # --- the refresh window ---
