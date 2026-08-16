@@ -21,19 +21,61 @@ jobs:
     # into parallel jobs before tightening this again.
     timeout-minutes: 330
     env:
+      # Three credentials, three different jobs, and they are no longer interchangeable now
+      # that the GitHub fetchers are gone:
+      #   OSO_API_KEY     the pyoso lookup in fetch_huggingface, which reads the author roster
+      #   HF_TOKEN        the Hub calls in both fetchers; unauthenticated, the link scan
+      #                   silently drops from ~742 links to ~7
+      #   GH_FETCH_TOKEN  publishing the refresh PR at the end, and nothing else
+      #
+      # GH_FETCH_TOKEN stays a PAT rather than ${{ github.token }}: a PR opened with the
+      # Actions token does not trigger the validate workflow, so the refresh would arrive
+      # unchecked.
       OSO_API_KEY: ${{ secrets.OSO_API_KEY }}
       HF_TOKEN: ${{ secrets.HF_TOKEN }}
+      GH_TOKEN: ${{ secrets.GH_FETCH_TOKEN }}
     steps:
       - uses: actions/checkout@v4
-      - name: Require secrets (fetchers degrade silently without them)
+      - name: Preflight credentials (#281)
         run: |
+          # Presence is not validity, and the gap between them cost eight weeks. Every
+          # scheduled run from 2026-06-22 to 2026-08-10 died on `401 - Bad credentials`
+          # about 3.5 hours in, after the fetchers had done all their work and before the
+          # step that publishes it. GH_FETCH_TOKEN is a PAT and PATs expire. Nothing gated
+          # on the workflow, so warehouse/catalog/ silently froze at 2026-07-28 while the
+          # schedule still read as live, and ~28 hours of runner time went into data that
+          # was then discarded.
+          #
+          # One authenticated GET per credential, before anything expensive. Measured
+          # against known-bad tokens: both 401, exit 1, 411ms.
           missing=""
           [ -n "$OSO_API_KEY" ] || missing="$missing OSO_API_KEY"
           [ -n "$HF_TOKEN" ] || missing="$missing HF_TOKEN"
+          [ -n "$GH_TOKEN" ] || missing="$missing GH_FETCH_TOKEN"
           if [ -n "$missing" ]; then
-            echo "::error::Missing repo secrets:$missing. Without tokens the HF link scan silently drops from ~742 links to ~7; refusing to run."
+            echo "::error::Missing repo secrets:$missing. Refusing to run."
             exit 1
           fi
+
+          bad=""
+          probe() {  # name, url, auth header
+            code=$(curl -s -o /dev/null -w '%{http_code}' -H "$3" "$2" || echo 000)
+            if [ "$code" != "200" ]; then
+              echo "::error::$1 did not authenticate (HTTP $code)"
+              bad="$bad $1"
+            fi
+          }
+          probe GH_FETCH_TOKEN https://api.github.com/user "Authorization: Bearer $GH_TOKEN"
+          probe HF_TOKEN https://huggingface.co/api/whoami-v2 "Authorization: Bearer $HF_TOKEN"
+          if [ -n "$bad" ]; then
+            echo "::error::Rotate the secret(s) above in repo settings. A PAT that has expired is the usual cause; see issue #281."
+            exit 1
+          fi
+
+          # OSO_API_KEY stays presence-only, deliberately. Every probe for it is a warehouse
+          # round trip against a live model - a heavier and less predictable precondition
+          # than a preflight should carry - and the fetcher surfaces an OSO failure itself.
+          echo "GH_FETCH_TOKEN and HF_TOKEN authenticate; OSO_API_KEY present."
       - uses: astral-sh/setup-uv@v5
         with:
           enable-cache: true
