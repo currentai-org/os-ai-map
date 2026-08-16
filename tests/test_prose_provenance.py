@@ -392,16 +392,48 @@ def test_packets_cover_every_unresolved_state():
     only the 172 `generic` ones — so the 16 `ambiguous_noncanonical` and 13
     `named_noncanonical` had no route through it at all. A second, weaker path for the named
     ones would let the prose vouch for itself, which is the shortcut this exercise corrects.
+
+    The coverage claim is that `packets()` emits one row for every product in an unresolved
+    state, NOT that all three states still occur in the corpus. Asserting the latter is the
+    same defect as the two tests below it: closing out the last `ambiguous_noncanonical` record
+    made this fail for succeeding. The per-state behavior it used to pin is now proved on a
+    synthetic corpus, and the count identity against the census holds at every state including
+    all-zero.
     """
     from build.prose_provenance import UNRESOLVED, packets
 
     by_state = census()
     rows = packets()
     assert len(rows) == sum(len(by_state.get(s, [])) for s in UNRESOLVED)
-    assert {r["current_state"] for r in rows} == set(UNRESOLVED)
+    assert {r["current_state"] for r in rows} <= set(UNRESOLVED)
+    assert {r["product"] for r in rows} == {
+        slug for state in UNRESOLVED for slug in by_state.get(state, [])
+    }
     for row in rows:
         assert row["current_clause"], f"{row['product']}: no clause to review"
         assert row["decision"] is None, "a packet decides nothing on its own"
+
+
+@pytest.mark.parametrize("state", ["generic", "ambiguous_noncanonical", "named_noncanonical"])
+def test_every_unresolved_state_is_packetable(tmp_path, monkeypatch, state):
+    """The per-state coverage the real-corpus test can no longer prove as it empties out."""
+    import build.prose_provenance as pp
+
+    line = {"generic": "Verified 2026-08-13 via primary sources.",
+            "ambiguous_noncanonical": "Verified 2026-08-13.",
+            "named_noncanonical": "Verified live 2026-08-13 via the SPEC.md."}[state]
+    products = tmp_path / "sources" / "products"
+    scores = tmp_path / "sources" / "scores"
+    products.mkdir(parents=True)
+    scores.mkdir(parents=True)
+    (products / "widget.yaml").write_text(
+        yaml.safe_dump({"name": "widget", "description": "A widget.", "comments": line}))
+    (scores / "widget.yaml").write_text(yaml.safe_dump({"openness": {"sources": []}}))
+    monkeypatch.setattr(pp, "ROOT", tmp_path)
+
+    rows = pp.packets()
+    assert [r["current_state"] for r in rows] == [state]
+    assert rows[0]["current_clause"] and rows[0]["decision"] is None
 
 
 def test_packets_can_be_scoped_to_one_category():
