@@ -423,15 +423,18 @@ axes that carry a `last_verified`. So they cover exactly what has been done, nev
 and never permit a regression on ground already taken. A big-bang gate over every axis at once
 would have failed on day one and been switched off, which is how gates die.
 
-**The ratchet has effectively closed.** That count was 137 when this section was written; the
-08-13/14 sweep dated all 1,416 axes, and the subsequent audit removed eight unsupported
-confirmations, leaving **1,408 confirmed and eight explicitly held** as of 2026-08-14. So the
-invariant and the digest requirement cover the 1,408 confirmed axes — not literally every axis —
-and the eight holds are governed instead by the queue-consistency gate (they may not carry a date
-at all). "Closed" now means there are no *silent* gaps, not that every axis is confirmed. The age
-gate above became possible only because coverage got this close: gating on age while most axes
-carried no date would have measured the backlog rather than staleness. Read the live count from
-`check_freshness` rather than from this paragraph, which will drift again.
+**The ratchet has closed.** That count was 137 when this section was written. The 08-13/14
+sweep dated every axis, an audit then removed the confirmations it could not support, and the
+08-16 reconciliation settled the last of those: as of the `baseline-472-2026-08-16` tag all
+1,416 axes are confirmed and the queue is empty. So the invariant and the digest requirement
+now cover every axis. The age gate above became possible only because coverage got this close:
+gating on age while most axes carried no date would have measured the backlog rather than
+staleness.
+
+The queue being empty is a state, not a property. A hold is still the correct answer when
+evidence contradicts a value, and the queue-consistency gate governs one when it exists — a
+held axis may not carry a date at all. Read the live counts from `check_freshness`, not from
+this paragraph.
 
 The producible-pair check and the parity gate apply in full immediately — nothing has to be
 populated first.
@@ -563,13 +566,13 @@ work the way openness got four.
 | deliberately null — not claims | 46 (26 capability, 20 adoption) |
 | **real claims to verify** | **1370** |
 | of those, citing at least one source URL | 1370 |
-| carrying a real `last_verified` | 1408 |
-| explicitly held in `verification_queue.yaml` (read via commit fallback) | 8 |
-| distinct source URLs behind all of it | 1824 |
+| carrying a real `last_verified` | 1416 |
+| explicitly held in `verification_queue.yaml` | 0 |
+| distinct source URLs behind all of it | 1827 |
 
-`check_freshness` reports median age 1d, oldest 6d, with eight axes resting on the commit-date
-fallback. Regenerate these rather than trusting them; the corpus grows most weeks, and the
-figures in this table have already been wrong once for exactly that reason.
+Read 2026-08-16. `check_freshness` reported median age 3d, oldest 8d, with no axis resting on
+the commit-date fallback. Regenerate these rather than trusting them; the corpus grows most
+weeks, and the figures in this table have already been wrong twice for exactly that reason.
 
 The null axes are two different abstentions and both are deliberate. Capability is null where
 the axis does not apply — datasets and a wire protocol are not capable of anything a benchmark
@@ -770,9 +773,9 @@ run unattended and why it must be fenced to those axes only.
 
 ### 4. The re-read pass — roughly 1106 URLs ✅ **done 2026-08-14**
 
-Closed by the 08-13/14 all-corpus sweep, which dated all 1,416 axes; a follow-up audit then
-removed eight unsupported confirmations, leaving **1,408 confirmed and eight held** (median age
-1d). The description below is kept as the standing procedure for re-running it.
+Closed by the 08-13/14 all-corpus sweep, which dated all 1,416 axes; a follow-up audit removed
+the confirmations it could not support, and the 08-16 reconciliation settled those. The
+description below is kept as the standing procedure for re-running it.
 
 Everything else, all of openness included. **Fold the deferral backlog into this pass rather
 than clearing it first.** Reading a product's sources to determine `core-gated` *is* the
@@ -810,9 +813,9 @@ score for this reason.
 category whose oldest axis is 50 days old is a category to go and look at. Gating earlier would
 only have failed on the pre-automation backlog rather than on genuine staleness; step 4 closed
 that, and on the day the gate landed all 1,416 axes carried a real `last_verified` and the
-oldest category read 6 days. (A later audit removed eight unsupported confirmations, so the
-current state is 1,408 confirmed and eight held — the eight ride the commit-date fallback and do
-not evade the age gate.)
+oldest category read 6 days. (An audit then removed the confirmations it could not support;
+those were settled on 08-16, and a held axis rides the commit-date fallback rather than evading
+the age gate.)
 
 **The window is 30 days, decided 2026-08-09.** It is a judgment about how much re-reading the
 map is worth rather than anything derivable, so it is recorded here with its date and its owner
