@@ -405,13 +405,26 @@ def test_packets_cover_every_unresolved_state():
 
 
 def test_packets_can_be_scoped_to_one_category():
-    """Review happens a category at a time, so the manifest has to be scopeable to a roster."""
+    """Review happens a category at a time, so the manifest has to be scopeable to a roster.
+
+    The category is chosen at run time from whichever still has unresolved records. Naming
+    `ui_api` here meant that finishing `ui_api` — the thing this machinery exists to do — broke
+    the test, which is the third time in this file a fixture was pinned to a corpus state the
+    work removes. A finished category must read as success, not as a failure.
+    """
+    from build.prose_provenance import ROOT as R
     from build.prose_provenance import category_roster, packets
 
-    roster = category_roster("ui_api")
-    rows = packets(roster)
-    assert rows and {r["product"] for r in rows} <= roster
-    assert {r["product"] for r in rows} == {r["product"] for r in packets()} & roster
+    everything = packets()
+    unresolved = {r["product"] for r in everything}
+    chosen = None
+    for path in sorted((R / "sources" / "categories").glob("*.yaml")):
+        roster = category_roster(path.stem)
+        rows = packets(roster)
+        assert {r["product"] for r in rows} == unresolved & roster, path.stem
+        if rows:
+            chosen = path.stem
+    assert chosen, "no category has an unresolved record; scoping is untested"
 
 
 @pytest.mark.parametrize("state", ["ambiguous_noncanonical", "named_noncanonical"])
