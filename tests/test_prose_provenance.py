@@ -9,11 +9,12 @@ cannot justify itself.
 
 from __future__ import annotations
 
+import re
 import pytest
 import yaml
 
 from build.apply_provenance import Refused, check, rewrite
-from build.prose_provenance import ROOT, census, classify
+from build.prose_provenance import ROOT, census, classify, clause_span
 
 
 @pytest.mark.parametrize(
@@ -61,7 +62,8 @@ def test_every_state_is_accounted_for():
 
 def test_rewrite_replaces_the_clause_and_keeps_the_rest():
     before = "Verified live 2026-08-13 via primary sources; v1.15.0 and 65k stars. MIT-licensed."
-    after = rewrite(before, "2026-08-13", "the anything-llm repository page")
+    after = rewrite(before, "Verified live 2026-08-13 via primary sources;",
+                    "the anything-llm repository page")
     assert after.startswith("Verified 2026-08-13 via the anything-llm repository page;")
     assert "v1.15.0 and 65k stars. MIT-licensed." in after
     assert "primary sources" not in after
@@ -70,7 +72,8 @@ def test_rewrite_replaces_the_clause_and_keeps_the_rest():
 def test_rewrite_never_moves_the_date():
     """A provenance repair is not a re-verification. Advancing the date would claim somebody
     re-confirmed the facts today, which nobody did."""
-    after = rewrite("Verified live 2026-08-13 via primary sources.", "2026-08-13", "the README")
+    after = rewrite("Verified live 2026-08-13 via primary sources.",
+                    "Verified live 2026-08-13 via primary sources.", "the README")
     assert "2026-08-13" in after
 
 
@@ -81,6 +84,7 @@ def _packet(**over):
     product = yaml.safe_load((ROOT / "sources" / "products" / "anythingllm.yaml").read_text())
     base = {
         "product": "anythingllm",
+        "current_clause": clause_span(product.get("comments")),
         "verification_date": "2026-08-13",
         "selected_document": "the anything-llm repository page",
         "source_url": "https://github.com/Mintplex-Labs/anything-llm",
@@ -198,35 +202,70 @@ def test_the_digest_catches_an_edit_to_either_prose_field():
 
 
 @pytest.mark.parametrize(
-    "before, expected",
+    "full, clause, expected",
     [
-        # The defect: `[^.;]*` stopped at the dot inside `huggingface.co` and left
-        # `.co/datasets/allenai/ai2_arc (474 downloads).` orphaned after the new document.
+        # A dot inside a URL is not a sentence end. `[^.;]*` stopped inside `huggingface.co`.
         ("Verified live 2026-08-13 on huggingface.co/datasets/allenai/ai2_arc (474 downloads).",
+         "Verified live 2026-08-13 on huggingface.co/datasets/allenai/ai2_arc (474 downloads).",
          "Verified 2026-08-13 via the dataset card."),
+        # Nor is the dot of an initialism, even though it IS followed by whitespace. Adding
+        # only the whitespace test split this into two grammatical-looking halves, which is
+        # worse than the URL case because nothing looks wrong.
+        ("Verified live 2026-08-13 via the U.S. AI Safety Institute report. Next sentence.",
+         "Verified live 2026-08-13 via the U.S. AI Safety Institute report.",
+         "Verified 2026-08-13 via the dataset card. Next sentence."),
         ("Verified live 2026-08-13 against the repository DATASHEET.md and arXiv:2406.19314.",
+         "Verified live 2026-08-13 against the repository DATASHEET.md and arXiv:2406.19314.",
          "Verified 2026-08-13 via the dataset card."),
+        # `;` terminates, and the prose after it survives.
         ("Verified live 2026-08-13 via primary sources; v1.15.0 and 65k stars. MIT-licensed.",
+         "Verified live 2026-08-13 via primary sources;",
          "Verified 2026-08-13 via the dataset card; v1.15.0 and 65k stars. MIT-licensed."),
     ],
 )
-def test_the_clause_bound_survives_a_dot_inside_a_url(before, expected):
-    """A sentence-terminating `.` is one followed by whitespace or end of string; a dot in a
-    URL, filename or version number is not. 71 clauses in the corpus contain an internal dot,
-    so treating them alike was not an edge case — it would have mangled the prose of every
-    one it rewrote."""
-    assert rewrite(before, "2026-08-13", "the dataset card") == expected
+def test_rewrite_replaces_the_exact_reviewed_clause(full, clause, expected):
+    assert rewrite(full, clause, "the dataset card") == expected
 
 
-def test_no_rewrite_leaves_an_orphaned_clause_fragment():
-    """The signature of the bug: a token beginning with `.` immediately after the document."""
+def test_rewrite_refuses_a_clause_that_is_not_present_exactly_once():
+    """The applier no longer re-derives a boundary, so its remaining risk is a stale packet.
+    A clause that is absent — or ambiguous — must refuse rather than guess."""
+    from build.apply_provenance import Refused
+
+    with pytest.raises(Refused):
+        rewrite("Verified 2026-08-13 via the README.", "a clause that is not there", "x")
+    with pytest.raises(Refused):
+        rewrite("A. A.", "A.", "x")   # two occurrences
+
+
+def test_the_clause_boundary_has_one_owner():
+    """BOUND is interpolated into both patterns rather than restated. The first cut of this
+    fix wrote the expansion into CLAUSE_ANY as a literal, so BOUND advertised a new boundary
+    while the pattern kept the old one — the sibling-copy defect, inside its own fix."""
+    from build.apply_provenance import CLAUSE
+    from build.prose_provenance import BOUND, CLAUSE_ANY
+
+    assert BOUND in CLAUSE.pattern
+    assert BOUND in CLAUSE_ANY.pattern
+
+
+def test_every_corpus_clause_round_trips_without_an_orphan():
+    """All 472, not a sample. The earlier version checked the first 60 files for one
+    signature (`the document.\w`), which is the URL case only — it would have passed the
+    initialism case, whose fragment starts with a space and a capital."""
     import glob
-    import re
 
-    for path in sorted(glob.glob(str(ROOT / "sources" / "products" / "*.yaml")))[:60]:
-        comments = str((yaml.safe_load(open(path)) or {}).get("comments") or "")
-        state, date, _ = classify(comments)
-        if state == "missing":
+    checked = 0
+    for path in sorted(glob.glob(str(ROOT / "sources" / "products" / "*.yaml"))):
+        product = yaml.safe_load(open(path)) or {}
+        comments = " ".join(str(product.get("comments") or "").split())
+        clause = clause_span(comments)
+        if not clause:
             continue
-        out = rewrite(" ".join(comments.split()), date, "the document")
-        assert not re.search(r"the document\.\w", out), f"orphaned fragment in {path}"
+        checked += 1
+        out = rewrite(comments, clause, "THE-DOCUMENT")
+        after = out.split("THE-DOCUMENT", 1)[1]
+        # Whatever follows the inserted name must start a new sentence or clause, never a
+        # fragment of the one just replaced.
+        assert re.match(r"^[.;]?(\s|$)", after), f"{path}: orphaned fragment {after[:60]!r}"
+    assert checked > 400, f"only {checked} products carried a clause; the walk has narrowed"

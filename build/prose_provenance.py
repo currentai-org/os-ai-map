@@ -84,11 +84,24 @@ METHOD_WORDS = re.compile(
 
 # A sentence-terminating "." is one followed by whitespace or end of string; a dot inside a
 # URL or filename is not. See apply_provenance.CLAUSE for the defect this bound fixes.
-BOUND = r"(?:[^.;]|\.(?!\s|$))*"
+# A period ends the clause only when it is followed by whitespace or end of string AND is not
+# the dot of an initialism. `[^.;]*` alone stopped inside `huggingface.co`; adding only the
+# whitespace test still broke `the U.S. AI Safety Institute report` into
+# `the U.S` + `. AI Safety Institute report`, which is worse than the URL case because the
+# result reads as grammatical.
+#
+# This is a HEURISTIC and is treated as one: it proposes a clause for a human to review in the
+# packet. The applier never re-derives a boundary — it replaces the exact reviewed string. See
+# apply_provenance.rewrite.
+BOUND = r"(?:[^.;]|\.(?!\s|$)|(?<=\b[A-Z])\.(?=\s))*"
 
 # The dated clause in any of its wordings, removed before digesting the surrounding prose.
+# Interpolated from BOUND at import, not restated. Writing the expansion out here is how the
+# first cut of this fix silently kept the old boundary while BOUND advertised a new one.
 CLAUSE_ANY = re.compile(
-    r"[Vv]erified(?: live)?\s+\d{4}-\d{2}-\d{2}\s*[,;]?\s*(?:via|on|against|using)?\s*(?:[^.;]|\.(?!\s|$))*[.;]?"
+    r"[Vv]erified(?: live)?\s+\d{4}-\d{2}-\d{2}\s*[,;]?\s*(?:via|on|against|using)?\s*"
+    + BOUND
+    + r"[.;]?"
 )
 
 # A document name has to contain an actual word. `Verified 2026-08-13 via .` is canonical in
@@ -192,6 +205,18 @@ def candidates(slug: str, date: str, score: dict) -> list[dict]:
     return sorted(best.values(), key=lambda c: (not c["looks_like_document"], c["url"]))
 
 
+def clause_span(comments: str) -> str | None:
+    """The dated verification clause, as the text a rewrite would replace.
+
+    Best effort. Its output goes into a packet for a human to confirm, and the applier matches
+    it literally rather than re-deriving it, so a mis-bounded clause is a visible wrong string
+    in review rather than a silent mangling on write.
+    """
+    text = " ".join(str(comments or "").split())
+    match = CLAUSE_ANY.search(text)
+    return match.group(0) if match else None
+
+
 def prose_digest(product: dict) -> str:
     """A digest over the prose a verification line is provenance for.
 
@@ -235,6 +260,9 @@ def packets() -> list[dict]:
             "description": " ".join(str(product.get("description") or "").split()),
             "comments": " ".join(str(product.get("comments") or "").split()),
             "prose_digest": prose_digest(product),
+            # The exact text the applier will replace. Confirm it in review: if the clause
+            # boundary guessed wrong, it is visible here rather than in the written file.
+            "current_clause": clause_span(product.get("comments")),
             "candidates": cands,
             # A packet with no usable candidate cannot be derived from evidence, whatever a
             # reader thinks of it: there is no document in the record to name.

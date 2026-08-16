@@ -63,7 +63,8 @@ from pathlib import Path
 import yaml
 
 from build.components import set_document_field
-from build.prose_provenance import AXES, HAS_WORD, METHOD_WORDS, classify, prose_digest
+from build.prose_provenance import (AXES, BOUND, HAS_WORD, METHOD_WORDS, classify,
+                                    prose_digest)
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -77,7 +78,7 @@ ROOT = Path(__file__).resolve().parents[1]
 # downloads).` orphaned after the new document name. 71 clauses in the corpus contain an
 # internal dot, so this was not an edge case.
 CLAUSE = re.compile(
-    r"[Vv]erified(?: live)?\s+(\d{4}-\d{2}-\d{2})\s*[,;]?\s*(?:via|on|against|using)?\s*(?:[^.;]|\.(?!\s|$))*",
+    r"[Vv]erified(?: live)?\s+(\d{4}-\d{2}-\d{2})\s*[,;]?\s*(?:via|on|against|using)?\s*" + BOUND
 )
 
 
@@ -99,7 +100,8 @@ def score_sources(slug: str) -> dict[str, str]:
 def check(packet: dict) -> None:
     """Raise `Refused` unless the packet carries every part of its own justification."""
     slug = packet.get("product")
-    for field in ("selected_document", "source_url", "source_accessed", "support", "prose_digest"):
+    for field in ("selected_document", "source_url", "source_accessed", "support",
+                  "prose_digest", "current_clause"):
         if not str(packet.get(field) or "").strip():
             raise Refused(f"{slug}: packet has no {field}")
 
@@ -155,13 +157,34 @@ def check(packet: dict) -> None:
         )
 
 
-def rewrite(comments: str, date: str, document: str) -> str:
-    """Replace the dated clause with the canonical form, leaving the rest of the prose alone."""
-    replacement = f"Verified {date} via {document.rstrip('.')}"
-    new, n = CLAUSE.subn(replacement, comments, count=1)
-    if n != 1:
-        raise Refused("could not locate exactly one dated verification clause")
-    return new
+def rewrite(comments: str, clause: str, document: str) -> str:
+    """Replace the EXACT reviewed `clause` with the canonical line. No boundary is re-derived.
+
+    The applier used to re-match the clause with a regex at write time, which made every
+    boundary bug a silent corruption: `[^.;]*` stopped inside `huggingface.co` and orphaned
+    the rest, and adding a whitespace test still split `the U.S. AI Safety Institute report`
+    into two grammatical-looking halves. A heuristic good enough to propose a clause for
+    review is not good enough to rewrite prose unsupervised.
+
+    So the boundary is decided once, in the packet, where a human sees the exact string that
+    will be replaced — and this does a literal substitution of that string, refusing if it is
+    not present exactly once.
+    """
+    if not clause:
+        raise Refused("packet carries no current_clause")
+    occurrences = comments.count(clause)
+    if occurrences != 1:
+        raise Refused(
+            f"the reviewed clause appears {occurrences} times in the live prose, not once; "
+            "the record has changed since review"
+        )
+    date_match = re.search(r"\d{4}-\d{2}-\d{2}", clause)
+    if not date_match:
+        raise Refused("the reviewed clause carries no date")
+    trailing = clause[-1] if clause and clause[-1] in ".;" else "."
+    return comments.replace(
+        clause, f"Verified {date_match.group(0)} via {document.rstrip('.')}{trailing}", 1
+    )
 
 
 def apply_one(packet: dict) -> bool:
@@ -172,7 +195,9 @@ def apply_one(packet: dict) -> bool:
     doc = yaml.safe_load(text) or {}
     comments = str(doc.get("comments") or "")
 
-    new_comments = rewrite(comments, str(packet["verification_date"]), str(packet["selected_document"]))
+    new_comments = rewrite(
+        comments, str(packet.get("current_clause") or ""), str(packet["selected_document"])
+    )
     if new_comments == comments:
         return False
     if not CANONICAL.search(" ".join(new_comments.split())):
