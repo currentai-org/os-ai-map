@@ -23,12 +23,6 @@ jobs:
     env:
       OSO_API_KEY: ${{ secrets.OSO_API_KEY }}
       HF_TOKEN: ${{ secrets.HF_TOKEN }}
-      # GITHUB_TOKEN is read by fetch_github_ai_repos; GH_TOKEN by the gh CLI
-      # inside fetch_github_orgs. Both map to the GH_FETCH_TOKEN repo secret
-      # (a PAT, not the Actions token: PRs opened with the Actions token would
-      # not trigger the validate workflow, and the orgs scan needs a 5K/hr limit).
-      GITHUB_TOKEN: ${{ secrets.GH_FETCH_TOKEN }}
-      GH_TOKEN: ${{ secrets.GH_FETCH_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - name: Require secrets (fetchers degrade silently without them)
@@ -36,7 +30,6 @@ jobs:
           missing=""
           [ -n "$OSO_API_KEY" ] || missing="$missing OSO_API_KEY"
           [ -n "$HF_TOKEN" ] || missing="$missing HF_TOKEN"
-          [ -n "$GITHUB_TOKEN" ] || missing="$missing GH_FETCH_TOKEN"
           if [ -n "$missing" ]; then
             echo "::error::Missing repo secrets:$missing. Without tokens the HF link scan silently drops from ~742 links to ~7; refusing to run."
             exit 1
@@ -48,16 +41,15 @@ jobs:
         run: uv sync --locked
       - name: Run fetchers
         run: |
-          # The GoodAI List fetcher is gone: currentai.signal_goodailist.repo_catalog
-          # reads goodailist.com directly on its own cron, so a committed CSV mirror
-          # was a second copy of the same data that could only be staler.
-          uv run python warehouse/ingest/fetch_incidents.py
+          # Two fetchers, and they are a chain: fetch_huggingface writes the model
+          # list that fetch_model_benchmarks scans for GitHub repo links. Order matters.
+          #
+          # Three others were removed on 2026-08-16 (incidents, GitHub orgs, GitHub AI
+          # repo search). Each wrote a CSV that loaded into no static model and was read
+          # by nothing. Incidents are served live by currentai.aiid.*, the same way
+          # currentai.signal_goodailist.repo_catalog replaced the GoodAI List mirror.
           uv run python warehouse/ingest/fetch_huggingface.py
           uv run python warehouse/ingest/fetch_model_benchmarks.py
-          uv run python warehouse/ingest/fetch_github_ai_repos.py
-          # Resumes from the committed orgs.csv, so steady-state runs only
-          # fetch new owners and stay well under the 5K/hr rate limit.
-          uv run python warehouse/ingest/fetch_github_orgs.py
       - name: Open refresh PR
         run: |
           if [ -z "$(git status --porcelain warehouse/catalog/)" ]; then

@@ -33,7 +33,7 @@ CSV-based reference data uploaded via scripts. Source CSVs live in `warehouse/ca
 | `currentai.catalog.pypi_downloads` | `warehouse/catalog/pypi/pypi_downloads.csv` (gitignored) | ~1.6M | PyPI daily downloads by package × country, 39 AI packages |
 | `currentai.catalog.stack_map` | `warehouse/catalog/stack_map/repos.csv` | 205 | Taxonomy bridge: scored-product repos → stack-map category / layer / openness + gap-map scores (adoption, capability, maturity), generated from `sources/` by `warehouse/ingest/build_stack_map.py` |
 
-### The GoodAI roster is no longer a catalog CSV
+### Two catalog CSVs are gone, for the same reason
 
 `currentai.catalog.goodailist_repos` is retired. The roster now comes from
 `currentai.signal_goodailist.repo_catalog`, a UDM that reads goodailist.com directly on
@@ -44,6 +44,12 @@ still listed 300 repos goodailist.com had delisted, 169 of them with over 1,000 
 while missing 2,056 the live list had added. A committed copy of a live source can only be
 staler than the source, and here nothing was reading the HTTP statuses that would have
 shown it.
+
+The AI incidents mirror went the same way on 2026-08-16. `currentai.aiid.*` is a live REST
+ingestion on a weekly cron, and the `ai-safety-incidents` notebook reads it directly; the
+committed `warehouse/catalog/ai-incidents/incidents.csv` loaded into no static model and had
+no reader at all. Removed with its fetcher, along with the GitHub org and AI-repo-search
+scans, which were in the same state.
 
 ## Entities (User Defined Models)
 
@@ -118,11 +124,13 @@ SELECT * FROM currentai.scores.project_summary ORDER BY total_stars DESC LIMIT 1
 ## Refreshing
 
 ```bash
-# Refresh catalog CSVs:
+# Refresh catalog CSVs. These two are a chain: fetch_huggingface writes the model
+# list that fetch_model_benchmarks scans for GitHub repo links.
+uv run python warehouse/ingest/fetch_huggingface.py
 uv run python warehouse/ingest/fetch_model_benchmarks.py    # then upload via MCP
 
-# The GoodAI roster needs no fetcher: signal_goodailist.repo_catalog reads
-# goodailist.com directly on its own cron.
+# Neither the GoodAI roster nor the incidents feed needs a fetcher:
+# signal_goodailist.repo_catalog and the aiid ingestion read their sources directly.
 
 # UDMs carry a declared cron, which is NOT evidence that they run. Trigger manually via MCP:
 # createUserModelRunRequest with the dataset ID
