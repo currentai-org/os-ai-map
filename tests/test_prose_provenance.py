@@ -98,10 +98,12 @@ def test_rewrite_refuses_a_clause_that_is_not_a_verification_line():
                 "Released 2026-08-13 under MIT.", "the README", "2026-08-13")
 
 
-# A synthetic corpus, deliberately. These once ran against `anythingllm`, which the ui_api
-# manifest then repaired — so the fixture's own subject stopped being `generic` and every
-# refusal test broke. A test for the machinery must not be pinned to a record the machinery is
-# built to change.
+# A synthetic corpus, deliberately. These once ran against `anythingllm`. A first cut of the
+# ui_api manifest repaired that record, its state stopped being `generic`, and every refusal
+# test here failed — not because the machinery broke, but because the fixture's subject had
+# been fixed. The manifest was withdrawn on other grounds, so `anythingllm` is `generic` again
+# and the tests would pass either way; the coupling is the defect, not the failure it caused.
+# A test for the machinery must not be pinned to a record the machinery exists to change.
 _COMMENTS = ("Verified live 2026-08-13 via primary sources; v1.15.0 and 65k stars. "
              "MIT-licensed local-first desktop AI app.")
 
