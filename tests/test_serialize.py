@@ -1,4 +1,7 @@
-from build.serialize import build_payload, _stage_and_gaps
+import pytest
+
+from build.serialize import (build_payload, release_date, repo_version,
+                             _stage_and_gaps)
 
 
 def _p(cls, adoption, capability):
@@ -348,3 +351,58 @@ def test_a_product_with_no_aliases_contributes_nothing():
     """Most products carry none. The gather must not invent an empty entry for them."""
     payload = build_payload(_sources(), frozen_long_tail={}, generated="2026-01-01")
     assert payload["aliases"] == {"products": {}, "organizations": {}}
+
+
+# --- Payload version -------------------------------------------------------
+# The map surfaces this string as "which release am I looking at", so it has to be the
+# version the repo actually released, not a number that can be set independently here.
+
+def test_payload_carries_an_explicit_version():
+    payload = build_payload(_sources(), frozen_long_tail={}, generated="2026-06-10",
+                            version="1.2.3", released="2026-01-02")
+    assert payload["version"] == "1.2.3"
+
+
+def test_an_unreleased_version_is_rejected_rather_than_dated_from_elsewhere():
+    """Naming a version with no changelog entry fails instead of borrowing a date."""
+    with pytest.raises(ValueError, match="1.2.3"):
+        build_payload(_sources(), frozen_long_tail={}, generated="2026-06-10",
+                      version="1.2.3")
+
+
+def test_payload_version_defaults_to_the_release_version():
+    """Left unset, the payload names the same version pyproject.toml does."""
+    payload = build_payload(_sources(), frozen_long_tail={}, generated="2026-06-10")
+    assert payload["version"] == repo_version()
+
+
+def test_repo_version_agrees_with_the_newest_dated_changelog_entry():
+    """The payload's default cannot name a version the changelog never released."""
+    from tests.test_release_metadata import _changelog_newest_dated_version
+    assert repo_version() == _changelog_newest_dated_version()
+
+
+def test_payload_carries_an_explicit_release_date():
+    payload = build_payload(_sources(), frozen_long_tail={}, generated="2026-06-10",
+                            version="1.2.3", released="2026-01-02")
+    assert payload["released"] == "2026-01-02"
+
+
+def test_release_date_is_looked_up_by_version(tmp_path):
+    """The date comes from that version's own heading, not the newest one."""
+    (tmp_path / "CHANGELOG.md").write_text(
+        "## [Unreleased]\n\n## [0.3.0] - 2026-09-01\n\n## [0.2.0] - 2026-08-16\n")
+    assert release_date("0.2.0", root=tmp_path) == "2026-08-16"
+    assert release_date("0.3.0", root=tmp_path) == "2026-09-01"
+
+
+def test_release_date_rejects_a_version_with_no_dated_heading(tmp_path):
+    """An unreleased version is an error here, not a silent fallback to another date."""
+    (tmp_path / "CHANGELOG.md").write_text("## [Unreleased]\n\n## [0.2.0] - 2026-08-16\n")
+    with pytest.raises(ValueError, match="0.9.9"):
+        release_date("0.9.9", root=tmp_path)
+
+
+def test_payload_release_date_defaults_to_the_changelog_date():
+    payload = build_payload(_sources(), frozen_long_tail={}, generated="2026-06-10")
+    assert payload["released"] == release_date(repo_version())

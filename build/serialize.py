@@ -2,12 +2,13 @@
 
 Reproduces the exact structure the live notebook consumes:
   { descriptions, layer_order[], categories: {cid: {label, arc, layer, products[]}},
-    order[], n_total, generated, long_tail }
+    order[], n_total, generated, version, released, long_tail }
 """
 from datetime import date
 from pathlib import Path
 import json
 import re
+import tomllib
 import yaml
 
 from build.check_rubric import components_string
@@ -303,10 +304,44 @@ def _aliases(prods: dict, orgs: dict) -> dict:
     }
 
 
+def repo_version(root: Path | None = None) -> str:
+    """The release version this payload was built from, read from ``pyproject.toml``.
+
+    Consumers show it as the map's version, so it has to be the same string the release
+    carries. ``pyproject.toml`` is one of the records ``tests/test_release_metadata.py``
+    holds in agreement with the changelog and the git tag, so reading it here means the
+    payload cannot name a version the repo never released.
+    """
+    data = tomllib.loads(((root or ROOT) / "pyproject.toml").read_text(encoding="utf-8"))
+    return data["project"]["version"]
+
+
+def release_date(version: str, root: Path | None = None) -> str:
+    """The date ``version`` was released, from its dated heading in ``CHANGELOG.md``.
+
+    This is the date the release was cut, which is not the date the payload was built —
+    a rebuild between releases keeps the release date and moves ``generated``. Looking the
+    date up *by version* rather than taking the newest heading means a payload can never
+    pair one release's number with another's date; a version with no dated heading is an
+    error rather than a silent fallback.
+    """
+    text = ((root or ROOT) / "CHANGELOG.md").read_text(encoding="utf-8")
+    m = re.search(rf"^## \[{re.escape(version)}\]\s+-\s+(\d{{4}}-\d{{2}}-\d{{2}})\s*$",
+                  text, re.M)
+    if not m:
+        raise ValueError(f"CHANGELOG.md has no dated heading for release {version}")
+    return m.group(1)
+
+
 def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None = None,
-                  freshness: dict | None = None) -> dict:
+                  freshness: dict | None = None, version: str | None = None,
+                  released: str | None = None) -> dict:
     if generated is None:
         generated = date.today().isoformat()
+    if version is None:
+        version = repo_version()
+    if released is None:
+        released = release_date(version)
     orgs, cats, prods, scores = (sources["organizations"], sources["categories"],
                                  sources["products"], sources["scores"])
     taxonomy = sources["taxonomy"]
@@ -374,6 +409,7 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
             "organizations": _organizations(orgs, product_org),
             "aliases": _aliases(prods, orgs),
             "n_total": n, "generated": generated,
+            "version": version, "released": released,
             "long_tail": _filter_long_tail(frozen_long_tail, prods)}
 
 
@@ -384,10 +420,17 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--date", default=None,
                         help="value for the payload 'generated' field (default: today)")
+    parser.add_argument("--version", default=None,
+                        help="value for the payload 'version' field (default: pyproject.toml)")
+    parser.add_argument("--released", default=None,
+                        help="value for the payload 'released' field (default: CHANGELOG.md)")
     args = parser.parse_args()
     sources = load_sources(ROOT)
     frozen = json.load(open(ROOT / "sources" / "snapshots" / "long_tail.json"))
     payload = build_payload(sources, frozen, generated=args.date,
-                            freshness=resolve_freshness(ROOT))
+                            freshness=resolve_freshness(ROOT), version=args.version,
+                            released=args.released)
     (ROOT / "build" / "notebook_data.json").write_text(json.dumps(payload, indent=2, ensure_ascii=False))
-    print(f"wrote build/notebook_data.json ({payload['n_total']} products)")
+    print(f"wrote build/notebook_data.json "
+          f"({payload['n_total']} products, v{payload['version']} "
+          f"released {payload['released']}, built {payload['generated']})")
