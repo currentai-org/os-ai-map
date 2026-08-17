@@ -16,6 +16,28 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ## [Unreleased]
 
+### Added
+
+- Per-product `overall_score` and `tier` (`leading` for score ≥ 4.5, `strong` for
+  4.0 ≤ score < 4.5, else `null`) fields, a `depth` category gap that fires at Stage 4, and a
+  `descriptions.tiers` legend in the payload (#87, #318).
+
+### Changed
+
+- Split the `maturity` category gap into `depth` (Stage 4) and its `capability`/`adoption`
+  drivers, which now fire together wherever both apply, and redefined the `adoption` gap as "the
+  best fully-open option is below the adoption threshold," independent of capability (#87, #318).
+
+### Deprecated
+
+- The per-product `maturity` and `mature` keys, dual-published for one release so consumers can
+  migrate before removal. Replacements: `maturity` → `overall_score`; `mature` →
+  `tier == "leading"` and `openness.bucket == "open"` (#87, #318).
+
+### Removed
+
+- The `maturity` gap type (#87, #318).
+
 ## [0.2.0] - 2026-08-16
 
 Grew and re-verified the corpus end to end, on top of a new evidence-based scoring pipeline.

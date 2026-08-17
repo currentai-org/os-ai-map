@@ -16,7 +16,8 @@ from build.check_rubric import components_string
 ROOT = Path(__file__).resolve().parents[1]
 
 PRODUCT_KEY_ORDER = ["slug", "product", "org_slug", "org", "type", "description",
-                     "openness", "adoption", "capability", "maturity", "mature",
+                     "openness", "adoption", "capability", "overall_score", "tier",
+                     "maturity", "mature",
                      "freshness", "version_note", "lineage"]
 
 # --- Gap analysis (category-level stage + gaps) -----------------------------
@@ -28,6 +29,19 @@ _GAP_OPENISH = {"open_weights", "source_available", "gated", "open_toolchain"}
 _MATURE_MIN = 4.5          # blended adoption/capability score for a product to be "mature"
 _STAGE5_MIN_MATURE = 4     # mature fully-open products needed for Stage 5 (Mature Open Ecosystem)
 _CAPABLE_MIN = 4           # raw capability below which an open option is "not capable yet"
+_ADOPTED_MIN = 4           # raw adoption below which an open option is "not adopted yet"
+# Product-level score tiers, banded on the overall score -- the adoption/capability blend, or
+# adoption alone where capability is unmeasured. Leading is 4.5+, Strong is 4.0 <= score < 4.5.
+# The bands are honest about how the number was reached: they name a score over the product's
+# available measured axes, not a claim about both. Where both axes are measured they are whole
+# numbers 1-5, so clearing 4.5 always needs a 5 on at least one axis -- but whether the partner
+# axis can be a 4 or must also be a 5 depends on the category weights (an even split clears at
+# 5-and-4; a lopsided split may not). An adoption-only product reaches Leading only at adoption
+# 5. Scored across all openness buckets -- the tier
+# describes the product -- while `mature` gates the same 4.5 bar on the fully-open bucket,
+# because only fully-open products advance a category's stage.
+_LEADING_MIN = _MATURE_MIN     # 4.5
+_STRONG_MIN = 4.0
 _STAGE_NAMES = {0: "Void", 1: "Open Experiments", 2: "Emerging Alternatives",
                 3: "Viable Alternatives", 4: "Competitive Open Ecosystem",
                 5: "Mature Open Ecosystem"}
@@ -36,26 +50,33 @@ _STAGE_NAMES = {0: "Void", 1: "Open Experiments", 2: "Emerging Alternatives",
 # re-deriving the methodology. Kept verbatim from docs/reference/gap-analysis.md
 # (the prose source of truth); edit both together.
 _STAGE_DESC = {
-    0: "no usable open option exists (and nothing is mature anywhere)",
+    0: "no usable open option exists (and nothing reaches the Leading tier anywhere)",
     1: "fully-open options exist but are weak on both axes",
-    2: "no mature fully-open product; the best fully-open option is promising but limited",
-    3: "no mature fully-open product, but the best fully-open option is strong",
-    4: "at least one mature fully-open product, but not yet enough for depth",
-    5: "enough mature fully-open products to be redundant/resilient",
+    2: "no Leading fully-open product; the best fully-open option is promising but limited",
+    3: "no Leading fully-open product, but the best fully-open option is strong",
+    4: "at least one Leading fully-open product, but not yet enough for depth",
+    5: "enough Leading fully-open products to be redundant/resilient",
 }
 _GAP_DESC = {
     "void": "no usable open option at all.",
     "capability": "the best fully-open option isn't capable enough to be useful.",
-    "adoption": "a capable fully-open option exists but is under-adopted.",
-    "maturity": "open options exist and at least one may be mature, but the ecosystem lacks "
-                "the depth/redundancy of a mature ecosystem (too few mature fully-open products).",
-    "openness": "capable, adopted options exist, but the mature ones are not fully open "
+    "adoption": "the best fully-open option is below the adoption threshold.",
+    "depth": "proven top-tier (Leading) open options exist, but too few of them for redundancy. "
+             "The shortfall is count, not quality; fires at Stage 4 only, because below it the "
+             "stage number already says no Leading open option exists.",
+    "openness": "capable, adopted options exist, but the Leading-tier ones are not fully open "
                 "(open-ish or closed). This is the orthogonal flag; it can co-occur with the others.",
     "disclosure": "the open products here are real and widely used, but the closed frontier's own "
                   "equivalent is undisclosed: labs publish neither their proprietary and licensed "
                   "data nor their exact training-data recipe. The gap is the invisibility of the "
                   "frontier's data, not the absence of open data. Declared per category (see "
                   "docs/reference/gap-analysis.md), not inferred from the roster.",
+}
+_TIER_DESC = {
+    "leading": "an overall score of 4.5 or higher, calculated from the product's available "
+               "measured axes.",
+    "strong": "an overall score of at least 4.0 but below 4.5 (4.0 ≤ score < 4.5), calculated "
+              "from the product's available measured axes.",
 }
 
 
@@ -122,15 +143,34 @@ def _stage_and_gaps(rows: list[dict], weights: dict, disclosure: bool = False) -
     elif stage == 0:
         gaps = ["void"]
     elif stage == 4:
-        gaps = ["maturity"]
+        # Count, not quality: the category has proven top-tier (Leading) open options but not
+        # enough of them. Deliberately fires at Stage 4 only -- defining depth as "no Leading
+        # open product at all" would spread it over the weaker categories and rebuild the
+        # near-ubiquitous chip this taxonomy replaced.
+        gaps = ["depth"]
     else:
-        gaps = ["maturity"]
+        # Stages 1-3: no fully-open product clears the maturity bar, so name the driver(s)
+        # holding the best one back rather than the umbrella. Both fire where both apply --
+        # there is no longer a one-diagnostic-per-category rule, which is what kept
+        # `capability` unreachable behind `openness` and hid the edge_hardware case.
+        #
+        # A driver gap fires only when its axis is measured and below its cutoff. If both
+        # measured axes clear their cutoffs yet the blend still misses the bar (adoption 4
+        # with a null capability blends to 4.0, which is benchmark_eval_data's shape), the
+        # category carries no driver gap: the stage number already says it has not reached the
+        # leading-product threshold, and asserting an adoption shortfall where adoption clears
+        # its cutoff would be a knowingly false label. When measurement gaps like this become
+        # common enough to name, introduce a gap for them deliberately.
+        best = max(open_rows, key=lambda rs: rs[1])[0] if open_rows else None
+        cap = ((best or {}).get("capability") or {}).get("score")
+        adopt = ((best or {}).get("adoption") or {}).get("level")
+        gaps = []
+        if cap is not None and cap < _CAPABLE_MIN:
+            gaps.append("capability")
+        if adopt is not None and adopt < _ADOPTED_MIN:
+            gaps.append("adoption")
         if mature_anywhere:                  # capable mature options exist, but none fully open
             gaps.append("openness")
-        else:                                # the open ecosystem itself is immature -> which axis?
-            best = max(open_rows, key=lambda rs: rs[1])[0] if open_rows else None
-            cap = ((best or {}).get("capability") or {}).get("score")
-            gaps.append("capability" if (cap is not None and cap < _CAPABLE_MIN) else "adoption")
 
     # Disclosure flag (orthogonal, any stage): a declared category attribute, set where
     # the closed frontier's equivalent to these open products is structurally undisclosed
@@ -213,7 +253,18 @@ def _row(slug: str, prod: dict, org_slug: str, org_name: str, score: dict,
     # already rounded to 2dp by _maturity_score, or null when adoption is missing. The
     # category stage thresholds in _stage_and_gaps compare this same 2dp value.
     m = _maturity_score(row, weights or {"adopt": 0.5, "cap": 0.5})
+    # `overall_score` is the new name for this number and `maturity` the old one. Both ship for
+    # one release so the front end and the warehouse can move over before the old key goes away:
+    # a routine data sync must not be able to break the map halfway through. Same value, and the
+    # rename is the point -- the number blends capability and adoption, which "maturity" implies
+    # age for, and it is not the category-level Maturity Stage that shares the old word.
+    row["overall_score"] = m
     row["maturity"] = m
+    # Leading / Strong / null, derived from the score alone (see _LEADING_MIN). Emitted rather
+    # than left to each consumer so the two tier boundaries stay methodology constants.
+    row["tier"] = (None if m is None else
+                   "leading" if m >= _LEADING_MIN else
+                   "strong" if m >= _STRONG_MIN else None)
     # Canonical `mature` flag: the SAME rule the category stage engine uses
     # (_stage_and_gaps) — a fully-open product whose blended maturity clears
     # _MATURE_MIN. Emitted here so downstream consumers stop recomputing it with a
@@ -402,6 +453,7 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
     descriptions = {
         "stages": {str(k): v for k, v in _STAGE_DESC.items()},
         "gaps": dict(_GAP_DESC),
+        "tiers": dict(_TIER_DESC),
         "categories": {cid: cats[cid].get("description", "") for cid in order},
     }
     return {"descriptions": descriptions, "layer_order": layer_order,

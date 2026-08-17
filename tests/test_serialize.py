@@ -18,7 +18,46 @@ def test_stage5_mature_open_ecosystem():
 def test_openness_gap_when_mature_options_are_open_ish():
     rows = [_p("open_weights", 5, 5) for _ in range(3)]  # mature but open-ish, none fully open
     sg = _stage_and_gaps(rows, {"adopt": 0.5, "cap": 0.5})
-    assert sg["num"] < 5 and "maturity" in sg["gaps"] and "openness" in sg["gaps"]
+    assert sg["num"] < 5 and "openness" in sg["gaps"]
+
+
+def test_maturity_is_not_a_gap_type():
+    # The composite was dropped from the vocabulary: it reported the blend next to its own
+    # parts, and it fired in 12 of 16 categories, so it discriminated between none of them.
+    for rows, w in (([_p("open_source", 5, 5)], {"adopt": 0.5, "cap": 0.5}),      # stage 4
+                    ([_p("open_weights", 5, 5)], {"adopt": 0.5, "cap": 0.5}),     # stage 1-3
+                    ([_p("open_source", 2, 2)], {"adopt": 0.5, "cap": 0.5})):     # stage 1-3
+        assert "maturity" not in _stage_and_gaps(rows, w)["gaps"]
+
+
+def test_depth_gap_at_stage_4_only():
+    # One mature fully-open product: quality is proven, count is not.
+    sg = _stage_and_gaps([_p("open_source", 5, 5)], {"adopt": 0.5, "cap": 0.5})
+    assert sg["num"] == 4 and sg["gaps"] == ["depth"]
+    # Four of them clears Stage 5, which carries no gaps at all.
+    sg5 = _stage_and_gaps([_p("open_source", 5, 5) for _ in range(4)], {"adopt": 0.5, "cap": 0.5})
+    assert sg5["num"] == 5 and "depth" not in sg5["gaps"]
+    # Below Stage 4 the stage number already says no frontier open option exists, so depth
+    # would only restate it — this is the ubiquity the old maturity gap had.
+    for rows in ([_p("open_source", 2, 2)], [_p("open_weights", 5, 5)], [_p("closed", 1, 1)]):
+        assert "depth" not in _stage_and_gaps(rows, {"adopt": 0.5, "cap": 0.5})["gaps"]
+
+
+def test_capability_and_adoption_both_fire_when_both_apply():
+    # No one-diagnostic-per-category rule any more: a fully-open option that is weak on both
+    # axes reports both drivers.
+    sg = _stage_and_gaps([_p("open_source", 3, 3)], {"adopt": 0.5, "cap": 0.5})
+    assert sg["num"] < 4 and sg["gaps"] == ["capability", "adoption"]
+
+
+def test_capability_gap_survives_alongside_openness():
+    # The edge_hardware case. The single fully-open board is adopted but underpowered, while
+    # mature open-ish and closed options exist. The old engine emitted one diagnostic and
+    # checked openness first, so `capability` was unreachable and this never surfaced.
+    rows = [_p("open_hardware", 4, 3), _p("open_weights", 5, 5), _p("closed", 5, 5)]
+    sg = _stage_and_gaps(rows, {"adopt": 0.5, "cap": 0.5})
+    assert "capability" in sg["gaps"] and "openness" in sg["gaps"]
+    assert "adoption" not in sg["gaps"]  # adoption 4 clears its bar
 
 
 def test_missing_adoption_yields_null_maturity_and_is_excluded_from_stage():
@@ -37,7 +76,18 @@ def test_void_when_no_open_option():
 def test_capability_gap_when_nothing_mature_and_weak():
     rows = [_p("open_source", 2, 2)]  # fully open but weak on both axes
     sg = _stage_and_gaps(rows, {"adopt": 0.5, "cap": 0.5})
-    assert "maturity" in sg["gaps"] and "capability" in sg["gaps"]
+    assert "capability" in sg["gaps"]
+
+
+def test_stage_1_to_3_carries_no_driver_gap_when_axes_clear_but_blend_misses_bar():
+    # benchmark_eval_data's shape: fully-open products at adoption 4 with a null capability,
+    # so the blend is adoption alone and tops out at 4.0 — under the maturity bar, yet neither
+    # axis is below its cutoff. Adoption is NOT short (it clears 4), and capability is unmeasured,
+    # not deficient — so no driver gap fires. Labelling this `adoption` would be a knowingly
+    # false shortfall; the stage number already says the category is below the leading bar.
+    rows = [_p("open_source", 4, None) for _ in range(3)]
+    sg = _stage_and_gaps(rows, {"adopt": 0.6, "cap": 0.4})
+    assert sg["num"] == 3 and sg["gaps"] == []
 
 
 def test_stage_uses_rounded_maturity_not_float_noise():
@@ -141,6 +191,9 @@ def test_descriptions_block_present_and_sourced():
     # stages keyed 0-5, gaps keyed by name, categories keyed by slug from the source yaml
     assert set(d["stages"]) == {"0", "1", "2", "3", "4", "5"}
     assert "void" in d["gaps"] and "openness" in d["gaps"]
+    assert "depth" in d["gaps"] and "maturity" not in d["gaps"]
+    # the two score tiers ship their own legend copy, so a consumer never hardcodes 4.5/4.0
+    assert set(d["tiers"]) == {"leading", "strong"}
     assert d["categories"]["base_pretrained"] == "Foundation models trained from scratch."
     # descriptions ships first so it reads as a header
     assert list(payload)[0] == "descriptions"
@@ -199,6 +252,45 @@ def test_mature_flag_false_when_maturity_null():
     assert row["mature"] is False
 
 
+def _row_for(cls, adoption, capability, weights=None):
+    src = _sources()
+    src["scores"]["llama-4"]["openness"] = {"score": 5, "class": cls}
+    src["scores"]["llama-4"]["adoption"] = {"level": adoption, "signal_type": "usage_volume"}
+    src["scores"]["llama-4"]["capability"] = {"score": capability, "basis": "x"}
+    if weights is not None:
+        src["categories"]["base_pretrained"]["weights"] = weights
+    payload = build_payload(src, frozen_long_tail={}, generated="2026-06-10")
+    return payload["categories"]["base_pretrained"]["products"][0]
+
+
+def test_overall_score_dual_publishes_with_maturity():
+    # Both keys ship for one release so the front end and the warehouse can migrate before
+    # `maturity` is removed. Same value, including the null.
+    row = _row_for("open_source", 4, 5)
+    assert row["overall_score"] == row["maturity"] == 4.5
+    null_row = _row_for("open_source", None, 5)
+    assert null_row["overall_score"] is None and null_row["maturity"] is None
+
+
+def test_tier_is_derived_from_the_score_across_all_buckets():
+    # Leading needs a 5 on one axis: 4 and 4 blends to exactly 4.0 and is Strong.
+    assert _row_for("open_source", 5, 4)["tier"] == "leading"
+    assert _row_for("open_source", 4, 4)["tier"] == "strong"
+    assert _row_for("open_source", 3, 4)["tier"] is None
+    assert _row_for("open_source", None, 4)["tier"] is None
+    # Unlike `mature`, the tier describes the product rather than the open ecosystem, so it
+    # is not gated on the openness bucket.
+    closed = _row_for("closed", 5, 5)
+    assert closed["tier"] == "leading" and closed["mature"] is False
+
+
+def test_tier_boundaries_are_inclusive_at_the_bottom():
+    # 4.5 is Leading, not Strong; 4.0 is Strong, not unlabeled.
+    assert _row_for("open_source", 4, 5, {"adopt": 0.5, "cap": 0.5})["overall_score"] == 4.5
+    assert _row_for("open_source", 4, 5, {"adopt": 0.5, "cap": 0.5})["tier"] == "leading"
+    assert _row_for("open_source", 4, 4, {"adopt": 0.5, "cap": 0.5})["tier"] == "strong"
+
+
 def test_unknown_org_renders_empty_string():
     s = _sources()
     s["organizations"] = {"unknown": {"name": "unknown", "display_name": "Unknown",
@@ -234,7 +326,7 @@ def test_disclosure_gap_flagged_even_at_top_stage():
 def test_disclosure_gap_coexists_with_stage_gaps():
     rows = [_pd("open", 5), _pd("open", 3)]  # one mature open corpus -> stage 4
     sg = _stage_and_gaps(rows, {"adopt": 1.0, "cap": 0.0}, disclosure=True)
-    assert sg["num"] == 4 and sg["gaps"] == ["maturity", "disclosure"]
+    assert sg["num"] == 4 and sg["gaps"] == ["depth", "disclosure"]
 
 
 def test_no_disclosure_gap_when_not_declared():
