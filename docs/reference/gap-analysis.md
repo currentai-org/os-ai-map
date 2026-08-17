@@ -184,14 +184,21 @@ categories, all in the model layer (`base_pretrained` 3→5, `finetuned_chat` 2�
 
 ## Stages
 
-| Stage | Name | Condition |
-|------:|------|-----------|
-| **5** | Mature Open Ecosystem | enough Leading fully-open products to be redundant/resilient |
-| **4** | Competitive Open Ecosystem | at least one Leading fully-open product, but not yet enough for depth |
-| **3** | Viable Alternatives | no Leading fully-open product, but the best fully-open option is strong |
-| **2** | Emerging Alternatives | no Leading fully-open product; the best fully-open option is promising but limited |
-| **1** | Open Experiments | fully-open options exist but are weak on both axes |
-| **0** | Void | no usable open option exists (and nothing reaches the Leading tier anywhere) |
+| Stage | Name | Definition | Triggers when |
+|------:|------|------------|---------------|
+| **5** | Mature Open Ecosystem | Multiple fully open products have reached the category's leading tier, creating a deep and competitive open ecosystem. | `L >= 4` |
+| **4** | Competitive Open Ecosystem | At least one fully open product has reached the category's leading tier, but the open field is still thin. | `1 <= L <= 3` |
+| **3** | Viable Alternatives | Fully open options are genuinely viable, but none has reached the category's leading tier. | `L = 0`, `B >= 3.5` |
+| **2** | Emerging Alternatives | Fully open products are becoming credible options, but remain meaningfully behind the category's strongest options. | `L = 0`, `3.0 <= B < 3.5` |
+| **1** | Open Experiments | Fully open products are absent or remain far behind the category's strongest options. | `L = 0`, `B < 3.0` |
+| **0** | Void | The category is still nascent overall, with no leading products and no meaningful fully open options. | `L = 0`, `B < 2.0`, and nothing anywhere reaches the Leading tier |
+
+The **Definition** column is quoted verbatim from `_STAGE_DESC` in `build/serialize.py` and is
+what ships in the payload. **Triggers when** is the mechanism, which the payload never carries:
+`L` is the number of fully-open products at or above the Leading bar, and `B` is the best
+fully-open overall score (`0` when the category has no scored fully-open product at all).
+Rules are evaluated top down, so Stages 5 and 4 are decided on count alone before any score
+band is considered.
 
 The exact count and score cutoffs that separate the stages are policy parameters (below),
 chosen so the ladder discriminates rather than bunching categories at one rung.
@@ -201,18 +208,18 @@ chosen so the ladder discriminates rather than bunching categories at one rung.
 Gaps are a **set** (zero or more) per category, so a category can carry more than one. They are
 derived from the same metrics as the stage:
 
-- **`void`** — no usable open option at all.
-- **`capability`** — the best fully-open option isn't capable enough to be useful.
-- **`adoption`** — the best fully-open option is below the adoption threshold.
-- **`depth`** — proven Leading open options exist, but too few of them for redundancy. The
-  shortfall is count, not quality.
-- **`openness`** — capable, adopted options exist, but the Leading-tier ones are not fully open
-  (open-ish or closed). This is the orthogonal flag; it can co-occur with the others.
-- **`disclosure`** — the open products are real and widely used, but the closed frontier's own
-  equivalent is undisclosed: labs publish neither their proprietary and licensed data nor their
-  exact recipe. The gap is the invisibility of the frontier's data, not the absence of open
-  data. Unlike the other gaps it is **declared per category**, not inferred (see below), and it
-  can appear at **any** stage, including Stage 5.
+- **`void`** — No usable fully open option exists at all.
+- **`capability`** — Fully open products exist, but they lack the capabilities needed to compete with the category's strongest options.
+- **`adoption`** — Fully open products have not reached the adoption of the category's strongest options.
+- **`depth`** — Fully open products have reached the category's leading tier, but there are too few to create a deep and resilient open ecosystem.
+- **`openness`** — Products have reached the category's leading tier, but none of them is fully open.
+- **`disclosure`** — Closed products rely on data or training recipes that are not disclosed, limiting visibility into how they are built and how they compare with fully open products.
+
+Those six sentences are quoted verbatim from `_GAP_DESC` in `build/serialize.py`: they are
+the text the payload carries and the text a reader sees in the site legend and the category
+drawer. Edit them in one place and copy across. Everything else in this document — which
+rung each gap fires on, the thresholds behind it, whether it is derived or declared — is the
+mechanism, and is deliberately absent from the payload.
 
 A fully mature ecosystem carries no gaps — with one exception: `disclosure` can still be
 flagged at Stage 5, because it describes the closed frontier's silence, not a shortfall of the

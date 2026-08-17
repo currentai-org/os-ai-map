@@ -498,3 +498,27 @@ def test_release_date_rejects_a_version_with_no_dated_heading(tmp_path):
 def test_payload_release_date_defaults_to_the_changelog_date():
     payload = build_payload(_sources(), frozen_long_tail={}, generated="2026-06-10")
     assert payload["released"] == release_date(repo_version())
+
+
+def test_descriptions_match_the_reference_doc():
+    """The payload's stage and gap definitions are quoted verbatim in gap-analysis.md.
+
+    They are one text with two homes: the legend a visitor reads and the reference a curator
+    reads. Prose that merely agrees in substance drifts silently — nothing here could tell you
+    which version was current — so the contract is character equality, and this is what enforces
+    it. The doc carries the thresholds and the assignment rules around these sentences; those
+    are the mechanism and are deliberately absent from the payload.
+    """
+    from build.serialize import ROOT, _GAP_DESC, _STAGE_DESC
+
+    doc = (ROOT / "docs" / "reference" / "gap-analysis.md").read_text()
+    for gap, text in _GAP_DESC.items():
+        assert f"- **`{gap}`** — {text}" in doc, f"gap-analysis.md is out of sync for `{gap}`"
+    for num, text in _STAGE_DESC.items():
+        assert f"| {text} |" in doc, f"gap-analysis.md is out of sync for stage {num}"
+
+    # methodology.md states the same definitions in its own list formatting, and may append the
+    # mechanism after one — so match on the sentence, not the whole line.
+    method = (ROOT / "docs" / "methodology.md").read_text()
+    for gap, text in _GAP_DESC.items():
+        assert text in method, f"methodology.md is out of sync for `{gap}`"
