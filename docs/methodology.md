@@ -36,8 +36,8 @@ To create the map, we used both a discovery step (to find the universe) and a mo
 
 The framework has two levels of analysis:
 
-- **Each product** is scored on three axes: *openness*, *adoption*, and *capability*.
-- **Each category** is rolled up from its products' scores into a maturity *stage* from 0 (Void) to 5 (Mature), plus a set of *gaps* naming what its open ecosystem still lacks.
+- **Each product** is scored on three axes: *openness*, *adoption*, and *capability*. Adoption and capability blend into a single *overall score*; openness is scored separately and never enters the blend.
+- **Each category** is rolled up from its products' scores into a *Maturity Stage* from 0 (Void) to 5 (Mature), plus a set of *gaps* naming what its open ecosystem still lacks.
 
 ### Discovery and scoring
 
@@ -95,15 +95,17 @@ Capability means different things for a model, a tool, and a dataset, so capabil
 
 ### Maturity stages
 
-We place every category on a maturity stage from 0 (Void) to 5 (Mature), computed deterministically from its products' scores, in two steps: first we score each product's maturity, then we read the category's stage off how many of its open products are mature. The ladder measures **fully-open-pipeline maturity** specifically: only products in the fully-`open` bucket count toward a stage. Open-weights models never advance a stage, no matter how capable or widely adopted, so the stage is a verdict on the genuinely-open ecosystem rather than on open AI in general.
+We place every category on a Maturity Stage from 0 (Void) to 5 (Mature), computed deterministically from its products' scores, in two steps: first we give each product an overall score, then we read the category's stage off how many of its open products clear the bar. Maturity is a property of a *category* here and of nothing else: the per-product number is its overall score, not its maturity, and the two were never a roll-up of each other. The ladder measures **fully-open-pipeline maturity** specifically: only products in the fully-`open` bucket count toward a stage. Open-weights models never advance a stage, no matter how capable or widely adopted, so the stage is a verdict on the genuinely-open ecosystem rather than on open AI in general.
 
-**Step 1: the product maturity score.** Each product receives a single score on a 1–5 scale, a per-category weighted blend of its adoption and capability grades:
+**Step 1: the product's overall score.** Each product receives a single score on a 1–5 scale, a per-category weighted blend of its adoption and capability grades:
 
 ```
 score = (w_adopt · adoption + w_cap · capability) / (w_adopt + w_cap)
 ```
 
 The weights vary by category, because the two axes do not matter equally everywhere: adoption is weighted more heavily for end-user surfaces such as UI & API (0.7 adoption to 0.3 capability), and capability more heavily for the model categories (0.3 to 0.7); the two weights sum to one. A product with no adoption signal at all receives no score and is left out of its category's stage. Datasets are scored on the same two axes as everything else, but each axis means something specific to a corpus: adoption is verified download volume, graded against bands set one order of magnitude below the package bands (a multi-terabyte corpus is pulled per training run, not per CI job; benchmark datasets, whose small files are pulled by harnesses on every run, keep the standard bands), and capability is training value — how good the models built on the corpus are, read from controlled ablations and downstream-model evidence rather than from the corpus in isolation. Training value here is deliberately narrow: it means performance under frontier-style, largely English and benchmark-driven evaluation, and does not capture a corpus's consent and licensing basis, documentation quality, or language coverage, which are openness and scope concerns rather than capability. A low capability score therefore marks a corpus as not the current pick for that objective, not as low quality. A product is **mature** only when its blended score reaches 4.5 of 5, a deliberately demanding bar: because the map already curates the most prominent products, a lower bar would call almost everything mature.
+
+Worth being explicit about what that bar requires, because it is easy to misread as "fairly good." Both grades are whole numbers from 1 to 5, so 4.5 can be cleared exactly one way: **something has to score a perfect 5.** A product graded 4 and 4 — strong on both counts — lands at exactly 4.0 and does not qualify, and that is the largest single group on the map. The working definition is therefore *best in class on at least one axis, and strong on the other.* We label the two bands accordingly: a product scoring 4.5 or above is **Frontier**, and one from 4.0 to 4.5 is **Competitive** — strong on both axes, best in class on neither. The labels describe the product and are read across every openness bucket; whether a product also counts toward its category's stage is a separate question, answered by the open-only rule in Step 2.
 
 **Step 2: the category stage.** Only **fully open** products advance a category's stage. Open-ish products (open weights, source-available, and the like) are used solely to detect the openness gap below; crediting them would blur the line between open source and open weights that the map exists to draw. The choice is consequential but bounded: counting open-weights models as open would move only three categories, all in the model layer — base/pretrained models (Stage 3→5), fine-tuned/chat models (2→3), and edge hardware (3→4) — and would leave every infrastructure and tooling verdict unchanged. The open-model verdict should therefore be read as a deliberately strict reading of a few model categories, not a sweeping claim about the whole stack. The ladder measures the health of the genuinely open ecosystem:
 
@@ -114,7 +116,7 @@ The weights vary by category, because the two axes do not matter equally everywh
 - **Stage 1: Open Experiments.** Fully open options exist but are weak on both axes.
 - **Stage 0: Void.** No usable open option exists.
 
-The exact cutoffs (four mature products for Stage 5, the 4.5 maturity bar, and best-fully-open score bands of 3.5, 3.0, and 2.0 dividing the lower stages) are deliberate, tunable parameters, reviewed when the scoring rubric or curation density changes materially. Not every category needs to reach Stage 5; redundancy matters more in some parts of the stack than others.
+The exact cutoffs (four mature products for Stage 5, the 4.5 Frontier bar, and best-fully-open score bands of 3.5, 3.0, and 2.0 dividing the lower stages) are deliberate, tunable parameters, reviewed when the scoring rubric or curation density changes materially. Not every category needs to reach Stage 5; redundancy matters more in some parts of the stack than others.
 
 ### Gaps
 
@@ -123,18 +125,20 @@ Openness is treated as an axis orthogonal to maturity: a category can hold stron
 - **Void:** no usable open option exists at all.
 - **Capability:** the best fully open option is not capable enough to be useful.
 - **Adoption:** a capable fully open option exists but is under-adopted.
-- **Maturity:** open options exist, and at least one may be mature, but the ecosystem lacks the depth and redundancy of a mature one (too few mature fully open products).
+- **Depth:** proven Frontier open options exist, but too few of them for redundancy. The shortfall is count, not quality, which is why it is named separately from the two driver gaps and fires only at Stage 4.
 - **Openness:** capable, adopted options exist, but the mature ones are not fully open. This is the orthogonal flag, and it can co-occur with the others.
 - **Disclosure:** the open products are real and widely used, but the closed frontier's own equivalent is undisclosed — labs publish neither their proprietary and licensed data nor their exact recipe. Training data is the clear case: the open corpora are shared (frontier models draw on the same web substrate, and some open corpora were built by the labs themselves), but the proprietary additions and the mixing recipe stay invisible, and that asymmetry is the finding worth surfacing rather than a maturity or adoption shortfall. Unlike the other gaps this flag is declared per category rather than inferred from the scores, so it does not silently toggle on a curation change; it is set on training data and left unset where the open products are the shared public standard the frontier reports against (open evaluation benchmarks). It is orthogonal and can appear at any stage, including Stage 5.
 
 A fully mature ecosystem carries no gaps, with the one exception that disclosure can still be flagged there: it describes the closed frontier's silence, not a shortfall of the open ecosystem. The set is extensible: further gap types, such as maintenance or bus-factor risk, can be added as the underlying signals become available, without changing the staging logic.
 
+Each gap names a different kind of shortfall, so which one fires follows from the stage. At Stage 4 a category has proven Frontier open options but not enough of them, so it carries **depth** alone. Below Stage 4 nothing fully open clears the bar, so we name the drivers that hold the best fully open option back — capability, adoption, or both — rather than restating the stage. Both can fire together; there is no rule limiting a category to one diagnostic.
+
 Here are two illustrations:
 
-- The base/pretrained-models and fine-tuned/chat-models categories both carry an openness gap: capable, well-adopted options exist, but the mature ones are not fully open.
-- The inference-code category, by contrast, has mature, competitive, well-adopted open source options (vLLM, llama.cpp, SGLang) but few of them; this is a maturity gap, signaling an ecosystem that depends on a small number of projects continuing to do well.
+- The base/pretrained-models and fine-tuned/chat-models categories both carry an openness gap: capable, well-adopted options exist, but the mature ones are not fully open. Each also carries an adoption gap, because the strongest fully open model in either category is capable but not yet widely used.
+- The inference-code category, by contrast, has mature, competitive, well-adopted open source options (vLLM, llama.cpp, SGLang) but few of them; this is a depth gap, signaling an ecosystem that depends on a small number of projects continuing to do well.
 
-At present {n_openness_gaps} of the {n_categories} categories in the map carry an openness gap. The gap vocabulary is broader than what the current data exercises: in the present scored set the maturity gap is near-ubiquitous, the openness gap appears in only a few model and infrastructure categories, the adoption gap fires rarely, and the void and capability gaps do not fire at all. The unused types are kept in the model because they describe situations the map expects to encounter as coverage grows, not because nothing qualifies for them today by accident.
+At present {n_openness_gaps} of the {n_categories} categories in the map carry an openness gap. The vocabulary is deliberately more discriminating than it used to be: a single **maturity** gap once fired in 12 of 16 categories, which meant it distinguished between none of them, while **capability** never fired at all — the engine emitted one diagnostic per category and checked openness first, so a category whose only fully open option was underpowered reported an openness gap instead. Edge hardware is the case that hid: its one fully open board is genuinely below the capability bar, and the map could not say so. Splitting maturity into **depth** at Stage 4 and the two driver gaps below it, and allowing a category to carry more than one diagnostic, gives every label a distinct meaning. The **void** gap still does not fire anywhere; it is kept because it describes a situation the map expects to encounter as coverage grows.
 
 ### The openness verdict
 

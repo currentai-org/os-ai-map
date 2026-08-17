@@ -16,7 +16,8 @@ from build.check_rubric import components_string
 ROOT = Path(__file__).resolve().parents[1]
 
 PRODUCT_KEY_ORDER = ["slug", "product", "org_slug", "org", "type", "description",
-                     "openness", "adoption", "capability", "maturity", "mature",
+                     "openness", "adoption", "capability", "overall_score", "tier",
+                     "maturity", "mature",
                      "freshness", "version_note", "lineage"]
 
 # --- Gap analysis (category-level stage + gaps) -----------------------------
@@ -28,6 +29,15 @@ _GAP_OPENISH = {"open_weights", "source_available", "gated", "open_toolchain"}
 _MATURE_MIN = 4.5          # blended adoption/capability score for a product to be "mature"
 _STAGE5_MIN_MATURE = 4     # mature fully-open products needed for Stage 5 (Mature Open Ecosystem)
 _CAPABLE_MIN = 4           # raw capability below which an open option is "not capable yet"
+_ADOPTED_MIN = 4           # raw adoption below which an open option is "not adopted yet"
+# Product-level score tiers. Both axes are whole numbers 1-5, so the _MATURE_MIN bar can only
+# be cleared by a 5 on one axis paired with a strong partner -- "best in class on at least one
+# axis" -- which is what Frontier names. Competitive is strong on both, best in class on
+# neither (a 4/4 product blends to exactly 4.0). Scored across all openness buckets: the tier
+# describes the product, while `mature` gates the same bar on the fully-open bucket because
+# only fully-open products advance a category's stage.
+_FRONTIER_MIN = _MATURE_MIN     # 4.5
+_COMPETITIVE_MIN = 4.0
 _STAGE_NAMES = {0: "Void", 1: "Open Experiments", 2: "Emerging Alternatives",
                 3: "Viable Alternatives", 4: "Competitive Open Ecosystem",
                 5: "Mature Open Ecosystem"}
@@ -47,8 +57,9 @@ _GAP_DESC = {
     "void": "no usable open option at all.",
     "capability": "the best fully-open option isn't capable enough to be useful.",
     "adoption": "a capable fully-open option exists but is under-adopted.",
-    "maturity": "open options exist and at least one may be mature, but the ecosystem lacks "
-                "the depth/redundancy of a mature ecosystem (too few mature fully-open products).",
+    "depth": "proven frontier open options exist, but too few of them for redundancy. The "
+             "shortfall is count, not quality; fires at Stage 4 only, because below it the "
+             "stage number already says no frontier open option exists.",
     "openness": "capable, adopted options exist, but the mature ones are not fully open "
                 "(open-ish or closed). This is the orthogonal flag; it can co-occur with the others.",
     "disclosure": "the open products here are real and widely used, but the closed frontier's own "
@@ -56,6 +67,12 @@ _GAP_DESC = {
                   "data nor their exact training-data recipe. The gap is the invisibility of the "
                   "frontier's data, not the absence of open data. Declared per category (see "
                   "docs/reference/gap-analysis.md), not inferred from the roster.",
+}
+_TIER_DESC = {
+    "frontier": "best in class on at least one axis and strong on the other (overall score 4.5+). "
+                "Because both axes are whole numbers 1-5, the bar can only be cleared by a 5.",
+    "competitive": "strong on both axes but best in class on neither (overall score 4.0 to 4.5). "
+                   "A product graded 4 and 4 lands here.",
 }
 
 
@@ -122,15 +139,41 @@ def _stage_and_gaps(rows: list[dict], weights: dict, disclosure: bool = False) -
     elif stage == 0:
         gaps = ["void"]
     elif stage == 4:
-        gaps = ["maturity"]
+        # Count, not quality: the category has proven frontier open options but not enough of
+        # them. Deliberately fires at Stage 4 only -- defining depth as "no frontier open
+        # product at all" would spread it over the weaker categories and rebuild the
+        # near-ubiquitous chip this taxonomy replaced.
+        gaps = ["depth"]
     else:
-        gaps = ["maturity"]
+        # Stages 1-3: no fully-open product clears the maturity bar, so name the driver(s)
+        # holding the best one back rather than the umbrella. Both fire where both apply --
+        # there is no longer a one-diagnostic-per-category rule, which is what kept
+        # `capability` unreachable behind `openness` and hid the edge_hardware case.
+        best = max(open_rows, key=lambda rs: rs[1])[0] if open_rows else None
+        cap = ((best or {}).get("capability") or {}).get("score")
+        adopt = ((best or {}).get("adoption") or {}).get("level")
+        gaps = []
+        if cap is not None and cap < _CAPABLE_MIN:
+            gaps.append("capability")
+        if adopt is not None and adopt < _ADOPTED_MIN:
+            gaps.append("adoption")
+        if not gaps:
+            # Both measured axes clear their bars yet the blend still misses _MATURE_MIN, so
+            # something is missing but neither threshold names it. Fall back to the weaker
+            # measured axis (ties to adoption, the axis the score is anchored on) rather than
+            # emit an empty set, which in this model reads as "mature".
+            #
+            # One category is in this state today: benchmark_eval_data, whose fully-open
+            # benchmarks are adoption 4 with a null capability, so the blend is adoption alone
+            # and tops out at 4.0. The real fix is to score capability for evaluation sets --
+            # the axis already exists there, applied to 4 products out of 27 -- which is
+            # filed separately. Delete this branch when that lands.
+            measured = [(n, v) for n, v in (("adoption", adopt), ("capability", cap))
+                        if v is not None]
+            if measured:
+                gaps.append(min(measured, key=lambda nv: nv[1])[0])
         if mature_anywhere:                  # capable mature options exist, but none fully open
             gaps.append("openness")
-        else:                                # the open ecosystem itself is immature -> which axis?
-            best = max(open_rows, key=lambda rs: rs[1])[0] if open_rows else None
-            cap = ((best or {}).get("capability") or {}).get("score")
-            gaps.append("capability" if (cap is not None and cap < _CAPABLE_MIN) else "adoption")
 
     # Disclosure flag (orthogonal, any stage): a declared category attribute, set where
     # the closed frontier's equivalent to these open products is structurally undisclosed
@@ -213,7 +256,18 @@ def _row(slug: str, prod: dict, org_slug: str, org_name: str, score: dict,
     # already rounded to 2dp by _maturity_score, or null when adoption is missing. The
     # category stage thresholds in _stage_and_gaps compare this same 2dp value.
     m = _maturity_score(row, weights or {"adopt": 0.5, "cap": 0.5})
+    # `overall_score` is the new name for this number and `maturity` the old one. Both ship for
+    # one release so the front end and the warehouse can move over before the old key goes away:
+    # a routine data sync must not be able to break the map halfway through. Same value, and the
+    # rename is the point -- the number blends capability and adoption, which "maturity" implies
+    # age for, and it is not the category-level Maturity Stage that shares the old word.
+    row["overall_score"] = m
     row["maturity"] = m
+    # Frontier / Competitive / null, derived from the score alone (see _FRONTIER_MIN). Emitted
+    # rather than left to each consumer so the two tier boundaries stay methodology constants.
+    row["tier"] = (None if m is None else
+                   "frontier" if m >= _FRONTIER_MIN else
+                   "competitive" if m >= _COMPETITIVE_MIN else None)
     # Canonical `mature` flag: the SAME rule the category stage engine uses
     # (_stage_and_gaps) — a fully-open product whose blended maturity clears
     # _MATURE_MIN. Emitted here so downstream consumers stop recomputing it with a
@@ -402,6 +456,7 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
     descriptions = {
         "stages": {str(k): v for k, v in _STAGE_DESC.items()},
         "gaps": dict(_GAP_DESC),
+        "tiers": dict(_TIER_DESC),
         "categories": {cid: cats[cid].get("description", "") for cid in order},
     }
     return {"descriptions": descriptions, "layer_order": layer_order,
