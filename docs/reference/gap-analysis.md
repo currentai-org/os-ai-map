@@ -71,16 +71,21 @@ The same two boundaries name the product-level tiers, emitted per product as `ti
 
 | Tier | Score | Meaning |
 |---|---|---|
-| **Frontier** | 4.5 and up | best in class on at least one axis, strong on the other |
-| **Competitive** | 4.0 to 4.5 | strong on both axes, best in class on neither |
+| **Leading** | 4.5 and up | overall score in this band, over the product's available measured axes |
+| **Strong** | 4.0 up to 4.5 | overall score in this band; a product graded 4 and 4 lands here |
 | *(none)* | below 4.0 | — |
+
+Each band names the overall score computed from the product's *available measured axes* — it is
+not a claim about both. Where both axes are measured they are whole numbers 1–5, so the 4.5 bar
+takes a best-in-class 5 on one axis paired with a strong partner, and a product graded on
+adoption alone is banded on that score without asserting a capability grade it does not have.
 
 Tiers are derived from the score alone, across every openness bucket, because they describe the
 *product*. The `mature` flag applies the same 4.5 bar but gates it on the fully-`open` bucket,
 because only fully-open products advance a category's stage. A closed product can therefore be
-Frontier and not mature; that is the intended reading, not a contradiction.
+Leading and not mature; that is the intended reading, not a contradiction.
 
-**Frontier and depth say different things on purpose.** Frontier is about one product being best
+**Leading and depth say different things on purpose.** Leading is about one product being best
 in class. The `depth` gap below is about a category not having enough of them.
 
 ### Field names
@@ -185,8 +190,8 @@ derived from the same metrics as the stage:
 
 - **`void`** — no usable open option at all.
 - **`capability`** — the best fully-open option isn't capable enough to be useful.
-- **`adoption`** — a capable fully-open option exists but is under-adopted.
-- **`depth`** — proven Frontier open options exist, but too few of them for redundancy. The
+- **`adoption`** — the best fully-open option is below the adoption threshold.
+- **`depth`** — proven Leading open options exist, but too few of them for redundancy. The
   shortfall is count, not quality.
 - **`openness`** — capable, adopted options exist, but the mature ones are not fully open
   (open-ish or closed). This is the orthogonal flag; it can co-occur with the others.
@@ -206,15 +211,15 @@ open ecosystem.
 |---|---|
 | 5 | none (except a declared `disclosure`) |
 | 4 | `depth` |
-| 1–3 | `capability` and/or `adoption`, plus `openness` where it applies |
+| 1–3 | `capability` and/or `adoption` (or neither), plus `openness` where it applies |
 | 0 | `void` |
 
-**`depth` fires at Stage 4 only.** Stage 4 means a category has proven Frontier open options but
+**`depth` fires at Stage 4 only.** Stage 4 means a category has proven Leading open options but
 not enough for redundancy, so the shortfall is genuinely count rather than quality. Defining
-depth as "no Frontier open product at all" would extend it over the weaker categories and
+depth as "no Leading open product at all" would extend it over the weaker categories and
 rebuild the problem this taxonomy replaced: the old `maturity` gap fired in 12 of 16 categories
 and so distinguished between none of them. Below Stage 4 the stage number already says no
-Frontier open option exists, and `capability` and `adoption` say why.
+Leading open option exists, and `capability` and `adoption` say why.
 
 **At Stages 1–3 the drivers are read off the best fully-open product** — the one with the
 highest overall score. Its capability is a `capability` gap when it falls below the capability
@@ -224,13 +229,16 @@ That rule checked openness first, which is why `capability` was unreachable and 
 appeared: `edge_hardware`'s only fully-open board is genuinely underpowered, and the category
 reported an openness gap instead, so nobody reading the map could see it.
 
-**One interim rule, to be deleted.** If both measured axes clear their cutoffs and the blend
-still misses 4.5, the weaker measured axis stands in (ties to adoption, the axis the score is
-anchored on), because an empty gap set at Stages 1–3 would read as "mature". Exactly one
-category is in this state: `benchmark_eval_data`, whose fully-open benchmarks are adoption 4
-with a **null capability**, so the blend is adoption alone and tops out at 4.0. The real fix is
-to score capability for evaluation sets — the axis is already applied to 4 of that category's 27
-products — which is filed separately. This branch goes when that lands.
+**A category at Stages 1–3 can carry no driver gap, and that is allowed.** If both measured axes
+clear their cutoffs and the blend still misses 4.5, neither driver fires and the category carries
+only whatever `openness` applies — possibly nothing. The stage number already says the category
+has not reached the leading-product threshold; inventing an adoption or capability shortfall where
+the axis clears its cutoff would be a knowingly false label. Exactly one category is in this state:
+`benchmark_eval_data`, whose fully-open benchmarks are adoption 4 with a **null capability**, so
+the blend is adoption alone and tops out at 4.0 — adoption is not short, capability is simply
+unmeasured. The fix is to score capability for evaluation sets — the axis is already applied to 4
+of that category's 27 products — which is filed separately. If unmeasured axes become common
+enough to name, add a gap for that state deliberately rather than reusing an inaccurate one.
 
 ### Declaring the disclosure gap
 
@@ -264,8 +272,8 @@ such libraries: Stage 5, no gaps.
 The thresholds are deliberate, tunable choices rather than fixed law. They live as named
 constants at the top of the gap-analysis block in `build/serialize.py`:
 
-- the **mature** score threshold, which is also the **Frontier** tier boundary,
-- the **Competitive** tier boundary,
+- the **mature** score threshold, which is also the **Leading** tier boundary,
+- the **Strong** tier boundary,
 - the count of mature fully-open products required for **Stage 5**,
 - the best-fully-open score bands that separate **Stages 1–3**,
 - the raw capability and adoption cutoffs that decide which drivers fire at Stages 1–3.

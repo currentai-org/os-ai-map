@@ -30,14 +30,16 @@ _MATURE_MIN = 4.5          # blended adoption/capability score for a product to 
 _STAGE5_MIN_MATURE = 4     # mature fully-open products needed for Stage 5 (Mature Open Ecosystem)
 _CAPABLE_MIN = 4           # raw capability below which an open option is "not capable yet"
 _ADOPTED_MIN = 4           # raw adoption below which an open option is "not adopted yet"
-# Product-level score tiers. Both axes are whole numbers 1-5, so the _MATURE_MIN bar can only
-# be cleared by a 5 on one axis paired with a strong partner -- "best in class on at least one
-# axis" -- which is what Frontier names. Competitive is strong on both, best in class on
-# neither (a 4/4 product blends to exactly 4.0). Scored across all openness buckets: the tier
-# describes the product, while `mature` gates the same bar on the fully-open bucket because
-# only fully-open products advance a category's stage.
-_FRONTIER_MIN = _MATURE_MIN     # 4.5
-_COMPETITIVE_MIN = 4.0
+# Product-level score tiers, banded on the overall score -- the adoption/capability blend, or
+# adoption alone where capability is unmeasured. Leading is 4.5+, Strong is 4.0 up to 4.5. The
+# bands are honest about how the number was reached: they name a score over the product's
+# available measured axes, not a claim about both. Where both axes are measured they are whole
+# numbers 1-5, so the 4.5 bar can only be cleared by a 5 on one of them (an adoption-only
+# product reaches Leading only at adoption 5). Scored across all openness buckets -- the tier
+# describes the product -- while `mature` gates the same 4.5 bar on the fully-open bucket,
+# because only fully-open products advance a category's stage.
+_LEADING_MIN = _MATURE_MIN     # 4.5
+_STRONG_MIN = 4.0
 _STAGE_NAMES = {0: "Void", 1: "Open Experiments", 2: "Emerging Alternatives",
                 3: "Viable Alternatives", 4: "Competitive Open Ecosystem",
                 5: "Mature Open Ecosystem"}
@@ -56,10 +58,10 @@ _STAGE_DESC = {
 _GAP_DESC = {
     "void": "no usable open option at all.",
     "capability": "the best fully-open option isn't capable enough to be useful.",
-    "adoption": "a capable fully-open option exists but is under-adopted.",
-    "depth": "proven frontier open options exist, but too few of them for redundancy. The "
-             "shortfall is count, not quality; fires at Stage 4 only, because below it the "
-             "stage number already says no frontier open option exists.",
+    "adoption": "the best fully-open option is below the adoption threshold.",
+    "depth": "proven top-tier (Leading) open options exist, but too few of them for redundancy. "
+             "The shortfall is count, not quality; fires at Stage 4 only, because below it the "
+             "stage number already says no Leading open option exists.",
     "openness": "capable, adopted options exist, but the mature ones are not fully open "
                 "(open-ish or closed). This is the orthogonal flag; it can co-occur with the others.",
     "disclosure": "the open products here are real and widely used, but the closed frontier's own "
@@ -69,10 +71,10 @@ _GAP_DESC = {
                   "docs/reference/gap-analysis.md), not inferred from the roster.",
 }
 _TIER_DESC = {
-    "frontier": "best in class on at least one axis and strong on the other (overall score 4.5+). "
-                "Because both axes are whole numbers 1-5, the bar can only be cleared by a 5.",
-    "competitive": "strong on both axes but best in class on neither (overall score 4.0 to 4.5). "
-                   "A product graded 4 and 4 lands here.",
+    "leading": "an overall score of 4.5 or higher, calculated from the product's available "
+               "measured axes.",
+    "strong": "an overall score from 4.0 up to 4.5, calculated from the product's available "
+              "measured axes.",
 }
 
 
@@ -139,9 +141,9 @@ def _stage_and_gaps(rows: list[dict], weights: dict, disclosure: bool = False) -
     elif stage == 0:
         gaps = ["void"]
     elif stage == 4:
-        # Count, not quality: the category has proven frontier open options but not enough of
-        # them. Deliberately fires at Stage 4 only -- defining depth as "no frontier open
-        # product at all" would spread it over the weaker categories and rebuild the
+        # Count, not quality: the category has proven top-tier (Leading) open options but not
+        # enough of them. Deliberately fires at Stage 4 only -- defining depth as "no Leading
+        # open product at all" would spread it over the weaker categories and rebuild the
         # near-ubiquitous chip this taxonomy replaced.
         gaps = ["depth"]
     else:
@@ -149,6 +151,14 @@ def _stage_and_gaps(rows: list[dict], weights: dict, disclosure: bool = False) -
         # holding the best one back rather than the umbrella. Both fire where both apply --
         # there is no longer a one-diagnostic-per-category rule, which is what kept
         # `capability` unreachable behind `openness` and hid the edge_hardware case.
+        #
+        # A driver gap fires only when its axis is measured and below its cutoff. If both
+        # measured axes clear their cutoffs yet the blend still misses the bar (adoption 4
+        # with a null capability blends to 4.0, which is benchmark_eval_data's shape), the
+        # category carries no driver gap: the stage number already says it has not reached the
+        # leading-product threshold, and asserting an adoption shortfall where adoption clears
+        # its cutoff would be a knowingly false label. When measurement gaps like this become
+        # common enough to name, introduce a gap for them deliberately.
         best = max(open_rows, key=lambda rs: rs[1])[0] if open_rows else None
         cap = ((best or {}).get("capability") or {}).get("score")
         adopt = ((best or {}).get("adoption") or {}).get("level")
@@ -157,21 +167,6 @@ def _stage_and_gaps(rows: list[dict], weights: dict, disclosure: bool = False) -
             gaps.append("capability")
         if adopt is not None and adopt < _ADOPTED_MIN:
             gaps.append("adoption")
-        if not gaps:
-            # Both measured axes clear their bars yet the blend still misses _MATURE_MIN, so
-            # something is missing but neither threshold names it. Fall back to the weaker
-            # measured axis (ties to adoption, the axis the score is anchored on) rather than
-            # emit an empty set, which in this model reads as "mature".
-            #
-            # One category is in this state today: benchmark_eval_data, whose fully-open
-            # benchmarks are adoption 4 with a null capability, so the blend is adoption alone
-            # and tops out at 4.0. The real fix is to score capability for evaluation sets --
-            # the axis already exists there, applied to 4 products out of 27 -- which is
-            # filed separately. Delete this branch when that lands.
-            measured = [(n, v) for n, v in (("adoption", adopt), ("capability", cap))
-                        if v is not None]
-            if measured:
-                gaps.append(min(measured, key=lambda nv: nv[1])[0])
         if mature_anywhere:                  # capable mature options exist, but none fully open
             gaps.append("openness")
 
@@ -263,11 +258,11 @@ def _row(slug: str, prod: dict, org_slug: str, org_name: str, score: dict,
     # age for, and it is not the category-level Maturity Stage that shares the old word.
     row["overall_score"] = m
     row["maturity"] = m
-    # Frontier / Competitive / null, derived from the score alone (see _FRONTIER_MIN). Emitted
-    # rather than left to each consumer so the two tier boundaries stay methodology constants.
+    # Leading / Strong / null, derived from the score alone (see _LEADING_MIN). Emitted rather
+    # than left to each consumer so the two tier boundaries stay methodology constants.
     row["tier"] = (None if m is None else
-                   "frontier" if m >= _FRONTIER_MIN else
-                   "competitive" if m >= _COMPETITIVE_MIN else None)
+                   "leading" if m >= _LEADING_MIN else
+                   "strong" if m >= _STRONG_MIN else None)
     # Canonical `mature` flag: the SAME rule the category stage engine uses
     # (_stage_and_gaps) — a fully-open product whose blended maturity clears
     # _MATURE_MIN. Emitted here so downstream consumers stop recomputing it with a

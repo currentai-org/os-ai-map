@@ -79,15 +79,15 @@ def test_capability_gap_when_nothing_mature_and_weak():
     assert "capability" in sg["gaps"]
 
 
-def test_stage_1_to_3_never_reports_an_empty_gap_set():
+def test_stage_1_to_3_carries_no_driver_gap_when_axes_clear_but_blend_misses_bar():
     # benchmark_eval_data's shape: fully-open products at adoption 4 with a null capability,
     # so the blend is adoption alone and tops out at 4.0 — under the maturity bar, yet neither
-    # axis threshold fires. An empty set reads as "mature" in this model, so the weaker
-    # measured axis stands in. Remove with the branch it guards once evaluation sets are
-    # capability-scored.
+    # axis is below its cutoff. Adoption is NOT short (it clears 4), and capability is unmeasured,
+    # not deficient — so no driver gap fires. Labelling this `adoption` would be a knowingly
+    # false shortfall; the stage number already says the category is below the leading bar.
     rows = [_p("open_source", 4, None) for _ in range(3)]
     sg = _stage_and_gaps(rows, {"adopt": 0.6, "cap": 0.4})
-    assert sg["num"] == 3 and sg["gaps"] == ["adoption"]
+    assert sg["num"] == 3 and sg["gaps"] == []
 
 
 def test_stage_uses_rounded_maturity_not_float_noise():
@@ -193,7 +193,7 @@ def test_descriptions_block_present_and_sourced():
     assert "void" in d["gaps"] and "openness" in d["gaps"]
     assert "depth" in d["gaps"] and "maturity" not in d["gaps"]
     # the two score tiers ship their own legend copy, so a consumer never hardcodes 4.5/4.0
-    assert set(d["tiers"]) == {"frontier", "competitive"}
+    assert set(d["tiers"]) == {"leading", "strong"}
     assert d["categories"]["base_pretrained"] == "Foundation models trained from scratch."
     # descriptions ships first so it reads as a header
     assert list(payload)[0] == "descriptions"
@@ -273,22 +273,22 @@ def test_overall_score_dual_publishes_with_maturity():
 
 
 def test_tier_is_derived_from_the_score_across_all_buckets():
-    # Frontier needs a 5 on one axis: 4 and 4 blends to exactly 4.0 and is Competitive.
-    assert _row_for("open_source", 5, 4)["tier"] == "frontier"
-    assert _row_for("open_source", 4, 4)["tier"] == "competitive"
+    # Leading needs a 5 on one axis: 4 and 4 blends to exactly 4.0 and is Strong.
+    assert _row_for("open_source", 5, 4)["tier"] == "leading"
+    assert _row_for("open_source", 4, 4)["tier"] == "strong"
     assert _row_for("open_source", 3, 4)["tier"] is None
     assert _row_for("open_source", None, 4)["tier"] is None
     # Unlike `mature`, the tier describes the product rather than the open ecosystem, so it
     # is not gated on the openness bucket.
     closed = _row_for("closed", 5, 5)
-    assert closed["tier"] == "frontier" and closed["mature"] is False
+    assert closed["tier"] == "leading" and closed["mature"] is False
 
 
 def test_tier_boundaries_are_inclusive_at_the_bottom():
-    # 4.5 is Frontier, not Competitive; 4.0 is Competitive, not unlabeled.
+    # 4.5 is Leading, not Strong; 4.0 is Strong, not unlabeled.
     assert _row_for("open_source", 4, 5, {"adopt": 0.5, "cap": 0.5})["overall_score"] == 4.5
-    assert _row_for("open_source", 4, 5, {"adopt": 0.5, "cap": 0.5})["tier"] == "frontier"
-    assert _row_for("open_source", 4, 4, {"adopt": 0.5, "cap": 0.5})["tier"] == "competitive"
+    assert _row_for("open_source", 4, 5, {"adopt": 0.5, "cap": 0.5})["tier"] == "leading"
+    assert _row_for("open_source", 4, 4, {"adopt": 0.5, "cap": 0.5})["tier"] == "strong"
 
 
 def test_unknown_org_renders_empty_string():

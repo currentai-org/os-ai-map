@@ -61,8 +61,8 @@ Each product is graded on three independent, multi-source axes:
 - **Adoption** — real usage (downloads, active users, deployments), not GitHub stars.
 - **Capability** — community benchmarks where they exist, feature coverage where they don't.
 
-Adoption and capability blend into a single **overall score** per product, banded as *Frontier*
-(4.5+) or *Competitive* (4.0–4.5). Categories then roll up from their products into a **Maturity
+Adoption and capability blend into a single **overall score** per product, banded as *Leading*
+(4.5+) or *Strong* (4.0–4.5). Categories then roll up from their products into a **Maturity
 Stage** (0 Void → 5 Mature) plus a set of **gaps** naming what the open ecosystem still lacks. The taxonomy and openness framework
 descend from the [2024 Columbia Convening on Openness in AI](https://arxiv.org/abs/2405.15802).
 
