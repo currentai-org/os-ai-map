@@ -72,9 +72,15 @@ So the file changes go through a PR first, and only then does the tag get cut.
    uv run python -m build.validate            # sources clean
    uv run pytest -q                           # full suite, incl. test_release_metadata
    ```
-6. **Open the release PR** (`release/vX.Y.Z` → `main`) and get it reviewed and merged like any
+6. **Commit and push the release branch:**
+   ```bash
+   git add CHANGELOG.md pyproject.toml uv.lock
+   git commit -m "chore(release): vX.Y.Z"
+   git push -u origin release/vX.Y.Z
+   ```
+7. **Open the release PR** (`release/vX.Y.Z` → `main`) and get it reviewed and merged like any
    other change. Do not tag yet.
-7. **Verify the merged commit.** After merge:
+8. **Verify the merged commit.** After merge:
    ```bash
    git fetch origin main
    git checkout main && git pull --ff-only
@@ -82,7 +88,7 @@ So the file changes go through a PR first, and only then does the tag get cut.
    uv run pytest tests/test_release_metadata.py -q
    ```
    Confirm the three in-tree records all read `X.Y.Z` before going further.
-8. **Tag the merged commit,** annotated, using that version's changelog section as the message
+9. **Tag the merged commit,** annotated, using that version's changelog section as the message
    body (not a bare `-m "vX.Y.Z"`):
    ```bash
    VERSION=X.Y.Z
@@ -92,12 +98,12 @@ So the file changes go through a PR first, and only then does the tag get cut.
      f {print}
    ' CHANGELOG.md | git tag -a "v$VERSION" -F -
    ```
-9. **Push the tag,** and confirm the metadata gate passes in a tag context:
+10. **Push the tag,** and confirm the metadata gate passes in a tag context:
    ```bash
    git push origin "v$VERSION"
    RELEASE_TAG="v$VERSION" uv run pytest tests/test_release_metadata.py -q
    ```
-10. **(Optional) GitHub Release.** Create a release from tag `vX.Y.Z`, pasting that version's
+11. **(Optional) GitHub Release.** Create a release from tag `vX.Y.Z`, pasting that version's
     changelog section (the same text the tag carries) as the body. Do not invent release notes.
 
 ## Rules
