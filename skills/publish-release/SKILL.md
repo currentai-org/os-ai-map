@@ -1,14 +1,15 @@
 ---
 name: publish-release
-description: Use when cutting a versioned release of os-ai-map — deciding the version bump, moving the changelog's Unreleased notes into a dated release, tagging it, and pushing. Maintainer step. For adding a single changelog line, just edit the Unreleased section in your PR.
+description: Use when cutting a versioned release of os-ai-map — deciding the version bump, moving the changelog's Unreleased notes into a dated release through a review PR, then tagging the merged commit. Maintainer step. For adding a single changelog line, just edit the Unreleased section in your PR.
 ---
 
 # Publish a release
 
 Cut a versioned release of the repository: turn the accumulated `## [Unreleased]` changelog
-notes into a dated, numbered release, bump the version, tag it, and push. This is a
-**maintainer step** — it writes a git tag and pushes to `main`. Editors do not run it; they
-add one line to the Unreleased section in their PR and stop.
+notes into a dated, numbered release. This is a **maintainer step**. The release goes in
+through a normal review PR like any other change; the git tag is applied afterward, to the
+commit that actually landed on `main`. Editors do not run it — they add one line to the
+Unreleased section in their own PR and stop.
 
 This skill versions **the `os-ai-map` repository** — its source YAML, schemas, build
 pipeline, and docs. It does **not** publish the live notebook or the warehouse models; those
@@ -17,13 +18,19 @@ are separate maintainer runbooks (`docs/operations/publish-map.md`,
 
 ## What tracks a release
 
-- **`CHANGELOG.md`** — the human record, in [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
-  format. One `## [Unreleased]` section collects changes as they land; a release freezes it
-  into a `## [X.Y.Z] - YYYY-MM-DD` section.
-- **`pyproject.toml` `version`** — the machine record. It must equal the latest released
-  version at all times.
-- **An annotated git tag `vX.Y.Z`** — the immutable marker. The tag and the two files above
-  always agree.
+A release's version is written in **four** places. They must all read the same string, or the
+release lies about itself:
+
+1. **`CHANGELOG.md`** — the newest dated heading, `## [X.Y.Z] - YYYY-MM-DD`
+   (the undated `## [Unreleased]` section does not count).
+2. **`pyproject.toml`** — `[project].version`.
+3. **`uv.lock`** — the root package (`source = { virtual = "." }`). Bumping `pyproject.toml`
+   without re-locking leaves this stale, so re-lock in the same commit.
+4. **The annotated git tag** — `vX.Y.Z`, on the merged `main` commit.
+
+`tests/test_release_metadata.py` enforces this. It checks the three in-tree records (1–3) on
+every PR, and the tag (4) as well when run in a tag context. Do not hand-eyeball the numbers;
+run the gate.
 
 ## Decide the version bump
 
@@ -41,57 +48,80 @@ MAJOR-worthy change bumps the MINOR instead (`0.y` may break); say so in the cha
 
 ## Steps
 
-1. **Confirm a clean tree on `main`.** `git status` is clean and `git pull` is current. Cut
-   releases from `main` so the tag matches the published history.
-2. **Choose the version** with the table above. Call it `X.Y.Z`.
+The tag must point at reviewed, merged history — never at a branch tip that has not landed.
+So the file changes go through a PR first, and only then does the tag get cut.
+
+1. **Start from current `main`.** `git checkout main && git pull --ff-only`; `git status`
+   clean. Choose the version `X.Y.Z` with the table above.
+2. **Branch:** `git checkout -b release/vX.Y.Z`.
 3. **Freeze the changelog.** In `CHANGELOG.md`:
    - Rename `## [Unreleased]` to `## [X.Y.Z] - YYYY-MM-DD` (today's date, ISO 8601).
    - Drop any now-empty subsections (keep only the headings that have entries).
    - Add a fresh, empty `## [Unreleased]` above it.
-   - Update the link definitions at the bottom:
+   - Update the link definitions at the bottom to **comparison links between consecutive
+     versions** (a release compares against the one before it):
      ```
      [unreleased]: https://github.com/currentai-org/os-ai-map/compare/vX.Y.Z...HEAD
-     [X.Y.Z]: https://github.com/currentai-org/os-ai-map/releases/tag/vX.Y.Z
+     [X.Y.Z]:      https://github.com/currentai-org/os-ai-map/compare/vPREV...vX.Y.Z
      ```
-     (On the first release only, replace the seed `[unreleased]: .../commits/main` line.)
-4. **Bump the version.** Set `version = "X.Y.Z"` in `pyproject.toml`. It must match the tag.
-5. **Commit** the changelog and version bump together:
+     The very first release has no predecessor, so it links to `releases/tag/vX.Y.Z` instead.
+4. **Bump and re-lock.** Set `version = "X.Y.Z"` in `pyproject.toml`, then run `uv lock` so
+   `uv.lock`'s root package matches. Both files are part of the commit.
+5. **Validate locally** before opening the PR:
    ```bash
-   git commit -am "chore(release): v X.Y.Z"   # write the version without the space
+   uv run python -m build.validate            # sources clean
+   uv run pytest -q                           # full suite, incl. test_release_metadata
    ```
-6. **Tag**, annotated, with the changelog section as the message body:
+6. **Open the release PR** (`release/vX.Y.Z` → `main`) and get it reviewed and merged like any
+   other change. Do not tag yet.
+7. **Verify the merged commit.** After merge:
    ```bash
-   git tag -a vX.Y.Z -m "vX.Y.Z"
+   git fetch origin main
+   git checkout main && git pull --ff-only
+   git rev-parse HEAD                          # the exact SHA the tag will point at
+   uv run pytest tests/test_release_metadata.py -q
    ```
-7. **Push the branch and the tag:**
+   Confirm the three in-tree records all read `X.Y.Z` before going further.
+8. **Tag the merged commit,** annotated, using that version's changelog section as the message
+   body (not a bare `-m "vX.Y.Z"`):
    ```bash
-   git push -u origin <branch> && git push origin vX.Y.Z
+   VERSION=X.Y.Z
+   awk -v v="$VERSION" '
+     $0 ~ "^## \\[" v "\\]" {f=1; print; next}
+     f && /^## \[/ {exit}
+     f {print}
+   ' CHANGELOG.md | git tag -a "v$VERSION" -F -
    ```
-8. **(Optional) GitHub Release.** Create a release from tag `vX.Y.Z`, pasting that version's
-   changelog section as the body. Use the GitHub MCP tools; do not invent release notes —
-   copy the changelog verbatim.
+9. **Push the tag,** and confirm the metadata gate passes in a tag context:
+   ```bash
+   git push origin "v$VERSION"
+   RELEASE_TAG="v$VERSION" uv run pytest tests/test_release_metadata.py -q
+   ```
+10. **(Optional) GitHub Release.** Create a release from tag `vX.Y.Z`, pasting that version's
+    changelog section (the same text the tag carries) as the body. Do not invent release notes.
 
 ## Rules
 
-- **The three records agree.** Tag `vX.Y.Z`, `pyproject.toml` version, and the newest
-  `CHANGELOG.md` heading are always the same string. A mismatch is a release bug.
+- **The four records agree.** The tag, `pyproject.toml`, the `uv.lock` root package, and the
+  newest dated `CHANGELOG.md` heading are all the same string. `tests/test_release_metadata.py`
+  is the gate; a mismatch is a release bug, not a formatting nit.
+- **A tag points only at merged `main` history.** Never tag a release-branch commit before it
+  merges — the merged SHA differs, and the tag would mark history that never shipped.
 - **Never edit a released section.** Once `## [X.Y.Z]` is dated and tagged, it is history.
   Corrections go in a new release.
 - **Tags are immutable.** Never move or delete a pushed tag. A mistake is fixed forward with
   the next PATCH.
 - **One line per change, in plain English.** Past tense, user-facing effect first, PR linked.
-  No AI tells, American English (per `CLAUDE.md`).
+  Only notable, user-facing changes earn an entry — not bot regenerations, dependency bumps,
+  internal refactors, or routine evidence refreshes. No AI tells, American English (per
+  `CLAUDE.md`).
 - **Do not commit** `build/notebook_data.json` or `notebooks/` — the bot owns them, and CI
   blocks hand edits.
 
 ## Validation
 
 ```bash
-# The three records must name the same version:
-grep '^version' pyproject.toml
-grep -m1 '^## \[' CHANGELOG.md
-git describe --tags --abbrev=0        # after tagging
-
-# The changelog parses as Keep a Changelog (Unreleased present, headings well-formed):
-grep -q '^## \[Unreleased\]' CHANGELOG.md && echo "Unreleased section present"
+uv run pytest tests/test_release_metadata.py -q   # the four-record gate (three in-tree, +tag)
+uv run python -m build.validate                   # sources still clean
+uv run pytest -q                                   # full suite
 ```

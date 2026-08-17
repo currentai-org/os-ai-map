@@ -7,9 +7,12 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 What a MAJOR, MINOR, or PATCH bump means for a data-and-schema repo is spelled out in
 `skills/publish-release/SKILL.md`; the `publish-release` skill cuts each release.
 
-Add your change to the `## [Unreleased]` section in the same PR that makes the change,
-under the matching heading (Added, Changed, Deprecated, Removed, Fixed, Security).
-Write one line per change, newest first, in plain past tense, and link the PR.
+Record a change under `## [Unreleased]`, in the same PR that makes it, only when it is
+**notable and user-facing** — a new or removed product, category, or data source; a schema or
+scoring change; a new skill or workflow. Routine maintenance stays out: bot regenerations,
+dependency bumps, internal refactors, and day-to-day evidence refreshes that do not move a
+published score. Put each entry under the matching heading (Added, Changed, Deprecated,
+Removed, Fixed, Security), one line, newest first, in plain past tense, with the PR linked.
 
 ## [Unreleased]
 
@@ -30,9 +33,9 @@ Grew and re-verified the corpus end to end, on top of a new evidence-based scori
 - **Evidence-based scoring:** openness scores are now computed from recorded evidence
   instead of being hand-authored — a machine-readable scoring rubric, an evidence store,
   and computed scores brought back into the repo for review (#98, #101, #102, #103, #108).
-- **Automated verification checks** that confirm each score against its cited source —
-  including one that fetches and reads the source page — plus a check that enforces the
-  scoring procedure itself (#127, #128, #134, #136, #148).
+- **Automated verification checks** for verification-date support, source attribution and
+  digests, sampled refetch reproducibility, and score reproduction from the declared rubrics
+  (#127, #128, #134, #136, #148).
 - **Structured openness and license records,** converted across the whole corpus, with each
   license part recorded as its own piece of evidence (#185, #186, #191–#198, #216, #217).
 - **A routing table** naming the authoritative source for each scoring dimension (#103),
@@ -44,9 +47,9 @@ Grew and re-verified the corpus end to end, on top of a new evidence-based scori
 
 ### Changed
 
-- **Re-verified all 472 products** against primary sources to a consistent, source-cited
-  standard — 385 product records and their scores updated — and edited all 15 existing
-  categories.
+- **Re-verified all 472 products** against named, reopenable evidence, preferring primary
+  sources where available — 385 product records and their scores updated — and edited all 15
+  existing categories.
 - **Made product descriptions neutral** rather than marketing copy, under one standard for
   the description and comments fields (#147, #222).
 - **Consolidated closed-model point releases** into the tier the vendor sells and fixed each
@@ -75,11 +78,11 @@ Grew and re-verified the corpus end to end, on top of a new evidence-based scori
   cache, and reverted the dates it had written (#115, #124).
 - Reconciled the verification tracking file and restored nine deferred items (#301).
 
-## [0.1.0] - 2026-06-30
+## [0.1.0] - 2026-07-01
 
-Initial release. The baseline AI Stack Map corpus as it stood at the end of June:
+Initial release: the first full snapshot of the AI Stack Map corpus, at the start of July —
 **458 products across 15 categories**, from **249 organizations**, each scored on openness,
-adoption, and capability.
+adoption, and capability. Tagged at commit `2e9d6eb`.
 
 [unreleased]: https://github.com/currentai-org/os-ai-map/compare/v0.2.0...HEAD
 [0.2.0]: https://github.com/currentai-org/os-ai-map/compare/v0.1.0...v0.2.0
