@@ -3,9 +3,13 @@
 Gap analysis assigns every stack-map category two derived attributes, computed
 deterministically from the scores of the products in that category:
 
-- a **maturity stage** (`0`–`5`) — how far the category's *open* ecosystem has progressed
+- a **Maturity Stage** (`0`–`5`) — how far the category's *open* ecosystem has progressed
   toward parity with the best available option, and
 - a **set of gaps** — what is missing for it to advance.
+
+"Maturity" names the category-level stage and nothing else. The per-product number that used to
+share the word is the **overall score** (see below); the two were never a roll-up of each other,
+and one word for both is what made the old `maturity` gap ambiguous.
 
 Both are recomputed from source on every build, so they never drift from the underlying
 product scores. They are emitted per category into `build/notebook_data.json` as
@@ -41,19 +45,49 @@ surface — and it is reported independently of how mature the ecosystem is othe
 - **Per-category weights** — `weights.adopt` and `weights.cap`, so each category blends the two
   axes according to what matters most for that part of the stack.
 
-## Maturity score and the "mature" bar
+## Overall score, and what the 4.5 bar actually means
 
-Each product gets a single **maturity score** on a 1–5 scale from a per-category linear blend,
-normalized by the weight sum so it stays on the 1–5 scale for any weights:
+Each product gets a single **overall score** on a 1–5 scale from a per-category linear blend of
+its two graded axes, normalized by the weight sum so it stays on the 1–5 scale for any weights:
 
 ```
 score = (weights.adopt · adoption + weights.cap · capability) / (weights.adopt + weights.cap)
 ```
 
 Where a product's capability has no defensible basis it may be null, in which case the product
-is graded on adoption alone. A product is **mature** when its score clears a high threshold (a
-near-best-on-both-axes bar). The bar is intentionally demanding: because the map curates the
-most prominent products in each category, a low bar would call almost everything mature.
+is graded on adoption alone. A product is **mature** when its score clears 4.5.
+
+**The bar is worth stating plainly, because it has never been written down.** Both grades are
+whole numbers from 1 to 5, so 4.5 can be cleared exactly one way: **something has to score a
+perfect 5.** A product graded 4 and 4 — strong on both counts — lands at exactly 4.0 and does not
+qualify, and that is the largest single group on the map. So the working definition is *best in
+class on at least one axis, and strong on the other.* That is the right bar for a map that
+already curates the most prominent products in each category; a lower one would call almost
+everything mature.
+
+### Score tiers
+
+The same two boundaries name the product-level tiers, emitted per product as `tier`:
+
+| Tier | Score | Meaning |
+|---|---|---|
+| **Frontier** | 4.5 and up | best in class on at least one axis, strong on the other |
+| **Competitive** | 4.0 to 4.5 | strong on both axes, best in class on neither |
+| *(none)* | below 4.0 | — |
+
+Tiers are derived from the score alone, across every openness bucket, because they describe the
+*product*. The `mature` flag applies the same 4.5 bar but gates it on the fully-`open` bucket,
+because only fully-open products advance a category's stage. A closed product can therefore be
+Frontier and not mature; that is the intended reading, not a contradiction.
+
+**Frontier and depth say different things on purpose.** Frontier is about one product being best
+in class. The `depth` gap below is about a category not having enough of them.
+
+### Field names
+
+The per-product score ships under two keys during the migration: **`overall_score`** (current)
+and **`maturity`** (retained for one release so the front end and the warehouse can move over
+before it is removed). Same value, including the null. New consumers read `overall_score`.
 
 ### The two nulls are not symmetric, and one of them is not an abstention
 
@@ -152,8 +186,8 @@ derived from the same metrics as the stage:
 - **`void`** — no usable open option at all.
 - **`capability`** — the best fully-open option isn't capable enough to be useful.
 - **`adoption`** — a capable fully-open option exists but is under-adopted.
-- **`maturity`** — open options exist and at least one may be mature, but the ecosystem lacks
-  the depth/redundancy of a mature ecosystem (too few mature fully-open products).
+- **`depth`** — proven Frontier open options exist, but too few of them for redundancy. The
+  shortfall is count, not quality.
 - **`openness`** — capable, adopted options exist, but the mature ones are not fully open
   (open-ish or closed). This is the orthogonal flag; it can co-occur with the others.
 - **`disclosure`** — the open products are real and widely used, but the closed frontier's own
@@ -165,6 +199,38 @@ derived from the same metrics as the stage:
 A fully mature ecosystem carries no gaps — with one exception: `disclosure` can still be
 flagged at Stage 5, because it describes the closed frontier's silence, not a shortfall of the
 open ecosystem.
+
+### How they are assigned
+
+| Stage | Gaps |
+|---|---|
+| 5 | none (except a declared `disclosure`) |
+| 4 | `depth` |
+| 1–3 | `capability` and/or `adoption`, plus `openness` where it applies |
+| 0 | `void` |
+
+**`depth` fires at Stage 4 only.** Stage 4 means a category has proven Frontier open options but
+not enough for redundancy, so the shortfall is genuinely count rather than quality. Defining
+depth as "no Frontier open product at all" would extend it over the weaker categories and
+rebuild the problem this taxonomy replaced: the old `maturity` gap fired in 12 of 16 categories
+and so distinguished between none of them. Below Stage 4 the stage number already says no
+Frontier open option exists, and `capability` and `adoption` say why.
+
+**At Stages 1–3 the drivers are read off the best fully-open product** — the one with the
+highest overall score. Its capability is a `capability` gap when it falls below the capability
+cutoff, its adoption is an `adoption` gap when it falls below the adoption cutoff, and **both
+fire where both apply.** There is no longer a rule emitting a single diagnostic per category.
+That rule checked openness first, which is why `capability` was unreachable and never once
+appeared: `edge_hardware`'s only fully-open board is genuinely underpowered, and the category
+reported an openness gap instead, so nobody reading the map could see it.
+
+**One interim rule, to be deleted.** If both measured axes clear their cutoffs and the blend
+still misses 4.5, the weaker measured axis stands in (ties to adoption, the axis the score is
+anchored on), because an empty gap set at Stages 1–3 would read as "mature". Exactly one
+category is in this state: `benchmark_eval_data`, whose fully-open benchmarks are adoption 4
+with a **null capability**, so the blend is adoption alone and tops out at 4.0. The real fix is
+to score capability for evaluation sets — the axis is already applied to 4 of that category's 27
+products — which is filed separately. This branch goes when that lands.
 
 ### Declaring the disclosure gap
 
@@ -186,20 +252,23 @@ additional flags computed per category.
 
 A hypothetical category whose strongest, most-adopted products are all open-*weights* (not
 open-source), with only weak fully-open options behind them: it has no mature *fully-open*
-product, so it sits low on the ladder (Viable / Emerging) and carries a **maturity** gap; and
-because capable, adopted options do exist but aren't fully open, it also carries an
-**openness** gap. Contrast a category with several strong, widely-used open-source libraries:
-multiple mature fully-open products → Stage 5, no gaps.
+product, so it sits low on the ladder (Viable / Emerging) and carries a **capability** gap,
+an **adoption** gap, or both, depending on which axes hold the best fully-open option back; and
+because capable, adopted options do exist but aren't fully open, it also carries an **openness**
+gap. Contrast a category with one strong, widely-used open-source library and nothing behind it:
+Stage 4, a **depth** gap, nothing wrong with the library itself. Contrast again with several
+such libraries: Stage 5, no gaps.
 
 ## Policy parameters
 
 The thresholds are deliberate, tunable choices rather than fixed law. They live as named
 constants at the top of the gap-analysis block in `build/serialize.py`:
 
-- the **mature** score threshold,
+- the **mature** score threshold, which is also the **Frontier** tier boundary,
+- the **Competitive** tier boundary,
 - the count of mature fully-open products required for **Stage 5**,
 - the best-fully-open score bands that separate **Stages 1–3**,
-- the raw capability cutoff that splits a `capability` gap from an `adoption` gap.
+- the raw capability and adoption cutoffs that decide which drivers fire at Stages 1–3.
 
 Adjusting them shifts how demanding each rung is; they should be reviewed when the scoring
 rubric or the curation density changes materially.
@@ -209,11 +278,12 @@ rubric or the curation density changes materially.
 - **Computed** in `build/serialize.py` (`_stage_and_gaps`), from the per-product scores in
   `sources/scores/` and the per-category `weights` in `sources/categories/`.
 - **Emitted** into `build/notebook_data.json` per category (`stage`, `gaps`). The
-  plain-language definitions of every stage and gap ship in the payload's top-level
-  `descriptions` block (`descriptions.stages`, `descriptions.gaps`, plus the neutral
-  per-category one-liner in `descriptions.categories`), so a consumer can render a
+  plain-language definitions of every stage, gap and score tier ship in the payload's top-level
+  `descriptions` block (`descriptions.stages`, `descriptions.gaps`, `descriptions.tiers`, plus
+  the neutral per-category one-liner in `descriptions.categories`), so a consumer can render a
   legend without re-deriving this document. Each product also carries its openness
-  `bucket` (`open` / `open-ish` / `closed`) alongside the raw `class`.
+  `bucket` (`open` / `open-ish` / `closed`) alongside the raw `class`, its `overall_score`
+  (and, for one more release, the same number as `maturity`), and its `tier`.
 - **Displayed** in the published notebook as a maturity-ladder table (each category placed on
   its stage). The per-category gap set is carried in the payload for downstream consumers
   rather than shown inline.
