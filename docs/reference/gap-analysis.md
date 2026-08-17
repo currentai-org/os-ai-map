@@ -55,15 +55,17 @@ score = (weights.adopt · adoption + weights.cap · capability) / (weights.adopt
 ```
 
 Where a product's capability has no defensible basis it may be null, in which case the product
-is graded on adoption alone. A product is **mature** when its score clears 4.5.
+is graded on adoption alone. A fully-open product reaches the top **Leading** tier when its
+score clears 4.5.
 
 **The bar is worth stating plainly, because it has never been written down.** Both grades are
-whole numbers from 1 to 5, so 4.5 can be cleared exactly one way: **something has to score a
-perfect 5.** A product graded 4 and 4 — strong on both counts — lands at exactly 4.0 and does not
-qualify, and that is the largest single group on the map. So the working definition is *best in
-class on at least one axis, and strong on the other.* That is the right bar for a map that
-already curates the most prominent products in each category; a lower one would call almost
-everything mature.
+whole numbers from 1 to 5, so clearing 4.5 always takes **a 5 on at least one axis.** A product
+graded 4 and 4 — strong on both counts — lands at exactly 4.0 and does not qualify, and that 4/4
+group is the largest single one on the map. Whether the second axis can be a 4 or must also be a
+5 depends on the category's weights: with an even split a 5 and a 4 average to 4.5, but where one
+axis is weighted more heavily a 5 on the lighter axis needs a 5 on the heavier one too. That is
+the right bar for a map that already curates the most prominent products in each category; a
+lower one would put almost everything at the top.
 
 ### Score tiers
 
@@ -71,19 +73,21 @@ The same two boundaries name the product-level tiers, emitted per product as `ti
 
 | Tier | Score | Meaning |
 |---|---|---|
-| **Leading** | 4.5 and up | overall score in this band, over the product's available measured axes |
-| **Strong** | 4.0 up to 4.5 | overall score in this band; a product graded 4 and 4 lands here |
-| *(none)* | below 4.0 | — |
+| **Leading** | score ≥ 4.5 | overall score in this band, over the product's available measured axes |
+| **Strong** | 4.0 ≤ score < 4.5 | overall score in this band; a product graded 4 and 4 lands here |
+| *(none)* | score < 4.0 | — |
 
 Each band names the overall score computed from the product's *available measured axes* — it is
-not a claim about both. Where both axes are measured they are whole numbers 1–5, so the 4.5 bar
-takes a best-in-class 5 on one axis paired with a strong partner, and a product graded on
-adoption alone is banded on that score without asserting a capability grade it does not have.
+not a claim about both. Where both axes are measured they are whole numbers 1–5, so reaching 4.5
+always needs a 5 on at least one axis (with the partner axis's required grade set by the category
+weights); a product graded on adoption alone is banded on that score without asserting a
+capability grade it does not have.
 
 Tiers are derived from the score alone, across every openness bucket, because they describe the
-*product*. The `mature` flag applies the same 4.5 bar but gates it on the fully-`open` bucket,
-because only fully-open products advance a category's stage. A closed product can therefore be
-Leading and not mature; that is the intended reading, not a contradiction.
+*product*. The legacy `mature` flag is the same 4.5 bar gated on the fully-`open` bucket — that
+is, `tier == "leading" and openness.bucket == "open"` — because only fully-open products advance
+a category's stage. A closed product can therefore be Leading and not mature; that is the
+intended reading, not a contradiction.
 
 **Leading and depth say different things on purpose.** Leading is about one product being best
 in class. The `depth` gap below is about a category not having enough of them.
@@ -93,6 +97,15 @@ in class. The `depth` gap below is about a category not having enough of them.
 The per-product score ships under two keys during the migration: **`overall_score`** (current)
 and **`maturity`** (retained for one release so the front end and the warehouse can move over
 before it is removed). Same value, including the null. New consumers read `overall_score`.
+
+The boolean `mature` is likewise legacy, kept for one release. Its replacement is not a single
+field but a pair a consumer already has: `mature` is exactly `tier == "leading" and
+openness.bucket == "open"`. The migration mapping is therefore:
+
+| Legacy field | Replacement |
+|---|---|
+| `maturity` | `overall_score` |
+| `mature` | `tier == "leading"` **and** `openness.bucket == "open"` |
 
 ### The two nulls are not symmetric, and one of them is not an abstention
 
@@ -111,13 +124,13 @@ are in `benchmark_eval_data`, where downloads plausibly *are* the quality signal
 everyone evaluates against is, by that fact, a good corpus.
 
 **Every other category inherits it by accident.** `model-context-protocol` is the clearest
-live case: adoption 5, capability null, `open_source`, so maturity computes to 5.0 and it counts
-as a mature open product on one axis while a reader assumes two.
+live case: adoption 5, capability null, `open_source`, so its overall score computes to 5.0 and
+it counts as a Leading fully-open product on one axis while a reader assumes two.
 
 **A correction, because this guide got the stakes wrong on first writing.** It claimed that
-`agent_tools_protocols`'s stage rested on that null, on the reasoning that one mature open
+`agent_tools_protocols`'s stage rested on that null, on the reasoning that one Leading fully-open
 product is the entire `stage >= 4` threshold. The rule is real but the inference was not
-checked against the category: it has **seven** mature open products, not one — MCP, `fastmcp`,
+checked against the category: it has **seven** Leading fully-open products, not one — MCP, `fastmcp`,
 `qdrant`, `mcp-python-sdk`, `mcp-typescript-sdk`, `docling`, `markitdown` — and six of them
 reach 4.5 from a real adoption *and* a real capability score with no null in the arithmetic.
 Seven clears `_STAGE5_MIN_MATURE = 4`, so the category is **stage 5**, and deleting MCP
@@ -142,10 +155,10 @@ also where documented reuse counts (crediting it to adoption too would double-co
 signal). Benchmark datasets keep the standard adoption bands, because small evaluation sets are
 pulled by harnesses on every run and their download counts behave like packages.
 
-The headline finding for `training_synthetic_datasets` is a **monoculture**: every mature
+The headline finding for `training_synthetic_datasets` is a **monoculture**: every Leading
 fully-open corpus today is filtered Common-Crawl English web text (FineWeb-Edu, DCLM, Dolma 3).
 The multilingual, preference, and reasoning roles lag well behind — capable corpora exist
-(FineWeb-2, MADLAD-400, Aya, UltraFeedback) but none clears the maturity bar — so the category's
+(FineWeb-2, MADLAD-400, Aya, UltraFeedback) but none clears the Leading bar — so the category's
 Stage 4 reflects English web pretraining specifically, not a broadly mature open data ecosystem.
 This is partly a property of the category mixing roles — pretraining corpora, SFT mixtures, and
 preference sets are graded against different yardsticks (knowledge benchmarks versus
@@ -173,12 +186,12 @@ categories, all in the model layer (`base_pretrained` 3→5, `finetuned_chat` 2�
 
 | Stage | Name | Condition |
 |------:|------|-----------|
-| **5** | Mature Open Ecosystem | enough mature fully-open products to be redundant/resilient |
-| **4** | Competitive Open Ecosystem | at least one mature fully-open product, but not yet enough for depth |
-| **3** | Viable Alternatives | no mature fully-open product, but the best fully-open option is strong |
-| **2** | Emerging Alternatives | no mature fully-open product; the best fully-open option is promising but limited |
+| **5** | Mature Open Ecosystem | enough Leading fully-open products to be redundant/resilient |
+| **4** | Competitive Open Ecosystem | at least one Leading fully-open product, but not yet enough for depth |
+| **3** | Viable Alternatives | no Leading fully-open product, but the best fully-open option is strong |
+| **2** | Emerging Alternatives | no Leading fully-open product; the best fully-open option is promising but limited |
 | **1** | Open Experiments | fully-open options exist but are weak on both axes |
-| **0** | Void | no usable open option exists (and nothing is mature anywhere) |
+| **0** | Void | no usable open option exists (and nothing reaches the Leading tier anywhere) |
 
 The exact count and score cutoffs that separate the stages are policy parameters (below),
 chosen so the ladder discriminates rather than bunching categories at one rung.
@@ -193,7 +206,7 @@ derived from the same metrics as the stage:
 - **`adoption`** — the best fully-open option is below the adoption threshold.
 - **`depth`** — proven Leading open options exist, but too few of them for redundancy. The
   shortfall is count, not quality.
-- **`openness`** — capable, adopted options exist, but the mature ones are not fully open
+- **`openness`** — capable, adopted options exist, but the Leading-tier ones are not fully open
   (open-ish or closed). This is the orthogonal flag; it can co-occur with the others.
 - **`disclosure`** — the open products are real and widely used, but the closed frontier's own
   equivalent is undisclosed: labs publish neither their proprietary and licensed data nor their
@@ -259,7 +272,7 @@ additional flags computed per category.
 ## Worked example (illustrative)
 
 A hypothetical category whose strongest, most-adopted products are all open-*weights* (not
-open-source), with only weak fully-open options behind them: it has no mature *fully-open*
+open-source), with only weak fully-open options behind them: it has no Leading *fully-open*
 product, so it sits low on the ladder (Viable / Emerging) and carries a **capability** gap,
 an **adoption** gap, or both, depending on which axes hold the best fully-open option back; and
 because capable, adopted options do exist but aren't fully open, it also carries an **openness**
@@ -272,9 +285,9 @@ such libraries: Stage 5, no gaps.
 The thresholds are deliberate, tunable choices rather than fixed law. They live as named
 constants at the top of the gap-analysis block in `build/serialize.py`:
 
-- the **mature** score threshold, which is also the **Leading** tier boundary,
+- the **Leading** score threshold (the 4.5 bar, retained as the legacy `mature` bar),
 - the **Strong** tier boundary,
-- the count of mature fully-open products required for **Stage 5**,
+- the count of Leading fully-open products required for **Stage 5**,
 - the best-fully-open score bands that separate **Stages 1–3**,
 - the raw capability and adoption cutoffs that decide which drivers fire at Stages 1–3.
 

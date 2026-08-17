@@ -31,11 +31,13 @@ _STAGE5_MIN_MATURE = 4     # mature fully-open products needed for Stage 5 (Matu
 _CAPABLE_MIN = 4           # raw capability below which an open option is "not capable yet"
 _ADOPTED_MIN = 4           # raw adoption below which an open option is "not adopted yet"
 # Product-level score tiers, banded on the overall score -- the adoption/capability blend, or
-# adoption alone where capability is unmeasured. Leading is 4.5+, Strong is 4.0 up to 4.5. The
-# bands are honest about how the number was reached: they name a score over the product's
+# adoption alone where capability is unmeasured. Leading is 4.5+, Strong is 4.0 <= score < 4.5.
+# The bands are honest about how the number was reached: they name a score over the product's
 # available measured axes, not a claim about both. Where both axes are measured they are whole
-# numbers 1-5, so the 4.5 bar can only be cleared by a 5 on one of them (an adoption-only
-# product reaches Leading only at adoption 5). Scored across all openness buckets -- the tier
+# numbers 1-5, so clearing 4.5 always needs a 5 on at least one axis -- but whether the partner
+# axis can be a 4 or must also be a 5 depends on the category weights (an even split clears at
+# 5-and-4; a lopsided split may not). An adoption-only product reaches Leading only at adoption
+# 5. Scored across all openness buckets -- the tier
 # describes the product -- while `mature` gates the same 4.5 bar on the fully-open bucket,
 # because only fully-open products advance a category's stage.
 _LEADING_MIN = _MATURE_MIN     # 4.5
@@ -48,12 +50,12 @@ _STAGE_NAMES = {0: "Void", 1: "Open Experiments", 2: "Emerging Alternatives",
 # re-deriving the methodology. Kept verbatim from docs/reference/gap-analysis.md
 # (the prose source of truth); edit both together.
 _STAGE_DESC = {
-    0: "no usable open option exists (and nothing is mature anywhere)",
+    0: "no usable open option exists (and nothing reaches the Leading tier anywhere)",
     1: "fully-open options exist but are weak on both axes",
-    2: "no mature fully-open product; the best fully-open option is promising but limited",
-    3: "no mature fully-open product, but the best fully-open option is strong",
-    4: "at least one mature fully-open product, but not yet enough for depth",
-    5: "enough mature fully-open products to be redundant/resilient",
+    2: "no Leading fully-open product; the best fully-open option is promising but limited",
+    3: "no Leading fully-open product, but the best fully-open option is strong",
+    4: "at least one Leading fully-open product, but not yet enough for depth",
+    5: "enough Leading fully-open products to be redundant/resilient",
 }
 _GAP_DESC = {
     "void": "no usable open option at all.",
@@ -62,7 +64,7 @@ _GAP_DESC = {
     "depth": "proven top-tier (Leading) open options exist, but too few of them for redundancy. "
              "The shortfall is count, not quality; fires at Stage 4 only, because below it the "
              "stage number already says no Leading open option exists.",
-    "openness": "capable, adopted options exist, but the mature ones are not fully open "
+    "openness": "capable, adopted options exist, but the Leading-tier ones are not fully open "
                 "(open-ish or closed). This is the orthogonal flag; it can co-occur with the others.",
     "disclosure": "the open products here are real and widely used, but the closed frontier's own "
                   "equivalent is undisclosed: labs publish neither their proprietary and licensed "
@@ -73,8 +75,8 @@ _GAP_DESC = {
 _TIER_DESC = {
     "leading": "an overall score of 4.5 or higher, calculated from the product's available "
                "measured axes.",
-    "strong": "an overall score from 4.0 up to 4.5, calculated from the product's available "
-              "measured axes.",
+    "strong": "an overall score of at least 4.0 but below 4.5 (4.0 ≤ score < 4.5), calculated "
+              "from the product's available measured axes.",
 }
 
 
