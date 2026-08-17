@@ -287,7 +287,8 @@ Claude Code session discovers them by name; if yours does not list them, read
 
 **Advanced / internal skills** (off the primary path): `build-rubric` (derive a category's
 openness ladder), `add-data-source` (register a fetcher), `refresh-all-categories` (drive the
-whole-corpus sweep), `pyoso-analyst` (read-only warehouse analysis).
+whole-corpus sweep), `pyoso-analyst` (read-only warehouse analysis), `publish-release` (cut a
+versioned release + changelog; maintainer).
 
 Invoke the relevant skill before doing editor work. Skills enforce the read-only boundary and
 walk through validation + preview steps.
