@@ -24,15 +24,15 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Changed
 
-- Split the `maturity` category gap into `depth` (Stage 4) and its `capability`/`adoption`
-  drivers, which now fire together wherever both apply, and redefined the `adoption` gap
-  independent of capability (#87, #318).
-- Rewrote the stage, gap and tier definitions the payload carries — the text rendered in the site
+- Rewrote the stage and gap definitions the payload carries — the text rendered in the site
   legend and category drawer. Stage 4 and the `depth` gap no longer define each other, the
   `adoption` gap no longer defines itself by its own threshold, and the `disclosure` gap no longer
   ships a repo path to the public payload. `docs/reference/gap-analysis.md` and
   `docs/methodology.md` now quote these definitions verbatim, with thresholds and assignment rules
   kept alongside rather than restated, and a test enforces the match (#87, #320).
+- Split the `maturity` category gap into `depth` (Stage 4) and its `capability`/`adoption`
+  drivers, which now fire together wherever both apply, and redefined the `adoption` gap
+  independent of capability (#87, #318).
 
 ### Deprecated
 

@@ -526,3 +526,9 @@ def test_descriptions_match_the_reference_doc():
     method = (ROOT / "docs" / "methodology.md").read_text()
     for gap, text in _GAP_DESC.items():
         assert f"- **{gap.title()}:** {text}" in method, f"methodology.md is out of sync for `{gap}`"
+    # Stages in BOTH docs, not just the reference one. Binding gaps in two files and stages in
+    # one is how methodology.md kept the pre-#320 stage wording through a review that thought
+    # the guard covered it.
+    for num, text in _STAGE_DESC.items():
+        labelled = f"- **Stage {num}: {_STAGE_NAMES[num]}.** {text}"
+        assert labelled in method, f"methodology.md is out of sync for stage {num}"

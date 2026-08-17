@@ -47,10 +47,11 @@ _STAGE_NAMES = {0: "Void", 1: "Open Experiments", 2: "Emerging Alternatives",
                 5: "Mature Open Ecosystem"}
 # Plain-language definitions of each stage, gap and score tier, emitted into the payload's
 # top-level `descriptions` block so downstream consumers render a legend without re-deriving the
-# methodology. These sentences are the definitions, full stop: docs/reference/gap-analysis.md
-# quotes them VERBATIM in its stage table and gap list, and carries the mechanism -- thresholds,
-# which rung fires what, derived vs declared -- around them rather than restating them in other
-# words. Edit here and copy across; test_descriptions_match_the_reference_doc pins the pair.
+# methodology. The stage and gap sentences are the definitions, full stop: gap-analysis.md and
+# methodology.md quote them VERBATIM and carry the mechanism -- thresholds, which rung fires what,
+# derived vs declared -- around them rather than restating them in other words. Edit here and copy
+# across; test_descriptions_match_the_reference_doc pins all four lists. The tier descriptions
+# below are not quoted in either doc and are not covered by that test.
 # Stage 4 used to read "not yet enough for depth" while the depth gap read "fires at Stage 4"
 # -- each defined by the other. The wording no longer does that. It also avoids the bare words
 # "leading" and "strong" except where the tier is genuinely meant: both are tier names now, and
@@ -58,17 +59,17 @@ _STAGE_NAMES = {0: "Void", 1: "Open Experiments", 2: "Emerging Alternatives",
 # fully-open score of 3.5, below the strong floor), so a colloquial use would read as false.
 # The exact thresholds are the constants above and the table in docs/reference/gap-analysis.md.
 _STAGE_DESC = {
-    0: "The category is still nascent overall, with no leading products and no meaningful "
-       "fully open options.",
-    1: "Fully open products are absent or remain at an early stage of adoption and "
-       "capability.",
+    0: "The category is still nascent overall, with no category-leading products and no "
+       "meaningful fully open options.",
+    1: "Fully open products are absent or remain substantially limited in adoption, "
+       "capability, or both.",
     2: "Fully open products are becoming credible, but remain limited in adoption or "
        "capability.",
-    3: "Fully open options are genuinely viable, but none has reached the category's leading "
+    3: "Fully open options are genuinely viable, but none has reached the category-leading "
        "tier.",
-    4: "At least one fully open product has reached the category's leading tier, but the open "
+    4: "At least one fully open product has reached the category-leading tier, but the open "
        "field is still thin.",
-    5: "Multiple fully open products have reached the category's leading tier, creating a deep "
+    5: "Multiple fully open products have reached the category-leading tier, creating a deep "
        "and competitive open ecosystem.",
 }
 # One sentence each, in the reader's terms. These render in the site legend and the category
@@ -81,9 +82,9 @@ _GAP_DESC = {
     # category weak on both axes shows this chip alongside the capability one, and asserting
     # "capable fully open products exist" here would contradict it on the same panel.
     "adoption": "The strongest fully open product has not yet achieved broad adoption.",
-    "depth": "Fully open products have reached the category's leading tier, but there are too "
+    "depth": "Fully open products have reached the category-leading tier, but there are too "
              "few to create a deep and resilient open ecosystem.",
-    "openness": "Products have reached the category's leading tier, but none of them is fully "
+    "openness": "Products have reached the category-leading tier, but none of them is fully "
                 "open.",
     "disclosure": "Closed products rely on data or training recipes that are not disclosed, "
                   "limiting visibility into how they are built and how they compare with fully "
