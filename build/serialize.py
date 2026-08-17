@@ -60,9 +60,10 @@ _STAGE_NAMES = {0: "Void", 1: "Open Experiments", 2: "Emerging Alternatives",
 _STAGE_DESC = {
     0: "The category is still nascent overall, with no leading products and no meaningful "
        "fully open options.",
-    1: "Fully open products are absent or remain far behind the category's strongest options.",
-    2: "Fully open products are becoming credible options, but remain meaningfully behind the "
-       "category's strongest options.",
+    1: "Fully open products are absent or remain at an early stage of adoption and "
+       "capability.",
+    2: "Fully open products are becoming credible, but remain limited in adoption or "
+       "capability.",
     3: "Fully open options are genuinely viable, but none has reached the category's leading "
        "tier.",
     4: "At least one fully open product has reached the category's leading tier, but the open "
@@ -75,13 +76,11 @@ _STAGE_DESC = {
 # derived or declared) and no repo paths -- that reasoning lives in the two prose docs below.
 _GAP_DESC = {
     "void": "No usable fully open option exists at all.",
-    "capability": "Fully open products exist, but they lack the capabilities needed to compete "
-                  "with the category's strongest options.",
+    "capability": "The strongest fully open product remains limited in capability.",
     # Deliberately claims nothing about capability: both driver gaps fire independently, so a
     # category weak on both axes shows this chip alongside the capability one, and asserting
     # "capable fully open products exist" here would contradict it on the same panel.
-    "adoption": "Fully open products have not reached the adoption of the category's strongest "
-                "options.",
+    "adoption": "The strongest fully open product has not yet achieved broad adoption.",
     "depth": "Fully open products have reached the category's leading tier, but there are too "
              "few to create a deep and resilient open ecosystem.",
     "openness": "Products have reached the category's leading tier, but none of them is fully "
@@ -90,11 +89,14 @@ _GAP_DESC = {
                   "limiting visibility into how they are built and how they compare with fully "
                   "open products.",
 }
-# Short enough to render inline next to a stage, where the stage copy uses the tier names and
-# the legend that defines them is a different surface.
+# The "available measured axes" qualification is deliberate: a product with no capability
+# grade is scored on adoption alone, so a tier names the score over whatever axes exist for that
+# product rather than asserting a judgment on both.
 _TIER_DESC = {
-    "leading": "an overall score of 4.5 or higher.",
-    "strong": "an overall score from 4.0 up to 4.5.",
+    "leading": "an overall score of 4.5 or higher, calculated from the product's available "
+               "measured axes.",
+    "strong": "an overall score of at least 4.0 but below 4.5 (4.0 ≤ score < 4.5), calculated "
+              "from the product's available measured axes.",
 }
 
 

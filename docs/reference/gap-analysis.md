@@ -189,16 +189,24 @@ categories, all in the model layer (`base_pretrained` 3→5, `finetuned_chat` 2�
 | **5** | Mature Open Ecosystem | Multiple fully open products have reached the category's leading tier, creating a deep and competitive open ecosystem. | `L >= 4` |
 | **4** | Competitive Open Ecosystem | At least one fully open product has reached the category's leading tier, but the open field is still thin. | `1 <= L <= 3` |
 | **3** | Viable Alternatives | Fully open options are genuinely viable, but none has reached the category's leading tier. | `L = 0`, `B >= 3.5` |
-| **2** | Emerging Alternatives | Fully open products are becoming credible options, but remain meaningfully behind the category's strongest options. | `L = 0`, `3.0 <= B < 3.5` |
-| **1** | Open Experiments | Fully open products are absent or remain far behind the category's strongest options. | `L = 0`, `B < 3.0` |
-| **0** | Void | The category is still nascent overall, with no leading products and no meaningful fully open options. | `L = 0`, `B < 2.0`, and nothing anywhere reaches the Leading tier |
+| **2** | Emerging Alternatives | Fully open products are becoming credible, but remain limited in adoption or capability. | `L = 0`, `3.0 <= B < 3.5` |
+| **1** | Open Experiments | Fully open products are absent or remain at an early stage of adoption and capability. | `L = 0`, `B < 3.0`, and (`B >= 2.0` or `M`) |
+| **0** | Void | The category is still nascent overall, with no leading products and no meaningful fully open options. | `L = 0`, `B < 2.0`, and not `M` |
 
 The **Definition** column is quoted verbatim from `_STAGE_DESC` in `build/serialize.py` and is
 what ships in the payload. **Triggers when** is the mechanism, which the payload never carries:
-`L` is the number of fully-open products at or above the Leading bar, and `B` is the best
-fully-open overall score (`0` when the category has no scored fully-open product at all).
-Rules are evaluated top down, so Stages 5 and 4 are decided on count alone before any score
-band is considered.
+
+- **`L`** — how many fully-open products score at or above the Leading bar (4.5).
+- **`B`** — the best overall score among fully-open products, or `0` where the category has
+  no scored fully-open product at all.
+- **`M`** — whether *any* product, in any openness bucket, reaches the Leading bar. Only
+  Stages 1 and 0 consult it, and it is what separates them: a category whose open options are
+  all feeble is Stage 1 rather than Void when a mature closed or open-weights product exists,
+  because Void means the whole category is nascent, not merely its open side.
+
+The conditions above are mutually exclusive, so the table can be read in any order. The code
+evaluates them 5, 4, 0, 1, 2, 3 and relies on earlier branches to narrow the later ones; the
+extra clause on Stage 1 is what that ordering does implicitly.
 
 The exact count and score cutoffs that separate the stages are policy parameters (below),
 chosen so the ladder discriminates rather than bunching categories at one rung.
@@ -209,8 +217,8 @@ Gaps are a **set** (zero or more) per category, so a category can carry more tha
 derived from the same metrics as the stage:
 
 - **`void`** — No usable fully open option exists at all.
-- **`capability`** — Fully open products exist, but they lack the capabilities needed to compete with the category's strongest options.
-- **`adoption`** — Fully open products have not reached the adoption of the category's strongest options.
+- **`capability`** — The strongest fully open product remains limited in capability.
+- **`adoption`** — The strongest fully open product has not yet achieved broad adoption.
 - **`depth`** — Fully open products have reached the category's leading tier, but there are too few to create a deep and resilient open ecosystem.
 - **`openness`** — Products have reached the category's leading tier, but none of them is fully open.
 - **`disclosure`** — Closed products rely on data or training recipes that are not disclosed, limiting visibility into how they are built and how they compare with fully open products.

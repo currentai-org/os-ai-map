@@ -509,16 +509,20 @@ def test_descriptions_match_the_reference_doc():
     it. The doc carries the thresholds and the assignment rules around these sentences; those
     are the mechanism and are deliberately absent from the payload.
     """
-    from build.serialize import ROOT, _GAP_DESC, _STAGE_DESC
+    from build.serialize import ROOT, _GAP_DESC, _STAGE_DESC, _STAGE_NAMES
 
+    # Every assertion binds a definition to its owner. Checking only that a sentence appears
+    # somewhere in the file would pass with two definitions swapped, which is a drift this guard
+    # exists to catch: the text would be present, attached to the wrong stage or gap.
     doc = (ROOT / "docs" / "reference" / "gap-analysis.md").read_text()
     for gap, text in _GAP_DESC.items():
         assert f"- **`{gap}`** — {text}" in doc, f"gap-analysis.md is out of sync for `{gap}`"
     for num, text in _STAGE_DESC.items():
-        assert f"| {text} |" in doc, f"gap-analysis.md is out of sync for stage {num}"
+        row = f"| **{num}** | {_STAGE_NAMES[num]} | {text} |"
+        assert row in doc, f"gap-analysis.md is out of sync for stage {num}"
 
-    # methodology.md states the same definitions in its own list formatting, and may append the
-    # mechanism after one — so match on the sentence, not the whole line.
+    # methodology.md uses its own list formatting and appends the mechanism after some
+    # definitions, so this matches the labelled prefix rather than the whole line.
     method = (ROOT / "docs" / "methodology.md").read_text()
     for gap, text in _GAP_DESC.items():
-        assert text in method, f"methodology.md is out of sync for `{gap}`"
+        assert f"- **{gap.title()}:** {text}" in method, f"methodology.md is out of sync for `{gap}`"

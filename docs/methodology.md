@@ -123,8 +123,8 @@ The exact cutoffs (four Leading fully-open products for Stage 5, the 4.5 Leading
 Openness is treated as an axis orthogonal to maturity: a category can hold strong, widely adopted options that are simply not *fully* open. Each category therefore carries a set of zero or more gaps, derived from the same metrics as the stage:
 
 - **Void:** No usable fully open option exists at all.
-- **Capability:** Fully open products exist, but they lack the capabilities needed to compete with the category's strongest options.
-- **Adoption:** Fully open products have not reached the adoption of the category's strongest options.
+- **Capability:** The strongest fully open product remains limited in capability.
+- **Adoption:** The strongest fully open product has not yet achieved broad adoption.
 - **Depth:** Fully open products have reached the category's leading tier, but there are too few to create a deep and resilient open ecosystem. It fires at Stage 4 only, because below it the stage number already says no fully open product has reached the leading tier.
 - **Openness:** Products have reached the category's leading tier, but none of them is fully open. This is the orthogonal flag, and it can co-occur with the others.
 - **Disclosure:** Closed products rely on data or training recipes that are not disclosed, limiting visibility into how they are built and how they compare with fully open products. Training data is the clear case: the open corpora are shared, but the proprietary additions and the mixing recipe stay invisible. Unlike the other gaps this flag is declared per category rather than inferred from the scores, so it does not silently toggle on a curation change, and it can appear at any stage, including Stage 5.
