@@ -37,7 +37,7 @@ OPENNESS_CLASSES = {
     # `restricted` joined the dataset vocabulary with the universal license scale. It was the
     # only product type with no word between `open` and `gated`, so a non-commercial corpus
     # had nowhere to land but `open` - which is how `personahub` came to be 5/open under a
-    # licence that caps a model at 2. The word already exists for models and hardware, and
+    # license that caps a model at 2. The word already exists for models and hardware, and
     # already carries gradient 2 and the closed bucket in openness-class-map.json.
     "dataset": {"open", "gated", "restricted", "closed"},
     "hardware": {"open_hardware", "open_toolchain", "documented", "restricted"},
@@ -337,7 +337,7 @@ def validate_sources(data: dict) -> list[str]:
     # A source's `establishes` list is what makes a re-check claim checkable: it records
     # which source settles which dimension, so check_verification can require a fresh read
     # per dimension rather than one fresh read per axis. That only works if the names mean
-    # something. A typo'd `licence` or `weight` establishes nothing at all while reading
+    # something. A typo'd `license` or `weight` establishes nothing at all while reading
     # like attribution, and the gate that consumes it would then pass an axis whose
     # dimension has no supporting source. Cross-file because the vocabulary lives in the
     # category recipes, not in the schema.
