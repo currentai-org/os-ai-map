@@ -188,7 +188,7 @@ categories, all in the model layer (`base_pretrained` 3â†’5, `finetuned_chat` 2â
 |------:|------|------------|---------------|
 | **5** | Mature Open Ecosystem | Several fully open products lead the category, so no single project carries it. | `L >= 4` |
 | **4** | Competitive Open Ecosystem | A small number of fully open products lead the category. | `1 <= L <= 3` |
-| **3** | Viable Alternatives | Fully open options are genuinely viable. | `L = 0`, `B >= 3.5` |
+| **3** | Viable Alternatives | Fully open options are proven in real use, but none leads the category. | `L = 0`, `B >= 3.5` |
 | **2** | Emerging Alternatives | Fully open products are becoming credible, but remain limited in adoption or capability. | `L = 0`, `3.0 <= B < 3.5` |
 | **1** | Open Experiments | Fully open products are absent or remain substantially limited in adoption, capability, or both. | `L = 0`, `B < 3.0`, and (`B >= 2.0` or `M`) |
 | **0** | Void | The category is still nascent overall, with no category-leading products and no meaningful fully open options. | `L = 0`, `B < 2.0`, and not `M` |

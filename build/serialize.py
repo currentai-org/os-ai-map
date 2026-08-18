@@ -71,7 +71,7 @@ _STAGE_DESC = {
        "capability, or both.",
     2: "Fully open products are becoming credible, but remain limited in adoption or "
        "capability.",
-    3: "Fully open options are genuinely viable.",
+    3: "Fully open options are proven in real use, but none leads the category.",
     4: "A small number of fully open products lead the category.",
     5: "Several fully open products lead the category, so no single project carries it.",
 }

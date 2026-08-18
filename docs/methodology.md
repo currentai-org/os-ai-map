@@ -111,7 +111,7 @@ Worth being explicit about what that bar requires, because it is easy to misread
 
 - **Stage 5: Mature Open Ecosystem.** Several fully open products lead the category, so no single project carries it.
 - **Stage 4: Competitive Open Ecosystem.** A small number of fully open products lead the category.
-- **Stage 3: Viable Alternatives.** Fully open options are genuinely viable.
+- **Stage 3: Viable Alternatives.** Fully open options are proven in real use, but none leads the category.
 - **Stage 2: Emerging Alternatives.** Fully open products are becoming credible, but remain limited in adoption or capability.
 - **Stage 1: Open Experiments.** Fully open products are absent or remain substantially limited in adoption, capability, or both.
 - **Stage 0: Void.** The category is still nascent overall, with no category-leading products and no meaningful fully open options.
