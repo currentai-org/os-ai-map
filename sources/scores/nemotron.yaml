@@ -16,16 +16,13 @@ openness:
     license:
     - name: NVIDIA-Nemotron-Open-Model-License
       detail: permissive,commercial,non-OSI
-  note: 'Unusually open for post-trained models: NVIDIA releases weights, the post-training data and the recipes,
-    but under the non-OSI NVIDIA Open Model License, so open_weights not open_source. This category scores the post-training
-    data, which is genuinely released. The pretraining side is thinner than NVIDIA''s "fully open" framing suggests
-    -- Nemotron-Pretraining-Specialized-v1.2 ships 53.6GB of synthetic data, but Nemotron-Pretraining-Code-v3 ships
-    metadata parquet describing the code corpus rather than the corpus, so the earlier "~10T-token pretraining released"
-    wording overstated it and has been narrowed. Score is unaffected: the post-training answer is what this category
-    asks for. Re-read 2026-08-13 - the Nemotron 3 page still lists Nemotron-SFT-Data and Nemotron-RL-Data
-    under Data with a Model Recipes section beside them, and the developer blog still says Nemotron 3 Super
-    is "fully open with open weights, datasets, and recipes". The pretraining-side caveat also still holds
-    - Nemotron-Pretraining-Code-v3 still ships only Nemotron-Code-Metadata parquet. No change.'
+  note: 'Unusually open for post-trained models: NVIDIA releases weights, the post-training data and the
+    recipes, but under the non-OSI NVIDIA Open Model License, so open_weights not open_source. This category
+    scores the post-training data, which is genuinely released. The pretraining side is thinner than NVIDIA''s
+    "fully open" framing suggests -- Nemotron-Pretraining-Specialized-v1.2 ships 53.6GB of synthetic data,
+    but Nemotron-Pretraining-Code-v3 ships metadata parquet describing the code corpus rather than the corpus,
+    so the earlier "~10T-token pretraining released" wording overstated it and has been narrowed. Score
+    is unaffected: the post-training answer is what this category asks for.'
   raw: weights:open;data:open(~40M post-training/SFT+RL samples released as Nemotron-SFT-Data/Nemotron-RL-Data;
     pretraining sets only partly released);code:open(training recipes + RL env configs);license:NVIDIA-Nemotron-Open-Model-License(permissive,commercial,non-OSI)
   last_verified: '2026-08-13'
@@ -62,15 +59,15 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: 'Corrected from 3/reported_traction to 4/usage_volume on 2026-07-29, and this is the first score on the
-    map re-banded off a machine signal rather than a hand-read figure. The record previously said no hard download
-    count was available because the instruct repo was gated; all three shipped repos resolve ungated at HTTP 200.
-    Summing the family''s distributed SKUs, which is what the category''s adoption recipe specifies: Nano BF16 994,374
-    + Super BF16 855,265 + Ultra BF16 339,360 = 2,188,999 monthly downloads, squarely in the 1M-10M band. The NVFP4/FP8/GGUF
-    quantizations are excluded to avoid double counting the same weights. Also distributed free via OpenRouter (nemotron-3-super-120b-a12b:free)
-    and NVIDIA build/NIM, which the band does not capture, so 4 is a floor. Re-read 2026-08-13 - the three
-    BF16 repos now sum to 2,226,055 downloads in the trailing 30 days (Nano 914,120 + Super 870,782 +
-    Ultra 441,153), still squarely 1M-10M. No change.'
+  note: 'Corrected from 3/reported_traction to 4/usage_volume on 2026-07-29, and this is the first score
+    on the map re-banded off a machine signal rather than a hand-read figure. The record previously said
+    no hard download count was available because the instruct repo was gated; all three shipped repos resolve
+    ungated at HTTP 200. Summing the family''s distributed SKUs, which is what the category''s adoption
+    recipe specifies: Nano BF16 994,374 + Super BF16 855,265 + Ultra BF16 339,360 = 2,188,999 monthly downloads,
+    squarely in the 1M-10M band. The NVFP4/FP8/GGUF quantizations are excluded to avoid double counting
+    the same weights. Also distributed free via OpenRouter (nemotron-3-super-120b-a12b:free) and NVIDIA
+    build/NIM, which the band does not capture, so 4 is a floor. The three BF16 repos sum to 2,226,055 downloads
+    in the trailing 30 days (Nano 914,120 + Super 870,782 + Ultra 441,153), still squarely 1M-10M.'
   last_verified: '2026-08-13'
   sources:
   - url: https://research.nvidia.com/labs/nemotron/Nemotron-3/
@@ -100,17 +97,11 @@ capability:
   value: 'Nemotron 3 Super (per NVIDIA tech report): SWE-Bench Verified 60.47, AIME 2025 90.21, GPQA (no tools)
     79.23, MMLU-Pro 83.73; ~2.2x inference throughput vs GPT-OSS-120B'
   confidence: high
-  note: >-
-    Frontier-tier among open instruct models on the Super SKU. Nano is much smaller and would score
-    lower, but the family's headline SKU defines the score.
-
-    Re-read 2026-08-13 - every recorded figure is still in the technical report's Agentic Reasoning
-    Benchmark table, unchanged (MMLU-Pro 83.73, AIME25 no tools 90.21, GPQA no tools 79.23, SWE-Bench
-    OpenHands 60.47). One claim in the note did NOT survive - it said 60.47 was "the highest
-    open-weight score", and the same table's Qwen3.5-122B-A10B column reads 66.40 on that row and
-    86.70 on MMLU-Pro. Removed rather than re-dated, because it was our gloss rather than a figure
-    the report published. Whether a 5 still follows from second place on the report's own comparison
-    is a scoring question, not a freshness one, and is FLAGGED for the orchestrator.
+  note: Frontier-tier among open instruct models on the Super SKU. Nano is much smaller and would score
+    lower, but the family's headline SKU defines the score. The report's own comparison table puts Qwen3.5-122B-A10B
+    above Super on the same rows (SWE-Bench 66.40, MMLU-Pro 86.70), so Super is not the highest open-weight
+    score, and the earlier claim that it was has been removed as our gloss rather than a figure the report
+    published. Whether a 5 still follows from second place on that comparison is FLAGGED as a scoring question.
   last_verified: '2026-08-13'
   sources:
   - url: https://research.nvidia.com/labs/nemotron/Nemotron-3/

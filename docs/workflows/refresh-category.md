@@ -83,6 +83,11 @@ Each is a defect this project shipped, not a precaution against one.
 4. **A plain YAML scalar cannot contain `": "`.** Write ` - ` or single-quote the whole scalar.
    This cost four parse failures in one day.
 
+The **scoring history is git**, not the note: `git log -p --follow sources/scores/<slug>.yaml`
+carries every previous pass and the digests it saw. A note records durable reasoning only, and is
+published verbatim in the payload — a verification narrative written into one ships to the public
+product page. See `docs/reference/evidence-and-freshness.md`.
+
 A **null axis is a finding and earns a date too**: re-read the page, confirm nothing has
 appeared, and date it, citing the page that publishes nothing. See
 [`../reference/evidence-and-freshness.md`](../reference/evidence-and-freshness.md).

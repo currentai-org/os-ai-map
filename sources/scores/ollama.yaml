@@ -12,13 +12,11 @@ openness:
     free_text:
     - no-feature-gated-core
   confidence: high
-  note: 'license:MIT;source:public;no-feature-gated-core. Re-read 2026-08-13 and unchanged. The LICENSE
-    body at repository head is a verbatim MIT text, "Copyright (c) Ollama", and the GitHub repository
-    metadata reports spdx_id MIT on a public, unarchived Go repository. The README ships the whole engine
-    for free - platform installers for macOS, Windows and Linux, an official Docker Hub image, the local
-    REST API on port 11434, and the model library - with no paid edition, license key or enterprise-only
-    build. Ollama now sells hosted cloud inference and lists a pricing page, but that is a separate
-    service alongside the engine rather than a capability withheld from it, so core-gated stays ungated.'
+  note: license:MIT;source:public;no-feature-gated-core. The whole engine ships free - platform installers
+    for macOS, Windows and Linux, an official Docker Hub image, the local REST API on port 11434, and the
+    model library - with no paid edition, license key or enterprise-only build. Ollama sells hosted cloud
+    inference alongside the engine, but that is a separate service rather than a capability withheld from
+    it, so core-gated stays ungated.
   raw: license:MIT;source:public;no-feature-gated-core;core-gated:ungated
   last_verified: '2026-08-13'
   sources:
@@ -64,30 +62,23 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: 'Reported 52M+ monthly model pulls in early 2026; 170K+ GitHub stars. Pull/usage volume places it in
-    the 1-10M+ active-user range; rated 4 conservatively on monthly pull volume (not stars). ARTIFACT
-    DELIBERATELY NOT DECLARED, checked 2026-08-13. A PyPI package named `ollama` exists and is genuinely this
-    project''s, so declaring it would satisfy check_instrument and would be wrong. Ollama is distributed as a
-    platform binary and a Docker image; the PyPI package is a client SDK for talking to a local server, not
-    how Ollama is obtained. 20.3M/mo is a large number attached to the wrong question. That is the under-
-    coverage rule in docs/reference/adoption.md - if the declared artifact is not the product''s primary
-    distribution channel, banding on it is a substitution rather than a measurement - applied before the
-    mistake rather than after. The band stands on the evidence already cited here; what this record needs is a
-    route to its real channel, not a convenient one. Re-read 2026-08-13. The band is unchanged and the
-    evidence under it has moved - the repository now reports 178,451 stars and 17,389 forks, and the
-    model library lists 233 models carrying about 1.0 billion cumulative pulls between them, led by
-    llama3.1 at 118.4M and deepseek-r1 at 91.3M. FIGURE CORRECTION - the "52M+ monthly model pulls" this
-    note opens with is not published on either cited page and could not be re-derived. ollama.com/library
-    publishes an all-time cumulative pull counter per model, never a monthly rate, and the word monthly
-    does not appear on it; the homepage publishes no volume figure at all. The level-4 band rests instead
-    on what those pages do show, which is a cumulative pull base around a billion across the library and
-    a very large installed developer base, still comfortably inside the 1M-10M active-user reading. The
-    monthly framing should come out of this note; flagged rather than edited because the wording is the
-    basis someone recorded. INSTRUMENT CAVEAT, recorded rather than worked around - this record uses
-    usage_volume while declaring no artifact a signal model can recompute from, and the artifact
-    paragraph above explains why declaring the PyPI package would be wrong. Neither the instrument nor
-    the artifact was changed; the axis now carries digested sources so the claim can be re-checked and
-    will age.'
+  note: 'The band rests on model-pull volume rather than stars: ollama.com/library lists 233 models carrying
+    about 1.0 billion cumulative pulls between them, led by llama3.1 at 118.4M and deepseek-r1 at 91.3M,
+    alongside 178,451 GitHub stars - comfortably inside a 1M-10M active-user reading, and rated 4 conservatively.
+    FIGURE CORRECTION: the "52M+ monthly model pulls" this record was originally banded on is not published
+    on either cited page and could not be re-derived - the library publishes an all-time cumulative pull
+    counter per model, never a monthly rate, and the homepage publishes no volume figure at all. The monthly
+    framing should come out of this note; flagged rather than edited because the wording is the basis someone
+    recorded. ARTIFACT DELIBERATELY NOT DECLARED: a PyPI package named `ollama` exists and is genuinely
+    this project''s, so declaring it would satisfy check_instrument and would be wrong. Ollama is distributed
+    as a platform binary and a Docker image; the PyPI package is a client SDK for talking to a local server,
+    not how Ollama is obtained, and its 20.3M/mo is a large number attached to the wrong question. That
+    is the under-coverage rule in docs/reference/adoption.md - if the declared artifact is not the product''s
+    primary distribution channel, banding on it is a substitution rather than a measurement - applied before
+    the mistake rather than after. INSTRUMENT CAVEAT, recorded rather than worked around: this record uses
+    usage_volume while declaring no artifact a signal model can recompute from, and the artifact paragraph
+    above explains why declaring the PyPI package would be wrong. Neither the instrument nor the artifact
+    was changed; the axis carries digested sources so the claim can be checked again and will age.'
   last_verified: '2026-08-13'
   sources:
   - url: https://api.github.com/repos/ollama/ollama
@@ -119,13 +110,11 @@ capability:
   confidence: high
   note: 'Local model serving with one-command run, OpenAI-compatible REST API, broad model library (Llama,
     Qwen, Gemma, gpt-oss, DeepSeek). Serving-layer tool; no MLPerf result cited, rated on feature/coverage
-    matrix. Re-read 2026-08-13 and the feature matrix holds, with the surface wider than when the band
-    was set. The README documents the local REST API on port 11434 with an OpenAI-compatible chat
-    endpoint, Python and JavaScript clients, and a new agent-launcher layer - ollama launch claude,
-    codex, copilot-cli, droid, opencode - plus the OpenClaw assistant integration. The library carries
-    233 model families including Llama, Qwen, Gemma, DeepSeek and gpt-oss, and the vendor site now also
-    serves several of them as cloud models. Still no benchmark result is published for the runtime
-    itself, so the basis stays feature_matrix.'
+    matrix. The surface is wider than when the band was set: the README documents the local REST API on
+    port 11434 with an OpenAI-compatible chat endpoint, Python and JavaScript clients, and an agent-launcher
+    layer - `ollama launch claude`, codex, copilot-cli, droid, opencode - plus the OpenClaw assistant integration,
+    and the library carries 233 model families, several of which the vendor site also serves as cloud models.
+    No benchmark result is published for the runtime itself, so the basis stays feature_matrix.'
   last_verified: '2026-08-13'
   sources:
   - url: https://raw.githubusercontent.com/ollama/ollama/main/README.md

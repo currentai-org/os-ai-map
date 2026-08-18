@@ -15,18 +15,13 @@ openness:
     - name: Llama-2-Community
       detail: custom Meta license, non-OSI; AUP + commercial conditions
   confidence: high
-  note: >-
-    Weights downloadable under Meta's non-OSI Llama-2 Community license. Marketed as open, which
-    the openness class deliberately does not accept at face value. Moved from 2/restricted on
-    2026-08-01 by the universal license scale, which caps a bounded commercial license at 3 rather
-    than 2. The test at that boundary is whether the license permits commercial use AT ALL: this
-    one does, for everyone inside the bound. A license that forbids commerce outright - CC-BY-NC,
-    Mistral Non-Production - stays at 2. Nine other products carry a bounded license and all now
-    score 3; four of them were already recorded there, which is the inconsistency this resolves.
-
-    Re-read 2026-08-13 - the 13B-Instruct card still carries `license:llama2` with a LICENSE file in the
-    repo, still reads `"gated":false`, and still ships a usage snippet with no training pipeline and no
-    corpus. No change.
+  note: 'Weights downloadable under Meta''s non-OSI Llama-2 Community license. Marketed as open, which the
+    openness class deliberately does not accept at face value. Moved from 2/restricted on 2026-08-01 by
+    the universal license scale, which caps a bounded commercial license at 3 rather than 2. The test at
+    that boundary is whether the license permits commercial use AT ALL: this one does, for everyone inside
+    the bound. A license that forbids commerce outright - CC-BY-NC, Mistral Non-Production - stays at 2.
+    Nine other products carry a bounded license and all now score 3; four of them were already recorded
+    there, which is the inconsistency this resolves.'
   raw: weights:open(downloadable on HF);data:closed;code:partial(inference utils, no training pipeline);license:Llama-2-Community(custom
     Meta license, non-OSI; AUP + commercial conditions)
   last_verified: '2026-08-13'
@@ -45,7 +40,7 @@ adoption:
   signal_type: usage_volume
   confidence: medium
   note: '110,069 Hugging Face downloads in the trailing 30 days summed across the four Code Llama Instruct
-    SKUs the tier covers, read 2026-08-12 (codellama/CodeLlama-34b-Instruct-hf 24,545; codellama/CodeLlama-7b-Instruct-hf
+    SKUs the tier covers (codellama/CodeLlama-34b-Instruct-hf 24,545; codellama/CodeLlama-7b-Instruct-hf
     73,688; codellama/CodeLlama-13b-Instruct-hf 11,336; codellama/CodeLlama-70b-Instruct-hf 500). Bands
     at level 3 (100K-1M). All 4 repos are now DECLARED in the product file: the band was previously read
     on the family while only one repo was declared, so it could not be re-derived by machine. Slugs on this
@@ -79,23 +74,12 @@ capability:
   value: Code Llama - Instruct 13B HumanEval pass@1 42.7%, MBPP pass@1 49.4%; 70B-Instruct higher at 67.8%
     HumanEval, 34B-Instruct lower at 41.5%; all 2023-era
   confidence: medium
-  note: >-
-    A 2023-generation code model, state of the art among open models at release and well below the
-    2026 coders in this category. The note that stood here until 2026-08-13 was a verbatim copy of
-    the openness note and described the license rather than the capability; it is replaced.
-
-    Re-read 2026-08-13, and the recorded value did not survive it. The HF card inlines no benchmark
-    table at all, and the paper it links (arXiv:2308.12950) reports "up to 67% and 65% on HumanEval
-    and MBPP" for the family rather than any 13B-Instruct figure. The recorded ~42% appears on
-    neither cited source.
-
-    Replacement found 2026-08-14, and it vindicates the figure. The abstract carries only the family
-    headline; Table 2 of the paper PDF, "Code Llama pass@ scores on HumanEval and MBPP", carries the
-    per-size rows, and Code Llama - Instruct 13B reads 42.7% HumanEval pass@1 and 49.4% MBPP pass@1. The
-    recorded ~42% was right and was simply cited to a page that does not show it. One clause corrected
-    while the table is open - "family 34B/70B-Instruct higher" is only half true. 70B-Instruct is higher
-    at 67.8%, but 34B-Instruct is 41.5%, BELOW the 13B, and only its MBPP column (57.0%) beats the 13B.
-    The value now says so. Score unchanged at 3.
+  note: A 2023-generation code model, state of the art among open models at release and well below the 2026
+    coders in this category. The note that stood here until 2026-08-13 was a verbatim copy of the openness
+    note and described the license rather than the capability; it is replaced. Table 2 of the Code Llama
+    paper puts Code Llama - Instruct 13B at 42.7% HumanEval pass@1 and 49.4% MBPP pass@1; 70B-Instruct is
+    higher at 67.8% but 34B-Instruct is lower at 41.5%, so the family is not monotonic in size. The HF card
+    itself carries no benchmark table and the arXiv abstract carries only the family headline.
   last_verified: '2026-08-14'
   sources:
   - url: https://arxiv.org/pdf/2308.12950

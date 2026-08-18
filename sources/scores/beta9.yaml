@@ -72,17 +72,15 @@ adoption:
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: low
-  note: 'No PyPI/usage figure for the OSS runtime surfaced and no disclosed Beam customer/usage count; only
-    ~1.7k GitHub stars available as a signal. stars_fallback caps level at 3; placed at 2 given the small star
-    base and absence of any volume signal. Low confidence. Stars read 2026-08-13: 1,742 across the 1 declared
-    repo, which bands at 1K-10K stars, level 2 on the stars scale in signal_routing.yaml. The previous reach
-    ''10K-100K'' was not a label this instrument offers - stars have their own vocabulary because a star is
-    not a download. Re-read in full 2026-08-13 against the GitHub API - 1,742 stars, 156 forks - the same
-    figure and the same 1K-10K stars band, level 2. The digest below will drift on every refetch because
-    a star count moves daily; that is expected of this instrument and does not weaken the band, which depends
-    only on the order of magnitude. One thing did change and is escalated rather than applied - the README
-    now installs the SDK with `pip install beam-client`, so a countable channel exists where this note said
-    none had surfaced. It is not declared here.'
+  note: 'No PyPI or usage figure for the OSS runtime has surfaced and Beam discloses no customer or usage
+    count, so GitHub stars are the only signal: 1,742 stars and 156 forks across the 1 declared repo, which
+    bands at 1K-10K stars, level 2 on the stars scale in signal_routing.yaml. stars_fallback caps level
+    at 3; placed at 2 given the small star base and the absence of any volume signal. The reach label uses
+    the stars vocabulary rather than a download band, because a star is not a download. Low confidence,
+    and the source digest drifts on every refetch because a star count moves daily - expected of this instrument,
+    and no weaker a band for it, since the band depends only on order of magnitude. One thing is escalated
+    rather than applied: the README now installs the SDK with `pip install beam-client`, so a countable
+    channel exists that this axis does not declare.'
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/beam-cloud/beta9
@@ -109,21 +107,18 @@ capability:
     container launch; language/runtime breadth:Python AI workloads + GPU (4090/H100); persistence:volume
     storage; scale:parallelize across hundreds of containers + autoscaling
   confidence: medium
-  note: Capable serverless container runtime with GPU support, volumes, autoscaling and sandbox primitives,
+  note: 'Capable serverless container runtime with GPU support, volumes, autoscaling and sandbox primitives,
     but container-level (not VM/microVM) isolation places it below the VM-grade peers on the isolation-strength
-    dimension; mid-tier. Independent ComputeSDK TTI benchmarks of Beam (the managed beta9 cloud) corroborate
-    the fast container launch (~380ms median cold-start, 8th of 19 sandbox providers). Re-read 2026-08-13.
-    The feature matrix still reads as described - the README claims container launches "in under a second"
-    from a custom runtime, scheduler and embedded cache, fan-out to hundreds of containers, scale-to-zero,
-    distributed volume storage, GPU support on 4090s and H100s or bring-your-own, and a Sandbox primitive
-    for running model-generated code. The isolation ceiling is unchanged, and it is what holds the score
-    at 3 - the README describes containers throughout and names no VM, microVM or application-kernel tier,
-    where the category''s frontier-definers do. The prose comparison to the VM-grade peers is now recorded
-    as relative_to firecracker with relation `two_below`, which holds arithmetically - Firecracker is 5,
-    this is 3, and Firecracker''s capability was re-derived the same day. The independent benchmark moved
-    in this product''s favor rather than against it and does not move the band, since the band turns on
-    isolation strength - on the ComputeSDK run of 2026-08-07, Beam is 4th-fastest by median of 24 providers
-    at 0.29s, up from 8th of 19 at ~380ms.'
+    dimension; mid-tier. The README claims container launches "in under a second" from a custom runtime,
+    scheduler and embedded cache, fan-out to hundreds of containers, scale-to-zero, distributed volume storage,
+    GPU support on 4090s and H100s or bring-your-own, and a Sandbox primitive for running model-generated
+    code - but it describes containers throughout and names no VM, microVM or application-kernel tier where
+    the category''s frontier-definers do, and that isolation ceiling is what holds the score at 3. The comparison
+    to the VM-grade peers is recorded as relative_to firecracker with relation `two_below`, which holds
+    arithmetically: Firecracker is 5 and this is 3. Independent ComputeSDK TTI benchmarks of Beam (the managed
+    beta9 cloud) corroborate the fast container launch at a 0.29s median, 4th-fastest by median of 24 providers,
+    up from ~380ms and 8th of 19 on the earlier run; the band turns on isolation strength rather than latency,
+    so a faster benchmark does not move it.'
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/beam-cloud/beta9

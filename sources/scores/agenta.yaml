@@ -20,7 +20,7 @@ openness:
     - self-hostable
   confidence: high
   note: 'MIT core with a commercially licensed enterprise half in the same repository, self-hostable either
-    way. `core-gated: gated` verified 2026-08-12 by a direct read, and it does NOT rest on Agenta Cloud
+    way. `core-gated: gated` comes from a direct read of the repo, and it does NOT rest on Agenta Cloud
     existing. The root LICENSE splits the repo: "All content that resides under any ''ee/'' directory of
     this repository, if such directories exist, are licensed under the license defined in ''ee/LICENSE''",
     everything else MIT Expat. ee/LICENSE is the Agenta Enterprise License - the software "may only be used
@@ -84,8 +84,8 @@ adoption:
   signal_type: usage_volume
   confidence: high
   note: agenta ~16k PyPI downloads/month (10K-100K band); ~4.2k GitHub stars corroborates only. Early-adopter
-    scale, smallest in this batch. Re-read 2026-08-13 - pypistats now reports 15,013 downloads last month
-    for agenta, effectively unchanged and still inside the 10K-100K band, so level 2 stands.
+    scale, smallest in this batch. pypistats reports 15,013 downloads in the last month, inside the 10K-100K
+    band.
   last_verified: '2026-08-13'
   sources:
   - url: https://pypistats.org/packages/agenta
@@ -110,42 +110,23 @@ capability:
     catalogue, no datasets or experiments, no prompt management, and no OTel/OpenLLMetry/OpenInference
     claim.'
   confidence: medium
-  note: 'Broad feature matrix across prompt mgmt, evals, and OTel observability, comparable to Langfuse
-    anchor (C4). Capability is decoupled from its lower adoption. Re-read 2026-08-14, and the recorded
-    value describes a product that no longer exists. Agenta 2.0 repositioned to an agent workspace - the
-    site headline is now "The open-source workspace for your agents" and the docs open "Agenta is a
-    workspace where you and your team build agents and automations. You do not need to know how to code.
-    You build agents by chatting with them." Every clause of the recorded value is gone or reduced. There
-    is no evaluator catalogue anywhere in the docs and the prompt-engineering section 404s; the OTel,
-    OpenLLMetry and OpenInference compatibility claims are gone, leaving "Tracing and usage. Inspect
-    every model and tool call."; the multi-model playground is replaced by harness selection across
-    Claude Code, Codex and Pi. What is there instead is a multiplayer workspace with per-agent folders,
-    1000+ integrations and MCP servers, reusable skills, permissions with human approval, scheduled and
-    event-triggered background agents, per-agent isolated sandboxes and version history. The blog still
-    carries the old title, which is stale metadata rather than a live product claim.
-
-    This is not a freshness problem. The comparison CLASS changed, so relative_to - langfuse and
-    relation - at no longer describe anything - Langfuse is an observability and eval platform and
-    Agenta is now an agent workspace. ESCALATED for a re-score against what the product now is,
-    including a new anchor. No last_verified claimed and nothing changed here beyond recording the
-    evidence.
-
-    RE-SCORED 4 -> 3 on 2026-08-14, on the owner''s ruling, and the anchor is REMOVED rather than
-    repointed. Removed because there is nowhere to point it: the field takes a peer in the same category,
-    and nothing else in telemetry_observability is an agent workspace, so any target here would assert a
-    comparison class that does not exist. Re-read of the docs and the repo today confirms the 2.0
-    reposition in the vendor''s own words - "Agenta is a workspace where you and your team build agents
-    and automations. You do not need to know how to code."
-    The 3 is derived from what the product now does against the coverage this category grades, which is
-    the only ruler the axis has here. Its whole remaining observability surface is tracing with token,
-    latency and estimated-cost tracking. The rungs above it in this category require an eval layer,
-    datasets and experiments, or prompt management on top of tracing, and Agenta 2.0 has none of the
-    three - the evaluator catalogue is gone, the prompt-engineering docs 404, and the OTel compatibility
-    claims are withdrawn. The rung below is for monitoring that does not trace individual model and tool
-    calls, which this does. So 3, at medium confidence, and the honest caveat is that the product is
-    strong at something this category does not measure. The real open question is not the band but the
-    placement - a no-code agent workspace is closer to orchestration_agents than to telemetry, and that
-    is a recategorization for a human rather than a re-score.'
+  note: 'Broad feature matrix across prompt mgmt, evals, and OTel observability, comparable to Langfuse anchor
+    (C4). Capability is decoupled from its lower adoption. The recorded value describes a product that has
+    been repositioned: Agenta 2.0 is an agent workspace, and the docs open "Agenta is a workspace where you
+    and your team build agents and automations. You do not need to know how to code." Against what this
+    category grades, the whole remaining observability surface is tracing with request, token, latency and
+    estimated-cost tracking. There is no evaluator catalogue anywhere in the docs, the prompt-engineering
+    section 404s, and the OTel, OpenLLMetry and OpenInference compatibility claims are gone; what is there
+    instead is a multiplayer workspace with per-agent folders, 1000+ integrations and MCP servers, reusable
+    skills, permissions with human approval, scheduled and event-triggered background agents, per-agent
+    isolated sandboxes and version history. The rungs above 3 in this category require an eval layer, datasets
+    and experiments, or prompt management on top of tracing, and Agenta 2.0 has none of the three; the rung
+    below is for monitoring that does not trace individual model and tool calls, which this does. So 3, at
+    medium confidence, with the honest caveat that the product is strong at something this category does not
+    measure. No anchor is recorded because `relative_to` takes a peer in the same category and nothing else in
+    telemetry_observability is an agent workspace, so any target would assert a comparison class that does not
+    exist. The open question is placement rather than band - a no-code agent workspace is closer to
+    orchestration_agents than to telemetry, which is a recategorization for a human rather than a re-score.'
   last_verified: '2026-08-14'
   sources:
   - url: https://agenta.ai/docs/
@@ -165,17 +146,16 @@ capability:
     http_status: 200
     content_sha256: 3d66acb69bfd18abbca6c63500256b6e5da6a145f7e79bf2e0c60fc61e3aaf3e
   - url: https://agenta.ai/docs/
-    shows: 'Re-fetched for the re-score, digest byte-identical to the read earlier the same day. Beyond
-      the features already recorded, the page carries harness choice across Claude Code, Codex and Pi,
-      per-agent isolated sandboxes, and role-based access with SSO - and the whole of what this category
-      grades is one line, "Tracing and usage. Inspect every model and tool call. Track requests, tokens,
-      latency, and estimated cost."'
+    shows: 'Beyond the features already recorded, the page carries harness choice across Claude Code, Codex
+      and Pi, per-agent isolated sandboxes, and role-based access with SSO - and the whole of what this
+      category grades is one line, "Tracing and usage. Inspect every model and tool call. Track requests,
+      tokens, latency, and estimated cost."'
     accessed: '2026-08-14'
     http_status: 200
     content_sha256: 5d642d3f7328864865f1909a64ea2e386d38adfa8a14f9138cfc90c672f770bb
   - url: https://api.github.com/repos/Agenta-AI/agenta
-    shows: 'Repo metadata read 2026-08-14 - description "The open-source workspace for building and running
-      agents", corroborating the reposition from the repository side rather than from the marketing site.'
+    shows: Repo metadata - description "The open-source workspace for building and running agents", corroborating
+      the reposition from the repository side rather than from the marketing site.
     accessed: '2026-08-14'
     http_status: 200
     content_sha256: a86b82756ac56213d576ca7efb2f229fee53477f99dbd4c45e132e2b9c17f311

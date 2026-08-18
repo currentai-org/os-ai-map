@@ -13,12 +13,10 @@ openness:
     free_text:
     - no-feature-gated-core
   confidence: high
-  note: 'Fully MIT, first-party GitHub server, no feature-gated core. Re-read 2026-08-13: the repository LICENSE
-    is the plain MIT License, "Copyright (c) 2025 GitHub", and the repo page carries the matching badge.
-    The whole Go server is in the tree with a Dockerfile and a goreleaser config beside it, so the self-hosted
-    build is the published build. GitHub also runs a hosted Remote GitHub MCP Server, and that is a managed
-    endpoint for the same server rather than a tier holding features back - the toolset list is the same
-    one, configured by header instead of by flag - which is the langchain shape the ladder settles as ungated.'
+  note: Fully MIT, first-party GitHub server, no feature-gated core. GitHub also runs a hosted Remote GitHub
+    MCP Server, but that is a managed endpoint for the same server rather than a tier holding features back
+    - the toolset list is the same one, configured by header instead of by flag - which is the langchain
+    shape the ladder settles as ungated.
   raw: license:MIT(OSI);source:public;no-feature-gated-core;core-gated:ungated
   last_verified: '2026-08-13'
   sources:
@@ -44,13 +42,11 @@ adoption:
   reach: '>10K stars'
   signal_type: stars_fallback
   confidence: medium
-  note: '~31k stars; no download metric for Go/Docker distribution - stars_fallback (first-party backing
-    implies higher real usage). Stars read 2026-08-13: 32,212 across the 1 declared repo, which bands at >10K
-    stars, level 3 on the stars scale in signal_routing.yaml. The record carried no reach label at all before
-    this. Re-read in full 2026-08-13: the repo page reports 32,220 stargazers, the same band, and the fallback
-    is still forced rather than chosen - the server is distributed as a Go binary and a Docker image plus
-    GitHub''s own hosted remote endpoint, none of which publishes a count, and there is no npm or PyPI package
-    to read. So the stars instrument and its level-3 cap both stand. The digest below is of a page carrying
+  note: 'No download metric exists for the distribution channels in use: the server ships as a Go binary,
+    a Docker image and GitHub''s own hosted remote endpoint, none of which publishes a count, and there
+    is no npm or PyPI package to read. The stars fallback is therefore forced rather than chosen. 32,220
+    stargazers across the 1 declared repo band at >10K stars, level 3 on the stars scale in signal_routing.yaml,
+    and first-party backing implies higher real usage than that. The digest below is of a page carrying
     a live star counter and will not match on a later refetch; that is expected drift on this source rather
     than a signal about the claim.'
   last_verified: '2026-08-13'
@@ -66,12 +62,7 @@ capability:
   basis: feature_matrix
   value: '20+ toolsets: repos, issues, PRs, Actions, code security, Dependabot, Discussions, Projects, Copilot'
   confidence: high
-  note: 'The most comprehensive GitHub-platform tool surface among MCP servers. Re-read 2026-08-13: the toolset
-    table still spans repositories, issues, pull requests, Actions, code security, Dependabot, discussions,
-    projects and Copilot, grouped in the README as repository management, CI/CD intelligence, code analysis
-    and team collaboration, with a default toolset applied when none is named and an Insiders mode for the
-    rest. It runs locally as a binary or Docker image and remotely against GitHub''s hosted endpoint with
-    the same toolsets. Band unchanged at 5.'
+  note: The most comprehensive GitHub-platform tool surface among MCP servers.
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/github/github-mcp-server

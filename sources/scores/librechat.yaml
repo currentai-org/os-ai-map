@@ -14,13 +14,8 @@ openness:
     - no-feature-gated-core(RAG API is a separate companion OSS repo)
   confidence: high
   note: Fully OSI (MIT), full source public, no paid feature-gated core. Enterprise backing via ClickHouse
-    acquisition has not introduced a closed core.
-    Re-read 2026-08-13. The repository still carries the MIT badge and the full self-hostable stack, now
-    at 41,990 stars and 8,686 forks, and the code interpreter it ships points at the open
-    ClickHouse/code-interpreter project rather than a paid tier. The ClickHouse acquisition post still
-    states that for existing LibreChat deployments operations continue unchanged with ongoing investment
-    in the open-source project and community, so no closed core has appeared. The post itself names no
-    license; MIT comes from the repository. Value unchanged at 5 / open_source.
+    acquisition has not introduced a closed core. The code interpreter it ships points at the open ClickHouse/code-interpreter
+    project rather than a paid tier. The acquisition post itself names no license; MIT comes from the repository.
   raw: license:MIT(OSI);source:public;no-feature-gated-core(RAG API is a separate companion OSS repo);core-gated:ungated
   last_verified: '2026-08-13'
   sources:
@@ -42,35 +37,20 @@ adoption:
   reach: '>10K stars'
   signal_type: stars_fallback
   confidence: medium
-  note: '23M+ cumulative Docker pulls by early 2026 (includes CI/upgrades, so a soft upper bound); 38.1k
-    GitHub stars, 6,800+ forks, 9,000+ Discord members; ClickHouse acquisition signals enterprise deployment.
-    Placed at 4 on Docker-pull volume; medium confidence because pulls overcount unique deployments.
-    Re-read 2026-08-14, and the signal the band rests on does not exist in any checkable form. Three
-    numbers, none of which agree. Docker Hub''s API reports 372,272 pulls on librechat/librechat and
-    roughly 732,090 summed across all nine librechat org repos. LibreChat''s own site counter now claims
-    47.3M Docker pulls, not the 23M recorded, and nothing corroborates it - the primary image is on
-    GHCR, which publishes no pull count at all, so the vendor figure cannot be checked against any
-    registry. The site''s star counter, by contrast, matches the GitHub API exactly (42k against 41,995),
-    so the counter is live rather than invented; it is the pull number specifically that has no
-    reachable basis. What IS countable today is 41,995 GitHub stars and 8,686 forks. ESCALATED rather
-    than changed - a usage_volume band of 4 at reach 1M-10M sits above the ~732k that Docker Hub can
-    actually account for and far below the 47.3M the vendor claims, and choosing between them is a
-    banding decision, not a freshness one. No last_verified claimed. Recommendation - re-band on the
-    GitHub star signal, or re-route the axis off usage_volume, rather than keep a Docker-pull band that
-    no registry can produce.
-
-    RE-BANDED 2026-08-14 on that recommendation, on the owner''s ruling. SAY WHAT WAS BANDED - the
-    quantity is GITHUB STARS on danny-avila/LibreChat, 42,002 read from the GitHub API today, which is
-    >10K stars and level 3 on the stars scale in signal_routing.yaml. The instrument moves to
-    stars_fallback and the level drops 4 -> 3, which is the ceiling that instrument allows however large
-    the count, because a star is attention rather than use.
-    The 23M Docker pulls the old band rested on is not merely stale, it is unreachable. Docker Hub''s API
-    accounts for 372,272 pulls on the primary librechat/librechat repo and roughly 732,090 across the
-    whole org; the image people actually run is on GHCR, which publishes no pull count at all; and the
-    vendor''s own counter now claims 47.3M, two orders above what any registry can produce and checkable
-    against nothing. A usage_volume band needs a count somebody can recompute, and this product has
-    none - so the honest move is down onto the one signal that is countable, not sideways onto a bigger
-    unverifiable number. Deployment reach is certainly higher than 42k; nothing published measures it.'
+  note: 'SAY WHAT WAS BANDED - the quantity is GITHUB STARS on danny-avila/LibreChat, 42,002 read from
+    the GitHub API, which is >10K stars and level 3 on the stars scale in signal_routing.yaml. The
+    instrument is stars_fallback and the level is 3 rather than 4, which is the ceiling that instrument
+    allows however large the count, because a star is attention rather than use. RE-BANDED down from a
+    usage_volume 4 at reach 1M-10M, on the owner''s ruling: the 23M Docker pulls the old band rested on
+    is not merely stale, it is unreachable. Docker Hub''s API accounts for 372,272 pulls on the primary
+    librechat/librechat repo and roughly 732,090 across the whole librechat org; the image people
+    actually run is on GHCR, which publishes no pull count at all; and the vendor''s own counter claims
+    47.3M, two orders above what any registry can produce and checkable against nothing. The vendor''s
+    star counter, by contrast, matches the GitHub API exactly (42k against 41,995), so the counter is
+    live rather than invented - it is the pull number specifically that has no reachable basis. A
+    usage_volume band needs a count somebody can recompute and this product has none, so the honest move
+    is down onto the one signal that is countable rather than sideways onto a bigger unverifiable
+    number. Deployment reach is certainly higher than 42k; nothing published measures it.'
   sources:
   - url: https://api.github.com/repos/danny-avila/LibreChat
     shows: 'GitHub API for danny-avila/LibreChat - 41,995 stars, 8,686 forks, 201 watchers, MIT. A
@@ -79,9 +59,9 @@ adoption:
     http_status: 200
     content_sha256: 957b025965cba8d0cf6ceb3934a22c819604d302a798c4a57ea5059941656eb5
   - url: https://api.github.com/repos/danny-avila/LibreChat
-    shows: 'Re-read for the re-band. 42,002 stargazers, 8,687 forks, 201 watchers, MIT, last pushed
-      2026-08-14. This is the figure the level 3 band is taken on. The digest differs from the earlier
-      read the same day because the star and fork counts moved.'
+    shows: 'GitHub API for danny-avila/LibreChat - 42,002 stargazers, 8,687 forks, 201 watchers, MIT.
+      This is the figure the level 3 band is taken on. The digest differs from the other read of the
+      same endpoint because the star and fork counts moved.'
     accessed: '2026-08-14'
     http_status: 200
     content_sha256: c335ab422ad0dded7e2a11d20059a2600c02e75099d5695305516cd568b07a76
@@ -106,12 +86,7 @@ capability:
     artifacts (React/HTML/Mermaid), web search
   confidence: high
   note: 'Frontier feature surface for the category: code interpreter, MCP, agents/subagents and artifacts
-    on top of the standard chat-UI matrix. At/above Open WebUI on breadth.
-    Re-read 2026-08-13. The README still lists the whole surface the band rests on - a sandboxed code
-    interpreter across nine languages, MCP tool support, agents with an agent marketplace, Skills
-    bundles and subagents, code artifacts in React, HTML and Mermaid, web search with rerankers, image
-    generation and editing, speech in and out, and multi-user auth over OAuth2, LDAP and email with
-    moderation and token-spend controls. Band unchanged at 5.'
+    on top of the standard chat-UI matrix. At/above Open WebUI on breadth.'
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/danny-avila/LibreChat

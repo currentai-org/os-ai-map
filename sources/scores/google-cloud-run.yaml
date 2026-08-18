@@ -18,10 +18,7 @@ openness:
     - managed-only(no self-host)
   confidence: high
   note: Proprietary managed serverless platform; only the underlying gVisor sandbox runtime is OSS, not
-    Cloud Run itself. Re-read 2026-08-13 - cloud.google.com/run still presents Cloud Run as a fully managed
-    Google platform billed only while code runs, with no source release and no self-hostable edition offered,
-    and google/gvisor remains a separately maintained Apache-2.0 repository rather than the Cloud Run
-    control plane.
+    Cloud Run itself.
   raw: license:Proprietary;service:proprietary(Google SaaS);source:closed;isolation-runtime:gVisor(open
     source, github.com/google/gvisor) but the Cloud Run product/control-plane is proprietary;managed-only(no
     self-host)
@@ -46,12 +43,11 @@ adoption:
   signal_type: usage_volume
   confidence: high
   note: 'Google Next ''26 blog (primary, verified verbatim): external active developers and apps on Cloud
-    Run doubled YoY, more new customers/apps in 2025 than its first 6 years combined; Replit VP quote:
-    >1M live projects hosted on Replit with Cloud Run as primary target. Hyperscaler serverless reach
-    is well into the >10M band. Re-read 2026-08-13 - both claims are still on the Next ''26 post verbatim,
-    the developer/app doubling and the Replit VP quote about over 1 million live projects. Instrument caveat
-    - the record is labeled usage_volume but Cloud Run publishes no countable artifact any signal model
-    can read, so the band rests on the vendor claim rather than a recomputable count.'
+    Run doubled YoY, more new customers/apps in 2025 than its first 6 years combined; Replit VP quote: >1M
+    live projects hosted on Replit with Cloud Run as primary target. Hyperscaler serverless reach is well
+    into the >10M band. Instrument caveat: the record is labeled usage_volume but Cloud Run publishes no
+    countable artifact any signal model can read, so the band rests on the vendor claim rather than a recomputable
+    count.'
   last_verified: '2026-08-13'
   sources:
   - url: https://cloud.google.com/blog/products/serverless/whats-new-for-cloud-run-at-next26
@@ -68,16 +64,13 @@ capability:
     OCI container (very broad); persistence: stateless request model + volume mounts; scale: 0 to thousands
     of instances autoscaling on a hyperscaler'
   confidence: medium
-  note: Very broad runtime/language coverage and hyperscaler scale; new agent `sandbox` tool (announced
-    Next '26, 'coming soon') adds first-class AI-code-execution via a `sandbox do --` command. gVisor
-    isolation is process/syscall-level rather than full microVM (Sprites/Northflank), so not the top isolation
-    tier. Strong but not the single frontier-definer. Independent ComputeSDK TTI benchmarks corroborate
-    the sub-second cold-start (~430ms median, 10th of 19 sandbox providers). Re-read 2026-08-13 - the Next
-    '26 post still describes the built-in `sandbox` tool as coming soon and adds Cloud Run instances in
-    preview for long-running background agents, and cloud.google.com/run still shows any-container deploy,
-    scale-to-zero and 20+ regions. The ComputeSDK leaderboard has been rerun since (2026-08-07, 24 providers)
-    and now places Cloud Run at 0.65s median time-to-interactive, 13th by composite score, still sub-second
-    and still mid-field.'
+  note: Very broad runtime/language coverage and hyperscaler scale; the built-in agent `sandbox` tool (announced
+    Next '26, still 'coming soon') adds first-class AI-code-execution via a `sandbox do --` command, alongside
+    Cloud Run instances in preview for long-running background agents. gVisor isolation is process/syscall-level
+    rather than full microVM (Sprites/Northflank), so not the top isolation tier. Strong but not the single
+    frontier-definer. Independent ComputeSDK TTI benchmarks corroborate the sub-second cold-start, placing
+    Cloud Run at a 0.65s median time-to-interactive, 13th by composite of 24 sandbox providers - still sub-second
+    and still mid-field.
   last_verified: '2026-08-13'
   sources:
   - url: https://cloud.google.com/blog/products/serverless/whats-new-for-cloud-run-at-next26
