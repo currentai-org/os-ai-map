@@ -186,9 +186,9 @@ categories, all in the model layer (`base_pretrained` 3→5, `finetuned_chat` 2�
 
 | Stage | Name | Definition | Triggers when |
 |------:|------|------------|---------------|
-| **5** | Mature Open Ecosystem | Multiple fully open products have reached the category-leading tier, creating a deep and competitive open ecosystem. | `L >= 4` |
-| **4** | Competitive Open Ecosystem | At least one fully open product has reached the category-leading tier, but the open field is still thin. | `1 <= L <= 3` |
-| **3** | Viable Alternatives | Fully open options are genuinely viable, but none has reached the category-leading tier. | `L = 0`, `B >= 3.5` |
+| **5** | Mature Open Ecosystem | Several fully open products lead the category, so no single project carries it. | `L >= 4` |
+| **4** | Competitive Open Ecosystem | A small number of fully open products lead the category. | `1 <= L <= 3` |
+| **3** | Viable Alternatives | Fully open options are genuinely viable. | `L = 0`, `B >= 3.5` |
 | **2** | Emerging Alternatives | Fully open products are becoming credible, but remain limited in adoption or capability. | `L = 0`, `3.0 <= B < 3.5` |
 | **1** | Open Experiments | Fully open products are absent or remain substantially limited in adoption, capability, or both. | `L = 0`, `B < 3.0`, and (`B >= 2.0` or `M`) |
 | **0** | Void | The category is still nascent overall, with no category-leading products and no meaningful fully open options. | `L = 0`, `B < 2.0`, and not `M` |
@@ -216,18 +216,26 @@ chosen so the ladder discriminates rather than bunching categories at one rung.
 Gaps are a **set** (zero or more) per category, so a category can carry more than one. They are
 derived from the same metrics as the stage:
 
-- **`void`** — No usable fully open option exists at all.
-- **`capability`** — The strongest fully open product remains limited in capability.
-- **`adoption`** — The strongest fully open product has not yet achieved broad adoption.
-- **`depth`** — Fully open products have reached the category-leading tier, but there are too few to create a deep and resilient open ecosystem.
-- **`openness`** — Products have reached the category-leading tier, but none of them is fully open.
-- **`disclosure`** — Closed products rely on data or training recipes that are not disclosed, limiting visibility into how they are built and how they compare with fully open products.
+- **`void`** — Needs a usable fully open option at all.
+- **`capability`** — Needs a more capable fully open option.
+- **`adoption`** — Needs broader adoption of its fully open options.
+- **`depth`** — Needs more fully open products at the leading tier to be resilient.
+- **`openness`** — Needs its category-leading products to be fully open.
+- **`disclosure`** — Needs the closed alternatives to disclose their data and training recipes.
 
 Those six sentences are quoted verbatim from `_GAP_DESC` in `build/serialize.py`: they are
 the text the payload carries and the text a reader sees in the site legend and the category
-drawer. Edit them in one place and copy across. Everything else in this document — which
-rung each gap fires on, the thresholds behind it, whether it is derived or declared — is the
-mechanism, and is deliberately absent from the payload.
+drawer. Edit them in one place and copy across.
+
+They are written as needs on purpose. Stage text and gap text render together in the category
+drawer, and a **stage says where the category stands** while a **gap says what it needs** — in
+one mood they restate each other, because `depth` fires if and only if the stage is 4, and the
+Stage 3–5 sentences and the `openness` gap otherwise circle the same tier fact. Each gap still
+has to read on its own, because the legend shows gap text with no stage beside it.
+
+Everything else in this document — which rung each gap fires on, the thresholds behind it,
+whether it is derived or declared — is the mechanism, and is deliberately absent from the
+payload.
 
 A fully mature ecosystem carries no gaps — with one exception: `disclosure` can still be
 flagged at Stage 5, because it describes the closed frontier's silence, not a shortfall of the
