@@ -20,21 +20,21 @@ openness:
         as the lib/gpu crate and resharding across four lib/collection modules with eight consensus tests
         - so what is sold is control plane rather than engine
   confidence: high
-  note: '`core-gated` is `ungated`, and the score is 5. The managed Qdrant Cloud tier sitting on top is
-    not a gate under the rubric, and a read of the repo and the pricing page finds no gating mechanism:
-    across the whole repository a code search for `enterprise` returns zero hits and one for "license key"
-    returns zero; there is a single Apache-2.0 LICENSE at the root and no ee/, enterprise/ or second-licensed
-    path in the tree. The pricing table is where a careless read goes wrong: it marks GPU Indexing and Shard
-    Splitting as absent from OSS, and both are in the open engine. GPU indexing is its own crate at lib/gpu
-    (Cargo.toml, src/, nvidia_icd.json) beside segment, quantization and sparse; resharding is implemented
-    and consensus-tested at lib/collection/src/collection/resharding.rs, lib/collection/src/shards/resharding.rs,
-    lib/collection/src/shards/shard_holder/resharding.rs and lib/collection/src/shards/transfer/resharding_stream_records.rs
+  note: 'Nothing in the engine is held back, so this scores 5. The managed Qdrant Cloud tier sitting on
+    top is not a gate under this rubric, and a read of the repository and the pricing page finds no gating
+    mechanism anywhere: a code search across the whole repository for `enterprise` returns zero hits and
+    one for "license key" returns zero, there is a single Apache-2.0 LICENSE at the root, and there is no
+    ee/, enterprise/ or second-licensed path in the tree. The pricing table is where a careless read goes
+    wrong. It marks GPU Indexing and Shard Splitting as absent from the open source build, and both are
+    in the open engine: GPU indexing is its own crate at lib/gpu (Cargo.toml, src/, nvidia_icd.json) beside
+    segment, quantization and sparse, and resharding is implemented and consensus-tested at lib/collection/src/collection/resharding.rs,
+    lib/collection/src/shards/resharding.rs, lib/collection/src/shards/shard_holder/resharding.rs and lib/collection/src/shards/transfer/resharding_stream_records.rs,
     with eight tests/consensus_tests/test_resharding*.py files. What the table actually compares is the
-    managed offering: uptime SLAs, managed backup and disaster recovery against "custom automation" you
-    run yourself, multi-AZ topology, disk encryption with customer keys, and Enterprise SSO on the Qdrant
-    Cloud console. Hybrid Cloud is described as running "managed Qdrant clusters on your own infrastructure"
-    - the same engine, someone else''s operator. A managed service beside a complete open core is the langchain
-    shape, not a gate.'
+    managed offering: uptime SLAs, managed backup and disaster recovery against the "custom automation"
+    you would run yourself, multi-AZ topology, disk encryption with customer keys, and Enterprise SSO on
+    the Qdrant Cloud console. Hybrid Cloud is described as running "managed Qdrant clusters on your own
+    infrastructure" - the same engine, operated by someone else. A managed service sold beside a complete
+    open core is not a gate.'
   raw: license:Apache-2.0(OSI, engine core);source:public(Rust);managed-tier:Qdrant Cloud (hosted, paid
     + free tier);core-gated:ungated(no ee/ path no second license and zero repo-wide hits for enterprise
     or license key. The two engine features the pricing table marks absent from OSS are both in the open
@@ -88,11 +88,13 @@ adoption:
   reach: '>10M'
   signal_type: usage_volume
   confidence: high
-  note: 'Banded on qdrant-client PyPI downloads: last_month = 19,077,155, well clear of the map''s prevailing
-    usage_volume level-5 floor of >10M/mo (cf. pydantic-ai ~31M, langgraph ~58M at level 5). That puts it
-    one above the Milvus anchor (A3) on download volume, a leading open vector DB for RAG/agent retrieval.
-    The figure is the Python client rather than the server, which is what the product''s artifact_exceptions
-    block declares and why it is the usage signal here.'
+  note: 'Banded on downloads of the Python client: the registry reports 19,077,155 downloads of qdrant-client
+    in the last month, well clear of the >10M floor that level 5 takes on this map (for scale, pydantic-ai
+    sits near 31M and langgraph near 58M at the same level). That is one level above Milvus on download
+    volume, and Qdrant is a leading open vector database for retrieval in RAG and agent stacks. The figure
+    is for the Python client rather than the server, which is what this product declares as its countable
+    artifact - a server has no download channel of its own, so its client''s downloads are the best available
+    usage signal.'
   last_verified: '2026-08-13'
   sources:
   - url: https://pypistats.org/api/packages/qdrant-client/recent
@@ -110,11 +112,13 @@ capability:
     highest RPS and lowest latency in almost all scenarios vs Milvus/Weaviate/Elasticsearch/Redis at matched
     precision; advanced filtered-search query planning.'
   confidence: medium
-  note: Top-tier ANN engine on RPS/latency; tied with the Milvus anchor at C4 (frontier vector-DB capability).
-    Headline comparison is vendor-run (qdrant.tech/benchmarks); ANN-Benchmarks corroborates inclusion but
-    its interactive plots did not yield a clean ranking number this run, hence medium confidence. ANN-Benchmarks
-    lists 38 algorithms, qdrant and Milvus(Knowhere) among them, and publishes only interactive recall-versus-QPS
-    plots with no ranking table, so it corroborates inclusion and nothing more.
+  note: 'A top-tier approximate-nearest-neighbour engine on throughput and latency, level with Milvus at
+    the frontier of vector-database capability. The headline comparison is vendor-run, published at qdrant.tech/benchmarks:
+    highest requests per second and lowest latency in almost all scenarios against Milvus, Weaviate, Elasticsearch
+    and Redis at matched precision, plus advanced query planning for filtered search. ANN-Benchmarks corroborates
+    inclusion and nothing more - it lists 38 algorithms, Qdrant and Milvus (Knowhere) among them, and publishes
+    only interactive recall-versus-queries-per-second plots with no ranking table, so no clean ranking number
+    could be taken from it. Hence medium confidence.'
   last_verified: '2026-08-13'
   sources:
   - url: https://ann-benchmarks.com/

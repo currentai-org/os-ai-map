@@ -23,15 +23,16 @@ openness:
       raw: open_market (global modules)
   confidence: high
   note: 'Proprietary silicon with an open source runtime and public product briefs, but the model-compiler
-    toolchain requires registration and silicon is closed. Component detail: HailoRT''s README carries the
-    open half of `toolchain` ("libhailort, pyhailort & hailortcli - distributed under the MIT license",
-    hailonet under LGPL 2.1) and the gated half is named by the Model Zoo README, which instructs "Install
-    Hailo Dataflow Compiler ... In case you are not Hailo customer please contact hailo.ai"; `blobs` by
-    the same README noting the PCIe driver "includes the Hailo-8 firmware that runs on the Hailo device";
-    `datasheets` by Hailo''s own Hailo-8 M.2 data sheet Rev 1.1, mirrored publicly by distributor Premio
-    and stamped "Hailo proprietary - unauthorized reproduction prohibited", which is also why `schematics`
-    stays none; `retail` by Waveshare listing the module at $179.99 with Add to Cart. hailo.ai answers 403
-    to every automated request, so these rest on substitutes.'
+    toolchain requires registration and the silicon itself is closed. HailoRT''s README carries the open
+    half of the toolchain - "libhailort, pyhailort & hailortcli - distributed under the MIT license", with
+    hailonet under LGPL 2.1 - and the gated half is named by the Model Zoo README, which instructs "Install
+    Hailo Dataflow Compiler ... In case you are not Hailo customer please contact hailo.ai". The same README
+    is why firmware blobs are required: the PCIe driver "includes the Hailo-8 firmware that runs on the
+    Hailo device". The published documentation is Hailo''s own Hailo-8 M.2 data sheet Rev 1.1, mirrored
+    publicly by distributor Premio and stamped "Hailo proprietary - unauthorized reproduction prohibited",
+    which is also why no schematics are published at all. Retail availability is Waveshare listing the module
+    at $179.99 with an add-to-cart button. hailo.ai refuses every automated request, so all of this rests
+    on substitute sources.'
   raw: schematics:none;toolchain:partial (open runtime (HailoRT) + closed/registration Dataflow Compiler);datasheets:brief
     (public briefs);blobs:required (proprietary silicon + firmware);retail:open_market (global modules)
   last_verified: '2026-08-14'
@@ -78,14 +79,15 @@ adoption:
   signal_type: reported_traction
   confidence: high
   banded_quantity: a vendor-reported user count (100K+) that is not re-derivable — hailo.ai answers 403
-  note: 'Retail-available modules and a large developer base; vendor reports 100K+ users and hundreds of
-    deployed customer products, with an active GitHub org. The vendor''s own 100K-users figure is not independently
-    derivable - hailo.ai answers 403 to every automated request and no substitute publishes it - so that
-    number rests on an earlier read. What the substitutes do establish is the standing the band was placed
-    on: the part is stocked and sold by several independent distributors on three continents (Waveshare
-    at $179.99, Geniatech AIM-M-H8, AAEON/UP, Advantech via Mouser), and HailoRT is a live repo at 215 stars
-    and 80 forks. That is broad standing for an edge accelerator, so level 4 / broad holds. `reported_traction`
-    claims no count, which is exactly why the unverifiable figure does not move it.'
+  note: 'Retail-available modules and a large developer base; the vendor reports 100K+ users and hundreds
+    of deployed customer products, and runs an active GitHub org. That 100K-users figure is not independently
+    derivable - hailo.ai refuses every automated request and no substitute publishes it - so the number
+    is the vendor''s own. What the substitutes do establish is the standing the band was placed on: the
+    part is stocked and sold by several independent distributors on three continents (Waveshare at $179.99,
+    Geniatech AIM-M-H8, AAEON/UP, Advantech via Mouser), and HailoRT is a live repo at 215 stars and 80
+    forks. That is broad standing for an edge accelerator, so level 4 / broad holds. The band rests on that
+    observable distribution rather than on the user count, which is why the unverifiable figure does not
+    move it.'
   last_verified: '2026-08-14'
   sources:
   - url: https://hailo.ai/products/ai-accelerators/hailo-8-ai-accelerator/

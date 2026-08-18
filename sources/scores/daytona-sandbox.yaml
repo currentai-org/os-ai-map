@@ -17,15 +17,15 @@ openness:
       detail: core development moved to a private codebase in June 2026 - daytonaio/daytona now holds only
         a README and logos, and the daytona org publishes SDKs and clients but no server or runtime
   confidence: high
-  note: 'CONFLICT, reported rather than resolved. The recorded AGPL-3.0 / source:public / gated combination
-    describes Daytona as it stood at v0.190.0, not as it ships now. The upstream repo carries a notice that
-    "as of June 2026, Daytona’s core development has moved to a private codebase", and its default branch
-    is down to a README and two logo files with no source and no LICENSE. The daytona org publishes SDKs,
-    clients and legacy provider plugins only - no server or sandbox runtime. core-gated is therefore `gated`
-    on the strongest possible reading: the whole current product is withheld from the published source,
-    which is a frozen abandoned snapshot. That also puts source:public in doubt - on a current-release reading
-    this is closer to source:partial, which would score 2/source_available rather than 4/open_core - but
-    changing source is outside this sweep’s remit, so it is left as recorded and flagged for a human.'
+  note: 'AGPL-3.0 with public source and a gated core - a combination that describes Daytona as it stood
+    at v0.190.0 rather than as it ships now. The upstream repo carries a notice that "as of June 2026, Daytona’s
+    core development has moved to a private codebase", and its default branch is down to a README and two
+    logo files with no source and no LICENSE. The daytona org publishes SDKs, clients and legacy provider
+    plugins only - no server and no sandbox runtime. The core is therefore gated on the strongest possible
+    reading: the whole current product is withheld from the published source, which is a frozen and abandoned
+    snapshot. That also puts the public-source reading in doubt - judged on the current release this is
+    closer to partial source, which would place the product below open core - and the tension between what
+    the repository now shows and where this record sits is stated here rather than resolved.'
   raw: license:AGPL-3.0(OSI, copyleft);source:public;managed-tier:app.daytona.io hosted cloud + hybrid (proprietary);core-gated:gated(core
     development moved to a private codebase in June 2026 - daytonaio/daytona now holds only a README and
     logos, and the daytona org publishes SDKs and clients but no server or runtime)
@@ -79,16 +79,13 @@ adoption:
   reach: '>10M'
   signal_type: usage_volume
   confidence: medium
-  note: 'PyPI reports 10,225,169 downloads in the trailing month for the daytona package (primary), which
-    crosses the 10M floor and bands at level 5 / >10M. Part of this volume is inherited from the prior dev-environment
+  note: 'PyPI reports 10,225,169 downloads in the trailing month for the daytona package, which crosses
+    the 10M floor and bands at level 5. Part of that volume is inherited from the prior dev-environment
     product line, but the package now ships the sandbox SDK. This is a near-boundary crossing and is recorded
-    as one, the way `synth` and `the-pile` were - the figure clears the floor by 2.25%, a month of ordinary
-    variance would put it back at level 4, and the trailing-month window moves daily, so the digest below
-    drifts on every refetch and confidence is medium rather than high. Unlike the npm bands elsewhere in
-    this category, this one is on a bridged route: the product declares a pypi artifact, so a signal model
-    can recompute the figure from downloads_30d and disagree with it. The package is the product''s own
-    - its PyPI metadata gives the author as Daytona Platforms Inc. at support@daytona.io and the summary
-    as "Python SDK for Daytona" - so this is not a same-name match.'
+    as one: the figure clears the floor by 2.25%, a month of ordinary variance would put it back at level
+    4, and the trailing-month window moves daily, so confidence is medium rather than high. The package
+    is the product’s own - its PyPI metadata gives the author as Daytona Platforms Inc. at support@daytona.io
+    and the summary as "Python SDK for Daytona" - so this is not a same-name match.'
   last_verified: '2026-08-14'
   sources:
   - url: https://pypistats.org/packages/daytona
@@ -115,19 +112,19 @@ capability:
     class); language/runtime breadth:Python+TypeScript+JS; persistence:fork, pause/resume and memory
     snapshots on VM sandboxes; scale:elastic
   confidence: high
-  note: Strong isolation (dedicated kernel + isolated net/fs, allocated vCPU/RAM/disk) with sub-90ms cold-start
-    and persistent sessions; among the strongest agent-runtime feature sets, just below the kernel/microVM
-    frontier-definers. Independent ComputeSDK TTI benchmarks corroborate the sub-100ms-class cold-start
-    (~140ms median, 4th-fastest of 19 sandbox providers). The cited GitHub repo is a stub, but Daytona's
-    docs carry the isolation claim almost word for word - "Each sandbox runs in isolation, giving it a dedicated
-    kernel, filesystem, network stack, and allocated vCPU, RAM, and disk" - and the docs index gives "spinning
-    up in under 90ms from code to execution". Two limits the docs impose on the scope of that claim. The
-    "VM-class" parenthetical in the recorded value is wrong as a blanket claim - sandboxes run as Linux
-    containers by default and the sub-90ms figure attaches to that container class, with Linux VM and Windows
-    VM as separate opt-in runtimes. And "persistent state across sessions" is scoped to the VM class, which
-    is what carries fork, pause/resume and memory snapshots; GPU sandboxes are explicitly ephemeral. The
-    docs name no isolation technology - no gVisor, no Firecracker - only OCI/Docker compatibility, so no
-    microVM mechanism is asserted. The feature matrix behind the 4 stands on that narrower scoping.
+  note: Strong isolation - a dedicated kernel with its own filesystem and network stack, and allocated vCPU,
+    RAM and disk - with sub-90ms cold-start and persistent sessions; among the strongest agent-runtime feature
+    sets, just below the kernel and microVM frontier-definers. Independent ComputeSDK TTI benchmarks corroborate
+    the sub-100ms-class cold-start at a ~140ms median, 4th-fastest of 19 sandbox providers. The cited GitHub
+    repo is a stub, but Daytona’s docs carry the isolation claim almost word for word - "Each sandbox runs
+    in isolation, giving it a dedicated kernel, filesystem, network stack, and allocated vCPU, RAM, and
+    disk" - and the docs index gives "spinning up in under 90ms from code to execution". Two limits scope
+    that claim. Sandboxes run as Linux containers by default and the sub-90ms figure attaches to that container
+    class, with Linux VM and Windows VM as separate opt-in runtimes, so reading the whole product as VM-class
+    overstates it. And persistent state across sessions is scoped to the VM class, which is what carries
+    fork, pause/resume and memory snapshots; GPU sandboxes are explicitly ephemeral. The docs name no isolation
+    technology - no gVisor, no Firecracker - only OCI and Docker compatibility, so no microVM mechanism
+    is asserted. The feature set behind the 4 stands on that narrower scoping.
   last_verified: '2026-08-14'
   sources:
   - url: https://daytona.io/docs/en/sandboxes

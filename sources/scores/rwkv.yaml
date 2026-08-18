@@ -18,25 +18,24 @@ openness:
       detail: OSI
   confidence: high
   last_verified: '2026-08-13'
-  note: 'This is a close call, and RWKV published more than a first look suggests. What IS released: an
-    itemized, machine-readable index (index/train.jsonl, train.csv) naming every component dataset with
-    a resolvable URL, category and citation, essentially all of them public, plus 100k and 1M preview subsamples.
-    That is real openness work and well beyond a prose description. What is NOT released, and why this is
-    not data:open: no corpus and no reconstruction scripts. The exact subsampling amounts are referenced
-    as "supplementary material (see wiki.txt, oscar.txt)" which is not published in the dataset repo, not
-    an arXiv ancillary file, and not in RWKV-LM, which carries model and training code but no data-prep
+  note: 'This is a close call, and RWKV has published more than a first look suggests. What is released:
+    an itemized, machine-readable index (index/train.jsonl and train.csv) naming every component dataset
+    with a resolvable URL, a category and a citation - almost all of them public - plus 100k and 1M preview
+    subsamples. That is real openness work, well beyond a prose description of the mixture. What is not
+    released is the corpus itself, or any script that reconstructs it. The exact subsampling amounts are
+    referred to as supplementary material (wiki.txt, oscar.txt) that appears neither in the dataset repository,
+    nor among the arXiv ancillary files, nor in RWKV-LM, which carries model and training code but no data-preparation
     directory. No mixing proportions or per-component token counts are given, one component (OSCAR23.01)
-    is itself gated, and the maintainers'' own notes record "peS2o - Which version out of the 3?", so the
-    mixture is not reproducible in detail even in principle. The rubric defines data:open as a released
-    dataset OR scripts that reconstruct the corpus end to end; neither holds, which narrows one claim rather
-    than downgrading the project - weights, training code and license are unaffected and remain fully open
-    under Apache-2.0. NOTE: this lands in a genuine rubric gap. "Every component named and publicly resolvable,
-    but the mixture not reproducible" is meaningfully more open than prose documentation and less than a
-    released corpus, and the data enum has no value for it. Nemotron 3''s partial release hits the same
-    gap, so two of the nine products checked fall between the available values. The Goose-World repo holds
-    only the component index, the two preview subsamples, two READMEs and a figure, with no corpus shards;
-    RWKV-LM is public Apache-2.0 at 14,661 stars with no data-prep directory; and rwkv-7-world is ungated
-    apache-2.0.'
+    is itself gated, and the maintainers'' own notes still ask which of the three versions of peS2o was
+    used, so the mixture is not reproducible in detail even in principle. Open data means a released dataset
+    or scripts that reconstruct the corpus end to end, and neither holds here - which narrows one claim
+    rather than downgrading the project, since the weights, the training code and the license are all fully
+    open under Apache-2.0. This lands in a genuine gap in the openness scale: every component named and
+    publicly resolvable, but the mixture not reproducible, is meaningfully more open than prose documentation
+    and less than a released corpus, and the scale has no value for it. Nemotron 3''s partial release falls
+    into the same gap. The evidence behind all of this: the Goose-World repository holds only the component
+    index, the two preview subsamples, two READMEs and a figure, with no corpus shards; RWKV-LM is public
+    and Apache-2.0 at 14,661 stars with no data-preparation directory; and rwkv-7-world is ungated apache-2.0.'
   raw: weights:open(Apache-2.0);data:documented-not-released(itemized machine-readable component index with
     resolvable links to public datasets, but no released corpus and no reconstruction pipeline);code:open(github.com/BlinkDL/RWKV-LM);license:Apache-2.0(OSI)
   sources:
@@ -85,13 +84,12 @@ adoption:
   level: 1
   signal_type: usage_volume
   confidence: medium
-  note: '4,652 downloads in the trailing 30 days (BlinkDL/rwkv-7-world 4,395; RWKV/RWKV7-Goose-World3-1.5B-HF
-    257). Bands at level 1 (<10K) on the software and model adoption scale. Moved off the stars fallback:
-    a real download signal exists, and docs/reference/adoption.md says to re-band when one does. The package
-    is summed across the two repos the product DECLARES, per the tier rule in docs/reference/identity.md.
-    Widening to every repo under the BlinkDL and RWKV orgs would give about 71k and level 2; the declared
-    reading is the one the map''s own identity rule supports. This LOWERS the recorded level from 3 - the
-    star count had been flattering it.'
+  note: 4,652 downloads in the trailing 30 days across the two repositories the product declares (BlinkDL/rwkv-7-world
+    4,395; RWKV/RWKV7-Goose-World3-1.5B-HF 257), which bands at level 1 (<10K) on the model adoption scale.
+    A real download signal exists, so the band rests on that rather than on a GitHub star count, which had
+    been flattering the family's reach. Widening the count to every repository under the BlinkDL and RWKV
+    organizations would give about 71,000 downloads and level 2, but only the artifacts a product declares
+    count toward its reach.
   reach: <10K
   last_verified: '2026-08-12'
   sources:

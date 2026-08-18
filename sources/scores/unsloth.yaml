@@ -18,16 +18,16 @@ openness:
         support and up to 8 GPUs, and Enterprise adds multi-node, full training and 5x faster inference;
         Pro is advertised as 20% less memory than OSS, an explicit comparison against the published package'
   confidence: high
-  note: '4/open_core: OSI-licensed throughout (Apache-2.0 core, AGPL-3.0 for the optional Studio UI) with
-    the source published, and unsloth.ai/pricing sells Unsloth Pro and Enterprise on capabilities the free
-    open-source tier does not have. Those are not a hosted service sold beside the open package; they are
-    builds of the same product. The free column lists MultiGPU as "coming soon" while Pro lists "Enhanced
-    MultiGPU support" and "Up to 8 GPUS support", Enterprise adds multi-node, "Supports full training" and
-    "5x faster inference", and Pro is advertised as "20% less memory than OSS", an explicit comparison against
-    the published package. That is functionality withheld from the published source, which is what software.yaml
-    defines gating to be, so the recorded 5 moves to the osi + public + gated rung. Caveat: the pricing
-    page names Llama 1/2/3 and Mistral/Gemma and looks stale, so the exact feature line may have moved even
-    though the tiering has not.'
+  note: 'Open core. Everything published is OSI-licensed, Apache-2.0 for the core package and AGPL-3.0 for
+    the optional Unsloth Studio UI, and the source is public. But unsloth.ai/pricing sells Pro and Enterprise
+    on capabilities the free tier does not have, and those are not a hosted service sold beside the open
+    package, they are builds of the same product. The free column lists MultiGPU as "coming soon" while
+    Pro lists "Enhanced MultiGPU support" and "Up to 8 GPUS support"; Enterprise adds multi-node, "Supports
+    full training" and "5x faster inference"; and Pro is advertised as "20% less memory than OSS", an explicit
+    comparison against the published package. Functionality withheld from the published source is what counts
+    as gating on this scale, which is what keeps an otherwise fully open project one band below open source.
+    One caveat: the pricing page still names Llama 1/2/3 and Mistral/Gemma and looks stale, so the exact
+    feature line may have moved even if the tiering has not.'
   last_verified: '2026-08-11'
   raw: 'license:Apache-2.0(OSI, core unsloth pkg)+AGPL-3.0(OSI, optional Unsloth Studio UI);source:public(unslothai/unsloth);core-gated:gated(unsloth.ai/pricing
     sells Unsloth Pro and Enterprise on capabilities the free open-source tier does not have: the free column
@@ -68,8 +68,8 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: ~2.19M PyPI downloads last month (Aug 2026, down slightly from ~2.43M in June); ~69.7K GitHub stars
-    corroborate. Level 4 on download volume, unchanged.
+  note: ~2.19M PyPI downloads over the trailing month, down slightly from an earlier reading of ~2.43M,
+    with ~69.7K GitHub stars corroborating. Download volume puts reach in the 1M-10M band.
   last_verified: '2026-08-09'
   sources:
   - url: https://pypistats.org/packages/unsloth
@@ -91,8 +91,12 @@ capability:
     models; multiple quant formats. Single-node memory/speed optimization is its frontier edge; less focused
     on multi-node frontier-scale parallelism than Megatron-LM.'
   confidence: high
-  note: Best-in-class single-/consumer-GPU efficiency (kernel-level), broad method coverage; C4, not
-    the frontier multi-node-scale anchor.
+  note: 'Best-in-class efficiency on a single or consumer GPU, driven by custom Triton kernels that deliver
+    roughly 2x faster training with up to 70% less VRAM, and MoE training around 12x faster with 35% less
+    VRAM. Method coverage is broad too: full fine-tuning, LoRA and QLoRA, RL including GRPO and FP8 RL,
+    pretraining and embedding fine-tuning, across 500+ supported models and several quantization formats.
+    The edge is memory and speed on one node rather than multi-node frontier-scale parallelism, so it sits
+    one band below Megatron-LM.'
   last_verified: '2026-08-09'
   sources:
   - url: https://raw.githubusercontent.com/unslothai/unsloth/main/README.md

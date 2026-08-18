@@ -50,13 +50,11 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: Re-banded from 3/100K-1M to 4/1M-10M. The old band had been set on GLM-4-9B-Chat alone - a SKU that
-    is not a declared artifact and is a generation behind - which is both the wrong release under the max-across-releases
-    rule in docs/reference/identity.md and the wrong scope under sum_across_artifacts. Recomputed across
-    the 4 declared artifacts, the family sums to 2,774,206 downloads in the trailing 30 days (zai-org/GLM-4.6
-    28,016; zai-org/glm-4-9b 11,688; zai-org/GLM-5.1 72,174; zai-org/GLM-5.2 2,662,328), which lands in
-    1M-10M on the model scale in sources/rubrics/model.yaml. GLM-5.2 supplies 96% of that total, so the
-    current release carries the tier, which is what the rule intends. THUDM/glm-4-9b now redirects to zai-org.
+  note: 2,774,206 downloads in the trailing 30 days across the four declared artifacts (zai-org/GLM-4.6
+    28,016; zai-org/glm-4-9b 11,688; zai-org/GLM-5.1 72,174; zai-org/GLM-5.2 2,662,328), which bands at
+    level 4 (1M-10M) on the model adoption scale. GLM-5.2 alone supplies 96% of that total, so the current
+    release carries the family rather than a generation-old checkpoint. The older THUDM/glm-4-9b repository
+    now redirects to zai-org.
   last_verified: '2026-08-14'
   sources:
   - url: https://huggingface.co/api/models/zai-org/GLM-4.6

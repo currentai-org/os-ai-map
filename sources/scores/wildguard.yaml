@@ -18,12 +18,12 @@ openness:
     - name: Apache-2.0
       detail: OSI
   confidence: medium
-  note: Open weights under Apache-2.0 with the WildGuardMix training corpus published, which is more than
-    most guardrail models release. The fine-tuning pipeline is not published, though. The allenai/wildguard
-    repo ships an inference package only (nine files, no trainer or training config), the companion Safety-Eval
-    repo is an evaluation suite, and the model card refers readers to the paper appendix for training details
-    rather than to code. The 4-rung requires released data and released code, so this scores 3. Recorded
-    4 until the components were completed; open data alone does not lift the rung.
+  note: 'Open weights under Apache-2.0 with the WildGuardMix training corpus published, which is more than
+    most guardrail models release. The fine-tuning pipeline is not: the allenai/wildguard repo ships an
+    inference package only - nine files, no trainer and no training config - the companion Safety-Eval repo
+    is an evaluation suite, and the model card sends readers to the paper appendix for training details
+    rather than to code. The rung above requires both released data and released code, so this scores 3;
+    open data alone does not lift it.'
   raw: weights:open(allenai/wildguard on HF);data:open(WildGuardMix corpus public);code:partial(inference/serving
     package only; no training pipeline);base:Mistral-7B;license:Apache-2.0(OSI)
   last_verified: '2026-08-13'
@@ -66,9 +66,8 @@ adoption:
   reach: 100K-1M
   signal_type: usage_volume
   confidence: high
-  note: 121,205 downloads in the trailing 30 days summed across the 1 declared artifact(s) (allenai/wildguard
-    121,205). Bands at level 3 (100K-1M) on the software and model adoption scale. Corrected from level
-    4, which the declared artifacts do not support.
+  note: 121,205 downloads in the trailing 30 days for the one declared artifact, allenai/wildguard, which
+    bands at 100K-1M, level 3 on the software and model adoption scale.
   last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/api/models/allenai/wildguard

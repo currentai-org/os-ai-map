@@ -23,21 +23,18 @@ openness:
       detail: spec schema and docs ship in the one LF/AAIF-governed repo and every reference SDK is a public
         modelcontextprotocol repo - there is no vendor tier to withhold anything for
   confidence: high
-  note: 'Open protocol with OSI-licensed reference implementations and open foundation governance; no feature-gated
-    core. The record reproduces at 5/open_source, on three points. (1) `source` was recorded under the key
-    `spec+reference-SDKs`, which no dimension''s `reads:` list names, so the right answer sat under a key
-    the ladder never looks at and the dimension read as unanswered. It is recorded under `source`. (2) `core-gated:
-    ungated`: the spec, the JSON/TypeScript schema and the docs are in the one repo, every reference SDK
-    is a separate public modelcontextprotocol repo (mcp-python-sdk and mcp-typescript-sdk are already on
-    the map at 5), and the project is governed by the Linux Foundation''s AAIF with no vendor tier to withhold
-    anything for. (3) The LICENSE really does split three ways - Apache-2.0 for new code and specifications,
-    CC-BY-4.0 for documentation other than the specifications, and MIT retained for pre-transition contributions
-    whose authors did not consent to relicensing. Recording all three under `license` is the defect to avoid:
-    `license_tier` resolves a compound on every part and takes the most restrictive, so a license covering
-    the project''s PROSE would govern the artifact you run and pull the product down to 3/source_available.
-    The documentation license sits under a `docs:` key, which the openness ladder does not read, matching
-    how `autogen` records the identical situation - MIT code, CC-BY-4.0 docs, 5/open_source. The license
-    dimension answers a question about the shipped artifact.'
+  note: 'An open protocol with OSI-licensed reference implementations under open foundation governance,
+    and nothing in the core held back. The specification, the JSON/TypeScript schema and the docs all live
+    in one repository, every reference SDK is a separate public modelcontextprotocol repo (mcp-python-sdk
+    and mcp-typescript-sdk are both on this map at 5), and the Linux Foundation''s AAIF governs the project,
+    so there is no vendor tier for anything to be withheld for. The LICENSE splits three ways: Apache-2.0
+    for new code and specifications, CC-BY-4.0 for documentation other than the specifications, and MIT
+    retained for pre-transition contributions whose authors did not consent to relicensing. Only the two
+    code licenses bear on the score. A compound license is resolved on every part and takes the most restrictive
+    of them, so filing the documentation license alongside the code would let a license covering the project''s
+    prose govern the artifact you actually run and drag the product down to source-available. The documentation
+    license is therefore recorded apart from the code licenses, the same way autogen records the identical
+    situation - MIT code, CC-BY-4.0 docs, scored 5. Both code licenses are OSI-approved, so the tier holds.'
   raw: source:public(spec schema and docs in one repo plus reference SDKs in separate public repos);license:Apache-2.0(OSI,
     new code/spec)+MIT(OSI, legacy contributions);docs:CC-BY-4.0(documentation other than the specifications;
     not read by the openness ladder, which scores the artifact the product ships);governance:Linux-Foundation/AAIF(open,
@@ -115,25 +112,23 @@ capability:
   basis: n/a
   value: null
   confidence: high
-  note: 'A wire protocol is not benchmarked; capability is not a meaningful axis per recipe. Openness
-    and adoption carry the signal. GRADING POLICY - A WIRE PROTOCOL IS GRADED ON OPENNESS AND ADOPTION
-    ONLY, AND ITS CAPABILITY IS NULL BY POLICY RATHER THAN BY FALLBACK. The reasoning is in docs/reference/gap-analysis.md,
-    "The two nulls are not symmetric": implementation breadth is adoption wearing a capability label,
-    and this product''s adoption is ALREADY banded on SDK downloads - 335M monthly PyPI downloads of
-    `mcp` and 198M monthly npm downloads of @modelcontextprotocol/sdk - so scoring breadth here would
-    let one instrument vote twice and make the blend (adoption + adoption) / 2. Spec maturity is genuinely
-    independent of uptake, but there is no ladder for it anywhere in the four rubrics, it would be a
-    fifth instrument sharing the `capability` field name with benchmark, feature_matrix and internal-eval,
-    and with only two protocols on the map there is nothing to anchor a `relative_to` against. A two-product
-    feature matrix against agent2agent-protocol is the only option the existing machinery could enforce,
-    and it requires un-nulling A2A first. No score is invented to close the gap, which is the point
-    of writing the policy down instead. What the reader should take from the null is therefore precise:
-    not "nobody has got to this yet" but "there is no independent capability question to ask of a specification".
-    The known cost stands and is stated rather than fixed here - build/serialize.py falls through to
-    adoption alone rather than dropping the product, so this record computes a maturity of 5.0 from
-    one axis. That is a serializer question, and it is not load-bearing for the category either way,
-    since agent_tools_protocols has seven mature open products and six of them reach 4.5 with no null
-    in the arithmetic. agent2agent-protocol has the identical shape and carries the same declaration.'
+  note: 'A wire protocol is not benchmarked, so capability is left unscored here by policy rather than for
+    want of a number: openness and adoption carry the whole signal for a specification. Two capability questions
+    could be asked of a protocol and neither survives scrutiny. Breadth of implementation is adoption wearing
+    a capability label, and this product''s adoption is already banded on exactly that kind of evidence
+    - 335 million monthly PyPI downloads of `mcp` and 198 million monthly npm downloads of @modelcontextprotocol/sdk
+    - so scoring breadth as well would let one instrument vote twice and average adoption against itself.
+    Spec maturity is genuinely independent of uptake, but no rubric on this map has a ladder for it, it
+    would be a fifth instrument sharing a field with benchmark, feature-comparison and internal-evaluation
+    scores, and with only two protocols on the map there is nothing to anchor a comparison against. A two-product
+    feature comparison against the Agent2Agent protocol is the only thing the existing machinery could enforce,
+    and it would require scoring that record''s capability first. No score is invented to close the gap.
+    The blank should therefore be read precisely: not "nobody has got to this yet" but "there is no independent
+    capability question to ask of a specification". One cost comes with it, stated rather than papered over
+    - with no capability score the maturity calculation falls through to adoption alone rather than dropping
+    the product, so this record computes a maturity of 5.0 from a single axis. That does not distort the
+    category, which holds seven mature open products, six of them reaching 4.5 with no blank in the arithmetic.
+    The Agent2Agent protocol has the same shape and carries the same policy.'
   last_verified: '2026-08-14'
   sources:
   - url: https://api.github.com/repos/modelcontextprotocol/modelcontextprotocol

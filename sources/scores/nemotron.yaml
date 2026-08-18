@@ -16,13 +16,13 @@ openness:
     license:
     - name: NVIDIA-Nemotron-Open-Model-License
       detail: permissive,commercial,non-OSI
-  note: 'Unusually open for post-trained models: NVIDIA releases weights, the post-training data and the
-    recipes, but under the non-OSI NVIDIA Open Model License, so open_weights not open_source. This category
-    scores the post-training data, which is genuinely released. The pretraining side is thinner than NVIDIA''s
-    "fully open" framing suggests -- Nemotron-Pretraining-Specialized-v1.2 ships 53.6GB of synthetic data,
-    but Nemotron-Pretraining-Code-v3 ships metadata parquet describing the code corpus rather than the corpus,
-    so the earlier "~10T-token pretraining released" wording overstated it and has been narrowed. Score
-    is unaffected: the post-training answer is what this category asks for.'
+  note: 'Unusually open for a post-trained model: NVIDIA releases the weights, the post-training data and
+    the recipes, but under the non-OSI NVIDIA Open Model License, so open weights rather than open source.
+    This category scores the post-training data, which is genuinely released. The pretraining side is thinner
+    than NVIDIA''s "fully open" framing suggests - Nemotron-Pretraining-Specialized-v1.2 ships 53.6GB of
+    synthetic data, but Nemotron-Pretraining-Code-v3 ships metadata parquet describing the code corpus rather
+    than the corpus itself. That does not change the score, because the post-training answer is what this
+    category asks for.'
   raw: weights:open;data:open(~40M post-training/SFT+RL samples released as Nemotron-SFT-Data/Nemotron-RL-Data;
     pretraining sets only partly released);code:open(training recipes + RL env configs);license:NVIDIA-Nemotron-Open-Model-License(permissive,commercial,non-OSI)
   last_verified: '2026-08-13'
@@ -59,12 +59,12 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: 'Banded on a machine signal rather than a hand-read figure: all three shipped repos resolve ungated
-    at HTTP 200, and summing the family''s distributed SKUs, which is what the category''s adoption recipe
-    specifies, the three BF16 repos sum to 2,226,055 downloads in the trailing 30 days (Nano 914,120 + Super
-    870,782 + Ultra 441,153), squarely in the 1M-10M band. The NVFP4/FP8/GGUF quantizations are excluded
-    to avoid double counting the same weights. Also distributed free via OpenRouter (nemotron-3-super-120b-a12b:free)
-    and NVIDIA build/NIM, which the band does not capture, so 4 is a floor.'
+  note: All three shipped repositories resolve ungated, and summing the family's distributed SKUs - which
+    is what this category's adoption recipe asks for - the three BF16 repositories reach 2,226,055 downloads
+    in the trailing 30 days (Nano 914,120; Super 870,782; Ultra 441,153), squarely in the 1M-10M band. The
+    NVFP4, FP8 and GGUF quantizations are excluded to avoid counting the same weights twice. The family
+    is also distributed free through OpenRouter (nemotron-3-super-120b-a12b:free) and NVIDIA build/NIM,
+    which the download count does not capture, so this level is a floor.
   last_verified: '2026-08-13'
   sources:
   - url: https://research.nvidia.com/labs/nemotron/Nemotron-3/
@@ -95,9 +95,9 @@ capability:
     79.23, MMLU-Pro 83.73; ~2.2x inference throughput vs GPT-OSS-120B'
   confidence: high
   note: Frontier-tier among open instruct models on the Super SKU. Nano is much smaller and would score
-    lower, but the family's headline SKU defines the score. The report's own comparison table puts Qwen3.5-122B-A10B
+    lower, but the family's headline SKU defines the score. NVIDIA's own comparison table puts Qwen3.5-122B-A10B
     above Super on the same rows (SWE-Bench 66.40, MMLU-Pro 86.70), so Super is not the highest open-weight
-    score. Whether a 5 still follows from second place on that comparison is FLAGGED as a scoring question.
+    score on that comparison.
   last_verified: '2026-08-13'
   sources:
   - url: https://research.nvidia.com/labs/nemotron/Nemotron-3/

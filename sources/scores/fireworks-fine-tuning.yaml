@@ -16,8 +16,9 @@ openness:
       value: open-models
       detail: varies
   confidence: high
-  note: The managed FT service/pipeline is proprietary and runs only on Fireworks' cloud; no source. (Fireworks'
-    separate reward-kit RFT toolkit is OSS but was not confirmed as part of this product this run.)
+  note: The managed fine-tuning service and its training pipeline are proprietary and run only on Fireworks'
+    cloud, with no source published. Fireworks does publish an open-source reinforcement-fine-tuning toolkit,
+    reward-kit, but it has not been confirmed as part of this product.
   last_verified: '2026-08-09'
   raw: source:closed;training-pipeline:closed;runs-on:Fireworks-cloud-only;license:Proprietary(managed service);
     base-weights:open-models(varies)
@@ -38,11 +39,10 @@ adoption:
   reach: null
   signal_type: unknown
   confidence: low
-  note: 'No disclosed standalone usage figure exists for the Fireworks fine-tuning feature - no jobs run,
-    customers tuning, models fine-tuned or developer count. Fireworks serves notable inference volume, but
-    no honest signal specific to the FT SKU is published, so no level is assigned. A null level is a value
-    here rather than a gap: it says somebody looked and the vendor publishes nothing, which is the honest
-    answer for a feature sold inside a larger platform.'
+  note: 'No standalone usage figure exists for the Fireworks fine-tuning service: no jobs run, no customers
+    tuning, no models fine-tuned, no developer count. Fireworks serves notable inference volume, but nothing
+    published is specific to fine-tuning, so no level is assigned. The absence is itself the finding: this
+    is a feature sold inside a larger platform, and the vendor publishes nothing about it on its own.'
   last_verified: '2026-08-13'
   sources:
   - url: https://docs.fireworks.ai/fine-tuning/fine-tuning-models
@@ -56,11 +56,13 @@ capability:
   value: 'Methods: SFT, DPO (preference), RFT (reinforcement fine-tuning). LoRA-adapter outputs with warm-start
     continued training; serves resulting adapters on dedicated deployments. Open base-model catalog.'
   confidence: medium
-  note: Strong managed method coverage (SFT+DPO+RFT, incl. reinforcement FT) over open base models. Black-box
-    (LoRA-output oriented, limited scale/precision control), no MLPerf-Training basis, so capped below
-    OSS scale definers; scored 4, on par with the other RFT-capable managed services. Slightly narrower
-    demonstrated scale than Together (no confirmed 100B+ full-FT claim), but matching RFT depth keeps
-    it at 4.
+  note: 'Strong managed method coverage over open base models: supervised fine-tuning, DPO preference tuning
+    and reinforcement fine-tuning, producing LoRA adapters that can be warm-started for continued training
+    and served on dedicated deployments. It is a black box, oriented to LoRA outputs with limited scale
+    and precision control and no training benchmark behind it, so it is capped below the open-source libraries
+    that define scale. Demonstrated scale is slightly narrower than Together''s, with no confirmed 100B+
+    full fine-tuning claim, but matching depth on reinforcement fine-tuning keeps it level with the other
+    services that offer it.'
   last_verified: '2026-08-09'
   sources:
   - url: https://docs.fireworks.ai/fine-tuning/fine-tuning-models

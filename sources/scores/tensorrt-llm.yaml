@@ -15,12 +15,11 @@ openness:
       detail: vendor-hardware lock, not a license restriction
       raw: runs only on NVIDIA GPUs (vendor-hardware lock, not a license restriction)
   confidence: high
-  note: Apache-2.0 across the repo. The LICENSE body opens "This project is licensed under the Apache 2.0
-    license" and appends the terms of bundled third-party code (MIT, BSD-3-Clause, and an LTX-2 Community
-    License scoped to tensorrt_llm/_torch/visual_gen/models/ltx2/), which is why GitHub's classifier reports
-    NOASSERTION. The published tree carries the C++ runtime and kernels in cpp/ rather than a stub, so nothing
-    is gated out of the source; NVIDIA sells NIM and enterprise support as separate products. Corrected
-    from 4/open_core to 5/open_source.
+  note: Apache-2.0 across the repository. The LICENSE body opens "This project is licensed under the Apache
+    2.0 license" and then appends the terms of bundled third-party code, MIT, BSD-3-Clause and an LTX-2
+    Community License scoped to a single visual-generation model directory, which is why GitHub's classifier
+    reports NOASSERTION. The published tree carries the C++ runtime and kernels in cpp/ rather than a stub,
+    so nothing is held back from the source; NVIDIA sells NIM and enterprise support as separate products.
   last_verified: '2026-08-09'
   raw: license:Apache-2.0(OSI, stated in LICENSE; GitHub reports NOASSERTION because of the bundled-dependency
     appendix);source:public;core-gated:ungated;caveat:runs only on NVIDIA GPUs (vendor-hardware lock, not
@@ -55,10 +54,10 @@ adoption:
   signal_type: reported_traction
   confidence: high
   banded_quantity: GitHub stars (14,342), not a download or user count
-  note: 14,342 GitHub stars (up from ~13.8k), and both comparison pieces frame TensorRT-LLM as the specialist
-    choice - highest raw throughput on standardized NVIDIA fleets, but narrower reach than vLLM/SGLang because
-    of compilation overhead and single-vendor lock-in. No clean standalone user/download count exists to
-    band directly; level 3 reflects significant but specialized production usage.
+  note: '14,342 GitHub stars, and the comparison write-ups consistently frame TensorRT-LLM as the specialist
+    choice: the highest raw throughput on standardized NVIDIA fleets, but narrower reach than vLLM or SGLang
+    because of its compilation overhead and single-vendor lock-in. No clean standalone user or download
+    count exists to band directly, so level 3 reflects significant but specialized production usage.'
   last_verified: '2026-08-09'
   sources:
   - url: https://github.com/NVIDIA/TensorRT-LLM
@@ -86,13 +85,12 @@ capability:
   basis_detail: MLPerf
   value: null
   confidence: high
-  note: 'MLPerf Inference v4.0: NVIDIA''s own recap states the HGX H100 platform ''delivered nearly 3x more
-    performance on the GPT-J test compared to the prior round thanks to our TensorRT-LLM software.'' A March
-    2026 independent H100 bake-off (Llama 3.3 70B, FP8) puts TensorRT-LLM ahead on raw throughput (2,100
-    tok/s vs. vLLM''s 1,850 and SGLang''s 1,920), at the cost of a much longer cold start (~28 min vs. ~1
-    min). No relative_to peer is recorded: the same source cites a newer engine (TokenSpeed) claiming a
-    9-11% edge over TensorRT-LLM on B200 for agentic workloads, and none of vLLM/SGLang/TokenSpeed''s own
-    capability bands in this map carry a confirmation recent enough to derive from.'
+  note: NVIDIA's own MLPerf Inference v4.0 recap states that the HGX H100 platform "delivered nearly 3x
+    more performance on the GPT-J test compared to the prior round thanks to our TensorRT-LLM software."
+    An independent H100 bake-off on Llama 3.3 70B at FP8 puts TensorRT-LLM ahead on raw throughput at 2,100
+    tokens per second, against vLLM's 1,850 and SGLang's 1,920, at the cost of a much longer cold start,
+    roughly 28 minutes against about 1 minute. The same source cites a newer engine, TokenSpeed, claiming
+    a 9-11% edge over TensorRT-LLM on B200 for agentic workloads.
   last_verified: '2026-08-09'
   sources:
   - url: https://www.hpcwire.com/2024/03/28/mlperf-inference-4-0-results-showcase-genai-nvidia-still-dominates/

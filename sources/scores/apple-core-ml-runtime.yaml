@@ -11,10 +11,10 @@ openness:
     self-host:
       value: 'no'
   confidence: high
-  note: 'Core ML has no repository - Apple''s own documentation describes it purely as an API surface (`MLModel`
-    etc.) that a person''s app calls into; there is no source tree to self-host or fork. The ladder''s `source:
-    closed` rule fires regardless of license tier, so core-gated is not applicable here (the note in software.yaml:
-    that dimension only matters where source is public).'
+  note: Core ML has no repository. Apple's own documentation describes it purely as an API surface, MLModel
+    and the rest, that an app calls into; there is no source tree to self-host or fork. Whether any feature
+    is held back behind a paid tier does not arise here, because that question only applies where the source
+    is published at all.
   last_verified: '2026-08-09'
   raw: source:closed;license:proprietary(Apple system framework, ships compiled with the OS/SDK, no published
     source);self-host:no
@@ -39,13 +39,13 @@ adoption:
   reach: '>10M users'
   signal_type: active_users
   confidence: medium
-  note: Core ML ships as a system framework across iOS/iPadOS/macOS/tvOS/watchOS/visionOS (confirmed against
-    the MLModel availability list), and Apple's own Q3 FY2026 earnings call puts the active-device installed
-    base at over 2.5 billion. Bands at >10M users, level 5 on the active_users scale. WHAT WAS BANDED -
-    an active DEVICE base, not an active user count - a person with an iPhone and a Mac is two of it, and
-    nobody is counted for using Core ML rather than for owning hardware it ships on. The band clears its
-    boundary by more than two orders of magnitude, so the distinction does not change the level; it is recorded
-    because the scale requires a substituted quantity to be named. Not a developer download count either.
+  note: 'Core ML ships as a system framework across iOS, iPadOS, macOS, tvOS, watchOS and visionOS, confirmed
+    against Apple''s MLModel availability list, and Apple''s own quarterly earnings call puts the active-device
+    installed base at more than 2.5 billion. That bands at >10M users, level 5. The quantity being banded
+    is an active device base rather than an active user count: someone with an iPhone and a Mac counts twice,
+    and nobody is counted for using Core ML rather than for owning hardware it ships on. It is not a developer
+    download count either. The figure clears the band boundary by more than two orders of magnitude, so
+    the substitution does not change the level, but the scale requires a substituted quantity to be named.'
   last_verified: '2026-08-09'
   sources:
   - url: https://docs.developer.apple.com/tutorials/data/documentation/coreml/mlmodel.md
@@ -70,10 +70,10 @@ capability:
     compression via INT4/INT8 linear quantization, palettization (1-8 bit lookup tables), and pruning, with
     per-model optimization guides published for ResNet50, OPT, and Stable Diffusion.
   confidence: medium
-  note: 'Comparison basis unchanged from the prior read: best-in-class for on-device/edge inference (Neural
-    Engine acceleration, quantization/palettization, broad converted-model coverage) but constrained to
-    Apple silicon and on-device scale, one tier below the large-scale server engines (vllm re-confirmed
-    today at capability score 5).'
+  note: Best in class for on-device and edge inference, with Neural Engine acceleration, quantization and
+    palettization, and broad coverage of converted models, but constrained to Apple silicon and to on-device
+    scale. That places it one tier below the large-scale server engines, of which vLLM holds the top capability
+    score in this category.
   basis_detail: 'Apple''s own CoreML and coremltools documentation: multi-device execution (CPU/GPU/Neural
     Engine), a compute-plan API for per-layer device placement, and a compression toolkit (quantization,
     palettization, pruning) whose documentation set carries dedicated optimization walkthroughs for ResNet50,

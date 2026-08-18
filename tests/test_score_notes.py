@@ -184,12 +184,8 @@ DATES_THAT_ARE_PRODUCT_FACTS = {
     ("n8n", "adoption"),
     ("open-llm-leaderboard", "adoption"),
     ("perplexica", "adoption"),
-    ("playwright-mcp", "adoption"),
     ("ragflow", "adoption"),
-    ("sambanova-cloud", "adoption"),
     ("sandbox-runtime", "adoption"),
-    ("searxng", "adoption"),
-    ("tinker", "capability"),
     ("vercel-sandbox", "adoption"),
 }
 
@@ -222,4 +218,23 @@ def test_no_note_states_a_date_unless_it_is_a_product_fact(sources):
         + "\n\nWhen a score changed is git's to remember: `git log -p --follow "
         "sources/scores/<slug>.yaml`. If the date is a fact about the product rather than about "
         "the reading, add it to DATES_THAT_ARE_PRODUCT_FACTS with that justification."
+    )
+
+
+def test_the_date_allowlist_has_not_gone_stale(sources):
+    """An axis whose note no longer states a date must leave the allowlist, not linger in it.
+
+    Otherwise the list stops describing the exceptions and starts hiding them: it would keep
+    passing long after the dates were gone, and the next real instance would have somewhere to
+    sit unnoticed. Same two-sided shape as
+    test_the_known_backlog_has_not_silently_grown_stale above, and the same reason.
+    """
+    stale = [
+        f"{slug} {axis}"
+        for slug, axis in DATES_THAT_ARE_PRODUCT_FACTS
+        if not ISO_DATE.search(((sources["scores"].get(slug, {}).get(axis) or {}).get("note")) or "")
+    ]
+    assert not stale, (
+        f"{sorted(stale)} no longer state a date - remove them from "
+        "DATES_THAT_ARE_PRODUCT_FACTS so the list keeps meaning what it says."
     )

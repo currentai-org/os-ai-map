@@ -78,14 +78,14 @@ capability:
   relation: at
   value: null
   confidence: high
-  note: A March 2026 H100 benchmark (Llama-3.3-70B FP8, single GPU) recorded SGLang at 1,920 tok/s / 112ms
-    TTFT against vLLM's 1,850 tok/s / 120ms TTFT, so SGLang matched or slightly exceeded vLLM on this workload,
-    while the same piece frames vLLM as the broader-purpose default and SGLang as strongest for shared-prefix
-    workloads. Scores remain equal, so relation is 'at'. Neither the repo's GitHub page nor the spheron
-    writeup records an SGLang MLPerf submission; the spheron piece mentions MLPerf Inference v6.0's GPT-OSS
-    120B task only in passing and links its own v6.0 results breakdown, which was not read. Basis therefore
-    stays feature_matrix plus third-party benchmarks rather than a standardized suite, and a future pass
-    should read that MLPerf v6.0 results page before treating the absence as settled.
+  note: An independent H100 benchmark on Llama-3.3-70B at FP8 on a single GPU recorded SGLang at 1,920 tokens
+    per second and 112ms to first token, against vLLM's 1,850 tokens per second and 120ms, so SGLang matched
+    or slightly exceeded vLLM on that workload, while the same write-up frames vLLM as the broader-purpose
+    default and SGLang as strongest for shared-prefix workloads. The two therefore sit level with each other.
+    Neither the project's GitHub page nor that write-up records an SGLang MLPerf submission, so the score
+    rests on the feature set, RadixAttention prefix-KV reuse, a zero-overhead CPU scheduler, prefill-decode
+    disaggregation, speculative decoding, structured outputs and hardware support across NVIDIA, AMD, Intel,
+    TPU and Ascend, together with third-party benchmarks, rather than on a standardized suite.
   basis_detail: RadixAttention prefix-KV reuse, zero-overhead CPU scheduler, prefill-decode disaggregation,
     speculative decoding, structured outputs, and broad hardware support (NVIDIA/AMD/Intel/TPU/Ascend),
     corroborated by a 2026 third-party H100 benchmark against vLLM and TensorRT-LLM.
