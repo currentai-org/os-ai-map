@@ -16,7 +16,7 @@ activity there is not a signal of real work.
 ## Directory map
 
 ```
-sources/               Curated YAML: organizations, categories, products, scores
+sources/               Curated YAML: organizations, categories, head products, scores, tail registry
 sources/taxonomy.yaml  Arc grouping + cross-category display order
 sources/signal_routing.yaml  Which machine signal is authoritative per dimension, and
                        which values mean "this source has no answer" (abstain_values)
@@ -111,8 +111,8 @@ including the copies that are deliberately kept and why.
 
 ## Data model
 
-The curated source set is four per-record YAML concerns in `sources/` plus the single
-`sources/taxonomy.yaml` manifest:
+The curated source set is four full-record YAML concerns in `sources/`, a compact tail
+registry, plus the single `sources/taxonomy.yaml` manifest:
 
 - **organizations**: one file per org (`name`=slug, `display_name`, `type`, `homepage`,
   optional `github` typed-url array and `comments` string). Owns the `products:` roster: a list of product slugs that belong to this org. A product
@@ -133,13 +133,19 @@ The curated source set is four per-record YAML concerns in `sources/` plus the s
   release date).
 - **scores**: one file per product (same slug) with `openness`, `adoption`, `capability`.
   Every non-null score value requires a `sources:` citation entry.
+- **registry**: one file per category with compact signal-only tail products. Each row owns
+  a stable slug, display name, product type, organization slug, and addressable artifact IDs.
+  Tail rows carry no editorial scores and need no organization file; they are exported to
+  OSO but excluded from the public scored map until promoted to the full records above.
 - **taxonomy.yaml**: owns arc grouping + cross-category display order. The three arcs
   ARE the Columbia openness-ontology layers (`product_ux`, `model_components`,
   `infrastructure`); each arc declares its `layer` slug and an ordered category list.
   `serialize.py` derives order, the display `arc`, and the machine `layer` from here, so
   a category's layer is never a separate hand-maintained field -- it is whichever arc the
-  category sits in. Validate enforces that every category appears in exactly one arc and
-  that every arc declares a valid layer.
+  category sits in. A mapping entry may also declare `status: preliminary | published`;
+  historical scalar entries mean published. Preliminary categories are registry-visible but
+  omitted from the notebook payload. Validate enforces that every category appears in exactly
+  one arc and that every arc declares a valid layer.
 
 Category slugs are underscore form (`base_pretrained`). Product and org slugs are
 hyphenated kebab-case (`llama-3-1`).

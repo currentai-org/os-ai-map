@@ -7,7 +7,10 @@ someone finishes a category by hand. These assert the survey reads the corpus.
 
 from datetime import date
 
-from build.sweep_status import product_state, survey
+import yaml
+
+from build.sweep_status import ROOT, product_state, survey
+from build.taxonomy import category_statuses
 
 
 def score(**axes) -> dict:
@@ -81,8 +84,18 @@ def test_the_real_corpus_surveys_and_orders_worst_coverage_first():
     non-empty ordering case is proved below on a corpus the test builds.
     """
     rows = survey()
-    assert len(rows) == 16
-    assert sum(r["products"] for r in rows) == 472
+    # Derived rather than pinned. This assertion used to read `== 16` and `== 472`, and it
+    # failed the day two categories were published because the corpus had grown - the sixth
+    # time in this repository that a test failed because the work succeeded, which is what the
+    # docstring above is about. `survey()` covers the PUBLISHED categories (preliminary ones
+    # carry no head-product verification work), so that is what this compares against.
+    published = [slug for slug, status in category_statuses(
+        yaml.safe_load((ROOT / "sources" / "taxonomy.yaml").read_text())).items()
+        if status == "published"]
+    assert len(rows) == len(published)
+    assert sum(r["products"] for r in rows) == sum(
+        len(yaml.safe_load((ROOT / "sources" / "categories" / f"{slug}.yaml").read_text())
+            .get("products") or []) for slug in published)
     # Finished categories sort last whatever their coverage; among the rest, worst first.
     coverages = [r["coverage"] for r in rows if r["done"] < r["products"]]
     assert coverages == sorted(coverages), "pending categories must be worst-coverage first"

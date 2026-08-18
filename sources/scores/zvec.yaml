@@ -1,0 +1,81 @@
+product: zvec
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole product,
+    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
+    and the core ungated.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/alibaba/zvec/blob/main/LICENSE
+    shows: LICENSE file is the verbatim Apache-2.0 text
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1
+    establishes:
+    - license
+  - url: https://api.github.com/repos/alibaba/zvec
+    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for
+      alibaba/zvec.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: a4e2e274b82db626aa019c11a999b207217490375cdf11c23c2434c029229915
+    establishes:
+    - license
+    - source
+  - url: https://github.com/alibaba/zvec/blob/main/README.md
+    shows: README describes an in-process vector database embedded directly into applications, with group-by search
+      across flat, HNSW, HNSW-RaBitQ and sparse indexes, and published benchmarks, with no paid tier, enterprise
+      edition or license-key-gated build beside it.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 05cee941eb351578cf0a79ed00f8ef374d82c00ef9689c8dbd14f07be8988ab8
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: '40,993 PyPI downloads of `zvec` in the trailing 30 days, which lands in the 10K-100K band of the software
+    usage scale, level 2. Banded on the package figure rather than the 15,461 GitHub stars: downloads measure use
+    and stars measure attention, and here the two point at different levels, which is the case the routing rules
+    rank downloads above stars for.'
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://pypistats.org/api/packages/zvec/recent
+    shows: last_month downloads = 40,993 for zvec
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 932bf85afe1ac1ea1ad2ad989771a0add9b70eeeabe78ec18f376d1c84a6a07e
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: single-purpose store or index'
+  value: Flat, HNSW, HNSW-RaBitQ and sparse indexes with group-by retrieval, embedded in the application process.
+    Index breadth is real; there is no server, cluster or hybrid full-text mode.
+  relative_to: vespa
+  relation: two_below
+  confidence: medium
+  note: Banded on the category feature matrix as single-purpose store or index. Placed two bands below the vespa
+    anchor, on a matrix that bands on how much of the persist-index-retrieve path a product provides itself, at
+    what scale and over how many retrieval modes.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/alibaba/zvec/blob/main/README.md
+    shows: README still documents an in-process vector database embedded directly into applications, with group-by
+      search across flat, HNSW, HNSW-RaBitQ and sparse indexes, and published benchmarks.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 05cee941eb351578cf0a79ed00f8ef374d82c00ef9689c8dbd14f07be8988ab8

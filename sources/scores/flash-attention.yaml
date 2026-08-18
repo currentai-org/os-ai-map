@@ -1,0 +1,79 @@
+product: flash-attention
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: BSD-3-Clause
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: BSD-3-Clause license body confirmed. The repository is public and unarchived and builds the whole product,
+    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
+    and the core ungated.
+  raw: license:BSD-3-Clause(OSI);source:public;core-gated:ungated
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/Dao-AILab/flash-attention/blob/main/LICENSE
+    shows: LICENSE file is the verbatim BSD-3-Clause text
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 8c9ccb96c065e706135b6cbad279b721da6156e51f3a5f27c6b3329af9416d73
+    establishes:
+    - license
+  - url: https://api.github.com/repos/Dao-AILab/flash-attention
+    shows: Repo metadata - license spdx_id BSD-3-Clause, private false, archived false, default branch main - for
+      Dao-AILab/flash-attention.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: dc403608566e1ed6097bf6b3cd40da10d7b330abcb59bb098b68c32409fb010f
+    establishes:
+    - license
+    - source
+  - url: https://github.com/Dao-AILab/flash-attention/blob/main/README.md
+    shows: README describes the official implementation of FlashAttention and FlashAttention-2, IO-aware exact attention,
+      with the papers, benchmarks and Hopper-specific kernels beside it, with no paid tier, enterprise edition or
+      license-key-gated build beside it.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 7bcb7ca466dcb819822003c5c15a8124e4866f4d446a5c60382615128c81c3a6
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: 402,966 PyPI downloads of `flash-attn` in the trailing 30 days, which lands in the 100K-1M band of the software
+    usage scale, level 3.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://pypistats.org/api/packages/flash-attn/recent
+    shows: last_month downloads = 402,966 for flash-attn
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 9777625edeb7883d7b3adc80d8d6e7ba0866003ca71c82e06a94de1bab87b387
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: performance-critical kernel and operator library'
+  value: Exact IO-aware attention kernels across NVIDIA GPU generations, the implementation training and serving
+    stacks call for the operator. One operator family, near-universal use.
+  relative_to: apache-tvm
+  relation: two_below
+  confidence: medium
+  note: Banded on the category feature matrix as performance-critical kernel and operator library. Placed two bands
+    below the apache-tvm anchor, on a matrix that bands on how much of the model-to-hardware transformation pipeline
+    a product performs, over how many inputs and targets.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/Dao-AILab/flash-attention/blob/main/README.md
+    shows: README still documents the official implementation of FlashAttention and FlashAttention-2, IO-aware exact
+      attention, with the papers, benchmarks and Hopper-specific kernels beside it.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 7bcb7ca466dcb819822003c5c15a8124e4866f4d446a5c60382615128c81c3a6

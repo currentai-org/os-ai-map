@@ -1,0 +1,94 @@
+name: storage
+display_name: Storage & Retrieval
+description: 'Data stores, indexes, file systems, and versioned data layers built for persisting and retrieving training, inference, and retrieval-augmented-generation data.'
+strapline: Openness holds across the layer - 22 of 24 products publish a complete, OSI-licensed
+  system - and the two exceptions fail in the same way rather than by selling a service alongside.
+  Elasticsearch keeps its x-pack directory under the Elastic License and Meilisearch keeps an
+  Enterprise Edition under BUSL, both inside the public repository. Adoption is harder to read here
+  than almost anywhere on the map, because most of these products ship as servers and the PyPI name
+  that matches them usually belongs to a client library.
+weights:
+  adopt: 0.6
+  cap: 0.4
+products:
+- vespa
+- elasticsearch
+- chroma
+- infinity
+- meilisearch
+- typesense
+- lancedb
+- lance
+- aistore
+- juicefs
+- deep-lake
+- faiss
+- usearch
+- pgvector
+- vearch
+- helixdb
+- zvec
+- dolt
+- lakefs
+- dvc
+- feast
+- openlake
+- hnswlib
+- annoy
+scoring_recipe:
+  version: 1
+  extends: software
+  derived_from:
+    method: shared software ladder, checked against the hand-recorded scores
+    scores_reproduced: 23
+    scores_total: 24
+    scores_deferred: 1
+    verified_on: '2026-08-18'
+    checker: build/check_rubric.py
+  note: >-
+    The roster is software-only and inherits the shared software ladder unchanged. Three licence
+    bodies decided scores that the GitHub label could not: elasticsearch's LICENSE.txt declares a
+    default triple licence (AGPL-3.0 only, SSPL-1.0 or Elastic License 2.0, recipient's choice) and
+    then carves the x-pack directory out as Elastic-only, and meilisearch's reads
+    `MIT AND BUSL-1.1` and names an Enterprise Edition in the same tree. Both are functionality
+    withheld from the open terms inside the published source, which is the litellm shape rather than
+    the langchain one, so both record `core-gated: gated` and land on 4/open_core. A hosted service
+    beside a complete core - Chroma Cloud, LanceDB Cloud, the Activeloop platform, Typesense Cloud -
+    is not gating and did not move a score.
+
+    Capability is a category feature matrix. It bands on how much of the persist-index-retrieve path
+    a product provides itself, at what scale and over how many retrieval modes: 5 is a distributed
+    retrieval platform that also ranks or runs inference in the serving path, 4 is a complete
+    durable system that is distributed or cluster-capable, 3 is a working single-purpose store or
+    index, and 2 is a single index family shipped as a library with no storage of its own. vespa is
+    the top anchor; every other band is recorded against it or against the chroma rung below it.
+  deferred:
+    pgvector:
+      because: >-
+        The LICENSE body is the PostgreSQL License - the Postgres project's own permissive terms,
+        carrying the PostgreSQL Global Development Group and University of California notices - and
+        it is OSI-approved in fact. The shared software ladder's `osi` tier lists licence names
+        literally rather than deciding them by rule, and `PostgreSQL` is not on the list, so the
+        licence maps to no tier and the formula abstains. This is the ladder rather than the
+        evidence: the recorded 5/open_source is the pair the ladder produces for any public,
+        ungated, OSI-licensed product, and nothing about pgvector is in doubt. Adding `PostgreSQL`
+        to the shared tier is a rubric decision that reaches every software category, so it
+        belongs to a maintainer rather than to this promotion. No other product on the map records
+        this licence, so the ruling would move no existing score.
+comments: >-
+  Columbia infrastructure category. Includes AI-oriented distributed storage, vector and hybrid
+  retrieval, feature stores, versioned data layers, and storage formats where storage is the product
+  surface. Generic ETL and corpus-construction pipelines remain in dataset_processing_tools and
+  model serving remains in inference_code. Seeded from Good AI List Infrastructure / Data systems
+  and Index & Search on 2026-08-18 and triaged in full the same day: 21 of 25 seeded rows were
+  promoted and four rejected on the boundary - redis and tidb as general-purpose data stores that
+  added vector types rather than retrieval systems, ceph as general-purpose distributed storage not
+  built for ML workloads, and alluxio as analytics-oriented data orchestration with no commit since
+  2025-04. Three replacements were added: pgvector, juicefs and lakefs. Qdrant, Milvus and Pinecone
+  stay in agent_tools_protocols and Safetensors stays in ml_frameworks. The three vector databases
+  are the map's clearest remaining taxonomy tension, since Chroma, LanceDB, Vearch, Infinity,
+  HelixDB and Zvec are their direct peers and sit here; moving them would recalibrate capability in
+  two published categories and is a decision to take on its own rather than inside this build. No
+  fourth replacement was sought for alluxio: 24 products clears the category's floor, and Weaviate,
+  the obvious candidate, is a fourth peer of the three that live elsewhere and would deepen that
+  tension rather than resolve it.

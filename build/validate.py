@@ -1,4 +1,4 @@
-"""Validate the four-concern sources/ tree: schema + cross-file invariants."""
+"""Validate the scored corpus, taxonomy, and signal-only tail registry."""
 from datetime import date
 import json
 import re
@@ -10,6 +10,7 @@ import yaml
 from build.vocabulary import axes
 
 from build.rubrics import dimension_vocabulary
+from build.taxonomy import category_entry, category_statuses
 
 # Maps each sources/ subdir to its docs/schemas/<name>.schema.json basename.
 _SCHEMA_FOR_DIR = {
@@ -55,6 +56,7 @@ def load_sources(root: Path) -> dict:
         "products": _dir("products"),
         "scores": _dir("scores"),
         "taxonomy": yaml.safe_load((root / "sources" / "taxonomy.yaml").read_text()),
+        "registry": _dir("registry"),
     }
     lt = root / "sources" / "snapshots" / "long_tail.json"
     if lt.exists():
@@ -67,6 +69,7 @@ def validate_sources(data: dict) -> list[str]:
     orgs, cats, prods, scores = (data["organizations"], data["categories"],
                                  data["products"], data["scores"])
     taxonomy = data["taxonomy"]
+    registry = data.get("registry") or {}
 
     # --- taxonomy <-> category invariants ---
     # Every category file appears in exactly one arc's `categories` list, and
@@ -74,10 +77,16 @@ def validate_sources(data: dict) -> list[str]:
     # Arcs are the Columbia ontology layers; each must declare a valid `layer`
     # slug, since serialize derives every category's layer from its arc.
     tax_count: dict[str, int] = {}
+    lifecycle_declared: set[str] = set()
     for arc in taxonomy.get("arcs", []):
         if arc.get("layer") not in LAYERS:
             errors.append(f"taxonomy arc {arc.get('name')!r}: layer {arc.get('layer')!r} not in {sorted(LAYERS)}")
-        for cid in arc.get("categories", []):
+        for raw in arc.get("categories", []):
+            cid, status = category_entry(raw)
+            if cid is None or status is None:
+                continue
+            if isinstance(raw, dict):
+                lifecycle_declared.add(cid)
             tax_count[cid] = tax_count.get(cid, 0) + 1
             if cid not in cats:
                 errors.append(f"taxonomy arc {arc.get('name')!r}: category {cid!r} has no categories/{cid}.yaml")
@@ -85,6 +94,74 @@ def validate_sources(data: dict) -> list[str]:
         n = tax_count.get(cid, 0)
         if n != 1:
             errors.append(f"category {cid!r}: must appear in exactly one taxonomy arc (found in {n})")
+
+    statuses = category_statuses(taxonomy)
+    for cid, cat in cats.items():
+        if cid not in lifecycle_declared:
+            continue
+        status = statuses.get(cid)
+        if not cat.get("description"):
+            errors.append(f"category {cid!r}: every category needs a description")
+        if not cat.get("weights"):
+            errors.append(f"category {cid!r}: every category needs axis weights")
+        if not cat.get("scoring_recipe"):
+            errors.append(f"category {cid!r}: every category needs a scoring_recipe")
+        if status == "published":
+            if not cat.get("strapline"):
+                errors.append(f"category {cid!r}: published category needs a strapline")
+            if len(cat.get("products") or []) < 10:
+                errors.append(f"category {cid!r}: published category needs at least 10 scored products")
+
+    # --- tail registry invariants ---
+    # Tail rows are deliberately lighter than head product records, but identity is
+    # not: a slug and a GitHub artifact may appear in only one tier and category.
+    tail_slugs: dict[str, str] = {}
+    tail_repos: dict[str, str] = {}
+    head_repos: dict[str, str] = {}
+    for slug, product in prods.items():
+        for artifact in product.get("github") or []:
+            if isinstance(artifact, dict) and isinstance(artifact.get("url"), str):
+                match = re.search(r"github\.com/([^/]+/[^/]+?)(?:\.git)?/?$", artifact["url"])
+                if match:
+                    head_repos[match.group(1).lower()] = slug
+    for cid, record in registry.items():
+        if not isinstance(record, dict):
+            errors.append(f"registry/{cid}.yaml: record must be a mapping")
+            continue
+        if record.get("category") != cid:
+            errors.append(
+                f"registry/{cid}.yaml: `category: {record.get('category')!r}` does not match "
+                f"the filename stem {cid!r}"
+            )
+        if cid not in cats:
+            errors.append(f"registry/{cid}.yaml: no matching categories/{cid}.yaml")
+        for row in record.get("products") or []:
+            if not isinstance(row, dict):
+                continue
+            slug = row.get("slug")
+            repo = row.get("github")
+            if not isinstance(slug, str) or not isinstance(repo, str):
+                continue
+            if slug in prods:
+                errors.append(f"registry/{cid}.yaml: tail slug {slug!r} already exists as a head product")
+            if slug in tail_slugs:
+                errors.append(
+                    f"registry/{cid}.yaml: tail slug {slug!r} already belongs to "
+                    f"registry/{tail_slugs[slug]}.yaml"
+                )
+            tail_slugs[slug] = cid
+            repo_key = repo.lower()
+            if repo_key in head_repos:
+                errors.append(
+                    f"registry/{cid}.yaml: GitHub artifact {repo!r} already belongs to "
+                    f"head product {head_repos[repo_key]!r}"
+                )
+            if repo_key in tail_repos:
+                errors.append(
+                    f"registry/{cid}.yaml: GitHub artifact {repo!r} already belongs to "
+                    f"tail product {tail_repos[repo_key]!r}"
+                )
+            tail_repos[repo_key] = slug
 
     # --- roster <-> product invariants ---
     roster_count: dict[str, int] = {}
@@ -315,6 +392,15 @@ def validate_sources(data: dict) -> list[str]:
         jsonschema.validate(data["taxonomy"], schemas["taxonomy"])
     except jsonschema.ValidationError as e:
         errors.append(f"sources/taxonomy.yaml: schema: {e.message}")
+
+    registry_schema = json.loads(
+        (Path(__file__).resolve().parents[1] / "docs" / "schemas" / "registry.schema.json").read_text()
+    )
+    for cid, record in registry.items():
+        try:
+            jsonschema.validate(record, registry_schema)
+        except jsonschema.ValidationError as e:
+            errors.append(f"registry/{cid}: schema: {e.message}")
 
     return errors
 

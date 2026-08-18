@@ -29,18 +29,18 @@ Each `sources/scores/<slug>.yaml` carries two separate, analyst-assigned opennes
 Every non-null value needs a primary `sources:` entry. Both fields were originally assigned
 by hand against MOF/OSI, and that history is why `components`/`note` read as editorial prose.
 
-**A deterministic formula now exists for most of the map.** All 16 categories declare a
+**A deterministic formula now exists for most of the map.** All 18 categories declare a
 `scoring_recipe` that names an ordered rule list over dimension values, and
 `build/check_rubric.py` replays it against each product's recorded `components` to check that
 the recorded score is the one the rules produce. Most recipes `extend` a shared ladder in
 [`sources/rubrics/`](../../sources/rubrics/) rather than restating one: `software.yaml` covers
-eleven categories, `model.yaml` the fine-tuned and guardrail models. A category holding more
+twelve categories directly plus the software half of `safeguards`, `model.yaml` the fine-tuned and guardrail models. A category holding more
 than one kind of product maps `extends` per product type.
 
 Three caveats, because "a formula exists" is easy to over-read:
 
-- **A recipe covers a category, not every product in it.** All sixteen categories carry one as
-  of 2026-08-01, and a small number of products are declared in a `deferred:` block, meaning the
+- **A recipe covers a category, not every product in it.** Every category has carried one since
+  2026-08-01, including compilers and storage, which arrived with theirs on 2026-08-18, and a small number of products are declared in a `deferred:` block, meaning the
   category has said the ladder does not decide them. Those scores remain editorial.
   `check_recipe` prints the per-category split and fails if a product abstains without being
   declared — read its output for the current figure rather than trusting a number typed here.
@@ -50,8 +50,9 @@ Three caveats, because "a formula exists" is easy to over-read:
   facts.
 - **A category can hold products back.** `scoring_recipe.deferred` lists products the rules do
   not decide, usually because a dimension is not recorded in a form the ladder can read. As of
-  2026-08-14 there are 5 such products across 4 of the 16 categories (`benchmark_eval_data` 2,
-  `dataset_processing_tools`, `edge_hardware` and `training_synthetic_datasets` 1 each) — down
+  2026-08-18 there are 7 such products across 6 categories (`benchmark_eval_data` 2, and
+  `compilers`, `dataset_processing_tools`, `edge_hardware`, `storage` and
+  `training_synthetic_datasets` 1 each) — down
   from 81 before the August verification sweep. Deferred products publish no openness evidence
   to the warehouse. `uv run python -m build.check_recipe` prints the live split.
 

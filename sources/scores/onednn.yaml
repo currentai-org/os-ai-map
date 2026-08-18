@@ -1,0 +1,80 @@
+product: onednn
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole product,
+    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
+    and the core ungated.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/uxlfoundation/oneDNN/blob/main/LICENSE
+    shows: LICENSE file is the verbatim Apache-2.0 text
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: e9fc874fc09801b9acf3411ba72394098473704d832d713404b6c4861a086318
+    establishes:
+    - license
+  - url: https://api.github.com/repos/uxlfoundation/oneDNN
+    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for
+      uxlfoundation/oneDNN.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 8bd9e7d5716f5b456ed5b8b2f30895a665d871a714bf11c068c4ce6347b1a4bd
+    establishes:
+    - license
+    - source
+  - url: https://github.com/uxlfoundation/oneDNN/blob/main/README.md
+    shows: README describes a cross-platform performance library of deep-learning building blocks implementing the
+      oneAPI specification, optimized for Intel 64, AMD64 and 64-bit Arm processors and Intel GPUs, with no paid
+      tier, enterprise edition or license-key-gated build beside it.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 2571c7821890a5b7f777ced8ebe6a29360c01345e2c1e2bc7a9ed3bb1c627b3d
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 4,036 GitHub stars, which lands in the 1K-10K stars band of the stars scale, level 2. oneDNN is consumed
+    as a C++ library vendored into frameworks rather than as a package, so no download channel measures it and the
+    stars scale applies with its cap of 3.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://api.github.com/repos/uxlfoundation/oneDNN
+    shows: Repo metadata - stargazers_count = 4,036 - for uxlfoundation/oneDNN.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 8bd9e7d5716f5b456ed5b8b2f30895a665d871a714bf11c068c4ce6347b1a4bd
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: performance-critical kernel and operator library'
+  value: Primitive library covering convolution, matmul, RNN, normalization and fusion across x86-64, AMD64, Arm64
+    CPUs and Intel GPUs, used as the CPU kernel layer beneath frameworks.
+  relative_to: apache-tvm
+  relation: two_below
+  confidence: medium
+  note: Banded on the category feature matrix as performance-critical kernel and operator library. Placed two bands
+    below the apache-tvm anchor, on a matrix that bands on how much of the model-to-hardware transformation pipeline
+    a product performs, over how many inputs and targets.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/uxlfoundation/oneDNN/blob/main/README.md
+    shows: README still documents a cross-platform performance library of deep-learning building blocks implementing
+      the oneAPI specification, optimized for Intel 64, AMD64 and 64-bit Arm processors and Intel GPUs.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 2571c7821890a5b7f777ced8ebe6a29360c01345e2c1e2bc7a9ed3bb1c627b3d

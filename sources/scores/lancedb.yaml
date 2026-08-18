@@ -1,0 +1,82 @@
+product: lancedb
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole product,
+    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
+    and the core ungated. A hosted Cloud and Enterprise tier is sold beside the Apache-2.0 core; the repository
+    carries the Rust engine and all four language bindings, so nothing is withheld from the published source.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/lancedb/lancedb/blob/main/LICENSE
+    shows: LICENSE file is the verbatim Apache-2.0 text
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 58d1e17ffe5109a7ae296caafcadfdbe6a7d176f0bc4ab01e12a689b0499d8bd
+    establishes:
+    - license
+  - url: https://api.github.com/repos/lancedb/lancedb
+    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for
+      lancedb/lancedb.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: d0c95f80dbf91b14c262115d1fb7160834cb71fd223619c9ebe747b2ae155db6
+    establishes:
+    - license
+    - source
+  - url: https://github.com/lancedb/lancedb/blob/main/README.md
+    shows: README describes a multimodal AI lakehouse for production vector search built on the Lance columnar format,
+      running locally or in the user's cloud with GPU index building, and a separate Cloud and Enterprise tier described
+      as products beside the open source one, with no paid tier, enterprise edition or license-key-gated build beside
+      it.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: c4dd477c2183dc83c57a74f75915397dadd5993e4ce2f55c237d34188a0ec1ca
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: 9,688,636 PyPI downloads of `lancedb` in the trailing 30 days, which lands in the 1M-10M band of the software
+    usage scale, level 4.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://pypistats.org/api/packages/lancedb/recent
+    shows: last_month downloads = 9,688,636 for lancedb
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 2221d7f8f1f7e6553ec6483791e31fac5cddc4ac5bb0ac58ac1fa039ea5b0ff8
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: complete retrieval system, distributed or cluster-capable'
+  value: Vector, full-text and hybrid retrieval with filtering over multimodal records on object storage, embedded
+    in-process, with GPU index builds and four language bindings.
+  relative_to: vespa
+  relation: one_below
+  confidence: medium
+  note: Banded on the category feature matrix as complete retrieval system, distributed or cluster-capable. Placed
+    one band below the vespa anchor, on a matrix that bands on how much of the persist-index-retrieve path a product
+    provides itself, at what scale and over how many retrieval modes.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/lancedb/lancedb/blob/main/README.md
+    shows: README still documents a multimodal AI lakehouse for production vector search built on the Lance columnar
+      format, running locally or in the user's cloud with GPU index building, and a separate Cloud and Enterprise
+      tier described as products beside the open source one.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: c4dd477c2183dc83c57a74f75915397dadd5993e4ce2f55c237d34188a0ec1ca

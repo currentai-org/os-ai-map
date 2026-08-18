@@ -77,6 +77,62 @@ def test_category_listed_in_two_arcs_fails():
     errs = validate_sources(d)
     assert any("exactly one taxonomy arc" in e for e in errs)
 
+
+def test_preliminary_category_may_have_no_head_products_but_needs_business_logic():
+    d = _fixture()
+    d["taxonomy"]["arcs"][0]["categories"].append(
+        {"name": "storage", "status": "preliminary"}
+    )
+    d["categories"]["storage"] = {
+        "name": "storage",
+        "display_name": "Storage",
+        "description": "AI storage and retrieval systems.",
+        "weights": {"adopt": 0.6, "cap": 0.4},
+        "products": [],
+        "scoring_recipe": {"version": 1},
+    }
+    assert validate_sources(d) == []
+    d["categories"]["storage"].pop("scoring_recipe")
+    assert any("storage" in e and "scoring_recipe" in e for e in validate_sources(d))
+
+
+def test_explicitly_published_category_requires_publication_fields_and_head_depth():
+    d = _fixture()
+    d["taxonomy"]["arcs"][0]["categories"] = [
+        {"name": "base_pretrained", "status": "published"}
+    ]
+    d["categories"]["base_pretrained"].update(
+        {
+            "description": "Base models.",
+            "weights": {"adopt": 0.3, "cap": 0.7},
+            "scoring_recipe": {"version": 1},
+        }
+    )
+    errs = validate_sources(d)
+    assert any("needs a strapline" in e for e in errs)
+    assert any("at least 10 scored products" in e for e in errs)
+
+
+def test_tail_registry_cannot_duplicate_a_head_product_or_artifact():
+    d = _fixture()
+    d["registry"] = {
+        "storage": {
+            "category": "storage",
+            "products": [
+                {
+                    "slug": "llama",
+                    "display_name": "Duplicate",
+                    "type": "software",
+                    "org": "meta",
+                    "github": "meta-llama/llama",
+                }
+            ],
+        }
+    }
+    errs = validate_sources(d)
+    assert any("already exists as a head product" in e for e in errs)
+    assert any("already belongs to head product" in e for e in errs)
+
 def test_roster_pointing_at_missing_product_fails():
     d = _fixture()
     d["categories"]["base_pretrained"]["products"].append("does-not-exist")

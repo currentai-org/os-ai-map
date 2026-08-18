@@ -1,0 +1,92 @@
+product: meilisearch
+openness:
+  score: 4
+  class: open_core
+  components:
+    license:
+    - name: MIT
+      detail: core
+    enterprise-dir:
+      value: BUSL-1.1
+    source:
+      value: public
+    core-gated:
+      value: gated
+      detail: advanced features including sharding and S3-streaming snapshots ship in the same repository under
+        the Business Source License 1.1 or a commercial licence, and BUSL permits non-production use only without
+        an agreement
+  confidence: high
+  note: 'MIT license body confirmed. The LICENSE body reads `SPDX-License-Identifier: MIT AND BUSL-1.1` and splits
+    the work in two: the core search engine is MIT and free for commercial use, while an Enterprise Edition portion
+    is governed by LICENSE-EE or BUSL-1.1. That is functionality withheld from the open terms inside the published
+    tree, so the core is gated - the litellm shape, not the langchain one.'
+  raw: license:MIT(core);enterprise-dir:BUSL-1.1;source:public;core-gated:gated(advanced features including sharding
+    and S3-streaming snapshots ship in the same repository under the Business Source License 1.1 or a commercial
+    licence, and BUSL permits non-production use only without an agreement)
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/meilisearch/meilisearch/blob/main/LICENSE
+    shows: 'LICENSE body reads ''SPDX-License-Identifier: MIT AND BUSL-1.1'' and states that part of the work falls
+      under the Meilisearch Enterprise Edition, licensed under the Business Source License 1.1 per LICENSE-EE, with
+      the other parts under the MIT licence.'
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 315c57000333ab29e78c67d46e96494e987cdc2b76479fb745e4ad6b496de642
+    establishes:
+    - license
+    - core-gated
+  - url: https://api.github.com/repos/meilisearch/meilisearch
+    shows: Repo metadata - license spdx_id NOASSERTION, private false, archived false, default branch main - for
+      meilisearch/meilisearch.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: de1799dd3c80eb4904500c00892c2f546fb162acc7d07df23e2ce5ab0dbf2b46
+    establishes:
+    - license
+    - source
+  - url: https://github.com/meilisearch/meilisearch/blob/main/README.md
+    shows: README describes a search engine API with out-of-the-box full-text, semantic and hybrid search, and a
+      licence section separating the MIT core, free for commercial use, from an Enterprise Edition carrying sharding
+      and S3-streaming snapshots, and names the separately licensed portion of the same repository rather than presenting
+      the tree as uniformly open.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 83929117b73b31f7233abb5237bfd04141dc278f6d6597c38ee3b65b1a3501c3
+    establishes:
+    - source
+adoption:
+  level: 3
+  reach: '>10K stars'
+  signal_type: stars_fallback
+  confidence: low
+  note: 59,006 GitHub stars, which lands in the >10K stars band of the stars scale, level 3. The `meilisearch` package
+    on PyPI is the Python client, not the engine, so its downloads measure client installs. No server deployment
+    count is published, so the stars scale applies and caps the band at 3.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://api.github.com/repos/meilisearch/meilisearch
+    shows: Repo metadata - stargazers_count = 59,006 - for meilisearch/meilisearch.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: de1799dd3c80eb4904500c00892c2f546fb162acc7d07df23e2ce5ab0dbf2b46
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: complete retrieval system, distributed or cluster-capable'
+  value: Typo-tolerant full-text search with faceting, filtering, geosearch and hybrid semantic search, with embedding
+    generation and sharding in the enterprise portion.
+  relative_to: vespa
+  relation: one_below
+  confidence: medium
+  note: Banded on the category feature matrix as complete retrieval system, distributed or cluster-capable. Placed
+    one band below the vespa anchor, on a matrix that bands on how much of the persist-index-retrieve path a product
+    provides itself, at what scale and over how many retrieval modes.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/meilisearch/meilisearch/blob/main/README.md
+    shows: README still documents a search engine API with out-of-the-box full-text, semantic and hybrid search,
+      and a licence section separating the MIT core, free for commercial use, from an Enterprise Edition carrying
+      sharding and S3-streaming snapshots.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 83929117b73b31f7233abb5237bfd04141dc278f6d6597c38ee3b65b1a3501c3

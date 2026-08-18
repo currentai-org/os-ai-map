@@ -14,6 +14,7 @@ in a category, use [`refresh-category.md`](refresh-category.md).
 ## Files this changes
 - `sources/categories/<slug>.yaml` — the category record.
 - `sources/taxonomy.yaml` — only when **creating** a category (assign it to an arc) or regrouping.
+- `sources/registry/<slug>.yaml` — optional signal-only seed roster for a preliminary category.
 
 There is **no `litmus` field**. `category.schema.json` sets `additionalProperties: false`, so
 inventing one fails `validate`. The membership boundary test — why a borderline product sits
@@ -29,10 +30,18 @@ here and not next door — is prose: put it in the category's `comments`, and in
    `sources/scores/<slug>.yaml` (use [`add-product.md`](add-product.md) first), then append its
    slug. A slug appears in exactly one category roster. Order equals display order; reorder by
    moving slugs.
-4. **Creating a category:** also add its slug to an arc in `sources/taxonomy.yaml`, or `validate`
-   fails with "must appear in exactly one taxonomy arc". The arc is the Columbia openness layer;
+4. **Creating a category:** also add it to an arc in `sources/taxonomy.yaml`, or `validate`
+   fails with "must appear in exactly one taxonomy arc". New categories normally start as
+   `{name: <slug>, status: preliminary}`. They need a definition, weights, and scoring recipe,
+   but no strapline or head products yet, and are excluded from the public scored payload.
+   Historical scalar entries are published categories. The arc is the Columbia openness layer;
    see [`../reference/identity.md`](../reference/identity.md) and the taxonomy schema.
-5. **Regrouping / reordering across arcs** happens in `sources/taxonomy.yaml` only — a category
+5. **Seed roster:** discovery candidates belong in `sources/registry/<slug>.yaml`, not in the
+   full `products:` roster. Registry rows carry stable identity and artifact IDs but no editorial
+   scores. A slug or artifact may not duplicate a head product or another tail row.
+6. **Publication:** change the taxonomy entry to `status: published` only after the category has
+   a strapline and at least ten promoted, fully scored head products. Validation enforces both.
+7. **Regrouping / reordering across arcs** happens in `sources/taxonomy.yaml` only — a category
    file no longer carries `arc` or cross-category `order`.
 
 ## Validation
@@ -42,8 +51,9 @@ uv run python -m build.validate            # must print 0 error(s)
 Then serialize and render locally to preview; do not commit the generated notebook or payload.
 
 ## Expected PR contents
-The category file, plus `taxonomy.yaml` if you created or regrouped a category. If you touched
-the roster, the added products' files belong in the same PR.
+The category file, plus `taxonomy.yaml` if you created or regrouped a category, and an optional
+per-category registry seed. If you touched the head roster, the added products' files belong in
+the same PR.
 
 ## Stop and escalate when
 - The category needs a **`scoring_recipe`** or its `components` values are prose rather than

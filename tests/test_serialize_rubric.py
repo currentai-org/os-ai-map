@@ -642,7 +642,7 @@ def test_real_sources_serialize_without_errors():
             counts[row["category_slug"]] = counts.get(row["category_slug"], 0) + 1
         return counts
 
-    # Ten software categories inherit ONE ladder from sources/rubrics/software.yaml, so
+    # Twelve software categories inherit ONE ladder from sources/rubrics/software.yaml, so
     # they all serialize the same 10 rules. Identical counts are the point: a category
     # showing a different number means it stopped inheriting.
     #
@@ -651,9 +651,9 @@ def test_real_sources_serialize_without_errors():
     # license, which is the boundary tests/test_openness_buckets.py now enforces. Removing
     # them costs 6 rows per software category and 6 from `safeguards`, whose software half
     # inherits the same ladder (25 -> 19 = 10 software + 9 model).
-    SOFTWARE = ["agent_tools_protocols", "dataset_processing_tools", "deployment",
+    SOFTWARE = ["agent_tools_protocols", "compilers", "dataset_processing_tools", "deployment",
                 "evaluation_code", "finetuning_code", "inference_code", "ml_frameworks",
-                "orchestration_agents", "telemetry_observability", "ui_api"]
+                "orchestration_agents", "storage", "telemetry_observability", "ui_api"]
     # Two DATASET categories inherit sources/rubrics/dataset.yaml, so both serialize the
     # same 24 rules. Was 22 until compound licenses resolved on all their parts, which put
     # `flan-collection` on a deferred-license tier it had never reached while the resolver
@@ -913,6 +913,13 @@ def test_real_sources_serialize_without_errors():
         # rockchip-rk3588 stays deferred pending the form_factor proposal (#219) and so still
         # publishes nothing, which is what holds the rise to the one product.
         "edge_hardware": 95,
+        # compilers and storage joined on 2026-08-18, promoted from the tail registry with 26
+        # and 24 products. Both inherit the shared software ladder and both record the same three
+        # dimensions per product, so the row count runs close to 4 x products: 98 and 94 rather
+        # than 104 and 96, because tensorrt records no `core-gated` at all (a `partial` source
+        # has nothing to gate) and the two deferred products, liger-kernel and pgvector, publish
+        # no openness evidence.
+        "compilers": 98, "storage": 94,
     }
     assert {r["grade"] for r in tables["product_openness_evidence"]} == {"document"}
 

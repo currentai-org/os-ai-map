@@ -148,6 +148,22 @@ def test_layer_order_present_and_in_arc_sequence():
     assert list(payload)[:2] == ["descriptions", "layer_order"]
 
 
+def test_preliminary_categories_are_excluded_from_the_public_payload():
+    src = _sources()
+    src["categories"]["storage"] = {
+        "name": "storage",
+        "display_name": "Storage",
+        "products": [],
+    }
+    src["taxonomy"]["arcs"][0]["categories"].append(
+        {"name": "storage", "status": "preliminary"}
+    )
+    payload = build_payload(src, frozen_long_tail={}, generated="2026-06-10")
+    assert payload["order"] == ["base_pretrained"]
+    assert "storage" not in payload["categories"]
+    assert "storage" not in payload["descriptions"]["categories"]
+
+
 def test_null_adoption_serializes_maturity_null():
     src = _sources()
     src["scores"]["llama-4"]["adoption"] = {"level": None, "signal_type": "unknown"}

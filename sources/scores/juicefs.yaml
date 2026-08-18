@@ -1,0 +1,81 @@
+product: juicefs
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole product,
+    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
+    and the core ungated.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/juicedata/juicefs/blob/main/LICENSE
+    shows: LICENSE file is the verbatim Apache-2.0 text
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+    establishes:
+    - license
+  - url: https://api.github.com/repos/juicedata/juicefs
+    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for
+      juicedata/juicefs.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: b5ad5b248704d2cd7b50d254e3509a11d18a3b5219f926f00ccc6627176ca4e4
+    establishes:
+    - license
+    - source
+  - url: https://github.com/juicedata/juicefs/blob/main/README.md
+    shows: README describes a high-performance POSIX file system for cloud-native environments that persists data
+      in object storage such as Amazon S3 and metadata in Redis, MySQL or TiKV, released under Apache-2.0, with
+      no paid tier, enterprise edition or license-key-gated build beside it.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: a0f9af00f1f6844208cab980f26446b6c46067c031c6c79b8d40d6c98f07971f
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 3
+  reach: '>10K stars'
+  signal_type: stars_fallback
+  confidence: low
+  note: 14,334 GitHub stars, which lands in the >10K stars band of the stars scale, level 3. The `juicefs` package
+    on PyPI is a third-party Python SDK published from another organization's repository and drawing under 200 downloads
+    a month; it is not this product's distribution channel, which is a Go binary and a CSI driver. The stars scale
+    therefore applies, capped at 3.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://api.github.com/repos/juicedata/juicefs
+    shows: Repo metadata - stargazers_count = 14,334 - for juicedata/juicefs.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: b5ad5b248704d2cd7b50d254e3509a11d18a3b5219f926f00ccc6627176ca4e4
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: complete retrieval system, distributed or cluster-capable'
+  value: POSIX, S3-gateway and CSI access over object storage with a pluggable metadata engine, caching, snapshots
+    and quotas. Complete file system rather than an index.
+  relative_to: vespa
+  relation: one_below
+  confidence: medium
+  note: Banded on the category feature matrix as complete retrieval system, distributed or cluster-capable. Placed
+    one band below the vespa anchor, on a matrix that bands on how much of the persist-index-retrieve path a product
+    provides itself, at what scale and over how many retrieval modes.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/juicedata/juicefs/blob/main/README.md
+    shows: README still documents a high-performance POSIX file system for cloud-native environments that persists
+      data in object storage such as Amazon S3 and metadata in Redis, MySQL or TiKV, released under Apache-2.0.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: a0f9af00f1f6844208cab980f26446b6c46067c031c6c79b8d40d6c98f07971f

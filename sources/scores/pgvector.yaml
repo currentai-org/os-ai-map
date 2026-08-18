@@ -1,0 +1,90 @@
+product: pgvector
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: PostgreSQL
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: PostgreSQL license body confirmed. The repository is public and unarchived and builds the whole product,
+    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
+    and the core ungated. The LICENSE body is the PostgreSQL License - the Postgres project's own permissive terms,
+    carrying the University of California and PostgreSQL Global Development Group notices. It is OSI-approved, but
+    the shared software ladder's OSI tier does not list the name, so the licence maps to no tier and the formula
+    abstains. The recorded pair is the one the ladder would produce for a public, ungated, OSI-licensed product,
+    and adding `PostgreSQL` to the shared tier is a rubric decision for a maintainer rather than a per-product fix.
+    No other product on the map records this licence, so the ruling would move no existing score.
+  raw: license:PostgreSQL(OSI);source:public;core-gated:ungated
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/pgvector/pgvector/blob/master/LICENSE
+    shows: LICENSE body is the PostgreSQL License - the Postgres project's own permissive terms, carrying the PostgreSQL
+      Global Development Group and University of California notices - which is why the API reports NOASSERTION.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 6bba9ebeb73e27477463b05e5ef1bf303bccbddb3db9bbc95905d351604d6a87
+    establishes:
+    - license
+  - url: https://api.github.com/repos/pgvector/pgvector
+    shows: Repo metadata - license spdx_id NOASSERTION, private false, archived false, default branch master - for
+      pgvector/pgvector.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 6ac746e2a79f3b273e73490a7b91311277a01abcb66aeb542f0ee21fb6937f1c
+    establishes:
+    - license
+    - source
+  - url: https://github.com/pgvector/pgvector/blob/master/README.md
+    shows: README describes vector similarity search for Postgres with exact and approximate nearest neighbour search
+      over single-precision, half-precision, binary and sparse vectors, six distance metrics, quantization for scale,
+      and ACID compliance and point-in-time recovery inherited from Postgres, with no paid tier, enterprise edition
+      or license-key-gated build beside it.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: cb55d09d1718fad1faeecadae20d0b83392fcdfe7d87888750dd91cfe7b23479
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 3
+  reach: '>10K stars'
+  signal_type: stars_fallback
+  confidence: low
+  note: 22,664 GitHub stars, which lands in the >10K stars band of the stars scale, level 3. The `pgvector` package
+    on PyPI is pgvector-python, a client helper for talking to the extension from Python, and its 36.6M monthly
+    downloads belong to that library rather than to this one. The extension itself is distributed through distribution
+    packages, PGXN and managed-Postgres vendors, none of which publishes a comparable count, so the stars scale
+    applies with its cap of 3.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://api.github.com/repos/pgvector/pgvector
+    shows: Repo metadata - stargazers_count = 22,664 - for pgvector/pgvector.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 6ac746e2a79f3b273e73490a7b91311277a01abcb66aeb542f0ee21fb6937f1c
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: single-purpose store or index'
+  value: Exact and approximate nearest neighbour search with IVFFlat and HNSW over four vector types and six distance
+    metrics, inheriting persistence and transactions from Postgres rather than implementing them.
+  relative_to: vespa
+  relation: two_below
+  confidence: medium
+  note: Banded on the category feature matrix as single-purpose store or index. Placed two bands below the vespa
+    anchor, on a matrix that bands on how much of the persist-index-retrieve path a product provides itself, at
+    what scale and over how many retrieval modes.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/pgvector/pgvector/blob/master/README.md
+    shows: README still documents vector similarity search for Postgres with exact and approximate nearest neighbour
+      search over single-precision, half-precision, binary and sparse vectors, six distance metrics, quantization
+      for scale, and ACID compliance and point-in-time recovery inherited from Postgres.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: cb55d09d1718fad1faeecadae20d0b83392fcdfe7d87888750dd91cfe7b23479

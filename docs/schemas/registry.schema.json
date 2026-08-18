@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Tail registry",
+  "type": "object",
+  "required": ["category", "products"],
+  "additionalProperties": false,
+  "properties": {
+    "category": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$",
+      "description": "The preliminary or published category this per-category registry file extends. It must equal the filename stem."
+    },
+    "products": {
+      "type": "array",
+      "description": "Signal-only tail products. They carry identity and addressable artifacts but no editorial scores, and are excluded from the public scored map until promoted.",
+      "items": {
+        "type": "object",
+        "required": ["slug", "display_name", "type", "org", "github"],
+        "additionalProperties": false,
+        "properties": {
+          "slug": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+          "display_name": {"type": "string", "minLength": 1},
+          "type": {"enum": ["software", "model", "dataset", "hardware"]},
+          "org": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$"},
+          "github": {"type": "string", "pattern": "^[^/]+/[^/]+$"},
+          "pypi": {"type": "string", "minLength": 1},
+          "npm": {"type": "string", "minLength": 1},
+          "huggingface_model": {"type": "string", "pattern": "^[^/]+/[^/]+$"},
+          "huggingface_dataset": {"type": "string", "pattern": "^[^/]+/[^/]+$"},
+          "homepage": {"type": "string", "format": "uri"}
+        }
+      }
+    }
+  }
+}

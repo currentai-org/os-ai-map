@@ -223,10 +223,16 @@ def test_local_scores_matches_check_rubrics_split():
     unexercised and pinned by tests/test_openness_buckets.py, because the ruling it encodes is
     about a license class rather than about one product."""
     computed, deferred = local_scores(None)
-    assert len(deferred) == 5
-    assert len(computed) == 467
+    # 467/5 -> 515/7 on 2026-08-18, when compilers and storage were promoted from the tail
+    # registry: 50 products in, and two new deferrals that are one ruling rather than two.
+    # liger-kernel records BSD-2-Clause and pgvector the PostgreSQL License; both are
+    # OSI-approved and meet the shared ladder's `osi` tier definition, and neither name is on
+    # that tier's literal list, so the formula abstains on both. Each is the first product on
+    # the map to record its license, so the ruling that closes them moves no existing score.
+    assert len(deferred) == 7
+    assert len(computed) == 515
     assert not set(computed) & set(deferred)
-    # Every one of the 410 reproduces today, so none should abstain.
+    # Every one of them reproduces today, so none should abstain.
     assert [key for key, value in computed.items() if value is None] == []
 
 

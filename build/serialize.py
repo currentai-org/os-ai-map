@@ -12,6 +12,7 @@ import tomllib
 import yaml
 
 from build.check_rubric import components_string
+from build.taxonomy import arc_categories
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -440,7 +441,9 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
         lyr = arc.get("layer")
         if lyr and lyr not in layer_order:
             layer_order.append(lyr)
-        for cid in arc["categories"]:
+        for cid, status in arc_categories(arc):
+            if status != "published":
+                continue
             order.append(cid)
             cid_arc[cid] = arc["name"]
             cid_layer[cid] = lyr

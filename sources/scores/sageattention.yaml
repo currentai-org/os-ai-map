@@ -1,0 +1,79 @@
+product: sageattention
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole product,
+    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
+    and the core ungated.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/thu-ml/SageAttention/blob/main/LICENSE
+    shows: LICENSE file is the verbatim Apache-2.0 text
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 178f46f58127373d449565589a32c2b5b60c082934618c17b7ce6890c61ef394
+    establishes:
+    - license
+  - url: https://api.github.com/repos/thu-ml/SageAttention
+    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for
+      thu-ml/SageAttention.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: d6594408649e453ce150d5f3bd2f46ae297ef68d1a35560518e1909d6b359324
+    establishes:
+    - license
+    - source
+  - url: https://github.com/thu-ml/SageAttention/blob/main/README.md
+    shows: README describes the official implementation of SageAttention, SageAttention2 and SageAttention2++, quantized
+      8-bit and INT4 attention applied as a plug-and-play replacement across language, image and video models, with
+      no paid tier, enterprise edition or license-key-gated build beside it.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 0cc6662bcf49645b10524f51de5178ab9d83946ae89bfa502a1f16c742bd74ac
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: 209,877 PyPI downloads of `sageattention` in the trailing 30 days, which lands in the 100K-1M band of the
+    software usage scale, level 3.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://pypistats.org/api/packages/sageattention/recent
+    shows: last_month downloads = 209,877 for sageattention
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: a9b66cb96832e3135c44f84b3d5c62d75bcc7c0328d895a812c0af3b469e142d
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: narrow kernel set or single-pass utility'
+  value: Quantized attention kernels for one operator, on recent NVIDIA architectures, applied as a plug-in replacement.
+  relative_to: tensorrt
+  relation: two_below
+  confidence: medium
+  note: Banded on the category feature matrix as narrow kernel set or single-pass utility. Placed two bands below
+    the tensorrt anchor, on a matrix that bands on how much of the model-to-hardware transformation pipeline a product
+    performs, over how many inputs and targets.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/thu-ml/SageAttention/blob/main/README.md
+    shows: README still documents the official implementation of SageAttention, SageAttention2 and SageAttention2++,
+      quantized 8-bit and INT4 attention applied as a plug-and-play replacement across language, image and video
+      models.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 0cc6662bcf49645b10524f51de5178ab9d83946ae89bfa502a1f16c742bd74ac

@@ -1,0 +1,84 @@
+product: arm-compute-library
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: 'MIT license body confirmed. The repository is public and unarchived and builds the whole product, and the
+    README describes no paid tier, enterprise edition or license-gated build beside it, so source is public and
+    the core ungated. GitHub reports no licence because the repository follows the REUSE convention rather than
+    carrying a root LICENSE file: REUSE.toml declares MIT throughout, LICENSES/MIT.txt holds the body, and Apache-2.0
+    and BSD-3-Clause texts sit beside it for vendored third-party code. All three are OSI, so the tier does not
+    turn on which covers a given file.'
+  raw: license:MIT(OSI);source:public;core-gated:ungated
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/ARM-software/ComputeLibrary/blob/main/LICENSES/MIT.txt
+    shows: LICENSES/MIT.txt holds the verbatim MIT text. The repository carries no root LICENSE file - it follows
+      the REUSE convention, with REUSE.toml declaring MIT for the tree and Apache-2.0 and BSD-3-Clause texts beside
+      this one for vendored third-party code - which is why the API reports no license at all.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: b05785f9f18e6716bab63424b11454513b9943a222595b70411009202fc592b5
+    establishes:
+    - license
+  - url: https://api.github.com/repos/ARM-software/ComputeLibrary
+    shows: Repo metadata - license spdx_id None, private false, archived false, default branch main - for ARM-software/ComputeLibrary.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 2f2a8b1b120bff928d6de3aeeb6f719aa8af4b9ccd62f30b617694a602010e4e
+    establishes:
+    - license
+    - source
+  - url: https://github.com/ARM-software/ComputeLibrary/blob/main/README.md
+    shows: README describes a collection of low-level machine learning and computer vision functions optimized for
+      Arm Cortex-A and Neoverse CPUs and Mali GPUs, distributed as source and as prebuilt binaries, with no paid
+      tier, enterprise edition or license-key-gated build beside it.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 9dcf9265c2a81b064ea9793379ef9d1235710a40c2d7c253e4664389ba3dc7d3
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 3,181 GitHub stars, which lands in the 1K-10K stars band of the stars scale, level 2. Distributed as source
+    and prebuilt binaries rather than through a package registry, so no download figure exists and the stars scale
+    applies with its cap of 3.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://api.github.com/repos/ARM-software/ComputeLibrary
+    shows: Repo metadata - stargazers_count = 3,181 - for ARM-software/ComputeLibrary.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 2f2a8b1b120bff928d6de3aeeb6f719aa8af4b9ccd62f30b617694a602010e4e
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: performance-critical kernel and operator library'
+  value: Hand-optimized NEON and OpenCL kernels for ML and vision operators across Arm Cortex-A, Neoverse and Mali
+    targets. Broad operator coverage on one vendor's architectures.
+  relative_to: apache-tvm
+  relation: two_below
+  confidence: medium
+  note: Banded on the category feature matrix as performance-critical kernel and operator library. Placed two bands
+    below the apache-tvm anchor, on a matrix that bands on how much of the model-to-hardware transformation pipeline
+    a product performs, over how many inputs and targets.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/ARM-software/ComputeLibrary/blob/main/README.md
+    shows: README still documents a collection of low-level machine learning and computer vision functions optimized
+      for Arm Cortex-A and Neoverse CPUs and Mali GPUs, distributed as source and as prebuilt binaries.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 9dcf9265c2a81b064ea9793379ef9d1235710a40c2d7c253e4664389ba3dc7d3
