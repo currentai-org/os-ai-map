@@ -498,3 +498,37 @@ def test_release_date_rejects_a_version_with_no_dated_heading(tmp_path):
 def test_payload_release_date_defaults_to_the_changelog_date():
     payload = build_payload(_sources(), frozen_long_tail={}, generated="2026-06-10")
     assert payload["released"] == release_date(repo_version())
+
+
+def test_descriptions_match_the_reference_doc():
+    """The payload's stage and gap definitions are quoted verbatim in gap-analysis.md.
+
+    They are one text with two homes: the legend a visitor reads and the reference a curator
+    reads. Prose that merely agrees in substance drifts silently — nothing here could tell you
+    which version was current — so the contract is character equality, and this is what enforces
+    it. The doc carries the thresholds and the assignment rules around these sentences; those
+    are the mechanism and are deliberately absent from the payload.
+    """
+    from build.serialize import ROOT, _GAP_DESC, _STAGE_DESC, _STAGE_NAMES
+
+    # Every assertion binds a definition to its owner. Checking only that a sentence appears
+    # somewhere in the file would pass with two definitions swapped, which is a drift this guard
+    # exists to catch: the text would be present, attached to the wrong stage or gap.
+    doc = (ROOT / "docs" / "reference" / "gap-analysis.md").read_text()
+    for gap, text in _GAP_DESC.items():
+        assert f"- **`{gap}`** — {text}" in doc, f"gap-analysis.md is out of sync for `{gap}`"
+    for num, text in _STAGE_DESC.items():
+        row = f"| **{num}** | {_STAGE_NAMES[num]} | {text} |"
+        assert row in doc, f"gap-analysis.md is out of sync for stage {num}"
+
+    # methodology.md uses its own list formatting and appends the mechanism after some
+    # definitions, so this matches the labelled prefix rather than the whole line.
+    method = (ROOT / "docs" / "methodology.md").read_text()
+    for gap, text in _GAP_DESC.items():
+        assert f"- **{gap.title()}:** {text}" in method, f"methodology.md is out of sync for `{gap}`"
+    # Stages in BOTH docs, not just the reference one. Binding gaps in two files and stages in
+    # one is how methodology.md kept the pre-#320 stage wording through a review that thought
+    # the guard covered it.
+    for num, text in _STAGE_DESC.items():
+        labelled = f"- **Stage {num}: {_STAGE_NAMES[num]}.** {text}"
+        assert labelled in method, f"methodology.md is out of sync for stage {num}"

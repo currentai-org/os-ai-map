@@ -45,33 +45,54 @@ _STRONG_MIN = 4.0
 _STAGE_NAMES = {0: "Void", 1: "Open Experiments", 2: "Emerging Alternatives",
                 3: "Viable Alternatives", 4: "Competitive Open Ecosystem",
                 5: "Mature Open Ecosystem"}
-# Plain-language definitions of each stage and gap, emitted into the payload's
-# top-level `descriptions` block so downstream consumers render a legend without
-# re-deriving the methodology. Kept verbatim from docs/reference/gap-analysis.md
-# (the prose source of truth); edit both together.
+# Plain-language definitions of each stage, gap and score tier, emitted into the payload's
+# top-level `descriptions` block so downstream consumers render a legend without re-deriving the
+# methodology. The stage and gap sentences are the definitions, full stop: gap-analysis.md and
+# methodology.md quote them VERBATIM and carry the mechanism -- thresholds, which rung fires what,
+# derived vs declared -- around them rather than restating them in other words. Edit here and copy
+# across; test_descriptions_match_the_reference_doc pins all four lists. The tier descriptions
+# below are not quoted in either doc and are not covered by that test.
+# Stage 4 used to read "not yet enough for depth" while the depth gap read "fires at Stage 4"
+# -- each defined by the other. The wording no longer does that. It also avoids the bare words
+# "leading" and "strong" except where the tier is genuinely meant: both are tier names now, and
+# a category can sit on a rung with no product in either tier (safeguards is Stage 3 with a best
+# fully-open score of 3.5, below the strong floor), so a colloquial use would read as false.
+# The exact thresholds are the constants above and the table in docs/reference/gap-analysis.md.
 _STAGE_DESC = {
-    0: "no usable open option exists (and nothing reaches the Leading tier anywhere)",
-    1: "fully-open options exist but are weak on both axes",
-    2: "no Leading fully-open product; the best fully-open option is promising but limited",
-    3: "no Leading fully-open product, but the best fully-open option is strong",
-    4: "at least one Leading fully-open product, but not yet enough for depth",
-    5: "enough Leading fully-open products to be redundant/resilient",
+    0: "The category is still nascent overall, with no category-leading products and no "
+       "meaningful fully open options.",
+    1: "Fully open products are absent or remain substantially limited in adoption, "
+       "capability, or both.",
+    2: "Fully open products are becoming credible, but remain limited in adoption or "
+       "capability.",
+    3: "Fully open options are genuinely viable, but none has reached the category-leading "
+       "tier.",
+    4: "At least one fully open product has reached the category-leading tier, but the open "
+       "field is still thin.",
+    5: "Multiple fully open products have reached the category-leading tier, creating a deep "
+       "and competitive open ecosystem.",
 }
+# One sentence each, in the reader's terms. These render in the site legend and the category
+# drawer, so they carry no implementation detail (which rung a gap fires on, whether it is
+# derived or declared) and no repo paths -- that reasoning lives in the two prose docs below.
 _GAP_DESC = {
-    "void": "no usable open option at all.",
-    "capability": "the best fully-open option isn't capable enough to be useful.",
-    "adoption": "the best fully-open option is below the adoption threshold.",
-    "depth": "proven top-tier (Leading) open options exist, but too few of them for redundancy. "
-             "The shortfall is count, not quality; fires at Stage 4 only, because below it the "
-             "stage number already says no Leading open option exists.",
-    "openness": "capable, adopted options exist, but the Leading-tier ones are not fully open "
-                "(open-ish or closed). This is the orthogonal flag; it can co-occur with the others.",
-    "disclosure": "the open products here are real and widely used, but the closed frontier's own "
-                  "equivalent is undisclosed: labs publish neither their proprietary and licensed "
-                  "data nor their exact training-data recipe. The gap is the invisibility of the "
-                  "frontier's data, not the absence of open data. Declared per category (see "
-                  "docs/reference/gap-analysis.md), not inferred from the roster.",
+    "void": "No usable fully open option exists at all.",
+    "capability": "The strongest fully open product remains limited in capability.",
+    # Deliberately claims nothing about capability: both driver gaps fire independently, so a
+    # category weak on both axes shows this chip alongside the capability one, and asserting
+    # "capable fully open products exist" here would contradict it on the same panel.
+    "adoption": "The strongest fully open product has not yet achieved broad adoption.",
+    "depth": "Fully open products have reached the category-leading tier, but there are too "
+             "few to create a deep and resilient open ecosystem.",
+    "openness": "Products have reached the category-leading tier, but none of them is fully "
+                "open.",
+    "disclosure": "Closed products rely on data or training recipes that are not disclosed, "
+                  "limiting visibility into how they are built and how they compare with fully "
+                  "open products.",
 }
+# The "available measured axes" qualification is deliberate: a product with no capability
+# grade is scored on adoption alone, so a tier names the score over whatever axes exist for that
+# product rather than asserting a judgment on both.
 _TIER_DESC = {
     "leading": "an overall score of 4.5 or higher, calculated from the product's available "
                "measured axes.",
