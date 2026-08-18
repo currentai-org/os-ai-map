@@ -24,6 +24,10 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
 
 ### Changed
 
+- Split the labour between stage and gap text: a stage says where a category stands, a gap says
+  what it needs. They render together in the category drawer, and written in one mood they
+  restated each other — `depth` fires if and only if the stage is 4, so both sentences carried
+  the same fact (#87, #321).
 - Rewrote the stage and gap definitions the payload carries — the text rendered in the site
   legend and category drawer. Stage 4 and the `depth` gap no longer define each other, the
   `adoption` gap no longer defines itself by its own threshold, and the `disclosure` gap no longer

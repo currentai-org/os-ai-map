@@ -109,9 +109,9 @@ Worth being explicit about what that bar requires, because it is easy to misread
 
 **Step 2: the category stage.** Only **fully open** products advance a category's stage. Open-ish products (open weights, source-available, and the like) are used solely to detect the openness gap below; crediting them would blur the line between open source and open weights that the map exists to draw. The choice is consequential but bounded: counting open-weights models as open would move only three categories, all in the model layer — base/pretrained models (Stage 3→5), fine-tuned/chat models (2→3), and edge hardware (3→4) — and would leave every infrastructure and tooling verdict unchanged. The open-model verdict should therefore be read as a deliberately strict reading of a few model categories, not a sweeping claim about the whole stack. The ladder measures the health of the genuinely open ecosystem:
 
-- **Stage 5: Mature Open Ecosystem.** Multiple fully open products have reached the category-leading tier, creating a deep and competitive open ecosystem.
-- **Stage 4: Competitive Open Ecosystem.** At least one fully open product has reached the category-leading tier, but the open field is still thin.
-- **Stage 3: Viable Alternatives.** Fully open options are genuinely viable, but none has reached the category-leading tier.
+- **Stage 5: Mature Open Ecosystem.** Several fully open products lead the category, so no single project carries it.
+- **Stage 4: Competitive Open Ecosystem.** A small number of fully open products lead the category.
+- **Stage 3: Viable Alternatives.** Fully open options are proven in real use, but none leads the category.
 - **Stage 2: Emerging Alternatives.** Fully open products are becoming credible, but remain limited in adoption or capability.
 - **Stage 1: Open Experiments.** Fully open products are absent or remain substantially limited in adoption, capability, or both.
 - **Stage 0: Void.** The category is still nascent overall, with no category-leading products and no meaningful fully open options.
@@ -122,12 +122,12 @@ The exact cutoffs (four category-leading fully-open products for Stage 5, the 4.
 
 Openness is treated as an axis orthogonal to maturity: a category can hold strong, widely adopted options that are simply not *fully* open. Each category therefore carries a set of zero or more gaps, derived from the same metrics as the stage:
 
-- **Void:** No usable fully open option exists at all.
-- **Capability:** The strongest fully open product remains limited in capability.
-- **Adoption:** The strongest fully open product has not yet achieved broad adoption.
-- **Depth:** Fully open products have reached the category-leading tier, but there are too few to create a deep and resilient open ecosystem.
-- **Openness:** Products have reached the category-leading tier, but none of them is fully open.
-- **Disclosure:** Closed products rely on data or training recipes that are not disclosed, limiting visibility into how they are built and how they compare with fully open products.
+- **Void:** Needs a usable fully open option at all.
+- **Capability:** Needs a more capable fully open option.
+- **Adoption:** Needs broader adoption of its fully open options.
+- **Depth:** Needs more fully open products at the leading tier to be resilient.
+- **Openness:** Needs its category-leading products to be fully open.
+- **Disclosure:** Needs the closed alternatives to disclose their data and training recipes.
 A fully mature ecosystem carries no gaps, with the one exception that disclosure can still be flagged there: it describes the closed frontier's silence, not a shortfall of the open ecosystem. The set is extensible: further gap types, such as maintenance or bus-factor risk, can be added as the underlying signals become available, without changing the staging logic.
 
 Each gap names a different kind of shortfall, so which one fires follows from the stage. At Stage 4 a category has proven category-leading open options but not enough of them, so its only stage-derived gap is **depth**; a declared **disclosure** may coexist. Below Stage 4 nothing fully open clears the bar, so we name the drivers that hold the best fully open option back — capability, adoption, or both — rather than restating the stage. Both can fire together, and neither is required: a category whose measured axes both clear their cutoffs while the blend still misses the bar carries no driver gap, since the stage number already places it below the leading-product threshold and asserting a shortfall the axes do not show would be false.
