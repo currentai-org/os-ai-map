@@ -96,7 +96,6 @@ def validate_sources(data: dict) -> list[str]:
     # Arcs are the Columbia ontology layers; each must declare a valid `layer`
     # slug, since serialize derives every category's layer from its arc.
     tax_count: dict[str, int] = {}
-    lifecycle_declared: set[str] = set()
     for arc in taxonomy.get("arcs", []):
         if arc.get("layer") not in LAYERS:
             errors.append(f"taxonomy arc {arc.get('name')!r}: layer {arc.get('layer')!r} not in {sorted(LAYERS)}")
@@ -104,8 +103,6 @@ def validate_sources(data: dict) -> list[str]:
             cid, status = category_entry(raw)
             if cid is None or status is None:
                 continue
-            if isinstance(raw, dict):
-                lifecycle_declared.add(cid)
             tax_count[cid] = tax_count.get(cid, 0) + 1
             if cid not in cats:
                 errors.append(f"taxonomy arc {arc.get('name')!r}: category {cid!r} has no categories/{cid}.yaml")
@@ -114,11 +111,24 @@ def validate_sources(data: dict) -> list[str]:
         if n != 1:
             errors.append(f"category {cid!r}: must appear in exactly one taxonomy arc (found in {n})")
 
+    # --- category contract, by lifecycle status ---
+    # Applied on the NORMALIZED status, so both taxonomy spellings are held to the same
+    # contract. This used to skip any category not declared as a mapping, on the reasoning
+    # that scalar entries predate lifecycle status and should not be disturbed - and that
+    # reasoning let the compatibility shim become an exemption. Appending a scalar entry for
+    # a category file carrying nothing but `name`, `display_name` and an empty `products`
+    # produced zero errors and a publicly visible category with no description, no weights,
+    # no ladder and no strapline. Found in review of the compilers/storage promotion.
+    #
+    # Applying it to all eighteen categories was measured before it was written: every one of
+    # the sixteen scalar entries already satisfies the whole contract, so this closes a hole
+    # rather than creating work. `category_statuses` is what makes the two spellings one
+    # question - a scalar entry normalizes to `published`, which is what it has always meant.
     statuses = category_statuses(taxonomy)
     for cid, cat in cats.items():
-        if cid not in lifecycle_declared:
-            continue
-        status = statuses.get(cid)
+        if cid not in statuses:
+            continue  # not in any arc; already reported above
+        status = statuses[cid]
         if not cat.get("description"):
             errors.append(f"category {cid!r}: every category needs a description")
         if not cat.get("weights"):

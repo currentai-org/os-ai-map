@@ -324,7 +324,7 @@ def _row(slug: str, prod: dict, org_slug: str, org_name: str, score: dict,
     return {k: row[k] for k in PRODUCT_KEY_ORDER if k in row}
 
 
-def _organizations(orgs: dict, product_org: dict) -> dict:
+def _organizations(orgs: dict, product_org: dict, published: set[str]) -> dict:
     """The organization roster, emitted for the app's /map/org/<slug> pages.
 
     Sourced from sources/organizations/*.yaml rather than build/registry/organizations.csv:
@@ -333,10 +333,19 @@ def _organizations(orgs: dict, product_org: dict) -> dict:
 
     Everything is sorted. A curator reordering a YAML roster must not produce a payload diff,
     because a payload diff is a daily bot PR in the app repo.
+
+    `published` is the set of product slugs the payload's categories carry, and this index is
+    built from it rather than from every org file. Two things follow, and both were leaks found
+    in review of the compilers/storage promotion: a roster never lists a product the categories
+    do not, and an organization all of whose products sit in preliminary categories does not
+    appear at all. Otherwise marking a category preliminary hid its products from /map while
+    leaving them addressable at /map/org/<slug>, and shipped orgs - openxla, mlc-ai - that
+    exist on the map nowhere else.
     """
     by_org: dict[str, list[str]] = {}
     for prod_slug, org_slug in product_org.items():
-        by_org.setdefault(org_slug, []).append(prod_slug)
+        if prod_slug in published:
+            by_org.setdefault(org_slug, []).append(prod_slug)
     return {
         slug: {
             "slug": slug,
@@ -346,13 +355,13 @@ def _organizations(orgs: dict, product_org: dict) -> dict:
             "github": sorted(e["url"] for e in (orgs[slug].get("github") or [])
                              if isinstance(e, dict) and e.get("url")),
             "country": orgs[slug].get("country", ""),
-            "products": sorted(by_org.get(slug, [])),
+            "products": sorted(by_org[slug]),
         }
-        for slug in sorted(orgs)
+        for slug in sorted(by_org)
     }
 
 
-def _aliases(prods: dict, orgs: dict) -> dict:
+def _aliases(prods: dict, orgs: dict, published: set[str], org_slugs: set[str]) -> dict:
     """Retired slug -> live slug, for the app's redirects.
 
     Gathered from the records rather than from one mapping, which is where these lived
@@ -370,13 +379,20 @@ def _aliases(prods: dict, orgs: dict) -> dict:
 
     Sorted, because this payload feeds a daily automated PR in another repo and
     unsorted keys would show up there as a phantom diff.
+
+    Scoped to what the payload serves, same as `_organizations` and for the same reason: a
+    redirect to a page the payload does not carry is a 404 with extra steps. `published` is the
+    product slugs in published categories, `org_slugs` the organizations that own at least one
+    of them.
     """
     return {
         "products": dict(sorted(
-            (alias, slug) for slug, p in prods.items() for alias in (p.get("aliases") or [])
+            (alias, slug) for slug, p in prods.items() if slug in published
+            for alias in (p.get("aliases") or [])
         )),
         "organizations": dict(sorted(
-            (alias, slug) for slug, o in orgs.items() for alias in (o.get("aliases") or [])
+            (alias, slug) for slug, o in orgs.items() if slug in org_slugs
+            for alias in (o.get("aliases") or [])
         )),
     }
 
@@ -480,6 +496,9 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
     # Stage/gap text are methodology constants (above); the per-category one-liner is
     # the neutral `description` from sources/categories/<cid>.yaml ("what it is", as
     # opposed to the editorial strapline). Edit at the source; it flows here on build.
+    # Built before the payload literal because the alias index is scoped to the organizations
+    # this leaves standing, and both are scoped to the published products.
+    organizations = _organizations(orgs, product_org, published_slugs)
     descriptions = {
         "stages": {str(k): v for k, v in _STAGE_DESC.items()},
         "gaps": dict(_GAP_DESC),
@@ -488,8 +507,8 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
     }
     return {"descriptions": descriptions, "layer_order": layer_order,
             "categories": out_cats, "order": order,
-            "organizations": _organizations(orgs, product_org),
-            "aliases": _aliases(prods, orgs),
+            "organizations": organizations,
+            "aliases": _aliases(prods, orgs, published_slugs, set(organizations)),
             "n_total": n, "generated": generated,
             "version": version, "released": released,
             # Published products only: see _filter_long_tail. A preliminary category's

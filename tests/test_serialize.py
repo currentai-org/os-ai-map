@@ -218,6 +218,31 @@ def test_long_tail_keeps_rows_for_products_in_preliminary_categories():
     assert [t["name"] for t in payload["long_tail"]["top"]] == ["meta-llama/llama"]
 
 
+def test_preliminary_products_reach_no_public_index():
+    """Every index the payload publishes is scoped to the published categories, not to the files.
+
+    Hiding a product from `categories` while leaving it in `organizations` or `aliases` does not
+    hide it: /map/org/<slug> still lists it and a redirect still resolves to a page the payload
+    does not carry. Found in review of the compilers/storage promotion, where marking one category
+    preliminary left its products on their org rosters and shipped two organizations - openxla and
+    mlc-ai - that existed on the map nowhere else.
+    """
+    src = _sources()
+    src["products"]["llama-4"]["aliases"] = ["llama-4-scout"]
+    src["organizations"]["meta"]["aliases"] = ["facebook"]
+    src["taxonomy"]["arcs"][0]["categories"] = [{"name": "base_pretrained", "status": "preliminary"}]
+    payload = build_payload(src, frozen_long_tail={}, generated="2026-06-10")
+    assert payload["organizations"] == {}, "an org whose only product is unpublished is not shipped"
+    assert payload["aliases"] == {"products": {}, "organizations": {}}
+
+    # and with the same category published, all three indexes carry it
+    src["taxonomy"]["arcs"][0]["categories"] = ["base_pretrained"]
+    payload = build_payload(src, frozen_long_tail={}, generated="2026-06-10")
+    assert payload["organizations"]["meta"]["products"] == ["llama-4"]
+    assert payload["aliases"]["products"] == {"llama-4-scout": "llama-4"}
+    assert payload["aliases"]["organizations"] == {"facebook": "meta"}
+
+
 def test_descriptions_block_present_and_sourced():
     src = _sources()
     src["categories"]["base_pretrained"]["description"] = "Foundation models trained from scratch."
