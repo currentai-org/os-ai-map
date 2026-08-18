@@ -22,16 +22,14 @@ openness:
       value: open
       detail: OLMES
   confidence: high
-  note: 'The released weights inherit Meta''s Llama 3.1 Community License (non-OSI, 700M-MAU cap), so the
-    license governs what a user downloading THIS checkpoint is bound by, not Ai2''s post- training layer.
-    That layer is genuinely open - data, code, RLVR recipe and eval framework, all Apache-2.0 - and it is
-    credited where it lives: tulu-3-sft-mixture carries 5/open in training_synthetic_datasets, and the same
-    recipe produces olmo-3-instruct at 5/open_source on an open base. Scoring the method on the checkpoint
-    would score two things at once. Was 3, corrected to 2 on 2026-07-29, and now 3 again on 2026-08-01 -
-    but not a reversal to the original reasoning. The 2026-07-29 correction was right at the time: the 3
-    it removed was 3/restricted, a pair no rule in the category ladder could produce. The universal license
-    scale now caps a bounded commercial license at 3/open_weights, which IS producible, so the score returns
-    while the objection that removed it stays answered.'
+  note: 'The released weights inherit Meta''s Llama 3.1 Community License - not OSI-approved, with a 700M
+    monthly-active-user commercial cap - and that license governs what someone downloading this checkpoint
+    is bound by, whatever Ai2 layered on top of it. The post-training layer itself is genuinely open: data,
+    code, RLVR recipe and evaluation framework, all Apache-2.0, and it is credited where it lives - the
+    tulu-3-sft-mixture corpus scores as fully open in its own right among the training and synthetic datasets,
+    and the same recipe produces Olmo 3 Instruct at fully open on an open base. Scoring the method on the
+    checkpoint would score two things at once. A license that bounds commercial use rather than forbidding
+    it caps at 3, in the open-weights class.'
   raw: weights:open(downloadable);license:Llama-3.1-Community(non-OSI;700M-MAU cap + use policy);post-training-data:open(Apache-2.0/ODC-BY);code:open(open-instruct
     Apache-2.0);recipe:open(SFT->DPO->RLVR);evals:open(OLMES)
   last_verified: '2026-08-13'
@@ -62,12 +60,11 @@ adoption:
   reach: 10K-100K
   signal_type: usage_volume
   confidence: high
-  note: Research-scale reach. The note that stood here until 2026-08-13 was a verbatim copy of the openness
-    note and described the license rather than the adoption; it is replaced. The three declared model SKUs
-    sum to 10,342 downloads in the trailing 30 days (Llama-3.1-Tulu-3-8B 9,421; -70B 680; -405B 241), which
-    bands at level 2 (10K-100K) on the model scale. The tulu-3-sft-mixture dataset the product also declares
-    reads 36,267, but the route takes the sum WITHIN the winning kind and the Hugging Face model route wins,
-    so the corpus is scored as its own product in training_synthetic_datasets rather than added here.
+  note: Research-scale reach. The three declared model SKUs sum to 10,342 downloads in the trailing 30 days
+    (Llama-3.1-Tulu-3-8B 9,421; -70B 680; -405B 241), which bands at level 2 (10K-100K) on the model scale.
+    The tulu-3-sft-mixture dataset the product also declares reads 36,267, but a product bands on the sum
+    within one kind of artifact and the Hugging Face models win here, so the corpus is scored as its own
+    product among the training and synthetic datasets rather than added in.
   last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/api/models/allenai/Llama-3.1-Tulu-3-8B
@@ -92,11 +89,10 @@ capability:
   value: Tulu-3-405B MMLU 87.0, GSM8K 95.5, IFEval 86.0, HumanEval 95.9, MATH 67.3
   confidence: high
   note: A 2025 post-training recipe on a Llama 3.1 base, at the top of its own generation and below the
-    2026 frontier. The note that stood here until 2026-08-13 was a verbatim copy of the openness note and
-    described the license rather than the capability; it is replaced. The 405B card's results table gives
-    the Tulu 3 405B column MMLU (5 shot, CoT) 87.0, GSM8K 95.5, IFEval 86.0, HumanEval 95.9 and MATH 67.3,
-    against a GPT-4o (11-24) column at 87.9 / 91.7 / 84.8 / 97.0 / 68.8 - a comparison set now two model
-    generations old, which is what keeps this at 3 rather than higher.
+    2026 frontier. The 405B card's results table gives the Tulu 3 405B column MMLU (5 shot, CoT) 87.0, GSM8K
+    95.5, IFEval 86.0, HumanEval 95.9 and MATH 67.3, against a GPT-4o (11-24) column at 87.9 / 91.7 / 84.8
+    / 97.0 / 68.8 - a comparison set now two model generations old, which is what keeps this at 3 rather
+    than higher.
   last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/allenai/Llama-3.1-Tulu-3-405B

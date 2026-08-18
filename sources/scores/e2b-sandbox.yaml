@@ -19,13 +19,13 @@ openness:
         no carve-out, and the paid tiers are capacity and session-length limits on the hosted service rather
         than features held back from the source
   confidence: high
-  note: 'Apache-2.0 SDKs and infrastructure with a managed cloud sold beside them. Corrected 2026-08-12
-    from a bare `gated` to `ungated` on a read of both repos and the pricing page. e2b-dev/E2B carries four
-    Apache-2.0 LICENSE files, all copies of the root, and no carve-out - but the decisive fact is the second
-    repo: e2b-dev/infra, described by the org as "Infrastructure that is powering E2B Cloud", is public,
-    Apache-2.0 and equally free of an enterprise directory. The managed product runs the published code,
-    which is the otari precedent. The pricing tiers sell capacity and session length - CPU/RAM customisation,
-    24-hour sessions, 100 concurrent sandboxes rising to 1,100 - and name no capability the source withholds.'
+  note: 'Apache-2.0 SDKs and infrastructure with a managed cloud sold beside them. Nothing in the core is
+    held back, and that reading rests on both repos and the pricing page. e2b-dev/E2B carries four Apache-2.0
+    LICENSE files, all copies of the root, and no carve-out - but the decisive fact is the second repo:
+    e2b-dev/infra, described by the org as "Infrastructure that is powering E2B Cloud", is public, Apache-2.0
+    and equally free of an enterprise directory. The managed product runs the published code. The pricing
+    tiers sell capacity and session length - CPU/RAM customization, 24-hour sessions, 100 concurrent sandboxes
+    rising to 1,100 - and name no capability the source withholds.'
   raw: license:Apache-2.0(OSI);source:public(SDKs+infra, Terraform self-host);managed-tier:e2b.dev hosted
     sandbox cloud (proprietary);core-gated:ungated(the infrastructure powering E2B Cloud is itself published
     Apache-2.0 as e2b-dev/infra with no carve-out, and the paid tiers are capacity and session-length limits
@@ -78,11 +78,11 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: 'PyPI reports 5,845,335 downloads in the trailing 30 days for the e2b package (primary), solidly
-    inside the 1M-10M band and nowhere near the 10M level-5 floor. Vendor figures corroborate: 1B+ sandboxes
-    started, 94% of Fortune 100 as customers, "7M+ monthly downloads" across the Python and npm SDKs, and
-    named production users including Perplexity, Hugging Face, Manus, Groq, Rogo, Lindy and Gumloop. Level
-    4, reach 1M-10M.'
+  note: 'PyPI reports 5,845,335 downloads in the trailing 30 days for the e2b package, solidly inside the
+    1M-10M band and nowhere near the 10M floor for level 5. Vendor figures corroborate: 1B+ sandboxes started,
+    94% of Fortune 100 as customers, "7M+ monthly downloads" across the Python and npm SDKs, and named production
+    users including Perplexity, Hugging Face, Manus, Groq, Rogo, Lindy and Gumloop. That puts it at level
+    4, with reach in the 1M-10M band.'
   last_verified: '2026-08-13'
   sources:
   - url: https://pypistats.org/packages/e2b
@@ -113,15 +113,14 @@ capability:
     breadth:Python+JS/TS code interpreter + custom templates; persistence:filesystem; scale:1B+ sandboxes
     started
   confidence: high
-  note: 'VM-grade isolation (Firecracker) is the strongest tier in the feature matrix, with broad SDK/runtime
-    support and proven scale: e2b.dev states "Each sandbox is powered by Firecracker, a microVM made to
-    run untrusted workflows", offers sessions up to 24 hours with configurable CPU and RAM, and reports
-    1b+ started sandboxes. Below the frontier-definer Firecracker itself (which it builds on), so 4 not
-    5 - recorded as relative_to firecracker with relation `one_below`, which holds arithmetically since
-    Firecracker is 5. Independent ComputeSDK TTI benchmarks put E2B at a 0.66s median time-to-interactive,
+  note: 'VM-grade isolation (Firecracker) is the strongest tier in the feature matrix, with broad SDK and
+    runtime support and proven scale: e2b.dev states "Each sandbox is powered by Firecracker, a microVM
+    made to run untrusted workflows", offers sessions up to 24 hours with configurable CPU and RAM, and
+    reports 1b+ started sandboxes. It sits one rung below Firecracker itself, the frontier-definer it builds
+    on, so 4 rather than 5. Independent ComputeSDK TTI benchmarks put E2B at a 0.66s median time-to-interactive,
     12th by median of 24 providers, where an earlier run had it at ~370ms and 7th of 19: still sub-second,
-    so the recorded cold-start class survives, but the corroboration is weaker than when it was written
-    and the band now rests on isolation strength and scale rather than on speed.'
+    so the fast cold-start holds, but the corroboration is weaker than it was and the band now rests on
+    isolation strength and scale rather than on speed.'
   last_verified: '2026-08-13'
   sources:
   - url: https://e2b.dev/
@@ -139,9 +138,8 @@ capability:
     http_status: 200
     content_sha256: e114307a0c219a70e6e5265f92bd5b72a95e95af472e71f5b974ed91cd07491e
   - url: https://www.computesdk.com/benchmarks/sandboxes/
-    shows: 'ComputeSDK TTI leaderboard, run of 2026-08-07, now 24 providers. E2B posts a 0.66s median,
-      0.96s P95, 1.02s P99 and 100% success for a composite of 92.1 - 12th by median. The ~370ms/7th-of-19
-      figure cited from the 2026-07-09 run is no longer on the page.'
+    shows: 'ComputeSDK TTI leaderboard, run of 2026-08-07, 24 providers. E2B posts a 0.66s median, 0.96s P95,
+      1.02s P99 and 100% success for a composite of 92.1 - 12th by median.'
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: a93049e6dc408dda2d08cbbce798b369c3378ba12289a3a161fe0609b5f29416

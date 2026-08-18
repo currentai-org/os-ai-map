@@ -55,10 +55,10 @@ adoption:
   reach: '>10K stars'
   signal_type: stars_fallback
   confidence: low
-  note: No PyPI/download or pull-count signal available (distributed as single-file binaries, not a package);
-    GitHub stars are the only honest signal, and stars_fallback caps the level at 3. 25,548 stars across
-    the 1 declared repo band at >10K stars, level 3 on the stars scale in signal_routing.yaml. Popular local-inference
-    convenience tool but no verified usage_volume figure.
+  note: Distributed as single-file binaries rather than as a package, so there is no download or pull count
+    to band; GitHub stars are the only honest signal, and because a star is not a use they cap the level
+    at 3. The 25,548 stars on the project's single repository fall in the >10K stars band, level 3. A popular
+    local-inference convenience tool, but with no verified usage figure behind it.
   last_verified: '2026-08-09'
   sources:
   - url: https://github.com/mozilla-ai/llamafile
@@ -74,12 +74,10 @@ capability:
     loading, a bundled llama.cpp server mode (`--server`) and TUI chat, plus whisperfile for speech-to-text;
     portability is the differentiator, not peak throughput.
   confidence: medium
-  note: Optimizes for portability/zero-install local inference rather than datacenter throughput; built
-    on llama.cpp so no continuous-batching/tensor-parallel server scaling like vLLM. Mid-tier on a capability
-    axis whose frontier is the high-throughput serving engines. No peer comparison was recorded in the brief
-    and none was introduced here.
-  basis_detail: single-file cross-platform local inference feature set re-read from the repo README and
-    its build-migration changelog
+  note: Optimized for portability and zero-install local inference rather than datacenter throughput. Because
+    it is built on llama.cpp it has none of the continuous-batching or tensor-parallel server scaling that
+    vLLM offers, which places it mid-tier on an axis whose frontier is the high-throughput serving engines.
+  basis_detail: single-file cross-platform local inference feature set and its build-migration changelog
   last_verified: '2026-08-09'
   sources:
   - url: https://raw.githubusercontent.com/mozilla-ai/llamafile/main/README.md

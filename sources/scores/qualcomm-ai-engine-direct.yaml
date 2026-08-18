@@ -15,13 +15,13 @@ openness:
       detail: qualcomm/qai-appbuilder, formerly quic/ai-engine-direct-helper -- a convenience API layer
         that requires the proprietary SDK libraries
   confidence: high
-  note: 'Source is closed against the ladder''s controlled vocabulary: the core engine has no published
-    repo and ships only as an EULA-gated download from the Qualcomm Software Center, so the formula settles
-    on source alone and the BSD-3 wrapper does not change the class. The wrapper repo has moved from quic/ai-engine-direct-helper
-    to qualcomm/qai-appbuilder; both names now redirect to the same place. Under its current name the wrapper
-    is BSD-3-Clause and states that "Some libraries from the Qualcomm AI Runtime SDK are required to use
-    QAI AppBuilder", so the open thing is a wrapper whose dependency is still an EULA-gated binary download.
-    1/closed.'
+  note: 'The core engine is closed: there is no published repository for the QNN / Qualcomm AI Runtime SDK,
+    which ships only as an EULA-gated binary download from the Qualcomm Software Center, and no license
+    is granted to source that is not published. There is an open wrapper, qualcomm/qai-appbuilder, formerly
+    quic/ai-engine-direct-helper, with both names now redirecting to the same place. Under its current name
+    that wrapper is BSD-3-Clause, but it states that "Some libraries from the Qualcomm AI Runtime SDK are
+    required to use QAI AppBuilder", so the open piece is a convenience API layer whose dependency is still
+    an EULA-gated binary. That does not change the class of the engine itself.'
   raw: source:closed(no published source for the QNN/Qualcomm AI Runtime SDK core engine; distributed as
     a proprietary binary via the Qualcomm Software Center under an EULA);license:proprietary(no license
     to the source since it is not published);open-wrapper:BSD-3-Clause(qualcomm/qai-appbuilder, formerly
@@ -83,11 +83,13 @@ capability:
     on-device LLM/VLM inference (e.g. Gemma, FastVLM) with NPU speedups reported up to 100x over CPU and
     10x over GPU on Snapdragon 8 Elite Gen 5
   confidence: medium
-  note: No peer comparison is recorded for this product and none is confirmed at least as recently as this
-    claim, so relative_to/relation stay unset per the capability-anchors rule; C4 reflects a leading mobile/edge
-    on-device runtime that is still Snapdragon-locked and edge-scale, below the server frontier engines
-    in this category.
-  basis_detail: 'Re-derived from current vendor/integrator documentation rather than a benchmark row: unified
+  note: 'A leading mobile and edge on-device runtime: a unified low-level API across the Hexagon HTP/NPU,
+    the Adreno GPU and the Kryo CPU, ahead-of-time and on-device compilation, and quantized INT8/INT16 LLM
+    and VLM inference such as Gemma and FastVLM, with NPU speedups reported up to 100x over CPU and 10x
+    over GPU on Snapdragon 8 Elite Gen 5. LiteRT, ExecuTorch and ONNX Runtime all delegate to it as their
+    Qualcomm NPU backend. It remains Snapdragon-locked and edge-scale, which holds it below the server frontier
+    engines in this category.'
+  basis_detail: 'Read from current vendor and integrator documentation rather than a benchmark row: unified
     low-level API surface, multi-accelerator coverage, AOT and on-device compilation, and measured NPU speedups
     reported by the LiteRT integration.'
   last_verified: '2026-08-09'

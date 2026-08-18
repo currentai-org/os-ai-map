@@ -22,17 +22,18 @@ openness:
       value: paid
       detail: managed-enclaves
   confidence: medium
-  note: Both halves of the stack are open under standard OSI licenses (Maple client MIT, OpenSecret platform
-    AGPL-3.0) and the served models are open-weight - unusually clean for a "private AI" product. Scored
-    open_source because the privacy guarantee is only credible because the code is open and attestable.
-    A direct read of both repos settles the open_core alternative against itself. The Maple README makes
-    the billing and feature-flag services optional external clients, VITE_MAPLE_BILLING_API_URL and VITE_OS_FLAGS_BASE_URL,
-    and the OpenSecret README says their "server implementations are not part of this repository setup";
-    a self-hosted backend runs without either, so what the subscription buys is usage on the hosted enclaves
-    rather than functionality withheld from the source. Neither repo has an enterprise directory or a license
-    key. The one closed-looking artifact is the 15MB continuum-proxy-x86_64 binary vendored into opensecret,
-    and it is the third-party TEE proxy from Edgeless Systems, carried alongside a git submodule of edgelesssys/privatemode-public
-    rather than being anything OpenSecret withholds from a self-hoster.
+  note: 'Both halves of the stack are open under standard OSI licenses - the Maple client under MIT, the
+    OpenSecret platform under AGPL-3.0 - and the served models are open-weight, which is unusually clean
+    for a "private AI" product. It scores as open source because the privacy guarantee is only credible
+    where the code is open and attestable. The paid tier is not a withheld core: the Maple README makes
+    the billing and feature-flag services optional external clients, configured through VITE_MAPLE_BILLING_API_URL
+    and VITE_OS_FLAGS_BASE_URL, and the OpenSecret README says those "server implementations are not part
+    of this repository setup". A self-hosted backend runs without either, so what the subscription buys
+    is usage on the hosted enclaves rather than functionality missing from the source, and neither repository
+    has an enterprise directory or a license key. The one closed-looking artifact is a 15MB continuum-proxy
+    binary vendored into OpenSecret, and that is the third-party trusted-execution proxy from Edgeless Systems,
+    carried alongside a submodule of edgelesssys/privatemode-public rather than anything OpenSecret withholds
+    from a self-hoster.'
   raw: license:MIT(Maple-client)+AGPL-3.0(OpenSecret-platform),both-OSI;source:public(github.com/OpenSecretCloud);core-gated:ungated(billing
     and feature-flag APIs are optional and external; no enterprise directory, no license key);models:open-weight;hosted-tier:paid(managed-enclaves)
   last_verified: '2026-08-12'

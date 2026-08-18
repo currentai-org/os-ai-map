@@ -18,13 +18,12 @@ openness:
     - no self-hostable execution service
   confidence: medium
   note: Closed managed service. The sandbox primitive (omegajail) is open source but it is a third-party
-    dependency, not Replit's own open core, and the thin client is archived; there is no self-hostable open
-    product, so an open dependency under a closed service is not open_core. Reclassified from open_core
-    (borderline). github.com/replit/replit-code-exec is archived and read-only under ISC, and its README
-    describes the execution service as a Repl the user forks and deploys onto Replit Autoscale Deployments,
-    sandboxed by the third-party omegaup/omegajail project - nothing Replit publishes is a self-hostable
-    execution service. The two replit.com blog URLs cited beside it answer 403 to every fetch attempt and
-    could not be read.
+    dependency rather than Replit’s own open core, and the thin client is archived; there is no self-hostable
+    open product, and an open dependency under a closed service is not open core. github.com/replit/replit-code-exec
+    is archived and read-only under ISC, and its README describes the execution service as a Repl the user
+    forks and deploys onto Replit Autoscale Deployments, sandboxed by the third-party omegaup/omegajail
+    project - nothing Replit publishes is a self-hostable execution service. The two replit.com blog URLs
+    cited beside it answer 403 to every fetch attempt and could not be read.
   raw: license:Proprietary;source:closed;service:proprietary(Replit managed Autoscale Deployments, no self-host);open-part:third-party
     isolation primitive omegajail(github.com/omegaup/omegajail) + an ARCHIVED thin client (replit-code-exec,
     ISC, read-only since 2025-02-11);no self-hostable execution service
@@ -59,13 +58,12 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: medium
-  note: 'Replit platform serves >50M users (Replit docs/coverage) and runs >1M live projects on Cloud Run
-    (Google Next ''26, primary). The code-execution API specifically discloses no standalone usage figures,
-    so adoption is attributed to the Replit Agent/platform surface it powers, not the raw API. Placed at
-    4 (platform-surface reach); the API alone would be lower. Instrument caveat: the record is labeled usage_volume
-    but neither Replit nor the code-execution API exposes a countable artifact a signal model can read,
-    so the band rests on a vendor-quoted figure rather than a recomputable count. replit.com/products/agent
-    answers 403 to every fetch attempt.'
+  note: The Replit platform serves more than 50M users, and runs more than 1M live projects on Google Cloud
+    Run. The code-execution API specifically discloses no standalone usage figures, so adoption is attributed
+    to the Replit Agent and platform surface it powers rather than to the raw API, and placed at 4 on that
+    platform-surface reach; the API alone would be lower. Neither Replit nor the code-execution API exposes
+    a countable artifact, so the band rests on a vendor-quoted figure rather than on a recomputable count.
+    replit.com/products/agent answers 403 to every fetch attempt.
   last_verified: '2026-08-13'
   sources:
   - url: https://cloud.google.com/blog/products/serverless/whats-new-for-cloud-run-at-next26
@@ -84,20 +82,20 @@ capability:
     language/runtime breadth: primarily Python, customizable Docker image; persistence: stateless;
     scale: Replit Autoscale Deployments'
   confidence: medium
-  note: 'Fast container-level execution tuned for agent code-eval, but container (not microVM) isolation,
-    narrow language focus and no persistence put it mid-tier against microVM-backed peers. The public self-serve
-    client (replit-code-exec) is archived and read-only, and the capability now lives inside the Replit
-    Agent surface. Every clause of the value re-derives from two independent live channels - the archived
-    README and the package''s own PyPI metadata - both describing execution inside an ephemeral unprivileged
-    container created on the fly on Replit Deployments with omegaup/omegajail as the code sandbox, a stateless
-    API optimized for AI agents, Python, with the container image swappable via `evalctl`. The ~100ms cold
-    start and the "prior stateful-Repl experiment discontinued" parenthetical were dropped rather than sourced:
-    both came only from the Replit blog post, which answers 403 to every request under every header set
-    tried and has no Wayback capture at all, so no surviving copy of the document carries the figure. Losing
-    the 100ms claim removes a point in the product''s favour, so if anything it argues against raising the
-    band, never for it. The blog source is kept below, undated and marked dead, so a later reader can see
-    what was lost rather than rediscovering the 403. The 3 rests on the same three grounds it always did
-    - container-rather-than-microVM isolation, narrow language focus and no persistence - all of which re-derive.'
+  note: 'Fast container-level execution tuned for agent code evaluation, but container rather than microVM
+    isolation, a narrow language focus and no persistence put it mid-tier against microVM-backed peers.
+    The public self-serve client (replit-code-exec) is archived and read-only, and the capability now lives
+    inside the Replit Agent surface. That picture comes from two independent live channels - the archived
+    README and the package’s own PyPI metadata - both describing execution inside an ephemeral unprivileged
+    container created on the fly on Replit Deployments, with omegaup/omegajail as the code sandbox, a stateless
+    API optimized for AI agents, Python, and the container image swappable via `evalctl`. Two claims that
+    once travelled with this score are not carried, because nothing readable supports them: a ~100ms cold
+    start, and a discontinued prior stateful-Repl experiment. Both came only from the Replit blog post,
+    which answers 403 to every request under every header set tried and has no Wayback capture at all, so
+    no surviving copy of the document states them. Losing the 100ms claim removes a point in the product’s
+    favor, so if anything it argues against raising the band. The dead blog source is kept below so a later
+    reader can see what was lost rather than rediscovering the 403. The 3 rests on the same three grounds
+    it always did - container rather than microVM isolation, narrow language focus and no persistence.'
   last_verified: '2026-08-14'
   sources:
   - url: https://replit.com/blog/ai-agents-code-execution

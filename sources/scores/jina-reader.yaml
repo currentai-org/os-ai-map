@@ -67,14 +67,14 @@ adoption:
   reach: '>10K stars'
   signal_type: stars_fallback
   confidence: low
-  note: 'No verified download or API-call volume is published by a primary source: neither the repo nor
-    jina.ai/reader gives a request count or a user count, and the reader is consumed as a URL prefix rather
-    than a package, so there is no registry artifact to band. 11,865 stargazers across the 1 declared repo
-    band at >10K stars, level 3 on the stars scale in signal_routing.yaml, and the stars fallback caps the
-    level at 3. The hosted r.jina.ai endpoint is widely used but unmetered publicly. The previous reach
-    ''100K-1M'' was not a label this instrument offers - stars have their own vocabulary because a star
-    is not a download. The digest below is of a page carrying a live star counter and will not match on
-    a later refetch; that is expected drift on this source rather than a signal about the claim.'
+  note: 'No verified download or API-call volume is published by any primary source: neither the repository
+    nor jina.ai/reader gives a request count or a user count, and the reader is consumed as a URL prefix
+    rather than as a package, so there is no registry artifact to band. That leaves stars - 11,865 stargazers
+    on the one declared repository, which bands at >10K stars, level 3, and a stars-based signal caps the
+    level there because a star is not a use. The hosted r.jina.ai endpoint is widely used but its traffic
+    is not published anywhere. The page the star count comes from carries a live counter, so its content
+    will differ on any later fetch; that is expected drift on this source rather than a signal about the
+    claim.'
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/jina-ai/reader
@@ -89,9 +89,9 @@ capability:
   value: URL->LLM-friendly markdown; handles HTML/PDF/MS-Office/images (AI captioning); web search via
     s.jina.ai; stateless + optional caching; self-host or hosted
   confidence: medium
-  note: Solid single-purpose reader/scrape tool with multi-format coverage and a search mode; mid-tier on
-    the {coverage, freshness, structured output, rate limits} feature matrix vs full agentic browse/search
-    platforms.
+  note: A solid single-purpose reader and scraper, covering several document formats and adding a search
+    mode. That puts it mid-tier on the dimensions that matter here - coverage, freshness, structured output
+    and rate limits - against full agentic browse and search platforms.
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/jina-ai/reader

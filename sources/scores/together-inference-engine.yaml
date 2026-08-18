@@ -14,11 +14,11 @@ openness:
     license:
     - name: Proprietary
   confidence: high
-  note: 'Re-confirmed today: no self-hostable implementation of the inference engine exists (serverless/dedicated
-    pages describe a managed cloud API and ''Reserved, isolated GPU endpoints running Together''s proprietary
-    inference engine''), and the Terms of Service grant only a non-exclusive, non-sublicensable right to
-    access the service while Together reserves all IP. Both recorded dimensions (source, license) unchanged
-    from the prior read.'
+  note: 'No self-hostable implementation of the Together Inference Engine exists: the serverless and dedicated
+    product pages describe a managed cloud API and "reserved, isolated GPU endpoints running Together''s
+    proprietary inference engine". The Terms of Service grant only a non-exclusive, non-sublicensable right
+    to access the service, with Together reserving all intellectual property. Together does publish open-source
+    research such as FlashAttention and ThunderKittens, but that is separate from the engine scored here.'
   last_verified: '2026-08-09'
   raw: engine:proprietary(Together Inference Engine);source:closed(though Together publishes OSS research
     e.g. FlashAttention/ThunderKittens separately);access:managed-cloud-API-only;license:Proprietary
@@ -53,10 +53,10 @@ adoption:
   level: 4
   signal_type: reported_traction
   confidence: medium
-  note: 'Re-confirmed today: the homepage still carries a named-customer case study (Cursor: "How Cursor
-    partnered with Together AI to deliver real-time, low-latency inference at scale") plus a hero logo collection
-    including Salesforce, ElevenLabs, Cohere, DeepMind, and Mozilla alongside Decagon. No raw developer/user
-    count disclosed; banding is unchanged reported_traction on enterprise breadth.'
+  note: The homepage carries a named-customer case study, "How Cursor partnered with Together AI to deliver
+    real-time, low-latency inference at scale", alongside a hero logo collection including Salesforce, ElevenLabs,
+    Cohere, DeepMind, Mozilla and Decagon. No developer or user count is disclosed, so the band rests on
+    that reported enterprise breadth.
   last_verified: '2026-08-09'
   sources:
   - url: https://www.together.ai/
@@ -73,15 +73,16 @@ capability:
     (up to 1605 TFLOPs/s, 71% utilization); ATLAS delivers up to 4x faster LLM inference; serverless, batch,
     and dedicated serving across a large open-model catalog.
   confidence: low
-  note: 'Re-confirmed vendor-reported speedups from the FlashAttention-4 and ATLAS research posts directly
-    (not just the homepage teaser). The Artificial Analysis gpt-oss-120b provider board was refetched today
-    but its output-speed/TTFT table is client-rendered and not present in the static HTML this run -- ''togetherai''
-    appears only in an embedded provider-name list, with no numeric figure alongside it -- so the prior
-    run''s TTFT ~4.19s claim could not be re-derived and is dropped rather than re-asserted. Capability
-    rests on the vendor-reported research speedups alone: feature_matrix, low confidence, no peer comparison
-    recorded.'
-  basis_detail: vendor-reported kernel/decoding research benchmarks re-read today; no independent throughput
-    benchmark for Together's service was reproducible from a static fetch
+  note: 'The score rests on vendor-reported speedups taken from Together''s own FlashAttention-4 and ATLAS
+    research posts rather than from the homepage summary of them: FlashAttention-4 is reported at 1.1-1.3x
+    faster than cuDNN 9.13 and 2.1-2.7x faster than Triton on B200/Blackwell, up to 1,605 TFLOPs/s at 71%
+    utilization, and ATLAS at up to 4x faster LLM inference. Artificial Analysis''s gpt-oss-120b provider
+    board would be the independent check, but its output-speed and time-to-first-token table is rendered
+    client-side and absent from the static page, where "togetherai" appears only in an embedded list of
+    provider names with no figure beside it. With only vendor-reported research figures behind it, confidence
+    is low.'
+  basis_detail: vendor-reported kernel/decoding research benchmarks; no independent throughput benchmark
+    for Together's service was reproducible from a static fetch
   last_verified: '2026-08-09'
   sources:
   - url: https://www.together.ai/blog/flashattention-4

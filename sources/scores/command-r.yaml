@@ -15,20 +15,17 @@ openness:
     license:
     - name: Apache-2.0
       detail: OSI
-  note: 'RESCORED 2026-08-14 onto the governing release, from 2/restricted to 3/open_weights. The axis had
-    been read on c4ai-command-r-plus, the 2024 104B checkpoint, which is still `license:cc-by-nc-4.0` with
-    `"gated":"auto"` - nothing about THAT checkpoint changed. What was wrong is which checkpoint the axis
-    read. docs/reference/identity.md says the CURRENT release governs openness, and the line''s current release
-    is Command A+ (command-a-plus-05-2026), which the product already declares as an artifact. Its card
-    reads "Command A+ is an open source model with 25 billion active parameters and 218B total parameters"
-    under "License - Apache 2.0", with `license:apache-2.0` in the repo tags and `"gated":false`. The
-    CohereLabs org listing confirms it is the newest Command release and that all three of its SKUs - bf16,
-    fp8 and w4a4 - carry `license:apache-2.0`, so most-restrictive across the governing release''s SKUs is
-    still Apache-2.0. That moves the license tier from commercial_forbidden to osi, which takes the ladder
-    off the 2/restricted rung. It does NOT reach 4 or 5 - the post-training mixture and the fine-tuning
-    pipeline are both unpublished, so the formula falls through to the open-weights centre of gravity at 3.
-    The Cohere Acceptable Use Policy has been dropped from the license list because it does not attach to
-    Apache-2.0 weights.'
+  note: 'Openness is read on the line''s current release, Command A+ (command-a-plus-05-2026), which the
+    product declares as an artifact. Its card reads "Command A+ is an open source model with 25 billion
+    active parameters and 218B total parameters" under "License - Apache 2.0", and the repository is tagged
+    Apache-2.0 and ungated. The CohereLabs org listing confirms it is the newest Command release and that
+    all three of its SKUs - bf16, fp8 and w4a4 - carry Apache-2.0, so resolving to the most restrictive
+    license across the release''s SKUs still lands on Apache-2.0. That is an OSI license, which takes the
+    ladder off the restricted rung. The superseded 2024 104B checkpoint c4ai-command-r-plus is still CC-BY-NC-4.0
+    and auto-gated, but it does not govern. It does not reach 4 or 5 either: the post-training mixture and
+    the fine-tuning pipeline are both unpublished, so the score settles at the open-weights center of gravity.
+    Cohere''s acceptable use policy is not listed as a license because it does not attach to Apache-2.0
+    weights.'
   raw: weights:open(ungated, Apache-2.0);data:closed;code:closed;license:Apache-2.0(OSI)
   last_verified: '2026-08-14'
   sources:
@@ -66,18 +63,13 @@ adoption:
   reach: 100K-1M
   signal_type: usage_volume
   confidence: high
-  note: '~3,258 HF downloads/mo on the original checkpoint (gated + superseded by 08-2024 revision + newer
-    Command models). Non-commercial license and 104B size cap self-host adoption; some legacy use via Cohere
-    API. Hobbyist/legacy scale on the download signal. With the artifact declared, the figure is 109,596
-    Hugging Face downloads in the trailing 30 days. Bands at 100K-1M, level 3. This record previously claimed
-    usage_volume - a download count - while declaring no artifact any signal model reads, so no computed
-    figure existed for the recorded band to disagree with. LEVEL CORRECTED FROM 1, by two bands, and the
-    cause is the max-across-releases rule in identity.md rather than a mismeasurement. The old note banded
-    on the 2024 Command R+ checkpoint at ~3,258/mo, a superseded SKU, while the product''s own description
-    says the line is now anchored by Command A+. Declared artifacts are command-a-plus-05-2026-bf16 (84,821)
-    and c4ai- command-r-v01 (24,775), summed per sum_across_artifacts. DELIBERATELY EXCLUDED: command-a-vision-07-2025,
+  note: 'A tier bands on its strongest release, and this line is anchored by Command A+. The declared artifacts
+    are command-a-plus-05-2026-bf16 (84,821) and c4ai-command-r-v01 (24,775), summing to 109,596 Hugging
+    Face downloads in the trailing 30 days, which bands at 100K-1M, level 3. Deliberately excluded: command-a-vision-07-2025,
     the transcribe models and the embed models, which are separate Cohere product lines rather than SKUs
-    of this one - including them would be over-attribution.'
+    of this one, and counting them would over-attribute. The superseded 2024 Command R+ checkpoint reads
+    about 3,258 a month on its own, gated and held back by a non-commercial license and its 104B size -
+    hobbyist and legacy scale, and not what the tier bands on.'
   last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/api/models/CohereLabs/command-a-plus-05-2026-bf16
@@ -102,20 +94,18 @@ capability:
   value: Command A+ (05-2026) - 218B total / 25B active sparse MoE, 128K context, conversational tool use,
     vision inputs, 48-language coverage, native citation and grounding spans; no vendor benchmark table
   confidence: medium
-  note: 'RESCORED 2026-08-14 from 2 to 3, on the max-across-releases rule in docs/reference/identity.md. The
-    old score read the 2024 Command R+ 104B checkpoint and its legacy Open LLM Leaderboard breakdown (avg
-    74.6, MMLU 75.7), which is a fair 2 against a 2026 comparison set - but a tier scores on its BEST
-    release, not its oldest. The tier''s current release is Command A+ (05-2026), a 218B-total / 25B-active
-    MoE Cohere positions for "agentic, multilingual, and reasoning-heavy tasks with a focus on enterprise
-    performance", with vision inputs, a 128K context and trained-in conversational tool use. The basis moves
-    from benchmark to feature_matrix, and that is the honest part of this rescore - the Command A+ card
-    publishes NO benchmark table at all, so the placement rests on the released feature surface rather than
-    on a number. 3 rather than 4 for that reason and because the 2026 reasoning frontier in this category
-    sits above it on published scores - nemotron at 5, deepseek-r1 and hermes at 4, all on AIME / GPQA /
-    SWE-bench evidence Cohere does not publish. It lands level with the other capable-but-unbenchmarked
-    general instruct models here, llama-instruct and qwen-instruct, both at 3. No relative_to is recorded
-    because no peer at this level carries a last_verified on or after this date, and check_capability''s
-    transitive-freshness rule would reject the anchor.'
+  note: 'A tier is scored on its strongest release, which here is Command A+ (05-2026), a 218B-total, 25B-active
+    mixture-of-experts model Cohere positions for "agentic, multilingual, and reasoning-heavy tasks with
+    a focus on enterprise performance", with vision inputs, a 128K context and trained-in conversational
+    tool use. The score rests on that feature set rather than on a benchmark, and that is the honest part
+    of the placement: the Command A+ card publishes no benchmark table at all. 3 rather than 4 for that
+    reason, and because the 2026 reasoning frontier in this category sits above it on published scores -
+    Nemotron at 5, DeepSeek-R1 and Hermes at 4, all on AIME, GPQA and SWE-bench evidence Cohere does not
+    publish. It lands level with the other capable but unbenchmarked general instruct models here, Llama
+    Instruct and Qwen Instruct, both at 3. The superseded 2024 Command R+ 104B checkpoint and its legacy
+    Open LLM Leaderboard breakdown (average 74.6, MMLU 75.7) would be a fair 2 against a 2026 comparison
+    set, but that is not the release the tier scores on. No peer at this level has been checked recently
+    enough to serve as a comparison anchor, so none is recorded.'
   last_verified: '2026-08-14'
   sources:
   - url: https://huggingface.co/CohereLabs/command-a-plus-05-2026-bf16

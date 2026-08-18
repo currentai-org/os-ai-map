@@ -15,8 +15,9 @@ openness:
     restriction:
       value: attribution/change-notice only
   confidence: high
-  note: license:BSD-3-Clause(OSI, NVIDIA core)+Apache-2.0/MIT(OSI, vendored components);source:public;restriction:attribution/change-notice
-    only
+  note: BSD-3-Clause for NVIDIA's own code and Apache-2.0 or MIT for vendored components, all OSI licenses,
+    with the full source public. The only obligations are attribution and a notice of changes, and no functionality
+    is held back for a paid tier.
   last_verified: '2026-08-08'
   raw: license:BSD-3-Clause(OSI, NVIDIA core)+Apache-2.0/MIT(OSI, vendored components);source:public;core-gated:ungated;restriction:attribution/change-notice
     only
@@ -113,12 +114,12 @@ adoption:
   reach: 100K-1M
   signal_type: usage_volume
   confidence: high
-  note: Foundational large-scale training library; directly inspired/underpins Colossal-AI, HuggingFace
-    Accelerate, NVIDIA NeMo. Used to train models 2B-462B params across thousands of GPUs. User base is
-    concentrated among large-model training teams (smaller absolute headcount than inference tools). megatron-core
-    records 223,175 PyPI downloads in the trailing 30 days, which sits inside the 100K-1M band and replaces
-    the previous reported-traction basis with a measured usage volume. Level 3 reflects specialist-but-influential
-    reach.
+  note: megatron-core records 223,175 PyPI downloads in the trailing 30 days, which puts reach in the 100K-1M
+    band. The library is foundational to large-scale training -- Colossal-AI, Hugging Face Accelerate and
+    NVIDIA NeMo all build on it or draw directly from it -- and has been used to train models from 2B to
+    462B parameters across thousands of GPUs. Its user base is concentrated among large-model training teams,
+    a far smaller headcount than inference tools reach, so the band reflects specialist but influential
+    use rather than mass adoption.
   last_verified: '2026-08-08'
   sources:
   - url: https://pypistats.org/api/packages/megatron-core/recent
@@ -151,10 +152,12 @@ capability:
     weak-scaling benchmark to a 462B-parameter GPT on 6,144 H100 GPUs at 47–48% MFU, strong scaling of a
     ~175B GPT-3 from 96 to 4,608 H100 GPUs.'
   confidence: high
-  note: Reference-grade large-scale transformer training infrastructure, and the capability anchor the rest
-    of this category places itself against. The parallelism, precision and scaling facts now sit in `value`
-    with establishing sources rather than being asserted here. No MLPerf-Training submission verified for
-    the library itself, so the basis is feature_matrix plus NVIDIA-reported scaling benchmarks.
+  note: Reference-grade infrastructure for large-scale transformer training, and the anchor the rest of
+    this category places itself against. It composes data, tensor, pipeline, context and expert parallelism
+    together with Megatron-FSDP, runs mixed precision from FP16 and BF16 down to FP8 and FP4, and has been
+    weak-scaled to a 462B-parameter GPT on 6,144 H100 GPUs at 47-48% MFU and strong-scaled on a ~175B GPT-3
+    from 96 to 4,608 H100 GPUs. No MLPerf Training submission for the library itself has been verified,
+    so the judgment rests on that feature set plus the scaling benchmarks NVIDIA reports.
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/NVIDIA/Megatron-LM

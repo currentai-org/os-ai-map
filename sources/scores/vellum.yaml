@@ -20,17 +20,15 @@ openness:
       detail: not a feature tier
       raw: hosting convenience, not a feature tier
   confidence: high
-  note: 'CORRECTED from the record''s "closed/score 1". The agent''s complete source is public and MIT-licensed
-    (LICENSE: "Copyright (c) 2025 Vellum AI"), covering the backend gateway, the Mac/Slack/Telegram clients,
-    the sandboxed skill framework and the memory system, and it is self-hostable by design rather than a
-    client stub. The vendor''s own marketing comparison table labels Vellum "Proprietary" against MIT for
-    Hermes/OpenClaw, because it sells a managed cloud tier. Score corrected from 4 to 5 on 2026-07-30. The
-    earlier 4 rested on the managed memory/security layer being a differentiator, but the README states
-    the managed runtime and the self-hosted one are the "Same codebase, same data model", so hosting is
-    convenience rather than a feature tier. The ladder''s core_gated note is explicit that a hosted offering
-    alongside an ungated core is not gating, and 4 pairs with open_core in any case. The vendor''s own comparison
-    post now says outright that "Vellum is also open source", so the "Proprietary" label that prompted the
-    original caveat is gone.'
+  note: 'The agent''s complete source is public and MIT-licensed (the LICENSE reads "Copyright (c) 2025
+    Vellum AI"), covering the backend gateway, the Mac, Slack and Telegram clients, the sandboxed skill
+    framework and the memory system, and it is self-hostable by design rather than a client stub. The vendor''s
+    own marketing comparison table labels Vellum "Proprietary" against MIT for Hermes and OpenClaw, because
+    it sells a managed cloud tier - but the same comparison post says outright that "Vellum is also open
+    source", so that label is not a live caveat. The managed memory and security layer is not a feature
+    tier either: the README states that the managed runtime and the self-hosted one are the "Same codebase,
+    same data model", so hosting is a convenience rather than a gate, and a hosted offering sold alongside
+    a complete open core is not gating.'
   raw: 'license:MIT(OSI, Copyright 2025 Vellum AI);source:public(the full agent - gateway, clients, skill
     framework, memory - in github.com/vellum-ai/vellum-assistant);core-gated:ungated(README: managed runtime
     on Vellum Platform or self-hosted, "Same codebase, same data model");self-host:yes(by design);managed-cloud:hosting
@@ -73,15 +71,10 @@ adoption:
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: low
-  note: 'No download/user/usage metrics disclosed (it''s a self-hosted app, not a registry package). Only
-    signal available is GitHub stars (~577 on vellum-ai/vellum-assistant), used here strictly as a last-resort
-    proxy per the adoption!=stars rule; small/new entrant. Previously null; set to a conservative level
-    1 now that a real (if weak) signal exists. 1,054 stars on vellum-ai/vellum-assistant, which bands at
-    1K-10K stars, level 2 on the stars scale. The previous reach ''<1K'' was a download label, which this
-    instrument does not offer - a star is not a download. Level corrected from 1. THE REAL DEFECT is upstream:
-    this product declares no artifacts at all, so a stars_fallback band had no stars source behind it and
-    the count lived only in this note. Declaring vellum-ai/vellum-assistant would fix it, and is deliberately
-    not done here because a declared code repo also re-routes the openness license dimension.'
+  note: 1,054 stars on vellum-ai/vellum-assistant, which bands at 1K-10K stars, level 2 on the stars scale.
+    No download, user or usage metric is disclosed - this is a self-hosted app rather than a registry package
+    - so stars are the only signal available, and they are used strictly as a last-resort proxy. A small,
+    new entrant.
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/vellum-ai/vellum-assistant
@@ -101,9 +94,10 @@ capability:
     multi-channel (Mac/Web/iOS/Slack/Telegram/phone), out-of-process credential isolation, ambient/proactive
     engine; no benchmark'
   confidence: low
-  note: Solid personal-agent feature breadth (8-type memory + multi-channel autonomous action + credential
-    isolation + proactive engine), now confirmed against the open MIT source. No benchmark and no frontier
-    differentiator; scored 3 on feature matrix.
+  note: 'Solid personal-agent feature breadth, all of it visible in the open MIT source: 8-type memory,
+    real-world action through managed OAuth connections, multi-channel reach across Mac, web, iOS, Slack,
+    Telegram and phone, out-of-process credential isolation and an ambient proactive engine. No benchmark
+    and no frontier differentiator, so this is a mid-tier judgment on features.'
   relative_to: openhands
   relation: two_below
   last_verified: '2026-08-13'

@@ -20,13 +20,12 @@ openness:
         ART backend optional, for users who do not want to manage GPU infrastructure; no ART feature is
         withheld from the self-hostable LocalBackend
   confidence: high
-  note: 'Apache-2.0 with the full source public, and nothing withheld from it: no ee/ or enterprise directory,
-    no closed package the open one depends on, no license key. The ART FAQ commits to "maintaining ART as
-    a full-featured open source project" and calls the hosted backend "an optional hosted ART backend for
-    users who don''t want to manage GPU infrastructure on their own", and the backend docs describe a fully
-    self-hostable LocalBackend alongside it. OpenPipe''s hosted training and serving SaaS is a separate
-    product sold beside the open core, which software.yaml explicitly does not count as gating, so core-gated
-    is ungated and the class is open_source.'
+  note: 'Apache-2.0 with the full source public and nothing withheld from it: no enterprise directory, no
+    closed package the open one depends on, no license key. The ART FAQ commits to "maintaining ART as a
+    full-featured open source project" and calls the hosted backend "an optional hosted ART backend for
+    users who don''t want to manage GPU infrastructure on their own", and the docs describe a fully self-hostable
+    LocalBackend beside it. OpenPipe''s hosted training and serving SaaS is a separate product sold alongside
+    the open core, which does not count as gating on this scale. Some vendored code carries LGPL-3.0.'
   last_verified: '2026-08-11'
   raw: license:Apache-2.0(OSI, OpenPipe Inc.; some vendored code LGPL-3.0);source:public;methods:RL(GRPO)+SFT
     trajectory training;managed-tier:OpenPipe hosted training/serving SaaS on top of the OSS lib;core-gated:ungated(ART
@@ -83,9 +82,9 @@ adoption:
   reach: 10K-100K
   signal_type: usage_volume
   confidence: medium
-  note: openpipe-art averaged 22,537 downloads over the trailing 30 days as of 2026-08-07 (pypistats.org's
-    Overall series), down from the ~47.7k/month read in June but still inside the 10K-100K band. 10,568
-    GitHub stars as of 2026-08-09 (corroborating only, per signal_routing.yaml's stars_fallback rule).
+  note: openpipe-art averaged 22,537 downloads over the trailing 30 days on pypistats' overall series, inside
+    the 10K-100K band. Its 10,568 GitHub stars corroborate that picture but do not set the level; a measured
+    download figure takes precedence over stars.
   last_verified: '2026-08-09'
   sources:
   - url: https://pypistats.org/packages/openpipe-art
@@ -101,8 +100,11 @@ capability:
     Qwen, Llama, GPT-OSS. Specialist agent-RL focus, not broad-method or large-scale-parallelism training
     infra.'
   confidence: medium
-  note: Capable, focused agent-RL trainer; mid-tier vs full training stacks (no TP/PP/EP at Megatron scale).
-    Feature-matrix basis per recipe; no MLPerf-Training submission.
+  note: 'A capable, focused agent-RL trainer: multi-step agentic reinforcement learning via GRPO plus SFT
+    on trajectories, running against vLLM and Unsloth backends and supporting Qwen, Llama and GPT-OSS models.
+    It is a specialist rather than general training infrastructure, with no tensor, pipeline or expert parallelism
+    at Megatron-LM''s scale, which places it mid-tier among full training stacks. The score rests on that
+    feature comparison; there is no MLPerf Training submission behind it.'
   relative_to: megatron-lm
   relation: two_below
   last_verified: '2026-08-13'

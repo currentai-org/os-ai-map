@@ -20,9 +20,9 @@ openness:
       detail: free starter credits
       raw: pay-as-you-go usage, free starter credits
   confidence: high
-  note: Closed managed service. The client SDK is open, but the execution substrate is a proprietary managed
-    cloud with no self-host; an open client over a closed runtime is not open_core. Corrects a prior mis-calibration
-    that grouped Modal with the genuinely self-hostable E2B (E2B ships self-hostable infra; Modal does not).
+  note: 'Closed managed service. The client SDK is open, but the execution substrate is a proprietary managed
+    cloud with no self-host option, and an open client over a closed runtime is not open core. The contrast
+    with E2B is the point: E2B ships self-hostable infrastructure, Modal does not.'
   raw: license:Proprietary;source:closed;service:proprietary Modal managed cloud (no self-host of the gVisor
     execution plane);open-part:client SDK only (modal Python/JS client libraries);pricing:pay-as-you-go
     usage, free starter credits
@@ -59,13 +59,13 @@ adoption:
   signal_type: reported_traction
   confidence: low
   banded_quantity: Modal platform teams (10,000+), not Sandboxes sessions or jobs
-  note: No disclosed Modal Sandboxes user/usage count on primary pages; Modal is a well-known managed AI-compute
-    platform with broad developer use and a documented free tier. Placed at 3 on reported multi-customer
-    traction, not a measured usage_volume figure (kept conservative absent a hard number). The nearest figure
-    Modal publishes is platform-wide rather than per-product - its sandbox comparison page claims Modal
-    "powers infrastructure for over 10,000 teams" and names Lovable and Quora as production users running
-    untrusted code - which is a reported-traction claim of exactly the kind already banded, not a count
-    of Sandboxes use, so the abstention on reach stands.
+  note: No Modal Sandboxes user or usage count is disclosed on the primary pages; Modal is a well-known
+    managed AI-compute platform with broad developer use and a documented free tier. Placed at 3 on reported
+    multi-customer traction rather than on a measured figure, kept conservative in the absence of a hard
+    number. The nearest figure Modal publishes is platform-wide rather than per-product - its sandbox comparison
+    page claims Modal "powers infrastructure for over 10,000 teams" and names Lovable and Quora as production
+    users running untrusted code - which is another reported-traction claim rather than a count of Sandboxes
+    use, so no reach figure is recorded.
   last_verified: '2026-08-13'
   sources:
   - url: https://modal.com/docs/guide/sandbox
@@ -97,13 +97,12 @@ capability:
   confidence: medium
   note: 'Strong, purpose-built agent sandbox: gVisor isolation, arbitrary images and high concurrency. The
     Sandboxes guide documents arbitrary custom images, named lookup and a 5-minute default lifetime extendable
-    to 24 hours, and Modal''s own comparison page states gVisor isolation and 50,000+ concurrent sessions.
-    Sits just below the Firecracker-microVM frontier (Lambda/Vercel) on isolation strength; scored 4, level
-    with the Ray/Ollama capability anchors and recorded as relative_to ray with relation `at`. Independent
-    ComputeSDK TTI benchmarks put Modal at a 0.76s median cold-start, 0.82s P95, composite 92.1, 14th by
-    median of 24 providers, against ~470ms and 13th of 19 on the earlier run - slower in absolute terms
-    and unchanged in placement, still mid-field, still short of the sub-0.3s leaders and well clear of the
-    multi-second tail.'
+    to 24 hours, and Modal’s own comparison page states gVisor isolation and 50,000+ concurrent sessions.
+    It sits just below the Firecracker-microVM frontier (Lambda, Vercel) on isolation strength, so 4 - level
+    with the Ray and Ollama capability anchors. Independent ComputeSDK TTI benchmarks put Modal at a 0.76s
+    median cold-start, 0.82s P95, composite 92.1, 14th by median of 24 providers, against ~470ms and 13th
+    of 19 on the earlier run: slower in absolute terms and unchanged in placement, still mid-field, still
+    short of the sub-0.3s leaders and well clear of the multi-second tail.'
   last_verified: '2026-08-13'
   sources:
   - url: https://modal.com/docs/guide/sandbox

@@ -16,14 +16,13 @@ openness:
       value: closed
       detail: anthropics/claude-code ships plugins, examples and scripts; no runtime source and LICENSE.md
         is all-rights-reserved
-  note: 'Closed/proprietary product gated behind an Anthropic subscription; the coding agent itself is not
-    open source. `source: closed` comes from a direct read of the repo: the GitHub contents API lists only
-    `.claude-plugin`, `.claude`, `.devcontainer`, `Script`, `examples`, `plugins`, `scripts` and docs at
-    the root, and LICENSE.md is a bare all-rights-reserved notice pointing at Anthropic''s Commercial Terms.
-    The published Agent SDK is a client that spawns the closed CLI, which the corpus already treats as `closed`
-    rather than `partial` (braintrust, promptlayer, openrouter, tavily-search-api all record client SDKs
-    under `source: closed`). `core-gated` is left unrecorded because the rubric says it is meaningful only
-    where source is public.'
+  note: 'Closed proprietary product gated behind an Anthropic subscription; the coding agent itself is not
+    open source. A direct read of the repo shows it: the GitHub contents API lists only .claude-plugin,
+    .claude, .devcontainer, Script, examples, plugins, scripts and docs at the root, and LICENSE.md is a
+    bare all-rights-reserved notice pointing at Anthropic''s Commercial Terms. The published Agent SDK is
+    a client that spawns the closed CLI, and a client SDK over a closed service counts as closed rather
+    than partly open, the same treatment other hosted products on this map get. Whether a core has been
+    carved out is only a meaningful question where the source is public, so nothing is recorded on it here.'
   last_verified: '2026-08-11'
   raw: license:Proprietary(closed-source CLI/app, requires Claude subscription or Console account);model:Claude(proprietary,
     API-only);note:Agent SDK published but the product is closed SaaS;source:closed(anthropics/claude-code
@@ -54,9 +53,10 @@ adoption:
   signal_type: reported_traction
   confidence: medium
   banded_quantity: revenue run-rate (~$2.5B, February 2026), not a developer count
-  note: 'Reuters (Feb 2026): Claude Code exceeded ~$2.5B run-rate revenue, with business subscriptions quadrupled
-    since the start of 2026 and enterprise now >half of Claude Code revenue. No clean user-count, so reported_traction;
-    revenue scale implies well into the 1-10M+ developer band.'
+  note: Reuters reported Claude Code above roughly $2.5B run-rate revenue, with business subscriptions quadrupled
+    over the year and enterprise now more than half of Claude Code revenue. No clean user count is published,
+    so the band rests on reported commercial traction rather than a counted figure; revenue at that scale
+    implies well into the 1-10M+ developer band.
   last_verified: '2026-08-13'
   sources:
   - url: https://code.claude.com/docs/en/overview
@@ -77,13 +77,13 @@ capability:
   value: Backed by frontier Claude Opus models leading SWE-bench Verified (Claude Opus 4.8 ~88.6%, 4.7
     ~87.6%); Claude Code is the reference agent harness for these scores.
   confidence: high
-  note: Frontier-defining coding agent, pairs the leading SWE-bench Verified models with a mature multi-surface
-    agent harness (sub-agents, hooks, MCP, scheduling). One of the 1-2 capability frontier-definers in this
-    category. Two of the three cited sources no longer serve the figure to a fetcher - llm-stats.com answers
-    a bot-check interstitial rather than the leaderboard, and the Anthropic Opus 4.8 announcement renders
-    its comparison table outside the fetched HTML - so the placement rests on the Marktechpost benchmark-driven
-    ranking, which puts Claude Code first of the field at 87.6% SWE-bench Verified on Opus 4.7 and 80.8%
-    on Opus 4.6.
+  note: 'Frontier-defining coding agent: it pairs the leading SWE-bench Verified models with a mature multi-surface
+    harness (sub-agents, hooks, MCP, scheduling), and is one of the one or two capability frontier-definers
+    in this category. The placement rests on the Marktechpost benchmark-driven ranking, which puts Claude
+    Code first of the field at 87.6% SWE-bench Verified on Opus 4.7 and 80.8% on Opus 4.6. Two of the three
+    cited sources no longer serve the figure to a fetcher - llm-stats.com answers a bot-check interstitial
+    rather than the leaderboard, and the Anthropic Opus 4.8 announcement renders its comparison table outside
+    the fetched HTML - so that ranking is what carries the score.'
   last_verified: '2026-08-13'
   sources:
   - url: https://llm-stats.com/benchmarks/swe-bench-verified

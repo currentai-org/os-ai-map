@@ -19,12 +19,13 @@ openness:
       detail: platform open sourced on closure
       raw: company-ceased-ops, platform open sourced on closure
   confidence: high
-  note: 'Scored on what remains accessible: the OSS stack. whylogs (data logging) and LangKit (LLM monitoring)
-    are Apache-2.0, and WhyLabs open sourced its platform on shutdown. Score corrected from 4 to 5 on 2026-07-30.
-    The earlier 4 was justified by the hosted backend no longer operating and the OSS pieces being libraries
-    rather than a turnkey observability product, which are maturity judgments and are already recorded as
-    adoption 2 and capability 2. On the openness question the published source is the whole product, because
-    there is no longer anything else, and 4 pairs with open_core rather than open_source.'
+  note: The score is taken on what remains accessible, which is the open source stack. whylogs, for data
+    logging, and LangKit, for LLM monitoring, are both Apache-2.0, and WhyLabs open sourced its platform
+    when it shut down. The two objections that would hold this lower - the hosted backend no longer operating,
+    and the open source pieces being libraries rather than a turnkey observability product - are judgments
+    about maturity rather than openness, and they are recorded on the adoption and capability axes, both
+    at 2. On openness the published source is now the whole product, because there is nothing else left,
+    and that is open source rather than open core.
   raw: license:Apache-2.0(OSI, whylogs + LangKit + open sourced platform);source:public(github.com/whylabs);core-gated:ungated(nothing
     is withheld - the company ceased operations and open sourced the platform on closure);hosted-SaaS:discontinued;status:company-ceased-ops,
     platform open sourced on closure
@@ -57,16 +58,13 @@ adoption:
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: low
-  note: 'Hosted SaaS shut down (no active platform users). Remaining signal is the OSS libraries: whylogs
-    ~2.8k GitHub stars, last release Dec 2024; stars_fallback caps at 3; placed at 2 given the dead commercial
-    product and stalled release cadence. Honest signal is modest residual OSS usage, not a live platform.
-    2,830 stars on whylabs/whylogs, which bands at 1K-10K stars, level 2 on the stars scale. The previous
-    reach ''10K-100K'' was a download label, which this instrument does not offer - a star is not a download.
-    THE REAL DEFECT is upstream: this product declares no artifacts at all, so a stars_fallback band had
-    no stars source behind it and the count lived only in this note. Declaring whylabs/whylogs would fix
-    it, and is deliberately not done here because a declared code repo also re-routes the openness license
-    dimension. The repository''s last push was in January 2025, so the stalled cadence the level rests on
-    is if anything more pronounced than the release date above suggests.'
+  note: 'The hosted SaaS has shut down, so there are no active platform users. The remaining signal is the
+    open source libraries: whylabs/whylogs has 2,830 GitHub stars, which bands at 1K-10K stars and level
+    2. Stars cannot carry a product above level 3, and no download-range label is recorded because stars
+    have their own vocabulary - a star is not a download. The level is placed at 2 rather than 3 because
+    the commercial product is dead and the release cadence has stalled: the last release was in December
+    2024 and the last push to the repository was in January 2025. The honest reading is modest residual
+    open source usage, not a live platform.'
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/whylabs/whylogs
@@ -87,11 +85,14 @@ capability:
     text-quality/safety metrics: sentiment, toxicity, prompt-injection signals). No live tracing backend,
     no eval-experiment/prompt-mgmt platform (open sourced but unmaintained). Narrow vs anchor C4 tools.'
   confidence: medium
-  note: As living, usable capability it is a pair of monitoring libraries (drift + LLM safety metrics),
-    not a full tracing/eval/prompt platform; with the hosted backend gone and releases stalled since Dec
-    2024, rated 2, well below the MLflow/Langfuse C4 anchors. The repository's last push was in January 2025
-    and the README is still a profiling library integrating with Spark, Airflow, S3 and MLflow rather than
-    an observability platform.
+  note: 'As living, usable capability this is a pair of monitoring libraries rather than a full tracing,
+    evaluation and prompt platform: whylogs does data logging and profiling with drift and data-quality
+    monitoring, and LangKit adds LLM text-quality and safety metrics such as sentiment, toxicity and prompt-injection
+    signals. There is no live tracing backend and no evaluation-experiment or prompt-management platform
+    - what was open sourced is now unmaintained, with the last release in December 2024 and the last push
+    in January 2025 - and the README still describes a profiling library that integrates with Spark, Airflow,
+    S3 and MLflow rather than an observability platform. That is narrow enough to sit two rungs below the
+    MLflow and Langfuse anchors at 4.'
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/whylabs/whylogs

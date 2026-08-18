@@ -13,8 +13,9 @@ openness:
     - name: Proprietary
       detail: managed Azure service
   confidence: high
-  note: Proprietary managed FT service inside Microsoft Foundry; no source, runs only on Azure, tuning both
-    closed OpenAI models (GA) and preview open-weight models (Ministral, Qwen, Llama, gpt-oss).
+  note: 'A proprietary managed fine-tuning service inside Microsoft Foundry, with no source published. It
+    runs only on Azure, and tunes both closed OpenAI models, which are generally available, and open-weight
+    models in preview: Ministral, Qwen, Llama and gpt-oss.'
   last_verified: '2026-08-09'
   raw: source:closed;training-code:closed;runs-on:Azure-AI-Foundry-only;license:Proprietary(managed Azure
     service)
@@ -58,10 +59,9 @@ adoption:
   reach: null
   signal_type: unknown
   confidence: low
-  note: No disclosed standalone usage figure for the Azure OpenAI fine-tuning feature located this run
-    (jobs run / customers tuning). Azure OpenAI overall is widely deployed in enterprise, but no honest
-    signal specific to the FT SKU was found; declining to assign a level rather than borrow the umbrella
-    surface number.
+  note: No standalone usage figure is disclosed for Azure OpenAI fine-tuning -- no jobs run, no count of
+    customers tuning. Azure OpenAI is widely deployed across enterprises, but nothing published is specific
+    to the fine-tuning offering, so no level is assigned rather than one borrowed from the umbrella product.
   last_verified: '2026-08-09'
   sources:
   - url: https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/fine-tuning
@@ -79,10 +79,13 @@ capability:
     frontier line, plus preview SFT on Ministral/Qwen/Llama/gpt-oss. Managed end-to-end (data validation,
     per-epoch checkpoints, auto-deploy); Standard/Global/Developer training tiers.'
   confidence: medium
-  note: 'Strong managed method coverage (SFT+DPO+RFT) over frontier closed base models plus an open-model
-    preview lane, but black-box: no parallelism/precision/scale controls, no MLPerf-Training basis. Scored
-    4 on method breadth + frontier base quality, calibrated equal to the OpenAI FT API (C4) it wraps;
-    not 5 since the user cannot control training internals/scale.'
+  note: 'Strong managed method coverage over frontier closed base models, plus an open-model preview lane:
+    supervised fine-tuning, DPO preference tuning and reinforcement fine-tuning with model-grader reward
+    signals across the gpt-4o, gpt-4.1, o4-mini and gpt-5 line, with data validation, per-epoch checkpoints
+    and auto-deploy, on Standard, Global and Developer training tiers. It is a black box -- no parallelism,
+    precision or scale controls, and no training benchmark behind it -- and it sits level with the OpenAI
+    fine-tuning API it wraps. It stops short of the top band because the user cannot control training internals
+    or scale.'
   last_verified: '2026-08-09'
   sources:
   - url: https://learn.microsoft.com/en-us/azure/foundry/openai/how-to/fine-tuning

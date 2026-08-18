@@ -21,12 +21,12 @@ openness:
       detail: Dynamic Workers $0.002/unique-worker/day
       raw: Workers paid plan, Dynamic Workers $0.002/unique-worker/day
   confidence: high
-  note: 'Closed managed service. The Sandbox SDK is Apache-2.0, but execution requires Cloudflare''s proprietary
-    managed edge network (no self-host of the isolate/container plane); an open client SDK over a closed
-    runtime is not open_core. Reclassified from open_core. One classification wrinkle is worth recording:
-    GitHub reports cloudflare/sandbox-sdk as NOASSERTION because the root LICENSE file is a one-line pointer
-    to packages/sandbox/LICENSE, and that file is the verbatim Apache License 2.0 - the SDK is Apache-2.0
-    as recorded, and the classifier is simply defeated by the redirect.'
+  note: 'Closed managed service. The Sandbox SDK is Apache-2.0, but execution requires Cloudflare’s proprietary
+    managed edge network, with no way to self-host the isolate or container plane; an open client SDK over
+    a closed runtime is not open core. One classification wrinkle is worth recording: GitHub reports cloudflare/sandbox-sdk
+    as NOASSERTION because the root LICENSE file is a one-line pointer to packages/sandbox/LICENSE, and
+    that file is the verbatim Apache License 2.0 - the SDK is Apache-2.0 as recorded, and the classifier
+    is simply defeated by the redirect.'
   raw: license:Proprietary;source:closed;service:proprietary Cloudflare edge (Workers/Durable Objects/Dynamic
     Worker Loader - no self-host of the isolate/container plane);open-part:Sandbox SDK only (@cloudflare/sandbox
     Apache-2.0, cloudflare/sandbox-sdk on GitHub);pricing:Workers paid plan, Dynamic Workers $0.002/unique-worker/day
@@ -71,17 +71,14 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: medium
-  note: 'npm @cloudflare/sandbox ~533k downloads in the last 30 days (npm registry API); Dynamic Workers
-    in open beta to all paid Workers users with a named customer (Zite) reporting ''millions of execution
-    requests daily.'' Execution-request volume is per-customer, not distinct-user adoption. Re-banded
-    2026-08-14. The npm downloads API reports 1,136,848 downloads of @cloudflare/sandbox over
-    2026-07-11 to 2026-08-09, roughly double the June reading and past the 1M floor, which bands at
-    level 4 / 1M-10M rather than the 100K-1M recorded. The package is the product''s own - registry
-    metadata points at github.com/cloudflare/sandbox-sdk, the same repository the openness axis reads.
-    Per the 2026-08-14 ruling this figure is re-fetchable but NOT pipeline-recomputable, because npm is
-    an unbridged route (issue #163); no signal model reads it, so it must not be mistaken for a computed
-    band. Confidence stays medium - the margin over the floor is modest and package pulls carry the
-    usual CI and mirror inflation.'
+  note: 'The npm downloads API reports 1,136,848 downloads of @cloudflare/sandbox over the window 2026-07-11
+    to 2026-08-09, past the 1M floor, which bands at level 4 / 1M-10M. The package is the product’s own
+    - registry metadata points at github.com/cloudflare/sandbox-sdk, the same repository the openness axis
+    reads. The npm figure can be fetched again by hand but no automated feed reads it, so it is a measured
+    number rather than a computed one. Dynamic Workers are in open beta to all paid Workers users, with
+    a named customer (Zite) reporting "millions of execution requests daily" - execution-request volume,
+    which is per-customer rather than distinct-user adoption. Confidence stays medium: the margin over the
+    floor is modest and package pulls carry the usual CI and mirror inflation.'
   last_verified: '2026-08-14'
   sources:
   - url: https://api.npmjs.org/downloads/point/last-month/@cloudflare/sandbox
@@ -113,18 +110,19 @@ capability:
     container sandbox; persistence:Durable Objects-backed state; scale:edge-global, unlimited dynamic
     workers
   confidence: medium
-  note: Distinctive isolate-based approach gives best-in-class cold-start and density on the JS/TS isolate
+  note: A distinctive isolate-based approach gives best-in-class cold-start and density on the JS/TS isolate
     path, plus a container path for arbitrary code; held at 4 because isolate sandboxing is JS/TS-centric
-    (narrower than microVM any-image), Dynamic Workers is still open beta, and overall scale evidence is
-    per-customer rather than category-leading. Scored as a combined product per the registry name. The Dynamic
-    Workers post claims ms-scale isolate start, ~100x the density of containers and no limit on global concurrent
-    sandboxes or creation rate, and the SDK repository exposes the container-backed path for arbitrary commands,
-    files, background processes and exposed services. Independent ComputeSDK TTI benchmarks measure that
-    container-backed path - the one that runs arbitrary code - at a 4.42s median cold-start, 21st of 24
-    sandbox providers, where an earlier run had it at ~1.76s and 18th of 19; the sub-ms figures apply to
-    the JS/TS Dynamic Workers path, not the arbitrary-code sandbox the benchmark exercises. On measured
-    full-sandbox latency alone this would be a 3, and it is held at 4 on the strength of the dual isolate-plus-container
-    isolation model, but the measured gap is now wide enough that the hold is the weakest part of this score.
+    (narrower than any-image microVMs), Dynamic Workers is still open beta, and the scale evidence is per-customer
+    rather than category-leading. The isolate path and the container path are scored together, as one product.
+    The Dynamic Workers post claims millisecond-scale isolate start, roughly 100x the density of containers
+    and no limit on global concurrent sandboxes or creation rate, and the SDK repository exposes the container-backed
+    path for arbitrary commands, files, background processes and exposed services. Independent ComputeSDK
+    TTI benchmarks measure that container-backed path - the one that runs arbitrary code - at a 4.42s median
+    cold-start, 21st of 24 sandbox providers, where an earlier run had it at ~1.76s and 18th of 19; the
+    sub-millisecond figures apply to the JS/TS Dynamic Workers path, not to the arbitrary-code sandbox the
+    benchmark exercises. On measured full-sandbox latency alone this would be a 3, and it is held at 4 on
+    the strength of the dual isolate-plus-container isolation model, but the measured gap is now wide enough
+    that the hold is the weakest part of this score.
   last_verified: '2026-08-13'
   sources:
   - url: https://blog.cloudflare.com/dynamic-workers/

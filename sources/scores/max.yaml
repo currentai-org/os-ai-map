@@ -15,14 +15,15 @@ openness:
     commercial-tier:
       value: Modular enterprise/managed deployment
   confidence: high
-  note: Large public codebase; the repo's own LICENSE is Apache-2.0 with LLVM Exceptions. GitHub's repo
-    page still states "Modular, MAX and Mojo usage and distribution are licensed under the Modular Community
-    License", which is not OSI approved. The Modular Community License itself splits capacity by device
-    architecture (no cap on X86/ARM/NVIDIA-PTX devices; an 8-device cap on any other accelerator type),
-    grants only "a limited right to redistribute certain components of the SDK", and the community variant
-    is "provided free of charge" but Modular "may at any time change its provision" with only commercially-reasonable
-    notice. So the source is readable and not unconditionally freely runnable or redistributable at scale.
-    Marketed as "open"; flag open_washed. Score corrected from 3 to 2.
+  note: A large public codebase whose own LICENSE file is Apache-2.0 with LLVM Exceptions, but the GitHub
+    repository page states that "Modular, MAX and Mojo usage and distribution are licensed under the Modular
+    Community License", which is not OSI approved. That license splits capacity by device architecture,
+    with no cap on x86, ARM or NVIDIA PTX devices but an eight-device cap on any other accelerator type;
+    it grants only "a limited right to redistribute certain components of the SDK"; and while the community
+    variant is "provided free of charge", Modular "may at any time change its provision" with only commercially
+    reasonable notice. The source is therefore readable but not unconditionally runnable or redistributable
+    at scale, which makes this source-available rather than open source despite the product being marketed
+    as open.
   last_verified: '2026-08-09'
   raw: license:Modular-Community-License(non-OSI, per-device licensing and a limited redistribution grant,
     governs MAX/Mojo usage+distribution);repo-license:Apache-2.0-WITH-LLVM-exception(the source in modular/modular);source:public(~450k
@@ -55,15 +56,11 @@ adoption:
   reach: '>10K stars'
   signal_type: stars_fallback
   confidence: low
-  note: 'No published download/user/tokens figure for MAX serving specifically. GitHub stars on modular/modular,
-    which covers MAX and Mojo together, are the only signal: 26,777 stars band at >10K stars, level 3 on
-    the stars scale. The previous reach ''10K-100K'' was a download label this instrument does not offer
-    - a star is not a download - and the level was corrected from 2. Over-attribution is named rather than
-    resolved: modular/modular is one repo covering both products, so these stars are not all MAX''s, the
-    guide has no settled rule for that shape yet, and confidence stays low. The real defect is upstream:
-    this product declares no artifacts at all, so a stars_fallback band has no stars source behind it and
-    the count lives only in this note. Declaring modular/modular would fix it, and is deliberately not done
-    here because a declared code repo also re-routes the openness license dimension.'
+  note: 'No download, user or token figure is published for MAX serving specifically. GitHub stars are the
+    only signal available, and the 26,777 stars on modular/modular fall in the >10K stars band, level 3
+    on the stars scale. Confidence stays low for two reasons: a star is not a download, and modular/modular
+    is a single repository covering MAX and Mojo together, so an unknown share of those stars belongs to
+    the language rather than to the serving product.'
   last_verified: '2026-08-09'
   sources:
   - url: https://github.com/modular/modular
@@ -78,12 +75,11 @@ capability:
     (NVIDIA/AMD/Apple) + CPU, custom-kernel authoring in Mojo, cloud deployment; designed as high-performance
     inference + hardware-abstraction layer
   confidence: medium
-  note: Docs record serving 500+ Hugging Face models via an OpenAI-compatible REST API, a graph compiler
-    with op-level fusions, and native MAX/PyTorch execution across GPUs and CPUs; the GitHub README records
-    separate NVIDIA and AMD GPU containers plus Apple-silicon GPU support, and custom op/kernel authoring
-    in Mojo. No standardized MLPerf/AA inference-engine submission has been found, so the basis stays feature_matrix
-    rather than benchmark. No peer comparison is recorded for this product, so relative_to/relation stay
-    unset.
+  note: The documentation records serving 500+ Hugging Face models through an OpenAI-compatible REST API,
+    a graph compiler with operator-level fusions, and native MAX and PyTorch execution across GPUs and CPUs;
+    the GitHub README records separate NVIDIA and AMD GPU containers, Apple-silicon GPU support, and custom
+    operator and kernel authoring in Mojo. No standardized MLPerf or Artificial Analysis inference-engine
+    result has been found for it, so the score rests on that feature set rather than on a benchmark.
   last_verified: '2026-08-09'
   sources:
   - url: https://docs.modular.com/max/intro

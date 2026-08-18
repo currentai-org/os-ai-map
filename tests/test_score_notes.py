@@ -154,3 +154,87 @@ def test_no_score_prose_carries_a_verification_log(sources):
         "`last_verified` moving is for. A re-read that changed something edits the note to say "
         "the new durable thing, not to narrate the discovery."
     )
+
+
+# ── No date in a note ───────────────────────────────────────────────────────────────────────
+
+ISO_DATE = re.compile(r"\b20\d\d-\d\d-\d\d\b")
+
+# Axes whose note states a date that is a fact about the PRODUCT or the SOURCE, not about when
+# somebody looked: a GA or ship date, an archive date, a measurement window, a retirement date.
+# Each was reviewed when the score-history sweep (#323) ran. Adding to this list is a claim that
+# the date would still be true if nobody ever re-read the record.
+DATES_THAT_ARE_PRODUCT_FACTS = {
+    ("amazon-bedrock-evaluations", "adoption"),
+    ("apertus", "adoption"),
+    ("apertus", "openness"),
+    ("atropos", "adoption"),
+    ("claude-haiku", "capability"),
+    ("claude-sonnet", "capability"),
+    ("claude-sonnet", "openness"),
+    ("cloudflare-sandboxes", "adoption"),
+    ("compar-ia", "adoption"),
+    ("cruxeval", "adoption"),
+    ("google-coral-dev-board", "adoption"),
+    ("khoj", "openness"),
+    ("kimi", "adoption"),
+    ("langflow", "adoption"),
+    ("localai", "adoption"),
+    ("mmmu", "openness"),
+    ("n8n", "adoption"),
+    ("open-llm-leaderboard", "adoption"),
+    ("perplexica", "adoption"),
+    ("ragflow", "adoption"),
+    ("sandbox-runtime", "adoption"),
+    ("vercel-sandbox", "adoption"),
+}
+
+
+def test_no_note_states_a_date_unless_it_is_a_product_fact(sources):
+    """A note says why the score is what it is. A date says when somebody looked.
+
+    #322 took the re-read log out of the notes and #323 took the score history out — "RE-BANDED
+    2026-08-14", "Class corrected from open_core on 2026-07-30" — leaving the chronology to git,
+    where it already lived with the diff and the digests that produced it.
+
+    This guard is a DATE rule rather than a verb list, deliberately. The first pass guarded on
+    `Re-read` and friends, and `Re-derived` rode through it 23 times: a vocabulary can always be
+    escaped by picking a new word, and the next pass will pick one. What cannot be escaped is that
+    a note about when something happened has to say when.
+
+    `sources[].shows` is deliberately NOT covered. It quotes the source, and sources carry dates
+    honestly — a GitHub `pushed_at`, a copyright year inside licence text, "29 June 2007" inside
+    the GPL, a model-snapshot identifier where the date IS the model's name.
+    """
+    offenders = [
+        f"{slug} {axis}"
+        for slug, score in sources["scores"].items()
+        for axis in ("openness", "adoption", "capability")
+        if (slug, axis) not in DATES_THAT_ARE_PRODUCT_FACTS
+        and ISO_DATE.search(((score.get(axis) or {}).get("note")) or "")
+    ]
+    assert not offenders, (
+        f"{len(offenders)} notes state a date:\n  " + "\n  ".join(sorted(offenders)[:20])
+        + "\n\nWhen a score changed is git's to remember: `git log -p --follow "
+        "sources/scores/<slug>.yaml`. If the date is a fact about the product rather than about "
+        "the reading, add it to DATES_THAT_ARE_PRODUCT_FACTS with that justification."
+    )
+
+
+def test_the_date_allowlist_has_not_gone_stale(sources):
+    """An axis whose note no longer states a date must leave the allowlist, not linger in it.
+
+    Otherwise the list stops describing the exceptions and starts hiding them: it would keep
+    passing long after the dates were gone, and the next real instance would have somewhere to
+    sit unnoticed. Same two-sided shape as
+    test_the_known_backlog_has_not_silently_grown_stale above, and the same reason.
+    """
+    stale = [
+        f"{slug} {axis}"
+        for slug, axis in DATES_THAT_ARE_PRODUCT_FACTS
+        if not ISO_DATE.search(((sources["scores"].get(slug, {}).get(axis) or {}).get("note")) or "")
+    ]
+    assert not stale, (
+        f"{sorted(stale)} no longer state a date - remove them from "
+        "DATES_THAT_ARE_PRODUCT_FACTS so the list keeps meaning what it says."
+    )

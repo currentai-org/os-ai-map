@@ -16,15 +16,15 @@ openness:
     - ee/-auth-directories-under-Mastra-Enterprise-License
     - Mastra-Platform-hosted-tier-commercial
   confidence: high
-  note: 'Open-core in the LangGraph/LlamaIndex shape rather than the n8n one - the framework itself is a
-    real OSI license, not fair-code. LICENSE.md scopes the commercial carve-out narrowly to `ee/` auth directories,
-    so the agent, workflow, memory and eval surfaces a user actually builds on are Apache-2.0. The bare
-    `gated` resolves to a named mechanism: ee/LICENSE is a separate Enterprise Edition license forbidding
+  note: 'Open core, but in the LangGraph and LlamaIndex shape rather than the n8n one: the framework itself
+    carries a real OSI license, not fair-code. LICENSE.md scopes the commercial carve-out narrowly to the
+    ee/ auth directories, so the agent, workflow, memory and eval surfaces a user actually builds on are
+    Apache-2.0. The gate is a named mechanism: ee/LICENSE is a separate Enterprise Edition license forbidding
     production use without a written agreement with Kepler Software, and packages/_internals/auth/src/ee/license.ts
     disables the EE features unless MASTRA_LICENSE_KEY validates against the Mastra license server, which
-    returns entitlements for rbac, sso and fga. So functionality is withheld from the published source by
-    a license key, not merely sold beside it. Not 5 for that reason; the managed Mastra Cloud is separate
-    and is not what decides this.'
+    returns entitlements for RBAC, SSO and FGA. So functionality is withheld from the published source by
+    a license key rather than merely sold beside it, which is why this is not full open source. The managed
+    Mastra Cloud is separate and is not what decides it.'
   last_verified: '2026-08-12'
   raw: license:Apache-2.0(OSI, everything outside `ee/`);source:public;ee/-auth-directories-under-Mastra-Enterprise-License;Mastra-Platform-hosted-tier-commercial;core-gated:gated(RBAC,
     SSO and FGA live in ee/-scoped directories under the Mastra Enterprise License and are switched on at
@@ -43,10 +43,10 @@ openness:
     - license
     - core-gated
   - url: https://registry.npmjs.org/@mastra/core
-    shows: 'Registry metadata declares `license: Apache-2.0`, latest 1.57.0 (was 1.55.0 on 2026-07-30),
-      confirming the framework still ships to consumers under the OSI license rather than only being licensed
-      that way in-repo. The npmjs.com package page answers 403 to any non-browser fetch behind a Cloudflare
-      interstitial; this registry endpoint serves the same fact and stays fetchable.'
+    shows: 'Registry metadata declares `license: Apache-2.0`, latest 1.57.0, confirming the framework still
+      ships to consumers under the OSI license rather than only being licensed that way in-repo. The npmjs.com
+      package page answers 403 to any non-browser fetch behind a Cloudflare interstitial; this registry
+      endpoint serves the same fact and stays fetchable.'
     accessed: '2026-08-12'
     http_status: 200
     content_sha256: a4361185051f473caffd3e3cd222e17f108be4f873c688dca43548149dbba9c1
@@ -99,13 +99,12 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: '@mastra/core at 4,931,561 downloads in the last month, which places it in the 1-10M band. Deliberately
-    NOT summed with the `mastra` package (2,151,411/mo): npm counts increment for transitively fetched dependencies,
-    and `mastra` pulls @mastra/core through @mastra/deployer, so adding them double-counts the same installs.
-    @mastra/core is the package everything resolves to and is the better single proxy. The band is the same
-    either way. Raw download volume includes CI and mirror traffic, so this is install volume rather than
-    a user count. The npm download API now returns 5,264,387 downloads for @mastra/core over the trailing
-    month, still inside the 1M-10M band.'
+  note: 'The npm download API returns 5,264,387 downloads for @mastra/core over the trailing month, which
+    places it in the 1-10M band. Deliberately not summed with the mastra package (2,151,411 a month): npm
+    counts increment for transitively fetched dependencies, and mastra pulls @mastra/core through @mastra/deployer,
+    so adding them would double-count the same installs. @mastra/core is the package everything resolves
+    to and is the better single proxy, and the band is the same either way. Raw download volume includes
+    CI and mirror traffic, so this is install volume rather than a user count.'
   last_verified: '2026-08-13'
   sources:
   - url: https://api.npmjs.org/downloads/point/last-month/@mastra/core

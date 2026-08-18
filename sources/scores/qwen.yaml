@@ -17,14 +17,12 @@ openness:
         so they fall outside this axis
   governing_release: qwen-3-6
   confidence: high
-  note: 'Apache-2.0 across the distributed base variants, data closed and only inference code published,
-    so 3. The load-bearing exclusion: Qwen3.7-Max is proprietary and served only through Alibaba Model Studio,
-    so it is not part of the distributed set and does not cap the family. Including it would publish Qwen
-    as 1/closed, which is what the rubric''s multi_sku_rule exists to prevent - API-only tiers are a different
-    product surface from the weights you can download. Qwen 2.5 scored 2 because its distributed 3B and
-    72B SKUs carried the Qwen License Agreement; from Qwen3 onward the distributed set is Apache. Replaces
-    an earlier note that was a copy of the components string and recorded the license as `mixed`, a value
-    the rubric forbids because it states that SKUs differ without recording the outcome.'
+  note: 'Apache-2.0 across the distributed base variants, with a closed corpus and only inference code published,
+    so 3. The exclusion that carries the score: Qwen3.7-Max is proprietary and served only through Alibaba
+    Model Studio, so it is never distributed and does not cap the family. Counting it would publish Qwen
+    as closed, which would say nothing useful about the weights anyone can actually download - an API-only
+    tier is a different product surface. Qwen 2.5 scored 2, because its distributed 3B and 72B checkpoints
+    carried the Qwen License Agreement; from Qwen3 onward every distributed variant is Apache-2.0.'
   last_verified: '2026-08-13'
   raw: weights:open(Apache-2.0 for open variants e.g. 27B/35B-A3B);data:closed;code:partial(inference/usage
     code on GitHub; no training pipeline/data);license:Apache-2.0(most restrictive distributed SKU; the
@@ -59,8 +57,8 @@ openness:
     http_status: 200
     content_sha256: ed47c320896efcb77e69a40b65e094790187f232cd590a39eae3ebe06be5a024
   - url: https://llm-stats.com/models/qwen3.6-plus
-    shows: 'NOT READABLE on 2026-08-15: the page returns HTTP 200 and serves a ''Quick verification - Confirm
-      you''re human to keep going'' interstitial rather than the model page, so it shows nothing and establishes
+    shows: 'NOT READABLE: the page returns HTTP 200 and serves a ''Quick verification - Confirm you''re
+      human to keep going'' interstitial rather than the model page, so it shows nothing and establishes
       nothing. Retained because the record cites it; a digest of the interstitial is recorded rather than
       a claim about the model.'
     accessed: '2026-08-15'
@@ -77,12 +75,11 @@ adoption:
   reach: '>10M'
   signal_type: usage_volume
   confidence: medium
-  note: 14,030,698 downloads in the trailing 30 days summed across the 6 declared artifact(s) (Qwen/Qwen2.5-72B
+  note: 14,030,698 downloads in the trailing 30 days across the six declared artifacts (Qwen/Qwen2.5-72B
     28,852; Qwen/Qwen2.5-7B 716,344; Qwen/Qwen3.6-27B 6,830,615; Qwen/Qwen3.6-35B-A3B 5,609,980; Qwen/Qwen3-235B-A22B
-    529,067; Qwen/Qwen3.5-397B-A17B 315,840). Bands at level 5 (>10M) on the software and model adoption
-    scale, unchanged - and now on a counted figure rather than a cumulative third-party estimate. The two
-    Qwen3.6 checkpoints supply 89% of it, so the family reach is current rather than inherited from the
-    2.5 generation.
+    529,067; Qwen/Qwen3.5-397B-A17B 315,840), which bands at level 5 (>10M) on the model adoption scale.
+    The two Qwen3.6 checkpoints supply 89% of that total, so the family's reach is current rather than inherited
+    from the 2.5 generation.
   last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/api/models/Qwen/Qwen2.5-72B

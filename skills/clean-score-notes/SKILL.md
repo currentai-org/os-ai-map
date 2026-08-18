@@ -113,7 +113,20 @@ Worst-first by note count:
 | finetuning_code | 12 | 15 | 1 |
 | inference_code | 10 | 12 | 5 |
 
-**Cleared 2026-08-18.** That table is the state the sweep started from, kept because it is the
+**Cleared 2026-08-18**, and the score-history class with it (#323): the dated changelog
+sentences that sat inside the arguments - "RE-BANDED", "Class corrected from open_core on
+2026-07-30", "DECLARED 2026-08-14" - are gone from all 117 records that carried them.
+
+**A note may no longer state a date.** That is the rule now, guarded by
+`test_no_note_states_a_date_unless_it_is_a_product_fact` against an allowlist of 26 axes whose
+dates are facts about the product or the source rather than about the reading. `sources[].shows`
+is not covered: it quotes the source, and sources carry dates honestly.
+
+**What no guard reaches:** undated chronology - "Recorded level was 3", "Corrected from level 4",
+"The note this replaces..." - in roughly 80 notes. No date, no marker, same defect. Only reading
+finds it.
+
+**Cleared 2026-08-18 (original re-read table).** That table is the state the sweep started from, kept because it is the
 only record of what was there — the corpus now holds zero, and the guard below is strict. A
 future pass over a different prose defect should measure its own table the same way rather than
 work from a vague sense of the scale.

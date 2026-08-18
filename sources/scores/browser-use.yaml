@@ -18,20 +18,18 @@ openness:
         APIs. The four modules reading BROWSER_USE_API_KEY - browser/cloud sandbox skills and llm/browser_use
         - are published clients to that hosted product and the local agent needs no key
   confidence: high
-  note: 'CORRECTION 2026-08-12: `core-gated` was `gated` with no evidence behind it, and the note beside
-    it already said the core was not feature-gated. A read of the repo and the pricing page confirms the
-    note, so the value is now `ungated` and the score moves 4 -> 5. The repo root has one MIT LICENSE and
-    no ee/, enterprise/ or commercial/ path. The pricing page prices hosted capacity only - Dev $29/mo for
-    25 concurrent sessions and 20 browser profiles, Business $299/mo, Scaleup $999/mo, Enterprise custom,
-    plus pay-as-you-go credits - and states outright that "Cloud usage and the open-source browser-use Python
-    library are separate products with different APIs." The one thing that could have gone the other way
-    is that four library modules read BROWSER_USE_API_KEY: browser_use/browser/cloud/cloud.py, browser_use/sandbox/sandbox.py,
-    browser_use/skills/service.py and browser_use/llm/browser_use/chat.py. Each is a published client to
-    the separate hosted product rather than a withheld feature - SkillService fetches skills from the Browser
-    Use API through the browser_use_sdk package, sandbox posts to the hosted sandbox, and chat.py is the
-    ChatBrowserUse endpoint - and the local agent, browser session and tools run with any LLM and no key
-    at all. Selling a separate hosted product is the langchain/LangSmith shape, which the rubric settles
-    as ungated.'
+  note: 'The core is ungated: the repo root has one MIT LICENSE and no ee/, enterprise/ or commercial/ path,
+    and neither the repo nor the pricing page shows a feature gate. The pricing page prices hosted capacity
+    only - Dev $29/mo for 25 concurrent sessions and 20 browser profiles, Business $299/mo, Scaleup $999/mo,
+    Enterprise custom, plus pay-as-you-go credits - and states outright that "Cloud usage and the open-source
+    browser-use Python library are separate products with different APIs." The one thing that could have
+    gone the other way is that four library modules read BROWSER_USE_API_KEY: browser_use/browser/cloud/cloud.py,
+    browser_use/sandbox/sandbox.py, browser_use/skills/service.py and browser_use/llm/browser_use/chat.py.
+    Each is a published client to the separate hosted product rather than a withheld feature - SkillService
+    fetches skills from the Browser Use API through the browser_use_sdk package, sandbox posts to the hosted
+    sandbox, and chat.py is the ChatBrowserUse endpoint - and the local agent, browser session and tools
+    run with any LLM and no key at all. Selling a separate hosted product is the langchain/LangSmith shape,
+    which the rubric settles as ungated.'
   raw: license:MIT(OSI, library core fully open);source:public;managed-tier:Browser-Use-Cloud(proxies/stealth/captcha/hosted
     browsers, proprietary);core-gated:ungated(one MIT LICENSE and no ee/ path. The pricing page prices hosted
     capacity only and states that cloud usage and the open-source browser-use Python library are separate
@@ -80,14 +78,10 @@ adoption:
   reach: '>10M'
   signal_type: usage_volume
   confidence: high
-  note: 'Banded on PyPI downloads of the declared browser-use package, one of the most-used agent
-    browser-automation libraries. GitHub stars corroborate but are not the basis. RE-BANDED 2026-08-14
-    from 4/1M-10M to 5/>10M under the measured-figure ruling in docs/reference/adoption.md - a live figure
-    on an already-declared artifact overrides a hand-set band. The pypistats API still answers last_month
-    = 53,142,086 downloads for browser-use, byte-identical to the 2026-08-13 read (same content_sha256),
-    which is more than five times the >10M level-5 floor in sources/rubrics/software.yaml. The record had
-    been sitting at 4 under a figure that banded at 5 even on the older ~27M reading, so this closes a
-    discrepancy that predated the flag.'
+  note: Banded on downloads of the declared browser-use package, one of the most-used agent browser-automation
+    libraries; GitHub stars corroborate but are not the basis. The registry reports 53,142,086 downloads
+    in the last month, more than five times the >10M floor for level 5, and a live measured figure like
+    that takes precedence over a hand-set band.
   last_verified: '2026-08-14'
   sources:
   - url: https://pypistats.org/api/packages/browser-use/recent

@@ -16,9 +16,9 @@ openness:
     source:
       value: closed
   confidence: high
-  note: Lambda is a proprietary managed serverless service (closed), per recipe's explicit 'Lambda as closed
-    counterpart'. Firecracker (the microVM substrate) is separately open source but is a different artifact;
-    Lambda itself is not self-hostable.
+  note: Lambda is a proprietary managed serverless service, and the closed counterpart to the open runtimes
+    in this category. Firecracker, the microVM substrate underneath it, is separately open source but is
+    a different product; Lambda itself is not self-hostable.
   raw: license:Proprietary;service:proprietary AWS-only SaaS (no self-host);underlying-microVM:Firecracker
     is Apache-2.0 OSS but the Lambda control/data plane is closed;weights:n/a;source:closed
   last_verified: '2026-08-13'
@@ -44,14 +44,13 @@ adoption:
   reach: '>10M'
   signal_type: usage_volume
   confidence: high
-  note: 'AWS states Lambda ''processes trillions of executions for hundreds of thousands of active customers
-    every month'' - mass-market serverless deployment substrate, unambiguously >10M reach. (Adoption attributed
-    to general serverless usage, not specifically agent-code-execution.) AWS''s current Lambda FAQ supersedes
-    that figure upward, stating "15 trillion+ monthly Lambda Function invocations" against the 2018 launch
-    post''s "trillions". Instrument caveat, recorded rather than fixed: `usage_volume` names a count and
-    Lambda has no countable artifact - no package, repo or registry entry any signal model reads - and the
-    invocation figure is a vendor-reported platform total rather than a per-user count, so the instrument
-    is flagged for a human ruling rather than relabelled here.'
+  note: 'AWS states that Lambda "processes trillions of executions for hundreds of thousands of active customers
+    every month" - a mass-market serverless deployment substrate, unambiguously past the >10M reach floor.
+    The adoption is attributed to general serverless usage rather than specifically to agent code execution.
+    AWS’s current Lambda FAQ raises that figure, stating "15 trillion+ monthly Lambda Function invocations"
+    against the launch post’s "trillions". One caveat travels with the level: Lambda has no countable artifact
+    - no package, repo or registry entry - and the invocation figure is a vendor-reported platform total
+    rather than a per-user count, so the band rests on vendor disclosure rather than on a measurable channel.'
   last_verified: '2026-08-13'
   sources:
   - url: https://aws.amazon.com/blogs/aws/firecracker-lightweight-virtualization-for-serverless-computing/

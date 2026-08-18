@@ -17,25 +17,22 @@ openness:
     - self-host supported
     - hosted Helicone Cloud with paid tiers(free=10k req/mo) = commercial SaaS layer atop OSS core
   confidence: high
-  note: 'Apache-2.0 throughout, self-hostable in full, with a hosted Helicone Cloud sold beside it. Moved
-    from 4/open_core to 5/open_source on 2026-08-12 under the settled rule that a separate hosted product
-    is not a gated core. The bare `gated` this record used to carry rested on the cloud''s tiered pricing,
-    which the rubric explicitly says is not evidence for this dimension. The read that replaced it: the
-    recursive git tree of the default branch (untruncated, so the whole repository) contains exactly one
-    LICENSE, the Apache-2.0 root file. There is no ee/ path, no enterprise/ directory, no second license,
-    no license-key module, and no premium or entitlement flag. The README''s self-host path is the published
-    docker/docker-compose.yml covering all five services - web, worker, jawn, Supabase, ClickHouse, plus
-    Minio. What does exist is plan gating, and it is published Apache-2.0 code: web/lib/features.ts declares
-    ADDON_FEATURES and NON_FREE_FEATURES, web/lib/freeTierLimits.ts sets the quotas, and web/hooks/useFreeTierLimit.ts
-    reads them. Those enforce Helicone Cloud''s billing plan against a hosted account, ship in the source,
-    and are modifiable under Apache-2.0 - the `continue` shape, where the thing that looks like a gate turns
-    out to withhold nothing. One datum points the other way and is recorded rather than smoothed over: the
-    pricing page lists SAML SSO on the Enterprise tier and the repository contains no SAML, SSO, OAuth-IdP,
-    Okta or WorkOS implementation anywhere. That is an absence, not a carve-out or a closed package, and
-    the Enterprise tier''s other named item - "On-prem deployment" - is support for a deployment the repo
-    already ships for free. So it does not meet any of the three tests the rubric names for a gate. It is
-    the weakest point in this record and a later reader disagreeing on it has the same facts in front of
-    them.'
+  note: 'Apache-2.0 throughout, self-hostable in full, with a hosted Helicone Cloud sold beside it. A separate
+    hosted product is not a gated core, and the cloud''s tiered pricing is not evidence on this dimension.
+    The read behind that: the whole default branch contains exactly one LICENSE, the Apache-2.0 root file.
+    There is no enterprise directory, no second license, no license-key module and no entitlement flag.
+    The README''s self-host path is the published docker-compose file covering all five services - web,
+    worker, jawn, Supabase and ClickHouse, plus Minio. What does exist is plan gating, and it ships as published
+    Apache-2.0 code: web/lib/features.ts declares the add-on and non-free feature lists, web/lib/freeTierLimits.ts
+    sets the quotas, and web/hooks/useFreeTierLimit.ts reads them. Those enforce Helicone Cloud''s billing
+    plan against a hosted account, ship in the source, and are modifiable under Apache-2.0, so the thing
+    that looks like a gate withholds nothing. One datum points the other way and is recorded rather than
+    smoothed over: the pricing page lists SAML SSO on the Enterprise tier, and the repository contains no
+    SAML, SSO, OAuth identity-provider, Okta or WorkOS implementation anywhere. That is an absence rather
+    than a carve-out or a closed package, and the Enterprise tier''s other named item, on-prem deployment,
+    is support for a deployment the repository already ships for free. So it meets none of the tests for
+    a gated core. It is the weakest point in this record, and a later reader who disagrees has the same
+    facts in front of them.'
   raw: license:Apache-2.0(OSI);source:public;core-gated:ungated(Apache-2.0 across the whole recursive tree
     with a single LICENSE, no ee/ or enterprise directory, no license-key or premium flag; the five services
     self-host from the published docker/docker-compose.yml, and the free-tier quotas are themselves published
@@ -104,10 +101,9 @@ adoption:
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: low
-  note: 6,058 GitHub stars on Helicone/helicone. Bands at level 2 (1K-10K stars) on the stars fallback scale,
-    which caps at 3 because a star is not a use. Resynced because the note says 'capped at level 3 via stars
-    fallback' and recorded the cap; no request or customer count is disclosed. No download, install or customer
-    figure is published for this product, so stars remain the only honest signal and the level is directional.
+  note: 6,058 GitHub stars on Helicone/helicone, which bands at 1K-10K stars and level 2. Stars cannot carry
+    a product above level 3, because a star is not a use. No download, install, request or customer figure
+    is published for this product, so stars remain the only honest signal and the level is directional.
   last_verified: '2026-08-12'
   sources:
   - url: https://api.github.com/repos/Helicone/helicone
@@ -124,8 +120,10 @@ capability:
     analytics; LLM routing via AI Gateway (100+ models) with automatic fallbacks; datasets & fine-tuning;
     caching.'
   confidence: high
-  note: Broad feature matrix with a strong gateway/routing + caching angle on top of tracing, prompt mgmt,
-    cost, and datasets; on par with Langfuse C4. Held at 4 (no frontier-definer claim over anchors).
+  note: A broad feature matrix - observability and agent tracing, prompt management versioned against production
+    data, cost, latency and quality analytics, datasets and fine-tuning, and caching - with a strong LLM
+    routing angle on top through an AI gateway spanning 100+ models with automatic fallbacks. That is level
+    with Langfuse at 4, and it is held there because nothing here is a frontier-definer over the anchors.
   last_verified: '2026-08-13'
   sources:
   - url: https://raw.githubusercontent.com/Helicone/helicone/main/README.md

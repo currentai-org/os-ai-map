@@ -17,14 +17,14 @@ openness:
     - no-managed-tier-observed
     - no-feature-gated-core
   confidence: high
-  note: Apache-2.0, fully self-hostable, no managed/enterprise gating observed => open_source (not open_core).
-    Alibaba says it open sourced the sandbox infra used internally. The repository has moved from the alibaba
-    org to opensandbox-group, with the old URL redirecting to the new one. The untruncated tree is 2,642
-    entries with the whole product public - server/, components/, kubernetes/, cli/, sdks/, specs/ - carrying
-    ten LICENSE paths, all Apache-2.0 copies beside per-SDK and per-component roots, and no ee/, enterprise/,
-    commercial/ or proprietary/ path. open-sandbox.ai is a documentation site with no pricing page, no hosted
-    offering and no sign-up, closing with "Released under the Apache 2.0 License", so there is no managed
-    tier to gate against.
+  note: Apache-2.0, fully self-hostable, with no managed or enterprise tier gating the core, which makes
+    it open source rather than open core. Alibaba says it open sourced the sandbox infrastructure it uses
+    internally. The repository has moved from the alibaba org to opensandbox-group, with the old URL redirecting
+    to the new one. The untruncated tree is 2,642 entries with the whole product public - server/, components/,
+    kubernetes/, cli/, sdks/, specs/ - carrying ten LICENSE paths, all Apache-2.0 copies beside per-SDK
+    and per-component roots, and no ee/, enterprise/, commercial/ or proprietary/ path. open-sandbox.ai
+    is a documentation site with no pricing page, no hosted offering and no sign-up, closing with "Released
+    under the Apache 2.0 License", so there is no managed tier to gate against.
   raw: license:Apache-2.0(OSI);source:public(Go execd + multi-language SDKs);runtimes:Docker/Kubernetes;no-managed-tier-observed;no-feature-gated-core;core-gated:ungated
   last_verified: '2026-08-13'
   sources:
@@ -75,15 +75,13 @@ adoption:
   reach: '>10K stars'
   signal_type: stars_fallback
   confidence: low
-  note: '12,522 stars and 1,056 forks across the 1 declared repo, which bands at >10K stars, level 3 on
-    the stars scale in signal_routing.yaml - the cap for stars_fallback, and a correction up from level
-    2. The project is only months old and no PyPI/download or named-deployment figure has surfaced, so stars
-    are the only signal: rapid early accumulation (3,845 within 72h of launch) with no usage volume behind
-    it yet. The reach label uses the stars vocabulary rather than a download band, because a star is not
-    a download, and the digest below drifts on every refetch because a star count moves daily - expected
-    of this instrument, and no weaker a band for it, since the band depends only on order of magnitude.
-    One thing is escalated rather than applied: a Python SDK is now published on PyPI as `opensandbox`,
-    so this record may no longer need the stars fallback at all. It is not declared here.'
+  note: '12,522 stars and 1,056 forks on the one declared repo, which falls in the >10K star band - the
+    highest level a star-based reading can reach, since a star is not a download. The project is only months
+    old and no download or named-deployment figure has surfaced, so stars are the only signal: rapid early
+    accumulation (3,845 within 72h of launch) with no usage volume behind it yet. A star count moves daily,
+    so the figure is a snapshot; the band depends only on its order of magnitude. One gap is worth naming:
+    a Python SDK is now published on PyPI as `opensandbox`, so a countable channel exists that this record
+    does not yet measure.'
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/alibaba/OpenSandbox
@@ -104,27 +102,24 @@ capability:
     language/runtime breadth:Python/TS/Go/Java SDKs, unified sandbox API, MCP server (Claude Code/Cursor);
     persistence:file ops; scale:K8s'
   confidence: medium
-  note: 'LEVEL CORRECTED 3 -> 4 on 2026-08-14. The band rested entirely on "container-level isolation (no
-    VM/microVM tier observed)", and that clause is false. OSEP-0004 "Pluggable Secure Container Runtime
-    Support" carries status `implementing`, and the capability is SHIPPED rather than proposed:
-    `server/opensandbox_server/services/runtime_resolver.py` holds SecureRuntimeResolver with a Docker map
-    (gvisor -> runsc, kata -> kata-runtime) and a Kubernetes RuntimeClass map (gvisor -> gvisor,
-    kata -> kata-qemu, firecracker -> kata-fc), plus startup validation. Corroborated by a gVisor e2e suite
-    with its own RuntimeClass fixtures and an AKS + Kata deployment walkthrough with a matching
-    examples/aks-kata/ directory. Verified by reading that file directly rather than from the OSEP.
-
-    NOT ABOVE 4, for two reasons recorded so the ceiling is arguable rather than asserted. OpenSandbox
-    explicitly does not install the runtimes - an OSEP non-goal - so the microVM tier depends on
-    operator-supplied infrastructure, and one server supports exactly one runtime at a time. And there is
-    no independent latency measurement: the only figures are the OSEP''s own planning estimates. Level with
-    daytona-sandbox, which scores 4 on the same shape - container by default, VM classes opt-in - on a
-    weaker openness story.'
+  note: 'Secure runtime support is shipped rather than proposed, which is what puts this at 4 rather than
+    at container-only isolation: the server’s runtime resolver holds a Docker map (gvisor to runsc, kata
+    to kata-runtime) and a Kubernetes RuntimeClass map (gvisor to gvisor, kata to kata-qemu, firecracker
+    to kata-fc), plus startup validation, under OSEP-0004 "Pluggable Secure Container Runtime Support" at
+    status implementing. A gVisor end-to-end suite with its own RuntimeClass fixtures, and an AKS plus Kata
+    deployment walkthrough with a matching example directory, corroborate that the code is real rather than
+    planned. Two things keep it from going higher. OpenSandbox explicitly does not install the runtimes
+    - an OSEP non-goal - so the microVM tier depends on operator-supplied infrastructure, and one server
+    supports exactly one runtime at a time. And there is no independent latency measurement: the only figures
+    are the OSEP’s own planning estimates (~550ms for gVisor, ~625ms for Kata and Firecracker). That leaves
+    it level with daytona-sandbox, which scores 4 on the same shape - container by default, VM classes opt-in
+    - on a weaker openness story.'
   last_verified: '2026-08-14'
   sources:
   - url: https://raw.githubusercontent.com/opensandbox-group/OpenSandbox/main/server/opensandbox_server/services/runtime_resolver.py
-    shows: 'SecureRuntimeResolver as shipped code: Docker runtime map (gvisor -> runsc, kata ->
-      kata-runtime) and Kubernetes RuntimeClass map (gvisor, kata-qemu, kata-fc), with startup
-      validation - the VM/microVM tier the record said was absent'
+    shows: 'SecureRuntimeResolver as shipped code: Docker runtime map (gvisor -> runsc, kata -> kata-runtime)
+      and Kubernetes RuntimeClass map (gvisor, kata-qemu, kata-fc), with startup validation - the VM/microVM
+      tier.'
     accessed: '2026-08-14'
     http_status: 200
     content_sha256: 3193ac44cebe3e45435273bd49487b21878d4b338e71adce5671df9cbd33164e
