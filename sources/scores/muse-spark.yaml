@@ -13,22 +13,17 @@ openness:
     - name: Proprietary
       detail: meta.ai/Meta AI app + private API preview; no downloadable weights
   confidence: high
-  note: >-
-    No weights released, a closed assistant-surface model; only a private API preview. Fully closed.
-
-    Re-read 2026-08-13 - the Meta newsroom post still says Muse Spark "currently powers the Meta AI app and
-    website" and that "We will also be offering the model in private preview via API to select partners",
-    with no weights, corpus or training code anywhere on it. Two corrections to what this file recorded.
-    The clause about hoping to open source future versions is not on the page and has been dropped from the
-    source's `shows`. And the ai.meta.com blog answers HTTP 400 to a plain fetch on both attempts, so it
-    was not re-dated. No change to the score.
+  note: No weights released, a closed assistant-surface model; only a private API preview. Fully closed.
+    Meta's newsroom post says Muse Spark powers the Meta AI app and website and will be offered in private
+    preview via API to select partners, with no weights, corpus or training code anywhere on it; the ai.meta.com
+    engineering blog answers HTTP 400 to a plain fetch. The clause about hoping to open source future versions
+    is on neither page and has been dropped.
   raw: weights:closed;data:closed;code:closed;license:Proprietary(meta.ai/Meta AI app + private API preview;
     no downloadable weights)
   last_verified: '2026-08-13'
   sources:
   - url: https://ai.meta.com/blog/introducing-muse-spark-msl/
-    shows: Meta's engineering blog for Muse Spark. Returned HTTP 400 to a plain fetch on 2026-08-13, so
-      not re-dated.
+    shows: Meta's engineering blog for Muse Spark. It answers HTTP 400 to a plain fetch.
     accessed: '2026-06-04'
   - url: https://about.fb.com/news/2026/04/introducing-muse-spark-meta-superintelligence-labs/
     shows: 'Meta primary newsroom post - "Muse Spark is our most powerful model yet. It currently powers
@@ -45,16 +40,13 @@ adoption:
   signal_type: active_users
   confidence: low
   note: Powers the Meta AI assistant on meta.ai and the Meta AI app (rolling out to WhatsApp/Instagram/Facebook/Messenger/AI
-    glasses), an enormous consumer surface, but Meta discloses no Muse Spark-specific user count, and
-    at scoring time it is not yet the model behind the full family of surfaces. Placed at 4 on the consumer-app
-    surface it powers; not 5 because no standalone figure and rollout incomplete. Attributed honestly
-    to the surface, not the model. Re-read 2026-08-13 - the newsroom post now carries a 2026-05-12 update
-    saying the rollout the note called incomplete has happened ("When we launched Muse Spark last month,
-    we said we'd bring it everywhere. Today, we are"), covering WhatsApp, Instagram, Facebook, Messenger
-    and the Ray-Ban and Oakley glasses. The "rollout incomplete" half of the reason for holding this at 4
-    rather than 5 no longer holds; the "no standalone figure" half still does, and Meta still publishes no
-    Muse Spark user count. That is a scoring question rather than a freshness one and is FLAGGED. The band
-    is dated on the surface evidence, which was re-read in full.
+    glasses), an enormous consumer surface, but Meta discloses no Muse Spark-specific user count, and at
+    scoring time it is not yet the model behind the full family of surfaces. Placed at 4 on the consumer-app
+    surface it powers; not 5 because no standalone figure and rollout incomplete. Attributed honestly to
+    the surface, not the model. The newsroom post's 2026-05-12 update says the rollout has since happened
+    across WhatsApp, Instagram, Facebook, Messenger and the Ray-Ban and Oakley glasses, so the rollout-incomplete
+    half of the reason for holding this at 4 rather than 5 no longer applies; the no-standalone-figure half
+    still does, and Meta still publishes no Muse Spark user count. FLAGGED as a scoring question.
   last_verified: '2026-08-13'
   sources:
   - url: https://about.fb.com/news/2026/04/introducing-muse-spark-meta-superintelligence-labs/
@@ -65,8 +57,7 @@ adoption:
     http_status: 200
     content_sha256: b4da0bd8ec45f87c8e9286e187e29d136a5b4238efbe5b45f13b600c70aa2620
   - url: https://ai.meta.com/blog/introducing-muse-spark-msl/
-    shows: Meta's engineering blog for Muse Spark. Returned HTTP 400 to a plain fetch on 2026-08-13, so
-      not re-dated.
+    shows: Meta's engineering blog for Muse Spark. It answers HTTP 400 to a plain fetch.
     accessed: '2026-06-04'
 capability:
   score: 5
@@ -75,29 +66,15 @@ capability:
   value: 'arena.ai text leaderboard - muse-spark-1.2 (xHigh) ranked 4 of 391 models at 1498 +/-10;
     Artificial Analysis Intelligence Index 57, rank #14 of 188'
   confidence: medium
-  note: >-
-    Bumped 4 -> 5 on the strength of an LMArena placement that no longer exists.
-
-    Re-read 2026-08-13, and NEITHER source supports the record any more. The LMArena leaderboard does not
-    list Muse Spark at all - the string does not appear on the page - and it has changed instrument, now
-    ranking by win share with a confidence interval rather than by Elo, so the "~1487 Elo, #6 overall"
-    figure is gone in both senses. The top of the Agent board reads Claude Opus 5 (High) 12.01%, Claude
-    Opus 5 (Max) 12.00%, Claude Fable 5 (High) 11.98%. The Meta engineering blog that carried the HLE 58%
-    and FrontierScience 38% figures answers HTTP 400 to a plain fetch, so those are unsourced too. This is
-    exactly the failure the bump was meant to close, in reverse.
-
-    Replacement found 2026-08-14, and the band survives on it. lmarena.ai now 301s to arena.ai, whose
-    TEXT board still ranks by an Elo-style score - the win-share board hit on 2026-08-13 was the Agent
-    board, a different instrument on the same site. On the text board Muse Spark IS present, as
-    muse-spark-1.2 (xHigh), ranked 4 of 391 models at 1498 +/-10, behind only three Anthropic entries.
-    Artificial Analysis corroborates independently at 57 on their Intelligence Index, #14 of 188.
-
-    Two narrowings the new evidence forces. The placement belongs to the 1.2 xHigh release rather than
-    to "mid-2026" generally, and the value has been rewritten to say so. And the HLE 58% /
-    FrontierScience 38% figures still have no fetchable home - ai.meta.com answers HTTP 400 to the
-    repo's own fetcher on a third attempt, so those numbers are dropped from the value rather than
-    carried unsourced. The 5 now rests on a top-5 arena placement and a #14/188 index rank, both
-    re-derivable.
+  note: 'The 5 rests on a top-5 arena placement and a #14/188 index rank, both re-derivable. arena.ai''s
+    TEXT board - lmarena.ai 301s to it - ranks muse-spark-1.2 (xHigh) 4 of 391 models at 1498 +/-10, behind
+    only three Anthropic entries, and Artificial Analysis corroborates independently at 57 on its Intelligence
+    Index, rank #14 of 188. Two narrowings the evidence forces. The placement belongs to the 1.2 xHigh release
+    rather than to the tier generally, and the value says so. And the HLE 58% / FrontierScience 38% figures
+    the record once carried have no fetchable home - ai.meta.com answers HTTP 400 to the repo''s fetcher
+    - so they are dropped rather than carried unsourced. The LMArena Elo placement the original 4 -> 5 bump
+    rested on is gone in both senses: the site''s Agent board now ranks by win share rather than Elo, and
+    the old ~1487 Elo / #6 overall figure appears on neither board.'
   last_verified: '2026-08-14'
   sources:
   - url: https://arena.ai/leaderboard/text
@@ -114,7 +91,6 @@ capability:
     http_status: 200
     content_sha256: efd6d68244a9fbe139a9ab0b4851ad821fa126f8de802ce720b7dd1319915d3c
   - url: https://ai.meta.com/blog/introducing-muse-spark-msl/
-    shows: the former source of the HLE 58% and FrontierScience 38% figures. Answered HTTP 400 to the
-      repo's fetcher again on 2026-08-14, so those figures remain unsourced and have been dropped from
-      the value.
+    shows: The former source of the HLE 58% and FrontierScience 38% figures. It answers HTTP 400 to the
+      repo's fetcher, so those figures remain unsourced and have been dropped from the value.
     accessed: '2026-06-04'

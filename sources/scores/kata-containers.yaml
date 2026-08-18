@@ -17,14 +17,8 @@ openness:
     free_text:
     - no-feature-gated-core
   confidence: high
-  note: 'Fully Apache-2.0, source public, vendor-neutral open-foundation governance, no managed-tier gating
-    from the project itself. Re-read 2026-08-13. The LICENSE body is the verbatim Apache License 2.0 with
-    nothing appended, and the README states the same in prose. The untruncated default-branch tree carries
-    one LICENSE and the whole product - src/ holds runtime, runtime-rs, agent and the built-in Dragonball
-    VMM, with tools/, tests/ and docs/ beside them - and there is no ee/, enterprise/, commercial/ or
-    proprietary/ path. katacontainers.io sells nothing - it is a community site stewarded by the OpenInfra
-    Foundation that points at GitHub for the code and at a user survey for feedback - so there is no managed
-    tier to gate against and core-gated stays ungated.'
+  note: Fully Apache-2.0, source public, vendor-neutral open-foundation governance, no managed-tier gating
+    from the project itself.
   raw: license:Apache-2.0(OSI);source:public;governance:open community (OpenInfra Foundation);no-feature-gated-core;core-gated:ungated
   last_verified: '2026-08-13'
   sources:
@@ -75,13 +69,12 @@ adoption:
   note: 'Established CNCF/OpenInfra-adjacent container-runtime project integrated into Kubernetes runtimeclass
     deployments; broad but operator-concentrated infrastructure adoption rather than a mass per-user count.
     No clean download/user figure verified; ~8k stars (corroborate only, not the basis). Level 3 reflects
-    specialist infra reach. Re-read 2026-08-13 and the abstention from a numeric reach still holds. katacontainers.io
-    publishes no download, install, cluster or user count anywhere - what it publishes instead is a running
-    user survey asking operators to self-report, plus one named production deployment (Baidu, for Function
-    Computing, Cloud Container Instances and Edge Computing). The project ships as release tarballs and a
-    kata-deploy Helm chart rather than through a countable package registry, so there is no channel to band
-    on. Stars read 2026-08-13 - 8,531, unchanged in magnitude and still corroboration only. No reach recorded,
-    which is what reported_traction requires absent a published figure.'
+    specialist infra reach. The abstention from a numeric reach is deliberate: katacontainers.io publishes
+    no download, install, cluster or user count anywhere - what it publishes instead is a running user survey
+    asking operators to self-report, plus one named production deployment (Baidu, for Function Computing,
+    Cloud Container Instances and Edge Computing) - and the project ships as release tarballs and a kata-deploy
+    Helm chart rather than through a countable package registry, so there is no channel to band on. No reach
+    is recorded, which is what reported_traction requires absent a published figure.'
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/kata-containers/kata-containers
@@ -117,14 +110,12 @@ capability:
     K8s-native); persistence:container lifecycle; scale:K8s clusters
   confidence: high
   note: 'VM-grade isolation with OCI/Kubernetes compatibility and pluggable hypervisors; very strong isolation
-    but higher cold-start than microVM/userspace frontier-definers, so 4. Re-read 2026-08-13. The feature
-    matrix still reads as described - the README states lightweight VMs "that feel and perform like containers,
-    but provide the workload isolation and security advantages of VMs", on x86_64, aarch64, ppc64le and
-    s390x, with a containerd shimv2 runtime and an in-VM agent; docs/hypervisors.md still lists five pluggable
-    VMMs (QEMU, Cloud Hypervisor, Firecracker, Dragonball, StratoVirt), with QEMU the best-supported for
-    NVIDIA GPUs and confidential computing. The prose comparison to the frontier-definers is now recorded
-    as relative_to firecracker with relation `one_below`, which holds arithmetically - Firecracker is 5,
-    Kata is 4, and Firecracker''s capability was re-derived the same day. Score unchanged at 4.'
+    but higher cold-start than microVM/userspace frontier-definers, so 4. Five hypervisors are pluggable
+    - QEMU, Cloud Hypervisor, Firecracker, Dragonball and StratoVirt - with QEMU the best-supported for
+    NVIDIA GPUs and confidential computing, and the runtime ships as a containerd shimv2 shim with an in-VM
+    agent across x86_64, aarch64, ppc64le and s390x. The comparison to the frontier-definers is recorded
+    as relative_to firecracker with relation `one_below`, which holds arithmetically: Firecracker is 5 and
+    Kata is 4.'
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/kata-containers/kata-containers

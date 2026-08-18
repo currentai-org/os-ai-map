@@ -15,17 +15,14 @@ openness:
     - reference-impl(Go)+client-SDKs
     - commercial-managed-service(CONFSEC)separate
   confidence: high
-  note: Fully OSI-licensed (Apache-2.0) across the reference implementation and related repos, with the spec
-    and whitepaper public. Confident Security runs a commercial managed service (CONFSEC) on top, but that
-    is an open-core *business* around a fully open standard, not open-core licensing. Re-read 2026-08-13
-    and unchanged. The LICENSE body at repository head is a verbatim Apache License 2.0, and the
-    repository metadata reports spdx_id Apache-2.0 on a public, unarchived Go repository. The README
-    still frames the project as "deployable on your own infrastructure", links the whitepaper in-tree,
-    and points the compute-node half at a second public repository, confidentsecurity/confidentcompute,
-    which publishes the compute_boot, router_com and compute_worker binaries plus the Packer image
-    build - so the part that actually runs the inference is published rather than withheld. CONFSEC
-    remains a managed service Confident Security sells on top, mentioned but not required, which is why
-    core-gated stays ungated.
+  note: 'Fully OSI-licensed (Apache-2.0) across the reference implementation and related repos, with the
+    spec and whitepaper public. Confident Security runs a commercial managed service (CONFSEC) on top, but
+    that is an open-core *business* around a fully open standard, not open-core licensing. The compute-node
+    half is published rather than withheld: confidentsecurity/confidentcompute carries the compute_boot,
+    router_com and compute_worker binaries plus the Packer image build, so the part that actually runs the
+    inference is open, and the OpenPCC README frames the project as "deployable on your own infrastructure".
+    CONFSEC remains a managed service Confident Security sells on top, mentioned but not required, which
+    is why core-gated stays ungated.'
   raw: license:Apache-2.0(OSI);source:public(github.com/openpcc/openpcc + spec/whitepaper);reference-impl(Go)+client-SDKs;commercial-managed-service(CONFSEC)separate;core-gated:ungated
   last_verified: '2026-08-13'
   sources:
@@ -79,16 +76,13 @@ adoption:
   signal_type: reported_traction
   confidence: low
   banded_quantity: GitHub stars (948) and seed funding ($5M), with no production adopter documented
-  note: 'Launched Nov 5 2025 with a $5M seed (Decibel, Ex/Ante, South Park Commons, Halcyon, SAIF); ~940 GitHub
-    stars by mid-2026 (notable for a young infra project) but no production adopters documented in primary
-    sources. Early-stage. Re-read 2026-08-13 and the picture is unchanged, so the level stands. The
-    repository reports 948 stars and 31 forks, and neither the README nor the launch write-up names a
-    production deployment; the only named consumer is Confident Security''s own CONFSEC managed service,
-    which is the vendor rather than an adopter. Two things worth a later look - the repository''s last
-    push is 2026-01-08, seven months before this read, and the launch post still closes on an open
-    waitlist rather than customers. Neither moves a level-2 reported_traction band on its own, but a
-    reference implementation that has not been pushed to since January is the kind of signal that
-    usually precedes one moving.'
+  note: 'Launched Nov 5 2025 with a $5M seed (Decibel, Ex/Ante, South Park Commons, Halcyon, SAIF); ~940
+    GitHub stars by mid-2026 (notable for a young infra project) but no production adopters documented in
+    primary sources. Early-stage. The only named consumer is Confident Security''s own CONFSEC managed service,
+    which is the vendor rather than an adopter: neither the README nor the launch write-up names a production
+    deployment, and the launch post closes on an open waitlist rather than customers. Worth a later look
+    - the reference implementation has gone months without a push, which does not move a level-2 reported_traction
+    band on its own but is the kind of signal that usually precedes one moving.'
   last_verified: '2026-08-13'
   sources:
   - url: https://api.github.com/repos/openpcc/openpcc
@@ -112,21 +106,19 @@ capability:
     requests via Oblivious HTTP; client SDKs (Go native + C lib for Python/JS); model/provider-agnostic (prototyped
     on Intel TDX + H100 serving Llama-3 8B on vLLM)'
   confidence: medium
-  note: 'Broad, well-architected confidential-serving stack with attestation plus anonymization that goes beyond
-    plain confidential compute. Not top because it is young with limited proven scale and no documented production
-    adopters. Re-read 2026-08-13 and the feature set holds, though the two cited pages divide the work
-    differently than this axis recorded. The launch write-up turns out to be a motivation and standards
-    piece - it establishes the anonymization scheme against timing, payment and metadata side channels,
-    and the Apache-2.0 Go implementation, and nothing more granular. The itemized scope comes from the
-    repositories instead. The OpenPCC README carries encrypted streaming, hardware attestation and
-    unlinkable requests over Oblivious HTTP, a transparency verifier with an identity policy, a Go client
-    plus a C library underlying the Python and JavaScript clients, and OpenAI-format completions against
-    an arbitrary tagged model, which is the provider-agnostic claim. The compute-node repository adds
-    the attestation target explicitly, with compute_boot attesting to the TPM, GPU and other hardware
-    before the router starts. One recorded detail did NOT re-derive - the "prototyped on Intel TDX + H100
-    serving Llama-3 8B on vLLM" clause in the value string appears on none of the pages read today, and
-    the README''s worked example runs qwen3:1.7b. Flagged rather than edited; the band does not rest on
-    it.'
+  note: Broad, well-architected confidential-serving stack with attestation plus anonymization that goes
+    beyond plain confidential compute. Not top because it is young with limited proven scale and no documented
+    production adopters. The itemized scope comes from the repositories rather than the launch write-up,
+    which is a motivation and standards piece establishing the anonymization scheme against timing, payment
+    and metadata side channels and the Apache-2.0 Go implementation, and nothing more granular. The OpenPCC
+    README carries encrypted streaming, hardware attestation and unlinkable requests over Oblivious HTTP,
+    a transparency verifier with an identity policy, a Go client plus a C library underlying the Python
+    and JavaScript clients, and OpenAI-format completions against an arbitrary tagged model, which is the
+    provider-agnostic claim; the compute-node repository adds the attestation target explicitly, with compute_boot
+    attesting to the TPM, GPU and other hardware before the router starts. One recorded detail does NOT
+    re-derive - the "prototyped on Intel TDX + H100 serving Llama-3 8B on vLLM" clause in the value string
+    appears on none of the cited pages, whose worked example runs qwen3:1.7b. Flagged rather than edited;
+    the band does not rest on it.
   last_verified: '2026-08-13'
   sources:
   - url: https://raw.githubusercontent.com/openpcc/openpcc/main/README.md

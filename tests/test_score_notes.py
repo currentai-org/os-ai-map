@@ -27,6 +27,7 @@ and the backlog shrank because it was counted.
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 import pytest
@@ -103,4 +104,53 @@ def test_the_known_backlog_has_not_silently_grown_stale(sources):
     assert not resolved, (
         f"{sorted(resolved)} no longer share a note across axes — remove them from "
         f"KNOWN_SHARED_NOTES so the list keeps meaning what it says."
+    )
+
+
+# ── The note is not the verification log ────────────────────────────────────────────────────
+
+VERIFICATION_PROSE = re.compile(r"Re-read|Re-checked|Re-fetched|Re-verified", re.I)
+
+
+def _prose_fields(score: dict):
+    """Every hand-written string on a score record that the payload publishes."""
+    for axis in ("openness", "adoption", "capability"):
+        block = score.get(axis) or {}
+        if block.get("note"):
+            yield f"{axis}.note", block["note"]
+        for i, source in enumerate(block.get("sources") or []):
+            if source.get("shows"):
+                yield f"{axis}.sources[{i}].shows", source["shows"]
+
+
+def test_no_score_prose_carries_a_verification_log(sources):
+    """A note says why the score is what it is. It is not the log of who checked it and when.
+
+    The payload publishes `note` and `sources[].shows` verbatim, and the product page renders
+    them as the prose a visitor reads to understand a score. Between 2026-04 and 2026-08 the
+    re-read passes appended their own narrative there — "Re-read 2026-08-13 - the source still
+    says X. No change." — until it was 44% of all note prose, in 1,035 of 1,416 notes. Every
+    fact those clauses stated was already a field on the same record: `last_verified`,
+    `sources[].accessed`, `sources[].http_status`, `sources[].content_sha256`. The page already
+    prints `Verified <date>` from the first of them.
+
+    The history is not lost by keeping it out of the prose. The scoring history is the git
+    history of the score file, which is complete, dated by commit, and needs no upkeep —
+    `git log -p --follow sources/scores/<slug>.yaml`. See docs/reference/evidence-and-freshness.md.
+
+    This is strict rather than a ratchet: the corpus was cleared in one pass (#322), so there is
+    no backlog left to name, and an allowlist would only give the next instance somewhere to hide.
+    """
+    offenders = [
+        f"{slug} {field}"
+        for slug, score in sources["scores"].items()
+        for field, text in _prose_fields(score)
+        if VERIFICATION_PROSE.search(text)
+    ]
+    assert not offenders, (
+        f"{len(offenders)} score prose fields carry a verification log:\n  "
+        + "\n  ".join(sorted(offenders)[:20])
+        + "\n\nA re-read that changed nothing leaves no trace in the note — that is what "
+        "`last_verified` moving is for. A re-read that changed something edits the note to say "
+        "the new durable thing, not to narrate the discovery."
     )

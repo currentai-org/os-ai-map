@@ -22,14 +22,13 @@ openness:
       detail: M.2 modules purchasable
       raw: open_market (M.2 modules purchasable)
   confidence: high
-  note: Proprietary silicon with published datasheets and an open GenAI model zoo, but the silicon and
-    full toolchain are closed. Re-read 2026-08-14 against substitutes, hailo.ai being unfetchable at
-    403. Each component re-derived - the GenAI model zoo is still MIT by the GitHub API's own
-    `spdx_id`, and HailoRT is MIT/LGPL-2.1 with the developer-zone documentation behind registration
-    and the Dataflow Compiler behind a customer relationship, which is the closed half of `toolchain`;
-    `blobs` from HailoRT's driver shipping device firmware; `datasheets` from AAEON's UP page carrying
-    the full published spec table for the module; `retail` from the same page plus Geniatech shipping
-    an independent Hailo-10 module. No change.
+  note: 'Proprietary silicon with published datasheets and an open GenAI model zoo, but the silicon and
+    full toolchain are closed. Component detail: the GenAI model zoo is MIT by the GitHub API''s own `spdx_id`;
+    HailoRT is MIT/LGPL-2.1 while the developer-zone documentation sits behind registration and the Dataflow
+    Compiler behind a customer relationship, which is the closed half of `toolchain`; `blobs` rests on HailoRT''s
+    driver shipping device firmware; `datasheets` on AAEON''s UP page carrying the full published spec table
+    for the module; `retail` on that same page plus Geniatech shipping an independent Hailo-10 module. hailo.ai
+    itself is unfetchable at 403, so these rest on substitutes.'
   raw: schematics:none;toolchain:partial (open runtime + MIT GenAI model zoo);datasheets:public (June 2025);blobs:required
     (proprietary silicon/firmware);retail:open_market (M.2 modules purchasable)
   last_verified: '2026-08-14'
@@ -76,11 +75,10 @@ adoption:
   signal_type: reported_traction
   confidence: medium
   note: Newer generative-AI part; purchasable M.2 modules and a dedicated GenAI repo, but smaller install
-    base than the Hailo-8. Re-read 2026-08-14 against substitutes. Both halves hold - the part is
-    productized and purchasable through at least two independent module vendors (AAEON/UP, Geniatech),
-    and it is still visibly the smaller surface next to the Hailo-8, with the GenAI model zoo at 100
-    stars and last pushed 2026-04-15 against HailoRT's 215 stars and 2026-08-11. Niche at level 3,
-    one below the Hailo-8, is unchanged.
+    base than the Hailo-8. The part is productized and purchasable through at least two independent module
+    vendors (AAEON/UP and Geniatech), and it is visibly the smaller surface next to the Hailo-8 - the GenAI
+    model zoo carries 100 stars against HailoRT's 215 - which is why niche at level 3, one below the Hailo-8,
+    is where it sits.
   last_verified: '2026-08-14'
   sources:
   - url: https://hailo.ai/products/ai-accelerators/hailo-10h-m-2-ai-acceleration-module/
@@ -109,12 +107,11 @@ capability:
   value: 40 TOPS INT4 / 20 TOPS INT8; runs LLMs & VLMs via direct DDR interface
   confidence: high
   note: Edge-first part that runs generative models locally via a DDR interface, a step beyond CNN-only
-    edge accelerators. Re-derived 2026-08-14 against substitutes, hailo.ai being unfetchable. AAEON/UP
-    reproduces the recorded value exactly - "AI Performance 40 TOPS @ INT4 | 20 TOPS @ INT8" and
-    "Hailo-10H includes a direct DDR interface, allowing it to scale for large models such as LLMs,
-    VLMs, Stable Diffusion" - and Geniatech independently states up to 40 TOPS running LLMs and VLMs
-    locally. Still one band above the Hailo-8, which is CNN/vision-only and bounded by on-die memory.
-    No change.
+    edge accelerators. AAEON/UP reproduces the recorded value exactly - "AI Performance 40 TOPS @ INT4 |
+    20 TOPS @ INT8" and "Hailo-10H includes a direct DDR interface, allowing it to scale for large models
+    such as LLMs, VLMs, Stable Diffusion" - and Geniatech independently states up to 40 TOPS running LLMs
+    and VLMs locally. That is one band above the Hailo-8, which is CNN/vision-only and bounded by on-die
+    memory. hailo.ai itself is unfetchable, so both rest on substitutes.
   last_verified: '2026-08-14'
   sources:
   - url: https://hailo.ai/products/ai-accelerators/hailo-10h-m-2-ai-acceleration-module/

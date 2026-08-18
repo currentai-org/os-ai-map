@@ -196,6 +196,56 @@ confirmation are different questions, and "never confirmed" is `build/sweep_stat
 `build/check_verification.py`'s. The report prints how many of its ages rest on the fallback so
 a pass can never quietly be resting on the weaker signal.
 
+## The note is not the log
+
+A score `note` says why the score is what it is. Between 2026-04 and 2026-08 the re-read passes
+appended their own narrative to it — "Re-read 2026-08-13 - the source still says X … No change."
+— until that text was 44% of all note prose, in 1,035 of 1,416 notes across 446 of 472 files.
+
+Every fact those clauses state is already a field on the same record:
+
+| The clause says | The field that holds it |
+|---|---|
+| when it was re-read | `last_verified` |
+| that a source was fetched | `sources[].accessed`, `sources[].http_status` |
+| that the source is unchanged | `sources[].content_sha256` |
+| what the source says | `sources[].shows` |
+
+And the product page already prints `Verified <date>` beneath the record, from `last_verified`.
+So the prose was not adding a fact; it was moving a structured one into the copy a visitor reads
+to understand a score, three times per product, once per axis.
+
+**The rule.** A note holds durable reasoning: what was assessed, against what, and why that lands
+on this rung. Anything whose truth depends on *when you read it* belongs in a field, not the note.
+A re-read that finds nothing changed leaves no trace in the note — that is what `last_verified`
+moving is for. A re-read that finds something changed edits the note to say the new durable thing,
+not to narrate the discovery.
+
+### Where the history lives
+
+Removing the narrative from the note does not discard it. **The scoring history is the git
+history of the score file**, which is complete, dated by commit, and maintained by the act of
+committing rather than by anyone remembering to append a paragraph:
+
+```bash
+git log -p --follow sources/scores/<slug>.yaml     # every pass, with what each one changed
+git log -L '/^  note:/,+20:sources/scores/<slug>.yaml'   # just one axis's note over time
+```
+
+An agent re-reading a product consults that before deciding a score has not moved. What it finds
+there is richer than the prose ever was: not only what a previous pass concluded, but the exact
+`content_sha256` it saw and the diff it produced.
+
+This is a deliberate choice against the alternative — a `verification_log` field carried in the
+score file and withheld from the payload. That would put the history where a file-reading agent
+trips over it, at the cost of duplicating what git already holds and obliging every future pass
+to maintain the copy. Duplicated history drifts; git's does not.
+
+The public payload publishes `note` and `sources` verbatim, so anything written into a note is
+published. That is the reason this boundary is a rule and not a style preference.
+
+Cleaning the corpus is `skills/clean-score-notes/SKILL.md`, and issue #322 carries the audit.
+
 ## Who may write `last_verified`
 
 **A person, and only a person.** No tool in this repo writes the field.

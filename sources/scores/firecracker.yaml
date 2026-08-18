@@ -17,11 +17,7 @@ openness:
     - no-feature-gated-core
   confidence: high
   note: Fully Apache-2.0, source public, no gated core; AWS-developed but openly governed (recipe lists
-    Firecracker as an open_source exemplar). Re-read 2026-08-13 against the GitHub repo API and the raw
-    README rather than the rendered repo page. The API reports spdx_id Apache-2.0, language Rust, not
-    archived, and a push the same day; the README states Firecracker "is open sourced under Apache version
-    2.0", gives build-from-source instructions for the whole VMM, and names no paid or withheld edition.
-    Score and class unchanged.
+    Firecracker as an open_source exemplar).
   raw: license:Apache-2.0(OSI);source:public(Rust 78.7%);governance:AWS-led open project;no-feature-gated-core;core-gated:ungated
   last_verified: '2026-08-13'
   sources:
@@ -55,17 +51,13 @@ adoption:
   signal_type: usage_volume
   confidence: high
   note: 'Underpins AWS Lambda and AWS Fargate, among the highest-volume serverless platforms in the world
-    (trillions of invocations), plus downstream use in Kata Containers, Flintlock, and E2B. Production
-    reach far exceeds >10M end-equivalent. (36,040 stars corroborate only.) Re-read 2026-08-13: the README
-    still states Firecracker was developed at AWS to accelerate AWS Lambda and AWS Fargate and has been
-    integrated into Kata Containers and Flintlock, and the AWS launch post still carries "Lambda processes
-    trillions of executions for hundreds of thousands of active customers every month" and Fargate running
-    "tens of millions of containers for AWS customers every week". Level unchanged at 5. Instrument
-    caveat, recorded rather than fixed: `usage_volume` names a count, and there is no countable artifact
-    behind this - Firecracker ships as a statically linked Rust binary from GitHub releases, not as a
-    package on any registry a signal model reads, and its PyPI namesake is not its distribution channel.
-    The band rests on reported AWS platform volume, so the instrument is flagged for a human ruling
-    rather than relabelled here.'
+    (trillions of invocations), plus downstream use in Kata Containers, Flintlock, and E2B. Production reach
+    far exceeds >10M end-equivalent. (36,040 stars corroborate only.) Instrument caveat, recorded rather
+    than fixed: `usage_volume` names a count and there is no countable artifact behind this - Firecracker
+    ships as a statically linked Rust binary from GitHub releases rather than as a package on any registry
+    a signal model reads, and its PyPI namesake is not its distribution channel. The band rests on reported
+    AWS platform volume - trillions of Lambda executions monthly and tens of millions of Fargate containers
+    weekly - so the instrument is flagged for a human ruling rather than relabelled here.'
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/firecracker-microvm/firecracker
@@ -99,10 +91,7 @@ capability:
   confidence: high
   note: 'Frontier-definer for the deployment category: hardware-VM isolation at container-like speed/density,
     the reference microVM that the managed sandbox layer (E2B, others) builds on. Defines the strongest
-    point on the isolation x cold-start x scale matrix. Re-read 2026-08-13. Both cited figures are still
-    on the AWS launch post - "you can launch a microVM in as little as 125 ms today" and "Firecracker
-    consumes about 5 MiB of memory per microVM" - and the README still describes a KVM-based VMM with a
-    deliberately minimal device model running container and function workloads. Score unchanged at 5.'
+    point on the isolation x cold-start x scale matrix.'
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/firecracker-microvm/firecracker

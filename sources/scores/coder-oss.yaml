@@ -18,9 +18,9 @@ openness:
         features
   confidence: high
   note: 'AGPL-3.0 OSI core (Community Edition) with a separate proprietary Premium/Enterprise tier => open_core.
-    The bare `gated` was transcribed 2026-08-12 from a read of the repo and both LICENSE files, and it holds
-    on a named mechanism rather than on the paid tier existing. coder/coder carries two top-level licenses:
-    the root AGPL-3.0 and LICENSE.enterprise, the latter scoped by its own text to "directory named enterprise".
+    The bare `gated` comes from a direct read of the repo and both LICENSE files, and it holds on a named
+    mechanism rather than on the paid tier existing. coder/coder carries two top-level licenses: the root
+    AGPL-3.0 and LICENSE.enterprise, the latter scoped by its own text to "directory named enterprise".
     That directory is in the published tree but not under the open license, it contains the audit log, group/RBAC
     and AI seat-tracking implementations, and the enterprise license forbids circumventing the license key
     that unlocks them. This is the litellm shape - a carve-out inside the repo - not the otari one.'
@@ -68,17 +68,14 @@ adoption:
   signal_type: stars_fallback
   reach: '>10K stars'
   confidence: low
-  note: 'No published install/active-user count for the OSS edition; ~13.4k GitHub stars is the only concrete
-    signal. Stars-fallback caps at level 3; placed at 3 (not higher) on broad enterprise positioning + star
-    base, but reach is unverified by usage_volume. Stars read 2026-08-13: 14,142 across the 1 declared repo,
-    which bands at >10K stars, level 3 on the stars scale in signal_routing.yaml. The previous reach
-    ''100K-1M'' was not a label this instrument offers - stars have their own vocabulary because a star is not
-    a download. Re-read 2026-08-13 against the GitHub API - 14,143 stars, still >10K stars and still level 3.
-    The absence of a download channel was re-checked too, and it holds for a second reason now - the
-    codercom/coder Docker Hub repository is deprecated, its description redirecting to GitHub Container
-    Registry, and it has taken 31,179 pulls in total since 2021 with no push since 2024. GHCR publishes
-    no pull count, so no usage_volume signal exists to re-band on and stars_fallback remains the
-    instrument. A digest over a star count drifts on every refetch by construction; that is noise on
+  note: 'No published install or active-user count for the OSS edition; GitHub stars are the only concrete
+    signal - 14,143 across the 1 declared repo, which bands at >10K stars, level 3 on the stars scale in
+    signal_routing.yaml. Stars-fallback caps at level 3; placed at 3 (not higher) on broad enterprise positioning
+    plus the star base, with reach unverified by usage_volume. The reach label uses the stars vocabulary
+    rather than a download band, because a star is not a download. There is no download channel to band
+    on instead: the codercom/coder Docker Hub repository is deprecated, its description redirecting to GitHub
+    Container Registry, with 31,179 pulls in total since 2021 and no push since 2024, and GHCR publishes
+    no pull count. A digest over a star count drifts on every refetch by construction; that is noise on
     this endpoint rather than evidence of change.'
   last_verified: '2026-08-13'
   sources:
@@ -106,14 +103,11 @@ capability:
     long-lived workspaces; scale:org-scale self-hosted
   confidence: medium
   note: Strong as a persistent governed dev-environment platform but a poor fit for the deployment litmus
-    'safely run arbitrary agent-generated code in an ephemeral sandbox' - isolation/cold-start depend
-    on the infra template, not a purpose-built sandbox; scored 3. Belongs more in a dev-environment shelf
-    than the agent-sandbox sub-segment. Re-read 2026-08-13 - the README still defines workspaces in
-    Terraform over EC2 VMs, Kubernetes pods or Docker containers, still connects them over a Wireguard
-    tunnel, and still describes long-lived environments that idle-shut-down rather than ephemeral
-    per-task sandboxes. The agent story has grown - Coder Agents now runs the agent loop in the control
-    plane so no model credentials sit in the workspace - but that is governance rather than isolation
-    strength or cold-start, so the band holds at 3.
+    'safely run arbitrary agent-generated code in an ephemeral sandbox' - isolation/cold-start depend on
+    the infra template, not a purpose-built sandbox; scored 3. Belongs more in a dev-environment shelf than
+    the agent-sandbox sub-segment. Coder Agents runs the agent loop in the control plane so that no model
+    credentials sit in the workspace, but that is governance rather than isolation strength or cold-start,
+    so the band holds at 3.
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/coder/coder

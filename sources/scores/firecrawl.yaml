@@ -18,12 +18,12 @@ openness:
         both require Fire-engine
   confidence: high
   note: 'AGPL-3.0 OSI core is fully open, but a piece of the product is withheld from it. `core-gated: gated`
-    verified 2026-08-12 by a direct read, replacing a justification that rested on the managed cloud carrying
-    "additional features" - an inference from the pricing page, which the rubric does not accept as evidence.
-    The mechanism has a name: Fire-engine, Firecrawl''s scraping engine, whose source is in no public repo.
-    What firecrawl/firecrawl ships at apps/api/src/scraper/scrapeURL/engines/fire-engine is a client - index.ts,
-    scrape.ts, checkStatus.ts, delete.ts, brandingScript.ts - pointed at a URL you must be given, and apps/api/.env.example
-    says so in one line: "# set if you''d like to use the fire engine closed beta" above FIRE_ENGINE_BETA_URL=.
+    comes from a direct read, replacing a justification that rested on the managed cloud carrying "additional
+    features" - an inference from the pricing page, which the rubric does not accept as evidence. The mechanism
+    has a name: Fire-engine, Firecrawl''s scraping engine, whose source is in no public repo. What firecrawl/firecrawl
+    ships at apps/api/src/scraper/scrapeURL/engines/fire-engine is a client - index.ts, scrape.ts, checkStatus.ts,
+    delete.ts, brandingScript.ts - pointed at a URL you must be given, and apps/api/.env.example says so
+    in one line: "# set if you''d like to use the fire engine closed beta" above FIRE_ENGINE_BETA_URL=.
     The self-hosting guide then states what the open build cannot do without it - screenshots and page actions
     are "Not available in the default stack. Fetch and Playwright both report no support; both require Fire-engine",
     Fire-engine must be "run and configured separately; it is not included", and the agent, browser, interact
@@ -90,17 +90,14 @@ adoption:
   reach: '>10K stars'
   signal_type: stars_fallback
   confidence: low
-  note: 'No verified download/API-volume or customer count disclosed on repo or pricing page; only ~129k
-    GitHub stars available as an honest signal. Capped at level 3 per stars_fallback rule. Widely integrated
-    as an agent scrape tool (LangChain, etc.) but no primary usage figure found this run. Stars read
-    2026-08-13: 166,749 across the 1 declared repo, which bands at >10K stars, level 3 on the stars scale in
-    signal_routing.yaml. The previous reach ''100K-1M'' was not a label this instrument offers - stars have
-    their own vocabulary because a star is not a download. Re-read in full 2026-08-13: the repo page reports
-    166,863 stargazers, which is the same band, and the repo and the pricing page still publish no download,
-    request-volume or customer count of any kind - a paid API sells credits rather than reporting usage,
-    so there is nothing here to band as usage_volume. The stars fallback and its level-3 cap therefore both
-    stand. The digest below is of a page carrying a live star counter and will not match on a later refetch;
-    that is expected drift on this source rather than a signal about the claim.'
+  note: 'Neither the repo nor the pricing page publishes a download, request-volume or customer count of
+    any kind - a paid API sells credits rather than reporting usage - so there is nothing here to band as
+    usage_volume. The only honest signal is GitHub stars: 166,863 across the 1 declared repo, which bands
+    at >10K stars, level 3 on the stars scale in signal_routing.yaml, and the stars_fallback rule caps the
+    level there. Widely integrated as an agent scrape tool (LangChain, etc.). The previous reach ''100K-1M''
+    was not a label this instrument offers - stars have their own vocabulary because a star is not a download.
+    The digest below is of a page carrying a live star counter and will not match on a later refetch; that
+    is expected drift on this source rather than a signal about the claim.'
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/mendableai/firecrawl
@@ -116,11 +113,7 @@ capability:
   confidence: medium
   note: 'Broad scrape/browse feature coverage (the recipe''s search/scrape dimensions: coverage, freshness,
     structured output, rate limits), among the most capable open scrape tools; not a 5 (no benchmark, and
-    frontier reserved for category-definers). Re-read 2026-08-13: the README still carries both figures
-    the recorded value quotes, verbatim - "Industry-leading reliability: Covers 96% of the web, including
-    JS-heavy pages" and "Blazingly fast: P95 latency of 3.4s across millions of pages" - and both remain
-    vendor-run rather than independently benchmarked, which is why the basis stays feature_matrix and the
-    band stays 4.'
+    frontier reserved for category-definers).'
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/mendableai/firecrawl

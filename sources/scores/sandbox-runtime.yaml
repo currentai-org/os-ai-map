@@ -17,11 +17,9 @@ openness:
     - no managed/proprietary tier(it is a local library, not a service)
   confidence: high
   note: Apache-2.0 OS-level sandboxing library, fully open and self-contained; no feature-gated core or
-    paid tier. Re-read 2026-08-13 - the GitHub API reports the repository public, unarchived and
-    licensed Apache-2.0, the LICENSE body is the verbatim Apache License 2.0, and the README installs
-    the whole tool with a single ``npm install -g @anthropic-ai/sandbox-runtime`` and documents no
-    hosted plan, license key or withheld capability. It is labeled a beta research preview, which is a
-    maturity statement rather than a gate.
+    paid tier. The README installs the whole tool with a single `npm install -g @anthropic-ai/sandbox-runtime`
+    and documents no hosted plan, license key or withheld capability. It is labeled a beta research preview,
+    which is a maturity statement rather than a gate.
   raw: license:Apache-2.0(OSI);source:public(GitHub);distribution:npm package;no managed/proprietary tier(it
     is a local library, not a service);core-gated:ungated
   last_verified: '2026-08-13'
@@ -105,12 +103,9 @@ capability:
     fs, deny/allow rules); scale:per-host, no managed fleet
   confidence: medium
   note: Best-in-class for low-overhead, no-container process isolation with fine-grained fs+network allow/deny
-    and pre-built seccomp filters; but a process-level sandbox is a weaker security boundary than the
-    microVM/gVisor frontier and offers no managed scale, so 3. Re-read 2026-08-13 - the README still
-    describes bubblewrap on Linux and sandbox-exec on macOS with proxy-based network filtering, still
-    documents seccomp filters as x64/arm64 only and warns that unix sockets go unrestricted where
-    seccomp is unavailable, and still ships no managed or multi-host mode. The feature matrix reads as
-    recorded and the band holds at 3.
+    and pre-built seccomp filters; but a process-level sandbox is a weaker security boundary than the microVM/gVisor
+    frontier and offers no managed scale, so 3. Seccomp filters are x64/arm64 only, with unix sockets going
+    unrestricted where seccomp is unavailable, and the tool ships no managed or multi-host mode.
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/anthropic-experimental/sandbox-runtime
