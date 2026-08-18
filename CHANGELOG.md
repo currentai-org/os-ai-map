@@ -28,6 +28,12 @@ Removed, Fixed, Security), one line, newest first, in plain past tense, with the
   what it needs. They render together in the category drawer, and written in one mood they
   restated each other — `depth` fires if and only if the stage is 4, so both sentences carried
   the same fact (#87, #321).
+- Took the record's own scoring history out of score notes - "RE-BANDED 2026-08-14", "Class
+  corrected from open_core on 2026-07-30", "LEVEL CORRECTED 3 -> 2". The reasoning behind each
+  correction stays, in the present tense; the chronology goes to git, which already holds it with
+  the diff and digests that produced it. A note may no longer state a date at all, enforced by
+  `test_no_note_states_a_date_unless_it_is_a_product_fact` against a reviewed allowlist of 26 axes
+  whose dates are facts about the product rather than about the reading (#322, #323).
 - Rewrote the stage and gap definitions the payload carries — the text rendered in the site
   legend and category drawer. Stage 4 and the `depth` gap no longer define each other, the
   `adoption` gap no longer defines itself by its own threshold, and the `disclosure` gap no longer

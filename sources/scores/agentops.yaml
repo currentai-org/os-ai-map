@@ -23,13 +23,12 @@ openness:
     parties as a hosted or managed service. That is this ladder's competition_restricted tier stated directly,
     and with the source published it lands on the 2/source_available rung. The root LICENSE is plain MIT
     with no carve-out, so it governs the repository root where the agentops SDK lives and says nothing about
-    app/; both licenses are now recorded as a compound so the ladder applies its own most-restrictive rule
-    rather than reading only the first half. The record previously carried the root MIT alone, which described
-    the SDK and not the observability application this slug is scored on. Nothing is withheld for a paid
-    tier - app/ ships api, dashboard, ClickHouse, the OTel collector, Supabase, deploy and a compose file,
-    with no ee/ directory and no license key - so core-gated is now recorded as `ungated`, but the license
-    rung fires above any rung that reads it. The vendor's README calls the app MIT; app/LICENSE says Elastic
-    2.0, and the LICENSE file governs.
+    app/; both licenses are recorded as a compound so the ladder applies its own most-restrictive rule rather
+    than reading only the first half. The root MIT alone describes the SDK and not the observability application
+    this slug is scored on. Nothing is withheld for a paid tier - app/ ships api, dashboard, ClickHouse,
+    the OTel collector, Supabase, deploy and a compose file, with no ee/ directory and no license key -
+    so core-gated is `ungated`, but the license rung fires above any rung that reads it. The vendor's README
+    calls the app MIT; app/LICENSE says Elastic 2.0, and the LICENSE file governs.
   raw: license:Elastic-License-2.0(app/LICENSE, the AgentOps application)+MIT(OSI, root LICENSE, the agentops
     SDK);source:public(SDK + self-hostable app dir);commercial:app.agentops.ai-SaaS-dashboard-is-the-primary-product;core-gated:ungated(app/
     ships the whole platform - api, dashboard, clickhouse, opentelemetry-collector, supabase, deploy, landing
@@ -117,7 +116,7 @@ capability:
   relative_to: langfuse
   relation: one_below
   note: Solid agent-tracing + cost + basic evals, but narrower feature matrix than MLflow/Langfuse/Opik/Phoenix;
-    stale SDK (no 2026 release) reinforces a mid score. The comparison is now recorded rather than left
+    a stale SDK with no 2026 release reinforces a mid score. The comparison is recorded rather than left
     in prose - one rung below the langfuse anchor at 4. Evaluations are carried as a roadmap table rather
     than a shipped surface.
   last_verified: '2026-08-13'

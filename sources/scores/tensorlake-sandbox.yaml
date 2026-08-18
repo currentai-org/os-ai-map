@@ -17,16 +17,16 @@ openness:
         repo - the Apache-2.0 tree publishes the SDK, the tl CLI and client crates, which authenticate to
         cloud.tensorlake.ai with an API key
   confidence: medium
-  note: 'Apache-2.0 SDK and CLI with a proprietary managed runtime. Confirmed `gated` 2026-08-12 on a named
-    mechanism, the firecrawl/composio shape: not a carve-out inside the repo but a component that is in
-    no repo at all. The 2,350-entry tree is entirely client side - the Python SDK around cloud_client.py,
-    the tl CLI, and nine crates that are all clients, codecs or bindings - and the README attributes sub-second
-    creation to "Lattice, a dynamic cluster scheduler", along with snapshots, cloning, auto suspend/resume
-    and live migration, none of which appear in any of the org’s 58 public repos. Onboarding is an API key
-    from cloud.tensorlake.ai. Secondary finding, NOT acted on: the recorded source detail "runtime+SDK,
-    BYOC self-host in your own AWS/GCP/Azure" is not supported - the runtime is not published, and BYOC
-    means the vendor’s closed control plane runs in your account rather than open self-hosting, so `source`
-    may belong at `partial`, which would score 2 rather than 4. Left as recorded and flagged.'
+  note: 'Apache-2.0 SDK and CLI with a proprietary managed runtime. It is `gated` on a named mechanism,
+    the firecrawl/composio shape: not a carve-out inside the repo but a component that is in no repo at
+    all. The 2,350-entry tree is entirely client side - the Python SDK around cloud_client.py, the tl CLI,
+    and nine crates that are all clients, codecs or bindings - and the README attributes sub-second creation
+    to "Lattice, a dynamic cluster scheduler", along with snapshots, cloning, auto suspend/resume and live
+    migration, none of which appear in any of the org’s 58 public repos. Onboarding is an API key from cloud.tensorlake.ai.
+    Secondary finding, NOT acted on: the recorded source detail "runtime+SDK, BYOC self-host in your own
+    AWS/GCP/Azure" is not supported - the runtime is not published, and BYOC means the vendor’s closed control
+    plane runs in your account rather than open self-hosting, so `source` may belong at `partial`, which
+    would score 2 rather than 4. Left as recorded and flagged.'
   raw: license:Apache-2.0(OSI);source:public(runtime+SDK, BYOC self-host in your own AWS/GCP/Azure);managed-tier:Tensorlake
     hosted cloud + proprietary Lattice scheduler;core-gated:gated(the MicroVM runtime and the Lattice cluster
     scheduler that creates sandboxes exist in no public repo - the Apache-2.0 tree publishes the SDK, the
@@ -108,15 +108,14 @@ capability:
     a rich agent-runtime feature set, level with the microVM peers: tensorlake.ai leads on Firecracker isolation
     with each tool call and harness in its own microVM, snapshots with pause/fork/resume, versioned mountable
     volumes, durable serverless functions with queues, timers and retries, and cloud dev boxes. THE MEASURED
-    HALF OF THE BAND HAS MOVED AND IS ESCALATED RATHER THAN ACTED ON. Independent ComputeSDK TTI benchmarks
-    now put Tensorlake at 1.35s median time-to-interactive, 1.44s P95, composite 86.1, 15th of 24 providers
-    - roughly three times the ~460ms and 12th-of-19 reading this band was written against, and against the
-    vendor''s own sub-second creation claim. Note that 460ms is the number the vendor site itself animates
-    in its demo, so the earlier record may have read the vendor claim and the leaderboard as agreeing when
-    only one of them was measured. The value string no longer asserts sub-second as if measured; it records
-    the vendor claim and the measured figure separately, which is what the two sources actually support.
-    The 4 is left exactly where it was, and whether a 1.35s time-to-interactive should pull it down is escalated
-    rather than taken here.'
+    HALF OF THE BAND IS IN TENSION WITH IT AND IS ESCALATED RATHER THAN ACTED ON. Independent ComputeSDK
+    TTI benchmarks put Tensorlake at 1.35s median time-to-interactive, 1.44s P95, composite 86.1, 15th of
+    24 providers - roughly three times the ~460ms and 12th-of-19 reading this band was written against,
+    and against the vendor''s own sub-second creation claim. Note that 460ms is also the number the vendor
+    site itself animates in its demo, so the vendor claim and the leaderboard are not two independent measurements.
+    The value string does not assert sub-second as if measured; it records the vendor claim and the measured
+    figure separately, which is what the two sources actually support. The 4 stands, and whether a 1.35s
+    time-to-interactive should pull it down is escalated rather than taken here.'
   last_verified: '2026-08-14'
   sources:
   - url: https://www.tensorlake.ai/
@@ -125,12 +124,9 @@ capability:
     http_status: 200
     content_sha256: 7522474f25c2864dae63f26e180926d421d634994f2ba2b3f4405d4882578456
   - url: https://www.computesdk.com/benchmarks/sandboxes/
-    shows: 'ComputeSDK TTI leaderboard, independent, 100 iterations per run, last run 7 August 2026, 24
-      providers on 4 vCPU / 16GB in Northern Virginia. Tensorlake records 1.35s median, 1.44s P95, 1.44s
-      P99, 100% success, composite 86.1 - 15th of 24 by composite and 17th of 24 by median. The
-      previously cited ~460ms / 12th of 19 reading is not on the page. Digest differs from the
-      2026-08-13 read (ec3f48b2...) because the page shell moves between builds; the Tensorlake row and
-      the run date are unchanged.'
+    shows: ComputeSDK TTI leaderboard, independent, 100 iterations per run, last run 7 August 2026, 24 providers
+      on 4 vCPU / 16GB in Northern Virginia. Tensorlake records 1.35s median, 1.44s P95, 1.44s P99, 100%
+      success, composite 86.1 - 15th of 24 by composite and 17th of 24 by median.
     accessed: '2026-08-14'
     http_status: 200
     content_sha256: 297068ee668b6e539692c74bbafde6ab456fe2121a28ad2a1d4bd9a5ce23e949
