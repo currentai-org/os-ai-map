@@ -472,6 +472,51 @@ floor and its note says so.
 The tell to look for when reviewing: **a note that describes the signal as understating the
 product, followed by a band recorded on that signal anyway.**
 
+## The third trap: the package that is not the product
+
+Both traps above are about ATTRIBUTION - a real count of the product credited to the wrong
+product, or a real count of the wrong channel credited to the right one. This one happens a step
+earlier, at IDENTIFICATION, and it is the one a gate cannot catch.
+
+> **A registry package sharing the product's name is not evidence that it is the product.** Before
+> banding on it, establish that the package CONTAINS the product rather than talking to it.
+
+Measured on 2026-08-18 while promoting the `storage` category: ten of twenty-seven products have a
+PyPI package matching their name, and in none of the ten is that package the product. Two shapes,
+and the second is worse:
+
+- **The client of a self-hostable server.** `elasticsearch` on PyPI is elasticsearch-py at 52.8M
+  downloads a month; the product is the Java engine at `elastic/elasticsearch`. `pgvector` is
+  pgvector-python at 36.6M; the product is a Postgres extension written in C. Same shape for
+  `meilisearch`, `typesense`, `lakefs`, `infinity-sdk`, `aistore` and `vearch`. Every one of those
+  figures is a real count of client installs, and none of them measures the server.
+- **A different project entirely.** `dolt` on PyPI is an unrelated REST wrapper by another author.
+  `flash-attention` is a Huawei Ascend port, not `Dao-AILab/flash-attention`. `juicefs` is a
+  third-party SDK published from another organization's repository, drawing under 200 downloads a
+  month against a product with 14,000 stars.
+
+**`check_artifacts --live` does not catch the first shape, and cannot.** Its `pypi_repo_mismatch`
+check compares the package's declared project URL against the product's repo, and a well-behaved
+client library points at exactly that repo - elasticsearch-py names `elastic/elasticsearch`. The
+gate is doing its job; the question it asks is not this one. That is why this rule lives here.
+
+Three questions settle it, and all three are answerable from the package's own JSON:
+
+1. **Does installing it give you the product, or a way to reach one?** A wheel for a Java engine, a
+   C extension, or a Go binary is a client by construction.
+2. **Who publishes it?** A package published from a different organization than the product's repo
+   is somebody else's software until proven otherwise, whatever it is called.
+3. **Does the magnitude make sense?** A server product whose package outdraws its stars by three
+   orders of magnitude is being measured through its client. `juicefs` at 169 downloads against
+   14,334 stars is the same tell inverted.
+
+Where the package turns out to be a client, the server usually has no countable channel at all, so
+the honest outcome is `stars_fallback` and its cap of 3 - understating a widely deployed system,
+and saying so in the note. Thirteen of `storage`'s twenty-seven bands are there for this reason,
+which is the highest share on the map after `dataset_processing_tools`, and it is a property of the
+category rather than a defect in it. Docker pull counts would fix most of them; there is no
+`docker` artifact kind to declare, which is the platform-side ask.
+
 ## Checklist
 
 - [ ] `level` is 1-5 and follows the band table for the product's **type**.
@@ -479,6 +524,8 @@ product, followed by a band recorded on that signal anyway.**
 - [ ] `signal_type` names the instrument actually used, not the one that sounds strongest.
 - [ ] `stars_fallback` never exceeds level 3.
 - [ ] A `usage_volume` band has a countable, **declared** artifact behind it.
+- [ ] A same-named registry package was checked for being the product rather than its client or
+      an unrelated project, per "The third trap" above. `check_artifacts` cannot ask this.
 - [ ] A `reported_traction` record cites a source with a date and a digest, and records a word
       from the vocabulary or no `reach` at all — never a number.
 - [ ] Anything read off something other than the product — a parent platform, a revenue or

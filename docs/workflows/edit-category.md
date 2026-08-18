@@ -3,8 +3,9 @@
 ## Use this when
 You are creating a category, or changing an existing one's definition, strapline, axis
 weights, or product roster. For giving a category its openness ladder (`scoring_recipe`),
-escalate to the `build-rubric` skill — that is its own craft. For re-verifying every product
-in a category, use [`refresh-category.md`](refresh-category.md).
+escalate to the `build-rubric` skill — that is its own craft. For turning a preliminary category's
+seed roster into published head products, use [`promote-category.md`](promote-category.md). For
+re-verifying every product in a category, use [`refresh-category.md`](refresh-category.md).
 
 ## Inputs you need
 - The category **slug** (`underscore_form`), and for a new one, its `display_name` and where it
@@ -40,7 +41,11 @@ here and not next door — is prose: put it in the category's `comments`, and in
    full `products:` roster. Registry rows carry stable identity and artifact IDs but no editorial
    scores. A slug or artifact may not duplicate a head product or another tail row.
 6. **Publication:** change the taxonomy entry to `status: published` only after the category has
-   a strapline and at least ten promoted, fully scored head products. Validation enforces both.
+   a strapline and at least ten promoted, fully scored head products. Validation enforces both, and
+   holds every category to the same contract whichever taxonomy spelling it uses — a scalar entry
+   means published and owes a description, weights, a ladder, a strapline and ten products.
+   Researching a seed roster into those products is its own job: see
+   [`promote-category.md`](promote-category.md).
 7. **Regrouping / reordering across arcs** happens in `sources/taxonomy.yaml` only — a category
    file no longer carries `arc` or cross-category `order`.
 
