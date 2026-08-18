@@ -74,14 +74,20 @@ capability:
   score: 5
   basis: feature_matrix
   basis_detail: 'category feature matrix: distributed retrieval platform with ranking and inference'
-  value: Full-text, dense-vector, sparse and hybrid retrieval with filtering, aggregations and learned sparse and
-    reranking models, over a sharded and replicated cluster.
+  value: Full-text, dense-vector, sparse and hybrid retrieval with filtering and aggregations, and an in-tree
+    inference and machine-learning stack that hosts models and evaluates reranking inside the query path,
+    over a sharded and replicated cluster.
   relative_to: vespa
   relation: at
   confidence: medium
-  note: Banded on the category feature matrix as distributed retrieval platform with ranking and inference. Placed
-    level with the vespa anchor, on a matrix that bands on how much of the persist-index-retrieve path a product
-    provides itself, at what scale and over how many retrieval modes.
+  note: 'Level with vespa at the top of the storage feature matrix, which bands on how much of the persist-index-retrieve
+    path a product provides itself, at what scale and over how many retrieval modes. The 5 rung is for a
+    distributed platform that also hosts and evaluates ranking or embedding models inside the serving path,
+    and Elasticsearch does: the `inference`, `ml` and `ml-package-loader` plugins ship in the repository
+    beside `rank-rrf` and `rank-vectors`. That is the line between this rung and the 4 rung the vector databases
+    sit on, which fuse or filter scores but host no model. Worth reading beside the openness score: the
+    plugins that earn this band live in x-pack, the Elastic-License-only directory that makes the product
+    open_core rather than open_source.'
   last_verified: '2026-08-18'
   sources:
   - url: https://github.com/elastic/elasticsearch/blob/main/README.asciidoc
@@ -90,3 +96,11 @@ capability:
     accessed: '2026-08-18'
     http_status: 200
     content_sha256: 08f81c149c32baec7f7bda391d2889413743a69c3a6c1c172786dcd96dad7261
+  - url: https://api.github.com/repos/elastic/elasticsearch/contents/x-pack/plugin
+    shows: 'x-pack/plugin tree: `inference`, `ml` and `ml-package-loader` plugins ship in the repository
+      beside `rank-rrf` and `rank-vectors`, so model hosting, inference endpoints and reranking are part
+      of the engine rather than a separate product. They sit inside x-pack, which is the Elastic-License-only
+      directory this product''s openness score records as its gate.'
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: d48ce962857bcdbf2805ef7e6492aa6b06ca5f589bfee004c92e1558132b4917

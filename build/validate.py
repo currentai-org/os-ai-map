@@ -64,6 +64,25 @@ def load_sources(root: Path) -> dict:
     return data
 
 
+def published_products(taxonomy: dict, cats: dict) -> set[str]:
+    """Every product slug on the roster of a PUBLISHED category.
+
+    The set the notebook payload actually carries. `serialize.py` derives `n_total` from the
+    same walk, and this is the one owner of "which products are publicly visible" so the two
+    cannot drift: a preliminary category is registry-visible and payload-invisible, and its
+    head products are neither an error nor published. A category absent from the taxonomy
+    defaults to published, which keeps hand-built fixtures behaving as they did before
+    lifecycle status existed; the missing-arc case is already an error of its own above.
+    """
+    statuses = category_statuses(taxonomy or {})
+    return {
+        slug
+        for cid, cat in (cats or {}).items()
+        if statuses.get(cid, "published") == "published"
+        for slug in (cat.get("products") or [])
+    }
+
+
 def validate_sources(data: dict) -> list[str]:
     errors: list[str] = []
     orgs, cats, prods, scores = (data["organizations"], data["categories"],
@@ -280,15 +299,29 @@ def validate_sources(data: dict) -> list[str]:
 
     # --- frozen long-tail <-> live count invariant ---
     # The long-tail section shows "Of the {scored} products scored above ..."; that
-    # count is a hand-synced snapshot and must track the live product count, or the
-    # notebook contradicts itself. Only checked when the fixture is loaded (real runs,
-    # not hand-built test fixtures).
+    # count is a hand-synced snapshot and must track what the notebook actually shows
+    # above it, or the notebook contradicts itself. Only checked when the fixture is
+    # loaded (real runs, not hand-built test fixtures).
+    #
+    # "What the notebook shows" is the roster of the PUBLISHED categories, not every
+    # product file. Those two were the same number until categories gained a lifecycle,
+    # and comparing against every file is now wrong in a way that passes: a preliminary
+    # category may hold fully scored head products - that is the state a category is in
+    # while it is being built, before it is published - and serialize.py omits them from
+    # the payload. Counting them here let `scored` exceed `n_total`, so the sentence
+    # "of the N products scored above" named products the reader could not see. Caught in
+    # review of the compilers/storage promotion, reproduced by marking one of the two
+    # preliminary again: `n_total: 496` against `counts.scored: 522`.
     lt = data.get("long_tail")
     if lt:
         scored = (lt.get("counts") or {}).get("scored")
-        if scored is not None and scored != len(prods):
-            errors.append(f"long_tail counts.scored ({scored}) != product count ({len(prods)}); "
-                          f"re-sync sources/snapshots/long_tail.json after a batch")
+        published = published_products(taxonomy, cats)
+        if scored is not None and scored != len(published):
+            errors.append(f"long_tail counts.scored ({scored}) != the number of products in "
+                          f"published categories ({len(published)}); re-sync "
+                          f"sources/snapshots/long_tail.json after a batch. Products in "
+                          f"preliminary categories are deliberately not counted: the payload "
+                          f"omits them, so the notebook does not show them above")
 
     # --- `establishes` must name a real dimension ---
     # A source's `establishes` list is what makes a re-check claim checkable: it records

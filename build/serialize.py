@@ -232,7 +232,13 @@ def _catalog_ids(prods: dict) -> dict:
 def _filter_long_tail(frozen: dict, prods: dict) -> dict:
     """Drop frozen 'top' sample rows that are now categorized products. The frozen
     counts stay as the point-in-time warehouse snapshot (synced by hand after a
-    batch); only the visible sample is derived so it never lists a scored product."""
+    batch); only the visible sample is derived so it never lists a scored product.
+
+    `prods` must be the PUBLISHED products, not every product file. A product in a
+    preliminary category is absent from the payload's categories, so dropping its row from
+    the long-tail sample too would delete it from the map in both directions: not scored
+    above, and no longer listed below. Its caller passes the published subset.
+    """
     ids = _catalog_ids(prods)
     lt = dict(frozen)
     lt["top"] = [t for t in frozen.get("top", [])
@@ -449,10 +455,12 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
             cid_layer[cid] = lyr
     out_cats = {}
     n = 0
+    published_slugs: set[str] = set()
     for cid in order:
         cat = cats[cid]
         rows = []
         for slug in cat["products"]:
+            published_slugs.add(slug)
             p = prods[slug]
             # The `unknown` sentinel org is the registry placeholder for products
             # that had an empty org string in the source. Reconstruct that empty
@@ -484,7 +492,10 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
             "aliases": _aliases(prods, orgs),
             "n_total": n, "generated": generated,
             "version": version, "released": released,
-            "long_tail": _filter_long_tail(frozen_long_tail, prods)}
+            # Published products only: see _filter_long_tail. A preliminary category's
+            # products are not shown above, so their tail rows stay visible below.
+            "long_tail": _filter_long_tail(
+                frozen_long_tail, {s: prods[s] for s in published_slugs})}
 
 
 if __name__ == "__main__":

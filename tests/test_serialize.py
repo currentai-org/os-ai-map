@@ -199,6 +199,25 @@ def test_long_tail_drops_now_categorized_products():
     assert "someone/uncategorized" in names
 
 
+def test_long_tail_keeps_rows_for_products_in_preliminary_categories():
+    """The other half of the filter above, and the one review caught.
+
+    A preliminary category is registry-visible and payload-invisible, so its products are
+    not shown "above" the long-tail section. Dropping their sample rows as well would delete
+    them from the map in both directions: not scored above, not listed below. The filter
+    therefore runs over the PUBLISHED products, which is the same walk `n_total` counts.
+    """
+    src = _sources()
+    src["products"]["llama-4"]["github"] = [{"url": "https://github.com/meta-llama/llama"}]
+    src["taxonomy"]["arcs"][0]["categories"] = [{"name": "base_pretrained", "status": "preliminary"}]
+    frozen = {"counts": {}, "top": [
+        {"name": "meta-llama/llama", "type": "repo", "usage_label": "", "description": ""},
+    ]}
+    payload = build_payload(src, frozen_long_tail=frozen, generated="2026-06-10")
+    assert payload["n_total"] == 0, "a preliminary category contributes nothing to the payload"
+    assert [t["name"] for t in payload["long_tail"]["top"]] == ["meta-llama/llama"]
+
+
 def test_descriptions_block_present_and_sourced():
     src = _sources()
     src["categories"]["base_pretrained"]["description"] = "Foundation models trained from scratch."

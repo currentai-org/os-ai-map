@@ -58,6 +58,45 @@ def test_long_tail_scored_must_match_product_count():
     assert not any("counts.scored" in e for e in validate_sources(d))
 
 
+def test_long_tail_scored_counts_published_categories_only():
+    """Reproduces the review finding on the compilers/storage promotion.
+
+    A preliminary category may hold fully scored head products — that is the state a
+    category is in while it is being built. `serialize.py` omits them from the payload, so
+    counting them here let `counts.scored` exceed `n_total`, and the notebook's "of the N
+    products scored above" then named products the reader could not see. The check passed
+    the whole time, which is why it is worth a test rather than a comment.
+    """
+    d = _fixture()
+    d["taxonomy"]["arcs"][0]["categories"] = [{"name": "base_pretrained", "status": "preliminary"}]
+    d["long_tail"] = {"counts": {"scored": 1}}  # the one product file, now unpublished
+    errs = validate_sources(d)
+    assert any("counts.scored" in e and "published categories (0)" in e for e in errs)
+    d["long_tail"]["counts"]["scored"] = 0  # nothing is published, so nothing is scored above
+    assert not any("counts.scored" in e for e in validate_sources(d))
+
+
+def test_head_products_in_a_preliminary_category_are_not_an_error():
+    """The other resolution considered for the same finding, and rejected.
+
+    Prohibiting head products in a preliminary category would make the promotion workflow
+    impossible: a roster is filled in, checked, and only then published. So the products are
+    allowed and the count follows the published roster instead.
+    """
+    d = _fixture()
+    d["taxonomy"]["arcs"][0]["categories"] = [{"name": "base_pretrained", "status": "preliminary"}]
+    # Declaring lifecycle status brings the rest of the category contract with it, which is
+    # the point: a preliminary category still owes a description, weights and a ladder, and
+    # only the strapline and the ten-product floor wait for publication.
+    d["categories"]["base_pretrained"].update(
+        description="Base / pretrained models.",
+        weights={"adopt": 0.6, "cap": 0.4},
+        scoring_recipe={"version": 1, "extends": "model"},
+    )
+    d["long_tail"] = {"counts": {"scored": 0}}
+    assert validate_sources(d) == []
+
+
 def test_orphan_product_not_in_roster_fails():
     d = _fixture()
     d["products"]["ghost"] = {"name": "ghost", "display_name": "Ghost", "type": "model"}

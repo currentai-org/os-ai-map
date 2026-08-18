@@ -768,7 +768,7 @@ def test_real_sources_serialize_without_errors():
         # undeclared-key row, exactly as `autogen`'s CC-BY-4.0 documentation license
         # already did - which is the evidence that MCP was made to match an existing
         # convention rather than given a new one.
-        "agent_tools_protocols": 138, "dataset_processing_tools": 92, "evaluation_code": 109,
+        "agent_tools_protocols": 124, "dataset_processing_tools": 92, "evaluation_code": 109,
         # inference_code 47 -> 64 when the sweep read the category: four stale deferrals came
         # off (a deferred product publishes no openness evidence at all), and several products
         # that had described their gating in prose gained a readable `source:`/`core-gated:`.
@@ -914,12 +914,16 @@ def test_real_sources_serialize_without_errors():
         # publishes nothing, which is what holds the rise to the one product.
         "edge_hardware": 95,
         # compilers and storage joined on 2026-08-18, promoted from the tail registry with 26
-        # and 24 products. Both inherit the shared software ladder and both record the same three
-        # dimensions per product, so the row count runs close to 4 x products: 98 and 94 rather
-        # than 104 and 96, because tensorrt records no `core-gated` at all (a `partial` source
-        # has nothing to gate) and the two deferred products, liger-kernel and pgvector, publish
-        # no openness evidence.
-        "compilers": 98, "storage": 94,
+        # and 27 products. Both inherit the shared software ladder and both record the same three
+        # dimensions per product, so the row count runs close to 4 x products, short of it because
+        # tensorrt records no `core-gated` at all (a `partial` source has nothing to gate) and the
+        # two deferred products, liger-kernel and pgvector, publish no openness evidence.
+        #
+        # storage was 94 on 24 products and agent_tools_protocols 138 on 32. Moving qdrant, milvus
+        # and pinecone from the second to the first shifted 14 rows with them, which is more than
+        # three products' worth of the shared ladder's three dimensions: those three records carry
+        # extra recorded keys the ladder reads or reports, `managed-tier` among them.
+        "compilers": 98, "storage": 108,
     }
     assert {r["grade"] for r in tables["product_openness_evidence"]} == {"document"}
 
