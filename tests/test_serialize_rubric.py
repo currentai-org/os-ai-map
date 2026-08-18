@@ -923,7 +923,14 @@ def test_real_sources_serialize_without_errors():
         # and pinecone from the second to the first shifted 14 rows with them, which is more than
         # three products' worth of the shared ladder's three dimensions: those three records carry
         # extra recorded keys the ladder reads or reports, `managed-tier` among them.
-        "compilers": 98, "storage": 108,
+        #
+        # Both then rose by 4 when the `osi` tier gained BSD-2-Clause and PostgreSQL and the two
+        # deferrals closed. A deferred product publishes no openness evidence at all, so closing
+        # one adds its whole recorded set at once, and that set is four rows rather than the three
+        # dimensions it records: `source`, the resolved `core_gated`, `license`, and `core-gated`
+        # again under the hyphenated key the record actually uses. Verified by reading the emitted
+        # rows for liger-kernel and pgvector rather than by inferring it from the count.
+        "compilers": 102, "storage": 112,
     }
     assert {r["grade"] for r in tables["product_openness_evidence"]} == {"document"}
 

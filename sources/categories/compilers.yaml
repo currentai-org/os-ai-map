@@ -41,9 +41,8 @@ scoring_recipe:
   extends: software
   derived_from:
     method: shared software ladder, checked against the hand-recorded scores
-    scores_reproduced: 25
+    scores_reproduced: 26
     scores_total: 26
-    scores_deferred: 1
     verified_on: '2026-08-18'
     checker: build/check_rubric.py
   note: >-
@@ -65,20 +64,6 @@ scoring_recipe:
     compilers target, and 2 is a narrow kernel set or a single-pass graph utility. apache-tvm is the
     top anchor and every other band is recorded against it or against the tensorrt rung below it,
     so `check_capability` can check the arithmetic.
-  deferred:
-    liger-kernel:
-      because: >-
-        The LICENSE body is the two-clause BSD text, carrying a LinkedIn Corporation copyright, and
-        GitHub agrees with the SPDX id. BSD-2-Clause is OSI-approved and meets the `osi` tier's
-        stated definition, but the shared software ladder's tier lists licence names literally rather
-        than deciding them by rule and does not list this one, so the licence maps to no tier and the
-        formula abstains. The abstention is the ladder rather than the evidence: the recorded
-        5/open_source is the pair the ladder produces for any public, ungated, OSI-licensed product.
-        liger-kernel is the first product on the map to record BSD-2-Clause, so adding it to the
-        shared tier would move no existing score - but that tier reaches every software category,
-        so the ruling belongs to a maintainer rather than to this promotion. `pgvector`
-        in storage is deferred for the identical reason one licence over, and the two are one
-        decision.
 comments: >-
   Columbia infrastructure category. Includes model conversion, graph and tensor compilation,
   quantization, pruning, and compiler-adjacent kernel libraries. Complete serving engines remain in

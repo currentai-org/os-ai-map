@@ -126,8 +126,25 @@ openness:
         # licenses, so either branch lands on this rung. `Apache-2.0/MIT` is the same shape
         # on `megatron-lm`'s vendored components, and is already declared verbatim in
         # `dataset.yaml` for `livebench` - one spelling, one tier, in both ladders.
-        examples: [Apache-2.0, MIT, BSD-3-Clause, GPL-3.0, AGPL-3.0, LGPL-3.0, MPL-2.0,
-          GPL-3.0-or-later, GPLv3, LGPL-3.0/GPL-3.0, Apache-2.0/MIT]
+        #
+        # `BSD-2-Clause` and `PostgreSQL` were added on 2026-08-18, on the owner's ruling,
+        # when the compilers and storage promotions each turned up one product this tier
+        # plainly covers and could not name: `liger-kernel` records the two-clause BSD text
+        # under a LinkedIn copyright, and `pgvector` records the PostgreSQL License, the
+        # Postgres project's own permissive terms. Both are OSI-approved, so both were
+        # already inside this tier's definition; the tier decides by literal name, which is
+        # the only reason either abstained.
+        #
+        # Checked before adding rather than after, which is what the note below asks for.
+        # Each is the FIRST product on the map to record its license, and the measurement
+        # was run rather than assumed: adding both names changed the computed score of two
+        # products - liger-kernel and pgvector, each from an abstention to the 5/open_source
+        # they already recorded - and of none of the other 520. Both categories went from
+        # one deferral each to full reproduction, 26/26 and 27/27, and check_recipe reported
+        # both deferrals stale on the same run, which is how a ruling like this is supposed
+        # to close.
+        examples: [Apache-2.0, MIT, BSD-3-Clause, BSD-2-Clause, GPL-3.0, AGPL-3.0, LGPL-3.0,
+          MPL-2.0, GPL-3.0-or-later, GPLv3, LGPL-3.0/GPL-3.0, Apache-2.0/MIT, PostgreSQL]
       permissive_non_osi:
         definition: >-
           Not OSI-approved, but imposes no restriction on WHO may use the software or AT

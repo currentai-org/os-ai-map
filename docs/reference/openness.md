@@ -50,9 +50,11 @@ Three caveats, because "a formula exists" is easy to over-read:
   facts.
 - **A category can hold products back.** `scoring_recipe.deferred` lists products the rules do
   not decide, usually because a dimension is not recorded in a form the ladder can read. As of
-  2026-08-18 there are 7 such products across 6 categories (`benchmark_eval_data` 2, and
-  `compilers`, `dataset_processing_tools`, `edge_hardware`, `storage` and
-  `training_synthetic_datasets` 1 each) — down
+  2026-08-18 there are 5 such products across 4 categories (`benchmark_eval_data` 2, and
+  `dataset_processing_tools`, `edge_hardware` and `training_synthetic_datasets` 1 each). The
+  compilers and storage promotions each added one and then closed it the same day: `liger-kernel`
+  and `pgvector` recorded `BSD-2-Clause` and the PostgreSQL License, which the shared `osi` tier
+  covers by definition and had never been asked to name. Down
   from 81 before the August verification sweep. Deferred products publish no openness evidence
   to the warehouse. `uv run python -m build.check_recipe` prints the live split.
 
