@@ -38,6 +38,7 @@ When in doubt about which door, start there.
 | [`reference/adoption.md`](reference/adoption.md) | The adoption bands and instruments |
 | [`reference/capability.md`](reference/capability.md) | The capability axis and the peer-comparison instrument |
 | [`reference/evidence-and-freshness.md`](reference/evidence-and-freshness.md) | What `last_verified` means, how an axis earns it, the gates |
+| [`reference/where-scores-live.md`](reference/where-scores-live.md) | Which axis is in the repo, which is in the warehouse, and which tables only look like scores |
 | [`reference/product-copy.md`](reference/product-copy.md) | The `description`/`comments` prose spec |
 | [`reference/gap-analysis.md`](reference/gap-analysis.md) | How the map derives gaps from scores |
 | [`reference/queries.md`](reference/queries.md) | Query conventions for the warehouse |
