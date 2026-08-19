@@ -109,3 +109,97 @@ def test_publish_refuses_when_an_empty_table_already_holds_rows(
 
     assert pr.main() == 2
     assert "products" in capsys.readouterr().err
+
+
+def test_delete_mutation_asks_for_fields_because_it_returns_an_object() -> None:
+    """`deleteStaticModel` returns SimplePayload!, so a bare call is a validation error.
+
+    Sent without a selection set it is rejected with an HTTP 400 before it reaches the
+    resolver, which is how the 2026-08-19 registry publish died. Pinning the selection
+    set here because the symptom carried no hint of the cause.
+    """
+    assert "deleteStaticModel" in pr.M_DELETE
+    body = pr.M_DELETE.split("deleteStaticModel", 1)[1]
+    assert "{" in body and "success" in body
+
+
+def test_http_error_bodies_are_surfaced(monkeypatch: pytest.MonkeyPatch) -> None:
+    """A 4xx carries the GraphQL validation message in a body urlopen never reads.
+
+    Without this the only thing printed was "HTTP Error 400: Bad Request", which says
+    nothing about which query was malformed or why.
+    """
+    import io
+    import urllib.error
+
+    def boom(request, timeout=None):  # noqa: ANN001, ARG001
+        raise urllib.error.HTTPError(
+            "https://api.oso.xyz/v1/graphql",
+            400,
+            "Bad Request",
+            {},
+            io.BytesIO(b'{"errors":[{"message":"Field must have a selection of subfields"}]}'),
+        )
+
+    monkeypatch.setattr("urllib.request.urlopen", boom)
+    with pytest.raises(RuntimeError, match="selection of subfields"):
+        pr.graphql("mutation{ x }", {}, "tok")
+
+
+def test_a_failed_delete_does_not_fail_the_publish(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """Tidying must not gate publishing.
+
+    The empty model is already excluded from the materialization run, so a token without
+    delete permission should still publish the populated tables. Fatal here would mean a
+    permission gap blocks the registry entirely.
+    """
+    for table in pr.TABLES:
+        write_csv(
+            tmp_path,
+            table,
+            [] if table == "tail_products" else [{"slug": "a", "display_name": "A"}],
+        )
+
+    uploaded: list[str] = []
+    ran: list[list[str]] = []
+
+    def fake_graphql(query: str, variables: dict, token: str) -> dict:
+        if query is pr.Q_DATASETS:
+            return {"datasets": {"edges": [{"node": {"id": "ds", "name": "registry", "type": "STATIC_MODEL"}}]}}
+        if query is pr.Q_STATIC:
+            return {
+                "staticModels": {
+                    "edges": [
+                        {
+                            "node": {
+                                "id": f"id-{t}",
+                                "name": t,
+                                "materializations": {"totalCount": None if t == "tail_products" else 5},
+                            }
+                        }
+                        for t in pr.TABLES
+                    ]
+                }
+            }
+        if query is pr.M_DELETE:
+            raise RuntimeError("HTTP 403 from the API: User not authorized")
+        if query is pr.M_URL:
+            return {"createStaticModelUploadUrl": "https://upload.example/put"}
+        if query is pr.M_RUN:
+            ran.append(variables["input"]["selectedModels"])
+            return {"createStaticModelRunRequest": {"run": {"id": "run-1", "status": "QUEUED"}}}
+        raise AssertionError(f"unexpected query: {query[:40]}")
+
+    monkeypatch.setattr(pr, "graphql", fake_graphql)
+    monkeypatch.setattr(pr, "upload", lambda path, url: uploaded.append(path.name))
+    monkeypatch.setenv("OSO_API_KEY", "tok")
+    monkeypatch.setenv("OSO_ORG_ID", "org")
+    monkeypatch.setattr("sys.argv", ["publish_registry", "--dir", str(tmp_path)])
+
+    assert pr.main() == 0
+    assert "tail_products.csv" not in uploaded
+    assert len(uploaded) == len(pr.TABLES) - 1
+    assert "id-tail_products" not in ran[0]
+    assert "WARNING could not delete empty tail_products" in capsys.readouterr().err
