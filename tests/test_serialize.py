@@ -1,4 +1,7 @@
-from build.serialize import build_payload, _stage_and_gaps
+import pytest
+
+from build.serialize import (build_payload, release_date, repo_version,
+                             _stage_and_gaps)
 
 
 def _p(cls, adoption, capability):
@@ -15,7 +18,46 @@ def test_stage5_mature_open_ecosystem():
 def test_openness_gap_when_mature_options_are_open_ish():
     rows = [_p("open_weights", 5, 5) for _ in range(3)]  # mature but open-ish, none fully open
     sg = _stage_and_gaps(rows, {"adopt": 0.5, "cap": 0.5})
-    assert sg["num"] < 5 and "maturity" in sg["gaps"] and "openness" in sg["gaps"]
+    assert sg["num"] < 5 and "openness" in sg["gaps"]
+
+
+def test_maturity_is_not_a_gap_type():
+    # The composite was dropped from the vocabulary: it reported the blend next to its own
+    # parts, and it fired in 12 of 16 categories, so it discriminated between none of them.
+    for rows, w in (([_p("open_source", 5, 5)], {"adopt": 0.5, "cap": 0.5}),      # stage 4
+                    ([_p("open_weights", 5, 5)], {"adopt": 0.5, "cap": 0.5}),     # stage 1-3
+                    ([_p("open_source", 2, 2)], {"adopt": 0.5, "cap": 0.5})):     # stage 1-3
+        assert "maturity" not in _stage_and_gaps(rows, w)["gaps"]
+
+
+def test_depth_gap_at_stage_4_only():
+    # One mature fully-open product: quality is proven, count is not.
+    sg = _stage_and_gaps([_p("open_source", 5, 5)], {"adopt": 0.5, "cap": 0.5})
+    assert sg["num"] == 4 and sg["gaps"] == ["depth"]
+    # Four of them clears Stage 5, which carries no gaps at all.
+    sg5 = _stage_and_gaps([_p("open_source", 5, 5) for _ in range(4)], {"adopt": 0.5, "cap": 0.5})
+    assert sg5["num"] == 5 and "depth" not in sg5["gaps"]
+    # Below Stage 4 the stage number already says no frontier open option exists, so depth
+    # would only restate it — this is the ubiquity the old maturity gap had.
+    for rows in ([_p("open_source", 2, 2)], [_p("open_weights", 5, 5)], [_p("closed", 1, 1)]):
+        assert "depth" not in _stage_and_gaps(rows, {"adopt": 0.5, "cap": 0.5})["gaps"]
+
+
+def test_capability_and_adoption_both_fire_when_both_apply():
+    # No one-diagnostic-per-category rule any more: a fully-open option that is weak on both
+    # axes reports both drivers.
+    sg = _stage_and_gaps([_p("open_source", 3, 3)], {"adopt": 0.5, "cap": 0.5})
+    assert sg["num"] < 4 and sg["gaps"] == ["capability", "adoption"]
+
+
+def test_capability_gap_survives_alongside_openness():
+    # The edge_hardware case. The single fully-open board is adopted but underpowered, while
+    # mature open-ish and closed options exist. The old engine emitted one diagnostic and
+    # checked openness first, so `capability` was unreachable and this never surfaced.
+    rows = [_p("open_hardware", 4, 3), _p("open_weights", 5, 5), _p("closed", 5, 5)]
+    sg = _stage_and_gaps(rows, {"adopt": 0.5, "cap": 0.5})
+    assert "capability" in sg["gaps"] and "openness" in sg["gaps"]
+    assert "adoption" not in sg["gaps"]  # adoption 4 clears its bar
 
 
 def test_missing_adoption_yields_null_maturity_and_is_excluded_from_stage():
@@ -34,7 +76,18 @@ def test_void_when_no_open_option():
 def test_capability_gap_when_nothing_mature_and_weak():
     rows = [_p("open_source", 2, 2)]  # fully open but weak on both axes
     sg = _stage_and_gaps(rows, {"adopt": 0.5, "cap": 0.5})
-    assert "maturity" in sg["gaps"] and "capability" in sg["gaps"]
+    assert "capability" in sg["gaps"]
+
+
+def test_stage_1_to_3_carries_no_driver_gap_when_axes_clear_but_blend_misses_bar():
+    # benchmark_eval_data's shape: fully-open products at adoption 4 with a null capability,
+    # so the blend is adoption alone and tops out at 4.0 — under the maturity bar, yet neither
+    # axis is below its cutoff. Adoption is NOT short (it clears 4), and capability is unmeasured,
+    # not deficient — so no driver gap fires. Labelling this `adoption` would be a knowingly
+    # false shortfall; the stage number already says the category is below the leading bar.
+    rows = [_p("open_source", 4, None) for _ in range(3)]
+    sg = _stage_and_gaps(rows, {"adopt": 0.6, "cap": 0.4})
+    assert sg["num"] == 3 and sg["gaps"] == []
 
 
 def test_stage_uses_rounded_maturity_not_float_noise():
@@ -95,6 +148,22 @@ def test_layer_order_present_and_in_arc_sequence():
     assert list(payload)[:2] == ["descriptions", "layer_order"]
 
 
+def test_preliminary_categories_are_excluded_from_the_public_payload():
+    src = _sources()
+    src["categories"]["storage"] = {
+        "name": "storage",
+        "display_name": "Storage",
+        "products": [],
+    }
+    src["taxonomy"]["arcs"][0]["categories"].append(
+        {"name": "storage", "status": "preliminary"}
+    )
+    payload = build_payload(src, frozen_long_tail={}, generated="2026-06-10")
+    assert payload["order"] == ["base_pretrained"]
+    assert "storage" not in payload["categories"]
+    assert "storage" not in payload["descriptions"]["categories"]
+
+
 def test_null_adoption_serializes_maturity_null():
     src = _sources()
     src["scores"]["llama-4"]["adoption"] = {"level": None, "signal_type": "unknown"}
@@ -130,6 +199,50 @@ def test_long_tail_drops_now_categorized_products():
     assert "someone/uncategorized" in names
 
 
+def test_long_tail_keeps_rows_for_products_in_preliminary_categories():
+    """The other half of the filter above, and the one review caught.
+
+    A preliminary category is registry-visible and payload-invisible, so its products are
+    not shown "above" the long-tail section. Dropping their sample rows as well would delete
+    them from the map in both directions: not scored above, not listed below. The filter
+    therefore runs over the PUBLISHED products, which is the same walk `n_total` counts.
+    """
+    src = _sources()
+    src["products"]["llama-4"]["github"] = [{"url": "https://github.com/meta-llama/llama"}]
+    src["taxonomy"]["arcs"][0]["categories"] = [{"name": "base_pretrained", "status": "preliminary"}]
+    frozen = {"counts": {}, "top": [
+        {"name": "meta-llama/llama", "type": "repo", "usage_label": "", "description": ""},
+    ]}
+    payload = build_payload(src, frozen_long_tail=frozen, generated="2026-06-10")
+    assert payload["n_total"] == 0, "a preliminary category contributes nothing to the payload"
+    assert [t["name"] for t in payload["long_tail"]["top"]] == ["meta-llama/llama"]
+
+
+def test_preliminary_products_reach_no_public_index():
+    """Every index the payload publishes is scoped to the published categories, not to the files.
+
+    Hiding a product from `categories` while leaving it in `organizations` or `aliases` does not
+    hide it: /map/org/<slug> still lists it and a redirect still resolves to a page the payload
+    does not carry. Found in review of the compilers/storage promotion, where marking one category
+    preliminary left its products on their org rosters and shipped two organizations - openxla and
+    mlc-ai - that existed on the map nowhere else.
+    """
+    src = _sources()
+    src["products"]["llama-4"]["aliases"] = ["llama-4-scout"]
+    src["organizations"]["meta"]["aliases"] = ["facebook"]
+    src["taxonomy"]["arcs"][0]["categories"] = [{"name": "base_pretrained", "status": "preliminary"}]
+    payload = build_payload(src, frozen_long_tail={}, generated="2026-06-10")
+    assert payload["organizations"] == {}, "an org whose only product is unpublished is not shipped"
+    assert payload["aliases"] == {"products": {}, "organizations": {}}
+
+    # and with the same category published, all three indexes carry it
+    src["taxonomy"]["arcs"][0]["categories"] = ["base_pretrained"]
+    payload = build_payload(src, frozen_long_tail={}, generated="2026-06-10")
+    assert payload["organizations"]["meta"]["products"] == ["llama-4"]
+    assert payload["aliases"]["products"] == {"llama-4-scout": "llama-4"}
+    assert payload["aliases"]["organizations"] == {"facebook": "meta"}
+
+
 def test_descriptions_block_present_and_sourced():
     src = _sources()
     src["categories"]["base_pretrained"]["description"] = "Foundation models trained from scratch."
@@ -138,6 +251,9 @@ def test_descriptions_block_present_and_sourced():
     # stages keyed 0-5, gaps keyed by name, categories keyed by slug from the source yaml
     assert set(d["stages"]) == {"0", "1", "2", "3", "4", "5"}
     assert "void" in d["gaps"] and "openness" in d["gaps"]
+    assert "depth" in d["gaps"] and "maturity" not in d["gaps"]
+    # the two score tiers ship their own legend copy, so a consumer never hardcodes 4.5/4.0
+    assert set(d["tiers"]) == {"leading", "strong"}
     assert d["categories"]["base_pretrained"] == "Foundation models trained from scratch."
     # descriptions ships first so it reads as a header
     assert list(payload)[0] == "descriptions"
@@ -196,6 +312,45 @@ def test_mature_flag_false_when_maturity_null():
     assert row["mature"] is False
 
 
+def _row_for(cls, adoption, capability, weights=None):
+    src = _sources()
+    src["scores"]["llama-4"]["openness"] = {"score": 5, "class": cls}
+    src["scores"]["llama-4"]["adoption"] = {"level": adoption, "signal_type": "usage_volume"}
+    src["scores"]["llama-4"]["capability"] = {"score": capability, "basis": "x"}
+    if weights is not None:
+        src["categories"]["base_pretrained"]["weights"] = weights
+    payload = build_payload(src, frozen_long_tail={}, generated="2026-06-10")
+    return payload["categories"]["base_pretrained"]["products"][0]
+
+
+def test_overall_score_dual_publishes_with_maturity():
+    # Both keys ship for one release so the front end and the warehouse can migrate before
+    # `maturity` is removed. Same value, including the null.
+    row = _row_for("open_source", 4, 5)
+    assert row["overall_score"] == row["maturity"] == 4.5
+    null_row = _row_for("open_source", None, 5)
+    assert null_row["overall_score"] is None and null_row["maturity"] is None
+
+
+def test_tier_is_derived_from_the_score_across_all_buckets():
+    # Leading needs a 5 on one axis: 4 and 4 blends to exactly 4.0 and is Strong.
+    assert _row_for("open_source", 5, 4)["tier"] == "leading"
+    assert _row_for("open_source", 4, 4)["tier"] == "strong"
+    assert _row_for("open_source", 3, 4)["tier"] is None
+    assert _row_for("open_source", None, 4)["tier"] is None
+    # Unlike `mature`, the tier describes the product rather than the open ecosystem, so it
+    # is not gated on the openness bucket.
+    closed = _row_for("closed", 5, 5)
+    assert closed["tier"] == "leading" and closed["mature"] is False
+
+
+def test_tier_boundaries_are_inclusive_at_the_bottom():
+    # 4.5 is Leading, not Strong; 4.0 is Strong, not unlabeled.
+    assert _row_for("open_source", 4, 5, {"adopt": 0.5, "cap": 0.5})["overall_score"] == 4.5
+    assert _row_for("open_source", 4, 5, {"adopt": 0.5, "cap": 0.5})["tier"] == "leading"
+    assert _row_for("open_source", 4, 4, {"adopt": 0.5, "cap": 0.5})["tier"] == "strong"
+
+
 def test_unknown_org_renders_empty_string():
     s = _sources()
     s["organizations"] = {"unknown": {"name": "unknown", "display_name": "Unknown",
@@ -231,7 +386,7 @@ def test_disclosure_gap_flagged_even_at_top_stage():
 def test_disclosure_gap_coexists_with_stage_gaps():
     rows = [_pd("open", 5), _pd("open", 3)]  # one mature open corpus -> stage 4
     sg = _stage_and_gaps(rows, {"adopt": 1.0, "cap": 0.0}, disclosure=True)
-    assert sg["num"] == 4 and sg["gaps"] == ["maturity", "disclosure"]
+    assert sg["num"] == 4 and sg["gaps"] == ["depth", "disclosure"]
 
 
 def test_no_disclosure_gap_when_not_declared():
@@ -348,3 +503,92 @@ def test_a_product_with_no_aliases_contributes_nothing():
     """Most products carry none. The gather must not invent an empty entry for them."""
     payload = build_payload(_sources(), frozen_long_tail={}, generated="2026-01-01")
     assert payload["aliases"] == {"products": {}, "organizations": {}}
+
+
+# --- Payload version -------------------------------------------------------
+# The map surfaces this string as "which release am I looking at", so it has to be the
+# version the repo actually released, not a number that can be set independently here.
+
+def test_payload_carries_an_explicit_version():
+    payload = build_payload(_sources(), frozen_long_tail={}, generated="2026-06-10",
+                            version="1.2.3", released="2026-01-02")
+    assert payload["version"] == "1.2.3"
+
+
+def test_an_unreleased_version_is_rejected_rather_than_dated_from_elsewhere():
+    """Naming a version with no changelog entry fails instead of borrowing a date."""
+    with pytest.raises(ValueError, match="1.2.3"):
+        build_payload(_sources(), frozen_long_tail={}, generated="2026-06-10",
+                      version="1.2.3")
+
+
+def test_payload_version_defaults_to_the_release_version():
+    """Left unset, the payload names the same version pyproject.toml does."""
+    payload = build_payload(_sources(), frozen_long_tail={}, generated="2026-06-10")
+    assert payload["version"] == repo_version()
+
+
+def test_repo_version_agrees_with_the_newest_dated_changelog_entry():
+    """The payload's default cannot name a version the changelog never released."""
+    from tests.test_release_metadata import _changelog_newest_dated_version
+    assert repo_version() == _changelog_newest_dated_version()
+
+
+def test_payload_carries_an_explicit_release_date():
+    payload = build_payload(_sources(), frozen_long_tail={}, generated="2026-06-10",
+                            version="1.2.3", released="2026-01-02")
+    assert payload["released"] == "2026-01-02"
+
+
+def test_release_date_is_looked_up_by_version(tmp_path):
+    """The date comes from that version's own heading, not the newest one."""
+    (tmp_path / "CHANGELOG.md").write_text(
+        "## [Unreleased]\n\n## [0.3.0] - 2026-09-01\n\n## [0.2.0] - 2026-08-16\n")
+    assert release_date("0.2.0", root=tmp_path) == "2026-08-16"
+    assert release_date("0.3.0", root=tmp_path) == "2026-09-01"
+
+
+def test_release_date_rejects_a_version_with_no_dated_heading(tmp_path):
+    """An unreleased version is an error here, not a silent fallback to another date."""
+    (tmp_path / "CHANGELOG.md").write_text("## [Unreleased]\n\n## [0.2.0] - 2026-08-16\n")
+    with pytest.raises(ValueError, match="0.9.9"):
+        release_date("0.9.9", root=tmp_path)
+
+
+def test_payload_release_date_defaults_to_the_changelog_date():
+    payload = build_payload(_sources(), frozen_long_tail={}, generated="2026-06-10")
+    assert payload["released"] == release_date(repo_version())
+
+
+def test_descriptions_match_the_reference_doc():
+    """The payload's stage and gap definitions are quoted verbatim in gap-analysis.md.
+
+    They are one text with two homes: the legend a visitor reads and the reference a curator
+    reads. Prose that merely agrees in substance drifts silently — nothing here could tell you
+    which version was current — so the contract is character equality, and this is what enforces
+    it. The doc carries the thresholds and the assignment rules around these sentences; those
+    are the mechanism and are deliberately absent from the payload.
+    """
+    from build.serialize import ROOT, _GAP_DESC, _STAGE_DESC, _STAGE_NAMES
+
+    # Every assertion binds a definition to its owner. Checking only that a sentence appears
+    # somewhere in the file would pass with two definitions swapped, which is a drift this guard
+    # exists to catch: the text would be present, attached to the wrong stage or gap.
+    doc = (ROOT / "docs" / "reference" / "gap-analysis.md").read_text()
+    for gap, text in _GAP_DESC.items():
+        assert f"- **`{gap}`** — {text}" in doc, f"gap-analysis.md is out of sync for `{gap}`"
+    for num, text in _STAGE_DESC.items():
+        row = f"| **{num}** | {_STAGE_NAMES[num]} | {text} |"
+        assert row in doc, f"gap-analysis.md is out of sync for stage {num}"
+
+    # methodology.md uses its own list formatting and appends the mechanism after some
+    # definitions, so this matches the labelled prefix rather than the whole line.
+    method = (ROOT / "docs" / "methodology.md").read_text()
+    for gap, text in _GAP_DESC.items():
+        assert f"- **{gap.title()}:** {text}" in method, f"methodology.md is out of sync for `{gap}`"
+    # Stages in BOTH docs, not just the reference one. Binding gaps in two files and stages in
+    # one is how methodology.md kept the pre-#320 stage wording through a review that thought
+    # the guard covered it.
+    for num, text in _STAGE_DESC.items():
+        labelled = f"- **Stage {num}: {_STAGE_NAMES[num]}.** {text}"
+        assert labelled in method, f"methodology.md is out of sync for stage {num}"

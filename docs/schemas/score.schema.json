@@ -47,7 +47,7 @@
             "documented",
             "closed"
           ],
-          "description": "The openness VOCABULARY: the band a reader sees, paired with `score`. Eleven values, one per rung any ladder can emit \u2014 the software, model, dataset and hardware ladders do not share a vocabulary, which is why this is longer than the five a single ladder uses. `docs/openness-class-map.json` maps each to a display label, a gradient and the three-way open / open-ish / closed bucket the payload carries. Until 2026-08-08 this was an unconstrained string and the vocabulary lived only in that map and in build/render.py."
+          "description": "The openness VOCABULARY: the band a reader sees, paired with `score`. Eleven values, one per rung any ladder can emit — the software, model, dataset and hardware ladders do not share a vocabulary, which is why this is longer than the five a single ladder uses. `docs/openness-class-map.json` maps each to a display label, a gradient and the three-way open / open-ish / closed bucket the payload carries. Until 2026-08-08 this was an unconstrained string and the vocabulary lived only in that map and in build/render.py."
         },
         "components": {
           "type": "object",
@@ -55,7 +55,9 @@
           "properties": {
             "free_text": {
               "type": "array",
-              "items": { "type": "string" },
+              "items": {
+                "type": "string"
+              },
               "minItems": 1
             }
           },
@@ -63,11 +65,19 @@
             "oneOf": [
               {
                 "type": "object",
-                "required": ["value"],
+                "required": [
+                  "value"
+                ],
                 "properties": {
-                  "value": { "type": "string" },
-                  "detail": { "type": "string" },
-                  "raw": { "type": "string" }
+                  "value": {
+                    "type": "string"
+                  },
+                  "detail": {
+                    "type": "string"
+                  },
+                  "raw": {
+                    "type": "string"
+                  }
                 },
                 "additionalProperties": false
               },
@@ -76,11 +86,19 @@
                 "minItems": 1,
                 "items": {
                   "type": "object",
-                  "required": ["name"],
+                  "required": [
+                    "name"
+                  ],
                   "properties": {
-                    "name": { "type": "string" },
-                    "detail": { "type": "string" },
-                    "raw": { "type": "string" }
+                    "name": {
+                      "type": "string"
+                    },
+                    "detail": {
+                      "type": "string"
+                    },
+                    "raw": {
+                      "type": "string"
+                    }
                   },
                   "additionalProperties": false
                 }
@@ -103,7 +121,7 @@
         },
         "note": {
           "type": "string",
-          "description": "Why these components add up to this rung, in a sentence or two of prose. Hand-written, parsed by nothing, rendered as `Why` in the product detail panel. It is the axis's escape valve and therefore its hazard: a judgment recorded only here cannot be checked, refreshed, or noticed when it goes stale. That is exactly what happened on capability, where the peer comparison placing roughly a hundred bands sat in the note until `relative_to` and `relation` pulled it out. So the reasoning belongs here and the facts belong in `components`. Prose in sources/products/<slug>.yaml must not restate what this note and the score already carry; docs/reference/product-copy.md, 'Scored fields', is normative on that."
+          "description": "Why these components add up to this rung, in a sentence or two of prose. Hand-written, parsed by nothing, rendered as `Why` in the product detail panel. It is the axis's escape valve and therefore its hazard: a judgment recorded only here cannot be checked, refreshed, or noticed when it goes stale. That is exactly what happened on capability, where the peer comparison placing roughly a hundred bands sat in the note until `relative_to` and `relation` pulled it out. So the reasoning belongs here and the facts belong in `components`. Prose in sources/products/<slug>.yaml must not restate what this note and the score already carry; docs/reference/product-copy.md, 'Scored fields', is normative on that. A note states why the score is what it is, in terms that stay true until the score changes. It is not the verification log: when it was last checked is `last_verified`, that a source was fetched is `sources[].accessed` and `http_status`, and that it is unchanged is `sources[].content_sha256`. A 'Re-read <date> - still says X. No change.' clause restates all three into the prose a visitor reads on the product page, which already renders `Verified <date>` of its own accord. See issue #322."
         },
         "sources": {
           "type": "array",
@@ -138,14 +156,14 @@
           ],
           "minimum": 1,
           "maximum": 5,
-          "description": "The adoption band, 1-5, and the axis's ONLY stored value. The human-readable range (`<10K` \u2026 `>10M`) is derived from it in build/serialize.py and emitted as `reach` in the payload, never recorded here: it is the same fact twice, and when it was stored 125 of 417 files contradicted their own level. Null where no usage figure exists to band \u2014 a hosted feature of a larger platform, or an internal eval suite. Null is an abstention, not a gap."
+          "description": "The adoption band, 1-5, and the axis's ONLY stored value. The human-readable range (`<10K` … `>10M`) is derived from it in build/serialize.py and emitted as `reach` in the payload, never recorded here: it is the same fact twice, and when it was stored 125 of 417 files contradicted their own level. Null where no usage figure exists to band — a hosted feature of a larger platform, or an internal eval suite. Null is an abstention, not a gap."
         },
         "reach": {
           "type": [
             "string",
             "null"
           ],
-          "description": "The band's human-readable label, and the UNIT it was read in. Not `level` restated: 20k stars and 20k downloads are not the same reach, so the same level maps to different labels depending on what was counted. The scale is a property of the product TYPE - software and model band package and hub downloads (`<10K` \u2026 `>10M`), dataset bands two orders lower (`<1k` \u2026 `>1M`) because fetching a corpus is rarer than installing a package, and hardware is qualitative (`niche` / `broad` / `mass-market`) because units shipped are not countable from an artifact. `sources/categories/base_pretrained.yaml` is the only category that declares its bands today, under `scoring_recipe.adoption.bands`; the other fifteen follow a convention that exists nowhere but in the agreement of their own files. Measured 2026-08-08 the corpus holds 34 distinct values, of which roughly eight are real bands and the rest are casing splits (`10k-100k` vs `10K-100K`) and free text (`~14.9k stars`, `50M+ total Docker pulls`) that belongs in `note`."
+          "description": "The band's human-readable label, and the UNIT it was read in. Not `level` restated: 20k stars and 20k downloads are not the same reach, so the same level maps to different labels depending on what was counted. The scale is a property of the product TYPE - software and model band package and hub downloads (`<10K` … `>10M`), dataset bands two orders lower (`<1k` … `>1M`) because fetching a corpus is rarer than installing a package, and hardware is qualitative (`niche` / `broad` / `mass-market`) because units shipped are not countable from an artifact. `sources/categories/base_pretrained.yaml` is the only category that declares its bands today, under `scoring_recipe.adoption.bands`; the other fifteen follow a convention that exists nowhere but in the agreement of their own files. Measured 2026-08-08 the corpus holds 34 distinct values, of which roughly eight are real bands and the rest are casing splits (`10k-100k` vs `10K-100K`) and free text (`~14.9k stars`, `50M+ total Docker pulls`) that belongs in `note`."
         },
         "signal_type": {
           "enum": [
@@ -158,8 +176,11 @@
           "description": "WHICH INSTRUMENT the band was read with. Capability's `basis` is the same concept under a different name and a different vocabulary, because the two axes were built at different times; openness's equivalent is the category's ladder, which is why openness carries no such field. `active_users` and `usage_volume` are measured figures, `reported_traction` is a vendor's or a tracker's claim rather than a count, `stars_fallback` is repository popularity standing in for usage, `unknown` is an abstention. The distinction is enforced rather than descriptive: build/validate.py rejects `stars_fallback` above level 3, because stars measure attention rather than use. Measured 2026-08-08: usage_volume 237, reported_traction 108, stars_fallback 84, active_users 23, unknown 20. Also the `Signal` row in the product detail panel."
         },
         "banded_quantity": {
-          "type": ["string", "null"],
-          "description": "What the level was actually read off, whenever that is not a current usage figure for this product. Absent means the level is a judgment about the product itself with no borrowed quantity behind it \u2014 `claude-opus` and `claude-fable` both record a market-position reading and cite no number at all, which is a real state rather than a gap. Four shapes recur: a parent platform's reach where the product is a feature inside something larger ('Replit platform registered users (50M+, March 2026), not an agent active count'); a real count of the product that is not a current active one (cumulative, all-time, lifetime, or weekly where the scale is written monthly); a proxy of a different kind entirely (revenue, funding, GitHub stars, research citations); and nothing at all, where the note cites a figure only to reject it. Mostly relevant to `reported_traction`, the instrument defined by having no count behind it and the one where the substitution is most common \u2014 measured 2026-08-15, 19 of its 109 records band on a parent platform and every one said so in prose a machine could not read. `active_users` had already solved this through the `attribution_note` on its route in sources/signal_routing.yaml; this is that rule given a field. tests/test_banded_quantity.py requires one wherever a `reported_traction` note cites a magnitude, because a number in the prose of an instrument that claims no count is exactly what a reader mistakes for a measurement of the product."
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "What the level was actually read off, whenever that is not a current usage figure for this product. Absent means the level is a judgment about the product itself with no borrowed quantity behind it — `claude-opus` and `claude-fable` both record a market-position reading and cite no number at all, which is a real state rather than a gap. Four shapes recur: a parent platform's reach where the product is a feature inside something larger ('Replit platform registered users (50M+, March 2026), not an agent active count'); a real count of the product that is not a current active one (cumulative, all-time, lifetime, or weekly where the scale is written monthly); a proxy of a different kind entirely (revenue, funding, GitHub stars, research citations); and nothing at all, where the note cites a figure only to reject it. Mostly relevant to `reported_traction`, the instrument defined by having no count behind it and the one where the substitution is most common — measured 2026-08-15, 19 of its 109 records band on a parent platform and every one said so in prose a machine could not read. `active_users` had already solved this through the `attribution_note` on its route in sources/signal_routing.yaml; this is that rule given a field. tests/test_banded_quantity.py requires one wherever a `reported_traction` note cites a magnitude, because a number in the prose of an instrument that claims no count is exactly what a reader mistakes for a measurement of the product."
         },
         "confidence": {
           "enum": [
@@ -171,7 +192,7 @@
         },
         "note": {
           "type": "string",
-          "description": "The prose behind the band: which figure was banded, from where, and what it excludes - 'the OLMo family measured ~14.8M cumulative HF downloads in early 2026; below the Qwen/Llama scale'. Hand-written, read by no tool, rendered as `Detail` in the product detail panel. Where `level` is null this is where the reason for abstaining belongs: 20 products carry no level because no standalone usage figure exists, mostly hosted features of a larger platform (Azure, Bedrock, Vertex, Together) and internal eval suites, and banding those off vendor prose would be inventing the number."
+          "description": "The prose behind the band: which figure was banded, from where, and what it excludes - 'the OLMo family measured ~14.8M cumulative HF downloads in early 2026; below the Qwen/Llama scale'. Hand-written, read by no tool, rendered as `Detail` in the product detail panel. Where `level` is null this is where the reason for abstaining belongs: 20 products carry no level because no standalone usage figure exists, mostly hosted features of a larger platform (Azure, Bedrock, Vertex, Together) and internal eval suites, and banding those off vendor prose would be inventing the number. A note states why the score is what it is, in terms that stay true until the score changes. It is not the verification log: when it was last checked is `last_verified`, that a source was fetched is `sources[].accessed` and `http_status`, and that it is unchanged is `sources[].content_sha256`. A 'Re-read <date> - still says X. No change.' clause restates all three into the prose a visitor reads on the product page, which already renders `Verified <date>` of its own accord. See issue #322."
         },
         "sources": {
           "type": "array",
@@ -203,7 +224,7 @@
           ],
           "minimum": 1,
           "maximum": 5,
-          "description": "The graded capability band, 1-5, comparable within a category and never across one, because capability means different things for a model, a training framework and a dataset. Null where the axis does not apply - 26 products, datasets and a wire protocol among them - which is an abstention rather than a gap. Non-null needs at least one source (build/validate.py). Unlike openness nothing computes it: no rubric declares a capability formula, and measured 2026-08-08, 322 of 472 products record `basis: feature_matrix` against 86 `benchmark`. Read by build/check_capability.py, which requires a recorded `relation` to be arithmetically consistent with this score and the peer's, and by build/serialize.py, which blends it with adoption.level into the product maturity score the category stage ladder reads (docs/reference/gap-analysis.md)."
+          "description": "The graded capability band, 1-5, comparable within a category and never across one, because capability means different things for a model, a training framework and a dataset. Null where the axis does not apply - 26 products, datasets and a wire protocol among them - which is an abstention rather than a gap. Non-null needs at least one source (build/validate.py). Unlike openness nothing computes it: no rubric declares a capability formula, and measured 2026-08-08, 322 of 472 products record `basis: feature_matrix` against 86 `benchmark`. Read by build/check_capability.py, which requires a recorded `relation` to be arithmetically consistent with this score and the peer's, and by build/serialize.py, which blends it with adoption.level into the product overall score the category stage ladder reads (docs/reference/gap-analysis.md)."
         },
         "basis": {
           "enum": [
@@ -232,7 +253,7 @@
         },
         "note": {
           "type": "string",
-          "description": "The prose behind the band: what the product does well, what it sits a step below, and against whom. Hand-written and parsed by nothing. This is where the axis's real instrument lived until 2026-08-08: roughly a hundred notes place the band against a named peer in the same category ('one tier below the Megatron-LM anchor'), and in `finetuning_code` every one of the 27 notes does it. `relative_to` and `relation` now record that comparison as data, on 27 products as of 2026-08-08, and `build/check_capability.py --candidates` reports the notes that look like they should carry it. Rendered as `Detail` in the product detail panel."
+          "description": "The prose behind the band: what the product does well, what it sits a step below, and against whom. Hand-written and parsed by nothing. This is where the axis's real instrument lived until 2026-08-08: roughly a hundred notes place the band against a named peer in the same category ('one tier below the Megatron-LM anchor'), and in `finetuning_code` every one of the 27 notes does it. `relative_to` and `relation` now record that comparison as data, on 27 products as of 2026-08-08, and `build/check_capability.py --candidates` reports the notes that look like they should carry it. Rendered as `Detail` in the product detail panel. A note states why the score is what it is, in terms that stay true until the score changes. It is not the verification log: when it was last checked is `last_verified`, that a source was fetched is `sources[].accessed` and `http_status`, and that it is unchanged is `sources[].content_sha256`. A 'Re-read <date> - still says X. No change.' clause restates all three into the prose a visitor reads on the product page, which already renders `Verified <date>` of its own accord. See issue #322."
         },
         "sources": {
           "type": "array",
@@ -319,7 +340,7 @@
         "content_sha256": {
           "type": "string",
           "pattern": "^[0-9a-f]{64}$",
-          "description": "SHA-256 of the fetched response body at `accessed` time. A changed digest says the page moved under a claim that still cites it \u2014 a reason to re-check rather than a failure on its own, since pages legitimately change. A MISSING digest on a newly claimed confirmation is a hard failure, because it means the tool fetched nothing."
+          "description": "SHA-256 of the fetched response body at `accessed` time. A changed digest says the page moved under a claim that still cites it — a reason to re-check rather than a failure on its own, since pages legitimately change. A MISSING digest on a newly claimed confirmation is a hard failure, because it means the tool fetched nothing."
         }
       }
     }

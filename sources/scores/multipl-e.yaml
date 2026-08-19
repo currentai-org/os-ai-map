@@ -17,16 +17,14 @@ openness:
       value: 'yes'
       detail: HF
   confidence: medium
-  note: Where a repository license and a distribution-point license differ the repository license governs,
+  note: 'Where a repository license and a distribution-point license differ, the repository license governs,
     and nuprl/MultiPL-E ships a LICENSE headed "BSD 3-Clause License with Machine Learning Restriction"
     whose clause 4 says "The contents of this repository may not be used as training data for any machine
     learning model, including but not limited to neural networks." That is the license recorded here; the
-    MIT on the HF data artifact is the weaker statement of the two. It was previously recorded under a caveat
-    key no dimension reads, which left the ladder seeing clean MIT and computing 5/open. The dataset ladder
-    declares no tier for a license that permits redistribution while bounding what you may use the corpus
-    FOR, so the tier lookup abstains and the score stays where the curator put it rather than being invented.
-    Re-read 2026-08-13 - the repository LICENSE still carries clause 4 verbatim, the HF repo still tags
-    `license:mit` with `"gated":false`, and the card still documents the 47 subsets. No change.
+    MIT on the Hugging Face data artifact is the weaker statement of the two. The dataset openness scale
+    has no rung for a license that permits redistribution while bounding what the corpus may be used for,
+    so the score is a curator judgment rather than a lookup: freely downloadable and redistributable, but
+    carrying a use restriction that stops it short of an unqualified open case.'
   raw: data:downloadable(HF parquet, 47 subsets);license:BSD-3-Clause-with-ML-Restriction(the nuprl/MultiPL-E
     repository LICENSE, whose clause 4 forbids using the contents as training data for any machine learning
     model; the HF data artifact carries MIT);datasheet:present(card documents prompts/doctests/tests/stop-tokens);redistributable:yes(HF)
@@ -41,9 +39,9 @@ openness:
     content_sha256: 139bc9f97a3374a56283c91458ea94337b79577231751690bcdc70ea8594bf08
     establishes: [license, data, datasheet]
   - url: https://github.com/nuprl/MultiPL-E/blob/main/LICENSE
-    shows: LICENSE headed "BSD 3-Clause License with Machine Learning Restriction"; clause 4 still reads
-      "The contents of this repository may not be used as training data for any machine learning model,
-      including but not limited to neural networks." Re-fetched 2026-08-13 with an unchanged digest
+    shows: LICENSE headed "BSD 3-Clause License with Machine Learning Restriction"; clause 4 reads "The
+      contents of this repository may not be used as training data for any machine learning model, including
+      but not limited to neural networks."
     accessed: '2026-08-13'
     establishes:
     - license
@@ -54,7 +52,8 @@ adoption:
   reach: 10K-100K
   signal_type: usage_volume
   confidence: high
-  note: 'INSTRUMENT CORRECTED on 2026-08-13, level unchanged at 3. The note said the HF page "did not surface a clean monthly-download count"; it does now - 33,673 in the trailing 30 days, which bands at 10K-100K, the same level 3 the record already carried. What changes is that the band is now RECOMPUTABLE rather than asserted: it moves off reported_traction, which has no scale and which nothing could check, onto usage_volume against a declared artifact a signal model can read.'
+  note: The Hugging Face page reports 33,673 downloads in the trailing 30 days, which puts it in the 10K-100K
+    band, level 3 on the dataset adoption scale.
   last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/api/datasets/nuprl/MultiPL-E
@@ -67,9 +66,8 @@ capability:
   basis: n/a
   value: null
   confidence: high
-  note: Dataset/translation framework, not capability-scored. Re-read 2026-08-13 and the abstention
-    stands - the corpus is a static translation of HumanEval and MBPP into other languages, with no
-    performance or feature claim the capability axis could band.
+  note: MultiPL-E is a dataset and translation framework rather than a system with capabilities to measure,
+    so this axis is left unscored.
   last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/datasets/nuprl/MultiPL-E

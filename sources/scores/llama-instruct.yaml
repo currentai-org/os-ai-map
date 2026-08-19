@@ -15,20 +15,14 @@ openness:
     - name: Llama-3.1-Community
       detail: non-OSI; 700M-MAU commercial cap + use policy
   confidence: high
-  note: >-
-    Weights open under Meta's non-OSI Llama 3.1 Community License, with its 700M-MAU commercial
-    cap. Commonly marketed as open. Moved from 2/restricted on 2026-08-01 by the universal license
-    scale, which caps a bounded commercial license at 3 rather than 2. The test at that boundary
-    is whether the license permits commercial use AT ALL: this one does, for everyone inside the
-    bound. A license that forbids commerce outright - CC-BY-NC, Mistral Non-Production - stays at
-    2. Nine other products carry a bounded license and all now score 3; four of them were already
-    recorded there, which is the inconsistency this resolves.
-
-    Re-read 2026-08-13 - the card still carries `license:llama3.1` and reproduces the license body, whose
-    Additional Commercial Terms still name the 700 million monthly active user threshold. The repo reads
-    `"gated":"manual"`, so the weights are behind an access request rather than a paywall; that is how Meta
-    has always distributed them and it does not change `weights:open`. Post-training is described as SFT
-    plus DPO with no pipeline or mixture published. No change.
+  note: 'Weights are open under Meta''s Llama 3.1 Community License, which is not OSI-approved and caps
+    commercial use at 700M monthly active users. The model is commonly marketed as open. A license that
+    bounds commercial use rather than forbidding it caps at 3 rather than 2: the test at that boundary is
+    whether commercial use is permitted at all, and this one permits it for everyone inside the bound, where
+    a license that forbids commerce outright - CC-BY-NC, Mistral''s Non-Production License - stays at 2.
+    Nine other products carry a bounded license and all score 3. The repository is gated by manual approval,
+    an access request rather than a paywall, which does not make the weights any less open; post-training
+    is described as SFT plus DPO, with neither the pipeline nor the mixture published.'
   raw: weights:open(downloadable);data:closed;code:partial(no training pipeline);license:Llama-3.1-Community(non-OSI;
     700M-MAU commercial cap + use policy)
   last_verified: '2026-08-13'
@@ -47,9 +41,9 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: 7,345,657 downloads in the trailing 30 days summed across the 1 declared artifact(s), read 2026-08-13
-    (meta-llama/Llama-3.1-8B-Instruct 7,345,657). Bands at level 4 (1M-10M) on the software and model adoption
-    scale. Corrected from level 5, which the declared artifacts do not support.
+  note: The one declared artifact, meta-llama/Llama-3.1-8B-Instruct, reads 7,345,657 downloads in the trailing
+    30 days, which bands at level 4 (1M-10M) on the software and model adoption scale. Nothing in the declared
+    artifacts supports level 5.
   last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/api/models/meta-llama/Llama-3.1-8B-Instruct
@@ -63,14 +57,9 @@ capability:
   basis_detail: MMLU/IFEval
   value: Llama 3.1 8B-Instruct ~MMLU ~69, solid 8B chat; no reasoning/agentic frontier scores
   confidence: medium
-  note: >-
-    A competent 2024-generation 8B chat model, a long way below the 2026 frontier and below the larger
-    Llama 3.1 SKUs. The note that stood here until 2026-08-13 was a verbatim copy of the openness note
-    and described the license rather than the capability; it is replaced.
-
-    Re-read 2026-08-13 - the card's benchmark table still gives Llama 3.1 8B Instruct MMLU 69.4
-    (5-shot, macro_avg/acc) against 83.6 for 70B and 87.3 for 405B, which is the ~69 the value
-    records, and still publishes no reasoning or agentic frontier scores. No change.
+  note: A competent 2024-generation 8B chat model, a long way below the 2026 frontier and below the larger
+    Llama 3.1 SKUs. The card's benchmark table gives Llama 3.1 8B Instruct MMLU 69.4 (5-shot, macro_avg/acc)
+    against 83.6 for the 70B and 87.3 for the 405B, and publishes no reasoning or agentic frontier scores.
   last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct

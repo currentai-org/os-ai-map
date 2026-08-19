@@ -1,0 +1,107 @@
+name: storage
+display_name: Storage & Retrieval
+description: 'Data stores, indexes, file systems, and versioned data layers built for persisting and retrieving training, inference, and retrieval-augmented-generation data.'
+strapline: Openness holds across the layer, with 24 of 27 products publishing a complete,
+  OSI-licensed system. The three exceptions are instructive rather than incidental. Elasticsearch and
+  Meilisearch both keep a separately licensed portion inside the public repository, x-pack under the
+  Elastic License and an Enterprise Edition under BUSL, rather than selling a service alongside a
+  complete core; Pinecone publishes no source at all. Adoption is harder to read here than almost
+  anywhere on the map, because most of these products ship as servers and the PyPI name that matches
+  them usually belongs to a client library.
+weights:
+  adopt: 0.6
+  cap: 0.4
+products:
+- vespa
+- elasticsearch
+- milvus
+- qdrant
+- pinecone
+- chroma
+- infinity
+- meilisearch
+- typesense
+- lancedb
+- lance
+- aistore
+- juicefs
+- deep-lake
+- faiss
+- usearch
+- pgvector
+- vearch
+- helixdb
+- zvec
+- dolt
+- lakefs
+- dvc
+- feast
+- openlake
+- hnswlib
+- annoy
+scoring_recipe:
+  version: 1
+  extends: software
+  derived_from:
+    method: shared software ladder, checked against the hand-recorded scores
+    scores_reproduced: 27
+    scores_total: 27
+    verified_on: '2026-08-18'
+    checker: build/check_rubric.py
+  note: >-
+    The roster is software-only and inherits the shared software ladder unchanged. Three license
+    bodies decided scores that the GitHub label could not: elasticsearch's LICENSE.txt declares a
+    default triple license (AGPL-3.0 only, SSPL-1.0 or Elastic License 2.0, recipient's choice) and
+    then carves the x-pack directory out as Elastic-only, and meilisearch's reads
+    `MIT AND BUSL-1.1` and names an Enterprise Edition in the same tree. Both are functionality
+    withheld from the open terms inside the published source, which is the litellm shape rather than
+    the langchain one, so both record `core-gated: gated` and land on 4/open_core. A hosted service
+    beside a complete core - Chroma Cloud, LanceDB Cloud, the Activeloop platform, Typesense Cloud -
+    is not gating and did not move a score.
+
+    Capability is a category feature matrix. It bands on how much of the persist-index-retrieve path
+    a product provides itself, at what scale and over how many retrieval modes: 5 is a distributed
+    platform that also hosts and evaluates ranking or embedding models inside the serving path, 4 is
+    a complete durable system that is distributed or cluster-capable, 3 is a working single-purpose
+    store or index, and 2 is a single index family shipped as a library with no storage of its own.
+    vespa is the top anchor; every other band is recorded against it or against the chroma rung
+    below it.
+
+    The 5 rung is worded that precisely because a looser reading of it collapses. "Ranks in the
+    serving path" would admit every product here that fuses scores - Qdrant's RRF and DBSF,
+    Infinity's tensor reranking, Milvus's rerank functions - and the rung would then hold six or
+    seven products and distinguish none of them. Hosting a model is the line that holds: vespa
+    evaluates tensor and ONNX models at serving time, and elasticsearch ships `inference`, `ml` and
+    `ml-package-loader` plugins in-tree beside `rank-rrf` and `rank-vectors`, while the vector
+    databases fuse or filter over vectors the caller supplies. Two products reach it.
+
+    Three bands rest on a benchmark rather than on the matrix - milvus, qdrant and pinecone, which
+    arrived from agent_tools_protocols carrying measurements. Their `basis` stays `benchmark`,
+    because a measurement is the stronger instrument, and their notes place them on the rungs this
+    matrix defines so the bands stay comparable inside the category. The measurements are not the
+    same instrument, and `basis_detail` says which is which rather than naming one harness for all
+    three: milvus and qdrant are both listed in ANN-Benchmarks, which publishes recall-versus-QPS
+    plots and no ranking table, so it corroborates inclusion while the headline numbers come from
+    each vendor's own harness - VDB Bench for milvus, qdrant.tech/benchmarks for qdrant. Pinecone is
+    a closed service and is NOT in ANN-Benchmarks; its band rests on vendor-reported production and
+    load-test figures carried by trade press, which is why its confidence is medium and why the
+    absence of an independent submission is recorded as a finding in its note.
+comments: >-
+  Columbia infrastructure category. Includes AI-oriented distributed storage, vector and hybrid
+  retrieval, feature stores, versioned data layers, and storage formats where storage is the product
+  surface. Generic ETL and corpus-construction pipelines remain in dataset_processing_tools and
+  model serving remains in inference_code. Seeded from Good AI List Infrastructure / Data systems
+  and Index & Search on 2026-08-18 and triaged in full the same day: 21 of 25 seeded rows were
+  promoted and four rejected on the boundary - redis and tidb as general-purpose data stores that
+  added vector types rather than retrieval systems, ceph as general-purpose distributed storage not
+  built for ML workloads, and alluxio as analytics-oriented data orchestration with no commit since
+  2025-04. Three replacements were added: pgvector, juicefs and lakefs. Qdrant, Milvus and Pinecone
+  moved here from agent_tools_protocols on 2026-08-18, which is what takes the roster to 27. They are
+  direct peers of Chroma, LanceDB, Vearch, Infinity, HelixDB and Zvec, and leaving them one category
+  over left two capability recipes banding the same kind of product, so their scores could not be
+  compared in the published map. All three were rebanded against this category's matrix and its vespa
+  anchor; no band moved, and the cluster they used to anchor among themselves now hangs off vespa.
+  Safetensors stays in ml_frameworks, where its identity is a file format the whole stack imports
+  rather than a store. Weaviate was considered as a fourth replacement for alluxio and not added: 27
+  products sits mid-range for the category, so it is a candidate for the next discovery batch rather
+  than a gap.

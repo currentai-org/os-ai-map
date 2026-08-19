@@ -18,17 +18,17 @@ openness:
         holds multi-tenant SSO, SSO settings, the audit-log viewer, the admin API, billing, verified domains
         and UI customization
   confidence: high
-  note: 'MIT core with a commercially licensed enterprise directory in the same repository. `core-gated:
-    gated` verified 2026-08-12 by a direct read, and it does NOT rest on Langfuse Cloud or on the ClickHouse
-    acquisition. The root LICENSE splits the repo itself: "All content that resides under the ''ee/'', ''web/src/ee/'',
+  note: 'An MIT core with a commercially licensed enterprise directory in the same repository. The gating
+    is read directly from the repository and does not rest on Langfuse Cloud or on the ClickHouse acquisition.
+    The root LICENSE splits the repo itself: "All content that resides under the ''ee/'', ''web/src/ee/'',
     and/or ''worker/src/ee/'' directories of this repository, if these directories exist, is licensed under
     the license defined in ''ee/LICENSE''", and everything outside them is MIT Expat. ee/LICENSE opens by
     calling Langfuse "an open core project" and requires "a valid Langfuse Enterprise License". The carve-out
-    is not a stub: ee/src holds an ee-license-check module and web/src/ee/features holds admin-api, audit-log-viewer,
-    billing, multi-tenant-sso, sfdc-sync, sso-settings, ui-customization and verified-domains. That is the
-    litellm side of the line, not the langchain side. One correction the read forces on this record''s own
-    prose: the license clause below claims SSO is in the MIT core, and it is not - multi-tenant-sso and
-    sso-settings are both under web/src/ee/.'
+    is not a stub: ee/src holds a license-check module, and web/src/ee/features holds admin-api, audit-log-viewer,
+    billing, multi-tenant-sso, sfdc-sync, sso-settings, ui-customization and verified-domains. That is genuine
+    open core rather than fully open source. One correction the read forces: single sign-on is not in the
+    MIT core, despite what the license detail recorded beside this note says - multi-tenant-sso and sso-settings
+    both sit under web/src/ee/.'
   raw: license:MIT(core:tracing/integrations/API/data-model/exports/evals/playground/SSO);commercial:enterprise-security(SCIM,audit-logs,data-retention);source:public;core-gated:gated(the
     root LICENSE carves ee/, web/src/ee/ and worker/src/ee/ out of MIT and under ee/LICENSE, the Langfuse
     Enterprise License; ee/src ships an ee-license-check module and web/src/ee/features holds multi-tenant
@@ -105,15 +105,13 @@ adoption:
   reach: '>10M'
   signal_type: usage_volume
   confidence: high
-  note: 'RE-BANDED 2026-08-14 from 3/reported_traction to 5/usage_volume, and the instrument moved with the
-    level. The old record asserted no precise download or active-user count existed, but the product
-    declares the PyPI package langfuse, its own client SDK, and the ruling of 2026-08-14 settles that where
-    a hosted platform has no other countable channel its client SDK''s downloads band the platform - the
-    same treatment qdrant already gets on qdrant-client. The pypistats API answers last_month = 26,611,793
-    downloads for langfuse (last_week 6,315,194, last_day 1,118,108), which clears the >10M level-5 floor in
-    sources/rubrics/software.yaml. This is instrumentation traffic rather than a seat count, which is
-    exactly what an observability platform''s reach looks like. The product is still described as the most
-    widely adopted open source LLM engineering platform, and was acquired by ClickHouse in March 2026.'
+  note: 'The band rests on the PyPI package langfuse, the product''s own client SDK: where a hosted platform
+    has no other countable channel, its client SDK''s downloads band the platform, the same way qdrant is
+    banded on qdrant-client. pypistats answers 26,611,793 downloads in the last month for langfuse (6,315,194
+    in the last week, 1,118,108 in the last day), which clears the >10M floor for level 5. This is instrumentation
+    traffic rather than a seat count, which is exactly what an observability platform''s reach looks like.
+    Langfuse is described as the most widely adopted open source LLM engineering platform, and was acquired
+    by ClickHouse in March 2026.'
   last_verified: '2026-08-14'
   sources:
   - url: https://pypistats.org/api/packages/langfuse/recent
@@ -138,12 +136,10 @@ capability:
   basis: feature_matrix
   value: null
   confidence: high
-  note: End-to-end tracing, prompt management, evals (incl. LLM-as-judge), datasets, annotation queues,
-    playground; OpenTelemetry + LangChain/OpenAI/LiteLLM integrations. Rated on feature matrix. Re-read
-    2026-08-13 - the repository README and the observability docs still describe the same feature set, and
-    the docs sidebar still lists Observability, Prompt Management, Evaluation and Playground as the four
-    product areas. Nothing was added or withdrawn that would move the band, so 4 stands as the category
-    anchor the peer comparisons in this category are recorded against.
+  note: End-to-end tracing, prompt management, evaluations including LLM-as-judge, datasets, annotation
+    queues and a playground, with OpenTelemetry plus LangChain, OpenAI and LiteLLM integrations. There is
+    no standard benchmark for observability, so the score is set on the feature matrix, and this 4 is the
+    reference point the rest of this category is compared against.
   sources:
   - url: https://github.com/langfuse/langfuse
     shows: Repository overview. The README still describes tracing, prompt management, evaluations, datasets

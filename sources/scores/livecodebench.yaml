@@ -19,16 +19,13 @@ openness:
       value: public problems with hidden test cases bundled
   confidence: medium
   note: 'Downloadable with a datasheet, but the only license statement the project makes about the corpus
-    is a bare cc naming no variant, and CC-BY and CC-BY-NC sit two tiers apart. A read on 2026-08-12 went
-    looking for the variant across the card front matter, the Hub API, the sibling code_generation and test_generation
-    corpora, the repository LICENSE (MIT, covering the lcb_runner harness rather than the problems), the
-    README, ERRATA.md, the project site, the leaderboard and the paper, and did not find one. Files that
-    download freely without a grant are not open, and not closed either, so the recorded 4/open drops to
-    3/gated: the barrier is the missing permission rather than a login. The problems are collected from
-    LeetCode, AtCoder and Codeforces, which is a plausible reason no variant has been committed to.
-    Re-fetched on 2026-08-13 - the card README and the repository LICENSE both return unchanged digests,
-    the Hub API still reports cardData.license as the bare string "cc", and the repo is still ungated,
-    so nothing has moved and no variant has appeared.'
+    is a bare "cc" naming no variant, and CC-BY and CC-BY-NC sit two tiers apart. No variant is stated anywhere
+    the project publishes: not in the card front matter, the Hub API, the sibling code_generation and test_generation
+    corpora, the repository LICENSE (MIT, which covers the lcb_runner harness rather than the problems),
+    the README, ERRATA.md, the project site, the leaderboard or the paper. Files that download freely without
+    a grant to use them are not open, and not closed either, so this sits at gated - the barrier is the
+    missing permission rather than a login. The problems are collected from LeetCode, AtCoder and Codeforces,
+    which is a plausible reason no variant has been committed to.'
   raw: data:downloadable(HF parquet);license:cc(the card YAML names the Creative Commons family and no variant;
     no variant is stated on the card, the GitHub repository, the project site or the paper);datasheet:present(README
     documents versions/sources/structure);redistributable:yes;splits:public problems with hidden test cases
@@ -47,46 +44,49 @@ openness:
     shows: 'YAML metadata license: cc'
     accessed: '2026-06-04'
   - url: https://huggingface.co/datasets/livecodebench/code_generation_lite/raw/main/README.md
-    shows: 'card front matter is `license: cc` with tags, pretty_name and size_categories, and nothing
-      naming a Creative Commons variant; the body is a change log of release_v1..v5, a dataset description
-      and usage instructions. Re-read 2026-08-12 and re-fetched 2026-08-13 with an unchanged digest'
+    shows: 'card front matter is `license: cc` with tags, pretty_name and size_categories, and nothing naming
+      a Creative Commons variant; the body is a change log of release_v1..v5, a dataset description and
+      usage instructions'
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: fbf0df23c9fb430778f037691bd191ece41d49373c0695151d87549b6f45d809
-    establishes: [license]
+    establishes:
+    - license
   - url: https://huggingface.co/api/datasets/livecodebench/code_generation_lite
-    shows: 'cardData.license is the string "cc" and the repository tags carry `license:cc`; the sibling
-      corpora code_generation and test_generation carry the same bare `cc`, and execution carries no
-      license at all. The open discussions on the repo are about loading, parquet conversion and version
-      sizes - none asks or answers what the CC variant is. Re-read 2026-08-13 and cardData.license
-      is still the bare string "cc"'
+    shows: cardData.license is the string "cc" and the repository tags carry `license:cc`; the sibling corpora
+      code_generation and test_generation carry the same bare `cc`, and execution carries no license at
+      all. The open discussions on the repo are about loading, parquet conversion and version sizes - none
+      asks or answers what the CC variant is
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 0f17aeab9c94cf4a6269259748edf887c3ab5daa9aa2ad2cf387716c06ce18c2
-    establishes: [license]
+    establishes:
+    - license
   - url: https://raw.githubusercontent.com/LiveCodeBench/LiveCodeBench/main/LICENSE
-    shows: MIT License, copyright 2024 LiveCodeBench. This is the repository holding lcb_runner, the
-      evaluation harness; the problems are distributed from the Hugging Face repos and this file makes
-      no statement about them. Re-fetched 2026-08-13 with an unchanged digest
+    shows: MIT License, copyright 2024 LiveCodeBench. This is the repository holding lcb_runner, the evaluation
+      harness; the problems are distributed from the Hugging Face repos and this file makes no statement
+      about them
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 104099948b78ebc36f2e951b3a7973b956adfa7d39aaec0d1512f97a2686d15d
-    establishes: [license]
+    establishes:
+    - license
   - url: https://raw.githubusercontent.com/LiveCodeBench/LiveCodeBench/main/README.md
     shows: 217 lines covering install, running the harness, scenarios and submissions, with no licensing
-      or terms section at all. Re-fetched 2026-08-13 with an unchanged digest
+      or terms section at all
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: ee0029cddc1d9051f35818f3348a4327819a3e35a9e597732519245605195cf6
-    establishes: [license]
+    establishes:
+    - license
 adoption:
   level: 3
   reach: 10K-100K
   signal_type: usage_volume
   confidence: medium
-  note: 91,719 downloads in the trailing 30 days summed across the 1 declared artifact(s), read 2026-08-13
-    (livecodebench/code_generation_lite 91,719). Bands at level 3 (10K-100K) on the dataset adoption scale,
-    whose top band is >1M. Corrected from level 4, which the declared artifacts do not support.
+  note: 91,719 Hugging Face downloads in the trailing 30 days for livecodebench/code_generation_lite, the
+    single declared artifact, which puts it in the 10K-100K band, level 3 on the dataset adoption scale.
+    That scale tops out at >1M.
   last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/api/datasets/livecodebench/code_generation_lite
@@ -99,10 +99,9 @@ capability:
   basis: n/a
   value: null
   confidence: high
-  note: A dataset is not 'capable'. Contamination-resistance (the 'live' continuously-updated design)
-    is a quality strength but not scored on the 1-5 capability axis per the recipe; openness + adoption
-    carry this category. Re-read 2026-08-13 and the abstention stands - the page publishes a rotating
-    problem set and no performance or feature claim the capability axis could band.
+  note: A dataset is not 'capable', so this axis is left unscored. Its contamination resistance - the "live",
+    continuously updated design - is a real quality strength, but openness and adoption are what carry this
+    category.
   last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/datasets/livecodebench/code_generation_lite

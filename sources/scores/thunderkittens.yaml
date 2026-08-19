@@ -1,0 +1,78 @@
+product: thunderkittens
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: MIT license body confirmed. The repository is public and unarchived and builds the whole product, and the
+    README describes no paid tier, enterprise edition or license-gated build beside it, so source is public and
+    the core ungated.
+  raw: license:MIT(OSI);source:public;core-gated:ungated
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/HazyResearch/ThunderKittens/blob/main/LICENSE
+    shows: LICENSE file is the verbatim MIT text
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: e705a1075640344d86b3b3d4f27dc06bf37cb5bf3b24676a9ca49a19c327ddae
+    establishes:
+    - license
+  - url: https://api.github.com/repos/HazyResearch/ThunderKittens
+    shows: Repo metadata - license spdx_id MIT, private false, archived false, default branch main - for HazyResearch/ThunderKittens.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: bdbe07b39e123fb60cb1315e3ed3af4bfd49d181772cc017760ca7585095d0c0
+    establishes:
+    - license
+    - source
+  - url: https://github.com/HazyResearch/ThunderKittens/blob/main/README.md
+    shows: README describes a CUDA-embedded framework of tile primitives for writing fast deep-learning kernels,
+      designed so authors can drop back to raw CUDA where the abstraction runs out, with no paid tier, enterprise
+      edition or license-key-gated build beside it.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 2f1ffd3bd943c5dcdfcdf1b890bded0d421a8deedfefc2d931f7daca73d9feb3
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 3,634 GitHub stars, which lands in the 1K-10K stars band of the stars scale, level 2. A header library built
+    from source with no package registry presence, so the stars scale applies with its cap of 3.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://api.github.com/repos/HazyResearch/ThunderKittens
+    shows: Repo metadata - stargazers_count = 3,634 - for HazyResearch/ThunderKittens.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: bdbe07b39e123fb60cb1315e3ed3af4bfd49d181772cc017760ca7585095d0c0
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: narrow kernel set or single-pass utility'
+  value: Tile primitives and example kernels for authoring CUDA kernels on recent NVIDIA architectures. An authoring
+    aid rather than a shipped operator set.
+  relative_to: tensorrt
+  relation: two_below
+  confidence: medium
+  note: Banded on the category feature matrix as narrow kernel set or single-pass utility. Placed two bands below
+    the tensorrt anchor, on a matrix that bands on how much of the model-to-hardware transformation pipeline a product
+    performs, over how many inputs and targets.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/HazyResearch/ThunderKittens/blob/main/README.md
+    shows: README still documents a CUDA-embedded framework of tile primitives for writing fast deep-learning kernels,
+      designed so authors can drop back to raw CUDA where the abstraction runs out.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 2f1ffd3bd943c5dcdfcdf1b890bded0d421a8deedfefc2d931f7daca73d9feb3

@@ -62,10 +62,10 @@ adoption:
   reach: null
   signal_type: unknown
   confidence: low
-  note: No disclosed standalone fine-tuning-API usage figure located this run (developer count / jobs
-    run / tokens). The OpenAI platform broadly serves ~1B+ ChatGPT WAU, but that surface is not the fine-tuning
-    API and cannot be honestly attributed to this SKU. Declining to assign a level rather than borrow
-    the umbrella surface number.
+  note: No standalone usage figure is disclosed for the fine-tuning API -- no developer count, no jobs run,
+    no tokens trained. The OpenAI platform broadly serves ~1B+ weekly ChatGPT users, but that surface is
+    not the fine-tuning API and cannot honestly be attributed to it, so no level is assigned rather than
+    one borrowed from the umbrella product.
   last_verified: '2026-08-08'
   sources:
   - url: https://developers.openai.com/api/docs/pricing
@@ -102,10 +102,12 @@ capability:
     for reasoning models. Tunes frontier closed models (gpt-4.1 family, gpt-4o, o4-mini). Managed end-to-end
     (data validation, training, hosting, eval).'
   confidence: medium
-  note: 'Strong managed method coverage (SFT+DPO+RFT) over frontier base models, but black-box: no
-    parallelism/precision/scale knobs exposed, no MLPerf-Training basis. Scored 4 on method breadth + frontier
-    base quality; not 5 since the user cannot control training scale/internals. Re-read 2026-08-13 as an
-    anchor for this category''s closing pass; unchanged at 4.'
+  note: 'Strong managed method coverage over frontier base models: supervised fine-tuning, vision fine-tuning,
+    DPO preference tuning and reinforcement fine-tuning for reasoning models, applied to the gpt-4.1 family,
+    gpt-4o and o4-mini, with data validation, training, hosting and evaluation all handled end to end. It
+    is a black box, though: no parallelism, precision or scale controls are exposed and no training benchmark
+    stands behind it. The score reflects that method breadth and base-model quality, and stops short of
+    the top band because the user cannot control training scale or internals.'
   last_verified: '2026-08-13'
   sources:
   - url: https://developers.openai.com/api/docs/guides/model-optimization

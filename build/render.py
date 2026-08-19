@@ -758,6 +758,7 @@ __SECTION_CELLS__
 
 @app.cell(hide_code=True)
 def details_payload(DATA, ORDER, mo):
+    import base64 as _b64
     import json as _json
     # Build a per-product payload keyed by product name, then install a delegated
     # click handler + modal via a hidden-iframe onload bootstrap (marimo strips
@@ -766,7 +767,17 @@ def details_payload(DATA, ORDER, mo):
     for _cid in ORDER:
         for _p in DATA["categories"][_cid]["products"]:
             _payload[_p["product"]] = {**_p, "category_label": DATA["categories"][_cid]["label"]}
-    _pj = _json.dumps(_payload, ensure_ascii=False)
+    # Base64, not raw JSON. This payload is interpolated into an HTML *attribute*, so it
+    # gets escaped (" -> &quot;), and a single astral character anywhere in it (a Hugging
+    # Face emoji, in practice) widens the whole Python string to 4 bytes per character.
+    # On 2026-08-18 those two multipliers put this cell's output at 24.5 MB against
+    # marimo's 8 MB output_max_bytes; marimo dropped the output silently and every
+    # Details button rendered wired to a handler that was never installed. Base64 is pure
+    # ASCII -- 1 byte per character, nothing for the attribute escaping to expand, and
+    # immune to whatever character lands in a score note next.
+    _pj = "'" + _b64.b64encode(
+        _json.dumps(_payload, ensure_ascii=False).encode("utf-8")
+    ).decode("ascii") + "'"
     _css = (
         ".v3-details{padding:3px 9px;font-size:11px;font-family:'DM Mono',ui-monospace,monospace;"
         "border:1px solid #a5bbbe;background:#fff;color:#0b252f;border-radius:0;cursor:pointer;font-weight:500;"
@@ -788,8 +799,9 @@ def details_payload(DATA, ORDER, mo):
     )
     _js = r\'\'\'
     (function(){
-      if (window.__V3_INSTALLED__) { window.__V3_PAYLOAD__ = __PAYLOAD__; return; }
-      window.__V3_INSTALLED__ = true; window.__V3_PAYLOAD__ = __PAYLOAD__;
+      var dec=function(b){return JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(b),function(c){return c.charCodeAt(0);})));};
+      if (window.__V3_INSTALLED__) { window.__V3_PAYLOAD__ = dec(__PAYLOAD__); return; }
+      window.__V3_INSTALLED__ = true; window.__V3_PAYLOAD__ = dec(__PAYLOAD__);
       var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];});};
       function ocol(sc){return sc==null?'#dcdcda':(sc>=4?'#e86f57':(sc==3?'#f4886f':(sc==2?'#f8ad99':'#f6cabd')));}
       function otext(sc){return '#0b252f';}

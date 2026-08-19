@@ -1,0 +1,81 @@
+product: torchao
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: BSD-3-Clause
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: BSD-3-Clause license body confirmed. The repository is public and unarchived and builds the whole product,
+    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
+    and the core ungated.
+  raw: license:BSD-3-Clause(OSI);source:public;core-gated:ungated
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/pytorch/ao/blob/main/LICENSE
+    shows: 'LICENSE body read rather than trusting the GitHub label: it opens with Meta and Arm copyright lines
+      and then runs the verbatim three-clause BSD text, which is why the API reports NOASSERTION.'
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 67901e351baeaa5aef967cccd0886ba679f085df8673d1ecd49592bf284115af
+    establishes:
+    - license
+  - url: https://api.github.com/repos/pytorch/ao
+    shows: Repo metadata - license spdx_id NOASSERTION, private false, archived false, default branch main - for
+      pytorch/ao.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: b75b9037227dca875f32c078d2b99fd1c76671ef852b55527681f7665ad302d2
+    establishes:
+    - license
+    - source
+  - url: https://github.com/pytorch/ao/blob/main/README.md
+    shows: README describes PyTorch-native training-to-serving optimization with float8 and MX training, quantization-aware
+      training, and int4 and int8 inference quantization, with measured speedups and memory savings quoted against
+      unquantized baselines, with no paid tier, enterprise edition or license-key-gated build beside it.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 577583288bc581b8b455769f38b0778768181a65fa2cd1b23d3bad6c32db3041
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: 4,080,208 PyPI downloads of `torchao` in the trailing 30 days, which lands in the 1M-10M band of the software
+    usage scale, level 4.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://pypistats.org/api/packages/torchao/recent
+    shows: last_month downloads = 4,080,208 for torchao
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: a8bb03708f3dc242643f1d711d3a9ea3eaf70d1b871a11c0f9c9d5f661a33041
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: multi-technique optimization toolchain'
+  value: Training-side (float8, MX, QAT) and serving-side (int4, int8, sparsity) optimization as native PyTorch
+    dtypes and tensor subclasses. Depth across techniques within one framework.
+  relative_to: apache-tvm
+  relation: one_below
+  confidence: medium
+  note: Banded on the category feature matrix as multi-technique optimization toolchain. Placed one band below the
+    apache-tvm anchor, on a matrix that bands on how much of the model-to-hardware transformation pipeline a product
+    performs, over how many inputs and targets.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/pytorch/ao/blob/main/README.md
+    shows: README still documents PyTorch-native training-to-serving optimization with float8 and MX training, quantization-aware
+      training, and int4 and int8 inference quantization, with measured speedups and memory savings quoted against
+      unquantized baselines.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 577583288bc581b8b455769f38b0778768181a65fa2cd1b23d3bad6c32db3041

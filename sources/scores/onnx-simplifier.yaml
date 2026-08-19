@@ -1,0 +1,79 @@
+product: onnx-simplifier
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole product,
+    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
+    and the core ungated.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/onnxsim/onnxsim/blob/master/LICENSE
+    shows: LICENSE file is the verbatim Apache-2.0 text
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 70774fc513552b4ab9b269cd389baf875c35136489ac7c44f4f6f88e1e601ec4
+    establishes:
+    - license
+  - url: https://api.github.com/repos/onnxsim/onnxsim
+    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch master - for
+      onnxsim/onnxsim.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: e9d7e0ed9241e0b0d67d93c15caeb4d896b4e122973f89cd5ed995ae53bc5c7e
+    establishes:
+    - license
+    - source
+  - url: https://github.com/onnxsim/onnxsim/blob/master/README.md
+    shows: README describes simplification of an ONNX graph by folding the constant subgraphs and redundant operations
+      exporters emit, with npm and Rust bindings beside the Python package, with no paid tier, enterprise edition
+      or license-key-gated build beside it.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: b2838cb1b3365f148c8c1c8366c94c6169613971869c12d4a9b13aa5568543c5
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: 535,030 PyPI downloads of `onnxsim` in the trailing 30 days, which lands in the 100K-1M band of the software
+    usage scale, level 3.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://pypistats.org/api/packages/onnxsim/recent
+    shows: last_month downloads = 535,030 for onnxsim
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: e2804949132fd27da429692f654d29569ca61e5e53525fe4b2a18a215c74cd15
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: narrow kernel set or single-pass utility'
+  value: Constant folding and redundancy elimination over an ONNX graph. A single graph-simplification pass, no
+    lowering and no target.
+  relative_to: tensorrt
+  relation: two_below
+  confidence: medium
+  note: Banded on the category feature matrix as narrow kernel set or single-pass utility. Placed two bands below
+    the tensorrt anchor, on a matrix that bands on how much of the model-to-hardware transformation pipeline a product
+    performs, over how many inputs and targets.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/onnxsim/onnxsim/blob/master/README.md
+    shows: README still documents simplification of an ONNX graph by folding the constant subgraphs and redundant
+      operations exporters emit, with npm and Rust bindings beside the Python package.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: b2838cb1b3365f148c8c1c8366c94c6169613971869c12d4a9b13aa5568543c5

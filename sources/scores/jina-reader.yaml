@@ -17,14 +17,14 @@ openness:
       detail: free tier + paid API key) on top of the same OSS core
       raw: r.jina.ai/s.jina.ai hosted SaaS (free tier + paid API key) on top of the same OSS core
   confidence: high
-  note: 'Apache-2.0 throughout with no enterprise directory and no license key, and a read on 2026-08-12
-    found the paid tiers buying throughput on the hosted endpoint rather than functionality: jina.ai/reader
-    lists Reader at 20 RPM without a key, 500 RPM with a free key and 5,000 RPM on Premium, with PDF,
-    MS-Office, image captioning and search available at every tier. The published branch does have the
-    MongoDB-backed SaaS storage layer stripped out, which the README states plainly, but it is accounting
-    and persistence for the hosted service rather than a piece of the reader the open build needs - the
-    README says the branch "runs in stateless mode out of the box, with optional MinIO/S3-compatible bucket
-    caching". Nothing is withheld from the published source, so core-gated is ungated.'
+  note: 'Apache-2.0 throughout with no enterprise directory and no license key, and the paid tiers buy throughput
+    on the hosted endpoint rather than functionality: jina.ai/reader lists Reader at 20 RPM without a key,
+    500 RPM with a free key and 5,000 RPM on Premium, with PDF, MS-Office, image captioning and search available
+    at every tier. The published branch does have the MongoDB-backed SaaS storage layer stripped out, which
+    the README states plainly, but it is accounting and persistence for the hosted service rather than a
+    piece of the reader the open build needs - the README says the branch "runs in stateless mode out of
+    the box, with optional MinIO/S3-compatible bucket caching". Nothing is withheld from the published source,
+    so core-gated is ungated.'
   raw: license:Apache-2.0(OSI);source:public(TypeScript, stateless mode self-hostable via Docker);core-gated:ungated(no
     enterprise directory or license key; the paid tiers buy rate limit on the hosted endpoint);managed-tier:r.jina.ai/s.jina.ai
     hosted SaaS (free tier + paid API key) on top of the same OSS core
@@ -67,16 +67,14 @@ adoption:
   reach: '>10K stars'
   signal_type: stars_fallback
   confidence: low
-  note: 'No verified download or API-call volume found from a primary source. ~11k GitHub stars on the OSS
-    repo plus a widely-used hosted r.jina.ai endpoint; capped at 3 on stars/reported-traction fallback in the
-    absence of a measured usage figure. Stars read 2026-08-13: 11,862 across the 1 declared repo, which bands
-    at >10K stars, level 3 on the stars scale in signal_routing.yaml. The previous reach ''100K-1M'' was not a
-    label this instrument offers - stars have their own vocabulary because a star is not a download. Re-read
-    in full 2026-08-13: the repo page reports 11,865 stargazers, the same band, and neither it nor jina.ai/reader
-    publishes a request count, a user count or any downloadable package for the reader itself - the product
-    is consumed as a URL prefix, so there is no registry to band. The stars fallback and its level-3 cap
-    therefore both stand. The digest below is of a page carrying a live star counter and will not match on
-    a later refetch; that is expected drift on this source rather than a signal about the claim.'
+  note: 'No verified download or API-call volume is published by any primary source: neither the repository
+    nor jina.ai/reader gives a request count or a user count, and the reader is consumed as a URL prefix
+    rather than as a package, so there is no registry artifact to band. That leaves stars - 11,865 stargazers
+    on the one declared repository, which bands at >10K stars, level 3, and a stars-based signal caps the
+    level there because a star is not a use. The hosted r.jina.ai endpoint is widely used but its traffic
+    is not published anywhere. The page the star count comes from carries a live counter, so its content
+    will differ on any later fetch; that is expected drift on this source rather than a signal about the
+    claim.'
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/jina-ai/reader
@@ -91,12 +89,9 @@ capability:
   value: URL->LLM-friendly markdown; handles HTML/PDF/MS-Office/images (AI captioning); web search via
     s.jina.ai; stateless + optional caching; self-host or hosted
   confidence: medium
-  note: 'Solid single-purpose reader/scrape tool with multi-format coverage and a search mode; mid-tier on
-    the {coverage, freshness, structured output, rate limits} feature matrix vs full agentic browse/search
-    platforms. Re-read 2026-08-13: the README still describes the same surface - URL to LLM-friendly markdown
-    via the r.jina.ai prefix, PDF and MS-Office input, image captioning, web search through s.jina.ai, and
-    a stateless mode with optional bucket caching. Nothing has been added that would move it against the
-    agentic browse platforms it is banded below, so the 3 stands.'
+  note: A solid single-purpose reader and scraper, covering several document formats and adding a search
+    mode. That puts it mid-tier on the dimensions that matter here - coverage, freshness, structured output
+    and rate limits - against full agentic browse and search platforms.
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/jina-ai/reader

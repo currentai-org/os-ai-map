@@ -17,20 +17,20 @@ openness:
         fire engine closed beta. Screenshots and page actions are unavailable in the self-hosted stack because
         both require Fire-engine
   confidence: high
-  note: 'AGPL-3.0 OSI core is fully open, but a piece of the product is withheld from it. `core-gated: gated`
-    verified 2026-08-12 by a direct read, replacing a justification that rested on the managed cloud carrying
-    "additional features" - an inference from the pricing page, which the rubric does not accept as evidence.
-    The mechanism has a name: Fire-engine, Firecrawl''s scraping engine, whose source is in no public repo.
-    What firecrawl/firecrawl ships at apps/api/src/scraper/scrapeURL/engines/fire-engine is a client - index.ts,
-    scrape.ts, checkStatus.ts, delete.ts, brandingScript.ts - pointed at a URL you must be given, and apps/api/.env.example
-    says so in one line: "# set if you''d like to use the fire engine closed beta" above FIRE_ENGINE_BETA_URL=.
-    The self-hosting guide then states what the open build cannot do without it - screenshots and page actions
-    are "Not available in the default stack. Fetch and Playwright both report no support; both require Fire-engine",
-    Fire-engine must be "run and configured separately; it is not included", and the agent, browser, interact
-    and specialty product/audio/video formats need Cloud or another external service. The same .env.example
-    shows the pattern twice more - the product format needs "an external product-extraction service", as
-    do the audio and video formats. Features of the product itself, withheld from the published source behind
-    a closed beta, so the 4 holds.'
+  note: 'The AGPL-3.0 core is genuinely open, but a piece of the product is withheld from it, which is what
+    keeps this at open core rather than open source. The gate has a name: Fire-engine, Firecrawl''s own
+    scraping engine, whose source is in no public repository. What firecrawl/firecrawl publishes under apps/api/src/scraper/scrapeURL/engines/fire-engine
+    is only a client - index.ts, scrape.ts, checkStatus.ts, delete.ts, brandingScript.ts - pointed at a
+    URL you have to be given, and apps/api/.env.example says as much in one line: "# set if you''d like
+    to use the fire engine closed beta" above FIRE_ENGINE_BETA_URL=. The self-hosting guide then spells
+    out what the open build cannot do without it: screenshots and page actions are "Not available in the
+    default stack. Fetch and Playwright both report no support; both require Fire-engine", Fire-engine must
+    be "run and configured separately; it is not included", and the agent, browser, interact and specialty
+    product, audio and video formats need Cloud or another external service. The same .env.example shows
+    the pattern twice more - the product format needs "an external product-extraction service", as do the
+    audio and video formats. These are features of the product itself, kept out of the published source
+    behind a closed beta, so the score stays at 4. The managed cloud advertising "additional features" would
+    not on its own be enough to establish a gate; the evidence here is in the code.'
   raw: license:AGPL-3.0(OSI, self-host core);source:public;managed-cloud:firecrawl.dev with 'additional
     features' beyond OSS = open-core split;core-gated:gated(Fire-engine is closed and its source is in no
     public repo - the tree ships only a client at apps/api/src/scraper/scrapeURL/engines/fire-engine and
@@ -90,17 +90,14 @@ adoption:
   reach: '>10K stars'
   signal_type: stars_fallback
   confidence: low
-  note: 'No verified download/API-volume or customer count disclosed on repo or pricing page; only ~129k
-    GitHub stars available as an honest signal. Capped at level 3 per stars_fallback rule. Widely integrated
-    as an agent scrape tool (LangChain, etc.) but no primary usage figure found this run. Stars read
-    2026-08-13: 166,749 across the 1 declared repo, which bands at >10K stars, level 3 on the stars scale in
-    signal_routing.yaml. The previous reach ''100K-1M'' was not a label this instrument offers - stars have
-    their own vocabulary because a star is not a download. Re-read in full 2026-08-13: the repo page reports
-    166,863 stargazers, which is the same band, and the repo and the pricing page still publish no download,
-    request-volume or customer count of any kind - a paid API sells credits rather than reporting usage,
-    so there is nothing here to band as usage_volume. The stars fallback and its level-3 cap therefore both
-    stand. The digest below is of a page carrying a live star counter and will not match on a later refetch;
-    that is expected drift on this source rather than a signal about the claim.'
+  note: 'Neither the repository nor the pricing page publishes a download, request-volume or customer count
+    of any kind - a paid API sells credits rather than reporting usage - so there is nothing here to band
+    as usage volume. The only honest signal is GitHub stars: 166,863 on the one declared repository, which
+    bands at >10K stars, level 3 on the stars scale, and a stars-based signal caps the level there because
+    a star is not a use. Firecrawl is widely integrated as an agent scraping tool (LangChain among others),
+    so real usage is very likely higher than this band can show. The page the count comes from carries a
+    live star counter, so its content will differ on any later fetch; that is expected drift on this source
+    rather than a signal about the claim.'
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/mendableai/firecrawl
@@ -114,13 +111,10 @@ capability:
   value: scrape + crawl + map + search + agent extract + batch; JS-rendered pages, rotating proxies, rate-limit
     handling; markdown/JSON/screenshot/structured output; P95 latency 3.4s, claims 96% web coverage
   confidence: medium
-  note: 'Broad scrape/browse feature coverage (the recipe''s search/scrape dimensions: coverage, freshness,
-    structured output, rate limits), among the most capable open scrape tools; not a 5 (no benchmark, and
-    frontier reserved for category-definers). Re-read 2026-08-13: the README still carries both figures
-    the recorded value quotes, verbatim - "Industry-leading reliability: Covers 96% of the web, including
-    JS-heavy pages" and "Blazingly fast: P95 latency of 3.4s across millions of pages" - and both remain
-    vendor-run rather than independently benchmarked, which is why the basis stays feature_matrix and the
-    band stays 4.'
+  note: 'Broad scrape and crawl coverage. On the dimensions that matter for a search or scrape tool - coverage,
+    freshness, structured output and rate-limit handling - Firecrawl is strong across all four, and it is
+    among the most capable open scraping tools. Not a 5: there is no benchmark behind it, and the top rung
+    is reserved for products that define their category.'
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/mendableai/firecrawl

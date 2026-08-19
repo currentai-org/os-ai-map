@@ -1,0 +1,82 @@
+product: composable-kernel
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: MIT license body confirmed. The repository is public and unarchived and builds the whole product, and the
+    README describes no paid tier, enterprise edition or license-gated build beside it, so source is public and
+    the core ungated. GitHub reports NOASSERTION because the LICENSE body carries an AMD copyright header; the body
+    is the verbatim MIT text.
+  raw: license:MIT(OSI);source:public;core-gated:ungated
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/ROCm/composable_kernel/blob/develop/LICENSE
+    shows: LICENSE body carries an AMD copyright header and then runs the verbatim MIT text, which is why the API
+      reports NOASSERTION.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 20f3b83dfda01bd18d285e0edbb9d044be6dde04cdf76a1ec18d9fc7127936bf
+    establishes:
+    - license
+  - url: https://api.github.com/repos/ROCm/composable_kernel
+    shows: Repo metadata - license spdx_id NOASSERTION, private false, archived false, default branch develop -
+      for ROCm/composable_kernel.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: b4bc8889dfef2e77d46268e809322743c31f5fe34f7b965d424ad8179cb10f9f
+    establishes:
+    - license
+    - source
+  - url: https://github.com/ROCm/composable_kernel/blob/develop/README.md
+    shows: README describes a programming model and template library for performance-critical ML kernels across
+      architectures, with a code generator and dispatcher, shipped as part of ROCm, with no paid tier, enterprise
+      edition or license-key-gated build beside it.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: a32b4f9c5e8a6c2435519fce45712c7b8c7ee39782aae711ed8888eefd79f98b
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 1
+  reach: <1K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 543 GitHub stars, which lands in the <1K stars band of the stars scale, level 1. Vendored into ROCm libraries
+    and built from source rather than distributed as a package, so the stars scale is the only instrument; at 543
+    stars it bands at 1, the floor.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://api.github.com/repos/ROCm/composable_kernel
+    shows: Repo metadata - stargazers_count = 543 - for ROCm/composable_kernel.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: b4bc8889dfef2e77d46268e809322743c31f5fe34f7b965d424ad8179cb10f9f
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: narrow kernel set or single-pass utility'
+  value: Tile-level templates and a codegen dispatcher for GEMM, convolution and fused attention on AMD GPUs. One
+    vendor, and narrower operator and ecosystem coverage than CUTLASS.
+  relative_to: tensorrt
+  relation: two_below
+  confidence: medium
+  note: Banded on the category feature matrix as narrow kernel set or single-pass utility. Placed two bands below
+    the tensorrt anchor, on a matrix that bands on how much of the model-to-hardware transformation pipeline a product
+    performs, over how many inputs and targets.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/ROCm/composable_kernel/blob/develop/README.md
+    shows: README still documents a programming model and template library for performance-critical ML kernels across
+      architectures, with a code generator and dispatcher, shipped as part of ROCm.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: a32b4f9c5e8a6c2435519fce45712c7b8c7ee39782aae711ed8888eefd79f98b

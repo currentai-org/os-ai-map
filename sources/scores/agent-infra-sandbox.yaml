@@ -16,12 +16,8 @@ openness:
     free_text:
     - no feature-gated core observed
   confidence: high
-  note: Apache-2.0, fully self-hostable single-container runtime; no separate proprietary/managed tier
-    gating the core. Re-read 2026-08-13 - the GitHub API reports the repository public, unarchived
-    and licensed Apache-2.0, the root LICENSE body is the verbatim Apache License 2.0, and the README
-    ships the entire runtime as one public image (ghcr.io/agent-infra/sandbox, with a mainland-China
-    mirror) plus Docker Compose and Kubernetes deployment manifests, with no paid, hosted or
-    feature-gated tier anywhere in it.
+  note: Apache-2.0, fully self-hostable single-container runtime; no separate proprietary/managed tier gating
+    the core.
   raw: license:Apache-2.0(OSI);source:public(GitHub);packaging:self-hostable Docker image + K8s deploy examples;no
     feature-gated core observed;core-gated:ungated
   last_verified: '2026-08-13'
@@ -62,9 +58,8 @@ adoption:
   reach: <10K
   signal_type: usage_volume
   confidence: low
-  note: 4,670 npm downloads in the trailing 30 days for @agent-infra/sandbox, read 2026-08-12. The level
-    was previously placed at 1 by hand, explicitly 'on the absence of any usage_volume evidence'. That evidence
-    exists and bands at 1 - the judgment was right and now rests on a measurement rather than on an absence.
+  note: 4,670 npm downloads in the trailing 30 days for @agent-infra/sandbox, far below the thresholds for
+    any higher band, so level 1.
   last_verified: '2026-08-12'
   sources:
   - url: https://api.npmjs.org/downloads/point/last-month/@agent-infra/sandbox
@@ -80,13 +75,8 @@ capability:
     within container; scale:K8s high-density deploy examples but no published concurrency limit
   confidence: medium
   note: Unusually broad multi-modal feature set (browser+shell+file+MCP+IDE in one) but isolation is container-level
-    only, below the Firecracker/gVisor isolation strength of the frontier deployment runtimes; scored
-    3.
-    Re-read 2026-08-13 - the README still describes one Docker container carrying Browser/VNC, Shell,
-    File, MCP, Jupyter and VSCode Server over a shared filesystem, still deploys through Compose or a
-    plain Kubernetes Deployment, and still names no isolation primitive stronger than the container
-    (the quick start actually relaxes one, running with seccomp unconfined). Breadth and isolation
-    both read as recorded, so the band holds at 3.
+    only, below the Firecracker/gVisor isolation strength of the frontier deployment runtimes; scored 3.
+    The quick start relaxes isolation further still, running with seccomp unconfined.
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/agent-infra/sandbox

@@ -17,11 +17,12 @@ openness:
     free_text:
     - no-feature-gated-core
   confidence: high
-  note: 'Re-confirmed: repo public and active, LICENSE body is the unmodified Apache-2.0 text, GitHub''s
-    repo metadata also reports spdxId Apache-2.0. No pricing/enterprise page or paid-tier mention exists
-    for the project itself; the only ''enterprise''/''pricing'' hits on the fetched repo page are GitHub''s
-    own site navigation chrome, not LMDeploy content, so core-gated:ungated stands. AWQ/W4A16 weight-only
-    and kv-cache quantization still documented on the repo page.'
+  note: 'The repository is public and active, the LICENSE body is the unmodified Apache-2.0 text, and GitHub''s
+    own repository metadata reports the same Apache-2.0 identifier. No pricing or enterprise page exists
+    for the project and no paid tier is mentioned anywhere: the only "enterprise" and "pricing" strings
+    on the repo page belong to GitHub''s site navigation rather than to LMDeploy, so nothing is withheld
+    from the published source. AWQ/W4A16 weight-only and KV-cache quantization are documented on the repo
+    page.'
   last_verified: '2026-08-09'
   raw: license:Apache-2.0(OSI);source:public(InternLM/lmdeploy);no-feature-gated-core;quantization:weight-only+kv(AWQ/W4A16);core-gated:ungated
   sources:
@@ -48,11 +49,11 @@ adoption:
   reach: 10K-100K
   signal_type: usage_volume
   confidence: medium
-  note: 'PyPI downloads stepped down between May and June 2026 and have held at the new level for three
-    months: 171,750 in May, 57,776 in June, 54,993 in July and 50,402 over the trailing 30 days. The prior
-    read''s 165,001 was a trailing window ending 2026-06-04, so it was measuring May. Level 2 (10K-100K)
-    on sustained volume rather than a single point read. No second distribution channel absorbs the difference:
-    releases from v0.13.0 onward attach no wheel assets, so PyPI is the package''s only route.'
+  note: 'PyPI downloads stepped down sharply and have since held at the new level for three months: 171,750
+    in the month before the step, then 57,776, then 54,993, and 50,402 over the trailing 30 days. That sustained
+    volume, rather than any single reading, is what places it at level 2, the 10K-100K band. No second distribution
+    channel absorbs the difference: releases from v0.13.0 onward attach no wheel assets, so PyPI is the
+    package''s only route.'
   last_verified: '2026-08-09'
   sources:
   - url: https://pypistats.org/packages/lmdeploy
@@ -91,12 +92,12 @@ capability:
     kv (AWQ/W4A16) quantization, tensor parallelism, broad LLM + VLM architecture coverage; vendor-reported
     4-bit inference ~2.4x FP16
   confidence: medium
-  note: Feature set re-confirmed unchanged on today's read of the repo (TurboMind/PyTorch engines, continuous
-    batching, AWQ/kv quantization, tensor parallelism, VLM support, the 2.4x 4-bit claim all still present).
-    vllm was re-confirmed in this same run at capability score 5 on 2026-08-09, so one_below (4) is arithmetic-consistent
-    and at least as fresh as the peer it rests on. The README's own claim of up to 1.8x higher request throughput
-    than vLLM is a vendor self-benchmark; the one_below placement rests on vLLM's independent MLPerf submission
-    and broader architecture coverage, not on a throughput ranking.
+  note: The feature set is the TurboMind and PyTorch engines, persistent and continuous batching, a blocked
+    KV cache, AWQ/W4A16 weight-only and KV-cache quantization, tensor parallelism, broad LLM and VLM architecture
+    coverage, and a vendor-reported 2.4x speedup for 4-bit inference over FP16. It sits one tier below vLLM,
+    which holds the top capability score in this category. The README's own claim of up to 1.8x higher request
+    throughput than vLLM is a vendor self-benchmark; the placement rests instead on vLLM's independent MLPerf
+    submission and its broader architecture coverage.
   last_verified: '2026-08-09'
   sources:
   - url: https://github.com/InternLM/lmdeploy

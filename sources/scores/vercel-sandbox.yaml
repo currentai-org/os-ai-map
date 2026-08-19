@@ -18,14 +18,10 @@ openness:
       detail: proprietary service
       raw: Proprietary, proprietary service
   confidence: high
-  note: 'Closed managed service. The SDK/CLI are open, but they are only a client for Vercel''s proprietary
-    microVM cloud, which cannot be self-hosted; an open client over a closed runtime is not open_core (the
-    core is proprietary). Reclassified from open_core; sits with the other proprietary sandbox clouds (Google
-    Cloud Run, Fly Sprites, Northflank). Re-read 2026-08-13 - the docs still place every sandbox in a
-    Firecracker microVM on Vercel''s own infrastructure, reached only through Vercel OIDC tokens or
-    Vercel access tokens, and the pricing and quotas page meters the product across Hobby, Pro and
-    Enterprise plans with no self-hosted or source-available option at any of them. Source and license
-    both read as recorded.'
+  note: Closed managed service. The SDK and CLI are open, but they are only a client for Vercel’s proprietary
+    microVM cloud, which cannot be self-hosted; an open client over a closed runtime is not open core, because
+    the core is proprietary. It sits with the other proprietary sandbox clouds - Google Cloud Run, Fly Sprites,
+    Northflank.
   raw: source:closed;service:proprietary Vercel Fluid-compute managed cloud (no self-host of the Firecracker
     microVM plane);open-part:client SDK/CLI only (@vercel/sandbox JS + Python, vercel/sandbox on GitHub);license:Proprietary,
     proprietary service
@@ -58,17 +54,14 @@ adoption:
   reach: '>10M'
   signal_type: usage_volume
   confidence: medium
-  note: 'npm @vercel/sandbox ~9.06M downloads in the last 30 days (npm registry API). Package-manager pulls
-    include CI/mirror inflation and overstate distinct human users; GA status + large Vercel install base
-    corroborate genuine production use. Re-banded 2026-08-14. The npm downloads API reports 13,197,882
-    downloads of @vercel/sandbox over 2026-07-11 to 2026-08-09, clear of the 10M floor, which bands at
-    level 5 / >10M on the software adoption scale rather than the 1M-10M placed on the older ~9.06M
-    reading. The package is the product''s own - its registry metadata describes it as the "Software
-    Development Kit for Vercel Sandbox" and points at github.com/vercel/sandbox. Per the 2026-08-14
-    ruling this figure is re-fetchable but NOT pipeline-recomputable, because npm is an unbridged route
-    (issue #163); no signal model reads it, so nothing computed can disagree with it and a later reader
-    must not mistake this for a computed band. Confidence stays medium rather than high on the
-    CI/mirror-inflation caveat above.'
+  note: The npm downloads API reports 13,197,882 downloads of @vercel/sandbox over the window 2026-07-11
+    to 2026-08-09, clear of the 10M floor, which bands at level 5 on the software adoption scale. The package
+    is the product’s own - its registry metadata describes it as the "Software Development Kit for Vercel
+    Sandbox" and points at github.com/vercel/sandbox. The npm figure can be fetched again by hand but no
+    automated feed reads it, so it is a measured number rather than a computed one. Package-manager pulls
+    include CI and mirror inflation and overstate distinct human users; GA status and the large Vercel install
+    base corroborate genuine production use. Confidence stays medium rather than high on that inflation
+    caveat.
   last_verified: '2026-08-14'
   sources:
   - url: https://api.npmjs.org/downloads/point/last-month/@vercel/sandbox
@@ -103,30 +96,27 @@ capability:
     drives; scale:managed autoscale to 10,000 concurrent sandboxes, 24h max duration, 32 vCPU / 64GB
     ceiling, single region (iad1)
   confidence: high
-  note: 'Firecracker microVM isolation (top tier) + ms cold-start + persistence/snapshots make it a strong
-    agent sandbox; held at 4 rather than 5. Independent ComputeSDK TTI benchmarks measure ~390ms median
-    cold-start (9th of 19 sandbox providers); the vendor''s ''ms startup'' framing is optimistic versus
-    the measured hundreds of ms, though still solidly sub-second. Re-derived 2026-08-14 because half the
-    recorded reason for the hold had expired. The old note held it below Lambda on runtime breadth AND
-    scale, and recorded "up to 45min execution". Breadth is no longer a difference - the docs now read
-    "Sandboxes run Linux images, with Ubuntu, Arch Linux, or any other Linux distribution you need" and
-    offer "your own OCI images stored in Vercel Container Registry", which is the same any-image story
-    that made Lambda the frontier. The 45 minutes was the Hobby tier - the limits table gives Pro and
-    Enterprise 24 hours. So the band now rests on scale alone, and on scale it still holds: 10,000
-    concurrent sandboxes and a 5,000 vCPU/min allocation ceiling against Lambda''s 15 trillion monthly
-    invocations and 1000 additional concurrent executions every 10 seconds, and one region, iad1, against
-    Lambda everywhere. A hard regional cap is a stronger constraint than the 45 minutes ever was. Score
-    unchanged at 4, one_below aws-lambda, on a narrower and better-evidenced reason.'
+  note: 'Firecracker microVM isolation (top tier), millisecond cold-start and persistence with snapshots
+    make it a strong agent sandbox; held at 4 rather than 5. Independent ComputeSDK TTI benchmarks measure
+    a ~390ms median cold-start, 9th of 19 sandbox providers; the vendor’s "ms startup" framing is optimistic
+    against the measured hundreds of milliseconds, though still solidly sub-second. The hold rests on scale
+    rather than on runtime breadth. On breadth the docs read "Sandboxes run Linux images, with Ubuntu, Arch
+    Linux, or any other Linux distribution you need" and offer "your own OCI images stored in Vercel Container
+    Registry", which is the same any-image story that made Lambda the frontier, and the 45-minute execution
+    cap applies to the Hobby tier only - the limits table gives Pro and Enterprise 24 hours. On scale the
+    hold stands: 10,000 concurrent sandboxes and a 5,000 vCPU/min allocation ceiling against Lambda’s 15
+    trillion monthly invocations and 1000 additional concurrent executions every 10 seconds, and a single
+    region, iad1, against Lambda everywhere. A hard regional cap is the stronger constraint. So 4, one rung
+    below AWS Lambda, on a narrow and well-evidenced reason.'
   last_verified: '2026-08-14'
   sources:
   - url: https://vercel.com/docs/sandbox
-    shows: '"Sandboxes run Linux images, with Ubuntu, Arch Linux, or any other Linux distribution you
-      need"; images come from Vercel Managed Images "or your own OCI images stored in Vercel Container
-      Registry"; "Each sandbox runs in a secure Firecracker microVM with its own filesystem and
-      network"; "Sandboxes start in milliseconds"; system-privileged processes "such as container
-      runtimes like Docker, VPN clients, and FUSE filesystem drivers"; persistence is the default with
-      snapshotting and attachable drives alongside it. The runtime-breadth half of the old hold is gone
-      from the page'
+    shows: '"Sandboxes run Linux images, with Ubuntu, Arch Linux, or any other Linux distribution you need";
+      images come from Vercel Managed Images "or your own OCI images stored in Vercel Container Registry";
+      "Each sandbox runs in a secure Firecracker microVM with its own filesystem and network"; "Sandboxes
+      start in milliseconds"; system-privileged processes "such as container runtimes like Docker, VPN clients,
+      and FUSE filesystem drivers"; persistence is the default with snapshotting and attachable drives alongside
+      it.'
     accessed: '2026-08-14'
     http_status: 200
     content_sha256: 0c0ba060749a68551b6c2105808d57c4dbbdac425cd62f79145ab46132a475de

@@ -20,15 +20,15 @@ openness:
         registries
   confidence: high
   note: 'Reference spec and SDKs are Apache-2.0 under neutral LF governance; for a protocol this is the
-    openness ceiling. `core-gated: ungated` transcribed 2026-08-12 from a read of the repo, and it rests
-    on there being nothing to gate with rather than on a pricing page saying so. The root tree is LICENSE,
-    GOVERNANCE.md, MAINTAINERS.md, specification/, docs/ and adrs/ with no ee/, enterprise/ or commercial/
-    path, and the README''s closing section reads "The A2A Protocol is an open source project under the
-    Linux Foundation, contributed by Google. It is licensed under the Apache License 2.0 and is open to
-    contributions from the community." All six reference SDKs are separate public a2aproject repos installable
-    from public registries - a2a-sdk on PyPI, github.com/a2aproject/a2a-go, @a2a-js/sdk on npm, Maven, NuGet
-    and a2a-lf on crates.io. There is no vendor product beside the protocol, so there is no paid tier, no
-    license key and no closed package.'
+    openness ceiling. Nothing is gated, established by a direct read of the repo: the finding rests on there
+    being nothing to gate with rather than on a pricing page saying so. The root tree is LICENSE, GOVERNANCE.md,
+    MAINTAINERS.md, specification/, docs/ and adrs/ with no ee/, enterprise/ or commercial/ path, and the
+    README''s closing section reads "The A2A Protocol is an open source project under the Linux Foundation,
+    contributed by Google. It is licensed under the Apache License 2.0 and is open to contributions from
+    the community." All six reference SDKs are separate public a2aproject repos installable from public
+    registries - a2a-sdk on PyPI, github.com/a2aproject/a2a-go, @a2a-js/sdk on npm, Maven, NuGet and a2a-lf
+    on crates.io. There is no vendor product beside the protocol, so there is no paid tier, no license key
+    and no closed package.'
   raw: license:Apache-2.0(OSI);source:public(spec + reference SDKs in 6 languages);governance:Linux Foundation
     (vendor-neutral, Google-contributed);core-gated:ungated(the Linux Foundation project sells nothing -
     one Apache-2.0 LICENSE at the root, no ee/ or enterprise/ path, and all six reference SDKs published
@@ -74,19 +74,14 @@ adoption:
   confidence: medium
   banded_quantity: supporting organizations (150+) and shipped integrations, a breadth count rather than
     a usage figure
-  note: 'Protocol adoption-breadth signal (per recipe): LF press (Apr 2026 one-year mark) reports 150+
-    supporting organizations, in-production use at Microsoft (Azure AI Foundry, Copilot Studio), AWS (Bedrock
-    AgentCore), Salesforce, SAP, ServiceNow, and embedding into Google Cloud. Breadth across the three
-    major clouds + enterprise production puts effective downstream reach in the 1-10M band; this is a
-    breadth/traction count, not a measured per-user figure. Re-read 2026-08-13 and every recorded claim
-    holds. The Linux Foundation release, dated 2026-04-09, states that supporting organizations "grown from
-    more than 50 to over 150 - including AWS, Cisco, Google, IBM, Microsoft, Salesforce, SAP, and ServiceNow",
-    that "Microsoft integrated A2A into Azure AI Foundry and Copilot Studio and AWS added support through
-    Amazon Bedrock AgentCore Runtime", and that the SDK ecosystem now spans five production-ready languages.
-    Note the correction the re-read forced on the SDK count - the release says five, not the six this record
-    carried, and the repo shows 25,336 stars against the 22,000 the release quotes. Neither figure is the
-    band''s basis: the instrument here is breadth of organizational support, no per-user count is published
-    anywhere, and level 4 is unchanged.'
+  note: For a protocol, adoption is measured as breadth rather than as a usage count, because no per-user
+    figure is published anywhere. The Linux Foundation reports supporting organizations grown from more
+    than 50 to over 150, including AWS, Cisco, Google, IBM, Microsoft, Salesforce, SAP and ServiceNow, with
+    Azure AI Foundry, Copilot Studio and Amazon Bedrock AgentCore Runtime integrating the protocol, in-production
+    use at Microsoft, AWS, Salesforce, SAP and ServiceNow, embedding into Google Cloud, and five production-ready
+    SDK languages. Breadth across the three major clouds plus enterprise production puts effective downstream
+    reach in the 1-10M band, though this is a count of organizational support rather than a measured per-user
+    figure.
   last_verified: '2026-08-13'
   sources:
   - url: https://www.linuxfoundation.org/press/a2a-protocol-surpasses-150-organizations-lands-in-major-cloud-platforms-and-sees-enterprise-production-use-in-first-year
@@ -108,26 +103,21 @@ capability:
   basis: n/a
   value: null
   confidence: high
-  note: 'A2A is a wire protocol for agent interoperability; per the recipe, capability is not a meaningful
-    axis for a protocol. The signal lives in openness and adoption-breadth. Abstention re-confirmed 2026-08-13:
-    the repository still publishes a specification, ADRs, governance documents and reference SDKs, and no
-    benchmark, leaderboard or measured performance number for the protocol appears on it or anywhere the
-    project points. What was looked for and not found is a published score of any kind that ranks A2A against
-    a peer. SEE ALSO the load-bearing-null note on model-context-protocol: a null capability does not abstain
-    the way a null adoption does, so this record also computes its maturity from adoption alone. The same
-    ruling should cover both.
-
-    DECLARED 2026-08-14, on the owner''s ruling, and it does cover both. GRADING POLICY - A WIRE PROTOCOL
-    IS GRADED ON OPENNESS AND ADOPTION ONLY, AND ITS CAPABILITY IS NULL BY POLICY RATHER THAN BY FALLBACK.
-    No score is invented. The reasoning is recorded in full on model-context-protocol and in
-    docs/reference/gap-analysis.md, "The two nulls are not symmetric": implementation breadth is adoption
-    wearing a capability label, and this record''s adoption is already banded on exactly that - the count
-    of supporting organizations, 150+ per the Linux Foundation - so scoring breadth here would let one
-    instrument vote twice. The known cost stands and is stated rather than fixed here: serialize.py falls
-    through to adoption alone for a null capability, so this record computes its maturity from one axis.
-    Re-read 2026-08-14 and the premise holds. The repository still publishes a specification, ADRs,
-    governance documents and reference SDKs, and no benchmark, leaderboard or measured performance figure
-    for the protocol appears on it or anywhere the project points.'
+  note: 'A2A is a wire protocol for agent interoperability, and a protocol is not benchmarked, so capability
+    is deliberately left unscored: openness and adoption-breadth carry the whole signal. The repository
+    publishes a specification, architecture decision records, governance documents and reference SDKs, and
+    no benchmark, leaderboard or measured performance number for the protocol appears there or anywhere
+    the project points - what was looked for and not found is a published score of any kind ranking A2A
+    against a peer. The blank is a policy rather than a gap waiting to be filled, and no score is invented
+    to close it. The reason is that neither capability question one might ask of a protocol survives scrutiny.
+    Breadth of implementation is adoption wearing a capability label, and this record''s adoption is already
+    banded on exactly that - more than 150 supporting organizations by the Linux Foundation''s count - so
+    scoring breadth here would let one instrument vote twice. Spec maturity is genuinely independent of
+    uptake, but no rubric on this map has a ladder for it, and with only two protocols on the map there
+    is nothing to anchor a comparison against. One cost comes with the blank and is stated rather than papered
+    over: with no capability score the maturity calculation falls through to adoption alone, so this record
+    computes its maturity from a single axis. The Model Context Protocol has the same shape and carries
+    the same policy.'
   last_verified: '2026-08-14'
   sources:
   - url: https://github.com/a2aproject/A2A
@@ -137,10 +127,8 @@ capability:
     http_status: 200
     content_sha256: 1165fc1e34756203cf564d09b228b277c3efedb7a0a62a30fac58cb0067a6bd1
   - url: https://github.com/a2aproject/A2A
-    shows: 'Re-read 2026-08-14 for the policy declaration. Still a specification repository - spec, ADRs,
-      governance, maintainers and the six reference SDK links - with no benchmark, leaderboard or
-      performance figure anywhere on it. The digest differs from the 2026-08-13 read because the star
-      count moved.'
+    shows: A specification repository - spec, ADRs, governance, maintainers and the reference SDK links
+      - with no benchmark, leaderboard or performance figure anywhere on it.
     accessed: '2026-08-14'
     http_status: 200
     content_sha256: 7123045c8469aa4c558e83b2a967c153f6590170693f8a93cb50cdb28c695a94

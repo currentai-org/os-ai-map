@@ -15,10 +15,8 @@ openness:
     - name: Apache-2.0
       detail: OSI permissive
   confidence: high
-  note: Apache-2.0 open weights; instruction-tuning data and recipe undisclosed -> open_weights. Re-read
-    2026-08-13 - the card still carries `license:apache-2.0`, still reads `"gated":false`, and still describes
-    the instruction fine-tune in one paragraph with no SFT mixture, no RLHF data and no training code.
-    No change.
+  note: Apache-2.0 open weights, with the instruction-tuning data and recipe undisclosed, so this is open
+    weights rather than open source.
   raw: weights:open(Apache-2.0, on HF);data:closed;code:closed(no training/post-training pipeline);license:Apache-2.0(OSI
     permissive)
   last_verified: '2026-08-13'
@@ -36,11 +34,9 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: ~2.5M downloads last month on HF plus a very large derivative ecosystem (~1,089 finetunes, 1,256 adapters,
-    349 merges); still a heavily used permissive 7B instruct base years after release. Re-read 2026-08-13
-    - the single declared SKU now reads 1,206,680 downloads in the trailing 30 days, still level 4, and
-    the model tree still shows roughly 1,100 finetunes, 1,200 adapters and 351 merges. The download figure
-    has roughly halved since the last read but stays inside 1M-10M. No change.
+  note: The single declared SKU reads 1,206,680 Hugging Face downloads in the trailing 30 days, inside the
+    1M-10M band, and it carries a very large derivative ecosystem - roughly 1,100 finetunes, 1,200 adapters
+    and 351 merges. Still a heavily used permissive 7B instruct base years after release.
   last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2
@@ -56,19 +52,11 @@ capability:
   value: Mistral 7B Instruct v0.2 MT-Bench 7.6 (Mistral-reported); underlying Mistral 7B base MMLU 60.1%;
     v0.1-Instruct MT-Bench 6.84. 2023-era 7B chat quality
   confidence: medium
-  note: Excellent for a 7B in 2023-24; clearly below 2026 frontier and below modern small instruct models (Phi-4-mini,
-    Qwen 3.x small). Capability low on a frontier-anchored scale. Re-read 2026-08-13 - the card carries no
-    benchmark table at all. It links arXiv:2310.06825, which is the base "Mistral 7B" paper rather than an
-    evaluation of this instruct tune, so neither the ~MT-Bench 7.6 nor the ~MMLU 60 in the recorded value is
-    re-derivable from the cited source. The 2 is not in doubt on the evidence, but the figures have no source
-    behind them. Both figures were found on 2026-08-14 and both needed re-attributing. The MT-Bench 7.6
-    is Mistral's own and is specifically about this tune - the La Plateforme launch post says
-    "Mistral-tiny. Our most cost-effective endpoint currently serves Mistral 7B Instruct v0.2 ... It
-    obtains 7.6 on MT-Bench." That it is version-specific matters, because Table 3 of the paper gives
-    v0.1-Instruct at 6.84, so the citation has to point at the post rather than the paper. The MMLU
-    ~60 is real at 60.1% but belongs to the Mistral 7B BASE model in Table 2 of the paper; Mistral
-    publishes no MMLU for the v0.2 instruct tune anywhere found, so the value now attributes it to the
-    base. Score unchanged at 2.
+  note: Excellent for a 7B in 2023-24; clearly below 2026 frontier and below modern small instruct models
+    (Phi-4-mini, Qwen 3.x small). Capability low on a frontier-anchored scale. The MT-Bench 7.6 comes from
+    Mistral's La Plateforme post and is specific to v0.2 - the paper's Table 3 gives v0.1-Instruct 6.84
+    - and the MMLU 60.1% belongs to the Mistral 7B BASE model in Table 2 rather than to this instruct tune.
+    The model card itself carries no benchmark table.
   last_verified: '2026-08-14'
   sources:
   - url: https://mistral.ai/news/la-plateforme

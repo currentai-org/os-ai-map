@@ -19,17 +19,16 @@ openness:
         deploy, landing and compose.yaml - with no ee/ or enterprise directory, no license-key check and
         no premium flag
   confidence: medium
-  note: Scored on app/LICENSE, which is the Elastic License 2.0 and forbids providing the software to third
-    parties as a hosted or managed service. That is this ladder's competition_restricted tier stated directly,
-    and with the source published it lands on the 2/source_available rung. The root LICENSE is plain MIT
-    with no carve-out, so it governs the repository root where the agentops SDK lives and says nothing about
-    app/; both licenses are now recorded as a compound so the ladder applies its own most-restrictive rule
-    rather than reading only the first half. The record previously carried the root MIT alone, which described
-    the SDK and not the observability application this slug is scored on. Nothing is withheld for a paid
-    tier - app/ ships api, dashboard, ClickHouse, the OTel collector, Supabase, deploy and a compose file,
-    with no ee/ directory and no license key - so core-gated is now recorded as `ungated`, but the license
-    rung fires above any rung that reads it. The vendor's README calls the app MIT; app/LICENSE says Elastic
-    2.0, and the LICENSE file governs.
+  note: The score is taken from app/LICENSE, which is the Elastic License 2.0 and forbids providing the
+    software to third parties as a hosted or managed service. That is a restriction on competing with the
+    vendor, and with the source published it lands on the source-available rung at 2. The repository root
+    carries plain MIT with no carve-out, but that governs the root, where the agentops SDK lives, and says
+    nothing about app/; it describes the SDK rather than the observability application scored here. Both
+    licenses are recorded together so that the more restrictive one decides rather than only the first being
+    read. Nothing is withheld for a paid tier - app/ ships the API, dashboard, ClickHouse, the OpenTelemetry
+    collector, Supabase, deploy tooling and a compose file, with no enterprise directory and no license
+    key - but a license that restricts competition outranks an ungated core. The vendor's README calls the
+    app MIT; app/LICENSE says Elastic 2.0, and the license file governs.
   raw: license:Elastic-License-2.0(app/LICENSE, the AgentOps application)+MIT(OSI, root LICENSE, the agentops
     SDK);source:public(SDK + self-hostable app dir);commercial:app.agentops.ai-SaaS-dashboard-is-the-primary-product;core-gated:ungated(app/
     ships the whole platform - api, dashboard, clickhouse, opentelemetry-collector, supabase, deploy, landing
@@ -92,11 +91,10 @@ adoption:
   reach: 100K-1M
   signal_type: usage_volume
   confidence: high
-  note: agentops ~585k PyPI downloads/month; multi-framework integrations (CrewAI, AG2, OpenAI Agents
-    SDK, LangChain, Camel); ~5.6k stars corroborates only. 100K-1M monthly-download band. Re-read
-    2026-08-13 - pypistats now reports 275,111 downloads last month for agentops, roughly half the 584,603
-    recorded and still inside the 100K-1M band, so level 3 is unchanged. The fall is consistent with the
-    stalled release cadence already recorded on the capability axis.
+  note: agentops draws 275,111 PyPI downloads a month, inside the 100K-1M band. It integrates with CrewAI,
+    AG2, the OpenAI Agents SDK, LangChain and Camel, and roughly 5,600 GitHub stars corroborate without
+    setting the band. Downloads have fallen from a high of 584,603, which is consistent with the stalled
+    release cadence recorded on the capability axis.
   last_verified: '2026-08-13'
   sources:
   - url: https://pypistats.org/packages/agentops
@@ -117,11 +115,11 @@ capability:
   confidence: medium
   relative_to: langfuse
   relation: one_below
-  note: Solid agent-tracing + cost + basic evals, but narrower feature matrix than MLflow/Langfuse/Opik/Phoenix;
-    stale SDK (no 2026 release) reinforces a mid score. The comparison is now recorded rather than left in
-    prose - one rung below the langfuse anchor at 4. Re-read 2026-08-13 on the repository README, whose
-    feature table is Replay Analytics and Debugging, LLM Cost Management, Agent Benchmarking, integrations
-    and Self-Host, with evaluations still carried as a roadmap table rather than a shipped surface.
+  note: 'Solid agent execution tracing with session replays, LLM cost tracking, multi-framework integrations,
+    monitoring and debugging dashboards and custom evaluation metrics, but a narrower feature matrix than
+    MLflow, Langfuse, Opik or Phoenix: prompt versioning and dataset or annotation workflows are thin, and
+    evaluations are carried as a roadmap table rather than a shipped surface. A stale SDK with no release
+    for over a year reinforces the mid score, one rung below Langfuse at 4.'
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/AgentOps-AI/agentops

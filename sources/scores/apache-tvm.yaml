@@ -1,0 +1,81 @@
+product: apache-tvm
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole product,
+    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
+    and the core ungated.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/apache/tvm/blob/main/LICENSE
+    shows: LICENSE file is the verbatim Apache-2.0 text
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: e62264b483aca7a9f8c1ac69388b476971b43975ced90ac11dbd9e9c530edb46
+    establishes:
+    - license
+  - url: https://api.github.com/repos/apache/tvm
+    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for
+      apache/tvm.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 00087e9b03fb998af255cbb07c2426325f8ab7fad3637b7ca77973f7bb3fdb47
+    establishes:
+    - license
+    - source
+  - url: https://github.com/apache/tvm/blob/main/README.md
+    shows: README describes an open machine learning compilation framework built on Python-first customization of
+      compiler pipelines and universal deployment into minimum deployable modules, licensed Apache-2.0, with no
+      paid tier, enterprise edition or license-key-gated build beside it.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: afb22aac927350415156670ba73864905cc1bf7ce74231f8137a3ecbd7479a3e
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: 13,543 PyPI downloads of `apache-tvm` in the trailing 30 days, which lands in the 10K-100K band of the software
+    usage scale, level 2. TVM is predominantly built from source rather than installed from the wheel, so the package
+    figure is a floor on real use rather than a measure of it. No higher-confidence usage count is published, and
+    the stars scale would report a level the ladder caps at 3 on a weaker instrument, so the download figure is
+    banded as recorded.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://pypistats.org/api/packages/apache-tvm/recent
+    shows: last_month downloads = 13,543 for apache-tvm
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: d5f13de74b861ff0b509fa98a35dd13c3d96731ee84bf2b60f8f9b8531d41ef0
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: retargetable end-to-end compiler'
+  value: Multi-framework front ends lowered through TVM's own optimizer and code generator to LLVM, CUDA, ROCm,
+    Metal, OpenCL, SPIR-V and WebGPU backends, with autotuning and quantization passes and a deployable runtime.
+  confidence: medium
+  note: 'Banded on the category feature matrix as retargetable end-to-end compiler. This is the category''s top
+    anchor: the matrix bands on how much of the model-to-hardware transformation pipeline a product performs, over
+    how many inputs and targets, and nothing else in the roster performs more of it. Every other band in the category
+    is placed against this one.'
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/apache/tvm/blob/main/README.md
+    shows: README still documents an open machine learning compilation framework built on Python-first customization
+      of compiler pipelines and universal deployment into minimum deployable modules, licensed Apache-2.0.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: afb22aac927350415156670ba73864905cc1bf7ce74231f8137a3ecbd7479a3e

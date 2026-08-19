@@ -86,6 +86,49 @@ AXES = axes()  # build/vocabulary.py owns this; the score schema declares it
 
 # A real browser-ish UA. Several vendor docs sites answer 403 to the default python-requests
 # string, which would otherwise read as a dead source on every run.
+# A bot wall answers 200 and hands back a page that is not the document. PyPI serves one
+# ("Client Challenge", ~3KB, "JavaScript is disabled in your browser") and on 2026-08-13 two
+# sources were digested from it — `pypi.org/project/llm` and `pypi.org/project/pydantic-ai/`
+# recorded the SAME digest, because the wall is byte-identical whatever you asked for. That
+# tripped the duplicate-digest resolver, which called it fabrication. It was not: nobody
+# forged a digest, the fetcher was challenged and hashed the challenge.
+#
+# It also poisoned a score note. pydantic-ai concluded "the PyPI project page no longer
+# serving a readable description" — a permanent claim about the source, from a transient wall.
+#
+# Same class as the canonical-license and host-alias false positives this module already
+# documents: the body is real, it just is not the page. So it is detected in ONE place that
+# both the recorder and the re-fetch import, and neither treats it as content.
+BOT_WALL_MARKERS = (
+    "<title>Client Challenge</title>",
+    "JavaScript is disabled in your browser",
+    "Enable JavaScript and cookies to continue",
+    "Checking your browser before accessing",
+)
+# Generous next to a real page (PyPI's own project pages are 100KB+) and far above the walls
+# seen, which are ~3KB. The bound is what keeps a page that merely QUOTES one of these
+# strings — a docs page about bot protection, say — from being discarded as a wall.
+BOT_WALL_MAX_BYTES = 25_000
+
+
+def bot_wall(response: "requests.Response") -> str | None:
+    """The marker this body matched, or None if it looks like a document.
+
+    Deliberately narrow: a marker AND a body too small to be the real page. Read the pair as
+    "this host declined to serve the document", which is a 429 wearing a 200.
+    """
+    if len(response.content) > BOT_WALL_MAX_BYTES:
+        return None
+    try:
+        text = response.content.decode("utf-8", "replace")
+    except Exception:  # pragma: no cover - decode with replace does not raise
+        return None
+    for marker in BOT_WALL_MARKERS:
+        if marker in text:
+            return marker
+    return None
+
+
 USER_AGENT = (
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) "
     "Chrome/126.0.0.0 Safari/537.36 os-ai-map-verification/1.0"
@@ -282,6 +325,7 @@ def resolve_duplicates(
     for digest, urls in groups:
         seen: dict[str, list[str]] = defaultdict(list)
         unreachable = []
+        walled: list[tuple[str, str, str]] = []
         for url in urls:
             try:
                 # Through `canonical`, exactly as build/fetch_source does. A GitHub blob URL
@@ -299,10 +343,29 @@ def resolve_duplicates(
             if response.status_code >= 400:
                 unreachable.append(url)
                 continue
-            seen[hashlib.sha256(response.content).hexdigest()].append(url)
+            live = hashlib.sha256(response.content).hexdigest()
+            marker = bot_wall(response)
+            if marker:
+                # The wall is the reason this group looked like fabrication. If its digest is
+                # the RECORDED one, that is positive evidence the original fetch was walled
+                # too: the recorded bytes are a challenge page, so nothing behind this source
+                # was ever read.
+                walled.append((url, live, marker))
+                continue
+            seen[live].append(url)
 
         listed = ", ".join(urls)
-        if len(seen) > 1:
+        walls_matching = [w for w in walled if w[1] == digest]
+        if walls_matching:
+            wall_urls = ", ".join(u for u, _, _ in walls_matching)
+            failures.append(
+                f"digest {digest[:12]}… IS a bot-challenge page, not a document: re-fetching "
+                f"{wall_urls} returns that same digest over a body matching "
+                f"{walls_matching[0][2]!r}. So all {len(urls)} sources recorded against it "
+                f"({listed}) were digested behind the wall and never read. Re-verify them "
+                f"against a source the host will serve."
+            )
+        elif len(seen) > 1:
             split = " | ".join(
                 f"{d[:12]}…: {', '.join(u)}" for d, u in sorted(seen.items())
             )
@@ -317,6 +380,11 @@ def resolve_duplicates(
             benign.append(
                 f"digest {digest[:12]}… is shared by {len(urls)} URLs ({listed}), and "
                 f"re-fetching confirms their bodies really are identical{note}."
+            )
+        if walled and not walls_matching:
+            benign.append(
+                f"digest {digest[:12]}…: {', '.join(u for u, _, _ in walled)} answered with a "
+                f"bot wall this run, so the group is unresolved rather than cleared."
             )
         if unreachable:
             benign.append(
@@ -348,6 +416,20 @@ def refetch(source: Source, timeout: float) -> tuple[str, str]:
         return "gone", f"recorded {source.status}, now HTTP {response.status_code}"
 
     live = hashlib.sha256(response.content).hexdigest()
+
+    # A wall is "not now" wearing a 200, so it belongs with 429 rather than with drift. Two
+    # readings would both be wrong: DRIFTED implies the document changed, and CONFIRMED on a
+    # matching digest would be worse still — it would certify a source whose recorded bytes
+    # are a challenge page, turning the gate's one piece of positive evidence into a lie.
+    marker = bot_wall(response)
+    if marker:
+        if live == source.digest:
+            return "gone", (
+                f"the recorded digest reproduces, but over a bot-challenge page "
+                f"({marker!r}), so this source was digested behind the wall and never read"
+            )
+        return "unreachable", f"bot wall ({marker!r}); the host declined to serve the document"
+
     if live == source.digest:
         return "confirmed", ""
     return "drifted", f"body changed since {source.accessed}"

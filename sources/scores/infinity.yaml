@@ -1,0 +1,81 @@
+product: infinity
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole product,
+    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
+    and the core ungated.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/infiniflow/infinity/blob/main/LICENSE
+    shows: LICENSE file is the verbatim Apache-2.0 text
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://api.github.com/repos/infiniflow/infinity
+    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for
+      infiniflow/infinity.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 595dd29d81202d24e77a7ef69eadfa9c65a061fd341e4394e2cad046b4beb4d8
+    establishes:
+    - license
+    - source
+  - url: https://github.com/infiniflow/infinity/blob/main/README.md
+    shows: README describes an AI-native database providing hybrid search over dense vectors, sparse vectors, tensors,
+      full text and structured data, with a published benchmark, with no paid tier, enterprise edition or license-key-gated
+      build beside it.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 80990ef6d7129c2b286d0663ffd46fd6b3530e205cc40f6ff890195cbac3b5d8
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 4,675 GitHub stars, which lands in the 1K-10K stars band of the stars scale, level 2. The `infinity-sdk`
+    package on PyPI is the Python client for a running server rather than the engine, and at about 11K monthly downloads
+    it would band the client, not the product. No deployment figure is published, so the stars scale applies with
+    its cap of 3.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://api.github.com/repos/infiniflow/infinity
+    shows: Repo metadata - stargazers_count = 4,675 - for infiniflow/infinity.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 595dd29d81202d24e77a7ef69eadfa9c65a061fd341e4394e2cad046b4beb4d8
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: complete retrieval system, distributed or cluster-capable'
+  value: Dense, sparse, tensor and full-text indexes fused in one hybrid query, with tensor reranking and structured-data
+    support in a single self-hosted engine.
+  relative_to: vespa
+  relation: one_below
+  confidence: medium
+  note: Banded on the category feature matrix as complete retrieval system, distributed or cluster-capable. Placed
+    one band below the vespa anchor, on a matrix that bands on how much of the persist-index-retrieve path a product
+    provides itself, at what scale and over how many retrieval modes.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/infiniflow/infinity/blob/main/README.md
+    shows: README still documents an AI-native database providing hybrid search over dense vectors, sparse vectors,
+      tensors, full text and structured data, with a published benchmark.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 80990ef6d7129c2b286d0663ffd46fd6b3530e205cc40f6ff890195cbac3b5d8

@@ -19,12 +19,12 @@ openness:
       detail: managed) with Apache-licensed LoRAX/Ludwig adjuncts
       raw: Proprietary(managed) with Apache-licensed LoRAX/Ludwig adjuncts
   confidence: high
-  note: The founders created and maintain OSS LoRAX (multi-LoRA serving) and Ludwig, but the Predibase fine-tuning/RFT
-    platform, which is the thing being scored, is proprietary managed SaaS running on Predibase's own cloud
-    or a customer VPC. The OSS sits at the serving and declarative-ML edges. Class corrected from open_core
-    on 2026-07-30. In this ladder open_core means an OSI core with functionality withheld for a paid tier,
-    and there is no open core here, only an open periphery. A repo that exists while the runtime does not
-    ship is source:partial, which the ladder scores 2/source_available. The score itself was already 2.
+  note: 'Predibase''s founders created and still maintain the open-source LoRAX multi-LoRA serving stack
+    and Ludwig, but the product scored here is the fine-tuning and reinforcement-fine-tuning platform, and
+    that is proprietary managed SaaS running on Predibase''s own cloud or inside a customer VPC. The open
+    source sits at the serving and declarative-ML edges: an open periphery around a closed core, rather
+    than an open core with paid extras on top. Because public repositories exist while the runtime itself
+    does not ship, the platform counts as source-available rather than open source.'
   last_verified: '2026-08-09'
   raw: core-platform:closed(proprietary post-training stack + turbo serving);source:partial(LoRAX and Ludwig
     are adjacent OSS; the fine-tuning platform does not ship);OSS-components:LoRAX(open source multi-LoRA
@@ -77,10 +77,11 @@ adoption:
   signal_type: reported_traction
   confidence: low
   banded_quantity: the acquisition value ($100M-$500M, press estimate), not a jobs or customer count
-  note: 'No hard per-platform usage figure (jobs / customers) disclosed this run. Reported traction: enterprise
-    post-training/agent platform now distributed under Rubrik (acquisition valued $100M-$500M per press),
-    founder-pedigree (Google/Uber), and a widely-adopted OSS serving layer (LoRAX). Placed at 2 on reported
-    enterprise traction, not a verified usage_volume number; low confidence pending hard data.'
+  note: 'No hard per-platform usage figure -- jobs run or customers -- is disclosed. What can be reported
+    is traction rather than volume: an enterprise post-training and agent platform now distributed under
+    Rubrik, following an acquisition the press valued at $100M-$500M; founders out of Google and Uber; and
+    a widely adopted open-source serving layer in LoRAX. That supports a modest level on reported enterprise
+    traction rather than a measured download or customer count, which is why confidence is low.'
   last_verified: '2026-08-09'
   sources:
   - url: https://techcrunch.com/2025/06/25/rubrik-acquires-predibase-to-accelerate-adoption-of-ai-agents/
@@ -100,10 +101,13 @@ capability:
     + LoRAX multi-adapter serving (hundreds of fine-tuned models per GPU); turbo serving (~2x). Tunes
     open source base models.'
   confidence: medium
-  note: 'Strong managed method depth - notably the pioneer of end-to-end RFT for LLMs - plus efficient
-    multi-LoRA serving over open models. Scored 4: matches the RFT-capable managed services (OpenAI/Azure/Fireworks
-    at C4) and adds best-in-class multi-adapter serving, but is still a black-box managed platform without
-    exposed large-scale training internals, so below the OSS scale-frontier definers (Megatron-LM C5).'
+  note: 'Strong managed method depth: supervised fine-tuning, continued pretraining and end-to-end reinforcement
+    fine-tuning in the GRPO mold -- which Predibase pioneered for LLMs, learning from outcomes and feedback
+    without heavy data preparation -- plus LoRA training and LoRAX multi-adapter serving that hosts hundreds
+    of fine-tuned models per GPU, and turbo serving around twice as fast, all over open-source base models.
+    That matches the reinforcement-fine-tuning services from OpenAI, Azure and Fireworks and adds best-in-class
+    multi-adapter serving, but it is still a black-box managed platform with no exposed large-scale training
+    internals, so it stays below Megatron-LM and the other open-source scale definers.'
   last_verified: '2026-08-09'
   sources:
   - url: https://web.archive.org/web/20260107043258/https://docs.predibase.com/

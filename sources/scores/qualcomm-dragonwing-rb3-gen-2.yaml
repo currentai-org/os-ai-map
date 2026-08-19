@@ -24,29 +24,25 @@ openness:
       detail: via Thundercomm/distributors
       raw: distributor (via Thundercomm/distributors)
   confidence: high
-  note: Proprietary Qualcomm silicon with public docs and a Linux SDK, sold through distributors, but
-    the board itself is not fully open hardware. Re-read 2026-08-14. www.qualcomm.com serves a
-    client-rendered 9KB shell to a fetcher and no header set changes that, but the fact it was cited
-    for is published elsewhere by Qualcomm itself - docs.qualcomm.com serves the kit''s actual product
-    brief as a PDF, and that document carries four of the five components on its own. `datasheets` is
-    it - a public brief, document 87-74789-1 Rev. A. `schematics` reads partial off "The hardware
-    development kit is also compliant with the 96Boards open hardware specification to support a range
-    of mezzanine-board expansions", an open interface standard published with a block diagram but no
-    board files. `toolchain` off "Support for Linux, Android" plus the Intelligent Multimedia, Robotics,
-    Neural Processing and Hexagon SDKs, and off Qualcomm AI Hub Models being a BSD-3-Clause repo at
-    1,183 stars. `blobs` off the whole stack sitting on the proprietary QCS6490 with vendor SDKs.
-    `retail` from Edge Impulse, which names Advantech, Tria, Thundercomm and Quectel as manufacturers
-    of QCS6490 kits. One thing worth flagging for the corpus rather than for this score - the first
-    product-brief URL tried resolved 200 to a Snapdragon 8 Gen 3 brief instead, and was discarded
-    rather than cited. No change.
+  note: Proprietary Qualcomm silicon with public documentation and a Linux SDK, sold through distributors,
+    but the board itself is not fully open hardware. The public documentation is a product brief, document
+    87-74789-1 Rev. A, served by docs.qualcomm.com. The design files count as partial on "The hardware development
+    kit is also compliant with the 96Boards open hardware specification to support a range of mezzanine-board
+    expansions" - an open interface standard published with a block diagram but no board files. The toolchain
+    counts as open on "Support for Linux, Android" plus the Intelligent Multimedia, Robotics, Neural Processing
+    and Hexagon SDKs, and on Qualcomm AI Hub Models being a BSD-3-Clause repository at 1,183 stars. Firmware
+    blobs are required because the whole stack sits on the proprietary QCS6490 with vendor SDKs. Retail
+    comes from Edge Impulse, which names Advantech, Tria, Thundercomm and Quectel as manufacturers of QCS6490
+    kits. www.qualcomm.com serves a client-rendered 9KB shell to an automated fetch and no header set changes
+    that, which is why the brief is taken from docs.qualcomm.com instead.
   raw: schematics:partial (96Boards mezzanine standard);toolchain:open (open Qualcomm Linux + AI Hub);datasheets:brief
     (public brief);blobs:required (proprietary silicon + firmware);retail:distributor (via Thundercomm/distributors)
   last_verified: '2026-08-14'
   sources:
   - url: https://www.qualcomm.com/developer/hardware/rb3-gen-2-development-kit
-    shows: 'official page: QCS6490, up to 12 TOPS, 96Boards design, Qualcomm Linux stack. Not
-      re-fetchable as a document - the URL returns 200 but the body is a ~9KB client-rendered shell
-      with no product content in it, which no header set changes - so it keeps its 2026-06-22 read.'
+    shows: 'official page: QCS6490, up to 12 TOPS, 96Boards design, Qualcomm Linux stack. Not re-fetchable
+      as a document - the URL returns 200 but the body is a ~9KB client-rendered shell with no product content
+      in it, which no header set changes - so it keeps its recorded read'
     accessed: '2026-06-22'
   - url: https://docs.qualcomm.com/doc/87-74789-1/87-74789-1_REV_A_Qualcomm_RB3_Gen_2_Development_Kit_Product_Brief.pdf
     shows: 'Qualcomm''s own "Qualcomm RB3 Gen 2 Development Kit" product brief, 87-74789-1 Rev. A -
@@ -77,12 +73,12 @@ adoption:
   reach: niche
   signal_type: reported_traction
   confidence: medium
-  note: Sold via Thundercomm and other distributors; first-class support in Edge Impulse, indicating an
-    established but specialist developer base. Re-read 2026-08-13 - Edge Impulse still lists the kit as
-    a supported board alongside the Dragonwing IQ-8275 and IQ-9075 EVKs, still says it is "fully
-    supported by Edge Impulse", and still documents a Qualcomm IM SDK GStreamer pipeline for it. The
-    Qualcomm developer page could not be re-read (it serves an empty client-rendered shell to a fetcher),
-    so the distributor half of the note rests on the earlier read. Level and reach unchanged.
+  note: Sold via Thundercomm and other distributors, with first-class support in Edge Impulse, indicating
+    an established but specialist developer base. Edge Impulse lists the kit as a supported board alongside
+    the Dragonwing IQ-8275 and IQ-9075 EVKs, says it is "fully supported by Edge Impulse", and documents
+    a Qualcomm IM SDK GStreamer pipeline for it. The Qualcomm developer page is unfetchable - it serves
+    an empty client-rendered shell to a fetcher - so the distributor half of the claim is not confirmable
+    from any source cited here.
   last_verified: '2026-08-13'
   sources:
   - url: https://docs.edgeimpulse.com/hardware/boards/qualcomm-rb3-gen-2-dev-kit
@@ -97,12 +93,11 @@ capability:
   value: 12 TOPS (Hexagon NPU); QCS6490 octa-core; multi-camera vision
   confidence: high
   note: 12 dense TOPS with octa-core CPU and dual-ISP vision puts it among the more capable edge-AI dev
-    kits here. Re-derived 2026-08-13 from Edge Impulse's board page, which reads "a powerful Linux-based
-    development board based around the QCS6490 SoC. It has two built-in cameras, a Kryo 670 CPU, Adreno
-    643L GPU and 12 TOPS Hexagon 770 NPU". Qualcomm's own developer page could not be re-read (it serves
-    an empty client-rendered shell to a fetcher), so the figure was confirmed against the ecosystem
-    partner's documentation instead. 12 TOPS still sits above the 6 TOPS RK3588 boards and below the
-    Jetson Orin NX, so the band is unchanged.
+    kits here. Edge Impulse's board page reads "a powerful Linux-based development board based around the
+    QCS6490 SoC. It has two built-in cameras, a Kryo 670 CPU, Adreno 643L GPU and 12 TOPS Hexagon 770 NPU".
+    Qualcomm's own developer page is unfetchable (it serves an empty client-rendered shell to a fetcher),
+    so the figure rests on the ecosystem partner's documentation instead. 12 TOPS sits above the 6 TOPS
+    RK3588 boards and below the Jetson Orin NX.
   last_verified: '2026-08-13'
   sources:
   - url: https://docs.edgeimpulse.com/hardware/boards/qualcomm-rb3-gen-2-dev-kit

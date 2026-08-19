@@ -20,26 +20,23 @@ openness:
       detail: mass-market
       raw: open_market (mass-market)
   confidence: high
-  note: 'Open Linux kernel tree and public datasheets, globally purchasable, but Raspberry Pi
-    publishes no schematic for the Pi 5 at all. Corrected from 4/open_toolchain on 2026-08-14: the
-    record said "reduced published", which is true of the Pi 4 and not of the Pi 5.
-    datasheets.raspberrypi.com/rpi4/raspberry-pi-4-reduced-schematics.pdf answers 200 and the
-    matching rpi5 path 404s, and the documentation index lists for the Pi 5 only a mechanical
-    drawing (RP-008347-DS) and two STEP files, one with silkscreen. That set is a mechanical spec -
-    what a HAT or a case is designed against - so the ladder reads it as `partial`, and a partial
-    design scores 3/documented however open the kernel tree is. The three components that pass did
-    not carry the date are read on 2026-08-14 and the axis is dated on all five. `datasheets` rests
-    on the RP1 Peripherals datasheet, RP-008370-DS, 93 pages of register-level documentation for the
-    Pi 5''s own I/O controller, served without registration under CC BY-ND with no NDA or
-    confidentiality notice anywhere in it. `blobs` rests on the raspberrypi/firmware README, which
-    splits the tree by licence - "start*.elf, fixup*.dat and bootcode.bin are the GPU firmwares and
-    bootloader", licensed under boot/LICENCE.broadcom, against kernel images, device trees and
-    modules under the GPL. `retail` rests on The Pi Hut listing all five SKUs in stock with an add to
-    cart and no account gate. One thing to flag rather than change - `minimal` is this product''s
-    reading of a proprietary Broadcom boot chain, and all nineteen other boards in the category
-    record `required` for the same shape of fact, `beagley-ai` included. Nothing scored turns on it,
-    since no rung in hardware.yaml reads `blobs`, so the word is left as recorded and the
-    inconsistency is raised rather than resolved here.'
+  note: 'Raspberry Pi publishes an open Linux kernel tree and public datasheets and the board is on sale
+    worldwide, but it publishes no schematic for the Pi 5 at all. The Pi 4''s reduced schematic is still
+    served at datasheets.raspberrypi.com/rpi4/raspberry-pi-4-reduced-schematics.pdf; the matching Pi 5 path
+    returns nothing, and the documentation index offers for the Pi 5 only a mechanical drawing (RP-008347-DS)
+    and two STEP files, one of them with silkscreen. That set is a mechanical spec - what a HAT or a case
+    is designed against - rather than a design, so the published design files count as partial, and a partial
+    design holds the board at 3, documented, however open the kernel tree is. The public documentation rests
+    on the RP1 Peripherals datasheet, RP-008370-DS, 93 pages of register-level documentation for the Pi
+    5''s own I/O controller, served without registration under CC BY-ND and carrying no NDA or confidentiality
+    notice anywhere in it. The firmware position rests on the raspberrypi/firmware README, which splits
+    the tree by licence - "start*.elf, fixup*.dat and bootcode.bin are the GPU firmwares and bootloader",
+    covered by Broadcom''s licence, against kernel images, device trees and modules under the GPL. Availability
+    rests on The Pi Hut listing all five SKUs in stock with an add-to-cart button and no account gate. One
+    inconsistency is worth stating rather than resolving here: this board describes its proprietary Broadcom
+    boot chain as minimal firmware, where all nineteen other boards in the category describe the same shape
+    of fact as required firmware, beagley-ai included. Nothing scored turns on the difference, because no
+    rung on the hardware ladder reads the firmware component at all.'
   raw: schematics:partial (mechanical drawing + STEP files only, no schematic);toolchain:open (open
     kernel tree + Raspberry Pi OS);datasheets:public;blobs:minimal;retail:open_market (mass-market)
   last_verified: '2026-08-14'
@@ -102,20 +99,18 @@ openness:
     establishes:
     - retail
   - url: https://www.raspberrypi.com/products/raspberry-pi-5/
-    shows: 'Official product page: BCM2712, Cortex-A76, RAM options, production until 2036. Not
-      re-fetchable - raspberrypi.com answered HTTP 403 to six consecutive requests on 2026-08-14, so
-      the source keeps its 2026-06-22 read'
+    shows: 'Official product page: BCM2712, Cortex-A76, RAM options, production until 2036. Not re-fetchable
+      - raspberrypi.com answers HTTP 403 to every automated request, so the source keeps its recorded read'
     accessed: '2026-06-22'
 adoption:
   level: 5
   reach: mass-market
   signal_type: reported_traction
   confidence: high
-  note: Flagship Raspberry Pi SBC sold globally through countless distributors with a huge community;
-    in production until at least January 2036. Re-read 2026-08-13 - raspberrypi.com answered 403 to every
-    request across the session, so the check was re-derived from Raspberry Pi's own product brief on
-    datasheets.raspberrypi.com, published April 2026, which still commits to production until at least
-    January 2036 and still lists the full 1GB-16GB price ladder. Level and reach unchanged.
+  note: The flagship Raspberry Pi SBC, sold globally through countless distributors and backed by a huge
+    community. raspberrypi.com refuses every automated request, so availability rests on Raspberry Pi's
+    own product brief at datasheets.raspberrypi.com, which lists the full 1GB-16GB price ladder and commits
+    to production until at least January 2036.
   last_verified: '2026-08-13'
   sources:
   - url: https://datasheets.raspberrypi.com/rpi5/raspberry-pi-5-product-brief.pdf
@@ -134,10 +129,10 @@ capability:
     on CPU
   confidence: high
   note: General-purpose SBC with no dedicated AI accelerator; on-device AI is modest unless paired with
-    an accelerator HAT. Re-derived 2026-08-13 from the April 2026 product brief, whose full feature list
-    runs GPU, video, RAM, wireless, storage, USB, Ethernet, MIPI, PCIe, power and header, and names no
-    NPU and no TOPS figure anywhere. That absence is the whole of the band - every other board in this
-    category records an accelerator, and this one records only 16GB of LPDDR4X behind a Cortex-A76.
+    an accelerator HAT. The product brief's full feature list runs GPU, video, RAM, wireless, storage, USB,
+    Ethernet, MIPI, PCIe, power and header, and names no NPU and no TOPS figure anywhere. That absence is
+    the whole of the band - every other board in this category records an accelerator, and this one records
+    only 16GB of LPDDR4X behind a Cortex-A76.
   last_verified: '2026-08-13'
   sources:
   - url: https://datasheets.raspberrypi.com/rpi5/raspberry-pi-5-product-brief.pdf

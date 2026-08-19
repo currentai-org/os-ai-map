@@ -16,9 +16,8 @@ openness:
     - name: proprietary
   confidence: high
   note: Closed, API-only hosted classifier; no weights or source. Long-standing and influential, but proprietary.
-    Re-read 2026-08-13 and the openness reading is unchanged, but the product is ending - the site now leads
-    with a sunset notice, and the API goes out of service after 2026. That is an availability fact rather
-    than an openness one, so the 1/closed stands; the consequences are on adoption, capability and the prose.
+    The product is also ending - the site leads with a sunset notice and the API goes out of service after
+    2026 - but that is a fact about availability rather than about openness, so the closed score stands.
   raw: service:proprietary hosted API by Jigsaw/Google(no weights, no self-host);access:free with quota;scores:toxicity
     + related attributes;source:closed;license:proprietary
   last_verified: '2026-08-13'
@@ -40,14 +39,13 @@ adoption:
   signal_type: reported_traction
   confidence: medium
   banded_quantity: none published; Jigsaw has never published a usage figure
-  note: 'NOT confirmed on 2026-08-13, and the record has two problems rather than one. First the
-    instrument: usage_volume claims a download or install count, and Jigsaw has never published one for
-    Perspective - the 1M-10M label asserts a measurement nobody made, which is what adoption.md forbids on
-    a claim of this kind. Second the level: the site now announces the API is sunsetting, out of service
-    after December 31, 2026, and gives as the reason that ''AI capabilities have evolved, and there is now
-    less demand for a standalone tool specific to this area''. A level 4 on a discontinued free API is a
-    claim about the past. Recommend reported_traction with no reach and a level the owner sets; not taken
-    here. The instrument now reads reported_traction, which is what a credible claim with no count behind it is for, and the illegal numeric reach is gone. The LEVEL is deliberately unchanged: correcting how a band was read is not a reason to move where it sits, and nothing re-read today argues the standing is different. What changes is that the record no longer claims a measurement nobody made.'
+  note: 'Jigsaw has never published a download, install or request count for Perspective, so the level rests
+    on reported standing rather than on a measured figure, and no numeric reach is claimed: a 1M-10M label
+    would assert a count nobody made. The site also announces that the API is sunsetting and goes out of
+    service after December 31, 2026, giving as the reason that ''AI capabilities have evolved, and there
+    is now less demand for a standalone tool specific to this area''. Level 4 describes the standing the
+    cited sources show and none of them argues for a different one - though a level 4 on a free API that
+    is leaving service describes the past more than the present.'
   last_verified: '2026-08-13'
   sources:
   - url: https://perspectiveapi.com/
@@ -63,25 +61,17 @@ capability:
   value: Scores toxicity and related attributes (insult, threat, profanity, identity attack) for text,
     multilingual; established but a fixed attribute set.
   confidence: low
-  note: 'Mature toxicity scoring with broad real-world use; narrower than full safety taxonomies and policy-conditioned
-    models. NOT confirmed on 2026-08-13 - the cited page no longer carries the attribute list at all, having
-    been replaced by the sunset notice, so nothing on it supports the recorded value. The developer site
-    that does carry the attributes renders client-side and returned no readable content, so the fact could
-    not be re-derived from a fetch rather than being found absent. A source that still shows the attributes
-    is needed, and the sunset raises the separate question of whether a product leaving service in 2026
-    should carry a live capability band at all.
-    Re-derived 2026-08-14 against substitutes. The developer site genuinely cannot be fetched - it is
-    a client-rendered Salesforce Experience site that serves an empty body, which no header changes,
-    so the fact was established elsewhere. The Comment Analyzer discovery document, the API''s own
-    machine-readable definition and still served at 200, shows the service live and multilingual,
-    taking "ISO and BCP-47 language codes" and detecting language per comment. The fixed attribute
-    set is corroborated by Lasso''s write-up, which names it exactly as the value does - "The
-    production attributes (TOXICITY, SEVERE_TOXICITY, IDENTITY_ATTACK, INSULT, PROFANITY, THREAT)" -
-    plus experimental ones. Provenance caveat kept in view - Lasso sells a competing moderation
-    product, so it is a document rather than a re-derivable dataset, and confidence stays low. The
-    band is unchanged, but the ESCALATION STANDS - the same page states Perspective "will sunset
-    after December 31, 2026, with no migration path provided", so whether a sunsetting product should
-    carry a live capability band is still a ruling for the orchestrator, not a fetch problem.'
+  note: Mature toxicity scoring with broad real-world use; narrower than full safety taxonomies and policy-conditioned
+    models. The main product page no longer carries the attribute list, having been replaced by the sunset
+    notice, and the developer site that does carry it is a client-rendered Salesforce Experience page serving
+    an empty body that no change of headers fixes - so the facts come from elsewhere. The Comment Analyzer
+    discovery document, which is the API's own machine-readable definition and is still served live, shows
+    the service running and multilingual, taking "ISO and BCP-47 language codes" and detecting language
+    per comment. The fixed attribute set is corroborated by Lasso's write-up, which names it exactly - "The
+    production attributes (TOXICITY, SEVERE_TOXICITY, IDENTITY_ATTACK, INSULT, PROFANITY, THREAT)" - plus
+    experimental ones. Lasso sells a competing moderation product, so that is a document rather than a re-derivable
+    dataset, and confidence stays low. The same page also states that Perspective "will sunset after December
+    31, 2026, with no migration path provided", which sits awkwardly beside a live capability band.
   last_verified: '2026-08-14'
   sources:
   - url: https://perspectiveapi.com/

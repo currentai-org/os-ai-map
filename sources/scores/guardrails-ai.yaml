@@ -16,21 +16,19 @@ openness:
     core-gated:
       value: gated
   confidence: medium
-  note: 'INCONCLUSIVE, reported rather than resolved. Read 2026-08-12 and the bare `gated` is not supported,
-    but neither is the 4 it produces. On core-gated itself nothing is withheld from the published source:
-    the 661-entry tree of guardrails-ai/guardrails carries one Apache-2.0 LICENSE and no ee/ or enterprise
-    directory, the FastAPI server ships as its own public repo with a Dockerfile and compose file, and the
-    private validator registry that used to need a token is gone - 0.11.0 moved every Guardrails-AI validator
-    from pypi.guardrailsai.com to public PyPI, the vendor''s own migration guide tabulating "Private registry
-    pypi.guardrailsai.com (token required)" against "Public PyPI (no token)". The commercial product beside
-    it is Snowglobe, a separate simulation product. That reads ungated and would compute 5. What stops it
-    is the license component, not this one: guardrails-ai/guardrails-api, the server the main package''s
-    `guardrails start` launches, is NOT Apache-2.0 - its LICENSE is adopted from the Elastic License and
-    forbids providing the software to third parties as a hosted or managed service. That is the competition_restricted
-    tier, which fires the rung above and computes 2/source_available. So the read supports 5 or 2, not the
-    recorded 4, exactly the agentops shape. core-gated was left as recorded rather than transcribed, because
-    recording ungated against an unexamined Apache-2.0 would manufacture a 5 on the favourable half of a
-    multi-SKU license question. A human settles which SKU this slug is scored on first.'
+  note: 'The evidence here does not settle cleanly on the recorded score. Nothing appears to be withheld
+    from the published source: the 661-entry tree of guardrails-ai/guardrails carries a single Apache-2.0
+    LICENSE and no enterprise directory, the FastAPI server ships as its own public repo with a Dockerfile
+    and a compose file, and the private validator registry that once needed a token is gone - release 0.11.0
+    moved every Guardrails-AI validator from pypi.guardrailsai.com to public PyPI, the vendor''s own migration
+    guide tabulating "Private registry pypi.guardrailsai.com (token required)" against "Public PyPI (no
+    token)". The commercial product beside it, Snowglobe, is a separate simulation product. On that reading
+    the project is ungated and fully open source. What complicates it is the licence rather than the gating:
+    guardrails-ai/guardrails-api, the server that the main package''s `guardrails start` launches, is not
+    Apache-2.0 - its LICENSE is adopted from the Elastic License and forbids providing the software to third
+    parties as a hosted or managed service, which is a competition-restricted licence and would place the
+    product at source-available instead. So the evidence points to either end rather than to the middle,
+    depending on which of the two SKUs the product is scored on, and that question is open.'
   raw: license:Apache-2.0(OSI) for the framework;source:public;hub:Guardrails Hub validator registry;commercial:hosted/enterprise
     tier;core-gated:gated
   last_verified: '2026-08-12'
@@ -75,10 +73,9 @@ adoption:
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: low
-  note: 7,279 GitHub stars on guardrails-ai/guardrails, read 2026-08-12. Bands at level 2 (1K-10K stars)
-    on the stars fallback scale, which caps at 3 because a star is not a use. Resynced because the note
-    says 'stars-only proxy, capped per methodology' and recorded the cap. No download, install or customer
-    figure is published for this product, so stars remain the only honest signal and the level is directional.
+  note: 7,279 GitHub stars on guardrails-ai/guardrails, which bands at 1K-10K stars, level 2. No download,
+    install or customer figure is published for this product, so stars are the only honest signal and the
+    level is directional; a stars proxy never rises above 3, because a star is not a use.
   last_verified: '2026-08-12'
   sources:
   - url: https://api.github.com/repos/guardrails-ai/guardrails
@@ -93,8 +90,8 @@ capability:
   value: Input/output guards plus a Hub of pre-built validators (PII, toxicity, injection, structure)
     and structured-output enforcement.
   confidence: medium
-  note: Broad validator ecosystem via the Hub; strong on structured-output enforcement in addition to
-    safety checks. Re-read 2026-08-13 and unchanged.
+  note: Broad validator ecosystem via the Hub; strong on structured-output enforcement in addition to safety
+    checks.
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/guardrails-ai/guardrails

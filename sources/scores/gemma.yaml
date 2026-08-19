@@ -15,18 +15,15 @@ openness:
       detail: OSI,but no open data/code
   governing_release: gemma-4
   confidence: medium
-  note: 'Apache-2.0 weights, no open training data and no training code, so open_weights rather than a fully-open
-    pipeline. The tier reads 3 because Gemma 4 relicensed: Gemma 2 and 3 shipped under the non-OSI Gemma License
-    with a Prohibited-Use-Policy and scored 2, while all six Gemma 4 SKUs are Apache-2.0 and ungated, verified against
-    the Hub on 2026-07-29. The current release governs, so a family that becomes more open is recorded as such rather
-    than pinned to its worst historical release. Adoption 5 is carried from Gemma 2, which still out-downloads Gemma
-    4. Re-read 2026-08-13, and the re-read corrected a source rather than a value. The releases page
-    cited for the Apache-2.0 claim does not carry it - the only Apache text on that page is the site
-    footer covering code samples - so the license now rests on the Gemma 4 model card front matter and
-    on ai.google.dev/gemma/docs/gemma_4_license, which redirects to ai.google.dev/gemma/apache_2. The
-    card documents the pretraining mixture without releasing it and links no training pipeline, so
-    data and code are unchanged. The closing sentence about adoption being carried from Gemma 2 no
-    longer holds either - Gemma 4 now supplies 99% of the downloads.'
+  note: 'Apache-2.0 weights, no open training data and no training code, so open weights rather than a fully
+    open pipeline. It scores 3 because Gemma 4 relicensed: Gemma 2 and 3 shipped under the non-OSI Gemma
+    License with a Prohibited Use Policy and scored 2, while all six Gemma 4 variants are Apache-2.0 and
+    ungated on Hugging Face. The current release governs, so a family that becomes more open is recorded
+    as such rather than pinned to its most restrictive historical release. The Apache-2.0 claim rests on
+    the Gemma 4 model card front matter and on ai.google.dev/gemma/docs/gemma_4_license, which redirects
+    to ai.google.dev/gemma/apache_2; the releases page carries no Apache statement for the models, only
+    a site footer covering code samples. The card documents the pretraining mixture without releasing it
+    and links no training pipeline, so data and code stay closed.'
   last_verified: '2026-08-13'
   raw: weights:open(Apache-2.0);data:closed;code:closed;license:Apache-2.0(OSI,but no open data/code)
   sources:
@@ -53,9 +50,8 @@ openness:
     content_sha256: b68286e35c25d3293e8013e7d988db561ba8100c1cc5308988640c948d60e193
     establishes: [license]
   - url: https://ai.google.dev/gemma/docs/releases
-    shows: Gemma 4 sizes and release dates. Re-read 2026-08-13 - it does NOT carry an Apache-2.0
-      statement for the models; the only Apache text is the site footer covering code samples. The
-      earlier `shows` claimed more than the page says.
+    shows: Gemma 4 sizes and release dates. It carries no Apache-2.0 statement for the models - the only
+      Apache text on the page is the site footer covering code samples.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 1bba6e91a79dd4550686b2372bd3515627156c92e56776b15ef672931b9ecc33
@@ -64,13 +60,11 @@ adoption:
   reach: '>10M'
   signal_type: usage_volume
   confidence: medium
-  note: 20,118,549 downloads in the trailing 30 days summed across the 6 declared artifact(s), read
-    2026-08-13 (google/gemma-2-27b 6,087; google/gemma-2-9b 77,700; google/gemma-3-27b-pt 10,455;
-    google/gemma-3-12b-pt 34,590; google/gemma-4-31B-it 9,915,701; google/gemma-4-26B-A4B-it
-    10,074,016). Bands at level 5 (>10M) on the software and model adoption scale, unchanged. The
-    composition inverts what the openness note assumed - the two Gemma 4 SKUs are 99.4% of the total
-    and the Gemma 2 repos are now a rounding error, so adoption is no longer carried from an older
-    generation.
+  note: 20,118,549 downloads in the trailing 30 days across the six declared artifacts (google/gemma-2-27b
+    6,087; google/gemma-2-9b 77,700; google/gemma-3-27b-pt 10,455; google/gemma-3-12b-pt 34,590; google/gemma-4-31B-it
+    9,915,701; google/gemma-4-26B-A4B-it 10,074,016), which bands at level 5 (>10M) on the model adoption
+    scale. The two Gemma 4 checkpoints are 99.4% of that total and the Gemma 2 repositories are now a rounding
+    error, so the family's reach rests on the current generation rather than an older one.
   last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/api/models/google/gemma-2-27b
@@ -111,17 +105,13 @@ capability:
     LiveCodeBench v6 80.0%, MMMU Pro 76.9%; multimodal on text and image across all sizes, audio native
     only on E2B/E4B/12B'
   confidence: medium
-  note: 'Frontier-class for an open model. Re-read 2026-08-14, and the cited Google Cloud post turned out
-    to be a deployment-availability announcement carrying neither the multimodal statement nor any
-    ranking, so both halves of the recorded value were unsourced. Replaced with the gemma-4-31B-it model
-    card, which carries the multimodal statement verbatim and a real evaluation table in text. Two
-    corrections the card forces. Audio is not native on the 31B - the card scopes it to E2B, E4B and 12B
-    - so "vision+audio" overstated the flagship SKU. And the "top-tier Arena rankings" clause is dropped
-    rather than re-sourced - lmarena.ai now 301s to arena.ai, where gemma-4-31b sits at rank 60 of 391
-    with a score of 1451 +/-8, roughly sixth among openly-licensed entries and behind glm-5.2-max,
-    mimo-v2.5-pro, glm-5.1, glm-5 and hy3. That is a strong open placement and not a top-tier one. The
-    basis_detail moves off LMArena to the card''s own table for the same reason. The 5 rests on the
-    benchmark table, which is what the card actually publishes.'
+  note: 'Frontier-class for an open model. The 5 rests on the evaluation table Google itself publishes on
+    the gemma-4-31B-it model card - MMLU Pro 85.2%, GPQA Diamond 84.3%, AIME 89.2% without tools, LiveCodeBench
+    v6 80.0%, MMMU Pro 76.9%. Audio is native only on E2B, E4B and 12B, so the flagship 31B is multimodal
+    on text and image but not audio. No top-tier arena placement backs the score: lmarena.ai now redirects
+    to arena.ai, where gemma-4-31b sits at rank 60 of 391 with a score of 1451 +/-8, roughly sixth among
+    openly-licensed entries and behind glm-5.2-max, mimo-v2.5-pro, glm-5.1, glm-5 and hy3 - a strong open
+    placement rather than a leading one.'
   last_verified: '2026-08-14'
   sources:
   - url: https://huggingface.co/google/gemma-4-31B-it

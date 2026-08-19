@@ -27,29 +27,25 @@ openness:
       detail: mass-market
       raw: open_market (mass-market)
   confidence: medium
-  note: Officially supported open Pi software stack and public product page, globally purchasable, but
-    the underlying Hailo model-compiler toolchain is registration-gated. Scored as an accessory on the
-    owner's ruling of 2026-08-12 - an add-on tracks the platform it completes, and what a builder gets
-    from this HAT is the openness of the Raspberry Pi 5 it plugs into. Its own design and toolchain
-    answers are both partial and neither describes the system anyone actually uses, so accessory-host
-    is what the ladder reads. See the dimension of that name in sources/rubrics/hardware.yaml for why
-    the principle is an axis rather than an extra rung. Moved 4 to 3 on 2026-08-14 with no new evidence
-    about the HAT - the host moved. `raspberry-pi-5` was corrected to 3/documented when it turned out
-    to publish no schematic, only a mechanical drawing, and an accessory cannot offer more openness
-    than the system it completes. All six components were re-read on 2026-08-14 and the axis is dated.
-    raspberrypi.com answers 403 to every automated request, so the product page it used to rest on was
-    replaced by Raspberry Pi''s own AI HAT+ product brief, RP-008133-DS, on datasheets.raspberrypi.com,
-    which carries four of the six on its own. `datasheets` is `brief` because that document is what it
-    says it is - six pages of overview, a specification table, a dimensioned drawing and safety text,
-    against the 93-page register-level datasheet the Pi 5 gets. `schematics` stays `partial` on the
-    HAT+ Specification, which describes itself as "A guide to designing Hardware-Attached-on-Top of a
-    Raspberry Pi" and licenses its contents for use "solely in conjunction with the Raspberry Pi
-    products" - an interface standard for building your own board, not this board''s design.
-    `accessory-host` off the brief pairing the HAT to one host and no other - it "communicates using
-    Raspberry Pi 5''s PCIe Gen 3 interface" and ships a stacking kit "to enable fitting on Raspberry
-    Pi 5". `toolchain` and `blobs` off Hailo''s own repositories rather than the vendor page, HailoRT
-    carrying the open half and the Model Zoo naming the customer-gated compiler. `retail` off The Pi
-    Hut stocking both variants. No value moved.
+  note: 'An officially supported open Raspberry Pi software stack and a public product page, on sale worldwide,
+    but the underlying Hailo model-compiler toolchain is registration-gated. The HAT is scored as an accessory:
+    an add-on tracks the platform it completes, and what a builder gets from this HAT is the openness of
+    the Raspberry Pi 5 it plugs into. Its own design files and its own toolchain are each only partly open,
+    and neither describes the system anyone actually uses, so the host''s openness is what decides the score.
+    The Pi 5 sits at 3, documented, because it publishes no schematic, only a mechanical drawing, and an
+    accessory cannot offer more openness than the system it completes, so this HAT sits at 3 as well. raspberrypi.com
+    refuses every automated request, so the evidence here is Raspberry Pi''s own AI HAT+ product brief,
+    RP-008133-DS, on datasheets.raspberrypi.com, which carries four of the six components on its own. The
+    documentation counts as a brief rather than a full datasheet because that is what it is - six pages
+    of overview, a specification table, a dimensioned drawing and safety text, against the 93-page register-level
+    datasheet the Pi 5 gets. The design files count as partial on the HAT+ Specification, which describes
+    itself as "A guide to designing Hardware-Attached-on-Top of a Raspberry Pi" and licenses its contents
+    for use "solely in conjunction with the Raspberry Pi products" - an interface standard for building
+    your own board, not this board''s design. The host pairing comes from the brief tying the HAT to one
+    host and no other: it "communicates using Raspberry Pi 5''s PCIe Gen 3 interface" and ships a stacking
+    kit "to enable fitting on Raspberry Pi 5". The toolchain and firmware positions come from Hailo''s own
+    repositories rather than the vendor page, HailoRT carrying the open half and the Model Zoo naming the
+    customer-gated compiler. Retail availability comes from The Pi Hut stocking both variants.'
   raw: schematics:partial (HAT+ mechanical spec public);accessory-host:documented(Raspberry Pi 5, which
     scores 3/documented);toolchain:partial (open Pi driver integration, Hailo compiler gated);datasheets:brief
     (public brief);blobs:required (Hailo firmware required);retail:open_market (mass-market)
@@ -122,19 +118,18 @@ openness:
     establishes:
     - retail
   - url: https://www.raspberrypi.com/products/ai-hat/
-    shows: 'Official product page: Hailo-8 (26 TOPS) / Hailo-8L (13 TOPS), HAT+ form factor, from $70.
-      Not re-fetchable - raspberrypi.com answered HTTP 403 to six consecutive requests on 2026-08-14,
-      so the source keeps its 2026-06-22 read'
+    shows: 'Official product page: Hailo-8 (26 TOPS) / Hailo-8L (13 TOPS), HAT+ form factor, from $70. Not
+      re-fetchable - raspberrypi.com answers HTTP 403 to every automated request, so the source keeps its
+      recorded read'
     accessed: '2026-06-22'
 adoption:
   level: 4
   reach: mass-market
   signal_type: reported_traction
   confidence: high
-  note: First-party Raspberry Pi accessory sold through the global Pi distributor network with strong
-    community/tutorial coverage. Re-read 2026-08-13 - the product page still reads "Available now from
-    $70", still carries Buy links against the 13 TOPS and 26 TOPS variants and an Approved Resellers
-    list, and now also commits to production until at least January 2030. Level and reach unchanged.
+  note: First-party Raspberry Pi accessory sold through the global Pi distributor network with strong community/tutorial
+    coverage. The product page reads "Available now from $70", carries Buy links against the 13 TOPS and
+    26 TOPS variants and an Approved Resellers list, and commits to production until at least January 2030.
   last_verified: '2026-08-13'
   sources:
   - url: https://www.raspberrypi.com/products/ai-hat/
@@ -148,12 +143,11 @@ capability:
   basis: feature_matrix
   value: 13 TOPS (Hailo-8L) or 26 TOPS (Hailo-8); vision inference; no onboard RAM (uses host Pi)
   confidence: high
-  note: Mid-tier vision-focused NPU; strong for CNN inference but not large LLMs, and dependent on the
-    host Pi for memory. Re-derived 2026-08-13 - the page still offers "Hailo-8 or Hailo-8L accelerator
-    offering 26 TOPS or 13 TOPS inferencing performance respectively" and still describes the workload
-    as camera post-processing (object detection, image segmentation, pose estimation) rather than
-    generative models. That places it above raspberry-pi-5 and the 6 TOPS RK3588 boards on throughput
-    and below the Jetson Orin parts on what it can actually run.
+  note: Mid-tier vision-focused NPU; strong for CNN inference but not large LLMs, and dependent on the host
+    Pi for memory. The page offers "Hailo-8 or Hailo-8L accelerator offering 26 TOPS or 13 TOPS inferencing
+    performance respectively" and describes the workload as camera post-processing (object detection, image
+    segmentation, pose estimation) rather than generative models. That places it above raspberry-pi-5 and
+    the 6 TOPS RK3588 boards on throughput and below the Jetson Orin parts on what it can actually run.
   last_verified: '2026-08-13'
   sources:
   - url: https://www.raspberrypi.com/products/ai-hat/

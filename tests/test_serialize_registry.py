@@ -53,6 +53,19 @@ def test_category_layer_is_derived_from_the_arc():
     assert layers["deployment"] == ("Infrastructure", "infrastructure")
 
 
+def test_category_layer_accepts_lifecycle_entries():
+    taxonomy = {
+        "arcs": [
+            {
+                "name": "Infrastructure",
+                "layer": "infrastructure",
+                "categories": [{"name": "storage", "status": "preliminary"}],
+            }
+        ]
+    }
+    assert category_layers(taxonomy)["storage"] == ("Infrastructure", "infrastructure")
+
+
 def test_membership_is_inverted_into_join_tables():
     sources = _sources(
         products={"olmo": {"display_name": "OLMo", "type": "model"}},
@@ -150,6 +163,51 @@ def test_distinct_display_names_produce_no_collision_warning():
 def test_every_declared_table_is_populated_or_present():
     tables, _, _ = build_registry(_sources())
     assert set(tables) == set(TABLES)
+
+
+def test_tail_products_serialize_without_becoming_head_products():
+    sources = _sources(
+        categories={"storage": {"display_name": "Storage", "weights": {}, "products": []}},
+        taxonomy={
+            "arcs": [
+                {
+                    "name": "Infrastructure",
+                    "layer": "infrastructure",
+                    "categories": [{"name": "storage", "status": "preliminary"}],
+                }
+            ]
+        },
+    )
+    sources["registry"] = {
+        "storage": {
+            "category": "storage",
+            "products": [
+                {
+                    "slug": "lancedb",
+                    "display_name": "LanceDB",
+                    "type": "software",
+                    "org": "lancedb",
+                    "github": "lancedb/lancedb",
+                }
+            ],
+        }
+    }
+    tables, errors, _ = build_registry(sources)
+    assert errors == []
+    assert tables["products"] == []
+    assert tables["tail_products"] == [
+        {
+            "slug": "lancedb",
+            "display_name": "LanceDB",
+            "product_type": "software",
+            "org_slug": "lancedb",
+            "category_slug": "storage",
+            "artifact_kind": "github",
+            "artifact_id": "lancedb/lancedb",
+            "artifact_url": "https://github.com/lancedb/lancedb",
+        }
+    ]
+    assert tables["categories"][0]["status"] == "preliminary"
 
 
 def test_real_sources_serialize_without_structural_errors():

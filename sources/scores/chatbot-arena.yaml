@@ -23,16 +23,13 @@ openness:
   confidence: medium
   last_verified: '2026-08-13'
   note: 'Scored as the hosted platform: the live evaluation product, its vote stream and the current ranking
-    pipeline are closed, while substantial OSS heritage (FastChat) and an OSS automatic-eval companion (Arena-Hard-Auto)
-    exist. The OSS code is stale relative to the operating platform, which is what makes this source_available
-    rather than closed: FastChat is a real arena implementation, just not the one running. Class corrected
-    from open_core on 2026-07-30. In this ladder open_core means an OSI core with functionality withheld
-    for a paid tier, and there is no open core here, only an open periphery. A repo that exists while the
-    runtime does not ship is source:partial, which the ladder scores 2/source_available. The score itself
-    was already 2. Re-read 2026-08-13 and unchanged. FastChat still says it powers the arena and its newest
-    release is still v0.2.36 from February 2024, so the staleness the class rests on has widened rather
-    than closed. The hosted platform''s canonical domain is now arena.ai, with lmarena.ai redirecting
-    to it, and the ranking pipeline behind it still does not ship.'
+    pipeline are all closed, while a substantial open-source heritage (FastChat) and an open automatic-eval
+    companion (Arena-Hard-Auto) sit alongside them. That open code is stale relative to the platform actually
+    running - FastChat''s newest published release is still v0.2.36 - so what is public is a real arena
+    implementation, just not the one operating. This is not an open core with functionality withheld for
+    a paid tier; it is an open periphery around a runtime that never ships, which makes the source only
+    partial and the product source-available rather than closed. The platform''s canonical domain is now
+    arena.ai, with lmarena.ai redirecting to it, and the ranking pipeline behind it still does not ship.'
   raw: platform:closed(hosted arena.ai, proprietary live leaderboard + private vote data); source:partial(FastChat
     is a real arena implementation but stale relative to the operating platform; the current ranking pipeline
     does not ship); reference-code:FastChat Apache-2.0 (powers Chatbot Arena but stale, last release Feb
@@ -61,10 +58,9 @@ openness:
     establishes:
     - source
   - url: https://arena.ai/
-    shows: 'Re-read 2026-08-13: still the hosted ranking and battle platform, and now the canonical domain
-      - lmarena.ai 301-redirects here. It offers no repository, no self-hostable ranking pipeline and
-      no license to the evaluation code, and states that conversations are disclosed to the relevant AI
-      providers.'
+    shows: Still the hosted ranking and battle platform, and now the canonical domain - lmarena.ai 301-redirects
+      here. It offers no repository, no self-hostable ranking pipeline and no license to the evaluation
+      code, and states that conversations are disclosed to the relevant AI providers.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 3961d21eeadc354e9fb8622a2371ea206f9a6b30f509892498a48f6fe0b443e0
@@ -76,13 +72,13 @@ adoption:
   signal_type: usage_volume
   confidence: medium
   last_verified: '2026-08-13'
-  note: FastChat README (primary) states Chatbot Arena has served 'over 10 million chat requests for 70+
-    LLMs'; Arena Elo is the most-cited human-preference leaderboard in frontier model releases (LMArena
-    Elo appears across vendor launch posts). Headline = the 10M+ chat-request figure (primary, FastChat
-    repo). Banded 1M-10M conservatively on request volume; could be higher cumulatively. Re-read 2026-08-13
-    - the FastChat README still carries the same 10M chat requests and 1.5M human votes figures, unchanged
-    since 2024, and the platform is still operating at arena.ai. The band is confirmed, and the figure
-    behind it is a frozen one, which is why it stays banded conservatively.
+  note: The FastChat README, the primary source here, states that Chatbot Arena has served 'over 10 million
+    chat requests for 70+ LLMs', and Arena Elo is the most-cited human-preference leaderboard in frontier
+    model releases, appearing across vendor launch posts. That 10M chat-request figure is what the band
+    rests on, placed conservatively in the 1M-10M range on request volume; cumulatively it could be higher.
+    It and the 1.5M human-vote figure beside it in the README have not been updated since they were first
+    published, so the headline is a frozen number - another reason to stay conservative - while the platform
+    itself still operates at arena.ai.
   sources:
   - url: https://github.com/lm-sys/FastChat
     shows: '''serving over 10 million chat requests for 70+ LLMs'''
@@ -98,8 +94,8 @@ adoption:
     http_status: 200
     content_sha256: fba2bace33da09a922bfb8f2f49463f958c7cecfdb77a98a07c04e758a09b694
   - url: https://arena.ai/
-    shows: hosted live leaderboard and battle platform still in active operation 2026-08-13; no standalone
-      user or traffic figure is published on it.
+    shows: hosted live leaderboard and battle platform in active operation; no standalone user or traffic
+      figure is published on it.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 3961d21eeadc354e9fb8622a2371ea206f9a6b30f509892498a48f6fe0b443e0
@@ -112,11 +108,11 @@ capability:
     approximation'
   confidence: medium
   last_verified: '2026-08-13'
-  note: Reference platform for human-preference evaluation and the de-facto Elo standard cited everywhere;
-    not a 5 because as eval CODE it is largely closed/hosted and narrower than execution-based harnesses
-    on agentic/task coverage. Capability assessed on its evaluation methodology breadth. Feature matrix
-    re-read 2026-08-13 and unchanged - Arena-Hard-Auto v2.0 still ships 500 hard queries plus 250 creative
-    writing ones with GPT-4.1 and Gemini-2.5 judges, and the hosted arena still runs blind pairwise battles.
+  note: 'The reference platform for human-preference evaluation and the de-facto Elo standard, cited everywhere.
+    Not a 5, because as evaluation code it is largely closed and hosted, and narrower than execution-based
+    harnesses on agentic and task coverage. Judged on the breadth of its evaluation methodology: the hosted
+    arena runs blind pairwise battles, and Arena-Hard-Auto v2.0 ships 500 hard queries plus 250 creative-writing
+    ones with GPT-4.1 and Gemini-2.5 judges.'
   sources:
   - url: https://github.com/lmarena/arena-hard-auto
     shows: 500 SWE/math queries + 250 creative prompts, GPT-4.1/Gemini-2.5 judges, highest correlation

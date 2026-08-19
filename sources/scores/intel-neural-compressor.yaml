@@ -1,0 +1,80 @@
+product: intel-neural-compressor
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole product,
+    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
+    and the core ungated.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/intel/neural-compressor/blob/main/LICENSE
+    shows: LICENSE file is the verbatim Apache-2.0 text
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: c61eb7ccdfa46756c6b45df0bc2277866d7e29c4a14567e476f38f632ea1e7c8
+    establishes:
+    - license
+  - url: https://api.github.com/repos/intel/neural-compressor
+    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for
+      intel/neural-compressor.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 9df44fe7e4acae6c72038992be2277c1996a699cbe98799b1d3e7e79e882dfb6
+    establishes:
+    - license
+    - source
+  - url: https://github.com/intel/neural-compressor/blob/main/README.md
+    shows: README describes static and dynamic quantization, SmoothQuant, weight-only quantization, quantization-aware
+      training, mixed precision and pruning across PyTorch, TensorFlow and ONNX Runtime, down to INT4 and the MX
+      and NVFP4 formats, with no paid tier, enterprise edition or license-key-gated build beside it.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 14a3763a17b18afa6cbed85895423ce0f748e3552d42bc6fb78f256badbb303a
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: 33,576 PyPI downloads of `neural-compressor` in the trailing 30 days, which lands in the 10K-100K band of
+    the software usage scale, level 2.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://pypistats.org/api/packages/neural-compressor/recent
+    shows: last_month downloads = 33,576 for neural-compressor
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: ffb05b43f84441f7b5acf9da1939180e8b0b7e5249fd15c7c6d27f92e28f14da
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: multi-technique optimization toolchain'
+  value: Quantization (static, dynamic, weight-only, QAT), SmoothQuant, mixed precision, sparsity and knowledge
+    distillation across three frameworks, with accuracy-driven auto-tuning.
+  relative_to: apache-tvm
+  relation: one_below
+  confidence: medium
+  note: Banded on the category feature matrix as multi-technique optimization toolchain. Placed one band below the
+    apache-tvm anchor, on a matrix that bands on how much of the model-to-hardware transformation pipeline a product
+    performs, over how many inputs and targets.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/intel/neural-compressor/blob/main/README.md
+    shows: README still documents static and dynamic quantization, SmoothQuant, weight-only quantization, quantization-aware
+      training, mixed precision and pruning across PyTorch, TensorFlow and ONNX Runtime, down to INT4 and the MX
+      and NVFP4 formats.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 14a3763a17b18afa6cbed85895423ce0f748e3552d42bc6fb78f256badbb303a

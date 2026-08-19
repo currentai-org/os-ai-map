@@ -16,19 +16,19 @@ openness:
         a paid subscription for production use, and the proxy gates premium features on a LITELLM_LICENSE
         key verified against license.litellm.ai
   confidence: high
-  note: 'MIT core with a proprietary enterprise directory in the same repository. `core-gated: gated` verified
-    2026-08-11 by a direct read, and it does NOT rest on BerriAI selling a hosted gateway. The root LICENSE
-    is explicitly split - "All content that resides under the ''enterprise/'' directory of this repository,
-    if that directory exists, is licensed under the license defined in ''enterprise/LICENSE''" - and everything
-    outside it is MIT. That enterprise license says the software "may only be used in production, if you
-    (and any entity that you represent) have agreed to, and are in compliance with, the BerriAI Subscription
-    Terms of Service ... and otherwise have a valid BerriAI Enterprise license for the correct number of
-    user seats", with copying, distribution and sale forbidden. The directory is not a stub: it ships litellm_enterprise,
-    enterprise_hooks, enterprise_ui and a cloudformation_stack. The proxy then enforces it in code - litellm/proxy/auth/litellm_license.py
-    reads a LITELLM_LICENSE environment variable and verifies it against license.litellm.ai to set premium_user.
-    A license key you must hold for the paid features to run is the dimension''s question answered directly,
-    so the 4 holds. This is the other side of the line from langchain, llama-index, pydantic-ai, zed and
-    otari, which sell a platform beside a complete open core and moved to 5.'
+  note: 'An MIT core with a proprietary enterprise directory in the same repository - and the gating is
+    in the code, not merely in BerriAI selling a hosted gateway. The root LICENSE is explicitly split: "All
+    content that resides under the ''enterprise/'' directory of this repository, if that directory exists,
+    is licensed under the license defined in ''enterprise/LICENSE''", and everything outside it is MIT.
+    That enterprise license says the software "may only be used in production, if you (and any entity that
+    you represent) have agreed to, and are in compliance with, the BerriAI Subscription Terms of Service
+    ... and otherwise have a valid BerriAI Enterprise license for the correct number of user seats", with
+    copying, distribution and sale forbidden. The directory is not a stub - it ships the enterprise package,
+    hooks, UI and a CloudFormation stack - and the proxy enforces it at runtime, reading a license key from
+    the environment and verifying it against license.litellm.ai before enabling premium features. A license
+    key you must hold for paid features to run is what makes this open core rather than fully open. That
+    is the other side of the line from LangChain, LlamaIndex, Pydantic AI, Zed and Otari, which sell a platform
+    beside a complete open core.'
   raw: license:MIT(core);enterprise-dir:LiteLLM-Commercial-License;source:public;core-gated:gated(the enterprise/
     directory ships under the proprietary BerriAI Enterprise License requiring a paid subscription for production
     use, and the proxy gates premium features on a LITELLM_LICENSE key verified against license.litellm.ai)
@@ -100,19 +100,11 @@ adoption:
   reach: '>10M'
   signal_type: usage_volume
   confidence: high
-  note: 'Used-by 21.7k dependent repos on GitHub; ~49.2k stars, 1,342 releases. Treated as 100K-1M range on
-    dependent/usage volume; stars not the basis. Artifact declared and read live 2026-08-13: 741,403,911 PyPI
-    downloads in the trailing 30 days. Bands at >10M, level 5. This record previously claimed usage_volume - a
-    download count - while declaring no artifact any signal model reads, so no computed figure existed for the
-    recorded band to disagree with. Level corrected from 3, by two bands. The figure is internally consistent
-    across windows (207.8M weekly, 28.5M daily) - litellm is a proxy library pulled on nearly every CI run
-    that touches a model provider. No last_verified claimed: only the figure was re-read.
-    Re-read 2026-08-13. The download figure the band rests on now has a cited source rather than living
-    only in this note - pypistats returns 741,403,911 for the trailing thirty days, the same number to
-    the unit, with 207,823,088 weekly and 28,463,811 daily still internally consistent. Still far above
-    the >10M threshold. The GitHub source line remains a phase-C placeholder and is retained only as the
-    repository pointer. Level unchanged at 5, and the earlier refusal to claim a date is superseded now
-    that the figure is sourced.'
+  note: 741,403,911 PyPI downloads in the trailing 30 days for litellm, which is above 10M and lands in
+    the top band. The figure is internally consistent across windows (207,823,088 weekly, 28,463,811 daily)
+    - litellm is a proxy library pulled on nearly every CI run that touches a model provider. GitHub shows
+    21.7k dependent repositories, roughly 49.2k stars and 1,342 releases, none of which is the basis for
+    the band.
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/BerriAI/litellm
@@ -131,17 +123,11 @@ capability:
   basis: feature_matrix
   value: null
   confidence: high
-  note: Unified gateway to 140+ LLM providers in OpenAI format with cost tracking, guardrails, load balancing,
-    virtual keys/budgets, logging. No standard benchmark applies to a gateway; rated on breadth of provider
-    coverage and production features.
-    Re-read 2026-08-13, replacing the phase-C placeholder source lines with an actual reading. The
-    README still describes an open source AI gateway giving one OpenAI-format interface over LLM
-    providers, usable as a Python SDK or deployed as a proxy server, with virtual keys, spend tracking,
-    guardrails, load balancing and an admin dashboard, and it quotes 8ms P95 latency at 1k RPS. The docs
-    still show budgets per project, guardrails, caching, load balancing and cost tracking. One drift
-    worth recording - both the README and the docs now say 100+ providers where this record says 140+,
-    so the headline count has been restated downward rather than grown. The band does not turn on that
-    number. Band unchanged at 4.
+  note: A unified gateway to a very large set of LLM providers in OpenAI format, with cost tracking, guardrails,
+    load balancing, virtual keys and budgets, and logging. No standard benchmark applies to a gateway, so
+    this is rated on breadth of provider coverage and production features. The README and docs now say 100+
+    providers where the recorded feature list says 140+, so the headline count has been restated downward
+    rather than grown; the score does not turn on that number.
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/BerriAI/litellm

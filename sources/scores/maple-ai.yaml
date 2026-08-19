@@ -22,18 +22,18 @@ openness:
       value: paid
       detail: managed-enclaves
   confidence: medium
-  note: 'Both halves of the stack are open under standard OSI licenses (Maple client MIT, OpenSecret platform
-    AGPL-3.0) and the served models are open-weight - unusually clean for a "private AI" product. Scored
-    open_source because the privacy guarantee is only credible because the code is open and attestable.
-    A repo read on 2026-08-12 settled the open_core alternative against itself. The Maple README makes
-    the billing and feature-flag services optional external clients, VITE_MAPLE_BILLING_API_URL and
-    VITE_OS_FLAGS_BASE_URL, and the OpenSecret README says their "server implementations are not part
-    of this repository setup"; a self-hosted backend runs without either, so what the subscription buys
-    is usage on the hosted enclaves rather than functionality withheld from the source. Neither repo has
-    an enterprise directory or a license key. The one closed-looking artifact is the 15MB
-    continuum-proxy-x86_64 binary vendored into opensecret, and it is the third-party TEE proxy from
-    Edgeless Systems, carried alongside a git submodule of edgelesssys/privatemode-public rather than
-    being anything OpenSecret withholds from a self-hoster.'
+  note: 'Both halves of the stack are open under standard OSI licenses - the Maple client under MIT, the
+    OpenSecret platform under AGPL-3.0 - and the served models are open-weight, which is unusually clean
+    for a "private AI" product. It scores as open source because the privacy guarantee is only credible
+    where the code is open and attestable. The paid tier is not a withheld core: the Maple README makes
+    the billing and feature-flag services optional external clients, configured through VITE_MAPLE_BILLING_API_URL
+    and VITE_OS_FLAGS_BASE_URL, and the OpenSecret README says those "server implementations are not part
+    of this repository setup". A self-hosted backend runs without either, so what the subscription buys
+    is usage on the hosted enclaves rather than functionality missing from the source, and neither repository
+    has an enterprise directory or a license key. The one closed-looking artifact is a 15MB continuum-proxy
+    binary vendored into OpenSecret, and that is the third-party trusted-execution proxy from Edgeless Systems,
+    carried alongside a submodule of edgelesssys/privatemode-public rather than anything OpenSecret withholds
+    from a self-hoster.'
   raw: license:MIT(Maple-client)+AGPL-3.0(OpenSecret-platform),both-OSI;source:public(github.com/OpenSecretCloud);core-gated:ungated(billing
     and feature-flag APIs are optional and external; no enterprise directory, no license key);models:open-weight;hosted-tier:paid(managed-enclaves)
   last_verified: '2026-08-12'
@@ -87,10 +87,6 @@ adoption:
   note: Launched Jan 2025; vendor reports "5x user growth in the last six months", >90% month-over-month
     paid retention, and "billions of tokens" in year one, but no absolute user count is published. Self-reported
     figures only, hence low confidence.
-    Re-read 2026-08-13. The one-year post is still up and still carries the same self-reported figures -
-    5x user growth in the last six months and over 90% of paying customers retained month over month -
-    and still publishes no absolute user count, so there is still nothing countable to band and
-    reported_traction with no numeric reach remains the right instrument. Level unchanged at 3.
   last_verified: '2026-08-13'
   sources:
   - url: https://blog.trymaple.ai/one-year-of-private-ai-how-maple-ai-made-encryption-easy/
@@ -105,12 +101,8 @@ capability:
     E2EE chat in TEEs with remote attestation; image/vision (gated to paid tiers); voice/transcription; OpenAI-compatible
     API (Maple Proxy); platforms: web/iOS/Android/macOS/desktop; teams/multi-seat'
   confidence: medium
-  note: Broad multi-model, multi-platform private chat with vision, API, and teams. Short of top because it
-    is a focused private-chat product without a confirmed agentic tool-use/web-browsing ecosystem.
-    Re-read 2026-08-13. The model guide still lists the same open-weight lineup the band rests on -
-    gpt-oss-120b, kimi-k2.5, deepseek-r1-0528, llama-3.3-70b, qwen3-vl-30b and gemma-3-27b - with the
-    tier structure gating vision and image work to paid plans. Still a focused private-chat product with
-    no agentic tool-use or browsing ecosystem. Band unchanged at 4.
+  note: Broad multi-model, multi-platform private chat with vision, API, and teams. Short of top because
+    it is a focused private-chat product without a confirmed agentic tool-use/web-browsing ecosystem.
   last_verified: '2026-08-13'
   sources:
   - url: https://blog.trymaple.ai/maple-ai-model-guide-with-example-prompts/

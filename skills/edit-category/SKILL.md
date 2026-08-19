@@ -19,7 +19,8 @@ roster rules, the taxonomy step for a new category, and the note that there is n
 
 ## Agent orchestration
 Edit `sources/categories/<slug>.yaml` surgically — never load-modify-dump. Creating a category
-also touches `sources/taxonomy.yaml` (assign it to an arc). Adding a product to the roster
+also touches `sources/taxonomy.yaml` (assign it to an arc and lifecycle status). Preliminary
+category seeds live in `sources/registry/<slug>.yaml`; adding a head product to the roster
 requires its product + score files to exist first (`add-product`).
 
 ## Scripts to run

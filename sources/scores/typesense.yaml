@@ -1,0 +1,83 @@
+product: typesense
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: GPL-3.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: GPL-3.0 license body confirmed. The repository is public and unarchived and builds the whole product, and
+    the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
+    and the core ungated. The README states the GPL choice plainly - the project uses copyleft so that modifications
+    stay open - and copyleft does not cap who may use the software or at what scale, so it sits on the OSI tier.
+    Typesense Cloud and paid support are separate products beside a complete core, not functionality withheld from
+    it.
+  raw: license:GPL-3.0(OSI);source:public;core-gated:ungated
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/typesense/typesense/blob/v31/LICENSE.txt
+    shows: LICENSE file is the verbatim GPL-3.0 text
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 8b1ba204bb69a0ade2bfcf65ef294a920f6bb361b317dba43c7ef29d96332b9b
+    establishes:
+    - license
+  - url: https://api.github.com/repos/typesense/typesense
+    shows: Repo metadata - license spdx_id GPL-3.0, private false, archived false, default branch v31 - for typesense/typesense.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 8d64cdeb1d36149523652eda1570ff9ae803295489b56910ec95cc0436490256
+    establishes:
+    - license
+    - source
+  - url: https://github.com/typesense/typesense/blob/v31/README.md
+    shows: README describes a typo-tolerant in-memory search engine with faceting, filtering, geosearch and vector
+      search, its GPL choice explained as keeping modifications open, and paid support and Typesense Cloud offered
+      separately, with no paid tier, enterprise edition or license-key-gated build beside it.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: e6221d7df0cbbcdc339127369407f7d2d109421d8227097619a34cb3114fdf18
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 3
+  reach: '>10K stars'
+  signal_type: stars_fallback
+  confidence: low
+  note: 26,444 GitHub stars, which lands in the >10K stars band of the stars scale, level 3. The `typesense` package
+    on PyPI is the Python client for a running server, so its downloads are not the product's. With no published
+    deployment figure the stars scale applies, capped at 3.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://api.github.com/repos/typesense/typesense
+    shows: Repo metadata - stargazers_count = 26,444 - for typesense/typesense.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 8d64cdeb1d36149523652eda1570ff9ae803295489b56910ec95cc0436490256
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: complete retrieval system, distributed or cluster-capable'
+  value: Full-text, vector and hybrid retrieval with faceting, filtering, geosearch and merchandising rules, from
+    an in-memory engine that clusters for high availability.
+  relative_to: vespa
+  relation: one_below
+  confidence: medium
+  note: Banded on the category feature matrix as complete retrieval system, distributed or cluster-capable. Placed
+    one band below the vespa anchor, on a matrix that bands on how much of the persist-index-retrieve path a product
+    provides itself, at what scale and over how many retrieval modes.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/typesense/typesense/blob/v31/README.md
+    shows: README still documents a typo-tolerant in-memory search engine with faceting, filtering, geosearch and
+      vector search, its GPL choice explained as keeping modifications open, and paid support and Typesense Cloud
+      offered separately.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: e6221d7df0cbbcdc339127369407f7d2d109421d8227097619a34cb3114fdf18

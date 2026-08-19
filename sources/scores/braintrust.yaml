@@ -15,13 +15,12 @@ openness:
       value: enterprise-only
       detail: hybrid
   confidence: high
-  note: Open SDKs but a closed SaaS core (Brainstore backend, dashboards, automation are proprietary);
-    no OSS core, so 'closed' (not open_core) like LangSmith/Galileo per recipe's closed examples. The
-    Apache-2.0 client SDK is instrumentation only and does not open the product. Re-read 2026-08-13 and
-    unchanged on the score. One detail has moved - braintrustdata/braintrust-sdk now states that it holds
-    "Braintrust's JavaScript/TypeScript SDKs and integrations" rather than the five-language set the
-    components clause records, so that clause overstates what this repository covers. It remains Apache-2.0
-    and it remains a client SDK, so neither the score nor the class turns on it.
+  note: 'Open SDKs over a closed SaaS core: the Brainstore backend, the dashboards and the automation layer
+    are all proprietary. There is no open source core, so this is closed rather than open core, the same
+    shape as LangSmith and Galileo. The Apache-2.0 client SDK is instrumentation only and does not open
+    the product; braintrustdata/braintrust-sdk now describes itself as holding Braintrust''s JavaScript
+    and TypeScript SDKs and integrations rather than a five-language set, but it remains Apache-2.0 and
+    remains a client SDK, so neither the score nor the class turns on it.'
   raw: source:closed;license:Apache-2.0(OSI, client SDKs only, Python/TS/Go/Ruby/C#);platform:proprietary(Brainstore
     custom DB, evals/tracing/automation all SaaS);self-host:enterprise-only(hybrid)
   last_verified: '2026-08-13'
@@ -51,12 +50,9 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: '~6.08M PyPI downloads in the last month for the `braintrust` package (primary: pypistats); named
-    production users. 1-10M monthly-download band; strongest adoption of the closed-platform set here.
-    Re-read 2026-08-13 - pypistats now reports 7,366,065 downloads last month, up from the 6,080,857
-    recorded and still inside the 1M-10M band, so level 4 is unchanged. The customer roster on the homepage
-    has changed: Notion and Coursera are still named, Vercel, Dropbox and Replit are not, and those three
-    are dropped from this note rather than carried forward. The band rests on the download count anyway.'
+  note: The braintrust package draws 7,366,065 PyPI downloads a month, inside the 1M-10M band and the strongest
+    adoption of the closed platforms in this category. Of the users named in the record, Notion and Coursera
+    are on the homepage while Vercel, Dropbox and Replit are not, so the band rests on the download count.
   last_verified: '2026-08-13'
   sources:
   - url: https://pypistats.org/packages/braintrust
@@ -81,10 +77,12 @@ capability:
     scoring, quality gates blocking releases); datasets/annotation; OTel + MCP + framework-agnostic SDKs(5
     langs). Quality-gate/automation depth exceeds the anchor tier.
   confidence: high
-  note: Deepest eval+automation feature surface in this batch (CI-style quality gates, Topics auto-clustering,
-    continuous scoring), a frontier-definer for eval-first LLM observability; rated 5 above the MLflow/Langfuse
-    C4 anchors on feature breadth. Re-read 2026-08-13 - Topics, continuous online scoring and quality gates
-    are all still front-of-page and still the thing no anchor matches, so the one-above comparison holds.
+  note: 'The deepest evaluation and automation surface in this category: tracing that supports real-time
+    inspection across millions of logs and tool calls; LLM, code and human scorers running experiments against
+    datasets; prompt management and a playground; automation covering pattern discovery, continuous scoring
+    and CI-style quality gates that block releases; datasets and annotation; and OpenTelemetry, MCP and
+    framework-agnostic SDKs. The quality-gate and automation depth goes beyond the MLflow and Langfuse anchors
+    at 4, which is why this is a 5 - a frontier-definer for evaluation-first LLM observability.'
   last_verified: '2026-08-13'
   sources:
   - url: https://www.braintrust.dev/

@@ -1,0 +1,79 @@
+product: deepgemm
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: MIT license body confirmed. The repository is public and unarchived and builds the whole product, and the
+    README describes no paid tier, enterprise edition or license-gated build beside it, so source is public and
+    the core ungated.
+  raw: license:MIT(OSI);source:public;core-gated:ungated
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/deepseek-ai/DeepGEMM/blob/main/LICENSE
+    shows: LICENSE file is the verbatim MIT text
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 6c73a30c14a2938abaa6afe98ebb19e6d81dac5bd4ace0cb05c61c20afa37b85
+    establishes:
+    - license
+  - url: https://api.github.com/repos/deepseek-ai/DeepGEMM
+    shows: Repo metadata - license spdx_id MIT, private false, archived false, default branch main - for deepseek-ai/DeepGEMM.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 2f578bd98a013611af938630babdbb736588785542d2179a650aa48c84287116
+    establishes:
+    - license
+    - source
+  - url: https://github.com/deepseek-ai/DeepGEMM/blob/main/README.md
+    shows: README describes a unified tensor-core kernel library covering FP8, FP4 and BF16 GEMMs, fused MoE with
+      overlapped communication and MQA scoring, all compiled at runtime through a lightweight JIT module, with no
+      paid tier, enterprise edition or license-key-gated build beside it.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: df82e7d6979e49e864cd0c8b2389648ebfa226b9f4b331646d7d5cdc4951ee63
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 7,700 GitHub stars, which lands in the 1K-10K stars band of the stars scale, level 2. Built from source
+    rather than published to a package registry, so no download figure exists and the stars scale applies with its
+    cap of 3.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://api.github.com/repos/deepseek-ai/DeepGEMM
+    shows: Repo metadata - stargazers_count = 7,700 - for deepseek-ai/DeepGEMM.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 2f578bd98a013611af938630babdbb736588785542d2179a650aa48c84287116
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: performance-critical kernel and operator library'
+  value: FP8, FP4 and BF16 GEMMs, fused MoE with communication overlap and MQA scoring in one JIT-compiled CUDA
+    library. Several primitive families rather than one.
+  relative_to: apache-tvm
+  relation: two_below
+  confidence: medium
+  note: Banded on the category feature matrix as performance-critical kernel and operator library. Placed two bands
+    below the apache-tvm anchor, on a matrix that bands on how much of the model-to-hardware transformation pipeline
+    a product performs, over how many inputs and targets.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/deepseek-ai/DeepGEMM/blob/main/README.md
+    shows: README still documents a unified tensor-core kernel library covering FP8, FP4 and BF16 GEMMs, fused MoE
+      with overlapped communication and MQA scoring, all compiled at runtime through a lightweight JIT module.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: df82e7d6979e49e864cd0c8b2389648ebfa226b9f4b331646d7d5cdc4951ee63

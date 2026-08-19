@@ -1,0 +1,80 @@
+product: aistore
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: MIT license body confirmed. The repository is public and unarchived and builds the whole product, and the
+    README describes no paid tier, enterprise edition or license-gated build beside it, so source is public and
+    the core ungated.
+  raw: license:MIT(OSI);source:public;core-gated:ungated
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/NVIDIA/aistore/blob/main/LICENSE
+    shows: LICENSE file is the verbatim MIT text
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: ff94bae9259bdc688e7fe9627bad82cc69e3d97dcf0f4514f1cada1c2a0c0a5b
+    establishes:
+    - license
+  - url: https://api.github.com/repos/NVIDIA/aistore
+    shows: Repo metadata - license spdx_id MIT, private false, archived false, default branch main - for NVIDIA/aistore.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: e5a51ffb558d6b79e6a96d0afefc57f544f49da5787b12cc5f959a7bb78af04c
+    establishes:
+    - license
+    - source
+  - url: https://github.com/NVIDIA/aistore/blob/main/README.md
+    shows: README describes a lightweight distributed storage stack for AI applications that scales out linearly,
+      deploys with or without Kubernetes from one Linux machine to a bare-metal cluster, and operates natively on
+      in-cluster and remote data, with no paid tier, enterprise edition or license-key-gated build beside it.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: e27a54fabe5e2ec9649415d6e671b6384116aa4339f7d41290bdbee3cb38b931
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 1,914 GitHub stars, which lands in the 1K-10K stars band of the stars scale, level 2. The `aistore` package
+    on PyPI is the client-side SDK for talking to a cluster, not the cluster itself, so its downloads measure client
+    installs. With no deployment figure published the stars scale applies, and at 1,914 stars it bands at 2.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://api.github.com/repos/NVIDIA/aistore
+    shows: Repo metadata - stargazers_count = 1,914 - for NVIDIA/aistore.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: e5a51ffb558d6b79e6a96d0afefc57f544f49da5787b12cc5f959a7bb78af04c
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: complete retrieval system, distributed or cluster-capable'
+  value: Elastic S3-compatible object storage with erasure coding, high availability, remote-bucket operation and
+    in-cluster ETL, deployable from one machine to a bare-metal cluster.
+  relative_to: vespa
+  relation: one_below
+  confidence: medium
+  note: Banded on the category feature matrix as complete retrieval system, distributed or cluster-capable. Placed
+    one band below the vespa anchor, on a matrix that bands on how much of the persist-index-retrieve path a product
+    provides itself, at what scale and over how many retrieval modes.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/NVIDIA/aistore/blob/main/README.md
+    shows: README still documents a lightweight distributed storage stack for AI applications that scales out linearly,
+      deploys with or without Kubernetes from one Linux machine to a bare-metal cluster, and operates natively on
+      in-cluster and remote data.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: e27a54fabe5e2ec9649415d6e671b6384116aa4339f7d41290bdbee3cb38b931

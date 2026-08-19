@@ -19,17 +19,16 @@ openness:
     - enterprise modules(SCIM,audit-logs,license/billing) under langwatch/ee/ require commercial license
       for production
   confidence: high
-  note: 'Explicit open core: Apache-2.0 platform, MIT SDKs, and an enterprise directory under a commercial
-    license. `core-gated: gated` verified 2026-08-12 by a direct read, and it does NOT rest on LangWatch
-    selling a hosted tier. NOTICE names the split component by component - "platform/app/ee/ LangWatch Enterprise
-    License (platform/app/ee/LICENSE.md)" against MIT sdks/typescript, sdks/python and mcp/typescript, with
-    everything else Apache-2.0. That license says the enterprise directory "implements the enterprise capabilities
-    of LangWatch, including single sign-on, SCIM provisioning, audit logging, gateway webhooks, licensing,
-    billing, and back-office tooling" and that "each verifies a license at runtime before it can be used".
-    A runtime license check on shipped features is the dimension''s question answered directly. The recorded
-    path has moved since the last pass - the directory is platform/app/ee/ rather than langwatch/ee/ - and
-    the license now names governance, managed-providers, event-sourcing and webhooks alongside the SCIM,
-    audit-log and billing modules already recorded.'
+  note: 'An explicit open core: an Apache-2.0 platform, MIT SDKs, and an enterprise directory under a commercial
+    license. The gating is read directly from the repository and does not rest on LangWatch selling a hosted
+    tier. The NOTICE file names the split component by component - "platform/app/ee/ LangWatch Enterprise
+    License (platform/app/ee/LICENSE.md)" against MIT for sdks/typescript, sdks/python and mcp/typescript,
+    with everything else Apache-2.0. That license says the enterprise directory "implements the enterprise
+    capabilities of LangWatch, including single sign-on, SCIM provisioning, audit logging, gateway webhooks,
+    licensing, billing, and back-office tooling" and that "each verifies a license at runtime before it
+    can be used". A runtime license check on shipped features answers this dimension directly. The enterprise
+    license now also names governance, managed providers, event sourcing and webhooks alongside the SCIM,
+    audit-log and billing modules.'
   raw: license:Apache-2.0(core)+MIT(SDKs);source:public;core-gated:gated(NOTICE and platform/app/ee/LICENSE.md
     put platform/app/ee under the LangWatch Enterprise License, covering SSO, SCIM, audit-log reading, governance,
     webhooks, billing, licensing, managed providers and back-office admin, each of which "verifies a license
@@ -82,15 +81,12 @@ adoption:
   reach: 1K-10K stars
   signal_type: stars_fallback
   confidence: low
-  note: 'No verified download/active-user figure located this run; ~3.3k GitHub stars is the only honest
-    signal, so capped at level 2 via stars fallback (cannot exceed 3 on stars regardless). Stars read
-    2026-08-13: 3,486 across the 1 declared repo, which bands at 1K-10K stars, level 2 on the stars scale in
-    signal_routing.yaml. The previous reach ''10K-100K'' was not a label this instrument offers - stars have
-    their own vocabulary because a star is not a download. The earlier pass declined to claim a date on the
-    ground that a star count is volatile and would read as drift on every refetch. That is true and it is not
-    a reason to leave the axis unconfirmed - `check_refetch` reports drift rather than failing on it, and
-    `helicone` in this same category already carries a dated stars_fallback band over the same endpoint. The
-    count was re-read from the repository API on 2026-08-13 and is recorded with its digest.'
+  note: 'No download or active-user figure is published for LangWatch, so the only honest signal is GitHub
+    stars: 3,486 on the one declared repository, which bands at 1K-10K stars and level 2. Stars are a weaker
+    instrument than downloads and cannot carry a product above level 3 on their own, and they have their
+    own vocabulary rather than a download range, because a star is not a use. The count is read from the
+    repository API and recorded with its digest; it drifts between reads, and drift on a star count is expected
+    rather than a problem.'
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/langwatch/langwatch
@@ -111,11 +107,11 @@ capability:
     testing; prompt management with GitHub integration; dataset creation + annotation; AI Gateway (cost
     control, failover); broad framework/provider integrations.'
   confidence: high
-  note: Full feature matrix across all six recipe dimensions plus distinctive agent-simulation/scenario
-    testing and a built-in gateway; on par with Langfuse C4. Held at 4 (no frontier-definer claim over
-    the anchors). Re-read 2026-08-13 - the README still leads on end-to-end agent simulations and on
-    "Eval + observability + prompts in one loop", so the breadth the band rests on is intact and the
-    recorded comparison at the langfuse anchor still holds.
+  note: Covers every dimension this category grades - OpenTelemetry-native tracing, offline evaluations
+    and production monitoring, prompt management with GitHub integration, dataset creation and annotation,
+    cost control through a built-in AI gateway with failover, and broad framework and provider integrations
+    - plus distinctive agent simulation and scenario testing. That puts it level with Langfuse at 4, and
+    it is held there because nothing here is a frontier-definer over the anchors.
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/langwatch/langwatch

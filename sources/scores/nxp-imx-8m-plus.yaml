@@ -24,29 +24,28 @@ openness:
       detail: commercial via NXP and SoM partners
       raw: distributor (commercial via NXP and SoM partners)
   confidence: high
-  note: Public datasheets and a Linux BSP with broad commercial availability, but proprietary silicon
-    with no open board files. Re-read 2026-08-14 against substitutes, www.nxp.com being unfetchable -
-    it answers 404 to every path tried including its own root, and browser headers change nothing, so
-    this is the host and not the URL. Every component re-derived. `datasheets` is the strongest of
-    them - the document the component names by part number, "Document Number IMX8MPCEC, Rev. 2.1,
-    07/2023, i.MX 8M Plus Applications Processor Datasheet for Consumer Products", is mirrored in full
-    and openly downloadable from DigiKey, 111 pages of electrical characteristics, boot modes and pin
-    assignments. `toolchain` and `blobs` both come from NXP's own Yocto layer repo - the BSP is public
-    and buildable, and the same README states "The NXP i.MX End User License Agreement (EULA) is
-    displayed during the setup process ... The license must be accepted to allow access to the NXP
-    EULA-licensed recipes", which is the gated-blob half stated by the vendor. `schematics` stays none
-    - what the BSP publishes is machine configurations for NXP's own EVK and FRDM reference boards,
-    and what the datasheet publishes is package and pin data, neither of which is a board file.
-    `retail` from Toradex shipping a Verdin SoM around the part and DigiKey stocking the silicon. No
-    change.
+  note: 'Public datasheets and a Linux BSP with broad commercial availability, but proprietary silicon with
+    no open board files. The documentation is the strongest part of the picture: the datasheet identified
+    as "Document Number IMX8MPCEC, Rev. 2.1, 07/2023, i.MX 8M Plus Applications Processor Datasheet for
+    Consumer Products" is mirrored in full and openly downloadable from DigiKey, 111 pages of electrical
+    characteristics, boot modes and pin assignments. The toolchain and the firmware position both come from
+    NXP''s own Yocto layer repo - the BSP is public and buildable, and the same README states "The NXP i.MX
+    End User License Agreement (EULA) is displayed during the setup process ... The license must be accepted
+    to allow access to the NXP EULA-licensed recipes", which is the gated-blob half stated by the vendor.
+    No board files are published at all: what the BSP offers is machine configurations for NXP''s own EVK
+    and FRDM reference boards, and what the datasheet offers is package and pin data, neither of which is
+    a design. Retail rests on Toradex shipping a Verdin SoM around the part and DigiKey stocking the silicon.
+    www.nxp.com itself is unfetchable - it answers 404 to every path tried including its own root, and browser
+    headers change nothing, so this is the host and not the URL - and these components therefore rest on
+    substitute sources.'
   raw: schematics:none (EVK reference designs only);toolchain:open (Linux/Yocto BSP);datasheets:public (IMX8MPCEC);blobs:required
     (proprietary silicon + NPU firmware);retail:distributor (commercial via NXP and SoM partners)
   last_verified: '2026-08-14'
   sources:
   - url: https://www.nxp.com/products/i.MX8MPLUS
-    shows: 'official page: Cortex-A53/M7, up to 2.3 TOPS NPU, ML/vision focus. Not re-fetchable -
-      www.nxp.com answers HTTP 404 to every automated request including its own root, under every
-      header set tried - so it keeps its 2026-06-22 read.'
+    shows: 'official page: Cortex-A53/M7, up to 2.3 TOPS NPU, ML/vision focus. Not re-fetchable - www.nxp.com
+      answers HTTP 404 to every automated request including its own root, under every header set tried -
+      so it keeps its recorded read'
     accessed: '2026-06-22'
   - url: https://mm.digikey.com/Volume0/opasdata/d220001/medias/docus/5783/IMX8MPCEC.pdf
     shows: 'the named datasheet in full, openly mirrored by DigiKey - "NXP Semiconductors Data Sheet -
@@ -78,12 +77,11 @@ adoption:
   reach: broad
   signal_type: reported_traction
   confidence: high
-  note: Widely deployed industrial processor with SoMs from multiple vendors (ADLINK, Toradex Verdin,
-    SolidRun) and broad distributor availability. Re-read 2026-08-13 - the Verdin iMX8M Plus is still a
-    live, configurable Toradex module with free Embedded Linux and FreeRTOS support and a product
-    availability commitment to 2036+. NXP's own product pages could not be re-read (www.nxp.com answers
-    404 to an automated fetch, including its own root), so the multi-vendor half of the note rests on the
-    earlier read. Level and reach unchanged.
+  note: Widely deployed industrial processor with SoMs from multiple vendors (ADLINK, Toradex Verdin, SolidRun)
+    and broad distributor availability. The Verdin iMX8M Plus is a live, configurable Toradex module with
+    free Embedded Linux and FreeRTOS support and a product availability commitment to 2036+. NXP's own product
+    pages are unfetchable - www.nxp.com answers 404 to an automated fetch, including its own root - so the
+    multi-vendor half of that availability is not confirmable from any source cited here.
   last_verified: '2026-08-13'
   sources:
   - url: https://www.toradex.com/computer-on-modules/verdin-arm-family/nxp-imx-8m-plus
@@ -98,13 +96,12 @@ capability:
   basis: feature_matrix
   value: 2.3 TOPS NPU; quad Cortex-A53 + Cortex-M7; LPDDR4 support
   confidence: high
-  note: 2.3 TOPS integrated NPU with dual-ISP vision is solid for industrial ML but lower throughput than
-    the 4-12 TOPS dedicated kits here. Re-derived 2026-08-13 - the NXP fact sheet the value cited now
-    404s (www.nxp.com answers 404 to an automated fetch across every path tried, including its own root),
-    so the figure was re-confirmed against Toradex's Verdin iMX8M Plus page, which reads "Neural
-    Processing Unit (NPU) - up to 2.3 TOPS" with 4x Cortex-A53 at 1.8 GHz and a Cortex-M7F. That is
-    still below beagley-ai and ti-am67a at 4 TOPS and well below the Jetson Orin line, so the band is
-    unchanged. The dead NXP source is escalated rather than deleted.
+  note: A 2.3 TOPS integrated NPU with dual-ISP vision is solid for industrial ML but lower throughput than
+    the 4-12 TOPS dedicated kits here. NXP's own fact sheet no longer resolves - www.nxp.com answers 404
+    to an automated fetch across every path tried, including its own root - so the figure rests on Toradex's
+    Verdin iMX8M Plus page, which reads "Neural Processing Unit (NPU) - up to 2.3 TOPS" with 4x Cortex-A53
+    at 1.8 GHz and a Cortex-M7F. That is still below beagley-ai and ti-am67a at 4 TOPS and well below the
+    Jetson Orin line, so the band holds.
   last_verified: '2026-08-13'
   sources:
   - url: https://www.toradex.com/computer-on-modules/verdin-arm-family/nxp-imx-8m-plus

@@ -18,19 +18,17 @@ openness:
       detail: OSI, Devstral Small 2 24B SKU only
   confidence: high
   governing_release: devstral-2-2512
-  note: 'Open weights, but training and post-training data and the pipeline are undisclosed -> open_weights,
-    not open_source. RESCORED 2026-08-14 onto the governing release. The record had been read on Devstral
-    Small 1.1 (2507); the tier now ships Devstral 2 (2512), which is what the product declares as its
-    artifacts. Under docs/reference/identity.md the CURRENT release governs openness and resolves
-    most-restrictive across that release''s distributed SKUs, and the two 2512 SKUs are not licensed alike -
-    Devstral Small 2 24B reads "This model is licensed under the Apache 2.0 License", Devstral 2 123B reads
-    "This model is licensed under a Modified MIT License" with `license:other` in the repo tags. These are
-    sizes of one release rather than substitutable alternatives, so most-restrictive applies and the
-    resolved tier is permissive_non_osi rather than osi. THE SCORE DOES NOT MOVE - with data closed and code
-    partial the ladder falls through to 3/open_weights on either tier - so what this rescore actually
-    changes is the recorded license, which had been claiming OSI terms the flagship SKU does not offer, and
-    the previously missing governing_release. A search of the Hub newest-first confirms 2512 is still the
-    latest first-party Devstral; everything newer is a community quant or LoRA.'
+  note: 'Open weights, with the training and post-training data and the pipeline undisclosed, so open weights
+    rather than open source. The tier ships Devstral 2 (2512), which is what the product declares as its
+    artifacts, and openness is read on that current release, resolved to the most restrictive license across
+    the SKUs the release distributes. The two 2512 SKUs are not licensed alike: Devstral Small 2 24B reads
+    "This model is licensed under the Apache 2.0 License", while Devstral 2 123B reads "This model is licensed
+    under a Modified MIT License" and is tagged as an other license on the Hub. These are sizes of one release
+    rather than substitutable alternatives, so the more restrictive of the two governs and the recorded
+    license is permissive but non-OSI. The score is 3 either way - with data closed and code partial the
+    ladder falls through to open weights - but the recorded license must not claim OSI terms the flagship
+    SKU does not offer. Searching the Hub newest-first confirms 2512 is the latest first-party Devstral;
+    everything newer is a community quantization or LoRA.'
   raw: weights:open(Apache-2.0, on HF);data:closed;code:partial(inference/serving; no training or post-training
     data);license:Modified-MIT(non-OSI, resolved most-restrictive across the governing release's SKUs (Devstral
     2 123B))+Apache-2.0(OSI, Devstral Small 2 24B SKU only)
@@ -72,15 +70,11 @@ adoption:
   reach: 100K-1M
   signal_type: usage_volume
   confidence: high
-  note: 'Specialist coding-agent model with real but non-mass-market uptake, in the OpenHands / coding-agent
-    niche rather than the chat mainstream. RE-BANDED 2026-08-14 from 2/10K-100K on the max-across-releases
-    rule in docs/reference/identity.md - the old band was read on the superseded Small-2507 SKU at ~37k. The two
-    DECLARED artifacts are the Devstral 2 (2512) pair and they sum to 221,596 downloads in the trailing 30
-    days (Devstral-Small-2-24B-Instruct-2512 188,901; Devstral-2-123B-Instruct-2512 32,695), which lands in
-    100K-1M under sum_across_artifacts. Both figures were re-read against the API on 2026-08-14 and both
-    digests are byte-identical to the 2026-08-13 read. The superseded 2507 SKU has itself risen to 97,969,
-    which would still be level 2 on its own - so the move comes from reading the right release rather than
-    from growth.'
+  note: A specialist coding-agent model with real but non-mass-market uptake, in the OpenHands and coding-agent
+    niche rather than the chat mainstream. A tier bands on its strongest release, and the two declared artifacts
+    are the Devstral 2 (2512) pair, which sum to 221,596 Hugging Face downloads in the trailing 30 days
+    (Devstral-Small-2-24B-Instruct-2512 188,901; Devstral-2-123B-Instruct-2512 32,695) - inside 100K-1M.
+    The superseded 2507 SKU reads 97,969, a level lower on its own.
   last_verified: '2026-08-14'
   sources:
   - url: https://huggingface.co/api/models/mistralai/Devstral-Small-2-24B-Instruct-2512
@@ -107,16 +101,14 @@ capability:
   value: Devstral 2 123B SWE-bench Verified 72.2% / SWE-bench Multilingual 61.3% / Terminal-Bench 2 32.6%;
     Devstral Small 2 24B 68.0% / 55.7% / 22.5%
   confidence: high
-  note: 'RESCORED 2026-08-14 from 3 to 4 on the max-across-releases rule in docs/reference/identity.md. The old
-    score read Devstral Small 1.1 (2507) at SWE-bench Verified 53.6%, which is still on that card and was a
-    fair mid-tier placement - but 2507 is superseded, and a tier scores on its BEST release. The governing
-    Devstral 2 (2512) card reports SWE-bench Verified 72.2% for the 123B and 68.0% for Devstral Small 2 24B,
-    which is a materially different position against the same comparison set. 4 rather than 5 because the
-    frontier open coders still sit clearly above it on the same benchmark - kimi at 80.2% and glm at
-    SWE-bench Pro 58.4 both score 5 here - and 72.2% lands beside qwen-coder, also 4. It is also above the
-    69.4% ornith reports at 4, so 4 is the floor this evidence supports rather than a generous reading. No
-    relative_to is recorded because no peer at this level carries a last_verified on or after this date, and
-    check_capability''s transitive-freshness rule would reject the anchor.'
+  note: 'A tier is scored on its strongest release, which here is Devstral 2 (2512): its card reports SWE-bench
+    Verified 72.2% for the 123B and 68.0% for Devstral Small 2 24B. 4 rather than 5 because the frontier
+    open coders still sit clearly above it on the same benchmark - Kimi at 80.2% and GLM at SWE-bench Pro
+    58.4 both score 5 here - and 72.2% lands beside Qwen3-Coder, also 4. It is also above the 69.4% Ornith
+    reports at 4, so 4 is the floor this evidence supports rather than a generous reading. The superseded
+    Devstral Small 1.1 (2507) card reads SWE-bench Verified 53.6%, a fair mid-tier placement for that release
+    but not the one the tier scores on. No peer at this level has been checked recently enough to serve
+    as a comparison anchor, so none is recorded.'
   last_verified: '2026-08-14'
   sources:
   - url: https://huggingface.co/mistralai/Devstral-Small-2-24B-Instruct-2512

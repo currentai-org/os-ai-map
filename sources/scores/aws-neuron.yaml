@@ -18,17 +18,14 @@ openness:
     hardware-lock:
       value: AWS-Inferentia/Trainium-only
   confidence: high
-  note: '2/source_available on `source: partial`. software.yaml defines `closed` as a managed service with
-    no self-hostable implementation, and Neuron is not one - the SDK installs and runs on the customer''s
-    own EC2 instance, from proprietary packages. It defines `partial` as a repo existing while the runtime
-    does not ship, a client, an SDK or an issue tracker standing in for the engine, and aws-neuron-sdk is
-    that exactly: a docs-and-issues repo whose compiler/ and neuron-runtime/ directories hold documentation
-    rather than source. AWS''s own OSS catalog lists six public repositories and neither the Neuron Runtime
-    nor the Neuron Compiler is among them, while the kernel driver (GPL-2.0), the NKI kernel library, vLLM-for-Neuron
-    (Apache-2.0) and the MIT-0 samples do ship as source. The headline inference path is still closed, which
-    is why this is not an open rung; `webcontainers` is already scored 2/source_available for the same shape.
-    The license value `mixed/proprietary-core` maps to no tier, and none is needed: the partial-source rung
-    fires above every rung that tests one.'
+  note: Source-available rather than closed or open. Neuron is not a managed service, since the SDK installs
+    and runs on the customer's own EC2 instance, but it installs from proprietary packages and the headline
+    inference path is not published. The aws-neuron-sdk repository is a documentation and issue-tracker
+    repo whose compiler and neuron-runtime directories hold documentation rather than code, and AWS's own
+    open-source catalog lists six public repositories with neither the Neuron Runtime nor the Neuron Compiler
+    among them. What does ship as source is the GPL-2.0 Linux kernel driver, the NKI kernel library, the
+    Apache-2.0 vLLM-for-Neuron integration and the MIT-0 samples, real open components arranged around a
+    closed core.
   last_verified: '2026-08-11'
   raw: license:mixed/proprietary-core;source:partial(aws-neuron-sdk is a documentation and issue-tracker
     repo carrying no Runtime or Compiler source, while the kernel driver, NKI kernel library, vLLM-for-Neuron
@@ -37,11 +34,10 @@ openness:
   sources:
   - url: https://awsdocs-neuron.readthedocs-hosted.com/en/latest/general/oss/index.html
     shows: AWS Neuron provides open source code and samples for some of its components, libraries, and tools
-      under the Apache 2.0 license. The current public repositories open to contribution at this time are
-      listed below. Re-read on 2026-08-11 (the URL now redirects to /about-neuron/oss/index.html), the
-      catalog lists exactly six public repositories -- TorchNeuron PyTorch Extension, Neuron Agentic Development,
-      Neuron Explorer CDK, Neuron Kernel Library, vLLM for Neuron, NKI Samples -- and neither the Neuron
-      Runtime nor the Neuron Compiler appears among them.
+      under the Apache 2.0 license, and lists the public repositories open to contribution. The URL redirects
+      to /about-neuron/oss/index.html, where the catalog lists exactly six public repositories -- TorchNeuron
+      PyTorch Extension, Neuron Agentic Development, Neuron Explorer CDK, Neuron Kernel Library, vLLM for
+      Neuron, NKI Samples -- and neither the Neuron Runtime nor the Neuron Compiler appears among them.
     accessed: '2026-08-11'
     establishes:
     - license
@@ -61,11 +57,11 @@ openness:
   - url: https://github.com/aws-neuron/aws-neuron-sdk
     shows: '"path":"LICENSE-DOCUMENTATION","preferredFileType":"license","tabName":"License" alongside "path":"LICENSE-SAMPLECODE",..."tabName":"MIT-0"
       -- repo carries a generic, GitHub-unclassified license for docs and a separate MIT-0 license for sample
-      code, i.e. no single OSI license covers the SDK repo. Re-read on 2026-08-11, the repo''s top-level
-      directories are .github, compiler, frameworks, deploy, general, libraries, neuron-runtime, neuron-customops,
-      nki, release-notes, setup and tools -- the "compiler" and "neuron-runtime" directories hold documentation
-      for those components, not their source. The repo points readers at the hosted Neuron SDK documentation
-      site and carries an open issue tracker.'
+      code, i.e. no single OSI license covers the SDK repo. The repo''s top-level directories are .github,
+      compiler, frameworks, deploy, general, libraries, neuron-runtime, neuron-customops, nki, release-notes,
+      setup and tools -- the "compiler" and "neuron-runtime" directories hold documentation for those components,
+      not their source. The repo points readers at the hosted Neuron SDK documentation site and carries
+      an open issue tracker.'
     accessed: '2026-08-11'
     establishes:
     - license
@@ -97,24 +93,18 @@ adoption:
   level: 3
   signal_type: reported_traction
   confidence: low
-  note: 'Re-read 2026-08-13 and held at 3. AWS publishes no customer count, download count or usage figure
-    for Neuron anywhere on the product page - confirmed by re-reading it rather than assumed from the
-    previous pass - and names no customers and makes no quantified scale claim. What the page does
-    establish is integration breadth: PyTorch and JAX natively, plus HuggingFace Transformers and Optimum
-    Neuron, vLLM, PyTorch Lightning and TorchTitan, "without modifying your code".
-
-    THIS IS A QUALITATIVE CONFIRMATION AND THE BAND IS ONLY AS GOOD AS THAT. reported_traction is the
-    correct instrument precisely because nothing here is countable, so re-reading can establish that the
-    described breadth still holds and can never establish that 3 is the right number for it. The date
-    records that the claim was re-derived from its source, not that a measurement was taken. If AWS ever
-    publishes an instance-hour or customer figure, this axis should move to a countable instrument.'
+  note: 'AWS publishes no customer count, download count or usage figure for Neuron anywhere on the product
+    page, names no customers and makes no quantified scale claim. What the page does establish is integration
+    breadth: PyTorch and JAX natively, plus Hugging Face Transformers and Optimum Neuron, vLLM, PyTorch
+    Lightning and TorchTitan, "without modifying your code". The band is therefore qualitative and only
+    as good as that description, since nothing here is countable: the breadth can support a level but cannot
+    confirm that 3 is precisely the right one.'
   last_verified: '2026-08-13'
   sources:
   - url: https://aws.amazon.com/ai/machine-learning/neuron/
-    shows: 're-read 2026-08-13: PyTorch and JAX natively, plus HuggingFace, vLLM, PyTorch Lightning,
-      TorchTitan and Optimum Neuron, "without modifying your code". NO customer count, download count,
-      usage figure or named customer anywhere on the page - the absence is what the reported_traction
-      instrument rests on'
+    shows: PyTorch and JAX natively, plus HuggingFace, vLLM, PyTorch Lightning, TorchTitan and Optimum Neuron,
+      "without modifying your code". No customer count, download count, usage figure or named customer anywhere
+      on the page - the absence is what the reported_traction instrument rests on.
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 4ccd6ea8ed04015f8c2729eec22575613ca21e969c4ff77b7483f5dfcec65965
@@ -124,9 +114,11 @@ capability:
   value: vLLM V1 API on Trainium/Inferentia with Expert Parallelism, disaggregated inference, speculative
     decoding; native PyTorch + JAX; compiler/runtime/profiler stack
   confidence: medium
-  note: No peer comparison was recorded for this product and none was found in today's read, so relative_to/relation
-    stay unset. Still no MLPerf Inference figure surfaced for Neuron, so basis remains feature_matrix rather
-    than benchmark. Feature set re-confirmed unchanged from the readthedocs overview.
+  note: 'The score rests on the feature set: the Neuron runtime supports the vLLM V1 API on Trainium and
+    Inferentia with expert parallelism for mixture-of-experts models, disaggregated inference architectures
+    and speculative decoding, alongside native PyTorch and JAX and a compiler/runtime/profiler stack. That
+    is a server-class inference feature set, but one locked to AWS Inferentia and Trainium hardware. No
+    MLPerf Inference figure has surfaced for Neuron, so there is no benchmark result behind the score.'
   basis_detail: vLLM V1 API on Trainium/Inferentia with Expert Parallelism, disaggregated inference, speculative
     decoding; native PyTorch + JAX; compiler/runtime/profiler stack
   last_verified: '2026-08-09'

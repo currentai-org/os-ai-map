@@ -1,23 +1,40 @@
 from build.validate import validate_sources
 
+# `llama` is the product the tests reach for; the other nine exist because a PUBLISHED
+# category owes ten scored products, and a scalar taxonomy entry means published. Padded
+# programmatically rather than by hand so the roster stays one fact in one place.
+# Letters rather than numbers in the filler slugs: a model slug carrying a digit reads as a
+# version or size token and validate rejects it, which is a rule worth not tripping in a fixture.
+FIXTURE_PRODUCTS = ["llama"] + [f"filler-{c}" for c in "abcdefghi"]
+
+
 def _fixture():
+    def product(slug):
+        return {"name": slug, "display_name": slug.title(), "type": "model",
+                "github": [{"url": f"https://github.com/meta-llama/{slug}"}], "comments": ""}
+
+    def score(slug):
+        cite = [{"url": "https://x", "shows": "y", "accessed": "2026-06-09"}]
+        return {"product": slug,
+                "openness": {"score": 2, "class": "restricted", "sources": cite},
+                "adoption": {"level": 4, "signal_type": "usage_volume", "sources": cite},
+                "capability": {"score": None, "basis": "n/a"}}
+
     return {
-        "organizations": {"meta": {"name": "meta", "display_name": "Meta", "products": ["llama"]}},
+        "organizations": {"meta": {"name": "meta", "display_name": "Meta",
+                                   "products": list(FIXTURE_PRODUCTS)}},
         "taxonomy": {"arcs": [{"name": "Model components", "layer": "model_components",
                                "categories": ["base_pretrained"]}]},
         "categories": {
             "base_pretrained": {"name": "base_pretrained", "display_name": "Base",
-                                "products": ["llama"], "comments": ""}
+                                "description": "Base / pretrained models.",
+                                "strapline": "The layer everything else is trained from.",
+                                "weights": {"adopt": 0.6, "cap": 0.4},
+                                "scoring_recipe": {"version": 1, "extends": "model"},
+                                "products": list(FIXTURE_PRODUCTS), "comments": ""}
         },
-        "products": {"llama": {"name": "llama", "display_name": "Llama",
-                                 "type": "model", "github": [{"url": "https://github.com/meta-llama/llama"}],
-                                 "comments": ""}},
-        "scores": {"llama": {"product": "llama",
-                               "openness": {"score": 2, "class": "restricted",
-                                            "sources": [{"url": "https://x", "shows": "y", "accessed": "2026-06-09"}]},
-                               "adoption": {"level": 4, "signal_type": "usage_volume",
-                                            "sources": [{"url": "https://x", "shows": "y", "accessed": "2026-06-09"}]},
-                               "capability": {"score": None, "basis": "n/a"}}},
+        "products": {slug: product(slug) for slug in FIXTURE_PRODUCTS},
+        "scores": {slug: score(slug) for slug in FIXTURE_PRODUCTS},
     }
 
 def test_valid_fixture_passes():
@@ -50,12 +67,64 @@ def test_matching_stems_produce_no_identity_error():
 
 
 def test_long_tail_scored_must_match_product_count():
-    d = _fixture()  # exactly one product
+    d = _fixture()
     d["long_tail"] = {"counts": {"scored": 999}}
     errs = validate_sources(d)
     assert any("counts.scored" in e for e in errs)
-    d["long_tail"]["counts"]["scored"] = 1  # now matches the single product
+    d["long_tail"]["counts"]["scored"] = len(FIXTURE_PRODUCTS)  # now matches the roster
     assert not any("counts.scored" in e for e in validate_sources(d))
+
+
+def test_long_tail_scored_counts_published_categories_only():
+    """Reproduces the review finding on the compilers/storage promotion.
+
+    A preliminary category may hold fully scored head products — that is the state a
+    category is in while it is being built. `serialize.py` omits them from the payload, so
+    counting them here let `counts.scored` exceed `n_total`, and the notebook's "of the N
+    products scored above" then named products the reader could not see. The check passed
+    the whole time, which is why it is worth a test rather than a comment.
+    """
+    d = _fixture()
+    d["taxonomy"]["arcs"][0]["categories"] = [{"name": "base_pretrained", "status": "preliminary"}]
+    d["long_tail"] = {"counts": {"scored": len(FIXTURE_PRODUCTS)}}  # the files, now unpublished
+    errs = validate_sources(d)
+    assert any("counts.scored" in e and "published categories (0)" in e for e in errs)
+    d["long_tail"]["counts"]["scored"] = 0  # nothing is published, so nothing is scored above
+    assert not any("counts.scored" in e for e in validate_sources(d))
+
+
+def test_head_products_in_a_preliminary_category_are_not_an_error():
+    """The other resolution considered for the same finding, and rejected.
+
+    Prohibiting head products in a preliminary category would make the promotion workflow
+    impossible: a roster is filled in, checked, and only then published. So the products are
+    allowed and the count follows the published roster instead.
+    """
+    d = _fixture()
+    d["taxonomy"]["arcs"][0]["categories"] = [{"name": "base_pretrained", "status": "preliminary"}]
+    # A preliminary category still owes a description, weights and a ladder; only the strapline
+    # and the ten-product floor wait for publication, so a thinner roster would pass here too.
+    d["long_tail"] = {"counts": {"scored": 0}}
+    assert validate_sources(d) == []
+
+
+def test_a_scalar_taxonomy_entry_is_held_to_the_published_contract():
+    """The compatibility shim for the historical spelling is not an exemption.
+
+    A scalar entry means published, and a published category owes a description, weights, a
+    ladder, a strapline and ten scored products. Skipping the checks for anything not declared
+    as a mapping let a bare category file pass with none of them and ship publicly empty. Found
+    in review of the compilers/storage promotion; measured before the fix, every one of the
+    sixteen scalar entries in the corpus already satisfies the contract.
+    """
+    d = _fixture()
+    d["categories"]["empty_new"] = {"name": "empty_new", "display_name": "Empty New",
+                                    "products": []}
+    d["taxonomy"]["arcs"][0]["categories"].append("empty_new")  # scalar, so published
+    errs = [e for e in validate_sources(d) if "empty_new" in e]
+    for owed in ("needs a description", "needs axis weights", "needs a scoring_recipe",
+                 "needs a strapline", "at least 10 scored products"):
+        assert any(owed in e for e in errs), owed
 
 
 def test_orphan_product_not_in_roster_fails():
@@ -76,6 +145,64 @@ def test_category_listed_in_two_arcs_fails():
                                   "categories": ["base_pretrained"]})
     errs = validate_sources(d)
     assert any("exactly one taxonomy arc" in e for e in errs)
+
+
+def test_preliminary_category_may_have_no_head_products_but_needs_business_logic():
+    d = _fixture()
+    d["taxonomy"]["arcs"][0]["categories"].append(
+        {"name": "storage", "status": "preliminary"}
+    )
+    d["categories"]["storage"] = {
+        "name": "storage",
+        "display_name": "Storage",
+        "description": "AI storage and retrieval systems.",
+        "weights": {"adopt": 0.6, "cap": 0.4},
+        "products": [],
+        "scoring_recipe": {"version": 1},
+    }
+    assert validate_sources(d) == []
+    d["categories"]["storage"].pop("scoring_recipe")
+    assert any("storage" in e and "scoring_recipe" in e for e in validate_sources(d))
+
+
+def test_explicitly_published_category_requires_publication_fields_and_head_depth():
+    # Trimmed back to one product and stripped of its strapline, since the shared fixture now
+    # satisfies the published contract - which is the point of the test one level up.
+    d = _fixture()
+    d["taxonomy"]["arcs"][0]["categories"] = [
+        {"name": "base_pretrained", "status": "published"}
+    ]
+    d["categories"]["base_pretrained"].pop("strapline")
+    d["categories"]["base_pretrained"]["products"] = ["llama"]
+    d["organizations"]["meta"]["products"] = ["llama"]
+    for key in ("products", "scores"):
+        d[key] = {"llama": d[key]["llama"]}
+    errs = validate_sources(d)
+    assert any("needs a strapline" in e for e in errs)
+    assert any("at least 10 scored products" in e for e in errs)
+    assert not any("description" in e or "axis weights" in e or "scoring_recipe" in e
+                   for e in errs), "the fixture supplies those three; only the two above are owed"
+
+
+def test_tail_registry_cannot_duplicate_a_head_product_or_artifact():
+    d = _fixture()
+    d["registry"] = {
+        "storage": {
+            "category": "storage",
+            "products": [
+                {
+                    "slug": "llama",
+                    "display_name": "Duplicate",
+                    "type": "software",
+                    "org": "meta",
+                    "github": "meta-llama/llama",
+                }
+            ],
+        }
+    }
+    errs = validate_sources(d)
+    assert any("already exists as a head product" in e for e in errs)
+    assert any("already belongs to head product" in e for e in errs)
 
 def test_roster_pointing_at_missing_product_fails():
     d = _fixture()

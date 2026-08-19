@@ -14,11 +14,11 @@ openness:
     - no-feature-gated-core(SDK is fully OSS; Traceloop dashboard is an optional external export target,
       not gated core)
   confidence: high
-  note: Apache-2.0 instrumentation library; exports to any OTel backend (Datadog, Honeycomb, etc.), so
-    the OSS is genuinely standalone. Re-read 2026-08-13 on the repository, which still states the Apache-2.0
-    licensing and the export-anywhere design in the vendor's own words. The PyPI project page could not be
-    re-read this run - pypi.org served a JavaScript bot challenge rather than the project page on every
-    attempt - so that source keeps its earlier read date and the confirmation rests on the repository.
+  note: An Apache-2.0 instrumentation library that exports to any OpenTelemetry backend - Datadog, Honeycomb
+    and the rest - so the open source project is genuinely standalone rather than a funnel into a paid backend.
+    The PyPI project page cannot be fetched; pypi.org serves a JavaScript bot challenge instead of the project
+    page. The Apache-2.0 licensing and the export-anywhere design are both stated in the repository, in
+    the vendor's own words, and that is what the score rests on.
   raw: license:Apache-2.0(OSI);source:public;no-feature-gated-core(SDK is fully OSS; Traceloop dashboard
     is an optional external export target, not gated core);core-gated:ungated
   last_verified: '2026-08-13'
@@ -46,10 +46,9 @@ adoption:
   reach: 1M-10M
   signal_type: usage_volume
   confidence: high
-  note: traceloop-sdk ~3.15M PyPI downloads/month; 15+ LLM providers, 7 vector DBs, 25+ tested export
-    destinations; ~7.2k stars corroborates only. Re-read 2026-08-13 - pypistats now reports 2,444,560
-    downloads last month for traceloop-sdk, down from the 3,149,787 recorded and still inside the 1M-10M
-    band, so level 4 is unchanged.
+  note: traceloop-sdk draws 2,444,560 PyPI downloads a month, inside the 1M-10M band. It instruments 15+
+    LLM providers, 7 vector databases and 25+ tested export destinations, and roughly 7,200 GitHub stars
+    corroborate without setting the band.
   last_verified: '2026-08-13'
   sources:
   - url: https://pypistats.org/packages/traceloop-sdk
@@ -71,11 +70,10 @@ capability:
   confidence: high
   relative_to: langfuse
   relation: one_below
-  note: Strong on tracing + integrations but narrow vs full platforms; it is an instrumentation layer,
-    not an eval/prompt/dataset suite. Below the MLflow/Langfuse/Phoenix/Opik feature breadth (C4). The
-    comparison the band rests on is now recorded rather than left in prose - one rung below the langfuse
-    anchor at 4. Re-read 2026-08-13 - the README is still organized around instrumentations, an SDK and
-    export destinations, with no evals, prompt management or dataset surface in the repository.
+  note: 'Strong on tracing and integrations but narrow beside the full platforms: this is an instrumentation
+    layer, not an evaluation, prompt and dataset suite. The open source layer has no native prompt management,
+    no evaluations or LLM-as-judge scoring, and no datasets or annotation, which leaves it one rung below
+    the feature breadth of MLflow, Langfuse, Phoenix and Opik at 4.'
   last_verified: '2026-08-13'
   sources:
   - url: https://github.com/traceloop/openllmetry

@@ -16,7 +16,7 @@ activity there is not a signal of real work.
 ## Directory map
 
 ```
-sources/               Curated YAML: organizations, categories, products, scores
+sources/               Curated YAML: organizations, categories, head products, scores, tail registry
 sources/taxonomy.yaml  Arc grouping + cross-category display order
 sources/allowlists/    Draining allowlists. undigested_sources.txt grandfathers the sources
                        cited before the digest discipline; anything NOT listed must carry a
@@ -119,8 +119,8 @@ including the copies that are deliberately kept and why.
 
 ## Data model
 
-The curated source set is four per-record YAML concerns in `sources/` plus the single
-`sources/taxonomy.yaml` manifest:
+The curated source set is four full-record YAML concerns in `sources/`, a compact tail
+registry, plus the single `sources/taxonomy.yaml` manifest:
 
 - **organizations**: one file per org (`name`=slug, `display_name`, `type`, `homepage`,
   optional `github` typed-url array and `comments` string). Owns the `products:` roster: a list of product slugs that belong to this org. A product
@@ -141,13 +141,19 @@ The curated source set is four per-record YAML concerns in `sources/` plus the s
   release date).
 - **scores**: one file per product (same slug) with `openness`, `adoption`, `capability`.
   Every non-null score value requires a `sources:` citation entry.
+- **registry**: one file per category with compact signal-only tail products. Each row owns
+  a stable slug, display name, product type, organization slug, and addressable artifact IDs.
+  Tail rows carry no editorial scores and need no organization file; they are exported to
+  OSO but excluded from the public scored map until promoted to the full records above.
 - **taxonomy.yaml**: owns arc grouping + cross-category display order. The three arcs
   ARE the Columbia openness-ontology layers (`product_ux`, `model_components`,
   `infrastructure`); each arc declares its `layer` slug and an ordered category list.
   `serialize.py` derives order, the display `arc`, and the machine `layer` from here, so
   a category's layer is never a separate hand-maintained field -- it is whichever arc the
-  category sits in. Validate enforces that every category appears in exactly one arc and
-  that every arc declares a valid layer.
+  category sits in. A mapping entry may also declare `status: preliminary | published`;
+  historical scalar entries mean published. Preliminary categories are registry-visible but
+  omitted from the notebook payload. Validate enforces that every category appears in exactly
+  one arc and that every arc declares a valid layer.
 
 Category slugs are underscore form (`base_pretrained`). Product and org slugs are
 hyphenated kebab-case (`llama-3-1`).
@@ -263,6 +269,13 @@ After any `components` edit, regenerate `raw` or CI fails.
 - **The chain does not run on a schedule.** Its crons were set at the model-revision layer; the
   platform schedules from the dataset, and zero scheduled runs have ever fired. Treat every
   scoring-chain recompute as manual, and check run history before believing a freshness claim.
+- **A real-corpus test asserts an invariant, or derives its count. Never a census.** Six tests here
+  have now failed because the work succeeded rather than because anything broke;
+  `tests/test_sweep_status.py` tells that story in its own docstring, and its `== 16` categories and
+  `== 472` products became the sixth on 2026-08-18. Both are now derived from the published
+  categories. Where a census IS pinned deliberately - `test_check_parity`'s computed/deferred split,
+  `test_serialize_rubric`'s per-category row counts - the comment beside it says what moves the
+  number, so whoever updates it next knows whether they are recording a change or hiding one.
 
 ## Editor posture (read-only on the warehouse)
 
@@ -283,19 +296,21 @@ once in `docs/reference/`, not in the skill. Skills are registered under `.claud
 Claude Code session discovers them by name; if yours does not list them, read
 `skills/<name>/SKILL.md` directly.
 
-**Five primary editor skills** (the contributor front door):
+**Six primary editor skills** (the contributor front door):
 
 | Skill | When to use | Workflow |
 |-------|------------|----------|
 | `add-product` | Add a new product | `docs/workflows/add-product.md` |
 | `update-product` | Change an existing product (identity, prose, a score, rosters, retirement) | `docs/workflows/update-product.md` |
 | `edit-category` | Create a category, or change its definition/weights/roster | `docs/workflows/edit-category.md` |
+| `promote-category` | Turn a preliminary category's seed roster into published head products | `docs/workflows/promote-category.md` |
 | `refresh-category` | Re-verify a whole category, scores and prose, to the PR | `docs/workflows/refresh-category.md` |
 | `migrate-axis` | Change an axis's schema or meaning corpus-wide (script-only) | `docs/workflows/migrate-axis.md` |
 
 **Advanced / internal skills** (off the primary path): `build-rubric` (derive a category's
 openness ladder), `add-data-source` (register a fetcher), `refresh-all-categories` (drive the
-whole-corpus sweep), `pyoso-analyst` (read-only warehouse analysis).
+whole-corpus sweep), `pyoso-analyst` (read-only warehouse analysis), `publish-release` (cut a
+versioned release + changelog; maintainer).
 
 Invoke the relevant skill before doing editor work. Skills enforce the read-only boundary and
 walk through validation + preview steps.

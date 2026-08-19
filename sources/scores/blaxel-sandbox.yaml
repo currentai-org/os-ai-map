@@ -17,17 +17,16 @@ openness:
         Blaxel sells - exists in no public repo; the MIT repo publishes only the in-sandbox HTTP API and
         a hub of image templates
   confidence: medium
-  note: 'MIT sandbox API and image hub with a proprietary managed platform. Confirmed `gated` 2026-08-12
-    on a named mechanism rather than on the paid tier existing, and it is the firecrawl/composio shape rather
-    than the litellm one: nothing is carved out inside the repo, but the piece that makes Blaxel a sandbox
-    product is not in any repo. blaxel-ai/sandbox is 419 entries of sandbox-api - the HTTP API running inside
-    a sandbox - plus about thirty Dockerfile templates under hub/, and the README calls it "Sandbox Hub
-    ... a collection of development environment templates". The scheduler that allocates a micro VM, and
-    the perpetual-standby and sub-25ms resume the product is sold on, appear nowhere across all 29 public
-    repos in the org, which hold SDKs, plugins and forks of third-party infrastructure. Deliberately not
-    decided by analogy with the other three sandbox slugs in this batch: e2b publishes the infra powering
-    its cloud and beta9 publishes its whole gateway, and both moved to 5, while this one and tensorlake
-    did not.'
+  note: 'MIT sandbox API and image hub with a proprietary managed platform. The core is gated on a named
+    mechanism rather than merely because a paid tier exists, and nothing is carved out inside the repository:
+    the piece that makes Blaxel a sandbox product is in no repository at all. blaxel-ai/sandbox is 419 entries
+    of sandbox-api - the HTTP API running inside a sandbox - plus about thirty Dockerfile templates under
+    hub/, and the README calls it "Sandbox Hub ... a collection of development environment templates". The
+    scheduler that allocates a micro VM, and the perpetual standby and sub-25ms resume the product is sold
+    on, appear nowhere across the 29 public repos in the org, which hold SDKs, plugins and forks of third-party
+    infrastructure. That is decided on what this org publishes rather than by analogy with its neighbors:
+    E2B publishes the infrastructure powering its cloud and beta9 publishes its whole gateway, and both
+    come out fully open, while this product and Tensorlake do not.'
   raw: license:MIT(OSI);source:public(sandbox API, self-hostable via Docker Compose);managed-tier:Blaxel
     proprietary perpetual-standby platform;core-gated:gated(the control plane that creates, suspends and
     resumes sandboxes - the perpetual-standby platform Blaxel sells - exists in no public repo; the MIT
@@ -85,21 +84,13 @@ adoption:
   reach: <1K stars
   signal_type: stars_fallback
   confidence: low
-  note: 'Very nascent: ~22 stars on the sandbox repo, a $7.3M seed (First Round, YC S2025), and an unverified
-    vendor claim of billions of agent requests. No usage or download signal. stars_fallback with a low-double-
-    digit star base places this at 1. Added on openness and mission-fit grounds despite the low prominence;
-    scored honestly. Low confidence. Stars read 2026-08-13: 27 across the 1 declared repo, which bands at <1K
-    stars, level 1 on the stars scale in signal_routing.yaml. The record carried no reach label at all before
-    this. No last_verified claimed: a star count is volatile, so a digest of it would read as drift on every
-    refetch, and the rest of the axis was not re-read. That last sentence is superseded - the rest of
-    the axis has now been re-read. The repository metadata endpoint reports 27 stars and 13 forks on
-    2026-08-13, which is the <1K stars band and level 1, and the vendor page was re-read for anything
-    bandable rather than the count being copied forward. Nothing bandable appeared. blaxel.ai/sandbox
-    publishes no customer, request or sandbox-count figure at all, and the "billions of agent requests"
-    line the note records is not on it today; the page sells on 25ms resumes and perpetual standby
-    instead. So stars remain the only signal, the level is unchanged, and the digest-drift objection is
-    accepted rather than avoided - a later refetch showing a different hash means the count moved, which
-    is what a star signal does.'
+  note: 'Very nascent: 27 stars and 13 forks on the sandbox repo, the only declared repo, which falls under
+    1K stars. With a low-double-digit star base and no other instrument, that reads at level 1. No usage
+    or download signal exists: blaxel.ai/sandbox publishes no customer, request or sandbox-count figure
+    at all - it sells on 25ms resumes and perpetual standby - so stars are all there is. The company is
+    backed by a $7.3M seed (First Round, YC S2025). It is included here on openness and mission-fit grounds
+    despite the low prominence, and scored on what the evidence supports. Confidence is low, and a star
+    count moves, so the figure below is a snapshot.'
   last_verified: '2026-08-13'
   sources:
   - url: https://api.github.com/repos/blaxel-ai/sandbox
@@ -121,19 +112,14 @@ capability:
     breadth:agent code execution; persistence:perpetual standby with full FS/memory state; scale:vendor-claimed
     billions of agent requests (unverified)
   confidence: medium
-  note: 'MicroVM isolation and the perpetual-standby resume model are a genuinely strong, distinctive feature
-    set, but proven scale is unverified and the product is early, so held at 3 rather than level with
-    the proven microVM 4s. Independent ComputeSDK TTI benchmarks measure ~450ms median fresh cold-start
-    (11th of 19 sandbox providers), mid-pack. Re-read 2026-08-13. The vendor page still carries every
-    recorded feature - microVMs, ~25ms resume from standby, full filesystem and memory snapshots,
-    auto-suspend after 15s idle, and persistence across months - and now also lists batch jobs across
-    thousands of sandboxes, outbound allow-lists, static IPs and self-hosted and VPC deployment options.
-    BENCHMARK FIGURE SUPERSEDED - the ComputeSDK leaderboard has re-run since (last run 7 August 2026)
-    and now covers 24 providers, so the cited "~450ms, 11th of 19" no longer appears. Blaxel now reads
-    0.51s median time-to-interactive, 0.60s P95, 0.61s P99, 100% success and a composite of 94.5, which
-    is 9th of 24 and still mid-pack, still sub-second, and ahead of E2B, Modal, Vercel and Cloud Run. The
-    band is unchanged and the reason it is held at 3 is unchanged too, since the missing evidence is
-    proven scale rather than latency.'
+  note: MicroVM isolation and the perpetual-standby resume model are a genuinely strong, distinctive feature
+    set, but proven scale is unverified and the product is early, so held at 3 rather than level with the
+    proven microVM 4s. The vendor page carries microVMs, ~25ms resume from standby, full filesystem and
+    memory snapshots, auto-suspend after 15s idle, persistence across months, batch jobs across thousands
+    of sandboxes, outbound allow-lists, static IPs, and self-hosted and VPC deployment options. Independent
+    ComputeSDK TTI benchmarks put Blaxel at a 0.51s median time-to-interactive, 0.60s P95, composite 94.5,
+    9th of 24 sandbox providers - mid-pack, sub-second, and ahead of E2B, Modal, Vercel and Cloud Run. Latency
+    is not what holds the band at 3; the missing evidence is proven scale.
   last_verified: '2026-08-13'
   sources:
   - url: https://blaxel.ai/sandbox

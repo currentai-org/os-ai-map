@@ -19,10 +19,9 @@ openness:
       detail: Firecracker itself is OSS/AWS, but the Sprites product/orchestration is proprietary
   confidence: high
   note: Proprietary managed sandbox SaaS; no open source runtime published (only client SDKs). Underlying
-    Firecracker is OSS but the product is not. Re-read 2026-08-13 - sprites.dev now redirects to fly.io/sprites,
-    which still ships only client surfaces (a CLI installer, a REST API, and JavaScript, Go, Elixir and
-    Python SDKs) against a hosted Fly.io control plane, with metered CPU, memory and storage pricing and
-    no self-hostable runtime or source release.
+    Firecracker is OSS but the product is not. The product page (now fly.io/sprites) ships only client surfaces
+    - a CLI installer, a REST API, and JavaScript, Go, Elixir and Python SDKs - against a hosted Fly.io
+    control plane, with metered CPU, memory and storage pricing and no self-hostable runtime or source release.
   raw: license:Proprietary;service:proprietary(Fly.io managed);source:closed;clients:CLI/REST/JS/Go SDKs
     (client libs only, no open runtime);isolation:Firecracker(Firecracker itself is OSS/AWS, but the Sprites
     product/orchestration is proprietary)
@@ -39,13 +38,12 @@ adoption:
   level: 1
   signal_type: reported_traction
   confidence: low
-  note: Launched Jan 2026 (~5 months at scoring time) as Fly.io's answer to E2B. No disclosed user/customer/usage
-    counts on the product page or launch coverage; positioned for AI coding-agent sessions (Claude Code/Codex).
-    Early-stage; placed at 1 on reported traction with low confidence pending real numbers. Re-read 2026-08-13
-    - the product page (now fly.io/sprites) still publishes no user, customer, session or sprite count of
-    any kind; the only numbers on it are the per-CPU-hour, per-GB-hour and per-GB-hour-storage prices, which
-    are unchanged at $0.07/CPU-hr. The abstention from a count is re-confirmed, so the record stays
-    reported_traction with no reach word.
+  note: Launched in January 2026 as Fly.io’s answer to E2B, and still early. No user, customer or usage
+    counts are disclosed on the product page or in launch coverage; the product is positioned for AI coding-agent
+    sessions (Claude Code, Codex). Placed at 1 on reported traction, with low confidence pending real numbers.
+    The product page (now fly.io/sprites) publishes no user, customer, session or sprite count of any kind;
+    the only numbers on it are the per-CPU-hour, per-GB-hour and per-GB-hour-storage prices, $0.07 per CPU-hour
+    among them. Because there is no count to band on, no reach figure is recorded.
   last_verified: '2026-08-13'
   sources:
   - url: https://sprites.dev/
@@ -67,16 +65,15 @@ capability:
     sessions (a key differentiator); language/runtime breadth: arbitrary Linux (''any code blob''); scale:
     Fly.io global infra'
   confidence: medium
-  note: Top-tier microVM isolation plus persistent stateful sandboxes (explicitly anti-ephemeral) is a
-    strong, differentiated feature set. Not a 5 only because it is brand-new with unproven scale vs incumbents;
-    isolation + persistence are best-in-class. Re-read 2026-08-13 - the product page moved to fly.io/sprites
-    and was rewritten around persistence and checkpointing; it now describes tiered storage backed by object
-    storage, a 100 GB POSIX volume, live copy-on-write checkpoints taken automatically on idle and shutdown,
-    per-sprite URLs and an outbound API gateway, but it no longer states the isolation mechanism or the
-    1-12s cold and sub-1s restore latencies the band was written against. Those were re-derived instead
-    from the vendor Sprites overview, which states that each Sprite is a Firecracker microVM with its own
-    kernel and filesystem, isolated in hardware from every other Sprite, and that it spins up in seconds.
-    Vendor prose no longer publishes a bounded cold-start figure.
+  note: Top-tier microVM isolation plus persistent stateful sandboxes (explicitly anti-ephemeral) is a strong,
+    differentiated feature set. It is not a 5 only because the product is brand-new with unproven scale
+    against the incumbents; isolation and persistence are best-in-class. The product page is now written
+    around persistence and checkpointing - tiered storage backed by object storage, a 100 GB POSIX volume,
+    live copy-on-write checkpoints taken automatically on idle and shutdown, per-sprite URLs and an outbound
+    API gateway - and it no longer states the isolation mechanism or the 1-12s cold and sub-1s restore latencies.
+    Those rest instead on the vendor Sprites overview, which states that each Sprite is a Firecracker microVM
+    with its own kernel and filesystem, isolated in hardware from every other Sprite, and that it spins
+    up in seconds. No bounded cold-start figure is published anywhere in the vendor prose.
   last_verified: '2026-08-13'
   sources:
   - url: https://sprites.dev/

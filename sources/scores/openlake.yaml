@@ -1,0 +1,82 @@
+product: openlake
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole product,
+    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
+    and the core ungated.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/openlake-project/openlake/blob/main/LICENSE
+    shows: LICENSE file is the verbatim Apache-2.0 text
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 2cc5b0edcac471328efc7aad74b07002f4bafb4837bebd4456e9332b797b500b
+    establishes:
+    - license
+  - url: https://api.github.com/repos/openlake-project/openlake
+    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for
+      openlake-project/openlake.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: c3b2c7f81c09bb271b1f42e7876d3b7e06f6a710642394f93b904eeb3f8564a7
+    establishes:
+    - license
+    - source
+  - url: https://github.com/openlake-project/openlake/blob/main/README.md
+    shows: README describes distributed storage for GPU workloads built in Rust on io_uring, presenting a KV-cache
+      offload pool and a petabyte-scale S3-compatible object store, with published throughput and latency figures
+      and a vLLM connector, with no paid tier, enterprise edition or license-key-gated build beside it.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 03a43a5f6de82dd245d7bc7b849ba88db4c731f8c0273f3356be8bbdf171ff9b
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 2,330 GitHub stars, which lands in the 1K-10K stars band of the stars scale, level 2. Built from source
+    or run from container images and Helm charts, with no package registry channel, so the stars scale applies;
+    at 2,330 stars the band is 2.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://api.github.com/repos/openlake-project/openlake
+    shows: Repo metadata - stargazers_count = 2,330 - for openlake-project/openlake.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: c3b2c7f81c09bb271b1f42e7876d3b7e06f6a710642394f93b904eeb3f8564a7
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: single-purpose store or index'
+  value: KV-cache offload and an S3-compatible object store on one io_uring engine, with a lossless BF16 codec and
+    a vLLM connector. Purpose-built and fast, with a narrower surface and shorter operational record than the band
+    above.
+  relative_to: vespa
+  relation: two_below
+  confidence: medium
+  note: Banded on the category feature matrix as single-purpose store or index. Placed two bands below the vespa
+    anchor, on a matrix that bands on how much of the persist-index-retrieve path a product provides itself, at
+    what scale and over how many retrieval modes.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/openlake-project/openlake/blob/main/README.md
+    shows: README still documents distributed storage for GPU workloads built in Rust on io_uring, presenting a
+      KV-cache offload pool and a petabyte-scale S3-compatible object store, with published throughput and latency
+      figures and a vLLM connector.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 03a43a5f6de82dd245d7bc7b849ba88db4c731f8c0273f3356be8bbdf171ff9b

@@ -37,6 +37,7 @@ import requests
 
 from build.check_refetch import (
     BACKOFF,
+    bot_wall,
     RETRIES,
     TRANSIENT,
     USER_AGENT,  # noqa: F401 — re-exported by import on purpose; a private copy would drift
@@ -103,6 +104,24 @@ def fetch(
             f"HTTP {response.status_code} after {attempts} attempts. The host declined to "
             f"answer; this says nothing about whether the fact exists. Retry later or defer "
             f"the axis. Do NOT record this as evidence and do NOT read it as an absence."
+        )
+        return record
+
+    # A bot wall answers 200, so the TRANSIENT branch above never sees it. Recording a digest
+    # here is how two sources came to share one on 2026-08-13: the wall is byte-identical
+    # whatever you asked for, and a score note then cited it as proof PyPI had stopped serving
+    # a description. Same treatment as a 429 — no digest, and a note saying not to read it as
+    # evidence or as an absence.
+    wall = bot_wall(response)
+    if wall:
+        record["transient"] = True
+        record["bytes"] = len(response.content)
+        record["note"] = (
+            f"HTTP {response.status_code} but the body is a bot-challenge page "
+            f"(matched {wall!r}) rather than the document. The host declined to serve it; "
+            f"this says nothing about whether the fact exists. Retry later, or cite a source "
+            f"the host will serve — for PyPI that is https://pypi.org/pypi/<name>/json. Do "
+            f"NOT record this as evidence and do NOT read it as an absence."
         )
         return record
 

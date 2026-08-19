@@ -14,12 +14,10 @@ openness:
       detail: API + ChatGPT only
   governing_release: gpt-5-line
   confidence: high
-  note: No downloadable weights, no published training data or code. Served through the OpenAI API and ChatGPT only,
-    so 1/closed. Kept apart from GPT-4o and GPT-4.1 because OpenAI markets those as distinct products rather than
-    versions of a single line, which is the same reason their slugs keep their version tokens. Adoption 5 reflects
-    ChatGPT-scale reach. Re-read 2026-08-13 - the line is still distributed only through ChatGPT, Microsoft
-    Copilot and the OpenAI API, with no weights, corpus or training code published for any release in it,
-    and TechCrunch still records GPT-5.5 Instant as the current ChatGPT default. No change.
+  note: No downloadable weights, no published training data or code. Served through the OpenAI API and ChatGPT
+    only, so 1/closed. Kept apart from GPT-4o and GPT-4.1 because OpenAI markets those as distinct products
+    rather than versions of a single line, which is the same reason their slugs keep their version tokens.
+    Adoption 5 reflects ChatGPT-scale reach.
   raw: weights:closed;data:closed;code:closed;license:Proprietary(API + ChatGPT only)
   last_verified: '2026-08-13'
   sources:
@@ -41,12 +39,9 @@ adoption:
   reach: '>10M users'
   signal_type: active_users
   confidence: high
-  note: GPT-5 was rolled out as the default model for logged-in ChatGPT users (Aug 2025). ChatGPT reached ~900M
-    weekly active users (Feb 2026) and ~1B by May 2026, far exceeding the >10M threshold. Adoption attributed to
-    the surface GPT-5 powers, not a standalone GPT-5 download count. Re-read 2026-08-13 - the source still
-    states ChatGPT "crossed 900 million weekly active users in February 2026", which is two orders above
-    the >10M users floor, so the band is unambiguous whichever way the figure has since moved. The second
-    source returned HTTP 403 to a plain fetch and was not re-dated. No change.
+  note: GPT-5 was rolled out as the default model for logged-in ChatGPT users (Aug 2025). ChatGPT reached
+    ~900M weekly active users (Feb 2026) and ~1B by May 2026, far exceeding the >10M threshold. Adoption
+    attributed to the surface GPT-5 powers, not a standalone GPT-5 download count.
   last_verified: '2026-08-13'
   sources:
   - url: https://almcorp.com/blog/chatgpt-900-million-weekly-active-users/
@@ -55,8 +50,7 @@ adoption:
     http_status: 200
     content_sha256: 36a725f2b702f9589be963dce5c0bd331512809aa07a9f7997fce3949f718acc
   - url: https://www.demandsage.com/chatgpt-statistics/
-    shows: ChatGPT usage statistics aggregator. Returned HTTP 403 to a plain fetch on 2026-08-13, so not
-      re-dated.
+    shows: ChatGPT usage statistics aggregator. Returns HTTP 403 to a plain fetch.
     accessed: '2026-06-04'
 capability:
   score: 5
@@ -64,20 +58,12 @@ capability:
   basis_detail: SWE-bench Verified
   value: null
   confidence: high
-  note: 'OpenAI-reported at launch: SWE-bench Verified 74.9%, MMMU 84.2%, AIME 2025 94.6% (no tools), Aider Polyglot
-    88%. Frontier-tier coding/reasoning. Vendor-reported figures. Re-read 2026-08-14 and ALL FOUR
-    re-derive from the primary source. The launch post was recorded unreachable on 2026-08-13, but
-    openai.com does not refuse automated requests outright - it challenges most of them and lets roughly
-    one in eight through, so the axis was blocked by the fetcher''s retry budget rather than by the host.
-    With that raised, the retrieved body carries every recorded figure verbatim: "74.9% on SWE-bench
-    Verified", "84.2% on MMMU", "94.6% on AIME 2025 without tools", "88% on Aider Polyglot". OpenAI''s
-    system card is kept as a second source because it documents the harness behind the basis figure -
-    a fixed subset of n=477 verified tasks at default verbosity - which the launch post does not.
-    A 2026-08-14 pass had dropped the other three figures as unsourceable; that was correct on the
-    evidence then available and is superseded now. Recorded while the card is open: Artificial Analysis
-    rates plain GPT-5 (high) at 35, #84 of 188 on their recalibrated index, but the tier takes the max
-    across its releases and its current flagship there is GPT-5.6 Sol (max) at 61, so the 5 is not in
-    doubt. No change to the score.'
+  note: OpenAI reported SWE-bench Verified 74.9%, MMMU 84.2%, AIME 2025 94.6% without tools and Aider Polyglot
+    88% at launch - frontier-tier coding and reasoning, though the figures are vendor-reported. Artificial
+    Analysis rates plain GPT-5 (high) at 35, 84th of 188 on their recalibrated index, but a tier is scored
+    on its strongest release and the current flagship there is GPT-5.6 Sol (max) at 61, so the 5 is not
+    in doubt. OpenAI's system card describes the harness behind the headline figure - a fixed subset of
+    477 verified tasks at default verbosity - which the launch post does not.
   last_verified: '2026-08-14'
   sources:
   - url: https://cdn.openai.com/gpt-5-system-card.pdf

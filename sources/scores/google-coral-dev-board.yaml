@@ -22,30 +22,27 @@ openness:
       detail: broadly purchasable
       raw: open_market (broadly purchasable)
   confidence: high
-  note: 'RETAIL RESOLVED 2026-08-14 and the axis dated. `retail` had blocked this confirmation because no declared value described the board''s actual state - Seeed marks both variants Discontinued and out of stock, and coral.ai/products/dev-board 302s to a page naming no hardware. `restricted` was the nearest word and is wrong: it means gated by NDA or design win, which is a part somebody CAN buy under terms. A withdrawn part is a different fact, so `discontinued` was added to the vocabulary - score-neutral, since no rung reads `retail`. Public datasheet, published baseboard design files and an open runtime/TFLite path, but the
-    Edge TPU silicon and the model compiler are proprietary closed binaries. The `schematics: none`
-    this record used to carry was wrong from the first pass rather than stale - its own cited
-    datasheet page has linked design files throughout. Corrected 2026-08-14: the datasheet offers a
-    baseboard schematic PDF, the Altium schematic source, an Allegro .brd layout and a STEP model of
-    baseboard and SoM together, all served from github.com/google-coral/electricals, which carries an
-    Apache-2.0 LICENSE. That is more than `radxa-rock-5b` releases, and it stops short of `open`
-    because only half the product is covered - the SoM that carries the i.MX 8M and the Edge TPU has
-    no design files. The score does not move: `published` reaches 4 only with a stack that builds from
-    source, and the Edge TPU compiler is a closed binary, so the ladder lands on 3/documented either
-    way. What changes is that the 3 is now derived from what Google actually publishes. The remaining
-    four components were read on 2026-08-14 and three of them hold. `datasheets` is `public` on the
-    same v1.7 datasheet. `toolchain` is `partial` on libedgetpu shipping its runtime source under
-    Apache-2.0 against an Edge TPU Compiler distributed only as an apt binary from
-    packages.cloud.google.com with no source anywhere - archived is not closed, so the value does not
-    move. `blobs` is `required` on the same closed compiler standing between any model and the
-    proprietary Edge TPU. THE AXIS IS NOT DATED, and `retail` is the component that blocks it. The
-    board reads as withdrawn rather than open-market - Seeed, which is its named reseller, marks both
-    the 1GB at $129.99 and the 4GB at $169.99 Discontinued and out of stock; coral.ai/products/dev-board
-    now 302s to developers.google.com/coral, a page that names no hardware and links no purchase route;
-    and no reachable distributor confirms stock, Mouser serving a bot-denial page and Farnell and
-    Digi-Key 403. The rubric''s vocabulary is open_market/distributor/restricted and none of the three
-    describes a discontinued part, so this is escalated for a ruling rather than guessed at. Escalated
-    with it - `adoption` below, which rests on the same wind-down.'
+  note: 'Google publishes a public datasheet and the baseboard design files, and there is an open runtime
+    with a TensorFlow Lite path, but the Edge TPU silicon and the model compiler are proprietary closed
+    binaries. The datasheet page links design files throughout: a baseboard schematic PDF, the Altium schematic
+    source, an Allegro .brd layout and a STEP model of baseboard and SoM together, all served from github.com/google-coral/electricals,
+    which carries an Apache-2.0 LICENSE. That is more than radxa-rock-5b releases, and it stops short of
+    fully open because only half the product is covered - the SoM that carries the i.MX 8M and the Edge
+    TPU has no design files. Published board files reach the next tier up only alongside a stack that builds
+    from source, and the Edge TPU Compiler is a closed binary, so the board lands at 3, documented, either
+    way; what the published files change is that the 3 is derived from what Google actually publishes. The
+    public documentation is that same v1.7 datasheet. The toolchain is partly open: libedgetpu ships its
+    runtime source under Apache-2.0 against an Edge TPU Compiler distributed only as an apt binary from
+    packages.cloud.google.com with no source anywhere, and a repository being archived does not make it
+    closed. Firmware blobs are required because that same closed compiler stands between any model and the
+    proprietary Edge TPU. Retail is the awkward component: the board reads as withdrawn rather than on open
+    sale. Seeed, its named reseller, marks both the 1GB at $129.99 and the 4GB at $169.99 discontinued and
+    out of stock; coral.ai/products/dev-board now redirects to developers.google.com/coral, a page that
+    names no hardware and links no purchase route; and no reachable distributor confirms stock, with Mouser
+    serving a bot-denial page and Farnell and Digi-Key refusing automated requests. Open market, distributor-only
+    and restricted all describe a part somebody can still buy under some terms, so a withdrawn part is recorded
+    instead as discontinued. The wording is score-neutral either way, since no rung on the hardware ladder
+    reads the retail component.'
   raw: schematics:published (baseboard schematic + Altium source + Allegro layout, Apache-2.0; SoM
     withheld);toolchain:partial (open runtime (libedgetpu) + TFLite, closed Edge TPU compiler);datasheets:public;blobs:required
     (proprietary Edge TPU ASIC + closed compiler);retail:open_market (broadly purchasable)
@@ -94,11 +91,10 @@ openness:
     - toolchain
     - blobs
   - url: https://github.com/google-coral/libedgetpu
-    shows: '"The userspace level runtime driver for Coral devices", Apache-2.0, source published - the
-      open half of the toolchain. Read again 2026-08-14 and it now carries "This repository was
-      archived by the owner on Oct 14, 2025. It is now read-only", last pushed 2024-08-11. The source
-      is still published under the same licence, so the openness value is unaffected; what the archive
-      bears on is adoption'
+    shows: '"The userspace level runtime driver for Coral devices", Apache-2.0, source published - the open
+      half of the toolchain. The repo carries "This repository was archived by the owner on Oct 14, 2025.
+      It is now read-only", last pushed 2024-08-11. The source is still published under the same licence,
+      so the openness value is unaffected; what the archive bears on is adoption'
     accessed: '2026-08-14'
     http_status: 200
     content_sha256: ab0cd769440985d0def6244a30fc16778c6d0a1e727a2cab92b998339545eaa7
@@ -117,19 +113,15 @@ adoption:
   reach: niche
   signal_type: reported_traction
   confidence: medium
-  note: 'LEVEL CORRECTED 4/broad -> 3/niche on 2026-08-14, because the previous note''s own stated
-    reason is false. It said the older edgetpu repo was archived "with libedgetpu now maintained".
-    libedgetpu was archived read-only on 2025-10-14, six months BEFORE the tracker repo, and the
-    org API read today shows 34 of 40 repositories archived - the entire Edge TPU stack, libedgetpu,
-    libcoral, pycoral, tflite, examples-camera and tutorials among them, all last pushed 2024-08-11.
-    The six live repositories are a different product line: coralnpu, coralnpu-compiler,
-    coralnpu-mpact, coralmicro and two project demos.
-
-    Combined with retail, this is a wound-down platform rather than a niche one. Seeed marks both
-    variants Discontinued and out of stock, and coral.ai/products/dev-board now 302s to a page that
-    names no hardware and links no purchase route. The category already places nvidia-jetson-agx-orin
-    and memryx-mx3 at 3/niche on stronger evidence than this board can now show. Held at 3 rather
-    than lower because the hardware remains in use and the archived stack still functions.'
+  note: 'The entire Edge TPU software stack is archived. libedgetpu is read-only, archived on 2025-10-14,
+    and the Coral GitHub org shows 34 of its 40 repositories archived - libedgetpu, libcoral, pycoral, tflite,
+    examples-camera and tutorials among them, all last pushed 2024-08-11. The six live repositories are
+    a different product line: coralnpu, coralnpu-compiler, coralnpu-mpact, coralmicro and two project demos.
+    Combined with retail, this is a wound-down platform rather than a niche one - Seeed marks both variants
+    discontinued and out of stock, and coral.ai/products/dev-board now redirects to a page that names no
+    hardware and links no purchase route. The category already places nvidia-jetson-agx-orin and memryx-mx3
+    at level 3, niche, on stronger evidence than this board can now show. It is held at 3 rather than lower
+    because the hardware remains in use and the archived stack still functions.'
   last_verified: '2026-08-14'
   sources:
   - url: https://api.github.com/orgs/google-coral/repos?per_page=100
@@ -147,10 +139,10 @@ capability:
   value: 4 TOPS (2 TOPS/W); int8-quantized models; TensorFlow Lite only
   confidence: high
   note: Modest 4 TOPS limited to int8 TFLite models; suited to small CNN inference rather than large or
-    generative models. Re-derived 2026-08-13 - the datasheet (still at version 1.7) reads "4 trillion
-    operations per second (TOPS)", "2 TOPS per watt" and an Edge TPU that "performs 4 trillion operations
-    per second" with TensorFlow Lite models. That is the lowest AI throughput in this category apart
-    from sipeed-maixcam, and the TFLite-only path is what keeps it below the 6 TOPS RK3588 boards.
+    generative models. The datasheet (version 1.7) reads "4 trillion operations per second (TOPS)", "2 TOPS
+    per watt" and an Edge TPU that "performs 4 trillion operations per second" with TensorFlow Lite models.
+    That is the lowest AI throughput in this category apart from sipeed-maixcam, and the TFLite-only path
+    is what keeps it below the 6 TOPS RK3588 boards.
   last_verified: '2026-08-13'
   sources:
   - url: https://coral.ai/docs/dev-board/datasheet/

@@ -1,0 +1,78 @@
+product: hummingbird
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: MIT license body confirmed. The repository is public and unarchived and builds the whole product, and the
+    README describes no paid tier, enterprise edition or license-gated build beside it, so source is public and
+    the core ungated.
+  raw: license:MIT(OSI);source:public;core-gated:ungated
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/microsoft/hummingbird/blob/main/LICENSE
+    shows: LICENSE file is the verbatim MIT text
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 9906940f61b1f0b533fa7d99baf55178b2808fbe113ea51dfbfad8572ccd5f2b
+    establishes:
+    - license
+  - url: https://api.github.com/repos/microsoft/hummingbird
+    shows: Repo metadata - license spdx_id MIT, private false, archived false, default branch main - for microsoft/hummingbird.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 47cbd80e556e2217c7e64c46360fcefc3881f44e908a905b20ea8371a3fd369c
+    establishes:
+    - license
+    - source
+  - url: https://github.com/microsoft/hummingbird/blob/main/README.md
+    shows: README describes compilation of trained traditional ML models into tensor computations so they run on
+      neural-network frameworks such as PyTorch, with no paid tier, enterprise edition or license-key-gated build
+      beside it.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 3a6f21c9df19cc285d044a991c0ab0a2d9d796dd7e4be32ff21d2a0ec099a10d
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: 18,660 PyPI downloads of `hummingbird-ml` in the trailing 30 days, which lands in the 10K-100K band of the
+    software usage scale, level 2.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://pypistats.org/api/packages/hummingbird-ml/recent
+    shows: last_month downloads = 18,660 for hummingbird-ml
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 17c05d7695237483231f8a1817c6df696b5524a404bb3c4ba8b9996d75286179
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: narrow kernel set or single-pass utility'
+  value: Lowers classical ML models into PyTorch, TorchScript, ONNX and TVM tensor programs. One input class, and
+    the transformation is a translation rather than an optimizing compilation.
+  relative_to: tensorrt
+  relation: two_below
+  confidence: medium
+  note: Banded on the category feature matrix as narrow kernel set or single-pass utility. Placed two bands below
+    the tensorrt anchor, on a matrix that bands on how much of the model-to-hardware transformation pipeline a product
+    performs, over how many inputs and targets.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/microsoft/hummingbird/blob/main/README.md
+    shows: README still documents compilation of trained traditional ML models into tensor computations so they
+      run on neural-network frameworks such as PyTorch.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 3a6f21c9df19cc285d044a991c0ab0a2d9d796dd7e4be32ff21d2a0ec099a10d

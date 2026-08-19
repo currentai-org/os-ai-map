@@ -48,6 +48,10 @@ Run standalone, this is the prose pass (formerly the `verify-product` skill). Va
 
 ### Re-verify the affected axes — a score's evidence or value moved
 A score change is evidence work, and it earns a date. Do **not** just edit the number.
+- **Before re-reading, read the history:** `git log -p --follow sources/scores/<slug>.yaml` is
+  the scoring history — what each previous pass concluded, and the digests it saw. Notes carry
+  durable reasoning only; they are published verbatim in the payload, so a verification narrative
+  written into one ships to the public product page. See `docs/reference/evidence-and-freshness.md`.
 - **One product:** re-read its cited sources, re-derive the axis, record the evidence and a real
   `last_verified` per [`../reference/evidence-and-freshness.md`](../reference/evidence-and-freshness.md).
   If it places a capability band against a peer, the peer must be confirmed at least as recently.

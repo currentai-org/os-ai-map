@@ -23,21 +23,18 @@ openness:
       detail: spec schema and docs ship in the one LF/AAIF-governed repo and every reference SDK is a public
         modelcontextprotocol repo - there is no vendor tier to withhold anything for
   confidence: high
-  note: 'Open protocol with OSI-licensed reference implementations and open foundation governance; no feature-gated
-    core. The record reproduces at 5/open_source as of 2026-08-12, after three fixes. (1) `source` was recorded
-    under the key `spec+reference-SDKs`, which no dimension''s `reads:` list names, so the right answer
-    sat under a key the ladder never looks at and the dimension read as unanswered. Renamed to `source`.
-    (2) `core-gated: ungated` added: the spec, the JSON/TypeScript schema and the docs are in the one repo,
-    every reference SDK is a separate public modelcontextprotocol repo (mcp-python-sdk and mcp-typescript-sdk
-    are already on the map at 5), and the project is governed by the Linux Foundation''s AAIF with no vendor
-    tier to withhold anything for. (3) The LICENSE really does split three ways - Apache-2.0 for new code
-    and specifications, CC-BY-4.0 for documentation other than the specifications, and MIT retained for
-    pre-transition contributions whose authors did not consent to relicensing. Recording all three under
-    `license` was the defect: `license_tier` resolves a compound on every part and takes the most restrictive,
-    so a license covering the project''s PROSE governed the artifact you run and pulled the product down
-    to 3/source_available. The documentation license now sits under a `docs:` key, which the openness ladder
-    does not read, matching how `autogen` records the identical situation - MIT code, CC-BY-4.0 docs, 5/open_source.
-    The license dimension answers a question about the shipped artifact.'
+  note: 'An open protocol with OSI-licensed reference implementations under open foundation governance,
+    and nothing in the core held back. The specification, the JSON/TypeScript schema and the docs all live
+    in one repository, every reference SDK is a separate public modelcontextprotocol repo (mcp-python-sdk
+    and mcp-typescript-sdk are both on this map at 5), and the Linux Foundation''s AAIF governs the project,
+    so there is no vendor tier for anything to be withheld for. The LICENSE splits three ways: Apache-2.0
+    for new code and specifications, CC-BY-4.0 for documentation other than the specifications, and MIT
+    retained for pre-transition contributions whose authors did not consent to relicensing. Only the two
+    code licenses bear on the score. A compound license is resolved on every part and takes the most restrictive
+    of them, so filing the documentation license alongside the code would let a license covering the project''s
+    prose govern the artifact you actually run and drag the product down to source-available. The documentation
+    license is therefore recorded apart from the code licenses, the same way autogen records the identical
+    situation - MIT code, CC-BY-4.0 docs, scored 5. Both code licenses are OSI-approved, so the tier holds.'
   raw: source:public(spec schema and docs in one repo plus reference SDKs in separate public repos);license:Apache-2.0(OSI,
     new code/spec)+MIT(OSI, legacy contributions);docs:CC-BY-4.0(documentation other than the specifications;
     not read by the openness ladder, which scores the artifact the product ships);governance:Linux-Foundation/AAIF(open,
@@ -78,17 +75,11 @@ adoption:
   reach: '>10M'
   signal_type: usage_volume
   confidence: high
-  note: 'De facto standard agent tool protocol, adopted natively by OpenAI (ChatGPT, Agents SDK, Responses
-    API), Google DeepMind (Gemini), Microsoft and AWS, with more than 16,000 MCP servers in the wild. Re-read
-    2026-08-13, and one recorded figure did not survive it: the note claimed "~97M monthly SDK downloads
-    in Mar 2026 (up from ~2M at Nov 2024 launch)" and "4,750% growth since launch" on the strength of the
-    Zuplo retrospective. That page carries neither figure and never could have - it is dated 2025-11-24,
-    four months before the month it was cited for. What it does say is "Over 16,000 MCP servers exist in
-    the wild" and the vendor-adoption list, both of which the note keeps. The download claim has been replaced
-    with a measured one from the two reference SDK registries, read the same day: 335,363,270 PyPI downloads
-    in the trailing 30 days for `mcp` and 198,046,096 npm downloads for @modelcontextprotocol/sdk. Either
-    alone clears the >10M level-5 floor by more than an order of magnitude, so level 5 and reach >10M are
-    unchanged and now rest on a countable figure rather than on an aggregator sentence that was not there.'
+  note: De facto standard agent tool protocol, adopted natively by OpenAI (ChatGPT, Agents SDK, Responses
+    API), Google DeepMind (Gemini), Microsoft and AWS, with more than 16,000 MCP servers in the wild. The
+    band rests on the two reference SDK registries - 335,363,270 PyPI downloads in the trailing 30 days
+    for `mcp` and 198,046,096 npm downloads for @modelcontextprotocol/sdk - either of which clears the >10M
+    level-5 floor by more than an order of magnitude.
   last_verified: '2026-08-13'
   sources:
   - url: https://en.wikipedia.org/wiki/Model_Context_Protocol
@@ -121,79 +112,30 @@ capability:
   basis: n/a
   value: null
   confidence: high
-  note: 'A wire protocol is not benchmarked; capability is not a meaningful axis per recipe. Openness +
-    adoption carry the signal.
-
-    A NULL WORTH SETTLING, flagged 2026-08-13. A null capability does not abstain the way a
-    null adoption does - build/serialize.py falls through to adoption alone rather than dropping the
-    product - so this record computes maturity 5.0 from its adoption 5 and counts as a mature open
-    product on one axis while a reader assumes two.
-
-    CORRECTION, recorded because the first version of this note overstated it: it said the category''s
-    stage rested on this null, on the reasoning that one mature open product is the entire stage>=4
-    threshold. Re-derived against build/serialize.py during the category pass, agent_tools_protocols
-    has SEVEN mature open products, six of which reach 4.5 with no null in the arithmetic. That clears
-    _STAGE5_MIN_MATURE, so the category is stage 5 and deleting this record entirely would leave six
-    and change nothing. The defect is policy hygiene, not a threshold rescue.
-
-    The recommendation from that pass is to DECLARE adoption-only grading for protocols rather than
-    score capability here, because implementation breadth is adoption wearing a capability label -
-    the map already bands this product''s adoption on SDK downloads, so putting breadth in capability
-    makes the blend (adoption + adoption) / 2. agent2agent-protocol has the identical shape. See
-    docs/reference/gap-analysis.md, "The two nulls are not symmetric".
-
-
-    RE-DERIVED 2026-08-13 in the agent_tools_protocols pass, and the premise above is WRONG on the
-    facts, which changes what is at stake rather than whether it matters. The null is not load-bearing
-    for the category. Counting the rule in build/serialize.py against the current corpus, seven fully-open
-    products in this category clear the 4.5 maturity floor - model-context-protocol, fastmcp, qdrant,
-    mcp-python-sdk, mcp-typescript-sdk, docling and markitdown - and six of the seven get there from a
-    real adoption AND a real capability score with no null anywhere in the arithmetic. Seven is at or
-    above _STAGE5_MIN_MATURE, so the category is at stage 5 rather than stage 4, and striking this record
-    out entirely leaves six, still above the threshold. So the claim "this category''s stage-4 claim rests
-    on an axis nobody has scored" was an error; the stage does not move either way.
-
-    What remains true is the methodological defect, and it should still be settled - a record that
-    computes a maturity of 5.0 from one axis, while a reader assumes two, is wrong in a way that will
-    matter in a category with fewer mature products. The recommendation from this pass is the SECOND
-    option, declaring adoption-only grading, and against the first. Every candidate basis for a score
-    fails a different test. Implementation breadth is adoption wearing a capability label: the map already
-    bands MCP''s adoption on SDK downloads and A2A''s on the count of supporting organizations, so putting
-    breadth here would let one instrument vote twice and make the blend (adoption + adoption) / 2. Spec
-    maturity is genuinely independent of uptake, but there is no ladder for it anywhere in the four
-    rubrics, it would be a fifth instrument sharing the `capability` field name with benchmark,
-    feature_matrix and internal-eval - the collision docs/reference/evidence-and-freshness.md already names as the
-    reason not to structure this field - and with only two protocols on the map there is nothing to
-    anchor a `relative_to` against. A two-product feature matrix against agent2agent-protocol is the only
-    option the existing machinery could enforce, and it requires un-nulling A2A first, so it is not a
-    smaller change than the declaration. Declaring the exclusion fixes both protocols and every future
-    one in a single move, and it converts a fallback nobody chose into a policy someone can argue with.
-
-    DECLARED 2026-08-14, on the owner''s ruling. GRADING POLICY - A WIRE PROTOCOL IS GRADED ON OPENNESS
-    AND ADOPTION ONLY, AND ITS CAPABILITY IS NULL BY POLICY RATHER THAN BY FALLBACK. The reasoning is the
-    one above and in docs/reference/gap-analysis.md, "The two nulls are not symmetric": implementation
-    breadth is adoption wearing a capability label, and this product''s adoption is ALREADY banded on SDK
-    downloads - 335M monthly PyPI downloads of `mcp` and 198M monthly npm downloads of
-    @modelcontextprotocol/sdk - so scoring breadth here would let one instrument vote twice and make the
-    blend (adoption + adoption) / 2. No score is invented to close the gap, which is the point of writing
-    the policy down instead.
-    What the reader should take from the null is therefore precise: not "nobody has got to this yet" but
-    "there is no independent capability question to ask of a specification". The known cost stands and is
-    stated rather than fixed here - build/serialize.py falls through to adoption alone rather than
-    dropping the product, so this record computes a maturity of 5.0 from one axis. That is a serializer
-    question, and it is not load-bearing for the category either way, since agent_tools_protocols has
-    seven mature open products and six reach 4.5 with no null in the arithmetic.
-    agent2agent-protocol has the identical shape and carries the same declaration.
-    Re-read 2026-08-14 and the premise still holds: the spec repo publishes a specification, a protocol
-    schema and documentation, and neither it nor anywhere the project points carries a benchmark,
-    leaderboard or measured performance figure for the protocol.'
+  note: 'A wire protocol is not benchmarked, so capability is left unscored here by policy rather than for
+    want of a number: openness and adoption carry the whole signal for a specification. Two capability questions
+    could be asked of a protocol and neither survives scrutiny. Breadth of implementation is adoption wearing
+    a capability label, and this product''s adoption is already banded on exactly that kind of evidence
+    - 335 million monthly PyPI downloads of `mcp` and 198 million monthly npm downloads of @modelcontextprotocol/sdk
+    - so scoring breadth as well would let one instrument vote twice and average adoption against itself.
+    Spec maturity is genuinely independent of uptake, but no rubric on this map has a ladder for it, it
+    would be a fifth instrument sharing a field with benchmark, feature-comparison and internal-evaluation
+    scores, and with only two protocols on the map there is nothing to anchor a comparison against. A two-product
+    feature comparison against the Agent2Agent protocol is the only thing the existing machinery could enforce,
+    and it would require scoring that record''s capability first. No score is invented to close the gap.
+    The blank should therefore be read precisely: not "nobody has got to this yet" but "there is no independent
+    capability question to ask of a specification". One cost comes with it, stated rather than papered over
+    - with no capability score the maturity calculation falls through to adoption alone rather than dropping
+    the product, so this record computes a maturity of 5.0 from a single axis. That does not distort the
+    category, which holds seven mature open products, six of them reaching 4.5 with no blank in the arithmetic.
+    The Agent2Agent protocol has the same shape and carries the same policy.'
   last_verified: '2026-08-14'
   sources:
   - url: https://api.github.com/repos/modelcontextprotocol/modelcontextprotocol
-    shows: 'Repo metadata read 2026-08-14 - description "Specification and documentation for the Model
-      Context Protocol", topics docs / mcp / specification / standard, 8,950 stars, homepage
-      modelcontextprotocol.io. What the project ships is a specification and its schema, and no benchmark
-      result, leaderboard entry or performance figure is published for it.'
+    shows: Repo metadata - description "Specification and documentation for the Model Context Protocol",
+      topics docs / mcp / specification / standard, 8,950 stars, homepage modelcontextprotocol.io. What
+      the project ships is a specification and its schema, and no benchmark result, leaderboard entry or
+      performance figure is published for it.
     accessed: '2026-08-14'
     http_status: 200
     content_sha256: 0756fabd71a36d29890ee7d2e08c29b43df3718acf2d99e45dba784e23572afe

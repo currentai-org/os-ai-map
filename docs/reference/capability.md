@@ -99,6 +99,38 @@ answerable and a sentence never did:
 The gate ratchets like the others — it covers the products that record a comparison and does
 not block the ones that do not.
 
+## Writing the rungs
+
+The bands are per category, so somebody writes their definitions, and that writing is where the
+axis is won or lost. Two rules, both learned on 2026-08-18 while banding `compilers` and `storage`.
+
+**Count the products per rung before you accept the wording.** A rung holding a third of the
+category is not discriminating between anything; it is a label. `storage`'s top rung was first
+written as "a distributed retrieval platform that also ranks or runs inference in the serving
+path", which admitted seven of twenty-seven products - Vespa and Elasticsearch, but also every
+vector database that fuses scores, since Qdrant has RRF and DBSF, Infinity has tensor reranking and
+Milvus has rerank functions. Reworded to "hosts and evaluates ranking or embedding models inside
+the serving path" it admits two. Nothing about the products changed; the definition stopped being
+satisfiable by almost all of them. The distribution is the diagnostic, and it costs one query.
+
+**Prefer a definition stated as a capability the product either has or has not, over one stated as
+an outcome.** "Ranks results" is an outcome, and outcomes generalize until they are vacuous -
+everything ranks results, that is what retrieval is. "Hosts a model" is a capability: it is
+checkable against a repository tree, it either ships an inference plugin or it does not, and two
+reviewers reading the same evidence reach the same answer. The same move works in the other
+direction: `compilers` bands on how much of the model-to-hardware transformation a product
+performs, which is why a kernel library tops out at 3 there - it supplies the primitives a compiler
+targets and transforms nothing itself. That is a fact about the product, not a judgment about its
+quality.
+
+A corollary for the evidence: **`basis_detail` is per product, never per cluster.** Three products
+moved into `storage` carrying `basis_detail: ANN-Benchmarks` from their old category, and it was
+wrong on all three - Pinecone is not in ANN-Benchmarks at all and its own note said so, while
+Milvus and Qdrant are listed but the harness publishes recall-versus-QPS plots with no ranking
+table, so it corroborates inclusion while their headline numbers come from their vendors' own
+harnesses. One name for a group of products reads as a shared measurement that does not exist.
+**Moving a product between categories re-opens the instrument, not just the band.**
+
 ## What it does not do
 
 - **It is not routable from signals.** `signal_routing.yaml` records the axis as effectively
@@ -114,6 +146,10 @@ not block the ones that do not.
 
 - [ ] `score` is 1-5 and comparable only within the category, or null with `basis: n/a`.
 - [ ] `basis` names the instrument; `basis_detail` and `value` carry what it was and what it said.
+- [ ] `basis_detail` names the instrument for THIS product - not one inherited from a cluster of
+      peers, and not a harness the product is absent from.
+- [ ] A new or reworded rung was checked against its own distribution: no rung quietly holds a
+      third of the category (see "Writing the rungs").
 - [ ] A comparison-placed band records `relative_to` (same category) and `relation`, and the
       arithmetic holds against the peer's score.
 - [ ] A non-null score cites at least one source.

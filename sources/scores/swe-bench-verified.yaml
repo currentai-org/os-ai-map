@@ -19,16 +19,13 @@ openness:
     data-source:
       value: real GitHub PR/issue pairs
   confidence: medium
-  note: Ungated, downloadable, full gold patches and tests, datasheet present, and the license is stated.
-    The canonical SWE-bench repository calls itself "Code and data for the following works", lists SWE-bench
-    among them, and its "Citation & license" section says "MIT license" with the citation block directly
-    beneath headed "For SWE-bench (Verified)". The HF card for Verified still declares no license field,
-    and where a repository license and a distribution-point license differ the repository license governs,
-    so the recorded 4 moves to the 5/open the ladder computes. (Distinct from SWE-bench broader/hidden variants,
-    which can carry held-out splits.) Re-read 2026-08-13 - the repository README still carries the
-    "Citation & license" section reading "MIT license" with the "For SWE-bench (Verified)" citation
-    directly beneath, the LICENSE file re-fetched with an unchanged digest, and the HF repo is still
-    ungated with a rendering card and no license field.
+  note: Ungated and downloadable, with full gold patches and tests, a datasheet present, and the license
+    stated. The canonical SWE-bench repository describes itself as "Code and data for the following works"
+    and lists SWE-bench among them; its "Citation & license" section says "MIT license", with the citation
+    block directly beneath headed "For SWE-bench (Verified)". The Hugging Face card for Verified declares
+    no license field, and where a repository license and a distribution-point license differ the repository
+    license governs, so MIT is what applies and this counts as fully open. (Distinct from the broader and
+    hidden SWE-bench variants, which can carry held-out splits.)
   raw: license:MIT(SWE-bench repository states MIT over its code and data; the HF card for Verified still
     declares no license field);redistributability:full(downloadable parquet, ungated);datasheet:yes(dataset
     card + arXiv:2310.06770);held-out:no hidden split in Verified itself(the public 500-instance set is
@@ -51,45 +48,42 @@ openness:
     accessed: '2026-06-04'
   - url: https://huggingface.co/datasets/princeton-nlp/SWE-bench_Verified/raw/main/README.md
     shows: card front matter carries dataset_info, splits and configs and no `license:` key; body describes
-      the 500 human-validated instances and the swebench.com leaderboard. Re-read on 2026-08-12 and
-      still unlicensed at source. The repository holds only .gitattributes, README.md and one parquet
-      file, so there is no LICENSE file alongside the data either. Re-fetched 2026-08-13 with an
-      unchanged digest
+      the 500 human-validated instances and the swebench.com leaderboard, so the data is unlicensed at source.
+      The repository holds only .gitattributes, README.md and one parquet file, so there is no LICENSE file
+      alongside the data either
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 6edb58b1b2c44ce858426c4ebc90077827713b75cebc243661e4433c81fd57f5
-    establishes: [license]
+    establishes:
+    - license
   - url: https://raw.githubusercontent.com/SWE-bench/SWE-bench/main/README.md
-    shows: '"Code and data for the following works:" listing SWE-bench and SWE-bench Multimodal; the
-      "Citation & license" section reads "MIT license. Check `LICENSE.md`." and the citation immediately
-      under it is headed "For SWE-bench (Verified)"; the news entry for Aug. 13, 2024 introduces Verified
-      as a 500-problem subset produced with OpenAI Preparedness. Re-read 2026-08-13 and all three
-      statements are still present; the digest moved (the README picked up unrelated edits), which
-      is why the whole section was re-read rather than assumed'
+    shows: '"Code and data for the following works:" listing SWE-bench and SWE-bench Multimodal; the "Citation
+      & license" section reads "MIT license. Check `LICENSE.md`." and the citation immediately under it
+      is headed "For SWE-bench (Verified)"; the news entry for Aug. 13, 2024 introduces Verified as a 500-problem
+      subset produced with OpenAI Preparedness'
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 910cf1bd353b898e9c6299d8e805c1a115d00c1b877e1239753be8d9caa4275f
-    establishes: [license]
+    establishes:
+    - license
   - url: https://raw.githubusercontent.com/SWE-bench/SWE-bench/main/LICENSE
-    shows: 'MIT License, copyright 2023 the SWE-bench authors. Note the README points at `LICENSE.md`,
-      which 404s; the file is `LICENSE`. Re-fetched 2026-08-13 with an unchanged digest'
+    shows: MIT License, copyright 2023 the SWE-bench authors. Note the README points at `LICENSE.md`, which
+      404s; the file is `LICENSE`
     accessed: '2026-08-13'
     http_status: 200
     content_sha256: 2bd2e08df7147f67a69b42c10efae09bd4bf119df397371036187d5dd1b02f57
-    establishes: [license]
+    establishes:
+    - license
 adoption:
   level: 4
   reach: 100K-1M
   signal_type: usage_volume
   confidence: high
-  note: 'The de-facto standard agentic-coding benchmark of 2025-2026: cited as the headline coding metric in
-    nearly every frontier model release (GPT-5, Claude Opus, DeepSeek, Qwen, Kimi all report SWE-bench
-    Verified). ~914k HF downloads/month plus a live, heavily-submitted leaderboard at swebench.com. Strongest
-    ''citation-as-standard'' signal in the batch. Read live 2026-08-13: 413,323 Hugging Face downloads in the
-    trailing 30 days across the declared artifact(s), which bands at 100K-1M, level 4. The previous reach
-    ''1M-10M'' was a band off a different scale. Re-read against the Hub API on 2026-08-13: still 413,323
-    downloads in the trailing 30 days, so level 4 / 100K-1M stands and the axis is now dated. The ~914k
-    figure the June source cited no longer appears anywhere on the dataset page.'
+  note: 'The de-facto standard agentic-coding benchmark: it is cited as the headline coding metric in nearly
+    every frontier model release - GPT-5, Claude Opus, DeepSeek, Qwen and Kimi all report SWE-bench Verified
+    - alongside a live, heavily-submitted leaderboard at swebench.com. Hugging Face records 413,323 downloads
+    in the trailing 30 days across the declared artifacts, which puts it in the 100K-1M band, level 4 on
+    the dataset adoption scale. It is the strongest citation-as-standard signal in this category.'
   last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/api/datasets/princeton-nlp/SWE-bench_Verified
@@ -102,10 +96,9 @@ capability:
   basis: n/a
   value: null
   confidence: high
-  note: Dataset, not 'capable'. Notably high contamination-resistance and discriminating power for coding
-    agents (real repo state, executable tests), but per recipe capability is n/a; the quality proxy is
-    noted, not numerically scored. Re-read 2026-08-13 and the abstention stands - the page publishes
-    a static instance set and no performance or feature claim the capability axis could band.
+  note: A dataset is not 'capable', so this axis is left unscored. SWE-bench Verified is notably contamination-resistant
+    and discriminating for coding agents, since it runs against real repository state and executable tests,
+    but that quality is noted here rather than turned into a number.
   last_verified: '2026-08-13'
   sources:
   - url: https://huggingface.co/datasets/princeton-nlp/SWE-bench_Verified

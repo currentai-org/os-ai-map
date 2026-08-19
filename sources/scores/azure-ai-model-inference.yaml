@@ -14,11 +14,6 @@ openness:
       value: Azure-managed
   confidence: high
   note: Fully proprietary managed Azure service; no source released. Scored closed.
-    Re-read 2026-08-13. The Foundry Models endpoints page still describes a wholly Azure-managed service
-    - deployments are Azure resources subject to Azure policy, reached through a single Foundry
-    inference endpoint with an OpenAI-compatible surface, and nothing about the serving stack is
-    published. No source, no self-host path, no license other than the Azure product terms. Value
-    unchanged at 1 / closed.
   raw: license:proprietary(Azure managed service);source:closed;interface:OpenAI-compatible REST endpoint
     over Foundry model deployments;hardware:Azure-managed
   last_verified: '2026-08-13'
@@ -36,13 +31,8 @@ adoption:
   confidence: low
   banded_quantity: Azure enterprise base, not this inference endpoint
   note: Default inference surface for Microsoft Foundry across Azure's enterprise base; broad distribution
-    but no published per-service usage number. Level 4 reflects Azure-enterprise scale (reported), not
-    a measured count.
-    Re-read 2026-08-13. The page still presents this as the one endpoint in front of every Foundry model
-    deployment for an Azure subscription, and it still publishes no per-service usage figure of any kind
-    - no call volume, no customer count, no deployment count. The band therefore remains a reported
-    reach rather than a measured one, and reported_traction with no numeric reach is the honest
-    instrument here. Level unchanged at 4.
+    but no published per-service usage number. Level 4 reflects Azure-enterprise scale (reported), not a
+    measured count.
   last_verified: '2026-08-13'
   sources:
   - url: https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/endpoints
@@ -56,15 +46,10 @@ capability:
   value: unified OpenAI-compatible endpoint; multi-provider model deployments (OpenAI, DeepSeek, MAI-DS-R1,
     etc.); keyless Entra ID auth; content filtering, rate limiting, batch inference
   confidence: medium
-  note: Capability is managed-endpoint breadth (multi-model routing, auth, governance), not raw engine
-    throughput. This is closer to a managed API gateway over model deployments than a weight-loading inference
-    engine; see recategorize flag.
-    Re-read 2026-08-13. The page still shows the whole feature set the band rests on - one endpoint
-    switching between many model deployments without code changes, per-deployment content filtering and
-    rate limiting, keyless authentication through Microsoft Entra ID role assignments, and batch
-    inference. It now also carries a deprecation banner for the Azure AI Inference beta SDK, retiring 26
-    August 2026 in favour of the OpenAI/v1 API, which is a migration of the client surface rather than a
-    change in what the service does. Band unchanged at 3.
+  note: Capability here is the breadth of a managed endpoint - multi-model routing, authentication, governance
+    - rather than raw engine throughput. It behaves more like a managed API gateway over model deployments
+    than a weight-loading inference engine. The Azure AI Inference beta SDK is deprecated in favour of the
+    OpenAI/v1 API, which changes the client surface rather than what the service does.
   last_verified: '2026-08-13'
   sources:
   - url: https://learn.microsoft.com/en-us/azure/foundry/foundry-models/concepts/endpoints

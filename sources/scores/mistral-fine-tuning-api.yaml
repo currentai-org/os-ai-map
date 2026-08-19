@@ -19,11 +19,11 @@ openness:
   note: 'The hosted FT API on Mistral''s Studio platform (formerly branded La Plateforme) is a proprietary
     managed service (LoRA adapters under the hood); no source for the service. Mistral separately ships
     an OSS mistral-finetune SDK for self-hosting, but that is a distinct product from this managed API.
-    Verified 2026-08-09: Mistral''s own docs now file the service under ''Deprecated features > Fine-tuning
-    API (legacy)'' with a banner reading ''This feature is deprecated and is no longer actively supported'';
-    the current API pricing catalog lists ongoing training/storage billing only for the Classifier API tier,
-    with no separate catalog entry for general text/vision SFT. Openness is unaffected either way: still
-    a closed, proprietary managed offering with no self-hostable implementation.'
+    Mistral''s own docs file the service under ''Deprecated features > Fine-tuning API (legacy)'' with a
+    banner reading ''This feature is deprecated and is no longer actively supported'', and the current API
+    pricing catalog lists ongoing training/storage billing only for the Classifier API tier, with no separate
+    catalog entry for general text/vision SFT. Openness is unaffected either way: still a closed, proprietary
+    managed offering with no self-hostable implementation.'
   last_verified: '2026-08-09'
   raw: source:closed;training-pipeline:closed;runs-on:La-Plateforme-only;license:Proprietary(managed service,
     per-token + storage pricing); base-weights:Mistral-models(open-weight variants exist)
@@ -73,14 +73,10 @@ adoption:
   reach: null
   signal_type: unknown
   confidence: low
-  note: 'No disclosed standalone usage figure for the Mistral fine-tuning API located this run (jobs run /
-    customers tuning). La Plateforme is a widely used developer platform, but no honest per-SKU FT signal was
-    found; declining to assign a level.  ABSTENTION RE-CONFIRMED 2026-08-13, and the date records that rather
-    than a measurement. Re-read the cited page and no usage figure has appeared - no jobs run, customers
-    tuning, models fine-tuned or developer count. A null level is a value here, not a gap: it says somebody
-    looked and the vendor publishes nothing, which is the honest answer for a feature sold inside a larger
-    platform. The corpus already dates abstentions this way (9 null axes carry a last_verified), and leaving
-    them undated would make an axis unverifiable forever purely because its answer is ''none''.'
+  note: 'No standalone usage figure exists for the Mistral fine-tuning API: no jobs run, no customers tuning,
+    no models fine-tuned, no developer count. The platform around it is widely used by developers, but nothing
+    published is specific to fine-tuning, so no level is assigned. The absence is itself the finding for
+    a feature sold inside a larger platform.'
   last_verified: '2026-08-13'
   sources:
   - url: https://mistral.ai/news/customization
@@ -95,12 +91,15 @@ capability:
     models. Tunable base models limited to Mistral''s own (Small/Medium tier). No exposed full-FT/DPO/RFT
     or scale/precision knobs in the managed API.'
   confidence: medium
-  note: 'Narrower managed method set than the SFT+DPO+RFT services - LoRA SFT + classifier factory only,
-    over Mistral''s own models, black-box. Scored 3: a real, capable managed LoRA-FT service but below the
-    preference/RL-capable OpenAI/Azure/Together/Fireworks offerings (C4) and far below the OSS scale definers.
-    Verified 2026-08-09: Mistral''s docs still describe both methods (deprecated fine-tuning guide), but
-    the live API pricing catalog now lists ongoing billing only for the Classifier API tier, with no separate
-    entry for general text/vision SFT - a possible narrowing worth a closer read.'
+  note: 'A narrower managed method set than the services offering supervised, preference and reinforcement
+    fine-tuning together: here it is LoRA-adapter supervised fine-tuning for text and vision, plus the Classifier
+    Factory for classification models, over Mistral''s own Small and Medium tier models, with no exposed
+    full fine-tuning, DPO or RFT and no scale or precision controls. It is a real, capable managed LoRA
+    service, but it sits below the preference- and RL-capable offerings from OpenAI, Azure, Together and
+    Fireworks, and far below the open-source libraries that define scale. Mistral''s own docs still describe
+    both methods in a fine-tuning guide now filed under deprecated features, while the live API pricing
+    catalog lists ongoing billing only for the Classifier tier, with no separate entry for general text
+    or vision fine-tuning.'
   last_verified: '2026-08-09'
   sources:
   - url: https://docs.mistral.ai/resources/deprecated/finetuning
