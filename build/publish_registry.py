@@ -59,8 +59,16 @@ def graphql(query: str, variables: dict, token: str) -> dict:
             "User-Agent": USER_AGENT,
         },
     )
-    with urllib.request.urlopen(request, timeout=60) as response:
-        body = json.load(response)
+    try:
+        with urllib.request.urlopen(request, timeout=60) as response:
+            body = json.load(response)
+    except urllib.error.HTTPError as error:
+        # A malformed query is a GraphQL VALIDATION error served with a 4xx, and the reason is
+        # in the body urlopen never reads. Without this, `deleteStaticModel` returning
+        # SimplePayload! rather than a scalar surfaced as a bare "HTTP Error 400: Bad Request"
+        # with no hint that the mutation was missing its selection set (2026-08-19).
+        detail = error.read().decode("utf-8", "replace")[:500]
+        raise RuntimeError(f"HTTP {error.code} from the API: {detail}") from error
     if body.get("errors"):
         raise RuntimeError(f"GraphQL error: {json.dumps(body['errors'])[:500]}")
     return body["data"]
@@ -76,7 +84,7 @@ M_STATIC = """mutation($input: CreateStaticModelInput!){
 M_URL = """mutation($staticModelId: ID!){ createStaticModelUploadUrl(staticModelId:$staticModelId) }"""
 M_RUN = """mutation($input: CreateStaticModelRunRequestInput!){
   createStaticModelRunRequest(input:$input){ success run{ id status } } }"""
-M_DELETE = """mutation($id: ID!){ deleteStaticModel(id:$id) }"""
+M_DELETE = """mutation($id: ID!){ deleteStaticModel(id:$id){ success message } }"""
 
 
 def resolve_dataset(name: str, org_id: str, token: str) -> str:
@@ -204,9 +212,21 @@ def main() -> int:
             continue
         if args.dry_run:
             print(f"  would delete empty {table} ({model_id})")
-        else:
+            continue
+        # Best effort, and deliberately not fatal. The delete is tidying: the model is already
+        # excluded from the run below, so the publish is correct whether or not it goes. Making
+        # it fatal would mean a token without delete permission cannot publish the registry at
+        # all, which is a far worse failure than an empty model sitting in the dataset.
+        try:
             graphql(M_DELETE, {"id": model_id}, token)
             print(f"  deleted empty {table} ({model_id}); it had never materialized")
+        except (RuntimeError, urllib.error.URLError) as error:
+            print(
+                f"  WARNING could not delete empty {table} ({model_id}): {error}. "
+                f"It is excluded from this run, so the publish is unaffected, but the dataset "
+                f"will keep showing it as broken until it is removed.",
+                file=sys.stderr,
+            )
 
     if stale:
         print(
