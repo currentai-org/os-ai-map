@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: "17 5 * * 1"
   workflow_dispatch:
+    inputs:
+      preflight_only:
+        description: "Check the credentials against the real secrets and stop, without the 3.5h fetch"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -63,18 +68,103 @@ jobs:
             exit 1
           fi
 
+          # Three checks, because each catches a failure the others cannot, and this workflow
+          # has now been killed by two of them 3.5 hours in.
+          #
+          #   1. RECOGNISED   /rate_limit accepts any valid credential and needs no permission,
+          #                   so a failure here is "GitHub does not know this token" and no
+          #                   permission change will help. That was the 2026-06-11 to 08-19
+          #                   outage: a fine-grained PAT, expired, 401 on everything.
+          #   2. SCOPED       X-OAuth-Scopes must carry repo or public_repo. Only CLASSIC
+          #                   tokens advertise scopes; a fine-grained PAT sends no such header,
+          #                   and there is no supported way to ask one what it may do. So this
+          #                   check doubles as "is this the kind of token we can verify".
+          #   3. AUTHORIZED   viewerPermission on THIS repo must be WRITE, MAINTAIN or ADMIN.
+          #
+          # None of the three is sufficient alone, which is the point. On 2026-08-19 the token
+          # passed check 1 and the run still died at the last step on
+          # "Resource not accessible by personal access token" — an authorization failure that
+          # a recognition check cannot see. And check 3 alone would not have caught that token
+          # either: viewerPermission reports the ACTOR's permission on the repo, which was
+          # ADMIN throughout, whatever the token was granted. Check 2 is what separates them.
+          #
+          # What none of them prove is a successful createPullRequest, because GitHub offers no
+          # dry run for it. This is the closest available proxy, not a guarantee.
           bad=""
-          probe() {  # name, url, auth header
-            code=$(curl -s -o /dev/null -w '%{http_code}' -H "$3" "$2" || echo 000)
-            if [ "$code" != "200" ]; then
-              echo "::error::$1 did not authenticate (HTTP $code)"
-              bad="$bad $1"
+
+          probe() {  # name, url, auth header, token value
+            body="$(mktemp)"
+            # curl prints 000 itself when it cannot connect, so `|| echo 000` would yield
+            # 000000 and read as a status nobody can look up. Keep transport failure separate.
+            if ! code=$(curl -s -o "$body" -w '%{http_code}' -H "$3" "$2"); then
+              echo "::error::$1 could not be checked: the request to $2 failed before an HTTP status"
+              bad="$bad $1"; rm -f "$body"; return 0
             fi
+            if [ "$code" = "200" ]; then rm -f "$body"; return 0; fi
+            echo "::error::$1 did not authenticate (HTTP $code)"
+            # A fresh file per probe: reusing one meant a failed request left the PREVIOUS
+            # probe's body in place, so the error quoted an answer to a different question.
+            echo "  the API said: $(head -c 200 "$body" | tr -d '\n')"
+            rm -f "$body"
+            RAW="$4"; TRIMMED="$(printf '%s' "$RAW" | tr -d '[:space:]')"
+            echo "  stored value: ${#RAW} chars$([ "${#RAW}" -ne "${#TRIMMED}" ] && echo " (WHITESPACE PRESENT - $(( ${#RAW} - ${#TRIMMED} )) chars, which alone can cause a 401)")"
+            case "$RAW" in
+              ghp_*) echo "  kind: classic PAT" ;;
+              github_pat_*) echo "  kind: fine-grained PAT (expires; 30 days by default, 1 year max)" ;;
+              ghs_*) echo "  kind: App installation token" ;;
+              gho_*|ghu_*) echo "  kind: OAuth / user-to-server token" ;;
+              hf_*) echo "  kind: Hugging Face token" ;;
+              *) echo "  kind: unrecognised prefix - is the right value in this secret?" ;;
+            esac
+            bad="$bad $1"
           }
-          probe GH_FETCH_TOKEN https://api.github.com/user "Authorization: Bearer $GH_TOKEN"
-          probe HF_TOKEN https://huggingface.co/api/whoami-v2 "Authorization: Bearer $HF_TOKEN"
+
+          # 1. recognised
+          probe GH_FETCH_TOKEN https://api.github.com/rate_limit "Authorization: Bearer $GH_TOKEN" "$GH_TOKEN"
+          probe HF_TOKEN https://huggingface.co/api/whoami-v2 "Authorization: Bearer $HF_TOKEN" "$HF_TOKEN"
+
+          # 2. scoped — and the absence of the header is itself the finding
+          if [ -z "$bad" ]; then
+            SCOPES="$(curl -sI -H "Authorization: Bearer $GH_TOKEN" https://api.github.com/rate_limit \
+                      | tr -d '\r' | awk -F': ' 'tolower($1)=="x-oauth-scopes"{print $2}')"
+            if [ -z "$SCOPES" ]; then
+              echo "::error::GH_FETCH_TOKEN advertises no OAuth scopes, so it is a fine-grained PAT."
+              echo "  This workflow requires a CLASSIC PAT with the repo (or public_repo) scope."
+              echo "  A fine-grained token cannot be verified before the run: GitHub exposes no"
+              echo "  way to ask one what it may do, and there is no dry run for creating a pull"
+              echo "  request — so the first sign of trouble is the last step failing, 3.5 hours in."
+              echo "  That is what happened on 2026-08-19."
+              bad="$bad GH_FETCH_TOKEN(no-scopes)"
+            else
+              echo "GH_FETCH_TOKEN scopes: $SCOPES"
+              case ",$(printf '%s' "$SCOPES" | tr -d ' '), " in
+                *,repo,*|*,public_repo,*) : ;;
+                *) echo "::error::GH_FETCH_TOKEN carries [$SCOPES] but needs repo or public_repo to open the refresh PR"
+                   bad="$bad GH_FETCH_TOKEN(scope)" ;;
+              esac
+            fi
+          fi
+
+          # 3. authorized on THIS repo, which is the check the 2026-08-19 failure needed
+          if [ -z "$bad" ]; then
+            PERM="$(curl -s -H "Authorization: Bearer $GH_TOKEN" -H 'Content-Type: application/json' \
+                    -d '{"query":"{ repository(owner:\"'"${GITHUB_REPOSITORY%%/*}"'\", name:\"'"${GITHUB_REPOSITORY##*/}"'\"){ viewerPermission } }"}' \
+                    https://api.github.com/graphql \
+                    | python3 -c 'import json,sys; d=json.load(sys.stdin); r=(d.get("data") or {}).get("repository") or {}; print(r.get("viewerPermission") or "")')"
+            case "$PERM" in
+              WRITE|MAINTAIN|ADMIN) echo "GH_FETCH_TOKEN effective permission on $GITHUB_REPOSITORY: $PERM" ;;
+              "") echo "::error::could not read viewerPermission for $GITHUB_REPOSITORY - the token may not reach this repository at all"
+                  bad="$bad GH_FETCH_TOKEN(unauthorized)" ;;
+              *) echo "::error::GH_FETCH_TOKEN has $PERM on $GITHUB_REPOSITORY; opening a pull request needs WRITE, MAINTAIN or ADMIN"
+                 bad="$bad GH_FETCH_TOKEN(read-only)" ;;
+            esac
+          fi
+
           if [ -n "$bad" ]; then
-            echo "::error::Rotate the secret(s) above in repo settings. A PAT that has expired is the usual cause; see issue #281."
+            # A 401 is "not recognised", so no permission change helps. A 403 is "recognised and
+            # DENIED", which is sometimes scopes but is also how rate limiting, an unapproved
+            # fine-grained token and org policy answer — read the body above rather than guessing.
+            echo "::error::Fix the secret(s) above in repo settings. GH_FETCH_TOKEN must be a classic PAT with repo or public_repo, held by an account with write access to this repository."
             exit 1
           fi
 
@@ -82,6 +172,13 @@ jobs:
           # round trip against a live model - a heavier and less predictable precondition
           # than a preflight should carry - and the fetcher surfaces an OSO failure itself.
           echo "GH_FETCH_TOKEN and HF_TOKEN authenticate; OSO_API_KEY present."
+      - name: Stop here when preflight_only was requested
+        if: inputs.preflight_only
+        run: |
+          echo "::notice::Credentials verified. Stopping before the fetchers, as requested."
+          echo "Re-run without preflight_only to do the refresh."
+          exit 1
+
       - uses: astral-sh/setup-uv@v5
         with:
           enable-cache: true
