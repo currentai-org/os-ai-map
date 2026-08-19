@@ -25,6 +25,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 import os
 import sys
@@ -66,7 +67,8 @@ def graphql(query: str, variables: dict, token: str) -> dict:
 
 
 Q_DATASETS = """query($where: JSON){ datasets(where:$where){ edges{ node{ id name type } } } }"""
-Q_STATIC = """query($where: JSON){ staticModels(where:$where){ edges{ node{ id name } } } }"""
+Q_STATIC = """query($where: JSON){ staticModels(where:$where){
+  edges{ node{ id name materializations(first:1){ totalCount } } } } }"""
 M_DATASET = """mutation($input: CreateDatasetInput!){
   createDataset(input:$input){ success dataset{ id name } } }"""
 M_STATIC = """mutation($input: CreateStaticModelInput!){
@@ -74,6 +76,7 @@ M_STATIC = """mutation($input: CreateStaticModelInput!){
 M_URL = """mutation($staticModelId: ID!){ createStaticModelUploadUrl(staticModelId:$staticModelId) }"""
 M_RUN = """mutation($input: CreateStaticModelRunRequestInput!){
   createStaticModelRunRequest(input:$input){ success run{ id status } } }"""
+M_DELETE = """mutation($id: ID!){ deleteStaticModel(id:$id) }"""
 
 
 def resolve_dataset(name: str, org_id: str, token: str) -> str:
@@ -101,15 +104,42 @@ def resolve_dataset(name: str, org_id: str, token: str) -> str:
     return created["createDataset"]["dataset"]["id"]
 
 
-def resolve_static_models(dataset_id: str, org_id: str, token: str) -> dict[str, str]:
+def data_rows(path: Path) -> int:
+    """Rows in a serialized CSV, not counting the header.
+
+    A serializer emits a header for every table it declares, whether or not anything
+    filled it, so file existence says nothing about content. `tail_products.csv` is 94
+    bytes of header on a push where every tail row was promoted or rejected.
+    """
+    with path.open(newline="", encoding="utf-8") as handle:
+        return max(0, sum(1 for _ in csv.reader(handle)) - 1)
+
+
+def resolve_static_models(
+    dataset_id: str, org_id: str, token: str, wanted: tuple[str, ...]
+) -> dict[str, tuple[str, bool]]:
+    """Model id and whether it has ever materialized a table, per wanted table.
+
+    Only `wanted` tables get created. A model created for a table with no rows is a
+    model that cannot succeed: dlt infers a schema from records, so zero records
+    produces zero tables, and the runner fails the whole materialization on
+    "No tables found after processing static model". That is what turned run
+    7cd22391 red on 2026-08-19 after all 16 populated tables had already loaded.
+    """
     found = graphql(Q_STATIC, {"where": {"dataset_id": {"eq": dataset_id}}}, token)
-    existing = {n["node"]["name"]: n["node"]["id"] for n in found["staticModels"]["edges"]}
-    for table in TABLES:
+    existing = {
+        n["node"]["name"]: (
+            n["node"]["id"],
+            bool((n["node"].get("materializations") or {}).get("totalCount")),
+        )
+        for n in found["staticModels"]["edges"]
+    }
+    for table in wanted:
         if table not in existing:
             created = graphql(
                 M_STATIC, {"input": {"orgId": org_id, "datasetId": dataset_id, "name": table}}, token
             )
-            existing[table] = created["createStaticModel"]["staticModel"]["id"]
+            existing[table] = (created["createStaticModel"]["staticModel"]["id"], False)
     return existing
 
 
@@ -145,27 +175,72 @@ def main() -> int:
         )
         return 2
 
+    counts = {t: data_rows(args.dir / f"{t}.csv") for t in TABLES}
+    populated = tuple(t for t in TABLES if counts[t])
+    empty = tuple(t for t in TABLES if not counts[t])
+
     dataset_id = resolve_dataset(dataset_name, org_id, token)
-    models = resolve_static_models(dataset_id, org_id, token)
+    models = resolve_static_models(dataset_id, org_id, token, populated)
     print(f"dataset {dataset_name} = {dataset_id}")
 
+    # An empty table is a real state, not an error: a category whose tail registry has been
+    # fully triaged declares `products: []` and keeps the file so the next discovery batch has
+    # somewhere to land. What must not happen is publishing nothing and leaving whatever was
+    # there before, which would serve rows the repo no longer declares. So the model is
+    # removed, and the table's absence is the honest reading of "no rows". A later push with
+    # rows recreates it, because resolve_static_models creates whatever is missing.
+    #
+    # Dropping a table that HOLDS rows is not something to do unattended, though. That shape
+    # means a serializer regressed or a filter went wrong, and the loud stop is the point.
+    stale = []
+    for table in empty:
+        model = models.get(table)
+        if model is None:
+            print(f"  skipped {table}.csv (no rows, no model to publish to)")
+            continue
+        model_id, materialized = model
+        if materialized:
+            stale.append(table)
+            continue
+        if args.dry_run:
+            print(f"  would delete empty {table} ({model_id})")
+        else:
+            graphql(M_DELETE, {"id": model_id}, token)
+            print(f"  deleted empty {table} ({model_id}); it had never materialized")
+
+    if stale:
+        print(
+            f"refusing to publish: {stale} serialized zero rows but already hold a "
+            f"materialized table. Publishing nothing would leave the old rows in place, and "
+            f"dropping a populated table is a human's call. Check the serializer before "
+            f"re-running.",
+            file=sys.stderr,
+        )
+        return 2
+
     if args.dry_run:
-        for table in TABLES:
-            print(f"  would upload {table}.csv -> {models[table]}")
+        for table in populated:
+            print(f"  would upload {table}.csv ({counts[table]:,} rows) -> {models[table][0]}")
         return 0
 
-    for table in TABLES:
+    for table in populated:
         path = args.dir / f"{table}.csv"
-        url = graphql(M_URL, {"staticModelId": models[table]}, token)["createStaticModelUploadUrl"]
+        model_id = models[table][0]
+        url = graphql(M_URL, {"staticModelId": model_id}, token)["createStaticModelUploadUrl"]
         upload(path, url)
-        print(f"  uploaded {table}.csv ({path.stat().st_size:,} bytes)")
+        print(f"  uploaded {table}.csv ({path.stat().st_size:,} bytes, {counts[table]:,} rows)")
 
     run = graphql(
         M_RUN,
-        {"input": {"datasetId": dataset_id, "selectedModels": [models[t] for t in TABLES]}},
+        {
+            "input": {
+                "datasetId": dataset_id,
+                "selectedModels": [models[t][0] for t in populated],
+            }
+        },
         token,
     )["createStaticModelRunRequest"]["run"]
-    print(f"materialization run {run['id']} ({run['status']})")
+    print(f"materialization run {run['id']} ({run['status']}) over {len(populated)} models")
     return 0
 
 
