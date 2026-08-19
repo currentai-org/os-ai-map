@@ -5,13 +5,14 @@ name for it. Find your task below, open the one workflow it points to, and follo
 workflow names the reference material and the exact gates it needs; you should not have to
 know the internal vocabulary before you begin.
 
-## Five doors
+## Six doors
 
 | I want to… | Workflow | Skill |
 |---|---|---|
 | Add a new product to the map | [`workflows/add-product.md`](workflows/add-product.md) | `add-product` |
 | Change something about an existing product | [`workflows/update-product.md`](workflows/update-product.md) | `update-product` |
 | Create a category, or change its definition, weights, or roster | [`workflows/edit-category.md`](workflows/edit-category.md) | `edit-category` |
+| Turn a preliminary category's seed roster into published products | [`workflows/promote-category.md`](workflows/promote-category.md) | `promote-category` |
 | Re-verify a whole category against its sources | [`workflows/refresh-category.md`](workflows/refresh-category.md) | `refresh-category` |
 | Change the schema or meaning of an axis, corpus-wide | [`workflows/migrate-axis.md`](workflows/migrate-axis.md) | `migrate-axis` |
 
@@ -44,7 +45,7 @@ When in doubt about which door, start there.
 
 ## Skills off the primary path
 
-Every skill is classified in `skills/registry.yaml` (validated in CI). Beyond the five primary
+Every skill is classified in `skills/registry.yaml` (validated in CI). Beyond the six primary
 doors above:
 
 - **Advanced** — deep editorial skills for maintainers: `build-rubric` (derive a category's

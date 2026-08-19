@@ -261,6 +261,13 @@ After any `components` edit, regenerate `raw` or CI fails.
 - **The chain does not run on a schedule.** Its crons were set at the model-revision layer; the
   platform schedules from the dataset, and zero scheduled runs have ever fired. Treat every
   scoring-chain recompute as manual, and check run history before believing a freshness claim.
+- **A real-corpus test asserts an invariant, or derives its count. Never a census.** Six tests here
+  have now failed because the work succeeded rather than because anything broke;
+  `tests/test_sweep_status.py` tells that story in its own docstring, and its `== 16` categories and
+  `== 472` products became the sixth on 2026-08-18. Both are now derived from the published
+  categories. Where a census IS pinned deliberately - `test_check_parity`'s computed/deferred split,
+  `test_serialize_rubric`'s per-category row counts - the comment beside it says what moves the
+  number, so whoever updates it next knows whether they are recording a change or hiding one.
 
 ## Editor posture (read-only on the warehouse)
 
@@ -281,13 +288,14 @@ once in `docs/reference/`, not in the skill. Skills are registered under `.claud
 Claude Code session discovers them by name; if yours does not list them, read
 `skills/<name>/SKILL.md` directly.
 
-**Five primary editor skills** (the contributor front door):
+**Six primary editor skills** (the contributor front door):
 
 | Skill | When to use | Workflow |
 |-------|------------|----------|
 | `add-product` | Add a new product | `docs/workflows/add-product.md` |
 | `update-product` | Change an existing product (identity, prose, a score, rosters, retirement) | `docs/workflows/update-product.md` |
 | `edit-category` | Create a category, or change its definition/weights/roster | `docs/workflows/edit-category.md` |
+| `promote-category` | Turn a preliminary category's seed roster into published head products | `docs/workflows/promote-category.md` |
 | `refresh-category` | Re-verify a whole category, scores and prose, to the PR | `docs/workflows/refresh-category.md` |
 | `migrate-axis` | Change an axis's schema or meaning corpus-wide (script-only) | `docs/workflows/migrate-axis.md` |
 

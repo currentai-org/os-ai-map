@@ -29,7 +29,13 @@ Five, and all in the same PR:
 3. **Verify against PRIMARY sources.** Never assert a 2025+ release from memory; confirm it
    against the vendor HF org / blog / registry. If it cannot be confirmed, mark it SKIP rather
    than guess. Read the LICENSE **body** for the OSI call (a custom copyright line makes a
-   genuine MIT/Apache repo report `NOASSERTION`).
+   genuine MIT/Apache repo report `NOASSERTION`). Two shapes worth knowing before you hunt: a
+   repository following the **REUSE convention** carries no root LICENSE at all - the texts sit in
+   `LICENSES/*.txt` with a `REUSE.toml` declaring which covers what, and the API reports no license
+   rather than `NOASSERTION` (`arm-compute-library`). And a **split license** states its own split
+   in the body: `elasticsearch` names a default triple license and carves out `x-pack`,
+   `meilisearch` reads `MIT AND BUSL-1.1` and names an Enterprise Edition. Those are `core-gated`
+   evidence, not just a license question.
 4. **Write the score.** Record the openness evidence in `openness.components` and let the
    category's `scoring_recipe` decide the `(score, class)` — do not hand-assign unless the
    category defers the product. Every non-null openness/capability value needs a `sources`

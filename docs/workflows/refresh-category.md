@@ -107,6 +107,13 @@ uv run python -m pytest tests/ -q
 Expect gates to fail first and tell you something — read the failure before working around it.
 Never commit while a gate is failing. Never commit `build/notebook_data.json` or `notebooks/`.
 
+**Budget the GitHub API before the sweep, not during it.** Unauthenticated it allows 60 requests an
+hour, and re-verifying one product costs three to four — the repo record, the license body, the
+README, sometimes a tree listing — so any category past about fifteen products exceeds the ceiling.
+Confirm `GITHUB_TOKEN` actually works first: a stale one fails as a silent 401 on every call, which
+reads as *every repository in the category is dead*, and that is exactly how a first pass over fifty
+live repositories reported itself on 2026-08-18 before anyone checked the token.
+
 ## Expected PR contents
 One PR for the category: every moved score with its evidence, every held product with its
 reason, and the re-fetch confirmation count. Then stop — a human merges.
