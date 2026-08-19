@@ -7,7 +7,7 @@
   "properties": {
     "arcs": {
       "type": "array",
-      "description": "The whole file. An arc is one layer of the Columbia openness ontology (the GPAIS tech stack) plus a display label for it and an ordered list of the categories that sit in it; three arcs hold all 16 categories as of 2026-08-08. This is the ONLY place a category's position in the stack is declared, and it is hand-edited: whoever adds a category or reorders the map writes it, never a tool. Everything downstream is derived from it and stored nowhere else: build/serialize.py flattens the arcs in sequence into the payload's `order`, stamps each category with its arc `name` and `layer`, and emits the arc sequence as `layer_order`; build/serialize_registry.py writes `arc_name` and `layer` into the registry's categories.csv, which warehouse/ingest/build_stack_map.py joins so every scored repo carries a layer in the warehouse. The schema is deliberately loose here (it does not require the array to be non-empty, and it cannot compare one arc against another), so the real invariants are cross-file and live in build/validate.py: every category file appears in exactly one arc, and every slug listed resolves to a categories/<slug>.yaml. Note that this file had a schema for a long time before anything applied it; it is a single file rather than a directory, so it fell outside validate's per-directory schema loop and is now checked by a separate call at the end of build/validate.py. The taxonomy descends from the 2024 Columbia Convening on Openness in AI; see docs/methodology.md. docs/reference/openness.md covers how the openness score relates to the same framework.",
+      "description": "The whole file. An arc is one layer of the Columbia openness ontology (the GPAIS tech stack) plus a display label for it and an ordered list of the categories that sit in it; three arcs hold 18 categories, all published as of 2026-08-18. This is the ONLY place a category's position and lifecycle status are declared, and it is hand-edited: whoever adds, publishes, or reorders a category writes it, never a tool. Historical scalar entries mean published; a mapping declares preliminary or published explicitly. build/serialize.py includes published entries in the public payload, while build/serialize_registry.py exports both states. The real cross-file invariants live in build/validate.py: every category file appears in exactly one arc, every slug listed resolves to a categories/<slug>.yaml, and explicitly published categories meet the publication gate. The taxonomy descends from the 2024 Columbia Convening on Openness in AI; see docs/methodology.md.",
       "items": {
         "type": "object",
         "required": ["name", "layer", "categories"],
@@ -24,8 +24,21 @@
           },
           "categories": {
             "type": "array",
-            "description": "The category slugs in this arc, in display order. The order is load-bearing: build/serialize.py flattens the arcs in sequence into the payload's `order`, which is the section order in the notebook and the row order in the at-a-glance roster, so moving a slug up here moves that section up. Slugs are underscored (`base_pretrained`) where product and organization slugs are hyphenated, so the two vocabularies cannot be confused at a glance, and each must equal the `name` of a sources/categories/<slug>.yaml — this list carries membership and position only, and everything else about a category lives in that file. Edited by hand alongside creating the category file, and doing only one of the two is the usual mistake, so build/validate.py checks both directions: a slug here with no file, and a category file that appears in zero arcs or in two. Neither check is in the schema, which will accept an empty list or the same slug listed twice.",
-            "items": { "type": "string", "pattern": "^[a-z0-9_]+$" }
+            "description": "The categories in this arc, in display order. A historical scalar slug means published; a mapping carries `name` plus `status: preliminary | published`. The order is load-bearing for published categories, while preliminary categories remain registry-only. Slugs are underscored (`base_pretrained`) and each must equal the `name` of a sources/categories/<slug>.yaml. Edited by hand alongside creating the category file; build/validate.py checks both directions and lifecycle publication requirements.",
+            "items": {
+              "oneOf": [
+                { "type": "string", "pattern": "^[a-z0-9_]+$" },
+                {
+                  "type": "object",
+                  "required": ["name", "status"],
+                  "additionalProperties": false,
+                  "properties": {
+                    "name": { "type": "string", "pattern": "^[a-z0-9_]+$" },
+                    "status": { "enum": ["preliminary", "published"] }
+                  }
+                }
+              ]
+            }
           }
         }
       }

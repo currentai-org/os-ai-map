@@ -1,0 +1,81 @@
+product: nvidia-model-optimizer
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole product,
+    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
+    and the core ungated.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/NVIDIA/Model-Optimizer/blob/main/LICENSE
+    shows: LICENSE file is the verbatim Apache-2.0 text
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: f37886aee6b03820c0afbdca55f39071b279012aad9ea2ec59f114e135ddef84
+    establishes:
+    - license
+  - url: https://api.github.com/repos/NVIDIA/Model-Optimizer
+    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for
+      NVIDIA/Model-Optimizer.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 1d1577d2e04bd2aecda4f63335b313891ecd57214a8a072f1e40c2014ce4c18b
+    establishes:
+    - license
+    - source
+  - url: https://github.com/NVIDIA/Model-Optimizer/blob/main/README.md
+    shows: README describes a library of quantization, pruning, neural architecture search, distillation, speculative
+      decoding and sparsity techniques taking Hugging Face, PyTorch or ONNX inputs and exporting optimized checkpoints
+      for TensorRT-LLM, TensorRT and vLLM, with no paid tier, enterprise edition or license-key-gated build beside
+      it.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 1a437a72280ed45ef2b239dae86e996a80e22d137b4a5268c20b9264e948ed8c
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: 418,452 PyPI downloads of `nvidia-modelopt` in the trailing 30 days, which lands in the 100K-1M band of
+    the software usage scale, level 3.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://pypistats.org/api/packages/nvidia-modelopt/recent
+    shows: last_month downloads = 418,452 for nvidia-modelopt
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 4348d1819ba7240e77a78b7f89910ad5815bf86d2597c23cfa0ac12abbe48892
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: multi-technique optimization toolchain'
+  value: Six optimization families (quantization, pruning, NAS, distillation, sparsity, speculative decoding) over
+    Hugging Face, PyTorch and ONNX inputs, exporting to NVIDIA deployment stacks.
+  relative_to: apache-tvm
+  relation: one_below
+  confidence: medium
+  note: Banded on the category feature matrix as multi-technique optimization toolchain. Placed one band below the
+    apache-tvm anchor, on a matrix that bands on how much of the model-to-hardware transformation pipeline a product
+    performs, over how many inputs and targets.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/NVIDIA/Model-Optimizer/blob/main/README.md
+    shows: README still documents a library of quantization, pruning, neural architecture search, distillation,
+      speculative decoding and sparsity techniques taking Hugging Face, PyTorch or ONNX inputs and exporting optimized
+      checkpoints for TensorRT-LLM, TensorRT and vLLM.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 1a437a72280ed45ef2b239dae86e996a80e22d137b4a5268c20b9264e948ed8c

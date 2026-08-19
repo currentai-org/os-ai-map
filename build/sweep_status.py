@@ -1,9 +1,10 @@
 """Where the verification sweep has got to, derived from the corpus rather than stored.
 
-`/goal` runs one category per invocation and has to know which one is next. That could be a
+`/goal` runs one published category per invocation and has to know which one is next. That could be a
 pointer in a file, and a pointer is a second copy of a fact the corpus already carries — it
 desyncs the first time a category is finished by hand, or half-finished, or reverted. So there
-is no pointer. This module reads `sources/` and works it out.
+is no pointer. This module reads `sources/` and works it out. Preliminary categories carry no
+head-product verification work and are excluded until publication.
 
 ## What "done" means for a product
 
@@ -60,6 +61,7 @@ from pathlib import Path
 import yaml
 
 from build.vocabulary import axes, parse_date
+from build.taxonomy import category_statuses
 
 ROOT = Path(__file__).resolve().parents[1]
 AXES = axes()  # build/vocabulary.py owns this; the score schema declares it
@@ -80,7 +82,14 @@ def load() -> tuple[dict, dict, dict, dict, dict]:
     queue = {}
     if queue_path.exists():
         queue = (yaml.safe_load(queue_path.read_text()) or {}).get("held") or {}
-    return _dir("categories"), _dir("products"), _dir("scores"), queue, {}
+    taxonomy = yaml.safe_load((ROOT / "sources" / "taxonomy.yaml").read_text()) or {}
+    return (
+        _dir("categories"),
+        _dir("products"),
+        _dir("scores"),
+        queue,
+        category_statuses(taxonomy),
+    )
 
 
 def _on_or_after(value: object, cutoff: date | None) -> bool:
@@ -205,9 +214,11 @@ def under_coverage() -> list[tuple[str, str, str]]:
 
 
 def survey(cutoff: date | None = None) -> list[dict]:
-    cats, prods, scores, held, _ = load()
+    cats, prods, scores, held, statuses = load()
     rows = []
     for slug, cat in cats.items():
+        if statuses.get(slug, "published") != "published":
+            continue
         roster = cat.get("products") or []
         states = {
             p: product_state(p, prods.get(p) or {}, scores.get(p) or {}, held, cutoff)

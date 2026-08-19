@@ -17,7 +17,7 @@
     },
     "description": {
       "type": "string",
-      "description": "What the category IS, in one neutral sentence. The definition, where `strapline` is the finding. Written by the category editor, and it travels: build/serialize.py copies it into the payload's `descriptions.categories` legend, which the notebook's at-a-glance overview renders, and build/serialize_registry.py emits it to the warehouse, so the wording lives in one place. Optional here; all 16 categories carry one as of 2026-08-08, and an absent one becomes an empty string in the legend rather than an error. The scope test, what is in and what is out, belongs in `comments`, which goes nowhere."
+      "description": "What the category IS, in one neutral sentence. The definition, where `strapline` is the finding. Written by the category editor, and it travels: build/serialize.py copies published definitions into the payload's `descriptions.categories` legend, while build/serialize_registry.py emits every category to the warehouse. Optional in the record schema for compatibility, but required by validation for lifecycle-declared categories. The scope test belongs in `comments`."
     },
     "strapline": {
       "type": "string",
@@ -49,7 +49,7 @@
     },
     "products": {
       "type": "array",
-      "description": "The category's product roster, and ARRAY ORDER IS DISPLAY ORDER: build/serialize.py emits the product rows in this sequence and consumers render them as received, so moving a slug up the list is how an editor promotes a product within its category. Order ACROSS categories is not here; that is the arc sequence in sources/taxonomy.yaml, which is also where a category's layer comes from. Every slug needs both a sources/products/<slug>.yaml and a sources/scores/<slug>.yaml, and must appear in exactly one roster: build/validate.py checks both directions, so a product in no category fails as loudly as a roster naming a product that does not exist, and moving a product between categories is one PR touching two files. Hyphenated, where the category `name` is underscored. The roster is also the ladder's denominator, walked product by product by build/check_rubric.py, and build/serialize_registry.py inverts it into the `product_categories` join the warehouse scores against. 472 slugs across the 16 rosters as of 2026-08-08.",
+      "description": "The category's fully researched head-product roster, and ARRAY ORDER IS DISPLAY ORDER. Every slug needs both a sources/products/<slug>.yaml and a sources/scores/<slug>.yaml and must appear in exactly one roster. Preliminary signal-only seeds live instead in sources/registry/<category>.yaml and may not duplicate a head slug or artifact. The roster is the scoring ladder's denominator and is inverted into the warehouse product_categories join. There are 522 head slugs across 18 published rosters as of 2026-08-18, when compilers and storage were promoted out of the tail registry and published, leaving both of their registry files empty.",
       "items": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" }
     },
     "comments": {

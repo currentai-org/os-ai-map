@@ -1,0 +1,82 @@
+product: mlc-llm
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole product,
+    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
+    and the core ungated.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/mlc-ai/mlc-llm/blob/main/LICENSE
+    shows: LICENSE file is the verbatim Apache-2.0 text
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://api.github.com/repos/mlc-ai/mlc-llm
+    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for
+      mlc-ai/mlc-llm.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 9400beb5afa85f51292d9e7a445c4b84cd7f552bf0b545a36b6a45a2f643faa6
+    establishes:
+    - license
+    - source
+  - url: https://github.com/mlc-ai/mlc-llm/blob/main/README.md
+    shows: README describes a machine learning compiler and deployment engine for LLMs, with a platform matrix covering
+      Vulkan, CUDA, ROCm, Metal, OpenCL, WebGPU and WASM across Linux, Windows, macOS, iOS, Android and the browser,
+      running on its own MLCEngine, with no paid tier, enterprise edition or license-key-gated build beside it.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: c6208e455ea145dbac62aa26493175db67bde071d481edf57ceaf17638d4db09
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 3
+  reach: '>10K stars'
+  signal_type: stars_fallback
+  confidence: low
+  note: 23,071 GitHub stars, which lands in the >10K stars band of the stars scale, level 3. MLC LLM distributes
+    prebuilt wheels from its own package index rather than PyPI, and that index publishes no download figure, so
+    the stars scale is the only instrument available and its cap of 3 applies.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://api.github.com/repos/mlc-ai/mlc-llm
+    shows: Repo metadata - stargazers_count = 23,071 - for mlc-ai/mlc-llm.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 9400beb5afa85f51292d9e7a445c4b84cd7f552bf0b545a36b6a45a2f643faa6
+capability:
+  score: 4
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: full compilation narrowed to one class of models'
+  value: Compiles LLMs through the TVM stack to Vulkan, CUDA, ROCm, Metal, OpenCL, WebGPU and WASM across six operating
+    systems, and serves them from its own engine. Breadth of targets is wide; the input class is language models
+    only.
+  relative_to: apache-tvm
+  relation: one_below
+  confidence: medium
+  note: Banded on the category feature matrix as full compilation narrowed to one class of models. Placed one band
+    below the apache-tvm anchor, on a matrix that bands on how much of the model-to-hardware transformation pipeline
+    a product performs, over how many inputs and targets.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/mlc-ai/mlc-llm/blob/main/README.md
+    shows: README still documents a machine learning compiler and deployment engine for LLMs, with a platform matrix
+      covering Vulkan, CUDA, ROCm, Metal, OpenCL, WebGPU and WASM across Linux, Windows, macOS, iOS, Android and
+      the browser, running on its own MLCEngine.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: c6208e455ea145dbac62aa26493175db67bde071d481edf57ceaf17638d4db09

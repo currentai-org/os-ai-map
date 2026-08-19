@@ -148,6 +148,22 @@ def test_layer_order_present_and_in_arc_sequence():
     assert list(payload)[:2] == ["descriptions", "layer_order"]
 
 
+def test_preliminary_categories_are_excluded_from_the_public_payload():
+    src = _sources()
+    src["categories"]["storage"] = {
+        "name": "storage",
+        "display_name": "Storage",
+        "products": [],
+    }
+    src["taxonomy"]["arcs"][0]["categories"].append(
+        {"name": "storage", "status": "preliminary"}
+    )
+    payload = build_payload(src, frozen_long_tail={}, generated="2026-06-10")
+    assert payload["order"] == ["base_pretrained"]
+    assert "storage" not in payload["categories"]
+    assert "storage" not in payload["descriptions"]["categories"]
+
+
 def test_null_adoption_serializes_maturity_null():
     src = _sources()
     src["scores"]["llama-4"]["adoption"] = {"level": None, "signal_type": "unknown"}
@@ -181,6 +197,50 @@ def test_long_tail_drops_now_categorized_products():
     names = [t["name"] for t in payload["long_tail"]["top"]]
     assert "meta-llama/llama" not in names
     assert "someone/uncategorized" in names
+
+
+def test_long_tail_keeps_rows_for_products_in_preliminary_categories():
+    """The other half of the filter above, and the one review caught.
+
+    A preliminary category is registry-visible and payload-invisible, so its products are
+    not shown "above" the long-tail section. Dropping their sample rows as well would delete
+    them from the map in both directions: not scored above, not listed below. The filter
+    therefore runs over the PUBLISHED products, which is the same walk `n_total` counts.
+    """
+    src = _sources()
+    src["products"]["llama-4"]["github"] = [{"url": "https://github.com/meta-llama/llama"}]
+    src["taxonomy"]["arcs"][0]["categories"] = [{"name": "base_pretrained", "status": "preliminary"}]
+    frozen = {"counts": {}, "top": [
+        {"name": "meta-llama/llama", "type": "repo", "usage_label": "", "description": ""},
+    ]}
+    payload = build_payload(src, frozen_long_tail=frozen, generated="2026-06-10")
+    assert payload["n_total"] == 0, "a preliminary category contributes nothing to the payload"
+    assert [t["name"] for t in payload["long_tail"]["top"]] == ["meta-llama/llama"]
+
+
+def test_preliminary_products_reach_no_public_index():
+    """Every index the payload publishes is scoped to the published categories, not to the files.
+
+    Hiding a product from `categories` while leaving it in `organizations` or `aliases` does not
+    hide it: /map/org/<slug> still lists it and a redirect still resolves to a page the payload
+    does not carry. Found in review of the compilers/storage promotion, where marking one category
+    preliminary left its products on their org rosters and shipped two organizations - openxla and
+    mlc-ai - that existed on the map nowhere else.
+    """
+    src = _sources()
+    src["products"]["llama-4"]["aliases"] = ["llama-4-scout"]
+    src["organizations"]["meta"]["aliases"] = ["facebook"]
+    src["taxonomy"]["arcs"][0]["categories"] = [{"name": "base_pretrained", "status": "preliminary"}]
+    payload = build_payload(src, frozen_long_tail={}, generated="2026-06-10")
+    assert payload["organizations"] == {}, "an org whose only product is unpublished is not shipped"
+    assert payload["aliases"] == {"products": {}, "organizations": {}}
+
+    # and with the same category published, all three indexes carry it
+    src["taxonomy"]["arcs"][0]["categories"] = ["base_pretrained"]
+    payload = build_payload(src, frozen_long_tail={}, generated="2026-06-10")
+    assert payload["organizations"]["meta"]["products"] == ["llama-4"]
+    assert payload["aliases"]["products"] == {"llama-4-scout": "llama-4"}
+    assert payload["aliases"]["organizations"] == {"facebook": "meta"}
 
 
 def test_descriptions_block_present_and_sourced():

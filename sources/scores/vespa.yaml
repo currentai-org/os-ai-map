@@ -1,0 +1,82 @@
+product: vespa
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole product,
+    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
+    and the core ungated.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/vespa-engine/vespa/blob/master/LICENSE
+    shows: LICENSE file is the verbatim Apache-2.0 text
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 71ca03775fa33cc27a4c999c438c306290570e4fe857b814c00e504b09b28d87
+    establishes:
+    - license
+  - url: https://api.github.com/repos/vespa-engine/vespa
+    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch master - for
+      vespa-engine/vespa.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: cb0a39f88cc3b5034eb9eb5a936ce1f9c9f38b0f5406aa0c33d515498a401e11
+    establishes:
+    - license
+    - source
+  - url: https://github.com/vespa-engine/vespa/blob/master/README.md
+    shows: README describes search, inference and organization over vectors, tensors, text and structured data at
+      serving time and any scale, with the repository stating it contains all the code required to build and run
+      Vespa and that everything in it is Apache-2.0, with no paid tier, enterprise edition or license-key-gated
+      build beside it.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: a24aafe980fb6283e58724086206500c7078503ae8d4b3919047740867a91338
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 7,054 GitHub stars, which lands in the 1K-10K stars band of the stars scale, level 2. Vespa is deployed
+    as a cluster from container images and RPM packages; the `pyvespa` package on PyPI is a client for a running
+    system, not the product, so attaching its downloads here would measure the wrong thing. No deployment count
+    is published, which leaves the stars scale and its cap of 3.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://api.github.com/repos/vespa-engine/vespa
+    shows: Repo metadata - stargazers_count = 7,054 - for vespa-engine/vespa.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: cb0a39f88cc3b5034eb9eb5a936ce1f9c9f38b0f5406aa0c33d515498a401e11
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: distributed retrieval platform with ranking and inference'
+  value: Vector, tensor, lexical and structured retrieval in one engine, with multi-phase ranking and ML inference
+    evaluated during serving, over an elastic cluster with replication and live redistribution.
+  confidence: medium
+  note: 'Banded on the category feature matrix as distributed retrieval platform with ranking and inference. This
+    is the category''s top anchor: the matrix bands on how much of the persist-index-retrieve path a product provides
+    itself, at what scale and over how many retrieval modes, and nothing else in the roster performs more of it.
+    Every other band in the category is placed against this one.'
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/vespa-engine/vespa/blob/master/README.md
+    shows: README still documents search, inference and organization over vectors, tensors, text and structured
+      data at serving time and any scale, with the repository stating it contains all the code required to build
+      and run Vespa and that everything in it is Apache-2.0.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: a24aafe980fb6283e58724086206500c7078503ae8d4b3919047740867a91338

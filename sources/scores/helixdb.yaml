@@ -1,0 +1,81 @@
+product: helixdb
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole product,
+    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
+    and the core ungated.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/HelixDB/helix-db/blob/main/LICENSE
+    shows: LICENSE file is the verbatim Apache-2.0 text
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://api.github.com/repos/HelixDB/helix-db
+    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for
+      HelixDB/helix-db.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 7241917a6055feefe1781888754e15d057b4a01799c1f07ce0a6c41402ab81d3
+    establishes:
+    - license
+    - source
+  - url: https://github.com/HelixDB/helix-db/blob/main/README.md
+    shows: README describes a graph-vector database for knowledge graphs and AI memory, built in Rust, presenting
+      the components an AI application needs in one platform rather than a separate application, relational and
+      vector database, with no paid tier, enterprise edition or license-key-gated build beside it.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: b80a90f9c4239592348859605a5adb260ce33e3ab417c4cafadb1bfd997f16a2
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 5,798 GitHub stars, which lands in the 1K-10K stars band of the stars scale, level 2. Distributed as a Rust
+    binary and a CLI with no package-registry channel of its own, so the stars scale is the only instrument available;
+    its cap of 3 applies and this band sits below it.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://api.github.com/repos/HelixDB/helix-db
+    shows: Repo metadata - stargazers_count = 5,798 - for HelixDB/helix-db.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 7241917a6055feefe1781888754e15d057b4a01799c1f07ce0a6c41402ab81d3
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: single-purpose store or index'
+  value: Graph traversal and vector search in one engine with a compiled query language on object storage. Combines
+    two retrieval models; younger and narrower in operational features than the band above.
+  relative_to: vespa
+  relation: two_below
+  confidence: medium
+  note: Banded on the category feature matrix as single-purpose store or index. Placed two bands below the vespa
+    anchor, on a matrix that bands on how much of the persist-index-retrieve path a product provides itself, at
+    what scale and over how many retrieval modes.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/HelixDB/helix-db/blob/main/README.md
+    shows: README still documents a graph-vector database for knowledge graphs and AI memory, built in Rust, presenting
+      the components an AI application needs in one platform rather than a separate application, relational and
+      vector database.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: b80a90f9c4239592348859605a5adb260ce33e3ab417c4cafadb1bfd997f16a2

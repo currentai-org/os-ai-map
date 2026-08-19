@@ -1,0 +1,106 @@
+product: elasticsearch
+openness:
+  score: 4
+  class: open_core
+  components:
+    license:
+    - name: AGPL-3.0
+      detail: OSI
+    enterprise-dir:
+      value: Elastic-License-2.0
+    source:
+      value: public
+    core-gated:
+      value: gated
+      detail: the x-pack directory is licensed solely under the Elastic License 2.0 rather than the repository's
+        default triple license, so a set of features in the published tree cannot be run under the open terms
+  confidence: high
+  note: AGPL-3.0 license body confirmed. The LICENSE body sets a default triple license - AGPL-3.0 only, SSPL-1.0
+    or Elastic License 2.0, at the recipient's choice - so an OSI branch is available for the bulk of the tree,
+    and AGPL-3.0 is the tier this records. It then carves out the x-pack directory as Elastic License 2.0 alone,
+    and that directory is present in the repository. Functionality withheld from the open terms inside the published
+    source is what the ladder calls a gated core, the same shape as litellm's enterprise directory rather than a
+    separate hosted service sold beside a complete core.
+  raw: license:AGPL-3.0(OSI);enterprise-dir:Elastic-License-2.0;source:public;core-gated:gated(the x-pack directory
+    is licensed solely under the Elastic License 2.0 rather than the repository's default triple license, so a set
+    of features in the published tree cannot be run under the open terms)
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/elastic/elasticsearch/blob/main/LICENSE.txt
+    shows: LICENSE.txt states the default is a triple license - GNU Affero General Public License v3.0 only, Server
+      Side Public License v1, and Elastic License 2.0 - and that code licensed solely under the Elastic License
+      2.0 is found only in the x-pack folder, which is present in the repository root.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 09979a6b0701e166ea7bfa4bdf524a431c7ca4a94b16ac2c645bbed9fb7ec2e1
+    establishes:
+    - license
+    - core-gated
+  - url: https://api.github.com/repos/elastic/elasticsearch
+    shows: Repo metadata - license spdx_id NOASSERTION, private false, archived false, default branch main - for
+      elastic/elasticsearch.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 825ae9cd1cf032dc1acc82bb5bb7479e0c6dcf069081c8cb1c75a43c2ed2c70a
+    establishes:
+    - license
+    - source
+  - url: https://github.com/elastic/elasticsearch/blob/main/README.asciidoc
+    shows: README describes a distributed search and analytics engine, data store and vector database, with retrieval-augmented
+      generation, vector search and full-text search among its listed use cases, and names the separately licensed
+      portion of the same repository rather than presenting the tree as uniformly open.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 08f81c149c32baec7f7bda391d2889413743a69c3a6c1c172786dcd96dad7261
+    establishes:
+    - source
+adoption:
+  level: 3
+  reach: '>10K stars'
+  signal_type: stars_fallback
+  confidence: low
+  note: 77,824 GitHub stars, which lands in the >10K stars band of the stars scale, level 3. The `elasticsearch`
+    package on PyPI is the Python client (elasticsearch-py), not the server, so its 52.8M monthly downloads measure
+    client installs and cannot be attributed to this product. Elastic publishes no server deployment count, so the
+    stars scale applies and caps the band at 3 despite the size of the install base.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://api.github.com/repos/elastic/elasticsearch
+    shows: Repo metadata - stargazers_count = 77,824 - for elastic/elasticsearch.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 825ae9cd1cf032dc1acc82bb5bb7479e0c6dcf069081c8cb1c75a43c2ed2c70a
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: distributed retrieval platform with ranking and inference'
+  value: Full-text, dense-vector, sparse and hybrid retrieval with filtering and aggregations, and an in-tree
+    inference and machine-learning stack that hosts models and evaluates reranking inside the query path,
+    over a sharded and replicated cluster.
+  relative_to: vespa
+  relation: at
+  confidence: medium
+  note: 'Level with vespa at the top of the storage feature matrix, which bands on how much of the persist-index-retrieve
+    path a product provides itself, at what scale and over how many retrieval modes. The 5 rung is for a
+    distributed platform that also hosts and evaluates ranking or embedding models inside the serving path,
+    and Elasticsearch does: the `inference`, `ml` and `ml-package-loader` plugins ship in the repository
+    beside `rank-rrf` and `rank-vectors`. That is the line between this rung and the 4 rung the vector databases
+    sit on, which fuse or filter scores but host no model. Worth reading beside the openness score: the
+    plugins that earn this band live in x-pack, the Elastic-License-only directory that makes the product
+    open_core rather than open_source.'
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/elastic/elasticsearch/blob/main/README.asciidoc
+    shows: README still documents a distributed search and analytics engine, data store and vector database, with
+      retrieval-augmented generation, vector search and full-text search among its listed use cases.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 08f81c149c32baec7f7bda391d2889413743a69c3a6c1c172786dcd96dad7261
+  - url: https://api.github.com/repos/elastic/elasticsearch/contents/x-pack/plugin
+    shows: 'x-pack/plugin tree: `inference`, `ml` and `ml-package-loader` plugins ship in the repository
+      beside `rank-rrf` and `rank-vectors`, so model hosting, inference endpoints and reranking are part
+      of the engine rather than a separate product. They sit inside x-pack, which is the Elastic-License-only
+      directory this product''s openness score records as its gate.'
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: d48ce962857bcdbf2805ef7e6492aa6b06ca5f589bfee004c92e1558132b4917

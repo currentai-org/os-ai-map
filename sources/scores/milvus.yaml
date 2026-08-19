@@ -79,23 +79,31 @@ adoption:
 capability:
   score: 4
   basis: benchmark
-  basis_detail: ANN-Benchmarks
-  value: null
+  basis_detail: ANN-Benchmarks inclusion, with the first-party VDB Bench harness beside it
+  value: Fully distributed deployment with compute and storage separated, index selection spanning HNSW,
+    IVF_SQ8, IVF_PQ and DiskANN to billion scale, and BM25 full-text search beside dense vector search.
+  relative_to: vespa
+  relation: one_below
   confidence: high
-  note: High-performance cloud-native vector ANN search, covered by independent ANN-Benchmarks and by the
-    first-party VDB Bench harness. The released line is Milvus 3.0 - lake-native vector search, S3-based
-    storage and a more powerful retrieval engine - and index-selection guidance spans HNSW / IVF_SQ8 / IVF_PQ
-    / DiskANN up to billion scale, with BM25 full-text search. Rated 4 on ANN benchmark coverage and scale.
-  last_verified: '2026-08-13'
+  note: 'A complete, durable, cluster-capable retrieval system, which is the 4 rung on the storage feature
+    matrix, which bands on how much of the persist-index-retrieve path a product provides itself, at what
+    scale and over how many retrieval modes. One band below vespa: Milvus scales horizontally with compute
+    and storage separated and combines dense vector search with BM25 full text, but the 5 rung is for a
+    platform that hosts and evaluates ranking or embedding models inside the serving path, and the recorded
+    evidence for Milvus does not show that. Independent ANN-Benchmarks coverage and the first-party VDB
+    Bench harness are what keep the basis a benchmark rather than a feature read. Rebanded on this matrix
+    when the product moved out of agent_tools_protocols, where it had been the anchor for a three-product
+    vector-database cluster; the band did not move.'
+  last_verified: '2026-08-18'
   sources:
   - url: https://github.com/milvus-io/milvus
     shows: Repo page - vector database feature set, standalone and distributed deployment.
-    accessed: '2026-08-13'
+    accessed: '2026-08-18'
     http_status: 200
-    content_sha256: 35f8f51c1fec1c38b1261ac74d373d403a03f7626275874277e2adbfece05d31
+    content_sha256: 1e976b8d918102eda30952a6396965e6437d73248cc0f98e09685e61017ae6c9
   - url: https://milvus.io/
     shows: Milvus 3.0 announcement headline; VDB Bench named as the benchmarking harness; index guidance
       from HNSW through DiskANN at billion scale; BM25 full-text search.
-    accessed: '2026-08-13'
+    accessed: '2026-08-18'
     http_status: 200
-    content_sha256: b38fa01081763668421a2a358613aeb03435f74478a64a352f9c2771dfd856c6
+    content_sha256: 359bd6613b04d3d432c6efbf171fa0c53e3bc92c5106e38b4878fe380ca87851

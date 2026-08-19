@@ -1,0 +1,81 @@
+product: xla
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole product,
+    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
+    and the core ungated.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/openxla/xla/blob/main/LICENSE
+    shows: LICENSE file is the verbatim Apache-2.0 text
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1
+    establishes:
+    - license
+  - url: https://api.github.com/repos/openxla/xla
+    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for
+      openxla/xla.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: d3dd034644b5600cb85a49311d560f5dc22c491a1b17ff77d0cc3da0d47695b2
+    establishes:
+    - license
+    - source
+  - url: https://github.com/openxla/xla/blob/main/README.md
+    shows: README describes an ML compiler for GPUs, CPUs and ML accelerators that takes models from PyTorch, TensorFlow
+      and JAX and optimizes them for execution across hardware platforms, with no paid tier, enterprise edition
+      or license-key-gated build beside it.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 98fc97dc1b470b3efed23cb11d574ffa6874be72884098f299834c8b5cb9a033
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 4,477 GitHub stars, which lands in the 1K-10K stars band of the stars scale, level 2. XLA ships inside the
+    frameworks that embed it rather than as its own package, so no download channel measures it and the stars scale
+    is the instrument of last resort. Its real reach is that of PyTorch, TensorFlow and JAX, which the stars figure
+    does not capture; a stars-derived band may not claim above 3 and this one does not.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://api.github.com/repos/openxla/xla
+    shows: Repo metadata - stargazers_count = 4,477 - for openxla/xla.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: d3dd034644b5600cb85a49311d560f5dc22c491a1b17ff77d0cc3da0d47695b2
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: retargetable end-to-end compiler'
+  value: HLO optimization pipeline fed by PyTorch, TensorFlow and JAX front ends and emitting for CPU, GPU and ML
+    accelerators including TPUs.
+  relative_to: apache-tvm
+  relation: at
+  confidence: medium
+  note: Banded on the category feature matrix as retargetable end-to-end compiler. Placed level with the apache-tvm
+    anchor, on a matrix that bands on how much of the model-to-hardware transformation pipeline a product performs,
+    over how many inputs and targets.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/openxla/xla/blob/main/README.md
+    shows: README still documents an ML compiler for GPUs, CPUs and ML accelerators that takes models from PyTorch,
+      TensorFlow and JAX and optimizes them for execution across hardware platforms.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 98fc97dc1b470b3efed23cb11d574ffa6874be72884098f299834c8b5cb9a033

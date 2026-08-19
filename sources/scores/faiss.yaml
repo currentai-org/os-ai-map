@@ -1,0 +1,83 @@
+product: faiss
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: MIT license body confirmed. The repository is public and unarchived and builds the whole product, and the
+    README describes no paid tier, enterprise edition or license-gated build beside it, so source is public and
+    the core ungated.
+  raw: license:MIT(OSI);source:public;core-gated:ungated
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/facebookresearch/faiss/blob/main/LICENSE
+    shows: LICENSE file is the verbatim MIT text
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 52412d7bc7ce4157ea628bbaacb8829e0a9cb3c58f57f99176126bc8cf2bfc85
+    establishes:
+    - license
+  - url: https://api.github.com/repos/facebookresearch/faiss
+    shows: Repo metadata - license spdx_id MIT, private false, archived false, default branch main - for facebookresearch/faiss.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: daeb80ad4bc74107d35a72f8104212b179e1173e507e27891cf385f949baa98e
+    establishes:
+    - license
+    - source
+  - url: https://github.com/facebookresearch/faiss/blob/main/README.md
+    shows: README describes a library for similarity search and clustering of dense vectors with algorithms that
+      scale past RAM, written in C++ with complete Python wrappers and GPU implementations of the most useful algorithms,
+      developed at Meta's Fundamental AI Research group, with no paid tier, enterprise edition or license-key-gated
+      build beside it.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 24679e12982711be6b122268569b7865a14feccc8a0dd9688e15b58e95c35a75
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 5
+  reach: '>10M'
+  signal_type: usage_volume
+  confidence: high
+  note: 15,698,726 PyPI downloads of `faiss-cpu` in the trailing 30 days, which lands in the >10M band of the software
+    usage scale, level 5. `faiss-cpu` is the community-maintained wheel of this library rather than a client for
+    a separate service, so its installs are installs of the product; its PyPI project URL points at facebookresearch/faiss.
+    The vendor's own channel is conda, which publishes no comparable figure, so this understates rather than overstates
+    the total.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://pypistats.org/api/packages/faiss-cpu/recent
+    shows: last_month downloads = 15,698,726 for faiss-cpu
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 3e2d174fcca1a1bc1db3be5e4338cde32972cb526c0af6a6e5f582387d824533
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: single-purpose store or index'
+  value: The broadest index family in the category - flat, IVF, PQ, OPQ, HNSW and composites - with GPU support,
+    but no persistence service, no filtering layer and no serving surface.
+  relative_to: vespa
+  relation: two_below
+  confidence: medium
+  note: Banded on the category feature matrix as single-purpose store or index. Placed two bands below the vespa
+    anchor, on a matrix that bands on how much of the persist-index-retrieve path a product provides itself, at
+    what scale and over how many retrieval modes.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/facebookresearch/faiss/blob/main/README.md
+    shows: README still documents a library for similarity search and clustering of dense vectors with algorithms
+      that scale past RAM, written in C++ with complete Python wrappers and GPU implementations of the most useful
+      algorithms, developed at Meta's Fundamental AI Research group.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 24679e12982711be6b122268569b7865a14feccc8a0dd9688e15b58e95c35a75

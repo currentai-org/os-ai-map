@@ -1,4 +1,4 @@
-"""Validate the four-concern sources/ tree: schema + cross-file invariants."""
+"""Validate the scored corpus, taxonomy, and signal-only tail registry."""
 from datetime import date
 import json
 import re
@@ -10,6 +10,7 @@ import yaml
 from build.vocabulary import axes
 
 from build.rubrics import dimension_vocabulary
+from build.taxonomy import category_entry, category_statuses
 
 # Maps each sources/ subdir to its docs/schemas/<name>.schema.json basename.
 _SCHEMA_FOR_DIR = {
@@ -36,7 +37,7 @@ OPENNESS_CLASSES = {
     # `restricted` joined the dataset vocabulary with the universal license scale. It was the
     # only product type with no word between `open` and `gated`, so a non-commercial corpus
     # had nowhere to land but `open` - which is how `personahub` came to be 5/open under a
-    # licence that caps a model at 2. The word already exists for models and hardware, and
+    # license that caps a model at 2. The word already exists for models and hardware, and
     # already carries gradient 2 and the closed bucket in openness-class-map.json.
     "dataset": {"open", "gated", "restricted", "closed"},
     "hardware": {"open_hardware", "open_toolchain", "documented", "restricted"},
@@ -55,6 +56,7 @@ def load_sources(root: Path) -> dict:
         "products": _dir("products"),
         "scores": _dir("scores"),
         "taxonomy": yaml.safe_load((root / "sources" / "taxonomy.yaml").read_text()),
+        "registry": _dir("registry"),
     }
     lt = root / "sources" / "snapshots" / "long_tail.json"
     if lt.exists():
@@ -62,11 +64,31 @@ def load_sources(root: Path) -> dict:
     return data
 
 
+def published_products(taxonomy: dict, cats: dict) -> set[str]:
+    """Every product slug on the roster of a PUBLISHED category.
+
+    The set the notebook payload actually carries. `serialize.py` derives `n_total` from the
+    same walk, and this is the one owner of "which products are publicly visible" so the two
+    cannot drift: a preliminary category is registry-visible and payload-invisible, and its
+    head products are neither an error nor published. A category absent from the taxonomy
+    defaults to published, which keeps hand-built fixtures behaving as they did before
+    lifecycle status existed; the missing-arc case is already an error of its own above.
+    """
+    statuses = category_statuses(taxonomy or {})
+    return {
+        slug
+        for cid, cat in (cats or {}).items()
+        if statuses.get(cid, "published") == "published"
+        for slug in (cat.get("products") or [])
+    }
+
+
 def validate_sources(data: dict) -> list[str]:
     errors: list[str] = []
     orgs, cats, prods, scores = (data["organizations"], data["categories"],
                                  data["products"], data["scores"])
     taxonomy = data["taxonomy"]
+    registry = data.get("registry") or {}
 
     # --- taxonomy <-> category invariants ---
     # Every category file appears in exactly one arc's `categories` list, and
@@ -77,7 +99,10 @@ def validate_sources(data: dict) -> list[str]:
     for arc in taxonomy.get("arcs", []):
         if arc.get("layer") not in LAYERS:
             errors.append(f"taxonomy arc {arc.get('name')!r}: layer {arc.get('layer')!r} not in {sorted(LAYERS)}")
-        for cid in arc.get("categories", []):
+        for raw in arc.get("categories", []):
+            cid, status = category_entry(raw)
+            if cid is None or status is None:
+                continue
             tax_count[cid] = tax_count.get(cid, 0) + 1
             if cid not in cats:
                 errors.append(f"taxonomy arc {arc.get('name')!r}: category {cid!r} has no categories/{cid}.yaml")
@@ -85,6 +110,87 @@ def validate_sources(data: dict) -> list[str]:
         n = tax_count.get(cid, 0)
         if n != 1:
             errors.append(f"category {cid!r}: must appear in exactly one taxonomy arc (found in {n})")
+
+    # --- category contract, by lifecycle status ---
+    # Applied on the NORMALIZED status, so both taxonomy spellings are held to the same
+    # contract. This used to skip any category not declared as a mapping, on the reasoning
+    # that scalar entries predate lifecycle status and should not be disturbed - and that
+    # reasoning let the compatibility shim become an exemption. Appending a scalar entry for
+    # a category file carrying nothing but `name`, `display_name` and an empty `products`
+    # produced zero errors and a publicly visible category with no description, no weights,
+    # no ladder and no strapline. Found in review of the compilers/storage promotion.
+    #
+    # Applying it to all eighteen categories was measured before it was written: every one of
+    # the sixteen scalar entries already satisfies the whole contract, so this closes a hole
+    # rather than creating work. `category_statuses` is what makes the two spellings one
+    # question - a scalar entry normalizes to `published`, which is what it has always meant.
+    statuses = category_statuses(taxonomy)
+    for cid, cat in cats.items():
+        if cid not in statuses:
+            continue  # not in any arc; already reported above
+        status = statuses[cid]
+        if not cat.get("description"):
+            errors.append(f"category {cid!r}: every category needs a description")
+        if not cat.get("weights"):
+            errors.append(f"category {cid!r}: every category needs axis weights")
+        if not cat.get("scoring_recipe"):
+            errors.append(f"category {cid!r}: every category needs a scoring_recipe")
+        if status == "published":
+            if not cat.get("strapline"):
+                errors.append(f"category {cid!r}: published category needs a strapline")
+            if len(cat.get("products") or []) < 10:
+                errors.append(f"category {cid!r}: published category needs at least 10 scored products")
+
+    # --- tail registry invariants ---
+    # Tail rows are deliberately lighter than head product records, but identity is
+    # not: a slug and a GitHub artifact may appear in only one tier and category.
+    tail_slugs: dict[str, str] = {}
+    tail_repos: dict[str, str] = {}
+    head_repos: dict[str, str] = {}
+    for slug, product in prods.items():
+        for artifact in product.get("github") or []:
+            if isinstance(artifact, dict) and isinstance(artifact.get("url"), str):
+                match = re.search(r"github\.com/([^/]+/[^/]+?)(?:\.git)?/?$", artifact["url"])
+                if match:
+                    head_repos[match.group(1).lower()] = slug
+    for cid, record in registry.items():
+        if not isinstance(record, dict):
+            errors.append(f"registry/{cid}.yaml: record must be a mapping")
+            continue
+        if record.get("category") != cid:
+            errors.append(
+                f"registry/{cid}.yaml: `category: {record.get('category')!r}` does not match "
+                f"the filename stem {cid!r}"
+            )
+        if cid not in cats:
+            errors.append(f"registry/{cid}.yaml: no matching categories/{cid}.yaml")
+        for row in record.get("products") or []:
+            if not isinstance(row, dict):
+                continue
+            slug = row.get("slug")
+            repo = row.get("github")
+            if not isinstance(slug, str) or not isinstance(repo, str):
+                continue
+            if slug in prods:
+                errors.append(f"registry/{cid}.yaml: tail slug {slug!r} already exists as a head product")
+            if slug in tail_slugs:
+                errors.append(
+                    f"registry/{cid}.yaml: tail slug {slug!r} already belongs to "
+                    f"registry/{tail_slugs[slug]}.yaml"
+                )
+            tail_slugs[slug] = cid
+            repo_key = repo.lower()
+            if repo_key in head_repos:
+                errors.append(
+                    f"registry/{cid}.yaml: GitHub artifact {repo!r} already belongs to "
+                    f"head product {head_repos[repo_key]!r}"
+                )
+            if repo_key in tail_repos:
+                errors.append(
+                    f"registry/{cid}.yaml: GitHub artifact {repo!r} already belongs to "
+                    f"tail product {tail_repos[repo_key]!r}"
+                )
+            tail_repos[repo_key] = slug
 
     # --- roster <-> product invariants ---
     roster_count: dict[str, int] = {}
@@ -203,21 +309,35 @@ def validate_sources(data: dict) -> list[str]:
 
     # --- frozen long-tail <-> live count invariant ---
     # The long-tail section shows "Of the {scored} products scored above ..."; that
-    # count is a hand-synced snapshot and must track the live product count, or the
-    # notebook contradicts itself. Only checked when the fixture is loaded (real runs,
-    # not hand-built test fixtures).
+    # count is a hand-synced snapshot and must track what the notebook actually shows
+    # above it, or the notebook contradicts itself. Only checked when the fixture is
+    # loaded (real runs, not hand-built test fixtures).
+    #
+    # "What the notebook shows" is the roster of the PUBLISHED categories, not every
+    # product file. Those two were the same number until categories gained a lifecycle,
+    # and comparing against every file is now wrong in a way that passes: a preliminary
+    # category may hold fully scored head products - that is the state a category is in
+    # while it is being built, before it is published - and serialize.py omits them from
+    # the payload. Counting them here let `scored` exceed `n_total`, so the sentence
+    # "of the N products scored above" named products the reader could not see. Caught in
+    # review of the compilers/storage promotion, reproduced by marking one of the two
+    # preliminary again: `n_total: 496` against `counts.scored: 522`.
     lt = data.get("long_tail")
     if lt:
         scored = (lt.get("counts") or {}).get("scored")
-        if scored is not None and scored != len(prods):
-            errors.append(f"long_tail counts.scored ({scored}) != product count ({len(prods)}); "
-                          f"re-sync sources/snapshots/long_tail.json after a batch")
+        published = published_products(taxonomy, cats)
+        if scored is not None and scored != len(published):
+            errors.append(f"long_tail counts.scored ({scored}) != the number of products in "
+                          f"published categories ({len(published)}); re-sync "
+                          f"sources/snapshots/long_tail.json after a batch. Products in "
+                          f"preliminary categories are deliberately not counted: the payload "
+                          f"omits them, so the notebook does not show them above")
 
     # --- `establishes` must name a real dimension ---
     # A source's `establishes` list is what makes a re-check claim checkable: it records
     # which source settles which dimension, so check_verification can require a fresh read
     # per dimension rather than one fresh read per axis. That only works if the names mean
-    # something. A typo'd `licence` or `weight` establishes nothing at all while reading
+    # something. A typo'd `license` or `weight` establishes nothing at all while reading
     # like attribution, and the gate that consumes it would then pass an axis whose
     # dimension has no supporting source. Cross-file because the vocabulary lives in the
     # category recipes, not in the schema.
@@ -315,6 +435,15 @@ def validate_sources(data: dict) -> list[str]:
         jsonschema.validate(data["taxonomy"], schemas["taxonomy"])
     except jsonschema.ValidationError as e:
         errors.append(f"sources/taxonomy.yaml: schema: {e.message}")
+
+    registry_schema = json.loads(
+        (Path(__file__).resolve().parents[1] / "docs" / "schemas" / "registry.schema.json").read_text()
+    )
+    for cid, record in registry.items():
+        try:
+            jsonschema.validate(record, registry_schema)
+        except jsonschema.ValidationError as e:
+            errors.append(f"registry/{cid}: schema: {e.message}")
 
     return errors
 

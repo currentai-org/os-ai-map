@@ -1,0 +1,82 @@
+product: liger-kernel
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: BSD-2-Clause
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: BSD-2-Clause license body confirmed. The repository is public and unarchived and builds the whole
+    product, and the README describes no paid tier, enterprise edition or license-gated build beside it,
+    so source is public and the core ungated. liger-kernel was the first product on the map to record BSD-2-Clause,
+    and the shared software ladder's OSI tier lists license names literally, so the license mapped to no
+    tier and the formula abstained. The tier now names it, on the owner's ruling, and the ladder reproduces
+    this score rather than deferring it.
+  raw: license:BSD-2-Clause(OSI);source:public;core-gated:ungated
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/linkedin/Liger-Kernel/blob/main/LICENSE
+    shows: LICENSE file is the verbatim BSD-2-Clause text
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 3a1ccb0c7274b68e1af2ca1d54b10b662085ca56753400182ecf87ae33f2d1a8
+    establishes:
+    - license
+  - url: https://api.github.com/repos/linkedin/Liger-Kernel
+    shows: Repo metadata - license spdx_id BSD-2-Clause, private false, archived false, default branch main - for
+      linkedin/Liger-Kernel.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 14c61226241139e4511f48d60be62974363a0f82cc085ec1f904d9220c8c5d15
+    establishes:
+    - license
+    - source
+  - url: https://github.com/linkedin/Liger-Kernel/blob/main/README.md
+    shows: README describes a collection of Triton kernels for LLM training that replace fused transformer operations
+      and add memory-efficient post-training losses, applied by patching Hugging Face classes, with no paid tier,
+      enterprise edition or license-key-gated build beside it.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 58d4eac3aef541b2bf90d41c6462d5da4cbc2f0a5eb5cabebd87c488b8d00e95
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: 584,477 PyPI downloads of `liger-kernel` in the trailing 30 days, which lands in the 100K-1M band of the
+    software usage scale, level 3.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://pypistats.org/api/packages/liger-kernel/recent
+    shows: last_month downloads = 584,477 for liger-kernel
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 7cec0608832dc8d0c5b30da592384575bf01548059ed968e67285b410e79375b
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: narrow kernel set or single-pass utility'
+  value: Fused Triton kernels for a fixed list of transformer training operations, plus post-training loss implementations,
+    delivered as monkey patches for Hugging Face classes.
+  relative_to: tensorrt
+  relation: two_below
+  confidence: medium
+  note: Banded on the category feature matrix as narrow kernel set or single-pass utility. Placed two bands below
+    the tensorrt anchor, on a matrix that bands on how much of the model-to-hardware transformation pipeline a product
+    performs, over how many inputs and targets.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/linkedin/Liger-Kernel/blob/main/README.md
+    shows: README still documents a collection of Triton kernels for LLM training that replace fused transformer
+      operations and add memory-efficient post-training losses, applied by patching Hugging Face classes.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 58d4eac3aef541b2bf90d41c6462d5da4cbc2f0a5eb5cabebd87c488b8d00e95

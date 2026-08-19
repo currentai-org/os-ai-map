@@ -1,0 +1,82 @@
+product: dolt
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole product,
+    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
+    and the core ungated.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/dolthub/dolt/blob/main/LICENSE
+    shows: LICENSE file is the verbatim Apache-2.0 text
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+    establishes:
+    - license
+  - url: https://api.github.com/repos/dolthub/dolt
+    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for
+      dolthub/dolt.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 205fe04c1620c583fede8e40741f2b8ebf7d248f0fb53a923cd00e416cbf64fd
+    establishes:
+    - license
+    - source
+  - url: https://github.com/dolthub/dolt/blob/main/README.md
+    shows: README describes a SQL database that forks, clones, branches, merges, pushes and pulls like a Git repository,
+      reachable as a MySQL database, with version control exposed through system tables, functions and procedures
+      and through a Git-like command line, with no paid tier, enterprise edition or license-key-gated build beside
+      it.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 55ff3d345173eb8e384ed7fb92dfa3eca083dceed7f752f3aa6be2f52ccf4ad9
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 3
+  reach: '>10K stars'
+  signal_type: stars_fallback
+  confidence: low
+  note: 24,216 GitHub stars, which lands in the >10K stars band of the stars scale, level 3. Distributed as a Go
+    binary; the `dolt` name on PyPI belongs to an unrelated project and must not be attached. No install count is
+    published, so the stars scale applies with its cap of 3.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://api.github.com/repos/dolthub/dolt
+    shows: Repo metadata - stargazers_count = 24,216 - for dolthub/dolt.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 205fe04c1620c583fede8e40741f2b8ebf7d248f0fb53a923cd00e416cbf64fd
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: single-purpose store or index'
+  value: Cell-level versioned SQL storage with branch, merge and diff semantics behind a MySQL interface. Versioning
+    depth is the category's best; it carries no vector or full-text retrieval.
+  relative_to: vespa
+  relation: two_below
+  confidence: medium
+  note: Banded on the category feature matrix as single-purpose store or index. Placed two bands below the vespa
+    anchor, on a matrix that bands on how much of the persist-index-retrieve path a product provides itself, at
+    what scale and over how many retrieval modes.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/dolthub/dolt/blob/main/README.md
+    shows: README still documents a SQL database that forks, clones, branches, merges, pushes and pulls like a Git
+      repository, reachable as a MySQL database, with version control exposed through system tables, functions and
+      procedures and through a Git-like command line.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 55ff3d345173eb8e384ed7fb92dfa3eca083dceed7f752f3aa6be2f52ccf4ad9

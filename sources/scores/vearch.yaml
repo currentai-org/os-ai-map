@@ -1,0 +1,80 @@
+product: vearch
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole product,
+    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
+    and the core ungated.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/vearch/vearch/blob/master/LICENSE
+    shows: LICENSE file is the verbatim Apache-2.0 text
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://api.github.com/repos/vearch/vearch
+    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch master - for
+      vearch/vearch.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: f4f668f91f3e0c818d101295dd61e2f371bac9c848f127da944825109162c11e
+    establishes:
+    - license
+    - source
+  - url: https://github.com/vearch/vearch/blob/master/README.md
+    shows: README describes a cloud-native distributed vector database for similarity search over embeddings, with
+      hybrid vector search and scalar filtering, with no paid tier, enterprise edition or license-key-gated build
+      beside it.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 75345e5843a2e3178bbe4aca70a6cf967f55f446fe0586388a0d6a8398a11732
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 2,321 GitHub stars, which lands in the 1K-10K stars band of the stars scale, level 2. The `vearch` package
+    on PyPI draws about 140 downloads a month and is a client for a running cluster, so banding on it would measure
+    neither the product nor its reach. The stars scale applies; at 2,321 stars the band is 2.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://api.github.com/repos/vearch/vearch
+    shows: Repo metadata - stargazers_count = 2,321 - for vearch/vearch.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: f4f668f91f3e0c818d101295dd61e2f371bac9c848f127da944825109162c11e
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: single-purpose store or index'
+  value: Distributed vector search with scalar filtering and a cluster role split, over IVF and HNSW indexes. A
+    working system, without the hybrid or full-text modes of the band above.
+  relative_to: vespa
+  relation: two_below
+  confidence: medium
+  note: Banded on the category feature matrix as single-purpose store or index. Placed two bands below the vespa
+    anchor, on a matrix that bands on how much of the persist-index-retrieve path a product provides itself, at
+    what scale and over how many retrieval modes.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/vearch/vearch/blob/master/README.md
+    shows: README still documents a cloud-native distributed vector database for similarity search over embeddings,
+      with hybrid vector search and scalar filtering.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 75345e5843a2e3178bbe4aca70a6cf967f55f446fe0586388a0d6a8398a11732

@@ -1,0 +1,83 @@
+name: compilers
+display_name: Compilers & Model Optimization
+description: 'Software that lowers, converts, quantizes, or otherwise optimizes trained models and tensor programs for target accelerator hardware.'
+strapline: Almost the whole layer is OSI-licensed and fully open - 25 of 26 products score 5, and
+  the exception is TensorRT, whose optimizing builder ships as a binary that the public repository
+  links against. What is scarce here is reach rather than openness, since half the roster bands at level 2
+  or below, because compilers and kernel libraries are built from source far more often than they
+  are installed from a package.
+weights:
+  adopt: 0.5
+  cap: 0.5
+products:
+- apache-tvm
+- iree
+- xla
+- tensorrt
+- mlc-llm
+- coremltools
+- nvidia-model-optimizer
+- intel-neural-compressor
+- torchao
+- bitsandbytes
+- llm-compressor
+- gptqmodel
+- aimet
+- onednn
+- arm-compute-library
+- cutlass
+- flash-attention
+- flashinfer
+- deepgemm
+- liger-kernel
+- sageattention
+- thunderkittens
+- composable-kernel
+- tf2onnx
+- onnx-simplifier
+- hummingbird
+scoring_recipe:
+  version: 1
+  extends: software
+  derived_from:
+    method: shared software ladder, checked against the hand-recorded scores
+    scores_reproduced: 26
+    scores_total: 26
+    verified_on: '2026-08-18'
+    checker: build/check_rubric.py
+  note: >-
+    The roster is software-only, so it inherits the shared software ladder unchanged; nothing in the
+    evidence suggested a semantic mismatch. Four license bodies had to be read rather than trusted:
+    aimet, torchao, cutlass and composable-kernel all report NOASSERTION because their LICENSE
+    bodies open with a vendor copyright line, and all four are verbatim BSD-3-Clause or MIT.
+    arm-compute-library reports no license at all because it follows the REUSE convention with no
+    root LICENSE file. tensorrt is the one product that does not reach the OSI rungs, and not
+    because of its license: its optimizing builder is a prebuilt binary the repository links
+    against, so `source` is `partial` and the formula settles it on that alone.
+
+    Capability is a category feature matrix rather than a benchmark. It bands on how much of the
+    model-to-hardware transformation pipeline a product performs, over how many inputs and targets:
+    5 is a retargetable end-to-end compiler (multi-framework input, multi-vendor backends, its own
+    optimizer and code generator), 4 is full compilation or a multi-technique optimization toolchain
+    narrowed to one vendor's targets or one class of models, 3 is one optimization family applied
+    broadly or a performance-critical kernel and operator library that supplies the primitives
+    compilers target, and 2 is a narrow kernel set or a single-pass graph utility. apache-tvm is the
+    top anchor and every other band is recorded against it or against the tensorrt rung below it,
+    so `check_capability` can check the arithmetic.
+comments: >-
+  Columbia infrastructure category. Includes model conversion, graph and tensor compilation,
+  quantization, pruning, and compiler-adjacent kernel libraries. Complete serving engines remain in
+  inference_code, general ML libraries in ml_frameworks, and firmware and device drivers in
+  edge_hardware. Seeded from Good AI List Infrastructure / Model optimization and Kernels on
+  2026-08-18 and triaged in full the same day: 21 of 25 seeded rows were promoted and four rejected
+  on the boundary - tiny-cuda-nn (a small neural-network framework for graphics workloads, not a
+  model-optimization tool), torch2trt (a thin converter with no release channel and no commit since
+  2024-08), llm-awq (the paper's reference implementation, superseded in production by
+  llm-compressor, which is on the roster) and litert, whose own README leads with "Google's
+  on-device runtime" and which the boundary excludes as a complete inference engine. Five
+  replacements were added: xla, mlc-llm, gptqmodel, cutlass and composable-kernel. ONNX, OpenVINO,
+  Optimum, Triton and GGML stay in ml_frameworks and ONNX Runtime and TensorRT-LLM stay in
+  inference_code; several of them would arguably read better here, but moving a product out of a
+  published category recalibrates capability in both and is a taxonomy decision to take on its own
+  rather than inside this build. litert is the one rejected candidate that plausibly belongs
+  elsewhere on the map, in inference_code or edge_hardware.

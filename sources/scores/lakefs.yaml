@@ -1,0 +1,82 @@
+product: lakefs
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole product,
+    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
+    and the core ungated.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/treeverse/lakeFS/blob/master/LICENSE
+    shows: LICENSE file is the verbatim Apache-2.0 text
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
+    establishes:
+    - license
+  - url: https://api.github.com/repos/treeverse/lakeFS
+    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch master - for
+      treeverse/lakeFS.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 9e9b14a87407f73957cac5bd45bfeb32eb3b4e05b43cede108f6b8e6abc43998
+    establishes:
+    - license
+    - source
+  - url: https://github.com/treeverse/lakeFS/blob/master/README.md
+    shows: README describes transformation of object storage into a Git-like repository giving repeatable, atomic
+      and versioned data lake operations over AWS S3, Azure Blob Storage and Google Cloud Storage, S3-API compatible
+      and working with Spark, Hive and other data frameworks, with no paid tier, enterprise edition or license-key-gated
+      build beside it.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 8f6c248a58c56f774704b5ffe4f84c0f92ad2a267aa1557e94dd558bc6d8e83c
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 1K-10K stars
+  signal_type: stars_fallback
+  confidence: low
+  note: 5,490 GitHub stars, which lands in the 1K-10K stars band of the stars scale, level 2. The `lakefs` package
+    on PyPI is the Python SDK wrapper for the server's API rather than the server, so its downloads measure client
+    use. No deployment figure is published, leaving the stars scale and its cap of 3.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://api.github.com/repos/treeverse/lakeFS
+    shows: Repo metadata - stargazers_count = 5,490 - for treeverse/lakeFS.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 9e9b14a87407f73957cac5bd45bfeb32eb3b4e05b43cede108f6b8e6abc43998
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: single-purpose store or index'
+  value: Zero-copy branching, committing and merging over three object stores behind an S3-compatible API, with
+    hooks and garbage collection. Versioning over storage it does not itself provide, and no indexing or retrieval.
+  relative_to: vespa
+  relation: two_below
+  confidence: medium
+  note: Banded on the category feature matrix as single-purpose store or index. Placed two bands below the vespa
+    anchor, on a matrix that bands on how much of the persist-index-retrieve path a product provides itself, at
+    what scale and over how many retrieval modes.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/treeverse/lakeFS/blob/master/README.md
+    shows: README still documents transformation of object storage into a Git-like repository giving repeatable,
+      atomic and versioned data lake operations over AWS S3, Azure Blob Storage and Google Cloud Storage, S3-API
+      compatible and working with Spark, Hive and other data frameworks.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 8f6c248a58c56f774704b5ffe4f84c0f92ad2a267aa1557e94dd558bc6d8e83c

@@ -1,7 +1,9 @@
 name: agent_tools_protocols
 display_name: Agent tools & protocols
 description: "Tools, protocols, and retrieval for agents."
-strapline: Open protocols, closed search. MCP and vector DBs are open; the search/scrape APIs are proprietary.
+strapline: Open protocols, closed search. The protocol layer is almost entirely open - MCP, the SDKs
+  and the servers around them - while the hosted search and scrape APIs agents call are proprietary,
+  and eight of the 29 products here publish no source at all.
 weights:
   adopt: 0.6
   cap: 0.4
@@ -10,7 +12,6 @@ products:
 - firecrawl
 - playwright-mcp
 - fastmcp
-- qdrant
 - jina-reader
 - agent2agent-protocol
 - composio
@@ -18,7 +19,6 @@ products:
 - exa-search-api
 - browserbase
 - perplexity-sonar-api
-- pinecone
 - serper
 - searxng
 - google-grounding-api
@@ -26,7 +26,6 @@ products:
 - cohere-rerank-api
 - algolia-ai-search
 - browser-use
-- milvus
 - mcp-python-sdk
 - mcp-typescript-sdk
 - mcp-inspector
@@ -43,9 +42,9 @@ scoring_recipe:
   extends: software
   derived_from:
     method: shared software ladder, verified against the hand-authored scores
-    scores_reproduced: 32
-    scores_total: 32
-    verified_on: '2026-08-12'
+    scores_reproduced: 29
+    scores_total: 29
+    verified_on: '2026-08-18'
     checker: build/check_rubric.py
   # Nothing is deferred here any more. `model-context-protocol` was the last one, and it
   # closed on a recording fix rather than on the rubric change it appeared to be waiting
@@ -55,4 +54,12 @@ scoring_recipe:
   # facts recorded the other way - MIT under `license`, CC-BY-4.0 under a separate `docs:`
   # key the ladder does not read - and kept its 5. MCP now matches autogen and reproduces
   # at 5/open_source.
-comments: ''
+comments: >-
+  Qdrant, Milvus and Pinecone left this category on 2026-08-18 for storage, which took the roster from
+  32 to 29. They had been placed here because agents call them for retrieval, but they are vector
+  databases, and their direct peers - Chroma, LanceDB, Vearch, Infinity, HelixDB, Zvec - sit in
+  storage. Two capability recipes banding the same kind of product meant their bands could not be
+  compared in the published map. The three anchored a self-contained comparison cluster among
+  themselves, so nothing left here points at them and no band in this category moved; the
+  reproduction count fell by exactly the three products that left. What is left is the protocol and
+  hosted-tool layer this category is actually about.

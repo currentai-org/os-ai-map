@@ -1,0 +1,79 @@
+product: iree
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole product,
+    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
+    and the core ungated.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/iree-org/iree/blob/main/LICENSE
+    shows: LICENSE file is the verbatim Apache-2.0 text
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 579fa63489ca4714793e90fa778b320f84527d7ebee37f1798db487e80c13cc0
+    establishes:
+    - license
+  - url: https://api.github.com/repos/iree-org/iree
+    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch main - for
+      iree-org/iree.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 951a733e171b306b4c276ff3b8b3be415e1fa7842076ae7c54f58be924cee08d
+    establishes:
+    - license
+    - source
+  - url: https://github.com/iree-org/iree/blob/main/README.md
+    shows: README describes an MLIR-based end-to-end compiler and runtime that lowers ML models to a unified IR
+      scaling from datacenter hardware down to mobile and edge constraints, with an LF AI & Data project note, with
+      no paid tier, enterprise edition or license-key-gated build beside it.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: d952aa452f41e16eb927bf590e1cdb979e72bfac106de636c0b304219df6adde
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 2
+  reach: 10K-100K
+  signal_type: usage_volume
+  confidence: high
+  note: 76,001 PyPI downloads of `iree-base-compiler` in the trailing 30 days, which lands in the 10K-100K band
+    of the software usage scale, level 2.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://pypistats.org/api/packages/iree-base-compiler/recent
+    shows: last_month downloads = 76,001 for iree-base-compiler
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: c30ef99a3343b6a5f4dd979ccd9b713271adb51d3214f03873f25265a17e6be3
+capability:
+  score: 5
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: retargetable end-to-end compiler'
+  value: MLIR-based lowering from PyTorch, JAX, TensorFlow and ONNX to CPU, CUDA, ROCm, Vulkan and SPIR-V, with
+    its own compiler and runtime halves shipped together.
+  relative_to: apache-tvm
+  relation: at
+  confidence: medium
+  note: Banded on the category feature matrix as retargetable end-to-end compiler. Placed level with the apache-tvm
+    anchor, on a matrix that bands on how much of the model-to-hardware transformation pipeline a product performs,
+    over how many inputs and targets.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/iree-org/iree/blob/main/README.md
+    shows: README still documents an MLIR-based end-to-end compiler and runtime that lowers ML models to a unified
+      IR scaling from datacenter hardware down to mobile and edge constraints, with an LF AI & Data project note.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: d952aa452f41e16eb927bf590e1cdb979e72bfac106de636c0b304219df6adde

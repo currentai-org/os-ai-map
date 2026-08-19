@@ -105,33 +105,38 @@ adoption:
 capability:
   score: 4
   basis: benchmark
-  basis_detail: ANN-Benchmarks
+  basis_detail: ANN-Benchmarks inclusion, with the throughput and latency headline from Qdrant's own benchmark
   relative_to: milvus
   relation: at
-  value: 'Included in ANN-Benchmarks (37 algorithms incl. Qdrant/Milvus/faiss/scann). Vendor benchmark:
-    highest RPS and lowest latency in almost all scenarios vs Milvus/Weaviate/Elasticsearch/Redis at matched
-    precision; advanced filtered-search query planning.'
+  value: Dense, sparse and multi-vector search including ColBERT-style late interaction, payload filtering,
+    hybrid queries fused by Reciprocal Rank Fusion or Distribution-Based Score Fusion, built-in quantization,
+    and horizontal sharding and replication with zero-downtime collection resizing. Vendor benchmark reports
+    the highest RPS and lowest latency in almost all scenarios against Milvus, Weaviate, Elasticsearch and
+    Redis at matched precision.
   confidence: medium
-  note: 'A top-tier approximate-nearest-neighbour engine on throughput and latency, level with Milvus at
-    the frontier of vector-database capability. The headline comparison is vendor-run, published at qdrant.tech/benchmarks:
-    highest requests per second and lowest latency in almost all scenarios against Milvus, Weaviate, Elasticsearch
-    and Redis at matched precision, plus advanced query planning for filtered search. ANN-Benchmarks corroborates
-    inclusion and nothing more - it lists 38 algorithms, Qdrant and Milvus (Knowhere) among them, and publishes
-    only interactive recall-versus-queries-per-second plots with no ranking table, so no clean ranking number
-    could be taken from it. Hence medium confidence.'
-  last_verified: '2026-08-13'
+  note: 'Level with Milvus, which is the 4 rung on the storage feature matrix, which bands on how much of
+    the persist-index-retrieve path a product provides itself, at what scale and over how many retrieval
+    modes: a complete durable system, distributed by sharding and replication, covering dense, sparse and
+    multi-vector retrieval with configurable score fusion. It does not reach the 5 rung, which is for a
+    platform that hosts and evaluates ranking or embedding models inside the serving path; score fusion
+    and late interaction over vectors the caller supplies are not that. The headline throughput comparison
+    is vendor-run and published at qdrant.tech/benchmarks. ANN-Benchmarks corroborates inclusion and nothing
+    more - it lists 38 algorithms, Qdrant and Milvus (Knowhere) among them, and publishes only interactive
+    recall-versus-queries-per-second plots with no ranking table - hence medium confidence. Rebanded on
+    this matrix when the product moved out of agent_tools_protocols; the band did not move.'
+  last_verified: '2026-08-18'
   sources:
   - url: https://ann-benchmarks.com/
     shows: Qdrant listed among 38 benchmarked ANN algorithms, alongside Milvus(Knowhere), faiss-ivf, scann,
-      hnswlib and weaviate. Results published as interactive recall-versus-queries-per-second plots per dataset;
-      no ranking table.
-    accessed: '2026-08-13'
+      hnswlib and weaviate. Results published as interactive recall-versus-queries-per-second plots per
+      dataset; no ranking table.
+    accessed: '2026-08-18'
     http_status: 200
-    content_sha256: 13d5e2d00070ba5ec7dc53d4ce89e86c86cb7c0ef43803a4fe565f397c956861
+    content_sha256: c964500c5402bf9c4dc5e0c8841f58497b3009aa38937bf1bc2b1306ee912788
   - url: https://qdrant.tech/benchmarks/
-    shows: 'Vendor benchmark, Observations section - "Qdrant achieves highest RPS and lowest latencies in
-      almost all the scenarios, no matter the precision threshold and the metric we choose. It has also shown
-      4x RPS gains on one of the datasets." Compared against Milvus, Weaviate, Elasticsearch and Redis.'
-    accessed: '2026-08-13'
+    shows: Vendor benchmark, Observations section - "Qdrant achieves highest RPS and lowest latencies in
+      almost all the scenarios, no matter the precision threshold and the metric we choose. It has also
+      shown 4x RPS gains on one of the datasets." Compared against Milvus, Weaviate, Elasticsearch and Redis.
+    accessed: '2026-08-18'
     http_status: 200
-    content_sha256: fd5094d6c8c1b0c729e2725a7b28cda8292b6b0979c2cd058d50f998cea21c0e
+    content_sha256: 14943a0c1c766192c8f065c4f6a5e53da199e3fb5ad5ec7e8cbed612cf919378

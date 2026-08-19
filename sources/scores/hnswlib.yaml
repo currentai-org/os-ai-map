@@ -1,0 +1,80 @@
+product: hnswlib
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: Apache-2.0
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: Apache-2.0 license body confirmed. The repository is public and unarchived and builds the whole product,
+    and the README describes no paid tier, enterprise edition or license-gated build beside it, so source is public
+    and the core ungated.
+  raw: license:Apache-2.0(OSI);source:public;core-gated:ungated
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/nmslib/hnswlib/blob/master/LICENSE
+    shows: LICENSE file is the verbatim Apache-2.0 text
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1
+    establishes:
+    - license
+  - url: https://api.github.com/repos/nmslib/hnswlib
+    shows: Repo metadata - license spdx_id Apache-2.0, private false, archived false, default branch master - for
+      nmslib/hnswlib.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: b280102bdfd8153fbe96d1a4666011f482979d8b20025557160523e7154094bc
+    establishes:
+    - license
+    - source
+  - url: https://github.com/nmslib/hnswlib/blob/master/README.md
+    shows: README describes a header-only C++ HNSW implementation with Python bindings supporting insertions, updates
+      and filtered search, with no paid tier, enterprise edition or license-key-gated build beside it.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 351e2b2c93b19b34e321a05342b67469d0a1e5257cd5c3149a8b9b1756b3778f
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 3
+  reach: 100K-1M
+  signal_type: usage_volume
+  confidence: high
+  note: 544,320 PyPI downloads of `hnswlib` in the trailing 30 days, which lands in the 100K-1M band of the software
+    usage scale, level 3. The PyPI project's declared source URL points at the author's own hnsw repository rather
+    than nmslib/hnswlib; the package is this library's Python distribution and not a client for something else,
+    so the figure is the product's.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://pypistats.org/api/packages/hnswlib/recent
+    shows: last_month downloads = 544,320 for hnswlib
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: d9033fe9cf4b2dc0c5a79b2f8a3fc4b854f05448aa9c47bfb1bb7cb659e0d459
+capability:
+  score: 2
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: single index family as a library'
+  value: One index structure, HNSW, with insertion, update and filtered search, as a header and a Python binding.
+    No storage, persistence service or query layer.
+  relative_to: chroma
+  relation: two_below
+  confidence: medium
+  note: Banded on the category feature matrix as single index family as a library. Placed two bands below the chroma
+    anchor, on a matrix that bands on how much of the persist-index-retrieve path a product provides itself, at
+    what scale and over how many retrieval modes.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/nmslib/hnswlib/blob/master/README.md
+    shows: README still documents a header-only C++ HNSW implementation with Python bindings supporting insertions,
+      updates and filtered search.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 351e2b2c93b19b34e321a05342b67469d0a1e5257cd5c3149a8b9b1756b3778f

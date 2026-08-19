@@ -12,7 +12,9 @@ Emitted tables (one CSV each, written to build/registry/):
   products              slug, display_name, type, description, comments
   organizations         slug, display_name, type, homepage, github, country
   categories            slug, display_name, description, strapline,
-                        weight_adopt, weight_cap, arc_name, layer
+                        weight_adopt, weight_cap, arc_name, layer, status
+  tail_products          slug, display_name, product_type, org_slug,
+                        category_slug, artifact_kind, artifact_id, artifact_url
   product_artifacts     product_slug, product_type, artifact_kind, artifact_id, artifact_url
                         (kinds: github, huggingface_model, huggingface_dataset,
                          pypi, npm, crates, arxiv)
@@ -46,6 +48,7 @@ import re
 import sys
 from pathlib import Path
 
+from build.taxonomy import arc_categories, category_statuses
 from build.validate import load_sources
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -74,6 +77,17 @@ TABLES: dict[str, tuple[str, ...]] = {
         "weight_cap",
         "arc_name",
         "layer",
+        "status",
+    ),
+    "tail_products": (
+        "slug",
+        "display_name",
+        "product_type",
+        "org_slug",
+        "category_slug",
+        "artifact_kind",
+        "artifact_id",
+        "artifact_url",
     ),
     "product_artifacts": (
         "product_slug",
@@ -139,8 +153,8 @@ def category_layers(taxonomy: dict) -> dict[str, tuple[str, str]]:
             continue
         name = arc.get("name")
         layer = arc.get("layer")
-        for slug in arc.get("categories") or []:
-            if isinstance(slug, str) and isinstance(name, str) and isinstance(layer, str):
+        for slug, _status in arc_categories(arc):
+            if isinstance(name, str) and isinstance(layer, str):
                 out[slug] = (name, layer)
     return out
 
@@ -158,7 +172,9 @@ def build_registry(sources: dict) -> tuple[dict[str, list[dict]], list[str], lis
     products: dict = sources["products"]
     organizations: dict = sources["organizations"]
     categories: dict = sources["categories"]
+    registry: dict = sources.get("registry") or {}
     layers = category_layers(sources.get("taxonomy") or {})
+    statuses = category_statuses(sources.get("taxonomy") or {})
 
     tables: dict[str, list[dict]] = {name: [] for name in TABLES}
     errors: list[str] = []
@@ -256,6 +272,7 @@ def build_registry(sources: dict) -> tuple[dict[str, list[dict]], list[str], lis
                 "weight_cap": weights.get("cap", ""),
                 "arc_name": arc_name,
                 "layer": layer,
+                "status": statuses.get(slug, ""),
             }
         )
         for product_slug in category.get("products") or []:
@@ -265,6 +282,38 @@ def build_registry(sources: dict) -> tuple[dict[str, list[dict]], list[str], lis
             tables["product_categories"].append(
                 {"product_slug": product_slug, "category_slug": slug}
             )
+
+    tail_artifact_kinds = (
+        "github", "pypi", "npm", "huggingface_model", "huggingface_dataset"
+    )
+    for category_slug, record in sorted(registry.items()):
+        for product in record.get("products") or []:
+            for kind in tail_artifact_kinds:
+                identifier = product.get(kind)
+                if not identifier:
+                    continue
+                if kind == "github":
+                    url = f"https://github.com/{identifier}"
+                elif kind == "pypi":
+                    url = f"https://pypi.org/project/{identifier}/"
+                elif kind == "npm":
+                    url = f"https://www.npmjs.com/package/{identifier}"
+                elif kind == "huggingface_model":
+                    url = f"https://huggingface.co/{identifier}"
+                else:
+                    url = f"https://huggingface.co/datasets/{identifier}"
+                tables["tail_products"].append(
+                    {
+                        "slug": product.get("slug", ""),
+                        "display_name": product.get("display_name", ""),
+                        "product_type": product.get("type", ""),
+                        "org_slug": product.get("org", ""),
+                        "category_slug": category_slug,
+                        "artifact_kind": kind,
+                        "artifact_id": identifier,
+                        "artifact_url": url,
+                    }
+                )
 
     placed = {row["product_slug"] for row in tables["product_categories"]}
     owned = {row["product_slug"] for row in tables["product_organizations"]}

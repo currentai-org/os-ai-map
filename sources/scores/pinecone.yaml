@@ -69,29 +69,34 @@ adoption:
 capability:
   score: 4
   basis: benchmark
-  basis_detail: ANN-Benchmarks
+  basis_detail: vendor-reported production and load-test figures (no independent harness submission)
   relative_to: milvus
   relation: at
   value: P50 latency ~26-60ms at 1.4B-vector scale, 5,700 QPS; serverless auto-indexing, dedicated read
     nodes
   confidence: medium
-  note: 'Top-tier managed approximate-nearest-neighbour search at billion-vector scale, with strong latency
-    and throughput. Being a closed system its figures are vendor-reported, and no independent submission
-    exists: ann-benchmarks.com lists 38 algorithms and Pinecone is not among them, so the absence is a confirmed
-    finding rather than an assumption. That puts it level with Milvus at 4, with 5 reserved for engines
-    whose frontier performance is benchmark-proven.'
-  last_verified: '2026-08-13'
+  note: 'Level with Milvus, which is the 4 rung on the storage feature matrix, which bands on how much of
+    the persist-index-retrieve path a product provides itself, at what scale and over how many retrieval
+    modes: a complete durable system operated at scale, with integrated sparse-dense hybrid search, serverless
+    auto-indexing and dedicated read nodes. It does not reach the 5 rung, which is for a platform that hosts
+    and evaluates ranking or embedding models inside the serving path, because nothing in the recorded evidence
+    shows that. Being a closed system its figures are vendor-reported and no independent submission exists:
+    ann-benchmarks.com lists 38 algorithms and Pinecone is not among them, so the absence is a confirmed
+    finding rather than an assumption, which is what holds confidence at medium. Rebanded on this matrix
+    when the product moved out of agent_tools_protocols; the band did not move. Capability is independent
+    of openness here - this product scores 1/closed and still reaches the same rung as two open engines.'
+  last_verified: '2026-08-18'
   sources:
   - url: https://www.infoq.com/news/2025/12/pinecone-drn-vector-workloads/
     shows: Dedicated read nodes for predictable vector workloads; serverless scaling.
-    accessed: '2026-08-13'
+    accessed: '2026-08-18'
     http_status: 200
-    content_sha256: 2a84fad84298a7a3621b4a6f9a0de72c2a80f447e146bebca16bd1d161b6dcd7
+    content_sha256: 7718267b7c994a701f63ca1a6bc7904869f5dcafa14a60d3445bc88f77413bec
   - url: https://siliconangle.com/2025/12/01/pinecone-scales-vector-database-support-demanding-workloads/
     shows: '"5,700 queries per second with a P50 latency of just 26 milliseconds across a database of 1.4
-      billion vectors"; and 600 QPS at 45ms over 135 million vectors, load-tested to "2,200 queries per second
-      with a P50 latency of just 60 milliseconds". Vendor-sourced figures reported by a trade outlet, not
-      an independent harness.'
-    accessed: '2026-08-13'
+      billion vectors"; and 600 QPS at 45ms over 135 million vectors, load-tested to "2,200 queries per
+      second with a P50 latency of just 60 milliseconds". Vendor-sourced figures reported by a trade outlet,
+      not an independent harness.'
+    accessed: '2026-08-18'
     http_status: 200
-    content_sha256: 065aca152e1b956651a4e7c6637129f8e68e42f7c3c1a9332564ea6f684c23b2
+    content_sha256: 5fdcdf03270cf00d985ffbaa89ba0be9a2a890cc84b8d6b3300bc64c0505f1c5

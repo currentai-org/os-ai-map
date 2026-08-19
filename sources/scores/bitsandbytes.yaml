@@ -1,0 +1,78 @@
+product: bitsandbytes
+openness:
+  score: 5
+  class: open_source
+  components:
+    license:
+    - name: MIT
+      detail: OSI
+    source:
+      value: public
+    core-gated:
+      value: ungated
+  confidence: high
+  note: MIT license body confirmed. The repository is public and unarchived and builds the whole product, and the
+    README describes no paid tier, enterprise edition or license-gated build beside it, so source is public and
+    the core ungated.
+  raw: license:MIT(OSI);source:public;core-gated:ungated
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/bitsandbytes-foundation/bitsandbytes/blob/main/LICENSE
+    shows: LICENSE file is the verbatim MIT text
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 52412d7bc7ce4157ea628bbaacb8829e0a9cb3c58f57f99176126bc8cf2bfc85
+    establishes:
+    - license
+  - url: https://api.github.com/repos/bitsandbytes-foundation/bitsandbytes
+    shows: Repo metadata - license spdx_id MIT, private false, archived false, default branch main - for bitsandbytes-foundation/bitsandbytes.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: e6e9f8da9f97dfcdcaf92f6829e9469a593b8f48f12bdf41395f45335d971385
+    establishes:
+    - license
+    - source
+  - url: https://github.com/bitsandbytes-foundation/bitsandbytes/blob/main/README.md
+    shows: README describes k-bit quantization for PyTorch through 8-bit block-wise optimizers, the LLM.int8() mixed-precision
+      inference path with separate outlier handling, and 4-bit NF4 quantization for QLoRA, with no paid tier, enterprise
+      edition or license-key-gated build beside it.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 2ca738f8631329f1b1223ab4efce814aef3c9e5518a5e8fec681f1240c86367e
+    establishes:
+    - source
+    - core-gated
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: 5,708,239 PyPI downloads of `bitsandbytes` in the trailing 30 days, which lands in the 1M-10M band of the
+    software usage scale, level 4.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://pypistats.org/api/packages/bitsandbytes/recent
+    shows: last_month downloads = 5,708,239 for bitsandbytes
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 9a42a9dfdf65bbde1078829f074ffc516cd3e6e78dd4f5b0ccd88eb8e07394d6
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: one optimization family, applied broadly'
+  value: 8-bit optimizers, LLM.int8() inference and 4-bit NF4 quantization for PyTorch, with multi-backend support.
+    Quantization only; it neither compiles nor lowers a graph.
+  relative_to: apache-tvm
+  relation: two_below
+  confidence: medium
+  note: Banded on the category feature matrix as one optimization family, applied broadly. Placed two bands below
+    the apache-tvm anchor, on a matrix that bands on how much of the model-to-hardware transformation pipeline a
+    product performs, over how many inputs and targets.
+  last_verified: '2026-08-18'
+  sources:
+  - url: https://github.com/bitsandbytes-foundation/bitsandbytes/blob/main/README.md
+    shows: README still documents k-bit quantization for PyTorch through 8-bit block-wise optimizers, the LLM.int8()
+      mixed-precision inference path with separate outlier handling, and 4-bit NF4 quantization for QLoRA.
+    accessed: '2026-08-18'
+    http_status: 200
+    content_sha256: 2ca738f8631329f1b1223ab4efce814aef3c9e5518a5e8fec681f1240c86367e
