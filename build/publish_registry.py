@@ -5,9 +5,12 @@ to score it, CI pushes that declaration outward. Nothing is pulled back in here,
 and no generated CSV is committed — the repo stays YAML, and OSO gets a flat mirror
 of it.
 
-Two serializers feed this. `serialize_registry` emits identity; `serialize_rubric`
-emits each category's scoring rules plus the evidence currently on record. Layer-2
-cannot compute a score without both, so they publish together.
+Three serializers feed this. `serialize_registry` emits identity; `serialize_rubric`
+emits each category's scoring rules plus the evidence currently on record; and
+`serialize_scores` emits the recorded scores themselves, every product and axis in one
+row. Layer-2 cannot compute a score without the first two, so they publish together, and
+the third is what lets a reader query adoption and capability at all — those axes are
+recomputed nowhere, so before this the warehouse held their sources and not their values.
 
 Idempotent. Static models are created on first run and reused after, so this can
 run on every push to sources/.
@@ -36,12 +39,14 @@ from pathlib import Path
 from build.serialize_registry import OUT_DIR
 from build.serialize_registry import TABLES as REGISTRY_TABLES
 from build.serialize_rubric import TABLES as RUBRIC_TABLES
+from build.serialize_scores import TABLES as SCORES_TABLES
 
-# One dataset, two serializers. `serialize_registry` declares what exists;
-# `serialize_rubric` declares how to score it and what evidence is on record.
-# Both are configuration flowing outward, so they share the `registry` dataset
-# and this publisher. Order is stable so the materialization run is reproducible.
-TABLES: tuple[str, ...] = tuple(REGISTRY_TABLES) + tuple(RUBRIC_TABLES)
+# One dataset, three serializers. `serialize_registry` declares what exists;
+# `serialize_rubric` declares how to score it and what evidence is on record; and
+# `serialize_scores` carries the recorded scores themselves. All three are the repo's own
+# declarations flowing outward, so they share the `registry` dataset and this publisher.
+# Order is stable so the materialization run is reproducible.
+TABLES: tuple[str, ...] = tuple(REGISTRY_TABLES) + tuple(RUBRIC_TABLES) + tuple(SCORES_TABLES)
 
 API = "https://api.oso.xyz/v1/graphql"
 USER_AGENT = "os-ai-map-registry-publisher/1.0"
@@ -103,7 +108,10 @@ def resolve_dataset(name: str, org_id: str, token: str) -> str:
                 "description": (
                     "The os-ai-map registry: which products, organizations and categories "
                     "exist and how they relate. Pushed by CI on every change to sources/. "
-                    "Declarative only — scores are computed downstream, not mirrored here."
+                    "Declarative only. Openness is COMPUTED downstream in "
+                    "currentai.scores and graded against this by check_parity; the recorded "
+                    "scores for all three axes are mirrored here as product_scores, which is "
+                    "a copy of what the repo says rather than a computation over it."
                 ),
             }
         },
@@ -177,8 +185,8 @@ def main() -> int:
     missing = [t for t in TABLES if not (args.dir / f"{t}.csv").exists()]
     if missing:
         print(
-            f"missing CSVs: {missing}. Run build.serialize_registry and "
-            f"build.serialize_rubric first.",
+            f"missing CSVs: {missing}. Run build.serialize_registry, build.serialize_rubric "
+            f"and build.serialize_scores first.",
             file=sys.stderr,
         )
         return 2
