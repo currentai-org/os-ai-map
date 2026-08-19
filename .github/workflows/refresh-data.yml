@@ -63,18 +63,59 @@ jobs:
             exit 1
           fi
 
+          # Report what the API said and what shape the credential has, never the credential.
+          # The previous version printed only "did not authenticate (HTTP 401)" and asserted
+          # expiry as the cause. That reading stood from 2026-06-11 to 2026-08-19, through this
+          # workflow's entire history of failed runs, and cost a long session of diagnosis that
+          # one printed response body would have ended.
+          #
+          # The GitHub probe is /rate_limit rather than /user on purpose: it accepts any valid
+          # credential and requires no permissions, so a failure there cannot be confused with
+          # a token that is fine but scoped too narrowly. That distinction is the whole point
+          # of the message below.
           bad=""
-          probe() {  # name, url, auth header
-            code=$(curl -s -o /dev/null -w '%{http_code}' -H "$3" "$2" || echo 000)
-            if [ "$code" != "200" ]; then
-              echo "::error::$1 did not authenticate (HTTP $code)"
+          probe() {  # name, url, auth header, token value
+            body="$(mktemp)"
+            # curl prints 000 itself when it cannot connect, so a `|| echo 000` here would
+            # yield 000000 and read as a status nobody can look up. Separate the transport
+            # failure from the HTTP answer instead.
+            if ! code=$(curl -s -o "$body" -w '%{http_code}' -H "$3" "$2"); then
+              echo "::error::$1 could not be checked: the request to $2 failed before an HTTP status"
               bad="$bad $1"
+              rm -f "$body"
+              return 0
             fi
+            if [ "$code" = "200" ]; then
+              rm -f "$body"
+              return 0
+            fi
+            echo "::error::$1 did not authenticate (HTTP $code)"
+            # A fresh file per probe. Reusing one meant a failed request left the PREVIOUS
+            # probe's body in place, so the error quoted an answer to a different question.
+            echo "  the API said: $(head -c 200 "$body" | tr -d '\n')"
+            rm -f "$body"
+            RAW="$4"
+            TRIMMED="$(printf '%s' "$RAW" | tr -d '[:space:]')"
+            echo "  stored value: ${#RAW} chars$([ "${#RAW}" -ne "${#TRIMMED}" ] && echo " (WHITESPACE PRESENT - $(( ${#RAW} - ${#TRIMMED} )) chars, which alone can cause a 401)")"
+            case "$RAW" in
+              ghp_*) echo "  kind: classic PAT" ;;
+              github_pat_*) echo "  kind: fine-grained PAT (these expire; 30 days by default, 1 year maximum)" ;;
+              ghs_*) echo "  kind: App installation token" ;;
+              gho_*|ghu_*) echo "  kind: OAuth / user-to-server token" ;;
+              hf_*) echo "  kind: Hugging Face token" ;;
+              *) echo "  kind: unrecognised prefix - is the right value in this secret?" ;;
+            esac
+            bad="$bad $1"
           }
-          probe GH_FETCH_TOKEN https://api.github.com/user "Authorization: Bearer $GH_TOKEN"
-          probe HF_TOKEN https://huggingface.co/api/whoami-v2 "Authorization: Bearer $HF_TOKEN"
+          probe GH_FETCH_TOKEN https://api.github.com/rate_limit "Authorization: Bearer $GH_TOKEN" "$GH_TOKEN"
+          probe HF_TOKEN https://huggingface.co/api/whoami-v2 "Authorization: Bearer $HF_TOKEN" "$HF_TOKEN"
           if [ -n "$bad" ]; then
-            echo "::error::Rotate the secret(s) above in repo settings. A PAT that has expired is the usual cause; see issue #281."
+            # 401 and 403 need different fixes, and neither is "add scopes" by default. A 401
+            # means the credential was not recognised at all, so no permission change helps. A
+            # 403 means the request was recognised and DENIED, which can be scopes but is also
+            # how rate limiting, an unapproved fine-grained token, and org policy all answer —
+            # read the body printed above rather than assuming which.
+            echo "::error::Set the secret(s) above in repo settings. On a 401 the credential is not recognised, so no permission change will help; on a 403 the request was recognised and denied, and the body says which denial. GH_FETCH_TOKEN needs only Metadata: read, Contents: read and Pull requests: write on this repo."
             exit 1
           fi
 
