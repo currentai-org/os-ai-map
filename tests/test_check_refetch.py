@@ -21,6 +21,7 @@ import pytest
 import requests
 
 from build.check_refetch import Source, offline_failures, refetch
+from build.check_refetch import bot_wall as pr_bot_wall
 
 DIGEST_A = "a" * 64
 DIGEST_B = "b" * 64
@@ -167,3 +168,51 @@ def test_network_error_is_unreachable_not_dead():
         "build.check_refetch.requests.get", side_effect=requests.Timeout("timed out")
     ):
         assert refetch(source, 5.0)[0] == "unreachable"
+
+
+# --- Bot walls -------------------------------------------------------------------------
+# A wall answers 200 and hands back a page that is not the document, so neither the
+# TRANSIENT branch nor the >=400 branch sees it. On 2026-08-13 two PyPI sources were
+# digested from one, recorded the same digest because the wall is byte-identical whatever
+# you ask for, and the duplicate resolver called it fabrication. Nobody forged anything.
+
+WALL = (
+    b"<html><head><title>Client Challenge</title></head>"
+    b"<body>JavaScript is disabled in your browser</body></html>"
+)
+
+
+def test_a_wall_is_recognised_by_marker_and_size():
+    assert "Client Challenge" in (pr_bot_wall(_response(200, WALL)) or "")
+
+
+def test_a_real_page_quoting_the_marker_is_not_a_wall():
+    """The size bound is what stops a docs page ABOUT bot protection being discarded.
+
+    Without it this check would silently drop legitimate evidence, which is a worse
+    failure than the one it is here to prevent.
+    """
+    big = WALL + b"x" * 30_000
+    assert pr_bot_wall(_response(200, big)) is None
+
+
+def test_a_walled_refetch_is_unreachable_not_drift():
+    """DRIFTED would assert the document changed. The host just declined to serve it."""
+    source = src("https://a.example/x", DIGEST_A)
+    with patch("build.check_refetch.requests.get", return_value=_response(200, WALL)):
+        outcome, detail = refetch(source, 5.0)
+    assert outcome == "unreachable"
+    assert "bot wall" in detail
+
+
+def test_a_wall_whose_digest_matches_is_never_confirmed():
+    """The one case that must not read as CONFIRMED.
+
+    A matching digest is this gate's only piece of positive evidence, and certifying a
+    source whose recorded bytes are a challenge page would turn that evidence into a lie.
+    """
+    source = src("https://a.example/x", hashlib.sha256(WALL).hexdigest())
+    with patch("build.check_refetch.requests.get", return_value=_response(200, WALL)):
+        outcome, detail = refetch(source, 5.0)
+    assert outcome != "confirmed"
+    assert "never read" in detail
