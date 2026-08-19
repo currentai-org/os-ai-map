@@ -4,10 +4,15 @@
 #  - hash:         the platform revision's content hash (an id for the deployed revision,
 #                  compared by a future drift check).
 #  - local_sha256: sha256 of the checked-in bytes, so this manifest binds the actual file.
+#  - synced_at:    when THAT entry was last refetched from the platform.
 # The platform is the source of truth. To re-sync: refetch each model's latest revision,
-# overwrite the file, and update revision/hash/local_sha256/synced_at below.
+# overwrite the file, and update revision/hash/local_sha256/synced_at on that entry.
+#
+# synced_at is PER ENTRY, not per file. It was one global date until 2026-08-16, which meant
+# refetching two models advanced the date on all twelve and implied the other ten had been
+# checked. A provenance record whose date moves for a reason unrelated to the thing it dates
+# is worse than no date. Staged entries carry none: nothing has been deployed to refetch.
 org: currentai            # ad7f4c1c-dd2f-430e-a831-e7f1f16e6d9e
-synced_at: '2026-08-15'
 
 models:
   - file: evidence_product_evidence.sql
@@ -15,6 +20,7 @@ models:
     model_id: 769c20b5-d9c0-4163-bced-81e3a62fbc47
     revision: 8
     hash: 0b82978b734971a41ce94a97d9a0c5cb8898733677049057a95675e16595ebdc
+    synced_at: '2026-08-15'
     local_sha256: 4cd20993f6f839e7bc8c2eae7e8b85a9e61b62d5f004462df99d5f203dee403b
     schema_file: evidence_product_evidence.schema.json
     schema_local_sha256: 625b9bb254aef512dd92151b8ef1055e8aab3566ec3326c2a4b806ea8feef46c
@@ -23,6 +29,7 @@ models:
     model_id: 68d9e34c-b0b6-460b-b4ae-21b7016eb1f8
     revision: 7
     hash: 7ce706d47d74cc433b6eb02b7b8558d26af21f6689d83426296d2457fa3ad26c
+    synced_at: '2026-08-15'
     local_sha256: 1952f4b3939ade83f4ec239795ad234fa3ec8464c1789edb4d66374f072e4e39
     schema_file: scores_openness_facts.schema.json
     schema_local_sha256: e0af61b46f8e470354b9c0c5e1efe8fc419cd37bbbfccc3bdbf44991ecddebf9
@@ -31,6 +38,7 @@ models:
     model_id: 6aef560b-cc85-4a9d-afa8-8f4798208e74
     revision: 15
     hash: 5606414402e540d23105552aa2320e4d62cdc71540e84e1d1a8db842df429ca1
+    synced_at: '2026-08-15'
     local_sha256: afc40feea6966d0ad946b0f2ae1d00b8ad4f5a9a6e2fb74dea8383ec5d88b464
     schema_file: scores_openness_computed.schema.json
     schema_local_sha256: 0802e69dd10acc0575ba95e845514f59ec818b6b51e5a69551ceaa2fec910a8e
@@ -39,58 +47,73 @@ models:
     model_id: a50ce375-4b91-43c6-b1ce-1fc60911b513
     revision: 4
     hash: efbd5ce1104d2f028c123f5f490fa9e5439be14489e8e069be50e0ecf545e4fd
+    synced_at: '2026-08-15'
     local_sha256: a11300a0a4c1a697a217202a43c230af3e00dc9595000c2f73cae74e615b9c66
   - file: huggingface_hub_state.py
     table: currentai.signal_huggingface.hub_state
     model_id: 014a0641-605f-4e57-831b-d24a1304437f
     revision: 3
     hash: d7b62c33cb51b13235dcb9d7e8b7f57fd7a8c76ec3bf2f8d912c32c145fc41f5
+    synced_at: '2026-08-15'
     local_sha256: d2c0ef261ee4af9beda119d14965301fd9f99411d9eddd978ed9aeeb49781b21
   - file: pypi_package_downloads.sql
     table: currentai.signal_pypi.package_downloads
     model_id: a88bff56-0a00-49d1-8667-809a79b4d7c0
     revision: 3
     hash: d5311e2d3feb3b5f0190134b70c143586bcda911ed530ca52545c53325b7bbd0
+    synced_at: '2026-08-15'
     local_sha256: 21fe2106888e7cf8aecc12d3a57b449a8a064537608eb4ac54ac32bb5d180499
   - file: artificialanalysis_models.py
     table: currentai.signal_artificialanalysis.model_evaluations
     model_id: dbce2dc6-9586-477d-8fe8-1c3ef8a7760c
     revision: 2
     hash: 044310c3f02b3bf5d52009095b737a3e9dcf995609641bf646b188e0886db451
+    synced_at: '2026-08-15'
     local_sha256: 1491f28b90e1f730b4de1035c7e2c49327d4baf9055fb359a0625095cce4bb8f
   - file: lmarena_leaderboard.py
     table: currentai.signal_lmarena.text_leaderboard
     model_id: efb89f86-7aff-48df-a78e-ce01234672db
     revision: 7
     hash: c4715ace092f807464fafbeeb5a207f3fa54dc4e69ee0e5ba442f089ede07ca4
+    synced_at: '2026-08-15'
     local_sha256: 1844f16f6a0d38d6e756f1f93b6d84242424eca813d9b3e2943c009351d165f9
   - file: semanticscholar_paper_citations.py
     table: currentai.signal_semanticscholar.paper_citations
     model_id: cc73d808-5833-4a91-a47b-35bb0414b6f0
     revision: 3
     hash: 369e2abc26bd6e5dd756c200ecac03201f8940420b7b33e5f829db5d1c9027b3
+    synced_at: '2026-08-15'
     local_sha256: 1945bc8dad621c1015e897e2620e445d5a5224bb8fe4a7bc014a5ba7547fb558
   - file: goodailist_repos.py
     table: currentai.signal_goodailist.repo_catalog
     model_id: c7d3a3d9-578c-4c54-8ccf-71879bdd43d2
     revision: 3
     hash: 27b7de7c1271500612ae0e29163d7661451db4b16352d7ce1b0dd12df1d466a7
+    synced_at: '2026-08-15'
     local_sha256: eaee5981530529fc1cbd6c21d2d18b7019b0ed2c15751f43b2d84f4f4bb0ae00
-  - file: packages_product_adoption.sql
+  # Both adoption models were listed against packages_product_adoption.sql until
+  # 2026-08-16 — the same file, twice, pointed at two tables it does not implement.
+  # Refetched from the platform: they are unrelated models. This one bands STARS as
+  # the last-resort route; the Hugging Face one bands Hub downloads; the packages
+  # file below bands package-registry downloads and declares its own table in line 6.
+  - file: github_product_adoption.sql
     table: currentai.signal_github.product_adoption
     model_id: 25538fa7-f956-481c-ac14-474ab1661ac3
-    revision: 2
-    hash: 15e77142a74d89e267b2e341c566f6da0e025bd7bda289183bb376cf5332f1eb
-    local_sha256: 554a229cf3608616c8a1c550b32c89b1d44d76633fa8e2ab956619e94f4c390e
-  - file: packages_product_adoption.sql
+    revision: 3
+    hash: fab87a5e45a70663162a5421eb5037a5bca9cdbd49d4ab0b24d47b3688ed1da8
+    synced_at: '2026-08-16'
+    local_sha256: 0ad0c6fe80fcdb546a82552b1b9f860d9f432b2f747ff678388cc95b83763ece
+  - file: huggingface_product_adoption.sql
     table: currentai.signal_huggingface.product_adoption
     model_id: abcf0044-dd9d-4942-a2a1-e047dab8e8b1
-    revision: 2
-    hash: bdc8c2b8231bacd62c6404276a11190b5ab3139a81c9b1bcaededafe23ff24ef
-    local_sha256: 554a229cf3608616c8a1c550b32c89b1d44d76633fa8e2ab956619e94f4c390e
+    revision: 3
+    hash: 6b088f7d0bae8e0d399dc63a44ccbd190d34da27f7cedc21346be4a2dd1ce9b9
+    synced_at: '2026-08-16'
+    local_sha256: f303551eafd02b3beca61c0552a4ef7489de7b510e77e048f95b10d4799988e9
 
-  # Staged signal_packages successor (PR #266), not yet a single deployed dataset.
-  # Confirm the exact file->revision mapping on the next re-sync before trusting.
+  # Staged signal_packages successor (PR #266), not yet a deployed dataset. All three
+  # models of that dataset are staged together; the manifest carries the set so a
+  # partial mirror is visible rather than silent.
   - file: packages_package_downloads.sql
     table: currentai.signal_packages.package_downloads
     status: staged
@@ -99,6 +122,10 @@ models:
     table: currentai.signal_packages.package_downloads_daily
     status: staged
     local_sha256: a513593cf14985b9f819e4a64ad60de63ed6d06777b5f492e427c6adea9725ab
+  - file: packages_product_adoption.sql
+    table: currentai.signal_packages.product_adoption
+    status: staged
+    local_sha256: 554a229cf3608616c8a1c550b32c89b1d44d76633fa8e2ab956619e94f4c390e
 
 # TODO (follow-up): a credentialed check job that refetches each model_id's latest
 # revision and compares `hash` to catch platform drift. tests/test_platform_mirror.py
