@@ -1,8 +1,10 @@
 name: registry
 
 # The "config in" bridge: the repo declares what exists, and CI pushes that
-# declaration to OSO. Nothing flows back in here — scores are computed downstream
-# and serialized outward separately.
+# declaration to OSO. Nothing flows back in here. Openness is COMPUTED downstream, in the
+# warehouse, and check_parity grades it against the repo; the recorded scores for all three
+# axes go out from here as registry.product_scores, which is a mirror rather than a
+# computation.
 
 # One publish at a time. Tables upload individually and are then materialized, so two
 # overlapping runs can commit a snapshot that is half registry and half rubric. Not
@@ -15,16 +17,46 @@ on:
   pull_request:
     paths:
       - "sources/**"
+      # Every module the three serializers reach, transitively — not just the serializers
+      # themselves. A change to build/serialize.py alters the derived scores in
+      # product_scores, and a change to build/freshness_payload.py alters its freshness
+      # columns, so either can change what gets published. Neither used to trigger this
+      # workflow. tests/test_registry_triggers.py recomputes the import closure and fails
+      # if this list falls behind it, so a new import is caught rather than remembered.
+      - "build/check_freshness.py"
+      - "build/check_rubric.py"
+      - "build/freshness_payload.py"
+      - "build/rubrics.py"
+      - "build/serialize.py"
       - "build/serialize_registry.py"
       - "build/serialize_rubric.py"
+      - "build/serialize_scores.py"
+      - "build/taxonomy.py"
+      - "build/validate.py"
+      - "build/vocabulary.py"
       - "build/publish_registry.py"
       - ".github/workflows/registry.yml"
   push:
     branches: [main]
     paths:
       - "sources/**"
+      # Every module the three serializers reach, transitively — not just the serializers
+      # themselves. A change to build/serialize.py alters the derived scores in
+      # product_scores, and a change to build/freshness_payload.py alters its freshness
+      # columns, so either can change what gets published. Neither used to trigger this
+      # workflow. tests/test_registry_triggers.py recomputes the import closure and fails
+      # if this list falls behind it, so a new import is caught rather than remembered.
+      - "build/check_freshness.py"
+      - "build/check_rubric.py"
+      - "build/freshness_payload.py"
+      - "build/rubrics.py"
+      - "build/serialize.py"
       - "build/serialize_registry.py"
       - "build/serialize_rubric.py"
+      - "build/serialize_scores.py"
+      - "build/taxonomy.py"
+      - "build/validate.py"
+      - "build/vocabulary.py"
       - "build/publish_registry.py"
   workflow_dispatch:
 
@@ -36,6 +68,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Full history: serialize_scores builds the payload, and build.freshness_payload
+          # dates each score file from its last commit. A shallow clone collapses all 522
+          # onto the tip commit, and resolve_freshness refuses rather than publishing a
+          # freshness field that is uniformly wrong. Same reason regenerate.yml and
+          # freshness.yml pin it.
+          fetch-depth: 0
       - uses: astral-sh/setup-uv@v5
         with:
           enable-cache: true
@@ -48,6 +87,11 @@ jobs:
       # products into `otherwise`, so it has to fail here.
       - name: Check rubric consistency
         run: uv run python -m build.serialize_rubric --check
+      # The fat table transcribes the payload, so this also fails if the payload itself
+      # cannot be built — which is the same failure `regenerate` would hit later, caught
+      # here on the PR instead.
+      - name: Check the scores table builds
+        run: uv run python -m build.serialize_scores --check
 
   # On main, serialize and push. Static models are created on first run and
   # reused after, so this is safe to run on every change to sources/.
@@ -56,6 +100,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Full history: serialize_scores builds the payload, and build.freshness_payload
+          # dates each score file from its last commit. A shallow clone collapses all 522
+          # onto the tip commit, and resolve_freshness refuses rather than publishing a
+          # freshness field that is uniformly wrong. Same reason regenerate.yml and
+          # freshness.yml pin it.
+          fetch-depth: 0
       - uses: astral-sh/setup-uv@v5
         with:
           enable-cache: true
@@ -65,6 +116,8 @@ jobs:
         run: uv run python -m build.serialize_registry
       - name: Serialize rubric and evidence
         run: uv run python -m build.serialize_rubric
+      - name: Serialize the recorded scores
+        run: uv run python -m build.serialize_scores
       - name: Publish to OSO
         env:
           OSO_API_KEY: ${{ secrets.OSO_API_KEY }}
