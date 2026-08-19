@@ -266,8 +266,11 @@ After any `components` edit, regenerate `raw` or CI fails.
 - **The scoring-chain SQL is not in this repo.** It lives on the OSO platform, and its deploy
   script and `.sql` sit one directory up in `currentai-org/{tools,udms}/`, not under version
   control. See `docs/operations/deploy-models.md`.
-- **The chain does not run on a schedule.** Its crons were set at the model-revision layer; the
-  platform schedules from the dataset, and zero scheduled runs have ever fired. Treat every
+- **The chain runs weekly, and that is verified rather than declared.** Dataset-level crons:
+  `evidence` Monday 03:00 UTC, `scores` 04:00, with `parity` grading at 06:00. A scheduled run
+  was observed firing on 2026-08-19, so this is an observation and not a cron field. It was NOT
+  running before that date — the crons had been set at the model-revision layer, which is a
+  throttle rather than a sweep. Treat every
   scoring-chain recompute as manual, and check run history before believing a freshness claim.
 - **A real-corpus test asserts an invariant, or derives its count. Never a census.** Six tests here
   have now failed because the work succeeded rather than because anything broke;

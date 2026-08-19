@@ -66,18 +66,46 @@ Two traps in the run step, both of which have cost hours:
 
 ## The schedule
 
-The **intended** operating schedule is weekly, upstream first: `evidence.product_evidence` Monday
-03:00 UTC, `scores.openness_facts` 04:00, `scores.openness_computed` 05:00, with the parity gate
-grading at 06:00, and the signal fetchers refreshing ahead of it. On that schedule the warehouse
-is at most a week behind the repo.
+This is what is **configured**, verified on the platform 2026-08-19. The workflow files are
+authoritative for the gates; this table is a copy and a copy can drift, so `tests/test_schedule_doc.py`
+holds it against the `cron:` lines it quotes.
 
-**This repository does not verify whether those scheduled runs actually fired** — that is a
-platform concern, not something the repo tracks. When you are diagnosing a freshness problem,
-inspect the datasets' run history on the platform rather than assuming this schedule held.
+| What | When (UTC) | Where the cron lives |
+|---|---|---|
+| `registry` static models | every push to `main` touching `sources/**` | `.github/workflows/registry.yml`, no cron |
+| `evidence` dataset | Monday 03:00 | dataset cron, timezone UTC |
+| `scores` dataset | Monday 04:00 | dataset cron, timezone UTC |
+| `parity` gate | Monday 06:00 | `.github/workflows/parity.yml` |
+| `artifacts` | Monday 07:00 | `.github/workflows/artifacts.yml` |
+| `freshness` report | Monday 08:00 | `.github/workflows/freshness.yml` |
 
-**Schedule a model on its dataset, not its model revision** (`updateDataModelSchedule`) — the
-platform's scheduler reads the dataset-level cron. Keep the 03/04/05 spacing so parity, at 06:00,
-grades a warehouse that has just recomputed.
+The chain lands two hours before parity grades it, and the warehouse is at most a week behind
+the repo.
+
+**The chain is two datasets, not three model times.** An earlier version of this section gave
+`openness_facts` 04:00 and `openness_computed` 05:00, which cannot be configured: both models
+live in the `scores` dataset and the platform sweeps per dataset. Within a sweep they run in
+dependency order anyway, so one dataset time covers both. Splitting them would mean splitting
+the dataset.
+
+**Set the cron on the dataset, and keep the models' own cron empty.** The dataset cron is when
+the sweep happens (`updateDataset`); a model's cron is a THROTTLE on top of it, where `""` means
+eligible on every sweep and `@manual` means never scheduled. `updateDataModelSchedule` sets that
+throttle, not the sweep — reaching for it to change *when* the chain runs mints a revision and
+changes nothing about the timing.
+
+**Pin the timezone to UTC.** These ran on `America/New_York` until 2026-08-19, which moves the
+real hour by one across DST while every gate that grades them is UTC-pinned. The margin is
+hours, so nothing inverted, but the two clocks had no reason to differ.
+
+**A configured cron is not an observed run, and the repo cannot tell you which you have.** Check
+`triggerType` in the dataset's run history: `MANUAL` everywhere means nothing has fired on its
+own, however healthy the cron field looks. Two ways that reads as a bug when it is not — a cron
+set after this week's slot has passed shows `lastRunAt: null` until the next one comes round, and
+`nextRunAt` is computed from the cron whether or not the scheduler ever acts on it. To settle it
+in minutes rather than waiting a week, point the cron a few minutes out, watch for a run whose
+`triggerType` is `SCHEDULED`, then set the real one back. Confirmed working that way on
+2026-08-19: `SCHEDULED/RUNNING started=2026-08-19T18:45:18Z` against a cron set for 18:45.
 
 ## A publish is only half a refresh
 
