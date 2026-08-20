@@ -89,8 +89,8 @@ is, `tier == "leading" and openness.bucket == "open"` — because only fully-ope
 a category's stage. A closed product can therefore be category-leading and not mature; that is the
 intended reading, not a contradiction.
 
-**Category-leading and depth say different things on purpose.** Category-leading is about one product being best
-in class. The `depth` gap below is about a category not having enough of them.
+**Category-leading and resiliency say different things on purpose.** Category-leading is about one product being best
+in class. The `resiliency` gap below is about a category not having enough of them.
 
 ### Field names
 
@@ -176,7 +176,7 @@ not advance the stage — they are used solely to detect the openness gap. The r
 ladder measures **fully-open-pipeline maturity** — the health of the genuinely-open ecosystem —
 and crediting partially-open products to it would blur exactly the open-source-vs-open-weights
 line the map is built to expose. Open-weights models therefore never advance a stage. Counting
-also distinguishes depth from a single standout (see Stage 5).
+also distinguishes resiliency from a single standout (see Stage 5).
 
 This is consequential but bounded: counting open-weights as fully open would move only three
 categories, all in the model layer (`base_pretrained` 3→5, `finetuned_chat` 2→3,
@@ -219,7 +219,7 @@ derived from the same metrics as the stage:
 - **`void`** — Needs a usable fully open option at all.
 - **`capability`** — Needs a more capable fully open option.
 - **`adoption`** — Needs broader adoption of its fully open options.
-- **`depth`** — Needs more fully open products at the leading tier to be resilient.
+- **`resiliency`** — Needs more fully open products at the leading tier to be resilient.
 - **`openness`** — Needs its category-leading products to be fully open.
 - **`disclosure`** — Needs the closed alternatives to disclose their data and training recipes.
 
@@ -229,7 +229,7 @@ drawer. Edit them in one place and copy across.
 
 They are written as needs on purpose. Stage text and gap text render together in the category
 drawer, and a **stage says where the category stands** while a **gap says what it needs** — in
-one mood they restate each other, because `depth` fires if and only if the stage is 4, and the
+one mood they restate each other, because `resiliency` fires if and only if the stage is 4, and the
 Stage 3–5 sentences and the `openness` gap otherwise circle the same tier fact. Each gap still
 has to read on its own, because the legend shows gap text with no stage beside it.
 
@@ -246,13 +246,13 @@ open ecosystem.
 | Stage | Gaps |
 |---|---|
 | 5 | none (except a declared `disclosure`) |
-| 4 | `depth` |
+| 4 | `resiliency` |
 | 1–3 | `capability` and/or `adoption` (or neither), plus `openness` where it applies |
 | 0 | `void` |
 
-**`depth` fires at Stage 4 only.** Stage 4 means a category has proven category-leading open options but
+**`resiliency` fires at Stage 4 only.** Stage 4 means a category has proven category-leading open options but
 not enough for redundancy, so the shortfall is genuinely count rather than quality. Defining
-depth as "no category-leading open product at all" would extend it over the weaker categories and
+resiliency as "no category-leading open product at all" would extend it over the weaker categories and
 rebuild the problem this taxonomy replaced: the old `maturity` gap fired in 12 of 16 categories
 and so distinguished between none of them. Below Stage 4 the stage number already says no
 category-leading open option exists, and `capability` and `adoption` say why.
@@ -300,7 +300,7 @@ product, so it sits low on the ladder (Viable / Emerging) and carries a **capabi
 an **adoption** gap, or both, depending on which axes hold the best fully-open option back; and
 because capable, adopted options do exist but aren't fully open, it also carries an **openness**
 gap. Contrast a category with one strong, widely-used open-source library and nothing behind it:
-Stage 4, a **depth** gap, nothing wrong with the library itself. Contrast again with several
+Stage 4, a **resiliency** gap, nothing wrong with the library itself. Contrast again with several
 such libraries: Stage 5, no gaps.
 
 ## Policy parameters

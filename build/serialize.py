@@ -55,7 +55,7 @@ _STAGE_NAMES = {0: "Void", 1: "Open Experiments", 2: "Emerging Alternatives",
 # below are not quoted in either doc and are not covered by that test.
 # Stage and gap text render together in the category drawer, so they divide the work rather than
 # describe the same fact twice: a STAGE says where the category stands, a GAP says what it needs.
-# Written in one mood they were redundant -- `depth` fires if and only if the stage is 4, so
+# Written in one mood they were redundant -- `resiliency` fires if and only if the stage is 4, so
 # "at least one product has reached the leading tier, but the field is thin" and "products have
 # reached the leading tier, but there are too few" were one sentence printed twice. The needs mood
 # makes that impossible. Gap text also renders in the legend with no stage beside it, so each one
@@ -84,7 +84,7 @@ _GAP_DESC = {
     "void": "Needs a usable fully open option at all.",
     "capability": "Needs a more capable fully open option.",
     "adoption": "Needs broader adoption of its fully open options.",
-    "depth": "Needs more fully open products at the leading tier to be resilient.",
+    "resiliency": "Needs more fully open products at the leading tier to be resilient.",
     "openness": "Needs its category-leading products to be fully open.",
     "disclosure": "Needs the closed alternatives to disclose their data and training recipes.",
 }
@@ -164,10 +164,10 @@ def _stage_and_gaps(rows: list[dict], weights: dict, disclosure: bool = False) -
         gaps = ["void"]
     elif stage == 4:
         # Count, not quality: the category has proven top-tier (Leading) open options but not
-        # enough of them. Deliberately fires at Stage 4 only -- defining depth as "no Leading
+        # enough of them. Deliberately fires at Stage 4 only -- defining resiliency as "no Leading
         # open product at all" would spread it over the weaker categories and rebuild the
         # near-ubiquitous chip this taxonomy replaced.
-        gaps = ["depth"]
+        gaps = ["resiliency"]
     else:
         # Stages 1-3: no fully-open product clears the maturity bar, so name the driver(s)
         # holding the best one back rather than the umbrella. Both fire where both apply --
