@@ -44,6 +44,24 @@ When in doubt about which door, start there.
 | [`reference/queries.md`](reference/queries.md) | Query conventions for the warehouse |
 | [`reference/notebook-design.md`](reference/notebook-design.md) | The published map's visual style |
 
+## Architecture
+
+How the data assets fit together, as opposed to what any one of them means. Read these
+before moving a table between namespaces, retiring a model, or changing what a schedule
+claims.
+
+| Doc | What it governs |
+|---|---|
+| [`architecture/data-architecture.md`](architecture/data-architecture.md) | The namespaces, the target DAG, the gates and their protected edges |
+| [`architecture/adr-001-repo-owns-scoring-semantics.md`](architecture/adr-001-repo-owns-scoring-semantics.md) | Why the repository is the only implementation of the scoring rules |
+| [`architecture/adr-002-registry-curated-catalog-discovered.md`](architecture/adr-002-registry-curated-catalog-discovered.md) | `registry` versus `catalog`, and which tables are misfiled today |
+| [`architecture/migration-status.md`](architecture/migration-status.md) | Phase state, the atomicity limitation, the retirement ledger |
+| [`architecture/current-state-dag.md`](architecture/current-state-dag.md) | Generated dependency graph |
+
+The inventory those documents specify is [`warehouse/assets.yaml`](../warehouse/assets.yaml),
+gated by `tests/test_assets_inventory.py`. It is the authority on what an asset is, who reads
+it, and whether its schedule has ever fired — check it before assuming a table is unused.
+
 ## Skills off the primary path
 
 Every skill is classified in `skills/registry.yaml` (validated in CI). Beyond the six primary

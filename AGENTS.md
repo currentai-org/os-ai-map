@@ -347,3 +347,20 @@ normative `docs/reference/evidence-and-freshness.md`.
 - Gap analysis (stages + gaps): `docs/reference/gap-analysis.md`
 - Coverage backlog: tracked in GitHub issues
 - Warehouse models this repo maintains: `warehouse/models/README.md`
+
+### Architecture and the asset inventory
+
+`docs/architecture/` carries the data architecture: what each namespace means, which tables
+are misfiled, and what the gates protect. `warehouse/assets.yaml` is the inventory it
+specifies — one entry per platform table, with grain, authority, producer, and derived
+`reads`/`read_by`.
+
+Two traps it exists to close:
+
+- **An empty reader list is not evidence a table is unused.** 16 of the org's 20 notebooks
+  are not tracked here. `consumer_checks` records what was actually audited, and
+  `platform_models` is still `unknown`.
+- **A configured cron is not a schedule.** No dataset has an observed `SCHEDULED` run, and 13
+  carry a daylight-saving timezone. Read `last_observed_trigger`, not `refresh`.
+
+Regenerate the derived fields with `build/assets.py`; never hand-edit them.

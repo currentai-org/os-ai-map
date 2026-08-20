@@ -38,24 +38,27 @@ Consequently, and per `data-architecture.md` 12.2:
 
 ## Recorded platform changes, not yet applied
 
-Phase 0 performs no platform write. This is handed to Phase 1.
+Phase 0 performs no platform write. Anything here is handed to Phase 1.
 
-**`catalog.stack_map` dataset description.** Dataset `3d049fc1-de36-47e1-bc8a-649d4b7d5963`.
+**Nothing is currently pending.** An earlier draft of this file recorded a correction for the
+`catalog.stack_map` dataset description, on the grounds that its "read by no deployed model"
+claim was false. That was a conflation of two differently-named tables and is withdrawn.
 
-Current text asserts: *"Frozen at 2026-05-29 and read by no deployed model; retained for
-reference only."*
+The distinction is worth writing down, because the names invite the mistake:
 
-The second clause is false. `warehouse/models/scores_stack_contributors.sql` reads it in a
-`WHERE ... IN (SELECT repo FROM currentai.catalog.stack_map)`, and four notebooks read it
-directly: `long-tail-explorer` (tracked, Live), `ai-contribution-load` and
-`stf-ai-stewardship-evidence` (both updated 2026-08-20) and `launch-insights`.
+| Table | Dataset | State | Read by |
+|---|---|---|---|
+| `currentai.stack_map.*` | `stack_map` (`3d049fc1`), **ARCHIVED 2026-08-20** | 9 frozen v1 tables | No deployed model. Two notebooks: `stack_map_category_maps` (Deprecated) and `state-of-os-ai` (not deprecated) |
+| `currentai.catalog.stack_map` | `catalog` (`046ee25e`), live | The repo-to-warehouse taxonomy bridge | `warehouse/models/scores_stack_contributors.sql`, plus four notebooks including the Live `long-tail-explorer` |
 
-Replacement text for that clause: *"Frozen at 2026-05-29 and superseded for scoring, but
-still read by `currentai.scores.stack_contributors` and by four notebooks; migrate those
-consumers before dropping it."*
+The archive note sits on the first and is accurate about deployed models.
+`docs/reference/where-scores-live.md` already draws this line correctly: it records
+`stack_map.*` as archived with no deployed reader, and `catalog.stack_map` as "Live and
+stale… Read by `scores.stack_contributors`".
 
-Leaving the false claim in place is how a table gets dropped by someone acting in good
-faith.
+What the note omits, and what this inventory adds, is that `stack_map.*` has two notebook
+readers and one of them is not deprecated. "No deployed model" and "no reader" are different
+claims, and only the first is true.
 
 ## Retirement ledger
 

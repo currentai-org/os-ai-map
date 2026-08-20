@@ -1,17 +1,22 @@
-# Architecture asset inventory for the fourteen datasets this repository maintains or
-# reads from. One entry per platform table. Generated 2026-08-20 from the live org, the
-# repository tree and every notebook in the organization; see
-# docs/architecture/data-architecture.md section 11 for the schema and the gates.
+# Architecture asset inventory for the datasets this repository maintains or reads from.
+# One entry per logical platform table. Generated 2026-08-20 from the live org, the
+# repository tree and every notebook in the organization; schema and gates are in
+# docs/architecture/data-architecture.md section 11.
 #
-# `kind` is what an asset IS, in the namespace vocabulary of section 4.
-# `current_namespace` is where its table lives today and `target_namespace` where the
-# architecture puts it; they disagree for 28 assets, which is what the migration is for.
+# `kind` is what an asset IS, in the namespace vocabulary of section 4. `current_namespace`
+# is where its table lives today and `target_namespace` where the architecture puts it.
+# Where they disagree the asset carries migration_status: pending.
 #
-# `reads` and `read_by` are DERIVED by build/assets.py from the tree, and CI compares them
-# against these values. Do not hand-edit them.
+# `reads`, `read_by` and the counts in any prose are DERIVED by build/assets.py from the
+# tree, and tests/test_assets_inventory.py compares them against these values. Do not
+# hand-edit them, and do not write a count here that is not generated.
 #
-# `consumer_scope: platform_checked` means every notebook in the org was read on the
-# verified_at date. It does NOT cover consumers outside this org or the platform.
+# `consumer_checks` records what was actually audited, per check:
+#   repository        every tracked model, build module, notebook and workflow
+#   platform_notebooks  all 20 notebooks in the org, including the 16 untracked here
+#   platform_models   NOT audited. Deployed model definitions were not read.
+#   external          NOT audited. Nothing outside this org.
+# No asset is a retirement candidate while platform_models is unknown.
 ---
 version: 1
 verified_at: '2026-08-20'
@@ -28,13 +33,20 @@ assets:
   read_by:
     notebooks:
     - notebooks/pypi-geo-trends.py
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers: none_confirmed
+  grain: one row per country_code
+  producer: manual upload
   refresh: manual upload
   timezone: UTC
   dataset_id: 046ee25e-daee-4c43-a13c-d6ba9f6bd549
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
 - id: catalog.foundation_model_repos
   table: currentai.catalog.foundation_model_repos
@@ -52,13 +64,21 @@ assets:
   read_by:
     models:
     - warehouse/models/entities_models.sql
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers: none_confirmed
+  grain: one row per curated model_family
+  producer: manual upload
+  classification_note: a curator controls which model families are listed
   refresh: manual upload
   timezone: UTC
   dataset_id: 046ee25e-daee-4c43-a13c-d6ba9f6bd549
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
 - id: catalog.goodailist_repos
   table: currentai.catalog.goodailist_repos
@@ -69,14 +89,21 @@ assets:
   authority: platform
   population: long_tail
   release_path: false
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers:
   - ai-safety-incidents
+  grain: one row per repo, frozen snapshot
+  producer: manual upload
   refresh: manual upload
   timezone: UTC
   dataset_id: 046ee25e-daee-4c43-a13c-d6ba9f6bd549
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
 - id: catalog.model_benchmarks
   table: currentai.catalog.model_benchmarks
@@ -97,14 +124,21 @@ assets:
   read_by:
     models:
     - warehouse/models/entities_models.sql
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers:
   - state-of-os-ai
+  grain: one row per Open LLM Leaderboard model_id
+  producer: warehouse/ingest/fetch_model_benchmarks.py
   refresh: manual upload
   timezone: UTC
   dataset_id: 046ee25e-daee-4c43-a13c-d6ba9f6bd549
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
 - id: catalog.model_repos
   table: currentai.catalog.model_repos
@@ -112,6 +146,9 @@ assets:
     model: warehouse/ingest/fetch_huggingface.py
     schema: null
     data: warehouse/catalog/huggingface/model_repos.csv
+    intermediate:
+    - warehouse/catalog/huggingface/tracked_models.csv
+    - warehouse/catalog/huggingface/top_models.csv
   kind: catalog
   current_namespace: catalog
   target_namespace: catalog
@@ -125,13 +162,20 @@ assets:
   read_by:
     models:
     - warehouse/models/entities_models.sql
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers: none_confirmed
+  grain: one row per Hugging Face model_id, mapped to a GitHub repo
+  producer: warehouse/ingest/fetch_huggingface.py
   refresh: manual upload
   timezone: UTC
   dataset_id: 046ee25e-daee-4c43-a13c-d6ba9f6bd549
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
 - id: catalog.osai_gap_map
   table: currentai.catalog.osai_gap_map
@@ -142,34 +186,53 @@ assets:
   authority: platform
   population: long_tail
   release_path: false
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers: none_confirmed
+  grain: one row per (layer, subcategory) of a third-party map
+  producer: manual upload
   refresh: manual upload
   timezone: UTC
   dataset_id: 046ee25e-daee-4c43-a13c-d6ba9f6bd549
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
-  retirement_reason: no in-repo code reader and no platform notebook consumer as of 2026-08-20
+  retirement_reason: 'no reviewed consumer found as of 2026-08-20: no in-repo code reader and no platform
+    notebook consumer. Deployed platform model definitions were NOT audited, so this is not evidence that
+    nothing reads it.'
   retirement_issue: 'TBD: open an issue before any deletion'
 - id: catalog.osai_subcategory_mapping
   table: currentai.catalog.osai_subcategory_mapping
-  kind: catalog
+  kind: registry
   current_namespace: catalog
-  target_namespace: catalog
-  migration_status: complete
+  target_namespace: registry
+  migration_status: pending
   authority: platform
   population: long_tail
   release_path: false
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers: none_confirmed
+  grain: one row per (osai_layer, osai_subcategory)
+  producer: manual upload
+  classification_note: curated crosswalk between two taxonomies
   refresh: manual upload
   timezone: UTC
   dataset_id: 046ee25e-daee-4c43-a13c-d6ba9f6bd549
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
-  retirement_reason: no in-repo code reader and no platform notebook consumer as of 2026-08-20
+  retirement_reason: 'no reviewed consumer found as of 2026-08-20: no in-repo code reader and no platform
+    notebook consumer. Deployed platform model definitions were NOT audited, so this is not evidence that
+    nothing reads it.'
   retirement_issue: 'TBD: open an issue before any deletion'
 - id: catalog.pypi_downloads
   table: currentai.catalog.pypi_downloads
@@ -183,15 +246,23 @@ assets:
   read_by:
     notebooks:
     - notebooks/pypi-geo-trends.py
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers:
   - pypi-china-openclaw
   - state-of-os-ai
+  grain: one row per (day, package, country_code)
+  producer: manual upload
+  classification_note: a measurement, not an inventory
   refresh: manual upload
   timezone: UTC
   dataset_id: 046ee25e-daee-4c43-a13c-d6ba9f6bd549
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
 - id: catalog.stack_map
   table: currentai.catalog.stack_map
@@ -199,10 +270,10 @@ assets:
     model: warehouse/ingest/build_stack_map.py
     schema: null
     data: warehouse/catalog/stack_map/repos.csv
-  kind: catalog
+  kind: registry
   current_namespace: catalog
-  target_namespace: catalog
-  migration_status: complete
+  target_namespace: registry
+  migration_status: pending
   authority: repo
   population: long_tail
   release_path: false
@@ -211,35 +282,54 @@ assets:
     - warehouse/models/scores_stack_contributors.sql
     notebooks:
     - notebooks/long-tail-explorer.py
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers:
   - ai-contribution-load
   - launch-insights
   - stf-ai-stewardship-evidence
+  grain: one row per repo, bridging scored products to stack-map taxonomy
+  producer: warehouse/ingest/build_stack_map.py
+  classification_note: compiled from sources/ by warehouse/ingest/build_stack_map.py
   refresh: manual upload
   timezone: UTC
   dataset_id: 046ee25e-daee-4c43-a13c-d6ba9f6bd549
   owner: carl
-  status: active
+  status: compatibility
+  materialized: true
   verified_at: '2026-08-20'
+  replacement: currentai.registry.product_scores
 - id: catalog.taxonomy_crosswalk
   table: currentai.catalog.taxonomy_crosswalk
-  kind: catalog
+  kind: registry
   current_namespace: catalog
-  target_namespace: catalog
-  migration_status: complete
+  target_namespace: registry
+  migration_status: pending
   authority: platform
   population: long_tail
   release_path: false
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers: none_confirmed
+  grain: one row per (osai_layer, goodai_category)
+  producer: manual upload
+  classification_note: curated crosswalk between two taxonomies
   refresh: manual upload
   timezone: UTC
   dataset_id: 046ee25e-daee-4c43-a13c-d6ba9f6bd549
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
-  retirement_reason: no in-repo code reader and no platform notebook consumer as of 2026-08-20
+  retirement_reason: 'no reviewed consumer found as of 2026-08-20: no in-repo code reader and no platform
+    notebook consumer. Deployed platform model definitions were NOT audited, so this is not evidence that
+    nothing reads it.'
   retirement_issue: 'TBD: open an issue before any deletion'
 - id: entities.models
   table: currentai.entities.models
@@ -268,14 +358,22 @@ assets:
     - warehouse/models/scores_project_summary.sql
     notebooks:
     - notebooks/long-tail-explorer.py
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers:
   - sta-grantmaker-view
+  grain: one row per Hugging Face model_id
+  producer: warehouse/models/entities_models.sql
+  classification_note: discovered from the goodailist roster, not curated
   refresh: dataset cron '0 4 * * 0'
   timezone: America/New_York
   dataset_id: 663132ed-ea4a-4fce-97a8-742e4479269c
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
 - id: entities.packages
   table: currentai.entities.packages
@@ -300,13 +398,21 @@ assets:
     - warehouse/models/scores_project_summary.sql
     notebooks:
     - notebooks/long-tail-explorer.py
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers: none_confirmed
+  grain: one row per (repo, package_source, package_name)
+  producer: warehouse/models/entities_packages.sql
+  classification_note: discovered from the goodailist roster, not curated
   refresh: dataset cron '0 4 * * 0'
   timezone: America/New_York
   dataset_id: 663132ed-ea4a-4fce-97a8-742e4479269c
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
 - id: entities.projects
   table: currentai.entities.projects
@@ -326,19 +432,27 @@ assets:
     scope: internal
   - table: currentai.signal_goodailist.repo_catalog
     scope: internal
-  - table: oso.oss_directory
+  - table: oso.oss_directory.projects
     scope: external
   read_by:
     models:
     - warehouse/models/scores_project_summary.sql
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers:
   - ai-potluck-partners
+  grain: one row per project_slug
+  producer: warehouse/models/entities_projects.sql
+  classification_note: discovered from the goodailist roster, not curated
   refresh: dataset cron '0 4 * * 0'
   timezone: America/New_York
   dataset_id: 663132ed-ea4a-4fce-97a8-742e4479269c
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
 - id: entities.repos
   table: currentai.entities.repos
@@ -356,7 +470,9 @@ assets:
   reads:
   - table: currentai.signal_goodailist.repo_catalog
     scope: internal
-  - table: oso.oss_directory
+  - table: oso.oss_directory.artifacts_by_project
+    scope: external
+  - table: oso.oss_directory.repositories
     scope: external
   read_by:
     models:
@@ -370,15 +486,23 @@ assets:
     - warehouse/models/scores_fragility.sql
     - warehouse/models/scores_ossd_coverage.sql
     - warehouse/models/scores_project_summary.sql
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers:
   - launch-insights
   - sta-grantmaker-view
+  grain: one row per repo
+  producer: warehouse/models/entities_repos.sql
+  classification_note: discovered from the goodailist roster, not curated
   refresh: dataset cron '0 4 * * 0'
   timezone: America/New_York
   dataset_id: 663132ed-ea4a-4fce-97a8-742e4479269c
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
 - id: events.github_events
   table: currentai.events.github_events
@@ -401,14 +525,22 @@ assets:
   read_by:
     models:
     - warehouse/models/metrics_daily.sql
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers:
   - ai-contribution-load
+  grain: one row per (github_id, event_type, time)
+  producer: warehouse/models/events_github_events.sql
+  classification_note: artifact-level measurement over time
   refresh: dataset cron '0 5 * * 0'
   timezone: America/New_York
   dataset_id: b2109421-64a8-4681-9d28-65a37a286f97
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
 - id: evidence.product_evidence
   table: currentai.evidence.product_evidence
@@ -443,8 +575,15 @@ assets:
   read_by:
     models:
     - warehouse/platform-mirror/scores_openness_facts.sql
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers: none_confirmed
+  grain: one row per (product_slug, category_slug, dimension, part_index, citing artifact)
+  producer: warehouse/platform-mirror/evidence_product_evidence.sql
+  classification_note: normalized facts derived from declarations
   refresh: dataset cron '0 3 * * 1'
   timezone: UTC
   last_observed_trigger: MANUAL
@@ -452,6 +591,7 @@ assets:
   dataset_id: 29f2784d-481e-488f-9f1a-3ece0e372f3a
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
   mirror:
     model_id: 769c20b5-d9c0-4163-bced-81e3a62fbc47
@@ -488,14 +628,22 @@ assets:
     - warehouse/models/scores_repos_summary.sql
     notebooks:
     - notebooks/oss-ai-trends.py
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers:
   - state-of-os-ai
+  grain: one row per (repo, day, metric)
+  producer: warehouse/models/metrics_daily.sql
+  classification_note: artifact-level measurement over time
   refresh: dataset cron '0 6 * * 0'
   timezone: America/New_York
   dataset_id: 5a73a919-79da-4029-ae5c-f5653bcc1e62
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
 - id: registry.adoption_bands
   table: currentai.registry.adoption_bands
@@ -511,14 +659,21 @@ assets:
     - warehouse/platform-mirror/github_product_adoption.sql
     - warehouse/platform-mirror/huggingface_product_adoption.sql
     - warehouse/platform-mirror/packages_product_adoption.sql
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers: none_confirmed
+  grain: one row per (product_type, signal_type, level)
+  producer: build/serialize_registry.py + build/publish_registry.py
   publication_role: payload_input
   refresh: CI push on merge to main
   timezone: UTC
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
 - id: registry.categories
   table: currentai.registry.categories
@@ -529,14 +684,21 @@ assets:
   authority: repo
   population: gap_map
   release_path: true
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers: none_confirmed
+  grain: one row per category slug
+  producer: build/serialize_registry.py + build/publish_registry.py
   publication_role: payload_input
   refresh: CI push on merge to main
   timezone: UTC
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
 - id: registry.category_deferrals
   table: currentai.registry.category_deferrals
@@ -550,14 +712,21 @@ assets:
   read_by:
     models:
     - warehouse/platform-mirror/scores_openness_facts.sql
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers: none_confirmed
+  grain: one row per (category_slug, product_slug)
+  producer: build/serialize_registry.py + build/publish_registry.py
   publication_role: payload_input
   refresh: CI push on merge to main
   timezone: UTC
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
 - id: registry.category_dimensions
   table: currentai.registry.category_dimensions
@@ -571,14 +740,21 @@ assets:
   read_by:
     models:
     - warehouse/platform-mirror/scores_openness_facts.sql
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers: none_confirmed
+  grain: one row per (category_slug, product_type, dimension)
+  producer: build/serialize_registry.py + build/publish_registry.py
   publication_role: payload_input
   refresh: CI push on merge to main
   timezone: UTC
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
 - id: registry.category_license_tiers
   table: currentai.registry.category_license_tiers
@@ -592,14 +768,21 @@ assets:
   read_by:
     models:
     - warehouse/platform-mirror/scores_openness_facts.sql
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers: none_confirmed
+  grain: one row per (category_slug, product_type, tier)
+  producer: build/serialize_registry.py + build/publish_registry.py
   publication_role: payload_input
   refresh: CI push on merge to main
   timezone: UTC
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
 - id: registry.category_scoring_rules
   table: currentai.registry.category_scoring_rules
@@ -615,14 +798,21 @@ assets:
     - warehouse/platform-mirror/evidence_product_evidence.sql
     - warehouse/platform-mirror/scores_openness_computed.sql
     - warehouse/platform-mirror/scores_openness_facts.sql
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers: none_confirmed
+  grain: one row per (category_slug, product_type, rule_index)
+  producer: build/serialize_registry.py + build/publish_registry.py
   publication_role: payload_input
   refresh: CI push on merge to main
   timezone: UTC
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
 - id: registry.evidence_abstentions
   table: currentai.registry.evidence_abstentions
@@ -636,14 +826,21 @@ assets:
   read_by:
     models:
     - warehouse/platform-mirror/evidence_product_evidence.sql
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers: none_confirmed
+  grain: one row per (source, column_name, abstain_value)
+  producer: build/serialize_registry.py + build/publish_registry.py
   publication_role: payload_input
   refresh: CI push on merge to main
   timezone: UTC
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
 - id: registry.license_aliases
   table: currentai.registry.license_aliases
@@ -658,14 +855,21 @@ assets:
     models:
     - warehouse/platform-mirror/evidence_product_evidence.sql
     - warehouse/platform-mirror/scores_openness_facts.sql
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers: none_confirmed
+  grain: one row per (source, license_slug)
+  producer: build/serialize_registry.py + build/publish_registry.py
   publication_role: payload_input
   refresh: CI push on merge to main
   timezone: UTC
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
 - id: registry.organizations
   table: currentai.registry.organizations
@@ -676,17 +880,24 @@ assets:
   authority: repo
   population: gap_map
   release_path: true
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers:
   - ai-contribution-load
   - sta-grantmaker-view
   - stf-ai-stewardship-evidence
+  grain: one row per organization slug
+  producer: build/serialize_registry.py + build/publish_registry.py
   publication_role: payload_input
   refresh: CI push on merge to main
   timezone: UTC
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
 - id: registry.product_artifacts
   table: currentai.registry.product_artifacts
@@ -705,17 +916,24 @@ assets:
     - warehouse/platform-mirror/packages_package_downloads_daily.py
     - warehouse/platform-mirror/pypi_package_downloads.sql
     - warehouse/platform-mirror/semanticscholar_paper_citations.py
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers:
   - ai-contribution-load
   - sta-grantmaker-view
   - stf-ai-stewardship-evidence
+  grain: one row per (product_slug, artifact_kind, artifact_id)
+  producer: build/serialize_registry.py + build/publish_registry.py
   publication_role: payload_input
   refresh: CI push on merge to main
   timezone: UTC
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
 - id: registry.product_categories
   table: currentai.registry.product_categories
@@ -730,15 +948,22 @@ assets:
     models:
     - warehouse/platform-mirror/evidence_product_evidence.sql
     - warehouse/platform-mirror/scores_openness_facts.sql
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers:
   - sta-grantmaker-view
+  grain: one row per (product_slug, category_slug)
+  producer: build/serialize_registry.py + build/publish_registry.py
   publication_role: payload_input
   refresh: CI push on merge to main
   timezone: UTC
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
 - id: registry.product_lineage
   table: currentai.registry.product_lineage
@@ -749,14 +974,21 @@ assets:
   authority: repo
   population: gap_map
   release_path: true
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers: none_confirmed
+  grain: one row per (product_slug, relation, target)
+  producer: build/serialize_registry.py + build/publish_registry.py
   publication_role: payload_input
   refresh: CI push on merge to main
   timezone: UTC
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
 - id: registry.product_openness_evidence
   table: currentai.registry.product_openness_evidence
@@ -770,14 +1002,21 @@ assets:
   read_by:
     models:
     - warehouse/platform-mirror/evidence_product_evidence.sql
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers: none_confirmed
+  grain: one row per (product_slug, category_slug, dimension, part_index)
+  producer: build/serialize_registry.py + build/publish_registry.py
   publication_role: payload_input
   refresh: CI push on merge to main
   timezone: UTC
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
 - id: registry.product_organizations
   table: currentai.registry.product_organizations
@@ -788,16 +1027,23 @@ assets:
   authority: repo
   population: gap_map
   release_path: true
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers:
   - ai-contribution-load
   - stf-ai-stewardship-evidence
+  grain: one row per (product_slug, org_slug)
+  producer: build/serialize_registry.py + build/publish_registry.py
   publication_role: payload_input
   refresh: CI push on merge to main
   timezone: UTC
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
 - id: registry.product_score_sources
   table: currentai.registry.product_score_sources
@@ -811,14 +1057,21 @@ assets:
   read_by:
     models:
     - warehouse/platform-mirror/evidence_product_evidence.sql
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers: none_confirmed
+  grain: one row per (product_slug, category_slug, axis, source_url)
+  producer: build/serialize_registry.py + build/publish_registry.py
   publication_role: payload_input
   refresh: CI push on merge to main
   timezone: UTC
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
 - id: registry.product_scores
   table: currentai.registry.product_scores
@@ -829,14 +1082,21 @@ assets:
   authority: repo
   population: gap_map
   release_path: true
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers: none_confirmed
+  grain: one row per (product_slug, category_slug), all three axes wide
+  producer: build/serialize_registry.py + build/publish_registry.py
   publication_role: payload_input
   refresh: CI push on merge to main
   timezone: UTC
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
 - id: registry.products
   table: currentai.registry.products
@@ -852,14 +1112,46 @@ assets:
     - warehouse/platform-mirror/github_product_adoption.sql
     - warehouse/platform-mirror/huggingface_product_adoption.sql
     - warehouse/platform-mirror/scores_openness_facts.sql
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers: none_confirmed
+  grain: one row per product slug
+  producer: build/serialize_registry.py + build/publish_registry.py
   publication_role: payload_input
   refresh: CI push on merge to main
   timezone: UTC
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
   owner: carl
   status: active
+  materialized: true
+  verified_at: '2026-08-20'
+- id: registry.tail_products
+  table: currentai.registry.tail_products
+  kind: registry
+  current_namespace: registry
+  target_namespace: registry
+  migration_status: complete
+  authority: repo
+  population: gap_map
+  release_path: true
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
+  external_consumers: none_confirmed
+  grain: one row per tail candidate slug
+  producer: build/serialize_registry.py + build/publish_registry.py
+  publication_role: payload_input
+  refresh: CI push on merge to main
+  timezone: UTC
+  dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
+  owner: carl
+  status: dormant
+  materialized: false
   verified_at: '2026-08-20'
 - id: scores.dependency_graph
   table: currentai.scores.dependency_graph
@@ -884,13 +1176,21 @@ assets:
   read_by:
     models:
     - warehouse/models/scores_fragility.sql
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers: none_confirmed
+  grain: one row per (dependent_repo, dependency_repo)
+  producer: warehouse/models/scores_dependency_graph.sql
+  classification_note: derived from catalog and observations
   refresh: dataset cron '0 4 * * 1'
   timezone: UTC
   dataset_id: 48ddf155-0090-4323-b91c-f62f87445128
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
 - id: scores.fragility
   table: currentai.scores.fragility
@@ -917,13 +1217,21 @@ assets:
   read_by:
     models:
     - warehouse/models/scores_project_summary.sql
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers: none_confirmed
+  grain: one row per repo
+  producer: warehouse/models/scores_fragility.sql
+  classification_note: derived from catalog and observations
   refresh: dataset cron '0 4 * * 1'
   timezone: UTC
   dataset_id: 48ddf155-0090-4323-b91c-f62f87445128
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
 - id: scores.investment_ranking
   table: currentai.scores.investment_ranking
@@ -934,14 +1242,22 @@ assets:
   authority: platform
   population: long_tail
   release_path: false
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers:
   - ai-potluck-partners
+  grain: one row per (layer, subcategory)
+  producer: manual upload
+  classification_note: derived from catalog and observations
   refresh: dataset cron '0 4 * * 1'
   timezone: UTC
   dataset_id: 48ddf155-0090-4323-b91c-f62f87445128
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
 - id: scores.openness_computed
   table: currentai.scores.openness_computed
@@ -965,13 +1281,21 @@ assets:
     build:
     - build/apply_scores.py
     - build/check_parity.py
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers: none_confirmed
+  grain: one row per (product_slug, category_slug)
+  producer: warehouse/platform-mirror/scores_openness_computed.sql
+  classification_note: derived from catalog and observations
   refresh: dataset cron '0 4 * * 1'
   timezone: UTC
   dataset_id: 48ddf155-0090-4323-b91c-f62f87445128
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
   mirror:
     model_id: 6aef560b-cc85-4a9d-afa8-8f4798208e74
@@ -1012,13 +1336,21 @@ assets:
   read_by:
     models:
     - warehouse/platform-mirror/scores_openness_computed.sql
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers: none_confirmed
+  grain: one row per (product_slug, category_slug, fact_key)
+  producer: warehouse/platform-mirror/scores_openness_facts.sql
+  classification_note: derived from catalog and observations
   refresh: dataset cron '0 4 * * 1'
   timezone: UTC
   dataset_id: 48ddf155-0090-4323-b91c-f62f87445128
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
   mirror:
     model_id: 68d9e34c-b0b6-460b-b4ae-21b7016eb1f8
@@ -1044,15 +1376,25 @@ assets:
     scope: internal
   - table: currentai.signal_goodailist.repo_catalog
     scope: internal
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers: none_confirmed
+  grain: one row per GitHub org
+  producer: warehouse/models/scores_ossd_coverage.sql
+  classification_note: derived from catalog and observations
   refresh: dataset cron '0 4 * * 1'
   timezone: UTC
   dataset_id: 48ddf155-0090-4323-b91c-f62f87445128
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
-  retirement_reason: no in-repo code reader and no platform notebook consumer as of 2026-08-20
+  retirement_reason: 'no reviewed consumer found as of 2026-08-20: no in-repo code reader and no platform
+    notebook consumer. Deployed platform model definitions were NOT audited, so this is not evidence that
+    nothing reads it.'
   retirement_issue: 'TBD: open an issue before any deletion'
 - id: scores.project_summary
   table: currentai.scores.project_summary
@@ -1082,14 +1424,22 @@ assets:
     scope: internal
   - table: currentai.signal_goodailist.repo_catalog
     scope: internal
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers:
   - ai-potluck-partners
+  grain: one row per project_slug
+  producer: warehouse/models/scores_project_summary.sql
+  classification_note: derived from catalog and observations
   refresh: dataset cron '0 4 * * 1'
   timezone: UTC
   dataset_id: 48ddf155-0090-4323-b91c-f62f87445128
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
 - id: scores.repos_summary
   table: currentai.scores.repos_summary
@@ -1113,16 +1463,24 @@ assets:
     notebooks:
     - notebooks/long-tail-explorer.py
     - notebooks/oss-ai-trends.py
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers:
   - france-ecosystem
   - oss-ai-gaps
   - state-of-os-ai
+  grain: one row per repo
+  producer: warehouse/models/scores_repos_summary.sql
+  classification_note: derived from catalog and observations
   refresh: dataset cron '0 4 * * 1'
   timezone: UTC
   dataset_id: 48ddf155-0090-4323-b91c-f62f87445128
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
 - id: scores.stack_contributors
   table: currentai.scores.stack_contributors
@@ -1142,15 +1500,23 @@ assets:
     scope: internal
   - table: oso.int_events__github_unified
     scope: external
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers:
   - launch-insights
   - sta-grantmaker-view
+  grain: one row per (developer, repo), trailing 365 days of COMMIT_CODE
+  producer: warehouse/models/scores_stack_contributors.sql
+  classification_note: derived from catalog and observations
   refresh: dataset cron '0 4 * * 1'
   timezone: UTC
   dataset_id: 48ddf155-0090-4323-b91c-f62f87445128
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
 - id: scores.taxonomy
   table: currentai.scores.taxonomy
@@ -1161,15 +1527,23 @@ assets:
   authority: platform
   population: long_tail
   release_path: false
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers:
   - ai-potluck-partners
   - state-of-os-ai
+  grain: one row per project_slug
+  producer: manual upload
+  classification_note: derived from catalog and observations
   refresh: dataset cron '0 4 * * 1'
   timezone: UTC
   dataset_id: 48ddf155-0090-4323-b91c-f62f87445128
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
 - id: signal_artificialanalysis.model_evaluations
   table: currentai.signal_artificialanalysis.model_evaluations
@@ -1184,11 +1558,14 @@ assets:
   authority: platform
   population: gap_map
   release_path: false
-  reads:
-  - table: oso.model
-    scope: external
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers: none_confirmed
+  grain: one row per Artificial Analysis model id
+  producer: warehouse/platform-mirror/artificialanalysis_models.py
   refresh: dataset cron '0 1 * * 0'
   timezone: America/New_York
   last_observed_trigger: MANUAL
@@ -1196,8 +1573,11 @@ assets:
   dataset_id: 7ce58fca-9dda-4a95-8a17-9cef500c0656
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
-  retirement_reason: no in-repo code reader and no platform notebook consumer as of 2026-08-20
+  retirement_reason: 'no reviewed consumer found as of 2026-08-20: no in-repo code reader and no platform
+    notebook consumer. Deployed platform model definitions were NOT audited, so this is not evidence that
+    nothing reads it.'
   retirement_issue: 'TBD: open an issue before any deletion'
   notes: The platform dataset description says "held deliberately unjoined to gap-map products". Unread
     by design.
@@ -1231,8 +1611,15 @@ assets:
     scope: internal
   - table: currentai.signal_pypi.package_downloads
     scope: internal
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers: none_confirmed
+  grain: one row per product_slug, stars fallback tier only
+  producer: warehouse/platform-mirror/github_product_adoption.sql
+  classification_note: a banded candidate assessment, not a raw measurement
   refresh: dataset cron '0 3 * * 0'
   timezone: America/New_York
   last_observed_trigger: MANUAL
@@ -1240,8 +1627,11 @@ assets:
   dataset_id: cc74e8db-7718-4615-a004-7f27cabaf967
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
-  retirement_reason: no in-repo code reader and no platform notebook consumer as of 2026-08-20
+  retirement_reason: 'no reviewed consumer found as of 2026-08-20: no in-repo code reader and no platform
+    notebook consumer. Deployed platform model definitions were NOT audited, so this is not evidence that
+    nothing reads it.'
   retirement_issue: 'TBD: open an issue before any deletion'
   notes: The stars fallback tier. Reads signal_pypi and signal_huggingface to skip already-measured products,
     so it holds the route precedence pypi > huggingface > stars in SQL. Must not retire before registry.adoption_routes
@@ -1268,17 +1658,21 @@ assets:
   reads:
   - table: currentai.registry.product_artifacts
     scope: internal
-  - table: oso.model
-    scope: external
   read_by:
     models:
     - warehouse/platform-mirror/evidence_product_evidence.sql
     - warehouse/platform-mirror/github_product_adoption.sql
     build:
     - build/check_artifacts.py
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers:
   - sta-grantmaker-view
+  grain: one row per (product_slug, repo) at one fetched_at
+  producer: warehouse/platform-mirror/github_repo_state.py
   refresh: dataset cron '0 3 * * 0'
   timezone: America/New_York
   last_observed_trigger: MANUAL
@@ -1286,6 +1680,7 @@ assets:
   dataset_id: cc74e8db-7718-4615-a004-7f27cabaf967
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
   mirror:
     model_id: a50ce375-4b91-43c6-b1ce-1fc60911b513
@@ -1306,9 +1701,6 @@ assets:
   authority: platform
   population: long_tail
   release_path: false
-  reads:
-  - table: oso.model
-    scope: external
   read_by:
     models:
     - warehouse/ingest/fetch_huggingface.py
@@ -1319,8 +1711,14 @@ assets:
     - warehouse/models/scores_ossd_coverage.sql
     - warehouse/models/scores_project_summary.sql
     - warehouse/models/scores_repos_summary.sql
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers: none_confirmed
+  grain: one row per repo, live from goodailist.com
+  producer: warehouse/platform-mirror/goodailist_repos.py
   refresh: dataset cron '0 1 * * 0'
   timezone: America/New_York
   last_observed_trigger: MANUAL
@@ -1328,6 +1726,7 @@ assets:
   dataset_id: f7f36dd4-ba41-4ee6-9547-65e409046893
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
   mirror:
     model_id: c7d3a3d9-578c-4c54-8ccf-71879bdd43d2
@@ -1351,14 +1750,18 @@ assets:
   reads:
   - table: currentai.registry.product_artifacts
     scope: internal
-  - table: oso.model
-    scope: external
   read_by:
     models:
     - warehouse/platform-mirror/evidence_product_evidence.sql
     - warehouse/platform-mirror/huggingface_product_adoption.sql
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers: none_confirmed
+  grain: one row per (product_slug, artifact_kind, artifact_id) at one fetched_at
+  producer: warehouse/platform-mirror/huggingface_hub_state.py
   refresh: dataset cron '0 2 * * 0'
   timezone: America/New_York
   last_observed_trigger: MANUAL
@@ -1366,6 +1769,7 @@ assets:
   dataset_id: 6108e4d6-868f-4cba-8df5-ee64f8fb301e
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
   mirror:
     model_id: 014a0641-605f-4e57-831b-d24a1304437f
@@ -1396,8 +1800,15 @@ assets:
   read_by:
     models:
     - warehouse/platform-mirror/github_product_adoption.sql
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers: none_confirmed
+  grain: one row per product_slug, Hub downloads route
+  producer: warehouse/platform-mirror/huggingface_product_adoption.sql
+  classification_note: a banded candidate assessment, not a raw measurement
   refresh: dataset cron '0 2 * * 0'
   timezone: America/New_York
   last_observed_trigger: MANUAL
@@ -1405,6 +1816,7 @@ assets:
   dataset_id: 6108e4d6-868f-4cba-8df5-ee64f8fb301e
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
   mirror:
     model_id: abcf0044-dd9d-4942-a2a1-e047dab8e8b1
@@ -1425,11 +1837,14 @@ assets:
   authority: platform
   population: gap_map
   release_path: false
-  reads:
-  - table: oso.model
-    scope: external
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers: none_confirmed
+  grain: one row per (model_name, category, arena_config)
+  producer: warehouse/platform-mirror/lmarena_leaderboard.py
   refresh: dataset cron '0 1 * * 0'
   timezone: America/New_York
   last_observed_trigger: MANUAL
@@ -1437,8 +1852,11 @@ assets:
   dataset_id: f248f653-2ea6-4fdf-badb-c99adf9bcbe4
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
-  retirement_reason: no in-repo code reader and no platform notebook consumer as of 2026-08-20
+  retirement_reason: 'no reviewed consumer found as of 2026-08-20: no in-repo code reader and no platform
+    notebook consumer. Deployed platform model definitions were NOT audited, so this is not evidence that
+    nothing reads it.'
   retirement_issue: 'TBD: open an issue before any deletion'
   notes: Capability anchor, collected ahead of the capability axis using it. Not dead.
   mirror:
@@ -1465,16 +1883,23 @@ assets:
     scope: internal
   - table: currentai.signal_packages.package_downloads_daily
     scope: internal
-  - table: oso.pypi_downloads
+  - table: oso.pypi_downloads.daily_downloads_by_package
     scope: external
   read_by:
     models:
     - warehouse/platform-mirror/packages_product_adoption.sql
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers: none_confirmed
+  grain: one row per (product_slug, package) over a 30-day window
+  producer: warehouse/platform-mirror/packages_package_downloads.sql
   refresh: 'not deployed; see issue #314'
   owner: carl
   status: staged
+  materialized: true
   verified_at: '2026-08-20'
 - id: signal_packages.package_downloads_daily
   table: currentai.signal_packages.package_downloads_daily
@@ -1492,16 +1917,21 @@ assets:
   reads:
   - table: currentai.registry.product_artifacts
     scope: internal
-  - table: oso.model
-    scope: external
   read_by:
     models:
     - warehouse/platform-mirror/packages_package_downloads.sql
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers: none_confirmed
+  grain: one row per (package, day)
+  producer: warehouse/platform-mirror/packages_package_downloads_daily.py
   refresh: 'not deployed; see issue #314'
   owner: carl
   status: staged
+  materialized: true
   verified_at: '2026-08-20'
 - id: signal_packages.product_adoption
   table: currentai.signal_packages.product_adoption
@@ -1521,13 +1951,23 @@ assets:
     scope: internal
   - table: currentai.signal_packages.package_downloads
     scope: internal
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers: none_confirmed
+  grain: one row per product_slug across package registries
+  producer: warehouse/platform-mirror/packages_product_adoption.sql
+  classification_note: a banded candidate assessment, not a raw measurement
   refresh: 'not deployed; see issue #314'
   owner: carl
   status: staged
+  materialized: true
   verified_at: '2026-08-20'
-  retirement_reason: no in-repo code reader and no platform notebook consumer as of 2026-08-20
+  retirement_reason: 'no reviewed consumer found as of 2026-08-20: no in-repo code reader and no platform
+    notebook consumer. Deployed platform model definitions were NOT audited, so this is not evidence that
+    nothing reads it.'
   retirement_issue: 'TBD: open an issue before any deletion'
   notes: Staged, not deployed.
 - id: signal_pypi.package_downloads
@@ -1546,20 +1986,27 @@ assets:
   reads:
   - table: currentai.registry.product_artifacts
     scope: internal
-  - table: oso.pypi_downloads
+  - table: oso.pypi_downloads.daily_downloads_by_package
     scope: external
   read_by:
     models:
     - warehouse/platform-mirror/github_product_adoption.sql
     build:
     - build/check_artifacts.py
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers: none_confirmed
+  grain: one row per (product_slug, package) over a 30-day window
+  producer: warehouse/platform-mirror/pypi_package_downloads.sql
   refresh: dataset cron '0 1 * * 0'
   timezone: America/New_York
   dataset_id: c7c3a04c-7e2d-4cea-a7e6-5861c725ea65
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
   mirror:
     model_id: a88bff56-0a00-49d1-8667-809a79b4d7c0
@@ -1583,17 +2030,24 @@ assets:
   reads:
   - table: currentai.registry.product_artifacts
     scope: internal
-  - table: oso.model
-    scope: external
-  consumer_scope: platform_checked
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
   external_consumers: none_confirmed
+  grain: one row per (product_slug, arxiv_id)
+  producer: warehouse/platform-mirror/semanticscholar_paper_citations.py
   refresh: dataset cron '0 1 * * 0'
   timezone: America/New_York
   dataset_id: a48ec2ff-1e15-4b22-a38e-8ae03e0096f7
   owner: carl
   status: active
+  materialized: true
   verified_at: '2026-08-20'
-  retirement_reason: no in-repo code reader and no platform notebook consumer as of 2026-08-20
+  retirement_reason: 'no reviewed consumer found as of 2026-08-20: no in-repo code reader and no platform
+    notebook consumer. Deployed platform model definitions were NOT audited, so this is not evidence that
+    nothing reads it.'
   retirement_issue: 'TBD: open an issue before any deletion'
   notes: Citation instrument for benchmark_eval_data, declared in signal_routing.yaml but not yet consumed
     by a repo model. Not dead.

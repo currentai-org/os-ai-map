@@ -17,9 +17,10 @@ import yaml
 from build import assets as A
 
 ROOT = A.ROOT
-NAMESPACES = {"registry", "catalog", "observations", "evaluation", "releases"}
-STATUSES = {"active", "staged", "deprecated", "historical", "compatibility"}
-SCOPES = {"in_repo_only", "platform_checked", "externally_confirmed"}
+# Vocabularies live in build/assets.py so the inventory and its gates cannot disagree
+# about what a valid value is.
+NAMESPACES = A.NAMESPACES
+STATUSES = A.STATUSES
 
 
 @pytest.fixture(scope="module")
@@ -40,18 +41,20 @@ def test_every_managed_file_is_claimed_exactly_once(inventory):
     weight the directory name used to."""
     seen: dict[str, str] = {}
     for asset in inventory:
-        for role, path in (asset.get("files") or {}).items():
-            if not path:
-                continue
-            assert path not in seen, f"{path} claimed by {seen[path]} and {asset['id']}:{role}"
-            seen[path] = f"{asset['id']}:{role}"
+        for role, value in (asset.get("files") or {}).items():
+            for path in (value if isinstance(value, list) else [value]):
+                if not path:
+                    continue
+                assert path not in seen, f"{path} claimed by {seen[path]} and {asset['id']}:{role}"
+                seen[path] = f"{asset['id']}:{role}"
 
 
 def test_every_declared_path_exists(inventory):
     for asset in inventory:
-        for role, path in (asset.get("files") or {}).items():
-            if path:
-                assert (ROOT / path).exists(), f"{asset['id']}:{role} -> missing {path}"
+        for role, value in (asset.get("files") or {}).items():
+            for path in (value if isinstance(value, list) else [value]):
+                if path:
+                    assert (ROOT / path).exists(), f"{asset['id']}:{role} -> missing {path}"
 
 
 # --- 1b/2: identity and namespace -------------------------------------------------
@@ -173,14 +176,11 @@ def test_in_repo_only_assets_are_never_candidates(inventory):
 
 def test_required_fields_and_vocabularies(inventory):
     for asset in inventory:
-        for field in ("id", "table", "kind", "current_namespace", "target_namespace",
-                      "migration_status", "authority", "population", "release_path",
-                      "consumer_scope", "owner", "status", "verified_at"):
+        for field in A.REQUIRED_FIELDS:
             assert field in asset, f"{asset['id']}: missing {field}"
         assert asset["status"] in STATUSES, f"{asset['id']}: bad status"
-        assert asset["consumer_scope"] in SCOPES, f"{asset['id']}: bad consumer_scope"
-        assert asset["authority"] in {"repo", "platform", "external"}, asset["id"]
-        assert asset["population"] in {"gap_map", "long_tail", "both"}, asset["id"]
+        assert asset["authority"] in A.AUTHORITIES, asset["id"]
+        assert asset["population"] in A.POPULATIONS, asset["id"]
 
 
 def test_release_path_implies_gap_map(inventory):
@@ -230,3 +230,221 @@ def test_no_test_requires_a_backlog_to_stay_non_empty():
     needles = ["len(candidates) " + ">", "retirement_candidates()" + " >", ">" + " 0, "]
     offenders = [n for n in needles if n in src]
     assert not offenders, f"this file asserts a backlog persists: {offenders}"
+
+
+# --- extraction: synthetic proofs that SQL context is what counts -------------------
+
+def _tmp(tmp_path, name, body):
+    p = tmp_path / name
+    p.write_text(body, encoding="utf-8")
+    return p
+
+
+def test_oso_model_decorator_is_not_a_table(tmp_path):
+    """Every Python UDM carries @oso.model. An earlier extractor turned that decorator
+    into a phantom `oso.model` upstream in seven files."""
+    path = _tmp(tmp_path, "m.py", "import oso\n\n@oso.model()\ndef build():\n    return None\n")
+    assert A.table_refs(path) == set()
+
+
+def test_a_url_is_not_a_table(tmp_path):
+    """`https://www.oso.xyz/...` produced a phantom `oso.xyz` upstream in five files."""
+    path = _tmp(tmp_path, "u.py", 'HOMEPAGE = "https://www.oso.xyz/docs/registry"\n')
+    assert A.table_refs(path) == set()
+
+
+def test_table_inside_a_sql_literal_is_found(tmp_path):
+    path = _tmp(tmp_path, "q.py", 'SQL = "SELECT a FROM currentai.registry.products WHERE x"\n')
+    assert A.table_refs(path) == {"currentai.registry.products"}
+
+
+def test_bare_table_identifier_constant_is_found(tmp_path):
+    """The `TABLE = "currentai.x.y"` pattern, used by apply_scores and check_parity."""
+    path = _tmp(tmp_path, "t.py", 'TABLE = "currentai.scores.openness_computed"\n')
+    assert A.table_refs(path) == {"currentai.scores.openness_computed"}
+
+
+def test_docstring_sql_is_not_a_read(tmp_path):
+    """build/warehouse.py illustrates its own API with a SELECT in its module docstring."""
+    path = _tmp(tmp_path, "d.py", '"""Usage:\n    query("SELECT a FROM currentai.scores.openness_computed")\n"""\n')
+    assert A.table_refs(path) == set()
+
+
+def test_sql_comment_is_not_a_read(tmp_path):
+    path = _tmp(tmp_path, "c.sql", "-- reads currentai.registry.products one day\nSELECT 1\n")
+    assert A.table_refs(path) == set()
+
+
+def test_sql_block_comment_is_not_a_read(tmp_path):
+    path = _tmp(tmp_path, "b.sql", "/* FROM currentai.registry.products */\nSELECT 1\n")
+    assert A.table_refs(path) == set()
+
+
+def test_join_and_subquery_reads_are_found(tmp_path):
+    path = _tmp(tmp_path, "j.sql",
+                "SELECT 1 FROM oso.int_events__github_unified e\n"
+                "JOIN currentai.registry.products p ON 1=1\n"
+                "WHERE x IN (SELECT repo FROM currentai.catalog.stack_map)\n")
+    assert A.table_refs(path) == {
+        "oso.int_events__github_unified",
+        "currentai.registry.products",
+        "currentai.catalog.stack_map",
+    }
+
+
+# --- coverage: declared vs tracked, both directions -------------------------------
+
+def test_every_tracked_managed_file_is_declared():
+    """Duplicate detection is not coverage. A tracked model or data file that no asset
+    claims is invisible to every other gate in this file."""
+    claimed = set(A.produced_files())
+    tracked = subprocess.run(
+        ["git", "-C", str(ROOT), "ls-files",
+         "warehouse/models", "warehouse/platform-mirror", "warehouse/ingest", "warehouse/catalog"],
+        capture_output=True, text=True, check=True,
+    ).stdout.split()
+    managed = [f for f in tracked
+               if f.endswith((".sql", ".py", ".csv"))
+               and not f.endswith(".schema.json")]
+    undeclared = sorted(f for f in managed if f not in claimed)
+    assert not undeclared, f"tracked managed files in no asset entry: {undeclared}"
+
+
+def test_every_registry_publisher_table_is_inventoried():
+    """build.publish_registry.TABLES is the authority on which registry tables exist.
+    tail_products was missing from the first inventory because its platform table is empty,
+    which would have let the next tail record materialize an uninventoried table."""
+    from build import publish_registry
+
+    declared = {f"registry.{t}" for t in publish_registry.TABLES}
+    have = {a["id"] for a in A.assets()}
+    assert not declared - have, f"registry outputs not inventoried: {sorted(declared - have)}"
+
+
+# --- mirror provenance, both directions and against the bytes ---------------------
+
+def test_mirror_block_only_on_platform_authority(inventory):
+    for asset in inventory:
+        if "mirror" in asset:
+            assert asset["authority"] == "platform", f"{asset['id']}: mirror block without platform authority"
+
+
+def test_mirror_local_sha256_matches_the_bytes(inventory):
+    """A recorded hash that does not match the file it dates is worse than no hash."""
+    import hashlib
+
+    for asset in inventory:
+        mirror = asset.get("mirror")
+        model = (asset.get("files") or {}).get("model")
+        if not mirror or not model:
+            continue
+        actual = hashlib.sha256((ROOT / model).read_bytes()).hexdigest()
+        assert actual == mirror["local_sha256"], f"{asset['id']}: {model} does not match local_sha256"
+
+
+def test_inventory_agrees_with_the_mirror_manifest():
+    """Both files describe the same mirrors during the transition. They must not drift --
+    sources.yaml and manifest.yaml already did exactly that."""
+    manifest = yaml.safe_load((ROOT / "warehouse/platform-mirror/manifest.yaml").read_text())
+    inv = A.by_table()
+    for entry in manifest["models"]:
+        table = entry["table"].removeprefix("currentai.")
+        assert table in inv, f"{table} in manifest.yaml but not in assets.yaml"
+        asset = inv[table]
+        if entry.get("status") == "staged":
+            assert asset["status"] == "staged", f"{table}: manifest says staged"
+            continue
+        assert asset.get("mirror", {}).get("revision") == entry["revision"], f"{table}: revision drift"
+        assert asset.get("mirror", {}).get("local_sha256") == entry["local_sha256"], f"{table}: hash drift"
+
+
+# --- grain, producer, enums -----------------------------------------------------
+
+def test_every_asset_has_a_nonempty_grain(inventory):
+    """Phase 0's contract: every asset has a semantic role, owner, grain and refresh."""
+    for asset in inventory:
+        grain = (asset.get("grain") or "").strip()
+        assert grain, f"{asset['id']}: no grain"
+        assert len(grain) > 10, f"{asset['id']}: grain too thin to be a grain: {grain!r}"
+
+
+def test_every_asset_names_a_producer(inventory):
+    for asset in inventory:
+        assert (asset.get("producer") or "").strip(), f"{asset['id']}: no producer"
+
+
+def test_migration_status_uses_the_enum(inventory):
+    for asset in inventory:
+        assert asset["migration_status"] in A.MIGRATION_STATES, asset["id"]
+
+
+def test_consumer_checks_are_complete_and_valid(inventory):
+    for asset in inventory:
+        checks = asset.get("consumer_checks")
+        assert checks, f"{asset['id']}: no consumer_checks"
+        for key in ("repository", "platform_notebooks", "platform_models", "external"):
+            assert checks.get(key) in A.CHECK_STATES, f"{asset['id']}: bad consumer_checks.{key}"
+
+
+def test_no_candidate_while_platform_models_unaudited(inventory):
+    """The specification's retirement condition includes "no deployed platform model reads
+    it". Notebooks are not models."""
+    for asset in A.retirement_candidates():
+        assert asset["consumer_checks"]["platform_models"] == "checked", asset["id"]
+
+
+def test_non_utc_schedules_are_recorded_with_a_trigger_field(inventory):
+    """Phase 1 moves these to UTC. This gate only ensures the worklist cannot silently
+    shrink: every non-UTC asset must carry an explicit observed-trigger field, so a
+    timezone cannot be quietly dropped without the field going with it."""
+    non_utc = [a for a in inventory if a.get("timezone") not in (None, "UTC")]
+    assert non_utc, "no non-UTC schedules: update Phase 1 status, this gate is now stale"
+    for asset in non_utc:
+        assert "last_observed_trigger" in asset or asset.get("last_run_at") is None, asset["id"]
+
+
+# --- the checked-in DAG must match the renderer ---------------------------------
+
+def test_committed_dag_matches_the_renderer():
+    """A generated document that drifts from its generator is worse than no document."""
+    committed = (ROOT / "docs/architecture/current-state-dag.md").read_text(encoding="utf-8")
+    assert A.render_dag() in committed, "current-state-dag.md is stale; regenerate it"
+
+
+# --- the inventory must agree with the ADR committed beside it -------------------
+
+def test_inventory_agrees_with_adr_002():
+    """ADR-002 tabulates the correct target for every misfiled `catalog` table. The first
+    inventory contradicted it -- three tables the ADR sends to `registry` were recorded as
+    settled `catalog` data. A decision record and the inventory implementing it must not
+    disagree, so the ADR's table is parsed and compared."""
+    adr = (ROOT / "docs/architecture/adr-002-registry-curated-catalog-discovered.md").read_text(encoding="utf-8")
+    inv = A.by_table()
+    claims = re.findall(r"^\| `([a-z_]+)` \| (.+?) \|$", adr, re.M)
+    assert len(claims) >= 10, "ADR-002's catalog table went missing"
+    for table, verdict in claims:
+        asset = inv.get(f"catalog.{table}")
+        assert asset, f"ADR-002 names catalog.{table}, not in the inventory"
+        if "Belongs in `registry`" in verdict or "belongs in `registry`" in verdict:
+            assert asset["target_namespace"] == "registry", (
+                f"catalog.{table}: ADR-002 says registry, inventory says {asset['target_namespace']}"
+            )
+        elif "`observations`" in verdict:
+            assert asset["target_namespace"] == "observations", f"catalog.{table}"
+        elif verdict.startswith("Correctly `catalog`"):
+            assert asset["target_namespace"] == "catalog", f"catalog.{table}"
+
+
+def test_no_handwritten_asset_count_in_the_docs():
+    """Every count that was typed here has been wrong at least once: 49 assets, 28
+    migrations, 8 build readers, 27 model files. Counts in prose must be generated, or
+    absent."""
+    generated = {
+        str(len(A.assets())),
+        str(len([a for a in A.assets() if a["migration_status"] == "pending"])),
+    }
+    stale = re.compile(r"\b(49|28|56)\s+(?:of\s+96\s+)?(?:assets|tables|namespace migrations)\b")
+    for name in ("data-architecture.md", "migration-status.md", "current-state-dag.md"):
+        text = (ROOT / "docs/architecture" / name).read_text(encoding="utf-8")
+        for match in stale.finditer(text):
+            assert match.group(1) in generated, f"{name}: stale count {match.group(0)!r}"

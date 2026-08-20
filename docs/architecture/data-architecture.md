@@ -1621,7 +1621,7 @@ Resolved by decision:
 | `catalog.model_repos` -> `hf_model_repo_links` | Same | Phase 5 |
 | `repo_state` / `hub_state` -> `artifact_state` | Do it, with the observations adapters that repoint the same SQL | Phase 2 |
 | Untracked notebook audit | Added to Phase 0. Sixteen of twenty notebooks are not in the repository | Phase 0 |
-| `catalog.stack_map` archive note | Record the correction in Phase 0; apply it in Phase 1, since a description edit is still a platform write | Phase 0 records, Phase 1 applies |
+| `catalog.stack_map` archive note | WITHDRAWN. The note sits on `stack_map.*`, not `catalog.stack_map`, and is accurate about deployed models. Two different tables were conflated | no action |
 
 No rename is performed as a standalone change. Each rides a phase that already repoints the
 same SQL, so no PR exists purely to rename a deployed table.

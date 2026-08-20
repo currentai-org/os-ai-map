@@ -22,6 +22,18 @@ from pathlib import Path
 import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
+
+NAMESPACES = {"registry", "catalog", "observations", "evaluation", "releases"}
+STATUSES = {"active", "staged", "deprecated", "historical", "compatibility", "dormant"}
+MIGRATION_STATES = {"pending", "in_progress", "complete", "not_planned"}
+CHECK_STATES = {"checked", "unknown", "not_applicable"}
+AUTHORITIES = {"repo", "platform", "external"}
+POPULATIONS = {"gap_map", "long_tail", "both"}
+REQUIRED_FIELDS = (
+    "id", "table", "kind", "current_namespace", "target_namespace", "migration_status",
+    "authority", "grain", "producer", "population", "release_path", "consumer_checks",
+    "refresh", "owner", "status", "verified_at",
+)
 ASSETS = ROOT / "warehouse" / "assets.yaml"
 
 # Closure roots, per data-architecture.md 11.3. `build/` is a root: seven modules
@@ -44,54 +56,77 @@ ROOTS = {
     "workflows": [".github/workflows/*.yml"],
 }
 
-TABLE_RE = re.compile(r"\bcurrentai\.([a-z_]+)\.([a-z_0-9]+)")
-EXTERNAL_RE = re.compile(r"\b(oso\.[a-z_0-9]+)")
+# A table reference counts only in SQL context: after FROM / JOIN / INTO / UPDATE, or as
+# a bare table identifier that IS the whole string (the `TABLE = "..."` constant pattern).
+#
+# Matching bare dotted names anywhere invents tables. `@oso.model` is the decorator every
+# Python UDM carries and produced a phantom `oso.model` upstream in seven files;
+# `https://www.oso.xyz/...` produced `oso.xyz` in five more. A denylist for those two would
+# only grow, so the rule is positive: a reference must look like it is being queried.
+QUALIFIED = r"(?:currentai|oso)\.[a-z_][a-z_0-9]*(?:\.[a-z_][a-z_0-9]*)?"
+SQL_CONTEXT_RE = re.compile(
+    r"\b(?:from|join|into|update)\s+(" + QUALIFIED + r")\b", re.IGNORECASE
+)
+BARE_IDENTIFIER_RE = re.compile(r"^\s*(" + QUALIFIED + r")\s*$")
+SQL_HINT_RE = re.compile(r"\b(?:select|from|join|with|insert|update)\b", re.IGNORECASE)
 
 
-def _uncommented(path: Path) -> str:
-    """Source with prose removed: comment lines, and Python docstrings.
-
-    Prose names a table as often as code does. `build/check_rubric.py` names a scores
-    table in a comment and queries nothing; three workflow files discuss tables they
-    never touch. Counting those invents consumers, which is the failure this inventory
-    exists to prevent.
-
-    Docstrings need stripping too, and this module is the proof -- an earlier version
-    read its own explanatory docstring and reported itself as a consumer of the table
-    that docstring names.
-
-    Only DOCSTRINGS are stripped, never all string literals: several build modules hold
-    real SQL in strings, and those reads are genuine.
-    """
-    src = path.read_text(encoding="utf-8", errors="replace")
-    if path.suffix == ".py":
-        src = _without_docstrings(src)
-    marker = "--" if path.suffix == ".sql" else "#"
+def _sql_comments_stripped(sql: str) -> str:
+    sql = re.sub(r"/\*.*?\*/", " ", sql, flags=re.DOTALL)
     return "\n".join(
-        line for line in src.splitlines() if not line.lstrip().startswith(marker)
+        line for line in sql.splitlines() if not line.lstrip().startswith("--")
     )
 
 
-def _without_docstrings(src: str) -> str:
-    """Blank out docstring bodies, preserving line numbering."""
+def _refs_in_sql(sql: str) -> set[str]:
+    return set(SQL_CONTEXT_RE.findall(_sql_comments_stripped(sql)))
+
+
+def _string_literals(src: str) -> list[str]:
+    """Every string constant in a Python module, docstrings excluded.
+
+    Docstrings are prose and name tables freely -- `build/warehouse.py` illustrates its
+    own API with a SELECT in its module docstring, which is not a query. Other literals
+    are where the real SQL lives, so they are read rather than skipped.
+    """
     try:
         tree = ast.parse(src)
     except SyntaxError:
-        return src
-    lines = src.splitlines()
+        return []
+    docstrings = set()
     for node in ast.walk(tree):
-        if not isinstance(node, (ast.Module, ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef)):
-            continue
         body = getattr(node, "body", None)
-        if not body:
+        if isinstance(node, (ast.Module, ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef)) and body:
+            first = body[0]
+            if isinstance(first, ast.Expr) and isinstance(first.value, ast.Constant) \
+                    and isinstance(first.value.value, str):
+                docstrings.add(id(first.value))
+    return [
+        n.value for n in ast.walk(tree)
+        if isinstance(n, ast.Constant) and isinstance(n.value, str) and id(n) not in docstrings
+    ]
+
+
+def _refs_in_python(src: str) -> set[str]:
+    found: set[str] = set()
+    for literal in _string_literals(src):
+        bare = BARE_IDENTIFIER_RE.match(literal)
+        if bare:
+            found.add(bare.group(1))
             continue
-        first = body[0]
-        if not (isinstance(first, ast.Expr) and isinstance(first.value, ast.Constant)
-                and isinstance(first.value.value, str)):
-            continue
-        for i in range(first.lineno - 1, min(first.end_lineno, len(lines))):
-            lines[i] = ""
-    return "\n".join(lines)
+        if SQL_HINT_RE.search(literal):
+            found |= _refs_in_sql(literal)
+    return found
+
+
+def table_refs(path: Path) -> set[str]:
+    """Fully-qualified tables this file queries."""
+    src = path.read_text(encoding="utf-8", errors="replace")
+    if path.suffix == ".sql":
+        return _refs_in_sql(src)
+    if path.suffix == ".py":
+        return _refs_in_python(src)
+    return set()
 
 
 def tracked_files(patterns: list[str]) -> list[Path]:
@@ -111,10 +146,11 @@ def tracked_files(patterns: list[str]) -> list[Path]:
 
 
 def reads_of(path: Path) -> tuple[set[str], set[str]]:
-    """Return (internal currentai tables, external tables) this file reads."""
-    src = _uncommented(path)
-    internal = {f"{ds}.{tbl}" for ds, tbl in TABLE_RE.findall(src)}
-    return internal, set(EXTERNAL_RE.findall(src))
+    """Return (internal currentai tables, external tables) this file queries."""
+    refs = table_refs(path)
+    internal = {r.removeprefix("currentai.") for r in refs if r.startswith("currentai.")}
+    external = {r for r in refs if not r.startswith("currentai.")}
+    return internal, external
 
 
 def derive_graph() -> dict:
@@ -156,9 +192,10 @@ def produced_files() -> dict[str, str]:
     """
     owned: dict[str, str] = {}
     for asset in assets():
-        for role, path in (asset.get("files") or {}).items():
-            if path:
-                owned.setdefault(path, f"{asset['id']}:{role}")
+        for role, value in (asset.get("files") or {}).items():
+            for path in (value if isinstance(value, list) else [value]):
+                if path:
+                    owned.setdefault(path, f"{asset['id']}:{role}")
     return owned
 
 
@@ -179,7 +216,11 @@ def retirement_candidates() -> list[dict]:
             continue
         if asset.get("external_consumers") != "none_confirmed":
             continue
-        if asset.get("consumer_scope") == "in_repo_only":
+        # The specification's condition includes "no deployed platform model reads it".
+        # Notebooks are not models. Until platform model definitions are audited, an
+        # asset cannot be a retirement candidate however unread it looks.
+        checks = asset.get("consumer_checks") or {}
+        if any(checks.get(k) != "checked" for k in ("repository", "platform_notebooks", "platform_models")):
             continue
         out.append(asset)
     return out
@@ -188,38 +229,73 @@ def retirement_candidates() -> list[dict]:
 def render_dag() -> str:
     """Render the current-state dependency graph as Mermaid, from the derived edges.
 
-    Generated, never drawn. A hand-drawn DAG of 56 assets is wrong within a week, and the
-    point of this document is to be checkable against the tree.
+    Generated, never drawn: a hand-drawn graph of 57 assets is wrong within a week, and a
+    generated document that drifts from its generator is worse than no document. A gate
+    compares this output against the committed copy.
+
+    The graph carries three things beyond table-to-table edges, because without them it is
+    a table-dependency diagram wearing a DAG's name: external upstreams, in-repo consumers
+    that are not themselves assets, and node status.
     """
     graph = derive_graph()
     inv = by_table()
-    lines = ["```mermaid", "graph LR"]
-    ns_of = lambda t: t.split(".")[0]
-    namespaces: dict[str, set[str]] = {}
-    for table in inv:
-        namespaces.setdefault(ns_of(table), set()).add(table)
+    producer_of = {
+        (a.get("files") or {}).get("model"): a["id"]
+        for a in assets() if (a.get("files") or {}).get("model")
+    }
+    out = ["```mermaid", "graph LR"]
+
+    namespaces: dict[str, list[str]] = {}
+    for table in sorted(inv):
+        namespaces.setdefault(table.split(".")[0], []).append(table)
     for ns, tables in sorted(namespaces.items()):
-        lines.append(f"  subgraph {ns}")
-        for t in sorted(tables):
-            node = t.replace(".", "__")
-            lines.append(f"    {node}[{t.split('.', 1)[1]}]")
-        lines.append("  end")
-    seen = set()
+        out.append(f"  subgraph {ns}")
+        for table in tables:
+            out.append(f"    {table.replace('.', '__')}[{table.split('.', 1)[1]}]")
+        out.append("  end")
+
+    external: set[str] = set()
+    consumers: set[tuple[str, str]] = set()
+    edges: set[tuple[str, str]] = set()
     for path, refs in sorted(graph["reads"].items()):
-        producer = None
-        for asset in assets():
-            if (asset.get("files") or {}).get("model") == path:
-                producer = asset["id"]
-                break
-        if not producer:
-            continue
+        producer = producer_of.get(path)
         for upstream in refs["internal"]:
-            if upstream == producer or upstream not in inv:
+            if upstream not in inv:
                 continue
-            edge = (upstream, producer)
-            if edge in seen:
-                continue
-            seen.add(edge)
-            lines.append(f"  {upstream.replace('.', '__')} --> {producer.replace('.', '__')}")
-    lines.append("```")
-    return "\n".join(lines)
+            if producer and upstream != producer:
+                edges.add((upstream.replace(".", "__"), producer.replace(".", "__")))
+            elif not producer:
+                consumers.add((upstream.replace(".", "__"), path))
+        for ext in refs["external"]:
+            external.add(ext)
+            if producer:
+                edges.add((f"EXT_{ext.replace('.', '__')}", producer.replace(".", "__")))
+
+    if external:
+        out.append("  subgraph external")
+        for ext in sorted(external):
+            out.append(f"    EXT_{ext.replace('.', '__')}[{ext}]:::ext")
+        out.append("  end")
+    if consumers:
+        out.append("  subgraph consumers")
+        for _, path in sorted(consumers):
+            out.append(f"    C_{path.replace('/', '_').replace('.', '_')}[{path}]:::consumer")
+        out.append("  end")
+
+    for a, b in sorted(edges):
+        out.append(f"  {a} --> {b}")
+    for table, path in sorted(consumers):
+        out.append(f"  {table} --> C_{path.replace('/', '_').replace('.', '_')}")
+
+    for asset in assets():
+        if asset["status"] != "active":
+            out.append(f"  class {asset['id'].replace('.', '__')} {asset['status']};")
+    out += [
+        "  classDef staged stroke-dasharray: 4 3;",
+        "  classDef compatibility stroke-width:3px;",
+        "  classDef dormant opacity:0.5;",
+        "  classDef ext fill:#eee;",
+        "  classDef consumer fill:#fff,stroke-dasharray: 2 2;",
+        "```",
+    ]
+    return "\n".join(out)
