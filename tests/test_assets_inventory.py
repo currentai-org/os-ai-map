@@ -227,7 +227,8 @@ def test_no_test_requires_a_backlog_to_stay_non_empty():
     src = Path(__file__).read_text(encoding="utf-8")
     # Needles are assembled at runtime so this test does not match its own source, which
     # is how it failed the first time it ran.
-    needles = ["len(candidates) " + ">", "retirement_candidates()" + " >", ">" + " 0, "]
+    needles = ["len(candidates) " + ">", "retirement_candidates()" + " >", ">" + " 0, ",
+               "assert non_" + "utc,", "assert pending" + ",", "assert candidates" + ","]
     offenders = [n for n in needles if n in src]
     assert not offenders, f"this file asserts a backlog persists: {offenders}"
 
@@ -393,14 +394,18 @@ def test_no_candidate_while_platform_models_unaudited(inventory):
         assert asset["consumer_checks"]["platform_models"] == "checked", asset["id"]
 
 
-def test_non_utc_schedules_are_recorded_with_a_trigger_field(inventory):
-    """Phase 1 moves these to UTC. This gate only ensures the worklist cannot silently
-    shrink: every non-UTC asset must carry an explicit observed-trigger field, so a
-    timezone cannot be quietly dropped without the field going with it."""
-    non_utc = [a for a in inventory if a.get("timezone") not in (None, "UTC")]
-    assert non_utc, "no non-UTC schedules: update Phase 1 status, this gate is now stale"
-    for asset in non_utc:
-        assert "last_observed_trigger" in asset or asset.get("last_run_at") is None, asset["id"]
+def test_every_scheduled_asset_declares_a_timezone_and_trigger(inventory):
+    """An invariant, not a backlog count. Any asset with a cron must say which timezone it
+    is in and what trigger type was last observed -- so a schedule cannot be moved to UTC
+    while quietly dropping the evidence that it ever ran.
+
+    An earlier version of this gate asserted the non-UTC list was non-empty, which asserts
+    a backlog persists. Section 7 forbids exactly that, and it would have failed the day
+    Phase 1 finished its job."""
+    scheduled = [a for a in inventory if str(a.get("refresh", "")).startswith("dataset cron")]
+    for asset in scheduled:
+        assert asset.get("timezone"), f"{asset['id']}: cron with no declared timezone"
+        assert "last_observed_trigger" in asset, f"{asset['id']}: cron with no observed-trigger field"
 
 
 # --- the checked-in DAG must match the renderer ---------------------------------
@@ -448,3 +453,27 @@ def test_no_handwritten_asset_count_in_the_docs():
         text = (ROOT / "docs/architecture" / name).read_text(encoding="utf-8")
         for match in stale.finditer(text):
             assert match.group(1) in generated, f"{name}: stale count {match.group(0)!r}"
+
+
+def test_quoted_trino_identifiers_are_found(tmp_path):
+    """`FROM "currentai"."registry"."x"` is the form every Python mirror model uses. An
+    earlier extractor matched only the unquoted form and found these by accident, via a
+    separate bare-name constant in the same file."""
+    path = _tmp(tmp_path, "q.sql", 'SELECT a FROM "currentai"."registry"."products" WHERE 1\n')
+    assert A.table_refs(path) == {"currentai.registry.products"}
+
+
+def test_explicit_depends_on_is_found(tmp_path):
+    """The escape hatch for a dependency no parser can see -- a name assembled at runtime,
+    or read through a helper."""
+    sql = _tmp(tmp_path, "d.sql", "-- depends_on: currentai.registry.products\nSELECT 1\n")
+    py = _tmp(tmp_path, "d.py", "# depends_on: currentai.catalog.stack_map\nx = 1\n")
+    assert A.table_refs(sql) == {"currentai.registry.products"}
+    assert A.table_refs(py) == {"currentai.catalog.stack_map"}
+
+
+def test_single_quoted_sql_value_is_not_an_identifier(tmp_path):
+    """Unquoting identifiers must not rewrite a value. Trino quotes identifiers with
+    double quotes and strings with single quotes."""
+    path = _tmp(tmp_path, "v.sql", "SELECT a FROM t WHERE name = 'currentai.registry.products'\n")
+    assert A.table_refs(path) == set()

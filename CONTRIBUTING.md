@@ -59,3 +59,18 @@ If you use a coding agent, the repo ships skills that mirror these workflows: `a
 `update-product`, `edit-category`, `refresh-category`, `migrate-axis`, plus the advanced
 `build-rubric`, `add-data-source`, and `pyoso-analyst`. They are registered under
 `.claude/skills/`. See `AGENTS.md` for the repo map.
+
+## Touching the warehouse layout
+
+Adding, moving or retiring a data asset means updating
+[`warehouse/assets.yaml`](warehouse/assets.yaml) in the same PR — it is one entry per
+platform table, and `tests/test_assets_inventory.py` fails if a tracked model or data file
+is not declared there.
+
+Do not hand-edit `reads`, `read_by` or any count: they are derived from the tree by
+`build/assets.py` and compared against the file. Regenerate instead.
+
+`docs/architecture/data-architecture.md` is the normative document for what the namespaces
+mean and which gate protects which edge. Read
+`adr-002-registry-curated-catalog-discovered.md` before deciding whether something belongs
+in `registry` or `catalog`.

@@ -78,8 +78,21 @@ def _sql_comments_stripped(sql: str) -> str:
     )
 
 
+def _unquote_identifiers(sql: str) -> str:
+    """Normalize Trino quoted identifiers: "a"."b"."c" becomes a.b.c.
+
+    This is the form the Python mirror models actually use. Matching only the unquoted
+    form missed every one of them; the dependencies looked present because several files
+    also carry the bare name in a separate constant, which is luck, not extraction.
+
+    Safe because Trino quotes identifiers with double quotes and string literals with
+    single quotes, so this cannot rewrite a value.
+    """
+    return re.sub(r'"([a-z_][a-z_0-9]*)"', r"\1", sql, flags=re.IGNORECASE)
+
+
 def _refs_in_sql(sql: str) -> set[str]:
-    return set(SQL_CONTEXT_RE.findall(_sql_comments_stripped(sql)))
+    return set(SQL_CONTEXT_RE.findall(_unquote_identifiers(_sql_comments_stripped(sql))))
 
 
 def _string_literals(src: str) -> list[str]:
@@ -119,14 +132,26 @@ def _refs_in_python(src: str) -> set[str]:
     return found
 
 
+# Escape hatch for a dependency no parser can see -- a table name assembled at runtime,
+# or read through a helper. Declared as a comment in either language:
+#   -- depends_on: currentai.registry.products
+#   # depends_on: currentai.registry.products
+# Deliberately a declaration rather than a heuristic: a parser that guessed this well
+# enough to be trusted would also guess wrong somewhere, silently.
+DEPENDS_ON_RE = re.compile(
+    r"^\s*(?:--|#)\s*depends_on:\s*(" + QUALIFIED + r")\s*$", re.IGNORECASE | re.MULTILINE
+)
+
+
 def table_refs(path: Path) -> set[str]:
     """Fully-qualified tables this file queries."""
     src = path.read_text(encoding="utf-8", errors="replace")
+    declared = set(DEPENDS_ON_RE.findall(src))
     if path.suffix == ".sql":
-        return _refs_in_sql(src)
+        return _refs_in_sql(src) | declared
     if path.suffix == ".py":
-        return _refs_in_python(src)
-    return set()
+        return _refs_in_python(src) | declared
+    return declared
 
 
 def tracked_files(patterns: list[str]) -> list[Path]:
