@@ -10,7 +10,7 @@ file records only where the work has got to. Delete a row when it stops being te
 | Phase | State | Note |
 |---|---|---|
 | 0 — architecture record and inventory | in review | This PR. Read-only; no platform writes. |
-| 1 — schedule normalization | not started | 10 datasets on `America/New_York`; <!-- count:unobserved_crons -->18 assets have a cron and no observed run. No platform metadata change is pending — see below. |
+| 1 — schedule normalization | not started | <!-- observed:2026-08-20 -->10 datasets on `America/New_York`; <!-- count:unobserved_crons -->18 assets have a cron and no observed run. No platform metadata change is pending — see below. |
 | 2 — normalized adoption observations | not started | Must compile `registry.adoption_routes` before any signal roll-up retires. |
 | 2B — incremental adoption history | blocked | Blocked on OSO incremental-model support. Not approximated with full-refresh models. |
 | 3 — reconciliation report | not started | Report-only first. |
@@ -38,11 +38,26 @@ Consequently, and per `data-architecture.md` 12.2:
 
 ## Recorded platform changes, not yet applied
 
-Phase 0 performs no platform write. Anything here is handed to Phase 1.
+Phase 0 performs no platform write. Anything here is handed to a later phase with credentials.
 
-**Nothing is currently pending.** An earlier draft of this file recorded a correction for the
-`catalog.stack_map` dataset description, on the grounds that its "read by no deployed model"
-claim was false. That was a conflation of two differently-named tables and is withdrawn.
+**Mirror header references to the retired `README.md` / `manifest.yaml`.** The mirror-layout
+restructure deleted `warehouse/platform-mirror/README.md` and `manifest.yaml`, but the moved
+mirror files still open with `-- See README.md and manifest.yaml in this folder`, now a dead
+reference. Those bytes are provenance-locked: each mirror's recorded `local_sha256` binds them,
+and the merge-base gate treats any byte change as a refetch that must also advance `revision`,
+`hash` and `synced_at`. A local edit alone would break the hash gate or fabricate provenance,
+and a credentialed refetch alone will not fix it while the deployed source still carries the
+line. The remediation is therefore ordered and platform-side:
+
+1. update the header in each platform-owned model source (in `currentai-org/{tools,udms}/`);
+2. release a new revision of each affected model;
+3. refetch those revisions into the mirror under `warehouse/models/<dataset>/`;
+4. update each mirror's `revision`, `hash`, `local_sha256` and `synced_at` together.
+
+**No description or schema change is pending.** An earlier draft of this file recorded a
+correction for the `catalog.stack_map` dataset description, on the grounds that its "read by no
+deployed model" claim was false. That was a conflation of two differently-named tables and is
+withdrawn.
 
 The distinction is worth writing down, because the names invite the mistake:
 

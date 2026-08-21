@@ -2,8 +2,8 @@
 
 ## Dataset layout
 
-25 datasets, all using three-part names: `currentai.<dataset>.<table>`. The table below covers the
-ones an analyst reads most; the rest are signal, snapshot and raw-ingestion datasets.
+The `currentai` warehouse uses three-part names: `currentai.<dataset>.<table>`. The table below
+covers the datasets an analyst reads most; the rest are signal, snapshot and raw-ingestion datasets.
 `warehouse/assets.yaml` inventories the tables this repo maintains, and
 `docs/architecture/data-architecture.md` documents them.
 
