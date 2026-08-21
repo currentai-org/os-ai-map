@@ -29,6 +29,18 @@ the published map.
 
 ---
 
+## Architecture and the asset inventory
+
+`docs/architecture/` records how the data assets fit together: what each namespace means,
+which tables are misfiled today, and what the gates protect. The inventory it specifies is
+[`warehouse/assets.yaml`](warehouse/assets.yaml) — one entry per platform table, with grain,
+authority, producer and derived dependencies.
+
+Check it before assuming a table is unused. An empty reader list is not evidence: 16 of the
+20 notebooks in the organization are not tracked here, and no deployed model definition has
+been audited yet.
+
+
 ## Contribute
 
 The map is a public, iterative effort, and community curation is the point. There are two ways in:
