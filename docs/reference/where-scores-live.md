@@ -91,12 +91,29 @@ Four things carry columns named like ours and answer a different question.
 
 | Table | What it really is | State |
 |---|---|---|
-| `currentai.stack_map.product_scores` | The **v1 hand-scored upload**: `adoption_level`, `capability_score`, `capability_value`, `combined_score` per product | **Frozen.** 282 products, 11 categories, newest `last_verified` 2026-05-29, keyed on `product_name` rather than slug. **No deployed model reads it.** |
+| `currentai.stack_map.*` | The **v1 hand-scored upload**: `adoption_level`, `capability_score`, `capability_value`, `combined_score` per product, plus its own products, sources, categories, gap and featured tables | **ARCHIVED 2026-08-20.** Superseded by `registry.product_scores`: 282 products against 522, frozen at 2026-05-29, keyed on `product_name` rather than slug. Read by no deployed model. The dataset is renamed `Stack Map [ARCHIVED 2026-08-20]` and all nine tables were snapshotted to CSV first — the 282 product scores and 821 source citations are hand-curated work that exists nowhere else. |
 | `currentai.catalog.stack_map` | The repo→warehouse taxonomy bridge, carrying `adoption`, `capability`, `maturity` per product | **Live and stale.** 205 rows / 199 products / 14 categories, and 0 rows for `compilers` or `storage`. Read by `scores.stack_contributors`, so the open-stack developer counts are computed over a 199-product roster. Rebuilt by `warehouse/ingest/build_stack_map.py`, declared `refresh: on-curation-change` — which means a human, and #328 did not trigger one. |
 | `currentai.catalog.osai_gap_map` | The **external** OSAI gap map: `ease_of_adoption`, `maturity`, `overall_score` | A different organisation's taxonomy and scale. Not our products, not our axes. |
 | `currentai.ai_demand_curve.*` | `capability_score`, `adoption_level` against **OpenRouter/LMArena models** | Keyed to model names from a leaderboard, not to gap-map product slugs. |
 
-`currentai.stack_map.category_scores` and `.gap` are the same v1 freeze at category grain.
+
+
+## Superseded models, and the ones that only look superseded
+
+A model is safe to archive when something newer covers the same ground **and** nothing reads it.
+Both halves matter, and row counts alone answer neither. Verified 2026-08-20:
+
+| Old | Replacement | Verdict |
+|---|---|---|
+| `stack_map.*` (282 products, May) | `registry.product_scores` (522, current) | **Archived.** Superset, no deployed reader, snapshotted first |
+| `catalog.goodailist_repos` (15,396 rows) | `signal_goodailist.repo_catalog` (17,641, live) | **Superseded.** 15,053 of its repos are in the live table; the 343 that are not are entries goodailist.com has delisted from its own catalogue, which is the staleness the live model exists to avoid. No deployed reader — the only apparent one is a docstring in the model that replaced it |
+| `catalog.pypi_downloads` (1.6M rows, day × package × country, 2025-05-01 → 2026-05-01) | `signal_pypi.package_downloads` (106 rows, per-product monthly) | **NOT superseded.** Different grain and a year of history the live table does not have. Keep |
+| `catalog.stack_map` (205 rows) | `registry.product_artifacts` ⋈ `product_scores` (307 rows, covering 190 of its 205 repos) | **Not yet.** Live: `scores.stack_contributors` reads it. The registry can supersede it, but 15 of its repos are absent from the registry's github artifacts and need explaining first. Also stale, at 199 products with nothing for compilers or storage — regenerating it is a fix, not a retirement |
+| `catalog.osai_gap_map`, `taxonomy_crosswalk`, `osai_subcategory_mapping`, `country_populations` | none | **Keep.** External or reference data with no newer equivalent |
+
+The pattern worth carrying forward: `catalog.pypi_downloads` and `signal_pypi.package_downloads`
+share a name-shape and answer different questions, and a row-count comparison makes the older one
+look obsolete when it holds history nothing else has.
 
 ## How to answer "is this axis in the warehouse" without guessing
 
