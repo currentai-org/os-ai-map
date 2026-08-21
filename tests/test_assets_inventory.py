@@ -165,11 +165,17 @@ def test_retirement_findings_carry_a_reason_and_issue(inventory):
         assert asset.get("retirement_issue"), f"{asset['id']}: candidate without an issue"
 
 
-def test_in_repo_only_assets_are_never_candidates(inventory):
+def test_unaudited_consumer_sources_block_candidacy(inventory):
     """An asset nobody checked beyond the repository is not evidence of anything. 16 of
-    the org's 20 notebooks are untracked, so in_repo_only cannot justify a retirement."""
+    the org's 20 notebooks are untracked, and no deployed model definition has been read.
+
+    This replaces an assertion on the removed `consumer_scope` field, which could no longer
+    fail: `asset.get("consumer_scope")` was always None, so `!= "in_repo_only"` always held.
+    A gate that cannot fail is worse than no gate, because it reads as coverage."""
     for asset in A.retirement_candidates():
-        assert asset.get("consumer_scope") != "in_repo_only", asset["id"]
+        checks = asset["consumer_checks"]
+        for source in ("repository", "platform_notebooks", "platform_models"):
+            assert checks[source] == "checked", f"{asset['id']}: {source} is {checks[source]}"
 
 
 # --- 9: vocabularies and required fields --------------------------------------
@@ -440,20 +446,6 @@ def test_inventory_agrees_with_adr_002():
             assert asset["target_namespace"] == "catalog", f"catalog.{table}"
 
 
-def test_no_handwritten_asset_count_in_the_docs():
-    """Every count that was typed here has been wrong at least once: 49 assets, 28
-    migrations, 8 build readers, 27 model files. Counts in prose must be generated, or
-    absent."""
-    generated = {
-        str(len(A.assets())),
-        str(len([a for a in A.assets() if a["migration_status"] == "pending"])),
-    }
-    stale = re.compile(r"\b(49|28|56)\s+(?:of\s+96\s+)?(?:assets|tables|namespace migrations)\b")
-    for name in ("data-architecture.md", "migration-status.md", "current-state-dag.md"):
-        text = (ROOT / "docs/architecture" / name).read_text(encoding="utf-8")
-        for match in stale.finditer(text):
-            assert match.group(1) in generated, f"{name}: stale count {match.group(0)!r}"
-
 
 def test_quoted_trino_identifiers_are_found(tmp_path):
     """`FROM "currentai"."registry"."x"` is the form every Python mirror model uses. An
@@ -477,3 +469,115 @@ def test_single_quoted_sql_value_is_not_an_identifier(tmp_path):
     double quotes and strings with single quotes."""
     path = _tmp(tmp_path, "v.sql", "SELECT a FROM t WHERE name = 'currentai.registry.products'\n")
     assert A.table_refs(path) == set()
+
+# --- counts, provenance and comment handling -------------------------------------
+
+def test_every_marked_count_matches_its_derived_value():
+    """Structural, not a denylist. The gate this replaces scanned prose for numbers that
+    had already been wrong -- 49, 28, 56 -- so by construction it could not catch the next
+    one, and it did not catch a stale 31 against an actual 34."""
+    violations = A.count_claim_violations()
+    assert not violations, "stale counts:\n" + "\n".join(violations)
+
+
+def test_architecture_docs_have_no_unmarked_asset_counts():
+    """A count in prose must carry a marker naming what it counts, or a reader cannot tell
+    a derived figure from a typed one either."""
+    pattern = re.compile(r"(?<!count:)\b(\d{2,3})\s+assets\b")
+    for path in sorted((ROOT / "docs" / "architecture").glob("*.md")):
+        text = path.read_text(encoding="utf-8")
+        for match in pattern.finditer(text):
+            before = text[max(0, match.start() - 40):match.start()]
+            assert "count:" in before, f"{path.name}: unmarked count {match.group(0)!r}"
+
+
+def test_inline_sql_comment_is_not_a_read(tmp_path):
+    """`SELECT 1 -- FROM currentai.registry.products` invented a dependency: the stripper
+    removed whole-line comments but not trailing ones."""
+    path = _tmp(tmp_path, "i.sql", "SELECT 1 -- FROM currentai.registry.products\n")
+    assert A.table_refs(path) == set()
+
+
+def test_a_double_dash_inside_a_value_is_not_a_comment(tmp_path):
+    """The fix must not overshoot: `--` occurs inside string values, and treating it as a
+    comment there would silently drop the rest of a real query."""
+    path = _tmp(tmp_path, "v.sql", "SELECT '--' AS dash FROM currentai.registry.products\n")
+    assert A.table_refs(path) == {"currentai.registry.products"}
+
+
+def test_doubled_quote_escape_does_not_break_scanning(tmp_path):
+    path = _tmp(tmp_path, "e.sql", "SELECT 'it''s' FROM currentai.catalog.stack_map\n")
+    assert A.table_refs(path) == {"currentai.catalog.stack_map"}
+
+
+def test_mirror_provenance_has_no_violations_against_the_merge_base():
+    """Corpus assertion. Returns nothing on the PR that introduces assets.yaml, because
+    there is no prior version to compare, and applies on every PR after it."""
+    violations = A.mirror_provenance_violations()
+    assert not violations, "mirror provenance:\n" + "\n".join(violations)
+
+
+def test_merge_base_gate_catches_a_silent_byte_swap(monkeypatch):
+    """Synthetic. The case the gate exists for: a contributor edits a mirrored file and
+    updates local_sha256 to match, so every single-snapshot check passes while the recorded
+    platform revision now dates bytes it never saw."""
+    before = [{
+        "id": "signal_github.repo_state",
+        "mirror": {"model_id": "m", "revision": 4, "hash": "aaa",
+                   "local_sha256": "OLD", "synced_at": "2026-08-15"},
+    }]
+    after = [{
+        "id": "signal_github.repo_state",
+        "mirror": {"model_id": "m", "revision": 4, "hash": "aaa",
+                   "local_sha256": "NEW", "synced_at": "2026-08-15"},
+    }]
+    monkeypatch.setattr(A, "merge_base_assets", lambda base="origin/main": before)
+    monkeypatch.setattr(A, "assets", lambda: after)
+    violations = A.mirror_provenance_violations()
+    assert len(violations) == 3, violations
+    assert all("local_sha256 changed but" in v for v in violations)
+
+
+def test_merge_base_gate_catches_provenance_moving_without_bytes(monkeypatch):
+    """The inverse: a revision bumped without the mirrored file changing, which claims a
+    refetch that did not happen."""
+    before = [{"id": "x.y", "mirror": {"revision": 4, "hash": "a", "local_sha256": "S", "synced_at": "d1"}}]
+    after = [{"id": "x.y", "mirror": {"revision": 5, "hash": "a", "local_sha256": "S", "synced_at": "d1"}}]
+    monkeypatch.setattr(A, "merge_base_assets", lambda base="origin/main": before)
+    monkeypatch.setattr(A, "assets", lambda: after)
+    assert A.mirror_provenance_violations() == [
+        "x.y: provenance changed but the mirrored bytes did not"
+    ]
+
+
+# --- schedule evidence applies only where a schedule exists ---------------------
+
+def test_schedule_evidence_only_on_scheduled_assets(inventory):
+    """A null trigger on an unscheduled asset would read as "no run observed", which is a
+    claim about a cron that is not there."""
+    for asset in inventory:
+        scheduled = str(asset.get("refresh", "")).startswith("dataset cron")
+        for field in ("timezone", "last_observed_trigger", "last_run_at"):
+            if scheduled:
+                assert field in asset, f"{asset['id']}: scheduled but no {field}"
+            else:
+                assert field not in asset, f"{asset['id']}: unscheduled but carries {field}"
+
+
+def test_the_openness_chain_is_gap_map(inventory):
+    """population describes whose ROWS these are, not who reads them. The `scores` dataset
+    holds two populations, so keying on the dataset put the openness chain in long_tail."""
+    inv = A.by_table()
+    for table in ("scores.openness_facts", "scores.openness_computed",
+                  "evidence.product_evidence", "catalog.stack_map"):
+        assert inv[table]["population"] == "gap_map", table
+
+
+def test_release_path_is_consistent_across_the_openness_chain(inventory):
+    """The chain is a parallel verification path feeding check_parity, retired in Phase 7 --
+    not the release path. Marking one of its three tables release_path and not the others
+    was arbitrary."""
+    inv = A.by_table()
+    chain = ("evidence.product_evidence", "scores.openness_facts", "scores.openness_computed")
+    assert len({inv[t]["release_path"] for t in chain}) == 1
+    assert all(inv[t]["release_path"] is False for t in chain)

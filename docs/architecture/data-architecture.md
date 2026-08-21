@@ -1321,9 +1321,13 @@ registries this file replaces.
                                   # entities.models, entities.packages and catalog.stack_map
                                   # — NOT this table
     workflows: []
-  consumer_scope: in_repo_only    # in_repo_only | platform_checked | externally_confirmed
-                                  # so this asset is NOT yet a retirement candidate,
-                                  # however empty read_by looks
+  consumer_checks:                # what was actually audited, per source of consumers
+    repository: checked            #   tracked models, build modules, notebooks, workflows
+    platform_notebooks: checked    #   every notebook in the org, tracked or not
+    platform_models: unknown       #   deployed model definitions -- NOT audited
+    external: unknown              #   anything outside this org -- NOT audited
+                                  # platform_models is unknown, so this asset is NOT a
+                                  # retirement candidate however empty read_by looks
   external_consumers: unknown     # unknown | none_confirmed | [named]
   publication_role: null          # null | release_sink | public_api | payload_input
   population: long_tail           # gap_map | long_tail | both
@@ -1364,14 +1368,20 @@ An asset is a retirement candidate only when all of the following hold:
 read_by is empty across every closure root
 AND publication_role is null
 AND external_consumers is none_confirmed
-AND consumer_scope is at least platform_checked
+AND consumer_checks.platform_models is checked
+AND consumer_checks.platform_notebooks is checked
 AND no deployed platform model reads it
 ```
 
-`consumer_scope` is what stops the inventory from overclaiming. `in_repo_only` means nobody
-has checked beyond the repository, so an empty `read_by` is not yet evidence of anything, and
-the asset cannot be a retirement candidate no matter how unread it appears. Promoting an
-asset to `platform_checked` requires actually querying deployed model definitions.
+`consumer_checks` is what stops the inventory from overclaiming, and it is four independent
+facts rather than one confidence level. A single flag cannot distinguish "we read every
+notebook" from "we read every deployed model definition", and those are different pieces of
+evidence gathered by different means.
+
+An asset cannot be a retirement candidate while either `platform_models` or
+`platform_notebooks` is `unknown`, however unread it appears. Reading notebooks does not
+license a retirement, because a deployed model is not a notebook. Until both are `checked`,
+the honest claim is "no reviewed consumer found", never "no consumer".
 
 There is no stored `retirement_candidate` boolean. The condition is computed; only the human
 outputs — `retirement_reason` and `retirement_issue` — are recorded.
@@ -1584,7 +1594,8 @@ exist.
 6. No duplicate asset ID or table.
 7. The retirement condition of 11.2 is computed, never read from a stored boolean. Any asset
    satisfying it must carry a `retirement_reason` and `retirement_issue`. No asset with
-   `consumer_scope: in_repo_only` may be reported as a retirement candidate.
+   any `consumer_checks` value other than `checked` for `platform_models` or
+   `platform_notebooks` may be reported as a retirement candidate.
 8. Every entry in `reads` either resolves to an asset in the inventory when
    `scope: internal`, or is `scope: external` and names a table outside the 49-table closure.
    Because the inventory deliberately covers the closure rather than all 96 org tables,
@@ -1629,9 +1640,9 @@ same SQL, so no PR exists purely to rename a deployed table.
 #### Deferred pending the Phase 0 notebook audit
 
 Three tables have no in-repo consumer and cannot be retired on that basis, because
-`consumer_scope: in_repo_only` is not evidence of anything while sixteen notebooks sit outside
-the repository. Each keeps `retirement_reason: null` and an open issue until the audit promotes
-its `consumer_scope` to `platform_checked`.
+an unaudited consumer source is not evidence of anything while sixteen notebooks sit outside
+the repository. Each keeps `retirement_reason: null` and an open issue until the audit sets
+`consumer_checks.platform_notebooks` and `platform_models` to `checked`.
 
 | Table | State |
 |---|---|

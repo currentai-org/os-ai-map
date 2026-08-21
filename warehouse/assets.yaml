@@ -19,7 +19,7 @@
 # No asset is a retirement candidate while platform_models is unknown.
 ---
 version: 1
-verified_at: '2026-08-20'
+verified_at: '2026-08-21'
 assets:
 - id: catalog.country_populations
   table: currentai.catalog.country_populations
@@ -42,9 +42,6 @@ assets:
   grain: one row per country_code
   producer: manual upload
   refresh: manual upload
-  timezone: UTC
-  last_observed_trigger: null
-  last_run_at: null
   dataset_id: 046ee25e-daee-4c43-a13c-d6ba9f6bd549
   owner: carl
   status: active
@@ -76,9 +73,6 @@ assets:
   producer: 'hand-maintained CSV: warehouse/catalog/huggingface/foundation_model_repos.csv'
   classification_note: a curator controls which model families are listed
   refresh: manual upload
-  timezone: UTC
-  last_observed_trigger: null
-  last_run_at: null
   dataset_id: 046ee25e-daee-4c43-a13c-d6ba9f6bd549
   owner: carl
   status: active
@@ -103,9 +97,6 @@ assets:
   grain: one row per repo, frozen snapshot
   producer: manual upload
   refresh: manual upload
-  timezone: UTC
-  last_observed_trigger: null
-  last_run_at: null
   dataset_id: 046ee25e-daee-4c43-a13c-d6ba9f6bd549
   owner: carl
   status: active
@@ -140,9 +131,6 @@ assets:
   grain: one row per Open LLM Leaderboard model_id
   producer: warehouse/ingest/fetch_model_benchmarks.py
   refresh: manual upload
-  timezone: UTC
-  last_observed_trigger: null
-  last_run_at: null
   dataset_id: 046ee25e-daee-4c43-a13c-d6ba9f6bd549
   owner: carl
   status: active
@@ -179,9 +167,6 @@ assets:
   grain: one row per Hugging Face model_id, mapped to a GitHub repo
   producer: warehouse/ingest/fetch_huggingface.py
   refresh: manual upload
-  timezone: UTC
-  last_observed_trigger: null
-  last_run_at: null
   dataset_id: 046ee25e-daee-4c43-a13c-d6ba9f6bd549
   owner: carl
   status: active
@@ -205,9 +190,6 @@ assets:
   grain: one row per (layer, subcategory) of a third-party map
   producer: manual upload
   refresh: manual upload
-  timezone: UTC
-  last_observed_trigger: null
-  last_run_at: null
   dataset_id: 046ee25e-daee-4c43-a13c-d6ba9f6bd549
   owner: carl
   status: active
@@ -236,9 +218,6 @@ assets:
   producer: manual upload
   classification_note: curated crosswalk between two taxonomies
   refresh: manual upload
-  timezone: UTC
-  last_observed_trigger: null
-  last_run_at: null
   dataset_id: 046ee25e-daee-4c43-a13c-d6ba9f6bd549
   owner: carl
   status: active
@@ -272,9 +251,6 @@ assets:
   producer: manual upload
   classification_note: a measurement, not an inventory
   refresh: manual upload
-  timezone: UTC
-  last_observed_trigger: null
-  last_run_at: null
   dataset_id: 046ee25e-daee-4c43-a13c-d6ba9f6bd549
   owner: carl
   status: active
@@ -291,7 +267,7 @@ assets:
   target_namespace: registry
   migration_status: pending
   authority: repo
-  population: long_tail
+  population: gap_map
   release_path: false
   read_by:
     models:
@@ -311,9 +287,6 @@ assets:
   producer: warehouse/ingest/build_stack_map.py
   classification_note: compiled from sources/ by warehouse/ingest/build_stack_map.py
   refresh: manual upload
-  timezone: UTC
-  last_observed_trigger: null
-  last_run_at: null
   dataset_id: 046ee25e-daee-4c43-a13c-d6ba9f6bd549
   owner: carl
   status: compatibility
@@ -339,9 +312,6 @@ assets:
   producer: manual upload
   classification_note: curated crosswalk between two taxonomies
   refresh: manual upload
-  timezone: UTC
-  last_observed_trigger: null
-  last_run_at: null
   dataset_id: 046ee25e-daee-4c43-a13c-d6ba9f6bd549
   owner: carl
   status: active
@@ -584,7 +554,7 @@ assets:
   migration_status: pending
   authority: platform
   population: gap_map
-  release_path: true
+  release_path: false
   reads:
   - table: currentai.registry.category_scoring_rules
     scope: internal
@@ -701,9 +671,6 @@ assets:
   producer: build/serialize_registry.py + build/publish_registry.py
   publication_role: payload_input
   refresh: CI push on merge to main
-  timezone: UTC
-  last_observed_trigger: null
-  last_run_at: null
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
   owner: carl
   status: active
@@ -728,9 +695,6 @@ assets:
   producer: build/serialize_registry.py + build/publish_registry.py
   publication_role: payload_input
   refresh: CI push on merge to main
-  timezone: UTC
-  last_observed_trigger: null
-  last_run_at: null
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
   owner: carl
   status: active
@@ -758,9 +722,6 @@ assets:
   producer: build/serialize_registry.py + build/publish_registry.py
   publication_role: payload_input
   refresh: CI push on merge to main
-  timezone: UTC
-  last_observed_trigger: null
-  last_run_at: null
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
   owner: carl
   status: active
@@ -788,9 +749,6 @@ assets:
   producer: build/serialize_registry.py + build/publish_registry.py
   publication_role: payload_input
   refresh: CI push on merge to main
-  timezone: UTC
-  last_observed_trigger: null
-  last_run_at: null
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
   owner: carl
   status: active
@@ -818,9 +776,6 @@ assets:
   producer: build/serialize_registry.py + build/publish_registry.py
   publication_role: payload_input
   refresh: CI push on merge to main
-  timezone: UTC
-  last_observed_trigger: null
-  last_run_at: null
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
   owner: carl
   status: active
@@ -850,9 +805,6 @@ assets:
   producer: build/serialize_registry.py + build/publish_registry.py
   publication_role: payload_input
   refresh: CI push on merge to main
-  timezone: UTC
-  last_observed_trigger: null
-  last_run_at: null
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
   owner: carl
   status: active
@@ -880,9 +832,6 @@ assets:
   producer: build/serialize_registry.py + build/publish_registry.py
   publication_role: payload_input
   refresh: CI push on merge to main
-  timezone: UTC
-  last_observed_trigger: null
-  last_run_at: null
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
   owner: carl
   status: active
@@ -911,9 +860,6 @@ assets:
   producer: build/serialize_registry.py + build/publish_registry.py
   publication_role: payload_input
   refresh: CI push on merge to main
-  timezone: UTC
-  last_observed_trigger: null
-  last_run_at: null
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
   owner: carl
   status: active
@@ -941,9 +887,6 @@ assets:
   producer: build/serialize_registry.py + build/publish_registry.py
   publication_role: payload_input
   refresh: CI push on merge to main
-  timezone: UTC
-  last_observed_trigger: null
-  last_run_at: null
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
   owner: carl
   status: active
@@ -979,9 +922,6 @@ assets:
   producer: build/serialize_registry.py + build/publish_registry.py
   publication_role: payload_input
   refresh: CI push on merge to main
-  timezone: UTC
-  last_observed_trigger: null
-  last_run_at: null
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
   owner: carl
   status: active
@@ -1011,9 +951,6 @@ assets:
   producer: build/serialize_registry.py + build/publish_registry.py
   publication_role: payload_input
   refresh: CI push on merge to main
-  timezone: UTC
-  last_observed_trigger: null
-  last_run_at: null
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
   owner: carl
   status: active
@@ -1038,9 +975,6 @@ assets:
   producer: build/serialize_registry.py + build/publish_registry.py
   publication_role: payload_input
   refresh: CI push on merge to main
-  timezone: UTC
-  last_observed_trigger: null
-  last_run_at: null
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
   owner: carl
   status: active
@@ -1068,9 +1002,6 @@ assets:
   producer: build/serialize_registry.py + build/publish_registry.py
   publication_role: payload_input
   refresh: CI push on merge to main
-  timezone: UTC
-  last_observed_trigger: null
-  last_run_at: null
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
   owner: carl
   status: active
@@ -1097,9 +1028,6 @@ assets:
   producer: build/serialize_registry.py + build/publish_registry.py
   publication_role: payload_input
   refresh: CI push on merge to main
-  timezone: UTC
-  last_observed_trigger: null
-  last_run_at: null
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
   owner: carl
   status: active
@@ -1127,9 +1055,6 @@ assets:
   producer: build/serialize_registry.py + build/publish_registry.py
   publication_role: payload_input
   refresh: CI push on merge to main
-  timezone: UTC
-  last_observed_trigger: null
-  last_run_at: null
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
   owner: carl
   status: active
@@ -1154,9 +1079,6 @@ assets:
   producer: build/serialize_registry.py + build/publish_registry.py
   publication_role: payload_input
   refresh: CI push on merge to main
-  timezone: UTC
-  last_observed_trigger: null
-  last_run_at: null
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
   owner: carl
   status: active
@@ -1186,9 +1108,6 @@ assets:
   producer: build/serialize_registry.py + build/publish_registry.py
   publication_role: payload_input
   refresh: CI push on merge to main
-  timezone: UTC
-  last_observed_trigger: null
-  last_run_at: null
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
   owner: carl
   status: active
@@ -1213,9 +1132,6 @@ assets:
   producer: build/serialize_registry.py + build/publish_registry.py
   publication_role: payload_input
   refresh: CI push on merge to main
-  timezone: UTC
-  last_observed_trigger: null
-  last_run_at: null
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
   owner: carl
   status: dormant
@@ -1344,7 +1260,7 @@ assets:
   target_namespace: evaluation
   migration_status: pending
   authority: platform
-  population: long_tail
+  population: gap_map
   release_path: false
   reads:
   - table: currentai.registry.category_scoring_rules
@@ -1390,7 +1306,7 @@ assets:
   target_namespace: evaluation
   migration_status: pending
   authority: platform
-  population: long_tail
+  population: gap_map
   release_path: false
   reads:
   - table: currentai.evidence.product_evidence
@@ -1577,7 +1493,7 @@ assets:
   target_namespace: evaluation
   migration_status: pending
   authority: repo
-  population: long_tail
+  population: gap_map
   release_path: false
   reads:
   - table: currentai.catalog.stack_map
@@ -1985,8 +1901,6 @@ assets:
   grain: one row per (product_slug, package) over a 30-day window
   producer: warehouse/platform-mirror/packages_package_downloads.sql
   refresh: 'not deployed; see issue #314'
-  last_observed_trigger: null
-  last_run_at: null
   owner: carl
   status: staged
   materialized: true
@@ -2019,8 +1933,6 @@ assets:
   grain: one row per (package, day)
   producer: warehouse/platform-mirror/packages_package_downloads_daily.py
   refresh: 'not deployed; see issue #314'
-  last_observed_trigger: null
-  last_run_at: null
   owner: carl
   status: staged
   materialized: true
@@ -2053,8 +1965,6 @@ assets:
   producer: warehouse/platform-mirror/packages_product_adoption.sql
   classification_note: a banded candidate assessment, not a raw measurement
   refresh: 'not deployed; see issue #314'
-  last_observed_trigger: null
-  last_run_at: null
   owner: carl
   status: staged
   materialized: true

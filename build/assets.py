@@ -72,10 +72,47 @@ SQL_HINT_RE = re.compile(r"\b(?:select|from|join|with|insert|update)\b", re.IGNO
 
 
 def _sql_comments_stripped(sql: str) -> str:
-    sql = re.sub(r"/\*.*?\*/", " ", sql, flags=re.DOTALL)
-    return "\n".join(
-        line for line in sql.splitlines() if not line.lstrip().startswith("--")
-    )
+    """Remove SQL comments, including inline ones, without touching quoted text.
+
+    A line-oriented stripper is not enough: `SELECT 1 -- FROM currentai.registry.products`
+    keeps the comment and invents a dependency. Nor is a plain regex, because `--` occurs
+    inside values -- `SELECT '--' AS dash FROM t` must not lose the rest of its line.
+
+    So this scans character by character, tracking whether it sits inside a single- or
+    double-quoted run. Doubled quotes escape within a quoted run, per SQL.
+    """
+    out: list[str] = []
+    i, n = 0, len(sql)
+    quote: str | None = None
+    while i < n:
+        ch = sql[i]
+        if quote:
+            out.append(ch)
+            if ch == quote:
+                if i + 1 < n and sql[i + 1] == quote:   # doubled quote escapes itself
+                    out.append(sql[i + 1])
+                    i += 2
+                    continue
+                quote = None
+            i += 1
+            continue
+        if ch in "'\"":
+            quote = ch
+            out.append(ch)
+            i += 1
+            continue
+        if sql.startswith("--", i):
+            while i < n and sql[i] != "\n":
+                i += 1
+            continue
+        if sql.startswith("/*", i):
+            end = sql.find("*/", i + 2)
+            i = n if end == -1 else end + 2
+            out.append(" ")
+            continue
+        out.append(ch)
+        i += 1
+    return "".join(out)
 
 
 def _unquote_identifiers(sql: str) -> str:
@@ -230,7 +267,7 @@ def retirement_candidates() -> list[dict]:
     An empty reader list is NOT sufficient. A table whose purpose is external
     consumption correctly has no in-repo reader -- `releases.manifest` would be the
     first false positive. And an asset nobody has checked beyond the repository is
-    not evidence of anything, which is what `consumer_scope` guards.
+    not evidence of anything, which is what `consumer_checks` guards.
     """
     out = []
     for asset in assets():
@@ -324,3 +361,97 @@ def render_dag() -> str:
         "```",
     ]
     return "\n".join(out)
+
+
+def merge_base_assets(base: str = "origin/main") -> list[dict] | None:
+    """The inventory as of the merge base, or None if it did not exist there.
+
+    A provenance gate that reads only the current tree cannot detect the case it exists
+    for: a contributor edits a mirrored file and updates `local_sha256` to match. Both
+    values agree, every single-snapshot check passes, and the recorded platform revision
+    now dates bytes it never saw. Catching that needs the previous value.
+    """
+    try:
+        merge_base = subprocess.run(
+            ["git", "-C", str(ROOT), "merge-base", "HEAD", base],
+            capture_output=True, text=True, check=True,
+        ).stdout.strip()
+        blob = subprocess.run(
+            ["git", "-C", str(ROOT), "show", f"{merge_base}:warehouse/assets.yaml"],
+            capture_output=True, text=True, check=True,
+        ).stdout
+    except subprocess.CalledProcessError:
+        return None
+    return (yaml.safe_load(blob) or {}).get("assets") or []
+
+
+def mirror_provenance_violations(base: str = "origin/main") -> list[str]:
+    """Mirror entries whose bytes moved without their provenance moving with them.
+
+    When a mirrored file's `local_sha256` changes, the platform revision it claims to
+    mirror must change too -- `revision`, `hash` and `synced_at` all move together, and
+    only for the entry whose file actually changed. `synced_at` is per entry for exactly
+    this reason: it was one global date until 2026-08-16, which meant refetching two
+    models advanced the date on all twelve.
+    """
+    before = merge_base_assets(base)
+    if before is None:
+        return []
+    old = {a["id"]: a for a in before if a.get("mirror")}
+    problems: list[str] = []
+    for asset in assets():
+        mirror = asset.get("mirror")
+        was = old.get(asset["id"])
+        if not mirror or not was or not was.get("mirror"):
+            continue
+        prior = was["mirror"]
+        if mirror.get("local_sha256") == prior.get("local_sha256"):
+            if any(mirror.get(f) != prior.get(f) for f in ("revision", "hash", "synced_at")):
+                problems.append(
+                    f"{asset['id']}: provenance changed but the mirrored bytes did not"
+                )
+            continue
+        for field in ("revision", "hash", "synced_at"):
+            if mirror.get(field) == prior.get(field):
+                problems.append(
+                    f"{asset['id']}: local_sha256 changed but {field} did not -- "
+                    "a refetch advances all of them"
+                )
+    return problems
+
+
+COUNT_CLAIMS = {
+    "assets": lambda: len(assets()),
+    "pending": lambda: sum(1 for a in assets() if a["migration_status"] == "pending"),
+    "no_reviewed_consumer": lambda: sum(1 for a in assets() if a.get("retirement_reason")),
+    "retirement_candidates": lambda: len(retirement_candidates()),
+    "in_repo_readers": lambda: len(derive_graph()["read_by"]),
+    "unobserved_crons": lambda: sum(
+        1 for a in assets()
+        if str(a.get("refresh", "")).startswith("dataset cron")
+        and a.get("last_observed_trigger") is None
+    ),
+}
+
+COUNT_MARKER_RE = re.compile(r"<!--\s*count:([a-z_]+)\s*-->\s*(\d+)")
+
+
+def count_claim_violations() -> list[str]:
+    """Check every marked count in the architecture docs against its derived value.
+
+    Marked, not sniffed. An earlier gate scanned prose for a denylist of numbers that had
+    already been wrong -- 49, 28, 56 -- which by construction could not catch the next one,
+    and did not catch a stale 31 against an actual 34. A count in prose now carries a marker
+    naming what it counts, and anything unmarked is invisible to the reader as well.
+    """
+    problems: list[str] = []
+    for path in sorted((ROOT / "docs" / "architecture").glob("*.md")):
+        text = path.read_text(encoding="utf-8")
+        for key, written in COUNT_MARKER_RE.findall(text):
+            if key not in COUNT_CLAIMS:
+                problems.append(f"{path.name}: unknown count key {key!r}")
+                continue
+            actual = COUNT_CLAIMS[key]()
+            if int(written) != actual:
+                problems.append(f"{path.name}: {key} says {written}, derived value is {actual}")
+    return problems

@@ -10,12 +10,12 @@ file records only where the work has got to. Delete a row when it stops being te
 | Phase | State | Note |
 |---|---|---|
 | 0 — architecture record and inventory | in review | This PR. Read-only; no platform writes. |
-| 1 — schedule normalization | not started | 13 datasets on `America/New_York`, 8 crons with no observed run. Also applies the `catalog.stack_map` description fix recorded below. |
+| 1 — schedule normalization | not started | 10 datasets on `America/New_York`; <!-- count:unobserved_crons -->18 assets have a cron and no observed run. No platform metadata change is pending — see below. |
 | 2 — normalized adoption observations | not started | Must compile `registry.adoption_routes` before any signal roll-up retires. |
 | 2B — incremental adoption history | blocked | Blocked on OSO incremental-model support. Not approximated with full-refresh models. |
 | 3 — reconciliation report | not started | Report-only first. |
 | 4 — blocking agreement gate | not started | |
-| 5 — catalog split and long-tail migration | not started | 31 assets carry `migration_status: pending`. |
+| 5 — catalog split and long-tail migration | not started | <!-- count:pending -->34 assets carry `migration_status: pending`. |
 | 6 — repository-owned scoring trace | not started | |
 | 7 — retire duplicate openness computation | not started | |
 | 8 — release manifests | not started | |
@@ -60,28 +60,34 @@ What the note omits, and what this inventory adds, is that `stack_map.*` has two
 readers and one of them is not deprecated. "No deployed model" and "no reader" are different
 claims, and only the first is true.
 
-## Retirement ledger
+## Assets with no reviewed consumer
 
-No asset has been retired. Candidates below satisfy the derived condition in
-`data-architecture.md` 11.2 — no in-repo code reader, no platform notebook consumer, no
-publication role, and `consumer_scope: platform_checked`. None is authorized for deletion;
-section 17 requires explicit maintainer approval after a consumer inventory.
+**Retirement candidates: <!-- count:retirement_candidates -->0.** Not zero because everything
+is read, but because no asset can be a candidate while `consumer_checks.platform_models` is
+`unknown` — and it is unknown for every asset. Deployed model definitions have not been
+audited. That is Phase 0b.
+
+The <!-- count:no_reviewed_consumer -->9 assets below have **no reviewed consumer**: no
+in-repo code reader, and no consumer among the twenty notebooks in the organization. That is
+a weaker claim than "no consumer", and it is not grounds for deletion. Section 17 requires
+explicit maintainer approval after a consumer inventory, and the inventory is not complete
+until platform models are read.
+
+Four of the nine are pre-positioned inputs rather than dead ends. The derived condition
+cannot tell "nobody wants this" from "nothing uses it yet", which is why it produces a list
+for a person and never an action.
 
 | Asset | Finding |
 |---|---|
-| `catalog.osai_gap_map` | No consumer anywhere. Also misnamed — it is a third-party map whose columns read as ours. |
-| `catalog.osai_subcategory_mapping` | No consumer anywhere. |
-| `catalog.taxonomy_crosswalk` | No consumer anywhere. |
-| `scores.ossd_coverage` | No consumer anywhere. |
-| `signal_github.product_adoption` | Unread in repo, but holds the route precedence `pypi > huggingface > stars` in SQL. **Must not retire before `registry.adoption_routes` compiles that ordering.** |
-| `signal_lmarena.text_leaderboard` | Capability anchor collected ahead of the axis that will use it. Pre-positioned, not dead. |
+| `catalog.osai_gap_map` | No reviewed consumer. Also misnamed — a third-party map whose columns read as ours. |
+| `catalog.osai_subcategory_mapping` | No reviewed consumer. |
+| `catalog.taxonomy_crosswalk` | No reviewed consumer. |
+| `scores.ossd_coverage` | No reviewed consumer. |
+| `signal_github.product_adoption` | Unread in repo, but holds the route precedence `pypi > huggingface > stars` in SQL. **Must not retire before `registry.adoption_routes` compiles that ordering** — nothing would fail if it did. |
+| `signal_lmarena.text_leaderboard` | Capability anchor collected ahead of the axis that will use it. Pre-positioned. |
 | `signal_semanticscholar.paper_citations` | Citation instrument declared in `signal_routing.yaml`, not yet consumed by a repo model. Pre-positioned. |
 | `signal_artificialanalysis.model_evaluations` | The platform description says "held deliberately unjoined to gap-map products". Unread by design. |
-| `signal_packages.*` (3) | Staged, not deployed. Issue #314. |
-
-The derived condition cannot tell "nobody wants this" from "nothing uses it yet". Four of
-the entries above are the second case, which is why the condition produces candidates for a
-person and never a deletion.
+| `signal_packages.*` (3, staged) | Not deployed. Issue #314. |
 
 ## Consumers with only a deprecated reader
 
