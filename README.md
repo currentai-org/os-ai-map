@@ -155,9 +155,9 @@ See [AGENTS.md](AGENTS.md) for agent-oriented project context.
 **Warehouse.** `warehouse/` holds the SQL models and fetchers that power adoption and activity
 signals. Contributors work read-only here; only maintainers write.
 
-- `warehouse/models/` — UDM SQL (entities, events, metrics, scores). See `warehouse/models/README.md`.
-- `warehouse/ingest/` — Python fetchers writing CSVs to `warehouse/catalog/`.
-- `warehouse/sources.yaml` — manifest linking each external source to its fetcher.
+- `warehouse/models/` — SQL and Python models, mirroring the warehouse as `models/<dataset>/<table>` (entities, events, metrics, scores, the read-only platform mirrors and the fetchers). See `warehouse/assets.yaml`.
+- `warehouse/data/` — frozen CSV inputs at `data/<dataset>/<table>.csv`.
+- `warehouse/assets.yaml` — the asset inventory: one entry per table, with authority, grain, provenance and derived reads/read_by.
 
 **Operations** (require OSO MCP write access — see `docs/operations/`):
 

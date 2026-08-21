@@ -9,11 +9,12 @@ different places.
 | Family | Models | Where the SQL lives |
 |---|---|---|
 | Legacy warehouse | `entities`, `events`, `metrics`, and the legacy `scores` stack-map models | `warehouse/models/` — **in this repo** |
-| Scoring chain | `evidence.product_evidence` → `scores.openness_facts` → `scores.openness_computed`, plus the `signal_*` fetchers | On the OSO platform. The models are copied **read-only** into `warehouse/platform-mirror/` (with a provenance manifest) so they are legible from the repo; the deploy script and the working copies you push from sit one level up in `currentai-org/{tools,udms}/`, outside version control. **Nothing deploys from `warehouse/platform-mirror/`.** |
+| Scoring chain | `evidence.product_evidence` → `scores.openness_facts` → `scores.openness_computed`, plus the `signal_*` fetchers | On the OSO platform. The models are copied **read-only** into `warehouse/models/<dataset>/` (carrying a `mirror:` block in `warehouse/assets.yaml`) so they are legible from the repo; the deploy script and the working copies you push from sit one level up in `currentai-org/{tools,udms}/`, outside version control. **Nothing deploys from the mirror copies.** |
 
-The `warehouse/platform-mirror/` copy (T1 of the 2026-08-14 audit) makes the scoring models
-readable without platform access. It is a snapshot, not the source of truth — see
-`warehouse/platform-mirror/README.md` and its `manifest.yaml` for the deployed revision each file reflects.
+The read-only mirror copies under `warehouse/models/<dataset>/` (T1 of the 2026-08-14 audit)
+make the scoring models readable without platform access. They are snapshots, not the source
+of truth — see each asset's `mirror:` block in `warehouse/assets.yaml` for the deployed
+revision, hash and sync date the file reflects.
 
 ## The deploy mechanic: revision → RELEASE → run
 
@@ -132,4 +133,4 @@ datasets' run history first" — it can mean the warehouse is stale rather than 
 - `docs/reference/evidence-and-freshness.md` — what the chain computes and the gates over it
 - `docs/operations/publish-map.md` — serializing and publishing the notebook
 - `docs/operations/refresh-data.md` — running the signal fetchers
-- `warehouse/models/README.md` — the legacy in-repo model family
+- `warehouse/assets.yaml` and `docs/architecture/data-architecture.md` — the asset inventory and the model families it covers

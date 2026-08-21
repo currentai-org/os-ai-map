@@ -1093,8 +1093,9 @@ Migration rules:
 
 Verified against the live `currentai` org on 2026-08-20: 22 datasets,
 <!-- observed:2026-08-20 -->96 tables,
-<!-- count:tracked_warehouse_files -->45 tracked files under `warehouse/`. The structure below is the target; the file manifest in
-11.4 is the exact diff from the state on that date.
+<!-- count:tracked_warehouse_files -->40 tracked files under `warehouse/`. The structure below is the target, and the
+mirror layout of 11.1 is now in place; the file manifest in 11.4 recorded the exact diff
+from the 2026-08-20 state, executed in this change.
 
 ### 11.1 Target layout
 
@@ -1465,9 +1466,17 @@ by `entities_models.sql`.
 
 ### 11.4 File manifest
 
+DONE. This manifest was executed: the moves below have landed, `warehouse/ingest/`,
+`warehouse/models/*.sql` at the top level and `warehouse/platform-mirror/` no longer exist,
+and `warehouse/assets.yaml` carries the new paths. The tables below are the record of what
+moved where.
+
 The diff from 2026-08-20 state. Because the mirror layout keeps each file's base name and
 only changes its directory, almost every move is a pure `git mv` — reviewable as a rename
-rather than a rewrite.
+rather than a rewrite. The one place a base name changed a table identity is
+`signal_packages`: rule 11.1a.1 strips the redundant source prefix, so the staged
+`signal_packages.package_downloads` / `package_downloads_daily` become `.downloads` /
+`.downloads_daily` (nothing deployed; repository-only).
 
 Counts, stated once and correctly. The manifest arithmetic runs from the PRE-Phase-0
 baseline, which is why that figure is an `observed:` reading rather than a derived one: Phase 0

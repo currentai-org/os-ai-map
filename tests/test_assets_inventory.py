@@ -12,7 +12,6 @@ import subprocess
 from pathlib import Path
 
 import pytest
-import yaml
 
 from build import assets as A
 
@@ -62,6 +61,30 @@ def test_every_declared_path_exists(inventory):
 def test_table_matches_id(inventory):
     for asset in inventory:
         assert asset["table"] == f"currentai.{asset['id']}"
+
+
+def test_path_derives_the_table(inventory):
+    """Gate 1b: models/<dataset>/<table>.<ext> and data/<dataset>/<table>.csv must derive
+    the declared `currentai.<dataset>.<table>`. This replaces the old filename-convention
+    check -- a misplaced file fails here rather than being accepted under a plausible name.
+
+    Only the model, schema and data roles carry a table identity. An intermediate CSV
+    (data/catalog/top_models.csv) is a fetcher's scratch input that shares a directory with
+    a table but is not one, so it is skipped by role, not by guessing."""
+    checked = 0
+    for asset in inventory:
+        for role in ("model", "schema", "data"):
+            value = (asset.get("files") or {}).get(role)
+            for path in (value if isinstance(value, list) else [value]):
+                if not path:
+                    continue
+                derived = A.table_for_path(path)
+                assert derived is not None, f"{asset['id']}:{role} -> {path} is not in the mirror layout"
+                assert derived == asset["table"], (
+                    f"{asset['id']}:{role} -> {path} derives {derived}, not {asset['table']}"
+                )
+                checked += 1
+    assert checked, "no model/schema/data paths were checked -- the derivation is not running"
 
 
 def test_current_namespace_matches_the_table(inventory):
@@ -219,8 +242,7 @@ def test_every_model_file_in_scope_is_inventoried():
     other gate here."""
     claimed = set(A.produced_files())
     tracked = subprocess.run(
-        ["git", "-C", str(ROOT), "ls-files",
-         "warehouse/models", "warehouse/platform-mirror", "warehouse/ingest"],
+        ["git", "-C", str(ROOT), "ls-files", "warehouse/models"],
         capture_output=True, text=True, check=True,
     ).stdout.split()
     code = [f for f in tracked if f.endswith((".sql", ".py"))]
@@ -306,8 +328,7 @@ def test_every_tracked_managed_file_is_declared():
     claims is invisible to every other gate in this file."""
     claimed = set(A.produced_files())
     tracked = subprocess.run(
-        ["git", "-C", str(ROOT), "ls-files",
-         "warehouse/models", "warehouse/platform-mirror", "warehouse/ingest", "warehouse/catalog"],
+        ["git", "-C", str(ROOT), "ls-files", "warehouse/models", "warehouse/data"],
         capture_output=True, text=True, check=True,
     ).stdout.split()
     managed = [f for f in tracked
@@ -347,22 +368,6 @@ def test_mirror_local_sha256_matches_the_bytes(inventory):
             continue
         actual = hashlib.sha256((ROOT / model).read_bytes()).hexdigest()
         assert actual == mirror["local_sha256"], f"{asset['id']}: {model} does not match local_sha256"
-
-
-def test_inventory_agrees_with_the_mirror_manifest():
-    """Both files describe the same mirrors during the transition. They must not drift --
-    sources.yaml and manifest.yaml already did exactly that."""
-    manifest = yaml.safe_load((ROOT / "warehouse/platform-mirror/manifest.yaml").read_text())
-    inv = A.by_table()
-    for entry in manifest["models"]:
-        table = entry["table"].removeprefix("currentai.")
-        assert table in inv, f"{table} in manifest.yaml but not in assets.yaml"
-        asset = inv[table]
-        if entry.get("status") == "staged":
-            assert asset["status"] == "staged", f"{table}: manifest says staged"
-            continue
-        assert asset.get("mirror", {}).get("revision") == entry["revision"], f"{table}: revision drift"
-        assert asset.get("mirror", {}).get("local_sha256") == entry["local_sha256"], f"{table}: hash drift"
 
 
 # --- grain, producer, enums -----------------------------------------------------

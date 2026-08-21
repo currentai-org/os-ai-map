@@ -7,7 +7,7 @@
 
 Covers npm and crates.io. PyPI is deliberately absent: `oso.pypi_downloads` already
 holds every package on PyPI at day grain, so the PyPI leg of
-`signal_packages.package_downloads` windows a table the warehouse has, and there is
+`signal_packages.downloads` windows a table the warehouse has, and there is
 nothing to fetch. There is no equivalent global dataset for npm or crates, which is
 the whole reason this model exists.
 

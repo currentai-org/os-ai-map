@@ -36,7 +36,7 @@ If you detect a request that requires write access, you must:
 ## Workflow Steps
 
 1. **Pick the right table from the registry**
-   - Start from [`warehouse/models/README.md`](../../warehouse/models/README.md) for the five datasets this repo maintains.
+   - Start from [`warehouse/assets.yaml`](../../warehouse/assets.yaml) and [the data architecture](../../docs/architecture/data-architecture.md) for the datasets this repo maintains.
    - Use [`docs/reference/queries.md`](../../docs/reference/queries.md) for query conventions and caveats.
    - Use [`docs/reference/notebook-design.md`](../../docs/reference/notebook-design.md) for marimo notebook structure/style.
 

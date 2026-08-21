@@ -49,7 +49,7 @@ The distinction is worth writing down, because the names invite the mistake:
 | Table | Dataset | State | Read by |
 |---|---|---|---|
 | `currentai.stack_map.*` | `stack_map` (`3d049fc1`), **ARCHIVED 2026-08-20** | 9 frozen v1 tables | No deployed model. Two notebooks: `stack_map_category_maps` (Deprecated) and `state-of-os-ai` (not deprecated) |
-| `currentai.catalog.stack_map` | `catalog` (`046ee25e`), live | The repo-to-warehouse taxonomy bridge | `warehouse/models/scores_stack_contributors.sql`, plus four notebooks including the Live `long-tail-explorer` |
+| `currentai.catalog.stack_map` | `catalog` (`046ee25e`), live | The repo-to-warehouse taxonomy bridge | `warehouse/models/scores/stack_contributors.sql`, plus four notebooks including the Live `long-tail-explorer` |
 
 The archive note sits on the first and is accurate about deployed models.
 `docs/reference/where-scores-live.md` already draws this line correctly: it records

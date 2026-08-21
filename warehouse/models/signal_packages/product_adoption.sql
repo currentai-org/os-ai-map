@@ -48,7 +48,7 @@
 --     `yomo`'s crate is a Rust SDK for a Go binary; both products then have no primary package
 --     channel at all and fall through to the stars instrument legitimately, rather than being
 --     held at a hand-set level nothing could check. Their downloads are still computed and
---     still visible in signal_packages.package_downloads. This is the mechanism behind the
+--     still visible in signal_packages.downloads. This is the mechanism behind the
 --     minority-channel ruling that also covers gvisor, ollama, promptfoo and opencompass.
 --
 -- A computed band is an observation, never a score. Nothing here writes back into sources/.
@@ -70,7 +70,7 @@ WITH measured AS (
     -- artifact stays declared and its downloads stay published per artifact; this is the one
     -- place the exclusion applies.
     not_primary_channel IS NULL AS is_primary
-  FROM currentai.signal_packages.package_downloads
+  FROM currentai.signal_packages.downloads
 ),
 
 rolled AS (

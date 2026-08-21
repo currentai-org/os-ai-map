@@ -98,8 +98,8 @@ graph LR
     signal_lmarena__text_leaderboard[text_leaderboard]
   end
   subgraph signal_packages
-    signal_packages__package_downloads[package_downloads]
-    signal_packages__package_downloads_daily[package_downloads_daily]
+    signal_packages__downloads[downloads]
+    signal_packages__downloads_daily[downloads_daily]
     signal_packages__product_adoption[product_adoption]
   end
   subgraph signal_pypi
@@ -141,7 +141,7 @@ graph LR
   EXT_oso__oss_directory__projects --> entities__projects
   EXT_oso__oss_directory__repositories --> entities__repos
   EXT_oso__package_owners_v0 --> entities__packages
-  EXT_oso__pypi_downloads__daily_downloads_by_package --> signal_packages__package_downloads
+  EXT_oso__pypi_downloads__daily_downloads_by_package --> signal_packages__downloads
   EXT_oso__pypi_downloads__daily_downloads_by_package --> signal_pypi__package_downloads
   EXT_oso__stg_opendevdata__repo_developer_28d_activities --> metrics__daily
   catalog__foundation_model_repos --> entities__models
@@ -180,8 +180,8 @@ graph LR
   registry__license_aliases --> scores__openness_facts
   registry__product_artifacts --> signal_github__repo_state
   registry__product_artifacts --> signal_huggingface__hub_state
-  registry__product_artifacts --> signal_packages__package_downloads
-  registry__product_artifacts --> signal_packages__package_downloads_daily
+  registry__product_artifacts --> signal_packages__downloads
+  registry__product_artifacts --> signal_packages__downloads_daily
   registry__product_artifacts --> signal_pypi__package_downloads
   registry__product_artifacts --> signal_semanticscholar__paper_citations
   registry__product_categories --> evidence__product_evidence
@@ -207,8 +207,8 @@ graph LR
   signal_huggingface__hub_state --> evidence__product_evidence
   signal_huggingface__hub_state --> signal_huggingface__product_adoption
   signal_huggingface__product_adoption --> signal_github__product_adoption
-  signal_packages__package_downloads --> signal_packages__product_adoption
-  signal_packages__package_downloads_daily --> signal_packages__package_downloads
+  signal_packages__downloads --> signal_packages__product_adoption
+  signal_packages__downloads_daily --> signal_packages__downloads
   signal_pypi__package_downloads --> signal_github__product_adoption
   catalog__country_populations --> C_notebooks_pypi-geo-trends_py
   catalog__pypi_downloads --> C_notebooks_pypi-geo-trends_py
@@ -224,8 +224,8 @@ graph LR
   signal_pypi__package_downloads --> C_build_check_artifacts_py
   class catalog__stack_map compatibility;
   class registry__tail_products dormant;
-  class signal_packages__package_downloads staged;
-  class signal_packages__package_downloads_daily staged;
+  class signal_packages__downloads staged;
+  class signal_packages__downloads_daily staged;
   class signal_packages__product_adoption staged;
   classDef staged stroke-dasharray: 4 3;
   classDef compatibility stroke-width:3px;

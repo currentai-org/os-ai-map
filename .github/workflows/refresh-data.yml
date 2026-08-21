@@ -28,7 +28,7 @@ jobs:
     env:
       # Three credentials, three different jobs, and they are no longer interchangeable now
       # that the GitHub fetchers are gone:
-      #   OSO_API_KEY     the pyoso lookup in fetch_huggingface, which reads the author roster
+      #   OSO_API_KEY     the pyoso lookup in model_repos.py, which reads the author roster
       #   HF_TOKEN        the Hub calls in both fetchers; unauthenticated, the link scan
       #                   silently drops from ~742 links to ~7
       #   GH_FETCH_TOKEN  publishing the refresh PR at the end, and nothing else
@@ -186,20 +186,20 @@ jobs:
         run: uv sync --locked
       - name: Run fetchers
         run: |
-          # Two fetchers, and they are a chain: fetch_huggingface writes the model
-          # list that fetch_model_benchmarks scans for GitHub repo links. Order matters.
+          # Two fetchers, and they are a chain: model_repos.py writes the model
+          # list that model_benchmarks.py scans for GitHub repo links. Order matters.
           #
           # Three others were removed on 2026-08-16 (incidents, GitHub orgs, GitHub AI
           # repo search). Each wrote a CSV that loaded into no static model and was read
           # by nothing. Incidents are served live by currentai.aiid.*, the same way
           # currentai.signal_goodailist.repo_catalog replaced the GoodAI List mirror.
-          uv run python warehouse/ingest/fetch_huggingface.py
-          uv run python warehouse/ingest/fetch_model_benchmarks.py
+          uv run python warehouse/models/catalog/model_repos.py
+          uv run python warehouse/models/catalog/model_benchmarks.py
       - name: Open refresh PR
         env:
           GH_TOKEN: ${{ secrets.GH_FETCH_TOKEN }}
         run: |
-          if [ -z "$(git status --porcelain warehouse/catalog/)" ]; then
+          if [ -z "$(git status --porcelain warehouse/data/)" ]; then
             echo "Catalog unchanged; no PR needed."
             exit 0
           fi
@@ -207,7 +207,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -b "$BRANCH"
-          git add warehouse/catalog/
+          git add warehouse/data/
           git commit -m "chore(catalog): weekly data refresh $(date -u +%F)"
           git push -u origin "$BRANCH"
           gh pr create \

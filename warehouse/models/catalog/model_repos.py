@@ -6,14 +6,14 @@ models by those authors. That gives the HF artifacts relevant to this ecosystem 
 the full 2.8M dump.
 
 Its two CSVs are not uploaded anywhere. They are the input list that
-`fetch_model_benchmarks.py` scans to build `model_repos.csv`, which IS uploaded and which
-`entities_models.sql` reads. That is the whole reason this fetcher still exists.
+`model_benchmarks.py` scans to build `model_repos.csv`, which IS uploaded and which
+`entities/models.sql` reads. That is the whole reason this fetcher still exists.
 
 It fetched HF DATASETS too until 2026-08-16. Those two CSVs loaded into no static model and
 were read by nothing — four months of weekly author scans producing a file with no consumer.
 
 Usage:
-    uv run python warehouse/ingest/fetch_huggingface.py
+    uv run python warehouse/models/catalog/model_repos.py
 """
 
 import csv
@@ -23,7 +23,7 @@ from pathlib import Path
 
 from huggingface_hub import list_models
 
-DATA_DIR = Path(__file__).resolve().parent.parent / "catalog" / "huggingface"
+DATA_DIR = Path(__file__).resolve().parent.parent.parent / "data" / "catalog"
 MODELS_CSV = DATA_DIR / "tracked_models.csv"
 TOP_MODELS_CSV = DATA_DIR / "top_models.csv"
 

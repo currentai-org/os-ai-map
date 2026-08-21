@@ -17,6 +17,17 @@
 #   platform_models   NOT audited. Deployed model definitions were not read.
 #   external          NOT audited. Nothing outside this org.
 # No asset is a retirement candidate while platform_models is unknown.
+#
+# This inventory absorbed warehouse/sources.yaml, retired in the mirror-layout restructure.
+# That file's explanation of why two sources carry no fetcher is preserved verbatim here.
+# goodailist's reasoning lives on the signal_goodailist.repo_catalog entry (source_note);
+# aiid is not a tracked asset, so its reasoning is carried here:
+#
+#   ai_incidents (AI Incident Database, https://incidentdatabase.ai/):
+#   No fetcher and no committed CSV, for the same reason as goodailist above: the
+#   currentai.aiid REST ingestion reads incidentdatabase.ai on its own weekly cron,
+#   and the ai-safety-incidents notebook reads that rather than a mirror. The
+#   committed CSV was removed on 2026-08-16 with nothing pointed at it.
 ---
 version: 1
 verified_at: '2026-08-21'
@@ -52,7 +63,7 @@ assets:
   files:
     model: null
     schema: null
-    data: warehouse/catalog/huggingface/foundation_model_repos.csv
+    data: warehouse/data/catalog/foundation_model_repos.csv
   kind: registry
   current_namespace: catalog
   target_namespace: registry
@@ -62,7 +73,7 @@ assets:
   release_path: false
   read_by:
     models:
-    - warehouse/models/entities_models.sql
+    - warehouse/models/entities/models.sql
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -70,7 +81,7 @@ assets:
     external: unknown
   external_consumers: none_confirmed
   grain: one row per curated model_family
-  producer: 'hand-maintained CSV: warehouse/catalog/huggingface/foundation_model_repos.csv'
+  producer: 'hand-maintained CSV: warehouse/data/catalog/foundation_model_repos.csv'
   classification_note: a curator controls which model families are listed
   refresh: manual upload
   dataset_id: 046ee25e-daee-4c43-a13c-d6ba9f6bd549
@@ -105,9 +116,9 @@ assets:
 - id: catalog.model_benchmarks
   table: currentai.catalog.model_benchmarks
   files:
-    model: warehouse/ingest/fetch_model_benchmarks.py
+    model: warehouse/models/catalog/model_benchmarks.py
     schema: null
-    data: warehouse/catalog/huggingface/model_benchmarks.csv
+    data: warehouse/data/catalog/model_benchmarks.csv
   kind: catalog
   current_namespace: catalog
   target_namespace: catalog
@@ -120,7 +131,7 @@ assets:
     scope: internal
   read_by:
     models:
-    - warehouse/models/entities_models.sql
+    - warehouse/models/entities/models.sql
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -129,7 +140,7 @@ assets:
   external_consumers:
   - state-of-os-ai
   grain: one row per Open LLM Leaderboard model_id
-  producer: warehouse/ingest/fetch_model_benchmarks.py
+  producer: warehouse/models/catalog/model_benchmarks.py
   refresh: manual upload
   dataset_id: 046ee25e-daee-4c43-a13c-d6ba9f6bd549
   owner: carl
@@ -139,12 +150,12 @@ assets:
 - id: catalog.model_repos
   table: currentai.catalog.model_repos
   files:
-    model: warehouse/ingest/fetch_huggingface.py
+    model: warehouse/models/catalog/model_repos.py
     schema: null
-    data: warehouse/catalog/huggingface/model_repos.csv
+    data: warehouse/data/catalog/model_repos.csv
     intermediate:
-    - warehouse/catalog/huggingface/tracked_models.csv
-    - warehouse/catalog/huggingface/top_models.csv
+    - warehouse/data/catalog/tracked_models.csv
+    - warehouse/data/catalog/top_models.csv
   kind: catalog
   current_namespace: catalog
   target_namespace: catalog
@@ -157,7 +168,7 @@ assets:
     scope: internal
   read_by:
     models:
-    - warehouse/models/entities_models.sql
+    - warehouse/models/entities/models.sql
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -165,7 +176,7 @@ assets:
     external: unknown
   external_consumers: none_confirmed
   grain: one row per Hugging Face model_id, mapped to a GitHub repo
-  producer: warehouse/ingest/fetch_huggingface.py
+  producer: warehouse/models/catalog/model_repos.py
   refresh: manual upload
   dataset_id: 046ee25e-daee-4c43-a13c-d6ba9f6bd549
   owner: carl
@@ -259,9 +270,9 @@ assets:
 - id: catalog.stack_map
   table: currentai.catalog.stack_map
   files:
-    model: warehouse/ingest/build_stack_map.py
+    model: warehouse/models/catalog/stack_map.py
     schema: null
-    data: warehouse/catalog/stack_map/repos.csv
+    data: warehouse/data/catalog/stack_map.csv
   kind: registry
   current_namespace: catalog
   target_namespace: registry
@@ -271,7 +282,7 @@ assets:
   release_path: false
   read_by:
     models:
-    - warehouse/models/scores_stack_contributors.sql
+    - warehouse/models/scores/stack_contributors.sql
     notebooks:
     - notebooks/long-tail-explorer.py
   consumer_checks:
@@ -284,8 +295,8 @@ assets:
   - launch-insights
   - stf-ai-stewardship-evidence
   grain: one row per repo, bridging scored products to stack-map taxonomy
-  producer: warehouse/ingest/build_stack_map.py
-  classification_note: compiled from sources/ by warehouse/ingest/build_stack_map.py
+  producer: warehouse/models/catalog/stack_map.py
+  classification_note: compiled from sources/ by warehouse/models/catalog/stack_map.py
   refresh: manual upload
   dataset_id: 046ee25e-daee-4c43-a13c-d6ba9f6bd549
   owner: carl
@@ -324,7 +335,7 @@ assets:
 - id: entities.models
   table: currentai.entities.models
   files:
-    model: warehouse/models/entities_models.sql
+    model: warehouse/models/entities/models.sql
     schema: null
     data: null
   kind: catalog
@@ -345,7 +356,7 @@ assets:
     scope: internal
   read_by:
     models:
-    - warehouse/models/scores_project_summary.sql
+    - warehouse/models/scores/project_summary.sql
     notebooks:
     - notebooks/long-tail-explorer.py
   consumer_checks:
@@ -356,7 +367,7 @@ assets:
   external_consumers:
   - sta-grantmaker-view
   grain: one row per Hugging Face model_id
-  producer: warehouse/models/entities_models.sql
+  producer: warehouse/models/entities/models.sql
   classification_note: discovered from the goodailist roster, not curated
   refresh: dataset cron '0 4 * * 0'
   timezone: America/New_York
@@ -370,7 +381,7 @@ assets:
 - id: entities.packages
   table: currentai.entities.packages
   files:
-    model: warehouse/models/entities_packages.sql
+    model: warehouse/models/entities/packages.sql
     schema: null
     data: null
   kind: catalog
@@ -387,7 +398,7 @@ assets:
     scope: external
   read_by:
     models:
-    - warehouse/models/scores_project_summary.sql
+    - warehouse/models/scores/project_summary.sql
     notebooks:
     - notebooks/long-tail-explorer.py
   consumer_checks:
@@ -397,7 +408,7 @@ assets:
     external: unknown
   external_consumers: none_confirmed
   grain: one row per (repo, package_source, package_name)
-  producer: warehouse/models/entities_packages.sql
+  producer: warehouse/models/entities/packages.sql
   classification_note: discovered from the goodailist roster, not curated
   refresh: dataset cron '0 4 * * 0'
   timezone: America/New_York
@@ -411,7 +422,7 @@ assets:
 - id: entities.projects
   table: currentai.entities.projects
   files:
-    model: warehouse/models/entities_projects.sql
+    model: warehouse/models/entities/projects.sql
     schema: null
     data: null
   kind: catalog
@@ -430,7 +441,7 @@ assets:
     scope: external
   read_by:
     models:
-    - warehouse/models/scores_project_summary.sql
+    - warehouse/models/scores/project_summary.sql
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -439,7 +450,7 @@ assets:
   external_consumers:
   - ai-potluck-partners
   grain: one row per project_slug
-  producer: warehouse/models/entities_projects.sql
+  producer: warehouse/models/entities/projects.sql
   classification_note: discovered from the goodailist roster, not curated
   refresh: dataset cron '0 4 * * 0'
   timezone: America/New_York
@@ -453,7 +464,7 @@ assets:
 - id: entities.repos
   table: currentai.entities.repos
   files:
-    model: warehouse/models/entities_repos.sql
+    model: warehouse/models/entities/repos.sql
     schema: null
     data: null
   kind: catalog
@@ -472,16 +483,16 @@ assets:
     scope: external
   read_by:
     models:
-    - warehouse/ingest/fetch_model_benchmarks.py
-    - warehouse/models/entities_models.sql
-    - warehouse/models/entities_packages.sql
-    - warehouse/models/entities_projects.sql
-    - warehouse/models/events_github_events.sql
-    - warehouse/models/metrics_daily.sql
-    - warehouse/models/scores_dependency_graph.sql
-    - warehouse/models/scores_fragility.sql
-    - warehouse/models/scores_ossd_coverage.sql
-    - warehouse/models/scores_project_summary.sql
+    - warehouse/models/catalog/model_benchmarks.py
+    - warehouse/models/entities/models.sql
+    - warehouse/models/entities/packages.sql
+    - warehouse/models/entities/projects.sql
+    - warehouse/models/events/github_events.sql
+    - warehouse/models/metrics/daily.sql
+    - warehouse/models/scores/dependency_graph.sql
+    - warehouse/models/scores/fragility.sql
+    - warehouse/models/scores/ossd_coverage.sql
+    - warehouse/models/scores/project_summary.sql
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -491,7 +502,7 @@ assets:
   - launch-insights
   - sta-grantmaker-view
   grain: one row per repo
-  producer: warehouse/models/entities_repos.sql
+  producer: warehouse/models/entities/repos.sql
   classification_note: discovered from the goodailist roster, not curated
   refresh: dataset cron '0 4 * * 0'
   timezone: America/New_York
@@ -505,7 +516,7 @@ assets:
 - id: events.github_events
   table: currentai.events.github_events
   files:
-    model: warehouse/models/events_github_events.sql
+    model: warehouse/models/events/github_events.sql
     schema: null
     data: null
   kind: observations
@@ -522,7 +533,7 @@ assets:
     scope: external
   read_by:
     models:
-    - warehouse/models/metrics_daily.sql
+    - warehouse/models/metrics/daily.sql
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -531,7 +542,7 @@ assets:
   external_consumers:
   - ai-contribution-load
   grain: one row per (github_id, event_type, time)
-  producer: warehouse/models/events_github_events.sql
+  producer: warehouse/models/events/github_events.sql
   classification_note: artifact-level measurement over time
   refresh: dataset cron '0 5 * * 0'
   timezone: America/New_York
@@ -545,8 +556,8 @@ assets:
 - id: evidence.product_evidence
   table: currentai.evidence.product_evidence
   files:
-    model: warehouse/platform-mirror/evidence_product_evidence.sql
-    schema: warehouse/platform-mirror/evidence_product_evidence.schema.json
+    model: warehouse/models/evidence/product_evidence.sql
+    schema: warehouse/models/evidence/product_evidence.schema.json
     data: null
   kind: evaluation
   current_namespace: evidence
@@ -574,7 +585,7 @@ assets:
     scope: internal
   read_by:
     models:
-    - warehouse/platform-mirror/scores_openness_facts.sql
+    - warehouse/models/scores/openness_facts.sql
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -582,7 +593,7 @@ assets:
     external: unknown
   external_consumers: none_confirmed
   grain: one row per (product_slug, category_slug, dimension, part_index, citing artifact)
-  producer: warehouse/platform-mirror/evidence_product_evidence.sql
+  producer: warehouse/models/evidence/product_evidence.sql
   classification_note: normalized facts derived from declarations
   refresh: dataset cron '0 3 * * 1'
   timezone: UTC
@@ -602,7 +613,7 @@ assets:
 - id: metrics.daily
   table: currentai.metrics.daily
   files:
-    model: warehouse/models/metrics_daily.sql
+    model: warehouse/models/metrics/daily.sql
     schema: null
     data: null
   kind: observations
@@ -623,9 +634,9 @@ assets:
     scope: external
   read_by:
     models:
-    - warehouse/models/scores_fragility.sql
-    - warehouse/models/scores_project_summary.sql
-    - warehouse/models/scores_repos_summary.sql
+    - warehouse/models/scores/fragility.sql
+    - warehouse/models/scores/project_summary.sql
+    - warehouse/models/scores/repos_summary.sql
     notebooks:
     - notebooks/oss-ai-trends.py
   consumer_checks:
@@ -636,7 +647,7 @@ assets:
   external_consumers:
   - state-of-os-ai
   grain: one row per (repo, day, metric)
-  producer: warehouse/models/metrics_daily.sql
+  producer: warehouse/models/metrics/daily.sql
   classification_note: artifact-level measurement over time
   refresh: dataset cron '0 6 * * 0'
   timezone: America/New_York
@@ -658,9 +669,9 @@ assets:
   release_path: true
   read_by:
     models:
-    - warehouse/platform-mirror/github_product_adoption.sql
-    - warehouse/platform-mirror/huggingface_product_adoption.sql
-    - warehouse/platform-mirror/packages_product_adoption.sql
+    - warehouse/models/signal_github/product_adoption.sql
+    - warehouse/models/signal_huggingface/product_adoption.sql
+    - warehouse/models/signal_packages/product_adoption.sql
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -711,7 +722,7 @@ assets:
   release_path: true
   read_by:
     models:
-    - warehouse/platform-mirror/scores_openness_facts.sql
+    - warehouse/models/scores/openness_facts.sql
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -738,7 +749,7 @@ assets:
   release_path: true
   read_by:
     models:
-    - warehouse/platform-mirror/scores_openness_facts.sql
+    - warehouse/models/scores/openness_facts.sql
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -765,7 +776,7 @@ assets:
   release_path: true
   read_by:
     models:
-    - warehouse/platform-mirror/scores_openness_facts.sql
+    - warehouse/models/scores/openness_facts.sql
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -792,9 +803,9 @@ assets:
   release_path: true
   read_by:
     models:
-    - warehouse/platform-mirror/evidence_product_evidence.sql
-    - warehouse/platform-mirror/scores_openness_computed.sql
-    - warehouse/platform-mirror/scores_openness_facts.sql
+    - warehouse/models/evidence/product_evidence.sql
+    - warehouse/models/scores/openness_computed.sql
+    - warehouse/models/scores/openness_facts.sql
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -821,7 +832,7 @@ assets:
   release_path: true
   read_by:
     models:
-    - warehouse/platform-mirror/evidence_product_evidence.sql
+    - warehouse/models/evidence/product_evidence.sql
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -848,8 +859,8 @@ assets:
   release_path: true
   read_by:
     models:
-    - warehouse/platform-mirror/evidence_product_evidence.sql
-    - warehouse/platform-mirror/scores_openness_facts.sql
+    - warehouse/models/evidence/product_evidence.sql
+    - warehouse/models/scores/openness_facts.sql
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -903,12 +914,12 @@ assets:
   release_path: true
   read_by:
     models:
-    - warehouse/platform-mirror/github_repo_state.py
-    - warehouse/platform-mirror/huggingface_hub_state.py
-    - warehouse/platform-mirror/packages_package_downloads.sql
-    - warehouse/platform-mirror/packages_package_downloads_daily.py
-    - warehouse/platform-mirror/pypi_package_downloads.sql
-    - warehouse/platform-mirror/semanticscholar_paper_citations.py
+    - warehouse/models/signal_github/repo_state.py
+    - warehouse/models/signal_huggingface/hub_state.py
+    - warehouse/models/signal_packages/downloads.sql
+    - warehouse/models/signal_packages/downloads_daily.py
+    - warehouse/models/signal_pypi/package_downloads.sql
+    - warehouse/models/signal_semanticscholar/paper_citations.py
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -938,8 +949,8 @@ assets:
   release_path: true
   read_by:
     models:
-    - warehouse/platform-mirror/evidence_product_evidence.sql
-    - warehouse/platform-mirror/scores_openness_facts.sql
+    - warehouse/models/evidence/product_evidence.sql
+    - warehouse/models/scores/openness_facts.sql
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -991,7 +1002,7 @@ assets:
   release_path: true
   read_by:
     models:
-    - warehouse/platform-mirror/evidence_product_evidence.sql
+    - warehouse/models/evidence/product_evidence.sql
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -1044,7 +1055,7 @@ assets:
   release_path: true
   read_by:
     models:
-    - warehouse/platform-mirror/evidence_product_evidence.sql
+    - warehouse/models/evidence/product_evidence.sql
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -1095,9 +1106,9 @@ assets:
   release_path: true
   read_by:
     models:
-    - warehouse/platform-mirror/github_product_adoption.sql
-    - warehouse/platform-mirror/huggingface_product_adoption.sql
-    - warehouse/platform-mirror/scores_openness_facts.sql
+    - warehouse/models/scores/openness_facts.sql
+    - warehouse/models/signal_github/product_adoption.sql
+    - warehouse/models/signal_huggingface/product_adoption.sql
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -1140,7 +1151,7 @@ assets:
 - id: scores.dependency_graph
   table: currentai.scores.dependency_graph
   files:
-    model: warehouse/models/scores_dependency_graph.sql
+    model: warehouse/models/scores/dependency_graph.sql
     schema: null
     data: null
   kind: evaluation
@@ -1159,7 +1170,7 @@ assets:
     scope: external
   read_by:
     models:
-    - warehouse/models/scores_fragility.sql
+    - warehouse/models/scores/fragility.sql
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -1167,7 +1178,7 @@ assets:
     external: unknown
   external_consumers: none_confirmed
   grain: one row per (dependent_repo, dependency_repo)
-  producer: warehouse/models/scores_dependency_graph.sql
+  producer: warehouse/models/scores/dependency_graph.sql
   classification_note: derived from catalog and observations
   refresh: dataset cron '0 4 * * 1'
   timezone: UTC
@@ -1181,7 +1192,7 @@ assets:
 - id: scores.fragility
   table: currentai.scores.fragility
   files:
-    model: warehouse/models/scores_fragility.sql
+    model: warehouse/models/scores/fragility.sql
     schema: null
     data: null
   kind: evaluation
@@ -1202,7 +1213,7 @@ assets:
     scope: internal
   read_by:
     models:
-    - warehouse/models/scores_project_summary.sql
+    - warehouse/models/scores/project_summary.sql
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -1210,7 +1221,7 @@ assets:
     external: unknown
   external_consumers: none_confirmed
   grain: one row per repo
-  producer: warehouse/models/scores_fragility.sql
+  producer: warehouse/models/scores/fragility.sql
   classification_note: derived from catalog and observations
   refresh: dataset cron '0 4 * * 1'
   timezone: UTC
@@ -1252,8 +1263,8 @@ assets:
 - id: scores.openness_computed
   table: currentai.scores.openness_computed
   files:
-    model: warehouse/platform-mirror/scores_openness_computed.sql
-    schema: warehouse/platform-mirror/scores_openness_computed.schema.json
+    model: warehouse/models/scores/openness_computed.sql
+    schema: warehouse/models/scores/openness_computed.schema.json
     data: null
   kind: evaluation
   current_namespace: scores
@@ -1278,7 +1289,7 @@ assets:
     external: unknown
   external_consumers: none_confirmed
   grain: one row per (product_slug, category_slug)
-  producer: warehouse/platform-mirror/scores_openness_computed.sql
+  producer: warehouse/models/scores/openness_computed.sql
   classification_note: derived from catalog and observations
   refresh: dataset cron '0 4 * * 1'
   timezone: UTC
@@ -1298,8 +1309,8 @@ assets:
 - id: scores.openness_facts
   table: currentai.scores.openness_facts
   files:
-    model: warehouse/platform-mirror/scores_openness_facts.sql
-    schema: warehouse/platform-mirror/scores_openness_facts.schema.json
+    model: warehouse/models/scores/openness_facts.sql
+    schema: warehouse/models/scores/openness_facts.schema.json
     data: null
   kind: evaluation
   current_namespace: scores
@@ -1327,7 +1338,7 @@ assets:
     scope: internal
   read_by:
     models:
-    - warehouse/platform-mirror/scores_openness_computed.sql
+    - warehouse/models/scores/openness_computed.sql
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -1335,7 +1346,7 @@ assets:
     external: unknown
   external_consumers: none_confirmed
   grain: one row per (product_slug, category_slug, fact_key)
-  producer: warehouse/platform-mirror/scores_openness_facts.sql
+  producer: warehouse/models/scores/openness_facts.sql
   classification_note: derived from catalog and observations
   refresh: dataset cron '0 4 * * 1'
   timezone: UTC
@@ -1355,7 +1366,7 @@ assets:
 - id: scores.ossd_coverage
   table: currentai.scores.ossd_coverage
   files:
-    model: warehouse/models/scores_ossd_coverage.sql
+    model: warehouse/models/scores/ossd_coverage.sql
     schema: null
     data: null
   kind: evaluation
@@ -1377,7 +1388,7 @@ assets:
     external: unknown
   external_consumers: none_confirmed
   grain: one row per GitHub org
-  producer: warehouse/models/scores_ossd_coverage.sql
+  producer: warehouse/models/scores/ossd_coverage.sql
   classification_note: derived from catalog and observations
   refresh: dataset cron '0 4 * * 1'
   timezone: UTC
@@ -1395,7 +1406,7 @@ assets:
 - id: scores.project_summary
   table: currentai.scores.project_summary
   files:
-    model: warehouse/models/scores_project_summary.sql
+    model: warehouse/models/scores/project_summary.sql
     schema: null
     data: null
   kind: evaluation
@@ -1428,7 +1439,7 @@ assets:
   external_consumers:
   - ai-potluck-partners
   grain: one row per project_slug
-  producer: warehouse/models/scores_project_summary.sql
+  producer: warehouse/models/scores/project_summary.sql
   classification_note: derived from catalog and observations
   refresh: dataset cron '0 4 * * 1'
   timezone: UTC
@@ -1442,7 +1453,7 @@ assets:
 - id: scores.repos_summary
   table: currentai.scores.repos_summary
   files:
-    model: warehouse/models/scores_repos_summary.sql
+    model: warehouse/models/scores/repos_summary.sql
     schema: null
     data: null
   kind: evaluation
@@ -1471,7 +1482,7 @@ assets:
   - oss-ai-gaps
   - state-of-os-ai
   grain: one row per repo
-  producer: warehouse/models/scores_repos_summary.sql
+  producer: warehouse/models/scores/repos_summary.sql
   classification_note: derived from catalog and observations
   refresh: dataset cron '0 4 * * 1'
   timezone: UTC
@@ -1485,7 +1496,7 @@ assets:
 - id: scores.stack_contributors
   table: currentai.scores.stack_contributors
   files:
-    model: warehouse/models/scores_stack_contributors.sql
+    model: warehouse/models/scores/stack_contributors.sql
     schema: null
     data: null
   kind: evaluation
@@ -1509,7 +1520,7 @@ assets:
   - launch-insights
   - sta-grantmaker-view
   grain: one row per (developer, repo), trailing 365 days of COMMIT_CODE
-  producer: warehouse/models/scores_stack_contributors.sql
+  producer: warehouse/models/scores/stack_contributors.sql
   classification_note: derived from catalog and observations
   refresh: dataset cron '0 4 * * 1'
   timezone: UTC
@@ -1552,7 +1563,7 @@ assets:
 - id: signal_artificialanalysis.model_evaluations
   table: currentai.signal_artificialanalysis.model_evaluations
   files:
-    model: warehouse/platform-mirror/artificialanalysis_models.py
+    model: warehouse/models/signal_artificialanalysis/model_evaluations.py
     schema: null
     data: null
   kind: observations
@@ -1569,7 +1580,7 @@ assets:
     external: unknown
   external_consumers: none_confirmed
   grain: one row per Artificial Analysis model id
-  producer: warehouse/platform-mirror/artificialanalysis_models.py
+  producer: warehouse/models/signal_artificialanalysis/model_evaluations.py
   refresh: dataset cron '0 1 * * 0'
   timezone: America/New_York
   last_observed_trigger: MANUAL
@@ -1594,7 +1605,7 @@ assets:
 - id: signal_github.product_adoption
   table: currentai.signal_github.product_adoption
   files:
-    model: warehouse/platform-mirror/github_product_adoption.sql
+    model: warehouse/models/signal_github/product_adoption.sql
     schema: null
     data: null
   kind: evaluation
@@ -1622,7 +1633,7 @@ assets:
     external: unknown
   external_consumers: none_confirmed
   grain: one row per product_slug, stars fallback tier only
-  producer: warehouse/platform-mirror/github_product_adoption.sql
+  producer: warehouse/models/signal_github/product_adoption.sql
   classification_note: a banded candidate assessment, not a raw measurement
   refresh: dataset cron '0 3 * * 0'
   timezone: America/New_York
@@ -1649,7 +1660,7 @@ assets:
 - id: signal_github.repo_state
   table: currentai.signal_github.repo_state
   files:
-    model: warehouse/platform-mirror/github_repo_state.py
+    model: warehouse/models/signal_github/repo_state.py
     schema: null
     data: null
   kind: observations
@@ -1664,8 +1675,8 @@ assets:
     scope: internal
   read_by:
     models:
-    - warehouse/platform-mirror/evidence_product_evidence.sql
-    - warehouse/platform-mirror/github_product_adoption.sql
+    - warehouse/models/evidence/product_evidence.sql
+    - warehouse/models/signal_github/product_adoption.sql
     build:
     - build/check_artifacts.py
   consumer_checks:
@@ -1676,7 +1687,7 @@ assets:
   external_consumers:
   - sta-grantmaker-view
   grain: one row per (product_slug, repo) at one fetched_at
-  producer: warehouse/platform-mirror/github_repo_state.py
+  producer: warehouse/models/signal_github/repo_state.py
   refresh: dataset cron '0 3 * * 0'
   timezone: America/New_York
   last_observed_trigger: MANUAL
@@ -1695,7 +1706,7 @@ assets:
 - id: signal_goodailist.repo_catalog
   table: currentai.signal_goodailist.repo_catalog
   files:
-    model: warehouse/platform-mirror/goodailist_repos.py
+    model: warehouse/models/signal_goodailist/repo_catalog.py
     schema: null
     data: null
   kind: observations
@@ -1707,14 +1718,14 @@ assets:
   release_path: false
   read_by:
     models:
-    - warehouse/ingest/fetch_huggingface.py
-    - warehouse/models/entities_projects.sql
-    - warehouse/models/entities_repos.sql
-    - warehouse/models/scores_dependency_graph.sql
-    - warehouse/models/scores_fragility.sql
-    - warehouse/models/scores_ossd_coverage.sql
-    - warehouse/models/scores_project_summary.sql
-    - warehouse/models/scores_repos_summary.sql
+    - warehouse/models/catalog/model_repos.py
+    - warehouse/models/entities/projects.sql
+    - warehouse/models/entities/repos.sql
+    - warehouse/models/scores/dependency_graph.sql
+    - warehouse/models/scores/fragility.sql
+    - warehouse/models/scores/ossd_coverage.sql
+    - warehouse/models/scores/project_summary.sql
+    - warehouse/models/scores/repos_summary.sql
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -1722,7 +1733,10 @@ assets:
     external: unknown
   external_consumers: none_confirmed
   grain: one row per repo, live from goodailist.com
-  producer: warehouse/platform-mirror/goodailist_repos.py
+  producer: warehouse/models/signal_goodailist/repo_catalog.py
+  source_note: 'No fetcher and no committed CSV. This source is read directly by the currentai.signal_goodailist.repo_catalog
+    UDM on its own cron, so there is nothing to mirror into warehouse/catalog/. A mirror could only be
+    staler than the live table, and it was: the frozen CSV still listed 300 repos goodailist.com had delisted.'
   refresh: dataset cron '0 1 * * 0'
   timezone: America/New_York
   last_observed_trigger: MANUAL
@@ -1741,7 +1755,7 @@ assets:
 - id: signal_huggingface.hub_state
   table: currentai.signal_huggingface.hub_state
   files:
-    model: warehouse/platform-mirror/huggingface_hub_state.py
+    model: warehouse/models/signal_huggingface/hub_state.py
     schema: null
     data: null
   kind: observations
@@ -1756,8 +1770,8 @@ assets:
     scope: internal
   read_by:
     models:
-    - warehouse/platform-mirror/evidence_product_evidence.sql
-    - warehouse/platform-mirror/huggingface_product_adoption.sql
+    - warehouse/models/evidence/product_evidence.sql
+    - warehouse/models/signal_huggingface/product_adoption.sql
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -1765,7 +1779,7 @@ assets:
     external: unknown
   external_consumers: none_confirmed
   grain: one row per (product_slug, artifact_kind, artifact_id) at one fetched_at
-  producer: warehouse/platform-mirror/huggingface_hub_state.py
+  producer: warehouse/models/signal_huggingface/hub_state.py
   refresh: dataset cron '0 2 * * 0'
   timezone: America/New_York
   last_observed_trigger: MANUAL
@@ -1784,7 +1798,7 @@ assets:
 - id: signal_huggingface.product_adoption
   table: currentai.signal_huggingface.product_adoption
   files:
-    model: warehouse/platform-mirror/huggingface_product_adoption.sql
+    model: warehouse/models/signal_huggingface/product_adoption.sql
     schema: null
     data: null
   kind: evaluation
@@ -1803,7 +1817,7 @@ assets:
     scope: internal
   read_by:
     models:
-    - warehouse/platform-mirror/github_product_adoption.sql
+    - warehouse/models/signal_github/product_adoption.sql
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -1811,7 +1825,7 @@ assets:
     external: unknown
   external_consumers: none_confirmed
   grain: one row per product_slug, Hub downloads route
-  producer: warehouse/platform-mirror/huggingface_product_adoption.sql
+  producer: warehouse/models/signal_huggingface/product_adoption.sql
   classification_note: a banded candidate assessment, not a raw measurement
   refresh: dataset cron '0 2 * * 0'
   timezone: America/New_York
@@ -1831,7 +1845,7 @@ assets:
 - id: signal_lmarena.text_leaderboard
   table: currentai.signal_lmarena.text_leaderboard
   files:
-    model: warehouse/platform-mirror/lmarena_leaderboard.py
+    model: warehouse/models/signal_lmarena/text_leaderboard.py
     schema: null
     data: null
   kind: observations
@@ -1848,7 +1862,7 @@ assets:
     external: unknown
   external_consumers: none_confirmed
   grain: one row per (model_name, category, arena_config)
-  producer: warehouse/platform-mirror/lmarena_leaderboard.py
+  producer: warehouse/models/signal_lmarena/text_leaderboard.py
   refresh: dataset cron '0 1 * * 0'
   timezone: America/New_York
   last_observed_trigger: MANUAL
@@ -1869,10 +1883,10 @@ assets:
     hash: c4715ace092f807464fafbeeb5a207f3fa54dc4e69ee0e5ba442f089ede07ca4
     local_sha256: 1844f16f6a0d38d6e756f1f93b6d84242424eca813d9b3e2943c009351d165f9
     synced_at: '2026-08-15'
-- id: signal_packages.package_downloads
-  table: currentai.signal_packages.package_downloads
+- id: signal_packages.downloads
+  table: currentai.signal_packages.downloads
   files:
-    model: warehouse/platform-mirror/packages_package_downloads.sql
+    model: warehouse/models/signal_packages/downloads.sql
     schema: null
     data: null
   kind: observations
@@ -1885,13 +1899,13 @@ assets:
   reads:
   - table: currentai.registry.product_artifacts
     scope: internal
-  - table: currentai.signal_packages.package_downloads_daily
+  - table: currentai.signal_packages.downloads_daily
     scope: internal
   - table: oso.pypi_downloads.daily_downloads_by_package
     scope: external
   read_by:
     models:
-    - warehouse/platform-mirror/packages_product_adoption.sql
+    - warehouse/models/signal_packages/product_adoption.sql
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -1899,16 +1913,16 @@ assets:
     external: unknown
   external_consumers: none_confirmed
   grain: one row per (product_slug, package) over a 30-day window
-  producer: warehouse/platform-mirror/packages_package_downloads.sql
+  producer: warehouse/models/signal_packages/downloads.sql
   refresh: 'not deployed; see issue #314'
   owner: carl
   status: staged
   materialized: true
   verified_at: '2026-08-20'
-- id: signal_packages.package_downloads_daily
-  table: currentai.signal_packages.package_downloads_daily
+- id: signal_packages.downloads_daily
+  table: currentai.signal_packages.downloads_daily
   files:
-    model: warehouse/platform-mirror/packages_package_downloads_daily.py
+    model: warehouse/models/signal_packages/downloads_daily.py
     schema: null
     data: null
   kind: observations
@@ -1923,7 +1937,7 @@ assets:
     scope: internal
   read_by:
     models:
-    - warehouse/platform-mirror/packages_package_downloads.sql
+    - warehouse/models/signal_packages/downloads.sql
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -1931,7 +1945,7 @@ assets:
     external: unknown
   external_consumers: none_confirmed
   grain: one row per (package, day)
-  producer: warehouse/platform-mirror/packages_package_downloads_daily.py
+  producer: warehouse/models/signal_packages/downloads_daily.py
   refresh: 'not deployed; see issue #314'
   owner: carl
   status: staged
@@ -1940,7 +1954,7 @@ assets:
 - id: signal_packages.product_adoption
   table: currentai.signal_packages.product_adoption
   files:
-    model: warehouse/platform-mirror/packages_product_adoption.sql
+    model: warehouse/models/signal_packages/product_adoption.sql
     schema: null
     data: null
   kind: evaluation
@@ -1953,7 +1967,7 @@ assets:
   reads:
   - table: currentai.registry.adoption_bands
     scope: internal
-  - table: currentai.signal_packages.package_downloads
+  - table: currentai.signal_packages.downloads
     scope: internal
   consumer_checks:
     repository: checked
@@ -1962,7 +1976,7 @@ assets:
     external: unknown
   external_consumers: none_confirmed
   grain: one row per product_slug across package registries
-  producer: warehouse/platform-mirror/packages_product_adoption.sql
+  producer: warehouse/models/signal_packages/product_adoption.sql
   classification_note: a banded candidate assessment, not a raw measurement
   refresh: 'not deployed; see issue #314'
   owner: carl
@@ -1977,7 +1991,7 @@ assets:
 - id: signal_pypi.package_downloads
   table: currentai.signal_pypi.package_downloads
   files:
-    model: warehouse/platform-mirror/pypi_package_downloads.sql
+    model: warehouse/models/signal_pypi/package_downloads.sql
     schema: null
     data: null
   kind: observations
@@ -1994,7 +2008,7 @@ assets:
     scope: external
   read_by:
     models:
-    - warehouse/platform-mirror/github_product_adoption.sql
+    - warehouse/models/signal_github/product_adoption.sql
     build:
     - build/check_artifacts.py
   consumer_checks:
@@ -2004,7 +2018,7 @@ assets:
     external: unknown
   external_consumers: none_confirmed
   grain: one row per (product_slug, package) over a 30-day window
-  producer: warehouse/platform-mirror/pypi_package_downloads.sql
+  producer: warehouse/models/signal_pypi/package_downloads.sql
   refresh: dataset cron '0 1 * * 0'
   timezone: America/New_York
   last_observed_trigger: null
@@ -2023,7 +2037,7 @@ assets:
 - id: signal_semanticscholar.paper_citations
   table: currentai.signal_semanticscholar.paper_citations
   files:
-    model: warehouse/platform-mirror/semanticscholar_paper_citations.py
+    model: warehouse/models/signal_semanticscholar/paper_citations.py
     schema: null
     data: null
   kind: observations
@@ -2043,7 +2057,7 @@ assets:
     external: unknown
   external_consumers: none_confirmed
   grain: one row per (product_slug, arxiv_id)
-  producer: warehouse/platform-mirror/semanticscholar_paper_citations.py
+  producer: warehouse/models/signal_semanticscholar/paper_citations.py
   refresh: dataset cron '0 1 * * 0'
   timezone: America/New_York
   last_observed_trigger: null
