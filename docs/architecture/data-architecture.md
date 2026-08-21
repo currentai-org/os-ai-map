@@ -1092,7 +1092,8 @@ Migration rules:
 ## 11. Asset registry and repository layout
 
 Verified against the live `currentai` org on 2026-08-20: 22 datasets,
-<!-- observed:2026-08-20 -->96 tables, 44 tracked files under `warehouse/`. The structure below is the target; the file manifest in
+<!-- observed:2026-08-20 -->96 tables,
+<!-- count:tracked_warehouse_files -->45 tracked files under `warehouse/`. The structure below is the target; the file manifest in
 11.4 is the exact diff from the state on that date.
 
 ### 11.1 Target layout
@@ -1468,10 +1469,13 @@ The diff from 2026-08-20 state. Because the mirror layout keeps each file's base
 only changes its directory, almost every move is a pure `git mv` — reviewable as a rename
 rather than a rewrite.
 
-Counts, stated once and correctly:
+Counts, stated once and correctly. The manifest arithmetic runs from the PRE-Phase-0
+baseline, which is why that figure is an `observed:` reading rather than a derived one: Phase 0
+itself adds `warehouse/assets.yaml`, so the live count is already one higher than the number
+this diff starts from.
 
 ```text
-warehouse/ tracked files today                        44
+warehouse/ tracked files, pre-Phase-0   <!-- observed:2026-08-20 -->44
   of which SQL/Python models   <!-- count:model_files -->30   (12 models, 3 ingest, 15 mirror)
 warehouse/ after the move    44 + 1 assets.yaml - 5 = 40
 repository-wide             +6 created, -5 deleted   = +1

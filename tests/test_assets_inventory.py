@@ -487,7 +487,11 @@ def test_architecture_docs_have_no_unmarked_asset_or_table_counts():
     Named for what it checks. An earlier version was called "no unmarked counts" while
     matching only `NN assets`, which left `49 tables in the closure` and `30 model files`
     unmarked under a name implying they were covered."""
-    pattern = re.compile(r"\b(\d{2,3})\s+(?:assets|tables|model files)\b")
+    # Covers every noun the architecture docs count. "tracked files" was the last one
+    # slipping through: 44 was unmarked because the pattern named tables and assets only.
+    pattern = re.compile(
+        r"\b(\d{2,3})\s+(?:assets|tables|model files|tracked files|tracked warehouse files)\b"
+    )
     for path in sorted((ROOT / "docs" / "architecture").glob("*.md")):
         text = path.read_text(encoding="utf-8")
         for match in pattern.finditer(text):

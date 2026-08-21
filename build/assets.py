@@ -455,6 +455,10 @@ COUNT_CLAIMS = {
     "deployed_tables": lambda: len(deployed_tables()),
     "staged_assets": lambda: sum(1 for a in assets() if a["status"] == "staged"),
     "dormant_assets": lambda: sum(1 for a in assets() if a["status"] == "dormant"),
+    "tracked_warehouse_files": lambda: len(subprocess.run(
+        ["git", "-C", str(ROOT), "ls-files", "warehouse"],
+        capture_output=True, text=True, check=True,
+    ).stdout.split()),
     "catalog_tables": lambda: sum(1 for a in assets() if a["current_namespace"] == "catalog"),
     "model_files": lambda: len(
         [f for f in produced_files() if f.endswith((".sql", ".py"))]
