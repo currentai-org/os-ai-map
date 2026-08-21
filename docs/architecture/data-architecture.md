@@ -48,10 +48,10 @@ As of 2026-08-20:
 - `currentai.catalog` mixes discovered inventory, fetcher output, external reference data, and a stale repo-to-warehouse bridge. Verified 2026-08-20: it holds <!-- count:catalog_tables -->10 tables, not the 5 its README documents. Only 3 are discovered inventory. `foundation_model_repos`, `osai_subcategory_mapping` and `taxonomy_crosswalk` are curator-controlled and belong in `registry`; `pypi_downloads` is a measurement; `goodailist_repos` is documented as retired but still live; `osai_gap_map` is a third-party map carrying `maturity`, `parity_verdict` and `overall_score` columns that read as gap-map outputs.
 - External measurements generally expose current state rather than a durable observation history.
 - OSO does not yet support incremental models; the current normalized state must therefore become the first preserved timestamped snapshot rather than being mislabeled as an append-only history.
-- Platform model source is mirrored read-only under `warehouse/platform-mirror/`; the platform remains authoritative for those deployed models.
-- Dataset scheduling, model throttles, GitHub Actions schedules, and manual operations coexist. A configured cron is not treated as proof that a scheduled run fired. Verified 2026-08-20: of 22 datasets, 13 carry `cronTimezone: America/New_York`, and 8 have a cron configured with `lastRunAt: null` — `signal_semanticscholar`, `signal_pypi`, `ai_demand_curve`, `state_of_os_ai`, `scores`, `events`, `metrics`, `entities`. The `scores` dataset is among them, which means the openness chain that `check_parity` compares against the repository has no observed scheduled run.
+- Platform model source is mirrored read-only under `warehouse/models/<dataset>/` (each carrying a `mirror:` block in `warehouse/assets.yaml`); the platform remains authoritative for those deployed models.
+- Dataset scheduling, model throttles, GitHub Actions schedules, and manual operations coexist. A configured cron is not treated as proof that a scheduled run fired. Verified 2026-08-20: of <!-- observed:2026-08-20 -->22 datasets, 13 carry `cronTimezone: America/New_York`, and 8 have a cron configured with `lastRunAt: null` — `signal_semanticscholar`, `signal_pypi`, `ai_demand_curve`, `state_of_os_ai`, `scores`, `events`, `metrics`, `entities`. The `scores` dataset is among them, which means the openness chain that `check_parity` compares against the repository has no observed scheduled run.
 - Two platform tables have no repository source and no in-repo consumer: `currentai.scores.investment_ranking` and `currentai.scores.taxonomy`.
-- The full org is 22 datasets and <!-- observed:2026-08-20 -->96 tables. The datasets the repository maintains or reads from hold <!-- count:deployed_tables -->53 of those tables; the rest are separate analytical products. See section 11.3 for how that reconciles with the inventory's size.
+- The full org is <!-- observed:2026-08-20 -->22 datasets and <!-- observed:2026-08-20 -->96 tables. The datasets the repository maintains or reads from hold <!-- count:deployed_tables -->53 of those tables; the rest are separate analytical products. See section 11.3 for how that reconciles with the inventory's size.
 
 The redesign must evolve this system without interrupting the existing map, registry tables, notebooks, or website.
 
@@ -1091,10 +1091,11 @@ Migration rules:
 
 ## 11. Asset registry and repository layout
 
-Verified against the live `currentai` org on 2026-08-20: 22 datasets,
+Verified against the live `currentai` org on 2026-08-20: <!-- observed:2026-08-20 -->22 datasets,
 <!-- observed:2026-08-20 -->96 tables,
-<!-- count:tracked_warehouse_files -->45 tracked files under `warehouse/`. The structure below is the target; the file manifest in
-11.4 is the exact diff from the state on that date.
+<!-- count:tracked_warehouse_files -->40 tracked files under `warehouse/`. The structure below is the target, and the
+mirror layout of 11.1 is now in place; the file manifest in 11.4 recorded the exact diff
+from the 2026-08-20 state, executed in this change.
 
 ### 11.1 Target layout
 
@@ -1461,13 +1462,21 @@ section 4 with no sixth catch-all.
 The closure is mechanical, so it must be recomputed rather than assumed. Three tables that
 look out of scope are in it: `catalog.country_populations` and `catalog.pypi_downloads`
 are read by the tracked `pypi-geo-trends.py`, and `catalog.foundation_model_repos` is read
-by `entities_models.sql`.
+by `entities/models.sql`.
 
 ### 11.4 File manifest
 
+DONE. This manifest was executed: the moves below have landed, `warehouse/ingest/`,
+`warehouse/models/*.sql` at the top level and `warehouse/platform-mirror/` no longer exist,
+and `warehouse/assets.yaml` carries the new paths. The tables below are the record of what
+moved where.
+
 The diff from 2026-08-20 state. Because the mirror layout keeps each file's base name and
 only changes its directory, almost every move is a pure `git mv` — reviewable as a rename
-rather than a rewrite.
+rather than a rewrite. The one place a base name changed a table identity is
+`signal_packages`: rule 11.1a.1 strips the redundant source prefix, so the staged
+`signal_packages.package_downloads` / `package_downloads_daily` become `.downloads` /
+`.downloads_daily` (nothing deployed; repository-only).
 
 Counts, stated once and correctly. The manifest arithmetic runs from the PRE-Phase-0
 baseline, which is why that figure is an `observed:` reading rather than a derived one: Phase 0
@@ -1568,12 +1577,12 @@ prefix into a directory and nothing else changes.
 | `warehouse/sources.yaml` | Absorbed into `assets.yaml`. Its prose on why `goodailist` and `aiid` have no fetcher carries over verbatim. |
 | `warehouse/platform-mirror/manifest.yaml` | Absorbed as the nested `mirror:` block. |
 | `warehouse/platform-mirror/README.md` | Content to `docs/architecture/data-architecture.md`. |
-| `warehouse/models/README.md` | Per-table detail to `assets.yaml`; enduring prose to `docs/architecture/data-architecture.md`, which avoids creating a seventh file that was never in the Create list. It currently claims 25 datasets against an actual 22, documents 5 `catalog` tables against an actual 10, and records `catalog.goodailist_repos` as retired while the table is live. |
+| `warehouse/models/README.md` | Per-table detail to `assets.yaml`; enduring prose to `docs/architecture/data-architecture.md`, which avoids creating a seventh file that was never in the Create list. Its inventory was stale — a dataset count of 25 against an actual 22, and 5 `catalog` tables documented against an actual 10 — and it recorded `catalog.goodailist_repos` as retired while the table is live. |
 | `warehouse/catalog/.gitkeep` | Directory retired. |
 
 `top_models.csv` and `tracked_models.csv` are NOT deleted. An earlier draft listed them as
 orphans loading no table; they are the interface between the two fetchers —
-`fetch_huggingface.py` writes both and `fetch_model_benchmarks.py` reads both at line 91.
+`model_repos.py` writes both and `model_benchmarks.py` reads both at line 91.
 Deleting them would have broken the benchmark fetcher. They move with the rest to
 `data/catalog/`.
 
@@ -1640,7 +1649,7 @@ repository or the platform already answered:
 
 | Question | Answer | Evidence |
 |---|---|---|
-| Do the two orphan CSVs get deleted? | No. They are the interface between the two fetchers. | `fetch_huggingface.py` writes both, `fetch_model_benchmarks.py` reads both at line 91 |
+| Do the two orphan CSVs get deleted? | No. They are the interface between the two fetchers. | `model_repos.py` writes both, `model_benchmarks.py` reads both at line 91 |
 | Is `registry.tail_products` misfiled? | No, correctly in `registry`. The platform table is absent because it is empty. | `publish_registry.py`: "94 bytes of header on a push where every tail row was promoted or rejected" — promotion and rejection are curator acts |
 | May a `held` axis retain its value? | Yes, with the hold reason and date. | `verification_queue.yaml`: "held at 3" |
 | Is a dated null `held` or `not_applicable`? | Neither — it is `confirmed`. | `verification_queue.yaml`: "a null answer that somebody looked for and did not find is a confirmed axis" |

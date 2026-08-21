@@ -46,7 +46,7 @@ its README documents, and four are misfiled by this ADR's own test:
 | `taxonomy_crosswalk` | Curated crosswalk. Belongs in `registry`. No consumer found. |
 | `pypi_downloads` | A measurement, 1.6M rows of daily downloads by package and country. Belongs in `observations`. |
 | `foundation_model_repos` | The README calls it curated. A curator controls these rows, so it belongs in `registry`. |
-| `stack_map` | Derived from `sources/` by `warehouse/ingest/build_stack_map.py`. A repo-derived bridge presented as external inventory. Belongs in `registry`. |
+| `stack_map` | Derived from `sources/` by `warehouse/models/catalog/stack_map.py`. A repo-derived bridge presented as external inventory. Belongs in `registry`. |
 
 `registry.tail_products` passes the test and stays where it is. Tail rows are promoted or
 rejected by a curator, and both are curator acts. Its platform table is absent only because

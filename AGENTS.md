@@ -36,14 +36,14 @@ sources/rubrics/       Shared scoring ladders. A category inherits one with
                        is the example). build/rubrics.py resolves either form.
                        license-to-tier lives here, because whether AGPL is `osi` is
                        a fact about AGPL, not about one category.
-warehouse/platform-mirror/  Read-only COPY of the models that run on the OSO platform to
-                       build the gap map's data (evidence, openness scores, signals), with a
-                       provenance manifest. Source of truth is the platform; nothing deploys from here.
-warehouse/models/      SQL for the legacy entities/events/metrics/scores layer (in-repo)
-warehouse/ingest/      Python fetchers that write CSVs to warehouse/catalog/
-warehouse/catalog/     Raw external CSVs (HF model catalog, benchmarks, stack-map bridge)
-warehouse/sources.yaml Manifest: each external source declares EITHER a fetcher
-                       (writes a CSV) or an ingested_by (a UDM reads it directly)
+warehouse/assets.yaml  The asset inventory: one entry per platform table, with authority,
+                       grain, provenance and derived reads/read_by. The only registry.
+warehouse/models/      SQL and Python models, mirroring the warehouse: models/<dataset>/<table>
+                       maps to currentai.<dataset>.<table>. Holds editable models, read-only
+                       platform mirrors (with a mirror: block in assets.yaml) and fetchers
+                       alike; authority is the declared field, not the directory name.
+warehouse/data/        Frozen CSV inputs, data/<dataset>/<table>.csv (HF model catalog,
+                       benchmarks, stack-map bridge)
 build/                 Python pipeline, see below
 notebooks/             Generated ai-stack-map.py and standalone companion notebooks (pypi-geo-trends, oss-ai-trends, long-tail-explorer)
 docs/methodology.md    Canonical methodology copy, rendered into the notebook (a build input)
@@ -346,7 +346,7 @@ normative `docs/reference/evidence-and-freshness.md`.
 - Openness scoring: `docs/reference/openness.md`
 - Gap analysis (stages + gaps): `docs/reference/gap-analysis.md`
 - Coverage backlog: tracked in GitHub issues
-- Warehouse models this repo maintains: `warehouse/models/README.md`
+- Warehouse models this repo maintains: `warehouse/assets.yaml` and `docs/architecture/data-architecture.md`
 
 ### Architecture and the asset inventory
 

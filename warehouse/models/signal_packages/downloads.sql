@@ -3,7 +3,7 @@
 -- tables. The platform is the source of truth; nothing deploys from this copy, and
 -- editing it here changes nothing. See README.md and manifest.yaml in this folder.
 
--- currentai.signal_packages.package_downloads
+-- currentai.signal_packages.downloads
 -- Windowed download volume for every package artifact the map declares, across all three
 -- registries. Grain: one row per (product_slug, artifact_kind, package).
 --
@@ -29,7 +29,7 @@
 -- Where each leg's history comes from:
 --   * pypi   — oso.pypi_downloads.daily_downloads_by_package, the marketplace dataset holding
 --              every package on PyPI at day grain. Nothing to fetch.
---   * npm    — currentai.signal_packages.package_downloads_daily, which fetches 18 months of
+--   * npm    — currentai.signal_packages.downloads_daily, which fetches 18 months of
 --              daily history per package, because no global npm dataset exists.
 --   * crates — the same daily table. crates.io serves 90 days and will not page further back.
 --
@@ -75,7 +75,7 @@ history AS (
     day,
     downloads,
     CAST(NULL AS BIGINT) AS country_count
-  FROM currentai.signal_packages.package_downloads_daily
+  FROM currentai.signal_packages.downloads_daily
   WHERE day IS NOT NULL
     AND downloads IS NOT NULL
 ),
@@ -117,7 +117,7 @@ fetch_status AS (
     artifact_kind,
     package,
     MAX(http_status) AS http_status
-  FROM currentai.signal_packages.package_downloads_daily
+  FROM currentai.signal_packages.downloads_daily
   GROUP BY artifact_kind, package
 )
 

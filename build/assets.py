@@ -41,15 +41,13 @@ ASSETS = ROOT / "warehouse" / "assets.yaml"
 # read as unconsumed -- which would have made check_parity's own inputs look like
 # retirement candidates.
 ROOTS = {
-    # All 30 SQL/Python model files, which live in three directories until the
-    # restructure lands: 12 in models/, 15 mirrored, 3 fetchers. Globbing only
-    # models/ reports registry.products as unread -- it is read by the mirrored
-    # scores_openness_facts.sql -- and that made fourteen load-bearing tables
-    # look like retirement candidates.
+    # All 30 SQL/Python model files now live under warehouse/models/<dataset>/, the
+    # repository mirroring the warehouse. One glob covers editable, mirror and fetcher
+    # files alike -- authority is a declared field in assets.yaml, not a directory name.
+    # The enumeration stays `git ls-files` rather than a filesystem glob (see
+    # tracked_files) so the derived graph does not depend on a working tree.
     "models": [
-        "warehouse/models/*.sql", "warehouse/models/*.py",
-        "warehouse/platform-mirror/*.sql", "warehouse/platform-mirror/*.py",
-        "warehouse/ingest/*.py",
+        "warehouse/models/**/*.sql", "warehouse/models/**/*.py",
     ],
     "build": ["build/*.py"],
     "notebooks": ["notebooks/*.py"],
@@ -243,6 +241,35 @@ def assets() -> list[dict]:
 
 def by_table() -> dict[str, dict]:
     return {a["table"].removeprefix("currentai."): a for a in assets()}
+
+
+# The mirror layout makes the fully-qualified table name derivable from the path:
+# warehouse/models/<dataset>/<table>.<ext> is currentai.<dataset>.<table>, and
+# warehouse/data/<dataset>/<table>.csv is the same table's frozen bytes. This replaces
+# the old filename-convention check (11.5 gate 1b): a misplaced file now fails rather
+# than being accepted under a plausible name.
+_MODEL_ROOTS = ("warehouse/models/", "warehouse/data/")
+
+
+def table_for_path(path: str) -> str | None:
+    """The `currentai.<dataset>.<table>` a mirror-layout path derives, or None.
+
+    None for anything that is not a `<dataset>/<table>` file under models/ or data/ --
+    intermediate CSVs (data/catalog/top_models.csv) share a directory with a table but
+    are a fetcher's scratch input, not a table, so they carry no derivable identity and
+    the caller skips them by role rather than by guessing here.
+    """
+    for prefix in _MODEL_ROOTS:
+        if path.startswith(prefix):
+            rest = path[len(prefix):]
+            if rest.endswith(".schema.json"):
+                rest = rest[: -len(".schema.json")]
+            else:
+                rest = rest.rsplit(".", 1)[0]
+            parts = rest.split("/")
+            if len(parts) == 2:
+                return f"currentai.{parts[0]}.{parts[1]}"
+    return None
 
 
 def produced_files() -> dict[str, str]:

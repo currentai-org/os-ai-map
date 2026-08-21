@@ -1,6 +1,6 @@
 # Runbook: Refresh external data (maintainer)
 
-1. Run the relevant fetcher(s): `uv run python warehouse/ingest/fetch_<id>.py`.
+1. Run the relevant fetcher(s): `uv run python warehouse/models/catalog/<table>.py`.
 2. Load the CSV into the `currentai` warehouse as a static model (MCP):
    `createStaticModelUploadUrl`, upload, then `createStaticModelRunRequest`. For a brand-new
    source, `createStaticModel` first; then `createDataModelRelease`.

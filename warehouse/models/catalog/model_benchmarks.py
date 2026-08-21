@@ -2,13 +2,13 @@
 Fetch model benchmarks and model→repo links from Hugging Face.
 
 Outputs:
-  warehouse/catalog/huggingface/model_benchmarks.csv  — Open LLM Leaderboard v2 scores (4.5K+ models)
-  warehouse/catalog/huggingface/model_repos.csv       — model_id → GitHub repo links (from HF metadata)
+  warehouse/data/catalog/model_benchmarks.csv  — Open LLM Leaderboard v2 scores (4.5K+ models)
+  warehouse/data/catalog/model_repos.csv       — model_id → GitHub repo links (from HF metadata)
 
 Usage:
-    uv run python warehouse/ingest/fetch_model_benchmarks.py
-    uv run python warehouse/ingest/fetch_model_benchmarks.py --benchmarks-only
-    uv run python warehouse/ingest/fetch_model_benchmarks.py --repos-only
+    uv run python warehouse/models/catalog/model_benchmarks.py
+    uv run python warehouse/models/catalog/model_benchmarks.py --benchmarks-only
+    uv run python warehouse/models/catalog/model_benchmarks.py --repos-only
 """
 
 import csv
@@ -20,7 +20,7 @@ from pathlib import Path
 
 print = functools.partial(print, flush=True)
 
-DATA_DIR = Path(__file__).resolve().parent.parent / "catalog" / "huggingface"
+DATA_DIR = Path(__file__).resolve().parent.parent.parent / "data" / "catalog"
 BENCHMARKS_CSV = DATA_DIR / "model_benchmarks.csv"
 REPOS_CSV = DATA_DIR / "model_repos.csv"
 

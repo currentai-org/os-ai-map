@@ -8,11 +8,11 @@ entities/repos catalog carries goodailist categories, NOT the curated
 sources/categories taxonomy, so this bridge is what lets warehouse models
 (e.g. currentai.scores.stack_contributors) roll up by stack-map category.
 
-Output: warehouse/catalog/stack_map/repos.csv  (one row per scored repo)
-Upload as the currentai.catalog.stack_map static model (see warehouse/models/README.md).
+Output: warehouse/data/catalog/stack_map.csv  (one row per scored repo)
+Upload as the currentai.catalog.stack_map static model (see docs/architecture/data-architecture.md).
 
 Usage:
-    uv run python warehouse/ingest/build_stack_map.py
+    uv run python warehouse/models/catalog/stack_map.py
 """
 
 import csv
@@ -23,9 +23,9 @@ from pathlib import Path
 
 import yaml
 
-ROOT = Path(__file__).resolve().parent.parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent.parent
 SOURCES = ROOT / "sources"
-OUTPUT_CSV = ROOT / "warehouse" / "catalog" / "stack_map" / "repos.csv"
+OUTPUT_CSV = ROOT / "warehouse" / "data" / "catalog" / "stack_map.csv"
 
 OPEN = {"open_source", "open", "open_core", "open_hardware"}
 OPENISH = {"open_weights", "source_available", "gated", "open_toolchain"}

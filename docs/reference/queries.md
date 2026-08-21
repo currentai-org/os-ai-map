@@ -2,9 +2,10 @@
 
 ## Dataset layout
 
-25 datasets, all using three-part names: `currentai.<dataset>.<table>`. The table below covers the
-ones an analyst reads most; the rest are signal, snapshot and raw-ingestion datasets.
-`warehouse/models/README.md` documents the SQL models this repo maintains.
+The `currentai` warehouse uses three-part names: `currentai.<dataset>.<table>`. The table below
+covers the datasets an analyst reads most; the rest are signal, snapshot and raw-ingestion datasets.
+`warehouse/assets.yaml` inventories the tables this repo maintains, and
+`docs/architecture/data-architecture.md` documents them.
 
 | Dataset | Type | Key tables |
 |---------|------|------------|
@@ -101,5 +102,5 @@ GROUP BY pc.collection_name, c.display_name
 
 ## Pointers
 
-- Inventory + schedules: [`warehouse/models/README.md`](../../warehouse/models/README.md)
+- Inventory + schedules: [`warehouse/assets.yaml`](../../warehouse/assets.yaml) and [data architecture §11](../architecture/data-architecture.md)
 - Coverage backlog: tracked in GitHub issues
