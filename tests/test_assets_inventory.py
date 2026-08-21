@@ -480,15 +480,34 @@ def test_every_marked_count_matches_its_derived_value():
     assert not violations, "stale counts:\n" + "\n".join(violations)
 
 
-def test_architecture_docs_have_no_unmarked_asset_counts():
-    """A count in prose must carry a marker naming what it counts, or a reader cannot tell
-    a derived figure from a typed one either."""
-    pattern = re.compile(r"(?<!count:)\b(\d{2,3})\s+assets\b")
+def test_architecture_docs_have_no_unmarked_asset_or_table_counts():
+    """A count of assets or tables in prose must carry a marker naming what it counts, or a
+    reader cannot tell a derived figure from a typed one either.
+
+    Named for what it checks. An earlier version was called "no unmarked counts" while
+    matching only `NN assets`, which left `49 tables in the closure` and `30 model files`
+    unmarked under a name implying they were covered."""
+    pattern = re.compile(r"\b(\d{2,3})\s+(?:assets|tables|model files)\b")
     for path in sorted((ROOT / "docs" / "architecture").glob("*.md")):
         text = path.read_text(encoding="utf-8")
         for match in pattern.finditer(text):
-            before = text[max(0, match.start() - 40):match.start()]
-            assert "count:" in before, f"{path.name}: unmarked count {match.group(0)!r}"
+            before = text[max(0, match.start() - 44):match.start()]
+            assert "count:" in before or "observed:" in before, (
+                f"{path.name}: unmarked count {match.group(0)!r}"
+            )
+
+
+def test_observed_counts_carry_a_date():
+    """Some figures are facts about the platform that this repository cannot derive -- the
+    org holds tables in datasets the inventory does not cover. Those carry
+    `<!-- observed:YYYY-MM-DD -->` so a reader can see they are a dated reading rather than
+    a live value, instead of being silently exempt from the count gate."""
+    marker = re.compile(r"<!--\s*observed:([^\s>]*)\s*-->")
+    for path in sorted((ROOT / "docs" / "architecture").glob("*.md")):
+        for stamp in marker.findall(path.read_text(encoding="utf-8")):
+            assert re.fullmatch(r"\d{4}-\d{2}-\d{2}", stamp), (
+                f"{path.name}: observed marker without a date: {stamp!r}"
+            )
 
 
 def test_inline_sql_comment_is_not_a_read(tmp_path):
@@ -534,8 +553,10 @@ def test_merge_base_gate_catches_a_silent_byte_swap(monkeypatch):
     monkeypatch.setattr(A, "merge_base_assets", lambda base="origin/main": before)
     monkeypatch.setattr(A, "assets", lambda: after)
     violations = A.mirror_provenance_violations()
-    assert len(violations) == 3, violations
-    assert all("local_sha256 changed but" in v for v in violations)
+    # Assert the content, not a count: a stricter gate legitimately changes how many
+    # messages one defect produces, and pinning the number makes the test fight the fix.
+    assert any("revision" in v for v in violations), violations
+    assert any("platform hash did not" in v for v in violations), violations
 
 
 def test_merge_base_gate_catches_provenance_moving_without_bytes(monkeypatch):
@@ -581,3 +602,88 @@ def test_release_path_is_consistent_across_the_openness_chain(inventory):
     chain = ("evidence.product_evidence", "scores.openness_facts", "scores.openness_computed")
     assert len({inv[t]["release_path"] for t in chain}) == 1
     assert all(inv[t]["release_path"] is False for t in chain)
+
+
+# --- the ledger must list exactly the derived set ------------------------------
+
+def test_no_reviewed_consumer_count_is_derived_not_authored():
+    """`retirement_reason` is prose a generator wrote. Counting rows that carry it verifies
+    nothing, because the same condition produced both. The count now recomputes the
+    predicate independently, so the two can disagree and this can notice."""
+    labelled = {a["id"] for a in A.assets() if a.get("retirement_reason")}
+    derived = {a["id"] for a in A.no_reviewed_consumers()}
+    assert labelled == derived, (
+        f"authored label and derived predicate disagree: "
+        f"label-only {sorted(labelled - derived)}, predicate-only {sorted(derived - labelled)}"
+    )
+
+
+def test_ledger_lists_exactly_the_assets_with_no_reviewed_consumer():
+    """The ledger named `signal_packages.*` (3, staged) when only one of the three
+    qualifies -- its two siblings have reviewed model consumers. A prose table that
+    generalizes over a wildcard cannot be trusted, so it is compared to the derived set."""
+    ledger = (ROOT / "docs/architecture/migration-status.md").read_text(encoding="utf-8")
+    section = ledger.split("## Assets with no reviewed consumer")[1].split("\n## ")[0]
+    listed = set(re.findall(r"^\| `([a-z_]+\.[a-z_0-9]+)`", section, re.M))
+    derived = {a["id"] for a in A.no_reviewed_consumers()}
+    assert listed == derived, (
+        f"ledger drifted: listed-only {sorted(listed - derived)}, "
+        f"derived-only {sorted(derived - listed)}"
+    )
+
+
+def test_deployed_staged_and_dormant_reconcile_to_the_inventory():
+    """The three numbers the docs quote must add up, or the explanation of why the
+    inventory is larger than the platform is itself wrong."""
+    assets = A.assets()
+    deployed = len(A.deployed_tables())
+    staged = sum(1 for a in assets if a["status"] == "staged")
+    dormant = sum(1 for a in assets if a["status"] == "dormant")
+    assert deployed + staged + dormant == len(assets)
+
+
+# --- mirror provenance: regression and identity --------------------------------
+
+def _provenance(monkeypatch, before, after):
+    monkeypatch.setattr(A, "merge_base_assets", lambda base="origin/main": before)
+    monkeypatch.setattr(A, "assets", lambda: after)
+    return A.mirror_provenance_violations()
+
+
+def _mirror(**overrides):
+    base = {"model_id": "m1", "revision": 4, "hash": "h1",
+            "local_sha256": "S1", "synced_at": "2026-08-15"}
+    return [{"id": "x.y", "mirror": {**base, **overrides}}]
+
+
+def test_revision_may_not_regress_when_bytes_change(monkeypatch):
+    """4 -> 3 passed the first gate, because it only required the value to differ."""
+    violations = _provenance(monkeypatch, _mirror(),
+                             _mirror(revision=3, hash="h2", local_sha256="S2", synced_at="2026-08-16"))
+    assert any("revision went 4 -> 3" in v for v in violations)
+
+
+def test_model_id_may_not_change_without_authorization(monkeypatch):
+    """Repointing an entry at a different deployed model, bytes and provenance untouched."""
+    violations = _provenance(monkeypatch, _mirror(), _mirror(model_id="m2"))
+    assert any("model_id changed" in v for v in violations)
+
+
+def test_model_id_change_is_allowed_with_a_migration_note(monkeypatch):
+    before = _mirror()
+    after = _mirror(model_id="m2")
+    after[0]["mirror_migration"] = "redeployed under a new model on 2026-08-21, see #999"
+    assert not [v for v in _provenance(monkeypatch, before, after) if "model_id" in v]
+
+
+def test_synced_at_may_not_move_backward(monkeypatch):
+    violations = _provenance(monkeypatch, _mirror(),
+                             _mirror(revision=5, hash="h2", local_sha256="S2", synced_at="2026-08-01"))
+    assert any("moved backward" in v for v in violations)
+
+
+def test_a_same_day_refetch_is_legal(monkeypatch):
+    """synced_at is date-granular, so requiring it to change would forbid two refetches in
+    one day -- an impossible requirement, not a gate."""
+    assert not _provenance(monkeypatch, _mirror(),
+                           _mirror(revision=5, hash="h2", local_sha256="S2"))

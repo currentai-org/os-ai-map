@@ -45,13 +45,13 @@ As of 2026-08-20:
 - Openness is also recomputed in OSO through `evidence.product_evidence`, `scores.openness_facts`, and `scores.openness_computed`; `build/check_parity.py` compares the independent result with the repository.
 - Adoption is recorded in the repository and measured through multiple channel-specific warehouse tables. It has no route-aware reconciliation gate.
 - Capability is recorded and mirrored but not recomputed.
-- `currentai.catalog` mixes discovered inventory, fetcher output, external reference data, and a stale repo-to-warehouse bridge. Verified 2026-08-20: it holds 10 tables, not the 5 its README documents. Only 3 are discovered inventory. `foundation_model_repos`, `osai_subcategory_mapping` and `taxonomy_crosswalk` are curator-controlled and belong in `registry`; `pypi_downloads` is a measurement; `goodailist_repos` is documented as retired but still live; `osai_gap_map` is a third-party map carrying `maturity`, `parity_verdict` and `overall_score` columns that read as gap-map outputs.
+- `currentai.catalog` mixes discovered inventory, fetcher output, external reference data, and a stale repo-to-warehouse bridge. Verified 2026-08-20: it holds <!-- count:catalog_tables -->10 tables, not the 5 its README documents. Only 3 are discovered inventory. `foundation_model_repos`, `osai_subcategory_mapping` and `taxonomy_crosswalk` are curator-controlled and belong in `registry`; `pypi_downloads` is a measurement; `goodailist_repos` is documented as retired but still live; `osai_gap_map` is a third-party map carrying `maturity`, `parity_verdict` and `overall_score` columns that read as gap-map outputs.
 - External measurements generally expose current state rather than a durable observation history.
 - OSO does not yet support incremental models; the current normalized state must therefore become the first preserved timestamped snapshot rather than being mislabeled as an append-only history.
 - Platform model source is mirrored read-only under `warehouse/platform-mirror/`; the platform remains authoritative for those deployed models.
 - Dataset scheduling, model throttles, GitHub Actions schedules, and manual operations coexist. A configured cron is not treated as proof that a scheduled run fired. Verified 2026-08-20: of 22 datasets, 13 carry `cronTimezone: America/New_York`, and 8 have a cron configured with `lastRunAt: null` — `signal_semanticscholar`, `signal_pypi`, `ai_demand_curve`, `state_of_os_ai`, `scores`, `events`, `metrics`, `entities`. The `scores` dataset is among them, which means the openness chain that `check_parity` compares against the repository has no observed scheduled run.
 - Two platform tables have no repository source and no in-repo consumer: `currentai.scores.investment_ranking` and `currentai.scores.taxonomy`.
-- The full org is 22 datasets and 96 tables. The transitive closure of what the repository ships or maintains is 49 of them; the other 47 are separate analytical products. See section 11.3.
+- The full org is 22 datasets and <!-- observed:2026-08-20 -->96 tables. The datasets the repository maintains or reads from hold <!-- count:deployed_tables -->53 of those tables; the rest are separate analytical products. See section 11.3 for how that reconciles with the inventory's size.
 
 The redesign must evolve this system without interrupting the existing map, registry tables, notebooks, or website.
 
@@ -1091,8 +1091,8 @@ Migration rules:
 
 ## 11. Asset registry and repository layout
 
-Verified against the live `currentai` org on 2026-08-20: 22 datasets, 96 tables, 44
-tracked files under `warehouse/`. The structure below is the target; the file manifest in
+Verified against the live `currentai` org on 2026-08-20: 22 datasets,
+<!-- observed:2026-08-20 -->96 tables, 44 tracked files under `warehouse/`. The structure below is the target; the file manifest in
 11.4 is the exact diff from the state on that date.
 
 ### 11.1 Target layout
@@ -1426,10 +1426,32 @@ prose that names tables freely; string literals hold the real SQL. A grep that i
 distinction invents consumers in one direction and, if it stripped every literal, would lose
 them in the other.
 
-On 2026-08-20 the closure is 49 of the org's 96 tables.
+#### The inventory is larger than the platform, and why
 
-The remaining 47 are separate analytical products that the gap-map pipeline neither feeds
-nor reads — `state_of_os_ai`, `ai_demand_curve`, `aiid`, `hf_live`, `openrouter_snapshot`,
+Three numbers that must not be conflated:
+
+```text
+deployed tables in the in-scope datasets    <!-- count:deployed_tables -->53
+staged, not deployed (signal_packages)      <!-- count:staged_assets -->3
+dormant, no platform table yet              <!-- count:dormant_assets -->1
+                                            ------
+logical assets in warehouse/assets.yaml     <!-- count:assets -->57
+```
+
+The staged three are the `signal_packages` models from issue #314: tracked files implementing
+a dataset that is not deployed. The dormant one is `registry.tail_products`, declared by
+`build.publish_registry.TABLES`, whose platform table is absent only because the last
+serialization had no rows.
+
+Both are real logical assets — a tracked file in no asset entry is invisible to every gate in
+11.5 — but neither is current deployed state. A count that mixes them misrepresents the
+warehouse, so `status` separates them and `build.assets.deployed_tables()` is what to count
+when the question is "what exists on the platform right now".
+
+An earlier draft quoted a single "49 of 96" figure that matched none of the three.
+
+The tables outside those datasets are separate analytical products that the gap-map pipeline
+neither feeds nor reads — `state_of_os_ai`, `ai_demand_curve`, `aiid`, `hf_live`, `openrouter_snapshot`,
 `datasette_plugins`, `linkedin_sources`, the archived `stack_map` v1 dataset, and four
 `catalog` tables with no in-repo consumer. They stay on the platform and stay out of
 `assets.yaml`. Keeping them out is what allows `kind` to remain the five namespaces of
@@ -1450,7 +1472,7 @@ Counts, stated once and correctly:
 
 ```text
 warehouse/ tracked files today                        44
-  of which SQL/Python models                          30   (12 models, 3 ingest, 15 mirror)
+  of which SQL/Python models   <!-- count:model_files -->30   (12 models, 3 ingest, 15 mirror)
 warehouse/ after the move    44 + 1 assets.yaml - 5 = 40
 repository-wide             +6 created, -5 deleted   = +1
 ```
@@ -1597,7 +1619,7 @@ exist.
    any `consumer_checks` value other than `checked` for `platform_models` or
    `platform_notebooks` may be reported as a retirement candidate.
 8. Every entry in `reads` either resolves to an asset in the inventory when
-   `scope: internal`, or is `scope: external` and names a table outside the 49-table closure.
+   `scope: internal`, or is `scope: external` and names a table this inventory does not cover.
    Because the inventory deliberately covers the closure rather than all 96 org tables,
    `oso.*` and out-of-scope `currentai.*` reads must be representable rather than errors.
 9. Deprecated assets carry a removal condition; active `compatibility` assets name a

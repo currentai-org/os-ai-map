@@ -87,7 +87,7 @@ for a person and never an action.
 | `signal_lmarena.text_leaderboard` | Capability anchor collected ahead of the axis that will use it. Pre-positioned. |
 | `signal_semanticscholar.paper_citations` | Citation instrument declared in `signal_routing.yaml`, not yet consumed by a repo model. Pre-positioned. |
 | `signal_artificialanalysis.model_evaluations` | The platform description says "held deliberately unjoined to gap-map products". Unread by design. |
-| `signal_packages.*` (3, staged) | Not deployed. Issue #314. |
+| `signal_packages.product_adoption` | Staged and not deployed. Issue #314. Its two siblings, `downloads` and `downloads_daily`, DO have reviewed model consumers and are not listed here. |
 
 ## Consumers with only a deprecated reader
 

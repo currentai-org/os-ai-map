@@ -405,25 +405,60 @@ def mirror_provenance_violations(base: str = "origin/main") -> list[str]:
         if not mirror or not was or not was.get("mirror"):
             continue
         prior = was["mirror"]
+        # model_id identifies WHICH deployed model is mirrored. Changing it silently
+        # repoints the entry at a different model while the bytes and provenance look
+        # untouched, so it is stable unless mirror_migration explains the change.
+        if mirror.get("model_id") != prior.get("model_id"):
+            if not asset.get("mirror_migration"):
+                problems.append(
+                    f"{asset['id']}: model_id changed from {prior.get('model_id')} to "
+                    f"{mirror.get('model_id')} with no mirror_migration authorizing it"
+                )
+
         if mirror.get("local_sha256") == prior.get("local_sha256"):
             if any(mirror.get(f) != prior.get(f) for f in ("revision", "hash", "synced_at")):
                 problems.append(
                     f"{asset['id']}: provenance changed but the mirrored bytes did not"
                 )
             continue
-        for field in ("revision", "hash", "synced_at"):
-            if mirror.get(field) == prior.get(field):
+
+        # Bytes moved, so a refetch happened. Everything that dates the refetch moves with
+        # it, and forward: an equal value means the provenance was not updated, and a lower
+        # one means it was rolled back while presenting as current.
+        old_rev, new_rev = prior.get("revision"), mirror.get("revision")
+        if isinstance(old_rev, int) and isinstance(new_rev, int):
+            if new_rev <= old_rev:
                 problems.append(
-                    f"{asset['id']}: local_sha256 changed but {field} did not -- "
-                    "a refetch advances all of them"
+                    f"{asset['id']}: bytes changed but revision went {old_rev} -> {new_rev}; "
+                    "a refetch advances it"
                 )
+        elif new_rev == old_rev:
+            problems.append(f"{asset['id']}: bytes changed but revision did not")
+
+        if mirror.get("hash") == prior.get("hash"):
+            problems.append(f"{asset['id']}: bytes changed but the platform hash did not")
+
+        # synced_at is date-granular, so a same-day refetch legitimately keeps its value.
+        # Only a backward move is a defect.
+        old_at, new_at = str(prior.get("synced_at") or ""), str(mirror.get("synced_at") or "")
+        if new_at < old_at:
+            problems.append(
+                f"{asset['id']}: synced_at moved backward, {old_at} -> {new_at}"
+            )
     return problems
 
 
 COUNT_CLAIMS = {
     "assets": lambda: len(assets()),
     "pending": lambda: sum(1 for a in assets() if a["migration_status"] == "pending"),
-    "no_reviewed_consumer": lambda: sum(1 for a in assets() if a.get("retirement_reason")),
+    "no_reviewed_consumer": lambda: len(no_reviewed_consumers()),
+    "deployed_tables": lambda: len(deployed_tables()),
+    "staged_assets": lambda: sum(1 for a in assets() if a["status"] == "staged"),
+    "dormant_assets": lambda: sum(1 for a in assets() if a["status"] == "dormant"),
+    "catalog_tables": lambda: sum(1 for a in assets() if a["current_namespace"] == "catalog"),
+    "model_files": lambda: len(
+        [f for f in produced_files() if f.endswith((".sql", ".py"))]
+    ),
     "retirement_candidates": lambda: len(retirement_candidates()),
     "in_repo_readers": lambda: len(derive_graph()["read_by"]),
     "unobserved_crons": lambda: sum(
@@ -455,3 +490,34 @@ def count_claim_violations() -> list[str]:
             if int(written) != actual:
                 problems.append(f"{path.name}: {key} says {written}, derived value is {actual}")
     return problems
+
+
+def no_reviewed_consumers() -> list[dict]:
+    """Assets with no consumer among the sources actually reviewed.
+
+    Derived from the predicate, not read from an authored label. `retirement_reason` is
+    prose a generator wrote; counting rows that carry it verifies nothing, because the
+    same condition produced both. This recomputes it independently so the two can
+    disagree and a gate can notice.
+
+    Weaker than `retirement_candidates`, which additionally requires every consumer
+    source to have been checked. This says only: nothing we looked at reads it.
+    """
+    return [
+        a for a in assets()
+        if not (a.get("read_by") or {})
+        and not a.get("publication_role")
+        and a.get("external_consumers") == "none_confirmed"
+    ]
+
+
+def deployed_tables() -> list[dict]:
+    """Assets that exist as a table on the platform today.
+
+    The inventory is larger than the platform, deliberately: it also holds staged models
+    that are not deployed and dormant outputs whose table is absent only because the last
+    serialization was empty. Both are real logical assets -- a file in no asset entry is
+    invisible to every gate -- but neither is current deployed state, and a count that
+    mixes them misrepresents the warehouse.
+    """
+    return [a for a in assets() if a["status"] not in ("staged", "dormant")]
