@@ -10,8 +10,8 @@ file records only where the work has got to. Delete a row when it stops being te
 | Phase | State | Note |
 |---|---|---|
 | 0 — architecture record and inventory | done | Merged (#345). The repository now mirrors the warehouse. |
-| 0b — deployed model audit | in review | This PR. Read-only: all 41 deployed model definitions read; `platform_models` now `checked` on every asset. |
-| 1 — schedule normalization | not started | <!-- observed:2026-08-20 -->10 datasets on `America/New_York`; <!-- count:unobserved_crons -->18 assets have a cron and no observed run. No platform metadata change is pending — see below. |
+| 0b — deployed model audit | done | Merged (#347). All 41 deployed model definitions read; `platform_models` `checked` on every asset; receipt at `warehouse/audits/platform_models.json`. |
+| 1 — schedule normalization | **applied 2026-08-22, verification pending** | Ten in-scope datasets relabelled to UTC; 3 out-of-scope analytical datasets left on `America/New_York` deliberately. <!-- count:unobserved_crons -->18 assets still have no observed run: §13 requires run history, not configuration, so this is not complete until a `SCHEDULED` fire is seen on/after 2026-08-23 01:00Z. See `docs/operations/normalize-schedules.md`. |
 | 2 — normalized adoption observations | not started | Must compile `registry.adoption_routes` before any signal roll-up retires. |
 | 2B — incremental adoption history | blocked | Blocked on OSO incremental-model support. Not approximated with full-refresh models. |
 | 3 — reconciliation report | not started | Report-only first. |
@@ -54,6 +54,12 @@ line. The remediation is therefore ordered and platform-side:
 2. release a new revision of each affected model;
 3. refetch those revisions into the mirror under `warehouse/models/<dataset>/`;
 4. update each mirror's `revision`, `hash`, `local_sha256` and `synced_at` together.
+
+The Phase 1 schedule normalization is **no longer pending** — it was applied 2026-08-22 and is
+recorded in the phase table above and in `docs/operations/normalize-schedules.md`; `assets.yaml`
+declares `timezone: UTC` for the fifteen affected assets. The only thing still outstanding there
+is the observed `SCHEDULED` run, which is a verification (tracked by `unobserved_crons`), not an
+unapplied change.
 
 **No description or schema change is pending.** An earlier draft of this file recorded a
 correction for the `catalog.stack_map` dataset description, on the grounds that its "read by no

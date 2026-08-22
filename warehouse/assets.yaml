@@ -372,7 +372,7 @@ assets:
   producer: warehouse/models/entities/models.sql
   classification_note: discovered from the goodailist roster, not curated
   refresh: dataset cron '0 4 * * 0'
-  timezone: America/New_York
+  timezone: UTC
   last_observed_trigger: null
   last_run_at: null
   dataset_id: 663132ed-ea4a-4fce-97a8-742e4479269c
@@ -413,7 +413,7 @@ assets:
   producer: warehouse/models/entities/packages.sql
   classification_note: discovered from the goodailist roster, not curated
   refresh: dataset cron '0 4 * * 0'
-  timezone: America/New_York
+  timezone: UTC
   last_observed_trigger: null
   last_run_at: null
   dataset_id: 663132ed-ea4a-4fce-97a8-742e4479269c
@@ -455,7 +455,7 @@ assets:
   producer: warehouse/models/entities/projects.sql
   classification_note: discovered from the goodailist roster, not curated
   refresh: dataset cron '0 4 * * 0'
-  timezone: America/New_York
+  timezone: UTC
   last_observed_trigger: null
   last_run_at: null
   dataset_id: 663132ed-ea4a-4fce-97a8-742e4479269c
@@ -512,7 +512,7 @@ assets:
   producer: warehouse/models/entities/repos.sql
   classification_note: discovered from the goodailist roster, not curated
   refresh: dataset cron '0 4 * * 0'
-  timezone: America/New_York
+  timezone: UTC
   last_observed_trigger: null
   last_run_at: null
   dataset_id: 663132ed-ea4a-4fce-97a8-742e4479269c
@@ -552,7 +552,7 @@ assets:
   producer: warehouse/models/events/github_events.sql
   classification_note: artifact-level measurement over time
   refresh: dataset cron '0 5 * * 0'
-  timezone: America/New_York
+  timezone: UTC
   last_observed_trigger: null
   last_run_at: null
   dataset_id: b2109421-64a8-4681-9d28-65a37a286f97
@@ -660,7 +660,7 @@ assets:
   producer: warehouse/models/metrics/daily.sql
   classification_note: artifact-level measurement over time
   refresh: dataset cron '0 6 * * 0'
-  timezone: America/New_York
+  timezone: UTC
   last_observed_trigger: null
   last_run_at: null
   dataset_id: 5a73a919-79da-4029-ae5c-f5653bcc1e62
@@ -1596,7 +1596,7 @@ assets:
   grain: one row per Artificial Analysis model id
   producer: warehouse/models/signal_artificialanalysis/model_evaluations.py
   refresh: dataset cron '0 1 * * 0'
-  timezone: America/New_York
+  timezone: UTC
   last_observed_trigger: MANUAL
   last_run_at: '2026-08-15'
   dataset_id: 7ce58fca-9dda-4a95-8a17-9cef500c0656
@@ -1648,7 +1648,7 @@ assets:
   producer: warehouse/models/signal_github/product_adoption.sql
   classification_note: a banded candidate assessment, not a raw measurement
   refresh: dataset cron '0 3 * * 0'
-  timezone: America/New_York
+  timezone: UTC
   last_observed_trigger: MANUAL
   last_run_at: '2026-08-15'
   dataset_id: cc74e8db-7718-4615-a004-7f27cabaf967
@@ -1699,7 +1699,7 @@ assets:
   grain: one row per (product_slug, repo) at one fetched_at
   producer: warehouse/models/signal_github/repo_state.py
   refresh: dataset cron '0 3 * * 0'
-  timezone: America/New_York
+  timezone: UTC
   last_observed_trigger: MANUAL
   last_run_at: '2026-08-15'
   dataset_id: cc74e8db-7718-4615-a004-7f27cabaf967
@@ -1748,7 +1748,7 @@ assets:
     UDM on its own cron, so there is nothing to mirror into warehouse/data/. A mirror could only be
     staler than the live table, and it was: the frozen CSV still listed 300 repos goodailist.com had delisted.'
   refresh: dataset cron '0 1 * * 0'
-  timezone: America/New_York
+  timezone: UTC
   last_observed_trigger: MANUAL
   last_run_at: '2026-08-16'
   dataset_id: f7f36dd4-ba41-4ee6-9547-65e409046893
@@ -1791,7 +1791,7 @@ assets:
   grain: one row per (product_slug, artifact_kind, artifact_id) at one fetched_at
   producer: warehouse/models/signal_huggingface/hub_state.py
   refresh: dataset cron '0 2 * * 0'
-  timezone: America/New_York
+  timezone: UTC
   last_observed_trigger: MANUAL
   last_run_at: '2026-08-15'
   dataset_id: 6108e4d6-868f-4cba-8df5-ee64f8fb301e
@@ -1838,7 +1838,7 @@ assets:
   producer: warehouse/models/signal_huggingface/product_adoption.sql
   classification_note: a banded candidate assessment, not a raw measurement
   refresh: dataset cron '0 2 * * 0'
-  timezone: America/New_York
+  timezone: UTC
   last_observed_trigger: MANUAL
   last_run_at: '2026-08-15'
   dataset_id: 6108e4d6-868f-4cba-8df5-ee64f8fb301e
@@ -1876,7 +1876,7 @@ assets:
   grain: one row per (model_name, category, arena_config)
   producer: warehouse/models/signal_lmarena/text_leaderboard.py
   refresh: dataset cron '0 1 * * 0'
-  timezone: America/New_York
+  timezone: UTC
   last_observed_trigger: MANUAL
   last_run_at: '2026-08-15'
   dataset_id: f248f653-2ea6-4fdf-badb-c99adf9bcbe4
@@ -2024,7 +2024,7 @@ assets:
   grain: one row per (product_slug, package) over a 30-day window
   producer: warehouse/models/signal_pypi/package_downloads.sql
   refresh: dataset cron '0 1 * * 0'
-  timezone: America/New_York
+  timezone: UTC
   last_observed_trigger: null
   last_run_at: null
   dataset_id: c7c3a04c-7e2d-4cea-a7e6-5861c725ea65
@@ -2063,7 +2063,7 @@ assets:
   grain: one row per (product_slug, arxiv_id)
   producer: warehouse/models/signal_semanticscholar/paper_citations.py
   refresh: dataset cron '0 1 * * 0'
-  timezone: America/New_York
+  timezone: UTC
   last_observed_trigger: null
   last_run_at: null
   dataset_id: a48ec2ff-1e15-4b22-a38e-8ae03e0096f7
