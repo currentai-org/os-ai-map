@@ -55,13 +55,11 @@ line. The remediation is therefore ordered and platform-side:
 3. refetch those revisions into the mirror under `warehouse/models/<dataset>/`;
 4. update each mirror's `revision`, `hash`, `local_sha256` and `synced_at` together.
 
-**Schedule normalization to UTC (Phase 1).** Ten in-scope pipeline datasets carry a
-daylight-saving `cronTimezone: America/New_York`. The relabel-only change (set `cronTimezone: UTC`,
-keep the cron digits) is scoped, its rollback captured, and the exact reversible `updateDataset`
-mutations prepared in `docs/operations/normalize-schedules.md`. The writes are a maintainer step
-and are not yet applied; `SCHEDULED`-run verification waits for the first weekly (Sunday) fire
-under UTC on/after 2026-08-23. The repository's `timezone` declarations stay `America/New_York`
-until the platform actually reflects UTC.
+The Phase 1 schedule normalization is **no longer pending** — it was applied 2026-08-22 and is
+recorded in the phase table above and in `docs/operations/normalize-schedules.md`; `assets.yaml`
+declares `timezone: UTC` for the fifteen affected assets. The only thing still outstanding there
+is the observed `SCHEDULED` run, which is a verification (tracked by `unobserved_crons`), not an
+unapplied change.
 
 **No description or schema change is pending.** An earlier draft of this file recorded a
 correction for the `catalog.stack_map` dataset description, on the grounds that its "read by no
