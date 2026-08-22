@@ -51,7 +51,7 @@ As of 2026-08-20:
 - Platform model source is mirrored read-only under `warehouse/models/<dataset>/` (each carrying a `mirror:` block in `warehouse/assets.yaml`); the platform remains authoritative for those deployed models.
 - Dataset scheduling, model throttles, GitHub Actions schedules, and manual operations coexist. A configured cron is not treated as proof that a scheduled run fired. Verified 2026-08-20: of <!-- observed:2026-08-20 -->22 datasets, 13 carry `cronTimezone: America/New_York`, and 8 have a cron configured with `lastRunAt: null` — `signal_semanticscholar`, `signal_pypi`, `ai_demand_curve`, `state_of_os_ai`, `scores`, `events`, `metrics`, `entities`. The `scores` dataset is among them, which means the openness chain that `check_parity` compares against the repository has no observed scheduled run.
 - Two platform tables have no repository source and no in-repo consumer: `currentai.scores.investment_ranking` and `currentai.scores.taxonomy`.
-- The full org is <!-- observed:2026-08-20 -->22 datasets and <!-- observed:2026-08-20 -->96 tables. The datasets the repository maintains or reads from hold <!-- count:deployed_tables -->53 of those tables; the rest are separate analytical products. See section 11.3 for how that reconciles with the inventory's size.
+- The full org is <!-- observed:2026-08-20 -->22 datasets by `ListDatasets`, or 23 counting `datasette` — which `ListDatasets` omits because it holds two deployed models and no materialized tables, so a dataset-first sweep misses it (Phase 0b enumerated from `ListDataModels` instead and found it). The org holds <!-- observed:2026-08-20 -->96 tables. The datasets the repository maintains or reads from hold <!-- count:deployed_tables -->53 of those tables; the rest are separate analytical products. See section 11.3 for how that reconciles with the inventory's size.
 
 The redesign must evolve this system without interrupting the existing map, registry tables, notebooks, or website.
 
@@ -1093,9 +1093,10 @@ Migration rules:
 
 Verified against the live `currentai` org on 2026-08-20: <!-- observed:2026-08-20 -->22 datasets,
 <!-- observed:2026-08-20 -->96 tables,
-<!-- count:tracked_warehouse_files -->40 tracked files under `warehouse/`. The structure below is the target, and the
+<!-- count:tracked_warehouse_files -->41 tracked files under `warehouse/`. The structure below is the target, and the
 mirror layout of 11.1 is now in place; the file manifest in 11.4 recorded the exact diff
-from the 2026-08-20 state, executed in this change.
+from the 2026-08-20 state (40 files), and Phase 0b added `warehouse/audits/platform_models.json`,
+the deployed-model audit receipt.
 
 ### 11.1 Target layout
 
@@ -1326,9 +1327,10 @@ registries this file replaces.
   consumer_checks:                # what was actually audited, per source of consumers
     repository: checked            #   tracked models, build modules, notebooks, workflows
     platform_notebooks: checked    #   every notebook in the org, tracked or not
-    platform_models: unknown       #   deployed model definitions -- NOT audited
+    platform_models: unknown       #   shown pre-Phase-0b; that audit later set this to
+                                  #   `checked` on every asset
     external: unknown              #   anything outside this org -- NOT audited
-                                  # platform_models is unknown, so this asset is NOT a
+                                  # while platform_models is unknown an asset is NOT a
                                   # retirement candidate however empty read_by looks
   external_consumers: unknown     # unknown | none_confirmed | [named]
   publication_role: null          # null | release_sink | public_api | payload_input
@@ -1672,21 +1674,21 @@ Resolved by decision:
 No rename is performed as a standalone change. Each rides a phase that already repoints the
 same SQL, so no PR exists purely to rename a deployed table.
 
-#### Deferred pending the Phase 0 notebook audit
+#### Resolved by the Phase 0b deployed-model audit
 
-Three tables have no in-repo consumer and cannot be retired on that basis, because
-an unaudited consumer source is not evidence of anything while sixteen notebooks sit outside
-the repository. Each keeps `retirement_reason: null` and an open issue until the audit sets
-`consumer_checks.platform_notebooks` and `platform_models` to `checked`.
+These three tables had no in-repo consumer and could not be judged on that basis while
+`consumer_checks.platform_models` was `unknown`. Phase 0b read all 41 deployed model
+definitions in the org and set it to `checked`; none of the three is a retirement candidate.
 
-| Table | State |
+| Table | Finding |
 |---|---|
-| `catalog.goodailist_repos` | Documented retired, table live, superseded by `signal_goodailist.repo_catalog` |
-| `scores.investment_ranking` | On the platform with no repository source and no in-repo reader |
-| `scores.taxonomy` | Same |
+| `catalog.goodailist_repos` | Documented retired, table live, superseded by `signal_goodailist.repo_catalog`; retained by the `ai-safety-incidents` notebook consumer. Not a candidate. |
+| `scores.investment_ranking` | No repository source and no in-repo reader; read only by the Deprecated `ai-potluck-partners` notebook. The audit also found it is itself a reader of `catalog.osai_gap_map`, `catalog.osai_subcategory_mapping`, `entities.repos` and `scores.fragility`. |
+| `scores.taxonomy` | Same shape; read by `ai-potluck-partners` (Deprecated) and the non-deprecated `state-of-os-ai`. The audit's self-check reproduced: it reads `catalog.osai_gap_map`, `catalog.osai_subcategory_mapping` and `catalog.taxonomy_crosswalk`, which removed those three from the "no reviewed consumer" list. |
 
-`oss-ai-gaps` and `stack_map_category_maps`, both tagged `Deprecated`, are the plausible
-readers of the latter two. Plausible is not checked.
+`oss-ai-gaps` and `stack_map_category_maps` were the plausible readers named before the audit.
+The deployed-model read that actually mattered was `scores.taxonomy`'s, now recorded as those
+three tables' `platform_model_consumers`.
 
 ## 12. Release mechanics
 

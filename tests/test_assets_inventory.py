@@ -185,7 +185,40 @@ def test_no_stored_retirement_candidate_flag(inventory):
 def test_retirement_findings_carry_a_reason_and_issue(inventory):
     for asset in A.retirement_candidates():
         assert asset.get("retirement_reason"), f"{asset['id']}: candidate without a reason"
-        assert asset.get("retirement_issue"), f"{asset['id']}: candidate without an issue"
+        # Truthiness is not enough: the field's whole claim is that a tracking issue EXISTS,
+        # so a placeholder like 'TBD: open an issue' must fail here, not pass.
+        assert A.is_retirement_issue_ref(asset.get("retirement_issue")), (
+            f"{asset['id']}: retirement_issue {asset.get('retirement_issue')!r} is not a real "
+            f"issue reference (#123 or a GitHub issues URL)"
+        )
+
+
+def test_issue_ref_validator_rejects_placeholders_and_prose():
+    """The gate above is only as strong as this validator, so pin its edges."""
+    assert A.is_retirement_issue_ref("#348")
+    assert A.is_retirement_issue_ref("https://github.com/currentai-org/os-ai-map/issues/348")
+    for bad in ("TBD: open an issue before any deletion", "", "  ", "issue 348", "#", "#abc",
+                "see #348 later", None, 348):
+        assert not A.is_retirement_issue_ref(bad), f"{bad!r} should not be a valid issue ref"
+
+
+def test_a_staged_unread_asset_is_not_a_retirement_candidate(monkeypatch):
+    """A model deployed nowhere cannot be retired -- it has no consumers because it does not
+    exist yet, which is a different fact from a live table nobody reads. signal_packages.* is
+    the live case (issue #314). Proven by construction: the same asset flips to a candidate
+    only when its status is a deployed one."""
+    base = {
+        "id": "signal_x.staged_model", "read_by": {}, "publication_role": None,
+        "external_consumers": "none_confirmed", "platform_model_consumers": None,
+        "consumer_checks": {"repository": "checked", "platform_notebooks": "checked",
+                            "platform_models": "checked", "external": "unknown"},
+        "retirement_reason": "unread", "retirement_issue": "#1",
+    }
+    monkeypatch.setattr(A, "assets", lambda: [{**base, "status": "staged"}])
+    assert A.retirement_candidates() == []
+    assert A.no_reviewed_consumers() == []
+    monkeypatch.setattr(A, "assets", lambda: [{**base, "status": "active"}])
+    assert [a["id"] for a in A.retirement_candidates()] == ["signal_x.staged_model"]
 
 
 def test_unaudited_consumer_sources_block_candidacy(inventory):
@@ -319,6 +352,60 @@ def test_join_and_subquery_reads_are_found(tmp_path):
         "currentai.registry.products",
         "currentai.catalog.stack_map",
     }
+
+
+# --- refs_in_source: the text entry point for deployed model code -------------------
+# Deployed model definitions arrive as a string (the platform's latestRevision.code), not a
+# file. refs_in_source runs the same rules as table_refs so a second extractor cannot drift.
+
+def test_refs_in_source_finds_sql_context():
+    assert A.refs_in_source(
+        "SELECT a FROM currentai.registry.products JOIN currentai.catalog.stack_map ON 1=1", "sql"
+    ) == {"currentai.registry.products", "currentai.catalog.stack_map"}
+
+
+def test_refs_in_source_language_is_case_insensitive():
+    """The platform records the language as `sql`, `SQL` or `python`; all must route."""
+    code = "SELECT a FROM currentai.registry.products"
+    assert A.refs_in_source(code, "SQL") == A.refs_in_source(code, "sql") == {"currentai.registry.products"}
+
+
+def test_refs_in_source_python_literal_and_bare_identifier():
+    assert A.refs_in_source('SQL = "SELECT a FROM currentai.registry.products"', "python") == {
+        "currentai.registry.products"
+    }
+    assert A.refs_in_source('TABLE = "currentai.scores.openness_computed"', "python") == {
+        "currentai.scores.openness_computed"
+    }
+
+
+def test_refs_in_source_excludes_python_docstrings():
+    """The same docstring exclusion table_refs applies -- a model whose module docstring
+    names its INPUT tables in prose must not have them counted as reads."""
+    assert A.refs_in_source('"""Reads currentai.registry.products."""\nx = 1\n', "python") == set()
+
+
+def test_refs_in_source_unquotes_trino_identifiers():
+    assert A.refs_in_source('FROM "currentai"."registry"."products"', "sql") == {
+        "currentai.registry.products"
+    }
+
+
+def test_refs_in_source_unknown_language_yields_only_depends_on():
+    """An unrecognized language contributes only its explicit depends_on: declarations, never
+    a guess from arbitrary text."""
+    assert A.refs_in_source("-- depends_on: currentai.catalog.stack_map\nblah", "scala") == {
+        "currentai.catalog.stack_map"
+    }
+    assert A.refs_in_source("FROM currentai.registry.products", "scala") == set()
+
+
+def test_table_refs_delegates_to_refs_in_source(tmp_path):
+    """table_refs is now refs_in_source over the file's bytes; the two must agree so the
+    file-based graph and the platform audit extract identically."""
+    code = "SELECT a FROM currentai.registry.products\n"
+    path = _tmp(tmp_path, "d.sql", code)
+    assert A.table_refs(path) == A.refs_in_source(code, "sql")
 
 
 # --- coverage: declared vs tracked, both directions -------------------------------
@@ -698,3 +785,111 @@ def test_a_same_day_refetch_is_legal(monkeypatch):
     one day -- an impossible requirement, not a gate."""
     assert not _provenance(monkeypatch, _mirror(),
                            _mirror(revision=5, hash="h2", local_sha256="S2"))
+
+
+# --- the platform-model audit is reproducible from a committed receipt -------------
+# platform_models: checked is not 57 authored booleans; it is backed by
+# warehouse/audits/platform_models.json, the credential-free receipt of the Phase 0b audit.
+# Regenerate with `uv run python -m build.audit_platform_models` (needs OSO_API_KEY).
+
+from build import audit_platform_models as AU  # noqa: E402
+
+
+def test_platform_audit_receipt_is_wellformed_and_complete():
+    """The full receipt contract, via the module's own validator (a real calendar date,
+    unique model_id/table, every field typed, valid hashes and language, deterministic order).
+    Plus two repository-side facts: no source body is committed, and every in-scope read
+    resolves to an inventory asset."""
+    r = AU.load_receipt()
+    assert AU.validate_receipt(r) == [], AU.validate_receipt(r)
+    ids = set(A.by_table())
+    for m in r["models"]:
+        assert "code" not in m, f"{m['table']}: receipt must not carry the source body"
+        for ref in m["in_scope_reads"]:
+            assert ref.removeprefix("currentai.") in ids, f"{m['table']} reads unlisted {ref}"
+
+
+def _valid_receipt() -> dict:
+    return {
+        "audited_at": "2026-08-22", "org": AU.ORG, "org_id": AU.ORG_ID, "model_count": 2,
+        "models": [
+            {"table": "currentai.a.one", "dataset": "a", "name": "one",
+             "model_id": "693dba9c-44d0-4a12-8e4d-0358023ceb9c",
+             "revision_hash": "a" * 64, "source_sha256": "b" * 64, "language": "SQL",
+             "internal_reads": ["currentai.a.two"], "in_scope_reads": [],
+             "has_repository_source": True},
+            {"table": "currentai.a.two", "dataset": "a", "name": "two",
+             "model_id": "693dba9c-44d0-4a12-8e4d-0358023ceb9d",
+             "revision_hash": "c" * 64, "source_sha256": "d" * 64, "language": "python",
+             "internal_reads": [], "in_scope_reads": [], "has_repository_source": False},
+        ],
+    }
+
+
+def test_receipt_validator_rejects_malformed_receipts():
+    """Every contract violation must fail the validator, so a bad receipt cannot pass by
+    resembling a good one. Same "grade on what you report" discipline the mirror gates carry."""
+    assert AU.validate_receipt(_valid_receipt()) == []
+
+    def broken(mutate):
+        r = _valid_receipt()
+        mutate(r)
+        return AU.validate_receipt(r)
+
+    def set_dup_table(r):
+        r["models"][1]["table"] = "currentai.a.one"; r["models"][1]["name"] = "one"
+
+    def set_bad_dataset(r):
+        # a non-string dataset must fail on its own, even when the table string happens to
+        # match its interpolation (`currentai.1.example`)
+        r["models"][0]["dataset"] = 1
+        r["models"][0]["table"] = "currentai.1.example"
+        r["models"][0]["name"] = "example"
+
+    cases = {
+        "calendar date": lambda r: r.__setitem__("audited_at", "2026-99-99"),
+        "missing top-level field org": lambda r: r.pop("org"),
+        "org is": lambda r: r.__setitem__("org", "someone-else"),
+        "missing top-level field org_id": lambda r: r.pop("org_id"),
+        "org_id is": lambda r: r.__setitem__("org_id", "00000000-0000-0000-0000-000000000000"),
+        "every model entry must be a mapping": lambda r: r["models"].__setitem__(1, "not-a-dict"),
+        "dataset is not a nonempty string": set_bad_dataset,
+        "name is not a nonempty string": lambda r: r["models"][0].__setitem__("name", 2),
+        "duplicate table": set_dup_table,
+        "duplicate model_id": lambda r: r["models"][1].__setitem__("model_id", r["models"][0]["model_id"]),
+        "revision_hash": lambda r: r["models"][0].__setitem__("revision_hash", "abc"),
+        "language": lambda r: r["models"][0].__setitem__("language", "scala"),
+        "has_repository_source": lambda r: r["models"][0].pop("has_repository_source"),
+        "model_count": lambda r: r.__setitem__("model_count", 5),
+        "deterministic": lambda r: r.__setitem__("models", list(reversed(r["models"]))),
+        "subset": lambda r: r["models"][0].__setitem__("in_scope_reads", ["currentai.z.z"]),
+    }
+    for needle, mutate in cases.items():
+        problems = broken(mutate)
+        assert any(needle in p for p in problems), f"{needle}: not caught, got {problems}"
+
+
+def test_platform_model_consumers_match_the_receipt(inventory):
+    """The inventory's platform_model_consumers must be exactly what the receipt derives --
+    so a hand-edit of that field (or of platform_models) without re-running the audit fails,
+    the same binding read_by has to the tree."""
+    derived = AU.consumers_from_receipt(AU.load_receipt())
+    authored = {a["id"]: sorted(a["platform_model_consumers"])
+                for a in inventory if a.get("platform_model_consumers")}
+    assert {k: sorted(v) for k, v in derived.items()} == authored
+
+
+def test_platform_models_checked_is_backed_by_the_census(inventory):
+    """platform_models is `checked` org-wide, so the audit had to cover every deployed model.
+    Every mirrored asset is a deployed UDM and must therefore appear in the receipt census;
+    and no asset may claim `checked` without the receipt existing to back it."""
+    r = AU.load_receipt()
+    census = {m["table"] for m in r["models"]}
+    for asset in inventory:
+        if asset.get("mirror"):
+            assert asset["table"] in census, (
+                f"{asset['id']} is a platform mirror but is absent from the audit census"
+            )
+    checked = [a for a in inventory if a["consumer_checks"]["platform_models"] == "checked"]
+    assert checked, "no asset is checked, yet a receipt exists"
+    assert r["audited_at"], "platform_models is checked but the receipt records no audit date"
