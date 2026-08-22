@@ -185,7 +185,40 @@ def test_no_stored_retirement_candidate_flag(inventory):
 def test_retirement_findings_carry_a_reason_and_issue(inventory):
     for asset in A.retirement_candidates():
         assert asset.get("retirement_reason"), f"{asset['id']}: candidate without a reason"
-        assert asset.get("retirement_issue"), f"{asset['id']}: candidate without an issue"
+        # Truthiness is not enough: the field's whole claim is that a tracking issue EXISTS,
+        # so a placeholder like 'TBD: open an issue' must fail here, not pass.
+        assert A.is_retirement_issue_ref(asset.get("retirement_issue")), (
+            f"{asset['id']}: retirement_issue {asset.get('retirement_issue')!r} is not a real "
+            f"issue reference (#123 or a GitHub issues URL)"
+        )
+
+
+def test_issue_ref_validator_rejects_placeholders_and_prose():
+    """The gate above is only as strong as this validator, so pin its edges."""
+    assert A.is_retirement_issue_ref("#348")
+    assert A.is_retirement_issue_ref("https://github.com/currentai-org/os-ai-map/issues/348")
+    for bad in ("TBD: open an issue before any deletion", "", "  ", "issue 348", "#", "#abc",
+                "see #348 later", None, 348):
+        assert not A.is_retirement_issue_ref(bad), f"{bad!r} should not be a valid issue ref"
+
+
+def test_a_staged_unread_asset_is_not_a_retirement_candidate(monkeypatch):
+    """A model deployed nowhere cannot be retired -- it has no consumers because it does not
+    exist yet, which is a different fact from a live table nobody reads. signal_packages.* is
+    the live case (issue #314). Proven by construction: the same asset flips to a candidate
+    only when its status is a deployed one."""
+    base = {
+        "id": "signal_x.staged_model", "read_by": {}, "publication_role": None,
+        "external_consumers": "none_confirmed", "platform_model_consumers": None,
+        "consumer_checks": {"repository": "checked", "platform_notebooks": "checked",
+                            "platform_models": "checked", "external": "unknown"},
+        "retirement_reason": "unread", "retirement_issue": "#1",
+    }
+    monkeypatch.setattr(A, "assets", lambda: [{**base, "status": "staged"}])
+    assert A.retirement_candidates() == []
+    assert A.no_reviewed_consumers() == []
+    monkeypatch.setattr(A, "assets", lambda: [{**base, "status": "active"}])
+    assert [a["id"] for a in A.retirement_candidates()] == ["signal_x.staged_model"]
 
 
 def test_unaudited_consumer_sources_block_candidacy(inventory):
@@ -752,3 +785,56 @@ def test_a_same_day_refetch_is_legal(monkeypatch):
     one day -- an impossible requirement, not a gate."""
     assert not _provenance(monkeypatch, _mirror(),
                            _mirror(revision=5, hash="h2", local_sha256="S2"))
+
+
+# --- the platform-model audit is reproducible from a committed receipt -------------
+# platform_models: checked is not 57 authored booleans; it is backed by
+# warehouse/audits/platform_models.json, the credential-free receipt of the Phase 0b audit.
+# Regenerate with `uv run python -m build.audit_platform_models` (needs OSO_API_KEY).
+
+from build import audit_platform_models as AU  # noqa: E402
+
+_HEX64 = re.compile(r"^[0-9a-f]{64}$")
+
+
+def test_platform_audit_receipt_is_wellformed_and_complete():
+    r = AU.load_receipt()
+    assert re.fullmatch(r"\d{4}-\d{2}-\d{2}", r["audited_at"]), "receipt has no audit date"
+    assert r["models"], "receipt census is empty"
+    assert r["model_count"] == len(r["models"]), "receipt model_count disagrees with the census"
+    ids = set(A.by_table())
+    for m in r["models"]:
+        assert m["table"].startswith("currentai."), m
+        assert m["model_id"], f"{m['table']}: no model_id"
+        assert _HEX64.match(m["source_sha256"] or ""), f"{m['table']}: no source digest"
+        assert "code" not in m, f"{m['table']}: receipt must not carry the source body"
+        assert isinstance(m["internal_reads"], list) and isinstance(m["in_scope_reads"], list)
+        assert set(m["in_scope_reads"]) <= set(m["internal_reads"]), m["table"]
+        for ref in m["in_scope_reads"]:
+            assert ref.removeprefix("currentai.") in ids, f"{m['table']} reads unlisted {ref}"
+
+
+def test_platform_model_consumers_match_the_receipt(inventory):
+    """The inventory's platform_model_consumers must be exactly what the receipt derives --
+    so a hand-edit of that field (or of platform_models) without re-running the audit fails,
+    the same binding read_by has to the tree."""
+    derived = AU.consumers_from_receipt(AU.load_receipt())
+    authored = {a["id"]: sorted(a["platform_model_consumers"])
+                for a in inventory if a.get("platform_model_consumers")}
+    assert {k: sorted(v) for k, v in derived.items()} == authored
+
+
+def test_platform_models_checked_is_backed_by_the_census(inventory):
+    """platform_models is `checked` org-wide, so the audit had to cover every deployed model.
+    Every mirrored asset is a deployed UDM and must therefore appear in the receipt census;
+    and no asset may claim `checked` without the receipt existing to back it."""
+    r = AU.load_receipt()
+    census = {m["table"] for m in r["models"]}
+    for asset in inventory:
+        if asset.get("mirror"):
+            assert asset["table"] in census, (
+                f"{asset['id']} is a platform mirror but is absent from the audit census"
+            )
+    checked = [a for a in inventory if a["consumer_checks"]["platform_models"] == "checked"]
+    assert checked, "no asset is checked, yet a receipt exists"
+    assert r["audited_at"], "platform_models is checked but the receipt records no audit date"

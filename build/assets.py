@@ -317,6 +317,13 @@ def retirement_candidates() -> list[dict]:
     """
     out = []
     for asset in assets():
+        # A model that has not entered service cannot be retired. `staged` (deployed nowhere,
+        # e.g. signal_packages awaiting #314) and `dormant` (no platform table yet) are
+        # not-in-service states, so they are excluded by construction rather than by an empty
+        # reader list -- an undeployed model has no consumers because it does not exist yet,
+        # which is a different fact from a live table nobody reads.
+        if asset["status"] in ("staged", "dormant"):
+            continue
         rb = asset.get("read_by") or {}
         if any(rb.get(root) for root in ROOTS):
             continue
@@ -338,6 +345,19 @@ def retirement_candidates() -> list[dict]:
             continue
         out.append(asset)
     return out
+
+
+# A retirement_issue must point at a real tracking issue, not a placeholder. `#123` or a full
+# GitHub issues URL. A gate that only checked truthiness let 'TBD: open an issue before any
+# deletion' satisfy a field whose whole claim is that an issue exists -- the recurring
+# "check establishes less than it reports" defect this inventory keeps closing.
+ISSUE_REF_RE = re.compile(
+    r"^(?:#\d+|https://github\.com/[\w.-]+/[\w.-]+/issues/\d+)$"
+)
+
+
+def is_retirement_issue_ref(value: object) -> bool:
+    return isinstance(value, str) and bool(ISSUE_REF_RE.match(value.strip()))
 
 
 def render_dag() -> str:
@@ -563,10 +583,15 @@ def no_reviewed_consumers() -> list[dict]:
     `platform_model_consumers` counts here from Phase 0b onward: a deployed model that reads
     the asset is a reviewed consumer even when it has no repository source, so an asset one
     reads is no longer "no reviewed consumer".
+
+    Not-in-service assets (`staged`, `dormant`) are excluded: a model deployed nowhere has no
+    consumers because it does not exist yet, which is a different state from a live table
+    nobody reads and must not be conflated with it.
     """
     return [
         a for a in assets()
-        if not (a.get("read_by") or {})
+        if a.get("status") not in ("staged", "dormant")
+        and not (a.get("read_by") or {})
         and not a.get("publication_role")
         and not a.get("platform_model_consumers")
         and a.get("external_consumers") == "none_confirmed"

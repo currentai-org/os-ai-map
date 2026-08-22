@@ -1093,9 +1093,10 @@ Migration rules:
 
 Verified against the live `currentai` org on 2026-08-20: <!-- observed:2026-08-20 -->22 datasets,
 <!-- observed:2026-08-20 -->96 tables,
-<!-- count:tracked_warehouse_files -->40 tracked files under `warehouse/`. The structure below is the target, and the
+<!-- count:tracked_warehouse_files -->41 tracked files under `warehouse/`. The structure below is the target, and the
 mirror layout of 11.1 is now in place; the file manifest in 11.4 recorded the exact diff
-from the 2026-08-20 state, executed in this change.
+from the 2026-08-20 state (40 files), and Phase 0b added `warehouse/audits/platform_models.json`,
+the deployed-model audit receipt.
 
 ### 11.1 Target layout
 

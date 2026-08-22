@@ -15,7 +15,9 @@
 #   repository        every tracked model, build module, notebook and workflow
 #   platform_notebooks  all 20 notebooks in the org, including the 16 untracked here
 #   platform_models   CHECKED (Phase 0b). All 41 deployed model definitions in the org
-#                     were read; platform_model_consumers lists any that read an asset.
+#                     were read. platform_model_consumers lists the deployed models with NO
+#                     repository source that read an asset; repo-sourced deployed readers
+#                     already appear in read_by, so they are not repeated there.
 #   external          NOT audited. Nothing outside this org.
 # platform_models is now checked for every asset, so retirement_candidates() can be
 # non-empty; retirement itself still requires maintainer authorization (section 17).
@@ -1410,7 +1412,7 @@ assets:
   materialized: true
   verified_at: '2026-08-20'
   retirement_reason: 'no reviewed consumer as of 2026-08-22: no in-repo code reader, no platform notebook consumer, and (Phase 0b, all 41 deployed model definitions read) no deployed platform model reads it. Recorded as a retirement candidate; deletion requires maintainer authorization per section 17 and is not performed here.'
-  retirement_issue: 'TBD: open an issue before any deletion'
+  retirement_issue: '#348'
 - id: scores.project_summary
   table: currentai.scores.project_summary
   files:
@@ -1603,7 +1605,7 @@ assets:
   materialized: true
   verified_at: '2026-08-20'
   retirement_reason: 'no reviewed consumer as of 2026-08-22: no in-repo code reader, no platform notebook consumer, and (Phase 0b, all 41 deployed model definitions read) no deployed platform model reads it. Recorded as a retirement candidate; deletion requires maintainer authorization per section 17 and is not performed here.'
-  retirement_issue: 'TBD: open an issue before any deletion'
+  retirement_issue: '#348'
   notes: The platform dataset description says "held deliberately unjoined to gap-map products". Unread
     by design.
   mirror:
@@ -1655,7 +1657,7 @@ assets:
   materialized: true
   verified_at: '2026-08-20'
   retirement_reason: 'no reviewed consumer as of 2026-08-22: no in-repo code reader, no platform notebook consumer, and (Phase 0b, all 41 deployed model definitions read) no deployed platform model reads it. Recorded as a retirement candidate; deletion requires maintainer authorization per section 17 and is not performed here.'
-  retirement_issue: 'TBD: open an issue before any deletion'
+  retirement_issue: '#348'
   notes: The stars fallback tier. Reads signal_pypi and signal_huggingface to skip already-measured products,
     so it holds the route precedence pypi > huggingface > stars in SQL. Must not retire before registry.adoption_routes
     compiles that ordering.
@@ -1923,7 +1925,7 @@ assets:
   refresh: 'not deployed; see issue #314'
   owner: carl
   status: staged
-  materialized: true
+  materialized: false
   verified_at: '2026-08-20'
 - id: signal_packages.downloads_daily
   table: currentai.signal_packages.downloads_daily
@@ -1955,7 +1957,7 @@ assets:
   refresh: 'not deployed; see issue #314'
   owner: carl
   status: staged
-  materialized: true
+  materialized: false
   verified_at: '2026-08-20'
 - id: signal_packages.product_adoption
   table: currentai.signal_packages.product_adoption
@@ -1987,10 +1989,8 @@ assets:
   refresh: 'not deployed; see issue #314'
   owner: carl
   status: staged
-  materialized: true
+  materialized: false
   verified_at: '2026-08-20'
-  retirement_reason: 'no reviewed consumer as of 2026-08-22: no in-repo code reader, no platform notebook consumer, and (Phase 0b, all 41 deployed model definitions read) no deployed platform model reads it. Recorded as a retirement candidate; deletion requires maintainer authorization per section 17 and is not performed here.'
-  retirement_issue: 'TBD: open an issue before any deletion'
   notes: Staged, not deployed.
 - id: signal_pypi.package_downloads
   table: currentai.signal_pypi.package_downloads
@@ -2072,7 +2072,7 @@ assets:
   materialized: true
   verified_at: '2026-08-20'
   retirement_reason: 'no reviewed consumer as of 2026-08-22: no in-repo code reader, no platform notebook consumer, and (Phase 0b, all 41 deployed model definitions read) no deployed platform model reads it. Recorded as a retirement candidate; deletion requires maintainer authorization per section 17 and is not performed here.'
-  retirement_issue: 'TBD: open an issue before any deletion'
+  retirement_issue: '#348'
   notes: Citation instrument for benchmark_eval_data, declared in signal_routing.yaml but not yet consumed
     by a repo model. Not dead.
   mirror:

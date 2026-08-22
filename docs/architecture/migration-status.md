@@ -78,17 +78,23 @@ claims, and only the first is true.
 
 ## Assets with no reviewed consumer
 
-**Retirement candidates: <!-- count:retirement_candidates -->5.** Phase 0b read all 41 deployed
+**Retirement candidates: <!-- count:retirement_candidates -->4.** Phase 0b read all 41 deployed
 model definitions in the org, so `consumer_checks.platform_models` is now `checked` on every
 asset and the derived candidate list is non-empty for the first time. It is **recorded, not
 acted on**: section 17 requires explicit maintainer authorization, a stated rollback path and a
 consumer inventory before any deletion. This phase produces the inventory only — no `DROP`, no
-dataset deletion, no description or model change.
+dataset deletion, no description or model change. The four are tracked in issue #348, which each
+entry references in `retirement_issue`; a `TBD` placeholder no longer satisfies that field.
 
-The <!-- count:no_reviewed_consumer -->5 assets below have **no reviewed consumer**: no in-repo
-code reader, no consumer among the twenty notebooks in the organization, and no deployed
-platform model reads them. `external` stays `unknown` — nothing outside this org was read — so
-this is still weaker than "no consumer" and is not itself grounds for deletion.
+The <!-- count:no_reviewed_consumer -->4 assets below are **deployed** and have **no reviewed
+consumer**: no in-repo code reader, no consumer among the twenty notebooks in the organization,
+and no deployed platform model reads them. `external` stays `unknown` — nothing outside this org
+was read — so this is still weaker than "no consumer" and is not itself grounds for deletion.
+
+A not-in-service asset is a different state and is **not** listed here. `signal_packages.product_adoption`
+has no consumer only because it is staged and deployed nowhere (issue #314); a model that has
+not entered service cannot be retired, so `retirement_candidates()` excludes `staged` and
+`dormant` by construction, and the staged `signal_packages` models carry `materialized: false`.
 
 Four assets left this list when the audit found a platform-model reader with no repository
 source, invisible to the repo-derived graph until the model definitions were read — exactly the
@@ -106,7 +112,6 @@ it produces a list for a person and never an action. Several entries are pre-pos
 | `signal_github.product_adoption` | Unread everywhere reviewed, but holds the route precedence `pypi > huggingface > stars` in SQL. **Must not retire before `registry.adoption_routes` compiles that ordering** — nothing would fail if it did. |
 | `signal_semanticscholar.paper_citations` | Citation instrument declared in `signal_routing.yaml`, not yet consumed. Pre-positioned. |
 | `signal_artificialanalysis.model_evaluations` | The platform description says "held deliberately unjoined to gap-map products". Unread by design. |
-| `signal_packages.product_adoption` | Staged and not deployed (issue #314). Its two siblings, `downloads` and `downloads_daily`, have reviewed model consumers and are not listed here. |
 
 ## Consumers with only a deprecated reader
 
