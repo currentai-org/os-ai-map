@@ -5,13 +5,25 @@
 daylight-saving `cronTimezone: America/New_York`. Phase 1 normalizes the **10 in-scope
 pipeline datasets** to `UTC`.
 
-**Warehouse writes are a maintainer step** (see `AGENTS.md`, and §17). The change was
-scoped, its rollback captured, and the exact mutations prepared here, but the writes
-themselves must be run by a maintainer with OSO write credentials — the implementation agent
-cannot mutate the platform.
+**Warehouse writes are a maintainer step** (see `AGENTS.md`, and §17). This runbook was
+prepared read-only, then **applied on 2026-08-22 with maintainer authorization**. All ten
+mutations succeeded and were verified independently of the mutation responses: a fresh
+`ListDatasets` filtered on `cron_timezone` returns 3 datasets on `America/New_York`, down from
+13, and those 3 are the out-of-scope analytical datasets this runbook deliberately excludes.
+
+The rollback below remains valid and is kept for that reason, not because the change is
+pending.
 
 ## Decision on record
 
+- **The cron digits are a dependency staircase, and that is why relabelling is safe.** The
+  ten jobs are staged one hour apart, and the offsets encode the actual dependency order:
+  signals at 01:00–03:00, then `entities` at 04:00 (which reads `signal_goodailist`), `events`
+  at 05:00 (which reads `entities`), `metrics` at 06:00 (which reads `events`). Relabelling
+  moves all ten by the same four hours, so the ordering is preserved exactly. Recomputing the
+  digits per dataset to hold the wall-clock instant — the rejected alternative — would have
+  had to reproduce that staircase by hand, and a single wrong digit would run a model before
+  its input.
 - **Relabel only.** Set `cronTimezone: UTC` and keep the cron digits unchanged. Each job's
   fire time therefore moves from `HH:00` America/New_York to `HH:00` UTC (4–5 hours earlier
   in wall-clock terms), and stops drifting with daylight saving. This was chosen deliberately
@@ -73,6 +85,39 @@ for dataset_id, cron in TARGETS.items():
     r = graphql(M, {"input": {"id": dataset_id, "cron": cron, "cronTimezone": "UTC"}}, tok)
     print(dataset_id, r["updateDataset"]["success"])
 ```
+
+## Applied 2026-08-22
+
+All ten returned `success: true`. Verified by re-query, not by the mutation responses:
+
+| Dataset | cron | cronTimezone | nextRunAt |
+|---|---|---|---|
+| `signal_pypi` | `0 1 * * 0` | UTC | 2026-08-23T01:00:00Z |
+| `signal_lmarena` | `0 1 * * 0` | UTC | 2026-08-23T01:00:00Z |
+| `signal_goodailist` | `0 1 * * 0` | UTC | 2026-08-23T01:00:00Z |
+| `signal_semanticscholar` | `0 1 * * 0` | UTC | 2026-08-23T01:00:00Z |
+| `signal_artificialanalysis` | `0 1 * * 0` | UTC | 2026-08-23T01:00:00Z |
+| `signal_huggingface` | `0 2 * * 0` | UTC | 2026-08-23T02:00:00Z |
+| `signal_github` | `0 3 * * 0` | UTC | 2026-08-23T03:00:00Z |
+| `entities` | `0 4 * * 0` | UTC | 2026-08-23T04:00:00Z |
+| `events` | `0 5 * * 0` | UTC | 2026-08-23T05:00:00Z |
+| `metrics` | `0 6 * * 0` | UTC | 2026-08-23T06:00:00Z |
+
+The staircase is intact, and the Monday openness chain (`evidence` 03:00, `scores` 04:00 UTC)
+still runs a day after `metrics` finishes. The three excluded datasets remain on
+`America/New_York` at 12:00 UTC Sunday, still downstream of `metrics`.
+
+`warehouse/assets.yaml` declares `timezone: UTC` for the 15 assets those ten datasets hold —
+now a statement of platform truth rather than a claim ahead of it.
+
+## Still pending: an observed SCHEDULED run
+
+`last_observed_trigger` remains `null` on all 18 assets that have never been seen to fire, and
+`unobserved_crons` still reads 18. §13 requires run history, not configuration, as proof — so
+this phase is not complete until a `SCHEDULED` run is observed.
+
+The first fire under UTC is **2026-08-23 01:00Z**. Until then the change is applied but
+unproven, and that distinction is the whole point of the gate.
 
 ## Verify (after the next weekly fire)
 

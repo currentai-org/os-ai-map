@@ -11,7 +11,7 @@ file records only where the work has got to. Delete a row when it stops being te
 |---|---|---|
 | 0 — architecture record and inventory | done | Merged (#345). The repository now mirrors the warehouse. |
 | 0b — deployed model audit | done | Merged (#347). All 41 deployed model definitions read; `platform_models` `checked` on every asset; receipt at `warehouse/audits/platform_models.json`. |
-| 1 — schedule normalization | runbook prepared, writes pending maintainer | <!-- observed:2026-08-20 -->13 datasets on `America/New_York`; Phase 1 relabels the 10 in-scope pipeline datasets to UTC (runbook `docs/operations/normalize-schedules.md`), leaving the 3 out-of-scope analytical datasets. <!-- count:unobserved_crons -->18 assets have a cron and no observed run. See below. |
+| 1 — schedule normalization | **applied 2026-08-22, verification pending** | Ten in-scope datasets relabelled to UTC; 3 out-of-scope analytical datasets left on `America/New_York` deliberately. <!-- count:unobserved_crons -->18 assets still have no observed run: §13 requires run history, not configuration, so this is not complete until a `SCHEDULED` fire is seen on/after 2026-08-23 01:00Z. See `docs/operations/normalize-schedules.md`. |
 | 2 — normalized adoption observations | not started | Must compile `registry.adoption_routes` before any signal roll-up retires. |
 | 2B — incremental adoption history | blocked | Blocked on OSO incremental-model support. Not approximated with full-refresh models. |
 | 3 — reconciliation report | not started | Report-only first. |
