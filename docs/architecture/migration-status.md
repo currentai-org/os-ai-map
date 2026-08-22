@@ -3,13 +3,14 @@
 Temporary phase state and the retirement ledger. Rules live in `data-architecture.md`; this
 file records only where the work has got to. Delete a row when it stops being temporary.
 
-**As of 2026-08-20.**
+**As of 2026-08-20; deployed-model audit (Phase 0b) 2026-08-22.**
 
 ## Phase state
 
 | Phase | State | Note |
 |---|---|---|
-| 0 — architecture record and inventory | in review | This PR. Read-only; no platform writes. |
+| 0 — architecture record and inventory | done | Merged (#345). The repository now mirrors the warehouse. |
+| 0b — deployed model audit | in review | This PR. Read-only: all 41 deployed model definitions read; `platform_models` now `checked` on every asset. |
 | 1 — schedule normalization | not started | <!-- observed:2026-08-20 -->10 datasets on `America/New_York`; <!-- count:unobserved_crons -->18 assets have a cron and no observed run. No platform metadata change is pending — see below. |
 | 2 — normalized adoption observations | not started | Must compile `registry.adoption_routes` before any signal roll-up retires. |
 | 2B — incremental adoption history | blocked | Blocked on OSO incremental-model support. Not approximated with full-refresh models. |
@@ -77,32 +78,35 @@ claims, and only the first is true.
 
 ## Assets with no reviewed consumer
 
-**Retirement candidates: <!-- count:retirement_candidates -->0.** Not zero because everything
-is read, but because no asset can be a candidate while `consumer_checks.platform_models` is
-`unknown` — and it is unknown for every asset. Deployed model definitions have not been
-audited. That is Phase 0b.
+**Retirement candidates: <!-- count:retirement_candidates -->5.** Phase 0b read all 41 deployed
+model definitions in the org, so `consumer_checks.platform_models` is now `checked` on every
+asset and the derived candidate list is non-empty for the first time. It is **recorded, not
+acted on**: section 17 requires explicit maintainer authorization, a stated rollback path and a
+consumer inventory before any deletion. This phase produces the inventory only — no `DROP`, no
+dataset deletion, no description or model change.
 
-The <!-- count:no_reviewed_consumer -->9 assets below have **no reviewed consumer**: no
-in-repo code reader, and no consumer among the twenty notebooks in the organization. That is
-a weaker claim than "no consumer", and it is not grounds for deletion. Section 17 requires
-explicit maintainer approval after a consumer inventory, and the inventory is not complete
-until platform models are read.
+The <!-- count:no_reviewed_consumer -->5 assets below have **no reviewed consumer**: no in-repo
+code reader, no consumer among the twenty notebooks in the organization, and no deployed
+platform model reads them. `external` stays `unknown` — nothing outside this org was read — so
+this is still weaker than "no consumer" and is not itself grounds for deletion.
 
-Four of the nine are pre-positioned inputs rather than dead ends. The derived condition
-cannot tell "nobody wants this" from "nothing uses it yet", which is why it produces a list
-for a person and never an action.
+Four assets left this list when the audit found a platform-model reader with no repository
+source, invisible to the repo-derived graph until the model definitions were read — exactly the
+gap Phase 0b existed to close. `catalog.osai_gap_map`, `catalog.osai_subcategory_mapping` and
+`catalog.taxonomy_crosswalk` are read by the deployed `scores.taxonomy` (the first two also by
+`scores.investment_ranking`), and `signal_lmarena.text_leaderboard` by
+`ai_demand_curve.model_capability_current`. All four now carry `platform_model_consumers`.
+
+The derived condition cannot tell "nobody wants this" from "nothing uses it yet", which is why
+it produces a list for a person and never an action. Several entries are pre-positioned inputs.
 
 | Asset | Finding |
 |---|---|
-| `catalog.osai_gap_map` | No reviewed consumer. Also misnamed — a third-party map whose columns read as ours. |
-| `catalog.osai_subcategory_mapping` | No reviewed consumer. |
-| `catalog.taxonomy_crosswalk` | No reviewed consumer. |
-| `scores.ossd_coverage` | No reviewed consumer. |
-| `signal_github.product_adoption` | Unread in repo, but holds the route precedence `pypi > huggingface > stars` in SQL. **Must not retire before `registry.adoption_routes` compiles that ordering** — nothing would fail if it did. |
-| `signal_lmarena.text_leaderboard` | Capability anchor collected ahead of the axis that will use it. Pre-positioned. |
-| `signal_semanticscholar.paper_citations` | Citation instrument declared in `signal_routing.yaml`, not yet consumed by a repo model. Pre-positioned. |
+| `scores.ossd_coverage` | No reviewed consumer, in repo or on the platform. |
+| `signal_github.product_adoption` | Unread everywhere reviewed, but holds the route precedence `pypi > huggingface > stars` in SQL. **Must not retire before `registry.adoption_routes` compiles that ordering** — nothing would fail if it did. |
+| `signal_semanticscholar.paper_citations` | Citation instrument declared in `signal_routing.yaml`, not yet consumed. Pre-positioned. |
 | `signal_artificialanalysis.model_evaluations` | The platform description says "held deliberately unjoined to gap-map products". Unread by design. |
-| `signal_packages.product_adoption` | Staged and not deployed. Issue #314. Its two siblings, `downloads` and `downloads_daily`, DO have reviewed model consumers and are not listed here. |
+| `signal_packages.product_adoption` | Staged and not deployed (issue #314). Its two siblings, `downloads` and `downloads_daily`, have reviewed model consumers and are not listed here. |
 
 ## Consumers with only a deprecated reader
 

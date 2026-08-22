@@ -321,6 +321,60 @@ def test_join_and_subquery_reads_are_found(tmp_path):
     }
 
 
+# --- refs_in_source: the text entry point for deployed model code -------------------
+# Deployed model definitions arrive as a string (the platform's latestRevision.code), not a
+# file. refs_in_source runs the same rules as table_refs so a second extractor cannot drift.
+
+def test_refs_in_source_finds_sql_context():
+    assert A.refs_in_source(
+        "SELECT a FROM currentai.registry.products JOIN currentai.catalog.stack_map ON 1=1", "sql"
+    ) == {"currentai.registry.products", "currentai.catalog.stack_map"}
+
+
+def test_refs_in_source_language_is_case_insensitive():
+    """The platform records the language as `sql`, `SQL` or `python`; all must route."""
+    code = "SELECT a FROM currentai.registry.products"
+    assert A.refs_in_source(code, "SQL") == A.refs_in_source(code, "sql") == {"currentai.registry.products"}
+
+
+def test_refs_in_source_python_literal_and_bare_identifier():
+    assert A.refs_in_source('SQL = "SELECT a FROM currentai.registry.products"', "python") == {
+        "currentai.registry.products"
+    }
+    assert A.refs_in_source('TABLE = "currentai.scores.openness_computed"', "python") == {
+        "currentai.scores.openness_computed"
+    }
+
+
+def test_refs_in_source_excludes_python_docstrings():
+    """The same docstring exclusion table_refs applies -- a model whose module docstring
+    names its INPUT tables in prose must not have them counted as reads."""
+    assert A.refs_in_source('"""Reads currentai.registry.products."""\nx = 1\n', "python") == set()
+
+
+def test_refs_in_source_unquotes_trino_identifiers():
+    assert A.refs_in_source('FROM "currentai"."registry"."products"', "sql") == {
+        "currentai.registry.products"
+    }
+
+
+def test_refs_in_source_unknown_language_yields_only_depends_on():
+    """An unrecognized language contributes only its explicit depends_on: declarations, never
+    a guess from arbitrary text."""
+    assert A.refs_in_source("-- depends_on: currentai.catalog.stack_map\nblah", "scala") == {
+        "currentai.catalog.stack_map"
+    }
+    assert A.refs_in_source("FROM currentai.registry.products", "scala") == set()
+
+
+def test_table_refs_delegates_to_refs_in_source(tmp_path):
+    """table_refs is now refs_in_source over the file's bytes; the two must agree so the
+    file-based graph and the platform audit extract identically."""
+    code = "SELECT a FROM currentai.registry.products\n"
+    path = _tmp(tmp_path, "d.sql", code)
+    assert A.table_refs(path) == A.refs_in_source(code, "sql")
+
+
 # --- coverage: declared vs tracked, both directions -------------------------------
 
 def test_every_tracked_managed_file_is_declared():

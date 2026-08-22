@@ -14,9 +14,11 @@
 # `consumer_checks` records what was actually audited, per check:
 #   repository        every tracked model, build module, notebook and workflow
 #   platform_notebooks  all 20 notebooks in the org, including the 16 untracked here
-#   platform_models   NOT audited. Deployed model definitions were not read.
+#   platform_models   CHECKED (Phase 0b). All 41 deployed model definitions in the org
+#                     were read; platform_model_consumers lists any that read an asset.
 #   external          NOT audited. Nothing outside this org.
-# No asset is a retirement candidate while platform_models is unknown.
+# platform_models is now checked for every asset, so retirement_candidates() can be
+# non-empty; retirement itself still requires maintainer authorization (section 17).
 #
 # This inventory absorbed warehouse/sources.yaml, retired in the mirror-layout restructure.
 # That file's explanation of why two sources carry no fetcher is preserved verbatim here.
@@ -30,7 +32,7 @@
 #   committed CSV was removed on 2026-08-16 with nothing pointed at it.
 ---
 version: 1
-verified_at: '2026-08-21'
+verified_at: '2026-08-22'
 assets:
 - id: catalog.country_populations
   table: currentai.catalog.country_populations
@@ -47,7 +49,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers: none_confirmed
   grain: one row per country_code
@@ -74,10 +76,12 @@ assets:
   read_by:
     models:
     - warehouse/models/entities/models.sql
+  platform_model_consumers:
+  - currentai.state_of_os_ai.family_footprint
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers: none_confirmed
   grain: one row per curated model_family
@@ -101,7 +105,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers:
   - ai-safety-incidents
@@ -135,7 +139,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers:
   - state-of-os-ai
@@ -172,7 +176,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers: none_confirmed
   grain: one row per Hugging Face model_id, mapped to a GitHub repo
@@ -192,10 +196,13 @@ assets:
   authority: platform
   population: long_tail
   release_path: false
+  platform_model_consumers:
+  - currentai.scores.investment_ranking
+  - currentai.scores.taxonomy
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers: none_confirmed
   grain: one row per (layer, subcategory) of a third-party map
@@ -206,10 +213,6 @@ assets:
   status: active
   materialized: true
   verified_at: '2026-08-20'
-  retirement_reason: 'no reviewed consumer found as of 2026-08-20: no in-repo code reader and no platform
-    notebook consumer. Deployed platform model definitions were NOT audited, so this is not evidence that
-    nothing reads it.'
-  retirement_issue: 'TBD: open an issue before any deletion'
 - id: catalog.osai_subcategory_mapping
   table: currentai.catalog.osai_subcategory_mapping
   kind: registry
@@ -219,10 +222,13 @@ assets:
   authority: platform
   population: long_tail
   release_path: false
+  platform_model_consumers:
+  - currentai.scores.investment_ranking
+  - currentai.scores.taxonomy
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers: none_confirmed
   grain: one row per (osai_layer, osai_subcategory)
@@ -234,10 +240,6 @@ assets:
   status: active
   materialized: true
   verified_at: '2026-08-20'
-  retirement_reason: 'no reviewed consumer found as of 2026-08-20: no in-repo code reader and no platform
-    notebook consumer. Deployed platform model definitions were NOT audited, so this is not evidence that
-    nothing reads it.'
-  retirement_issue: 'TBD: open an issue before any deletion'
 - id: catalog.pypi_downloads
   table: currentai.catalog.pypi_downloads
   kind: observations
@@ -253,7 +255,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers:
   - pypi-china-openclaw
@@ -288,7 +290,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers:
   - ai-contribution-load
@@ -313,10 +315,12 @@ assets:
   authority: platform
   population: long_tail
   release_path: false
+  platform_model_consumers:
+  - currentai.scores.taxonomy
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers: none_confirmed
   grain: one row per (osai_layer, goodai_category)
@@ -328,10 +332,6 @@ assets:
   status: active
   materialized: true
   verified_at: '2026-08-20'
-  retirement_reason: 'no reviewed consumer found as of 2026-08-20: no in-repo code reader and no platform
-    notebook consumer. Deployed platform model definitions were NOT audited, so this is not evidence that
-    nothing reads it.'
-  retirement_issue: 'TBD: open an issue before any deletion'
 - id: entities.models
   table: currentai.entities.models
   files:
@@ -362,7 +362,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers:
   - sta-grantmaker-view
@@ -404,7 +404,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers: none_confirmed
   grain: one row per (repo, package_source, package_name)
@@ -445,7 +445,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers:
   - ai-potluck-partners
@@ -493,10 +493,15 @@ assets:
     - warehouse/models/scores/fragility.sql
     - warehouse/models/scores/ossd_coverage.sql
     - warehouse/models/scores/project_summary.sql
+  platform_model_consumers:
+  - currentai.scores.investment_ranking
+  - currentai.scores.taxonomy
+  - currentai.state_of_os_ai.country_activity_monthly
+  - currentai.state_of_os_ai.geo_cohorts
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers:
   - launch-insights
@@ -537,7 +542,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers:
   - ai-contribution-load
@@ -589,7 +594,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers: none_confirmed
   grain: one row per (product_slug, category_slug, dimension, part_index, citing artifact)
@@ -639,10 +644,13 @@ assets:
     - warehouse/models/scores/repos_summary.sql
     notebooks:
     - notebooks/oss-ai-trends.py
+  platform_model_consumers:
+  - currentai.state_of_os_ai.country_activity_monthly
+  - currentai.state_of_os_ai.star_trajectories
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers:
   - state-of-os-ai
@@ -675,7 +683,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers: none_confirmed
   grain: one row per (product_type, signal_type, level)
@@ -699,7 +707,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers: none_confirmed
   grain: one row per category slug
@@ -726,7 +734,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers: none_confirmed
   grain: one row per (category_slug, product_slug)
@@ -753,7 +761,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers: none_confirmed
   grain: one row per (category_slug, product_type, dimension)
@@ -780,7 +788,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers: none_confirmed
   grain: one row per (category_slug, product_type, tier)
@@ -809,7 +817,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers: none_confirmed
   grain: one row per (category_slug, product_type, rule_index)
@@ -836,7 +844,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers: none_confirmed
   grain: one row per (source, column_name, abstain_value)
@@ -864,7 +872,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers: none_confirmed
   grain: one row per (source, license_slug)
@@ -888,7 +896,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers:
   - ai-contribution-load
@@ -923,7 +931,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers:
   - ai-contribution-load
@@ -954,7 +962,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers:
   - sta-grantmaker-view
@@ -979,7 +987,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers: none_confirmed
   grain: one row per (product_slug, relation, target)
@@ -1006,7 +1014,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers: none_confirmed
   grain: one row per (product_slug, category_slug, dimension, part_index)
@@ -1030,7 +1038,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers:
   - ai-contribution-load
@@ -1059,7 +1067,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers: none_confirmed
   grain: one row per (product_slug, category_slug, axis, source_url)
@@ -1083,7 +1091,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers: none_confirmed
   grain: one row per (product_slug, category_slug), all three axes wide
@@ -1112,7 +1120,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers: none_confirmed
   grain: one row per product slug
@@ -1136,7 +1144,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers: none_confirmed
   grain: one row per tail candidate slug
@@ -1174,7 +1182,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers: none_confirmed
   grain: one row per (dependent_repo, dependency_repo)
@@ -1214,10 +1222,12 @@ assets:
   read_by:
     models:
     - warehouse/models/scores/project_summary.sql
+  platform_model_consumers:
+  - currentai.scores.investment_ranking
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers: none_confirmed
   grain: one row per repo
@@ -1244,7 +1254,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers:
   - ai-potluck-partners
@@ -1285,7 +1295,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers: none_confirmed
   grain: one row per (product_slug, category_slug)
@@ -1342,7 +1352,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers: none_confirmed
   grain: one row per (product_slug, category_slug, fact_key)
@@ -1384,7 +1394,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers: none_confirmed
   grain: one row per GitHub org
@@ -1399,9 +1409,7 @@ assets:
   status: active
   materialized: true
   verified_at: '2026-08-20'
-  retirement_reason: 'no reviewed consumer found as of 2026-08-20: no in-repo code reader and no platform
-    notebook consumer. Deployed platform model definitions were NOT audited, so this is not evidence that
-    nothing reads it.'
+  retirement_reason: 'no reviewed consumer as of 2026-08-22: no in-repo code reader, no platform notebook consumer, and (Phase 0b, all 41 deployed model definitions read) no deployed platform model reads it. Recorded as a retirement candidate; deletion requires maintainer authorization per section 17 and is not performed here.'
   retirement_issue: 'TBD: open an issue before any deletion'
 - id: scores.project_summary
   table: currentai.scores.project_summary
@@ -1434,7 +1442,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers:
   - ai-potluck-partners
@@ -1472,10 +1480,14 @@ assets:
     notebooks:
     - notebooks/long-tail-explorer.py
     - notebooks/oss-ai-trends.py
+  platform_model_consumers:
+  - currentai.state_of_os_ai.family_footprint
+  - currentai.state_of_os_ai.org_leaderboard
+  - currentai.state_of_os_ai.robotics_repos
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers:
   - france-ecosystem
@@ -1514,7 +1526,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers:
   - launch-insights
@@ -1543,7 +1555,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers:
   - ai-potluck-partners
@@ -1576,7 +1588,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers: none_confirmed
   grain: one row per Artificial Analysis model id
@@ -1590,9 +1602,7 @@ assets:
   status: active
   materialized: true
   verified_at: '2026-08-20'
-  retirement_reason: 'no reviewed consumer found as of 2026-08-20: no in-repo code reader and no platform
-    notebook consumer. Deployed platform model definitions were NOT audited, so this is not evidence that
-    nothing reads it.'
+  retirement_reason: 'no reviewed consumer as of 2026-08-22: no in-repo code reader, no platform notebook consumer, and (Phase 0b, all 41 deployed model definitions read) no deployed platform model reads it. Recorded as a retirement candidate; deletion requires maintainer authorization per section 17 and is not performed here.'
   retirement_issue: 'TBD: open an issue before any deletion'
   notes: The platform dataset description says "held deliberately unjoined to gap-map products". Unread
     by design.
@@ -1629,7 +1639,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers: none_confirmed
   grain: one row per product_slug, stars fallback tier only
@@ -1644,9 +1654,7 @@ assets:
   status: active
   materialized: true
   verified_at: '2026-08-20'
-  retirement_reason: 'no reviewed consumer found as of 2026-08-20: no in-repo code reader and no platform
-    notebook consumer. Deployed platform model definitions were NOT audited, so this is not evidence that
-    nothing reads it.'
+  retirement_reason: 'no reviewed consumer as of 2026-08-22: no in-repo code reader, no platform notebook consumer, and (Phase 0b, all 41 deployed model definitions read) no deployed platform model reads it. Recorded as a retirement candidate; deletion requires maintainer authorization per section 17 and is not performed here.'
   retirement_issue: 'TBD: open an issue before any deletion'
   notes: The stars fallback tier. Reads signal_pypi and signal_huggingface to skip already-measured products,
     so it holds the route precedence pypi > huggingface > stars in SQL. Must not retire before registry.adoption_routes
@@ -1682,7 +1690,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers:
   - sta-grantmaker-view
@@ -1729,7 +1737,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers: none_confirmed
   grain: one row per repo, live from goodailist.com
@@ -1775,7 +1783,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers: none_confirmed
   grain: one row per (product_slug, artifact_kind, artifact_id) at one fetched_at
@@ -1821,7 +1829,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers: none_confirmed
   grain: one row per product_slug, Hub downloads route
@@ -1855,10 +1863,12 @@ assets:
   authority: platform
   population: gap_map
   release_path: false
+  platform_model_consumers:
+  - currentai.ai_demand_curve.model_capability_current
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers: none_confirmed
   grain: one row per (model_name, category, arena_config)
@@ -1872,10 +1882,6 @@ assets:
   status: active
   materialized: true
   verified_at: '2026-08-20'
-  retirement_reason: 'no reviewed consumer found as of 2026-08-20: no in-repo code reader and no platform
-    notebook consumer. Deployed platform model definitions were NOT audited, so this is not evidence that
-    nothing reads it.'
-  retirement_issue: 'TBD: open an issue before any deletion'
   notes: Capability anchor, collected ahead of the capability axis using it. Not dead.
   mirror:
     model_id: efb89f86-7aff-48df-a78e-ce01234672db
@@ -1909,7 +1915,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers: none_confirmed
   grain: one row per (product_slug, package) over a 30-day window
@@ -1941,7 +1947,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers: none_confirmed
   grain: one row per (package, day)
@@ -1972,7 +1978,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers: none_confirmed
   grain: one row per product_slug across package registries
@@ -1983,9 +1989,7 @@ assets:
   status: staged
   materialized: true
   verified_at: '2026-08-20'
-  retirement_reason: 'no reviewed consumer found as of 2026-08-20: no in-repo code reader and no platform
-    notebook consumer. Deployed platform model definitions were NOT audited, so this is not evidence that
-    nothing reads it.'
+  retirement_reason: 'no reviewed consumer as of 2026-08-22: no in-repo code reader, no platform notebook consumer, and (Phase 0b, all 41 deployed model definitions read) no deployed platform model reads it. Recorded as a retirement candidate; deletion requires maintainer authorization per section 17 and is not performed here.'
   retirement_issue: 'TBD: open an issue before any deletion'
   notes: Staged, not deployed.
 - id: signal_pypi.package_downloads
@@ -2014,7 +2018,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers: none_confirmed
   grain: one row per (product_slug, package) over a 30-day window
@@ -2053,7 +2057,7 @@ assets:
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers: none_confirmed
   grain: one row per (product_slug, arxiv_id)
@@ -2067,9 +2071,7 @@ assets:
   status: active
   materialized: true
   verified_at: '2026-08-20'
-  retirement_reason: 'no reviewed consumer found as of 2026-08-20: no in-repo code reader and no platform
-    notebook consumer. Deployed platform model definitions were NOT audited, so this is not evidence that
-    nothing reads it.'
+  retirement_reason: 'no reviewed consumer as of 2026-08-22: no in-repo code reader, no platform notebook consumer, and (Phase 0b, all 41 deployed model definitions read) no deployed platform model reads it. Recorded as a retirement candidate; deletion requires maintainer authorization per section 17 and is not performed here.'
   retirement_issue: 'TBD: open an issue before any deletion'
   notes: Citation instrument for benchmark_eval_data, declared in signal_routing.yaml but not yet consumed
     by a repo model. Not dead.

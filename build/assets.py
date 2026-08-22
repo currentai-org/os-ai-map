@@ -178,15 +178,34 @@ DEPENDS_ON_RE = re.compile(
 )
 
 
+def refs_in_source(code: str, language: str) -> set[str]:
+    """Fully-qualified tables referenced by model source given as TEXT.
+
+    The text-based twin of `table_refs`, for deployed model definitions that arrive as a
+    string (from the platform's `latestRevision.code`) rather than a file on disk. It runs
+    the SAME rules -- SQL context only, quoted Trino identifiers unquoted, comments and
+    docstrings stripped, the `depends_on:` escape hatch honored -- because a second extractor
+    would drift from the first, which is the failure this whole inventory exists to prevent.
+
+    `language` is matched case-insensitively: the platform records it as `sql`, `SQL` or
+    `python`. Anything else contributes only its explicit `depends_on:` declarations.
+    """
+    declared = set(DEPENDS_ON_RE.findall(code))
+    lang = (language or "").strip().lower()
+    if lang == "sql":
+        return _refs_in_sql(code) | declared
+    if lang in ("python", "py"):
+        return _refs_in_python(code) | declared
+    return declared
+
+
+_SUFFIX_LANGUAGE = {".sql": "sql", ".py": "python"}
+
+
 def table_refs(path: Path) -> set[str]:
     """Fully-qualified tables this file queries."""
     src = path.read_text(encoding="utf-8", errors="replace")
-    declared = set(DEPENDS_ON_RE.findall(src))
-    if path.suffix == ".sql":
-        return _refs_in_sql(src) | declared
-    if path.suffix == ".py":
-        return _refs_in_python(src) | declared
-    return declared
+    return refs_in_source(src, _SUFFIX_LANGUAGE.get(path.suffix, ""))
 
 
 def tracked_files(patterns: list[str]) -> list[Path]:
@@ -305,9 +324,15 @@ def retirement_candidates() -> list[dict]:
             continue
         if asset.get("external_consumers") != "none_confirmed":
             continue
-        # The specification's condition includes "no deployed platform model reads it".
-        # Notebooks are not models. Until platform model definitions are audited, an
-        # asset cannot be a retirement candidate however unread it looks.
+        # "no deployed platform model reads it" (11.2). The Phase 0b audit records those in
+        # `platform_model_consumers` -- deployed models with no repository source, so they
+        # cannot appear in the repo-derived read_by above. A non-empty list is a real reader.
+        if asset.get("platform_model_consumers"):
+            continue
+        # An asset nobody checked beyond the repository is not evidence of anything. Notebooks
+        # are not models: before Phase 0b every asset carried platform_models: unknown and none
+        # could be a candidate; the audit set it to checked, which is why this list is now able
+        # to be non-empty at all.
         checks = asset.get("consumer_checks") or {}
         if any(checks.get(k) != "checked" for k in ("repository", "platform_notebooks", "platform_models")):
             continue
@@ -532,12 +557,18 @@ def no_reviewed_consumers() -> list[dict]:
     disagree and a gate can notice.
 
     Weaker than `retirement_candidates`, which additionally requires every consumer
-    source to have been checked. This says only: nothing we looked at reads it.
+    source to have been checked. This says only: nothing we looked at reads it -- no in-repo
+    reader, no reviewed platform-model reader, and no confirmed external consumer.
+
+    `platform_model_consumers` counts here from Phase 0b onward: a deployed model that reads
+    the asset is a reviewed consumer even when it has no repository source, so an asset one
+    reads is no longer "no reviewed consumer".
     """
     return [
         a for a in assets()
         if not (a.get("read_by") or {})
         and not a.get("publication_role")
+        and not a.get("platform_model_consumers")
         and a.get("external_consumers") == "none_confirmed"
     ]
 
