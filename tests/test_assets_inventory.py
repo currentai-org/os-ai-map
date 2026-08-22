@@ -811,7 +811,7 @@ def test_platform_audit_receipt_is_wellformed_and_complete():
 
 def _valid_receipt() -> dict:
     return {
-        "audited_at": "2026-08-22", "org": "currentai", "org_id": "x", "model_count": 2,
+        "audited_at": "2026-08-22", "org": AU.ORG, "org_id": AU.ORG_ID, "model_count": 2,
         "models": [
             {"table": "currentai.a.one", "dataset": "a", "name": "one",
              "model_id": "693dba9c-44d0-4a12-8e4d-0358023ceb9c",
@@ -839,8 +839,22 @@ def test_receipt_validator_rejects_malformed_receipts():
     def set_dup_table(r):
         r["models"][1]["table"] = "currentai.a.one"; r["models"][1]["name"] = "one"
 
+    def set_bad_dataset(r):
+        # a non-string dataset must fail on its own, even when the table string happens to
+        # match its interpolation (`currentai.1.example`)
+        r["models"][0]["dataset"] = 1
+        r["models"][0]["table"] = "currentai.1.example"
+        r["models"][0]["name"] = "example"
+
     cases = {
         "calendar date": lambda r: r.__setitem__("audited_at", "2026-99-99"),
+        "missing top-level field org": lambda r: r.pop("org"),
+        "org is": lambda r: r.__setitem__("org", "someone-else"),
+        "missing top-level field org_id": lambda r: r.pop("org_id"),
+        "org_id is": lambda r: r.__setitem__("org_id", "00000000-0000-0000-0000-000000000000"),
+        "every model entry must be a mapping": lambda r: r["models"].__setitem__(1, "not-a-dict"),
+        "dataset is not a nonempty string": set_bad_dataset,
+        "name is not a nonempty string": lambda r: r["models"][0].__setitem__("name", 2),
         "duplicate table": set_dup_table,
         "duplicate model_id": lambda r: r["models"][1].__setitem__("model_id", r["models"][0]["model_id"]),
         "revision_hash": lambda r: r["models"][0].__setitem__("revision_hash", "abc"),

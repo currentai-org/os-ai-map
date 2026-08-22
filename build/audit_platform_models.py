@@ -116,31 +116,47 @@ def validate_receipt(receipt: dict) -> list[str]:
     type must all fail here, not slip through a nonempty-list check.
     """
     problems: list[str] = []
+    for key in ("audited_at", "org", "org_id", "model_count", "models"):
+        if key not in receipt:
+            problems.append(f"missing top-level field {key}")
     if not is_iso_date(str(receipt.get("audited_at"))):
         problems.append(f"audited_at {receipt.get('audited_at')!r} is not a real calendar date")
+    # The org is not a free parameter: a receipt for a different org is not this audit.
+    if receipt.get("org") != ORG:
+        problems.append(f"org is {receipt.get('org')!r}, expected {ORG!r}")
+    if receipt.get("org_id") != ORG_ID:
+        problems.append(f"org_id is {receipt.get('org_id')!r}, expected {ORG_ID!r}")
 
     models = receipt.get("models")
     if not isinstance(models, list) or not models:
         problems.append("models is empty or not a list")
         return problems
+    if not all(isinstance(m, dict) for m in models):
+        problems.append("every model entry must be a mapping")
+        return problems  # the per-model checks below would raise on a non-mapping
     if receipt.get("model_count") != len(models):
         problems.append(f"model_count {receipt.get('model_count')} != {len(models)} listed")
 
     tables = [m.get("table") for m in models]
-    if tables != sorted(tables):
+    if all(isinstance(t, str) for t in tables) and tables != sorted(tables):
         problems.append("models are not in deterministic (table-sorted) order")
     for field, seen in (("table", tables), ("model_id", [m.get("model_id") for m in models])):
-        dupes = sorted({v for v in seen if seen.count(v) > 1})
+        dupes = sorted({v for v in seen if seen.count(v) > 1}, key=str)
         if dupes:
             problems.append(f"duplicate {field}: {dupes}")
 
     for m in models:
         t = m.get("table")
-        where = t or "<no table>"
+        where = t if isinstance(t, str) else "<no table>"
+        ds, name = m.get("dataset"), m.get("name")
+        if not (isinstance(ds, str) and ds):
+            problems.append(f"{where}: dataset is not a nonempty string")
+        if not (isinstance(name, str) and name):
+            problems.append(f"{where}: name is not a nonempty string")
         if not (isinstance(t, str) and t.startswith("currentai.")):
             problems.append(f"{where}: table is not a currentai.* string")
-        elif t != f"currentai.{m.get('dataset')}.{m.get('name')}":
-            problems.append(f"{where}: table disagrees with dataset/name {m.get('dataset')}.{m.get('name')}")
+        elif isinstance(ds, str) and isinstance(name, str) and t != f"currentai.{ds}.{name}":
+            problems.append(f"{where}: table disagrees with dataset/name {ds}.{name}")
         if not (isinstance(m.get("model_id"), str) and _UUID.match(m.get("model_id") or "")):
             problems.append(f"{where}: model_id is not a UUID")
         if not _HEX64.match(m.get("revision_hash") or ""):
