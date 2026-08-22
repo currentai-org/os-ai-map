@@ -32,12 +32,14 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import sys
-from datetime import date, datetime, timezone
+from datetime import datetime, timezone
 from pathlib import Path
 
 from build import assets as A
 from build.publish_registry import graphql
+from build.vocabulary import is_iso_date
 
 ORG_ID = "ad7f4c1c-dd2f-430e-a831-e7f1f16e6d9e"
 ORG = "currentai"
@@ -98,6 +100,64 @@ def build_receipt(models: list[dict], as_of: str) -> dict:
         "model_count": len(rows),
         "models": rows,
     }
+
+
+_HEX64 = re.compile(r"^[0-9a-f]{64}$")
+_UUID = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
+RECOGNIZED_LANGUAGES = {"sql", "python"}  # matched case-insensitively; the platform emits both cases
+
+
+def validate_receipt(receipt: dict) -> list[str]:
+    """Every part of the receipt contract, so a committed receipt cannot lie by omission.
+
+    Shape only -- the online `--check` is the authoritative comparison against the live
+    platform. This guards the committed bytes: an impossible `audited_at`, a duplicated or
+    dropped model, a missing revision hash, an unrecognized language or a field of the wrong
+    type must all fail here, not slip through a nonempty-list check.
+    """
+    problems: list[str] = []
+    if not is_iso_date(str(receipt.get("audited_at"))):
+        problems.append(f"audited_at {receipt.get('audited_at')!r} is not a real calendar date")
+
+    models = receipt.get("models")
+    if not isinstance(models, list) or not models:
+        problems.append("models is empty or not a list")
+        return problems
+    if receipt.get("model_count") != len(models):
+        problems.append(f"model_count {receipt.get('model_count')} != {len(models)} listed")
+
+    tables = [m.get("table") for m in models]
+    if tables != sorted(tables):
+        problems.append("models are not in deterministic (table-sorted) order")
+    for field, seen in (("table", tables), ("model_id", [m.get("model_id") for m in models])):
+        dupes = sorted({v for v in seen if seen.count(v) > 1})
+        if dupes:
+            problems.append(f"duplicate {field}: {dupes}")
+
+    for m in models:
+        t = m.get("table")
+        where = t or "<no table>"
+        if not (isinstance(t, str) and t.startswith("currentai.")):
+            problems.append(f"{where}: table is not a currentai.* string")
+        elif t != f"currentai.{m.get('dataset')}.{m.get('name')}":
+            problems.append(f"{where}: table disagrees with dataset/name {m.get('dataset')}.{m.get('name')}")
+        if not (isinstance(m.get("model_id"), str) and _UUID.match(m.get("model_id") or "")):
+            problems.append(f"{where}: model_id is not a UUID")
+        if not _HEX64.match(m.get("revision_hash") or ""):
+            problems.append(f"{where}: revision_hash is not a 64-hex digest")
+        if not _HEX64.match(m.get("source_sha256") or ""):
+            problems.append(f"{where}: source_sha256 is not a 64-hex digest")
+        if str(m.get("language") or "").lower() not in RECOGNIZED_LANGUAGES:
+            problems.append(f"{where}: unrecognized language {m.get('language')!r}")
+        for key in ("internal_reads", "in_scope_reads"):
+            if not isinstance(m.get(key), list) or not all(isinstance(x, str) for x in m.get(key) or []):
+                problems.append(f"{where}: {key} is not a list of strings")
+        if isinstance(m.get("internal_reads"), list) and isinstance(m.get("in_scope_reads"), list):
+            if not set(m["in_scope_reads"]) <= set(m["internal_reads"]):
+                problems.append(f"{where}: in_scope_reads is not a subset of internal_reads")
+        if not isinstance(m.get("has_repository_source"), bool):
+            problems.append(f"{where}: has_repository_source is not a boolean")
+    return problems
 
 
 def consumers_from_receipt(receipt: dict) -> dict[str, list[str]]:

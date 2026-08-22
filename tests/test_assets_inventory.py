@@ -794,24 +794,65 @@ def test_a_same_day_refetch_is_legal(monkeypatch):
 
 from build import audit_platform_models as AU  # noqa: E402
 
-_HEX64 = re.compile(r"^[0-9a-f]{64}$")
-
 
 def test_platform_audit_receipt_is_wellformed_and_complete():
+    """The full receipt contract, via the module's own validator (a real calendar date,
+    unique model_id/table, every field typed, valid hashes and language, deterministic order).
+    Plus two repository-side facts: no source body is committed, and every in-scope read
+    resolves to an inventory asset."""
     r = AU.load_receipt()
-    assert re.fullmatch(r"\d{4}-\d{2}-\d{2}", r["audited_at"]), "receipt has no audit date"
-    assert r["models"], "receipt census is empty"
-    assert r["model_count"] == len(r["models"]), "receipt model_count disagrees with the census"
+    assert AU.validate_receipt(r) == [], AU.validate_receipt(r)
     ids = set(A.by_table())
     for m in r["models"]:
-        assert m["table"].startswith("currentai."), m
-        assert m["model_id"], f"{m['table']}: no model_id"
-        assert _HEX64.match(m["source_sha256"] or ""), f"{m['table']}: no source digest"
         assert "code" not in m, f"{m['table']}: receipt must not carry the source body"
-        assert isinstance(m["internal_reads"], list) and isinstance(m["in_scope_reads"], list)
-        assert set(m["in_scope_reads"]) <= set(m["internal_reads"]), m["table"]
         for ref in m["in_scope_reads"]:
             assert ref.removeprefix("currentai.") in ids, f"{m['table']} reads unlisted {ref}"
+
+
+def _valid_receipt() -> dict:
+    return {
+        "audited_at": "2026-08-22", "org": "currentai", "org_id": "x", "model_count": 2,
+        "models": [
+            {"table": "currentai.a.one", "dataset": "a", "name": "one",
+             "model_id": "693dba9c-44d0-4a12-8e4d-0358023ceb9c",
+             "revision_hash": "a" * 64, "source_sha256": "b" * 64, "language": "SQL",
+             "internal_reads": ["currentai.a.two"], "in_scope_reads": [],
+             "has_repository_source": True},
+            {"table": "currentai.a.two", "dataset": "a", "name": "two",
+             "model_id": "693dba9c-44d0-4a12-8e4d-0358023ceb9d",
+             "revision_hash": "c" * 64, "source_sha256": "d" * 64, "language": "python",
+             "internal_reads": [], "in_scope_reads": [], "has_repository_source": False},
+        ],
+    }
+
+
+def test_receipt_validator_rejects_malformed_receipts():
+    """Every contract violation must fail the validator, so a bad receipt cannot pass by
+    resembling a good one. Same "grade on what you report" discipline the mirror gates carry."""
+    assert AU.validate_receipt(_valid_receipt()) == []
+
+    def broken(mutate):
+        r = _valid_receipt()
+        mutate(r)
+        return AU.validate_receipt(r)
+
+    def set_dup_table(r):
+        r["models"][1]["table"] = "currentai.a.one"; r["models"][1]["name"] = "one"
+
+    cases = {
+        "calendar date": lambda r: r.__setitem__("audited_at", "2026-99-99"),
+        "duplicate table": set_dup_table,
+        "duplicate model_id": lambda r: r["models"][1].__setitem__("model_id", r["models"][0]["model_id"]),
+        "revision_hash": lambda r: r["models"][0].__setitem__("revision_hash", "abc"),
+        "language": lambda r: r["models"][0].__setitem__("language", "scala"),
+        "has_repository_source": lambda r: r["models"][0].pop("has_repository_source"),
+        "model_count": lambda r: r.__setitem__("model_count", 5),
+        "deterministic": lambda r: r.__setitem__("models", list(reversed(r["models"]))),
+        "subset": lambda r: r["models"][0].__setitem__("in_scope_reads", ["currentai.z.z"]),
+    }
+    for needle, mutate in cases.items():
+        problems = broken(mutate)
+        assert any(needle in p for p in problems), f"{needle}: not caught, got {problems}"
 
 
 def test_platform_model_consumers_match_the_receipt(inventory):
