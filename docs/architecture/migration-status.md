@@ -10,8 +10,8 @@ file records only where the work has got to. Delete a row when it stops being te
 | Phase | State | Note |
 |---|---|---|
 | 0 — architecture record and inventory | done | Merged (#345). The repository now mirrors the warehouse. |
-| 0b — deployed model audit | in review | This PR. Read-only: all 41 deployed model definitions read; `platform_models` now `checked` on every asset. |
-| 1 — schedule normalization | not started | <!-- observed:2026-08-20 -->10 datasets on `America/New_York`; <!-- count:unobserved_crons -->18 assets have a cron and no observed run. No platform metadata change is pending — see below. |
+| 0b — deployed model audit | done | Merged (#347). All 41 deployed model definitions read; `platform_models` `checked` on every asset; receipt at `warehouse/audits/platform_models.json`. |
+| 1 — schedule normalization | runbook prepared, writes pending maintainer | <!-- observed:2026-08-20 -->13 datasets on `America/New_York`; Phase 1 relabels the 10 in-scope pipeline datasets to UTC (runbook `docs/operations/normalize-schedules.md`), leaving the 3 out-of-scope analytical datasets. <!-- count:unobserved_crons -->18 assets have a cron and no observed run. See below. |
 | 2 — normalized adoption observations | not started | Must compile `registry.adoption_routes` before any signal roll-up retires. |
 | 2B — incremental adoption history | blocked | Blocked on OSO incremental-model support. Not approximated with full-refresh models. |
 | 3 — reconciliation report | not started | Report-only first. |
@@ -54,6 +54,14 @@ line. The remediation is therefore ordered and platform-side:
 2. release a new revision of each affected model;
 3. refetch those revisions into the mirror under `warehouse/models/<dataset>/`;
 4. update each mirror's `revision`, `hash`, `local_sha256` and `synced_at` together.
+
+**Schedule normalization to UTC (Phase 1).** Ten in-scope pipeline datasets carry a
+daylight-saving `cronTimezone: America/New_York`. The relabel-only change (set `cronTimezone: UTC`,
+keep the cron digits) is scoped, its rollback captured, and the exact reversible `updateDataset`
+mutations prepared in `docs/operations/normalize-schedules.md`. The writes are a maintainer step
+and are not yet applied; `SCHEDULED`-run verification waits for the first weekly (Sunday) fire
+under UTC on/after 2026-08-23. The repository's `timezone` declarations stay `America/New_York`
+until the platform actually reflects UTC.
 
 **No description or schema change is pending.** An earlier draft of this file recorded a
 correction for the `catalog.stack_map` dataset description, on the grounds that its "read by no
