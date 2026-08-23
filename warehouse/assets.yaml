@@ -668,6 +668,32 @@ assets:
   status: active
   materialized: true
   verified_at: '2026-08-20'
+- id: observations.source_runs
+  table: currentai.observations.source_runs
+  kind: observations
+  current_namespace: observations
+  target_namespace: observations
+  migration_status: complete
+  authority: repo
+  population: gap_map
+  release_path: false
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: checked
+    external: unknown
+  external_consumers: none_confirmed
+  grain: one row per (run_id, materialized model)
+  producer: build/snapshot_source_runs.py
+  classification_note: a current-run execution snapshot at captured_at; makes no history
+    claim and retains no history
+  refresh: 'not deployed; snapshot emitted read-only from the control-plane runs API by
+    build/snapshot_source_runs.py, see issue #355'
+  dataset_id: 98624afe-44bb-4963-9d27-e50ebc4f96a0
+  owner: carl
+  status: staged
+  materialized: false
+  verified_at: '2026-08-23'
 - id: registry.adoption_aggregation_rules
   table: currentai.registry.adoption_aggregation_rules
   kind: registry
