@@ -412,8 +412,10 @@ def adoption_bands(shared_rubrics: dict) -> tuple[list[dict], list[str]]:
         for band in bands:
             rows.append({
                 # The usage_volume ladder is per product type — a dataset's downloads run an
-                # order below a package's — so its band_set_id is `type:<product_type>`, and
-                # a usage_volume route resolves it per type via the `type:*` sentinel.
+                # order below a package's — so its band_set_id is `type:<product_type>`. There is
+                # no `type:*` sentinel: the route-to-band link now lives in
+                # `registry.adoption_route_band_sets`, one row per route x product type, so a
+                # usage_volume route resolves per type by an ordinary join rather than a sentinel.
                 "band_set_id": band_set_id("type", product_type),
                 "product_type": product_type,
                 "signal_type": "usage_volume",

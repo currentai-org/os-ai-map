@@ -98,11 +98,20 @@ M_RUN = """mutation($input: CreateStaticModelRunRequestInput!){
 M_DELETE = """mutation($id: ID!){ deleteStaticModel(id:$id){ success message } }"""
 
 
-def resolve_dataset(name: str, org_id: str, token: str) -> str:
+def resolve_dataset(name: str, org_id: str, token: str, create: bool = True) -> str | None:
+    """The registry dataset's id, creating it when absent.
+
+    `create` gates the one mutation this resolver performs, mirroring `resolve_static_models`.
+    A `--dry-run` publish calls it False so that resolving the dataset reads the platform but
+    never writes to it: an absent dataset returns `None` and is left for the caller to report
+    as a would-create, rather than being created via `M_DATASET` before the dry-run returns.
+    """
     found = graphql(Q_DATASETS, {"where": {"org_id": {"eq": org_id}, "name": {"eq": name}}}, token)
     edges = found["datasets"]["edges"]
     if edges:
         return edges[0]["node"]["id"]
+    if not create:
+        return None
     created = graphql(
         M_DATASET,
         {
@@ -199,8 +208,8 @@ def main() -> int:
     missing = [t for t in TABLES if not (args.dir / f"{t}.csv").exists()]
     if missing:
         print(
-            f"missing CSVs: {missing}. Run build.serialize_registry, build.serialize_rubric "
-            f"and build.serialize_scores first.",
+            f"missing CSVs: {missing}. Run build.serialize_registry, build.serialize_rubric, "
+            f"build.serialize_routing and build.serialize_scores first.",
             file=sys.stderr,
         )
         return 2
@@ -209,9 +218,19 @@ def main() -> int:
     populated = tuple(t for t in TABLES if counts[t])
     empty = tuple(t for t in TABLES if not counts[t])
 
-    dataset_id = resolve_dataset(dataset_name, org_id, token)
-    # A dry-run reads ids but must not write: `create=False` records a missing model as a
-    # would-create rather than creating it before the early return below.
+    # A dry-run reads ids but must not write: `create=not args.dry_run` keeps the resolver from
+    # firing `M_DATASET` when the dataset is absent. It then returns None, and there is no
+    # dataset to resolve static models against — so the plan reports every populated table as a
+    # would-create and returns without a single mutation.
+    dataset_id = resolve_dataset(dataset_name, org_id, token, create=not args.dry_run)
+    if dataset_id is None:
+        print(f"would create dataset {dataset_name}")
+        for table in populated:
+            print(f"  would create {table} and upload {table}.csv ({counts[table]:,} rows)")
+        return 0
+
+    # `create=False` on a dry-run records a missing model as a would-create rather than
+    # creating it before the early return below.
     models = resolve_static_models(dataset_id, org_id, token, populated, create=not args.dry_run)
     print(f"dataset {dataset_name} = {dataset_id}")
 

@@ -286,13 +286,15 @@ that there is exactly one.
 Inspected 2026-08-20, `dimensions.adoption` carries seven routes whose fields are:
 
 ```text
-source  column  signal_type  confidence  unit  cap  cap_because  bands
+source  column  signal_type  authority  confidence  unit  cap  cap_because  bands
 applies_to_categories  requires_evidence  hand_authored  vocabulary
 vocabulary_note  note  attribution_note
 ```
 
-plus the dimension-level `sum_across_artifacts` and `sum_note`. Two routes have
-`source: null`, and only two of seven carry inline `bands`.
+plus the dimension-level `aggregation` block, a list of named rules each carrying `rule_id`,
+`method`, `scope` and `applies_to_instrument` (a route picks up its rule by matching
+instrument, so the method string is declared once here rather than on every route). Two routes
+have `source: null`, and only two of seven carry inline `bands`.
 
 A single flat table cannot hold this without loss, so normalize:
 
@@ -336,6 +338,13 @@ abstain_rule
 vocabulary                   qualitative vocabulary where the route declares one
 routing_policy_version       the routing YAML version; NOT a release/declaration identity
 ```
+
+`route_order` is precedence, and precedence is monotonic in authority: the five `authoritative`
+routes come first, in list order, then the two `fallback` routes — the last resorts before
+abstention. So the hand-authored `active_users` route (authoritative) precedes the
+`stars_fallback` route, correcting a prior ordering where the authoritative hand-authored route
+sat after the fallback stars route. Within the authoritative download channels the order is the
+ADR-001 precedence `pypi > huggingface > stars`, so `pypi` leads the two Hugging Face routes.
 
 The YAML's `signal_type` compiles to `instrument_type`; `metric_type` is derived from the
 `column`; and `artifact_kind` is read from the source's declared `artifact_key` in the `sources:`

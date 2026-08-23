@@ -40,7 +40,7 @@ from pathlib import Path
 import yaml
 
 from build.serialize_registry import write_tables
-from build.vocabulary import SIGNAL_TYPES
+from build.vocabulary import ROUTABLE_INSTRUMENTS
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT_DIR = ROOT / "build" / "registry"
@@ -191,10 +191,10 @@ def adoption_aggregation_rules(routing: dict) -> tuple[list[dict], list[str]]:
                 f"aggregation rule {rule_id!r}: scope {scope!r} is not one of "
                 f"{sorted(_AGG_SCOPES)}"
             )
-        if instrument not in SIGNAL_TYPES:
+        if instrument not in ROUTABLE_INSTRUMENTS:
             errors.append(
                 f"aggregation rule {rule_id!r}: applies_to_instrument {instrument!r} is not "
-                f"one of {sorted(SIGNAL_TYPES)}"
+                f"one of {sorted(ROUTABLE_INSTRUMENTS)}"
             )
         elif instrument in seen_instruments:
             errors.append(
@@ -248,15 +248,41 @@ def adoption_routes(routing: dict, aggregation_by_instrument: dict[str, str]) ->
             continue
         seen_ids.add(route_id)
 
-        # The instrument must be one the corpus recognizes. `signal_type` is declared on the
-        # route and is not derivable from anything else, so a typo like `mystery` would compile
-        # an eighth route with no error until it is checked against the canonical vocabulary
-        # build/vocabulary.py owns (shared with validate.py so the two cannot disagree).
-        if signal_type not in SIGNAL_TYPES:
+        # The instrument must be one the corpus recognizes AND can route. `signal_type` is
+        # declared on the route and is not derivable from anything else, so a typo like `mystery`
+        # would compile an eighth route with no error until it is checked against the canonical
+        # vocabulary build/vocabulary.py owns. `unknown` is in that vocabulary — a recorded score
+        # with no routable instrument — but it is not a routable instrument, so routes are gated
+        # against the narrower ROUTABLE_INSTRUMENTS, not the full SIGNAL_TYPES validate.py uses.
+        if signal_type not in ROUTABLE_INSTRUMENTS:
             errors.append(
                 f"route {route_id!r}: signal_type {signal_type!r} is not one of "
-                f"{sorted(SIGNAL_TYPES)}"
+                f"{sorted(ROUTABLE_INSTRUMENTS)}"
             )
+
+        # A route's source, column and hand_authored flag are not independent: a sourced route
+        # reads a machine column and is fetched, so it must name a nonempty column and must not
+        # claim to be hand-authored; a source-less route is hand-read, so it must declare
+        # `hand_authored: true` and name no column. A `huggingface_model.` route id with an empty
+        # column, or a hand_authored flag on a fetched source, is a contradiction, not a blank.
+        if source:
+            if not column:
+                errors.append(
+                    f"route {route_id!r}: a sourced route must declare a nonempty column"
+                )
+            if route.get("hand_authored"):
+                errors.append(
+                    f"route {route_id!r}: a sourced route must not be hand_authored"
+                )
+        else:
+            if not route.get("hand_authored"):
+                errors.append(
+                    f"route {route_id!r}: a route with no source must be hand_authored"
+                )
+            if column:
+                errors.append(
+                    f"route {route_id!r}: a route with no source must not declare a column"
+                )
 
         # `artifact_kind` is READ from the source's declared `artifact_key`, not guessed from a
         # hardcoded map — so `semanticscholar` compiles to `arxiv` and matches the registry. A
@@ -326,20 +352,36 @@ def adoption_routes(routing: dict, aggregation_by_instrument: dict[str, str]) ->
     return rows, errors
 
 
-def adoption_route_scopes(routing: dict) -> list[dict]:
+def adoption_route_scopes(
+    routing: dict, categories: dict | None = None
+) -> tuple[list[dict], list[str]]:
     """Route -> the category it is scoped to, from `applies_to_categories`.
 
     A route with no `applies_to_categories` emits no rows and applies to every category; a
     scope row narrows it. Emitted one row per category so a join never splits a string.
+
+    A scope names a category by slug, so a slug no `sources/categories/` file declares is a
+    dangling reference: the scope would narrow the route to a category that does not exist,
+    which evaluation could never satisfy. When `categories` is threaded in, every scope value
+    is checked against the declared slugs and an undeclared one is a hard error rather than a
+    row nothing joins to. `None` means "not supplied" and the check is skipped — the compiler
+    only knows the declared categories when `main()` loads them.
     """
+    valid = set(categories) if categories is not None else None
     rows: list[dict] = []
+    errors: list[str] = []
     for route in _routes(routing):
         route_id = _route_id(route)
         for category in route.get("applies_to_categories") or []:
+            if valid is not None and category not in valid:
+                errors.append(
+                    f"route {route_id!r}: applies_to_categories {category!r} is not a declared "
+                    f"category (no sources/categories/{category}.yaml)"
+                )
             rows.append(
                 {"route_id": route_id, "scope_type": "category", "scope_value": category}
             )
-    return rows
+    return rows, errors
 
 
 def adoption_route_band_sets(routing: dict, rubrics: dict) -> tuple[list[dict], list[str]]:
@@ -397,13 +439,17 @@ def adoption_route_band_sets(routing: dict, rubrics: dict) -> tuple[list[dict], 
     return rows, errors
 
 
-def build_routing(routing: dict, rubrics: dict) -> tuple[dict[str, list[dict]], list[str], list[str]]:
-    """Return (tables, errors, warnings), a pure function of the parsed routing YAML and the
-    shared rubrics.
+def build_routing(
+    routing: dict, rubrics: dict, categories: dict | None = None
+) -> tuple[dict[str, list[dict]], list[str], list[str]]:
+    """Return (tables, errors, warnings), a pure function of the parsed routing YAML, the
+    shared rubrics and the declared categories.
 
-    `rubrics` is threaded in rather than read here so the function stays pure and the tests can
-    pass a rubric inline. Errors would make routing wrong — an unroutable route, an unknown
-    derivation, a duplicate id, a dangling band-set join; warnings are genuine coverage facts.
+    `rubrics` and `categories` are threaded in rather than read here so the function stays pure
+    and the tests can pass them inline. Errors would make routing wrong — an unroutable route,
+    an unknown derivation, a duplicate id, a dangling band-set join, a scope naming a category
+    that does not exist; warnings are genuine coverage facts. `categories` is optional: when
+    omitted the dangling-scope check is skipped, because only `main()` loads the declared slugs.
     """
     tables: dict[str, list[dict]] = {name: [] for name in TABLES}
 
@@ -415,14 +461,15 @@ def build_routing(routing: dict, rubrics: dict) -> tuple[dict[str, list[dict]], 
     }
 
     routes, route_errors = adoption_routes(routing, aggregation_by_instrument)
+    scope_rows, scope_errors = adoption_route_scopes(routing, categories)
     band_set_rows, band_set_errors = adoption_route_band_sets(routing, rubrics)
 
     tables["adoption_routes"] = routes
-    tables["adoption_route_scopes"] = adoption_route_scopes(routing)
+    tables["adoption_route_scopes"] = scope_rows
     tables["adoption_route_band_sets"] = band_set_rows
     tables["adoption_aggregation_rules"] = aggregation_rows
 
-    errors = aggregation_errors + route_errors + band_set_errors
+    errors = aggregation_errors + route_errors + scope_errors + band_set_errors
     warnings: list[str] = []
 
     # Referential integrity holds by construction — a route's aggregation_rule_id comes from
@@ -453,8 +500,12 @@ def main() -> int:
     # route x product-type table is derived against. Loaded the same way serialize_rubric does.
     from build.validate import load_sources
 
-    rubrics = load_sources(ROOT).get("rubrics") or {}
-    tables, errors, warnings = build_routing(load_routing(ROOT), rubrics)
+    sources = load_sources(ROOT)
+    rubrics = sources.get("rubrics") or {}
+    # The declared category slugs, so a route's `applies_to_categories` scope naming a category
+    # no file declares is a hard error rather than a scope row nothing joins to.
+    categories = sources.get("categories") or {}
+    tables, errors, warnings = build_routing(load_routing(ROOT), rubrics, categories)
 
     for name in TABLES:
         print(f"  {name:<27} {len(tables[name]):>5} rows")

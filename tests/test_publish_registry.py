@@ -83,6 +83,52 @@ def test_dry_run_creates_no_static_model(
         assert f"would create {table}" in out
 
 
+def test_dry_run_creates_no_dataset_when_absent(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """`--dry-run` against a MISSING dataset must not fire `createDataset`.
+
+    `resolve_dataset` used to create the dataset unconditionally, and `main()` called it before
+    the dry-run early return, so a plan-only invocation against an empty datasets query wrote a
+    real dataset. With `create=not args.dry_run` the resolver returns None and the plan reports
+    a would-create dataset plus a would-create per populated table — with NO create, upload or
+    run mutation of any kind.
+    """
+    for table in pr.TABLES:
+        write_csv(tmp_path, table, [{"slug": "a", "display_name": "A"}])
+
+    def fake_graphql(query: str, variables: dict, token: str) -> dict:
+        if query is pr.Q_DATASETS:
+            return {"datasets": {"edges": []}}
+        raise AssertionError(f"dry-run with absent dataset must not mutate, but called: {query[:40]}")
+
+    monkeypatch.setattr(pr, "graphql", fake_graphql)
+    monkeypatch.setattr(pr, "upload", lambda path, url: pytest.fail("dry-run must not upload"))
+    monkeypatch.setenv("OSO_API_KEY", "tok")
+    monkeypatch.setenv("OSO_ORG_ID", "org")
+    monkeypatch.setattr("sys.argv", ["publish_registry", "--dry-run", "--dir", str(tmp_path)])
+
+    assert pr.main() == 0
+    out = capsys.readouterr().out
+    assert "would create dataset" in out
+    for table in pr.TABLES:
+        assert f"would create {table}" in out
+
+
+def test_resolve_dataset_returns_none_when_absent_and_not_creating(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """With `create=False` an absent dataset becomes None and no M_DATASET fires."""
+
+    def fake_graphql(query: str, variables: dict, token: str) -> dict:
+        if query is pr.Q_DATASETS:
+            return {"datasets": {"edges": []}}
+        raise AssertionError(f"create=False must not mutate, but called: {query[:40]}")
+
+    monkeypatch.setattr(pr, "graphql", fake_graphql)
+    assert pr.resolve_dataset("registry", "org", "tok", create=False) is None
+
+
 def test_resolve_static_models_records_missing_as_would_create_when_not_creating(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:

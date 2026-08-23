@@ -269,18 +269,25 @@ dimensions:
     # resorts before abstention. `hand_authored` and `confidence` stay orthogonal: whether a
     # figure was read by a person, and how much to trust it, are separate questions from
     # whether the route is authoritative for the dimension.
+    #
+    # ROUTE PRECEDENCE is monotonic in authority: the five `authoritative` routes come first,
+    # in list order, then the two `fallback` routes — the last resorts before abstention. So a
+    # hand-read `active_users` disclosure (authoritative) precedes the `stars_fallback` route,
+    # correcting a prior ordering where the authoritative hand-authored route sat AFTER the
+    # fallback stars route. Within the authoritative download channels the order is the ADR-001
+    # precedence `pypi > huggingface > stars`, so `pypi` leads the two Hugging Face routes.
     routes:
+    - source: pypi
+      column: downloads_30d
+      signal_type: usage_volume
+      authority: authoritative
+      confidence: high
     - source: huggingface_model
       column: downloads_30d
       signal_type: usage_volume
       authority: authoritative
       confidence: high
     - source: huggingface_dataset
-      column: downloads_30d
-      signal_type: usage_volume
-      authority: authoritative
-      confidence: high
-    - source: pypi
       column: downloads_30d
       signal_type: usage_volume
       authority: authoritative
@@ -294,36 +301,6 @@ dimensions:
       note: >
         For a benchmark, citations measure reach better than downloads: the
         question is how many papers evaluate against it.
-    - source: github
-      column: stargazers_count
-      signal_type: stars_fallback
-      authority: fallback
-      confidence: low
-      note: >
-        Last resort, and explicitly last. Stars measure attention, not use, and
-        the rubric already ranks this below every real usage signal.
-      # The stars scale lives HERE rather than in sources/rubrics/<type>.yaml,
-      # because it is a property of the INSTRUMENT rather than of the product
-      # type. A dataset's downloads run an order below a package's, which is why
-      # those bands are per type; a star is a star whatever it was given to.
-      # Declaring it once on the route that produces it is also the only way to
-      # avoid four copies of a scale that must not drift.
-      #
-      # Thresholds set 2026-08-10 from the medians the corpus already used: the
-      # 71 stars_fallback products with a live GitHub row sit at medians of ~93,
-      # ~1,733 and ~15,801 stars for levels 1, 2 and 3. The ranges overlap badly
-      # - 20,901 stars recorded at 2 against 77 recorded at 3 - so this scale is
-      # a decision that tightens a loose convention rather than a description of
-      # one.
-      cap: 3
-      cap_because: >
-        Stars measure attention, not use, so a stars-derived band may never claim
-        the top two levels however large the count. The corpus already respects
-        this: no stars_fallback product records 4 or 5.
-      bands:
-      - {level: 3, above: 10000, reach: '>10K stars'}
-      - {level: 2, above: 1000, reach: 1K-10K stars}
-      - {level: 1, above: -1, reach: <1K stars}
     - source: null
       signal_type: active_users
       authority: authoritative
@@ -376,6 +353,36 @@ dimensions:
         under-coverage error in docs/reference/adoption.md - a substitution wearing a
         measurement's label - and the score must either find an active figure or say
         in its note which quantity it actually banded on.
+    - source: github
+      column: stargazers_count
+      signal_type: stars_fallback
+      authority: fallback
+      confidence: low
+      note: >
+        Last resort, and explicitly last. Stars measure attention, not use, and
+        the rubric already ranks this below every real usage signal.
+      # The stars scale lives HERE rather than in sources/rubrics/<type>.yaml,
+      # because it is a property of the INSTRUMENT rather than of the product
+      # type. A dataset's downloads run an order below a package's, which is why
+      # those bands are per type; a star is a star whatever it was given to.
+      # Declaring it once on the route that produces it is also the only way to
+      # avoid four copies of a scale that must not drift.
+      #
+      # Thresholds set 2026-08-10 from the medians the corpus already used: the
+      # 71 stars_fallback products with a live GitHub row sit at medians of ~93,
+      # ~1,733 and ~15,801 stars for levels 1, 2 and 3. The ranges overlap badly
+      # - 20,901 stars recorded at 2 against 77 recorded at 3 - so this scale is
+      # a decision that tightens a loose convention rather than a description of
+      # one.
+      cap: 3
+      cap_because: >
+        Stars measure attention, not use, so a stars-derived band may never claim
+        the top two levels however large the count. The corpus already respects
+        this: no stars_fallback product records 4 or 5.
+      bands:
+      - {level: 3, above: 10000, reach: '>10K stars'}
+      - {level: 2, above: 1000, reach: 1K-10K stars}
+      - {level: 1, above: -1, reach: <1K stars}
     - source: null
       signal_type: reported_traction
       authority: fallback

@@ -114,13 +114,18 @@ def rubrics():
 
 
 @pytest.fixture(scope="module")
+def categories():
+    return load_sources(ROOT).get("categories") or {}
+
+
+@pytest.fixture(scope="module")
 def adoption(routing):
     return routing["dimensions"]["adoption"]
 
 
 @pytest.fixture(scope="module")
-def tables(routing, rubrics):
-    tables, errors, _warnings = build_routing(routing, rubrics)
+def tables(routing, rubrics, categories):
+    tables, errors, _warnings = build_routing(routing, rubrics, categories)
     assert errors == [], errors
     return tables
 
@@ -166,6 +171,22 @@ def test_every_route_compiles_to_one_row_in_contiguous_order(adoption, tables):
     assert [r["route_order"] for r in rows] == list(range(1, len(rows) + 1))
 
 
+def test_routes_are_in_the_declared_precedence_order(tables):
+    """Precedence is monotonic in authority — the five authoritative routes first, then the two
+    fallback routes — and within the authoritative download channels the ADR-001 order is
+    `pypi > huggingface`. This pins the EXACT ordered route_ids, not merely that route_order is
+    contiguous, so a reorder that breaks ADR-001 fails here rather than passing silently."""
+    assert [r["route_id"] for r in tables["adoption_routes"]] == [
+        "pypi.downloads_30d",
+        "huggingface_model.downloads_30d",
+        "huggingface_dataset.downloads_30d",
+        "semanticscholar.citation_count",
+        "active_users",
+        "github.stargazers_count",
+        "reported_traction",
+    ]
+
+
 def test_null_source_routes_are_empty_source_and_hand_authored(tables):
     """The two hand-authored instruments read no machine source, so their source compiles to
     the empty string and hand_authored is True — the fact that keeps evaluation from expecting
@@ -198,7 +219,9 @@ def test_semantic_field_values_reach_the_tables(adoption, tables):
         assert row["authority"] == route["authority"]
 
     # unit (active_users declares one), cap (stars caps at 3), cap_reason (its prose compiled).
-    assert by_instrument["active_users"]["unit"] == adoption["routes"][5]["unit"]
+    # Indexed by instrument, not list position: the route order is precedence and may change.
+    active_route = next(r for r in adoption["routes"] if r["signal_type"] == "active_users")
+    assert by_instrument["active_users"]["unit"] == active_route["unit"]
     assert by_instrument["stars_fallback"]["cap"] == 3
     assert by_instrument["stars_fallback"]["cap_reason"].startswith("Stars measure attention")
 
@@ -401,6 +424,39 @@ def test_an_unknown_signal_type_is_an_error(routing, rubrics):
     bad["dimensions"]["adoption"]["routes"][0]["signal_type"] = "mystery"
     _, errors, _ = build_routing(bad, rubrics)
     assert any("signal_type" in e and "mystery" in e for e in errors), errors
+
+
+def test_signal_type_unknown_is_not_routable(routing, rubrics):
+    """`unknown` is a valid recorded-score signal_type (a score with no routable instrument),
+    so it lives in SIGNAL_TYPES; but it is not routable, so a route declaring it is checked
+    against the narrower ROUTABLE_INSTRUMENTS and fails. Distinct from the `mystery` case: this
+    value IS in the shared vocabulary and must still be rejected as a route instrument."""
+    bad = copy.deepcopy(routing)
+    bad["dimensions"]["adoption"]["routes"][0]["signal_type"] = "unknown"
+    _, errors, _ = build_routing(bad, rubrics)
+    assert any("signal_type" in e and "unknown" in e for e in errors), errors
+
+
+def test_a_dangling_category_scope_is_an_error(routing, rubrics, categories):
+    """`applies_to_categories: [does_not_exist]` names a category no file declares, so the scope
+    would narrow the route to a category that cannot exist. Threaded the declared slugs into the
+    compiler, an undeclared scope value is a hard error rather than a row nothing joins to."""
+    bad = copy.deepcopy(routing)
+    bad["dimensions"]["adoption"]["routes"][0]["applies_to_categories"] = ["does_not_exist"]
+    _, errors, _ = build_routing(bad, rubrics, categories)
+    assert any("does_not_exist" in e and "category" in e for e in errors), errors
+
+
+def test_a_sourced_route_with_no_column_is_an_error(routing, rubrics):
+    """A route WITH a non-null source must name a nonempty column; without one it compiled a
+    route id like `huggingface_model.` and emitted no error. The source/column/hand_authored
+    combination is now enforced, so the empty column is a hard error."""
+    bad = copy.deepcopy(routing)
+    bad["dimensions"]["adoption"]["routes"].append(
+        {"source": "huggingface_model", "signal_type": "usage_volume", "authority": "authoritative"}
+    )
+    _, errors, _ = build_routing(bad, rubrics)
+    assert any("huggingface_model." in e and "column" in e for e in errors), errors
 
 
 # --- HARD ERRORS: a malformed aggregation block must fail the compiler --------------
