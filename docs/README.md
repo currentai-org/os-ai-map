@@ -26,7 +26,9 @@ When in doubt about which door, start there.
 - **`reference/`** answers *what rules and concepts govern the task?* — the normative specs the
   workflows point at. A rule lives here once; workflows reference it rather than restating it.
 - **`operations/`** is maintainer-only: deploying warehouse models, publishing the map, running
-  the fetchers. Editors do not run these (see `AGENTS.md` on the read-only boundary).
+  the fetchers, and one-off migrations such as the Phase 2 source-table rename in
+  [`operations/artifact-state-rename.md`](operations/artifact-state-rename.md). Editors do not
+  run these (see `AGENTS.md` on the read-only boundary).
 - **`schemas/`** is the machine-readable JSON Schema for the source files.
 
 ## Reference material

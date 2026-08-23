@@ -327,6 +327,9 @@ After a PR merges, a maintainer (OSO MCP write access) may need to:
 - `docs/operations/refresh-data.md`: run fetchers and reload static models.
 - `docs/operations/publish-map.md`: serialize, render, upload, and publish the live notebook to
   `/currentai/ai-stack-map` (id `7b29bf47`).
+- `docs/operations/artifact-state-rename.md`: the Phase 2 coordinated rename of the source
+  `repo_state` / `hub_state` tables to `artifact_state` — the platform redeploy and the lockstep
+  repository PR.
 
 For the score-verification procedure itself, see `docs/workflows/refresh-category.md` and the
 normative `docs/reference/evidence-and-freshness.md`.
