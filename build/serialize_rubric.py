@@ -79,6 +79,7 @@ from build.check_rubric import (
 )
 from build.rubrics import load_product_types, recipe_for, resolve_recipe_variants
 from build.serialize_registry import write_tables
+from build.serialize_routing import band_set_id
 from build.validate import load_sources
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -148,7 +149,11 @@ TABLES: dict[str, tuple[str, ...]] = {
     # stars band is per INSTRUMENT and type-independent — a star is a star whatever it
     # was given to — so it is emitted once with product_type '*' and is declared on its
     # route in signal_routing.yaml rather than in four rubrics that could drift.
-    "adoption_bands": ("product_type", "signal_type", "level", "above", "reach", "unit"),
+    # `band_set_id` leads the tuple because it is the join key back to `adoption_routes`,
+    # which references it: a route-declared scale is `route:<signal_type>`, a per-product-type
+    # usage_volume ladder is `type:<product_type>`. serialize_routing owns the id logic and
+    # this module imports it, so the two sides cannot spell the link differently.
+    "adoption_bands": ("band_set_id", "product_type", "signal_type", "level", "above", "reach", "unit"),
     "license_aliases": ("source", "license_slug", "license_name"),
     "evidence_abstentions": ("source", "column_name", "abstain_value"),
     # Grain: one row per (product_slug, category_slug, dimension, part_index).
@@ -375,6 +380,10 @@ def route_bands(routing: dict) -> tuple[list[dict], list[str]]:
                 )
                 continue
             rows.append({
+                # A route-declared scale is addressed per instrument, not per product type,
+                # so its band_set_id is `route:<signal_type>` and `adoption_routes` points
+                # every route carrying inline bands at exactly this id.
+                "band_set_id": band_set_id("route", signal_type),
                 "product_type": "*",
                 "signal_type": signal_type,
                 "level": band["level"],
@@ -402,6 +411,10 @@ def adoption_bands(shared_rubrics: dict) -> tuple[list[dict], list[str]]:
             warnings.append(f"rubric {product_type!r} declares empty bands but is not qualitative")
         for band in bands:
             rows.append({
+                # The usage_volume ladder is per product type — a dataset's downloads run an
+                # order below a package's — so its band_set_id is `type:<product_type>`, and
+                # a usage_volume route resolves it per type via the `type:*` sentinel.
+                "band_set_id": band_set_id("type", product_type),
                 "product_type": product_type,
                 "signal_type": "usage_volume",
                 "level": band["level"],

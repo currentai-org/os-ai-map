@@ -668,6 +668,30 @@ assets:
   status: active
   materialized: true
   verified_at: '2026-08-20'
+- id: registry.adoption_aggregation_rules
+  table: currentai.registry.adoption_aggregation_rules
+  kind: registry
+  current_namespace: registry
+  target_namespace: registry
+  migration_status: complete
+  authority: repo
+  population: gap_map
+  release_path: true
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: checked
+    external: unknown
+  external_consumers: none_confirmed
+  grain: one row per (dimension, aggregation_method)
+  producer: build/serialize_routing.py + build/publish_registry.py
+  publication_role: payload_input
+  refresh: CI push on merge to main
+  dataset_id: 3db1ea09-b9df-44c6-b077-015c664e7aec
+  owner: carl
+  status: active
+  materialized: true
+  verified_at: '2026-08-23'
 - id: registry.adoption_bands
   table: currentai.registry.adoption_bands
   kind: registry
@@ -689,7 +713,7 @@ assets:
     external: unknown
   external_consumers: none_confirmed
   grain: one row per (product_type, signal_type, level)
-  producer: build/serialize_registry.py + build/publish_registry.py
+  producer: build/serialize_rubric.py + build/publish_registry.py
   publication_role: payload_input
   refresh: CI push on merge to main
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
@@ -697,6 +721,54 @@ assets:
   status: active
   materialized: true
   verified_at: '2026-08-20'
+- id: registry.adoption_route_scopes
+  table: currentai.registry.adoption_route_scopes
+  kind: registry
+  current_namespace: registry
+  target_namespace: registry
+  migration_status: complete
+  authority: repo
+  population: gap_map
+  release_path: true
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: checked
+    external: unknown
+  external_consumers: none_confirmed
+  grain: one row per (route_id, scope_type, scope_value)
+  producer: build/serialize_routing.py + build/publish_registry.py
+  publication_role: payload_input
+  refresh: CI push on merge to main
+  dataset_id: 785325eb-260d-490e-bc33-7f1bf6e8918b
+  owner: carl
+  status: active
+  materialized: true
+  verified_at: '2026-08-23'
+- id: registry.adoption_routes
+  table: currentai.registry.adoption_routes
+  kind: registry
+  current_namespace: registry
+  target_namespace: registry
+  migration_status: complete
+  authority: repo
+  population: gap_map
+  release_path: true
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: checked
+    external: unknown
+  external_consumers: none_confirmed
+  grain: one row per adoption route, in precedence order
+  producer: build/serialize_routing.py + build/publish_registry.py
+  publication_role: payload_input
+  refresh: CI push on merge to main
+  dataset_id: d4c3dbdc-68f0-4b29-bf6f-769797174c8d
+  owner: carl
+  status: active
+  materialized: true
+  verified_at: '2026-08-23'
 - id: registry.categories
   table: currentai.registry.categories
   kind: registry
