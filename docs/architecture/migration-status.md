@@ -3,7 +3,7 @@
 Temporary phase state and the retirement ledger. Rules live in `data-architecture.md`; this
 file records only where the work has got to. Delete a row when it stops being temporary.
 
-**As of 2026-08-20; deployed-model audit (Phase 0b) 2026-08-22.**
+**As of 2026-08-20; deployed-model audit (Phase 0b) 2026-08-22; Phase 1 verified 2026-08-23.**
 
 ## Phase state
 
@@ -11,7 +11,7 @@ file records only where the work has got to. Delete a row when it stops being te
 |---|---|---|
 | 0 — architecture record and inventory | done | Merged (#345). The repository now mirrors the warehouse. |
 | 0b — deployed model audit | done | Merged (#347). All 41 deployed model definitions read; `platform_models` `checked` on every asset; receipt at `warehouse/audits/platform_models.json`. |
-| 1 — schedule normalization | **applied 2026-08-22, verification pending** | Ten in-scope datasets relabelled to UTC; 3 out-of-scope analytical datasets left on `America/New_York` deliberately. <!-- count:unobserved_crons -->18 assets still have no observed run: §13 requires run history, not configuration, so this is not complete until a `SCHEDULED` fire is seen on/after 2026-08-23 01:00Z. See `docs/operations/normalize-schedules.md`. |
+| 1 — schedule normalization | done | Applied (#349) and **verified 2026-08-23**: all ten in-scope datasets fired a `SCHEDULED` run on their UTC cron (01:00–06:00Z Sunday), the run-history proof §13 requires; 3 out-of-scope analytical datasets left on `America/New_York` deliberately. <!-- count:unobserved_crons -->10 assets still have no observed run, all outside Phase 1's scope. Two model runs failed on the scheduled fire — a transient `ConnectTimeout` on `metrics` (cleared on re-run) and a reproducible upstream `429` on `signal_semanticscholar.paper_citations` — but neither is a schedule defect; see the note below. `docs/operations/normalize-schedules.md` carries the per-dataset evidence. |
 | 2 — normalized adoption observations | not started | Must compile `registry.adoption_routes` before any signal roll-up retires. |
 | 2B — incremental adoption history | blocked | Blocked on OSO incremental-model support. Not approximated with full-refresh models. |
 | 3 — reconciliation report | not started | Report-only first. |
@@ -55,11 +55,26 @@ line. The remediation is therefore ordered and platform-side:
 3. refetch those revisions into the mirror under `warehouse/models/<dataset>/`;
 4. update each mirror's `revision`, `hash`, `local_sha256` and `synced_at` together.
 
-The Phase 1 schedule normalization is **no longer pending** — it was applied 2026-08-22 and is
-recorded in the phase table above and in `docs/operations/normalize-schedules.md`; `assets.yaml`
-declares `timezone: UTC` for the fifteen affected assets. The only thing still outstanding there
-is the observed `SCHEDULED` run, which is a verification (tracked by `unobserved_crons`), not an
-unapplied change.
+The Phase 1 schedule normalization is **complete** — applied 2026-08-22 and verified 2026-08-23,
+recorded in the phase table above and in `docs/operations/normalize-schedules.md`. All ten in-scope
+datasets fired a `SCHEDULED` run on their UTC cron, so `assets.yaml` records `last_observed_trigger:
+SCHEDULED` and `last_run_at: '2026-08-23'` for the fifteen affected assets alongside `timezone: UTC`.
+Nothing there is outstanding.
+
+**Two deployed-model failures surfaced on the first scheduled fire — tracked here, not Phase 1
+blockers.** The schedule is what Phase 1 changed and what it verified; whether a model's own body
+then succeeds is separate. Both failing models fired exactly on their UTC cron.
+
+1. `metrics.daily` failed its 06:00Z run on a transient `ConnectTimeout` while materializing. A
+   manual re-run the same morning succeeded, so this was infrastructure flakiness, not a defect;
+   the model is healthy.
+2. `signal_semanticscholar.paper_citations` failed its 01:00Z run on an upstream Semantic Scholar
+   HTTP `429` (`semantic scholar batch returned 429 for 24 ids`), and a manual re-run failed
+   identically — reproducible, not a blip. Root cause: the deployed UDM has no 429 backoff/retry,
+   unlike the repo's own `warehouse/models/catalog/model_repos.py`. The fix (backoff, or an
+   authenticated Semantic Scholar key) is a **platform-owned model change** under §17, out of Phase
+   1's scope. The asset has no reviewed consumer (pre-positioned per the inventory below), so no
+   pipeline is affected. Recorded for a maintainer; not acted on here.
 
 **No description or schema change is pending.** An earlier draft of this file recorded a
 correction for the `catalog.stack_map` dataset description, on the grounds that its "read by no

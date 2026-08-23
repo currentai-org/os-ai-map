@@ -110,37 +110,47 @@ still runs a day after `metrics` finishes. The three excluded datasets remain on
 `warehouse/assets.yaml` declares `timezone: UTC` for the 15 assets those ten datasets hold —
 now a statement of platform truth rather than a claim ahead of it.
 
-## Still pending: an observed SCHEDULED run
+## Verified 2026-08-23 — every dataset fired SCHEDULED on its UTC cron
 
-`last_observed_trigger` remains `null` on all 18 assets that have never been seen to fire, and
-`unobserved_crons` still reads 18. §13 requires run history, not configuration, as proof — so
-this phase is not complete until a `SCHEDULED` run is observed.
+The first weekly fire under UTC was **Sunday 2026-08-23**. Run history — not configuration — is
+the proof §13 demands, and it is now in hand. Each dataset's newest run at or after its UTC fire
+time carries `triggerType: SCHEDULED` (verified by the runs API, not `datasets.lastRunAt`, which
+lags), and `cronTimezone == "UTC"` still holds on all ten. The schedule normalization is proven.
 
-The first fire under UTC is **2026-08-23 01:00Z**. Until then the change is applied but
-unproven, and that distinction is the whole point of the gate.
+| Dataset | UTC fire | Trigger | Model status | Run started |
+|---|---|---|---|---|
+| `signal_pypi` | 01:00 | SCHEDULED | SUCCESS | 2026-08-23T01:00:15Z |
+| `signal_lmarena` | 01:00 | SCHEDULED | SUCCESS | 2026-08-23T01:00:17Z |
+| `signal_goodailist` | 01:00 | SCHEDULED | SUCCESS | 2026-08-23T01:00:16Z |
+| `signal_semanticscholar` | 01:00 | SCHEDULED | **FAILED** (upstream 429) | 2026-08-23T01:00:14Z |
+| `signal_artificialanalysis` | 01:00 | SCHEDULED | SUCCESS | 2026-08-23T01:00:15Z |
+| `signal_huggingface` | 02:00 | SCHEDULED | SUCCESS | 2026-08-23T02:01:42Z |
+| `signal_github` | 03:00 | SCHEDULED | SUCCESS | 2026-08-23T03:01:43Z |
+| `entities` | 04:00 | SCHEDULED | SUCCESS | 2026-08-23T04:00:29Z |
+| `events` | 05:00 | SCHEDULED | SUCCESS | 2026-08-23T05:00:16Z |
+| `metrics` | 06:00 | SCHEDULED | **FAILED** (transient ConnectTimeout) | 2026-08-23T06:00:16Z |
 
-## Verify (after the next weekly fire)
+**The two failures are model-body failures, not schedule defects — both fired exactly on their UTC
+cron.** They are recorded here and in `docs/architecture/migration-status.md`; neither gates Phase 1.
 
-The crons fire weekly on **Sunday**; the first fire under UTC is **2026-08-23**. `SCHEDULED`
-verification cannot be done at apply time — wait for that fire, then confirm each dataset's
-run history shows a `SCHEDULED` (not `MANUAL`) trigger:
+- `metrics.daily` timed out (`ConnectTimeout`) during materialization at 06:00Z. A manual re-run
+  the same morning (08:54→09:02Z) succeeded, so this was transient infrastructure, not a defect.
+- `signal_semanticscholar.paper_citations` hit an upstream Semantic Scholar HTTP `429`
+  (`semantic scholar batch returned 429 for 24 ids`); a manual re-run failed identically, so it is
+  reproducible. The deployed UDM has no 429 backoff (the repo's `warehouse/models/catalog/model_repos.py`
+  does). The fix is a platform-owned model change under §17; the asset has no reviewed consumer, so
+  nothing downstream is affected. Recorded for a maintainer, not acted on here.
 
-```python
-q = "query($w: JSON){ datasets(where:$w){ edges{ node{ name cron cronTimezone lastRunAt } } } }"
-# and GetRunsForDataset / the runs API for the trigger type on the newest run
-```
+## Recorded in the repository (this PR)
 
-Confirm `cronTimezone == "UTC"` on all ten, and a `SCHEDULED` run dated on/after 2026-08-23.
+The inventory now reflects the proven platform state — never ahead of it:
 
-## Then, in the repository (a follow-up PR)
-
-Only once the platform reflects UTC — never before, or the inventory would declare a state
-that is not true:
-
-1. Set `timezone: UTC` on the ten datasets' assets in `warehouse/assets.yaml` (cron digits in
-   `refresh:` are unchanged).
-2. Set `last_observed_trigger: SCHEDULED` and `last_run_at` for each verified dataset.
-3. Regenerate any affected count markers (`unobserved_crons`) and run `uv run pytest -q`.
+1. `timezone: UTC` was already set on the fifteen affected assets at apply time (unchanged here).
+2. `last_observed_trigger: SCHEDULED` and `last_run_at: '2026-08-23'` set on all fifteen — every
+   one of the ten datasets fired SCHEDULED, so every asset they hold records the observation
+   (including `signal_semanticscholar`, whose schedule fired even though its model failed).
+3. `unobserved_crons` recomputed 18 → 10 (the remaining ten are all out of Phase 1's scope); the
+   marker in `docs/architecture/migration-status.md` is updated and `uv run pytest -q` passes.
 
 ## Rollback
 
