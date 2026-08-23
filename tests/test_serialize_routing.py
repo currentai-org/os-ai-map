@@ -1,9 +1,9 @@
 """The adoption routing compiler, and its acceptance test: round-trip completeness.
 
 `build/serialize_routing.py` compiles `dimensions.adoption` from signal_routing.yaml into
-`registry.adoption_routes`, `registry.adoption_route_scopes` and
-`registry.adoption_aggregation_rules`, so evaluation reads normalized facts and never
-reinterprets the YAML (AD-1).
+`registry.adoption_routes`, `registry.adoption_route_scopes`,
+`registry.adoption_route_band_sets` and `registry.adoption_aggregation_rules`, so evaluation
+reads normalized facts and never reinterprets the YAML (AD-1).
 
 The acceptance test (data-architecture.md 4.1) is NOT column presence but round-trip
 completeness: every semantic field in the adoption portion of the YAML is either compiled
@@ -11,10 +11,10 @@ into these tables or explicitly classified documentation-only. A field that is n
 fail here, so the next field added to a route cannot slip out of the warehouse unnoticed.
 """
 
+import copy
 from pathlib import Path
 
 import pytest
-import yaml
 
 from build.serialize_routing import build_routing, load_routing
 from build.serialize_rubric import adoption_bands, route_bands
@@ -26,26 +26,28 @@ ROOT = Path(__file__).resolve().parents[1]
 # dimension's prose prompt, classified with the other documentation below.
 _STRUCTURAL = {"routes"}
 
-# Semantic fields that MUST reach one of the three tables (or, for `bands`, the adoption_bands
-# table that `band_set_id` links to). This is the list data-architecture.md 4.1 names as
-# semantic, plus `bands`, which compiles in serialize_rubric and is referenced by band_set_id.
+# Semantic fields that MUST reach one of the tables (or, for `bands`, the adoption_bands table
+# that `band_set_id` links to). This is the list data-architecture.md 4.1 names as semantic,
+# plus `bands`, which compiles in serialize_rubric and is referenced by the band-set join.
 _COMPILED = {
     "source",
     "column",
     "signal_type",
+    "authority",
     "confidence",
     "unit",
     "cap",
+    "cap_because",
     "applies_to_categories",
     "hand_authored",
     "requires_evidence",
     "vocabulary",
-    "sum_across_artifacts",
+    "aggregation",
     "bands",
 }
 
 # Prose. Allowed to be absent from the tables; a reader consults the YAML for the reasoning.
-_DOC_ONLY = {"note", "cap_because", "sum_note", "attribution_note", "vocabulary_note", "question"}
+_DOC_ONLY = {"note", "sum_note", "attribution_note", "vocabulary_note", "question"}
 
 
 @pytest.fixture(scope="module")
@@ -54,13 +56,18 @@ def routing():
 
 
 @pytest.fixture(scope="module")
+def rubrics():
+    return load_sources(ROOT).get("rubrics") or {}
+
+
+@pytest.fixture(scope="module")
 def adoption(routing):
     return routing["dimensions"]["adoption"]
 
 
 @pytest.fixture(scope="module")
-def tables(routing):
-    tables, errors, _warnings = build_routing(routing)
+def tables(routing, rubrics):
+    tables, errors, _warnings = build_routing(routing, rubrics)
     assert errors == [], errors
     return tables
 
@@ -83,10 +90,10 @@ def test_every_adoption_field_is_compiled_or_classified_documentation(adoption):
     )
 
 
-def test_seven_routes_compile_to_seven_rows_in_contiguous_order(tables):
+def test_every_route_compiles_to_one_row_in_contiguous_order(adoption, tables):
     rows = tables["adoption_routes"]
-    assert len(rows) == 7
-    assert [r["route_order"] for r in rows] == list(range(1, 8))
+    assert len(rows) == len(adoption["routes"])
+    assert [r["route_order"] for r in rows] == list(range(1, len(rows) + 1))
 
 
 def test_null_source_routes_are_empty_source_and_hand_authored(tables):
@@ -118,10 +125,12 @@ def test_semantic_field_values_reach_the_tables(adoption, tables):
         assert row["source_column"] == column
         assert row["instrument_type"] == signal_type
         assert row["confidence"] == route["confidence"]
+        assert row["authority"] == route["authority"]
 
-    # unit (active_users declares one), cap (stars caps at 3).
+    # unit (active_users declares one), cap (stars caps at 3), cap_reason (its prose compiled).
     assert by_instrument["active_users"]["unit"] == adoption["routes"][5]["unit"]
     assert by_instrument["stars_fallback"]["cap"] == 3
+    assert by_instrument["stars_fallback"]["cap_reason"].startswith("Stars measure attention")
 
     # requires_evidence pipe-joined for the two hand-authored routes.
     assert by_instrument["active_users"]["requires_evidence"] == "accessed|content_sha256"
@@ -130,38 +139,97 @@ def test_semantic_field_values_reach_the_tables(adoption, tables):
     # vocabulary on reported_traction only.
     assert by_instrument["reported_traction"]["vocabulary"] == "niche|broad|mass-market"
 
-    # applies_to_categories -> a scope row; sum_across_artifacts -> the aggregation rule.
+    # applies_to_categories -> a scope row; the aggregation block -> the one aggregation rule.
     assert {"route_id": "semanticscholar.citation_count", "scope_type": "category",
             "scope_value": "benchmark_eval_data"} in tables["adoption_route_scopes"]
     assert tables["adoption_aggregation_rules"] == [
-        {"dimension": "adoption", "aggregation_method": "sum", "scope": "artifacts"}
+        {"aggregation_rule_id": "sum_usage_across_artifacts", "method": "sum",
+         "scope": "artifacts", "applies_to_instrument": "usage_volume"}
     ]
 
 
-def test_band_set_id_referential_integrity(routing, tables):
-    """Every route band_set_id that names a scale must resolve to at least one adoption_bands
-    row; the `type:*` and '' sentinels resolve to none by design.
+def test_artifact_kind_is_the_sources_artifact_key_not_the_source_name(tables):
+    """`artifact_kind` is read from the source's declared `artifact_key`, not from a hardcoded
+    map. `semanticscholar`'s key is `arxiv`, so the route compiles `arxiv` — matching
+    `registry.product_artifacts.artifact_kind` — rather than a guessed `paper` off the name."""
+    by_id = {r["route_id"]: r for r in tables["adoption_routes"]}
+    assert by_id["semanticscholar.citation_count"]["artifact_kind"] == "arxiv"
+    # The point is the name and the key differ; the compiler followed the key.
+    assert by_id["semanticscholar.citation_count"]["source"] == "semanticscholar"
 
-    `type:*` says the bands are resolved per product type at evaluation, so no single row
-    carries it; '' says the instrument has a vocabulary and no bands at all.
+
+def test_routing_policy_version_is_the_declared_version(routing, tables):
+    """The bare version publishes only under `routing_policy_version`. It must NOT reappear
+    under a release-identity-sounding name like `declaration_version_id`."""
+    version = str(routing["version"])
+    for row in tables["adoption_routes"]:
+        assert row["routing_policy_version"] == version
+        assert "declaration_version_id" not in row
+        assert "policy_version" not in row
+
+
+def test_aggregation_rule_id_is_set_only_where_the_instrument_matches(tables):
+    """A route carries the aggregation rule whose `applies_to_instrument` equals its own
+    instrument, and no method string is duplicated onto the route. usage_volume routes get
+    `sum_usage_across_artifacts`; every other route gets the empty string."""
+    rule = tables["adoption_aggregation_rules"][0]
+    for row in tables["adoption_routes"]:
+        if row["instrument_type"] == rule["applies_to_instrument"]:
+            assert row["aggregation_rule_id"] == rule["aggregation_rule_id"]
+        else:
+            assert row["aggregation_rule_id"] == ""
+        # The method string lives on the rule, not the route.
+        assert "aggregation_method" not in row
+
+
+def test_every_route_band_set_resolves_to_an_adoption_bands_row(routing, rubrics, tables):
+    """Every `adoption_route_band_sets` row names a band set that resolves to at least one
+    `adoption_bands` row — with NO sentinel exemption. The `type:*`/'' sentinels are gone:
+    a route x product type that resolves to no scale (hardware usage_volume, reported_traction)
+    emits no row at all, so evaluation abstains by finding nothing to join to.
     """
-    bands, _ = adoption_bands(load_sources(ROOT).get("rubrics") or {})
+    bands, _ = adoption_bands(rubrics)
     route_scale_rows, _ = route_bands(routing)
     band_ids = {b["band_set_id"] for b in bands + route_scale_rows}
 
-    for row in tables["adoption_routes"]:
-        band_set = row["band_set_id"]
-        if band_set in ("type:*", ""):
-            continue
-        assert band_set.startswith(("route:", "type:")), band_set
-        assert band_set in band_ids, (
-            f"route {row['route_id']!r} points at band_set_id {band_set!r}, which no "
-            f"adoption_bands row carries"
+    rows = tables["adoption_route_band_sets"]
+    assert rows, "no route band sets emitted"
+    for row in rows:
+        assert row["band_set_id"].startswith(("route:", "type:")), row
+        assert row["band_set_id"] in band_ids, (
+            f"route {row['route_id']!r} for product type {row['product_type']!r} points at "
+            f"band_set_id {row['band_set_id']!r}, which no adoption_bands row carries"
         )
 
-    # The sentinels really are sentinels: no band row is emitted under them.
-    assert "type:*" not in band_ids
-    assert "" not in band_ids
+
+def test_hardware_usage_volume_has_no_band_set_row(tables):
+    """Hardware is qualitative and declares no usage_volume bands, so a usage_volume route
+    emits no row for it — evaluation abstains for hardware usage_volume by joining to nothing,
+    which is the "abstain rather than substitute" rule expressed as a missing row."""
+    usage_routes = {
+        r["route_id"] for r in tables["adoption_routes"] if r["instrument_type"] == "usage_volume"
+    }
+    for row in tables["adoption_route_band_sets"]:
+        if row["route_id"] in usage_routes:
+            assert row["product_type"] != "hardware", row
+
+
+def test_type_independent_scales_cover_every_product_type(rubrics, tables):
+    """A star is a star and a monthly active user is a person whatever the product type, so
+    those two routes emit a row for EVERY product type, not just the banded ones."""
+    all_types = set(rubrics.keys())
+    by_route: dict[str, set[str]] = {}
+    for row in tables["adoption_route_band_sets"]:
+        by_route.setdefault(row["route_id"], set()).add(row["product_type"])
+    assert by_route["github.stargazers_count"] == all_types
+    assert by_route["active_users"] == all_types
+
+
+def test_reported_traction_resolves_to_no_band_set(tables):
+    """A vocabulary instrument with no bands resolves to nothing, so it emits no band-set row."""
+    assert not any(
+        r["route_id"] == "reported_traction" for r in tables["adoption_route_band_sets"]
+    )
 
 
 def test_source_null_routes_carry_no_derived_artifact_or_metric(tables):
@@ -171,3 +239,86 @@ def test_source_null_routes_carry_no_derived_artifact_or_metric(tables):
         if row["hand_authored"]:
             assert row["artifact_kind"] == ""
             assert row["metric_type"] == ""
+
+
+# --- HARD ERRORS: an unknown derivation or a duplicate must fail the compiler ----------
+
+
+def test_a_source_absent_from_the_sources_block_is_an_error(routing, rubrics):
+    """A non-null source the `sources:` block does not declare cannot yield an artifact_kind,
+    so it is an error rather than a blank."""
+    bad = copy.deepcopy(routing)
+    bad["dimensions"]["adoption"]["routes"].append(
+        {"source": "notasource", "column": "downloads_30d", "signal_type": "usage_volume",
+         "authority": "authoritative"}
+    )
+    _, errors, _ = build_routing(bad, rubrics)
+    assert any("notasource" in e and "sources:" in e for e in errors), errors
+
+
+def test_a_source_with_no_artifact_key_is_an_error(routing, rubrics):
+    bad = copy.deepcopy(routing)
+    bad["sources"]["keyless"] = {"table": "x"}
+    bad["dimensions"]["adoption"]["routes"].append(
+        {"source": "keyless", "column": "downloads_30d", "signal_type": "usage_volume",
+         "authority": "authoritative"}
+    )
+    _, errors, _ = build_routing(bad, rubrics)
+    assert any("keyless" in e and "artifact_key" in e for e in errors), errors
+
+
+def test_a_column_with_no_metric_type_is_an_error(routing, rubrics):
+    bad = copy.deepcopy(routing)
+    bad["dimensions"]["adoption"]["routes"].append(
+        {"source": "huggingface_model", "column": "not_a_metric", "signal_type": "usage_volume",
+         "authority": "authoritative"}
+    )
+    _, errors, _ = build_routing(bad, rubrics)
+    assert any("not_a_metric" in e and "metric_type" in e for e in errors), errors
+
+
+def test_a_missing_authority_is_an_error(routing, rubrics):
+    bad = copy.deepcopy(routing)
+    del bad["dimensions"]["adoption"]["routes"][0]["authority"]
+    _, errors, _ = build_routing(bad, rubrics)
+    assert any("authority" in e for e in errors), errors
+
+
+def test_an_invalid_authority_is_an_error(routing, rubrics):
+    bad = copy.deepcopy(routing)
+    bad["dimensions"]["adoption"]["routes"][0]["authority"] = "supreme"
+    _, errors, _ = build_routing(bad, rubrics)
+    assert any("authority" in e and "supreme" in e for e in errors), errors
+
+
+def test_a_duplicate_route_id_is_an_error(routing, rubrics):
+    bad = copy.deepcopy(routing)
+    routes = bad["dimensions"]["adoption"]["routes"]
+    routes.append(copy.deepcopy(routes[0]))
+    _, errors, _ = build_routing(bad, rubrics)
+    assert any("duplicate route_id" in e for e in errors), errors
+
+
+def test_a_band_set_absent_from_adoption_bands_is_an_error(routing, rubrics):
+    """Referential integrity. If the stars scale loses its `bands` on the route, `route_bands`
+    stops emitting `route:stars_fallback`, but the band-set join still points at it — a
+    dangling reference that must fail the serializer rather than publish a broken join."""
+    bad = copy.deepcopy(routing)
+    for route in bad["dimensions"]["adoption"]["routes"]:
+        if route.get("signal_type") == "stars_fallback":
+            route.pop("bands", None)
+    _, errors, _ = build_routing(bad, rubrics)
+    assert any("route:stars_fallback" in e and "adoption_bands" in e for e in errors), errors
+
+
+def test_authority_is_read_from_the_yaml_not_a_constant(routing, rubrics):
+    """Flipping a route's declared authority in an in-memory copy changes the output, proving
+    the value is compiled from the YAML rather than looked up in a Python constant."""
+    flipped = copy.deepcopy(routing)
+    route = flipped["dimensions"]["adoption"]["routes"][0]
+    assert route["authority"] == "authoritative"
+    route["authority"] = "fallback"
+    tables, errors, _ = build_routing(flipped, rubrics)
+    assert errors == [], errors
+    row = next(r for r in tables["adoption_routes"] if r["route_order"] == 1)
+    assert row["authority"] == "fallback"

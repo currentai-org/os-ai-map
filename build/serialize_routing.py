@@ -17,10 +17,13 @@ Emitted tables (CSVs into build/registry/, alongside the registry's and rubric's
 
   adoption_routes            one row per route, in precedence order
   adoption_route_scopes      route -> the category/product type it is scoped to
-  adoption_aggregation_rules the dimension-level aggregation (sum_across_artifacts)
+  adoption_route_band_sets   route x product type -> the band set that resolves it
+  adoption_aggregation_rules the named aggregation rules, one row per rule
 
-The bands themselves stay in `registry.adoption_bands`, produced by `serialize_rubric.py`;
-`adoption_routes.band_set_id` points at the band rows a route resolves to. The two modules
+The bands themselves stay in `registry.adoption_bands`, produced by `serialize_rubric.py`.
+`adoption_route_band_sets` is the join that says which of those band sets a given route
+resolves to for a given product type — so evaluation does an ordinary join and abstains when
+no row exists, rather than reading a `type:*` sentinel and reinterpreting it. The two modules
 share the id logic here (`band_set_id`) so they cannot spell that link two different ways.
 
 Usage:
@@ -44,9 +47,9 @@ OUT_DIR = ROOT / "build" / "registry"
 TABLES: dict[str, tuple[str, ...]] = {
     # One row per route, carrying everything evaluation needs to route a signal without
     # reopening the YAML. Each column's derivation is documented in `adoption_routes` below;
-    # that function IS the compiler's contract.
+    # that function IS the compiler's contract. The band set a route resolves to is NOT a
+    # column here — it varies by product type, so it lives in `adoption_route_band_sets`.
     "adoption_routes": (
-        "declaration_version_id",
         "route_id",
         "route_order",
         "source",
@@ -58,49 +61,50 @@ TABLES: dict[str, tuple[str, ...]] = {
         "hand_authored",
         "confidence",
         "unit",
-        "aggregation_method",
-        "band_set_id",
+        "aggregation_rule_id",
         "cap",
+        "cap_reason",
         "requires_evidence",
         "freshness_days",
         "abstain_rule",
         "vocabulary",
-        "policy_version",
+        "routing_policy_version",
     ),
     # A route with no scope row applies to every category; a scope row narrows it. Only
     # `semanticscholar.citation_count` declares one today (citations measure a benchmark's
     # reach better than downloads do), so it is the one route restricted to a category.
     "adoption_route_scopes": ("route_id", "scope_type", "scope_value"),
-    # The dimension-level aggregation. `sum_across_artifacts: true` means a family's several
-    # SKUs sum rather than the largest winning, because the map's unit is the family.
-    "adoption_aggregation_rules": ("dimension", "aggregation_method", "scope"),
+    # One row per valid route x product type combination, naming the band set that resolves
+    # it. Evaluation joins this table and abstains when no row exists — hardware usage_volume
+    # has no row because hardware is qualitative, which is the abstention, not a sentinel to
+    # reinterpret. Every band_set_id here must resolve to an `adoption_bands` row.
+    "adoption_route_band_sets": ("route_id", "product_type", "band_set_id"),
+    # The named aggregation rules. `applies_to_instrument` is what binds a rule to a route:
+    # a route's `aggregation_rule_id` is the rule whose instrument it matches, so the method
+    # string is declared once here rather than copied onto every route it governs.
+    "adoption_aggregation_rules": (
+        "aggregation_rule_id",
+        "method",
+        "scope",
+        "applies_to_instrument",
+    ),
 }
 
-# The YAML's `signal_type` compiles to `instrument_type`; `artifact_kind` and `metric_type`
-# are DERIVED from source and column. That derivation is part of the compiler's contract, not
-# something evaluation infers — so the maps live here and a source or column the maps do not
-# cover raises a warning rather than emitting a silent blank.
-_ARTIFACT_KIND = {
-    "huggingface_model": "model",
-    "huggingface_dataset": "dataset",
-    "pypi": "package",
-    "github": "repo",
-    "semanticscholar": "paper",
-}
+# The YAML's `signal_type` compiles to `instrument_type`; `metric_type` is DERIVED from the
+# column. That derivation is part of the compiler's contract, not something evaluation
+# infers — so the map lives here and a column the map does not cover is a hard error rather
+# than a silent blank. `artifact_kind` is NOT hardcoded: it is read from the source's declared
+# `artifact_key` in the `sources:` block, so `semanticscholar` compiles to its `arxiv` key and
+# matches `registry.product_artifacts.artifact_kind` rather than a guessed `paper`.
 _METRIC_TYPE = {
     "downloads_30d": "downloads",
     "citation_count": "citations",
     "stargazers_count": "stars",
 }
-# Authority is a property of the instrument. `usage_volume` counts real use and is
-# authoritative; `active_users` is a hand-read disclosure standing in for a count, so
-# secondary; `stars_fallback` and `reported_traction` are the last resorts before abstention.
-_AUTHORITY = {
-    "usage_volume": "authoritative",
-    "stars_fallback": "fallback",
-    "active_users": "secondary",
-    "reported_traction": "fallback",
-}
+
+# The authority values a route may declare. Authority is read from the route, not inferred:
+# it is a routing decision and not a property the instrument name can be trusted to carry.
+_AUTHORITIES = {"authoritative", "secondary", "fallback"}
 
 # The dimension's declared abstention: when the authoritative signal is missing or unusable,
 # produce NO evidence rather than fall through to a weaker source. Constant per route because
@@ -123,21 +127,55 @@ def load_routing(root: Path) -> dict:
     return yaml.safe_load((root / "sources" / "signal_routing.yaml").read_text()) or {}
 
 
-def adoption_routes(routing: dict) -> tuple[list[dict], list[str], list[str]]:
+def _routes(routing: dict) -> list[dict]:
+    return (((routing.get("dimensions") or {}).get("adoption")) or {}).get("routes") or []
+
+
+def _route_id(route: dict) -> str:
+    """A stable slug. A sourced route is identified by source.column, its natural join key;
+    a null-source route has neither, so it is identified by the instrument it declares."""
+    source = route.get("source") or ""
+    column = route.get("column") or ""
+    signal_type = route.get("signal_type") or ""
+    return f"{source}.{column}" if source else signal_type
+
+
+def adoption_aggregation_rules(routing: dict) -> list[dict]:
+    """The named aggregation rules, from the dimension's `aggregation` block.
+
+    One row per declared rule. `scope` records what the aggregation is over — a family's
+    several artifacts, not its categories or sources — and `applies_to_instrument` is what a
+    route joins on to pick up its `aggregation_rule_id`, so the method lives here once.
+    """
+    dimension = ((routing.get("dimensions") or {}).get("adoption")) or {}
+    rows: list[dict] = []
+    for rule in dimension.get("aggregation") or []:
+        rows.append(
+            {
+                "aggregation_rule_id": rule.get("rule_id", ""),
+                "method": rule.get("method", ""),
+                "scope": rule.get("scope", ""),
+                "applies_to_instrument": rule.get("applies_to_instrument", ""),
+            }
+        )
+    return rows
+
+
+def adoption_routes(routing: dict, aggregation_by_instrument: dict[str, str]) -> tuple[list[dict], list[str]]:
     """One row per adoption route, in the YAML's precedence order.
 
     The derivation of every column is documented inline; this is the compiler's contract.
-    Warnings flag a source or instrument the derivation maps do not cover — a coverage gap
-    rather than a broken score — and errors flag a route with no signal_type, which cannot
-    be routed at all.
+    Everything here that would make routing wrong is an error, not a warning: a route with no
+    instrument, a source the `sources:` block does not declare, a column with no metric_type,
+    a missing or invalid authority, or a duplicate route_id.
     """
-    dimension = ((routing.get("dimensions") or {}).get("adoption")) or {}
-    routes = dimension.get("routes") or []
+    routes = _routes(routing)
+    sources = routing.get("sources") or {}
     version = str(routing.get("version", ""))
 
     rows: list[dict] = []
     errors: list[str] = []
-    warnings: list[str] = []
+    seen_ids: set[str] = set()
 
     for index, route in enumerate(routes):
         # `source` is nullable: two routes are hand-authored and read no machine source, and
@@ -150,45 +188,48 @@ def adoption_routes(routing: dict) -> tuple[list[dict], list[str], list[str]]:
             errors.append(f"adoption route {index} declares no signal_type and cannot be routed")
             continue
 
-        # `route_id` is a stable slug. A sourced route is identified by source.column, its
-        # natural join key; a null-source route has neither, so it is identified by the
-        # instrument it declares — `active_users`, `reported_traction`.
-        route_id = f"{source}.{column}" if source else signal_type
+        route_id = _route_id(route)
+        if route_id in seen_ids:
+            errors.append(f"adoption route {index} has a duplicate route_id {route_id!r}")
+            continue
+        seen_ids.add(route_id)
 
-        # `artifact_kind` and `metric_type` are derived, not read. A hand-authored route reads
-        # no column, so `metric_type` is empty; a null-source route names no artifact, so
-        # `artifact_kind` is empty. A non-null source or a column the maps do not cover is a
-        # coverage warning, so a new source declares its mapping here rather than shipping blank.
-        artifact_kind = _ARTIFACT_KIND.get(source, "")
-        if source and not artifact_kind:
-            warnings.append(f"route {route_id!r}: source {source!r} has no artifact_kind mapping")
-        metric_type = _METRIC_TYPE.get(column, "")
-        if column and not metric_type:
-            warnings.append(f"route {route_id!r}: column {column!r} has no metric_type mapping")
+        # `artifact_kind` is READ from the source's declared `artifact_key`, not guessed from a
+        # hardcoded map — so `semanticscholar` compiles to `arxiv` and matches the registry. A
+        # null-source route names no artifact, so it is empty; a non-null source the `sources:`
+        # block does not declare, or one with no `artifact_key`, is an error, not a blank.
+        artifact_kind = ""
+        if source:
+            source_spec = sources.get(source)
+            if source_spec is None:
+                errors.append(
+                    f"route {route_id!r}: source {source!r} is not declared in the `sources:` block"
+                )
+            elif not source_spec.get("artifact_key"):
+                errors.append(
+                    f"route {route_id!r}: source {source!r} declares no `artifact_key`"
+                )
+            else:
+                artifact_kind = source_spec["artifact_key"]
 
-        authority = _AUTHORITY.get(signal_type, "")
-        if not authority:
-            warnings.append(f"route {route_id!r}: instrument {signal_type!r} has no declared authority")
+        # `metric_type` is derived from the column. A hand-authored route reads no column, so
+        # it is empty; a column the map does not cover is an error rather than a silent blank.
+        metric_type = ""
+        if column:
+            metric_type = _METRIC_TYPE.get(column, "")
+            if not metric_type:
+                errors.append(f"route {route_id!r}: column {column!r} has no metric_type mapping")
 
-        # A usage_volume route sums across a family's artifacts (the dimension's rule); every
-        # other instrument reads one figure and does not aggregate.
-        aggregation_method = "sum" if signal_type == "usage_volume" else "none"
-
-        # `band_set_id` points at the band rows the route resolves to. A route with inline
-        # bands owns a per-INSTRUMENT scale, addressed `route:<signal_type>`. A usage_volume
-        # route resolves its bands per PRODUCT TYPE at evaluation, so it points at the `type:*`
-        # sentinel rather than any one type. An instrument with a vocabulary and no bands
-        # (reported_traction) points at nothing.
-        if route.get("bands"):
-            band_set = band_set_id("route", signal_type)
-        elif signal_type == "usage_volume":
-            band_set = band_set_id("type", "*")
-        else:
-            band_set = ""
+        # `authority` is declared on the route and compiled, not inferred from the instrument.
+        authority = route.get("authority") or ""
+        if authority not in _AUTHORITIES:
+            errors.append(
+                f"route {route_id!r}: authority {authority!r} is missing or not one of "
+                f"{sorted(_AUTHORITIES)}"
+            )
 
         rows.append(
             {
-                "declaration_version_id": version,
                 "route_id": route_id,
                 "route_order": index + 1,
                 "source": source,
@@ -200,22 +241,25 @@ def adoption_routes(routing: dict) -> tuple[list[dict], list[str], list[str]]:
                 "hand_authored": bool(route.get("hand_authored", False)),
                 "confidence": route.get("confidence", ""),
                 "unit": route.get("unit") or "",
-                "aggregation_method": aggregation_method,
-                "band_set_id": band_set,
-                # `cap`, `requires_evidence` and `vocabulary` are semantic and compile; the
-                # prose that explains each — cap_because, note, attribution_note,
+                # The rule whose `applies_to_instrument` matches this route's instrument; the
+                # method string is not copied here, only its rule id. Empty when no rule governs
+                # the instrument (everything but usage_volume today).
+                "aggregation_rule_id": aggregation_by_instrument.get(signal_type, ""),
+                # `cap`, `cap_reason`, `requires_evidence` and `vocabulary` are semantic and
+                # compile; the prose that explains the rest — note, attribution_note,
                 # vocabulary_note — is documentation-only and does not.
                 "cap": route.get("cap") if route.get("cap") is not None else "",
+                "cap_reason": " ".join(str(route.get("cap_because", "")).split()),
                 "requires_evidence": "|".join(route.get("requires_evidence") or []),
                 # Not declared per route in the YAML today; kept as a column so a per-route
                 # freshness threshold has somewhere to land without a schema change.
                 "freshness_days": "",
                 "abstain_rule": _ABSTAIN_RULE,
                 "vocabulary": "|".join(route.get("vocabulary") or []),
-                "policy_version": version,
+                "routing_policy_version": version,
             }
         )
-    return rows, errors, warnings
+    return rows, errors
 
 
 def adoption_route_scopes(routing: dict) -> list[dict]:
@@ -224,13 +268,9 @@ def adoption_route_scopes(routing: dict) -> list[dict]:
     A route with no `applies_to_categories` emits no rows and applies to every category; a
     scope row narrows it. Emitted one row per category so a join never splits a string.
     """
-    routes = (((routing.get("dimensions") or {}).get("adoption")) or {}).get("routes") or []
     rows: list[dict] = []
-    for route in routes:
-        signal_type = route.get("signal_type") or ""
-        source = route.get("source") or ""
-        column = route.get("column") or ""
-        route_id = f"{source}.{column}" if source else signal_type
+    for route in _routes(routing):
+        route_id = _route_id(route)
         for category in route.get("applies_to_categories") or []:
             rows.append(
                 {"route_id": route_id, "scope_type": "category", "scope_value": category}
@@ -238,31 +278,88 @@ def adoption_route_scopes(routing: dict) -> list[dict]:
     return rows
 
 
-def adoption_aggregation_rules(routing: dict) -> list[dict]:
-    """The dimension-level aggregation, from `sum_across_artifacts`.
+def adoption_route_band_sets(routing: dict, rubrics: dict) -> tuple[list[dict], list[str]]:
+    """One row per valid route x product type, naming the band set that resolves it.
 
-    `scope: artifacts` records what the sum is over: a family's several artifacts, not its
-    categories or sources. Emitted only when the flag is set, so the table's presence is the
-    declaration.
+    This is what replaces the `type:*` sentinel `adoption_routes` used to carry: evaluation
+    joins this table and abstains when no row exists, rather than reading a sentinel and
+    resolving bands itself. The derivation runs off the shared rubrics:
+
+      - a `usage_volume` route resolves per product type, so it emits `type:<P>` for each type
+        whose rubric declares usage_volume bands. Hardware is qualitative and declares none, so
+        it gets no row — and its absence IS the abstention, correctly.
+      - `stars_fallback` and `active_users` carry a scale that is a property of the INSTRUMENT
+        and type-independent, so each emits `route:<signal_type>` for EVERY product type.
+      - `reported_traction` has a vocabulary and no bands, so it resolves to nothing and emits
+        no row.
+
+    Referential integrity is enforced here rather than trusted: every band_set_id emitted must
+    resolve to an `adoption_bands` row, so a scale renamed on one side without the other fails
+    the serializer instead of publishing a dangling join.
     """
-    dimension = ((routing.get("dimensions") or {}).get("adoption")) or {}
-    if not dimension.get("sum_across_artifacts"):
-        return []
-    return [{"dimension": "adoption", "aggregation_method": "sum", "scope": "artifacts"}]
+    # Deferred import: serialize_rubric imports band_set_id from this module, so importing it at
+    # module scope would be a cycle. By call time both modules are fully loaded.
+    from build.serialize_rubric import adoption_bands, route_bands
+
+    band_rows, _ = adoption_bands(rubrics)
+    route_scale_rows, _ = route_bands(routing)
+    valid_band_ids = {b["band_set_id"] for b in band_rows + route_scale_rows}
+
+    all_types = sorted(rubrics.keys())
+    banded_types = sorted(
+        t for t, r in rubrics.items() if ((r or {}).get("adoption") or {}).get("bands")
+    )
+
+    rows: list[dict] = []
+    errors: list[str] = []
+    for route in _routes(routing):
+        signal_type = route.get("signal_type") or ""
+        route_id = _route_id(route)
+        if signal_type == "usage_volume":
+            pairs = [(p, band_set_id("type", p)) for p in banded_types]
+        elif signal_type in ("stars_fallback", "active_users"):
+            pairs = [(p, band_set_id("route", signal_type)) for p in all_types]
+        else:
+            pairs = []
+        for product_type, band_set in pairs:
+            if band_set not in valid_band_ids:
+                errors.append(
+                    f"route {route_id!r}: band_set_id {band_set!r} for product type "
+                    f"{product_type!r} resolves to no adoption_bands row"
+                )
+            rows.append(
+                {"route_id": route_id, "product_type": product_type, "band_set_id": band_set}
+            )
+    return rows, errors
 
 
-def build_routing(routing: dict) -> tuple[dict[str, list[dict]], list[str], list[str]]:
-    """Return (tables, errors, warnings), a pure function of the parsed routing YAML.
+def build_routing(routing: dict, rubrics: dict) -> tuple[dict[str, list[dict]], list[str], list[str]]:
+    """Return (tables, errors, warnings), a pure function of the parsed routing YAML and the
+    shared rubrics.
 
-    Errors would make routing wrong — a route with no instrument. Warnings are coverage
-    facts — a source or instrument whose derivation the maps do not yet cover.
+    `rubrics` is threaded in rather than read here so the function stays pure and the tests can
+    pass a rubric inline. Errors would make routing wrong — an unroutable route, an unknown
+    derivation, a duplicate id, a dangling band-set join; warnings are genuine coverage facts.
     """
     tables: dict[str, list[dict]] = {name: [] for name in TABLES}
 
-    routes, errors, warnings = adoption_routes(routing)
+    aggregation_rows = adoption_aggregation_rules(routing)
+    aggregation_by_instrument = {
+        r["applies_to_instrument"]: r["aggregation_rule_id"]
+        for r in aggregation_rows
+        if r["applies_to_instrument"]
+    }
+
+    routes, route_errors = adoption_routes(routing, aggregation_by_instrument)
+    band_set_rows, band_set_errors = adoption_route_band_sets(routing, rubrics)
+
     tables["adoption_routes"] = routes
     tables["adoption_route_scopes"] = adoption_route_scopes(routing)
-    tables["adoption_aggregation_rules"] = adoption_aggregation_rules(routing)
+    tables["adoption_route_band_sets"] = band_set_rows
+    tables["adoption_aggregation_rules"] = aggregation_rows
+
+    errors = route_errors + band_set_errors
+    warnings: list[str] = []
 
     if not routes:
         errors.append("signal_routing.yaml declares no adoption routes, so there is nothing to route with")
@@ -276,7 +373,12 @@ def main() -> int:
     parser.add_argument("--out", type=Path, default=OUT_DIR, help="output directory")
     args = parser.parse_args()
 
-    tables, errors, warnings = build_routing(load_routing(ROOT))
+    # The shared rubrics carry the usage_volume band sets each product type declares, which the
+    # route x product-type table is derived against. Loaded the same way serialize_rubric does.
+    from build.validate import load_sources
+
+    rubrics = load_sources(ROOT).get("rubrics") or {}
+    tables, errors, warnings = build_routing(load_routing(ROOT), rubrics)
 
     for name in TABLES:
         print(f"  {name:<27} {len(tables[name]):>5} rows")

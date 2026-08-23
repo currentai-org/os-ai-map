@@ -51,7 +51,7 @@ As of 2026-08-20:
 - Platform model source is mirrored read-only under `warehouse/models/<dataset>/` (each carrying a `mirror:` block in `warehouse/assets.yaml`); the platform remains authoritative for those deployed models.
 - Dataset scheduling, model throttles, GitHub Actions schedules, and manual operations coexist. A configured cron is not treated as proof that a scheduled run fired. Verified 2026-08-20: of <!-- observed:2026-08-20 -->22 datasets, 13 carry `cronTimezone: America/New_York`, and 8 have a cron configured with `lastRunAt: null` — `signal_semanticscholar`, `signal_pypi`, `ai_demand_curve`, `state_of_os_ai`, `scores`, `events`, `metrics`, `entities`. The `scores` dataset is among them, which means the openness chain that `check_parity` compares against the repository has no observed scheduled run.
 - Two platform tables have no repository source and no in-repo consumer: `currentai.scores.investment_ranking` and `currentai.scores.taxonomy`.
-- The full org is <!-- observed:2026-08-20 -->22 datasets by `ListDatasets`, or 23 counting `datasette` — which `ListDatasets` omits because it holds two deployed models and no materialized tables, so a dataset-first sweep misses it (Phase 0b enumerated from `ListDataModels` instead and found it). The org holds <!-- observed:2026-08-20 -->96 tables. The datasets the repository maintains or reads from hold <!-- count:deployed_tables -->56 of those tables; the rest are separate analytical products. See section 11.3 for how that reconciles with the inventory's size.
+- The full org is <!-- observed:2026-08-20 -->22 datasets by `ListDatasets`, or 23 counting `datasette` — which `ListDatasets` omits because it holds two deployed models and no materialized tables, so a dataset-first sweep misses it (Phase 0b enumerated from `ListDataModels` instead and found it). The org holds <!-- observed:2026-08-20 -->96 tables. The datasets the repository maintains or reads from hold <!-- count:deployed_tables -->57 of those tables; the rest are separate analytical products. See section 11.3 for how that reconciles with the inventory's size.
 
 The redesign must evolve this system without interrupting the existing map, registry tables, notebooks, or website.
 
@@ -299,43 +299,51 @@ A single flat table cannot hold this without loss, so normalize:
 ```text
 registry.adoption_routes            one row per route
 registry.adoption_route_scopes      route x applicable category / product type
-registry.adoption_aggregation_rules sum_across_artifacts and per-dimension aggregation
+registry.adoption_route_band_sets   route x product type -> the band set that resolves it
+registry.adoption_aggregation_rules named aggregation rules, bound to routes by instrument
 registry.adoption_bands             existing; gains band_set_id
 ```
 
-`registry.adoption_bands` has no `band_set_id` column today — its columns are `product_type`,
-`level`, `above`, `reach`, `unit`, `signal_type`. Adding one is part of this work, because two
-routes carry bands inline and those must land somewhere addressable.
+`registry.adoption_bands` had no `band_set_id` column — its columns were `product_type`,
+`level`, `above`, `reach`, `unit`, `signal_type`. It now leads with `band_set_id`, the identity a
+route resolves to: `route:<signal_type>` for a scale declared on its own route (stars, active
+users), `type:<product_type>` for a per-product-type usage_volume ladder. The route-to-band link
+is **not** a column on `adoption_routes` — it varies by product type, so it lives in
+`registry.adoption_route_band_sets`, one row per valid route x product type. Evaluation joins that
+table and abstains when no row exists (hardware usage_volume has none, because hardware is
+qualitative), rather than reading a `type:*` sentinel and reinterpreting it.
 
 `registry.adoption_routes` must preserve at minimum:
 
 ```text
-declaration_version_id
 route_id
 route_order                  explicit; the YAML encodes precedence by list position
 source                       nullable — two routes legitimately have none
 source_column
-artifact_kind
-metric_type                  derived from source + column
+artifact_kind                the source's declared artifact_key (so semanticscholar -> arxiv)
+metric_type                  derived from column
 instrument_type              the YAML's signal_type; usage_volume | stars_fallback | ...
-authority                    authoritative | secondary | fallback
+authority                    declared per route; authoritative | secondary | fallback
 hand_authored
 confidence
 unit
-aggregation_method
-band_set_id
+aggregation_rule_id          references adoption_aggregation_rules; method lives there once
 cap
-cap_because
+cap_reason                   the declared reason a cap applies
 requires_evidence
 freshness_days
 abstain_rule
 vocabulary                   qualitative vocabulary where the route declares one
-policy_version
+routing_policy_version       the routing YAML version; NOT a release/declaration identity
 ```
 
-The YAML's `signal_type` compiles to `instrument_type`, and `metric_type` is derived from
-`source` and `column`. That mapping is part of the compiler's contract, not something evaluation
-infers.
+The YAML's `signal_type` compiles to `instrument_type`; `metric_type` is derived from the
+`column`; and `artifact_kind` is read from the source's declared `artifact_key` in the `sources:`
+block (so `semanticscholar` compiles to `arxiv`, matching `registry.product_artifacts`, not a
+guessed `paper`). `authority` is declared on each route and compiled, never inferred from the
+instrument name. Those derivations are part of the compiler's contract, not something evaluation
+infers — and an unknown source, column, instrument, authority, duplicate `route_id`, or dangling
+band-set reference is a hard compiler error, not a warning.
 
 The repository compiler owns these tables. Evaluation reads them and never reinterprets the
 YAML. A route the compiler cannot express is a compiler bug to fix, not a case for evaluation to
@@ -343,11 +351,11 @@ special-case.
 
 **Acceptance test is round-trip completeness**, not column presence: every semantic field in the
 adoption portion of `signal_routing.yaml` is either compiled into these tables or explicitly
-classified as documentation-only. `note`, `cap_because`, `sum_note`, `attribution_note` and
-`vocabulary_note` are prose and may be classified documentation-only; `cap`,
-`applies_to_categories`, `hand_authored`, `requires_evidence`, `vocabulary` and
-`sum_across_artifacts` are semantic and must compile. A field that is neither compiled nor
-classified fails the test.
+classified as documentation-only. `note`, `sum_note`, `attribution_note` and `vocabulary_note` are
+prose and may be classified documentation-only; `source`, `column`, `signal_type`, `authority`,
+`confidence`, `unit`, `cap`, `cap_because` (compiled as `cap_reason`), `applies_to_categories`,
+`hand_authored`, `requires_evidence`, `vocabulary` and the `aggregation` block are semantic and
+must compile. A field that is neither compiled nor classified fails the test.
 
 `registry.product_scores` remains the stable compatibility table for current consumers. Moving it to `releases` is a future API migration, not part of the first implementation wave.
 
@@ -1435,11 +1443,11 @@ them in the other.
 Three numbers that must not be conflated:
 
 ```text
-deployed tables in the in-scope datasets    <!-- count:deployed_tables -->56
+deployed tables in the in-scope datasets    <!-- count:deployed_tables -->57
 staged, not deployed (signal_packages)      <!-- count:staged_assets -->3
 dormant, no platform table yet              <!-- count:dormant_assets -->1
                                             ------
-logical assets in warehouse/assets.yaml     <!-- count:assets -->60
+logical assets in warehouse/assets.yaml     <!-- count:assets -->61
 ```
 
 The staged three are the `signal_packages` models from issue #314: tracked files implementing

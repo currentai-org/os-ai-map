@@ -721,6 +721,30 @@ assets:
   status: active
   materialized: true
   verified_at: '2026-08-20'
+- id: registry.adoption_route_band_sets
+  table: currentai.registry.adoption_route_band_sets
+  kind: registry
+  current_namespace: registry
+  target_namespace: registry
+  migration_status: complete
+  authority: repo
+  population: gap_map
+  release_path: true
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: checked
+    external: unknown
+  external_consumers: none_confirmed
+  grain: one row per (route_id, product_type, band_set_id)
+  producer: build/serialize_routing.py + build/publish_registry.py
+  publication_role: payload_input
+  refresh: CI push on merge to main
+  dataset_id: a2bb5ac9-73d1-489e-b7ae-a0b231b04fde
+  owner: carl
+  status: active
+  materialized: true
+  verified_at: '2026-08-23'
 - id: registry.adoption_route_scopes
   table: currentai.registry.adoption_route_scopes
   kind: registry
