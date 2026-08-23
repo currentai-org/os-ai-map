@@ -337,7 +337,7 @@ def test_source_null_routes_carry_no_derived_artifact_or_metric(tables):
 # --- HARD ERRORS: an unknown derivation or a duplicate must fail the compiler ----------
 
 
-def test_a_source_absent_from_the_sources_block_is_an_error(routing, rubrics):
+def test_a_source_absent_from_the_sources_block_is_an_error(routing, rubrics, categories):
     """A non-null source the `sources:` block does not declare cannot yield an artifact_kind,
     so it is an error rather than a blank."""
     bad = copy.deepcopy(routing)
@@ -345,54 +345,54 @@ def test_a_source_absent_from_the_sources_block_is_an_error(routing, rubrics):
         {"source": "notasource", "column": "downloads_30d", "signal_type": "usage_volume",
          "authority": "authoritative"}
     )
-    _, errors, _ = build_routing(bad, rubrics)
+    _, errors, _ = build_routing(bad, rubrics, categories)
     assert any("notasource" in e and "sources:" in e for e in errors), errors
 
 
-def test_a_source_with_no_artifact_key_is_an_error(routing, rubrics):
+def test_a_source_with_no_artifact_key_is_an_error(routing, rubrics, categories):
     bad = copy.deepcopy(routing)
     bad["sources"]["keyless"] = {"table": "x"}
     bad["dimensions"]["adoption"]["routes"].append(
         {"source": "keyless", "column": "downloads_30d", "signal_type": "usage_volume",
          "authority": "authoritative"}
     )
-    _, errors, _ = build_routing(bad, rubrics)
+    _, errors, _ = build_routing(bad, rubrics, categories)
     assert any("keyless" in e and "artifact_key" in e for e in errors), errors
 
 
-def test_a_column_with_no_metric_type_is_an_error(routing, rubrics):
+def test_a_column_with_no_metric_type_is_an_error(routing, rubrics, categories):
     bad = copy.deepcopy(routing)
     bad["dimensions"]["adoption"]["routes"].append(
         {"source": "huggingface_model", "column": "not_a_metric", "signal_type": "usage_volume",
          "authority": "authoritative"}
     )
-    _, errors, _ = build_routing(bad, rubrics)
+    _, errors, _ = build_routing(bad, rubrics, categories)
     assert any("not_a_metric" in e and "metric_type" in e for e in errors), errors
 
 
-def test_a_missing_authority_is_an_error(routing, rubrics):
+def test_a_missing_authority_is_an_error(routing, rubrics, categories):
     bad = copy.deepcopy(routing)
     del bad["dimensions"]["adoption"]["routes"][0]["authority"]
-    _, errors, _ = build_routing(bad, rubrics)
+    _, errors, _ = build_routing(bad, rubrics, categories)
     assert any("authority" in e for e in errors), errors
 
 
-def test_an_invalid_authority_is_an_error(routing, rubrics):
+def test_an_invalid_authority_is_an_error(routing, rubrics, categories):
     bad = copy.deepcopy(routing)
     bad["dimensions"]["adoption"]["routes"][0]["authority"] = "supreme"
-    _, errors, _ = build_routing(bad, rubrics)
+    _, errors, _ = build_routing(bad, rubrics, categories)
     assert any("authority" in e and "supreme" in e for e in errors), errors
 
 
-def test_a_duplicate_route_id_is_an_error(routing, rubrics):
+def test_a_duplicate_route_id_is_an_error(routing, rubrics, categories):
     bad = copy.deepcopy(routing)
     routes = bad["dimensions"]["adoption"]["routes"]
     routes.append(copy.deepcopy(routes[0]))
-    _, errors, _ = build_routing(bad, rubrics)
+    _, errors, _ = build_routing(bad, rubrics, categories)
     assert any("duplicate route_id" in e for e in errors), errors
 
 
-def test_a_band_set_absent_from_adoption_bands_is_an_error(routing, rubrics):
+def test_a_band_set_absent_from_adoption_bands_is_an_error(routing, rubrics, categories):
     """Referential integrity. If the stars scale loses its `bands` on the route, `route_bands`
     stops emitting `route:stars_fallback`, but the band-set join still points at it — a
     dangling reference that must fail the serializer rather than publish a broken join."""
@@ -400,40 +400,40 @@ def test_a_band_set_absent_from_adoption_bands_is_an_error(routing, rubrics):
     for route in bad["dimensions"]["adoption"]["routes"]:
         if route.get("signal_type") == "stars_fallback":
             route.pop("bands", None)
-    _, errors, _ = build_routing(bad, rubrics)
+    _, errors, _ = build_routing(bad, rubrics, categories)
     assert any("route:stars_fallback" in e and "adoption_bands" in e for e in errors), errors
 
 
-def test_authority_is_read_from_the_yaml_not_a_constant(routing, rubrics):
+def test_authority_is_read_from_the_yaml_not_a_constant(routing, rubrics, categories):
     """Flipping a route's declared authority in an in-memory copy changes the output, proving
     the value is compiled from the YAML rather than looked up in a Python constant."""
     flipped = copy.deepcopy(routing)
     route = flipped["dimensions"]["adoption"]["routes"][0]
     assert route["authority"] == "authoritative"
     route["authority"] = "fallback"
-    tables, errors, _ = build_routing(flipped, rubrics)
+    tables, errors, _ = build_routing(flipped, rubrics, categories)
     assert errors == [], errors
     row = next(r for r in tables["adoption_routes"] if r["route_order"] == 1)
     assert row["authority"] == "fallback"
 
 
-def test_an_unknown_signal_type_is_an_error(routing, rubrics):
+def test_an_unknown_signal_type_is_an_error(routing, rubrics, categories):
     """A route instrument outside the canonical vocabulary used to compile an eighth route
     with no error; it is now checked against build/vocabulary.SIGNAL_TYPES."""
     bad = copy.deepcopy(routing)
     bad["dimensions"]["adoption"]["routes"][0]["signal_type"] = "mystery"
-    _, errors, _ = build_routing(bad, rubrics)
+    _, errors, _ = build_routing(bad, rubrics, categories)
     assert any("signal_type" in e and "mystery" in e for e in errors), errors
 
 
-def test_signal_type_unknown_is_not_routable(routing, rubrics):
+def test_signal_type_unknown_is_not_routable(routing, rubrics, categories):
     """`unknown` is a valid recorded-score signal_type (a score with no routable instrument),
     so it lives in SIGNAL_TYPES; but it is not routable, so a route declaring it is checked
     against the narrower ROUTABLE_INSTRUMENTS and fails. Distinct from the `mystery` case: this
     value IS in the shared vocabulary and must still be rejected as a route instrument."""
     bad = copy.deepcopy(routing)
     bad["dimensions"]["adoption"]["routes"][0]["signal_type"] = "unknown"
-    _, errors, _ = build_routing(bad, rubrics)
+    _, errors, _ = build_routing(bad, rubrics, categories)
     assert any("signal_type" in e and "unknown" in e for e in errors), errors
 
 
@@ -447,7 +447,7 @@ def test_a_dangling_category_scope_is_an_error(routing, rubrics, categories):
     assert any("does_not_exist" in e and "category" in e for e in errors), errors
 
 
-def test_a_sourced_route_with_no_column_is_an_error(routing, rubrics):
+def test_a_sourced_route_with_no_column_is_an_error(routing, rubrics, categories):
     """A route WITH a non-null source must name a nonempty column; without one it compiled a
     route id like `huggingface_model.` and emitted no error. The source/column/hand_authored
     combination is now enforced, so the empty column is a hard error."""
@@ -455,52 +455,52 @@ def test_a_sourced_route_with_no_column_is_an_error(routing, rubrics):
     bad["dimensions"]["adoption"]["routes"].append(
         {"source": "huggingface_model", "signal_type": "usage_volume", "authority": "authoritative"}
     )
-    _, errors, _ = build_routing(bad, rubrics)
+    _, errors, _ = build_routing(bad, rubrics, categories)
     assert any("huggingface_model." in e and "column" in e for e in errors), errors
 
 
 # --- HARD ERRORS: a malformed aggregation block must fail the compiler --------------
 
 
-def test_a_duplicate_aggregation_rule_id_is_an_error(routing, rubrics):
+def test_a_duplicate_aggregation_rule_id_is_an_error(routing, rubrics, categories):
     bad = copy.deepcopy(routing)
     rules = bad["dimensions"]["adoption"]["aggregation"]
     dup = copy.deepcopy(rules[0])
     dup["applies_to_instrument"] = "stars_fallback"  # a different instrument, so only the id collides
     rules.append(dup)
-    _, errors, _ = build_routing(bad, rubrics)
+    _, errors, _ = build_routing(bad, rubrics, categories)
     assert any("duplicate rule_id" in e for e in errors), errors
 
 
-def test_an_empty_aggregation_rule_id_is_an_error(routing, rubrics):
+def test_an_empty_aggregation_rule_id_is_an_error(routing, rubrics, categories):
     bad = copy.deepcopy(routing)
     bad["dimensions"]["adoption"]["aggregation"][0]["rule_id"] = ""
-    _, errors, _ = build_routing(bad, rubrics)
+    _, errors, _ = build_routing(bad, rubrics, categories)
     assert any("no rule_id" in e for e in errors), errors
 
 
-def test_an_unknown_aggregation_instrument_is_an_error(routing, rubrics):
+def test_an_unknown_aggregation_instrument_is_an_error(routing, rubrics, categories):
     bad = copy.deepcopy(routing)
     bad["dimensions"]["adoption"]["aggregation"][0]["applies_to_instrument"] = "mystery"
-    _, errors, _ = build_routing(bad, rubrics)
+    _, errors, _ = build_routing(bad, rubrics, categories)
     assert any("applies_to_instrument" in e and "mystery" in e for e in errors), errors
 
 
-def test_an_unknown_aggregation_method_is_an_error(routing, rubrics):
+def test_an_unknown_aggregation_method_is_an_error(routing, rubrics, categories):
     bad = copy.deepcopy(routing)
     bad["dimensions"]["adoption"]["aggregation"][0]["method"] = "median"
-    _, errors, _ = build_routing(bad, rubrics)
+    _, errors, _ = build_routing(bad, rubrics, categories)
     assert any("method" in e and "median" in e for e in errors), errors
 
 
-def test_an_unknown_aggregation_scope_is_an_error(routing, rubrics):
+def test_an_unknown_aggregation_scope_is_an_error(routing, rubrics, categories):
     bad = copy.deepcopy(routing)
     bad["dimensions"]["adoption"]["aggregation"][0]["scope"] = "categories"
-    _, errors, _ = build_routing(bad, rubrics)
+    _, errors, _ = build_routing(bad, rubrics, categories)
     assert any("scope" in e and "categories" in e for e in errors), errors
 
 
-def test_a_second_aggregation_rule_for_one_instrument_is_an_error(routing, rubrics):
+def test_a_second_aggregation_rule_for_one_instrument_is_an_error(routing, rubrics, categories):
     """Two rules for usage_volume silently overwrote in the {instrument: rule_id} map and
     pointed every usage route at whichever came last."""
     bad = copy.deepcopy(routing)
@@ -509,5 +509,26 @@ def test_a_second_aggregation_rule_for_one_instrument_is_an_error(routing, rubri
     second["rule_id"] = "max_usage_across_artifacts"
     second["method"] = "max"
     rules.append(second)
-    _, errors, _ = build_routing(bad, rubrics)
+    _, errors, _ = build_routing(bad, rubrics, categories)
     assert any("second rule for instrument 'usage_volume'" in e for e in errors), errors
+
+
+def test_categories_is_a_required_argument(routing, rubrics):
+    """`categories` has no default: a caller cannot skip the dangling-scope check by omitting
+    it. Calling build_routing without categories is a TypeError, not a silent pass."""
+    with pytest.raises(TypeError):
+        build_routing(routing, rubrics)
+
+
+def test_a_duplicate_category_scope_is_an_error(routing, rubrics, categories):
+    """The table's grain is (route_id, scope_type, scope_value), so the same category listed
+    twice on one route would publish two identical rows. That is a hard error, not a duplicate
+    row. `benchmark_eval_data` is a real category, so only the duplicate — not a dangling
+    reference — is what fails here."""
+    bad = copy.deepcopy(routing)
+    for route in bad["dimensions"]["adoption"]["routes"]:
+        if route.get("signal_type") == "usage_volume":
+            route["applies_to_categories"] = ["benchmark_eval_data", "benchmark_eval_data"]
+            break
+    _, errors, _ = build_routing(bad, rubrics, categories)
+    assert any("duplicate applies_to_categories scope" in e for e in errors), errors

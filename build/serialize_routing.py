@@ -352,32 +352,40 @@ def adoption_routes(routing: dict, aggregation_by_instrument: dict[str, str]) ->
     return rows, errors
 
 
-def adoption_route_scopes(
-    routing: dict, categories: dict | None = None
-) -> tuple[list[dict], list[str]]:
+def adoption_route_scopes(routing: dict, categories: dict) -> tuple[list[dict], list[str]]:
     """Route -> the category it is scoped to, from `applies_to_categories`.
 
     A route with no `applies_to_categories` emits no rows and applies to every category; a
     scope row narrows it. Emitted one row per category so a join never splits a string.
 
-    A scope names a category by slug, so a slug no `sources/categories/` file declares is a
-    dangling reference: the scope would narrow the route to a category that does not exist,
-    which evaluation could never satisfy. When `categories` is threaded in, every scope value
-    is checked against the declared slugs and an undeclared one is a hard error rather than a
-    row nothing joins to. `None` means "not supplied" and the check is skipped — the compiler
-    only knows the declared categories when `main()` loads them.
+    `categories` is required, not optional: skipping it would silently skip the dangling-scope
+    check, so the declared slugs are always threaded in (from `main()` or a test). A scope names
+    a category by slug, so a slug no `sources/categories/` file declares is a dangling reference
+    — the scope would narrow the route to a category that does not exist — and is a hard error.
+    Duplicate `(route_id, category)` pairs are also an error: the table's grain is
+    `(route_id, scope_type, scope_value)`, so a repeated category would publish two identical
+    rows the grain forbids.
     """
-    valid = set(categories) if categories is not None else None
+    valid = set(categories)
     rows: list[dict] = []
     errors: list[str] = []
+    seen: set[tuple[str, str, str]] = set()
     for route in _routes(routing):
         route_id = _route_id(route)
         for category in route.get("applies_to_categories") or []:
-            if valid is not None and category not in valid:
+            if category not in valid:
                 errors.append(
                     f"route {route_id!r}: applies_to_categories {category!r} is not a declared "
                     f"category (no sources/categories/{category}.yaml)"
                 )
+            key = (route_id, "category", category)
+            if key in seen:
+                errors.append(
+                    f"route {route_id!r}: duplicate applies_to_categories scope {category!r}; "
+                    f"the (route_id, scope_type, scope_value) grain forbids repeats"
+                )
+                continue
+            seen.add(key)
             rows.append(
                 {"route_id": route_id, "scope_type": "category", "scope_value": category}
             )
@@ -440,16 +448,17 @@ def adoption_route_band_sets(routing: dict, rubrics: dict) -> tuple[list[dict], 
 
 
 def build_routing(
-    routing: dict, rubrics: dict, categories: dict | None = None
+    routing: dict, rubrics: dict, categories: dict
 ) -> tuple[dict[str, list[dict]], list[str], list[str]]:
     """Return (tables, errors, warnings), a pure function of the parsed routing YAML, the
     shared rubrics and the declared categories.
 
     `rubrics` and `categories` are threaded in rather than read here so the function stays pure
-    and the tests can pass them inline. Errors would make routing wrong — an unroutable route,
-    an unknown derivation, a duplicate id, a dangling band-set join, a scope naming a category
-    that does not exist; warnings are genuine coverage facts. `categories` is optional: when
-    omitted the dangling-scope check is skipped, because only `main()` loads the declared slugs.
+    and the tests can pass them inline. All three are required: making `categories` optional
+    would let a caller silently skip the dangling-scope check, so it is a positional argument
+    with no default. Errors would make routing wrong — an unroutable route, an unknown
+    derivation, a duplicate id, a dangling band-set join, a scope naming a category that does
+    not exist, a duplicate scope; warnings are genuine coverage facts.
     """
     tables: dict[str, list[dict]] = {name: [] for name in TABLES}
 
