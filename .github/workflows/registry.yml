@@ -29,6 +29,7 @@ on:
       - "build/rubrics.py"
       - "build/serialize.py"
       - "build/serialize_registry.py"
+      - "build/serialize_routing.py"
       - "build/serialize_rubric.py"
       - "build/serialize_scores.py"
       - "build/taxonomy.py"
@@ -52,6 +53,7 @@ on:
       - "build/rubrics.py"
       - "build/serialize.py"
       - "build/serialize_registry.py"
+      - "build/serialize_routing.py"
       - "build/serialize_rubric.py"
       - "build/serialize_scores.py"
       - "build/taxonomy.py"
@@ -87,6 +89,10 @@ jobs:
       # products into `otherwise`, so it has to fail here.
       - name: Check rubric consistency
         run: uv run python -m build.serialize_rubric --check
+      # The adoption routing compiler: a route it cannot express is a compiler bug, and a
+      # route with no instrument fails here rather than reaching OSO.
+      - name: Check routing consistency
+        run: uv run python -m build.serialize_routing --check
       # The fat table transcribes the payload, so this also fails if the payload itself
       # cannot be built — which is the same failure `regenerate` would hit later, caught
       # here on the PR instead.
@@ -116,6 +122,8 @@ jobs:
         run: uv run python -m build.serialize_registry
       - name: Serialize rubric and evidence
         run: uv run python -m build.serialize_rubric
+      - name: Serialize adoption routing
+        run: uv run python -m build.serialize_routing
       - name: Serialize the recorded scores
         run: uv run python -m build.serialize_scores
       - name: Publish to OSO

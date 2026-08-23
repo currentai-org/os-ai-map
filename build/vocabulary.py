@@ -90,6 +90,26 @@ def parse_date(value: object) -> date | None:
         return None
 
 
+# The canonical adoption instrument vocabulary: the `signal_type` values a recorded score
+# or a routing route may declare. A literal rather than a derivation — `signal_routing.yaml`
+# names the routed instruments but not `unknown` (a recorded score with no routable
+# instrument), so no declarative file carries the full set. Held here, once, because
+# `validate.py` gates recorded scores against it and `serialize_routing.py` gates compiled
+# routes against it, and a sibling copy in either is exactly the drift this module exists to
+# stop: `mystery` compiled an eighth route with no error until both read the same set.
+SIGNAL_TYPES = frozenset(
+    {"active_users", "usage_volume", "reported_traction", "stars_fallback", "unknown"}
+)
+
+# The routable subset: the instruments a routing route or an aggregation rule may declare.
+# `unknown` is a legitimate recorded-score `signal_type` — a score with no routable instrument
+# behind it — but it is NOT a route: nothing fetches or bands it, so a route or a rule naming
+# `unknown` is a declaration evaluation could not act on. `validate.py` keeps the full
+# `SIGNAL_TYPES` for recorded scores; `serialize_routing.py` gates compiled routes and rules
+# against this narrower set, and the difference between the two is the decision written here.
+ROUTABLE_INSTRUMENTS = SIGNAL_TYPES - {"unknown"}
+
+
 @lru_cache(maxsize=1)
 def axes() -> tuple[str, ...]:
     """The three scored axes, from `docs/schemas/score.schema.json`.

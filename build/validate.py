@@ -7,7 +7,7 @@ from pathlib import Path
 import jsonschema
 import yaml
 
-from build.vocabulary import axes
+from build.vocabulary import axes, SIGNAL_TYPES
 
 from build.rubrics import dimension_vocabulary
 from build.taxonomy import category_entry, category_statuses
@@ -42,7 +42,8 @@ OPENNESS_CLASSES = {
     "dataset": {"open", "gated", "restricted", "closed"},
     "hardware": {"open_hardware", "open_toolchain", "documented", "restricted"},
 }
-SIGNAL_TYPES = {"active_users", "usage_volume", "reported_traction", "stars_fallback", "unknown"}
+# `SIGNAL_TYPES` is the canonical adoption instrument vocabulary, owned by build/vocabulary.py
+# and imported above so this gate and serialize_routing cannot disagree about the set.
 LAYERS = {"product_ux", "model_components", "infrastructure"}
 
 

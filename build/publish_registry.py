@@ -5,12 +5,14 @@ to score it, CI pushes that declaration outward. Nothing is pulled back in here,
 and no generated CSV is committed — the repo stays YAML, and OSO gets a flat mirror
 of it.
 
-Three serializers feed this. `serialize_registry` emits identity; `serialize_rubric`
-emits each category's scoring rules plus the evidence currently on record; and
-`serialize_scores` emits the recorded scores themselves, every product and axis in one
-row. Layer-2 cannot compute a score without the first two, so they publish together, and
-the third is what lets a reader query adoption and capability at all — those axes are
-recomputed nowhere, so before this the warehouse held their sources and not their values.
+Four serializers feed this. `serialize_registry` emits identity; `serialize_rubric`
+emits each category's scoring rules plus the evidence currently on record;
+`serialize_routing` compiles the adoption routing semantics so evaluation never reinterprets
+signal_routing.yaml; and `serialize_scores` emits the recorded scores themselves, every
+product and axis in one row. Layer-2 cannot compute a score without the first two, so they
+publish together, and the last is what lets a reader query adoption and capability at all —
+those axes are recomputed nowhere, so before this the warehouse held their sources and not
+their values.
 
 Idempotent. Static models are created on first run and reused after, so this can
 run on every push to sources/.
@@ -38,15 +40,19 @@ from pathlib import Path
 
 from build.serialize_registry import OUT_DIR
 from build.serialize_registry import TABLES as REGISTRY_TABLES
+from build.serialize_routing import TABLES as ROUTING_TABLES
 from build.serialize_rubric import TABLES as RUBRIC_TABLES
 from build.serialize_scores import TABLES as SCORES_TABLES
 
-# One dataset, three serializers. `serialize_registry` declares what exists;
-# `serialize_rubric` declares how to score it and what evidence is on record; and
-# `serialize_scores` carries the recorded scores themselves. All three are the repo's own
-# declarations flowing outward, so they share the `registry` dataset and this publisher.
-# Order is stable so the materialization run is reproducible.
-TABLES: tuple[str, ...] = tuple(REGISTRY_TABLES) + tuple(RUBRIC_TABLES) + tuple(SCORES_TABLES)
+# One dataset, four serializers. `serialize_registry` declares what exists;
+# `serialize_rubric` declares how to score it and what evidence is on record;
+# `serialize_routing` compiles the adoption routing semantics; and `serialize_scores` carries
+# the recorded scores themselves. All are the repo's own declarations flowing outward, so they
+# share the `registry` dataset and this publisher. Order is stable so the materialization run
+# is reproducible.
+TABLES: tuple[str, ...] = (
+    tuple(REGISTRY_TABLES) + tuple(RUBRIC_TABLES) + tuple(ROUTING_TABLES) + tuple(SCORES_TABLES)
+)
 
 API = "https://api.oso.xyz/v1/graphql"
 USER_AGENT = "os-ai-map-registry-publisher/1.0"
@@ -92,11 +98,20 @@ M_RUN = """mutation($input: CreateStaticModelRunRequestInput!){
 M_DELETE = """mutation($id: ID!){ deleteStaticModel(id:$id){ success message } }"""
 
 
-def resolve_dataset(name: str, org_id: str, token: str) -> str:
+def resolve_dataset(name: str, org_id: str, token: str, create: bool = True) -> str | None:
+    """The registry dataset's id, creating it when absent.
+
+    `create` gates the one mutation this resolver performs, mirroring `resolve_static_models`.
+    A `--dry-run` publish calls it False so that resolving the dataset reads the platform but
+    never writes to it: an absent dataset returns `None` and is left for the caller to report
+    as a would-create, rather than being created via `M_DATASET` before the dry-run returns.
+    """
     found = graphql(Q_DATASETS, {"where": {"org_id": {"eq": org_id}, "name": {"eq": name}}}, token)
     edges = found["datasets"]["edges"]
     if edges:
         return edges[0]["node"]["id"]
+    if not create:
+        return None
     created = graphql(
         M_DATASET,
         {
@@ -132,8 +147,8 @@ def data_rows(path: Path) -> int:
 
 
 def resolve_static_models(
-    dataset_id: str, org_id: str, token: str, wanted: tuple[str, ...]
-) -> dict[str, tuple[str, bool]]:
+    dataset_id: str, org_id: str, token: str, wanted: tuple[str, ...], create: bool = True
+) -> dict[str, tuple[str | None, bool]]:
     """Model id and whether it has ever materialized a table, per wanted table.
 
     Only `wanted` tables get created. A model created for a table with no rows is a
@@ -141,9 +156,14 @@ def resolve_static_models(
     produces zero tables, and the runner fails the whole materialization on
     "No tables found after processing static model". That is what turned run
     7cd22391 red on 2026-08-19 after all 16 populated tables had already loaded.
+
+    `create` gates the one mutation this resolver performs. A `--dry-run` publish calls
+    it False so that resolving ids reads the platform but never writes to it: a missing
+    model is recorded as `(None, False)` and left for the caller to report as a
+    would-create, rather than being created before the dry-run's early return.
     """
     found = graphql(Q_STATIC, {"where": {"dataset_id": {"eq": dataset_id}}}, token)
-    existing = {
+    existing: dict[str, tuple[str | None, bool]] = {
         n["node"]["name"]: (
             n["node"]["id"],
             bool((n["node"].get("materializations") or {}).get("totalCount")),
@@ -152,6 +172,9 @@ def resolve_static_models(
     }
     for table in wanted:
         if table not in existing:
+            if not create:
+                existing[table] = (None, False)
+                continue
             created = graphql(
                 M_STATIC, {"input": {"orgId": org_id, "datasetId": dataset_id, "name": table}}, token
             )
@@ -185,8 +208,8 @@ def main() -> int:
     missing = [t for t in TABLES if not (args.dir / f"{t}.csv").exists()]
     if missing:
         print(
-            f"missing CSVs: {missing}. Run build.serialize_registry, build.serialize_rubric "
-            f"and build.serialize_scores first.",
+            f"missing CSVs: {missing}. Run build.serialize_registry, build.serialize_rubric, "
+            f"build.serialize_routing and build.serialize_scores first.",
             file=sys.stderr,
         )
         return 2
@@ -195,8 +218,20 @@ def main() -> int:
     populated = tuple(t for t in TABLES if counts[t])
     empty = tuple(t for t in TABLES if not counts[t])
 
-    dataset_id = resolve_dataset(dataset_name, org_id, token)
-    models = resolve_static_models(dataset_id, org_id, token, populated)
+    # A dry-run reads ids but must not write: `create=not args.dry_run` keeps the resolver from
+    # firing `M_DATASET` when the dataset is absent. It then returns None, and there is no
+    # dataset to resolve static models against — so the plan reports every populated table as a
+    # would-create and returns without a single mutation.
+    dataset_id = resolve_dataset(dataset_name, org_id, token, create=not args.dry_run)
+    if dataset_id is None:
+        print(f"would create dataset {dataset_name}")
+        for table in populated:
+            print(f"  would create {table} and upload {table}.csv ({counts[table]:,} rows)")
+        return 0
+
+    # `create=False` on a dry-run records a missing model as a would-create rather than
+    # creating it before the early return below.
+    models = resolve_static_models(dataset_id, org_id, token, populated, create=not args.dry_run)
     print(f"dataset {dataset_name} = {dataset_id}")
 
     # An empty table is a real state, not an error: a category whose tail registry has been
@@ -248,7 +283,11 @@ def main() -> int:
 
     if args.dry_run:
         for table in populated:
-            print(f"  would upload {table}.csv ({counts[table]:,} rows) -> {models[table][0]}")
+            model_id = models[table][0]
+            if model_id is None:
+                print(f"  would create {table} and upload {table}.csv ({counts[table]:,} rows)")
+            else:
+                print(f"  would upload {table}.csv ({counts[table]:,} rows) -> {model_id}")
         return 0
 
     for table in populated:
