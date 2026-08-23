@@ -138,8 +138,8 @@ def data_rows(path: Path) -> int:
 
 
 def resolve_static_models(
-    dataset_id: str, org_id: str, token: str, wanted: tuple[str, ...]
-) -> dict[str, tuple[str, bool]]:
+    dataset_id: str, org_id: str, token: str, wanted: tuple[str, ...], create: bool = True
+) -> dict[str, tuple[str | None, bool]]:
     """Model id and whether it has ever materialized a table, per wanted table.
 
     Only `wanted` tables get created. A model created for a table with no rows is a
@@ -147,9 +147,14 @@ def resolve_static_models(
     produces zero tables, and the runner fails the whole materialization on
     "No tables found after processing static model". That is what turned run
     7cd22391 red on 2026-08-19 after all 16 populated tables had already loaded.
+
+    `create` gates the one mutation this resolver performs. A `--dry-run` publish calls
+    it False so that resolving ids reads the platform but never writes to it: a missing
+    model is recorded as `(None, False)` and left for the caller to report as a
+    would-create, rather than being created before the dry-run's early return.
     """
     found = graphql(Q_STATIC, {"where": {"dataset_id": {"eq": dataset_id}}}, token)
-    existing = {
+    existing: dict[str, tuple[str | None, bool]] = {
         n["node"]["name"]: (
             n["node"]["id"],
             bool((n["node"].get("materializations") or {}).get("totalCount")),
@@ -158,6 +163,9 @@ def resolve_static_models(
     }
     for table in wanted:
         if table not in existing:
+            if not create:
+                existing[table] = (None, False)
+                continue
             created = graphql(
                 M_STATIC, {"input": {"orgId": org_id, "datasetId": dataset_id, "name": table}}, token
             )
@@ -202,7 +210,9 @@ def main() -> int:
     empty = tuple(t for t in TABLES if not counts[t])
 
     dataset_id = resolve_dataset(dataset_name, org_id, token)
-    models = resolve_static_models(dataset_id, org_id, token, populated)
+    # A dry-run reads ids but must not write: `create=False` records a missing model as a
+    # would-create rather than creating it before the early return below.
+    models = resolve_static_models(dataset_id, org_id, token, populated, create=not args.dry_run)
     print(f"dataset {dataset_name} = {dataset_id}")
 
     # An empty table is a real state, not an error: a category whose tail registry has been
@@ -254,7 +264,11 @@ def main() -> int:
 
     if args.dry_run:
         for table in populated:
-            print(f"  would upload {table}.csv ({counts[table]:,} rows) -> {models[table][0]}")
+            model_id = models[table][0]
+            if model_id is None:
+                print(f"  would create {table} and upload {table}.csv ({counts[table]:,} rows)")
+            else:
+                print(f"  would upload {table}.csv ({counts[table]:,} rows) -> {model_id}")
         return 0
 
     for table in populated:

@@ -22,14 +22,23 @@ from build.validate import load_sources
 
 ROOT = Path(__file__).resolve().parents[1]
 
-# Containers, not leaf fields. `routes` holds the routes iterated per-field; `question` is the
-# dimension's prose prompt, classified with the other documentation below.
-_STRUCTURAL = {"routes"}
+# Round-trip completeness is checked at FOUR levels, each with its own compiled/doc-only sets,
+# because the adoption YAML nests: the dimension holds routes and an aggregation block, a route
+# holds bands. Classifying only the route-level keys — and treating the whole `aggregation` and
+# `bands` containers as "compiled" — let a new field nested inside either be dropped silently.
+# The census below recurses into every structural container and fails on any unclassified field
+# at any level.
 
-# Semantic fields that MUST reach one of the tables (or, for `bands`, the adoption_bands table
-# that `band_set_id` links to). This is the list data-architecture.md 4.1 names as semantic,
-# plus `bands`, which compiles in serialize_rubric and is referenced by the band-set join.
-_COMPILED = {
+# Contract 1 — the adoption dimension. `routes` and `aggregation` are structural containers the
+# census recurses into; `question` is the dimension's prose prompt.
+_DIM_STRUCTURAL = {"routes", "aggregation"}
+_DIM_DOC_ONLY = {"question"}
+
+# Contract 2 — a route. These reach one of the tables (or, for the structural `bands` container,
+# the adoption_bands table `band_set_id` links to). `note`, `attribution_note` and
+# `vocabulary_note` are prose a reader consults the YAML for.
+_ROUTE_STRUCTURAL = {"bands"}
+_ROUTE_COMPILED = {
     "source",
     "column",
     "signal_type",
@@ -42,12 +51,56 @@ _COMPILED = {
     "hand_authored",
     "requires_evidence",
     "vocabulary",
-    "aggregation",
-    "bands",
 }
+_ROUTE_DOC_ONLY = {"note", "attribution_note", "vocabulary_note"}
 
-# Prose. Allowed to be absent from the tables; a reader consults the YAML for the reasoning.
-_DOC_ONLY = {"note", "sum_note", "attribution_note", "vocabulary_note", "question"}
+# Contract 3 — an aggregation rule, walked from `dimension["aggregation"][*]`.
+_AGG_COMPILED = {"rule_id", "method", "scope", "applies_to_instrument"}
+_AGG_DOC_ONLY = {"note"}
+
+# Contract 4 — a band, walked from each route's `bands[*]`. Every field compiles into
+# adoption_bands; nothing here is documentation-only.
+_BAND_COMPILED = {"level", "above", "reach"}
+_BAND_DOC_ONLY: set[str] = set()
+
+
+def _assert_classified(kind, fields, compiled, doc_only, structural=frozenset()):
+    """A field at one level is compiled, classified documentation-only, or a structural
+    container the census recurses into. Anything else fails."""
+    unclassified = set(fields) - set(compiled) - set(doc_only) - set(structural)
+    assert not unclassified, (
+        f"{kind} fields neither compiled nor classified documentation-only: {sorted(unclassified)}. "
+        f"Compile the field into serialize_routing, or classify it documentation-only with a reason."
+    )
+
+
+def _census(adoption):
+    """Run the four-contract round-trip completeness census, recursing into every structural
+    container. Raises AssertionError on any unclassified field at any level."""
+    # Contract 1: the dimension itself.
+    _assert_classified(
+        "adoption dimension", adoption, compiled=set(),
+        doc_only=_DIM_DOC_ONLY, structural=_DIM_STRUCTURAL,
+    )
+    # Contract 2: every route.
+    route_fields: set[str] = set()
+    for route in adoption["routes"]:
+        route_fields |= set(route)
+    _assert_classified(
+        "route", route_fields, compiled=_ROUTE_COMPILED,
+        doc_only=_ROUTE_DOC_ONLY, structural=_ROUTE_STRUCTURAL,
+    )
+    # Contract 3: every aggregation rule.
+    agg_fields: set[str] = set()
+    for rule in adoption.get("aggregation") or []:
+        agg_fields |= set(rule)
+    _assert_classified("aggregation rule", agg_fields, compiled=_AGG_COMPILED, doc_only=_AGG_DOC_ONLY)
+    # Contract 4: every band on every route.
+    band_fields: set[str] = set()
+    for route in adoption["routes"]:
+        for band in route.get("bands") or []:
+            band_fields |= set(band)
+    _assert_classified("band", band_fields, compiled=_BAND_COMPILED, doc_only=_BAND_DOC_ONLY)
 
 
 @pytest.fixture(scope="module")
@@ -73,21 +126,38 @@ def tables(routing, rubrics):
 
 
 def test_every_adoption_field_is_compiled_or_classified_documentation(adoption):
-    """Round-trip completeness. A field that is neither compiled nor documentation-only fails.
+    """Round-trip completeness, recursive. A field that is neither compiled nor documentation-
+    only fails — at the dimension, route, aggregation-rule OR band level.
 
     This is the check the spec calls the acceptance test: it is what makes the tables a
     faithful compilation of the YAML rather than a lossy subset that drifts as fields are added.
+    Recursing into the `aggregation` and `bands` containers is what stops a new nested field
+    from being dropped silently while its container reads as "compiled".
     """
-    fields: set[str] = set()
-    for route in adoption["routes"]:
-        fields |= set(route)
-    fields |= {k for k in adoption if k not in _STRUCTURAL}
+    _census(adoption)
 
-    unclassified = fields - _COMPILED - _DOC_ONLY
-    assert not unclassified, (
-        f"adoption fields neither compiled nor classified documentation-only: {sorted(unclassified)}. "
-        f"Compile the field into serialize_routing, or add it to _DOC_ONLY with a reason."
-    )
+
+def test_a_planted_aggregation_rule_field_fails_the_census(adoption):
+    """A new field nested inside an aggregation rule must be caught by the census, not slip
+    through because the whole `aggregation` container was classified compiled."""
+    planted = copy.deepcopy(adoption)
+    planted["aggregation"][0]["mystery_agg_field"] = "x"
+    with pytest.raises(AssertionError, match="aggregation rule"):
+        _census(planted)
+
+
+def test_a_planted_route_band_field_fails_the_census(adoption):
+    """The same, one container deeper: a new field inside a route's band must fail the census
+    rather than ride along because `bands` was classified compiled."""
+    planted = copy.deepcopy(adoption)
+    for route in planted["routes"]:
+        if route.get("bands"):
+            route["bands"][0]["mystery_band_field"] = "x"
+            break
+    else:
+        pytest.fail("no route declares bands; the fixture cannot exercise the band census")
+    with pytest.raises(AssertionError, match="band"):
+        _census(planted)
 
 
 def test_every_route_compiles_to_one_row_in_contiguous_order(adoption, tables):
@@ -322,3 +392,66 @@ def test_authority_is_read_from_the_yaml_not_a_constant(routing, rubrics):
     assert errors == [], errors
     row = next(r for r in tables["adoption_routes"] if r["route_order"] == 1)
     assert row["authority"] == "fallback"
+
+
+def test_an_unknown_signal_type_is_an_error(routing, rubrics):
+    """A route instrument outside the canonical vocabulary used to compile an eighth route
+    with no error; it is now checked against build/vocabulary.SIGNAL_TYPES."""
+    bad = copy.deepcopy(routing)
+    bad["dimensions"]["adoption"]["routes"][0]["signal_type"] = "mystery"
+    _, errors, _ = build_routing(bad, rubrics)
+    assert any("signal_type" in e and "mystery" in e for e in errors), errors
+
+
+# --- HARD ERRORS: a malformed aggregation block must fail the compiler --------------
+
+
+def test_a_duplicate_aggregation_rule_id_is_an_error(routing, rubrics):
+    bad = copy.deepcopy(routing)
+    rules = bad["dimensions"]["adoption"]["aggregation"]
+    dup = copy.deepcopy(rules[0])
+    dup["applies_to_instrument"] = "stars_fallback"  # a different instrument, so only the id collides
+    rules.append(dup)
+    _, errors, _ = build_routing(bad, rubrics)
+    assert any("duplicate rule_id" in e for e in errors), errors
+
+
+def test_an_empty_aggregation_rule_id_is_an_error(routing, rubrics):
+    bad = copy.deepcopy(routing)
+    bad["dimensions"]["adoption"]["aggregation"][0]["rule_id"] = ""
+    _, errors, _ = build_routing(bad, rubrics)
+    assert any("no rule_id" in e for e in errors), errors
+
+
+def test_an_unknown_aggregation_instrument_is_an_error(routing, rubrics):
+    bad = copy.deepcopy(routing)
+    bad["dimensions"]["adoption"]["aggregation"][0]["applies_to_instrument"] = "mystery"
+    _, errors, _ = build_routing(bad, rubrics)
+    assert any("applies_to_instrument" in e and "mystery" in e for e in errors), errors
+
+
+def test_an_unknown_aggregation_method_is_an_error(routing, rubrics):
+    bad = copy.deepcopy(routing)
+    bad["dimensions"]["adoption"]["aggregation"][0]["method"] = "median"
+    _, errors, _ = build_routing(bad, rubrics)
+    assert any("method" in e and "median" in e for e in errors), errors
+
+
+def test_an_unknown_aggregation_scope_is_an_error(routing, rubrics):
+    bad = copy.deepcopy(routing)
+    bad["dimensions"]["adoption"]["aggregation"][0]["scope"] = "categories"
+    _, errors, _ = build_routing(bad, rubrics)
+    assert any("scope" in e and "categories" in e for e in errors), errors
+
+
+def test_a_second_aggregation_rule_for_one_instrument_is_an_error(routing, rubrics):
+    """Two rules for usage_volume silently overwrote in the {instrument: rule_id} map and
+    pointed every usage route at whichever came last."""
+    bad = copy.deepcopy(routing)
+    rules = bad["dimensions"]["adoption"]["aggregation"]
+    second = copy.deepcopy(rules[0])
+    second["rule_id"] = "max_usage_across_artifacts"
+    second["method"] = "max"
+    rules.append(second)
+    _, errors, _ = build_routing(bad, rubrics)
+    assert any("second rule for instrument 'usage_volume'" in e for e in errors), errors

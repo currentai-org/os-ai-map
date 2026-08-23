@@ -51,7 +51,7 @@ As of 2026-08-20:
 - Platform model source is mirrored read-only under `warehouse/models/<dataset>/` (each carrying a `mirror:` block in `warehouse/assets.yaml`); the platform remains authoritative for those deployed models.
 - Dataset scheduling, model throttles, GitHub Actions schedules, and manual operations coexist. A configured cron is not treated as proof that a scheduled run fired. Verified 2026-08-20: of <!-- observed:2026-08-20 -->22 datasets, 13 carry `cronTimezone: America/New_York`, and 8 have a cron configured with `lastRunAt: null` — `signal_semanticscholar`, `signal_pypi`, `ai_demand_curve`, `state_of_os_ai`, `scores`, `events`, `metrics`, `entities`. The `scores` dataset is among them, which means the openness chain that `check_parity` compares against the repository has no observed scheduled run.
 - Two platform tables have no repository source and no in-repo consumer: `currentai.scores.investment_ranking` and `currentai.scores.taxonomy`.
-- The full org is <!-- observed:2026-08-20 -->22 datasets by `ListDatasets`, or 23 counting `datasette` — which `ListDatasets` omits because it holds two deployed models and no materialized tables, so a dataset-first sweep misses it (Phase 0b enumerated from `ListDataModels` instead and found it). The org holds <!-- observed:2026-08-20 -->96 tables. The datasets the repository maintains or reads from hold <!-- count:deployed_tables -->57 of those tables; the rest are separate analytical products. See section 11.3 for how that reconciles with the inventory's size.
+- The full org is <!-- observed:2026-08-20 -->22 datasets by `ListDatasets`, or 23 counting `datasette` — which `ListDatasets` omits because it holds two deployed models and no materialized tables, so a dataset-first sweep misses it (Phase 0b enumerated from `ListDataModels` instead and found it). The org holds <!-- observed:2026-08-20 -->96 tables. The datasets the repository maintains or reads from hold <!-- count:deployed_tables -->53 of those tables; the rest are separate analytical products. See section 11.3 for how that reconciles with the inventory's size.
 
 The redesign must evolve this system without interrupting the existing map, registry tables, notebooks, or website.
 
@@ -1443,17 +1443,20 @@ them in the other.
 Three numbers that must not be conflated:
 
 ```text
-deployed tables in the in-scope datasets    <!-- count:deployed_tables -->57
-staged, not deployed (signal_packages)      <!-- count:staged_assets -->3
+deployed tables in the in-scope datasets    <!-- count:deployed_tables -->53
+staged, not deployed                         <!-- count:staged_assets -->7
 dormant, no platform table yet              <!-- count:dormant_assets -->1
                                             ------
 logical assets in warehouse/assets.yaml     <!-- count:assets -->61
 ```
 
-The staged three are the `signal_packages` models from issue #314: tracked files implementing
-a dataset that is not deployed. The dormant one is `registry.tail_products`, declared by
-`build.publish_registry.TABLES`, whose platform table is absent only because the last
-serialization had no rows.
+The staged seven are the three `signal_packages` models from issue #314 and the four
+`registry.adoption_*` routing tables — `adoption_routes`, `adoption_route_scopes`,
+`adoption_route_band_sets` and `adoption_aggregation_rules` — compiled by
+`build.serialize_routing` but not yet deployed to the platform (Phase 2A): tracked files
+implementing tables that do not exist on the platform yet. The dormant one is
+`registry.tail_products`, declared by `build.publish_registry.TABLES`, whose platform table
+is absent only because the last serialization had no rows.
 
 Both are real logical assets — a tracked file in no asset entry is invisible to every gate in
 11.5 — but neither is current deployed state. A count that mixes them misrepresents the

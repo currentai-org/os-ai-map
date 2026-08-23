@@ -50,6 +50,54 @@ def test_an_empty_table_is_never_created(monkeypatch: pytest.MonkeyPatch) -> Non
     assert "tail_products" not in models
 
 
+def test_dry_run_creates_no_static_model(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """`--dry-run` resolves ids but writes nothing to the platform.
+
+    `resolve_static_models` used to create every missing model up front, before the dry-run
+    early return, so a plan-only invocation performed a real `createStaticModel` mutation.
+    With `create=not args.dry_run` a missing model is recorded as a would-create instead. No
+    create, upload or run mutation may fire, the exit code is 0, and the plan names each
+    would-create.
+    """
+    for table in pr.TABLES:
+        write_csv(tmp_path, table, [{"slug": "a", "display_name": "A"}])
+
+    def fake_graphql(query: str, variables: dict, token: str) -> dict:
+        if query is pr.Q_DATASETS:
+            return {"datasets": {"edges": [{"node": {"id": "ds", "name": "registry", "type": "STATIC_MODEL"}}]}}
+        if query is pr.Q_STATIC:
+            return {"staticModels": {"edges": []}}
+        raise AssertionError(f"dry-run must not mutate the platform, but called: {query[:40]}")
+
+    monkeypatch.setattr(pr, "graphql", fake_graphql)
+    monkeypatch.setattr(pr, "upload", lambda path, url: pytest.fail("dry-run must not upload"))
+    monkeypatch.setenv("OSO_API_KEY", "tok")
+    monkeypatch.setenv("OSO_ORG_ID", "org")
+    monkeypatch.setattr("sys.argv", ["publish_registry", "--dry-run", "--dir", str(tmp_path)])
+
+    assert pr.main() == 0
+    out = capsys.readouterr().out
+    for table in pr.TABLES:
+        assert f"would create {table}" in out
+
+
+def test_resolve_static_models_records_missing_as_would_create_when_not_creating(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """With `create=False` a missing model becomes `(None, False)` and no M_STATIC fires."""
+
+    def fake_graphql(query: str, variables: dict, token: str) -> dict:
+        if query is pr.Q_STATIC:
+            return {"staticModels": {"edges": []}}
+        raise AssertionError(f"create=False must not mutate, but called: {query[:40]}")
+
+    monkeypatch.setattr(pr, "graphql", fake_graphql)
+    models = pr.resolve_static_models("ds", "org", "tok", ("products",), create=False)
+    assert models["products"] == (None, False)
+
+
 def test_materialization_count_marks_a_model_that_holds_a_table(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:

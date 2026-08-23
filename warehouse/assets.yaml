@@ -683,14 +683,14 @@ assets:
     platform_models: checked
     external: unknown
   external_consumers: none_confirmed
-  grain: one row per (dimension, aggregation_method)
+  grain: one row per aggregation_rule_id
   producer: build/serialize_routing.py + build/publish_registry.py
   publication_role: payload_input
   refresh: CI push on merge to main
-  dataset_id: 3db1ea09-b9df-44c6-b077-015c664e7aec
+  dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
   owner: carl
-  status: active
-  materialized: true
+  status: staged
+  materialized: false
   verified_at: '2026-08-23'
 - id: registry.adoption_bands
   table: currentai.registry.adoption_bands
@@ -712,7 +712,7 @@ assets:
     platform_models: checked
     external: unknown
   external_consumers: none_confirmed
-  grain: one row per (product_type, signal_type, level)
+  grain: one row per (band_set_id, level)
   producer: build/serialize_rubric.py + build/publish_registry.py
   publication_role: payload_input
   refresh: CI push on merge to main
@@ -736,14 +736,14 @@ assets:
     platform_models: checked
     external: unknown
   external_consumers: none_confirmed
-  grain: one row per (route_id, product_type, band_set_id)
+  grain: one row per (route_id, product_type)
   producer: build/serialize_routing.py + build/publish_registry.py
   publication_role: payload_input
   refresh: CI push on merge to main
-  dataset_id: a2bb5ac9-73d1-489e-b7ae-a0b231b04fde
+  dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
   owner: carl
-  status: active
-  materialized: true
+  status: staged
+  materialized: false
   verified_at: '2026-08-23'
 - id: registry.adoption_route_scopes
   table: currentai.registry.adoption_route_scopes
@@ -764,10 +764,10 @@ assets:
   producer: build/serialize_routing.py + build/publish_registry.py
   publication_role: payload_input
   refresh: CI push on merge to main
-  dataset_id: 785325eb-260d-490e-bc33-7f1bf6e8918b
+  dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
   owner: carl
-  status: active
-  materialized: true
+  status: staged
+  materialized: false
   verified_at: '2026-08-23'
 - id: registry.adoption_routes
   table: currentai.registry.adoption_routes
@@ -788,10 +788,10 @@ assets:
   producer: build/serialize_routing.py + build/publish_registry.py
   publication_role: payload_input
   refresh: CI push on merge to main
-  dataset_id: d4c3dbdc-68f0-4b29-bf6f-769797174c8d
+  dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
   owner: carl
-  status: active
-  materialized: true
+  status: staged
+  materialized: false
   verified_at: '2026-08-23'
 - id: registry.categories
   table: currentai.registry.categories

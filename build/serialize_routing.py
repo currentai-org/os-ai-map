@@ -40,6 +40,7 @@ from pathlib import Path
 import yaml
 
 from build.serialize_registry import write_tables
+from build.vocabulary import SIGNAL_TYPES
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT_DIR = ROOT / "build" / "registry"
@@ -111,6 +112,15 @@ _AUTHORITIES = {"authoritative", "secondary", "fallback"}
 # the YAML states it once for the dimension, not per route.
 _ABSTAIN_RULE = "produce_no_evidence"
 
+# The recognized aggregation vocabulary. A rule combines a family's several artifacts, so
+# `method` is how the per-artifact figures collapse to one and `scope` is what they are
+# collapsed over. Both are validated against these sets rather than trusted: an unknown
+# `method` or `scope` would publish a rule evaluation could not act on. `sum` is today's only
+# declared method; `max` is admitted because it is the obvious alternative (the largest SKU
+# rather than the total) and naming it keeps the check from reading as a one-value enum.
+_AGG_METHODS = {"sum", "max"}
+_AGG_SCOPES = {"artifacts"}
+
 
 def band_set_id(scope: str, value: str) -> str:
     """Compose the id that links a route to its band rows in `registry.adoption_bands`.
@@ -140,25 +150,69 @@ def _route_id(route: dict) -> str:
     return f"{source}.{column}" if source else signal_type
 
 
-def adoption_aggregation_rules(routing: dict) -> list[dict]:
+def adoption_aggregation_rules(routing: dict) -> tuple[list[dict], list[str]]:
     """The named aggregation rules, from the dimension's `aggregation` block.
 
     One row per declared rule. `scope` records what the aggregation is over — a family's
     several artifacts, not its categories or sources — and `applies_to_instrument` is what a
     route joins on to pick up its `aggregation_rule_id`, so the method lives here once.
+
+    Everything that would make an aggregation wrong is an error, not a silent row: a rule with
+    no id, a duplicate id, an unrecognized method or scope, an instrument outside the canonical
+    vocabulary, or a second rule for one instrument. The last mattered most — the code that
+    binds rules to routes builds a `{instrument: rule_id}` map, so a second `usage_volume` rule
+    silently overwrote the first and pointed every usage route at whichever came last.
     """
     dimension = ((routing.get("dimensions") or {}).get("adoption")) or {}
     rows: list[dict] = []
-    for rule in dimension.get("aggregation") or []:
+    errors: list[str] = []
+    seen_ids: set[str] = set()
+    seen_instruments: set[str] = set()
+    for index, rule in enumerate(dimension.get("aggregation") or []):
+        rule_id = rule.get("rule_id", "")
+        method = rule.get("method", "")
+        scope = rule.get("scope", "")
+        instrument = rule.get("applies_to_instrument", "")
+
+        if not isinstance(rule_id, str) or not rule_id:
+            errors.append(f"aggregation rule {index} declares no rule_id")
+        elif rule_id in seen_ids:
+            errors.append(f"aggregation rule {index} has a duplicate rule_id {rule_id!r}")
+        else:
+            seen_ids.add(rule_id)
+
+        if method not in _AGG_METHODS:
+            errors.append(
+                f"aggregation rule {rule_id!r}: method {method!r} is not one of "
+                f"{sorted(_AGG_METHODS)}"
+            )
+        if scope not in _AGG_SCOPES:
+            errors.append(
+                f"aggregation rule {rule_id!r}: scope {scope!r} is not one of "
+                f"{sorted(_AGG_SCOPES)}"
+            )
+        if instrument not in SIGNAL_TYPES:
+            errors.append(
+                f"aggregation rule {rule_id!r}: applies_to_instrument {instrument!r} is not "
+                f"one of {sorted(SIGNAL_TYPES)}"
+            )
+        elif instrument in seen_instruments:
+            errors.append(
+                f"aggregation rule {rule_id!r}: a second rule for instrument {instrument!r}; "
+                f"an instrument may be governed by at most one rule"
+            )
+        else:
+            seen_instruments.add(instrument)
+
         rows.append(
             {
-                "aggregation_rule_id": rule.get("rule_id", ""),
-                "method": rule.get("method", ""),
-                "scope": rule.get("scope", ""),
-                "applies_to_instrument": rule.get("applies_to_instrument", ""),
+                "aggregation_rule_id": rule_id,
+                "method": method,
+                "scope": scope,
+                "applies_to_instrument": instrument,
             }
         )
-    return rows
+    return rows, errors
 
 
 def adoption_routes(routing: dict, aggregation_by_instrument: dict[str, str]) -> tuple[list[dict], list[str]]:
@@ -193,6 +247,16 @@ def adoption_routes(routing: dict, aggregation_by_instrument: dict[str, str]) ->
             errors.append(f"adoption route {index} has a duplicate route_id {route_id!r}")
             continue
         seen_ids.add(route_id)
+
+        # The instrument must be one the corpus recognizes. `signal_type` is declared on the
+        # route and is not derivable from anything else, so a typo like `mystery` would compile
+        # an eighth route with no error until it is checked against the canonical vocabulary
+        # build/vocabulary.py owns (shared with validate.py so the two cannot disagree).
+        if signal_type not in SIGNAL_TYPES:
+            errors.append(
+                f"route {route_id!r}: signal_type {signal_type!r} is not one of "
+                f"{sorted(SIGNAL_TYPES)}"
+            )
 
         # `artifact_kind` is READ from the source's declared `artifact_key`, not guessed from a
         # hardcoded map — so `semanticscholar` compiles to `arxiv` and matches the registry. A
@@ -343,7 +407,7 @@ def build_routing(routing: dict, rubrics: dict) -> tuple[dict[str, list[dict]], 
     """
     tables: dict[str, list[dict]] = {name: [] for name in TABLES}
 
-    aggregation_rows = adoption_aggregation_rules(routing)
+    aggregation_rows, aggregation_errors = adoption_aggregation_rules(routing)
     aggregation_by_instrument = {
         r["applies_to_instrument"]: r["aggregation_rule_id"]
         for r in aggregation_rows
@@ -358,8 +422,20 @@ def build_routing(routing: dict, rubrics: dict) -> tuple[dict[str, list[dict]], 
     tables["adoption_route_band_sets"] = band_set_rows
     tables["adoption_aggregation_rules"] = aggregation_rows
 
-    errors = route_errors + band_set_errors
+    errors = aggregation_errors + route_errors + band_set_errors
     warnings: list[str] = []
+
+    # Referential integrity holds by construction — a route's aggregation_rule_id comes from
+    # the {instrument: rule_id} map built off these same rows — but guarded anyway so a future
+    # change to how the id is assigned cannot publish a route pointing at a rule that is gone.
+    rule_ids = {r["aggregation_rule_id"] for r in aggregation_rows}
+    for route in routes:
+        rule_id = route["aggregation_rule_id"]
+        if rule_id and rule_id not in rule_ids:
+            errors.append(
+                f"route {route['route_id']!r}: aggregation_rule_id {rule_id!r} references no "
+                f"aggregation rule"
+            )
 
     if not routes:
         errors.append("signal_routing.yaml declares no adoption routes, so there is nothing to route with")

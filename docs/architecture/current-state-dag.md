@@ -227,6 +227,10 @@ graph LR
   signal_github__repo_state --> C_build_check_artifacts_py
   signal_pypi__package_downloads --> C_build_check_artifacts_py
   class catalog__stack_map compatibility;
+  class registry__adoption_aggregation_rules staged;
+  class registry__adoption_route_band_sets staged;
+  class registry__adoption_route_scopes staged;
+  class registry__adoption_routes staged;
   class registry__tail_products dormant;
   class signal_packages__downloads staged;
   class signal_packages__downloads_daily staged;
