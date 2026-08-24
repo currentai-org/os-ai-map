@@ -21,6 +21,29 @@ file records only where the work has got to. Delete a row when it stops being te
 | 7 — retire duplicate openness computation | not started | |
 | 8 — release manifests | not started | |
 
+## Versioning identities
+
+Prerequisites for the fully-keyed evaluation tables (`evaluation.product_adoption_measurements`,
+`evaluation.adoption_reconciliation`, `registry.axis_assessments`), which key on identities that
+did not yet exist in code. Laid ahead of those tables so each is defined once, on its own, rather
+than improvised inside the first consumer.
+
+- **`declaration_version_id` — implemented** (`build/declaration_version.py`, `data-architecture.md`
+  §4.5). Commit-scoped (it embeds `source_git_sha`), derived at run time rather than stored, and
+  refused over a worktree that disagrees with `HEAD` — a dirty tracked file (declarations or
+  identity/evaluator code) or an untracked file under `sources/` — without an explicit diagnostic
+  opt-in; the digest itself reads only git-tracked files. Its `source_content_digest` covers every authoritative
+  declaration input under `sources/` — the full top-level inventory is classified and gated, so
+  `evidence_policy.yaml` and `verification_queue.yaml` (which `load_sources` does not return) are
+  folded in, while `signal_routing.yaml` (its `routing_policy_version` a **pending** binding
+  obligation for reconciliation/releases), the frozen long-tail sample, and the derived score
+  projections are excluded from the **digest** — not from the id, which changes with any commit
+  that touches them. `evaluator_version` is pinned to the sentinel `v0-no-repo-evaluator` until
+  the repository-owned evaluator lands (Phase 6).
+- **`observation_snapshot_id` — pending**, to be emitted by the observations layer over
+  `observations.product_adoption_current` (a build receipt, like `source_runs.json`). Gated on
+  `observations.product_adoption_current` reaching `main`.
+
 ## Atomicity: which state is in force
 
 **Transitional.** Verified 2026-08-20: static models carry no version or revision list, and

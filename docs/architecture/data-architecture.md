@@ -833,6 +833,47 @@ release_id
   = declaration_version_id + observation_snapshot_id + reconciliation_policy_version
 ```
 
+`declaration_version_id` is derived by `build/declaration_version.py`, not stored: it embeds
+`source_git_sha`, and no commit can record its own SHA, so the release builder (and any
+consumer keying a candidate table) computes it from the resolved SHA at run time. Its
+`source_content_digest` covers every authoritative declaration input under `sources/` — every
+top-level entry is classified into exactly one of three buckets, gated so a new input cannot
+escape the digest unnoticed:
+
+- **declaration** (folded into the digest): `products`, `organizations`, `categories`,
+  `scores`, `rubrics`, `taxonomy.yaml`, the long-tail `registry` seeds, and — beyond what
+  `load_sources` returns — `evidence_policy.yaml` (which shapes serialized registry output) and
+  `verification_queue.yaml` (which governs release eligibility), plus the `allowlists`;
+- **policy** (excluded from the digest, its own version a pending downstream obligation):
+  `signal_routing.yaml`, which publishes under `routing_policy_version` and is applied in the
+  evaluation layer. That version must bind into `evaluation.adoption_reconciliation` /
+  `release_id`; those tables do not exist yet, so the binding is recorded as an obligation and
+  ratcheted into a real assertion when they land;
+- **non-declaration** (excluded from the digest, with a reason): the frozen
+  `sources/snapshots/long_tail.json` warehouse sample.
+
+The derived score projections (`overall_score`, `tier`, `maturity`, `mature`) are excluded from
+the digest by construction — they never live in `sources/`; they are the evaluator's
+contribution, already named by `evaluator_version`.
+
+These are exclusions from the **content digest**, not from the identity. `declaration_version_id`
+is **commit-scoped**: it also carries `source_git_sha`, so any commit that touches
+`signal_routing.yaml`, the frozen snapshot, or the derived projections changes the SHA and
+therefore the id. What the digest buys is a content-addressed cross-check — two commits with
+identical declaration content share a digest even though their SHAs differ, so a reconciliation
+can distinguish a real declaration change from an unrelated one. Because the id is commit-scoped
+and computed by tracked code over the working tree, it is derived only over a worktree that
+agrees with `HEAD`: a dirty tracked file anywhere (dirty declarations, or dirty identity/evaluator
+code), or an untracked file under `sources/` (a declaration the commit does not carry), is
+refused unless an explicit diagnostic opt-in is given. The digest reads only git-tracked files, so
+an untracked file cannot enter it silently; the guard additionally refuses it so the mismatch
+surfaces.
+
+Until the repository-owned evaluator lands (Phase 6), `evaluator_version` is a declared sentinel
+`v0-no-repo-evaluator` — well-formed and forward-compatible, and deliberately not the empty
+string, so the day a real evaluator version replaces it is a reviewed change that moves every id
+with it.
+
 Use them consistently:
 
 - `registry.axis_assessments` belongs to `declaration_version_id`. It does not depend on
@@ -872,6 +913,22 @@ this specification — `source_content_digest`, `observation_content_digest`,
 
 Two implementations that disagree on any of these produce different digests from identical
 data, which is indistinguishable from real drift.
+
+Declared, for `source_content_digest` (owned by `build/declaration_version.py`,
+`canonicalization_version` 1):
+
+- serialization format: JSON, UTF-8, with no insignificant whitespace;
+- key ordering: every mapping sorted by key, so reordering a YAML file changes nothing;
+- string normalization: preserved verbatim, not ASCII-escaped;
+- date and null representation: a date scalar renders as its ISO text, null as JSON `null`;
+- number representation: finite only — `NaN`/`Infinity` are rejected, not emitted;
+- type handling: only JSON scalars, lists, dicts, and dates are accepted; any other type
+  (a YAML `!!set`, an unexpected object) is rejected rather than coerced to a string, which
+  would make the digest implementation-dependent;
+- hash algorithm: SHA-256, lowercase hex;
+- input set: the classified declaration inputs of `sources/` (the full top-level inventory is
+  gated, so a new authoritative input cannot silently leave the digest), excluding the
+  separately-versioned routing policy and the frozen long-tail sample.
 
 Future release tables may include:
 
