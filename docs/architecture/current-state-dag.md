@@ -188,6 +188,7 @@ graph LR
   registry__evidence_abstentions --> evidence__product_evidence
   registry__license_aliases --> evidence__product_evidence
   registry__license_aliases --> scores__openness_facts
+  registry__product_artifacts --> observations__product_adoption_current
   registry__product_artifacts --> signal_github__artifact_state
   registry__product_artifacts --> signal_github__repo_state
   registry__product_artifacts --> signal_huggingface__artifact_state
@@ -200,7 +201,6 @@ graph LR
   registry__product_categories --> scores__openness_facts
   registry__product_openness_evidence --> evidence__product_evidence
   registry__product_score_sources --> evidence__product_evidence
-  registry__products --> observations__product_adoption_current
   registry__products --> scores__openness_facts
   registry__products --> signal_github__product_adoption
   registry__products --> signal_huggingface__product_adoption

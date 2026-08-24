@@ -682,7 +682,7 @@ assets:
   population: gap_map
   release_path: false
   reads:
-  - table: currentai.registry.products
+  - table: currentai.registry.product_artifacts
     scope: internal
   - table: currentai.signal_github.artifact_state
     scope: internal
@@ -1106,6 +1106,7 @@ assets:
   release_path: true
   read_by:
     models:
+    - warehouse/models/observations/product_adoption_current.sql
     - warehouse/models/signal_github/artifact_state.py
     - warehouse/models/signal_github/repo_state.py
     - warehouse/models/signal_huggingface/artifact_state.py
@@ -1300,7 +1301,6 @@ assets:
   release_path: true
   read_by:
     models:
-    - warehouse/models/observations/product_adoption_current.sql
     - warehouse/models/scores/openness_facts.sql
     - warehouse/models/signal_github/product_adoption.sql
     - warehouse/models/signal_huggingface/product_adoption.sql

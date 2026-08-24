@@ -33,6 +33,14 @@
 -- when the incremental history table (observations.product_adoption, Phase 2B / #352) lands, this
 -- model is replaced by a view over it with the same schema and the same tie-break.
 --
+-- Declared artifact identity is ENFORCED, not assumed. The final projection joins each observation
+-- through registry.product_artifacts on (product_slug, artifact_kind, artifact_id), so a row
+-- survives only if that exact artifact is declared for that product; product_type comes from the
+-- matched declaration and is never NULL. An observation with no matching declaration (a stale or
+-- undeclared artifact, or an unknown product) FAILS the materialization loudly via the coverage
+-- guard rather than passing through silently. The four source artifact_kind vocabularies —
+-- github, huggingface_model / huggingface_dataset, pypi, arxiv — match product_artifacts exactly.
+--
 -- Sources normalized (the deployed machine adoption routes of signal_routing.yaml; the
 -- hand-authored active_users / reported_traction routes have no machine table and are not here):
 --   signal_github.artifact_state            channel github        metric stars      (no window)
@@ -134,25 +142,61 @@ ranked AS (
   FROM observations o
 )
 
+covered AS (
+  -- Enforce DECLARED artifact identity. An observation survives only if its
+  -- (product_slug, artifact_kind, artifact_id) is a declared artifact in
+  -- registry.product_artifacts — not merely a product whose slug happens to exist. This closes
+  -- two silent-survival paths the old `LEFT JOIN registry.products ON slug` allowed: a stale or
+  -- undeclared artifact carrying a still-valid product slug, and an unknown product surviving
+  -- with product_type = NULL. The join is on the deduped declaration key so a product that
+  -- declares one artifact under two URLs cannot fan the observation out.
+  --
+  -- The join is LEFT, not INNER, on purpose: an unmatched observation is kept visible to the
+  -- coverage guard in the final projection rather than vanishing. product_type comes from the
+  -- matched declaration, so it is never NULL for a surviving row.
+  SELECT
+    r.*,
+    pa.product_type                          AS declared_product_type,
+    (pa.product_slug IS NOT NULL)            AS is_declared
+  FROM ranked r
+  LEFT JOIN (
+    SELECT DISTINCT product_slug, artifact_kind, artifact_id, product_type
+    FROM currentai.registry.product_artifacts
+  ) pa
+    ON  pa.product_slug  = r.product_slug
+    AND pa.artifact_kind = r.artifact_kind
+    AND pa.artifact_id   = r.artifact_id
+  WHERE r.rn = 1
+)
+
 SELECT
-  r.observation_id,
-  r.product_slug,
-  p.type                                    AS product_type,
-  r.artifact_kind,
-  r.artifact_id,
-  r.channel,
-  r.metric_type,
-  r.raw_value,
-  r.unit,
-  r.measurement_window_days,
-  r.observed_at,
+  c.observation_id,
+  c.product_slug,
+  -- Anti-join coverage guard: an observation with no matching declaration FAILS the
+  -- materialization loudly, naming the offending artifact, rather than disappearing silently or
+  -- surviving with a NULL product_type. FAIL only evaluates on the undeclared branch (Trino IF
+  -- short-circuits) and its argument is row-derived, so it cannot be constant-folded away. In
+  -- the current terminal full-refresh state a mismatch is a declaration/vocabulary defect to
+  -- fix at the source, not a row to drop.
+  IF(c.is_declared,
+     c.declared_product_type,
+     CAST(FAIL('product_adoption_current: observation for undeclared artifact '
+               || COALESCE(c.product_slug, '?') || ' / ' || COALESCE(c.artifact_kind, '?')
+               || ' / ' || COALESCE(c.artifact_id, '?')
+               || ' — not in registry.product_artifacts') AS VARCHAR)) AS product_type,
+  c.artifact_kind,
+  c.artifact_id,
+  c.channel,
+  c.metric_type,
+  c.raw_value,
+  c.unit,
+  c.measurement_window_days,
+  c.observed_at,
   CAST(current_timestamp AS TIMESTAMP)      AS ingested_at,
-  r.source_dataset,
-  r.source_table,
+  c.source_dataset,
+  c.source_table,
   CAST(NULL AS VARCHAR)                     AS source_run_id,             -- blocked on #355
   CAST(NULL AS VARCHAR)                     AS source_record_id,
   true                                      AS is_valid,                 -- only valid rows are selected
   CAST(NULL AS VARCHAR)                     AS supersedes_observation_id -- no history until Phase 2B
-FROM ranked r
-LEFT JOIN currentai.registry.products p ON p.slug = r.product_slug
-WHERE r.rn = 1
+FROM covered c
