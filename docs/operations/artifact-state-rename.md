@@ -72,6 +72,21 @@ the old tables.** Both pairs run in parallel for the whole window. This is a two
 not a `RENAME`, precisely so the old names keep serving their consumers until step 3 repoints
 them and step 6 retires them.
 
+**The twins must declare the fetch capability, and that one line is a sanctioned delta.** The
+platform now refuses to *release* any model that calls `context.fetch()` without
+`capabilities=oso.Capabilities(fetch=True)` on `@oso.model` (`createDataModelRelease` returns
+`undeclared-fetch-capability`). The deployed `repo_state` (rev 5) and `hub_state` (rev 4) predate
+that gate and are grandfathered — they keep running, but their exact bytes are no longer
+releasable, so a twin built from byte-identical code cannot be released. Add the one line to each
+twin. This is the **one exception to the identity-only rule of step 2**, and it is safe because
+the declaration is behavior-neutral: it declares fetch behavior the model already performs and
+changes no output, schema, or resolved identity coverage (the grandfathered originals fetch
+successfully today without it, so nothing about the run changes — only the release gate is
+satisfied). Verified on a throwaway revision: adding the line releases cleanly. Record the delta
+explicitly in the step-4 PR. No other change to the model code is permitted. Bringing the
+grandfathered originals and the other `context.fetch` fetchers into compliance is a separate,
+org-wide concern (issue #358), not a prerequisite for the rename.
+
 ### 2. Verify equivalence old-vs-new
 
 Before anything repoints, prove the new tables are equivalent to the old ones on everything that
@@ -81,7 +96,10 @@ between requests, so a per-row comparison of two separately-fetched tables would
 that is expected rather than on a defect. Require instead:
 
 - **Identical model code** — the new model's code is identical to the old model's except for the
-  model identity itself: the file path, the `def` name, and the table it writes.
+  model identity itself (the file path, the `def` name, and the table it writes) and the mandatory
+  `capabilities=oso.Capabilities(fetch=True)` declaration sanctioned in step 1. Those are the only
+  permitted deltas; the declaration is behavior-neutral, so equivalence of output still holds. Any
+  other divergence in the code is the failure this check exists to catch.
 - **Identical schema and identity coverage** — column names, types and nullability identical
   between each old table and its new twin, and the same set of resolved identity keys
   (`product_slug` for GitHub; `(product_slug, artifact_kind, artifact_id)` for Hugging Face)
@@ -166,8 +184,11 @@ Regenerate every derived field rather than hand-editing it (`build/assets.py` ow
     `warehouse/models/signal_huggingface/artifact_state.py` (with `def artifact_state`).
   The path must derive the table (`test_path_derives_the_table`), so each new file's path and
   `def` name match its new table. Each new file carries its own `mirror:` block, refetched from
-  the step-1 redeploy of the new model, per the provenance rule above. The old files and their
-  `mirror:` blocks are deleted only at step 6, when the old tables actually retire.
+  the step-1 redeploy of the new model, per the provenance rule above. The refetched bytes carry
+  the `capabilities=oso.Capabilities(fetch=True)` declaration sanctioned in step 1 — the twins'
+  one non-identity delta from the grandfathered originals; call it out in this PR's description so
+  the delta is on record rather than buried in the mirror bytes. The old files and their `mirror:`
+  blocks are deleted only at step 6, when the old tables actually retire.
 - **`warehouse/audits/platform_models.json`** — regenerate with
   `uv run python -m build.audit_platform_models` (needs `OSO_API_KEY`) against the real platform
   state, so the census lists the new table names alongside the retained old ones. Do not
