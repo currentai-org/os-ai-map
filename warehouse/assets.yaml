@@ -703,12 +703,26 @@ assets:
   producer: warehouse/models/observations/product_adoption_current.sql
   classification_note: artifact-level raw observations (metric_type + raw_value), no band and no
     instrument_type; banding and product-level aggregation are evaluation concerns (§4.3)
-  refresh: 'not deployed; repo-authored, awaiting the maintainer platform deploy that creates the
-    observations namespace (data-architecture.md §4.3). source_run_id is NULL until #355; the
-    product_adoption_baseline frozen-bytes snapshot follows the first deployed run.'
+  retirement_reason: 'no reviewed consumer as of 2026-08-24: nothing in the repo, no platform
+    notebook, and no deployed platform model reads it yet. This is the derived no-reviewed-consumer
+    predicate firing on a freshly deployed, PRE-POSITIONED input, not a dead table — its consumers
+    (evaluation.product_adoption_measurements and the Phase 3 reconciliation report) are later
+    phases and are not built yet. It is the centerpiece of the observations layer, not a deletion
+    target; recorded here only because the predicate cannot tell "nothing uses it yet" from
+    "nobody wants it".'
+  retirement_issue: '#348'
+  notes: The Phase 2 current-state adoption slice, deployed 2026-08-24. Unread by design until the
+    Phase 3 evaluation/reconciliation consumers land; pre-positioned, not a retirement candidate in
+    substance.
+  refresh: 'repo-authored SQL, deployed to the platform 2026-08-24 (the deploy created the
+    observations namespace); the repo owns the definition and is its source of truth. Full-refresh
+    on the platform. source_run_id is NULL until #355, so downstream reconciliation treats an
+    unbound SUCCESS as source_unavailable, not agreement (§4.3). The product_adoption_baseline
+    frozen-bytes snapshot is a separate asset, captured from this model''s first run.'
+  dataset_id: c507c9f9-321f-4773-a107-d96658e2da67
   owner: carl
-  status: staged
-  materialized: false
+  status: active
+  materialized: true
   verified_at: '2026-08-24'
 - id: observations.source_runs
   table: currentai.observations.source_runs
