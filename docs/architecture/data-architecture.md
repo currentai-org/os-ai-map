@@ -418,7 +418,7 @@ Use three distinct objects so current state is never mislabeled as history:
 
 - `observations.source_runs` — the run contract described below. Required from day one; ships now as a read-only control-plane snapshot (interim Option B, issue #355);
 - `observations.product_adoption_current` — a full-refresh normalized model holding the current source state (the latest normalized values). It cannot filter or attribute those values by run until #355 binds observations to runs, so it makes no completeness claim; see the source_runs rules below;
-- `observations.product_adoption_baseline` — the immutable first snapshot, backed by frozen bytes rather than a query;
+- `observations.product_adoption_baseline` — the immutable first snapshot, backed by frozen bytes rather than a query. It is the anchor the append-only history builds forward from, so it is frozen **with** the incremental table, not before it: deferred to Phase 2B (#352) rather than captured at `product_adoption_current`'s deploy. Nothing consumes it until then, and because `product_adoption_current` is full-refresh, "first snapshot" means the point where history begins (2B), not the deploy day;
 - `observations.product_adoption` — the target incremental history table, created only after OSO incremental models are available.
 
 #### The baseline is bytes, not a query
