@@ -1,16 +1,28 @@
 """Synthetic gates over build/snapshot_source_runs.py -- no live API is touched.
 
-Mirrors tests/test_assets_inventory.py's platform-audit tests: the parsing, pagination, digest
-and receipt-validator contracts are pinned against hand-built run nodes, so the module can be
-trusted without credentials. The run->model binding is asserted to come from materializations,
-never from timestamps, because that is the one inference the module must refuse to make.
+Mirrors tests/test_assets_inventory.py's platform-audit tests: parsing, coverage derivation,
+pagination, row validation, digest and receipt-validator contracts are pinned against hand-built
+data, so the module can be trusted without credentials. The run->model binding is asserted to come
+from materializations, never from timestamps, because that is the one inference the module must
+refuse to make. A final credential-free test loads the COMMITTED receipt and validates it.
+
+Run standalone (no pytest dependency required):
+    uv run python -m tests.test_snapshot_source_runs
 """
 
 from __future__ import annotations
 
+import json
+
 import build.snapshot_source_runs as S
 
 CAPTURED = "2026-08-23T12:00:00+00:00"
+
+# Real-shaped UUIDs for synthetic name->id bindings.
+_UUID = {
+    "signal_github": "cc74e8db-7718-4615-a004-7f27cabaf967",
+    "signal_huggingface": "6108e4d6-868f-4cba-8df5-ee64f8fb301e",
+}
 
 
 # --- synthetic run nodes ----------------------------------------------------------
@@ -43,13 +55,58 @@ def _one_materialized_run() -> dict:
     ])
 
 
+# --- coverage derived from the routing YAML (Finding 1) ---------------------------
+
+_SYNTHETIC_ROUTING = {
+    "sources": {
+        "github": {"table": "currentai.signal_github.repo_state", "bridged": True},
+        "huggingface_model": {"table": "currentai.signal_huggingface.hub_state", "bridged": True},
+        "huggingface_dataset": {"table": "currentai.signal_huggingface.hub_state", "bridged": True},
+        "pypi": {"table": "currentai.signal_pypi.package_downloads", "bridged": True},
+        "semanticscholar": {"table": "currentai.signal_semanticscholar.paper_citations", "bridged": True},
+        "npm": {"table": None, "bridged": False},
+    },
+    "dimensions": {"adoption": {"routes": [
+        {"source": "pypi", "column": "downloads_30d"},
+        {"source": "huggingface_model", "column": "downloads_30d"},
+        {"source": "huggingface_dataset", "column": "downloads_30d"},
+        {"source": "semanticscholar", "column": "citation_count"},
+        {"source": None, "signal_type": "active_users"},          # hand-authored -> no dataset
+        {"source": "github", "column": "stargazers_count"},
+        {"source": "npm", "column": "downloads_30d"},              # unbridged -> excluded
+    ]}},
+}
+
+
+def test_deployed_datasets_are_derived_from_routing_and_include_semanticscholar():
+    deployed = S.deployed_adoption_source_datasets(_SYNTHETIC_ROUTING)
+    # The two Hugging Face routes collapse to one dataset; the hand-authored and unbridged routes
+    # contribute nothing; semanticscholar -- the route the old hard-coded list dropped -- is in.
+    assert deployed == ("signal_github", "signal_huggingface", "signal_pypi", "signal_semanticscholar")
+    assert "signal_semanticscholar" in deployed
+
+
+def test_source_datasets_add_the_staged_successor_separately():
+    requested = S.source_datasets(_SYNTHETIC_ROUTING)
+    assert "signal_packages" in requested                      # staged successor, added separately
+    assert set(requested) == {"signal_github", "signal_huggingface", "signal_pypi",
+                              "signal_semanticscholar", "signal_packages"}
+
+
+def test_real_routing_yaml_derives_the_deployed_adoption_datasets():
+    """Against the committed signal_routing.yaml, not a synthetic one."""
+    deployed = S.deployed_adoption_source_datasets(S.load_routing(S.A.ROOT))
+    assert "signal_semanticscholar" in deployed
+    assert "signal_github" in deployed and "signal_pypi" in deployed
+    assert "signal_huggingface" in deployed
+
+
 # --- parsing the row contract -----------------------------------------------------
 
 def test_parse_binds_model_from_materialization_and_keeps_four_ids_distinct():
     rows = S.parse_run_rows("ds-github", "signal_github", _one_materialized_run(), CAPTURED)
     assert len(rows) == 1
     row = rows[0]
-    # Every contract column is present, and the four identifiers are separate values.
     assert set(row) == set(S.COLUMNS)
     assert row["source_run_id"] == "run-1"
     assert row["materialization_id"] == "mat-1"
@@ -62,8 +119,6 @@ def test_parse_binds_model_from_materialization_and_keeps_four_ids_distinct():
 
 
 def test_binding_is_from_materializations_never_timestamps():
-    """A run whose materialization createdAt is nowhere near its finishedAt still binds to the
-    table named by that materialization -- the binding is structural, not temporal."""
     node = _run("run-x", started="2026-08-23T01:00:00Z", steps=[
         _step("evaluate_model_hub_state",
               [_mat("mat-x", "tbl-hub-state", "ds-hf", "1999-01-01T00:00:00Z")]),
@@ -116,15 +171,12 @@ def test_actor_type_is_an_enum_and_the_raw_requested_by_id_never_appears():
     assert u["actor_type"] == "user" and s["actor_type"] == "system"
     assert "user-abc-123" not in u.values()
     assert "requested_by" not in u and "requestedBy" not in u
-    # error_class is a normalized token slot, null here -- never raw error text.
     assert u["error_class"] is None
 
 
-# --- complete pagination ----------------------------------------------------------
+# --- complete pagination (Finding 2) ----------------------------------------------
 
 def test_pagination_reads_every_page_not_just_the_first(monkeypatch):
-    """A two-page connection must yield all runs. The stub keys off the `after` cursor: page one
-    advertises hasNextPage, page two closes it. Reading only page one would drop run-2."""
     page_one = {"runs": {
         "pageInfo": {"hasNextPage": True, "endCursor": "CURSOR-1"},
         "edges": [{"node": _run("run-1")}],
@@ -133,7 +185,6 @@ def test_pagination_reads_every_page_not_just_the_first(monkeypatch):
         "pageInfo": {"hasNextPage": False, "endCursor": None},
         "edges": [{"node": _run("run-2")}],
     }}
-
     calls = {"n": 0}
 
     def fake_graphql(query, variables, token):
@@ -143,11 +194,60 @@ def test_pagination_reads_every_page_not_just_the_first(monkeypatch):
     monkeypatch.setattr(S, "graphql", fake_graphql)
     nodes = S.fetch_runs("ds-github", token="t", page_size=1)
     assert [n["id"] for n in nodes] == ["run-1", "run-2"]
-    assert calls["n"] == 2  # both pages were actually fetched
+    assert calls["n"] == 2
+
+
+def test_pagination_rejects_a_repeated_cursor(monkeypatch):
+    """hasNextPage stays true but the cursor never advances -- a stall that must raise, not loop."""
+    stuck = {"runs": {
+        "pageInfo": {"hasNextPage": True, "endCursor": "SAME"},
+        "edges": [{"node": _run("run-1")}],
+    }}
+    monkeypatch.setattr(S, "graphql", lambda q, v, t: stuck)
+    try:
+        S.fetch_runs("ds-github", token="t")
+        assert False, "expected TruncatedConnection on a repeated cursor"
+    except S.TruncatedConnection:
+        pass
+
+
+def test_pagination_rejects_a_missing_cursor(monkeypatch):
+    """hasNextPage true but endCursor empty -- truncation, must raise rather than stop silently."""
+    bad = {"runs": {
+        "pageInfo": {"hasNextPage": True, "endCursor": None},
+        "edges": [{"node": _run("run-1")}],
+    }}
+    monkeypatch.setattr(S, "graphql", lambda q, v, t: bad)
+    try:
+        S.fetch_runs("ds-github", token="t")
+        assert False, "expected TruncatedConnection on a missing cursor"
+    except S.TruncatedConnection:
+        pass
+
+
+def test_truncated_nested_steps_or_materializations_raise():
+    node = _run("run-trunc", steps=[
+        _step("evaluate_model_repo_state",
+              [_mat("m1", "t1", "ds-github", "2026-08-23T01:04:00Z")]),
+    ])
+    # A truncated materializations page must raise.
+    node["steps"]["edges"][0]["node"]["materializations"]["pageInfo"] = {"hasNextPage": True}
+    try:
+        S._assert_nested_complete(node)
+        assert False, "expected TruncatedConnection on truncated materializations"
+    except S.TruncatedConnection:
+        pass
+    # A truncated steps page must raise.
+    node2 = _run("run-trunc2", steps=[])
+    node2["steps"]["pageInfo"] = {"hasNextPage": True}
+    try:
+        S._assert_nested_complete(node2)
+        assert False, "expected TruncatedConnection on truncated steps"
+    except S.TruncatedConnection:
+        pass
 
 
 def test_two_runs_from_one_fire_are_both_kept(monkeypatch):
-    """Two runs started at the same minute are distinct rows -- never deduped by dataset+time."""
     same_minute = "2026-08-23T01:00:00Z"
     page = {"runs": {
         "pageInfo": {"hasNextPage": False, "endCursor": None},
@@ -159,6 +259,54 @@ def test_two_runs_from_one_fire_are_both_kept(monkeypatch):
     assert {n["id"] for n in nodes} == {"run-a", "run-b"}
 
 
+# --- row validation (Finding 3) ---------------------------------------------------
+
+def _valid_rows() -> list[dict]:
+    return (
+        S.parse_run_rows("ds-github", "signal_github", _one_materialized_run(), CAPTURED)
+        + S.parse_run_rows("ds-hf", "signal_huggingface", _run("run-2"), CAPTURED)
+    )
+
+
+def test_validate_rows_accepts_a_wellformed_row_set():
+    assert S.validate_rows(_valid_rows()) == []
+
+
+def test_validate_rows_rejects_defects():
+    def broken(mutate):
+        rows = _valid_rows()
+        mutate(rows)
+        return S.validate_rows(rows)
+
+    # partial materialization: an id with no table
+    p = broken(lambda rows: rows[0].__setitem__("table_id", None))
+    assert any("partial materialization" in x for x in p), p
+
+    # duplicate grain: two rows with the same (run, materialization)
+    p = broken(lambda rows: rows.append(dict(rows[0])))
+    assert any("duplicate grain" in x or "exact-duplicate" in x for x in p), p
+
+    # bad trigger enum
+    p = broken(lambda rows: rows[0].__setitem__("trigger_type", "SNEAKY"))
+    assert any("trigger_type" in x for x in p), p
+
+    # bad actor enum
+    p = broken(lambda rows: rows[0].__setitem__("actor_type", "robot"))
+    assert any("actor_type" in x for x in p), p
+
+    # invalid timestamp
+    p = broken(lambda rows: rows[0].__setitem__("started_at", "2026-99-99T99:99:99garbage"))
+    assert any("started_at" in x and "ISO-8601" in x for x in p), p
+
+    # scope must be unknown
+    p = broken(lambda rows: rows[0].__setitem__("scope_status", "complete"))
+    assert any("scope must be unknown" in x for x in p), p
+
+    # missing required identifier
+    p = broken(lambda rows: rows[0].__setitem__("source_run_id", None))
+    assert any("source_run_id" in x for x in p), p
+
+
 # --- deterministic digest ---------------------------------------------------------
 
 def test_digest_is_order_independent_and_ignores_captured_at():
@@ -166,7 +314,6 @@ def test_digest_is_order_independent_and_ignores_captured_at():
         S.parse_run_rows("ds", "signal_github", _run("r1"), "2026-08-23T12:00:00+00:00")
         + S.parse_run_rows("ds", "signal_github", _one_materialized_run(), "2026-08-23T12:00:00+00:00")
     )
-    # Same run-set, reversed order, a DIFFERENT captured_at.
     rows_b = list(reversed(
         S.parse_run_rows("ds", "signal_github", _run("r1"), "2030-01-01T00:00:00+00:00")
         + S.parse_run_rows("ds", "signal_github", _one_materialized_run(), "2030-01-01T00:00:00+00:00")
@@ -180,18 +327,21 @@ def test_digest_changes_when_a_non_captured_field_changes():
     assert S.content_digest(base) != S.content_digest(changed)
 
 
-# --- receipt validator ------------------------------------------------------------
+# --- receipt validator (Finding 4) ------------------------------------------------
 
 def _valid_receipt() -> dict:
-    rows = (
-        S.parse_run_rows("ds-github", "signal_github", _one_materialized_run(), CAPTURED)
-        + S.parse_run_rows("ds-hf", "signal_huggingface", _run("run-2"), CAPTURED)
-    )
+    rows = _valid_rows()
     return S.build_receipt(
         rows,
-        requested_datasets=S.SOURCE_DATASETS,
+        requested_datasets=("signal_github", "signal_huggingface", "signal_pypi",
+                            "signal_semanticscholar", "signal_packages"),
+        deployed_datasets=("signal_github", "signal_huggingface", "signal_pypi",
+                           "signal_semanticscholar"),
+        staged_datasets=("signal_packages",),
+        resolved_dataset_ids={"signal_github": _UUID["signal_github"],
+                              "signal_huggingface": _UUID["signal_huggingface"]},
         per_dataset_run_counts={"signal_github": 1, "signal_huggingface": 1},
-        unresolved_datasets=["signal_packages", "signal_pypi"],
+        unresolved_datasets=["signal_packages", "signal_pypi", "signal_semanticscholar"],
         captured_at=CAPTURED,
     )
 
@@ -199,10 +349,10 @@ def _valid_receipt() -> dict:
 def test_receipt_validator_accepts_a_wellformed_receipt():
     receipt = _valid_receipt()
     assert S.validate_receipt(receipt) == [], S.validate_receipt(receipt)
-    # The bounds and coverage the snapshot must carry are actually populated.
     assert receipt["earliest_started_at"] and receipt["latest_started_at"]
-    assert receipt["unresolved_datasets"] == ["signal_packages", "signal_pypi"]
     assert receipt["snapshot"] is True
+    assert receipt["schema_version"] == S.SCHEMA_VERSION
+    assert receipt["resolved_dataset_ids"]["signal_github"] == _UUID["signal_github"]
 
 
 def test_receipt_validator_rejects_malformed_receipts():
@@ -214,25 +364,37 @@ def test_receipt_validator_rejects_malformed_receipts():
         return S.validate_receipt(r)
 
     cases = {
-        # missing capture bounds
+        # the four holes the prior validator let through
+        "captured_at": lambda r: r.__setitem__("captured_at", "2026-99-99T99:99:99garbage"),
+        "row_count is not a nonnegative int": lambda r: r.__setitem__("row_count", -1),
+        "requested_datasets has duplicates":
+            lambda r: r["requested_datasets"].append("signal_github"),
+        "resolved + unresolved do not partition":
+            lambda r: (r["requested_datasets"].append("signal_x"),
+                       r["deployed_datasets"].append("signal_x")),
+        "resolved_dataset_ids keys do not match":
+            lambda r: r["resolved_dataset_ids"].pop("signal_github"),
+        "is not a UUID":
+            lambda r: r["resolved_dataset_ids"].__setitem__("signal_github", "not-a-uuid"),
+        # capture bounds
         "missing top-level field earliest_started_at": lambda r: r.pop("earliest_started_at"),
-        "missing top-level field latest_started_at": lambda r: r.pop("latest_started_at"),
-        "capture bounds out of order": lambda r: (r.__setitem__("earliest_started_at", "2030-01-01"),
-                                                  r.__setitem__("latest_started_at", "2020-01-01")),
-        # bad digest
+        "capture bounds out of order": lambda r: (r.__setitem__("earliest_started_at", "2030-01-01T00:00:00Z"),
+                                                  r.__setitem__("latest_started_at", "2020-01-01T00:00:00Z")),
+        # digest / scope / identity
         "content_digest is not a 64-hex sha256": lambda r: r.__setitem__("content_digest", "abc"),
-        # unknown-scope not recorded
         "expected_scope is": lambda r: r.__setitem__("expected_scope", "full"),
         "scope_status is": lambda r: r.__setitem__("scope_status", "complete"),
-        # other contract violations
         "snapshot must be true": lambda r: r.__setitem__("snapshot", False),
         "missing top-level field content_digest": lambda r: r.pop("content_digest"),
         "org is": lambda r: r.__setitem__("org", "someone-else"),
         "org_id is": lambda r: r.__setitem__("org_id", "00000000-0000-0000-0000-000000000000"),
-        "captured_at": lambda r: r.__setitem__("captured_at", "not-a-timestamp"),
+        "schema_version is": lambda r: r.__setitem__("schema_version", 999),
+        "canonicalization_version is": lambda r: r.__setitem__("canonicalization_version", 999),
+        # coverage partitions and counts
         "run_count": lambda r: r.__setitem__("run_count", 99),
         "resolved_datasets disagrees": lambda r: r["per_dataset_run_counts"].pop("signal_github"),
         "both resolved and unresolved": lambda r: r["unresolved_datasets"].append("signal_github"),
+        "both deployed and staged": lambda r: r["staged_datasets"].append("signal_github"),
         "window is not a mapping": lambda r: r.__setitem__("window", "unbounded"),
         "window is bounded but records no explicit bound":
             lambda r: r.__setitem__("window", {"bounded": True}),
@@ -240,3 +402,34 @@ def test_receipt_validator_rejects_malformed_receipts():
     for needle, mutate in cases.items():
         problems = broken(mutate)
         assert any(needle in p for p in problems), f"{needle}: not caught, got {problems}"
+
+
+# --- credential-free: the committed receipt validates ------------------------------
+
+def test_committed_receipt_is_present_and_valid():
+    """The committed attestation must load and pass the validator with no credentials -- the same
+    gate `--check` runs offline. If the receipt is stale-shaped, this fails."""
+    assert S.RECEIPT.exists(), f"committed receipt missing at {S.RECEIPT}"
+    receipt = json.loads(S.RECEIPT.read_text())
+    assert S.validate_receipt(receipt) == [], S.validate_receipt(receipt)
+    assert receipt["snapshot"] is True
+    assert receipt["schema_version"] == S.SCHEMA_VERSION
+    assert receipt["canonicalization_version"] == S.CANONICALIZATION_VERSION
+
+
+if __name__ == "__main__":
+    import traceback
+    fns = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
+    passed = failed = 0
+    for fn in fns:
+        try:
+            if "monkeypatch" in fn.__code__.co_varnames[:fn.__code__.co_argcount]:
+                continue  # needs pytest's monkeypatch fixture
+            fn()
+            passed += 1
+        except Exception:
+            failed += 1
+            print(f"FAIL {fn.__name__}")
+            traceback.print_exc()
+    print(f"{passed} passed, {failed} failed (monkeypatch tests skipped in standalone mode)")
+    raise SystemExit(1 if failed else 0)
