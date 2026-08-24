@@ -1,6 +1,6 @@
 """The declaration-version identity, and the properties that keep it honest.
 
-`build/declaration_version.py` derives `declaration_version_id` (data-architecture.md §4.6):
+`build/declaration_version.py` derives `declaration_version_id` (data-architecture.md §4.5):
 the identity of a set of declarations, evaluated by a named evaluator, that
 `registry.axis_assessments`, `evaluation.product_adoption_measurements` and
 `evaluation.adoption_reconciliation` all key on.
@@ -8,55 +8,95 @@ the identity of a set of declarations, evaluated by a named evaluator, that
 There is no committed golden value to pin — the id embeds `source_git_sha`, and freezing a
 receipt would either name its own parent commit or force a regenerate step on every score edit
 (see the module docstring). So these tests pin the canonicalization's PROPERTIES instead:
-determinism, order-invariance, the exact digested key-set, the exclusions, the sentinel, and
-that the id responds to each component.
+the classified `sources/` inventory, determinism, order-invariance, type rejection, the
+fail-closed behavior on a dirty tree, and that the id responds to each component.
 """
 
 import copy
 import hashlib
 from pathlib import Path
 
+import pytest
+
 import build.declaration_version as dv
 from build.declaration_version import (
     CANONICALIZATION_VERSION,
-    DECLARATION_KEYS,
+    DECLARATION_INPUTS,
     EVALUATOR_VERSION,
-    NON_DECLARATION_KEYS,
+    NON_DECLARATION_INPUTS,
+    POLICY_INPUTS,
+    DirtyDeclarationsError,
     canonical_json,
     declaration_content,
     declaration_version_id,
+    resolve,
     source_content_digest,
 )
-from build.validate import load_sources
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def test_declaration_keys_cover_every_declaration_subtree():
-    """The digested key-set must be load_sources MINUS the declared non-declarations, exactly.
+# --- the classified inventory (finding 1) ----------------------------------------
 
-    This is the 'declared state matches reality' gate for the identity: add a new declaration
-    directory to sources/ (so load_sources grows a key) and this fails until the key is either
-    folded into the digest or explicitly classified a non-declaration. A declaration cannot
-    slip out of the version unnoticed.
+
+def test_source_inventory_is_fully_classified():
+    """Every top-level sources/ entry is classified into exactly one bucket.
+
+    This is the 'declared state matches reality' gate for the identity, and it protects the
+    WHOLE sources/ inventory rather than only what load_sources parses: add a new authoritative
+    input to sources/ and this fails until it is folded into the digest, bound downstream as a
+    policy input, or explicitly declared a non-declaration. An input cannot silently escape the
+    identity.
     """
-    exposed = set(load_sources(ROOT))
-    classified = set(DECLARATION_KEYS) | set(NON_DECLARATION_KEYS)
-    assert exposed == classified, (
-        f"load_sources exposes {sorted(exposed)}, but the identity classifies "
-        f"{sorted(classified)}; every key must be a declaration or a declared exclusion."
+    entries = {p.name for p in (ROOT / "sources").iterdir()}
+    declaration = set(DECLARATION_INPUTS)
+    policy = set(POLICY_INPUTS)
+    non_declaration = set(NON_DECLARATION_INPUTS)
+
+    classified = declaration | policy | non_declaration
+    assert entries == classified, (
+        f"sources/ holds {sorted(entries)}, but the identity classifies {sorted(classified)}; "
+        "every entry must be a declaration, a downstream-bound policy, or a declared exclusion."
     )
-    # The two partitions must not overlap: a key is a declaration xor an exclusion.
-    assert not (set(DECLARATION_KEYS) & set(NON_DECLARATION_KEYS))
+    # The three buckets are disjoint: an entry is exactly one kind.
+    assert declaration.isdisjoint(policy)
+    assert declaration.isdisjoint(non_declaration)
+    assert policy.isdisjoint(non_declaration)
 
 
-def test_long_tail_is_excluded_from_the_declaration_content():
-    """The frozen warehouse sample is a non-declaration and never enters the digest."""
-    assert "long_tail" in NON_DECLARATION_KEYS
-    assert "long_tail" not in DECLARATION_KEYS
+def test_uncovered_declaration_inputs_are_included():
+    """The two authoritative inputs load_sources does NOT return are in the digest.
+
+    evidence_policy.yaml shapes serialized registry output and verification_queue.yaml governs
+    release eligibility; both are declarations and must move the id when they change.
+    """
+    assert "evidence_policy.yaml" in DECLARATION_INPUTS
+    assert "verification_queue.yaml" in DECLARATION_INPUTS
     content = declaration_content(ROOT)
-    assert set(content) == set(DECLARATION_KEYS)
-    assert "long_tail" not in content
+    assert "evidence_policy.yaml" in content
+    assert "verification_queue.yaml" in content
+
+
+def test_policy_inputs_name_a_downstream_binding():
+    """A policy input is excluded from THIS identity only by naming where its version binds.
+
+    The exclusion is a redirection, not a gap: signal_routing.yaml carries routing_policy_version
+    and must bind into a downstream identity, so its record names both.
+    """
+    assert "signal_routing.yaml" in POLICY_INPUTS
+    for name, spec in POLICY_INPUTS.items():
+        assert spec.get("policy_version"), f"{name} names no policy version"
+        assert spec.get("bound_into"), f"{name} names no downstream identity to bind into"
+
+
+def test_frozen_snapshot_is_a_non_declaration():
+    """The frozen warehouse sample is excluded, with a reason, and never enters the digest."""
+    assert "snapshots" in NON_DECLARATION_INPUTS
+    assert NON_DECLARATION_INPUTS["snapshots"]
+    assert "snapshots" not in declaration_content(ROOT)
+
+
+# --- canonicalization properties --------------------------------------------------
 
 
 def test_digest_is_deterministic():
@@ -96,17 +136,66 @@ def test_reordering_a_loaded_declaration_does_not_change_the_digest():
     content = declaration_content(ROOT)
     baseline = hashlib.sha256(canonical_json(content).encode("utf-8")).hexdigest()
     shuffled = copy.deepcopy(content)
-    # Rebuild the top-level mapping in reverse key order.
     shuffled = {k: shuffled[k] for k in reversed(list(shuffled))}
     assert hashlib.sha256(canonical_json(shuffled).encode("utf-8")).hexdigest() == baseline
 
 
-def test_evaluator_version_is_the_declared_sentinel():
-    """The Phase-6 evaluator does not exist yet; the component is a deliberate sentinel, not ''.
+# --- strict type handling (finding 3) --------------------------------------------
 
-    Pinned so that the day a real evaluator version replaces it is a deliberate, reviewed change
-    (every historical declaration_version_id moves with it) rather than an accident.
+
+def test_canonical_json_rejects_unsupported_types():
+    """A YAML set (or any non-JSON-native object) is rejected, never coerced to a string."""
+    with pytest.raises(TypeError):
+        canonical_json({"x": {1, 2, 3}})
+
+    class Weird:
+        pass
+
+    with pytest.raises(TypeError):
+        canonical_json({"x": Weird()})
+
+
+def test_canonical_json_rejects_non_finite_numbers():
+    """NaN and Infinity are not valid JSON and do not round-trip; reject rather than emit."""
+    for bad in (float("nan"), float("inf"), float("-inf")):
+        with pytest.raises(ValueError):
+            canonical_json({"x": bad})
+
+
+# --- fail-closed on a dirty tree (finding 2) -------------------------------------
+
+
+def test_resolve_fails_closed_on_dirty_declarations(monkeypatch):
+    """With uncommitted declarations, resolve() raises rather than emit an unreproducible id.
+
+    Synthetic: the cleanliness probe is forced to report dirty, so the fail-closed branch is
+    exercised without dirtying the real tree.
     """
+    monkeypatch.setattr(dv, "declaration_paths_are_clean", lambda *a, **k: False)
+    with pytest.raises(DirtyDeclarationsError):
+        resolve()
+
+
+def test_resolve_allow_dirty_opt_in_returns_a_diagnostic_value(monkeypatch):
+    """The explicit opt-in returns a value and records that the tree was dirty."""
+    monkeypatch.setattr(dv, "declaration_paths_are_clean", lambda *a, **k: False)
+    info = resolve(allow_dirty=True)
+    assert info["declarations_clean"] is False
+    assert len(info["declaration_version_id"]) == 64
+
+
+def test_resolve_clean_tree_succeeds():
+    """On a clean tree resolve() returns the full component set without opt-in."""
+    info = resolve()
+    assert info["declarations_clean"] is True
+    assert len(info["declaration_version_id"]) == 64
+
+
+# --- the id itself ----------------------------------------------------------------
+
+
+def test_evaluator_version_is_the_declared_sentinel():
+    """The Phase-6 evaluator does not exist yet; the component is a deliberate sentinel, not ''."""
     assert EVALUATOR_VERSION == "v0-no-repo-evaluator"
     assert EVALUATOR_VERSION != ""
 

@@ -1,6 +1,6 @@
 """Derive the ``declaration_version_id`` — the identity of a set of declarations.
 
-Three identities run through the release model (data-architecture.md §4.6), and they are
+Three identities run through the release model (data-architecture.md §4.5), and they are
 deliberately distinct:
 
     declaration_version_id = source_git_sha + source_content_digest + evaluator_version
@@ -14,29 +14,32 @@ and ``evaluation.adoption_reconciliation`` all key on. It says nothing about mea
 (that is the observation snapshot) and nothing about a published release (that is the release
 id, which only exists once a declaration/observation pair has passed reconciliation).
 
-## What the digest covers, and what it must not
+## What the digest covers: every authoritative declaration input, gated
 
-``source_content_digest`` is a canonical hash over the DECLARATION tree alone — the
-curator-authored records that ``build.validate.load_sources`` parses: products,
-organizations, categories, scores, rubrics, the taxonomy, and the long-tail registry seeds.
-Those are exactly the inputs a reconciliation adjudicates a measurement against.
+``source_content_digest`` is a canonical hash over the DECLARATION inputs of ``sources/`` — the
+curator-authored records whose change should mint a new declaration version. Every top-level
+entry of ``sources/`` is classified into exactly one of three buckets below, and
+``test_source_inventory_is_fully_classified`` walks the directory and fails if a new entry is
+unclassified. The gate protects the whole ``sources/`` inventory, not just what
+``build.validate.load_sources`` happens to parse — ``evidence_policy.yaml`` and
+``verification_queue.yaml`` are authoritative declaration inputs that ``load_sources`` does not
+return, and both are folded in here.
 
-Three exclusions are deliberate, because including any of them would make the id move for a
-reason that is not a change in the declarations:
+  * ``DECLARATION_INPUTS`` — content IS the declaration; folded into the digest.
+  * ``POLICY_INPUTS`` — excluded from ``declaration_version_id`` because the input carries its
+    OWN version and is applied in a downstream layer, not in the declaration compile. The
+    exclusion is a redirection, not a gap: each names the downstream identity its policy version
+    must bind into. ``signal_routing.yaml`` is the case — it publishes under
+    ``routing_policy_version`` (see ``test_serialize_routing``) and is applied in evaluation, so
+    its version binds into ``evaluation.adoption_reconciliation`` / ``release_id`` when those are
+    built, never into this identity.
+  * ``NON_DECLARATION_INPUTS`` — not a scoring declaration at all (the frozen long-tail
+    warehouse sample); excluded with a reason.
 
-  * The frozen ``sources/snapshots/long_tail.json`` warehouse sample. It is a hand-synced
-    point-in-time count, not a scoring declaration; a re-sync must not mint a new declaration
-    version. ``load_sources`` exposes it under ``long_tail``; ``DECLARATION_KEYS`` omits it.
-  * The derived score projections (``overall_score``, ``tier``, ``maturity``, ``mature``).
-    Those are computed by the evaluator from the declared axis values, so folding them in
-    would double-count the evaluator — whose contribution is already named separately by
-    ``evaluator_version`` — and would make ``source_content_digest`` change when the scoring
-    formula changes, breaking the clean three-way split. ``load_sources`` carries only the
-    RECORDED axis values under ``scores``; the derived numbers live downstream in
-    ``build.serialize`` and never enter this digest.
-  * The routing policy (``sources/signal_routing.yaml``). It publishes under its own
-    ``routing_policy_version`` (see ``test_serialize_routing``) and is applied in the
-    evaluation layer, not declared per product; it is not a scoring declaration.
+The derived score projections (``overall_score``, ``tier``, ``maturity``, ``mature``) are also
+excluded, by construction rather than by name: they are computed by ``build.serialize`` from the
+declared axis values and never live in ``sources/``. Folding them in would double-count the
+evaluator, whose contribution is already named by ``evaluator_version``.
 
 ## No frozen receipt, on purpose
 
@@ -47,27 +50,35 @@ this by DERIVING the id at release time from the resolved SHA, which is what thi
 it is a pure computation the release builder (and any consumer keying a candidate table) calls,
 not a stored constant. ``source_content_digest`` alone is git-SHA-independent and reproducible,
 but freezing it would demand a regenerate-and-gate step on every score edit; the tests pin the
-canonicalization's PROPERTIES (determinism, order-invariance, the digested key-set) instead of
-a brittle golden value.
+canonicalization's PROPERTIES (determinism, order-invariance, the digested inventory, type
+rejection) instead of a brittle golden value.
+
+Because the digest is taken over the working tree while ``source_git_sha`` is ``HEAD``, a dirty
+``sources/`` tree yields an id that no SHA can reproduce. ``resolve`` therefore FAILS CLOSED on
+uncommitted declarations; a diagnostic value over a dirty tree requires an explicit opt-in
+(``allow_dirty`` / CLI ``--allow-dirty``).
 
 Usage:
-    uv run python -m build.declaration_version            # print the components at HEAD
-    uv run python -m build.declaration_version --json     # same, machine-readable
+    uv run python -m build.declaration_version                # print the components at HEAD
+    uv run python -m build.declaration_version --json         # same, machine-readable
+    uv run python -m build.declaration_version --allow-dirty  # diagnostic over a dirty tree
 """
 
 from __future__ import annotations
 
 import argparse
+import datetime
 import hashlib
 import json
 import subprocess
+import sys
 from pathlib import Path
 
-from build.validate import load_sources
+import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 
-# Bumped when the digested key-set, the serialization, or the id composition changes, so a
+# Bumped when the classified inventory, the serialization, or the id composition changes, so a
 # value computed under an older rule cannot silently pass for a current one.
 CANONICALIZATION_VERSION = 1
 
@@ -79,57 +90,138 @@ CANONICALIZATION_VERSION = 1
 # sentinel records that rather than leaving a field that reads as "unset".
 EVALUATOR_VERSION = "v0-no-repo-evaluator"
 
-# The declaration subtrees of ``load_sources`` that the digest covers. This is the whole of
-# ``load_sources`` EXCEPT ``long_tail`` (the frozen warehouse sample). Kept explicit, and gated
-# by ``test_declaration_keys_cover_every_declaration_subtree``, so a newly added declaration
-# directory cannot slip out of the identity unnoticed.
-DECLARATION_KEYS: tuple[str, ...] = (
-    "organizations",
+# --- the classified sources/ inventory -------------------------------------------
+# Every top-level entry of sources/ is in exactly one of the three collections below;
+# test_source_inventory_is_fully_classified fails if that stops being true.
+
+# Declaration inputs — their content IS the declaration; a change mints a new
+# declaration_version_id. Directories are read file-by-file; a .txt allowlist is reduced to its
+# semantic set of entries (matching the repo's own parse in tests/test_digest_ratchet.py).
+DECLARATION_INPUTS: tuple[str, ...] = (
+    "allowlists",
     "categories",
-    "rubrics",
+    "evidence_policy.yaml",
+    "organizations",
     "products",
-    "scores",
-    "taxonomy",
     "registry",
+    "rubrics",
+    "scores",
+    "taxonomy.yaml",
+    "verification_queue.yaml",
 )
 
-# Everything ``load_sources`` may return that is deliberately NOT a declaration.
-NON_DECLARATION_KEYS: frozenset[str] = frozenset({"long_tail"})
+# Policy inputs — excluded from declaration_version_id because they carry their OWN version and
+# are applied in a downstream layer, not in the declaration compile. Each MUST have its policy
+# version bound into the downstream identity named here when that identity is built.
+POLICY_INPUTS: dict[str, dict[str, str]] = {
+    "signal_routing.yaml": {
+        "policy_version": "routing_policy_version",
+        "bound_into": "evaluation.adoption_reconciliation / release_id",
+        "reason": (
+            "routing is applied in the evaluation layer, not declared per product; it "
+            "publishes under routing_policy_version (see test_serialize_routing)."
+        ),
+    },
+}
+
+# Non-declaration inputs — authored nowhere as a scoring declaration.
+NON_DECLARATION_INPUTS: dict[str, str] = {
+    "snapshots": (
+        "frozen point-in-time warehouse sample (long_tail.json), hand-synced; a re-sync is "
+        "not a change in the declarations."
+    ),
+}
+
+
+def _canonical_default(value: object) -> str:
+    """Serialize the one non-JSON-native type the declarations use (dates); reject the rest.
+
+    ``json.dumps`` calls this only for values it cannot serialize itself. A YAML ``!!set`` or an
+    unexpected object would otherwise slip through a permissive ``str`` fallback and become an
+    implementation-dependent string — a silently non-reproducible identity. Only dates are
+    accepted (rendered ISO); everything else raises.
+    """
+    if isinstance(value, (datetime.date, datetime.datetime)):
+        return value.isoformat()
+    raise TypeError(
+        f"canonical_json cannot serialize a value of type {type(value).__name__!r}; "
+        "only JSON scalars, lists, dicts, and dates are supported."
+    )
 
 
 def canonical_json(obj: object) -> str:
     """The one canonical serialization every digest here is taken over.
 
-    Canonicalization rule (data-architecture.md §4.7), version ``CANONICALIZATION_VERSION``:
+    Canonicalization rule (data-architecture.md §4.5), version ``CANONICALIZATION_VERSION``:
 
       * format: JSON, UTF-8, no insignificant whitespace (``separators=(",", ":")``);
       * key ordering: every mapping sorted by key (``sort_keys=True``), so a curator
         reordering a YAML file produces no change;
       * strings: preserved verbatim, not ASCII-escaped (``ensure_ascii=False``);
-      * dates/other scalars: rendered by ``str`` (``default=str``), so a YAML ``date`` becomes
-        its ISO ``YYYY-MM-DD`` text deterministically rather than a Python object;
-      * null: JSON ``null``.
+      * dates: rendered as ISO text; null as JSON ``null``;
+      * numbers: finite only — ``allow_nan=False`` rejects ``NaN``/``Infinity``, which are not
+        valid JSON and do not round-trip reproducibly;
+      * types: only JSON scalars, lists, dicts, and dates; any other type is rejected rather
+        than coerced (``_canonical_default``).
     """
     return json.dumps(
-        obj, sort_keys=True, ensure_ascii=False, separators=(",", ":"), default=str
+        obj,
+        sort_keys=True,
+        ensure_ascii=False,
+        separators=(",", ":"),
+        default=_canonical_default,
+        allow_nan=False,
     )
 
 
-def declaration_content(root: Path | None = None) -> dict:
-    """The declaration tree the digest is taken over: ``load_sources`` minus non-declarations.
+def _read_declaration_input(path: Path) -> object:
+    """Read one declaration input into its canonical, format-invariant content.
 
-    Raises if ``load_sources`` stops exposing a declared key, so the digest can never quietly
-    narrow to a subset of the declarations.
+    YAML is parsed (dropping comments and key order); a ``.txt`` allowlist is reduced to the
+    sorted set of its non-comment, non-blank lines, exactly as the repo's own gate reads it, so
+    a comment edit does not mint a new version but an added or removed entry does.
     """
-    sources = load_sources(root or ROOT)
-    missing = [k for k in DECLARATION_KEYS if k not in sources]
-    if missing:
-        raise KeyError(f"load_sources is missing declaration keys: {sorted(missing)}")
-    return {k: sources[k] for k in DECLARATION_KEYS}
+    if path.is_dir():
+        out: dict[str, object] = {}
+        for child in sorted(path.iterdir()):
+            if not child.is_file():
+                raise ValueError(f"unexpected non-file in declaration input: {child}")
+            if child.suffix in (".yaml", ".yml"):
+                out[child.name] = yaml.safe_load(child.read_text(encoding="utf-8"))
+            elif child.suffix == ".txt":
+                out[child.name] = sorted(
+                    {
+                        line.strip()
+                        for line in child.read_text(encoding="utf-8").splitlines()
+                        if line.strip() and not line.startswith("#")
+                    }
+                )
+            else:
+                raise ValueError(f"unclassified file type in declaration input: {child}")
+        return out
+    if path.suffix in (".yaml", ".yml"):
+        return yaml.safe_load(path.read_text(encoding="utf-8"))
+    raise ValueError(f"unsupported declaration input file: {path}")
+
+
+def declaration_content(root: Path | None = None) -> dict:
+    """The declaration tree the digest is taken over: every ``DECLARATION_INPUTS`` entry.
+
+    Raises if a declared input is missing from disk, so the digest can never quietly narrow to a
+    subset of the declarations.
+    """
+    base = (root or ROOT) / "sources"
+    content: dict[str, object] = {}
+    for name in DECLARATION_INPUTS:
+        path = base / name
+        if not path.exists():
+            raise FileNotFoundError(f"declaration input missing: sources/{name}")
+        content[name] = _read_declaration_input(path)
+    return content
 
 
 def source_content_digest(root: Path | None = None) -> str:
-    """sha256 over the canonicalized declaration tree. Git-SHA-independent and reproducible."""
+    """sha256 over the canonicalized declaration inputs. Git-SHA-independent and reproducible."""
     payload = canonical_json(declaration_content(root))
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
@@ -150,11 +242,10 @@ def declaration_paths_are_clean(root: Path | None = None) -> bool:
 
     A ``declaration_version_id`` pairs the working-tree digest with ``HEAD``'s SHA. When a
     declaration file is dirty the two describe different states, so the derived id is not
-    reproducible from the SHA alone. The CLI surfaces this rather than emitting a misleading id.
+    reproducible from the SHA alone.
     """
-    base = root or ROOT
     result = subprocess.run(
-        ["git", "-C", str(base), "status", "--porcelain", "--", "sources/"],
+        ["git", "-C", str(root or ROOT), "status", "--porcelain", "--", "sources/"],
         capture_output=True,
         text=True,
         check=True,
@@ -185,9 +276,25 @@ def declaration_version_id(
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
-def resolve(root: Path | None = None) -> dict:
-    """Derive every component and the id at ``HEAD`` over the working-tree declarations."""
+class DirtyDeclarationsError(RuntimeError):
+    """Raised when an id is requested over a working tree with uncommitted declarations."""
+
+
+def resolve(root: Path | None = None, allow_dirty: bool = False) -> dict:
+    """Derive every component and the id at ``HEAD`` over the working-tree declarations.
+
+    Fails closed when ``sources/`` is dirty: the digest is over the working tree but the SHA is
+    ``HEAD``, so the pair is not reproducible. ``allow_dirty`` returns a diagnostic value anyway,
+    with ``declarations_clean`` recording the state.
+    """
     base = root or ROOT
+    clean = declaration_paths_are_clean(base)
+    if not clean and not allow_dirty:
+        raise DirtyDeclarationsError(
+            "sources/ has uncommitted changes: the working-tree digest would pair with HEAD's "
+            "SHA and would not be reproducible from it. Commit the declarations first, or pass "
+            "allow_dirty=True (CLI --allow-dirty) for a diagnostic-only value."
+        )
     digest = source_content_digest(base)
     git_sha = resolve_git_sha(base)
     return {
@@ -196,16 +303,26 @@ def resolve(root: Path | None = None) -> dict:
         "source_git_sha": git_sha,
         "source_content_digest": digest,
         "declaration_version_id": declaration_version_id(git_sha, digest),
-        "declarations_clean": declaration_paths_are_clean(base),
+        "declarations_clean": clean,
     }
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--json", action="store_true", help="emit the components as JSON")
+    parser.add_argument(
+        "--allow-dirty",
+        action="store_true",
+        help="emit a diagnostic id over an uncommitted sources/ tree (not reproducible)",
+    )
     args = parser.parse_args()
 
-    info = resolve()
+    try:
+        info = resolve(allow_dirty=args.allow_dirty)
+    except DirtyDeclarationsError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 1
+
     if args.json:
         print(json.dumps(info, indent=2))
         return 0
@@ -217,9 +334,9 @@ def main() -> int:
     print(f"declaration_version_id    {info['declaration_version_id']}")
     if not info["declarations_clean"]:
         print(
-            "\nWARNING: sources/ has uncommitted changes. The digest is taken over the working\n"
-            "tree but source_git_sha is HEAD, so this declaration_version_id is not reproducible\n"
-            "from that SHA. Commit the declarations first."
+            "\nWARNING: sources/ has uncommitted changes. This is a diagnostic value only — the\n"
+            "digest is over the working tree but source_git_sha is HEAD, so it is not\n"
+            "reproducible from that SHA."
         )
     return 0
 

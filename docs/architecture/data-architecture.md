@@ -836,15 +836,28 @@ release_id
 `declaration_version_id` is derived by `build/declaration_version.py`, not stored: it embeds
 `source_git_sha`, and no commit can record its own SHA, so the release builder (and any
 consumer keying a candidate table) computes it from the resolved SHA at run time. Its
-`source_content_digest` covers the declaration tree `build.validate.load_sources` parses
-(products, organizations, categories, scores, rubrics, taxonomy, long-tail registry seeds) and
-deliberately excludes three things whose change is not a change in the declarations: the frozen
-`sources/snapshots/long_tail.json` warehouse sample, the derived score projections (those are
-the evaluator's contribution, already named by `evaluator_version`), and the routing policy
-(which carries its own `routing_policy_version`). Until the repository-owned evaluator lands
-(Phase 6), `evaluator_version` is a declared sentinel `v0-no-repo-evaluator` — well-formed and
+`source_content_digest` covers every authoritative declaration input under `sources/` — every
+top-level entry is classified into exactly one of three buckets, gated so a new input cannot
+escape the identity unnoticed:
+
+- **declaration** (folded into the digest): `products`, `organizations`, `categories`,
+  `scores`, `rubrics`, `taxonomy.yaml`, the long-tail `registry` seeds, and — beyond what
+  `load_sources` returns — `evidence_policy.yaml` (which shapes serialized registry output) and
+  `verification_queue.yaml` (which governs release eligibility), plus the `allowlists`;
+- **policy** (excluded here, its own version bound downstream): `signal_routing.yaml`, which
+  publishes under `routing_policy_version` and is applied in the evaluation layer, so its version
+  binds into `evaluation.adoption_reconciliation` / `release_id`, never into this identity;
+- **non-declaration** (excluded with a reason): the frozen `sources/snapshots/long_tail.json`
+  warehouse sample.
+
+The derived score projections (`overall_score`, `tier`, `maturity`, `mature`) are excluded by
+construction — they never live in `sources/`; they are the evaluator's contribution, already
+named by `evaluator_version`. Until the repository-owned evaluator lands (Phase 6),
+`evaluator_version` is a declared sentinel `v0-no-repo-evaluator` — well-formed and
 forward-compatible, and deliberately not the empty string, so the day a real evaluator version
-replaces it is a reviewed change that moves every id with it.
+replaces it is a reviewed change that moves every id with it. The id is also derived only over
+a committed `sources/` tree: a dirty working tree pairs a working-tree digest with `HEAD`'s SHA
+and is refused unless an explicit diagnostic opt-in is given.
 
 Use them consistently:
 
@@ -892,12 +905,15 @@ Declared, for `source_content_digest` (owned by `build/declaration_version.py`,
 - serialization format: JSON, UTF-8, with no insignificant whitespace;
 - key ordering: every mapping sorted by key, so reordering a YAML file changes nothing;
 - string normalization: preserved verbatim, not ASCII-escaped;
-- date and null representation: a date scalar renders as its ISO `YYYY-MM-DD` text (Python
-  `str`), null as JSON `null`;
+- date and null representation: a date scalar renders as its ISO text, null as JSON `null`;
+- number representation: finite only — `NaN`/`Infinity` are rejected, not emitted;
+- type handling: only JSON scalars, lists, dicts, and dates are accepted; any other type
+  (a YAML `!!set`, an unexpected object) is rejected rather than coerced to a string, which
+  would make the digest implementation-dependent;
 - hash algorithm: SHA-256, lowercase hex;
-- input set: the declaration subtrees of `load_sources` (an explicit key-list gated so a new
-  declaration directory cannot silently leave the digest), excluding the frozen long-tail
-  sample.
+- input set: the classified declaration inputs of `sources/` (the full top-level inventory is
+  gated, so a new authoritative input cannot silently leave the digest), excluding the
+  separately-versioned routing policy and the frozen long-tail sample.
 
 Future release tables may include:
 
