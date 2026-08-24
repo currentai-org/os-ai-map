@@ -21,6 +21,22 @@ file records only where the work has got to. Delete a row when it stops being te
 | 7 — retire duplicate openness computation | not started | |
 | 8 — release manifests | not started | |
 
+## Versioning identities
+
+Prerequisites for the fully-keyed evaluation tables (`evaluation.product_adoption_measurements`,
+`evaluation.adoption_reconciliation`, `registry.axis_assessments`), which key on identities that
+did not yet exist in code. Laid ahead of those tables so each is defined once, on its own, rather
+than improvised inside the first consumer.
+
+- **`declaration_version_id` — implemented** (`build/declaration_version.py`, `data-architecture.md`
+  §4.6/§4.7). Derived at run time, not stored, because it embeds `source_git_sha`. Its
+  `source_content_digest` covers the declaration tree `load_sources` parses, excluding the frozen
+  long-tail sample, the derived score projections, and the routing policy. `evaluator_version` is
+  pinned to the sentinel `v0-no-repo-evaluator` until the repository-owned evaluator lands (Phase 6).
+- **`observation_snapshot_id` — pending**, to be emitted by the observations layer over
+  `observations.product_adoption_current` (a build receipt, like `source_runs.json`). Gated on
+  `observations.product_adoption_current` reaching `main`.
+
 ## Atomicity: which state is in force
 
 **Transitional.** Verified 2026-08-20: static models carry no version or revision list, and

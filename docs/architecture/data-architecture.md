@@ -833,6 +833,19 @@ release_id
   = declaration_version_id + observation_snapshot_id + reconciliation_policy_version
 ```
 
+`declaration_version_id` is derived by `build/declaration_version.py`, not stored: it embeds
+`source_git_sha`, and no commit can record its own SHA, so the release builder (and any
+consumer keying a candidate table) computes it from the resolved SHA at run time. Its
+`source_content_digest` covers the declaration tree `build.validate.load_sources` parses
+(products, organizations, categories, scores, rubrics, taxonomy, long-tail registry seeds) and
+deliberately excludes three things whose change is not a change in the declarations: the frozen
+`sources/snapshots/long_tail.json` warehouse sample, the derived score projections (those are
+the evaluator's contribution, already named by `evaluator_version`), and the routing policy
+(which carries its own `routing_policy_version`). Until the repository-owned evaluator lands
+(Phase 6), `evaluator_version` is a declared sentinel `v0-no-repo-evaluator` — well-formed and
+forward-compatible, and deliberately not the empty string, so the day a real evaluator version
+replaces it is a reviewed change that moves every id with it.
+
 Use them consistently:
 
 - `registry.axis_assessments` belongs to `declaration_version_id`. It does not depend on
@@ -872,6 +885,19 @@ this specification — `source_content_digest`, `observation_content_digest`,
 
 Two implementations that disagree on any of these produce different digests from identical
 data, which is indistinguishable from real drift.
+
+Declared, for `source_content_digest` (owned by `build/declaration_version.py`,
+`canonicalization_version` 1):
+
+- serialization format: JSON, UTF-8, with no insignificant whitespace;
+- key ordering: every mapping sorted by key, so reordering a YAML file changes nothing;
+- string normalization: preserved verbatim, not ASCII-escaped;
+- date and null representation: a date scalar renders as its ISO `YYYY-MM-DD` text (Python
+  `str`), null as JSON `null`;
+- hash algorithm: SHA-256, lowercase hex;
+- input set: the declaration subtrees of `load_sources` (an explicit key-list gated so a new
+  declaration directory cannot silently leave the digest), excluding the frozen long-tail
+  sample.
 
 Future release tables may include:
 
