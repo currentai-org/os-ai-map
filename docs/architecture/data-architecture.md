@@ -862,9 +862,12 @@ is **commit-scoped**: it also carries `source_git_sha`, so any commit that touch
 therefore the id. What the digest buys is a content-addressed cross-check — two commits with
 identical declaration content share a digest even though their SHAs differ, so a reconciliation
 can distinguish a real declaration change from an unrelated one. Because the id is commit-scoped
-and computed by tracked code over the working tree, it is derived only over a **clean tracked
-worktree**: a dirty tree (dirty declarations, or dirty identity/evaluator code) pairs a
-working-tree value with `HEAD`'s SHA and is refused unless an explicit diagnostic opt-in is given.
+and computed by tracked code over the working tree, it is derived only over a worktree that
+agrees with `HEAD`: a dirty tracked file anywhere (dirty declarations, or dirty identity/evaluator
+code), or an untracked file under `sources/` (a declaration the commit does not carry), is
+refused unless an explicit diagnostic opt-in is given. The digest reads only git-tracked files, so
+an untracked file cannot enter it silently; the guard additionally refuses it so the mismatch
+surfaces.
 
 Until the repository-owned evaluator lands (Phase 6), `evaluator_version` is a declared sentinel
 `v0-no-repo-evaluator` — well-formed and forward-compatible, and deliberately not the empty

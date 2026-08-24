@@ -66,10 +66,13 @@ canonicalization's PROPERTIES (determinism, order-invariance, the digested inven
 rejection) instead of a brittle golden value.
 
 Because the digest and this identity code are both read from the working tree while
-``source_git_sha`` is ``HEAD``, a dirty TRACKED worktree — dirty declarations, or a dirty
-``build/declaration_version.py`` / future evaluator — yields an id that no commit can reproduce.
-``resolve`` therefore FAILS CLOSED unless the whole tracked worktree is clean; a diagnostic value
-over a dirty tree requires an explicit opt-in (``allow_dirty`` / CLI ``--allow-dirty``).
+``source_git_sha`` is ``HEAD``, a worktree that disagrees with ``HEAD`` yields an id no commit can
+reproduce. ``resolve`` therefore FAILS CLOSED on either kind of disagreement: a dirty TRACKED file
+anywhere (dirty declarations, or a dirty ``build/declaration_version.py`` / future evaluator), or
+an UNTRACKED file under ``sources/`` (a declaration the commit does not carry). The digest itself
+reads only tracked files, so an untracked file cannot enter it silently; the guard additionally
+refuses it so the mismatch surfaces rather than passing. A diagnostic value over a dirty tree
+requires an explicit opt-in (``allow_dirty`` / CLI ``--allow-dirty``).
 
 Usage:
     uv run python -m build.declaration_version                # print the components at HEAD
@@ -233,49 +236,64 @@ def canonical_json(obj: object) -> str:
     )
 
 
-def _read_declaration_input(path: Path) -> object:
-    """Read one declaration input into its canonical, format-invariant content.
+def _tracked_paths(root: Path, rel: str) -> list[str]:
+    """Repo-relative paths of the files git TRACKS at ``rel`` (a file or a directory).
+
+    The digest is taken over what git tracks, never over ``Path.iterdir()``: an untracked file
+    dropped into ``sources/`` must not be able to enter the digest while ``source_git_sha`` names
+    a commit that does not contain it. ``git ls-files`` lists tracked paths only, so an untracked
+    file is simply absent from the set.
+    """
+    result = subprocess.run(
+        ["git", "-C", str(root), "ls-files", "-z", "--", rel],
+        capture_output=True,
+        check=True,
+    )
+    return [p for p in result.stdout.decode("utf-8").split("\0") if p]
+
+
+def _parse_declaration_file(path: Path) -> object:
+    """Parse one declaration file into its canonical, format-invariant content.
 
     YAML is parsed (dropping comments and key order); a ``.txt`` allowlist is reduced to the
     sorted set of its non-comment, non-blank lines, exactly as the repo's own gate reads it, so
     a comment edit does not mint a new version but an added or removed entry does.
     """
-    if path.is_dir():
-        out: dict[str, object] = {}
-        for child in sorted(path.iterdir()):
-            if not child.is_file():
-                raise ValueError(f"unexpected non-file in declaration input: {child}")
-            if child.suffix in (".yaml", ".yml"):
-                out[child.name] = yaml.safe_load(child.read_text(encoding="utf-8"))
-            elif child.suffix == ".txt":
-                out[child.name] = sorted(
-                    {
-                        line.strip()
-                        for line in child.read_text(encoding="utf-8").splitlines()
-                        if line.strip() and not line.startswith("#")
-                    }
-                )
-            else:
-                raise ValueError(f"unclassified file type in declaration input: {child}")
-        return out
     if path.suffix in (".yaml", ".yml"):
         return yaml.safe_load(path.read_text(encoding="utf-8"))
-    raise ValueError(f"unsupported declaration input file: {path}")
+    if path.suffix == ".txt":
+        return sorted(
+            {
+                line.strip()
+                for line in path.read_text(encoding="utf-8").splitlines()
+                if line.strip() and not line.startswith("#")
+            }
+        )
+    raise ValueError(f"unclassified file type in declaration input: {path}")
 
 
 def declaration_content(root: Path | None = None) -> dict:
     """The declaration tree the digest is taken over: every ``DECLARATION_INPUTS`` entry.
 
-    Raises if a declared input is missing from disk, so the digest can never quietly narrow to a
-    subset of the declarations.
+    The file set is derived from ``git ls-files``, not the filesystem, so an untracked file
+    cannot enter the digest. Raises if a declared input tracks no files, so the digest can never
+    quietly narrow to a subset of the declarations.
     """
-    base = (root or ROOT) / "sources"
+    base = root or ROOT
     content: dict[str, object] = {}
     for name in DECLARATION_INPUTS:
-        path = base / name
-        if not path.exists():
-            raise FileNotFoundError(f"declaration input missing: sources/{name}")
-        content[name] = _read_declaration_input(path)
+        rel = f"sources/{name}"
+        tracked = _tracked_paths(base, rel)
+        if not tracked:
+            raise FileNotFoundError(f"declaration input tracks no files: {rel}")
+        if tracked == [rel]:
+            # A single tracked file at exactly this path — a file input (taxonomy.yaml, etc.).
+            content[name] = _parse_declaration_file(base / rel)
+        else:
+            # A directory input — map each tracked file's basename to its parsed content.
+            content[name] = {
+                (base / tp).name: _parse_declaration_file(base / tp) for tp in tracked
+            }
     return content
 
 
@@ -296,26 +314,41 @@ def resolve_git_sha(root: Path | None = None) -> str:
     return result.stdout.strip()
 
 
-def tracked_worktree_is_clean(root: Path | None = None) -> bool:
-    """True when no TRACKED file has uncommitted changes.
+def worktree_is_clean_for_identity(root: Path | None = None) -> bool:
+    """True when the worktree state the identity depends on matches ``HEAD``.
 
-    The identity is commit-scoped: ``source_git_sha`` names ``HEAD``, and the digest is computed
-    over the working tree by code that is itself tracked. So it is not enough for ``sources/`` to
-    be clean — a dirty ``build/declaration_version.py`` (or, later, dirty evaluator code) would
-    change the computed identity while ``source_git_sha`` still named ``HEAD``, producing a value
-    no commit can reproduce. Requiring the whole tracked worktree to match ``HEAD`` is the
-    simplest guarantee that the derived id names exactly this commit's state.
+    Two kinds of dirtiness both make the derived id unreproducible from ``source_git_sha``, and
+    both are refused:
 
-    Untracked files are ignored (``--untracked-files=no``): they are not read by this computation
-    and do not affect the identity.
+      * any TRACKED file modified/staged/deleted/renamed, ANYWHERE — the digest and this identity
+        code are read from the working tree, so dirty declarations OR dirty identity/evaluator
+        code change the computed id while ``source_git_sha`` still names ``HEAD``;
+      * any UNTRACKED file under ``sources/`` — ``declaration_content`` reads only tracked files,
+        so such a file cannot silently enter the digest, but its presence means the working tree
+        carries a declaration the commit does not, so the id is refused rather than emitted
+        against a tree that disagrees with ``HEAD``.
+
+    Untracked files OUTSIDE ``sources/`` (scratch, build artifacts, new modules not yet added)
+    are not read by this computation and are ignored.
     """
     result = subprocess.run(
-        ["git", "-C", str(root or ROOT), "status", "--porcelain", "--untracked-files=no"],
+        ["git", "-C", str(root or ROOT), "status", "--porcelain"],
         capture_output=True,
         text=True,
         check=True,
     )
-    return result.stdout.strip() == ""
+    for line in result.stdout.splitlines():
+        if not line:
+            continue
+        status, path = line[:2], line[3:]
+        if status == "??":
+            # Untracked: dirty only when it sits under sources/ (a declaration the commit lacks).
+            if path.startswith("sources/"):
+                return False
+        else:
+            # Any tracked change, anywhere in the worktree.
+            return False
+    return True
 
 
 def declaration_version_id(
@@ -354,13 +387,14 @@ def resolve(root: Path | None = None, allow_dirty: bool = False) -> dict:
     ``worktree_clean`` recording the state.
     """
     base = root or ROOT
-    clean = tracked_worktree_is_clean(base)
+    clean = worktree_is_clean_for_identity(base)
     if not clean and not allow_dirty:
         raise DirtyWorktreeError(
-            "the tracked worktree has uncommitted changes: the digest and the identity code are "
-            "read from the working tree while source_git_sha is HEAD, so the id would not be "
-            "reproducible from that commit. Commit first, or pass allow_dirty=True "
-            "(CLI --allow-dirty) for a diagnostic-only value."
+            "the worktree has uncommitted changes affecting the identity — a tracked file "
+            "(declarations or identity/evaluator code), or an untracked file under sources/. "
+            "The digest and identity code are read from the working tree while source_git_sha is "
+            "HEAD, so the id would not be reproducible from that commit. Commit first, or pass "
+            "allow_dirty=True (CLI --allow-dirty) for a diagnostic-only value."
         )
     digest = source_content_digest(base)
     git_sha = resolve_git_sha(base)

@@ -33,7 +33,7 @@ from build.declaration_version import (
     declaration_version_id,
     resolve,
     source_content_digest,
-    tracked_worktree_is_clean,
+    worktree_is_clean_for_identity,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -200,9 +200,9 @@ def test_canonical_json_rejects_non_finite_numbers():
 def test_dirty_declaration_file_is_detected(tmp_path):
     """A dirty declaration file makes the worktree unclean."""
     repo = _tiny_repo(tmp_path)
-    assert tracked_worktree_is_clean(repo) is True
+    assert worktree_is_clean_for_identity(repo) is True
     (repo / "sources" / "x.yaml").write_text("a: 2\n", encoding="utf-8")
-    assert tracked_worktree_is_clean(repo) is False
+    assert worktree_is_clean_for_identity(repo) is False
 
 
 def test_dirty_identity_implementation_is_detected(tmp_path):
@@ -212,28 +212,61 @@ def test_dirty_identity_implementation_is_detected(tmp_path):
     while source_git_sha still names HEAD. The cleanliness probe must cover it.
     """
     repo = _tiny_repo(tmp_path)
-    assert tracked_worktree_is_clean(repo) is True
+    assert worktree_is_clean_for_identity(repo) is True
     (repo / "impl.py").write_text("# identity implementation CHANGED\n", encoding="utf-8")
-    assert tracked_worktree_is_clean(repo) is False
+    assert worktree_is_clean_for_identity(repo) is False
 
 
-def test_untracked_files_do_not_make_the_worktree_dirty(tmp_path):
-    """An untracked file is not read by the computation and must not block a reproducible id."""
+def test_untracked_file_under_sources_makes_the_worktree_dirty(tmp_path):
+    """An UNTRACKED file under sources/ is a declaration the commit lacks — refused.
+
+    This is the gap the --untracked-files=no check missed: the digest read the filesystem, so an
+    untracked declaration entered the digest while source_git_sha named a commit without it.
+    """
+    repo = _tiny_repo(tmp_path)
+    assert worktree_is_clean_for_identity(repo) is True
+    (repo / "sources" / "review_probe.yaml").write_text("display_name: probe\n", encoding="utf-8")
+    assert worktree_is_clean_for_identity(repo) is False
+
+
+def test_untracked_files_outside_sources_are_ignored(tmp_path):
+    """An untracked scratch file elsewhere is not read by the computation and must not block."""
     repo = _tiny_repo(tmp_path)
     (repo / "scratch.txt").write_text("ignore me\n", encoding="utf-8")
-    assert tracked_worktree_is_clean(repo) is True
+    (repo / "build_artifact.log").write_text("noise\n", encoding="utf-8")
+    assert worktree_is_clean_for_identity(repo) is True
+
+
+def test_untracked_declaration_is_excluded_from_the_digest_and_refused():
+    """The reproduction on the real repo: an untracked YAML in sources/categories/.
+
+    Two guarantees at once — the digest reads only tracked files, so the untracked probe does NOT
+    change it (closing `probe_digested=True`); and resolve() REFUSES rather than emit an id over a
+    tree that carries a declaration the commit does not (closing `clean_probe=True`).
+    """
+    probe = ROOT / "sources" / "categories" / "_declaration_version_untracked_probe.yaml"
+    assert not probe.exists()
+    baseline = source_content_digest(ROOT)
+    probe.write_text("display_name: probe\n", encoding="utf-8")
+    try:
+        assert source_content_digest(ROOT) == baseline  # digest reads tracked files only
+        assert worktree_is_clean_for_identity(ROOT) is False  # untracked-under-sources is dirty
+        with pytest.raises(DirtyWorktreeError):
+            resolve()
+    finally:
+        probe.unlink()
 
 
 def test_resolve_fails_closed_on_a_dirty_worktree(monkeypatch):
-    """With any tracked file dirty, resolve() raises rather than emit an unreproducible id."""
-    monkeypatch.setattr(dv, "tracked_worktree_is_clean", lambda *a, **k: False)
+    """With the worktree dirty, resolve() raises rather than emit an unreproducible id."""
+    monkeypatch.setattr(dv, "worktree_is_clean_for_identity", lambda *a, **k: False)
     with pytest.raises(DirtyWorktreeError):
         resolve()
 
 
 def test_resolve_allow_dirty_opt_in_returns_a_diagnostic_value(monkeypatch):
     """The explicit opt-in returns a value and records that the tree was dirty."""
-    monkeypatch.setattr(dv, "tracked_worktree_is_clean", lambda *a, **k: False)
+    monkeypatch.setattr(dv, "worktree_is_clean_for_identity", lambda *a, **k: False)
     info = resolve(allow_dirty=True)
     assert info["worktree_clean"] is False
     assert len(info["declaration_version_id"]) == 64
@@ -246,7 +279,7 @@ def test_resolve_clean_path_succeeds(monkeypatch):
     very changes under test, so asserting against live git state would be flaky. The digest and
     SHA are still computed over the real repo.
     """
-    monkeypatch.setattr(dv, "tracked_worktree_is_clean", lambda *a, **k: True)
+    monkeypatch.setattr(dv, "worktree_is_clean_for_identity", lambda *a, **k: True)
     info = resolve()
     assert info["worktree_clean"] is True
     assert len(info["declaration_version_id"]) == 64

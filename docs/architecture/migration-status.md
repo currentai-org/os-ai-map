@@ -30,8 +30,9 @@ than improvised inside the first consumer.
 
 - **`declaration_version_id` — implemented** (`build/declaration_version.py`, `data-architecture.md`
   §4.5). Commit-scoped (it embeds `source_git_sha`), derived at run time rather than stored, and
-  refused over a dirty **tracked worktree** — dirty declarations or dirty identity/evaluator code —
-  without an explicit diagnostic opt-in. Its `source_content_digest` covers every authoritative
+  refused over a worktree that disagrees with `HEAD` — a dirty tracked file (declarations or
+  identity/evaluator code) or an untracked file under `sources/` — without an explicit diagnostic
+  opt-in; the digest itself reads only git-tracked files. Its `source_content_digest` covers every authoritative
   declaration input under `sources/` — the full top-level inventory is classified and gated, so
   `evidence_policy.yaml` and `verification_queue.yaml` (which `load_sources` does not return) are
   folded in, while `signal_routing.yaml` (its `routing_policy_version` a **pending** binding
