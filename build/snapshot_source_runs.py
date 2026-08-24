@@ -174,17 +174,38 @@ Q_RUNS = """query($where: JSON, $first: Int, $after: String){
       id triggerType runType status
       queuedAt startedAt finishedAt lastHeartbeatAt
       requestedBy{ id }
-      steps{ pageInfo{ hasNextPage } edges{ node{ name displayName status
-        materializations{ pageInfo{ hasNextPage } edges{ node{ id tableId datasetId createdAt } } } } } }
+      steps{ pageInfo{ hasNextPage endCursor } edges{ node{ name displayName status
+        materializations{ pageInfo{ hasNextPage endCursor } edges{ node{ id tableId datasetId createdAt } } } } } }
     } }
   } }"""
 
 
 class TruncatedConnection(RuntimeError):
-    """A Relay connection could not be paged to exhaustion -- a repeated or missing cursor, or a
-    nested page that the query could not exhaust. Raised rather than returning a partial result,
-    because a silently truncated snapshot understates run history, which is the exact blindness
-    `source_runs` exists to remove."""
+    """A Relay connection could not be certified as paged to exhaustion -- a repeated or missing
+    cursor, a nested page the query could not exhaust, or a `pageInfo` that is absent or malformed.
+    Raised rather than returning a partial result, because a silently truncated (or unverifiable)
+    snapshot understates run history, which is the exact blindness `source_runs` exists to remove."""
+
+
+def _read_page_info(conn: dict, where: str) -> tuple[bool, str | None]:
+    """Validate a Relay connection's `pageInfo` and return (has_next, end_cursor).
+
+    Fails CLOSED: a connection with no `pageInfo` mapping, a non-boolean `hasNextPage`, or
+    `hasNextPage = true` with no `endCursor` cannot be certified as exhausted, so each raises
+    `TruncatedConnection` rather than defaulting to "no more pages". Treating a missing `pageInfo`
+    as `hasNextPage = false` is exactly the fail-open a schema change or a malformed response would
+    slip through as "full pagination to exhaustion".
+    """
+    if not isinstance(conn, dict) or not isinstance(conn.get("pageInfo"), dict):
+        raise TruncatedConnection(f"{where}: response carries no pageInfo mapping")
+    page = conn["pageInfo"]
+    has_next = page.get("hasNextPage")
+    if not isinstance(has_next, bool):
+        raise TruncatedConnection(f"{where}: pageInfo.hasNextPage is not a boolean ({has_next!r})")
+    cursor = page.get("endCursor")
+    if has_next and not (isinstance(cursor, str) and cursor):
+        raise TruncatedConnection(f"{where}: hasNextPage is true but endCursor is missing or empty")
+    return has_next, cursor
 
 
 # --- coverage derived from the routing YAML --------------------------------------
@@ -269,13 +290,15 @@ def _assert_nested_complete(node: dict) -> None:
     and this refuses the run rather than emit a run missing some of its materializations.
     """
     run_id = node.get("id")
-    steps_conn = node.get("steps") or {}
-    if (steps_conn.get("pageInfo") or {}).get("hasNextPage"):
+    steps_conn = node.get("steps")
+    steps_next, _ = _read_page_info(steps_conn, f"run {run_id}: steps")
+    if steps_next:
         raise TruncatedConnection(f"run {run_id}: steps connection truncated (more than one page)")
     for step_edge in (steps_conn.get("edges") or []):
         step = step_edge.get("node") or {}
-        mats = step.get("materializations") or {}
-        if (mats.get("pageInfo") or {}).get("hasNextPage"):
+        mats = step.get("materializations")
+        mats_next, _ = _read_page_info(mats, f"run {run_id}: materializations of step {step.get('name')!r}")
+        if mats_next:
             raise TruncatedConnection(
                 f"run {run_id}: materializations of step {step.get('name')!r} truncated")
 
@@ -524,17 +547,20 @@ def validate_receipt(receipt: dict) -> list[str]:
     if receipt["org_id"] != ORG_ID:
         problems.append(f"org_id is {receipt['org_id']!r}, expected {ORG_ID!r}")
 
-    # Every dataset list is a list of strings; requested has no duplicates.
+    # Every dataset list is a list of strings, duplicate-free, and canonically sorted -- not only
+    # requested_datasets. A duplicate or an out-of-order list is a generator defect that would let
+    # two receipts over identical coverage differ, so each is rejected here.
     for key in ("requested_datasets", "deployed_datasets", "staged_datasets",
                 "resolved_datasets", "unresolved_datasets"):
         value = receipt[key]
         if not isinstance(value, list) or not all(isinstance(x, str) for x in value):
             problems.append(f"{key} is not a list of strings")
-    if isinstance(receipt["requested_datasets"], list):
-        req = receipt["requested_datasets"]
-        if len(req) != len(set(req)):
-            dupes = sorted({x for x in req if req.count(x) > 1})
-            problems.append(f"requested_datasets has duplicates: {dupes}")
+            continue
+        if len(value) != len(set(value)):
+            dupes = sorted({x for x in value if value.count(x) > 1})
+            problems.append(f"{key} has duplicates: {dupes}")
+        if value != sorted(value):
+            problems.append(f"{key} is not canonically sorted")
 
     # deployed and staged partition requested, disjointly.
     req_set = set(receipt.get("requested_datasets") or [])
@@ -582,9 +608,17 @@ def validate_receipt(receipt: dict) -> list[str]:
             if not _is_uuid(ds_id):
                 problems.append(f"resolved_dataset_ids[{name!r}] = {ds_id!r} is not a UUID")
 
+    good_counts = True
     for key in ("run_count", "row_count"):
         if not isinstance(receipt[key], int) or isinstance(receipt[key], bool) or receipt[key] < 0:
             problems.append(f"{key} is not a nonnegative int")
+            good_counts = False
+    # Every run emits at least one row (a run that materialized nothing still emits one), so
+    # row_count can never fall below run_count. A receipt claiming otherwise is impossible.
+    if good_counts and receipt["row_count"] < receipt["run_count"]:
+        problems.append(
+            f"row_count {receipt['row_count']} < run_count {receipt['run_count']}: "
+            f"impossible, every run emits at least one row")
 
     # Capture bounds: real timestamps or null, and ordered. String comparison is not enough --
     # a bound that looks like a date but is not must be rejected.
@@ -628,13 +662,15 @@ def _connection_pages(query: str, base_vars: dict, connection_key: str, token: s
     while True:
         data = graphql(query, {**base_vars, "first": page_size, "after": after}, token)
         conn = data[connection_key]
-        yield conn["edges"]
-        page = conn.get("pageInfo") or {}
-        if not page.get("hasNextPage"):
+        # Validate pageInfo BEFORE trusting the page, so a malformed response is never certified as
+        # a complete page.
+        has_next, cursor = _read_page_info(conn, connection_key)
+        edges = conn.get("edges")
+        if not isinstance(edges, list):
+            raise TruncatedConnection(f"{connection_key}: response carries no edges list")
+        yield edges
+        if not has_next:
             return
-        cursor = page.get("endCursor")
-        if not cursor:
-            raise TruncatedConnection(f"{connection_key}: hasNextPage but endCursor is empty")
         if cursor in seen:
             raise TruncatedConnection(f"{connection_key}: cursor {cursor!r} repeated -- pagination stalled")
         seen.add(cursor)

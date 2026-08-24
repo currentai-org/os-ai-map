@@ -32,9 +32,13 @@ def _mat(mat_id: str, table_id: str, dataset_id: str, created_at: str) -> dict:
                      "createdAt": created_at}}
 
 
+def _pi(has_next: bool = False, cursor=None) -> dict:
+    return {"hasNextPage": has_next, "endCursor": cursor}
+
+
 def _step(name: str, mats: list[dict], display_name: str | None = None) -> dict:
     return {"node": {"name": name, "displayName": display_name or name, "status": "SUCCESS",
-                     "materializations": {"edges": mats}}}
+                     "materializations": {"pageInfo": _pi(), "edges": mats}}}
 
 
 def _run(run_id: str, *, status="SUCCESS", trigger="SCHEDULED", run_type="MODEL",
@@ -44,7 +48,7 @@ def _run(run_id: str, *, status="SUCCESS", trigger="SCHEDULED", run_type="MODEL"
         "queuedAt": "2026-08-23T00:59:00Z", "startedAt": started,
         "finishedAt": "2026-08-23T01:05:00Z", "lastHeartbeatAt": None,
         "requestedBy": ({"id": requested_by} if requested_by else None),
-        "steps": {"edges": steps or []},
+        "steps": {"pageInfo": _pi(), "edges": steps or []},
     }
 
 
@@ -231,7 +235,7 @@ def test_truncated_nested_steps_or_materializations_raise():
               [_mat("m1", "t1", "ds-github", "2026-08-23T01:04:00Z")]),
     ])
     # A truncated materializations page must raise.
-    node["steps"]["edges"][0]["node"]["materializations"]["pageInfo"] = {"hasNextPage": True}
+    node["steps"]["edges"][0]["node"]["materializations"]["pageInfo"] = _pi(True, "c")
     try:
         S._assert_nested_complete(node)
         assert False, "expected TruncatedConnection on truncated materializations"
@@ -239,10 +243,59 @@ def test_truncated_nested_steps_or_materializations_raise():
         pass
     # A truncated steps page must raise.
     node2 = _run("run-trunc2", steps=[])
-    node2["steps"]["pageInfo"] = {"hasNextPage": True}
+    node2["steps"]["pageInfo"] = _pi(True, "c")
     try:
         S._assert_nested_complete(node2)
         assert False, "expected TruncatedConnection on truncated steps"
+    except S.TruncatedConnection:
+        pass
+
+
+def test_pagination_fails_closed_on_missing_or_malformed_pageinfo(monkeypatch):
+    """A response with no pageInfo, or a non-boolean hasNextPage, cannot be certified as exhausted
+    and must raise -- never be read as 'no more pages'."""
+    # Top-level runs: no pageInfo at all (the reviewer's reproduction).
+    monkeypatch.setattr(S, "graphql", lambda q, v, t: {"runs": {"edges": []}})
+    try:
+        S.fetch_runs("ds", token="t")
+        assert False, "expected TruncatedConnection on runs with no pageInfo"
+    except S.TruncatedConnection:
+        pass
+    # Top-level datasets: no pageInfo.
+    monkeypatch.setattr(S, "graphql", lambda q, v, t: {
+        "datasets": {"edges": [{"node": {"id": "x", "name": "signal_github"}}]}})
+    try:
+        S.resolve_datasets(("signal_github",), token="t")
+        assert False, "expected TruncatedConnection on datasets with no pageInfo"
+    except S.TruncatedConnection:
+        pass
+    # Top-level runs: hasNextPage present but not a boolean.
+    monkeypatch.setattr(S, "graphql", lambda q, v, t: {
+        "runs": {"pageInfo": {"hasNextPage": "yes"}, "edges": []}})
+    try:
+        S.fetch_runs("ds", token="t")
+        assert False, "expected TruncatedConnection on non-boolean hasNextPage"
+    except S.TruncatedConnection:
+        pass
+
+
+def test_nested_missing_pageinfo_fails_closed():
+    """Nested steps/materializations with no pageInfo must raise, not be read as complete -- the
+    reviewer's second reproduction."""
+    # steps has no pageInfo.
+    node = {"id": "r", "steps": {"edges": [
+        {"node": {"name": "s", "materializations": {"pageInfo": _pi(), "edges": []}}}]}}
+    try:
+        S._assert_nested_complete(node)
+        assert False, "expected TruncatedConnection on steps with no pageInfo"
+    except S.TruncatedConnection:
+        pass
+    # materializations has no pageInfo.
+    node = {"id": "r", "steps": {"pageInfo": _pi(), "edges": [
+        {"node": {"name": "s", "materializations": {"edges": []}}}]}}
+    try:
+        S._assert_nested_complete(node)
+        assert False, "expected TruncatedConnection on materializations with no pageInfo"
     except S.TruncatedConnection:
         pass
 
@@ -369,6 +422,12 @@ def test_receipt_validator_rejects_malformed_receipts():
         "row_count is not a nonnegative int": lambda r: r.__setitem__("row_count", -1),
         "requested_datasets has duplicates":
             lambda r: r["requested_datasets"].append("signal_github"),
+        # row_count can never fall below run_count (every run emits >= 1 row)
+        "< run_count": lambda r: r.__setitem__("row_count", 0),
+        # every dataset list, not just requested, must be dedup'd and canonically sorted
+        "deployed_datasets has duplicates":
+            lambda r: r["deployed_datasets"].append("signal_github"),
+        "is not canonically sorted": lambda r: r["requested_datasets"].reverse(),
         "resolved + unresolved do not partition":
             lambda r: (r["requested_datasets"].append("signal_x"),
                        r["deployed_datasets"].append("signal_x")),
