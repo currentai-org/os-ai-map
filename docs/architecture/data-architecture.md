@@ -417,7 +417,7 @@ Source-specific ingestion remains in datasets such as `signal_github`, `signal_h
 Use three distinct objects so current state is never mislabeled as history:
 
 - `observations.source_runs` — the run contract described below. Required from day one; ships now as a read-only control-plane snapshot (interim Option B, issue #355);
-- `observations.product_adoption_current` — a full-refresh normalized model containing the latest observations from successful source runs (completeness stays unknown until #355, per the source_runs rules below);
+- `observations.product_adoption_current` — a full-refresh normalized model holding the current source state (the latest normalized values). It cannot filter or attribute those values by run until #355 binds observations to runs, so it makes no completeness claim; see the source_runs rules below;
 - `observations.product_adoption_baseline` — the immutable first snapshot, backed by frozen bytes rather than a query;
 - `observations.product_adoption` — the target incremental history table, created only after OSO incremental models are available.
 
@@ -502,9 +502,11 @@ Rules:
 - Reconciliation reports a missing or failed current run as its own condition, distinct from a
   product that has no applicable measurement. The first is an infrastructure failure; the
   second is a legitimate abstention. Collapsing them hides outages as data gaps.
-- `product_adoption_current` may select only on `status = succeeded` today; once #355 supplies
-  real scope and row counts it selects on `status = succeeded` AND a scope matching
-  `expected_scope`. Until then it cannot claim completeness, only execution success.
+- Before #355, `source_runs` can report source/model execution state, but it cannot filter,
+  validate, or attribute individual observations by run. An unbound `SUCCESS` remains
+  `source_unavailable` for reconciliation. After #355 provides authoritative row-to-run binding
+  and scope, `product_adoption_current` may include only observations bound to
+  `execution_status = "SUCCESS"` with matching scope.
 - `observation_snapshot_id` is content-addressed over the normalized observations alone. Run
   identifiers are lineage, recorded in `observation_run_ids`, and are NOT inputs to the ID.
   Including them would give every re-run a new snapshot ID even when nothing measured changed,
@@ -617,7 +619,7 @@ observation identity:
 (product_slug, artifact_kind, artifact_id, channel, metric_type, measurement_window_days)
 ```
 
-It selects only from source runs with `status = succeeded`. It begins as a full-refresh model. After the incremental history table exists, replace its implementation with a view over `observations.product_adoption` without changing the consumer-facing name or schema.
+Before #355, it holds the current source state and cannot filter or attribute observations by run: an unbound `SUCCESS` in `source_runs` stays `source_unavailable` for reconciliation, not a validated current observation. After #355 provides authoritative row-to-run binding and scope, it may include only observations bound to a run with `execution_status = "SUCCESS"` and matching scope. It begins as a full-refresh model; after the incremental history table exists, replace its implementation with a view over `observations.product_adoption` without changing the consumer-facing name or schema.
 
 The view must use explicit ordering and tie-breaking. It must not use an unordered `MAX()` reduction that can combine fields from different rows.
 
