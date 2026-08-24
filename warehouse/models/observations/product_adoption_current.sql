@@ -140,7 +140,7 @@ ranked AS (
       ORDER BY observed_at DESC, source_table, artifact_id
     ) AS rn
   FROM observations o
-)
+),
 
 covered AS (
   -- Enforce DECLARED artifact identity. An observation survives only if its
