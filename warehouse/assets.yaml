@@ -586,9 +586,9 @@ assets:
     scope: internal
   - table: currentai.registry.product_score_sources
     scope: internal
-  - table: currentai.signal_github.repo_state
+  - table: currentai.signal_github.artifact_state
     scope: internal
-  - table: currentai.signal_huggingface.hub_state
+  - table: currentai.signal_huggingface.artifact_state
     scope: internal
   read_by:
     models:
@@ -613,10 +613,10 @@ assets:
   verified_at: '2026-08-20'
   mirror:
     model_id: 769c20b5-d9c0-4163-bced-81e3a62fbc47
-    revision: 8
-    hash: 0b82978b734971a41ce94a97d9a0c5cb8898733677049057a95675e16595ebdc
-    local_sha256: 4cd20993f6f839e7bc8c2eae7e8b85a9e61b62d5f004462df99d5f203dee403b
-    synced_at: '2026-08-15'
+    revision: 11
+    hash: 039c0649f93d19e8bb8f86454e29a4c7ae8d12e87db93d8290ccf75437db48a4
+    local_sha256: d31044ba633a012666543a80c15890530f58807e392db89a92f5d25363f60e57
+    synced_at: '2026-08-24'
 - id: metrics.daily
   table: currentai.metrics.daily
   files:
@@ -1049,7 +1049,9 @@ assets:
   release_path: true
   read_by:
     models:
+    - warehouse/models/signal_github/artifact_state.py
     - warehouse/models/signal_github/repo_state.py
+    - warehouse/models/signal_huggingface/artifact_state.py
     - warehouse/models/signal_huggingface/hub_state.py
     - warehouse/models/signal_packages/downloads.sql
     - warehouse/models/signal_packages/downloads_daily.py
@@ -1739,6 +1741,52 @@ assets:
     hash: 044310c3f02b3bf5d52009095b737a3e9dcf995609641bf646b188e0886db451
     local_sha256: 1491f28b90e1f730b4de1035c7e2c49327d4baf9055fb359a0625095cce4bb8f
     synced_at: '2026-08-15'
+- id: signal_github.artifact_state
+  table: currentai.signal_github.artifact_state
+  files:
+    model: warehouse/models/signal_github/artifact_state.py
+    schema: null
+    data: null
+  kind: observations
+  current_namespace: signal_github
+  target_namespace: observations
+  migration_status: pending
+  authority: platform
+  population: gap_map
+  release_path: false
+  reads:
+  - table: currentai.registry.product_artifacts
+    scope: internal
+  read_by:
+    models:
+    - warehouse/models/evidence/product_evidence.sql
+    - warehouse/models/signal_github/product_adoption.sql
+    build:
+    - build/check_artifacts.py
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: checked
+    external: unknown
+  external_consumers:
+  - sta-grantmaker-view
+  grain: one row per (product_slug, repo) at one fetched_at
+  producer: warehouse/models/signal_github/artifact_state.py
+  refresh: dataset cron '0 3 * * 0'
+  timezone: UTC
+  last_observed_trigger: MANUAL
+  last_run_at: '2026-08-24'
+  dataset_id: cc74e8db-7718-4615-a004-7f27cabaf967
+  owner: carl
+  status: active
+  materialized: true
+  verified_at: '2026-08-24'
+  mirror:
+    model_id: fed14549-c660-44fc-a6cc-c859795bde7f
+    revision: 2
+    hash: 4ca130834731c7cdee5534b15eef71143b20179b725cb90758e3cfd5d4fcec5f
+    local_sha256: 66b18ee046d741510a0669028c8b4fb4dd47c8190ca0f92d83c6ccdb20b7f9ea
+    synced_at: '2026-08-24'
 - id: signal_github.product_adoption
   table: currentai.signal_github.product_adoption
   files:
@@ -1757,7 +1805,7 @@ assets:
     scope: internal
   - table: currentai.registry.products
     scope: internal
-  - table: currentai.signal_github.repo_state
+  - table: currentai.signal_github.artifact_state
     scope: internal
   - table: currentai.signal_huggingface.product_adoption
     scope: internal
@@ -1788,10 +1836,10 @@ assets:
     compiles that ordering.
   mirror:
     model_id: 25538fa7-f956-481c-ac14-474ab1661ac3
-    revision: 3
-    hash: fab87a5e45a70663162a5421eb5037a5bca9cdbd49d4ab0b24d47b3688ed1da8
-    local_sha256: 0ad0c6fe80fcdb546a82552b1b9f860d9f432b2f747ff678388cc95b83763ece
-    synced_at: '2026-08-16'
+    revision: 4
+    hash: d7761e0d9e7138f9c9264f2f956fadf79f7f1857a80574a957aa994fbf65686f
+    local_sha256: 28a46af11338d101c3c9045b9cbb2cecdf59be6a3f038148907c0214c018836d
+    synced_at: '2026-08-24'
 - id: signal_github.repo_state
   table: currentai.signal_github.repo_state
   files:
@@ -1808,12 +1856,6 @@ assets:
   reads:
   - table: currentai.registry.product_artifacts
     scope: internal
-  read_by:
-    models:
-    - warehouse/models/evidence/product_evidence.sql
-    - warehouse/models/signal_github/product_adoption.sql
-    build:
-    - build/check_artifacts.py
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -1829,9 +1871,10 @@ assets:
   last_run_at: '2026-08-23'
   dataset_id: cc74e8db-7718-4615-a004-7f27cabaf967
   owner: carl
-  status: active
+  status: compatibility
+  replacement: signal_github.artifact_state
   materialized: true
-  verified_at: '2026-08-20'
+  verified_at: '2026-08-24'
   mirror:
     model_id: a50ce375-4b91-43c6-b1ce-1fc60911b513
     revision: 4
@@ -1887,10 +1930,10 @@ assets:
     hash: 27b7de7c1271500612ae0e29163d7661451db4b16352d7ce1b0dd12df1d466a7
     local_sha256: eaee5981530529fc1cbd6c21d2d18b7019b0ed2c15751f43b2d84f4f4bb0ae00
     synced_at: '2026-08-15'
-- id: signal_huggingface.hub_state
-  table: currentai.signal_huggingface.hub_state
+- id: signal_huggingface.artifact_state
+  table: currentai.signal_huggingface.artifact_state
   files:
-    model: warehouse/models/signal_huggingface/hub_state.py
+    model: warehouse/models/signal_huggingface/artifact_state.py
     schema: null
     data: null
   kind: observations
@@ -1914,6 +1957,45 @@ assets:
     external: unknown
   external_consumers: none_confirmed
   grain: one row per (product_slug, artifact_kind, artifact_id) at one fetched_at
+  producer: warehouse/models/signal_huggingface/artifact_state.py
+  refresh: dataset cron '0 2 * * 0'
+  timezone: UTC
+  last_observed_trigger: MANUAL
+  last_run_at: '2026-08-24'
+  dataset_id: 6108e4d6-868f-4cba-8df5-ee64f8fb301e
+  owner: carl
+  status: active
+  materialized: true
+  verified_at: '2026-08-24'
+  mirror:
+    model_id: 9c1e8561-280e-417e-b006-d08b177002db
+    revision: 2
+    hash: 40e1df01e4fc93c56213283de20aa04e85c8bd7951dc3f038e3fb093c61ba6d3
+    local_sha256: 851e601b94f4abccd66005827b7e38f0b419ca5a9b1c9c3292f62ebd273b8ec0
+    synced_at: '2026-08-24'
+- id: signal_huggingface.hub_state
+  table: currentai.signal_huggingface.hub_state
+  files:
+    model: warehouse/models/signal_huggingface/hub_state.py
+    schema: null
+    data: null
+  kind: observations
+  current_namespace: signal_huggingface
+  target_namespace: observations
+  migration_status: pending
+  authority: platform
+  population: gap_map
+  release_path: false
+  reads:
+  - table: currentai.registry.product_artifacts
+    scope: internal
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: checked
+    external: unknown
+  external_consumers: none_confirmed
+  grain: one row per (product_slug, artifact_kind, artifact_id) at one fetched_at
   producer: warehouse/models/signal_huggingface/hub_state.py
   refresh: dataset cron '0 2 * * 0'
   timezone: UTC
@@ -1921,9 +2003,10 @@ assets:
   last_run_at: '2026-08-23'
   dataset_id: 6108e4d6-868f-4cba-8df5-ee64f8fb301e
   owner: carl
-  status: active
+  status: compatibility
+  replacement: signal_huggingface.artifact_state
   materialized: true
-  verified_at: '2026-08-20'
+  verified_at: '2026-08-24'
   mirror:
     model_id: 014a0641-605f-4e57-831b-d24a1304437f
     revision: 3
@@ -1948,7 +2031,7 @@ assets:
     scope: internal
   - table: currentai.registry.products
     scope: internal
-  - table: currentai.signal_huggingface.hub_state
+  - table: currentai.signal_huggingface.artifact_state
     scope: internal
   read_by:
     models:
@@ -1973,10 +2056,10 @@ assets:
   verified_at: '2026-08-20'
   mirror:
     model_id: abcf0044-dd9d-4942-a2a1-e047dab8e8b1
-    revision: 3
-    hash: 6b088f7d0bae8e0d399dc63a44ccbd190d34da27f7cedc21346be4a2dd1ce9b9
-    local_sha256: f303551eafd02b3beca61c0552a4ef7489de7b510e77e048f95b10d4799988e9
-    synced_at: '2026-08-16'
+    revision: 4
+    hash: 3a07002e0fd547adb46e17c7963fe134824ef3b34a5ce267891b17281df66353
+    local_sha256: e7d3d29e7e895c7155a873ebf8a97d88abaecae95af5f2e5b77b234663680584
+    synced_at: '2026-08-24'
 - id: signal_lmarena.text_leaderboard
   table: currentai.signal_lmarena.text_leaderboard
   files:

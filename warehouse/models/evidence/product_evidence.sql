@@ -141,7 +141,7 @@ hub AS (
     h.used_storage_bytes,
     h.http_status,
     CAST(h.fetched_at AS DATE) AS fetched_on
-  FROM currentai.signal_huggingface.hub_state h
+  FROM currentai.signal_huggingface.artifact_state h
   JOIN roster r ON r.product_slug = h.product_slug
   WHERE h.artifact_kind = 'huggingface_model'
 ),
@@ -164,7 +164,7 @@ hub_license AS (
     'artifact' AS attribution,
     b.artifact_id,
     'https://huggingface.co/' || b.artifact_id AS source_url,
-    'currentai.signal_huggingface.hub_state' AS source_table,
+    'currentai.signal_huggingface.artifact_state' AS source_table,
     'license' AS source_column,
     b.fetched_on AS source_accessed,
     (
@@ -226,7 +226,7 @@ hub_weights AS (
     'artifact' AS attribution,
     b.artifact_id,
     'https://huggingface.co/' || b.artifact_id AS source_url,
-    'currentai.signal_huggingface.hub_state' AS source_table,
+    'currentai.signal_huggingface.artifact_state' AS source_table,
     'is_private, is_disabled, used_storage_bytes' AS source_column,
     b.fetched_on AS source_accessed,
     (
@@ -269,7 +269,7 @@ repo_code AS (
     'artifact' AS attribution,
     g.repo AS artifact_id,
     g.html_url AS source_url,
-    'currentai.signal_github.repo_state' AS source_table,
+    'currentai.signal_github.artifact_state' AS source_table,
     'is_archived, pushed_at' AS source_column,
     CAST(g.fetched_at AS DATE) AS source_accessed,
     (g.http_status = 200) AS admitted,
@@ -281,7 +281,7 @@ repo_code AS (
     END AS reject_reason,
     -- The load-bearing false. Everything else about this row is corroboration.
     false AS settles_dimension
-  FROM currentai.signal_github.repo_state g
+  FROM currentai.signal_github.artifact_state g
   JOIN roster r ON r.product_slug = g.product_slug
 )
 

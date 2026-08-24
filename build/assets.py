@@ -321,8 +321,11 @@ def retirement_candidates() -> list[dict]:
         # e.g. signal_packages awaiting #314) and `dormant` (no platform table yet) are
         # not-in-service states, so they are excluded by construction rather than by an empty
         # reader list -- an undeployed model has no consumers because it does not exist yet,
-        # which is a different fact from a live table nobody reads.
-        if asset["status"] in ("staged", "dormant"):
+        # which is a different fact from a live table nobody reads. `compatibility` is excluded
+        # for the opposite reason: its retirement is already DECIDED -- it names a `replacement`
+        # and rides a governing runbook to its drop -- so surfacing it as an un-noticed candidate
+        # would be noise and would demand a spurious retirement_issue it does not have.
+        if asset["status"] in ("staged", "dormant", "compatibility"):
             continue
         rb = asset.get("read_by") or {}
         if any(rb.get(root) for root in ROOTS):
@@ -586,11 +589,13 @@ def no_reviewed_consumers() -> list[dict]:
 
     Not-in-service assets (`staged`, `dormant`) are excluded: a model deployed nowhere has no
     consumers because it does not exist yet, which is a different state from a live table
-    nobody reads and must not be conflated with it.
+    nobody reads and must not be conflated with it. `compatibility` is excluded too: its
+    consumers moved to its named `replacement` by design, so its empty reader list is the
+    planned outcome of a rename, not an unnoticed dead table.
     """
     return [
         a for a in assets()
-        if a.get("status") not in ("staged", "dormant")
+        if a.get("status") not in ("staged", "dormant", "compatibility")
         and not (a.get("read_by") or {})
         and not a.get("publication_role")
         and not a.get("platform_model_consumers")

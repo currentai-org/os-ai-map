@@ -80,7 +80,7 @@ def waived(product: dict, check: str) -> str | None:
 def github_moved(products: dict[str, dict]) -> list[tuple[str, str, str]]:
     """Declarations whose repo now resolves somewhere else, per the signal's own probe."""
     rows = query(
-        "SELECT product_slug, repo, resolved_repo FROM currentai.signal_github.repo_state "
+        "SELECT product_slug, repo, resolved_repo FROM currentai.signal_github.artifact_state "
         "WHERE resolved_via_redirect = true"
     )
     findings = []
