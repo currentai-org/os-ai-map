@@ -668,6 +668,48 @@ assets:
   status: active
   materialized: true
   verified_at: '2026-08-20'
+- id: observations.product_adoption_current
+  table: currentai.observations.product_adoption_current
+  files:
+    model: warehouse/models/observations/product_adoption_current.sql
+    schema: null
+    data: null
+  kind: observations
+  current_namespace: observations
+  target_namespace: observations
+  migration_status: complete
+  authority: repo
+  population: gap_map
+  release_path: false
+  reads:
+  - table: currentai.registry.products
+    scope: internal
+  - table: currentai.signal_github.artifact_state
+    scope: internal
+  - table: currentai.signal_huggingface.artifact_state
+    scope: internal
+  - table: currentai.signal_pypi.package_downloads
+    scope: internal
+  - table: currentai.signal_semanticscholar.paper_citations
+    scope: internal
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: checked
+    external: unknown
+  external_consumers: none_confirmed
+  grain: one row per (product_slug, artifact_kind, artifact_id, channel, metric_type, measurement_window_days)
+    — the latest valid artifact-level adoption observation, band-free
+  producer: warehouse/models/observations/product_adoption_current.sql
+  classification_note: artifact-level raw observations (metric_type + raw_value), no band and no
+    instrument_type; banding and product-level aggregation are evaluation concerns (§4.3)
+  refresh: 'not deployed; repo-authored, awaiting the maintainer platform deploy that creates the
+    observations namespace (data-architecture.md §4.3). source_run_id is NULL until #355; the
+    product_adoption_baseline frozen-bytes snapshot follows the first deployed run.'
+  owner: carl
+  status: staged
+  materialized: false
+  verified_at: '2026-08-24'
 - id: observations.source_runs
   table: currentai.observations.source_runs
   kind: observations
@@ -1243,6 +1285,7 @@ assets:
   release_path: true
   read_by:
     models:
+    - warehouse/models/observations/product_adoption_current.sql
     - warehouse/models/scores/openness_facts.sql
     - warehouse/models/signal_github/product_adoption.sql
     - warehouse/models/signal_huggingface/product_adoption.sql
@@ -1760,6 +1803,7 @@ assets:
   read_by:
     models:
     - warehouse/models/evidence/product_evidence.sql
+    - warehouse/models/observations/product_adoption_current.sql
     - warehouse/models/signal_github/product_adoption.sql
     build:
     - build/check_artifacts.py
@@ -1949,6 +1993,7 @@ assets:
   read_by:
     models:
     - warehouse/models/evidence/product_evidence.sql
+    - warehouse/models/observations/product_adoption_current.sql
     - warehouse/models/signal_huggingface/product_adoption.sql
   consumer_checks:
     repository: checked
@@ -2220,6 +2265,7 @@ assets:
     scope: external
   read_by:
     models:
+    - warehouse/models/observations/product_adoption_current.sql
     - warehouse/models/signal_github/product_adoption.sql
     build:
     - build/check_artifacts.py
@@ -2262,6 +2308,9 @@ assets:
   reads:
   - table: currentai.registry.product_artifacts
     scope: internal
+  read_by:
+    models:
+    - warehouse/models/observations/product_adoption_current.sql
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -2279,10 +2328,9 @@ assets:
   status: active
   materialized: true
   verified_at: '2026-08-20'
-  retirement_reason: 'no reviewed consumer as of 2026-08-22: no in-repo code reader, no platform notebook consumer, and (Phase 0b, all 41 deployed model definitions read) no deployed platform model reads it. Recorded as a retirement candidate; deletion requires maintainer authorization per section 17 and is not performed here.'
-  retirement_issue: '#348'
-  notes: Citation instrument for benchmark_eval_data, declared in signal_routing.yaml but not yet consumed
-    by a repo model. Not dead.
+  notes: Citation instrument for benchmark_eval_data, declared in signal_routing.yaml. Now
+    consumed in-repo by observations.product_adoption_current (the citations channel), so it is
+    no longer a retirement candidate.
   mirror:
     model_id: cc73d808-5833-4a91-a47b-35bb0414b6f0
     revision: 3

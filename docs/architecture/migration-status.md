@@ -12,7 +12,7 @@ file records only where the work has got to. Delete a row when it stops being te
 | 0 — architecture record and inventory | done | Merged (#345). The repository now mirrors the warehouse. |
 | 0b — deployed model audit | done | Merged (#347). All 41 deployed model definitions read; `platform_models` `checked` on every asset; receipt at `warehouse/audits/platform_models.json`. |
 | 1 — schedule normalization | done | Applied (#349) and **verified 2026-08-23**: all ten in-scope datasets fired a `SCHEDULED` run on their UTC cron (01:00–06:00Z Sunday), the run-history proof §13 requires; 3 out-of-scope analytical datasets left on `America/New_York` deliberately. <!-- count:unobserved_crons -->10 assets still have no observed run, all outside Phase 1's scope. Two model runs failed on the scheduled fire — a transient `ConnectTimeout` on `metrics` (cleared on re-run) and a reproducible upstream `429` on `signal_semanticscholar.paper_citations` — but neither is a schedule defect; see the note below. `docs/operations/normalize-schedules.md` carries the per-dataset evidence. |
-| 2 — normalized adoption observations | in progress | **2A done**: `registry.adoption_routes` + `adoption_route_scopes` / `adoption_route_band_sets` / `adoption_aggregation_rules` compiled from `signal_routing.yaml` and merged (#351), materialized on the platform 2026-08-23 (7 / 1 / 20 / 1 rows). **`source_runs` shipped** (#356). **`artifact_state` source-table rename applied** (Part B runbook): `signal_github.repo_state` and `signal_huggingface.hub_state` twinned to `signal_github.artifact_state` / `signal_huggingface.artifact_state` on the platform, the three consumers repointed and redeployed, and the old tables kept as `compatibility` assets (each naming its replacement) until their step-6 retirement. Remaining: `observations.product_adoption_current` and the baseline before any signal roll-up retires. |
+| 2 — normalized adoption observations | in progress | **2A done**: `registry.adoption_routes` + `adoption_route_scopes` / `adoption_route_band_sets` / `adoption_aggregation_rules` compiled from `signal_routing.yaml` and merged (#351), materialized on the platform 2026-08-23 (7 / 1 / 20 / 1 rows). **`source_runs` shipped** (#356). **`artifact_state` source-table rename applied** (Part B runbook): `signal_github.repo_state` and `signal_huggingface.hub_state` twinned to `signal_github.artifact_state` / `signal_huggingface.artifact_state` on the platform, the three consumers repointed and redeployed, and the old tables kept as `compatibility` assets (each naming its replacement) until their step-6 retirement. **`observations.product_adoption_current` authored** — the artifact-level, band-free current-state normalization over the four deployed adoption sources, staged (`authority: repo`, deployed nowhere) awaiting the maintainer platform deploy that creates the `observations` namespace. Remaining: deploy `product_adoption_current` + freeze the `product_adoption_baseline` bytes before any signal roll-up retires. |
 | 2B — incremental adoption history | blocked | Blocked on OSO incremental-model support (issue #352). The stable latest-state contract `observations.product_adoption_current` (full-refresh + `observed_at`) ships in Phase 2; the bare name `observations.product_adoption` is reserved for the incremental append-only history table, created only when OSO supports it. `_current` is not renamed into `product_adoption` — its grain is current-state, and a consumer of the current-state table must not silently inherit a historical grain. |
 | 3 — reconciliation report | not started | Report-only first. |
 | 4 — blocking agreement gate | not started | |
@@ -96,8 +96,9 @@ then succeeds is separate. Both failing models fired exactly on their UTC cron.
    identically — reproducible, not a blip. Root cause: the deployed UDM has no 429 backoff/retry,
    unlike the repo's own `warehouse/models/catalog/model_repos.py`. The fix (backoff, or an
    authenticated Semantic Scholar key) is a **platform-owned model change** under §17, out of Phase
-   1's scope. The asset has no reviewed consumer (pre-positioned per the inventory below), so no
-   pipeline is affected. Recorded for a maintainer; not acted on here.
+   1's scope. Its only in-repo consumer is the staged `observations.product_adoption_current`,
+   which is deployed nowhere yet, so no live pipeline is affected. Recorded for a maintainer; not
+   acted on here.
 
 **No description or schema change is pending.** An earlier draft of this file recorded a
 correction for the `catalog.stack_map` dataset description, on the grounds that its "read by no
@@ -122,15 +123,15 @@ claims, and only the first is true.
 
 ## Assets with no reviewed consumer
 
-**Retirement candidates: <!-- count:retirement_candidates -->4.** Phase 0b read all 41 deployed
+**Retirement candidates: <!-- count:retirement_candidates -->3.** Phase 0b read all 41 deployed
 model definitions in the org, so `consumer_checks.platform_models` is now `checked` on every
 asset and the derived candidate list is non-empty for the first time. It is **recorded, not
 acted on**: section 17 requires explicit maintainer authorization, a stated rollback path and a
 consumer inventory before any deletion. This phase produces the inventory only — no `DROP`, no
-dataset deletion, no description or model change. The four are tracked in issue #348, which each
+dataset deletion, no description or model change. The three are tracked in issue #348, which each
 entry references in `retirement_issue`; a `TBD` placeholder no longer satisfies that field.
 
-The <!-- count:no_reviewed_consumer -->4 assets below are **deployed** and have **no reviewed
+The <!-- count:no_reviewed_consumer -->3 assets below are **deployed** and have **no reviewed
 consumer**: no in-repo code reader, no consumer among the twenty notebooks in the organization,
 and no deployed platform model reads them. `external` stays `unknown` — nothing outside this org
 was read — so this is still weaker than "no consumer" and is not itself grounds for deletion.
@@ -150,11 +151,15 @@ gap Phase 0b existed to close. `catalog.osai_gap_map`, `catalog.osai_subcategory
 The derived condition cannot tell "nobody wants this" from "nothing uses it yet", which is why
 it produces a list for a person and never an action. Several entries are pre-positioned inputs.
 
+`signal_semanticscholar.paper_citations` left this list in Phase 2: the new
+`observations.product_adoption_current` reads it as the citations channel, so it now has an
+in-repo reviewed consumer. It was the clearest "pre-positioned, not yet consumed" case, and the
+observations layer is what consumes it.
+
 | Asset | Finding |
 |---|---|
 | `scores.ossd_coverage` | No reviewed consumer, in repo or on the platform. |
 | `signal_github.product_adoption` | Unread everywhere reviewed, but holds the route precedence `pypi > huggingface > stars` in SQL. **Must not retire before `registry.adoption_routes` compiles that ordering** — nothing would fail if it did. |
-| `signal_semanticscholar.paper_citations` | Citation instrument declared in `signal_routing.yaml`, not yet consumed. Pre-positioned. |
 | `signal_artificialanalysis.model_evaluations` | The platform description says "held deliberately unjoined to gap-map products". Unread by design. |
 
 ## Consumers with only a deprecated reader

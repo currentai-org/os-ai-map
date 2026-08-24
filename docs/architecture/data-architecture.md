@@ -1199,7 +1199,7 @@ Migration rules:
 
 Verified against the live `currentai` org on 2026-08-20: <!-- observed:2026-08-20 -->22 datasets,
 <!-- observed:2026-08-20 -->96 tables,
-<!-- count:tracked_warehouse_files -->44 tracked files under `warehouse/`. The structure below is the target, and the
+<!-- count:tracked_warehouse_files -->45 tracked files under `warehouse/`. The structure below is the target, and the
 mirror layout of 11.1 is now in place; the file manifest in 11.4 recorded the exact diff
 from the 2026-08-20 state (40 files), Phase 0b added `warehouse/audits/platform_models.json`,
 the deployed-model audit receipt, and Phase 2 added `warehouse/audits/source_runs.json`, the
@@ -1547,18 +1547,19 @@ Three numbers that must not be conflated:
 
 ```text
 deployed tables in the in-scope datasets    <!-- count:deployed_tables -->59
-staged, not deployed                         <!-- count:staged_assets -->4
+staged, not deployed                         <!-- count:staged_assets -->5
 dormant, no platform table yet              <!-- count:dormant_assets -->1
                                             ------
-logical assets in warehouse/assets.yaml     <!-- count:assets -->64
+logical assets in warehouse/assets.yaml     <!-- count:assets -->65
 ```
 
-The staged four are the three `signal_packages` models from issue #314 and
-`observations.source_runs` (Phase 2): tracked assets whose tables do not exist on the platform
-yet. The four `registry.adoption_*` routing tables — `adoption_routes`, `adoption_route_scopes`,
-`adoption_route_band_sets` and `adoption_aggregation_rules` — were staged during Phase 2A and are
-now **deployed** (materialized 2026-08-23, PR #353), which is why the staged count fell from seven
-to four. The dormant one is `registry.tail_products`, declared by `build.publish_registry.TABLES`,
+The staged five are the three `signal_packages` models from issue #314, `observations.source_runs`
+and `observations.product_adoption_current` (both Phase 2): tracked assets whose tables do not
+exist on the platform yet. `product_adoption_current` is repo-authored and awaits the maintainer
+deploy that creates the `observations` namespace (§4.3). The four `registry.adoption_*` routing
+tables — `adoption_routes`, `adoption_route_scopes`, `adoption_route_band_sets` and
+`adoption_aggregation_rules` — were staged during Phase 2A and are now **deployed** (materialized
+2026-08-23, PR #353). The dormant one is `registry.tail_products`, declared by `build.publish_registry.TABLES`,
 whose platform table is absent only because the last serialization had no rows.
 
 Both are real logical assets — a tracked file in no asset entry is invisible to every gate in
@@ -1601,7 +1602,7 @@ this diff starts from.
 
 ```text
 warehouse/ tracked files, pre-Phase-0   <!-- observed:2026-08-20 -->44
-  of which SQL/Python models   <!-- count:model_files -->32   (12 models, 3 ingest, 17 mirror)
+  of which SQL/Python models   <!-- count:model_files -->33   (13 models, 3 ingest, 17 mirror)
 warehouse/ after the move    44 + 1 assets.yaml - 5 = 40
 repository-wide             +6 created, -5 deleted   = +1
 ```
