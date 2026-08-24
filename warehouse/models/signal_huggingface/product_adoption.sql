@@ -32,7 +32,7 @@ WITH typed AS (
     p.type AS product_type,
     h.artifact_kind,
     h.downloads_30d
-  FROM currentai.signal_huggingface.hub_state h
+  FROM currentai.signal_huggingface.artifact_state h
   JOIN currentai.registry.products p
     ON p.slug = h.product_slug
   -- A failed fetch is not a zero. Excluding it keeps a transient 429 from banding

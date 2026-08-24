@@ -1,8 +1,8 @@
 {
- "audited_at": "2026-08-22",
+ "audited_at": "2026-08-24",
  "org": "currentai",
  "org_id": "ad7f4c1c-dd2f-430e-a831-e7f1f16e6d9e",
- "model_count": 41,
+ "model_count": 43,
  "models": [
   {
    "table": "currentai.ai_demand_curve.cost_of_intelligence_timeseries",
@@ -207,8 +207,8 @@
    "dataset": "evidence",
    "name": "product_evidence",
    "model_id": "769c20b5-d9c0-4163-bced-81e3a62fbc47",
-   "revision_hash": "1df6aea100e8536cc390d3d0a3ec5157978c0c08b93b7f717b92dc643930613a",
-   "source_sha256": "fe718b3a4711eb7e91ef8d86964ce29f12a2233370f4c44032096a43a3697cb4",
+   "revision_hash": "039c0649f93d19e8bb8f86454e29a4c7ae8d12e87db93d8290ccf75437db48a4",
+   "source_sha256": "f6e2660a3edd07f452a1f86f7c391c3dfbf00cd7bbb257012086631a2924925d",
    "language": "SQL",
    "internal_reads": [
     "currentai.registry.category_scoring_rules",
@@ -217,8 +217,8 @@
     "currentai.registry.product_categories",
     "currentai.registry.product_openness_evidence",
     "currentai.registry.product_score_sources",
-    "currentai.signal_github.repo_state",
-    "currentai.signal_huggingface.hub_state"
+    "currentai.signal_github.artifact_state",
+    "currentai.signal_huggingface.artifact_state"
    ],
    "in_scope_reads": [
     "currentai.registry.category_scoring_rules",
@@ -227,8 +227,8 @@
     "currentai.registry.product_categories",
     "currentai.registry.product_openness_evidence",
     "currentai.registry.product_score_sources",
-    "currentai.signal_github.repo_state",
-    "currentai.signal_huggingface.hub_state"
+    "currentai.signal_github.artifact_state",
+    "currentai.signal_huggingface.artifact_state"
    ],
    "has_repository_source": true
   },
@@ -475,24 +475,40 @@
    "has_repository_source": true
   },
   {
+   "table": "currentai.signal_github.artifact_state",
+   "dataset": "signal_github",
+   "name": "artifact_state",
+   "model_id": "fed14549-c660-44fc-a6cc-c859795bde7f",
+   "revision_hash": "4ca130834731c7cdee5534b15eef71143b20179b725cb90758e3cfd5d4fcec5f",
+   "source_sha256": "7cdc29c8ed59ea9b4af36af41361656829c8d43e7198a3e9e5c9ddd4a0fe1050",
+   "language": "PYTHON",
+   "internal_reads": [
+    "currentai.registry.product_artifacts"
+   ],
+   "in_scope_reads": [
+    "currentai.registry.product_artifacts"
+   ],
+   "has_repository_source": true
+  },
+  {
    "table": "currentai.signal_github.product_adoption",
    "dataset": "signal_github",
    "name": "product_adoption",
    "model_id": "25538fa7-f956-481c-ac14-474ab1661ac3",
-   "revision_hash": "fab87a5e45a70663162a5421eb5037a5bca9cdbd49d4ab0b24d47b3688ed1da8",
-   "source_sha256": "902407a0e67f01c83161d12c5d7f75753d1b7b915d35c2630d127433a46bb96c",
-   "language": "sql",
+   "revision_hash": "d7761e0d9e7138f9c9264f2f956fadf79f7f1857a80574a957aa994fbf65686f",
+   "source_sha256": "dce7b23f3148fda4838743467f3c4a28649c492c887b174ed7d82d17df023dcf",
+   "language": "SQL",
    "internal_reads": [
     "currentai.registry.adoption_bands",
     "currentai.registry.products",
-    "currentai.signal_github.repo_state",
+    "currentai.signal_github.artifact_state",
     "currentai.signal_huggingface.product_adoption",
     "currentai.signal_pypi.package_downloads"
    ],
    "in_scope_reads": [
     "currentai.registry.adoption_bands",
     "currentai.registry.products",
-    "currentai.signal_github.repo_state",
+    "currentai.signal_github.artifact_state",
     "currentai.signal_huggingface.product_adoption",
     "currentai.signal_pypi.package_downloads"
    ],
@@ -527,6 +543,22 @@
    "has_repository_source": true
   },
   {
+   "table": "currentai.signal_huggingface.artifact_state",
+   "dataset": "signal_huggingface",
+   "name": "artifact_state",
+   "model_id": "9c1e8561-280e-417e-b006-d08b177002db",
+   "revision_hash": "40e1df01e4fc93c56213283de20aa04e85c8bd7951dc3f038e3fb093c61ba6d3",
+   "source_sha256": "41583eb4aa602aa05689b7b47b7147cf59337ca1a2e59936638dd7e07216f552",
+   "language": "PYTHON",
+   "internal_reads": [
+    "currentai.registry.product_artifacts"
+   ],
+   "in_scope_reads": [
+    "currentai.registry.product_artifacts"
+   ],
+   "has_repository_source": true
+  },
+  {
    "table": "currentai.signal_huggingface.hub_state",
    "dataset": "signal_huggingface",
    "name": "hub_state",
@@ -547,18 +579,18 @@
    "dataset": "signal_huggingface",
    "name": "product_adoption",
    "model_id": "abcf0044-dd9d-4942-a2a1-e047dab8e8b1",
-   "revision_hash": "6b088f7d0bae8e0d399dc63a44ccbd190d34da27f7cedc21346be4a2dd1ce9b9",
-   "source_sha256": "c69720e61730982b52aa532d0f729e6aba6641145f37370afafbef32e62f819d",
-   "language": "sql",
+   "revision_hash": "3a07002e0fd547adb46e17c7963fe134824ef3b34a5ce267891b17281df66353",
+   "source_sha256": "c03057c64368cefe8be5d6f6e8a690eca6238fdbd13cf0a2b88cce9dbf744980",
+   "language": "SQL",
    "internal_reads": [
     "currentai.registry.adoption_bands",
     "currentai.registry.products",
-    "currentai.signal_huggingface.hub_state"
+    "currentai.signal_huggingface.artifact_state"
    ],
    "in_scope_reads": [
     "currentai.registry.adoption_bands",
     "currentai.registry.products",
-    "currentai.signal_huggingface.hub_state"
+    "currentai.signal_huggingface.artifact_state"
    ],
    "has_repository_source": true
   },

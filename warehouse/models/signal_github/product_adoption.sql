@@ -37,7 +37,7 @@ stars AS (
     -- across its artifacts: the map's unit is the product, not the repository.
     SUM(g.stargazers_count) AS stars,
     COUNT(*) AS repos_counted
-  FROM currentai.signal_github.repo_state g
+  FROM currentai.signal_github.artifact_state g
   JOIN currentai.registry.products p
     ON p.slug = g.product_slug
   -- A failed fetch is not zero stars.

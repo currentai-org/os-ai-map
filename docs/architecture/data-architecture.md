@@ -51,7 +51,7 @@ As of 2026-08-20:
 - Platform model source is mirrored read-only under `warehouse/models/<dataset>/` (each carrying a `mirror:` block in `warehouse/assets.yaml`); the platform remains authoritative for those deployed models.
 - Dataset scheduling, model throttles, GitHub Actions schedules, and manual operations coexist. A configured cron is not treated as proof that a scheduled run fired. Verified 2026-08-20: of <!-- observed:2026-08-20 -->22 datasets, 13 carry `cronTimezone: America/New_York`, and 8 have a cron configured with `lastRunAt: null` — `signal_semanticscholar`, `signal_pypi`, `ai_demand_curve`, `state_of_os_ai`, `scores`, `events`, `metrics`, `entities`. The `scores` dataset is among them, which means the openness chain that `check_parity` compares against the repository has no observed scheduled run.
 - Two platform tables have no repository source and no in-repo consumer: `currentai.scores.investment_ranking` and `currentai.scores.taxonomy`.
-- The full org is <!-- observed:2026-08-20 -->22 datasets by `ListDatasets`, or 23 counting `datasette` — which `ListDatasets` omits because it holds two deployed models and no materialized tables, so a dataset-first sweep misses it (Phase 0b enumerated from `ListDataModels` instead and found it). The org held <!-- observed:2026-08-20 -->96 tables at that 2026-08-20 enumeration. Separately, and as a live derived count rather than a 2026-08-20 subset, the inventory currently tracks <!-- count:deployed_tables -->57 deployed tables in the datasets the repository maintains or reads from; the rest of the org's tables are separate analytical products. The two figures are different populations measured at different times — the 96 is a point-in-time org-wide observation, the 57 is derived from `assets.yaml` on every run. See section 11.3 for how the 57 reconciles with the inventory's size.
+- The full org is <!-- observed:2026-08-20 -->22 datasets by `ListDatasets`, or 23 counting `datasette` — which `ListDatasets` omits because it holds two deployed models and no materialized tables, so a dataset-first sweep misses it (Phase 0b enumerated from `ListDataModels` instead and found it). The org held <!-- observed:2026-08-20 -->96 tables at that 2026-08-20 enumeration. Separately, and as a live derived count rather than a 2026-08-20 subset, the inventory currently tracks <!-- count:deployed_tables -->59 deployed tables in the datasets the repository maintains or reads from; the rest of the org's tables are separate analytical products. The two figures are different populations measured at different times — the 96 is a point-in-time org-wide observation, the 59 is derived from `assets.yaml` on every run. See section 11.3 for how the 59 reconciles with the inventory's size.
 
 The redesign must evolve this system without interrupting the existing map, registry tables, notebooks, or website.
 
@@ -1142,11 +1142,14 @@ Migration rules:
 
 Verified against the live `currentai` org on 2026-08-20: <!-- observed:2026-08-20 -->22 datasets,
 <!-- observed:2026-08-20 -->96 tables,
-<!-- count:tracked_warehouse_files -->42 tracked files under `warehouse/`. The structure below is the target, and the
+<!-- count:tracked_warehouse_files -->44 tracked files under `warehouse/`. The structure below is the target, and the
 mirror layout of 11.1 is now in place; the file manifest in 11.4 recorded the exact diff
 from the 2026-08-20 state (40 files), Phase 0b added `warehouse/audits/platform_models.json`,
 the deployed-model audit receipt, and Phase 2 added `warehouse/audits/source_runs.json`, the
-committed point-in-time attestation of the `source_runs` snapshot (§4.3).
+committed point-in-time attestation of the `source_runs` snapshot (§4.3), then the
+`artifact_state` rename added the two new source mirror files
+`signal_github/artifact_state.py` and `signal_huggingface/artifact_state.py` alongside the
+retained `repo_state.py` / `hub_state.py`.
 
 ### 11.1 Target layout
 
@@ -1486,11 +1489,11 @@ them in the other.
 Three numbers that must not be conflated:
 
 ```text
-deployed tables in the in-scope datasets    <!-- count:deployed_tables -->57
+deployed tables in the in-scope datasets    <!-- count:deployed_tables -->59
 staged, not deployed                         <!-- count:staged_assets -->4
 dormant, no platform table yet              <!-- count:dormant_assets -->1
                                             ------
-logical assets in warehouse/assets.yaml     <!-- count:assets -->62
+logical assets in warehouse/assets.yaml     <!-- count:assets -->64
 ```
 
 The staged four are the three `signal_packages` models from issue #314 and
@@ -1541,7 +1544,7 @@ this diff starts from.
 
 ```text
 warehouse/ tracked files, pre-Phase-0   <!-- observed:2026-08-20 -->44
-  of which SQL/Python models   <!-- count:model_files -->30   (12 models, 3 ingest, 15 mirror)
+  of which SQL/Python models   <!-- count:model_files -->32   (12 models, 3 ingest, 17 mirror)
 warehouse/ after the move    44 + 1 assets.yaml - 5 = 40
 repository-wide             +6 created, -5 deleted   = +1
 ```
