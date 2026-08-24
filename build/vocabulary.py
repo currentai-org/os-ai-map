@@ -39,7 +39,7 @@ excluded. A narrower vocabulary with a written reason is a decision, not a dupli
 from __future__ import annotations
 
 import json
-from datetime import date
+from datetime import date, datetime
 from functools import lru_cache
 from pathlib import Path
 
@@ -86,6 +86,36 @@ def parse_date(value: object) -> date | None:
         return value
     try:
         return date.fromisoformat(str(value))
+    except (TypeError, ValueError):
+        return None
+
+
+def is_iso_timestamp(value: object) -> bool:
+    r"""A real ISO-8601 timestamp carrying a time AND a timezone, in the form the runs API emits.
+
+    The timestamp sibling of `is_iso_date`, and here for the same reason: `source_runs` records
+    instants (`2026-08-23T01:00:00.266Z`), not calendar dates, so it needs a check that ACCEPTS a
+    time and offset rather than rejecting them for exceeding ten characters. Both halves of the
+    date rule carry over: a shape a `datetime` can actually parse — so `2026-99-99T99:99:99garbage`
+    is refused for looking like a timestamp without being one — AND a timezone, because a run
+    instant without an offset is ambiguous and this corpus records only UTC-stamped ones.
+    """
+    dt = parse_timestamp(value)
+    return dt is not None and dt.tzinfo is not None
+
+
+def parse_timestamp(value: object) -> datetime | None:
+    """A timezone-carrying datetime for COMPARING, or None. The permissive sibling of
+    `is_iso_timestamp`, mirroring `parse_date`/`is_iso_date`.
+
+    `datetime.fromisoformat` accepts a trailing `Z` only on newer Pythons, so it is swapped for
+    `+00:00` first. A `datetime` passthrough matches `parse_date`, for a caller that already holds
+    one; ordering two of these is what a capture-bounds check needs.
+    """
+    if isinstance(value, datetime):
+        return value
+    try:
+        return datetime.fromisoformat(str(value).replace("Z", "+00:00"))
     except (TypeError, ValueError):
         return None
 

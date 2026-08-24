@@ -668,6 +668,35 @@ assets:
   status: active
   materialized: true
   verified_at: '2026-08-20'
+- id: observations.source_runs
+  table: currentai.observations.source_runs
+  kind: observations
+  current_namespace: observations
+  target_namespace: observations
+  migration_status: complete
+  authority: repo
+  population: gap_map
+  release_path: false
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: checked
+    external: unknown
+  external_consumers: none_confirmed
+  grain: one row per (source_run_id, materialization_id); a run that materialized nothing emits
+    one row with the materialization fields null, and a model materialized more than once in a
+    run emits one row per materialization
+  producer: build/snapshot_source_runs.py
+  classification_note: a point-in-time snapshot of platform-retained run history, captured at
+    captured_at; the repository keeps no history of its own and a later snapshot replaces this one
+  refresh: 'not deployed; snapshot emitted read-only from the control-plane runs API by
+    build/snapshot_source_runs.py, see issue #355. No dataset_id is recorded because the
+    observations namespace is not yet created on the platform (verified read-only 2026-08-24); a
+    real id is written here only once the dataset exists.'
+  owner: carl
+  status: staged
+  materialized: false
+  verified_at: '2026-08-24'
 - id: registry.adoption_aggregation_rules
   table: currentai.registry.adoption_aggregation_rules
   kind: registry

@@ -416,8 +416,8 @@ Source-specific ingestion remains in datasets such as `signal_github`, `signal_h
 
 Use three distinct objects so current state is never mislabeled as history:
 
-- `observations.source_runs` — the run contract described below. Required from day one;
-- `observations.product_adoption_current` — a full-refresh normalized model containing the latest observations from successful, complete source runs;
+- `observations.source_runs` — the run contract described below. Required from day one; ships now as a read-only control-plane snapshot (interim Option B, issue #355);
+- `observations.product_adoption_current` — a full-refresh normalized model holding the current source state (the latest normalized values). It cannot filter or attribute those values by run until #355 binds observations to runs, so it makes no completeness claim; see the source_runs rules below;
 - `observations.product_adoption_baseline` — the immutable first snapshot, backed by frozen bytes rather than a query;
 - `observations.product_adoption` — the target incremental history table, created only after OSO incremental models are available.
 
@@ -448,33 +448,65 @@ remained readable, from a source that never ran at all, from a partial run. All 
 "the current value is what it was".
 
 This table is required before reconciliation can honour the rule that a failed or stale source
-does not silently reuse itself as current. It can begin as a current-run manifest rather than a
-history; it cannot be omitted.
+does not silently reuse itself as current; it cannot be omitted.
 
-Grain: one row per source run.
+**Transitional shape (interim Option B, issue #355).** The platform exposes no row-level run id
+in the fetcher tables and no expected-scope field, so run completeness is not derivable from what
+the control plane offers today. Until the live emitter of #355 lands, `source_runs` is a
+READ-ONLY snapshot of platform-retained run history, produced by `build/snapshot_source_runs.py`
+against the control-plane `runs` API — **not** a SQL model that selects from upstream, and **not**
+a live current-run manifest. It fetches every run the API still retains for each adoption source
+dataset and is REPLACED wholesale on each capture; the committed receipt
+(`warehouse/audits/source_runs.json`) is its point-in-time attestation, carrying coverage bounds,
+per-dataset run counts, the resolved dataset name→id bindings, and a content digest.
+
+Grain: one row per `(source_run_id, materialization_id)`. A run binds to the model it wrote
+through `steps → materializations`, authoritatively and never by timestamp; a run that
+materialized nothing emits one row with the materialization fields null, and a model materialized
+more than once in a run emits one row per materialization.
 
 ```text
-source_run_id
-source_dataset
-source_table
-started_at
-completed_at
-status                       succeeded | failed | partial | running
-trigger_type                 SCHEDULED | MANUAL | unknown
-expected_scope               what the run was supposed to cover
-observed_row_count
-rejected_row_count
-content_digest
-error_class                  nullable
+source_run_id                the run's own id
+source_dataset_id            the dataset whose runs were queried
+source_dataset_name          signal_github, signal_huggingface, ...
+materialization_id           the Materialization node's own id (nullable)
+table_id                     materialization.tableId — the materialized model/table (nullable)
+model_name                   parsed from the owning step name (nullable)
+dataset_id                   materialization.datasetId — where it wrote (nullable)
+execution_status             platform run status: SUCCESS | FAILED | RUNNING | ...
+trigger_type                 SCHEDULED | MANUAL
+run_type                     the platform run type
+actor_type                   user | system — normalized from requestedBy, never the id
+queued_at / started_at / finished_at
+materialized_at              materialization.createdAt (nullable)
+error_class                  normalized error-type token, nullable — never raw error text
+expected_scope               constant "unknown" (blocked on #355)
+scope_status                 constant "unknown" (blocked on #355)
+captured_at                  snapshot time — excluded from the content digest
 ```
+
+**Fields blocked on #355 (the live emitter).** `expected_scope` and `scope_status` are the
+constant `"unknown"` here, and there is no `observed_row_count` / `rejected_row_count` and no
+row-level binding of an observation to the run that produced it. Real scope, real row counts, and
+a row→run binding require either the UDM runtime writing its run id into output rows or a table
+version atomically bound to a materialization id — neither of which the control plane offers
+today — so they are deferred to #355 and must NOT be reconstructed from timestamps.
 
 Rules:
 
-- `product_adoption_current` selects only from runs with `status = succeeded` and a scope that
-  matches `expected_scope`.
+- `execution_status` is the platform's real run status; it is NOT scope. A `SUCCESS` means the
+  run's steps executed without error, not that collection was complete. Reconciliation must
+  therefore NOT read a `SUCCESS` carrying `scope_status = "unknown"` and no row-level binding as a
+  fully valid current observation: an unbound success reconciles to `source_unavailable`, not to
+  agreement.
 - Reconciliation reports a missing or failed current run as its own condition, distinct from a
   product that has no applicable measurement. The first is an infrastructure failure; the
   second is a legitimate abstention. Collapsing them hides outages as data gaps.
+- Before #355, `source_runs` can report source/model execution state, but it cannot filter,
+  validate, or attribute individual observations by run. An unbound `SUCCESS` remains
+  `source_unavailable` for reconciliation. After #355 provides authoritative row-to-run binding
+  and scope, `product_adoption_current` may include only observations bound to
+  `execution_status = "SUCCESS"` with matching scope.
 - `observation_snapshot_id` is content-addressed over the normalized observations alone. Run
   identifiers are lineage, recorded in `observation_run_ids`, and are NOT inputs to the ID.
   Including them would give every re-run a new snapshot ID even when nothing measured changed,
@@ -587,7 +619,7 @@ observation identity:
 (product_slug, artifact_kind, artifact_id, channel, metric_type, measurement_window_days)
 ```
 
-It selects only from source runs with `status = succeeded`. It begins as a full-refresh model. After the incremental history table exists, replace its implementation with a view over `observations.product_adoption` without changing the consumer-facing name or schema.
+Before #355, it holds the current source state and cannot filter or attribute observations by run: an unbound `SUCCESS` in `source_runs` stays `source_unavailable` for reconciliation, not a validated current observation. After #355 provides authoritative row-to-run binding and scope, it may include only observations bound to a run with `execution_status = "SUCCESS"` and matching scope. It begins as a full-refresh model; after the incremental history table exists, replace its implementation with a view over `observations.product_adoption` without changing the consumer-facing name or schema.
 
 The view must use explicit ordering and tie-breaking. It must not use an unordered `MAX()` reduction that can combine fields from different rows.
 
@@ -1110,10 +1142,11 @@ Migration rules:
 
 Verified against the live `currentai` org on 2026-08-20: <!-- observed:2026-08-20 -->22 datasets,
 <!-- observed:2026-08-20 -->96 tables,
-<!-- count:tracked_warehouse_files -->41 tracked files under `warehouse/`. The structure below is the target, and the
+<!-- count:tracked_warehouse_files -->42 tracked files under `warehouse/`. The structure below is the target, and the
 mirror layout of 11.1 is now in place; the file manifest in 11.4 recorded the exact diff
-from the 2026-08-20 state (40 files), and Phase 0b added `warehouse/audits/platform_models.json`,
-the deployed-model audit receipt.
+from the 2026-08-20 state (40 files), Phase 0b added `warehouse/audits/platform_models.json`,
+the deployed-model audit receipt, and Phase 2 added `warehouse/audits/source_runs.json`, the
+committed point-in-time attestation of the `source_runs` snapshot (§4.3).
 
 ### 11.1 Target layout
 
@@ -1133,7 +1166,8 @@ warehouse/
       openllm_leaderboard.py             renamed in Phase 5
       hf_model_repo_links.py             renamed in Phase 5
     observations/
-      source_runs.sql                    the run contract; required from day one
+      source_runs                        run contract; a Python control-plane snapshot now
+                                         (build/snapshot_source_runs.py), a live-emitter model later (#355)
       product_adoption.sql               incremental history — Phase 2B, blocked on OSO
       product_adoption_current.sql       full-refresh now, a view over history later
     evaluation/
@@ -1453,19 +1487,19 @@ Three numbers that must not be conflated:
 
 ```text
 deployed tables in the in-scope datasets    <!-- count:deployed_tables -->57
-staged, not deployed                         <!-- count:staged_assets -->3
+staged, not deployed                         <!-- count:staged_assets -->4
 dormant, no platform table yet              <!-- count:dormant_assets -->1
                                             ------
-logical assets in warehouse/assets.yaml     <!-- count:assets -->61
+logical assets in warehouse/assets.yaml     <!-- count:assets -->62
 ```
 
-The staged seven are the three `signal_packages` models from issue #314 and the four
-`registry.adoption_*` routing tables — `adoption_routes`, `adoption_route_scopes`,
-`adoption_route_band_sets` and `adoption_aggregation_rules` — compiled by
-`build.serialize_routing` but not yet deployed to the platform (Phase 2A): tracked files
-implementing tables that do not exist on the platform yet. The dormant one is
-`registry.tail_products`, declared by `build.publish_registry.TABLES`, whose platform table
-is absent only because the last serialization had no rows.
+The staged four are the three `signal_packages` models from issue #314 and
+`observations.source_runs` (Phase 2): tracked assets whose tables do not exist on the platform
+yet. The four `registry.adoption_*` routing tables — `adoption_routes`, `adoption_route_scopes`,
+`adoption_route_band_sets` and `adoption_aggregation_rules` — were staged during Phase 2A and are
+now **deployed** (materialized 2026-08-23, PR #353), which is why the staged count fell from seven
+to four. The dormant one is `registry.tail_products`, declared by `build.publish_registry.TABLES`,
+whose platform table is absent only because the last serialization had no rows.
 
 Both are real logical assets — a tracked file in no asset entry is invisible to every gate in
 11.5 — but neither is current deployed state. A count that mixes them misrepresents the
