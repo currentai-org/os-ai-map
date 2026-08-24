@@ -838,26 +838,38 @@ release_id
 consumer keying a candidate table) computes it from the resolved SHA at run time. Its
 `source_content_digest` covers every authoritative declaration input under `sources/` — every
 top-level entry is classified into exactly one of three buckets, gated so a new input cannot
-escape the identity unnoticed:
+escape the digest unnoticed:
 
 - **declaration** (folded into the digest): `products`, `organizations`, `categories`,
   `scores`, `rubrics`, `taxonomy.yaml`, the long-tail `registry` seeds, and — beyond what
   `load_sources` returns — `evidence_policy.yaml` (which shapes serialized registry output) and
   `verification_queue.yaml` (which governs release eligibility), plus the `allowlists`;
-- **policy** (excluded here, its own version bound downstream): `signal_routing.yaml`, which
-  publishes under `routing_policy_version` and is applied in the evaluation layer, so its version
-  binds into `evaluation.adoption_reconciliation` / `release_id`, never into this identity;
-- **non-declaration** (excluded with a reason): the frozen `sources/snapshots/long_tail.json`
-  warehouse sample.
+- **policy** (excluded from the digest, its own version a pending downstream obligation):
+  `signal_routing.yaml`, which publishes under `routing_policy_version` and is applied in the
+  evaluation layer. That version must bind into `evaluation.adoption_reconciliation` /
+  `release_id`; those tables do not exist yet, so the binding is recorded as an obligation and
+  ratcheted into a real assertion when they land;
+- **non-declaration** (excluded from the digest, with a reason): the frozen
+  `sources/snapshots/long_tail.json` warehouse sample.
 
-The derived score projections (`overall_score`, `tier`, `maturity`, `mature`) are excluded by
-construction — they never live in `sources/`; they are the evaluator's contribution, already
-named by `evaluator_version`. Until the repository-owned evaluator lands (Phase 6),
-`evaluator_version` is a declared sentinel `v0-no-repo-evaluator` — well-formed and
-forward-compatible, and deliberately not the empty string, so the day a real evaluator version
-replaces it is a reviewed change that moves every id with it. The id is also derived only over
-a committed `sources/` tree: a dirty working tree pairs a working-tree digest with `HEAD`'s SHA
-and is refused unless an explicit diagnostic opt-in is given.
+The derived score projections (`overall_score`, `tier`, `maturity`, `mature`) are excluded from
+the digest by construction — they never live in `sources/`; they are the evaluator's
+contribution, already named by `evaluator_version`.
+
+These are exclusions from the **content digest**, not from the identity. `declaration_version_id`
+is **commit-scoped**: it also carries `source_git_sha`, so any commit that touches
+`signal_routing.yaml`, the frozen snapshot, or the derived projections changes the SHA and
+therefore the id. What the digest buys is a content-addressed cross-check — two commits with
+identical declaration content share a digest even though their SHAs differ, so a reconciliation
+can distinguish a real declaration change from an unrelated one. Because the id is commit-scoped
+and computed by tracked code over the working tree, it is derived only over a **clean tracked
+worktree**: a dirty tree (dirty declarations, or dirty identity/evaluator code) pairs a
+working-tree value with `HEAD`'s SHA and is refused unless an explicit diagnostic opt-in is given.
+
+Until the repository-owned evaluator lands (Phase 6), `evaluator_version` is a declared sentinel
+`v0-no-repo-evaluator` — well-formed and forward-compatible, and deliberately not the empty
+string, so the day a real evaluator version replaces it is a reviewed change that moves every id
+with it.
 
 Use them consistently:
 

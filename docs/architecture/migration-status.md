@@ -29,14 +29,16 @@ did not yet exist in code. Laid ahead of those tables so each is defined once, o
 than improvised inside the first consumer.
 
 - **`declaration_version_id` — implemented** (`build/declaration_version.py`, `data-architecture.md`
-  §4.5). Derived at run time, not stored, because it embeds `source_git_sha`, and refused over a
-  dirty `sources/` tree without an explicit diagnostic opt-in. Its `source_content_digest` covers
-  every authoritative declaration input under `sources/` — the full top-level inventory is
-  classified and gated, so `evidence_policy.yaml` and `verification_queue.yaml` (which
-  `load_sources` does not return) are folded in, `signal_routing.yaml` is excluded as a policy
-  whose `routing_policy_version` binds downstream, and the frozen long-tail sample and derived
-  score projections are excluded. `evaluator_version` is pinned to the sentinel
-  `v0-no-repo-evaluator` until the repository-owned evaluator lands (Phase 6).
+  §4.5). Commit-scoped (it embeds `source_git_sha`), derived at run time rather than stored, and
+  refused over a dirty **tracked worktree** — dirty declarations or dirty identity/evaluator code —
+  without an explicit diagnostic opt-in. Its `source_content_digest` covers every authoritative
+  declaration input under `sources/` — the full top-level inventory is classified and gated, so
+  `evidence_policy.yaml` and `verification_queue.yaml` (which `load_sources` does not return) are
+  folded in, while `signal_routing.yaml` (its `routing_policy_version` a **pending** binding
+  obligation for reconciliation/releases), the frozen long-tail sample, and the derived score
+  projections are excluded from the **digest** — not from the id, which changes with any commit
+  that touches them. `evaluator_version` is pinned to the sentinel `v0-no-repo-evaluator` until
+  the repository-owned evaluator lands (Phase 6).
 - **`observation_snapshot_id` — pending**, to be emitted by the observations layer over
   `observations.product_adoption_current` (a build receipt, like `source_runs.json`). Gated on
   `observations.product_adoption_current` reaching `main`.

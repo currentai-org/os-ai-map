@@ -8,12 +8,14 @@ the identity of a set of declarations, evaluated by a named evaluator, that
 There is no committed golden value to pin — the id embeds `source_git_sha`, and freezing a
 receipt would either name its own parent commit or force a regenerate step on every score edit
 (see the module docstring). So these tests pin the canonicalization's PROPERTIES instead:
-the classified `sources/` inventory, determinism, order-invariance, type rejection, the
-fail-closed behavior on a dirty tree, and that the id responds to each component.
+the classified `sources/` inventory, determinism, order-invariance, collision-free encoding,
+type rejection, the fail-closed behavior on a dirty tracked worktree, and that the id responds
+to each component.
 """
 
 import copy
 import hashlib
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -25,29 +27,40 @@ from build.declaration_version import (
     EVALUATOR_VERSION,
     NON_DECLARATION_INPUTS,
     POLICY_INPUTS,
-    DirtyDeclarationsError,
+    DirtyWorktreeError,
     canonical_json,
     declaration_content,
     declaration_version_id,
     resolve,
     source_content_digest,
+    tracked_worktree_is_clean,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
-# --- the classified inventory (finding 1) ----------------------------------------
+def _git(cwd: Path, *args: str) -> None:
+    subprocess.run(["git", "-C", str(cwd), *args], check=True, capture_output=True, text=True)
+
+
+def _tiny_repo(tmp_path: Path) -> Path:
+    """A throwaway git repo with a tracked declaration file and a tracked implementation file."""
+    _git(tmp_path, "init", "-q")
+    _git(tmp_path, "config", "user.email", "t@t.test")
+    _git(tmp_path, "config", "user.name", "t")
+    (tmp_path / "sources").mkdir()
+    (tmp_path / "sources" / "x.yaml").write_text("a: 1\n", encoding="utf-8")
+    (tmp_path / "impl.py").write_text("# identity implementation\n", encoding="utf-8")
+    _git(tmp_path, "add", "-A")
+    _git(tmp_path, "commit", "-q", "-m", "init")
+    return tmp_path
+
+
+# --- the classified inventory (finding 1, first pass) ----------------------------
 
 
 def test_source_inventory_is_fully_classified():
-    """Every top-level sources/ entry is classified into exactly one bucket.
-
-    This is the 'declared state matches reality' gate for the identity, and it protects the
-    WHOLE sources/ inventory rather than only what load_sources parses: add a new authoritative
-    input to sources/ and this fails until it is folded into the digest, bound downstream as a
-    policy input, or explicitly declared a non-declaration. An input cannot silently escape the
-    identity.
-    """
+    """Every top-level sources/ entry is classified into exactly one bucket."""
     entries = {p.name for p in (ROOT / "sources").iterdir()}
     declaration = set(DECLARATION_INPUTS)
     policy = set(POLICY_INPUTS)
@@ -58,18 +71,13 @@ def test_source_inventory_is_fully_classified():
         f"sources/ holds {sorted(entries)}, but the identity classifies {sorted(classified)}; "
         "every entry must be a declaration, a downstream-bound policy, or a declared exclusion."
     )
-    # The three buckets are disjoint: an entry is exactly one kind.
     assert declaration.isdisjoint(policy)
     assert declaration.isdisjoint(non_declaration)
     assert policy.isdisjoint(non_declaration)
 
 
 def test_uncovered_declaration_inputs_are_included():
-    """The two authoritative inputs load_sources does NOT return are in the digest.
-
-    evidence_policy.yaml shapes serialized registry output and verification_queue.yaml governs
-    release eligibility; both are declarations and must move the id when they change.
-    """
+    """The two authoritative inputs load_sources does NOT return are in the digest."""
     assert "evidence_policy.yaml" in DECLARATION_INPUTS
     assert "verification_queue.yaml" in DECLARATION_INPUTS
     content = declaration_content(ROOT)
@@ -77,16 +85,22 @@ def test_uncovered_declaration_inputs_are_included():
     assert "verification_queue.yaml" in content
 
 
-def test_policy_inputs_name_a_downstream_binding():
-    """A policy input is excluded from THIS identity only by naming where its version binds.
+def test_policy_inputs_record_a_binding_obligation():
+    """A policy input records a PENDING binding obligation, not a binding that already exists.
 
-    The exclusion is a redirection, not a gap: signal_routing.yaml carries routing_policy_version
-    and must bind into a downstream identity, so its record names both.
+    The downstream identities (evaluation.adoption_reconciliation, release_id) are not built yet,
+    so there is no binding to prove — only an obligation to record and later ratchet. This test
+    asserts the obligation is well-formed and marked pending; it deliberately does NOT assert a
+    binding exists. When those tables land, `binding` flips to `bound` and this test tightens.
     """
     assert "signal_routing.yaml" in POLICY_INPUTS
     for name, spec in POLICY_INPUTS.items():
         assert spec.get("policy_version"), f"{name} names no policy version"
-        assert spec.get("bound_into"), f"{name} names no downstream identity to bind into"
+        assert spec.get("binds_into"), f"{name} names no downstream identity to bind into"
+        assert spec.get("binding") == "pending", (
+            f"{name}: until reconciliation/releases land, the binding is an obligation, not a "
+            "fact. Ratchet this to 'bound' only when the downstream table is implemented."
+        )
 
 
 def test_frozen_snapshot_is_a_non_declaration():
@@ -140,7 +154,25 @@ def test_reordering_a_loaded_declaration_does_not_change_the_digest():
     assert hashlib.sha256(canonical_json(shuffled).encode("utf-8")).hexdigest() == baseline
 
 
-# --- strict type handling (finding 3) --------------------------------------------
+# --- collision-free encoding (finding 1, second pass) ----------------------------
+
+
+def test_non_string_mapping_keys_are_rejected():
+    """A non-string key would otherwise be coerced so `{1: x}` and `{"1": x}` collide."""
+    with pytest.raises(TypeError):
+        canonical_json({1: "x"})
+    # And the reproduction is genuinely closed: the string-keyed form still serializes.
+    assert canonical_json({"1": "x"})
+
+
+def test_tuples_are_rejected_so_they_cannot_collide_with_lists():
+    """A tuple would otherwise serialize as an array, colliding `(1, 2)` with `[1, 2]`."""
+    with pytest.raises(TypeError):
+        canonical_json((1, 2))
+    with pytest.raises(TypeError):
+        canonical_json({"k": (1, 2)})
+    # The list form is accepted; only the ambiguous tuple is refused.
+    assert canonical_json({"k": [1, 2]})
 
 
 def test_canonical_json_rejects_unsupported_types():
@@ -162,33 +194,63 @@ def test_canonical_json_rejects_non_finite_numbers():
             canonical_json({"x": bad})
 
 
-# --- fail-closed on a dirty tree (finding 2) -------------------------------------
+# --- fail-closed on a dirty tracked worktree (finding 2) -------------------------
 
 
-def test_resolve_fails_closed_on_dirty_declarations(monkeypatch):
-    """With uncommitted declarations, resolve() raises rather than emit an unreproducible id.
+def test_dirty_declaration_file_is_detected(tmp_path):
+    """A dirty declaration file makes the worktree unclean."""
+    repo = _tiny_repo(tmp_path)
+    assert tracked_worktree_is_clean(repo) is True
+    (repo / "sources" / "x.yaml").write_text("a: 2\n", encoding="utf-8")
+    assert tracked_worktree_is_clean(repo) is False
 
-    Synthetic: the cleanliness probe is forced to report dirty, so the fail-closed branch is
-    exercised without dirtying the real tree.
+
+def test_dirty_identity_implementation_is_detected(tmp_path):
+    """A dirty NON-sources tracked file (the identity implementation) is refused too.
+
+    This is the gap the sources/-only check missed: dirty identity code changes the computed id
+    while source_git_sha still names HEAD. The cleanliness probe must cover it.
     """
-    monkeypatch.setattr(dv, "declaration_paths_are_clean", lambda *a, **k: False)
-    with pytest.raises(DirtyDeclarationsError):
+    repo = _tiny_repo(tmp_path)
+    assert tracked_worktree_is_clean(repo) is True
+    (repo / "impl.py").write_text("# identity implementation CHANGED\n", encoding="utf-8")
+    assert tracked_worktree_is_clean(repo) is False
+
+
+def test_untracked_files_do_not_make_the_worktree_dirty(tmp_path):
+    """An untracked file is not read by the computation and must not block a reproducible id."""
+    repo = _tiny_repo(tmp_path)
+    (repo / "scratch.txt").write_text("ignore me\n", encoding="utf-8")
+    assert tracked_worktree_is_clean(repo) is True
+
+
+def test_resolve_fails_closed_on_a_dirty_worktree(monkeypatch):
+    """With any tracked file dirty, resolve() raises rather than emit an unreproducible id."""
+    monkeypatch.setattr(dv, "tracked_worktree_is_clean", lambda *a, **k: False)
+    with pytest.raises(DirtyWorktreeError):
         resolve()
 
 
 def test_resolve_allow_dirty_opt_in_returns_a_diagnostic_value(monkeypatch):
     """The explicit opt-in returns a value and records that the tree was dirty."""
-    monkeypatch.setattr(dv, "declaration_paths_are_clean", lambda *a, **k: False)
+    monkeypatch.setattr(dv, "tracked_worktree_is_clean", lambda *a, **k: False)
     info = resolve(allow_dirty=True)
-    assert info["declarations_clean"] is False
+    assert info["worktree_clean"] is False
     assert len(info["declaration_version_id"]) == 64
 
 
-def test_resolve_clean_tree_succeeds():
-    """On a clean tree resolve() returns the full component set without opt-in."""
+def test_resolve_clean_path_succeeds(monkeypatch):
+    """On a clean tree resolve() returns the full component set without opt-in.
+
+    Cleanliness is forced rather than assumed: during development the real worktree carries the
+    very changes under test, so asserting against live git state would be flaky. The digest and
+    SHA are still computed over the real repo.
+    """
+    monkeypatch.setattr(dv, "tracked_worktree_is_clean", lambda *a, **k: True)
     info = resolve()
-    assert info["declarations_clean"] is True
+    assert info["worktree_clean"] is True
     assert len(info["declaration_version_id"]) == 64
+    assert len(info["source_content_digest"]) == 64
 
 
 # --- the id itself ----------------------------------------------------------------
