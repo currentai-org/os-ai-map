@@ -784,21 +784,31 @@ Both tables are built by repo-side release builders — `build/adoption_measurem
 which the warehouse sandbox has no access to. The builder has the git checkout and reads the
 warehouse, so it computes both identities at run time (`build/declaration_version.py`,
 `build/observation_snapshot.py`) and stamps them onto the candidate rows — derived, not stored,
-like the identities themselves. The aggregation, route selection and banding read the compiled
-routing (`build/serialize_routing.py`, `build/serialize_rubric.py`) and reinterpret none of it; a
-routing fact the builder needs but cannot read is a compiler bug to fix at the source. A rule-less
-route with more than one contributing artifact (only `stars_fallback` can reach this) abstains
-rather than invent an aggregation the routing source never declared — declaring a stars aggregation
-rule in `signal_routing.yaml` would resolve it. The builders are pure functions of their inputs
-(the two identities passed in) so the logic is pinned against the immutable Phase-2 baseline with
-fixed test identities; the real publish to OSO is a maintainer step, and until it lands both tables
-are inventoried `staged`.
+like the identities themselves. The route selection, aggregation and banding read the compiled routing
+(`build/serialize_routing.py`, `build/serialize_rubric.py`) and reinterpret none of it; a routing
+fact the builder needs but cannot read is a compiler bug to fix at the source.
 
-`adoption_reconciliation` reports before it blocks (above), and today every measured row is
-`source_unavailable`: `product_adoption_current` carries no `source_run_id` (row binding is blocked
-on #355), so §4.3 forbids reading any current measurement as a validated agreement. That status is
-the source-run contract reaching the gate, not a defect in the report; the fuller status set
-becomes assignable once #355 binds observations to runs.
+Route selection is by DECLARED ARTIFACTS and never falls through: the winning route is the first
+route, in precedence order, that the product's declarations make applicable — it names an artifact
+kind the product declares (`registry.product_artifacts`) and is in scope for its category — and the
+builder then looks for an observation on THAT route only. A missing authoritative observation does
+not cause a fall to a weaker route (a PyPI-declared product is never scored on GitHub stars because
+its PyPI download was uncollected); it simply produces no measurement, and reconciliation records
+the unmeasured outcome. Aggregation follows the compiled rules: both `usage_volume` and
+`stars_fallback` sum across a family's artifacts (`sum_stars_across_artifacts` matches the deployed
+compatibility model's `SUM(stargazers_count)` and the recorded assessments), with the stars cap
+still enforced by the band set. The builders are pure functions of their inputs (the two identities
+passed in) so the logic is pinned against the immutable Phase-2 baseline with fixed test identities;
+`build/serialize_evaluation.py` reads the current table once and serializes both tables from that
+one atomic row set, and the OSO publish is a maintainer step
+(`docs/operations/deploy-evaluation.md`).
+
+`adoption_reconciliation` reports before it blocks (above) over EVERY recorded adoption assessment —
+measured, unmeasured, and the deliberate nulls — one terminal outcome per applicable route. Today
+every measured row is `source_unavailable`: `product_adoption_current` carries no `source_run_id`
+(row binding is blocked on #355), so §4.3 forbids reading any current measurement as a validated
+agreement. That status is the source-run contract reaching the gate, not a defect in the report;
+the fuller status set becomes assignable once #355 binds observations to runs.
 
 #### Repository-derived scoring trace
 
@@ -1652,12 +1662,17 @@ dormant, no platform table yet              <!-- count:dormant_assets -->1
 logical assets in warehouse/assets.yaml     <!-- count:assets -->68
 ```
 
-The staged five are the three `signal_packages` models from issue #314,
-`observations.source_runs` and `observations.product_adoption_baseline` (both Phase 2): tracked
-assets whose tables do not exist on the platform yet. The last two are staged for a reason the
-other three are not — they are repository-side artifacts by design, a control-plane snapshot and
-a frozen-bytes baseline, and `staged` here records only that no platform table carries their name.
-Neither is unfinished, and neither is waiting on a deploy to become authoritative. `observations.product_adoption_current` was staged the same way when first authored, and is
+The staged seven are the three `signal_packages` models from issue #314,
+`observations.source_runs` and `observations.product_adoption_baseline` (both Phase 2), and the two
+Phase-3 evaluation candidates `evaluation.product_adoption_measurements` and
+`evaluation.adoption_reconciliation`: tracked assets whose tables do not exist on the platform yet.
+The last four are staged for a reason the `signal_packages` three are not — they are
+repository-side artifacts by design (a control-plane snapshot, a frozen-bytes baseline, and two
+release-builder candidates whose `evaluation` namespace is not created yet), and `staged` here
+records only that no platform table carries their name.
+Neither the snapshot nor the baseline is unfinished, and neither is waiting on a deploy to become
+authoritative; the two evaluation candidates await the `evaluation` namespace and the maintainer
+publish in `docs/operations/deploy-evaluation.md`. `observations.product_adoption_current` was staged the same way when first authored, and is
 now **deployed** (2026-08-24, the deploy created the `observations` namespace), so it counts among
 the deployed tables rather than the staged ones. The four `registry.adoption_*` routing tables —
 `adoption_routes`, `adoption_route_scopes`, `adoption_route_band_sets` and

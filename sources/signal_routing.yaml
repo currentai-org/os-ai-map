@@ -447,6 +447,19 @@ dimensions:
       note: >
         A model family ships several SKUs. The map's unit is the family, so
         downloads sum across its artifacts rather than taking the largest.
+    - rule_id: sum_stars_across_artifacts
+      method: sum
+      scope: artifacts
+      applies_to_instrument: stars_fallback
+      note: >
+        A product may ship several repositories, and the map's unit is the family, so a
+        stars-fallback band sums stargazers across the product's repos within the winning
+        route — the same reason usage_volume sums. This is not new semantics: the deployed
+        per-source compatibility model computes SUM(stargazers_count) across a product's
+        repos, docs/reference/adoption.md declares the map's unit is the product family, and
+        recorded assessments already band the sum (bigcodebench sums its two repositories).
+        The stars cap still applies through the band set, whose levels stop at 3, so summing
+        cannot lift a stars figure above the attention ceiling.
 
   capability:
     question: How good is it, measured independently?

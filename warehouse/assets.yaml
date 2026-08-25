@@ -676,7 +676,7 @@ assets:
   migration_status: complete
   authority: repo
   population: gap_map
-  release_path: false
+  release_path: true
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -689,12 +689,14 @@ assets:
   classification_note: report-first reconciliation of measured vs recorded adoption; keys on both
     release identities and carries no release_id (§4.4). Every measured row is source_unavailable
     until row-to-run binding lands (#355); an abstaining route is abstained.
-  refresh: 'not deployed; built read-only by the repo-side release builder
-    (build/adoption_reconciliation.py) over evaluation.product_adoption_measurements and the
-    recorded sources/scores, stamped with the run-time declaration_version_id +
-    observation_snapshot_id. The evaluation namespace does not exist on the platform yet (verified
-    read-only 2026-08-25); a dataset_id is recorded here only once it does. Publishing to OSO is a
-    maintainer step.'
+  refresh: 'not deployed; built by the repo-side release builder (build/adoption_reconciliation.py)
+    over evaluation.product_adoption_measurements and the recorded sources/scores, stamped with the
+    run-time declaration_version_id + observation_snapshot_id. The measurements it reconciles read
+    observations.product_adoption_current live via pyoso; build/serialize_evaluation.py reads that
+    table once and serializes both evaluation tables to publishable static-model CSVs from one
+    atomic row set. The evaluation namespace does not exist on the platform yet (verified read-only
+    2026-08-25); a dataset_id is recorded here only once it does. Publishing to OSO is a maintainer
+    step, runbook at docs/operations/deploy-evaluation.md.'
   owner: carl
   status: staged
   materialized: false
@@ -707,7 +709,7 @@ assets:
   migration_status: complete
   authority: repo
   population: gap_map
-  release_path: false
+  release_path: true
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -720,12 +722,14 @@ assets:
   classification_note: product-level aggregation + banding of artifact observations by the compiled
     routing (§4.4); keys on both release identities and carries measured_level, band_set_id and
     route_authority. Artifact-level raw observations stay in observations.product_adoption_current.
-  refresh: 'not deployed; built read-only by the repo-side release builder
-    (build/adoption_measurements.py) over observations.product_adoption_current and the compiled
-    registry.adoption_* routing tables, stamped with the run-time declaration_version_id +
-    observation_snapshot_id. The evaluation namespace does not exist on the platform yet (verified
-    read-only 2026-08-25); a dataset_id is recorded here only once it does. Publishing to OSO is a
-    maintainer step.'
+  refresh: 'not deployed; built by the repo-side release builder (build/adoption_measurements.py),
+    which reads observations.product_adoption_current live via pyoso
+    (load_current_observations) and the compiled registry.adoption_* routing tables, stamped with
+    the run-time declaration_version_id + observation_snapshot_id derived from that same single
+    read. build/serialize_evaluation.py writes the publishable static-model CSV. The evaluation
+    namespace does not exist on the platform yet (verified read-only 2026-08-25); a dataset_id is
+    recorded here only once it does. Publishing to OSO is a maintainer step, runbook at
+    docs/operations/deploy-evaluation.md.'
   owner: carl
   status: staged
   materialized: false
@@ -824,6 +828,9 @@ assets:
     scope: internal
   - table: currentai.signal_semanticscholar.paper_citations
     scope: internal
+  read_by:
+    build:
+    - build/adoption_measurements.py
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -835,17 +842,11 @@ assets:
   producer: warehouse/models/observations/product_adoption_current.sql
   classification_note: artifact-level raw observations (metric_type + raw_value), no band and no
     instrument_type; banding and product-level aggregation are evaluation concerns (§4.3)
-  retirement_reason: 'no reviewed consumer as of 2026-08-24: nothing in the repo, no platform
-    notebook, and no deployed platform model reads it yet. This is the derived no-reviewed-consumer
-    predicate firing on a freshly deployed, PRE-POSITIONED input, not a dead table — its consumers
-    (evaluation.product_adoption_measurements and the Phase 3 reconciliation report) are later
-    phases and are not built yet. It is the centerpiece of the observations layer, not a deletion
-    target; recorded here only because the predicate cannot tell "nothing uses it yet" from
-    "nobody wants it".'
-  retirement_issue: '#348'
-  notes: The Phase 2 current-state adoption slice, deployed 2026-08-24. Unread by design until the
-    Phase 3 evaluation/reconciliation consumers land; pre-positioned, not a retirement candidate in
-    substance. The declared-identity guard went live 2026-08-25 as revision 3
+  notes: The Phase 2 current-state adoption slice, deployed 2026-08-24. Its Phase-3 consumer has now
+    landed — build/adoption_measurements.py reads it (recorded in read_by above) — so the
+    no-reviewed-consumer predicate no longer fires and it carries no retirement_reason; the earlier
+    reason recorded only that the predicate could not tell "nothing uses it yet" from "nobody wants
+    it", and now something does. The declared-identity guard went live 2026-08-25 as revision 3
     (a27b153d-76d8-4661-8fcb-4ee4802cb164); the run SUCCEEDED, which is the coverage proof, since
     the guard FAILs the materialization on any undeclared artifact.
   refresh: 'repo-authored SQL, deployed to the platform 2026-08-24 and repointed to the

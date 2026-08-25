@@ -17,7 +17,7 @@ Edges are reads found in SQL context -- after `FROM`, `JOIN`, `INTO` or `UPDATE`
 table identifier constant. Comments, docstrings and URLs are excluded: prose names tables as
 freely as code does, and counting it invents consumers.
 
-<!-- count:in_repo_readers -->38 assets have at least one in-repo reader.
+<!-- count:in_repo_readers -->39 assets have at least one in-repo reader.
 
 ```mermaid
 graph LR
@@ -141,6 +141,7 @@ graph LR
     C_notebooks_long-tail-explorer_py[notebooks/long-tail-explorer.py]:::consumer
     C_notebooks_long-tail-explorer_py[notebooks/long-tail-explorer.py]:::consumer
     C_notebooks_oss-ai-trends_py[notebooks/oss-ai-trends.py]:::consumer
+    C_build_adoption_measurements_py[build/adoption_measurements.py]:::consumer
     C_build_apply_scores_py[build/apply_scores.py]:::consumer
     C_build_check_parity_py[build/check_parity.py]:::consumer
     C_notebooks_long-tail-explorer_py[notebooks/long-tail-explorer.py]:::consumer
@@ -238,6 +239,7 @@ graph LR
   entities__models --> C_notebooks_long-tail-explorer_py
   entities__packages --> C_notebooks_long-tail-explorer_py
   metrics__daily --> C_notebooks_oss-ai-trends_py
+  observations__product_adoption_current --> C_build_adoption_measurements_py
   scores__openness_computed --> C_build_apply_scores_py
   scores__openness_computed --> C_build_check_parity_py
   scores__repos_summary --> C_notebooks_long-tail-explorer_py

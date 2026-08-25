@@ -7,50 +7,45 @@ result depends on the declarations that selected the route AND on the measuremen
 carries no `release_id` — a release exists only once a pair has passed reconciliation and been
 adjudicated for publication (§4.4).
 
-## Report before block
+## Complete coverage of the accepted assessments
 
-"The initial implementation should report before it blocks. Establish and adjudicate the baseline
-first; only then enable the blocking transition" (§4.4). This module computes the report. It
-assigns a `status` and an `explanation` per row but enforces nothing; no gate reads it yet.
+Every recorded adoption assessment reaches a coherent outcome — the deliberate nulls included.
+The population is exactly the products that carry an `adoption` block in `sources/scores`, one row
+each, keyed on the applicable route (grain `(declaration_version_id, observation_snapshot_id,
+product_slug, category_slug, route_id)`). The applicable route is resolved the same way the
+measurements builder resolves it — the first route the product's DECLARATIONS make applicable — so
+a measured product and its reconciliation row name the same route. A product that declares no
+machine artifact is keyed on its recorded hand-authored instrument's route (`active_users`,
+`reported_traction`); one with neither is keyed on its recorded instrument name so the row still
+has a stable key.
 
-## The honest current state: run binding is missing (#355)
+## Statuses (report before block)
 
-`observations.product_adoption_current` carries no `source_run_id` — the platform exposes no
-row-to-run binding, blocked on #355 — so no current measurement can be validated as a bound,
-in-scope observation. §4.3 states the consequence directly: "an unbound SUCCESS remains
-`source_unavailable` for reconciliation, not a validated current observation." So every measured
-row here reconciles to **`source_unavailable`** today, and that is not a defect in this report —
-it is the source-run contract reaching the gate exactly as designed, the status that keeps a
-failed collector from being read as agreement. The measured-vs-recorded fields and the `delta` are
-still populated, so the report shows what WOULD be adjudicated once #355 binds observations to
-runs and the fuller status set (`agree`, `expected_difference`, `route_mismatch`, the override
-statuses) becomes assignable. A row whose route itself abstained (a null measured level) is
-`abstained`, distinct from an infrastructure absence.
+"The initial implementation should report before it blocks" (§4.4). This assigns a `status` and an
+`explanation` and enforces nothing. Today, with row-to-run binding still missing (#355):
+
+  * recorded level null                       -> ``abstained`` (a deliberate abstention, not a gap)
+  * measured (an observation on the route)    -> ``source_unavailable`` — the observation is not
+                                                 run-bound, so §4.3 forbids reading it as agreement;
+                                                 the measured level and ``delta`` are still shown
+  * the route abstained (null measured level) -> ``abstained``
+  * a route applies but was not observed      -> ``unmeasured``
 
 `measurement_freshness` is `unknown` for the same reason: freshness is a property of a bound run,
-and there is no binding yet.
+and there is no binding yet. The fuller status set (`agree`, `expected_difference`,
+`route_mismatch`, the override statuses) becomes assignable once #355 binds observations to runs.
 
-## Scope of this first report
+## Determinism
 
-One row per measurement — grain `(declaration_version_id, observation_snapshot_id, product_slug,
-category_slug, route_id)`, 1:1 with `product_adoption_measurements`. Products recorded with a
-hand-authored instrument and no machine measurement (`reported_traction`, `active_users`) are not
-rows here: their recorded instrument (`usage_volume` especially) maps to several routes, so a
-single grain-defining `route_id` is not well defined for an unmeasured product. The CLI reports
-how many such recorded-but-unmeasured products exist so the omission is visible rather than silent;
-keying them into the report is follow-up work, alongside the run binding that would let their
-statuses mean something.
-
-## Identities and determinism
-
-Both identities are inputs (derived at run time by the CLI, like the measurements builder), so the
-logic stays pure and the goldens pin content with fixed test identities. `evaluated_at` is a
-parameter for the same reason — a wall-clock stamp would make the table nondeterministic — and it
-is excluded from the content digest, as `ingested_at` is excluded from an observation's identity.
+Both identities and `evaluated_at` are inputs, so the logic is pure and the goldens pin content
+with fixed test identities. `evaluated_at` is a per-run wall-clock stamp and is excluded from the
+content digest, as `ingested_at` is excluded from an observation's identity; the CLI stamps a real
+UTC value on the emitted table.
 
 Usage:
     uv run python -m build.adoption_reconciliation            # over the committed baseline
-    uv run python -m build.adoption_reconciliation --json     # same, machine-readable rows
+    uv run python -m build.adoption_reconciliation --live     # over the deployed current table
+    uv run python -m build.adoption_reconciliation --json     # emit the rows
 """
 
 from __future__ import annotations
@@ -58,12 +53,17 @@ from __future__ import annotations
 import argparse
 import datetime
 import json
-from collections.abc import Iterable, Mapping
+from collections.abc import Iterable, Mapping, Sequence
 from pathlib import Path
 
-from build.adoption_measurements import resolve_over_baseline as _measurements_over_baseline
+from build.adoption_measurements import (
+    machine_routes,
+    route_scopes,
+    select_route,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
+_UTC = datetime.timezone.utc
 
 COLUMNS: tuple[str, ...] = (
     "declaration_version_id",
@@ -98,59 +98,93 @@ _UNBOUND_EXPLANATION = (
 
 
 def reconcile(
-    measurement_rows: Iterable[Mapping],
     recorded_scores: Mapping[str, Mapping],
+    measurement_rows: Iterable[Mapping],
+    routing_tables: Mapping[str, Sequence[Mapping]],
+    category_of: Mapping[str, str],
+    declared_artifacts: Mapping[str, set[str]],
     *,
+    declaration_version_id: str,
+    observation_snapshot_id: str,
     evaluated_at: datetime.datetime | None = None,
 ) -> list[dict]:
-    """The reconciliation report as a pure function of measurements and recorded scores.
+    """The reconciliation report over every recorded adoption assessment.
 
-    ``recorded_scores`` is ``load_sources(...)["scores"]`` — slug -> the score document, whose
-    ``adoption`` block carries the recorded ``level`` and ``signal_type``.
+    ``recorded_scores`` is ``load_sources(...)["scores"]``; ``measurement_rows`` is the output of
+    ``build.adoption_measurements.measurements`` for the same run. The applicable route is resolved
+    from ``declared_artifacts`` (then the recorded instrument), reusing the measurements resolver.
     """
+    routes = machine_routes(routing_tables)
+    scopes = route_scopes(routing_tables)
+    all_routes = {r["route_id"]: dict(r) for r in routing_tables["adoption_routes"]}
+    # A hand-authored route's id equals its instrument (build/serialize_routing._route_id).
+    measured_by_product = {m["product_slug"]: m for m in measurement_rows}
+
     rows: list[dict] = []
-    for measurement in measurement_rows:
-        slug = measurement["product_slug"]
-        adoption = (recorded_scores.get(slug) or {}).get("adoption") or {}
+    for product_slug in sorted(recorded_scores):
+        adoption = (recorded_scores[product_slug] or {}).get("adoption")
+        if not isinstance(adoption, dict):
+            continue  # not a recorded adoption assessment
         recorded_level = adoption.get("level")
         recorded_instrument = adoption.get("signal_type") or ""
-        measured_level = measurement["measured_level"]
+        category_slug = category_of.get(product_slug)
+        measurement = measured_by_product.get(product_slug)
 
+        # Resolve the applicable route: declarations first, then the recorded hand-authored
+        # instrument, then the recorded instrument name so the grain key is always stable.
+        declared = declared_artifacts.get(product_slug, set())
+        machine_route = select_route(declared, category_slug, routes, scopes)
+        if machine_route is not None:
+            route = machine_route
+        elif recorded_instrument in all_routes:
+            route = all_routes[recorded_instrument]
+        else:
+            route = {"route_id": recorded_instrument or "unresolved",
+                     "instrument_type": recorded_instrument, "authority": ""}
+
+        measured_level = measurement["measured_level"] if measurement else None
         delta = (
             measured_level - recorded_level
             if measured_level is not None and recorded_level is not None
             else None
         )
 
-        if measured_level is None:
-            # The route itself abstained (a rule-less multi-artifact aggregation, or a product
-            # type with no band set). Nothing to certify, and not an infrastructure absence.
+        if recorded_level is None:
             status = "abstained"
-            explanation = (
-                f"route {measurement['route_id']} produced no banded level "
-                f"(aggregation_method={measurement['aggregation_method']!r}, "
-                f"band_set_id={measurement['band_set_id']!r}); the route abstains"
-            )
-        else:
-            # A banded measurement exists, but it is not run-bound (see module doc / §4.3).
+            explanation = "recorded adoption level is null — a deliberate abstention, not a gap"
+        elif measurement is not None and measured_level is not None:
             status = "source_unavailable"
             explanation = _UNBOUND_EXPLANATION
+        elif measurement is not None:
+            status = "abstained"
+            explanation = (
+                f"route {route['route_id']} produced no banded level "
+                f"(band_set_id={measurement['band_set_id']!r}); the route abstains"
+            )
+        else:
+            status = "unmeasured"
+            explanation = (
+                f"the applicable route {route['route_id']} has no observation for this product; "
+                f"recorded assessment stands unmeasured"
+            )
 
         rows.append(
             {
-                "declaration_version_id": measurement["declaration_version_id"],
-                "observation_snapshot_id": measurement["observation_snapshot_id"],
-                "product_slug": slug,
-                "category_slug": measurement["category_slug"],
-                "route_id": measurement["route_id"],
+                "declaration_version_id": declaration_version_id,
+                "observation_snapshot_id": observation_snapshot_id,
+                "product_slug": product_slug,
+                "category_slug": category_slug,
+                "route_id": route["route_id"],
                 "recorded_level": recorded_level,
                 "recorded_instrument_type": recorded_instrument,
                 "measured_level": measured_level,
-                "measured_instrument_type": measurement["instrument_type"],
-                "channel": measurement["channel"],
-                "raw_value": measurement["raw_value"],
-                "measurement_as_of": measurement["measurement_as_of"],
-                "route_authority": measurement["route_authority"],
+                "measured_instrument_type": (
+                    measurement["instrument_type"] if measurement else route.get("instrument_type", "")
+                ),
+                "channel": measurement["channel"] if measurement else None,
+                "raw_value": measurement["raw_value"] if measurement else None,
+                "measurement_as_of": measurement["measurement_as_of"] if measurement else None,
+                "route_authority": measurement["route_authority"] if measurement else route.get("authority", ""),
                 "measurement_freshness": "unknown",
                 "status": status,
                 "delta": delta,
@@ -176,40 +210,62 @@ def canonical_row(row: Mapping) -> str:
     )
 
 
-def resolve_over_baseline(
+def resolve(
+    observation_rows: Sequence[Mapping],
     root: Path | None = None,
     allow_dirty: bool = False,
     evaluated_at: datetime.datetime | None = None,
 ) -> list[dict]:
-    """Build the reconciliation report over the immutable baseline, with real identities.
-
-    Reads the measurements this report reconciles from the one measurements builder, so the two
-    tables share a single run's declaration_version_id and observation_snapshot_id.
-    """
+    """Build the report from an already-read observation set — one read feeds ids, measurements
+    and reconciliation, so the whole release candidate is one atomic set of rows."""
+    from build.adoption_measurements import load_inputs, measurements
+    from build.declaration_version import resolve as resolve_declaration
+    from build.observation_snapshot import observation_snapshot_id
     from build.validate import load_sources
 
     base = root or ROOT
-    measurement_rows = _measurements_over_baseline(base, allow_dirty=allow_dirty)
-    recorded_scores = load_sources(base)["scores"]
-    return reconcile(measurement_rows, recorded_scores, evaluated_at=evaluated_at)
+    tables, band_rows, category_of, declared = load_inputs(base)
+    dvid = resolve_declaration(base, allow_dirty=allow_dirty)["declaration_version_id"]
+    osid = observation_snapshot_id(observation_rows)
+    measurement_rows = measurements(
+        observation_rows, tables, band_rows, category_of, declared,
+        declaration_version_id=dvid, observation_snapshot_id=osid,
+    )
+    return reconcile(
+        load_sources(base)["scores"], measurement_rows, tables, category_of, declared,
+        declaration_version_id=dvid, observation_snapshot_id=osid, evaluated_at=evaluated_at,
+    )
+
+
+def resolve_over_baseline(root: Path | None = None, allow_dirty: bool = False,
+                          evaluated_at: datetime.datetime | None = None) -> list[dict]:
+    from build.observation_snapshot import rows_from_parquet
+
+    return resolve(rows_from_parquet(), root=root, allow_dirty=allow_dirty, evaluated_at=evaluated_at)
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--json", action="store_true", help="emit the reconciliation rows as JSON")
-    parser.add_argument(
-        "--allow-dirty",
-        action="store_true",
-        help="stamp a diagnostic declaration_version_id over a dirty worktree",
-    )
+    parser.add_argument("--live", action="store_true", help="read the deployed current table via pyoso")
+    parser.add_argument("--allow-dirty", action="store_true",
+                        help="stamp a diagnostic declaration_version_id over a dirty worktree")
     args = parser.parse_args()
 
-    from build.validate import load_sources
+    if args.live:
+        from build.adoption_measurements import load_current_observations
 
-    measurement_rows = _measurements_over_baseline(ROOT, allow_dirty=args.allow_dirty)
-    scores = load_sources(ROOT)["scores"]
-    rows = reconcile(measurement_rows, scores)
+        observation_rows = load_current_observations()
+    else:
+        from build.observation_snapshot import rows_from_parquet
 
+        observation_rows = rows_from_parquet()
+
+    rows = resolve(
+        observation_rows,
+        allow_dirty=args.allow_dirty,
+        evaluated_at=datetime.datetime.now(_UTC),
+    )
     if args.json:
         print("\n".join(canonical_row(row) for row in rows))
         return 0
@@ -217,19 +273,9 @@ def main() -> int:
     by_status: dict[str, int] = {}
     for row in rows:
         by_status[row["status"]] = by_status.get(row["status"], 0) + 1
-    measured_slugs = {r["product_slug"] for r in measurement_rows}
-    recorded_unmeasured = sum(
-        1
-        for slug, doc in scores.items()
-        if (doc.get("adoption") or {}).get("level") is not None and slug not in measured_slugs
-    )
-    print(f"reconciliation rows     {len(rows)}")
+    print(f"reconciliation rows     {len(rows)}  (every recorded adoption assessment)")
     for status in sorted(by_status):
         print(f"  {status:<20}{by_status[status]:>5}")
-    print(
-        f"\nrecorded-but-unmeasured products (not rows in this report, see module doc): "
-        f"{recorded_unmeasured}"
-    )
     return 0
 
 

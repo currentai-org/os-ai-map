@@ -15,43 +15,37 @@ semantics inside the gate that is supposed to check them (§4.4). This module is
 
 Route selection, aggregation and banding are all read from the compiled routing tables
 (`build/serialize_routing.py` and `build/serialize_rubric.py`); this module reinterprets none of
-them. A routing fact this builder needs but cannot read is a compiler bug to fix at the source,
-not a special case here — the same contract `serialize_routing` states for evaluation SQL.
+them.
 
-## Grain and identities
+## Route selection is by DECLARED ARTIFACTS, and never falls through
 
-One row per `(declaration_version_id, observation_snapshot_id, product_slug, category_slug,
-route_id)`. It keys on BOTH release identities because a rollup depends on WHICH declarations
-selected the route (the category roster, the product type) and on WHICH measurements it summed.
-Both are derived at run time (`build/declaration_version.py`, `build/observation_snapshot.py`)
-and are NOT stored — a full-refresh table's content changes every run, so a frozen value goes
-stale. They are inputs to the pure builder here so the aggregation/banding logic stays a pure
-function of (observations, routing, bands) and the goldens can pin it with fixed test identities;
-the CLI wires in the real run-time values.
-
-## Route selection
-
-For each product, the winning route is the FIRST route in precedence order (`route_order`) that
-is (a) a usable machine route — it names a source with a real table; the two hand-authored routes
-(`active_users`, `reported_traction`) read no machine signal and never win here — (b) in scope
-for the product's category (`registry.adoption_route_scopes`; a route with no scope row applies to
-every category), and (c) has at least one observation for the product matching the route's
-`(artifact_kind, metric_type)`. Higher-precedence routes with no observation are skipped, exactly
-as `build/check_routing.py` selects a route by declared artifact — here by an observed one.
+The winning route is the first route, in precedence order (`route_order`), that the product's
+DECLARATIONS make applicable — it names an artifact kind the product declares
+(`registry.product_artifacts`) and is in scope for the product's category
+(`registry.adoption_route_scopes`). Applicability is a fact about declarations, NOT about which
+observations happened to arrive. Once that winning route is fixed, the builder looks for an
+observation on THAT route only. If the authoritative route's observation is missing, the product
+is simply not measured — the builder does NOT fall through to a weaker route. Falling through is
+the silent substitution `signal_routing.yaml` exists to prevent: a product that declares a PyPI
+package must never be scored on GitHub stars merely because its PyPI download was not collected
+this run. A product whose winning route was not observed produces no measurement row here; its
+unmeasured outcome is recorded in `evaluation.adoption_reconciliation`, which covers every
+recorded assessment.
 
 ## Aggregation
 
 The winning route's contributing observations (all of the product's observations matching the
 route's `(artifact_kind, metric_type)`) are combined by the aggregation rule bound to the route's
-instrument (`registry.adoption_aggregation_rules`): `usage_volume` sums across a family's
-artifacts, since the map's unit is the family. A route whose instrument declares NO rule and has
-exactly one contributing observation uses that value directly. A rule-less route with MORE than
-one contributing observation is an UNDEFINED aggregation — today only `stars_fallback` can reach
-this, for the handful of products declaring several GitHub repositories — and the builder ABSTAINS
-(null value, null level) rather than invent a sum or a max the routing source never declared. The
-row is still emitted, carrying the contributing ids and `aggregation_method = ''`, so the gap is
-visible rather than papered over. Declaring a stars aggregation rule in `signal_routing.yaml`
-would resolve it; that is a routing-semantics decision for the source, not a default to guess here.
+instrument (`registry.adoption_aggregation_rules`): both `usage_volume` and `stars_fallback` sum
+across a family's artifacts, since the map's unit is the family. A route whose instrument declares
+no rule and has exactly one contributing observation uses that value directly; a rule-less route
+with more than one contributing observation would be an undefined aggregation and abstains rather
+than invent one (no route reaches this today — both routable instruments with a machine table
+declare a sum rule).
+
+Numbers are preserved, never truncated: a `raw_value` is a finite `int` or `float` (bool and
+non-finite rejected), carried through the sum and the band comparison as-is, so `1000.9` bands on
+its real magnitude rather than a floored `1000`.
 
 ## Banding
 
@@ -59,19 +53,29 @@ The aggregate value is banded by the band set the winning route resolves to for 
 type (`registry.adoption_route_band_sets` -> `registry.adoption_bands`): the highest level whose
 exclusive lower bound `above` is below the value. A `(route, product_type)` pair with no band set
 row abstains (null level) — hardware declares no usage ladder, and that absence IS the abstention
-(§4.4). The stars cap is already baked into its band set (levels stop at 3), so no separate cap
-logic lives here.
+(§4.4). The stars cap is baked into its band set (levels stop at 3), so no separate cap logic here.
 
 ## Freshness
 
 `measurement_as_of` is the MINIMUM `observed_at` across the contributing observations: an aggregate
-is only as current as its stalest input, so the conservative bound is the honest one. Run binding
-is blocked on #355, so these observations carry no `source_run_id`; that is reconciliation's
-concern (an unbound measurement is `source_unavailable`, §4.3), not this table's.
+is only as current as its stalest input.
+
+## Identities, atomicity, and the live path
+
+The grain keys on `declaration_version_id` and `observation_snapshot_id`, both derived at run time
+(`build/declaration_version.py`, `build/observation_snapshot.py`) and NOT stored. They are inputs
+to the pure `measurements(...)` so the aggregation/banding logic stays a pure function and the
+goldens pin it with fixed test identities. The observation rows are read ONCE per run and the same
+rows derive `observation_snapshot_id` and this table — the snapshot id and the rollup are one
+atomic set, never two reads that could straddle a refresh. `load_current_observations()` reads the
+deployed `observations.product_adoption_current` via `pyoso`; `resolve_over_baseline()` reads the
+immutable Phase-2 baseline for in-repo tests. Serialization to a publishable static model and the
+OSO upload are `build/serialize_evaluation.py` and a maintainer runbook (`docs/operations/`).
 
 Usage:
     uv run python -m build.adoption_measurements            # over the committed baseline
-    uv run python -m build.adoption_measurements --json     # same, machine-readable rows
+    uv run python -m build.adoption_measurements --live     # over the deployed current table
+    uv run python -m build.adoption_measurements --json     # emit the rows
 """
 
 from __future__ import annotations
@@ -79,6 +83,7 @@ from __future__ import annotations
 import argparse
 import datetime
 import json
+import math
 from collections.abc import Iterable, Mapping, Sequence
 from pathlib import Path
 
@@ -119,6 +124,15 @@ def _category_of(categories: Mapping[str, dict]) -> dict[str, str]:
     return out
 
 
+def _numeric(value: object, column: str) -> int | float:
+    """A finite int or float, preserved (never truncated); bool and non-finite are rejected."""
+    if type(value) is bool or not isinstance(value, (int, float)):
+        raise TypeError(f"{column} must be a finite int or float, got {type(value).__name__!r} ({value!r})")
+    if isinstance(value, float) and not math.isfinite(value):
+        raise ValueError(f"non-finite number in column {column!r}: {value!r}")
+    return value
+
+
 def _band_index(band_rows: Iterable[Mapping]) -> dict[str, list[tuple[int, int, str]]]:
     """band_set_id -> [(above, level, reach)] sorted by level ascending."""
     index: dict[str, list[tuple[int, int, str]]] = {}
@@ -131,7 +145,7 @@ def _band_index(band_rows: Iterable[Mapping]) -> dict[str, list[tuple[int, int, 
     return index
 
 
-def _band_for(index: Mapping[str, list[tuple[int, int, str]]], band_set_id: str, value: int):
+def _band_for(index: Mapping[str, list[tuple[int, int, str]]], band_set_id: str, value: int | float):
     """The highest (level, reach) whose exclusive lower bound is below value, or (None, None)."""
     best: tuple[int | None, str | None] = (None, None)
     for above, level, reach in index.get(band_set_id, []):
@@ -140,114 +154,141 @@ def _band_for(index: Mapping[str, list[tuple[int, int, str]]], band_set_id: str,
     return best
 
 
+def machine_routes(routing_tables: Mapping[str, Sequence[Mapping]]) -> list[dict]:
+    """The routes that read a machine source, in precedence order. The two hand-authored routes
+    (`active_users`, `reported_traction`) name no artifact and can never be selected here."""
+    return [
+        dict(r)
+        for r in sorted(routing_tables["adoption_routes"], key=lambda r: r["route_order"])
+        if r["source"]
+    ]
+
+
+def route_scopes(routing_tables: Mapping[str, Sequence[Mapping]]) -> dict[str, set[str]]:
+    scopes: dict[str, set[str]] = {}
+    for row in routing_tables["adoption_route_scopes"]:
+        scopes.setdefault(row["route_id"], set()).add(row["scope_value"])
+    return scopes
+
+
+def select_route(
+    declared_kinds: set[str],
+    category_slug: str | None,
+    routes: Sequence[Mapping],
+    scopes: Mapping[str, set[str]],
+) -> dict | None:
+    """The first applicable machine route by precedence — declared artifact kind + category scope —
+    independent of whether any observation exists for it. None when the product declares no artifact
+    that any in-scope machine route reads."""
+    for route in routes:
+        if route["artifact_kind"] not in declared_kinds:
+            continue
+        scope = scopes.get(route["route_id"])
+        if scope is not None and category_slug not in scope:
+            continue
+        return dict(route)
+    return None
+
+
 def measurements(
     observation_rows: Iterable[Mapping],
     routing_tables: Mapping[str, Sequence[Mapping]],
     band_rows: Iterable[Mapping],
     category_of: Mapping[str, str],
+    declared_artifacts: Mapping[str, set[str]],
     *,
     declaration_version_id: str,
     observation_snapshot_id: str,
 ) -> list[dict]:
     """The product-level rollup as a pure function of its inputs (identities passed in).
 
-    ``routing_tables`` is the output of ``build.serialize_routing.build_routing`` —
-    ``adoption_routes``, ``adoption_route_scopes``, ``adoption_route_band_sets`` and
-    ``adoption_aggregation_rules``. ``band_rows`` is ``adoption_bands`` + ``route_bands``.
+    ``routing_tables`` is ``build.serialize_routing.build_routing``'s output; ``band_rows`` is
+    ``adoption_bands`` + ``route_bands``; ``declared_artifacts`` maps product slug -> the artifact
+    kinds it declares (``registry.product_artifacts``). A row is emitted only where the product's
+    winning applicable route (by declarations) actually has an observation — never a fallthrough.
     """
-    routes = sorted(routing_tables["adoption_routes"], key=lambda r: r["route_order"])
+    routes = machine_routes(routing_tables)
+    scopes = route_scopes(routing_tables)
     method_by_rule = {
         r["aggregation_rule_id"]: r["method"] for r in routing_tables["adoption_aggregation_rules"]
     }
-    scopes: dict[str, set[str]] = {}
-    for row in routing_tables["adoption_route_scopes"]:
-        scopes.setdefault(row["route_id"], set()).add(row["scope_value"])
     band_set_of: dict[tuple[str, str], str] = {
         (row["route_id"], row["product_type"]): row["band_set_id"]
         for row in routing_tables["adoption_route_band_sets"]
     }
     band_index = _band_index(band_rows)
 
-    # Only machine routes with a real source can win on an observation; the hand-authored routes
-    # read no machine signal. This mirrors build/check_routing.route_usable without the bridge
-    # cases, which no adoption source route hits.
-    machine_routes = [r for r in routes if r["source"]]
-
     by_product: dict[str, list[Mapping]] = {}
     for obs in observation_rows:
         by_product.setdefault(obs["product_slug"], []).append(obs)
 
     rows: list[dict] = []
-    for product_slug in sorted(by_product):
-        product_obs = by_product[product_slug]
-        product_type = product_obs[0]["product_type"]
+    for product_slug in sorted(declared_artifacts):
         category_slug = category_of.get(product_slug)
+        route = select_route(declared_artifacts[product_slug], category_slug, routes, scopes)
+        if route is None:
+            continue
 
-        for route in machine_routes:
-            scope = scopes.get(route["route_id"])
-            if scope is not None and category_slug not in scope:
-                continue
-            contributing = [
-                o
-                for o in product_obs
-                if o["artifact_kind"] == route["artifact_kind"]
-                and o["metric_type"] == route["metric_type"]
-            ]
-            if not contributing:
-                continue
+        product_obs = by_product.get(product_slug, [])
+        contributing = [
+            o
+            for o in product_obs
+            if o["artifact_kind"] == route["artifact_kind"] and o["metric_type"] == route["metric_type"]
+        ]
+        if not contributing:
+            # The winning route was not observed. Do NOT fall through to a weaker route; the
+            # unmeasured outcome is reconciliation's to record.
+            continue
 
-            # This route wins. Aggregate its contributing observations.
-            method = method_by_rule.get(route["aggregation_rule_id"], "")
-            values = [int(o["raw_value"]) for o in contributing]
-            if method == "sum":
-                raw_value: int | None = sum(values)
-            elif method == "max":
-                raw_value = max(values)
-            elif len(contributing) == 1:
-                raw_value = values[0]
-            else:
-                # A rule-less route with several contributing artifacts: aggregation is undefined
-                # by the routing source, so abstain rather than fabricate one (see module doc).
-                raw_value = None
+        product_type = contributing[0]["product_type"]
+        method = method_by_rule.get(route["aggregation_rule_id"], "")
+        values = [_numeric(o["raw_value"], "raw_value") for o in contributing]
+        if method == "sum":
+            raw_value: int | float | None = sum(values)
+        elif method == "max":
+            raw_value = max(values)
+        elif len(values) == 1:
+            raw_value = values[0]
+        else:
+            raw_value = None  # rule-less route, several artifacts: undefined aggregation, abstain
 
-            band_set_id = band_set_of.get((route["route_id"], product_type), "")
-            if raw_value is None or not band_set_id:
-                measured_level, measured_reach = None, None
-            else:
-                measured_level, measured_reach = _band_for(band_index, band_set_id, raw_value)
+        band_set_id = band_set_of.get((route["route_id"], product_type), "")
+        if raw_value is None or not band_set_id:
+            measured_level, measured_reach = None, None
+        else:
+            measured_level, measured_reach = _band_for(band_index, band_set_id, raw_value)
 
-            observed = [o["observed_at"] for o in contributing]
-            rows.append(
-                {
-                    "declaration_version_id": declaration_version_id,
-                    "observation_snapshot_id": observation_snapshot_id,
-                    "product_slug": product_slug,
-                    "category_slug": category_slug,
-                    "product_type": product_type,
-                    "route_id": route["route_id"],
-                    "channel": contributing[0]["channel"],
-                    "metric_type": route["metric_type"],
-                    "instrument_type": route["instrument_type"],
-                    "aggregation_method": method,
-                    "contributing_observation_ids": sorted(o["observation_id"] for o in contributing),
-                    "raw_value": raw_value,
-                    "unit": contributing[0]["unit"],
-                    "measurement_window_days": contributing[0]["measurement_window_days"],
-                    "band_set_id": band_set_id,
-                    "measured_level": measured_level,
-                    "measured_reach": measured_reach,
-                    "route_authority": route["authority"],
-                    "measurement_as_of": min(observed) if observed else None,
-                }
-            )
-            break  # winner found; do not consider lower-precedence routes
+        observed = [o["observed_at"] for o in contributing]
+        rows.append(
+            {
+                "declaration_version_id": declaration_version_id,
+                "observation_snapshot_id": observation_snapshot_id,
+                "product_slug": product_slug,
+                "category_slug": category_slug,
+                "product_type": product_type,
+                "route_id": route["route_id"],
+                "channel": contributing[0]["channel"],
+                "metric_type": route["metric_type"],
+                "instrument_type": route["instrument_type"],
+                "aggregation_method": method,
+                "contributing_observation_ids": sorted(o["observation_id"] for o in contributing),
+                "raw_value": raw_value,
+                "unit": contributing[0]["unit"],
+                "measurement_window_days": contributing[0]["measurement_window_days"],
+                "band_set_id": band_set_id,
+                "measured_level": measured_level,
+                "measured_reach": measured_reach,
+                "route_authority": route["authority"],
+                "measurement_as_of": min(observed) if observed else None,
+            }
+        )
 
     rows.sort(key=lambda r: (r["product_slug"], r["category_slug"] or "", r["route_id"]))
     return rows
 
 
 def canonical_row(row: Mapping) -> str:
-    """A flat, deterministic serialization of one measurement row for digesting/emitting."""
+    """A flat, deterministic serialization of one measurement row for digesting."""
     flat = dict(row)
     flat["contributing_observation_ids"] = "|".join(row["contributing_observation_ids"])
     if isinstance(flat.get("measurement_as_of"), datetime.datetime):
@@ -255,11 +296,12 @@ def canonical_row(row: Mapping) -> str:
     return json.dumps({k: flat.get(k) for k in COLUMNS}, separators=(",", ":"), sort_keys=True)
 
 
-# --- inputs assembled over the committed baseline -------------------------------
+# --- inputs, the live read, and atomic resolution -------------------------------
 
 
 def load_inputs(root: Path | None = None):
-    """Return (routing_tables, band_rows, category_of) from the committed sources."""
+    """Return (routing_tables, band_rows, category_of, declared_artifacts) from committed sources."""
+    from build.serialize_registry import build_registry
     from build.serialize_routing import build_routing, load_routing
     from build.serialize_rubric import adoption_bands, route_bands
     from build.validate import load_sources
@@ -271,49 +313,110 @@ def load_inputs(root: Path | None = None):
     if errors:
         raise RuntimeError("routing compiler errors: " + "; ".join(errors))
     band_rows = adoption_bands(src["rubrics"])[0] + route_bands(routing)[0]
-    return tables, band_rows, _category_of(src["categories"])
+    declared: dict[str, set[str]] = {}
+    for row in build_registry(src)[0]["product_artifacts"]:
+        declared.setdefault(row["product_slug"], set()).add(row["artifact_kind"])
+    return tables, band_rows, _category_of(src["categories"]), declared
 
 
-def resolve_over_baseline(root: Path | None = None, allow_dirty: bool = False) -> list[dict]:
-    """Build the measurements over the immutable Phase-2 baseline, stamped with real identities."""
+def _native(value: object) -> object:
+    """Coerce a pyoso/pandas scalar to a native Python value.
+
+    `build.warehouse.query` returns rows via pandas `to_dict`, so numbers arrive as numpy scalars
+    and timestamps as pandas `Timestamp` — types the strict digest (`observation_snapshot._canonical_
+    row`) and `_numeric` here reject on purpose. A `Timestamp` becomes a `datetime`; a numpy scalar
+    becomes its Python equivalent via `.item()`; a null (`None`/NaN/NaT) becomes `None`. Native
+    values pass through untouched.
+    """
+    if value is None:
+        return None
+    to_pydatetime = getattr(value, "to_pydatetime", None)
+    if callable(to_pydatetime):  # pandas Timestamp
+        return None if _is_na(value) else to_pydatetime()
+    if _is_na(value):  # NaN / NaT / pandas.NA
+        return None
+    item = getattr(value, "item", None)
+    if callable(item) and not isinstance(value, (str, bytes)):  # numpy scalar
+        return item()
+    return value
+
+
+def _is_na(value: object) -> bool:
+    try:
+        import pandas as pd
+
+        result = pd.isna(value)
+        return bool(result) if not hasattr(result, "__len__") else False
+    except Exception:
+        return False
+
+
+def load_current_observations() -> list[dict]:
+    """The deployed observations.product_adoption_current, read live via pyoso (needs OSO_API_KEY).
+
+    Values are coerced to native Python types so the strict digest and banding accept them.
+    """
+    from build.warehouse import query
+
+    rows = query(
+        "SELECT observation_id, product_slug, product_type, artifact_kind, artifact_id, channel, "
+        "metric_type, raw_value, unit, measurement_window_days, observed_at "
+        "FROM currentai.observations.product_adoption_current"
+    )
+    return [{key: _native(value) for key, value in row.items()} for row in rows]
+
+
+def resolve(observation_rows: Sequence[Mapping], root: Path | None = None, allow_dirty: bool = False) -> list[dict]:
+    """Build measurements from an already-read observation set — the atomic entry point.
+
+    The SAME rows derive ``observation_snapshot_id`` and the rollup, so the snapshot id and the
+    table are one set of rows, never two reads.
+    """
     from build.declaration_version import resolve as resolve_declaration
-    from build.observation_snapshot import observation_snapshot_id, rows_from_parquet
+    from build.observation_snapshot import observation_snapshot_id
 
     base = root or ROOT
-    observation_rows = rows_from_parquet()
-    tables, band_rows, category_of = load_inputs(base)
+    tables, band_rows, category_of, declared = load_inputs(base)
     return measurements(
         observation_rows,
         tables,
         band_rows,
         category_of,
-        declaration_version_id=resolve_declaration(base, allow_dirty=allow_dirty)[
-            "declaration_version_id"
-        ],
+        declared,
+        declaration_version_id=resolve_declaration(base, allow_dirty=allow_dirty)["declaration_version_id"],
         observation_snapshot_id=observation_snapshot_id(observation_rows),
     )
+
+
+def resolve_over_baseline(root: Path | None = None, allow_dirty: bool = False) -> list[dict]:
+    """Build measurements over the immutable Phase-2 baseline (one read feeds id + rollup)."""
+    from build.observation_snapshot import rows_from_parquet
+
+    return resolve(rows_from_parquet(), root=root, allow_dirty=allow_dirty)
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--json", action="store_true", help="emit the measurement rows as JSON")
-    parser.add_argument(
-        "--allow-dirty",
-        action="store_true",
-        help="stamp a diagnostic declaration_version_id over a dirty worktree",
-    )
+    parser.add_argument("--live", action="store_true", help="read the deployed current table via pyoso")
+    parser.add_argument("--allow-dirty", action="store_true",
+                        help="stamp a diagnostic declaration_version_id over a dirty worktree")
     args = parser.parse_args()
 
-    rows = resolve_over_baseline(allow_dirty=args.allow_dirty)
+    observation_rows = load_current_observations() if args.live else None
+    rows = (
+        resolve(observation_rows, allow_dirty=args.allow_dirty)
+        if observation_rows is not None
+        else resolve_over_baseline(allow_dirty=args.allow_dirty)
+    )
     if args.json:
         print("\n".join(canonical_row(row) for row in rows))
         return 0
 
     banded = sum(1 for r in rows if r["measured_level"] is not None)
-    abstained = len(rows) - banded
     print(f"measurement rows        {len(rows)}")
     print(f"  banded                {banded}")
-    print(f"  abstained (null level){abstained:>6}")
+    print(f"  abstained (null level){len(rows) - banded:>6}")
     by_route: dict[str, int] = {}
     for row in rows:
         by_route[row["route_id"]] = by_route.get(row["route_id"], 0) + 1
