@@ -38,14 +38,35 @@ uv run python -m build.serialize_evaluation --check          # in-memory build, 
 Then build the upload artifacts:
 
 ```bash
-uv run python -m build.serialize_evaluation --live
+uv run python -m build.serialize_evaluation --live      # BROKEN, see below
+uv run python -m build.serialize_evaluation             # the committed Phase-2 baseline
 ```
 
-This reads `observations.product_adoption_current` once, derives `observation_snapshot_id` and
+Either reads the observation set **once**, derives `observation_snapshot_id` and
 `declaration_version_id` from that read and the working tree, and writes
 `build/evaluation/product_adoption_measurements.csv` and `adoption_reconciliation.csv`. The single
 read is the point: the snapshot id and both tables describe the same rows, never two reads that
 straddle a refresh. The CSVs are git-ignored — they are an upload artifact, not repository state.
+
+**`--live` currently fails and has no test covering it.** `adoption_measurements.
+load_current_observations` coerces a pandas `Timestamp` but not the plain `str` the deployed table's
+`observed_at` actually arrives as through `pyoso`, and the strict digest rejects a string on
+purpose (it would bypass UTC normalization). All three `--live` callers are affected. Until that is
+fixed, build from the baseline — but **prove the substitution first**, because the baseline is only
+equivalent while the live table has not moved:
+
+```bash
+uv run python -c "import datetime as dt; \
+from build import adoption_measurements as M; \
+from build.observation_snapshot import rows_from_parquet, observation_content_digest as d; \
+c=lambda r:{**r,'observed_at':dt.datetime.fromisoformat(r['observed_at'])} \
+  if isinstance(r.get('observed_at'),str) else r; \
+print(d(rows_from_parquet()) == d([c(r) for r in M.load_current_observations()]))"
+```
+
+`True` means the baseline and the deployed current table are the same content, so the published
+bytes are exactly what a working `--live` would have produced (this is how the 2026-08-25 deploy was
+cut). `False` means they have diverged and you must fix `--live` rather than substitute.
 
 Sanity-check the row counts against what the builder reports over the baseline
 (`uv run python -m build.adoption_measurements` and `... adoption_reconciliation`), remembering the
@@ -67,9 +88,15 @@ uv run python -m build.publish_evaluation              # validate, upload, run, 
 
 `--plan` and `--dry-run` write nothing. A real publish resolves (or creates) the `evaluation`
 dataset and each static model, `PUT`s the CSV, and requests the load run — which is only *accepted*
-synchronously. It then **waits for both runs to reach terminal `SUCCESS`** and **verifies the
-deployed row counts and column schema match the candidate** (read back via `pyoso`). Only when both
-runs succeeded and the deployed data matches does it write an **immutable deployment archive** at
+synchronously. Runs are requested **one model at a time and awaited in turn** — a request naming
+both models fans out into two runs, returns only one of them, and the two race to create the
+dataset's Trino schema on a first publish. It **waits for each load run to reach terminal
+`SUCCESS`** and **verifies the deployed row counts and column schema match the candidate** (read
+back via `pyoso`, retrying while the query catalog catches up, and ignoring the loader's own
+`_dlt_*` columns). A candidate column that is null in every row may be absent from the deployed
+table: the loader types columns from records and drops one it never sees a value for
+(`adoption_reconciliation.override_id` today). Only when every run succeeded and the deployed data
+matches does it write an **immutable deployment archive** at
 `build/evaluation/deployments/<deployment_id>/` (the two CSVs it just uploaded plus a completed
 receipt of row counts, column schema, and SHA-256). The `deployment_id` is the declaration and
 observation identities; the archive is written once and is never overwritten. **Any partial failure

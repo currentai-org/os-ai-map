@@ -189,3 +189,170 @@ def test_deployment_archive_is_immutable(tmp_path):
         assert "already exists" in str(exc)
     else:
         raise AssertionError("archive_deployment must refuse to overwrite an existing deployment id")
+
+
+def test_load_run_is_requested_once_per_model_and_awaited(tmp_path, monkeypatch):
+    """Each table gets its OWN run request, naming exactly one model, and is awaited in turn.
+
+    Two things were wrong on the first publish (2026-08-25) and both are pinned here:
+
+      * `{staticModelId: ...}` is not a valid input — the API requires `datasetId`, so the upload
+        landed and nothing ever materialized.
+      * A single request naming BOTH models fans out into two runs and returns only one of them.
+        The returned run reported SUCCESS while its sibling FAILED (the two raced to create the
+        dataset's Trino schema), so the wait certified a half-loaded deployment.
+    """
+    _valid_candidates(tmp_path)
+    requested: list[dict] = []
+
+    def fake_graphql(query, variables, token):
+        if query is P.Q_DATASETS:
+            return {"datasets": {"edges": [{"node": {"id": "ds-eval", "name": "evaluation",
+                                                     "type": "STATIC_MODEL"}}]}}
+        if query is PR.Q_STATIC:
+            return {"staticModels": {"edges": [
+                {"node": {"id": f"id-{t}", "name": t, "materializations": {"totalCount": 1}}}
+                for t in P.EVAL_TABLES
+            ]}}
+        if query is P.M_URL:
+            return {"createStaticModelUploadUrl": "https://upload.example/put"}
+        if query is P.M_RUN:
+            requested.append(variables["input"])
+            return {"createStaticModelRunRequest":
+                    {"run": {"id": f"run-{len(requested)}", "status": "QUEUED"}}}
+        raise AssertionError(f"unexpected query: {query[:60]}")
+
+    monkeypatch.setattr(P, "graphql", fake_graphql)
+    monkeypatch.setattr(PR, "graphql", fake_graphql)
+    monkeypatch.setattr(P, "upload", lambda path, url: None)
+    monkeypatch.setattr(P, "poll_run", lambda run_id, token: "SUCCESS")
+    monkeypatch.setattr(P, "deployed_table_state",
+                        lambda dataset, table: {"rows": 0, "columns": []})
+    # Stop before the archive: this test is about the request shape, not the receipt.
+    monkeypatch.setattr(P, "deployment_mismatches", lambda expected, deployed: ["stop here"])
+    monkeypatch.setenv("OSO_API_KEY", "tok")
+    monkeypatch.setenv("OSO_ORG_ID", "org")
+    monkeypatch.setattr(sys, "argv", ["publish_evaluation", "--dir", str(tmp_path)])
+
+    assert P.main() == 2  # stopped at the injected mismatch, after both runs were requested
+
+    assert len(requested) == len(P.EVAL_TABLES), "one run request per model"
+    for payload in requested:
+        assert payload["datasetId"] == "ds-eval"
+        assert "staticModelId" not in payload
+        assert len(payload["selectedModels"]) == 1, "never select two models in one request"
+    assert [pl["selectedModels"][0] for pl in requested] == [f"id-{t}" for t in P.EVAL_TABLES]
+
+
+def test_a_failed_run_stops_the_deploy_before_the_next_model(tmp_path, monkeypatch):
+    """A table that fails to load stops the deploy — no further run is requested, nothing archived."""
+    _valid_candidates(tmp_path)
+    requested: list[dict] = []
+
+    def fake_graphql(query, variables, token):
+        if query is P.Q_DATASETS:
+            return {"datasets": {"edges": [{"node": {"id": "ds-eval", "name": "evaluation",
+                                                     "type": "STATIC_MODEL"}}]}}
+        if query is PR.Q_STATIC:
+            return {"staticModels": {"edges": [
+                {"node": {"id": f"id-{t}", "name": t, "materializations": {"totalCount": 1}}}
+                for t in P.EVAL_TABLES
+            ]}}
+        if query is P.M_URL:
+            return {"createStaticModelUploadUrl": "https://upload.example/put"}
+        if query is P.M_RUN:
+            requested.append(variables["input"])
+            return {"createStaticModelRunRequest": {"run": {"id": "run-1", "status": "QUEUED"}}}
+        raise AssertionError(f"unexpected query: {query[:60]}")
+
+    def boom(dataset, table):
+        raise AssertionError("must not read deployed state when a run failed")
+
+    monkeypatch.setattr(P, "graphql", fake_graphql)
+    monkeypatch.setattr(PR, "graphql", fake_graphql)
+    monkeypatch.setattr(P, "upload", lambda path, url: None)
+    monkeypatch.setattr(P, "poll_run", lambda run_id, token: "FAILED")
+    monkeypatch.setattr(P, "deployed_table_state", boom)
+    monkeypatch.setenv("OSO_API_KEY", "tok")
+    monkeypatch.setenv("OSO_ORG_ID", "org")
+    monkeypatch.setattr(sys, "argv", ["publish_evaluation", "--dir", str(tmp_path)])
+
+    assert P.main() == 2
+    assert len(requested) == 1, "the second model is not requested after the first fails"
+    assert P.latest_archive(tmp_path) is None, "a failed deploy archives nothing"
+
+
+# --- the deployed-schema comparison ----------------------------------------------
+
+
+def test_all_null_candidate_column_may_be_absent_but_a_populated_one_may_not():
+    """The loader drops a column that is null in every row; a column with data going missing is a bug."""
+    expected = {
+        "product_adoption_measurements": {"rows": 2, "columns": ["a", "b"], "all_null_columns": []},
+        "adoption_reconciliation": {
+            "rows": 2, "columns": ["c", "override_id"], "all_null_columns": ["override_id"],
+        },
+    }
+    deployed = {
+        "product_adoption_measurements": {"rows": 2, "columns": ["a", "b"]},
+        "adoption_reconciliation": {"rows": 2, "columns": ["c"]},  # override_id dropped: expected
+    }
+    assert P.deployment_mismatches(expected, deployed) == []
+
+    # The same absence is a mismatch when the candidate column DID carry data.
+    with_data = {**expected, "adoption_reconciliation": {
+        "rows": 2, "columns": ["c", "override_id"], "all_null_columns": [],
+    }}
+    assert any("missing" in m for m in P.deployment_mismatches(with_data, deployed))
+
+    # An undeclared extra column is always a mismatch.
+    extra = {**deployed, "product_adoption_measurements": {"rows": 2, "columns": ["a", "b", "z"]}}
+    assert any("undeclared" in m for m in P.deployment_mismatches(expected, extra))
+
+
+def test_loader_bookkeeping_columns_are_excluded_from_the_deployed_schema(monkeypatch):
+    """`_dlt_*` columns are on every loaded table and in no candidate; they are not a mismatch."""
+    monkeypatch.setattr(
+        "build.warehouse.query",
+        lambda sql: [{"a": 1, "b": 2, "_dlt_id": "x", "_dlt_load_id": "y"}],
+    )
+    state = P.deployed_table_state("evaluation", "product_adoption_measurements")
+    assert state == {"rows": 1, "columns": ["a", "b"]}
+
+
+def test_deployed_state_retries_while_the_catalog_catches_up(monkeypatch):
+    """A just-loaded table is briefly invisible to the query catalog; that is lag, not a failure."""
+    calls = {"n": 0}
+
+    def flaky(sql):
+        calls["n"] += 1
+        if calls["n"] < 3:
+            raise RuntimeError("USER_ERROR: TablesNotFound - Tables do not exist or are inaccessible")
+        return [{"a": 1}]
+
+    monkeypatch.setattr("build.warehouse.query", flaky)
+    state = P.deployed_table_state("evaluation", "adoption_reconciliation",
+                                   timeout=10.0, interval=0.0)
+    assert state == {"rows": 1, "columns": ["a"]}
+    assert calls["n"] == 3
+
+
+def test_deployed_state_gives_up_at_the_deadline(monkeypatch):
+    """Still missing at the deadline raises, so a table that never loaded is never archived."""
+    def always_missing(sql):
+        raise RuntimeError("USER_ERROR: TablesNotFound - Tables do not exist or are inaccessible")
+
+    monkeypatch.setattr("build.warehouse.query", always_missing)
+    try:
+        P.deployed_table_state("evaluation", "adoption_reconciliation", timeout=0.0, interval=0.0)
+    except RuntimeError as exc:
+        assert "TablesNotFound" in str(exc)
+    else:
+        raise AssertionError("a table missing at the deadline must raise")
+
+
+def test_all_null_columns_are_recorded_in_the_provenance(tmp_path):
+    path = _write_csv(tmp_path / "t.csv", ["a", "empty"], [[1, ""], [2, ""]])
+    assert P.csv_provenance(path)["all_null_columns"] == ["empty"]
+    path = _write_csv(tmp_path / "u.csv", ["a", "some"], [[1, ""], [2, "v"]])
+    assert P.csv_provenance(path)["all_null_columns"] == []
