@@ -216,6 +216,14 @@ source_count
 
 This table is a long-form companion to `registry.product_scores`. It does not replace the existing wide table during the migration.
 
+Implemented 2026-08-25 as the repo-side builder `build/axis_assessments.py` (staged, not yet
+materialized). It keys on `declaration_version_id` with no `release_id`, draws its published
+population from the same `build_payload` roster the wide table uses, and enforces the status/field
+contract at build time — a held axis carries no `last_verified`, a confirmed axis is dated and
+cites at least one source. It compiles `confirmed` and `held` only; `not_applicable` stays deferred
+(see below), so a capability recorded as `basis: n/a` is a `confirmed` axis with a null
+`recorded_value`. Publishing is a maintainer step (`docs/operations/deploy-axis-assessments.md`).
+
 Valid field combinations per `status`, so downstream models do not each invent an
 interpretation of nulls:
 
@@ -1669,23 +1677,25 @@ Three numbers that must not be conflated:
 
 ```text
 deployed tables in the in-scope datasets    <!-- count:deployed_tables -->62
-staged, not deployed                         <!-- count:staged_assets -->5
+staged, not deployed                         <!-- count:staged_assets -->6
 dormant, no platform table yet              <!-- count:dormant_assets -->1
                                             ------
-logical assets in warehouse/assets.yaml     <!-- count:assets -->68
+logical assets in warehouse/assets.yaml     <!-- count:assets -->69
 ```
 
-The staged seven are the three `signal_packages` models from issue #314,
-`observations.source_runs` and `observations.product_adoption_baseline` (both Phase 2), and the two
-Phase-3 evaluation candidates `evaluation.product_adoption_measurements` and
-`evaluation.adoption_reconciliation`: tracked assets whose tables do not exist on the platform yet.
-The last four are staged for a reason the `signal_packages` three are not — they are
-repository-side artifacts by design (a control-plane snapshot, a frozen-bytes baseline, and two
-release-builder candidates whose `evaluation` namespace is not created yet), and `staged` here
+The staged six are the three `signal_packages` models from issue #314,
+`observations.source_runs` and `observations.product_adoption_baseline` (both Phase 2), and the
+Phase-3 `registry.axis_assessments` candidate: tracked assets whose tables do not exist on the
+platform yet. The two Phase-3 evaluation candidates that were staged here,
+`evaluation.product_adoption_measurements` and `evaluation.adoption_reconciliation`, are now
+**deployed** (#368, 2026-08-25) and count among the deployed tables.
+The last three are staged for a reason the `signal_packages` three are not — they are
+repository-side artifacts by design (a control-plane snapshot, a frozen-bytes baseline, and a
+declaration-keyed release-builder candidate whose row a maintainer publishes), and `staged` here
 records only that no platform table carries their name.
 Neither the snapshot nor the baseline is unfinished, and neither is waiting on a deploy to become
-authoritative; the two evaluation candidates await the `evaluation` namespace and the maintainer
-publish in `docs/operations/deploy-evaluation.md`. `observations.product_adoption_current` was staged the same way when first authored, and is
+authoritative; `registry.axis_assessments` awaits its maintainer publish in
+`docs/operations/deploy-axis-assessments.md`. `observations.product_adoption_current` was staged the same way when first authored, and is
 now **deployed** (2026-08-24, the deploy created the `observations` namespace), so it counts among
 the deployed tables rather than the staged ones. The four `registry.adoption_*` routing tables —
 `adoption_routes`, `adoption_route_scopes`, `adoption_route_band_sets` and

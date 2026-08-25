@@ -155,6 +155,28 @@ def axes() -> tuple[str, ...]:
 
 
 @lru_cache(maxsize=1)
+def confidence_levels() -> frozenset[str]:
+    """The confidence vocabulary, from `docs/schemas/score.schema.json`.
+
+    Each of the three axes declares its own `confidence` enum; this reads all three and asserts
+    they agree, so a schema that let one axis drift is caught here rather than in a consumer.
+    `registry.axis_assessments` enforces a confidence on every `confirmed` axis (the schema
+    describes the field but does not require it), and this is the owner it derives the allowed set
+    from rather than copying the three strings.
+    """
+    schema = json.loads((ROOT / "docs" / "schemas" / "score.schema.json").read_text())
+    per_axis = {}
+    for axis in axes():
+        enum = (((schema["properties"].get(axis) or {}).get("properties") or {})
+                .get("confidence") or {}).get("enum")
+        assert enum, f"score.schema.json: {axis}.confidence declares no enum"
+        per_axis[axis] = tuple(enum)
+    distinct = set(per_axis.values())
+    assert len(distinct) == 1, f"score.schema.json axes disagree on the confidence enum: {per_axis}"
+    return frozenset(next(iter(distinct)))
+
+
+@lru_cache(maxsize=1)
 def artifact_kinds() -> frozenset[str]:
     """Product artifact keys any routing source declares it consumes, via `artifact_key`.
 

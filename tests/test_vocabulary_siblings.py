@@ -21,11 +21,10 @@ from __future__ import annotations
 
 import ast
 import json
-from pathlib import Path
 
 import yaml
 
-from build.vocabulary import ROOT, artifact_kinds, axes
+from build.vocabulary import ROOT, artifact_kinds, axes, confidence_levels
 
 BUILD = ROOT / "build"
 
@@ -69,6 +68,18 @@ def test_axes_come_from_the_schema():
     schema = json.loads((ROOT / "docs" / "schemas" / "score.schema.json").read_text())
     assert set(axes()) == set(schema["required"]) - {"product"}
     assert set(axes()) == set(schema["properties"]) - {"product"}
+
+
+def test_confidence_levels_come_from_the_schema_and_agree_across_axes():
+    """The score schema is the owner; each axis declares its own `confidence` enum, and
+    `confidence_levels()` derives the allowed set from them, asserting all three agree — so a
+    schema that let one axis drift is caught here rather than in axis_assessments."""
+    schema = json.loads((ROOT / "docs" / "schemas" / "score.schema.json").read_text())
+    per_axis = {
+        axis: frozenset(schema["properties"][axis]["properties"]["confidence"]["enum"])
+        for axis in axes()
+    }
+    assert set(per_axis.values()) == {confidence_levels()}, per_axis
 
 
 def test_no_module_holds_a_private_copy_of_the_axes():
