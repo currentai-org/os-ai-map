@@ -516,11 +516,15 @@ Rules:
   `source_unavailable` for reconciliation. After #355 provides authoritative row-to-run binding
   and scope, `product_adoption_current` may include only observations bound to
   `execution_status = "SUCCESS"` with matching scope.
-- `observation_snapshot_id` is content-addressed over the normalized observations alone. Run
-  identifiers are lineage, recorded in `observation_run_ids`, and are NOT inputs to the ID.
-  Including them would give every re-run a new snapshot ID even when nothing measured changed,
-  which is the opposite of what the ID is for. Identical content means an identical snapshot;
-  different content means a different one; the runs that produced it stay visible either way.
+- The observation identity is two things, not one. `observation_content_digest` is
+  content-addressed over the normalized observation content alone; `observation_snapshot_id` is
+  `SHA-256(domain + canonicalization_version + observation_content_digest)`, binding the
+  canonicalization rule so a persisted id names the rule that produced it. Run identifiers are
+  lineage, recorded in `observation_run_ids`, and are NOT inputs to either. Including them would
+  give every re-run a new content digest even when nothing measured changed, which is the opposite
+  of what the digest is for. Under one canonicalization contract, identical content means an
+  identical digest and different content means a different one; the runs that produced it stay
+  visible either way.
 
 Reconciliation may proceed against `product_adoption_current`; it does not need to wait for incremental support. Historical trend claims must wait.
 
@@ -835,8 +839,11 @@ and next week against different measurements produces different findings under t
 declaration_version_id
   = source_git_sha + source_content_digest + evaluator_version
 
+observation_content_digest
+  = canonical digest of the normalized observation content
+
 observation_snapshot_id
-  = canonical digest of the normalized observation content, and nothing else
+  = SHA-256(domain + canonicalization_version + observation_content_digest)
 
 release_id
   = declaration_version_id + observation_snapshot_id + reconciliation_policy_version
@@ -882,6 +889,33 @@ Until the repository-owned evaluator lands (Phase 6), `evaluator_version` is a d
 `v0-no-repo-evaluator` — well-formed and forward-compatible, and deliberately not the empty
 string, so the day a real evaluator version replaces it is a reviewed change that moves every id
 with it.
+
+`observation_content_digest` and `observation_snapshot_id` are both derived by
+`build/observation_snapshot.py`, and like the declaration version they are run-time computations,
+not stored receipts — a full-refresh table's content changes every run, so a frozen value would go
+stale. They are two distinct things, as the manifest columns above require:
+
+- **`observation_content_digest`** is a SHA-256 over the normalized observation content **and
+  nothing else**: the measurement columns only (`product_slug`, `product_type`, `artifact_kind`,
+  `artifact_id`, `channel`, `metric_type`, `raw_value`, `unit`, `measurement_window_days`,
+  `observed_at`), taken as an order-independent multiset. Lineage (`source_run_id`,
+  `source_record_id`, `source_dataset`, `source_table`), capture time (`ingested_at`), the derived
+  `observation_id`, `is_valid`, and `supersedes_observation_id` are excluded, so an unchanged
+  measurement keeps its digest across re-runs and the runs that produced it stay visible only in
+  `observation_run_ids` beside it. It does not fold in the `canonicalization_version` number — a
+  version bump alone does not move it — but it is *not* invariant across canonicalization rules:
+  the canonical bytes change if the contract changes, so two content digests are comparable only
+  under the same contract.
+- **`observation_snapshot_id`** is the identity reconciliation and `release_id` key on. It binds
+  the `canonicalization_version` to the content digest, so a persisted id names the rule that
+  produced it and two rules cannot collide on one id — the version is bound INTO this id, not
+  merely recorded next to it.
+
+`observed_at` is normalized to UTC before hashing (an aware timestamp converted, a naive one
+interpreted as UTC — the warehouse emits naive UTC), at fixed microsecond precision with a `Z`
+suffix, so one instant has one digest. A merge-base ratchet fails if the serializer or
+`CONTENT_COLUMNS` change without `CANONICALIZATION_VERSION` advancing. Both digests are exercised
+in-repo against the immutable Phase-2 baseline parquet and pinned there as fixed contracts.
 
 Use them consistently:
 
@@ -938,6 +972,37 @@ Declared, for `source_content_digest` (owned by `build/declaration_version.py`,
 - input set: the classified declaration inputs of `sources/` (the full top-level inventory is
   gated, so a new authoritative input cannot silently leave the digest), excluding the
   separately-versioned routing policy and the frozen long-tail sample.
+
+Declared, for `observation_content_digest` (owned by `build/observation_snapshot.py`,
+`canonicalization_version` 1):
+
+- serialization format: each observation is a compact JSON array (UTF-8, no insignificant
+  whitespace) over the fixed column order `CONTENT_COLUMNS`; strings preserved verbatim, not
+  ASCII-escaped;
+- row/multiset ordering: the serialized rows are sorted and newline-joined, so the digest is
+  independent of the order rows were materialized or read in;
+- column set: the measurement columns only — lineage, capture time (`ingested_at`), the derived
+  `observation_id`, `is_valid`, and `supersedes_observation_id` are excluded;
+- timezone/date normalization: `observed_at` MUST be a `datetime` (a string or lookalike is
+  rejected, not coerced); it is converted to UTC (a naive value interpreted as UTC), rendered at
+  fixed microsecond precision with a `Z` suffix, so one instant has one rendering; null as JSON
+  `null`;
+- number/type representation: each column is checked against its declared type (by exact `type`
+  identity, so a `bool` never satisfies an `int`/`str` requirement), any other type rejected —
+  identity, vocabulary, and unit columns must be nonempty strings; `raw_value` a finite integer or
+  float, excluding boolean and null; `measurement_window_days` a nonnegative integer or null,
+  excluding boolean; `observed_at` a datetime normalized to UTC (as above);
+- hash algorithm: SHA-256, lowercase hex;
+- versioning: the `canonicalization_version` number is excluded from the content-digest preimage
+  (bumping the version alone does not move `observation_content_digest`), but content digests are
+  comparable only under the same canonicalization contract, since the canonical bytes change if the
+  contract changes. The
+  `canonicalization_version` is bound into `observation_snapshot_id`, whose preimage is the exact
+  UTF-8 bytes `"os-ai-map:observation-snapshot:v" + version + "\0" + content_digest`
+  (domain-separated, NUL-delimited). A merge-base ratchet forbids changing the canonicalization
+  **contract descriptor** — the columns, ordering, types, timestamp rule, null/number encoding,
+  serialization, and hash, fingerprinted as a whole rather than by one sample — without advancing
+  the version; implementation conformance to the descriptor is tested separately.
 
 Future release tables may include:
 

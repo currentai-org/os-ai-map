@@ -40,9 +40,16 @@ than improvised inside the first consumer.
   projections are excluded from the **digest** — not from the id, which changes with any commit
   that touches them. `evaluator_version` is pinned to the sentinel `v0-no-repo-evaluator` until
   the repository-owned evaluator lands (Phase 6).
-- **`observation_snapshot_id` — pending**, to be emitted by the observations layer over
-  `observations.product_adoption_current` (a build receipt, like `source_runs.json`). Gated on
-  `observations.product_adoption_current` reaching `main`.
+- **`observation_snapshot_id` — implemented** (`build/observation_snapshot.py`, `data-architecture.md`
+  §4.5), as the two distinct things §4.5 names. **`observation_content_digest`** is a SHA-256 over
+  the normalized observation content and nothing else — the ten measurement columns of
+  `product_adoption_current` as an order-independent multiset, excluding lineage, capture time, the
+  derived `observation_id`, `is_valid`, and `supersedes_observation_id`, with `observed_at`
+  normalized to UTC (naive interpreted as UTC) at fixed precision. **`observation_snapshot_id`** is
+  the identity reconciliation and `release_id` key on: it binds the `canonicalization_version` into
+  the content digest, so a persisted id names its rule. Derived at run time, not stored; a
+  merge-base ratchet forbids a serializer change without a version bump. Both digests are pinned
+  against the immutable Phase-2 baseline as fixed contracts.
 
 ## Atomicity: which state is in force
 
