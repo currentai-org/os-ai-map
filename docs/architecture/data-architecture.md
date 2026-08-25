@@ -832,10 +832,11 @@ publish is a maintainer step (`docs/operations/deploy-evaluation.md`).
 measured, unmeasured, and the deliberate nulls — one terminal outcome per applicable route. Today
 every measured row is `source_unavailable`: `product_adoption_current` carries no `source_run_id`
 (row binding is blocked on #355), so §4.3 forbids reading any current measurement as a validated
-agreement. That status is the source-run contract reaching the gate, not a defect in the report;
-the fuller status set becomes assignable once #355 binds observations to runs — the platform run id
-it needs is folded into OSO's incremental-model work (Kariba OSO-4705), so this waits on OSO
-shipping incremental models.
+agreement. That status is the source-run contract reaching the gate, not a defect in the report, and
+it is the report's **shipped end state**: the fuller status set is follow-up work, assignable once
+#355 binds observations to runs, and that binding is itself follow-up — the platform run id it needs
+is folded into OSO's incremental-model work (Kariba OSO-4705). The migration ships the report, not
+the gate.
 
 #### Repository-derived scoring trace
 
