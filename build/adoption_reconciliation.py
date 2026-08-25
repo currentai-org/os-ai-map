@@ -146,7 +146,11 @@ def reconcile(
                      "instrument_type": recorded_instrument, "authority": authority_of.get(recorded_instrument, "")}
 
         measured_level = measurement["measured_level"] if measurement else None
-        measured_instrument = measurement["instrument_type"] if measurement else route.get("instrument_type", "")
+        # A measured field is null when there is no measurement — never the route's would-be
+        # instrument. route_id / route_authority / recorded_instrument_type carry the applicable-
+        # route context instead; conflating "instrument the route would use" with "instrument
+        # actually measured" is what this avoids.
+        measured_instrument = measurement["instrument_type"] if measurement else None
 
         # Never compare across instrument types: a delta is meaningful only when the measured and
         # recorded instruments match. A cross-instrument row withholds the delta and is classified

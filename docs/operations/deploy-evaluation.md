@@ -20,10 +20,12 @@ commit, over one atomic read of `observations.product_adoption_current`.
 
 - The commit you are publishing from is on `main` and the worktree is clean (the builder refuses a
   dirty tree without `--allow-dirty`, because a dirty tree yields an id no commit reproduces).
-- `OSO_API_KEY` is set (the builder reads the deployed current table via `pyoso`).
-- The `evaluation` dataset exists on the platform. If it does not, create it first — this is the
-  same one-time namespace creation `observations` needed in Phase 2. Until it exists, both assets
-  stay `staged` / `materialized: false` in `warehouse/assets.yaml`.
+- `OSO_API_KEY` and `OSO_ORG_ID` are both set (the builder reads the deployed current table via
+  `pyoso`; the publisher uses the same GraphQL API as `build/publish_registry.py`). `OSO_DATASET`
+  defaults to `evaluation`.
+- The `evaluation` dataset may or may not exist; `build/publish_evaluation.py` creates it on the
+  first real publish. Until the tables exist, both assets stay `staged` / `materialized: false` in
+  `warehouse/assets.yaml`.
 
 ## 2. Dry run, then build the candidates from one live read
 
@@ -49,52 +51,46 @@ Sanity-check the row counts against what the builder reports over the baseline
 (`uv run python -m build.adoption_measurements` and `... adoption_reconciliation`), remembering the
 live counts move with the live observations.
 
-## 3. Upload as static models
+## 3. Publish
 
-Same GraphQL mechanism `build/publish_registry.py` uses (`graphql()` helper, `OSO_API_KEY` bearer
-token, `ORG_ID`). For each of the two tables, in order — `product_adoption_measurements` then
-`adoption_reconciliation`:
+`build/publish_evaluation.py` does the upload — it reuses `publish_registry`'s `graphql`,
+`resolve_static_models`, and `upload`, resolves (or creates) the `evaluation` dataset and each
+static model, `PUT`s the CSV, and requests the load run.
 
-1. **Resolve or create the dataset.** The `evaluation` dataset must exist; create it once if not
-   (mirror `publish_registry.resolve_dataset`). Record its `dataset_id`.
-2. **Resolve or create the static model** for the table name:
+```bash
+# Archive the current known-good bytes first, so a rollback has something to re-upload (see below).
+mkdir -p ~/eval-archive/$(date -u +%Y%m%dT%H%M%SZ) && cp build/evaluation/*.csv ~/eval-archive/…/
 
-   ```graphql
-   mutation($input: CreateStaticModelInput!) {
-     createStaticModel(input:$input){ success staticModel{ id name } } }
+uv run python -m build.publish_evaluation --plan       # offline: tables, row counts, SHA-256; no network
+uv run python -m build.publish_evaluation --dry-run    # read-only id resolution; NO mutation
+uv run python -m build.publish_evaluation              # create/upload/run; writes a provenance receipt
+```
+
+The publish writes `build/evaluation/publish_receipt.json` (row count, column schema, SHA-256 per
+table) **before** it uploads, and prints each `run.id` and status. Record the `dataset_id`,
+`model_id`, and the receipt with the deploy note. Verify the deployed row counts equal the CSV row
+counts and that `routing_policy_version` is present and equals the value in `signal_routing.yaml`.
+
+## Rollback — by bytes, not by revision re-pointing
+
+A static-model publication **replaces the table in place**; the platform exposes no prior-revision
+list to re-point to, and `observations.product_adoption_current` may have changed since, so
+regenerating from an old commit does **not** reproduce the previous table. Rollback therefore means
+**re-uploading the exact bytes that were live before the replacement**:
+
+1. Take the archived CSV whose SHA-256 the previous `publish_receipt.json` recorded (the copy you
+   made in step 3, or the receipt from the prior deploy).
+2. Re-run the publisher against those bytes:
+
+   ```bash
+   uv run python -m build.publish_evaluation --dir /path/to/archived-good/   # re-upload known-good bytes
    ```
 
-   Capture the returned `staticModel.id` (this is `model_id`). If it already exists, reuse its id.
-3. **Get an upload URL and PUT the CSV** (mirror `publish_registry.upload`):
+3. Confirm the deployed SHA-256/row count matches the archived receipt.
 
-   ```graphql
-   mutation($staticModelId: ID!){ createStaticModelUploadUrl(staticModelId:$staticModelId) }
-   ```
-
-   then HTTP `PUT` the CSV bytes to that URL.
-4. **Trigger the load and capture the revision:**
-
-   ```graphql
-   mutation($input: CreateStaticModelRunRequestInput!){
-     createStaticModelRunRequest(input:$input){ success run{ id status } } }
-   ```
-
-   Record `run.id`, the resulting `revision`, the schema the platform inferred, and the CSV's
-   `sha256`. These are the provenance the inventory's `mirror` block (or the evaluation asset's
-   deploy note) must carry, exactly as the registry and observation deploys record theirs.
-
-Verify the deployed row counts equal the CSV row counts (`data_rows`), and that
-`routing_policy_version` is present and equals the value in `signal_routing.yaml`.
-
-## Rollback
-
-A static-model load is a new revision over the same `model_id`; the previous revision is retained.
-To roll back, re-point the model to the prior revision (or re-run step 3 with the last-known-good
-CSV, which you can regenerate from the commit whose `declaration_version_id` you recorded). Because
-nothing downstream consumes these tables yet (Phase 4's gate is not enabled), a rollback has no
-consumer to break — but record the revision you rolled back from and to, so the provenance stays
-truthful. If a load fails midway, the model keeps its prior revision; do not leave a half-loaded
-table marked `active` in the inventory.
+Nothing downstream consumes these tables yet (Phase 4's gate is not enabled), so a rollback has no
+consumer to break — but do not leave a half-loaded table marked `active` in the inventory: if a
+load fails midway, re-upload the known-good bytes or revert the inventory entry to `staged`.
 
 ## 4. Reconcile the inventory with reality
 

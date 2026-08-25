@@ -30,12 +30,13 @@ return, and both are folded in here.
     ``declaration_version_id`` — see "commit-scoped" below) because the input carries its OWN
     version and is applied in a downstream layer, not in the declaration compile.
     ``signal_routing.yaml`` is the case — it publishes under ``routing_policy_version`` (see
-    ``test_serialize_routing``) and is applied in evaluation. That binding is now BOUND, not
-    pending: ``evaluation.adoption_reconciliation`` (and ``evaluation.product_adoption_measurements``)
-    exist and carry ``routing_policy_version`` as a column, stamped from the compiled routes, so the
-    policy version travels with the evaluation output that applied it. ``release_id`` folds the
-    reconciliation in turn. The version therefore stays OUT of ``source_content_digest`` (it is a
-    downstream policy, not a declaration input) while being carried where it is applied.
+    ``test_serialize_routing``) and is applied in evaluation. Its binding is now SPLIT: BOUND to the
+    evaluation tables (``evaluation.product_adoption_measurements`` and
+    ``evaluation.adoption_reconciliation`` carry ``routing_policy_version`` as a column, stamped from
+    the compiled routes, proven by the column), and still PENDING for ``release_id``, which does not
+    exist until Phase 8. The version therefore stays OUT of ``source_content_digest`` (it is a
+    downstream policy, not a declaration input) while being carried where it is applied; the Phase-8
+    ratchet in ``POLICY_INPUTS`` records the remaining obligation.
   * ``NON_DECLARATION_INPUTS`` — not a scoring declaration at all (the frozen long-tail
     warehouse sample); excluded from the digest with a reason.
 
@@ -130,17 +131,37 @@ DECLARATION_INPUTS: tuple[str, ...] = (
 )
 
 # Policy inputs — excluded from source_content_digest because they carry their OWN version and
-# are applied in a downstream layer, not in the declaration compile. The binding is now BOUND, not
-# an obligation: evaluation.adoption_reconciliation and evaluation.product_adoption_measurements
-# exist and carry routing_policy_version as a column, stamped from the compiled routes, so the
-# version travels with the evaluation output that applied it (and release_id folds the
-# reconciliation in turn). Excluding an input here never excludes it from declaration_version_id
-# itself, which is commit-scoped via source_git_sha.
-POLICY_INPUTS: dict[str, dict[str, str]] = {
+# are applied in a downstream layer, not in the declaration compile. The binding has TWO parts,
+# tracked separately so a real binding is not marked complete while an unbuilt one rides along:
+#   * evaluation_tables — BOUND. evaluation.adoption_reconciliation and
+#     evaluation.product_adoption_measurements exist and carry routing_policy_version as a column,
+#     stamped from the compiled routes, so the version travels with the evaluation output that
+#     applied it. Proven by the column, not merely asserted (see test_policy_inputs_*).
+#   * release_id — PENDING. release_id does not exist until Phase 8; the release identity must then
+#     incorporate the reconciliation-policy version (which folds routing_policy_version via
+#     reconciliation). Until releases.manifest lands, this stays pending and the future ratchet
+#     below records the obligation. Marking it bound now would be a green ratchet over an unbuilt
+#     table.
+# Excluding an input here never excludes it from declaration_version_id itself, which is
+# commit-scoped via source_git_sha.
+POLICY_INPUTS: dict[str, dict[str, object]] = {
     "signal_routing.yaml": {
         "policy_version": "routing_policy_version",
-        "binding": "bound",
-        "binds_into": "evaluation.adoption_reconciliation / release_id",
+        "bindings": {
+            "evaluation_tables": "bound",
+            "release_id": "pending",
+        },
+        "binds_into": {
+            "evaluation_tables": (
+                "evaluation.product_adoption_measurements / evaluation.adoption_reconciliation"
+            ),
+            "release_id": "releases.manifest.release_id (Phase 8)",
+        },
+        "future_ratchet": (
+            "when releases.manifest lands (Phase 8), release_id MUST incorporate the "
+            "reconciliation-policy version, which folds routing_policy_version; flip release_id to "
+            "bound only then, proven by the release identity carrying it."
+        ),
         "reason": (
             "routing is applied in the evaluation layer, not declared per product; it "
             "publishes under routing_policy_version (see test_serialize_routing) and is now "

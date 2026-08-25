@@ -38,7 +38,7 @@ TEST_DVID = "test-declaration-version"
 
 BASELINE_SNAPSHOT_ID = "9bd4d93a6fc67a2b9d89d91adeb4bb3f4fd9b612cc26e6647c67210c9a37a8d4"
 MEASUREMENTS_DIGEST = "f1ccad234b9e91906b2feb4e9f4d40f82489f4d2d62bb7bb016ac2ae38629742"
-RECONCILIATION_DIGEST = "44f5e0395f47480a0c59f2408e1f4aa99e1c0160f9982c54310e0efb7146ed5e"
+RECONCILIATION_DIGEST = "26251c300f12532c586a0d967828586e2bc807064b349c4dc6d235686c891800"
 
 MEASUREMENT_COUNT = 377
 RECORDED_ASSESSMENT_COUNT = 522
@@ -356,6 +356,18 @@ def test_same_instrument_measured_is_source_unavailable_with_a_delta(reconciliat
     for row in same:
         assert row["status"] == "source_unavailable"
         assert row["delta"] == row["measured_level"] - row["recorded_level"]
+
+
+def test_unmeasured_rows_carry_no_measurement_fields(reconciliation_rows):
+    """An unmeasured row has no measurement, so every measurement field is null — never the route's
+    would-be instrument. The applicable-route context lives in route_id + route_authority instead."""
+    unmeasured = [r for r in reconciliation_rows if r["status"] == "unmeasured"]
+    assert unmeasured
+    for row in unmeasured:
+        for field in ("measured_level", "measured_instrument_type", "channel", "raw_value",
+                      "measurement_as_of", "delta"):
+            assert row[field] is None, f"{row['product_slug']}: unmeasured but {field}={row[field]!r}"
+        assert row["route_id"] and row["route_authority"] is not None  # route context preserved
 
 
 def test_every_status_is_in_the_allowed_set(reconciliation_rows):

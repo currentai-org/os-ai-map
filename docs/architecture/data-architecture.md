@@ -806,8 +806,10 @@ Reconciliation never compares across instrument types. A `delta` is computed onl
 and recorded instruments match; a cross-instrument row withholds it and is `route_mismatch` (an
 authoritative instrument on either side — inconsistent declarations) or `expected_difference` (both
 weak signals). Both evaluation tables carry `routing_policy_version`, stamped from the compiled
-routes, so the routing policy that produced a row travels with it and binds into `release_id` — the
-obligation `declaration_version.py` reserved is now bound, not pending.
+routes, so the routing policy that produced a row travels with it. `declaration_version.py`'s
+binding is split accordingly: **bound** to the evaluation tables (proven by the column), and still
+**pending** for `release_id`, which does not exist until Phase 8 — where the release identity must
+then incorporate the reconciliation-policy version.
 
 The builders are pure functions of their inputs (the identities passed in) so the logic is pinned
 against the immutable Phase-2 baseline with fixed test identities; `build/serialize_evaluation.py`
