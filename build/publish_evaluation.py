@@ -93,12 +93,22 @@ _GRAIN = ("declaration_version_id", "observation_snapshot_id", "product_slug", "
 
 
 def csv_provenance(path: Path) -> dict:
-    """Row count, column schema, and SHA-256 of a CSV — the bytes a rollback must be able to name."""
+    """Row count, column schema, and SHA-256 of a CSV — the bytes a rollback must be able to name.
+
+    ``all_null_columns`` records the declared columns that are empty in EVERY row. The loader
+    infers a table schema from records, so it cannot type — and therefore drops — a column that
+    carries no value anywhere; recording them here lets the deployment check tell that expected
+    absence apart from a column that went missing with data in it.
+    """
     raw = path.read_bytes()
     header = path.read_text(encoding="utf-8").splitlines()[0] if raw else ""
+    columns, rows = _read_rows(path) if raw else ([], [])
     return {
         "rows": data_rows(path),
         "columns": header.split(",") if header else [],
+        "all_null_columns": sorted(
+            c for c in columns if all((row.get(c) or "") == "" for row in rows)
+        ) if rows else [],
         "sha256": hashlib.sha256(raw).hexdigest(),
         "bytes": len(raw),
     }
@@ -255,12 +265,33 @@ def poll_run(run_id: str, token: str, timeout: float = 1800.0, interval: float =
     return status
 
 
-def deployed_table_state(dataset: str, table: str) -> dict:
-    """Row count and column set of a deployed table, read via pyoso — the materialized reality."""
+def deployed_table_state(dataset: str, table: str, timeout: float = 300.0,
+                        interval: float = 15.0) -> dict:
+    """Row count and column set of a deployed table, read via pyoso — the materialized reality.
+
+    A just-loaded table is not immediately visible in the query catalog: the verification SELECT
+    fired the instant a run reported SUCCESS raises `TablesNotFound` (observed on the first
+    publish, 2026-08-25). That is propagation lag, not a failed load, so the read is retried until
+    `timeout`; a table still missing at the deadline raises and the deployment is not archived.
+
+    `_dlt_*` columns are the loader's own bookkeeping, present on every loaded table and in no
+    candidate. They are excluded so the schema comparison is against the declared columns only.
+    """
+    import time
+
     from build.warehouse import query
 
-    rows = query(f"SELECT * FROM currentai.{dataset}.{table}")
-    return {"rows": len(rows), "columns": sorted(rows[0].keys()) if rows else []}
+    deadline = time.time() + timeout
+    while True:
+        try:
+            rows = query(f"SELECT * FROM currentai.{dataset}.{table}")
+            break
+        except Exception as exc:
+            if "TablesNotFound" not in str(exc) or time.time() >= deadline:
+                raise
+            time.sleep(interval)
+    columns = [c for c in (rows[0].keys() if rows else []) if not c.startswith("_dlt_")]
+    return {"rows": len(rows), "columns": sorted(columns)}
 
 
 def runs_all_succeeded(statuses: dict[str, tuple[str, str]]) -> list[str]:
@@ -273,14 +304,29 @@ def runs_all_succeeded(statuses: dict[str, tuple[str, str]]) -> list[str]:
 
 
 def deployment_mismatches(expected: dict, deployed: dict) -> list[str]:
-    """Problems if the deployed row count or column set does not match the validated candidate."""
+    """Problems if the deployed row count or column set does not match the validated candidate.
+
+    Row counts must match exactly. On columns, the deployed table must carry every candidate column
+    that holds a value somewhere, and must carry NO column the candidate does not declare. The one
+    permitted absence is a candidate column that is null in every row: the loader types columns from
+    records and drops one it never sees a value for, so its absence is the loader's schema inference
+    and not lost data (`adoption_reconciliation.override_id` today, with no overrides recorded yet).
+    A column with data that fails to arrive is still a mismatch, and so is an unexpected extra.
+    """
     problems: list[str] = []
     for table in EVAL_TABLES:
         exp, got = expected[table], deployed[table]
         if got["rows"] != exp["rows"]:
             problems.append(f"{table}: deployed {got['rows']} rows, candidate had {exp['rows']}")
-        if set(got["columns"]) != set(exp["columns"]):
-            problems.append(f"{table}: deployed columns do not match the candidate schema")
+        permitted_absent = set(exp.get("all_null_columns") or ())
+        missing = set(exp["columns"]) - set(got["columns"]) - permitted_absent
+        extra = set(got["columns"]) - set(exp["columns"])
+        if missing:
+            problems.append(
+                f"{table}: deployed table is missing candidate columns with data: {sorted(missing)}"
+            )
+        if extra:
+            problems.append(f"{table}: deployed table has undeclared columns: {sorted(extra)}")
     return problems
 
 
@@ -372,23 +418,43 @@ def main() -> int:
             print(f"  {verb} {table}.csv ({receipt[table]['rows']:,} rows) -> {model_id}")
         return 0  # NO write on a dry run
 
-    run_ids: dict[str, str] = {}
     for table in EVAL_TABLES:
         path = args.dir / f"{table}.csv"
         model_id = models[table][0]
         url = graphql(M_URL, {"staticModelId": model_id}, token)["createStaticModelUploadUrl"]
         upload(path, url)
-        run = graphql(M_RUN, {"input": {"staticModelId": model_id}}, token)["createStaticModelRunRequest"]["run"]
-        run_ids[table] = run["id"]
-        print(f"  uploaded {table}.csv ({path.stat().st_size:,} bytes, {receipt[table]['rows']:,} rows); "
-              f"run {run['id']} accepted ({run['status']})")
+        print(f"  uploaded {table}.csv ({path.stat().st_size:,} bytes, {receipt[table]['rows']:,} rows)")
 
-    # A run request is only ACCEPTED above. Wait for both to reach terminal SUCCESS, then confirm the
-    # deployed row counts and schema match the candidate. Only then is the deployment real, and only
-    # then is the immutable archive written. Any partial failure returns nonzero WITHOUT archiving,
-    # so the previous archive stays the authoritative rollback target and a rerun is not blocked by
-    # an archive that was never truly deployed.
-    statuses = {table: (run_id, poll_run(run_id, token)) for table, run_id in run_ids.items()}
+    # ONE RUN REQUEST PER MODEL, awaited in turn. The request is addressed to a dataset with an
+    # explicit model selection (`datasetId` + `selectedModels`) — there is no per-static-model
+    # input, so a `{staticModelId}` payload is rejected outright and nothing materializes. But a
+    # request naming N models FANS OUT INTO N RUNS and returns only ONE of them, which breaks this
+    # publisher's contract in two ways at once, both observed on the first publish (2026-08-25):
+    #
+    #   * The returned run cannot certify its siblings. Polling it reported SUCCESS while the
+    #     sibling run loading the other table had already FAILED — exactly the half-loaded
+    #     deployment the wait exists to prevent.
+    #   * The sibling runs start concurrently and RACE to create the dataset's Trino schema, which
+    #     no run has created yet on a first publish. One wins; the other dies with
+    #     "Key 'org_<org>__<dataset>' already exists". Selecting both models is therefore not
+    #     merely unverifiable, it is the cause of the failure.
+    #
+    # Serializing costs a few seconds on two small tables and buys a pollable run id per table and
+    # a schema created exactly once. Fail fast: a table that does not load stops the deploy rather
+    # than uploading over a table whose sibling is already broken.
+    statuses: dict[str, tuple[str, str]] = {}
+    for table in EVAL_TABLES:
+        run = graphql(
+            M_RUN,
+            {"input": {"datasetId": dataset_id, "selectedModels": [models[table][0]]}},
+            token,
+        )["createStaticModelRunRequest"]["run"]
+        # A run request is only ACCEPTED here; wait for THIS table's run to reach a terminal state.
+        status = poll_run(run["id"], token)
+        statuses[table] = (run["id"], status)
+        print(f"  {table}: run {run['id']} finished {status}")
+        if status != RUN_SUCCESS:
+            break
     problems = runs_all_succeeded(statuses)
     if problems:
         print("deployment did not succeed — not archiving:", file=sys.stderr)
@@ -405,7 +471,7 @@ def main() -> int:
         return 2
 
     archive = archive_deployment(args.dir, receipt)
-    print(f"\nboth runs SUCCESS and deployed data verified; archived this deployment (immutable) at "
+    print(f"\nevery load run SUCCESS and deployed data verified; archived this deployment (immutable) at "
           f"{archive} — the rollback target for the next deploy")
     return 0
 

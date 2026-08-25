@@ -689,17 +689,25 @@ assets:
   classification_note: report-first reconciliation of measured vs recorded adoption; keys on both
     release identities and carries no release_id (§4.4). Every measured row is source_unavailable
     until row-to-run binding lands (#355); an abstaining route is abstained.
-  refresh: 'not deployed; built by the repo-side release builder (build/adoption_reconciliation.py)
-    over evaluation.product_adoption_measurements and the recorded sources/scores, stamped with the
-    run-time declaration_version_id + observation_snapshot_id. The measurements it reconciles read
-    observations.product_adoption_current live via pyoso; build/serialize_evaluation.py reads that
-    table once and serializes both evaluation tables to publishable static-model CSVs from one
-    atomic row set. The evaluation namespace does not exist on the platform yet (verified read-only
-    2026-08-25); a dataset_id is recorded here only once it does. Publishing to OSO is a maintainer
-    step, runbook at docs/operations/deploy-evaluation.md.'
+  refresh: 'static model, reloaded by a maintainer; built by the repo-side release builder
+    (build/adoption_reconciliation.py) over evaluation.product_adoption_measurements and the
+    recorded sources/scores, stamped with the run-time declaration_version_id +
+    observation_snapshot_id. The measurements it reconciles read observations.product_adoption_current
+    live via pyoso; build/serialize_evaluation.py reads that table once and serializes both
+    evaluation tables to publishable static-model CSVs from one atomic row set. First published
+    2026-08-25 (522 rows, declaration 8d3e9d8df10d / snapshot 9bd4d93a6fc6). override_id is absent
+    from the deployed table: it is null in every row and the loader types columns from records.
+    Publishing to OSO is a maintainer step, runbook at docs/operations/deploy-evaluation.md.'
+  retirement_reason: 'no reviewed consumer as of 2026-08-25, because it was published that day and
+    its consumer does not exist yet: the Phase-4 blocking gate is deliberately not enabled while
+    every measured row is source_unavailable (#355). This is a "nothing uses it yet" finding, not a
+    "nobody wants it" one, and the derived predicate cannot tell those apart -- which is why the
+    label is required here rather than the entry being exempt. NOT a deletion candidate.'
+  retirement_issue: '#355'
+  dataset_id: 55a4311d-7659-4811-a4c5-7ff167ef5eef
   owner: carl
-  status: staged
-  materialized: false
+  status: active
+  materialized: true
   verified_at: '2026-08-25'
 - id: evaluation.product_adoption_measurements
   table: currentai.evaluation.product_adoption_measurements
@@ -722,17 +730,26 @@ assets:
   classification_note: product-level aggregation + banding of artifact observations by the compiled
     routing (§4.4); keys on both release identities and carries measured_level, band_set_id and
     route_authority. Artifact-level raw observations stay in observations.product_adoption_current.
-  refresh: 'not deployed; built by the repo-side release builder (build/adoption_measurements.py),
-    which reads observations.product_adoption_current live via pyoso
-    (load_current_observations) and the compiled registry.adoption_* routing tables, stamped with
-    the run-time declaration_version_id + observation_snapshot_id derived from that same single
-    read. build/serialize_evaluation.py writes the publishable static-model CSV. The evaluation
-    namespace does not exist on the platform yet (verified read-only 2026-08-25); a dataset_id is
-    recorded here only once it does. Publishing to OSO is a maintainer step, runbook at
+  refresh: 'static model, reloaded by a maintainer; built by the repo-side release builder
+    (build/adoption_measurements.py), which reads observations.product_adoption_current live via
+    pyoso (load_current_observations) and the compiled registry.adoption_* routing tables, stamped
+    with the run-time declaration_version_id + observation_snapshot_id derived from that same single
+    read. build/serialize_evaluation.py writes the publishable static-model CSV. First published
+    2026-08-25 (377 rows, declaration 8d3e9d8df10d / snapshot 9bd4d93a6fc6), cut over the committed
+    Phase-2 baseline: --live is broken (load_current_observations does not coerce the VARCHAR-
+    transported observed_at), and the baseline was confirmed digest-identical to the deployed
+    current table that day. Publishing to OSO is a maintainer step, runbook at
     docs/operations/deploy-evaluation.md.'
+  retirement_reason: 'no reviewed consumer as of 2026-08-25, because it was published that day and
+    its only consumer is the reconciliation builder, which reads the candidate rows in-repo rather
+    than the deployed table. A platform reader arrives with the Phase-4 gate, held until row-to-run
+    binding lands (#355). A "nothing uses it yet" finding, not a "nobody wants it" one. NOT a
+    deletion candidate.'
+  retirement_issue: '#355'
+  dataset_id: 55a4311d-7659-4811-a4c5-7ff167ef5eef
   owner: carl
-  status: staged
-  materialized: false
+  status: active
+  materialized: true
   verified_at: '2026-08-25'
 - id: observations.product_adoption_baseline
   table: currentai.observations.product_adoption_baseline
