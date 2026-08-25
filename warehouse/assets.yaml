@@ -783,9 +783,12 @@ assets:
   retirement_issue: '#348'
   notes: The Phase 2 current-state adoption slice, deployed 2026-08-24. Unread by design until the
     Phase 3 evaluation/reconciliation consumers land; pre-positioned, not a retirement candidate in
-    substance.
-  refresh: 'repo-authored SQL, deployed to the platform 2026-08-24 (the deploy created the
-    observations namespace); the repo owns the definition and is its source of truth. Full-refresh
+    substance. The declared-identity guard went live 2026-08-25 as revision 3
+    (a27b153d-76d8-4661-8fcb-4ee4802cb164); the run SUCCEEDED, which is the coverage proof, since
+    the guard FAILs the materialization on any undeclared artifact.
+  refresh: 'repo-authored SQL, deployed to the platform 2026-08-24 and repointed to the
+    declared-identity revision 2026-08-25 (revision 3); the repo owns the definition and is its
+    source of truth. Full-refresh
     on the platform. source_run_id is NULL until #355, so downstream reconciliation treats an
     unbound SUCCESS as source_unavailable, not agreement (§4.3). Because this model is
     full-refresh, its deployed state was frozen at once as observations.product_adoption_baseline
@@ -795,7 +798,7 @@ assets:
   owner: carl
   status: active
   materialized: true
-  verified_at: '2026-08-24'
+  verified_at: '2026-08-25'
 - id: observations.source_runs
   table: currentai.observations.source_runs
   kind: observations
