@@ -186,31 +186,41 @@ def _merge_base_bytes(path: str, base: str = "origin/main") -> bytes | None:
         return None
 
 
-def _assert_immutable(prior: bytes | None) -> None:
+def _assert_immutable(prior: bytes | None, receipt: dict) -> None:
+    current = PARQUET.read_bytes()
     if prior is None:
-        pytest.skip("baseline absent at merge base (introducing PR); ratchet arms once merged")
-    assert prior == PARQUET.read_bytes(), (
+        # First install: the file does not exist at the merge base, so there is no prior to
+        # ratchet against. Rather than skip, establish the frozen reference the ratchet will
+        # guard once this lands — assert the committed bytes match the digest the receipt
+        # records, so a bytes/receipt mismatch fails at introduction too.
+        assert hashlib.sha256(current).hexdigest() == receipt["file_sha256"], (
+            "baseline bytes do not match the receipt's recorded file digest at introduction"
+        )
+        return
+    assert prior == current, (
         "the frozen baseline bytes changed against the merge base — the single preserved "
         "snapshot is immutable and must never be rewritten, refreshed, or relabeled"
     )
 
 
-def test_baseline_bytes_are_immutable_against_the_merge_base():
+def test_baseline_bytes_are_immutable_against_the_merge_base(receipt):
     """Once the baseline exists on the base branch, its bytes are frozen forever. A later PR
     that alters them — even while updating file_sha256 in the receipt to match — fails here,
     because the check compares the actual bytes across the merge base, not the recorded digest.
 
     On the introducing PR the file does not yet exist at the merge base, so there is nothing to
-    ratchet against and the internal digest checks above carry the contract; the ratchet arms the
-    moment this lands on the base branch.
+    ratchet against; the check instead verifies the committed bytes match the receipt digest,
+    establishing the reference the byte-identity ratchet guards the moment this lands on the base
+    branch. Either way the test asserts and passes — no skip.
     """
     _assert_immutable(
-        _merge_base_bytes("warehouse/data/observations/product_adoption_baseline.parquet")
+        _merge_base_bytes("warehouse/data/observations/product_adoption_baseline.parquet"),
+        receipt,
     )
 
 
-def test_ratchet_fires_on_a_byte_swap():
+def test_ratchet_fires_on_a_byte_swap(receipt):
     """Prove the gate is real: any difference from the merge-base bytes fails, so a later PR
     cannot swap the bytes (even with a matching receipt update)."""
     with pytest.raises(AssertionError):
-        _assert_immutable(PARQUET.read_bytes() + b"\x00")
+        _assert_immutable(PARQUET.read_bytes() + b"\x00", receipt)
