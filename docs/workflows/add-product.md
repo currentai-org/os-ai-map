@@ -20,6 +20,21 @@ Five, and all in the same PR:
 
 `CONTRIBUTING.md` historically listed only the first four. The fifth is real.
 
+**A sixth, when the product starts life as a discovered candidate.** If a row for this slug
+exists in `sources/registry/<cat>.yaml` — put there by
+[`discover-candidates.md`](discover-candidates.md) — that row **comes out** in the same PR. A
+slug may live in exactly one tier, so adding the head product without removing the tail row
+fails `validate` with `tail slug '<slug>' already exists as a head product`. Check before you
+start:
+
+```bash
+grep -rn "slug: <slug>" sources/registry/
+```
+
+`promote-category` does the same removal for a whole roster, but it applies only to
+*preliminary* categories. A candidate discovered in an already-published category has no other
+workflow that clears its row, so this is the only place it happens.
+
 ## Procedure
 1. **Pick the slug.** Kebab-case, and it names the **tier the vendor sells**, not a version or
    size — see [`../reference/identity.md`](../reference/identity.md). Slugs are immutable.
@@ -43,7 +58,9 @@ Five, and all in the same PR:
    [`../reference/openness.md`](../reference/openness.md), [`../reference/adoption.md`](../reference/adoption.md),
    [`../reference/capability.md`](../reference/capability.md).
 5. **Update both rosters** (category and org), and the org file if the org is new. A slug
-   appears in exactly one of each.
+   appears in exactly one of each. **If the product came from a registry row, delete that row
+   now** — see the sixth file above. If it was the last row in the file, leave `products: []`
+   rather than deleting the file: the file pairs with a category, not with its contents.
 6. **For a batch,** generate the files with a small script (dump for new files, and a helper
    that inserts `- <slug>` lines under existing `products:` blocks so their formatting is
    preserved). Never load-modify-dump an existing corpus file. Re-check the two hand-authored
@@ -58,8 +75,8 @@ uv run python -m build.check_verification  # producible pair; invariant if you d
 Preview only, never commit: `build/notebook_data.json`, `notebooks/ai-stack-map.py` (bot-owned).
 
 ## Expected PR contents
-The five files above, nothing generated. A one-line note per product on the evidence that
-settled its openness score.
+The five files above — six when a discovered candidate's registry row comes out — and nothing
+generated. A one-line note per product on the evidence that settled its openness score.
 
 ## Stop and escalate when
 - The product needs a **new category** → do [`edit-category.md`](edit-category.md) first (and a
