@@ -38,7 +38,7 @@ uv run python -m build.serialize_evaluation --check          # in-memory build, 
 Then build the upload artifacts:
 
 ```bash
-uv run python -m build.serialize_evaluation --live      # BROKEN, see below
+uv run python -m build.serialize_evaluation --live      # the deployed current table
 uv run python -m build.serialize_evaluation             # the committed Phase-2 baseline
 ```
 
@@ -48,25 +48,31 @@ Either reads the observation set **once**, derives `observation_snapshot_id` and
 read is the point: the snapshot id and both tables describe the same rows, never two reads that
 straddle a refresh. The CSVs are git-ignored — they are an upload artifact, not repository state.
 
-**`--live` currently fails and has no test covering it.** `adoption_measurements.
-load_current_observations` coerces a pandas `Timestamp` but not the plain `str` the deployed table's
-`observed_at` actually arrives as through `pyoso`, and the strict digest rejects a string on
-purpose (it would bypass UTC normalization). All three `--live` callers are affected. Until that is
-fixed, build from the baseline — but **prove the substitution first**, because the baseline is only
-equivalent while the live table has not moved:
+**`--live` is fixed.** `adoption_measurements.load_current_observations` coerced a pandas
+`Timestamp` but not the plain `str` the deployed table's `observed_at` actually arrives as through
+`pyoso` (pyoso has no `Timestamp` to hand back for that column, so it serializes it as ISO-8601
+text instead), and the strict digest rejected the string on purpose — it would bypass UTC
+normalization. The fix is a new `_coerce_observed_at` step at the load boundary, in
+`build/adoption_measurements.py`, that parses the string into a `datetime` and hands it to the
+digest exactly as it would have received a `Timestamp`; the digest's own UTC-normalization rule
+is unchanged. All three `--live` callers (`adoption_measurements`, `adoption_reconciliation`,
+`serialize_evaluation`) share this one load function, so the fix covers all three.
+`tests/test_adoption_evaluation.py` pins the str/`datetime` digest equivalence and, when
+`OSO_API_KEY` is set, a live check that the deployed current table still digest-matches the
+committed baseline parquet.
+
+As optional assurance before a publish, the same equivalence can still be checked by hand:
 
 ```bash
-uv run python -c "import datetime as dt; \
-from build import adoption_measurements as M; \
+uv run python -c "from build import adoption_measurements as M; \
 from build.observation_snapshot import rows_from_parquet, observation_content_digest as d; \
-c=lambda r:{**r,'observed_at':dt.datetime.fromisoformat(r['observed_at'])} \
-  if isinstance(r.get('observed_at'),str) else r; \
-print(d(rows_from_parquet()) == d([c(r) for r in M.load_current_observations()]))"
+print(d(rows_from_parquet()) == d(M.load_current_observations()))"
 ```
 
-`True` means the baseline and the deployed current table are the same content, so the published
-bytes are exactly what a working `--live` would have produced (this is how the 2026-08-25 deploy was
-cut). `False` means they have diverged and you must fix `--live` rather than substitute.
+`True` means the baseline and the deployed current table are still the same content, so building
+from the baseline (if you choose to) would produce the same bytes as `--live`. `False` means the
+live table has genuinely moved since the baseline was captured — build from `--live` in that case
+rather than treating the baseline as current.
 
 Sanity-check the row counts against what the builder reports over the baseline
 (`uv run python -m build.adoption_measurements` and `... adoption_reconciliation`), remembering the

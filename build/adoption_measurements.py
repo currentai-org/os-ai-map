@@ -384,10 +384,35 @@ def _is_na(value: object) -> bool:
         return False
 
 
+def _coerce_observed_at(value: object) -> object:
+    """`observed_at` as pyoso actually returns it, after `_native` above has already turned a
+    pandas `Timestamp` into a `datetime` and a null into `None`: a plain ISO-8601 `str`, because
+    pyoso has no `Timestamp` to hand back for this column and serializes it as text instead.
+    `observation_snapshot._canonical_row` rejects a string on purpose — see its module docstring
+    — because a string would bypass its own UTC normalization, so the str -> datetime coercion
+    belongs here, at the load boundary, not there. The parsed value keeps whatever offset (or
+    lack of one) the string carried; converting it to UTC stays the digest's job, not this one's.
+    """
+    if value is None or isinstance(value, datetime.datetime):
+        return value
+    if isinstance(value, str):
+        try:
+            return datetime.datetime.fromisoformat(value)
+        except ValueError as exc:
+            raise ValueError(
+                f"observed_at is not a parseable ISO-8601 datetime string: {value!r}"
+            ) from exc
+    raise TypeError(
+        f"observed_at must be a datetime or an ISO-8601 string, got {type(value).__name__!r} ({value!r})"
+    )
+
+
 def load_current_observations() -> list[dict]:
     """The deployed observations.product_adoption_current, read live via pyoso (needs OSO_API_KEY).
 
     Values are coerced to native Python types so the strict digest and banding accept them.
+    `observed_at` gets an extra pass through `_coerce_observed_at`: pyoso hands it back as a
+    plain string rather than a pandas `Timestamp`, so `_native` alone lets it through unchanged.
     """
     from build.warehouse import query
 
@@ -396,7 +421,13 @@ def load_current_observations() -> list[dict]:
         "metric_type, raw_value, unit, measurement_window_days, observed_at "
         "FROM currentai.observations.product_adoption_current"
     )
-    return [{key: _native(value) for key, value in row.items()} for row in rows]
+    return [
+        {
+            key: (_coerce_observed_at(_native(value)) if key == "observed_at" else _native(value))
+            for key, value in row.items()
+        }
+        for row in rows
+    ]
 
 
 def resolve(observation_rows: Sequence[Mapping], root: Path | None = None, allow_dirty: bool = False) -> list[dict]:

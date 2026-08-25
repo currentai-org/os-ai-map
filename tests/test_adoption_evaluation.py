@@ -11,6 +11,7 @@ commit, whose SHA the content digests deliberately exclude.
 
 import datetime
 import hashlib
+import os
 from pathlib import Path
 
 import pytest
@@ -18,17 +19,23 @@ import pytest
 from build.adoption_measurements import (
     _band_for,
     _band_index,
+    _coerce_observed_at,
     _native,
     _numeric,
     all_routes,
     canonical_row as measurement_row,
+    load_current_observations,
     load_inputs,
     measurements,
     route_scopes,
     select_route,
 )
 from build.adoption_reconciliation import canonical_row as reconciliation_row, reconcile
-from build.observation_snapshot import observation_snapshot_id, rows_from_parquet
+from build.observation_snapshot import (
+    observation_content_digest,
+    observation_snapshot_id,
+    rows_from_parquet,
+)
 from build.validate import load_sources
 
 _ROOT = Path(__file__).resolve().parents[1]
@@ -282,6 +289,78 @@ def test_native_coerces_pyoso_scalars_to_python_types():
     assert _native(_Timestamp()) == datetime.datetime(2026, 1, 2, 3, 4, 5)
     coerced = _native(_NpScalar(7))
     assert coerced == 7 and type(coerced) is int
+
+
+# --- --live: pyoso hands `observed_at` back as a plain str, not a Timestamp ------
+
+
+_OBSERVATION_FIXTURE_COLUMNS = {
+    "product_slug": "acme-widget",
+    "product_type": "model",
+    "artifact_kind": "github",
+    "artifact_id": "acme/widget",
+    "channel": "github",
+    "metric_type": "stars",
+    "raw_value": 42,
+    "unit": "stars",
+    "measurement_window_days": None,
+}
+
+
+def test_coerce_observed_at_str_round_trips_to_the_same_digest_as_datetime():
+    """The str `observed_at` pyoso actually returns must digest identically to the equivalent
+    `datetime` the strict digest accepts directly — the coercion must not change the content,
+    only the type. Exercised naive (the warehouse's own case) and aware ("Z")."""
+    naive_dt = datetime.datetime(2026, 8, 20, 12, 0, 0)
+    naive_str = "2026-08-20T12:00:00"
+    assert _coerce_observed_at(naive_str) == naive_dt
+    naive_row_from_str = {**_OBSERVATION_FIXTURE_COLUMNS, "observed_at": _coerce_observed_at(naive_str)}
+    naive_row_from_dt = {**_OBSERVATION_FIXTURE_COLUMNS, "observed_at": naive_dt}
+    assert observation_content_digest([naive_row_from_str]) == observation_content_digest([naive_row_from_dt])
+
+    aware_dt = datetime.datetime(2026, 8, 20, 12, 0, 0, tzinfo=datetime.timezone.utc)
+    aware_str = "2026-08-20T12:00:00Z"
+    assert _coerce_observed_at(aware_str) == aware_dt
+    aware_row_from_str = {**_OBSERVATION_FIXTURE_COLUMNS, "observed_at": _coerce_observed_at(aware_str)}
+    aware_row_from_dt = {**_OBSERVATION_FIXTURE_COLUMNS, "observed_at": aware_dt}
+    assert observation_content_digest([aware_row_from_str]) == observation_content_digest([aware_row_from_dt])
+
+    # A naive string and its "Z" equivalent both normalize to UTC, so they digest the same too.
+    assert observation_content_digest([naive_row_from_str]) == observation_content_digest([aware_row_from_str])
+
+
+def test_coerce_observed_at_passes_through_datetime_and_none_rejects_the_rest():
+    already = datetime.datetime(2026, 8, 20, 12, 0, 0)
+    assert _coerce_observed_at(already) is already
+    assert _coerce_observed_at(None) is None
+    with pytest.raises(ValueError):
+        _coerce_observed_at("not-a-timestamp")
+    with pytest.raises(TypeError):
+        _coerce_observed_at(1_755_000_000)  # an epoch int is exactly the lookalike the digest rejects
+
+
+@pytest.mark.skipif(
+    not os.environ.get("OSO_API_KEY"),
+    reason="live equivalence check needs OSO_API_KEY; not run in ordinary CI",
+)
+def test_live_current_table_matches_the_committed_baseline_unless_rows_changed():
+    """The deployed `observations.product_adoption_current` table, read through the now-fixed
+    `--live` path, must digest-match the immutable Phase-2 baseline parquet -- UNLESS the live
+    table has genuinely accumulated new rows since the baseline was captured, which is expected
+    drift rather than a bug in this coercion. This mirrors the manual equivalence check in
+    docs/operations/deploy-evaluation.md, pinned here as a real (network-gated) test rather than
+    a copy-pasted shell one-liner. A mismatch is reported via the assertion message, not chased:
+    fixing `--live` is this unit's job, reconciling live drift against the baseline is not."""
+    live_rows = load_current_observations()
+    baseline_rows = rows_from_parquet()
+    live_digest = observation_content_digest(live_rows)
+    baseline_digest = observation_content_digest(baseline_rows)
+    assert live_digest == baseline_digest, (
+        f"live content digest {live_digest} != baseline digest {baseline_digest} over "
+        f"{len(live_rows)} live vs {len(baseline_rows)} baseline rows -- the deployed table has "
+        "drifted from the frozen baseline since it was captured; this is reported, not resolved, "
+        "by this test"
+    )
 
 
 def test_a_float_just_over_a_threshold_bands_above_not_floored():
