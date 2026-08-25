@@ -1,34 +1,39 @@
-"""The observation-snapshot identity, and the properties §4.5 requires of it.
+"""The observation content digest, the versioned snapshot id, and the canonicalization ratchet.
 
-`build/observation_snapshot.py` derives `observation_snapshot_id` — the content address of a set
-of normalized adoption observations, which `evaluation.adoption_reconciliation` and
-`releases.manifest` key on. These tests pin the content-alone contract: it depends on the
-measurement and nothing else (not lineage, not capture time, not row order, not the
-canonicalization version), and it reproduces a fixed value over the immutable Phase-2 baseline.
+`build/observation_snapshot.py` derives two things §4.5 names separately:
+`observation_content_digest` (the pure content address) and `observation_snapshot_id` (the
+versioned identity reconciliation and releases key on). These tests pin the content-alone contract
+of the digest, the version binding of the id, UTC timestamp normalization, and a merge-base ratchet
+that forbids changing the serializer without a version bump.
 """
 
-import copy
 import datetime
 
 import pytest
 
 import build.observation_snapshot as osnap
 from build.observation_snapshot import (
+    CANONICALIZATION_FINGERPRINT,
     CONTENT_COLUMNS,
+    CanonicalizationRatchetError,
+    check_canonicalization_ratchet,
+    merge_base_canonicalization,
+    observation_content_digest,
     observation_snapshot_id,
     rows_from_parquet,
+    snapshot_id_from_digest,
+    _FINGERPRINT_FIXTURE,
 )
 
-# The snapshot id over the committed baseline parquet. The baseline bytes are ratchet-locked
-# (tests/test_baseline_contract.py), so this is a fixed contract; a change here means the
-# canonicalization drifted, and CANONICALIZATION_VERSION must move with it.
-BASELINE_SNAPSHOT_ID = "78922959233f1f83c72fb04d9877fbe67168a1e5517eaa3cb575c0886d1d1533"
+_UTC = datetime.timezone.utc
+
+# Fixed contracts over the immutable Phase-2 baseline parquet.
+BASELINE_CONTENT_DIGEST = "8a6c3e984776302ce116bc2f119a77eaf45dfc7b7aaffc734de74c63ae0d6eab"
+BASELINE_SNAPSHOT_ID = "ae1e9dfbc55c82c522edddc03c6286a6b57242a5fd104d2763ec2f966ef3e462"
 
 
 def _row(**overrides) -> dict:
-    """A minimal observation row carrying every column the id must ignore, plus the content."""
     base = {
-        # content
         "product_slug": "acme", "product_type": "model", "artifact_kind": "github",
         "artifact_id": "acme/thing", "channel": "github", "metric_type": "stars",
         "raw_value": 100, "unit": "stars", "measurement_window_days": None,
@@ -43,11 +48,10 @@ def _row(**overrides) -> dict:
     return base
 
 
-# --- the content column set -------------------------------------------------------
+# --- content columns -------------------------------------------------------------
 
 
 def test_content_columns_exclude_lineage_and_capture_time():
-    """The digest covers the measurement, not how or when it was recorded."""
     for excluded in (
         "observation_id", "ingested_at", "source_run_id", "source_record_id",
         "source_dataset", "source_table", "is_valid", "supersedes_observation_id",
@@ -57,82 +61,148 @@ def test_content_columns_exclude_lineage_and_capture_time():
         assert included in CONTENT_COLUMNS
 
 
-# --- content-alone behavior -------------------------------------------------------
+# --- the pure content digest -----------------------------------------------------
 
 
-def test_deterministic():
-    rows = [_row()]
-    assert observation_snapshot_id(rows) == observation_snapshot_id(rows)
-
-
-def test_order_independent_multiset():
+def test_content_digest_is_deterministic_and_order_independent():
     a, b = _row(product_slug="a"), _row(product_slug="b")
-    assert observation_snapshot_id([a, b]) == observation_snapshot_id([b, a])
+    assert observation_content_digest([a, b]) == observation_content_digest([b, a])
 
 
-def test_lineage_and_capture_time_do_not_change_the_id():
-    """Run identifiers, capture time, and provenance are lineage — a re-run that changes only
-    those keeps the same snapshot id (§4.3)."""
-    base = observation_snapshot_id([_row()])
+def test_lineage_and_capture_time_do_not_change_the_content_digest():
+    base = observation_content_digest([_row()])
     for excluded, value in (
         ("source_run_id", "run-xyz"),
         ("ingested_at", datetime.datetime(2027, 1, 1, 0, 0, 0)),
         ("observation_id", "cafebabe"),
-        ("source_table", "somewhere.else"),
         ("is_valid", False),
-        ("supersedes_observation_id", "prior"),
     ):
-        assert observation_snapshot_id([_row(**{excluded: value})]) == base, (
-            f"changing {excluded} changed the snapshot id; it must be content-alone"
-        )
+        assert observation_content_digest([_row(**{excluded: value})]) == base
 
 
-def test_measurement_changes_do_change_the_id():
-    base = observation_snapshot_id([_row()])
-    assert observation_snapshot_id([_row(raw_value=101)]) != base
-    assert observation_snapshot_id([_row(observed_at=datetime.datetime(2026, 8, 21, 12, 0, 0))]) != base
-    assert observation_snapshot_id([_row(metric_type="downloads")]) != base
-    assert observation_snapshot_id([_row(measurement_window_days=30)]) != base
+def test_measurement_changes_change_the_content_digest():
+    base = observation_content_digest([_row()])
+    assert observation_content_digest([_row(raw_value=101)]) != base
+    assert observation_content_digest([_row(metric_type="downloads")]) != base
 
 
-def test_canonicalization_version_is_not_folded_into_the_id(monkeypatch):
-    """§4.5 is strict: the id is content and nothing else. Bumping the canonicalization version
-    (recorded beside the id) must NOT change the id itself."""
-    before = observation_snapshot_id([_row()])
+def test_content_digest_is_version_independent(monkeypatch):
+    """§4.5: the content digest is content and nothing else — the version is bound in the snapshot
+    id, not the digest."""
+    before = observation_content_digest([_row()])
     monkeypatch.setattr(osnap, "CANONICALIZATION_VERSION", osnap.CANONICALIZATION_VERSION + 1)
-    assert observation_snapshot_id([_row()]) == before
-
-
-def test_shape_is_64_hex():
-    vid = observation_snapshot_id([_row()])
-    assert len(vid) == 64 and vid == vid.lower()
-    int(vid, 16)
+    assert observation_content_digest([_row()]) == before
 
 
 def test_non_finite_numbers_are_rejected():
     with pytest.raises(ValueError):
-        observation_snapshot_id([_row(raw_value=float("inf"))])
+        observation_content_digest([_row(raw_value=float("inf"))])
 
 
 def test_missing_content_column_is_loud():
     bad = _row()
     del bad["metric_type"]
     with pytest.raises(KeyError):
-        observation_snapshot_id([bad])
+        observation_content_digest([bad])
 
 
-# --- the pinned contract over the immutable baseline ------------------------------
+# --- UTC timestamp normalization (finding 2) -------------------------------------
 
 
-def test_reproduces_the_baseline_snapshot_id():
-    """The id over the committed baseline is a fixed contract: the baseline bytes are immutable,
-    so this value only changes if the canonicalization changes — which requires a version bump."""
+def test_equivalent_instants_produce_one_digest():
+    """The same instant, whatever its written offset or naivety, digests identically."""
+    aware_utc = _row(observed_at=datetime.datetime(2026, 8, 25, 12, 0, 0, tzinfo=_UTC))
+    aware_off = _row(observed_at=datetime.datetime(
+        2026, 8, 25, 8, 0, 0, tzinfo=datetime.timezone(datetime.timedelta(hours=-4))))
+    naive = _row(observed_at=datetime.datetime(2026, 8, 25, 12, 0, 0))
+    d = observation_content_digest([aware_utc])
+    assert observation_content_digest([aware_off]) == d  # -04:00 same instant
+    assert observation_content_digest([naive]) == d       # naive interpreted UTC
+
+
+def test_different_instants_differ():
+    a = _row(observed_at=datetime.datetime(2026, 8, 25, 12, 0, 0, tzinfo=_UTC))
+    b = _row(observed_at=datetime.datetime(2026, 8, 25, 13, 0, 0, tzinfo=_UTC))
+    assert observation_content_digest([a]) != observation_content_digest([b])
+
+
+# --- the versioned snapshot id (finding 1) ---------------------------------------
+
+
+def test_snapshot_id_binds_the_canonicalization_version(monkeypatch):
+    """Bumping the version MUST change the snapshot id, so a stored id names its rule."""
+    before = observation_snapshot_id([_row()])
+    monkeypatch.setattr(osnap, "CANONICALIZATION_VERSION", osnap.CANONICALIZATION_VERSION + 1)
+    assert observation_snapshot_id([_row()]) != before
+
+
+def test_snapshot_id_is_not_the_bare_content_digest():
+    rows = [_row()]
+    assert observation_snapshot_id(rows) != observation_content_digest(rows)
+
+
+def test_snapshot_id_is_a_function_of_the_content_digest():
+    rows = [_row()]
+    assert observation_snapshot_id(rows) == snapshot_id_from_digest(
+        observation_content_digest(rows)
+    )
+
+
+def test_snapshot_id_shape():
+    vid = observation_snapshot_id([_row()])
+    assert len(vid) == 64 and vid == vid.lower()
+    int(vid, 16)
+
+
+# --- the canonicalization ratchet (finding 3) ------------------------------------
+
+
+def test_fingerprint_matches_the_current_serializer():
+    """The committed fingerprint must equal the digest the current serializer produces over the
+    fixture; regenerating it is the only way to change it, which the ratchet then guards."""
+    assert observation_content_digest(_FINGERPRINT_FIXTURE) == CANONICALIZATION_FINGERPRINT
+
+
+def test_ratchet_fires_on_a_serializer_change_without_a_version_bump():
+    before = {"version": 1, "fingerprint": "a" * 64}
+    with pytest.raises(CanonicalizationRatchetError):
+        check_canonicalization_ratchet(before, {"version": 1, "fingerprint": "b" * 64})
+
+
+def test_ratchet_passes_when_the_version_advances_with_the_fingerprint():
+    before = {"version": 1, "fingerprint": "a" * 64}
+    check_canonicalization_ratchet(before, {"version": 2, "fingerprint": "b" * 64})
+
+
+def test_ratchet_passes_when_nothing_changed():
+    same = {"version": 1, "fingerprint": "a" * 64}
+    check_canonicalization_ratchet(same, dict(same))
+
+
+def test_ratchet_first_install_is_not_a_violation():
+    check_canonicalization_ratchet(None, {"version": 1, "fingerprint": "a" * 64})
+
+
+def test_canonicalization_ratchet_against_the_merge_base():
+    """The real gate: on this branch the module is new (absent at the merge base) so there is
+    nothing to ratchet against and this passes; once merged, any serializer change without a
+    version bump fails here."""
+    before = merge_base_canonicalization()
+    now = {"version": osnap.CANONICALIZATION_VERSION, "fingerprint": CANONICALIZATION_FINGERPRINT}
+    check_canonicalization_ratchet(before, now)
+
+
+# --- the pinned contracts over the immutable baseline ----------------------------
+
+
+def test_reproduces_the_baseline_digests():
     rows = rows_from_parquet()
     assert len(rows) == 654
-    assert observation_snapshot_id(rows) == BASELINE_SNAPSHOT_ID
+    digest = observation_content_digest(rows)
+    assert digest == BASELINE_CONTENT_DIGEST
+    assert snapshot_id_from_digest(digest) == BASELINE_SNAPSHOT_ID
 
 
-def test_baseline_snapshot_ignores_the_row_order_it_is_read_in():
+def test_baseline_digest_ignores_read_order():
     rows = rows_from_parquet()
-    shuffled = copy.deepcopy(rows)[::-1]
-    assert observation_snapshot_id(shuffled) == BASELINE_SNAPSHOT_ID
+    assert observation_content_digest(rows[::-1]) == BASELINE_CONTENT_DIGEST

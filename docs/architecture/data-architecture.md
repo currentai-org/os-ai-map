@@ -883,20 +883,29 @@ Until the repository-owned evaluator lands (Phase 6), `evaluator_version` is a d
 string, so the day a real evaluator version replaces it is a reviewed change that moves every id
 with it.
 
-`observation_snapshot_id` is derived by `build/observation_snapshot.py`, and like the declaration
-version it is a run-time computation, not a stored receipt — a full-refresh table's snapshot must
-track current content, and a frozen value would go stale on every run. It is a SHA-256 over the
-normalized observation content **and nothing else**: the measurement columns only (`product_slug`,
-`product_type`, `artifact_kind`, `artifact_id`, `channel`, `metric_type`, `raw_value`, `unit`,
-`measurement_window_days`, `observed_at`), taken as an order-independent multiset. Lineage
-(`source_run_id`, `source_record_id`, `source_dataset`, `source_table`), capture time
-(`ingested_at`), the derived `observation_id`, `is_valid`, and `supersedes_observation_id` are
-excluded, so an unchanged measurement keeps its snapshot across re-runs and the runs that produced
-it stay visible only in `observation_run_ids` beside the id. The §4.7 `canonicalization_version` is
-likewise recorded **beside** the id, never folded into the digest — that is what keeps it "content
-and nothing else," and is the deliberate difference from the opaque composite `declaration_version_id`.
-The computation is exercised in-repo against the immutable Phase-2 baseline parquet, whose snapshot
-id is pinned as a fixed contract.
+`observation_content_digest` and `observation_snapshot_id` are both derived by
+`build/observation_snapshot.py`, and like the declaration version they are run-time computations,
+not stored receipts — a full-refresh table's content changes every run, so a frozen value would go
+stale. They are two distinct things, as the manifest columns above require:
+
+- **`observation_content_digest`** is a SHA-256 over the normalized observation content **and
+  nothing else**: the measurement columns only (`product_slug`, `product_type`, `artifact_kind`,
+  `artifact_id`, `channel`, `metric_type`, `raw_value`, `unit`, `measurement_window_days`,
+  `observed_at`), taken as an order-independent multiset. Lineage (`source_run_id`,
+  `source_record_id`, `source_dataset`, `source_table`), capture time (`ingested_at`), the derived
+  `observation_id`, `is_valid`, and `supersedes_observation_id` are excluded, so an unchanged
+  measurement keeps its digest across re-runs and the runs that produced it stay visible only in
+  `observation_run_ids` beside it. It does not depend on the canonicalization version.
+- **`observation_snapshot_id`** is the identity reconciliation and `release_id` key on. It binds
+  the `canonicalization_version` to the content digest, so a persisted id names the rule that
+  produced it and two rules cannot collide on one id — the version is bound INTO this id, not
+  merely recorded next to it.
+
+`observed_at` is normalized to UTC before hashing (an aware timestamp converted, a naive one
+interpreted as UTC — the warehouse emits naive UTC), at fixed microsecond precision with a `Z`
+suffix, so one instant has one digest. A merge-base ratchet fails if the serializer or
+`CONTENT_COLUMNS` change without `CANONICALIZATION_VERSION` advancing. Both digests are exercised
+in-repo against the immutable Phase-2 baseline parquet and pinned there as fixed contracts.
 
 Use them consistently:
 
@@ -953,6 +962,26 @@ Declared, for `source_content_digest` (owned by `build/declaration_version.py`,
 - input set: the classified declaration inputs of `sources/` (the full top-level inventory is
   gated, so a new authoritative input cannot silently leave the digest), excluding the
   separately-versioned routing policy and the frozen long-tail sample.
+
+Declared, for `observation_content_digest` (owned by `build/observation_snapshot.py`,
+`canonicalization_version` 1):
+
+- serialization format: each observation is a compact JSON array (UTF-8, no insignificant
+  whitespace) over the fixed column order `CONTENT_COLUMNS`; strings preserved verbatim, not
+  ASCII-escaped;
+- row/multiset ordering: the serialized rows are sorted and newline-joined, so the digest is
+  independent of the order rows were materialized or read in;
+- column set: the measurement columns only — lineage, capture time (`ingested_at`), the derived
+  `observation_id`, `is_valid`, and `supersedes_observation_id` are excluded;
+- timezone/date normalization: `observed_at` is converted to UTC (a naive value interpreted as
+  UTC), rendered at fixed microsecond precision with a `Z` suffix, so one instant has one
+  rendering; null as JSON `null`;
+- number representation: finite only — `NaN`/`Infinity` are rejected; any non-JSON-native,
+  non-date type is rejected rather than coerced;
+- hash algorithm: SHA-256, lowercase hex;
+- versioning: `observation_content_digest` is version-independent (pure content); the
+  `canonicalization_version` is bound into `observation_snapshot_id` instead, and a merge-base
+  ratchet forbids changing `CONTENT_COLUMNS` or the serializer without advancing the version.
 
 Future release tables may include:
 

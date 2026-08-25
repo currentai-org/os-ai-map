@@ -1,51 +1,59 @@
-"""Derive the ``observation_snapshot_id`` — the identity of a set of adoption observations.
+"""Identity of a set of adoption observations — the content digest and the versioned snapshot id.
 
-One of the three release identities (data-architecture.md §4.5). Where ``declaration_version_id``
-answers "which declarations", this answers "which measurements": it is the content address of the
-normalized adoption observations that a reconciliation adjudicated a declaration against. It is
-what ``evaluation.adoption_reconciliation`` and ``releases.manifest`` key on alongside the
-declaration version.
+Two distinct things the release model (data-architecture.md §4.5) names separately, and
+`releases.manifest` carries both:
 
-## Content alone — §4.5, strictly
+  * ``observation_content_digest`` — a pure SHA-256 of the canonical observation content, "and
+    nothing else". This is the raw content address: identical measurements digest identically,
+    forever, regardless of the canonicalization rule in force.
+  * ``observation_snapshot_id`` — the *identity* that `evaluation.adoption_reconciliation` and
+    `releases.manifest` key on, and that binds into `release_id`. It is derived from BOTH the
+    ``canonicalization_version`` and the content digest, so a persisted snapshot id names the rule
+    that produced it. Without this a caller could store an id and be unable to tell which
+    serialization produced it; two rules could even collide on one id.
 
-``observation_snapshot_id`` is "a canonical digest of the normalized observation content, and
-nothing else" (§4.5). Two materializations with identical measurements share an id; a re-run that
-changes nothing measured keeps the id (§4.3). Two consequences follow, and both are enforced here:
+The earlier revision of this module conflated the two — it exposed only the pure digest under the
+name ``observation_snapshot_id`` and left the version unbound. The split here is what §4.5 already
+requires.
 
-  * **Run identifiers are lineage, not inputs.** ``source_run_id`` and the ``observation_run_ids``
-    a snapshot was produced by are recorded *beside* the id, never folded into it (§4.3) —
-    otherwise every re-run would mint a new snapshot even when the measurements were identical,
-    which is the opposite of what the id is for.
-  * **Capture time and provenance are excluded.** ``ingested_at`` (when the row was written),
-    ``source_dataset`` / ``source_table`` (which physical table it sat in), ``source_record_id``,
-    the derived ``observation_id`` (a hash of the grain, redundant), ``is_valid`` (a constant on
-    the valid current-state slice), and ``supersedes_observation_id`` (history, absent pre-2B) are
-    all excluded. What remains — ``CONTENT_COLUMNS`` — is the measurement itself.
+## What the content digest covers
 
-The digest is over the observations as a **multiset**: the serialized rows are sorted before
-hashing, so the id does not depend on the order the rows were materialized or read in.
+``observation_content_digest`` is a SHA-256 over the measurement columns only — ``CONTENT_COLUMNS``:
+``product_slug``, ``product_type``, ``artifact_kind``, ``artifact_id``, ``channel``,
+``metric_type``, ``raw_value``, ``unit``, ``measurement_window_days``, ``observed_at`` — taken as an
+order-independent **multiset** (rows serialized, sorted, then hashed). Lineage (``source_run_id``,
+``source_record_id``, ``source_dataset``, ``source_table``), capture time (``ingested_at``), the
+derived ``observation_id``, ``is_valid``, and ``supersedes_observation_id`` are excluded, so an
+unchanged measurement keeps its digest across re-runs; the runs that produced it live in
+``observation_run_ids`` beside the id (§4.3), never in it.
 
-## Canonicalization version is recorded beside the id, not inside it
+## Timestamps are normalized to UTC
 
-§4.7 requires a canonicalization version so the rule can change without silently changing every
-digest. But §4.5 says the id is content "and nothing else" — folding the version into the digest
-bytes would break that. The two are reconciled by recording ``CANONICALIZATION_VERSION`` alongside
-the id (in the reconciliation row / manifest that carries it), never in the hashed input. A rule
-change is therefore a visible, declared version bump; the id itself stays a pure content address.
-This is the deliberate difference from ``declaration_version_id``, an opaque composite whose
-version *is* folded in.
+``observed_at`` is normalized before hashing: an aware timestamp is converted to UTC; a naive one
+is interpreted as UTC (the warehouse emits naive timestamps and the pipeline runs on UTC crons, so
+that is their real zone), and it is rendered at fixed microsecond precision with a ``Z`` suffix.
+Without this the same instant written ``…+00:00``, ``…-04:00``, or naive would produce three
+different digests (§4.5 requires timezone normalization).
 
 ## Derived, not stored
 
-Like ``declaration_version_id``, this is a computation the release builder and reconciliation call
-at run time over the live ``observations.product_adoption_current``; it is not a committed receipt.
-A full-refresh table's snapshot id must track current content, and a frozen value would go stale
-on every run. The tests exercise it against the one observation set that IS committed and
-immutable — the Phase-2 baseline parquet — which is why a golden value over the baseline is
-pinned: those bytes are ratchet-locked, so the digest over them is a fixed contract.
+Like ``declaration_version_id``, these are run-time computations, not committed receipts — a
+full-refresh table's content changes every run, so a frozen value would go stale. Reconciliation
+and the release builder compute them over the live ``product_adoption_current`` rows. The tests
+exercise them against the one observation set that IS committed and immutable — the Phase-2
+baseline parquet — so both digests over it are pinned as fixed contracts.
+
+## The canonicalization ratchet
+
+``CANONICALIZATION_FINGERPRINT`` is the content digest over a fixed in-module fixture: any change to
+``CONTENT_COLUMNS`` or the serializer moves it. It is gated two ways — a test asserts it matches the
+current serializer, and a merge-base ratchet (``check_canonicalization_ratchet``) fails if the
+fingerprint changed against the merge base while ``CANONICALIZATION_VERSION`` did not advance. So a
+serialization change cannot land without a version bump, even if someone regenerates the pinned
+golden values.
 
 Usage:
-    uv run python -m build.observation_snapshot            # id over the committed baseline
+    uv run python -m build.observation_snapshot            # digests over the committed baseline
     uv run python -m build.observation_snapshot --json     # same, machine-readable
 """
 
@@ -55,19 +63,22 @@ import argparse
 import datetime
 import hashlib
 import json
+import re
+import subprocess
 from collections.abc import Iterable
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+_UTC = datetime.timezone.utc
 
-# Bumped when CONTENT_COLUMNS or the serialization changes, so a value computed under an older
-# rule is known not to be comparable. Recorded BESIDE the id by callers, never folded into it.
+# Bumped when CONTENT_COLUMNS or the serialization changes. Bound INTO observation_snapshot_id (not
+# into observation_content_digest), and enforced by the ratchet below.
 CANONICALIZATION_VERSION = 1
 
 # The normalized observation content: the measurement itself, and nothing else. Lineage
 # (source_run_id / source_record_id / source_dataset / source_table), capture time (ingested_at),
-# the derived observation_id, is_valid, and supersedes_observation_id are deliberately excluded —
-# see the module docstring. Order is fixed: it is the serialization's column order.
+# the derived observation_id, is_valid, and supersedes_observation_id are deliberately excluded.
+# Order is fixed: it is the serialization's column order.
 CONTENT_COLUMNS: tuple[str, ...] = (
     "product_slug",
     "product_type",
@@ -81,53 +92,159 @@ CONTENT_COLUMNS: tuple[str, ...] = (
     "observed_at",
 )
 
-# The committed, immutable observation set the tests and CLI resolve against when no live rows are
-# supplied. Its digest is pinned in tests/test_observation_snapshot.py.
 BASELINE_PARQUET = ROOT / "warehouse/data/observations/product_adoption_baseline.parquet"
+
+
+def _canonical_timestamp(value: datetime.datetime) -> str:
+    """UTC-normalized, fixed-precision, ``Z``-suffixed ISO text.
+
+    Aware timestamps are converted to UTC; naive timestamps are interpreted as UTC (the warehouse
+    emits naive UTC). Always six fractional digits, so the same instant has exactly one rendering.
+    """
+    if value.tzinfo is None:
+        value = value.replace(tzinfo=_UTC)
+    value = value.astimezone(_UTC)
+    return value.strftime("%Y-%m-%dT%H:%M:%S.") + f"{value.microsecond:06d}Z"
+
+
+def _canonical_value(value: object) -> object:
+    if isinstance(value, datetime.datetime):
+        return _canonical_timestamp(value)
+    if isinstance(value, datetime.date):
+        return value.isoformat()
+    return value
 
 
 def _canonical_row(row: dict) -> str:
     """One observation's content as a compact JSON array over CONTENT_COLUMNS.
 
-    Dates render as ISO-8601 text; numbers must be finite; every other non-JSON-native type is
+    Timestamps are UTC-normalized; numbers must be finite; every other non-JSON-native type is
     rejected (no permissive ``default``), so an unexpected value fails loudly rather than becoming
-    an implementation-dependent string and a non-reproducible id.
+    an implementation-dependent string and a non-reproducible digest.
     """
     values = []
     for column in CONTENT_COLUMNS:
         if column not in row:
             raise KeyError(f"observation row is missing content column {column!r}")
-        value = row[column]
-        if isinstance(value, (datetime.date, datetime.datetime)):
-            value = value.isoformat()
-        values.append(value)
+        values.append(_canonical_value(row[column]))
     return json.dumps(values, separators=(",", ":"), ensure_ascii=False, allow_nan=False)
 
 
-def observation_snapshot_id(rows: Iterable[dict]) -> str:
-    """The content address of a set of normalized observations.
+def observation_content_digest(rows: Iterable[dict]) -> str:
+    """The pure content address of a set of observations — §4.5 "content and nothing else".
 
-    A SHA-256 over the sorted, newline-joined canonical rows — a multiset digest, independent of
-    row order and of everything outside CONTENT_COLUMNS.
+    SHA-256 over the sorted, newline-joined canonical rows (an order-independent multiset). Does
+    NOT depend on the canonicalization version — that binding lives in observation_snapshot_id.
     """
     lines = sorted(_canonical_row(row) for row in rows)
     return hashlib.sha256("\n".join(lines).encode("utf-8")).hexdigest()
 
 
+def observation_snapshot_id(rows: Iterable[dict]) -> str:
+    """The versioned identity reconciliation and releases key on.
+
+    Binds the canonicalization version to the content digest, so a stored id names the rule that
+    produced it and two rules cannot collide on one id.
+    """
+    return snapshot_id_from_digest(observation_content_digest(rows))
+
+
+def snapshot_id_from_digest(content_digest: str, version: int | None = None) -> str:
+    """Compose a snapshot id from a content digest and the canonicalization version."""
+    payload = json.dumps(
+        {
+            "canonicalization_version": CANONICALIZATION_VERSION if version is None else version,
+            "observation_content_digest": content_digest,
+        },
+        separators=(",", ":"),
+        sort_keys=True,
+    )
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
+# --- the canonicalization fingerprint and ratchet --------------------------------
+
+# A fixed fixture exercising the serializer: an aware timestamp, a naive one, a null window, and
+# unicode. CANONICALIZATION_FINGERPRINT is its content digest; any CONTENT_COLUMNS or serializer
+# change moves it, and the ratchet then requires CANONICALIZATION_VERSION to advance.
+_FINGERPRINT_FIXTURE: tuple[dict, ...] = (
+    {
+        "product_slug": "fixture-a", "product_type": "model", "artifact_kind": "github",
+        "artifact_id": "ówner/repo", "channel": "github", "metric_type": "stars",
+        "raw_value": 42, "unit": "stars", "measurement_window_days": None,
+        "observed_at": datetime.datetime(2026, 1, 2, 3, 4, 5, tzinfo=_UTC),
+    },
+    {
+        "product_slug": "fixture-b", "product_type": "dataset", "artifact_kind": "huggingface_dataset",
+        "artifact_id": "org/set", "channel": "huggingface", "metric_type": "downloads",
+        "raw_value": 1000, "unit": "downloads", "measurement_window_days": 30,
+        "observed_at": datetime.datetime(2026, 1, 2, 3, 4, 5),  # naive → interpreted UTC
+    },
+)
+CANONICALIZATION_FINGERPRINT = "e2e93998bdcf8fabe99fc2fb6d8e3870bf255785b153ba53138fd15ae578eb5c"
+
+
+class CanonicalizationRatchetError(RuntimeError):
+    """Raised when the canonicalization changed without a version bump."""
+
+
+def check_canonicalization_ratchet(before: dict | None, now: dict) -> None:
+    """Fail if the fingerprint moved against the merge base while the version did not advance.
+
+    ``before`` / ``now`` are ``{"version": int, "fingerprint": str}``; ``before`` is None on the
+    introducing PR (the module did not exist at the merge base), which is not a violation.
+    """
+    if before is None:
+        return
+    if now["fingerprint"] != before["fingerprint"] and now["version"] <= before["version"]:
+        raise CanonicalizationRatchetError(
+            "the observation canonicalization changed (CONTENT_COLUMNS or the serializer) but "
+            f"CANONICALIZATION_VERSION did not advance ({before['version']} -> {now['version']}). "
+            "Bump the version so a snapshot id minted under the old rule cannot be confused with "
+            "one minted under the new rule."
+        )
+
+
+def _parse_canonicalization(source: str) -> dict | None:
+    """Extract {version, fingerprint} from a copy of this module's source, or None if absent."""
+    version = re.search(r"^CANONICALIZATION_VERSION\s*=\s*(\d+)", source, re.M)
+    fingerprint = re.search(r'^CANONICALIZATION_FINGERPRINT\s*=\s*"([0-9a-f]{64})"', source, re.M)
+    if not version or not fingerprint:
+        return None
+    return {"version": int(version.group(1)), "fingerprint": fingerprint.group(1)}
+
+
+def merge_base_canonicalization(base: str = "origin/main") -> dict | None:
+    """This module's {version, fingerprint} as of the merge base, or None if it did not exist."""
+    rel = "build/observation_snapshot.py"
+    try:
+        merge_base = subprocess.run(
+            ["git", "-C", str(ROOT), "merge-base", "HEAD", base],
+            capture_output=True, text=True, check=True,
+        ).stdout.strip()
+        source = subprocess.run(
+            ["git", "-C", str(ROOT), "show", f"{merge_base}:{rel}"],
+            capture_output=True, text=True, check=True,
+        ).stdout
+    except subprocess.CalledProcessError:
+        return None
+    return _parse_canonicalization(source)
+
+
 def rows_from_parquet(path: Path | None = None) -> list[dict]:
-    """Load observation rows from a parquet file (the baseline, or any frozen snapshot)."""
     import pyarrow.parquet as pq
 
     return pq.read_table(path or BASELINE_PARQUET).to_pylist()
 
 
 def resolve_baseline() -> dict:
-    """Compute the snapshot id over the committed baseline, with the version recorded beside it."""
     rows = rows_from_parquet(BASELINE_PARQUET)
+    digest = observation_content_digest(rows)
     return {
         "canonicalization_version": CANONICALIZATION_VERSION,
         "row_count": len(rows),
-        "observation_snapshot_id": observation_snapshot_id(rows),
+        "observation_content_digest": digest,
+        "observation_snapshot_id": snapshot_id_from_digest(digest),
         "computed_over": "warehouse/data/observations/product_adoption_baseline.parquet",
     }
 
@@ -141,13 +258,14 @@ def main() -> int:
     if args.json:
         print(json.dumps(info, indent=2))
         return 0
-    print(f"canonicalization_version  {info['canonicalization_version']}")
-    print(f"row_count                 {info['row_count']}")
-    print(f"observation_snapshot_id   {info['observation_snapshot_id']}")
-    print(f"computed_over             {info['computed_over']}")
+    print(f"canonicalization_version   {info['canonicalization_version']}")
+    print(f"row_count                  {info['row_count']}")
+    print(f"observation_content_digest {info['observation_content_digest']}")
+    print(f"observation_snapshot_id    {info['observation_snapshot_id']}")
+    print(f"computed_over              {info['computed_over']}")
     print(
         "\n(Computed over the committed Phase-2 baseline. At reconciliation/release time the same\n"
-        "function runs over the live observations.product_adoption_current rows.)"
+        "functions run over the live observations.product_adoption_current rows.)"
     )
     return 0
 
