@@ -303,6 +303,7 @@ Claude Code session discovers them by name; if yours does not list them, read
 
 | Skill | When to use | Workflow |
 |-------|------------|----------|
+| `discover-candidates` | Sweep for products the map does not have yet | `docs/workflows/discover-candidates.md` |
 | `add-product` | Add a new product | `docs/workflows/add-product.md` |
 | `update-product` | Change an existing product (identity, prose, a score, rosters, retirement) | `docs/workflows/update-product.md` |
 | `edit-category` | Create a category, or change its definition/weights/roster | `docs/workflows/edit-category.md` |

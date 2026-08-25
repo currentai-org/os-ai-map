@@ -23,8 +23,8 @@ DOC_FILES = sorted(
     + [REPO / n for n in ("README.md", "CONTRIBUTING.md", "AGENTS.md", "CLAUDE.md")]
 )
 
-PRIMARY_SKILLS = ["add-product", "update-product", "edit-category", "promote-category",
-                  "refresh-category", "migrate-axis"]
+PRIMARY_SKILLS = ["discover-candidates", "add-product", "update-product", "edit-category",
+                  "promote-category", "refresh-category", "migrate-axis"]
 
 # Paths that were deleted or renamed in the reorg. A live reference to one is a regression.
 DEAD_FRAGMENTS = [
