@@ -247,8 +247,6 @@ graph LR
   signal_github__artifact_state --> C_build_check_artifacts_py
   signal_pypi__package_downloads --> C_build_check_artifacts_py
   class catalog__stack_map compatibility;
-  class evaluation__adoption_reconciliation staged;
-  class evaluation__product_adoption_measurements staged;
   class observations__product_adoption_baseline staged;
   class observations__source_runs staged;
   class registry__tail_products dormant;
