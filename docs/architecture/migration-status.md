@@ -14,7 +14,7 @@ file records only where the work has got to. Delete a row when it stops being te
 | 1 — schedule normalization | done | Applied (#349) and **verified 2026-08-23**: all ten in-scope datasets fired a `SCHEDULED` run on their UTC cron (01:00–06:00Z Sunday), the run-history proof §13 requires; 3 out-of-scope analytical datasets left on `America/New_York` deliberately. <!-- count:unobserved_crons -->10 assets still have no observed run, all outside Phase 1's scope. Two model runs failed on the scheduled fire — a transient `ConnectTimeout` on `metrics` (cleared on re-run) and a reproducible upstream `429` on `signal_semanticscholar.paper_citations` — but neither is a schedule defect; see the note below. `docs/operations/normalize-schedules.md` carries the per-dataset evidence. |
 | 2 — normalized adoption observations | done | **2A done**: `registry.adoption_routes` + `adoption_route_scopes` / `adoption_route_band_sets` / `adoption_aggregation_rules` compiled from `signal_routing.yaml` and merged (#351), materialized on the platform 2026-08-23 (7 / 1 / 20 / 1 rows). **`source_runs` shipped** (#356). **`artifact_state` source-table rename applied** (Part B runbook): `signal_github.repo_state` and `signal_huggingface.hub_state` twinned to `signal_github.artifact_state` / `signal_huggingface.artifact_state` on the platform, the three consumers repointed and redeployed, and the old tables kept as `compatibility` assets (each naming its replacement) until their step-6 retirement. **`observations.product_adoption_current` deployed** (2026-08-24) — the artifact-level, band-free current-state normalization over the four deployed adoption sources; the deploy created the `observations` namespace, and the first run materialized 654 rows over 392 products (`authority: repo`, deployed from the repo SQL). **The declared-identity guard is deployed and enforced** (2026-08-25, revision 3, `a27b153d-76d8-4661-8fcb-4ee4802cb164`). The live model resolves `product_type` by joining `registry.product_artifacts` on `(product_slug, artifact_kind, artifact_id)`, replacing the pre-guard `registry.products` slug join, and FAILs the materialization on any observation whose artifact is not declared for that product. The materialization SUCCEEDED, which is the coverage proof: 654 rows over 392 products, grain unique on all 654, `product_type` non-null on every row, per-channel counts unchanged (github 305, huggingface 189, pypi 136, arxiv 24). `warehouse/audits/platform_models.json` was regenerated against the deployed state and now records source SHA `33a9f760c2701b6926ea3af1479f2aca7f02c0094393592f41d9c2ccdcf1ef08`, matching the repo SQL byte for byte, and `registry.product_artifacts` among the reads. **`observations.product_adoption_baseline` captured** (2026-08-24T22:27:44Z) — §18 requires one preserved baseline snapshot for the temporary full-refresh period, and because `product_adoption_current` is full-refresh (every run overwrites), the deployed state is preserved only by freezing it. The 654 rows over 392 products are now immutable bytes at `warehouse/data/observations/product_adoption_baseline.parquet` (file sha256 `84e0d5747c5963617fd712688bce14210389104f218f624f66aceddace1fa569`, writer-independent content sha256 `3a942c39c203b4d2aa962d1709fa3ca1b045ff17673ed5b00899b259777f9a9b`), with the receipt at `warehouse/audits/product_adoption_baseline.json`. It records honestly that `source_run_id` is NULL for all 654 rows and that no authoritative row-to-run binding exists (#355); no run id is inferred. The baseline is a frozen data asset, not a query, so it carries no platform table and is inventoried `staged` / `materialized: false`. The per-source banding roll-ups retire later, once the evaluation layer + reconciliation replace them. |
 | 2B — incremental adoption history | blocked | Blocked on OSO incremental-model support (issue #352). The stable latest-state contract `observations.product_adoption_current` (full-refresh + `observed_at`) ships in Phase 2; the bare name `observations.product_adoption` is reserved for the incremental append-only history table, created only when OSO supports it. The `observations.product_adoption_baseline` frozen-bytes snapshot was captured in **Phase 2**, not here (2026-08-24, 654 rows) — it is the immutable anchor the append-only history builds **forward** from, and it already exists for 2B to build on. `_current` is not renamed into `product_adoption` — its grain is current-state, and a consumer of the current-state table must not silently inherit a historical grain. |
-| 3 — reconciliation report | not started | Report-only first. |
+| 3 — reconciliation report | in progress | **Both fully-keyed evaluation tables built as repo-side release builders**, keyed on `declaration_version_id` + `observation_snapshot_id`. **`evaluation.product_adoption_measurements`** (`build/adoption_measurements.py`) aggregates the artifact-level `observations.product_adoption_current` to the product level. Route selection is **by declared artifacts** (`registry.product_artifacts`) and the recorded instrument, first applicable route by `registry.adoption_routes` precedence + `adoption_route_scopes`, then an observation is sought on that route only — **no fallthrough** to a weaker route when the authoritative observation is missing (a PyPI-declared product is never scored on GitHub stars). Applicability now spans **all** routes, not just machine ones: `signal_routing.yaml` gained unbridged `npm`/`crates` authoritative usage routes (ranked after the bridged download channels, before stars) and the hand-authored `active_users`/`reported_traction` routes are selected by the recorded instrument — so an `active_users` product with a GitHub repo, or an npm-only product, is left **unmeasured on its authoritative route** rather than scored on stars. Aggregation by `adoption_aggregation_rules`: both `usage_volume` and `stars_fallback` sum across a family's artifacts (`sum_stars_across_artifacts` added to `signal_routing.yaml`, matching the deployed compatibility model's `SUM(stargazers_count)` and the recorded assessments); banding by `adoption_route_band_sets` → `adoption_bands`, stars capped by the band set. Numbers are preserved, never `int()`-truncated. It reinterprets none of that — the routing compiler is the one owner. **`evaluation.adoption_reconciliation`** (`build/adoption_reconciliation.py`) compares measured vs recorded adoption, **report-first**, over **every recorded adoption assessment** (measured, unmeasured, and the deliberate nulls) — one terminal outcome per applicable route. It **never compares across instrument types**: a `delta` is computed only when the measured and recorded instruments match; a cross-instrument row withholds the delta and is classified `route_mismatch` (an authoritative instrument on either side) or `expected_difference` (both weak signals), not turned into a number. A same-instrument measured row is `source_unavailable` today because observations carry no `source_run_id` (row-to-run binding blocked on #355), exactly as §4.3 requires; the fuller status set activates once #355 binds observations to runs. Both tables carry `routing_policy_version` (now **2**), so the routing policy that produced them travels with the output — `declaration_version.py`'s binding is now split: **bound** to the evaluation tables, **pending** for `release_id` until Phase 8. The two builders read the current table once and derive the snapshot id and both tables from that one atomic row set; `build/serialize_evaluation.py` serializes the publishable static-model CSVs (live via pyoso or the baseline), and both are exercised in-repo against the immutable Phase-2 baseline with pinned goldens (`tests/test_adoption_evaluation.py`). **Not deployed**: the `evaluation` namespace does not exist on the platform yet, both are inventoried `staged` / `materialized: false`, and publishing to OSO is a maintainer step (`docs/operations/deploy-evaluation.md`). |
 | 4 — blocking agreement gate | not started | |
 | 5 — catalog split and long-tail migration | not started | <!-- count:pending -->36 assets carry `migration_status: pending`. |
 | 6 — repository-owned scoring trace | not started | |
@@ -35,10 +35,11 @@ than improvised inside the first consumer.
   opt-in; the digest itself reads only git-tracked files. Its `source_content_digest` covers every authoritative
   declaration input under `sources/` — the full top-level inventory is classified and gated, so
   `evidence_policy.yaml` and `verification_queue.yaml` (which `load_sources` does not return) are
-  folded in, while `signal_routing.yaml` (its `routing_policy_version` a **pending** binding
-  obligation for reconciliation/releases), the frozen long-tail sample, and the derived score
-  projections are excluded from the **digest** — not from the id, which changes with any commit
-  that touches them. `evaluator_version` is pinned to the sentinel `v0-no-repo-evaluator` until
+  folded in, while `signal_routing.yaml` (its `routing_policy_version` now **bound to the evaluation
+  tables** — carried as a column on `evaluation.adoption_reconciliation` and
+  `evaluation.product_adoption_measurements` — with the `release_id` binding still **pending** until
+  Phase 8), the frozen long-tail sample, and the derived score projections are excluded from the
+  **digest** — not from the id, which changes with any commit that touches them. `evaluator_version` is pinned to the sentinel `v0-no-repo-evaluator` until
   the repository-owned evaluator lands (Phase 6).
 - **`observation_snapshot_id` — implemented** (`build/observation_snapshot.py`, `data-architecture.md`
   §4.5), as the two distinct things §4.5 names. **`observation_content_digest`** is a SHA-256 over
@@ -130,15 +131,15 @@ claims, and only the first is true.
 
 ## Assets with no reviewed consumer
 
-**Retirement candidates: <!-- count:retirement_candidates -->4.** Phase 0b read all 41 deployed
+**Retirement candidates: <!-- count:retirement_candidates -->3.** Phase 0b read all 41 deployed
 model definitions in the org, so `consumer_checks.platform_models` is now `checked` on every
 asset and the derived candidate list is non-empty for the first time. It is **recorded, not
 acted on**: section 17 requires explicit maintainer authorization, a stated rollback path and a
 consumer inventory before any deletion. This phase produces the inventory only — no `DROP`, no
-dataset deletion, no description or model change. The four are tracked in issue #348, which each
+dataset deletion, no description or model change. The three are tracked in issue #348, which each
 entry references in `retirement_issue`; a `TBD` placeholder no longer satisfies that field.
 
-The <!-- count:no_reviewed_consumer -->4 assets below are **deployed** and have **no reviewed
+The <!-- count:no_reviewed_consumer -->3 assets below are **deployed** and have **no reviewed
 consumer**: no in-repo code reader, no consumer among the twenty notebooks in the organization,
 and no deployed platform model reads them. `external` stays `unknown` — nothing outside this org
 was read — so this is still weaker than "no consumer" and is not itself grounds for deletion.
@@ -168,19 +169,17 @@ it produces a list for a person and never an action. Several entries are pre-pos
 in-repo reviewed consumer. It was the clearest "pre-positioned, not yet consumed" case, and the
 observations layer is what consumes it.
 
-In the same phase `observations.product_adoption_current` itself joins this list, now that it is
-deployed: nothing reads it yet because its consumers — `evaluation.product_adoption_measurements`
-and the Phase 3 reconciliation report — are later phases and not built yet. It is the newest
-pre-positioned input, the centerpiece of the observations layer rather than a deletion target, and
-its `retirement_reason` says exactly that. This is the "nothing uses it yet" case the predicate
-cannot distinguish from "nobody wants it".
+`observations.product_adoption_current` joined this list in Phase 2 when it deployed with no
+reader, and **left it in Phase 3**: `build/adoption_measurements.py` now reads it to build
+`evaluation.product_adoption_measurements`, so it has an in-repo reviewed consumer and the derived
+predicate no longer fires. It was the clearest "nothing uses it yet" case, and the evaluation
+rollup is what now uses it.
 
 | Asset | Finding |
 |---|---|
 | `scores.ossd_coverage` | No reviewed consumer, in repo or on the platform. |
 | `signal_github.product_adoption` | Unread everywhere reviewed, but holds the route precedence `pypi > huggingface > stars` in SQL. **Must not retire before `registry.adoption_routes` compiles that ordering** — nothing would fail if it did. |
 | `signal_artificialanalysis.model_evaluations` | The platform description says "held deliberately unjoined to gap-map products". Unread by design. |
-| `observations.product_adoption_current` | Just deployed (Phase 2). Pre-positioned: its consumers — `evaluation.product_adoption_measurements` and the Phase 3 reconciliation report — are later phases, not yet built. The centerpiece of the observations layer, not a deletion target. |
 
 ## Consumers with only a deprecated reader
 

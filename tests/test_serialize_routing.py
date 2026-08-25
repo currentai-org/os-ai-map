@@ -172,15 +172,19 @@ def test_every_route_compiles_to_one_row_in_contiguous_order(adoption, tables):
 
 
 def test_routes_are_in_the_declared_precedence_order(tables):
-    """Precedence is monotonic in authority — the five authoritative routes first, then the two
+    """Precedence is monotonic in authority — the authoritative routes first, then the two
     fallback routes — and within the authoritative download channels the ADR-001 order is
-    `pypi > huggingface`. This pins the EXACT ordered route_ids, not merely that route_order is
-    contiguous, so a reorder that breaks ADR-001 fails here rather than passing silently."""
+    `pypi > huggingface`. The unbridged npm/crates usage routes rank AFTER the bridged download
+    channels (so a product declaring both is measured on the bridged one) and BEFORE the fallback
+    stars route (so an unbridged-authoritative product is left unmeasured, not scored on stars).
+    This pins the EXACT ordered route_ids, so a reorder that breaks either invariant fails here."""
     assert [r["route_id"] for r in tables["adoption_routes"]] == [
         "pypi.downloads_30d",
         "huggingface_model.downloads_30d",
         "huggingface_dataset.downloads_30d",
         "semanticscholar.citation_count",
+        "npm.downloads_30d",
+        "crates.downloads_30d",
         "active_users",
         "github.stargazers_count",
         "reported_traction",
@@ -237,7 +241,9 @@ def test_semantic_field_values_reach_the_tables(adoption, tables):
             "scope_value": "benchmark_eval_data"} in tables["adoption_route_scopes"]
     assert tables["adoption_aggregation_rules"] == [
         {"aggregation_rule_id": "sum_usage_across_artifacts", "method": "sum",
-         "scope": "artifacts", "applies_to_instrument": "usage_volume"}
+         "scope": "artifacts", "applies_to_instrument": "usage_volume"},
+        {"aggregation_rule_id": "sum_stars_across_artifacts", "method": "sum",
+         "scope": "artifacts", "applies_to_instrument": "stars_fallback"},
     ]
 
 
@@ -264,13 +270,14 @@ def test_routing_policy_version_is_the_declared_version(routing, tables):
 def test_aggregation_rule_id_is_set_only_where_the_instrument_matches(tables):
     """A route carries the aggregation rule whose `applies_to_instrument` equals its own
     instrument, and no method string is duplicated onto the route. usage_volume routes get
-    `sum_usage_across_artifacts`; every other route gets the empty string."""
-    rule = tables["adoption_aggregation_rules"][0]
+    `sum_usage_across_artifacts`, stars_fallback gets `sum_stars_across_artifacts`; a route
+    whose instrument has no rule gets the empty string."""
+    rule_for = {
+        r["applies_to_instrument"]: r["aggregation_rule_id"]
+        for r in tables["adoption_aggregation_rules"]
+    }
     for row in tables["adoption_routes"]:
-        if row["instrument_type"] == rule["applies_to_instrument"]:
-            assert row["aggregation_rule_id"] == rule["aggregation_rule_id"]
-        else:
-            assert row["aggregation_rule_id"] == ""
+        assert row["aggregation_rule_id"] == rule_for.get(row["instrument_type"], "")
         # The method string lives on the rule, not the route.
         assert "aggregation_method" not in row
 

@@ -777,6 +777,52 @@ artifact observations  ->  route selection      (registry.adoption_routes)
                        ->  reconciliation       (evaluation.adoption_reconciliation)
 ```
 
+Both tables are built by repo-side release builders — `build/adoption_measurements.py` and
+`build/adoption_reconciliation.py` — not by an in-warehouse UDM. This is forced by the identities:
+`observation_snapshot_id` a UDM could compute from the warehouse content, but
+`declaration_version_id` encodes the repository `source_git_sha` and the `sources/` content digest,
+which the warehouse sandbox has no access to. The builder has the git checkout and reads the
+warehouse, so it computes both identities at run time (`build/declaration_version.py`,
+`build/observation_snapshot.py`) and stamps them onto the candidate rows — derived, not stored,
+like the identities themselves. The route selection, aggregation and banding read the compiled routing
+(`build/serialize_routing.py`, `build/serialize_rubric.py`) and reinterpret none of it; a routing
+fact the builder needs but cannot read is a compiler bug to fix at the source.
+
+Route selection is by DECLARED ARTIFACTS and never falls through: the winning route is the first
+route, in precedence order, that is applicable — an artifact-driven route (pypi, huggingface,
+github, arxiv, and the unbridged npm/crates) applies when the product declares that artifact kind
+and the route is in scope; a hand-authored route (`active_users`, `reported_traction`) applies when
+the product's recorded instrument names it. Selection spans ALL routes, not only machine ones, so
+the declared precedence is executable: an authoritative `active_users` outranks fallback stars, and
+an unbridged `npm`/`crates` route outranks stars, so such a product is left UNMEASURED on its
+authoritative route rather than scored on a weaker observed one. The builder then looks for an
+observation on the winning route only; a missing observation produces no measurement (reconciliation
+records the unmeasured outcome), never a fall to a weaker route. Aggregation follows the compiled
+rules: both `usage_volume` and `stars_fallback` sum across a family's artifacts
+(`sum_stars_across_artifacts` matches the deployed compatibility model's `SUM(stargazers_count)` and
+the recorded assessments), with the stars cap still enforced by the band set.
+
+Reconciliation never compares across instrument types. A `delta` is computed only when the measured
+and recorded instruments match; a cross-instrument row withholds it and is `route_mismatch` (an
+authoritative instrument on either side — inconsistent declarations) or `expected_difference` (both
+weak signals). Both evaluation tables carry `routing_policy_version`, stamped from the compiled
+routes, so the routing policy that produced a row travels with it. `declaration_version.py`'s
+binding is split accordingly: **bound** to the evaluation tables (proven by the column), and still
+**pending** for `release_id`, which does not exist until Phase 8 — where the release identity must
+then incorporate the reconciliation-policy version.
+
+The builders are pure functions of their inputs (the identities passed in) so the logic is pinned
+against the immutable Phase-2 baseline with fixed test identities; `build/serialize_evaluation.py`
+reads the current table once and serializes both tables from that one atomic row set, and the OSO
+publish is a maintainer step (`docs/operations/deploy-evaluation.md`).
+
+`adoption_reconciliation` reports before it blocks (above) over EVERY recorded adoption assessment —
+measured, unmeasured, and the deliberate nulls — one terminal outcome per applicable route. Today
+every measured row is `source_unavailable`: `product_adoption_current` carries no `source_run_id`
+(row binding is blocked on #355), so §4.3 forbids reading any current measurement as a validated
+agreement. That status is the source-run contract reaching the gate, not a defect in the report;
+the fuller status set becomes assignable once #355 binds observations to runs.
+
 #### Repository-derived scoring trace
 
 The repository-owned evaluator must eventually publish:
@@ -1623,18 +1669,23 @@ Three numbers that must not be conflated:
 
 ```text
 deployed tables in the in-scope datasets    <!-- count:deployed_tables -->60
-staged, not deployed                         <!-- count:staged_assets -->5
+staged, not deployed                         <!-- count:staged_assets -->7
 dormant, no platform table yet              <!-- count:dormant_assets -->1
                                             ------
-logical assets in warehouse/assets.yaml     <!-- count:assets -->66
+logical assets in warehouse/assets.yaml     <!-- count:assets -->68
 ```
 
-The staged five are the three `signal_packages` models from issue #314,
-`observations.source_runs` and `observations.product_adoption_baseline` (both Phase 2): tracked
-assets whose tables do not exist on the platform yet. The last two are staged for a reason the
-other three are not — they are repository-side artifacts by design, a control-plane snapshot and
-a frozen-bytes baseline, and `staged` here records only that no platform table carries their name.
-Neither is unfinished, and neither is waiting on a deploy to become authoritative. `observations.product_adoption_current` was staged the same way when first authored, and is
+The staged seven are the three `signal_packages` models from issue #314,
+`observations.source_runs` and `observations.product_adoption_baseline` (both Phase 2), and the two
+Phase-3 evaluation candidates `evaluation.product_adoption_measurements` and
+`evaluation.adoption_reconciliation`: tracked assets whose tables do not exist on the platform yet.
+The last four are staged for a reason the `signal_packages` three are not — they are
+repository-side artifacts by design (a control-plane snapshot, a frozen-bytes baseline, and two
+release-builder candidates whose `evaluation` namespace is not created yet), and `staged` here
+records only that no platform table carries their name.
+Neither the snapshot nor the baseline is unfinished, and neither is waiting on a deploy to become
+authoritative; the two evaluation candidates await the `evaluation` namespace and the maintainer
+publish in `docs/operations/deploy-evaluation.md`. `observations.product_adoption_current` was staged the same way when first authored, and is
 now **deployed** (2026-08-24, the deploy created the `observations` namespace), so it counts among
 the deployed tables rather than the staged ones. The four `registry.adoption_*` routing tables —
 `adoption_routes`, `adoption_route_scopes`, `adoption_route_band_sets` and
