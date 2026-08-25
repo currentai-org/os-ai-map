@@ -973,15 +973,21 @@ Declared, for `observation_content_digest` (owned by `build/observation_snapshot
   independent of the order rows were materialized or read in;
 - column set: the measurement columns only — lineage, capture time (`ingested_at`), the derived
   `observation_id`, `is_valid`, and `supersedes_observation_id` are excluded;
-- timezone/date normalization: `observed_at` is converted to UTC (a naive value interpreted as
-  UTC), rendered at fixed microsecond precision with a `Z` suffix, so one instant has one
-  rendering; null as JSON `null`;
-- number representation: finite only — `NaN`/`Infinity` are rejected; any non-JSON-native,
-  non-date type is rejected rather than coerced;
+- timezone/date normalization: `observed_at` MUST be a `datetime` (a string or lookalike is
+  rejected, not coerced); it is converted to UTC (a naive value interpreted as UTC), rendered at
+  fixed microsecond precision with a `Z` suffix, so one instant has one rendering; null as JSON
+  `null`;
+- number/type representation: finite numbers only (`NaN`/`Infinity` rejected); every
+  non-timestamp column must be a JSON scalar (`str`/`bool`/`int`/finite `float`/`None`), any other
+  type rejected;
 - hash algorithm: SHA-256, lowercase hex;
-- versioning: `observation_content_digest` is version-independent (pure content); the
-  `canonicalization_version` is bound into `observation_snapshot_id` instead, and a merge-base
-  ratchet forbids changing `CONTENT_COLUMNS` or the serializer without advancing the version.
+- versioning: `observation_content_digest` is version-independent (pure content). The
+  `canonicalization_version` is bound into `observation_snapshot_id`, whose preimage is the exact
+  UTF-8 bytes `"os-ai-map:observation-snapshot:v" + version + "\0" + content_digest`
+  (domain-separated, NUL-delimited). A merge-base ratchet forbids changing the canonicalization
+  **contract descriptor** — the columns, ordering, types, timestamp rule, null/number encoding,
+  serialization, and hash, fingerprinted as a whole rather than by one sample — without advancing
+  the version; implementation conformance to the descriptor is tested separately.
 
 Future release tables may include:
 

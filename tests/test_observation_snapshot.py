@@ -1,35 +1,58 @@
 """The observation content digest, the versioned snapshot id, and the canonicalization ratchet.
 
-`build/observation_snapshot.py` derives two things §4.5 names separately:
+`build/observation_snapshot.py` derives the two things §4.5 names separately —
 `observation_content_digest` (the pure content address) and `observation_snapshot_id` (the
-versioned identity reconciliation and releases key on). These tests pin the content-alone contract
-of the digest, the version binding of the id, UTC timestamp normalization, and a merge-base ratchet
-that forbids changing the serializer without a version bump.
+versioned, domain-separated identity). These tests pin the content-alone contract, the version
+binding and exact preimage of the id, UTC timestamp normalization with strict typing, and a
+merge-base ratchet over an explicit contract descriptor that forbids a serialization change without
+a version bump.
 """
 
 import datetime
+import hashlib
 
 import pytest
 
 import build.observation_snapshot as osnap
 from build.observation_snapshot import (
+    CANONICALIZATION_CONTRACT,
     CANONICALIZATION_FINGERPRINT,
+    CANONICALIZATION_VERSION,
     CONTENT_COLUMNS,
     CanonicalizationRatchetError,
+    canonicalization_fingerprint,
     check_canonicalization_ratchet,
     merge_base_canonicalization,
     observation_content_digest,
     observation_snapshot_id,
     rows_from_parquet,
     snapshot_id_from_digest,
-    _FINGERPRINT_FIXTURE,
 )
 
 _UTC = datetime.timezone.utc
 
 # Fixed contracts over the immutable Phase-2 baseline parquet.
 BASELINE_CONTENT_DIGEST = "8a6c3e984776302ce116bc2f119a77eaf45dfc7b7aaffc734de74c63ae0d6eab"
-BASELINE_SNAPSHOT_ID = "ae1e9dfbc55c82c522edddc03c6286a6b57242a5fd104d2763ec2f966ef3e462"
+BASELINE_SNAPSHOT_ID = "9bd4d93a6fc67a2b9d89d91adeb4bb3f4fd9b612cc26e6647c67210c9a37a8d4"
+
+# A behavioral fixture exercising tz-aware + naive timestamps, a null window, and unicode. Its
+# digest is a separate behavioral golden — the canonicalization FINGERPRINT is over the contract
+# descriptor, not this fixture, so a declared-rule change is caught even if no fixture exercises it.
+_BEHAVIOR_FIXTURE = (
+    {
+        "product_slug": "fixture-a", "product_type": "model", "artifact_kind": "github",
+        "artifact_id": "ówner/repo", "channel": "github", "metric_type": "stars",
+        "raw_value": 42, "unit": "stars", "measurement_window_days": None,
+        "observed_at": datetime.datetime(2026, 1, 2, 3, 4, 5, tzinfo=_UTC),
+    },
+    {
+        "product_slug": "fixture-b", "product_type": "dataset", "artifact_kind": "huggingface_dataset",
+        "artifact_id": "org/set", "channel": "huggingface", "metric_type": "downloads",
+        "raw_value": 1000, "unit": "downloads", "measurement_window_days": 30,
+        "observed_at": datetime.datetime(2026, 1, 2, 3, 4, 5),  # naive → interpreted UTC
+    },
+)
+BEHAVIOR_FIXTURE_DIGEST = "e2e93998bdcf8fabe99fc2fb6d8e3870bf255785b153ba53138fd15ae578eb5c"
 
 
 def _row(**overrides) -> dict:
@@ -38,7 +61,6 @@ def _row(**overrides) -> dict:
         "artifact_id": "acme/thing", "channel": "github", "metric_type": "stars",
         "raw_value": 100, "unit": "stars", "measurement_window_days": None,
         "observed_at": datetime.datetime(2026, 8, 20, 12, 0, 0),
-        # excluded: lineage / capture-time / derived / history
         "observation_id": "deadbeef", "ingested_at": datetime.datetime(2026, 8, 25, 5, 0, 0),
         "source_dataset": "signal_github", "source_table": "currentai.signal_github.artifact_state",
         "source_run_id": None, "source_record_id": None, "is_valid": True,
@@ -48,7 +70,7 @@ def _row(**overrides) -> dict:
     return base
 
 
-# --- content columns -------------------------------------------------------------
+# --- content columns & the pure content digest -----------------------------------
 
 
 def test_content_columns_exclude_lineage_and_capture_time():
@@ -57,11 +79,6 @@ def test_content_columns_exclude_lineage_and_capture_time():
         "source_dataset", "source_table", "is_valid", "supersedes_observation_id",
     ):
         assert excluded not in CONTENT_COLUMNS
-    for included in ("product_slug", "artifact_id", "metric_type", "raw_value", "observed_at"):
-        assert included in CONTENT_COLUMNS
-
-
-# --- the pure content digest -----------------------------------------------------
 
 
 def test_content_digest_is_deterministic_and_order_independent():
@@ -73,7 +90,7 @@ def test_lineage_and_capture_time_do_not_change_the_content_digest():
     base = observation_content_digest([_row()])
     for excluded, value in (
         ("source_run_id", "run-xyz"),
-        ("ingested_at", datetime.datetime(2027, 1, 1, 0, 0, 0)),
+        ("ingested_at", datetime.datetime(2027, 1, 1)),
         ("observation_id", "cafebabe"),
         ("is_valid", False),
     ):
@@ -87,16 +104,29 @@ def test_measurement_changes_change_the_content_digest():
 
 
 def test_content_digest_is_version_independent(monkeypatch):
-    """§4.5: the content digest is content and nothing else — the version is bound in the snapshot
-    id, not the digest."""
     before = observation_content_digest([_row()])
     monkeypatch.setattr(osnap, "CANONICALIZATION_VERSION", osnap.CANONICALIZATION_VERSION + 1)
     assert observation_content_digest([_row()]) == before
 
 
+# --- strict typing (refinement: observed_at must be a datetime) ------------------
+
+
+def test_observed_at_must_be_a_datetime():
+    """A string or other lookalike is rejected — it would bypass UTC normalization."""
+    for bad in ("2026-08-20T12:00:00", "2026-08-20T12:00:00Z", 1_755_000_000, datetime.date(2026, 8, 20)):
+        with pytest.raises(TypeError):
+            observation_content_digest([_row(observed_at=bad)])
+
+
 def test_non_finite_numbers_are_rejected():
     with pytest.raises(ValueError):
         observation_content_digest([_row(raw_value=float("inf"))])
+
+
+def test_unexpected_type_in_a_content_column_is_rejected():
+    with pytest.raises(TypeError):
+        observation_content_digest([_row(raw_value={1, 2})])
 
 
 def test_missing_content_column_is_loud():
@@ -106,18 +136,17 @@ def test_missing_content_column_is_loud():
         observation_content_digest([bad])
 
 
-# --- UTC timestamp normalization (finding 2) -------------------------------------
+# --- UTC timestamp normalization -------------------------------------------------
 
 
 def test_equivalent_instants_produce_one_digest():
-    """The same instant, whatever its written offset or naivety, digests identically."""
     aware_utc = _row(observed_at=datetime.datetime(2026, 8, 25, 12, 0, 0, tzinfo=_UTC))
     aware_off = _row(observed_at=datetime.datetime(
         2026, 8, 25, 8, 0, 0, tzinfo=datetime.timezone(datetime.timedelta(hours=-4))))
     naive = _row(observed_at=datetime.datetime(2026, 8, 25, 12, 0, 0))
     d = observation_content_digest([aware_utc])
-    assert observation_content_digest([aware_off]) == d  # -04:00 same instant
-    assert observation_content_digest([naive]) == d       # naive interpreted UTC
+    assert observation_content_digest([aware_off]) == d
+    assert observation_content_digest([naive]) == d
 
 
 def test_different_instants_differ():
@@ -126,26 +155,27 @@ def test_different_instants_differ():
     assert observation_content_digest([a]) != observation_content_digest([b])
 
 
-# --- the versioned snapshot id (finding 1) ---------------------------------------
+# --- the versioned, domain-separated snapshot id ---------------------------------
 
 
 def test_snapshot_id_binds_the_canonicalization_version(monkeypatch):
-    """Bumping the version MUST change the snapshot id, so a stored id names its rule."""
     before = observation_snapshot_id([_row()])
     monkeypatch.setattr(osnap, "CANONICALIZATION_VERSION", osnap.CANONICALIZATION_VERSION + 1)
     assert observation_snapshot_id([_row()]) != before
 
 
+def test_snapshot_id_uses_the_documented_domain_separated_preimage():
+    """The id is SHA-256 of exactly 'os-ai-map:observation-snapshot:v<N>\\0<content_digest>'."""
+    digest = "b" * 64
+    expected = hashlib.sha256(
+        f"os-ai-map:observation-snapshot:v{CANONICALIZATION_VERSION}\0{digest}".encode("utf-8")
+    ).hexdigest()
+    assert snapshot_id_from_digest(digest) == expected
+
+
 def test_snapshot_id_is_not_the_bare_content_digest():
     rows = [_row()]
     assert observation_snapshot_id(rows) != observation_content_digest(rows)
-
-
-def test_snapshot_id_is_a_function_of_the_content_digest():
-    rows = [_row()]
-    assert observation_snapshot_id(rows) == snapshot_id_from_digest(
-        observation_content_digest(rows)
-    )
 
 
 def test_snapshot_id_shape():
@@ -154,22 +184,32 @@ def test_snapshot_id_shape():
     int(vid, 16)
 
 
-# --- the canonicalization ratchet (finding 3) ------------------------------------
+# --- the canonicalization ratchet over an explicit contract descriptor -----------
 
 
-def test_fingerprint_matches_the_current_serializer():
-    """The committed fingerprint must equal the digest the current serializer produces over the
-    fixture; regenerating it is the only way to change it, which the ratchet then guards."""
-    assert observation_content_digest(_FINGERPRINT_FIXTURE) == CANONICALIZATION_FINGERPRINT
+def test_contract_descriptor_matches_the_live_constants():
+    assert CANONICALIZATION_CONTRACT["version"] == CANONICALIZATION_VERSION
+    assert CANONICALIZATION_CONTRACT["content_columns"] == list(CONTENT_COLUMNS)
 
 
-def test_ratchet_fires_on_a_serializer_change_without_a_version_bump():
+def test_fingerprint_is_the_contract_descriptor_digest():
+    """The fingerprint is over the DECLARED contract, so a rule change moves it even where no
+    fixture exercises that rule."""
+    assert canonicalization_fingerprint() == CANONICALIZATION_FINGERPRINT
+
+
+def test_behavioral_fixture_digest_is_pinned():
+    """Implementation behavior is pinned separately from the contract fingerprint."""
+    assert observation_content_digest(_BEHAVIOR_FIXTURE) == BEHAVIOR_FIXTURE_DIGEST
+
+
+def test_ratchet_fires_on_a_contract_change_without_a_version_bump():
     before = {"version": 1, "fingerprint": "a" * 64}
     with pytest.raises(CanonicalizationRatchetError):
         check_canonicalization_ratchet(before, {"version": 1, "fingerprint": "b" * 64})
 
 
-def test_ratchet_passes_when_the_version_advances_with_the_fingerprint():
+def test_ratchet_passes_when_the_version_advances():
     before = {"version": 1, "fingerprint": "a" * 64}
     check_canonicalization_ratchet(before, {"version": 2, "fingerprint": "b" * 64})
 
@@ -184,11 +224,10 @@ def test_ratchet_first_install_is_not_a_violation():
 
 
 def test_canonicalization_ratchet_against_the_merge_base():
-    """The real gate: on this branch the module is new (absent at the merge base) so there is
-    nothing to ratchet against and this passes; once merged, any serializer change without a
-    version bump fails here."""
+    """The real gate: the module is new on this branch (absent at the merge base) so this passes
+    without a skip; once merged, a contract change without a version bump fails here."""
     before = merge_base_canonicalization()
-    now = {"version": osnap.CANONICALIZATION_VERSION, "fingerprint": CANONICALIZATION_FINGERPRINT}
+    now = {"version": CANONICALIZATION_VERSION, "fingerprint": CANONICALIZATION_FINGERPRINT}
     check_canonicalization_ratchet(before, now)
 
 
