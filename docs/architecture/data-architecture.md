@@ -777,6 +777,29 @@ artifact observations  ->  route selection      (registry.adoption_routes)
                        ->  reconciliation       (evaluation.adoption_reconciliation)
 ```
 
+Both tables are built by repo-side release builders — `build/adoption_measurements.py` and
+`build/adoption_reconciliation.py` — not by an in-warehouse UDM. This is forced by the identities:
+`observation_snapshot_id` a UDM could compute from the warehouse content, but
+`declaration_version_id` encodes the repository `source_git_sha` and the `sources/` content digest,
+which the warehouse sandbox has no access to. The builder has the git checkout and reads the
+warehouse, so it computes both identities at run time (`build/declaration_version.py`,
+`build/observation_snapshot.py`) and stamps them onto the candidate rows — derived, not stored,
+like the identities themselves. The aggregation, route selection and banding read the compiled
+routing (`build/serialize_routing.py`, `build/serialize_rubric.py`) and reinterpret none of it; a
+routing fact the builder needs but cannot read is a compiler bug to fix at the source. A rule-less
+route with more than one contributing artifact (only `stars_fallback` can reach this) abstains
+rather than invent an aggregation the routing source never declared — declaring a stars aggregation
+rule in `signal_routing.yaml` would resolve it. The builders are pure functions of their inputs
+(the two identities passed in) so the logic is pinned against the immutable Phase-2 baseline with
+fixed test identities; the real publish to OSO is a maintainer step, and until it lands both tables
+are inventoried `staged`.
+
+`adoption_reconciliation` reports before it blocks (above), and today every measured row is
+`source_unavailable`: `product_adoption_current` carries no `source_run_id` (row binding is blocked
+on #355), so §4.3 forbids reading any current measurement as a validated agreement. That status is
+the source-run contract reaching the gate, not a defect in the report; the fuller status set
+becomes assignable once #355 binds observations to runs.
+
 #### Repository-derived scoring trace
 
 The repository-owned evaluator must eventually publish:
@@ -1623,10 +1646,10 @@ Three numbers that must not be conflated:
 
 ```text
 deployed tables in the in-scope datasets    <!-- count:deployed_tables -->60
-staged, not deployed                         <!-- count:staged_assets -->5
+staged, not deployed                         <!-- count:staged_assets -->7
 dormant, no platform table yet              <!-- count:dormant_assets -->1
                                             ------
-logical assets in warehouse/assets.yaml     <!-- count:assets -->66
+logical assets in warehouse/assets.yaml     <!-- count:assets -->68
 ```
 
 The staged five are the three `signal_packages` models from issue #314,

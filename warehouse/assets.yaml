@@ -668,6 +668,68 @@ assets:
   status: active
   materialized: true
   verified_at: '2026-08-20'
+- id: evaluation.adoption_reconciliation
+  table: currentai.evaluation.adoption_reconciliation
+  kind: evaluation
+  current_namespace: evaluation
+  target_namespace: evaluation
+  migration_status: complete
+  authority: repo
+  population: gap_map
+  release_path: false
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: checked
+    external: unknown
+  external_consumers: none_confirmed
+  grain: one row per (declaration_version_id, observation_snapshot_id, product_slug, category_slug,
+    route_id) — the report-first reconciliation of measured against recorded adoption
+  producer: build/adoption_reconciliation.py
+  classification_note: report-first reconciliation of measured vs recorded adoption; keys on both
+    release identities and carries no release_id (§4.4). Every measured row is source_unavailable
+    until row-to-run binding lands (#355); an abstaining route is abstained.
+  refresh: 'not deployed; built read-only by the repo-side release builder
+    (build/adoption_reconciliation.py) over evaluation.product_adoption_measurements and the
+    recorded sources/scores, stamped with the run-time declaration_version_id +
+    observation_snapshot_id. The evaluation namespace does not exist on the platform yet (verified
+    read-only 2026-08-25); a dataset_id is recorded here only once it does. Publishing to OSO is a
+    maintainer step.'
+  owner: carl
+  status: staged
+  materialized: false
+  verified_at: '2026-08-25'
+- id: evaluation.product_adoption_measurements
+  table: currentai.evaluation.product_adoption_measurements
+  kind: evaluation
+  current_namespace: evaluation
+  target_namespace: evaluation
+  migration_status: complete
+  authority: repo
+  population: gap_map
+  release_path: false
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: checked
+    external: unknown
+  external_consumers: none_confirmed
+  grain: one row per (declaration_version_id, observation_snapshot_id, product_slug, category_slug,
+    route_id) — the product-level adoption rollup on the winning route
+  producer: build/adoption_measurements.py
+  classification_note: product-level aggregation + banding of artifact observations by the compiled
+    routing (§4.4); keys on both release identities and carries measured_level, band_set_id and
+    route_authority. Artifact-level raw observations stay in observations.product_adoption_current.
+  refresh: 'not deployed; built read-only by the repo-side release builder
+    (build/adoption_measurements.py) over observations.product_adoption_current and the compiled
+    registry.adoption_* routing tables, stamped with the run-time declaration_version_id +
+    observation_snapshot_id. The evaluation namespace does not exist on the platform yet (verified
+    read-only 2026-08-25); a dataset_id is recorded here only once it does. Publishing to OSO is a
+    maintainer step.'
+  owner: carl
+  status: staged
+  materialized: false
+  verified_at: '2026-08-25'
 - id: observations.product_adoption_baseline
   table: currentai.observations.product_adoption_baseline
   files:
