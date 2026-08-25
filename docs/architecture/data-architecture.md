@@ -883,6 +883,21 @@ Until the repository-owned evaluator lands (Phase 6), `evaluator_version` is a d
 string, so the day a real evaluator version replaces it is a reviewed change that moves every id
 with it.
 
+`observation_snapshot_id` is derived by `build/observation_snapshot.py`, and like the declaration
+version it is a run-time computation, not a stored receipt — a full-refresh table's snapshot must
+track current content, and a frozen value would go stale on every run. It is a SHA-256 over the
+normalized observation content **and nothing else**: the measurement columns only (`product_slug`,
+`product_type`, `artifact_kind`, `artifact_id`, `channel`, `metric_type`, `raw_value`, `unit`,
+`measurement_window_days`, `observed_at`), taken as an order-independent multiset. Lineage
+(`source_run_id`, `source_record_id`, `source_dataset`, `source_table`), capture time
+(`ingested_at`), the derived `observation_id`, `is_valid`, and `supersedes_observation_id` are
+excluded, so an unchanged measurement keeps its snapshot across re-runs and the runs that produced
+it stay visible only in `observation_run_ids` beside the id. The §4.7 `canonicalization_version` is
+likewise recorded **beside** the id, never folded into the digest — that is what keeps it "content
+and nothing else," and is the deliberate difference from the opaque composite `declaration_version_id`.
+The computation is exercised in-repo against the immutable Phase-2 baseline parquet, whose snapshot
+id is pinned as a fixed contract.
+
 Use them consistently:
 
 - `registry.axis_assessments` belongs to `declaration_version_id`. It does not depend on

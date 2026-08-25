@@ -40,9 +40,14 @@ than improvised inside the first consumer.
   projections are excluded from the **digest** — not from the id, which changes with any commit
   that touches them. `evaluator_version` is pinned to the sentinel `v0-no-repo-evaluator` until
   the repository-owned evaluator lands (Phase 6).
-- **`observation_snapshot_id` — pending**, to be emitted by the observations layer over
-  `observations.product_adoption_current` (a build receipt, like `source_runs.json`). Gated on
-  `observations.product_adoption_current` reaching `main`.
+- **`observation_snapshot_id` — implemented** (`build/observation_snapshot.py`, `data-architecture.md`
+  §4.5). A SHA-256 over the normalized observation content and nothing else — the ten measurement
+  columns of `product_adoption_current` as an order-independent multiset, excluding lineage
+  (`source_run_id` et al.), capture time (`ingested_at`), the derived `observation_id`, `is_valid`,
+  and `supersedes_observation_id`, so an unchanged measurement keeps its id across re-runs. Derived
+  at run time, not stored (a full-refresh snapshot would go stale if frozen); the
+  `canonicalization_version` is recorded beside the id, not folded in, keeping it content-alone.
+  Exercised against the immutable Phase-2 baseline, whose snapshot id is pinned as a fixed contract.
 
 ## Atomicity: which state is in force
 
