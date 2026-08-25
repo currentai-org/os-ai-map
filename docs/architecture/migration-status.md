@@ -179,7 +179,9 @@ rollup is what now uses it.
 Both `evaluation` tables joined this list on 2026-08-25, the day they were published, and for the
 same reason `observations.product_adoption_current` was on it a phase earlier: the consumer is the
 next phase's. The Phase-4 blocking gate is the reader, and it stays disabled while every measured
-reconciliation row is `source_unavailable` for want of row-to-run binding (#355). Publishing the
+reconciliation row is `source_unavailable` for want of row-to-run binding (#355) — the platform run
+binding it needs has been folded into OSO's incremental-model work (Kariba OSO-4705), so it now
+waits on OSO shipping incremental models rather than a standalone run-id feature. Publishing the
 report before gating on it is deliberate, so these two are the clearest current case of the blind
 spot named above — a table nothing uses **yet** — and neither is a deletion candidate.
 
@@ -189,7 +191,7 @@ spot named above — a table nothing uses **yet** — and neither is a deletion 
 | `signal_github.product_adoption` | Unread everywhere reviewed, but holds the route precedence `pypi > huggingface > stars` in SQL. **Must not retire before `registry.adoption_routes` compiles that ordering** — nothing would fail if it did. |
 | `signal_artificialanalysis.model_evaluations` | The platform description says "held deliberately unjoined to gap-map products". Unread by design. |
 | `evaluation.product_adoption_measurements` | Published 2026-08-25. Read in-repo only as candidate rows by the reconciliation builder; the deployed table's reader is the Phase-4 gate, held on #355. |
-| `evaluation.adoption_reconciliation` | Published 2026-08-25. The report is the deliverable; the Phase-4 gate that would consume it is deliberately not enabled while every measured row is `source_unavailable` (#355). |
+| `evaluation.adoption_reconciliation` | Published 2026-08-25. The report is the deliverable; the Phase-4 gate that would consume it is deliberately not enabled while every measured row is `source_unavailable` (#355) — its platform run binding is folded into OSO's incremental-model work (OSO-4705). |
 
 ## Consumers with only a deprecated reader
 
