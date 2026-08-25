@@ -25,7 +25,15 @@ commit, over one atomic read of `observations.product_adoption_current`.
   same one-time namespace creation `observations` needed in Phase 2. Until it exists, both assets
   stay `staged` / `materialized: false` in `warehouse/assets.yaml`.
 
-## 2. Build the candidates from one live read
+## 2. Dry run, then build the candidates from one live read
+
+Validate first — this writes nothing and fails on a dirty tree or a routing/compiler error:
+
+```bash
+uv run python -m build.serialize_evaluation --check          # in-memory build, no files, no upload
+```
+
+Then build the upload artifacts:
 
 ```bash
 uv run python -m build.serialize_evaluation --live
@@ -43,9 +51,50 @@ live counts move with the live observations.
 
 ## 3. Upload as static models
 
-Upload each CSV as its `currentai.evaluation.*` static model (the same mechanism
-`build/publish_registry.py` uses for the registry tables). Record the resulting `dataset_id`,
-`model_id`/revision and byte hash.
+Same GraphQL mechanism `build/publish_registry.py` uses (`graphql()` helper, `OSO_API_KEY` bearer
+token, `ORG_ID`). For each of the two tables, in order — `product_adoption_measurements` then
+`adoption_reconciliation`:
+
+1. **Resolve or create the dataset.** The `evaluation` dataset must exist; create it once if not
+   (mirror `publish_registry.resolve_dataset`). Record its `dataset_id`.
+2. **Resolve or create the static model** for the table name:
+
+   ```graphql
+   mutation($input: CreateStaticModelInput!) {
+     createStaticModel(input:$input){ success staticModel{ id name } } }
+   ```
+
+   Capture the returned `staticModel.id` (this is `model_id`). If it already exists, reuse its id.
+3. **Get an upload URL and PUT the CSV** (mirror `publish_registry.upload`):
+
+   ```graphql
+   mutation($staticModelId: ID!){ createStaticModelUploadUrl(staticModelId:$staticModelId) }
+   ```
+
+   then HTTP `PUT` the CSV bytes to that URL.
+4. **Trigger the load and capture the revision:**
+
+   ```graphql
+   mutation($input: CreateStaticModelRunRequestInput!){
+     createStaticModelRunRequest(input:$input){ success run{ id status } } }
+   ```
+
+   Record `run.id`, the resulting `revision`, the schema the platform inferred, and the CSV's
+   `sha256`. These are the provenance the inventory's `mirror` block (or the evaluation asset's
+   deploy note) must carry, exactly as the registry and observation deploys record theirs.
+
+Verify the deployed row counts equal the CSV row counts (`data_rows`), and that
+`routing_policy_version` is present and equals the value in `signal_routing.yaml`.
+
+## Rollback
+
+A static-model load is a new revision over the same `model_id`; the previous revision is retained.
+To roll back, re-point the model to the prior revision (or re-run step 3 with the last-known-good
+CSV, which you can regenerate from the commit whose `declaration_version_id` you recorded). Because
+nothing downstream consumes these tables yet (Phase 4's gate is not enabled), a rollback has no
+consumer to break — but record the revision you rolled back from and to, so the provenance stays
+truthful. If a load fails midway, the model keeps its prior revision; do not leave a half-loaded
+table marked `active` in the inventory.
 
 ## 4. Reconcile the inventory with reality
 

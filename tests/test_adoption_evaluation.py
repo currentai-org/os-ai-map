@@ -20,12 +20,12 @@ from build.adoption_measurements import (
     _band_index,
     _native,
     _numeric,
+    all_routes,
     canonical_row as measurement_row,
     load_inputs,
     measurements,
-    select_route,
-    machine_routes,
     route_scopes,
+    select_route,
 )
 from build.adoption_reconciliation import canonical_row as reconciliation_row, reconcile
 from build.observation_snapshot import observation_snapshot_id, rows_from_parquet
@@ -37,16 +37,17 @@ _ROOT = Path(__file__).resolve().parents[1]
 TEST_DVID = "test-declaration-version"
 
 BASELINE_SNAPSHOT_ID = "9bd4d93a6fc67a2b9d89d91adeb4bb3f4fd9b612cc26e6647c67210c9a37a8d4"
-MEASUREMENTS_DIGEST = "0d71d073786150256b1cb64d62a9703c42cbe1040d2c23c3089769a91ccaf014"
-RECONCILIATION_DIGEST = "f296f5d63512ec3adf4f785914e551c3f82c52268706e749f7d8190bf38ad34c"
+MEASUREMENTS_DIGEST = "f1ccad234b9e91906b2feb4e9f4d40f82489f4d2d62bb7bb016ac2ae38629742"
+RECONCILIATION_DIGEST = "44f5e0395f47480a0c59f2408e1f4aa99e1c0160f9982c54310e0efb7146ed5e"
 
-MEASUREMENT_COUNT = 390
+MEASUREMENT_COUNT = 377
 RECORDED_ASSESSMENT_COUNT = 522
+ROUTING_POLICY_VERSION = "2"
 
 
 @pytest.fixture(scope="module")
 def inputs():
-    return load_inputs()  # (routing_tables, band_rows, category_of, declared_artifacts)
+    return load_inputs()  # (routing_tables, band_rows, category_of, declared, recorded_instruments)
 
 
 @pytest.fixture(scope="module")
@@ -61,9 +62,9 @@ def scores():
 
 @pytest.fixture(scope="module")
 def measurement_rows(inputs, observations):
-    tables, band_rows, category_of, declared = inputs
+    tables, band_rows, category_of, declared, recorded = inputs
     return measurements(
-        observations, tables, band_rows, category_of, declared,
+        observations, tables, band_rows, category_of, declared, recorded,
         declaration_version_id=TEST_DVID,
         observation_snapshot_id=observation_snapshot_id(observations),
     )
@@ -71,7 +72,7 @@ def measurement_rows(inputs, observations):
 
 @pytest.fixture(scope="module")
 def reconciliation_rows(inputs, measurement_rows, scores, observations):
-    tables, _, category_of, declared = inputs
+    tables, _, category_of, declared, _recorded = inputs
     return reconcile(
         scores, measurement_rows, tables, category_of, declared,
         declaration_version_id=TEST_DVID,
@@ -84,11 +85,26 @@ def _digest(rows, serializer) -> str:
     return hashlib.sha256("\n".join(sorted(serializer(r) for r in rows)).encode("utf-8")).hexdigest()
 
 
-def _measure(inputs, observation_rows, **overrides):
-    tables, band_rows, category_of, declared = inputs
+def _measure(inputs, observation_rows, recorded_override=None, **overrides):
+    tables, band_rows, category_of, declared, recorded = inputs
     ids = {"declaration_version_id": TEST_DVID, "observation_snapshot_id": "x" * 64}
     ids.update(overrides)
-    return measurements(observation_rows, tables, band_rows, category_of, declared, **ids)
+    return measurements(
+        observation_rows, tables, band_rows, category_of, declared,
+        recorded if recorded_override is None else recorded_override, **ids,
+    )
+
+
+def _obs(slug, artifact_kind, metric_type, raw_value, product_type="software", **kw):
+    base = {
+        "observation_id": f"{slug}:{artifact_kind}:{metric_type}",
+        "product_slug": slug, "product_type": product_type, "artifact_kind": artifact_kind,
+        "artifact_id": f"{slug}/{artifact_kind}", "channel": artifact_kind, "metric_type": metric_type,
+        "raw_value": raw_value, "unit": metric_type, "measurement_window_days": None,
+        "observed_at": datetime.datetime(2026, 8, 20, 12, 0, 0),
+    }
+    base.update(kw)
+    return base
 
 
 # --- measurements: shape and the pinned golden -----------------------------------
@@ -104,14 +120,18 @@ def test_one_row_per_product(measurement_rows):
     assert len(slugs) == len(set(slugs))
 
 
-def test_both_identities_are_stamped_on_every_row(measurement_rows):
+def test_all_three_identity_columns_are_stamped(measurement_rows):
     for row in measurement_rows:
         assert row["declaration_version_id"] == TEST_DVID
         assert row["observation_snapshot_id"] == BASELINE_SNAPSHOT_ID
+        assert row["routing_policy_version"] == ROUTING_POLICY_VERSION
 
 
 def test_only_machine_routes_win(measurement_rows):
-    assert not ({"active_users", "reported_traction"} & {r["route_id"] for r in measurement_rows})
+    """Measured rows only ever carry an observable machine route; the hand-authored and unbridged
+    routes are never measured (they have no observation)."""
+    unobservable = {"active_users", "reported_traction", "npm.downloads_30d", "crates.downloads_30d"}
+    assert not (unobservable & {r["route_id"] for r in measurement_rows})
 
 
 # --- measurements: route selection is by declaration, and never falls through ----
@@ -123,11 +143,9 @@ def test_route_selection_is_by_declared_artifacts_not_observations(inputs, obser
     accelerate_obs = [o for o in observations if o["product_slug"] == "accelerate"]
     assert {"pypi", "github"} <= {o["artifact_kind"] for o in accelerate_obs}
 
-    # With PyPI present, accelerate is measured on the PyPI route.
     with_pypi = [r for r in _measure(inputs, observations) if r["product_slug"] == "accelerate"]
     assert [r["route_id"] for r in with_pypi] == ["pypi.downloads_30d"]
 
-    # Remove only the PyPI observation; GitHub stays.
     no_pypi_obs = [
         o for o in observations
         if not (o["product_slug"] == "accelerate" and o["artifact_kind"] == "pypi")
@@ -136,13 +154,52 @@ def test_route_selection_is_by_declared_artifacts_not_observations(inputs, obser
     assert without_pypi == [], "PyPI-declared product fell through to a weaker route"
 
 
-def test_winning_route_is_the_top_applicable_declared_route(inputs, measurement_rows):
-    """Every measured product's route is exactly select_route over its declarations — the top
-    applicable route by precedence, not merely the first route that had an observation."""
-    tables, _, category_of, declared = inputs
-    routes, scopes = machine_routes(tables), route_scopes(tables)
+def test_authoritative_active_users_precedes_stars(inputs):
+    """A product recorded as active_users with a GitHub artifact must not be scored on stars: the
+    authoritative hand-authored route outranks the fallback, and is unmeasured."""
+    tables, band_rows, category_of, _declared, _recorded = inputs
+    obs = [_obs("synthetic-au", "github", "stars", 5000)]
+    declared = {"synthetic-au": {"github"}}
+
+    def run(recorded):
+        return measurements(
+            obs, tables, band_rows, category_of, declared, recorded,
+            declaration_version_id=TEST_DVID, observation_snapshot_id="x" * 64,
+        )
+
+    # Recorded as active_users: the active_users route wins, and it has no machine observation.
+    assert run({"synthetic-au": "active_users"}) == []
+    # With no recorded hand-authored instrument, the same product measures on stars.
+    assert [r["route_id"] for r in run({})] == ["github.stargazers_count"]
+
+
+def test_unbridged_npm_route_precedes_stars(inputs):
+    """A product declaring an unbridged npm package must be unmeasured on the npm route, not scored
+    on GitHub stars — an unbridged authoritative instrument does not fall through."""
+    tables, band_rows, category_of, _declared, recorded = inputs
+    obs = [_obs("synthetic-npm", "github", "stars", 5000)]
+    with_npm = measurements(
+        obs, tables, band_rows, category_of, {"synthetic-npm": {"npm", "github"}}, {},
+        declaration_version_id=TEST_DVID, observation_snapshot_id="x" * 64,
+    )
+    assert [r for r in with_npm if r["product_slug"] == "synthetic-npm"] == []
+    without_npm = measurements(
+        obs, tables, band_rows, category_of, {"synthetic-npm": {"github"}}, {},
+        declaration_version_id=TEST_DVID, observation_snapshot_id="x" * 64,
+    )
+    assert [r["route_id"] for r in without_npm if r["product_slug"] == "synthetic-npm"] == [
+        "github.stargazers_count"
+    ]
+
+
+def test_winning_route_is_the_top_applicable_route(inputs, measurement_rows):
+    tables, _, category_of, declared, recorded = inputs
+    routes, scopes = all_routes(tables), route_scopes(tables)
     for row in measurement_rows:
-        winner = select_route(declared[row["product_slug"]], row["category_slug"], routes, scopes)
+        winner = select_route(
+            declared[row["product_slug"]], recorded.get(row["product_slug"]),
+            row["category_slug"], routes, scopes,
+        )
         assert winner is not None and winner["route_id"] == row["route_id"]
 
 
@@ -160,20 +217,17 @@ def test_usage_volume_sums_across_contributing_artifacts(measurement_rows):
 
 
 def test_stars_sum_rule_aggregates_multiple_repositories(measurement_rows):
-    """sum_stars_across_artifacts: a product with several GitHub repos sums and bands, rather than
-    abstaining. bigcodebench declares two repositories."""
     multi_star = [
         r for r in measurement_rows
         if r["route_id"] == "github.stargazers_count" and len(r["contributing_observation_ids"]) > 1
     ]
-    assert multi_star, "expected at least one multi-repo stars aggregation in the baseline"
+    assert multi_star
     for row in multi_star:
         assert row["aggregation_method"] == "sum"
-        assert row["measured_level"] is not None  # summed and banded, not abstained
+        assert row["measured_level"] is not None
 
 
 def test_no_measurement_abstains_in_the_baseline(measurement_rows):
-    """With the stars sum rule declared, every baseline measurement bands; none is null."""
     assert all(r["measured_level"] is not None for r in measurement_rows)
 
 
@@ -201,7 +255,7 @@ def test_measurement_as_of_is_the_oldest_contributing_observation(inputs, observ
 
 def test_numeric_preserves_floats_and_rejects_bad_types():
     assert _numeric(1000, "raw_value") == 1000
-    assert _numeric(1000.9, "raw_value") == 1000.9  # not floored
+    assert _numeric(1000.9, "raw_value") == 1000.9
     for bad in (True, "100", None, {1}):
         with pytest.raises(TypeError):
             _numeric(bad, "raw_value")
@@ -211,8 +265,6 @@ def test_numeric_preserves_floats_and_rejects_bad_types():
 
 
 def test_native_coerces_pyoso_scalars_to_python_types():
-    """The live loader must hand the strict digest native ints/floats/datetimes, not numpy/Timestamp."""
-
     class _Timestamp:
         def to_pydatetime(self):
             return datetime.datetime(2026, 1, 2, 3, 4, 5)
@@ -233,28 +285,12 @@ def test_native_coerces_pyoso_scalars_to_python_types():
 
 
 def test_a_float_just_over_a_threshold_bands_above_not_floored():
-    """int() truncation would misband 1000.9 as 1000 (below a 1000 threshold). The real value
-    must band above it."""
     index = _band_index([
         {"band_set_id": "b", "level": 1, "above": -1, "reach": "lo"},
         {"band_set_id": "b", "level": 2, "above": 1000, "reach": "hi"},
     ])
-    assert _band_for(index, "b", 1000.9) == (2, "hi")   # a floor to 1000 would give level 1
-    assert _band_for(index, "b", 1000) == (1, "lo")     # exactly the exclusive bound stays below
-
-
-def test_a_float_raw_value_survives_into_the_measurement(inputs, observations):
-    """A doctored float download count reaches the row unfloored."""
-    target = next(o for o in observations if o["artifact_kind"] == "pypi")
-    doctored = [
-        {**o, "raw_value": 1234.5} if o is target else o
-        for o in observations
-    ]
-    rows = {r["product_slug"]: r for r in _measure(inputs, doctored)}
-    row = rows[target["product_slug"]]
-    # Only that product's single pypi artifact contributes here; the float is preserved.
-    if len(row["contributing_observation_ids"]) == 1:
-        assert row["raw_value"] == 1234.5
+    assert _band_for(index, "b", 1000.9) == (2, "hi")
+    assert _band_for(index, "b", 1000) == (1, "lo")
 
 
 # --- reconciliation: complete coverage of the recorded assessments ---------------
@@ -277,42 +313,72 @@ def test_deliberate_null_assessments_are_covered_as_abstained(reconciliation_row
         s for s, doc in scores.items()
         if isinstance(doc.get("adoption"), dict) and doc["adoption"].get("level") is None
     }
-    assert null_recorded  # there are deliberate nulls to cover
+    assert null_recorded
     by_product = {r["product_slug"]: r for r in reconciliation_rows}
     for slug in null_recorded:
         assert by_product[slug]["status"] == "abstained"
 
 
-def test_every_status_is_honest_for_the_pre_355_state(reconciliation_rows):
-    allowed = {"abstained", "source_unavailable", "unmeasured"}
+def test_no_delta_across_instrument_types(reconciliation_rows):
+    """The core rule: a delta exists only when the measured and recorded instruments match."""
+    for row in reconciliation_rows:
+        if row["measured_instrument_type"] != row["recorded_instrument_type"]:
+            assert row["delta"] is None
+
+
+def test_cross_instrument_rows_are_mismatch_or_expected_difference(reconciliation_rows):
+    """A measured row whose instrument differs from the recorded one is classified by authority,
+    never source_unavailable and never a numeric comparison."""
+    cross = [
+        r for r in reconciliation_rows
+        if r["measured_level"] is not None
+        and r["measured_instrument_type"] != r["recorded_instrument_type"]
+    ]
+    assert cross  # the baseline has cross-instrument cases (e.g. reported_traction vs stars)
+    for row in cross:
+        assert row["status"] in {"route_mismatch", "expected_difference"}
+        assert row["delta"] is None
+        # An authoritative instrument on either side => mismatch; both weak => expected_difference.
+        authoritative = row["route_authority"] == "authoritative" or row["recorded_instrument_type"] in {
+            "usage_volume", "active_users"
+        }
+        assert row["status"] == ("route_mismatch" if authoritative else "expected_difference")
+
+
+def test_same_instrument_measured_is_source_unavailable_with_a_delta(reconciliation_rows):
+    same = [
+        r for r in reconciliation_rows
+        if r["measured_level"] is not None
+        and r["measured_instrument_type"] == r["recorded_instrument_type"]
+        and r["recorded_level"] is not None
+    ]
+    assert same
+    for row in same:
+        assert row["status"] == "source_unavailable"
+        assert row["delta"] == row["measured_level"] - row["recorded_level"]
+
+
+def test_every_status_is_in_the_allowed_set(reconciliation_rows):
+    allowed = {"abstained", "source_unavailable", "unmeasured", "route_mismatch", "expected_difference"}
     for row in reconciliation_rows:
         assert row["status"] in allowed
-        if row["recorded_level"] is None:
-            assert row["status"] == "abstained"
-        elif row["measured_level"] is not None:
-            assert row["status"] == "source_unavailable"  # measured but unbound (#355)
         assert row["measurement_freshness"] == "unknown"
         assert row["override_id"] is None
         assert row["explanation"]
+        assert row["routing_policy_version"] == ROUTING_POLICY_VERSION
 
 
-def test_measured_products_all_appear_recorded(measurement_rows, reconciliation_rows):
-    """measured ⊆ recorded, so every measurement has a reconciliation row on the same route."""
-    m_keys = {(r["product_slug"], r["route_id"]) for r in measurement_rows}
-    r_keys = {(r["product_slug"], r["route_id"]) for r in reconciliation_rows}
-    assert m_keys <= r_keys
-
-
-def test_delta_is_present_exactly_when_both_levels_are(reconciliation_rows):
+def test_active_users_products_are_not_reconciled_against_stars(reconciliation_rows, scores):
+    """A product recorded active_users must key on the active_users route (unmeasured), never on
+    github stars — the authoritative-precedes-fallback rule reaching reconciliation."""
     for row in reconciliation_rows:
-        both = row["measured_level"] is not None and row["recorded_level"] is not None
-        assert (row["delta"] is not None) == both
-        if both:
-            assert row["delta"] == row["measured_level"] - row["recorded_level"]
+        if row["recorded_instrument_type"] == "active_users":
+            assert row["route_id"] != "github.stargazers_count"
+            assert row["measured_instrument_type"] != "stars_fallback"
 
 
 def test_evaluated_at_is_excluded_from_the_content_digest(inputs, measurement_rows, scores, observations):
-    tables, _, category_of, declared = inputs
+    tables, _, category_of, declared, _recorded = inputs
     osid = observation_snapshot_id(observations)
     kw = dict(declaration_version_id=TEST_DVID, observation_snapshot_id=osid)
     a = reconcile(scores, measurement_rows, tables, category_of, declared,

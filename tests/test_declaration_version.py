@@ -85,22 +85,24 @@ def test_uncovered_declaration_inputs_are_included():
     assert "verification_queue.yaml" in content
 
 
-def test_policy_inputs_record_a_binding_obligation():
-    """A policy input records a PENDING binding obligation, not a binding that already exists.
-
-    The downstream identities (evaluation.adoption_reconciliation, release_id) are not built yet,
-    so there is no binding to prove — only an obligation to record and later ratchet. This test
-    asserts the obligation is well-formed and marked pending; it deliberately does NOT assert a
-    binding exists. When those tables land, `binding` flips to `bound` and this test tightens.
-    """
+def test_policy_inputs_record_a_bound_routing_version():
+    """The routing policy version is now BOUND: evaluation.adoption_reconciliation exists and
+    carries routing_policy_version, so this is a fact, not a pending obligation. The binding is
+    proven by the evaluation table actually carrying the column — not merely asserted here."""
     assert "signal_routing.yaml" in POLICY_INPUTS
     for name, spec in POLICY_INPUTS.items():
         assert spec.get("policy_version"), f"{name} names no policy version"
         assert spec.get("binds_into"), f"{name} names no downstream identity to bind into"
-        assert spec.get("binding") == "pending", (
-            f"{name}: until reconciliation/releases land, the binding is an obligation, not a "
-            "fact. Ratchet this to 'bound' only when the downstream table is implemented."
+        assert spec.get("binding") == "bound", (
+            f"{name}: reconciliation/measurements now carry routing_policy_version, so the binding "
+            "is a fact, not an obligation."
         )
+    # Prove it: both evaluation tables declare routing_policy_version as a column.
+    from build.adoption_measurements import COLUMNS as MEAS_COLUMNS
+    from build.adoption_reconciliation import COLUMNS as RECON_COLUMNS
+
+    assert "routing_policy_version" in MEAS_COLUMNS
+    assert "routing_policy_version" in RECON_COLUMNS
 
 
 def test_frozen_snapshot_is_a_non_declaration():

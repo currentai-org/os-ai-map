@@ -789,19 +789,30 @@ like the identities themselves. The route selection, aggregation and banding rea
 fact the builder needs but cannot read is a compiler bug to fix at the source.
 
 Route selection is by DECLARED ARTIFACTS and never falls through: the winning route is the first
-route, in precedence order, that the product's declarations make applicable — it names an artifact
-kind the product declares (`registry.product_artifacts`) and is in scope for its category — and the
-builder then looks for an observation on THAT route only. A missing authoritative observation does
-not cause a fall to a weaker route (a PyPI-declared product is never scored on GitHub stars because
-its PyPI download was uncollected); it simply produces no measurement, and reconciliation records
-the unmeasured outcome. Aggregation follows the compiled rules: both `usage_volume` and
-`stars_fallback` sum across a family's artifacts (`sum_stars_across_artifacts` matches the deployed
-compatibility model's `SUM(stargazers_count)` and the recorded assessments), with the stars cap
-still enforced by the band set. The builders are pure functions of their inputs (the two identities
-passed in) so the logic is pinned against the immutable Phase-2 baseline with fixed test identities;
-`build/serialize_evaluation.py` reads the current table once and serializes both tables from that
-one atomic row set, and the OSO publish is a maintainer step
-(`docs/operations/deploy-evaluation.md`).
+route, in precedence order, that is applicable — an artifact-driven route (pypi, huggingface,
+github, arxiv, and the unbridged npm/crates) applies when the product declares that artifact kind
+and the route is in scope; a hand-authored route (`active_users`, `reported_traction`) applies when
+the product's recorded instrument names it. Selection spans ALL routes, not only machine ones, so
+the declared precedence is executable: an authoritative `active_users` outranks fallback stars, and
+an unbridged `npm`/`crates` route outranks stars, so such a product is left UNMEASURED on its
+authoritative route rather than scored on a weaker observed one. The builder then looks for an
+observation on the winning route only; a missing observation produces no measurement (reconciliation
+records the unmeasured outcome), never a fall to a weaker route. Aggregation follows the compiled
+rules: both `usage_volume` and `stars_fallback` sum across a family's artifacts
+(`sum_stars_across_artifacts` matches the deployed compatibility model's `SUM(stargazers_count)` and
+the recorded assessments), with the stars cap still enforced by the band set.
+
+Reconciliation never compares across instrument types. A `delta` is computed only when the measured
+and recorded instruments match; a cross-instrument row withholds it and is `route_mismatch` (an
+authoritative instrument on either side — inconsistent declarations) or `expected_difference` (both
+weak signals). Both evaluation tables carry `routing_policy_version`, stamped from the compiled
+routes, so the routing policy that produced a row travels with it and binds into `release_id` — the
+obligation `declaration_version.py` reserved is now bound, not pending.
+
+The builders are pure functions of their inputs (the identities passed in) so the logic is pinned
+against the immutable Phase-2 baseline with fixed test identities; `build/serialize_evaluation.py`
+reads the current table once and serializes both tables from that one atomic row set, and the OSO
+publish is a maintainer step (`docs/operations/deploy-evaluation.md`).
 
 `adoption_reconciliation` reports before it blocks (above) over EVERY recorded adoption assessment —
 measured, unmeasured, and the deliberate nulls — one terminal outcome per applicable route. Today

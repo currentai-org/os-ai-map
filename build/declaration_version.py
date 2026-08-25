@@ -30,10 +30,12 @@ return, and both are folded in here.
     ``declaration_version_id`` — see "commit-scoped" below) because the input carries its OWN
     version and is applied in a downstream layer, not in the declaration compile.
     ``signal_routing.yaml`` is the case — it publishes under ``routing_policy_version`` (see
-    ``test_serialize_routing``) and is applied in evaluation. Its version is a PENDING binding
-    obligation: ``evaluation.adoption_reconciliation`` and ``release_id`` do not exist yet, so no
-    binding exists to prove; the entry records where the version MUST bind, and the obligation is
-    ratcheted into a real assertion when those tables land.
+    ``test_serialize_routing``) and is applied in evaluation. That binding is now BOUND, not
+    pending: ``evaluation.adoption_reconciliation`` (and ``evaluation.product_adoption_measurements``)
+    exist and carry ``routing_policy_version`` as a column, stamped from the compiled routes, so the
+    policy version travels with the evaluation output that applied it. ``release_id`` folds the
+    reconciliation in turn. The version therefore stays OUT of ``source_content_digest`` (it is a
+    downstream policy, not a declaration input) while being carried where it is applied.
   * ``NON_DECLARATION_INPUTS`` — not a scoring declaration at all (the frozen long-tail
     warehouse sample); excluded from the digest with a reason.
 
@@ -128,20 +130,21 @@ DECLARATION_INPUTS: tuple[str, ...] = (
 )
 
 # Policy inputs — excluded from source_content_digest because they carry their OWN version and
-# are applied in a downstream layer, not in the declaration compile. The version is a PENDING
-# binding obligation, not an existing binding: the downstream identity does not exist yet, so
-# `binding` is "pending" and names where the version MUST bind. When that table lands, the
-# binding is implemented and this flips to "bound" (test_policy_inputs_record_a_binding_obligation
-# ratchets on it). Excluding an input here never excludes it from declaration_version_id itself,
-# which is commit-scoped via source_git_sha.
+# are applied in a downstream layer, not in the declaration compile. The binding is now BOUND, not
+# an obligation: evaluation.adoption_reconciliation and evaluation.product_adoption_measurements
+# exist and carry routing_policy_version as a column, stamped from the compiled routes, so the
+# version travels with the evaluation output that applied it (and release_id folds the
+# reconciliation in turn). Excluding an input here never excludes it from declaration_version_id
+# itself, which is commit-scoped via source_git_sha.
 POLICY_INPUTS: dict[str, dict[str, str]] = {
     "signal_routing.yaml": {
         "policy_version": "routing_policy_version",
-        "binding": "pending",
+        "binding": "bound",
         "binds_into": "evaluation.adoption_reconciliation / release_id",
         "reason": (
             "routing is applied in the evaluation layer, not declared per product; it "
-            "publishes under routing_policy_version (see test_serialize_routing)."
+            "publishes under routing_policy_version (see test_serialize_routing) and is now "
+            "carried as a column on the evaluation tables that apply it."
         ),
     },
 }

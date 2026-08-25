@@ -94,6 +94,7 @@ ROOT = Path(__file__).resolve().parents[1]
 COLUMNS: tuple[str, ...] = (
     "declaration_version_id",
     "observation_snapshot_id",
+    "routing_policy_version",
     "product_slug",
     "category_slug",
     "product_type",
@@ -154,14 +155,12 @@ def _band_for(index: Mapping[str, list[tuple[int, int, str]]], band_set_id: str,
     return best
 
 
-def machine_routes(routing_tables: Mapping[str, Sequence[Mapping]]) -> list[dict]:
-    """The routes that read a machine source, in precedence order. The two hand-authored routes
-    (`active_users`, `reported_traction`) name no artifact and can never be selected here."""
-    return [
-        dict(r)
-        for r in sorted(routing_tables["adoption_routes"], key=lambda r: r["route_order"])
-        if r["source"]
-    ]
+def all_routes(routing_tables: Mapping[str, Sequence[Mapping]]) -> list[dict]:
+    """Every adoption route in precedence order — artifact-driven, unbridged, and hand-authored
+    alike. Selection considers all of them so the declared precedence (an authoritative
+    `active_users` ahead of fallback stars; an unbridged npm route ahead of stars) is executable,
+    not silently pruned to the routes that happen to have a deployed table."""
+    return [dict(r) for r in sorted(routing_tables["adoption_routes"], key=lambda r: r["route_order"])]
 
 
 def route_scopes(routing_tables: Mapping[str, Sequence[Mapping]]) -> dict[str, set[str]]:
@@ -171,17 +170,36 @@ def route_scopes(routing_tables: Mapping[str, Sequence[Mapping]]) -> dict[str, s
     return scopes
 
 
+def routing_policy_version(routing_tables: Mapping[str, Sequence[Mapping]]) -> str:
+    """The one routing_policy_version every compiled route carries (empty if there are no routes)."""
+    routes = routing_tables["adoption_routes"]
+    return routes[0]["routing_policy_version"] if routes else ""
+
+
 def select_route(
     declared_kinds: set[str],
+    recorded_instrument: str | None,
     category_slug: str | None,
     routes: Sequence[Mapping],
     scopes: Mapping[str, set[str]],
 ) -> dict | None:
-    """The first applicable machine route by precedence — declared artifact kind + category scope —
-    independent of whether any observation exists for it. None when the product declares no artifact
-    that any in-scope machine route reads."""
+    """The first APPLICABLE route by precedence, independent of whether an observation exists.
+
+    Applicability by route kind, so the declared precedence is fully executable:
+      - an artifact-driven route (``artifact_kind`` set — pypi, huggingface, github, arxiv, and the
+        unbridged npm/crates) applies when the product declares that artifact kind and the route is
+        in scope for its category;
+      - a hand-authored route (``artifact_kind`` empty — ``active_users``, ``reported_traction``)
+        applies when the product's RECORDED instrument is that route, since it names no artifact.
+
+    Returning an unbridged or hand-authored route is deliberate: the product is then left unmeasured
+    on its authoritative route rather than falling through to a weaker observed one.
+    """
     for route in routes:
-        if route["artifact_kind"] not in declared_kinds:
+        if route["artifact_kind"]:
+            if route["artifact_kind"] not in declared_kinds:
+                continue
+        elif route["instrument_type"] != (recorded_instrument or ""):
             continue
         scope = scopes.get(route["route_id"])
         if scope is not None and category_slug not in scope:
@@ -196,6 +214,7 @@ def measurements(
     band_rows: Iterable[Mapping],
     category_of: Mapping[str, str],
     declared_artifacts: Mapping[str, set[str]],
+    recorded_instruments: Mapping[str, str],
     *,
     declaration_version_id: str,
     observation_snapshot_id: str,
@@ -204,11 +223,14 @@ def measurements(
 
     ``routing_tables`` is ``build.serialize_routing.build_routing``'s output; ``band_rows`` is
     ``adoption_bands`` + ``route_bands``; ``declared_artifacts`` maps product slug -> the artifact
-    kinds it declares (``registry.product_artifacts``). A row is emitted only where the product's
-    winning applicable route (by declarations) actually has an observation — never a fallthrough.
+    kinds it declares (``registry.product_artifacts``); ``recorded_instruments`` maps slug -> the
+    recorded ``adoption.signal_type``, which selects a hand-authored route. A row is emitted only
+    where the product's winning applicable route actually has an observation — never a fallthrough,
+    and never when the winning route is an unbridged or hand-authored one (it has no observation).
     """
-    routes = machine_routes(routing_tables)
+    routes = all_routes(routing_tables)
     scopes = route_scopes(routing_tables)
+    policy_version = routing_policy_version(routing_tables)
     method_by_rule = {
         r["aggregation_rule_id"]: r["method"] for r in routing_tables["adoption_aggregation_rules"]
     }
@@ -225,7 +247,10 @@ def measurements(
     rows: list[dict] = []
     for product_slug in sorted(declared_artifacts):
         category_slug = category_of.get(product_slug)
-        route = select_route(declared_artifacts[product_slug], category_slug, routes, scopes)
+        route = select_route(
+            declared_artifacts[product_slug], recorded_instruments.get(product_slug),
+            category_slug, routes, scopes,
+        )
         if route is None:
             continue
 
@@ -236,8 +261,9 @@ def measurements(
             if o["artifact_kind"] == route["artifact_kind"] and o["metric_type"] == route["metric_type"]
         ]
         if not contributing:
-            # The winning route was not observed. Do NOT fall through to a weaker route; the
-            # unmeasured outcome is reconciliation's to record.
+            # The winning route was not observed — unbridged, hand-authored, or an authoritative
+            # route this run did not collect. Do NOT fall through to a weaker route; the unmeasured
+            # outcome is reconciliation's to record.
             continue
 
         product_type = contributing[0]["product_type"]
@@ -263,6 +289,7 @@ def measurements(
             {
                 "declaration_version_id": declaration_version_id,
                 "observation_snapshot_id": observation_snapshot_id,
+                "routing_policy_version": policy_version,
                 "product_slug": product_slug,
                 "category_slug": category_slug,
                 "product_type": product_type,
@@ -300,7 +327,8 @@ def canonical_row(row: Mapping) -> str:
 
 
 def load_inputs(root: Path | None = None):
-    """Return (routing_tables, band_rows, category_of, declared_artifacts) from committed sources."""
+    """Return (routing_tables, band_rows, category_of, declared_artifacts, recorded_instruments)
+    from the committed sources."""
     from build.serialize_registry import build_registry
     from build.serialize_routing import build_routing, load_routing
     from build.serialize_rubric import adoption_bands, route_bands
@@ -316,7 +344,12 @@ def load_inputs(root: Path | None = None):
     declared: dict[str, set[str]] = {}
     for row in build_registry(src)[0]["product_artifacts"]:
         declared.setdefault(row["product_slug"], set()).add(row["artifact_kind"])
-    return tables, band_rows, _category_of(src["categories"]), declared
+    recorded_instruments = {
+        slug: (doc["adoption"] or {}).get("signal_type") or ""
+        for slug, doc in src["scores"].items()
+        if isinstance(doc.get("adoption"), dict)
+    }
+    return tables, band_rows, _category_of(src["categories"]), declared, recorded_instruments
 
 
 def _native(value: object) -> object:
@@ -376,13 +409,14 @@ def resolve(observation_rows: Sequence[Mapping], root: Path | None = None, allow
     from build.observation_snapshot import observation_snapshot_id
 
     base = root or ROOT
-    tables, band_rows, category_of, declared = load_inputs(base)
+    tables, band_rows, category_of, declared, recorded = load_inputs(base)
     return measurements(
         observation_rows,
         tables,
         band_rows,
         category_of,
         declared,
+        recorded,
         declaration_version_id=resolve_declaration(base, allow_dirty=allow_dirty)["declaration_version_id"],
         observation_snapshot_id=observation_snapshot_id(observation_rows),
     )

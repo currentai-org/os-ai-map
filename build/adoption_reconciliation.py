@@ -57,8 +57,9 @@ from collections.abc import Iterable, Mapping, Sequence
 from pathlib import Path
 
 from build.adoption_measurements import (
-    machine_routes,
+    all_routes,
     route_scopes,
+    routing_policy_version,
     select_route,
 )
 
@@ -68,6 +69,7 @@ _UTC = datetime.timezone.utc
 COLUMNS: tuple[str, ...] = (
     "declaration_version_id",
     "observation_snapshot_id",
+    "routing_policy_version",
     "product_slug",
     "category_slug",
     "route_id",
@@ -114,10 +116,11 @@ def reconcile(
     ``build.adoption_measurements.measurements`` for the same run. The applicable route is resolved
     from ``declared_artifacts`` (then the recorded instrument), reusing the measurements resolver.
     """
-    routes = machine_routes(routing_tables)
+    routes = all_routes(routing_tables)
     scopes = route_scopes(routing_tables)
-    all_routes = {r["route_id"]: dict(r) for r in routing_tables["adoption_routes"]}
-    # A hand-authored route's id equals its instrument (build/serialize_routing._route_id).
+    policy_version = routing_policy_version(routing_tables)
+    # The one authority each instrument carries, read off the compiled routes.
+    authority_of = {r["instrument_type"]: r["authority"] for r in routes}
     measured_by_product = {m["product_slug"]: m for m in measurement_rows}
 
     rows: list[dict] = []
@@ -130,57 +133,81 @@ def reconcile(
         category_slug = category_of.get(product_slug)
         measurement = measured_by_product.get(product_slug)
 
-        # Resolve the applicable route: declarations first, then the recorded hand-authored
-        # instrument, then the recorded instrument name so the grain key is always stable.
-        declared = declared_artifacts.get(product_slug, set())
-        machine_route = select_route(declared, category_slug, routes, scopes)
-        if machine_route is not None:
-            route = machine_route
-        elif recorded_instrument in all_routes:
-            route = all_routes[recorded_instrument]
-        else:
+        # Resolve the applicable route the same way the measurements builder does — the first
+        # applicable route by precedence over declarations and the recorded instrument — so a
+        # measured product names the same route here. When nothing is applicable (no artifact and a
+        # non-hand-authored recorded instrument), key on the recorded instrument name for stability.
+        route = select_route(
+            declared_artifacts.get(product_slug, set()), recorded_instrument,
+            category_slug, routes, scopes,
+        )
+        if route is None:
             route = {"route_id": recorded_instrument or "unresolved",
-                     "instrument_type": recorded_instrument, "authority": ""}
+                     "instrument_type": recorded_instrument, "authority": authority_of.get(recorded_instrument, "")}
 
         measured_level = measurement["measured_level"] if measurement else None
+        measured_instrument = measurement["instrument_type"] if measurement else route.get("instrument_type", "")
+
+        # Never compare across instrument types: a delta is meaningful only when the measured and
+        # recorded instruments match. A cross-instrument row withholds the delta and is classified
+        # by authority, not turned into a number.
+        same_instrument = bool(measurement) and measured_instrument == recorded_instrument
         delta = (
             measured_level - recorded_level
-            if measured_level is not None and recorded_level is not None
+            if same_instrument and measured_level is not None and recorded_level is not None
             else None
         )
 
         if recorded_level is None:
             status = "abstained"
             explanation = "recorded adoption level is null — a deliberate abstention, not a gap"
-        elif measurement is not None and measured_level is not None:
-            status = "source_unavailable"
-            explanation = _UNBOUND_EXPLANATION
-        elif measurement is not None:
+        elif measurement is None:
+            status = "unmeasured"
+            explanation = (
+                f"the applicable route {route['route_id']} has no observation for this product "
+                f"(unbridged, hand-authored, or uncollected); the recorded assessment stands "
+                f"unmeasured rather than being scored on a weaker route"
+            )
+        elif measured_level is None:
             status = "abstained"
             explanation = (
                 f"route {route['route_id']} produced no banded level "
                 f"(band_set_id={measurement['band_set_id']!r}); the route abstains"
             )
-        else:
-            status = "unmeasured"
-            explanation = (
-                f"the applicable route {route['route_id']} has no observation for this product; "
-                f"recorded assessment stands unmeasured"
+        elif not same_instrument:
+            # The measurement and the recorded assessment are different instruments — a category
+            # error to subtract. route_mismatch when an authoritative instrument is on either side
+            # (the declaration and the recorded instrument disagree); expected_difference when both
+            # are weak signals whose divergence is unsurprising.
+            either_authoritative = (
+                measurement["route_authority"] == "authoritative"
+                or authority_of.get(recorded_instrument) == "authoritative"
             )
+            status = "route_mismatch" if either_authoritative else "expected_difference"
+            explanation = (
+                f"recorded instrument {recorded_instrument!r} but the applicable route measures "
+                f"{measured_instrument!r} — different instruments, so no delta is computed; "
+                + ("an authoritative instrument disagrees with the measured route"
+                   if either_authoritative
+                   else "both are weak signals whose divergence is expected")
+                + f". The measurement is also unbound ({_UNBOUND_EXPLANATION.split(';')[0]})."
+            )
+        else:
+            status = "source_unavailable"
+            explanation = _UNBOUND_EXPLANATION
 
         rows.append(
             {
                 "declaration_version_id": declaration_version_id,
                 "observation_snapshot_id": observation_snapshot_id,
+                "routing_policy_version": policy_version,
                 "product_slug": product_slug,
                 "category_slug": category_slug,
                 "route_id": route["route_id"],
                 "recorded_level": recorded_level,
                 "recorded_instrument_type": recorded_instrument,
                 "measured_level": measured_level,
-                "measured_instrument_type": (
-                    measurement["instrument_type"] if measurement else route.get("instrument_type", "")
-                ),
+                "measured_instrument_type": measured_instrument,
                 "channel": measurement["channel"] if measurement else None,
                 "raw_value": measurement["raw_value"] if measurement else None,
                 "measurement_as_of": measurement["measurement_as_of"] if measurement else None,
@@ -224,11 +251,11 @@ def resolve(
     from build.validate import load_sources
 
     base = root or ROOT
-    tables, band_rows, category_of, declared = load_inputs(base)
+    tables, band_rows, category_of, declared, recorded = load_inputs(base)
     dvid = resolve_declaration(base, allow_dirty=allow_dirty)["declaration_version_id"]
     osid = observation_snapshot_id(observation_rows)
     measurement_rows = measurements(
-        observation_rows, tables, band_rows, category_of, declared,
+        observation_rows, tables, band_rows, category_of, declared, recorded,
         declaration_version_id=dvid, observation_snapshot_id=osid,
     )
     return reconcile(

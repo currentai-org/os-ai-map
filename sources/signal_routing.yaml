@@ -30,8 +30,13 @@
 # rule is to produce NO evidence and leave the dimension to research. Falling
 # through to a less authoritative signal is how the failure above happens.
 
-version: 1
+version: 2
 verified_on: '2026-07-28'
+# version 2 (2026-08-25): declared the adoption aggregation rule for stars_fallback
+# (sum_stars_across_artifacts) and the unbridged npm/crates authoritative usage routes, so the
+# evaluation rollup sums stars across a family's repos and an unbridged-authoritative product is
+# left unmeasured rather than falling through to stars. The bump binds into
+# evaluation.adoption_reconciliation via routing_policy_version.
 
 # Where each artifact kind's facts live. `key` is the join column back to the
 # registry; a source with no key cannot be used until a bridge exists.
@@ -301,6 +306,29 @@ dimensions:
       note: >
         For a benchmark, citations measure reach better than downloads: the
         question is how many papers evaluate against it.
+    - source: npm
+      column: downloads_30d
+      signal_type: usage_volume
+      authority: authoritative
+      confidence: high
+      note: >
+        UNBRIDGED. npm download counts are a direct analogue of the pypi route
+        (see sources.npm.bridge_note), but no signal model reads the npm registry yet,
+        so this route resolves to no observation. It is declared as an authoritative
+        usage route so that a product declaring an npm package selects it — and is left
+        UNMEASURED — rather than falling through to the fallback stars route: an
+        unbridged authoritative instrument must not be scored on a weaker signal. It
+        ranks after the bridged download channels, so a product that also declares a
+        PyPI or Hugging Face artifact is still measured there.
+    - source: crates
+      column: downloads_30d
+      signal_type: usage_volume
+      authority: authoritative
+      confidence: high
+      note: >
+        UNBRIDGED, same shape as the npm route: crates.io publishes download counts and
+        no model reads them (see sources.crates.bridge_note). Declared so a crates-only
+        product is unmeasured on its authoritative route rather than scored on stars.
     - source: null
       signal_type: active_users
       authority: authoritative

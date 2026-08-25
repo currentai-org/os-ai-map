@@ -47,11 +47,11 @@ def build_tables(
     from build.validate import load_sources
 
     base = root or ROOT
-    tables, band_rows, category_of, declared = M.load_inputs(base)
+    tables, band_rows, category_of, declared, recorded = M.load_inputs(base)
     dvid = resolve_declaration(base, allow_dirty=allow_dirty)["declaration_version_id"]
     osid = observation_snapshot_id(observation_rows)
     measurements = M.measurements(
-        observation_rows, tables, band_rows, category_of, declared,
+        observation_rows, tables, band_rows, category_of, declared, recorded,
         declaration_version_id=dvid, observation_snapshot_id=osid,
     )
     reconciliation = R.reconcile(
