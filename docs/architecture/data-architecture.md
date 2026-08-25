@@ -516,11 +516,15 @@ Rules:
   `source_unavailable` for reconciliation. After #355 provides authoritative row-to-run binding
   and scope, `product_adoption_current` may include only observations bound to
   `execution_status = "SUCCESS"` with matching scope.
-- `observation_snapshot_id` is content-addressed over the normalized observations alone. Run
-  identifiers are lineage, recorded in `observation_run_ids`, and are NOT inputs to the ID.
-  Including them would give every re-run a new snapshot ID even when nothing measured changed,
-  which is the opposite of what the ID is for. Identical content means an identical snapshot;
-  different content means a different one; the runs that produced it stay visible either way.
+- The observation identity is two things, not one. `observation_content_digest` is
+  content-addressed over the normalized observation content alone; `observation_snapshot_id` is
+  `SHA-256(domain + canonicalization_version + observation_content_digest)`, binding the
+  canonicalization rule so a persisted id names the rule that produced it. Run identifiers are
+  lineage, recorded in `observation_run_ids`, and are NOT inputs to either. Including them would
+  give every re-run a new content digest even when nothing measured changed, which is the opposite
+  of what the digest is for. Under one canonicalization contract, identical content means an
+  identical digest and different content means a different one; the runs that produced it stay
+  visible either way.
 
 Reconciliation may proceed against `product_adoption_current`; it does not need to wait for incremental support. Historical trend claims must wait.
 
@@ -835,8 +839,11 @@ and next week against different measurements produces different findings under t
 declaration_version_id
   = source_git_sha + source_content_digest + evaluator_version
 
+observation_content_digest
+  = canonical digest of the normalized observation content
+
 observation_snapshot_id
-  = canonical digest of the normalized observation content, and nothing else
+  = SHA-256(domain + canonicalization_version + observation_content_digest)
 
 release_id
   = declaration_version_id + observation_snapshot_id + reconciliation_policy_version
@@ -895,7 +902,10 @@ stale. They are two distinct things, as the manifest columns above require:
   `source_record_id`, `source_dataset`, `source_table`), capture time (`ingested_at`), the derived
   `observation_id`, `is_valid`, and `supersedes_observation_id` are excluded, so an unchanged
   measurement keeps its digest across re-runs and the runs that produced it stay visible only in
-  `observation_run_ids` beside it. It does not depend on the canonicalization version.
+  `observation_run_ids` beside it. It does not fold in the `canonicalization_version` number — a
+  version bump alone does not move it — but it is *not* invariant across canonicalization rules:
+  the canonical bytes change if the contract changes, so two content digests are comparable only
+  under the same contract.
 - **`observation_snapshot_id`** is the identity reconciliation and `release_id` key on. It binds
   the `canonicalization_version` to the content digest, so a persisted id names the rule that
   produced it and two rules cannot collide on one id — the version is bound INTO this id, not

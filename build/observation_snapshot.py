@@ -4,8 +4,10 @@ Two distinct things the release model (data-architecture.md §4.5) names separat
 `releases.manifest` carries both:
 
   * ``observation_content_digest`` — a pure SHA-256 of the canonical observation content, "and
-    nothing else". Identical measurements digest identically, forever, regardless of the
-    canonicalization rule in force. Version-independent.
+    nothing else": it does not fold in the ``canonicalization_version`` number, so bumping the
+    version alone does not move it. It is *not* invariant across canonicalization rules — the
+    canonical bytes themselves change if the contract changes — so two content digests are
+    comparable only under the same canonicalization contract.
   * ``observation_snapshot_id`` — the *identity* that `evaluation.adoption_reconciliation` and
     `releases.manifest` key on, and that binds into `release_id`. It is a domain-separated hash of
     the ``canonicalization_version`` and the content digest, so a persisted snapshot id names the
@@ -23,12 +25,23 @@ are excluded; the runs that produced the observations live in ``observation_run_
 
 ## Strict per-column typing
 
-Every value is checked before serialization. ``observed_at`` must be an actual ``datetime`` — a
-string or other lookalike is rejected, never passed through (a string would bypass UTC
-normalization and produce a non-reproducible digest). Aware timestamps are converted to UTC; naive
-ones are interpreted as UTC (the warehouse emits naive UTC), rendered at fixed microsecond
-precision with a ``Z`` suffix. Every other column must be a JSON scalar (``str``/``bool``/``int``/
-finite ``float``/``None``); anything else raises.
+Every value is checked against its column's declared type before serialization; a malformed row
+fails closed rather than minting an identity over garbage:
+
+  * the identity, vocabulary, and unit fields (``product_slug``, ``product_type``,
+    ``artifact_kind``, ``artifact_id``, ``channel``, ``metric_type``, ``unit``) must be **nonempty
+    strings** — an empty string, ``None``, or a non-string raises;
+  * ``raw_value`` must be a **finite ``int`` or ``float``, excluding ``bool``** (``True`` is not a
+    measurement); ``NaN``/``Infinity`` raise;
+  * ``measurement_window_days`` must be a **nonnegative ``int`` or ``None``, excluding ``bool``**;
+  * ``observed_at`` must be an actual ``datetime`` — a string, epoch ``int``, or bare ``date`` is
+    rejected, never passed through (a string would bypass UTC normalization and produce a
+    non-reproducible digest). Aware timestamps are converted to UTC; naive ones are interpreted as
+    UTC (the warehouse emits naive UTC), rendered at fixed microsecond precision with a ``Z``
+    suffix.
+
+Type checks use exact ``type(...) is`` identity, not ``isinstance``, so a ``bool`` never slips
+through where an ``int`` or ``str`` is required.
 
 ## The snapshot-id preimage (domain-separated, exact bytes)
 
@@ -100,13 +113,21 @@ CONTENT_COLUMNS: tuple[str, ...] = (
 # Columns that MUST be a datetime and are UTC-normalized. A string or other lookalike is rejected.
 TIMESTAMP_COLUMNS: frozenset[str] = frozenset({"observed_at"})
 
-# Exact scalar types allowed in a non-timestamp content column, by identity (bool listed apart from
-# int: both are wanted and serialize to distinct JSON tokens).
-_ALLOWED_SCALARS = (str, bool, int, float)
+# Identity, vocabulary, and unit fields: each must be a nonempty string.
+IDENTITY_COLUMNS: frozenset[str] = frozenset({
+    "product_slug",
+    "product_type",
+    "artifact_kind",
+    "artifact_id",
+    "channel",
+    "metric_type",
+    "unit",
+})
 
 BASELINE_PARQUET = ROOT / "warehouse/data/observations/product_adoption_baseline.parquet"
 
 _SNAPSHOT_DOMAIN = "os-ai-map:observation-snapshot"
+_HEX64 = re.compile(r"\A[0-9a-f]{64}\Z")
 
 
 def _canonical_timestamp(value: datetime.datetime) -> str:
@@ -115,6 +136,43 @@ def _canonical_timestamp(value: datetime.datetime) -> str:
         value = value.replace(tzinfo=_UTC)
     value = value.astimezone(_UTC)
     return value.strftime("%Y-%m-%dT%H:%M:%S.") + f"{value.microsecond:06d}Z"
+
+
+def _canonical_identity(column: str, value: object) -> str:
+    """An identity/vocabulary/unit field: a nonempty string, nothing else."""
+    if type(value) is not str:
+        raise TypeError(
+            f"{column} must be a nonempty str, got {type(value).__name__!r} ({value!r})"
+        )
+    if value == "":
+        raise ValueError(f"{column} must be a nonempty str, got an empty string")
+    return value
+
+
+def _canonical_raw_value(column: str, value: object) -> int | float:
+    """``raw_value``: a finite int or float, excluding bool."""
+    if type(value) not in (int, float):  # exact type: excludes bool, None, str
+        raise TypeError(
+            f"{column} must be a finite int or float (not bool), got "
+            f"{type(value).__name__!r} ({value!r})"
+        )
+    if type(value) is float and not math.isfinite(value):
+        raise ValueError(f"non-finite number in column {column!r}: {value!r}")
+    return value
+
+
+def _canonical_window(column: str, value: object) -> int | None:
+    """``measurement_window_days``: a nonnegative int or null, excluding bool."""
+    if value is None:
+        return None
+    if type(value) is not int:  # exact type: excludes bool and float
+        raise TypeError(
+            f"{column} must be a nonnegative int or None (not bool), got "
+            f"{type(value).__name__!r} ({value!r})"
+        )
+    if value < 0:
+        raise ValueError(f"{column} must be nonnegative, got {value!r}")
+    return value
 
 
 def _canonical_row(row: dict) -> str:
@@ -131,17 +189,14 @@ def _canonical_row(row: dict) -> str:
                     f"({value!r}); a string or other lookalike would bypass UTC normalization"
                 )
             values.append(_canonical_timestamp(value))
-            continue
-        if value is None:
-            values.append(None)
-        elif type(value) in _ALLOWED_SCALARS:
-            if type(value) is float and not math.isfinite(value):
-                raise ValueError(f"non-finite number in column {column!r}: {value!r}")
-            values.append(value)
-        else:
-            raise TypeError(
-                f"unsupported type {type(value).__name__!r} in content column {column!r}"
-            )
+        elif column in IDENTITY_COLUMNS:
+            values.append(_canonical_identity(column, value))
+        elif column == "raw_value":
+            values.append(_canonical_raw_value(column, value))
+        elif column == "measurement_window_days":
+            values.append(_canonical_window(column, value))
+        else:  # pragma: no cover - a new content column with no declared type
+            raise AssertionError(f"content column {column!r} has no declared type rule")
     return json.dumps(values, separators=(",", ":"), ensure_ascii=False, allow_nan=False)
 
 
@@ -152,8 +207,20 @@ def observation_content_digest(rows: Iterable[dict]) -> str:
 
 
 def snapshot_id_from_digest(content_digest: str, version: int | None = None) -> str:
-    """The versioned, domain-separated snapshot id for a content digest (exact bytes in module doc)."""
+    """The versioned, domain-separated snapshot id for a content digest (exact bytes in module doc).
+
+    Fails closed on a malformed preimage: the version must be a positive int (not bool), and the
+    content digest must be exactly 64 lowercase hex characters — the shape ``observation_content_
+    digest`` produces. Minting an identity over ``"x"`` or an uppercase or truncated digest would
+    silently create an id that no content can reproduce.
+    """
     v = CANONICALIZATION_VERSION if version is None else version
+    if type(v) is not int or v <= 0:  # exact type: excludes bool
+        raise ValueError(f"canonicalization version must be a positive int, got {v!r}")
+    if type(content_digest) is not str or not _HEX64.match(content_digest):
+        raise ValueError(
+            f"content digest must be 64-character lowercase hex, got {content_digest!r}"
+        )
     preimage = f"{_SNAPSHOT_DOMAIN}:v{v}\0{content_digest}".encode("utf-8")
     return hashlib.sha256(preimage).hexdigest()
 
@@ -175,13 +242,26 @@ CANONICALIZATION_CONTRACT: dict = {
     "timestamp_columns": sorted(TIMESTAMP_COLUMNS),
     "row_ordering": "sorted-multiset-of-per-row-compact-json-arrays-newline-joined",
     "serialization": "json-compact-array;separators=(',',':');utf-8;ensure_ascii=false",
-    "allowed_nontimestamp_scalars": ["str", "bool", "int", "finite-float", "NoneType"],
+    "column_types": {
+        "product_slug": "nonempty-str",
+        "product_type": "nonempty-str",
+        "artifact_kind": "nonempty-str",
+        "artifact_id": "nonempty-str",
+        "channel": "nonempty-str",
+        "metric_type": "nonempty-str",
+        "unit": "nonempty-str",
+        "raw_value": "finite-int-or-float-excluding-bool",
+        "measurement_window_days": "nonnegative-int-or-null-excluding-bool",
+        "observed_at": "datetime-utc",
+    },
+    "type_check": "exact-type-identity-not-isinstance",
     "timestamp_rule": "datetime-required;to-utc;naive-interpreted-utc;"
     "strftime=%Y-%m-%dT%H:%M:%S.<6-digit-microseconds>Z",
     "null_encoding": "json-null",
     "number_rule": "finite-only;NaN-and-Infinity-rejected",
     "hash": "sha256-lowercase-hex",
-    "snapshot_id_preimage": "sha256('os-ai-map:observation-snapshot:v'+version+'\\0'+content_digest)",
+    "snapshot_id_preimage": "sha256('os-ai-map:observation-snapshot:v'+version+'\\0'+content_digest);"
+    "version-positive-int;content_digest-64-lowercase-hex",
 }
 
 
@@ -191,7 +271,7 @@ def canonicalization_fingerprint() -> str:
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
-CANONICALIZATION_FINGERPRINT = "cfe7fe9c1cdb30f72f079a2fe0b6437a82c8580ddec3ee2c09d70b08a2a91c86"
+CANONICALIZATION_FINGERPRINT = "f30c139bfb8a740589f34d9bd39cbee4f0dd4fe292788e2f0e4d43fc8bfaa150"
 
 
 class CanonicalizationRatchetError(RuntimeError):

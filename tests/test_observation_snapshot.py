@@ -19,6 +19,7 @@ from build.observation_snapshot import (
     CANONICALIZATION_FINGERPRINT,
     CANONICALIZATION_VERSION,
     CONTENT_COLUMNS,
+    IDENTITY_COLUMNS,
     CanonicalizationRatchetError,
     canonicalization_fingerprint,
     check_canonicalization_ratchet,
@@ -109,7 +110,7 @@ def test_content_digest_is_version_independent(monkeypatch):
     assert observation_content_digest([_row()]) == before
 
 
-# --- strict typing (refinement: observed_at must be a datetime) ------------------
+# --- strict per-column typing ----------------------------------------------------
 
 
 def test_observed_at_must_be_a_datetime():
@@ -119,9 +120,52 @@ def test_observed_at_must_be_a_datetime():
             observation_content_digest([_row(observed_at=bad)])
 
 
-def test_non_finite_numbers_are_rejected():
+def test_identity_columns_must_be_nonempty_strings():
+    """Every identity/vocabulary/unit field rejects a non-string and an empty string."""
+    assert IDENTITY_COLUMNS == {
+        "product_slug", "product_type", "artifact_kind", "artifact_id",
+        "channel", "metric_type", "unit",
+    }
+    for column in IDENTITY_COLUMNS:
+        with pytest.raises(TypeError):  # a bare int is not a slug
+            observation_content_digest([_row(**{column: 123})])
+        with pytest.raises(TypeError):  # bool is not a str (exact-type check)
+            observation_content_digest([_row(**{column: True})])
+        with pytest.raises(TypeError):  # None is not a nonempty str
+            observation_content_digest([_row(**{column: None})])
+        with pytest.raises(ValueError):  # empty string
+            observation_content_digest([_row(**{column: ""})])
+
+
+def test_raw_value_must_be_a_finite_number_and_not_a_bool():
+    with pytest.raises(TypeError):  # a numeric string is not a measurement
+        observation_content_digest([_row(raw_value="100")])
+    with pytest.raises(TypeError):  # bool is not a number (exact-type check)
+        observation_content_digest([_row(raw_value=True)])
+    with pytest.raises(TypeError):  # None is not a measurement
+        observation_content_digest([_row(raw_value=None)])
     with pytest.raises(ValueError):
         observation_content_digest([_row(raw_value=float("inf"))])
+    with pytest.raises(ValueError):
+        observation_content_digest([_row(raw_value=float("nan"))])
+    # a finite int and a finite float are both accepted, and 0 is a legitimate measurement.
+    observation_content_digest([_row(raw_value=0)])
+    observation_content_digest([_row(raw_value=3.5)])
+
+
+def test_measurement_window_days_must_be_a_nonnegative_int_or_null():
+    with pytest.raises(TypeError):  # bool is not an int here (exact-type check)
+        observation_content_digest([_row(measurement_window_days=True)])
+    with pytest.raises(TypeError):  # a float is not an int
+        observation_content_digest([_row(measurement_window_days=30.0)])
+    with pytest.raises(TypeError):  # a numeric string is not an int
+        observation_content_digest([_row(measurement_window_days="30")])
+    with pytest.raises(ValueError):  # negative
+        observation_content_digest([_row(measurement_window_days=-1)])
+    # None and a nonnegative int are both accepted.
+    observation_content_digest([_row(measurement_window_days=None)])
+    observation_content_digest([_row(measurement_window_days=0)])
+    observation_content_digest([_row(measurement_window_days=30)])
 
 
 def test_unexpected_type_in_a_content_column_is_rejected():
@@ -171,6 +215,20 @@ def test_snapshot_id_uses_the_documented_domain_separated_preimage():
         f"os-ai-map:observation-snapshot:v{CANONICALIZATION_VERSION}\0{digest}".encode("utf-8")
     ).hexdigest()
     assert snapshot_id_from_digest(digest) == expected
+
+
+def test_snapshot_id_from_digest_rejects_a_malformed_digest():
+    """Fail closed before minting: only a 64-char lowercase hex digest is a valid preimage."""
+    for bad in ("x", "b" * 63, "b" * 65, "B" * 64, "g" * 64, 123, None):
+        with pytest.raises((ValueError, TypeError)):
+            snapshot_id_from_digest(bad)
+
+
+def test_snapshot_id_from_digest_rejects_a_nonpositive_or_nonint_version():
+    good = "b" * 64
+    for bad_version in (0, -1, True, 1.0, "1"):
+        with pytest.raises((ValueError, TypeError)):
+            snapshot_id_from_digest(good, version=bad_version)
 
 
 def test_snapshot_id_is_not_the_bare_content_digest():
