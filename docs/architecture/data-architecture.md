@@ -987,11 +987,16 @@ Declared, for `observation_content_digest` (owned by `build/observation_snapshot
   rejected, not coerced); it is converted to UTC (a naive value interpreted as UTC), rendered at
   fixed microsecond precision with a `Z` suffix, so one instant has one rendering; null as JSON
   `null`;
-- number/type representation: finite numbers only (`NaN`/`Infinity` rejected); every
-  non-timestamp column must be a JSON scalar (`str`/`bool`/`int`/finite `float`/`None`), any other
-  type rejected;
+- number/type representation: each column is checked against its declared type (by exact `type`
+  identity, so a `bool` never satisfies an `int`/`str` requirement), any other type rejected —
+  identity, vocabulary, and unit columns must be nonempty strings; `raw_value` a finite integer or
+  float, excluding boolean and null; `measurement_window_days` a nonnegative integer or null,
+  excluding boolean; `observed_at` a datetime normalized to UTC (as above);
 - hash algorithm: SHA-256, lowercase hex;
-- versioning: `observation_content_digest` is version-independent (pure content). The
+- versioning: the `canonicalization_version` number is excluded from the content-digest preimage
+  (bumping the version alone does not move `observation_content_digest`), but content digests are
+  comparable only under the same canonicalization contract, since the canonical bytes change if the
+  contract changes. The
   `canonicalization_version` is bound into `observation_snapshot_id`, whose preimage is the exact
   UTF-8 bytes `"os-ai-map:observation-snapshot:v" + version + "\0" + content_digest`
   (domain-separated, NUL-delimited). A merge-base ratchet forbids changing the canonicalization
