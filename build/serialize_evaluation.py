@@ -13,6 +13,14 @@ maintainer uploads as the `currentai.evaluation.*` static models; see
 `docs/operations/deploy-evaluation.md`. Nothing here writes to the platform — publishing is the
 maintainer step.
 
+A `--live` read is additionally run inside a materialization bracket (`build.read_binding`), and
+the verdict lands in `build/evaluation/read_binding.json` beside the CSVs: `bound` proves which
+materialization (and so which run) of `product_adoption_current` served the rows the snapshot id
+was minted over; `unstable` or `unavailable` records that it could not be proven, claiming
+nothing. The receipt is provenance for the read only — it does not enter either table's columns,
+does not move `observation_snapshot_id`, and does not bind the underlying fetcher runs (#355).
+The baseline path reads frozen bytes, so no receipt is written there.
+
 Usage:
     uv run python -m build.serialize_evaluation                 # baseline -> build/evaluation/*.csv
     uv run python -m build.serialize_evaluation --live          # deployed current table
@@ -24,6 +32,7 @@ from __future__ import annotations
 import argparse
 import csv
 import datetime
+import json
 from collections.abc import Mapping, Sequence
 from pathlib import Path
 
@@ -61,6 +70,40 @@ def build_tables(
     return measurements, reconciliation
 
 
+def read_live_bound() -> tuple[list[dict], dict]:
+    """The deployed current table, read inside a materialization bracket where possible.
+
+    A control-plane failure degrades the BINDING, never the read: the rows still load (unbracketed)
+    and the receipt records `unavailable` with the reason. The bracket is provenance, not a gate —
+    refusing to serialize because a lookup failed would block a deploy on a blip while proving
+    nothing about the rows.
+    """
+    from build.read_binding import bound_read
+
+    try:
+        result = bound_read(M.load_current_observations)
+    except Exception as exc:  # noqa: BLE001 — any binding failure degrades to `unavailable`, by design
+        return M.load_current_observations(), {
+            "binding_status": "unavailable",
+            "model": "observations.product_adoption_current",
+            "reason": str(exc),
+        }
+    return result.rows, result.binding
+
+
+def write_binding_receipt(binding: Mapping, observation_rows: Sequence[Mapping], path: Path) -> None:
+    """The read-binding verdict plus the identity of the rows it is a verdict about."""
+    from build.observation_snapshot import observation_snapshot_id
+
+    receipt = {
+        "observation_snapshot_id": observation_snapshot_id(observation_rows),
+        "row_count": len(observation_rows),
+        **binding,
+    }
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
 def _flat(row: Mapping, columns: Sequence[str]) -> dict:
     out: dict[str, object] = {}
     for key in columns:
@@ -90,8 +133,9 @@ def main() -> int:
                         help="stamp a diagnostic declaration_version_id over a dirty worktree")
     args = parser.parse_args()
 
+    binding: dict | None = None
     if args.live:
-        observation_rows = M.load_current_observations()
+        observation_rows, binding = read_live_bound()
     else:
         from build.observation_snapshot import rows_from_parquet
 
@@ -102,6 +146,8 @@ def main() -> int:
     )
     print(f"product_adoption_measurements  {len(measurements)} rows")
     print(f"adoption_reconciliation        {len(reconciliation)} rows")
+    if binding is not None:
+        print(f"read binding                   {binding['binding_status']}")
     if args.check:
         print("\ncheck only: nothing written")
         return 0
@@ -109,6 +155,9 @@ def main() -> int:
     write_csv(measurements, M.COLUMNS, OUT_DIR / "product_adoption_measurements.csv")
     write_csv(reconciliation, R.COLUMNS, OUT_DIR / "adoption_reconciliation.csv")
     print(f"\nwrote {OUT_DIR}/product_adoption_measurements.csv and adoption_reconciliation.csv")
+    if binding is not None:
+        write_binding_receipt(binding, observation_rows, OUT_DIR / "read_binding.json")
+        print(f"wrote {OUT_DIR}/read_binding.json ({binding['binding_status']})")
     return 0
 
 
