@@ -463,13 +463,28 @@ def license_tier(parts: list[dict], recipe: dict) -> str | None:
     if not tiers:
         return None
 
-    resolved = [
-        _tier_of(normalize_license(part.get("name", "")).lower(), tiers) for part in parts
-    ]
+    resolved = [tier for _part, tier in resolve_license_parts(parts, recipe)]
     if not resolved or any(tier is None for tier in resolved):
         return None
     rank = tier_rank(tiers)
     return max(resolved, key=lambda name: rank.get(name, len(tiers)))
+
+
+def resolve_license_parts(parts: list[dict], recipe: dict) -> list[tuple[dict, str | None]]:
+    """Each recorded license part paired with the tier it maps to, or None if unmapped.
+
+    The per-part decomposition `license_tier` reduces to a single governing tier — the
+    scoring trace publishes it whole so the chain `result -> matched rule -> normalized
+    fact` can name which license part carried the cap. It is the SAME resolution
+    `license_tier` performs (normalize the recorded name, look it up in the recipe's own
+    tier examples); factoring it here keeps one implementation, so the trace cannot resolve
+    a part differently from the score. An empty `tiers` (a ladder with no `license_tier`,
+    e.g. hardware) yields no pairs.
+    """
+    tiers = ((recipe.get("openness") or {}).get("license_tier") or {}).get("values") or {}
+    if not tiers:
+        return []
+    return [(part, _tier_of(normalize_license(part.get("name", "")).lower(), tiers)) for part in parts]
 
 
 def dimension_spec(dimension: str, recipe: dict) -> dict:
@@ -573,15 +588,44 @@ def apply_formula(recipe: dict, facts: dict) -> tuple[int, str] | None:
     return result
 
 
+class RuleStep(NamedTuple):
+    """One rung of the ordered-rule walk, as the walk actually evaluated it.
+
+    The scoring trace (`build/axis_scoring_trace.py`) needs the walk decomposed rung by
+    rung — which rules were skipped, which fired, which fell through on a tier — and that
+    decomposition must come from the SAME walk that produces the score, or it is a second
+    scoring implementation (ADR-001). So the walk records its steps here and
+    `walk_formula` is a thin projection of it, rather than the trace re-deriving the walk.
+
+    `outcome` is one of:
+      * ``fired`` — this rung produced the result; first match wins, so the walk stops here;
+      * ``skipped`` — the rung's non-tier conditions did not all match `facts`;
+      * ``fell_through_tier`` — the non-tier conditions matched but the rung's required
+        `license_tier` did not equal the resolved tier, so the walk continues past it;
+      * ``blocked_on_tier`` — the non-tier conditions matched and the rung tests a
+        `license_tier`, but no tier resolved, so the walk cannot continue (an unmapped
+        license may sit on this restrictive rung; falling through would overstate openness).
+    """
+
+    rule_index: int
+    kind: str  # "when" | "otherwise"
+    conditions: dict  # the rung's non-tier `when` conditions ({} for `otherwise`)
+    tests_tier: bool
+    wanted_tier: str | None
+    non_tier_matched: bool
+    outcome: str  # fired | skipped | fell_through_tier | blocked_on_tier
+    result: tuple[int, str] | None
+
+
 def walk_formula(
     recipe: dict, facts: dict, tier: str | None
 ) -> tuple[tuple[int, str] | None, bool]:
     """First match wins, consulting `tier` only where a rung actually tests it.
 
-    Returns `(result, blocked)`. `blocked` is True when a rung whose other conditions all
-    match tests `license_tier` and no tier resolved — the walk cannot continue past a rung
-    it cannot evaluate, because first-match-wins means a later rung only fires if this one
-    did not.
+    Returns `(result, blocked)` — a thin projection of `walk_formula_trace`, which owns the
+    walk. `blocked` is True when a rung whose other conditions all match tests
+    `license_tier` and no tier resolved — the walk cannot continue past a rung it cannot
+    evaluate, because first-match-wins means a later rung only fires if this one did not.
 
     Why the tier is not simply resolved up front: it used to be, and a product whose
     recorded license names nothing the tier lookup recognizes abstained before the formula
@@ -602,23 +646,54 @@ def walk_formula(
     already names: partial coverage overstating openness. A product whose license may sit
     on the restrictive rung would fall through to a more permissive one below it.
     """
-    for rule in (recipe.get("openness") or {}).get("formula") or []:
+    result, blocked, _steps = walk_formula_trace(recipe, facts, tier)
+    return result, blocked
+
+
+def walk_formula_trace(
+    recipe: dict, facts: dict, tier: str | None
+) -> tuple[tuple[int, str] | None, bool, list[RuleStep]]:
+    """The ordered-rule walk, returning `(result, blocked, steps)`.
+
+    The single owner of first-match-wins. `steps` records every rung the walk actually
+    touched, in order, up to and including the one that fired or blocked — never the rungs
+    after a match, because first-match-wins never reaches them and recording them would
+    invent an evaluation that did not happen. When nothing fires and there is no
+    `otherwise`, every rung is touched and the walk returns `(None, False, steps)`; the
+    ladder is telling us it does not decide this product.
+
+    `result` and `blocked` are exactly what `walk_formula` returned before this function
+    existed — that method now projects this one — so no caller or golden changes.
+    """
+    steps: list[RuleStep] = []
+    for index, rule in enumerate((recipe.get("openness") or {}).get("formula") or []):
         if "otherwise" in rule:
-            result = rule["otherwise"]
-            return (result["score"], result["class"]), False
+            spec = rule["otherwise"]
+            result = (spec["score"], spec["class"])
+            steps.append(RuleStep(index, "otherwise", {}, False, None, True, "fired", result))
+            return result, False, steps
         when = rule.get("when") or {}
         wanted = when.get("license_tier")
-        if not matches({k: v for k, v in when.items() if k != "license_tier"}, facts):
+        tests_tier = wanted is not None
+        non_tier = {k: v for k, v in when.items() if k != "license_tier"}
+        if not matches(non_tier, facts):
+            steps.append(RuleStep(index, "when", non_tier, tests_tier, wanted, False, "skipped", None))
             continue
         if wanted is None:
-            result = rule["then"]
-            return (result["score"], result["class"]), False
+            spec = rule["then"]
+            result = (spec["score"], spec["class"])
+            steps.append(RuleStep(index, "when", non_tier, False, None, True, "fired", result))
+            return result, False, steps
         if tier is None:
-            return None, True
+            steps.append(RuleStep(index, "when", non_tier, True, wanted, True, "blocked_on_tier", None))
+            return None, True, steps
         if tier == wanted:
-            result = rule["then"]
-            return (result["score"], result["class"]), False
-    return None, False
+            spec = rule["then"]
+            result = (spec["score"], spec["class"])
+            steps.append(RuleStep(index, "when", non_tier, True, wanted, True, "fired", result))
+            return result, False, steps
+        steps.append(RuleStep(index, "when", non_tier, True, wanted, True, "fell_through_tier", None))
+    return None, False, steps
 
 
 class Outcome(NamedTuple):
@@ -656,17 +731,42 @@ def score_openness(recipe: dict, openness: dict) -> Outcome:
     `license_tier` condition with no declared tiers, so such a ladder cannot have a rung
     that needs one.
     """
+    resolved = _resolve_openness(recipe, openness)
+    result, blocked, _steps = walk_formula_trace(recipe, resolved.facts, resolved.tier)
+    return Outcome(
+        result, resolved.facts, resolved.has_tiers, resolved.raw_license, resolved.tier, blocked
+    )
+
+
+class _ResolvedOpenness(NamedTuple):
+    """The evidence one ladder resolves from a product's recorded openness axis, before the
+    walk. The single resolution `score_openness` and `trace_openness` share, so the trace
+    can never resolve a fact or a license differently from the score."""
+
+    components: dict[str, str]
+    has_tiers: bool
+    license_key: str | None
+    raw_license: str
+    tier: str | None
+    facts: dict[str, str]
+
+
+def _resolve_openness(recipe: dict, openness: dict) -> _ResolvedOpenness:
+    """Resolve the license tier and the declared-dimension facts, shared by both readers."""
     components = components_of(openness)
     has_tiers = bool(((recipe.get("openness") or {}).get("license_tier") or {}).get("values"))
+    license_key = None
     raw_license = ""
     tier = None
     if has_tiers:
         # The key is chosen once and both the clause and the parts come from it. Choosing
         # twice is how the reported license and the resolved one could name different keys.
-        key = next((key for key in license_read_keys(recipe) if components.get(key)), None)
-        if key is not None:
-            raw_license = components[key]
-            tier = license_tier(license_parts_of(structured_components_of(openness).get(key)), recipe)
+        license_key = next((key for key in license_read_keys(recipe) if components.get(key)), None)
+        if license_key is not None:
+            raw_license = components[license_key]
+            tier = license_tier(
+                license_parts_of(structured_components_of(openness).get(license_key)), recipe
+            )
 
     # Facts come from the dimensions the recipe DECLARES, not a fixed list. The model
     # categories ask about weights/data/code; software categories ask whether the source is
@@ -675,8 +775,68 @@ def score_openness(recipe: dict, openness: dict) -> Outcome:
     # product type.
     declared = ((recipe.get("openness") or {}).get("dimensions")) or {}
     facts = {name: dimension_value(components, name, recipe) for name in declared}
-    result, blocked = walk_formula(recipe, facts, tier)
-    return Outcome(result, facts, has_tiers, raw_license, tier, blocked)
+    return _ResolvedOpenness(components, has_tiers, license_key, raw_license, tier, facts)
+
+
+class OpennessTrace(NamedTuple):
+    """A product's openness evaluation decomposed into fact / rule-walk / result.
+
+    The scoring trace (`build/axis_scoring_trace.py`) reads this instead of `Outcome`
+    because the three trace tables need what `Outcome` folds away: the recorded key each
+    fact was read under, the per-part license-tier resolution, and the ordered rung walk
+    with the index of the rung that fired. Every field comes from the same resolution and
+    the same walk that `score_openness` runs, so the trace and the score cannot diverge.
+
+    `matched_index` is the `rule_index` of the rung that fired, or None when the ladder
+    reached no deciding rung (an undecided product) or blocked on an unmapped tier.
+    `license_parts` pairs each recorded license part with the tier it maps to (empty for a
+    tier-free ladder or an unrecorded license). `fact_keys` maps each declared dimension to
+    the recorded `components` key that answered it, or None where nothing did.
+    """
+
+    result: tuple[int, str] | None
+    facts: dict[str, str]
+    fact_keys: dict[str, str | None]
+    has_tiers: bool
+    license_key: str | None
+    raw_license: str
+    tier: str | None
+    license_parts: list[tuple[dict, str | None]]
+    blocked_on_tier: bool
+    steps: list[RuleStep]
+    matched_index: int | None
+
+
+def trace_openness(recipe: dict, openness: dict) -> OpennessTrace:
+    """`score_openness` with the walk and the license decomposition kept, for the trace.
+
+    Runs the identical resolution and walk as `score_openness`; it only retains the
+    intermediate structure the score discards. It is not a second scoring path — the
+    `result` it returns is `walk_formula_trace`'s, the same one `score_openness` reports.
+    """
+    resolved = _resolve_openness(recipe, openness)
+    result, blocked, steps = walk_formula_trace(recipe, resolved.facts, resolved.tier)
+    fact_keys = {
+        name: resolve_dimension(resolved.components, name, recipe) for name in resolved.facts
+    }
+    license_parts: list[tuple[dict, str | None]] = []
+    if resolved.has_tiers and resolved.license_key is not None:
+        parts = license_parts_of(structured_components_of(openness).get(resolved.license_key))
+        license_parts = resolve_license_parts(parts, recipe)
+    matched_index = next((s.rule_index for s in steps if s.outcome == "fired"), None)
+    return OpennessTrace(
+        result=result,
+        facts=resolved.facts,
+        fact_keys=fact_keys,
+        has_tiers=resolved.has_tiers,
+        license_key=resolved.license_key,
+        raw_license=resolved.raw_license,
+        tier=resolved.tier,
+        license_parts=license_parts,
+        blocked_on_tier=blocked,
+        steps=steps,
+        matched_index=matched_index,
+    )
 
 
 class CategoryReport(NamedTuple):

@@ -712,6 +712,107 @@ assets:
   status: active
   materialized: true
   verified_at: '2026-08-25'
+- id: evaluation.axis_facts
+  table: currentai.evaluation.axis_facts
+  kind: evaluation
+  current_namespace: evaluation
+  target_namespace: evaluation
+  migration_status: complete
+  authority: repo
+  population: gap_map
+  release_path: true
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: checked
+    external: unknown
+  external_consumers: none_confirmed
+  grain: one row per (declaration_version_id, product_slug, category_slug, axis, dimension,
+    part_index) — the normalized openness fact the ladder reads for each declared dimension,
+    plus the license decomposed into its resolved per-part tiers
+  producer: build/axis_scoring_trace.py
+  classification_note: the repository-owned scoring trace (§4.4, ADR-001), fact layer. Keys on the
+    declaration alone and carries NO release_id or observation_snapshot_id. Every value is
+    transcribed from build/check_rubric (trace_openness facts, resolve_license_parts) — the single
+    scoring owner — not recomputed. Openness is the only deterministic rule-walk axis, so axis is
+    'openness' on every row today. Joins to registry.product_openness_evidence (recorded evidence)
+    and registry.product_score_sources (source document) on their natural keys rather than
+    republishing them.
+  refresh: 'static model, reloaded by a maintainer; built by the repo-side release builder
+    (build/axis_scoring_trace.py) over the recorded sources/scores, resolved rubrics and the
+    published roster (build_payload), stamped with the run-time declaration_version_id. Not yet
+    published: the candidate CSV is written to build/evaluation/axis_facts.csv (git-ignored) and
+    publishing to OSO is a maintainer step, runbook at docs/operations/deploy-scoring-trace.md.'
+  owner: carl
+  status: staged
+  materialized: false
+  verified_at: '2026-08-25'
+- id: evaluation.axis_results
+  table: currentai.evaluation.axis_results
+  kind: evaluation
+  current_namespace: evaluation
+  target_namespace: evaluation
+  migration_status: complete
+  authority: repo
+  population: gap_map
+  release_path: true
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: checked
+    external: unknown
+  external_consumers: none_confirmed
+  grain: one row per (declaration_version_id, product_slug, category_slug, axis) — the openness
+    result the repository evaluator produces, with the rung it matched, the governing license
+    tier, and whether it reproduces the recorded score
+  producer: build/axis_scoring_trace.py
+  classification_note: the repository-owned scoring trace (§4.4, ADR-001), result layer — the
+    ADR-001 evaluator's own output. Keys on the declaration alone and carries NO release_id. status
+    is scored | undecided | blocked_on_tier | deferred | no_recipe; reproduces_recorded is the
+    dual-run agreement with the recorded score made queryable (true on every scored row today). Not
+    a second copy of the recorded score in registry.product_scores — it is the recomputed result
+    from build/check_rubric, carried beside the recorded value so the two can be compared.
+  refresh: 'static model, reloaded by a maintainer; built by the repo-side release builder
+    (build/axis_scoring_trace.py) over the recorded sources/scores, resolved rubrics and the
+    published roster, stamped with the run-time declaration_version_id. Not yet published: the
+    candidate CSV is written to build/evaluation/axis_results.csv (git-ignored) and publishing to
+    OSO is a maintainer step, runbook at docs/operations/deploy-scoring-trace.md.'
+  owner: carl
+  status: staged
+  materialized: false
+  verified_at: '2026-08-25'
+- id: evaluation.axis_rule_matches
+  table: currentai.evaluation.axis_rule_matches
+  kind: evaluation
+  current_namespace: evaluation
+  target_namespace: evaluation
+  migration_status: complete
+  authority: repo
+  population: gap_map
+  release_path: true
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: checked
+    external: unknown
+  external_consumers: none_confirmed
+  grain: one row per (declaration_version_id, product_slug, category_slug, axis, rule_index) — each
+    rung the ordered openness walk evaluated, in order, up to and including the one that fired
+  producer: build/axis_scoring_trace.py
+  classification_note: the repository-owned scoring trace (§4.4, ADR-001), rule-walk layer. Keys on
+    the declaration alone and carries NO release_id. The walk is check_rubric.walk_formula_trace —
+    the same first-match-wins primitive walk_formula projects — so this is not a second scorer.
+    outcome is fired | skipped | fell_through_tier | blocked_on_tier; rule_conditions join back to
+    axis_facts by dimension name, which is the result -> matched rule -> normalized fact chain.
+  refresh: 'static model, reloaded by a maintainer; built by the repo-side release builder
+    (build/axis_scoring_trace.py) over the recorded sources/scores, resolved rubrics and the
+    published roster, stamped with the run-time declaration_version_id. Not yet published: the
+    candidate CSV is written to build/evaluation/axis_rule_matches.csv (git-ignored) and publishing
+    to OSO is a maintainer step, runbook at docs/operations/deploy-scoring-trace.md.'
+  owner: carl
+  status: staged
+  materialized: false
+  verified_at: '2026-08-25'
 - id: evaluation.product_adoption_measurements
   table: currentai.evaluation.product_adoption_measurements
   kind: evaluation
