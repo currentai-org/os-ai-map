@@ -51,10 +51,10 @@ straddle a refresh. The CSVs are git-ignored — they are an upload artifact, no
 `--live` reads the deployed `observations.product_adoption_current` via `pyoso`, which returns
 `observed_at` as an ISO-8601 string; `adoption_measurements.load_current_observations` parses it to
 a `datetime` at that boundary so the strict digest (which requires a `datetime` and owns UTC
-normalization) accepts it. That coercion is pinned by
-`tests/test_adoption_evaluation.py::test_str_observed_at_from_pyoso_digests_identically_to_a_datetime`,
-and a live read is exercised, when `OSO_API_KEY` is set, by
-`test_live_current_table_serializes_through_the_strict_digest`.
+normalization) accepts it. That coercion is pinned synthetically (no network, no skips) by
+`tests/test_adoption_evaluation.py::test_str_observed_at_from_pyoso_digests_identically_to_a_datetime`
+and `test_load_current_observations_coerces_pyoso_iso_string`. An actual live read is the
+operational check immediately below, run here rather than in the required pytest suite.
 
 Optional assurance — confirm the deployed current table still matches the committed Phase-2 baseline
 before publishing from either (they were digest-identical when the 2026-08-25 deploy was cut):

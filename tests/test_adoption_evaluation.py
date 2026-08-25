@@ -313,24 +313,31 @@ def test_coerce_timestamp_passes_through_and_fails_closed():
         _coerce_timestamp("observed_at", "not-a-timestamp")
 
 
-def test_live_current_table_serializes_through_the_strict_digest():
-    """With OSO_API_KEY the live `--live` read must coerce cleanly through the strict digest — the
-    regression the str `observed_at` broke. Baseline equivalence is reported, not asserted: the live
-    table legitimately moves, and the standing instruction is to report drift, not chase it."""
-    import os
+def test_load_current_observations_coerces_pyoso_iso_string(monkeypatch):
+    """The `--live` regression, pinned synthetically — no network, no skips. `pyoso` returns
+    `observed_at` as an ISO string; `load_current_observations` must coerce it to a `datetime` at
+    the load boundary so the strict digest (which rejects a string) accepts the row. An actual live
+    read is the runbook's operational check (`docs/operations/deploy-evaluation.md`), not a required
+    pytest that would skip without credentials or on legitimate table drift."""
+    import build.warehouse
 
-    if not os.environ.get("OSO_API_KEY"):
-        pytest.skip("OSO_API_KEY not set; the live warehouse read is unavailable")
+    fake_rows = [
+        {
+            "observation_id": "p:pypi:downloads_30d",
+            "product_slug": "p", "product_type": "software", "artifact_kind": "pypi",
+            "artifact_id": "p", "channel": "pypi", "metric_type": "downloads_30d",
+            "raw_value": 1234, "unit": "downloads_30d", "measurement_window_days": 30,
+            "observed_at": "2026-08-24 11:19:51",  # the exact shape pyoso returns: naive ISO string
+        }
+    ]
+    monkeypatch.setattr(build.warehouse, "query", lambda sql: [dict(r) for r in fake_rows])
     from build.adoption_measurements import load_current_observations
 
-    live_digest = observation_content_digest(load_current_observations())  # must not raise
-    assert len(live_digest) == 64
-    baseline_digest = observation_content_digest(rows_from_parquet())
-    if live_digest != baseline_digest:
-        pytest.skip(
-            f"live current table has moved off the Phase-2 baseline "
-            f"(live={live_digest}, baseline={baseline_digest}); report, do not chase"
-        )
+    rows = load_current_observations()
+    assert isinstance(rows[0]["observed_at"], datetime.datetime)  # coerced at the boundary
+    assert observation_content_digest(rows) == observation_content_digest([
+        {**fake_rows[0], "observed_at": datetime.datetime(2026, 8, 24, 11, 19, 51)}
+    ])  # the coerced string digests identically to the equivalent datetime, and does not raise
 
 
 def test_a_float_just_over_a_threshold_bands_above_not_floored():
