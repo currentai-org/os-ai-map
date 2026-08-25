@@ -18,6 +18,7 @@ import pytest
 from build.adoption_measurements import (
     _band_for,
     _band_index,
+    _coerce_timestamp,
     _native,
     _numeric,
     all_routes,
@@ -28,7 +29,11 @@ from build.adoption_measurements import (
     select_route,
 )
 from build.adoption_reconciliation import canonical_row as reconciliation_row, reconcile
-from build.observation_snapshot import observation_snapshot_id, rows_from_parquet
+from build.observation_snapshot import (
+    observation_content_digest,
+    observation_snapshot_id,
+    rows_from_parquet,
+)
 from build.validate import load_sources
 
 _ROOT = Path(__file__).resolve().parents[1]
@@ -282,6 +287,57 @@ def test_native_coerces_pyoso_scalars_to_python_types():
     assert _native(_Timestamp()) == datetime.datetime(2026, 1, 2, 3, 4, 5)
     coerced = _native(_NpScalar(7))
     assert coerced == 7 and type(coerced) is int
+
+
+def test_str_observed_at_from_pyoso_digests_identically_to_a_datetime():
+    """The `--live` fix. `observed_at` arrives from `pyoso` as an ISO string (e.g. the deployed
+    table returns `'2026-08-24 11:19:51'`), which the strict digest rejects on purpose. The
+    load-boundary coercion must parse it into the same content as the equivalent `datetime`, for
+    the naive form the warehouse emits and for aware forms that name the same instant."""
+    instant = datetime.datetime(2026, 8, 24, 11, 19, 51)
+    dt_digest = observation_content_digest([_obs("p", "package", "downloads_30d", 100, observed_at=instant)])
+
+    for text in ("2026-08-24 11:19:51", "2026-08-24T11:19:51", "2026-08-24 11:19:51+00:00"):
+        raw = [_obs("p", "package", "downloads_30d", 100, observed_at=text)]
+        with pytest.raises(TypeError):  # the raw string is not a datetime and must be rejected
+            observation_content_digest(raw)
+        coerced = [{**r, "observed_at": _coerce_timestamp("observed_at", r["observed_at"])} for r in raw]
+        assert observation_content_digest(coerced) == dt_digest
+
+
+def test_coerce_timestamp_passes_through_and_fails_closed():
+    assert _coerce_timestamp("observed_at", None) is None
+    dt = datetime.datetime(2026, 1, 1, tzinfo=datetime.timezone.utc)
+    assert _coerce_timestamp("observed_at", dt) is dt
+    with pytest.raises(ValueError):  # unparseable text mints no identity
+        _coerce_timestamp("observed_at", "not-a-timestamp")
+
+
+def test_load_current_observations_coerces_pyoso_iso_string(monkeypatch):
+    """The `--live` regression, pinned synthetically — no network, no skips. `pyoso` returns
+    `observed_at` as an ISO string; `load_current_observations` must coerce it to a `datetime` at
+    the load boundary so the strict digest (which rejects a string) accepts the row. An actual live
+    read is the runbook's operational check (`docs/operations/deploy-evaluation.md`), not a required
+    pytest that would skip without credentials or on legitimate table drift."""
+    import build.warehouse
+
+    fake_rows = [
+        {
+            "observation_id": "p:pypi:downloads_30d",
+            "product_slug": "p", "product_type": "software", "artifact_kind": "pypi",
+            "artifact_id": "p", "channel": "pypi", "metric_type": "downloads_30d",
+            "raw_value": 1234, "unit": "downloads_30d", "measurement_window_days": 30,
+            "observed_at": "2026-08-24 11:19:51",  # the exact shape pyoso returns: naive ISO string
+        }
+    ]
+    monkeypatch.setattr(build.warehouse, "query", lambda sql: [dict(r) for r in fake_rows])
+    from build.adoption_measurements import load_current_observations
+
+    rows = load_current_observations()
+    assert isinstance(rows[0]["observed_at"], datetime.datetime)  # coerced at the boundary
+    assert observation_content_digest(rows) == observation_content_digest([
+        {**fake_rows[0], "observed_at": datetime.datetime(2026, 8, 24, 11, 19, 51)}
+    ])  # the coerced string digests identically to the equivalent datetime, and does not raise
 
 
 def test_a_float_just_over_a_threshold_bands_above_not_floored():

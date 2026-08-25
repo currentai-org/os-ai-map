@@ -384,10 +384,39 @@ def _is_na(value: object) -> bool:
         return False
 
 
+def _coerce_timestamp(column: str, value: object) -> object:
+    """Coerce a timestamp scalar from a live read to a `datetime`, leaving the instant untouched.
+
+    `pyoso` returns `observed_at` as ISO-8601 text (e.g. `'2026-08-24 11:19:51'`), pandas returns a
+    `Timestamp`, and the baseline parquet yields a `datetime`. The strict digest requires a
+    `datetime` and owns UTC normalization (`observation_snapshot._canonical_timestamp`), so this
+    only parses to a `datetime` and never itself shifts the instant: a string with no offset stays
+    naive — the digest reads it as UTC, which is what the warehouse emits — and a `Z`/offset string
+    stays aware for the digest to convert. A null passes through as `None`; an unparseable string
+    fails closed rather than minting an identity over garbage.
+    """
+    if value is None or isinstance(value, datetime.datetime):
+        return value
+    to_pydatetime = getattr(value, "to_pydatetime", None)  # a pandas Timestamp
+    if callable(to_pydatetime):
+        return to_pydatetime()
+    if isinstance(value, str):
+        try:
+            return datetime.datetime.fromisoformat(value.strip())
+        except ValueError as exc:
+            raise ValueError(f"{column} is not ISO-8601 datetime text: {value!r}") from exc
+    raise TypeError(
+        f"{column} must be a datetime, pandas Timestamp, or ISO-8601 str; "
+        f"got {type(value).__name__!r} ({value!r})"
+    )
+
+
 def load_current_observations() -> list[dict]:
     """The deployed observations.product_adoption_current, read live via pyoso (needs OSO_API_KEY).
 
-    Values are coerced to native Python types so the strict digest and banding accept them.
+    Values are coerced to native Python types so the strict digest and banding accept them. The
+    warehouse returns `observed_at` as an ISO-8601 string (not a pandas `Timestamp`), so it is
+    parsed to a `datetime` at this boundary — the one place the live read enters the identity path.
     """
     from build.warehouse import query
 
@@ -396,7 +425,13 @@ def load_current_observations() -> list[dict]:
         "metric_type, raw_value, unit, measurement_window_days, observed_at "
         "FROM currentai.observations.product_adoption_current"
     )
-    return [{key: _native(value) for key, value in row.items()} for row in rows]
+    out = []
+    for row in rows:
+        native = {key: _native(value) for key, value in row.items()}
+        if "observed_at" in native:
+            native["observed_at"] = _coerce_timestamp("observed_at", native["observed_at"])
+        out.append(native)
+    return out
 
 
 def resolve(observation_rows: Sequence[Mapping], root: Path | None = None, allow_dirty: bool = False) -> list[dict]:
