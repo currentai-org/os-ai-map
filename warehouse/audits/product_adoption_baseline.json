@@ -1,0 +1,119 @@
+{
+  "asset": "observations.product_adoption_baseline",
+  "table": "currentai.observations.product_adoption_baseline",
+  "captured_at": "2026-08-24T22:27:44Z",
+  "captured_from": "currentai.observations.product_adoption_current",
+  "captured_from_dataset_id": "c507c9f9-321f-4773-a107-d96658e2da67",
+  "capture_query": "SELECT * FROM currentai.observations.product_adoption_current",
+  "schema_version": 1,
+  "row_count": 654,
+  "product_count": 392,
+  "file": "warehouse/data/observations/product_adoption_baseline.parquet",
+  "file_bytes": 77277,
+  "file_sha256": "84e0d5747c5963617fd712688bce14210389104f218f624f66aceddace1fa569",
+  "content_sha256": "3a942c39c203b4d2aa962d1709fa3ca1b045ff17673ed5b00899b259777f9a9b",
+  "content_digest_definition": "sha256 over UTF-8 newline-joined compact JSON arrays, one per row, columns in the schema order below, rows ordered by observation_id, timestamps ISO-8601, nulls as null. Writer-independent: it survives a parquet library upgrade that the file digest does not.",
+  "parquet_writer": {
+    "library": "pyarrow 24.0.0",
+    "format_version": "2.6",
+    "compression": "none",
+    "write_statistics": false,
+    "store_schema": false,
+    "sorting_columns": [
+      "observation_id"
+    ],
+    "note": "The parquet footer carries the writer's own created_by string, so the file digest is reproducible only under the recorded writer version. content_sha256 is the digest to re-derive against."
+  },
+  "schema": [
+    {
+      "name": "observation_id",
+      "type": "string"
+    },
+    {
+      "name": "product_slug",
+      "type": "string"
+    },
+    {
+      "name": "product_type",
+      "type": "string"
+    },
+    {
+      "name": "artifact_kind",
+      "type": "string"
+    },
+    {
+      "name": "artifact_id",
+      "type": "string"
+    },
+    {
+      "name": "channel",
+      "type": "string"
+    },
+    {
+      "name": "metric_type",
+      "type": "string"
+    },
+    {
+      "name": "raw_value",
+      "type": "int64"
+    },
+    {
+      "name": "unit",
+      "type": "string"
+    },
+    {
+      "name": "measurement_window_days",
+      "type": "int32"
+    },
+    {
+      "name": "observed_at",
+      "type": "timestamp[us]"
+    },
+    {
+      "name": "ingested_at",
+      "type": "timestamp[us]"
+    },
+    {
+      "name": "source_dataset",
+      "type": "string"
+    },
+    {
+      "name": "source_table",
+      "type": "string"
+    },
+    {
+      "name": "source_run_id",
+      "type": "string"
+    },
+    {
+      "name": "source_record_id",
+      "type": "string"
+    },
+    {
+      "name": "is_valid",
+      "type": "bool"
+    },
+    {
+      "name": "supersedes_observation_id",
+      "type": "string"
+    }
+  ],
+  "observed_at_range": {
+    "min": "2026-08-16T18:40:14",
+    "max": "2026-08-24T11:21:39"
+  },
+  "ingested_at_values": [
+    "2026-08-24T15:02:13.026000"
+  ],
+  "source_run_ids": [],
+  "source_run_binding": "NONE. source_run_id is NULL for all 654 rows and there is no authoritative row-to-run binding (issue #355): the platform exposes no row-level run id in the fetcher tables, so the runs that produced these values cannot be named. No run id is inferred from timestamps or from observations.source_runs, and none is invented here.",
+  "rows_with_null_source_run_id": 654,
+  "immutability": "Immutable. These bytes are the single preserved baseline snapshot required by data-architecture.md section 18 for the temporary full-refresh period. product_adoption_current is full-refresh, so every later run overwrites the state these bytes record; nothing may rewrite, refresh or relabel this file.",
+  "source_dataset_row_counts": {
+    "signal_github": 305,
+    "signal_huggingface": 189,
+    "signal_pypi": 136,
+    "signal_semanticscholar": 24
+  },
+  "captured_at_note": "UTC instant the SELECT against the deployed product_adoption_current returned."
+}

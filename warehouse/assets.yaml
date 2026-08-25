@@ -668,6 +668,137 @@ assets:
   status: active
   materialized: true
   verified_at: '2026-08-20'
+- id: observations.product_adoption_baseline
+  table: currentai.observations.product_adoption_baseline
+  files:
+    model: null
+    schema: null
+    data: warehouse/data/observations/product_adoption_baseline.parquet
+  kind: observations
+  current_namespace: observations
+  target_namespace: observations
+  migration_status: complete
+  authority: repo
+  population: gap_map
+  release_path: false
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: checked
+    external: unknown
+  external_consumers: none_confirmed
+  grain: one row per (product_slug, artifact_kind, artifact_id, channel, metric_type,
+    measurement_window_days) — the frozen 2026-08-24 state of observations.product_adoption_current,
+    654 rows over 392 products, sorted by observation_id
+  producer: 'one-off capture from the deployed currentai.observations.product_adoption_current
+    (SELECT *), frozen to parquet; receipt at warehouse/audits/product_adoption_baseline.json'
+  classification_note: frozen data bytes, NOT a query. An immutable snapshot cannot be a SQL model
+    that selects from live upstream tables — re-running one produces a different result, which is
+    the opposite of a baseline (§4.3, "The baseline is bytes, not a query"). The parquet file IS
+    the asset; a view or static model may later present it under this table name, but the bytes
+    remain the baseline.
+  capture:
+    captured_at: '2026-08-24T22:27:44Z'
+    captured_from: currentai.observations.product_adoption_current
+    schema_version: 1
+    row_count: 654
+    product_count: 392
+    columns: [observation_id, product_slug, product_type, artifact_kind, artifact_id, channel,
+      metric_type, raw_value, unit, measurement_window_days, observed_at, ingested_at,
+      source_dataset, source_table, source_run_id, source_record_id, is_valid,
+      supersedes_observation_id]
+    observed_at_min: '2026-08-16T18:40:14'
+    observed_at_max: '2026-08-24T11:21:39'
+    ingested_at: '2026-08-24T15:02:13.026000'
+    file_sha256: 84e0d5747c5963617fd712688bce14210389104f218f624f66aceddace1fa569
+    content_sha256: 3a942c39c203b4d2aa962d1709fa3ca1b045ff17673ed5b00899b259777f9a9b
+    source_run_ids: []
+    source_run_binding: 'NONE. source_run_id is NULL for all 654 rows and no authoritative
+      row-to-run binding exists (#355): the platform exposes no row-level run id in the fetcher
+      tables, so the runs that produced these values cannot be named. Nothing here infers one from
+      timestamps or from observations.source_runs.'
+    receipt: warehouse/audits/product_adoption_baseline.json
+  refresh: 'never. Immutable: these are the single preserved baseline snapshot §18 requires for the
+    temporary full-refresh period. product_adoption_current is full-refresh, so every later run
+    overwrites the state these bytes record — nothing may rewrite, refresh or relabel this file,
+    and the refresh path must not write to its path.'
+  notes: 'Captured 2026-08-24 from the deployed product_adoption_current, closing the Phase 2
+    baseline requirement. A staged status records that no table of this name exists on the
+    platform — the bytes live in the repository — and not that the capture is unfinished; the
+    bytes are complete and final. NOT a deletion target. Nothing in the repo, no platform notebook
+    and no deployed platform model reads it, and that is by construction: a baseline is read when
+    there is history to compare against it, and the append-only history table
+    (observations.product_adoption, Phase 2B) is blocked on #352. It is a PRE-POSITIONED immutable
+    anchor, like observations.product_adoption_current (whose own no-reviewed-consumer finding is
+    tracked in #348) — the only surviving copy of the first observations state, unrecoverable once
+    product_adoption_current next refreshes. It carries no retirement_reason because the derived
+    predicate excludes staged assets: labelling one would put an authored retirement claim on an
+    asset the predicate does not select, which is the drift the ledger gate exists to catch.'
+  owner: carl
+  status: staged
+  materialized: false
+  verified_at: '2026-08-24'
+- id: observations.product_adoption_current
+  table: currentai.observations.product_adoption_current
+  files:
+    model: warehouse/models/observations/product_adoption_current.sql
+    schema: null
+    data: null
+  kind: observations
+  current_namespace: observations
+  target_namespace: observations
+  migration_status: complete
+  authority: repo
+  population: gap_map
+  release_path: false
+  reads:
+  - table: currentai.registry.product_artifacts
+    scope: internal
+  - table: currentai.signal_github.artifact_state
+    scope: internal
+  - table: currentai.signal_huggingface.artifact_state
+    scope: internal
+  - table: currentai.signal_pypi.package_downloads
+    scope: internal
+  - table: currentai.signal_semanticscholar.paper_citations
+    scope: internal
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: checked
+    external: unknown
+  external_consumers: none_confirmed
+  grain: one row per (product_slug, artifact_kind, artifact_id, channel, metric_type, measurement_window_days)
+    — the latest valid artifact-level adoption observation, band-free
+  producer: warehouse/models/observations/product_adoption_current.sql
+  classification_note: artifact-level raw observations (metric_type + raw_value), no band and no
+    instrument_type; banding and product-level aggregation are evaluation concerns (§4.3)
+  retirement_reason: 'no reviewed consumer as of 2026-08-24: nothing in the repo, no platform
+    notebook, and no deployed platform model reads it yet. This is the derived no-reviewed-consumer
+    predicate firing on a freshly deployed, PRE-POSITIONED input, not a dead table — its consumers
+    (evaluation.product_adoption_measurements and the Phase 3 reconciliation report) are later
+    phases and are not built yet. It is the centerpiece of the observations layer, not a deletion
+    target; recorded here only because the predicate cannot tell "nothing uses it yet" from
+    "nobody wants it".'
+  retirement_issue: '#348'
+  notes: The Phase 2 current-state adoption slice, deployed 2026-08-24. Unread by design until the
+    Phase 3 evaluation/reconciliation consumers land; pre-positioned, not a retirement candidate in
+    substance. The declared-identity guard went live 2026-08-25 as revision 3
+    (a27b153d-76d8-4661-8fcb-4ee4802cb164); the run SUCCEEDED, which is the coverage proof, since
+    the guard FAILs the materialization on any undeclared artifact.
+  refresh: 'repo-authored SQL, deployed to the platform 2026-08-24 and repointed to the
+    declared-identity revision 2026-08-25 (revision 3); the repo owns the definition and is its
+    source of truth. Full-refresh
+    on the platform. source_run_id is NULL until #355, so downstream reconciliation treats an
+    unbound SUCCESS as source_unavailable, not agreement (§4.3). Because this model is
+    full-refresh, its deployed state was frozen at once as observations.product_adoption_baseline
+    (2026-08-24, 654 rows) — the single preserved snapshot §18 requires; a later run overwrites
+    this table but must never touch those bytes.'
+  dataset_id: c507c9f9-321f-4773-a107-d96658e2da67
+  owner: carl
+  status: active
+  materialized: true
+  verified_at: '2026-08-25'
 - id: observations.source_runs
   table: currentai.observations.source_runs
   kind: observations
@@ -1049,6 +1180,7 @@ assets:
   release_path: true
   read_by:
     models:
+    - warehouse/models/observations/product_adoption_current.sql
     - warehouse/models/signal_github/artifact_state.py
     - warehouse/models/signal_github/repo_state.py
     - warehouse/models/signal_huggingface/artifact_state.py
@@ -1760,6 +1892,7 @@ assets:
   read_by:
     models:
     - warehouse/models/evidence/product_evidence.sql
+    - warehouse/models/observations/product_adoption_current.sql
     - warehouse/models/signal_github/product_adoption.sql
     build:
     - build/check_artifacts.py
@@ -1949,6 +2082,7 @@ assets:
   read_by:
     models:
     - warehouse/models/evidence/product_evidence.sql
+    - warehouse/models/observations/product_adoption_current.sql
     - warehouse/models/signal_huggingface/product_adoption.sql
   consumer_checks:
     repository: checked
@@ -2220,6 +2354,7 @@ assets:
     scope: external
   read_by:
     models:
+    - warehouse/models/observations/product_adoption_current.sql
     - warehouse/models/signal_github/product_adoption.sql
     build:
     - build/check_artifacts.py
@@ -2262,6 +2397,9 @@ assets:
   reads:
   - table: currentai.registry.product_artifacts
     scope: internal
+  read_by:
+    models:
+    - warehouse/models/observations/product_adoption_current.sql
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -2279,10 +2417,9 @@ assets:
   status: active
   materialized: true
   verified_at: '2026-08-20'
-  retirement_reason: 'no reviewed consumer as of 2026-08-22: no in-repo code reader, no platform notebook consumer, and (Phase 0b, all 41 deployed model definitions read) no deployed platform model reads it. Recorded as a retirement candidate; deletion requires maintainer authorization per section 17 and is not performed here.'
-  retirement_issue: '#348'
-  notes: Citation instrument for benchmark_eval_data, declared in signal_routing.yaml but not yet consumed
-    by a repo model. Not dead.
+  notes: Citation instrument for benchmark_eval_data, declared in signal_routing.yaml. Now
+    consumed in-repo by observations.product_adoption_current (the citations channel), so it is
+    no longer a retirement candidate.
   mirror:
     model_id: cc73d808-5833-4a91-a47b-35bb0414b6f0
     revision: 3

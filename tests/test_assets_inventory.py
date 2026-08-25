@@ -412,14 +412,18 @@ def test_table_refs_delegates_to_refs_in_source(tmp_path):
 
 def test_every_tracked_managed_file_is_declared():
     """Duplicate detection is not coverage. A tracked model or data file that no asset
-    claims is invisible to every other gate in this file."""
+    claims is invisible to every other gate in this file.
+
+    `.parquet` counts because frozen bytes are a data asset like any other: the
+    product_adoption_baseline capture would otherwise have been the first managed file this
+    gate could not see."""
     claimed = set(A.produced_files())
     tracked = subprocess.run(
         ["git", "-C", str(ROOT), "ls-files", "warehouse/models", "warehouse/data"],
         capture_output=True, text=True, check=True,
     ).stdout.split()
     managed = [f for f in tracked
-               if f.endswith((".sql", ".py", ".csv"))
+               if f.endswith((".sql", ".py", ".csv", ".parquet"))
                and not f.endswith(".schema.json")]
     undeclared = sorted(f for f in managed if f not in claimed)
     assert not undeclared, f"tracked managed files in no asset entry: {undeclared}"

@@ -51,7 +51,7 @@ As of 2026-08-20:
 - Platform model source is mirrored read-only under `warehouse/models/<dataset>/` (each carrying a `mirror:` block in `warehouse/assets.yaml`); the platform remains authoritative for those deployed models.
 - Dataset scheduling, model throttles, GitHub Actions schedules, and manual operations coexist. A configured cron is not treated as proof that a scheduled run fired. Verified 2026-08-20: of <!-- observed:2026-08-20 -->22 datasets, 13 carry `cronTimezone: America/New_York`, and 8 have a cron configured with `lastRunAt: null` — `signal_semanticscholar`, `signal_pypi`, `ai_demand_curve`, `state_of_os_ai`, `scores`, `events`, `metrics`, `entities`. The `scores` dataset is among them, which means the openness chain that `check_parity` compares against the repository has no observed scheduled run.
 - Two platform tables have no repository source and no in-repo consumer: `currentai.scores.investment_ranking` and `currentai.scores.taxonomy`.
-- The full org is <!-- observed:2026-08-20 -->22 datasets by `ListDatasets`, or 23 counting `datasette` — which `ListDatasets` omits because it holds two deployed models and no materialized tables, so a dataset-first sweep misses it (Phase 0b enumerated from `ListDataModels` instead and found it). The org held <!-- observed:2026-08-20 -->96 tables at that 2026-08-20 enumeration. Separately, and as a live derived count rather than a 2026-08-20 subset, the inventory currently tracks <!-- count:deployed_tables -->59 deployed tables in the datasets the repository maintains or reads from; the rest of the org's tables are separate analytical products. The two figures are different populations measured at different times — the 96 is a point-in-time org-wide observation, the 59 is derived from `assets.yaml` on every run. See section 11.3 for how the 59 reconciles with the inventory's size.
+- The full org is <!-- observed:2026-08-20 -->22 datasets by `ListDatasets`, or 23 counting `datasette` — which `ListDatasets` omits because it holds two deployed models and no materialized tables, so a dataset-first sweep misses it (Phase 0b enumerated from `ListDataModels` instead and found it). The org held <!-- observed:2026-08-20 -->96 tables at that 2026-08-20 enumeration. Separately, and as a live derived count rather than a 2026-08-20 subset, the inventory currently tracks <!-- count:deployed_tables -->60 deployed tables in the datasets the repository maintains or reads from; the rest of the org's tables are separate analytical products. The two figures are different populations measured at different times — the 96 is a point-in-time org-wide observation, the 60 is derived from `assets.yaml` on every run. See section 11.3 for how the 60 reconciles with the inventory's size.
 
 The redesign must evolve this system without interrupting the existing map, registry tables, notebooks, or website.
 
@@ -418,7 +418,7 @@ Use three distinct objects so current state is never mislabeled as history:
 
 - `observations.source_runs` — the run contract described below. Required from day one; ships now as a read-only control-plane snapshot (interim Option B, issue #355);
 - `observations.product_adoption_current` — a full-refresh normalized model holding the current source state (the latest normalized values). It cannot filter or attribute those values by run until #355 binds observations to runs, so it makes no completeness claim; see the source_runs rules below;
-- `observations.product_adoption_baseline` — the immutable first snapshot, backed by frozen bytes rather than a query;
+- `observations.product_adoption_baseline` — the immutable first snapshot, backed by frozen bytes rather than a query. **Captured 2026-08-24T22:27:44Z** from the deployed `product_adoption_current` state, in Phase 2 and not deferred to Phase 2B: 654 rows over 392 products, file digest `84e0d574…a569`, content digest `3a942c39…9a9b`. §18 requires one preserved baseline snapshot for the whole temporary full-refresh period, and precisely because `product_adoption_current` is full-refresh (every run overwrites), those bytes would not have survived the next run had they not been frozen deliberately; waiting for 2B would have meant the first snapshot never existed. It anchors the future append-only history but did not wait for it. The capture records honestly that `source_run_id` is NULL for every one of the 654 rows and that no authoritative row-to-run binding exists (#355); no run id is inferred from timestamps or from `source_runs`. It is immutable from here — later full-refresh executions must not overwrite or relabel it;
 - `observations.product_adoption` — the target incremental history table, created only after OSO incremental models are available.
 
 #### The baseline is bytes, not a query
@@ -438,6 +438,15 @@ a presentation of them.
 Record in `warehouse/assets.yaml`: capture timestamp, per-row `observed_at`, the included
 source-run IDs, schema version, row count, content digest, and file digest. Do not refresh it
 in place, and do not let the refresh path write to its path.
+
+The capture of 2026-08-24 records all of these in the asset's `capture` block, and repeats them
+with the full column schema and the writer settings in the committed receipt
+`warehouse/audits/product_adoption_baseline.json`. Two digests, not one: `file_sha256` covers the
+parquet bytes as written and is reproducible only under the recorded writer, because the parquet
+footer carries the writer's own version string; `content_sha256` covers a writer-independent
+canonical serialization of the rows and survives a library upgrade. The included source-run IDs
+are the empty list, which is the honest value rather than a missing field — `source_run_id` is
+NULL for all 654 rows and #355 has not yet made the binding derivable.
 
 #### `observations.source_runs`
 
@@ -1199,14 +1208,16 @@ Migration rules:
 
 Verified against the live `currentai` org on 2026-08-20: <!-- observed:2026-08-20 -->22 datasets,
 <!-- observed:2026-08-20 -->96 tables,
-<!-- count:tracked_warehouse_files -->44 tracked files under `warehouse/`. The structure below is the target, and the
+<!-- count:tracked_warehouse_files -->47 tracked files under `warehouse/`. The structure below is the target, and the
 mirror layout of 11.1 is now in place; the file manifest in 11.4 recorded the exact diff
 from the 2026-08-20 state (40 files), Phase 0b added `warehouse/audits/platform_models.json`,
 the deployed-model audit receipt, and Phase 2 added `warehouse/audits/source_runs.json`, the
 committed point-in-time attestation of the `source_runs` snapshot (§4.3), then the
 `artifact_state` rename added the two new source mirror files
 `signal_github/artifact_state.py` and `signal_huggingface/artifact_state.py` alongside the
-retained `repo_state.py` / `hub_state.py`.
+retained `repo_state.py` / `hub_state.py`. Phase 2's baseline capture added two more:
+`warehouse/data/observations/product_adoption_baseline.parquet`, the frozen bytes themselves,
+and `warehouse/audits/product_adoption_baseline.json`, their provenance receipt.
 
 ### 11.1 Target layout
 
@@ -1546,19 +1557,24 @@ them in the other.
 Three numbers that must not be conflated:
 
 ```text
-deployed tables in the in-scope datasets    <!-- count:deployed_tables -->59
-staged, not deployed                         <!-- count:staged_assets -->4
+deployed tables in the in-scope datasets    <!-- count:deployed_tables -->60
+staged, not deployed                         <!-- count:staged_assets -->5
 dormant, no platform table yet              <!-- count:dormant_assets -->1
                                             ------
-logical assets in warehouse/assets.yaml     <!-- count:assets -->64
+logical assets in warehouse/assets.yaml     <!-- count:assets -->66
 ```
 
-The staged four are the three `signal_packages` models from issue #314 and
-`observations.source_runs` (Phase 2): tracked assets whose tables do not exist on the platform
-yet. The four `registry.adoption_*` routing tables — `adoption_routes`, `adoption_route_scopes`,
-`adoption_route_band_sets` and `adoption_aggregation_rules` — were staged during Phase 2A and are
-now **deployed** (materialized 2026-08-23, PR #353), which is why the staged count fell from seven
-to four. The dormant one is `registry.tail_products`, declared by `build.publish_registry.TABLES`,
+The staged five are the three `signal_packages` models from issue #314,
+`observations.source_runs` and `observations.product_adoption_baseline` (both Phase 2): tracked
+assets whose tables do not exist on the platform yet. The last two are staged for a reason the
+other three are not — they are repository-side artifacts by design, a control-plane snapshot and
+a frozen-bytes baseline, and `staged` here records only that no platform table carries their name.
+Neither is unfinished, and neither is waiting on a deploy to become authoritative. `observations.product_adoption_current` was staged the same way when first authored, and is
+now **deployed** (2026-08-24, the deploy created the `observations` namespace), so it counts among
+the deployed tables rather than the staged ones. The four `registry.adoption_*` routing tables —
+`adoption_routes`, `adoption_route_scopes`, `adoption_route_band_sets` and
+`adoption_aggregation_rules` — were staged during Phase 2A and are now **deployed** (materialized
+2026-08-23, PR #353). The dormant one is `registry.tail_products`, declared by `build.publish_registry.TABLES`,
 whose platform table is absent only because the last serialization had no rows.
 
 Both are real logical assets — a tracked file in no asset entry is invisible to every gate in
@@ -1601,7 +1617,7 @@ this diff starts from.
 
 ```text
 warehouse/ tracked files, pre-Phase-0   <!-- observed:2026-08-20 -->44
-  of which SQL/Python models   <!-- count:model_files -->32   (12 models, 3 ingest, 17 mirror)
+  of which SQL/Python models   <!-- count:model_files -->33   (13 models, 3 ingest, 17 mirror)
 warehouse/ after the move    44 + 1 assets.yaml - 5 = 40
 repository-wide             +6 created, -5 deleted   = +1
 ```
