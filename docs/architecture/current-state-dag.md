@@ -20,7 +20,6 @@ freely as code does, and counting it invents consumers.
 <!-- count:in_repo_readers -->39 assets have at least one in-repo reader.
 
 ```mermaid
-```mermaid
 graph LR
   subgraph catalog
     catalog__country_populations[country_populations]
@@ -263,5 +262,4 @@ graph LR
   classDef dormant opacity:0.5;
   classDef ext fill:#eee;
   classDef consumer fill:#fff,stroke-dasharray: 2 2;
-```
 ```

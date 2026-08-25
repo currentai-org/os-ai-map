@@ -121,11 +121,9 @@ def test_matches_product_scores_population(rows):
 # --- status: confirmed / held, and not_applicable never emitted ------------------
 
 
-def test_baseline_is_all_confirmed_because_the_queue_is_empty(rows):
-    assert {r["status"] for r in rows} == {"confirmed"}
-
-
-def test_not_applicable_is_never_emitted(rows):
+def test_status_is_always_in_the_allowed_set(rows):
+    """The allowed status set is the invariant — not that the queue happens to be empty today. A
+    future verification hold is a valid repository state, so this must not pin all-confirmed."""
     assert {r["status"] for r in rows} <= {"confirmed", "held"}
 
 
@@ -256,6 +254,26 @@ def test_confirmed_axis_without_a_date_fails_closed():
 def test_confirmed_axis_without_a_source_fails_closed():
     with pytest.raises(ValueError, match="cites no sources"):
         _run({"p": {"openness": _score_block(sources=[])}})
+
+
+def test_confirmed_axis_without_confidence_fails_closed():
+    """§4.4 requires a confidence for a confirmed axis; the source schema describes it but does not
+    require it, so a dated, sourced-but-unconfident assessment must not pass silently."""
+    with pytest.raises(ValueError, match="confidence"):
+        _run({"p": {"openness": _score_block(confidence=None)}})
+
+
+def test_confirmed_axis_with_invalid_confidence_fails_closed():
+    with pytest.raises(ValueError, match="confidence"):
+        _run({"p": {"openness": _score_block(confidence="maybe")}})
+
+
+def test_held_axis_does_not_require_confidence():
+    """The confidence contract is on confirmed only; a held axis carries a reason, not a confidence."""
+    scores = {"p": {"openness": _score_block(last_verified=None, confidence=None)}}
+    held = {"p": [{"axis": "openness", "since": "2026-08-01", "reason": "awaiting license"}]}
+    (row,) = _run(scores, held)
+    assert row["status"] == "held" and row["confidence"] is None
 
 
 # --- serialization: CSV shape matches COLUMNS ------------------------------------

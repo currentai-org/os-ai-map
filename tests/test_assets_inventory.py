@@ -513,9 +513,17 @@ def test_every_scheduled_asset_declares_a_timezone_and_trigger(inventory):
 # --- the checked-in DAG must match the renderer ---------------------------------
 
 def test_committed_dag_matches_the_renderer():
-    """A generated document that drifts from its generator is worse than no document."""
+    """A generated document that drifts from its generator is worse than no document.
+
+    `render_dag()` emits its own fenced ```mermaid block, so the document must contain it EXACTLY
+    once — a substring check alone passed a doubled fence (two openers, two closers) that a
+    regeneration bug left behind and Mermaid renders as broken.
+    """
     committed = (ROOT / "docs/architecture/current-state-dag.md").read_text(encoding="utf-8")
-    assert A.render_dag() in committed, "current-state-dag.md is stale; regenerate it"
+    rendered = A.render_dag()
+    assert rendered in committed, "current-state-dag.md is stale; regenerate it"
+    assert committed.count(rendered) == 1, "the rendered Mermaid block appears more than once"
+    assert committed.count("```mermaid") == 1, "duplicate ```mermaid fence in current-state-dag.md"
 
 
 # --- the inventory must agree with the ADR committed beside it -------------------

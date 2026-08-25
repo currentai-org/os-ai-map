@@ -119,6 +119,11 @@ COLUMNS: tuple[str, ...] = (
 
 TABLES: dict[str, tuple[str, ...]] = {"axis_assessments": COLUMNS}
 
+# The confidence vocabulary is owned by docs/schemas/score.schema.json (identical across all three
+# axes); a confirmed axis must carry one of these (§4.4), so a dated, sourced-but-unconfident
+# assessment fails closed rather than passing as confirmed.
+CONFIDENCE_LEVELS: frozenset[str] = frozenset({"high", "medium", "low"})
+
 
 def _axis_block(scores_doc: Mapping, axis: str) -> dict:
     block = (scores_doc or {}).get(axis)
@@ -219,9 +224,16 @@ def axis_assessments(
                 recorded_value = block.get("score")
                 basis, basis_detail = _capability_basis(block)
             status, last_verified, hold_reason, held_since = _status(slug, axis, block, held_lookup)
+            confidence = block.get("confidence")
             source_count = len(block.get("sources") or [])
-            if status == "confirmed" and source_count < 1:
-                raise ValueError(f"{slug}.{axis} is confirmed but cites no sources (source_count 0)")
+            if status == "confirmed":
+                if source_count < 1:
+                    raise ValueError(f"{slug}.{axis} is confirmed but cites no sources (source_count 0)")
+                if confidence not in CONFIDENCE_LEVELS:
+                    raise ValueError(
+                        f"{slug}.{axis} is confirmed but has no valid confidence ({confidence!r}); "
+                        f"§4.4 requires one of {sorted(CONFIDENCE_LEVELS)}"
+                    )
             rows.append(
                 {
                     "declaration_version_id": declaration_version_id,
@@ -236,7 +248,7 @@ def axis_assessments(
                     "basis": basis,
                     "basis_detail": basis_detail,
                     "instrument_type": instrument_type,
-                    "confidence": block.get("confidence"),
+                    "confidence": confidence,
                     "last_verified": last_verified,
                     "hold_reason": hold_reason,
                     "held_since": held_since,
