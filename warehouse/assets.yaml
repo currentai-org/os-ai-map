@@ -1033,6 +1033,38 @@ assets:
   status: active
   materialized: true
   verified_at: '2026-08-23'
+- id: registry.axis_assessments
+  table: currentai.registry.axis_assessments
+  kind: registry
+  current_namespace: registry
+  target_namespace: registry
+  migration_status: complete
+  authority: repo
+  population: gap_map
+  release_path: true
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: checked
+    external: unknown
+  external_consumers: none_confirmed
+  grain: one row per (declaration_version_id, product_slug, category_slug, axis) — the long-form
+    companion to registry.product_scores, one row per recorded axis
+  producer: build/axis_assessments.py
+  classification_note: normalized long form of the recorded axis assessments (§4.4). Keys on the
+    declaration alone and carries NO release_id. The status/field contract is enforced by the
+    builder — a held axis carries no last_verified, a confirmed axis is dated and sourced —
+    and not_applicable is deliberately unimplemented pending the §4.4 ruling (a dated null is
+    confirmed either way).
+  refresh: 'static model, reloaded by a maintainer; built by the repo-side release builder
+    (build/axis_assessments.py) over the recorded sources/scores and the published roster
+    (build_payload), stamped with the run-time declaration_version_id. Not yet published:
+    the candidate CSV is written to build/registry/axis_assessments.csv (git-ignored) and
+    publishing to OSO is a maintainer step, runbook at docs/operations/deploy-axis-assessments.md.'
+  owner: carl
+  status: staged
+  materialized: false
+  verified_at: '2026-08-25'
 - id: registry.categories
   table: currentai.registry.categories
   kind: registry

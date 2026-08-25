@@ -216,6 +216,14 @@ source_count
 
 This table is a long-form companion to `registry.product_scores`. It does not replace the existing wide table during the migration.
 
+Implemented 2026-08-25 as the repo-side builder `build/axis_assessments.py` (staged, not yet
+materialized). It keys on `declaration_version_id` with no `release_id`, draws its published
+population from the same `build_payload` roster the wide table uses, and enforces the status/field
+contract at build time — a held axis carries no `last_verified`, a confirmed axis is dated and
+cites at least one source. It compiles `confirmed` and `held` only; `not_applicable` stays deferred
+(see below), so a capability recorded as `basis: n/a` is a `confirmed` axis with a null
+`recorded_value`. Publishing is a maintainer step (`docs/operations/deploy-axis-assessments.md`).
+
 Valid field combinations per `status`, so downstream models do not each invent an
 interpretation of nulls:
 
@@ -1669,10 +1677,10 @@ Three numbers that must not be conflated:
 
 ```text
 deployed tables in the in-scope datasets    <!-- count:deployed_tables -->62
-staged, not deployed                         <!-- count:staged_assets -->5
+staged, not deployed                         <!-- count:staged_assets -->6
 dormant, no platform table yet              <!-- count:dormant_assets -->1
                                             ------
-logical assets in warehouse/assets.yaml     <!-- count:assets -->68
+logical assets in warehouse/assets.yaml     <!-- count:assets -->69
 ```
 
 The staged seven are the three `signal_packages` models from issue #314,
