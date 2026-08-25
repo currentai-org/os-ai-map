@@ -469,8 +469,9 @@ does not silently reuse itself as current; it cannot be omitted.
 
 **Transitional shape (interim Option B, issue #355).** The platform exposes no row-level run id
 in the fetcher tables and no expected-scope field, so run completeness is not derivable from what
-the control plane offers today. Until the live emitter of #355 lands — now folded into OSO's
-incremental-model work (Kariba OSO-4705), so it arrives when incremental ships — `source_runs` is a
+the control plane offers today. Until the live emitter of #355 lands — its platform mechanism may
+come from OSO's incremental-model work (Kariba OSO-4705), but #355 closes on demonstrated row-to-run
+binding, not on incremental shipping — `source_runs` is a
 READ-ONLY snapshot of platform-retained run history, produced by `build/snapshot_source_runs.py`
 against the control-plane `runs` API — **not** a SQL model that selects from upstream, and **not**
 a live current-run manifest. It fetches every run the API still retains for each adoption source
@@ -509,9 +510,9 @@ row-level binding of an observation to the run that produced it. Real scope, rea
 a row→run binding require either the UDM runtime writing its run id into output rows or a table
 version atomically bound to a materialization id — neither of which the control plane offers
 today — so they are deferred to #355 and must NOT be reconstructed from timestamps. The platform
-mechanism #355 depends on (a UDM writing its run id into its output rows) has been folded into
-OSO's incremental-model work (Kariba OSO-4705), so the authoritative binding lands when OSO ships
-incremental models rather than as a standalone run-id feature.
+mechanism #355 depends on (a UDM writing its run id into its output rows) may be provided by OSO's
+incremental-model work (Kariba OSO-4705); #355 stays independently open until live row-to-run
+emission and authoritative binding are demonstrated, and is not closed by incremental shipping alone.
 
 Rules:
 
@@ -832,11 +833,12 @@ publish is a maintainer step (`docs/operations/deploy-evaluation.md`).
 measured, unmeasured, and the deliberate nulls — one terminal outcome per applicable route. Today
 every measured row is `source_unavailable`: `product_adoption_current` carries no `source_run_id`
 (row binding is blocked on #355), so §4.3 forbids reading any current measurement as a validated
-agreement. That status is the source-run contract reaching the gate, not a defect in the report, and
-it is the report's **shipped end state**: the fuller status set is follow-up work, assignable once
-#355 binds observations to runs, and that binding is itself follow-up — the platform run id it needs
-is folded into OSO's incremental-model work (Kariba OSO-4705). The migration ships the report, not
-the gate.
+agreement. That status is the source-run contract reaching the gate, not a defect in the report; it
+is the report's **accepted interim state** (§18), not a final one. The fuller status set is
+assignable once #355 binds observations to runs — blocked follow-up whose platform mechanism may
+come from OSO's incremental-model support (Kariba OSO-4705), though #355 closes on its own
+row-to-run evidence, not on incremental shipping. The gate that consumes the fuller set is required
+by AD-5 and activates then.
 
 #### Repository-derived scoring trace
 

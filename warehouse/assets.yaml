@@ -700,8 +700,9 @@ assets:
     Publishing to OSO is a maintainer step, runbook at docs/operations/deploy-evaluation.md.'
   retirement_reason: 'no reviewed consumer as of 2026-08-25, because it was published that day and
     its consumer does not exist yet: the Phase-4 blocking gate is deliberately not enabled while
-    every measured row is source_unavailable (#355) -- the platform run binding it needs is folded
-    into OSO''s incremental-model work (OSO-4705), so it waits on OSO shipping incremental. This is
+    every measured row is source_unavailable (#355) -- the accepted interim state. Its authoritative
+    row-to-run binding is blocked follow-up (mechanism may come from OSO incremental / OSO-4705;
+    #355 closes on its own evidence), and the gate stays required by AD-5. This is
     a "nothing uses it yet" finding, not a
     "nobody wants it" one, and the derived predicate cannot tell those apart -- which is why the
     label is required here rather than the entry being exempt. NOT a deletion candidate.'
@@ -744,9 +745,10 @@ assets:
     docs/operations/deploy-evaluation.md.'
   retirement_reason: 'no reviewed consumer as of 2026-08-25, because it was published that day and
     its only consumer is the reconciliation builder, which reads the candidate rows in-repo rather
-    than the deployed table. A platform reader arrives with the Phase-4 gate, held until row-to-run
-    binding lands (#355) -- the platform run binding it needs is folded into OSO''s incremental-model
-    work (OSO-4705), so it waits on OSO shipping incremental. A "nothing uses it yet" finding, not a
+    than the deployed table. A platform reader arrives with the Phase-4 gate, blocked follow-up until
+    authoritative row-to-run binding lands (#355) -- the accepted interim state, with the gate still
+    required by AD-5 (mechanism may come from OSO incremental / OSO-4705; #355 closes on its own
+    evidence). A "nothing uses it yet" finding, not a
     "nobody wants it" one. NOT a deletion candidate.'
   retirement_issue: '#355'
   dataset_id: 55a4311d-7659-4811-a4c5-7ff167ef5eef
