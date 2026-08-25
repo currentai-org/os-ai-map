@@ -86,7 +86,7 @@ from build.check_rubric import components_string, score_openness
 from build.freshness_payload import held_axes
 from build.rubrics import load_shared, recipe_for, resolve_recipe_variants
 from build.validate import load_sources
-from build.vocabulary import axes
+from build.vocabulary import axes, confidence_levels
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -118,11 +118,6 @@ COLUMNS: tuple[str, ...] = (
 )
 
 TABLES: dict[str, tuple[str, ...]] = {"axis_assessments": COLUMNS}
-
-# The confidence vocabulary is owned by docs/schemas/score.schema.json (identical across all three
-# axes); a confirmed axis must carry one of these (§4.4), so a dated, sourced-but-unconfident
-# assessment fails closed rather than passing as confirmed.
-CONFIDENCE_LEVELS: frozenset[str] = frozenset({"high", "medium", "low"})
 
 
 def _axis_block(scores_doc: Mapping, axis: str) -> dict:
@@ -202,6 +197,7 @@ def axis_assessments(
     is enforced per emitted row.
     """
     held_lookup = {(slug, e["axis"]): e for slug, entries in held.items() for e in entries}
+    levels = confidence_levels()  # the allowed confidence set, from its schema owner
     rows: list[dict] = []
     for category_slug, slug, product_type in population:
         doc = scores.get(slug) or {}
@@ -229,10 +225,10 @@ def axis_assessments(
             if status == "confirmed":
                 if source_count < 1:
                     raise ValueError(f"{slug}.{axis} is confirmed but cites no sources (source_count 0)")
-                if confidence not in CONFIDENCE_LEVELS:
+                if confidence not in levels:
                     raise ValueError(
                         f"{slug}.{axis} is confirmed but has no valid confidence ({confidence!r}); "
-                        f"§4.4 requires one of {sorted(CONFIDENCE_LEVELS)}"
+                        f"§4.4 requires one of {sorted(levels)}"
                     )
             rows.append(
                 {
