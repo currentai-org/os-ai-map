@@ -330,6 +330,9 @@ After a PR merges, a maintainer (OSO MCP write access) may need to:
 - `docs/operations/artifact-state-rename.md`: the Phase 2 coordinated rename of the source
   `repo_state` / `hub_state` tables to `artifact_state` — the platform redeploy and the lockstep
   repository PR.
+- `docs/operations/catalog-split.md`: the Phase 5 general procedure for relocating a table to its
+  target namespace, generalizing the rename runbook — the platform flip plus the lockstep
+  repository PR, with one instance section per move.
 
 For the score-verification procedure itself, see `docs/workflows/refresh-category.md` and the
 normative `docs/reference/evidence-and-freshness.md`.
