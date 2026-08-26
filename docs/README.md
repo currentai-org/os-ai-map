@@ -9,6 +9,7 @@ know the internal vocabulary before you begin.
 
 | I want to… | Workflow | Skill |
 |---|---|---|
+| Find products the map does not have yet | [`workflows/discover-candidates.md`](workflows/discover-candidates.md) | `discover-candidates` |
 | Add a new product to the map | [`workflows/add-product.md`](workflows/add-product.md) | `add-product` |
 | Change something about an existing product | [`workflows/update-product.md`](workflows/update-product.md) | `update-product` |
 | Create a category, or change its definition, weights, or roster | [`workflows/edit-category.md`](workflows/edit-category.md) | `edit-category` |

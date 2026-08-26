@@ -204,6 +204,55 @@ def test_tail_registry_cannot_duplicate_a_head_product_or_artifact():
     assert any("already exists as a head product" in e for e in errs)
     assert any("already belongs to head product" in e for e in errs)
 
+def test_tail_slug_cannot_be_a_retired_alias():
+    """A retired slug disqualifies a candidate exactly as a live slug does.
+
+    The discover-candidates workflow makes "dedup against retired aliases" its second
+    dedup rule and its Validation section claimed this check existed. It did not: the tail
+    block tested `slug in prods` and nothing else, so amazon-nova-pro -- an alias of
+    amazon-nova in the real corpus -- passed as a brand-new candidate. An advisory dedup
+    rule that validation does not enforce is a rule that fails silently."""
+    d = _fixture()
+    d["products"]["llama"]["aliases"] = ["llama-70b-chat"]
+    d["registry"] = {
+        "storage": {
+            "category": "storage",
+            "products": [
+                {
+                    "slug": "llama-70b-chat",
+                    "display_name": "Llama 70B Chat",
+                    "type": "software",
+                    "org": "meta",
+                    "github": "meta-llama/some-other-repo",
+                }
+            ],
+        }
+    }
+    errs = validate_sources(d)
+    assert any("is a retired alias of head product 'llama'" in e for e in errs), errs
+
+
+def test_a_tail_slug_that_is_no_alias_passes():
+    """The mirror of the above: the check must be able to pass, or it proves nothing."""
+    d = _fixture()
+    d["products"]["llama"]["aliases"] = ["llama-70b-chat"]
+    d["registry"] = {
+        "storage": {
+            "category": "storage",
+            "products": [
+                {
+                    "slug": "some-new-thing",
+                    "display_name": "Some New Thing",
+                    "type": "software",
+                    "org": "meta",
+                    "github": "acme/some-new-thing",
+                }
+            ],
+        }
+    }
+    assert not any("retired alias" in e for e in validate_sources(d))
+
+
 def test_roster_pointing_at_missing_product_fails():
     d = _fixture()
     d["categories"]["base_pretrained"]["products"].append("does-not-exist")

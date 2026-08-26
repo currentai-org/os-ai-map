@@ -148,6 +148,18 @@ def validate_sources(data: dict) -> list[str]:
     tail_slugs: dict[str, str] = {}
     tail_repos: dict[str, str] = {}
     head_repos: dict[str, str] = {}
+    # A retired slug is a settled decision, so it disqualifies a candidate exactly as a live
+    # slug does: re-adding it re-opens the consolidation that retired it. Checking only
+    # `slug in prods` missed that entirely -- amazon-nova-pro, an alias of amazon-nova, passed
+    # validation as a new candidate. Resolved here rather than reusing the `claimed` map built
+    # in the slug-stability section below, because that map is built by a loop whose purpose is
+    # to REPORT duplicate claims as it goes; this one only needs to resolve them.
+    alias_of = {
+        alias: slug
+        for slug, product in sorted(prods.items())
+        for alias in product.get("aliases") or []
+        if isinstance(alias, str)
+    }
     for slug, product in prods.items():
         for artifact in product.get("github") or []:
             if isinstance(artifact, dict) and isinstance(artifact.get("url"), str):
@@ -174,6 +186,12 @@ def validate_sources(data: dict) -> list[str]:
                 continue
             if slug in prods:
                 errors.append(f"registry/{cid}.yaml: tail slug {slug!r} already exists as a head product")
+            if slug in alias_of:
+                errors.append(
+                    f"registry/{cid}.yaml: tail slug {slug!r} is a retired alias of head product "
+                    f"{alias_of[slug]!r}. A retired slug was deliberately consolidated or "
+                    f"dropped; re-adding it as a candidate re-opens a settled decision."
+                )
             if slug in tail_slugs:
                 errors.append(
                     f"registry/{cid}.yaml: tail slug {slug!r} already belongs to "
