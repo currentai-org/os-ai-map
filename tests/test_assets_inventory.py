@@ -116,6 +116,36 @@ def test_migration_status_is_consistent(inventory):
             assert not same, f"{asset['id']}: pending but namespaces already agree"
 
 
+def test_source_collectors_are_not_reclassified_to_observations(inventory):
+    """Source-specific ingestion stays in `signal_*` per `data-architecture.md` §4.3: a
+    `kind: observations` table in a `signal_*` namespace is permanently legitimate, so a
+    source collector must not be relocated to the `observations` namespace on the strength
+    of its `kind` alone. §11.6 authorizes `entities->catalog`, `events`/`metrics->observations`
+    and `scores->evaluation` -- never `signal_*->observations`. (A Phase 5 pilot that did this
+    to `signal_semanticscholar.paper_citations` was rolled back; this gate keeps the mistake
+    from recurring.)
+
+    The rule is simple and complete: every `kind: observations` asset currently in a
+    `signal_*` namespace must target that same namespace. The `kind: observations` predicate
+    is what scopes it to source collectors -- the `signal_*.product_adoption` per-source
+    adoption tables are `kind: evaluation` and legitimately move to `evaluation`, so they are
+    already outside it. Compatibility shims are NOT exempt: retirement (`status: compatibility`
+    + `replacement`) governs a table's deletion, not its architectural namespace, so the
+    retired `repo_state`/`hub_state` twins stay in `signal_*` like any other collector. An
+    explicit future architecture change may amend this gate.
+    """
+    for asset in inventory:
+        if not asset["current_namespace"].startswith("signal_"):
+            continue
+        if asset["kind"] != "observations":
+            continue
+        assert asset["target_namespace"] == asset["current_namespace"], (
+            f"{asset['id']}: source collector declares target_namespace "
+            f"{asset['target_namespace']!r} -- a signal_* kind: observations collector stays "
+            f"in signal_* (§4.3) and is not reclassified on the strength of its kind"
+        )
+
+
 # --- 3: mirror provenance ---------------------------------------------------------
 
 def test_mirror_block_iff_platform_authority(inventory):
