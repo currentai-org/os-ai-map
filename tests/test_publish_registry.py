@@ -283,7 +283,7 @@ def test_a_failed_delete_does_not_fail_the_publish(
             return {"createStaticModelUploadUrl": "https://upload.example/put"}
         if query is pr.M_RUN:
             ran.append(variables["input"]["selectedModels"])
-            return {"createStaticModelRunRequest": {"run": {"id": "run-1", "status": "QUEUED"}}}
+            return {"createStaticModelRunRequest": {"runGroup": {"id": "run-1", "status": "QUEUED"}}}
         raise AssertionError(f"unexpected query: {query[:40]}")
 
     monkeypatch.setattr(pr, "graphql", fake_graphql)

@@ -94,7 +94,7 @@ M_STATIC = """mutation($input: CreateStaticModelInput!){
   createStaticModel(input:$input){ success staticModel{ id name } } }"""
 M_URL = """mutation($staticModelId: ID!){ createStaticModelUploadUrl(staticModelId:$staticModelId) }"""
 M_RUN = """mutation($input: CreateStaticModelRunRequestInput!){
-  createStaticModelRunRequest(input:$input){ success run{ id status } } }"""
+  createStaticModelRunRequest(input:$input){ success runGroup{ id status } } }"""
 M_DELETE = """mutation($id: ID!){ deleteStaticModel(id:$id){ success message } }"""
 
 
@@ -297,7 +297,7 @@ def main() -> int:
         upload(path, url)
         print(f"  uploaded {table}.csv ({path.stat().st_size:,} bytes, {counts[table]:,} rows)")
 
-    run = graphql(
+    run_group = graphql(
         M_RUN,
         {
             "input": {
@@ -306,8 +306,8 @@ def main() -> int:
             }
         },
         token,
-    )["createStaticModelRunRequest"]["run"]
-    print(f"materialization run {run['id']} ({run['status']}) over {len(populated)} models")
+    )["createStaticModelRunRequest"]["runGroup"]
+    print(f"materialization run group {run_group['id']} ({run_group['status']}) over {len(populated)} models")
     return 0
 
 
