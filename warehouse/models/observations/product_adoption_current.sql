@@ -46,7 +46,7 @@
 --   signal_github.artifact_state            channel github        metric stars      (no window)
 --   signal_huggingface.artifact_state       channel huggingface   metric downloads  (30-day)
 --   signal_pypi.package_downloads           channel pypi          metric downloads  (30-day)
---   signal_semanticscholar.paper_citations  channel other/arxiv   metric citations  (no window)
+--   observations.paper_citations            channel other/arxiv   metric citations  (no window)
 -- signal_packages.downloads (the merged-registry successor, #314) is deliberately NOT read yet:
 -- it is staged and deployed nowhere. It replaces the pypi channel here once it deploys.
 
@@ -119,9 +119,9 @@ WITH observations AS (
     'citations'                                           AS unit,
     CAST(NULL AS INTEGER)                                 AS measurement_window_days,
     CAST(fetched_at AS TIMESTAMP)                         AS observed_at,
-    'signal_semanticscholar'                              AS source_dataset,
-    'currentai.signal_semanticscholar.paper_citations'    AS source_table
-  FROM currentai.signal_semanticscholar.paper_citations
+    'observations'                                        AS source_dataset,
+    'currentai.observations.paper_citations'              AS source_table
+  FROM currentai.observations.paper_citations
   WHERE found = true AND citation_count IS NOT NULL
 ),
 

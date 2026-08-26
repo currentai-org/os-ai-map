@@ -98,9 +98,14 @@ def test_source_datasets_add_the_staged_successor_separately():
 
 
 def test_real_routing_yaml_derives_the_deployed_adoption_datasets():
-    """Against the committed signal_routing.yaml, not a synthetic one."""
+    """Against the committed signal_routing.yaml, not a synthetic one.
+
+    The citations source resolves to `observations` since the Phase 5 pilot move relocated
+    `signal_semanticscholar.paper_citations` to `observations.paper_citations` — the same
+    behavior-neutral `table:` repoint that did not bump routing_policy_version."""
     deployed = S.deployed_adoption_source_datasets(S.load_routing(S.A.ROOT))
-    assert "signal_semanticscholar" in deployed
+    assert "observations" in deployed
+    assert "signal_semanticscholar" not in deployed
     assert "signal_github" in deployed and "signal_pypi" in deployed
     assert "signal_huggingface" in deployed
 

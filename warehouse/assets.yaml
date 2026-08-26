@@ -756,6 +756,60 @@ assets:
   status: active
   materialized: true
   verified_at: '2026-08-25'
+- id: observations.paper_citations
+  table: currentai.observations.paper_citations
+  files:
+    model: warehouse/models/observations/paper_citations.py
+    schema: null
+    data: null
+  kind: observations
+  current_namespace: observations
+  target_namespace: observations
+  migration_status: complete
+  authority: platform
+  population: gap_map
+  release_path: false
+  reads:
+  - table: currentai.registry.product_artifacts
+    scope: internal
+  read_by:
+    models:
+    - warehouse/models/observations/product_adoption_current.sql
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: checked
+    external: unknown
+  external_consumers: none_confirmed
+  grain: one row per (product_slug, arxiv_id)
+  producer: warehouse/models/observations/paper_citations.py
+  refresh: 'no dataset cron yet: the observations dataset has none, so runs are manual. The
+    replaced signal_semanticscholar.paper_citations keeps its ''0 1 * * 0'' UTC cron on the old
+    dataset through the compatibility window; scheduling the observations dataset is a recorded
+    follow-up of the Phase 5 pilot move.'
+  dataset_id: c507c9f9-321f-4773-a107-d96658e2da67
+  owner: carl
+  status: active
+  materialized: true
+  verified_at: '2026-08-26'
+  notes: 'Phase 5 pilot move (catalog-split.md Instance 1), deployed 2026-08-26 as the relocation
+    of signal_semanticscholar.paper_citations into its target namespace. First materialized 2026-08-26 05:57Z
+    after nine consecutive shared upstream Semantic Scholar 429s that day (the old model failed
+    identically at paired run times); 24 rows, all found, pairing 1:1 with the old table on
+    (product_slug, arxiv_id) with identical paper_id/title and non-decreasing citation counts. The model code is
+    byte-identical to the old model except the one sanctioned delta: the platform release gate
+    now refuses a model that calls context.fetch() without capabilities=oso.Capabilities(fetch=True)
+    (the old revision is grandfathered), so the twin declares it — behavior-neutral, exactly as in
+    the Phase 2 artifact_state rename. The runbook''s Instance 1 section predicted no capabilities
+    delta; the release gate proved otherwise, and the general procedure''s sanctioned-delta rule
+    is what applied. Replaces the old table for every in-repo consumer; the old asset is
+    status: compatibility until step-6 retirement.'
+  mirror:
+    model_id: 50b1effd-f7cc-49f6-962d-994ca10ba278
+    revision: 3
+    hash: d864737b70eda0c7607b9adfe689b780a0e4356e190a08a57e9808a6ecce7d11
+    local_sha256: b7b2b4b07c7a3b272be87050b182089d94bbbd37c4c04dbbbd456d9205dc48ac
+    synced_at: '2026-08-26'
 - id: observations.product_adoption_baseline
   table: currentai.observations.product_adoption_baseline
   files:
@@ -840,6 +894,8 @@ assets:
   population: gap_map
   release_path: false
   reads:
+  - table: currentai.observations.paper_citations
+    scope: internal
   - table: currentai.registry.product_artifacts
     scope: internal
   - table: currentai.signal_github.artifact_state
@@ -847,8 +903,6 @@ assets:
   - table: currentai.signal_huggingface.artifact_state
     scope: internal
   - table: currentai.signal_pypi.package_downloads
-    scope: internal
-  - table: currentai.signal_semanticscholar.paper_citations
     scope: internal
   read_by:
     build:
@@ -871,9 +925,10 @@ assets:
     it", and now something does. The declared-identity guard went live 2026-08-25 as revision 3
     (a27b153d-76d8-4661-8fcb-4ee4802cb164); the run SUCCEEDED, which is the coverage proof, since
     the guard FAILs the materialization on any undeclared artifact.
-  refresh: 'repo-authored SQL, deployed to the platform 2026-08-24 and repointed to the
-    declared-identity revision 2026-08-25 (revision 3); the repo owns the definition and is its
-    source of truth. Full-refresh
+  refresh: 'repo-authored SQL, deployed to the platform 2026-08-24, repointed to the
+    declared-identity revision 2026-08-25 (revision 3), and repointed again 2026-08-26 (revision 4,
+    Phase 5 pilot: the citations channel reads observations.paper_citations); the repo owns the
+    definition and is its source of truth. Full-refresh
     on the platform. source_run_id is NULL until #355, so downstream reconciliation treats an
     unbound SUCCESS as source_unavailable, not agreement (§4.3). Because this model is
     full-refresh, its deployed state was frozen at once as observations.product_adoption_baseline
@@ -1297,6 +1352,7 @@ assets:
   release_path: true
   read_by:
     models:
+    - warehouse/models/observations/paper_citations.py
     - warehouse/models/observations/product_adoption_current.sql
     - warehouse/models/signal_github/artifact_state.py
     - warehouse/models/signal_github/repo_state.py
@@ -2514,9 +2570,6 @@ assets:
   reads:
   - table: currentai.registry.product_artifacts
     scope: internal
-  read_by:
-    models:
-    - warehouse/models/observations/product_adoption_current.sql
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -2531,12 +2584,15 @@ assets:
   last_run_at: '2026-08-23'
   dataset_id: a48ec2ff-1e15-4b22-a38e-8ae03e0096f7
   owner: carl
-  status: active
+  status: compatibility
+  replacement: observations.paper_citations
   materialized: true
-  verified_at: '2026-08-20'
-  notes: Citation instrument for benchmark_eval_data, declared in signal_routing.yaml. Now
-    consumed in-repo by observations.product_adoption_current (the citations channel), so it is
-    no longer a retirement candidate.
+  verified_at: '2026-08-26'
+  notes: 'Phase 5 pilot move (catalog-split.md Instance 1): relocated to
+    observations.paper_citations 2026-08-26; every in-repo consumer is repointed, so this table
+    is kept only for external and unaudited readers until its step-6 retirement, which waits on
+    a clean consumer inventory. The signal_semanticscholar dataset cron still refreshes it in
+    the meantime.'
   mirror:
     model_id: cc73d808-5833-4a91-a47b-35bb0414b6f0
     revision: 3
