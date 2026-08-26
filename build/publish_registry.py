@@ -297,17 +297,18 @@ def main() -> int:
         upload(path, url)
         print(f"  uploaded {table}.csv ({path.stat().st_size:,} bytes, {counts[table]:,} rows)")
 
-    run_group = graphql(
-        M_RUN,
-        {
-            "input": {
-                "datasetId": dataset_id,
-                "selectedModels": [models[t][0] for t in populated],
-            }
-        },
-        token,
-    )["createStaticModelRunRequest"]["runGroup"]
-    print(f"materialization run group {run_group['id']} ({run_group['status']}) over {len(populated)} models")
+    # The run request is per static model: CreateStaticModelRunRequestInput takes
+    # (datasetId, staticModelId), not a selectedModels list. Request one run group per
+    # populated model in turn rather than one batch over all of them — a single request
+    # naming many models fans out into runs that race to create the dataset's Trino schema.
+    for table in populated:
+        run_group = graphql(
+            M_RUN,
+            {"input": {"datasetId": dataset_id, "staticModelId": models[table][0]}},
+            token,
+        )["createStaticModelRunRequest"]["runGroup"]
+        print(f"  requested {table}: run group {run_group['id']} ({run_group['status']})")
+    print(f"requested {len(populated)} materialization run groups")
     return 0
 
 

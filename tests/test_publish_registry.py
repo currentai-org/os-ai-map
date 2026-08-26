@@ -257,7 +257,7 @@ def test_a_failed_delete_does_not_fail_the_publish(
         )
 
     uploaded: list[str] = []
-    ran: list[list[str]] = []
+    ran: list[str] = []
 
     def fake_graphql(query: str, variables: dict, token: str) -> dict:
         if query is pr.Q_DATASETS:
@@ -282,7 +282,7 @@ def test_a_failed_delete_does_not_fail_the_publish(
         if query is pr.M_URL:
             return {"createStaticModelUploadUrl": "https://upload.example/put"}
         if query is pr.M_RUN:
-            ran.append(variables["input"]["selectedModels"])
+            ran.append(variables["input"]["staticModelId"])
             return {"createStaticModelRunRequest": {"runGroup": {"id": "run-1", "status": "QUEUED"}}}
         raise AssertionError(f"unexpected query: {query[:40]}")
 
@@ -295,5 +295,7 @@ def test_a_failed_delete_does_not_fail_the_publish(
     assert pr.main() == 0
     assert "tail_products.csv" not in uploaded
     assert len(uploaded) == len(pr.TABLES) - 1
-    assert "id-tail_products" not in ran[0]
+    # one run request per populated model, tail_products (empty) skipped from both
+    assert len(ran) == len(pr.TABLES) - 1
+    assert "id-tail_products" not in ran
     assert "WARNING could not delete empty tail_products" in capsys.readouterr().err
