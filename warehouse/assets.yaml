@@ -2506,8 +2506,8 @@ assets:
     data: null
   kind: observations
   current_namespace: signal_semanticscholar
-  target_namespace: observations
-  migration_status: pending
+  target_namespace: signal_semanticscholar
+  migration_status: complete
   authority: platform
   population: gap_map
   release_path: false
@@ -2533,13 +2533,21 @@ assets:
   owner: carl
   status: active
   materialized: true
-  verified_at: '2026-08-20'
-  notes: Citation instrument for benchmark_eval_data, declared in signal_routing.yaml. Now
-    consumed in-repo by observations.product_adoption_current (the citations channel), so it is
-    no longer a retirement candidate.
+  verified_at: '2026-08-26'
+  notes: 'Citation instrument for benchmark_eval_data, declared in signal_routing.yaml;
+    consumed in-repo by observations.product_adoption_current (the citations channel).
+    Source-specific ingestion stays here per data-architecture.md §4.3 (a kind: observations
+    table in a signal_* namespace is permanently legitimate); target_namespace equals
+    current_namespace and the table does not move — the earlier target_namespace: observations
+    was a misfiled inventory value, corrected 2026-08-26 after the Phase 5 pilot relocation was
+    rolled back (see the aborted move on the closed #375). Revision 5 (2026-08-26) added the
+    durable 429 fix in place: requests authenticate with SEMANTIC_SCHOLAR_TOKEN (x-api-key), batch
+    POSTs are paced to the keyed one-request-per-second allowance, and load-shed 429s retry with
+    exponential backoff (15s doubling to 120s). The 2026-08-26 13:31Z run SUCCEEDED — 24 rows, all
+    found — clearing the reproducible anonymous 429 that had starved the Sunday cron since 08-16.'
   mirror:
     model_id: cc73d808-5833-4a91-a47b-35bb0414b6f0
-    revision: 3
-    hash: 369e2abc26bd6e5dd756c200ecac03201f8940420b7b33e5f829db5d1c9027b3
-    local_sha256: 1945bc8dad621c1015e897e2620e445d5a5224bb8fe4a7bc014a5ba7547fb558
-    synced_at: '2026-08-15'
+    revision: 5
+    hash: 7ad39259ecb37da91cf6f9e9c4b88b3927f98f7e79be1804f732c168ae99bcd0
+    local_sha256: 08f2ac0588c3d2792e0af597bc1ddfc2cfe5342505384efe33bc15c6eb030cc6
+    synced_at: '2026-08-26'
