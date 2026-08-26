@@ -46,10 +46,17 @@ from the product's expected paper, that is the OpenAlex failure recurring here a
 the row should not be trusted.
 
 The batch endpoint takes up to 500 ids per POST, so the whole roster is one
-request. That keeps this inside the anonymous rate limit; per-paper GETs 429 after
-about two calls.
+request. Requests are authenticated with SEMANTIC_SCHOLAR_TOKEN (x-api-key) as of
+2026-08-26: the anonymous pool is shared across all unauthenticated callers from
+the same egress, and it starved nine consecutive runs with 429s on a single
+24-id POST before this model got its own allowance. Even keyed
+requests get load-shed 429s at times, and the keyed allowance is one request per
+second, so batch POSTs are paced a second apart and each retries 429s with an
+exponential backoff (15s doubling to 120s, five attempts). Per-paper GETs are
+still avoided; one batch request per run is the contract either way.
 """
 
+import asyncio
 import json
 from datetime import datetime, timezone
 
@@ -129,8 +136,11 @@ def _build_table(rows: list[dict], stamp: datetime) -> pa.Table:
     depends_on=["currentai.registry.product_artifacts"],
     external_origins=["https://api.semanticscholar.org"],
     capabilities=oso.Capabilities(fetch=True),
+    secrets=["SEMANTIC_SCHOLAR_TOKEN"],
+    environment_name="Default",
 )
 async def paper_citations(context: oso.AsyncContext) -> oso.DataFrame:
+    token: str = await context.secret("SEMANTIC_SCHOLAR_TOKEN")
     roster_result = await context.query(ROSTER_QUERY)
     roster = await roster_result.as_pl()
     pairs = [
@@ -146,14 +156,25 @@ async def paper_citations(context: oso.AsyncContext) -> oso.DataFrame:
 
     rows: list[dict] = []
     for start in range(0, len(pairs), BATCH_SIZE):
+        if start:
+            # Semantic Scholar allows one request per second per key; pace
+            # successive batch POSTs rather than burst them.
+            await asyncio.sleep(1)
         batch = pairs[start : start + BATCH_SIZE]
         body = json.dumps({"ids": [f"arXiv:{arxiv}" for _, arxiv in batch]})
-        response = await context.fetch(
-            f"{BATCH_URL}?fields={FIELDS}",
-            method="POST",
-            headers={"Content-Type": "application/json"},
-            body=body,
-        )
+        # Semantic Scholar load-sheds with 429 even on keyed requests, so each
+        # batch POST gets an exponential backoff (15s, 30s, 60s, 120s) before the
+        # run gives up. Any other non-200 still fails loudly.
+        for attempt in range(5):
+            response = await context.fetch(
+                f"{BATCH_URL}?fields={FIELDS}",
+                method="POST",
+                headers={"Content-Type": "application/json", "x-api-key": token},
+                body=body,
+            )
+            if response.status != 429 or attempt == 4:
+                break
+            await asyncio.sleep(15 * 2 ** attempt)
         if response.status != 200:
             raise RuntimeError(
                 f"semantic scholar batch returned {response.status} "

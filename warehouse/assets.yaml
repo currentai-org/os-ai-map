@@ -796,7 +796,13 @@ assets:
     of signal_semanticscholar.paper_citations into its target namespace. First materialized 2026-08-26 05:57Z
     after nine consecutive shared upstream Semantic Scholar 429s that day (the old model failed
     identically at paired run times); 24 rows, all found, pairing 1:1 with the old table on
-    (product_slug, arxiv_id) with identical paper_id/title and non-decreasing citation counts. The model code is
+    (product_slug, arxiv_id) with identical paper_id/title and non-decreasing citation counts.
+    After the move completed on identical bytes, revisions 5-6 (2026-08-26) added the durable
+    429 fix as their own change: requests authenticate with the SEMANTIC_SCHOLAR_TOKEN platform
+    secret (x-api-key), batch POSTs are paced to the keyed one-request-per-second allowance, and
+    load-shed 429s retry with exponential backoff (15s doubling to 120s); verified with SUCCESS
+    runs 06:31Z and 07:22Z. The old compatibility model stays anonymous and un-retried — it is
+    retiring at step 6, not being maintained. The model code is
     byte-identical to the old model except the one sanctioned delta: the platform release gate
     now refuses a model that calls context.fetch() without capabilities=oso.Capabilities(fetch=True)
     (the old revision is grandfathered), so the twin declares it — behavior-neutral, exactly as in
@@ -806,9 +812,9 @@ assets:
     status: compatibility until step-6 retirement.'
   mirror:
     model_id: 50b1effd-f7cc-49f6-962d-994ca10ba278
-    revision: 3
-    hash: d864737b70eda0c7607b9adfe689b780a0e4356e190a08a57e9808a6ecce7d11
-    local_sha256: b7b2b4b07c7a3b272be87050b182089d94bbbd37c4c04dbbbd456d9205dc48ac
+    revision: 6
+    hash: b22bcc0f5986766df8cf9923b8e6276f89860c89f337f15af32f62c44a9e1797
+    local_sha256: 08f2ac0588c3d2792e0af597bc1ddfc2cfe5342505384efe33bc15c6eb030cc6
     synced_at: '2026-08-26'
 - id: observations.product_adoption_baseline
   table: currentai.observations.product_adoption_baseline
