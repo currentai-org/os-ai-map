@@ -842,27 +842,57 @@ by AD-5 and activates then.
 
 #### Repository-derived scoring trace
 
-The repository-owned evaluator must eventually publish:
+The repository-owned evaluator publishes three tables, built repo-side by
+`build/axis_scoring_trace.py` and staged (`status: staged` / `materialized: false`) until a
+maintainer deploys them (`docs/operations/deploy-scoring-trace.md`):
 
-- `evaluation.axis_facts`
-- `evaluation.axis_rule_matches`
-- `evaluation.axis_results`
+- `evaluation.axis_facts` — grain
+  `(declaration_version_id, product_slug, category_slug, axis, dimension, part_index)`
+- `evaluation.axis_rule_matches` — grain
+  `(declaration_version_id, product_slug, category_slug, axis, rule_index)`
+- `evaluation.axis_results` — grain
+  `(declaration_version_id, product_slug, category_slug, axis)`
 
-These tables must make this chain queryable:
+Together they make this chain queryable:
 
 ```text
 result → matched rule → normalized fact → recorded evidence → source document
 ```
 
-Suggested grains:
+- **result** is `axis_results` — the score/class the evaluator produced, the `rule_index` it
+  matched, the governing license tier, and `reproduces_recorded`, the dual-run agreement with the
+  recorded score (true on every scored row today; the property `check_rubric` gates in CI, made
+  queryable).
+- **matched rule** is `axis_rule_matches` — each rung the ordered first-match-wins walk evaluated,
+  in order, with its `outcome` (`fired` / `skipped` / `fell_through_tier` / `blocked_on_tier`). Its
+  `rule_conditions` join back to `axis_facts` by dimension name.
+- **normalized fact** is `axis_facts` — the value the formula reads for each declared dimension,
+  plus the recorded license decomposed into one row per `+`-joined part, each resolved to its tier,
+  and the governing `license_tier` the walk tests.
+- **recorded evidence** and **source document** are NOT republished here — they already have
+  owners. `axis_facts` joins to `registry.product_openness_evidence` (grain
+  `product_slug, category_slug, dimension, part_index`, the recorded value and its grade) and to
+  `registry.product_score_sources` (carrying `source_url`) on their natural keys.
 
-- `axis_facts`: `(declaration_version_id, product_slug, category_slug, axis, dimension, part_index)`
-- `axis_rule_matches`: `(declaration_version_id, product_slug, category_slug, axis, rule_index)`
-- `axis_results`: `(declaration_version_id, product_slug, category_slug, axis)`
+All three are deterministic over declarations alone: they key on `declaration_version_id` and carry
+the commit-scoped `source_git_sha` alongside; none carries a `release_id` or an
+`observation_snapshot_id`. Only openness is scored by a deterministic ordered-rule walk, so `axis`
+is `openness` on every row; the column is retained so the grain is forward-compatible. Adoption's
+trace already exists as `evaluation.product_adoption_measurements`, and capability is recorded
+verbatim.
 
-All three are deterministic over declarations alone. None carries a `release_id`.
+**No second scoring implementation** — this is ADR-001's whole point. Every value is transcribed
+from `build/check_rubric.py`, the single owner of the ladder walk: the rung walk is
+`walk_formula_trace` (which `walk_formula`, and so `score_openness` / `check_parity` /
+`check_recipe`, now projects), the facts are `trace_openness().facts`, and the per-part license
+tiers are `resolve_license_parts` (which `license_tier` now projects). The trace cannot resolve a
+fact, a tier or a rung outcome differently from the score, because both read the same primitives.
 
-The evaluator may reuse existing component parsing and rubric helpers. It must not introduce a second scoring implementation.
+The `evaluator_version` cutover is a separate, gated step — see §4.5 and
+`docs/operations/deploy-scoring-trace.md`. Building this evaluator does not flip the sentinel:
+`declaration_version_id` folds in `evaluator_version`, so replacing `v0-no-repo-evaluator` re-keys
+every declaration-keyed table corpus-wide, the already-deployed Phase-3 tables included, and is
+done as its own coordinated republish rather than as a side effect of landing the trace.
 
 ### 4.5 `currentai.releases`
 
@@ -1686,10 +1716,10 @@ Three numbers that must not be conflated:
 
 ```text
 deployed tables in the in-scope datasets    <!-- count:deployed_tables -->62
-staged, not deployed                         <!-- count:staged_assets -->6
+staged, not deployed                         <!-- count:staged_assets -->9
 dormant, no platform table yet              <!-- count:dormant_assets -->1
                                             ------
-logical assets in warehouse/assets.yaml     <!-- count:assets -->69
+logical assets in warehouse/assets.yaml     <!-- count:assets -->72
 ```
 
 The staged six are the three `signal_packages` models from issue #314,

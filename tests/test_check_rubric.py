@@ -570,3 +570,105 @@ def test_every_recorded_self_host_value_is_mapped():
         "software.yaml's core_gated.value_aliases, or record `core-gated` on the product."
     )
     assert set(aliases.values()) == {"gated", "ungated"}
+
+
+# --- the trace primitives: walk_formula_trace and resolve_license_parts ----------
+# Added for the repository-owned scoring trace (build/axis_scoring_trace.py). They are the
+# single-owner extension the trace reads: `walk_formula` and `license_tier` project them, so
+# these prove the projection is faithful rather than a second implementation.
+
+
+class TestWalkFormulaTrace:
+    RECIPE = {
+        "openness": {
+            "dimensions": {"source": {"values": ["public", "closed", "partial"]}},
+            "license_tier": {"values": {"osi": {}, "noncommercial": {}}},
+            "formula": [
+                {"when": {"source": "closed"}, "then": {"score": 1, "class": "closed"}},
+                {"when": {"source": "public", "license_tier": "noncommercial"},
+                 "then": {"score": 2, "class": "restricted"}},
+                {"when": {"source": "public", "license_tier": "osi"},
+                 "then": {"score": 5, "class": "open_source"}},
+            ],
+        }
+    }
+
+    def test_walk_formula_is_a_faithful_projection_of_the_trace(self):
+        """The public `(result, blocked)` must equal the trace's, for every input, or the trace
+        is a fork. Exercises fired / fell-through / blocked / skipped-to-exhaustion."""
+        from build.check_rubric import walk_formula, walk_formula_trace
+
+        cases = [
+            ({"source": "closed"}, "osi"),
+            ({"source": "public"}, "osi"),
+            ({"source": "public"}, None),        # blocks on the noncommercial rung
+            ({"source": "partial"}, "osi"),      # nothing fires, no otherwise
+        ]
+        for facts, tier in cases:
+            result, blocked, steps = walk_formula_trace(self.RECIPE, facts, tier)
+            assert (result, blocked) == walk_formula(self.RECIPE, facts, tier)
+            fired = [s for s in steps if s.outcome == "fired"]
+            assert len(fired) == (1 if result is not None else 0)
+
+    def test_records_fell_through_then_fired(self):
+        from build.check_rubric import walk_formula_trace
+
+        _result, _blocked, steps = walk_formula_trace(self.RECIPE, {"source": "public"}, "osi")
+        assert [s.outcome for s in steps] == ["skipped", "fell_through_tier", "fired"]
+        assert steps[-1].rule_index == 2 and steps[-1].result == (5, "open_source")
+
+    def test_blocks_on_an_unresolved_tier_and_stops(self):
+        from build.check_rubric import walk_formula_trace
+
+        result, blocked, steps = walk_formula_trace(self.RECIPE, {"source": "public"}, None)
+        assert result is None and blocked is True
+        assert steps[-1].outcome == "blocked_on_tier" and steps[-1].rule_index == 1
+        # the walk stops at the blocking rung — it never reaches the osi rung below it
+        assert len(steps) == 2
+
+    def test_otherwise_fires_and_ends_the_walk(self):
+        from build.check_rubric import walk_formula_trace
+
+        recipe = {"openness": {"dimensions": {"source": {"values": ["public"]}},
+                               "formula": [{"when": {"source": "closed"}, "then": {"score": 1, "class": "closed"}},
+                                           {"otherwise": {"score": 3, "class": "mid"}}]}}
+        result, blocked, steps = walk_formula_trace(recipe, {"source": "public"}, None)
+        assert result == (3, "mid") and blocked is False
+        assert steps[-1].kind == "otherwise" and steps[-1].outcome == "fired"
+
+
+class TestResolveLicenseParts:
+    RECIPE = {"openness": {"license_tier": {"values": {
+        "osi": {"examples": ["Apache-2.0", "MIT"]},
+        "noncommercial": {"examples": ["CC-BY-NC"]},
+    }}}}
+
+    def test_pairs_each_part_with_its_tier(self):
+        from build.check_rubric import license_entry, resolve_license_parts
+
+        pairs = resolve_license_parts(license_entry("Apache-2.0(code)+CC-BY-NC(weights)"), self.RECIPE)
+        assert [(p.get("name"), tier) for p, tier in pairs] == [
+            ("Apache-2.0", "osi"), ("CC-BY-NC", "noncommercial"),
+        ]
+
+    def test_unmapped_part_is_paired_with_none(self):
+        from build.check_rubric import license_entry, resolve_license_parts
+
+        pairs = resolve_license_parts(license_entry("Some-Vendor-License"), self.RECIPE)
+        assert [tier for _p, tier in pairs] == [None]
+
+    def test_agrees_with_license_tier_the_governing_cap(self):
+        """The governing tier `license_tier` returns is the most restrictive of these parts —
+        proving the trace and the score resolve one license the same way."""
+        from build.check_rubric import license_entry, license_tier, resolve_license_parts, tier_rank
+
+        parts = license_entry("Apache-2.0+CC-BY-NC")
+        pairs = resolve_license_parts(parts, self.RECIPE)
+        rank = tier_rank(self.RECIPE["openness"]["license_tier"]["values"])
+        governing = max((t for _p, t in pairs), key=lambda name: rank.get(name, 99))
+        assert governing == license_tier(parts, self.RECIPE) == "noncommercial"
+
+    def test_tier_free_ladder_yields_no_pairs(self):
+        from build.check_rubric import license_entry, resolve_license_parts
+
+        assert resolve_license_parts(license_entry("MIT"), {"openness": {}}) == []
