@@ -299,7 +299,7 @@ once in `docs/reference/`, not in the skill. Skills are registered under `.claud
 Claude Code session discovers them by name; if yours does not list them, read
 `skills/<name>/SKILL.md` directly.
 
-**Six primary editor skills** (the contributor front door):
+**Primary editor skills** (the contributor front door):
 
 | Skill | When to use | Workflow |
 |-------|------------|----------|

@@ -28,10 +28,11 @@ rules are the standard these rows are eventually held to.
 The workflow explains each. They are listed here because every one of them has produced a
 sweep that had to be thrown away.
 
-1. **Read the category list at run time, through `build.taxonomy.category_statuses()`.** A
-   remembered list silently drops every candidate belonging to a category added since — and
-   parsing `sources/taxonomy.yaml` by hand drops the `{name, status}` entries, which is the
-   failure that broke `build_stack_map`.
+1. **Read the category list at run time, through `build.taxonomy.category_statuses(taxonomy)`.**
+   It takes the loaded taxonomy mapping — `category_statuses(yaml.safe_load(...))`, not a
+   zero-argument call, which raises `TypeError`. A remembered list silently drops every
+   candidate belonging to a category added since — and parsing `sources/taxonomy.yaml` by hand
+   drops the `{name, status}` entries, which is the failure that broke `build_stack_map`.
 2. **Artifacts are identifiers, not URLs.** `github: owner/repo`, not
    `https://github.com/owner/repo`; same for `huggingface_*`, and bare package names for
    `pypi` / `npm`. `homepage` is the only URL on the row. Serialization builds the public URL
@@ -53,9 +54,11 @@ because they depend on the whole candidate set rather than on any single row.
 
 ## Output
 
-Populated `sources/registry/<category>.yaml` files and a summary carrying the reconciled
-counts, the source URL and fetch date behind each accepted candidate, and the parked
-candidates with their reasons. Not a prose report, and not a PR per candidate.
+Populated `sources/registry/<category>.yaml` files — appended, or created for a category with
+no file yet — and a summary carrying the five reconciled counts (`raw_signals =
+duplicate_signals + unique_candidates`; `unique_candidates = accepted + parked`), and the
+source URL and fetch date behind every candidate, accepted or parked, each parked one with its
+reason. Not a prose report, and not a PR per candidate.
 
 A registry row rejects unknown keys, so the summary is the only place a reason, a source URL
 or an ambiguity can be recorded. It is part of the deliverable, not a covering note.

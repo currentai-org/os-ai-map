@@ -20,24 +20,44 @@ head products use `promote-category`; to re-verify what is already published use
 ## Inputs you need
 
 - The categories to sweep. Read them at run time through
-  `build.taxonomy.category_statuses()`, which returns `{slug: status}` for the whole
-  taxonomy. **Never work from a remembered list** — the taxonomy grows, and a stale list
-  silently drops every candidate belonging to a category added since. **Never parse
-  `sources/taxonomy.yaml` yourself either:** a category entry is either a bare string or a
-  `{name, status}` mapping, and code that assumed the scalar form is what broke
-  `build_stack_map`. `category_statuses()` and `arc_categories()` own that normalization.
+  `build.taxonomy.category_statuses(taxonomy)`, which takes the loaded taxonomy mapping and
+  returns `{slug: status}` for the whole taxonomy. Load the mapping first, exactly as the
+  build code does:
+
+  ```python
+  import yaml
+  from pathlib import Path
+  from build.taxonomy import category_statuses
+
+  taxonomy = yaml.safe_load(Path("sources/taxonomy.yaml").read_text()) or {}
+  statuses = category_statuses(taxonomy)   # {slug: "published" | "preliminary"}
+  ```
+
+  `category_statuses()` is not a zero-argument call — passing nothing raises `TypeError`.
+  **Never work from a remembered list** — the taxonomy grows, and a stale list silently drops
+  every candidate belonging to a category added since. **Never parse `sources/taxonomy.yaml`
+  yourself either:** a category entry is either a bare string or a `{name, status}` mapping,
+  and code that assumed the scalar form is what broke `build_stack_map`. `category_statuses()`
+  and `arc_categories()` own that normalization.
 - A time window, so the sweep is reproducible and the next one knows where to start.
-- Warehouse access for the discovery pool (`currentai.entities.repos`), if available. It is
-  a dedup input, not a source of truth about what belongs on the map.
+- Warehouse access for the discovery pool (`currentai.entities.repos`), if available. This is
+  the long-tail *discovery* set, not the accepted Gap Map: a repository appearing there may be
+  exactly what this workflow should emit. Use it to consolidate multiple signals into one
+  entity, recover a canonical repository identity, and enrich a candidate — **presence in the
+  pool never disqualifies a candidate.** A repository is only ruled out when it resolves to an
+  existing head product or an existing registry row (see the dedup order below).
 
 ## Files this changes
 
 | File | Change |
 |---|---|
-| `sources/registry/<category>.yaml` | Candidate rows appended to `products:`, one per accepted candidate |
-| `sources/taxonomy.yaml` | Only if a candidate needs a category that does not exist — and then only as a `category-proposal` issue first, never edited here |
+| `sources/registry/<category>.yaml` | One accepted candidate per row under `products:` — appended to an existing file, or a new file created for a category that has none yet (see step 5) |
 
-Nothing else. This workflow does not write `sources/products/`, `sources/scores/`, or any
+Nothing else. A candidate that needs a category which does not exist is a governance event,
+not a data event: open a `category-proposal` issue and park the candidate against it (see
+**Stop and escalate**). This workflow never edits `sources/taxonomy.yaml`.
+
+This workflow does not write `sources/products/`, `sources/scores/`, or any
 category roster. A candidate becomes a product later, and **which workflow picks it up depends
 on the category's status** — a distinction worth getting right, because the two are not
 interchangeable:
@@ -56,16 +76,21 @@ the row behind fails `validate` as a duplicate.
 
 ### 1. Read the taxonomy, then the corpus
 
-Load every category through `build.taxonomy.category_statuses()`, published and preliminary
-alike. Then load the existing corpus:
+Load every category through `build.taxonomy.category_statuses(taxonomy)`, published and
+preliminary alike. Then load the existing corpus:
 
 - **current slugs** — the filename stems of `sources/products/*.yaml`;
 - **retired slugs** — the `aliases:` list on each of those records. There is no
   `sources/slug_aliases.yaml`; the single alias mapping was deleted in #157 because two
   renames of the same retired slug silently kept whichever came last. Aliases now live on
   the record that replaced the slug, so the retired set is derived, not read from a file.
+- **existing registry slugs and artifacts** — the `slug` and `github` of every row already in
+  `sources/registry/*.yaml`. These are candidates a previous sweep already found; without this
+  set a repeated sweep rediscovers and re-triages them every time, only failing at final
+  `validate` if a slug or repository collides. Loading them here is what makes a sweep
+  incremental rather than a full re-triage.
 
-A candidate matching either set is already mapped and is not a candidate.
+A candidate matching any of these sets is already known and is not a new candidate.
 
 ### 2. Sweep
 
@@ -80,8 +105,18 @@ candidate — see the emit contract below.
    `sources/products/*.yaml`. A retired slug means the thing was deliberately consolidated or
    dropped, and re-adding it re-opens a settled decision. `amazon-nova-pro` is the shape to
    watch for: a SKU that was folded into `amazon-nova` and reads like a new product.
-3. Against the warehouse discovery pool, if reachable.
-4. Against itself: the same tool arriving from GitHub, PyPI and Hugging Face is one
+3. Against the existing registry rows loaded in step 1 — every `slug` and `github` already in
+   `sources/registry/*.yaml`. A match here is a candidate a previous sweep already emitted;
+   drop it and, if the earlier decision was to park it, do not re-triage it. This set is
+   deduped *before* the warehouse pool because a match here is a settled outcome, while a match
+   in the pool is only a signal.
+4. Against the warehouse discovery pool, if reachable. This step is enrichment and
+   consolidation, **not rejection**: use the pool to fold several signals into one entity,
+   recover the canonical `owner/repo`, and fill in artifacts. A repository being present in the
+   pool does not disqualify it — the pool *is* the long-tail set this workflow harvests from.
+   Only rule a candidate out here when the pool resolves it to a slug or repository already
+   caught by dedup sets 1–3.
+5. Against itself: the same tool arriving from GitHub, PyPI and Hugging Face is one
    candidate, not three.
 
 Entity resolution is the part that goes wrong. Where two signals might be the same product
@@ -101,6 +136,25 @@ Each accepted candidate becomes a row in `sources/registry/<category>.yaml` sati
 `docs/schemas/registry.schema.json`: `slug`, `display_name`, `type`, `org` and `github` are
 required, with `pypi`, `npm`, `huggingface_model`, `huggingface_dataset` and `homepage` where
 they apply. The row rejects any other key (`additionalProperties: false`).
+
+**When the category has no registry file yet, create it.** Only `compilers` and `storage` have
+registry files today, so a sweep over any other category is creating the file, not appending to
+one. The file is a mapping with a `category` key naming the category slug and a `products:`
+list of rows:
+
+```yaml
+category: <category_slug>
+products:
+  - slug: <kebab-case-slug>
+    display_name: <Display Name>
+    type: software
+    org: <org-slug>
+    github: owner/repo
+```
+
+Append to `products:` only when the file already exists; do not load-modify-dump an existing
+file, since that reformats rows a human authored. For a new file, write the two-key mapping
+above.
 
 **Artifacts are canonical identifiers, not URLs.** This is the single easiest way to produce a
 sweep that has to be redone, because a URL looks obviously right and fails two ways at once —
@@ -129,8 +183,11 @@ and keeps neither the identifiers nor the source URLs has produced nothing the r
 
 Anything surveyed and not accepted is recorded **in the batch summary** with the reason:
 already mapped, a retired alias, a new SKU of an existing product, superseded, unmaintained,
-no public artifact, GitHub-backed storage not yet available (#365), or a boundary rejection. A
-reject that leaves no trace comes back next week and is triaged again from scratch.
+no public artifact, GitHub-backed storage not yet available (#365), or a boundary rejection.
+Record the source URL and fetch date for a parked candidate too, not only for an accepted one:
+the sweep earlier promised provenance for *every* raw signal, and a parked candidate with no
+source URL cannot be re-checked next week — it just comes back and is triaged again from
+scratch.
 
 Parked candidates do not go in `products:`. A registry row has no `notes` field and rejects
 unknown keys, so there is nowhere on a row to write a reason — and a parked candidate is not a
@@ -138,8 +195,18 @@ candidate row in the first place.
 
 ### 7. Reconcile the counts
 
-Surveyed, deduped, accepted, parked. They must add up. Publishing counts that do not
-reconcile means nobody can tell whether candidates were dropped silently.
+The counts must satisfy two invariants, stated as equations so the reconciliation is
+executable rather than a slogan:
+
+```
+raw_signals       = duplicate_signals + unique_candidates
+unique_candidates = accepted          + parked
+```
+
+Every raw signal is either a duplicate (caught by one of the dedup sets in step 3) or a unique
+candidate; every unique candidate is either accepted (emitted as a row) or parked (recorded in
+the summary with its reason). Publish all five numbers. If either equation does not balance,
+some signal was dropped without a trace — find it before opening the PR.
 
 ## Rules that hold throughout
 
@@ -182,10 +249,12 @@ collisions, not judgment.
 
 ## Expected PR contents
 
-- One or more `sources/registry/<category>.yaml` files with new rows.
-- A PR body listing: the window swept, the sources swept, the reconciled counts, the source
-  URL and fetch date behind each accepted candidate, and the parked candidates with their
-  reasons.
+- One or more `sources/registry/<category>.yaml` files with new rows — appended to existing
+  files, or created for a category that had none.
+- A PR body listing: the window swept, the sources swept, the five reconciled counts
+  (`raw_signals`, `duplicate_signals`, `unique_candidates`, `accepted`, `parked`), the source
+  URL and fetch date behind each accepted candidate, and the parked candidates each with their
+  reason and their own source URL and fetch date.
 - No product, score, or category-roster files.
 
 ## Stop and escalate when
@@ -195,8 +264,14 @@ collisions, not judgment.
 - Two signals may be the same product and the evidence does not settle it.
 - A source blocks the sweep (rate limits that survive retry, an API that has changed).
   Report the gap rather than filling it with a guess.
-- The sweep volume is large enough that nobody can review it. Tighten the signal floor
-  before relaxing the human-in-the-loop rule.
+- The sweep volume is large enough that nobody can review it. The fix is a **disclosed,
+  predeclared retrieval cutoff** — how far down a ranked source you swept (top-N by stars, a
+  minimum release date) — not a legitimacy rule. This is not the mid-sweep threshold the rules
+  above prohibit: that one adjudicates whether a *discovered* product is real; a retrieval
+  cutoff only bounds *how much* you retrieved. Keep the two apart: pause and define the cutoff
+  before you rerun, report the resulting coverage limitation in the summary, and never use the
+  cutoff to reject a product the sweep already surfaced — an already-discovered candidate below
+  the cutoff is parked with its reason, not dropped.
 
 ## Relevant reference material
 
