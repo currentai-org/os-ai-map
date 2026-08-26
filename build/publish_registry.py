@@ -96,35 +96,38 @@ M_URL = """mutation($staticModelId: ID!){ createStaticModelUploadUrl(staticModel
 M_RUN = """mutation($input: CreateStaticModelRunRequestInput!){
   createStaticModelRunRequest(input:$input){ success runGroup{ id status } } }"""
 M_DELETE = """mutation($id: ID!){ deleteStaticModel(id:$id){ success message } }"""
-Q_MODEL_RUN = """query($where: JSON){ staticModels(where:$where){
-  edges{ node{ runs(first:1){ edges{ node{ id status } } } } } } }"""
+Q_RUN_GROUP = """query($where: JSON){ runGroups(where:$where){ edges{ node{ id status } } } }"""
 
-RUN_SUCCESS = "SUCCESS"
-RUN_TERMINAL = frozenset({"SUCCESS", "FAILED", "CANCELED", "CANCELLED", "ERROR", "TIMEOUT", "ABORTED"})
-
-
-def latest_run_status(model_id: str, token: str) -> str | None:
-    """The status of a static model's most recent run, or None if it has none yet."""
-    edges = graphql(Q_MODEL_RUN, {"where": {"id": {"eq": model_id}}}, token)["staticModels"]["edges"]
-    runs = edges[0]["node"]["runs"]["edges"] if edges else []
-    return runs[0]["node"]["status"] if runs else None
+GROUP_SUCCESS = "SUCCESS"
+GROUP_TERMINAL = frozenset({"SUCCESS", "FAILED", "CANCELED", "CANCELLED"})
 
 
-def poll_model_run(model_id: str, token: str, timeout: float = 600.0, interval: float = 5.0) -> str:
-    """Block until the model's latest run reaches a terminal state, or the timeout elapses.
+def run_group_status(run_group_id: str, token: str) -> str | None:
+    """The status of the run group with THIS id, or None if the platform does not know it yet.
 
-    A non-terminal status at timeout (e.g. RUNNING/QUEUED) is returned as-is, which the caller
-    treats as not-SUCCESS — a hung run never certifies as materialized.
+    Bound to the exact run group `createStaticModelRunRequest` returned — never a model's
+    "latest run", which could be an earlier, unrelated success and would let the poll pass
+    before this request's run has even appeared.
+    """
+    edges = graphql(Q_RUN_GROUP, {"where": {"id": {"eq": run_group_id}}}, token)["runGroups"]["edges"]
+    return edges[0]["node"]["status"] if edges else None
+
+
+def poll_run_group(run_group_id: str, token: str, timeout: float = 600.0, interval: float = 5.0) -> str:
+    """Block until THIS run group reaches a terminal state, or the timeout elapses.
+
+    A non-terminal status at timeout (e.g. RUNNING) is returned as-is, which the caller treats
+    as not-SUCCESS — a hung run never certifies as materialized.
     """
     import time
 
     deadline = time.time() + timeout
-    status = latest_run_status(model_id, token)
-    while status not in RUN_TERMINAL:
+    status = run_group_status(run_group_id, token)
+    while status not in GROUP_TERMINAL:
         if time.time() >= deadline:
             return status or "UNKNOWN"
         time.sleep(interval)
-        status = latest_run_status(model_id, token)
+        status = run_group_status(run_group_id, token)
     return status
 
 
@@ -329,13 +332,13 @@ def main() -> int:
 
     # The run request is per static model: CreateStaticModelRunRequestInput takes
     # (datasetId, staticModelId), not a selectedModels list. Materialize ONE model at a time,
-    # awaiting each run to a terminal state before requesting the next. A run request only
-    # QUEUES a run; the loads then execute asynchronously, and firing them all at once makes
-    # their loads collide on the destination — a transient "Failed to query OPA backend"
-    # (DatabaseTransientException) that fails a nondeterministic subset. Serializing keeps each
-    # load alone, and polling to terminal is what certifies the table actually materialized
-    # (an accepted request is not a finished one).
-    failures: list[tuple[str, str]] = []
+    # awaiting THIS request's run group to a terminal state before requesting the next. A run
+    # request only QUEUES a run; the loads then execute asynchronously, and firing them all at
+    # once makes their loads collide on the destination — a transient "Failed to query OPA
+    # backend" (DatabaseTransientException) that fails a nondeterministic subset. Serializing
+    # keeps each load alone, and polling the run group we just created (by its id, never the
+    # model's "latest run") is what certifies the table actually materialized. Fail fast: the
+    # first unsuccessful model stops the publish rather than queuing more runs behind a failure.
     for table in populated:
         model_id = models[table][0]
         run_group = graphql(
@@ -343,16 +346,11 @@ def main() -> int:
             {"input": {"datasetId": dataset_id, "staticModelId": model_id}},
             token,
         )["createStaticModelRunRequest"]["runGroup"]
-        status = poll_model_run(model_id, token)
+        status = poll_run_group(run_group["id"], token)
         print(f"  {table}: run group {run_group['id']} finished {status}")
-        if status != RUN_SUCCESS:
-            failures.append((table, status))
-
-    if failures:
-        print("materialization did not succeed for every model:", file=sys.stderr)
-        for table, status in failures:
-            print(f"  ! {table}: {status}", file=sys.stderr)
-        return 1
+        if status != GROUP_SUCCESS:
+            print(f"materialization did not succeed: {table} run group {run_group['id']} is {status}", file=sys.stderr)
+            return 1
     print(f"materialized {len(populated)} models")
     return 0
 
