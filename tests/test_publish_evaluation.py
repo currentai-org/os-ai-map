@@ -141,15 +141,15 @@ def test_missing_csv_is_a_loud_failure(tmp_path, monkeypatch):
 # --- the archive is gated on terminal SUCCESS and verified deployed data ---------
 
 
-def test_runs_all_succeeded_requires_terminal_success():
-    ok = {"product_adoption_measurements": ("r1", "SUCCESS"),
-          "adoption_reconciliation": ("r2", "SUCCESS")}
-    assert P.runs_all_succeeded(ok) == []
-    # A queued/running/failed run is not success — each is a problem, so no archive.
+def test_run_groups_all_succeeded_requires_terminal_success():
+    ok = {"product_adoption_measurements": ("g1", "SUCCESS"),
+          "adoption_reconciliation": ("g2", "SUCCESS")}
+    assert P.run_groups_all_succeeded(ok) == []
+    # A queued/running/failed run group is not success — each is a problem, so no archive.
     for bad in ("RUNNING", "QUEUED", "FAILED", "UNKNOWN", "TIMEOUT"):
-        statuses = {"product_adoption_measurements": ("r1", "SUCCESS"),
-                    "adoption_reconciliation": ("r2", bad)}
-        assert P.runs_all_succeeded(statuses), f"{bad} must be treated as not-succeeded"
+        statuses = {"product_adoption_measurements": ("g1", "SUCCESS"),
+                    "adoption_reconciliation": ("g2", bad)}
+        assert P.run_groups_all_succeeded(statuses), f"{bad} must be treated as not-succeeded"
 
 
 def test_deployment_mismatches_catches_row_and_schema_drift():
@@ -164,11 +164,50 @@ def test_deployment_mismatches_catches_row_and_schema_drift():
     assert any("columns" in m for m in P.deployment_mismatches(expected, wrong_cols))
 
 
-def test_poll_run_returns_last_status_at_timeout(monkeypatch):
-    """A run that never reaches a terminal state returns its last (non-SUCCESS) status, so the
-    caller does not archive a queued run."""
-    monkeypatch.setattr(P, "run_status", lambda run_id, token: "RUNNING")
-    assert P.poll_run("r1", "tok", timeout=0.0, interval=0.0) == "RUNNING"
+def test_the_publisher_polls_the_exact_run_group_the_mutation_returned(tmp_path, monkeypatch):
+    """The reconciled polling (#380) is bound to the run group `createStaticModelRunRequest`
+    returns — never a model's latest run — so an earlier unrelated success can't satisfy the wait.
+
+    Pinned by capturing the id handed to `poll_run_group` and asserting it is the group id the
+    mutation returned for that model, in order.
+    """
+    _valid_candidates(tmp_path)
+    polled: list[str] = []
+
+    def fake_graphql(query, variables, token):
+        if query is P.Q_DATASETS:
+            return {"datasets": {"edges": [{"node": {"id": "ds-eval", "name": "evaluation",
+                                                     "type": "STATIC_MODEL"}}]}}
+        if query is PR.Q_STATIC:
+            return {"staticModels": {"edges": [
+                {"node": {"id": f"id-{t}", "name": t, "materializations": {"totalCount": 1}}}
+                for t in P.EVAL_TABLES
+            ]}}
+        if query is P.M_URL:
+            return {"createStaticModelUploadUrl": "https://upload.example/put"}
+        if query is P.M_RUN:
+            model = variables["input"]["staticModelId"]
+            return {"createStaticModelRunRequest":
+                    {"runGroup": {"id": f"grp-for-{model}", "status": "QUEUED"}}}
+        raise AssertionError(f"unexpected query: {query[:60]}")
+
+    def record_poll(group_id, token, timeout=1800.0):
+        polled.append(group_id)
+        return "SUCCESS"
+
+    monkeypatch.setattr(P, "graphql", fake_graphql)
+    monkeypatch.setattr(PR, "graphql", fake_graphql)
+    monkeypatch.setattr(P, "upload", lambda path, url: None)
+    monkeypatch.setattr(P, "poll_run_group", record_poll)
+    monkeypatch.setattr(P, "deployed_table_state",
+                        lambda dataset, table: {"rows": 0, "columns": []})
+    monkeypatch.setattr(P, "deployment_mismatches", lambda expected, deployed: ["stop here"])
+    monkeypatch.setenv("OSO_API_KEY", "tok")
+    monkeypatch.setenv("OSO_ORG_ID", "org")
+    monkeypatch.setattr(sys, "argv", ["publish_evaluation", "--dir", str(tmp_path)])
+
+    assert P.main() == 2  # stopped at the injected mismatch, after polling every group
+    assert polled == [f"grp-for-id-{t}" for t in P.EVAL_TABLES]
 
 
 # --- the immutable deployment archive --------------------------------------------
@@ -194,13 +233,11 @@ def test_deployment_archive_is_immutable(tmp_path):
 def test_load_run_is_requested_once_per_model_and_awaited(tmp_path, monkeypatch):
     """Each table gets its OWN run request, naming exactly one model, and is awaited in turn.
 
-    Two things were wrong on the first publish (2026-08-25) and both are pinned here:
-
-      * `{staticModelId: ...}` is not a valid input — the API requires `datasetId`, so the upload
-        landed and nothing ever materialized.
-      * A single request naming BOTH models fans out into two runs and returns only one of them.
-        The returned run reported SUCCESS while its sibling FAILED (the two raced to create the
-        dataset's Trino schema), so the wait certified a half-loaded deployment.
+    The input is per static model — `CreateStaticModelRunRequestInput` takes
+    `(datasetId, staticModelId)`, not a `selectedModels` list (the API drift #380/#381 corrected).
+    A single request naming BOTH models would fan out into two runs and return one run group, which
+    cannot certify its siblings; the two would also race to create the dataset's Trino schema. One
+    request per model, awaited to its own run group's terminal state, is what this pins.
     """
     _valid_candidates(tmp_path)
     requested: list[dict] = []
@@ -219,13 +256,13 @@ def test_load_run_is_requested_once_per_model_and_awaited(tmp_path, monkeypatch)
         if query is P.M_RUN:
             requested.append(variables["input"])
             return {"createStaticModelRunRequest":
-                    {"run": {"id": f"run-{len(requested)}", "status": "QUEUED"}}}
+                    {"runGroup": {"id": f"group-{len(requested)}", "status": "QUEUED"}}}
         raise AssertionError(f"unexpected query: {query[:60]}")
 
     monkeypatch.setattr(P, "graphql", fake_graphql)
     monkeypatch.setattr(PR, "graphql", fake_graphql)
     monkeypatch.setattr(P, "upload", lambda path, url: None)
-    monkeypatch.setattr(P, "poll_run", lambda run_id, token: "SUCCESS")
+    monkeypatch.setattr(P, "poll_run_group", lambda group_id, token, timeout=1800.0: "SUCCESS")
     monkeypatch.setattr(P, "deployed_table_state",
                         lambda dataset, table: {"rows": 0, "columns": []})
     # Stop before the archive: this test is about the request shape, not the receipt.
@@ -239,9 +276,8 @@ def test_load_run_is_requested_once_per_model_and_awaited(tmp_path, monkeypatch)
     assert len(requested) == len(P.EVAL_TABLES), "one run request per model"
     for payload in requested:
         assert payload["datasetId"] == "ds-eval"
-        assert "staticModelId" not in payload
-        assert len(payload["selectedModels"]) == 1, "never select two models in one request"
-    assert [pl["selectedModels"][0] for pl in requested] == [f"id-{t}" for t in P.EVAL_TABLES]
+        assert "selectedModels" not in payload, "the batch selectedModels payload is gone"
+    assert [pl["staticModelId"] for pl in requested] == [f"id-{t}" for t in P.EVAL_TABLES]
 
 
 def test_a_failed_run_stops_the_deploy_before_the_next_model(tmp_path, monkeypatch):
@@ -262,7 +298,7 @@ def test_a_failed_run_stops_the_deploy_before_the_next_model(tmp_path, monkeypat
             return {"createStaticModelUploadUrl": "https://upload.example/put"}
         if query is P.M_RUN:
             requested.append(variables["input"])
-            return {"createStaticModelRunRequest": {"run": {"id": "run-1", "status": "QUEUED"}}}
+            return {"createStaticModelRunRequest": {"runGroup": {"id": "group-1", "status": "QUEUED"}}}
         raise AssertionError(f"unexpected query: {query[:60]}")
 
     def boom(dataset, table):
@@ -271,7 +307,7 @@ def test_a_failed_run_stops_the_deploy_before_the_next_model(tmp_path, monkeypat
     monkeypatch.setattr(P, "graphql", fake_graphql)
     monkeypatch.setattr(PR, "graphql", fake_graphql)
     monkeypatch.setattr(P, "upload", lambda path, url: None)
-    monkeypatch.setattr(P, "poll_run", lambda run_id, token: "FAILED")
+    monkeypatch.setattr(P, "poll_run_group", lambda group_id, token, timeout=1800.0: "FAILED")
     monkeypatch.setattr(P, "deployed_table_state", boom)
     monkeypatch.setenv("OSO_API_KEY", "tok")
     monkeypatch.setenv("OSO_ORG_ID", "org")

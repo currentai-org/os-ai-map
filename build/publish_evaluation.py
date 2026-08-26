@@ -4,7 +4,8 @@ The maintainer half of the evaluation release path. `build/serialize_evaluation.
 CSVs (`product_adoption_measurements`, `adoption_reconciliation`) from one atomic read of
 `observations.product_adoption_current`; this validates and uploads them as `currentai.evaluation.*`
 static models. It reuses the exact GraphQL mechanics of `build/publish_registry.py` — the `graphql`
-helper, `resolve_static_models`, `upload`, `data_rows` — so the two publishers cannot drift.
+helper, `resolve_static_models`, `upload`, `data_rows`, and the run-group-bound `poll_run_group` —
+so the two publishers cannot drift.
 
 ## Validation before any mutation
 
@@ -62,12 +63,14 @@ from pathlib import Path
 from build.adoption_measurements import COLUMNS as MEASUREMENTS_COLUMNS
 from build.adoption_reconciliation import COLUMNS as RECONCILIATION_COLUMNS
 from build.publish_registry import (
+    GROUP_SUCCESS,
     M_DATASET,
     M_RUN,
     M_URL,
     Q_DATASETS,
     data_rows,
     graphql,
+    poll_run_group,
     resolve_static_models,
     upload,
 )
@@ -234,35 +237,10 @@ def latest_archive(out_dir: Path) -> Path | None:
 
 
 # A run request is only ACCEPTED synchronously; materialization happens asynchronously, so the
-# archive is gated on the run reaching terminal SUCCESS and the deployed data matching, not on the
-# request being accepted. `runs(where:{id})` is the same read snapshot_source_runs.py uses.
-Q_RUN = """query($where: JSON){ runs(where:$where){ edges{ node{ id status } } } }"""
-RUN_SUCCESS = "SUCCESS"
-RUN_TERMINAL = frozenset({"SUCCESS", "FAILED", "CANCELED", "CANCELLED", "ERROR", "TIMEOUT", "ABORTED"})
-
-
-def run_status(run_id: str, token: str) -> str | None:
-    """The current status of a run, or None if the platform does not know the id yet."""
-    edges = graphql(Q_RUN, {"where": {"id": {"eq": run_id}}}, token)["runs"]["edges"]
-    return edges[0]["node"]["status"] if edges else None
-
-
-def poll_run(run_id: str, token: str, timeout: float = 1800.0, interval: float = 15.0) -> str:
-    """Block until the run reaches a terminal state or the timeout elapses; return the last status.
-
-    A non-terminal status at timeout is returned as-is (e.g. RUNNING/QUEUED), which the caller
-    treats as not-SUCCESS — so a queued or hung run never certifies a deployment.
-    """
-    import time
-
-    deadline = time.time() + timeout
-    status = run_status(run_id, token)
-    while status not in RUN_TERMINAL:
-        if time.time() >= deadline:
-            return status or "UNKNOWN"
-        time.sleep(interval)
-        status = run_status(run_id, token)
-    return status
+# archive is gated on the run group reaching terminal SUCCESS and the deployed data matching, not on
+# the request being accepted. Polling is `build/publish_registry.py`'s run-group-bound
+# `poll_run_group` (imported above), shared so the two publishers cannot drift: it polls the exact
+# run group `createStaticModelRunRequest` returns, never a model's "latest run".
 
 
 def deployed_table_state(dataset: str, table: str, timeout: float = 300.0,
@@ -294,12 +272,15 @@ def deployed_table_state(dataset: str, table: str, timeout: float = 300.0,
     return {"rows": len(rows), "columns": sorted(columns)}
 
 
-def runs_all_succeeded(statuses: dict[str, tuple[str, str]]) -> list[str]:
-    """Problems if any run did not reach terminal SUCCESS. `statuses` is table -> (run_id, status)."""
+def run_groups_all_succeeded(statuses: dict[str, tuple[str, str]]) -> list[str]:
+    """Problems if any run group did not reach terminal SUCCESS.
+
+    `statuses` is table -> (run_group_id, status).
+    """
     return [
-        f"{table}: run {run_id} ended {status!r}, not SUCCESS"
-        for table, (run_id, status) in statuses.items()
-        if status != RUN_SUCCESS
+        f"{table}: run group {run_group_id} ended {status!r}, not SUCCESS"
+        for table, (run_group_id, status) in statuses.items()
+        if status != GROUP_SUCCESS
     ]
 
 
@@ -425,37 +406,31 @@ def main() -> int:
         upload(path, url)
         print(f"  uploaded {table}.csv ({path.stat().st_size:,} bytes, {receipt[table]['rows']:,} rows)")
 
-    # ONE RUN REQUEST PER MODEL, awaited in turn. The request is addressed to a dataset with an
-    # explicit model selection (`datasetId` + `selectedModels`) — there is no per-static-model
-    # input, so a `{staticModelId}` payload is rejected outright and nothing materializes. But a
-    # request naming N models FANS OUT INTO N RUNS and returns only ONE of them, which breaks this
-    # publisher's contract in two ways at once, both observed on the first publish (2026-08-25):
-    #
-    #   * The returned run cannot certify its siblings. Polling it reported SUCCESS while the
-    #     sibling run loading the other table had already FAILED — exactly the half-loaded
-    #     deployment the wait exists to prevent.
-    #   * The sibling runs start concurrently and RACE to create the dataset's Trino schema, which
-    #     no run has created yet on a first publish. One wins; the other dies with
-    #     "Key 'org_<org>__<dataset>' already exists". Selecting both models is therefore not
-    #     merely unverifiable, it is the cause of the failure.
-    #
-    # Serializing costs a few seconds on two small tables and buys a pollable run id per table and
-    # a schema created exactly once. Fail fast: a table that does not load stops the deploy rather
-    # than uploading over a table whose sibling is already broken.
+    # ONE RUN REQUEST PER MODEL, awaited in turn — the same discipline `build/publish_registry.py`
+    # uses, down to its shared run-group-bound `poll_run_group`. `CreateStaticModelRunRequestInput`
+    # takes (datasetId, staticModelId), one model per request; a request naming N models would fan
+    # out into N runs and return only one run group, which cannot certify its siblings, and the
+    # sibling loads would RACE to create the dataset's Trino schema. Both were observed on the first
+    # publish (2026-08-25). Serialize, and poll the EXACT run group this request returned — never a
+    # model's "latest run", which could be an earlier unrelated success that would pass the poll
+    # before this run has even appeared. The 1800s budget keeps the more generous patience this
+    # maintainer deploy has always allowed while sharing the one helper. Fail fast: the first model
+    # that does not reach SUCCESS stops the deploy rather than uploading over a table whose sibling
+    # is already broken.
     statuses: dict[str, tuple[str, str]] = {}
     for table in EVAL_TABLES:
-        run = graphql(
+        run_group = graphql(
             M_RUN,
-            {"input": {"datasetId": dataset_id, "selectedModels": [models[table][0]]}},
+            {"input": {"datasetId": dataset_id, "staticModelId": models[table][0]}},
             token,
-        )["createStaticModelRunRequest"]["run"]
-        # A run request is only ACCEPTED here; wait for THIS table's run to reach a terminal state.
-        status = poll_run(run["id"], token)
-        statuses[table] = (run["id"], status)
-        print(f"  {table}: run {run['id']} finished {status}")
-        if status != RUN_SUCCESS:
+        )["createStaticModelRunRequest"]["runGroup"]
+        # A run request is only ACCEPTED here; wait for THIS run group to reach a terminal state.
+        status = poll_run_group(run_group["id"], token, timeout=1800.0)
+        statuses[table] = (run_group["id"], status)
+        print(f"  {table}: run group {run_group['id']} finished {status}")
+        if status != GROUP_SUCCESS:
             break
-    problems = runs_all_succeeded(statuses)
+    problems = run_groups_all_succeeded(statuses)
     if problems:
         print("deployment did not succeed — not archiving:", file=sys.stderr)
         for problem in problems:

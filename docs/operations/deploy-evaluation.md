@@ -89,9 +89,13 @@ uv run python -m build.publish_evaluation              # validate, upload, run, 
 
 `--plan` and `--dry-run` write nothing. A real publish resolves (or creates) the `evaluation`
 dataset and each static model, `PUT`s the CSV, and requests the load run — which is only *accepted*
-synchronously. Runs are requested **one model at a time and awaited in turn** — a request naming
-both models fans out into two runs, returns only one of them, and the two race to create the
-dataset's Trino schema on a first publish. It **waits for each load run to reach terminal
+synchronously. The run request is **per static model** (`createStaticModelRunRequest` takes
+`datasetId` + `staticModelId`, one model per request); runs are requested **one model at a time and
+awaited in turn**, because starting both loads at once would race them to create the dataset's Trino
+schema on a first publish. Each request returns a **run group**, and the publisher polls that
+group's exact id to a terminal state — never a model's "latest run", which could be an earlier,
+unrelated success. It reuses `build/publish_registry.py`'s run-group-bound `poll_run_group` so the
+two publishers cannot drift. It **waits for each load run group to reach terminal
 `SUCCESS`** and **verifies the deployed row counts and column schema match the candidate** (read
 back via `pyoso`, retrying while the query catalog catches up, and ignoring the loader's own
 `_dlt_*` columns). A candidate column that is null in every row may be absent from the deployed
