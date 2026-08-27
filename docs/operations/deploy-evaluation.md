@@ -121,16 +121,24 @@ mutation" executable — it creates the content-addressed artifact with no OSO c
 AR=build/evaluation/deployments
 uv run python -m build.publish_evaluation --stage-artifact --dir build/evaluation --archive-root $AR  # prints <artifact_id>
 uv run python -m build.release_persistence persist --publisher evaluation --archive-root $AR --artifact-id <artifact_id>
-uv run python -m build.publish_evaluation --dir build/evaluation --archive-root $AR                    # the OSO deploy
+uv run python -m build.publish_evaluation --deploy-artifact <artifact_id> --archive-root $AR           # the OSO deploy of the released bytes
 uv run python -m build.release_persistence record-occurrence --publisher evaluation --archive-root $AR
 ```
 
-`persist` packages the CSV bundle + `receipt.json` + `SHA256SUMS` (provenance-gated), creates a
-**draft**, uploads, verifies the remote asset set, and only then publishes the tag
-`artifact/evaluation/<artifact_id>` — refusing to replace a completed release, retriable on a partial
-upload. `record-occurrence` writes the durable append-only file under
-`warehouse/deployments/occurrences/` for the reconciliation PR to commit. Needs a `contents: write`
-token (`GITHUB_TOKEN`); `--stage-artifact` and `persist --dry-run` need none.
+The three modes `--stage-artifact`, `--deploy-artifact`, and `--rollback` are mutually exclusive, and
+`--stage-artifact` (which writes) cannot ride `--dry-run`/`--plan`. `--deploy-artifact <artifact_id>`
+deploys the EXACT staged/Released bytes — verified against their recorded hashes — so the OSO publish
+is **bound to the released artifact**, not to whatever `build/evaluation/` happens to hold when the
+deploy runs (a regenerated `evaluated_at` there would otherwise be a different `artifact_id`). `persist`
+packages the CSV bundle + `receipt.json` + `SHA256SUMS` (provenance-gated), creates a **draft**,
+uploads, verifies each remote asset's **SHA-256** (not merely its name and size) by re-downloading, and
+only then publishes the tag `artifact/evaluation/<artifact_id>` — refusing to replace a completed
+release, retriable on a partial upload (a retry discards only a draft this tool created for this exact
+tag). `record-occurrence` re-gates the artifact for the publisher, confirms the completed Release
+exists and its bytes verify, then writes the durable append-only file (stamped with its `release_tag`)
+under `warehouse/deployments/occurrences/` for the reconciliation PR to commit. All three of `persist`,
+`record-occurrence`, and `restore` need a `contents: write` token (`GITHUB_TOKEN`); `--stage-artifact`
+and `persist --dry-run` need none.
 
 ## Rollback — re-upload the previous deployment's archived bytes
 

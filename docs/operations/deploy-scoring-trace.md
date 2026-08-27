@@ -92,17 +92,25 @@ platform mutation" executable — it creates the content-addressed artifact with
 AR=build/evaluation/scoring-trace-deployments
 uv run python -m build.publish_scoring_trace --stage-artifact --dir build/evaluation --archive-root $AR  # prints <artifact_id>
 uv run python -m build.release_persistence persist --publisher scoring-trace --archive-root $AR --artifact-id <artifact_id>
-uv run python -m build.publish_scoring_trace --dir build/evaluation --archive-root $AR                    # the OSO deploy
+uv run python -m build.publish_scoring_trace --deploy-artifact <artifact_id> --archive-root $AR          # the OSO deploy of the released bytes
 uv run python -m build.release_persistence record-occurrence --publisher scoring-trace --archive-root $AR
 ```
 
+The three modes `--stage-artifact`, `--deploy-artifact`, and `--rollback` are mutually exclusive, and
+`--stage-artifact` (which writes) cannot ride `--dry-run`/`--plan`. `--deploy-artifact <artifact_id>`
+deploys the EXACT staged/Released bytes — verified against their recorded hashes — so the OSO publish is
+**bound to the released artifact**, not to whatever `build/evaluation/` holds when the deploy runs.
 `persist` packages the CSV bundle + `receipt.json` + `SHA256SUMS` (running the provenance gate first),
-creates a **draft**, uploads, verifies the remote asset set, and only then publishes the tag
-`artifact/scoring-trace/<artifact_id>` — refusing to replace a completed release, retriable on a
-partial upload. `record-occurrence` writes the durable append-only file under
-`warehouse/deployments/occurrences/` for the reconciliation PR to commit. To roll back in a fresh
-container, `release_persistence restore …` recovers the artifact from its Release first. Needs a
-`contents: write` token (`GITHUB_TOKEN`); `--stage-artifact` and `persist --dry-run` need none.
+creates a **draft**, uploads, verifies each remote asset's **SHA-256** (not merely its name and size)
+by re-downloading, and only then publishes the tag `artifact/scoring-trace/<artifact_id>` — refusing to
+replace a completed release, retriable on a partial upload (a retry discards only a draft this tool
+created for this exact tag). `record-occurrence` re-gates the artifact for the publisher, confirms the
+completed Release exists and its bytes verify, then writes the durable append-only file (stamped with
+its `release_tag`) under `warehouse/deployments/occurrences/` for the reconciliation PR to commit. To
+roll back in a fresh container, `release_persistence restore …` recovers the artifact from its Release
+first — validating the downloaded bytes fully **before** it creates any local archive directory. All
+three of `persist`, `record-occurrence`, and `restore` need a `contents: write` token
+(`GITHUB_TOKEN`); `--stage-artifact` and `persist --dry-run` need none.
 
 ## 4. Reconcile the inventory with reality
 

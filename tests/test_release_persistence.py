@@ -21,7 +21,9 @@ def _csv(path, text):
 
 
 def _recompute_tables(adir):
-    return {name: {"rows": 1, "sha256": DA.file_sha256(adir / name)} for name in DA.read_manifest(adir)}
+    # Enumerate the CSVs directly (glob), not via SHA256SUMS: restore recomputes the receipt from the
+    # EXTRACTED csvs before any archive dir — and its SHA256SUMS — exists.
+    return {p.name: {"rows": 1, "sha256": DA.file_sha256(p)} for p in sorted(adir.glob("*.csv"))}
 
 
 def _recompute_did(adir):
@@ -50,6 +52,7 @@ class FakeReleases:
         self._next = 1
         self.fail_after: int | None = None
         self._uploads = 0
+        self.corrupt_uploads: set[str] = set()  # names to store as same-size, different bytes
 
     def published_release(self, tag):
         for r in self.releases.values():
@@ -58,8 +61,10 @@ class FakeReleases:
         return None
 
     def draft_release(self, tag):
+        # Mirror the real client: match the intended tag_name AND the tool-owned marker in the body,
+        # never the cosmetic display name.
         for r in self.releases.values():
-            if r["name"] == tag and r["draft"]:
+            if r["draft"] and r["tag"] == tag and RP.DRAFT_MARKER in (r.get("body") or ""):
                 return r
         return None
 
@@ -69,7 +74,7 @@ class FakeReleases:
     def create_draft(self, tag, name, body, target_commitish=None):
         rid = self._next
         self._next += 1
-        self.releases[rid] = {"id": rid, "tag": tag, "name": name, "draft": True, "assets": {}}
+        self.releases[rid] = {"id": rid, "tag": tag, "name": name, "body": body, "draft": True, "assets": {}}
         return {"id": rid, "upload_url": f"https://uploads.example/{rid}"}
 
     def list_assets(self, release_id):
@@ -82,6 +87,8 @@ class FakeReleases:
             raise RuntimeError("simulated upload failure")
         rid = int(upload_url.rstrip("/").split("/")[-1])
         data = __import__("pathlib").Path(path).read_bytes()
+        if name in self.corrupt_uploads:
+            data = bytes((b ^ 0x01) for b in data)  # same length, different bytes — size check can't see it
         self.releases[rid]["assets"][name] = {"id": f"{rid}-{name}", "name": name, "size": len(data), "bytes": data}
 
     def publish_release(self, release_id):
@@ -179,6 +186,18 @@ def test_persist_refuses_a_completed_release(tmp_path, adapter):
         RP.persist_artifact(root, aid, "evaluation", client=client)
 
 
+def test_persist_rejects_same_size_remote_corruption(tmp_path, adapter):
+    """A remote asset with the RIGHT size but WRONG bytes passes a name+size check and is caught only
+    by re-downloading and re-hashing before publish. The draft is never published."""
+    root, aid = _artifact(tmp_path)
+    tag = RP.release_tag("evaluation", aid)
+    client = FakeReleases()
+    client.corrupt_uploads = {DA.RECEIPT}  # stored same-size, one bit flipped
+    with pytest.raises(RuntimeError, match="sha256"):
+        RP.persist_artifact(root, aid, "evaluation", client=client)
+    assert client.published_release(tag) is None, "a corrupt upload must not be published"
+
+
 # --- restore --------------------------------------------------------------------------------------
 
 
@@ -203,6 +222,46 @@ def test_restore_rejects_a_missing_asset(tmp_path, adapter):
     del rel["assets"][DA.SHA256SUMS]  # drop an asset
     with pytest.raises(RuntimeError, match="assets"):
         RP.restore_artifact(root, aid, "evaluation", client=client)
+
+
+def test_poisoned_receipt_restore_leaves_no_artifact(tmp_path, adapter):
+    """A forged receipt (bytes intact, so it content-addresses correctly, but its `tables` tampered)
+    is rejected BEFORE the atomic archive rename, so no poisoned content-addressed directory is left
+    behind — restore is the only writer, and it creates nothing."""
+    import shutil
+
+    root, aid = _artifact(tmp_path)
+    client = FakeReleases()
+    RP.persist_artifact(root, aid, "evaluation", client=client)
+    rel = client.published_release(RP.release_tag("evaluation", aid))
+    doc = json.loads(rel["assets"][DA.RECEIPT]["bytes"].decode())
+    doc["tables"] = {"a.csv": {"rows": 999, "sha256": "0" * 64}, "b.csv": {"rows": 1, "sha256": "0" * 64}}
+    forged = json.dumps(doc).encode()
+    rel["assets"][DA.RECEIPT].update(bytes=forged, size=len(forged))
+
+    shutil.rmtree(DA.artifact_dir(root, aid))  # restore is the only writer now
+    with pytest.raises(RuntimeError):
+        RP.restore_artifact(root, aid, "evaluation", client=client)
+    assert not DA.artifact_dir(root, aid).exists(), "a poisoned receipt must leave no artifact directory"
+
+
+def test_restore_rejects_a_tampered_sha256sums(tmp_path, adapter):
+    """The downloaded SHA256SUMS is CHECKED against the extracted CSVs, not ignored: a flipped hash
+    fails the comparison, before any archive dir is created."""
+    import shutil
+
+    root, aid = _artifact(tmp_path)
+    client = FakeReleases()
+    RP.persist_artifact(root, aid, "evaluation", client=client)
+    rel = client.published_release(RP.release_tag("evaluation", aid))
+    text = rel["assets"][DA.SHA256SUMS]["bytes"].decode()
+    tampered = text.replace(text[:64], "0" * 64, 1).encode()  # zero out the first recorded hash
+    rel["assets"][DA.SHA256SUMS].update(bytes=tampered, size=len(tampered))
+
+    shutil.rmtree(DA.artifact_dir(root, aid))
+    with pytest.raises(RuntimeError, match="SHA256SUMS"):
+        RP.restore_artifact(root, aid, "evaluation", client=client)
+    assert not DA.artifact_dir(root, aid).exists()
 
 
 def test_safe_extract_rejects_absolute_parent_and_link_members(tmp_path):
@@ -242,14 +301,56 @@ def test_write_repo_occurrence_is_append_only_and_pathed_by_publisher(tmp_path):
         RP.write_repo_occurrence(tmp_path, "evaluation", occ)
 
 
-def test_record_local_occurrence_reads_the_archive_tail(tmp_path, adapter):
+def _record_occurrence_for(root, aid):
+    """Append a local occurrence whose deployment_id matches the artifact's reconstructed identity."""
+    did = _recompute_did(DA.artifact_dir(root, aid))
+    DA.record_occurrence(root, "deploy", did, aid, None, at="2026-08-27T10:00:00+00:00")
+
+
+def test_record_local_occurrence_gates_confirms_release_and_stamps_the_tag(tmp_path, adapter):
     root, aid = _artifact(tmp_path)
-    DA.record_occurrence(root, "deploy", "gen-1", aid, None, at="2026-08-27T10:00:00+00:00")
-    path = RP.record_local_occurrence(root, tmp_path / "repo", "evaluation")
+    client = FakeReleases()
+    RP.persist_artifact(root, aid, "evaluation", client=client)  # the completed Release exists + verifies
+    _record_occurrence_for(root, aid)
+    path = RP.record_local_occurrence(root, tmp_path / "repo", "evaluation", client)
     written = json.loads(path.read_text())
     assert written["artifact_id"] == aid and written["operation"] == "deploy"
+    assert written["release_tag"] == RP.release_tag("evaluation", aid)  # bound to its durable home
 
 
 def test_record_local_occurrence_with_no_occurrence_is_an_error(tmp_path):
     with pytest.raises(RuntimeError, match="nothing to persist"):
-        RP.record_local_occurrence(tmp_path / "empty", tmp_path / "repo", "evaluation")
+        RP.record_local_occurrence(tmp_path / "empty", tmp_path / "repo", "evaluation", FakeReleases())
+
+
+def test_record_local_occurrence_rejects_a_wrong_publisher_artifact(tmp_path, monkeypatch):
+    """An occurrence naming an artifact whose tables are NOT this publisher's (scoring-trace recorded
+    under evaluation) is rejected by the gate's exact filename-set check — nothing is written."""
+    root, aid = _artifact(tmp_path, names=("a.csv", "b.csv"))
+    _record_occurrence_for(root, aid)
+    # The named publisher expects a DIFFERENT table set than the artifact carries.
+    monkeypatch.setattr(RP, "_adapter",
+                        lambda publisher: ({"x.csv", "y.csv", "z.csv"}, _recompute_tables, _recompute_did))
+    repo = tmp_path / "repo"
+    with pytest.raises(RuntimeError):
+        RP.record_local_occurrence(root, repo, "evaluation", FakeReleases())
+    assert not repo.exists() or not list(repo.rglob("*.json")), "a rejected record writes no durable file"
+
+
+def test_record_local_occurrence_requires_a_completed_release(tmp_path, adapter):
+    """Even when the local gate passes, an occurrence whose bytes were never published is refused."""
+    root, aid = _artifact(tmp_path)
+    _record_occurrence_for(root, aid)
+    with pytest.raises(RuntimeError, match="no completed release"):
+        RP.record_local_occurrence(root, tmp_path / "repo", "evaluation", FakeReleases())
+
+
+def test_record_local_occurrence_requires_a_complete_release(tmp_path, adapter):
+    """A Release missing an asset fails the remote-content confirmation — nothing is recorded."""
+    root, aid = _artifact(tmp_path)
+    client = FakeReleases()
+    RP.persist_artifact(root, aid, "evaluation", client=client)
+    _record_occurrence_for(root, aid)
+    del client.published_release(RP.release_tag("evaluation", aid))["assets"][DA.SHA256SUMS]
+    with pytest.raises(RuntimeError, match="assets"):
+        RP.record_local_occurrence(root, tmp_path / "repo", "evaluation", client)

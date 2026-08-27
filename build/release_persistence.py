@@ -11,10 +11,12 @@ STANDALONE, around the OSO publishers (they stay OSO-only). The executable seque
 
 1. `publish_* --stage-artifact` persists the content-addressed artifact locally, network-free, and
    prints its `artifact_id` (so the bytes exist BEFORE any platform mutation);
-2. `release_persistence persist` pushes that artifact to a Release;
-3. `publish_*` deploys to OSO and verifies;
+2. `release_persistence persist --artifact-id <id>` pushes that exact artifact to a Release;
+3. `publish_* --deploy-artifact <id>` deploys THOSE exact archived bytes to OSO and verifies — the
+   OSO publish is bound to the released `artifact_id`, never to whatever `--dir` currently holds;
 4. `release_persistence record-occurrence` writes the durable append-only occurrence file for the
-   reconciliation PR to commit.
+   reconciliation PR to commit — after re-confirming the artifact gates for the publisher and its
+   completed Release verifies.
 
 `restore` recovers an artifact from its Release into the archive root (for rollback in a fresh
 container), verifying identity and running #387's provenance gate.
@@ -52,6 +54,10 @@ RELEASE_ASSETS = (CSV_BUNDLE, DA.RECEIPT, DA.SHA256SUMS)
 REPO_OCCURRENCES = Path("warehouse") / "deployments" / "occurrences"
 API = "https://api.github.com"
 USER_AGENT = "os-ai-map-release-persistence/1.0"
+# A tool-owned sentinel written into every draft body. Draft cleanup on retry matches the intended
+# `tag_name` AND this marker — never merely the display name — so a retry can only ever discard a
+# draft THIS tool created for THIS artifact, and never someone else's release that happens to share a name.
+DRAFT_MARKER = "x-os-ai-map-release-persistence: deployment-artifact-draft"
 
 
 def release_tag(publisher: str, artifact_id: str) -> str:
@@ -138,9 +144,11 @@ class GitHubReleases:
             raise
 
     def draft_release(self, tag):
+        # Match the intended tag_name AND the tool-owned marker in the body — not the cosmetic display
+        # name — so a retry only ever discards a draft this tool created for this exact artifact.
         _s, rels = self._request("GET", f"{API}/repos/{self.repo}/releases?per_page=100")
         for rel in rels or []:
-            if rel.get("draft") and rel.get("name") == tag:
+            if rel.get("draft") and rel.get("tag_name") == tag and DRAFT_MARKER in (rel.get("body") or ""):
                 return rel
         return None
 
@@ -195,15 +203,27 @@ def persist_artifact(archive_root, artifact_id, publisher, client, *,
         incomplete = client.draft_release(tag)
         if incomplete is not None:
             client.delete_release(incomplete["id"])  # retry: discard the incomplete draft, never a finished release
-        draft = client.create_draft(tag, name=tag, target_commitish=target_commitish,
-                                    body=f"Deployment artifact {artifact_id} for the {publisher} publisher.\n\n"
-                                         f"Content-addressed rollback bytes; hashes in SHA256SUMS.")
+        draft = client.create_draft(
+            tag, name=tag, target_commitish=target_commitish,
+            body=f"Deployment artifact {artifact_id} for the {publisher} publisher.\n\n"
+                 f"Content-addressed rollback bytes; hashes in SHA256SUMS.\n\n{DRAFT_MARKER}",
+        )
         for name, path in assets.items():
             client.upload_asset(draft["upload_url"], name, path, _content_type(name))
-        remote = {a["name"]: a["size"] for a in client.list_assets(draft["id"])}
-        expected = {name: Path(path).stat().st_size for name, path in assets.items()}
-        if remote != expected:
-            raise RuntimeError(f"draft asset set/sizes {remote} do not match expected {expected}; not publishing")
+        # Verify the remote bytes, not merely their names and sizes: a same-size corruption or a
+        # truncated-then-padded upload has the right size and is caught only by re-hashing. Download
+        # each asset and require its SHA-256 to equal the local file's before publishing the draft.
+        remote = {a["name"]: a for a in client.list_assets(draft["id"])}
+        if set(remote) != set(assets):
+            raise RuntimeError(f"draft asset names {sorted(remote)} do not match expected {sorted(assets)}; not publishing")
+        with tempfile.TemporaryDirectory() as verify_dir:
+            probe = Path(verify_dir) / "asset"
+            for name, path in assets.items():
+                client.download_asset(remote[name]["id"], probe)
+                remote_sha, local_sha = DA.file_sha256(probe), DA.file_sha256(path)
+                if remote_sha != local_sha:
+                    raise RuntimeError(
+                        f"remote asset {name} sha256 {remote_sha} != local {local_sha}; not publishing")
         client.publish_release(draft["id"])
         summary["created"] = True
         return summary
@@ -234,36 +254,76 @@ def _safe_extract(bundle: Path, dest: Path) -> list[str]:
     return names
 
 
-def restore_artifact(archive_root, artifact_id, publisher, client, *, work_dir=None) -> str:
-    """Download a persisted Release and rebuild `artifacts/<artifact_id>/` locally, or raise.
+def _download_and_validate_release(client, tag, artifact_id, publisher, tmp) -> tuple[dict, dict, str]:
+    """Download a completed Release's three assets into `tmp`, validate them fully, and return
+    `(files, tables, deployment_id)` reconstructed FROM the downloaded bytes — WITHOUT committing
+    anything to the archive. Raises on any mismatch.
 
-    Requires a COMPLETED release for `artifact/<publisher>/<artifact_id>` carrying exactly the three
-    expected assets. The tarball is extracted safely (regular files only; no absolute paths, `..`, or
-    links), the artifact is rebuilt through the atomic `ensure_artifact`, its recomputed `artifact_id`
-    is required to equal the requested id, and #387's provenance gate is run. Returns the artifact_id.
+    The full validation, before any archive directory is created (so a forged receipt can never leave
+    a poisoned content-addressed directory behind), and reused by both `restore` and
+    `record-occurrence`:
+
+    1. a completed release exists carrying exactly the three expected assets;
+    2. the extracted CSVs content-address to the requested `artifact_id`;
+    3. the downloaded `SHA256SUMS` matches the extracted CSVs exactly (names + hashes) — it is
+       checked, never ignored;
+    4. the manifest filename set equals the publisher's expected tables;
+    5. the receipt (which `SHA256SUMS` does NOT cover) claims that `artifact_id`, and its `tables` and
+       `deployment_id` equal what recomputing from the extracted bytes yields.
     """
-    tag = release_tag(publisher, artifact_id)
     rel = client.published_release(tag)
     if rel is None:
-        raise RuntimeError(f"no completed release for {tag} to restore from")
+        raise RuntimeError(f"no completed release for {tag}")
     assets = {a["name"]: a for a in client.list_assets(rel["id"])}
     if set(assets) != set(RELEASE_ASSETS):
         raise RuntimeError(f"release {tag} assets {sorted(assets)} != expected {sorted(RELEASE_ASSETS)}")
+    expected_names, recompute_receipt, recompute_deployment_id = _adapter(publisher)
+    for name in RELEASE_ASSETS:
+        client.download_asset(assets[name]["id"], tmp / name)
+    extract_dir = tmp / "extracted"
+    extracted = _safe_extract(tmp / CSV_BUNDLE, extract_dir)
+    files = {name: extract_dir / name for name in extracted}
+    rebuilt = DA.artifact_id(files)
+    if rebuilt != artifact_id:
+        raise RuntimeError(f"release {tag} bytes content-address to {rebuilt}, not the requested {artifact_id}")
+    if DA.read_manifest(tmp) != DA.manifest(files):
+        raise RuntimeError(f"downloaded {DA.SHA256SUMS} does not match the extracted CSVs for {tag}")
+    if set(files) != set(expected_names):
+        raise RuntimeError(
+            f"release {tag} carries {sorted(files)}, not the {publisher} tables {sorted(expected_names)}")
+    receipt = json.loads((tmp / DA.RECEIPT).read_text(encoding="utf-8"))
+    if receipt.get("artifact_id") != artifact_id:
+        raise RuntimeError(f"downloaded receipt artifact_id {receipt.get('artifact_id')!r} != requested {artifact_id}")
+    tables = recompute_receipt(extract_dir)
+    if tables != receipt.get("tables"):
+        raise RuntimeError(f"downloaded receipt tables do not match the extracted CSVs for {tag} (tampered receipt?)")
+    deployment_id = recompute_deployment_id(extract_dir)
+    if deployment_id != receipt.get("deployment_id"):
+        raise RuntimeError(
+            f"downloaded receipt deployment_id {receipt.get('deployment_id')!r} != recomputed "
+            f"{deployment_id!r} for {tag} (tampered receipt?)")
+    return files, tables, deployment_id
 
+
+def restore_artifact(archive_root, artifact_id, publisher, client, *, work_dir=None) -> str:
+    """Download a persisted Release and rebuild `artifacts/<artifact_id>/` locally, or raise.
+
+    The Release contents are downloaded and FULLY validated in a temporary directory FIRST — safe
+    extraction, content-addressing to the requested id, `SHA256SUMS` agreement with the extracted
+    CSVs, the publisher's exact filename set, and receipt provenance recomputed from the bytes — and
+    ONLY when every check passes is the atomic `ensure_artifact` allowed to create the final
+    content-addressed directory. A forged receipt or a tampered `SHA256SUMS` therefore leaves no
+    artifact directory at all, rather than a poisoned one that a later gate merely reports on.
+    Returns the artifact_id.
+    """
+    tag = release_tag(publisher, artifact_id)
     with tempfile.TemporaryDirectory() as tmp:
         tmp = Path(tmp)
-        for name in RELEASE_ASSETS:
-            client.download_asset(assets[name]["id"], tmp / name)
-        extract_dir = tmp / "extracted"
-        extracted = _safe_extract(tmp / CSV_BUNDLE, extract_dir)
-        receipt = json.loads((tmp / DA.RECEIPT).read_text(encoding="utf-8"))
-        if receipt.get("artifact_id") != artifact_id:
-            raise RuntimeError(f"downloaded receipt artifact_id {receipt.get('artifact_id')!r} != requested {artifact_id}")
-        files = {name: extract_dir / name for name in extracted}
-        rebuilt = DA.ensure_artifact(archive_root, files, receipt["tables"], receipt["deployment_id"])
+        files, tables, deployment_id = _download_and_validate_release(client, tag, artifact_id, publisher, tmp)
+        rebuilt = DA.ensure_artifact(archive_root, files, tables, deployment_id)  # atomic, only now
         if rebuilt != artifact_id:
             raise RuntimeError(f"restored bytes content-address to {rebuilt}, not the requested {artifact_id}")
-    _gate(archive_root, artifact_id, publisher)  # publisher-exact filename set + receipt agrees with bytes
+    _gate(archive_root, artifact_id, publisher)  # belt-and-suspenders over the now-committed archive
     return artifact_id
 
 
@@ -286,13 +346,36 @@ def write_repo_occurrence(repo_root: Path, publisher: str, occurrence: dict) -> 
     return path
 
 
-def record_local_occurrence(archive_root: Path, repo_root: Path, publisher: str) -> Path:
-    """Read the publisher's latest VERIFIED local occurrence (the tail of the archive's occurrence
-    log, written only after deployed-state verification) and persist it as the durable repo file."""
+def record_local_occurrence(archive_root: Path, repo_root: Path, publisher: str, client) -> Path:
+    """Persist the archive's latest occurrence as the durable repo file — but only after proving it
+    belongs to `publisher` AND its bytes are durably published.
+
+    Reading the occurrence-log tail is not enough: the tail could name an artifact of a DIFFERENT
+    publisher (scoring-trace recorded under evaluation), or one whose bytes were never actually
+    released. So before writing the repo file this:
+
+    1. runs the #387 provenance gate for `publisher` over the referenced artifact — which enforces the
+       publisher's exact filename set, so a wrong-publisher artifact is rejected here — and requires
+       the reconstructed `deployment_id` to equal the occurrence's;
+    2. confirms the COMPLETED Release for that artifact exists and its assets pass the remote-content
+       check (`_download_and_validate_release`);
+    3. stamps the durable occurrence with the `release_tag` it is bound to, so the git-tracked record
+       names the durable home of its bytes.
+    """
     occurrence = DA.current_live(archive_root)
     if occurrence is None:
         raise RuntimeError(f"no occurrence recorded in {archive_root} — nothing to persist")
-    return write_repo_occurrence(repo_root, publisher, occurrence)
+    artifact_id = occurrence["artifact_id"]
+    _tables, deployment_id = _gate(archive_root, artifact_id, publisher)  # publisher-exact + bytes-derived
+    if deployment_id != occurrence.get("deployment_id"):
+        raise RuntimeError(
+            f"occurrence deployment_id {occurrence.get('deployment_id')!r} does not match the artifact's "
+            f"reconstructed {deployment_id!r} for {artifact_id}")
+    tag = release_tag(publisher, artifact_id)
+    with tempfile.TemporaryDirectory() as tmp:
+        _download_and_validate_release(client, tag, artifact_id, publisher, Path(tmp))
+    durable = {**occurrence, "release_tag": tag}
+    return write_repo_occurrence(repo_root, publisher, durable)
 
 
 def _client_from_env():
@@ -331,15 +414,9 @@ def main() -> int:
         summary = persist_artifact(args.archive_root, args.artifact_id, args.publisher, client=None, dry_run=True)
         print(f"would create release {summary['tag']} with assets {summary['assets']} (no GitHub call)")
         return 0
-    if args.command == "record-occurrence":
-        try:
-            path = record_local_occurrence(args.archive_root, args.repo_root, args.publisher)
-        except RuntimeError as exc:
-            print(f"record-occurrence failed: {exc}", file=sys.stderr)
-            return 2
-        print(f"wrote durable occurrence {path}")
-        return 0
 
+    # persist, restore, and record-occurrence all need a token now: record-occurrence confirms the
+    # completed Release exists and its bytes verify before writing the durable occurrence.
     client = _client_from_env()
     if client is None:
         return 2
@@ -348,6 +425,9 @@ def main() -> int:
             summary = persist_artifact(args.archive_root, args.artifact_id, args.publisher,
                                        client=client, target_commitish=args.target_commitish)
             print(f"created release {summary['tag']} with assets {summary['assets']}")
+        elif args.command == "record-occurrence":
+            path = record_local_occurrence(args.archive_root, args.repo_root, args.publisher, client)
+            print(f"wrote durable occurrence {path}")
         else:  # restore
             restore_artifact(args.archive_root, args.artifact_id, args.publisher, client=client)
             print(f"restored artifact {args.artifact_id} into {args.archive_root}")

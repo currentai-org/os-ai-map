@@ -454,6 +454,56 @@ def test_stage_artifact_persists_locally_and_touches_no_network(tmp_path, monkey
     assert P.archive.current_live(root) is None, "staging records no occurrence"
 
 
+def test_deploy_artifact_deploys_the_archived_bytes_bound_to_the_id(tmp_path, monkeypatch):
+    """`--deploy-artifact <id>` re-uploads the archived artifact's exact bytes and records a deploy of
+    that id, reading the archive and never `--dir`."""
+    _synthetic_candidates(tmp_path)
+    root = tmp_path / "archive"
+    aid = P.archive.ensure_artifact(root, P.archived_files(tmp_path), P.build_receipt(tmp_path),
+                                    P.deployment_id(tmp_path))
+    tables = P.archive.artifact_receipt(root, aid)["tables"]
+    deployed = {t: {"rows": tables[t]["rows"], "columns": tables[t]["columns"]} for t in P.TRACE_TABLES}
+    for t in P.TRACE_TABLES:
+        (tmp_path / f"{t}.csv").unlink()  # the deploy must not depend on --dir
+
+    requested: list[dict] = []
+    _wire(monkeypatch, requested)
+    monkeypatch.setattr(PE, "poll_run_group", lambda gid, token, timeout=1800.0: "SUCCESS")
+    monkeypatch.setattr(PE, "deployed_table_state", lambda dataset, table: deployed[table])
+    uploaded: dict[str, bytes] = {}
+    monkeypatch.setattr(PE, "upload",
+                        lambda path, url: uploaded.__setitem__(P.Path(path).name, P.Path(path).read_bytes()))
+    monkeypatch.setattr(sys, "argv", ["publish_scoring_trace", "--deploy-artifact", aid, "--archive-root", str(root)])
+
+    assert P.main() == 0
+    occ = P.archive.occurrences(root)
+    assert [o["operation"] for o in occ] == ["deploy"]
+    assert occ[0]["artifact_id"] == aid
+    adir = P.archive.artifact_dir(root, aid)
+    for t in P.TRACE_TABLES:
+        assert uploaded[f"{t}.csv"] == (adir / f"{t}.csv").read_bytes()
+
+
+def test_artifact_modes_are_mutually_exclusive(tmp_path, monkeypatch):
+    ar = str(tmp_path / "archive")
+    for extra in (["--rollback", "x"], ["--deploy-artifact", "y"]):
+        monkeypatch.setattr(sys, "argv", ["publish_scoring_trace", "--stage-artifact", *extra, "--archive-root", ar])
+        assert P.main() == 2
+    monkeypatch.setattr(sys, "argv",
+                        ["publish_scoring_trace", "--deploy-artifact", "y", "--rollback", "x", "--archive-root", ar])
+    assert P.main() == 2
+
+
+def test_stage_artifact_with_dry_run_is_rejected_and_writes_nothing(tmp_path, monkeypatch):
+    _synthetic_candidates(tmp_path)
+    root = tmp_path / "archive"
+    monkeypatch.setattr(sys, "argv",
+                        ["publish_scoring_trace", "--stage-artifact", "--dry-run", "--dir", str(tmp_path),
+                         "--archive-root", str(root)])
+    assert P.main() == 2
+    assert not root.exists()
+
+
 def test_the_trace_archive_root_is_its_own_never_the_evaluation_publishers(tmp_path):
     # Default archive roots are distinct, so neither publisher reads the other's archives.
     assert P.DEFAULT_ARCHIVE_ROOT.name == "scoring-trace-deployments"

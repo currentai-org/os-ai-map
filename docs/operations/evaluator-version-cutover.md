@@ -182,8 +182,9 @@ uv run python -m build.publish_scoring_trace --stage-artifact --dir build/evalua
 # 2. Release: push the artifact to a durable GitHub Release (draft -> verify -> publish)
 uv run python -m build.release_persistence persist --publisher scoring-trace \
     --archive-root build/evaluation/scoring-trace-deployments --artifact-id <artifact_id>
-# 3. publish: the OSO deploy (uploads, runs, verifies)
-uv run python -m build.publish_scoring_trace --dir build/evaluation \
+# 3. publish: the OSO deploy of the EXACT released artifact (uploads, runs, verifies) — --deploy-artifact
+#    binds the OSO publish to the staged/Released id, never re-reading (and re-hashing) --dir
+uv run python -m build.publish_scoring_trace --deploy-artifact <artifact_id> \
     --archive-root build/evaluation/scoring-trace-deployments
 # 4. record: write the durable append-only occurrence file for the reconciliation PR to commit
 uv run python -m build.release_persistence record-occurrence --publisher scoring-trace \
@@ -191,8 +192,11 @@ uv run python -m build.release_persistence record-occurrence --publisher scoring
 ```
 
 `restore` recovers an artifact from its Release into a fresh container before a rollback
-(`release_persistence restore --publisher … --artifact-id …`): it verifies identity, safely extracts,
-rebuilds `artifacts/<artifact_id>/`, and runs the provenance gate.
+(`release_persistence restore --publisher … --artifact-id …`): it downloads and FULLY validates the
+bytes in a temp dir first — safe extraction, content-addressing to the requested id, `SHA256SUMS`
+agreement with the extracted CSVs, the publisher's exact filename set, and receipt provenance
+recomputed from the bytes — and only then rebuilds `artifacts/<artifact_id>/` atomically, so a forged
+receipt or tampered `SHA256SUMS` leaves no artifact directory at all.
 
 **Persist both currently-live generations before the cutover** — but heed the byte-fidelity warning:
 the trace generation `eb828b57b14d` can be reproduced exactly by rebuilding at `980250b`; the

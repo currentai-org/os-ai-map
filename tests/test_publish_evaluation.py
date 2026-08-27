@@ -332,6 +332,58 @@ def test_stage_artifact_persists_locally_and_touches_no_network(tmp_path, monkey
     assert P.archive.current_live(root) is None, "staging records no occurrence"
 
 
+def test_deploy_artifact_deploys_the_archived_bytes_bound_to_the_id(tmp_path, monkeypatch):
+    """`--deploy-artifact <id>` binds the OSO publish to a specific archived artifact: it re-uploads
+    THAT artifact's exact bytes and records a deploy of that id, reading the archive and never `--dir`
+    (which may since have regenerated to different bytes, or vanished)."""
+    _valid_candidates(tmp_path)
+    root = tmp_path / "archive"
+    aid = P.archive.ensure_artifact(root, P.archived_files(tmp_path), P.build_receipt(tmp_path),
+                                    P.deployment_id(tmp_path))
+    tables = P.archive.artifact_receipt(root, aid)["tables"]
+    deployed = {t: {"rows": tables[t]["rows"], "columns": tables[t]["columns"]} for t in P.EVAL_TABLES}
+    # The candidate dir is gone — a --deploy-artifact deploy must not depend on it at all.
+    for t in P.EVAL_TABLES:
+        (tmp_path / f"{t}.csv").unlink()
+
+    uploaded: dict[str, bytes] = {}
+    _wire_success(monkeypatch, [], deployed)
+    monkeypatch.setattr(P, "upload", lambda path, url: uploaded.__setitem__(P.Path(path).name, P.Path(path).read_bytes()))
+    monkeypatch.setattr(sys, "argv", ["publish_evaluation", "--deploy-artifact", aid, "--archive-root", str(root)])
+
+    assert P.main() == 0
+    occ = P.archive.occurrences(root)
+    assert [o["operation"] for o in occ] == ["deploy"]
+    assert occ[0]["artifact_id"] == aid, "the deploy is bound to the released artifact id"
+    adir = P.archive.artifact_dir(root, aid)
+    for t in P.EVAL_TABLES:
+        assert uploaded[f"{t}.csv"] == (adir / f"{t}.csv").read_bytes(), "the archived bytes were uploaded"
+
+
+def test_artifact_modes_are_mutually_exclusive(tmp_path, monkeypatch):
+    """--stage-artifact, --deploy-artifact, and --rollback each name one operation; no two combine."""
+    ar = str(tmp_path / "archive")
+    for extra in (["--rollback", "x"], ["--deploy-artifact", "y"]):
+        monkeypatch.setattr(sys, "argv", ["publish_evaluation", "--stage-artifact", *extra, "--archive-root", ar])
+        assert P.main() == 2
+    monkeypatch.setattr(sys, "argv",
+                        ["publish_evaluation", "--deploy-artifact", "y", "--rollback", "x", "--archive-root", ar])
+    assert P.main() == 2
+
+
+def test_stage_artifact_with_dry_run_is_rejected_and_writes_nothing(tmp_path, monkeypatch):
+    """`--stage-artifact` WRITES the artifact, so pairing it with --dry-run (which promises no write)
+    is contradictory and refused BEFORE any write — closing the path that previously wrote despite
+    --dry-run."""
+    _valid_candidates(tmp_path)
+    root = tmp_path / "archive"
+    monkeypatch.setattr(sys, "argv",
+                        ["publish_evaluation", "--stage-artifact", "--dry-run", "--dir", str(tmp_path),
+                         "--archive-root", str(root)])
+    assert P.main() == 2
+    assert not root.exists(), "the rejected stage+dry-run must not write the archive"
+
+
 def test_dataset_and_model_creation_cannot_precede_artifact_persistence(tmp_path, monkeypatch):
     """The candidate bytes must be archived BEFORE any create-capable platform call — resolve_* with
     create=True can create the dataset or static models."""
