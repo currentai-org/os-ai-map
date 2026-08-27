@@ -213,29 +213,102 @@ def test_the_publisher_polls_the_exact_run_group_the_mutation_returned(tmp_path,
 # --- the immutable deployment archive --------------------------------------------
 
 
-def test_deployment_archive_is_immutable_and_rollback_is_an_occurrence(tmp_path):
+def test_ensure_artifact_writes_a_verifiable_content_addressed_archive(tmp_path):
     _valid_candidates(tmp_path)
     receipt = P.build_receipt(tmp_path)
     root = tmp_path / "archive"
-    did = P.deployment_id(tmp_path)
-
-    # First store of a fresh identity is a deploy: the immutable dir + receipt + CSVs are written.
-    target, kind = P.archive.store(root, did, P.archived_files(tmp_path), receipt)
-    assert kind == "deploy"
-    assert target.exists() and (target / "receipt.json").exists()
+    aid = P.archive.ensure_artifact(root, P.archived_files(tmp_path), receipt, P.deployment_id(tmp_path))
+    adir = P.archive.artifact_dir(root, aid)
+    assert adir.name == aid
     for table in P.EVAL_TABLES:
-        assert (target / f"{table}.csv").exists()
-    assert P.archive.current_live_archive(root) == target
-    written = target.stat().st_mtime_ns
+        assert (adir / f"{table}.csv").exists()
+    assert (adir / P.archive.RECEIPT).exists() and (adir / P.archive.SHA256SUMS).exists()
+    P.archive.verify_artifact(root, aid)  # the archive is complete and hashes match
+    # ensure_artifact alone records no occurrence — the publisher does that only after verification.
+    assert P.archive.current_live(root) is None
 
-    # Re-storing the SAME identity (re-publishing archived bytes) is a rollback: the immutable dir is
-    # NOT rewritten, and an occurrence is appended — live-state comes from the log, not mtimes.
-    target2, kind2 = P.archive.store(root, did, P.archived_files(tmp_path), receipt)
-    assert kind2 == "rollback" and target2 == target
-    assert target.stat().st_mtime_ns == written, "the immutable archive was rewritten"
+
+def _fake_platform(requested):
+    def fake_graphql(query, variables, token):
+        if query is P.Q_DATASETS:
+            return {"datasets": {"edges": [{"node": {"id": "ds-eval", "name": "evaluation",
+                                                     "type": "STATIC_MODEL"}}]}}
+        if query is PR.Q_STATIC:
+            return {"staticModels": {"edges": [
+                {"node": {"id": f"id-{t}", "name": t, "materializations": {"totalCount": 1}}}
+                for t in P.EVAL_TABLES]}}
+        if query is P.M_URL:
+            return {"createStaticModelUploadUrl": "https://upload.example/put"}
+        if query is P.M_RUN:
+            requested.append(variables["input"])
+            return {"createStaticModelRunRequest":
+                    {"runGroup": {"id": f"group-{len(requested)}", "status": "QUEUED"}}}
+        raise AssertionError(f"unexpected query: {query[:60]}")
+    return fake_graphql
+
+
+def _wire_success(monkeypatch, requested, deployed_rows):
+    fake = _fake_platform(requested)
+    monkeypatch.setattr(P, "graphql", fake)
+    monkeypatch.setattr(PR, "graphql", fake)
+    monkeypatch.setattr(P, "upload", lambda path, url: None)
+    monkeypatch.setattr(P, "poll_run_group", lambda gid, token, timeout=1800.0: "SUCCESS")
+    monkeypatch.setattr(P, "deployed_table_state", lambda dataset, table: deployed_rows[table])
+    monkeypatch.setenv("OSO_API_KEY", "tok")
+    monkeypatch.setenv("OSO_ORG_ID", "org")
+
+
+def _deployed_matching(tmp_path):
+    """Deployed row/column state that matches the candidate, so deployment_mismatches passes."""
+    receipt = P.build_receipt(tmp_path)
+    return {t: {"rows": receipt[t]["rows"], "columns": receipt[t]["columns"]} for t in P.EVAL_TABLES}
+
+
+def test_a_deploy_records_a_deploy_occurrence_after_verification(tmp_path, monkeypatch):
+    _valid_candidates(tmp_path)
+    root = tmp_path / "archive"
+    _wire_success(monkeypatch, [], _deployed_matching(tmp_path))
+    monkeypatch.setattr(sys, "argv", ["publish_evaluation", "--dir", str(tmp_path), "--archive-root", str(root)])
+    assert P.main() == 0
     occ = P.archive.occurrences(root)
-    assert [o["kind"] for o in occ] == ["deploy", "rollback"]
-    assert P.archive.current_live(root) == did
+    assert len(occ) == 1 and occ[0]["operation"] == "deploy"
+    assert occ[0]["previous_artifact_id"] is None
+    live = P.archive.current_live_artifact_id(root)
+    assert occ[0]["artifact_id"] == live
+    P.archive.verify_artifact(root, live)  # the live artifact is archived and intact
+
+
+def test_explicit_rollback_reuploads_a_verified_artifact_and_records_rollback(tmp_path, monkeypatch):
+    _valid_candidates(tmp_path)
+    root = tmp_path / "archive"
+    # Pre-archive an artifact to roll back to.
+    aid = P.archive.ensure_artifact(root, P.archived_files(tmp_path), P.build_receipt(tmp_path), P.deployment_id(tmp_path))
+    _wire_success(monkeypatch, [], _deployed_matching(tmp_path))
+    monkeypatch.setattr(sys, "argv",
+                        ["publish_evaluation", "--rollback", aid, "--archive-root", str(root)])
+    assert P.main() == 0
+    occ = P.archive.occurrences(root)
+    assert [o["operation"] for o in occ] == ["rollback"]
+    assert occ[0]["artifact_id"] == aid
+
+
+def test_rollback_with_altered_bytes_is_rejected_and_records_nothing(tmp_path, monkeypatch):
+    _valid_candidates(tmp_path)
+    root = tmp_path / "archive"
+    aid = P.archive.ensure_artifact(root, P.archived_files(tmp_path), P.build_receipt(tmp_path), P.deployment_id(tmp_path))
+    # Tamper with an archived byte after the fact.
+    (P.archive.artifact_dir(root, aid) / "adoption_reconciliation.csv").write_text("x,y\n1,2\n", encoding="utf-8")
+
+    def _no_network(*a, **k):
+        raise AssertionError("a rejected rollback must not touch the platform")
+
+    monkeypatch.setattr(P, "graphql", _no_network)
+    monkeypatch.setenv("OSO_API_KEY", "tok")
+    monkeypatch.setenv("OSO_ORG_ID", "org")
+    monkeypatch.setattr(sys, "argv",
+                        ["publish_evaluation", "--rollback", aid, "--archive-root", str(root)])
+    assert P.main() == 2
+    assert P.archive.occurrences(root) == [], "a rejected rollback records no occurrence"
 
 
 def test_load_run_is_requested_once_per_model_and_awaited(tmp_path, monkeypatch):

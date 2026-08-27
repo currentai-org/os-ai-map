@@ -1,98 +1,140 @@
-"""The shared deployment archive: immutable identity + append-only occurrence log.
+"""The shared deployment archive: content addressing, explicit operations, atomic staging.
 
 `build/deployment_archive.py` is the rollback record shared by the evaluation and scoring-trace
-publishers. These tests pin the properties the cutover plan depends on: live state is read from the
-occurrence log (never directory mtimes), a rollback is an occurrence rather than a rewrite, and
-publishing from an archive never nests a new archive inside the bytes being restored.
+publishers. These pin the integrity properties: a byte identity distinct from the semantic
+generation, hash-verified artifacts, an atomic archive that survives interruption, and live-state
+from an append-only occurrence log rather than directory mtimes.
 """
 
 import build.deployment_archive as A
 
 
-def _candidate(tmp_path, name, text="a,b\n1,2\n"):
-    p = tmp_path / name
-    p.write_text(text, encoding="utf-8")
-    return p
+def _csv(path, text):
+    path.write_text(text, encoding="utf-8")
+    return path
 
 
-def _files(tmp_path):
-    return {"t.csv": _candidate(tmp_path, "t.csv")}
+def _files(tmp_path, text="declaration_version_id,x\nabc,1\n"):
+    return {"t.csv": _csv(tmp_path / "t.csv", text)}
+
+
+# --- content addressing: artifact_id is a byte identity, not the semantic generation --------------
+
+
+def test_same_generation_different_bytes_are_different_artifacts(tmp_path):
+    """The core of review point 1: identical declaration/observation ids but different bytes (a
+    regenerated evaluated_at) must yield different artifact_ids — never mistaken for the same."""
+    a = {"t.csv": _csv(tmp_path / "a.csv", "declaration_version_id,evaluated_at\nabc,2026-08-27T10:00:00\n")}
+    b = {"t.csv": _csv(tmp_path / "b.csv", "declaration_version_id,evaluated_at\nabc,2026-08-27T11:00:00\n")}
+    assert A.artifact_id(a) != A.artifact_id(b)
+    # ...and identical bytes are the same artifact.
+    c = {"t.csv": _csv(tmp_path / "c.csv", "declaration_version_id,evaluated_at\nabc,2026-08-27T10:00:00\n")}
+    assert A.artifact_id(a) == A.artifact_id(c)
+
+
+def test_ensure_artifact_is_content_addressed_and_idempotent(tmp_path):
+    root = tmp_path / "archive"
+    aid = A.ensure_artifact(root, _files(tmp_path), {"t.csv": {"rows": 1}}, "gen-1")
+    adir = A.artifact_dir(root, aid)
+    assert adir.name == aid and (adir / "t.csv").exists()
+    assert (adir / A.RECEIPT).exists() and (adir / A.SHA256SUMS).exists()
+    written = adir.stat().st_mtime_ns
+    # Re-ensuring the same bytes verifies and returns the same id without rewriting.
+    assert A.ensure_artifact(root, _files(tmp_path), {"t.csv": {"rows": 1}}, "gen-1") == aid
+    assert adir.stat().st_mtime_ns == written
+
+
+# --- exact hash verification ----------------------------------------------------------------------
+
+
+def test_verify_artifact_passes_for_intact_and_raises_for_tampered(tmp_path):
+    root = tmp_path / "archive"
+    aid = A.ensure_artifact(root, _files(tmp_path), {}, "gen-1")
+    A.verify_artifact(root, aid)  # intact: no raise
+
+    # Tamper with an archived byte; verification must catch it (rollback-with-altered-bytes rejected).
+    (A.artifact_dir(root, aid) / "t.csv").write_text("declaration_version_id,x\nabc,999\n", encoding="utf-8")
+    try:
+        A.verify_artifact(root, aid)
+    except RuntimeError as exc:
+        assert "hash mismatch" in str(exc)
+    else:
+        raise AssertionError("verify_artifact must reject an artifact whose bytes were altered")
+
+
+def test_verify_artifact_raises_for_absent(tmp_path):
+    try:
+        A.verify_artifact(tmp_path / "archive", "0" * 64)
+    except RuntimeError as exc:
+        assert "not archived" in str(exc)
+    else:
+        raise AssertionError("verify_artifact must reject an id that is not archived")
+
+
+# --- atomic staging: an interrupted write leaves no valid artifact and no occurrence --------------
+
+
+def test_interrupted_archive_creation_leaves_no_valid_artifact(tmp_path):
+    root = tmp_path / "archive"
+    aid = A.artifact_id(_files(tmp_path))
+    # Simulate an interrupted write: a partial staging directory under the eventual artifact id.
+    staging = A.artifacts_root(root) / f"{A._STAGING_PREFIX}{aid}"
+    staging.mkdir(parents=True)
+    (staging / "t.csv").write_text("partial", encoding="utf-8")  # no receipt, no SHA256SUMS
+
+    # The real artifact does not exist, verification refuses it, and nothing is live.
+    assert not A.artifact_dir(root, aid).exists()
+    try:
+        A.verify_artifact(root, aid)
+    except RuntimeError:
+        pass
+    else:
+        raise AssertionError("a partial staging dir must not verify as an artifact")
+    assert A.current_live(root) is None
+
+    # A subsequent ensure discards the stale staging and completes atomically.
+    assert A.ensure_artifact(root, _files(tmp_path), {}, "gen-1") == aid
+    A.verify_artifact(root, aid)
+
+
+# --- the append-only occurrence log ---------------------------------------------------------------
 
 
 def test_empty_root_reads_as_no_live_state_and_creates_nothing(tmp_path):
     root = tmp_path / "archive"
     assert A.occurrences(root) == []
     assert A.current_live(root) is None
-    assert A.current_live_archive(root) is None
-    assert not root.exists(), "reading live state must not create the archive root"
+    assert A.current_live_artifact_id(root) is None
+    assert not root.exists()
 
 
-def test_a_fresh_identity_is_a_deploy_and_becomes_live(tmp_path):
+def test_occurrences_record_operation_ids_and_previous(tmp_path):
     root = tmp_path / "archive"
-    target, kind = A.store(root, "id-A", _files(tmp_path), {"t": {"rows": 1}}, at="2026-01-01T00:00:00+00:00")
-    assert kind == "deploy"
-    assert target == A.archive_path(root, "id-A")
-    assert (target / "t.csv").exists() and (target / "receipt.json").exists()
-    assert A.current_live(root) == "id-A"
+    A.record_occurrence(root, "deploy", "gen-1", "aid-1", None, at="2026-01-01T00:00:00+00:00")
+    A.record_occurrence(root, "deploy", "gen-2", "aid-2", "aid-1", at="2026-01-02T00:00:00+00:00")
+    A.record_occurrence(root, "rollback", "gen-1", "aid-1", "aid-2", at="2026-01-03T00:00:00+00:00")
+    occ = A.occurrences(root)
+    assert [o["operation"] for o in occ] == ["deploy", "deploy", "rollback"]
+    assert [o["artifact_id"] for o in occ] == ["aid-1", "aid-2", "aid-1"]
+    assert [o["previous_artifact_id"] for o in occ] == [None, "aid-1", "aid-2"]
+    assert A.current_live_artifact_id(root) == "aid-1"  # the rollback re-pointed live
 
 
-def test_a_new_identity_advances_live_and_both_are_deploys(tmp_path):
+def test_live_state_is_from_occurrences_not_directory_mtime(tmp_path):
     root = tmp_path / "archive"
-    A.store(root, "id-A", _files(tmp_path), {}, at="2026-01-01T00:00:00+00:00")
-    A.store(root, "id-B", _files(tmp_path), {}, at="2026-01-02T00:00:00+00:00")
-    assert [o["kind"] for o in A.occurrences(root)] == ["deploy", "deploy"]
-    assert [o["deployment_id"] for o in A.occurrences(root)] == ["id-A", "id-B"]
-    assert A.current_live(root) == "id-B"
+    a1 = A.ensure_artifact(root, {"t.csv": _csv(tmp_path / "a.csv", "declaration_version_id,x\nabc,1\n")}, {}, "gen-1")
+    a2 = A.ensure_artifact(root, {"t.csv": _csv(tmp_path / "b.csv", "declaration_version_id,x\nabc,2\n")}, {}, "gen-2")
+    A.record_occurrence(root, "deploy", "gen-1", a1, None, at="2026-01-01T00:00:00+00:00")
+    A.record_occurrence(root, "deploy", "gen-2", a2, a1, at="2026-01-02T00:00:00+00:00")
+    # Make a1 the newest directory by mtime; the occurrence log still says a2 is live.
+    (A.artifact_dir(root, a1) / "touch").write_text("x", encoding="utf-8")
+    assert A.current_live_artifact_id(root) == a2
 
 
-def test_rollback_to_a_prior_identity_is_an_occurrence_not_a_rewrite(tmp_path):
-    root = tmp_path / "archive"
-    a_target, _ = A.store(root, "id-A", _files(tmp_path), {}, at="2026-01-01T00:00:00+00:00")
-    A.store(root, "id-B", _files(tmp_path), {}, at="2026-01-02T00:00:00+00:00")
-    a_written = a_target.stat().st_mtime_ns
-
-    target, kind = A.store(root, "id-A", _files(tmp_path), {}, at="2026-01-03T00:00:00+00:00")
-    assert kind == "rollback"
-    assert target == a_target
-    assert a_target.stat().st_mtime_ns == a_written, "the immutable archive was rewritten on rollback"
-    assert [o["kind"] for o in A.occurrences(root)] == ["deploy", "deploy", "rollback"]
-    assert A.current_live(root) == "id-A", "rollback re-points live at the restored identity"
-
-
-def test_live_state_comes_from_occurrences_not_directory_mtime(tmp_path):
-    root = tmp_path / "archive"
-    a_target, _ = A.store(root, "id-A", _files(tmp_path), {}, at="2026-01-01T00:00:00+00:00")
-    A.store(root, "id-B", _files(tmp_path), {}, at="2026-01-02T00:00:00+00:00")
-    # Make id-A the newest directory by mtime; the occurrence log still says id-B is live.
-    (a_target / "touch").write_text("x", encoding="utf-8")
-    assert A.current_live(root) == "id-B"
-    assert A.current_live_archive(root) == A.archive_path(root, "id-B")
-
-
-def test_publishing_from_an_archive_never_nests(tmp_path):
-    """Republishing a prior archive's bytes writes its occurrence to the fixed root, not inside the
-    archive directory it is reading from."""
-    root = tmp_path / "archive"
-    a_target, _ = A.store(root, "id-A", _files(tmp_path), {}, at="2026-01-01T00:00:00+00:00")
-    A.store(root, "id-B", _files(tmp_path), {}, at="2026-01-02T00:00:00+00:00")
-
-    # "Publish from the archive": the candidate files are read from inside id-A's archive dir, but
-    # the archive root is the fixed canonical root — so id-A is restored as a rollback occurrence and
-    # nothing is written inside a_target.
-    before = set(a_target.iterdir())
-    _, kind = A.store(root, "id-A", {"t.csv": a_target / "t.csv"}, {}, at="2026-01-03T00:00:00+00:00")
-    assert kind == "rollback"
-    assert set(a_target.iterdir()) == before, "an archive was nested inside the bytes being restored"
-    assert not A.archive_path(a_target, "id-A").exists()
-    assert not (a_target / A.OCCURRENCES).exists()
-    assert A.current_live(root) == "id-A"
-
-
-def test_bad_occurrence_kind_is_rejected(tmp_path):
-    root = tmp_path / "archive"
+def test_bad_operation_is_rejected(tmp_path):
     try:
-        A.record_occurrence(root, "sideways", "id-A")
+        A.record_occurrence(tmp_path / "archive", "sideways", "gen", "aid", None)
     except ValueError as exc:
         assert "deploy" in str(exc)
     else:
-        raise AssertionError("record_occurrence must reject an unknown kind")
+        raise AssertionError("record_occurrence must reject an unknown operation")

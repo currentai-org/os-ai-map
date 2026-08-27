@@ -350,7 +350,7 @@ def _wire(monkeypatch, requested):
     monkeypatch.setattr(P, "graphql", fake)
     monkeypatch.setattr(PR, "graphql", fake)
     monkeypatch.setattr(PE, "graphql", fake)
-    monkeypatch.setattr(P, "upload", lambda path, url: None)
+    monkeypatch.setattr(PE, "upload", lambda path, url: None)
     monkeypatch.setenv("OSO_API_KEY", "tok")
     monkeypatch.setenv("OSO_ORG_ID", "org")
 
@@ -359,8 +359,8 @@ def test_load_run_is_requested_once_per_model_with_static_model_id(tmp_path, mon
     _synthetic_candidates(tmp_path)
     requested: list[dict] = []
     _wire(monkeypatch, requested)
-    monkeypatch.setattr(P, "poll_run_group", lambda gid, token, timeout=1800.0: "SUCCESS")
-    monkeypatch.setattr(P, "deployed_table_state", lambda dataset, table: {"rows": 0, "columns": []})
+    monkeypatch.setattr(PE, "poll_run_group", lambda gid, token, timeout=1800.0: "SUCCESS")
+    monkeypatch.setattr(PE, "deployed_table_state", lambda dataset, table: {"rows": 0, "columns": []})
     monkeypatch.setattr(P, "deployment_mismatches", lambda expected, deployed: ["stop here"])
     monkeypatch.setattr(sys, "argv", ["publish_scoring_trace", "--dir", str(tmp_path), "--archive-root", str(tmp_path / "archive")])
 
@@ -382,8 +382,8 @@ def test_the_publisher_polls_the_exact_run_group_the_mutation_returned(tmp_path,
         polled.append(gid)
         return "SUCCESS"
 
-    monkeypatch.setattr(P, "poll_run_group", record_poll)
-    monkeypatch.setattr(P, "deployed_table_state", lambda dataset, table: {"rows": 0, "columns": []})
+    monkeypatch.setattr(PE, "poll_run_group", record_poll)
+    monkeypatch.setattr(PE, "deployed_table_state", lambda dataset, table: {"rows": 0, "columns": []})
     monkeypatch.setattr(P, "deployment_mismatches", lambda expected, deployed: ["stop here"])
     monkeypatch.setattr(sys, "argv", ["publish_scoring_trace", "--dir", str(tmp_path), "--archive-root", str(tmp_path / "archive")])
 
@@ -395,12 +395,12 @@ def test_a_failed_run_stops_the_deploy_before_the_next_model(tmp_path, monkeypat
     _synthetic_candidates(tmp_path)
     requested: list[dict] = []
     _wire(monkeypatch, requested)
-    monkeypatch.setattr(P, "poll_run_group", lambda gid, token, timeout=1800.0: "FAILED")
+    monkeypatch.setattr(PE, "poll_run_group", lambda gid, token, timeout=1800.0: "FAILED")
 
     def boom(dataset, table):
         raise AssertionError("must not read deployed state when a run failed")
 
-    monkeypatch.setattr(P, "deployed_table_state", boom)
+    monkeypatch.setattr(PE, "deployed_table_state", boom)
     monkeypatch.setattr(sys, "argv", ["publish_scoring_trace", "--dir", str(tmp_path), "--archive-root", str(tmp_path / "archive")])
 
     assert P.main() == 2
@@ -421,25 +421,17 @@ def test_deployment_mismatches_catches_row_and_schema_drift():
     assert any("columns" in m for m in P.deployment_mismatches(expected, wrong_cols))
 
 
-def test_deployment_archive_is_immutable_and_rollback_is_an_occurrence(tmp_path):
+def test_ensure_artifact_writes_a_verifiable_content_addressed_archive(tmp_path):
     _synthetic_candidates(tmp_path)
-    receipt = P.build_receipt(tmp_path)
     root = tmp_path / "archive"
-    did = P.deployment_id(tmp_path)
-
-    target, kind = P.archive.store(root, did, P.archived_files(tmp_path), receipt)
-    assert kind == "deploy"
-    assert target.exists() and (target / "receipt.json").exists()
+    aid = P.archive.ensure_artifact(root, P.archived_files(tmp_path), P.build_receipt(tmp_path), P.deployment_id(tmp_path))
+    adir = P.archive.artifact_dir(root, aid)
+    assert adir.name == aid
     for table in P.TRACE_TABLES:
-        assert (target / f"{table}.csv").exists()
-    assert P.archive.current_live_archive(root) == target
-    written = target.stat().st_mtime_ns
-
-    # Re-storing the same identity is a rollback occurrence, not a rewrite.
-    target2, kind2 = P.archive.store(root, did, P.archived_files(tmp_path), receipt)
-    assert kind2 == "rollback" and target2 == target
-    assert target.stat().st_mtime_ns == written
-    assert [o["kind"] for o in P.archive.occurrences(root)] == ["deploy", "rollback"]
+        assert (adir / f"{table}.csv").exists()
+    assert (adir / P.archive.RECEIPT).exists() and (adir / P.archive.SHA256SUMS).exists()
+    P.archive.verify_artifact(root, aid)
+    assert P.archive.current_live(root) is None  # ensure_artifact alone records no occurrence
 
 
 def test_the_trace_archive_root_is_its_own_never_the_evaluation_publishers(tmp_path):
