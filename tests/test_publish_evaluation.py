@@ -311,6 +311,76 @@ def test_rollback_with_altered_bytes_is_rejected_and_records_nothing(tmp_path, m
     assert P.archive.occurrences(root) == [], "a rejected rollback records no occurrence"
 
 
+def test_dataset_and_model_creation_cannot_precede_artifact_persistence(tmp_path, monkeypatch):
+    """The candidate bytes must be archived BEFORE any create-capable platform call — resolve_* with
+    create=True can create the dataset or static models."""
+    _valid_candidates(tmp_path)
+    root = tmp_path / "archive"
+    order: list[str] = []
+    real_ensure = P.archive.ensure_artifact
+
+    def spy_ensure(*a, **k):
+        order.append("ensure-artifact")
+        return real_ensure(*a, **k)
+
+    def fake_dataset(name, org_id, token, create):
+        if create:
+            order.append("create-dataset")
+        return "ds-eval"
+
+    def fake_models(dataset_id, org_id, token, tables, create):
+        if create:
+            order.append("create-models")
+        return {t: (f"id-{t}", True) for t in P.EVAL_TABLES}
+
+    monkeypatch.setattr(P.archive, "ensure_artifact", spy_ensure)
+    monkeypatch.setattr(P, "resolve_evaluation_dataset", fake_dataset)
+    monkeypatch.setattr(P, "resolve_static_models", fake_models)
+    fake = _fake_platform([])
+    monkeypatch.setattr(P, "graphql", fake)
+    monkeypatch.setattr(PR, "graphql", fake)
+    monkeypatch.setattr(P, "upload", lambda path, url: None)
+    monkeypatch.setattr(P, "poll_run_group", lambda gid, token, timeout=1800.0: "SUCCESS")
+    monkeypatch.setattr(P, "deployed_table_state", lambda dataset, table: _deployed_matching(tmp_path)[table])
+    monkeypatch.setenv("OSO_API_KEY", "tok")
+    monkeypatch.setenv("OSO_ORG_ID", "org")
+    monkeypatch.setattr(sys, "argv", ["publish_evaluation", "--dir", str(tmp_path), "--archive-root", str(root)])
+
+    assert P.main() == 0
+    assert order and order[0] == "ensure-artifact", f"artifact must be persisted before any create: {order}"
+    assert "create-dataset" in order and "create-models" in order
+
+
+def test_rollback_rejects_a_tampered_receipt_before_touching_the_platform(tmp_path, monkeypatch):
+    """A forged receipt (deployment_id or all_null_columns) is caught by provenance reconstruction
+    from the verified bytes — before any network call."""
+    import json
+
+    _valid_candidates(tmp_path)
+
+    def _no_network(*a, **k):
+        raise AssertionError("a rejected rollback must not touch the platform")
+
+    for tamper in ("deployment_id", "all_null_columns"):
+        root = tmp_path / f"archive-{tamper}"  # isolate: a fresh, untampered archive per case
+        aid = P.archive.ensure_artifact(root, P.archived_files(tmp_path), P.build_receipt(tmp_path),
+                                        P.deployment_id(tmp_path))
+        rj = P.archive.artifact_dir(root, aid) / P.archive.RECEIPT
+        doc = json.loads(rj.read_text())
+        if tamper == "deployment_id":
+            doc["deployment_id"] = "forged-generation"
+        else:  # suppress a would-be missing-column failure by forging the all-null set
+            doc["tables"]["adoption_reconciliation"]["all_null_columns"] = ["declaration_version_id"]
+        rj.write_text(json.dumps(doc), encoding="utf-8")
+
+        monkeypatch.setattr(P, "graphql", _no_network)
+        monkeypatch.setenv("OSO_API_KEY", "tok")
+        monkeypatch.setenv("OSO_ORG_ID", "org")
+        monkeypatch.setattr(sys, "argv", ["publish_evaluation", "--rollback", aid, "--archive-root", str(root)])
+        assert P.main() == 2, f"a receipt tampered on {tamper} must be rejected"
+        assert P.archive.occurrences(root) == [], "a rejected rollback records no occurrence"
+
+
 def test_load_run_is_requested_once_per_model_and_awaited(tmp_path, monkeypatch):
     """Each table gets its OWN run request, naming exactly one model, and is awaited in turn.
 

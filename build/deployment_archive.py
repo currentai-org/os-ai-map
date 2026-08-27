@@ -172,6 +172,53 @@ def artifact_receipt(archive_root: Path, aid: str) -> dict:
     return json.loads((artifact_dir(archive_root, aid) / RECEIPT).read_text(encoding="utf-8"))
 
 
+def verified_rollback_provenance(
+    archive_root: Path,
+    aid: str,
+    expected_names: set[str],
+    recompute_receipt,
+    recompute_deployment_id,
+) -> tuple[dict, str]:
+    """Gate a rollback: return `(tables, deployment_id)` reconstructed from the VERIFIED archived
+    bytes, or raise.
+
+    `SHA256SUMS` covers only the data files, NOT `receipt.json`, so `receipt.json` cannot be trusted
+    on its own — a tampered `deployment_id`, row count, schema, or `all_null_columns` would otherwise
+    ride a rollback into generation identity and deployed-state verification. This:
+
+    1. verifies the data files against their recorded hashes (`verify_artifact`);
+    2. requires the manifest's filename set to equal the publisher's expected tables — no missing and
+       no unexpected files;
+    3. recomputes the provenance (`recompute_receipt`) and the `deployment_id`
+       (`recompute_deployment_id`) FROM those verified bytes and requires each to equal what
+       `receipt.json` claims, plus the stored `artifact_id` to equal `aid`.
+
+    The returned values are the reconstructed ones, so callers use provenance derived from bytes, not
+    from the (unhashed) receipt.
+    """
+    verify_artifact(archive_root, aid)
+    adir = artifact_dir(archive_root, aid)
+    names = set(read_manifest(adir))
+    if names != set(expected_names):
+        raise RuntimeError(
+            f"artifact {aid} manifest names {sorted(names)} do not equal the expected files "
+            f"{sorted(expected_names)} (missing or unexpected files)"
+        )
+    stored = artifact_receipt(archive_root, aid)
+    if stored.get("artifact_id") != aid:
+        raise RuntimeError(f"receipt artifact_id {stored.get('artifact_id')!r} does not equal {aid}")
+    tables = recompute_receipt(adir)
+    if tables != stored.get("tables"):
+        raise RuntimeError(f"receipt tables do not match the archived bytes for {aid} (tampered receipt?)")
+    deployment_id = recompute_deployment_id(adir)
+    if deployment_id != stored.get("deployment_id"):
+        raise RuntimeError(
+            f"receipt deployment_id {stored.get('deployment_id')!r} does not match the archived bytes "
+            f"({deployment_id!r}) for {aid} (tampered receipt?)"
+        )
+    return tables, deployment_id
+
+
 # --- the append-only occurrence log ----------------------------------------------
 
 

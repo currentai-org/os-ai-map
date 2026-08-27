@@ -347,12 +347,14 @@ def main() -> int:
         operation = "rollback"
         aid = args.rollback
         try:
-            archive.verify_artifact(args.archive_root, aid)
+            # Provenance is reconstructed from the VERIFIED bytes and required to equal receipt.json,
+            # which SHA256SUMS does not cover — a tampered receipt cannot ride the rollback.
+            receipt, deployment = archive.verified_rollback_provenance(
+                args.archive_root, aid, {f"{t}.csv" for t in TRACE_TABLES}, build_receipt, deployment_id,
+            )
         except RuntimeError as exc:
             print(f"cannot roll back to {aid}: {exc}", file=sys.stderr)
             return 2
-        stored = archive.artifact_receipt(args.archive_root, aid)
-        receipt, deployment = stored["tables"], stored["deployment_id"]
         src_dir = archive.artifact_dir(args.archive_root, aid)
         print(f"rollback: artifact {aid} (generation {deployment}) verified against its recorded hashes")
         print_plan(receipt, dataset_name)
@@ -388,26 +390,29 @@ def main() -> int:
     if previous is not None:
         print(f"currently live artifact (the rollback target if this is bad): {previous}")
 
-    dataset_id = resolve_evaluation_dataset(dataset_name, org_id, token, create=not args.dry_run)
-    if dataset_id is None:
-        print(f"would create dataset {dataset_name}, then create + upload {list(TRACE_TABLES)}")
-        return 0  # dry-run only reaches here; no write
-
-    models = resolve_static_models(dataset_id, org_id, token, TRACE_TABLES, create=not args.dry_run)
-    print(f"dataset {dataset_name} = {dataset_id}")
-
     if args.dry_run:
+        # READ-ONLY resolution — create=False — so a dry run creates NOTHING and writes nothing.
+        dataset_id = resolve_evaluation_dataset(dataset_name, org_id, token, create=False)
+        if dataset_id is None:
+            print(f"would create dataset {dataset_name}, then create + upload {list(TRACE_TABLES)}")
+            return 0
+        models = resolve_static_models(dataset_id, org_id, token, TRACE_TABLES, create=False)
+        print(f"dataset {dataset_name} = {dataset_id}")
         for table in TRACE_TABLES:
             model_id = models[table][0]
             verb = "would upload" if model_id else "would create + upload"
             print(f"  {verb} {table}.csv ({receipt[table]['rows']:,} rows) -> {model_id}")
-        return 0  # NO write on a dry run
+        return 0  # NO write, NO create
 
-    # DEPLOY: persist the candidate bytes content-addressed BEFORE mutating the platform (a rollback's
-    # bytes are already archived and were hash-verified above). Then upload/run/verify via the shared
-    # `materialize`, and record the occurrence LAST — only after the deployed state verified.
+    # REAL publish. Persist the candidate bytes content-addressed BEFORE any create-capable platform
+    # call — `resolve_*` with create=True can create the dataset or static models, so the artifact
+    # must already exist on disk first. A rollback's bytes are already archived (verified above).
     if operation == "deploy":
         aid = archive.ensure_artifact(args.archive_root, archived_files(src_dir), receipt, deployment)
+
+    dataset_id = resolve_evaluation_dataset(dataset_name, org_id, token, create=True)
+    models = resolve_static_models(dataset_id, org_id, token, TRACE_TABLES, create=True)
+    print(f"dataset {dataset_name} = {dataset_id}")
 
     if materialize(dataset_id, models, TRACE_TABLES, src_dir, token, dataset_name, receipt, deployment_mismatches):
         return 2

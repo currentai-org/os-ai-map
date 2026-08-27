@@ -138,3 +138,76 @@ def test_bad_operation_is_rejected(tmp_path):
         assert "deploy" in str(exc)
     else:
         raise AssertionError("record_occurrence must reject an unknown operation")
+
+
+# --- rollback provenance: receipt.json is not covered by SHA256SUMS, so reconstruct + require ------
+
+import json  # noqa: E402
+
+
+def _recompute_tables(adir):
+    return {name: {"rows": 1, "sha256": A.file_sha256(adir / name)} for name in A.read_manifest(adir)}
+
+
+def _recompute_did(adir):
+    return "gen-" + A.file_sha256(adir / "t.csv")[:8]
+
+
+def _archived(tmp_path):
+    root = tmp_path / "archive"
+    files = _files(tmp_path)
+    tables = {name: {"rows": 1, "sha256": A.file_sha256(p)} for name, p in files.items()}
+    aid = A.ensure_artifact(root, files, tables, "gen-" + A.file_sha256(files["t.csv"])[:8])
+    return root, aid
+
+
+def test_verified_rollback_provenance_passes_for_an_intact_artifact(tmp_path):
+    root, aid = _archived(tmp_path)
+    tables, did = A.verified_rollback_provenance(root, aid, {"t.csv"}, _recompute_tables, _recompute_did)
+    assert did == _recompute_did(A.artifact_dir(root, aid))
+    assert tables == _recompute_tables(A.artifact_dir(root, aid))
+
+
+def _expect_rejected(root, aid, expected_names=frozenset({"t.csv"})):
+    try:
+        A.verified_rollback_provenance(root, aid, set(expected_names), _recompute_tables, _recompute_did)
+    except RuntimeError:
+        return
+    raise AssertionError("verified_rollback_provenance should have rejected this artifact")
+
+
+def test_rollback_rejects_a_tampered_receipt_deployment_id(tmp_path):
+    root, aid = _archived(tmp_path)
+    rj = A.artifact_dir(root, aid) / A.RECEIPT
+    doc = json.loads(rj.read_text()); doc["deployment_id"] = "forged-generation"
+    rj.write_text(json.dumps(doc), encoding="utf-8")
+    _expect_rejected(root, aid)
+
+
+def test_rollback_rejects_a_tampered_receipt_row_count(tmp_path):
+    root, aid = _archived(tmp_path)
+    rj = A.artifact_dir(root, aid) / A.RECEIPT
+    doc = json.loads(rj.read_text()); doc["tables"]["t.csv"]["rows"] = 999
+    rj.write_text(json.dumps(doc), encoding="utf-8")
+    _expect_rejected(root, aid)
+
+
+def test_rollback_rejects_a_tampered_receipt_artifact_id(tmp_path):
+    root, aid = _archived(tmp_path)
+    rj = A.artifact_dir(root, aid) / A.RECEIPT
+    doc = json.loads(rj.read_text()); doc["artifact_id"] = "0" * 64
+    rj.write_text(json.dumps(doc), encoding="utf-8")
+    _expect_rejected(root, aid)
+
+
+def test_rollback_rejects_altered_bytes(tmp_path):
+    root, aid = _archived(tmp_path)
+    (A.artifact_dir(root, aid) / "t.csv").write_text("declaration_version_id,x\nabc,999\n", encoding="utf-8")
+    _expect_rejected(root, aid)  # verify_artifact inside the gate catches the hash mismatch
+
+
+def test_rollback_rejects_an_unexpected_or_missing_manifest_file(tmp_path):
+    root, aid = _archived(tmp_path)
+    # The manifest names {"t.csv"} but the publisher expects a different file set.
+    _expect_rejected(root, aid, expected_names={"t.csv", "extra.csv"})
+    _expect_rejected(root, aid, expected_names={"other.csv"})
