@@ -740,13 +740,22 @@ assets:
     republishing them.
   refresh: 'static model, reloaded by a maintainer; built by the repo-side release builder
     (build/axis_scoring_trace.py) over the recorded sources/scores, resolved rubrics and the
-    published roster (build_payload), stamped with the run-time declaration_version_id. Not yet
-    published: the candidate CSV is written to build/evaluation/axis_facts.csv (git-ignored) and
-    publishing to OSO is a maintainer step, runbook at docs/operations/deploy-scoring-trace.md.'
+    published roster (build_payload), stamped with the run-time declaration_version_id. The
+    candidate CSV is written to build/evaluation/axis_facts.csv (git-ignored) and publishing to OSO
+    is a maintainer step, runbook at docs/operations/deploy-scoring-trace.md. First published
+    2026-08-27 (2,284 rows, declaration eb828b57b14d).'
+  retirement_reason: 'no reviewed consumer as of 2026-08-27, because it was deployed that day and its
+    consumer does not exist yet: the Phase-7 retirement of the duplicate warehouse openness
+    computation (ADR-001) is what will read the trace, once evaluation.axis_results dual-runs green
+    across releases. A "nothing uses it yet" finding, not a "nobody wants it" one -- and the derived
+    predicate cannot tell those apart, which is why the label is required here. NOT a deletion
+    candidate; this table is the replacement, not the thing retired.'
+  retirement_issue: '#384'
+  dataset_id: 55a4311d-7659-4811-a4c5-7ff167ef5eef
   owner: carl
-  status: staged
-  materialized: false
-  verified_at: '2026-08-25'
+  status: active
+  materialized: true
+  verified_at: '2026-08-27'
 - id: evaluation.axis_results
   table: currentai.evaluation.axis_results
   kind: evaluation
@@ -774,13 +783,22 @@ assets:
     from build/check_rubric, carried beside the recorded value so the two can be compared.
   refresh: 'static model, reloaded by a maintainer; built by the repo-side release builder
     (build/axis_scoring_trace.py) over the recorded sources/scores, resolved rubrics and the
-    published roster, stamped with the run-time declaration_version_id. Not yet published: the
-    candidate CSV is written to build/evaluation/axis_results.csv (git-ignored) and publishing to
-    OSO is a maintainer step, runbook at docs/operations/deploy-scoring-trace.md.'
+    published roster, stamped with the run-time declaration_version_id. The candidate CSV is written
+    to build/evaluation/axis_results.csv (git-ignored) and publishing to OSO is a maintainer step,
+    runbook at docs/operations/deploy-scoring-trace.md. First published 2026-08-27 (522 rows,
+    declaration eb828b57b14d).'
+  retirement_reason: 'no reviewed consumer as of 2026-08-27, because it was deployed that day and its
+    consumer does not exist yet: the Phase-7 retirement of the duplicate warehouse openness
+    computation (ADR-001) is what will read the trace, once evaluation.axis_results dual-runs green
+    across releases. A "nothing uses it yet" finding, not a "nobody wants it" one -- and the derived
+    predicate cannot tell those apart, which is why the label is required here. NOT a deletion
+    candidate; this table is the replacement, not the thing retired.'
+  retirement_issue: '#384'
+  dataset_id: 55a4311d-7659-4811-a4c5-7ff167ef5eef
   owner: carl
-  status: staged
-  materialized: false
-  verified_at: '2026-08-25'
+  status: active
+  materialized: true
+  verified_at: '2026-08-27'
 - id: evaluation.axis_rule_matches
   table: currentai.evaluation.axis_rule_matches
   kind: evaluation
@@ -806,13 +824,22 @@ assets:
     axis_facts by dimension name, which is the result -> matched rule -> normalized fact chain.
   refresh: 'static model, reloaded by a maintainer; built by the repo-side release builder
     (build/axis_scoring_trace.py) over the recorded sources/scores, resolved rubrics and the
-    published roster, stamped with the run-time declaration_version_id. Not yet published: the
-    candidate CSV is written to build/evaluation/axis_rule_matches.csv (git-ignored) and publishing
-    to OSO is a maintainer step, runbook at docs/operations/deploy-scoring-trace.md.'
+    published roster, stamped with the run-time declaration_version_id. The candidate CSV is written
+    to build/evaluation/axis_rule_matches.csv (git-ignored) and publishing to OSO is a maintainer
+    step, runbook at docs/operations/deploy-scoring-trace.md. First published 2026-08-27 (2,734
+    rows, declaration eb828b57b14d).'
+  retirement_reason: 'no reviewed consumer as of 2026-08-27, because it was deployed that day and its
+    consumer does not exist yet: the Phase-7 retirement of the duplicate warehouse openness
+    computation (ADR-001) is what will read the trace, once evaluation.axis_results dual-runs green
+    across releases. A "nothing uses it yet" finding, not a "nobody wants it" one -- and the derived
+    predicate cannot tell those apart, which is why the label is required here. NOT a deletion
+    candidate; this table is the replacement, not the thing retired.'
+  retirement_issue: '#384'
+  dataset_id: 55a4311d-7659-4811-a4c5-7ff167ef5eef
   owner: carl
-  status: staged
-  materialized: false
-  verified_at: '2026-08-25'
+  status: active
+  materialized: true
+  verified_at: '2026-08-27'
 - id: evaluation.product_adoption_measurements
   table: currentai.evaluation.product_adoption_measurements
   kind: evaluation
