@@ -92,7 +92,7 @@ def test_plan_validates_offline_and_writes_nothing(tmp_path, monkeypatch):
         raise AssertionError("--plan must not hit the network")
 
     monkeypatch.setattr(P, "graphql", _no_network)
-    monkeypatch.setattr(sys, "argv", ["publish_evaluation", "--plan", "--dir", str(tmp_path)])
+    monkeypatch.setattr(sys, "argv", ["publish_evaluation", "--plan", "--dir", str(tmp_path), "--archive-root", str(tmp_path / "archive")])
     before = set(tmp_path.iterdir())
     assert P.main() == 0
     assert set(tmp_path.iterdir()) == before  # no deployments dir, no receipt
@@ -113,11 +113,11 @@ def test_dry_run_with_credentials_makes_no_mutation_and_no_write(tmp_path, monke
 
     monkeypatch.setattr(P, "graphql", fake_graphql)
     monkeypatch.setattr(PR, "graphql", fake_graphql)  # resolve_static_models uses publish_registry's
-    monkeypatch.setattr(sys, "argv", ["publish_evaluation", "--dry-run", "--dir", str(tmp_path)])
+    monkeypatch.setattr(sys, "argv", ["publish_evaluation", "--dry-run", "--dir", str(tmp_path), "--archive-root", str(tmp_path / "archive")])
     before = set(tmp_path.iterdir())
     assert P.main() == 0
     assert set(tmp_path.iterdir()) == before
-    assert not P.deployments_dir(tmp_path).exists()
+    assert not (tmp_path / "archive").exists()  # a dry run writes no archive and no occurrence log
 
 
 def test_publish_without_credentials_refuses(tmp_path, monkeypatch):
@@ -129,12 +129,12 @@ def test_publish_without_credentials_refuses(tmp_path, monkeypatch):
         raise AssertionError("must not hit the network without credentials")
 
     monkeypatch.setattr(P, "graphql", _no_network)
-    monkeypatch.setattr(sys, "argv", ["publish_evaluation", "--dry-run", "--dir", str(tmp_path)])
+    monkeypatch.setattr(sys, "argv", ["publish_evaluation", "--dry-run", "--dir", str(tmp_path), "--archive-root", str(tmp_path / "archive")])
     assert P.main() == 2
 
 
 def test_missing_csv_is_a_loud_failure(tmp_path, monkeypatch):
-    monkeypatch.setattr(sys, "argv", ["publish_evaluation", "--plan", "--dir", str(tmp_path)])
+    monkeypatch.setattr(sys, "argv", ["publish_evaluation", "--plan", "--dir", str(tmp_path), "--archive-root", str(tmp_path / "archive")])
     assert P.main() == 2
 
 
@@ -204,7 +204,7 @@ def test_the_publisher_polls_the_exact_run_group_the_mutation_returned(tmp_path,
     monkeypatch.setattr(P, "deployment_mismatches", lambda expected, deployed: ["stop here"])
     monkeypatch.setenv("OSO_API_KEY", "tok")
     monkeypatch.setenv("OSO_ORG_ID", "org")
-    monkeypatch.setattr(sys, "argv", ["publish_evaluation", "--dir", str(tmp_path)])
+    monkeypatch.setattr(sys, "argv", ["publish_evaluation", "--dir", str(tmp_path), "--archive-root", str(tmp_path / "archive")])
 
     assert P.main() == 2  # stopped at the injected mismatch, after polling every group
     assert polled == [f"grp-for-id-{t}" for t in P.EVAL_TABLES]
@@ -213,21 +213,29 @@ def test_the_publisher_polls_the_exact_run_group_the_mutation_returned(tmp_path,
 # --- the immutable deployment archive --------------------------------------------
 
 
-def test_deployment_archive_is_immutable(tmp_path):
+def test_deployment_archive_is_immutable_and_rollback_is_an_occurrence(tmp_path):
     _valid_candidates(tmp_path)
     receipt = P.build_receipt(tmp_path)
-    archive = P.archive_deployment(tmp_path, receipt)
-    assert archive.exists() and (archive / "receipt.json").exists()
+    root = tmp_path / "archive"
+    did = P.deployment_id(tmp_path)
+
+    # First store of a fresh identity is a deploy: the immutable dir + receipt + CSVs are written.
+    target, kind = P.archive.store(root, did, P.archived_files(tmp_path), receipt)
+    assert kind == "deploy"
+    assert target.exists() and (target / "receipt.json").exists()
     for table in P.EVAL_TABLES:
-        assert (archive / f"{table}.csv").exists()
-    assert P.latest_archive(tmp_path) == archive
-    # A second archive of the same identities is refused — the record is written once.
-    try:
-        P.archive_deployment(tmp_path, receipt)
-    except RuntimeError as exc:
-        assert "already exists" in str(exc)
-    else:
-        raise AssertionError("archive_deployment must refuse to overwrite an existing deployment id")
+        assert (target / f"{table}.csv").exists()
+    assert P.archive.current_live_archive(root) == target
+    written = target.stat().st_mtime_ns
+
+    # Re-storing the SAME identity (re-publishing archived bytes) is a rollback: the immutable dir is
+    # NOT rewritten, and an occurrence is appended — live-state comes from the log, not mtimes.
+    target2, kind2 = P.archive.store(root, did, P.archived_files(tmp_path), receipt)
+    assert kind2 == "rollback" and target2 == target
+    assert target.stat().st_mtime_ns == written, "the immutable archive was rewritten"
+    occ = P.archive.occurrences(root)
+    assert [o["kind"] for o in occ] == ["deploy", "rollback"]
+    assert P.archive.current_live(root) == did
 
 
 def test_load_run_is_requested_once_per_model_and_awaited(tmp_path, monkeypatch):
@@ -269,7 +277,7 @@ def test_load_run_is_requested_once_per_model_and_awaited(tmp_path, monkeypatch)
     monkeypatch.setattr(P, "deployment_mismatches", lambda expected, deployed: ["stop here"])
     monkeypatch.setenv("OSO_API_KEY", "tok")
     monkeypatch.setenv("OSO_ORG_ID", "org")
-    monkeypatch.setattr(sys, "argv", ["publish_evaluation", "--dir", str(tmp_path)])
+    monkeypatch.setattr(sys, "argv", ["publish_evaluation", "--dir", str(tmp_path), "--archive-root", str(tmp_path / "archive")])
 
     assert P.main() == 2  # stopped at the injected mismatch, after both runs were requested
 
@@ -311,11 +319,11 @@ def test_a_failed_run_stops_the_deploy_before_the_next_model(tmp_path, monkeypat
     monkeypatch.setattr(P, "deployed_table_state", boom)
     monkeypatch.setenv("OSO_API_KEY", "tok")
     monkeypatch.setenv("OSO_ORG_ID", "org")
-    monkeypatch.setattr(sys, "argv", ["publish_evaluation", "--dir", str(tmp_path)])
+    monkeypatch.setattr(sys, "argv", ["publish_evaluation", "--dir", str(tmp_path), "--archive-root", str(tmp_path / "archive")])
 
     assert P.main() == 2
     assert len(requested) == 1, "the second model is not requested after the first fails"
-    assert P.latest_archive(tmp_path) is None, "a failed deploy archives nothing"
+    assert P.archive.current_live(tmp_path / "archive") is None, "a failed deploy records no occurrence"
 
 
 # --- the deployed-schema comparison ----------------------------------------------

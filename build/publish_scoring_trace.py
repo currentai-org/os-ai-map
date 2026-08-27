@@ -38,10 +38,13 @@ Like the evaluation publisher: `--plan` (offline) and `--dry-run` (read-only id 
 and print the plan and perform NO mutation and NO local write. A real publish uploads, requests one
 run per model with `{datasetId, staticModelId}` and awaits each run group to terminal `SUCCESS`
 (polling the exact group the mutation returned), verifies the deployed row count and column schema
-via `pyoso`, and only then writes an immutable per-deployment archive of the exact bytes it uploaded
-— under `build/evaluation/scoring-trace-deployments/<deployment_id>/`, kept separate from the
-evaluation publisher's `deployments/` so neither reads the other's archives. It REFUSES to overwrite
-an existing archive.
+via `pyoso`, and only then archives the exact bytes it uploaded — an immutable per-deployment
+directory `<archive-root>/<deployment_id>/` (default `--archive-root`
+`build/evaluation/scoring-trace-deployments/`, kept separate from the evaluation publisher's
+`deployments/` so neither reads the other's archives), plus an append-only occurrence log that
+decides what is live. The archive root is independent of `--dir`, so re-publishing a prior archive
+(`--dir <that-archive>`) records a `rollback` occurrence without nesting or rewriting the immutable
+bytes. The mechanism is `build/deployment_archive.py`, shared with the evaluation publisher.
 
 Environment:
     OSO_API_KEY   required (except for --plan)
@@ -58,12 +61,11 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import json
 import os
-import shutil
 import sys
 from pathlib import Path
 
+from build import deployment_archive as archive
 from build.axis_scoring_trace import TABLES as TRACE_SPEC
 from build.publish_evaluation import (
     csv_provenance,
@@ -85,6 +87,9 @@ from build.publish_registry import (
 ROOT = Path(__file__).resolve().parents[1]
 OUT_DIR = ROOT / "build" / "evaluation"
 DEFAULT_DATASET = "evaluation"
+# Its OWN archive root — never the evaluation publisher's `deployments/` — and independent of `--dir`,
+# so publishing from an archive never nests. The occurrence log lives here too. See build/deployment_archive.py.
+DEFAULT_ARCHIVE_ROOT = OUT_DIR / "scoring-trace-deployments"
 
 # The three trace tables, in a stable publish order, and their exact expected headers.
 TRACE_TABLES: tuple[str, ...] = tuple(TRACE_SPEC)
@@ -103,16 +108,6 @@ _GRAIN: dict[str, tuple[str, ...]] = {
         "dimension", "part_index", "fact_kind",
     ),
 }
-
-
-def deployments_dir(out_dir: Path) -> Path:
-    """Where completed, immutable trace-deployment archives live.
-
-    Deliberately NOT `deployments/` — that belongs to `build/publish_evaluation.py`, which shares
-    this `build/evaluation` directory. A separate subdirectory keeps each publisher's `latest_archive`
-    scan blind to the other's archives (a trace archive has no evaluation CSVs, and vice versa).
-    """
-    return out_dir / "scoring-trace-deployments"
 
 
 def build_receipt(out_dir: Path = OUT_DIR) -> dict:
@@ -285,43 +280,14 @@ def deployment_id(out_dir: Path = OUT_DIR) -> str:
     return f"{dvid[:12]}-{sha[:12]}"
 
 
-def archive_deployment(out_dir: Path, receipt: dict) -> Path:
-    """Copy the just-deployed CSVs + completed receipt into an immutable per-deployment directory.
-
-    Refuses to overwrite an existing archive: a deployment id is written exactly once.
-
-    KNOWN LIMITATION (non-blocking; shared with build/publish_evaluation.py, follow-up before the
-    rollback workflow is relied on): the archive root is derived from `out_dir`, so re-publishing a
-    prior archive's bytes with `--dir <that-archive>` would nest a new archive *inside* it and would
-    not update the canonical `build/evaluation/scoring-trace-deployments/` root's notion of what is
-    live. Deployment identity (the declaration) and deployment occurrence (a publish event) are
-    conflated. First deploys are unaffected; a rollback-from-archive flow needs the archive root
-    decoupled from the read `--dir` first.
-    """
-    target = deployments_dir(out_dir) / deployment_id(out_dir)
-    if target.exists():
-        raise RuntimeError(
-            f"deployment archive {target} already exists — a deployment id is immutable and is "
-            f"never overwritten. If you are re-publishing identical bytes, the previous archive "
-            f"already records them; if not, the declaration identity would have changed."
-        )
-    target.mkdir(parents=True)
-    for table in TRACE_TABLES:
-        shutil.copy2(out_dir / f"{table}.csv", target / f"{table}.csv")
-    (target / "receipt.json").write_text(
-        json.dumps({"deployment_id": target.name, "tables": receipt}, indent=2, sort_keys=True),
-        encoding="utf-8",
-    )
-    return target
+def archived_files(out_dir: Path = OUT_DIR) -> dict[str, Path]:
+    """The candidate files to archive, keyed by their archived name."""
+    return {f"{table}.csv": out_dir / f"{table}.csv" for table in TRACE_TABLES}
 
 
-def latest_archive(out_dir: Path) -> Path | None:
-    """The most recently written trace-deployment archive, if any — the next deploy's rollback target."""
-    root = deployments_dir(out_dir)
-    if not root.exists():
-        return None
-    archives = [p for p in root.iterdir() if p.is_dir() and (p / "receipt.json").exists()]
-    return max(archives, key=lambda p: p.stat().st_mtime) if archives else None
+# The immutable per-deployment archive and the append-only occurrence log that decides what is live
+# both live in build/deployment_archive.py, shared with build/publish_evaluation.py (each publisher
+# passing its own --archive-root) so the two cannot drift and neither reads the other's archives.
 
 
 def deployment_mismatches(expected: dict, deployed: dict) -> list[str]:
@@ -361,7 +327,10 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--plan", action="store_true", help="validate + print the plan; no network, no creds, no write")
     parser.add_argument("--dry-run", action="store_true", help="validate + resolve ids read-only; no mutation, no write")
-    parser.add_argument("--dir", type=Path, default=OUT_DIR)
+    parser.add_argument("--dir", type=Path, default=OUT_DIR, help="where candidate CSVs are read")
+    parser.add_argument("--archive-root", type=Path, default=DEFAULT_ARCHIVE_ROOT,
+                        help="the durable archive + occurrence log (independent of --dir, so publishing "
+                             "from an archive never nests)")
     args = parser.parse_args()
 
     dataset_name = os.environ.get("OSO_DATASET", DEFAULT_DATASET)
@@ -392,7 +361,7 @@ def main() -> int:
               file=sys.stderr)
         return 2
 
-    rollback_target = latest_archive(args.dir)
+    rollback_target = archive.current_live_archive(args.archive_root)
     if rollback_target is not None:
         print(f"rollback target if this deploy is bad: {rollback_target}")
 
@@ -451,9 +420,10 @@ def main() -> int:
             print(f"  ! {mismatch}", file=sys.stderr)
         return 2
 
-    archive = archive_deployment(args.dir, receipt)
-    print(f"\nevery load run SUCCESS and deployed data verified; archived this deployment (immutable) at "
-          f"{archive} — the rollback target for the next deploy")
+    target, kind = archive.store(args.archive_root, deployment_id(args.dir), archived_files(args.dir), receipt)
+    verb = "archived this deployment (immutable)" if kind == "deploy" else "recorded a rollback to the archived deployment"
+    print(f"\nevery load run SUCCESS and deployed data verified; {verb} at "
+          f"{target} — now the live state in {args.archive_root}")
     return 0
 
 
