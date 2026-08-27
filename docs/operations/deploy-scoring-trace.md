@@ -47,15 +47,36 @@ before publishing, never something to deploy around.
 
 ## 3. Publish
 
-The three tables are static models in the `evaluation` dataset. They use the same publish mechanics
-as the Phase-3 evaluation tables (`resolve_dataset` → `resolve_static_models` → upload URL → `PUT`
-the CSV → `createStaticModelRunRequest`, requested **one model at a time and awaited in turn** so
-two runs never race to create the dataset's Trino schema, then wait for each run to reach terminal
-`SUCCESS` and read the deployed row count/schema back via `pyoso` before trusting it). They are
-**not** wired into any automatic table set, precisely because they are cut at a commit rather than
-on every merge; a maintainer publishes them explicitly. Wiring a dedicated publisher (mirroring
-`build/publish_evaluation.py`, with the same validate-before-mutation and SUCCESS-gated archive) is
-the natural follow-up once this deploy becomes routine.
+The three tables are static models in the `evaluation` dataset, published by the dedicated
+`build/publish_scoring_trace.py` — a mirror of `build/publish_evaluation.py` (same
+validate-before-mutation, the shared run-group-bound `poll_run_group`, deployed-schema read-back,
+and SUCCESS-gated immutable archive), so the two publishers cannot drift. They are **not** wired
+into any automatic table set, precisely because they are cut at a commit rather than on every merge;
+a maintainer publishes them explicitly.
+
+```bash
+uv run python -m build.publish_scoring_trace --plan       # validate + plan; offline, no creds, NO write
+uv run python -m build.publish_scoring_trace --dry-run    # validate + read-only id resolution; NO mutation, NO write
+uv run python -m build.publish_scoring_trace              # validate, upload, run, then archive
+```
+
+`--plan` and `--dry-run` write nothing. A real publish resolves the `evaluation` dataset and each
+static model, `PUT`s the CSV, and requests the load run **per static model** (`datasetId` +
+`staticModelId`, one model at a time and awaited in turn) so two runs never race to create the
+dataset's Trino schema. Each request returns a **run group**, whose exact id the publisher polls to
+terminal `SUCCESS` — never a model's "latest run". Before any upload it VALIDATES the candidates:
+exact headers against the builder's `COLUMNS`, non-empty tables, `declaration_version_id` /
+`source_git_sha` constant within each file and equal across all three, each table unique on its
+grain, and — the ADR-001 dual-run gate — **every scored `axis_results` row reproduces the recorded
+score** (a scored row that does not is a `check_rubric` disagreement, refused here, never deployed).
+It then reads the deployed row count/schema back via `pyoso` and, only when every run group reached
+`SUCCESS` and the deployed data matches, writes an **immutable deployment archive** at
+`build/evaluation/scoring-trace-deployments/<deployment_id>/` (the three CSVs plus a receipt of row
+counts, column schema, and SHA-256). The `deployment_id` is the declaration identity
+(`declaration_version_id` + `source_git_sha`); it is written once and never overwritten, and it
+lives in its own subdirectory so it is never confused with the evaluation publisher's `deployments/`.
+Any partial failure — a run group ending non-`SUCCESS` or timing out, or a deployed count/schema
+mismatch — returns nonzero and writes no archive.
 
 Record the `dataset_id`, each static-model id, and the `declaration_version_id` you published from
 in the deploy note.
