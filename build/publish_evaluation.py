@@ -383,26 +383,74 @@ def main() -> int:
     parser.add_argument("--rollback", metavar="ARTIFACT_ID",
                         help="re-upload an already-archived artifact by its artifact_id; verifies its "
                              "recorded hashes and records a rollback, not a deploy")
+    parser.add_argument("--deploy-artifact", metavar="ARTIFACT_ID",
+                        help="deploy an already-staged/Released artifact by its artifact_id: re-upload "
+                             "its EXACT archived bytes (verified against their recorded hashes) and "
+                             "record a deploy — so the OSO publish is bound to the released artifact, "
+                             "not to whatever --dir currently holds")
+    parser.add_argument("--stage-artifact", action="store_true",
+                        help="validate candidates and persist the content-addressed artifact locally, "
+                             "print its artifact_id, and exit — NO OSO resolution or mutation. This is "
+                             "the network-free first step of stage -> Release -> publish.")
     args = parser.parse_args()
 
     dataset_name = os.environ.get("OSO_DATASET", DEFAULT_DATASET)
 
-    # The operation is EXPLICIT: --rollback re-uploads verified archived bytes; otherwise a deploy
-    # builds and validates candidates from --dir at HEAD. Neither is inferred from the archive.
-    if args.rollback:
-        operation = "rollback"
-        aid = args.rollback
+    # The three artifact modes are mutually exclusive — each names one operation. --stage-artifact
+    # deliberately WRITES the artifact, so it cannot ride --dry-run/--plan (which promise no write);
+    # combining them is what previously wrote despite --dry-run.
+    active_modes = [name for name, on in (
+        ("--stage-artifact", args.stage_artifact),
+        ("--deploy-artifact", bool(args.deploy_artifact)),
+        ("--rollback", bool(args.rollback)),
+    ) if on]
+    if len(active_modes) > 1:
+        print(f"{' and '.join(active_modes)} are mutually exclusive — choose one operation", file=sys.stderr)
+        return 2
+    if args.stage_artifact and (args.dry_run or args.plan):
+        print("--stage-artifact writes the artifact and cannot be combined with --dry-run/--plan "
+              "(which write nothing); stage first, then run a dry run separately", file=sys.stderr)
+        return 2
+
+    if args.stage_artifact:
+        # Network-free: build + validate the candidates and persist the artifact so it exists on disk
+        # (and can be pushed to a durable Release) BEFORE any OSO call.
+        missing = [t for t in EVAL_TABLES if not (args.dir / f"{t}.csv").exists()]
+        if missing:
+            print(f"missing CSVs: {missing}. Run `uv run python -m build.serialize_evaluation --live` first.",
+                  file=sys.stderr)
+            return 2
+        receipt = build_receipt(args.dir)
+        print_plan(receipt, dataset_name)
+        problems = validate_candidates(args.dir, ROOT)
+        if problems:
+            print("candidate validation failed:", file=sys.stderr)
+            for problem in problems:
+                print(f"  ! {problem}", file=sys.stderr)
+            return 2
+        aid = archive.ensure_artifact(args.archive_root, archived_files(args.dir), receipt, deployment_id(args.dir))
+        print(f"staged artifact {aid} at {archive.artifact_dir(args.archive_root, aid)} — no OSO mutation")
+        return 0
+
+    # The operation is EXPLICIT and never inferred from the archive:
+    #   --rollback ID         re-upload verified archived bytes, record a ROLLBACK;
+    #   --deploy-artifact ID  re-upload verified archived bytes, record a DEPLOY (bound to the Release);
+    #   (default)             build + validate candidates from --dir at HEAD, then deploy.
+    from_archive = bool(args.rollback or args.deploy_artifact)
+    if from_archive:
+        operation = "rollback" if args.rollback else "deploy"
+        aid = args.rollback or args.deploy_artifact
         try:
             # Provenance is reconstructed from the VERIFIED bytes and required to equal receipt.json,
-            # which SHA256SUMS does not cover — a tampered receipt cannot ride the rollback.
+            # which SHA256SUMS does not cover — a tampered receipt cannot ride the re-upload.
             receipt, deployment = archive.verified_rollback_provenance(
                 args.archive_root, aid, {f"{t}.csv" for t in EVAL_TABLES}, build_receipt, deployment_id,
             )
         except RuntimeError as exc:
-            print(f"cannot roll back to {aid}: {exc}", file=sys.stderr)
+            print(f"cannot {operation} artifact {aid}: {exc}", file=sys.stderr)
             return 2
         src_dir = archive.artifact_dir(args.archive_root, aid)
-        print(f"rollback: artifact {aid} (generation {deployment}) verified against its recorded hashes")
+        print(f"{operation}: artifact {aid} (generation {deployment}) verified against its recorded hashes")
         print_plan(receipt, dataset_name)
     else:
         operation = "deploy"
@@ -452,8 +500,9 @@ def main() -> int:
 
     # REAL publish. Persist the candidate bytes content-addressed BEFORE any create-capable platform
     # call — `resolve_*` with create=True can create the dataset or static models, so the artifact
-    # must already exist on disk first. A rollback's bytes are already archived (verified above).
-    if operation == "deploy":
+    # must already exist on disk first. Bytes re-uploaded from the archive (--rollback /
+    # --deploy-artifact) are already archived and verified above.
+    if not from_archive:
         aid = archive.ensure_artifact(args.archive_root, archived_files(src_dir), receipt, deployment)
 
     dataset_id = resolve_evaluation_dataset(dataset_name, org_id, token, create=True)
