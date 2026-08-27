@@ -92,7 +92,7 @@ def test_plan_validates_offline_and_writes_nothing(tmp_path, monkeypatch):
         raise AssertionError("--plan must not hit the network")
 
     monkeypatch.setattr(P, "graphql", _no_network)
-    monkeypatch.setattr(sys, "argv", ["publish_evaluation", "--plan", "--dir", str(tmp_path)])
+    monkeypatch.setattr(sys, "argv", ["publish_evaluation", "--plan", "--dir", str(tmp_path), "--archive-root", str(tmp_path / "archive")])
     before = set(tmp_path.iterdir())
     assert P.main() == 0
     assert set(tmp_path.iterdir()) == before  # no deployments dir, no receipt
@@ -113,11 +113,11 @@ def test_dry_run_with_credentials_makes_no_mutation_and_no_write(tmp_path, monke
 
     monkeypatch.setattr(P, "graphql", fake_graphql)
     monkeypatch.setattr(PR, "graphql", fake_graphql)  # resolve_static_models uses publish_registry's
-    monkeypatch.setattr(sys, "argv", ["publish_evaluation", "--dry-run", "--dir", str(tmp_path)])
+    monkeypatch.setattr(sys, "argv", ["publish_evaluation", "--dry-run", "--dir", str(tmp_path), "--archive-root", str(tmp_path / "archive")])
     before = set(tmp_path.iterdir())
     assert P.main() == 0
     assert set(tmp_path.iterdir()) == before
-    assert not P.deployments_dir(tmp_path).exists()
+    assert not (tmp_path / "archive").exists()  # a dry run writes no archive and no occurrence log
 
 
 def test_publish_without_credentials_refuses(tmp_path, monkeypatch):
@@ -129,12 +129,12 @@ def test_publish_without_credentials_refuses(tmp_path, monkeypatch):
         raise AssertionError("must not hit the network without credentials")
 
     monkeypatch.setattr(P, "graphql", _no_network)
-    monkeypatch.setattr(sys, "argv", ["publish_evaluation", "--dry-run", "--dir", str(tmp_path)])
+    monkeypatch.setattr(sys, "argv", ["publish_evaluation", "--dry-run", "--dir", str(tmp_path), "--archive-root", str(tmp_path / "archive")])
     assert P.main() == 2
 
 
 def test_missing_csv_is_a_loud_failure(tmp_path, monkeypatch):
-    monkeypatch.setattr(sys, "argv", ["publish_evaluation", "--plan", "--dir", str(tmp_path)])
+    monkeypatch.setattr(sys, "argv", ["publish_evaluation", "--plan", "--dir", str(tmp_path), "--archive-root", str(tmp_path / "archive")])
     assert P.main() == 2
 
 
@@ -204,7 +204,7 @@ def test_the_publisher_polls_the_exact_run_group_the_mutation_returned(tmp_path,
     monkeypatch.setattr(P, "deployment_mismatches", lambda expected, deployed: ["stop here"])
     monkeypatch.setenv("OSO_API_KEY", "tok")
     monkeypatch.setenv("OSO_ORG_ID", "org")
-    monkeypatch.setattr(sys, "argv", ["publish_evaluation", "--dir", str(tmp_path)])
+    monkeypatch.setattr(sys, "argv", ["publish_evaluation", "--dir", str(tmp_path), "--archive-root", str(tmp_path / "archive")])
 
     assert P.main() == 2  # stopped at the injected mismatch, after polling every group
     assert polled == [f"grp-for-id-{t}" for t in P.EVAL_TABLES]
@@ -213,21 +213,172 @@ def test_the_publisher_polls_the_exact_run_group_the_mutation_returned(tmp_path,
 # --- the immutable deployment archive --------------------------------------------
 
 
-def test_deployment_archive_is_immutable(tmp_path):
+def test_ensure_artifact_writes_a_verifiable_content_addressed_archive(tmp_path):
     _valid_candidates(tmp_path)
     receipt = P.build_receipt(tmp_path)
-    archive = P.archive_deployment(tmp_path, receipt)
-    assert archive.exists() and (archive / "receipt.json").exists()
+    root = tmp_path / "archive"
+    aid = P.archive.ensure_artifact(root, P.archived_files(tmp_path), receipt, P.deployment_id(tmp_path))
+    adir = P.archive.artifact_dir(root, aid)
+    assert adir.name == aid
     for table in P.EVAL_TABLES:
-        assert (archive / f"{table}.csv").exists()
-    assert P.latest_archive(tmp_path) == archive
-    # A second archive of the same identities is refused — the record is written once.
-    try:
-        P.archive_deployment(tmp_path, receipt)
-    except RuntimeError as exc:
-        assert "already exists" in str(exc)
-    else:
-        raise AssertionError("archive_deployment must refuse to overwrite an existing deployment id")
+        assert (adir / f"{table}.csv").exists()
+    assert (adir / P.archive.RECEIPT).exists() and (adir / P.archive.SHA256SUMS).exists()
+    P.archive.verify_artifact(root, aid)  # the archive is complete and hashes match
+    # ensure_artifact alone records no occurrence — the publisher does that only after verification.
+    assert P.archive.current_live(root) is None
+
+
+def _fake_platform(requested):
+    def fake_graphql(query, variables, token):
+        if query is P.Q_DATASETS:
+            return {"datasets": {"edges": [{"node": {"id": "ds-eval", "name": "evaluation",
+                                                     "type": "STATIC_MODEL"}}]}}
+        if query is PR.Q_STATIC:
+            return {"staticModels": {"edges": [
+                {"node": {"id": f"id-{t}", "name": t, "materializations": {"totalCount": 1}}}
+                for t in P.EVAL_TABLES]}}
+        if query is P.M_URL:
+            return {"createStaticModelUploadUrl": "https://upload.example/put"}
+        if query is P.M_RUN:
+            requested.append(variables["input"])
+            return {"createStaticModelRunRequest":
+                    {"runGroup": {"id": f"group-{len(requested)}", "status": "QUEUED"}}}
+        raise AssertionError(f"unexpected query: {query[:60]}")
+    return fake_graphql
+
+
+def _wire_success(monkeypatch, requested, deployed_rows):
+    fake = _fake_platform(requested)
+    monkeypatch.setattr(P, "graphql", fake)
+    monkeypatch.setattr(PR, "graphql", fake)
+    monkeypatch.setattr(P, "upload", lambda path, url: None)
+    monkeypatch.setattr(P, "poll_run_group", lambda gid, token, timeout=1800.0: "SUCCESS")
+    monkeypatch.setattr(P, "deployed_table_state", lambda dataset, table: deployed_rows[table])
+    monkeypatch.setenv("OSO_API_KEY", "tok")
+    monkeypatch.setenv("OSO_ORG_ID", "org")
+
+
+def _deployed_matching(tmp_path):
+    """Deployed row/column state that matches the candidate, so deployment_mismatches passes."""
+    receipt = P.build_receipt(tmp_path)
+    return {t: {"rows": receipt[t]["rows"], "columns": receipt[t]["columns"]} for t in P.EVAL_TABLES}
+
+
+def test_a_deploy_records_a_deploy_occurrence_after_verification(tmp_path, monkeypatch):
+    _valid_candidates(tmp_path)
+    root = tmp_path / "archive"
+    _wire_success(monkeypatch, [], _deployed_matching(tmp_path))
+    monkeypatch.setattr(sys, "argv", ["publish_evaluation", "--dir", str(tmp_path), "--archive-root", str(root)])
+    assert P.main() == 0
+    occ = P.archive.occurrences(root)
+    assert len(occ) == 1 and occ[0]["operation"] == "deploy"
+    assert occ[0]["previous_artifact_id"] is None
+    live = P.archive.current_live_artifact_id(root)
+    assert occ[0]["artifact_id"] == live
+    P.archive.verify_artifact(root, live)  # the live artifact is archived and intact
+
+
+def test_explicit_rollback_reuploads_a_verified_artifact_and_records_rollback(tmp_path, monkeypatch):
+    _valid_candidates(tmp_path)
+    root = tmp_path / "archive"
+    # Pre-archive an artifact to roll back to.
+    aid = P.archive.ensure_artifact(root, P.archived_files(tmp_path), P.build_receipt(tmp_path), P.deployment_id(tmp_path))
+    _wire_success(monkeypatch, [], _deployed_matching(tmp_path))
+    monkeypatch.setattr(sys, "argv",
+                        ["publish_evaluation", "--rollback", aid, "--archive-root", str(root)])
+    assert P.main() == 0
+    occ = P.archive.occurrences(root)
+    assert [o["operation"] for o in occ] == ["rollback"]
+    assert occ[0]["artifact_id"] == aid
+
+
+def test_rollback_with_altered_bytes_is_rejected_and_records_nothing(tmp_path, monkeypatch):
+    _valid_candidates(tmp_path)
+    root = tmp_path / "archive"
+    aid = P.archive.ensure_artifact(root, P.archived_files(tmp_path), P.build_receipt(tmp_path), P.deployment_id(tmp_path))
+    # Tamper with an archived byte after the fact.
+    (P.archive.artifact_dir(root, aid) / "adoption_reconciliation.csv").write_text("x,y\n1,2\n", encoding="utf-8")
+
+    def _no_network(*a, **k):
+        raise AssertionError("a rejected rollback must not touch the platform")
+
+    monkeypatch.setattr(P, "graphql", _no_network)
+    monkeypatch.setenv("OSO_API_KEY", "tok")
+    monkeypatch.setenv("OSO_ORG_ID", "org")
+    monkeypatch.setattr(sys, "argv",
+                        ["publish_evaluation", "--rollback", aid, "--archive-root", str(root)])
+    assert P.main() == 2
+    assert P.archive.occurrences(root) == [], "a rejected rollback records no occurrence"
+
+
+def test_dataset_and_model_creation_cannot_precede_artifact_persistence(tmp_path, monkeypatch):
+    """The candidate bytes must be archived BEFORE any create-capable platform call — resolve_* with
+    create=True can create the dataset or static models."""
+    _valid_candidates(tmp_path)
+    root = tmp_path / "archive"
+    order: list[str] = []
+    real_ensure = P.archive.ensure_artifact
+
+    def spy_ensure(*a, **k):
+        order.append("ensure-artifact")
+        return real_ensure(*a, **k)
+
+    def fake_dataset(name, org_id, token, create):
+        if create:
+            order.append("create-dataset")
+        return "ds-eval"
+
+    def fake_models(dataset_id, org_id, token, tables, create):
+        if create:
+            order.append("create-models")
+        return {t: (f"id-{t}", True) for t in P.EVAL_TABLES}
+
+    monkeypatch.setattr(P.archive, "ensure_artifact", spy_ensure)
+    monkeypatch.setattr(P, "resolve_evaluation_dataset", fake_dataset)
+    monkeypatch.setattr(P, "resolve_static_models", fake_models)
+    fake = _fake_platform([])
+    monkeypatch.setattr(P, "graphql", fake)
+    monkeypatch.setattr(PR, "graphql", fake)
+    monkeypatch.setattr(P, "upload", lambda path, url: None)
+    monkeypatch.setattr(P, "poll_run_group", lambda gid, token, timeout=1800.0: "SUCCESS")
+    monkeypatch.setattr(P, "deployed_table_state", lambda dataset, table: _deployed_matching(tmp_path)[table])
+    monkeypatch.setenv("OSO_API_KEY", "tok")
+    monkeypatch.setenv("OSO_ORG_ID", "org")
+    monkeypatch.setattr(sys, "argv", ["publish_evaluation", "--dir", str(tmp_path), "--archive-root", str(root)])
+
+    assert P.main() == 0
+    assert order and order[0] == "ensure-artifact", f"artifact must be persisted before any create: {order}"
+    assert "create-dataset" in order and "create-models" in order
+
+
+def test_rollback_rejects_a_tampered_receipt_before_touching_the_platform(tmp_path, monkeypatch):
+    """A forged receipt (deployment_id or all_null_columns) is caught by provenance reconstruction
+    from the verified bytes — before any network call."""
+    import json
+
+    _valid_candidates(tmp_path)
+
+    def _no_network(*a, **k):
+        raise AssertionError("a rejected rollback must not touch the platform")
+
+    for tamper in ("deployment_id", "all_null_columns"):
+        root = tmp_path / f"archive-{tamper}"  # isolate: a fresh, untampered archive per case
+        aid = P.archive.ensure_artifact(root, P.archived_files(tmp_path), P.build_receipt(tmp_path),
+                                        P.deployment_id(tmp_path))
+        rj = P.archive.artifact_dir(root, aid) / P.archive.RECEIPT
+        doc = json.loads(rj.read_text())
+        if tamper == "deployment_id":
+            doc["deployment_id"] = "forged-generation"
+        else:  # suppress a would-be missing-column failure by forging the all-null set
+            doc["tables"]["adoption_reconciliation"]["all_null_columns"] = ["declaration_version_id"]
+        rj.write_text(json.dumps(doc), encoding="utf-8")
+
+        monkeypatch.setattr(P, "graphql", _no_network)
+        monkeypatch.setenv("OSO_API_KEY", "tok")
+        monkeypatch.setenv("OSO_ORG_ID", "org")
+        monkeypatch.setattr(sys, "argv", ["publish_evaluation", "--rollback", aid, "--archive-root", str(root)])
+        assert P.main() == 2, f"a receipt tampered on {tamper} must be rejected"
+        assert P.archive.occurrences(root) == [], "a rejected rollback records no occurrence"
 
 
 def test_load_run_is_requested_once_per_model_and_awaited(tmp_path, monkeypatch):
@@ -269,7 +420,7 @@ def test_load_run_is_requested_once_per_model_and_awaited(tmp_path, monkeypatch)
     monkeypatch.setattr(P, "deployment_mismatches", lambda expected, deployed: ["stop here"])
     monkeypatch.setenv("OSO_API_KEY", "tok")
     monkeypatch.setenv("OSO_ORG_ID", "org")
-    monkeypatch.setattr(sys, "argv", ["publish_evaluation", "--dir", str(tmp_path)])
+    monkeypatch.setattr(sys, "argv", ["publish_evaluation", "--dir", str(tmp_path), "--archive-root", str(tmp_path / "archive")])
 
     assert P.main() == 2  # stopped at the injected mismatch, after both runs were requested
 
@@ -311,11 +462,11 @@ def test_a_failed_run_stops_the_deploy_before_the_next_model(tmp_path, monkeypat
     monkeypatch.setattr(P, "deployed_table_state", boom)
     monkeypatch.setenv("OSO_API_KEY", "tok")
     monkeypatch.setenv("OSO_ORG_ID", "org")
-    monkeypatch.setattr(sys, "argv", ["publish_evaluation", "--dir", str(tmp_path)])
+    monkeypatch.setattr(sys, "argv", ["publish_evaluation", "--dir", str(tmp_path), "--archive-root", str(tmp_path / "archive")])
 
     assert P.main() == 2
     assert len(requested) == 1, "the second model is not requested after the first fails"
-    assert P.latest_archive(tmp_path) is None, "a failed deploy archives nothing"
+    assert P.archive.current_live(tmp_path / "archive") is None, "a failed deploy records no occurrence"
 
 
 # --- the deployed-schema comparison ----------------------------------------------

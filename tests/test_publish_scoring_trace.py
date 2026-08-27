@@ -273,7 +273,7 @@ def test_plan_validates_offline_and_writes_nothing(tmp_path, monkeypatch):
         raise AssertionError("--plan must not hit the network")
 
     monkeypatch.setattr(P, "graphql", _no_network)
-    monkeypatch.setattr(sys, "argv", ["publish_scoring_trace", "--plan", "--dir", str(tmp_path)])
+    monkeypatch.setattr(sys, "argv", ["publish_scoring_trace", "--plan", "--dir", str(tmp_path), "--archive-root", str(tmp_path / "archive")])
     before = set(tmp_path.iterdir())
     assert P.main() == 0
     assert set(tmp_path.iterdir()) == before
@@ -295,11 +295,11 @@ def test_dry_run_with_credentials_makes_no_mutation_and_no_write(tmp_path, monke
     monkeypatch.setattr(P, "graphql", fake_graphql)
     monkeypatch.setattr(PR, "graphql", fake_graphql)
     monkeypatch.setattr(PE, "graphql", fake_graphql)  # resolve_evaluation_dataset uses PE's graphql
-    monkeypatch.setattr(sys, "argv", ["publish_scoring_trace", "--dry-run", "--dir", str(tmp_path)])
+    monkeypatch.setattr(sys, "argv", ["publish_scoring_trace", "--dry-run", "--dir", str(tmp_path), "--archive-root", str(tmp_path / "archive")])
     before = set(tmp_path.iterdir())
     assert P.main() == 0
     assert set(tmp_path.iterdir()) == before
-    assert not P.deployments_dir(tmp_path).exists()
+    assert not (tmp_path / "archive").exists()  # a dry run writes no archive and no occurrence log
 
 
 def test_publish_without_credentials_refuses(tmp_path, monkeypatch):
@@ -312,12 +312,12 @@ def test_publish_without_credentials_refuses(tmp_path, monkeypatch):
         raise AssertionError("must not hit the network without credentials")
 
     monkeypatch.setattr(P, "graphql", _no_network)
-    monkeypatch.setattr(sys, "argv", ["publish_scoring_trace", "--dry-run", "--dir", str(tmp_path)])
+    monkeypatch.setattr(sys, "argv", ["publish_scoring_trace", "--dry-run", "--dir", str(tmp_path), "--archive-root", str(tmp_path / "archive")])
     assert P.main() == 2
 
 
 def test_missing_csv_is_a_loud_failure(tmp_path, monkeypatch):
-    monkeypatch.setattr(sys, "argv", ["publish_scoring_trace", "--plan", "--dir", str(tmp_path)])
+    monkeypatch.setattr(sys, "argv", ["publish_scoring_trace", "--plan", "--dir", str(tmp_path), "--archive-root", str(tmp_path / "archive")])
     assert P.main() == 2
 
 
@@ -350,7 +350,7 @@ def _wire(monkeypatch, requested):
     monkeypatch.setattr(P, "graphql", fake)
     monkeypatch.setattr(PR, "graphql", fake)
     monkeypatch.setattr(PE, "graphql", fake)
-    monkeypatch.setattr(P, "upload", lambda path, url: None)
+    monkeypatch.setattr(PE, "upload", lambda path, url: None)
     monkeypatch.setenv("OSO_API_KEY", "tok")
     monkeypatch.setenv("OSO_ORG_ID", "org")
 
@@ -359,10 +359,10 @@ def test_load_run_is_requested_once_per_model_with_static_model_id(tmp_path, mon
     _synthetic_candidates(tmp_path)
     requested: list[dict] = []
     _wire(monkeypatch, requested)
-    monkeypatch.setattr(P, "poll_run_group", lambda gid, token, timeout=1800.0: "SUCCESS")
-    monkeypatch.setattr(P, "deployed_table_state", lambda dataset, table: {"rows": 0, "columns": []})
+    monkeypatch.setattr(PE, "poll_run_group", lambda gid, token, timeout=1800.0: "SUCCESS")
+    monkeypatch.setattr(PE, "deployed_table_state", lambda dataset, table: {"rows": 0, "columns": []})
     monkeypatch.setattr(P, "deployment_mismatches", lambda expected, deployed: ["stop here"])
-    monkeypatch.setattr(sys, "argv", ["publish_scoring_trace", "--dir", str(tmp_path)])
+    monkeypatch.setattr(sys, "argv", ["publish_scoring_trace", "--dir", str(tmp_path), "--archive-root", str(tmp_path / "archive")])
 
     assert P.main() == 2  # stopped at the injected mismatch, after all three runs were requested
     assert len(requested) == len(P.TRACE_TABLES), "one run request per model"
@@ -382,10 +382,10 @@ def test_the_publisher_polls_the_exact_run_group_the_mutation_returned(tmp_path,
         polled.append(gid)
         return "SUCCESS"
 
-    monkeypatch.setattr(P, "poll_run_group", record_poll)
-    monkeypatch.setattr(P, "deployed_table_state", lambda dataset, table: {"rows": 0, "columns": []})
+    monkeypatch.setattr(PE, "poll_run_group", record_poll)
+    monkeypatch.setattr(PE, "deployed_table_state", lambda dataset, table: {"rows": 0, "columns": []})
     monkeypatch.setattr(P, "deployment_mismatches", lambda expected, deployed: ["stop here"])
-    monkeypatch.setattr(sys, "argv", ["publish_scoring_trace", "--dir", str(tmp_path)])
+    monkeypatch.setattr(sys, "argv", ["publish_scoring_trace", "--dir", str(tmp_path), "--archive-root", str(tmp_path / "archive")])
 
     assert P.main() == 2
     assert polled == [f"grp-for-id-{t}" for t in P.TRACE_TABLES]
@@ -395,17 +395,17 @@ def test_a_failed_run_stops_the_deploy_before_the_next_model(tmp_path, monkeypat
     _synthetic_candidates(tmp_path)
     requested: list[dict] = []
     _wire(monkeypatch, requested)
-    monkeypatch.setattr(P, "poll_run_group", lambda gid, token, timeout=1800.0: "FAILED")
+    monkeypatch.setattr(PE, "poll_run_group", lambda gid, token, timeout=1800.0: "FAILED")
 
     def boom(dataset, table):
         raise AssertionError("must not read deployed state when a run failed")
 
-    monkeypatch.setattr(P, "deployed_table_state", boom)
-    monkeypatch.setattr(sys, "argv", ["publish_scoring_trace", "--dir", str(tmp_path)])
+    monkeypatch.setattr(PE, "deployed_table_state", boom)
+    monkeypatch.setattr(sys, "argv", ["publish_scoring_trace", "--dir", str(tmp_path), "--archive-root", str(tmp_path / "archive")])
 
     assert P.main() == 2
     assert len(requested) == 1, "the second model is not requested after the first fails"
-    assert P.latest_archive(tmp_path) is None, "a failed deploy archives nothing"
+    assert P.archive.current_live(tmp_path / "archive") is None, "a failed deploy records no occurrence"
 
 
 # --- the deployed-schema comparison and the immutable archive --------------------
@@ -421,20 +421,20 @@ def test_deployment_mismatches_catches_row_and_schema_drift():
     assert any("columns" in m for m in P.deployment_mismatches(expected, wrong_cols))
 
 
-def test_deployment_archive_is_immutable_and_in_its_own_subdir(tmp_path):
+def test_ensure_artifact_writes_a_verifiable_content_addressed_archive(tmp_path):
     _synthetic_candidates(tmp_path)
-    receipt = P.build_receipt(tmp_path)
-    archive = P.archive_deployment(tmp_path, receipt)
-    assert archive.exists() and (archive / "receipt.json").exists()
+    root = tmp_path / "archive"
+    aid = P.archive.ensure_artifact(root, P.archived_files(tmp_path), P.build_receipt(tmp_path), P.deployment_id(tmp_path))
+    adir = P.archive.artifact_dir(root, aid)
+    assert adir.name == aid
     for table in P.TRACE_TABLES:
-        assert (archive / f"{table}.csv").exists()
-    # Its own subdirectory — never the evaluation publisher's `deployments/`.
-    assert P.deployments_dir(tmp_path).name == "scoring-trace-deployments"
-    assert P.deployments_dir(tmp_path) != PE.deployments_dir(tmp_path)
-    assert P.latest_archive(tmp_path) == archive
-    try:
-        P.archive_deployment(tmp_path, receipt)
-    except RuntimeError as exc:
-        assert "already exists" in str(exc)
-    else:
-        raise AssertionError("archive_deployment must refuse to overwrite an existing deployment id")
+        assert (adir / f"{table}.csv").exists()
+    assert (adir / P.archive.RECEIPT).exists() and (adir / P.archive.SHA256SUMS).exists()
+    P.archive.verify_artifact(root, aid)
+    assert P.archive.current_live(root) is None  # ensure_artifact alone records no occurrence
+
+
+def test_the_trace_archive_root_is_its_own_never_the_evaluation_publishers(tmp_path):
+    # Default archive roots are distinct, so neither publisher reads the other's archives.
+    assert P.DEFAULT_ARCHIVE_ROOT.name == "scoring-trace-deployments"
+    assert P.DEFAULT_ARCHIVE_ROOT != PE.DEFAULT_ARCHIVE_ROOT

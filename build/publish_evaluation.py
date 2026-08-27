@@ -20,22 +20,27 @@ rejected here rather than published.
 
 ## No writes before the dry-run returns
 
-`--plan` (offline, no credentials) and `--dry-run` (read-only id resolution) validate and print the
-plan and perform NO mutation and NO local write. The only filesystem write this tool makes is the
-immutable deployment archive, and only after a real, successful upload.
+`--plan` (offline, no credentials) and `--dry-run` (read-only id resolution, `create=False`) validate
+and print the plan and perform NO mutation, NO create, and NO local write. On a real publish the
+candidate bytes are archived to disk BEFORE any create-capable call (so nothing is created before the
+artifact exists), and the occurrence is recorded only after a successful, verified upload.
 
-## Rollback is by BYTES — an immutable archive of what was deployed
+## Rollback is by BYTES — a content-addressed archive, live-state from an occurrence log
 
 A static-model publication REPLACES the table in place; the platform exposes no prior-revision list,
 and `observations.product_adoption_current` may have changed since, so regenerating from an old
-commit does not reproduce a previous table. So after a successful deployment this tool archives the
-exact bytes it uploaded, plus a completed receipt (row counts, column schema, SHA-256), under an
-immutable per-deployment directory `build/evaluation/deployments/<deployment_id>/` — keyed on the
-declaration and observation identities. It REFUSES to overwrite an existing archive (a deployment id
-is written once). To roll back a later bad deployment, re-run this tool pointed at the PRIOR
-deployment archive; before deploying, the tool prints that prior archive as the rollback target.
-The candidate CSVs under `build/evaluation/` are never the rollback record — only a completed
-deployment archive is.
+commit does not reproduce a previous table. So a successful deploy persists the exact bytes it
+uploaded — content-addressed by `artifact_id` (SHA-256 over the file manifest), so a regenerated
+`evaluated_at` is a DISTINCT artifact under the same `deployment_id` and is never confused with one
+already archived — plus a receipt and `SHA256SUMS`, under `<archive-root>/artifacts/<artifact_id>/`.
+The archive root (`--archive-root`, default `build/evaluation/deployments/`) is independent of
+`--dir`, so re-publishing from an archive never nests. What is "live" is read from an append-only
+occurrence log (each line: operation, `deployment_id`, `artifact_id`, `previous_artifact_id`,
+timestamp), not directory mtimes. The operation is EXPLICIT: a normal publish records a `deploy`;
+`--rollback <artifact_id>` re-uploads an already-archived artifact after verifying its recorded
+hashes and records a `rollback`. The bytes are persisted BEFORE the platform mutation and the
+occurrence is appended only AFTER the deployed state verifies. The mechanism is
+`build/deployment_archive.py`, shared with the scoring-trace publisher.
 
 Environment:
     OSO_API_KEY   required (except for --plan)
@@ -54,12 +59,11 @@ from __future__ import annotations
 import argparse
 import csv
 import hashlib
-import json
 import os
-import shutil
 import sys
 from pathlib import Path
 
+from build import deployment_archive as archive
 from build.adoption_measurements import COLUMNS as MEASUREMENTS_COLUMNS
 from build.adoption_reconciliation import COLUMNS as RECONCILIATION_COLUMNS
 from build.publish_registry import (
@@ -78,11 +82,9 @@ from build.publish_registry import (
 ROOT = Path(__file__).resolve().parents[1]
 OUT_DIR = ROOT / "build" / "evaluation"
 DEFAULT_DATASET = "evaluation"
-
-
-def deployments_dir(out_dir: Path) -> Path:
-    """Where completed, immutable deployment archives live — beside the candidate CSVs."""
-    return out_dir / "deployments"
+# The durable archive root — the rollback record — is independent of `--dir` (where candidates are
+# read), so publishing from an archive never nests a new archive inside it. See build/deployment_archive.py.
+DEFAULT_ARCHIVE_ROOT = OUT_DIR / "deployments"
 
 # table -> (csv basename, expected header columns). The header is exactly the builder's COLUMNS.
 EVAL_TABLES: tuple[str, ...] = ("product_adoption_measurements", "adoption_reconciliation")
@@ -204,36 +206,16 @@ def deployment_id(out_dir: Path = OUT_DIR) -> str:
     return f"{dvid[:12]}-{osid[:12]}"
 
 
-def archive_deployment(out_dir: Path, receipt: dict) -> Path:
-    """Copy the just-deployed CSVs + completed receipt into an immutable per-deployment directory.
-
-    Refuses to overwrite an existing archive: a deployment id is written exactly once, so the record
-    of what was live cannot be clobbered by a later (possibly failed) publish.
-    """
-    target = deployments_dir(out_dir) / deployment_id(out_dir)
-    if target.exists():
-        raise RuntimeError(
-            f"deployment archive {target} already exists — a deployment id is immutable and is "
-            f"never overwritten. If you are re-publishing identical bytes, the previous archive "
-            f"already records them; if not, the identities would have changed."
-        )
-    target.mkdir(parents=True)
-    for table in EVAL_TABLES:
-        shutil.copy2(out_dir / f"{table}.csv", target / f"{table}.csv")
-    (target / "receipt.json").write_text(
-        json.dumps({"deployment_id": target.name, "tables": receipt}, indent=2, sort_keys=True),
-        encoding="utf-8",
-    )
-    return target
+def archived_files(out_dir: Path = OUT_DIR) -> dict[str, Path]:
+    """The candidate files to archive, keyed by their archived name."""
+    return {f"{table}.csv": out_dir / f"{table}.csv" for table in EVAL_TABLES}
 
 
-def latest_archive(out_dir: Path) -> Path | None:
-    """The most recently written deployment archive, if any — the rollback target for the next deploy."""
-    root = deployments_dir(out_dir)
-    if not root.exists():
-        return None
-    archives = [p for p in root.iterdir() if p.is_dir() and (p / "receipt.json").exists()]
-    return max(archives, key=lambda p: p.stat().st_mtime) if archives else None
+# The immutable per-deployment archive and the append-only occurrence log that decides what is live
+# both live in build/deployment_archive.py, shared with build/publish_scoring_trace.py so the two
+# publishers cannot drift. `deployment_id` above names the archive directory; `archive.store` writes
+# it (a fresh identity) or records a rollback (an identity already archived), and `archive.current_live_archive`
+# reads the live state from the occurrence log rather than directory mtimes.
 
 
 # A run request is only ACCEPTED synchronously; materialization happens asynchronously, so the
@@ -345,30 +327,100 @@ def resolve_evaluation_dataset(name: str, org_id: str, token: str, create: bool)
     return created["createDataset"]["dataset"]["id"]
 
 
+def materialize(dataset_id, models, tables, src_dir, token, dataset_name, receipt, mismatches_fn) -> int:
+    """Upload each table, request+await ONE run group per model (serialized, run-group-bound,
+    fail-fast), then verify the deployed row count/schema via pyoso. Returns 0 iff every model
+    reached terminal SUCCESS and the deployed data matches; nonzero otherwise. Shared by the deploy
+    and rollback paths, and (imported) by the scoring-trace publisher, so the sequence cannot drift.
+
+    `CreateStaticModelRunRequestInput` takes (datasetId, staticModelId), one model per request;
+    naming N models fans out into N runs and returns one run group that cannot certify its siblings,
+    and the sibling loads race to create the dataset's Trino schema. So each request names one model
+    and polls the EXACT run group it returned — never a model's "latest run" — with a generous 1800s
+    budget; the first non-SUCCESS stops the run.
+    """
+    for table in tables:
+        path = src_dir / f"{table}.csv"
+        url = graphql(M_URL, {"staticModelId": models[table][0]}, token)["createStaticModelUploadUrl"]
+        upload(path, url)
+        print(f"  uploaded {table}.csv ({path.stat().st_size:,} bytes, {receipt[table]['rows']:,} rows)")
+
+    statuses: dict[str, tuple[str, str]] = {}
+    for table in tables:
+        run_group = graphql(
+            M_RUN, {"input": {"datasetId": dataset_id, "staticModelId": models[table][0]}}, token,
+        )["createStaticModelRunRequest"]["runGroup"]
+        status = poll_run_group(run_group["id"], token, timeout=1800.0)
+        statuses[table] = (run_group["id"], status)
+        print(f"  {table}: run group {run_group['id']} finished {status}")
+        if status != GROUP_SUCCESS:
+            break
+    problems = run_groups_all_succeeded(statuses)
+    if problems:
+        print("deployment did not succeed — recording no occurrence:", file=sys.stderr)
+        for problem in problems:
+            print(f"  ! {problem}", file=sys.stderr)
+        return 2
+
+    deployed = {t: deployed_table_state(dataset_name, t) for t in tables}
+    mismatches = mismatches_fn(receipt, deployed)
+    if mismatches:
+        print("deployed data does not match the candidate — recording no occurrence:", file=sys.stderr)
+        for mismatch in mismatches:
+            print(f"  ! {mismatch}", file=sys.stderr)
+        return 2
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--plan", action="store_true", help="validate + print the plan; no network, no creds, no write")
     parser.add_argument("--dry-run", action="store_true", help="validate + resolve ids read-only; no mutation, no write")
-    parser.add_argument("--dir", type=Path, default=OUT_DIR)
+    parser.add_argument("--dir", type=Path, default=OUT_DIR, help="where candidate CSVs are read (a deploy)")
+    parser.add_argument("--archive-root", type=Path, default=DEFAULT_ARCHIVE_ROOT,
+                        help="the durable archive + occurrence log (independent of --dir, so publishing "
+                             "from an archive never nests)")
+    parser.add_argument("--rollback", metavar="ARTIFACT_ID",
+                        help="re-upload an already-archived artifact by its artifact_id; verifies its "
+                             "recorded hashes and records a rollback, not a deploy")
     args = parser.parse_args()
 
     dataset_name = os.environ.get("OSO_DATASET", DEFAULT_DATASET)
-    missing = [t for t in EVAL_TABLES if not (args.dir / f"{t}.csv").exists()]
-    if missing:
-        print(f"missing CSVs: {missing}. Run `uv run python -m build.serialize_evaluation --live` first.",
-              file=sys.stderr)
-        return 2
 
-    receipt = build_receipt(args.dir)
-    print_plan(receipt, dataset_name)
-
-    # Validate BEFORE any mutation — and in --plan / --dry-run too.
-    problems = validate_candidates(args.dir, ROOT)
-    if problems:
-        print("candidate validation failed:", file=sys.stderr)
-        for problem in problems:
-            print(f"  ! {problem}", file=sys.stderr)
-        return 2
+    # The operation is EXPLICIT: --rollback re-uploads verified archived bytes; otherwise a deploy
+    # builds and validates candidates from --dir at HEAD. Neither is inferred from the archive.
+    if args.rollback:
+        operation = "rollback"
+        aid = args.rollback
+        try:
+            # Provenance is reconstructed from the VERIFIED bytes and required to equal receipt.json,
+            # which SHA256SUMS does not cover — a tampered receipt cannot ride the rollback.
+            receipt, deployment = archive.verified_rollback_provenance(
+                args.archive_root, aid, {f"{t}.csv" for t in EVAL_TABLES}, build_receipt, deployment_id,
+            )
+        except RuntimeError as exc:
+            print(f"cannot roll back to {aid}: {exc}", file=sys.stderr)
+            return 2
+        src_dir = archive.artifact_dir(args.archive_root, aid)
+        print(f"rollback: artifact {aid} (generation {deployment}) verified against its recorded hashes")
+        print_plan(receipt, dataset_name)
+    else:
+        operation = "deploy"
+        missing = [t for t in EVAL_TABLES if not (args.dir / f"{t}.csv").exists()]
+        if missing:
+            print(f"missing CSVs: {missing}. Run `uv run python -m build.serialize_evaluation --live` first.",
+                  file=sys.stderr)
+            return 2
+        src_dir = args.dir
+        receipt = build_receipt(src_dir)
+        print_plan(receipt, dataset_name)
+        problems = validate_candidates(src_dir, ROOT)  # structural + canonical, BEFORE any mutation
+        if problems:
+            print("candidate validation failed:", file=sys.stderr)
+            for problem in problems:
+                print(f"  ! {problem}", file=sys.stderr)
+            return 2
+        deployment, aid = deployment_id(src_dir), None  # aid is set when the bytes are persisted
 
     if args.plan:
         return 0
@@ -380,74 +432,42 @@ def main() -> int:
               file=sys.stderr)
         return 2
 
-    rollback_target = latest_archive(args.dir)
-    if rollback_target is not None:
-        print(f"rollback target if this deploy is bad: {rollback_target}")
-
-    dataset_id = resolve_evaluation_dataset(dataset_name, org_id, token, create=not args.dry_run)
-    if dataset_id is None:
-        print(f"would create dataset {dataset_name}, then create + upload {list(EVAL_TABLES)}")
-        return 0  # dry-run only reaches here; no write
-
-    models = resolve_static_models(dataset_id, org_id, token, EVAL_TABLES, create=not args.dry_run)
-    print(f"dataset {dataset_name} = {dataset_id}")
+    previous = archive.current_live_artifact_id(args.archive_root)
+    if previous is not None:
+        print(f"currently live artifact (the rollback target if this is bad): {previous}")
 
     if args.dry_run:
+        # READ-ONLY resolution — create=False — so a dry run creates NOTHING and writes nothing.
+        dataset_id = resolve_evaluation_dataset(dataset_name, org_id, token, create=False)
+        if dataset_id is None:
+            print(f"would create dataset {dataset_name}, then create + upload {list(EVAL_TABLES)}")
+            return 0
+        models = resolve_static_models(dataset_id, org_id, token, EVAL_TABLES, create=False)
+        print(f"dataset {dataset_name} = {dataset_id}")
         for table in EVAL_TABLES:
             model_id = models[table][0]
             verb = "would upload" if model_id else "would create + upload"
             print(f"  {verb} {table}.csv ({receipt[table]['rows']:,} rows) -> {model_id}")
-        return 0  # NO write on a dry run
+        return 0  # NO write, NO create
 
-    for table in EVAL_TABLES:
-        path = args.dir / f"{table}.csv"
-        model_id = models[table][0]
-        url = graphql(M_URL, {"staticModelId": model_id}, token)["createStaticModelUploadUrl"]
-        upload(path, url)
-        print(f"  uploaded {table}.csv ({path.stat().st_size:,} bytes, {receipt[table]['rows']:,} rows)")
+    # REAL publish. Persist the candidate bytes content-addressed BEFORE any create-capable platform
+    # call — `resolve_*` with create=True can create the dataset or static models, so the artifact
+    # must already exist on disk first. A rollback's bytes are already archived (verified above).
+    if operation == "deploy":
+        aid = archive.ensure_artifact(args.archive_root, archived_files(src_dir), receipt, deployment)
 
-    # ONE RUN REQUEST PER MODEL, awaited in turn — the same discipline `build/publish_registry.py`
-    # uses, down to its shared run-group-bound `poll_run_group`. `CreateStaticModelRunRequestInput`
-    # takes (datasetId, staticModelId), one model per request; a request naming N models would fan
-    # out into N runs and return only one run group, which cannot certify its siblings, and the
-    # sibling loads would RACE to create the dataset's Trino schema. Both were observed on the first
-    # publish (2026-08-25). Serialize, and poll the EXACT run group this request returned — never a
-    # model's "latest run", which could be an earlier unrelated success that would pass the poll
-    # before this run has even appeared. The 1800s budget keeps the more generous patience this
-    # maintainer deploy has always allowed while sharing the one helper. Fail fast: the first model
-    # that does not reach SUCCESS stops the deploy rather than uploading over a table whose sibling
-    # is already broken.
-    statuses: dict[str, tuple[str, str]] = {}
-    for table in EVAL_TABLES:
-        run_group = graphql(
-            M_RUN,
-            {"input": {"datasetId": dataset_id, "staticModelId": models[table][0]}},
-            token,
-        )["createStaticModelRunRequest"]["runGroup"]
-        # A run request is only ACCEPTED here; wait for THIS run group to reach a terminal state.
-        status = poll_run_group(run_group["id"], token, timeout=1800.0)
-        statuses[table] = (run_group["id"], status)
-        print(f"  {table}: run group {run_group['id']} finished {status}")
-        if status != GROUP_SUCCESS:
-            break
-    problems = run_groups_all_succeeded(statuses)
-    if problems:
-        print("deployment did not succeed — not archiving:", file=sys.stderr)
-        for problem in problems:
-            print(f"  ! {problem}", file=sys.stderr)
+    dataset_id = resolve_evaluation_dataset(dataset_name, org_id, token, create=True)
+    models = resolve_static_models(dataset_id, org_id, token, EVAL_TABLES, create=True)
+    print(f"dataset {dataset_name} = {dataset_id}")
+
+    if materialize(dataset_id, models, EVAL_TABLES, src_dir, token, dataset_name, receipt, deployment_mismatches):
         return 2
 
-    deployed = {t: deployed_table_state(dataset_name, t) for t in EVAL_TABLES}
-    mismatches = deployment_mismatches(receipt, deployed)
-    if mismatches:
-        print("deployed data does not match the candidate — not archiving:", file=sys.stderr)
-        for mismatch in mismatches:
-            print(f"  ! {mismatch}", file=sys.stderr)
-        return 2
-
-    archive = archive_deployment(args.dir, receipt)
-    print(f"\nevery load run SUCCESS and deployed data verified; archived this deployment (immutable) at "
-          f"{archive} — the rollback target for the next deploy")
+    # Occurrence LAST — only after the deployed state verified. A failed deploy leaves at most an
+    # unreferenced staged artifact (harmless); it never records a wrong live state.
+    archive.record_occurrence(args.archive_root, operation, deployment, aid, previous)
+    print(f"\nevery load run SUCCESS and deployed data verified; recorded {operation} of artifact {aid} "
+          f"(generation {deployment}) — now the live state in {args.archive_root}")
     return 0
 
 
