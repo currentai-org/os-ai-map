@@ -23,6 +23,15 @@ scored row means the repository-owned evaluator computed the same score `check_r
 scored row with `reproduces_recorded` anything but `True` is a `check_rubric` disagreement, and this
 publisher REFUSES to upload it — a disagreement is resolved in the evaluator, never deployed around.
 
+## Canonical equivalence is the authority
+
+The structural checks above prove a candidate is internally consistent; they cannot prove it is the
+COMPLETE, AUTHENTIC trace. So before any mutation the publisher re-runs the builder in memory
+(`build.axis_scoring_trace.resolve()`) and requires the candidate to be byte-for-byte that output —
+every product, fact, and rule-walk row, the current `declaration_version_id` and `source_git_sha`,
+and every result disposition. A truncated subset or a fabricated/stale identity is rejected here,
+and there is no second evaluation that could drift from the builder.
+
 ## No writes before the dry-run returns; rollback is by BYTES
 
 Like the evaluation publisher: `--plan` (offline) and `--dry-run` (read-only id resolution) validate
@@ -123,11 +132,13 @@ def _read_rows(path: Path) -> tuple[list[str], list[dict]]:
         return list(reader.fieldnames or []), list(reader)
 
 
-def validate_candidates(out_dir: Path = OUT_DIR) -> list[str]:
-    """Every check that must pass before a byte is uploaded. Returns a list of problems (empty = ok).
+def structural_problems(out_dir: Path = OUT_DIR) -> list[str]:
+    """The cheap, well-messaged structural checks. Returns a list of problems (empty = ok).
 
-    Run in --plan and --dry-run as well as a real publish: a candidate that fails here is never
-    published, and the failure is the same whether or not credentials are present.
+    These are NOT the authority — canonical equivalence (below) is — but they run first because a
+    header, empty-table, identity, grain, dual-run, or orphan failure is far more legible reported
+    on its own than as a wall of canonical-row diffs. A candidate that passes these is still only
+    published if it is byte-for-byte the trace this repository's builder produces.
     """
     errors: list[str] = []
     parsed: dict[str, tuple[list[str], list[dict]]] = {}
@@ -191,6 +202,76 @@ def validate_candidates(out_dir: Path = OUT_DIR) -> list[str]:
     return errors
 
 
+def canonical_equivalence_problems(
+    out_dir: Path = OUT_DIR, root: Path = ROOT, allow_dirty: bool = False
+) -> list[str]:
+    """The authority: the candidate must be EXACTLY the trace this repository's builder produces.
+
+    Structural checks prove a candidate is internally consistent; they cannot prove it is complete
+    or authentic. A truncated-but-consistent subset (one product, one fact, one rule, one result)
+    passes them, and any constant `declaration_version_id` / `source_git_sha` passes them — nothing
+    ties the bytes to *this* repository at *this* commit.
+
+    So, before any mutation, re-run the canonical builder in memory and compare. The expected rows
+    are written through the very `write_tables` the candidate was written with and read back with
+    the same reader, so the comparison is over identical serialization — then each table is an
+    order-independent multiset of `canonical_row` strings. Equality proves, in one gate: the exact
+    complete population (no omitted product, fact, or rule; no invented row), every value and result
+    disposition and `reproduces_recorded` flag, and the current declaration identity + source commit
+    (both are columns on every row, so a fabricated or stale id mismatches every row). There is no
+    second evaluation here — the authority is the builder itself.
+    """
+    import collections
+    import tempfile
+
+    from build.axis_scoring_trace import canonical_row, resolve
+    from build.axis_scoring_trace import TABLES as TRACE_SPEC_LOCAL
+    from build.serialize_registry import write_tables
+
+    try:
+        expected = resolve(root, allow_dirty=allow_dirty)
+    except Exception as exc:  # DirtyWorktreeError, a recipe error, or a contract breach
+        return [f"cannot rebuild the canonical trace to compare against (publish from a clean commit): {exc}"]
+
+    problems: list[str] = []
+    with tempfile.TemporaryDirectory() as tmp:
+        expected_dir = Path(tmp)
+        write_tables(expected, expected_dir, TRACE_SPEC_LOCAL)
+        for table in TRACE_TABLES:
+            _eh, expected_rows = _read_rows(expected_dir / f"{table}.csv")
+            _ch, candidate_rows = _read_rows(out_dir / f"{table}.csv")
+            expected_canon = collections.Counter(canonical_row(table, r) for r in expected_rows)
+            candidate_canon = collections.Counter(canonical_row(table, r) for r in candidate_rows)
+            if candidate_canon == expected_canon:
+                continue
+            omitted = expected_canon - candidate_canon
+            invented = candidate_canon - expected_canon
+            detail = []
+            if omitted:
+                detail.append(f"{sum(omitted.values())} row(s) the builder produced are missing "
+                              f"(e.g. {next(iter(omitted))[:160]}…)")
+            if invented:
+                detail.append(f"{sum(invented.values())} row(s) the builder did not produce are present "
+                              f"(e.g. {next(iter(invented))[:160]}…)")
+            problems.append(
+                f"{table} is not the canonical trace this repository produces: " + "; ".join(detail)
+            )
+    return problems
+
+
+def validate_candidates(out_dir: Path = OUT_DIR, root: Path = ROOT, allow_dirty: bool = False) -> list[str]:
+    """Every check that must pass before a byte is uploaded (empty = ok).
+
+    Structural checks first, for legible messages; then canonical equivalence, the final authority.
+    Run in --plan and --dry-run as well as a real publish — a candidate that fails here is never
+    published, and the failure is the same whether or not credentials are present.
+    """
+    problems = structural_problems(out_dir)
+    if problems:
+        return problems
+    return canonical_equivalence_problems(out_dir, root, allow_dirty)
+
+
 def deployment_id(out_dir: Path = OUT_DIR) -> str:
     """A stable, immutable id for the candidate: the declaration identity it carries.
 
@@ -208,6 +289,14 @@ def archive_deployment(out_dir: Path, receipt: dict) -> Path:
     """Copy the just-deployed CSVs + completed receipt into an immutable per-deployment directory.
 
     Refuses to overwrite an existing archive: a deployment id is written exactly once.
+
+    KNOWN LIMITATION (non-blocking; shared with build/publish_evaluation.py, follow-up before the
+    rollback workflow is relied on): the archive root is derived from `out_dir`, so re-publishing a
+    prior archive's bytes with `--dir <that-archive>` would nest a new archive *inside* it and would
+    not update the canonical `build/evaluation/scoring-trace-deployments/` root's notion of what is
+    live. Deployment identity (the declaration) and deployment occurrence (a publish event) are
+    conflated. First deploys are unaffected; a rollback-from-archive flow needs the archive root
+    decoupled from the read `--dir` first.
     """
     target = deployments_dir(out_dir) / deployment_id(out_dir)
     if target.exists():
