@@ -81,23 +81,28 @@ verifies. Any partial failure returns nonzero and records no occurrence.
 Record the `dataset_id`, each static-model id, and the `declaration_version_id` / `artifact_id` you
 published from in the deploy note.
 
-### Durable persistence (before this becomes a rollback you rely on)
+### Durable persistence — the executable sequence
 
-The local archive is git-ignored and per-session ephemeral. Persist the artifact durably to a GitHub
-Release **before** publishing, and commit the occurrence **after** verification, via the standalone
-`build/release_persistence.py` (see `docs/operations/evaluator-version-cutover.md` §9):
+The local archive is git-ignored and per-session ephemeral, so the deployable order is
+**stage → Release → publish → record** (`build/release_persistence.py`, standalone; see
+`docs/operations/evaluator-version-cutover.md` §9). The stage step is what makes "persist before the
+platform mutation" executable — it creates the content-addressed artifact with no OSO call:
 
 ```bash
-uv run python -m build.release_persistence --publisher scoring-trace \
-    --archive-root build/evaluation/scoring-trace-deployments --artifact-id <artifact_id> --dry-run
-uv run python -m build.release_persistence --publisher scoring-trace \
-    --archive-root build/evaluation/scoring-trace-deployments --artifact-id <artifact_id>
+AR=build/evaluation/scoring-trace-deployments
+uv run python -m build.publish_scoring_trace --stage-artifact --dir build/evaluation --archive-root $AR  # prints <artifact_id>
+uv run python -m build.release_persistence persist --publisher scoring-trace --archive-root $AR --artifact-id <artifact_id>
+uv run python -m build.publish_scoring_trace --dir build/evaluation --archive-root $AR                    # the OSO deploy
+uv run python -m build.release_persistence record-occurrence --publisher scoring-trace --archive-root $AR
 ```
 
-It packages the CSV bundle + `receipt.json` + `SHA256SUMS` as assets, tags the release
-`artifact/scoring-trace/<artifact_id>` (refusing to replace an existing tag), and writes the durable
-occurrence file under `warehouse/deployments/occurrences/` for the reconciliation PR to commit.
-Needs a `contents: write` token (`GITHUB_TOKEN`); `--dry-run` needs none.
+`persist` packages the CSV bundle + `receipt.json` + `SHA256SUMS` (running the provenance gate first),
+creates a **draft**, uploads, verifies the remote asset set, and only then publishes the tag
+`artifact/scoring-trace/<artifact_id>` — refusing to replace a completed release, retriable on a
+partial upload. `record-occurrence` writes the durable append-only file under
+`warehouse/deployments/occurrences/` for the reconciliation PR to commit. To roll back in a fresh
+container, `release_persistence restore …` recovers the artifact from its Release first. Needs a
+`contents: write` token (`GITHUB_TOKEN`); `--stage-artifact` and `persist --dry-run` need none.
 
 ## 4. Reconcile the inventory with reality
 

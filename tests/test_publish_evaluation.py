@@ -311,6 +311,27 @@ def test_rollback_with_altered_bytes_is_rejected_and_records_nothing(tmp_path, m
     assert P.archive.occurrences(root) == [], "a rejected rollback records no occurrence"
 
 
+def test_stage_artifact_persists_locally_and_touches_no_network(tmp_path, monkeypatch):
+    """`--stage-artifact` validates + persists the content-addressed artifact and exits, with NO OSO
+    resolution or mutation — the network-free first step of stage -> Release -> publish."""
+    _valid_candidates(tmp_path)
+    root = tmp_path / "archive"
+
+    def _no_network(*a, **k):
+        raise AssertionError("--stage-artifact must not touch OSO")
+
+    monkeypatch.setattr(P, "graphql", _no_network)
+    monkeypatch.setattr(P, "resolve_evaluation_dataset", _no_network)
+    monkeypatch.delenv("OSO_API_KEY", raising=False)
+    monkeypatch.delenv("OSO_ORG_ID", raising=False)
+    monkeypatch.setattr(sys, "argv",
+                        ["publish_evaluation", "--stage-artifact", "--dir", str(tmp_path), "--archive-root", str(root)])
+    assert P.main() == 0
+    aid = P.archive.artifact_id(P.archived_files(tmp_path))
+    P.archive.verify_artifact(root, aid)  # the artifact was persisted and verifies
+    assert P.archive.current_live(root) is None, "staging records no occurrence"
+
+
 def test_dataset_and_model_creation_cannot_precede_artifact_persistence(tmp_path, monkeypatch):
     """The candidate bytes must be archived BEFORE any create-capable platform call — resolve_* with
     create=True can create the dataset or static models."""

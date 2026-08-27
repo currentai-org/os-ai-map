@@ -110,26 +110,27 @@ bytes are persisted **before** any create-capable platform call, and the append-
 or times out, or a deployed count/schema mismatch — returns nonzero and records no occurrence.**
 Record the `dataset_id`, `model_id`, and the `artifact_id` with the deploy note.
 
-### Durable persistence (before this becomes a rollback you rely on)
+### Durable persistence — the executable sequence
 
-The local archive is git-ignored and per-session ephemeral. Persist the artifact to a GitHub Release
-**before** publishing, and commit the occurrence **after** verification, via the standalone
-`build/release_persistence.py` (see `docs/operations/evaluator-version-cutover.md` §9):
+The local archive is git-ignored and per-session ephemeral, so the deployable order is
+**stage → Release → publish → record** (`build/release_persistence.py`, standalone; see
+`docs/operations/evaluator-version-cutover.md` §9). The stage step makes "persist before the platform
+mutation" executable — it creates the content-addressed artifact with no OSO call:
 
 ```bash
-uv run python -m build.release_persistence --publisher evaluation \
-    --archive-root build/evaluation/deployments --artifact-id <artifact_id> --dry-run
-uv run python -m build.release_persistence --publisher evaluation \
-    --archive-root build/evaluation/deployments --artifact-id <artifact_id>
+AR=build/evaluation/deployments
+uv run python -m build.publish_evaluation --stage-artifact --dir build/evaluation --archive-root $AR  # prints <artifact_id>
+uv run python -m build.release_persistence persist --publisher evaluation --archive-root $AR --artifact-id <artifact_id>
+uv run python -m build.publish_evaluation --dir build/evaluation --archive-root $AR                    # the OSO deploy
+uv run python -m build.release_persistence record-occurrence --publisher evaluation --archive-root $AR
 ```
 
-It packages the CSV bundle + `receipt.json` + `SHA256SUMS`, tags the release
-`artifact/evaluation/<artifact_id>` (refusing to replace an existing tag), and writes the durable
-occurrence file under `warehouse/deployments/occurrences/` for the reconciliation PR to commit. Needs
-a `contents: write` token (`GITHUB_TOKEN`); `--dry-run` needs none.
-
-**Rollback** re-uploads a persisted artifact by id: `--rollback <artifact_id>` (it verifies the
-archived bytes' hashes and reconstructs provenance from them before re-uploading).
+`persist` packages the CSV bundle + `receipt.json` + `SHA256SUMS` (provenance-gated), creates a
+**draft**, uploads, verifies the remote asset set, and only then publishes the tag
+`artifact/evaluation/<artifact_id>` — refusing to replace a completed release, retriable on a partial
+upload. `record-occurrence` writes the durable append-only file under
+`warehouse/deployments/occurrences/` for the reconciliation PR to commit. Needs a `contents: write`
+token (`GITHUB_TOKEN`); `--stage-artifact` and `persist --dry-run` need none.
 
 ## Rollback — re-upload the previous deployment's archived bytes
 

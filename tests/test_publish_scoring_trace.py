@@ -434,6 +434,26 @@ def test_ensure_artifact_writes_a_verifiable_content_addressed_archive(tmp_path)
     assert P.archive.current_live(root) is None  # ensure_artifact alone records no occurrence
 
 
+def test_stage_artifact_persists_locally_and_touches_no_network(tmp_path, monkeypatch):
+    _synthetic_candidates(tmp_path)
+    root = tmp_path / "archive"
+
+    def _no_network(*a, **k):
+        raise AssertionError("--stage-artifact must not touch OSO")
+
+    monkeypatch.setattr(P, "canonical_equivalence_problems", lambda *a, **k: [])  # tested elsewhere
+    monkeypatch.setattr(P, "graphql", _no_network)
+    monkeypatch.setattr(P, "resolve_evaluation_dataset", _no_network)
+    monkeypatch.delenv("OSO_API_KEY", raising=False)
+    monkeypatch.delenv("OSO_ORG_ID", raising=False)
+    monkeypatch.setattr(sys, "argv",
+                        ["publish_scoring_trace", "--stage-artifact", "--dir", str(tmp_path), "--archive-root", str(root)])
+    assert P.main() == 0
+    aid = P.archive.artifact_id(P.archived_files(tmp_path))
+    P.archive.verify_artifact(root, aid)
+    assert P.archive.current_live(root) is None, "staging records no occurrence"
+
+
 def test_the_trace_archive_root_is_its_own_never_the_evaluation_publishers(tmp_path):
     # Default archive roots are distinct, so neither publisher reads the other's archives.
     assert P.DEFAULT_ARCHIVE_ROOT.name == "scoring-trace-deployments"

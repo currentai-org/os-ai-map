@@ -383,9 +383,33 @@ def main() -> int:
     parser.add_argument("--rollback", metavar="ARTIFACT_ID",
                         help="re-upload an already-archived artifact by its artifact_id; verifies its "
                              "recorded hashes and records a rollback, not a deploy")
+    parser.add_argument("--stage-artifact", action="store_true",
+                        help="validate candidates and persist the content-addressed artifact locally, "
+                             "print its artifact_id, and exit — NO OSO resolution or mutation. This is "
+                             "the network-free first step of stage -> Release -> publish.")
     args = parser.parse_args()
 
     dataset_name = os.environ.get("OSO_DATASET", DEFAULT_DATASET)
+
+    if args.stage_artifact:
+        # Network-free: build + validate the candidates and persist the artifact so it exists on disk
+        # (and can be pushed to a durable Release) BEFORE any OSO call.
+        missing = [t for t in EVAL_TABLES if not (args.dir / f"{t}.csv").exists()]
+        if missing:
+            print(f"missing CSVs: {missing}. Run `uv run python -m build.serialize_evaluation --live` first.",
+                  file=sys.stderr)
+            return 2
+        receipt = build_receipt(args.dir)
+        print_plan(receipt, dataset_name)
+        problems = validate_candidates(args.dir, ROOT)
+        if problems:
+            print("candidate validation failed:", file=sys.stderr)
+            for problem in problems:
+                print(f"  ! {problem}", file=sys.stderr)
+            return 2
+        aid = archive.ensure_artifact(args.archive_root, archived_files(args.dir), receipt, deployment_id(args.dir))
+        print(f"staged artifact {aid} at {archive.artifact_dir(args.archive_root, aid)} — no OSO mutation")
+        return 0
 
     # The operation is EXPLICIT: --rollback re-uploads verified archived bytes; otherwise a deploy
     # builds and validates candidates from --dir at HEAD. Neither is inferred from the archive.
