@@ -30,17 +30,17 @@ def test_maturity_is_not_a_gap_type():
         assert "maturity" not in _stage_and_gaps(rows, w)["gaps"]
 
 
-def test_depth_gap_at_stage_4_only():
+def test_resiliency_gap_at_stage_4_only():
     # One mature fully-open product: quality is proven, count is not.
     sg = _stage_and_gaps([_p("open_source", 5, 5)], {"adopt": 0.5, "cap": 0.5})
-    assert sg["num"] == 4 and sg["gaps"] == ["depth"]
+    assert sg["num"] == 4 and sg["gaps"] == ["resiliency"]
     # Four of them clears Stage 5, which carries no gaps at all.
     sg5 = _stage_and_gaps([_p("open_source", 5, 5) for _ in range(4)], {"adopt": 0.5, "cap": 0.5})
-    assert sg5["num"] == 5 and "depth" not in sg5["gaps"]
-    # Below Stage 4 the stage number already says no frontier open option exists, so depth
+    assert sg5["num"] == 5 and "resiliency" not in sg5["gaps"]
+    # Below Stage 4 the stage number already says no frontier open option exists, so resiliency
     # would only restate it — this is the ubiquity the old maturity gap had.
     for rows in ([_p("open_source", 2, 2)], [_p("open_weights", 5, 5)], [_p("closed", 1, 1)]):
-        assert "depth" not in _stage_and_gaps(rows, {"adopt": 0.5, "cap": 0.5})["gaps"]
+        assert "resiliency" not in _stage_and_gaps(rows, {"adopt": 0.5, "cap": 0.5})["gaps"]
 
 
 def test_capability_and_adoption_both_fire_when_both_apply():
@@ -251,7 +251,7 @@ def test_descriptions_block_present_and_sourced():
     # stages keyed 0-5, gaps keyed by name, categories keyed by slug from the source yaml
     assert set(d["stages"]) == {"0", "1", "2", "3", "4", "5"}
     assert "void" in d["gaps"] and "openness" in d["gaps"]
-    assert "depth" in d["gaps"] and "maturity" not in d["gaps"]
+    assert "resiliency" in d["gaps"] and "maturity" not in d["gaps"]
     # the two score tiers ship their own legend copy, so a consumer never hardcodes 4.5/4.0
     assert set(d["tiers"]) == {"leading", "strong"}
     assert d["categories"]["base_pretrained"] == "Foundation models trained from scratch."
@@ -386,7 +386,7 @@ def test_disclosure_gap_flagged_even_at_top_stage():
 def test_disclosure_gap_coexists_with_stage_gaps():
     rows = [_pd("open", 5), _pd("open", 3)]  # one mature open corpus -> stage 4
     sg = _stage_and_gaps(rows, {"adopt": 1.0, "cap": 0.0}, disclosure=True)
-    assert sg["num"] == 4 and sg["gaps"] == ["depth", "disclosure"]
+    assert sg["num"] == 4 and sg["gaps"] == ["resiliency", "disclosure"]
 
 
 def test_no_disclosure_gap_when_not_declared():
