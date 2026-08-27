@@ -172,14 +172,17 @@ Rollback re-uploads the **previous generation's archived bytes** in reverse depl
 
 - **§0.1 archive-root bug** — re-publishing from an archive via `--dir` currently nests a new archive
   and does not update the canonical archive root.
-- **Archive persistence.** Archives live under `build/evaluation/…deployments/`, which is
-  **git-ignored and per-session ephemeral**. In a fresh container the prior archives do not exist, so
-  rollback-by-bytes only works within the deploying session unless the archives are deliberately
-  retained. **Recommendation: durable immutable object storage, or release assets, with a recorded
-  SHA-256 for each archived file.** Ordinary CI artifacts, with finite retention, are **not
-  sufficient** for a rollback the cutover must be able to rely on. This is a separate prerequisite
-  from §0.1 and must be settled before execution: retain the two pre-cutover generations and the
-  cutover session's own archives durably, or download the deployed bytes before overwriting them.
+- **Archive persistence.** The local archives under `build/evaluation/…deployments/` are
+  **git-ignored and per-session ephemeral**, so rollback-by-bytes needs a durable home.
+  `build/release_persistence.py` provides it: it packages a content-addressed artifact (CSV bundle +
+  `receipt.json` + `SHA256SUMS`) into a **GitHub Release** tagged `artifact/<publisher>/<artifact_id>`,
+  refusing to replace an existing tag, and it writes durable append-only **occurrence files** under
+  `warehouse/deployments/occurrences/<publisher>/` for the reconciliation PR to commit — durable bytes
+  in Releases, auditable transitions in git history, no expiring CI artifacts and no new storage
+  credentials (just a `contents: write` token). It is a **standalone step**: the runbook persists the
+  artifact to a Release **before** running the publisher, and appends the committed occurrence
+  **after** the publisher verifies. Before the cutover, persist recoverable artifacts for **both**
+  currently-live generations (`232015a76ecc` eval, `eb828b57b14d` trace) this way.
 
 ## 10. Post-deploy verification and lockstep reconciliation
 
