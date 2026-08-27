@@ -115,6 +115,18 @@ def test_unknown_publisher_is_rejected():
         RP.release_tag("nope", "a" * 64)
 
 
+def test_published_release_url_encodes_the_tag_slashes():
+    """The tag's slashes must be percent-encoded in the REST path, or GitHub returns a false 404 —
+    which would silently break completed-release detection, restore, and occurrence recording."""
+    captured = {}
+    client = RP.GitHubReleases("tok", "currentai-org/os-ai-map")
+    client._request = lambda method, url, **kw: (captured.update(url=url) or (200, {"draft": False}))
+    tag = RP.release_tag("evaluation", "a" * 64)
+    client.published_release(tag)
+    assert f"/releases/tags/artifact%2Fevaluation%2F{'a' * 64}" in captured["url"]
+    assert "tags/artifact/evaluation" not in captured["url"]  # no raw slashes survive in the tag path
+
+
 # --- packaging goes through the provenance gate ---------------------------------------------------
 
 

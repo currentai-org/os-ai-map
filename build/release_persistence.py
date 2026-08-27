@@ -44,6 +44,7 @@ import tempfile
 import urllib.error
 import urllib.request
 from pathlib import Path
+from urllib.parse import quote
 
 from build import deployment_archive as DA
 
@@ -135,8 +136,10 @@ class GitHubReleases:
             return response.status, (json.loads(body) if body else None)
 
     def published_release(self, tag):
+        # The tag carries slashes (`artifact/<publisher>/<id>`); a slash in a REST path parameter must
+        # be percent-encoded to %2F, or GitHub reads a different path and returns a false 404.
         try:
-            _s, data = self._request("GET", f"{API}/repos/{self.repo}/releases/tags/{tag}")
+            _s, data = self._request("GET", f"{API}/repos/{self.repo}/releases/tags/{quote(tag, safe='')}")
             return data if not data.get("draft") else None
         except urllib.error.HTTPError as error:
             if error.code == 404:
