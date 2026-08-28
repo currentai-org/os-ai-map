@@ -11,6 +11,11 @@ in-repo consumers, schedules) was read from `assets.yaml` on 2026-08-28; re-deri
 
 ## The lockstep, per move (from the plan §recipe)
 
+0. **[freshness / supersession pre-check — do this first]** Confirm the source is still the **live**
+   source and not a stale snapshot superseded by a subscribed/newer dataset (check `assets.yaml`
+   `reads`, the `current-state-dag.md` external-source edges, and recent data/scheduled-run). If it is
+   superseded, the move is a **re-model over the live source + retire the stale table**, not a byte
+   relocation — see `catalog.pypi_downloads` in §2 and the plan's Freshness section.
 1. **[maintainer / platform]** Create the target table alongside the source (new dataset, or new
    registry static model), source left live and unchanged.
 2. **[maintainer / platform, read-only ok]** Verify the target against the source via `pyoso`: row
@@ -64,6 +69,13 @@ Scheduled: demonstrate a `SCHEDULED` run on the target `catalog.*` before repoin
 `github_events` and `daily` are scheduled — the scheduling gate (step 2) applies: a successful
 `SCHEDULED` run on the `observations.*` target must be shown before canonical consumers repoint. This
 is the specific lesson the failed semanticscholar pilot encoded.
+
+**`catalog.pypi_downloads` is NOT a byte relocation (freshness pre-check, step 0).** It is a stale
+static manual-upload snapshot (`2025-05 → 2026-05`) superseded by the subscribed live source
+`oso.pypi_downloads.daily_downloads_by_package_country` (same grain, `2026-06 → present`). Disposition
+(settled 2026-08-28, forward-only — old history not needed): create `observations.pypi_downloads` as a
+**live model over the subscribed source**, repoint `pypi-geo-trends` to it, and **retire the static
+`catalog.pypi_downloads` entirely**. No copy, no history union. See the plan's Freshness section.
 
 ## 3. `catalog.* → registry` — ownership transitions (NOT plain moves)
 

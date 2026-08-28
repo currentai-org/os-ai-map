@@ -36,7 +36,7 @@ Derived at write time from `assets.yaml` via `build.assets` (not hand-listed), a
 | `entities.*` → `catalog` (4) | `repos`, `projects`, `packages`, `models` | §11.1 line 1461; §11.6 — "the discovery set not yet scored," AD-3's definition of catalog |
 | `events.github_events` → `observations` (1) | `github_events` | §11.1 line 1462 — artifact-level measurement grain |
 | `metrics.daily` → `observations` (1) | `daily` | §11.1 line 1463 — already long-format `metric`/`value` |
-| `catalog.pypi_downloads` → `observations` (1) | `pypi_downloads` | §2 line 48 — "`pypi_downloads` is a measurement" |
+| `catalog.pypi_downloads` → `observations` (1) | `pypi_downloads` | §2 line 48 — "`pypi_downloads` is a measurement". **NOT a byte relocation — a supersession re-model; see §Freshness below.** |
 | `catalog.*` → `registry` (3) | `foundation_model_repos`, `osai_subcategory_mapping`, `taxonomy_crosswalk` | §2 line 48 — "curator-controlled and belong in `registry`". **These are ownership transitions, not SQL repoints — see §Registry ownership below.** |
 | analytical `scores.*` → `evaluation` (6) | `dependency_graph`, `fragility`, `ossd_coverage`, `project_summary`, `repos_summary`, `stack_contributors` | §11.1 lines 1464 / 1473–1476 — the retained long-tail analytical chain; exactly the six files the target `evaluation/` layout lists |
 
@@ -97,6 +97,36 @@ transition** whose unit must specify:
 
 Until a unit does all five, the table stays where it is. This is a larger unit than a namespace move
 and is planned as such.
+
+## Freshness / supersession pre-check (before ANY move)
+
+`target_namespace` records where a table's *kind* belongs — not whether that specific table is still
+the **live source**. A table can be correctly classified by kind yet be a **stale snapshot superseded
+by a newer subscribed/deployed source**, in which case relocating its bytes would enshrine dead data
+in the target namespace. So every candidate gets a freshness/supersession check before it is eligible
+to move — derivable from the repo's own Phase-0 mapping (`current-state-dag.md` external-source edges,
+`warehouse/audits/platform_models.json`, `assets.yaml` `reads`): is the table live (recent
+scheduled run / current data), or is there an `oso.*` subscription or newer model that already
+supersedes it?
+
+**`catalog.pypi_downloads` is exactly this case, and its plan entry is corrected here.** It is a
+**static, manual-upload snapshot** (`day, package, country_code, downloads`), frozen `2025-05-01 →
+2026-05-01` (1.6M rows), feeding only the `pypi-geo-trends` notebook. It has been **superseded by a
+subscribed dataset**: `oso.pypi_downloads.daily_downloads_by_package_country` carries the identical
+grain, live (`2026-06-01 → present`, ~228M rows) — the source the deployed `signal_pypi`/
+`signal_packages` models already read. So the move is **not** a byte relocation; it is a
+**supersession re-model**:
+
+- create `observations.pypi_downloads` as a **live model over the subscribed source**
+  (`oso.pypi_downloads.daily_downloads_by_package_country`), giving the repo a namespaced,
+  fresh handle instead of a dead copy;
+- repoint the `pypi-geo-trends` notebook to it;
+- **retire** the stale static `catalog.pypi_downloads` entirely.
+
+**History decision (settled 2026-08-28):** the old snapshot's prior-year data (`2025-05 → 2026-05`)
+is **not needed** — the re-model is **forward-only** off the live source, and the static table is
+**removed entirely**, not preserved as a historical union. So this is a clean supersession: drop the
+stale table, stand up the live model, repoint the notebook.
 
 ## Dependency order
 
