@@ -113,6 +113,10 @@ A reader must move (or be repointed) no earlier than the table it reads. Derived
 
 ## Per-move execution recipe — lockstep, source-preserving (each move its own reviewed unit)
 
+> The concrete, ordered, per-table steps (datasets, in-repo consumers to repoint, scheduling checks)
+> live in `docs/operations/phase5-execution-runbook.md`. This section is the generic recipe.
+
+
 Modeled on the proven Phase-2 `repo_state`/`hub_state` → `artifact_state` twinning, never a
 cut-over-in-place:
 
