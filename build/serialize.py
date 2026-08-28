@@ -456,6 +456,16 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
         released = release_date(version)
     if contract is None:
         contract = PAYLOAD_CONTRACT
+    # A caller cannot assert a shape claim the code does not hold. Below 1 every consumer
+    # rejects the payload outright; above PAYLOAD_CONTRACT it claims a shape this build does
+    # not produce, which would make every consumer refuse a payload that is in fact fine.
+    if not isinstance(contract, int) or isinstance(contract, bool) or contract < 1:
+        raise ValueError(f"contract must be an integer >= 1, got {contract!r}")
+    if contract > PAYLOAD_CONTRACT:
+        raise ValueError(
+            f"contract {contract} claims a shape this build does not produce "
+            f"(PAYLOAD_CONTRACT is {PAYLOAD_CONTRACT}); bump the constant instead"
+        )
     orgs, cats, prods, scores = (sources["organizations"], sources["categories"],
                                  sources["products"], sources["scores"])
     taxonomy = sources["taxonomy"]
