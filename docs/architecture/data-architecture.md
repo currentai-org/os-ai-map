@@ -1392,9 +1392,11 @@ warehouse/
   assets.yaml                          the only registry
 
   models/
-    catalog/
-      openllm_leaderboard.py             renamed in Phase 5
-      hf_model_repo_links.py             renamed in Phase 5
+    catalog/                             static reference (STATIC_MODEL dataset)
+      model_benchmarks.py                Open LLM Leaderboard; rename WITHDRAWN (#393)
+      model_repos.py                     HF-to-GitHub links; rename WITHDRAWN (#393)
+    entities/                            kind: catalog, but a scheduled USER_MODEL dataset — stays put (#393)
+      repos.sql projects.sql packages.sql models.sql
     observations/
       source_runs                        run contract; a Python control-plane snapshot now
                                          (build/snapshot_source_runs.py), a live-emitter model later (#355)
@@ -1406,6 +1408,9 @@ warehouse/
       axis_facts.sql
       axis_rule_matches.sql
       axis_results.sql
+    scores/                              kind: evaluation, but a scheduled USER_MODEL dataset — stays put (#393)
+      dependency_graph.sql fragility.sql investment_ranking.sql ossd_coverage.sql
+      project_summary.sql repos_summary.sql stack_contributors.sql taxonomy.sql
     releases/
       manifest.sql
       product_axis_scores.sql
@@ -1432,8 +1437,8 @@ warehouse/
 
   data/
     catalog/
-      openllm_leaderboard.csv            renamed in Phase 5
-      hf_model_repo_links.csv            renamed in Phase 5
+      model_benchmarks.csv               rename WITHDRAWN (#393)
+      model_repos.csv                    rename WITHDRAWN (#393)
       foundation_model_repos.csv
       top_models.csv                     fetcher interface, not an orphan
       tracked_models.csv                 fetcher interface, not an orphan
@@ -1456,21 +1461,37 @@ Retaining it does NOT require a sixth kind. Checked against actual grains, every
 onto the five namespaces of section 4 — the earlier `analysis` proposal was accommodating
 legacy naming, not a real semantic gap:
 
-| Today | Target | Why |
+| Today | Kind | Why |
 |---|---|---|
 | `entities.repos`, `.projects`, `.packages`, `.models` | `catalog` | Discovered from the goodailist roster, not curated. `long-tail-explorer` calls them "the discovery set not yet scored in the gap map", which is AD-3's definition of catalog. |
 | `events.github_events` | `observations` | Grain `(github_id, repo, event_type, time, event_count)` — artifact-level measurement. |
 | `metrics.daily` | `observations` | Grain `(repo, github_id, day, metric, value)` — already long-format `metric`/`value`, which is nearly the corrected 4.3 shape. |
 | `scores.*` (8 tables) | `evaluation` | Derived from catalog and observations. |
 
-So the fully-migrated `models/` also contains:
+The column above is **kind**, and the kind thesis holds: no sixth kind is needed. **Physical
+placement is a separate question, and for the scheduled pipelines the two come apart (correction
+2026-08-28, #393).** An OSO namespace *is* a dataset, and a dataset's type — `STATIC_MODEL` or
+`USER_MODEL` — is fixed at creation and cannot be changed. `catalog` (`046ee25e`) and `evaluation`
+(`55a4311d`, the compiled release-artifact dataset) are **static**; `entities.*` (`663132ed`, cron
+`0 4 * * 0`) and `scores.*` (`48ddf155`, cron `0 4 * * 1`) are **scheduled `USER_MODEL`** pipelines.
+A scheduled model cannot be hosted in a static dataset (platform-verified on the catalog case
+2026-08-28: a create/revision/release into `catalog` succeeded but the run request was rejected —
+dataset type `STATIC_MODEL`, a scheduled model needs `USER_MODEL`). So `entities.*` and `scores.*`
+**keep their current namespaces**: their `kind` stays `catalog` / `evaluation`, but their
+`target_namespace` equals `current_namespace` under the `migration_status: not_planned` exception to
+`target_namespace == kind` (§11.5 rule 2). `catalog` and `evaluation` remain the static layers they
+are; the scheduled discovery and scoring pipelines remain their own `USER_MODEL` datasets. The
+only tables that physically relocate in Phase 5 are the type-compatible ones: `events`/`metrics`
+→ `observations` (scheduled → the scheduled `observations` dataset) and the curator-controlled
+`catalog.* → registry` ownership transitions (static → compiled). The SQL for the staying pipelines
+therefore keeps its `models/entities/*` and `models/scores/*` paths:
 
 ```text
-    catalog/
+    entities/                       # kind: catalog, USER_MODEL dataset, stays put
       repos.sql projects.sql packages.sql models.sql
     observations/
       github_events.sql daily.sql
-    evaluation/
+    scores/                         # kind: evaluation, USER_MODEL dataset, stays put
       dependency_graph.sql fragility.sql ossd_coverage.sql
       project_summary.sql repos_summary.sql stack_contributors.sql
 ```
@@ -1589,12 +1610,14 @@ registries this file replaces.
     data: null
   kind: evaluation                # registry | catalog | observations | evaluation | releases
   current_namespace: scores       # where the table lives today
-  target_namespace: evaluation    # where the architecture puts it (== current_namespace when the
+  target_namespace: scores        # where the architecture puts it (== current_namespace when the
                                   #   asset does not move: migration_status complete or not_planned)
-  migration_status: pending       # pending | in_progress | complete | not_planned
-  # not_planned_reason: ...       # REQUIRED when migration_status: not_planned — the documented
-                                  #   retirement/supersession reason the asset stays put (a
-                                  #   `replacement` or `retirement_reason` also satisfies it)
+  migration_status: not_planned   # pending | in_progress | complete | not_planned
+  not_planned_reason: 'will NOT relocate to evaluation (§11.1): kind is evaluation, but this is a
+    scheduled USER_MODEL pipeline and the evaluation dataset is static with an immutable type, so it
+    stays in scores (#393).'      # REQUIRED when migration_status: not_planned — the documented
+                                  #   reason the asset stays put (a `replacement` or
+                                  #   `retirement_reason` also satisfies it)
   authority: repo                 # repo | platform | external
   grain: one row per (developer, repo), trailing 365d COMMIT_CODE
   reads:                          # DERIVED
@@ -1973,11 +1996,11 @@ Resolved by decision:
 
 | Decision | Resolution | Lands in |
 |---|---|---|
-| Sixth `kind` for the long-tail chain | Not needed. `entities` to `catalog`, `events`/`metrics` to `observations`, `scores` to `evaluation` | Recorded Phase 0, moved Phase 5 |
+| Sixth `kind` for the long-tail chain | Not needed. Kinds: `entities` = `catalog`, `events`/`metrics` = `observations`, `scores` = `evaluation`. **Physical move (2026-08-28, #393): only `events`/`metrics` → `observations` relocate; `entities.*` and `scores.*` stay put — their static target datasets cannot host a scheduled `USER_MODEL` pipeline (§11.1, dataset-type constraint), so they are `not_planned` in their own namespaces.** | Recorded Phase 0; events/metrics move Phase 5, entities/scores stay |
 | Gates over two populations | Key on `release_path`, not namespace | Section 7 |
 | Publication atomicity | `releases.*` atomic from birth; compatibility outputs documented non-atomic | Sections 12.2, 18 |
-| `catalog.model_benchmarks` -> `openllm_leaderboard` | Do it, with the `entities` to `catalog` move that creates the collision | Phase 5 |
-| `catalog.model_repos` -> `hf_model_repo_links` | Same | Phase 5 |
+| `catalog.model_benchmarks` -> `openllm_leaderboard` | **WITHDRAWN (2026-08-28, #393).** Its only trigger was the `catalog.models` name collision the `entities → catalog` move would have created; that move is cancelled (§11.1 dataset-type constraint), so there is no collision to resolve and no PR may exist purely to rename a deployed table. `catalog.model_benchmarks` keeps its name. | no action |
+| `catalog.model_repos` -> `hf_model_repo_links` | Same — WITHDRAWN with the collision that triggered it. `catalog.model_repos` keeps its name. | no action |
 | `repo_state` / `hub_state` -> `artifact_state` | Do it, with the observations adapters that repoint the same SQL | Phase 2 |
 | Untracked notebook audit | Added to Phase 0. Sixteen of twenty notebooks are not in the repository | Phase 0 |
 | `catalog.stack_map` archive note | WITHDRAWN. The note sits on `stack_map.*`, not `catalog.stack_map`, and is accurate about deployed models. Two different tables were conflated | no action |
