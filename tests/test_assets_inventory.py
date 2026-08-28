@@ -146,6 +146,38 @@ def test_source_collectors_are_not_reclassified_to_observations(inventory):
         )
 
 
+def test_signal_product_adoption_tables_are_superseded_compatibility_shims(inventory):
+    """The three `signal_*.product_adoption` per-source banding tables are transitional
+    compatibility assets (data-architecture.md §11.1): product-level aggregation and banding
+    happen once, centrally, in `observations` + `evaluation`, so each DEPLOYED one is
+    `status: compatibility` naming `observations.product_adoption_current` as its `replacement`
+    and retires in place once the centralized evaluator is proven -- never independently
+    materialized as an `evaluation.*` table despite `target_namespace: evaluation` (retirement
+    governs deletion, not namespace, §11.6). The Phase 5 plan records this as a correction of a
+    misfiled `target_namespace: evaluation` "relocation"; this gate keeps it from regressing.
+
+    The staged sibling (`signal_packages.product_adoption`, never deployed, #314) is exempt: a
+    table that never entered service is not a live compatibility shim, and marking it so would
+    assert a supersession that never happened.
+    """
+    seen = 0
+    for asset in inventory:
+        if not (asset["table"].endswith(".product_adoption")
+                and asset["current_namespace"].startswith("signal_")):
+            continue
+        seen += 1
+        if not asset.get("materialized"):
+            continue  # staged / never deployed -- not a live shim
+        assert asset["status"] == "compatibility", (
+            f"{asset['id']}: a deployed signal_*.product_adoption table must be "
+            f"status: compatibility (a superseded shim per §11.1), not {asset['status']!r}"
+        )
+        assert asset.get("replacement") == "currentai.observations.product_adoption_current", (
+            f"{asset['id']}: must name observations.product_adoption_current as its replacement"
+        )
+    assert seen == 3, f"expected the three signal_*.product_adoption tables, saw {seen}"
+
+
 # --- 3: mirror provenance ---------------------------------------------------------
 
 def test_mirror_block_iff_platform_authority(inventory):

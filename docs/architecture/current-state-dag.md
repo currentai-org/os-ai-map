@@ -255,8 +255,10 @@ graph LR
   class observations__source_runs staged;
   class registry__axis_assessments staged;
   class registry__tail_products dormant;
+  class signal_github__product_adoption compatibility;
   class signal_github__repo_state compatibility;
   class signal_huggingface__hub_state compatibility;
+  class signal_huggingface__product_adoption compatibility;
   class signal_packages__downloads staged;
   class signal_packages__downloads_daily staged;
   class signal_packages__product_adoption staged;
