@@ -149,18 +149,21 @@ Before any upload, build every candidate at the cutover commit and assert:
 - **Schemas** equal each builder's `COLUMNS` (the publishers already gate this per file).
 - **Per-file authority** — `publish_scoring_trace` canonical-equivalence and `publish_evaluation`
   `validate_candidates` already prove each file is exactly its builder's output at HEAD.
-- **Single-identity invariant (new).** Every candidate across both publishers shares **one**
-  `declaration_version_id` and one `source_git_sha`. This proves the single-commit build produced a
-  single generation. It does not exist yet and must be added (§0.2).
-- **Semantic no-change invariant (new, and the important one).** The cutover must change **identity
-  only** — not facts, rule matches, scores, routes, statuses, or reconciliation results. For each of
-  the five live tables, project out the fields expected to change — `declaration_version_id`,
-  `source_git_sha` where present, and any explicitly non-content build/deployment timestamp (e.g.
-  `evaluated_at` on the adoption tables; the exact non-content column set is enumerated per table at
-  execution time) — and require the **new candidate rows to equal the currently-deployed rows
-  canonically** (order-independent multiset). Any difference outside the projected-out identity
-  columns fails the cutover: it would mean the evaluator bump is smuggling a content change, which
-  D1's bump policy forbids without its own justified generation.
+- **Single-identity invariant.** Every candidate across both publishers shares **one**
+  `declaration_version_id` and one `source_git_sha` (on the tables that carry it). This proves the
+  single-commit build produced a single generation. Implemented as
+  `build.cutover_preflight.single_identity_problems` (§0.2).
+- **Semantic no-change invariant (the important one).** The cutover must change **identity only** —
+  not facts, rule matches, scores, routes, statuses, or reconciliation results. For each of the five
+  live tables, project out the fields expected to change — `declaration_version_id`, `source_git_sha`
+  where present, and any explicitly non-content build/deployment timestamp (`evaluated_at` on
+  `adoption_reconciliation`; the per-table set is `cutover_preflight.NON_CONTENT_COLUMNS`, re-affirmed
+  at execution time) — and require the **new candidate rows to equal the currently-deployed rows
+  canonically** (order-independent multiset, tolerating the loader's all-null-column drop). Any
+  difference outside the projected-out columns fails the cutover: it would mean the evaluator bump is
+  smuggling a content change, which D1's bump policy forbids without its own justified generation.
+  Implemented as `build.cutover_preflight.semantic_no_change_problems` (§0.2); the deployed rows come
+  from an offline CSV export (`--deployed-dir`) or a read-only `pyoso` read (`--live`).
 - **Hashes** — record the sha256 of every uploaded CSV in the deploy note (the publishers archive
   these in each receipt).
 
@@ -230,10 +233,22 @@ After the swap, in one reconciliation PR (mirroring the Unit-2 reconciliation):
    - **never nests** an archive when publishing from archived bytes;
    - applies consistently across the evaluation and scoring-trace publishers.
    Tests only; no platform mutation.
-2. **Cross-cutover identity + semantic no-change checks** (§8): a checkable step asserting all
-   candidates across both publishers share one `declaration_version_id` + `source_git_sha`, and that
-   each live table's candidate equals the deployed rows canonically once identity/timestamp columns
-   are projected out.
+2. **Cross-cutover identity + semantic no-change checks** (§8) — **implemented** in
+   `build/cutover_preflight.py` (tests only, no platform write): `single_identity_problems` asserts
+   all candidates across both publishers share one `declaration_version_id` + `source_git_sha`, and
+   `semantic_no_change_problems` asserts each live table's candidate equals the deployed rows
+   canonically once the per-table non-content columns are projected out. The CLI **requires a semantic
+   source** — exactly one of `--deployed-dir <export>`, `--live`, or the explicit opt-out
+   `--identity-only` — so a run can never silently pass on the identity half alone; `--deployed-dir`
+   and `--live` cannot be combined. The cutover command runs the FULL pre-flight against the deployed
+   platform (read-only):
+
+   ```bash
+   uv run python -m build.cutover_preflight --dir build/evaluation --live   # identity + semantic vs pyoso
+   ```
+
+   `--deployed-dir <export>` substitutes an offline CSV export of the deployed rows; `--identity-only`
+   is the deliberate opt-out and is never the cutover default.
 
 (There is deliberately **no** `registry.axis_assessments` publisher item here — D3 excludes it from
 the cutover; its eventual first deployment is a separate, independent step.)
