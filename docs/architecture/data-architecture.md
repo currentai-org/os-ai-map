@@ -1589,8 +1589,12 @@ registries this file replaces.
     data: null
   kind: evaluation                # registry | catalog | observations | evaluation | releases
   current_namespace: scores       # where the table lives today
-  target_namespace: evaluation    # where the architecture puts it
+  target_namespace: evaluation    # where the architecture puts it (== current_namespace when the
+                                  #   asset does not move: migration_status complete or not_planned)
   migration_status: pending       # pending | in_progress | complete | not_planned
+  # not_planned_reason: ...       # REQUIRED when migration_status: not_planned — the documented
+                                  #   retirement/supersession reason the asset stays put (a
+                                  #   `replacement` or `retirement_reason` also satisfies it)
   authority: repo                 # repo | platform | external
   grain: one row per (developer, repo), trailing 365d COMMIT_CODE
   reads:                          # DERIVED
@@ -1903,12 +1907,23 @@ exist.
    a frozen asset. A `schema` role is available to any model, mirrored or repository-owned —
    restricting it to mirrors would block repository-owned models from declaring schemas.
 2. `current_namespace` matches the namespace in the deployed `table`. `target_namespace`
-   matches what `kind` implies. Equality between the two is required only when
-   `migration_status: complete`; a mismatch otherwise must name a migration phase or an open
-   issue. `kind: observations` in a `signal_*` namespace is permanently legitimate per 4.3.
-   An earlier draft required `kind` to equal the table's namespace outright, which would have
-   rejected every legacy `entities`, `events`, `metrics`, `scores` and `evidence` asset — and
-   this section's own worked example.
+   matches what `kind` implies, with two exceptions below. Equality between `current_namespace`
+   and `target_namespace` tracks whether the asset still has a move outstanding:
+   `migration_status: complete` (already moved) and `migration_status: not_planned`
+   (deliberately staying put) both require `current_namespace == target_namespace`, while
+   `pending` and `in_progress` require them to **differ** (a still-outstanding move that names a
+   migration phase or an open issue). The two exceptions to `target_namespace == kind` are:
+   `kind: observations` in a `signal_*` namespace (permanently legitimate per 4.3); and
+   `migration_status: not_planned`, the explicit **retirement/supersession-in-place** state — the
+   asset is retired or superseded where it lives rather than relocated to its `kind`, so a
+   `not_planned` asset keeps `target_namespace == current_namespace` regardless of `kind` and
+   **must carry a `not_planned_reason`** (or an equivalent `replacement`/`retirement_reason`)
+   documenting why it will not move. The three `signal_*.product_adoption` compatibility/staged
+   tables and the Phase 7 openness chain (`scores.openness_facts`/`openness_computed`,
+   `evidence.product_evidence`) are `kind: evaluation` but `not_planned`: retired in place, never
+   relocated to the `evaluation` namespace. An earlier draft required `kind` to equal the table's
+   namespace outright, which would have rejected every legacy `entities`, `events`, `metrics`,
+   `scores` and `evidence` asset — and this section's own worked example.
 2b. Release-completeness and projection-parity gates apply only to assets with
    `release_path: true`. Every asset declares `population`; an asset with `release_path: true`
    and `population: long_tail` is a contradiction and fails.
