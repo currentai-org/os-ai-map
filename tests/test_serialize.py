@@ -1,7 +1,7 @@
 import pytest
 
-from build.serialize import (build_payload, release_date, repo_version,
-                             _stage_and_gaps)
+from build.serialize import (PAYLOAD_CONTRACT, _GAP_DESC, build_payload, release_date,
+                             repo_version, _stage_and_gaps)
 
 
 def _p(cls, adoption, capability):
@@ -592,3 +592,92 @@ def test_descriptions_match_the_reference_doc():
     for num, text in _STAGE_DESC.items():
         labelled = f"- **Stage {num}: {_STAGE_NAMES[num]}.** {text}"
         assert labelled in method, f"methodology.md is out of sync for stage {num}"
+
+
+# --- Payload contract ------------------------------------------------------
+# The number a consumer compares against to decide whether it can read this payload at all.
+
+def test_payload_carries_the_contract():
+    payload = build_payload(_sources(), frozen_long_tail={}, generated="2026-06-10")
+    assert payload["contract"] == PAYLOAD_CONTRACT
+
+
+def test_payload_contract_can_be_set_explicitly():
+    """Only downward, to the current contract or below — see the guard tests beneath."""
+    payload = build_payload(_sources(), frozen_long_tail={}, generated="2026-06-10",
+                            contract=PAYLOAD_CONTRACT)
+    assert payload["contract"] == PAYLOAD_CONTRACT
+
+
+def test_contract_override_rejects_a_shape_this_build_does_not_produce():
+    """--contract 99 would make every consumer refuse a payload that is in fact fine."""
+    with pytest.raises(ValueError, match="does not produce"):
+        build_payload(_sources(), frozen_long_tail={}, generated="2026-06-10",
+                      contract=PAYLOAD_CONTRACT + 1)
+
+
+def test_contract_override_rejects_a_value_no_consumer_accepts():
+    for bad in (0, -1, "1", 1.5, True):
+        with pytest.raises(ValueError, match="integer >= 1"):
+            build_payload(_sources(), frozen_long_tail={}, generated="2026-06-10", contract=bad)
+
+
+def test_contract_is_an_integer_so_consumers_can_compare_it():
+    """A consumer gates on `payload.contract > supported`, which needs an ordered type."""
+    assert isinstance(PAYLOAD_CONTRACT, int) and PAYLOAD_CONTRACT >= 1
+
+
+def test_the_gap_vocabulary_is_what_contract_1_promises():
+    """Contract 1 names these six gap keys. Renaming one without bumping the contract is the
+    exact failure this number exists to prevent, so pin the pair together."""
+    payload = build_payload(_sources(), frozen_long_tail={}, generated="2026-06-10")
+    assert payload["contract"] == 1
+    assert set(payload["descriptions"]["gaps"]) == {
+        "void", "capability", "adoption", "resiliency", "openness", "disclosure"
+    }
+
+
+# The test above pins the DESCRIPTION dict. The values a consumer actually branches on are
+# emitted separately by _stage_and_gaps as bare string literals, and nothing tied the two
+# together: renaming `gaps = ["resiliency"]` there while leaving _GAP_DESC alone passed every
+# contract test and shipped a payload whose categories carry a gap the descriptions do not
+# define. A front end doing GAP_META[gap].label on it dereferences undefined. These two close
+# that, and they are the assertion the contract number actually rests on.
+
+def _every_gap_branch():
+    """Rows chosen to reach each branch in _stage_and_gaps, so the union covers the vocabulary."""
+    w = {"adopt": 0.5, "cap": 0.5}
+    return [
+        _stage_and_gaps([_p("closed", 1, 1)], w),                              # void
+        _stage_and_gaps([_p("open_source", 5, 5)], w),                         # resiliency
+        _stage_and_gaps([_p("open_source", 5, 5) for _ in range(4)], w),       # none (Stage 5)
+        _stage_and_gaps([_p("open_source", 5, 2)], w),                         # capability
+        _stage_and_gaps([_p("open_source", 2, 5)], w),                         # adoption
+        _stage_and_gaps([_p("open_weights", 5, 5)], w),                        # openness
+        _stage_and_gaps([_p("open_source", 5, 5)], w, disclosure=True),        # disclosure
+    ]
+
+
+def test_every_emitted_gap_has_a_description():
+    """A gap the payload emits but does not describe is unreadable to a consumer."""
+    emitted = {g for sg in _every_gap_branch() for g in sg["gaps"]}
+    undescribed = emitted - set(_GAP_DESC)
+    assert not undescribed, f"gaps emitted with no entry in _GAP_DESC: {sorted(undescribed)}"
+
+
+def test_the_branches_cover_the_whole_declared_vocabulary():
+    """And the reverse: a described gap nothing can emit is dead vocabulary in the contract."""
+    emitted = {g for sg in _every_gap_branch() for g in sg["gaps"]}
+    assert emitted == set(_GAP_DESC), (
+        f"declared but never emitted: {sorted(set(_GAP_DESC) - emitted)}; "
+        f"emitted but never declared: {sorted(emitted - set(_GAP_DESC))}"
+    )
+
+
+def test_a_built_payload_never_carries_an_undescribed_gap():
+    """The same invariant at the payload level, over the real category roster."""
+    payload = build_payload(_sources(), frozen_long_tail={}, generated="2026-06-10")
+    described = set(payload["descriptions"]["gaps"])
+    for cid in payload["order"]:
+        for gap in payload["categories"][cid]["gaps"]:
+            assert gap in described, f"category {cid} carries undescribed gap {gap!r}"

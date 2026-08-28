@@ -2,7 +2,7 @@
 
 Reproduces the exact structure the live notebook consumes:
   { descriptions, layer_order[], categories: {cid: {label, arc, layer, products[]}},
-    order[], n_total, generated, version, released, long_tail }
+    order[], n_total, generated, version, released, contract, long_tail }
 """
 from datetime import date
 from pathlib import Path
@@ -253,8 +253,9 @@ def _row(slug: str, prod: dict, org_slug: str, org_name: str, score: dict,
     # consumers get a stable 3-way verdict that survives changes to the openness.class
     # vocabulary. Same collapse the category gap logic uses (_gap_bucket).
     # The payload's `components` stays a flat string whatever shape the record carries, and
-    # `raw` never ships. The front end's contract with this payload is undocumented and
-    # untested, and build/render.py plus the rendered notebook both do `row('Components',
+    # `raw` never ships. The front end's contract with this payload is declared as
+    # PAYLOAD_CONTRACT below but is not enforced field by field, and build/render.py plus the
+    # rendered notebook both do `row('Components',
     # o.components)` on it — so a mapping here would render as [object Object] in the product
     # detail panel and force a regeneration of a bot-owned file. Keeping the key a string
     # means the structured-dimensions migration is invisible downstream, which is also what
@@ -397,6 +398,24 @@ def _aliases(prods: dict, orgs: dict, published: set[str], org_slugs: set[str]) 
     }
 
 
+# The shape of this payload, as a number a consumer can compare against.
+#
+# Bump it when a consumer reading the PREVIOUS contract would MISREAD this payload — a renamed
+# or removed key, a field changing type or meaning. Do not bump for additions: a new key a reader
+# does not know about is ignored, which is why adding is safe and renaming is not.
+#
+# It exists because the alternative is doing the check by hand. Renaming the `depth` gap to
+# `resiliency` in 2026-08 needed a transitional alias in the front end, three pull requests across
+# two repositories, and a merge order written on the ticket so nobody landed them the wrong way
+# round. A consumer that declares the contract it understands turns all of that into one
+# comparison: if the payload's contract is higher than what the consumer supports, the consumer
+# ships support first. Nothing else enforces that ordering.
+#
+# History:
+#   1 - the shape as of 2026-08. Gap keys void/capability/adoption/resiliency/openness/disclosure.
+PAYLOAD_CONTRACT = 1
+
+
 def repo_version(root: Path | None = None) -> str:
     """The release version this payload was built from, read from ``pyproject.toml``.
 
@@ -428,13 +447,25 @@ def release_date(version: str, root: Path | None = None) -> str:
 
 def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None = None,
                   freshness: dict | None = None, version: str | None = None,
-                  released: str | None = None) -> dict:
+                  released: str | None = None, contract: int | None = None) -> dict:
     if generated is None:
         generated = date.today().isoformat()
     if version is None:
         version = repo_version()
     if released is None:
         released = release_date(version)
+    if contract is None:
+        contract = PAYLOAD_CONTRACT
+    # A caller cannot assert a shape claim the code does not hold. Below 1 every consumer
+    # rejects the payload outright; above PAYLOAD_CONTRACT it claims a shape this build does
+    # not produce, which would make every consumer refuse a payload that is in fact fine.
+    if not isinstance(contract, int) or isinstance(contract, bool) or contract < 1:
+        raise ValueError(f"contract must be an integer >= 1, got {contract!r}")
+    if contract > PAYLOAD_CONTRACT:
+        raise ValueError(
+            f"contract {contract} claims a shape this build does not produce "
+            f"(PAYLOAD_CONTRACT is {PAYLOAD_CONTRACT}); bump the constant instead"
+        )
     orgs, cats, prods, scores = (sources["organizations"], sources["categories"],
                                  sources["products"], sources["scores"])
     taxonomy = sources["taxonomy"]
@@ -510,7 +541,7 @@ def build_payload(sources: dict, frozen_long_tail: dict, generated: str | None =
             "organizations": organizations,
             "aliases": _aliases(prods, orgs, published_slugs, set(organizations)),
             "n_total": n, "generated": generated,
-            "version": version, "released": released,
+            "version": version, "released": released, "contract": contract,
             # Published products only: see _filter_long_tail. A preliminary category's
             # products are not shown above, so their tail rows stay visible below.
             "long_tail": _filter_long_tail(
@@ -528,13 +559,15 @@ if __name__ == "__main__":
                         help="value for the payload 'version' field (default: pyproject.toml)")
     parser.add_argument("--released", default=None,
                         help="value for the payload 'released' field (default: CHANGELOG.md)")
+    parser.add_argument("--contract", default=None, type=int,
+                        help="value for the payload 'contract' field (default: PAYLOAD_CONTRACT)")
     args = parser.parse_args()
     sources = load_sources(ROOT)
     frozen = json.load(open(ROOT / "sources" / "snapshots" / "long_tail.json"))
     payload = build_payload(sources, frozen, generated=args.date,
                             freshness=resolve_freshness(ROOT), version=args.version,
-                            released=args.released)
+                            released=args.released, contract=args.contract)
     (ROOT / "build" / "notebook_data.json").write_text(json.dumps(payload, indent=2, ensure_ascii=False))
     print(f"wrote build/notebook_data.json "
-          f"({payload['n_total']} products, v{payload['version']} "
+          f"({payload['n_total']} products, v{payload['version']} contract {payload['contract']} "
           f"released {payload['released']}, built {payload['generated']})")
