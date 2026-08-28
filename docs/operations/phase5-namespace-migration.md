@@ -36,7 +36,7 @@ Derived at write time from `assets.yaml` via `build.assets` (not hand-listed), a
 | `entities.*` → `catalog` (4) | `repos`, `projects`, `packages`, `models` | §11.1 line 1461; §11.6 — "the discovery set not yet scored," AD-3's definition of catalog |
 | `events.github_events` → `observations` (1) | `github_events` | §11.1 line 1462 — artifact-level measurement grain |
 | `metrics.daily` → `observations` (1) | `daily` | §11.1 line 1463 — already long-format `metric`/`value` |
-| `catalog.pypi_downloads` → `observations` (1) | `pypi_downloads` | §2 line 48 — "`pypi_downloads` is a measurement". **NOT a byte relocation — a supersession re-model; see §Freshness below.** |
+| `catalog.pypi_downloads` → `observations` (1) | `pypi_downloads` | §2 line 48 — "`pypi_downloads` is a measurement". **DEFERRED — not a mechanical move; its live successor is a ~90-day rolling window, so the static table stays and consolidation is a G1 decision. See §Freshness below.** |
 | `catalog.*` → `registry` (3) | `foundation_model_repos`, `osai_subcategory_mapping`, `taxonomy_crosswalk` | §2 line 48 — "curator-controlled and belong in `registry`". **These are ownership transitions, not SQL repoints — see §Registry ownership below.** |
 | analytical `scores.*` → `evaluation` (6) | `dependency_graph`, `fragility`, `ossd_coverage`, `project_summary`, `repos_summary`, `stack_contributors` | §11.1 lines 1464 / 1473–1476 — the retained long-tail analytical chain; exactly the six files the target `evaluation/` layout lists |
 
@@ -112,21 +112,30 @@ supersedes it?
 **`catalog.pypi_downloads` is exactly this case, and its plan entry is corrected here.** It is a
 **static, manual-upload snapshot** (`day, package, country_code, downloads`), frozen `2025-05-01 →
 2026-05-01` (1.6M rows), feeding only the `pypi-geo-trends` notebook. It has been **superseded by a
-subscribed dataset**: `oso.pypi_downloads.daily_downloads_by_package_country` carries the identical
-grain, live (`2026-06-01 → present`, ~228M rows) — the source the deployed `signal_pypi`/
-`signal_packages` models already read. So the move is **not** a byte relocation; it is a
-**supersession re-model**:
+subscribed dataset** `oso.pypi_downloads.daily_downloads_by_package_country` — same grain. **But that
+subscribed source is a ~90-day ROLLING WINDOW** (verified 2026-08-28: 87 distinct days, trimmed at
+both ends), not a growing archive. It cannot reproduce the static snapshot's prior-year history
+(`2025-05 → 2026-05`), and a `FULL` model over it sits at ~90 days forever.
 
-- create `observations.pypi_downloads` as a **live model over the subscribed source**
-  (`oso.pypi_downloads.daily_downloads_by_package_country`), giving the repo a namespaced,
-  fresh handle instead of a dead copy;
-- repoint the `pypi-geo-trends` notebook to it;
-- **retire** the stale static `catalog.pypi_downloads` entirely.
+**Corrected disposition (2026-08-28) — this is NOT a clean Phase-5 relocation, and it is DEFERRED:**
 
-**History decision (settled 2026-08-28):** the old snapshot's prior-year data (`2025-05 → 2026-05`)
-is **not needed** — the re-model is **forward-only** off the live source, and the static table is
-**removed entirely**, not preserved as a historical union. So this is a clean supersession: drop the
-stale table, stand up the live model, repoint the notebook.
+- The static `catalog.pypi_downloads` **stays** — it is the only long-history PyPI-geo asset, and the
+  `pypi-geo-trends` notebook keeps reading it. Do **not** retire it, do **not** repoint the notebook.
+- The move to `observations` therefore cannot be a copy or a straight supersession; it is a
+  **consolidation** (a live forward accumulator plus the retained history) whose shape is a **G1
+  scope decision** — see the constraint below. So `catalog.pypi_downloads` remains `pending` but is
+  **held out of the mechanical Phase-5 pass** until G1 rules; it is not executed here.
+- A live `observations.pypi_downloads` modelled over the subscribed source is a **separate
+  forward accumulator**. To be worth keeping it must be `INCREMENTAL_BY_TIME_RANGE` on `day` so
+  partitions persist after the ~90-day source drops them (a `FULL` model accretes nothing). Until
+  it has a purpose or is incremental, it is an orphan and should be made incremental or dropped.
+
+**Data-foundation constraint → G1 board (client-visible):** live PyPI geography is capped at ~90 days.
+No year-over-year, no pre-June-2026 baseline; the 39-package static extract is the only long-history
+PyPI asset. Any adoption/trend scoring resting on PyPI download geography inherits this ceiling. The
+scope call — whether to start accumulating (incremental now, since each day waited falls off the back
+irrecoverably) and whether adoption banding should lean on PyPI geo history at all — is a G1
+judgement, not a Phase-5 mechanical move.
 
 ## Dependency order
 
@@ -135,9 +144,9 @@ A reader must move (or be repointed) no earlier than the table it reads. Derived
 1. **Corrections first (B).** Fix the six misfiled/out-of-phase `target_namespace` values in
    `assets.yaml` (pure inventory + regression gate; no platform mutation), so the pending set
    describes only real Phase-5 moves.
-2. **Leaf tables:** `entities.*→catalog` (with the two rides-along renames); `events`/`metrics`/
-   `catalog.pypi_downloads`→`observations`; the three `catalog.*→registry` ownership transitions
-   (each its own larger unit, per above).
+2. **Leaf tables:** `entities.*→catalog` (with the two rides-along renames); `events`/`metrics`
+   →`observations`; the three `catalog.*→registry` ownership transitions (each its own larger unit,
+   per above). **`catalog.pypi_downloads` is held out** — deferred pending the G1 decision above.
 3. **Readers of those:** the analytical `scores.*→evaluation` set, then the nuanced
    `scores.{investment_ranking, taxonomy}` and `catalog.stack_map` once their dependencies land.
 

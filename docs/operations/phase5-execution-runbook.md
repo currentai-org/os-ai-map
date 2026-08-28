@@ -14,8 +14,10 @@ in-repo consumers, schedules) was read from `assets.yaml` on 2026-08-28; re-deri
 0. **[freshness / supersession pre-check — do this first]** Confirm the source is still the **live**
    source and not a stale snapshot superseded by a subscribed/newer dataset (check `assets.yaml`
    `reads`, the `current-state-dag.md` external-source edges, and recent data/scheduled-run). If it is
-   superseded, the move is a **re-model over the live source + retire the stale table**, not a byte
-   relocation — see `catalog.pypi_downloads` in §2 and the plan's Freshness section.
+   superseded, it is **not** a byte relocation — and whether it re-models, consolidates, or is held
+   depends on whether the live successor actually covers the source's data (e.g. a rolling-window
+   subscription may not carry the history). See `catalog.pypi_downloads` in §2 and the plan's
+   Freshness section for the worked case, which turned out to be **deferred**, not a move.
 1. **[maintainer / platform]** Create the target table alongside the source (new dataset, or new
    registry static model), source left live and unchanged.
 2. **[maintainer / platform, read-only ok]** Verify the target against the source via `pyoso`: row
@@ -70,12 +72,14 @@ Scheduled: demonstrate a `SCHEDULED` run on the target `catalog.*` before repoin
 `SCHEDULED` run on the `observations.*` target must be shown before canonical consumers repoint. This
 is the specific lesson the failed semanticscholar pilot encoded.
 
-**`catalog.pypi_downloads` is NOT a byte relocation (freshness pre-check, step 0).** It is a stale
-static manual-upload snapshot (`2025-05 → 2026-05`) superseded by the subscribed live source
-`oso.pypi_downloads.daily_downloads_by_package_country` (same grain, `2026-06 → present`). Disposition
-(settled 2026-08-28, forward-only — old history not needed): create `observations.pypi_downloads` as a
-**live model over the subscribed source**, repoint `pypi-geo-trends` to it, and **retire the static
-`catalog.pypi_downloads` entirely**. No copy, no history union. See the plan's Freshness section.
+**`catalog.pypi_downloads` is DEFERRED — do NOT move it in the mechanical pass (freshness pre-check,
+step 0).** It is a static snapshot (`2025-05 → 2026-05`) whose live successor
+`oso.pypi_downloads.daily_downloads_by_package_country` is a **~90-day rolling window**, so it cannot
+carry the static's history. The static table **stays** (the `pypi-geo-trends` notebook keeps reading
+it — do not repoint, do not retire), and a live `observations.pypi_downloads` accumulator only earns
+its keep as `INCREMENTAL_BY_TIME_RANGE`. The 90-day coverage ceiling is a **G1 scope decision** (it
+constrains any PyPI-geo adoption scoring); consolidation waits on that. See the plan's Freshness
+section.
 
 ## 3. `catalog.* → registry` — ownership transitions (NOT plain moves)
 
