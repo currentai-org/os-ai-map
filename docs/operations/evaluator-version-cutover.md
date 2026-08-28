@@ -237,9 +237,18 @@ After the swap, in one reconciliation PR (mirroring the Unit-2 reconciliation):
    `build/cutover_preflight.py` (tests only, no platform write): `single_identity_problems` asserts
    all candidates across both publishers share one `declaration_version_id` + `source_git_sha`, and
    `semantic_no_change_problems` asserts each live table's candidate equals the deployed rows
-   canonically once the per-table non-content columns are projected out. Run offline as
-   `uv run python -m build.cutover_preflight --dir build/evaluation` (single identity), adding
-   `--deployed-dir <export>` or `--live` for the semantic check.
+   canonically once the per-table non-content columns are projected out. The CLI **requires a semantic
+   source** — exactly one of `--deployed-dir <export>`, `--live`, or the explicit opt-out
+   `--identity-only` — so a run can never silently pass on the identity half alone; `--deployed-dir`
+   and `--live` cannot be combined. The cutover command runs the FULL pre-flight against the deployed
+   platform (read-only):
+
+   ```bash
+   uv run python -m build.cutover_preflight --dir build/evaluation --live   # identity + semantic vs pyoso
+   ```
+
+   `--deployed-dir <export>` substitutes an offline CSV export of the deployed rows; `--identity-only`
+   is the deliberate opt-out and is never the cutover default.
 
 (There is deliberately **no** `registry.axis_assessments` publisher item here — D3 excludes it from
 the cutover; its eventual first deployment is a separate, independent step.)

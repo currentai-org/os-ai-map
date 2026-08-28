@@ -135,20 +135,36 @@ def _write_candidate_csvs(directory, cands):
             writer.writerows(rows)
 
 
-def test_cli_runs_the_single_identity_check_offline(tmp_path, monkeypatch, capsys):
+def test_cli_requires_a_semantic_source_or_explicit_opt_out(tmp_path, monkeypatch, capsys):
+    """The central bug: with no --deployed-dir / --live / --identity-only, the run must NOT pass —
+    it may not silently skip the semantic no-change invariant."""
     _write_candidate_csvs(tmp_path, _candidates())
     monkeypatch.setattr(sys, "argv", ["cutover_preflight", "--dir", str(tmp_path)])
+    assert CP.main() == 2
+    assert "exactly one of --deployed-dir, --live, or --identity-only" in capsys.readouterr().err
+
+
+def test_cli_rejects_combining_deployed_dir_and_live(tmp_path, monkeypatch):
+    _write_candidate_csvs(tmp_path, _candidates())
+    monkeypatch.setattr(sys, "argv",
+                        ["cutover_preflight", "--dir", str(tmp_path), "--deployed-dir", str(tmp_path), "--live"])
+    assert CP.main() == 2
+
+
+def test_cli_identity_only_runs_identity_and_waives_semantic(tmp_path, monkeypatch, capsys):
+    _write_candidate_csvs(tmp_path, _candidates())
+    monkeypatch.setattr(sys, "argv", ["cutover_preflight", "--dir", str(tmp_path), "--identity-only"])
     assert CP.main() == 0
     out = capsys.readouterr().out
     assert "single-identity: ok" in out
-    assert "semantic-no-change: skipped" in out
+    assert "semantic-no-change: skipped (--identity-only" in out
 
 
-def test_cli_fails_on_a_split_identity(tmp_path, monkeypatch):
+def test_cli_identity_only_still_fails_on_a_split_identity(tmp_path, monkeypatch):
     cands = _candidates()
     cands["axis_results"] = [{**cands["axis_results"][0], "declaration_version_id": "e" * 64}]
     _write_candidate_csvs(tmp_path, cands)
-    monkeypatch.setattr(sys, "argv", ["cutover_preflight", "--dir", str(tmp_path)])
+    monkeypatch.setattr(sys, "argv", ["cutover_preflight", "--dir", str(tmp_path), "--identity-only"])
     assert CP.main() == 2
 
 

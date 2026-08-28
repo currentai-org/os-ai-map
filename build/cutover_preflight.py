@@ -212,10 +212,27 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--dir", type=Path, default=OUT_DIR, help="where the candidate CSVs are read")
     parser.add_argument("--deployed-dir", type=Path, default=None,
-                        help="an offline export of the deployed rows (CSV per table) for the semantic check")
+                        help="an offline export of the deployed rows (CSV per table): runs the semantic check")
     parser.add_argument("--live", action="store_true",
-                        help="read the deployed rows via pyoso (READ-ONLY) for the semantic check")
+                        help="read the deployed rows via pyoso (READ-ONLY): runs the semantic check")
+    parser.add_argument("--identity-only", action="store_true",
+                        help="run ONLY the single-identity check and explicitly SKIP the semantic "
+                             "no-change invariant — the deliberate opt-out, never the default")
     args = parser.parse_args()
+
+    # A semantic source must be chosen explicitly, or the central semantic-no-change invariant be
+    # explicitly waived — the pre-flight must never silently pass with only the identity half. Exactly
+    # one of the three; --deployed-dir and --live cannot combine.
+    active = [name for name, on in (
+        ("--deployed-dir", args.deployed_dir is not None),
+        ("--live", args.live),
+        ("--identity-only", args.identity_only),
+    ) if on]
+    if len(active) != 1:
+        chosen = " and ".join(active) if active else "none"
+        print(f"exactly one of --deployed-dir, --live, or --identity-only is required (got {chosen}); "
+              f"--identity-only explicitly waives the semantic no-change invariant", file=sys.stderr)
+        return 2
 
     dataset = None
     if args.live:
@@ -233,7 +250,9 @@ def main() -> int:
     _report("single-identity", identity)
 
     semantic: list[str] = []
-    if args.deployed_dir is not None or args.live:
+    if args.identity_only:
+        print("semantic-no-change: skipped (--identity-only — the semantic invariant is waived)")
+    else:
         for table in CUTOVER_TABLES:
             if args.deployed_dir is not None:
                 path = args.deployed_dir / f"{table}.csv"
@@ -245,8 +264,6 @@ def main() -> int:
                 deployed = deployed_rows(dataset, table)
             semantic.extend(semantic_no_change_problems(table, candidates[table], deployed))
         _report("semantic-no-change", semantic)
-    else:
-        print("semantic-no-change: skipped (no --deployed-dir or --live)")
 
     return 2 if (identity or semantic) else 0
 
