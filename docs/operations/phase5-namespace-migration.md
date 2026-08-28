@@ -117,25 +117,30 @@ subscribed source is a ~90-day ROLLING WINDOW** (verified 2026-08-28: 87 distinc
 both ends), not a growing archive. It cannot reproduce the static snapshot's prior-year history
 (`2025-05 → 2026-05`), and a `FULL` model over it sits at ~90 days forever.
 
-**Corrected disposition (2026-08-28) — this is NOT a clean Phase-5 relocation, and it is DEFERRED:**
+**The ~90-day window is NOT a scoring constraint — history is not needed for our purposes.** Adoption
+scoring and signal (`signal_pypi.package_downloads`, `signal_packages.downloads`) read the live
+**aggregate** `oso.pypi_downloads.daily_downloads_by_package` with **trailing-30d / 7d** windows; a
+snapshot measures recent adoption, not deep history, and the code already accepts 90-day-max sources
+by design (crates.io serves only 90 days). So the rolling window is ample for scoring and signal, and
+there is **no data-foundation ceiling and no G1 item here.**
 
-- The static `catalog.pypi_downloads` **stays** — it is the only long-history PyPI-geo asset, and the
-  `pypi-geo-trends` notebook keeps reading it. Do **not** retire it, do **not** repoint the notebook.
-- The move to `observations` therefore cannot be a copy or a straight supersession; it is a
-  **consolidation** (a live forward accumulator plus the retained history) whose shape is a **G1
-  scope decision** — see the constraint below. So `catalog.pypi_downloads` remains `pending` but is
-  **held out of the mechanical Phase-5 pass** until G1 rules; it is not executed here.
-- A live `observations.pypi_downloads` modelled over the subscribed source is a **separate
-  forward accumulator**. To be worth keeping it must be `INCREMENTAL_BY_TIME_RANGE` on `day` so
-  partitions persist after the ~90-day source drops them (a `FULL` model accretes nothing). Until
-  it has a purpose or is incremental, it is an orphan and should be made incremental or dropped.
+**Corrected disposition (2026-08-28) — low-stakes, viz-only, deferred:** the static per-country
+`catalog.pypi_downloads` is read by **only** the `pypi-geo-trends` notebook (long-history regional
+trends); nothing reads per-country `country_code` for scoring or signal. So its move is not urgent and
+touches no scoring path:
 
-**Data-foundation constraint → G1 board (client-visible):** live PyPI geography is capped at ~90 days.
-No year-over-year, no pre-June-2026 baseline; the 39-package static extract is the only long-history
-PyPI asset. Any adoption/trend scoring resting on PyPI download geography inherits this ceiling. The
-scope call — whether to start accumulating (incremental now, since each day waited falls off the back
-irrecoverably) and whether adoption banding should lean on PyPI geo history at all — is a G1
-judgement, not a Phase-5 mechanical move.
+- Leave `catalog.pypi_downloads` as `pending` but **held out of the mechanical Phase-5 pass** — it is
+  a notebook-only concern, decided when that notebook is next touched, not part of the move sweep.
+- **Do not build an incremental accumulator** — nothing needs accreted per-country history. When the
+  notebook is addressed, the choice is simply: keep the static frozen for year-over-year regional
+  viz, **or** repoint it to a live `observations.pypi_downloads` (FULL, ~90-day per-country) and
+  retire the static, accepting a rolling-window regional view.
+- The orphan `observations.pypi_downloads` the platform side stood up has **no committed consumer**
+  (scoring/signal don't use per-country); unless the notebook is repointed to it now, **drop it**
+  rather than leave a large `FULL` table nothing reads.
+
+(If per-country geo later becomes a *signal* input, it is still a live ~90-day table read with recent
+windows — no history accumulation — so this stays a small, forward decision.)
 
 ## Dependency order
 

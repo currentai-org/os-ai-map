@@ -14,10 +14,11 @@ in-repo consumers, schedules) was read from `assets.yaml` on 2026-08-28; re-deri
 0. **[freshness / supersession pre-check — do this first]** Confirm the source is still the **live**
    source and not a stale snapshot superseded by a subscribed/newer dataset (check `assets.yaml`
    `reads`, the `current-state-dag.md` external-source edges, and recent data/scheduled-run). If it is
-   superseded, it is **not** a byte relocation — and whether it re-models, consolidates, or is held
-   depends on whether the live successor actually covers the source's data (e.g. a rolling-window
-   subscription may not carry the history). See `catalog.pypi_downloads` in §2 and the plan's
-   Freshness section for the worked case, which turned out to be **deferred**, not a move.
+   superseded, it is **not** a byte relocation — and whether it re-models or is held depends on
+   whether the source's data is actually needed and whether the live successor covers it (a
+   rolling-window subscription may not carry the history, but the history may not be needed either).
+   See `catalog.pypi_downloads` in §2 and the plan's Freshness section for the worked case, which
+   turned out to be **deferred** (notebook-only, no scoring impact), not a move.
 1. **[maintainer / platform]** Create the target table alongside the source (new dataset, or new
    registry static model), source left live and unchanged.
 2. **[maintainer / platform, read-only ok]** Verify the target against the source via `pyoso`: row
@@ -73,13 +74,17 @@ Scheduled: demonstrate a `SCHEDULED` run on the target `catalog.*` before repoin
 is the specific lesson the failed semanticscholar pilot encoded.
 
 **`catalog.pypi_downloads` is DEFERRED — do NOT move it in the mechanical pass (freshness pre-check,
-step 0).** It is a static snapshot (`2025-05 → 2026-05`) whose live successor
-`oso.pypi_downloads.daily_downloads_by_package_country` is a **~90-day rolling window**, so it cannot
-carry the static's history. The static table **stays** (the `pypi-geo-trends` notebook keeps reading
-it — do not repoint, do not retire), and a live `observations.pypi_downloads` accumulator only earns
-its keep as `INCREMENTAL_BY_TIME_RANGE`. The 90-day coverage ceiling is a **G1 scope decision** (it
-constrains any PyPI-geo adoption scoring); consolidation waits on that. See the plan's Freshness
-section.
+step 0), but this is low-stakes and notebook-only.** It is a static per-country snapshot read by
+**only** `notebooks/pypi-geo-trends.py`; nothing reads per-country `country_code` for scoring or
+signal. Adoption scoring and signal read the live **aggregate**
+`oso.pypi_downloads.daily_downloads_by_package` with **trailing-30d/7d** windows, so the ~90-day
+rolling window of the per-country successor is **not** a scoring constraint and there is **no G1
+item** here. Leave the static as `pending`, held out of the sweep — its disposition (keep frozen for
+year-over-year regional viz, or repoint to a live FULL ~90-day `observations.pypi_downloads` and
+retire the static) is decided when that notebook is next touched. **Do not build an incremental
+accumulator** — no consumer needs accreted per-country history. The orphan
+`observations.pypi_downloads` the platform side stood up has no committed consumer; unless the
+notebook is repointed to it now, **drop it**. See the plan's Freshness section.
 
 ## 3. `catalog.* → registry` — ownership transitions (NOT plain moves)
 
