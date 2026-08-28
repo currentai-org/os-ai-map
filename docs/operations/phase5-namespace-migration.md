@@ -60,8 +60,9 @@ are inventory corrections, landing first, before any move.
 
 `signal_github.product_adoption` additionally holds the `pypi > huggingface > stars` route
 precedence in SQL (§11.1 lines 1510–1517). `registry.adoption_routes` captured that precedence in
-Phase 2A, so the precondition for its eventual retirement is met — but retirement is a §17/§9.3 act
-(explicit authorization, rollback path, consumer inventory) and is **out of Phase 5's scope**; this
+Phase 2A, so the precondition for its eventual retirement is met — but retiring a compatibility table
+is a **§17** act (explicit authorization, rollback path, consumer inventory) — §9.3 governs the
+separate openness chain — and is **out of Phase 5's scope**; this
 plan only corrects the `target_namespace`/`status` so the inventory stops asserting a move that will
 never happen.
 
@@ -69,7 +70,7 @@ never happen.
 
 | Asset | Note |
 |---|---|
-| `catalog.stack_map` → `registry` | Already `status: compatibility`, `replacement: registry.product_scores`. A live repo-to-warehouse bridge read by `scores.stack_contributors` and four notebooks (one Live). A bridge relocation with real readers — sequence after its consumers are repointed. |
+| `catalog.stack_map` → `registry` | **Decision gate — a direct `catalog.stack_map → registry` relocation is NOT authorized until resolved.** It is already `status: compatibility` naming `registry.product_scores` as `replacement`, and `models/registry/` is forbidden, so the generated table cannot simply be moved into `registry`. Choose one: **(a)** repoint its consumers (`scores.stack_contributors` and four notebooks, one Live) to existing/new compiler-owned registry tables and **retire `catalog.stack_map` in place**; or **(b)** compile its curated identity mapping into a new registry table (via `sources/` + the registry publisher) while retaining a **separately named** compatibility projection temporarily. Resolve (a) vs (b) before its execution unit. |
 | `scores.investment_ranking` → `evaluation` | Read only by the Deprecated `ai-potluck-partners`; itself reads `catalog.osai_*`, `entities.repos`, `scores.fragility`. Must move **after** the catalog/entities tables it reads, or be repointed in the same unit. |
 | `scores.taxonomy` → `evaluation` | Read by `ai-potluck-partners` (Deprecated) and the non-deprecated `state-of-os-ai`; reads `catalog.osai_gap_map`, `catalog.osai_subcategory_mapping`, `catalog.taxonomy_crosswalk`. Same dependency constraint. |
 
@@ -119,23 +120,29 @@ cut-over-in-place:
    static model) while the source table remains live and unchanged.
 2. **Verify the target** — schema, row counts, and (for scheduled models) refresh behavior against
    the source, plus the consumer inventory.
-3. **Repoint consumers** — in-repo (`build/`, notebooks) and deployed readers — **while the source
-   remains available**, so nothing breaks mid-move.
-4. **Reconcile the repository against verified live state** and merge: update `assets.yaml`
-   (new namespace, `migration_status: complete`, `verified_at`, derived `read_by`), regenerate the
-   DAG and count markers (`build/assets.py`), and pass the gates (`build.validate`,
-   `count_claim_violations`, `tests/test_assets_inventory.py`).
+3. **Repoint consumers, while the source remains available** — split by who writes:
+   - **3a. Deployed-reader repointing is a platform write** — a **separately authorized maintainer
+     action** (repointing a deployed model/notebook to the target dataset), never done by an editor
+     unit.
+   - **3b. Repository consumer changes** (`build/`, in-repo notebook sources) land in the lockstep
+     **reconciliation PR** of step 4 — **after** the target (step 2) and the deployed repoints (3a)
+     are verified — so the repo is only reconciled against a live state that already holds.
+4. **Reconcile the repository against verified live state** and merge (the reconciliation PR that
+   carries 3b): update `assets.yaml` (new namespace, `migration_status: complete`, `verified_at`,
+   derived `read_by`), regenerate the DAG and count markers (`build/assets.py`), and pass the gates
+   (`build.validate`, `count_claim_violations`, `tests/test_assets_inventory.py`).
 5. **Retire the source later, under separate authorization** (§17), only after the consumer
    inventory is clean.
 
 **Scheduling gate (the lesson of the failed pilot).** A move **into `observations`**, and any
 **scheduled analytical model moving into `evaluation`**, must preserve its refresh contract and
 **demonstrate a successful scheduled run on the target before canonical consumers are repointed**
-(step 3). A move that silently drops a table's schedule is the Phase-1-class defect this gate exists
+(step 3a). A move that silently drops a table's schedule is the Phase-1-class defect this gate exists
 to catch; `metrics.daily` and `events.github_events` are scheduled and carry this obligation.
 
-No editor unit performs a platform DROP/CREATE; the create-and-verify (steps 1–2) and the retirement
-(step 5) are maintainer runbooks authorized separately.
+No editor unit performs a platform write. The create-and-verify (steps 1–2), the **deployed-reader
+repointing (3a)**, and the retirement (step 5) are maintainer runbooks authorized separately; the
+editor PR is the step-4 reconciliation carrying the repository consumer changes (3b).
 
 ## Explicitly out of scope for Phase 5
 
