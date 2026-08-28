@@ -136,8 +136,9 @@ touches no scoring path:
   viz, **or** repoint it to a live `observations.pypi_downloads` (FULL, ~90-day per-country) and
   retire the static, accepting a rolling-window regional view.
 - The orphan `observations.pypi_downloads` the platform side stood up has **no committed consumer**
-  (scoring/signal don't use per-country); unless the notebook is repointed to it now, **drop it**
-  rather than leave a large `FULL` table nothing reads.
+  (scoring/signal don't use per-country) and the notebook stays on the static, so it is a large `FULL`
+  table nothing reads. **Maintainer authorized dropping it (2026-08-28)** — a platform-side delete, no
+  repo reconciliation needed (no in-repo consumer, no inventory row).
 
 (If per-country geo later becomes a *signal* input, it is still a live ~90-day table read with recent
 windows — no history accumulation — so this stays a small, forward decision.)

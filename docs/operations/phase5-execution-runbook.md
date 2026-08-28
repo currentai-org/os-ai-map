@@ -83,8 +83,10 @@ item** here. Leave the static as `pending`, held out of the sweep — its dispos
 year-over-year regional viz, or repoint to a live FULL ~90-day `observations.pypi_downloads` and
 retire the static) is decided when that notebook is next touched. **Do not build an incremental
 accumulator** — no consumer needs accreted per-country history. The orphan
-`observations.pypi_downloads` the platform side stood up has no committed consumer; unless the
-notebook is repointed to it now, **drop it**. See the plan's Freshness section.
+`observations.pypi_downloads` the platform side stood up has no committed consumer and the notebook
+stays on the static, so the **maintainer authorized dropping it (2026-08-28)** — a platform-side
+delete with no repo reconciliation (no in-repo consumer, no inventory row). See the plan's Freshness
+section.
 
 ## 3. `catalog.* → registry` — ownership transitions (NOT plain moves)
 
