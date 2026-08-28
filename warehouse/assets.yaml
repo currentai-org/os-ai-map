@@ -568,8 +568,9 @@ assets:
     data: null
   kind: evaluation
   current_namespace: evidence
-  target_namespace: evaluation
-  migration_status: pending
+  target_namespace: evidence
+  migration_status: not_planned
+  not_planned_reason: 'will NOT relocate to evaluation: a Phase 7 / §9.3 retirement target, retired (deleted) — not migrated — once the repository-owned scoring trace (evaluation.axis_*) shows dual-run agreement over multiple releases (#384). Stays active until then.'
   authority: platform
   population: gap_map
   release_path: false
@@ -1784,8 +1785,9 @@ assets:
     data: null
   kind: evaluation
   current_namespace: scores
-  target_namespace: evaluation
-  migration_status: pending
+  target_namespace: scores
+  migration_status: not_planned
+  not_planned_reason: 'will NOT relocate to evaluation: a Phase 7 / §9.3 retirement target (the duplicate openness computation), retired (deleted) — not migrated — once evaluation.axis_* shows dual-run agreement over multiple releases (#384). Stays active until then.'
   authority: platform
   population: gap_map
   release_path: false
@@ -1830,8 +1832,9 @@ assets:
     data: null
   kind: evaluation
   current_namespace: scores
-  target_namespace: evaluation
-  migration_status: pending
+  target_namespace: scores
+  migration_status: not_planned
+  not_planned_reason: 'will NOT relocate to evaluation: a Phase 7 / §9.3 retirement target (the duplicate openness computation), retired (deleted) — not migrated — once evaluation.axis_* shows dual-run agreement over multiple releases (#384). Stays active until then.'
   authority: platform
   population: gap_map
   release_path: false
@@ -2173,8 +2176,9 @@ assets:
     data: null
   kind: evaluation
   current_namespace: signal_github
-  target_namespace: evaluation
-  migration_status: pending
+  target_namespace: signal_github
+  migration_status: not_planned
+  not_planned_reason: 'will NOT relocate to evaluation (data-architecture.md §11.1): the per-source stars-fallback banding is superseded by the central observations + evaluation layer, so it is a transitional compatibility shim naming observations.product_adoption_current as its replacement, retired in place once the centralized evaluator is proven — not a namespace migration. Retirement is a §17 act, not performed here.'
   authority: platform
   population: gap_map
   release_path: false
@@ -2204,11 +2208,10 @@ assets:
   last_run_at: '2026-08-23'
   dataset_id: cc74e8db-7718-4615-a004-7f27cabaf967
   owner: carl
-  status: active
+  status: compatibility
+  replacement: currentai.observations.product_adoption_current
   materialized: true
-  verified_at: '2026-08-20'
-  retirement_reason: 'no reviewed consumer as of 2026-08-22: no in-repo code reader, no platform notebook consumer, and (Phase 0b, all 41 deployed model definitions read) no deployed platform model reads it. Recorded as a retirement candidate; deletion requires maintainer authorization per section 17 and is not performed here.'
-  retirement_issue: '#348'
+  verified_at: '2026-08-28'
   notes: The stars fallback tier. Reads signal_pypi and signal_huggingface to skip already-measured products,
     so it holds the route precedence pypi > huggingface > stars in SQL. Must not retire before registry.adoption_routes
     compiles that ordering.
@@ -2400,8 +2403,9 @@ assets:
     data: null
   kind: evaluation
   current_namespace: signal_huggingface
-  target_namespace: evaluation
-  migration_status: pending
+  target_namespace: signal_huggingface
+  migration_status: not_planned
+  not_planned_reason: 'will NOT relocate to evaluation (data-architecture.md §11.1): the per-source Hub-downloads banding is superseded by the central observations + evaluation layer, so it is a transitional compatibility shim naming observations.product_adoption_current as its replacement, retired in place once the centralized evaluator is proven — not a namespace migration. Retirement is a §17 act, not performed here.'
   authority: platform
   population: gap_map
   release_path: false
@@ -2430,9 +2434,10 @@ assets:
   last_run_at: '2026-08-23'
   dataset_id: 6108e4d6-868f-4cba-8df5-ee64f8fb301e
   owner: carl
-  status: active
+  status: compatibility
+  replacement: currentai.observations.product_adoption_current
   materialized: true
-  verified_at: '2026-08-20'
+  verified_at: '2026-08-28'
   mirror:
     model_id: abcf0044-dd9d-4942-a2a1-e047dab8e8b1
     revision: 4
@@ -2554,8 +2559,9 @@ assets:
     data: null
   kind: evaluation
   current_namespace: signal_packages
-  target_namespace: evaluation
-  migration_status: pending
+  target_namespace: signal_packages
+  migration_status: not_planned
+  not_planned_reason: 'will NOT relocate to evaluation (data-architecture.md §11.1): staged and never deployed (#314); the per-source package-registry banding is superseded by the central observations + evaluation layer, so it stays staged and out of service rather than migrating namespace. It is not a live compatibility shim (never materialized), so it is not marked compatibility.'
   authority: repo
   population: gap_map
   release_path: false

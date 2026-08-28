@@ -94,26 +94,42 @@ def test_current_namespace_matches_the_table(inventory):
 
 def test_kind_and_target_namespace_agree(inventory):
     """`kind` is semantic; target_namespace is where the architecture puts it. They must
-    agree, with one permanent exception: observations legitimately live in signal_*
-    datasets per section 4.3."""
+    agree, with two exceptions:
+
+    - observations legitimately live in signal_* datasets per section 4.3; and
+    - a `migration_status: not_planned` asset is deliberately NOT migrated — it stays in its
+      current namespace (target == current) and retires or is superseded in place, so its
+      target need not equal its `kind`. This is the explicit retirement-in-place state, e.g. the
+      three `signal_*.product_adoption` compatibility/staged tables and the Phase 7 openness
+      chain (`scores.openness_facts`/`openness_computed`, `evidence.product_evidence`): all are
+      `kind: evaluation` but are retired, never relocated to the `evaluation` namespace.
+    """
     for asset in inventory:
         kind, target = asset["kind"], asset["target_namespace"]
         assert kind in NAMESPACES, f"{asset['id']}: unknown kind {kind}"
+        if asset["migration_status"] == "not_planned":
+            continue  # retirement-in-place: stays put (target == current), not relocated to its kind
         if kind == "observations" and target.startswith("signal_"):
             continue
         assert kind == target, f"{asset['id']}: kind={kind} target_namespace={target}"
 
 
 def test_migration_status_is_consistent(inventory):
-    """Equality between current and target is required only when migration is complete.
-    Requiring it outright would reject every legacy entities/events/metrics/scores and
-    evidence asset -- which is what the migration is for."""
+    """Namespaces must AGREE when the asset is not going to move -- `complete` (already moved)
+    or `not_planned` (deliberately staying put / retiring in place) -- and must DIFFER while a
+    move is still outstanding (`pending`, `in_progress`). Requiring agreement outright would
+    reject every legacy entities/events/metrics/scores and evidence asset still awaiting its
+    move, which is what the migration is for; permitting it for `pending` would let a false
+    "already there" slip through."""
+    settled = {"complete", "not_planned"}
     for asset in inventory:
         same = asset["current_namespace"] == asset["target_namespace"]
-        if asset["migration_status"] == "complete":
-            assert same, f"{asset['id']}: complete but {asset['current_namespace']} != {asset['target_namespace']}"
+        if asset["migration_status"] in settled:
+            assert same, (
+                f"{asset['id']}: {asset['migration_status']} but "
+                f"{asset['current_namespace']} != {asset['target_namespace']}")
         else:
-            assert not same, f"{asset['id']}: pending but namespaces already agree"
+            assert not same, f"{asset['id']}: {asset['migration_status']} but namespaces already agree"
 
 
 def test_source_collectors_are_not_reclassified_to_observations(inventory):
@@ -126,12 +142,12 @@ def test_source_collectors_are_not_reclassified_to_observations(inventory):
     from recurring.)
 
     The rule is simple and complete: every `kind: observations` asset currently in a
-    `signal_*` namespace must target that same namespace. The `kind: observations` predicate
-    is what scopes it to source collectors -- the `signal_*.product_adoption` per-source
-    adoption tables are `kind: evaluation` and legitimately move to `evaluation`, so they are
-    already outside it. Compatibility shims are NOT exempt: retirement (`status: compatibility`
-    + `replacement`) governs a table's deletion, not its architectural namespace, so the
-    retired `repo_state`/`hub_state` twins stay in `signal_*` like any other collector. An
+    `signal_*` namespace must target that same namespace. The `kind: observations` predicate is
+    what scopes it to source collectors. The `signal_*.product_adoption` per-source adoption
+    tables are `kind: evaluation`, so they are outside THIS gate -- but they do not relocate to
+    `evaluation` either: they are `migration_status: not_planned` (retire in place), enforced
+    separately by `test_signal_product_adoption_tables_stay_put_and_deployed_ones_are_compat`.
+    The `repo_state`/`hub_state` twins similarly stay in `signal_*` like any other collector. An
     explicit future architecture change may amend this gate.
     """
     for asset in inventory:
@@ -144,6 +160,83 @@ def test_source_collectors_are_not_reclassified_to_observations(inventory):
             f"{asset['target_namespace']!r} -- a signal_* kind: observations collector stays "
             f"in signal_* (§4.3) and is not reclassified on the strength of its kind"
         )
+
+
+def test_not_planned_assets_stay_put_with_a_documented_disposition(inventory):
+    """`migration_status: not_planned` is the explicit "this asset does not migrate namespace"
+    state. It must keep the asset in its current namespace (target == current, no false
+    relocation claim) and document WHY it will not move -- a `replacement` it is superseded by,
+    a `retirement_reason`, or a `not_planned_reason`. This is what lets the six Phase-5
+    corrections drop out of the `pending` move set without pretending they will land in
+    `evaluation`."""
+    for asset in inventory:
+        if asset["migration_status"] != "not_planned":
+            continue
+        assert asset["current_namespace"] == asset["target_namespace"], (
+            f"{asset['id']}: not_planned must target its current namespace, not "
+            f"{asset['target_namespace']!r} (no relocation)")
+        assert (asset.get("not_planned_reason") or asset.get("replacement")
+                or asset.get("retirement_reason")), (
+            f"{asset['id']}: not_planned requires a documented retirement/replacement disposition")
+
+
+def test_signal_product_adoption_tables_stay_put_and_deployed_ones_are_compat(inventory):
+    """The three `signal_*.product_adoption` per-source banding tables are superseded by the
+    central observations + evaluation layer (data-architecture.md §11.1). Two invariants, held
+    apart because supersession-today and namespace-target are different questions:
+
+    1. NONE of the three relocates: each is `migration_status: not_planned` and never targets
+       `evaluation` (correcting the misfiled `target_namespace: evaluation` the Phase-5 plan
+       flagged).
+    2. The DEPLOYED ones (`signal_github`, `signal_huggingface`) are live compatibility shims:
+       `status: compatibility` naming `observations.product_adoption_current` as `replacement`.
+       The staged sibling (`signal_packages`, never deployed, #314) is exempt -- a table that
+       never entered service is not a live shim, and marking it compatibility would assert a
+       supersession that never happened.
+    """
+    seen = 0
+    for asset in inventory:
+        if not (asset["table"].endswith(".product_adoption")
+                and asset["current_namespace"].startswith("signal_")):
+            continue
+        seen += 1
+        assert asset["migration_status"] == "not_planned", (
+            f"{asset['id']}: must be migration_status: not_planned (it does not migrate), "
+            f"not {asset['migration_status']!r}")
+        assert asset["target_namespace"] != "evaluation", (
+            f"{asset['id']}: must not target evaluation -- it is superseded and retires in "
+            f"place, not relocated")
+        if not asset.get("materialized"):
+            continue  # staged / never deployed -- not a live compatibility shim
+        assert asset["status"] == "compatibility", (
+            f"{asset['id']}: a deployed signal_*.product_adoption table must be "
+            f"status: compatibility (a superseded shim per §11.1), not {asset['status']!r}")
+        assert asset.get("replacement") == "currentai.observations.product_adoption_current", (
+            f"{asset['id']}: must name observations.product_adoption_current as its replacement")
+    assert seen == 3, f"expected the three signal_*.product_adoption tables, saw {seen}"
+
+
+def test_phase7_openness_chain_stays_put_until_retirement(inventory):
+    """The Phase 7 / §9.3 openness chain -- `evidence.product_evidence`, `scores.openness_facts`,
+    `scores.openness_computed` -- is RETIRED (deleted), never relocated to `evaluation`, once the
+    repository-owned trace (`evaluation.axis_*`) shows multi-release dual-run agreement (#384).
+    So each is `migration_status: not_planned` and never targets `evaluation`, and stays `active`
+    (not prematurely marked `compatibility`) until Phase 7 actually retires it."""
+    chain = {"currentai.evidence.product_evidence",
+             "currentai.scores.openness_facts", "currentai.scores.openness_computed"}
+    seen = set()
+    for asset in inventory:
+        if asset["table"] not in chain:
+            continue
+        seen.add(asset["table"])
+        assert asset["migration_status"] == "not_planned", (
+            f"{asset['id']}: Phase 7 retirement target must be migration_status: not_planned, "
+            f"not {asset['migration_status']!r}")
+        assert asset["target_namespace"] != "evaluation", (
+            f"{asset['id']}: retired in Phase 7, not relocated to evaluation")
+        assert asset["status"] == "active", (
+            f"{asset['id']}: stays active until Phase 7 retirement, not {asset['status']!r}")
+    assert seen == chain, f"missing openness-chain entries: {sorted(chain - seen)}"
 
 
 # --- 3: mirror provenance ---------------------------------------------------------
