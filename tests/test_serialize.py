@@ -1,6 +1,6 @@
 import pytest
 
-from build.serialize import (build_payload, release_date, repo_version,
+from build.serialize import (PAYLOAD_CONTRACT, build_payload, release_date, repo_version,
                              _stage_and_gaps)
 
 
@@ -592,3 +592,31 @@ def test_descriptions_match_the_reference_doc():
     for num, text in _STAGE_DESC.items():
         labelled = f"- **Stage {num}: {_STAGE_NAMES[num]}.** {text}"
         assert labelled in method, f"methodology.md is out of sync for stage {num}"
+
+
+# --- Payload contract ------------------------------------------------------
+# The number a consumer compares against to decide whether it can read this payload at all.
+
+def test_payload_carries_the_contract():
+    payload = build_payload(_sources(), frozen_long_tail={}, generated="2026-06-10")
+    assert payload["contract"] == PAYLOAD_CONTRACT
+
+
+def test_payload_contract_can_be_set_explicitly():
+    payload = build_payload(_sources(), frozen_long_tail={}, generated="2026-06-10", contract=7)
+    assert payload["contract"] == 7
+
+
+def test_contract_is_an_integer_so_consumers_can_compare_it():
+    """A consumer gates on `payload.contract > supported`, which needs an ordered type."""
+    assert isinstance(PAYLOAD_CONTRACT, int) and PAYLOAD_CONTRACT >= 1
+
+
+def test_the_gap_vocabulary_is_what_contract_1_promises():
+    """Contract 1 names these six gap keys. Renaming one without bumping the contract is the
+    exact failure this number exists to prevent, so pin the pair together."""
+    payload = build_payload(_sources(), frozen_long_tail={}, generated="2026-06-10")
+    assert payload["contract"] == 1
+    assert set(payload["descriptions"]["gaps"]) == {
+        "void", "capability", "adoption", "resiliency", "openness", "disclosure"
+    }
