@@ -71,12 +71,25 @@ the platform side stood up has no committed consumer and the notebook stays on t
 Both are scheduled — the scheduling gate (step 2) applies: a successful `SCHEDULED` run on the
 `observations.*` target must be shown before canonical consumers repoint. This is the specific lesson
 the failed semanticscholar pilot encoded. Both are scheduled `USER_MODEL` and the `observations`
-dataset is `USER_MODEL` (it hosts the deployed `product_adoption_current`), so the dataset type is
-compatible.
+dataset (`c507c9f9`, which hosts `product_adoption_current`) is `USER_MODEL`, so the dataset **type**
+is compatible — this move clears the wall that stopped `entities`/`scores`.
+
+**Pre-check (schedule granularity).** These two carry different crons (`0 5 * * 0`, `0 6 * * 0`) and
+`product_adoption_current` is full-refresh, so co-hosting them in one `observations` dataset requires
+**per-model schedules**. OSO exposes a model-level `updateDataModelSchedule`, so schedules are
+expected to be per-model (not per-dataset) — confirm this before creating; if a dataset instead
+enforces one shared schedule these crons can't fit, **stop and report** (a design decision, not a
+force). Create `observations.github_events` **first** and `observations.daily` second: `daily` reads
+`github_events`, and the 1-hour cron offset exists to order that dependency — the target `daily` must
+read `currentai.observations.github_events`, and its verify run must follow a green `github_events`.
 
 Note: the in-repo consumers to repoint include `scores.*` models. Those models **stay** in `scores`
 (dataset-type constraint) — only their *read* of `metrics.daily` changes to the `observations` name;
-the models themselves do not move.
+the models themselves do not move. `metrics.daily` has a wide reader set (deployed
+`scores.{fragility,project_summary,repos_summary}`, `state_of_os_ai.{country_activity_monthly,
+star_trajectories}`, the Live `oss-ai-trends` notebook, external `state-of-os-ai`; `github_events` is
+read externally by `ai-contribution-load`), so the *repoint* is the delicate step — the create+verify
+half is safe because nothing reads the targets yet.
 
 ## 3. `catalog.* → registry` — ownership transitions (NOT plain moves)
 
