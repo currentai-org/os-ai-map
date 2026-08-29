@@ -88,6 +88,13 @@ AUDIT_ROOTS = (
     "build/check_artifacts.py",  # audits declared-artifact coverage of the signals
 )
 
+# Explicitly declared publication workflows that read tables directly (none today). The root
+# set is CLOSED (ADR-003 finding 3): a governed root is a governed producer file, a named
+# AUDIT_ROOT, or a declared workflow here -- never "any tracked build/*.py or workflow", so an
+# unrelated future helper that happens to contain a table reference cannot become a semantic
+# root and pull a peripheral table into dependencies.yaml.
+PUBLICATION_WORKFLOWS: tuple[str, ...] = ()
+
 REQUIRED_FIELDS = (
     "id", "table", "kind", "current_namespace", "target_namespace", "migration_status",
     "authority", "grain", "producer", "population", "release_path", "consumer_checks",
@@ -473,16 +480,17 @@ def _dependency_model_files() -> dict[str, str]:
 
 
 def _governed_root_files() -> set[str]:
-    """The map roots: governed asset model files, plus every build module and workflow.
+    """The map roots -- a CLOSED set (ADR-003 finding 3), never "any build module or workflow".
 
-    Standalone notebooks are excluded (gate 5), and a dependency's mirror file is NOT a root --
-    it is a leaf whose reads are the platform's business, surfaced only for chain reachability.
+    A root is a governed producer file (a governed asset's model file, or a `build/` module named
+    as a governed asset's `producer`), a named AUDIT_ROOT, or an explicitly declared publication
+    workflow. So an unrelated future `build/foo.py` or workflow that merely contains a table
+    reference cannot become a semantic root and confer dependency membership. Standalone notebooks
+    are excluded (gate 5); a dependency's mirror file is a leaf, not a root.
     """
-    roots = {(a.get("files") or {}).get("model") for a in assets() if a.get("role")}
-    roots.discard(None)
-    for pattern_key in ("build", "workflows"):
-        for p in tracked_files(ROOTS[pattern_key]):
-            roots.add(str(p.relative_to(ROOT)))
+    roots = set(_governed_producer_paths())
+    roots |= set(AUDIT_ROOTS)
+    roots |= set(PUBLICATION_WORKFLOWS)
     return roots
 
 
@@ -634,6 +642,11 @@ def dependency_violations() -> list[str]:
         if d.get("owner") != "oso":
             problems.append(f"{t}: dependency owner must be oso, not {d.get('owner')!r}")
 
+        # ADR-003 requires the contract to state purpose, grain and freshness (fail closed).
+        for field in ("purpose", "expected_grain", "freshness_requirement"):
+            if not str(d.get(field) or "").strip():
+                problems.append(f"{t}: dependency contract is missing {field}")
+
         # Provenance anchor: exactly one, and internally self-consistent.
         has_rev = d.get("verified_revision") is not None
         has_hash = bool(d.get("content_contract_sha256")) and bool(d.get("verified_at"))
@@ -668,24 +681,39 @@ def dependency_violations() -> list[str]:
 
 
 def _mirror_integrity(dep: dict) -> list[str]:
-    """A currentai.* dependency mirror is self-consistent: model file present, local_sha256 matches."""
+    """A currentai.* dependency mirror fails closed: every claimed file's bytes are hashed and
+    match, verified_revision equals the mirror revision, and the mirror names a model_id."""
     problems: list[str] = []
     t = dep["table"]
     mirror = dep.get("mirror") or {}
-    model = (dep.get("files") or {}).get("model")
+    files = dep.get("files") or {}
+    model = files.get("model")
     if not model:
         problems.append(f"{t}: currentai.* dependency needs a mirror model file")
         return problems
-    path = ROOT / model
-    if not path.exists():
-        problems.append(f"{t}: mirror model file {model} does not exist")
-        return problems
-    declared = mirror.get("local_sha256")
-    actual = hashlib.sha256(path.read_bytes()).hexdigest()
-    if declared != actual:
-        problems.append(f"{t}: mirror local_sha256 does not match {model} on disk")
+    # verified_revision is the anchor; it must equal the mirror block's revision (fail closed).
+    if dep.get("verified_revision") != mirror.get("revision"):
+        problems.append(
+            f"{t}: verified_revision {dep.get('verified_revision')!r} != mirror.revision "
+            f"{mirror.get('revision')!r}"
+        )
     if not mirror.get("model_id"):
         problems.append(f"{t}: mirror block needs a model_id")
+    # Content-bind EVERY claimed file: the model via mirror.local_sha256, the schema via
+    # mirror.schema_sha256. A tracked file the contract claims but does not hash is not bound.
+    for role, declared_key in (("model", "local_sha256"), ("schema", "schema_sha256")):
+        fp = files.get(role)
+        if not fp:
+            continue
+        path = ROOT / fp
+        if not path.exists():
+            problems.append(f"{t}: mirror {role} file {fp} does not exist")
+            continue
+        declared = mirror.get(declared_key)
+        if not declared:
+            problems.append(f"{t}: mirror block needs {declared_key} for the {role} file {fp}")
+        elif declared != hashlib.sha256(path.read_bytes()).hexdigest():
+            problems.append(f"{t}: mirror {declared_key} does not match {fp} on disk")
     return problems
 
 
@@ -993,66 +1021,97 @@ def merge_base_assets(base: str = "origin/main") -> list[dict] | None:
     return (yaml.safe_load(blob) or {}).get("assets") or []
 
 
-def mirror_provenance_violations(base: str = "origin/main") -> list[str]:
-    """Mirror entries whose bytes moved without their provenance moving with them.
+def merge_base_dependencies(base: str = "origin/main") -> list[dict] | None:
+    """The dependency manifest as of the merge base, or None if it did not exist there."""
+    try:
+        merge_base = subprocess.run(
+            ["git", "-C", str(ROOT), "merge-base", "HEAD", base],
+            capture_output=True, text=True, check=True,
+        ).stdout.strip()
+        blob = subprocess.run(
+            ["git", "-C", str(ROOT), "show", f"{merge_base}:warehouse/dependencies.yaml"],
+            capture_output=True, text=True, check=True,
+        ).stdout
+    except subprocess.CalledProcessError:
+        return None
+    return (yaml.safe_load(blob) or {}).get("dependencies") or []
 
-    When a mirrored file's `local_sha256` changes, the platform revision it claims to
-    mirror must change too -- `revision`, `hash` and `synced_at` all move together, and
-    only for the entry whose file actually changed. `synced_at` is per entry for exactly
-    this reason: it was one global date until 2026-08-16, which meant refetching two
-    models advanced the date on all twelve.
+
+def _compare_mirror(label: str, prior: dict, cur: dict, has_migration: bool) -> list[str]:
+    """The provenance-coherence rules for one mirror across two commits.
+
+    Bytes and provenance move together and forward: if `local_sha256` changed, `revision` must
+    advance, `hash` must change, and `synced_at` must not go backward; if the bytes did NOT
+    change, none of the provenance may. `model_id` is stable unless a migration authorizes it.
+    """
+    problems: list[str] = []
+    if cur.get("model_id") != prior.get("model_id") and not has_migration:
+        problems.append(
+            f"{label}: model_id changed from {prior.get('model_id')} to {cur.get('model_id')} "
+            "with no migration authorizing it"
+        )
+    if cur.get("local_sha256") == prior.get("local_sha256"):
+        if any(cur.get(f) != prior.get(f) for f in ("revision", "hash", "synced_at")):
+            problems.append(f"{label}: provenance changed but the mirrored bytes did not")
+        return problems
+    old_rev, new_rev = prior.get("revision"), cur.get("revision")
+    if isinstance(old_rev, int) and isinstance(new_rev, int):
+        if new_rev <= old_rev:
+            problems.append(
+                f"{label}: bytes changed but revision went {old_rev} -> {new_rev}; a refetch advances it"
+            )
+    elif new_rev == old_rev:
+        problems.append(f"{label}: bytes changed but revision did not")
+    if cur.get("hash") == prior.get("hash"):
+        problems.append(f"{label}: bytes changed but the platform hash did not")
+    old_at, new_at = str(prior.get("synced_at") or ""), str(cur.get("synced_at") or "")
+    if new_at < old_at:
+        problems.append(f"{label}: synced_at moved backward, {old_at} -> {new_at}")
+    return problems
+
+
+def mirror_provenance_violations(base: str = "origin/main") -> list[str]:
+    """Governed-asset mirror entries whose bytes moved without their provenance moving with them.
+
+    `synced_at` is per entry for exactly this reason: it was one global date until 2026-08-16,
+    which meant refetching two models advanced the date on all twelve.
     """
     before = merge_base_assets(base)
     if before is None:
         return []
-    old = {a["id"]: a for a in before if a.get("mirror")}
+    old = {a["id"]: a["mirror"] for a in before if a.get("mirror")}
     problems: list[str] = []
     for asset in assets():
-        mirror = asset.get("mirror")
-        was = old.get(asset["id"])
-        if not mirror or not was or not was.get("mirror"):
+        cur, prior = asset.get("mirror"), old.get(asset["id"])
+        if not cur or not prior:
             continue
-        prior = was["mirror"]
-        # model_id identifies WHICH deployed model is mirrored. Changing it silently
-        # repoints the entry at a different model while the bytes and provenance look
-        # untouched, so it is stable unless mirror_migration explains the change.
-        if mirror.get("model_id") != prior.get("model_id"):
-            if not asset.get("mirror_migration"):
-                problems.append(
-                    f"{asset['id']}: model_id changed from {prior.get('model_id')} to "
-                    f"{mirror.get('model_id')} with no mirror_migration authorizing it"
-                )
+        problems += _compare_mirror(asset["id"], prior, cur, bool(asset.get("mirror_migration")))
+    return problems
 
-        if mirror.get("local_sha256") == prior.get("local_sha256"):
-            if any(mirror.get(f) != prior.get(f) for f in ("revision", "hash", "synced_at")):
-                problems.append(
-                    f"{asset['id']}: provenance changed but the mirrored bytes did not"
-                )
+
+def dependency_mirror_provenance_violations(base: str = "origin/main") -> list[str]:
+    """Cross-commit provenance for currentai.* DEPENDENCY mirrors -- the protection moving the
+    seven mirrors out of assets.yaml would otherwise have lost (ADR-003 finding 1).
+
+    Prior provenance is looked up by TABLE across BOTH merge-base manifests, so the one-time
+    asset -> dependency transition is covered: a mirror that was a governed asset at the merge
+    base must carry forward the same coherent provenance now that it is a dependency contract.
+    """
+    prior = {}
+    for a in (merge_base_assets(base) or []):
+        if a.get("mirror"):
+            prior[a["table"]] = a["mirror"]
+    for d in (merge_base_dependencies(base) or []):
+        if d.get("mirror"):
+            prior[d["table"]] = d["mirror"]
+    if not prior:
+        return []
+    problems: list[str] = []
+    for d in dependencies():
+        cur, was = d.get("mirror"), prior.get(d["table"])
+        if not cur or not was:
             continue
-
-        # Bytes moved, so a refetch happened. Everything that dates the refetch moves with
-        # it, and forward: an equal value means the provenance was not updated, and a lower
-        # one means it was rolled back while presenting as current.
-        old_rev, new_rev = prior.get("revision"), mirror.get("revision")
-        if isinstance(old_rev, int) and isinstance(new_rev, int):
-            if new_rev <= old_rev:
-                problems.append(
-                    f"{asset['id']}: bytes changed but revision went {old_rev} -> {new_rev}; "
-                    "a refetch advances it"
-                )
-        elif new_rev == old_rev:
-            problems.append(f"{asset['id']}: bytes changed but revision did not")
-
-        if mirror.get("hash") == prior.get("hash"):
-            problems.append(f"{asset['id']}: bytes changed but the platform hash did not")
-
-        # synced_at is date-granular, so a same-day refetch legitimately keeps its value.
-        # Only a backward move is a defect.
-        old_at, new_at = str(prior.get("synced_at") or ""), str(mirror.get("synced_at") or "")
-        if new_at < old_at:
-            problems.append(
-                f"{asset['id']}: synced_at moved backward, {old_at} -> {new_at}"
-            )
+        problems += _compare_mirror(d["table"], was, cur, bool(d.get("mirror_migration")))
     return problems
 
 

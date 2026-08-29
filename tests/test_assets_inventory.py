@@ -748,6 +748,31 @@ def test_notebook_is_never_a_graph_root():
     assert not violations, "notebook-root violations:\n" + "\n".join(violations)
 
 
+def test_no_dead_repo_computations():
+    """Every active repo-computation / governed-data is reachable from a governed root (F4)."""
+    violations = A.unreachable_repo_computations()
+    assert not violations, "unreachable governed nodes:\n" + "\n".join(violations)
+
+
+def test_dependency_mirror_provenance_holds():
+    """Cross-commit provenance for the dependency mirrors is coherent against the merge base,
+    including the asset->dependency transition (ADR-003 finding 1)."""
+    violations = A.dependency_mirror_provenance_violations()
+    assert not violations, "dependency mirror provenance:\n" + "\n".join(violations)
+
+
+def test_governed_root_set_is_closed():
+    """Finding 3: the root set is governed producer files + named audit roots + declared
+    workflows only -- never "any tracked build/*.py", so an unrelated helper cannot become a
+    semantic root."""
+    roots = A._governed_root_files()
+    allowed = set(A._governed_producer_paths()) | set(A.AUDIT_ROOTS) | set(A.PUBLICATION_WORKFLOWS)
+    assert roots == allowed
+    # a real build module that neither produces a governed table nor is an audit root is excluded
+    assert "build/render.py" not in roots
+    assert "build/warehouse.py" not in roots
+
+
 def test_role_and_backlog_partition_the_inventory():
     """Every asset is either governed (carries a role) or in the externalization backlog
     (roleless: long_tail, or one of the named questionable gap_map tables). Nothing else."""

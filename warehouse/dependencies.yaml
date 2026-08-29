@@ -5,29 +5,33 @@
 # so these are contracts, never governed assets. See docs/architecture/adr-003-repository-scope-boundary.md.
 #
 # This file is NOT an org-wide inventory and cannot become one. The gates (build/assets.py
-# dependency_violations, tests/test_scope_gates.py) keep it honest:
+# dependency_violations + dependency_mirror_provenance_violations, tests/test_scope_gates.py) fail
+# CLOSED:
 #   * disjoint from assets.yaml (gate 3);
-#   * every entry is REACHABLE from a governed root -- re-derived from the tree, not trusted from
-#     required_by; a table only the externalization backlog or a notebook reads is not a contract
-#     here (gate 2/4);
-#   * required_by is mechanically re-derived and must match;
-#   * exactly one provenance anchor, internally self-consistent (integrity):
-#       - currentai.* mirror -> verified_revision + a mirror block whose local_sha256 matches the
-#         tracked read-only mirror file (bytes on disk), so a silent edit is caught;
+#   * every entry is REACHABLE from a CLOSED root set -- governed producer files + named audit
+#     roots only, never "any build/*.py" -- re-derived from the tree, not trusted from required_by;
+#   * required_by is mechanically re-derived and must match; owner: oso; purpose, expected_grain and
+#     freshness_requirement are required;
+#   * exactly one provenance anchor, internally self-consistent:
+#       - currentai.* mirror -> verified_revision (== mirror.revision) + a mirror block that hashes
+#         EVERY claimed file (model via local_sha256, schema via schema_sha256) against the bytes on
+#         disk; cross-commit coherence (bytes move with revision/hash/synced_at, model_id stable) is
+#         gated across BOTH manifests, including the one-time asset->dependency move;
 #       - oso.* upstream -> content_contract_sha256 over table + grain + TYPED expected_columns
-#         (name + type + nullability), recomputed by the gate; live-schema verification is a
-#         credentialed maintainer step (CI has no OSO credentials).
+#         (name + type + nullable), recomputed by the gate + a verified_at date.
 #         Reproduce: sha256(table + "\n" + expected_grain + "\n" +
 #         "\n".join(sorted(f"{c['name']}:{c['type']}:{'null' if c['nullable'] else 'notnull'}")))
 #
-# The three openness models carry retirement_context: the repo drives their Phase-7 retirement
-# (#384), replacing them with the repo-owned evaluation.axis_* trace -- it does not own them.
+# `platform_schedule` is INFORMATIONAL (the platform's cron + last observed trigger, retained from
+# the prior inventory) -- it records the freshness expectation's basis, not an ownership obligation.
+# The three openness models carry retirement_context: the repo drives their Phase-7 retirement (#384).
 ---
 version: 1
 dependencies:
 - table: currentai.evidence.product_evidence
   purpose: adoption_and_openness_evidence
   expected_grain: one row per (product_slug, category_slug, dimension, part_index, citing artifact)
+  freshness_requirement: <= 8 days (weekly platform refresh)
   required_by:
   - warehouse/models/scores/openness_facts.sql
   verified_revision: 11
@@ -41,12 +45,18 @@ dependencies:
     hash: 039c0649f93d19e8bb8f86454e29a4c7ae8d12e87db93d8290ccf75437db48a4
     local_sha256: d31044ba633a012666543a80c15890530f58807e392db89a92f5d25363f60e57
     synced_at: '2026-08-24'
+    schema_sha256: 625b9bb254aef512dd92151b8ef1055e8aab3566ec3326c2a4b806ea8feef46c
+  platform_schedule:
+    cron: 0 3 * * 1
+    timezone: UTC
+    last_observed_trigger: MANUAL
   retirement_context: 'Phase 7 / §9.3: the platform openness chain is RETIRED (deleted, not migrated)
     once the repo-owned evaluation.axis_* scoring trace dual-runs green across releases (#384). Tracked
     as a dependency because the repo drives that retirement, not because it owns the model.'
 - table: currentai.scores.openness_facts
   purpose: openness_normalized_facts
   expected_grain: one row per (product_slug, category_slug, fact_key)
+  freshness_requirement: <= 8 days (weekly platform refresh)
   required_by:
   - warehouse/models/scores/openness_computed.sql
   verified_revision: 7
@@ -60,12 +70,18 @@ dependencies:
     hash: 7ce706d47d74cc433b6eb02b7b8558d26af21f6689d83426296d2457fa3ad26c
     local_sha256: 1952f4b3939ade83f4ec239795ad234fa3ec8464c1789edb4d66374f072e4e39
     synced_at: '2026-08-15'
+    schema_sha256: e0af61b46f8e470354b9c0c5e1efe8fc419cd37bbbfccc3bdbf44991ecddebf9
+  platform_schedule:
+    cron: 0 4 * * 1
+    timezone: UTC
+    last_observed_trigger: null
   retirement_context: 'Phase 7 / §9.3: the platform openness chain is RETIRED (deleted, not migrated)
     once the repo-owned evaluation.axis_* scoring trace dual-runs green across releases (#384). Tracked
     as a dependency because the repo drives that retirement, not because it owns the model.'
 - table: currentai.scores.openness_computed
   purpose: openness_computed_scores
   expected_grain: one row per (product_slug, category_slug)
+  freshness_requirement: <= 8 days (weekly platform refresh)
   required_by:
   - build/apply_scores.py
   - build/check_parity.py
@@ -80,12 +96,18 @@ dependencies:
     hash: 5606414402e540d23105552aa2320e4d62cdc71540e84e1d1a8db842df429ca1
     local_sha256: afc40feea6966d0ad946b0f2ae1d00b8ad4f5a9a6e2fb74dea8383ec5d88b464
     synced_at: '2026-08-15'
+    schema_sha256: 0802e69dd10acc0575ba95e845514f59ec818b6b51e5a69551ceaa2fec910a8e
+  platform_schedule:
+    cron: 0 4 * * 1
+    timezone: UTC
+    last_observed_trigger: null
   retirement_context: 'Phase 7 / §9.3: the platform openness chain is RETIRED (deleted, not migrated)
     once the repo-owned evaluation.axis_* scoring trace dual-runs green across releases (#384). Tracked
     as a dependency because the repo drives that retirement, not because it owns the model.'
 - table: currentai.signal_github.artifact_state
   purpose: github_adoption_signal
   expected_grain: one row per (product_slug, repo) at one fetched_at
+  freshness_requirement: <= 8 days (weekly platform refresh)
   required_by:
   - build/check_artifacts.py
   - warehouse/models/evidence/product_evidence.sql
@@ -101,9 +123,14 @@ dependencies:
     hash: 4ca130834731c7cdee5534b15eef71143b20179b725cb90758e3cfd5d4fcec5f
     local_sha256: 66b18ee046d741510a0669028c8b4fb4dd47c8190ca0f92d83c6ccdb20b7f9ea
     synced_at: '2026-08-24'
+  platform_schedule:
+    cron: 0 3 * * 0
+    timezone: UTC
+    last_observed_trigger: MANUAL
 - table: currentai.signal_huggingface.artifact_state
   purpose: huggingface_adoption_signal
   expected_grain: one row per (product_slug, artifact_kind, artifact_id) at one fetched_at
+  freshness_requirement: <= 8 days (weekly platform refresh)
   required_by:
   - warehouse/models/evidence/product_evidence.sql
   - warehouse/models/observations/product_adoption_current.sql
@@ -118,9 +145,14 @@ dependencies:
     hash: 40e1df01e4fc93c56213283de20aa04e85c8bd7951dc3f038e3fb093c61ba6d3
     local_sha256: 851e601b94f4abccd66005827b7e38f0b419ca5a9b1c9c3292f62ebd273b8ec0
     synced_at: '2026-08-24'
+  platform_schedule:
+    cron: 0 2 * * 0
+    timezone: UTC
+    last_observed_trigger: MANUAL
 - table: currentai.signal_pypi.package_downloads
   purpose: pypi_adoption_signal
   expected_grain: one row per (product_slug, package) over a 30-day window
+  freshness_requirement: <= 8 days (weekly platform refresh)
   required_by:
   - build/check_artifacts.py
   - warehouse/models/observations/product_adoption_current.sql
@@ -135,9 +167,14 @@ dependencies:
     hash: d5311e2d3feb3b5f0190134b70c143586bcda911ed530ca52545c53325b7bbd0
     local_sha256: 21fe2106888e7cf8aecc12d3a57b449a8a064537608eb4ac54ac32bb5d180499
     synced_at: '2026-08-15'
+  platform_schedule:
+    cron: 0 1 * * 0
+    timezone: UTC
+    last_observed_trigger: SCHEDULED
 - table: currentai.signal_semanticscholar.paper_citations
   purpose: paper_citation_signal
   expected_grain: one row per (product_slug, arxiv_id)
+  freshness_requirement: <= 8 days (weekly platform refresh)
   required_by:
   - warehouse/models/observations/product_adoption_current.sql
   verified_revision: 5
@@ -150,6 +187,10 @@ dependencies:
     hash: 7ad39259ecb37da91cf6f9e9c4b88b3927f98f7e79be1804f732c168ae99bcd0
     local_sha256: 08f2ac0588c3d2792e0af597bc1ddfc2cfe5342505384efe33bc15c6eb030cc6
     synced_at: '2026-08-26'
+  platform_schedule:
+    cron: 0 1 * * 0
+    timezone: UTC
+    last_observed_trigger: SCHEDULED
 - table: oso.pypi_downloads.daily_downloads_by_package
   purpose: pypi_adoption_signal
   expected_grain: one row per (day, package)

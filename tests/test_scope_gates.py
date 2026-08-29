@@ -86,6 +86,7 @@ def _oso_dep(**over):
     base = dict(
         table="oso.x.y", purpose="p", expected_grain="one row per z",
         expected_columns=[{"name": "z", "type": "varchar", "nullable": False}],
+        freshness_requirement="<= 8 days",
         required_by=["warehouse/models/signal_pypi/package_downloads.sql"],
         verified_at="2026-08-29", owner="oso",
     )
@@ -186,6 +187,113 @@ def test_notebook_producer_is_flagged(monkeypatch):
         producer="notebooks/long-tail-explorer.py",
         files={"model": "notebooks/long-tail-explorer.py"})])
     assert any("gate 5" in v for v in A.notebook_root_violations())
+
+
+# --- F2 fail-closed: currentai mirror integrity + required fields ---------------
+
+import hashlib
+from pathlib import Path
+
+_REAL_MODEL = "warehouse/models/signal_pypi/package_downloads.sql"
+
+
+def _currentai_dep(**over):
+    h = hashlib.sha256((A.ROOT / _REAL_MODEL).read_bytes()).hexdigest()
+    base = dict(
+        table="currentai.signal_pypi.package_downloads", purpose="p", expected_grain="g",
+        freshness_requirement="<= 8 days", required_by=["build/x.py"], verified_revision=3,
+        owner="oso", files={"model": _REAL_MODEL},
+        mirror={"model_id": "m", "revision": 3, "hash": "hh",
+                "local_sha256": h, "synced_at": "2026-08-15"},
+    )
+    base.update(over)
+    return base
+
+
+def test_verified_revision_must_equal_mirror_revision():
+    dep = _currentai_dep(verified_revision=999999)  # mirror.revision stays 3
+    assert any("verified_revision" in v and "mirror.revision" in v for v in A._mirror_integrity(dep))
+
+
+def test_mirror_bytes_edited_without_hash_is_flagged():
+    dep = _currentai_dep()
+    dep["mirror"]["local_sha256"] = "0" * 64  # claims bytes that are not on disk
+    assert any("local_sha256 does not match" in v for v in A._mirror_integrity(dep))
+
+
+def test_claimed_schema_file_must_be_hashed():
+    dep = _currentai_dep()
+    dep["files"]["schema"] = "warehouse/models/evidence/product_evidence.schema.json"
+    # no schema_sha256 recorded -> flagged
+    assert any("schema_sha256" in v for v in A._mirror_integrity(dep))
+
+
+def test_missing_freshness_requirement_is_flagged(monkeypatch):
+    dep = _oso_dep()
+    del dep["freshness_requirement"]
+    monkeypatch.setattr(A, "assets", lambda: [])
+    monkeypatch.setattr(A, "dependencies", lambda: [dep])
+    monkeypatch.setattr(A, "needed_tables", lambda: {"oso.x.y"})
+    monkeypatch.setattr(A, "dependency_readers",
+                        lambda: {"oso.x.y": ["warehouse/models/signal_pypi/package_downloads.sql"]})
+    assert any("missing freshness_requirement" in v for v in A.dependency_violations())
+
+
+# --- F1 cross-commit provenance for dependency mirrors --------------------------
+
+def _prior_asset(**over):
+    m = {"model_id": "m", "revision": 3, "hash": "hh", "local_sha256": "aaa", "synced_at": "2026-08-15"}
+    m.update(over)
+    return {"id": "signal_pypi.package_downloads", "table": "currentai.signal_pypi.package_downloads",
+            "mirror": m}
+
+
+def _cur_dep(**over):
+    m = {"model_id": "m", "revision": 3, "hash": "hh", "local_sha256": "aaa", "synced_at": "2026-08-15"}
+    m.update(over.pop("mirror", {}))
+    d = {"table": "currentai.signal_pypi.package_downloads", "mirror": m}
+    d.update(over)
+    return d
+
+
+def test_asset_to_dependency_transition_with_identical_provenance_passes(monkeypatch):
+    monkeypatch.setattr(A, "merge_base_assets", lambda base="origin/main": [_prior_asset()])
+    monkeypatch.setattr(A, "merge_base_dependencies", lambda base="origin/main": [])
+    monkeypatch.setattr(A, "dependencies", lambda: [_cur_dep()])
+    assert A.dependency_mirror_provenance_violations() == []
+
+
+def test_dependency_bytes_changed_without_revision_advance_is_flagged(monkeypatch):
+    monkeypatch.setattr(A, "merge_base_assets", lambda base="origin/main": [_prior_asset()])
+    monkeypatch.setattr(A, "merge_base_dependencies", lambda base="origin/main": [])
+    monkeypatch.setattr(A, "dependencies",
+                        lambda: [_cur_dep(mirror={"local_sha256": "bbb", "hash": "new"})])  # bytes moved, rev still 3
+    assert any("revision" in v for v in A.dependency_mirror_provenance_violations())
+
+
+def test_dependency_provenance_changed_without_bytes_is_flagged(monkeypatch):
+    monkeypatch.setattr(A, "merge_base_assets", lambda base="origin/main": [_prior_asset()])
+    monkeypatch.setattr(A, "merge_base_dependencies", lambda base="origin/main": [])
+    monkeypatch.setattr(A, "dependencies",
+                        lambda: [_cur_dep(mirror={"revision": 99})])  # same bytes, revision moved
+    assert any("bytes did not" in v for v in A.dependency_mirror_provenance_violations())
+
+
+def test_dependency_model_id_change_without_migration_is_flagged(monkeypatch):
+    monkeypatch.setattr(A, "merge_base_assets", lambda base="origin/main": [_prior_asset()])
+    monkeypatch.setattr(A, "merge_base_dependencies", lambda base="origin/main": [])
+    monkeypatch.setattr(A, "dependencies", lambda: [_cur_dep(mirror={"model_id": "other"})])
+    assert any("model_id changed" in v for v in A.dependency_mirror_provenance_violations())
+
+
+# --- F3 the root set is closed ---------------------------------------------------
+
+def test_unrelated_build_helper_is_not_a_root():
+    """A build module that neither produces a governed table nor is a named audit root is not a
+    governed root, so a table reference in it cannot confer dependency membership."""
+    roots = A._governed_root_files()
+    assert "build/render.py" not in roots and "build/vocabulary.py" not in roots
+    assert roots <= (set(A._governed_producer_paths()) | set(A.AUDIT_ROOTS) | set(A.PUBLICATION_WORKFLOWS))
 
 
 # --- the dependency loader and manifest are well-formed -------------------------

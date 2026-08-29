@@ -63,8 +63,11 @@ not own*:
 
 Everything else — a table that merely exists on OSO, or is read only by standalone notebooks or other
 platform products — is **out of scope** in both files. It keeps living on OSO and is discoverable
-through OSO's own UI. The repository does not mirror it, assign it a migration status, or take
-retirement obligations for it.
+through OSO's own UI. The repository assigns it no migration status and takes no retirement obligation
+for it. (The one exception: a category-3 dependency the repo actually reads may keep a **read-only
+mirror file** of the platform model's definition, so the dependency chain stays inspectable and its
+provenance is gated — a mirror is provenance, not ownership, and confers no governance. An out-of-scope
+table gets no such mirror.)
 
 Population and release-path follow from this, not the reverse: **every governed asset carries
 `population: gap_map`; only governed outputs additionally require `release_path: true`.** (The
@@ -95,7 +98,7 @@ Category-3 OSO inputs are recorded as **contracts**, not owned models. Proposed 
   required_by:                                     # the named repo computation(s) that read it
     - warehouse/models/observations/product_adoption_current.sql
   # Provenance anchor — exactly one of:
-  verified_revision: <platform revision hash>     # for a currentai.* USER_MODEL with a revision, OR
+  verified_revision: <integer platform revision number, == the mirror block's revision>   # currentai.* mirror, OR
   # content_contract_sha256: <hash> + verified_at: <date>   # for an oso.* upstream with no revision
   owner: oso                                      # NOT this repo
 ```
