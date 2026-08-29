@@ -163,7 +163,6 @@ graph LR
   EXT_oso__package_owners_v0 --> entities__packages
   EXT_oso__pypi_downloads__daily_downloads_by_package --> signal_packages__downloads
   EXT_oso__pypi_downloads__daily_downloads_by_package --> signal_pypi__package_downloads
-  catalog__foundation_model_repos --> entities__models
   catalog__model_benchmarks --> entities__models
   catalog__model_repos --> entities__models
   catalog__stack_map --> scores__stack_contributors
@@ -195,6 +194,7 @@ graph LR
   registry__category_scoring_rules --> scores__openness_computed
   registry__category_scoring_rules --> scores__openness_facts
   registry__evidence_abstentions --> evidence__product_evidence
+  registry__foundation_model_repos --> entities__models
   registry__license_aliases --> evidence__product_evidence
   registry__license_aliases --> scores__openness_facts
   registry__product_artifacts --> observations__product_adoption_current
@@ -253,7 +253,6 @@ graph LR
   class observations__product_adoption_baseline staged;
   class observations__source_runs staged;
   class registry__axis_assessments staged;
-  class registry__foundation_model_repos staged;
   class registry__tail_products dormant;
   class signal_github__product_adoption compatibility;
   class signal_github__repo_state compatibility;
