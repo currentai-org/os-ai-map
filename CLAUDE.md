@@ -23,10 +23,11 @@ map semantics, or a temporary compatibility shim with an exit. A **direct OSO in
 belongs in `warehouse/dependencies.yaml` as a contract (not owned) — **never in `assets.yaml`**. A table
 that merely exists on OSO, or is read only by a standalone notebook or another platform product, is
 **out of scope** entirely — it lives on OSO. See `docs/architecture/adr-003-repository-scope-boundary.md`
-(Accepted — implementation pending). **Phase-5 platform migration stays frozen** until the ADR-003
-mechanism lands: the `role` field, `warehouse/dependencies.yaml` contracts, the root-scoped DAG, and the
-anti-reintroduction gates are all merged. Accepting the ADR does not lift the freeze; the old Phase-5
-runbooks are **superseded**, not re-enabled.
+(Accepted; mechanism implemented). The ADR-003 mechanism has **landed** — the `role` field,
+`warehouse/dependencies.yaml` contracts, the root-scoped DAG, and the anti-reintroduction gates are
+merged — which **lifts the Phase-5 freeze**. The remaining authorized work is externalizing the 28
+roleless backlog assets (ADR-003 steps 5–6), each gated by the no-orphan precondition; the old Phase-5
+namespace-move runbooks stay **superseded**, not re-enabled.
 
 ## Conventions
 

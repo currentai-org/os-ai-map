@@ -715,15 +715,48 @@ def test_every_scheduled_asset_declares_a_timezone_and_trigger(inventory):
 def test_committed_dag_matches_the_renderer():
     """A generated document that drifts from its generator is worse than no document.
 
-    `render_dag()` emits its own fenced ```mermaid block, so the document must contain it EXACTLY
-    once — a substring check alone passed a doubled fence (two openers, two closers) that a
-    regeneration bug left behind and Mermaid renders as broken.
+    `render_dag()` emits the three root-scoped views (ADR-003), each its own fenced ```mermaid
+    block, so the document must contain the whole rendered region EXACTLY once and carry no
+    extra fence a regeneration bug might have doubled (Mermaid renders those as broken).
     """
     committed = (ROOT / "docs/architecture/current-state-dag.md").read_text(encoding="utf-8")
     rendered = A.render_dag()
     assert rendered in committed, "current-state-dag.md is stale; regenerate it"
-    assert committed.count(rendered) == 1, "the rendered Mermaid block appears more than once"
-    assert committed.count("```mermaid") == 1, "duplicate ```mermaid fence in current-state-dag.md"
+    assert committed.count(rendered) == 1, "the rendered Mermaid region appears more than once"
+    assert committed.count("```mermaid") == rendered.count("```mermaid"), (
+        "committed ```mermaid fence count differs from the renderer's; regenerate the doc"
+    )
+
+
+# --- ADR-003 scope-boundary gates hold on the real inventory --------------------
+
+def test_role_gate_holds():
+    """Every governed asset carries the boundary-rule role; gates 1 and 6 hold (ADR-003)."""
+    violations = A.role_violations()
+    assert not violations, "role/boundary violations:\n" + "\n".join(violations)
+
+
+def test_dependency_gate_holds():
+    """assets.yaml and dependencies.yaml obey gates 2, 3, 4 (ADR-003)."""
+    violations = A.dependency_violations()
+    assert not violations, "dependency-contract violations:\n" + "\n".join(violations)
+
+
+def test_notebook_is_never_a_graph_root():
+    """Gate 5: no standalone notebook produces a governed table / roots the graph."""
+    violations = A.notebook_root_violations()
+    assert not violations, "notebook-root violations:\n" + "\n".join(violations)
+
+
+def test_role_and_backlog_partition_the_inventory():
+    """Every asset is either governed (carries a role) or in the externalization backlog
+    (roleless: long_tail, or one of the named questionable gap_map tables). Nothing else."""
+    for a in A.assets():
+        roleless = a.get("role") is None
+        assert roleless == A.in_externalization_backlog(a), (
+            f"{a['id']}: role/backlog disagree (role={a.get('role')!r}, "
+            f"backlog={A.in_externalization_backlog(a)})"
+        )
 
 
 # --- the inventory must agree with the ADR committed beside it -------------------

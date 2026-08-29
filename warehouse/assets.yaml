@@ -1,7 +1,15 @@
-# Architecture asset inventory for the datasets this repository maintains or reads from.
-# One entry per logical platform table. Generated 2026-08-20 from the live org, the
-# repository tree and every notebook in the organization; schema and gates are in
-# docs/architecture/data-architecture.md section 11.
+# Governed asset inventory for the Open Source AI Gap Map's data system (ADR-003).
+# NOT an org-wide mirror: an entry belongs here only if it is a GOVERNED asset -- a governed
+# output, repo-owned map computation, or a compatibility shim -- and it carries a `role`
+# saying which. Direct OSO inputs the map depends on but does not own live in
+# warehouse/dependencies.yaml as contracts, never here. Tables that merely exist on OSO, or
+# are read only by a standalone notebook or another platform product, are out of scope in
+# both files and stay discoverable through OSO's own UI.
+#
+# Transitional: the 28 roleless entries below are the externalization backlog (24 long_tail +
+# 4 questionable gap_map tables) that ADR-003 steps 5-6 transfer to the platform and remove.
+# They are deliberately roleless until they leave; every OTHER entry is governed and carries a
+# role. Schema and gates are in docs/architecture/data-architecture.md section 11.
 #
 # `kind` is what an asset IS, in the namespace vocabulary of section 4. `current_namespace`
 # is where its table lives today and `target_namespace` where the architecture puts it.
@@ -588,6 +596,7 @@ assets:
   authority: platform
   population: gap_map
   release_path: false
+  role: repo-computation
   reads:
   - table: currentai.registry.category_scoring_rules
     scope: internal
@@ -691,6 +700,7 @@ assets:
   authority: repo
   population: gap_map
   release_path: true
+  role: governed-output
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -735,6 +745,7 @@ assets:
   authority: repo
   population: gap_map
   release_path: true
+  role: governed-output
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -779,6 +790,7 @@ assets:
   authority: repo
   population: gap_map
   release_path: true
+  role: governed-output
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -822,6 +834,7 @@ assets:
   authority: repo
   population: gap_map
   release_path: true
+  role: governed-output
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -863,6 +876,7 @@ assets:
   authority: repo
   population: gap_map
   release_path: true
+  role: governed-output
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -911,6 +925,7 @@ assets:
   authority: repo
   population: gap_map
   release_path: false
+  role: repo-computation
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -981,6 +996,7 @@ assets:
   authority: repo
   population: gap_map
   release_path: false
+  role: repo-computation
   reads:
   - table: currentai.registry.product_artifacts
     scope: internal
@@ -1035,6 +1051,7 @@ assets:
   authority: repo
   population: gap_map
   release_path: false
+  role: repo-computation
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -1064,6 +1081,7 @@ assets:
   authority: repo
   population: gap_map
   release_path: true
+  role: governed-output
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -1088,6 +1106,7 @@ assets:
   authority: repo
   population: gap_map
   release_path: true
+  role: governed-output
   read_by:
     models:
     - warehouse/models/signal_github/product_adoption.sql
@@ -1117,6 +1136,7 @@ assets:
   authority: repo
   population: gap_map
   release_path: true
+  role: governed-output
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -1141,6 +1161,7 @@ assets:
   authority: repo
   population: gap_map
   release_path: true
+  role: governed-output
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -1165,6 +1186,7 @@ assets:
   authority: repo
   population: gap_map
   release_path: true
+  role: governed-output
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -1189,6 +1211,7 @@ assets:
   authority: repo
   population: gap_map
   release_path: true
+  role: governed-output
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -1259,6 +1282,7 @@ assets:
   authority: repo
   population: gap_map
   release_path: true
+  role: governed-output
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -1283,6 +1307,7 @@ assets:
   authority: repo
   population: gap_map
   release_path: true
+  role: governed-output
   read_by:
     models:
     - warehouse/models/scores/openness_facts.sql
@@ -1310,6 +1335,7 @@ assets:
   authority: repo
   population: gap_map
   release_path: true
+  role: governed-output
   read_by:
     models:
     - warehouse/models/scores/openness_facts.sql
@@ -1337,6 +1363,7 @@ assets:
   authority: repo
   population: gap_map
   release_path: true
+  role: governed-output
   read_by:
     models:
     - warehouse/models/scores/openness_facts.sql
@@ -1364,6 +1391,7 @@ assets:
   authority: repo
   population: gap_map
   release_path: true
+  role: governed-output
   read_by:
     models:
     - warehouse/models/evidence/product_evidence.sql
@@ -1393,6 +1421,7 @@ assets:
   authority: repo
   population: gap_map
   release_path: true
+  role: governed-output
   read_by:
     models:
     - warehouse/models/evidence/product_evidence.sql
@@ -1420,6 +1449,7 @@ assets:
   authority: repo
   population: gap_map
   release_path: true
+  role: governed-output
   read_by:
     models:
     - warehouse/models/evidence/product_evidence.sql
@@ -1448,6 +1478,7 @@ assets:
   authority: repo
   population: gap_map
   release_path: true
+  role: governed-output
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -1475,6 +1506,7 @@ assets:
   authority: repo
   population: gap_map
   release_path: true
+  role: governed-output
   read_by:
     models:
     - warehouse/models/observations/product_adoption_current.sql
@@ -1513,6 +1545,7 @@ assets:
   authority: repo
   population: gap_map
   release_path: true
+  role: governed-output
   read_by:
     models:
     - warehouse/models/evidence/product_evidence.sql
@@ -1542,6 +1575,7 @@ assets:
   authority: repo
   population: gap_map
   release_path: true
+  role: governed-output
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -1566,6 +1600,7 @@ assets:
   authority: repo
   population: gap_map
   release_path: true
+  role: governed-output
   read_by:
     models:
     - warehouse/models/evidence/product_evidence.sql
@@ -1593,6 +1628,7 @@ assets:
   authority: repo
   population: gap_map
   release_path: true
+  role: governed-output
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -1619,6 +1655,7 @@ assets:
   authority: repo
   population: gap_map
   release_path: true
+  role: governed-output
   read_by:
     models:
     - warehouse/models/evidence/product_evidence.sql
@@ -1646,6 +1683,7 @@ assets:
   authority: repo
   population: gap_map
   release_path: true
+  role: governed-output
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -1670,6 +1708,7 @@ assets:
   authority: repo
   population: gap_map
   release_path: true
+  role: governed-output
   read_by:
     models:
     - warehouse/models/scores/openness_facts.sql
@@ -1699,6 +1738,7 @@ assets:
   authority: repo
   population: gap_map
   release_path: true
+  role: governed-output
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -1845,6 +1885,7 @@ assets:
   authority: platform
   population: gap_map
   release_path: false
+  role: repo-computation
   reads:
   - table: currentai.registry.category_scoring_rules
     scope: internal
@@ -1892,6 +1933,7 @@ assets:
   authority: platform
   population: gap_map
   release_path: false
+  role: repo-computation
   reads:
   - table: currentai.evidence.product_evidence
     scope: internal
@@ -2193,6 +2235,7 @@ assets:
   authority: platform
   population: gap_map
   release_path: false
+  role: repo-computation
   reads:
   - table: currentai.registry.product_artifacts
     scope: internal
@@ -2241,6 +2284,7 @@ assets:
   authority: platform
   population: gap_map
   release_path: false
+  role: compatibility-shim
   reads:
   - table: currentai.registry.adoption_bands
     scope: internal
@@ -2293,6 +2337,7 @@ assets:
   authority: platform
   population: gap_map
   release_path: false
+  role: compatibility-shim
   reads:
   - table: currentai.registry.product_artifacts
     scope: internal
@@ -2383,6 +2428,7 @@ assets:
   authority: platform
   population: gap_map
   release_path: false
+  role: repo-computation
   reads:
   - table: currentai.registry.product_artifacts
     scope: internal
@@ -2427,6 +2473,7 @@ assets:
   authority: platform
   population: gap_map
   release_path: false
+  role: compatibility-shim
   reads:
   - table: currentai.registry.product_artifacts
     scope: internal
@@ -2468,6 +2515,7 @@ assets:
   authority: platform
   population: gap_map
   release_path: false
+  role: compatibility-shim
   reads:
   - table: currentai.registry.adoption_bands
     scope: internal
@@ -2555,6 +2603,7 @@ assets:
   authority: repo
   population: gap_map
   release_path: false
+  role: repo-computation
   reads:
   - table: currentai.registry.product_artifacts
     scope: internal
@@ -2591,6 +2640,7 @@ assets:
   authority: repo
   population: gap_map
   release_path: false
+  role: repo-computation
   reads:
   - table: currentai.registry.product_artifacts
     scope: internal
@@ -2624,6 +2674,7 @@ assets:
   authority: repo
   population: gap_map
   release_path: false
+  role: repo-computation
   reads:
   - table: currentai.registry.adoption_bands
     scope: internal
@@ -2657,6 +2708,7 @@ assets:
   authority: platform
   population: gap_map
   release_path: false
+  role: repo-computation
   reads:
   - table: currentai.registry.product_artifacts
     scope: internal
@@ -2704,6 +2756,7 @@ assets:
   authority: platform
   population: gap_map
   release_path: false
+  role: repo-computation
   reads:
   - table: currentai.registry.product_artifacts
     scope: internal

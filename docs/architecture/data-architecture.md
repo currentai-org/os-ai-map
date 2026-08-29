@@ -1670,6 +1670,12 @@ registries this file replaces.
   publication_role: null          # null | release_sink | public_api | payload_input
   population: long_tail           # gap_map | long_tail | both
   release_path: false             # true only if this asset belongs to a gap-map release
+  # role is ABSENT here: scores.stack_contributors is in the ADR-003 externalization backlog
+  # (a questionable gap_map table, steps 5-6). A GOVERNED asset instead carries exactly one:
+  #   role: governed-output       # a published gap-map artifact (must be release_path: true)
+  #   role: repo-computation      # repo-defined map computation (a repo file or build/ producer;
+  #                               #   authority repo, or platform only for a mirror)
+  #   role: compatibility-shim    # a temporary shim for a governed asset (carries `replacement`)
   refresh: dataset cron '0 4 * * 1'
   timezone: UTC
   last_observed_trigger: null     # no SCHEDULED run observed in run history
@@ -1726,11 +1732,14 @@ outputs — `retirement_reason` and `retirement_issue` — are recorded.
 
 ### 11.3 Scope: what the inventory covers
 
-> **Superseded in basis by `adr-003-repository-scope-boundary.md` (Accepted — implementation pending, 2026-08-29).** The
-> transitive-closure rule below pulls peripheral OSO pipelines into governance whenever a standalone
-> notebook reads them; ADR-003 replaces it with an explicit-role boundary (governed output / repo
-> computation / external dependency / compatibility) and externalizes the long-tail pipelines. This
-> section stands as the record of the old rule until the ADR-003 execution PRs land.
+> **Superseded by `adr-003-repository-scope-boundary.md`; mechanism landed 2026-08-29.** The
+> transitive-closure rule below pulled peripheral OSO pipelines into governance whenever a standalone
+> notebook read them. ADR-003 replaces it with an explicit-role boundary, now IMPLEMENTED: the `role`
+> field on governed assets, `warehouse/dependencies.yaml` for external inputs, a **root-scoped** DAG
+> (notebooks are no longer reachability roots), and the six anti-reintroduction gates
+> (`build/assets.py` `role_violations` / `dependency_violations` / `notebook_root_violations`; §11.5).
+> What remains are ADR-003 steps 5-6 — the ownership transfer of the 28 roleless backlog assets. This
+> section is the record of the old closure, which still describes those 28 until they leave.
 
 The inventory covers the transitive closure of what the repository ships or maintains. The
 roots are:
@@ -2023,8 +2032,46 @@ exist.
    replacement or state why none exists.
 10. No test asserts that a backlog must remain non-empty.
 
+**ADR-003 scope-boundary gates.** Implemented in `build/assets.py` (`role_violations`,
+`dependency_violations`, `notebook_root_violations`) and asserted in
+`tests/test_assets_inventory.py` + `tests/test_scope_gates.py`. The `role` each governed asset
+carries is RE-DERIVED from its fields (`expected_role`) and must match the authored value,
+exactly as `read_by` is re-derived; the externalization backlog (long_tail, or a table in
+`EXTERNALIZE_QUESTIONABLE`) is the roleless set and everything else must carry a role:
+
+- **G1 governed-output ⇔ release_path.** A `governed-output` is `release_path: true`, and a
+  `release_path: true` asset is a `governed-output` (subsumes 2b).
+- **G2 external reads are contracts.** Every external table a governed computation reads
+  appears in `dependencies.yaml` exactly once (a `compatibility-shim` is the only governed
+  exception). Re-derived from the tree, so an uncontracted OSO read fails.
+- **G3 the two files are disjoint.** A table is a governed asset or a dependency contract,
+  never both.
+- **G4 every dependency is used and named.** Each `dependencies.yaml` entry has ≥1 `required_by`
+  repo computation, the recorded `required_by` equals the mechanically re-derived readers, and
+  no dependency is read only by a notebook or an external product. Exactly one provenance
+  anchor (`verified_revision`, or `content_contract_sha256` + `verified_at`); `owner: oso`.
+- **G5 a notebook is never a graph root.** No standalone notebook produces a governed table,
+  so a notebook read cannot confer membership or pull a table into the DAG.
+- **G6 `long_tail` is not a governed population.** No asset carrying a `role` is
+  `population: long_tail`; the tail-candidate registry (`registry.tail_products`) is distinct
+  and is not `long_tail`.
+
 The inventory must not claim visibility into untracked external consumers. `read_by` covers
 in-repo consumers only; represent confidence about anything beyond that explicitly.
+
+### 11.7 External dependency manifest (`warehouse/dependencies.yaml`)
+
+Category-3 OSO inputs — tables a governed asset reads but the repository does not own — are
+recorded here as **contracts**, never as governed assets (ADR-003; the manifest schema is
+specified at ADR-003 "External dependency manifest"). Each entry states `purpose`,
+`expected_grain`, `expected_columns`, `freshness_requirement`, the `required_by` repo
+computations, a provenance anchor, and `owner: oso`. A contract confers **no** migration
+status, retirement policy, source mirror, or namespace-cleanup obligation — it records what a
+governed asset needs and lets G2/G3/G4 keep the manifest from growing into a second org-wide
+inventory. `content_contract_sha256` is the fingerprint of the agreed schema contract (table +
+grain + columns), captured at `verified_at`; like the mirror hashes, CI cannot recompute it
+against the live OSO schema (no credentials), so a credentialed maintainer re-verifies it at
+deploy time.
 
 ### 11.6 Decisions resolved 2026-08-20, and what remains
 

@@ -1,0 +1,37 @@
+# External dependency contracts (ADR-003 category 3) for the Open Source AI Gap Map's
+# data system. These are direct OSO inputs a GOVERNED asset reads but the repository does
+# NOT own. They are recorded as CONTRACTS -- purpose, grain, freshness, a provenance anchor,
+# owner: oso -- not as governed assets. See docs/architecture/adr-003-repository-scope-boundary.md.
+#
+# This file is NOT an org-wide inventory and must never become one. The anti-reintroduction
+# gates (build/assets.py dependency_violations, tests/test_dependencies.py) keep it honest:
+#   * disjoint from assets.yaml (a dependency is never a governed asset, and vice versa);
+#   * every entry is a real external table read by a governed computation (re-derived from
+#     the tree, not trusted from `required_by`); a notebook-only or unused input cannot sit
+#     here;
+#   * exactly one provenance anchor per entry -- `verified_revision` for a currentai.* USER_MODEL
+#     that carries a platform revision, OR `content_contract_sha256` + `verified_at` for an
+#     oso.* upstream that has no model revision.
+#
+# `content_contract_sha256` is the fingerprint of the AGREED schema contract (the table, its
+# expected grain, and the `expected_columns` the repository depends on), captured at
+# `verified_at`. Like the mirror provenance hashes, CI cannot recompute it against the live
+# OSO schema (no platform credentials); a credentialed maintainer re-verifies the contract at
+# deploy time. To reproduce the value in-repo:
+#   sha256( table + "\n" + expected_grain + "\n" + "\n".join(sorted(expected_columns)) )
+---
+version: 1
+verified_at: '2026-08-29'
+dependencies:
+- table: oso.pypi_downloads.daily_downloads_by_package
+  purpose: pypi_adoption_signal
+  expected_grain: one row per (day, package)
+  expected_columns: [country_count, day, downloads, package]
+  freshness_requirement: <= 35 days (the map reads trailing-30d and trailing-7d windows)
+  required_by:
+  - warehouse/models/signal_packages/downloads.sql
+  - warehouse/models/signal_pypi/package_downloads.sql
+  # oso.* upstream with no model revision -> content-contract fingerprint + verified date.
+  content_contract_sha256: c672394c378779a23a5203eebde0be2f1278da1e5c9e42cbcf8d348fac2c32a1
+  verified_at: '2026-08-29'
+  owner: oso

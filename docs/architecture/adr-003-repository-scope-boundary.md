@@ -1,10 +1,12 @@
 # ADR-003: Repository scope boundary — govern the Gap Map, not the OSO org
 
-**Status:** **Accepted — implementation pending**, 2026-08-29. This is a **plan only**: no asset is
-moved, removed, or reclassified by this document; it sets the boundary and sequences the execution into
-later reviewed PRs. **Accepting the ADR does not lift the Phase-5 freeze** — the freeze holds until the
-mechanism PRs (the `role` field, `dependencies.yaml`, the root-scoped DAG, and the anti-reintroduction
-gates; steps 2–4 below) are merged. The old Phase-5 runbooks are **superseded, not re-enabled**.
+**Status:** **Accepted; mechanism implemented (steps 2–4), 2026-08-29.** This document is the plan;
+its mechanism has now landed — the `role` field on governed assets, `warehouse/dependencies.yaml`, the
+root-scoped DAG, and the anti-reintroduction gates are all merged. That merge **lifts the Phase-5
+platform-migration freeze**: the remaining authorized work is the externalization of the 28 roleless
+backlog assets (steps 5–6 below), each gated by the no-orphan precondition — **not** the old Phase-5
+namespace moves, which stay **superseded, not re-enabled**. No backlog asset has yet been moved,
+removed, or reclassified.
 **Supersedes:** the scope *basis* of ADR-002 and `data-architecture.md` §11.3 (the transitive-closure
 membership rule). ADR-002's provenance test (`registry` vs `catalog`) stands; its assumption that every
 misfiled `catalog` table must be *migrated into repo ownership* does not.
@@ -116,10 +118,15 @@ core DAG nodes**. Three separate views replace the single all-asset graph:
 2. **Runtime dependencies** — OSO inputs (from `dependencies.yaml`) → map computation.
 3. **Compatibility / retirement appendix** — shims and their exits.
 
-## Anti-reintroduction gates (proposed; added in the execution PR, not here)
+## Anti-reintroduction gates (implemented 2026-08-29)
 
-These are executable invariants over `assets.yaml` **and** `dependencies.yaml` together — so the
-manifest cannot itself grow into a new organization-wide inventory:
+Executable invariants over `assets.yaml` **and** `dependencies.yaml` together — so the manifest
+cannot itself grow into a new organization-wide inventory. Implemented in `build/assets.py`
+(`role_violations`, `dependency_violations`, `notebook_root_violations`) and asserted in
+`tests/test_assets_inventory.py` + `tests/test_scope_gates.py`; see `data-architecture.md` §11.5.
+Gate 6 is enforced against the governed set (assets carrying a `role`): the 28 roleless backlog
+assets are exempt until steps 5–6 remove them, so no `long_tail` can be reintroduced as governed
+while the backlog drains.
 
 1. **Governed-output ⇔ release_path.** A `governed-output` asset must be `release_path: true`, and a
    `release_path: true` asset must be a `governed-output`.
