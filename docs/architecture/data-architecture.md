@@ -1397,6 +1397,10 @@ warehouse/
       model_repos.py                     HF-to-GitHub links; rename WITHDRAWN (#393)
     entities/                            kind: catalog, but a scheduled USER_MODEL dataset — stays put (#393)
       repos.sql projects.sql packages.sql models.sql
+    events/                              kind: observations, own USER_MODEL sweep — deferred, stays put (#393)
+      github_events.sql
+    metrics/                             kind: observations, own USER_MODEL sweep — deferred, stays put (#393)
+      daily.sql
     observations/
       source_runs                        run contract; a Python control-plane snapshot now
                                          (build/snapshot_source_runs.py), a live-emitter model later (#355)
@@ -2010,7 +2014,7 @@ Resolved by decision:
 
 | Decision | Resolution | Lands in |
 |---|---|---|
-| Sixth `kind` for the long-tail chain | Not needed. Kinds: `entities` = `catalog`, `events`/`metrics` = `observations`, `scores` = `evaluation`. **Physical move (2026-08-28, #393): only `events`/`metrics` → `observations` relocate; `entities.*` and `scores.*` stay put — their static target datasets cannot host a scheduled `USER_MODEL` pipeline (§11.1, dataset-type constraint), so they are `not_planned` in their own namespaces.** | Recorded Phase 0; events/metrics move Phase 5, entities/scores stay |
+| Sixth `kind` for the long-tail chain | Not needed. Kinds: `entities` = `catalog`, `events`/`metrics` = `observations`, `scores` = `evaluation`. **Physical move (2026-08-28, #393): none of the scheduled pipelines relocate.** `entities.*`/`scores.*` hit the type wall (static target dataset can't host a scheduled `USER_MODEL`); `events`/`metrics` hit the schedule wall (folding into the manual `observations` dataset would force a sweep onto the §18 `product_adoption_current`) and are deferred to Phase 2B. All are `not_planned` in their own namespaces (§11.1). | Recorded Phase 0; scheduled pipelines stay put |
 | Gates over two populations | Key on `release_path`, not namespace | Section 7 |
 | Publication atomicity | `releases.*` atomic from birth; compatibility outputs documented non-atomic | Sections 12.2, 18 |
 | `catalog.model_benchmarks` -> `openllm_leaderboard` | **WITHDRAWN (2026-08-28, #393).** Its only trigger was the `catalog.models` name collision the `entities → catalog` move would have created; that move is cancelled (§11.1 dataset-type constraint), so there is no collision to resolve and no PR may exist purely to rename a deployed table. `catalog.model_benchmarks` keeps its name. | no action |
