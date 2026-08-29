@@ -41,9 +41,9 @@ its README documents, and four are misfiled by this ADR's own test:
 | `model_repos` | Correctly `catalog`. Externally discovered mapping. |
 | `country_populations` | Correctly `catalog`. External reference lookup. |
 | `goodailist_repos` | Superseded by `signal_goodailist.repo_catalog`. Documented as retired; the table is live and the `ai-safety-incidents` notebook still reads it. |
-| `osai_gap_map` | External third-party map. Its `maturity`, `parity_verdict` and `overall_score` columns read as Gap Map outputs and must be renamed to say whose map it is. No consumer found. |
-| `osai_subcategory_mapping` | Curated crosswalk. Belongs in `registry`. No consumer found. |
-| `taxonomy_crosswalk` | Curated crosswalk. Belongs in `registry`. No consumer found. |
+| `osai_gap_map` | Superseded 2026-08-29: removed from the inventory as out of repo scope. Platform-authored, off the gap-map release path, read only by the also-out-of-scope `scores.taxonomy` / `scores.investment_ranking`. Lives on OSO; not tracked here. |
+| `osai_subcategory_mapping` | Superseded 2026-08-29: removed from the inventory as out of repo scope (no repo consumer, off the release path). Originally routed to `registry`; that migration is retired. Lives on OSO; not tracked here. |
+| `taxonomy_crosswalk` | Superseded 2026-08-29: removed from the inventory as out of repo scope (no repo consumer, off the release path). Originally routed to `registry`; that migration is retired. Lives on OSO; not tracked here. |
 | `pypi_downloads` | A measurement, 1.6M rows of daily downloads by package and country. Belongs in `observations`. |
 | `foundation_model_repos` | The README calls it curated. A curator controls these rows, so it belongs in `registry`. |
 | `stack_map` | Derived from `sources/` by `warehouse/models/catalog/stack_map.py`. A repo-derived bridge presented as external inventory. Belongs in `registry`. |

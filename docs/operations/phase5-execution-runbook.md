@@ -112,11 +112,12 @@ static-class), so it clears the dataset-type constraint that blocked `entities`/
 | Table | Current owner | Ownership-transition work |
 |---|---|---|
 | `catalog.foundation_model_repos` | **repo CSV** already: `warehouse/data/catalog/foundation_model_repos.csv` (72 rows) | **Consumer cutover underway (in_progress overall).** Data moved to `sources/foundation_model_repos.yaml`, wired into `build/serialize_registry.py` (+ auto-published by `publish_registry.py` via CI on merge), golden added (compiled == the live CSV). The create-target landed in **#397**; `registry.foundation_model_repos` was **published by CI on merge and platform-verified 2026-08-29** (72 rows, clean bidirectional business-column diff against the retiring catalog table), now `active` / `materialized`. The **reconciliation PR** repoints `models/entities/models.sql` to the registry table. Remaining: a maintainer repoints the deployed `state_of_os_ai.family_footprint` reader, then §17 retires `catalog.foundation_model_repos`. **§17 parity caveat:** both tables carry regenerated dlt loader columns (`_dlt_load_id`, `_dlt_id`); a full-row `EXCEPT` reports total drift permanently, so the retirement equivalence check must project the business columns explicitly. The lightest of the three; no platform create needed (CI publishes registry). |
-| `catalog.osai_subcategory_mapping` | **platform-only** (no repo file) | Export the live table (read-only), design a canonical `sources/` format, author the content, integrate the serializer + publisher, prove compiled == live. **Needs a source-schema design decision.** No in-repo consumer; a deployed reader (`scores.taxonomy`, `scores.investment_ranking`) must be repointed on the platform. |
-| `catalog.taxonomy_crosswalk` | **platform-only** (no repo file) | Same as above. **Needs a source-schema design decision.** |
+| ~~`catalog.osai_subcategory_mapping`~~ | — | **REMOVED 2026-08-29 — out of repo scope.** Platform-authored, no repo consumer, off the gap-map release path; read only by the also-out-of-scope `scores.taxonomy` / `scores.investment_ranking`. Not migrated; dropped from the inventory (stays on OSO). See `data-architecture.md` §11.3. |
+| ~~`catalog.taxonomy_crosswalk`~~ | — | **REMOVED 2026-08-29 — out of repo scope** (same rationale). |
 
-The two platform-only tables are the only Phase-5 items with a genuine repo build attached, gated on
-a **canonical-source-schema decision** before authoring — flagged for the maintainer, not built blind.
+The two former platform-only "transitions" were retired by the 2026-08-29 scope decision — the repo
+does not mirror peripheral OSO tables. The remaining `catalog.*→registry` transition is `stack_map`
+(repo-authored, notebook-facing), which needs no export: it already derives from `sources/`.
 
 Note: `models/entities/models.sql` (the consumer of `foundation_model_repos`) stays in `entities`
 (dataset-type constraint). Its **read is now repointed to `registry.foundation_model_repos`** (the
@@ -136,8 +137,9 @@ reconciliation PR), the registry successor having been published and platform-ve
 Every sanctioned move needs, per table: a maintainer **create-target** + **verify** (with a fresh
 scheduled run for the scheduled tables), **deployed-reader repoint**, and later a §17 **retire**. The
 editor reconciliation PR (step 4) is the only repo-side unit and follows the verified live state.
-Beyond the three executable moves (the `catalog.*→registry` ownership transitions), two items need a
-decision before any work: the `catalog.stack_map` disposition, and the canonical `sources/` schema for
-`osai_subcategory_mapping` / `taxonomy_crosswalk`.
+After the 2026-08-29 scope decision (`osai_subcategory_mapping` / `taxonomy_crosswalk` removed as out
+of repo scope), the remaining `catalog.*→registry` work is a single transition — `stack_map` — plus
+the deferred `pypi_downloads`. `stack_map`'s disposition is settled: move to `registry.stack_map` (it
+is a repo-grain bridge; `registry.product_scores` is product-grain and cannot replace it).
 The one platform action already authorized is the **drop of the orphan `observations.pypi_downloads`**
 (§1). No other move, rename, Release, or platform mutation is authorized by this runbook.

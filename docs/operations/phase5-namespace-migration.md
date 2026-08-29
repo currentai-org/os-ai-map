@@ -96,9 +96,17 @@ Derived at write time from `assets.yaml` via `build.assets` (not hand-listed). `
 
 ### A. Sanctioned, type-compatible relocations
 
+> **Scope decision, 2026-08-29 (supersedes the `osai_subcategory_mapping` / `taxonomy_crosswalk`
+> rows below).** Those two, plus `osai_gap_map`, were **removed from the inventory as out of repo
+> scope** — platform-authored, no repo consumer, off the gap-map release path — not migrated to
+> `registry`. The repo tracks the core gap-map datasets + reference-notebook inputs, not a mirror of
+> the OSO org (see `data-architecture.md` §11.3, "What the inventory excludes"). The only real
+> `catalog.*→registry` transition left is **`stack_map`** (repo-authored, notebook-facing); `foundation_
+> model_repos` is done (#397/#400). The table below is retained as the original plan of record.
+
 | Move | Tables | Authority |
 |---|---|---|
-| `catalog.*` → `registry` (3) | `foundation_model_repos` (**in progress**), `osai_subcategory_mapping`, `taxonomy_crosswalk` | §2 — "curator-controlled and belong in `registry`"; static→compiled. **Ownership transitions, not SQL repoints — see §Registry ownership.** |
+| `catalog.*` → `registry` | `foundation_model_repos` (**done**, #397/#400), `stack_map` (**to author**); ~~`osai_subcategory_mapping`, `taxonomy_crosswalk`~~ (removed 2026-08-29 — out of repo scope) | §2 — "curator-controlled and belong in `registry`"; static→compiled. **Ownership transitions, not SQL repoints — see §Registry ownership.** |
 | `catalog.pypi_downloads` → `observations` (1) | `pypi_downloads` | §2 — "a measurement". **DEFERRED — notebook-only, no scoring impact; see §Freshness.** |
 
 `catalog.foundation_model_repos → registry` is the first executed transition: source at
@@ -110,9 +118,10 @@ registry table. The `catalog` version stays live (`in_progress`) **only** until 
 `state_of_os_ai.family_footprint` reader is also repointed (a separately authorized platform step), when it
 retires under §17. **§17 parity caveat:** both tables carry regenerated dlt loader columns
 (`_dlt_load_id`, `_dlt_id`), so a full-row `EXCEPT` reports total drift permanently — the retirement
-equivalence check must project the business columns explicitly. That leaves **two transitions still to
-author** (`osai_subcategory_mapping`, `taxonomy_crosswalk` — platform-only, need a canonical `sources/`
-schema) and **two held** — `pypi_downloads` (deferred) and `stack_map` (decision gate, §D).
+equivalence check must project the business columns explicitly. That leaves **one transition still to
+author** — `stack_map` (repo-authored, notebook-facing → `registry.stack_map`) — after the 2026-08-29
+scope decision retired `osai_subcategory_mapping` / `taxonomy_crosswalk` (removed as out of repo scope,
+above). `pypi_downloads` stays **deferred** (notebook-only).
 
 ### B. `not_planned` — do not move (type / schedule constraint, 2026-08-28)
 

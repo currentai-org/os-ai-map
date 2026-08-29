@@ -198,59 +198,6 @@ assets:
   status: active
   materialized: true
   verified_at: '2026-08-20'
-- id: catalog.osai_gap_map
-  table: currentai.catalog.osai_gap_map
-  kind: catalog
-  current_namespace: catalog
-  target_namespace: catalog
-  migration_status: complete
-  authority: platform
-  population: long_tail
-  release_path: false
-  platform_model_consumers:
-  - currentai.scores.investment_ranking
-  - currentai.scores.taxonomy
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers: none_confirmed
-  grain: one row per (layer, subcategory) of a third-party map
-  producer: manual upload
-  refresh: manual upload
-  dataset_id: 046ee25e-daee-4c43-a13c-d6ba9f6bd549
-  owner: carl
-  status: active
-  materialized: true
-  verified_at: '2026-08-20'
-- id: catalog.osai_subcategory_mapping
-  table: currentai.catalog.osai_subcategory_mapping
-  kind: registry
-  current_namespace: catalog
-  target_namespace: registry
-  migration_status: pending
-  authority: platform
-  population: long_tail
-  release_path: false
-  platform_model_consumers:
-  - currentai.scores.investment_ranking
-  - currentai.scores.taxonomy
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers: none_confirmed
-  grain: one row per (osai_layer, osai_subcategory)
-  producer: manual upload
-  classification_note: curated crosswalk between two taxonomies
-  refresh: manual upload
-  dataset_id: 046ee25e-daee-4c43-a13c-d6ba9f6bd549
-  owner: carl
-  status: active
-  materialized: true
-  verified_at: '2026-08-20'
 - id: catalog.pypi_downloads
   table: currentai.catalog.pypi_downloads
   kind: observations
@@ -317,32 +264,6 @@ assets:
   materialized: true
   verified_at: '2026-08-20'
   replacement: currentai.registry.product_scores
-- id: catalog.taxonomy_crosswalk
-  table: currentai.catalog.taxonomy_crosswalk
-  kind: registry
-  current_namespace: catalog
-  target_namespace: registry
-  migration_status: pending
-  authority: platform
-  population: long_tail
-  release_path: false
-  platform_model_consumers:
-  - currentai.scores.taxonomy
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers: none_confirmed
-  grain: one row per (osai_layer, goodai_category)
-  producer: manual upload
-  classification_note: curated crosswalk between two taxonomies
-  refresh: manual upload
-  dataset_id: 046ee25e-daee-4c43-a13c-d6ba9f6bd549
-  owner: carl
-  status: active
-  materialized: true
-  verified_at: '2026-08-20'
 - id: entities.models
   table: currentai.entities.models
   files:
@@ -1802,35 +1723,6 @@ assets:
   status: active
   materialized: true
   verified_at: '2026-08-20'
-- id: scores.investment_ranking
-  table: currentai.scores.investment_ranking
-  kind: evaluation
-  current_namespace: scores
-  target_namespace: scores
-  migration_status: not_planned
-  not_planned_reason: 'will NOT relocate to evaluation (data-architecture.md §11.1): kind is evaluation, but the target namespace currentai.evaluation is the static compiled release-artifact dataset (55a4311d, holding axis_* and adoption_*) and this is a scheduled USER_MODEL pipeline (dataset 48ddf155, weekly cron 0 4 * * 1). OSO dataset type is immutable, so a scheduled model cannot be hosted in the static evaluation dataset — the same wall the entities-to-catalog move hit, platform-verified on the symmetric catalog case 2026-08-28. Decision 2026-08-28 (Phase 5): the scoring pipeline stays in its own USER_MODEL namespace `scores`; evaluation remains the static release-artifact layer. Not a namespace migration.'
-  authority: platform
-  population: long_tail
-  release_path: false
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers:
-  - ai-potluck-partners
-  grain: one row per (layer, subcategory)
-  producer: manual upload
-  classification_note: derived from catalog and observations
-  refresh: dataset cron '0 4 * * 1'
-  timezone: UTC
-  last_observed_trigger: null
-  last_run_at: null
-  dataset_id: 48ddf155-0090-4323-b91c-f62f87445128
-  owner: carl
-  status: active
-  materialized: true
-  verified_at: '2026-08-20'
 - id: scores.openness_computed
   table: currentai.scores.openness_computed
   files:
@@ -2100,36 +1992,6 @@ assets:
   - sta-grantmaker-view
   grain: one row per (developer, repo), trailing 365 days of COMMIT_CODE
   producer: warehouse/models/scores/stack_contributors.sql
-  classification_note: derived from catalog and observations
-  refresh: dataset cron '0 4 * * 1'
-  timezone: UTC
-  last_observed_trigger: null
-  last_run_at: null
-  dataset_id: 48ddf155-0090-4323-b91c-f62f87445128
-  owner: carl
-  status: active
-  materialized: true
-  verified_at: '2026-08-20'
-- id: scores.taxonomy
-  table: currentai.scores.taxonomy
-  kind: evaluation
-  current_namespace: scores
-  target_namespace: scores
-  migration_status: not_planned
-  not_planned_reason: 'will NOT relocate to evaluation (data-architecture.md §11.1): kind is evaluation, but the target namespace currentai.evaluation is the static compiled release-artifact dataset (55a4311d, holding axis_* and adoption_*) and this is a scheduled USER_MODEL pipeline (dataset 48ddf155, weekly cron 0 4 * * 1). OSO dataset type is immutable, so a scheduled model cannot be hosted in the static evaluation dataset — the same wall the entities-to-catalog move hit, platform-verified on the symmetric catalog case 2026-08-28. Decision 2026-08-28 (Phase 5): the scoring pipeline stays in its own USER_MODEL namespace `scores`; evaluation remains the static release-artifact layer. Not a namespace migration.'
-  authority: platform
-  population: long_tail
-  release_path: false
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers:
-  - ai-potluck-partners
-  - state-of-os-ai
-  grain: one row per project_slug
-  producer: manual upload
   classification_note: derived from catalog and observations
   refresh: dataset cron '0 4 * * 1'
   timezone: UTC

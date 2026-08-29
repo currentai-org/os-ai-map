@@ -45,13 +45,13 @@ As of 2026-08-20:
 - Openness is also recomputed in OSO through `evidence.product_evidence`, `scores.openness_facts`, and `scores.openness_computed`; `build/check_parity.py` compares the independent result with the repository.
 - Adoption is recorded in the repository and measured through multiple channel-specific warehouse tables. It has no route-aware reconciliation gate.
 - Capability is recorded and mirrored but not recomputed.
-- `currentai.catalog` mixes discovered inventory, fetcher output, external reference data, and a stale repo-to-warehouse bridge. Verified 2026-08-20: it holds <!-- count:catalog_tables -->10 tables, not the 5 its README documents. Only 3 are discovered inventory. `foundation_model_repos`, `osai_subcategory_mapping` and `taxonomy_crosswalk` are curator-controlled and belong in `registry`; `pypi_downloads` is a measurement; `goodailist_repos` is documented as retired but still live; `osai_gap_map` is a third-party map carrying `maturity`, `parity_verdict` and `overall_score` columns that read as gap-map outputs.
+- `currentai.catalog` mixes discovered inventory, fetcher output, external reference data, and a stale repo-to-warehouse bridge. Verified 2026-08-20 it held ten tables; the inventory now tracks <!-- count:catalog_tables -->7 of them, having dropped three (`osai_gap_map`, `osai_subcategory_mapping`, `taxonomy_crosswalk`) as **out of repo scope** on 2026-08-29 — platform-authored reference tables with no repo consumer and off the gap-map release path (see §Repo scope). `foundation_model_repos` moved to `registry` (compiled from `sources/`, #397/#400); `pypi_downloads` is a measurement feeding a reference notebook; `goodailist_repos` is a live discovery-seed roster read by a repo model.
 - External measurements generally expose current state rather than a durable observation history.
 - OSO does not yet support incremental models; the current normalized state must therefore become the first preserved timestamped snapshot rather than being mislabeled as an append-only history.
 - Platform model source is mirrored read-only under `warehouse/models/<dataset>/` (each carrying a `mirror:` block in `warehouse/assets.yaml`); the platform remains authoritative for those deployed models.
 - Dataset scheduling, model throttles, GitHub Actions schedules, and manual operations coexist. A configured cron is not treated as proof that a scheduled run fired. Verified 2026-08-20: of <!-- observed:2026-08-20 -->22 datasets, 13 carry `cronTimezone: America/New_York`, and 8 have a cron configured with `lastRunAt: null` — `signal_semanticscholar`, `signal_pypi`, `ai_demand_curve`, `state_of_os_ai`, `scores`, `events`, `metrics`, `entities`. The `scores` dataset is among them, which means the openness chain that `check_parity` compares against the repository has no observed scheduled run.
 - Two platform tables have no repository source and no in-repo consumer: `currentai.scores.investment_ranking` and `currentai.scores.taxonomy`.
-- The full org is <!-- observed:2026-08-20 -->22 datasets by `ListDatasets`, or 23 counting `datasette` — which `ListDatasets` omits because it holds two deployed models and no materialized tables, so a dataset-first sweep misses it (Phase 0b enumerated from `ListDataModels` instead and found it). The org held <!-- observed:2026-08-20 -->96 tables at that 2026-08-20 enumeration. Separately, and as a live derived count rather than a 2026-08-20 subset, the inventory currently tracks <!-- count:deployed_tables -->66 deployed tables in the datasets the repository maintains or reads from; the rest of the org's tables are separate analytical products. The two figures are different populations measured at different times — the 96 is a point-in-time org-wide observation, the 66 is derived from `assets.yaml` on every run. See section 11.3 for how the 66 reconciles with the inventory's size.
+- The full org is <!-- observed:2026-08-20 -->22 datasets by `ListDatasets`, or 23 counting `datasette` — which `ListDatasets` omits because it holds two deployed models and no materialized tables, so a dataset-first sweep misses it (Phase 0b enumerated from `ListDataModels` instead and found it). The org held <!-- observed:2026-08-20 -->96 tables at that 2026-08-20 enumeration. Separately, and as a live derived count rather than a 2026-08-20 subset, the inventory currently tracks <!-- count:deployed_tables -->61 deployed tables in the datasets the repository maintains or reads from; the rest of the org's tables are separate analytical products the repo deliberately does not mirror. The two figures are different populations measured at different times — the 96 is a point-in-time org-wide observation, the 61 is derived from `assets.yaml` on every run. See section 11.3 for how the 61 reconciles with the inventory's size.
 
 The redesign must evolve this system without interrupting the existing map, registry tables, notebooks, or website.
 
@@ -1764,16 +1764,44 @@ prose that names tables freely; string literals hold the real SQL. A grep that i
 distinction invents consumers in one direction and, if it stripped every literal, would lose
 them in the other.
 
+#### What the inventory excludes: repo scope, not an OSO mirror (2026-08-29)
+
+The closure above is also a boundary. The inventory covers the CORE gap-map datasets and the
+reference-notebook inputs — what the repository owns, compiles, ships, or reads. It is **not** a
+catalogue of everything that exists in the `currentai` OSO org. A table that is platform-authored,
+carries no repo consumer, and sits off the gap-map release path is **out of scope**: it belongs to
+OSO, is discoverable through OSO's own UI, and is deliberately absent from `assets.yaml` — not even
+recorded "for reference that it exists". Mirroring such tables is clutter that the inventory's whole
+purpose (a truthful record of what the repo maintains) is worse for.
+
+Applied 2026-08-29: a self-contained island of five peripheral platform tables was **removed** from
+the inventory rather than migrated — `catalog.osai_gap_map`, `catalog.osai_subcategory_mapping`,
+`catalog.taxonomy_crosswalk`, read only by `scores.taxonomy` and `scores.investment_ranking`, which
+are themselves platform-authored, off the release path, and read by nothing in scope. `kind:
+registry` (they are reference-shaped) does **not** oblige the repo to own them; ownership follows the
+scope rule, not the kind. This is an **inventory** decision: the tables leave `assets.yaml` and keep
+living on OSO for OSO users to find in its UI. The org-wide audit receipt
+(`warehouse/audits/platform_models.json`) is deliberately **not** narrowed with them — it still
+records the two deployed island models (and every other deployed org model) so that any in-scope
+table they read keeps its true `platform_model_consumers` edge and its retirement-safety signal. The
+receipt is a credential-free platform record, not part of the inventory's clutter; scoping it to
+in-scope models would have stripped the consumer edges of legitimate downstream products
+(`state_of_os_ai.*`, `ai_demand_curve.*`) that read core tables, weakening retirement safety for the
+core, so that was declined. Guarded by `test_out_of_scope_platform_tables_are_not_tracked`.
+Kept, as the contrast that defines the line: `catalog.goodailist_repos` (read by the repo model
+`signal_goodailist/repo_catalog.py`) and `catalog.pypi_downloads` (feeds the `pypi-geo-trends`
+reference notebook).
+
 #### The inventory is larger than the platform, and why
 
 Three numbers that must not be conflated:
 
 ```text
-deployed tables in the in-scope datasets    <!-- count:deployed_tables -->66
+deployed tables in the in-scope datasets    <!-- count:deployed_tables -->61
 staged, not deployed                         <!-- count:staged_assets -->6
 dormant, no platform table yet              <!-- count:dormant_assets -->1
                                             ------
-logical assets in warehouse/assets.yaml     <!-- count:assets -->73
+logical assets in warehouse/assets.yaml     <!-- count:assets -->68
 ```
 
 The staged six are the three `signal_packages` models from issue #314,

@@ -258,14 +258,17 @@ def test_scheduled_pipelines_do_not_relocate_into_static_namespaces(inventory):
     constraint in `not_planned_reason`. Its `kind` is unchanged -- the logical model is intact; this
     is the not_planned exception to `target_namespace == kind`.
 
-    The eight `scores.*` here are the analytical chain (`dependency_graph`, `fragility`,
-    `investment_ranking`, `ossd_coverage`, `project_summary`, `repos_summary`, `stack_contributors`,
-    `taxonomy`) -- NOT the openness pair, which is a separate Phase 7 retirement gate above.
+    The six `scores.*` here are the repo-authored analytical chain (`dependency_graph`,
+    `fragility`, `ossd_coverage`, `project_summary`, `repos_summary`, `stack_contributors`) --
+    NOT the openness pair (a separate Phase 7 retirement gate above), and NOT `scores.taxonomy`
+    or `scores.investment_ranking`, which are platform-authored, off the gap-map release path,
+    read by nothing in scope, and therefore removed from the inventory entirely as out-of-repo-
+    scope (see `test_out_of_scope_platform_tables_are_not_tracked`).
     """
     entities = {f"currentai.entities.{t}" for t in ("repos", "models", "packages", "projects")}
     scores = {f"currentai.scores.{t}" for t in (
-        "dependency_graph", "fragility", "investment_ranking", "ossd_coverage",
-        "project_summary", "repos_summary", "stack_contributors", "taxonomy")}
+        "dependency_graph", "fragility", "ossd_coverage",
+        "project_summary", "repos_summary", "stack_contributors")}
     blocked = entities | scores
     seen = set()
     for asset in inventory:
@@ -739,6 +742,13 @@ def test_inventory_agrees_with_adr_002():
     assert len(claims) >= 10, "ADR-002's catalog table went missing"
     for table, verdict in claims:
         asset = inv.get(f"catalog.{table}")
+        if "out of repo scope" in verdict:
+            # Superseded by the 2026-08-29 scope decision: removed from the inventory, kept on
+            # OSO. The ADR row records the supersession; the table must NOT be an asset.
+            assert asset is None, (
+                f"catalog.{table}: ADR-002 marks it out of repo scope, but it is still in the inventory"
+            )
+            continue
         assert asset, f"ADR-002 names catalog.{table}, not in the inventory"
         if "Belongs in `registry`" in verdict or "belongs in `registry`" in verdict:
             assert asset["target_namespace"] == "registry", (
@@ -1105,3 +1115,20 @@ def test_platform_models_checked_is_backed_by_the_census(inventory):
     checked = [a for a in inventory if a["consumer_checks"]["platform_models"] == "checked"]
     assert checked, "no asset is checked, yet a receipt exists"
     assert r["audited_at"], "platform_models is checked but the receipt records no audit date"
+
+
+def test_out_of_scope_platform_tables_are_not_tracked(inventory):
+    """Regression guard for the 2026-08-29 scope decision: five peripheral platform-authored
+    tables (a self-contained island read only by each other, dead-ending in two analytical
+    models nothing reads, none on the gap-map release path) were removed from the INVENTORY
+    rather than migrated. OSO users find them in OSO's UI; this repo does not track them as
+    assets. (The org-wide audit receipt still records the two deployed island models as
+    consumers of the in-scope tables they read -- that is retirement-safety data, not inventory.)
+    They must stay out of `assets.yaml`."""
+    ids = set(A.by_table())
+    removed = {
+        "catalog.osai_gap_map", "catalog.osai_subcategory_mapping", "catalog.taxonomy_crosswalk",
+        "scores.taxonomy", "scores.investment_ranking",
+    }
+    back = sorted(removed & ids)
+    assert not back, f"out-of-scope peripheral tables were re-added to the inventory: {back}"
