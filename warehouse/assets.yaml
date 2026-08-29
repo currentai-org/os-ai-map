@@ -88,11 +88,14 @@ assets:
   classification_note: 'catalog->registry ownership transition, consumer cutover underway: the
     compiled successor currentai.registry.foundation_model_repos is ACTIVE and materialized (published
     to the registry dataset on merge of #397, platform-verified 2026-08-29 — 72 rows, bidirectional
-    business-column diff against this table clean). The in-repo consumer entities.models was repointed
-    to the registry table in this reconciliation PR, so this table has no in-repo reader left. It stays
-    live (in_progress) ONLY because the deployed state_of_os_ai.family_footprint still reads it; §17
-    retires it once that deployed reader is repointed (a separately authorized maintainer/platform
-    step). NOTE for the §17 retirement parity check: both tables carry regenerated dlt loader metadata
+    business-column diff against this table clean). The consumer entities.models was repointed to the
+    registry table AND redeployed on the platform (revision 5, revision_hash c7099b10…, run
+    b09bcc98 terminal SUCCESS 2026-08-29T14:57:47Z, behavior-neutral: 21311 rows unchanged, (repo,
+    model_id, model_family) set diff 0 both ways; platform_models.json regenerated so its
+    source_sha256 b2d91edc… and internal_reads match the repo). So neither the in-repo nor the
+    deployed entities.models reads this table any more. It stays live (in_progress) ONLY because the
+    deployed state_of_os_ai.family_footprint still reads it; §17 retires it once that deployed reader
+    is repointed (a separately authorized maintainer/platform step). NOTE for the §17 retirement parity check: both tables carry regenerated dlt loader metadata
     columns (_dlt_load_id, _dlt_id), so a full-row EXCEPT reports total drift permanently — the
     retirement equivalence check MUST project the business columns explicitly.'
   refresh: manual upload
