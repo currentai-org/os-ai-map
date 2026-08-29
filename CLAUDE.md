@@ -21,8 +21,11 @@ warehouse. An asset belongs in `warehouse/assets.yaml` only if it is a curated d
 table powering the map, repo-owned computation implementing/auditing map semantics, a direct OSO
 dependency of those (recorded as a contract, not owned), or a temporary compatibility shim with an exit.
 A table that merely exists on OSO, or is read only by a standalone notebook or another platform product,
-is **out of scope** — it lives on OSO. See `docs/architecture/adr-003-repository-scope-boundary.md`.
-**Phase-5 platform migration is frozen** until that boundary lands.
+is **out of scope** — it lives on OSO. See `docs/architecture/adr-003-repository-scope-boundary.md`
+(Accepted — implementation pending). **Phase-5 platform migration stays frozen** until the ADR-003
+mechanism lands: the `role` field, `warehouse/dependencies.yaml` contracts, the root-scoped DAG, and the
+anti-reintroduction gates are all merged. Accepting the ADR does not lift the freeze; the old Phase-5
+runbooks are **superseded**, not re-enabled.
 
 ## Conventions
 

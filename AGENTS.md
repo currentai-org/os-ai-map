@@ -36,12 +36,21 @@ sources/rubrics/       Shared scoring ladders. A category inherits one with
                        is the example). build/rubrics.py resolves either form.
                        license-to-tier lives here, because whether AGPL is `osi` is
                        a fact about AGPL, not about one category.
-warehouse/assets.yaml  The asset inventory: one entry per platform table, with authority,
+warehouse/assets.yaml  The GOVERNED asset inventory: governed outputs (Gap Map publications),
+                       repo-owned computation, and temporary compatibility shims only — NOT one
+                       entry per platform table (ADR-003). OSO existence or standalone-notebook
+                       use never confers membership. Direct external OSO inputs live in
+                       warehouse/dependencies.yaml as contracts, never here. Carries authority,
                        grain, provenance and derived reads/read_by. The only registry.
-warehouse/models/      SQL and Python models, mirroring the warehouse: models/<dataset>/<table>
-                       maps to currentai.<dataset>.<table>. Holds editable models, read-only
-                       platform mirrors (with a mirror: block in assets.yaml) and fetchers
-                       alike; authority is the declared field, not the directory name.
+warehouse/dependencies.yaml  External OSO inputs a governed asset reads — dependency contracts
+                       (purpose, grain, freshness, verified_revision or content hash, owner: oso).
+                       Not owned; no migration/retirement/mirror obligations. (Introduced by the
+                       ADR-003 execution PRs; specified in adr-003-repository-scope-boundary.md.)
+warehouse/models/      SQL and Python models the repo OWNS or maintains for Gap Map computation —
+                       models/<dataset>/<table> maps to currentai.<dataset>.<table>. NOT an
+                       organization-wide platform mirror. Holds editable models, the compatibility
+                       shims for governed assets, and fetchers; authority is the declared field,
+                       not the directory name.
 warehouse/data/        Frozen CSV inputs, data/<dataset>/<table>.csv (HF model catalog,
                        benchmarks, stack-map bridge)
 build/                 Python pipeline, see below
@@ -355,9 +364,11 @@ normative `docs/reference/evidence-and-freshness.md`.
 ### Architecture and the asset inventory
 
 `docs/architecture/` carries the data architecture: what each namespace means, which tables
-are misfiled, and what the gates protect. `warehouse/assets.yaml` is the inventory it
-specifies — one entry per platform table, with grain, authority, producer, and derived
-`reads`/`read_by`.
+are misfiled, and what the gates protect. `warehouse/assets.yaml` is the **governed** inventory
+it specifies — governed outputs, repo-owned computation, and compatibility shims, with grain,
+authority, producer, and derived `reads`/`read_by`. It is **not** a mirror of the OSO org:
+membership follows the scope boundary in `adr-003-repository-scope-boundary.md`, and external
+OSO inputs live in `warehouse/dependencies.yaml` as contracts, not here.
 
 Two traps it exists to close:
 

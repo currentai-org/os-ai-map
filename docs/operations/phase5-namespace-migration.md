@@ -1,10 +1,13 @@
 # Plan: Phase 5 — catalog split and long-tail namespace migration
 
-> **FROZEN 2026-08-29 — superseded in scope by `../architecture/adr-003-repository-scope-boundary.md`.**
-> A deeper review found the inventory governs the OSO org rather than the Gap Map's data system. The
-> remaining moves in this plan are **held**; several of the tables here are slated to be **externalized**
-> (ownership transferred to the platform repo), not migrated into `registry`. Do not execute anything
-> from this plan until the ADR-003 boundary is accepted.
+> **SUPERSEDED — NOT EXECUTABLE (2026-08-29).** Replaced by
+> `../architecture/adr-003-repository-scope-boundary.md` (Accepted — implementation pending). A deeper
+> review found the inventory governs the OSO org rather than the Gap Map's data system. The moves in
+> this plan are **not to be run**: several of the tables here are slated to be **externalized**
+> (ownership transferred to the platform repo), not migrated into `registry`. This document is retained
+> for historical reasoning only; the Phase-5 freeze holds until the ADR-003 mechanism (roles, dependency
+> contracts, root-scoped DAG, anti-reintroduction gates) is merged, and this runbook is not re-enabled
+> when the ADR is accepted.
 
 **Status: PLAN FOR REVIEW. No asset is moved and no platform mutation is authorized by this
 document.** It classifies the assets carrying `migration_status: pending`, resolves which

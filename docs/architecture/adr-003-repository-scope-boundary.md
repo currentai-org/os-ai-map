@@ -1,7 +1,10 @@
 # ADR-003: Repository scope boundary — govern the Gap Map, not the OSO org
 
-**Status:** Proposed — **plan only**, 2026-08-29. No asset is moved, removed, or reclassified by
-this document; it sets the boundary and sequences the execution into later reviewed PRs.
+**Status:** **Accepted — implementation pending**, 2026-08-29. This is a **plan only**: no asset is
+moved, removed, or reclassified by this document; it sets the boundary and sequences the execution into
+later reviewed PRs. **Accepting the ADR does not lift the Phase-5 freeze** — the freeze holds until the
+mechanism PRs (the `role` field, `dependencies.yaml`, the root-scoped DAG, and the anti-reintroduction
+gates; steps 2–4 below) are merged. The old Phase-5 runbooks are **superseded, not re-enabled**.
 **Supersedes:** the scope *basis* of ADR-002 and `data-architecture.md` §11.3 (the transitive-closure
 membership rule). ADR-002's provenance test (`registry` vs `catalog`) stands; its assumption that every
 misfiled `catalog` table must be *migrated into repo ownership* does not.
@@ -39,19 +42,31 @@ registry *publication* responsibility. It should not have.
 
 ## Decision — the boundary rule
 
-An asset belongs in the **governed** os-ai-map inventory only if it is one of:
+The repository tracks two different kinds of thing, in two different files:
 
-1. **A curated declaration or published table directly powering the Gap Map** (`release_path: true`).
+**Governed assets** (`warehouse/assets.yaml`) — things the repository *owns*. An entry is a governed
+asset only if it is one of:
+
+1. **A curated declaration or published table directly powering the Gap Map** (a governed output).
 2. **Repo-owned computation implementing or auditing Gap Map scoring / adoption / openness semantics.**
-3. **A direct OSO dependency required by (1) or (2)** — recorded as a *dependency contract*, not owned
-   (see the manifest below).
 4. **A temporary compatibility object for (1) or (2)** with a defined exit (a named `replacement` and a
    retirement trigger).
 
+**Dependency contracts** (`warehouse/dependencies.yaml`) — things the repository *depends on but does
+not own*:
+
+3. **A direct OSO input required by a (1)/(2) asset** — recorded as a contract (purpose, grain,
+   freshness, verified revision or content hash, `owner: oso`). **A dependency contract is never a
+   governed asset and never appears in `assets.yaml`.**
+
 Everything else — a table that merely exists on OSO, or is read only by standalone notebooks or other
-platform products — is **out of scope**. It keeps living on OSO and is discoverable through OSO's own
-UI. The repository does not mirror it, assign it a migration status, or take retirement obligations for
-it.
+platform products — is **out of scope** in both files. It keeps living on OSO and is discoverable
+through OSO's own UI. The repository does not mirror it, assign it a migration status, or take
+retirement obligations for it.
+
+Population and release-path follow from this, not the reverse: **every governed asset carries
+`population: gap_map`; only governed outputs additionally require `release_path: true`.** (The
+`population: long_tail` value is retired as a *governed* population — see the gates.)
 
 ## Repository roles (a new `role` field on governed assets)
 
@@ -59,11 +74,11 @@ Every governed asset declares a `role`, so membership is asserted, not inferred 
 
 | role | meaning | must be |
 |---|---|---|
-| `governed-output` | a Gap Map publication compiled from `sources/` | `release_path: true` |
+| `governed-output` | a **published Gap Map artifact whose schema and publication lifecycle are owned here** — regardless of whether its rows come exclusively from `sources/` (so the `evaluation.*` release-path publications, derived partly from `observations`, qualify) | `release_path: true` |
 | `repo-computation` | repo-owned SQL/Python implementing or auditing map semantics | has a repo file; `authority: repo` |
-| `compatibility` | temporary shim for a (1)/(2) asset | carries `replacement` + a retirement trigger |
+| `compatibility-shim` | temporary shim for a (1)/(2) asset (named to avoid collision with the lifecycle `status: compatibility`) | carries `replacement` + a retirement trigger |
 
-External dependencies are **not** assets and carry no role — they live in the manifest below.
+External dependencies are **not** governed assets and carry no `role` — they live in the manifest below.
 
 ## External dependency manifest — `warehouse/dependencies.yaml`
 
@@ -74,15 +89,21 @@ Category-3 OSO inputs are recorded as **contracts**, not owned models. Proposed 
   purpose: adoption_and_evidence                  # why a (1)/(2) asset needs it
   expected_grain: one row per (artifact_kind, artifact_id)
   freshness_requirement: <= 8 days
-  verified_revision: <platform revision hash>     # what we validated against
+  required_by:                                     # the named repo computation(s) that read it
+    - warehouse/models/observations/product_adoption_current.sql
+  # Provenance anchor — exactly one of:
+  verified_revision: <platform revision hash>     # for a currentai.* USER_MODEL with a revision, OR
+  # content_contract_sha256: <hash> + verified_at: <date>   # for an oso.* upstream with no revision
   owner: oso                                      # NOT this repo
 ```
 
-A dependency entry confers **no** migration status, retirement policy, source mirror, or
-namespace-cleanup obligation. It records what a governed asset needs and lets a gate check the
-contract (grain/freshness) without claiming ownership of the model's deployment. The manifest is
-introduced empty-of-obligations and populated in the execution PR (step 2 below); this ADR specifies
-it, and does not add the file.
+`verified_revision` is used where the dependency is a `currentai.*` model with a platform revision; an
+`oso.*` upstream that has no model revision instead records a `content_contract_sha256` (a hash of the
+agreed schema/content contract) plus a `verified_at` date. A dependency entry confers **no** migration
+status, retirement policy, source mirror, or namespace-cleanup obligation. It records what a governed
+asset needs and lets a gate check the contract (grain/freshness) without claiming ownership of the
+model's deployment. The manifest is created and populated in the execution PR (step 2 below); this ADR
+specifies it and does not add the file.
 
 ## The DAG becomes root-scoped
 
@@ -97,16 +118,27 @@ core DAG nodes**. Three separate views replace the single all-asset graph:
 
 ## Anti-reintroduction gates (proposed; added in the execution PR, not here)
 
-1. A `governed-output` asset must be `release_path: true`; a `release_path: true` asset must be a
-   `governed-output`.
-2. A platform-authored table with no `repo-computation` consumer and not `release_path` **may not be a
-   governed asset** — it belongs in `dependencies.yaml` or nowhere.
-3. A **standalone-notebook read does not confer membership**: the reachability roots exclude notebooks
-   that are not themselves map publications.
-4. `population: long_tail` is retired as a *governed* population. The repo's legitimate tail-candidate
-   registry (`registry.tail_products`, curator-promoted) is distinct from the OSO long-tail analytics
-   pipeline; both currently say "long tail", which obscures ownership. Governed inventory is
-   `gap_map`/release only.
+These are executable invariants over `assets.yaml` **and** `dependencies.yaml` together — so the
+manifest cannot itself grow into a new organization-wide inventory:
+
+1. **Governed-output ⇔ release_path.** A `governed-output` asset must be `release_path: true`, and a
+   `release_path: true` asset must be a `governed-output`.
+2. **Every external table a repo computation reads appears in `dependencies.yaml` exactly once** — a
+   platform-authored input is a dependency contract, not a governed asset; the only exception is a
+   `compatibility-shim`, which is a governed asset by design.
+3. **A dependency cannot also appear in `assets.yaml`** (and a governed asset cannot appear in
+   `dependencies.yaml`) — the two files are disjoint.
+4. **Every dependency is referenced by at least one named repo computation** (`required_by`), and
+   **no dependency is referenced only by a standalone notebook or an external platform product.**
+   `required_by` is recorded and mechanically re-derived from the repo-computation reads, and the gate
+   fails if the two disagree — so an unused or notebook-only dependency cannot linger.
+5. **A standalone-notebook read never confers membership** in either file: the DAG reachability roots
+   exclude notebooks that are not themselves map publications.
+6. **`population: long_tail` is retired as a *governed* population.** Every governed asset is
+   `population: gap_map`. The repo's legitimate tail-candidate registry (`registry.tail_products`,
+   curator-promoted) is distinct from the OSO long-tail analytics pipeline; both currently say "long
+   tail", which obscures ownership — the analytics pipeline externalizes, the tail-candidate registry
+   stays and is not `long_tail`.
 
 ## Classification of the peripheral assets (for ownership transfer, not deletion)
 
@@ -152,9 +184,25 @@ Each keeps the rule: **gain a named Gap Map use, or leave the governed inventory
    OSO deletion**).
 6. Resolve the 4 individually.
 
+### Ownership-handoff precondition for step 5 (no orphaning)
+
+Before any peripheral source is removed from this repo's inventory **and publisher**, a verified
+ownership handoff must exist and be recorded:
+
+- destination repository and path;
+- responsible owner;
+- the merged transfer commit / PR;
+- a working deploy or publication path in the destination;
+- proof that existing OSO consumers of the table remain functional after the handoff.
+
+This is not optional bookkeeping: for `registry.foundation_model_repos`, removing it from *this*
+publisher before another owner can reproduce it would **orphan the live input to `entities.models`**.
+The recent `#397`/`#400` work is unwound by **transferring ownership**, never by reversing the platform
+deployment — the deployed table keeps serving its readers until the destination reproduces it.
+
 All Phase-5 platform migration (`osai_subcategory_mapping`/`taxonomy_crosswalk` → registry, `stack_map`
 → registry, and any `entities`/`events`/`metrics`/analytical-`scores` consolidation) is **held** until
-this boundary is accepted and steps 2–4 land.
+the mechanism (steps 2–4) is merged. **Accepting this ADR does not lift the freeze.**
 
 ## Consequences
 
@@ -162,7 +210,9 @@ this boundary is accepted and steps 2–4 land.
   outputs, the openness/adoption computation and its real OSO dependencies, plus compatibility shims).
 - Parts of ADR-002 are superseded: catalog reference tables it routed *into* `registry` are instead
   **externalized**, because ownership follows the scope rule, not the provenance shape.
-- Recent `foundation_model_repos` work (#397/#400) is partly unwound; the honest cost of having
-  migrated under the old boundary.
+- Recent `foundation_model_repos` work (#397/#400) is unwound **through ownership transfer, not by
+  reversing the platform deployment** (see the handoff precondition): the deployed table keeps serving
+  `entities.models` until a destination owner reproduces it. The honest cost of having migrated under
+  the old boundary.
 - The agent stops generating cross-org consistency work, because the boundary no longer pulls unrelated
   OSO assets into repository governance.

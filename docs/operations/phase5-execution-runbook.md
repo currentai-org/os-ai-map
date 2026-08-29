@@ -1,9 +1,11 @@
 # Runbook: executing the Phase 5 namespace moves
 
-> **FROZEN 2026-08-29 — see `../architecture/adr-003-repository-scope-boundary.md`.** Phase-5 migration
-> is held pending the repository scope boundary; several tables named here are slated for
-> **externalization** (ownership transfer to the platform repo), not migration. Execute nothing from
-> this runbook until the ADR-003 boundary is accepted.
+> **SUPERSEDED — NOT EXECUTABLE (2026-08-29).** Replaced by
+> `../architecture/adr-003-repository-scope-boundary.md`. Several tables named here are slated for
+> **externalization** (ownership transfer to the platform repo), not migration. Retained for historical
+> reasoning only; execute nothing from this runbook. The Phase-5 freeze holds until the ADR-003
+> mechanism (roles, dependency contracts, root-scoped DAG, anti-reintroduction gates) is merged — it is
+> not re-enabled when the ADR is accepted.
 
 **Status: EXECUTION RUNBOOK. No move is authorized by this document.** It turns the Phase 5 plan
 (`phase5-namespace-migration.md`, the what/why/contract) into concrete, ordered, per-table steps.
