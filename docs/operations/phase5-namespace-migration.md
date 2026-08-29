@@ -215,7 +215,7 @@ A reader must move (or be repointed) no earlier than the table it reads. With `e
 
 1. **The three `catalog.*→registry` ownership transitions** (each its own larger unit).
 2. **Held:** `catalog.pypi_downloads` (deferred), `catalog.stack_map` (decision gate), and the
-   deferred `events`/`metrics` fold (Phase 2B) — none executes until its open question is resolved.
+   deferred `events`/`metrics` fold (schedule wall; `not_planned`, any move needs a new decision).
 
 ## Per-move execution recipe — lockstep, source-preserving (each move its own reviewed unit)
 

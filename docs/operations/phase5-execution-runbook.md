@@ -48,7 +48,7 @@ independent. Work them:
 
 1. **`catalog.* → registry`** (3 ownership transitions; the fourth, `stack_map`, is a decision gate).
 2. **Held:** `catalog.pypi_downloads` (deferred), `catalog.stack_map` (decision gate), and the
-   deferred `events`/`metrics` fold (§2, Phase 2B) — none executes until its open question resolves.
+   deferred `events`/`metrics` fold (§2, schedule wall; `not_planned`, any move needs a new decision).
 
 ## 1. `catalog.pypi_downloads → observations` — DEFERRED (freshness pre-check, step 0)
 

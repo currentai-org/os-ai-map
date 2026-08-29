@@ -139,10 +139,12 @@ def test_source_collectors_are_not_reclassified_to_observations(inventory):
     """Source-specific ingestion stays in `signal_*` per `data-architecture.md` §4.3: a
     `kind: observations` table in a `signal_*` namespace is permanently legitimate, so a
     source collector must not be relocated to the `observations` namespace on the strength
-    of its `kind` alone. §11.6 authorizes `events`/`metrics->observations` and the
-    `catalog.*->registry` ownership transitions -- never `signal_*->observations`. (The
-    `entities->catalog` and `scores->evaluation` moves were cancelled by the dataset-type
-    constraint, #393; those pipelines stay put.) A Phase 5 pilot that relocated
+    of its `kind` alone. The only relocation Phase 5 still sanctions is the
+    `catalog.*->registry` ownership transitions -- never `signal_*->observations`. (All the
+    scheduled long-tail pipelines stay put under `not_planned`: `entities->catalog` and
+    `scores->evaluation` were cancelled by the dataset-type wall, and `events`/`metrics->observations`
+    by the dataset-schedule wall; #393. Phase 2B owns only the observations refresh-model question,
+    and any later relocation would require a new architecture decision.) A Phase 5 pilot that relocated
     `signal_semanticscholar.paper_citations` to `observations` was rolled back; this gate keeps
     the mistake from recurring.
 
@@ -168,12 +170,13 @@ def test_source_collectors_are_not_reclassified_to_observations(inventory):
 
 
 def test_not_planned_assets_stay_put_with_a_documented_disposition(inventory):
-    """`migration_status: not_planned` is the explicit "this asset does not migrate namespace"
-    state. It must keep the asset in its current namespace (target == current, no false
-    relocation claim) and document WHY it will not move -- a `replacement` it is superseded by,
-    a `retirement_reason`, or a `not_planned_reason`. This is what lets the six Phase-5
-    corrections drop out of the `pending` move set without pretending they will land in
-    `evaluation`."""
+    """`migration_status: not_planned` means "no namespace move under the currently accepted
+    architecture" (§11.5). It must keep the asset in its current namespace (target == current, no
+    false relocation claim) and document WHY it will not move -- a `replacement` it is superseded by,
+    a `retirement_reason`, or a `not_planned_reason` naming an accepted cause (retirement/supersession,
+    immutable dataset-type incompatibility, or dataset-schedule isolation). This is what lets the
+    scheduled long-tail pipelines and the earlier corrections drop out of the `pending` move set
+    without pretending they will relocate."""
     for asset in inventory:
         if asset["migration_status"] != "not_planned":
             continue
@@ -182,7 +185,8 @@ def test_not_planned_assets_stay_put_with_a_documented_disposition(inventory):
             f"{asset['target_namespace']!r} (no relocation)")
         assert (asset.get("not_planned_reason") or asset.get("replacement")
                 or asset.get("retirement_reason")), (
-            f"{asset['id']}: not_planned requires a documented retirement/replacement disposition")
+            f"{asset['id']}: not_planned requires a documented not-planned disposition "
+            f"(retirement/supersession, dataset-type, or dataset-schedule constraint)")
 
 
 def test_signal_product_adoption_tables_stay_put_and_deployed_ones_are_compat(inventory):
@@ -288,9 +292,11 @@ def test_events_metrics_deferred_not_folded_into_observations(inventory):
     dataset is type-compatible (USER_MODEL), but an OSO schedule is a dataset-level sweep and the
     observations dataset is currently manual (product_adoption_current runs MANUAL under the §18
     baseline discipline). Folding these two independently-scheduled pipelines in would force a sweep
-    cron onto that §18-sensitive dataset, so they are DEFERRED to Phase 2B: `migration_status:
-    not_planned`, kept in their own namespaces, never targeting `observations`, still `active`, with
-    the constraint documented (data-architecture.md §11.1, #393)."""
+    cron onto that §18-sensitive dataset, so they STAY PUT under `migration_status: not_planned`,
+    kept in their own namespaces, never targeting `observations`, still `active`, with the constraint
+    documented (data-architecture.md §11.1, #393). Phase 2B owns only the observations refresh-model
+    question; any later relocation would require a new architecture decision, not an automatic
+    follow-on."""
     deferred = {"currentai.events.github_events", "currentai.metrics.daily"}
     seen = set()
     for asset in inventory:
