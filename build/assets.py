@@ -1050,7 +1050,14 @@ def _compare_mirror(label: str, prior: dict, cur: dict, has_migration: bool) -> 
             f"{label}: model_id changed from {prior.get('model_id')} to {cur.get('model_id')} "
             "with no migration authorizing it"
         )
-    if cur.get("local_sha256") == prior.get("local_sha256"):
+    # The byte identity is the COMPLETE claimed artifact: the model AND, when present, the
+    # schema. A schema-only edit is a byte change and must advance the revision just like a
+    # model edit -- otherwise a contributor could rewrite a schema, bump schema_sha256, and
+    # freeze the revision (ADR-003 re-review). The caller supplies the prior schema digest,
+    # deriving it from the merge-base schema file for the asset->dependency transition.
+    bytes_moved = (cur.get("local_sha256") != prior.get("local_sha256")
+                   or cur.get("schema_sha256") != prior.get("schema_sha256"))
+    if not bytes_moved:
         if any(cur.get(f) != prior.get(f) for f in ("revision", "hash", "synced_at")):
             problems.append(f"{label}: provenance changed but the mirrored bytes did not")
         return problems
@@ -1089,13 +1096,37 @@ def mirror_provenance_violations(base: str = "origin/main") -> list[str]:
     return problems
 
 
+def _merge_base_sha(base: str = "origin/main") -> str | None:
+    try:
+        return subprocess.run(
+            ["git", "-C", str(ROOT), "merge-base", "HEAD", base],
+            capture_output=True, text=True, check=True,
+        ).stdout.strip()
+    except subprocess.CalledProcessError:
+        return None
+
+
+def _git_blob_sha256(sha: str, path: str) -> str | None:
+    """sha256 of a file's bytes at a given commit, or None if it did not exist there."""
+    try:
+        blob = subprocess.run(
+            ["git", "-C", str(ROOT), "show", f"{sha}:{path}"],
+            capture_output=True, check=True,
+        ).stdout
+    except subprocess.CalledProcessError:
+        return None
+    return hashlib.sha256(blob).hexdigest()
+
+
 def dependency_mirror_provenance_violations(base: str = "origin/main") -> list[str]:
     """Cross-commit provenance for currentai.* DEPENDENCY mirrors -- the protection moving the
     seven mirrors out of assets.yaml would otherwise have lost (ADR-003 finding 1).
 
     Prior provenance is looked up by TABLE across BOTH merge-base manifests, so the one-time
-    asset -> dependency transition is covered: a mirror that was a governed asset at the merge
-    base must carry forward the same coherent provenance now that it is a dependency contract.
+    asset -> dependency transition is covered. The byte identity is the model AND the schema; a
+    governed-asset mirror carried no `schema_sha256`, so for the transition the prior schema
+    digest is derived from the merge-base schema file itself -- the transition is audited, not
+    exempted, and a schema edited during the move without a revision advance is still rejected.
     """
     prior = {}
     for a in (merge_base_assets(base) or []):
@@ -1106,11 +1137,19 @@ def dependency_mirror_provenance_violations(base: str = "origin/main") -> list[s
             prior[d["table"]] = d["mirror"]
     if not prior:
         return []
+    mb = _merge_base_sha(base)
     problems: list[str] = []
     for d in dependencies():
         cur, was = d.get("mirror"), prior.get(d["table"])
         if not cur or not was:
             continue
+        schema_file = (d.get("files") or {}).get("schema")
+        if schema_file and not was.get("schema_sha256") and mb:
+            # transition: derive the prior schema digest from the merge-base file bytes so an
+            # unchanged schema compares equal and a changed one is caught.
+            derived = _git_blob_sha256(mb, schema_file)
+            if derived is not None:
+                was = {**was, "schema_sha256": derived}
         problems += _compare_mirror(d["table"], was, cur, bool(d.get("mirror_migration")))
     return problems
 
