@@ -1231,10 +1231,12 @@ assets:
     catalog.foundation_model_repos (Phase 5 ownership transition); the golden proves it
     reproduces the catalog contents byte-for-byte. STAGED: this PR only adds the source +
     serializer; CI publishes it on merge (registry.yml), but activation is a separate deployed-state
-    claim — a reconciliation PR sets status: active / materialized: true / dataset_id and records
-    verified_at only after the publish reaches terminal SUCCESS and the table is independently
-    verified, and after entities.models is repointed and redeployed to read it. Long-tail reference
-    data, not a gap-map payload input, so release_path: false and no publication_role.'
+    claim. The verified_at here attests candidate fidelity — the compiled==live golden proving the
+    source reproduces the retiring catalog table byte-for-byte — not platform materialization. A
+    reconciliation PR sets status: active / materialized: true / dataset_id and advances verified_at
+    to the platform-verification date only after the publish reaches terminal SUCCESS and the table is
+    independently verified, and after entities.models is repointed and redeployed to read it. Long-tail
+    reference data, not a gap-map payload input, so release_path: false and no publication_role.'
   refresh: CI push on merge to main
   owner: carl
   status: staged
