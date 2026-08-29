@@ -1367,7 +1367,7 @@ Migration rules:
 
 Verified against the live `currentai` org on 2026-08-20: <!-- observed:2026-08-20 -->22 datasets,
 <!-- observed:2026-08-20 -->96 tables,
-<!-- count:tracked_warehouse_files -->48 tracked files under `warehouse/`. The structure below is the target, and the
+<!-- count:tracked_warehouse_files -->49 tracked files under `warehouse/`. The structure below is the target, and the
 mirror layout of 11.1 is now in place; the file manifest in 11.4 recorded the exact diff
 from the 2026-08-20 state (40 files), Phase 0b added `warehouse/audits/platform_models.json`,
 the deployed-model audit receipt, and Phase 2 added `warehouse/audits/source_runs.json`, the
@@ -1376,7 +1376,8 @@ committed point-in-time attestation of the `source_runs` snapshot (§4.3), then 
 `signal_github/artifact_state.py` and `signal_huggingface/artifact_state.py` alongside the
 retained `repo_state.py` / `hub_state.py`. Phase 2's baseline capture added two more:
 `warehouse/data/observations/product_adoption_baseline.parquet`, the frozen bytes themselves,
-and `warehouse/audits/product_adoption_baseline.json`, their provenance receipt.
+and `warehouse/audits/product_adoption_baseline.json`, their provenance receipt. The ADR-003
+mechanism then added `warehouse/dependencies.yaml`, the external dependency manifest (§11.7).
 
 ### 11.1 Target layout
 
