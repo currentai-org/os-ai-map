@@ -5,25 +5,26 @@ fails if this file drifts from the renderer. Regenerate with
 `uv run python -c "import sys;sys.path.insert(0,'.');from build import assets;print(assets.render_dag())"`.
 
 This graph is **root-scoped** (ADR-003): it is the Open Source AI Gap Map's own data system,
-not the OSO organization's warehouse. Nodes are the <!-- count:governed_assets -->45 governed
-assets in `warehouse/assets.yaml` (those carrying a `role`) plus the <!-- count:dependencies -->1
-external contract in `warehouse/dependencies.yaml`. The <!-- count:externalization_backlog -->28
-roleless backlog assets (24 `long_tail` + 4 questionable `gap_map`) that ADR-003 slates for
-externalization are **not** nodes, and a standalone notebook is **never** a reachability root
-(gate 5): a notebook read cannot pull a table into this graph.
+not the OSO organization's warehouse. Nodes are the <!-- count:governed_assets -->38 governed
+assets in `warehouse/assets.yaml` (those carrying a `role`) plus the <!-- count:dependencies -->8
+external contracts in `warehouse/dependencies.yaml`. The <!-- count:externalization_backlog -->28
+roleless backlog assets that ADR-003 slates for externalization are **not** nodes, and a standalone
+notebook is **never** a reachability root (gate 5): a notebook read cannot pull a table into this graph.
 
-Reachability starts at the map roots -- `sources/` and the governed model/`build` files that
-produce a governed table. Three views replace the old single all-asset diagram:
+Reachability is a real closure from the map roots -- the governed publication sinks and the named
+audit/control build modules -- traversed UPSTREAM through repo-owned producer files (governed models
+and the read-only dependency mirrors); dependencies are leaves. Three views replace the old single
+all-asset diagram:
 
-1. **Map governance** -- `sources/` -> `registry`/`evaluation` governed outputs and the
-   repo-owned computation chain (openness + adoption) that feeds them.
-2. **Runtime dependencies** -- the OSO inputs recorded in `dependencies.yaml` -> the governed
-   computation that reads each one.
+1. **Map governance** -- `sources/` -> `registry`/`evaluation` governed outputs and the repo-owned
+   computation chain. A `sources/` edge is drawn only for a serializer-compiled output, never invented
+   from a missing upstream; node status carries through (staged dashed, dormant faded).
+2. **Runtime dependencies** -- the OSO / platform inputs in `dependencies.yaml` -> the governed
+   computation (and the dependency chain the openness parity gate reaches into).
 3. **Compatibility / retirement appendix** -- compatibility shims -> their `replacement`.
 
 Edges are reads found in SQL context -- after `FROM`, `JOIN`, `INTO` or `UPDATE`, or as a bare
-table identifier constant. Comments, docstrings and URLs are excluded: prose names tables as
-freely as code does, and counting it invents consumers.
+table identifier constant. Comments, docstrings and URLs are excluded.
 
 ### View 1 — Map governance (sources → governed outputs)
 
@@ -36,9 +37,6 @@ graph LR
     evaluation__axis_results[axis_results]
     evaluation__axis_rule_matches[axis_rule_matches]
     evaluation__product_adoption_measurements[product_adoption_measurements]
-  end
-  subgraph evidence
-    evidence__product_evidence[product_evidence]
   end
   subgraph observations
     observations__product_adoption_baseline[product_adoption_baseline]
@@ -70,37 +68,16 @@ graph LR
     registry__products[products]
     registry__tail_products[tail_products]
   end
-  subgraph scores
-    scores__openness_computed[openness_computed]
-    scores__openness_facts[openness_facts]
-  end
-  subgraph signal_github
-    signal_github__artifact_state[artifact_state]
-  end
-  subgraph signal_huggingface
-    signal_huggingface__artifact_state[artifact_state]
-  end
   subgraph signal_packages
     signal_packages__downloads[downloads]
     signal_packages__downloads_daily[downloads_daily]
     signal_packages__product_adoption[product_adoption]
   end
-  subgraph signal_pypi
-    signal_pypi__package_downloads[package_downloads]
-  end
-  subgraph signal_semanticscholar
-    signal_semanticscholar__paper_citations[paper_citations]
-  end
-  SRC --> evaluation__adoption_reconciliation
-  SRC --> evaluation__axis_facts
-  SRC --> evaluation__axis_results
-  SRC --> evaluation__axis_rule_matches
   SRC --> registry__adoption_aggregation_rules
   SRC --> registry__adoption_bands
   SRC --> registry__adoption_route_band_sets
   SRC --> registry__adoption_route_scopes
   SRC --> registry__adoption_routes
-  SRC --> registry__axis_assessments
   SRC --> registry__categories
   SRC --> registry__category_deferrals
   SRC --> registry__category_dimensions
@@ -118,49 +95,49 @@ graph LR
   SRC --> registry__product_scores
   SRC --> registry__products
   SRC --> registry__tail_products
-  evidence__product_evidence --> scores__openness_facts
   observations__product_adoption_current --> evaluation__product_adoption_measurements
   registry__adoption_bands --> signal_packages__product_adoption
-  registry__category_deferrals --> scores__openness_facts
-  registry__category_dimensions --> scores__openness_facts
-  registry__category_license_tiers --> scores__openness_facts
-  registry__category_scoring_rules --> evidence__product_evidence
-  registry__category_scoring_rules --> scores__openness_computed
-  registry__category_scoring_rules --> scores__openness_facts
-  registry__evidence_abstentions --> evidence__product_evidence
-  registry__license_aliases --> evidence__product_evidence
-  registry__license_aliases --> scores__openness_facts
   registry__product_artifacts --> observations__product_adoption_current
-  registry__product_artifacts --> signal_github__artifact_state
-  registry__product_artifacts --> signal_huggingface__artifact_state
   registry__product_artifacts --> signal_packages__downloads
   registry__product_artifacts --> signal_packages__downloads_daily
-  registry__product_artifacts --> signal_pypi__package_downloads
-  registry__product_artifacts --> signal_semanticscholar__paper_citations
-  registry__product_categories --> evidence__product_evidence
-  registry__product_categories --> scores__openness_facts
-  registry__product_openness_evidence --> evidence__product_evidence
-  registry__product_score_sources --> evidence__product_evidence
-  registry__products --> scores__openness_facts
-  scores__openness_facts --> scores__openness_computed
-  signal_github__artifact_state --> evidence__product_evidence
-  signal_github__artifact_state --> observations__product_adoption_current
-  signal_huggingface__artifact_state --> evidence__product_evidence
-  signal_huggingface__artifact_state --> observations__product_adoption_current
   signal_packages__downloads --> signal_packages__product_adoption
   signal_packages__downloads_daily --> signal_packages__downloads
-  signal_pypi__package_downloads --> observations__product_adoption_current
-  signal_semanticscholar__paper_citations --> observations__product_adoption_current
+  class observations__product_adoption_baseline staged;
+  class observations__source_runs staged;
+  class registry__axis_assessments staged;
+  class registry__tail_products dormant;
+  class signal_packages__downloads staged;
+  class signal_packages__downloads_daily staged;
+  class signal_packages__product_adoption staged;
   classDef src fill:#def;
+  classDef staged stroke-dasharray: 4 3;
+  classDef dormant opacity:0.5;
 ```
 
-### View 2 — Runtime dependencies (OSO inputs → map computation)
+### View 2 — Runtime dependencies (dependencies.yaml → map computation)
 
 ```mermaid
 graph LR
-  EXT_oso__pypi_downloads__daily_downloads_by_package[oso.pypi_downloads.daily_downloads_by_package] --> signal_packages__downloads
-  EXT_oso__pypi_downloads__daily_downloads_by_package[oso.pypi_downloads.daily_downloads_by_package] --> signal_pypi__package_downloads
-  classDef uncontracted fill:#fdd;
+  currentai__evidence__product_evidence[currentai.evidence.product_evidence]:::dep --> currentai__scores__openness_facts[currentai.scores.openness_facts]:::dep
+  currentai__scores__openness_computed[currentai.scores.openness_computed]:::dep --> build/apply_scores__py[build/apply_scores.py]:::audit
+  currentai__scores__openness_computed[currentai.scores.openness_computed]:::dep --> build/check_parity__py[build/check_parity.py]:::audit
+  currentai__scores__openness_facts[currentai.scores.openness_facts]:::dep --> currentai__scores__openness_computed[currentai.scores.openness_computed]:::dep
+  currentai__signal_github__artifact_state[currentai.signal_github.artifact_state]:::dep --> build/check_artifacts__py[build/check_artifacts.py]:::audit
+  currentai__signal_github__artifact_state[currentai.signal_github.artifact_state]:::dep --> currentai__evidence__product_evidence[currentai.evidence.product_evidence]:::dep
+  currentai__signal_github__artifact_state[currentai.signal_github.artifact_state]:::dep --> currentai__observations__product_adoption_current[currentai.observations.product_adoption_current]
+  currentai__signal_github__artifact_state[currentai.signal_github.artifact_state]:::dep --> currentai__signal_github__product_adoption[currentai.signal_github.product_adoption]
+  currentai__signal_huggingface__artifact_state[currentai.signal_huggingface.artifact_state]:::dep --> currentai__evidence__product_evidence[currentai.evidence.product_evidence]:::dep
+  currentai__signal_huggingface__artifact_state[currentai.signal_huggingface.artifact_state]:::dep --> currentai__observations__product_adoption_current[currentai.observations.product_adoption_current]
+  currentai__signal_huggingface__artifact_state[currentai.signal_huggingface.artifact_state]:::dep --> currentai__signal_huggingface__product_adoption[currentai.signal_huggingface.product_adoption]
+  currentai__signal_pypi__package_downloads[currentai.signal_pypi.package_downloads]:::dep --> build/check_artifacts__py[build/check_artifacts.py]:::audit
+  currentai__signal_pypi__package_downloads[currentai.signal_pypi.package_downloads]:::dep --> currentai__observations__product_adoption_current[currentai.observations.product_adoption_current]
+  currentai__signal_pypi__package_downloads[currentai.signal_pypi.package_downloads]:::dep --> currentai__signal_github__product_adoption[currentai.signal_github.product_adoption]
+  currentai__signal_semanticscholar__paper_citations[currentai.signal_semanticscholar.paper_citations]:::dep --> currentai__observations__product_adoption_current[currentai.observations.product_adoption_current]
+  oso__pypi_downloads__daily_downloads_by_package[oso.pypi_downloads.daily_downloads_by_package]:::dep --> currentai__signal_packages__downloads[currentai.signal_packages.downloads]
+  oso__pypi_downloads__daily_downloads_by_package[oso.pypi_downloads.daily_downloads_by_package]:::dep --> currentai__signal_pypi__package_downloads[currentai.signal_pypi.package_downloads]:::dep
+  classDef dep fill:#eee;
+  classDef audit fill:#ffd;
+  classDef src fill:#def;
 ```
 
 ### View 3 — Compatibility / retirement appendix
@@ -172,4 +149,5 @@ graph LR
   signal_huggingface__hub_state[signal_huggingface.hub_state]:::compat --> signal_huggingface__artifact_state[signal_huggingface.artifact_state]
   signal_huggingface__product_adoption[signal_huggingface.product_adoption]:::compat --> observations__product_adoption_current[observations.product_adoption_current]
   classDef compat stroke-width:3px;
+  classDef src fill:#def;
 ```

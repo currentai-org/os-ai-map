@@ -1,10 +1,11 @@
 # Governed asset inventory for the Open Source AI Gap Map's data system (ADR-003).
 # NOT an org-wide mirror: an entry belongs here only if it is a GOVERNED asset -- a governed
-# output, repo-owned map computation, or a compatibility shim -- and it carries a `role`
-# saying which. Direct OSO inputs the map depends on but does not own live in
-# warehouse/dependencies.yaml as contracts, never here. Tables that merely exist on OSO, or
-# are read only by a standalone notebook or another platform product, are out of scope in
-# both files and stay discoverable through OSO's own UI.
+# output, repo-owned map computation, repo-owned data/control artifact, or a compatibility shim
+# -- and it carries a `role` saying which. Inputs the map depends on but does not own -- oso.*
+# upstreams AND platform-authored currentai.* models the repo mirrors read-only -- live in
+# warehouse/dependencies.yaml as contracts, never here (a mirror is provenance, not ownership).
+# Tables that merely exist on OSO, or are read only by a standalone notebook or another platform
+# product, are out of scope in both files and stay discoverable through OSO's own UI.
 #
 # Transitional: the 28 roleless entries below are the externalization backlog (24 long_tail +
 # 4 questionable gap_map tables) that ADR-003 steps 5-6 transfer to the platform and remove.
@@ -582,65 +583,6 @@ assets:
   status: active
   materialized: true
   verified_at: '2026-08-20'
-- id: evidence.product_evidence
-  table: currentai.evidence.product_evidence
-  files:
-    model: warehouse/models/evidence/product_evidence.sql
-    schema: warehouse/models/evidence/product_evidence.schema.json
-    data: null
-  kind: evaluation
-  current_namespace: evidence
-  target_namespace: evidence
-  migration_status: not_planned
-  not_planned_reason: 'will NOT relocate to evaluation: a Phase 7 / §9.3 retirement target, retired (deleted) — not migrated — once the repository-owned scoring trace (evaluation.axis_*) shows dual-run agreement over multiple releases (#384). Stays active until then.'
-  authority: platform
-  population: gap_map
-  release_path: false
-  role: repo-computation
-  reads:
-  - table: currentai.registry.category_scoring_rules
-    scope: internal
-  - table: currentai.registry.evidence_abstentions
-    scope: internal
-  - table: currentai.registry.license_aliases
-    scope: internal
-  - table: currentai.registry.product_categories
-    scope: internal
-  - table: currentai.registry.product_openness_evidence
-    scope: internal
-  - table: currentai.registry.product_score_sources
-    scope: internal
-  - table: currentai.signal_github.artifact_state
-    scope: internal
-  - table: currentai.signal_huggingface.artifact_state
-    scope: internal
-  read_by:
-    models:
-    - warehouse/models/scores/openness_facts.sql
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers: none_confirmed
-  grain: one row per (product_slug, category_slug, dimension, part_index, citing artifact)
-  producer: warehouse/models/evidence/product_evidence.sql
-  classification_note: normalized facts derived from declarations
-  refresh: dataset cron '0 3 * * 1'
-  timezone: UTC
-  last_observed_trigger: MANUAL
-  last_run_at: '2026-08-19'
-  dataset_id: 29f2784d-481e-488f-9f1a-3ece0e372f3a
-  owner: carl
-  status: active
-  materialized: true
-  verified_at: '2026-08-20'
-  mirror:
-    model_id: 769c20b5-d9c0-4163-bced-81e3a62fbc47
-    revision: 11
-    hash: 039c0649f93d19e8bb8f86454e29a4c7ae8d12e87db93d8290ccf75437db48a4
-    local_sha256: d31044ba633a012666543a80c15890530f58807e392db89a92f5d25363f60e57
-    synced_at: '2026-08-24'
 - id: metrics.daily
   table: currentai.metrics.daily
   files:
@@ -925,7 +867,7 @@ assets:
   authority: repo
   population: gap_map
   release_path: false
-  role: repo-computation
+  role: governed-data
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -1051,7 +993,7 @@ assets:
   authority: repo
   population: gap_map
   release_path: false
-  role: repo-computation
+  role: governed-data
   consumer_checks:
     repository: checked
     platform_notebooks: checked
@@ -1871,113 +1813,6 @@ assets:
   status: active
   materialized: true
   verified_at: '2026-08-20'
-- id: scores.openness_computed
-  table: currentai.scores.openness_computed
-  files:
-    model: warehouse/models/scores/openness_computed.sql
-    schema: warehouse/models/scores/openness_computed.schema.json
-    data: null
-  kind: evaluation
-  current_namespace: scores
-  target_namespace: scores
-  migration_status: not_planned
-  not_planned_reason: 'will NOT relocate to evaluation: a Phase 7 / §9.3 retirement target (the duplicate openness computation), retired (deleted) — not migrated — once evaluation.axis_* shows dual-run agreement over multiple releases (#384). Stays active until then.'
-  authority: platform
-  population: gap_map
-  release_path: false
-  role: repo-computation
-  reads:
-  - table: currentai.registry.category_scoring_rules
-    scope: internal
-  - table: currentai.scores.openness_facts
-    scope: internal
-  read_by:
-    build:
-    - build/apply_scores.py
-    - build/check_parity.py
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers: none_confirmed
-  grain: one row per (product_slug, category_slug)
-  producer: warehouse/models/scores/openness_computed.sql
-  classification_note: derived from catalog and observations
-  refresh: dataset cron '0 4 * * 1'
-  timezone: UTC
-  last_observed_trigger: null
-  last_run_at: null
-  dataset_id: 48ddf155-0090-4323-b91c-f62f87445128
-  owner: carl
-  status: active
-  materialized: true
-  verified_at: '2026-08-20'
-  mirror:
-    model_id: 6aef560b-cc85-4a9d-afa8-8f4798208e74
-    revision: 15
-    hash: 5606414402e540d23105552aa2320e4d62cdc71540e84e1d1a8db842df429ca1
-    local_sha256: afc40feea6966d0ad946b0f2ae1d00b8ad4f5a9a6e2fb74dea8383ec5d88b464
-    synced_at: '2026-08-15'
-- id: scores.openness_facts
-  table: currentai.scores.openness_facts
-  files:
-    model: warehouse/models/scores/openness_facts.sql
-    schema: warehouse/models/scores/openness_facts.schema.json
-    data: null
-  kind: evaluation
-  current_namespace: scores
-  target_namespace: scores
-  migration_status: not_planned
-  not_planned_reason: 'will NOT relocate to evaluation: a Phase 7 / §9.3 retirement target (the duplicate openness computation), retired (deleted) — not migrated — once evaluation.axis_* shows dual-run agreement over multiple releases (#384). Stays active until then.'
-  authority: platform
-  population: gap_map
-  release_path: false
-  role: repo-computation
-  reads:
-  - table: currentai.evidence.product_evidence
-    scope: internal
-  - table: currentai.registry.category_deferrals
-    scope: internal
-  - table: currentai.registry.category_dimensions
-    scope: internal
-  - table: currentai.registry.category_license_tiers
-    scope: internal
-  - table: currentai.registry.category_scoring_rules
-    scope: internal
-  - table: currentai.registry.license_aliases
-    scope: internal
-  - table: currentai.registry.product_categories
-    scope: internal
-  - table: currentai.registry.products
-    scope: internal
-  read_by:
-    models:
-    - warehouse/models/scores/openness_computed.sql
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers: none_confirmed
-  grain: one row per (product_slug, category_slug, fact_key)
-  producer: warehouse/models/scores/openness_facts.sql
-  classification_note: derived from catalog and observations
-  refresh: dataset cron '0 4 * * 1'
-  timezone: UTC
-  last_observed_trigger: null
-  last_run_at: null
-  dataset_id: 48ddf155-0090-4323-b91c-f62f87445128
-  owner: carl
-  status: active
-  materialized: true
-  verified_at: '2026-08-20'
-  mirror:
-    model_id: 68d9e34c-b0b6-460b-b4ae-21b7016eb1f8
-    revision: 7
-    hash: 7ce706d47d74cc433b6eb02b7b8558d26af21f6689d83426296d2457fa3ad26c
-    local_sha256: 1952f4b3939ade83f4ec239795ad234fa3ec8464c1789edb4d66374f072e4e39
-    synced_at: '2026-08-15'
 - id: scores.ossd_coverage
   table: currentai.scores.ossd_coverage
   files:
@@ -2222,54 +2057,6 @@ assets:
     hash: 044310c3f02b3bf5d52009095b737a3e9dcf995609641bf646b188e0886db451
     local_sha256: 1491f28b90e1f730b4de1035c7e2c49327d4baf9055fb359a0625095cce4bb8f
     synced_at: '2026-08-15'
-- id: signal_github.artifact_state
-  table: currentai.signal_github.artifact_state
-  files:
-    model: warehouse/models/signal_github/artifact_state.py
-    schema: null
-    data: null
-  kind: observations
-  current_namespace: signal_github
-  target_namespace: signal_github
-  migration_status: complete
-  authority: platform
-  population: gap_map
-  release_path: false
-  role: repo-computation
-  reads:
-  - table: currentai.registry.product_artifacts
-    scope: internal
-  read_by:
-    models:
-    - warehouse/models/evidence/product_evidence.sql
-    - warehouse/models/observations/product_adoption_current.sql
-    - warehouse/models/signal_github/product_adoption.sql
-    build:
-    - build/check_artifacts.py
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers:
-  - sta-grantmaker-view
-  grain: one row per (product_slug, repo) at one fetched_at
-  producer: warehouse/models/signal_github/artifact_state.py
-  refresh: dataset cron '0 3 * * 0'
-  timezone: UTC
-  last_observed_trigger: MANUAL
-  last_run_at: '2026-08-24'
-  dataset_id: cc74e8db-7718-4615-a004-7f27cabaf967
-  owner: carl
-  status: active
-  materialized: true
-  verified_at: '2026-08-24'
-  mirror:
-    model_id: fed14549-c660-44fc-a6cc-c859795bde7f
-    revision: 2
-    hash: 4ca130834731c7cdee5534b15eef71143b20179b725cb90758e3cfd5d4fcec5f
-    local_sha256: 66b18ee046d741510a0669028c8b4fb4dd47c8190ca0f92d83c6ccdb20b7f9ea
-    synced_at: '2026-08-24'
 - id: signal_github.product_adoption
   table: currentai.signal_github.product_adoption
   files:
@@ -2415,51 +2202,6 @@ assets:
     hash: 27b7de7c1271500612ae0e29163d7661451db4b16352d7ce1b0dd12df1d466a7
     local_sha256: eaee5981530529fc1cbd6c21d2d18b7019b0ed2c15751f43b2d84f4f4bb0ae00
     synced_at: '2026-08-15'
-- id: signal_huggingface.artifact_state
-  table: currentai.signal_huggingface.artifact_state
-  files:
-    model: warehouse/models/signal_huggingface/artifact_state.py
-    schema: null
-    data: null
-  kind: observations
-  current_namespace: signal_huggingface
-  target_namespace: signal_huggingface
-  migration_status: complete
-  authority: platform
-  population: gap_map
-  release_path: false
-  role: repo-computation
-  reads:
-  - table: currentai.registry.product_artifacts
-    scope: internal
-  read_by:
-    models:
-    - warehouse/models/evidence/product_evidence.sql
-    - warehouse/models/observations/product_adoption_current.sql
-    - warehouse/models/signal_huggingface/product_adoption.sql
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers: none_confirmed
-  grain: one row per (product_slug, artifact_kind, artifact_id) at one fetched_at
-  producer: warehouse/models/signal_huggingface/artifact_state.py
-  refresh: dataset cron '0 2 * * 0'
-  timezone: UTC
-  last_observed_trigger: MANUAL
-  last_run_at: '2026-08-24'
-  dataset_id: 6108e4d6-868f-4cba-8df5-ee64f8fb301e
-  owner: carl
-  status: active
-  materialized: true
-  verified_at: '2026-08-24'
-  mirror:
-    model_id: 9c1e8561-280e-417e-b006-d08b177002db
-    revision: 2
-    hash: 40e1df01e4fc93c56213283de20aa04e85c8bd7951dc3f038e3fb093c61ba6d3
-    local_sha256: 851e601b94f4abccd66005827b7e38f0b419ca5a9b1c9c3292f62ebd273b8ec0
-    synced_at: '2026-08-24'
 - id: signal_huggingface.hub_state
   table: currentai.signal_huggingface.hub_state
   files:
@@ -2695,105 +2437,3 @@ assets:
   materialized: false
   verified_at: '2026-08-20'
   notes: Staged, not deployed.
-- id: signal_pypi.package_downloads
-  table: currentai.signal_pypi.package_downloads
-  files:
-    model: warehouse/models/signal_pypi/package_downloads.sql
-    schema: null
-    data: null
-  kind: observations
-  current_namespace: signal_pypi
-  target_namespace: signal_pypi
-  migration_status: complete
-  authority: platform
-  population: gap_map
-  release_path: false
-  role: repo-computation
-  reads:
-  - table: currentai.registry.product_artifacts
-    scope: internal
-  - table: oso.pypi_downloads.daily_downloads_by_package
-    scope: external
-  read_by:
-    models:
-    - warehouse/models/observations/product_adoption_current.sql
-    - warehouse/models/signal_github/product_adoption.sql
-    build:
-    - build/check_artifacts.py
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers: none_confirmed
-  grain: one row per (product_slug, package) over a 30-day window
-  producer: warehouse/models/signal_pypi/package_downloads.sql
-  refresh: dataset cron '0 1 * * 0'
-  timezone: UTC
-  last_observed_trigger: SCHEDULED
-  last_run_at: '2026-08-23'
-  dataset_id: c7c3a04c-7e2d-4cea-a7e6-5861c725ea65
-  owner: carl
-  status: active
-  materialized: true
-  verified_at: '2026-08-20'
-  mirror:
-    model_id: a88bff56-0a00-49d1-8667-809a79b4d7c0
-    revision: 3
-    hash: d5311e2d3feb3b5f0190134b70c143586bcda911ed530ca52545c53325b7bbd0
-    local_sha256: 21fe2106888e7cf8aecc12d3a57b449a8a064537608eb4ac54ac32bb5d180499
-    synced_at: '2026-08-15'
-- id: signal_semanticscholar.paper_citations
-  table: currentai.signal_semanticscholar.paper_citations
-  files:
-    model: warehouse/models/signal_semanticscholar/paper_citations.py
-    schema: null
-    data: null
-  kind: observations
-  current_namespace: signal_semanticscholar
-  target_namespace: signal_semanticscholar
-  migration_status: complete
-  authority: platform
-  population: gap_map
-  release_path: false
-  role: repo-computation
-  reads:
-  - table: currentai.registry.product_artifacts
-    scope: internal
-  read_by:
-    models:
-    - warehouse/models/observations/product_adoption_current.sql
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers: none_confirmed
-  grain: one row per (product_slug, arxiv_id)
-  producer: warehouse/models/signal_semanticscholar/paper_citations.py
-  refresh: dataset cron '0 1 * * 0'
-  timezone: UTC
-  last_observed_trigger: SCHEDULED
-  last_run_at: '2026-08-23'
-  dataset_id: a48ec2ff-1e15-4b22-a38e-8ae03e0096f7
-  owner: carl
-  status: active
-  materialized: true
-  verified_at: '2026-08-26'
-  notes: 'Citation instrument for benchmark_eval_data, declared in signal_routing.yaml;
-    consumed in-repo by observations.product_adoption_current (the citations channel).
-    Source-specific ingestion stays here per data-architecture.md §4.3 (a kind: observations
-    table in a signal_* namespace is permanently legitimate); target_namespace equals
-    current_namespace and the table does not move — the earlier target_namespace: observations
-    was a misfiled inventory value, corrected 2026-08-26 after the Phase 5 pilot relocation was
-    rolled back (see the aborted move on the closed #375). Revision 5 (2026-08-26) added the
-    durable 429 fix in place: requests authenticate with SEMANTIC_SCHOLAR_TOKEN (x-api-key), batch
-    POSTs are paced to the keyed one-request-per-second allowance, and load-shed 429s retry with
-    exponential backoff (15s doubling to 120s). The 2026-08-26 13:31Z run SUCCEEDED — 24 rows, all
-    found — clearing the reproducible anonymous 429 that had starved the Sunday cron since 08-16.'
-  mirror:
-    model_id: cc73d808-5833-4a91-a47b-35bb0414b6f0
-    revision: 5
-    hash: 7ad39259ecb37da91cf6f9e9c4b88b3927f98f7e79be1804f732c168ae99bcd0
-    local_sha256: 08f2ac0588c3d2792e0af597bc1ddfc2cfe5342505384efe33bc15c6eb030cc6
-    synced_at: '2026-08-26'

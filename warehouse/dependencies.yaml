@@ -1,37 +1,175 @@
 # External dependency contracts (ADR-003 category 3) for the Open Source AI Gap Map's
-# data system. These are direct OSO inputs a GOVERNED asset reads but the repository does
-# NOT own. They are recorded as CONTRACTS -- purpose, grain, freshness, a provenance anchor,
-# owner: oso -- not as governed assets. See docs/architecture/adr-003-repository-scope-boundary.md.
+# data system. These are inputs a GOVERNED asset reads but the repository does NOT own -- OSO
+# platform tables (oso.*) and platform-authored currentai.* models the repo mirrors read-only.
+# A `mirror:` block proves provenance, NOT operational ownership: the platform is authoritative,
+# so these are contracts, never governed assets. See docs/architecture/adr-003-repository-scope-boundary.md.
 #
-# This file is NOT an org-wide inventory and must never become one. The anti-reintroduction
-# gates (build/assets.py dependency_violations, tests/test_dependencies.py) keep it honest:
-#   * disjoint from assets.yaml (a dependency is never a governed asset, and vice versa);
-#   * every entry is a real external table read by a governed computation (re-derived from
-#     the tree, not trusted from `required_by`); a notebook-only or unused input cannot sit
-#     here;
-#   * exactly one provenance anchor per entry -- `verified_revision` for a currentai.* USER_MODEL
-#     that carries a platform revision, OR `content_contract_sha256` + `verified_at` for an
-#     oso.* upstream that has no model revision.
+# This file is NOT an org-wide inventory and cannot become one. The gates (build/assets.py
+# dependency_violations, tests/test_scope_gates.py) keep it honest:
+#   * disjoint from assets.yaml (gate 3);
+#   * every entry is REACHABLE from a governed root -- re-derived from the tree, not trusted from
+#     required_by; a table only the externalization backlog or a notebook reads is not a contract
+#     here (gate 2/4);
+#   * required_by is mechanically re-derived and must match;
+#   * exactly one provenance anchor, internally self-consistent (integrity):
+#       - currentai.* mirror -> verified_revision + a mirror block whose local_sha256 matches the
+#         tracked read-only mirror file (bytes on disk), so a silent edit is caught;
+#       - oso.* upstream -> content_contract_sha256 over table + grain + TYPED expected_columns
+#         (name + type + nullability), recomputed by the gate; live-schema verification is a
+#         credentialed maintainer step (CI has no OSO credentials).
+#         Reproduce: sha256(table + "\n" + expected_grain + "\n" +
+#         "\n".join(sorted(f"{c['name']}:{c['type']}:{'null' if c['nullable'] else 'notnull'}")))
 #
-# `content_contract_sha256` is the fingerprint of the AGREED schema contract (the table, its
-# expected grain, and the `expected_columns` the repository depends on), captured at
-# `verified_at`. Like the mirror provenance hashes, CI cannot recompute it against the live
-# OSO schema (no platform credentials); a credentialed maintainer re-verifies the contract at
-# deploy time. To reproduce the value in-repo:
-#   sha256( table + "\n" + expected_grain + "\n" + "\n".join(sorted(expected_columns)) )
+# The three openness models carry retirement_context: the repo drives their Phase-7 retirement
+# (#384), replacing them with the repo-owned evaluation.axis_* trace -- it does not own them.
 ---
 version: 1
-verified_at: '2026-08-29'
 dependencies:
+- table: currentai.evidence.product_evidence
+  purpose: adoption_and_openness_evidence
+  expected_grain: one row per (product_slug, category_slug, dimension, part_index, citing artifact)
+  required_by:
+  - warehouse/models/scores/openness_facts.sql
+  verified_revision: 11
+  owner: oso
+  files:
+    model: warehouse/models/evidence/product_evidence.sql
+    schema: warehouse/models/evidence/product_evidence.schema.json
+  mirror:
+    model_id: 769c20b5-d9c0-4163-bced-81e3a62fbc47
+    revision: 11
+    hash: 039c0649f93d19e8bb8f86454e29a4c7ae8d12e87db93d8290ccf75437db48a4
+    local_sha256: d31044ba633a012666543a80c15890530f58807e392db89a92f5d25363f60e57
+    synced_at: '2026-08-24'
+  retirement_context: 'Phase 7 / §9.3: the platform openness chain is RETIRED (deleted, not migrated)
+    once the repo-owned evaluation.axis_* scoring trace dual-runs green across releases (#384). Tracked
+    as a dependency because the repo drives that retirement, not because it owns the model.'
+- table: currentai.scores.openness_facts
+  purpose: openness_normalized_facts
+  expected_grain: one row per (product_slug, category_slug, fact_key)
+  required_by:
+  - warehouse/models/scores/openness_computed.sql
+  verified_revision: 7
+  owner: oso
+  files:
+    model: warehouse/models/scores/openness_facts.sql
+    schema: warehouse/models/scores/openness_facts.schema.json
+  mirror:
+    model_id: 68d9e34c-b0b6-460b-b4ae-21b7016eb1f8
+    revision: 7
+    hash: 7ce706d47d74cc433b6eb02b7b8558d26af21f6689d83426296d2457fa3ad26c
+    local_sha256: 1952f4b3939ade83f4ec239795ad234fa3ec8464c1789edb4d66374f072e4e39
+    synced_at: '2026-08-15'
+  retirement_context: 'Phase 7 / §9.3: the platform openness chain is RETIRED (deleted, not migrated)
+    once the repo-owned evaluation.axis_* scoring trace dual-runs green across releases (#384). Tracked
+    as a dependency because the repo drives that retirement, not because it owns the model.'
+- table: currentai.scores.openness_computed
+  purpose: openness_computed_scores
+  expected_grain: one row per (product_slug, category_slug)
+  required_by:
+  - build/apply_scores.py
+  - build/check_parity.py
+  verified_revision: 15
+  owner: oso
+  files:
+    model: warehouse/models/scores/openness_computed.sql
+    schema: warehouse/models/scores/openness_computed.schema.json
+  mirror:
+    model_id: 6aef560b-cc85-4a9d-afa8-8f4798208e74
+    revision: 15
+    hash: 5606414402e540d23105552aa2320e4d62cdc71540e84e1d1a8db842df429ca1
+    local_sha256: afc40feea6966d0ad946b0f2ae1d00b8ad4f5a9a6e2fb74dea8383ec5d88b464
+    synced_at: '2026-08-15'
+  retirement_context: 'Phase 7 / §9.3: the platform openness chain is RETIRED (deleted, not migrated)
+    once the repo-owned evaluation.axis_* scoring trace dual-runs green across releases (#384). Tracked
+    as a dependency because the repo drives that retirement, not because it owns the model.'
+- table: currentai.signal_github.artifact_state
+  purpose: github_adoption_signal
+  expected_grain: one row per (product_slug, repo) at one fetched_at
+  required_by:
+  - build/check_artifacts.py
+  - warehouse/models/evidence/product_evidence.sql
+  - warehouse/models/observations/product_adoption_current.sql
+  - warehouse/models/signal_github/product_adoption.sql
+  verified_revision: 2
+  owner: oso
+  files:
+    model: warehouse/models/signal_github/artifact_state.py
+  mirror:
+    model_id: fed14549-c660-44fc-a6cc-c859795bde7f
+    revision: 2
+    hash: 4ca130834731c7cdee5534b15eef71143b20179b725cb90758e3cfd5d4fcec5f
+    local_sha256: 66b18ee046d741510a0669028c8b4fb4dd47c8190ca0f92d83c6ccdb20b7f9ea
+    synced_at: '2026-08-24'
+- table: currentai.signal_huggingface.artifact_state
+  purpose: huggingface_adoption_signal
+  expected_grain: one row per (product_slug, artifact_kind, artifact_id) at one fetched_at
+  required_by:
+  - warehouse/models/evidence/product_evidence.sql
+  - warehouse/models/observations/product_adoption_current.sql
+  - warehouse/models/signal_huggingface/product_adoption.sql
+  verified_revision: 2
+  owner: oso
+  files:
+    model: warehouse/models/signal_huggingface/artifact_state.py
+  mirror:
+    model_id: 9c1e8561-280e-417e-b006-d08b177002db
+    revision: 2
+    hash: 40e1df01e4fc93c56213283de20aa04e85c8bd7951dc3f038e3fb093c61ba6d3
+    local_sha256: 851e601b94f4abccd66005827b7e38f0b419ca5a9b1c9c3292f62ebd273b8ec0
+    synced_at: '2026-08-24'
+- table: currentai.signal_pypi.package_downloads
+  purpose: pypi_adoption_signal
+  expected_grain: one row per (product_slug, package) over a 30-day window
+  required_by:
+  - build/check_artifacts.py
+  - warehouse/models/observations/product_adoption_current.sql
+  - warehouse/models/signal_github/product_adoption.sql
+  verified_revision: 3
+  owner: oso
+  files:
+    model: warehouse/models/signal_pypi/package_downloads.sql
+  mirror:
+    model_id: a88bff56-0a00-49d1-8667-809a79b4d7c0
+    revision: 3
+    hash: d5311e2d3feb3b5f0190134b70c143586bcda911ed530ca52545c53325b7bbd0
+    local_sha256: 21fe2106888e7cf8aecc12d3a57b449a8a064537608eb4ac54ac32bb5d180499
+    synced_at: '2026-08-15'
+- table: currentai.signal_semanticscholar.paper_citations
+  purpose: paper_citation_signal
+  expected_grain: one row per (product_slug, arxiv_id)
+  required_by:
+  - warehouse/models/observations/product_adoption_current.sql
+  verified_revision: 5
+  owner: oso
+  files:
+    model: warehouse/models/signal_semanticscholar/paper_citations.py
+  mirror:
+    model_id: cc73d808-5833-4a91-a47b-35bb0414b6f0
+    revision: 5
+    hash: 7ad39259ecb37da91cf6f9e9c4b88b3927f98f7e79be1804f732c168ae99bcd0
+    local_sha256: 08f2ac0588c3d2792e0af597bc1ddfc2cfe5342505384efe33bc15c6eb030cc6
+    synced_at: '2026-08-26'
 - table: oso.pypi_downloads.daily_downloads_by_package
   purpose: pypi_adoption_signal
   expected_grain: one row per (day, package)
-  expected_columns: [country_count, day, downloads, package]
-  freshness_requirement: <= 35 days (the map reads trailing-30d and trailing-7d windows)
+  expected_columns:
+  - name: country_count
+    type: bigint
+    nullable: true
+  - name: day
+    type: date
+    nullable: false
+  - name: downloads
+    type: bigint
+    nullable: false
+  - name: package
+    type: varchar
+    nullable: false
+  freshness_requirement: <= 35 days (map reads trailing-30d and trailing-7d windows)
   required_by:
   - warehouse/models/signal_packages/downloads.sql
   - warehouse/models/signal_pypi/package_downloads.sql
-  # oso.* upstream with no model revision -> content-contract fingerprint + verified date.
-  content_contract_sha256: c672394c378779a23a5203eebde0be2f1278da1e5c9e42cbcf8d348fac2c32a1
-  verified_at: '2026-08-29'
   owner: oso
+  verified_at: '2026-08-29'
+  content_contract_sha256: fc944c8a4d6faf77bd3ee10b4616e6dc99ea1a1481e0ff94a0ceca29ee9543fc

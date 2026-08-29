@@ -15,6 +15,7 @@ described in docs/architecture/data-architecture.md section 11.5 check 4.
 from __future__ import annotations
 
 import ast
+import hashlib
 import re
 import subprocess
 from pathlib import Path
@@ -35,25 +36,57 @@ POPULATIONS = {"gap_map", "long_tail", "both"}
 # peripheral assets ADR-003 slates for ownership transfer) is deliberately ROLELESS until
 # it leaves, so `role` is optional this PR and becomes required once the backlog is empty.
 #   governed-output   a published Gap Map artifact whose schema + publication lifecycle
-#                     are owned here (must be release_path: true)
-#   repo-computation  repo-defined SQL/Python/data implementing or auditing map semantics
-#                     (has a repo file or a build/ producer; a platform-authored MIRROR
-#                     counts -- the repo owns the tracked definition, ADR-003 wording
-#                     refined from "authority: repo" to admit mirrors of deployed models)
-#   compatibility-shim  a temporary shim for a (1)/(2) asset (carries `replacement`;
-#                     named to avoid collision with the lifecycle `status: compatibility`)
-ROLES = {"governed-output", "repo-computation", "compatibility-shim"}
+#                     are owned here (must be release_path: true, authority: repo)
+#   repo-computation  repo-OWNED SQL/Python implementing or auditing map semantics. MUST be
+#                     authority: repo -- a `mirror` block proves provenance, not operational
+#                     ownership, so a platform-authored mirror is NOT a repo-computation; it
+#                     is a dependency contract (dependencies.yaml).
+#   governed-data     a repo-OWNED data or control artifact that is not a computation -- the
+#                     frozen adoption baseline (bytes, not a query) and the source-runs
+#                     control snapshot. authority: repo, not release_path.
+#   compatibility-shim  a temporary shim for a governed asset (carries `replacement`; named
+#                     to avoid collision with the lifecycle `status: compatibility`). May be a
+#                     platform mirror -- a shim is transitional by definition, not owned.
+ROLES = {"governed-output", "repo-computation", "governed-data", "compatibility-shim"}
 
 # ADR-003 step 6: the four `gap_map` tables that do not participate in the canonical map
 # pipeline (all release_path: false) and externalize individually. Held ROLELESS in the
-# backlog with the 24 `long_tail` assets until step 5/6 removes them. Named explicitly
-# because they are gap_map -- population alone cannot distinguish them from governed assets.
+# backlog with the `long_tail` assets until step 5/6 removes them. Named explicitly because
+# they are gap_map -- population alone cannot distinguish them from governed assets.
 EXTERNALIZE_QUESTIONABLE = frozenset({
     "catalog.stack_map",
     "scores.stack_contributors",
     "signal_artificialanalysis.model_evaluations",
     "signal_lmarena.text_leaderboard",
 })
+
+# ADR-003 externalization backlog RATCHET. This is the FROZEN set of roleless assets as of
+# the mechanism PR: the 24 `long_tail` pipelines plus the 4 questionable gap_map tables. The
+# gate proves the roleless set can only SHRINK from this list -- a newly added asset can never
+# be roleless (it must justify a role), so the exact reintroduction ADR-003 prevents cannot
+# recur. Steps 5/6 remove entries from here as they externalize; when it is empty the
+# transitional allowance is deleted and `population: long_tail` is forbidden outright.
+FROZEN_LONG_TAIL_BACKLOG = frozenset({
+    "catalog.country_populations", "catalog.foundation_model_repos", "catalog.goodailist_repos",
+    "catalog.model_benchmarks", "catalog.model_repos", "catalog.osai_gap_map",
+    "catalog.osai_subcategory_mapping", "catalog.pypi_downloads", "catalog.taxonomy_crosswalk",
+    "entities.models", "entities.packages", "entities.projects", "entities.repos",
+    "events.github_events", "metrics.daily", "registry.foundation_model_repos",
+    "scores.dependency_graph", "scores.fragility", "scores.investment_ranking",
+    "scores.ossd_coverage", "scores.project_summary", "scores.repos_summary", "scores.taxonomy",
+    "signal_goodailist.repo_catalog",
+})
+FROZEN_BACKLOG = FROZEN_LONG_TAIL_BACKLOG | EXTERNALIZE_QUESTIONABLE
+
+# The named audit / control roots of the governed graph: repo modules that READ governed or
+# dependency tables to gate or audit map semantics but do not themselves produce a governed
+# table (so reachability from a publication sink alone would miss them). ADR-003 gate 4 / the
+# root-scoped DAG treat these as roots alongside the governed-output sinks.
+AUDIT_ROOTS = (
+    "build/check_parity.py",     # protects the openness dual-run
+    "build/apply_scores.py",     # applies the recorded score corpus
+    "build/check_artifacts.py",  # audits declared-artifact coverage of the signals
+)
 
 REQUIRED_FIELDS = (
     "id", "table", "kind", "current_namespace", "target_namespace", "migration_status",
@@ -317,8 +350,11 @@ def in_externalization_backlog(asset: dict) -> bool:
 def expected_role(asset: dict) -> str | None:
     """The role ADR-003 assigns this asset, or None if it is in the externalization backlog.
 
-    Derived, not read: `governed-output` iff on the release path; a `compatibility-shim` iff
-    a live compatibility object; otherwise repo-owned map computation.
+    Derived, not read. `governed-output` iff on the release path; `compatibility-shim` iff a
+    live compatibility object; `repo-computation` iff a repo-owned model (has a model file);
+    otherwise `governed-data` (a repo-owned data/control artifact -- the baseline bytes, the
+    source-runs snapshot). A platform mirror is never governed-output/repo-computation here:
+    such assets are not in assets.yaml at all -- they are dependency contracts.
     """
     if in_externalization_backlog(asset):
         return None
@@ -326,23 +362,17 @@ def expected_role(asset: dict) -> str | None:
         return "governed-output"
     if asset["status"] == "compatibility":
         return "compatibility-shim"
-    return "repo-computation"
-
-
-def _has_repo_definition(asset: dict) -> bool:
-    """The repository tracks this asset's definition -- a model/data file, or a build/ producer."""
-    files = asset.get("files") or {}
-    if files.get("model") or files.get("data"):
-        return True
-    return str(asset.get("producer", "")).startswith("build/")
+    if (asset.get("files") or {}).get("model"):
+        return "repo-computation"
+    return "governed-data"
 
 
 def role_violations() -> list[str]:
-    """Every governed asset carries the correct `role`, and each role's invariants hold.
+    """Every governed asset carries the correct `role`, each role's invariants hold, and the
+    externalization backlog can only shrink.
 
-    Implements ADR-003 gates 1 (governed-output <-> release_path) and 6 (no governed
-    long_tail), plus the role taxonomy's per-role "must be" clauses and the backlog rule
-    (roleless iff in the externalization backlog).
+    ADR-003 gate 1 (governed-output <-> release_path), gate 6 (no governed long_tail), the
+    per-role "must be" clauses, and the backlog ratchet (roleless iff in the FROZEN_BACKLOG).
     """
     problems: list[str] = []
     for a in assets():
@@ -354,12 +384,26 @@ def role_violations() -> list[str]:
             problems.append(f"{aid}: role {role!r} is not one of {sorted(ROLES)}")
             continue
 
+        # Backlog ratchet (gate 6 / finding 3): the roleless set can only SHRINK. A roleless
+        # asset must be a member of the frozen backlog, and any long_tail asset must be in the
+        # frozen long-tail backlog -- a NEW long_tail or a new roleless asset cannot appear.
+        if role is None and aid not in FROZEN_BACKLOG:
+            problems.append(
+                f"{aid}: roleless but not in the frozen externalization backlog; a new asset "
+                "must justify a role -- the backlog can only shrink (gate 6 / ratchet)"
+            )
+        if a["population"] == "long_tail" and aid not in FROZEN_LONG_TAIL_BACKLOG:
+            problems.append(
+                f"{aid}: population long_tail but not in the frozen backlog; long_tail is a "
+                "retired governed population and cannot be reintroduced (gate 6)"
+            )
+
         if want is None:
             # Externalization backlog: must stay roleless until it leaves (steps 5/6).
             if role is not None:
                 problems.append(
-                    f"{aid}: is in the externalization backlog (long_tail or questionable) "
-                    f"but carries role {role!r}; the backlog is roleless until ADR-003 step 5/6"
+                    f"{aid}: is in the externalization backlog but carries role {role!r}; "
+                    "the backlog is roleless until ADR-003 step 5/6"
                 )
             continue
 
@@ -375,18 +419,27 @@ def role_violations() -> list[str]:
         if a["release_path"] and role != "governed-output":
             problems.append(f"{aid}: release_path true but role is {role!r}, not governed-output (gate 1)")
 
-        # repo-computation must have a repo-tracked definition; authority repo, or platform
-        # only for a mirror of a deployed model (ADR-003 wording refined to admit mirrors).
+        # repo-computation is repo-OWNED: authority repo (a mirror is not ownership), model file.
         if role == "repo-computation":
-            if not _has_repo_definition(a):
-                problems.append(f"{aid}: role repo-computation but no repo file or build/ producer")
-            if a["authority"] == "platform" and not a.get("mirror"):
+            if a["authority"] != "repo":
                 problems.append(
-                    f"{aid}: role repo-computation with authority platform but no mirror block; "
-                    "only a mirrored deployed model may be platform-authored repo-computation"
+                    f"{aid}: role repo-computation but authority is {a['authority']!r}; a "
+                    "platform mirror is a dependency contract, not a repo computation"
                 )
-            if a["authority"] == "external":
-                problems.append(f"{aid}: role repo-computation but authority is external")
+            if not (a.get("files") or {}).get("model"):
+                problems.append(f"{aid}: role repo-computation but no model file")
+
+        # governed-data is a repo-owned data/control artifact, not a computation.
+        if role == "governed-data":
+            if a["authority"] != "repo":
+                problems.append(f"{aid}: role governed-data but authority is {a['authority']!r}")
+            if a["release_path"]:
+                problems.append(f"{aid}: role governed-data but release_path is true (use governed-output)")
+            files = a.get("files") or {}
+            if files.get("model"):
+                problems.append(f"{aid}: role governed-data but has a model file (use repo-computation)")
+            if not (files.get("data") or str(a.get("producer", "")).startswith("build/")):
+                problems.append(f"{aid}: role governed-data but no data file or build/ producer")
 
         # compatibility-shim must name its exit target.
         if role == "compatibility-shim":
@@ -398,51 +451,150 @@ def role_violations() -> list[str]:
     return problems
 
 
-def _repo_computation_external_reads() -> dict[str, list[str]]:
-    """External (non-currentai) tables read by files owned by a role-carrying computation.
+# --- the governed graph: reachability from map roots ------------------------------------
 
-    Scoped to GOVERNED assets: the externalization backlog's OSO reads leave with it and are
-    not the repository's contracts. Returns {external_table: [reader file paths]}. Only the
-    model files of governed-output / repo-computation / compatibility-shim assets are read;
-    a standalone notebook read never counts (gate 5).
+def _governed_tables() -> set[str]:
+    """currentai-stripped table names of the governed assets (those carrying a role)."""
+    return {a["table"].removeprefix("currentai.") for a in assets() if a.get("role")}
+
+
+def _dependency_model_files() -> dict[str, str]:
+    """{currentai-stripped table: mirror model file} for currentai.* dependency contracts.
+
+    A dependency keeps a read-only MIRROR file so its provenance is tracked and the openness
+    dependency chain remains derivable; the table is not governed but the file is claimed here.
     """
-    owned: dict[str, str] = {}
-    for a in assets():
-        if a.get("role") is None:
-            continue
-        model = (a.get("files") or {}).get("model")
-        if model:
-            owned[model] = a["id"]
-    out: dict[str, list[str]] = {}
-    graph = derive_graph()
-    for path, refs in graph["reads"].items():
-        if path not in owned:
-            continue
-        for ext in refs["external"]:
-            out.setdefault(ext, []).append(path)
-    for ext in out:
-        out[ext].sort()
+    out: dict[str, str] = {}
+    for d in dependencies():
+        model = (d.get("files") or {}).get("model")
+        if model and d["table"].startswith("currentai."):
+            out[d["table"].removeprefix("currentai.")] = model
     return out
 
 
-def dependency_violations() -> list[str]:
-    """The dependency manifest and the inventory obey ADR-003 gates 2, 3 and 4.
+def _governed_root_files() -> set[str]:
+    """The map roots: governed asset model files, plus every build module and workflow.
 
-    Gate 2: every external table a governed computation reads is a dependency contract exactly
-      once (a compatibility-shim is the only governed exception and is not required here).
-    Gate 3: assets.yaml and dependencies.yaml are disjoint.
-    Gate 4: every dependency has >= 1 named `required_by` repo computation, the recorded
-      `required_by` matches the mechanically re-derived readers, and no dependency is read
-      only by a notebook or an external product.
+    Standalone notebooks are excluded (gate 5), and a dependency's mirror file is NOT a root --
+    it is a leaf whose reads are the platform's business, surfaced only for chain reachability.
+    """
+    roots = {(a.get("files") or {}).get("model") for a in assets() if a.get("role")}
+    roots.discard(None)
+    for pattern_key in ("build", "workflows"):
+        for p in tracked_files(ROOTS[pattern_key]):
+            roots.add(str(p.relative_to(ROOT)))
+    return roots
+
+
+def needed_tables() -> set[str]:
+    """Every table (full name) reachable UPSTREAM from the governed roots.
+
+    Reachability closure (ADR-003 root-scoped DAG / gate 4): start at the governed roots
+    (sinks + audit/control build modules), follow each read to the table it names, and where
+    that table has a repo producer file (a governed model OR a dependency mirror) follow that
+    file's reads too. Notebooks never enter the traversal. A table not in this set is not part
+    of the Gap Map's data system.
+    """
+    graph = derive_graph()
+    producer = {t: mf for t, mf in _dependency_model_files().items()}
+    for a in assets():
+        if a.get("role"):
+            mf = (a.get("files") or {}).get("model")
+            if mf:
+                producer[a["table"].removeprefix("currentai.")] = mf
+    needed: set[str] = set()
+    seen_files: set[str] = set()
+    queue: list[str] = sorted(_governed_root_files())
+    while queue:
+        f = queue.pop()
+        if f in seen_files:
+            continue
+        seen_files.add(f)
+        refs = graph["reads"].get(f)
+        if not refs:
+            continue
+        for internal in refs["internal"]:
+            needed.add(f"currentai.{internal}")
+            pf = producer.get(internal)
+            if pf and pf not in seen_files:
+                queue.append(pf)
+        for ext in refs["external"]:
+            needed.add(ext)
+    return needed
+
+
+def dependency_readers() -> dict[str, list[str]]:
+    """{full dependency table: sorted repo files that read it}.
+
+    Mechanically re-derived so a recorded `required_by` cannot drift. Readers are the governed
+    roots (governed model files + build modules + workflows) and the dependency mirror files
+    (the openness chain reads dep->dep) -- NOT the externalization backlog's own model files,
+    whose reads leave with them, and never a notebook (gate 5). This is why an unlisted OSO
+    input a governed computation reads is caught, while a backlog table's OSO reads are not
+    the repository's contracts.
+    """
+    governed = _governed_tables()
+    reader_files = _governed_root_files() | set(_dependency_model_files().values())
+    graph = derive_graph()
+    out: dict[str, list[str]] = {}
+    for path in reader_files:
+        refs = graph["reads"].get(path)
+        if not refs:
+            continue
+        for internal in refs["internal"]:
+            if internal not in governed:
+                out.setdefault(f"currentai.{internal}", []).append(path)
+        for ext in refs["external"]:
+            out.setdefault(ext, []).append(path)
+    return {t: sorted(set(v)) for t, v in out.items()}
+
+
+def _sha256(text: str) -> str:
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def contract_fingerprint(dep: dict) -> str:
+    """The reproducible content-contract fingerprint of an oso.* dependency.
+
+    Binds the agreed schema -- table, grain, and each column's name AND type (nullability
+    included) -- so a silent edit to the contract terms changes the hash. Names alone are
+    insufficient (the timestamp(6) drift): columns carry types.
+    """
+    cols = dep.get("expected_columns") or []
+    rendered = []
+    for c in cols:
+        if isinstance(c, dict):
+            rendered.append(f"{c.get('name')}:{c.get('type')}:{'null' if c.get('nullable') else 'notnull'}")
+        else:
+            rendered.append(str(c))
+    payload = dep["table"] + "\n" + str(dep.get("expected_grain", "")) + "\n" + "\n".join(sorted(rendered))
+    return _sha256(payload)
+
+
+_HEX64_RE = re.compile(r"^[0-9a-f]{64}$")
+
+
+def dependency_violations() -> list[str]:
+    """assets.yaml and dependencies.yaml obey ADR-003 gates 2, 3, 4 and contract integrity.
+
+    Gate 2: every non-governed table reachable from a governed root is a dependency contract
+      exactly once (currentai.* platform inputs AND oso.* upstreams alike).
+    Gate 3: the two files are disjoint.
+    Gate 4: every dependency is reachable from a governed root, has >= 1 named `required_by`
+      that matches the mechanically re-derived repo readers, and is not read only by a notebook.
+    Integrity: exactly one provenance anchor, self-consistent -- a currentai.* mirror uses
+      verified_revision + a mirror block whose local_sha256 matches the file; an oso.* upstream
+      uses content_contract_sha256 (64 hex, recomputed from typed expected_columns) + verified_at.
     """
     problems: list[str] = []
     deps = dependencies()
-    inv_tables = {a["table"] for a in assets()}
-    dep_tables: list[str] = [d.get("table") for d in deps]
+    governed_full = {a["table"] for a in assets()}
+    dep_tables = [d.get("table") for d in deps]
+    dep_set = set(dep_tables)
 
-    # Gate 3: disjoint files.
+    # Gate 3: disjoint; gate 2: no duplicate contract.
     for t in dep_tables:
-        if t in inv_tables:
+        if t in governed_full:
             problems.append(f"{t}: appears in both assets.yaml and dependencies.yaml (gate 3)")
     seen: set[str] = set()
     for t in dep_tables:
@@ -450,43 +602,90 @@ def dependency_violations() -> list[str]:
             problems.append(f"{t}: listed more than once in dependencies.yaml (gate 2)")
         seen.add(t)
 
-    derived = _repo_computation_external_reads()
+    governed = _governed_tables()
+    needed = needed_tables()
+    readers = dependency_readers()
 
-    # Gate 2: every external read by a governed computation is a contract exactly once.
-    for ext, readers in sorted(derived.items()):
-        if ext not in seen:
-            problems.append(
-                f"{ext}: read by {', '.join(readers)} but absent from dependencies.yaml (gate 2)"
-            )
+    # Gate 2: every non-governed table a governed root transitively needs is a contract.
+    for t in sorted(needed):
+        stripped = t.removeprefix("currentai.")
+        if stripped in governed:
+            continue
+        if t not in dep_set:
+            who = ", ".join(readers.get(t, [])) or "the reachability closure"
+            problems.append(f"{t}: needed by {who} but absent from dependencies.yaml (gate 2)")
 
-    # Gate 4: each contract is real, named, and re-derivable.
+    # Gate 4 + integrity, per contract.
     for d in deps:
         t = d.get("table")
-        recorded = d.get("required_by") or []
+        if t not in needed:
+            problems.append(
+                f"{t}: dependency is not reachable from any governed root -- read only by a "
+                "notebook, an external product, or nothing (gate 4)"
+            )
+        recorded = sorted(d.get("required_by") or [])
+        actual = readers.get(t, [])
         if not recorded:
             problems.append(f"{t}: dependency has no required_by (gate 4)")
-        actual = derived.get(t)
-        if actual is None:
+        elif recorded != actual:
             problems.append(
-                f"{t}: dependency is not read by any governed computation "
-                "(only a notebook or an external product, or nothing) (gate 4)"
-            )
-        elif sorted(recorded) != actual:
-            problems.append(
-                f"{t}: required_by {sorted(recorded)} disagrees with the derived readers "
-                f"{actual} (gate 4)"
-            )
-        # Provenance anchor: exactly one of verified_revision, or content_contract_sha256 + verified_at.
-        has_rev = bool(d.get("verified_revision"))
-        has_hash = bool(d.get("content_contract_sha256")) and bool(d.get("verified_at"))
-        if has_rev == has_hash:
-            problems.append(
-                f"{t}: needs exactly one provenance anchor -- verified_revision, OR "
-                "content_contract_sha256 + verified_at"
+                f"{t}: required_by {recorded} disagrees with the derived repo readers {actual} (gate 4)"
             )
         if d.get("owner") != "oso":
             problems.append(f"{t}: dependency owner must be oso, not {d.get('owner')!r}")
 
+        # Provenance anchor: exactly one, and internally self-consistent.
+        has_rev = d.get("verified_revision") is not None
+        has_hash = bool(d.get("content_contract_sha256")) and bool(d.get("verified_at"))
+        if has_rev == has_hash:
+            problems.append(
+                f"{t}: needs exactly one provenance anchor -- verified_revision (currentai.* "
+                "mirror), OR content_contract_sha256 + verified_at (oso.* upstream)"
+            )
+            continue
+        if has_rev:
+            if not str(t).startswith("currentai."):
+                problems.append(f"{t}: verified_revision anchors a currentai.* model; this is not one")
+            problems += _mirror_integrity(d)
+        else:
+            if not str(t).startswith("oso."):
+                problems.append(f"{t}: content_contract_sha256 anchors an oso.* upstream; this is not one")
+            got = d.get("content_contract_sha256")
+            if not (isinstance(got, str) and _HEX64_RE.match(got)):
+                problems.append(f"{t}: content_contract_sha256 must be 64 lowercase hex chars")
+            elif got != contract_fingerprint(d):
+                problems.append(
+                    f"{t}: content_contract_sha256 does not match the recomputed fingerprint of "
+                    "table + grain + typed expected_columns (edit the contract, then the hash)"
+                )
+            if not d.get("expected_columns"):
+                problems.append(f"{t}: oso.* contract needs typed expected_columns (name + type)")
+            for c in d.get("expected_columns") or []:
+                if not (isinstance(c, dict) and c.get("name") and c.get("type")):
+                    problems.append(f"{t}: each expected_columns entry needs a name and a type: {c!r}")
+
+    return problems
+
+
+def _mirror_integrity(dep: dict) -> list[str]:
+    """A currentai.* dependency mirror is self-consistent: model file present, local_sha256 matches."""
+    problems: list[str] = []
+    t = dep["table"]
+    mirror = dep.get("mirror") or {}
+    model = (dep.get("files") or {}).get("model")
+    if not model:
+        problems.append(f"{t}: currentai.* dependency needs a mirror model file")
+        return problems
+    path = ROOT / model
+    if not path.exists():
+        problems.append(f"{t}: mirror model file {model} does not exist")
+        return problems
+    declared = mirror.get("local_sha256")
+    actual = hashlib.sha256(path.read_bytes()).hexdigest()
+    if declared != actual:
+        problems.append(f"{t}: mirror local_sha256 does not match {model} on disk")
+    if not mirror.get("model_id"):
+        problems.append(f"{t}: mirror block needs a model_id")
     return problems
 
 
@@ -532,6 +731,14 @@ def produced_files() -> dict[str, str]:
             for path in (value if isinstance(value, list) else [value]):
                 if path:
                     owned.setdefault(path, f"{asset['id']}:{role}")
+    # A currentai.* dependency keeps a read-only MIRROR file (ADR-003): it is not a governed
+    # asset, but the file is tracked, so the dependency claims it and the "every managed file
+    # appears exactly once" gate still holds across both files.
+    for dep in dependencies():
+        for role, value in (dep.get("files") or {}).items():
+            for path in (value if isinstance(value, list) else [value]):
+                if path:
+                    owned.setdefault(path, f"dependency:{dep['table']}:{role}")
     return owned
 
 
@@ -597,9 +804,9 @@ _BUILD_PRODUCER_RE = re.compile(r"build/[\w./]+\.py")
 def _governed_producer_paths() -> dict[str, list[str]]:
     """Each repo path that PRODUCES a governed table -> the governed table(s) it produces.
 
-    A governed model file, or a `build/` module named in an asset's `producer`. This is the
-    set of map roots: only these paths are readers in the root-scoped graph, so a standalone
-    notebook that merely reads a table is never a root (ADR-003 gate 5).
+    A governed model file, or a `build/` module named in an asset's `producer`. Only these
+    paths (and the audit roots) are readers in the root-scoped graph, so a standalone notebook
+    that merely reads a table is never a root (ADR-003 gate 5).
     """
     out: dict[str, list[str]] = {}
     for table, a in by_table().items():
@@ -613,33 +820,46 @@ def _governed_producer_paths() -> dict[str, list[str]]:
     return {p: sorted(set(v)) for p, v in out.items()}
 
 
-def governed_edges() -> tuple[set[tuple[str, str]], set[tuple[str, str]], set[tuple[str, str]]]:
-    """(internal, external, shim) edges among GOVERNED assets, reachable from the map roots.
+def _sources_compiled(asset: dict) -> bool:
+    """A governed output compiled from sources/ by a serializer (so sources/ is its real root)."""
+    return "serialize" in str(asset.get("producer") or "")
 
-    `internal`  governed table -> governed table (a map root reads the upstream).
-    `external`  a `dependencies.yaml` OSO input -> the governed computation that reads it.
-    `shim`      a compatibility-shim -> its `replacement`.
 
-    Backlog tables are not nodes and notebooks/workflows are not roots, so the graph is the
-    Gap Map's own data system rather than the OSO organization's warehouse.
+def governed_internal_edges() -> set[tuple[str, str]]:
+    """governed table -> governed table, where the downstream's producer file reads the upstream.
+
+    Real edges from the tree, not invented: sources/ links are added only for serializer-compiled
+    outputs (see render_dag), never by "has no detected upstream".
     """
     governed = {tbl: a for tbl, a in by_table().items() if a.get("role")}
     producers = _governed_producer_paths()
     graph = derive_graph()
-    internal: set[tuple[str, str]] = set()
-    external: set[tuple[str, str]] = set()
+    edges: set[tuple[str, str]] = set()
     for path, refs in graph["reads"].items():
         for target in producers.get(path, []):
             for up in refs["internal"]:
                 if up in governed and up != target:
-                    internal.add((up, target))
-            for ext in refs["external"]:
-                external.add((ext, target))
-    shim: set[tuple[str, str]] = set()
-    for tbl, a in governed.items():
-        if a["role"] == "compatibility-shim" and a.get("replacement"):
-            shim.add((tbl, a["replacement"].removeprefix("currentai.")))
-    return internal, external, shim
+                    edges.add((up, target))
+    return edges
+
+
+def unreachable_repo_computations() -> list[str]:
+    """ADR-003 gate 4 / finding 4: every ACTIVE repo-computation and governed-data table is
+    reachable upstream from a governed sink or a named audit root.
+
+    A staged or dormant asset is pre-service (no consumer yet by construction) and is exempt;
+    an active intermediate that nothing governed reads is a dead node the closure should not carry.
+    """
+    needed = needed_tables()
+    problems: list[str] = []
+    for a in assets():
+        if a.get("role") in ("repo-computation", "governed-data") and a["status"] == "active":
+            if a["table"] not in needed:
+                problems.append(
+                    f"{a['id']}: active {a['role']} not reachable from any governed sink or "
+                    "audit root -- a dead node in the governed graph (gate 4)"
+                )
+    return problems
 
 
 def _node(table: str) -> str:
@@ -657,16 +877,23 @@ def render_dag() -> str:
     that drifts from its generator is worse than none. A gate compares this output against the
     committed copy. Membership is the governed inventory (assets carrying a `role`) plus the
     external contracts in dependencies.yaml -- not every table on the OSO org, and never a
-    standalone notebook (gate 5).
+    standalone notebook (gate 5). Edges are real reads: a sources/ link is drawn only for a
+    serializer-compiled output, never invented from a missing upstream. Node status carries
+    through (staged dashed, dormant faded) so a pre-service asset never reads as live.
     """
     governed = {tbl: a for tbl, a in by_table().items() if a.get("role")}
     role_of = {tbl: a["role"] for tbl, a in governed.items()}
-    internal, external, shim = governed_edges()
-    has_incoming = {b for _, b in internal}
+    status_of = {tbl: a["status"] for tbl, a in governed.items()}
+    internal = governed_internal_edges()
+    deps = dependencies()
+    dep_stripped = {d["table"].removeprefix("currentai.") for d in deps}
+    producers = _governed_producer_paths()
+    dep_model = _dependency_model_files()  # stripped dep table -> mirror file
+    file_produces_dep = {mf: t for t, mf in dep_model.items()}
 
     out: list[str] = []
 
-    # View 1 -- map governance: sources/ -> governed outputs, and the computation chain.
+    # View 1 -- map governance: sources/ -> serializer-compiled outputs + the real computation chain.
     body: list[str] = ["  SRC[sources/]:::src"]
     ns_tables: dict[str, list[str]] = {}
     for tbl in sorted(governed):
@@ -678,36 +905,54 @@ def render_dag() -> str:
         for tbl in tables:
             body.append(f"    {_node(tbl)}[{tbl.split('.', 1)[1]}]")
         body.append("  end")
-    # sources/ feeds every governed output with no governed upstream (the compiled declarations).
     for tbl in sorted(governed):
-        if role_of[tbl] == "governed-output" and tbl not in has_incoming:
+        if role_of[tbl] == "governed-output" and _sources_compiled(governed[tbl]):
             body.append(f"  SRC --> {_node(tbl)}")
     for up, dn in sorted(internal):
         if role_of.get(up) == "compatibility-shim" or role_of.get(dn) == "compatibility-shim":
             continue
         body.append(f"  {_node(up)} --> {_node(dn)}")
-    body.append("  classDef src fill:#def;")
+    for tbl in sorted(governed):
+        if role_of[tbl] != "compatibility-shim" and status_of[tbl] != "active":
+            body.append(f"  class {_node(tbl)} {status_of[tbl]};")
+    body += ["  classDef src fill:#def;", "  classDef staged stroke-dasharray: 4 3;",
+             "  classDef dormant opacity:0.5;"]
     out += _fence("View 1 — Map governance (sources → governed outputs)", body)
 
-    # View 2 -- runtime dependencies: OSO inputs (dependencies.yaml) -> map computation.
+    # View 2 -- runtime dependencies: dependencies.yaml inputs -> the governed/dep files reading
+    # them. dep->dep edges show the platform openness chain the repo's parity gate reaches into.
     body = []
-    dep_tables = {d["table"] for d in dependencies()}
-    for ext, dn in sorted(external):
-        marker = "" if ext in dep_tables else ":::uncontracted"
-        body.append(f"  EXT_{_node(ext)}[{ext}]{marker} --> {_node(dn)}")
-    if not external:
+    edges2: set[tuple[str, str]] = set()
+    for dep_full, files in sorted(dependency_readers().items()):
+        for f in files:
+            for gt in producers.get(f, []):
+                edges2.add((dep_full, f"currentai.{gt}"))
+            if f in file_produces_dep:
+                edges2.add((dep_full, f"currentai.{file_produces_dep[f]}"))
+            if f in AUDIT_ROOTS:
+                edges2.add((dep_full, f))
+    dep_nodes = {d["table"] for d in deps}
+    for a, b in sorted(edges2):
+        astyle = ":::dep" if a in dep_nodes else ""
+        bstyle = ":::dep" if b in dep_nodes else (":::audit" if b in AUDIT_ROOTS else "")
+        body.append(f"  {_node(a)}[{a}]{astyle} --> {_node(b)}[{b}]{bstyle}")
+    if not edges2:
         body.append("  none[no external runtime dependencies]:::src")
-    body.append("  classDef uncontracted fill:#fdd;")
-    out += _fence("View 2 — Runtime dependencies (OSO inputs → map computation)", body)
+    body += ["  classDef dep fill:#eee;", "  classDef audit fill:#ffd;", "  classDef src fill:#def;"]
+    out += _fence("View 2 — Runtime dependencies (dependencies.yaml → map computation)", body)
 
     # View 3 -- compatibility / retirement appendix: shims -> their replacements.
     body = []
+    shim = sorted(
+        (tbl, governed[tbl]["replacement"].removeprefix("currentai."))
+        for tbl in governed if role_of[tbl] == "compatibility-shim" and governed[tbl].get("replacement")
+    )
     if shim:
-        for src, repl in sorted(shim):
+        for src, repl in shim:
             body.append(f"  {_node(src)}[{src}]:::compat --> {_node(repl)}[{repl}]")
     else:
         body.append("  none[no compatibility shims]:::src")
-    body.append("  classDef compat stroke-width:3px;")
+    body += ["  classDef compat stroke-width:3px;", "  classDef src fill:#def;"]
     out += _fence("View 3 — Compatibility / retirement appendix", body)
 
     return "\n".join(out).rstrip() + "\n"
@@ -716,12 +961,11 @@ def render_dag() -> str:
 def notebook_root_violations() -> list[str]:
     """ADR-003 gate 5: no standalone notebook is a reachability root of the governed graph.
 
-    A notebook path must never appear as a producer of a governed table, so a notebook read
-    cannot pull a table into the DAG or confer membership. Re-derived, so a future asset that
-    named a notebook as its producer would be caught.
+    A notebook path must never appear as a producer of a governed table or in the governed
+    roots, so a notebook read cannot pull a table into the DAG or confer membership.
     """
     problems: list[str] = []
-    for path in _governed_producer_paths():
+    for path in set(_governed_producer_paths()) | _governed_root_files():
         if path.startswith("notebooks/"):
             problems.append(f"{path}: a notebook is a governed-graph root (gate 5)")
     return problems

@@ -51,7 +51,7 @@ As of 2026-08-20:
 - Platform model source is mirrored read-only under `warehouse/models/<dataset>/` (each carrying a `mirror:` block in `warehouse/assets.yaml`); the platform remains authoritative for those deployed models.
 - Dataset scheduling, model throttles, GitHub Actions schedules, and manual operations coexist. A configured cron is not treated as proof that a scheduled run fired. Verified 2026-08-20: of <!-- observed:2026-08-20 -->22 datasets, 13 carry `cronTimezone: America/New_York`, and 8 have a cron configured with `lastRunAt: null` — `signal_semanticscholar`, `signal_pypi`, `ai_demand_curve`, `state_of_os_ai`, `scores`, `events`, `metrics`, `entities`. The `scores` dataset is among them, which means the openness chain that `check_parity` compares against the repository has no observed scheduled run.
 - Two platform tables have no repository source and no in-repo consumer: `currentai.scores.investment_ranking` and `currentai.scores.taxonomy`.
-- The full org is <!-- observed:2026-08-20 -->22 datasets by `ListDatasets`, or 23 counting `datasette` — which `ListDatasets` omits because it holds two deployed models and no materialized tables, so a dataset-first sweep misses it (Phase 0b enumerated from `ListDataModels` instead and found it). The org held <!-- observed:2026-08-20 -->96 tables at that 2026-08-20 enumeration. Separately, and as a live derived count rather than a 2026-08-20 subset, the inventory currently tracks <!-- count:deployed_tables -->66 deployed tables in the datasets the repository maintains or reads from; the rest of the org's tables are separate analytical products. The two figures are different populations measured at different times — the 96 is a point-in-time org-wide observation, the 66 is derived from `assets.yaml` on every run. See section 11.3 for how the 66 reconciles with the inventory's size.
+- The full org is <!-- observed:2026-08-20 -->22 datasets by `ListDatasets`, or 23 counting `datasette` — which `ListDatasets` omits because it holds two deployed models and no materialized tables, so a dataset-first sweep misses it (Phase 0b enumerated from `ListDataModels` instead and found it). The org held <!-- observed:2026-08-20 -->96 tables at that 2026-08-20 enumeration. Separately, and as a live derived count rather than a 2026-08-20 subset, the inventory currently tracks <!-- count:deployed_tables -->59 deployed tables in the datasets the repository maintains or reads from; the rest of the org's tables are separate analytical products. The two figures are different populations measured at different times — the 96 is a point-in-time org-wide observation, the 59 is derived from `assets.yaml` on every run. See section 11.3 for how the 59 reconciles with the inventory's size.
 
 The redesign must evolve this system without interrupting the existing map, registry tables, notebooks, or website.
 
@@ -1673,9 +1673,12 @@ registries this file replaces.
   release_path: false             # true only if this asset belongs to a gap-map release
   # role is ABSENT here: scores.stack_contributors is in the ADR-003 externalization backlog
   # (a questionable gap_map table, steps 5-6). A GOVERNED asset instead carries exactly one:
-  #   role: governed-output       # a published gap-map artifact (must be release_path: true)
-  #   role: repo-computation      # repo-defined map computation (a repo file or build/ producer;
-  #                               #   authority repo, or platform only for a mirror)
+  #   role: governed-output       # a published gap-map artifact (release_path: true, authority repo)
+  #   role: repo-computation      # a repo-OWNED model (has a model file; authority: repo). A
+  #                               #   platform mirror is NOT repo-computation -- it is a dependency
+  #                               #   contract (dependencies.yaml); a mirror is provenance, not ownership.
+  #   role: governed-data         # a repo-owned data/control artifact, not a computation (the frozen
+  #                               #   baseline bytes, the source-runs snapshot); authority repo, not release_path
   #   role: compatibility-shim    # a temporary shim for a governed asset (carries `replacement`)
   refresh: dataset cron '0 4 * * 1'
   timezone: UTC
@@ -1785,11 +1788,11 @@ them in the other.
 Three numbers that must not be conflated:
 
 ```text
-deployed tables in the in-scope datasets    <!-- count:deployed_tables -->66
+deployed tables in the in-scope datasets    <!-- count:deployed_tables -->59
 staged, not deployed                         <!-- count:staged_assets -->6
 dormant, no platform table yet              <!-- count:dormant_assets -->1
                                             ------
-logical assets in warehouse/assets.yaml     <!-- count:assets -->73
+logical assets in warehouse/assets.yaml     <!-- count:assets -->66
 ```
 
 The staged six are the three `signal_packages` models from issue #314,
@@ -2034,45 +2037,63 @@ exist.
 10. No test asserts that a backlog must remain non-empty.
 
 **ADR-003 scope-boundary gates.** Implemented in `build/assets.py` (`role_violations`,
-`dependency_violations`, `notebook_root_violations`) and asserted in
-`tests/test_assets_inventory.py` + `tests/test_scope_gates.py`. The `role` each governed asset
-carries is RE-DERIVED from its fields (`expected_role`) and must match the authored value,
-exactly as `read_by` is re-derived; the externalization backlog (long_tail, or a table in
-`EXTERNALIZE_QUESTIONABLE`) is the roleless set and everything else must carry a role:
+`dependency_violations`, `notebook_root_violations`, `unreachable_repo_computations`) and asserted
+in `tests/test_assets_inventory.py` + `tests/test_scope_gates.py`. The `role` each governed asset
+carries is RE-DERIVED from its fields (`expected_role`) and must match the authored value, exactly
+as `read_by` is re-derived. A role is one of `governed-output`, `repo-computation` (repo-OWNED
+model, authority repo), `governed-data` (repo-owned data/control artifact), or `compatibility-shim`.
+The externalization backlog (long_tail, or a table in `EXTERNALIZE_QUESTIONABLE`) is the roleless set.
 
 - **G1 governed-output ⇔ release_path.** A `governed-output` is `release_path: true`, and a
   `release_path: true` asset is a `governed-output` (subsumes 2b).
-- **G2 external reads are contracts.** Every external table a governed computation reads
-  appears in `dependencies.yaml` exactly once (a `compatibility-shim` is the only governed
-  exception). Re-derived from the tree, so an uncontracted OSO read fails.
-- **G3 the two files are disjoint.** A table is a governed asset or a dependency contract,
-  never both.
-- **G4 every dependency is used and named.** Each `dependencies.yaml` entry has ≥1 `required_by`
-  repo computation, the recorded `required_by` equals the mechanically re-derived readers, and
-  no dependency is read only by a notebook or an external product. Exactly one provenance
-  anchor (`verified_revision`, or `content_contract_sha256` + `verified_at`); `owner: oso`.
-- **G5 a notebook is never a graph root.** No standalone notebook produces a governed table,
-  so a notebook read cannot confer membership or pull a table into the DAG.
-- **G6 `long_tail` is not a governed population.** No asset carrying a `role` is
-  `population: long_tail`; the tail-candidate registry (`registry.tail_products`) is distinct
-  and is not `long_tail`.
+- **G2 needed non-governed tables are contracts.** Every table reachable UPSTREAM from a governed
+  root that is not itself governed -- a platform-authored `currentai.*` mirror OR an `oso.*`
+  upstream -- appears in `dependencies.yaml` exactly once. Re-derived from the tree, so an
+  uncontracted input (of either kind) fails; a table only the externalization backlog reads is not
+  the repository's contract.
+- **G3 the two files are disjoint.** A table is a governed asset or a dependency contract, never both.
+- **G4 every dependency is reachable, used and named.** Each `dependencies.yaml` entry is reachable
+  from a governed root, has ≥1 `required_by` that equals the mechanically re-derived repo readers
+  (governed roots + dependency mirror files, never a notebook), and `owner: oso`. Contract
+  INTEGRITY: exactly one provenance anchor, self-consistent -- a `currentai.*` mirror uses
+  `verified_revision` + a `mirror` block whose `local_sha256` matches the tracked file's bytes; an
+  `oso.*` upstream uses `content_contract_sha256` (64 hex, recomputed by the gate from the table,
+  grain and TYPED `expected_columns`) + `verified_at`.
+- **G5 a notebook is never a graph root.** No standalone notebook produces a governed table or is a
+  governed root, so a notebook read cannot confer membership or pull a table into the DAG.
+- **G6 `long_tail` is not a governed population; the backlog only shrinks.** No asset carrying a
+  `role` is `population: long_tail`; the roleless set is a subset of the frozen backlog, and no new
+  `long_tail` or roleless asset can be introduced (a ratchet). The tail-candidate registry
+  (`registry.tail_products`) is distinct and is not `long_tail`.
+- **Reachability.** Every ACTIVE `repo-computation`/`governed-data` table is reachable upstream from
+  a governed sink or a named audit root -- no dead nodes in the governed graph (staged/dormant
+  pre-service assets are exempt).
 
 The inventory must not claim visibility into untracked external consumers. `read_by` covers
 in-repo consumers only; represent confidence about anything beyond that explicitly.
 
 ### 11.7 External dependency manifest (`warehouse/dependencies.yaml`)
 
-Category-3 OSO inputs — tables a governed asset reads but the repository does not own — are
-recorded here as **contracts**, never as governed assets (ADR-003; the manifest schema is
-specified at ADR-003 "External dependency manifest"). Each entry states `purpose`,
-`expected_grain`, `expected_columns`, `freshness_requirement`, the `required_by` repo
-computations, a provenance anchor, and `owner: oso`. A contract confers **no** migration
-status, retirement policy, source mirror, or namespace-cleanup obligation — it records what a
-governed asset needs and lets G2/G3/G4 keep the manifest from growing into a second org-wide
-inventory. `content_contract_sha256` is the fingerprint of the agreed schema contract (table +
-grain + columns), captured at `verified_at`; like the mirror hashes, CI cannot recompute it
-against the live OSO schema (no credentials), so a credentialed maintainer re-verifies it at
-deploy time.
+Category-3 inputs — tables a governed asset reads but the repository does not own — are recorded
+here as **contracts**, never as governed assets (ADR-003). Two kinds:
+
+- **`oso.*` upstreams** — an OSO marketplace/pipeline table. Anchored by `content_contract_sha256`
+  + `verified_at`: the fingerprint of the agreed schema (table + `expected_grain` + TYPED
+  `expected_columns`, each a `{name, type, nullable}`). The gate recomputes it, so a silent edit to
+  the contract terms is caught; live-schema verification against OSO is a credentialed maintainer
+  step (CI has no credentials). Names alone are insufficient — columns carry types (the `timestamp(6)`
+  drift).
+- **`currentai.*` platform mirrors** — a platform-authored model the repo reads read-only (the
+  openness chain, the signal ingestion). A `mirror:` block proves provenance, **not** operational
+  ownership, so these are dependencies, not governed assets. Anchored by `verified_revision` + the
+  `mirror` block; the repo keeps the read-only mirror **file**, claimed by the contract, and the gate
+  recomputes its `local_sha256` from the bytes on disk. The three openness models carry a
+  `retirement_context`: the repo drives their Phase-7 retirement (#384), it does not own them.
+
+Every entry also states `purpose`, `required_by` (the repo files that read it, mechanically
+re-derived), and `owner: oso`. A contract confers **no** migration status, retirement policy, or
+namespace-cleanup obligation. G2/G3/G4 (§11.5) keep the manifest reachable and disjoint so it cannot
+grow into a second org-wide inventory.
 
 ### 11.6 Decisions resolved 2026-08-20, and what remains
 

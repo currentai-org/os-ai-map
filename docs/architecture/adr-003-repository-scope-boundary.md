@@ -76,11 +76,12 @@ Every governed asset declares a `role`, so membership is asserted, not inferred 
 
 | role | meaning | must be |
 |---|---|---|
-| `governed-output` | a **published Gap Map artifact whose schema and publication lifecycle are owned here** — regardless of whether its rows come exclusively from `sources/` (so the `evaluation.*` release-path publications, derived partly from `observations`, qualify) | `release_path: true` |
-| `repo-computation` | repo-owned SQL/Python implementing or auditing map semantics | has a repo file; `authority: repo` |
-| `compatibility-shim` | temporary shim for a (1)/(2) asset (named to avoid collision with the lifecycle `status: compatibility`) | carries `replacement` + a retirement trigger |
+| `governed-output` | a **published Gap Map artifact whose schema and publication lifecycle are owned here** — regardless of whether its rows come exclusively from `sources/` (so the `evaluation.*` release-path publications, derived partly from `observations`, qualify) | `release_path: true`; `authority: repo` |
+| `repo-computation` | repo-**owned** SQL/Python implementing or auditing map semantics | has a model file; `authority: repo`. A `mirror:` block proves provenance, not ownership, so a platform-authored mirror is **not** a repo-computation — it is a dependency contract |
+| `governed-data` | a repo-**owned** data or control artifact that is not a computation — the frozen adoption baseline (bytes, not a query) and the `source_runs` control snapshot | `authority: repo`; not `release_path`; no model file |
+| `compatibility-shim` | temporary shim for a (1)/(2) asset (named to avoid collision with the lifecycle `status: compatibility`); may be a platform mirror, since a shim is transitional by definition | carries `replacement` |
 
-External dependencies are **not** governed assets and carry no `role` — they live in the manifest below.
+External dependencies are **not** governed assets and carry no `role` — they live in the manifest below. Because a mirror is provenance and not ownership, the seven platform-authored mirrors the repo reads — the openness chain (`evidence.product_evidence`, `scores.openness_facts`, `scores.openness_computed`) and the signal ingestion (`signal_github`/`signal_huggingface`.`artifact_state`, `signal_pypi.package_downloads`, `signal_semanticscholar.paper_citations`) — are **dependency contracts**, not governed assets (implemented 2026-08-29).
 
 ## External dependency manifest — `warehouse/dependencies.yaml`
 
@@ -99,13 +100,15 @@ Category-3 OSO inputs are recorded as **contracts**, not owned models. Proposed 
   owner: oso                                      # NOT this repo
 ```
 
-`verified_revision` is used where the dependency is a `currentai.*` model with a platform revision; an
-`oso.*` upstream that has no model revision instead records a `content_contract_sha256` (a hash of the
-agreed schema/content contract) plus a `verified_at` date. A dependency entry confers **no** migration
-status, retirement policy, source mirror, or namespace-cleanup obligation. It records what a governed
-asset needs and lets a gate check the contract (grain/freshness) without claiming ownership of the
-model's deployment. The manifest is created and populated in the execution PR (step 2 below); this ADR
-specifies it and does not add the file.
+`verified_revision` is used where the dependency is a `currentai.*` platform model with a revision; the
+repo keeps its read-only `mirror` **file** (claimed by the contract) and the gate recomputes the file's
+`local_sha256`, so a silent edit is caught. An `oso.*` upstream that has no model revision instead
+records a `content_contract_sha256` — the fingerprint of the agreed schema (table + grain + TYPED
+`expected_columns`, each `{name, type, nullable}`; names alone are insufficient) — plus a `verified_at`
+date, and the gate recomputes it. A dependency entry confers **no** migration status, retirement policy,
+or namespace-cleanup obligation; a `currentai.*` mirror the repo will retire (the openness chain, #384)
+carries a `retirement_context` recording that the repo drives the retirement without owning the model.
+Implemented 2026-08-29.
 
 ## The DAG becomes root-scoped
 
