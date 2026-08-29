@@ -184,21 +184,21 @@ Each keeps the rule: **gain a named Gap Map use, or leave the governed inventory
    OSO deletion**).
 6. Resolve the 4 individually.
 
-### Ownership-handoff precondition for step 5 (no orphaning)
+### No-orphan precondition for step 5
 
-Before any peripheral source is removed from this repo's inventory **and publisher**, a verified
-ownership handoff must exist and be recorded:
+One rule, not a checklist (everything here is the same account, so a "responsible owner" field carries
+no signal): **do not leave a consumed table with no producer and no data.** Concretely, before removing
+a source from this repo's inventory and publisher, confirm both:
 
-- destination repository and path;
-- responsible owner;
-- the merged transfer commit / PR;
-- a working deploy or publication path in the destination;
-- proof that existing OSO consumers of the table remain functional after the handoff.
+- the deployed OSO table still exists (never deleted as part of cleanup), and
+- every consumer that still reads it — in this repo or on the platform — still resolves.
 
-This is not optional bookkeeping: for `registry.foundation_model_repos`, removing it from *this*
-publisher before another owner can reproduce it would **orphan the live input to `entities.models`**.
-The recent `#397`/`#400` work is unwound by **transferring ownership**, never by reversing the platform
-deployment — the deployed table keeps serving its readers until the destination reproduces it.
+If a destination reproduces the table, point consumers there; if not, the deployed table simply freezes
+at its last publish, which is acceptable for the curated reference tables here **only while their
+consumers keep resolving**. The one case that must not be shortcut is `registry.foundation_model_repos`:
+its deployed table keeps serving `entities.models`, so it stays produced (here or elsewhere) until that
+reader no longer needs it. The `#397`/`#400` work is unwound by moving where the table is produced,
+never by reversing the platform deployment.
 
 All Phase-5 platform migration (`osai_subcategory_mapping`/`taxonomy_crosswalk` → registry, `stack_map`
 → registry, and any `entities`/`events`/`metrics`/analytical-`scores` consolidation) is **held** until
@@ -211,7 +211,7 @@ the mechanism (steps 2–4) is merged. **Accepting this ADR does not lift the fr
 - Parts of ADR-002 are superseded: catalog reference tables it routed *into* `registry` are instead
   **externalized**, because ownership follows the scope rule, not the provenance shape.
 - Recent `foundation_model_repos` work (#397/#400) is unwound **through ownership transfer, not by
-  reversing the platform deployment** (see the handoff precondition): the deployed table keeps serving
+  reversing the platform deployment** (see the no-orphan precondition): the deployed table keeps serving
   `entities.models` until a destination owner reproduces it. The honest cost of having migrated under
   the old boundary.
 - The agent stops generating cross-org consistency work, because the boundary no longer pulls unrelated
