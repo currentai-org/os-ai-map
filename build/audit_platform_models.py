@@ -68,7 +68,11 @@ def build_receipt(models: list[dict], as_of: str) -> dict:
 
     Deterministic: models sorted by table, reference lists sorted, so a re-run diffs cleanly.
     """
+    # In-scope = a governed asset OR a currentai.* dependency contract (ADR-003): both are
+    # tracked repository scope, so a deployed model reading either is an in-scope read.
     in_scope = set(A.by_table())
+    in_scope |= {d["table"].removeprefix("currentai.") for d in A.dependencies()
+                 if d["table"].startswith("currentai.")}
     producers = _producer_tables()
     rows = []
     for node in models:

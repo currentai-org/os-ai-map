@@ -225,27 +225,22 @@ def test_signal_product_adoption_tables_stay_put_and_deployed_ones_are_compat(in
     assert seen == 3, f"expected the three signal_*.product_adoption tables, saw {seen}"
 
 
-def test_phase7_openness_chain_stays_put_until_retirement(inventory):
+def test_phase7_openness_chain_is_a_dependency_with_retirement_context(inventory):
     """The Phase 7 / §9.3 openness chain -- `evidence.product_evidence`, `scores.openness_facts`,
-    `scores.openness_computed` -- is RETIRED (deleted), never relocated to `evaluation`, once the
-    repository-owned trace (`evaluation.axis_*`) shows multi-release dual-run agreement (#384).
-    So each is `migration_status: not_planned` and never targets `evaluation`, and stays `active`
-    (not prematurely marked `compatibility`) until Phase 7 actually retires it."""
+    `scores.openness_computed` -- is platform-authored, so under ADR-003 it is a DEPENDENCY
+    CONTRACT, not a governed asset: the repository drives its retirement (replacing it with the
+    repo-owned `evaluation.axis_*` trace, #384) but does not own it. Each is absent from
+    assets.yaml, present in dependencies.yaml with a Phase-7 `retirement_context` and `owner: oso`."""
     chain = {"currentai.evidence.product_evidence",
              "currentai.scores.openness_facts", "currentai.scores.openness_computed"}
-    seen = set()
-    for asset in inventory:
-        if asset["table"] not in chain:
-            continue
-        seen.add(asset["table"])
-        assert asset["migration_status"] == "not_planned", (
-            f"{asset['id']}: Phase 7 retirement target must be migration_status: not_planned, "
-            f"not {asset['migration_status']!r}")
-        assert asset["target_namespace"] != "evaluation", (
-            f"{asset['id']}: retired in Phase 7, not relocated to evaluation")
-        assert asset["status"] == "active", (
-            f"{asset['id']}: stays active until Phase 7 retirement, not {asset['status']!r}")
-    assert seen == chain, f"missing openness-chain entries: {sorted(chain - seen)}"
+    inv_tables = {a["table"] for a in inventory}
+    assert not (chain & inv_tables), "openness chain must not be a governed asset (ADR-003)"
+    deps = {d["table"]: d for d in A.dependencies()}
+    for t in chain:
+        assert t in deps, f"{t}: must be a dependency contract"
+        assert deps[t]["owner"] == "oso"
+        assert "#384" in (deps[t].get("retirement_context") or ""), (
+            f"{t}: dependency must carry its Phase-7 retirement_context (#384)")
 
 
 def test_scheduled_pipelines_do_not_relocate_into_static_namespaces(inventory):
@@ -354,13 +349,18 @@ def test_reads_matches_the_derived_graph(inventory):
 
 def test_external_reads_are_marked_external(inventory):
     """The inventory covers the gap-map closure, not all 96 org tables, so oso.* and
-    out-of-scope reads must be representable rather than errors."""
+    out-of-scope reads must be representable rather than errors. An internal (currentai.*)
+    read resolves to a governed asset OR a currentai.* dependency contract (ADR-003) -- a
+    governed computation legitimately reads a platform mirror it does not own."""
     ids = {a["id"] for a in inventory}
+    dep_ids = {d["table"].removeprefix("currentai.") for d in A.dependencies()
+               if d["table"].startswith("currentai.")}
     for asset in inventory:
         for ref in asset.get("reads") or []:
             table = ref["table"]
             if ref["scope"] == "internal":
-                assert table.removeprefix("currentai.") in ids, f"{asset['id']} reads unlisted {table}"
+                stripped = table.removeprefix("currentai.")
+                assert stripped in ids or stripped in dep_ids, f"{asset['id']} reads unlisted {table}"
             else:
                 assert not table.startswith("currentai."), f"{asset['id']}: {table} marked external"
 
@@ -715,15 +715,73 @@ def test_every_scheduled_asset_declares_a_timezone_and_trigger(inventory):
 def test_committed_dag_matches_the_renderer():
     """A generated document that drifts from its generator is worse than no document.
 
-    `render_dag()` emits its own fenced ```mermaid block, so the document must contain it EXACTLY
-    once — a substring check alone passed a doubled fence (two openers, two closers) that a
-    regeneration bug left behind and Mermaid renders as broken.
+    `render_dag()` emits the three root-scoped views (ADR-003), each its own fenced ```mermaid
+    block, so the document must contain the whole rendered region EXACTLY once and carry no
+    extra fence a regeneration bug might have doubled (Mermaid renders those as broken).
     """
     committed = (ROOT / "docs/architecture/current-state-dag.md").read_text(encoding="utf-8")
     rendered = A.render_dag()
     assert rendered in committed, "current-state-dag.md is stale; regenerate it"
-    assert committed.count(rendered) == 1, "the rendered Mermaid block appears more than once"
-    assert committed.count("```mermaid") == 1, "duplicate ```mermaid fence in current-state-dag.md"
+    assert committed.count(rendered) == 1, "the rendered Mermaid region appears more than once"
+    assert committed.count("```mermaid") == rendered.count("```mermaid"), (
+        "committed ```mermaid fence count differs from the renderer's; regenerate the doc"
+    )
+
+
+# --- ADR-003 scope-boundary gates hold on the real inventory --------------------
+
+def test_role_gate_holds():
+    """Every governed asset carries the boundary-rule role; gates 1 and 6 hold (ADR-003)."""
+    violations = A.role_violations()
+    assert not violations, "role/boundary violations:\n" + "\n".join(violations)
+
+
+def test_dependency_gate_holds():
+    """assets.yaml and dependencies.yaml obey gates 2, 3, 4 (ADR-003)."""
+    violations = A.dependency_violations()
+    assert not violations, "dependency-contract violations:\n" + "\n".join(violations)
+
+
+def test_notebook_is_never_a_graph_root():
+    """Gate 5: no standalone notebook produces a governed table / roots the graph."""
+    violations = A.notebook_root_violations()
+    assert not violations, "notebook-root violations:\n" + "\n".join(violations)
+
+
+def test_no_dead_repo_computations():
+    """Every active repo-computation / governed-data is reachable from a governed root (F4)."""
+    violations = A.unreachable_repo_computations()
+    assert not violations, "unreachable governed nodes:\n" + "\n".join(violations)
+
+
+def test_dependency_mirror_provenance_holds():
+    """Cross-commit provenance for the dependency mirrors is coherent against the merge base,
+    including the asset->dependency transition (ADR-003 finding 1)."""
+    violations = A.dependency_mirror_provenance_violations()
+    assert not violations, "dependency mirror provenance:\n" + "\n".join(violations)
+
+
+def test_governed_root_set_is_closed():
+    """Finding 3: the root set is governed producer files + named audit roots + declared
+    workflows only -- never "any tracked build/*.py", so an unrelated helper cannot become a
+    semantic root."""
+    roots = A._governed_root_files()
+    allowed = set(A._governed_producer_paths()) | set(A.AUDIT_ROOTS) | set(A.PUBLICATION_WORKFLOWS)
+    assert roots == allowed
+    # a real build module that neither produces a governed table nor is an audit root is excluded
+    assert "build/render.py" not in roots
+    assert "build/warehouse.py" not in roots
+
+
+def test_role_and_backlog_partition_the_inventory():
+    """Every asset is either governed (carries a role) or in the externalization backlog
+    (roleless: long_tail, or one of the named questionable gap_map tables). Nothing else."""
+    for a in A.assets():
+        roleless = a.get("role") is None
+        assert roleless == A.in_externalization_backlog(a), (
+            f"{a['id']}: role/backlog disagree (role={a.get('role')!r}, "
+            f"backlog={A.in_externalization_backlog(a)})"
+        )
 
 
 # --- the inventory must agree with the ADR committed beside it -------------------
@@ -895,23 +953,10 @@ def test_schedule_evidence_only_on_scheduled_assets(inventory):
                 assert field not in asset, f"{asset['id']}: unscheduled but carries {field}"
 
 
-def test_the_openness_chain_is_gap_map(inventory):
-    """population describes whose ROWS these are, not who reads them. The `scores` dataset
-    holds two populations, so keying on the dataset put the openness chain in long_tail."""
-    inv = A.by_table()
-    for table in ("scores.openness_facts", "scores.openness_computed",
-                  "evidence.product_evidence", "catalog.stack_map"):
-        assert inv[table]["population"] == "gap_map", table
-
-
-def test_release_path_is_consistent_across_the_openness_chain(inventory):
-    """The chain is a parallel verification path feeding check_parity, retired in Phase 7 --
-    not the release path. Marking one of its three tables release_path and not the others
-    was arbitrary."""
-    inv = A.by_table()
-    chain = ("evidence.product_evidence", "scores.openness_facts", "scores.openness_computed")
-    assert len({inv[t]["release_path"] for t in chain}) == 1
-    assert all(inv[t]["release_path"] is False for t in chain)
+# The openness chain (evidence.product_evidence, scores.openness_facts, scores.openness_computed)
+# is no longer a governed asset -- ADR-003 reclassified it as a dependency contract. Its new
+# state is asserted by test_phase7_openness_chain_is_a_dependency_with_retirement_context above;
+# the former population/release_path consistency tests over it are retired with the reclassification.
 
 
 # --- the ledger must list exactly the derived set ------------------------------
@@ -1014,7 +1059,11 @@ def test_platform_audit_receipt_is_wellformed_and_complete():
     resolves to an inventory asset."""
     r = AU.load_receipt()
     assert AU.validate_receipt(r) == [], AU.validate_receipt(r)
+    # In-scope = a governed asset OR a currentai.* dependency contract (ADR-003): both are
+    # tracked repository scope, so a deployed model reading either is reading in-scope.
     ids = set(A.by_table())
+    ids |= {d["table"].removeprefix("currentai.") for d in A.dependencies()
+            if d["table"].startswith("currentai.")}
     for m in r["models"]:
         assert "code" not in m, f"{m['table']}: receipt must not carry the source body"
         for ref in m["in_scope_reads"]:
