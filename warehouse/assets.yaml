@@ -342,8 +342,9 @@ assets:
     data: null
   kind: catalog
   current_namespace: entities
-  target_namespace: catalog
-  migration_status: pending
+  target_namespace: entities
+  migration_status: not_planned
+  not_planned_reason: 'will NOT relocate to catalog (data-architecture.md §11.1): kind is catalog, but the target dataset currentai.catalog is an immutable OSO STATIC_MODEL dataset (046ee25e) and this is a scheduled USER_MODEL pipeline (dataset 663132ed, weekly cron 0 4 * * 0). OSO dataset type is fixed at creation and cannot be changed, so a scheduled model cannot be hosted in the static catalog dataset — platform-verified 2026-08-28, when a create/revision/release into catalog succeeded silently but the run request was rejected because the dataset type is STATIC_MODEL where a scheduled model needs USER_MODEL. Decision 2026-08-28 (Phase 5): the discovery pipeline stays in its own USER_MODEL namespace `entities`; catalog remains the static reference layer. Not a namespace migration.'
   authority: repo
   population: long_tail
   release_path: false
@@ -388,8 +389,9 @@ assets:
     data: null
   kind: catalog
   current_namespace: entities
-  target_namespace: catalog
-  migration_status: pending
+  target_namespace: entities
+  migration_status: not_planned
+  not_planned_reason: 'will NOT relocate to catalog (data-architecture.md §11.1): kind is catalog, but the target dataset currentai.catalog is an immutable OSO STATIC_MODEL dataset (046ee25e) and this is a scheduled USER_MODEL pipeline (dataset 663132ed, weekly cron 0 4 * * 0). OSO dataset type is fixed at creation and cannot be changed, so a scheduled model cannot be hosted in the static catalog dataset — platform-verified 2026-08-28, when a create/revision/release into catalog succeeded silently but the run request was rejected because the dataset type is STATIC_MODEL where a scheduled model needs USER_MODEL. Decision 2026-08-28 (Phase 5): the discovery pipeline stays in its own USER_MODEL namespace `entities`; catalog remains the static reference layer. Not a namespace migration.'
   authority: repo
   population: long_tail
   release_path: false
@@ -429,8 +431,9 @@ assets:
     data: null
   kind: catalog
   current_namespace: entities
-  target_namespace: catalog
-  migration_status: pending
+  target_namespace: entities
+  migration_status: not_planned
+  not_planned_reason: 'will NOT relocate to catalog (data-architecture.md §11.1): kind is catalog, but the target dataset currentai.catalog is an immutable OSO STATIC_MODEL dataset (046ee25e) and this is a scheduled USER_MODEL pipeline (dataset 663132ed, weekly cron 0 4 * * 0). OSO dataset type is fixed at creation and cannot be changed, so a scheduled model cannot be hosted in the static catalog dataset — platform-verified 2026-08-28, when a create/revision/release into catalog succeeded silently but the run request was rejected because the dataset type is STATIC_MODEL where a scheduled model needs USER_MODEL. Decision 2026-08-28 (Phase 5): the discovery pipeline stays in its own USER_MODEL namespace `entities`; catalog remains the static reference layer. Not a namespace migration.'
   authority: repo
   population: long_tail
   release_path: false
@@ -471,8 +474,9 @@ assets:
     data: null
   kind: catalog
   current_namespace: entities
-  target_namespace: catalog
-  migration_status: pending
+  target_namespace: entities
+  migration_status: not_planned
+  not_planned_reason: 'will NOT relocate to catalog (data-architecture.md §11.1): kind is catalog, but the target dataset currentai.catalog is an immutable OSO STATIC_MODEL dataset (046ee25e) and this is a scheduled USER_MODEL pipeline (dataset 663132ed, weekly cron 0 4 * * 0). OSO dataset type is fixed at creation and cannot be changed, so a scheduled model cannot be hosted in the static catalog dataset — platform-verified 2026-08-28, when a create/revision/release into catalog succeeded silently but the run request was rejected because the dataset type is STATIC_MODEL where a scheduled model needs USER_MODEL. Decision 2026-08-28 (Phase 5): the discovery pipeline stays in its own USER_MODEL namespace `entities`; catalog remains the static reference layer. Not a namespace migration.'
   authority: repo
   population: long_tail
   release_path: false
@@ -528,8 +532,9 @@ assets:
     data: null
   kind: observations
   current_namespace: events
-  target_namespace: observations
-  migration_status: pending
+  target_namespace: events
+  migration_status: not_planned
+  not_planned_reason: 'DEFERRED, stays put (data-architecture.md §11.1, #393): kind is observations and the observations dataset is USER_MODEL (type-compatible), but folding this scheduled pipeline in requires giving the observations dataset a sweep cron — an OSO schedule is a dataset-level sweep and a model cron only throttles it (platform-verified 2026-08-28). The observations dataset is currently manual (cron null); its product_adoption_current is deliberately manual/full-refresh under the §18 baseline discipline, and this pipeline carries its own weekly cron 0 5 * * 0. Scheduling observations to host it would also sweep product_adoption_current and the pypi orphan, a behavior change to a §18-sensitive model. Decision 2026-08-28 (Phase 5): keep this pipeline in its own USER_MODEL dataset (events); whether the observations dataset ever gains a sweep is a Phase-2B refresh-model decision, and even then a namespace move for this table would require a NEW explicit architecture decision, not an automatic follow-on. Not a namespace migration now. Repo<->platform read drift on the deployed revision is tracked in #395.'
   authority: repo
   population: long_tail
   release_path: false
@@ -626,8 +631,9 @@ assets:
     data: null
   kind: observations
   current_namespace: metrics
-  target_namespace: observations
-  migration_status: pending
+  target_namespace: metrics
+  migration_status: not_planned
+  not_planned_reason: 'DEFERRED, stays put (data-architecture.md §11.1, #393): kind is observations and the observations dataset is USER_MODEL (type-compatible), but folding this scheduled pipeline in requires giving the observations dataset a sweep cron — an OSO schedule is a dataset-level sweep and a model cron only throttles it (platform-verified 2026-08-28). The observations dataset is currently manual (cron null); its product_adoption_current is deliberately manual/full-refresh under the §18 baseline discipline, and this pipeline carries its own weekly cron 0 6 * * 0 (one hour after events so it reads fresh github_events). Scheduling observations to host it would also sweep product_adoption_current and the pypi orphan, a behavior change to a §18-sensitive model. Decision 2026-08-28 (Phase 5): keep this pipeline in its own USER_MODEL dataset (metrics); whether the observations dataset ever gains a sweep is a Phase-2B refresh-model decision, and even then a namespace move for this table would require a NEW explicit architecture decision, not an automatic follow-on. Not a namespace migration now. Repo<->platform read drift on the deployed revision is tracked in #395.'
   authority: repo
   population: long_tail
   release_path: false
@@ -1671,8 +1677,9 @@ assets:
     data: null
   kind: evaluation
   current_namespace: scores
-  target_namespace: evaluation
-  migration_status: pending
+  target_namespace: scores
+  migration_status: not_planned
+  not_planned_reason: 'will NOT relocate to evaluation (data-architecture.md §11.1): kind is evaluation, but the target namespace currentai.evaluation is the static compiled release-artifact dataset (55a4311d, holding axis_* and adoption_*) and this is a scheduled USER_MODEL pipeline (dataset 48ddf155, weekly cron 0 4 * * 1). OSO dataset type is immutable, so a scheduled model cannot be hosted in the static evaluation dataset — the same wall the entities-to-catalog move hit, platform-verified on the symmetric catalog case 2026-08-28. Decision 2026-08-28 (Phase 5): the scoring pipeline stays in its own USER_MODEL namespace `scores`; evaluation remains the static release-artifact layer. Not a namespace migration.'
   authority: repo
   population: long_tail
   release_path: false
@@ -1712,8 +1719,9 @@ assets:
     data: null
   kind: evaluation
   current_namespace: scores
-  target_namespace: evaluation
-  migration_status: pending
+  target_namespace: scores
+  migration_status: not_planned
+  not_planned_reason: 'will NOT relocate to evaluation (data-architecture.md §11.1): kind is evaluation, but the target namespace currentai.evaluation is the static compiled release-artifact dataset (55a4311d, holding axis_* and adoption_*) and this is a scheduled USER_MODEL pipeline (dataset 48ddf155, weekly cron 0 4 * * 1). OSO dataset type is immutable, so a scheduled model cannot be hosted in the static evaluation dataset — the same wall the entities-to-catalog move hit, platform-verified on the symmetric catalog case 2026-08-28. Decision 2026-08-28 (Phase 5): the scoring pipeline stays in its own USER_MODEL namespace `scores`; evaluation remains the static release-artifact layer. Not a namespace migration.'
   authority: repo
   population: long_tail
   release_path: false
@@ -1753,8 +1761,9 @@ assets:
   table: currentai.scores.investment_ranking
   kind: evaluation
   current_namespace: scores
-  target_namespace: evaluation
-  migration_status: pending
+  target_namespace: scores
+  migration_status: not_planned
+  not_planned_reason: 'will NOT relocate to evaluation (data-architecture.md §11.1): kind is evaluation, but the target namespace currentai.evaluation is the static compiled release-artifact dataset (55a4311d, holding axis_* and adoption_*) and this is a scheduled USER_MODEL pipeline (dataset 48ddf155, weekly cron 0 4 * * 1). OSO dataset type is immutable, so a scheduled model cannot be hosted in the static evaluation dataset — the same wall the entities-to-catalog move hit, platform-verified on the symmetric catalog case 2026-08-28. Decision 2026-08-28 (Phase 5): the scoring pipeline stays in its own USER_MODEL namespace `scores`; evaluation remains the static release-artifact layer. Not a namespace migration.'
   authority: platform
   population: long_tail
   release_path: false
@@ -1890,8 +1899,9 @@ assets:
     data: null
   kind: evaluation
   current_namespace: scores
-  target_namespace: evaluation
-  migration_status: pending
+  target_namespace: scores
+  migration_status: not_planned
+  not_planned_reason: 'will NOT relocate to evaluation (data-architecture.md §11.1): kind is evaluation, but the target namespace currentai.evaluation is the static compiled release-artifact dataset (55a4311d, holding axis_* and adoption_*) and this is a scheduled USER_MODEL pipeline (dataset 48ddf155, weekly cron 0 4 * * 1). OSO dataset type is immutable, so a scheduled model cannot be hosted in the static evaluation dataset — the same wall the entities-to-catalog move hit, platform-verified on the symmetric catalog case 2026-08-28. Decision 2026-08-28 (Phase 5): the scoring pipeline stays in its own USER_MODEL namespace `scores`; evaluation remains the static release-artifact layer. Not a namespace migration.'
   authority: repo
   population: long_tail
   release_path: false
@@ -1928,8 +1938,9 @@ assets:
     data: null
   kind: evaluation
   current_namespace: scores
-  target_namespace: evaluation
-  migration_status: pending
+  target_namespace: scores
+  migration_status: not_planned
+  not_planned_reason: 'will NOT relocate to evaluation (data-architecture.md §11.1): kind is evaluation, but the target namespace currentai.evaluation is the static compiled release-artifact dataset (55a4311d, holding axis_* and adoption_*) and this is a scheduled USER_MODEL pipeline (dataset 48ddf155, weekly cron 0 4 * * 1). OSO dataset type is immutable, so a scheduled model cannot be hosted in the static evaluation dataset — the same wall the entities-to-catalog move hit, platform-verified on the symmetric catalog case 2026-08-28. Decision 2026-08-28 (Phase 5): the scoring pipeline stays in its own USER_MODEL namespace `scores`; evaluation remains the static release-artifact layer. Not a namespace migration.'
   authority: repo
   population: long_tail
   release_path: false
@@ -1975,8 +1986,9 @@ assets:
     data: null
   kind: evaluation
   current_namespace: scores
-  target_namespace: evaluation
-  migration_status: pending
+  target_namespace: scores
+  migration_status: not_planned
+  not_planned_reason: 'will NOT relocate to evaluation (data-architecture.md §11.1): kind is evaluation, but the target namespace currentai.evaluation is the static compiled release-artifact dataset (55a4311d, holding axis_* and adoption_*) and this is a scheduled USER_MODEL pipeline (dataset 48ddf155, weekly cron 0 4 * * 1). OSO dataset type is immutable, so a scheduled model cannot be hosted in the static evaluation dataset — the same wall the entities-to-catalog move hit, platform-verified on the symmetric catalog case 2026-08-28. Decision 2026-08-28 (Phase 5): the scoring pipeline stays in its own USER_MODEL namespace `scores`; evaluation remains the static release-artifact layer. Not a namespace migration.'
   authority: repo
   population: long_tail
   release_path: false
@@ -2022,8 +2034,9 @@ assets:
     data: null
   kind: evaluation
   current_namespace: scores
-  target_namespace: evaluation
-  migration_status: pending
+  target_namespace: scores
+  migration_status: not_planned
+  not_planned_reason: 'will NOT relocate to evaluation (data-architecture.md §11.1): kind is evaluation, but the target namespace currentai.evaluation is the static compiled release-artifact dataset (55a4311d, holding axis_* and adoption_*) and this is a scheduled USER_MODEL pipeline (dataset 48ddf155, weekly cron 0 4 * * 1). OSO dataset type is immutable, so a scheduled model cannot be hosted in the static evaluation dataset — the same wall the entities-to-catalog move hit, platform-verified on the symmetric catalog case 2026-08-28. Decision 2026-08-28 (Phase 5): the scoring pipeline stays in its own USER_MODEL namespace `scores`; evaluation remains the static release-artifact layer. Not a namespace migration.'
   authority: repo
   population: gap_map
   release_path: false
@@ -2056,8 +2069,9 @@ assets:
   table: currentai.scores.taxonomy
   kind: evaluation
   current_namespace: scores
-  target_namespace: evaluation
-  migration_status: pending
+  target_namespace: scores
+  migration_status: not_planned
+  not_planned_reason: 'will NOT relocate to evaluation (data-architecture.md §11.1): kind is evaluation, but the target namespace currentai.evaluation is the static compiled release-artifact dataset (55a4311d, holding axis_* and adoption_*) and this is a scheduled USER_MODEL pipeline (dataset 48ddf155, weekly cron 0 4 * * 1). OSO dataset type is immutable, so a scheduled model cannot be hosted in the static evaluation dataset — the same wall the entities-to-catalog move hit, platform-verified on the symmetric catalog case 2026-08-28. Decision 2026-08-28 (Phase 5): the scoring pipeline stays in its own USER_MODEL namespace `scores`; evaluation remains the static release-artifact layer. Not a namespace migration.'
   authority: platform
   population: long_tail
   release_path: false

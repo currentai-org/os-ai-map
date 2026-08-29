@@ -98,11 +98,13 @@ def test_kind_and_target_namespace_agree(inventory):
 
     - observations legitimately live in signal_* datasets per section 4.3; and
     - a `migration_status: not_planned` asset is deliberately NOT migrated — it stays in its
-      current namespace (target == current) and retires or is superseded in place, so its
-      target need not equal its `kind`. This is the explicit retirement-in-place state, e.g. the
-      three `signal_*.product_adoption` compatibility/staged tables and the Phase 7 openness
-      chain (`scores.openness_facts`/`openness_computed`, `evidence.product_evidence`): all are
-      `kind: evaluation` but are retired, never relocated to the `evaluation` namespace.
+      current namespace (target == current) and retires, is superseded, or is physically blocked
+      in place, so its target need not equal its `kind`. This covers three families: the three
+      `signal_*.product_adoption` compatibility/staged tables and the Phase 7 openness chain
+      (`scores.openness_facts`/`openness_computed`, `evidence.product_evidence`), all `kind:
+      evaluation` but retired not relocated; and the scheduled `entities.*` (`kind: catalog`) and
+      `scores.*` (`kind: evaluation`) pipelines, which stay put because their static target
+      datasets cannot host a scheduled `USER_MODEL` model (data-architecture.md §11.1, #393).
     """
     for asset in inventory:
         kind, target = asset["kind"], asset["target_namespace"]
@@ -118,9 +120,10 @@ def test_migration_status_is_consistent(inventory):
     """Namespaces must AGREE when the asset is not going to move -- `complete` (already moved)
     or `not_planned` (deliberately staying put / retiring in place) -- and must DIFFER while a
     move is still outstanding (`pending`, `in_progress`). Requiring agreement outright would
-    reject every legacy entities/events/metrics/scores and evidence asset still awaiting its
-    move, which is what the migration is for; permitting it for `pending` would let a false
-    "already there" slip through."""
+    reject every `events`/`metrics`/`catalog.*` asset still awaiting its move, which is what the
+    migration is for; permitting it for `pending` would let a false "already there" slip through.
+    (`entities.*` and `scores.*` are no longer awaiting a move — they are `not_planned`, blocked by
+    the dataset-type constraint, so they are in the settled branch below.)"""
     settled = {"complete", "not_planned"}
     for asset in inventory:
         same = asset["current_namespace"] == asset["target_namespace"]
@@ -136,10 +139,14 @@ def test_source_collectors_are_not_reclassified_to_observations(inventory):
     """Source-specific ingestion stays in `signal_*` per `data-architecture.md` §4.3: a
     `kind: observations` table in a `signal_*` namespace is permanently legitimate, so a
     source collector must not be relocated to the `observations` namespace on the strength
-    of its `kind` alone. §11.6 authorizes `entities->catalog`, `events`/`metrics->observations`
-    and `scores->evaluation` -- never `signal_*->observations`. (A Phase 5 pilot that did this
-    to `signal_semanticscholar.paper_citations` was rolled back; this gate keeps the mistake
-    from recurring.)
+    of its `kind` alone. The only relocation Phase 5 still sanctions is the
+    `catalog.*->registry` ownership transitions -- never `signal_*->observations`. (All the
+    scheduled long-tail pipelines stay put under `not_planned`: `entities->catalog` and
+    `scores->evaluation` were cancelled by the dataset-type wall, and `events`/`metrics->observations`
+    by the dataset-schedule wall; #393. Phase 2B owns only the observations refresh-model question,
+    and any later relocation would require a new architecture decision.) A Phase 5 pilot that relocated
+    `signal_semanticscholar.paper_citations` to `observations` was rolled back; this gate keeps
+    the mistake from recurring.
 
     The rule is simple and complete: every `kind: observations` asset currently in a
     `signal_*` namespace must target that same namespace. The `kind: observations` predicate is
@@ -163,12 +170,13 @@ def test_source_collectors_are_not_reclassified_to_observations(inventory):
 
 
 def test_not_planned_assets_stay_put_with_a_documented_disposition(inventory):
-    """`migration_status: not_planned` is the explicit "this asset does not migrate namespace"
-    state. It must keep the asset in its current namespace (target == current, no false
-    relocation claim) and document WHY it will not move -- a `replacement` it is superseded by,
-    a `retirement_reason`, or a `not_planned_reason`. This is what lets the six Phase-5
-    corrections drop out of the `pending` move set without pretending they will land in
-    `evaluation`."""
+    """`migration_status: not_planned` means "no namespace move under the currently accepted
+    architecture" (§11.5). It must keep the asset in its current namespace (target == current, no
+    false relocation claim) and document WHY it will not move -- a `replacement` it is superseded by,
+    a `retirement_reason`, or a `not_planned_reason` naming an accepted cause (retirement/supersession,
+    immutable dataset-type incompatibility, or dataset-schedule isolation). This is what lets the
+    scheduled long-tail pipelines and the earlier corrections drop out of the `pending` move set
+    without pretending they will relocate."""
     for asset in inventory:
         if asset["migration_status"] != "not_planned":
             continue
@@ -177,7 +185,8 @@ def test_not_planned_assets_stay_put_with_a_documented_disposition(inventory):
             f"{asset['target_namespace']!r} (no relocation)")
         assert (asset.get("not_planned_reason") or asset.get("replacement")
                 or asset.get("retirement_reason")), (
-            f"{asset['id']}: not_planned requires a documented retirement/replacement disposition")
+            f"{asset['id']}: not_planned requires a documented not-planned disposition "
+            f"(retirement/supersession, dataset-type, or dataset-schedule constraint)")
 
 
 def test_signal_product_adoption_tables_stay_put_and_deployed_ones_are_compat(inventory):
@@ -237,6 +246,74 @@ def test_phase7_openness_chain_stays_put_until_retirement(inventory):
         assert asset["status"] == "active", (
             f"{asset['id']}: stays active until Phase 7 retirement, not {asset['status']!r}")
     assert seen == chain, f"missing openness-chain entries: {sorted(chain - seen)}"
+
+
+def test_scheduled_pipelines_do_not_relocate_into_static_namespaces(inventory):
+    """The `entities.*` (kind: catalog) and analytical `scores.*` (kind: evaluation) tables are
+    scheduled USER_MODEL pipelines. Their `kind` target namespaces -- `catalog` and `evaluation` --
+    are static datasets (STATIC_MODEL / compiled release artifacts), and an OSO dataset's type is
+    immutable, so a scheduled model cannot be hosted there (data-architecture.md §11.1, verified on
+    the catalog case 2026-08-28, #393). So each is `migration_status: not_planned`, keeps its
+    current namespace (never targeting `catalog`/`evaluation`), stays `active`, and documents the
+    constraint in `not_planned_reason`. Its `kind` is unchanged -- the logical model is intact; this
+    is the not_planned exception to `target_namespace == kind`.
+
+    The eight `scores.*` here are the analytical chain (`dependency_graph`, `fragility`,
+    `investment_ranking`, `ossd_coverage`, `project_summary`, `repos_summary`, `stack_contributors`,
+    `taxonomy`) -- NOT the openness pair, which is a separate Phase 7 retirement gate above.
+    """
+    entities = {f"currentai.entities.{t}" for t in ("repos", "models", "packages", "projects")}
+    scores = {f"currentai.scores.{t}" for t in (
+        "dependency_graph", "fragility", "investment_ranking", "ossd_coverage",
+        "project_summary", "repos_summary", "stack_contributors", "taxonomy")}
+    blocked = entities | scores
+    seen = set()
+    for asset in inventory:
+        if asset["table"] not in blocked:
+            continue
+        seen.add(asset["table"])
+        static_ns = "catalog" if asset["table"] in entities else "evaluation"
+        assert asset["migration_status"] == "not_planned", (
+            f"{asset['id']}: a scheduled pipeline into a static namespace must be not_planned, "
+            f"not {asset['migration_status']!r}")
+        assert asset["target_namespace"] == asset["current_namespace"], (
+            f"{asset['id']}: stays put -- target must equal current, not {asset['target_namespace']!r}")
+        assert asset["target_namespace"] != static_ns, (
+            f"{asset['id']}: must not target the static namespace {static_ns!r}")
+        assert asset.get("not_planned_reason"), (
+            f"{asset['id']}: must document the dataset-type constraint in not_planned_reason")
+        assert asset["status"] == "active", (
+            f"{asset['id']}: a live pipeline stays active, not {asset['status']!r}")
+    assert seen == blocked, f"missing dataset-type-blocked entries: {sorted(blocked - seen)}"
+
+
+def test_events_metrics_deferred_not_folded_into_observations(inventory):
+    """`events.github_events` and `metrics.daily` are `kind: observations` and the `observations`
+    dataset is type-compatible (USER_MODEL), but an OSO schedule is a dataset-level sweep and the
+    observations dataset is currently manual (product_adoption_current runs MANUAL under the §18
+    baseline discipline). Folding these two independently-scheduled pipelines in would force a sweep
+    cron onto that §18-sensitive dataset, so they STAY PUT under `migration_status: not_planned`,
+    kept in their own namespaces, never targeting `observations`, still `active`, with the constraint
+    documented (data-architecture.md §11.1, #393). Phase 2B owns only the observations refresh-model
+    question; any later relocation would require a new architecture decision, not an automatic
+    follow-on."""
+    deferred = {"currentai.events.github_events", "currentai.metrics.daily"}
+    seen = set()
+    for asset in inventory:
+        if asset["table"] not in deferred:
+            continue
+        seen.add(asset["table"])
+        assert asset["migration_status"] == "not_planned", (
+            f"{asset['id']}: deferred fold must be not_planned, not {asset['migration_status']!r}")
+        assert asset["current_namespace"] == asset["target_namespace"], (
+            f"{asset['id']}: stays put -- target must equal current, not {asset['target_namespace']!r}")
+        assert asset["target_namespace"] != "observations", (
+            f"{asset['id']}: must not target observations while the fold is deferred")
+        assert asset.get("not_planned_reason"), (
+            f"{asset['id']}: must document the schedule constraint in not_planned_reason")
+        assert asset["status"] == "active", (
+            f"{asset['id']}: a live pipeline stays active, not {asset['status']!r}")
+    assert seen == deferred, f"missing deferred events/metrics entries: {sorted(deferred - seen)}"
 
 
 # --- 3: mirror provenance ---------------------------------------------------------

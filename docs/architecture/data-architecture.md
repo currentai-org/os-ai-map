@@ -1392,9 +1392,15 @@ warehouse/
   assets.yaml                          the only registry
 
   models/
-    catalog/
-      openllm_leaderboard.py             renamed in Phase 5
-      hf_model_repo_links.py             renamed in Phase 5
+    catalog/                             static reference (STATIC_MODEL dataset)
+      model_benchmarks.py                Open LLM Leaderboard; rename WITHDRAWN (#393)
+      model_repos.py                     HF-to-GitHub links; rename WITHDRAWN (#393)
+    entities/                            kind: catalog, but a scheduled USER_MODEL dataset — stays put (#393)
+      repos.sql projects.sql packages.sql models.sql
+    events/                              kind: observations, own USER_MODEL sweep — deferred, stays put (#393)
+      github_events.sql
+    metrics/                             kind: observations, own USER_MODEL sweep — deferred, stays put (#393)
+      daily.sql
     observations/
       source_runs                        run contract; a Python control-plane snapshot now
                                          (build/snapshot_source_runs.py), a live-emitter model later (#355)
@@ -1406,6 +1412,9 @@ warehouse/
       axis_facts.sql
       axis_rule_matches.sql
       axis_results.sql
+    scores/                              kind: evaluation, but a scheduled USER_MODEL dataset — stays put (#393)
+      dependency_graph.sql fragility.sql investment_ranking.sql ossd_coverage.sql
+      project_summary.sql repos_summary.sql stack_contributors.sql taxonomy.sql
     releases/
       manifest.sql
       product_axis_scores.sql
@@ -1432,8 +1441,8 @@ warehouse/
 
   data/
     catalog/
-      openllm_leaderboard.csv            renamed in Phase 5
-      hf_model_repo_links.csv            renamed in Phase 5
+      model_benchmarks.csv               rename WITHDRAWN (#393)
+      model_repos.csv                    rename WITHDRAWN (#393)
       foundation_model_repos.csv
       top_models.csv                     fetcher interface, not an orphan
       tracked_models.csv                 fetcher interface, not an orphan
@@ -1446,31 +1455,69 @@ showed it as a `.sql` file, which contradicts 4.3 — a model that selects from 
 tables produces a different result on every run, which is the opposite of an immutable snapshot.
 Add a presentation view only if something actually needs one.
 
-#### The long-tail chain is retained, and folds into the same five namespaces
+#### The long-tail chain is retained; its tables map onto the five KINDS, not onto five datasets
 
 The `entities`, `events`, `metrics` and analytical `scores` tables are kept. `oss-ai-trends`
 and `long-tail-explorer` are both tagged `Live` on the platform, so retiring the chain would
 break shipped deliverables.
 
-Retaining it does NOT require a sixth kind. Checked against actual grains, every table maps
-onto the five namespaces of section 4 — the earlier `analysis` proposal was accommodating
-legacy naming, not a real semantic gap:
+Retaining it does NOT require a sixth **kind**. Checked against actual grains, every table maps
+onto one of the five semantic kinds of section 4 — the earlier `analysis` proposal was
+accommodating legacy naming, not a real semantic gap:
 
-| Today | Target | Why |
+| Today | Kind | Why |
 |---|---|---|
 | `entities.repos`, `.projects`, `.packages`, `.models` | `catalog` | Discovered from the goodailist roster, not curated. `long-tail-explorer` calls them "the discovery set not yet scored in the gap map", which is AD-3's definition of catalog. |
 | `events.github_events` | `observations` | Grain `(github_id, repo, event_type, time, event_count)` — artifact-level measurement. |
 | `metrics.daily` | `observations` | Grain `(repo, github_id, day, metric, value)` — already long-format `metric`/`value`, which is nearly the corrected 4.3 shape. |
 | `scores.*` (8 tables) | `evaluation` | Derived from catalog and observations. |
 
-So the fully-migrated `models/` also contains:
+**Kind is not dataset.** The five kinds are the *semantic* layering; they map onto **more than
+five physical OSO datasets**, because a dataset carries one immutable **type** and one **sweep
+schedule**, and tables of the same kind but different type or schedule cannot share one. So a
+kind is realized across as many datasets as its type/schedule partitions require — `kind:
+observations`, for example, spans the manual `observations` dataset, the `events` sweep, and the
+`metrics` sweep. **Physical placement is therefore a separate question from kind, and for the
+scheduled pipelines the two come apart (correction 2026-08-28, #393).** An OSO namespace *is* a
+dataset, and a dataset's type — `STATIC_MODEL` or
+`USER_MODEL` — is fixed at creation and cannot be changed. `catalog` (`046ee25e`) and `evaluation`
+(`55a4311d`, the compiled release-artifact dataset) are **static**; `entities.*` (`663132ed`, cron
+`0 4 * * 0`) and `scores.*` (`48ddf155`, cron `0 4 * * 1`) are **scheduled `USER_MODEL`** pipelines.
+A scheduled model cannot be hosted in a static dataset (platform-verified on the catalog case
+2026-08-28: a create/revision/release into `catalog` succeeded but the run request was rejected —
+dataset type `STATIC_MODEL`, a scheduled model needs `USER_MODEL`). So `entities.*` and `scores.*`
+**keep their current namespaces**: their `kind` stays `catalog` / `evaluation`, but their
+`target_namespace` equals `current_namespace` under the `migration_status: not_planned` exception to
+`target_namespace == kind` (§11.5 rule 2). `catalog` and `evaluation` remain the static layers they
+are; the scheduled discovery and scoring pipelines remain their own `USER_MODEL` datasets.
+
+**The same constraint applies to schedule, not just type (#393).** `events`/`metrics` are `kind:
+observations` and `observations` is `USER_MODEL` (type-compatible), so at first they looked like clean
+moves — but an OSO schedule is a **dataset-level sweep** and a model cron only throttles it, and the
+`observations` dataset is currently manual (`cron null`; `product_adoption_current` runs `MANUAL`
+under the §18 baseline discipline). `events` (`0 5 * * 0`) and `metrics` (`0 6 * * 0`) carry distinct
+dataset crons; folding them into `observations` would force a sweep cron on that dataset that also
+swept the deliberately-manual `product_adoption_current`. So `events`/`metrics` are **deferred**
+(`not_planned`, kept in their own datasets). Whether the `observations` dataset ever becomes swept is
+a **Phase-2B refresh-model** question (2B owns that decision, blocked on OSO incremental support); it
+does **not** carry a scheduled follow-on move — a later relocation of `events`/`metrics` would require
+a **new explicit architecture decision** re-opening their `not_planned` disposition.
+The general rule: OSO binds **one type and one sweep schedule per dataset**, so an independently-typed
+or independently-scheduled pipeline cannot fold into a shared namespace. The only tables that
+physically relocate in Phase 5 are the curator-controlled `catalog.* → registry` ownership
+transitions (static → compiled). The SQL for the staying pipelines keeps its `models/{entities,
+scores,events,metrics}/*` paths:
 
 ```text
-    catalog/
+    entities/                       # kind: catalog, USER_MODEL dataset, stays put
       repos.sql projects.sql packages.sql models.sql
-    observations/
-      github_events.sql daily.sql
-    evaluation/
+    events/                         # kind: observations, own USER_MODEL sweep — deferred, stays put
+      github_events.sql
+    metrics/                        # kind: observations, own USER_MODEL sweep — deferred, stays put
+      daily.sql
+    observations/                   # USER_MODEL, currently manual (product_adoption_current)
+      product_adoption_current.sql
+    scores/                         # kind: evaluation, USER_MODEL dataset, stays put
       dependency_graph.sql fragility.sql ossd_coverage.sql
       project_summary.sql repos_summary.sql stack_contributors.sql
 ```
@@ -1589,12 +1636,14 @@ registries this file replaces.
     data: null
   kind: evaluation                # registry | catalog | observations | evaluation | releases
   current_namespace: scores       # where the table lives today
-  target_namespace: evaluation    # where the architecture puts it (== current_namespace when the
+  target_namespace: scores        # where the architecture puts it (== current_namespace when the
                                   #   asset does not move: migration_status complete or not_planned)
-  migration_status: pending       # pending | in_progress | complete | not_planned
-  # not_planned_reason: ...       # REQUIRED when migration_status: not_planned — the documented
-                                  #   retirement/supersession reason the asset stays put (a
-                                  #   `replacement` or `retirement_reason` also satisfies it)
+  migration_status: not_planned   # pending | in_progress | complete | not_planned
+  not_planned_reason: 'will NOT relocate to evaluation (§11.1): kind is evaluation, but this is a
+    scheduled USER_MODEL pipeline and the evaluation dataset is static with an immutable type, so it
+    stays in scores (#393).'      # REQUIRED when migration_status: not_planned — the documented
+                                  #   reason the asset stays put (a `replacement` or
+                                  #   `retirement_reason` also satisfies it)
   authority: repo                 # repo | platform | external
   grain: one row per (developer, repo), trailing 365d COMMIT_CODE
   reads:                          # DERIVED
@@ -1758,7 +1807,7 @@ The tables outside those datasets are separate analytical products that the gap-
 neither feeds nor reads — `state_of_os_ai`, `ai_demand_curve`, `aiid`, `hf_live`, `openrouter_snapshot`,
 `datasette_plugins`, `linkedin_sources`, the archived `stack_map` v1 dataset, and four
 `catalog` tables with no in-repo consumer. They stay on the platform and stay out of
-`assets.yaml`. Keeping them out is what allows `kind` to remain the five namespaces of
+`assets.yaml`. Keeping them out is what allows `kind` to remain the five semantic kinds of
 section 4 with no sixth catch-all.
 
 The closure is mechanical, so it must be recomputed rather than assumed. Three tables that
@@ -1914,16 +1963,28 @@ exist.
    `pending` and `in_progress` require them to **differ** (a still-outstanding move that names a
    migration phase or an open issue). The two exceptions to `target_namespace == kind` are:
    `kind: observations` in a `signal_*` namespace (permanently legitimate per 4.3); and
-   `migration_status: not_planned`, the explicit **retirement/supersession-in-place** state — the
-   asset is retired or superseded where it lives rather than relocated to its `kind`, so a
-   `not_planned` asset keeps `target_namespace == current_namespace` regardless of `kind` and
-   **must carry a `not_planned_reason`** (or an equivalent `replacement`/`retirement_reason`)
-   documenting why it will not move. The three `signal_*.product_adoption` compatibility/staged
-   tables and the Phase 7 openness chain (`scores.openness_facts`/`openness_computed`,
-   `evidence.product_evidence`) are `kind: evaluation` but `not_planned`: retired in place, never
-   relocated to the `evaluation` namespace. An earlier draft required `kind` to equal the table's
-   namespace outright, which would have rejected every legacy `entities`, `events`, `metrics`,
-   `scores` and `evidence` asset — and this section's own worked example.
+   `migration_status: not_planned`, meaning **no namespace move under the currently accepted
+   architecture** — the asset keeps `target_namespace == current_namespace` regardless of `kind` and
+   **must carry a `not_planned_reason`** (or an equivalent `replacement`/`retirement_reason`) naming
+   which of the accepted reasons applies:
+   - **retirement or supersession in place** — the asset is retired or superseded where it lives
+     rather than relocated to its `kind` (the three `signal_*.product_adoption` compatibility/staged
+     tables; the Phase 7 openness chain `scores.openness_facts`/`openness_computed`,
+     `evidence.product_evidence` — all `kind: evaluation`, retired in place, never relocated to the
+     `evaluation` namespace);
+   - **immutable dataset-type incompatibility** — a scheduled `USER_MODEL` pipeline whose `kind`'s
+     dataset is `STATIC_MODEL` (or vice versa), which the platform cannot change (`entities.*` →
+     `catalog`, `scores.*` → `evaluation`, #393);
+   - **dataset-schedule isolation** — a pipeline with its own sweep schedule whose `kind`'s dataset
+     carries a different (or no) sweep, so co-hosting would force an unwanted schedule change
+     (`events.github_events`, `metrics.daily` → `observations`, #393).
+
+   A `not_planned` disposition is not permanent by fiat: any later move would require a **new explicit
+   architecture decision** re-opening it, not an automatic follow-on. An earlier draft required
+   `kind` to equal the table's namespace outright, which would have rejected every legacy `entities`,
+   `events`, `metrics`, `scores` and `evidence` asset — and this section's own worked example. An
+   earlier revision of this rule scoped `not_planned` to retirement/supersession only, before the
+   dataset type/schedule constraints were discovered (#393).
 2b. Release-completeness and projection-parity gates apply only to assets with
    `release_path: true`. Every asset declares `population`; an asset with `release_path: true`
    and `population: long_tail` is a contradiction and fails.
@@ -1966,18 +2027,18 @@ repository or the platform already answered:
 | Is `registry.tail_products` misfiled? | No, correctly in `registry`. The platform table is absent because it is empty. | `publish_registry.py`: "94 bytes of header on a push where every tail row was promoted or rejected" — promotion and rejection are curator acts |
 | May a `held` axis retain its value? | Yes, with the hold reason and date. | `verification_queue.yaml`: "held at 3" |
 | Is a dated null `held` or `not_applicable`? | Neither — it is `confirmed`. | `verification_queue.yaml`: "a null answer that somebody looked for and did not find is a confirmed axis" |
-| Is the long-tail chain retired? | No. Retained and migrated into the five namespaces. | `oss-ai-trends` and `long-tail-explorer` are both tagged `Live` on the platform |
+| Is the long-tail chain retired? | No. Retained and classified by the five kinds; its scheduled tables keep their own datasets rather than migrating namespace (type/schedule isolation, #393). | `oss-ai-trends` and `long-tail-explorer` are both tagged `Live` on the platform |
 | Does the platform support release-scoped tables? | No. Each static-model publish replaces in place. | No version or revision field; `registry.product_scores` has `createdAt == updatedAt` |
 
 Resolved by decision:
 
 | Decision | Resolution | Lands in |
 |---|---|---|
-| Sixth `kind` for the long-tail chain | Not needed. `entities` to `catalog`, `events`/`metrics` to `observations`, `scores` to `evaluation` | Recorded Phase 0, moved Phase 5 |
+| Sixth `kind` for the long-tail chain | Not needed. Kinds: `entities` = `catalog`, `events`/`metrics` = `observations`, `scores` = `evaluation`. **Physical move (2026-08-28, #393): none of the scheduled pipelines relocate.** `entities.*`/`scores.*` hit the type wall (static target dataset can't host a scheduled `USER_MODEL`); `events`/`metrics` hit the schedule wall (folding into the manual `observations` dataset would force a sweep onto the §18 `product_adoption_current`). All are `not_planned` in their own namespaces (§11.1). Phase 2B owns only the observations refresh-model question; any relocation would need a new architecture decision. | Recorded Phase 0; scheduled pipelines stay put |
 | Gates over two populations | Key on `release_path`, not namespace | Section 7 |
 | Publication atomicity | `releases.*` atomic from birth; compatibility outputs documented non-atomic | Sections 12.2, 18 |
-| `catalog.model_benchmarks` -> `openllm_leaderboard` | Do it, with the `entities` to `catalog` move that creates the collision | Phase 5 |
-| `catalog.model_repos` -> `hf_model_repo_links` | Same | Phase 5 |
+| `catalog.model_benchmarks` -> `openllm_leaderboard` | **WITHDRAWN (2026-08-28, #393).** Its only trigger was the `catalog.models` name collision the `entities → catalog` move would have created; that move is cancelled (§11.1 dataset-type constraint), so there is no collision to resolve and no PR may exist purely to rename a deployed table. `catalog.model_benchmarks` keeps its name. | no action |
+| `catalog.model_repos` -> `hf_model_repo_links` | Same — WITHDRAWN with the collision that triggered it. `catalog.model_repos` keeps its name. | no action |
 | `repo_state` / `hub_state` -> `artifact_state` | Do it, with the observations adapters that repoint the same SQL | Phase 2 |
 | Untracked notebook audit | Added to Phase 0. Sixteen of twenty notebooks are not in the repository | Phase 0 |
 | `catalog.stack_map` archive note | WITHDRAWN. The note sits on `stack_map.*`, not `catalog.stack_map`, and is accurate about deployed models. Two different tables were conflated | no action |
@@ -2151,8 +2212,14 @@ Before any platform mutation:
 
 The architecture migration is complete when:
 
-- every active data asset has one named semantic role, owner, grain, and refresh mechanism;
-- curated declarations live in `registry`, discovered inventory in `catalog`, measurements in `observations`, derived candidates and trace in `evaluation`, and valid snapshots in `releases`;
+- every active data asset has one named semantic **kind** (role), owner, grain, and refresh mechanism;
+- every asset is classified by the correct kind — curated declarations `registry`, discovered
+  inventory `catalog`, measurements `observations`, derived candidates and trace `evaluation`, valid
+  snapshots `releases` — and physically placed in a dataset compatible with its type and schedule.
+  A kind maps onto **one or more** physical OSO datasets (a dataset carries one immutable type and one
+  sweep schedule), so a scheduled or differently-typed pipeline of a given kind stays in its own
+  dataset rather than being forced into a shared namespace; the migration requires correct-kind
+  classification and type/schedule-valid placement, **not** one dataset per kind (§11.1, #393);
 - adoption observations retain history and reconcile through route-aware rules;
 - fresh authoritative adoption disagreement cannot enter a release silently;
 - fallback and cross-instrument differences are represented honestly rather than forced into equality;
