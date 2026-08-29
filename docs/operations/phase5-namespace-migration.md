@@ -21,12 +21,18 @@ Two scope corrections have since reshaped the census:
   source-specific ingestion in `signal_*`. The misfiled `target_namespace: observations` values were
   corrected to stay put, and the gate `test_source_collectors_are_not_reclassified_to_observations`
   now protects source collectors.
-- **2026-08-28 (dataset-type constraint, #393):** the planned `entities.*→catalog` (4) and
-  `scores.*→evaluation` (8) relocations are **cancelled** — see the dataset-type section below — and
-  those 12 scheduled models are now `not_planned` in their own namespaces. This dropped `pending`
-  19→7.
+- **2026-08-28 (dataset constraints, #393):** the planned `entities.*→catalog` (4) and
+  `scores.*→evaluation` (8) relocations are **cancelled** (type wall), and the `events`/`metrics`
+  →`observations` fold (2) is **deferred** to Phase 2B (schedule wall) — see the constraint section
+  below. All 14 scheduled models are now `not_planned` in their own namespaces, dropping `pending`
+  19→5.
 
-## The dataset-type constraint — why `entities.*` and `scores.*` do not move
+## The dataset constraints — why the scheduled pipelines do not move
+
+Two facets of the same rule (**one type and one sweep schedule per dataset**) stop the scheduled
+pipelines from folding into shared namespaces.
+
+### Type — why `entities.*` and `scores.*` do not move
 
 An OSO **namespace is a dataset**, and a dataset's type — `STATIC_MODEL` (upload / compiled) or
 `USER_MODEL` (scheduled SQL) — is **fixed at creation and immutable** (there is no `type` field to
@@ -58,32 +64,55 @@ openllm_leaderboard` and `catalog.model_repos → hf_model_repo_links` existed o
 there is no collision, and §11.6 forbids a PR that exists purely to rename a deployed table. Both keep
 their current names (recorded WITHDRAWN in §11.6).
 
+### Schedule — why `events`/`metrics` do not move (deferred)
+
+`events`/`metrics` are `kind: observations` and `observations` is `USER_MODEL`, so the **type** is
+compatible — they first looked like clean moves. But an OSO **schedule is a dataset-level sweep**; a
+model's cron only *throttles* which sweeps it is eligible for (`""` = every sweep), it is not an
+independent trigger (platform-verified 2026-08-28 via `updateDataModelSchedule`). The `observations`
+dataset (`c507c9f9`) is currently **manual** — `cron null`, and its `product_adoption_current` runs
+`MANUAL` under the §18 baseline discipline (every run overwrites current state; the frozen baseline
+must never be disturbed). `events` (`0 5 * * 0`) and `metrics` (`0 6 * * 0`) carry distinct dataset
+crons; folding them into `observations` would force a sweep cron on that dataset that also swept
+`product_adoption_current` (and the 228M-row pypi orphan) — a behavior change to a §18-sensitive
+model. Giving `observations` a sweep and throttling the manual models is possible, but it is a
+decision about the observations refresh model that belongs with **Phase 2B** (incremental history,
+currently blocked on OSO), not a mechanical Phase-5 move. So `events`/`metrics` are **deferred**:
+`not_planned`, kept in their own datasets, revisited when 2B settles that model.
+
+**Emerging pattern.** Type and schedule are both per-dataset and (type) immutable, so an
+independently-typed or independently-scheduled pipeline (`entities`, `scores`, `events`, `metrics`)
+cannot fold into a shared namespace. Phase 5's real remaining work is therefore the compiled
+`catalog.* → registry` ownership transitions; the live pipelines keep their own datasets.
+
 ## The pending assets, classified
 
 Derived at write time from `assets.yaml` via `build.assets` (not hand-listed). `pending` now holds
-**7** rows; the 12 dataset-type-blocked tables and the earlier 6 corrections are `not_planned`.
+**5** rows; the 14 constraint-blocked tables and the earlier 6 corrections are `not_planned`.
 
 ### A. Sanctioned, type-compatible relocations
 
 | Move | Tables | Authority |
 |---|---|---|
-| `events.github_events` → `observations` (1) | `github_events` | §11.1 — artifact-level measurement grain; scheduled→scheduled `observations` |
-| `metrics.daily` → `observations` (1) | `daily` | §11.1 — already long-format `metric`/`value`; scheduled→scheduled `observations` |
 | `catalog.*` → `registry` (3) | `foundation_model_repos`, `osai_subcategory_mapping`, `taxonomy_crosswalk` | §2 — "curator-controlled and belong in `registry`"; static→compiled. **Ownership transitions, not SQL repoints — see §Registry ownership.** |
 | `catalog.pypi_downloads` → `observations` (1) | `pypi_downloads` | §2 — "a measurement". **DEFERRED — notebook-only, no scoring impact; see §Freshness.** |
 
-So of the 7 pending, **five are executable moves** (2 into `observations`, 3 registry ownership
-transitions) and **two are held** — `pypi_downloads` (deferred) and `stack_map` (decision gate, §C).
+So of the 5 pending, **three are executable moves** (the `catalog.*→registry` ownership transitions)
+and **two are held** — `pypi_downloads` (deferred) and `stack_map` (decision gate, §D).
 
-### B. `not_planned` — do not move (dataset-type constraint, 2026-08-28)
+### B. `not_planned` — do not move (type / schedule constraint, 2026-08-28)
 
-`kind` is correct; the physical target dataset cannot host a scheduled model (see the dataset-type
-section). Each stays in its current namespace with a `not_planned_reason`.
+`kind` is correct; the physical target dataset cannot host the model — either its **type** is
+immutable-and-wrong, or hosting it would force a **shared sweep schedule** on a dataset that must stay
+manual (see the dataset-type and schedule sections). Each stays in its current namespace with a
+`not_planned_reason`.
 
 | Tables | Kind | Stays in | Why |
 |---|---|---|---|
-| `entities.repos`, `.projects`, `.packages`, `.models` (4) | `catalog` | `entities` | scheduled `USER_MODEL`; `catalog` is a static dataset |
-| `scores.dependency_graph`, `.fragility`, `.investment_ranking`, `.ossd_coverage`, `.project_summary`, `.repos_summary`, `.stack_contributors`, `.taxonomy` (8) | `evaluation` | `scores` | scheduled `USER_MODEL`; `evaluation` is a static dataset |
+| `entities.repos`, `.projects`, `.packages`, `.models` (4) | `catalog` | `entities` | scheduled `USER_MODEL`; `catalog` is a static dataset (type wall) |
+| `scores.dependency_graph`, `.fragility`, `.investment_ranking`, `.ossd_coverage`, `.project_summary`, `.repos_summary`, `.stack_contributors`, `.taxonomy` (8) | `evaluation` | `scores` | scheduled `USER_MODEL`; `evaluation` is a static dataset (type wall) |
+| `events.github_events` (1) | `observations` | `events` | own weekly sweep (`0 5 * * 0`); folding into the manual `observations` dataset would force a sweep cron onto the §18 `product_adoption_current`. **Deferred** to Phase 2B (schedule wall) |
+| `metrics.daily` (1) | `observations` | `metrics` | own weekly sweep (`0 6 * * 0`); same schedule wall. **Deferred** to Phase 2B |
 
 ### C. Earlier corrections / out-of-phase retirement targets (6) — landed #392
 
@@ -173,13 +202,12 @@ windows — no history accumulation — so this stays a small, forward decision.
 
 ## Dependency order
 
-A reader must move (or be repointed) no earlier than the table it reads. With `entities.*` and
-`scores.*` staying put, the remaining moves are nearly independent:
+A reader must move (or be repointed) no earlier than the table it reads. With `entities.*`, `scores.*`,
+`events` and `metrics` all staying put, the remaining moves are independent:
 
-1. **`events`/`metrics` → `observations`** (scheduled; scheduling gate applies).
-2. **The three `catalog.*→registry` ownership transitions** (each its own larger unit).
-3. **Held:** `catalog.pypi_downloads` (deferred) and `catalog.stack_map` (decision gate) — neither
-   executes until its open question is resolved.
+1. **The three `catalog.*→registry` ownership transitions** (each its own larger unit).
+2. **Held:** `catalog.pypi_downloads` (deferred), `catalog.stack_map` (decision gate), and the
+   deferred `events`/`metrics` fold (Phase 2B) — none executes until its open question is resolved.
 
 ## Per-move execution recipe — lockstep, source-preserving (each move its own reviewed unit)
 
@@ -210,7 +238,7 @@ cut-over-in-place:
 refresh contract and **demonstrate a successful scheduled run on the target before canonical consumers
 are repointed** (step 3a). A move that silently drops a table's schedule is the Phase-1-class defect
 this gate exists to catch; `metrics.daily` and `events.github_events` are scheduled and carry this
-obligation.
+obligation **if and when their deferred fold is revisited in Phase 2B**.
 
 No editor unit performs a platform write. The create-and-verify (steps 1–2), the **deployed-reader
 repointing (3a)**, and the retirement (step 5) are maintainer runbooks authorized separately; the
@@ -223,7 +251,8 @@ editor PR is the step-4 reconciliation carrying the repository consumer changes 
 - Retiring `scores.openness_facts`, `scores.openness_computed`, and `evidence.product_evidence`
   (Phase 7 / §9.3, gated on multi-release dual-run agreement, #384).
 - Relocating `entities.*` or `scores.*` — cancelled by the dataset-type constraint; they stay in their
-  own `USER_MODEL` namespaces.
+  own `USER_MODEL` namespaces. Folding `events`/`metrics` into `observations` — deferred to Phase 2B by
+  the schedule constraint; they stay in their own datasets.
 - Any platform mutation — every unit above is an editor PR; the create-alongside, verify, and retire
   steps are maintainer runbooks authorized separately.
 

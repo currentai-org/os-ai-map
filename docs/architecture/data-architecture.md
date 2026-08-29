@@ -1480,17 +1480,31 @@ dataset type `STATIC_MODEL`, a scheduled model needs `USER_MODEL`). So `entities
 **keep their current namespaces**: their `kind` stays `catalog` / `evaluation`, but their
 `target_namespace` equals `current_namespace` under the `migration_status: not_planned` exception to
 `target_namespace == kind` (§11.5 rule 2). `catalog` and `evaluation` remain the static layers they
-are; the scheduled discovery and scoring pipelines remain their own `USER_MODEL` datasets. The
-only tables that physically relocate in Phase 5 are the type-compatible ones: `events`/`metrics`
-→ `observations` (scheduled → the scheduled `observations` dataset) and the curator-controlled
-`catalog.* → registry` ownership transitions (static → compiled). The SQL for the staying pipelines
-therefore keeps its `models/entities/*` and `models/scores/*` paths:
+are; the scheduled discovery and scoring pipelines remain their own `USER_MODEL` datasets.
+
+**The same constraint applies to schedule, not just type (#393).** `events`/`metrics` are `kind:
+observations` and `observations` is `USER_MODEL` (type-compatible), so at first they looked like clean
+moves — but an OSO schedule is a **dataset-level sweep** and a model cron only throttles it, and the
+`observations` dataset is currently manual (`cron null`; `product_adoption_current` runs `MANUAL`
+under the §18 baseline discipline). `events` (`0 5 * * 0`) and `metrics` (`0 6 * * 0`) carry distinct
+dataset crons; folding them into `observations` would force a sweep cron on that dataset that also
+swept the deliberately-manual `product_adoption_current`. So `events`/`metrics` are **deferred**
+(`not_planned`, kept in their own datasets) until Phase 2B settles the observations refresh model.
+The general rule: OSO binds **one type and one sweep schedule per dataset**, so an independently-typed
+or independently-scheduled pipeline cannot fold into a shared namespace. The only tables that
+physically relocate in Phase 5 are the curator-controlled `catalog.* → registry` ownership
+transitions (static → compiled). The SQL for the staying pipelines keeps its `models/{entities,
+scores,events,metrics}/*` paths:
 
 ```text
     entities/                       # kind: catalog, USER_MODEL dataset, stays put
       repos.sql projects.sql packages.sql models.sql
-    observations/
-      github_events.sql daily.sql
+    events/                         # kind: observations, own USER_MODEL sweep — deferred, stays put
+      github_events.sql
+    metrics/                        # kind: observations, own USER_MODEL sweep — deferred, stays put
+      daily.sql
+    observations/                   # USER_MODEL, currently manual (product_adoption_current)
+      product_adoption_current.sql
     scores/                         # kind: evaluation, USER_MODEL dataset, stays put
       dependency_graph.sql fragility.sql ossd_coverage.sql
       project_summary.sql repos_summary.sql stack_contributors.sql

@@ -283,6 +283,33 @@ def test_scheduled_pipelines_do_not_relocate_into_static_namespaces(inventory):
     assert seen == blocked, f"missing dataset-type-blocked entries: {sorted(blocked - seen)}"
 
 
+def test_events_metrics_deferred_not_folded_into_observations(inventory):
+    """`events.github_events` and `metrics.daily` are `kind: observations` and the `observations`
+    dataset is type-compatible (USER_MODEL), but an OSO schedule is a dataset-level sweep and the
+    observations dataset is currently manual (product_adoption_current runs MANUAL under the §18
+    baseline discipline). Folding these two independently-scheduled pipelines in would force a sweep
+    cron onto that §18-sensitive dataset, so they are DEFERRED to Phase 2B: `migration_status:
+    not_planned`, kept in their own namespaces, never targeting `observations`, still `active`, with
+    the constraint documented (data-architecture.md §11.1, #393)."""
+    deferred = {"currentai.events.github_events", "currentai.metrics.daily"}
+    seen = set()
+    for asset in inventory:
+        if asset["table"] not in deferred:
+            continue
+        seen.add(asset["table"])
+        assert asset["migration_status"] == "not_planned", (
+            f"{asset['id']}: deferred fold must be not_planned, not {asset['migration_status']!r}")
+        assert asset["current_namespace"] == asset["target_namespace"], (
+            f"{asset['id']}: stays put -- target must equal current, not {asset['target_namespace']!r}")
+        assert asset["target_namespace"] != "observations", (
+            f"{asset['id']}: must not target observations while the fold is deferred")
+        assert asset.get("not_planned_reason"), (
+            f"{asset['id']}: must document the schedule constraint in not_planned_reason")
+        assert asset["status"] == "active", (
+            f"{asset['id']}: a live pipeline stays active, not {asset['status']!r}")
+    assert seen == deferred, f"missing deferred events/metrics entries: {sorted(deferred - seen)}"
+
+
 # --- 3: mirror provenance ---------------------------------------------------------
 
 def test_mirror_block_iff_platform_authority(inventory):
