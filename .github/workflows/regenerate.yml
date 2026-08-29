@@ -62,10 +62,12 @@ jobs:
         run: |
           uv run marimo check notebooks/ai-stack-map.py
       - name: Commit regenerated artifacts
+        id: commit
         run: |
           ARTIFACTS="build/notebook_data.json notebooks/ai-stack-map.py README.md"
           if git diff --quiet $ARTIFACTS; then
             echo "No changes to generated artifacts."
+            echo "published=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           git config user.name "github-actions[bot]"
@@ -73,3 +75,37 @@ jobs:
           git add $ARTIFACTS
           git commit -m "chore(build): regenerate notebook data, notebooks, README badges [bot]"
           git push
+          echo "published=true" >> "$GITHUB_OUTPUT"
+
+      # Tell the consumer, instead of making it guess.
+      #
+      # aipotluck.org pulls this payload on a daily cron, and that cron has never once fired on
+      # time: across 26 scheduled runs the delay ranged from 45 minutes to ten hours, because
+      # GitHub queues scheduled workflows under load. The consequence is not just lateness — on
+      # 2026-08-27 a rename merged here at 21:43 and the sync's slot had passed, so the change
+      # waited a further day. Polling cannot fix that; only the publisher knows when it published.
+      #
+      # The cron stays as a backstop. This makes the normal case immediate rather than eventual.
+      #
+      # Skips cleanly when the token is absent, because a missing secret should degrade to the
+      # old behaviour rather than fail a publish that already succeeded.
+      - name: Notify aipotluck.org that new data is published
+        if: steps.commit.outputs.published == 'true'
+        env:
+          DISPATCH_TOKEN: ${{ secrets.AIPOTLUCK_DISPATCH_TOKEN }}
+        run: |
+          if [ -z "$DISPATCH_TOKEN" ]; then
+            echo "::notice::AIPOTLUCK_DISPATCH_TOKEN not set — skipping publish notification." \
+                 "aipotluck.org will pick this up on its daily cron instead."
+            exit 0
+          fi
+          GENERATED=$(python3 -c "import json;print(json.load(open('build/notebook_data.json'))['generated'])")
+          CONTRACT=$(python3 -c "import json;print(json.load(open('build/notebook_data.json')).get('contract',1))")
+          echo "Notifying aipotluck.org: generated=$GENERATED contract=$CONTRACT sha=$GITHUB_SHA"
+          curl --fail-with-body --silent --show-error \
+            -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $DISPATCH_TOKEN" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/currentai-org/aipotluck.org/dispatches \
+            -d "{\"event_type\":\"gap-map-data-published\",\"client_payload\":{\"generated\":\"$GENERATED\",\"contract\":$CONTRACT,\"source_sha\":\"$GITHUB_SHA\"}}"
