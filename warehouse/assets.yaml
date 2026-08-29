@@ -536,14 +536,14 @@ assets:
   current_namespace: events
   target_namespace: events
   migration_status: not_planned
-  not_planned_reason: 'DEFERRED, stays put (data-architecture.md §11.1, #393): kind is observations and the observations dataset is USER_MODEL (type-compatible), but folding this scheduled pipeline in requires giving the observations dataset a sweep cron — an OSO schedule is a dataset-level sweep and a model cron only throttles it (platform-verified 2026-08-28). The observations dataset is currently manual (cron null); its product_adoption_current is deliberately manual/full-refresh under the §18 baseline discipline, and this pipeline carries its own weekly cron 0 5 * * 0. Scheduling observations to host it would also sweep product_adoption_current and the pypi orphan, a behavior change to a §18-sensitive model. Decision 2026-08-28 (Phase 5): keep this pipeline in its own USER_MODEL dataset (events); whether the observations dataset ever gains a sweep is a Phase-2B refresh-model decision, and even then a namespace move for this table would require a NEW explicit architecture decision, not an automatic follow-on. Not a namespace migration now. Repo<->platform read drift on the deployed revision is tracked in #395.'
+  not_planned_reason: 'DEFERRED, stays put (data-architecture.md §11.1, #393): kind is observations and the observations dataset is USER_MODEL (type-compatible), but folding this scheduled pipeline in requires giving the observations dataset a sweep cron — an OSO schedule is a dataset-level sweep and a model cron only throttles it (platform-verified 2026-08-28). The observations dataset is currently manual (cron null); its product_adoption_current is deliberately manual/full-refresh under the §18 baseline discipline, and this pipeline carries its own weekly cron 0 5 * * 0. Scheduling observations to host it would also sweep product_adoption_current and the pypi orphan, a behavior change to a §18-sensitive model. Decision 2026-08-28 (Phase 5): keep this pipeline in its own USER_MODEL dataset (events); whether the observations dataset ever gains a sweep is a Phase-2B refresh-model decision, and even then a namespace move for this table would require a NEW explicit architecture decision, not an automatic follow-on. Not a namespace migration now. Repo<->platform read drift on the deployed revision was back-ported so the repo SQL matches the deployed source byte-for-byte (sha256 matches the audit; #395, resolved 2026-08-29).'
   authority: repo
   population: long_tail
   release_path: false
   reads:
   - table: currentai.entities.repos
     scope: internal
-  - table: oso.int_events__github_unified
+  - table: oso.github_events.github_events_last_365_days
     scope: external
   read_by:
     models:
@@ -635,7 +635,7 @@ assets:
   current_namespace: metrics
   target_namespace: metrics
   migration_status: not_planned
-  not_planned_reason: 'DEFERRED, stays put (data-architecture.md §11.1, #393): kind is observations and the observations dataset is USER_MODEL (type-compatible), but folding this scheduled pipeline in requires giving the observations dataset a sweep cron — an OSO schedule is a dataset-level sweep and a model cron only throttles it (platform-verified 2026-08-28). The observations dataset is currently manual (cron null); its product_adoption_current is deliberately manual/full-refresh under the §18 baseline discipline, and this pipeline carries its own weekly cron 0 6 * * 0 (one hour after events so it reads fresh github_events). Scheduling observations to host it would also sweep product_adoption_current and the pypi orphan, a behavior change to a §18-sensitive model. Decision 2026-08-28 (Phase 5): keep this pipeline in its own USER_MODEL dataset (metrics); whether the observations dataset ever gains a sweep is a Phase-2B refresh-model decision, and even then a namespace move for this table would require a NEW explicit architecture decision, not an automatic follow-on. Not a namespace migration now. Repo<->platform read drift on the deployed revision is tracked in #395.'
+  not_planned_reason: 'DEFERRED, stays put (data-architecture.md §11.1, #393): kind is observations and the observations dataset is USER_MODEL (type-compatible), but folding this scheduled pipeline in requires giving the observations dataset a sweep cron — an OSO schedule is a dataset-level sweep and a model cron only throttles it (platform-verified 2026-08-28). The observations dataset is currently manual (cron null); its product_adoption_current is deliberately manual/full-refresh under the §18 baseline discipline, and this pipeline carries its own weekly cron 0 6 * * 0 (one hour after events so it reads fresh github_events). Scheduling observations to host it would also sweep product_adoption_current and the pypi orphan, a behavior change to a §18-sensitive model. Decision 2026-08-28 (Phase 5): keep this pipeline in its own USER_MODEL dataset (metrics); whether the observations dataset ever gains a sweep is a Phase-2B refresh-model decision, and even then a namespace move for this table would require a NEW explicit architecture decision, not an automatic follow-on. Not a namespace migration now. Repo<->platform read drift on the deployed revision was back-ported so the repo SQL matches the deployed source byte-for-byte (sha256 matches the audit; #395, resolved 2026-08-29).'
   authority: repo
   population: long_tail
   release_path: false
@@ -644,9 +644,7 @@ assets:
     scope: internal
   - table: currentai.events.github_events
     scope: internal
-  - table: oso.int_opendevdata__repositories_with_repo_id
-    scope: external
-  - table: oso.stg_opendevdata__repo_developer_28d_activities
+  - table: oso.github_events.github_events_last_365_days
     scope: external
   read_by:
     models:

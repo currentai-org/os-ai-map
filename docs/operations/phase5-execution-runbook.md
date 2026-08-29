@@ -62,12 +62,9 @@ year-over-year regional viz, or repoint to a live FULL ~90-day `observations.pyp
 retire the static) is decided when that notebook is next touched. **Do not build an incremental
 accumulator** — no consumer needs accreted per-country history. The orphan `observations.pypi_downloads`
 the platform side stood up has no committed consumer and the notebook stays on the static, so the
-**maintainer authorized dropping it (2026-08-28)** — a platform-side delete. It has no in-repo consumer
-and no inventory row, but declared-state discipline still requires **durable deletion evidence**: after
-the delete, record a receipt at `warehouse/audits/observations_pypi_downloads_deletion.json` (dataset
-id, model id, prior revision/schema, `deleted_at`, and post-delete verification the table is absent —
-e.g. a refreshed platform census) and commit it in a short repo PR. The delete is not complete until
-that evidence lands. See the plan's Freshness section.
+**dropped 2026-08-29** (authorized 2026-08-28) — a platform-side delete of the 228M-row orphan, with
+durable evidence committed at `warehouse/audits/observations_pypi_downloads_deletion.json` (dataset/
+model id, prior revision + schema, `deleted_at`, absence verified). See the plan's Freshness section.
 
 ## 2. `events`/`metrics → observations` — DEFERRED (schedule wall)
 
@@ -99,10 +96,11 @@ repoint is the delicate step.
 **Repo↔platform drift to reconcile first (independent of the move).** The deployed `events.github_events`
 (rev 8) and `metrics.daily` (rev 5) read `oso.github_events.github_events_last_365_days`, while the repo
 SQL + inventory still read the older `oso.int_events__github_unified` / `oso.*opendevdata*` — repo file
-sha256 ≠ the Phase-0b audit's deployed `source_sha256` for both. The repo is behind the platform.
-**Tracked in #395**: back-port the exact deployed rev-8/rev-5 source and schema (including the
-`time timestamp(6)` precision), captured from the platform side rather than reconstructed, so the repo
-mirrors the warehouse — regardless of the deferred namespace fold.
+sha256 ≠ the Phase-0b audit's deployed `source_sha256` for both. **Resolved 2026-08-29 (#395):** the
+deployed rev-8/rev-5 source was captured from the platform and back-ported verbatim, so the repo SQL
+now reads `oso.github_events.github_events_last_365_days` and its file sha256 matches the audit's
+deployed `source_sha256` for both — the repo mirrors the warehouse again. (Known follow-up: the
+back-ported prose still claims a frozen-history union the SQL no longer performs.)
 
 ## 3. `catalog.* → registry` — ownership transitions (NOT plain moves)
 

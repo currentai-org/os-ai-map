@@ -203,13 +203,12 @@ there is **no data-foundation ceiling and no G1 item here.**
   retire the static, accepting a rolling-window regional view.
 - The orphan `observations.pypi_downloads` the platform side stood up has **no committed consumer**
   (scoring/signal don't use per-country) and the notebook stays on the static, so it is a large `FULL`
-  table nothing reads. **Maintainer authorized dropping it (2026-08-28)** — a platform-side delete.
-  It has no in-repo consumer and no inventory row, but declared-state discipline still requires
-  **durable deletion evidence**: after the delete, record a receipt at
-  `warehouse/audits/observations_pypi_downloads_deletion.json` (dataset id, model id, prior
-  revision/schema, `deleted_at`, and post-delete verification that the table is absent — e.g. a
-  refreshed platform census), and commit it in a short repo PR. The deletion is not "done" until that
-  evidence is in the repo.
+  table nothing reads. **Dropped 2026-08-29** (authorized 2026-08-28): a platform-side delete of a
+  228,115,061-row `FULL` model (`73fd0417…` in dataset `c507c9f9…`) with no consumer and no schedule.
+  Durable deletion evidence is committed at
+  `warehouse/audits/observations_pypi_downloads_deletion.json` (dataset/model id, prior
+  revision + schema, `deleted_at`, absence verified: the `observations` dataset now lists only
+  `product_adoption_current`). Static `catalog.pypi_downloads` and the `oso.*` sources untouched.
 
 (If per-country geo later becomes a *signal* input, it is still a live ~90-day table read with recent
 windows — no history accumulation — so this stays a small, forward decision.)

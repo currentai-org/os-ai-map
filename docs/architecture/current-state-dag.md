@@ -129,15 +129,14 @@ graph LR
     signal_semanticscholar__paper_citations[paper_citations]
   end
   subgraph external
+    EXT_oso__github_events__github_events_last_365_days[oso.github_events.github_events_last_365_days]:::ext
     EXT_oso__int_code_dependencies[oso.int_code_dependencies]:::ext
     EXT_oso__int_events__github_unified[oso.int_events__github_unified]:::ext
-    EXT_oso__int_opendevdata__repositories_with_repo_id[oso.int_opendevdata__repositories_with_repo_id]:::ext
     EXT_oso__oss_directory__artifacts_by_project[oso.oss_directory.artifacts_by_project]:::ext
     EXT_oso__oss_directory__projects[oso.oss_directory.projects]:::ext
     EXT_oso__oss_directory__repositories[oso.oss_directory.repositories]:::ext
     EXT_oso__package_owners_v0[oso.package_owners_v0]:::ext
     EXT_oso__pypi_downloads__daily_downloads_by_package[oso.pypi_downloads.daily_downloads_by_package]:::ext
-    EXT_oso__stg_opendevdata__repo_developer_28d_activities[oso.stg_opendevdata__repo_developer_28d_activities]:::ext
   end
   subgraph consumers
     C_notebooks_pypi-geo-trends_py[notebooks/pypi-geo-trends.py]:::consumer
@@ -154,17 +153,16 @@ graph LR
     C_build_check_artifacts_py[build/check_artifacts.py]:::consumer
     C_build_check_artifacts_py[build/check_artifacts.py]:::consumer
   end
+  EXT_oso__github_events__github_events_last_365_days --> events__github_events
+  EXT_oso__github_events__github_events_last_365_days --> metrics__daily
   EXT_oso__int_code_dependencies --> scores__dependency_graph
-  EXT_oso__int_events__github_unified --> events__github_events
   EXT_oso__int_events__github_unified --> scores__stack_contributors
-  EXT_oso__int_opendevdata__repositories_with_repo_id --> metrics__daily
   EXT_oso__oss_directory__artifacts_by_project --> entities__repos
   EXT_oso__oss_directory__projects --> entities__projects
   EXT_oso__oss_directory__repositories --> entities__repos
   EXT_oso__package_owners_v0 --> entities__packages
   EXT_oso__pypi_downloads__daily_downloads_by_package --> signal_packages__downloads
   EXT_oso__pypi_downloads__daily_downloads_by_package --> signal_pypi__package_downloads
-  EXT_oso__stg_opendevdata__repo_developer_28d_activities --> metrics__daily
   catalog__model_benchmarks --> entities__models
   catalog__model_repos --> entities__models
   catalog__stack_map --> scores__stack_contributors
