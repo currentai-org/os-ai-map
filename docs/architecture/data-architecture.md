@@ -51,7 +51,7 @@ As of 2026-08-20:
 - Platform model source is mirrored read-only under `warehouse/models/<dataset>/` (each carrying a `mirror:` block in `warehouse/assets.yaml`); the platform remains authoritative for those deployed models.
 - Dataset scheduling, model throttles, GitHub Actions schedules, and manual operations coexist. A configured cron is not treated as proof that a scheduled run fired. Verified 2026-08-20: of <!-- observed:2026-08-20 -->22 datasets, 13 carry `cronTimezone: America/New_York`, and 8 have a cron configured with `lastRunAt: null` — `signal_semanticscholar`, `signal_pypi`, `ai_demand_curve`, `state_of_os_ai`, `scores`, `events`, `metrics`, `entities`. The `scores` dataset is among them, which means the openness chain that `check_parity` compares against the repository has no observed scheduled run.
 - Two platform tables have no repository source and no in-repo consumer: `currentai.scores.investment_ranking` and `currentai.scores.taxonomy`.
-- The full org is <!-- observed:2026-08-20 -->22 datasets by `ListDatasets`, or 23 counting `datasette` — which `ListDatasets` omits because it holds two deployed models and no materialized tables, so a dataset-first sweep misses it (Phase 0b enumerated from `ListDataModels` instead and found it). The org held <!-- observed:2026-08-20 -->96 tables at that 2026-08-20 enumeration. Separately, and as a live derived count rather than a 2026-08-20 subset, the inventory currently tracks <!-- count:deployed_tables -->65 deployed tables in the datasets the repository maintains or reads from; the rest of the org's tables are separate analytical products. The two figures are different populations measured at different times — the 96 is a point-in-time org-wide observation, the 65 is derived from `assets.yaml` on every run. See section 11.3 for how the 65 reconciles with the inventory's size.
+- The full org is <!-- observed:2026-08-20 -->22 datasets by `ListDatasets`, or 23 counting `datasette` — which `ListDatasets` omits because it holds two deployed models and no materialized tables, so a dataset-first sweep misses it (Phase 0b enumerated from `ListDataModels` instead and found it). The org held <!-- observed:2026-08-20 -->96 tables at that 2026-08-20 enumeration. Separately, and as a live derived count rather than a 2026-08-20 subset, the inventory currently tracks <!-- count:deployed_tables -->66 deployed tables in the datasets the repository maintains or reads from; the rest of the org's tables are separate analytical products. The two figures are different populations measured at different times — the 96 is a point-in-time org-wide observation, the 66 is derived from `assets.yaml` on every run. See section 11.3 for how the 66 reconciles with the inventory's size.
 
 The redesign must evolve this system without interrupting the existing map, registry tables, notebooks, or website.
 
@@ -1769,20 +1769,22 @@ them in the other.
 Three numbers that must not be conflated:
 
 ```text
-deployed tables in the in-scope datasets    <!-- count:deployed_tables -->65
-staged, not deployed                         <!-- count:staged_assets -->7
+deployed tables in the in-scope datasets    <!-- count:deployed_tables -->66
+staged, not deployed                         <!-- count:staged_assets -->6
 dormant, no platform table yet              <!-- count:dormant_assets -->1
                                             ------
 logical assets in warehouse/assets.yaml     <!-- count:assets -->73
 ```
 
-The staged seven are the three `signal_packages` models from issue #314,
-`observations.source_runs` and `observations.product_adoption_baseline` (both Phase 2), the
-Phase-3 `registry.axis_assessments` candidate, and the Phase-5 `registry.foundation_model_repos`
-candidate (the compiled catalog->registry successor, published by CI on merge and activated in a
-later reconciliation PR): tracked assets whose tables do not exist on the platform yet. The two Phase-3 evaluation candidates that were staged here,
+The staged six are the three `signal_packages` models from issue #314,
+`observations.source_runs` and `observations.product_adoption_baseline` (both Phase 2), and the
+Phase-3 `registry.axis_assessments` candidate: tracked assets whose tables do not exist on the
+platform yet. The two Phase-3 evaluation candidates that were staged here,
 `evaluation.product_adoption_measurements` and `evaluation.adoption_reconciliation`, are now
-**deployed** (#368, 2026-08-25) and count among the deployed tables.
+**deployed** (#368, 2026-08-25) and count among the deployed tables; the Phase-5
+`registry.foundation_model_repos` candidate was staged as a create-target and is now **deployed**
+(published by `registry.yml` on merge of #397, platform-verified 2026-08-29), so it too counts among
+the deployed tables.
 `observations.source_runs`, `observations.product_adoption_baseline` and
 `registry.axis_assessments` are staged for a reason the `signal_packages` three are not — they are
 repository-side artifacts by design (a control-plane snapshot, a frozen-bytes baseline, and a
@@ -1790,10 +1792,7 @@ declaration-keyed release-builder candidate whose row a maintainer publishes), a
 records only that no platform table carries their name.
 Neither the snapshot nor the baseline is unfinished, and neither is waiting on a deploy to become
 authoritative; `registry.axis_assessments` awaits its maintainer publish in
-`docs/operations/deploy-axis-assessments.md`. `registry.foundation_model_repos` is staged for a
-third reason again: it is a compiled create-target whose platform table CI *will* publish on merge
-(`registry.yml`), so it is staged only across the window between this create-target PR and the
-reconciliation PR that activates it and repoints its consumer. `observations.product_adoption_current` was staged the same way when first authored, and is
+`docs/operations/deploy-axis-assessments.md`. `observations.product_adoption_current` was staged the same way when first authored, and is
 now **deployed** (2026-08-24, the deploy created the `observations` namespace), so it counts among
 the deployed tables rather than the staged ones. The four `registry.adoption_*` routing tables —
 `adoption_routes`, `adoption_route_scopes`, `adoption_route_band_sets` and

@@ -102,13 +102,17 @@ Derived at write time from `assets.yaml` via `build.assets` (not hand-listed). `
 | `catalog.pypi_downloads` → `observations` (1) | `pypi_downloads` | §2 — "a measurement". **DEFERRED — notebook-only, no scoring impact; see §Freshness.** |
 
 `catalog.foundation_model_repos → registry` is the first executed transition: source at
-`sources/foundation_model_repos.yaml`, compiled to `registry.foundation_model_repos`, **staged** in this
-PR (published by CI on merge; no platform create needed). The consumer `entities.models` **stays on the
-catalog table** — its repoint is deferred to a reconciliation PR after the registry table is published and
-verified; the `catalog` version stays live (`in_progress`) until both that in-repo consumer and the
-deployed `state_of_os_ai.family_footprint` reader are repointed and it retires under §17. That leaves **two transitions still to author** (`osai_subcategory_mapping`,
-`taxonomy_crosswalk` — platform-only, need a canonical `sources/` schema) and **two held** —
-`pypi_downloads` (deferred) and `stack_map` (decision gate, §D).
+`sources/foundation_model_repos.yaml`, compiled to `registry.foundation_model_repos`. The create-target
+landed in **#397**; `registry.yml` published the table on merge and it is **platform-verified 2026-08-29**
+(72 rows, clean bidirectional business-column diff against the retiring catalog table), so it is now
+`active` / `materialized`. The **reconciliation PR** repoints the in-repo consumer `entities.models` to the
+registry table. The `catalog` version stays live (`in_progress`) **only** until the deployed
+`state_of_os_ai.family_footprint` reader is also repointed (a separately authorized platform step), when it
+retires under §17. **§17 parity caveat:** both tables carry regenerated dlt loader columns
+(`_dlt_load_id`, `_dlt_id`), so a full-row `EXCEPT` reports total drift permanently — the retirement
+equivalence check must project the business columns explicitly. That leaves **two transitions still to
+author** (`osai_subcategory_mapping`, `taxonomy_crosswalk` — platform-only, need a canonical `sources/`
+schema) and **two held** — `pypi_downloads` (deferred) and `stack_map` (decision gate, §D).
 
 ### B. `not_planned` — do not move (type / schedule constraint, 2026-08-28)
 

@@ -75,9 +75,6 @@ assets:
   authority: repo
   population: long_tail
   release_path: false
-  read_by:
-    models:
-    - warehouse/models/entities/models.sql
   platform_model_consumers:
   - currentai.state_of_os_ai.family_footprint
   consumer_checks:
@@ -88,13 +85,16 @@ assets:
   external_consumers: none_confirmed
   grain: one row per curated model_family
   producer: 'hand-maintained CSV: warehouse/data/catalog/foundation_model_repos.csv'
-  classification_note: 'catalog->registry ownership transition underway: the compiled successor
-    currentai.registry.foundation_model_repos is STAGED (source sources/foundation_model_repos.yaml,
-    published to the registry dataset by CI on merge but not yet activated in the inventory). This
-    table stays live and its readers unchanged in this PR — both entities.models (in-repo) and the
-    deployed state_of_os_ai.family_footprint still read it. A reconciliation PR repoints
-    entities.models after the registry successor is verified live; §17 retires this table once the
-    deployed state_of_os_ai.family_footprint is also repointed.'
+  classification_note: 'catalog->registry ownership transition, consumer cutover underway: the
+    compiled successor currentai.registry.foundation_model_repos is ACTIVE and materialized (published
+    to the registry dataset on merge of #397, platform-verified 2026-08-29 — 72 rows, bidirectional
+    business-column diff against this table clean). The in-repo consumer entities.models was repointed
+    to the registry table in this reconciliation PR, so this table has no in-repo reader left. It stays
+    live (in_progress) ONLY because the deployed state_of_os_ai.family_footprint still reads it; §17
+    retires it once that deployed reader is repointed (a separately authorized maintainer/platform
+    step). NOTE for the §17 retirement parity check: both tables carry regenerated dlt loader metadata
+    columns (_dlt_load_id, _dlt_id), so a full-row EXCEPT reports total drift permanently — the
+    retirement equivalence check MUST project the business columns explicitly.'
   refresh: manual upload
   dataset_id: 046ee25e-daee-4c43-a13c-d6ba9f6bd549
   owner: carl
@@ -355,13 +355,13 @@ assets:
   population: long_tail
   release_path: false
   reads:
-  - table: currentai.catalog.foundation_model_repos
-    scope: internal
   - table: currentai.catalog.model_benchmarks
     scope: internal
   - table: currentai.catalog.model_repos
     scope: internal
   - table: currentai.entities.repos
+    scope: internal
+  - table: currentai.registry.foundation_model_repos
     scope: internal
   read_by:
     models:
@@ -1218,29 +1218,32 @@ assets:
   authority: repo
   population: long_tail
   release_path: false
+  read_by:
+    models:
+    - warehouse/models/entities/models.sql
   consumer_checks:
     repository: checked
     platform_notebooks: checked
-    platform_models: unknown
+    platform_models: checked
     external: unknown
   external_consumers: none_confirmed
   grain: one row per curated model_family
   producer: build/serialize_registry.py + build/publish_registry.py
   classification_note: 'curator-controlled foundation-model reference table, compiled from
     sources/foundation_model_repos.yaml. The catalog->registry successor of
-    catalog.foundation_model_repos (Phase 5 ownership transition); the golden proves it
-    reproduces the catalog contents byte-for-byte. STAGED: this PR only adds the source +
-    serializer; CI publishes it on merge (registry.yml), but activation is a separate deployed-state
-    claim. The verified_at here attests candidate fidelity — the compiled==live golden proving the
-    source reproduces the retiring catalog table byte-for-byte — not platform materialization. A
-    reconciliation PR sets status: active / materialized: true / dataset_id and advances verified_at
-    to the platform-verification date only after the publish reaches terminal SUCCESS and the table is
-    independently verified, and after entities.models is repointed and redeployed to read it. Long-tail
+    catalog.foundation_model_repos (Phase 5 ownership transition); the golden proves it reproduces the
+    catalog contents byte-for-byte. ACTIVE and materialized: published to the registry dataset on merge
+    of #397 (registry.yml), platform-verified 2026-08-29 — 72 rows, 72 distinct model_family, and a
+    bidirectional business-column diff against the retiring catalog.foundation_model_repos is clean
+    (only_in_catalog 0, only_in_registry 0). The in-repo consumer entities.models was repointed to this
+    table in this reconciliation PR. catalog.foundation_model_repos stays live (in_progress) until the
+    deployed state_of_os_ai.family_footprint reader is also repointed and it retires under §17. Long-tail
     reference data, not a gap-map payload input, so release_path: false and no publication_role.'
   refresh: CI push on merge to main
+  dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
   owner: carl
-  status: staged
-  materialized: false
+  status: active
+  materialized: true
   verified_at: '2026-08-29'
 - id: registry.categories
   table: currentai.registry.categories

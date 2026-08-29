@@ -111,7 +111,7 @@ static-class), so it clears the dataset-type constraint that blocked `entities`/
 
 | Table | Current owner | Ownership-transition work |
 |---|---|---|
-| `catalog.foundation_model_repos` | **repo CSV** already: `warehouse/data/catalog/foundation_model_repos.csv` (72 rows) | **Source-side done; successor staged (in_progress overall).** Data moved to `sources/foundation_model_repos.yaml`, wired into `build/serialize_registry.py` (+ auto-published by `publish_registry.py` via CI on merge), golden added (compiled == the live CSV). The successor `registry.foundation_model_repos` is **staged** (`materialized: false`) — CI publishes it on merge. The consumer `models/entities/models.sql` **stays on the catalog table**; its repoint is deferred to a reconciliation PR after the registry table is published and verified. Remaining: publish + verify the registry table, repoint the in-repo consumer, a maintainer repoints the deployed `state_of_os_ai.family_footprint` reader, then §17 retires `catalog.foundation_model_repos`. The lightest of the three; no platform create needed (CI publishes registry). |
+| `catalog.foundation_model_repos` | **repo CSV** already: `warehouse/data/catalog/foundation_model_repos.csv` (72 rows) | **Consumer cutover underway (in_progress overall).** Data moved to `sources/foundation_model_repos.yaml`, wired into `build/serialize_registry.py` (+ auto-published by `publish_registry.py` via CI on merge), golden added (compiled == the live CSV). The create-target landed in **#397**; `registry.foundation_model_repos` was **published by CI on merge and platform-verified 2026-08-29** (72 rows, clean bidirectional business-column diff against the retiring catalog table), now `active` / `materialized`. The **reconciliation PR** repoints `models/entities/models.sql` to the registry table. Remaining: a maintainer repoints the deployed `state_of_os_ai.family_footprint` reader, then §17 retires `catalog.foundation_model_repos`. **§17 parity caveat:** both tables carry regenerated dlt loader columns (`_dlt_load_id`, `_dlt_id`); a full-row `EXCEPT` reports total drift permanently, so the retirement equivalence check must project the business columns explicitly. The lightest of the three; no platform create needed (CI publishes registry). |
 | `catalog.osai_subcategory_mapping` | **platform-only** (no repo file) | Export the live table (read-only), design a canonical `sources/` format, author the content, integrate the serializer + publisher, prove compiled == live. **Needs a source-schema design decision.** No in-repo consumer; a deployed reader (`scores.taxonomy`, `scores.investment_ranking`) must be repointed on the platform. |
 | `catalog.taxonomy_crosswalk` | **platform-only** (no repo file) | Same as above. **Needs a source-schema design decision.** |
 
@@ -119,9 +119,9 @@ The two platform-only tables are the only Phase-5 items with a genuine repo buil
 a **canonical-source-schema decision** before authoring — flagged for the maintainer, not built blind.
 
 Note: `models/entities/models.sql` (the consumer of `foundation_model_repos`) stays in `entities`
-(dataset-type constraint). It also **stays reading `catalog.foundation_model_repos`** in this PR; its
-read is repointed only in the later reconciliation PR, once the staged `registry` successor is published
-and verified.
+(dataset-type constraint). Its **read is now repointed to `registry.foundation_model_repos`** (the
+reconciliation PR), the registry successor having been published and platform-verified;
+`catalog.foundation_model_repos` keeps only its deployed reader until §17 retirement.
 
 ## Nuanced — decision required before moving (plan §D)
 
