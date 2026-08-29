@@ -9,8 +9,8 @@
 > contracts, root-scoped DAG, anti-reintroduction gates) is merged, and this runbook is not re-enabled
 > when the ADR is accepted.
 
-**Status: PLAN FOR REVIEW. No asset is moved and no platform mutation is authorized by this
-document.** It classifies the assets carrying `migration_status: pending`, resolves which
+**Status: HISTORICAL — NOT EXECUTABLE.** Superseded by ADR-003 (see the banner above). Retained for
+its reasoning only; no asset is moved and nothing here is to be run. It classifies the assets carrying `migration_status: pending`, resolves which
 `target_namespace` values are genuinely sanctioned versus misfiled, out-of-phase, or physically
 impossible, orders the sanctioned moves, and states the per-move execution recipe. Execution lands as
 separate, individually reviewed units.

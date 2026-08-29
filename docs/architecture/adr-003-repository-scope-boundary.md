@@ -172,7 +172,7 @@ None currently participates in the canonical map pipeline (all `release_path: fa
 
 Each keeps the rule: **gain a named Gap Map use, or leave the governed inventory.**
 
-## Execution sequence (later PRs — frozen until this boundary lands)
+## Execution sequence (later PRs — frozen until the mechanism lands)
 
 1. **This PR (plan only):** the boundary rule, the role taxonomy, the `dependencies.yaml` spec, the
    root-scoped-DAG design, the anti-reintroduction-gate design, and the classification above. Amends the
