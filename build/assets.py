@@ -29,7 +29,9 @@ STATUSES = {"active", "staged", "deprecated", "historical", "compatibility", "do
 MIGRATION_STATES = {"pending", "in_progress", "complete", "not_planned"}
 CHECK_STATES = {"checked", "unknown", "not_applicable"}
 AUTHORITIES = {"repo", "platform", "external"}
-POPULATIONS = {"gap_map", "long_tail", "both"}
+# `long_tail` is RETIRED as a governed population (ADR-003 steps 5-6 externalized the long-tail
+# pipelines). Every governed asset is `gap_map`; the gates forbid `long_tail` outright.
+POPULATIONS = {"gap_map", "both"}
 
 # ADR-003 repository role. Membership is ASSERTED by this field, not inferred from the
 # graph. A governed asset carries exactly one role; the externalization backlog (the
@@ -49,33 +51,13 @@ POPULATIONS = {"gap_map", "long_tail", "both"}
 #                     platform mirror -- a shim is transitional by definition, not owned.
 ROLES = {"governed-output", "repo-computation", "governed-data", "compatibility-shim"}
 
-# ADR-003 step 6: the four `gap_map` tables that do not participate in the canonical map
-# pipeline (all release_path: false) and externalize individually. Held ROLELESS in the
-# backlog with the `long_tail` assets until step 5/6 removes them. Named explicitly because
-# they are gap_map -- population alone cannot distinguish them from governed assets.
-EXTERNALIZE_QUESTIONABLE = frozenset({
-    "catalog.stack_map",
-    "scores.stack_contributors",
-    "signal_artificialanalysis.model_evaluations",
-    "signal_lmarena.text_leaderboard",
-})
-
-# ADR-003 externalization backlog RATCHET. This is the FROZEN set of roleless assets as of
-# the mechanism PR: the 24 `long_tail` pipelines plus the 4 questionable gap_map tables. The
-# gate proves the roleless set can only SHRINK from this list -- a newly added asset can never
-# be roleless (it must justify a role), so the exact reintroduction ADR-003 prevents cannot
-# recur. Steps 5/6 remove entries from here as they externalize; when it is empty the
-# transitional allowance is deleted and `population: long_tail` is forbidden outright.
-FROZEN_LONG_TAIL_BACKLOG = frozenset({
-    "catalog.country_populations", "catalog.foundation_model_repos", "catalog.goodailist_repos",
-    "catalog.model_benchmarks", "catalog.model_repos", "catalog.osai_gap_map",
-    "catalog.osai_subcategory_mapping", "catalog.pypi_downloads", "catalog.taxonomy_crosswalk",
-    "entities.models", "entities.packages", "entities.projects", "entities.repos",
-    "events.github_events", "metrics.daily", "registry.foundation_model_repos",
-    "scores.dependency_graph", "scores.fragility", "scores.investment_ranking",
-    "scores.ossd_coverage", "scores.project_summary", "scores.repos_summary", "scores.taxonomy",
-    "signal_goodailist.repo_catalog",
-})
+# ADR-003 externalization backlog RATCHET, now EMPTY: steps 5-6 externalized the long-tail
+# pipelines and the questionable gap_map tables, so the backlog has drained. These stay as the
+# PERMANENT anti-reintroduction floor -- the gates require every asset to carry a role (no
+# roleless entry may appear) and forbid `population: long_tail` outright, so a peripheral OSO
+# table can never be pulled back into governance. Both are empty and are expected to stay empty.
+EXTERNALIZE_QUESTIONABLE: frozenset[str] = frozenset()
+FROZEN_LONG_TAIL_BACKLOG: frozenset[str] = frozenset()
 FROZEN_BACKLOG = FROZEN_LONG_TAIL_BACKLOG | EXTERNALIZE_QUESTIONABLE
 
 # The named audit / control roots of the governed graph: repo modules that READ governed or
@@ -97,8 +79,8 @@ PUBLICATION_WORKFLOWS: tuple[str, ...] = ()
 
 REQUIRED_FIELDS = (
     "id", "table", "kind", "current_namespace", "target_namespace", "migration_status",
-    "authority", "grain", "producer", "population", "release_path", "consumer_checks",
-    "refresh", "owner", "status", "verified_at",
+    "authority", "grain", "producer", "population", "release_path", "role", "consumer_checks",
+    "refresh", "status", "verified_at",
 )
 ASSETS = ROOT / "warehouse" / "assets.yaml"
 DEPENDENCIES = ROOT / "warehouse" / "dependencies.yaml"

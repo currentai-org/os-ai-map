@@ -243,72 +243,13 @@ def test_phase7_openness_chain_is_a_dependency_with_retirement_context(inventory
             f"{t}: dependency must carry its Phase-7 retirement_context (#384)")
 
 
-def test_scheduled_pipelines_do_not_relocate_into_static_namespaces(inventory):
-    """The `entities.*` (kind: catalog) and analytical `scores.*` (kind: evaluation) tables are
-    scheduled USER_MODEL pipelines. Their `kind` target namespaces -- `catalog` and `evaluation` --
-    are static datasets (STATIC_MODEL / compiled release artifacts), and an OSO dataset's type is
-    immutable, so a scheduled model cannot be hosted there (data-architecture.md §11.1, verified on
-    the catalog case 2026-08-28, #393). So each is `migration_status: not_planned`, keeps its
-    current namespace (never targeting `catalog`/`evaluation`), stays `active`, and documents the
-    constraint in `not_planned_reason`. Its `kind` is unchanged -- the logical model is intact; this
-    is the not_planned exception to `target_namespace == kind`.
-
-    The eight `scores.*` here are the analytical chain (`dependency_graph`, `fragility`,
-    `investment_ranking`, `ossd_coverage`, `project_summary`, `repos_summary`, `stack_contributors`,
-    `taxonomy`) -- NOT the openness pair, which is a separate Phase 7 retirement gate above.
-    """
-    entities = {f"currentai.entities.{t}" for t in ("repos", "models", "packages", "projects")}
-    scores = {f"currentai.scores.{t}" for t in (
-        "dependency_graph", "fragility", "investment_ranking", "ossd_coverage",
-        "project_summary", "repos_summary", "stack_contributors", "taxonomy")}
-    blocked = entities | scores
-    seen = set()
-    for asset in inventory:
-        if asset["table"] not in blocked:
-            continue
-        seen.add(asset["table"])
-        static_ns = "catalog" if asset["table"] in entities else "evaluation"
-        assert asset["migration_status"] == "not_planned", (
-            f"{asset['id']}: a scheduled pipeline into a static namespace must be not_planned, "
-            f"not {asset['migration_status']!r}")
-        assert asset["target_namespace"] == asset["current_namespace"], (
-            f"{asset['id']}: stays put -- target must equal current, not {asset['target_namespace']!r}")
-        assert asset["target_namespace"] != static_ns, (
-            f"{asset['id']}: must not target the static namespace {static_ns!r}")
-        assert asset.get("not_planned_reason"), (
-            f"{asset['id']}: must document the dataset-type constraint in not_planned_reason")
-        assert asset["status"] == "active", (
-            f"{asset['id']}: a live pipeline stays active, not {asset['status']!r}")
-    assert seen == blocked, f"missing dataset-type-blocked entries: {sorted(blocked - seen)}"
-
-
-def test_events_metrics_deferred_not_folded_into_observations(inventory):
-    """`events.github_events` and `metrics.daily` are `kind: observations` and the `observations`
-    dataset is type-compatible (USER_MODEL), but an OSO schedule is a dataset-level sweep and the
-    observations dataset is currently manual (product_adoption_current runs MANUAL under the §18
-    baseline discipline). Folding these two independently-scheduled pipelines in would force a sweep
-    cron onto that §18-sensitive dataset, so they STAY PUT under `migration_status: not_planned`,
-    kept in their own namespaces, never targeting `observations`, still `active`, with the constraint
-    documented (data-architecture.md §11.1, #393). Phase 2B owns only the observations refresh-model
-    question; any later relocation would require a new architecture decision, not an automatic
-    follow-on."""
-    deferred = {"currentai.events.github_events", "currentai.metrics.daily"}
-    seen = set()
-    for asset in inventory:
-        if asset["table"] not in deferred:
-            continue
-        seen.add(asset["table"])
-        assert asset["migration_status"] == "not_planned", (
-            f"{asset['id']}: deferred fold must be not_planned, not {asset['migration_status']!r}")
-        assert asset["current_namespace"] == asset["target_namespace"], (
-            f"{asset['id']}: stays put -- target must equal current, not {asset['target_namespace']!r}")
-        assert asset["target_namespace"] != "observations", (
-            f"{asset['id']}: must not target observations while the fold is deferred")
-        assert asset.get("not_planned_reason"), (
-            f"{asset['id']}: must document the schedule constraint in not_planned_reason")
-        assert asset["status"] == "active", (
-            f"{asset['id']}: a live pipeline stays active, not {asset['status']!r}")
-    assert seen == deferred, f"missing deferred events/metrics entries: {sorted(deferred - seen)}"
+# test_scheduled_pipelines_do_not_relocate_into_static_namespaces and
+# test_events_metrics_deferred_not_folded_into_observations were retired with ADR-003 steps 5-6:
+# the entities.*/scores.* analytical chain and events.github_events/metrics.daily were externalized
+# to platform ownership and removed from this inventory. Their old not_planned dispositions no
+# longer apply because the assets are no longer governed here. That no long_tail/peripheral pipeline
+# can re-enter the inventory is now enforced generally by the role + ratchet gates (test_role_gate_holds,
+# tests/test_scope_gates.py), not per-asset here.
 
 
 # --- 3: mirror provenance ---------------------------------------------------------
@@ -664,7 +605,7 @@ def test_mirror_local_sha256_matches_the_bytes(inventory):
 # --- grain, producer, enums -----------------------------------------------------
 
 def test_every_asset_has_a_nonempty_grain(inventory):
-    """Phase 0's contract: every asset has a semantic role, owner, grain and refresh."""
+    """Phase 0's contract: every asset has a semantic role, grain and refresh."""
     for asset in inventory:
         grain = (asset.get("grain") or "").strip()
         assert grain, f"{asset['id']}: no grain"
@@ -786,26 +727,10 @@ def test_role_and_backlog_partition_the_inventory():
 
 # --- the inventory must agree with the ADR committed beside it -------------------
 
-def test_inventory_agrees_with_adr_002():
-    """ADR-002 tabulates the correct target for every misfiled `catalog` table. The first
-    inventory contradicted it -- three tables the ADR sends to `registry` were recorded as
-    settled `catalog` data. A decision record and the inventory implementing it must not
-    disagree, so the ADR's table is parsed and compared."""
-    adr = (ROOT / "docs/architecture/adr-002-registry-curated-catalog-discovered.md").read_text(encoding="utf-8")
-    inv = A.by_table()
-    claims = re.findall(r"^\| `([a-z_]+)` \| (.+?) \|$", adr, re.M)
-    assert len(claims) >= 10, "ADR-002's catalog table went missing"
-    for table, verdict in claims:
-        asset = inv.get(f"catalog.{table}")
-        assert asset, f"ADR-002 names catalog.{table}, not in the inventory"
-        if "Belongs in `registry`" in verdict or "belongs in `registry`" in verdict:
-            assert asset["target_namespace"] == "registry", (
-                f"catalog.{table}: ADR-002 says registry, inventory says {asset['target_namespace']}"
-            )
-        elif "`observations`" in verdict:
-            assert asset["target_namespace"] == "observations", f"catalog.{table}"
-        elif verdict.startswith("Correctly `catalog`"):
-            assert asset["target_namespace"] == "catalog", f"catalog.{table}"
+# test_inventory_agrees_with_adr_002 was retired with ADR-003 steps 5-6. ADR-003 supersedes the
+# scope basis of ADR-002: the `catalog` reference tables ADR-002 routed *into* `registry` are
+# instead EXTERNALIZED (ownership follows the scope rule, not the provenance shape), so they are no
+# longer in this inventory and there is nothing left to reconcile against ADR-002's catalog table.
 
 
 

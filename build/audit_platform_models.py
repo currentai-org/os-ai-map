@@ -188,12 +188,18 @@ def consumers_from_receipt(receipt: dict) -> dict[str, list[str]]:
     the `platform_model_consumers` field in the inventory, and gating that field against this
     map is what makes the audit reproducible instead of authored.
     """
+    # platform_model_consumers is an assets.yaml field, so attribute only reads that resolve to
+    # a GOVERNED ASSET. A read of a dependency contract (dependencies.yaml) or of an externalized
+    # table is not a governed-asset consumer and carries no such field.
+    governed = set(A.by_table())
     out: dict[str, set[str]] = {}
     for m in receipt["models"]:
         if m["has_repository_source"]:
             continue
         for ref in m["in_scope_reads"]:
-            out.setdefault(ref.removeprefix("currentai."), set()).add(m["table"])
+            stripped = ref.removeprefix("currentai.")
+            if stripped in governed:
+                out.setdefault(stripped, set()).add(m["table"])
     return {k: sorted(v) for k, v in out.items()}
 
 

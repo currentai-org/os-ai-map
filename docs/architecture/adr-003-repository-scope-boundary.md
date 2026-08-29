@@ -1,12 +1,14 @@
 # ADR-003: Repository scope boundary — govern the Gap Map, not the OSO org
 
-**Status:** **Accepted; mechanism implemented (steps 2–4), 2026-08-29.** This document is the plan;
-its mechanism has now landed — the `role` field on governed assets, `warehouse/dependencies.yaml`, the
-root-scoped DAG, and the anti-reintroduction gates are all merged. That merge **lifts the Phase-5
-platform-migration freeze**: the remaining authorized work is the externalization of the 28 roleless
-backlog assets (steps 5–6 below), each gated by the no-orphan precondition — **not** the old Phase-5
-namespace moves, which stay **superseded, not re-enabled**. No backlog asset has yet been moved,
-removed, or reclassified.
+**Status:** **Accepted; fully implemented (steps 2–6), 2026-08-29.** This document is the plan; it
+has now landed in full. The mechanism (steps 2–4) — the `role` field on governed assets,
+`warehouse/dependencies.yaml`, the root-scoped DAG, and the anti-reintroduction gates — is merged,
+and the externalization (steps 5–6) is complete: the 28 roleless backlog assets (24 long-tail
+pipelines + 4 questionable gap_map tables) were transferred to platform ownership and removed from
+this repo's inventory and publisher. **No OSO table was deleted** — the deployed tables stay live
+under platform ownership; only their repo inventory/publisher entries were removed, under the
+no-orphan precondition. The governed inventory is now 38 governed assets + 8 dependency contracts;
+the `long_tail` population is retired and the backlog is empty, kept so by the gates.
 **Supersedes:** the scope *basis* of ADR-002 and `data-architecture.md` §11.3 (the transitive-closure
 membership rule). ADR-002's provenance test (`registry` vs `catalog`) stands; its assumption that every
 misfiled `catalog` table must be *migrated into repo ownership* does not.

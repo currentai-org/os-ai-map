@@ -58,9 +58,6 @@ def load_sources(root: Path) -> dict:
         "scores": _dir("scores"),
         "taxonomy": yaml.safe_load((root / "sources" / "taxonomy.yaml").read_text()),
         "registry": _dir("registry"),
-        "foundation_model_repos": (
-            yaml.safe_load((root / "sources" / "foundation_model_repos.yaml").read_text()) or {}
-        ).get("rows", []),
     }
     lt = root / "sources" / "snapshots" / "long_tail.json"
     if lt.exists():

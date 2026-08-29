@@ -6,19 +6,19 @@ fails if this file drifts from the renderer. Regenerate with
 
 This graph is **root-scoped** (ADR-003): it is the Open Source AI Gap Map's own data system,
 not the OSO organization's warehouse. Nodes are the <!-- count:governed_assets -->38 governed
-assets in `warehouse/assets.yaml` (those carrying a `role`) plus the <!-- count:dependencies -->8
-external contracts in `warehouse/dependencies.yaml`. The <!-- count:externalization_backlog -->28
-roleless backlog assets that ADR-003 slates for externalization are **not** nodes, and a standalone
-notebook is **never** a reachability root (gate 5): a notebook read cannot pull a table into this graph.
+assets in `warehouse/assets.yaml` (every one carries a `role`) plus the <!-- count:dependencies -->8
+external contracts in `warehouse/dependencies.yaml`. The externalization backlog is empty
+(<!-- count:externalization_backlog -->0): the long-tail pipelines and questionable gap_map tables
+were transferred to platform ownership and removed (ADR-003 steps 5-6). A standalone notebook is
+**never** a reachability root (gate 5).
 
 Reachability is a real closure from the map roots -- the governed publication sinks and the named
 audit/control build modules -- traversed UPSTREAM through repo-owned producer files (governed models
-and the read-only dependency mirrors); dependencies are leaves. Three views replace the old single
-all-asset diagram:
+and the read-only dependency mirrors); dependencies are leaves. Three views:
 
 1. **Map governance** -- `sources/` -> `registry`/`evaluation` governed outputs and the repo-owned
-   computation chain. A `sources/` edge is drawn only for a serializer-compiled output, never invented
-   from a missing upstream; node status carries through (staged dashed, dormant faded).
+   computation chain. A `sources/` edge is drawn only for a serializer-compiled output; node status
+   carries through (staged dashed, dormant faded).
 2. **Runtime dependencies** -- the OSO / platform inputs in `dependencies.yaml` -> the governed
    computation (and the dependency chain the openness parity gate reaches into).
 3. **Compatibility / retirement appendix** -- compatibility shims -> their `replacement`.

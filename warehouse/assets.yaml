@@ -7,632 +7,34 @@
 # Tables that merely exist on OSO, or are read only by a standalone notebook or another platform
 # product, are out of scope in both files and stay discoverable through OSO's own UI.
 #
-# Transitional: the 28 roleless entries below are the externalization backlog (24 long_tail +
-# 4 questionable gap_map tables) that ADR-003 steps 5-6 transfer to the platform and remove.
-# They are deliberately roleless until they leave; every OTHER entry is governed and carries a
-# role. Schema and gates are in docs/architecture/data-architecture.md section 11.
+# The ADR-003 externalization is COMPLETE: the long-tail pipelines and the questionable gap_map
+# tables have been transferred to platform ownership and removed here (steps 5-6). Every entry
+# now carries a `role`; the externalization backlog is empty and the gates keep it that way
+# (`population: long_tail` is retired, and no roleless entry may appear). The deployed OSO tables
+# for the externalized assets stay live under platform ownership -- they were removed from this
+# repo's inventory and publisher, never from OSO.
 #
-# `kind` is what an asset IS, in the namespace vocabulary of section 4. `current_namespace`
-# is where its table lives today and `target_namespace` where the architecture puts it.
-# Where they disagree the asset carries migration_status: pending.
+# There is no `owner` field: every governed asset is owned by this repository, so a uniform owner
+# carried no signal (a dependency contract instead records `owner: oso` in dependencies.yaml).
 #
-# `reads`, `read_by` and the counts in any prose are DERIVED by build/assets.py from the
-# tree, and tests/test_assets_inventory.py compares them against these values. Do not
-# hand-edit them, and do not write a count here that is not generated.
+# `kind` is what an asset IS, in the namespace vocabulary of section 4. `current_namespace` is
+# where its table lives today and `target_namespace` where the architecture puts it.
+#
+# `reads`, `read_by` and the counts in any prose are DERIVED by build/assets.py from the tree,
+# and tests/test_assets_inventory.py compares them against these values. Do not hand-edit them.
 #
 # `consumer_checks` records what was actually audited, per check:
 #   repository        every tracked model, build module, notebook and workflow
-#   platform_notebooks  all 20 notebooks in the org, including the 16 untracked here
-#   platform_models   CHECKED (Phase 0b). All 41 deployed model definitions in the org
-#                     were read. platform_model_consumers lists the deployed models with NO
-#                     repository source that read an asset; repo-sourced deployed readers
+#   platform_notebooks  all notebooks in the org, including the untracked ones
+#   platform_models   CHECKED (Phase 0b). platform_model_consumers lists the deployed models with
+#                     NO repository source that read an asset; repo-sourced deployed readers
 #                     already appear in read_by, so they are not repeated there.
 #   external          NOT audited. Nothing outside this org.
-# platform_models is now checked for every asset, so retirement_candidates() can be
-# non-empty; retirement itself still requires maintainer authorization (section 17).
-#
-# This inventory absorbed warehouse/sources.yaml, retired in the mirror-layout restructure.
-# That file's explanation of why two sources carry no fetcher is preserved verbatim here.
-# goodailist's reasoning lives on the signal_goodailist.repo_catalog entry (source_note);
-# aiid is not a tracked asset, so its reasoning is carried here:
-#
-#   ai_incidents (AI Incident Database, https://incidentdatabase.ai/):
-#   No fetcher and no committed CSV, for the same reason as goodailist above: the
-#   currentai.aiid REST ingestion reads incidentdatabase.ai on its own weekly cron,
-#   and the ai-safety-incidents notebook reads that rather than a mirror. The
-#   committed CSV was removed on 2026-08-16 with nothing pointed at it.
+# Schema and gates are in docs/architecture/data-architecture.md section 11.
 ---
 version: 1
 verified_at: '2026-08-22'
 assets:
-- id: catalog.country_populations
-  table: currentai.catalog.country_populations
-  kind: catalog
-  current_namespace: catalog
-  target_namespace: catalog
-  migration_status: complete
-  authority: platform
-  population: long_tail
-  release_path: false
-  read_by:
-    notebooks:
-    - notebooks/pypi-geo-trends.py
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers: none_confirmed
-  grain: one row per country_code
-  producer: manual upload
-  refresh: manual upload
-  dataset_id: 046ee25e-daee-4c43-a13c-d6ba9f6bd549
-  owner: carl
-  status: active
-  materialized: true
-  verified_at: '2026-08-20'
-- id: catalog.foundation_model_repos
-  table: currentai.catalog.foundation_model_repos
-  files:
-    model: null
-    schema: null
-    data: warehouse/data/catalog/foundation_model_repos.csv
-  kind: registry
-  current_namespace: catalog
-  target_namespace: registry
-  migration_status: in_progress
-  authority: repo
-  population: long_tail
-  release_path: false
-  platform_model_consumers:
-  - currentai.state_of_os_ai.family_footprint
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers: none_confirmed
-  grain: one row per curated model_family
-  producer: 'hand-maintained CSV: warehouse/data/catalog/foundation_model_repos.csv'
-  classification_note: 'catalog->registry ownership transition, consumer cutover underway: the
-    compiled successor currentai.registry.foundation_model_repos is ACTIVE and materialized (published
-    to the registry dataset on merge of #397, platform-verified 2026-08-29 — 72 rows, bidirectional
-    business-column diff against this table clean). The consumer entities.models was repointed to the
-    registry table AND redeployed on the platform (revision 5, revision_hash c7099b10…, run
-    b09bcc98 terminal SUCCESS 2026-08-29T14:57:47Z, behavior-neutral: 21311 rows unchanged, (repo,
-    model_id, model_family) set diff 0 both ways; platform_models.json regenerated so its
-    source_sha256 b2d91edc… and internal_reads match the repo). So neither the in-repo nor the
-    deployed entities.models reads this table any more. It stays live (in_progress) ONLY because the
-    deployed state_of_os_ai.family_footprint still reads it; §17 retires it once that deployed reader
-    is repointed (a separately authorized maintainer/platform step). NOTE for the §17 retirement parity check: both tables carry regenerated dlt loader metadata
-    columns (_dlt_load_id, _dlt_id), so a full-row EXCEPT reports total drift permanently — the
-    retirement equivalence check MUST project the business columns explicitly.'
-  refresh: manual upload
-  dataset_id: 046ee25e-daee-4c43-a13c-d6ba9f6bd549
-  owner: carl
-  status: active
-  materialized: true
-  verified_at: '2026-08-29'
-- id: catalog.goodailist_repos
-  table: currentai.catalog.goodailist_repos
-  kind: catalog
-  current_namespace: catalog
-  target_namespace: catalog
-  migration_status: complete
-  authority: platform
-  population: long_tail
-  release_path: false
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers:
-  - ai-safety-incidents
-  grain: one row per repo, frozen snapshot
-  producer: manual upload
-  refresh: manual upload
-  dataset_id: 046ee25e-daee-4c43-a13c-d6ba9f6bd549
-  owner: carl
-  status: active
-  materialized: true
-  verified_at: '2026-08-20'
-- id: catalog.model_benchmarks
-  table: currentai.catalog.model_benchmarks
-  files:
-    model: warehouse/models/catalog/model_benchmarks.py
-    schema: null
-    data: warehouse/data/catalog/model_benchmarks.csv
-  kind: catalog
-  current_namespace: catalog
-  target_namespace: catalog
-  migration_status: complete
-  authority: repo
-  population: long_tail
-  release_path: false
-  reads:
-  - table: currentai.entities.repos
-    scope: internal
-  read_by:
-    models:
-    - warehouse/models/entities/models.sql
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers:
-  - state-of-os-ai
-  grain: one row per Open LLM Leaderboard model_id
-  producer: warehouse/models/catalog/model_benchmarks.py
-  refresh: manual upload
-  dataset_id: 046ee25e-daee-4c43-a13c-d6ba9f6bd549
-  owner: carl
-  status: active
-  materialized: true
-  verified_at: '2026-08-20'
-- id: catalog.model_repos
-  table: currentai.catalog.model_repos
-  files:
-    model: warehouse/models/catalog/model_repos.py
-    schema: null
-    data: warehouse/data/catalog/model_repos.csv
-    intermediate:
-    - warehouse/data/catalog/tracked_models.csv
-    - warehouse/data/catalog/top_models.csv
-  kind: catalog
-  current_namespace: catalog
-  target_namespace: catalog
-  migration_status: complete
-  authority: repo
-  population: long_tail
-  release_path: false
-  reads:
-  - table: currentai.signal_goodailist.repo_catalog
-    scope: internal
-  read_by:
-    models:
-    - warehouse/models/entities/models.sql
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers: none_confirmed
-  grain: one row per Hugging Face model_id, mapped to a GitHub repo
-  producer: warehouse/models/catalog/model_repos.py
-  refresh: manual upload
-  dataset_id: 046ee25e-daee-4c43-a13c-d6ba9f6bd549
-  owner: carl
-  status: active
-  materialized: true
-  verified_at: '2026-08-20'
-- id: catalog.osai_gap_map
-  table: currentai.catalog.osai_gap_map
-  kind: catalog
-  current_namespace: catalog
-  target_namespace: catalog
-  migration_status: complete
-  authority: platform
-  population: long_tail
-  release_path: false
-  platform_model_consumers:
-  - currentai.scores.investment_ranking
-  - currentai.scores.taxonomy
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers: none_confirmed
-  grain: one row per (layer, subcategory) of a third-party map
-  producer: manual upload
-  refresh: manual upload
-  dataset_id: 046ee25e-daee-4c43-a13c-d6ba9f6bd549
-  owner: carl
-  status: active
-  materialized: true
-  verified_at: '2026-08-20'
-- id: catalog.osai_subcategory_mapping
-  table: currentai.catalog.osai_subcategory_mapping
-  kind: registry
-  current_namespace: catalog
-  target_namespace: registry
-  migration_status: pending
-  authority: platform
-  population: long_tail
-  release_path: false
-  platform_model_consumers:
-  - currentai.scores.investment_ranking
-  - currentai.scores.taxonomy
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers: none_confirmed
-  grain: one row per (osai_layer, osai_subcategory)
-  producer: manual upload
-  classification_note: curated crosswalk between two taxonomies
-  refresh: manual upload
-  dataset_id: 046ee25e-daee-4c43-a13c-d6ba9f6bd549
-  owner: carl
-  status: active
-  materialized: true
-  verified_at: '2026-08-20'
-- id: catalog.pypi_downloads
-  table: currentai.catalog.pypi_downloads
-  kind: observations
-  current_namespace: catalog
-  target_namespace: observations
-  migration_status: pending
-  authority: platform
-  population: long_tail
-  release_path: false
-  read_by:
-    notebooks:
-    - notebooks/pypi-geo-trends.py
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers:
-  - pypi-china-openclaw
-  - state-of-os-ai
-  grain: one row per (day, package, country_code)
-  producer: manual upload
-  classification_note: a measurement, not an inventory
-  refresh: manual upload
-  dataset_id: 046ee25e-daee-4c43-a13c-d6ba9f6bd549
-  owner: carl
-  status: active
-  materialized: true
-  verified_at: '2026-08-20'
-- id: catalog.stack_map
-  table: currentai.catalog.stack_map
-  files:
-    model: warehouse/models/catalog/stack_map.py
-    schema: null
-    data: warehouse/data/catalog/stack_map.csv
-  kind: registry
-  current_namespace: catalog
-  target_namespace: registry
-  migration_status: pending
-  authority: repo
-  population: gap_map
-  release_path: false
-  read_by:
-    models:
-    - warehouse/models/scores/stack_contributors.sql
-    notebooks:
-    - notebooks/long-tail-explorer.py
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers:
-  - ai-contribution-load
-  - launch-insights
-  - stf-ai-stewardship-evidence
-  grain: one row per repo, bridging scored products to stack-map taxonomy
-  producer: warehouse/models/catalog/stack_map.py
-  classification_note: compiled from sources/ by warehouse/models/catalog/stack_map.py
-  refresh: manual upload
-  dataset_id: 046ee25e-daee-4c43-a13c-d6ba9f6bd549
-  owner: carl
-  status: compatibility
-  materialized: true
-  verified_at: '2026-08-20'
-  replacement: currentai.registry.product_scores
-- id: catalog.taxonomy_crosswalk
-  table: currentai.catalog.taxonomy_crosswalk
-  kind: registry
-  current_namespace: catalog
-  target_namespace: registry
-  migration_status: pending
-  authority: platform
-  population: long_tail
-  release_path: false
-  platform_model_consumers:
-  - currentai.scores.taxonomy
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers: none_confirmed
-  grain: one row per (osai_layer, goodai_category)
-  producer: manual upload
-  classification_note: curated crosswalk between two taxonomies
-  refresh: manual upload
-  dataset_id: 046ee25e-daee-4c43-a13c-d6ba9f6bd549
-  owner: carl
-  status: active
-  materialized: true
-  verified_at: '2026-08-20'
-- id: entities.models
-  table: currentai.entities.models
-  files:
-    model: warehouse/models/entities/models.sql
-    schema: null
-    data: null
-  kind: catalog
-  current_namespace: entities
-  target_namespace: entities
-  migration_status: not_planned
-  not_planned_reason: 'will NOT relocate to catalog (data-architecture.md §11.1): kind is catalog, but the target dataset currentai.catalog is an immutable OSO STATIC_MODEL dataset (046ee25e) and this is a scheduled USER_MODEL pipeline (dataset 663132ed, weekly cron 0 4 * * 0). OSO dataset type is fixed at creation and cannot be changed, so a scheduled model cannot be hosted in the static catalog dataset — platform-verified 2026-08-28, when a create/revision/release into catalog succeeded silently but the run request was rejected because the dataset type is STATIC_MODEL where a scheduled model needs USER_MODEL. Decision 2026-08-28 (Phase 5): the discovery pipeline stays in its own USER_MODEL namespace `entities`; catalog remains the static reference layer. Not a namespace migration.'
-  authority: repo
-  population: long_tail
-  release_path: false
-  reads:
-  - table: currentai.catalog.model_benchmarks
-    scope: internal
-  - table: currentai.catalog.model_repos
-    scope: internal
-  - table: currentai.entities.repos
-    scope: internal
-  - table: currentai.registry.foundation_model_repos
-    scope: internal
-  read_by:
-    models:
-    - warehouse/models/scores/project_summary.sql
-    notebooks:
-    - notebooks/long-tail-explorer.py
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers:
-  - sta-grantmaker-view
-  grain: one row per Hugging Face model_id
-  producer: warehouse/models/entities/models.sql
-  classification_note: discovered from the goodailist roster, not curated
-  refresh: dataset cron '0 4 * * 0'
-  timezone: UTC
-  last_observed_trigger: SCHEDULED
-  last_run_at: '2026-08-23'
-  dataset_id: 663132ed-ea4a-4fce-97a8-742e4479269c
-  owner: carl
-  status: active
-  materialized: true
-  verified_at: '2026-08-20'
-- id: entities.packages
-  table: currentai.entities.packages
-  files:
-    model: warehouse/models/entities/packages.sql
-    schema: null
-    data: null
-  kind: catalog
-  current_namespace: entities
-  target_namespace: entities
-  migration_status: not_planned
-  not_planned_reason: 'will NOT relocate to catalog (data-architecture.md §11.1): kind is catalog, but the target dataset currentai.catalog is an immutable OSO STATIC_MODEL dataset (046ee25e) and this is a scheduled USER_MODEL pipeline (dataset 663132ed, weekly cron 0 4 * * 0). OSO dataset type is fixed at creation and cannot be changed, so a scheduled model cannot be hosted in the static catalog dataset — platform-verified 2026-08-28, when a create/revision/release into catalog succeeded silently but the run request was rejected because the dataset type is STATIC_MODEL where a scheduled model needs USER_MODEL. Decision 2026-08-28 (Phase 5): the discovery pipeline stays in its own USER_MODEL namespace `entities`; catalog remains the static reference layer. Not a namespace migration.'
-  authority: repo
-  population: long_tail
-  release_path: false
-  reads:
-  - table: currentai.entities.repos
-    scope: internal
-  - table: oso.package_owners_v0
-    scope: external
-  read_by:
-    models:
-    - warehouse/models/scores/project_summary.sql
-    notebooks:
-    - notebooks/long-tail-explorer.py
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers: none_confirmed
-  grain: one row per (repo, package_source, package_name)
-  producer: warehouse/models/entities/packages.sql
-  classification_note: discovered from the goodailist roster, not curated
-  refresh: dataset cron '0 4 * * 0'
-  timezone: UTC
-  last_observed_trigger: SCHEDULED
-  last_run_at: '2026-08-23'
-  dataset_id: 663132ed-ea4a-4fce-97a8-742e4479269c
-  owner: carl
-  status: active
-  materialized: true
-  verified_at: '2026-08-20'
-- id: entities.projects
-  table: currentai.entities.projects
-  files:
-    model: warehouse/models/entities/projects.sql
-    schema: null
-    data: null
-  kind: catalog
-  current_namespace: entities
-  target_namespace: entities
-  migration_status: not_planned
-  not_planned_reason: 'will NOT relocate to catalog (data-architecture.md §11.1): kind is catalog, but the target dataset currentai.catalog is an immutable OSO STATIC_MODEL dataset (046ee25e) and this is a scheduled USER_MODEL pipeline (dataset 663132ed, weekly cron 0 4 * * 0). OSO dataset type is fixed at creation and cannot be changed, so a scheduled model cannot be hosted in the static catalog dataset — platform-verified 2026-08-28, when a create/revision/release into catalog succeeded silently but the run request was rejected because the dataset type is STATIC_MODEL where a scheduled model needs USER_MODEL. Decision 2026-08-28 (Phase 5): the discovery pipeline stays in its own USER_MODEL namespace `entities`; catalog remains the static reference layer. Not a namespace migration.'
-  authority: repo
-  population: long_tail
-  release_path: false
-  reads:
-  - table: currentai.entities.repos
-    scope: internal
-  - table: currentai.signal_goodailist.repo_catalog
-    scope: internal
-  - table: oso.oss_directory.projects
-    scope: external
-  read_by:
-    models:
-    - warehouse/models/scores/project_summary.sql
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers:
-  - ai-potluck-partners
-  grain: one row per project_slug
-  producer: warehouse/models/entities/projects.sql
-  classification_note: discovered from the goodailist roster, not curated
-  refresh: dataset cron '0 4 * * 0'
-  timezone: UTC
-  last_observed_trigger: SCHEDULED
-  last_run_at: '2026-08-23'
-  dataset_id: 663132ed-ea4a-4fce-97a8-742e4479269c
-  owner: carl
-  status: active
-  materialized: true
-  verified_at: '2026-08-20'
-- id: entities.repos
-  table: currentai.entities.repos
-  files:
-    model: warehouse/models/entities/repos.sql
-    schema: null
-    data: null
-  kind: catalog
-  current_namespace: entities
-  target_namespace: entities
-  migration_status: not_planned
-  not_planned_reason: 'will NOT relocate to catalog (data-architecture.md §11.1): kind is catalog, but the target dataset currentai.catalog is an immutable OSO STATIC_MODEL dataset (046ee25e) and this is a scheduled USER_MODEL pipeline (dataset 663132ed, weekly cron 0 4 * * 0). OSO dataset type is fixed at creation and cannot be changed, so a scheduled model cannot be hosted in the static catalog dataset — platform-verified 2026-08-28, when a create/revision/release into catalog succeeded silently but the run request was rejected because the dataset type is STATIC_MODEL where a scheduled model needs USER_MODEL. Decision 2026-08-28 (Phase 5): the discovery pipeline stays in its own USER_MODEL namespace `entities`; catalog remains the static reference layer. Not a namespace migration.'
-  authority: repo
-  population: long_tail
-  release_path: false
-  reads:
-  - table: currentai.signal_goodailist.repo_catalog
-    scope: internal
-  - table: oso.oss_directory.artifacts_by_project
-    scope: external
-  - table: oso.oss_directory.repositories
-    scope: external
-  read_by:
-    models:
-    - warehouse/models/catalog/model_benchmarks.py
-    - warehouse/models/entities/models.sql
-    - warehouse/models/entities/packages.sql
-    - warehouse/models/entities/projects.sql
-    - warehouse/models/events/github_events.sql
-    - warehouse/models/metrics/daily.sql
-    - warehouse/models/scores/dependency_graph.sql
-    - warehouse/models/scores/fragility.sql
-    - warehouse/models/scores/ossd_coverage.sql
-    - warehouse/models/scores/project_summary.sql
-  platform_model_consumers:
-  - currentai.scores.investment_ranking
-  - currentai.scores.taxonomy
-  - currentai.state_of_os_ai.country_activity_monthly
-  - currentai.state_of_os_ai.geo_cohorts
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers:
-  - launch-insights
-  - sta-grantmaker-view
-  grain: one row per repo
-  producer: warehouse/models/entities/repos.sql
-  classification_note: discovered from the goodailist roster, not curated
-  refresh: dataset cron '0 4 * * 0'
-  timezone: UTC
-  last_observed_trigger: SCHEDULED
-  last_run_at: '2026-08-23'
-  dataset_id: 663132ed-ea4a-4fce-97a8-742e4479269c
-  owner: carl
-  status: active
-  materialized: true
-  verified_at: '2026-08-20'
-- id: events.github_events
-  table: currentai.events.github_events
-  files:
-    model: warehouse/models/events/github_events.sql
-    schema: null
-    data: null
-  kind: observations
-  current_namespace: events
-  target_namespace: events
-  migration_status: not_planned
-  not_planned_reason: 'DEFERRED, stays put (data-architecture.md §11.1, #393): kind is observations and the observations dataset is USER_MODEL (type-compatible), but folding this scheduled pipeline in requires giving the observations dataset a sweep cron — an OSO schedule is a dataset-level sweep and a model cron only throttles it (platform-verified 2026-08-28). The observations dataset is currently manual (cron null); its product_adoption_current is deliberately manual/full-refresh under the §18 baseline discipline, and this pipeline carries its own weekly cron 0 5 * * 0. Scheduling observations to host it would also sweep product_adoption_current and the pypi orphan, a behavior change to a §18-sensitive model. Decision 2026-08-28 (Phase 5): keep this pipeline in its own USER_MODEL dataset (events); whether the observations dataset ever gains a sweep is a Phase-2B refresh-model decision, and even then a namespace move for this table would require a NEW explicit architecture decision, not an automatic follow-on. Not a namespace migration now. Repo<->platform read drift on the deployed revision was back-ported so the repo SQL matches the deployed source byte-for-byte (sha256 matches the audit; #395, resolved 2026-08-29).'
-  authority: repo
-  population: long_tail
-  release_path: false
-  reads:
-  - table: currentai.entities.repos
-    scope: internal
-  - table: oso.github_events.github_events_last_365_days
-    scope: external
-  read_by:
-    models:
-    - warehouse/models/metrics/daily.sql
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers:
-  - ai-contribution-load
-  grain: one row per (github_id, event_type, time)
-  producer: warehouse/models/events/github_events.sql
-  classification_note: artifact-level measurement over time
-  refresh: dataset cron '0 5 * * 0'
-  timezone: UTC
-  last_observed_trigger: SCHEDULED
-  last_run_at: '2026-08-23'
-  dataset_id: b2109421-64a8-4681-9d28-65a37a286f97
-  owner: carl
-  status: active
-  materialized: true
-  verified_at: '2026-08-20'
-- id: metrics.daily
-  table: currentai.metrics.daily
-  files:
-    model: warehouse/models/metrics/daily.sql
-    schema: null
-    data: null
-  kind: observations
-  current_namespace: metrics
-  target_namespace: metrics
-  migration_status: not_planned
-  not_planned_reason: 'DEFERRED, stays put (data-architecture.md §11.1, #393): kind is observations and the observations dataset is USER_MODEL (type-compatible), but folding this scheduled pipeline in requires giving the observations dataset a sweep cron — an OSO schedule is a dataset-level sweep and a model cron only throttles it (platform-verified 2026-08-28). The observations dataset is currently manual (cron null); its product_adoption_current is deliberately manual/full-refresh under the §18 baseline discipline, and this pipeline carries its own weekly cron 0 6 * * 0 (one hour after events so it reads fresh github_events). Scheduling observations to host it would also sweep product_adoption_current and the pypi orphan, a behavior change to a §18-sensitive model. Decision 2026-08-28 (Phase 5): keep this pipeline in its own USER_MODEL dataset (metrics); whether the observations dataset ever gains a sweep is a Phase-2B refresh-model decision, and even then a namespace move for this table would require a NEW explicit architecture decision, not an automatic follow-on. Not a namespace migration now. Repo<->platform read drift on the deployed revision was back-ported so the repo SQL matches the deployed source byte-for-byte (sha256 matches the audit; #395, resolved 2026-08-29).'
-  authority: repo
-  population: long_tail
-  release_path: false
-  reads:
-  - table: currentai.entities.repos
-    scope: internal
-  - table: currentai.events.github_events
-    scope: internal
-  - table: oso.github_events.github_events_last_365_days
-    scope: external
-  read_by:
-    models:
-    - warehouse/models/scores/fragility.sql
-    - warehouse/models/scores/project_summary.sql
-    - warehouse/models/scores/repos_summary.sql
-    notebooks:
-    - notebooks/oss-ai-trends.py
-  platform_model_consumers:
-  - currentai.state_of_os_ai.country_activity_monthly
-  - currentai.state_of_os_ai.star_trajectories
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers:
-  - state-of-os-ai
-  grain: one row per (repo, day, metric)
-  producer: warehouse/models/metrics/daily.sql
-  classification_note: artifact-level measurement over time
-  refresh: dataset cron '0 6 * * 0'
-  timezone: UTC
-  last_observed_trigger: SCHEDULED
-  last_run_at: '2026-08-23'
-  dataset_id: 5a73a919-79da-4029-ae5c-f5653bcc1e62
-  owner: carl
-  status: active
-  materialized: true
-  verified_at: '2026-08-20'
 - id: evaluation.adoption_reconciliation
   table: currentai.evaluation.adoption_reconciliation
   kind: evaluation
@@ -674,7 +76,6 @@ assets:
     label is required here rather than the entry being exempt. NOT a deletion candidate.'
   retirement_issue: '#355'
   dataset_id: 55a4311d-7659-4811-a4c5-7ff167ef5eef
-  owner: carl
   status: active
   materialized: true
   verified_at: '2026-08-25'
@@ -719,7 +120,6 @@ assets:
     candidate; this table is the replacement, not the thing retired.'
   retirement_issue: '#384'
   dataset_id: 55a4311d-7659-4811-a4c5-7ff167ef5eef
-  owner: carl
   status: active
   materialized: true
   verified_at: '2026-08-27'
@@ -763,7 +163,6 @@ assets:
     candidate; this table is the replacement, not the thing retired.'
   retirement_issue: '#384'
   dataset_id: 55a4311d-7659-4811-a4c5-7ff167ef5eef
-  owner: carl
   status: active
   materialized: true
   verified_at: '2026-08-27'
@@ -805,7 +204,6 @@ assets:
     candidate; this table is the replacement, not the thing retired.'
   retirement_issue: '#384'
   dataset_id: 55a4311d-7659-4811-a4c5-7ff167ef5eef
-  owner: carl
   status: active
   materialized: true
   verified_at: '2026-08-27'
@@ -850,7 +248,6 @@ assets:
     "nobody wants it" one. NOT a deletion candidate.'
   retirement_issue: '#355'
   dataset_id: 55a4311d-7659-4811-a4c5-7ff167ef5eef
-  owner: carl
   status: active
   materialized: true
   verified_at: '2026-08-25'
@@ -921,7 +318,6 @@ assets:
     product_adoption_current next refreshes. It carries no retirement_reason because the derived
     predicate excludes staged assets: labelling one would put an authored retirement claim on an
     asset the predicate does not select, which is the drift the ledger gate exists to catch.'
-  owner: carl
   status: staged
   materialized: false
   verified_at: '2026-08-24'
@@ -980,7 +376,6 @@ assets:
     (2026-08-24, 654 rows) — the single preserved snapshot §18 requires; a later run overwrites
     this table but must never touch those bytes.'
   dataset_id: c507c9f9-321f-4773-a107-d96658e2da67
-  owner: carl
   status: active
   materialized: true
   verified_at: '2026-08-25'
@@ -1010,7 +405,6 @@ assets:
     build/snapshot_source_runs.py, see issue #355. No dataset_id is recorded because the
     observations namespace is not yet created on the platform (verified read-only 2026-08-24); a
     real id is written here only once the dataset exists.'
-  owner: carl
   status: staged
   materialized: false
   verified_at: '2026-08-24'
@@ -1035,7 +429,6 @@ assets:
   publication_role: payload_input
   refresh: CI push on merge to main
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
-  owner: carl
   status: active
   materialized: true
   verified_at: '2026-08-23'
@@ -1065,7 +458,6 @@ assets:
   publication_role: payload_input
   refresh: CI push on merge to main
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
-  owner: carl
   status: active
   materialized: true
   verified_at: '2026-08-20'
@@ -1090,7 +482,6 @@ assets:
   publication_role: payload_input
   refresh: CI push on merge to main
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
-  owner: carl
   status: active
   materialized: true
   verified_at: '2026-08-23'
@@ -1115,7 +506,6 @@ assets:
   publication_role: payload_input
   refresh: CI push on merge to main
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
-  owner: carl
   status: active
   materialized: true
   verified_at: '2026-08-23'
@@ -1140,7 +530,6 @@ assets:
   publication_role: payload_input
   refresh: CI push on merge to main
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
-  owner: carl
   status: active
   materialized: true
   verified_at: '2026-08-23'
@@ -1173,48 +562,9 @@ assets:
     (build_payload), stamped with the run-time declaration_version_id. Not yet published:
     the candidate CSV is written to build/registry/axis_assessments.csv (git-ignored) and
     publishing to OSO is a maintainer step, runbook at docs/operations/deploy-axis-assessments.md.'
-  owner: carl
   status: staged
   materialized: false
   verified_at: '2026-08-25'
-- id: registry.foundation_model_repos
-  table: currentai.registry.foundation_model_repos
-  kind: registry
-  current_namespace: registry
-  target_namespace: registry
-  migration_status: complete
-  authority: repo
-  population: long_tail
-  release_path: false
-  read_by:
-    models:
-    - warehouse/models/entities/models.sql
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers: none_confirmed
-  grain: one row per curated model_family
-  producer: build/serialize_registry.py + build/publish_registry.py
-  classification_note: 'curator-controlled foundation-model reference table, compiled from
-    sources/foundation_model_repos.yaml. The catalog->registry successor of
-    catalog.foundation_model_repos (Phase 5 ownership transition); the golden proves it reproduces the
-    catalog contents byte-for-byte. ACTIVE and materialized: published to the registry dataset on merge
-    of #397 (registry.yml), platform-verified 2026-08-29 — 72 rows, 72 distinct model_family, and a
-    bidirectional business-column diff against the retiring catalog.foundation_model_repos is clean
-    (only_in_catalog 0, only_in_registry 0). The in-repo consumer entities.models was repointed to this
-    table in this reconciliation PR. catalog.foundation_model_repos stays live (in_progress) until the
-    deployed state_of_os_ai.family_footprint reader is also repointed and it retires under §17. The
-    verified_at below records DEPLOYED-STATE (platform) verification — the successor is materialized and
-    diff-clean against the retiring table — not merely candidate/compiled fidelity. Long-tail reference
-    data, not a gap-map payload input, so release_path: false and no publication_role.'
-  refresh: CI push on merge to main
-  dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
-  owner: carl
-  status: active
-  materialized: true
-  verified_at: '2026-08-29'
 - id: registry.categories
   table: currentai.registry.categories
   kind: registry
@@ -1236,7 +586,6 @@ assets:
   publication_role: payload_input
   refresh: CI push on merge to main
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
-  owner: carl
   status: active
   materialized: true
   verified_at: '2026-08-20'
@@ -1264,7 +613,6 @@ assets:
   publication_role: payload_input
   refresh: CI push on merge to main
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
-  owner: carl
   status: active
   materialized: true
   verified_at: '2026-08-20'
@@ -1292,7 +640,6 @@ assets:
   publication_role: payload_input
   refresh: CI push on merge to main
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
-  owner: carl
   status: active
   materialized: true
   verified_at: '2026-08-20'
@@ -1320,7 +667,6 @@ assets:
   publication_role: payload_input
   refresh: CI push on merge to main
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
-  owner: carl
   status: active
   materialized: true
   verified_at: '2026-08-20'
@@ -1350,7 +696,6 @@ assets:
   publication_role: payload_input
   refresh: CI push on merge to main
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
-  owner: carl
   status: active
   materialized: true
   verified_at: '2026-08-20'
@@ -1378,7 +723,6 @@ assets:
   publication_role: payload_input
   refresh: CI push on merge to main
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
-  owner: carl
   status: active
   materialized: true
   verified_at: '2026-08-20'
@@ -1407,7 +751,6 @@ assets:
   publication_role: payload_input
   refresh: CI push on merge to main
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
-  owner: carl
   status: active
   materialized: true
   verified_at: '2026-08-20'
@@ -1435,7 +778,6 @@ assets:
   publication_role: payload_input
   refresh: CI push on merge to main
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
-  owner: carl
   status: active
   materialized: true
   verified_at: '2026-08-20'
@@ -1474,7 +816,6 @@ assets:
   publication_role: payload_input
   refresh: CI push on merge to main
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
-  owner: carl
   status: active
   materialized: true
   verified_at: '2026-08-20'
@@ -1504,7 +845,6 @@ assets:
   publication_role: payload_input
   refresh: CI push on merge to main
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
-  owner: carl
   status: active
   materialized: true
   verified_at: '2026-08-20'
@@ -1529,7 +869,6 @@ assets:
   publication_role: payload_input
   refresh: CI push on merge to main
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
-  owner: carl
   status: active
   materialized: true
   verified_at: '2026-08-20'
@@ -1557,7 +896,6 @@ assets:
   publication_role: payload_input
   refresh: CI push on merge to main
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
-  owner: carl
   status: active
   materialized: true
   verified_at: '2026-08-20'
@@ -1584,7 +922,6 @@ assets:
   publication_role: payload_input
   refresh: CI push on merge to main
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
-  owner: carl
   status: active
   materialized: true
   verified_at: '2026-08-20'
@@ -1612,7 +949,6 @@ assets:
   publication_role: payload_input
   refresh: CI push on merge to main
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
-  owner: carl
   status: active
   materialized: true
   verified_at: '2026-08-20'
@@ -1637,7 +973,6 @@ assets:
   publication_role: payload_input
   refresh: CI push on merge to main
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
-  owner: carl
   status: active
   materialized: true
   verified_at: '2026-08-20'
@@ -1667,7 +1002,6 @@ assets:
   publication_role: payload_input
   refresh: CI push on merge to main
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
-  owner: carl
   status: active
   materialized: true
   verified_at: '2026-08-20'
@@ -1692,371 +1026,9 @@ assets:
   publication_role: payload_input
   refresh: CI push on merge to main
   dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
-  owner: carl
   status: dormant
   materialized: false
   verified_at: '2026-08-20'
-- id: scores.dependency_graph
-  table: currentai.scores.dependency_graph
-  files:
-    model: warehouse/models/scores/dependency_graph.sql
-    schema: null
-    data: null
-  kind: evaluation
-  current_namespace: scores
-  target_namespace: scores
-  migration_status: not_planned
-  not_planned_reason: 'will NOT relocate to evaluation (data-architecture.md §11.1): kind is evaluation, but the target namespace currentai.evaluation is the static compiled release-artifact dataset (55a4311d, holding axis_* and adoption_*) and this is a scheduled USER_MODEL pipeline (dataset 48ddf155, weekly cron 0 4 * * 1). OSO dataset type is immutable, so a scheduled model cannot be hosted in the static evaluation dataset — the same wall the entities-to-catalog move hit, platform-verified on the symmetric catalog case 2026-08-28. Decision 2026-08-28 (Phase 5): the scoring pipeline stays in its own USER_MODEL namespace `scores`; evaluation remains the static release-artifact layer. Not a namespace migration.'
-  authority: repo
-  population: long_tail
-  release_path: false
-  reads:
-  - table: currentai.entities.repos
-    scope: internal
-  - table: currentai.signal_goodailist.repo_catalog
-    scope: internal
-  - table: oso.int_code_dependencies
-    scope: external
-  read_by:
-    models:
-    - warehouse/models/scores/fragility.sql
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers: none_confirmed
-  grain: one row per (dependent_repo, dependency_repo)
-  producer: warehouse/models/scores/dependency_graph.sql
-  classification_note: derived from catalog and observations
-  refresh: dataset cron '0 4 * * 1'
-  timezone: UTC
-  last_observed_trigger: null
-  last_run_at: null
-  dataset_id: 48ddf155-0090-4323-b91c-f62f87445128
-  owner: carl
-  status: active
-  materialized: true
-  verified_at: '2026-08-20'
-- id: scores.fragility
-  table: currentai.scores.fragility
-  files:
-    model: warehouse/models/scores/fragility.sql
-    schema: null
-    data: null
-  kind: evaluation
-  current_namespace: scores
-  target_namespace: scores
-  migration_status: not_planned
-  not_planned_reason: 'will NOT relocate to evaluation (data-architecture.md §11.1): kind is evaluation, but the target namespace currentai.evaluation is the static compiled release-artifact dataset (55a4311d, holding axis_* and adoption_*) and this is a scheduled USER_MODEL pipeline (dataset 48ddf155, weekly cron 0 4 * * 1). OSO dataset type is immutable, so a scheduled model cannot be hosted in the static evaluation dataset — the same wall the entities-to-catalog move hit, platform-verified on the symmetric catalog case 2026-08-28. Decision 2026-08-28 (Phase 5): the scoring pipeline stays in its own USER_MODEL namespace `scores`; evaluation remains the static release-artifact layer. Not a namespace migration.'
-  authority: repo
-  population: long_tail
-  release_path: false
-  reads:
-  - table: currentai.entities.repos
-    scope: internal
-  - table: currentai.metrics.daily
-    scope: internal
-  - table: currentai.scores.dependency_graph
-    scope: internal
-  - table: currentai.signal_goodailist.repo_catalog
-    scope: internal
-  read_by:
-    models:
-    - warehouse/models/scores/project_summary.sql
-  platform_model_consumers:
-  - currentai.scores.investment_ranking
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers: none_confirmed
-  grain: one row per repo
-  producer: warehouse/models/scores/fragility.sql
-  classification_note: derived from catalog and observations
-  refresh: dataset cron '0 4 * * 1'
-  timezone: UTC
-  last_observed_trigger: null
-  last_run_at: null
-  dataset_id: 48ddf155-0090-4323-b91c-f62f87445128
-  owner: carl
-  status: active
-  materialized: true
-  verified_at: '2026-08-20'
-- id: scores.investment_ranking
-  table: currentai.scores.investment_ranking
-  kind: evaluation
-  current_namespace: scores
-  target_namespace: scores
-  migration_status: not_planned
-  not_planned_reason: 'will NOT relocate to evaluation (data-architecture.md §11.1): kind is evaluation, but the target namespace currentai.evaluation is the static compiled release-artifact dataset (55a4311d, holding axis_* and adoption_*) and this is a scheduled USER_MODEL pipeline (dataset 48ddf155, weekly cron 0 4 * * 1). OSO dataset type is immutable, so a scheduled model cannot be hosted in the static evaluation dataset — the same wall the entities-to-catalog move hit, platform-verified on the symmetric catalog case 2026-08-28. Decision 2026-08-28 (Phase 5): the scoring pipeline stays in its own USER_MODEL namespace `scores`; evaluation remains the static release-artifact layer. Not a namespace migration.'
-  authority: platform
-  population: long_tail
-  release_path: false
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers:
-  - ai-potluck-partners
-  grain: one row per (layer, subcategory)
-  producer: manual upload
-  classification_note: derived from catalog and observations
-  refresh: dataset cron '0 4 * * 1'
-  timezone: UTC
-  last_observed_trigger: null
-  last_run_at: null
-  dataset_id: 48ddf155-0090-4323-b91c-f62f87445128
-  owner: carl
-  status: active
-  materialized: true
-  verified_at: '2026-08-20'
-- id: scores.ossd_coverage
-  table: currentai.scores.ossd_coverage
-  files:
-    model: warehouse/models/scores/ossd_coverage.sql
-    schema: null
-    data: null
-  kind: evaluation
-  current_namespace: scores
-  target_namespace: scores
-  migration_status: not_planned
-  not_planned_reason: 'will NOT relocate to evaluation (data-architecture.md §11.1): kind is evaluation, but the target namespace currentai.evaluation is the static compiled release-artifact dataset (55a4311d, holding axis_* and adoption_*) and this is a scheduled USER_MODEL pipeline (dataset 48ddf155, weekly cron 0 4 * * 1). OSO dataset type is immutable, so a scheduled model cannot be hosted in the static evaluation dataset — the same wall the entities-to-catalog move hit, platform-verified on the symmetric catalog case 2026-08-28. Decision 2026-08-28 (Phase 5): the scoring pipeline stays in its own USER_MODEL namespace `scores`; evaluation remains the static release-artifact layer. Not a namespace migration.'
-  authority: repo
-  population: long_tail
-  release_path: false
-  reads:
-  - table: currentai.entities.repos
-    scope: internal
-  - table: currentai.signal_goodailist.repo_catalog
-    scope: internal
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers: none_confirmed
-  grain: one row per GitHub org
-  producer: warehouse/models/scores/ossd_coverage.sql
-  classification_note: derived from catalog and observations
-  refresh: dataset cron '0 4 * * 1'
-  timezone: UTC
-  last_observed_trigger: null
-  last_run_at: null
-  dataset_id: 48ddf155-0090-4323-b91c-f62f87445128
-  owner: carl
-  status: active
-  materialized: true
-  verified_at: '2026-08-20'
-  retirement_reason: 'no reviewed consumer as of 2026-08-22: no in-repo code reader, no platform notebook consumer, and (Phase 0b, all 41 deployed model definitions read) no deployed platform model reads it. Recorded as a retirement candidate; deletion requires maintainer authorization per section 17 and is not performed here.'
-  retirement_issue: '#348'
-- id: scores.project_summary
-  table: currentai.scores.project_summary
-  files:
-    model: warehouse/models/scores/project_summary.sql
-    schema: null
-    data: null
-  kind: evaluation
-  current_namespace: scores
-  target_namespace: scores
-  migration_status: not_planned
-  not_planned_reason: 'will NOT relocate to evaluation (data-architecture.md §11.1): kind is evaluation, but the target namespace currentai.evaluation is the static compiled release-artifact dataset (55a4311d, holding axis_* and adoption_*) and this is a scheduled USER_MODEL pipeline (dataset 48ddf155, weekly cron 0 4 * * 1). OSO dataset type is immutable, so a scheduled model cannot be hosted in the static evaluation dataset — the same wall the entities-to-catalog move hit, platform-verified on the symmetric catalog case 2026-08-28. Decision 2026-08-28 (Phase 5): the scoring pipeline stays in its own USER_MODEL namespace `scores`; evaluation remains the static release-artifact layer. Not a namespace migration.'
-  authority: repo
-  population: long_tail
-  release_path: false
-  reads:
-  - table: currentai.entities.models
-    scope: internal
-  - table: currentai.entities.packages
-    scope: internal
-  - table: currentai.entities.projects
-    scope: internal
-  - table: currentai.entities.repos
-    scope: internal
-  - table: currentai.metrics.daily
-    scope: internal
-  - table: currentai.scores.fragility
-    scope: internal
-  - table: currentai.signal_goodailist.repo_catalog
-    scope: internal
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers:
-  - ai-potluck-partners
-  grain: one row per project_slug
-  producer: warehouse/models/scores/project_summary.sql
-  classification_note: derived from catalog and observations
-  refresh: dataset cron '0 4 * * 1'
-  timezone: UTC
-  last_observed_trigger: null
-  last_run_at: null
-  dataset_id: 48ddf155-0090-4323-b91c-f62f87445128
-  owner: carl
-  status: active
-  materialized: true
-  verified_at: '2026-08-20'
-- id: scores.repos_summary
-  table: currentai.scores.repos_summary
-  files:
-    model: warehouse/models/scores/repos_summary.sql
-    schema: null
-    data: null
-  kind: evaluation
-  current_namespace: scores
-  target_namespace: scores
-  migration_status: not_planned
-  not_planned_reason: 'will NOT relocate to evaluation (data-architecture.md §11.1): kind is evaluation, but the target namespace currentai.evaluation is the static compiled release-artifact dataset (55a4311d, holding axis_* and adoption_*) and this is a scheduled USER_MODEL pipeline (dataset 48ddf155, weekly cron 0 4 * * 1). OSO dataset type is immutable, so a scheduled model cannot be hosted in the static evaluation dataset — the same wall the entities-to-catalog move hit, platform-verified on the symmetric catalog case 2026-08-28. Decision 2026-08-28 (Phase 5): the scoring pipeline stays in its own USER_MODEL namespace `scores`; evaluation remains the static release-artifact layer. Not a namespace migration.'
-  authority: repo
-  population: long_tail
-  release_path: false
-  reads:
-  - table: currentai.metrics.daily
-    scope: internal
-  - table: currentai.signal_goodailist.repo_catalog
-    scope: internal
-  read_by:
-    notebooks:
-    - notebooks/long-tail-explorer.py
-    - notebooks/oss-ai-trends.py
-  platform_model_consumers:
-  - currentai.state_of_os_ai.family_footprint
-  - currentai.state_of_os_ai.org_leaderboard
-  - currentai.state_of_os_ai.robotics_repos
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers:
-  - france-ecosystem
-  - oss-ai-gaps
-  - state-of-os-ai
-  grain: one row per repo
-  producer: warehouse/models/scores/repos_summary.sql
-  classification_note: derived from catalog and observations
-  refresh: dataset cron '0 4 * * 1'
-  timezone: UTC
-  last_observed_trigger: null
-  last_run_at: null
-  dataset_id: 48ddf155-0090-4323-b91c-f62f87445128
-  owner: carl
-  status: active
-  materialized: true
-  verified_at: '2026-08-20'
-- id: scores.stack_contributors
-  table: currentai.scores.stack_contributors
-  files:
-    model: warehouse/models/scores/stack_contributors.sql
-    schema: null
-    data: null
-  kind: evaluation
-  current_namespace: scores
-  target_namespace: scores
-  migration_status: not_planned
-  not_planned_reason: 'will NOT relocate to evaluation (data-architecture.md §11.1): kind is evaluation, but the target namespace currentai.evaluation is the static compiled release-artifact dataset (55a4311d, holding axis_* and adoption_*) and this is a scheduled USER_MODEL pipeline (dataset 48ddf155, weekly cron 0 4 * * 1). OSO dataset type is immutable, so a scheduled model cannot be hosted in the static evaluation dataset — the same wall the entities-to-catalog move hit, platform-verified on the symmetric catalog case 2026-08-28. Decision 2026-08-28 (Phase 5): the scoring pipeline stays in its own USER_MODEL namespace `scores`; evaluation remains the static release-artifact layer. Not a namespace migration.'
-  authority: repo
-  population: gap_map
-  release_path: false
-  reads:
-  - table: currentai.catalog.stack_map
-    scope: internal
-  - table: oso.int_events__github_unified
-    scope: external
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers:
-  - launch-insights
-  - sta-grantmaker-view
-  grain: one row per (developer, repo), trailing 365 days of COMMIT_CODE
-  producer: warehouse/models/scores/stack_contributors.sql
-  classification_note: derived from catalog and observations
-  refresh: dataset cron '0 4 * * 1'
-  timezone: UTC
-  last_observed_trigger: null
-  last_run_at: null
-  dataset_id: 48ddf155-0090-4323-b91c-f62f87445128
-  owner: carl
-  status: active
-  materialized: true
-  verified_at: '2026-08-20'
-- id: scores.taxonomy
-  table: currentai.scores.taxonomy
-  kind: evaluation
-  current_namespace: scores
-  target_namespace: scores
-  migration_status: not_planned
-  not_planned_reason: 'will NOT relocate to evaluation (data-architecture.md §11.1): kind is evaluation, but the target namespace currentai.evaluation is the static compiled release-artifact dataset (55a4311d, holding axis_* and adoption_*) and this is a scheduled USER_MODEL pipeline (dataset 48ddf155, weekly cron 0 4 * * 1). OSO dataset type is immutable, so a scheduled model cannot be hosted in the static evaluation dataset — the same wall the entities-to-catalog move hit, platform-verified on the symmetric catalog case 2026-08-28. Decision 2026-08-28 (Phase 5): the scoring pipeline stays in its own USER_MODEL namespace `scores`; evaluation remains the static release-artifact layer. Not a namespace migration.'
-  authority: platform
-  population: long_tail
-  release_path: false
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers:
-  - ai-potluck-partners
-  - state-of-os-ai
-  grain: one row per project_slug
-  producer: manual upload
-  classification_note: derived from catalog and observations
-  refresh: dataset cron '0 4 * * 1'
-  timezone: UTC
-  last_observed_trigger: null
-  last_run_at: null
-  dataset_id: 48ddf155-0090-4323-b91c-f62f87445128
-  owner: carl
-  status: active
-  materialized: true
-  verified_at: '2026-08-20'
-- id: signal_artificialanalysis.model_evaluations
-  table: currentai.signal_artificialanalysis.model_evaluations
-  files:
-    model: warehouse/models/signal_artificialanalysis/model_evaluations.py
-    schema: null
-    data: null
-  kind: observations
-  current_namespace: signal_artificialanalysis
-  target_namespace: signal_artificialanalysis
-  migration_status: complete
-  authority: platform
-  population: gap_map
-  release_path: false
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers: none_confirmed
-  grain: one row per Artificial Analysis model id
-  producer: warehouse/models/signal_artificialanalysis/model_evaluations.py
-  refresh: dataset cron '0 1 * * 0'
-  timezone: UTC
-  last_observed_trigger: SCHEDULED
-  last_run_at: '2026-08-23'
-  dataset_id: 7ce58fca-9dda-4a95-8a17-9cef500c0656
-  owner: carl
-  status: active
-  materialized: true
-  verified_at: '2026-08-20'
-  retirement_reason: 'no reviewed consumer as of 2026-08-22: no in-repo code reader, no platform notebook consumer, and (Phase 0b, all 41 deployed model definitions read) no deployed platform model reads it. Recorded as a retirement candidate; deletion requires maintainer authorization per section 17 and is not performed here.'
-  retirement_issue: '#348'
-  notes: The platform dataset description says "held deliberately unjoined to gap-map products". Unread
-    by design.
-  mirror:
-    model_id: dbce2dc6-9586-477d-8fe8-1c3ef8a7760c
-    revision: 2
-    hash: 044310c3f02b3bf5d52009095b737a3e9dcf995609641bf646b188e0886db451
-    local_sha256: 1491f28b90e1f730b4de1035c7e2c49327d4baf9055fb359a0625095cce4bb8f
-    synced_at: '2026-08-15'
 - id: signal_github.product_adoption
   table: currentai.signal_github.product_adoption
   files:
@@ -2097,7 +1069,6 @@ assets:
   last_observed_trigger: SCHEDULED
   last_run_at: '2026-08-23'
   dataset_id: cc74e8db-7718-4615-a004-7f27cabaf967
-  owner: carl
   status: compatibility
   replacement: currentai.observations.product_adoption_current
   materialized: true
@@ -2142,7 +1113,6 @@ assets:
   last_observed_trigger: SCHEDULED
   last_run_at: '2026-08-23'
   dataset_id: cc74e8db-7718-4615-a004-7f27cabaf967
-  owner: carl
   status: compatibility
   replacement: signal_github.artifact_state
   materialized: true
@@ -2152,55 +1122,6 @@ assets:
     revision: 4
     hash: efbd5ce1104d2f028c123f5f490fa9e5439be14489e8e069be50e0ecf545e4fd
     local_sha256: a11300a0a4c1a697a217202a43c230af3e00dc9595000c2f73cae74e615b9c66
-    synced_at: '2026-08-15'
-- id: signal_goodailist.repo_catalog
-  table: currentai.signal_goodailist.repo_catalog
-  files:
-    model: warehouse/models/signal_goodailist/repo_catalog.py
-    schema: null
-    data: null
-  kind: observations
-  current_namespace: signal_goodailist
-  target_namespace: signal_goodailist
-  migration_status: complete
-  authority: platform
-  population: long_tail
-  release_path: false
-  read_by:
-    models:
-    - warehouse/models/catalog/model_repos.py
-    - warehouse/models/entities/projects.sql
-    - warehouse/models/entities/repos.sql
-    - warehouse/models/scores/dependency_graph.sql
-    - warehouse/models/scores/fragility.sql
-    - warehouse/models/scores/ossd_coverage.sql
-    - warehouse/models/scores/project_summary.sql
-    - warehouse/models/scores/repos_summary.sql
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers: none_confirmed
-  grain: one row per repo, live from goodailist.com
-  producer: warehouse/models/signal_goodailist/repo_catalog.py
-  source_note: 'No fetcher and no committed CSV. This source is read directly by the currentai.signal_goodailist.repo_catalog
-    UDM on its own cron, so there is nothing to mirror into warehouse/data/. A mirror could only be
-    staler than the live table, and it was: the frozen CSV still listed 300 repos goodailist.com had delisted.'
-  refresh: dataset cron '0 1 * * 0'
-  timezone: UTC
-  last_observed_trigger: SCHEDULED
-  last_run_at: '2026-08-23'
-  dataset_id: f7f36dd4-ba41-4ee6-9547-65e409046893
-  owner: carl
-  status: active
-  materialized: true
-  verified_at: '2026-08-20'
-  mirror:
-    model_id: c7d3a3d9-578c-4c54-8ccf-71879bdd43d2
-    revision: 3
-    hash: 27b7de7c1271500612ae0e29163d7661451db4b16352d7ce1b0dd12df1d466a7
-    local_sha256: eaee5981530529fc1cbd6c21d2d18b7019b0ed2c15751f43b2d84f4f4bb0ae00
     synced_at: '2026-08-15'
 - id: signal_huggingface.hub_state
   table: currentai.signal_huggingface.hub_state
@@ -2232,7 +1153,6 @@ assets:
   last_observed_trigger: SCHEDULED
   last_run_at: '2026-08-23'
   dataset_id: 6108e4d6-868f-4cba-8df5-ee64f8fb301e
-  owner: carl
   status: compatibility
   replacement: signal_huggingface.artifact_state
   materialized: true
@@ -2282,7 +1202,6 @@ assets:
   last_observed_trigger: SCHEDULED
   last_run_at: '2026-08-23'
   dataset_id: 6108e4d6-868f-4cba-8df5-ee64f8fb301e
-  owner: carl
   status: compatibility
   replacement: currentai.observations.product_adoption_current
   materialized: true
@@ -2293,45 +1212,6 @@ assets:
     hash: 3a07002e0fd547adb46e17c7963fe134824ef3b34a5ce267891b17281df66353
     local_sha256: e7d3d29e7e895c7155a873ebf8a97d88abaecae95af5f2e5b77b234663680584
     synced_at: '2026-08-24'
-- id: signal_lmarena.text_leaderboard
-  table: currentai.signal_lmarena.text_leaderboard
-  files:
-    model: warehouse/models/signal_lmarena/text_leaderboard.py
-    schema: null
-    data: null
-  kind: observations
-  current_namespace: signal_lmarena
-  target_namespace: signal_lmarena
-  migration_status: complete
-  authority: platform
-  population: gap_map
-  release_path: false
-  platform_model_consumers:
-  - currentai.ai_demand_curve.model_capability_current
-  consumer_checks:
-    repository: checked
-    platform_notebooks: checked
-    platform_models: checked
-    external: unknown
-  external_consumers: none_confirmed
-  grain: one row per (model_name, category, arena_config)
-  producer: warehouse/models/signal_lmarena/text_leaderboard.py
-  refresh: dataset cron '0 1 * * 0'
-  timezone: UTC
-  last_observed_trigger: SCHEDULED
-  last_run_at: '2026-08-23'
-  dataset_id: f248f653-2ea6-4fdf-badb-c99adf9bcbe4
-  owner: carl
-  status: active
-  materialized: true
-  verified_at: '2026-08-20'
-  notes: Capability anchor, collected ahead of the capability axis using it. Not dead.
-  mirror:
-    model_id: efb89f86-7aff-48df-a78e-ce01234672db
-    revision: 7
-    hash: c4715ace092f807464fafbeeb5a207f3fa54dc4e69ee0e5ba442f089ede07ca4
-    local_sha256: 1844f16f6a0d38d6e756f1f93b6d84242424eca813d9b3e2943c009351d165f9
-    synced_at: '2026-08-15'
 - id: signal_packages.downloads
   table: currentai.signal_packages.downloads
   files:
@@ -2365,7 +1245,6 @@ assets:
   grain: one row per (product_slug, package) over a 30-day window
   producer: warehouse/models/signal_packages/downloads.sql
   refresh: 'not deployed; see issue #314'
-  owner: carl
   status: staged
   materialized: false
   verified_at: '2026-08-20'
@@ -2398,7 +1277,6 @@ assets:
   grain: one row per (package, day)
   producer: warehouse/models/signal_packages/downloads_daily.py
   refresh: 'not deployed; see issue #314'
-  owner: carl
   status: staged
   materialized: false
   verified_at: '2026-08-20'
@@ -2432,7 +1310,6 @@ assets:
   producer: warehouse/models/signal_packages/product_adoption.sql
   classification_note: a banded candidate assessment, not a raw measurement
   refresh: 'not deployed; see issue #314'
-  owner: carl
   status: staged
   materialized: false
   verified_at: '2026-08-20'

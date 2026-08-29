@@ -45,13 +45,13 @@ As of 2026-08-20:
 - Openness is also recomputed in OSO through `evidence.product_evidence`, `scores.openness_facts`, and `scores.openness_computed`; `build/check_parity.py` compares the independent result with the repository.
 - Adoption is recorded in the repository and measured through multiple channel-specific warehouse tables. It has no route-aware reconciliation gate.
 - Capability is recorded and mirrored but not recomputed.
-- `currentai.catalog` mixes discovered inventory, fetcher output, external reference data, and a stale repo-to-warehouse bridge. Verified 2026-08-20: it holds <!-- count:catalog_tables -->10 tables, not the 5 its README documents. Only 3 are discovered inventory. `foundation_model_repos`, `osai_subcategory_mapping` and `taxonomy_crosswalk` are curator-controlled and belong in `registry`; `pypi_downloads` is a measurement; `goodailist_repos` is documented as retired but still live; `osai_gap_map` is a third-party map carrying `maturity`, `parity_verdict` and `overall_score` columns that read as gap-map outputs.
+- `currentai.catalog` mixes discovered inventory, fetcher output, external reference data, and a stale repo-to-warehouse bridge. Verified 2026-08-20: it holds <!-- count:catalog_tables -->0 tables, not the 5 its README documents. Only 3 are discovered inventory. `foundation_model_repos`, `osai_subcategory_mapping` and `taxonomy_crosswalk` are curator-controlled and belong in `registry`; `pypi_downloads` is a measurement; `goodailist_repos` is documented as retired but still live; `osai_gap_map` is a third-party map carrying `maturity`, `parity_verdict` and `overall_score` columns that read as gap-map outputs.
 - External measurements generally expose current state rather than a durable observation history.
 - OSO does not yet support incremental models; the current normalized state must therefore become the first preserved timestamped snapshot rather than being mislabeled as an append-only history.
 - Platform model source is mirrored read-only under `warehouse/models/<dataset>/` (each carrying a `mirror:` block in `warehouse/assets.yaml`); the platform remains authoritative for those deployed models.
 - Dataset scheduling, model throttles, GitHub Actions schedules, and manual operations coexist. A configured cron is not treated as proof that a scheduled run fired. Verified 2026-08-20: of <!-- observed:2026-08-20 -->22 datasets, 13 carry `cronTimezone: America/New_York`, and 8 have a cron configured with `lastRunAt: null` — `signal_semanticscholar`, `signal_pypi`, `ai_demand_curve`, `state_of_os_ai`, `scores`, `events`, `metrics`, `entities`. The `scores` dataset is among them, which means the openness chain that `check_parity` compares against the repository has no observed scheduled run.
 - Two platform tables have no repository source and no in-repo consumer: `currentai.scores.investment_ranking` and `currentai.scores.taxonomy`.
-- The full org is <!-- observed:2026-08-20 -->22 datasets by `ListDatasets`, or 23 counting `datasette` — which `ListDatasets` omits because it holds two deployed models and no materialized tables, so a dataset-first sweep misses it (Phase 0b enumerated from `ListDataModels` instead and found it). The org held <!-- observed:2026-08-20 -->96 tables at that 2026-08-20 enumeration. Separately, and as a live derived count rather than a 2026-08-20 subset, the inventory currently tracks <!-- count:deployed_tables -->59 deployed tables in the datasets the repository maintains or reads from; the rest of the org's tables are separate analytical products. The two figures are different populations measured at different times — the 96 is a point-in-time org-wide observation, the 59 is derived from `assets.yaml` on every run. See section 11.3 for how the 59 reconciles with the inventory's size.
+- The full org is <!-- observed:2026-08-20 -->22 datasets by `ListDatasets`, or 23 counting `datasette` — which `ListDatasets` omits because it holds two deployed models and no materialized tables, so a dataset-first sweep misses it (Phase 0b enumerated from `ListDataModels` instead and found it). The org held <!-- observed:2026-08-20 -->96 tables at that 2026-08-20 enumeration. Separately, and as a live derived count rather than a 2026-08-20 subset, the inventory currently tracks <!-- count:deployed_tables -->31 deployed tables in the datasets the repository maintains or reads from; the rest of the org's tables are separate analytical products. The two figures are different populations measured at different times — the 96 is a point-in-time org-wide observation, the 59 is derived from `assets.yaml` on every run. See section 11.3 for how the 59 reconciles with the inventory's size.
 
 The redesign must evolve this system without interrupting the existing map, registry tables, notebooks, or website.
 
@@ -1367,7 +1367,7 @@ Migration rules:
 
 Verified against the live `currentai` org on 2026-08-20: <!-- observed:2026-08-20 -->22 datasets,
 <!-- observed:2026-08-20 -->96 tables,
-<!-- count:tracked_warehouse_files -->49 tracked files under `warehouse/`. The structure below is the target, and the
+<!-- count:tracked_warehouse_files -->25 tracked files under `warehouse/`. The structure below is the target, and the
 mirror layout of 11.1 is now in place; the file manifest in 11.4 recorded the exact diff
 from the 2026-08-20 state (40 files), Phase 0b added `warehouse/audits/platform_models.json`,
 the deployed-model audit receipt, and Phase 2 added `warehouse/audits/source_runs.json`, the
@@ -1742,8 +1742,9 @@ outputs — `retirement_reason` and `retirement_issue` — are recorded.
 > field on governed assets, `warehouse/dependencies.yaml` for external inputs, a **root-scoped** DAG
 > (notebooks are no longer reachability roots), and the six anti-reintroduction gates
 > (`build/assets.py` `role_violations` / `dependency_violations` / `notebook_root_violations`; §11.5).
-> What remains are ADR-003 steps 5-6 — the ownership transfer of the 28 roleless backlog assets. This
-> section is the record of the old closure, which still describes those 28 until they leave.
+> ADR-003 is now COMPLETE: the externalization (steps 5-6) transferred the 28 backlog assets to
+> platform ownership and removed them here, so the closure below is history — the governed inventory
+> is the 38 governed assets + 8 dependency contracts, not the old transitive closure.
 
 The inventory covers the transitive closure of what the repository ships or maintains. The
 roots are:
@@ -1788,11 +1789,11 @@ them in the other.
 Three numbers that must not be conflated:
 
 ```text
-deployed tables in the in-scope datasets    <!-- count:deployed_tables -->59
+deployed tables in the in-scope datasets    <!-- count:deployed_tables -->31
 staged, not deployed                         <!-- count:staged_assets -->6
 dormant, no platform table yet              <!-- count:dormant_assets -->1
                                             ------
-logical assets in warehouse/assets.yaml     <!-- count:assets -->66
+logical assets in warehouse/assets.yaml     <!-- count:assets -->38
 ```
 
 The staged six are the three `signal_packages` models from issue #314,
@@ -1833,10 +1834,11 @@ neither feeds nor reads — `state_of_os_ai`, `ai_demand_curve`, `aiid`, `hf_liv
 `assets.yaml`. Keeping them out is what allows `kind` to remain the five semantic kinds of
 section 4 with no sixth catch-all.
 
-The closure is mechanical, so it must be recomputed rather than assumed. Three tables that
-look out of scope are in it: `catalog.country_populations` and `catalog.pypi_downloads`
-are read by the tracked `pypi-geo-trends.py`, and `catalog.foundation_model_repos` is read
-by `entities/models.sql`.
+The closure is mechanical, so it must be recomputed rather than assumed. (Under the old rule it
+also pulled in tables only a standalone notebook read — `catalog.country_populations` and
+`catalog.pypi_downloads` via `pypi-geo-trends.py` — which is exactly the over-scope ADR-003
+corrected: those tables are now externalized and out of scope, and a notebook read no longer
+confers membership.)
 
 ### 11.4 File manifest
 
@@ -1859,7 +1861,7 @@ this diff starts from.
 
 ```text
 warehouse/ tracked files, pre-Phase-0   <!-- observed:2026-08-20 -->44
-  of which SQL/Python models   <!-- count:model_files -->33   (13 models, 3 ingest, 17 mirror)
+  of which SQL/Python models   <!-- count:model_files -->15   (13 models, 3 ingest, 17 mirror)
 warehouse/ after the move    44 + 1 assets.yaml - 5 = 40
 repository-wide             +6 created, -5 deleted   = +1
 ```
