@@ -14,6 +14,20 @@ Entry point for agent sessions in `os-ai-map`. Four things, then get to work:
    publishes are steps under `docs/operations/`. An editor session works in `sources/`, `docs/`
    and `notebooks/`, and opens a PR.
 
+## Scope boundary
+
+This repository governs the **Open Source AI Gap Map's data system**, not the OSO organization's
+warehouse. Two files, kept disjoint: a **governed asset** belongs in `warehouse/assets.yaml` only if it
+is a governed output (a published table powering the map), repo-owned computation implementing/auditing
+map semantics, or a temporary compatibility shim with an exit. A **direct OSO input** those depend on
+belongs in `warehouse/dependencies.yaml` as a contract (not owned) — **never in `assets.yaml`**. A table
+that merely exists on OSO, or is read only by a standalone notebook or another platform product, is
+**out of scope** entirely — it lives on OSO. See `docs/architecture/adr-003-repository-scope-boundary.md`
+(Accepted — implementation pending). **Phase-5 platform migration stays frozen** until the ADR-003
+mechanism lands: the `role` field, `warehouse/dependencies.yaml` contracts, the root-scoped DAG, and the
+anti-reintroduction gates are all merged. Accepting the ADR does not lift the freeze; the old Phase-5
+runbooks are **superseded**, not re-enabled.
+
 ## Conventions
 
 - `uv` for everything Python. `uv run python -m build.<module>`; every module takes `--help`.

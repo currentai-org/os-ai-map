@@ -1,11 +1,20 @@
 # Runbook: executing the Phase 5 namespace moves
 
-**Status: EXECUTION RUNBOOK. No move is authorized by this document.** It turns the Phase 5 plan
+> **SUPERSEDED — NOT EXECUTABLE (2026-08-29).** Replaced by
+> `../architecture/adr-003-repository-scope-boundary.md`. Several tables named here are slated for
+> **externalization** (ownership transfer to the platform repo), not migration. Retained for historical
+> reasoning only; execute nothing from this runbook. The Phase-5 freeze holds until the ADR-003
+> mechanism (roles, dependency contracts, root-scoped DAG, anti-reintroduction gates) is merged — it is
+> not re-enabled when the ADR is accepted.
+
+**Status: HISTORICAL — NOT EXECUTABLE.** Superseded by ADR-003 (see the banner above). Retained for
+its reasoning only; no move here is authorized or to be run. It turns the Phase 5 plan
 (`phase5-namespace-migration.md`, the what/why/contract) into concrete, ordered, per-table steps.
 Each move is a **maintainer platform action plus an editor reconciliation PR**, run under the
 source-preserving lockstep. Nothing here is done until the maintainer authorizes that move.
 
-The pending move set is **3 executable moves + 2 held** (5 `pending` rows total). The former
+(HISTORICAL) As originally scoped, the pending move set was 3 moves + 2 held (5 `pending` rows total) —
+ADR-003 has since superseded this; none of it is to be executed. The former
 `entities.*→catalog` (4) and `scores.*→evaluation` (8) relocations are **cancelled** — a scheduled
 `USER_MODEL` pipeline cannot be hosted in the static `catalog`/`evaluation` datasets (OSO dataset type
 is immutable; platform-verified 2026-08-28). The `events`/`metrics`→`observations` fold (2) is
@@ -136,8 +145,8 @@ reconciliation PR), the registry successor having been published and platform-ve
 Every sanctioned move needs, per table: a maintainer **create-target** + **verify** (with a fresh
 scheduled run for the scheduled tables), **deployed-reader repoint**, and later a §17 **retire**. The
 editor reconciliation PR (step 4) is the only repo-side unit and follows the verified live state.
-Beyond the three executable moves (the `catalog.*→registry` ownership transitions), two items need a
-decision before any work: the `catalog.stack_map` disposition, and the canonical `sources/` schema for
+(HISTORICAL) Beyond the three moves as then scoped (the `catalog.*→registry` ownership transitions —
+now superseded by ADR-003), two items needed a decision: the `catalog.stack_map` disposition, and the canonical `sources/` schema for
 `osai_subcategory_mapping` / `taxonomy_crosswalk`.
 The one platform action already authorized is the **drop of the orphan `observations.pypi_downloads`**
 (§1). No other move, rename, Release, or platform mutation is authorized by this runbook.

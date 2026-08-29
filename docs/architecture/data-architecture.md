@@ -1726,6 +1726,12 @@ outputs — `retirement_reason` and `retirement_issue` — are recorded.
 
 ### 11.3 Scope: what the inventory covers
 
+> **Superseded in basis by `adr-003-repository-scope-boundary.md` (Accepted — implementation pending, 2026-08-29).** The
+> transitive-closure rule below pulls peripheral OSO pipelines into governance whenever a standalone
+> notebook reads them; ADR-003 replaces it with an explicit-role boundary (governed output / repo
+> computation / external dependency / compatibility) and externalizes the long-tail pipelines. This
+> section stands as the record of the old rule until the ADR-003 execution PRs land.
+
 The inventory covers the transitive closure of what the repository ships or maintains. The
 roots are:
 
