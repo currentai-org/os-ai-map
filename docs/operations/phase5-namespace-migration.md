@@ -102,10 +102,11 @@ Derived at write time from `assets.yaml` via `build.assets` (not hand-listed). `
 | `catalog.pypi_downloads` → `observations` (1) | `pypi_downloads` | §2 — "a measurement". **DEFERRED — notebook-only, no scoring impact; see §Freshness.** |
 
 `catalog.foundation_model_repos → registry` is the first executed transition: source at
-`sources/foundation_model_repos.yaml`, compiled to `registry.foundation_model_repos` and published by
-CI on merge (no platform create needed), consumer `entities.models` repointed; `catalog` version stays
-live (`in_progress`) until the deployed `state_of_os_ai.family_footprint` reader is repointed and it
-retires under §17. That leaves **two transitions still to author** (`osai_subcategory_mapping`,
+`sources/foundation_model_repos.yaml`, compiled to `registry.foundation_model_repos`, **staged** in this
+PR (published by CI on merge; no platform create needed). The consumer `entities.models` **stays on the
+catalog table** — its repoint is deferred to a reconciliation PR after the registry table is published and
+verified; the `catalog` version stays live (`in_progress`) until both that in-repo consumer and the
+deployed `state_of_os_ai.family_footprint` reader are repointed and it retires under §17. That leaves **two transitions still to author** (`osai_subcategory_mapping`,
 `taxonomy_crosswalk` — platform-only, need a canonical `sources/` schema) and **two held** —
 `pypi_downloads` (deferred) and `stack_map` (decision gate, §D).
 

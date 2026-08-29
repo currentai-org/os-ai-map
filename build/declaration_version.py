@@ -178,9 +178,11 @@ NON_DECLARATION_INPUTS: dict[str, str] = {
     ),
     "foundation_model_repos.yaml": (
         "curated foundation-model reference table, compiled into registry.foundation_model_repos "
-        "and read by the discovery model entities.models — not a scoring declaration, so editing "
-        "the model-family list is not a change in any product's declaration and must not re-key "
-        "declaration_version_id."
+        "and read by the discovery model entities.models — not a scoring declaration, so it is "
+        "excluded from source_content_digest (editing the model-family list is not a change in any "
+        "product's declaration). This does NOT freeze declaration_version_id: that id is "
+        "commit-scoped via source_git_sha, so committing an edit to this file re-keys the final id "
+        "like any other commit — what stays stable is source_content_digest."
     ),
 }
 
