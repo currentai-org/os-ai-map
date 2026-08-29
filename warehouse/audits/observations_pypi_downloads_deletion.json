@@ -21,5 +21,12 @@
   "row_count": 228115061,
   "deleted_at": "2026-08-29T07:20:52Z",
   "absence_verified": true,
-  "absence_verification": "GetLineage DOWNSTREAM returned only the node itself (no consumers); no schedule at any layer (dataset cron null, model effectiveCron '', revision cron ''). After deletion the observations dataset lists one table (product_adoption_current) and one model. Static currentai.catalog.pypi_downloads and all oso.* sources untouched."
+  "absence_verification": "GetLineage DOWNSTREAM returned only the node itself (no consumers); no schedule at any layer (dataset cron null, model effectiveCron '', revision cron ''). After deletion the observations dataset lists one table (product_adoption_current) and one model. Static currentai.catalog.pypi_downloads and all oso.* sources untouched.",
+  "verification_method": {
+    "pre_delete_no_consumers": "OSO GetLineage(node='currentai.observations.pypi_downloads', direction='DOWNSTREAM') -> only the node itself, zero downstream edges.",
+    "pre_delete_no_schedule": "OSO GetDataset(c507c9f9-321f-4773-a107-d96658e2da67).cron == null; GetDataModel(73fd0417-81d3-45cb-8966-0de9c4032ee1).effectiveCron == '' and prior revision cron == ''.",
+    "delete_call": "OSO deleteDataModel(id='73fd0417-81d3-45cb-8966-0de9c4032ee1').",
+    "post_delete_absence": "OSO ListTablesForDataset(c507c9f9-321f-4773-a107-d96658e2da67) -> ['product_adoption_current'] only; ListDataModels for the observations dataset returns one model; pypi_downloads absent.",
+    "reverify_query": "To re-confirm at any time: OSO ListTablesForDataset('currentai.observations') should not list pypi_downloads, and `SELECT count(*) FROM currentai.observations.pypi_downloads` should error 'table not found'; `SELECT count(*) FROM currentai.catalog.pypi_downloads` stays intact (static extract untouched)."
+  }
 }
