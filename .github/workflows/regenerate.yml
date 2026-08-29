@@ -87,15 +87,21 @@ jobs:
       #
       # The cron stays as a backstop. This makes the normal case immediate rather than eventual.
       #
+      # Reuses GH_FETCH_TOKEN rather than minting a second secret. It is already a classic PAT
+      # with the repo scope (refresh-data.yml asserts exactly that before it runs), and that scope
+      # is what POSTing a dispatch to aipotluck.org requires. A dedicated token would buy
+      # independent expiry; it would also be a second thing to rotate and forget.
+      #
       # Skips cleanly when the token is absent, because a missing secret should degrade to the
-      # old behaviour rather than fail a publish that already succeeded.
+      # old behaviour rather than fail a publish that already succeeded. A token that is present
+      # but rejected is a different case and fails loudly, via curl --fail-with-body.
       - name: Notify aipotluck.org that new data is published
         if: steps.commit.outputs.published == 'true'
         env:
-          DISPATCH_TOKEN: ${{ secrets.AIPOTLUCK_DISPATCH_TOKEN }}
+          DISPATCH_TOKEN: ${{ secrets.GH_FETCH_TOKEN }}
         run: |
           if [ -z "$DISPATCH_TOKEN" ]; then
-            echo "::notice::AIPOTLUCK_DISPATCH_TOKEN not set — skipping publish notification." \
+            echo "::notice::GH_FETCH_TOKEN not set — skipping publish notification." \
                  "aipotluck.org will pick this up on its daily cron instead."
             exit 0
           fi
