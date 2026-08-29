@@ -71,7 +71,7 @@ assets:
   kind: registry
   current_namespace: catalog
   target_namespace: registry
-  migration_status: pending
+  migration_status: in_progress
   authority: repo
   population: long_tail
   release_path: false
@@ -88,13 +88,19 @@ assets:
   external_consumers: none_confirmed
   grain: one row per curated model_family
   producer: 'hand-maintained CSV: warehouse/data/catalog/foundation_model_repos.csv'
-  classification_note: a curator controls which model families are listed
+  classification_note: 'catalog->registry ownership transition underway: the compiled successor
+    currentai.registry.foundation_model_repos is STAGED (source sources/foundation_model_repos.yaml,
+    published to the registry dataset by CI on merge but not yet activated in the inventory). This
+    table stays live and its readers unchanged in this PR — both entities.models (in-repo) and the
+    deployed state_of_os_ai.family_footprint still read it. A reconciliation PR repoints
+    entities.models after the registry successor is verified live; §17 retires this table once the
+    deployed state_of_os_ai.family_footprint is also repointed.'
   refresh: manual upload
   dataset_id: 046ee25e-daee-4c43-a13c-d6ba9f6bd549
   owner: carl
   status: active
   materialized: true
-  verified_at: '2026-08-20'
+  verified_at: '2026-08-29'
 - id: catalog.goodailist_repos
   table: currentai.catalog.goodailist_repos
   kind: catalog
@@ -534,14 +540,14 @@ assets:
   current_namespace: events
   target_namespace: events
   migration_status: not_planned
-  not_planned_reason: 'DEFERRED, stays put (data-architecture.md §11.1, #393): kind is observations and the observations dataset is USER_MODEL (type-compatible), but folding this scheduled pipeline in requires giving the observations dataset a sweep cron — an OSO schedule is a dataset-level sweep and a model cron only throttles it (platform-verified 2026-08-28). The observations dataset is currently manual (cron null); its product_adoption_current is deliberately manual/full-refresh under the §18 baseline discipline, and this pipeline carries its own weekly cron 0 5 * * 0. Scheduling observations to host it would also sweep product_adoption_current and the pypi orphan, a behavior change to a §18-sensitive model. Decision 2026-08-28 (Phase 5): keep this pipeline in its own USER_MODEL dataset (events); whether the observations dataset ever gains a sweep is a Phase-2B refresh-model decision, and even then a namespace move for this table would require a NEW explicit architecture decision, not an automatic follow-on. Not a namespace migration now. Repo<->platform read drift on the deployed revision is tracked in #395.'
+  not_planned_reason: 'DEFERRED, stays put (data-architecture.md §11.1, #393): kind is observations and the observations dataset is USER_MODEL (type-compatible), but folding this scheduled pipeline in requires giving the observations dataset a sweep cron — an OSO schedule is a dataset-level sweep and a model cron only throttles it (platform-verified 2026-08-28). The observations dataset is currently manual (cron null); its product_adoption_current is deliberately manual/full-refresh under the §18 baseline discipline, and this pipeline carries its own weekly cron 0 5 * * 0. Scheduling observations to host it would also sweep product_adoption_current and the pypi orphan, a behavior change to a §18-sensitive model. Decision 2026-08-28 (Phase 5): keep this pipeline in its own USER_MODEL dataset (events); whether the observations dataset ever gains a sweep is a Phase-2B refresh-model decision, and even then a namespace move for this table would require a NEW explicit architecture decision, not an automatic follow-on. Not a namespace migration now. Repo<->platform read drift on the deployed revision was back-ported so the repo SQL matches the deployed source byte-for-byte (sha256 matches the audit; #395, resolved 2026-08-29).'
   authority: repo
   population: long_tail
   release_path: false
   reads:
   - table: currentai.entities.repos
     scope: internal
-  - table: oso.int_events__github_unified
+  - table: oso.github_events.github_events_last_365_days
     scope: external
   read_by:
     models:
@@ -633,7 +639,7 @@ assets:
   current_namespace: metrics
   target_namespace: metrics
   migration_status: not_planned
-  not_planned_reason: 'DEFERRED, stays put (data-architecture.md §11.1, #393): kind is observations and the observations dataset is USER_MODEL (type-compatible), but folding this scheduled pipeline in requires giving the observations dataset a sweep cron — an OSO schedule is a dataset-level sweep and a model cron only throttles it (platform-verified 2026-08-28). The observations dataset is currently manual (cron null); its product_adoption_current is deliberately manual/full-refresh under the §18 baseline discipline, and this pipeline carries its own weekly cron 0 6 * * 0 (one hour after events so it reads fresh github_events). Scheduling observations to host it would also sweep product_adoption_current and the pypi orphan, a behavior change to a §18-sensitive model. Decision 2026-08-28 (Phase 5): keep this pipeline in its own USER_MODEL dataset (metrics); whether the observations dataset ever gains a sweep is a Phase-2B refresh-model decision, and even then a namespace move for this table would require a NEW explicit architecture decision, not an automatic follow-on. Not a namespace migration now. Repo<->platform read drift on the deployed revision is tracked in #395.'
+  not_planned_reason: 'DEFERRED, stays put (data-architecture.md §11.1, #393): kind is observations and the observations dataset is USER_MODEL (type-compatible), but folding this scheduled pipeline in requires giving the observations dataset a sweep cron — an OSO schedule is a dataset-level sweep and a model cron only throttles it (platform-verified 2026-08-28). The observations dataset is currently manual (cron null); its product_adoption_current is deliberately manual/full-refresh under the §18 baseline discipline, and this pipeline carries its own weekly cron 0 6 * * 0 (one hour after events so it reads fresh github_events). Scheduling observations to host it would also sweep product_adoption_current and the pypi orphan, a behavior change to a §18-sensitive model. Decision 2026-08-28 (Phase 5): keep this pipeline in its own USER_MODEL dataset (metrics); whether the observations dataset ever gains a sweep is a Phase-2B refresh-model decision, and even then a namespace move for this table would require a NEW explicit architecture decision, not an automatic follow-on. Not a namespace migration now. Repo<->platform read drift on the deployed revision was back-ported so the repo SQL matches the deployed source byte-for-byte (sha256 matches the audit; #395, resolved 2026-08-29).'
   authority: repo
   population: long_tail
   release_path: false
@@ -642,9 +648,7 @@ assets:
     scope: internal
   - table: currentai.events.github_events
     scope: internal
-  - table: oso.int_opendevdata__repositories_with_repo_id
-    scope: external
-  - table: oso.stg_opendevdata__repo_developer_28d_activities
+  - table: oso.github_events.github_events_last_365_days
     scope: external
   read_by:
     models:
@@ -1205,6 +1209,39 @@ assets:
   status: staged
   materialized: false
   verified_at: '2026-08-25'
+- id: registry.foundation_model_repos
+  table: currentai.registry.foundation_model_repos
+  kind: registry
+  current_namespace: registry
+  target_namespace: registry
+  migration_status: complete
+  authority: repo
+  population: long_tail
+  release_path: false
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
+  external_consumers: none_confirmed
+  grain: one row per curated model_family
+  producer: build/serialize_registry.py + build/publish_registry.py
+  classification_note: 'curator-controlled foundation-model reference table, compiled from
+    sources/foundation_model_repos.yaml. The catalog->registry successor of
+    catalog.foundation_model_repos (Phase 5 ownership transition); the golden proves it
+    reproduces the catalog contents byte-for-byte. STAGED: this PR only adds the source +
+    serializer; CI publishes it on merge (registry.yml), but activation is a separate deployed-state
+    claim. The verified_at here attests candidate fidelity — the compiled==live golden proving the
+    source reproduces the retiring catalog table byte-for-byte — not platform materialization. A
+    reconciliation PR sets status: active / materialized: true / dataset_id and advances verified_at
+    to the platform-verification date only after the publish reaches terminal SUCCESS and the table is
+    independently verified, and after entities.models is repointed and redeployed to read it. Long-tail
+    reference data, not a gap-map payload input, so release_path: false and no publication_role.'
+  refresh: CI push on merge to main
+  owner: carl
+  status: staged
+  materialized: false
+  verified_at: '2026-08-29'
 - id: registry.categories
   table: currentai.registry.categories
   kind: registry

@@ -8,12 +8,14 @@ and reference integrity.
 from build.serialize_registry import TABLES, artifact_id, build_registry, category_layers
 
 
-def _sources(products=None, organizations=None, categories=None, taxonomy=None):
+def _sources(products=None, organizations=None, categories=None, taxonomy=None,
+             foundation_model_repos=None):
     return {
         "products": products or {},
         "organizations": organizations or {},
         "categories": categories or {},
         "taxonomy": taxonomy or {"arcs": []},
+        "foundation_model_repos": foundation_model_repos or [],
     }
 
 
@@ -260,3 +262,62 @@ def test_arxiv_artifacts_serialize_like_any_other_kind():
             "artifact_url": "https://arxiv.org/abs/2110.14168",
         }
     ]
+
+
+# --- foundation_model_repos: curated reference table compiled into registry ------
+# (catalog -> registry ownership transition, Phase 5). A flat curated list, copied
+# through verbatim; the source file is the authority, and the compiled table must
+# reproduce the prior catalog.foundation_model_repos contents byte-for-byte.
+
+def test_foundation_model_repos_are_copied_through_verbatim():
+    sources = _sources(foundation_model_repos=[
+        {"model_family": "llama-3", "hf_author": "meta-llama",
+         "github_repo": "meta-llama/llama3", "model_examples": "A,B",
+         "category": "llm", "notes": "x"},
+    ])
+    tables, errors, warnings = build_registry(sources)
+    assert errors == []
+    assert tables["foundation_model_repos"] == [
+        {"model_family": "llama-3", "hf_author": "meta-llama",
+         "github_repo": "meta-llama/llama3", "model_examples": "A,B",
+         "category": "llm", "notes": "x"},
+    ]
+
+
+def test_foundation_model_repos_duplicate_family_is_an_error():
+    sources = _sources(foundation_model_repos=[
+        {"model_family": "dup", "hf_author": "a", "github_repo": "a/x",
+         "model_examples": "n/a", "category": "llm", "notes": ""},
+        {"model_family": "dup", "hf_author": "b", "github_repo": "b/y",
+         "model_examples": "n/a", "category": "llm", "notes": ""},
+    ])
+    _, errors, _ = build_registry(sources)
+    assert any("duplicate model_family 'dup'" in e for e in errors)
+
+
+def test_foundation_model_repos_row_without_family_is_an_error():
+    sources = _sources(foundation_model_repos=[
+        {"hf_author": "a", "github_repo": "a/x", "model_examples": "n/a",
+         "category": "llm", "notes": ""},
+    ])
+    _, errors, _ = build_registry(sources)
+    assert any("no model_family" in e for e in errors)
+
+
+def test_foundation_model_repos_source_reproduces_the_live_catalog_table():
+    """compiled == live: the sources/ YAML must compile to exactly the contents of the
+    retiring catalog.foundation_model_repos (its committed CSV), so the registry successor
+    is a faithful ownership transition, not a re-authoring."""
+    import csv
+    import pathlib
+
+    from build.validate import load_sources
+
+    root = pathlib.Path(__file__).resolve().parents[1]
+    tables, errors, _ = build_registry(load_sources(root))
+    assert errors == []
+    compiled = tables["foundation_model_repos"]
+    live = list(csv.DictReader(
+        (root / "warehouse/data/catalog/foundation_model_repos.csv").open(encoding="utf-8")))
+    cols = list(TABLES["foundation_model_repos"])
+    assert [ {c: r[c] for c in cols} for r in live ] == compiled

@@ -91,17 +91,24 @@ cannot fold into a shared namespace. Phase 5's real remaining work is therefore 
 ## The pending assets, classified
 
 Derived at write time from `assets.yaml` via `build.assets` (not hand-listed). `pending` now holds
-**5** rows; the 14 constraint-blocked tables and the earlier 6 corrections are `not_planned`.
+**4** rows; the 14 constraint-blocked tables and the earlier 6 corrections are `not_planned`, and
+`catalog.foundation_model_repos` is `in_progress` (its registry successor authored, see below).
 
 ### A. Sanctioned, type-compatible relocations
 
 | Move | Tables | Authority |
 |---|---|---|
-| `catalog.*` → `registry` (3) | `foundation_model_repos`, `osai_subcategory_mapping`, `taxonomy_crosswalk` | §2 — "curator-controlled and belong in `registry`"; static→compiled. **Ownership transitions, not SQL repoints — see §Registry ownership.** |
+| `catalog.*` → `registry` (3) | `foundation_model_repos` (**in progress**), `osai_subcategory_mapping`, `taxonomy_crosswalk` | §2 — "curator-controlled and belong in `registry`"; static→compiled. **Ownership transitions, not SQL repoints — see §Registry ownership.** |
 | `catalog.pypi_downloads` → `observations` (1) | `pypi_downloads` | §2 — "a measurement". **DEFERRED — notebook-only, no scoring impact; see §Freshness.** |
 
-So of the 5 pending, **three are executable moves** (the `catalog.*→registry` ownership transitions)
-and **two are held** — `pypi_downloads` (deferred) and `stack_map` (decision gate, §D).
+`catalog.foundation_model_repos → registry` is the first executed transition: source at
+`sources/foundation_model_repos.yaml`, compiled to `registry.foundation_model_repos`, **staged** in this
+PR (published by CI on merge; no platform create needed). The consumer `entities.models` **stays on the
+catalog table** — its repoint is deferred to a reconciliation PR after the registry table is published and
+verified; the `catalog` version stays live (`in_progress`) until both that in-repo consumer and the
+deployed `state_of_os_ai.family_footprint` reader are repointed and it retires under §17. That leaves **two transitions still to author** (`osai_subcategory_mapping`,
+`taxonomy_crosswalk` — platform-only, need a canonical `sources/` schema) and **two held** —
+`pypi_downloads` (deferred) and `stack_map` (decision gate, §D).
 
 ### B. `not_planned` — do not move (type / schedule constraint, 2026-08-28)
 
@@ -197,13 +204,12 @@ there is **no data-foundation ceiling and no G1 item here.**
   retire the static, accepting a rolling-window regional view.
 - The orphan `observations.pypi_downloads` the platform side stood up has **no committed consumer**
   (scoring/signal don't use per-country) and the notebook stays on the static, so it is a large `FULL`
-  table nothing reads. **Maintainer authorized dropping it (2026-08-28)** — a platform-side delete.
-  It has no in-repo consumer and no inventory row, but declared-state discipline still requires
-  **durable deletion evidence**: after the delete, record a receipt at
-  `warehouse/audits/observations_pypi_downloads_deletion.json` (dataset id, model id, prior
-  revision/schema, `deleted_at`, and post-delete verification that the table is absent — e.g. a
-  refreshed platform census), and commit it in a short repo PR. The deletion is not "done" until that
-  evidence is in the repo.
+  table nothing reads. **Dropped 2026-08-29** (authorized 2026-08-28): a platform-side delete of a
+  228,115,061-row `FULL` model (`73fd0417…` in dataset `c507c9f9…`) with no consumer and no schedule.
+  Durable deletion evidence is committed at
+  `warehouse/audits/observations_pypi_downloads_deletion.json` (dataset/model id, prior
+  revision + schema, `deleted_at`, absence verified: the `observations` dataset now lists only
+  `product_adoption_current`). Static `catalog.pypi_downloads` and the `oso.*` sources untouched.
 
 (If per-country geo later becomes a *signal* input, it is still a live ~90-day table read with recent
 windows — no history accumulation — so this stays a small, forward decision.)

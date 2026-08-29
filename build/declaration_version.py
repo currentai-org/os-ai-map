@@ -176,6 +176,14 @@ NON_DECLARATION_INPUTS: dict[str, str] = {
         "frozen point-in-time warehouse sample (long_tail.json), hand-synced; a re-sync is "
         "not a change in the declarations."
     ),
+    "foundation_model_repos.yaml": (
+        "curated foundation-model reference table, compiled into registry.foundation_model_repos "
+        "and read by the discovery model entities.models — not a scoring declaration, so it is "
+        "excluded from source_content_digest (editing the model-family list is not a change in any "
+        "product's declaration). This does NOT freeze declaration_version_id: that id is "
+        "commit-scoped via source_git_sha, so committing an edit to this file re-keys the final id "
+        "like any other commit — what stays stable is source_content_digest."
+    ),
 }
 
 

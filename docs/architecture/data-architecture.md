@@ -1367,7 +1367,7 @@ Migration rules:
 
 Verified against the live `currentai` org on 2026-08-20: <!-- observed:2026-08-20 -->22 datasets,
 <!-- observed:2026-08-20 -->96 tables,
-<!-- count:tracked_warehouse_files -->47 tracked files under `warehouse/`. The structure below is the target, and the
+<!-- count:tracked_warehouse_files -->48 tracked files under `warehouse/`. The structure below is the target, and the
 mirror layout of 11.1 is now in place; the file manifest in 11.4 recorded the exact diff
 from the 2026-08-20 state (40 files), Phase 0b added `warehouse/audits/platform_models.json`,
 the deployed-model audit receipt, and Phase 2 added `warehouse/audits/source_runs.json`, the
@@ -1770,25 +1770,30 @@ Three numbers that must not be conflated:
 
 ```text
 deployed tables in the in-scope datasets    <!-- count:deployed_tables -->65
-staged, not deployed                         <!-- count:staged_assets -->6
+staged, not deployed                         <!-- count:staged_assets -->7
 dormant, no platform table yet              <!-- count:dormant_assets -->1
                                             ------
-logical assets in warehouse/assets.yaml     <!-- count:assets -->72
+logical assets in warehouse/assets.yaml     <!-- count:assets -->73
 ```
 
-The staged six are the three `signal_packages` models from issue #314,
-`observations.source_runs` and `observations.product_adoption_baseline` (both Phase 2), and the
-Phase-3 `registry.axis_assessments` candidate: tracked assets whose tables do not exist on the
-platform yet. The two Phase-3 evaluation candidates that were staged here,
+The staged seven are the three `signal_packages` models from issue #314,
+`observations.source_runs` and `observations.product_adoption_baseline` (both Phase 2), the
+Phase-3 `registry.axis_assessments` candidate, and the Phase-5 `registry.foundation_model_repos`
+candidate (the compiled catalog->registry successor, published by CI on merge and activated in a
+later reconciliation PR): tracked assets whose tables do not exist on the platform yet. The two Phase-3 evaluation candidates that were staged here,
 `evaluation.product_adoption_measurements` and `evaluation.adoption_reconciliation`, are now
 **deployed** (#368, 2026-08-25) and count among the deployed tables.
-The last three are staged for a reason the `signal_packages` three are not — they are
+`observations.source_runs`, `observations.product_adoption_baseline` and
+`registry.axis_assessments` are staged for a reason the `signal_packages` three are not — they are
 repository-side artifacts by design (a control-plane snapshot, a frozen-bytes baseline, and a
 declaration-keyed release-builder candidate whose row a maintainer publishes), and `staged` here
 records only that no platform table carries their name.
 Neither the snapshot nor the baseline is unfinished, and neither is waiting on a deploy to become
 authoritative; `registry.axis_assessments` awaits its maintainer publish in
-`docs/operations/deploy-axis-assessments.md`. `observations.product_adoption_current` was staged the same way when first authored, and is
+`docs/operations/deploy-axis-assessments.md`. `registry.foundation_model_repos` is staged for a
+third reason again: it is a compiled create-target whose platform table CI *will* publish on merge
+(`registry.yml`), so it is staged only across the window between this create-target PR and the
+reconciliation PR that activates it and repoints its consumer. `observations.product_adoption_current` was staged the same way when first authored, and is
 now **deployed** (2026-08-24, the deploy created the `observations` namespace), so it counts among
 the deployed tables rather than the staged ones. The four `registry.adoption_*` routing tables —
 `adoption_routes`, `adoption_route_scopes`, `adoption_route_band_sets` and

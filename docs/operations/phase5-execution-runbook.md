@@ -62,12 +62,9 @@ year-over-year regional viz, or repoint to a live FULL ~90-day `observations.pyp
 retire the static) is decided when that notebook is next touched. **Do not build an incremental
 accumulator** — no consumer needs accreted per-country history. The orphan `observations.pypi_downloads`
 the platform side stood up has no committed consumer and the notebook stays on the static, so the
-**maintainer authorized dropping it (2026-08-28)** — a platform-side delete. It has no in-repo consumer
-and no inventory row, but declared-state discipline still requires **durable deletion evidence**: after
-the delete, record a receipt at `warehouse/audits/observations_pypi_downloads_deletion.json` (dataset
-id, model id, prior revision/schema, `deleted_at`, and post-delete verification the table is absent —
-e.g. a refreshed platform census) and commit it in a short repo PR. The delete is not complete until
-that evidence lands. See the plan's Freshness section.
+**dropped 2026-08-29** (authorized 2026-08-28) — a platform-side delete of the 228M-row orphan, with
+durable evidence committed at `warehouse/audits/observations_pypi_downloads_deletion.json` (dataset/
+model id, prior revision + schema, `deleted_at`, absence verified). See the plan's Freshness section.
 
 ## 2. `events`/`metrics → observations` — DEFERRED (schedule wall)
 
@@ -99,10 +96,11 @@ repoint is the delicate step.
 **Repo↔platform drift to reconcile first (independent of the move).** The deployed `events.github_events`
 (rev 8) and `metrics.daily` (rev 5) read `oso.github_events.github_events_last_365_days`, while the repo
 SQL + inventory still read the older `oso.int_events__github_unified` / `oso.*opendevdata*` — repo file
-sha256 ≠ the Phase-0b audit's deployed `source_sha256` for both. The repo is behind the platform.
-**Tracked in #395**: back-port the exact deployed rev-8/rev-5 source and schema (including the
-`time timestamp(6)` precision), captured from the platform side rather than reconstructed, so the repo
-mirrors the warehouse — regardless of the deferred namespace fold.
+sha256 ≠ the Phase-0b audit's deployed `source_sha256` for both. **Resolved 2026-08-29 (#395):** the
+deployed rev-8/rev-5 source was captured from the platform and back-ported verbatim, so the repo SQL
+now reads `oso.github_events.github_events_last_365_days` and its file sha256 matches the audit's
+deployed `source_sha256` for both — the repo mirrors the warehouse again. (Known follow-up: the
+back-ported prose still claims a frozen-history union the SQL no longer performs.)
 
 ## 3. `catalog.* → registry` — ownership transitions (NOT plain moves)
 
@@ -113,7 +111,7 @@ static-class), so it clears the dataset-type constraint that blocked `entities`/
 
 | Table | Current owner | Ownership-transition work |
 |---|---|---|
-| `catalog.foundation_model_repos` | **repo CSV** already: `warehouse/data/catalog/foundation_model_repos.csv` (72 rows) | Data already lives in the repo. Wire it into `build/serialize_registry.py` + `build/publish_registry.py` so it publishes to `registry.foundation_model_repos`, add a golden, repoint its one consumer `models/entities/models.sql`. The lightest of the three. |
+| `catalog.foundation_model_repos` | **repo CSV** already: `warehouse/data/catalog/foundation_model_repos.csv` (72 rows) | **Source-side done; successor staged (in_progress overall).** Data moved to `sources/foundation_model_repos.yaml`, wired into `build/serialize_registry.py` (+ auto-published by `publish_registry.py` via CI on merge), golden added (compiled == the live CSV). The successor `registry.foundation_model_repos` is **staged** (`materialized: false`) — CI publishes it on merge. The consumer `models/entities/models.sql` **stays on the catalog table**; its repoint is deferred to a reconciliation PR after the registry table is published and verified. Remaining: publish + verify the registry table, repoint the in-repo consumer, a maintainer repoints the deployed `state_of_os_ai.family_footprint` reader, then §17 retires `catalog.foundation_model_repos`. The lightest of the three; no platform create needed (CI publishes registry). |
 | `catalog.osai_subcategory_mapping` | **platform-only** (no repo file) | Export the live table (read-only), design a canonical `sources/` format, author the content, integrate the serializer + publisher, prove compiled == live. **Needs a source-schema design decision.** No in-repo consumer; a deployed reader (`scores.taxonomy`, `scores.investment_ranking`) must be repointed on the platform. |
 | `catalog.taxonomy_crosswalk` | **platform-only** (no repo file) | Same as above. **Needs a source-schema design decision.** |
 
@@ -121,7 +119,9 @@ The two platform-only tables are the only Phase-5 items with a genuine repo buil
 a **canonical-source-schema decision** before authoring — flagged for the maintainer, not built blind.
 
 Note: `models/entities/models.sql` (the consumer of `foundation_model_repos`) stays in `entities`
-(dataset-type constraint); only its read of the moved table changes.
+(dataset-type constraint). It also **stays reading `catalog.foundation_model_repos`** in this PR; its
+read is repointed only in the later reconciliation PR, once the staged `registry` successor is published
+and verified.
 
 ## Nuanced — decision required before moving (plan §D)
 

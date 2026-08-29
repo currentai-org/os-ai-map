@@ -1,0 +1,32 @@
+{
+  "asset": "currentai.observations.pypi_downloads",
+  "action": "deleted",
+  "authorized": "2026-08-28 (maintainer); orphan model — no consumer, no cron, never inventoried",
+  "reason": "Orphan FULL model over the ~90-day rolling oso.pypi_downloads.daily_downloads_by_package_country. Scoring and signal read the trailing-window aggregate and the pypi-geo-trends notebook stays on the static catalog.pypi_downloads, so nothing read this per-country table. See docs/operations/phase5-namespace-migration.md (Freshness).",
+  "dataset_id": "c507c9f9-321f-4773-a107-d96658e2da67",
+  "model_id": "73fd0417-81d3-45cb-8966-0de9c4032ee1",
+  "prior_revision": {
+    "revisionNumber": 2,
+    "id": "91c50efb-e99c-46c4-8f9f-d2f5d3aa4527",
+    "hash": "f2e3eca20f1a52093ebbb5ce575ba451a4b361ec8391e31a5d13e370bc57f97a",
+    "createdAt": "2026-08-28T20:55:48.933Z",
+    "description": "Live per-day PyPI downloads by package and country, passed through from the subscribed oso.pypi_downloads source. Replaces the frozen currentai.catalog.pypi_downloads extract."
+  },
+  "prior_schema": [
+    {"name": "day", "type": "DATE"},
+    {"name": "package", "type": "VARCHAR"},
+    {"name": "country_code", "type": "VARCHAR"},
+    {"name": "downloads", "type": "BIGINT"}
+  ],
+  "row_count": 228115061,
+  "deleted_at": "2026-08-29T07:20:52Z",
+  "absence_verified": true,
+  "absence_verification": "GetLineage DOWNSTREAM returned only the node itself (no consumers); no schedule at any layer (dataset cron null, model effectiveCron '', revision cron ''). After deletion the observations dataset lists one table (product_adoption_current) and one model. Static currentai.catalog.pypi_downloads and all oso.* sources untouched.",
+  "verification_method": {
+    "pre_delete_no_consumers": "OSO GetLineage(node='currentai.observations.pypi_downloads', direction='DOWNSTREAM') -> only the node itself, zero downstream edges.",
+    "pre_delete_no_schedule": "OSO GetDataset(c507c9f9-321f-4773-a107-d96658e2da67).cron == null; GetDataModel(73fd0417-81d3-45cb-8966-0de9c4032ee1).effectiveCron == '' and prior revision cron == ''.",
+    "delete_call": "OSO deleteDataModel(id='73fd0417-81d3-45cb-8966-0de9c4032ee1').",
+    "post_delete_absence": "OSO ListTablesForDataset(c507c9f9-321f-4773-a107-d96658e2da67) -> ['product_adoption_current'] only; ListDataModels for the observations dataset returns one model; pypi_downloads absent.",
+    "reverify_query": "To re-confirm at any time: OSO ListTablesForDataset('currentai.observations') should not list pypi_downloads, and `SELECT count(*) FROM currentai.observations.pypi_downloads` should error 'table not found'; `SELECT count(*) FROM currentai.catalog.pypi_downloads` stays intact (static extract untouched)."
+  }
+}
