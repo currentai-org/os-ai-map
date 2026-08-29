@@ -9,9 +9,11 @@ The pending move set is **3 executable moves + 2 held** (5 `pending` rows total)
 `entities.*→catalog` (4) and `scores.*→evaluation` (8) relocations are **cancelled** — a scheduled
 `USER_MODEL` pipeline cannot be hosted in the static `catalog`/`evaluation` datasets (OSO dataset type
 is immutable; platform-verified 2026-08-28). The `events`/`metrics`→`observations` fold (2) is
-**deferred to Phase 2B** — an OSO schedule is a dataset-level sweep, and folding them into the manual
-`observations` dataset would force a sweep cron onto the §18 `product_adoption_current` (see §2 and the
-plan's schedule section). All 14 are `not_planned` and stay in their own datasets. The two rides-along
+**deferred (schedule wall)** — an OSO schedule is a dataset-level sweep, and folding them into the
+manual `observations` dataset would force a sweep cron onto the §18 `product_adoption_current` (see §2
+and the plan's schedule section); whether `observations` ever gains a sweep is a Phase-2B refresh-model
+decision, and any later move would need a new explicit decision. All 14 are `not_planned` and stay in
+their own datasets. The two rides-along
 renames (`model_benchmarks→openllm_leaderboard`, `model_repos→hf_model_repo_links`) are **withdrawn**
 with the collision that triggered them. Table metadata below was read from `assets.yaml` on 2026-08-28;
 re-derive at execution time.
@@ -60,10 +62,14 @@ year-over-year regional viz, or repoint to a live FULL ~90-day `observations.pyp
 retire the static) is decided when that notebook is next touched. **Do not build an incremental
 accumulator** — no consumer needs accreted per-country history. The orphan `observations.pypi_downloads`
 the platform side stood up has no committed consumer and the notebook stays on the static, so the
-**maintainer authorized dropping it (2026-08-28)** — a platform-side delete with no repo reconciliation
-(no in-repo consumer, no inventory row). See the plan's Freshness section.
+**maintainer authorized dropping it (2026-08-28)** — a platform-side delete. It has no in-repo consumer
+and no inventory row, but declared-state discipline still requires **durable deletion evidence**: after
+the delete, record a receipt at `warehouse/audits/observations_pypi_downloads_deletion.json` (dataset
+id, model id, prior revision/schema, `deleted_at`, and post-delete verification the table is absent —
+e.g. a refreshed platform census) and commit it in a short repo PR. The delete is not complete until
+that evidence lands. See the plan's Freshness section.
 
-## 2. `events`/`metrics → observations` — DEFERRED to Phase 2B (schedule wall)
+## 2. `events`/`metrics → observations` — DEFERRED (schedule wall)
 
 | Table | Source dataset | Scheduled | In-repo consumers (later) |
 |---|---|---|---|
@@ -77,11 +83,13 @@ model's cron only throttles which sweeps it is eligible for, it is not an indepe
 (`0 5`) and `metrics` (`0 6`) carry distinct dataset crons, so folding them into `observations` would
 force a sweep cron on that dataset that also swept `product_adoption_current` (and the 228M-row pypi
 orphan) — a behavior change to a §18-sensitive model. Giving `observations` a `0 5,6 * * 0` sweep and
-throttling the manual models to `@manual` is *possible*, but that is a decision about the observations
-refresh model that belongs with **Phase 2B** (incremental history, blocked on OSO), not a mechanical
-Phase-5 move. Both are `not_planned` and stay in their own datasets until 2B.
+throttling the manual models to `@manual` is *possible*, but giving `observations` a sweep at all is a
+decision about its **refresh model** that belongs with **Phase 2B** (incremental history, blocked on
+OSO) — 2B owns that decision, not this fold. Both tables are `not_planned` and stay in their own
+datasets; a later relocation would require a **new explicit architecture decision** re-opening their
+disposition, not an automatic Phase-2B follow-on.
 
-**When 2B revisits this**, the scheduling gate (step 2) applies — a successful `SCHEDULED` run on each
+**If a future decision does relocate them**, the scheduling gate (step 2) applies — a successful `SCHEDULED` run on each
 target before canonical consumers repoint — and `metrics.daily` has a **wide reader set** (deployed
 `scores.{fragility,project_summary,repos_summary}` — which stay in `scores`, only their read changes —
 plus `state_of_os_ai.{country_activity_monthly,star_trajectories}`, the Live `oss-ai-trends` notebook,
@@ -91,9 +99,10 @@ repoint is the delicate step.
 **Repo↔platform drift to reconcile first (independent of the move).** The deployed `events.github_events`
 (rev 8) and `metrics.daily` (rev 5) read `oso.github_events.github_events_last_365_days`, while the repo
 SQL + inventory still read the older `oso.int_events__github_unified` / `oso.*opendevdata*` — repo file
-sha256 ≠ the Phase-0b audit's deployed `source_sha256` for both. The repo is behind the platform; a
-small fidelity unit should back-port the deployed source (needs the deployed rev-8/rev-5 SQL from the
-platform side) so the repo mirrors the warehouse, regardless of the deferred namespace fold.
+sha256 ≠ the Phase-0b audit's deployed `source_sha256` for both. The repo is behind the platform.
+**Tracked in #395**: back-port the exact deployed rev-8/rev-5 source and schema (including the
+`time timestamp(6)` precision), captured from the platform side rather than reconstructed, so the repo
+mirrors the warehouse — regardless of the deferred namespace fold.
 
 ## 3. `catalog.* → registry` — ownership transitions (NOT plain moves)
 

@@ -23,9 +23,10 @@ Two scope corrections have since reshaped the census:
   now protects source collectors.
 - **2026-08-28 (dataset constraints, #393):** the planned `entities.*→catalog` (4) and
   `scores.*→evaluation` (8) relocations are **cancelled** (type wall), and the `events`/`metrics`
-  →`observations` fold (2) is **deferred** to Phase 2B (schedule wall) — see the constraint section
-  below. All 14 scheduled models are now `not_planned` in their own namespaces, dropping `pending`
-  19→5.
+  →`observations` fold (2) is **deferred** (schedule wall) — see the constraint section below. All 14
+  scheduled models are now `not_planned` in their own namespaces, dropping `pending` 19→5. (The
+  refresh-model question that could revisit the fold is Phase 2B's; a later move would need a new
+  explicit decision — Phase 2B does not perform it.)
 
 ## The dataset constraints — why the scheduled pipelines do not move
 
@@ -75,10 +76,12 @@ dataset (`c507c9f9`) is currently **manual** — `cron null`, and its `product_a
 must never be disturbed). `events` (`0 5 * * 0`) and `metrics` (`0 6 * * 0`) carry distinct dataset
 crons; folding them into `observations` would force a sweep cron on that dataset that also swept
 `product_adoption_current` (and the 228M-row pypi orphan) — a behavior change to a §18-sensitive
-model. Giving `observations` a sweep and throttling the manual models is possible, but it is a
-decision about the observations refresh model that belongs with **Phase 2B** (incremental history,
-currently blocked on OSO), not a mechanical Phase-5 move. So `events`/`metrics` are **deferred**:
-`not_planned`, kept in their own datasets, revisited when 2B settles that model.
+model. Giving `observations` a sweep and throttling the manual models is possible, but whether
+`observations` becomes swept at all is a decision about its **refresh model** that belongs with
+**Phase 2B** (incremental history, currently blocked on OSO) — 2B owns that decision, not this fold.
+So `events`/`metrics` are **deferred**: `not_planned`, kept in their own datasets. A later relocation
+would require a **new explicit architecture decision** re-opening their disposition, not an automatic
+Phase-2B follow-on.
 
 **Emerging pattern.** Type and schedule are both per-dataset and (type) immutable, so an
 independently-typed or independently-scheduled pipeline (`entities`, `scores`, `events`, `metrics`)
@@ -111,8 +114,8 @@ manual (see the dataset-type and schedule sections). Each stays in its current n
 |---|---|---|---|
 | `entities.repos`, `.projects`, `.packages`, `.models` (4) | `catalog` | `entities` | scheduled `USER_MODEL`; `catalog` is a static dataset (type wall) |
 | `scores.dependency_graph`, `.fragility`, `.investment_ranking`, `.ossd_coverage`, `.project_summary`, `.repos_summary`, `.stack_contributors`, `.taxonomy` (8) | `evaluation` | `scores` | scheduled `USER_MODEL`; `evaluation` is a static dataset (type wall) |
-| `events.github_events` (1) | `observations` | `events` | own weekly sweep (`0 5 * * 0`); folding into the manual `observations` dataset would force a sweep cron onto the §18 `product_adoption_current`. **Deferred** to Phase 2B (schedule wall) |
-| `metrics.daily` (1) | `observations` | `metrics` | own weekly sweep (`0 6 * * 0`); same schedule wall. **Deferred** to Phase 2B |
+| `events.github_events` (1) | `observations` | `events` | own weekly sweep (`0 5 * * 0`); folding into the manual `observations` dataset would force a sweep cron onto the §18 `product_adoption_current`. **Deferred** (schedule wall); any later move needs a new explicit decision |
+| `metrics.daily` (1) | `observations` | `metrics` | own weekly sweep (`0 6 * * 0`); same schedule wall. **Deferred** (schedule wall) |
 
 ### C. Earlier corrections / out-of-phase retirement targets (6) — landed #392
 
@@ -194,8 +197,13 @@ there is **no data-foundation ceiling and no G1 item here.**
   retire the static, accepting a rolling-window regional view.
 - The orphan `observations.pypi_downloads` the platform side stood up has **no committed consumer**
   (scoring/signal don't use per-country) and the notebook stays on the static, so it is a large `FULL`
-  table nothing reads. **Maintainer authorized dropping it (2026-08-28)** — a platform-side delete, no
-  repo reconciliation needed (no in-repo consumer, no inventory row).
+  table nothing reads. **Maintainer authorized dropping it (2026-08-28)** — a platform-side delete.
+  It has no in-repo consumer and no inventory row, but declared-state discipline still requires
+  **durable deletion evidence**: after the delete, record a receipt at
+  `warehouse/audits/observations_pypi_downloads_deletion.json` (dataset id, model id, prior
+  revision/schema, `deleted_at`, and post-delete verification that the table is absent — e.g. a
+  refreshed platform census), and commit it in a short repo PR. The deletion is not "done" until that
+  evidence is in the repo.
 
 (If per-country geo later becomes a *signal* input, it is still a live ~90-day table read with recent
 windows — no history accumulation — so this stays a small, forward decision.)
@@ -238,7 +246,8 @@ cut-over-in-place:
 refresh contract and **demonstrate a successful scheduled run on the target before canonical consumers
 are repointed** (step 3a). A move that silently drops a table's schedule is the Phase-1-class defect
 this gate exists to catch; `metrics.daily` and `events.github_events` are scheduled and carry this
-obligation **if and when their deferred fold is revisited in Phase 2B**.
+obligation **only if a future explicit decision relocates them** (the deferred fold is not on any
+phase's execution path today).
 
 No editor unit performs a platform write. The create-and-verify (steps 1–2), the **deployed-reader
 repointing (3a)**, and the retirement (step 5) are maintainer runbooks authorized separately; the
@@ -251,8 +260,8 @@ editor PR is the step-4 reconciliation carrying the repository consumer changes 
 - Retiring `scores.openness_facts`, `scores.openness_computed`, and `evidence.product_evidence`
   (Phase 7 / §9.3, gated on multi-release dual-run agreement, #384).
 - Relocating `entities.*` or `scores.*` — cancelled by the dataset-type constraint; they stay in their
-  own `USER_MODEL` namespaces. Folding `events`/`metrics` into `observations` — deferred to Phase 2B by
-  the schedule constraint; they stay in their own datasets.
+  own `USER_MODEL` namespaces. Folding `events`/`metrics` into `observations` — deferred by the schedule
+  constraint; they stay in their own datasets, and any later move needs a new explicit decision.
 - Any platform mutation — every unit above is an editor PR; the create-alongside, verify, and retire
   steps are maintainer runbooks authorized separately.
 
