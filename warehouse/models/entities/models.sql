@@ -21,7 +21,7 @@ WITH model_repo_links AS (
 ),
 foundation AS (
   SELECT LOWER(github_repo) AS repo, model_family
-  FROM currentai.catalog.foundation_model_repos
+  FROM currentai.registry.foundation_model_repos
 ),
 benchmarks AS (
   SELECT model_id, CAST(average AS DOUBLE) AS benchmark_avg, architecture

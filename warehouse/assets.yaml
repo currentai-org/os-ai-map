@@ -71,13 +71,10 @@ assets:
   kind: registry
   current_namespace: catalog
   target_namespace: registry
-  migration_status: pending
+  migration_status: in_progress
   authority: repo
   population: long_tail
   release_path: false
-  read_by:
-    models:
-    - warehouse/models/entities/models.sql
   platform_model_consumers:
   - currentai.state_of_os_ai.family_footprint
   consumer_checks:
@@ -88,13 +85,18 @@ assets:
   external_consumers: none_confirmed
   grain: one row per curated model_family
   producer: 'hand-maintained CSV: warehouse/data/catalog/foundation_model_repos.csv'
-  classification_note: a curator controls which model families are listed
+  classification_note: 'catalog->registry ownership transition in progress: the compiled
+    successor currentai.registry.foundation_model_repos exists (source
+    sources/foundation_model_repos.yaml, published by CI), and the in-repo consumer
+    entities.models has been repointed to it. This table stays live because the deployed
+    state_of_os_ai.family_footprint still reads it; it retires under §17 once that deployed
+    reader is repointed on the platform.'
   refresh: manual upload
   dataset_id: 046ee25e-daee-4c43-a13c-d6ba9f6bd549
   owner: carl
   status: active
   materialized: true
-  verified_at: '2026-08-20'
+  verified_at: '2026-08-29'
 - id: catalog.goodailist_repos
   table: currentai.catalog.goodailist_repos
   kind: catalog
@@ -349,13 +351,13 @@ assets:
   population: long_tail
   release_path: false
   reads:
-  - table: currentai.catalog.foundation_model_repos
-    scope: internal
   - table: currentai.catalog.model_benchmarks
     scope: internal
   - table: currentai.catalog.model_repos
     scope: internal
   - table: currentai.entities.repos
+    scope: internal
+  - table: currentai.registry.foundation_model_repos
     scope: internal
   read_by:
     models:
@@ -1205,6 +1207,37 @@ assets:
   status: staged
   materialized: false
   verified_at: '2026-08-25'
+- id: registry.foundation_model_repos
+  table: currentai.registry.foundation_model_repos
+  kind: registry
+  current_namespace: registry
+  target_namespace: registry
+  migration_status: complete
+  authority: repo
+  population: long_tail
+  release_path: false
+  read_by:
+    models:
+    - warehouse/models/entities/models.sql
+  consumer_checks:
+    repository: checked
+    platform_notebooks: checked
+    platform_models: unknown
+    external: unknown
+  external_consumers: none_confirmed
+  grain: one row per curated model_family
+  producer: build/serialize_registry.py + build/publish_registry.py
+  classification_note: 'curator-controlled foundation-model reference table, compiled from
+    sources/foundation_model_repos.yaml and published to the registry dataset by CI on merge
+    to main. The catalog->registry successor of catalog.foundation_model_repos (Phase 5
+    ownership transition); reproduces its contents byte-for-byte. Long-tail reference data,
+    not a gap-map payload input, so release_path: false and no publication_role.'
+  refresh: CI push on merge to main
+  dataset_id: 6b735d7b-e38e-41e8-a951-d4d7f3fbf331
+  owner: carl
+  status: active
+  materialized: true
+  verified_at: '2026-08-29'
 - id: registry.categories
   table: currentai.registry.categories
   kind: registry

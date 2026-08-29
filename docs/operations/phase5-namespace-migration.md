@@ -91,17 +91,23 @@ cannot fold into a shared namespace. Phase 5's real remaining work is therefore 
 ## The pending assets, classified
 
 Derived at write time from `assets.yaml` via `build.assets` (not hand-listed). `pending` now holds
-**5** rows; the 14 constraint-blocked tables and the earlier 6 corrections are `not_planned`.
+**4** rows; the 14 constraint-blocked tables and the earlier 6 corrections are `not_planned`, and
+`catalog.foundation_model_repos` is `in_progress` (its registry successor authored, see below).
 
 ### A. Sanctioned, type-compatible relocations
 
 | Move | Tables | Authority |
 |---|---|---|
-| `catalog.*` → `registry` (3) | `foundation_model_repos`, `osai_subcategory_mapping`, `taxonomy_crosswalk` | §2 — "curator-controlled and belong in `registry`"; static→compiled. **Ownership transitions, not SQL repoints — see §Registry ownership.** |
+| `catalog.*` → `registry` (3) | `foundation_model_repos` (**in progress**), `osai_subcategory_mapping`, `taxonomy_crosswalk` | §2 — "curator-controlled and belong in `registry`"; static→compiled. **Ownership transitions, not SQL repoints — see §Registry ownership.** |
 | `catalog.pypi_downloads` → `observations` (1) | `pypi_downloads` | §2 — "a measurement". **DEFERRED — notebook-only, no scoring impact; see §Freshness.** |
 
-So of the 5 pending, **three are executable moves** (the `catalog.*→registry` ownership transitions)
-and **two are held** — `pypi_downloads` (deferred) and `stack_map` (decision gate, §D).
+`catalog.foundation_model_repos → registry` is the first executed transition: source at
+`sources/foundation_model_repos.yaml`, compiled to `registry.foundation_model_repos` and published by
+CI on merge (no platform create needed), consumer `entities.models` repointed; `catalog` version stays
+live (`in_progress`) until the deployed `state_of_os_ai.family_footprint` reader is repointed and it
+retires under §17. That leaves **two transitions still to author** (`osai_subcategory_mapping`,
+`taxonomy_crosswalk` — platform-only, need a canonical `sources/` schema) and **two held** —
+`pypi_downloads` (deferred) and `stack_map` (decision gate, §D).
 
 ### B. `not_planned` — do not move (type / schedule constraint, 2026-08-28)
 

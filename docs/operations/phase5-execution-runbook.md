@@ -113,7 +113,7 @@ static-class), so it clears the dataset-type constraint that blocked `entities`/
 
 | Table | Current owner | Ownership-transition work |
 |---|---|---|
-| `catalog.foundation_model_repos` | **repo CSV** already: `warehouse/data/catalog/foundation_model_repos.csv` (72 rows) | Data already lives in the repo. Wire it into `build/serialize_registry.py` + `build/publish_registry.py` so it publishes to `registry.foundation_model_repos`, add a golden, repoint its one consumer `models/entities/models.sql`. The lightest of the three. |
+| `catalog.foundation_model_repos` | **repo CSV** already: `warehouse/data/catalog/foundation_model_repos.csv` (72 rows) | **DONE in the repo (in_progress overall).** Data moved to `sources/foundation_model_repos.yaml`, wired into `build/serialize_registry.py` (+ auto-published by `publish_registry.py` via CI on merge), golden added (compiled == the live CSV), consumer `models/entities/models.sql` repointed. Remaining: a maintainer repoints the deployed `state_of_os_ai.family_footprint` reader, then §17 retires `catalog.foundation_model_repos`. The lightest of the three; no platform create needed (CI publishes registry). |
 | `catalog.osai_subcategory_mapping` | **platform-only** (no repo file) | Export the live table (read-only), design a canonical `sources/` format, author the content, integrate the serializer + publisher, prove compiled == live. **Needs a source-schema design decision.** No in-repo consumer; a deployed reader (`scores.taxonomy`, `scores.investment_ranking`) must be repointed on the platform. |
 | `catalog.taxonomy_crosswalk` | **platform-only** (no repo file) | Same as above. **Needs a source-schema design decision.** |
 
