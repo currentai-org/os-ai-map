@@ -32,7 +32,7 @@ TEST_DVID = "test-declaration-version"
 TEST_SHA = "test-git-sha"
 
 AXIS_ROW_COUNT = 1581
-AXIS_ASSESSMENTS_DIGEST = "ade443aa1230e0cab28a6bbd70ea27ab9a09541d6124740d86cac47d4b0c5216"
+AXIS_ASSESSMENTS_DIGEST = "4bb976a64f6b0a01dca3de0966bb899a25e175472792941fa9c30c2143c8ad4e"
 
 
 @pytest.fixture(scope="module")
