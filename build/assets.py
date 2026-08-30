@@ -748,6 +748,35 @@ def role_violations() -> list[str]:
     return problems
 
 
+def expected_kind(asset: dict) -> str:
+    """The semantic layer (`kind`) an asset's PHYSICAL placement derives.
+
+    A governed asset in the `registry`, `observations` or `evaluation` namespace names its own
+    kind. A `signal_*` source dataset is physically separate but semantically an OBSERVATION (a
+    raw source collector) -- unless it is a banded `product_adoption` assessment, which is an
+    EVALUATION. This is the one intentional place `kind` and namespace come apart, so keeping
+    `kind` requires enforcing it: nothing else re-derives it.
+    """
+    namespace = asset["table"].split(".")[1]
+    if namespace.startswith("signal_"):
+        return "evaluation" if asset["table"].endswith(".product_adoption") else "observations"
+    return namespace
+
+
+def kind_violations() -> list[str]:
+    """Every governed asset's `kind` is the one its placement derives (expected_kind), so `kind`
+    is a governed field, not decorative: a `registry` table cannot claim `kind: evaluation`."""
+    problems: list[str] = []
+    for a in assets():
+        if a["kind"] not in NAMESPACES:
+            problems.append(f"{a['id']}: kind {a['kind']!r} not in {sorted(NAMESPACES)}")
+            continue
+        want = expected_kind(a)
+        if a["kind"] != want:
+            problems.append(f"{a['id']}: kind is {a['kind']!r} but its placement derives {want!r}")
+    return problems
+
+
 # --- the governed graph: reachability from map roots ------------------------------------
 
 def _governed_tables() -> set[str]:

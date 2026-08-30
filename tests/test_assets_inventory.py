@@ -87,9 +87,10 @@ def test_path_derives_the_table(inventory):
     assert checked, "no model/schema/data paths were checked -- the derivation is not running"
 
 
-def test_kind_uses_the_namespace_vocabulary(inventory):
-    for asset in inventory:
-        assert asset["kind"] in NAMESPACES, f"{asset['id']}: unknown kind {asset['kind']}"
+def test_kind_gate_holds(inventory):
+    """Every governed asset's `kind` is the one its physical placement derives -- `kind` is a
+    governed field, not decorative (a registry table cannot claim kind: evaluation)."""
+    assert A.kind_violations() == []
 
 
 def test_signal_product_adoption_deployed_tables_are_compatibility_shims(inventory):

@@ -156,7 +156,7 @@ See [AGENTS.md](AGENTS.md) for agent-oriented project context.
 **Warehouse.** `warehouse/` holds the SQL models and fetchers that power adoption and activity
 signals. Contributors work read-only here; only maintainers write.
 
-- `warehouse/models/` — the governed SQL and Python models at `models/<dataset>/<table>` (the registry serializers, the evaluation builders, the signal ingestion and the read-only platform mirrors). See `warehouse/assets.yaml`.
+- `warehouse/models/` — SQL and Python model files at `models/<dataset>/<table>`. Most are governed (the registry serializers, the evaluation builders, the signal ingestion), claimed by `warehouse/assets.yaml`; the rest are **read-only mirrors of platform-owned models**, claimed by `warehouse/dependencies.yaml` as dependency contracts (a mirror binds provenance, not ownership).
 - `warehouse/data/` — frozen CSV inputs at `data/<dataset>/<table>.csv`.
 - `warehouse/assets.yaml` — the governed-asset inventory: one entry per governed asset with a `role`, authority, grain, provenance and derived reads/read_by. Required OSO inputs are contracts in `warehouse/dependencies.yaml`.
 

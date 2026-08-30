@@ -1434,94 +1434,14 @@ showed it as a `.sql` file, which contradicts 4.3 — a model that selects from 
 tables produces a different result on every run, which is the opposite of an immutable snapshot.
 Add a presentation view only if something actually needs one.
 
-#### [SUPERSEDED by ADR-003 — historical] The long-tail chain is retained; its tables map onto the five KINDS, not onto five datasets
+#### [Superseded by ADR-003 — historical] The long-tail chain
 
-> **Superseded (ADR-003, steps 5–6, 2026-08-30).** This subsection is retained as history and is
-> **non-executable**. The `entities`, `events`, `metrics` and analytical `scores` tables are no
-> longer governed by this repository. Under the repository-scope boundary they were externalized —
-> frozen under platform ownership with disposition `frozen-without-producer` and recorded in
-> `warehouse/audits/externalization.json` — because they are OSO-hosted platform tables, not the
-> Gap Map's own data system. The `population: long_tail` classification is retired; the governed
-> inventory is `role`-typed and single-population (`gap_map`). The mapping table and namespace/type
-> analysis below described the pre-boundary plan to keep the chain in-repo; they no longer bind any
-> asset. For the current state see ADR-003 and §11.2/§11.5.
-
-The `entities`, `events`, `metrics` and analytical `scores` tables are kept. `oss-ai-trends`
-and `long-tail-explorer` are both tagged `Live` on the platform, so retiring the chain would
-break shipped deliverables.
-
-Retaining it does NOT require a sixth **kind**. Checked against actual grains, every table maps
-onto one of the five semantic kinds of section 4 — the earlier `analysis` proposal was
-accommodating legacy naming, not a real semantic gap:
-
-| Today | Kind | Why |
-|---|---|---|
-| `entities.repos`, `.projects`, `.packages`, `.models` | `catalog` | Discovered from the goodailist roster, not curated. `long-tail-explorer` calls them "the discovery set not yet scored in the gap map", which is AD-3's definition of catalog. |
-| `events.github_events` | `observations` | Grain `(github_id, repo, event_type, time, event_count)` — artifact-level measurement. |
-| `metrics.daily` | `observations` | Grain `(repo, github_id, day, metric, value)` — already long-format `metric`/`value`, which is nearly the corrected 4.3 shape. |
-| `scores.*` (8 tables) | `evaluation` | Derived from catalog and observations. |
-
-**Kind is not dataset.** The five kinds are the *semantic* layering; they map onto **more than
-five physical OSO datasets**, because a dataset carries one immutable **type** and one **sweep
-schedule**, and tables of the same kind but different type or schedule cannot share one. So a
-kind is realized across as many datasets as its type/schedule partitions require — `kind:
-observations`, for example, spans the manual `observations` dataset, the `events` sweep, and the
-`metrics` sweep. **Physical placement is therefore a separate question from kind, and for the
-scheduled pipelines the two come apart (correction 2026-08-28, #393).** An OSO namespace *is* a
-dataset, and a dataset's type — `STATIC_MODEL` or
-`USER_MODEL` — is fixed at creation and cannot be changed. `catalog` (`046ee25e`) and `evaluation`
-(`55a4311d`, the compiled release-artifact dataset) are **static**; `entities.*` (`663132ed`, cron
-`0 4 * * 0`) and `scores.*` (`48ddf155`, cron `0 4 * * 1`) are **scheduled `USER_MODEL`** pipelines.
-A scheduled model cannot be hosted in a static dataset (platform-verified on the catalog case
-2026-08-28: a create/revision/release into `catalog` succeeded but the run request was rejected —
-dataset type `STATIC_MODEL`, a scheduled model needs `USER_MODEL`). So `entities.*` and `scores.*`
-**keep their current namespaces**: their `kind` stays `catalog` / `evaluation`, but their
-`target_namespace` equals `current_namespace` under the `migration_status: not_planned` exception to
-`target_namespace == kind` (§11.5 rule 2). `catalog` and `evaluation` remain the static layers they
-are; the scheduled discovery and scoring pipelines remain their own `USER_MODEL` datasets.
-
-**The same constraint applies to schedule, not just type (#393).** `events`/`metrics` are `kind:
-observations` and `observations` is `USER_MODEL` (type-compatible), so at first they looked like clean
-moves — but an OSO schedule is a **dataset-level sweep** and a model cron only throttles it, and the
-`observations` dataset is currently manual (`cron null`; `product_adoption_current` runs `MANUAL`
-under the §18 baseline discipline). `events` (`0 5 * * 0`) and `metrics` (`0 6 * * 0`) carry distinct
-dataset crons; folding them into `observations` would force a sweep cron on that dataset that also
-swept the deliberately-manual `product_adoption_current`. So `events`/`metrics` are **deferred**
-(`not_planned`, kept in their own datasets). Whether the `observations` dataset ever becomes swept is
-a **Phase-2B refresh-model** question (2B owns that decision, blocked on OSO incremental support); it
-does **not** carry a scheduled follow-on move — a later relocation of `events`/`metrics` would require
-a **new explicit architecture decision** re-opening their `not_planned` disposition.
-The general rule: OSO binds **one type and one sweep schedule per dataset**, so an independently-typed
-or independently-scheduled pipeline cannot fold into a shared namespace. The only tables that
-physically relocate in Phase 5 are the curator-controlled `catalog.* → registry` ownership
-transitions (static → compiled). The SQL for the staying pipelines keeps its `models/{entities,
-scores,events,metrics}/*` paths:
-
-```text
-    entities/                       # kind: catalog, USER_MODEL dataset, stays put
-      repos.sql projects.sql packages.sql models.sql
-    events/                         # kind: observations, own USER_MODEL sweep — deferred, stays put
-      github_events.sql
-    metrics/                        # kind: observations, own USER_MODEL sweep — deferred, stays put
-      daily.sql
-    observations/                   # USER_MODEL, currently manual (product_adoption_current)
-      product_adoption_current.sql
-    scores/                         # kind: evaluation, USER_MODEL dataset, stays put
-      dependency_graph.sql fragility.sql ossd_coverage.sql
-      project_summary.sql repos_summary.sql stack_contributors.sql
-```
-
-Two populations, one set of namespaces. The gap map is ~522 curated products; the long tail is
-~24,600 discovered artifacts. They share `observations` and `evaluation` because
-`signal_github.repo_state` and `metrics.daily` are both measurements of GitHub repositories and
-should not live in separate worlds permanently. What keeps the gates coherent is that release
-gates key on POPULATION, not namespace — see 11.2's `release_path` field and section 7.
-
-Phase 0 records these as `target_namespace` and changes nothing. The moves land in Phase 5, so
-no inventory PR touches a Live notebook.
-
-All file counts in this section must be regenerated mechanically in Phase 0 rather than
-maintained in prose. Every count previously written here by hand was wrong.
+> An earlier plan kept the `entities`, `events`, `metrics` and analytical `scores` chain in this
+> repository, mapping its tables onto the five semantic kinds and reasoning about which OSO dataset
+> type/schedule each needed. ADR-003 (steps 5–6) **externalized** the whole chain instead — it
+> models the OSO organization, not the Gap Map — so those tables are frozen under platform ownership
+> and gone from this inventory, and the `population: long_tail` classification is retired. None of
+> that mapping or namespace analysis binds any asset today. Current state: ADR-003, §11.2 and §11.5.
 
 Three consequences worth stating, because each is a true claim the layout makes on its own:
 
@@ -1606,10 +1526,14 @@ Three properties of the schema are load-bearing and were wrong in the first draf
 and frozen bytes. A singular `file` cannot satisfy "every managed file appears exactly once"
 and "one entry per table" simultaneously, so files are keyed by role.
 
-**`kind` is semantic; the namespace is where the table lives today.** These disagree for
-every legacy `entities`, `events`, `metrics`, `scores` and `evidence` table, which is the
-entire point of the migration. A gate requiring them to match cannot inventory the current
-system without misdescribing it. Record both, and require equality only after migration.
+**`table` records physical placement; `kind` records the semantic layer.** They agree for every
+asset in the `registry`, `observations` and `evaluation` namespaces. They come apart only for the
+`signal_*` source datasets: those are physically separate but semantically observations (a raw
+source collector) — or evaluations, for the banded `product_adoption` assessments. `kind` is not
+decorative: `build/assets.py` `kind_violations()` re-derives it from the table's placement
+(`expected_kind`) and rejects a `registry` table that claims `kind: evaluation`. There are no
+`current_namespace`, `target_namespace` or `migration_status` fields — the namespace migration is
+complete, and a settled inventory records what each asset *is*, not where it was going.
 
 **Dependency fields are derived, not authored.** They come from parsing model bodies,
 `build/` modules, notebooks and workflows, then get verified in CI. Nothing here is
@@ -1623,11 +1547,9 @@ registries this file replaces.
     model: warehouse/models/observations/product_adoption_current.sql
     schema: null
     data: null
-  kind: observations              # registry | catalog | observations | evaluation | releases
-  current_namespace: observations # where the table lives today
-  target_namespace: observations  # where the architecture puts it (== current_namespace when the
-                                  #   asset does not move: migration_status complete or not_planned)
-  migration_status: complete      # pending | in_progress | complete | not_planned
+  kind: observations              # the semantic layer, derived from placement by expected_kind:
+                                  #   the table's namespace, except a signal_* source dataset is
+                                  #   observations (or evaluation for a *.product_adoption assessment)
   authority: repo                 # repo | platform | external
   population: gap_map             # gap_map — the ONLY governed population (long_tail retired, ADR-003)
   release_path: false             # true only if this asset belongs to a gap-map release
@@ -1708,55 +1630,20 @@ outputs — `retirement_reason` and `retirement_issue` — are recorded.
 
 ### 11.3 Scope: what the inventory covers
 
-> **Superseded by `adr-003-repository-scope-boundary.md`; mechanism landed 2026-08-29.** The
-> transitive-closure rule below pulled peripheral OSO pipelines into governance whenever a standalone
-> notebook read them. ADR-003 replaces it with an explicit-role boundary, now IMPLEMENTED: the `role`
-> field on governed assets, `warehouse/dependencies.yaml` for external inputs, a **root-scoped** DAG
-> (notebooks are no longer reachability roots), and the six anti-reintroduction gates
-> (`build/assets.py` `role_violations` / `dependency_violations` / `notebook_root_violations`; §11.5).
-> ADR-003 is now COMPLETE: the externalization (steps 5-6) removed the 28 backlog assets here and
-> FROZE them under platform ownership (disposition `frozen-without-producer`, recorded in the
-> reproducible receipt `warehouse/audits/externalization.json`; not an ownership transfer to a named
-> destination repo), so the closure below is history — the governed inventory is the 38 governed
-> assets + 8 dependency contracts, not the old transitive closure.
+`warehouse/assets.yaml` covers the governed Gap Map data system: the assets reachable UPSTREAM from
+the Gap Map's publication sinks and its named audit/control roots (§11.5 gate 4), traversed through
+repo-owned producer files. Required OSO inputs a governed asset reads are contracts in
+`warehouse/dependencies.yaml`, not governed assets. A standalone notebook is never a reachability root,
+so a table only a notebook reads never enters governance (gate 5). Peripheral OSO pipelines the map
+neither feeds nor reads are out of scope in both files and stay on the platform.
 
-The inventory covers the transitive closure of what the repository ships or maintains. The
-roots are:
-
-```text
-warehouse/                 30 SQL and Python model files
-build/                     the validators, serializers and gates
-notebooks/                 the four tracked notebooks
-.github/workflows/         the eight workflows and what they invoke
-generated public projections   build/notebook_data.json and the front-end payload contract
-```
-
-`build/` is a root, not an afterthought. Three modules there hold real queries:
-
-```text
-build/apply_scores.py     scores.openness_computed          (TABLE constant)
-build/check_parity.py     scores.openness_computed          (TABLE constant)
-build/check_artifacts.py  signal_github.repo_state          (SELECT)
-                          signal_pypi.package_downloads     (SELECT)
-```
-
-An earlier draft rooted the closure at `warehouse/` and the notebooks alone, which would have
-reported those tables as having no in-repo consumer and made each a false retirement
-candidate. `check_parity.py` is the gate protecting the openness dual-run; scoring its input
-as unread would have been a serious error.
-
-That same draft then claimed EIGHT `build/` modules read tables directly, listing
-`check_adoption.py`, `check_rubric.py`, `publish_registry.py`, `serialize_scores.py` and
-`warehouse.py` alongside the three above. Those five mention tables only in prose — module
-docstrings and `#` comments. `build/warehouse.py` is the clearest case: its docstring's usage
-example reads `query("SELECT product_slug FROM currentai.scores.openness_computed")`, which is
-an illustration, not a query.
-
-The lesson is a rule for the derivation, not a footnote: **strip comments AND docstrings
-before counting a reference, and never all string literals.** Comments and docstrings are
-prose that names tables freely; string literals hold the real SQL. A grep that ignores the
-distinction invents consumers in one direction and, if it stripped every literal, would lose
-them in the other.
+The root set is closed: a governed root is a governed producer file, one of the named audit modules
+(`build/check_parity.py`, `build/apply_scores.py`, `build/check_artifacts.py`, which read tables
+directly to gate map semantics), or a declared publication workflow — never "any tracked build module
+or notebook". The reference extractor strips SQL and Python comments AND docstrings before counting a
+table reference and reads only string literals: comments and docstrings name tables in prose, while the
+real SQL lives in literals, so a grep that ignored the distinction would invent consumers one way and
+lose them the other.
 
 #### The inventory is larger than the platform, and why
 
@@ -1775,10 +1662,9 @@ The staged six are the three `signal_packages` models from issue #314,
 Phase-3 `registry.axis_assessments` candidate: tracked assets whose tables do not exist on the
 platform yet. The two Phase-3 evaluation candidates that were staged here,
 `evaluation.product_adoption_measurements` and `evaluation.adoption_reconciliation`, are now
-**deployed** (#368, 2026-08-25) and count among the deployed tables; the Phase-5
-`registry.foundation_model_repos` candidate was staged as a create-target and is now **deployed**
-(published by `registry.yml` on merge of #397, platform-verified 2026-08-29), so it too counts among
-the deployed tables.
+**deployed** (#368, 2026-08-25) and count among the deployed tables. (`registry.foundation_model_repos`
+was later **externalized** under ADR-003 — frozen under platform ownership and removed from this
+inventory — so it is no longer a governed asset here.)
 `observations.source_runs`, `observations.product_adoption_baseline` and
 `registry.axis_assessments` are staged for a reason the `signal_packages` three are not — they are
 repository-side artifacts by design (a control-plane snapshot, a frozen-bytes baseline, and a
@@ -1954,39 +1840,16 @@ exist.
    are checked for consistency with `authority` and `kind`: a `data` role requires a fetcher or
    a frozen asset. A `schema` role is available to any model, mirrored or repository-owned —
    restricting it to mirrors would block repository-owned models from declaring schemas.
-2. `current_namespace` matches the namespace in the deployed `table`. `target_namespace`
-   matches what `kind` implies, with two exceptions below. Equality between `current_namespace`
-   and `target_namespace` tracks whether the asset still has a move outstanding:
-   `migration_status: complete` (already moved) and `migration_status: not_planned`
-   (deliberately staying put) both require `current_namespace == target_namespace`, while
-   `pending` and `in_progress` require them to **differ** (a still-outstanding move that names a
-   migration phase or an open issue). The two exceptions to `target_namespace == kind` are:
-   `kind: observations` in a `signal_*` namespace (permanently legitimate per 4.3); and
-   `migration_status: not_planned`, meaning **no namespace move under the currently accepted
-   architecture** — the asset keeps `target_namespace == current_namespace` regardless of `kind` and
-   **must carry a `not_planned_reason`** (or an equivalent `replacement`/`retirement_reason`) naming
-   which of the accepted reasons applies:
-   - **retirement or supersession in place** — the asset is retired or superseded where it lives
-     rather than relocated to its `kind` (the three `signal_*.product_adoption` compatibility/staged
-     tables; the Phase 7 openness chain `scores.openness_facts`/`openness_computed`,
-     `evidence.product_evidence` — all `kind: evaluation`, retired in place, never relocated to the
-     `evaluation` namespace);
-   - **immutable dataset-type incompatibility** — a scheduled `USER_MODEL` pipeline whose `kind`'s
-     dataset is `STATIC_MODEL` (or vice versa), which the platform cannot change (`entities.*` →
-     `catalog`, `scores.*` → `evaluation`, #393);
-   - **dataset-schedule isolation** — a pipeline with its own sweep schedule whose `kind`'s dataset
-     carries a different (or no) sweep, so co-hosting would force an unwanted schedule change
-     (`events.github_events`, `metrics.daily` → `observations`, #393).
-
-   A `not_planned` disposition is not permanent by fiat: any later move would require a **new explicit
-   architecture decision** re-opening it, not an automatic follow-on. An earlier draft required
-   `kind` to equal the table's namespace outright, which would have rejected every legacy `entities`,
-   `events`, `metrics`, `scores` and `evidence` asset — and this section's own worked example. An
-   earlier revision of this rule scoped `not_planned` to retirement/supersession only, before the
-   dataset type/schedule constraints were discovered (#393).
+2. `kind` (the semantic layer) equals what the table's placement derives (`expected_kind`,
+   enforced by `kind_violations`): the table's own namespace for a `registry`, `observations` or
+   `evaluation` asset, and for a `signal_*` source dataset either `observations` (a raw source
+   collector) or `evaluation` (a banded `product_adoption` assessment). This is the one place `kind`
+   and namespace intentionally come apart, so the gate enforces it rather than leaving `kind` free.
+   There are no `current_namespace`, `target_namespace` or `migration_status` fields: the namespace
+   migration is complete, so the inventory records placement (`table`) and semantics (`kind`), not a
+   move.
 2b. Release-completeness and projection-parity gates apply only to assets with
-   `release_path: true`. Every asset declares `population`; an asset with `release_path: true`
-   and `population: long_tail` is a contradiction and fails.
+   `release_path: true`. Every governed asset is `population: gap_map`.
 3. `mirror:` is present if and only if `authority: platform`.
 4. Mirror drift, in two parts, because a test reading only the current tree cannot detect it.
    A contributor who edits a mirrored file and updates `local_sha256` to match passes any

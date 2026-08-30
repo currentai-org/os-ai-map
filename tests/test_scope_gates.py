@@ -61,6 +61,28 @@ def test_gap_map_is_the_only_population():
     assert A.POPULATIONS == {"gap_map"}
 
 
+# --- kind gate: kind is derived from placement, not decorative --------------------
+
+KIND_VIOLATIONS = [
+    ("registry_claiming_evaluation",
+     dict(table="currentai.registry.products", kind="evaluation"), "derives 'registry'"),
+    ("evaluation_claiming_registry",
+     dict(table="currentai.evaluation.axis_facts", kind="registry"), "derives 'evaluation'"),
+    ("signal_collector_claiming_evaluation",
+     dict(table="currentai.signal_github.repo_state", kind="evaluation"), "derives 'observations'"),
+    ("signal_adoption_claiming_observations",
+     dict(table="currentai.signal_github.product_adoption", kind="observations"), "derives 'evaluation'"),
+    ("unknown_kind_value", dict(table="currentai.registry.products", kind="banana"), "not in"),
+]
+
+
+@pytest.mark.parametrize("label,override,expected", KIND_VIOLATIONS,
+                         ids=[m[0] for m in KIND_VIOLATIONS])
+def test_kind_violation_is_flagged(monkeypatch, label, override, expected):
+    monkeypatch.setattr(A, "assets", lambda: [_governed(**override)])
+    assert any(expected in v for v in A.kind_violations()), label
+
+
 # --- dependency gate: gates 2, 3, 4, and contract integrity ----------------------
 
 def _oso_dep(**over):

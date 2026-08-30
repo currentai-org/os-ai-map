@@ -4,8 +4,9 @@
 
 The `currentai` warehouse uses three-part names: `currentai.<dataset>.<table>`. `warehouse/assets.yaml`
 inventories only the tables this repo **governs** — the `registry`, `observations` and `evaluation`
-datasets plus the read-only signal mirrors — and `docs/architecture/data-architecture.md` documents
-them.
+datasets plus the governed `signal_*` collectors and compatibility shims. The read-only `signal_*`
+mirrors of platform-owned models are **not** governed; they are dependency contracts in
+`warehouse/dependencies.yaml`. `docs/architecture/data-architecture.md` documents both.
 
 The datasets below (`catalog`, `signal_goodailist`, `entities`, `events`, `metrics`, `scores`) were
 **externalized under ADR-003**: they model the OSO organization, not the Gap Map's data system, so they
