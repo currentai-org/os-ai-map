@@ -2,8 +2,10 @@
 
 > **SUPERSEDED — NOT EXECUTABLE (2026-08-29).** Replaced by
 > `../architecture/adr-003-repository-scope-boundary.md`. Several tables named here are slated for
-> **externalization** (ownership transfer to the platform repo), not migration. Retained for historical
-> reasoning only; execute nothing from this runbook. The Phase-5 freeze holds until the ADR-003
+> **externalization** — frozen under platform ownership (`frozen-without-producer`, recorded in
+> `../../warehouse/audits/externalization.json`; **not** a verified ownership transfer to a named
+> destination repo) — not migration. Retained for historical reasoning only; execute nothing from this
+> runbook. The Phase-5 freeze holds until the ADR-003
 > mechanism (roles, dependency contracts, root-scoped DAG, anti-reintroduction gates) is merged — it is
 > not re-enabled when the ADR is accepted.
 

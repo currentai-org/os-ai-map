@@ -159,10 +159,12 @@ peripheral table — from re-entering the governed inventory.
    tail", which obscures ownership — the analytics pipeline externalizes, the tail-candidate registry
    stays and is not `long_tail`.
 
-## Classification of the peripheral assets (for ownership transfer, not deletion)
+## Classification of the peripheral assets (for freeze under platform ownership, not deletion)
 
-**Do not delete working OSO tables.** Transfer their code/data ownership to the appropriate platform
-repository, then remove them from this repo's inventory and publisher.
+**Do not delete working OSO tables.** Freeze each deployed table under platform ownership at its last
+publish (`frozen-without-producer`) — or, where a destination reproduces it, point consumers there —
+then remove them from this repo's inventory and publisher. This is the no-orphan disposition, not a
+verified ownership transfer to a named destination repo.
 
 ### The 24 `long_tail` assets → externalize
 
@@ -199,8 +201,8 @@ Each keeps the rule: **gain a named Gap Map use, or leave the governed inventory
 2. Add the `role` field to governed assets and create `warehouse/dependencies.yaml`.
 3. Root-scope the DAG generator and split the three views.
 4. Add the anti-reintroduction gates.
-5. Externalize the 24 (ownership transfer to the platform repo; remove from inventory + publisher; **no
-   OSO deletion**).
+5. Externalize the 24 (freeze under platform ownership, `frozen-without-producer`; remove from
+   inventory + publisher; **no OSO deletion**).
 6. Resolve the 4 individually.
 
 ### No-orphan precondition for step 5
@@ -214,10 +216,21 @@ a source from this repo's inventory and publisher, confirm both:
 
 If a destination reproduces the table, point consumers there; if not, the deployed table simply freezes
 at its last publish, which is acceptable for the curated reference tables here **only while their
-consumers keep resolving**. The one case that must not be shortcut is `registry.foundation_model_repos`:
-its deployed table keeps serving `entities.models`, so it stays produced (here or elsewhere) until that
-reader no longer needs it. The `#397`/`#400` work is unwound by moving where the table is produced,
-never by reversing the platform deployment.
+consumers keep resolving**. `registry.foundation_model_repos` was called out as the case that must not
+be shortcut — its deployed table keeps serving `entities.models` — and steps 5–6 resolve it explicitly
+rather than by shortcut. Its sole consumer, `entities.models`, is **itself** one of the externalized
+tables: it too is frozen under platform ownership (`frozen-without-producer`, in the same receipt). So
+this is a **frozen consumer reading a frozen producer** — both deployed tables retained on the platform
+at their last publish, neither with a repository producer, both out of this repo's governance. The
+no-orphan rule holds because the data is retained (the table is frozen, not deleted) and the consumer
+still resolves against it; there is no repo-side staleness because neither table is regenerated here.
+**This ADR authorizes that frozen dependency explicitly, accepting its staleness and availability
+risk:** `registry.foundation_model_repos` and `entities.models` are static at their last platform
+publish, and the platform maintainer owns keeping them live or retiring the pair together — the
+repository no longer does. This is why the `#397`/`#400` registry publication is unwound by freezing the
+deployed table, not by reversing the platform deployment. (Had the consumer been a *live governed*
+asset, the producer would have had to stay produced until that reader was repointed; it is not, so it
+does not.)
 
 All Phase-5 platform migration (`osai_subcategory_mapping`/`taxonomy_crosswalk` → registry, `stack_map`
 → registry, and any `entities`/`events`/`metrics`/analytical-`scores` consolidation) is **held** until

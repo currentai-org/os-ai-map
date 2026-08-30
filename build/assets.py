@@ -368,11 +368,77 @@ def _tree_files_at_commit(sha: str, prefixes: tuple[str, ...]) -> set[str]:
 
 
 def _platform_models() -> dict[str, dict]:
-    """The deployed-model audit receipt keyed by table, or {} if absent."""
+    """The current deployed-model audit receipt keyed by table, or {} if absent."""
     if not PLATFORM_MODELS.exists():
         return {}
     doc = json.loads(PLATFORM_MODELS.read_text(encoding="utf-8")) or {}
     return {m["table"]: m for m in doc.get("models") or []}
+
+
+def _platform_models_at_commit(sha: str) -> dict[str, dict]:
+    """The deployed-model audit as of an explicit commit, keyed by table, or {} if unreadable.
+
+    The externalization receipt records platform facts *as of removal*; reproducing them against the
+    mutable current audit would break the moment a later legitimate audit changed or dropped an
+    externalized model, forcing an append-only violation. So the receipt reproduces against the
+    audit committed at its own base commit -- immutable evidence for an immutable receipt.
+    """
+    try:
+        blob = subprocess.run(
+            ["git", "-C", str(ROOT), "show", f"{sha}:warehouse/audits/platform_models.json"],
+            capture_output=True, text=True, check=True,
+        ).stdout
+    except subprocess.CalledProcessError:
+        return {}
+    return {m["table"]: m for m in (json.loads(blob) or {}).get("models") or []}
+
+
+def _first_add_commit(path: str) -> str | None:
+    """The oldest commit reachable from HEAD that added `path`, or None."""
+    out = subprocess.run(
+        ["git", "-C", str(ROOT), "log", "--reverse", "--diff-filter=A", "--format=%H", "--", path],
+        capture_output=True, text=True,
+    ).stdout.split()
+    return out[0] if out else None
+
+
+def _rev_parse(ref: str) -> str | None:
+    r = subprocess.run(
+        ["git", "-C", str(ROOT), "rev-parse", "--verify", "--quiet", ref],
+        capture_output=True, text=True,
+    )
+    return r.stdout.strip() or None
+
+
+def _parent_sha(sha: str) -> str | None:
+    return _rev_parse(f"{sha}^")
+
+
+def expected_externalization_base(recorded_tables: set[str]) -> str | None:
+    """Derive the base commit the receipt MUST name, from the commit graph -- not from the receipt.
+
+    ADR-003's externalization boundary is the state just BEFORE the receipted tables left the
+    inventory. Anchored to `externalization.json`'s first-add commit so it survives squash merging
+    (on the merged trunk the squash commit both removes the tables and adds the receipt, and its
+    parent is the pre-externalization trunk tip). Because a multi-commit branch can add the receipt
+    a commit or two AFTER the removal, the derivation starts at the first-add commit's parent and
+    walks back along first-parent history to the newest commit whose inventory still contains every
+    receipted table -- the pre-removal snapshot. Binding the base this way means a substituted older
+    commit (regenerating a broader historical removal set) no longer validates: the receipt's
+    `externalization_base_commit` must equal the graph-derived boundary.
+    """
+    add = _first_add_commit("warehouse/audits/externalization.json")
+    if not add:
+        return None
+    base = _parent_sha(add)
+    steps = 0
+    while base and steps < 100:
+        tables = _assets_at_commit(base)
+        if tables is not None and recorded_tables <= set(tables):
+            return base
+        base = _parent_sha(base)
+        steps += 1
+    return None
 
 
 def _norm_read_by(rb) -> dict:
@@ -386,17 +452,22 @@ def externalization_receipt_violations() -> list[str]:
     """The externalization receipt MECHANICALLY REPRODUCES from its named base commit.
 
     ADR-003's no-orphan handoff evidence is only worth as much as its reproducibility. This gate
-    re-derives every derivable field from `externalization_base_commit` + the platform-model audit
-    and asserts the committed receipt matches, so the receipt cannot drift from the state it claims
-    to record. It proves, with no OSO credentials:
+    re-derives every derivable field from the base commit's IMMUTABLE evidence (the inventory, the
+    file blobs, and the platform-model audit committed AT THE BASE) and asserts the committed
+    receipt matches, so the receipt cannot drift from the state it claims to record. It proves, with
+    no OSO credentials:
 
     * the document is well-formed: `schema_version`, a `count` equal to the entry total, unique ids
-      and tables, and a base commit that actually resolves in this repo;
+      and tables, and a base commit that resolves;
+    * BOUNDARY -- `externalization_base_commit` is not free-form: it must equal the graph-derived
+      boundary (the pre-removal state anchored to `externalization.json`'s first-add commit, so it
+      survives squash merging), so a valid-but-older commit cannot be substituted to attribute a
+      broader historical removal set to this externalization;
     * MEMBERSHIP -- the entries are EXACTLY the assets removed from the base inventory (base minus
       the current governed inventory minus the current dependency manifest), both directions;
     * per entry, `id` and `population_was` equal the base asset's, `platform.dataset_id` equals the
       base asset's dataset, and the deployed-model facts (`model_id`, `revision_hash`,
-      `source_sha256`) equal the platform audit -- an entry with no audited model carries only a
+      `source_sha256`) equal the BASE platform audit -- an entry with no audited model carries only a
       dataset id, never fabricated model facts;
     * PROVENANCE -- every `archived_source_sha256` hash equals the file's bytes at the base commit
       and the file is genuinely gone from the worktree; and every file that existed under the
@@ -404,8 +475,8 @@ def externalization_receipt_violations() -> list[str]:
       what catches a deleted source that was left unarchived);
     * CONSUMERS -- `repo_read_by` equals the base asset's `read_by` and `external_notebooks_or_products`
       equals its `external_consumers`; the captured `platform_models` list must at least cover every
-      surviving audited model that read the table (a reproducible lower bound -- extra entries come
-      from the externalization-time platform scan named in `evidence_basis`);
+      surviving model in the BASE audit that read the table (a reproducible lower bound -- extra
+      entries come from the externalization-time platform scan named in `evidence_basis`);
     * HONESTY -- `last_platform_verified_at` equals the base asset's own `verified_at` (its real last
       verification, not a fresh live claim), and `recorded_at`, `evidence_basis`, and `owner` are
       present. `consumer_resolution` is optional prose and is NEVER what satisfies the gate; the
@@ -441,6 +512,18 @@ def externalization_receipt_violations() -> list[str]:
         problems.append(f"externalization_base_commit {base!r} does not resolve in this repo")
         return problems  # everything below reproduces against the base; without it, stop here
 
+    # The base is not free-form: it must be the graph-derived externalization boundary, so a valid
+    # but older commit cannot be substituted to attribute a broader historical removal set here.
+    recorded_tables = {t for t in tables if t}
+    expected_base = expected_externalization_base(recorded_tables)
+    if expected_base is None:
+        problems.append("cannot derive the externalization boundary from history "
+                        "(externalization.json add commit or a pre-removal inventory is unreachable)")
+    elif expected_base != _rev_parse(base):
+        problems.append(
+            f"externalization_base_commit {base} is not the externalization boundary; the commit "
+            f"graph derives {expected_base} (the pre-removal state anchored to externalization.json)")
+
     base_assets = _assets_at_commit(base)
     if base_assets is None:
         problems.append(f"cannot read warehouse/assets.yaml at base commit {base}")
@@ -462,7 +545,9 @@ def externalization_receipt_violations() -> list[str]:
         problems.append(f"{t}: in the receipt but not an asset removed from the base inventory")
 
     # -- per-entry reproduction ----------------------------------------------------
-    pmodels = _platform_models()
+    # Platform facts reproduce against the audit committed AT THE BASE (immutable evidence for an
+    # immutable receipt), never the mutable current audit.
+    pmodels = _platform_models_at_commit(base)
     producers = {(a.get("files") or {}).get("model") for a in assets()}
     producers |= {(d.get("files") or {}).get("model") for d in dependencies()}
     producer_tables = {table_for_path(p) for p in producers if p}

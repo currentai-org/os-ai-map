@@ -392,6 +392,48 @@ def test_altered_base_commit_is_flagged(monkeypatch):
     assert any("does not resolve" in v for v in A.externalization_receipt_violations())
 
 
+def test_valid_but_wrong_ancestor_base_is_flagged(monkeypatch):
+    # A resolvable-but-incorrect ancestor (the grandparent of the true boundary) must be rejected:
+    # the base is bound to the graph-derived externalization boundary, not merely to "resolves".
+    r = _real_receipt()
+    real = r["externalization_base_commit"]
+    grandparent = A._parent_sha(A._parent_sha(real))  # a valid older ancestor, not the boundary
+    assert grandparent and grandparent != real
+    r["externalization_base_commit"] = grandparent
+    _serve(monkeypatch, r)
+    assert any("is not the externalization boundary" in v
+               for v in A.externalization_receipt_violations())
+
+
+def test_base_boundary_derivation_matches_recorded():
+    # The graph-derived boundary equals what the committed receipt names -- the positive anchor for
+    # the binding, independent of the receipt's own base field.
+    tables = {e["table"] for e in A.externalized()}
+    derived = A.expected_externalization_base(tables)
+    recorded = A.externalization_receipt()["externalization_base_commit"]
+    assert derived is not None
+    assert derived == A._rev_parse(recorded)
+
+
+def test_platform_facts_reproduce_against_base_audit_not_current(monkeypatch):
+    # Blocker 2: the receipt reproduces against the audit committed AT THE BASE, so a later change
+    # to the CURRENT platform_models.json must not affect the verdict. Poison the current audit and
+    # confirm the gate is unmoved.
+    monkeypatch.setattr(A, "_platform_models",
+                        lambda: {"currentai.entities.repos": {"table": "currentai.entities.repos",
+                                                              "model_id": "poisoned", "revision_hash": "x",
+                                                              "source_sha256": "y", "internal_reads": []}})
+    assert A.externalization_receipt_violations() == []
+
+
+def test_missing_base_audit_is_flagged(monkeypatch):
+    # If the base-committed audit cannot be read, deployed-model facts cannot reproduce -> flagged,
+    # never silently skipped.
+    monkeypatch.setattr(A, "_platform_models_at_commit", lambda sha: {})
+    probs = A.externalization_receipt_violations()
+    assert any("no audited model exists to source it" in v for v in probs)
+
+
 def test_wrong_count_is_flagged(monkeypatch):
     r = _real_receipt()
     r["count"] = r["count"] + 1
