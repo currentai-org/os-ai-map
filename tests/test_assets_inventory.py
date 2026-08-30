@@ -243,13 +243,8 @@ def test_phase7_openness_chain_is_a_dependency_with_retirement_context(inventory
             f"{t}: dependency must carry its Phase-7 retirement_context (#384)")
 
 
-# test_scheduled_pipelines_do_not_relocate_into_static_namespaces and
-# test_events_metrics_deferred_not_folded_into_observations were retired with ADR-003 steps 5-6:
-# the entities.*/scores.* analytical chain and events.github_events/metrics.daily were externalized
-# to platform ownership and removed from this inventory. Their old not_planned dispositions no
-# longer apply because the assets are no longer governed here. That no long_tail/peripheral pipeline
-# can re-enter the inventory is now enforced generally by the role + ratchet gates (test_role_gate_holds,
-# tests/test_scope_gates.py), not per-asset here.
+# The entities.*/scores.* and events/metrics relocation tests were retired with ADR-003: those
+# pipelines are externalized, and re-entry is now blocked generally by the role/scope gates.
 
 
 # --- 3: mirror provenance ---------------------------------------------------------
@@ -714,24 +709,18 @@ def test_governed_root_set_is_closed():
     assert "build/warehouse.py" not in roots
 
 
-def test_role_and_backlog_partition_the_inventory():
-    """Every asset is either governed (carries a role) or in the externalization backlog
-    (roleless: long_tail, or one of the named questionable gap_map tables). Nothing else."""
+def test_every_asset_is_governed_with_a_role():
+    """The externalization backlog is empty (ADR-003 steps 5-6): every asset in assets.yaml is
+    governed and carries a role in the vocabulary, and every asset is population gap_map."""
     for a in A.assets():
-        roleless = a.get("role") is None
-        assert roleless == A.in_externalization_backlog(a), (
-            f"{a['id']}: role/backlog disagree (role={a.get('role')!r}, "
-            f"backlog={A.in_externalization_backlog(a)})"
-        )
+        assert a.get("role") in A.ROLES, f"{a['id']}: role {a.get('role')!r} not in {sorted(A.ROLES)}"
+        assert a["population"] == "gap_map", f"{a['id']}: population {a['population']!r}, not gap_map"
 
 
 # --- the inventory must agree with the ADR committed beside it -------------------
 
-# test_inventory_agrees_with_adr_002 was retired with ADR-003 steps 5-6. ADR-003 supersedes the
-# scope basis of ADR-002: the `catalog` reference tables ADR-002 routed *into* `registry` are
-# instead EXTERNALIZED (ownership follows the scope rule, not the provenance shape), so they are no
-# longer in this inventory and there is nothing left to reconcile against ADR-002's catalog table.
-
+# test_inventory_agrees_with_adr_002 was retired with ADR-003: the catalog tables ADR-002 routed
+# into registry are externalized, so there is nothing left to reconcile against it.
 
 
 def test_quoted_trino_identifiers_are_found(tmp_path):
@@ -878,10 +867,9 @@ def test_schedule_evidence_only_on_scheduled_assets(inventory):
                 assert field not in asset, f"{asset['id']}: unscheduled but carries {field}"
 
 
-# The openness chain (evidence.product_evidence, scores.openness_facts, scores.openness_computed)
-# is no longer a governed asset -- ADR-003 reclassified it as a dependency contract. Its new
-# state is asserted by test_phase7_openness_chain_is_a_dependency_with_retirement_context above;
-# the former population/release_path consistency tests over it are retired with the reclassification.
+# The openness chain is now a dependency contract (ADR-003), asserted by
+# test_phase7_openness_chain_is_a_dependency_with_retirement_context above; its former
+# population/release_path tests are retired with the reclassification.
 
 
 # --- the ledger must list exactly the derived set ------------------------------
@@ -993,6 +981,25 @@ def test_platform_audit_receipt_is_wellformed_and_complete():
         assert "code" not in m, f"{m['table']}: receipt must not carry the source body"
         for ref in m["in_scope_reads"]:
             assert ref.removeprefix("currentai.") in ids, f"{m['table']} reads unlisted {ref}"
+
+
+def test_platform_receipt_derived_fields_reproduce_read_only():
+    """The receipt's projected fields (in_scope_reads, has_repository_source) must re-derive from
+    the committed tree with no OSO fetch -- it cannot be partly historical, partly recomputed."""
+    violations = AU.receipt_reproduction_violations(AU.load_receipt())
+    assert not violations, "receipt does not reproduce:\n" + "\n".join(violations)
+
+
+def test_externalization_receipt_is_honest():
+    """ADR-003 no-orphan handoff evidence: every externalized table is genuinely gone from the
+    inventory and the dependency manifest, has no repository producer, and carries a real
+    disposition + handoff fields -- a freeze cannot be mislabeled as an ownership transfer."""
+    violations = A.externalization_receipt_violations()
+    assert not violations, "externalization receipt:\n" + "\n".join(violations)
+    receipt = A.externalized()
+    assert receipt, "externalization.json should record the ADR-003 step 5-6 removals"
+    for e in receipt:
+        assert e["disposition"] in A.EXTERNALIZATION_DISPOSITIONS
 
 
 def _valid_receipt() -> dict:

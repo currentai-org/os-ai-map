@@ -22,7 +22,7 @@ def _governed(**over):
     return base
 
 
-# --- role gate (gates 1, 6, per-role, ratchet) ----------------------------------
+# --- role gate (gate 1, per-role invariants, retired populations) ---------------
 
 def test_governed_output_without_release_path_is_flagged(monkeypatch):
     monkeypatch.setattr(A, "assets", lambda: [_governed(release_path=False)])
@@ -59,20 +59,18 @@ def test_compatibility_shim_without_replacement_is_flagged(monkeypatch):
     assert any("replacement" in v for v in A.role_violations())
 
 
-def test_new_long_tail_asset_is_flagged_by_the_ratchet(monkeypatch):
-    # finding 3: a NEW long_tail (not in the frozen backlog) must be rejected -- shrink-only.
-    monkeypatch.setattr(A, "assets", lambda: [_governed(
-        id="scores.brand_new", table="currentai.scores.brand_new",
-        population="long_tail", release_path=False, role=None)])
-    v = A.role_violations()
-    assert any("frozen backlog" in x and "long_tail" in x for x in v)
+def test_retired_populations_are_rejected():
+    # finding 3: `long_tail` and `both` are retired; the vocabulary is a single value, so the
+    # required-fields/vocab gate rejects any governed asset that is not gap_map.
+    assert A.POPULATIONS == {"gap_map"}
+    assert "long_tail" not in A.POPULATIONS and "both" not in A.POPULATIONS
 
 
-def test_new_roleless_asset_is_flagged_by_the_ratchet(monkeypatch):
+def test_roleless_asset_is_flagged(monkeypatch):
+    # Every asset must carry a role -- there is no roleless/backlog state any more.
     monkeypatch.setattr(A, "assets", lambda: [_governed(
-        id="registry.brand_new", table="currentai.registry.brand_new",
-        population="gap_map", release_path=False, role=None)])
-    assert any("frozen externalization backlog" in v for v in A.role_violations())
+        id="registry.brand_new", table="currentai.registry.brand_new", role=None)])
+    assert any("is not one of" in v for v in A.role_violations())
 
 
 def test_unknown_role_value_is_flagged(monkeypatch):

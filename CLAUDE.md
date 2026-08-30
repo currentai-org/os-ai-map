@@ -25,8 +25,9 @@ that merely exists on OSO, or is read only by a standalone notebook or another p
 **out of scope** entirely — it lives on OSO. See `docs/architecture/adr-003-repository-scope-boundary.md`
 (Accepted; fully implemented). ADR-003 is **done**: the mechanism (the `role` field,
 `warehouse/dependencies.yaml` contracts, the root-scoped DAG, the anti-reintroduction gates) and the
-externalization (the 28 backlog assets transferred to platform ownership and removed from this repo's
-inventory + publisher, no OSO deletion) have both landed. The governed inventory is the Gap Map's own
+externalization (the 28 backlog assets removed from this repo's inventory + publisher and frozen under
+platform ownership — disposition `frozen-without-producer`, no OSO deletion; see
+`warehouse/audits/externalization.json`) have both landed. The governed inventory is the Gap Map's own
 data system — 38 governed assets + 8 dependency contracts; `population: long_tail` is retired and the
 gates keep peripheral OSO tables out. The old Phase-5 namespace-move runbooks stay **superseded**.
 

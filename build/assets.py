@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import ast
 import hashlib
+import json
 import re
 import subprocess
 from pathlib import Path
@@ -29,14 +30,14 @@ STATUSES = {"active", "staged", "deprecated", "historical", "compatibility", "do
 MIGRATION_STATES = {"pending", "in_progress", "complete", "not_planned"}
 CHECK_STATES = {"checked", "unknown", "not_applicable"}
 AUTHORITIES = {"repo", "platform", "external"}
-# `long_tail` is RETIRED as a governed population (ADR-003 steps 5-6 externalized the long-tail
-# pipelines). Every governed asset is `gap_map`; the gates forbid `long_tail` outright.
-POPULATIONS = {"gap_map", "both"}
+# Every governed asset is `gap_map` (ADR-003). `long_tail` is retired (steps 5-6 externalized the
+# long-tail pipelines) and `both` -- which meant overlap with that retired population -- is gone
+# with it. A single value: the vocabulary itself now forbids any non-gap_map governed asset.
+POPULATIONS = {"gap_map"}
 
-# ADR-003 repository role. Membership is ASSERTED by this field, not inferred from the
-# graph. A governed asset carries exactly one role; the externalization backlog (the
-# peripheral assets ADR-003 slates for ownership transfer) is deliberately ROLELESS until
-# it leaves, so `role` is optional this PR and becomes required once the backlog is empty.
+# ADR-003 repository role. Membership is ASSERTED by this field, not inferred from the graph.
+# Every governed asset carries exactly one role (REQUIRED_FIELDS); there is no roleless state --
+# the externalization backlog drained in steps 5-6 and cannot return.
 #   governed-output   a published Gap Map artifact whose schema + publication lifecycle
 #                     are owned here (must be release_path: true, authority: repo)
 #   repo-computation  repo-OWNED SQL/Python implementing or auditing map semantics. MUST be
@@ -50,15 +51,6 @@ POPULATIONS = {"gap_map", "both"}
 #                     to avoid collision with the lifecycle `status: compatibility`). May be a
 #                     platform mirror -- a shim is transitional by definition, not owned.
 ROLES = {"governed-output", "repo-computation", "governed-data", "compatibility-shim"}
-
-# ADR-003 externalization backlog RATCHET, now EMPTY: steps 5-6 externalized the long-tail
-# pipelines and the questionable gap_map tables, so the backlog has drained. These stay as the
-# PERMANENT anti-reintroduction floor -- the gates require every asset to carry a role (no
-# roleless entry may appear) and forbid `population: long_tail` outright, so a peripheral OSO
-# table can never be pulled back into governance. Both are empty and are expected to stay empty.
-EXTERNALIZE_QUESTIONABLE: frozenset[str] = frozenset()
-FROZEN_LONG_TAIL_BACKLOG: frozenset[str] = frozenset()
-FROZEN_BACKLOG = FROZEN_LONG_TAIL_BACKLOG | EXTERNALIZE_QUESTIONABLE
 
 # The named audit / control roots of the governed graph: repo modules that READ governed or
 # dependency tables to gate or audit map semantics but do not themselves produce a governed
@@ -84,6 +76,7 @@ REQUIRED_FIELDS = (
 )
 ASSETS = ROOT / "warehouse" / "assets.yaml"
 DEPENDENCIES = ROOT / "warehouse" / "dependencies.yaml"
+EXTERNALIZATION = ROOT / "warehouse" / "audits" / "externalization.json"
 
 # Closure roots, per data-architecture.md 11.3. `build/` is a root: seven modules
 # there read currentai tables directly, and omitting them reports every table they
@@ -323,30 +316,76 @@ def dependencies() -> list[dict]:
     return (yaml.safe_load(DEPENDENCIES.read_text(encoding="utf-8")) or {}).get("dependencies") or []
 
 
+EXTERNALIZATION_DISPOSITIONS = {"frozen-without-producer", "transferred"}
+
+
+def externalized() -> list[dict]:
+    """The append-only externalization receipt (ADR-003 steps 5-6), or [] if absent."""
+    if not EXTERNALIZATION.exists():
+        return []
+    return (json.loads(EXTERNALIZATION.read_text(encoding="utf-8")) or {}).get("assets") or []
+
+
+def externalization_receipt_violations() -> list[str]:
+    """The externalization receipt is well-formed and honest (ADR-003 no-orphan handoff evidence).
+
+    Each entry documents a table removed from this repo's inventory/publisher. The gate proves the
+    receipt describes reality, not a claim: every entry is genuinely GONE from the governed inventory
+    and the dependency manifest, has NO repository producer left, carries a real disposition and the
+    handoff evidence fields, and a `frozen-without-producer` entry names the deployed table it froze.
+    A `transferred` entry must name a destination (repo/path + commit) -- so a freeze cannot be
+    mislabeled as an ownership transfer.
+    """
+    problems: list[str] = []
+    governed = set(by_table())
+    dep_tables = {d.get("table") for d in dependencies()}
+    producers = {(a.get("files") or {}).get("model") for a in assets()}
+    producers |= {(d.get("files") or {}).get("model") for d in dependencies()}
+    producer_tables = {table_for_path(p) for p in producers if p}
+    seen: set[str] = set()
+    for e in externalized():
+        t = e.get("table")
+        eid = e.get("id") or t
+        if not t:
+            problems.append(f"{eid}: externalization entry has no table")
+            continue
+        if t in seen:
+            problems.append(f"{t}: listed more than once in the externalization receipt")
+        seen.add(t)
+        if t.removeprefix("currentai.") in governed:
+            problems.append(f"{t}: externalized but still a governed asset in assets.yaml")
+        if t in dep_tables:
+            problems.append(f"{t}: externalized but also a dependency contract")
+        if t in producer_tables:
+            problems.append(f"{t}: externalized but a repository model file still produces it")
+        if e.get("disposition") not in EXTERNALIZATION_DISPOSITIONS:
+            problems.append(f"{t}: disposition {e.get('disposition')!r} not in {sorted(EXTERNALIZATION_DISPOSITIONS)}")
+        for field in ("owner", "verified_at", "consumer_resolution", "consumers_at_removal"):
+            if not e.get(field) and e.get(field) != {}:
+                problems.append(f"{t}: externalization entry missing {field}")
+        if e.get("disposition") == "transferred":
+            dest = e.get("destination") or {}
+            if not (dest.get("repository") and dest.get("commit")):
+                problems.append(f"{t}: disposition 'transferred' must name destination.repository + commit")
+    return problems
+
+
 # --- ADR-003 roles and the anti-reintroduction gates -----------------------------------
 #
 # `role` ASSERTS membership; these functions RE-DERIVE it from the asset's own fields so an
 # authored role that disagrees with the boundary rule is caught, exactly as the derived
-# read_by graph catches a hand-edited reader list. The externalization backlog (24 long_tail
-# + the 4 questionable gap_map tables of EXTERNALIZE_QUESTIONABLE) is roleless until ADR-003
-# steps 5/6 remove it; every OTHER asset is a governed asset and must carry the derived role.
+# read_by graph catches a hand-edited reader list. Every asset in assets.yaml is a governed
+# asset and must carry the derived role (the externalization backlog is gone; steps 5-6 done).
 
-def in_externalization_backlog(asset: dict) -> bool:
-    """True for an asset ADR-003 slates to leave the governed inventory (roleless until then)."""
-    return asset["population"] == "long_tail" or asset["id"] in EXTERNALIZE_QUESTIONABLE
+def expected_role(asset: dict) -> str:
+    """The role ADR-003 derives for a governed asset, from its own fields.
 
-
-def expected_role(asset: dict) -> str | None:
-    """The role ADR-003 assigns this asset, or None if it is in the externalization backlog.
-
-    Derived, not read. `governed-output` iff on the release path; `compatibility-shim` iff a
-    live compatibility object; `repo-computation` iff a repo-owned model (has a model file);
-    otherwise `governed-data` (a repo-owned data/control artifact -- the baseline bytes, the
-    source-runs snapshot). A platform mirror is never governed-output/repo-computation here:
-    such assets are not in assets.yaml at all -- they are dependency contracts.
+    `governed-output` iff on the release path; `compatibility-shim` iff a live compatibility
+    object; `repo-computation` iff a repo-owned model (has a model file); otherwise
+    `governed-data` (a repo-owned data/control artifact -- the baseline bytes, the source-runs
+    snapshot). A platform mirror is never governed-output/repo-computation: such tables are not
+    in assets.yaml at all -- they are dependency contracts.
     """
-    if in_externalization_backlog(asset):
-        return None
     if asset["release_path"]:
         return "governed-output"
     if asset["status"] == "compatibility":
@@ -357,11 +396,11 @@ def expected_role(asset: dict) -> str | None:
 
 
 def role_violations() -> list[str]:
-    """Every governed asset carries the correct `role`, each role's invariants hold, and the
-    externalization backlog can only shrink.
+    """Every governed asset carries the correct `role` and each role's invariants hold.
 
-    ADR-003 gate 1 (governed-output <-> release_path), gate 6 (no governed long_tail), the
-    per-role "must be" clauses, and the backlog ratchet (roleless iff in the FROZEN_BACKLOG).
+    ADR-003 gate 1 (governed-output <-> release_path) and the per-role "must be" clauses. The
+    externalization backlog drained in steps 5-6, so there is no roleless state and no long_tail:
+    `role` and `population: gap_map` are REQUIRED_FIELDS / vocabulary, enforced directly.
     """
     problems: list[str] = []
     for a in assets():
@@ -369,35 +408,8 @@ def role_violations() -> list[str]:
         want = expected_role(a)
         aid = a["id"]
 
-        if role is not None and role not in ROLES:
+        if role not in ROLES:
             problems.append(f"{aid}: role {role!r} is not one of {sorted(ROLES)}")
-            continue
-
-        # Backlog ratchet (gate 6 / finding 3): the roleless set can only SHRINK. A roleless
-        # asset must be a member of the frozen backlog, and any long_tail asset must be in the
-        # frozen long-tail backlog -- a NEW long_tail or a new roleless asset cannot appear.
-        if role is None and aid not in FROZEN_BACKLOG:
-            problems.append(
-                f"{aid}: roleless but not in the frozen externalization backlog; a new asset "
-                "must justify a role -- the backlog can only shrink (gate 6 / ratchet)"
-            )
-        if a["population"] == "long_tail" and aid not in FROZEN_LONG_TAIL_BACKLOG:
-            problems.append(
-                f"{aid}: population long_tail but not in the frozen backlog; long_tail is a "
-                "retired governed population and cannot be reintroduced (gate 6)"
-            )
-
-        if want is None:
-            # Externalization backlog: must stay roleless until it leaves (steps 5/6).
-            if role is not None:
-                problems.append(
-                    f"{aid}: is in the externalization backlog but carries role {role!r}; "
-                    "the backlog is roleless until ADR-003 step 5/6"
-                )
-            continue
-
-        if role is None:
-            problems.append(f"{aid}: governed asset is missing its role (expected {want!r})")
             continue
         if role != want:
             problems.append(f"{aid}: role is {role!r} but the boundary rule derives {want!r}")

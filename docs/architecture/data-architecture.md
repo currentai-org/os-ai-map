@@ -1367,7 +1367,7 @@ Migration rules:
 
 Verified against the live `currentai` org on 2026-08-20: <!-- observed:2026-08-20 -->22 datasets,
 <!-- observed:2026-08-20 -->96 tables,
-<!-- count:tracked_warehouse_files -->25 tracked files under `warehouse/`. The structure below is the target, and the
+<!-- count:tracked_warehouse_files -->26 tracked files under `warehouse/`. The structure below is the target, and the
 mirror layout of 11.1 is now in place; the file manifest in 11.4 recorded the exact diff
 from the 2026-08-20 state (40 files), Phase 0b added `warehouse/audits/platform_models.json`,
 the deployed-model audit receipt, and Phase 2 added `warehouse/audits/source_runs.json`, the
@@ -1456,7 +1456,17 @@ showed it as a `.sql` file, which contradicts 4.3 — a model that selects from 
 tables produces a different result on every run, which is the opposite of an immutable snapshot.
 Add a presentation view only if something actually needs one.
 
-#### The long-tail chain is retained; its tables map onto the five KINDS, not onto five datasets
+#### [SUPERSEDED by ADR-003 — historical] The long-tail chain is retained; its tables map onto the five KINDS, not onto five datasets
+
+> **Superseded (ADR-003, steps 5–6, 2026-08-30).** This subsection is retained as history and is
+> **non-executable**. The `entities`, `events`, `metrics` and analytical `scores` tables are no
+> longer governed by this repository. Under the repository-scope boundary they were externalized —
+> frozen under platform ownership with disposition `frozen-without-producer` and recorded in
+> `warehouse/audits/externalization.json` — because they are OSO-hosted platform tables, not the
+> Gap Map's own data system. The `population: long_tail` classification is retired; the governed
+> inventory is `role`-typed and single-population (`gap_map`). The mapping table and namespace/type
+> analysis below described the pre-boundary plan to keep the chain in-repo; they no longer bind any
+> asset. For the current state see ADR-003 and §11.2/§11.5.
 
 The `entities`, `events`, `metrics` and analytical `scores` tables are kept. `oss-ai-trends`
 and `long-tail-explorer` are both tagged `Live` on the platform, so retiring the chain would
@@ -1629,69 +1639,53 @@ hand-maintained, because a hand-maintained dependency list drifts exactly like t
 registries this file replaces.
 
 ```yaml
-- id: scores.stack_contributors
-  table: currentai.scores.stack_contributors
+- id: observations.product_adoption_current
+  table: currentai.observations.product_adoption_current
   files:                          # keyed by role; every managed file appears in exactly one
-    model: warehouse/models/scores/stack_contributors.sql
+    model: warehouse/models/observations/product_adoption_current.sql
     schema: null
     data: null
-  kind: evaluation                # registry | catalog | observations | evaluation | releases
-  current_namespace: scores       # where the table lives today
-  target_namespace: scores        # where the architecture puts it (== current_namespace when the
+  kind: observations              # registry | catalog | observations | evaluation | releases
+  current_namespace: observations # where the table lives today
+  target_namespace: observations  # where the architecture puts it (== current_namespace when the
                                   #   asset does not move: migration_status complete or not_planned)
-  migration_status: not_planned   # pending | in_progress | complete | not_planned
-  not_planned_reason: 'will NOT relocate to evaluation (§11.1): kind is evaluation, but this is a
-    scheduled USER_MODEL pipeline and the evaluation dataset is static with an immutable type, so it
-    stays in scores (#393).'      # REQUIRED when migration_status: not_planned — the documented
-                                  #   reason the asset stays put (a `replacement` or
-                                  #   `retirement_reason` also satisfies it)
+  migration_status: complete      # pending | in_progress | complete | not_planned
   authority: repo                 # repo | platform | external
-  grain: one row per (developer, repo), trailing 365d COMMIT_CODE
+  population: gap_map             # gap_map — the ONLY governed population (long_tail retired, ADR-003)
+  release_path: false             # true only if this asset belongs to a gap-map release
+  role: repo-computation          # REQUIRED, one of:
+                                  #   governed-output   a published gap-map artifact (release_path: true, authority repo)
+                                  #   repo-computation  a repo-OWNED model (has a model file; authority: repo).
+                                  #                     A platform mirror is NOT this — it is a dependency
+                                  #                     contract (dependencies.yaml); a mirror is provenance,
+                                  #                     not ownership.
+                                  #   governed-data     a repo-owned data/control artifact, not a computation
+                                  #                     (the frozen baseline bytes, the source-runs snapshot)
+                                  #   compatibility-shim  a temporary shim for a governed asset (has `replacement`)
+                                  # There is NO `owner` field — every governed asset is repo-owned, so a
+                                  # uniform owner carried no signal (a dependency records owner: oso instead).
+  grain: one row per (product_slug, artifact_kind, artifact_id, channel, metric_type, measurement_window_days)
   reads:                          # DERIVED
-    - table: currentai.catalog.stack_map
+    - table: currentai.registry.product_artifacts
       scope: internal
-    - table: oso.int_events__github_unified
-      scope: external
-  read_by:                        # DERIVED across ALL closure roots of 11.3
-    models: []
-    build: []
-    notebooks: []                 # verified: long-tail-explorer reads repos_summary,
-                                  # entities.models, entities.packages and catalog.stack_map
-                                  # — NOT this table
-    workflows: []
+    - table: currentai.signal_github.artifact_state
+      scope: internal             # a dependency contract (a platform mirror), not a governed asset
+  read_by:                        # DERIVED across the governed roots of 11.3
+    build:
+    - build/adoption_measurements.py
   consumer_checks:                # what was actually audited, per source of consumers
     repository: checked            #   tracked models, build modules, notebooks, workflows
     platform_notebooks: checked    #   every notebook in the org, tracked or not
-    platform_models: unknown       #   shown pre-Phase-0b; that audit later set this to
-                                  #   `checked` on every asset
+    platform_models: checked       #   Phase 0b read every deployed model definition
     external: unknown              #   anything outside this org -- NOT audited
-                                  # while platform_models is unknown an asset is NOT a
-                                  # retirement candidate however empty read_by looks
-  external_consumers: unknown     # unknown | none_confirmed | [named]
-  publication_role: null          # null | release_sink | public_api | payload_input
-  population: long_tail           # gap_map | long_tail | both
-  release_path: false             # true only if this asset belongs to a gap-map release
-  # role is ABSENT here: scores.stack_contributors is in the ADR-003 externalization backlog
-  # (a questionable gap_map table, steps 5-6). A GOVERNED asset instead carries exactly one:
-  #   role: governed-output       # a published gap-map artifact (release_path: true, authority repo)
-  #   role: repo-computation      # a repo-OWNED model (has a model file; authority: repo). A
-  #                               #   platform mirror is NOT repo-computation -- it is a dependency
-  #                               #   contract (dependencies.yaml); a mirror is provenance, not ownership.
-  #   role: governed-data         # a repo-owned data/control artifact, not a computation (the frozen
-  #                               #   baseline bytes, the source-runs snapshot); authority repo, not release_path
-  #   role: compatibility-shim    # a temporary shim for a governed asset (carries `replacement`)
-  refresh: dataset cron '0 4 * * 1'
-  timezone: UTC
-  last_observed_trigger: null     # no SCHEDULED run observed in run history
-  owner: carl
+  external_consumers: none_confirmed   # unknown | none_confirmed | [named]
+  refresh: repo-authored SQL, full-refresh on the platform
   status: active                  # active | staged | deprecated | historical | compatibility
-  replacement:
-  retirement_reason: null         # set only when the derived test below passes
-  retirement_issue: null
-  verified_at: '2026-08-20'
+  verified_at: '2026-08-25'
 ```
 
-For `authority: platform`, a `mirror:` block is required. This replaces
+For `authority: platform`, a `mirror:` block is required (the compatibility shims, whose `status:
+compatibility` makes a platform mirror legitimate). This replaces
 `platform-mirror/manifest.yaml`, including its per-entry `synced_at` discipline — the date
 must move only for the entry actually refetched.
 
@@ -2044,7 +2038,7 @@ in `tests/test_assets_inventory.py` + `tests/test_scope_gates.py`. The `role` ea
 carries is RE-DERIVED from its fields (`expected_role`) and must match the authored value, exactly
 as `read_by` is re-derived. A role is one of `governed-output`, `repo-computation` (repo-OWNED
 model, authority repo), `governed-data` (repo-owned data/control artifact), or `compatibility-shim`.
-The externalization backlog (long_tail, or a table in `EXTERNALIZE_QUESTIONABLE`) is the roleless set.
+Every asset in `assets.yaml` is governed and carries a role; there is no roleless/backlog state (the ADR-003 externalization backlog drained in steps 5-6) and `population` is always `gap_map`.
 
 - **G1 governed-output ⇔ release_path.** A `governed-output` is `release_path: true`, and a
   `release_path: true` asset is a `governed-output` (subsumes 2b).
@@ -2108,14 +2102,14 @@ repository or the platform already answered:
 | Is `registry.tail_products` misfiled? | No, correctly in `registry`. The platform table is absent because it is empty. | `publish_registry.py`: "94 bytes of header on a push where every tail row was promoted or rejected" — promotion and rejection are curator acts |
 | May a `held` axis retain its value? | Yes, with the hold reason and date. | `verification_queue.yaml`: "held at 3" |
 | Is a dated null `held` or `not_applicable`? | Neither — it is `confirmed`. | `verification_queue.yaml`: "a null answer that somebody looked for and did not find is a confirmed axis" |
-| Is the long-tail chain retired? | No. Retained and classified by the five kinds; its scheduled tables keep their own datasets rather than migrating namespace (type/schedule isolation, #393). | `oss-ai-trends` and `long-tail-explorer` are both tagged `Live` on the platform |
+| Is the long-tail chain retired? | **Superseded by ADR-003 (2026-08-29): externalized.** The long-tail pipelines are out of the Gap Map's data system, so they were removed from this repo's inventory/publisher and frozen under platform ownership (steps 5-6). They keep serving `oss-ai-trends` / `long-tail-explorer` on the platform, but this repo no longer governs them. | superseded |
 | Does the platform support release-scoped tables? | No. Each static-model publish replaces in place. | No version or revision field; `registry.product_scores` has `createdAt == updatedAt` |
 
 Resolved by decision:
 
 | Decision | Resolution | Lands in |
 |---|---|---|
-| Sixth `kind` for the long-tail chain | Not needed. Kinds: `entities` = `catalog`, `events`/`metrics` = `observations`, `scores` = `evaluation`. **Physical move (2026-08-28, #393): none of the scheduled pipelines relocate.** `entities.*`/`scores.*` hit the type wall (static target dataset can't host a scheduled `USER_MODEL`); `events`/`metrics` hit the schedule wall (folding into the manual `observations` dataset would force a sweep onto the §18 `product_adoption_current`). All are `not_planned` in their own namespaces (§11.1). Phase 2B owns only the observations refresh-model question; any relocation would need a new architecture decision. | Recorded Phase 0; scheduled pipelines stay put |
+| Sixth `kind` for the long-tail chain | **Moot under ADR-003 (2026-08-29): the long-tail chain is externalized**, so no sixth kind and no namespace decision is needed — `entities.*`, `events`/`metrics` and the analytical `scores.*` left this repo's inventory (frozen under platform ownership, steps 5-6). Historically they were `not_planned` in their own namespaces because a scheduled `USER_MODEL` cannot be hosted in a static dataset (#393); the scope reset made the question irrelevant. | superseded |
 | Gates over two populations | Key on `release_path`, not namespace | Section 7 |
 | Publication atomicity | `releases.*` atomic from birth; compatibility outputs documented non-atomic | Sections 12.2, 18 |
 | `catalog.model_benchmarks` -> `openllm_leaderboard` | **WITHDRAWN (2026-08-28, #393).** Its only trigger was the `catalog.models` name collision the `entities → catalog` move would have created; that move is cancelled (§11.1 dataset-type constraint), so there is no collision to resolve and no PR may exist purely to rename a deployed table. `catalog.model_benchmarks` keeps its name. | no action |

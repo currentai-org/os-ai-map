@@ -4,11 +4,14 @@
 has now landed in full. The mechanism (steps 2–4) — the `role` field on governed assets,
 `warehouse/dependencies.yaml`, the root-scoped DAG, and the anti-reintroduction gates — is merged,
 and the externalization (steps 5–6) is complete: the 28 roleless backlog assets (24 long-tail
-pipelines + 4 questionable gap_map tables) were transferred to platform ownership and removed from
-this repo's inventory and publisher. **No OSO table was deleted** — the deployed tables stay live
-under platform ownership; only their repo inventory/publisher entries were removed, under the
-no-orphan precondition. The governed inventory is now 38 governed assets + 8 dependency contracts;
-the `long_tail` population is retired and the backlog is empty, kept so by the gates.
+pipelines + 4 questionable gap_map tables) were removed from this repo's inventory and publisher and
+**frozen under platform ownership** — disposition `frozen-without-producer`, recorded per asset in
+`warehouse/audits/externalization.json` (archived source hashes, platform IDs, consumers at removal).
+That is the no-orphan disposition, **not** a verified ownership transfer to a named destination repo:
+**no OSO table was deleted** — each deployed table is retained and frozen at its last publish, its
+repo producer removed, and its consumers still resolve against it. The governed inventory is now 38
+governed assets + 8 dependency contracts; the `long_tail` population is retired and the backlog is
+empty, kept so by the gates.
 **Supersedes:** the scope *basis* of ADR-002 and `data-architecture.md` §11.3 (the transitive-closure
 membership rule). ADR-002's provenance test (`registry` vs `catalog`) stands; its assumption that every
 misfiled `catalog` table must be *migrated into repo ownership* does not.
@@ -225,9 +228,10 @@ the mechanism (steps 2–4) is merged. **Accepting this ADR does not lift the fr
   outputs, the openness/adoption computation and its real OSO dependencies, plus compatibility shims).
 - Parts of ADR-002 are superseded: catalog reference tables it routed *into* `registry` are instead
   **externalized**, because ownership follows the scope rule, not the provenance shape.
-- Recent `foundation_model_repos` work (#397/#400) is unwound **through ownership transfer, not by
-  reversing the platform deployment** (see the no-orphan precondition): the deployed table keeps serving
-  `entities.models` until a destination owner reproduces it. The honest cost of having migrated under
-  the old boundary.
+- Recent `foundation_model_repos` work (#397/#400) is unwound **by freezing the deployed table, not by
+  reversing the platform deployment** (see the no-orphan precondition): its repo producer/publisher are
+  removed and the deployed `registry.foundation_model_repos` keeps serving `entities.models` frozen at
+  its last publish (disposition `frozen-without-producer`). The honest cost of having migrated under the
+  old boundary — a freeze, not a completed ownership transfer.
 - The agent stops generating cross-org consistency work, because the boundary no longer pulls unrelated
   OSO assets into repository governance.

@@ -59,8 +59,14 @@ def fetch_models(token: str) -> list[dict]:
 
 
 def _producer_tables() -> set[str]:
-    """Inventory tables that have a repository model file -- i.e. a repo source."""
-    return {t for t, a in A.by_table().items() if (a.get("files") or {}).get("model")}
+    """Every table with a repository model file -- a governed asset's model, OR a currentai.*
+    dependency's read-only MIRROR file (ADR-003: the repo tracks the definition without owning
+    the table). `has_repository_source` is true for both."""
+    tables = {t for t, a in A.by_table().items() if (a.get("files") or {}).get("model")}
+    for d in A.dependencies():
+        if d["table"].startswith("currentai.") and (d.get("files") or {}).get("model"):
+            tables.add(d["table"].removeprefix("currentai."))
+    return tables
 
 
 def build_receipt(models: list[dict], as_of: str) -> dict:
@@ -201,6 +207,38 @@ def consumers_from_receipt(receipt: dict) -> dict[str, list[str]]:
             if stripped in governed:
                 out.setdefault(stripped, set()).add(m["table"])
     return {k: sorted(v) for k, v in out.items()}
+
+
+def in_scope_of(internal_reads: list[str]) -> list[str]:
+    """The in-scope subset of a model's internal reads: those resolving to a governed asset or a
+    currentai.* dependency contract. Credential-free -- a pure projection over the committed tree."""
+    scope = set(A.by_table())
+    scope |= {d["table"].removeprefix("currentai.") for d in A.dependencies()
+              if d["table"].startswith("currentai.")}
+    return sorted(r for r in internal_reads if r.removeprefix("currentai.") in scope)
+
+
+def receipt_reproduction_violations(receipt: dict) -> list[str]:
+    """The receipt's DERIVED fields must re-derive from the committed tree with NO OSO fetch.
+
+    Platform facts (model_id, revision_hash, source_sha256, language, internal_reads) are captured
+    at credentialed audit time; but `in_scope_reads` and `has_repository_source` are projections of
+    those facts over the current inventory + dependency manifest, so they must be recomputable
+    read-only. This closes the gap where the receipt was left partly historical, partly recomputed.
+    """
+    problems: list[str] = []
+    producers = _producer_tables()
+    for m in receipt["models"]:
+        table = m["table"].removeprefix("currentai.")
+        want_reads = in_scope_of(m["internal_reads"])
+        if m["in_scope_reads"] != want_reads:
+            problems.append(f"{m['table']}: in_scope_reads {m['in_scope_reads']} != re-derived {want_reads}")
+        want_src = table in producers
+        if m["has_repository_source"] != want_src:
+            problems.append(
+                f"{m['table']}: has_repository_source {m['has_repository_source']} != re-derived {want_src}"
+            )
+    return problems
 
 
 def load_receipt() -> dict:
