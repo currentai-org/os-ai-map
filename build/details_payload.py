@@ -20,6 +20,8 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 
+from build.vocabulary import axes
+
 #: What the modal's JavaScript actually reads off a product. It renders the three axes, the
 #: description and the identity line. It never reads `freshness`, `slug`, `org_slug`, `tier`,
 #: `maturity`, `mature` or `overall_score` - those belong to the table and the gap arithmetic.
@@ -54,7 +56,7 @@ def details_records(data: Mapping, order: Sequence[str]) -> dict[str, dict]:
         category = data["categories"][cid]
         for product in category["products"]:
             record = {k: product[k] for k in PRODUCT_KEYS if k in product}
-            for axis in ("openness", "adoption", "capability"):
+            for axis in axes():
                 if axis in record:
                     record[axis] = _trim_axis(record[axis])
             record["category_label"] = category["label"]
