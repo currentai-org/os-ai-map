@@ -187,7 +187,25 @@ openness:
         # emits an open-ISH class, so `test_openness_buckets` bounds the damage a bad
         # edit could do. `test_permissive_non_osi_rung_is_pinned` pins its outcome so a
         # silent change is a test failure rather than a score move.
-        examples: [CC-BY-4.0]
+        # `Crawl4AI-Attribution-License` was added on 2026-08-30, and it is the first product
+        # ever to reach this tier. crawl4ai's LICENSE is the stock Apache-2.0 text followed,
+        # after END OF TERMS AND CONDITIONS, by an appended Attribution Requirement binding
+        # "all distributions, publications, or public uses" to carry a set credit line in a
+        # NOTICE, a paper's acknowledgments, a website's About section or a CLI's help output.
+        #
+        # It lands here rather than in `osi` because Apache-2.0 section 4(d) binds
+        # REDISTRIBUTION of the Work while this clause binds public USE of it, and section 4
+        # permits added terms only over a contributor's own modifications - so the composite
+        # is not the OSI-approved license the GitHub API reports. It lands here rather than in
+        # `competition_restricted` because attribution is all it asks: it caps neither who may
+        # use the software nor at what scale, which is this tier's definition stated directly.
+        #
+        # This retires the note below about the rung being unexercised. The rung's outcome is
+        # unchanged and still pinned by test_permissive_non_osi_rung_is_pinned; what changed is
+        # that a product now walks it. Measured before adding, as this file requires: no other
+        # product records this license name, and adding it moved the computed score of crawl4ai
+        # alone.
+        examples: [CC-BY-4.0, Crawl4AI-Attribution-License]
       competition_restricted:
         definition: >-
           Source is published and readable, but the license forbids or charges for a class
@@ -224,10 +242,25 @@ openness:
         # no other score. That is worth checking before extending this list rather than after:
         # the list is shared across eleven categories, and a name added for one product tiers
         # every product that happens to record it.
-        examples: [BSL-1.1, SSPL-1.0, FCL-1.0-ALv2, Elastic-License-2.0,
-          Elastic License 2.0, Sustainable-Use-License, n8n-Enterprise-License,
-          Modular-Community-License, Dify-Open-Source-License, Open-WebUI-License,
-          LobeHub-Community-License, PolyForm-Shield]
+        # `MinerU-Open-Source-License` and `AI-Pubs-Open-RAIL-M-Modified` were added on
+        # 2026-08-30, when the agent_tools_protocols promotion turned up two products whose
+        # licenses this tier plainly covers and could not name. Both are the shape the tier
+        # already holds under a dozen vendor names: an Apache or RAIL base with a revenue or
+        # funding threshold above which a separate commercial license is required. MinerU is
+        # Apache-2.0 "subject to the additional terms below", requiring a commercial license
+        # above 100M MAU or USD 20M monthly revenue; marker's weights are free below USD 5M
+        # funding or revenue and licensed commercially above it.
+        #
+        # Measured before adding, per the note on this file's other tier extensions. Neither
+        # name is recorded by any other product on the map. The two OpenRAIL records that do
+        # exist - `zentropi-cope` (zentropi-openrail-m) and `starcoder2` (BigCode-OpenRAIL-M) -
+        # are `type: model`, scored by model.yaml against its own tier list, and spell their
+        # licenses differently besides. Adding both names changed the computed score of exactly
+        # the two products they were added for, and of none of the other 525.
+        examples: [BSL-1.1, SSPL-1.0, FCL-1.0-ALv2, Elastic-License-2.0, Elastic License 2.0,
+          Sustainable-Use-License, n8n-Enterprise-License, Modular-Community-License, Dify-Open-Source-License,
+          Open-WebUI-License, LobeHub-Community-License, PolyForm-Shield, MinerU-Open-Source-License,
+          AI-Pubs-Open-RAIL-M-Modified]
       proprietary:
         definition: No license to the source, because the source is not published.
         # `commercial` is how the closed observability vendors record it.

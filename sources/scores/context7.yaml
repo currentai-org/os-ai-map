@@ -1,0 +1,90 @@
+product: context7
+openness:
+  score: 2
+  class: source_available
+  components:
+    license:
+    - name: MIT
+      detail: OSI, over the published MCP server, CLI and SDK
+    source:
+      value: partial
+      detail: the API backend, parsing engine and crawling engine are private and not in the repository
+    core-gated:
+      value: gated
+      detail: the index the product exists to serve is produced by components that are not published
+  confidence: high
+  note: 'The MIT license is real and the repository is genuinely public, which is exactly why this record needs
+    reading past the badge. The README states it directly: ''This repository hosts the MCP server''s source code.
+    The supporting components - API backend, parsing engine, and crawling engine - are private and not part of this
+    repository.'' What ships publicly is the client half - the MCP server, a CLI and an SDK - while the documentation
+    index that the product exists to serve is built and held privately and reached over a hosted endpoint at mcp.context7.com
+    with an API key. That is source: partial under this ladder, a repo without the runtime, and the formula settles
+    a partial source at 2/source_available before the license tier is consulted. An OSI license over a client does
+    not open an engine that was never published.'
+  raw: license:MIT(OSI, over the published MCP server, CLI and SDK);source:partial(the API backend, parsing engine
+    and crawling engine are private and not in the repository);core-gated:gated(the index the product exists to
+    serve is produced by components that are not published)
+  last_verified: '2026-08-30'
+  sources:
+  - url: https://raw.githubusercontent.com/upstash/context7/master/README.md
+    shows: 'README, numbered note: ''This repository hosts the MCP server''s source code. The supporting components
+      - API backend, parsing engine, and crawling engine - are private and not part of this repository.'' Setup
+      instructions point at the hosted server URL https://mcp.context7.com/mcp with an API key passed as a bearer
+      token.'
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: c513b9ec9c006a85c63d6ad0c9fe49af3eaa517f8e59b66de0af6029ccafda13
+    establishes:
+    - source
+    - core-gated
+  - url: https://raw.githubusercontent.com/upstash/context7/master/LICENSE
+    shows: LICENSE body is the MIT License text, covering what this repository publishes.
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: 85cfb556dc2b22b55d2565674fcdaac82f3f2f6b7a928d27003132721bb6736c
+    establishes:
+    - license
+  - url: https://api.github.com/repos/upstash/context7
+    shows: Repo metadata - license spdx_id MIT, archived false, 61,419 stars - for upstash/context7.
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: c7519cfd85de3270bf155fe700aedbe56499810376a3c85553d3157f3adddba4
+    establishes:
+    - license
+    - source
+adoption:
+  level: 4
+  reach: 1M-10M
+  signal_type: usage_volume
+  confidence: high
+  note: 3,992,771 downloads of @upstash/context7-mcp in the trailing 30 days, which bands at 1M-10M, level 4 on
+    the software adoption scale. The figure counts installs of the MCP server package and not calls to the hosted
+    index, for which no count is published.
+  last_verified: '2026-08-30'
+  sources:
+  - url: https://api.npmjs.org/downloads/point/last-month/@upstash/context7-mcp
+    shows: 3,992,771 downloads for the window 2026-07-31 to 2026-08-29 for @upstash/context7-mcp.
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: b2a6801d4202a538bf6a7c102598311a0fbca0e507a9a39be7fb94b52d881048
+capability:
+  score: 3
+  basis: feature_matrix
+  basis_detail: 'category feature matrix: single-purpose retrieval service'
+  value: Version-aware retrieval of library documentation and code examples over MCP or a CLI, with per-library
+    resolution and token budgeting.
+  relative_to: jina-reader
+  relation: at
+  confidence: medium
+  note: 'Banded with jina-reader as a single-purpose retrieval service: one kind of source, fetched and shaped for
+    a model context, without the crawl, extraction-strategy and deployment surface the level-4 products in this
+    category carry. The comparison is dated to when the anchor was last confirmed rather than to this sweep, because
+    a relative band is only as fresh as the record it is relative to.'
+  last_verified: '2026-08-13'
+  sources:
+  - url: https://raw.githubusercontent.com/upstash/context7/master/README.md
+    shows: README documents version-aware retrieval of library documentation and code examples over MCP or a CLI,
+      with library resolution and a token budget parameter.
+    accessed: '2026-08-30'
+    http_status: 200
+    content_sha256: c513b9ec9c006a85c63d6ad0c9fe49af3eaa517f8e59b66de0af6029ccafda13
