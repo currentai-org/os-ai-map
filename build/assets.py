@@ -1341,8 +1341,8 @@ def _compare_mirror(label: str, prior: dict, cur: dict, has_migration: bool) -> 
     # The byte identity is the COMPLETE claimed artifact: the model AND, when present, the
     # schema. A schema-only edit is a byte change and must advance the revision just like a
     # model edit -- otherwise a contributor could rewrite a schema, bump schema_sha256, and
-    # freeze the revision (ADR-003 re-review). The caller supplies the prior schema digest,
-    # deriving it from the merge-base schema file for the asset->dependency transition.
+    # freeze the revision. The caller supplies the prior schema digest, deriving it from the
+    # merge-base schema file for the asset->dependency transition.
     bytes_moved = (cur.get("local_sha256") != prior.get("local_sha256")
                    or cur.get("schema_sha256") != prior.get("schema_sha256"))
     if not bytes_moved:
