@@ -193,11 +193,11 @@ None currently participates in the canonical map pipeline (all `release_path: fa
 
 Each keeps the rule: **gain a named Gap Map use, or leave the governed inventory.**
 
-## Execution sequence (later PRs — frozen until the mechanism lands)
+## Execution sequence (all steps landed 2026-08-29)
 
-1. **This PR (plan only):** the boundary rule, the role taxonomy, the `dependencies.yaml` spec, the
-   root-scoped-DAG design, the anti-reintroduction-gate design, and the classification above. Amends the
-   charter (`CLAUDE.md`) and marks Phase 5 migration frozen.
+1. **Plan (#404):** the boundary rule, the role taxonomy, the `dependencies.yaml` spec, the
+   root-scoped-DAG design, the anti-reintroduction-gate design, and the classification above. Amended the
+   charter (`CLAUDE.md`).
 2. Add the `role` field to governed assets and create `warehouse/dependencies.yaml`.
 3. Root-scope the DAG generator and split the three views.
 4. Add the anti-reintroduction gates.
@@ -232,9 +232,10 @@ deployed table, not by reversing the platform deployment. (Had the consumer been
 asset, the producer would have had to stay produced until that reader was repointed; it is not, so it
 does not.)
 
-All Phase-5 platform migration (`osai_subcategory_mapping`/`taxonomy_crosswalk` → registry, `stack_map`
-→ registry, and any `entities`/`events`/`metrics`/analytical-`scores` consolidation) is **held** until
-the mechanism (steps 2–4) is merged. **Accepting this ADR does not lift the freeze.**
+The Phase-5 platform migration those runbooks described (`osai_subcategory_mapping`/`taxonomy_crosswalk`
+→ registry, `stack_map` → registry, and any `entities`/`events`/`metrics`/analytical-`scores`
+consolidation) was never executed: steps 5–6 externalized those tables instead, so the moves are moot
+and their runbooks stay superseded.
 
 ## Consequences
 

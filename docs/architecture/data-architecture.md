@@ -1206,36 +1206,14 @@ Do not repeat live schedule claims in multiple documents without a behavioral or
 | Evaluation → release | Release completeness | Missing products/axes, stale upstream release, blocking reconciliation finding, mixed release IDs |
 | Release → public projection | Projection parity | JSON/notebook/API projection differs from the valid release |
 
-#### Gates key on population, not namespace
+#### Gates key on `release_path`, not namespace
 
-`observations` and `evaluation` hold two populations: the ~522 curated gap-map products and the
-~24,600 discovered long-tail artifacts. They share namespaces deliberately — a GitHub repo
-measurement is the same kind of fact whichever population it belongs to.
-
-Release gates therefore apply to an asset only when `release_path: true`. Applying them by
-namespace would fire "missing products or axes" and "mixed release IDs" on
-`evaluation.fragility`, which belongs to no gap-map release and has no axes, and the only ways
-out would be a permanent exemption list or a sixth namespace. Keying on the declared population
-avoids both.
-
-Which gates are shared is narrower than "everything except release completeness". The long-tail
-population has `catalog` artifact identities, not accepted `registry` product identities, and it
-has no adoption route, no accepted axis assessment and no evidence-freshness state at all.
-
-| Gate | gap_map | long_tail |
-|---|---|---|
-| Observation schema, units, time fields | yes | yes |
-| Source-run lineage and completeness | yes | yes |
-| Identity integrity | resolves to `registry.product_artifacts` | resolves to a stable `catalog` artifact identity |
-| Adoption routing contract | yes | no — no routes exist for it |
-| Evidence and axis freshness | yes | no — no axis assessments exist for it |
-| Reconciliation | yes | no |
-| Release completeness, projection parity | yes | no |
-
-Long-tail evaluation declares its own contracts where it needs them; it does not inherit the
-gap map's. An earlier draft said the observation, routing and freshness gates applied to both,
-which would have failed `metrics.daily` for having no registry identity and
-`evaluation.fragility` for having no axis freshness — neither of which is a defect.
+Every governed asset is `population: gap_map` (ADR-003 retired `long_tail` — the discovered
+artifacts are externalized). Release gates still key on the asset's `release_path` flag rather than
+its namespace, because not every table in the `observations` or `evaluation` namespace is on the
+release path: a staged or control artifact shares the namespace but belongs to no gap-map release.
+Applying release completeness or "mixed release IDs" by namespace would fire on those; keying on
+`release_path` avoids both a permanent exemption list and a namespace split.
 
 Every gate must satisfy these engineering rules:
 
