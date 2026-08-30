@@ -99,9 +99,6 @@ TABLES: dict[str, tuple[str, ...]] = {
     "product_categories": ("product_slug", "category_slug"),
     "product_organizations": ("product_slug", "org_slug"),
     "product_lineage": ("product_slug", "relation", "target"),
-    "foundation_model_repos": (
-        "model_family", "hf_author", "github_repo", "model_examples", "category", "notes",
-    ),
 }
 
 _ID_PATTERNS = {
@@ -324,26 +321,6 @@ def build_registry(sources: dict) -> tuple[dict[str, list[dict]], list[str], lis
         errors.append(f"product '{slug}' is in no category")
     for slug in sorted(set(products) - owned):
         errors.append(f"product '{slug}' has no organization")
-
-    # Curated foundation-model reference table (sources/foundation_model_repos.yaml).
-    # A flat curated list, not derived from products/categories, so it is copied through
-    # verbatim in file order rather than joined. Its `model_family` is the identity;
-    # a duplicate would silently overwrite nothing here (rows are appended), so the
-    # uniqueness of the family is a curation property of the source file.
-    fmr_columns = TABLES["foundation_model_repos"]
-    seen_families: set[str] = set()
-    for row in sources.get("foundation_model_repos") or []:
-        family = str(row.get("model_family", "")).strip()
-        if not family:
-            errors.append("foundation_model_repos: a row has no model_family")
-            continue
-        if family in seen_families:
-            errors.append(f"foundation_model_repos: duplicate model_family '{family}'")
-            continue
-        seen_families.add(family)
-        tables["foundation_model_repos"].append(
-            {col: ("" if row.get(col) is None else str(row.get(col))) for col in fmr_columns}
-        )
 
     return tables, errors, warnings
 

@@ -116,15 +116,9 @@ def test_frozen_snapshot_is_a_non_declaration():
     assert "snapshots" not in declaration_content(ROOT)
 
 
-def test_foundation_model_repos_is_a_non_declaration():
-    """The curated foundation-model reference table is discovery data, not a scoring
-    declaration, so it is excluded (with a reason) and never enters source_content_digest.
-    (It still rides source_git_sha like any tracked file — this only concerns the content
-    digest.)"""
-    assert "foundation_model_repos.yaml" in NON_DECLARATION_INPUTS
-    assert NON_DECLARATION_INPUTS["foundation_model_repos.yaml"]
-    assert "foundation_model_repos.yaml" not in declaration_content(ROOT)
-    assert "foundation_model_repos" not in declaration_content(ROOT)
+# test_foundation_model_repos_is_a_non_declaration was retired with ADR-003 step 5/6: the
+# curated foundation-model reference table was externalized to platform ownership and removed
+# from sources/, so it is no longer a repository input to classify.
 
 
 # --- canonicalization properties --------------------------------------------------

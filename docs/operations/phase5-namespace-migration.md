@@ -3,8 +3,10 @@
 > **SUPERSEDED — NOT EXECUTABLE (2026-08-29).** Replaced by
 > `../architecture/adr-003-repository-scope-boundary.md` (Accepted — implementation pending). A deeper
 > review found the inventory governs the OSO org rather than the Gap Map's data system. The moves in
-> this plan are **not to be run**: several of the tables here are slated to be **externalized**
-> (ownership transferred to the platform repo), not migrated into `registry`. This document is retained
+> this plan are **not to be run**: several of the tables here are slated to be **externalized** —
+> frozen under platform ownership (`frozen-without-producer`, recorded in
+> `../../warehouse/audits/externalization.json`; **not** a verified ownership transfer to a named
+> destination repo) — not migrated into `registry`. This document is retained
 > for historical reasoning only; the Phase-5 freeze holds until the ADR-003 mechanism (roles, dependency
 > contracts, root-scoped DAG, anti-reintroduction gates) is merged, and this runbook is not re-enabled
 > when the ADR is accepted.

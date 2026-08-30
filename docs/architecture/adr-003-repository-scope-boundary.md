@@ -1,12 +1,17 @@
 # ADR-003: Repository scope boundary — govern the Gap Map, not the OSO org
 
-**Status:** **Accepted; mechanism implemented (steps 2–4), 2026-08-29.** This document is the plan;
-its mechanism has now landed — the `role` field on governed assets, `warehouse/dependencies.yaml`, the
-root-scoped DAG, and the anti-reintroduction gates are all merged. That merge **lifts the Phase-5
-platform-migration freeze**: the remaining authorized work is the externalization of the 28 roleless
-backlog assets (steps 5–6 below), each gated by the no-orphan precondition — **not** the old Phase-5
-namespace moves, which stay **superseded, not re-enabled**. No backlog asset has yet been moved,
-removed, or reclassified.
+**Status:** **Accepted; fully implemented (steps 2–6), 2026-08-29.** This document is the plan; it
+has now landed in full. The mechanism (steps 2–4) — the `role` field on governed assets,
+`warehouse/dependencies.yaml`, the root-scoped DAG, and the anti-reintroduction gates — is merged,
+and the externalization (steps 5–6) is complete: the 28 externalized assets (24 long-tail
+pipelines + 4 questionable gap_map tables) were removed from this repo's inventory and publisher and
+**frozen under platform ownership** — disposition `frozen-without-producer`, recorded per asset in
+`warehouse/audits/externalization.json` (archived source hashes, platform IDs, consumers at removal).
+That is the no-orphan disposition, **not** a verified ownership transfer to a named destination repo:
+**no OSO table was deleted** — each deployed table is retained and frozen at its last publish, its
+repo producer removed, and its consumers still resolve against it. The governed inventory is now 38
+governed assets + 8 dependency contracts; the `long_tail` population is retired and the backlog is
+empty, kept so by the gates.
 **Supersedes:** the scope *basis* of ADR-002 and `data-architecture.md` §11.3 (the transitive-closure
 membership rule). ADR-002's provenance test (`registry` vs `catalog`) stands; its assumption that every
 misfiled `catalog` table must be *migrated into repo ownership* does not.
@@ -130,9 +135,10 @@ Executable invariants over `assets.yaml` **and** `dependencies.yaml` together �
 cannot itself grow into a new organization-wide inventory. Implemented in `build/assets.py`
 (`role_violations`, `dependency_violations`, `notebook_root_violations`) and asserted in
 `tests/test_assets_inventory.py` + `tests/test_scope_gates.py`; see `data-architecture.md` §11.5.
-Gate 6 is enforced against the governed set (assets carrying a `role`): the 28 roleless backlog
-assets are exempt until steps 5–6 remove them, so no `long_tail` can be reintroduced as governed
-while the backlog drains.
+Gate 6 is enforced against the governed set (assets carrying a `role`): `gap_map` is the only
+governed population, so no `long_tail` asset can appear; the 28 externalized tables are recorded in
+the reproducible externalization receipt, and the role/scope gates keep any of them — or any other
+peripheral table — from re-entering the governed inventory.
 
 1. **Governed-output ⇔ release_path.** A `governed-output` asset must be `release_path: true`, and a
    `release_path: true` asset must be a `governed-output`.
@@ -153,10 +159,12 @@ while the backlog drains.
    tail", which obscures ownership — the analytics pipeline externalizes, the tail-candidate registry
    stays and is not `long_tail`.
 
-## Classification of the peripheral assets (for ownership transfer, not deletion)
+## Classification of the peripheral assets (for freeze under platform ownership, not deletion)
 
-**Do not delete working OSO tables.** Transfer their code/data ownership to the appropriate platform
-repository, then remove them from this repo's inventory and publisher.
+**Do not delete working OSO tables.** Freeze each deployed table under platform ownership at its last
+publish (`frozen-without-producer`) — or, where a destination reproduces it, point consumers there —
+then remove them from this repo's inventory and publisher. This is the no-orphan disposition, not a
+verified ownership transfer to a named destination repo.
 
 ### The 24 `long_tail` assets → externalize
 
@@ -193,8 +201,8 @@ Each keeps the rule: **gain a named Gap Map use, or leave the governed inventory
 2. Add the `role` field to governed assets and create `warehouse/dependencies.yaml`.
 3. Root-scope the DAG generator and split the three views.
 4. Add the anti-reintroduction gates.
-5. Externalize the 24 (ownership transfer to the platform repo; remove from inventory + publisher; **no
-   OSO deletion**).
+5. Externalize the 24 (freeze under platform ownership, `frozen-without-producer`; remove from
+   inventory + publisher; **no OSO deletion**).
 6. Resolve the 4 individually.
 
 ### No-orphan precondition for step 5
@@ -208,10 +216,21 @@ a source from this repo's inventory and publisher, confirm both:
 
 If a destination reproduces the table, point consumers there; if not, the deployed table simply freezes
 at its last publish, which is acceptable for the curated reference tables here **only while their
-consumers keep resolving**. The one case that must not be shortcut is `registry.foundation_model_repos`:
-its deployed table keeps serving `entities.models`, so it stays produced (here or elsewhere) until that
-reader no longer needs it. The `#397`/`#400` work is unwound by moving where the table is produced,
-never by reversing the platform deployment.
+consumers keep resolving**. `registry.foundation_model_repos` was called out as the case that must not
+be shortcut — its deployed table keeps serving `entities.models` — and steps 5–6 resolve it explicitly
+rather than by shortcut. Its sole consumer, `entities.models`, is **itself** one of the externalized
+tables: it too is frozen under platform ownership (`frozen-without-producer`, in the same receipt). So
+this is a **frozen consumer reading a frozen producer** — both deployed tables retained on the platform
+at their last publish, neither with a repository producer, both out of this repo's governance. The
+no-orphan rule holds because the data is retained (the table is frozen, not deleted) and the consumer
+still resolves against it; there is no repo-side staleness because neither table is regenerated here.
+**This ADR authorizes that frozen dependency explicitly, accepting its staleness and availability
+risk:** `registry.foundation_model_repos` and `entities.models` are static at their last platform
+publish, and the platform maintainer owns keeping them live or retiring the pair together — the
+repository no longer does. This is why the `#397`/`#400` registry publication is unwound by freezing the
+deployed table, not by reversing the platform deployment. (Had the consumer been a *live governed*
+asset, the producer would have had to stay produced until that reader was repointed; it is not, so it
+does not.)
 
 All Phase-5 platform migration (`osai_subcategory_mapping`/`taxonomy_crosswalk` → registry, `stack_map`
 → registry, and any `entities`/`events`/`metrics`/analytical-`scores` consolidation) is **held** until
@@ -223,9 +242,10 @@ the mechanism (steps 2–4) is merged. **Accepting this ADR does not lift the fr
   outputs, the openness/adoption computation and its real OSO dependencies, plus compatibility shims).
 - Parts of ADR-002 are superseded: catalog reference tables it routed *into* `registry` are instead
   **externalized**, because ownership follows the scope rule, not the provenance shape.
-- Recent `foundation_model_repos` work (#397/#400) is unwound **through ownership transfer, not by
-  reversing the platform deployment** (see the no-orphan precondition): the deployed table keeps serving
-  `entities.models` until a destination owner reproduces it. The honest cost of having migrated under
-  the old boundary.
+- Recent `foundation_model_repos` work (#397/#400) is unwound **by freezing the deployed table, not by
+  reversing the platform deployment** (see the no-orphan precondition): its repo producer/publisher are
+  removed and the deployed `registry.foundation_model_repos` keeps serving `entities.models` frozen at
+  its last publish (disposition `frozen-without-producer`). The honest cost of having migrated under the
+  old boundary — a freeze, not a completed ownership transfer.
 - The agent stops generating cross-org consistency work, because the boundary no longer pulls unrelated
   OSO assets into repository governance.

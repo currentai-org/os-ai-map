@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import ast
 import hashlib
+import json
 import re
 import subprocess
 from pathlib import Path
@@ -29,12 +30,14 @@ STATUSES = {"active", "staged", "deprecated", "historical", "compatibility", "do
 MIGRATION_STATES = {"pending", "in_progress", "complete", "not_planned"}
 CHECK_STATES = {"checked", "unknown", "not_applicable"}
 AUTHORITIES = {"repo", "platform", "external"}
-POPULATIONS = {"gap_map", "long_tail", "both"}
+# Every governed asset is `gap_map` (ADR-003). `long_tail` is retired (steps 5-6 externalized the
+# long-tail pipelines) and `both` -- which meant overlap with that retired population -- is gone
+# with it. A single value: the vocabulary itself now forbids any non-gap_map governed asset.
+POPULATIONS = {"gap_map"}
 
-# ADR-003 repository role. Membership is ASSERTED by this field, not inferred from the
-# graph. A governed asset carries exactly one role; the externalization backlog (the
-# peripheral assets ADR-003 slates for ownership transfer) is deliberately ROLELESS until
-# it leaves, so `role` is optional this PR and becomes required once the backlog is empty.
+# ADR-003 repository role. Membership is ASSERTED by this field, not inferred from the graph.
+# Every governed asset carries exactly one role (REQUIRED_FIELDS); there is no roleless state --
+# the externalization backlog drained in steps 5-6 and cannot return.
 #   governed-output   a published Gap Map artifact whose schema + publication lifecycle
 #                     are owned here (must be release_path: true, authority: repo)
 #   repo-computation  repo-OWNED SQL/Python implementing or auditing map semantics. MUST be
@@ -48,35 +51,6 @@ POPULATIONS = {"gap_map", "long_tail", "both"}
 #                     to avoid collision with the lifecycle `status: compatibility`). May be a
 #                     platform mirror -- a shim is transitional by definition, not owned.
 ROLES = {"governed-output", "repo-computation", "governed-data", "compatibility-shim"}
-
-# ADR-003 step 6: the four `gap_map` tables that do not participate in the canonical map
-# pipeline (all release_path: false) and externalize individually. Held ROLELESS in the
-# backlog with the `long_tail` assets until step 5/6 removes them. Named explicitly because
-# they are gap_map -- population alone cannot distinguish them from governed assets.
-EXTERNALIZE_QUESTIONABLE = frozenset({
-    "catalog.stack_map",
-    "scores.stack_contributors",
-    "signal_artificialanalysis.model_evaluations",
-    "signal_lmarena.text_leaderboard",
-})
-
-# ADR-003 externalization backlog RATCHET. This is the FROZEN set of roleless assets as of
-# the mechanism PR: the 24 `long_tail` pipelines plus the 4 questionable gap_map tables. The
-# gate proves the roleless set can only SHRINK from this list -- a newly added asset can never
-# be roleless (it must justify a role), so the exact reintroduction ADR-003 prevents cannot
-# recur. Steps 5/6 remove entries from here as they externalize; when it is empty the
-# transitional allowance is deleted and `population: long_tail` is forbidden outright.
-FROZEN_LONG_TAIL_BACKLOG = frozenset({
-    "catalog.country_populations", "catalog.foundation_model_repos", "catalog.goodailist_repos",
-    "catalog.model_benchmarks", "catalog.model_repos", "catalog.osai_gap_map",
-    "catalog.osai_subcategory_mapping", "catalog.pypi_downloads", "catalog.taxonomy_crosswalk",
-    "entities.models", "entities.packages", "entities.projects", "entities.repos",
-    "events.github_events", "metrics.daily", "registry.foundation_model_repos",
-    "scores.dependency_graph", "scores.fragility", "scores.investment_ranking",
-    "scores.ossd_coverage", "scores.project_summary", "scores.repos_summary", "scores.taxonomy",
-    "signal_goodailist.repo_catalog",
-})
-FROZEN_BACKLOG = FROZEN_LONG_TAIL_BACKLOG | EXTERNALIZE_QUESTIONABLE
 
 # The named audit / control roots of the governed graph: repo modules that READ governed or
 # dependency tables to gate or audit map semantics but do not themselves produce a governed
@@ -97,11 +71,12 @@ PUBLICATION_WORKFLOWS: tuple[str, ...] = ()
 
 REQUIRED_FIELDS = (
     "id", "table", "kind", "current_namespace", "target_namespace", "migration_status",
-    "authority", "grain", "producer", "population", "release_path", "consumer_checks",
-    "refresh", "owner", "status", "verified_at",
+    "authority", "grain", "producer", "population", "release_path", "role", "consumer_checks",
+    "refresh", "status", "verified_at",
 )
 ASSETS = ROOT / "warehouse" / "assets.yaml"
 DEPENDENCIES = ROOT / "warehouse" / "dependencies.yaml"
+EXTERNALIZATION = ROOT / "warehouse" / "audits" / "externalization.json"
 
 # Closure roots, per data-architecture.md 11.3. `build/` is a root: seven modules
 # there read currentai tables directly, and omitting them reports every table they
@@ -341,30 +316,381 @@ def dependencies() -> list[dict]:
     return (yaml.safe_load(DEPENDENCIES.read_text(encoding="utf-8")) or {}).get("dependencies") or []
 
 
+EXTERNALIZATION_DISPOSITIONS = {"frozen-without-producer", "transferred"}
+EXTERNALIZATION_SCHEMA_VERSION = 2
+PLATFORM_MODELS = ROOT / "warehouse" / "audits" / "platform_models.json"
+# The externalized artifacts live under these path prefixes; every file that existed under them
+# at the base commit and is now gone must be archived in the receipt (completeness check).
+EXTERNALIZED_FILE_PREFIXES = ("warehouse/models/", "warehouse/data/", "sources/")
+
+
+def externalization_receipt() -> dict:
+    """The full externalization receipt document (ADR-003 steps 5-6), or {} if absent."""
+    if not EXTERNALIZATION.exists():
+        return {}
+    return json.loads(EXTERNALIZATION.read_text(encoding="utf-8")) or {}
+
+
+def externalized() -> list[dict]:
+    """The externalization receipt's asset entries, or [] if absent."""
+    return externalization_receipt().get("assets") or []
+
+
+def _git_commit_exists(sha: str) -> bool:
+    return subprocess.run(
+        ["git", "-C", str(ROOT), "rev-parse", "--verify", "--quiet", f"{sha}^{{commit}}"],
+        capture_output=True,
+    ).returncode == 0
+
+
+def _assets_at_commit(sha: str) -> dict[str, dict] | None:
+    """The inventory as of an explicit commit, keyed by table, or None if unreadable there."""
+    try:
+        blob = subprocess.run(
+            ["git", "-C", str(ROOT), "show", f"{sha}:warehouse/assets.yaml"],
+            capture_output=True, text=True, check=True,
+        ).stdout
+    except subprocess.CalledProcessError:
+        return None
+    return {a["table"]: a for a in (yaml.safe_load(blob) or {}).get("assets") or []}
+
+
+def _tree_files_at_commit(sha: str, prefixes: tuple[str, ...]) -> set[str]:
+    """Every tracked file under any of `prefixes` as of `sha`."""
+    try:
+        out = subprocess.run(
+            ["git", "-C", str(ROOT), "ls-tree", "-r", "--name-only", sha],
+            capture_output=True, text=True, check=True,
+        ).stdout
+    except subprocess.CalledProcessError:
+        return set()
+    return {p for p in out.splitlines() if p.startswith(prefixes)}
+
+
+def _platform_models() -> dict[str, dict]:
+    """The current deployed-model audit receipt keyed by table, or {} if absent."""
+    if not PLATFORM_MODELS.exists():
+        return {}
+    doc = json.loads(PLATFORM_MODELS.read_text(encoding="utf-8")) or {}
+    return {m["table"]: m for m in doc.get("models") or []}
+
+
+def _platform_models_at_commit(sha: str) -> dict[str, dict]:
+    """The deployed-model audit as of an explicit commit, keyed by table, or {} if unreadable.
+
+    The externalization receipt records platform facts *as of removal*; reproducing them against the
+    mutable current audit would break the moment a later legitimate audit changed or dropped an
+    externalized model, forcing an append-only violation. So the receipt reproduces against the
+    audit committed at its own base commit -- immutable evidence for an immutable receipt.
+    """
+    try:
+        blob = subprocess.run(
+            ["git", "-C", str(ROOT), "show", f"{sha}:warehouse/audits/platform_models.json"],
+            capture_output=True, text=True, check=True,
+        ).stdout
+    except subprocess.CalledProcessError:
+        return {}
+    return {m["table"]: m for m in (json.loads(blob) or {}).get("models") or []}
+
+
+def _first_add_commit(path: str) -> str | None:
+    """The oldest commit reachable from HEAD that added `path`, or None."""
+    out = subprocess.run(
+        ["git", "-C", str(ROOT), "log", "--reverse", "--diff-filter=A", "--format=%H", "--", path],
+        capture_output=True, text=True,
+    ).stdout.split()
+    return out[0] if out else None
+
+
+def _rev_parse(ref: str) -> str | None:
+    r = subprocess.run(
+        ["git", "-C", str(ROOT), "rev-parse", "--verify", "--quiet", ref],
+        capture_output=True, text=True,
+    )
+    return r.stdout.strip() or None
+
+
+def _parent_sha(sha: str) -> str | None:
+    return _rev_parse(f"{sha}^")
+
+
+def expected_externalization_base(recorded_tables: set[str]) -> str | None:
+    """Derive the base commit the receipt MUST name, from the commit graph -- not from the receipt.
+
+    ADR-003's externalization boundary is the state just BEFORE the receipted tables left the
+    inventory. Anchored to `externalization.json`'s first-add commit so it survives squash merging
+    (on the merged trunk the squash commit both removes the tables and adds the receipt, and its
+    parent is the pre-externalization trunk tip). Because a multi-commit branch can add the receipt
+    a commit or two AFTER the removal, the derivation starts at the first-add commit's parent and
+    walks back along first-parent history to the newest commit whose inventory still contains every
+    receipted table -- the pre-removal snapshot. Binding the base this way means a substituted older
+    commit (regenerating a broader historical removal set) no longer validates: the receipt's
+    `externalization_base_commit` must equal the graph-derived boundary.
+    """
+    add = _first_add_commit("warehouse/audits/externalization.json")
+    if not add:
+        return None
+    base = _parent_sha(add)
+    steps = 0
+    while base and steps < 100:
+        tables = _assets_at_commit(base)
+        if tables is not None and recorded_tables <= set(tables):
+            return base
+        base = _parent_sha(base)
+        steps += 1
+    return None
+
+
+def _norm_read_by(rb) -> dict:
+    """A read_by block normalized to sorted lists so two provenance snapshots compare by value."""
+    if not rb:
+        return {}
+    return {k: sorted(v) for k, v in rb.items() if v}
+
+
+def externalization_receipt_violations() -> list[str]:
+    """The externalization receipt MECHANICALLY REPRODUCES from its named base commit.
+
+    ADR-003's no-orphan handoff evidence is only worth as much as its reproducibility. This gate
+    re-derives every derivable field from the base commit's IMMUTABLE evidence (the inventory, the
+    file blobs, and the platform-model audit committed AT THE BASE) and asserts the committed
+    receipt matches, so the receipt cannot drift from the state it claims to record. It proves, with
+    no OSO credentials:
+
+    * the document is well-formed: `schema_version`, a `count` equal to the entry total, unique ids
+      and tables, and a base commit that resolves;
+    * BOUNDARY -- `externalization_base_commit` is not free-form: it must equal the graph-derived
+      boundary (the pre-removal state anchored to `externalization.json`'s first-add commit, so it
+      survives squash merging), so a valid-but-older commit cannot be substituted to attribute a
+      broader historical removal set to this externalization;
+    * MEMBERSHIP -- the entries are EXACTLY the assets removed from the base inventory (base minus
+      the current governed inventory minus the current dependency manifest), both directions;
+    * per entry, `id` and `population_was` equal the base asset's, `platform.dataset_id` equals the
+      base asset's dataset, and the deployed-model facts (`model_id`, `revision_hash`,
+      `source_sha256`) equal the BASE platform audit -- an entry with no audited model carries only a
+      dataset id, never fabricated model facts;
+    * PROVENANCE -- every `archived_source_sha256` hash equals the file's bytes at the base commit
+      and the file is genuinely gone from the worktree; and every file that existed under the
+      externalized prefixes at the base commit and is now deleted is archived by some entry (this is
+      what catches a deleted source that was left unarchived);
+    * CONSUMERS -- `repo_read_by` equals the base asset's `read_by` and `external_notebooks_or_products`
+      equals its `external_consumers`; the captured `platform_models` list must at least cover every
+      surviving model in the BASE audit that read the table (a reproducible lower bound -- extra
+      entries come from the externalization-time platform scan named in `evidence_basis`);
+    * HONESTY -- `last_platform_verified_at` equals the base asset's own `verified_at` (its real last
+      verification, not a fresh live claim), and `recorded_at`, `evidence_basis`, and `owner` are
+      present. `consumer_resolution` is optional prose and is NEVER what satisfies the gate; the
+      structured, reproduced consumer fields are;
+    * SHAPE -- a real disposition, `frozen-without-producer` names the frozen deployed table (a
+      dataset id), `transferred` names a destination (repo + commit) so a freeze cannot be mislabeled
+      as a transfer, and each entry is genuinely gone from the governed inventory, the dependency
+      manifest, and every repository producer;
+    * APPEND-ONLY -- every entry recorded in the receipt at the merge base survives unchanged here.
+    """
+    problems: list[str] = []
+    receipt = externalization_receipt()
+    if not receipt:
+        return problems  # no receipt is not a violation; nothing was externalized
+
+    entries = receipt.get("assets") or []
+
+    # -- document well-formedness --------------------------------------------------
+    if receipt.get("schema_version") != EXTERNALIZATION_SCHEMA_VERSION:
+        problems.append(
+            f"receipt schema_version {receipt.get('schema_version')!r} != {EXTERNALIZATION_SCHEMA_VERSION}")
+    if receipt.get("count") != len(entries):
+        problems.append(f"receipt count {receipt.get('count')!r} != {len(entries)} entries")
+    ids = [e.get("id") for e in entries]
+    tables = [e.get("table") for e in entries]
+    if len(set(ids)) != len(ids):
+        problems.append("receipt has duplicate entry ids")
+    if len(set(tables)) != len(tables):
+        problems.append("receipt has duplicate entry tables")
+
+    base = receipt.get("externalization_base_commit")
+    if not base or not _git_commit_exists(base):
+        problems.append(f"externalization_base_commit {base!r} does not resolve in this repo")
+        return problems  # everything below reproduces against the base; without it, stop here
+
+    # The base is not free-form: it must be the graph-derived externalization boundary, so a valid
+    # but older commit cannot be substituted to attribute a broader historical removal set here.
+    recorded_tables = {t for t in tables if t}
+    expected_base = expected_externalization_base(recorded_tables)
+    if expected_base is None:
+        problems.append("cannot derive the externalization boundary from history "
+                        "(externalization.json add commit or a pre-removal inventory is unreachable)")
+    elif expected_base != _rev_parse(base):
+        problems.append(
+            f"externalization_base_commit {base} is not the externalization boundary; the commit "
+            f"graph derives {expected_base} (the pre-removal state anchored to externalization.json)")
+
+    base_assets = _assets_at_commit(base)
+    if base_assets is None:
+        problems.append(f"cannot read warehouse/assets.yaml at base commit {base}")
+        return problems
+
+    # -- membership: entries == assets removed from the base inventory --------------
+    governed = set(by_table())
+    dep_tables = {d.get("table") for d in dependencies()}
+    dep_tables_bare = {t.removeprefix("currentai.") for t in dep_tables if t}
+    removed = {
+        t for t in base_assets
+        if t.removeprefix("currentai.") not in governed
+        and t.removeprefix("currentai.") not in dep_tables_bare
+    }
+    recorded = set(tables)
+    for t in sorted(removed - recorded):
+        problems.append(f"{t}: removed from the base inventory but not in the externalization receipt")
+    for t in sorted(recorded - removed):
+        problems.append(f"{t}: in the receipt but not an asset removed from the base inventory")
+
+    # -- per-entry reproduction ----------------------------------------------------
+    # Platform facts reproduce against the audit committed AT THE BASE (immutable evidence for an
+    # immutable receipt), never the mutable current audit.
+    pmodels = _platform_models_at_commit(base)
+    producers = {(a.get("files") or {}).get("model") for a in assets()}
+    producers |= {(d.get("files") or {}).get("model") for d in dependencies()}
+    producer_tables = {table_for_path(p) for p in producers if p}
+    archived_all: set[str] = set()
+
+    for e in entries:
+        t = e.get("table")
+        if not t:
+            problems.append(f"{e.get('id')!r}: externalization entry has no table")
+            continue
+        b = base_assets.get(t)
+        if b is None:
+            continue  # membership check above already flagged this
+
+        # still gone from every live surface
+        if t.removeprefix("currentai.") in governed:
+            problems.append(f"{t}: externalized but still a governed asset in assets.yaml")
+        if t in dep_tables:
+            problems.append(f"{t}: externalized but also a dependency contract")
+        if t in producer_tables:
+            problems.append(f"{t}: externalized but a repository model file still produces it")
+
+        # identity + population reproduce from the base asset
+        if e.get("id") != b.get("id"):
+            problems.append(f"{t}: id {e.get('id')!r} != base {b.get('id')!r}")
+        if e.get("population_was") != b.get("population"):
+            problems.append(f"{t}: population_was {e.get('population_was')!r} != base {b.get('population')!r}")
+
+        # platform facts reproduce from the base dataset + the deployed-model audit
+        plat = e.get("platform") or {}
+        if plat.get("dataset_id") != b.get("dataset_id"):
+            problems.append(f"{t}: platform.dataset_id {plat.get('dataset_id')!r} != base {b.get('dataset_id')!r}")
+        m = pmodels.get(t)
+        if m:
+            for f in ("model_id", "revision_hash", "source_sha256"):
+                if plat.get(f) != m.get(f):
+                    problems.append(f"{t}: platform.{f} {plat.get(f)!r} != audit {m.get(f)!r}")
+        else:
+            extra = set(plat) - {"dataset_id"}
+            if extra:
+                problems.append(f"{t}: platform carries {sorted(extra)} but no audited model exists to source it")
+
+        # archived hashes reproduce from base blobs; the files are really gone
+        for path, h in (e.get("archived_source_sha256") or {}).items():
+            archived_all.add(path)
+            want = _git_blob_sha256(base, path)
+            if want is None:
+                problems.append(f"{t}: archived {path} did not exist at the base commit")
+            elif want != h:
+                problems.append(f"{t}: archived {path} hash {h} != base blob {want}")
+            if (ROOT / path).exists():
+                problems.append(f"{t}: archived {path} still exists in the worktree (not deleted)")
+
+        # consumer provenance: repo readers + external consumers reproduce from the base asset
+        car = e.get("consumers_at_removal") or {}
+        if _norm_read_by(car.get("repo_read_by")) != _norm_read_by(b.get("read_by")):
+            problems.append(f"{t}: consumers_at_removal.repo_read_by != base read_by")
+        base_ext = b.get("external_consumers")
+        want_ext = sorted(base_ext) if isinstance(base_ext, list) else []
+        got_ext = sorted(car.get("external_notebooks_or_products") or [])
+        if want_ext != got_ext:
+            problems.append(f"{t}: external_notebooks_or_products {got_ext} != base external_consumers {want_ext}")
+        # the captured platform consumer list must cover every surviving audited reader (lower bound)
+        recorded_pm = {p.removeprefix("currentai.") for p in car.get("platform_models") or []}
+        for cm in pmodels.values():
+            if cm["table"] in recorded or cm["table"] == t:
+                continue  # a removed model is not a surviving consumer; nor is the table itself
+            reads = {r.removeprefix("currentai.") for r in cm.get("internal_reads") or []}
+            if t.removeprefix("currentai.") in reads and cm["table"].removeprefix("currentai.") not in recorded_pm:
+                problems.append(
+                    f"{t}: surviving audited model {cm['table']} reads it but is absent from "
+                    "consumers_at_removal.platform_models")
+
+        # honesty: the verification date is the asset's real prior date, not a fresh live claim
+        if str(e.get("last_platform_verified_at")) != str(b.get("verified_at")):
+            problems.append(
+                f"{t}: last_platform_verified_at {e.get('last_platform_verified_at')!r} != base "
+                f"verified_at {b.get('verified_at')!r}")
+        for field in ("recorded_at", "evidence_basis", "owner"):
+            if not e.get(field):
+                problems.append(f"{t}: externalization entry missing {field}")
+
+        # shape
+        disp = e.get("disposition")
+        if disp not in EXTERNALIZATION_DISPOSITIONS:
+            problems.append(f"{t}: disposition {disp!r} not in {sorted(EXTERNALIZATION_DISPOSITIONS)}")
+        if disp == "frozen-without-producer" and not plat.get("dataset_id"):
+            problems.append(f"{t}: 'frozen-without-producer' must name the frozen deployed table (dataset_id)")
+        if disp == "transferred":
+            dest = e.get("destination") or {}
+            if not (dest.get("repository") and dest.get("commit")):
+                problems.append(f"{t}: disposition 'transferred' must name destination.repository + commit")
+
+    # -- completeness: every deleted externalized file is archived ------------------
+    base_files = _tree_files_at_commit(base, EXTERNALIZED_FILE_PREFIXES)
+    deleted = {p for p in base_files if not (ROOT / p).exists()}
+    for p in sorted(deleted - archived_all):
+        problems.append(f"{p}: deleted since the base commit but not archived in any receipt entry")
+
+    # -- append-only: prior entries survive unchanged ------------------------------
+    prior = _merge_base_receipt()
+    if prior:
+        cur_by_id = {e.get("id"): e for e in entries}
+        for pid, pe in prior.items():
+            if pid not in cur_by_id:
+                problems.append(f"{pid}: previously recorded externalization entry was removed (append-only)")
+            elif cur_by_id[pid] != pe:
+                problems.append(f"{pid}: previously recorded externalization entry was modified (append-only)")
+
+    return problems
+
+
+def _merge_base_receipt(base: str = "origin/main") -> dict[str, dict] | None:
+    """The externalization receipt entries as of the merge base, keyed by id, or None if absent."""
+    mb = _merge_base_sha(base)
+    if not mb:
+        return None
+    try:
+        blob = subprocess.run(
+            ["git", "-C", str(ROOT), "show", f"{mb}:warehouse/audits/externalization.json"],
+            capture_output=True, text=True, check=True,
+        ).stdout
+    except subprocess.CalledProcessError:
+        return None
+    return {e.get("id"): e for e in (json.loads(blob) or {}).get("assets") or []}
+
+
 # --- ADR-003 roles and the anti-reintroduction gates -----------------------------------
 #
 # `role` ASSERTS membership; these functions RE-DERIVE it from the asset's own fields so an
 # authored role that disagrees with the boundary rule is caught, exactly as the derived
-# read_by graph catches a hand-edited reader list. The externalization backlog (24 long_tail
-# + the 4 questionable gap_map tables of EXTERNALIZE_QUESTIONABLE) is roleless until ADR-003
-# steps 5/6 remove it; every OTHER asset is a governed asset and must carry the derived role.
+# read_by graph catches a hand-edited reader list. Every asset in assets.yaml is a governed
+# asset and must carry the derived role (the externalization backlog is gone; steps 5-6 done).
 
-def in_externalization_backlog(asset: dict) -> bool:
-    """True for an asset ADR-003 slates to leave the governed inventory (roleless until then)."""
-    return asset["population"] == "long_tail" or asset["id"] in EXTERNALIZE_QUESTIONABLE
+def expected_role(asset: dict) -> str:
+    """The role ADR-003 derives for a governed asset, from its own fields.
 
-
-def expected_role(asset: dict) -> str | None:
-    """The role ADR-003 assigns this asset, or None if it is in the externalization backlog.
-
-    Derived, not read. `governed-output` iff on the release path; `compatibility-shim` iff a
-    live compatibility object; `repo-computation` iff a repo-owned model (has a model file);
-    otherwise `governed-data` (a repo-owned data/control artifact -- the baseline bytes, the
-    source-runs snapshot). A platform mirror is never governed-output/repo-computation here:
-    such assets are not in assets.yaml at all -- they are dependency contracts.
+    `governed-output` iff on the release path; `compatibility-shim` iff a live compatibility
+    object; `repo-computation` iff a repo-owned model (has a model file); otherwise
+    `governed-data` (a repo-owned data/control artifact -- the baseline bytes, the source-runs
+    snapshot). A platform mirror is never governed-output/repo-computation: such tables are not
+    in assets.yaml at all -- they are dependency contracts.
     """
-    if in_externalization_backlog(asset):
-        return None
     if asset["release_path"]:
         return "governed-output"
     if asset["status"] == "compatibility":
@@ -375,11 +701,11 @@ def expected_role(asset: dict) -> str | None:
 
 
 def role_violations() -> list[str]:
-    """Every governed asset carries the correct `role`, each role's invariants hold, and the
-    externalization backlog can only shrink.
+    """Every governed asset carries the correct `role` and each role's invariants hold.
 
-    ADR-003 gate 1 (governed-output <-> release_path), gate 6 (no governed long_tail), the
-    per-role "must be" clauses, and the backlog ratchet (roleless iff in the FROZEN_BACKLOG).
+    ADR-003 gate 1 (governed-output <-> release_path) and the per-role "must be" clauses. The
+    externalization backlog drained in steps 5-6, so there is no roleless state and no long_tail:
+    `role` and `population: gap_map` are REQUIRED_FIELDS / vocabulary, enforced directly.
     """
     problems: list[str] = []
     for a in assets():
@@ -387,35 +713,8 @@ def role_violations() -> list[str]:
         want = expected_role(a)
         aid = a["id"]
 
-        if role is not None and role not in ROLES:
+        if role not in ROLES:
             problems.append(f"{aid}: role {role!r} is not one of {sorted(ROLES)}")
-            continue
-
-        # Backlog ratchet (gate 6 / finding 3): the roleless set can only SHRINK. A roleless
-        # asset must be a member of the frozen backlog, and any long_tail asset must be in the
-        # frozen long-tail backlog -- a NEW long_tail or a new roleless asset cannot appear.
-        if role is None and aid not in FROZEN_BACKLOG:
-            problems.append(
-                f"{aid}: roleless but not in the frozen externalization backlog; a new asset "
-                "must justify a role -- the backlog can only shrink (gate 6 / ratchet)"
-            )
-        if a["population"] == "long_tail" and aid not in FROZEN_LONG_TAIL_BACKLOG:
-            problems.append(
-                f"{aid}: population long_tail but not in the frozen backlog; long_tail is a "
-                "retired governed population and cannot be reintroduced (gate 6)"
-            )
-
-        if want is None:
-            # Externalization backlog: must stay roleless until it leaves (steps 5/6).
-            if role is not None:
-                problems.append(
-                    f"{aid}: is in the externalization backlog but carries role {role!r}; "
-                    "the backlog is roleless until ADR-003 step 5/6"
-                )
-            continue
-
-        if role is None:
-            problems.append(f"{aid}: governed asset is missing its role (expected {want!r})")
             continue
         if role != want:
             problems.append(f"{aid}: role is {role!r} but the boundary rule derives {want!r}")
